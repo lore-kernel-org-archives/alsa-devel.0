@@ -1,17 +1,15 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [asoc:topic/intel 37/40]
- sound/soc/intel/skylake/skl-debug.c:53:1-6: WARNING: invalid free of devm_
- allocated data (fwd)
-Date: Sat, 1 Jul 2017 16:56:46 +0200 (CEST)
-Message-ID: <alpine.DEB.2.20.1707011655370.2342@hadrien>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH v2] ALSA: pcm: add a documentation for
+	tracepoints
+Date: Sun,  2 Jul 2017 11:44:43 +0900
+Message-ID: <20170702024443.7443-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id F41D42668BF
- for <alsa-devel@alsa-project.org>; Sat,  1 Jul 2017 16:56:47 +0200 (CEST)
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id BF617266884
+ for <alsa-devel@alsa-project.org>; Sun,  2 Jul 2017 04:45:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +19,214 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Guneshwor Singh <guneshwor.o.singh@intel.com>, kbuild-all@01.org, Vunny Sodhi <vunnyx.sodhi@intel.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This doesn't show enough of the context to see the allocation, but please
-check.
+In PCM interface/protocol for userspace, parameters of runtime for PCM
+substream is decided by an interaction between applications and ALSA
+PCM core. In former commits, some tracepoints were added to probe a part
+of the interaction.
 
-thanks,
-julia
+This commit adds a documentation about the interaction and the
+tracepoints.
 
----------- Forwarded message ----------
-Date: Sat, 1 Jul 2017 02:40:21 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-To: kbuild@01.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [asoc:topic/intel 37/40] sound/soc/intel/skylake/skl-debug.c:53:1-6:
-    WARNING: invalid free of devm_ allocated data
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
-head:   bdd0384a5ada8bb5745e5f29c10a5ba88827efad
-commit: 5cdf6c09ca9de3f037ba2d770206f3374459602d [37/40] ASoC: Intel: Skylake: Add debugfs support
-:::::: branch date: 6 hours ago
-:::::: commit date: 6 hours ago
-
->> sound/soc/intel/skylake/skl-debug.c:53:1-6: WARNING: invalid free of devm_ allocated data
-
-git remote add asoc https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-git remote update asoc
-git checkout 5cdf6c09ca9de3f037ba2d770206f3374459602d
-vim +53 sound/soc/intel/skylake/skl-debug.c
-
-5cdf6c09 Vinod Koul 2017-06-30  37  				   skl->platform->component.debugfs_root);
-5cdf6c09 Vinod Koul 2017-06-30  38  	if (IS_ERR(d->fs) || !d->fs) {
-5cdf6c09 Vinod Koul 2017-06-30  39  		dev_err(&skl->pci->dev, "debugfs root creation failed\n");
-5cdf6c09 Vinod Koul 2017-06-30  40  		return NULL;
-5cdf6c09 Vinod Koul 2017-06-30  41  	}
-5cdf6c09 Vinod Koul 2017-06-30  42
-5cdf6c09 Vinod Koul 2017-06-30  43  	d->skl = skl;
-5cdf6c09 Vinod Koul 2017-06-30  44  	d->dev = &skl->pci->dev;
-5cdf6c09 Vinod Koul 2017-06-30  45
-5cdf6c09 Vinod Koul 2017-06-30  46  	return d;
-5cdf6c09 Vinod Koul 2017-06-30  47  }
-5cdf6c09 Vinod Koul 2017-06-30  48
-5cdf6c09 Vinod Koul 2017-06-30  49  void skl_debugfs_exit(struct skl_debug *d)
-5cdf6c09 Vinod Koul 2017-06-30  50  {
-5cdf6c09 Vinod Koul 2017-06-30  51  	debugfs_remove_recursive(d->fs);
-5cdf6c09 Vinod Koul 2017-06-30  52
-5cdf6c09 Vinod Koul 2017-06-30 @53  	kfree(d);
-5cdf6c09 Vinod Koul 2017-06-30  54
-5cdf6c09 Vinod Koul 2017-06-30  55  }
-
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ Documentation/sound/designs/index.rst       |   1 +
+ Documentation/sound/designs/tracepoints.rst | 172 ++++++++++++++++++++++++++++
+ 2 files changed, 173 insertions(+)
+ create mode 100644 Documentation/sound/designs/tracepoints.rst
+
+diff --git a/Documentation/sound/designs/index.rst b/Documentation/sound/designs/index.rst
+index 04dcdae3e4f2..f0749943ccb2 100644
+--- a/Documentation/sound/designs/index.rst
++++ b/Documentation/sound/designs/index.rst
+@@ -9,6 +9,7 @@ Designs and Implementations
+    compress-offload
+    timestamping
+    jack-controls
++   tracepoints
+    procfile
+    powersave
+    oss-emulation
+diff --git a/Documentation/sound/designs/tracepoints.rst b/Documentation/sound/designs/tracepoints.rst
+new file mode 100644
+index 000000000000..d2e481c6da37
+--- /dev/null
++++ b/Documentation/sound/designs/tracepoints.rst
+@@ -0,0 +1,172 @@
++===================
++Tracepoints in ALSA
++===================
++
++2017/07/02
++Takasahi Sakamoto
++
++Tracepoints in ALSA PCM core
++============================
++
++ALSA PCM core registers ``snd_pcm`` subsystem to kernel tracepoint system.
++This subsystem includes two categories of tracepoints; for state of PCM buffer
++and for processing of PCM hardware parameters. These tracepoints are available
++when corresponding kernel configurations are enabled. When ``CONFIG_SND_DEBUG``
++is enabled, the latter tracepoints are available. When additional
++``SND_PCM_XRUN_DEBUG`` is enabled too, the former trace points are enabled.
++
++Tracepoints for state of PCM buffer
++------------------------------------
++
++This category includes four tracepoints; ``hwptr``, ``applptr``, ``xrun`` and
++``hw_ptr_error``.
++
++Tracepoints for processing of PCM hardware parameters
++-----------------------------------------------------
++
++This category includes two tracepoints; ``hw_mask_param`` and
++``hw_interval_param``.
++
++In a design of ALSA PCM core, data transmission is abstracted as PCM substream.
++Applications manage PCM substream to maintain data transmission for PCM frames.
++Before starting the data transmission, applications need to configure PCM
++substream. In this procedure, PCM hardware parameters are decided by
++interaction between applications and ALSA PCM core. Once decided, runtime of
++the PCM substream keeps the parameters.
++
++The parameters are described in :c:type:`struct snd_pcm_hw_params`. This
++structure includes several types of parameters. Applications set preferable
++value to these parameters, then execute ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE
++or SNDRV_PCM_IOCTL_HW_PARAMS. The former is used just for refining available
++set of parameters. The latter is used for an actual decision of the parameters.
++
++The :c:type:`struct snd_pcm_hw_params` structure has below members:
++
++``flags``
++        Configurable. ALSA PCM core and some drivers handle this flag to select
++        convenient parameters or change their behaviour.
++``masks``
++        Configurable. This type of parameter is described in
++        :c:type:`struct snd_mask` and represent mask values. As of PCM protocol
++        v2.0.13, three types are defined.
++
++        - SNDRV_PCM_HW_PARAM_ACCESS
++        - SNDRV_PCM_HW_PARAM_FORMAT
++        - SNDRV_PCM_HW_PARAM_SUBFORMAT
++``intervals``
++        Configurable. This type of parameter is described in
++        :c:type:`struct snd_interval` and represent values with a range. As of
++        PCM protocol v2.0.13, twelve types are defined.
++
++        - SNDRV_PCM_HW_PARAM_SAMPLE_BITS
++        - SNDRV_PCM_HW_PARAM_FRAME_BITS
++        - SNDRV_PCM_HW_PARAM_CHANNELS
++        - SNDRV_PCM_HW_PARAM_RATE
++        - SNDRV_PCM_HW_PARAM_PERIOD_TIME
++        - SNDRV_PCM_HW_PARAM_PERIOD_SIZE
++        - SNDRV_PCM_HW_PARAM_PERIOD_BYTES
++        - SNDRV_PCM_HW_PARAM_PERIODS
++        - SNDRV_PCM_HW_PARAM_BUFFER_TIME
++        - SNDRV_PCM_HW_PARAM_BUFFER_SIZE
++        - SNDRV_PCM_HW_PARAM_BUFFER_BYTES
++        - SNDRV_PCM_HW_PARAM_TICK_TIME
++``rmask``
++        Configurable. This is evaluated at ioctl(2) with
++        SNDRV_PCM_IOCTL_HW_REFINE only. Applications can select which
++        mask/interval parameter can be changed by ALSA PCM core. For
++        SNDRV_PCM_IOCTL_HW_PARAMS, this mask is ignored and all of parameters
++        are going to be changed.
++``cmask``
++        Read-only. After returning from ioctl(2), buffer in user space for
++        :c:type:`struct snd_pcm_hw_params` includes result of each operation.
++        This mask represents which mask/interval parameter is actually changed.
++``info``
++        Read-only. This represents hardware/driver capabilities as bit flags
++        with SNDRV_PCM_INFO_XXX. Typically, applications execute ioctl(2) with
++        SNDRV_PCM_IOCTL_HW_REFINE to retrieve this flag, then decide candidates
++        of parameters and execute ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS to
++        configure PCM substream.
++``msbits``
++        Read-only. This value represents available bit width in MSB side of
++        a PCM sample. When a parameter of SNDRV_PCM_HW_PARAM_SAMPLE_BITS was
++        decided as a fixed number, this value is also calculated according to
++        it. Else, zero. But this behaviour depends on implementations in driver
++        side.
++``rate_num``
++        Read-only. This value represents numerator of sampling rate in fraction
++        notation. Basically, when a parameter of SNDRV_PCM_HW_PARAM_RATE was
++        decided as a single value, this value is also calculated according to
++        it. Else, zero. But this behaviour depends on implementations in driver
++        side.
++``rate_den``
++        Read-only. This value represents denominator of sampling rate in
++        fraction notation. Basically, when a parameter of
++        SNDRV_PCM_HW_PARAM_RATE was decided as a single value, this value is
++        also calculated according to it. Else, zero. But this behaviour depends
++        on implementations in driver side.
++``fifo_size``
++        Read-only. This value represents the size of FIFO in serial sound
++        interface of hardware. Basically, each driver can assigns a proper
++        value to this parameter but some drivers intentionally set zero with
++        a care of hardware design or data transmission protocol.
++
++ALSA PCM core handles buffer of :c:type:`struct snd_pcm_hw_params` when
++applications execute ioctl(2) with SNDRV_PCM_HW_REFINE or SNDRV_PCM_HW_PARAMS.
++Parameters in the buffer are changed according to
++:c:type:`struct snd_pcm_hardware` and rules of constraints in the runtime. The
++structure describes capabilities of handled hardware. The rules describes
++dependencies on which a parameter is decided according to several parameters.
++A rule has a callback function, and drivers can register arbitrary functions
++to compute the target parameter. ALSA PCM core registers some rules to the
++runtime as a default.
++
++Each driver can join in the interaction as long as it prepared for two stuffs
++in a callback of :c:type:`struct snd_pcm_ops.open`.
++
++1. In the callback, drivers are expected to change a member of
++   :c:type:`struct snd_pcm_hardware` type in the runtime, according to
++   capacities of corresponding hardware.
++2. In the same callback, drivers are also expected to register additional rules
++   of constraints into the runtime when several parameters have dependencies
++   due to hardware design.
++
++The driver can refers to result of the interaction in a callback of
++:c:type:`struct snd_pcm_ops.hw_params`, however it should not change the
++content.
++
++Tracepoints in this category are designed to trace changes of the
++mask/interval parameters. When ALSA PCM core changes them, ``hw_mask_param`` or
++``hw_interval_param`` event is probed according to type of the changed parameter.
++
++ALSA PCM core also has a pretty print format for each of the tracepoints. Below
++is an example for ``hw_mask_param``.
++
++::
++
++    hw_mask_param: pcmC0D0p 001/023 FORMAT 00000000000000000000001000000044 00000000000000000000001000000044
++
++
++Below is an example for ``hw_interval_param``.
++
++::
++
++    hw_interval_param: pcmC0D0p 000/023 BUFFER_SIZE 0 0 [0 4294967295] 0 1 [0 4294967295]
++
++The first three fields are common. They represent name of ALSA PCM character
++device, rules of constraint and name of the changed parameter, in order. The
++field for rules of constraint consists of two sub-fields; index of applied rule
++and total number of rules added to the runtime. As an exception, the index 000
++means that the parameter is changed by ALSA PCM core, regardless of the rules.
++
++The rest of field represent state of the parameter before/after changing. These
++fields are different according to type of the parameter. For parameters of mask
++type, the fields represent hexadecimal dump of content of the parameter. For
++parameters of interval type, the fields represent values of each member of
++``empty``, ``integer``, ``openmin``, ``min``, ``max``, ``openmax`` in
++:c:type:`struct snd_interval` in this order.
++
++Tracepoints in drivers
++======================
++
++Some drivers have tracepoints for developers' convenience. For them, please
++refer to each documentation or implementation.
+-- 
+2.11.0
