@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: explicitly add the
-	headers sst-dsp.h" to the asoc tree
-Date: Mon, 03 Jul 2017 16:51:12 +0100
-Message-ID: <E1dS3d2-0002iu-DN@debutante>
-References: <20170703082447.2304-1-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Remove driver debugfs
+	exit" to the asoc tree
+Date: Mon, 03 Jul 2017 16:51:09 +0100
+Message-ID: <E1dS3cz-0002hv-Bw@debutante>
+References: <20170703082447.2304-2-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D51FB26680F
- for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 17:51:23 +0200 (CEST)
-In-Reply-To: <20170703082447.2304-1-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EF534266BC2
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 17:51:30 +0200 (CEST)
+In-Reply-To: <20170703082447.2304-2-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, kbuild test robot <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Julia Lawall <julia.lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, kbuild test robot <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: explicitly add the headers sst-dsp.h
+   ASoC: Intel: Skylake: Remove driver debugfs exit
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 58be77537aa12ca0c6c91eaf37902ad5f8c812bd Mon Sep 17 00:00:00 2001
+>From 7d3d6e0645dd3689e625161b9e312108e66b2b51 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Mon, 3 Jul 2017 13:54:46 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: explicitly add the headers sst-dsp.h
+Date: Mon, 3 Jul 2017 13:54:47 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Remove driver debugfs exit
 
-Commit bdd0384a5ada ("ASoC: Intel: Skylake: Add support to read firmware
-registers") introduced firmware register read so added sst-dsp-priv.h but
-missed adding sst-dsp.h as that leads to below compiler warning:
+For driver debugfs, debugfs_remove_recursive() is called which is not
+needed as it is already done in ASoC core debugfs. And a device managed
+memory need not be freed explicitly as device core frees it up. So
+remove unnecessary skl_debugfs_exit().
 
-   In file included from sound/soc/intel/skylake/skl-debug.c:23:0:
->> sound/soc/intel/skylake/../common/sst-dsp-priv.h:63:42: warning:
-'struct sst_pdata' declared inside parameter list [enabled by default]
-     int (*init)(struct sst_dsp *sst, struct sst_pdata *pdata);
-                                             ^
->> sound/soc/intel/skylake/../common/sst-dsp-priv.h:63:42: warning:
-its scope is only this definition or declaration, which is probably
-not what you want [enabled by default]
-
-So add the missing header.
-
-Fixes: bdd0384a5ada ("ASoC: Intel: Skylake: Add support to read firmware registers")
+Fixes: 5cdf6c09ca9d ASoC: ("Intel: Skylake: Add debugfs support")
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
 Reported-by: kbuild test robot <fengguang.wu@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-debug.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/skylake/skl-debug.c | 8 --------
+ sound/soc/intel/skylake/skl.c       | 1 -
+ sound/soc/intel/skylake/skl.h       | 3 ---
+ 3 files changed, 12 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-index 75497b1fda45..34d06abbf796 100644
+index 34d06abbf796..dc20d91f62e6 100644
 --- a/sound/soc/intel/skylake/skl-debug.c
 +++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -20,6 +20,7 @@
- #include "skl-sst-ipc.h"
- #include "skl-tplg-interface.h"
- #include "skl-topology.h"
-+#include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
+@@ -259,11 +259,3 @@ struct skl_debug *skl_debugfs_init(struct skl *skl)
+ 	debugfs_remove_recursive(d->fs);
+ 	return NULL;
+ }
+-
+-void skl_debugfs_exit(struct skl_debug *d)
+-{
+-	debugfs_remove_recursive(d->fs);
+-
+-	kfree(d);
+-
+-}
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 410ce83f4a49..334917ee41cf 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -866,7 +866,6 @@ static void skl_remove(struct pci_dev *pci)
+ 	/* codec removal, invoke bus_device_remove */
+ 	snd_hdac_ext_bus_device_remove(ebus);
  
- #define MOD_BUF		PAGE_SIZE
+-	skl_debugfs_exit(skl->debugfs);
+ 	skl->debugfs = NULL;
+ 	skl_platform_unregister(&pci->dev);
+ 	skl_free_dsp(skl);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 14e7778d7f80..a6b134b4c037 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -125,7 +125,6 @@ struct skl_module_cfg;
+ 
+ #ifdef CONFIG_DEBUG_FS
+ struct skl_debug *skl_debugfs_init(struct skl *skl);
+-void skl_debugfs_exit(struct skl_debug *d);
+ void skl_debug_init_module(struct skl_debug *d,
+ 			struct snd_soc_dapm_widget *w,
+ 			struct skl_module_cfg *mconfig);
+@@ -134,8 +133,6 @@ static inline struct skl_debug *skl_debugfs_init(struct skl *skl)
+ {
+ 	return NULL;
+ }
+-static inline void skl_debugfs_exit(struct skl_debug *d)
+-{}
+ static inline void skl_debug_init_module(struct skl_debug *d,
+ 					 struct snd_soc_dapm_widget *w,
+ 					 struct skl_module_cfg *mconfig)
 -- 
 2.13.1
