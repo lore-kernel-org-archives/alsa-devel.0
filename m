@@ -1,22 +1,19 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH] aplay: Fix header for raw format
-Date: Mon, 3 Jul 2017 12:41:44 +0300
-Message-ID: <CAEnQRZA3_NGTp9pvoMDoc12Oeaa_YOAo9KJ2AcRpegg6f789GQ@mail.gmail.com>
-References: <1498735036-26126-1-git-send-email-ion-horia.petrisor@nxp.com>
- <s5hwp7urmno.wl-tiwai@suse.de>
- <CAEnQRZANk-SQ2oZNuWk9f2GcZ1Hqrs5v1sheoFop=LJ056+pqQ@mail.gmail.com>
- <s5hlgo9d0bn.wl-tiwai@suse.de>
+From: James Cameron <quozl@laptop.org>
+Subject: Re: I sent hardware informations with the script about
+ a MEDION laptop with Intel devices
+Date: Mon, 3 Jul 2017 19:46:53 +1000
+Message-ID: <20170703094653.GC12700@us.netrek.org>
+References: <CALmBKtk6TnY4rB2jj+NSc-8wo1cnNh4Qr2W0o8Yvw-rFPUmqog@mail.gmail.com>
+ <CALmBKtmcqqw1A_5zM6g+LPJJOKRcMNG+oOkhiqQZUX4tDPzTJQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f177.google.com (mail-qk0-f177.google.com
- [209.85.220.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 87279266884
- for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 11:41:46 +0200 (CEST)
-Received: by mail-qk0-f177.google.com with SMTP id v143so57364127qkb.0
- for <alsa-devel@alsa-project.org>; Mon, 03 Jul 2017 02:41:46 -0700 (PDT)
-In-Reply-To: <s5hlgo9d0bn.wl-tiwai@suse.de>
+Received: from swan.laptop.org (swan.laptop.org [18.85.44.157])
+ by alsa0.perex.cz (Postfix) with ESMTP id B137C266884
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 11:47:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CALmBKtmcqqw1A_5zM6g+LPJJOKRcMNG+oOkhiqQZUX4tDPzTJQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,227 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ion-Horia Petrisor <ion-horia.petrisor@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, =?UTF-8?B?5Z2C5pys6LK05Y+y?= <o-takashi@sakamocchi.jp>
+To: alsa-devel@alsa-project.org
+Cc: fulgor fulgor <l.vanwinnendaele@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 30, 2017 at 5:20 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 30 Jun 2017 15:11:38 +0200,
-> Daniel Baluta wrote:
->>
->> Hi Takashi,
->>
->> Thanks a lot for your feedback.
->>
->> On Fri, Jun 30, 2017 at 9:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Thu, 29 Jun 2017 13:17:16 +0200,
->> > Ion-Horia Petrisor wrote:
->> >>
->> >> Raw format has no header, so use 0 when calling playback_go.
->> >
->> > It's the value passed for the length that has been already loaded.
->> > The program has read dta bytes for parsing the header, and it's raw
->> > data without header.  Thus you need to pass dta there.
->> >
->> With the current code we assume that the raw files have at least 26 bytes.
->> (sizeof (VocHeader).
->>
->> I think it doesn't matter here that dta bytes has already been loaded. These
->> bytes useful to figure out the file header type.
->>
->> To keep things simple we can assume that in the case of raw files there is no
->> header, so second parameter of playback_go (named loaded) can be set to 0.
->
-> The loaded parameter of playback_go() doesn't mean that.  It's the
-> size that has been already read onto the audio buffer.  If you pass 0
-> there, it means that you discard the first 26 bytes samples you have
-> already read without playing.
+On Mon, Jul 03, 2017 at 11:21:09AM +0200, fulgor fulgor wrote:
+> Is there any news about a module for this laptop ?
 
-Agree. Passing 0 discards the first 26 bytes that have already been read
-but these bytes will be re-read inside playback_go so they will be played.
+Please use better subject line, and at least link to your previous
+message.
 
-playback_go( .. loaded = 0)
-..
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/121766.html
 
-r = safe_read(fd, audio_buf + loaded, c). [aplay.c: 2757]
+A recent patch "ASoC: rt5645: Add quirk override by module option" and
+those immediately prior by the same author on the same driver fixed my
+problems with a similar laptop.  Needed experimentation with
+snd_soc_rt5645.quirks value and boot command line changes.
 
->
->> The worst things that can happen is that we re-read the first 26 bytes
->> (previously
->> read as VoC header).
->
-> Where is re-read...?
+Please, don't reply directly to me in future.  It's not my job to fix
+your laptop.
 
-As explained above, we first read the header [be it .au, .voc or .wav] in
-playback() function and then because we pass [with our proposed patch
-loaded = 0]
-we re-read those bytes in playback_go function.
-
-Of course, is not optimal. Let me look at your patch.
->
->> We are trying to introduce a new parameter --samples which tells aplay to  only
->> playback/record s number of samples.
->>
->> We modified calc_count() accordingly so that when receives the
->> --samples parameter
->> computes the correct number of bytes to be read.
->>
->> Anyhow, it doesn't work as expected because aplay expects files to have at least
->> 26 bytes.
->>
->> The correct solution would be that in the case of raw files not assume
->> any header
->> and read samples * sample_size bytes from the beginning of the file.
->
-> I see now what you want, but the patch is incorrect.
-> I guess a patch something like below is what you want.
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/aplay/aplay.c b/aplay/aplay.c
-> index 00af66246cad..a902be5cf9cb 100644
-> --- a/aplay/aplay.c
-> +++ b/aplay/aplay.c
-> @@ -2782,12 +2782,65 @@ static void playback_go(int fd, size_t loaded, off64_t count, int rtype, char *n
->   *  let's play or capture it (capture_type says VOC/WAVE/raw)
->   */
->
-> -static void playback(char *name)
-> +static void read_header(int *loaded, int header_size)
-> +{
-> +       if (*loaded < header_size) {
-> +               header_size -= *loaded;
-> +               if (safe_read(fd, audiobuf, header_size) != header_size) {
-
-audio_buf + *loaded here.
-
-> +                       error(_("read error"));
-> +                       prg_exit(EXIT_FAILURE);
-> +               }
-> +               *loaded += header_size;
-> +       }
-> +}
-> +
-> +static int playback_au(char *name, int *loaded)
-> +{
-> +       read_header(loaded, sizeof(AuHeader));
-> +       if (test_au(fd, audiobuf) < 0)
-> +               return -1;
-> +       rhwparams.format = hwparams.format;
-> +       pbrec_count = calc_count();
-> +       playback_go(fd, *loaded - sizeof(AuHeader), pbrec_count, FORMAT_AU, name);
-> +       return 0;
-> +}
-> +
-> +static int playback_voc(char *name, int *loaded)
->  {
->         int ofs;
-> -       size_t dta;
-> +
-> +       read_header(loaded, sizeof(VocHeader));
-> +       if ((ofs = test_vocfile(audiobuf)) < 0)
-> +               return -1;
-> +       pbrec_count = calc_count();
-> +       voc_play(fd, ofs, name);
-> +       return 0;
-> +}
-> +
-> +static int playback_wave(char *name, int *loaded)
-> +{
->         ssize_t dtawave;
->
-> +       read_header(loaded, sizeof(WaveHeader));
-> +       if ((dtawave = test_wavefile(fd, audiobuf, *loaded)) < 0)
-> +               return -1;
-> +       pbrec_count = calc_count();
-> +       playback_go(fd, dtawave, pbrec_count, FORMAT_WAVE, name);
-> +       return 0;
-> +}
-> +
-> +static int playback_raw(char *name, int *loaded)
-> +{
-> +       init_raw_data();
-> +       pbrec_count = calc_count();
-> +       playback_go(fd, *loaded, pbrec_count, FORMAT_RAW, name);
-> +       return 0;
-> +}
-> +
-> +static void playback(char *name)
-> +{
-> +       int loaded = 0;
-> +
->         pbrec_count = LLONG_MAX;
->         fdcount = 0;
->         if (!name || !strcmp(name, "-")) {
-> @@ -2800,40 +2853,29 @@ static void playback(char *name)
->                         prg_exit(EXIT_FAILURE);
->                 }
->         }
-> -       /* read the file header */
-> -       dta = sizeof(AuHeader);
-> -       if ((size_t)safe_read(fd, audiobuf, dta) != dta) {
-> -               error(_("read error"));
-> -               prg_exit(EXIT_FAILURE);
-> -       }
-> -       if (test_au(fd, audiobuf) >= 0) {
-> -               rhwparams.format = hwparams.format;
-> -               pbrec_count = calc_count();
-> -               playback_go(fd, 0, pbrec_count, FORMAT_AU, name);
-> -               goto __end;
-> -       }
-> -       dta = sizeof(VocHeader);
-> -       if ((size_t)safe_read(fd, audiobuf + sizeof(AuHeader),
-> -                dta - sizeof(AuHeader)) != dta - sizeof(AuHeader)) {
-> -               error(_("read error"));
-> -               prg_exit(EXIT_FAILURE);;
-> -       }
-> -       if ((ofs = test_vocfile(audiobuf)) >= 0) {
-> -               pbrec_count = calc_count();
-> -               voc_play(fd, ofs, name);
-> -               goto __end;
-> -       }
-> -       /* read bytes for WAVE-header */
-> -       if ((dtawave = test_wavefile(fd, audiobuf, dta)) >= 0) {
-> -               pbrec_count = calc_count();
-> -               playback_go(fd, dtawave, pbrec_count, FORMAT_WAVE, name);
-> -       } else {
-> -               /* should be raw data */
-> -               init_raw_data();
-> -               pbrec_count = calc_count();
-> -               playback_go(fd, dta, pbrec_count, FORMAT_RAW, name);
-> +
-> +       switch (file_type) {
-> +       case FORMAT_AU:
-> +               playback_au(name, &loaded);
-> +               break;
-> +       case FORMAT_VOC:
-> +               playback_voc(name, &loaded);
-> +               break;
-> +       case FORMAT_WAVE:
-> +               playback_wave(name, &loaded);
-> +               break;
-> +       case FORMAT_RAW:
-> +               playback_raw(name, &loaded);
-> +               break;
-> +       default:
-> +               /* parse the file header */
-> +               if (playback_au(name, &loaded) < 0 &&
-> +                   playback_voc(name, &loaded) < 0 &&
-> +                   playback_wave(name, &loaded) < 0)
-> +                       playback_raw(name, &loaded); /* should be raw data */
-> +               break;
->         }
-> -      __end:
-> +
->         if (fd != 0)
->                 close(fd);
->  }
-
-This is more elegant and also fixes our problem. Care to send a formal patch?
-
-thanks,
-daniel.
+-- 
+James Cameron
+http://quozl.netrek.org/
