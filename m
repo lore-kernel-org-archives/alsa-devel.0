@@ -1,47 +1,83 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v3 01/17] mfd: madera: Add register definitions for
- Cirrus Logic Madera codecs
-Date: Mon, 03 Jul 2017 03:52:46 -0700
-Message-ID: <1499079166.9885.13.camel@perches.com>
-References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
-         <1496415790-19164-2-git-send-email-rf@opensource.wolfsonmicro.com>
-         <20170703103330.uka6otpdes462eym@dell>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH] aplay: Fix header for raw format
+Date: Mon, 3 Jul 2017 14:02:14 +0300
+Message-ID: <CAEnQRZCcY1nkemhm+LSo9OC_wRZoCt-XqNWotpzGptVL-GXVWg@mail.gmail.com>
+References: <1498735036-26126-1-git-send-email-ion-horia.petrisor@nxp.com>
+ <s5hwp7urmno.wl-tiwai@suse.de>
+ <CAEnQRZANk-SQ2oZNuWk9f2GcZ1Hqrs5v1sheoFop=LJ056+pqQ@mail.gmail.com>
+ <s5hlgo9d0bn.wl-tiwai@suse.de>
+ <CAEnQRZA3_NGTp9pvoMDoc12Oeaa_YOAo9KJ2AcRpegg6f789GQ@mail.gmail.com>
+ <s5hwp7pj089.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <20170703103330.uka6otpdes462eym@dell>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f175.google.com (mail-qt0-f175.google.com
+ [209.85.216.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC6F1266DAB
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 13:02:16 +0200 (CEST)
+Received: by mail-qt0-f175.google.com with SMTP id r30so140187222qtc.0
+ for <alsa-devel@alsa-project.org>; Mon, 03 Jul 2017 04:02:16 -0700 (PDT)
+In-Reply-To: <s5hwp7pj089.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ion-Horia Petrisor <ion-horia.petrisor@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, =?UTF-8?B?5Z2C5pys6LK05Y+y?= <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2017-07-03 at 11:33 +0100, Lee Jones wrote:
-> On Fri, 02 Jun 2017, Richard Fitzgerald wrote:
-> 
-> > This patch adds a header file of register definitions for Cirrus
-> > Logic "Madera" class codecs. These codecs are all based off a common
-> > set of hardware IP so have a common register map (with a few minor
-> > device-to-device variations). These are complex devices with a large
-> > number of features and so have a correspondingly large register set.
-> > The registers.h file has been auto-generated from the hardware register
-> > definitions, stripped down to only registers we need to access from
-> > the driver
-> > 
-> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > ---
-> > Changes since V2:
-> > - Used new field names for IRQ1_STATUS_33 register
-> > 
-> >  MAINTAINERS                          |   10 +
-> >  include/linux/mfd/madera/registers.h | 8832 ++++++++++++++++++++++++++++++++++
-> >  2 files changed, 8842 insertions(+)
-> >  create mode 100644 include/linux/mfd/madera/registers.h
-> 
-> Applied, thanks.
+On Mon, Jul 3, 2017 at 1:14 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Mon, 03 Jul 2017 11:41:44 +0200,
+> Daniel Baluta wrote:
+>>
+>> On Fri, Jun 30, 2017 at 5:20 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > On Fri, 30 Jun 2017 15:11:38 +0200,
+>> > Daniel Baluta wrote:
+>> >>
+>> >> Hi Takashi,
+>> >>
+>> >> Thanks a lot for your feedback.
+>> >>
+>> >> On Fri, Jun 30, 2017 at 9:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > On Thu, 29 Jun 2017 13:17:16 +0200,
+>> >> > Ion-Horia Petrisor wrote:
+>> >> >>
+>> >> >> Raw format has no header, so use 0 when calling playback_go.
+>> >> >
+>> >> > It's the value passed for the length that has been already loaded.
+>> >> > The program has read dta bytes for parsing the header, and it's raw
+>> >> > data without header.  Thus you need to pass dta there.
+>> >> >
+>> >> With the current code we assume that the raw files have at least 26 bytes.
+>> >> (sizeof (VocHeader).
+>> >>
+>> >> I think it doesn't matter here that dta bytes has already been loaded. These
+>> >> bytes useful to figure out the file header type.
+>> >>
+>> >> To keep things simple we can assume that in the case of raw files there is no
+>> >> header, so second parameter of playback_go (named loaded) can be set to 0.
+>> >
+>> > The loaded parameter of playback_go() doesn't mean that.  It's the
+>> > size that has been already read onto the audio buffer.  If you pass 0
+>> > there, it means that you discard the first 26 bytes samples you have
+>> > already read without playing.
+>>
+>> Agree. Passing 0 discards the first 26 bytes that have already been read
+>> but these bytes will be re-read inside playback_go so they will be played.
+>>
+>> playback_go( .. loaded = 0)
+>> ..
+>>
+>> r = safe_read(fd, audio_buf + loaded, c). [aplay.c: 2757]
+>
+> No no, safe_read won't *re*-read.  It just reads the data after the
+> point you've already read without seeking back.  So the first 26 bytes
+> will be lost by your patch.
 
-followed by 400k of useless quoted reply!!!
-
-Lee.  Seriously.  Don't be impolite to others.
-Remember to trim  your replies.
-
+Oh, got it! Thanks for your patience.
