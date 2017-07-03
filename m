@@ -1,74 +1,85 @@
-From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v3 01/17] mfd: madera: Add register definitions for
- Cirrus Logic Madera codecs
-Date: Mon, 03 Jul 2017 04:26:54 -0700
-Message-ID: <1499081214.9885.15.camel@perches.com>
-References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
-         <1496415790-19164-2-git-send-email-rf@opensource.wolfsonmicro.com>
-         <20170703103330.uka6otpdes462eym@dell>
-         <1499079166.9885.13.camel@perches.com>
-         <20170703112116.zgatgnazk24qja4e@dell>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 1/6] clk: at91: clk-generated: remove
+ useless divisor loop
+Date: Mon, 3 Jul 2017 15:58:34 +0200
+Message-ID: <20170703155834.4de2a304@bbrezillon>
+References: <20170623090059.8371-1-quentin.schulz@free-electrons.com>
+ <20170623090059.8371-2-quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170703112116.zgatgnazk24qja4e@dell>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF6A2266B38
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 15:58:35 +0200 (CEST)
+In-Reply-To: <20170623090059.8371-2-quentin.schulz@free-electrons.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Quentin Schulz <quentin.schulz@free-electrons.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, thomas.petazzoni@free-electrons.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, mturquette@baylibre.com, tiwai@suse.com, sboyd@codeaurora.org, nicolas.ferre@microchip.com, linux@armlinux.org.uk, robh+dt@kernel.org, alexandre.belloni@free-electrons.com, broonie@kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2017-07-03 at 12:21 +0100, Lee Jones wrote:
-> On Mon, 03 Jul 2017, Joe Perches wrote:
+On Fri, 23 Jun 2017 11:00:54 +0200
+Quentin Schulz <quentin.schulz@free-electrons.com> wrote:
+
+> The driver requests the current clk rate of each of its parent clocks to
+> decide whether a clock rate is suitable or not. It does not request
+> determine_rate from a parent clock which could request a rate change in
+> parent clock (i.e. there is no parent rate propagation).
 > 
-> > On Mon, 2017-07-03 at 11:33 +0100, Lee Jones wrote:
-> > > On Fri, 02 Jun 2017, Richard Fitzgerald wrote:
-> > > 
-> > > > This patch adds a header file of register definitions for Cirrus
-> > > > Logic "Madera" class codecs. These codecs are all based off a common
-> > > > set of hardware IP so have a common register map (with a few minor
-> > > > device-to-device variations). These are complex devices with a large
-> > > > number of features and so have a correspondingly large register set.
-> > > > The registers.h file has been auto-generated from the hardware register
-> > > > definitions, stripped down to only registers we need to access from
-> > > > the driver
-> > > > 
-> > > > Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-> > > > ---
-> > > > Changes since V2:
-> > > > - Used new field names for IRQ1_STATUS_33 register
-> > > > 
-> > > >  MAINTAINERS                          |   10 +
-> > > >  include/linux/mfd/madera/registers.h | 8832 ++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 8842 insertions(+)
-> > > >  create mode 100644 include/linux/mfd/madera/registers.h
-> > > 
-> > > Applied, thanks.
-> > 
-> > followed by 400k of useless quoted reply!!!
-> > 
-> > Lee.  Seriously.  Don't be impolite to others.
-> > Remember to trim  your replies.
+> We know the rate we want (passed along req argument of the function) and
+> the parent clock rate, thus we know the closest rounded divisor, we
+> don't need to iterate over the available divisors to find the best one
+> for a given clock.
 > 
-> "Applied, thanks" is *obviously* the last message in my reply.  Did
-> you waste any time reading past that, or are you just being pedantic?
+> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 
-Nope, I just looked at the size and the delay
-in loading this message over my phone's hotspot.
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-> If you are truly concerned over 400k of bandwidth you need to switch
-> to a new internet provider.
-
-Not everyone uses continuously fast connections.
-
-> This isn't the 1980s.
-
-2017 last I checked.
-
-Being thoughtful to others is still something you
-seem content to overlook.
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> ---
+>  drivers/clk/at91/clk-generated.c | 25 ++++++++++++-------------
+>  1 file changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+> index 07c8f701e51c..dab7002937e6 100644
+> --- a/drivers/clk/at91/clk-generated.c
+> +++ b/drivers/clk/at91/clk-generated.c
+> @@ -124,19 +124,18 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+>  		    (gck->range.max && min_rate > gck->range.max))
+>  			continue;
+>  
+> -		for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
+> -			tmp_rate = DIV_ROUND_CLOSEST(parent_rate, div);
+> -			tmp_diff = abs(req->rate - tmp_rate);
+> -
+> -			if (best_diff < 0 || best_diff > tmp_diff) {
+> -				best_rate = tmp_rate;
+> -				best_diff = tmp_diff;
+> -				req->best_parent_rate = parent_rate;
+> -				req->best_parent_hw = parent;
+> -			}
+> -
+> -			if (!best_diff || tmp_rate < req->rate)
+> -				break;
+> +		div = DIV_ROUND_CLOSEST(parent_rate, req->rate);
+> +		if (!div)
+> +			tmp_rate = parent_rate;
+> +		else
+> +			tmp_rate = parent_rate / div;
+> +		tmp_diff = abs(req->rate - tmp_rate);
+> +
+> +		if (best_diff < 0 || best_diff > tmp_diff) {
+> +			best_rate = tmp_rate;
+> +			best_diff = tmp_diff;
+> +			req->best_parent_rate = parent_rate;
+> +			req->best_parent_hw = parent;
+>  		}
+>  
+>  		if (!best_diff)
