@@ -1,24 +1,18 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: Re: [PATCH] aplay: Fix header for raw format
-Date: Mon, 3 Jul 2017 14:02:14 +0300
-Message-ID: <CAEnQRZCcY1nkemhm+LSo9OC_wRZoCt-XqNWotpzGptVL-GXVWg@mail.gmail.com>
-References: <1498735036-26126-1-git-send-email-ion-horia.petrisor@nxp.com>
- <s5hwp7urmno.wl-tiwai@suse.de>
- <CAEnQRZANk-SQ2oZNuWk9f2GcZ1Hqrs5v1sheoFop=LJ056+pqQ@mail.gmail.com>
- <s5hlgo9d0bn.wl-tiwai@suse.de>
- <CAEnQRZA3_NGTp9pvoMDoc12Oeaa_YOAo9KJ2AcRpegg6f789GQ@mail.gmail.com>
- <s5hwp7pj089.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Fix default
+ dma_buffer_size
+Date: Mon, 3 Jul 2017 16:40:44 +0530
+Message-ID: <20170703111044.GC19154@localhost>
+References: <1498828124-17671-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f175.google.com (mail-qt0-f175.google.com
- [209.85.216.175])
- by alsa0.perex.cz (Postfix) with ESMTP id BC6F1266DAB
- for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 13:02:16 +0200 (CEST)
-Received: by mail-qt0-f175.google.com with SMTP id r30so140187222qtc.0
- for <alsa-devel@alsa-project.org>; Mon, 03 Jul 2017 04:02:16 -0700 (PDT)
-In-Reply-To: <s5hwp7pj089.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3631266DAB
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 13:07:49 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1498828124-17671-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,56 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ion-Horia Petrisor <ion-horia.petrisor@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, =?UTF-8?B?5Z2C5pys6LK05Y+y?= <o-takashi@sakamocchi.jp>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 3, 2017 at 1:14 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 03 Jul 2017 11:41:44 +0200,
-> Daniel Baluta wrote:
->>
->> On Fri, Jun 30, 2017 at 5:20 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Fri, 30 Jun 2017 15:11:38 +0200,
->> > Daniel Baluta wrote:
->> >>
->> >> Hi Takashi,
->> >>
->> >> Thanks a lot for your feedback.
->> >>
->> >> On Fri, Jun 30, 2017 at 9:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> > On Thu, 29 Jun 2017 13:17:16 +0200,
->> >> > Ion-Horia Petrisor wrote:
->> >> >>
->> >> >> Raw format has no header, so use 0 when calling playback_go.
->> >> >
->> >> > It's the value passed for the length that has been already loaded.
->> >> > The program has read dta bytes for parsing the header, and it's raw
->> >> > data without header.  Thus you need to pass dta there.
->> >> >
->> >> With the current code we assume that the raw files have at least 26 bytes.
->> >> (sizeof (VocHeader).
->> >>
->> >> I think it doesn't matter here that dta bytes has already been loaded. These
->> >> bytes useful to figure out the file header type.
->> >>
->> >> To keep things simple we can assume that in the case of raw files there is no
->> >> header, so second parameter of playback_go (named loaded) can be set to 0.
->> >
->> > The loaded parameter of playback_go() doesn't mean that.  It's the
->> > size that has been already read onto the audio buffer.  If you pass 0
->> > there, it means that you discard the first 26 bytes samples you have
->> > already read without playing.
->>
->> Agree. Passing 0 discards the first 26 bytes that have already been read
->> but these bytes will be re-read inside playback_go so they will be played.
->>
->> playback_go( .. loaded = 0)
->> ..
->>
->> r = safe_read(fd, audio_buf + loaded, c). [aplay.c: 2757]
->
-> No no, safe_read won't *re*-read.  It just reads the data after the
-> point you've already read without seeking back.  So the first 26 bytes
-> will be lost by your patch.
+On Fri, Jun 30, 2017 at 06:38:44PM +0530, Subhransu S. Prusty wrote:
+> If the dma_buffer_size is not defined in topology, fix it to 2ms default
+> value to make backward compatible.
 
-Oh, got it! Thanks for your patience.
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+
+-- 
+~Vinod
