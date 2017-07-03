@@ -1,17 +1,20 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: Skylake: Remove driver
-	debugfs exit
-Date: Mon,  3 Jul 2017 13:54:47 +0530
-Message-ID: <20170703082447.2304-2-guneshwor.o.singh@intel.com>
-References: <20170703082447.2304-1-guneshwor.o.singh@intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v3 05/12] Input: wm97xx: split out
+	touchscreen registering
+Date: Mon, 3 Jul 2017 09:58:17 +0100
+Message-ID: <20170703085817.fajdhhgamngxfnwp@localhost.localdomain>
+References: <20170630194408.24978-1-robert.jarzmik@free.fr>
+ <20170630194408.24978-6-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EE3B266884
- for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 10:25:54 +0200 (CEST)
-In-Reply-To: <20170703082447.2304-1-guneshwor.o.singh@intel.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3F4C266884
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 10:58:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170630194408.24978-6-robert.jarzmik@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+On Fri, Jun 30, 2017 at 09:44:01PM +0200, Robert Jarzmik wrote:
+> wm97xx-core does several things in it initialization :
+>  - touchscreen input device setup
+>  - battery device creation
+> 
+> As the wm97xx is actually a multi-function device handling an audio
+> codec, a touchscreen, a gpio block and an ADC, reshape the probing to
+> isolate what is truly input/touchscreen specific from the remaining
+> part.
+> 
+> This is only code shuffling, there is no functional change.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
 
-For driver debugfs, debugfs_remove_recursive() is called which is not
-needed as it is already done in ASoC core debugfs. And a device managed
-memory need not be freed explicitly as device core frees it up. So
-remove unnecessary skl_debugfs_exit().
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-Fixes: 5cdf6c09ca9d ASoC: ("Intel: Skylake: Add debugfs support")
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
----
- sound/soc/intel/skylake/skl-debug.c | 8 --------
- sound/soc/intel/skylake/skl.c       | 1 -
- sound/soc/intel/skylake/skl.h       | 3 ---
- 3 files changed, 12 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-index 34d06abbf796..dc20d91f62e6 100644
---- a/sound/soc/intel/skylake/skl-debug.c
-+++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -259,11 +259,3 @@ struct skl_debug *skl_debugfs_init(struct skl *skl)
- 	debugfs_remove_recursive(d->fs);
- 	return NULL;
- }
--
--void skl_debugfs_exit(struct skl_debug *d)
--{
--	debugfs_remove_recursive(d->fs);
--
--	kfree(d);
--
--}
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 410ce83f4a49..334917ee41cf 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -866,7 +866,6 @@ static void skl_remove(struct pci_dev *pci)
- 	/* codec removal, invoke bus_device_remove */
- 	snd_hdac_ext_bus_device_remove(ebus);
- 
--	skl_debugfs_exit(skl->debugfs);
- 	skl->debugfs = NULL;
- 	skl_platform_unregister(&pci->dev);
- 	skl_free_dsp(skl);
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 14e7778d7f80..a6b134b4c037 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -125,7 +125,6 @@ struct skl_module_cfg;
- 
- #ifdef CONFIG_DEBUG_FS
- struct skl_debug *skl_debugfs_init(struct skl *skl);
--void skl_debugfs_exit(struct skl_debug *d);
- void skl_debug_init_module(struct skl_debug *d,
- 			struct snd_soc_dapm_widget *w,
- 			struct skl_module_cfg *mconfig);
-@@ -134,8 +133,6 @@ static inline struct skl_debug *skl_debugfs_init(struct skl *skl)
- {
- 	return NULL;
- }
--static inline void skl_debugfs_exit(struct skl_debug *d)
--{}
- static inline void skl_debug_init_module(struct skl_debug *d,
- 					 struct snd_soc_dapm_widget *w,
- 					 struct skl_module_cfg *mconfig)
--- 
-2.13.0
+Thanks,
+Charles
