@@ -1,20 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v3 10/12] ASoC: wm9705: add private
-	structure
-Date: Mon, 3 Jul 2017 10:16:31 +0100
-Message-ID: <20170703091631.h2e53k4sgvofdlbl@localhost.localdomain>
-References: <20170630194408.24978-1-robert.jarzmik@free.fr>
- <20170630194408.24978-11-robert.jarzmik@free.fr>
+From: fulgor fulgor <l.vanwinnendaele@gmail.com>
+Subject: I sent hardware informations with the script about a
+ MEDION laptop with Intel devices
+Date: Mon, 3 Jul 2017 11:21:09 +0200
+Message-ID: <CALmBKtmcqqw1A_5zM6g+LPJJOKRcMNG+oOkhiqQZUX4tDPzTJQ@mail.gmail.com>
+References: <CALmBKtk6TnY4rB2jj+NSc-8wo1cnNh4Qr2W0o8Yvw-rFPUmqog@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id DC270266884
- for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 11:16:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170630194408.24978-11-robert.jarzmik@free.fr>
+Received: from mail-yw0-f175.google.com (mail-yw0-f175.google.com
+ [209.85.161.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 541F5266884
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 11:21:11 +0200 (CEST)
+Received: by mail-yw0-f175.google.com with SMTP id v193so3309018ywg.2
+ for <alsa-devel@alsa-project.org>; Mon, 03 Jul 2017 02:21:11 -0700 (PDT)
+In-Reply-To: <CALmBKtk6TnY4rB2jj+NSc-8wo1cnNh4Qr2W0o8Yvw-rFPUmqog@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +24,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 30, 2017 at 09:44:06PM +0200, Robert Jarzmik wrote:
-> Add a private data structure. This is a preparation for a codec which
-> would need an another data on top of snd_ac97, which will be the case
-> when an MFD wm97xx device will probe wm9705.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
+Is there any news about a module for this laptop ?
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-
-Thanks,
-Charles
+fulgor
