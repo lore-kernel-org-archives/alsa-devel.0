@@ -1,20 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: ioctl(fd, SNDRV_CTL_IOCTL_ELEM_REPLACE,
- ... not working from userspace ?
-Date: Tue, 4 Jul 2017 09:00:51 +0900
-Message-ID: <bc4bbe47-3ba7-d432-0861-10023bb7fe1d@sakamocchi.jp>
-References: <c7599ba3-f6c3-bb46-c08d-efff67ca60e9@iot.bzh>
- <a8252c34-c9ac-22d9-589d-ff2af5ea1188@ladisch.de>
- <071d305a-2941-4417-4f6e-f9f7d605a510@iot.bzh>
+From: "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek - Fix typo
+Date: Mon,  3 Jul 2017 14:13:29 +0800
+Message-ID: <1499062409-24069-1-git-send-email-sylee@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 6546026680F
- for <alsa-devel@alsa-project.org>; Tue,  4 Jul 2017 02:00:56 +0200 (CEST)
-In-Reply-To: <071d305a-2941-4417-4f6e-f9f7d605a510@iot.bzh>
-Content-Language: en-US
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D1DD2669F3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 08:13:33 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id e199so24634255pfh.0
+ for <alsa-devel@alsa-project.org>; Sun, 02 Jul 2017 23:13:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fulup Ar Foll <fulup.arfoll@iot.bzh>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Kailang Yang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The PIN number for Dell headset mode of ALC3271 is wrong.
 
-On Jul 4 2017 01:50, Fulup Ar Foll wrote:
-> At kernel level the iotcl point onto ./sound/core/control.c and calls
-> snd_ctl_elem_add_user(ctl, argp, 1) that itself calls snd_ctl_elem_add
-> 
-> Looking at this code I do not understand why the replace iotcl is
-> refused. Nevertheless it seems more to come from some lacking data in ly
-> ctrlinfo than because of access right (I'm testing as root)
+Signed-off-by: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ALSA control core in kernel land is designed to maintain two types of
-control element set; one is added by drivers in kernel land, another is
-added by userspace applications. The macro, 'SNDRV_CTL_ELEM_ACCESS_USER'
-is for distinction of the latter type from the former type. Both type of
-control element set can be handled by userspace applications in the same
-way (read/write/poll/ioctl with SNDRV_PCM_IOCTL_XXX), however they have
-different effects.
-
-Typically, users utilize the former type of control element set to
-configure hardware features with helps of kernel drivers. On the other
-hand, the latter type of control element set has no direct relations to
-hardware. There's a need for userspace applications to handle any events
-relevant to the latter type of control element set when achieving some
-actual effects. At present, there's a few cases to use the latter type;
-e.g. softvol PCM plugin in alsa-lib utilizes the latter control element
-set to add alternative control element set for PCM frame resampling[1].
-
-The issued operation, SNDRV_CTL_IOCTL_ELEM_REPLACE, is designed just for
-the latter type of control element set. Therefore, you got no success
-from this operation for the former type of control element set. When
-attempting to get success, you need to add the latter type of control
-element set in advance, then issue the operation for the added control
-element set. You can see a test program in alsa-lib[2] for the latter
-type of control element set, for your information.
-
-But I know that implementations for the latter type of control element
-set has been long-abandoned. For recent years I had been fixing them but
-some bugs might be still left, perhaps. If you still receive some errors
-from this operation for the latter type of control element set, please
-report how to reproduce it (some programs are preferable). I'm willing
-to investigate and fix the bug.
-
-[1] src/pcm/pcm_softvol.c
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_softvol.c
-[2] test/user-ctl-element-set.c
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/user-ctl-element-set.c
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c39bc49..d0cf1f3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6553,7 +6553,7 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 	SND_HDA_PIN_QUIRK(0x10ec0299, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+-		{0x13, 0xb8a60140},
++		{0x13, 0xb8a61140},
+ 		{0x17, 0x90170110}),
+ 	{}
+ };
+-- 
+2.7.4
