@@ -1,23 +1,22 @@
-From: gianluca <gianlucarenzi@eurekelettronica.it>
-Subject: Re: Fwd: Issue on Linux 4.12-rc7 on iMX6 based board
-Date: Mon, 3 Jul 2017 11:36:28 +0200
-Message-ID: <5d5f3326-8412-1af2-ac6f-ba3c5adf0013@eurekelettronica.it>
-References: <7ab79167-fa6c-4aea-0545-48d0522d5d77@eurekelettronica.it>
- <d7d15b1d-ac7f-4b45-b7e6-e4cdc0d5cc65@eurekelettronica.it>
- <CAOMZO5C1HSN2m4P34GQq2+SKB+kmm9WUjr37T_Q_W6LwCQQQFQ@mail.gmail.com>
- <2cb47b9c-d631-6fe0-8e5c-3f1d2604ab0d@eurekelettronica.it>
- <CAOMZO5CYw-eoOuaP6Tb3c51va9ua7gvg2mTz+kX7fYtQdhsK+w@mail.gmail.com>
- <c19fa7f1-17f3-1bd0-81a2-a916fac8c1ab@eurekelettronica.it>
- <CAOMZO5CnuSim+vXB7eTBDV_PFrNf9Hgpj6AJea9hnELjaVdsTg@mail.gmail.com>
- <259c247e-3638-f814-932a-ec5a2c9200b5@eurekelettronica.it>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH] aplay: Fix header for raw format
+Date: Mon, 3 Jul 2017 12:41:44 +0300
+Message-ID: <CAEnQRZA3_NGTp9pvoMDoc12Oeaa_YOAo9KJ2AcRpegg6f789GQ@mail.gmail.com>
+References: <1498735036-26126-1-git-send-email-ion-horia.petrisor@nxp.com>
+ <s5hwp7urmno.wl-tiwai@suse.de>
+ <CAEnQRZANk-SQ2oZNuWk9f2GcZ1Hqrs5v1sheoFop=LJ056+pqQ@mail.gmail.com>
+ <s5hlgo9d0bn.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qmail.e-mind.com (qmail34.e-mind.com [188.94.192.34])
- by alsa0.perex.cz (Postfix) with SMTP id 93E39266884
- for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 11:36:30 +0200 (CEST)
-In-Reply-To: <259c247e-3638-f814-932a-ec5a2c9200b5@eurekelettronica.it>
+Received: from mail-qk0-f177.google.com (mail-qk0-f177.google.com
+ [209.85.220.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87279266884
+ for <alsa-devel@alsa-project.org>; Mon,  3 Jul 2017 11:41:46 +0200 (CEST)
+Received: by mail-qk0-f177.google.com with SMTP id v143so57364127qkb.0
+ for <alsa-devel@alsa-project.org>; Mon, 03 Jul 2017 02:41:46 -0700 (PDT)
+In-Reply-To: <s5hlgo9d0bn.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,133 +26,227 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ion-Horia Petrisor <ion-horia.petrisor@nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>, =?UTF-8?B?5Z2C5pys6LK05Y+y?= <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Now I did some great steps ahead! ;-)
-
-I can assume there is some misconfigured alsa stuff in my debootstrapped 
-armhf jessie distro!!!
-
-First step: from Barebox bootloader I tried to move on/off all pins 
-connected to the SGTL5000 from SoC iMX6. They are moving good, so I can 
-assume _NO_HARDWARE_ issue.
-
-Second step: burn a ubuntu armhf image (boundary-devices-jessie) to 
-match up my system-boot (/etc/fstab and /etc/inittab), adding the 
-/lib/modules/4.12-rc7/ directory and drivers, and add the uImage for 
-4.12-rc7 on the sdcard.
-
-Third step: burn on the sdcard the Barebox bootloader instead of the 
-(unrunningble) u-boot for another board (Nitrogen).
-
-Fourth step: turn on my board with this sdcard.
-
-Sound is working. The levels of the capabilities (PCM, MIC, DAC, ...) 
-are settable and they are working fine.
-
-I can play and I can record. The only thing is the driver can use only 
-S24_LE as frequeny for recording but afterall everything is working as 
-expected.
-
-Now the biggest question:
-
-WTF are working alsa or its configuration in a deboostrapped armhf 
-distribution? Actually this distro was upgraded two times:
-
-1- Wheezy armel
-2- Wheezy armel + armhf
-3- Wheezy armhf
-4- Jessie armhf
-5- apt get dist-upgrade...
-
-Something in between was wrong with alsa. Any help or configuration file 
-to fix this issue???
-
-> # aplay -L
-> null
->     Discard all samples (playback) or generate zero samples (capture)
-> default:CARD=imx6ek360sgtl50
->     imx6-ek360-sgtl5000,
->     Default Audio Device
-> sysdefault:CARD=imx6ek360sgtl50
->     imx6-ek360-sgtl5000,
->     Default Audio Device
-> dmix:CARD=imx6ek360sgtl50,DEV=0
->     imx6-ek360-sgtl5000,
->     Direct sample mixing device
-> dsnoop:CARD=imx6ek360sgtl50,DEV=0
->     imx6-ek360-sgtl5000,
->     Direct sample snooping device
-> hw:CARD=imx6ek360sgtl50,DEV=0
->     imx6-ek360-sgtl5000,
->     Direct hardware device without any conversions
-> plughw:CARD=imx6ek360sgtl50,DEV=0
->     imx6-ek360-sgtl5000,
->     Hardware device with all software conversions
-
->
->
-> # aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: imx6ek360sgtl50 [imx6-ek360-sgtl5000], device 0: HiFi sgtl5000-0 []
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> root@nitrogen:~# arecord -l
-> **** List of CAPTURE Hardware Devices ****
-> card 0: imx6ek360sgtl50 [imx6-ek360-sgtl5000], device 0: HiFi sgtl5000-0 []
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-
-
-May I have a simple configuration file for this?
-
-
-On 06/29/2017 06:28 PM, gianluca wrote:
-> On 06/29/2017 04:30 PM, Fabio Estevam wrote:
->> On Thu, Jun 29, 2017 at 11:24 AM, gianluca
->> <gianlucarenzi@eurekelettronica.it> wrote:
+On Fri, Jun 30, 2017 at 5:20 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 30 Jun 2017 15:11:38 +0200,
+> Daniel Baluta wrote:
 >>
->>> So, are they good?
+>> Hi Takashi,
 >>
->> If your hardware really uses these pins, then yes :-)
+>> Thanks a lot for your feedback.
 >>
+>> On Fri, Jun 30, 2017 at 9:54 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > On Thu, 29 Jun 2017 13:17:16 +0200,
+>> > Ion-Horia Petrisor wrote:
+>> >>
+>> >> Raw format has no header, so use 0 when calling playback_go.
+>> >
+>> > It's the value passed for the length that has been already loaded.
+>> > The program has read dta bytes for parsing the header, and it's raw
+>> > data without header.  Thus you need to pass dta there.
+>> >
+>> With the current code we assume that the raw files have at least 26 bytes.
+>> (sizeof (VocHeader).
+>>
+>> I think it doesn't matter here that dta bytes has already been loaded. These
+>> bytes useful to figure out the file header type.
+>>
+>> To keep things simple we can assume that in the case of raw files there is no
+>> header, so second parameter of playback_go (named loaded) can be set to 0.
 >
-> Now looking at other boards where our hardware-guy took the inspiration
-> (i.e. iMX6 Rex from Fedevel) the device-tree is the same as mine.
->
->> MX6QDL_PAD_GPIO_0__CCM_CLKO1        0x030b0
->
-> 0x130b0 or 0x030b0 the only difference is the PAD_CTL_HYS      (1 << 16)
->
-> Maybe more strong to noise, but basically they are the same.
->
-> But I found an issue when playing data from aplay without specifing the
-> device or specifying one:
->
->> # aplay /usr/share/sounds/alsa/Front_Center.wav
->> Playing WAVE 'Front_Center.wav' : Signed 16 bit Little Endian, Rate
->> 48000 Hz, Mono
->
-> or
->
->> # aplay -D hw:0,0 /usr/share/sounds/alsa/Front_Right.wav
->> Playing WAVE 'Front_Center.wav' : Signed 16 bit Little Endian, Rate
->> 48000 Hz, Mono
->> aplay: set_params:1233: Sample format non available
->> Available formats:
->> - S24_LE
->
-> Maybe some ALSA misconfigured????
->
-> This distro is a bootstrapped jessie Debian 8, so some configuration
-> could be missing or not-so-good-configured.
->
+> The loaded parameter of playback_go() doesn't mean that.  It's the
+> size that has been already read onto the audio buffer.  If you pass 0
+> there, it means that you discard the first 26 bytes samples you have
+> already read without playing.
 
-Regards,
--- 
-Eurek s.r.l.                          |
-Electronic Engineering                | http://www.eurek.it
-via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
-p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
+Agree. Passing 0 discards the first 26 bytes that have already been read
+but these bytes will be re-read inside playback_go so they will be played.
+
+playback_go( .. loaded = 0)
+..
+
+r = safe_read(fd, audio_buf + loaded, c). [aplay.c: 2757]
+
+>
+>> The worst things that can happen is that we re-read the first 26 bytes
+>> (previously
+>> read as VoC header).
+>
+> Where is re-read...?
+
+As explained above, we first read the header [be it .au, .voc or .wav] in
+playback() function and then because we pass [with our proposed patch
+loaded = 0]
+we re-read those bytes in playback_go function.
+
+Of course, is not optimal. Let me look at your patch.
+>
+>> We are trying to introduce a new parameter --samples which tells aplay to  only
+>> playback/record s number of samples.
+>>
+>> We modified calc_count() accordingly so that when receives the
+>> --samples parameter
+>> computes the correct number of bytes to be read.
+>>
+>> Anyhow, it doesn't work as expected because aplay expects files to have at least
+>> 26 bytes.
+>>
+>> The correct solution would be that in the case of raw files not assume
+>> any header
+>> and read samples * sample_size bytes from the beginning of the file.
+>
+> I see now what you want, but the patch is incorrect.
+> I guess a patch something like below is what you want.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/aplay/aplay.c b/aplay/aplay.c
+> index 00af66246cad..a902be5cf9cb 100644
+> --- a/aplay/aplay.c
+> +++ b/aplay/aplay.c
+> @@ -2782,12 +2782,65 @@ static void playback_go(int fd, size_t loaded, off64_t count, int rtype, char *n
+>   *  let's play or capture it (capture_type says VOC/WAVE/raw)
+>   */
+>
+> -static void playback(char *name)
+> +static void read_header(int *loaded, int header_size)
+> +{
+> +       if (*loaded < header_size) {
+> +               header_size -= *loaded;
+> +               if (safe_read(fd, audiobuf, header_size) != header_size) {
+
+audio_buf + *loaded here.
+
+> +                       error(_("read error"));
+> +                       prg_exit(EXIT_FAILURE);
+> +               }
+> +               *loaded += header_size;
+> +       }
+> +}
+> +
+> +static int playback_au(char *name, int *loaded)
+> +{
+> +       read_header(loaded, sizeof(AuHeader));
+> +       if (test_au(fd, audiobuf) < 0)
+> +               return -1;
+> +       rhwparams.format = hwparams.format;
+> +       pbrec_count = calc_count();
+> +       playback_go(fd, *loaded - sizeof(AuHeader), pbrec_count, FORMAT_AU, name);
+> +       return 0;
+> +}
+> +
+> +static int playback_voc(char *name, int *loaded)
+>  {
+>         int ofs;
+> -       size_t dta;
+> +
+> +       read_header(loaded, sizeof(VocHeader));
+> +       if ((ofs = test_vocfile(audiobuf)) < 0)
+> +               return -1;
+> +       pbrec_count = calc_count();
+> +       voc_play(fd, ofs, name);
+> +       return 0;
+> +}
+> +
+> +static int playback_wave(char *name, int *loaded)
+> +{
+>         ssize_t dtawave;
+>
+> +       read_header(loaded, sizeof(WaveHeader));
+> +       if ((dtawave = test_wavefile(fd, audiobuf, *loaded)) < 0)
+> +               return -1;
+> +       pbrec_count = calc_count();
+> +       playback_go(fd, dtawave, pbrec_count, FORMAT_WAVE, name);
+> +       return 0;
+> +}
+> +
+> +static int playback_raw(char *name, int *loaded)
+> +{
+> +       init_raw_data();
+> +       pbrec_count = calc_count();
+> +       playback_go(fd, *loaded, pbrec_count, FORMAT_RAW, name);
+> +       return 0;
+> +}
+> +
+> +static void playback(char *name)
+> +{
+> +       int loaded = 0;
+> +
+>         pbrec_count = LLONG_MAX;
+>         fdcount = 0;
+>         if (!name || !strcmp(name, "-")) {
+> @@ -2800,40 +2853,29 @@ static void playback(char *name)
+>                         prg_exit(EXIT_FAILURE);
+>                 }
+>         }
+> -       /* read the file header */
+> -       dta = sizeof(AuHeader);
+> -       if ((size_t)safe_read(fd, audiobuf, dta) != dta) {
+> -               error(_("read error"));
+> -               prg_exit(EXIT_FAILURE);
+> -       }
+> -       if (test_au(fd, audiobuf) >= 0) {
+> -               rhwparams.format = hwparams.format;
+> -               pbrec_count = calc_count();
+> -               playback_go(fd, 0, pbrec_count, FORMAT_AU, name);
+> -               goto __end;
+> -       }
+> -       dta = sizeof(VocHeader);
+> -       if ((size_t)safe_read(fd, audiobuf + sizeof(AuHeader),
+> -                dta - sizeof(AuHeader)) != dta - sizeof(AuHeader)) {
+> -               error(_("read error"));
+> -               prg_exit(EXIT_FAILURE);;
+> -       }
+> -       if ((ofs = test_vocfile(audiobuf)) >= 0) {
+> -               pbrec_count = calc_count();
+> -               voc_play(fd, ofs, name);
+> -               goto __end;
+> -       }
+> -       /* read bytes for WAVE-header */
+> -       if ((dtawave = test_wavefile(fd, audiobuf, dta)) >= 0) {
+> -               pbrec_count = calc_count();
+> -               playback_go(fd, dtawave, pbrec_count, FORMAT_WAVE, name);
+> -       } else {
+> -               /* should be raw data */
+> -               init_raw_data();
+> -               pbrec_count = calc_count();
+> -               playback_go(fd, dta, pbrec_count, FORMAT_RAW, name);
+> +
+> +       switch (file_type) {
+> +       case FORMAT_AU:
+> +               playback_au(name, &loaded);
+> +               break;
+> +       case FORMAT_VOC:
+> +               playback_voc(name, &loaded);
+> +               break;
+> +       case FORMAT_WAVE:
+> +               playback_wave(name, &loaded);
+> +               break;
+> +       case FORMAT_RAW:
+> +               playback_raw(name, &loaded);
+> +               break;
+> +       default:
+> +               /* parse the file header */
+> +               if (playback_au(name, &loaded) < 0 &&
+> +                   playback_voc(name, &loaded) < 0 &&
+> +                   playback_wave(name, &loaded) < 0)
+> +                       playback_raw(name, &loaded); /* should be raw data */
+> +               break;
+>         }
+> -      __end:
+> +
+>         if (fd != 0)
+>                 close(fd);
+>  }
+
+This is more elegant and also fixes our problem. Care to send a formal patch?
+
+thanks,
+daniel.
