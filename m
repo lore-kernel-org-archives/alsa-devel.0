@@ -1,17 +1,21 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 18/18] ALSA: opl4: Move inline before return
-	type
-Date: Wed,  5 Jul 2017 13:02:27 -0700
-Message-ID: <e19de389484090a3059d17584d5a342db90889e5.1499284835.git.joe@perches.com>
-References: <cover.1499284835.git.joe@perches.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v3 02/12] ALSA: ac97: add an ac97 bus
+Date: Wed, 05 Jul 2017 22:21:39 +0200
+Message-ID: <877ezmtz1o.fsf@belgarion.home>
+References: <20170630194408.24978-1-robert.jarzmik@free.fr>
+ <20170630194408.24978-3-robert.jarzmik@free.fr>
+ <s5hpodhc28v.wl-tiwai@suse.de> <87bmp0t2lv.fsf@belgarion.home>
+ <s5hbmp0c6a3.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0066.hostedemail.com
- [216.40.44.66]) by alsa0.perex.cz (Postfix) with ESMTP id C5B94267031
- for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2017 22:03:14 +0200 (CEST)
-In-Reply-To: <cover.1499284835.git.joe@perches.com>
+Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
+ [80.12.242.123])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3652226698E
+ for <alsa-devel@alsa-project.org>; Wed,  5 Jul 2017 22:21:51 +0200 (CEST)
+In-Reply-To: <s5hbmp0c6a3.wl-tiwai@suse.de> (Takashi Iwai's message of "Tue,
+ 04 Jul 2017 22:10:28 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrew Morton <akpm@linux-foundation.org>, Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make the code like the rest of the kernel.
+Takashi Iwai <tiwai@suse.de> writes:
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/drivers/opl4/opl4_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, 04 Jul 2017 21:37:48 +0200,
+> Robert Jarzmik wrote:
+>> 
+>> Takashi Iwai <tiwai@suse.de> writes:
+>> 
+>> > On Fri, 30 Jun 2017 21:43:58 +0200,
+>> > Robert Jarzmik wrote:
+>> >> +static struct bus_type ac97_bus_type = {
+>> >> +	.name		= "ac97",
+>> >
+>> > Name-conflict with the old ac97 bus?
+>> Yeah, fair point. So what should I choose for this new one ?
+>>  - ac97new
+>>  - ac97bis
+>>  - ac97_2
+>>  - ac97reborn
+>
+> ac97bus
+> ac97_episode_5
+> ac98
+> ...
+>
+> I have no opinion on it.
+Ah clone wars one is really tempting :)
+But let's have ac97bus actually.
 
-diff --git a/sound/drivers/opl4/opl4_lib.c b/sound/drivers/opl4/opl4_lib.c
-index bc345d564f8d..db76a5bf2bd2 100644
---- a/sound/drivers/opl4/opl4_lib.c
-+++ b/sound/drivers/opl4/opl4_lib.c
-@@ -29,7 +29,7 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_DESCRIPTION("OPL4 driver");
- MODULE_LICENSE("GPL");
- 
--static void inline snd_opl4_wait(struct snd_opl4 *opl4)
-+static inline void snd_opl4_wait(struct snd_opl4 *opl4)
- {
- 	int timeout = 10;
- 	while ((inb(opl4->fm_port) & OPL4_STATUS_BUSY) && --timeout > 0)
+> You can use subsys_init() for modules, it's no problem.
+> When it's built for a module, all xxx_init() is handled as equivalent
+> with module_init().  See linux/module.h.
+>
+> It's just the lack of module_exit() in your case.
+Got it, I'll add it for v4.
+
+Cheers.
+
 -- 
-2.10.0.rc2.1.g053435c
+Robert
