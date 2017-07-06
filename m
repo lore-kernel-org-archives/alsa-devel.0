@@ -1,83 +1,128 @@
-From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 3/3] mfd: twl: move header file out of I2C realm
-Date: Thu, 6 Jul 2017 08:03:52 +0100
-Message-ID: <20170706070352.xdecvsnremwqed72@dell>
-References: <20170521220212.1404-1-wsa@the-dreams.de>
- <20170521220212.1404-4-wsa@the-dreams.de>
- <20170706064453.GH16144@ulmo.fritz.box>
-Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2] ASoC: hdmi-codec: ELD control
+ corresponds to the PCM stream
+Date: Thu, 6 Jul 2017 09:16:59 +0200
+Message-ID: <ee210b21-09a5-3705-c97a-baf45f49077c@st.com>
+References: <87bmoyjteh.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <rtc-linux+bncBDA7X7F2WUEBBXGB67FAKGQEIDFRN5Q-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20170706064453.GH16144-m5CkvRiFyV9wFLYp8hBm2A@public.gmane.org>
-List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/rtc-linux
-List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/rtc-linux/subscribe>
-To: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kishon Vijay Abraham I <kishon-l0cyMroinI0@public.gmane.org>, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jingoohan1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Wi
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 89EFF266AF7
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2017 09:18:02 +0200 (CEST)
+In-Reply-To: <87bmoyjteh.wl%kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: "Jon
+ Medhurst (Tixy)" <tixy@linaro.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, Simon <horms@verge.net.au>, PhilippZabel <p.zabel@pengutronix.de>, Colin Ian King <colin.king@canonical.com>, Vincent ABRIOU <vincent.abriou@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 06 Jul 2017, Thierry Reding wrote:
+Hello,
 
-> On Mon, May 22, 2017 at 12:02:10AM +0200, Wolfram Sang wrote:
-> > include/linux/i2c is not for client devices. Move the header file to a
-> > more appropriate location.
-> >=20
-> > Signed-off-by: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-> > ---
-> >  arch/arm/mach-omap2/common.h            | 2 +-
-> >  arch/arm/mach-omap2/omap_twl.c          | 2 +-
-> >  drivers/gpio/gpio-twl4030.c             | 2 +-
-> >  drivers/iio/adc/twl4030-madc.c          | 2 +-
-> >  drivers/iio/adc/twl6030-gpadc.c         | 2 +-
-> >  drivers/input/keyboard/twl4030_keypad.c | 2 +-
-> >  drivers/input/misc/twl4030-pwrbutton.c  | 2 +-
-> >  drivers/input/misc/twl4030-vibra.c      | 2 +-
-> >  drivers/mfd/twl-core.c                  | 6 +++---
-> >  drivers/mfd/twl4030-audio.c             | 2 +-
-> >  drivers/mfd/twl4030-irq.c               | 2 +-
-> >  drivers/mfd/twl4030-power.c             | 2 +-
-> >  drivers/mfd/twl6030-irq.c               | 2 +-
-> >  drivers/phy/phy-twl4030-usb.c           | 2 +-
-> >  drivers/power/supply/twl4030_charger.c  | 2 +-
-> >  drivers/pwm/pwm-twl-led.c               | 2 +-
-> >  drivers/pwm/pwm-twl.c                   | 2 +-
-> >  drivers/regulator/twl-regulator.c       | 2 +-
-> >  drivers/regulator/twl6030-regulator.c   | 2 +-
-> >  drivers/rtc/rtc-twl.c                   | 2 +-
-> >  drivers/usb/phy/phy-twl6030-usb.c       | 2 +-
-> >  drivers/video/backlight/pandora_bl.c    | 2 +-
-> >  drivers/watchdog/twl4030_wdt.c          | 2 +-
-> >  include/linux/{i2c =3D> mfd}/twl.h        | 0
-> >  sound/soc/codecs/twl4030.c              | 2 +-
-> >  25 files changed, 26 insertions(+), 26 deletions(-)
-> >  rename include/linux/{i2c =3D> mfd}/twl.h (100%)
->=20
-> I didn't see this get applied yet, so just in case anyone was waiting
-> for me (this is trivial, so I don't think there's a need):
+On 07/06/2017 02:39 AM, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Current hdmi-codec driver is using hdmi_controls for "ELD" control.
+> But, hdmi-codec driver might be used from many HDMIs. Thus, we need
+> to correspond device number, otherwise we will receive below error.
+> 
+>         xxx: control x:x:x:ELD:x is already present
+> 
+> This patch registers ELD control in .pcm_new by using
+> .device = rtd->pcm->device to corresponding to PCM stream.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> [Takashi: use snd_ctl_new1()/snd_ctl_add()]
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> v1 -> v2
+> 
+>  - change title
+> 	- ASoC: hdmi-codec: hdmi_codec_priv includes snd_kcontrol_new
+> 	+ ASoC: hdmi-codec: ELD control corresponds to the PCM stream
+>  - hdmi_eld_ctl is now local variable
+>  - Author should be Takashi ?
+> 
+>  sound/soc/codecs/hdmi-codec.c | 31 ++++++++++++++++---------------
+>  1 file changed, 16 insertions(+), 15 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+> index 22ed0dc..7686a80 100644
+> --- a/sound/soc/codecs/hdmi-codec.c
+> +++ b/sound/soc/codecs/hdmi-codec.c
+> @@ -399,18 +399,6 @@ static int hdmi_codec_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+>  	return 0;
+>  }
+>  
+> -
+> -static const struct snd_kcontrol_new hdmi_controls[] = {
+> -	{
+> -		.access = SNDRV_CTL_ELEM_ACCESS_READ |
+> -			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+> -		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+> -		.name = "ELD",
+> -		.info = hdmi_eld_ctl_info,
+> -		.get = hdmi_eld_ctl_get,
+> -	},
+> -};
+> -
+>  static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
+>  				 struct snd_soc_dai *dai)
+>  {
+> @@ -668,6 +656,16 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+>  {
+>  	struct snd_soc_dai_driver *drv = dai->driver;
+>  	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+> +	struct snd_kcontrol *kctl;
+> +	struct snd_kcontrol_new hdmi_eld_ctl = {
+> +		.access	= SNDRV_CTL_ELEM_ACCESS_READ |
+> +			  SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+> +		.iface	= SNDRV_CTL_ELEM_IFACE_PCM,
+> +		.name	= "ELD",
+> +		.info	= hdmi_eld_ctl_info,
+> +		.get	= hdmi_eld_ctl_get,
+> +		.device	= rtd->pcm->device,
+> +	};
+>  	int ret;
+>  
+>  	dev_dbg(dai->dev, "%s()\n", __func__);
+> @@ -686,7 +684,12 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+>  	hcp->chmap_info->chmap = hdmi_codec_stereo_chmaps;
+>  	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+>  
+> -	return 0;
+> +	/* add ELD ctl with the device number corresponding to the PCM stream */
+> +	kctl = snd_ctl_new1(&hdmi_eld_ctl, dai->component);
+> +	if (!kctl)
+> +		return -ENOMEM;
+> +
+> +	return snd_ctl_add(rtd->card->snd_card, kctl);
+>  }
+>  
+>  static struct snd_soc_dai_driver hdmi_i2s_dai = {
+> @@ -732,8 +735,6 @@ static int hdmi_of_xlate_dai_id(struct snd_soc_component *component,
+>  
+>  static struct snd_soc_codec_driver hdmi_codec = {
+>  	.component_driver = {
+> -		.controls		= hdmi_controls,
+> -		.num_controls		= ARRAY_SIZE(hdmi_controls),
+>  		.dapm_widgets		= hdmi_widgets,
+>  		.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
+>  		.dapm_routes		= hdmi_routes,
+> 
 
-You're not the last. :)
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards,
 
---=20
-You received this message because you are subscribed to "rtc-linux".
-Membership options at http://groups.google.com/group/rtc-linux .
-Please read http://groups.google.com/group/rtc-linux/web/checklist
-before submitting a driver.
----=20
-You received this message because you are subscribed to the Google Groups "=
-rtc-linux" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+Arnaud
