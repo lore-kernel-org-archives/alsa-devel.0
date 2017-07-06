@@ -1,20 +1,18 @@
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH v2 6/9] clk: at91: clk-generated: make gclk
- determine audio_pll rate
-Date: Thu, 6 Jul 2017 17:29:22 +0200
-Message-ID: <ab11f002-b761-cdb4-eb0c-ce24dcb9c5d4@microchip.com>
-References: <20170704115927.32662-1-quentin.schulz@free-electrons.com>
- <20170704115927.32662-7-quentin.schulz@free-electrons.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: msnd: Optimize / harden DSP and MIDI
+	loops
+Date: Thu,  6 Jul 2017 17:43:34 +0200
+Message-ID: <20170706154334.4051-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
- [68.232.149.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 58167266ABB
- for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2017 17:28:49 +0200 (CEST)
-In-Reply-To: <20170704115927.32662-7-quentin.schulz@free-electrons.com>
-Content-Language: en-US
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D96A266ABB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2017 17:43:40 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 0734EAC37
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2017 15:43:40 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,140 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Quentin Schulz <quentin.schulz@free-electrons.com>, mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, cyrille.pitchen@wedev4u.fr, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/07/2017 at 13:59, Quentin Schulz wrote:
-> This allows gclk to determine audio_pll rate and set the parent rate
-> accordingly.
-> 
-> However, there are multiple children clocks that could technically
-> change the rate of audio_pll (via gck). With the rate locking, the first
-> consumer to enable the clock will be the one definitely setting the rate
-> of the clock.
-> 
-> Since audio IPs are most likely to request the same rate, we enforce
-> that the only clks able to modify gck rate are those of audio IPs.
-> 
-> To remain consistent, we deny other clocks to be children of audio_pll.
-> 
-> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
-> ---
-> 
-> v2:
->   - added conditions for audio pll rate setting restriction for SSC and
-> I2S,
-> 
->  drivers/clk/at91/clk-generated.c | 48 +++++++++++++++++++++++++++++++++++-----
->  1 file changed, 42 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
-> index 6530a2e7e84d..87866786a6ab 100644
-> --- a/drivers/clk/at91/clk-generated.c
-> +++ b/drivers/clk/at91/clk-generated.c
-> @@ -26,6 +26,13 @@
->  #define GENERATED_SOURCE_MAX	6
->  #define GENERATED_MAX_DIV	255
->  
-> +#define GCK_ID_SSC0		43
-> +#define GCK_ID_SSC1		44
-> +#define GCK_ID_I2S0		54
-> +#define GCK_ID_I2S1		55
-> +#define GCK_ID_CLASSD		59
-> +#define GCK_INDEX_DT_AUDIO_PLL	5
+The ISA msnd drivers have loops fetching the ring-buffer head, tail
+and size values inside the loops.  Such codes are inefficient and
+fragile.
 
-hum...
+This patch optimizes it, and also adds the sanity check to avoid the
+endless loops.
 
-> +
->  struct clk_generated {
->  	struct clk_hw hw;
->  	struct regmap *regmap;
-> @@ -126,15 +133,14 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
->  {
->  	struct clk_generated *gck = to_clk_generated(hw);
->  	struct clk_hw *parent = NULL;
-> +	struct clk_rate_request req_parent = *req;
->  	long best_rate = -EINVAL;
-> -	unsigned long min_rate;
-> +	unsigned long min_rate, parent_rate;
->  	int best_diff = -1;
->  	int i;
-> +	u32 div;
->  
-> -	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-> -		u32 div;
-> -		unsigned long parent_rate;
-> -
-> +	for (i = 0; i < clk_hw_get_num_parents(hw) - 1; i++) {
->  		parent = clk_hw_get_parent_by_index(hw, i);
->  		if (!parent)
->  			continue;
-> @@ -150,11 +156,40 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
->  		clk_generated_best_diff(req, parent, parent_rate, div,
->  					&best_diff, &best_rate);
->  
-> +		if (!best_diff)
-> +			break;
-> +	}
-> +
-> +	/*
-> +	 * The audio_pll rate can be modified, unlike the five others clocks
-> +	 * that should never be altered.
-> +	 * The audio_pll can technically be used by multiple consumers. However,
-> +	 * with the rate locking, the first consumer to enable to clock will be
-> +	 * the one definitely setting the rate of the clock.
-> +	 * Since audio IPs are most likely to request the same rate, we enforce
-> +	 * that the only clks able to modify gck rate are those of audio IPs.
-> +	 */
-> +
-> +	if (gck->id != GCK_ID_SSC0 && gck->id != GCK_ID_SSC1 &&
-> +	    gck->id != GCK_ID_I2S0 && gck->id != GCK_ID_I2S1 &&
-> +	    gck->id != GCK_ID_CLASSD)
-> +		goto end;
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=196131
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=196133
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/isa/msnd/msnd_midi.c     | 30 +++++++++++++++---------------
+ sound/isa/msnd/msnd_pinnacle.c | 23 ++++++++++++-----------
+ 2 files changed, 27 insertions(+), 26 deletions(-)
 
-...well... maybe for a temporary solution, but what about the next
-product that will also have such feature but without the same set of IDs?
-
-I know that the main use of this clock is the "audio" subsystem (so its
-name) but in a machine without audio needs, it can be interesting to use
-this fractional PLL for other devices that can handle a GCK (and I'm
-thinking about the SDHCI interface that then could be configured with
-maximum clock speed).
-
-> +	parent = clk_hw_get_parent_by_index(hw, GCK_INDEX_DT_AUDIO_PLL);
-> +	if (!parent)
-> +		goto end;
-
-Here, if the audio pll id changes in the DT, we don't retrieve the
-proper parent... And again, not very future proof.
-
-> +	for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
-> +		req_parent.rate = req->rate * div;
-> +		__clk_determine_rate(parent, &req_parent);
-> +		clk_generated_best_diff(req, parent, req_parent.rate, div,
-> +					&best_diff, &best_rate);
->  
->  		if (!best_diff)
->  			break;
->  	}
->  
-> +end:
->  	pr_debug("GCLK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
->  		 __func__, best_rate,
->  		 __clk_get_name((req->best_parent_hw)->clk),
-> @@ -264,7 +299,8 @@ at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
->  	init.ops = &generated_ops;
->  	init.parent_names = parent_names;
->  	init.num_parents = num_parents;
-> -	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
-> +	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
-> +		CLK_SET_RATE_PARENT;
->  
->  	gck->id = id;
->  	gck->hw.init = &init;
-> 
-
-
+diff --git a/sound/isa/msnd/msnd_midi.c b/sound/isa/msnd/msnd_midi.c
+index 912b5a9ccbab..013d8d1170fe 100644
+--- a/sound/isa/msnd/msnd_midi.c
++++ b/sound/isa/msnd/msnd_midi.c
+@@ -120,24 +120,24 @@ void snd_msndmidi_input_read(void *mpuv)
+ 	unsigned long flags;
+ 	struct snd_msndmidi *mpu = mpuv;
+ 	void *pwMIDQData = mpu->dev->mappedbase + MIDQ_DATA_BUFF;
++	u16 head, tail, size;
+ 
+ 	spin_lock_irqsave(&mpu->input_lock, flags);
+-	while (readw(mpu->dev->MIDQ + JQS_wTail) !=
+-	       readw(mpu->dev->MIDQ + JQS_wHead)) {
+-		u16 wTmp, val;
+-		val = readw(pwMIDQData + 2 * readw(mpu->dev->MIDQ + JQS_wHead));
+-
+-			if (test_bit(MSNDMIDI_MODE_BIT_INPUT_TRIGGER,
+-				     &mpu->mode))
+-				snd_rawmidi_receive(mpu->substream_input,
+-						    (unsigned char *)&val, 1);
+-
+-		wTmp = readw(mpu->dev->MIDQ + JQS_wHead) + 1;
+-		if (wTmp > readw(mpu->dev->MIDQ + JQS_wSize))
+-			writew(0,  mpu->dev->MIDQ + JQS_wHead);
+-		else
+-			writew(wTmp,  mpu->dev->MIDQ + JQS_wHead);
++	head = readw(mpu->dev->MIDQ + JQS_wHead);
++	tail = readw(mpu->dev->MIDQ + JQS_wTail);
++	size = readw(mpu->dev->MIDQ + JQS_wSize);
++	if (head > size || tail > size)
++		goto out;
++	while (head != tail) {
++		unsigned char val = readw(pwMIDQData + 2 * head);
++
++		if (test_bit(MSNDMIDI_MODE_BIT_INPUT_TRIGGER, &mpu->mode))
++			snd_rawmidi_receive(mpu->substream_input, &val, 1);
++		if (++head > size)
++			head = 0;
++		writew(head, mpu->dev->MIDQ + JQS_wHead);
+ 	}
++ out:
+ 	spin_unlock_irqrestore(&mpu->input_lock, flags);
+ }
+ EXPORT_SYMBOL(snd_msndmidi_input_read);
+diff --git a/sound/isa/msnd/msnd_pinnacle.c b/sound/isa/msnd/msnd_pinnacle.c
+index ad4897337df5..fc4fb1904aef 100644
+--- a/sound/isa/msnd/msnd_pinnacle.c
++++ b/sound/isa/msnd/msnd_pinnacle.c
+@@ -170,23 +170,24 @@ static irqreturn_t snd_msnd_interrupt(int irq, void *dev_id)
+ {
+ 	struct snd_msnd *chip = dev_id;
+ 	void *pwDSPQData = chip->mappedbase + DSPQ_DATA_BUFF;
++	u16 head, tail, size;
+ 
+ 	/* Send ack to DSP */
+ 	/* inb(chip->io + HP_RXL); */
+ 
+ 	/* Evaluate queued DSP messages */
+-	while (readw(chip->DSPQ + JQS_wTail) != readw(chip->DSPQ + JQS_wHead)) {
+-		u16 wTmp;
+-
+-		snd_msnd_eval_dsp_msg(chip,
+-			readw(pwDSPQData + 2 * readw(chip->DSPQ + JQS_wHead)));
+-
+-		wTmp = readw(chip->DSPQ + JQS_wHead) + 1;
+-		if (wTmp > readw(chip->DSPQ + JQS_wSize))
+-			writew(0, chip->DSPQ + JQS_wHead);
+-		else
+-			writew(wTmp, chip->DSPQ + JQS_wHead);
++	head = readw(chip->DSPQ + JQS_wHead);
++	tail = readw(chip->DSPQ + JQS_wTail);
++	size = readw(chip->DSPQ + JQS_wSize);
++	if (head > size || tail > size)
++		goto out;
++	while (head != tail) {
++		snd_msnd_eval_dsp_msg(chip, readw(pwDSPQData + 2 * head));
++		if (++head > size)
++			head = 0;
++		writew(head, chip->DSPQ + JQS_wHead);
+ 	}
++ out:
+ 	/* Send ack to DSP */
+ 	inb(chip->io + HP_RXL);
+ 	return IRQ_HANDLED;
 -- 
-Nicolas Ferre
+2.13.2
