@@ -1,15 +1,20 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5514: Support the DSP recording
-	continuously after the hotwording triggered
-Date: Thu, 6 Jul 2017 19:14:45 +0800
-Message-ID: <1499339685-3112-1-git-send-email-oder_chiou@realtek.com>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [PATCH v2 6/9] clk: at91: clk-generated: make gclk
+ determine audio_pll rate
+Date: Thu, 6 Jul 2017 17:29:22 +0200
+Message-ID: <ab11f002-b761-cdb4-eb0c-ce24dcb9c5d4@microchip.com>
+References: <20170704115927.32662-1-quentin.schulz@free-electrons.com>
+ <20170704115927.32662-7-quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 11E452664EB
- for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2017 13:14:52 +0200 (CEST)
+Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
+ [68.232.149.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58167266ABB
+ for <alsa-devel@alsa-project.org>; Thu,  6 Jul 2017 17:28:49 +0200 (CEST)
+In-Reply-To: <20170704115927.32662-7-quentin.schulz@free-electrons.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,262 +24,140 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Quentin Schulz <quentin.schulz@free-electrons.com>, mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, cyrille.pitchen@wedev4u.fr, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch uses the IRQ to copy the PCM data to userspace continuously after
-the hotwording triggered from DSP.
+On 04/07/2017 at 13:59, Quentin Schulz wrote:
+> This allows gclk to determine audio_pll rate and set the parent rate
+> accordingly.
+> 
+> However, there are multiple children clocks that could technically
+> change the rate of audio_pll (via gck). With the rate locking, the first
+> consumer to enable the clock will be the one definitely setting the rate
+> of the clock.
+> 
+> Since audio IPs are most likely to request the same rate, we enforce
+> that the only clks able to modify gck rate are those of audio IPs.
+> 
+> To remain consistent, we deny other clocks to be children of audio_pll.
+> 
+> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+> ---
+> 
+> v2:
+>   - added conditions for audio pll rate setting restriction for SSC and
+> I2S,
+> 
+>  drivers/clk/at91/clk-generated.c | 48 +++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 42 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+> index 6530a2e7e84d..87866786a6ab 100644
+> --- a/drivers/clk/at91/clk-generated.c
+> +++ b/drivers/clk/at91/clk-generated.c
+> @@ -26,6 +26,13 @@
+>  #define GENERATED_SOURCE_MAX	6
+>  #define GENERATED_MAX_DIV	255
+>  
+> +#define GCK_ID_SSC0		43
+> +#define GCK_ID_SSC1		44
+> +#define GCK_ID_I2S0		54
+> +#define GCK_ID_I2S1		55
+> +#define GCK_ID_CLASSD		59
+> +#define GCK_INDEX_DT_AUDIO_PLL	5
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5514-spi.c | 147 +++++++++++++++++++++++-------------------
- sound/soc/codecs/rt5514-spi.h |   7 +-
- 2 files changed, 84 insertions(+), 70 deletions(-)
+hum...
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 7ed62e8..5884850 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -39,13 +39,12 @@ static struct spi_device *rt5514_spi;
- 
- struct rt5514_dsp {
- 	struct device *dev;
-+	struct work_struct start_work;
- 	struct delayed_work copy_work;
- 	struct mutex dma_lock;
- 	struct snd_pcm_substream *substream;
- 	unsigned int buf_base, buf_limit, buf_rp;
--	size_t buf_size;
--	size_t dma_offset;
--	size_t dsp_offset;
-+	size_t buf_size, get_size, dma_offset;
- };
- 
- static const struct snd_pcm_hardware rt5514_spi_pcm_hardware = {
-@@ -80,6 +79,8 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- 		container_of(work, struct rt5514_dsp, copy_work.work);
- 	struct snd_pcm_runtime *runtime;
- 	size_t period_bytes, truncated_bytes = 0;
-+	unsigned int cur_wp, remain_data;
-+	u8 buf[8];
- 
- 	mutex_lock(&rt5514_dsp->dma_lock);
- 	if (!rt5514_dsp->substream) {
-@@ -90,8 +91,22 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- 	runtime = rt5514_dsp->substream->runtime;
- 	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
- 
--	if (rt5514_dsp->buf_size - rt5514_dsp->dsp_offset <  period_bytes)
--		period_bytes = rt5514_dsp->buf_size - rt5514_dsp->dsp_offset;
-+	if (rt5514_dsp->get_size >= rt5514_dsp->buf_size) {
-+		rt5514_spi_burst_read(RT5514_BUFFER_VOICE_WP, (u8 *)&buf,
-+			sizeof(buf));
-+		cur_wp = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+					buf[3] << 24;
-+
-+		remain_data = (cur_wp >= rt5514_dsp->buf_rp) ?
-+			(cur_wp - rt5514_dsp->buf_rp) :
-+			((rt5514_dsp->buf_limit - rt5514_dsp->buf_rp) +
-+			(cur_wp - rt5514_dsp->buf_base));
-+
-+		if (remain_data < period_bytes) {
-+			schedule_delayed_work(&rt5514_dsp->copy_work, 5);
-+			goto done;
-+		}
-+	}
- 
- 	if (rt5514_dsp->buf_rp + period_bytes <= rt5514_dsp->buf_limit) {
- 		rt5514_spi_burst_read(rt5514_dsp->buf_rp,
-@@ -112,24 +127,57 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- 			runtime->dma_area + rt5514_dsp->dma_offset +
- 			truncated_bytes, period_bytes - truncated_bytes);
- 
--			rt5514_dsp->buf_rp = rt5514_dsp->buf_base +
--				period_bytes - truncated_bytes;
-+		rt5514_dsp->buf_rp = rt5514_dsp->buf_base + period_bytes -
-+			truncated_bytes;
- 	}
- 
-+	rt5514_dsp->get_size += period_bytes;
- 	rt5514_dsp->dma_offset += period_bytes;
- 	if (rt5514_dsp->dma_offset >= runtime->dma_bytes)
- 		rt5514_dsp->dma_offset = 0;
- 
--	rt5514_dsp->dsp_offset += period_bytes;
--
- 	snd_pcm_period_elapsed(rt5514_dsp->substream);
- 
--	if (rt5514_dsp->dsp_offset < rt5514_dsp->buf_size)
--		schedule_delayed_work(&rt5514_dsp->copy_work, 5);
-+	schedule_delayed_work(&rt5514_dsp->copy_work, 5);
-+
- done:
- 	mutex_unlock(&rt5514_dsp->dma_lock);
- }
- 
-+static void rt5514_spi_start_work(struct work_struct *work)
-+{
-+	struct rt5514_dsp *rt5514_dsp =
-+		container_of(work, struct rt5514_dsp, start_work);
-+	u8 buf[8];
-+
-+	rt5514_dsp->get_size = 0;
-+	rt5514_dsp->dma_offset = 0;
-+
-+	/**
-+	 * The address area x1800XXXX is the register address, and it cannot
-+	 * support spi burst read perfectly. So we use the spi burst read
-+	 * individually to make sure the data correctly.
-+	 */
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_BASE, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_base = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_LIMIT, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_limit = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_WP, (u8 *)&buf,
-+		sizeof(buf));
-+	rt5514_dsp->buf_rp = buf[0] | buf[1] << 8 | buf[2] << 16 |
-+				buf[3] << 24;
-+
-+	rt5514_dsp->buf_size = rt5514_dsp->buf_limit - rt5514_dsp->buf_base;
-+
-+	schedule_delayed_work(&rt5514_dsp->copy_work, 0);
-+}
-+
- /* PCM for streaming audio from the DSP buffer */
- static int rt5514_spi_pcm_open(struct snd_pcm_substream *substream)
- {
-@@ -170,59 +218,6 @@ static int rt5514_spi_hw_free(struct snd_pcm_substream *substream)
- 	return snd_pcm_lib_free_vmalloc_buffer(substream);
- }
- 
--static int rt5514_spi_prepare(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct rt5514_dsp *rt5514_dsp =
--			snd_soc_platform_get_drvdata(rtd->platform);
--	u8 buf[8];
--
--	rt5514_dsp->dma_offset = 0;
--	rt5514_dsp->dsp_offset = 0;
--
--	/**
--	 * The address area x1800XXXX is the register address, and it cannot
--	 * support spi burst read perfectly. So we use the spi burst read
--	 * individually to make sure the data correctly.
--	*/
--	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_BASE, (u8 *)&buf,
--		sizeof(buf));
--	rt5514_dsp->buf_base = buf[0] | buf[1] << 8 | buf[2] << 16 |
--				buf[3] << 24;
--
--	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_LIMIT, (u8 *)&buf,
--		sizeof(buf));
--	rt5514_dsp->buf_limit = buf[0] | buf[1] << 8 | buf[2] << 16 |
--				buf[3] << 24;
--
--	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_RP, (u8 *)&buf,
--		sizeof(buf));
--	rt5514_dsp->buf_rp = buf[0] | buf[1] << 8 | buf[2] << 16 |
--				buf[3] << 24;
--
--	rt5514_spi_burst_read(RT5514_BUFFER_VOICE_SIZE, (u8 *)&buf,
--		sizeof(buf));
--	rt5514_dsp->buf_size = buf[0] | buf[1] << 8 | buf[2] << 16 |
--				buf[3] << 24;
--
--	return 0;
--}
--
--static int rt5514_spi_trigger(struct snd_pcm_substream *substream, int cmd)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct rt5514_dsp *rt5514_dsp =
--			snd_soc_platform_get_drvdata(rtd->platform);
--
--	if (cmd == SNDRV_PCM_TRIGGER_START) {
--		if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
--			rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
--			schedule_delayed_work(&rt5514_dsp->copy_work, 0);
--	}
--
--	return 0;
--}
--
- static snd_pcm_uframes_t rt5514_spi_pcm_pointer(
- 		struct snd_pcm_substream *substream)
- {
-@@ -238,25 +233,45 @@ static const struct snd_pcm_ops rt5514_spi_pcm_ops = {
- 	.open		= rt5514_spi_pcm_open,
- 	.hw_params	= rt5514_spi_hw_params,
- 	.hw_free	= rt5514_spi_hw_free,
--	.trigger	= rt5514_spi_trigger,
--	.prepare	= rt5514_spi_prepare,
- 	.pointer	= rt5514_spi_pcm_pointer,
- 	.mmap		= snd_pcm_lib_mmap_vmalloc,
- 	.page		= snd_pcm_lib_get_vmalloc_page,
- };
- 
-+static irqreturn_t rt5514_spi_irq(int irq, void *data)
-+{
-+	struct rt5514_dsp *rt5514_dsp = data;
-+
-+	schedule_work(&rt5514_dsp->start_work);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int rt5514_spi_pcm_probe(struct snd_soc_platform *platform)
- {
- 	struct rt5514_dsp *rt5514_dsp;
-+	int ret;
- 
- 	rt5514_dsp = devm_kzalloc(platform->dev, sizeof(*rt5514_dsp),
- 			GFP_KERNEL);
- 
- 	rt5514_dsp->dev = &rt5514_spi->dev;
- 	mutex_init(&rt5514_dsp->dma_lock);
-+	INIT_WORK(&rt5514_dsp->start_work, rt5514_spi_start_work);
- 	INIT_DELAYED_WORK(&rt5514_dsp->copy_work, rt5514_spi_copy_work);
- 	snd_soc_platform_set_drvdata(platform, rt5514_dsp);
- 
-+	if (rt5514_spi->irq) {
-+		ret = devm_request_threaded_irq(&rt5514_spi->dev,
-+			rt5514_spi->irq, NULL, rt5514_spi_irq,
-+			IRQF_TRIGGER_RISING | IRQF_ONESHOT, "rt5514-spi",
-+			rt5514_dsp);
-+		if (ret)
-+			dev_err(&rt5514_spi->dev,
-+				"%s Failed to reguest IRQ: %d\n", __func__,
-+				ret);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/rt5514-spi.h b/sound/soc/codecs/rt5514-spi.h
-index f69b1cd..a6434ee 100644
---- a/sound/soc/codecs/rt5514-spi.h
-+++ b/sound/soc/codecs/rt5514-spi.h
-@@ -17,10 +17,9 @@
- */
- #define RT5514_SPI_BUF_LEN		240
- 
--#define RT5514_BUFFER_VOICE_BASE	0x18001034
--#define RT5514_BUFFER_VOICE_LIMIT	0x18001038
--#define RT5514_BUFFER_VOICE_RP		0x1800103c
--#define RT5514_BUFFER_VOICE_SIZE	0x18001040
-+#define RT5514_BUFFER_VOICE_BASE	0x18000200
-+#define RT5514_BUFFER_VOICE_LIMIT	0x18000204
-+#define RT5514_BUFFER_VOICE_WP		0x1800020c
- 
- /* SPI Command */
- enum {
+> +
+>  struct clk_generated {
+>  	struct clk_hw hw;
+>  	struct regmap *regmap;
+> @@ -126,15 +133,14 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+>  {
+>  	struct clk_generated *gck = to_clk_generated(hw);
+>  	struct clk_hw *parent = NULL;
+> +	struct clk_rate_request req_parent = *req;
+>  	long best_rate = -EINVAL;
+> -	unsigned long min_rate;
+> +	unsigned long min_rate, parent_rate;
+>  	int best_diff = -1;
+>  	int i;
+> +	u32 div;
+>  
+> -	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+> -		u32 div;
+> -		unsigned long parent_rate;
+> -
+> +	for (i = 0; i < clk_hw_get_num_parents(hw) - 1; i++) {
+>  		parent = clk_hw_get_parent_by_index(hw, i);
+>  		if (!parent)
+>  			continue;
+> @@ -150,11 +156,40 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+>  		clk_generated_best_diff(req, parent, parent_rate, div,
+>  					&best_diff, &best_rate);
+>  
+> +		if (!best_diff)
+> +			break;
+> +	}
+> +
+> +	/*
+> +	 * The audio_pll rate can be modified, unlike the five others clocks
+> +	 * that should never be altered.
+> +	 * The audio_pll can technically be used by multiple consumers. However,
+> +	 * with the rate locking, the first consumer to enable to clock will be
+> +	 * the one definitely setting the rate of the clock.
+> +	 * Since audio IPs are most likely to request the same rate, we enforce
+> +	 * that the only clks able to modify gck rate are those of audio IPs.
+> +	 */
+> +
+> +	if (gck->id != GCK_ID_SSC0 && gck->id != GCK_ID_SSC1 &&
+> +	    gck->id != GCK_ID_I2S0 && gck->id != GCK_ID_I2S1 &&
+> +	    gck->id != GCK_ID_CLASSD)
+> +		goto end;
+
+...well... maybe for a temporary solution, but what about the next
+product that will also have such feature but without the same set of IDs?
+
+I know that the main use of this clock is the "audio" subsystem (so its
+name) but in a machine without audio needs, it can be interesting to use
+this fractional PLL for other devices that can handle a GCK (and I'm
+thinking about the SDHCI interface that then could be configured with
+maximum clock speed).
+
+> +	parent = clk_hw_get_parent_by_index(hw, GCK_INDEX_DT_AUDIO_PLL);
+> +	if (!parent)
+> +		goto end;
+
+Here, if the audio pll id changes in the DT, we don't retrieve the
+proper parent... And again, not very future proof.
+
+> +	for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
+> +		req_parent.rate = req->rate * div;
+> +		__clk_determine_rate(parent, &req_parent);
+> +		clk_generated_best_diff(req, parent, req_parent.rate, div,
+> +					&best_diff, &best_rate);
+>  
+>  		if (!best_diff)
+>  			break;
+>  	}
+>  
+> +end:
+>  	pr_debug("GCLK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
+>  		 __func__, best_rate,
+>  		 __clk_get_name((req->best_parent_hw)->clk),
+> @@ -264,7 +299,8 @@ at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
+>  	init.ops = &generated_ops;
+>  	init.parent_names = parent_names;
+>  	init.num_parents = num_parents;
+> -	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
+> +	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
+> +		CLK_SET_RATE_PARENT;
+>  
+>  	gck->id = id;
+>  	gck->hw.init = &init;
+> 
+
+
 -- 
-2.7.4
+Nicolas Ferre
