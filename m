@@ -1,67 +1,83 @@
-From: Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 6/9] clk: at91: clk-generated: make gclk determine
- audio_pll rate
-Date: Thu, 6 Jul 2017 18:08:31 +0200
-Message-ID: <20170706160831.4ire6kbfqswo337d@piout.net>
-References: <20170704115927.32662-1-quentin.schulz@free-electrons.com>
- <20170704115927.32662-7-quentin.schulz@free-electrons.com>
- <ab11f002-b761-cdb4-eb0c-ce24dcb9c5d4@microchip.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <ab11f002-b761-cdb4-eb0c-ce24dcb9c5d4-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Nicolas Ferre <nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>
-Cc: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+From: Chris Gorman <chrisjohgorman@gmail.com>
+Subject: [PATCH 2/2] soc: codecs: rt5645: fixed coding style issuses
+Date: Thu,  6 Jul 2017 21:05:03 -0400
+Message-ID: <1499389503-6308-1-git-send-email-chrisjohgorman@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: bardliao@realtek.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Gorman <chrisjohgorman@gmail.com>, Chris Gorman <chrisjohgorman@bell.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/07/2017 at 17:29:22 +0200, Nicolas Ferre wrote:
-> > +	/*
-> > +	 * The audio_pll rate can be modified, unlike the five others clocks
-> > +	 * that should never be altered.
-> > +	 * The audio_pll can technically be used by multiple consumers. However,
-> > +	 * with the rate locking, the first consumer to enable to clock will be
-> > +	 * the one definitely setting the rate of the clock.
-> > +	 * Since audio IPs are most likely to request the same rate, we enforce
-> > +	 * that the only clks able to modify gck rate are those of audio IPs.
-> > +	 */
-> > +
-> > +	if (gck->id != GCK_ID_SSC0 && gck->id != GCK_ID_SSC1 &&
-> > +	    gck->id != GCK_ID_I2S0 && gck->id != GCK_ID_I2S1 &&
-> > +	    gck->id != GCK_ID_CLASSD)
-> > +		goto end;
-> 
-> ...well... maybe for a temporary solution, but what about the next
-> product that will also have such feature but without the same set of IDs?
-> 
+fixed coding style issues 6 warnings and 1 error
 
-It will have a different compatible and that can be used to encode the
-difference.
+left two warnings alone because I was unsure about changing the logic and
+felt the 80 + character line necessary
+sound/soc/codecs/rt5645.c:702: WARNING: else is not generally useful after a break or return
+sound/soc/codecs/rt5645.c:3024: WARNING: line over 80 characters
 
-> I know that the main use of this clock is the "audio" subsystem (so its
-> name) but in a machine without audio needs, it can be interesting to use
-> this fractional PLL for other devices that can handle a GCK (and I'm
-> thinking about the SDHCI interface that then could be configured with
-> maximum clock speed).
-> 
-> > +	parent = clk_hw_get_parent_by_index(hw, GCK_INDEX_DT_AUDIO_PLL);
-> > +	if (!parent)
-> > +		goto end;
-> 
-> Here, if the audio pll id changes in the DT, we don't retrieve the
-> proper parent... And again, not very future proof.
-> 
+Signed-off-by: Chris Gorman <chrisjohgorman@bell.net>
+---
+ sound/soc/codecs/rt5645.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-One more reason to remove all the crap we have in the DT, as suggested
-by RobH.
-
-
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 87844a4..7c14317 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3021,7 +3021,7 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+-		if (SND_SOC_BIAS_STANDBY == snd_soc_codec_get_bias_level(codec)) {
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
+ 			snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
+ 				RT5645_PWR_VREF1 | RT5645_PWR_MB |
+ 				RT5645_PWR_BG | RT5645_PWR_VREF2,
+@@ -3117,7 +3117,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 		snd_soc_dapm_sync(dapm);
+ 		if (!dapm->card->instantiated) {
+ 			/* Power up necessary bits for JD if dapm is
+-			   not ready yet */
++			 * not ready yet
++			 */
+ 			regmap_update_bits(rt5645->regmap, RT5645_PWR_ANLG1,
+ 				RT5645_PWR_MB | RT5645_PWR_VREF2,
+ 				RT5645_PWR_MB | RT5645_PWR_VREF2);
+@@ -3143,9 +3144,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 
+ 		if (val == 1 || val == 2) {
+ 			rt5645->jack_type = SND_JACK_HEADSET;
+-			if (rt5645->en_button_func) {
++			if (rt5645->en_button_func)
+ 				rt5645_enable_push_button_irq(codec, true);
+-			}
+ 		} else {
+ 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+ 			snd_soc_dapm_sync(dapm);
+@@ -3262,10 +3262,11 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 			report = SND_JACK_HEADSET;
+ 			btn_type = rt5645_button_detect(rt5645->codec);
+ 			/* rt5650 can report three kinds of button behavior,
+-			   one click, double click and hold. However,
+-			   currently we will report button pressed/released
+-			   event. So all the three button behaviors are
+-			   treated as button pressed. */
++			 * one click, double click and hold. However,
++			 * currently we will report button pressed/released
++			 * event. So all the three button behaviors are
++			 * treated as button pressed.
++			 */
+ 			switch (btn_type) {
+ 			case 0x8000:
+ 			case 0x4000:
+@@ -3527,7 +3528,7 @@ static const struct regmap_config rt5650_regmap = {
+ };
+ 
+ static const struct regmap_config temp_regmap = {
+-	.name="nocache",
++	.name = "nocache",
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+ 	.use_single_rw = true,
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.7.4
