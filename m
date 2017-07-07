@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl6040: fix error return code in
-	twl6040_probe()" to the asoc tree
-Date: Fri, 07 Jul 2017 13:51:47 +0100
-Message-ID: <E1dTSjb-0002lE-CP@finisterre>
-References: <20170630222648.GA19310@embeddedgus>
+Subject: Applied "ASoC: kirkwood-i2s: fix error return code in
+	kirkwood_i2s_dev_probe()" to the asoc tree
+Date: Fri, 07 Jul 2017 13:51:51 +0100
+Message-ID: <E1dTSjf-0002mD-Ie@finisterre>
+References: <20170630214633.GA14042@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 92A572671F4
- for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2017 14:52:36 +0200 (CEST)
-In-Reply-To: <20170630222648.GA19310@embeddedgus>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D0CA2671E7
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2017 14:52:38 +0200 (CEST)
+In-Reply-To: <20170630214633.GA14042@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl6040: fix error return code in twl6040_probe()
+   ASoC: kirkwood-i2s: fix error return code in kirkwood_i2s_dev_probe()
 
 has been applied to the asoc tree at
 
@@ -52,13 +52,14 @@ to this mail.
 Thanks,
 Mark
 
->From 2a788bcd390e585cb64074497037884c7eeecb27 Mon Sep 17 00:00:00 2001
+>From 02f2722d61edf9d9dfc35ebb1fcb639c06e14f80 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Fri, 30 Jun 2017 17:26:48 -0500
-Subject: [PATCH] ASoC: twl6040: fix error return code in twl6040_probe()
+Date: Fri, 30 Jun 2017 16:46:33 -0500
+Subject: [PATCH] ASoC: kirkwood-i2s: fix error return code in
+ kirkwood_i2s_dev_probe()
 
-platform_get_irq() returns an error code, but the twl6040
-driver ignores it and always returns -EINVAL. This is not correct,
+platform_get_irq() returns an error code, but the kirkwood-i2s
+driver ignores it and always returns -ENXIO. This is not correct,
 and prevents -EPROBE_DEFER from being propagated properly.
 Notice that platform_get_irq() no longer returns 0 on error.
 
@@ -67,23 +68,25 @@ Print and propagate the return value of platform_get_irq on failure.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl6040.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/kirkwood/kirkwood-i2s.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 2b6ad09e0886..96cf94a2b7a0 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1123,8 +1123,8 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index 3a36d60e1785..3b09f71b9535 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -550,9 +550,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->io);
  
- 	priv->plug_irq = platform_get_irq(pdev, 0);
- 	if (priv->plug_irq < 0) {
--		dev_err(codec->dev, "invalid irq\n");
--		return -EINVAL;
-+		dev_err(codec->dev, "invalid irq: %d\n", priv->plug_irq);
-+		return priv->plug_irq;
+ 	priv->irq = platform_get_irq(pdev, 0);
+-	if (priv->irq <= 0) {
+-		dev_err(&pdev->dev, "platform_get_irq failed\n");
+-		return -ENXIO;
++	if (priv->irq < 0) {
++		dev_err(&pdev->dev, "platform_get_irq failed: %d\n", priv->irq);
++		return priv->irq;
  	}
  
- 	INIT_DELAYED_WORK(&priv->hs_jack.work, twl6040_accessory_work);
+ 	if (np) {
 -- 
 2.13.2
