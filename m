@@ -1,46 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 7/9] ASoC: atmel-classd: remove aclk clock from DT
- binding
-Date: Fri, 7 Jul 2017 13:44:20 +0100
-Message-ID: <20170707124419.jfkgyl66wi7jfhnu@sirena.org.uk>
-References: <20170704115927.32662-1-quentin.schulz@free-electrons.com>
- <20170704115927.32662-8-quentin.schulz@free-electrons.com>
+Subject: Re: [PATCH] ASoC: rt5514: Move the auto disable DSP
+ function to set_bias_level()
+Date: Fri, 7 Jul 2017 13:45:58 +0100
+Message-ID: <20170707124558.gtktlctnsl43z3ni@sirena.org.uk>
+References: <1499166534-16438-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="woub2x6txwmvzhcf"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170704115927.32662-8-quentin.schulz@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Quentin Schulz <quentin.schulz@free-electrons.com>
-Cc: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com, cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============7745795810400452536=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C1312671C0
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2017 14:46:05 +0200 (CEST)
+In-Reply-To: <1499166534-16438-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---woub2x6txwmvzhcf
+--===============7745795810400452536==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ilt6dse2scyditym"
+Content-Disposition: inline
+
+
+--ilt6dse2scyditym
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 04, 2017 at 01:59:25PM +0200, Quentin Schulz wrote:
-> Since gclk (generated-clk) is now able to determine the rate of the
-> audio_pll, there is no need for classd to have a direct phandle to the
-> audio_pll while already having a phandle to gclk.
+On Tue, Jul 04, 2017 at 07:08:54PM +0800, Oder Chiou wrote:
+> Move the auto disable DSP function from the widget event "DAPM Pre" to
+> the set_bias_level() function to avoid the unexpected behavior.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Could you provide a bit more information on what the unexpected
+behaviour is and why this is a good fix please?
 
---woub2x6txwmvzhcf
+--ilt6dse2scyditym
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllfgiMACgkQJNaLcl1U
-h9D4EAf/RdCKk4UjTfyf4/fmSVtDhhexDdLPZ2dtAdyhOXP0/WJBzS4FXuHMU5V8
-vuFe96ZKhVqeQFWzDV3Hf6Xit8JmgfKbIukIOVvY9FfDHfr/cslPIebGosWvDKT9
-txSlXUdCacd2cpd8PqTfx9aeT6An6HgL38JHwQSkxVBMbVuu3ZM1oE9ReJ2TOXIG
-OSn6IvR3VYJ0G6cw+zbJ61u48vdHLj5QVEy/lm7AhLjUhp6lL9zVhBoPTYV1EiR9
-G8WJbAXxwfGkHZayulD4mI73Hr/1sMYnvrebsJDSnFOJPgk/I9hQHlm16DSv4cVo
-zw9O4tbWs7PAN7Ej/WziemoWbokP1g==
-=c1fk
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllfgoUACgkQJNaLcl1U
+h9CI3Qf+NH/w5XZE7TR5C8P6dNkznzfqU8K8F43gGfVwcG2xds4Lv/Khc/l/9YUB
+1872xsdUsE1pYU1O95E4GJ9v2F+jnO6sYsLaChoB3ALkpsT7nHCmRUO+3VknHOfK
+1eSWCpNQ6kctmJB1vrMeXttRr0KOItRZI466GPI+VDuQp96EOKCFk/BASoKggfTN
++ZxgfEkVBJB62Md0Jq8aTnOT+Tn3qwfEfLAsCybiZo3GrFXmySJet+8ZYU7iElrJ
+2IUHmCdNO7reGHAQO3Tz/bG7AUffvXXTMBvvMxxh6ZNpMgUW7Gze8KfpXyY+O0cL
+6goxz0SaPhtfBL5wtjUzMkiZXOHRNw==
+=gvWm
 -----END PGP SIGNATURE-----
 
---woub2x6txwmvzhcf--
+--ilt6dse2scyditym--
+
+--===============7745795810400452536==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7745795810400452536==--
