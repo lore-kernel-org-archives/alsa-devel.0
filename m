@@ -1,173 +1,49 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 1/3] ASoC: rt5663: Update the calibration
-	funciton
-Date: Fri, 7 Jul 2017 16:58:57 +0800
-Message-ID: <1499417939-319-1-git-send-email-oder_chiou@realtek.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 8/9] ASoC: atmel-classd: remove aclk clock
+Date: Fri, 7 Jul 2017 13:44:32 +0100
+Message-ID: <20170707124432.b5h2ugtxsz3zqysx@sirena.org.uk>
+References: <20170704115927.32662-1-quentin.schulz@free-electrons.com>
+ <20170704115927.32662-9-quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 17A9F2664EB
- for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2017 10:59:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="exdyu7fmnfly6tbs"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170704115927.32662-9-quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch updates the calibration funciton for getting the correct DC
-offset of headphone output.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5663.c | 100 ++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 79 insertions(+), 21 deletions(-)
+--exdyu7fmnfly6tbs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index a33202a..18b3b52 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -2986,47 +2986,75 @@ static void rt5663_calibrate(struct rt5663_priv *rt5663)
- {
- 	int value, count;
- 
--	regmap_write(rt5663->regmap, RT5663_RC_CLK, 0x0280);
-+	regmap_write(rt5663->regmap, RT5663_RESET, 0x0000);
-+	msleep(20);
-+	regmap_write(rt5663->regmap, RT5663_ANA_BIAS_CUR_4, 0x00a1);
-+	regmap_write(rt5663->regmap, RT5663_RC_CLK, 0x0380);
- 	regmap_write(rt5663->regmap, RT5663_GLB_CLK, 0x8000);
--	regmap_write(rt5663->regmap, RT5663_DIG_MISC, 0x8001);
-+	regmap_write(rt5663->regmap, RT5663_ADDA_CLK_1, 0x1000);
- 	regmap_write(rt5663->regmap, RT5663_VREF_RECMIX, 0x0032);
--	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_1, 0xa2be);
--	msleep(20);
--	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_1, 0xf2be);
--	regmap_write(rt5663->regmap, RT5663_PWR_DIG_2, 0x8400);
--	regmap_write(rt5663->regmap, RT5663_CHOP_ADC, 0x3000);
--	regmap_write(rt5663->regmap, RT5663_DEPOP_1, 0x003b);
--	regmap_write(rt5663->regmap, RT5663_PWR_DIG_1, 0x8df8);
--	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_2, 0x0003);
--	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_3, 0x018c);
--	regmap_write(rt5663->regmap, RT5663_ADDA_CLK_1, 0x1111);
-+	regmap_write(rt5663->regmap, RT5663_HP_IMP_SEN_19, 0x000c);
-+	regmap_write(rt5663->regmap, RT5663_DUMMY_1, 0x0324);
-+	regmap_write(rt5663->regmap, RT5663_DIG_MISC, 0x8001);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_1, 0xa23b);
-+	msleep(30);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_1, 0xf23b);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_2, 0x8000);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_3, 0x0008);
- 	regmap_write(rt5663->regmap, RT5663_PRE_DIV_GATING_1, 0xffff);
- 	regmap_write(rt5663->regmap, RT5663_PRE_DIV_GATING_2, 0xffff);
-+	regmap_write(rt5663->regmap, RT5663_CBJ_1, 0x8c10);
-+	regmap_write(rt5663->regmap, RT5663_IL_CMD_2, 0x00c1);
-+	regmap_write(rt5663->regmap, RT5663_EM_JACK_TYPE_1, 0xb880);
-+	regmap_write(rt5663->regmap, RT5663_EM_JACK_TYPE_2, 0x4110);
-+	regmap_write(rt5663->regmap, RT5663_EM_JACK_TYPE_2, 0x4118);
-+
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5663->regmap, RT5663_INT_ST_2, &value);
-+		if (!(value & 0x80))
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 200)
-+			break;
-+	}
-+
-+	regmap_write(rt5663->regmap, RT5663_HP_IMP_SEN_19, 0x0000);
- 	regmap_write(rt5663->regmap, RT5663_DEPOP_2, 0x3003);
-+	regmap_write(rt5663->regmap, RT5663_DEPOP_1, 0x0038);
- 	regmap_write(rt5663->regmap, RT5663_DEPOP_1, 0x003b);
-+	regmap_write(rt5663->regmap, RT5663_PWR_DIG_2, 0x8400);
-+	regmap_write(rt5663->regmap, RT5663_PWR_DIG_1, 0x8df8);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_2, 0x8003);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_3, 0x018c);
- 	regmap_write(rt5663->regmap, RT5663_HP_CHARGE_PUMP_1, 0x1e32);
--	regmap_write(rt5663->regmap, RT5663_HP_CHARGE_PUMP_2, 0x1371);
- 	regmap_write(rt5663->regmap, RT5663_DACREF_LDO, 0x3b0b);
--	regmap_write(rt5663->regmap, RT5663_STO_DAC_MIXER, 0x2080);
-+	regmap_write(rt5663->regmap, RT5663_STO_DAC_MIXER, 0x0000);
- 	regmap_write(rt5663->regmap, RT5663_BYPASS_STO_DAC, 0x000c);
--	regmap_write(rt5663->regmap, RT5663_HP_BIAS, 0xabba);
-+	regmap_write(rt5663->regmap, RT5663_HP_BIAS, 0xafaa);
- 	regmap_write(rt5663->regmap, RT5663_CHARGE_PUMP_1, 0x2224);
- 	regmap_write(rt5663->regmap, RT5663_HP_OUT_EN, 0x8088);
- 	regmap_write(rt5663->regmap, RT5663_STO_DRE_9, 0x0017);
- 	regmap_write(rt5663->regmap, RT5663_STO_DRE_10, 0x0017);
- 	regmap_write(rt5663->regmap, RT5663_STO1_ADC_MIXER, 0x4040);
-+	regmap_write(rt5663->regmap, RT5663_CHOP_ADC, 0x3000);
- 	regmap_write(rt5663->regmap, RT5663_RECMIX, 0x0005);
- 	regmap_write(rt5663->regmap, RT5663_ADDA_RST, 0xc000);
- 	regmap_write(rt5663->regmap, RT5663_STO1_HPF_ADJ1, 0x3320);
- 	regmap_write(rt5663->regmap, RT5663_HP_CALIB_2, 0x00c9);
- 	regmap_write(rt5663->regmap, RT5663_DUMMY_1, 0x004c);
--	regmap_write(rt5663->regmap, RT5663_ANA_BIAS_CUR_1, 0x7766);
--	regmap_write(rt5663->regmap, RT5663_BIAS_CUR_8, 0x4702);
--	msleep(200);
-+	regmap_write(rt5663->regmap, RT5663_ANA_BIAS_CUR_1, 0x1111);
-+	regmap_write(rt5663->regmap, RT5663_BIAS_CUR_8, 0x4402);
-+	regmap_write(rt5663->regmap, RT5663_CHARGE_PUMP_2, 0x3311);
- 	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1, 0x0069);
--	regmap_write(rt5663->regmap, RT5663_HP_CALIB_3, 0x06c2);
--	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1_1, 0x7b00);
--	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1_1, 0xfb00);
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_3, 0x06ce);
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1_1, 0x6800);
-+	regmap_write(rt5663->regmap, RT5663_CHARGE_PUMP_2, 0x1100);
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_7, 0x0057);
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1_1, 0xe800);
-+
- 	count = 0;
- 	while (true) {
- 		regmap_read(rt5663->regmap, RT5663_HP_CALIB_1_1, &value);
-@@ -3039,6 +3067,36 @@ static void rt5663_calibrate(struct rt5663_priv *rt5663)
- 			return;
- 		count++;
- 	}
-+
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1_1, 0x6200);
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_7, 0x0059);
-+	regmap_write(rt5663->regmap, RT5663_HP_CALIB_1_1, 0xe200);
-+
-+	count = 0;
-+	while (true) {
-+		regmap_read(rt5663->regmap, RT5663_HP_CALIB_1_1, &value);
-+		if (value & 0x8000)
-+			usleep_range(10000, 10005);
-+		else
-+			break;
-+
-+		if (count > 200)
-+			return;
-+		count++;
-+	}
-+
-+	regmap_write(rt5663->regmap, RT5663_EM_JACK_TYPE_1, 0xb8e0);
-+	usleep_range(10000, 10005);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_1, 0x003b);
-+	usleep_range(10000, 10005);
-+	regmap_write(rt5663->regmap, RT5663_PWR_DIG_1, 0x0000);
-+	usleep_range(10000, 10005);
-+	regmap_write(rt5663->regmap, RT5663_DEPOP_1, 0x000b);
-+	usleep_range(10000, 10005);
-+	regmap_write(rt5663->regmap, RT5663_DEPOP_1, 0x0008);
-+	usleep_range(10000, 10005);
-+	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_2, 0x0000);
-+	usleep_range(10000, 10005);
- }
- 
- static int rt5663_i2c_probe(struct i2c_client *i2c,
--- 
-2.7.4
+On Tue, Jul 04, 2017 at 01:59:26PM +0200, Quentin Schulz wrote:
+> Since gclk (generated-clk) is now able to determine the rate of the
+> audio_pll, there is no need for classd to have a direct phandle to the
+> audio_pll while already having a phandle to gclk.
+
+Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+
+--exdyu7fmnfly6tbs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllfgi8ACgkQJNaLcl1U
+h9DzAQf/dC3hmT2cJGuO5WN2WUEdJi8i15jUGACz08lH+qnyfGQ2vIaHDa7Gk2Ro
+kZLHscJuR5tzN5xi16pUGAH2klyPaOQdVpNVXv+wzxvOsVKxsB0woKIVaFo/DhmM
+y8HfO6l6J09CReewm4Ij2LzXNJy+gz9lh4GYzfWnqtqjPcns1KBEmYhmAZtvX8lh
+/7Q6oZ9yeBJY3xWORvD8zv/vxof39ZbdXpRd1zb/7HYDQYnhoJlRPkn/1KtyWmAG
+1lJ1+r6Ao1DEYdfwDB3jvxdtdg8zD7H0ggRyPw9fpcwSzfBUEIzFr/7Y3hrlNfus
+nTT5B70tS9bBhc1bZ89tgaHoWT4yWQ==
+=4O/E
+-----END PGP SIGNATURE-----
+
+--exdyu7fmnfly6tbs--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
