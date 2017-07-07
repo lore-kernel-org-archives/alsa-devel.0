@@ -1,62 +1,148 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda/realtek - change the location for one of two front microphones
-Date: Fri,  7 Jul 2017 12:08:29 +0800
-Message-ID: <1499400509-23919-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2] ASoC: samsung: i2s: Support more resolution rates
+Date: Fri, 7 Jul 2017 07:45:47 +0200
+Message-ID: <20170707054547.GA2383@kozik-book>
+References: <CGME20170707013112epcas5p43273c95afd43b18ded971bea081edd40@epcas5p4.samsung.com>
+ <20170707013110.7060-1-jcsing.lee@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170707013110.7060-1-jcsing.lee@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Jaechul Lee <jcsing.lee@samsung.com>
+Cc: Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel <alsa-devel@alsa-project.org>, Jaechul Lee <galaxyra@gmail.com>, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On this Lenovo machine, there are two front mics, and both of them are
-assigned the same name "Mic", but pulseaudio can't support two mics
-with the same name, as a workaround, we change the location for one of
-them, then the driver will assign "Front Mic" and "Mic" for them.
+On Fri, Jul 07, 2017 at 10:31:10AM +0900, Jaechul Lee wrote:
+> This driver can support more frequencies over 96KHz. There are no reasons
+> to limit the frequency range below 96KHz. If codecs/amps or something else
+> can't support higher resolution rates, the constraints would be set rates
+> properly because each drivers have its own limits.
+> 
+> I added the 'pcm_rates' field to the dai_data to be set rates by the
+> compatibilities. As a result, rates will be set each devices respectively.
+> For example of exynos5433, rates will be set from 8KHz to 192KHz.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Code looks okay but commtit message could be still improved. Simply, the
+goal of this change is to add 192 kHz ferquency to Exynos5433 and
+Exynos7 DAI.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index cebf59e..a6c3ce0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5179,6 +5179,7 @@ enum {
- 	ALC233_FIXUP_ASUS_MIC_NO_PRESENCE,
- 	ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE,
- 	ALC233_FIXUP_LENOVO_MULTI_CODECS,
-+	ALC294_FIXUP_LENOVO_MIC_LOCATION,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5962,6 +5963,18 @@ enum {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
- 	},
-+	[ALC294_FIXUP_LENOVO_MIC_LOCATION] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			/* Change the mic location from front to right, otherwise there are
-+			   two front mics with the same name, pulseaudio can't handle them.
-+			   This is just a temporary workaround, after applying this fixup,
-+			   there will be one "Front Mic" and one "Mic" in this machine.
-+			 */
-+			{ 0x1a, 0x04a19040 },
-+			{ }
-+		},
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -6143,6 +6156,7 @@ enum {
- 	SND_PCI_QUIRK(0x17aa, 0x2233, "Thinkpad", ALC292_FIXUP_TPT460),
- 	SND_PCI_QUIRK(0x17aa, 0x30bb, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x30e2, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
-+	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x3112, "ThinkCentre AIO", ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
--- 
-1.9.1
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Best regards,
+Krzysztof
+
+
+> 
+> Signed-off-by: Jaechul Lee <jcsing.lee@samsung.com>
+> ---
+> v2:
+>  - changed the name of variable to pcm_rates.                                  
+>  - removed duplicated code.
+>  - modified commit message.
+> ---
+>  sound/soc/samsung/i2s.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index af3ba4d4ccc5..c9f87f7bae99 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -50,6 +50,7 @@ struct samsung_i2s_variant_regs {
+>  
+>  struct samsung_i2s_dai_data {
+>  	u32 quirks;
+> +	unsigned int pcm_rates;
+>  	const struct samsung_i2s_variant_regs *i2s_variant_regs;
+>  };
+>  
+> @@ -1076,13 +1077,13 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
+>  	.name		= "samsung-i2s",
+>  };
+>  
+> -#define SAMSUNG_I2S_RATES	SNDRV_PCM_RATE_8000_96000
+> -
+>  #define SAMSUNG_I2S_FMTS	(SNDRV_PCM_FMTBIT_S8 | \
+>  					SNDRV_PCM_FMTBIT_S16_LE | \
+>  					SNDRV_PCM_FMTBIT_S24_LE)
+>  
+> -static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+> +static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev,
+> +				const struct samsung_i2s_dai_data *i2s_dai_data,
+> +				bool sec)
+>  {
+>  	struct i2s_dai *i2s;
+>  
+> @@ -1101,13 +1102,13 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+>  	i2s->i2s_dai_drv.resume = i2s_resume;
+>  	i2s->i2s_dai_drv.playback.channels_min = 1;
+>  	i2s->i2s_dai_drv.playback.channels_max = 2;
+> -	i2s->i2s_dai_drv.playback.rates = SAMSUNG_I2S_RATES;
+> +	i2s->i2s_dai_drv.playback.rates = i2s_dai_data->pcm_rates;
+>  	i2s->i2s_dai_drv.playback.formats = SAMSUNG_I2S_FMTS;
+>  
+>  	if (!sec) {
+>  		i2s->i2s_dai_drv.capture.channels_min = 1;
+>  		i2s->i2s_dai_drv.capture.channels_max = 2;
+> -		i2s->i2s_dai_drv.capture.rates = SAMSUNG_I2S_RATES;
+> +		i2s->i2s_dai_drv.capture.rates = i2s_dai_data->pcm_rates;
+>  		i2s->i2s_dai_drv.capture.formats = SAMSUNG_I2S_FMTS;
+>  	}
+>  	return i2s;
+> @@ -1242,7 +1243,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+>  		i2s_dai_data = (struct samsung_i2s_dai_data *)
+>  				platform_get_device_id(pdev)->driver_data;
+>  
+> -	pri_dai = i2s_alloc_dai(pdev, false);
+> +	pri_dai = i2s_alloc_dai(pdev, i2s_dai_data, false);
+>  	if (!pri_dai) {
+>  		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
+>  		return -ENOMEM;
+> @@ -1316,7 +1317,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+>  		goto err_disable_clk;
+>  
+>  	if (quirks & QUIRK_SEC_DAI) {
+> -		sec_dai = i2s_alloc_dai(pdev, true);
+> +		sec_dai = i2s_alloc_dai(pdev, i2s_dai_data, true);
+>  		if (!sec_dai) {
+>  			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
+>  			ret = -ENOMEM;
+> @@ -1452,29 +1453,34 @@ static const struct samsung_i2s_variant_regs i2sv5_i2s1_regs = {
+>  
+>  static const struct samsung_i2s_dai_data i2sv3_dai_type = {
+>  	.quirks = QUIRK_NO_MUXPSR,
+> +	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+>  	.i2s_variant_regs = &i2sv3_regs,
+>  };
+>  
+>  static const struct samsung_i2s_dai_data i2sv5_dai_type = {
+>  	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
+>  			QUIRK_SUPPORTS_IDMA,
+> +	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+>  	.i2s_variant_regs = &i2sv3_regs,
+>  };
+>  
+>  static const struct samsung_i2s_dai_data i2sv6_dai_type = {
+>  	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
+>  			QUIRK_SUPPORTS_TDM | QUIRK_SUPPORTS_IDMA,
+> +	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+>  	.i2s_variant_regs = &i2sv6_regs,
+>  };
+>  
+>  static const struct samsung_i2s_dai_data i2sv7_dai_type = {
+>  	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
+>  			QUIRK_SUPPORTS_TDM,
+> +	.pcm_rates = SNDRV_PCM_RATE_8000_192000,
+>  	.i2s_variant_regs = &i2sv7_regs,
+>  };
+>  
+>  static const struct samsung_i2s_dai_data i2sv5_dai_type_i2s1 = {
+>  	.quirks = QUIRK_PRI_6CHAN | QUIRK_NEED_RSTCLR,
+> +	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+>  	.i2s_variant_regs = &i2sv5_i2s1_regs,
+>  };
+>  
+> -- 
+> 2.11.0
+> 
