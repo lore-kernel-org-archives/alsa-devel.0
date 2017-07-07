@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: kirkwood-i2s: fix error return code in
-	kirkwood_i2s_dev_probe()" to the asoc tree
-Date: Fri, 07 Jul 2017 13:51:51 +0100
-Message-ID: <E1dTSjf-0002mD-Ie@finisterre>
-References: <20170630214633.GA14042@embeddedgus>
+Subject: Applied "ASoC: rt5663: Optimize the Jack Type
+	detection" to the asoc tree
+Date: Fri, 07 Jul 2017 13:52:35 +0100
+Message-ID: <E1dTSkN-0002qa-Jr@finisterre>
+References: <1499417939-319-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D0CA2671E7
- for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2017 14:52:38 +0200 (CEST)
-In-Reply-To: <20170630214633.GA14042@embeddedgus>
+ by alsa0.perex.cz (Postfix) with ESMTP id 665FE267214
+ for <alsa-devel@alsa-project.org>; Fri,  7 Jul 2017 14:52:45 +0200 (CEST)
+In-Reply-To: <1499417939-319-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: kirkwood-i2s: fix error return code in kirkwood_i2s_dev_probe()
+   ASoC: rt5663: Optimize the Jack Type detection
 
 has been applied to the asoc tree at
 
@@ -52,41 +52,62 @@ to this mail.
 Thanks,
 Mark
 
->From 02f2722d61edf9d9dfc35ebb1fcb639c06e14f80 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Fri, 30 Jun 2017 16:46:33 -0500
-Subject: [PATCH] ASoC: kirkwood-i2s: fix error return code in
- kirkwood_i2s_dev_probe()
+>From fa8b3b6a5a081697e7158687c7803020040c7d2e Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Fri, 7 Jul 2017 16:58:58 +0800
+Subject: [PATCH] ASoC: rt5663: Optimize the Jack Type detection
 
-platform_get_irq() returns an error code, but the kirkwood-i2s
-driver ignores it and always returns -ENXIO. This is not correct,
-and prevents -EPROBE_DEFER from being propagated properly.
-Notice that platform_get_irq() no longer returns 0 on error.
+The patch optimizes the Jack Type detection.
 
-Print and propagate the return value of platform_get_irq on failure.
-
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5663.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 3a36d60e1785..3b09f71b9535 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -550,9 +550,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->io);
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 18b3b526b7c5..ebd9ae00e04d 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1508,7 +1508,7 @@ static int rt5663_v2_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ {
+ 	struct rt5663_priv *rt5663 = snd_soc_codec_get_drvdata(codec);
+-	int val, i = 0, sleep_time[5] = {300, 150, 100, 50, 30};
++	int val, i = 0;
  
- 	priv->irq = platform_get_irq(pdev, 0);
--	if (priv->irq <= 0) {
--		dev_err(&pdev->dev, "platform_get_irq failed\n");
--		return -ENXIO;
-+	if (priv->irq < 0) {
-+		dev_err(&pdev->dev, "platform_get_irq failed: %d\n", priv->irq);
-+		return priv->irq;
- 	}
+ 	dev_dbg(codec->dev, "%s jack_insert:%d\n", __func__, jack_insert);
  
- 	if (np) {
+@@ -1543,17 +1543,22 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			RT5663_IRQ_POW_SAV_MASK, RT5663_IRQ_POW_SAV_EN);
+ 		snd_soc_update_bits(codec, RT5663_IRQ_1,
+ 			RT5663_EN_IRQ_JD1_MASK, RT5663_EN_IRQ_JD1_EN);
+-		while (i < 5) {
+-			msleep(sleep_time[i]);
+-			val = snd_soc_read(codec, RT5663_EM_JACK_TYPE_2) &
+-				0x0003;
+-			dev_dbg(codec->dev, "%s: MX-00e7 val=%x sleep %d\n",
+-				__func__, val, sleep_time[i]);
+-			i++;
+-			if (val == 0x1 || val == 0x2 || val == 0x3)
++
++		while (true) {
++			regmap_read(rt5663->regmap, RT5663_INT_ST_2, &val);
++			if (!(val & 0x80))
++				usleep_range(10000, 10005);
++			else
++				break;
++
++			if (i > 200)
+ 				break;
++			i++;
+ 		}
++
++		val = snd_soc_read(codec, RT5663_EM_JACK_TYPE_2) & 0x0003;
+ 		dev_dbg(codec->dev, "%s val = %d\n", __func__, val);
++
+ 		switch (val) {
+ 		case 1:
+ 		case 2:
 -- 
 2.13.2
