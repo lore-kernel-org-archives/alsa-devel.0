@@ -1,83 +1,130 @@
-From: Chris Gorman <chrisjohgorman@gmail.com>
-Subject: [PATCH 2/2] soc: codecs: rt5645: fixed coding style issuses
-Date: Thu,  6 Jul 2017 21:05:03 -0400
-Message-ID: <1499389503-6308-1-git-send-email-chrisjohgorman@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: bardliao@realtek.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Chris Gorman <chrisjohgorman@gmail.com>, Chris Gorman <chrisjohgorman@bell.net>
+From: Jaechul Lee <jcsing.lee@samsung.com>
+Subject: [PATCH v2] ASoC: samsung: i2s: Support more resolution rates
+Date: Fri, 07 Jul 2017 10:31:10 +0900
+Message-ID: <20170707013110.7060-1-jcsing.lee@samsung.com>
+References: <CGME20170707013112epcas5p43273c95afd43b18ded971bea081edd40@epcas5p4.samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: Jaechul Lee <jcsing.lee@samsung.com>, Jaechul Lee <galaxyra@gmail.com>, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-fixed coding style issues 6 warnings and 1 error
+This driver can support more frequencies over 96KHz. There are no reasons
+to limit the frequency range below 96KHz. If codecs/amps or something else
+can't support higher resolution rates, the constraints would be set rates
+properly because each drivers have its own limits.
 
-left two warnings alone because I was unsure about changing the logic and
-felt the 80 + character line necessary
-sound/soc/codecs/rt5645.c:702: WARNING: else is not generally useful after a break or return
-sound/soc/codecs/rt5645.c:3024: WARNING: line over 80 characters
+I added the 'pcm_rates' field to the dai_data to be set rates by the
+compatibilities. As a result, rates will be set each devices respectively.
+For example of exynos5433, rates will be set from 8KHz to 192KHz.
 
-Signed-off-by: Chris Gorman <chrisjohgorman@bell.net>
+Signed-off-by: Jaechul Lee <jcsing.lee@samsung.com>
 ---
- sound/soc/codecs/rt5645.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+v2:
+ - changed the name of variable to pcm_rates.                                  
+ - removed duplicated code.
+ - modified commit message.
+---
+ sound/soc/samsung/i2s.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 87844a4..7c14317 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3021,7 +3021,7 @@ static int rt5645_set_bias_level(struct snd_soc_codec *codec,
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index af3ba4d4ccc5..c9f87f7bae99 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -50,6 +50,7 @@ struct samsung_i2s_variant_regs {
  
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
--		if (SND_SOC_BIAS_STANDBY == snd_soc_codec_get_bias_level(codec)) {
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_STANDBY) {
- 			snd_soc_update_bits(codec, RT5645_PWR_ANLG1,
- 				RT5645_PWR_VREF1 | RT5645_PWR_MB |
- 				RT5645_PWR_BG | RT5645_PWR_VREF2,
-@@ -3117,7 +3117,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 		snd_soc_dapm_sync(dapm);
- 		if (!dapm->card->instantiated) {
- 			/* Power up necessary bits for JD if dapm is
--			   not ready yet */
-+			 * not ready yet
-+			 */
- 			regmap_update_bits(rt5645->regmap, RT5645_PWR_ANLG1,
- 				RT5645_PWR_MB | RT5645_PWR_VREF2,
- 				RT5645_PWR_MB | RT5645_PWR_VREF2);
-@@ -3143,9 +3144,8 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 
- 		if (val == 1 || val == 2) {
- 			rt5645->jack_type = SND_JACK_HEADSET;
--			if (rt5645->en_button_func) {
-+			if (rt5645->en_button_func)
- 				rt5645_enable_push_button_irq(codec, true);
--			}
- 		} else {
- 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
- 			snd_soc_dapm_sync(dapm);
-@@ -3262,10 +3262,11 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 			report = SND_JACK_HEADSET;
- 			btn_type = rt5645_button_detect(rt5645->codec);
- 			/* rt5650 can report three kinds of button behavior,
--			   one click, double click and hold. However,
--			   currently we will report button pressed/released
--			   event. So all the three button behaviors are
--			   treated as button pressed. */
-+			 * one click, double click and hold. However,
-+			 * currently we will report button pressed/released
-+			 * event. So all the three button behaviors are
-+			 * treated as button pressed.
-+			 */
- 			switch (btn_type) {
- 			case 0x8000:
- 			case 0x4000:
-@@ -3527,7 +3528,7 @@ static const struct regmap_config rt5650_regmap = {
+ struct samsung_i2s_dai_data {
+ 	u32 quirks;
++	unsigned int pcm_rates;
+ 	const struct samsung_i2s_variant_regs *i2s_variant_regs;
  };
  
- static const struct regmap_config temp_regmap = {
--	.name="nocache",
-+	.name = "nocache",
- 	.reg_bits = 8,
- 	.val_bits = 16,
- 	.use_single_rw = true,
+@@ -1076,13 +1077,13 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
+ 	.name		= "samsung-i2s",
+ };
+ 
+-#define SAMSUNG_I2S_RATES	SNDRV_PCM_RATE_8000_96000
+-
+ #define SAMSUNG_I2S_FMTS	(SNDRV_PCM_FMTBIT_S8 | \
+ 					SNDRV_PCM_FMTBIT_S16_LE | \
+ 					SNDRV_PCM_FMTBIT_S24_LE)
+ 
+-static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
++static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev,
++				const struct samsung_i2s_dai_data *i2s_dai_data,
++				bool sec)
+ {
+ 	struct i2s_dai *i2s;
+ 
+@@ -1101,13 +1102,13 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev, bool sec)
+ 	i2s->i2s_dai_drv.resume = i2s_resume;
+ 	i2s->i2s_dai_drv.playback.channels_min = 1;
+ 	i2s->i2s_dai_drv.playback.channels_max = 2;
+-	i2s->i2s_dai_drv.playback.rates = SAMSUNG_I2S_RATES;
++	i2s->i2s_dai_drv.playback.rates = i2s_dai_data->pcm_rates;
+ 	i2s->i2s_dai_drv.playback.formats = SAMSUNG_I2S_FMTS;
+ 
+ 	if (!sec) {
+ 		i2s->i2s_dai_drv.capture.channels_min = 1;
+ 		i2s->i2s_dai_drv.capture.channels_max = 2;
+-		i2s->i2s_dai_drv.capture.rates = SAMSUNG_I2S_RATES;
++		i2s->i2s_dai_drv.capture.rates = i2s_dai_data->pcm_rates;
+ 		i2s->i2s_dai_drv.capture.formats = SAMSUNG_I2S_FMTS;
+ 	}
+ 	return i2s;
+@@ -1242,7 +1243,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		i2s_dai_data = (struct samsung_i2s_dai_data *)
+ 				platform_get_device_id(pdev)->driver_data;
+ 
+-	pri_dai = i2s_alloc_dai(pdev, false);
++	pri_dai = i2s_alloc_dai(pdev, i2s_dai_data, false);
+ 	if (!pri_dai) {
+ 		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
+ 		return -ENOMEM;
+@@ -1316,7 +1317,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		goto err_disable_clk;
+ 
+ 	if (quirks & QUIRK_SEC_DAI) {
+-		sec_dai = i2s_alloc_dai(pdev, true);
++		sec_dai = i2s_alloc_dai(pdev, i2s_dai_data, true);
+ 		if (!sec_dai) {
+ 			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
+ 			ret = -ENOMEM;
+@@ -1452,29 +1453,34 @@ static const struct samsung_i2s_variant_regs i2sv5_i2s1_regs = {
+ 
+ static const struct samsung_i2s_dai_data i2sv3_dai_type = {
+ 	.quirks = QUIRK_NO_MUXPSR,
++	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+ 	.i2s_variant_regs = &i2sv3_regs,
+ };
+ 
+ static const struct samsung_i2s_dai_data i2sv5_dai_type = {
+ 	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
+ 			QUIRK_SUPPORTS_IDMA,
++	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+ 	.i2s_variant_regs = &i2sv3_regs,
+ };
+ 
+ static const struct samsung_i2s_dai_data i2sv6_dai_type = {
+ 	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
+ 			QUIRK_SUPPORTS_TDM | QUIRK_SUPPORTS_IDMA,
++	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+ 	.i2s_variant_regs = &i2sv6_regs,
+ };
+ 
+ static const struct samsung_i2s_dai_data i2sv7_dai_type = {
+ 	.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR |
+ 			QUIRK_SUPPORTS_TDM,
++	.pcm_rates = SNDRV_PCM_RATE_8000_192000,
+ 	.i2s_variant_regs = &i2sv7_regs,
+ };
+ 
+ static const struct samsung_i2s_dai_data i2sv5_dai_type_i2s1 = {
+ 	.quirks = QUIRK_PRI_6CHAN | QUIRK_NEED_RSTCLR,
++	.pcm_rates = SNDRV_PCM_RATE_8000_96000,
+ 	.i2s_variant_regs = &i2sv5_i2s1_regs,
+ };
+ 
 -- 
-2.7.4
+2.11.0
