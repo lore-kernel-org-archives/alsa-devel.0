@@ -1,70 +1,53 @@
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: codec: cpcap: new codec
-Date: Sat, 8 Jul 2017 22:39:39 -0700
-Message-ID: <20170709053939.GQ3730@atomide.com>
-References: <20170707164229.5868-1-sebastian.reichel@collabora.co.uk>
- <20170707164229.5868-2-sebastian.reichel@collabora.co.uk>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] ASoC: pxa: SND_PXA2XX_SOC should depend on
+	HAS_DMA
+Date: Sun,  9 Jul 2017 21:30:32 +0200
+Message-ID: <1499628632-15421-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170707164229.5868-2-sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Cc: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [195.130.137.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE8122669CD
+ for <alsa-devel@alsa-project.org>; Sun,  9 Jul 2017 21:30:38 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-* Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org> [170707 09:43]:
-> Motorola CPCAP is a PMIC with audio functionality, that can be
-> found on Motorola Droid 4 and probably a few other phones from
-> Motorola's Droid series.
-> 
-> The driver has been written from scratch using Motorola's Android
-> driver, register dumps from running Android and datasheet for NXP
-> MC13783UG (which is similar to Motorola CPCAP, but not the same).
-> 
-> The chip provides two audio interfaces, that can be muxed to two
-> different audio codecs. One provides support for stereo output
-> (named StDAC or HiFi), while the other only provides mono output
-> (named Voice). Only the Voice codec provides a Capture interface.
+If NO_DMA=y:
 
-I needed the patch below for modular .config. Other than that,
-plays music fine for me, so feel free to add:
+    ERROR: "bad_dma_ops" [sound/soc/pxa/snd-soc-pxa2xx.ko] undefined!
+    ERROR: "bad_dma_ops" [sound/arm/snd-pxa2xx-lib.ko] undefined!
+    ERROR: "dma_common_mmap" [sound/arm/snd-pxa2xx-lib.ko] undefined!
 
-Acked-by: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Add a dependency on HAS_DMA to fix this.
 
-8< -----------------------
->From tony Mon Sep 17 00:00:00 2001
-From: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Date: Sat, 8 Jul 2017 21:43:46 -0700
-Subject: [PATCH] ALSA: pcm: Export soc_dpcm_runtime_update
-
-Some drivers may need to use this from loadable modules. Otherwise we
-will get:
-
-ERROR: "soc_dpcm_runtime_update" [sound/soc/codecs/snd-soc-cpcap.ko]
-undefined!
-
-Signed-off-by: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Fixes: 73d7ee2e831f106c ("ASoC: pxa: add COMPILE_TEST on SND_PXA2XX_SOC")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- sound/soc/soc-pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/pxa/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2539,6 +2539,8 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
- 	mutex_unlock(&card->mutex);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(soc_dpcm_runtime_update);
-+
- int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute)
- {
- 	struct snd_soc_dpcm *dpcm;
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 960744e46edc0549..484ab3c2ad672fc8 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -1,6 +1,7 @@
+ config SND_PXA2XX_SOC
+ 	tristate "SoC Audio for the Intel PXA2xx chip"
+ 	depends on ARCH_PXA || COMPILE_TEST
++	depends on HAS_DMA
+ 	select SND_PXA2XX_LIB
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
 -- 
-2.13.2
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.7.4
