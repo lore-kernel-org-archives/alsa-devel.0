@@ -1,53 +1,47 @@
-From: Enric Balletbo Serra <eballetbo@gmail.com>
-Subject: Re: [PATCH v8 4/5] platform/x86: Enable Atom PMC platform clocks
-Date: Mon, 10 Jul 2017 12:19:23 +0200
-Message-ID: <CAFqH_52JO5eWa9sZk+1OcmfFjsydLk+ajajqTnLprSJfCCSM7g@mail.gmail.com>
-References: <1485194865-10400-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1485194865-10400-5-git-send-email-pierre-louis.bossart@linux.intel.com> <20170127002344.GZ8801@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ARM: dts: omap4-droid4: add soundcard
+Date: Mon, 10 Jul 2017 13:26:02 +0100
+Message-ID: <20170710122602.srdzonm3s6gcqhnf@sirena.org.uk>
+References: <20170707164229.5868-1-sebastian.reichel@collabora.co.uk>
+ <20170707164229.5868-4-sebastian.reichel@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20170127002344.GZ8801@codeaurora.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org, Irina Tirdea <irina.tirdea@intel.com>, Michael Turquette <mturquette@baylibre.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="olg6lzizx3gns3l4"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170707164229.5868-4-sebastian.reichel@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: Sebastian Reichel <sre@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Tony Lindgren <tony@atomide.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-2017-01-27 1:23 GMT+01:00 Stephen Boyd <sboyd@codeaurora.org>:
-> On 01/23, Pierre-Louis Bossart wrote:
->> From: Irina Tirdea <irina.tirdea@intel.com>
->>
->> The BayTrail and CherryTrail platforms provide platform clocks
->> through their Power Management Controller (PMC).
->>
->> The SoC supports up to 6 clocks (PMC_PLT_CLK[0..5]) with a
->> frequency of either 19.2 MHz (PLL) or 25 MHz (XTAL) for BayTrail
->> and a frequency of 19.2 MHz (XTAL) for CherryTrail. These clocks
->> are available for general system use, where appropriate. For example,
->> the usage for platform clocks suggested in the datasheet is the
->> following:
->>   PLT_CLK[0..2] - Camera
->>   PLT_CLK[3] - Audio Codec
->>   PLT_CLK[4] -
->>   PLT_CLK[5] - COMMs
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
->> ---
->
-> Applied to clk-next
->
+--olg6lzizx3gns3l4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I just noticed that I need to revert this patch on kernel 4.12 to get
-audio working again on my Acer C200 (Baytrail). Any clue on what could
-be wrong?
+On Fri, Jul 07, 2017 at 06:42:29PM +0200, Sebastian Reichel wrote:
 
-Thanks in advance,
- Enric
+> +	soundcard {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "Droid 4 Audio";
 
+New systems should be using the of-graph card which is more flexible and
+extensible than simple-card.
 
-> --
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+--olg6lzizx3gns3l4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlljcloACgkQJNaLcl1U
+h9APNgf8CY2qlt7rvqTEnozXXl1djhxuLrgvUldr3zcDfo2lbbhPIgTArGRTOPgd
+UJfj+CepBfzzamp98W0Pix1zRBW4PG2jYgsij4AbA5LSj5NkOgm7hGngJXFZD+eW
+1nZnz6p8d1BX79e9CnKP1yZncs8+1eRoTaiS0L4BJxu5N7fT/mBv+9ArogOT2Ltd
+zZKGxvGoi7EKBdxH13jEG45PKLQMIOoxelhz9IESsvBtWkzjj0rqJ6iWXyF85GZ8
+jVAorkeensXPZgH4TcAZukFLlzkEj1rQeNe7ThnPnDSBheySuuLsEhomr9NkrZbb
+RxQI62NZ5AtwwmICwHibslsu7qEHLA==
+=V697
+-----END PGP SIGNATURE-----
+
+--olg6lzizx3gns3l4--
