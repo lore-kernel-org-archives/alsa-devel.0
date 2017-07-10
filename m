@@ -1,15 +1,17 @@
 From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5514: Move the auto disable DSP
-	function to set_bias_level()
-Date: Mon, 10 Jul 2017 10:03:12 +0800
-Message-ID: <1499652192-2945-1-git-send-email-oder_chiou@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt5663: Update the HW default values
+	based on the shipping version
+Date: Mon, 10 Jul 2017 11:14:57 +0800
+Message-ID: <1499656497-3986-2-git-send-email-oder_chiou@realtek.com>
+References: <1499656497-3986-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id DA8C12669CD
- for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 04:03:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E2CC72669CD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 05:15:03 +0200 (CEST)
+In-Reply-To: <1499656497-3986-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,92 +25,83 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Move the auto disable DSP function from the widget event "DAPM Pre" to
-the set_bias_level() function to avoid the unexpected behavior. While the
-SPI was recording using the DAI "rt5514-dsp-cpu-dai", the event "DAPM Pre" 
-would be manipulated even the DAPM widgets were not connected, and it also
-would power off the DSP that cause the DSP buffered data lost. So the auto
-disable DSP function should move to the set_bias_level() function to make
-sure that it is only manipulated by the DAPM widgets are connected. 
+The patch update the HW default values based on the shipping version.
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/codecs/rt5514.c | 49 +++++++++++++++++------------------------------
- 1 file changed, 18 insertions(+), 31 deletions(-)
+ sound/soc/codecs/rt5663.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 1b6796c..a71e630 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -471,35 +471,6 @@ static int rt5514_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- 		return 0;
- }
- 
--static int rt5514_pre_event(struct snd_soc_dapm_widget *w,
--	struct snd_kcontrol *kcontrol, int event)
--{
--	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
--
--	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		/**
--		 * If the DSP is enabled in start of recording, the DSP
--		 * should be disabled, and sync back to normal recording
--		 * settings to make sure recording properly.
--		*/
--		if (rt5514->dsp_enabled) {
--			rt5514->dsp_enabled = 0;
--			regmap_multi_reg_write(rt5514->i2c_regmap,
--				rt5514_i2c_patch, ARRAY_SIZE(rt5514_i2c_patch));
--			regcache_mark_dirty(rt5514->regmap);
--			regcache_sync(rt5514->regmap);
--		}
--		break;
--
--	default:
--		return 0;
--	}
--
--	return 0;
--}
--
- static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
- 	/* Input Lines */
- 	SND_SOC_DAPM_INPUT("DMIC1L"),
-@@ -607,8 +578,6 @@ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
- 
- 	/* Audio Interface */
- 	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
--
--	SND_SOC_DAPM_PRE("DAPM Pre", rt5514_pre_event),
- };
- 
- static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
-@@ -975,6 +944,24 @@ static int rt5514_set_bias_level(struct snd_soc_codec *codec,
- 		}
- 		break;
- 
-+	case SND_SOC_BIAS_STANDBY:
-+		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
-+			/*
-+			 * If the DSP is enabled in start of recording, the DSP
-+			 * should be disabled, and sync back to normal recording
-+			 * settings to make sure recording properly.
-+			 */
-+			if (rt5514->dsp_enabled) {
-+				rt5514->dsp_enabled = 0;
-+				regmap_multi_reg_write(rt5514->i2c_regmap,
-+					rt5514_i2c_patch,
-+					ARRAY_SIZE(rt5514_i2c_patch));
-+				regcache_mark_dirty(rt5514->regmap);
-+				regcache_sync(rt5514->regmap);
-+			}
-+		}
-+		break;
-+
- 	default:
- 		break;
- 	}
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 52ecca4..0349c30 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -471,7 +471,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0006, 0x1000 },
+ 	{ 0x000a, 0x0000 },
+ 	{ 0x0010, 0x000f },
+-	{ 0x0015, 0x42c1 },
++	{ 0x0015, 0x42f1 },
+ 	{ 0x0016, 0x0000 },
+ 	{ 0x0018, 0x000b },
+ 	{ 0x0019, 0xafaf },
+@@ -514,7 +514,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x008a, 0x0000 },
+ 	{ 0x008b, 0x0000 },
+ 	{ 0x008c, 0x0003 },
+-	{ 0x008e, 0x0004 },
++	{ 0x008e, 0x0008 },
+ 	{ 0x008f, 0x1000 },
+ 	{ 0x0090, 0x0646 },
+ 	{ 0x0091, 0x0e3e },
+@@ -525,7 +525,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0098, 0x0000 },
+ 	{ 0x009a, 0x0000 },
+ 	{ 0x009f, 0x0000 },
+-	{ 0x00ae, 0x2000 },
++	{ 0x00ae, 0x6000 },
+ 	{ 0x00af, 0x0000 },
+ 	{ 0x00b6, 0x0000 },
+ 	{ 0x00b7, 0x0000 },
+@@ -543,7 +543,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x00d9, 0x08f9 },
+ 	{ 0x00db, 0x0008 },
+ 	{ 0x00dc, 0x00c0 },
+-	{ 0x00dd, 0x6724 },
++	{ 0x00dd, 0x6729 },
+ 	{ 0x00de, 0x3131 },
+ 	{ 0x00df, 0x0008 },
+ 	{ 0x00e0, 0x4000 },
+@@ -583,7 +583,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0116, 0x0000 },
+ 	{ 0x0117, 0x0f00 },
+ 	{ 0x0118, 0x0006 },
+-	{ 0x0125, 0x2224 },
++	{ 0x0125, 0x2424 },
+ 	{ 0x0126, 0x5550 },
+ 	{ 0x0127, 0x0400 },
+ 	{ 0x0128, 0x7711 },
+@@ -601,8 +601,8 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0145, 0x0002 },
+ 	{ 0x0146, 0x0000 },
+ 	{ 0x0160, 0x0e80 },
+-	{ 0x0161, 0x0020 },
+-	{ 0x0162, 0x0080 },
++	{ 0x0161, 0x0080 },
++	{ 0x0162, 0x0200 },
+ 	{ 0x0163, 0x0800 },
+ 	{ 0x0164, 0x0000 },
+ 	{ 0x0165, 0x0000 },
+@@ -681,8 +681,8 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0251, 0x0000 },
+ 	{ 0x0252, 0x028a },
+ 	{ 0x02fa, 0x0000 },
+-	{ 0x02fb, 0x0000 },
+-	{ 0x02fc, 0x0000 },
++	{ 0x02fb, 0x00a4 },
++	{ 0x02fc, 0x0300 },
+ 	{ 0x0300, 0x0000 },
+ 	{ 0x03d0, 0x0000 },
+ 	{ 0x03d1, 0x0000 },
 -- 
 2.7.4
