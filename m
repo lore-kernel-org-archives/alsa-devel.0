@@ -1,18 +1,24 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Simplify check for
-	dma_mmap_coherent() availability
-Date: Mon, 10 Jul 2017 16:13:36 +0200
-Message-ID: <20170710141336.18649-1-tiwai@suse.de>
+From: fulgor fulgor <l.vanwinnendaele@gmail.com>
+Subject: MEDION sound devices informations
+Date: Mon, 10 Jul 2017 16:38:15 +0200
+Message-ID: <CALmBKtk_aK+Z8nt3bifYVm-vRf5NFosjW0JR5VCoZiBR6n9NWQ@mail.gmail.com>
+References: <CALmBKtndEOASQ4+oLUAxuniw6iUUvQoBa0f26OiUYgFbUV=MCg@mail.gmail.com>
+ <CALmBKt=HrWzYa9UQXBCqVQSGm++sK9RM8Yv7YuxOZ1AOB3-Rrw@mail.gmail.com>
+ <CALmBKtn8XT-raQku098Z=OHbrtWH2ahk6kpk1p55fuz7gQ0ZBQ@mail.gmail.com>
+ <CALmBKtm0xPL_bQ9MNO=N4TSWX9f7=8V0+yFNBMbHahg5NvsSxQ@mail.gmail.com>
+ <CALmBKtmML7_tNob7mfz9gqn3XF2tjni_h3U252VtcL5WSBp0CQ@mail.gmail.com>
+ <CALmBKtnJsSVphMkTDr2XtCWtFNXgSzMQY3Jy+D1pFSstoQeK9A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BD54266D49
- for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 16:13:37 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 5A61BAABA
- for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 14:13:37 +0000 (UTC)
+Received: from mail-yb0-f182.google.com (mail-yb0-f182.google.com
+ [209.85.213.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C5B8266D49
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 16:38:17 +0200 (CEST)
+Received: by mail-yb0-f182.google.com with SMTP id p207so28619623yba.2
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 07:38:17 -0700 (PDT)
+In-Reply-To: <CALmBKtnJsSVphMkTDr2XtCWtFNXgSzMQY3Jy+D1pFSstoQeK9A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +31,8 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We check the availability of dma_mmap_coherent() in hw_support_mmap()
-but with an ugly ifdef of lots of arch-checks.  Now we have a nice
-CONFIG_ARCH_NO_COHERENT_DMA_MMAP kconfig, and this can be used
-together with CONFIG_HAS_DMA check for a cleaner and more
-comprehensive check.
+I have run the script alsa-info.SH
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+www.alsa-project.org/db/?f=6fb68d0201f421b41fe65677fde2ec5b1c9d4429
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index b26c7e61d600..2a730f38e375 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -238,10 +238,8 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
- {
- 	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
- 		return false;
--	/* check architectures that return -EINVAL from dma_mmap_coherent() */
--	/* FIXME: this should be some global flag */
--#if defined(CONFIG_C6X) || defined(CONFIG_FRV) || defined(CONFIG_MN10300) ||\
--	defined(CONFIG_PARISC) || defined(CONFIG_XTENSA)
-+	/* architecture supports dma_mmap_coherent()? */
-+#if defined(CONFIG_ARCH_NO_COHERENT_DMA_MMAP) || !defined(CONFIG_HAS_DMA)
- 	if (!substream->ops->mmap &&
- 	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
- 		return false;
--- 
-2.13.2
+thanks for all your work
