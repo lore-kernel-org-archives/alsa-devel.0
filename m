@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix default
-	dma_buffer_size" to the asoc tree
-Date: Mon, 10 Jul 2017 19:41:47 +0100
-Message-ID: <E1dUdcx-000097-5J@debutante>
-References: <1498828124-17671-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: rt5663: Update the HW default values
+	based on the shipping version" to the asoc tree
+Date: Mon, 10 Jul 2017 19:41:59 +0100
+Message-ID: <E1dUdd9-0000AE-Db@debutante>
+References: <1499656497-3986-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 38C7C266D49
- for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 20:42:00 +0200 (CEST)
-In-Reply-To: <1498828124-17671-1-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EF2CA266DEE
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 20:42:08 +0200 (CEST)
+In-Reply-To: <1499656497-3986-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix default dma_buffer_size
+   ASoC: rt5663: Update the HW default values based on the shipping version
 
 has been applied to the asoc tree at
 
@@ -52,40 +52,90 @@ to this mail.
 Thanks,
 Mark
 
->From 5b43af6d25461d7de293e0704d3b4631dda9b1e8 Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Fri, 30 Jun 2017 18:38:44 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix default dma_buffer_size
+>From 9f8f5b5f6c515e0c9d9bc14996fa8b9414c5ce1a Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Mon, 10 Jul 2017 11:14:57 +0800
+Subject: [PATCH] ASoC: rt5663: Update the HW default values based on the
+ shipping version
 
-If the dma_buffer_size is not defined in topology, fix it to 2ms default
-value to make backward compatible.
+The patch update the HW default values based on the shipping version.
 
-Fixes: f6e6ab1d16ec ("ASoC: Intel: Skylake: Fix dma buffer size calculation")
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/rt5663.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index eca85827dbd2..fb2f1f603f3c 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -540,6 +540,14 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 	cpr_mconfig->gtw_cfg.dma_buffer_size =
- 				mconfig->dma_buffer_size * dma_io_buf;
- 
-+	/* fallback to 2ms default value */
-+	if (!cpr_mconfig->gtw_cfg.dma_buffer_size) {
-+		if (mconfig->hw_conn_type == SKL_CONN_SOURCE)
-+			cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->obs;
-+		else
-+			cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->ibs;
-+	}
-+
- 	cpr_mconfig->cpr_feature_mask = 0;
- 	cpr_mconfig->gtw_cfg.config_length  = 0;
- 
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index a33202affeb1..fa550e3c1332 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -466,7 +466,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0006, 0x1000 },
+ 	{ 0x000a, 0x0000 },
+ 	{ 0x0010, 0x000f },
+-	{ 0x0015, 0x42c1 },
++	{ 0x0015, 0x42f1 },
+ 	{ 0x0016, 0x0000 },
+ 	{ 0x0018, 0x000b },
+ 	{ 0x0019, 0xafaf },
+@@ -509,7 +509,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x008a, 0x0000 },
+ 	{ 0x008b, 0x0000 },
+ 	{ 0x008c, 0x0003 },
+-	{ 0x008e, 0x0004 },
++	{ 0x008e, 0x0008 },
+ 	{ 0x008f, 0x1000 },
+ 	{ 0x0090, 0x0646 },
+ 	{ 0x0091, 0x0e3e },
+@@ -520,7 +520,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0098, 0x0000 },
+ 	{ 0x009a, 0x0000 },
+ 	{ 0x009f, 0x0000 },
+-	{ 0x00ae, 0x2000 },
++	{ 0x00ae, 0x6000 },
+ 	{ 0x00af, 0x0000 },
+ 	{ 0x00b6, 0x0000 },
+ 	{ 0x00b7, 0x0000 },
+@@ -538,7 +538,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x00d9, 0x08f9 },
+ 	{ 0x00db, 0x0008 },
+ 	{ 0x00dc, 0x00c0 },
+-	{ 0x00dd, 0x6724 },
++	{ 0x00dd, 0x6729 },
+ 	{ 0x00de, 0x3131 },
+ 	{ 0x00df, 0x0008 },
+ 	{ 0x00e0, 0x4000 },
+@@ -578,7 +578,7 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0116, 0x0000 },
+ 	{ 0x0117, 0x0f00 },
+ 	{ 0x0118, 0x0006 },
+-	{ 0x0125, 0x2224 },
++	{ 0x0125, 0x2424 },
+ 	{ 0x0126, 0x5550 },
+ 	{ 0x0127, 0x0400 },
+ 	{ 0x0128, 0x7711 },
+@@ -596,8 +596,8 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0145, 0x0002 },
+ 	{ 0x0146, 0x0000 },
+ 	{ 0x0160, 0x0e80 },
+-	{ 0x0161, 0x0020 },
+-	{ 0x0162, 0x0080 },
++	{ 0x0161, 0x0080 },
++	{ 0x0162, 0x0200 },
+ 	{ 0x0163, 0x0800 },
+ 	{ 0x0164, 0x0000 },
+ 	{ 0x0165, 0x0000 },
+@@ -676,8 +676,8 @@ static const struct reg_default rt5663_reg[] = {
+ 	{ 0x0251, 0x0000 },
+ 	{ 0x0252, 0x028a },
+ 	{ 0x02fa, 0x0000 },
+-	{ 0x02fb, 0x0000 },
+-	{ 0x02fc, 0x0000 },
++	{ 0x02fb, 0x00a4 },
++	{ 0x02fc, 0x0300 },
+ 	{ 0x0300, 0x0000 },
+ 	{ 0x03d0, 0x0000 },
+ 	{ 0x03d1, 0x0000 },
 -- 
 2.13.2
