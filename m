@@ -1,38 +1,114 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 7/9] ASoC: atmel-classd: remove aclk clock from DT
- binding
-Date: Sun, 9 Jul 2017 20:02:03 -0500
-Message-ID: <20170710010203.u54wtave2a3x2ke6@rob-hp-laptop>
-References: <20170704115927.32662-1-quentin.schulz@free-electrons.com>
- <20170704115927.32662-8-quentin.schulz@free-electrons.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH v2] ASoC: rt5514: Move the auto disable DSP
+	function to set_bias_level()
+Date: Mon, 10 Jul 2017 10:03:12 +0800
+Message-ID: <1499652192-2945-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170704115927.32662-8-quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA8C12669CD
+ for <alsa-devel@alsa-project.org>; Mon, 10 Jul 2017 04:03:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 04, 2017 at 01:59:25PM +0200, Quentin Schulz wrote:
-> Since gclk (generated-clk) is now able to determine the rate of the
-> audio_pll, there is no need for classd to have a direct phandle to the
-> audio_pll while already having a phandle to gclk.
-> 
-> This binding is used by no board in mainline so it is safe to be
-> modified.
-> 
-> Signed-off-by: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-> ---
-> 
-> added in v2
-> 
->  Documentation/devicetree/bindings/sound/atmel-classd.txt | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+Move the auto disable DSP function from the widget event "DAPM Pre" to
+the set_bias_level() function to avoid the unexpected behavior. While the
+SPI was recording using the DAI "rt5514-dsp-cpu-dai", the event "DAPM Pre" 
+would be manipulated even the DAPM widgets were not connected, and it also
+would power off the DSP that cause the DSP buffered data lost. So the auto
+disable DSP function should move to the set_bias_level() function to make
+sure that it is only manipulated by the DAPM widgets are connected. 
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514.c | 49 +++++++++++++++++------------------------------
+ 1 file changed, 18 insertions(+), 31 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 1b6796c..a71e630 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -471,35 +471,6 @@ static int rt5514_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
+ 		return 0;
+ }
+ 
+-static int rt5514_pre_event(struct snd_soc_dapm_widget *w,
+-	struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
+-
+-	switch (event) {
+-	case SND_SOC_DAPM_PRE_PMU:
+-		/**
+-		 * If the DSP is enabled in start of recording, the DSP
+-		 * should be disabled, and sync back to normal recording
+-		 * settings to make sure recording properly.
+-		*/
+-		if (rt5514->dsp_enabled) {
+-			rt5514->dsp_enabled = 0;
+-			regmap_multi_reg_write(rt5514->i2c_regmap,
+-				rt5514_i2c_patch, ARRAY_SIZE(rt5514_i2c_patch));
+-			regcache_mark_dirty(rt5514->regmap);
+-			regcache_sync(rt5514->regmap);
+-		}
+-		break;
+-
+-	default:
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("DMIC1L"),
+@@ -607,8 +578,6 @@ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
+ 
+ 	/* Audio Interface */
+ 	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
+-
+-	SND_SOC_DAPM_PRE("DAPM Pre", rt5514_pre_event),
+ };
+ 
+ static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
+@@ -975,6 +944,24 @@ static int rt5514_set_bias_level(struct snd_soc_codec *codec,
+ 		}
+ 		break;
+ 
++	case SND_SOC_BIAS_STANDBY:
++		if (snd_soc_codec_get_bias_level(codec) == SND_SOC_BIAS_OFF) {
++			/*
++			 * If the DSP is enabled in start of recording, the DSP
++			 * should be disabled, and sync back to normal recording
++			 * settings to make sure recording properly.
++			 */
++			if (rt5514->dsp_enabled) {
++				rt5514->dsp_enabled = 0;
++				regmap_multi_reg_write(rt5514->i2c_regmap,
++					rt5514_i2c_patch,
++					ARRAY_SIZE(rt5514_i2c_patch));
++				regcache_mark_dirty(rt5514->regmap);
++				regcache_sync(rt5514->regmap);
++			}
++		}
++		break;
++
+ 	default:
+ 		break;
+ 	}
+-- 
+2.7.4
