@@ -1,17 +1,62 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: hdmi-codec: make const array hdmi_codec_eld_spk_alloc_bits static
-Date: Tue, 11 Jul 2017 15:08:55 +0100
-Message-ID: <20170711140855.17634-1-colin.king@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdmi-codec: make const array
+	hdmi_codec_eld_spk_alloc_bits static" to the asoc tree
+Date: Tue, 11 Jul 2017 15:43:17 +0100
+Message-ID: <E1dUwNh-0005LF-Q0@debutante>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Vincent Abriou <vincent.abriou@st.com>, Jon Medhurst <tixy@linaro.org>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 235A6266A0C
+ for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2017 16:43:26 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
+
+   ASoC: hdmi-codec: make const array hdmi_codec_eld_spk_alloc_bits static
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fc2b74460d96ec28110a581d6e58d15c27304d16 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
+Date: Tue, 11 Jul 2017 15:08:55 +0100
+Subject: [PATCH] ASoC: hdmi-codec: make const array
+ hdmi_codec_eld_spk_alloc_bits static
 
 Don't populate array hdmi_codec_eld_spk_alloc_bits on the stack but
 make it static. Makes the object code smaller by over 260 bytes:
@@ -25,6 +70,7 @@ After:
   10557	   3440	     64	  14061	   36ed	sound/soc/codecs/hdmi-codec.o
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/codecs/hdmi-codec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -43,4 +89,4 @@ index 7686a80861f1..509ab513b4b2 100644
  		[4] = RC, [5] = FLC | FRC, [6] = RLC | RRC,
  	};
 -- 
-2.11.0
+2.13.2
