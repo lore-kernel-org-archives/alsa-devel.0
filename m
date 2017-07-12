@@ -1,7 +1,7 @@
 From: Natanael Copa <ncopa@alpinelinux.org>
-Subject: [PATCH - alsa-lib 1/1] snd_user_file: avoid use wordexp
-Date: Wed, 12 Jul 2017 10:44:54 +0200
-Message-ID: <20170712084454.11338-1-ncopa@alpinelinux.org>
+Subject: [PATCH - alsa-lib 1/2] cleanup: fix poll.h includes
+Date: Wed, 12 Jul 2017 10:45:18 +0200
+Message-ID: <20170712084519.11389-1-ncopa@alpinelinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -19,139 +19,171 @@ To: patch@alsa-project.org
 Cc: Natanael Copa <ncopa@alpinelinux.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As suggested in POSIX[1], wordexp might execute the shell. If the libc
-implementation does so, it will break the firefox sandbox which does
-not allow exec. This happened on Alpine Linux with musl libc[2].
+According POSIX[1] and linux manpage[2] the include is poll.h, not
+sys/poll.h.
 
-Since we cannot guarantee that the system wordexp implementation does
-not execute shell, we cannot really use it, and need to implement the
-~/ expansion ourselves.
+This fixes the he following compiler warning when build with musl libc:
 
-Generally, wordexp is a large attack vector and it is better to avoid it
-since only tilde expansion is needed.
-
-[1]: http://pubs.opengroup.org/onlinepubs/9699919799/functions/wordexp.html#tag_16_684_08
-[2]: http://bugs.alpinelinux.org/issues/7454#note-2
+  /usr/include/sys/poll.h:1:2: warning: #warning redirecting incorrect #include <sys/poll.h> to <poll.h> [-Wcpp]
+   #warning redirecting incorrect #include <sys/poll.h> to <poll.h>
+    ^~~~~~~
 
 Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
 
-diff --git a/configure.ac b/configure.ac
-index 26e5d125..076c6bab 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -304,7 +304,7 @@ fi
- AC_SUBST(ALSA_DEPLIBS)
+diff --git a/aserver/aserver.c b/aserver/aserver.c
+index ac20706b..46f731a4 100644
+--- a/aserver/aserver.c
++++ b/aserver/aserver.c
+@@ -20,7 +20,7 @@
  
- dnl Check for headers
--AC_CHECK_HEADERS([wordexp.h endian.h sys/endian.h sys/shm.h])
-+AC_CHECK_HEADERS([endian.h sys/endian.h sys/shm.h])
+ #include <sys/shm.h>
+ #include <sys/socket.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/un.h>
+ #include <sys/uio.h>
+ #include <stdio.h>
+diff --git a/include/asoundlib-head.h b/include/asoundlib-head.h
+index 1ec611e5..21e32c6b 100644
+--- a/include/asoundlib-head.h
++++ b/include/asoundlib-head.h
+@@ -35,6 +35,6 @@
+ #include <string.h>
+ #include <fcntl.h>
+ #include <assert.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <errno.h>
+ #include <stdarg.h>
+diff --git a/include/local.h b/include/local.h
+index 317f2e32..6a43a473 100644
+--- a/include/local.h
++++ b/include/local.h
+@@ -47,7 +47,7 @@
+ #error Header defining endianness not defined
+ #endif
+ #include <stdarg.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/types.h>
+ #include <errno.h>
+ #if defined(__linux__)
+diff --git a/src/control/control.c b/src/control/control.c
+index 134ba4c8..6439b294 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -90,7 +90,7 @@ against the original design.
+ #include <string.h>
+ #include <fcntl.h>
+ #include <signal.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <stdbool.h>
+ #include "control_local.h"
  
- dnl Check for resmgr support...
- AC_MSG_CHECKING(for resmgr support)
-diff --git a/src/userfile.c b/src/userfile.c
-index 72779da4..0e3f5fae 100644
---- a/src/userfile.c
-+++ b/src/userfile.c
-@@ -21,6 +21,11 @@
- #include <config.h>
+diff --git a/src/control/control_shm.c b/src/control/control_shm.c
+index bd07d4af..9a2e268b 100644
+--- a/src/control/control_shm.c
++++ b/src/control/control_shm.c
+@@ -27,7 +27,7 @@
+ #include <fcntl.h>
+ #include <sys/shm.h>
+ #include <sys/socket.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/un.h>
+ #include <sys/uio.h>
+ #include <sys/mman.h>
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 200b10c2..2b4ce8ec 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -651,7 +651,7 @@ playback devices.
+ #include <stdarg.h>
+ #include <signal.h>
+ #include <ctype.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/mman.h>
+ #include <limits.h>
+ #include "pcm_local.h"
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 9fd376d8..393083f5 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -30,7 +30,7 @@
+ #include <grp.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/shm.h>
+ #include <sys/sem.h>
+ #include <sys/wait.h>
+diff --git a/src/pcm/pcm_mmap.c b/src/pcm/pcm_mmap.c
+index 1948289c..4cf220a4 100644
+--- a/src/pcm/pcm_mmap.c
++++ b/src/pcm/pcm_mmap.c
+@@ -22,7 +22,7 @@
+ #include <stdio.h>
+ #include <malloc.h>
+ #include <string.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/mman.h>
+ #ifdef HAVE_SYS_SHM_H
+ #include <sys/shm.h>
+diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
+index 5d8aaf21..21a57fc6 100644
+--- a/src/pcm/pcm_share.c
++++ b/src/pcm/pcm_share.c
+@@ -34,7 +34,7 @@
+ #include <signal.h>
+ #include <math.h>
+ #include <sys/socket.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <pthread.h>
+ #include "pcm_local.h"
+ 
+diff --git a/src/pcm/pcm_shm.c b/src/pcm/pcm_shm.c
+index a815ac6b..4ee958c1 100644
+--- a/src/pcm/pcm_shm.c
++++ b/src/pcm/pcm_shm.c
+@@ -36,7 +36,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/shm.h>
+ #include <sys/socket.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/un.h>
+ #include <sys/mman.h>
+ #include <netinet/in.h>
+diff --git a/src/seq/seq.c b/src/seq/seq.c
+index b206e2f8..d5ed1c6a 100644
+--- a/src/seq/seq.c
++++ b/src/seq/seq.c
+@@ -777,7 +777,7 @@ void event_filter(snd_seq_t *seq, snd_seq_event_t *ev)
+ 
+ */
+ 
+-#include <sys/poll.h>
++#include <poll.h>
+ #include "seq_local.h"
+ 
+ /****************************************************************************
+diff --git a/src/shmarea.c b/src/shmarea.c
+index 9843aa8b..eaa71f00 100644
+--- a/src/shmarea.c
++++ b/src/shmarea.c
+@@ -27,7 +27,7 @@
+ #include <malloc.h>
  #include <string.h>
  #include <errno.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <pwd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
- 
- /**
-  * \brief Get the full file name
-@@ -28,46 +33,58 @@
-  * \param result The pointer to store the resultant file name
-  * \return 0 if successful, or a negative error code
-  *
-- * Parses the given file name with POSIX-Shell-like expansion and
-- * stores the first matchine one.  The returned string is strdup'ed.
-+ * Parses the given file name with POSIX-Shell-like expansion for ~/.
-+ * The returned string is strdup'ed.
-  */
- 
--#ifdef HAVE_WORDEXP_H
--#include <wordexp.h>
- #include <assert.h>
- int snd_user_file(const char *file, char **result)
- {
--	wordexp_t we;
- 	int err;
--	
-+	size_t len;
-+	char *buf = NULL;
-+
- 	assert(file && result);
--	err = wordexp(file, &we, WRDE_NOCMD);
--	switch (err) {
--	case WRDE_NOSPACE:
--		wordfree(&we);
--		return -ENOMEM;
--	case 0:
--		if (we.we_wordc == 1)
--			break;
--		wordfree(&we);
--		/* fall thru */
--	default:
--		return -EINVAL;
-+	*result = NULL;
-+
-+	/* expand ~/ if needed */
-+	if (file[0] == '~' && file[1] == '/') {
-+		const char *home = getenv("HOME");
-+		if (home == NULL) {
-+			struct passwd pwent, *p = NULL;
-+			uid_t id = getuid();
-+			size_t bufsize = 1024;
-+
-+			buf = malloc(bufsize);
-+			if (buf == NULL)
-+				goto out;
-+
-+			while ((err = getpwuid_r(id, &pwent, buf, bufsize, &p)) == ERANGE) {
-+				char *newbuf;
-+				bufsize += 1024;
-+				if (bufsize < 1024)
-+					break;
-+				newbuf = realloc(buf, bufsize);
-+				if (newbuf == NULL)
-+					goto out;
-+				buf = newbuf;
-+			}
-+			home = err ? "" : pwent.pw_dir;
-+		}
-+		len = strlen(home) + strlen(&file[2]) + 2;
-+		*result = malloc(len);
-+		if (*result)
-+			snprintf(*result, len, "%s/%s", home, &file[2]);
-+	} else {
-+		*result = strdup(file);
- 	}
--	*result = strdup(we.we_wordv[0]);
--	wordfree(&we);
-+
-+out:
-+	if (buf)
-+		free(buf);
-+
- 	if (*result == NULL)
- 		return -ENOMEM;
- 	return 0;
- }
- 
--#else /* !HAVE_WORDEXP_H */
--/* just copy the string - would be nicer to expand by ourselves, though... */
--int snd_user_file(const char *file, char **result)
--{
--	*result = strdup(file);
--	if (! *result)
--		return -ENOMEM;
--	return 0;
--}
--#endif /* HAVE_WORDEXP_H */
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/mman.h>
+ #include <sys/shm.h>
+ #include "list.h"
 -- 
 2.13.2
