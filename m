@@ -1,17 +1,11 @@
-From: Ville Oikarinen <ville@oikarinen.org>
-Subject: Slow/piecewise send of sysex?
-Date: Wed, 12 Jul 2017 09:49:24 +0300
-Message-ID: <CACCw25PGWUoVPv3hnKNjgh0dB9mNxggPyKSXAox4k9hSuQUisw@mail.gmail.com>
+From: Natanael Copa <ncopa@alpinelinux.org>
+Subject: [PATCH - alsa-lib 1/1] snd_user_file: avoid use wordexp
+Date: Wed, 12 Jul 2017 10:44:54 +0200
+Message-ID: <20170712084454.11338-1-ncopa@alpinelinux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f171.google.com (mail-qt0-f171.google.com
- [209.85.216.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 27CB9266B7E
- for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2017 08:49:25 +0200 (CEST)
-Received: by mail-qt0-f171.google.com with SMTP id b40so11294582qtb.2
- for <alsa-devel@alsa-project.org>; Tue, 11 Jul 2017 23:49:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +15,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: Natanael Copa <ncopa@alpinelinux.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+As suggested in POSIX[1], wordexp might execute the shell. If the libc
+implementation does so, it will break the firefox sandbox which does
+not allow exec. This happened on Alpine Linux with musl libc[2].
 
-I just created this question as a ticket
-https://github.com/opensrc/alsa/issues/24 but was instructed to ask
-here.
+Since we cannot guarantee that the system wordexp implementation does
+not execute shell, we cannot really use it, and need to implement the
+~/ expansion ourselves.
 
-So:
+Generally, wordexp is a large attack vector and it is better to avoid it
+since only tilde expansion is needed.
 
-I'm using amidi --send-hex to send data to a Commodore 64 via a CLab
-MIDI interface. The problem is that even with 100 bytes the
-probability of a buffer overrun is about 30%. I didn't find a way to
-throttle the send speed. I also tried sending the data in smaller
-chunks, but I cannot get amidi to send anything after the first chunk.
-I suspect it refuses to send anything if the data doesn't start with
-F0 i.e. sysex dump start.
+[1]: http://pubs.opengroup.org/onlinepubs/9699919799/functions/wordexp.html#tag_16_684_08
+[2]: http://bugs.alpinelinux.org/issues/7454#note-2
 
-If I am right about that assumption, as a workaround I could
-encapsulate each chunk as a full sysex dump, but that requires extra
-logic on the receiving side and it also wastes bandwidth, so I don't
-really wish to do that.
+Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
 
-Primarily I would prefer a way to throttle the speed, but if I cannot
-have that, I would like to be able to send the data a few bytes at a
-time in a simple shell loop.
-
-- Ville Oikarinen
+diff --git a/configure.ac b/configure.ac
+index 26e5d125..076c6bab 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -304,7 +304,7 @@ fi
+ AC_SUBST(ALSA_DEPLIBS)
+ 
+ dnl Check for headers
+-AC_CHECK_HEADERS([wordexp.h endian.h sys/endian.h sys/shm.h])
++AC_CHECK_HEADERS([endian.h sys/endian.h sys/shm.h])
+ 
+ dnl Check for resmgr support...
+ AC_MSG_CHECKING(for resmgr support)
+diff --git a/src/userfile.c b/src/userfile.c
+index 72779da4..0e3f5fae 100644
+--- a/src/userfile.c
++++ b/src/userfile.c
+@@ -21,6 +21,11 @@
+ #include <config.h>
+ #include <string.h>
+ #include <errno.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <pwd.h>
++#include <stdio.h>
++#include <stdlib.h>
+ 
+ /**
+  * \brief Get the full file name
+@@ -28,46 +33,58 @@
+  * \param result The pointer to store the resultant file name
+  * \return 0 if successful, or a negative error code
+  *
+- * Parses the given file name with POSIX-Shell-like expansion and
+- * stores the first matchine one.  The returned string is strdup'ed.
++ * Parses the given file name with POSIX-Shell-like expansion for ~/.
++ * The returned string is strdup'ed.
+  */
+ 
+-#ifdef HAVE_WORDEXP_H
+-#include <wordexp.h>
+ #include <assert.h>
+ int snd_user_file(const char *file, char **result)
+ {
+-	wordexp_t we;
+ 	int err;
+-	
++	size_t len;
++	char *buf = NULL;
++
+ 	assert(file && result);
+-	err = wordexp(file, &we, WRDE_NOCMD);
+-	switch (err) {
+-	case WRDE_NOSPACE:
+-		wordfree(&we);
+-		return -ENOMEM;
+-	case 0:
+-		if (we.we_wordc == 1)
+-			break;
+-		wordfree(&we);
+-		/* fall thru */
+-	default:
+-		return -EINVAL;
++	*result = NULL;
++
++	/* expand ~/ if needed */
++	if (file[0] == '~' && file[1] == '/') {
++		const char *home = getenv("HOME");
++		if (home == NULL) {
++			struct passwd pwent, *p = NULL;
++			uid_t id = getuid();
++			size_t bufsize = 1024;
++
++			buf = malloc(bufsize);
++			if (buf == NULL)
++				goto out;
++
++			while ((err = getpwuid_r(id, &pwent, buf, bufsize, &p)) == ERANGE) {
++				char *newbuf;
++				bufsize += 1024;
++				if (bufsize < 1024)
++					break;
++				newbuf = realloc(buf, bufsize);
++				if (newbuf == NULL)
++					goto out;
++				buf = newbuf;
++			}
++			home = err ? "" : pwent.pw_dir;
++		}
++		len = strlen(home) + strlen(&file[2]) + 2;
++		*result = malloc(len);
++		if (*result)
++			snprintf(*result, len, "%s/%s", home, &file[2]);
++	} else {
++		*result = strdup(file);
+ 	}
+-	*result = strdup(we.we_wordv[0]);
+-	wordfree(&we);
++
++out:
++	if (buf)
++		free(buf);
++
+ 	if (*result == NULL)
+ 		return -ENOMEM;
+ 	return 0;
+ }
+ 
+-#else /* !HAVE_WORDEXP_H */
+-/* just copy the string - would be nicer to expand by ourselves, though... */
+-int snd_user_file(const char *file, char **result)
+-{
+-	*result = strdup(file);
+-	if (! *result)
+-		return -ENOMEM;
+-	return 0;
+-}
+-#endif /* HAVE_WORDEXP_H */
+-- 
+2.13.2
