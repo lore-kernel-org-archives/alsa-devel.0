@@ -1,44 +1,71 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 00/12] AC97 device/driver model revamp
-Date: Wed, 12 Jul 2017 15:41:51 +0200
-Message-ID: <87r2xlsrfk.fsf@belgarion.home>
-References: <20170630194408.24978-1-robert.jarzmik@free.fr>
-        <20170712105530.p3yb2gj3vt3thlab@sirena.org.uk>
+From: Natanael Copa <ncopa@alpinelinux.org>
+Subject: Re: [PATCH v2 - alsa-lib] cleanup: Use uint*_t instead
+ of u_int*_t everythwere
+Date: Wed, 12 Jul 2017 15:59:17 +0200
+Message-ID: <20170712155917.624ebce1@ncopa-desktop.copa.dup.pw>
+References: <s5h60eykloy.wl-tiwai@suse.de>
+ <20170712115048.28872-1-ncopa@alpinelinux.org>
+ <s5hy3rtkes2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170712105530.p3yb2gj3vt3thlab@sirena.org.uk> (Mark Brown's
-        message of "Wed, 12 Jul 2017 11:55:30 +0100")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.tetrasec.net (mx1.tetrasec.net [74.117.190.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16082266C21
+ for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2017 15:59:28 +0200 (CEST)
+In-Reply-To: <s5hy3rtkes2.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
+On Wed, 12 Jul 2017 14:42:21 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> On Fri, Jun 30, 2017 at 09:43:56PM +0200, Robert Jarzmik wrote:
->> Hi Lars, Mark, Charles, Lee,
->> 
->> This is a resend of the v2, with patch 1 added (forgotten in v2). Patch 12 was
->> slightly modified after module unloading tests, and Dmitry acks were added.
->
-> This all looks good to me modulo the naming thing Takashi raised.
-Ok Mark, let us do this :
- - I'll do some extensive testing this week just to ensure the v4 is on par with
- v3 (should be the case but I prefer to be carefull).
- - Once I'm sure it's not worse than before, I'll post a v4.
+> On Wed, 12 Jul 2017 13:50:48 +0200,
+> Natanael Copa wrote:
+> > 
+> > Use the standard uint{8,16,32,64}_t everywhere instead of the
+> > non-standard u_int{8,16,32,64}_t.  
+> 
+> Note that, since it changes the types in the public header, it's no
+> trivial "cleanup".  It has even a risk of breakage, in theory.
 
-That might give a couple of days to :
- - have Lee's ack on patch 6/12
+Yes.
 
-   Lee, could you have a look please, that touches your tree, and if you have
-   concerns I'd rather wait before releasing v4 in order to take them into
-   account ?
+> So, this has to be carried with a care, and it needs a better
+> clarification why the change has to be applied.
+> Could you give more background?
 
- - give Lars another opportunity to complain about what I had forgotten :)
- - give me time to retest
+The intention was just to clean up code and to not add custom data
+types when there are standard ones to use.
 
-Cheers.
+The standard uint{8,32,64}_t are also used various places in alsa-lib
+code, so I thought it was better to be consistent to avoid
+unintentional side-effects and breakages.
 
--- 
-Robert
+If you have a system where you rely on u_int8_t != uint8_t etc, then
+you have system which is so weird that you probably know how to handle
+it.
+
+If you on the other hand unintentionally have u_int8_t != uint8_t then
+you probably want things to break early and at minimum give a compiler
+warning.
+
+The thinking is, if things breaks due to this, then it probably
+*should* break.
+
+If there are any plans for ABI breakage in near future, then it might
+be an idea to do this at that point.
+
+Thanks!
+
+-nc
