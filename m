@@ -1,87 +1,48 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5514: Support the DSP recording
- continuously after the hotwording triggered
-Date: Wed, 12 Jul 2017 11:54:34 +0100
-Message-ID: <20170712105434.m3vpt6patlz25szd@sirena.org.uk>
-References: <1499339685-3112-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH v3 00/12] AC97 device/driver model revamp
+Date: Wed, 12 Jul 2017 11:55:30 +0100
+Message-ID: <20170712105530.p3yb2gj3vt3thlab@sirena.org.uk>
+References: <20170630194408.24978-1-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1628317191824927213=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 59FBF266EF1
- for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2017 12:54:43 +0200 (CEST)
-In-Reply-To: <1499339685-3112-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xfp3lqwfrgd6coml"
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170630194408.24978-1-robert.jarzmik@free.fr>
+Sender: linux-input-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1628317191824927213==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cxj5zn37kxuwzkd3"
-Content-Disposition: inline
-
-
---cxj5zn37kxuwzkd3
+--xfp3lqwfrgd6coml
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 06, 2017 at 07:14:45PM +0800, Oder Chiou wrote:
+On Fri, Jun 30, 2017 at 09:43:56PM +0200, Robert Jarzmik wrote:
+> Hi Lars, Mark, Charles, Lee,
+>=20
+> This is a resend of the v2, with patch 1 added (forgotten in v2). Patch 1=
+2 was
+> slightly modified after module unloading tests, and Dmitry acks were adde=
+d.
 
-> +		remain_data = (cur_wp >= rt5514_dsp->buf_rp) ?
-> +			(cur_wp - rt5514_dsp->buf_rp) :
-> +			((rt5514_dsp->buf_limit - rt5514_dsp->buf_rp) +
-> +			(cur_wp - rt5514_dsp->buf_base));
+This all looks good to me modulo the naming thing Takashi raised.
 
-Please write this using a normal if statement, it'd be much easier to
-read.
-
-> +static irqreturn_t rt5514_spi_irq(int irq, void *data)
-> +{
-> +	struct rt5514_dsp *rt5514_dsp = data;
-> +
-> +	schedule_work(&rt5514_dsp->start_work);
-> +
-> +	return IRQ_HANDLED;
-> +}
-
-Why not just use a threaded interrupt handler for the start_work?
-That'd get you into process context.
-
-Otherwise this looks basically fine.
-
---cxj5zn37kxuwzkd3
+--xfp3lqwfrgd6coml
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlll/+kACgkQJNaLcl1U
-h9CMlAf/dgB96CD9wUPq5hjkmnBAC7Gx/hm9coay6+VQGOn3yjSUPtckHip6oa5x
-/AysBWY/Cocy6ASjvX/8FKsKxsN9l765RJU+DBpLA0W85C+L+0BkFgQ+g9I1vcAl
-7MF4IWQBG56tIZ4GVd8H20w4ncvz2I8k5wUWk1Rpe5EwmOM1iuc7RDaOVUEEeNJn
-o/9rg7ijGIOoKLHz584lpzySEZqd8RNlo+2dDeI9jBgaxnqYOUNNBdkpbS8Xz63F
-Na7q7Z6f3PauxiHiPtAm//1aQOa4B8Kf56QnJSUv8M1Yif8ZnrFcPXNZiJqerlv3
-47Vh5f94EK5x9w7Y3xQhlQMJTXav6Q==
-=4GUQ
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllmACIACgkQJNaLcl1U
+h9BXIwf/Zj3vuqVYZozqaWjj7tUBJhb7dZnyYnKNNGpM9vQXRN1l8XRIYNuFn56j
+fvnh70UUdrYtCO2ZKbRmJ9s4KDBaQ3Vma8SAzyTLVtoJls9Qn6IYWQ7OYhfOKKk8
+IVYMljrY2XnyZ/ipLB1dWhqCpK8ZRVnUvp+92glN4F8lugZkb3A5PXZxzw4FN1qy
+tKars8BbXw8yONVhbGTyC3eNYghyi5ryCGYfQcNm79PDtFTm9T49A7ChgCZ3B+65
+sMYDyIvT8OL/i5Jidjhq8NFngHf+b765IXoH9PN8Vq6IBmQg9TnsOKLnLYiGpg+7
+iJhcxL2WwBwWXHjvAkkzm3KA4a1Jqw==
+=7aZN
 -----END PGP SIGNATURE-----
 
---cxj5zn37kxuwzkd3--
-
---===============1628317191824927213==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1628317191824927213==--
+--xfp3lqwfrgd6coml--
