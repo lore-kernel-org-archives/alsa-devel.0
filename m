@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5514: Support the DSP recording
- continuously after the hotwording triggered
-Date: Thu, 13 Jul 2017 11:09:05 +0100
-Message-ID: <20170713100905.gbi6gn4t3qx3gpl7@sirena.org.uk>
-References: <1499339685-3112-1-git-send-email-oder_chiou@realtek.com>
- <20170712105434.m3vpt6patlz25szd@sirena.org.uk>
- <7EB0DE829A537248AF2ED30C97D12694023B30AA@RTITMBSV02.realtek.com.tw>
+Subject: Re: [PATCH] ASoC: fsl_asrc: constify snd_soc_dai_ops
+ structure
+Date: Thu, 13 Jul 2017 11:16:30 +0100
+Message-ID: <20170713101630.odml56qmsvgxqj64@sirena.org.uk>
+References: <20170713072351.GA1485@embeddedgus> <s5hlgnsiyg6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4359509510273550332=="
+Content-Type: multipart/mixed; boundary="===============7511140960797908957=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 248D626648D
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 12:09:11 +0200 (CEST)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694023B30AA@RTITMBSV02.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B78726648D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 12:17:36 +0200 (CEST)
+In-Reply-To: <s5hlgnsiyg6.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "hychao@google.com" <hychao@google.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Albert Chen <albertchen@realtek.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, Bard Liao <bardliao@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4359509510273550332==
+--===============7511140960797908957==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4aq4i27qlg2ct6y2"
+	protocol="application/pgp-signature"; boundary="f6ufjioalak4igbi"
 Content-Disposition: inline
 
 
---4aq4i27qlg2ct6y2
+--f6ufjioalak4igbi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 13, 2017 at 02:01:51AM +0000, Oder Chiou wrote:
-> > > +static irqreturn_t rt5514_spi_irq(int irq, void *data) {
-> > > +	struct rt5514_dsp *rt5514_dsp =3D data;
-> > > +
-> > > +	schedule_work(&rt5514_dsp->start_work);
-> > > +
-> > > +	return IRQ_HANDLED;
-> > > +}
+On Thu, Jul 13, 2017 at 09:32:41AM +0200, Takashi Iwai wrote:
 
-> > Why not just use a threaded interrupt handler for the start_work?
-> > That'd get you into process context.
+> please stop posting in this style.  It's really annoying to see
+> spontaneously popping-up almost same patch for more than two hours
+> long.
 
-> Because of the SPI related function the work thread should be manipulated
-> by the interrupt handler function. If the SPI related function is
-> implemented to the interrupt handler directly, it will cause the runtime
-> error while the interrupt handler is triggered.
+> If you have a series of the same fix patches, send them as a patch
+> set in a shot with a thread.  git-send-email does it right.
 
-Why will this cause an error? =20
+> I don't mind a couple of patches posted separately, but this is over
+> the limit.
 
---4aq4i27qlg2ct6y2
+Or at least just collect them up and send them all at one time even if
+not as a single thread (you don't want to CC everyone affected by a
+single patch in the set on everything, that's harder to avoid when
+sending a series via git, but it can be confusing to get one item in a
+large patch series without context). =20
+
+--f6ufjioalak4igbi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllnRsAACgkQJNaLcl1U
-h9BVUAf/bR8b/CQffu1FcvbSpp6Xn0AH3iPXqnKpNrA1D5rFi9rVcbsOEUXSzaR1
-6JcGurelrIVzMjDFgwmDR2nSrfExMpyRRPvseQyCZ35h+tyv80gnUdcArexDmsPp
-iZHjLuWxKRN/MO8SuvHamhd7slBh0Ui40hPKpbpP1ls+fsFdkneR5uRAJQiVnkoW
-KlNjOyQajIHODZOPI88HBuPHyWdS9PJkChpfHf05PWXavEEznHweAZ3hsg2et34z
-CvyDVS12xpBqSAm2YpjIOYJkfcG/QobZ0CAg3KUv9JlvHIc9ZmgFdpP7rAqb743C
-RYewoyzeOI5Gp5NrnhRWe1bLE71w/A==
-=oYVf
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllnSH0ACgkQJNaLcl1U
+h9Bf8Qf6AzXqrmxUZfLyUvE72qUb3AwmnIzLONclZSgwG2VD3VTL65vc3ZAehIMr
+AWgSWL0laBKJhAiCdQ6ZQ5r3CQmui27gyIHagZ8GXrVSrgw2/lZOzwPkmTGQA/Ya
+OSrRnYVmK/ClSkV12NDYS4uvBRGSho275Y7mfI/rdlqYJMBjgI1uzz2HQn8bQ7iM
+QKZ8FIXhjH9Qait3bVYL7m6uYHhAOW7opBnVGOH2m+X30AuD6Wec9XU72Q1/pGvA
+GYJmGiImxQtRBV+OK0STvQxO4RJ0INfXL1ZT7b8UY8frMMFx9Mu7CpIidWdtP1jO
+ZIzvA0T3+aqq/EALntQqjBHBfp9j/Q==
+=nlTK
 -----END PGP SIGNATURE-----
 
---4aq4i27qlg2ct6y2--
+--f6ufjioalak4igbi--
 
---===============4359509510273550332==
+--===============7511140960797908957==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4359509510273550332==--
+--===============7511140960797908957==--
