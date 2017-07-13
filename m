@@ -1,18 +1,21 @@
-From: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH] davinci-evm: extend it to support DM81xx
-	and derivatives
-Date: Thu, 13 Jul 2017 13:31:25 +0530
-Message-ID: <c439ed79-1961-1781-1853-bcdc758592d3@ti.com>
-References: <20170712124318.39e5941b49d0da45602bd1c1@gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 01/18] mfd: madera: Add register
+ definitions for Cirrus Logic Madera codecs
+Date: Thu, 13 Jul 2017 09:02:10 +0100
+Message-ID: <20170713080210.lbsjnmlciovoxe4g@dell>
+References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1493050124-5970-2-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C1EE266B7E
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 10:01:29 +0200 (CEST)
-In-Reply-To: <20170712124318.39e5941b49d0da45602bd1c1@gmail.com>
-Content-Language: en-US
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF0FB2671E7
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 10:02:13 +0200 (CEST)
+Received: by mail-wm0-f46.google.com with SMTP id w126so15419147wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 01:02:13 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1493050124-5970-2-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vitaly Wool <vitalywool@gmail.com>, Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org, Jyri Sarah <jsarha@ti.com>, trini@konsulko.com
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-+ Peter & Jyri
-
-Hi Vitaly,
-
-On Wednesday 12 July 2017 04:13 PM, Vitaly Wool wrote:
-> Having worked closely with TI DM8148/DM8168 EVMs I came across
-> many derivatives of these boards which didn't use the standard
-> codec but had something like wm897x instead. They all would fit
-> davinci-evm driver nicely if it had support for audio CPU clock
-> divisor and slightly more generic naming. So this patch adds
-> support for reading CPU divisor from a DT and slightly changes
-> names of helper/init functions to be more generic.
-> 
-> It also adds support for DaVinci boards that use wm8978 codec.
-> 
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-
-While there are some users of davinci-evm.c, I think a majority are
-using simple-audio-card instead. Curious on why you chose not to use
-that. It sounds like codec is not the bitclock and frame-sync master in
-your case. Did that end up creating issues ?
-
-Thanks,
-Sekhar
+T24gTW9uLCAyNCBBcHIgMjAxNywgUmljaGFyZCBGaXR6Z2VyYWxkIHdyb3RlOgoKPiBUaGlzIHBh
+dGNoIGFkZHMgYSBoZWFkZXIgZmlsZSBvZiByZWdpc3RlciBkZWZpbml0aW9ucyBmb3IgQ2lycnVz
+Cj4gTG9naWMgIk1hZGVyYSIgY2xhc3MgY29kZWNzLiBUaGVzZSBjb2RlY3MgYXJlIGFsbCBiYXNl
+ZCBvZmYgYSBjb21tb24KPiBzZXQgb2YgaGFyZHdhcmUgSVAgc28gaGF2ZSBhIGNvbW1vbiByZWdp
+c3RlciBtYXAgKHdpdGggYSBmZXcgbWlub3IKPiBkZXZpY2UtdG8tZGV2aWNlIHZhcmlhdGlvbnMp
+LiBUaGVzZSBhcmUgY29tcGxleCBkZXZpY2VzIHdpdGggYSBsYXJnZQo+IG51bWJlciBvZiBmZWF0
+dXJlcyBhbmQgc28gaGF2ZSBhIGNvcnJlc3BvbmRpbmdseSBsYXJnZSByZWdpc3RlciBzZXQuCj4g
+VGhlIHJlZ2lzdGVycy5oIGZpbGUgaGFzIGJlZW4gYXV0by1nZW5lcmF0ZWQgZnJvbSB0aGUgaGFy
+ZHdhcmUgcmVnaXN0ZXIKPiBkZWZpbml0aW9ucywgc3RyaXBwZWQgZG93biB0byBvbmx5IHJlZ2lz
+dGVycyB3ZSBuZWVkIHRvIGFjY2VzcyBmcm9tCj4gdGhlIGRyaXZlci4KPiAKPiBTaWduZWQtb2Zm
+LWJ5OiBSaWNoYXJkIEZpdHpnZXJhbGQgPHJmQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4K
+PiAtLS0KPiAKPiBObyBjaGFuZ2VzIHNpbmNlIFYxLgo+IAo+ICBNQUlOVEFJTkVSUyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDEwICsKPiAgaW5jbHVkZS9saW51eC9tZmQvbWFkZXJhL3Jl
+Z2lzdGVycy5oIHwgODgzMiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gIDIg
+ZmlsZXMgY2hhbmdlZCwgODg0MiBpbnNlcnRpb25zKCspCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBp
+bmNsdWRlL2xpbnV4L21mZC9tYWRlcmEvcmVnaXN0ZXJzLmgKClRoaXMgcGF0Y2ggaGFzIGJlZW4g
+cmVqZWN0ZWQgYnkgTGludXMuCgpodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNy83LzcvNTc5Cgot
+LSAKTGVlIEpvbmVzCkxpbmFybyBTVE1pY3JvZWxlY3Ryb25pY3MgTGFuZGluZyBUZWFtIExlYWQK
+TGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBM
+aW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
