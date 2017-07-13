@@ -1,48 +1,60 @@
-From: Jon Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: constify snd_soc_dai_ops structure
-Date: Thu, 13 Jul 2017 15:19:06 +0100
-Message-ID: <955f62ce-258c-9fa1-9b36-e7a3a8c194dc@nvidia.com>
-References: <20170713054735.GA18162@embeddedgus>
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Subject: Re: [PATCH] ASoC: fsl_asrc: constify snd_soc_dai_ops
+ structure
+Date: Thu, 13 Jul 2017 10:18:14 -0500
+Message-ID: <20170713101814.Horde.q8OhHejhvSALVEt2o11aUTW@gator4166.hostgator.com>
+References: <20170713072351.GA1485@embeddedgus> <s5hlgnsiyg6.wl-tiwai@suse.de>
+ <20170713101630.odml56qmsvgxqj64@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170713054735.GA18162@embeddedgus>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Gustavo A. R. Silva" <garsilva-L1vi/lXTdts+Va1GwOuvDg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gateway23.websitewelcome.com (gateway23.websitewelcome.com
+ [192.185.49.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78E85267264
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 17:18:16 +0200 (CEST)
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+ by gateway23.websitewelcome.com (Postfix) with ESMTP id 00D41252C4
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 10:18:15 -0500 (CDT)
+In-Reply-To: <20170713101630.odml56qmsvgxqj64@sirena.org.uk>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
-On 13/07/17 06:47, Gustavo A. R. Silva wrote:
-> This structure is only stored in the ops field of a snd_soc_dai_driver
-> structure. That field is declared const, so snd_soc_dai_ops structures
-> that have this property can be declared as const also.
-> 
-> Signed-off-by: Gustavo A. R. Silva <garsilva-L1vi/lXTdts+Va1GwOuvDg@public.gmane.org>
-> ---
->  sound/soc/tegra/tegra30_i2s.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-> index b2b279c..0b176ea 100644
-> --- a/sound/soc/tegra/tegra30_i2s.c
-> +++ b/sound/soc/tegra/tegra30_i2s.c
-> @@ -275,7 +275,7 @@ static int tegra30_i2s_probe(struct snd_soc_dai *dai)
->  	return 0;
->  }
->  
-> -static struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
-> +static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
->  	.set_fmt	= tegra30_i2s_set_fmt,
->  	.hw_params	= tegra30_i2s_hw_params,
->  	.trigger	= tegra30_i2s_trigger,
+Quoting Mark Brown <broonie@kernel.org>:
 
-Acked-by: Jon Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> On Thu, Jul 13, 2017 at 09:32:41AM +0200, Takashi Iwai wrote:
+>
+>> please stop posting in this style.  It's really annoying to see
+>> spontaneously popping-up almost same patch for more than two hours
+>> long.
+>
+>> If you have a series of the same fix patches, send them as a patch
+>> set in a shot with a thread.  git-send-email does it right.
+>
+>> I don't mind a couple of patches posted separately, but this is over
+>> the limit.
+>
+> Or at least just collect them up and send them all at one time even if
+> not as a single thread (you don't want to CC everyone affected by a
+> single patch in the set on everything, that's harder to avoid when
+> sending a series via git, but it can be confusing to get one item in a
+> large patch series without context).
 
-Cheers
-Jon
+I like this idea better. I will do so next time. :)
 
--- 
-nvpublic
+Thank you
+--
+Gustavo A. R. Silva
