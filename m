@@ -1,72 +1,48 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 01/18] mfd: madera: Add register definitions for
- Cirrus Logic Madera codecs
-Date: Thu, 13 Jul 2017 14:03:05 +0100
-Message-ID: <20170713130305.ytrk322lqe6dusla@sirena.org.uk>
-References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1493050124-5970-2-git-send-email-rf@opensource.wolfsonmicro.com>
- <20170713080210.lbsjnmlciovoxe4g@dell>
- <20170713100539.mqvyxgvwqowjim6i@sirena.org.uk>
- <1499949850.4826.88.camel@rf-debian.wolfsonmicro.main>
+From: Jon Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tegra: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 15:19:06 +0100
+Message-ID: <955f62ce-258c-9fa1-9b36-e7a3a8c194dc@nvidia.com>
+References: <20170713054735.GA18162@embeddedgus>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dnu4nyp3x6jvsw2v"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1499949850.4826.88.camel-WeElTRBN8n0bEPBeyYQi64iQ8/zYDDdY1BehtkLrGTY@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170713054735.GA18162@embeddedgus>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Gustavo A. R. Silva" <garsilva-L1vi/lXTdts+Va1GwOuvDg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---dnu4nyp3x6jvsw2v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 13/07/17 06:47, Gustavo A. R. Silva wrote:
+> This structure is only stored in the ops field of a snd_soc_dai_driver
+> structure. That field is declared const, so snd_soc_dai_ops structures
+> that have this property can be declared as const also.
+> 
+> Signed-off-by: Gustavo A. R. Silva <garsilva-L1vi/lXTdts+Va1GwOuvDg@public.gmane.org>
+> ---
+>  sound/soc/tegra/tegra30_i2s.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+> index b2b279c..0b176ea 100644
+> --- a/sound/soc/tegra/tegra30_i2s.c
+> +++ b/sound/soc/tegra/tegra30_i2s.c
+> @@ -275,7 +275,7 @@ static int tegra30_i2s_probe(struct snd_soc_dai *dai)
+>  	return 0;
+>  }
+>  
+> -static struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
+> +static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
+>  	.set_fmt	= tegra30_i2s_set_fmt,
+>  	.hw_params	= tegra30_i2s_hw_params,
+>  	.trigger	= tegra30_i2s_trigger,
 
-On Thu, Jul 13, 2017 at 01:44:10PM +0100, Richard Fitzgerald wrote:
-> On Thu, 2017-07-13 at 11:05 +0100, Mark Brown wrote:
-> > On Thu, Jul 13, 2017 at 09:02:10AM +0100, Lee Jones wrote:
+Acked-by: Jon Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-> > > This patch has been rejected by Linus.
+Cheers
+Jon
 
-> > > https://lkml.org/lkml/2017/7/7/579
-
-> > Hrm, when I used to push the register definition patches I did elide all
-> > the obviously repeated register banks like the write sequencer one that
-> > Linus is calling out there.  I'm surprised by the "every single line"
-> > bit though...
-
-> Linux doesn't say what he wants us to do about it. I could manually
-> strip out a few more definitions but seriously, it makes the code a lot
-> harder to maintain if we can't grep it for use of registers and register
-> fields. They are big chips, they have a lot of stuff in the registers.
-
-I'd take it up with him, if you can explain why it looks very
-repetitive but isn't actually that'd help...
-
-Building up copies of the repeated IPs with macros would help too (the
-AIF and especially frame control registers stick out like a sore thumb
-here), as would removing the individual registers for the write
-sequencer block.
-
---dnu4nyp3x6jvsw2v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllnb4gACgkQJNaLcl1U
-h9Ajzwf/UT3dCb8Miwi/swDRP0ZvxT512f4vbdv9H1+mx+lXkUUQ3xQOYHvfy2Fp
-7qnitYjeGzzPk5Qm5sfkEHDgmm95Ju3OKAPQqsib0qYHRIWQ1Tbfk9/USplc6oqb
-TyKqII498Tt1t5Uq4ZmjVynwGweem1Hy2TqnjqOgsc9jtRB9mcvup/BFGDwY2Tq6
-T/9Wudte3/BkK2Pd9tUUAT+lSHnukOi6lmCdfM+bYJhF8aveEm4ZAzvrhHTETu/E
-tcn7GcbK5hjMwBaQGtOdJioYdvYJd4CbWSmG8Qb1y+CiTkXcvKZaG/KtNe7TJRhV
-RuvJHVmYXTilhvtTxIKvkBnbmvB8Uw==
-=pWIf
------END PGP SIGNATURE-----
-
---dnu4nyp3x6jvsw2v--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+nvpublic
