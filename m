@@ -1,93 +1,52 @@
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: [PATCH v3 5/9] clk: at91: clk-generated: create function to find best_diff
-Date: Thu, 13 Jul 2017 09:49:23 +0200
-Message-ID: <20170713074927.10882-6-quentin.schulz@free-electrons.com>
-References: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
-Cc: Quentin Schulz <quentin.schulz@free-electrons.com>, cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+From: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH] davinci-evm: extend it to support DM81xx
+	and derivatives
+Date: Thu, 13 Jul 2017 13:31:25 +0530
+Message-ID: <c439ed79-1961-1781-1853-bcdc758592d3@ti.com>
+References: <20170712124318.39e5941b49d0da45602bd1c1@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C1EE266B7E
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 10:01:29 +0200 (CEST)
+In-Reply-To: <20170712124318.39e5941b49d0da45602bd1c1@gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vitaly Wool <vitalywool@gmail.com>, Mark Brown <broonie@kernel.org>, Kevin Hilman <khilman@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org, Jyri Sarah <jsarha@ti.com>, trini@konsulko.com
 List-Id: alsa-devel@alsa-project.org
 
-The way to find the best_diff and do the appropriate process afterwards
-can be re-used.
++ Peter & Jyri
 
-This patch prepares the driver for an upcoming patch that will allow
-clk_generated to determine the rate of the audio_pll.
+Hi Vitaly,
 
-Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/clk/at91/clk-generated.c | 41 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 14 deletions(-)
+On Wednesday 12 July 2017 04:13 PM, Vitaly Wool wrote:
+> Having worked closely with TI DM8148/DM8168 EVMs I came across
+> many derivatives of these boards which didn't use the standard
+> codec but had something like wm897x instead. They all would fit
+> davinci-evm driver nicely if it had support for audio CPU clock
+> divisor and slightly more generic naming. So this patch adds
+> support for reading CPU divisor from a DT and slightly changes
+> names of helper/init functions to be more generic.
+> 
+> It also adds support for DaVinci boards that use wm8978 codec.
+> 
+> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
 
-diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
-index ef4b4e03de04..7260e498e059 100644
---- a/drivers/clk/at91/clk-generated.c
-+++ b/drivers/clk/at91/clk-generated.c
-@@ -99,15 +99,36 @@ clk_generated_recalc_rate(struct clk_hw *hw,
- 	return DIV_ROUND_CLOSEST(parent_rate, gck->gckdiv + 1);
- }
- 
-+static void clk_generated_best_diff(struct clk_rate_request *req,
-+				    struct clk_hw *parent,
-+				    unsigned long parent_rate, u32 div,
-+				    int *best_diff, long *best_rate)
-+{
-+	unsigned long tmp_rate;
-+	int tmp_diff;
-+
-+	if (!div)
-+		tmp_rate = parent_rate;
-+	else
-+		tmp_rate = parent_rate / div;
-+	tmp_diff = abs(req->rate - tmp_rate);
-+
-+	if (*best_diff < 0 || *best_diff > tmp_diff) {
-+		*best_rate = tmp_rate;
-+		*best_diff = tmp_diff;
-+		req->best_parent_rate = parent_rate;
-+		req->best_parent_hw = parent;
-+	}
-+}
-+
- static int clk_generated_determine_rate(struct clk_hw *hw,
- 					struct clk_rate_request *req)
- {
- 	struct clk_generated *gck = to_clk_generated(hw);
- 	struct clk_hw *parent = NULL;
- 	long best_rate = -EINVAL;
--	unsigned long tmp_rate, min_rate;
-+	unsigned long min_rate;
- 	int best_diff = -1;
--	int tmp_diff;
- 	int i;
- 
- 	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-@@ -125,18 +146,10 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
- 			continue;
- 
- 		div = DIV_ROUND_CLOSEST(parent_rate, req->rate);
--		if (!div)
--			tmp_rate = parent_rate;
--		else
--			tmp_rate = parent_rate / div;
--		tmp_diff = abs(req->rate - tmp_rate);
--
--		if (best_diff < 0 || best_diff > tmp_diff) {
--			best_rate = tmp_rate;
--			best_diff = tmp_diff;
--			req->best_parent_rate = parent_rate;
--			req->best_parent_hw = parent;
--		}
-+
-+		clk_generated_best_diff(req, parent, parent_rate, div,
-+					&best_diff, &best_rate);
-+
- 
- 		if (!best_diff)
- 			break;
--- 
-2.11.0
+While there are some users of davinci-evm.c, I think a majority are
+using simple-audio-card instead. Curious on why you chose not to use
+that. It sounds like codec is not the bitclock and frame-sync master in
+your case. Did that end up creating issues ?
 
+Thanks,
+Sekhar
