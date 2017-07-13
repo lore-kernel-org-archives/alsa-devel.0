@@ -1,7 +1,8 @@
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Subject: [PATCH 08/12] ASoC: max9867: constify snd_soc_dai_ops structure
-Date: Thu, 13 Jul 2017 15:38:26 -0500
-Message-ID: <d32f4b33d6f8fe1a88c40331c76e0886ae59d6ad.1499974826.git.garsilva@embeddedor.com>
+Subject: [PATCH 07/12] ASoC: codecs: msm8916-wcd-digital: constify
+ snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 15:38:14 -0500
+Message-ID: <f41455c6c14bb0a662e4fdcce03138974072d12c.1499974826.git.garsilva@embeddedor.com>
 References: <cover.1499974826.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -19,21 +20,21 @@ that have this property can be declared as const also.
 
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 ---
- sound/soc/codecs/max9867.c | 2 +-
+ sound/soc/codecs/msm8916-wcd-digital.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 2a40a69..3e421e9 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -350,7 +350,7 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index f690442..7e3794f 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -788,7 +788,7 @@ static void msm8916_wcd_digital_shutdown(struct snd_pcm_substream *substream,
+ 			    LPASS_CDC_CLK_PDM_CTL_PDM_CLK_SEL_MASK, 0);
  }
  
--static struct snd_soc_dai_ops max9867_dai_ops = {
-+static const struct snd_soc_dai_ops max9867_dai_ops = {
- 	.set_fmt = max9867_dai_set_fmt,
- 	.set_sysclk	= max9867_set_dai_sysclk,
- 	.prepare	= max9867_prepare,
+-static struct snd_soc_dai_ops msm8916_wcd_digital_dai_ops = {
++static const struct snd_soc_dai_ops msm8916_wcd_digital_dai_ops = {
+ 	.startup = msm8916_wcd_digital_startup,
+ 	.shutdown = msm8916_wcd_digital_shutdown,
+ 	.hw_params = msm8916_wcd_digital_hw_params,
 -- 
 2.5.0
