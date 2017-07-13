@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_asrc: constify snd_soc_dai_ops
- structure
-Date: Thu, 13 Jul 2017 11:16:30 +0100
-Message-ID: <20170713101630.odml56qmsvgxqj64@sirena.org.uk>
-References: <20170713072351.GA1485@embeddedgus> <s5hlgnsiyg6.wl-tiwai@suse.de>
+Subject: Re: [PATCH] davinci-evm: extend it to support DM81xx
+	and derivatives
+Date: Thu, 13 Jul 2017 11:33:38 +0100
+Message-ID: <20170713103338.cu5emql5vnalsamw@sirena.org.uk>
+References: <20170712124318.39e5941b49d0da45602bd1c1@gmail.com>
+ <c439ed79-1961-1781-1853-bcdc758592d3@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7511140960797908957=="
+Content-Type: multipart/mixed; boundary="===============8982684308364444726=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B78726648D
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 12:17:36 +0200 (CEST)
-In-Reply-To: <s5hlgnsiyg6.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8ED4526648D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 12:33:49 +0200 (CEST)
+In-Reply-To: <c439ed79-1961-1781-1853-bcdc758592d3@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Sekhar Nori <nsekhar@ti.com>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org, Kevin Hilman <khilman@kernel.org>, Vitaly Wool <vitalywool@gmail.com>, Jyri Sarah <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, trini@konsulko.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7511140960797908957==
+--===============8982684308364444726==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="f6ufjioalak4igbi"
+	protocol="application/pgp-signature"; boundary="jbs65zyzdbkxxfpc"
 Content-Disposition: inline
 
 
---f6ufjioalak4igbi
+--jbs65zyzdbkxxfpc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 13, 2017 at 09:32:41AM +0200, Takashi Iwai wrote:
+On Thu, Jul 13, 2017 at 01:31:25PM +0530, Sekhar Nori wrote:
 
-> please stop posting in this style.  It's really annoying to see
-> spontaneously popping-up almost same patch for more than two hours
-> long.
+> While there are some users of davinci-evm.c, I think a majority are
+> using simple-audio-card instead. Curious on why you chose not to use
+> that. It sounds like codec is not the bitclock and frame-sync master in
+> your case. Did that end up creating issues ?
 
-> If you have a series of the same fix patches, send them as a patch
-> set in a shot with a thread.  git-send-email does it right.
+New systems should start using of-graph - that's a more flexible and
+extensible replacement for simple-card.  But yes, if you can use one of
+the generic cards that's better.
 
-> I don't mind a couple of patches posted separately, but this is over
-> the limit.
-
-Or at least just collect them up and send them all at one time even if
-not as a single thread (you don't want to CC everyone affected by a
-single patch in the set on everything, that's harder to avoid when
-sending a series via git, but it can be confusing to get one item in a
-large patch series without context). =20
-
---f6ufjioalak4igbi
+--jbs65zyzdbkxxfpc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllnSH0ACgkQJNaLcl1U
-h9Bf8Qf6AzXqrmxUZfLyUvE72qUb3AwmnIzLONclZSgwG2VD3VTL65vc3ZAehIMr
-AWgSWL0laBKJhAiCdQ6ZQ5r3CQmui27gyIHagZ8GXrVSrgw2/lZOzwPkmTGQA/Ya
-OSrRnYVmK/ClSkV12NDYS4uvBRGSho275Y7mfI/rdlqYJMBjgI1uzz2HQn8bQ7iM
-QKZ8FIXhjH9Qait3bVYL7m6uYHhAOW7opBnVGOH2m+X30AuD6Wec9XU72Q1/pGvA
-GYJmGiImxQtRBV+OK0STvQxO4RJ0INfXL1ZT7b8UY8frMMFx9Mu7CpIidWdtP1jO
-ZIzvA0T3+aqq/EALntQqjBHBfp9j/Q==
-=nlTK
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllnTIEACgkQJNaLcl1U
+h9DWzwf/dgYKFuzYxZOtpj78a5Wh4JdETw7EQoBIyr/b6TDkaIqCKBwwqjNwVo7H
+r2G3gABSS4oiHU/cODX8JlFueL1f8SpH1n3jtT/td0xsA/OgKNebexZKjiQmntKJ
+0BCJl3F96V4RpLV3VfwOfDaVUi12ZSd1j9fqRjrxqyAuMyGZiMo/AFCvIYWzxTUp
+zuXHvEizmigsXMgnrMzQiGS1J7rJMK/9H4xsEiuZTV8v8spnlJ0kZwGR66EC9F+E
+i4FCuB41YoooT5jBJSMkBpwZvmuU/11QFzB1grub/9z6qsat+zf86hHtJq8PBWWW
+I0UbyKe7AyE1bQ0JeGmM8m4HNJ8gMA==
+=Mrlv
 -----END PGP SIGNATURE-----
 
---f6ufjioalak4igbi--
+--jbs65zyzdbkxxfpc--
 
---===============7511140960797908957==
+--===============8982684308364444726==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7511140960797908957==--
+--===============8982684308364444726==--
