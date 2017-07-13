@@ -1,107 +1,184 @@
 From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: [PATCH v3 4/9] ARM: dts: at91: sama5d2: add classd nodes
-Date: Thu, 13 Jul 2017 09:49:22 +0200
-Message-ID: <20170713074927.10882-5-quentin.schulz@free-electrons.com>
+Subject: [PATCH v3 6/9] clk: at91: clk-generated: make gclk
+	determine audio_pll rate
+Date: Thu, 13 Jul 2017 09:49:24 +0200
+Message-ID: <20170713074927.10882-7-quentin.schulz@free-electrons.com>
 References: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id E87B52671D3
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 09:49:42 +0200 (CEST)
 In-Reply-To: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Quentin Schulz <quentin.schulz@free-electrons.com>, cyrille.pitchen@wedev4u.fr, Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Quentin Schulz <quentin.schulz@free-electrons.com>, cyrille.pitchen@wedev4u.fr, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+This allows gclk to determine audio_pll rate and set the parent rate
+accordingly.
 
-This patch adds nodes for the classd device and its generated clock.
+However, there are multiple children clocks that could technically
+change the rate of audio_pll (via gck). With the rate locking, the first
+consumer to enable the clock will be the one definitely setting the rate
+of the clock.
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Since audio IPs are most likely to request the same rate, we enforce
+that the only clks able to modify gck rate are those of audio IPs.
+
+To remain consistent, we deny other clocks to be children of audio_pll.
+
 Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
 ---
- arch/arm/boot/dts/sama5d2.dtsi | 39 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index cc06da394366..a564cd1ba327 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -494,6 +494,24 @@
- 					clocks = <&plla>;
- 				};
+v3:
+  - added a flag per generated clock to know which one is allowed to
+modify audio_pll rate,
+  - set the flag in setup function depending on the compatible and the
+clock ID,
+
+v2:
+  - added conditions for audio pll rate setting restriction for SSC and
+I2S,
+
+ drivers/clk/at91/clk-generated.c | 63 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 57 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index 7260e498e059..33481368740e 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -26,6 +26,13 @@
+ #define GENERATED_SOURCE_MAX	6
+ #define GENERATED_MAX_DIV	255
  
-+				audio_pll_frac: audiopll_fracck {
-+					compatible = "atmel,sama5d2-clk-audio-pll-frac";
-+					#clock-cells = <0>;
-+					clocks = <&main>;
-+				};
++#define GCK_ID_SSC0		43
++#define GCK_ID_SSC1		44
++#define GCK_ID_I2S0		54
++#define GCK_ID_I2S1		55
++#define GCK_ID_CLASSD		59
++#define GCK_INDEX_DT_AUDIO_PLL	5
 +
-+				audio_pll_pad: audiopll_padck {
-+					compatible = "atmel,sama5d2-clk-audio-pll-pad";
-+					#clock-cells = <0>;
-+					clocks = <&audio_pll_frac>;
-+				};
-+
-+				audio_pll_pmc: audiopll_pmcck {
-+					compatible = "atmel,sama5d2-clk-audio-pll-pmc";
-+					#clock-cells = <0>;
-+					clocks = <&audio_pll_frac>;
-+				};
-+
- 				utmi: utmick {
- 					compatible = "atmel,at91sam9x5-clk-utmi";
- 					#clock-cells = <0>;
-@@ -895,7 +913,7 @@
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 					interrupt-parent = <&pmc>;
--					clocks = <&clk32k>, <&main>, <&plladiv>, <&utmi>, <&mck>;
-+					clocks = <&clk32k>, <&main>, <&plladiv>, <&utmi>, <&mck>, <&audio_pll_pmc>;
+ struct clk_generated {
+ 	struct clk_hw hw;
+ 	struct regmap *regmap;
+@@ -34,6 +41,7 @@ struct clk_generated {
+ 	u32 id;
+ 	u32 gckdiv;
+ 	u8 parent_id;
++	bool audio_pll_allowed;
+ };
  
- 					sdmmc0_gclk: sdmmc0_gclk {
- 						#clock-cells = <0>;
-@@ -951,6 +969,12 @@
- 						reg = <57>;
- 						atmel,clk-output-range = <0 80000000>;
- 					};
-+
-+					classd_gclk: classd_gclk {
-+						#clock-cells = <0>;
-+						reg = <59>;
-+						atmel,clk-output-range = <0 100000000>;
-+					};
- 				};
- 			};
+ #define to_clk_generated(hw) \
+@@ -126,15 +134,14 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ {
+ 	struct clk_generated *gck = to_clk_generated(hw);
+ 	struct clk_hw *parent = NULL;
++	struct clk_rate_request req_parent = *req;
+ 	long best_rate = -EINVAL;
+-	unsigned long min_rate;
++	unsigned long min_rate, parent_rate;
+ 	int best_diff = -1;
+ 	int i;
++	u32 div;
  
-@@ -1406,6 +1430,19 @@
- 				status = "okay";
- 			};
+-	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+-		u32 div;
+-		unsigned long parent_rate;
+-
++	for (i = 0; i < clk_hw_get_num_parents(hw) - 1; i++) {
+ 		parent = clk_hw_get_parent_by_index(hw, i);
+ 		if (!parent)
+ 			continue;
+@@ -150,11 +157,38 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ 		clk_generated_best_diff(req, parent, parent_rate, div,
+ 					&best_diff, &best_rate);
  
-+			classd: classd@fc048000 {
-+				compatible = "atmel,sama5d2-classd";
-+				reg = <0xfc048000 0x100>;
-+				interrupts = <59 IRQ_TYPE_LEVEL_HIGH 7>;
-+				dmas = <&dma0
-+					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-+					 AT91_XDMAC_DT_PERID(47))>;
-+				dma-names = "tx";
-+				clocks = <&classd_clk>, <&classd_gclk>;
-+				clock-names = "pclk", "gclk";
-+				status = "disabled";
-+			};
++		if (!best_diff)
++			break;
++	}
 +
- 			can1: can@fc050000 {
- 				compatible = "bosch,m_can";
- 				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
++	/*
++	 * The audio_pll rate can be modified, unlike the five others clocks
++	 * that should never be altered.
++	 * The audio_pll can technically be used by multiple consumers. However,
++	 * with the rate locking, the first consumer to enable to clock will be
++	 * the one definitely setting the rate of the clock.
++	 * Since audio IPs are most likely to request the same rate, we enforce
++	 * that the only clks able to modify gck rate are those of audio IPs.
++	 */
++
++	if (!gck->audio_pll_allowed)
++		goto end;
++
++	parent = clk_hw_get_parent_by_index(hw, GCK_INDEX_DT_AUDIO_PLL);
++	if (!parent)
++		goto end;
++
++	for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
++		req_parent.rate = req->rate * div;
++		__clk_determine_rate(parent, &req_parent);
++		clk_generated_best_diff(req, parent, req_parent.rate, div,
++					&best_diff, &best_rate);
+ 
+ 		if (!best_diff)
+ 			break;
+ 	}
+ 
++end:
+ 	pr_debug("GCLK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
+ 		 __func__, best_rate,
+ 		 __clk_get_name((req->best_parent_hw)->clk),
+@@ -264,7 +298,8 @@ at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
+ 	init.ops = &generated_ops;
+ 	init.parent_names = parent_names;
+ 	init.num_parents = num_parents;
+-	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
++	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
++		CLK_SET_RATE_PARENT;
+ 
+ 	gck->id = id;
+ 	gck->hw.init = &init;
+@@ -296,6 +331,7 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
+ 	struct device_node *gcknp;
+ 	struct clk_range range = CLK_RANGE(0, 0);
+ 	struct regmap *regmap;
++	struct clk_generated *gck;
+ 
+ 	num_parents = of_clk_get_parent_count(np);
+ 	if (num_parents == 0 || num_parents > GENERATED_SOURCE_MAX)
+@@ -327,6 +363,21 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
+ 		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock, name,
+ 						  parent_names, num_parents,
+ 						  id, &range);
++
++		gck = to_clk_generated(hw);
++
++		if (of_device_is_compatible(np,
++					    "atmel,sama5d2-clk-generated")) {
++			if (gck->id == GCK_ID_SSC0 || gck->id == GCK_ID_SSC1 ||
++			    gck->id == GCK_ID_I2S0 || gck->id == GCK_ID_I2S1 ||
++			    gck->id == GCK_ID_CLASSD)
++				gck->audio_pll_allowed = true;
++			else
++				gck->audio_pll_allowed = false;
++		} else {
++			gck->audio_pll_allowed = false;
++		}
++
+ 		if (IS_ERR(hw))
+ 			continue;
+ 
 -- 
 2.11.0
