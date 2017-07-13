@@ -1,19 +1,19 @@
-From: =?UTF-8?Q?Felix_H=c3=a4dicke?= <felixhaedicke@web.de>
-Subject: Re: [PATCH 1/2] mixer: explicit casts from void * to
- other pointer type
-Date: Thu, 13 Jul 2017 22:16:49 +0200
-Message-ID: <80f6b81b-69e1-c824-6970-4d4275b6a69b@web.de>
-References: <20170712203114.11870-1-felixhaedicke@web.de>
- <20170712203114.11870-2-felixhaedicke@web.de> <s5hr2xle6fw.wl-tiwai@suse.de>
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Subject: [PATCH 00/12] constify snd_soc_dai_ops structures
+Date: Thu, 13 Jul 2017 15:37:08 -0500
+Message-ID: <cover.1499974826.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id C474A26727D
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 22:16:51 +0200 (CEST)
-In-Reply-To: <s5hr2xle6fw.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com
+ [192.185.143.234])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF72126727D
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 22:37:10 +0200 (CEST)
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+ by gateway31.websitewelcome.com (Postfix) with ESMTP id 35D1021A48
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 15:37:09 -0500 (CDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,146 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDcvMTIvMTcgMjI6MzgsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQsIDEyIEp1bCAy
-MDE3IDIyOjMxOjEzICswMjAwLAo+IEZlbGl4IEjDpGRpY2tlIHdyb3RlOgo+PiBnKysgZG9lcyBu
-b3QgYWxsb3cgaW1wbGljaXQgY2FzdGluZyBvZiB2b2lkICogdG8gYW5vdGhlciBwb2ludGVyIHR5
-cGUKPj4gKGF0IGxlYXN0IG5vdCB3aXRob3V0IC1mcGVybWlzc2l2ZSkKPiBJdCdzIGEga25vd24g
-aXNzdWUsIGFuZCBpbnRlbnRpb25hbGx5IGlnbm9yZWQuICBDYXN0IGlzIGp1c3QgdWdseS4KPiBU
-aGUgc2Fsc2EtbGliIGhlYWRlcnMgYXJlIGZvciBDLCBub3QgZm9yIEMrKywgYWZ0ZXIgYWxsLgpX
-aGF0IGlzIHdyb25nIHdpdGggdXNpbmcgc2Fsc2EtbGliIGl0IGluIGEgQysrIHByb2plY3Q/Cklz
-IGl0IHJlYWxseSBub3QgZGVzaW5nZWQgZm9yIGJlaW5nIHVzZWQgZnJvbSBDKysgY29kZT8KCkZy
-b20gYXNvdW5kbGliLWhlYWQuaDoKI2lmZGVmIF9fY3BsdXNwbHVzCmV4dGVybiAiQyIgewojZW5k
-aWYKPgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQo+Cj4+IFNpZ25lZC1vZmYtYnk6IEZlbGl4IEjD
-pGRpY2tlIDxmZWxpeGhhZWRpY2tlQHdlYi5kZT4KPj4gLS0tCj4+ICBzcmMvbWl4ZXJfbWFjcm9z
-LmggfCA0NCArKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLQo+PiAg
-MSBmaWxlIGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQo+Pgo+PiBk
-aWZmIC0tZ2l0IGEvc3JjL21peGVyX21hY3Jvcy5oIGIvc3JjL21peGVyX21hY3Jvcy5oCj4+IGlu
-ZGV4IDliMzg4NDguLmMwZThjOGEgMTAwNjQ0Cj4+IC0tLSBhL3NyYy9taXhlcl9tYWNyb3MuaAo+
-PiArKysgYi9zcmMvbWl4ZXJfbWFjcm9zLmgKPj4gQEAgLTQ4Nyw3ICs0ODcsOSBAQCBpbnQgc25k
-X21peGVyX3NlbGVtX3NldF9wbGF5YmFja192b2x1bWUoc25kX21peGVyX2VsZW1fdCAqZWxlbSwK
-Pj4gIAkJCQkJc25kX21peGVyX3NlbGVtX2NoYW5uZWxfaWRfdCBjaGFubmVsLAo+PiAgCQkJCQls
-b25nIHZhbHVlKQo+PiAgewo+PiAtCXJldHVybiBfc25kX3NlbGVtX3VwZGF0ZV92b2x1bWUoZWxl
-bS0+aXRlbXNbU05EX1NFTEVNX0lURU1fUFZPTFVNRV0sIGNoYW5uZWwsIHZhbHVlKTsKPj4gKwly
-ZXR1cm4gX3NuZF9zZWxlbV91cGRhdGVfdm9sdW1lKChzbmRfc2VsZW1fdm9sX2l0ZW1fdCAqKWVs
-ZW0tPml0ZW1zW1NORF9TRUxFTV9JVEVNX1BWT0xVTUVdLAo+PiArCQkJCQljaGFubmVsLAo+PiAr
-CQkJCQl2YWx1ZSk7Cj4+ICB9Cj4+ICAKPj4gIF9fU0FMU0FfRVhQT1JUX0ZVTkMKPj4gQEAgLTQ5
-NSwxOSArNDk3LDIzIEBAIGludCBzbmRfbWl4ZXJfc2VsZW1fc2V0X2NhcHR1cmVfdm9sdW1lKHNu
-ZF9taXhlcl9lbGVtX3QgKmVsZW0sCj4+ICAJCQkJICAgICAgIHNuZF9taXhlcl9zZWxlbV9jaGFu
-bmVsX2lkX3QgY2hhbm5lbCwKPj4gIAkJCQkgICAgICAgbG9uZyB2YWx1ZSkKPj4gIHsKPj4gLQly
-ZXR1cm4gX3NuZF9zZWxlbV91cGRhdGVfdm9sdW1lKGVsZW0tPml0ZW1zW1NORF9TRUxFTV9JVEVN
-X0NWT0xVTUVdLCBjaGFubmVsLCB2YWx1ZSk7Cj4+ICsJcmV0dXJuIF9zbmRfc2VsZW1fdXBkYXRl
-X3ZvbHVtZSgoc25kX3NlbGVtX3ZvbF9pdGVtX3QgKillbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRF
-TV9DVk9MVU1FXSwKPj4gKwkJCQkJY2hhbm5lbCwKPj4gKwkJCQkJdmFsdWUpOwo+PiAgfQo+PiAg
-Cj4+ICBfX1NBTFNBX0VYUE9SVF9GVU5DCj4+ICBpbnQgc25kX21peGVyX3NlbGVtX3NldF9wbGF5
-YmFja192b2x1bWVfYWxsKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0sIGxvbmcgdmFsdWUpCj4+ICB7
-Cj4+IC0JcmV0dXJuIF9zbmRfc2VsZW1fdXBkYXRlX3ZvbHVtZV9hbGwoZWxlbS0+aXRlbXNbU05E
-X1NFTEVNX0lURU1fUFZPTFVNRV0sIHZhbHVlKTsKPj4gKwlyZXR1cm4gX3NuZF9zZWxlbV91cGRh
-dGVfdm9sdW1lX2FsbCgoc25kX3NlbGVtX3ZvbF9pdGVtX3QgKillbGVtLT5pdGVtc1tTTkRfU0VM
-RU1fSVRFTV9QVk9MVU1FXSwKPj4gKwkJCQkJICAgIHZhbHVlKTsKPj4gIH0KPj4gIAo+PiAgX19T
-QUxTQV9FWFBPUlRfRlVOQwo+PiAgaW50IHNuZF9taXhlcl9zZWxlbV9zZXRfY2FwdHVyZV92b2x1
-bWVfYWxsKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0sIGxvbmcgdmFsdWUpCj4+ICB7Cj4+IC0JcmV0
-dXJuIF9zbmRfc2VsZW1fdXBkYXRlX3ZvbHVtZV9hbGwoZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lU
-RU1fQ1ZPTFVNRV0sIHZhbHVlKTsKPj4gKwlyZXR1cm4gX3NuZF9zZWxlbV91cGRhdGVfdm9sdW1l
-X2FsbCgoc25kX3NlbGVtX3ZvbF9pdGVtX3QgKillbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRFTV9D
-Vk9MVU1FXSwKPj4gKwkJCQkJICAgIHZhbHVlKTsKPj4gIH0KPj4gIAo+PiAgX19TQUxTQV9FWFBP
-UlRfRlVOQwo+PiBAQCAtNTMxLDcgKzUzNyw3IEBAIGludCBzbmRfbWl4ZXJfc2VsZW1faXNfZW51
-bV9jYXB0dXJlKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0pCj4+ICBfX1NBTFNBX0VYUE9SVF9GVU5D
-Cj4+ICBpbnQgc25kX21peGVyX3NlbGVtX2dldF9lbnVtX2l0ZW1zKHNuZF9taXhlcl9lbGVtX3Qg
-KmVsZW0pCj4+ICB7Cj4+IC0Jc25kX3NlbGVtX2VudW1faXRlbV90ICplaXRlbSA9IGVsZW0tPml0
-ZW1zW1NORF9TRUxFTV9JVEVNX0VOVU1dOwo+PiArCXNuZF9zZWxlbV9lbnVtX2l0ZW1fdCAqZWl0
-ZW0gPSAoc25kX3NlbGVtX2VudW1faXRlbV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1f
-RU5VTV07Cj4+ICAJaWYgKCFlaXRlbSkKPj4gIAkJcmV0dXJuIC1FSU5WQUw7Cj4+ICAJcmV0dXJu
-IGVpdGVtLT5pdGVtczsKPj4gQEAgLTU0Miw3ICs1NDgsNyBAQCBpbnQgc25kX21peGVyX3NlbGVt
-X2dldF9lbnVtX2l0ZW0oc25kX21peGVyX2VsZW1fdCAqZWxlbSwKPj4gIAkJCQkgIHNuZF9taXhl
-cl9zZWxlbV9jaGFubmVsX2lkX3QgY2hhbm5lbCwKPj4gIAkJCQkgIHVuc2lnbmVkIGludCAqaXRl
-bXApCj4+ICB7Cj4+IC0Jc25kX3NlbGVtX2VudW1faXRlbV90ICplaXRlbSA9IGVsZW0tPml0ZW1z
-W1NORF9TRUxFTV9JVEVNX0VOVU1dOwo+PiArCXNuZF9zZWxlbV9lbnVtX2l0ZW1fdCAqZWl0ZW0g
-PSAoc25kX3NlbGVtX2VudW1faXRlbV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1fRU5V
-TV07Cj4+ICAJaWYgKCFlaXRlbSB8fCAodW5zaWduZWQgaW50KWNoYW5uZWwgPj0gZWl0ZW0tPmhl
-YWQuY2hhbm5lbHMpCj4+ICAJCXJldHVybiAtRUlOVkFMOwo+PiAgCSppdGVtcCA9ICBlaXRlbS0+
-aXRlbVtjaGFubmVsXTsKPj4gQEAgLTYwMiw3ICs2MDgsNyBAQCBfX1NBTFNBX0VYUE9SVF9GVU5D
-Cj4+ICBpbnQgc25kX21peGVyX3NlbGVtX2dldF9wbGF5YmFja19kQl9yYW5nZShzbmRfbWl4ZXJf
-ZWxlbV90ICplbGVtLAo+PiAgCQkJCQkgIGxvbmcgKm1pbiwgbG9uZyAqbWF4KQo+PiAgewo+PiAt
-CXJldHVybiBfc25kX3NlbGVtX3ZvbF9nZXRfZEJfcmFuZ2UoZWxlbS0+aXRlbXNbU05EX1NFTEVN
-X0lURU1fUFZPTFVNRV0sCj4+ICsJcmV0dXJuIF9zbmRfc2VsZW1fdm9sX2dldF9kQl9yYW5nZSgo
-c25kX3NlbGVtX3ZvbF9pdGVtX3QgKillbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRFTV9QVk9MVU1F
-XSwKPj4gIAkJCQkJICAgbWluLCBtYXgpOwo+PiAgfQo+PiAgCj4+IEBAIC02MTEsNyArNjE3LDcg
-QEAgaW50IHNuZF9taXhlcl9zZWxlbV9nZXRfcGxheWJhY2tfZEIoc25kX21peGVyX2VsZW1fdCAq
-ZWxlbSwKPj4gIAkJCQkgICAgc25kX21peGVyX3NlbGVtX2NoYW5uZWxfaWRfdCBjaGFubmVsLAo+
-PiAgCQkJCSAgICBsb25nICp2YWx1ZSkKPj4gIHsKPj4gLQlyZXR1cm4gX3NuZF9zZWxlbV92b2xf
-Z2V0X2RCKGVsZW0tPml0ZW1zW1NORF9TRUxFTV9JVEVNX1BWT0xVTUVdLAo+PiArCXJldHVybiBf
-c25kX3NlbGVtX3ZvbF9nZXRfZEIoKHNuZF9zZWxlbV92b2xfaXRlbV90ICopZWxlbS0+aXRlbXNb
-U05EX1NFTEVNX0lURU1fUFZPTFVNRV0sCj4+ICAJCQkJICAgICBjaGFubmVsLCB2YWx1ZSk7Cj4+
-ICB9Cj4+ICAKPj4gQEAgLTYxOSw3ICs2MjUsNyBAQCBfX1NBTFNBX0VYUE9SVF9GVU5DCj4+ICBp
-bnQgc25kX21peGVyX3NlbGVtX2Fza19wbGF5YmFja192b2xfZEIoc25kX21peGVyX2VsZW1fdCAq
-ZWxlbSwgbG9uZyB2YWx1ZSwKPj4gIAkJCQkJbG9uZyAqZEJ2YWx1ZSkKPj4gIHsKPj4gLQlyZXR1
-cm4gX3NuZF9zZWxlbV9hc2tfdm9sX2RCKGVsZW0tPml0ZW1zW1NORF9TRUxFTV9JVEVNX1BWT0xV
-TUVdLAo+PiArCXJldHVybiBfc25kX3NlbGVtX2Fza192b2xfZEIoKHNuZF9zZWxlbV92b2xfaXRl
-bV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1fUFZPTFVNRV0sCj4+ICAJCQkJICAgICB2
-YWx1ZSwgZEJ2YWx1ZSk7Cj4+ICB9Cj4+ICAKPj4gQEAgLTYyNyw3ICs2MzMsNyBAQCBfX1NBTFNB
-X0VYUE9SVF9GVU5DCj4+ICBpbnQgc25kX21peGVyX3NlbGVtX2Fza19wbGF5YmFja19kQl92b2wo
-c25kX21peGVyX2VsZW1fdCAqZWxlbSwgbG9uZyBkQnZhbHVlLAo+PiAgCQkJCQlpbnQgZGlyLCBs
-b25nICp2YWx1ZSkKPj4gIHsKPj4gLQlyZXR1cm4gX3NuZF9zZWxlbV9hc2tfZEJfdm9sKGVsZW0t
-Pml0ZW1zW1NORF9TRUxFTV9JVEVNX1BWT0xVTUVdLAo+PiArCXJldHVybiBfc25kX3NlbGVtX2Fz
-a19kQl92b2woKHNuZF9zZWxlbV92b2xfaXRlbV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lU
-RU1fUFZPTFVNRV0sCj4+ICAJCQkJICAgICBkQnZhbHVlLCB2YWx1ZSwgZGlyKTsKPj4gIH0KPj4g
-IAo+PiBAQCAtNjM2LDcgKzY0Miw3IEBAIGludCBzbmRfbWl4ZXJfc2VsZW1fc2V0X3BsYXliYWNr
-X2RCKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0sCj4+ICAJCQkJICAgIHNuZF9taXhlcl9zZWxlbV9j
-aGFubmVsX2lkX3QgY2hhbm5lbCwKPj4gIAkJCQkgICAgbG9uZyB2YWx1ZSwgaW50IGRpcikKPj4g
-IHsKPj4gLQlyZXR1cm4gX3NuZF9zZWxlbV92b2xfc2V0X2RCKGVsZW0tPml0ZW1zW1NORF9TRUxF
-TV9JVEVNX1BWT0xVTUVdLAo+PiArCXJldHVybiBfc25kX3NlbGVtX3ZvbF9zZXRfZEIoKHNuZF9z
-ZWxlbV92b2xfaXRlbV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1fUFZPTFVNRV0sCj4+
-ICAJCQkJICAgICAoaW50KWNoYW5uZWwsIHZhbHVlLCBkaXIpOwo+PiAgfQo+PiAgCj4+IEBAIC02
-NDQsMTQgKzY1MCwxNSBAQCBfX1NBTFNBX0VYUE9SVF9GVU5DCj4+ICBpbnQgc25kX21peGVyX3Nl
-bGVtX3NldF9wbGF5YmFja19kQl9hbGwoc25kX21peGVyX2VsZW1fdCAqZWxlbSwgbG9uZyB2YWx1
-ZSwKPj4gIAkJCQkJaW50IGRpcikKPj4gIHsKPj4gLQlyZXR1cm4gX3NuZF9zZWxlbV92b2xfc2V0
-X2RCX2FsbChlbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRFTV9QVk9MVU1FXSwgdmFsdWUsIGRpcik7
-Cj4+ICsJcmV0dXJuIF9zbmRfc2VsZW1fdm9sX3NldF9kQl9hbGwoKHNuZF9zZWxlbV92b2xfaXRl
-bV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1fUFZPTFVNRV0sCj4+ICsJCQkJCSB2YWx1
-ZSwgZGlyKTsKPj4gIH0KPj4gIAo+PiAgX19TQUxTQV9FWFBPUlRfRlVOQwo+PiAgaW50IHNuZF9t
-aXhlcl9zZWxlbV9nZXRfY2FwdHVyZV9kQl9yYW5nZShzbmRfbWl4ZXJfZWxlbV90ICplbGVtLAo+
-PiAgCQkJCQkgbG9uZyAqbWluLCBsb25nICptYXgpCj4+ICB7Cj4+IC0JcmV0dXJuIF9zbmRfc2Vs
-ZW1fdm9sX2dldF9kQl9yYW5nZShlbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRFTV9DVk9MVU1FXSwK
-Pj4gKwlyZXR1cm4gX3NuZF9zZWxlbV92b2xfZ2V0X2RCX3JhbmdlKChzbmRfc2VsZW1fdm9sX2l0
-ZW1fdCAqKWVsZW0tPml0ZW1zW1NORF9TRUxFTV9JVEVNX0NWT0xVTUVdLAo+PiAgCQkJCQkgICBt
-aW4sIG1heCk7Cj4+ICB9Cj4+ICAKPj4gQEAgLTY2MCw3ICs2NjcsNyBAQCBpbnQgc25kX21peGVy
-X3NlbGVtX2dldF9jYXB0dXJlX2RCKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0sCj4+ICAJCQkJICAg
-c25kX21peGVyX3NlbGVtX2NoYW5uZWxfaWRfdCBjaGFubmVsLAo+PiAgCQkJCSAgIGxvbmcgKnZh
-bHVlKQo+PiAgewo+PiAtCXJldHVybiBfc25kX3NlbGVtX3ZvbF9nZXRfZEIoZWxlbS0+aXRlbXNb
-U05EX1NFTEVNX0lURU1fQ1ZPTFVNRV0sCj4+ICsJcmV0dXJuIF9zbmRfc2VsZW1fdm9sX2dldF9k
-Qigoc25kX3NlbGVtX3ZvbF9pdGVtX3QgKillbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRFTV9DVk9M
-VU1FXSwKPj4gIAkJCQkgICAgIGNoYW5uZWwsIHZhbHVlKTsKPj4gIH0KPj4gIAo+PiBAQCAtNjY4
-LDcgKzY3NSw3IEBAIF9fU0FMU0FfRVhQT1JUX0ZVTkMKPj4gIGludCBzbmRfbWl4ZXJfc2VsZW1f
-YXNrX2NhcHR1cmVfdm9sX2RCKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0sIGxvbmcgdmFsdWUsCj4+
-ICAJCQkJICAgICAgIGxvbmcgKmRCdmFsdWUpCj4+ICB7Cj4+IC0JcmV0dXJuIF9zbmRfc2VsZW1f
-YXNrX3ZvbF9kQihlbGVtLT5pdGVtc1tTTkRfU0VMRU1fSVRFTV9DVk9MVU1FXSwKPj4gKwlyZXR1
-cm4gX3NuZF9zZWxlbV9hc2tfdm9sX2RCKChzbmRfc2VsZW1fdm9sX2l0ZW1fdCAqKWVsZW0tPml0
-ZW1zW1NORF9TRUxFTV9JVEVNX0NWT0xVTUVdLAo+PiAgCQkJCSAgICAgdmFsdWUsIGRCdmFsdWUp
-Owo+PiAgfQo+PiAgCj4+IEBAIC02NzYsNyArNjgzLDcgQEAgX19TQUxTQV9FWFBPUlRfRlVOQwo+
-PiAgaW50IHNuZF9taXhlcl9zZWxlbV9hc2tfY2FwdHVyZV9kQl92b2woc25kX21peGVyX2VsZW1f
-dCAqZWxlbSwgbG9uZyBkQnZhbHVlLAo+PiAgCQkJCSAgICAgICBpbnQgZGlyLCBsb25nICp2YWx1
-ZSkKPj4gIHsKPj4gLQlyZXR1cm4gX3NuZF9zZWxlbV9hc2tfZEJfdm9sKGVsZW0tPml0ZW1zW1NO
-RF9TRUxFTV9JVEVNX0NWT0xVTUVdLAo+PiArCXJldHVybiBfc25kX3NlbGVtX2Fza19kQl92b2wo
-KHNuZF9zZWxlbV92b2xfaXRlbV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1fQ1ZPTFVN
-RV0sCj4+ICAJCQkJICAgICBkQnZhbHVlLCB2YWx1ZSwgZGlyKTsKPj4gIH0KPj4gIAo+PiBAQCAt
-Njg1LDcgKzY5Miw3IEBAIGludCBzbmRfbWl4ZXJfc2VsZW1fc2V0X2NhcHR1cmVfZEIoc25kX21p
-eGVyX2VsZW1fdCAqZWxlbSwKPj4gIAkJCQkgICBzbmRfbWl4ZXJfc2VsZW1fY2hhbm5lbF9pZF90
-IGNoYW5uZWwsCj4+ICAJCQkJICAgbG9uZyB2YWx1ZSwgaW50IGRpcikKPj4gIHsKPj4gLQlyZXR1
-cm4gX3NuZF9zZWxlbV92b2xfc2V0X2RCKGVsZW0tPml0ZW1zW1NORF9TRUxFTV9JVEVNX0NWT0xV
-TUVdLAo+PiArCXJldHVybiBfc25kX3NlbGVtX3ZvbF9zZXRfZEIoKHNuZF9zZWxlbV92b2xfaXRl
-bV90ICopZWxlbS0+aXRlbXNbU05EX1NFTEVNX0lURU1fQ1ZPTFVNRV0sCj4+ICAJCQkJICAgICBj
-aGFubmVsLCB2YWx1ZSwgZGlyKTsKPj4gIH0KPj4gIAo+PiBAQCAtNjkzLDcgKzcwMCw4IEBAIF9f
-U0FMU0FfRVhQT1JUX0ZVTkMKPj4gIGludCBzbmRfbWl4ZXJfc2VsZW1fc2V0X2NhcHR1cmVfZEJf
-YWxsKHNuZF9taXhlcl9lbGVtX3QgKmVsZW0sIGxvbmcgdmFsdWUsCj4+ICAJCQkJICAgICAgIGlu
-dCBkaXIpCj4+ICB7Cj4+IC0JcmV0dXJuIF9zbmRfc2VsZW1fdm9sX3NldF9kQl9hbGwoZWxlbS0+
-aXRlbXNbU05EX1NFTEVNX0lURU1fQ1ZPTFVNRV0sIHZhbHVlLCBkaXIpOwo+PiArCXJldHVybiBf
-c25kX3NlbGVtX3ZvbF9zZXRfZEJfYWxsKChzbmRfc2VsZW1fdm9sX2l0ZW1fdCAqKWVsZW0tPml0
-ZW1zW1NORF9TRUxFTV9JVEVNX0NWT0xVTUVdLAo+PiArCQkJCQkgdmFsdWUsIGRpcik7Cj4+ICB9
-Cj4+ICAKPj4gICNlbHNlIC8qIFNBTFNBX0hBU19UTFZfU1VQUE9SVCAqLwo+PiAtLSAKPj4gMi4x
-My4yCj4+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This patchset aims to constify all snd_soc_dai_ops structures that
+are only stored in the ops field of a snd_soc_dai_driver structure.
+That field is declared const, so snd_soc_dai_ops structures that have
+this property can be declared as const also.
+
+Thanks!
+
+Gustavo A. R. Silva (12):
+  ASoC: cs42l42: constify snd_soc_dai_ops structure
+  ASoC: rt5663: constify snd_soc_dai_ops structure
+  ASoC: rt5616: constify snd_soc_dai_ops structure
+  ASoC: msm8916-wcd-analog: constify snd_soc_dai_ops structure
+  ASoC: max98926: constify snd_soc_dai_ops structure
+  ASoC: rt5514: constify snd_soc_dai_ops structure
+  ASoC: codecs: msm8916-wcd-digital: constify snd_soc_dai_ops structure
+  ASoC: max9867: constify snd_soc_dai_ops structure
+  ASoC: rk3036: constify snd_soc_dai_ops structure
+  ASoC: hdac_hdmi: constify snd_soc_dai_ops structure
+  ASoC: dwc: constify snd_soc_dai_ops structure
+  ASoC: tas5720: constify snd_soc_dai_ops structure
+
+ sound/soc/codecs/cs42l42.c             | 2 +-
+ sound/soc/codecs/hdac_hdmi.c           | 2 +-
+ sound/soc/codecs/inno_rk3036.c         | 2 +-
+ sound/soc/codecs/max9867.c             | 2 +-
+ sound/soc/codecs/max98926.c            | 2 +-
+ sound/soc/codecs/msm8916-wcd-analog.c  | 2 +-
+ sound/soc/codecs/msm8916-wcd-digital.c | 2 +-
+ sound/soc/codecs/rt5514.c              | 2 +-
+ sound/soc/codecs/rt5616.c              | 2 +-
+ sound/soc/codecs/rt5663.c              | 2 +-
+ sound/soc/codecs/tas5720.c             | 2 +-
+ sound/soc/dwc/dwc-i2s.c                | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
+
+-- 
+2.5.0
