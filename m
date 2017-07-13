@@ -1,19 +1,20 @@
-From: =?UTF-8?Q?Felix_H=c3=a4dicke?= <felixhaedicke@web.de>
-Subject: Re: [PATCH 2/2] Include <poll.h> instead of
-	<sys/poll.h>
-Date: Wed, 12 Jul 2017 23:17:40 +0200
-Message-ID: <f5e96bac-7869-6da3-8faa-0c0f59a7e292@web.de>
-References: <20170712203114.11870-1-felixhaedicke@web.de>
- <20170712203114.11870-3-felixhaedicke@web.de> <s5hpod5e6dv.wl-tiwai@suse.de>
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Subject: [PATCH] ASoC: zx-i2s: constify snd_soc_dai_ops
+	structure
+Date: Thu, 13 Jul 2017 00:22:09 -0500
+Message-ID: <20170713052208.GA11536@embeddedgus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 45C55267099
- for <alsa-devel@alsa-project.org>; Wed, 12 Jul 2017 23:17:43 +0200 (CEST)
-In-Reply-To: <s5hpod5e6dv.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from gateway36.websitewelcome.com (gateway36.websitewelcome.com
+ [192.185.188.18])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8DE1267099
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 07:22:11 +0200 (CEST)
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+ by gateway36.websitewelcome.com (Postfix) with ESMTP id 3E9C34028691A
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 00:22:10 -0500 (CDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,112 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embededdor.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDcvMTIvMTcgMjI6NDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQsIDEyIEp1bCAy
-MDE3IDIyOjMxOjE0ICswMjAwLAo+IEZlbGl4IEjDpGRpY2tlIHdyb3RlOgo+PiBBY2NvcmRpbmcg
-dG8gUE9TSVguMS0yMDAxLCB0aGUgY29ycmVjdCBpbmNsdWRlIHBhdGggaXMgPHBvbGwuaD4uIEFu
-ZAo+PiB3aGVuIGNvbXBpbGluZyBhZ2FpbnN0IG11c2wsIGl0IGdlbmVyYXRlcyAiZGVwcmVjYXRl
-ZCIgd2FybmluZ3MsIGlmCj4+IDxzeXMvcG9sbC5oPiBpcyBpbmNsdWRlZC4KPiBEb2VzIHRoZSBj
-dXJyZW50IGNvZGUtbGliIHdvcmsgd2l0aCBtdXNsPyAgSXQncyBuZXZlciB0ZXN0ZWQgYW5kCj4g
-aW50ZW5kZWQuLi4KCnllcywgc2Fsc2EtbGliIGlzIHdvcmtpbmcgZmluZSB3aXRoIG11c2wgZm9y
-IG1lLgoKQnR3LiBJIGFtIHVzaW5nIHNhbHNhLWxpYiBmb3IgYXVkaW8gb3V0cHV0IGZvciB0aGUg
-WENTb2FyIGdsaWRpbmcKY29tcHV0ZXIgb24gS29ibyBlUmVhZGVycyB2aWEgVVNCLU9URy4KaHR0
-cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj05dTRxa2kzR0EwTQoKPgo+Cj4gdGhhbmtzLAo+
-Cj4gVGFrYXNoaQo+Cj4+IFNpZ25lZC1vZmYtYnk6IEZlbGl4IEjDpGRpY2tlIDxmZWxpeGhhZWRp
-Y2tlQHdlYi5kZT4KPj4gLS0tCj4+ICBzcmMvYXNvdW5kbGliLWhlYWQuaCB8IDIgKy0KPj4gIHNy
-Yy9jb250cm9sLmMgICAgICAgIHwgMiArLQo+PiAgc3JjL2N0bF9tYWNyb3MuaCAgICAgfCAyICst
-Cj4+ICBzcmMvaGNvbnRyb2wuYyAgICAgICB8IDIgKy0KPj4gIHNyYy9oY3RsX21hY3Jvcy5oICAg
-IHwgMiArLQo+PiAgc3JjL2h3ZGVwLmMgICAgICAgICAgfCAyICstCj4+ICBzcmMvaHdkZXBfbWFj
-cm9zLmggICB8IDIgKy0KPj4gIHNyYy9taXhlci5jICAgICAgICAgIHwgMiArLQo+PiAgc3JjL21p
-eGVyX21hY3Jvcy5oICAgfCAyICstCj4+ICBzcmMvcGNtX21hY3Jvcy5oICAgICB8IDIgKy0KPj4g
-IHNyYy9yYXdtaWRpLmMgICAgICAgIHwgMiArLQo+PiAgc3JjL3Jhd21pZGlfbWFjcm9zLmggfCAy
-ICstCj4+ICBzcmMvdGltZXIuYyAgICAgICAgICB8IDIgKy0KPj4gIHNyYy90aW1lcl9tYWNyb3Mu
-aCAgIHwgMiArLQo+PiAgMTQgZmlsZXMgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKSwgMTQgZGVs
-ZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9zcmMvYXNvdW5kbGliLWhlYWQuaCBiL3NyYy9h
-c291bmRsaWItaGVhZC5oCj4+IGluZGV4IGE4NTJmYmUuLmNjN2IxNTQgMTAwNjQ0Cj4+IC0tLSBh
-L3NyYy9hc291bmRsaWItaGVhZC5oCj4+ICsrKyBiL3NyYy9hc291bmRsaWItaGVhZC5oCj4+IEBA
-IC0yOSw3ICsyOSw3IEBACj4+ICAjaW5jbHVkZSA8ZmNudGwuaD4KPj4gICNpbmNsdWRlIDxhc3Nl
-cnQuaD4KPj4gICNpbmNsdWRlIDxlbmRpYW4uaD4KPj4gLSNpbmNsdWRlIDxzeXMvcG9sbC5oPgo+
-PiArI2luY2x1ZGUgPHBvbGwuaD4KPj4gICNpbmNsdWRlIDxlcnJuby5oPgo+PiAgI2luY2x1ZGUg
-PHN0ZGFyZy5oPgo+PiAgCj4+IGRpZmYgLS1naXQgYS9zcmMvY29udHJvbC5jIGIvc3JjL2NvbnRy
-b2wuYwo+PiBpbmRleCAxNzM5OGJhLi5jOWVhYjcyIDEwMDY0NAo+PiAtLS0gYS9zcmMvY29udHJv
-bC5jCj4+ICsrKyBiL3NyYy9jb250cm9sLmMKPj4gQEAgLTI2LDcgKzI2LDcgQEAKPj4gICNpbmNs
-dWRlIDxzdHJpbmcuaD4KPj4gICNpbmNsdWRlIDxmY250bC5oPgo+PiAgI2luY2x1ZGUgPHNpZ25h
-bC5oPgo+PiAtI2luY2x1ZGUgPHN5cy9wb2xsLmg+Cj4+ICsjaW5jbHVkZSA8cG9sbC5oPgo+PiAg
-I2luY2x1ZGUgImNvbnRyb2wuaCIKPj4gICNpbmNsdWRlICJsb2NhbC5oIgo+PiAgI2lmIFNBTFNB
-X1NVUFBPUlRfRkxPQVQKPj4gZGlmZiAtLWdpdCBhL3NyYy9jdGxfbWFjcm9zLmggYi9zcmMvY3Rs
-X21hY3Jvcy5oCj4+IGluZGV4IDllZDMzNTcuLmNlODZhOGYgMTAwNjQ0Cj4+IC0tLSBhL3NyYy9j
-dGxfbWFjcm9zLmgKPj4gKysrIGIvc3JjL2N0bF9tYWNyb3MuaAo+PiBAQCAtMTIsNyArMTIsNyBA
-QAo+PiAgI2luY2x1ZGUgPHN0cmluZy5oPgo+PiAgI2luY2x1ZGUgPGVycm5vLmg+Cj4+ICAjaW5j
-bHVkZSA8c3lzL2lvY3RsLmg+Cj4+IC0jaW5jbHVkZSA8c3lzL3BvbGwuaD4KPj4gKyNpbmNsdWRl
-IDxwb2xsLmg+Cj4+ICAKPj4gIHN0cnVjdCBfc25kX2N0bCB7Cj4+ICAJY2hhciAqbmFtZTsKPj4g
-ZGlmZiAtLWdpdCBhL3NyYy9oY29udHJvbC5jIGIvc3JjL2hjb250cm9sLmMKPj4gaW5kZXggZmNl
-MWIxMy4uMTRkZmViMSAxMDA2NDQKPj4gLS0tIGEvc3JjL2hjb250cm9sLmMKPj4gKysrIGIvc3Jj
-L2hjb250cm9sLmMKPj4gQEAgLTI2LDcgKzI2LDcgQEAKPj4gICNpbmNsdWRlIDxzdHJpbmcuaD4K
-Pj4gICNpbmNsdWRlIDxmY250bC5oPgo+PiAgI2luY2x1ZGUgPHNpZ25hbC5oPgo+PiAtI2luY2x1
-ZGUgPHN5cy9wb2xsLmg+Cj4+ICsjaW5jbHVkZSA8cG9sbC5oPgo+PiAgI2luY2x1ZGUgImhjb250
-cm9sLmgiCj4+ICAjaW5jbHVkZSAibG9jYWwuaCIKPj4gIAo+PiBkaWZmIC0tZ2l0IGEvc3JjL2hj
-dGxfbWFjcm9zLmggYi9zcmMvaGN0bF9tYWNyb3MuaAo+PiBpbmRleCBmYzEzNDhiLi42MTMyMzdi
-IDEwMDY0NAo+PiAtLS0gYS9zcmMvaGN0bF9tYWNyb3MuaAo+PiArKysgYi9zcmMvaGN0bF9tYWNy
-b3MuaAo+PiBAQCAtMTIsNyArMTIsNyBAQAo+PiAgI2luY2x1ZGUgPHN0cmluZy5oPgo+PiAgI2lu
-Y2x1ZGUgPGVycm5vLmg+Cj4+ICAjaW5jbHVkZSA8c3lzL2lvY3RsLmg+Cj4+IC0jaW5jbHVkZSA8
-c3lzL3BvbGwuaD4KPj4gKyNpbmNsdWRlIDxwb2xsLmg+Cj4+ICAKPj4gIHN0cnVjdCBfc25kX2hj
-dGwgewo+PiAgCXNuZF9jdGxfdCAqY3RsOwo+PiBkaWZmIC0tZ2l0IGEvc3JjL2h3ZGVwLmMgYi9z
-cmMvaHdkZXAuYwo+PiBpbmRleCAzYjVlZTZkLi5iNGMyM2Y5IDEwMDY0NAo+PiAtLS0gYS9zcmMv
-aHdkZXAuYwo+PiArKysgYi9zcmMvaHdkZXAuYwo+PiBAQCAtMjYsNyArMjYsNyBAQAo+PiAgI2lu
-Y2x1ZGUgPHN0cmluZy5oPgo+PiAgI2luY2x1ZGUgPGZjbnRsLmg+Cj4+ICAjaW5jbHVkZSA8c2ln
-bmFsLmg+Cj4+IC0jaW5jbHVkZSA8c3lzL3BvbGwuaD4KPj4gKyNpbmNsdWRlIDxwb2xsLmg+Cj4+
-ICAjaW5jbHVkZSAiaHdkZXAuaCIKPj4gICNpbmNsdWRlICJsb2NhbC5oIgo+PiAgCj4+IGRpZmYg
-LS1naXQgYS9zcmMvaHdkZXBfbWFjcm9zLmggYi9zcmMvaHdkZXBfbWFjcm9zLmgKPj4gaW5kZXgg
-NmE1MmM2OC4uM2QyZWExMyAxMDA2NDQKPj4gLS0tIGEvc3JjL2h3ZGVwX21hY3Jvcy5oCj4+ICsr
-KyBiL3NyYy9od2RlcF9tYWNyb3MuaAo+PiBAQCAtMTEsNyArMTEsNyBAQAo+PiAgI2luY2x1ZGUg
-PGVycm5vLmg+Cj4+ICAjaW5jbHVkZSA8dW5pc3RkLmg+Cj4+ICAjaW5jbHVkZSA8c3lzL2lvY3Rs
-Lmg+Cj4+IC0jaW5jbHVkZSA8c3lzL3BvbGwuaD4KPj4gKyNpbmNsdWRlIDxwb2xsLmg+Cj4+ICAK
-Pj4gIHN0cnVjdCBfc25kX2h3ZGVwIHsKPj4gIAljb25zdCBjaGFyICpuYW1lOwo+PiBkaWZmIC0t
-Z2l0IGEvc3JjL21peGVyLmMgYi9zcmMvbWl4ZXIuYwo+PiBpbmRleCBjMGNjYzNkLi4xNWZjYzMw
-IDEwMDY0NAo+PiAtLS0gYS9zcmMvbWl4ZXIuYwo+PiArKysgYi9zcmMvbWl4ZXIuYwo+PiBAQCAt
-MjYsNyArMjYsNyBAQAo+PiAgI2luY2x1ZGUgPHN0cmluZy5oPgo+PiAgI2luY2x1ZGUgPGZjbnRs
-Lmg+Cj4+ICAjaW5jbHVkZSA8c2lnbmFsLmg+Cj4+IC0jaW5jbHVkZSA8c3lzL3BvbGwuaD4KPj4g
-KyNpbmNsdWRlIDxwb2xsLmg+Cj4+ICAjaW5jbHVkZSAibWl4ZXIuaCIKPj4gICNpbmNsdWRlICJs
-b2NhbC5oIgo+PiAgCj4+IGRpZmYgLS1naXQgYS9zcmMvbWl4ZXJfbWFjcm9zLmggYi9zcmMvbWl4
-ZXJfbWFjcm9zLmgKPj4gaW5kZXggYzBlOGM4YS4uNzM1NTA0NiAxMDA2NDQKPj4gLS0tIGEvc3Jj
-L21peGVyX21hY3Jvcy5oCj4+ICsrKyBiL3NyYy9taXhlcl9tYWNyb3MuaAo+PiBAQCAtMTAsNyAr
-MTAsNyBAQAo+PiAgI2luY2x1ZGUgPHN0cmluZy5oPgo+PiAgI2luY2x1ZGUgPGVycm5vLmg+Cj4+
-ICAjaW5jbHVkZSA8c3lzL2lvY3RsLmg+Cj4+IC0jaW5jbHVkZSA8c3lzL3BvbGwuaD4KPj4gKyNp
-bmNsdWRlIDxwb2xsLmg+Cj4+ICAKPj4gIHN0cnVjdCBfc25kX21peGVyIHsKPj4gIAlzbmRfaGN0
-bF90ICpoY3RsOwo+PiBkaWZmIC0tZ2l0IGEvc3JjL3BjbV9tYWNyb3MuaCBiL3NyYy9wY21fbWFj
-cm9zLmgKPj4gaW5kZXggYTM1Yzc5NC4uZjI1MjAxNCAxMDA2NDQKPj4gLS0tIGEvc3JjL3BjbV9t
-YWNyb3MuaAo+PiArKysgYi9zcmMvcGNtX21hY3Jvcy5oCj4+IEBAIC0xMiw3ICsxMiw3IEBACj4+
-ICAjaW5jbHVkZSA8c3RyaW5nLmg+Cj4+ICAjaW5jbHVkZSA8ZXJybm8uaD4KPj4gICNpbmNsdWRl
-IDxzeXMvaW9jdGwuaD4KPj4gLSNpbmNsdWRlIDxzeXMvcG9sbC5oPgo+PiArI2luY2x1ZGUgPHBv
-bGwuaD4KPj4gIAo+PiAgdHlwZWRlZiBzdHJ1Y3Qgewo+PiAgCXN0cnVjdCBzbmRydl9wY21fY2hh
-bm5lbF9pbmZvIGluZm87Cj4+IGRpZmYgLS1naXQgYS9zcmMvcmF3bWlkaS5jIGIvc3JjL3Jhd21p
-ZGkuYwo+PiBpbmRleCA3OWY5YjIxLi5jYTk2ZjVkIDEwMDY0NAo+PiAtLS0gYS9zcmMvcmF3bWlk
-aS5jCj4+ICsrKyBiL3NyYy9yYXdtaWRpLmMKPj4gQEAgLTI2LDcgKzI2LDcgQEAKPj4gICNpbmNs
-dWRlIDxzdHJpbmcuaD4KPj4gICNpbmNsdWRlIDxmY250bC5oPgo+PiAgI2luY2x1ZGUgPHNpZ25h
-bC5oPgo+PiAtI2luY2x1ZGUgPHN5cy9wb2xsLmg+Cj4+ICsjaW5jbHVkZSA8cG9sbC5oPgo+PiAg
-I2luY2x1ZGUgInJhd21pZGkuaCIKPj4gICNpbmNsdWRlICJjb250cm9sLmgiCj4+ICAjaW5jbHVk
-ZSAibG9jYWwuaCIKPj4gZGlmZiAtLWdpdCBhL3NyYy9yYXdtaWRpX21hY3Jvcy5oIGIvc3JjL3Jh
-d21pZGlfbWFjcm9zLmgKPj4gaW5kZXggYzMyYjQ0MC4uYzMxNDZjYyAxMDA2NDQKPj4gLS0tIGEv
-c3JjL3Jhd21pZGlfbWFjcm9zLmgKPj4gKysrIGIvc3JjL3Jhd21pZGlfbWFjcm9zLmgKPj4gQEAg
-LTEzLDcgKzEzLDcgQEAKPj4gICNpbmNsdWRlIDxlcnJuby5oPgo+PiAgI2luY2x1ZGUgPHVuaXN0
-ZC5oPgo+PiAgI2luY2x1ZGUgPHN5cy9pb2N0bC5oPgo+PiAtI2luY2x1ZGUgPHN5cy9wb2xsLmg+
-Cj4+ICsjaW5jbHVkZSA8cG9sbC5oPgo+PiAgCj4+ICB0eXBlZGVmIHN0cnVjdCBfc25kX3Jhd21p
-ZGlfaHcgewo+PiAgCWNoYXIgKm5hbWU7Cj4+IGRpZmYgLS1naXQgYS9zcmMvdGltZXIuYyBiL3Ny
-Yy90aW1lci5jCj4+IGluZGV4IDAwYTg1MzQuLmI5ZmJiMDAgMTAwNjQ0Cj4+IC0tLSBhL3NyYy90
-aW1lci5jCj4+ICsrKyBiL3NyYy90aW1lci5jCj4+IEBAIC0yNiw3ICsyNiw3IEBACj4+ICAjaW5j
-bHVkZSA8c3RyaW5nLmg+Cj4+ICAjaW5jbHVkZSA8ZmNudGwuaD4KPj4gICNpbmNsdWRlIDxzaWdu
-YWwuaD4KPj4gLSNpbmNsdWRlIDxzeXMvcG9sbC5oPgo+PiArI2luY2x1ZGUgPHBvbGwuaD4KPj4g
-ICNpbmNsdWRlICJ0aW1lci5oIgo+PiAgI2luY2x1ZGUgImxvY2FsLmgiCj4+ICAKPj4gZGlmZiAt
-LWdpdCBhL3NyYy90aW1lcl9tYWNyb3MuaCBiL3NyYy90aW1lcl9tYWNyb3MuaAo+PiBpbmRleCBh
-MTgzN2U3Li4xY2QzN2JlIDEwMDY0NAo+PiAtLS0gYS9zcmMvdGltZXJfbWFjcm9zLmgKPj4gKysr
-IGIvc3JjL3RpbWVyX21hY3Jvcy5oCj4+IEBAIC0xMSw3ICsxMSw3IEBACj4+ICAjaW5jbHVkZSA8
-ZXJybm8uaD4KPj4gICNpbmNsdWRlIDx1bmlzdGQuaD4KPj4gICNpbmNsdWRlIDxzeXMvaW9jdGwu
-aD4KPj4gLSNpbmNsdWRlIDxzeXMvcG9sbC5oPgo+PiArI2luY2x1ZGUgPHBvbGwuaD4KPj4gIAo+
-PiAgc3RydWN0IF9zbmRfdGltZXIgewo+PiAgCWNoYXIgKm5hbWU7Cj4+IC0tIAo+PiAyLjEzLjIK
-Pj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This structure is only stored in the ops field of a snd_soc_dai_driver
+structure. That field is declared const, so snd_soc_dai_ops structures
+that have this property can be declared as const also.
+
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+---
+ sound/soc/zte/zx-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
+index 8bbad1d..9a05659 100644
+--- a/sound/soc/zte/zx-i2s.c
++++ b/sound/soc/zte/zx-i2s.c
+@@ -357,7 +357,7 @@ static void zx_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	clk_disable_unprepare(zx_i2s->dai_pclk);
+ }
+ 
+-static struct snd_soc_dai_ops zx_i2s_dai_ops = {
++static const struct snd_soc_dai_ops zx_i2s_dai_ops = {
+ 	.trigger	= zx_i2s_trigger,
+ 	.hw_params	= zx_i2s_hw_params,
+ 	.set_fmt	= zx_i2s_set_fmt,
+-- 
+2.5.0
