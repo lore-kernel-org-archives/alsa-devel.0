@@ -1,15 +1,21 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: Intel: Skylake: fix type in debug message
-Date: Fri, 14 Jul 2017 00:04:06 +0100
-Message-ID: <20170713230406.15854-1-colin.king@canonical.com>
+From: Viktor Radnai <viktor.radnai@gmail.com>
+Subject: Re: Patch for Digidesign Mbox 2 (set sample rate)
+Date: Fri, 14 Jul 2017 00:58:15 +0100
+Message-ID: <CANx-tGhmxJ3b7B0ECF2fYoWh4sruvguQaG7exZF_zGV3WcR=tg@mail.gmail.com>
+References: <CANx-tGgQ59u==FL-yAvR6QRZWZp7LNgU4Qaf6EQ45Ae8t-=VWw@mail.gmail.com>
+ <s5h1ss6s0t9.wl-tiwai@suse.de>
+ <8ff1733e-3ff5-0ba4-ebfa-866797ca35bf@zamaudio.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id DD23F2672A8
- for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2017 01:04:19 +0200 (CEST)
+Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
+ [209.85.218.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22F642672A8
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2017 01:58:17 +0200 (CEST)
+Received: by mail-oi0-f67.google.com with SMTP id l130so8531488oib.2
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 16:58:17 -0700 (PDT)
+In-Reply-To: <8ff1733e-3ff5-0ba4-ebfa-866797ca35bf@zamaudio.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,32 +25,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Dharageswari R <dharageswari.r@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, GuruprasadX Pawse <guruprasadx.pawse@intel.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Damien Zammit <damien@zamaudio.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Damien,
 
-Trivial fix to typo in debug message, dst_instacne should be
-dst_instance
+Thanks for the test report.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/intel/skylake/skl-messages.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I have now successfully recorded with both the Mbox 2 and Mbox 2 Mini,
+however I had one occurrence where the Mbox 2 would not initialize even
+when I repeatedly unplugged and plugged it back. I have added your "magic"
+boot sequence back and since then I haven't seen this problem. I have been
+using that version ever since, so I cannot tell if simply unloading and
+reloading the driver would have fixed it. In any case I will re-submit the
+patch with the magic boot sequence for inclusion.
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index fb2f1f603f3c..c5b4e0a9946c 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -950,7 +950,7 @@ static void skl_dump_bind_info(struct skl_sst *ctx, struct skl_module_cfg
- {
- 	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
- 		__func__, src_module->id.module_id, src_module->id.pvt_id);
--	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
-+	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instance=%d\n", __func__,
- 		 dst_module->id.module_id, dst_module->id.pvt_id);
- 
- 	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
+Cheers,
+Vik
+
+On 9 July 2017 at 03:14, Damien Zammit <damien@zamaudio.com> wrote:
+
+> Hi all,
+>
+> I have tested Viktor's patch on "Mbox 2" and it works very well.
+> Looks like my 'magic' boot sequence was not needed.
+> Rate switching works between 44.1 and 48k.
+> Good job.
+>
+> Damien
+>
+> On 03/05/17 20:16, Takashi Iwai wrote:
+> > On Fri, 28 Apr 2017 22:36:09 +0200,
+> > Viktor Radnai wrote:
+> >>
+> >> Hi there,
+> >>
+> >> I have recently bought a Digidesign Mbox 2 Mini and found the lack of
+> >> support for 44100Hz sample rate in the driver limiting (the sample rate
+> was
+> >> hard-set to 48000Hz by the original author even though the device
+> supports
+> >> it, because he couldn't get the frame rate switching to work reliably).
+> >>
+> >> I had a go at hacking the driver and came up with the following patch
+> which
+> >> appears to work on the MBox 2 Mini:
+> >> https://pastebin.com/kzzTDj9T
+> >>
+> >> I have built and tested this with Linux 4.8.15 without any realtime
+> >> patches. I am planning to pick up a "full size" Mbox 2 as well, in the
+> >> meantime if anyone on the list owns one I would appreciate if you could
+> >> test this and let me know the result. There is a possibility that it
+> will
+> >> not work without the "magic" init sequence that I have removed because
+> it
+> >> does not look like it's needed on the Mini. Although I would be a bit
+> >> surprised because the two devices are apparently identical to the point
+> >> that the Mini allows the use of it's physically nonexistent features.
+> >>
+> >> Once someone could confirm that this works, I would like to get it
+> merged.
+> >> This is my first attempt at submitting a patch for any Linux device
+> driver
+> >> so please let me know if I need to do anything else :)
+> >
+> > At least it'd be better to the original author in the loop.
+> > Damien, could you take a look if you still have the device?
+> >
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+>
+
+
+
 -- 
-2.11.0
+My other sig is hilarious
