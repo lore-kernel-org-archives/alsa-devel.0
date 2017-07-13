@@ -1,19 +1,19 @@
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Subject: [PATCH] ASoC: mediatek: mt2701: constify
-	snd_soc_dai_ops structure
-Date: Thu, 13 Jul 2017 01:10:19 -0500
-Message-ID: <20170713061019.GA24134@embeddedgus>
+Subject: [PATCH] ASoC: Intel: Skylake: constify snd_soc_dai_ops
+	structures
+Date: Thu, 13 Jul 2017 01:16:46 -0500
+Message-ID: <20170713061646.GA25608@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway31.websitewelcome.com (gateway31.websitewelcome.com
- [192.185.143.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 53B09267099
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 08:10:26 +0200 (CEST)
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
- by gateway31.websitewelcome.com (Postfix) with ESMTP id 616AE1543C
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 01:10:25 -0500 (CDT)
+Received: from gateway24.websitewelcome.com (gateway24.websitewelcome.com
+ [192.185.51.36])
+ by alsa0.perex.cz (Postfix) with ESMTP id D87CC267099
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 08:16:48 +0200 (CEST)
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+ by gateway24.websitewelcome.com (Postfix) with ESMTP id 689FF3393
+ for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 01:16:47 -0500 (CDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,27 +28,46 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarosl
 Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This structure is only stored in the ops field of a snd_soc_dai_driver
+These structures are only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
 that have this property can be declared as const also.
 
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-pcm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index bc5d4db..10dcd69 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -595,7 +595,7 @@ static const struct snd_soc_dai_ops mt2701_afe_i2s_ops = {
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 0ebea34a..b1f2dba 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -628,7 +628,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops skl_pcm_dai_ops = {
++static const struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ 	.startup = skl_pcm_open,
+ 	.shutdown = skl_pcm_close,
+ 	.prepare = skl_pcm_prepare,
+@@ -637,15 +637,15 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ 	.trigger = skl_pcm_trigger,
  };
  
- /* MRG BE DAIs */
--static struct snd_soc_dai_ops mt2701_btmrg_ops = {
-+static const struct snd_soc_dai_ops mt2701_btmrg_ops = {
- 	.startup = mt2701_btmrg_startup,
- 	.shutdown = mt2701_btmrg_shutdown,
- 	.hw_params = mt2701_btmrg_hw_params,
+-static struct snd_soc_dai_ops skl_dmic_dai_ops = {
++static const struct snd_soc_dai_ops skl_dmic_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
+ };
+ 
+-static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
++static const struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
+ };
+ 
+-static struct snd_soc_dai_ops skl_link_dai_ops = {
++static const struct snd_soc_dai_ops skl_link_dai_ops = {
+ 	.prepare = skl_link_pcm_prepare,
+ 	.hw_params = skl_link_hw_params,
+ 	.hw_free = skl_link_hw_free,
 -- 
 2.5.0
