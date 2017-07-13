@@ -1,79 +1,80 @@
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_asrc: constify snd_soc_dai_ops
- structure
-Date: Thu, 13 Jul 2017 02:36:38 -0500
-Message-ID: <20170713023638.Horde.0_LUC9FWsp9URj4mt2AqTT6@gator4166.hostgator.com>
-References: <20170713072351.GA1485@embeddedgus>
- <s5hlgnsiyg6.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hlgnsiyg6.wl-tiwai@suse.de>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: [PATCH v3 0/9] add support for Sama5d2 audio PLLs and enable ClassD
+Date: Thu, 13 Jul 2017 09:49:18 +0200
+Message-ID: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
+Return-path: <linux-clk-owner@vger.kernel.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
+Cc: Quentin Schulz <quentin.schulz@free-electrons.com>, cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+This patch series adds support for the audio PLLs and enables ClassD that
+can be found in ATMEL Sama5d2 SoC.
 
-Quoting Takashi Iwai <tiwai@suse.de>:
+There are two audio PLLs (PMC and PAD) that shares the same parent (FRAC).
+FRAC can output between 620 and 700MHz and only multiply the rate of its
+parent. The two audio PLLs then divide the FRAC rate to best match the
+asked rate.
 
-> Gustavo,
->
-> please stop posting in this style.  It's really annoying to see
-> spontaneously popping-up almost same patch for more than two hours
-> long.
->
-> If you have a series of the same fix patches, send them as a patch
-> set in a shot with a thread.  git-send-email does it right.
->
+I basically took an old patch series posted by Nicolas on December, 6th
+2016[1][2][3] and the comments Boris did on the first version[4] Nicolas
+sent on July, 15th 2015.
 
-I will do that.
+I also fixed the function used to compute the divisors, removed useless
+spinlocks and added a range to the audio frac PLL to stay within vendor's
+supported range. Clocks that are children of gclk (generated-clk) are now
+able to propagate rate to the audio PLL clocks when needed.
 
-Thanks for the suggestion.
---
-Gustavo A. R. Silva
+However, there are multiple children clocks that could technically
+change the rate of audio_pll (via gck). With the rate locking introduced
+in Jerome Brunet's patch series[5], the first consumer to enable the clock
+will be the one definitely setting the rate of the clock. Without the rate
+locking, the last consumer to set the rate will be able to mess with the
+rate.
+Since audio IPs are most likely to request the same rate, we enforce
+that the only clks able to modify gck rate are those of audio IPs.
 
-> I don't mind a couple of patches posted separately, but this is over
-> the limit.
->
->
-> thanks,
->
-> Takashi
->
-> On Thu, 13 Jul 2017 09:23:51 +0200,
-> Gustavo A. R. Silva wrote:
->>
->> This structure is only stored in the ops field of a snd_soc_dai_driver
->> structure. That field is declared const, so snd_soc_dai_ops structures
->> that have this property can be declared as const also.
->>
->> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
->> ---
->>  sound/soc/fsl/fsl_asrc.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
->> index 8cfffa7..806d399 100644
->> --- a/sound/soc/fsl/fsl_asrc.c
->> +++ b/sound/soc/fsl/fsl_asrc.c
->> @@ -542,7 +542,7 @@ static int fsl_asrc_dai_trigger(struct  
->> snd_pcm_substream *substream, int cmd,
->>  	return 0;
->>  }
->>
->> -static struct snd_soc_dai_ops fsl_asrc_dai_ops = {
->> +static const struct snd_soc_dai_ops fsl_asrc_dai_ops = {
->>  	.hw_params    = fsl_asrc_dai_hw_params,
->>  	.hw_free      = fsl_asrc_dai_hw_free,
->>  	.trigger      = fsl_asrc_dai_trigger,
->> --
->> 2.5.0
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+To remain consistent, we deny other clocks to be children of audio_pll.
+
+Thanks,
+Quentin
+
+[1] https://patchwork.kernel.org/patch/9462351/
+[2] https://patchwork.kernel.org/patch/9462347/
+[3] https://patchwork.kernel.org/patch/9462349/
+[4] https://www.spinics.net/lists/arm-kernel/msg436120.html
+[5] http://www.spinics.net/lists/linux-clk/msg17927.html
+
+Cyrille Pitchen (2):
+  ARM: dts: at91: sama5d2: add classd nodes
+  ARM: dts: at91: sama5d2_xplained: add pin muxing and enable classd
+
+Quentin Schulz (7):
+  clk: at91: clk-generated: remove useless divisor loop
+  clk: at91: add audio plls to the compatible list in DT binding
+  clk: at91: add audio pll clock drivers
+  clk: at91: clk-generated: create function to find best_diff
+  clk: at91: clk-generated: make gclk determine audio_pll rate
+  ASoC: atmel-classd: remove aclk clock from DT binding
+  ASoC: atmel-classd: remove aclk clock
+
+ .../devicetree/bindings/clock/at91-clock.txt       |  10 +
+ .../devicetree/bindings/sound/atmel-classd.txt     |   9 +-
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts        |  16 ++
+ arch/arm/boot/dts/sama5d2.dtsi                     |  39 +++-
+ arch/arm/mach-at91/Kconfig                         |   4 +
+ drivers/clk/at91/Makefile                          |   2 +
+ drivers/clk/at91/clk-audio-pll-pad.c               | 206 ++++++++++++++++++
+ drivers/clk/at91/clk-audio-pll-pmc.c               | 174 +++++++++++++++
+ drivers/clk/at91/clk-audio-pll.c                   | 239 +++++++++++++++++++++
+ drivers/clk/at91/clk-generated.c                   | 101 +++++++--
+ include/linux/clk/at91_pmc.h                       |  25 +++
+ sound/soc/atmel/atmel-classd.c                     |  47 ++--
+ 12 files changed, 813 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/clk/at91/clk-audio-pll-pad.c
+ create mode 100644 drivers/clk/at91/clk-audio-pll-pmc.c
+ create mode 100644 drivers/clk/at91/clk-audio-pll.c
+
+-- 
+2.11.0
+
