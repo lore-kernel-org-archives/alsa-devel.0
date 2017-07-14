@@ -1,21 +1,15 @@
-From: Viktor Radnai <viktor.radnai@gmail.com>
-Subject: Re: Patch for Digidesign Mbox 2 (set sample rate)
-Date: Fri, 14 Jul 2017 00:58:15 +0100
-Message-ID: <CANx-tGhmxJ3b7B0ECF2fYoWh4sruvguQaG7exZF_zGV3WcR=tg@mail.gmail.com>
-References: <CANx-tGgQ59u==FL-yAvR6QRZWZp7LNgU4Qaf6EQ45Ae8t-=VWw@mail.gmail.com>
- <s5h1ss6s0t9.wl-tiwai@suse.de>
- <8ff1733e-3ff5-0ba4-ebfa-866797ca35bf@zamaudio.com>
+From: Daniel Dadap <ddadap@nvidia.com>
+Subject: [PATCH] ALSA: hda - Add missing NVIDIA GPU codec IDs
+	to patch table
+Date: Thu, 13 Jul 2017 19:27:39 -0500
+Message-ID: <e95f874b-7544-7c7b-5b41-380f8c16d187@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
- [209.85.218.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 22F642672A8
- for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2017 01:58:17 +0200 (CEST)
-Received: by mail-oi0-f67.google.com with SMTP id l130so8531488oib.2
- for <alsa-devel@alsa-project.org>; Thu, 13 Jul 2017 16:58:17 -0700 (PDT)
-In-Reply-To: <8ff1733e-3ff5-0ba4-ebfa-866797ca35bf@zamaudio.com>
+Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37DDF2672A8
+ for <alsa-devel@alsa-project.org>; Fri, 14 Jul 2017 02:27:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,82 +19,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Zammit <damien@zamaudio.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Damien,
+Add codec IDs for several recently released, pending, and historical
+NVIDIA GPU audio controllers to the patch table, to allow the correct
+patch functions to be selected for them.
 
-Thanks for the test report.
+Signed-off-by: Daniel Dadap <ddadap@nvidia.com>
+Reviewed-by: Andy Ritger <aritger@nvidia.com>
+---
+  sound/pci/hda/patch_hdmi.c | 27 +++++++++++++++++++++++++++
+  1 file changed, 27 insertions(+)
 
-I have now successfully recorded with both the Mbox 2 and Mbox 2 Mini,
-however I had one occurrence where the Mbox 2 would not initialize even
-when I repeatedly unplugged and plugged it back. I have added your "magic"
-boot sequence back and since then I haven't seen this problem. I have been
-using that version ever since, so I cannot tell if simply unloading and
-reloading the driver would have fixed it. In any case I will re-submit the
-patch with the magic boot sequence for inclusion.
-
-Cheers,
-Vik
-
-On 9 July 2017 at 03:14, Damien Zammit <damien@zamaudio.com> wrote:
-
-> Hi all,
->
-> I have tested Viktor's patch on "Mbox 2" and it works very well.
-> Looks like my 'magic' boot sequence was not needed.
-> Rate switching works between 44.1 and 48k.
-> Good job.
->
-> Damien
->
-> On 03/05/17 20:16, Takashi Iwai wrote:
-> > On Fri, 28 Apr 2017 22:36:09 +0200,
-> > Viktor Radnai wrote:
-> >>
-> >> Hi there,
-> >>
-> >> I have recently bought a Digidesign Mbox 2 Mini and found the lack of
-> >> support for 44100Hz sample rate in the driver limiting (the sample rate
-> was
-> >> hard-set to 48000Hz by the original author even though the device
-> supports
-> >> it, because he couldn't get the frame rate switching to work reliably).
-> >>
-> >> I had a go at hacking the driver and came up with the following patch
-> which
-> >> appears to work on the MBox 2 Mini:
-> >> https://pastebin.com/kzzTDj9T
-> >>
-> >> I have built and tested this with Linux 4.8.15 without any realtime
-> >> patches. I am planning to pick up a "full size" Mbox 2 as well, in the
-> >> meantime if anyone on the list owns one I would appreciate if you could
-> >> test this and let me know the result. There is a possibility that it
-> will
-> >> not work without the "magic" init sequence that I have removed because
-> it
-> >> does not look like it's needed on the Mini. Although I would be a bit
-> >> surprised because the two devices are apparently identical to the point
-> >> that the Mini allows the use of it's physically nonexistent features.
-> >>
-> >> Once someone could confirm that this works, I would like to get it
-> merged.
-> >> This is my first attempt at submitting a patch for any Linux device
-> driver
-> >> so please let me know if I need to do anything else :)
-> >
-> > At least it'd be better to the original author in the loop.
-> > Damien, could you take a look if you still have the device?
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> >
->
-
-
-
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 76c85f08bea6..0328561f20a1 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3731,11 +3731,15 @@ HDA_CODEC_ENTRY(0x1002aa01, "R6xx HDMI", 
+patch_atihdmi),
+  HDA_CODEC_ENTRY(0x10951390, "SiI1390 HDMI",	patch_generic_hdmi),
+  HDA_CODEC_ENTRY(0x10951392, "SiI1392 HDMI",	patch_generic_hdmi),
+  HDA_CODEC_ENTRY(0x17e80047, "Chrontel HDMI",	patch_generic_hdmi),
++HDA_CODEC_ENTRY(0x10de0001, "MCP73 HDMI",	patch_nvhdmi_2ch),
+  HDA_CODEC_ENTRY(0x10de0002, "MCP77/78 HDMI",	patch_nvhdmi_8ch_7x),
+  HDA_CODEC_ENTRY(0x10de0003, "MCP77/78 HDMI",	patch_nvhdmi_8ch_7x),
++HDA_CODEC_ENTRY(0x10de0004, "GPU 04 HDMI",	patch_nvhdmi_8ch_7x),
+  HDA_CODEC_ENTRY(0x10de0005, "MCP77/78 HDMI",	patch_nvhdmi_8ch_7x),
+  HDA_CODEC_ENTRY(0x10de0006, "MCP77/78 HDMI",	patch_nvhdmi_8ch_7x),
+  HDA_CODEC_ENTRY(0x10de0007, "MCP79/7A HDMI",	patch_nvhdmi_8ch_7x),
++HDA_CODEC_ENTRY(0x10de0008, "GPU 08 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0009, "GPU 09 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de000a, "GPU 0a HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de000b, "GPU 0b HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de000c, "MCP89 HDMI",	patch_nvhdmi),
+@@ -3762,17 +3766,40 @@ HDA_CODEC_ENTRY(0x10de0041, "GPU 41 HDMI/DP", 
+patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0042, "GPU 42 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0043, "GPU 43 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0044, "GPU 44 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0045, "GPU 45 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0050, "GPU 50 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0051, "GPU 51 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0052, "GPU 52 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0060, "GPU 60 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0061, "GPU 61 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0062, "GPU 62 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0067, "MCP67 HDMI",	patch_nvhdmi_2ch),
+  HDA_CODEC_ENTRY(0x10de0070, "GPU 70 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0071, "GPU 71 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0072, "GPU 72 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0073, "GPU 73 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0074, "GPU 74 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0076, "GPU 76 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de007b, "GPU 7b HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de007c, "GPU 7c HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de007d, "GPU 7d HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de007e, "GPU 7e HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0080, "GPU 80 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0081, "GPU 81 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0082, "GPU 82 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de0083, "GPU 83 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0084, "GPU 84 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0090, "GPU 90 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0091, "GPU 91 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0092, "GPU 92 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0093, "GPU 93 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0094, "GPU 94 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0095, "GPU 95 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0097, "GPU 97 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0098, "GPU 98 HDMI/DP",	patch_nvhdmi),
++HDA_CODEC_ENTRY(0x10de0099, "GPU 99 HDMI/DP",	patch_nvhdmi),
+  HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
++HDA_CODEC_ENTRY(0x10de8067, "MCP67/68 HDMI",	patch_nvhdmi_2ch),
+  HDA_CODEC_ENTRY(0x11069f80, "VX900 HDMI/DP",	patch_via_hdmi),
+  HDA_CODEC_ENTRY(0x11069f81, "VX900 HDMI/DP",	patch_via_hdmi),
+  HDA_CODEC_ENTRY(0x11069f84, "VX11 HDMI/DP",	patch_generic_hdmi),
 -- 
-My other sig is hilarious
+2.11.0
