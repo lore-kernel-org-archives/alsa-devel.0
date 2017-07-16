@@ -1,18 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 1/8] ASoC: sun4i-codec: Remove unneeded gpiod
-	NULL check
-Date: Sun, 16 Jul 2017 18:11:06 -0300
-Message-ID: <1500239473-14886-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH 2/8] ASoC: wm8804: Remove unneeded gpiod NULL
+	check
+Date: Sun, 16 Jul 2017 18:11:07 -0300
+Message-ID: <1500239473-14886-2-git-send-email-festevam@gmail.com>
+References: <1500239473-14886-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
- [209.85.216.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DC8E266A74
- for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2017 23:11:28 +0200 (CEST)
-Received: by mail-qt0-f196.google.com with SMTP id v31so16255811qtb.3
- for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2017 14:11:28 -0700 (PDT)
+Received: from mail-qk0-f196.google.com (mail-qk0-f196.google.com
+ [209.85.220.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78D66266A74
+ for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2017 23:11:30 +0200 (CEST)
+Received: by mail-qk0-f196.google.com with SMTP id v17so16284416qka.3
+ for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2017 14:11:30 -0700 (PDT)
+In-Reply-To: <1500239473-14886-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,24 +35,22 @@ duplicate the check in the driver.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/sunxi/sun4i-codec.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8804.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 1500699..4c37231 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1171,9 +1171,8 @@ static int sun4i_codec_spk_event(struct snd_soc_dapm_widget *w,
- {
- 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(w->dapm->card);
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index af95d648..fc69b87 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -623,8 +623,7 @@ int wm8804_probe(struct device *dev, struct regmap *regmap)
+ 		return ret;
+ 	}
  
--	if (scodec->gpio_pa)
--		gpiod_set_value_cansleep(scodec->gpio_pa,
--					 !!SND_SOC_DAPM_EVENT_ON(event));
-+	gpiod_set_value_cansleep(scodec->gpio_pa,
-+				 !!SND_SOC_DAPM_EVENT_ON(event));
+-	if (wm8804->reset)
+-		gpiod_set_value_cansleep(wm8804->reset, 1);
++	gpiod_set_value_cansleep(wm8804->reset, 1);
  
- 	return 0;
- }
+ 	ret = regmap_read(regmap, WM8804_RST_DEVID1, &id1);
+ 	if (ret < 0) {
 -- 
 2.7.4
