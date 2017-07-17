@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove unnecessary static in
-	rsnd_ssiu_probe()" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:18 +0100
-Message-ID: <E1dX8VO-0004O9-4w@debutante>
+Subject: Applied "ASoC: dwc: constify snd_soc_dai_ops
+	structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:04:23 +0100
+Message-ID: <E1dX8VT-0004QF-Iq@debutante>
+References: <b46ec58b34081fa70e5087d392e939f08488eb9c.1499974826.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DB6A266F93
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:27 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id A2675266FD4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:50 +0200 (CEST)
+In-Reply-To: <b46ec58b34081fa70e5087d392e939f08488eb9c.1499974826.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove unnecessary static in rsnd_ssiu_probe()
+   ASoC: dwc: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,72 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From 32e1b60d8f91be932c4a624d4153224895b65ec7 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Mon, 17 Jul 2017 10:30:20 -0500
-Subject: [PATCH] ASoC: rsnd: remove unnecessary static in rsnd_ssiu_probe()
+>From 73a995ca90544914a97ed33a4f7baef44ad110d0 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Thu, 13 Jul 2017 15:38:43 -0500
+Subject: [PATCH] ASoC: dwc: constify snd_soc_dai_ops structure
 
-Remove unnecessary static on local variable ops.
-Such variable is initialized before being used,
-on every execution path throughout the function.
-The static has no benefit and, removing it reduces
-the code size.
+This structure is only stored in the ops field of a snd_soc_dai_driver
+structure. That field is declared const, so snd_soc_dai_ops structures
+that have this property can be declared as const also.
 
-This issue was detected using Coccinelle and the following semantic patch:
-
-@bad exists@
-position p;
-identifier x;
-type T;
-@@
-
-static T x@p;
-...
-x = <+...x...+>
-
-@@
-identifier x;
-expression e;
-type T;
-position p != bad.p;
-@@
-
--static
- T x@p;
- ... when != x
-     when strict
-?x = e;
-
-In the following log you can see the difference in the code size. Also,
-there is a significant difference in the bss segment. This log is the
-output of the size command, before and after the code change:
-
-before:
-   text    data     bss     dec     hex filename
-   3211     680      64    3955     f73 sound/soc/sh/rcar/ssiu.o
-
-after:
-   text    data     bss     dec     hex filename
-   3207     592       0    3799     ed7 sound/soc/sh/rcar/ssiu.o
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 2 +-
+ sound/soc/dwc/dwc-i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index bed2c9c0004b..4d948757d300 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -250,7 +250,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct rsnd_ssiu *ssiu;
--	static struct rsnd_mod_ops *ops;
-+	struct rsnd_mod_ops *ops;
- 	int i, nr, ret;
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 916067638180..eebe9d34e7a0 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -381,7 +381,7 @@ static int dw_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	return ret;
+ }
  
- 	/* same number to SSI */
+-static struct snd_soc_dai_ops dw_i2s_dai_ops = {
++static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
+ 	.startup	= dw_i2s_startup,
+ 	.shutdown	= dw_i2s_shutdown,
+ 	.hw_params	= dw_i2s_hw_params,
 -- 
 2.13.2
