@@ -1,56 +1,32 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 8/8] ASoC: sta32x: Remove unneeded gpiod NULL
-	check
-Date: Sun, 16 Jul 2017 18:11:13 -0300
-Message-ID: <1500239473-14886-8-git-send-email-festevam@gmail.com>
-References: <1500239473-14886-1-git-send-email-festevam@gmail.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH 0/3] constify dev_pm_ops structures
+Date: Sun, 16 Jul 2017 21:12:11 -0500
+Message-ID: <cover.1500256845.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EC66266DB3
- for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2017 23:11:44 +0200 (CEST)
-Received: by mail-qk0-f193.google.com with SMTP id z22so9781qka.2
- for <alsa-devel@alsa-project.org>; Sun, 16 Jul 2017 14:11:44 -0700 (PDT)
-In-Reply-To: <1500239473-14886-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@nxp.com>
+This patchset aims to constify all dev_pm_ops structures that only
+stored in the pm field of a device_driver structure. This field is
+declared const, so dev_pm_ops structures that have this property
+can be declared as const also.
 
-The gpiod API checks for NULL descriptors, so there is no need to
-duplicate the check in the driver.
+Thanks!
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- sound/soc/codecs/sta32x.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Gustavo A. R. Silva (3):
+  ASoC: fsi: constify dev_pm_ops structure
+  ASoC: psc-ac97: constify dev_pm_ops structure
+  ASoC: au1x: psc-i2s: constify dev_pm_ops structure
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index 0790ae8..5b88847 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -847,8 +847,7 @@ static int sta32x_set_bias_level(struct snd_soc_codec *codec,
- 		msleep(300);
- 		sta32x_watchdog_stop(sta32x);
- 
--		if (sta32x->gpiod_nreset)
--			gpiod_set_value(sta32x->gpiod_nreset, 0);
-+		gpiod_set_value(sta32x->gpiod_nreset, 0);
- 
- 		regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies),
- 				       sta32x->supplies);
+ sound/soc/au1x/psc-ac97.c | 2 +-
+ sound/soc/au1x/psc-i2s.c  | 2 +-
+ sound/soc/sh/fsi.c        | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
 -- 
-2.7.4
+2.5.0
