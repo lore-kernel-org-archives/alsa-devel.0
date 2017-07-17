@@ -1,33 +1,27 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:50 +0100
-Message-ID: <E1dX8Vu-0004Zr-Oy@debutante>
-References: <f980e5bacd8546d3dd8c01ec0f69384205879d78.1499974826.git.garsilva@embeddedor.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A6C02267021
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:22 +0200 (CEST)
-In-Reply-To: <f980e5bacd8546d3dd8c01ec0f69384205879d78.1499974826.git.garsilva@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Bard Liao <bardliao@realtek.com>
+Subject: Applied "ASoC: fsl_esai: constify snd_soc_dai_ops structure" to the
+ asoc tree
+Date: Mon, 17 Jul 2017 17:05:24 +0100
+Message-ID: <E1dX8WS-0004m0-3i@debutante>
+References: <20170713071925.GA32343@embeddedgus>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20170713071925.GA32343@embeddedgus>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Fabio Estevam <fabio.estevam@nxp.com>, Jaroslav Kysela <perex@perex.cz>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: constify snd_soc_dai_ops structure
+   ASoC: fsl_esai: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +46,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6ccf3a6d031c47d6319cb56ee35dd4b546905e91 Mon Sep 17 00:00:00 2001
+>From 5d29e95eec1451d35ef6ce5b851fbc8b04f82d39 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:37:36 -0500
-Subject: [PATCH] ASoC: rt5663: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 02:19:25 -0500
+Subject: [PATCH] ASoC: fsl_esai: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +58,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 2 +-
+ sound/soc/fsl/fsl_esai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 963cda9c995a..71c073c63866 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -2888,7 +2888,7 @@ static int rt5663_resume(struct snd_soc_codec *codec)
- #define RT5663_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 809a069d490b..cef79a1a620b 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -620,7 +620,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return 0;
+ }
  
--static struct snd_soc_dai_ops rt5663_aif_dai_ops = {
-+static const struct snd_soc_dai_ops rt5663_aif_dai_ops = {
- 	.hw_params = rt5663_hw_params,
- 	.set_fmt = rt5663_set_dai_fmt,
- 	.set_sysclk = rt5663_set_dai_sysclk,
+-static struct snd_soc_dai_ops fsl_esai_dai_ops = {
++static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
+ 	.startup = fsl_esai_startup,
+ 	.shutdown = fsl_esai_shutdown,
+ 	.trigger = fsl_esai_trigger,
 -- 
 2.13.2
