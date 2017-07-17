@@ -1,50 +1,46 @@
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_asrc: constify snd_soc_dai_ops
- structure
-Date: Sun, 16 Jul 2017 23:22:09 -0500
-Message-ID: <607d5ac9-5452-a13b-63b1-52a9a2c61cc1@embeddedor.com>
-References: <20170713072351.GA1485@embeddedgus> <s5hlgnsiyg6.wl-tiwai@suse.de>
- <20170713101630.odml56qmsvgxqj64@sirena.org.uk>
- <20170713101814.Horde.q8OhHejhvSALVEt2o11aUTW@gator4166.hostgator.com>
- <1499969891.4457.59.camel@perches.com>
- <20170714110233.fqkmgy7kyhje7mfy@sirena.org.uk>
- <1500030501.4457.70.camel@perches.com>
- <20170714112511.nhcgu2ogpufgele5@sirena.org.uk>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] ASoC: samsung: Remove non-existing
+	CONFIG_CPU_S3C2413
+Date: Mon, 17 Jul 2017 07:44:21 +0200
+Message-ID: <1500270261-23235-1-git-send-email-krzk@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170714112511.nhcgu2ogpufgele5@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 034A6266D71
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 07:44:30 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Joe,
+There is no CONFIG_CPU_S3C2413 so get rid of it.
 
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ sound/soc/samsung/s3c-i2s-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 07/14/2017 06:25 AM, Mark Brown wrote:
-> On Fri, Jul 14, 2017 at 04:08:21AM -0700, Joe Perches wrote:
->> On Fri, 2017-07-14 at 12:02 +0100, Mark Brown wrote:
->>> On Thu, Jul 13, 2017 at 11:18:11AM -0700, Joe Perches wrote:
->>>> I don't it's better.
->>>> It's not that confusing if the 0/n patch cover letter is cc'd
->>>> to all the appropriate mailing lists and all the [1..n]/n
->>>> patches are sent with in-reply-to of the cover letter and
->>>> send to the maintainers and appropriate mailing lists.
->>> With large serieses like Gustavo is sending the CC list can easily hit
->>> the points where mailing lists start blocking it, and the individual
->>> pathces really do need to go to the relevant people so they have sight
->>> of them.
->> I agree and that's what I wrote.
-> The set of people who should have sight of the patches is wider than
-> just the maintainers.
-I'm running get_maintainer.pl in the following way in order to get all 
-the supporters, maintainers and lists:
-
-$ scripts/get_maintainer.pl --nokeywords --nogit --nogit-fallback <file>
-
-Thank you
-
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 8f42deaa184b..ca522a95160b 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -27,7 +27,7 @@
+ 
+ #undef S3C_IIS_V2_SUPPORTED
+ 
+-#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413) \
++#if defined(CONFIG_CPU_S3C2412) \
+ 	|| defined(CONFIG_ARCH_S3C64XX) || defined(CONFIG_CPU_S5PV210)
+ #define S3C_IIS_V2_SUPPORTED
+ #endif
 -- 
-Gustavo A. R. Silva
+2.7.4
