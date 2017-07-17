@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:26 +0100
-Message-ID: <E1dX8VW-0004RL-IG@debutante>
-References: <f8993aaa6db0fcd64aab7672da799fe4ef74966e.1499974826.git.garsilva@embeddedor.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ADE42266FCD
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:54 +0200 (CEST)
-In-Reply-To: <f8993aaa6db0fcd64aab7672da799fe4ef74966e.1499974826.git.garsilva@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Subject: Applied "ASoC: ux500: Restore platform DAI assignments" to the asoc tree
+Date: Mon, 17 Jul 2017 17:05:36 +0100
+Message-ID: <E1dX8We-0004ql-91@debutante>
+References: <20170712155530.17765-2-johan@kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20170712155530.17765-2-johan@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Johan Hovold <johan@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, stable <stable@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.orgstable <stable@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdac_hdmi: constify snd_soc_dai_ops structure
+   ASoC: ux500: Restore platform DAI assignments
 
 has been applied to the asoc tree at
 
@@ -52,33 +37,59 @@ to this mail.
 Thanks,
 Mark
 
->From 61b3b3cc68c4161ba202f401a6572250360ff18c Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:38:38 -0500
-Subject: [PATCH] ASoC: hdac_hdmi: constify snd_soc_dai_ops structure
+>From 651e9268fb9b9944e063d731b09c0d2ad339bedb Mon Sep 17 00:00:00 2001
+From: Johan Hovold <johan@kernel.org>
+Date: Wed, 12 Jul 2017 17:55:30 +0200
+Subject: [PATCH] ASoC: ux500: Restore platform DAI assignments
 
-This structure is only stored in the ops field of a snd_soc_dai_driver
-structure. That field is declared const, so snd_soc_dai_ops structures
-that have this property can be declared as const also.
+This reverts commit f1013cdeeeb9 ("ASoC: ux500: drop platform DAI
+assignments"), which seems to have been based on a misunderstanding and
+prevents the platform driver callbacks from being made (e.g. to
+preallocate DMA memory).
 
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+The real culprit for the warnings about attempts to create duplicate
+procfs entries was commit 99b04f4c4051 ("ASoC: add Component level
+pcm_new/pcm_free" that broke PCM creation on systems that use more than
+one platform component.
+
+Fixes: f1013cdeeeb9 ("ASoC: ux500: drop platform DAI assignments")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable <stable@vger.kernel.org>	# 4.11
 ---
- sound/soc/codecs/hdac_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ux500/mop500.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index bc2e74ff3b2d..e6de50acefd4 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1360,7 +1360,7 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
- 
- }
- 
--static struct snd_soc_dai_ops hdmi_dai_ops = {
-+static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup = hdac_hdmi_pcm_open,
- 	.shutdown = hdac_hdmi_pcm_close,
- 	.hw_params = hdac_hdmi_set_hw_params,
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index b50f68a439ce..ba9fc099cf67 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -33,6 +33,7 @@ static struct snd_soc_dai_link mop500_dai_links[] = {
+ 		.stream_name = "ab8500_0",
+ 		.cpu_dai_name = "ux500-msp-i2s.1",
+ 		.codec_dai_name = "ab8500-codec-dai.0",
++		.platform_name = "ux500-msp-i2s.1",
+ 		.codec_name = "ab8500-codec.0",
+ 		.init = mop500_ab8500_machine_init,
+ 		.ops = mop500_ab8500_ops,
+@@ -42,6 +43,7 @@ static struct snd_soc_dai_link mop500_dai_links[] = {
+ 		.stream_name = "ab8500_1",
+ 		.cpu_dai_name = "ux500-msp-i2s.3",
+ 		.codec_dai_name = "ab8500-codec-dai.1",
++		.platform_name = "ux500-msp-i2s.3",
+ 		.codec_name = "ab8500-codec.0",
+ 		.init = NULL,
+ 		.ops = mop500_ab8500_ops,
+@@ -85,6 +87,8 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 	for (i = 0; i < 2; i++) {
+ 		mop500_dai_links[i].cpu_of_node = msp_np[i];
+ 		mop500_dai_links[i].cpu_dai_name = NULL;
++		mop500_dai_links[i].platform_of_node = msp_np[i];
++		mop500_dai_links[i].platform_name = NULL;
+ 		mop500_dai_links[i].codec_of_node = codec_np;
+ 		mop500_dai_links[i].codec_name = NULL;
+ 	}
 -- 
 2.13.2
