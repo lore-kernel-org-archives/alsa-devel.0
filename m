@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hisilicon: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:18 +0100
-Message-ID: <E1dX8WM-0004jM-0P@debutante>
-References: <20170713070853.GA29230@embeddedgus>
+Subject: Applied "ASoC: mediatek: mt2701: constify
+	snd_soc_dai_ops structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:05:14 +0100
+Message-ID: <E1dX8WJ-0004iP-07@debutante>
+References: <20170713061019.GA24134@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FF782673E4
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:40 +0200 (CEST)
-In-Reply-To: <20170713070853.GA29230@embeddedgus>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D57B2673DA
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:38 +0200 (CEST)
+In-Reply-To: <20170713061019.GA24134@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hisilicon: constify snd_soc_dai_ops structure
+   ASoC: mediatek: mt2701: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 94372fceb2fb5d3d05d6db61c9658865d5e27ee4 Mon Sep 17 00:00:00 2001
+>From 549acff975c9245ea8d469c0defa50e52489227c Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 02:08:53 -0500
-Subject: [PATCH] ASoC: hisilicon: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 01:10:19 -0500
+Subject: [PATCH] ASoC: mediatek: mt2701: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +64,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 2 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index b193d3beb253..0c8f86d4020e 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -517,7 +517,7 @@ static int hi6210_i2s_dai_probe(struct snd_soc_dai *dai)
- }
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index bc5d4db94de6..10dcd69c5ffa 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -595,7 +595,7 @@ static const struct snd_soc_dai_ops mt2701_afe_i2s_ops = {
+ };
  
- 
--static struct snd_soc_dai_ops hi6210_i2s_dai_ops = {
-+static const struct snd_soc_dai_ops hi6210_i2s_dai_ops = {
- 	.trigger	= hi6210_i2s_trigger,
- 	.hw_params	= hi6210_i2s_hw_params,
- 	.set_fmt	= hi6210_i2s_set_fmt,
+ /* MRG BE DAIs */
+-static struct snd_soc_dai_ops mt2701_btmrg_ops = {
++static const struct snd_soc_dai_ops mt2701_btmrg_ops = {
+ 	.startup = mt2701_btmrg_startup,
+ 	.shutdown = mt2701_btmrg_shutdown,
+ 	.hw_params = mt2701_btmrg_hw_params,
 -- 
 2.13.2
