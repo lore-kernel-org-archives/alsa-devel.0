@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l34: Remove unneeded gpiod NULL
-	check" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:55 +0100
-Message-ID: <E1dX8Wx-0004wj-Q0@debutante>
-References: <1500239473-14886-5-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: tegra: constify snd_soc_dai_ops
+	structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:05:33 +0100
+Message-ID: <E1dX8Wb-0004pc-7M@debutante>
+References: <20170713054735.GA18162@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 154BA267414
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:03 +0200 (CEST)
-In-Reply-To: <1500239473-14886-5-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B63E2673D1
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:00 +0200 (CEST)
+In-Reply-To: <20170713054735.GA18162@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jonathan Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l34: Remove unneeded gpiod NULL check
+   ASoC: tegra: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -53,33 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From db3be255a101da11f67c0f3053b750e767eb10fe Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 16 Jul 2017 18:11:10 -0300
-Subject: [PATCH] ASoC: cs35l34: Remove unneeded gpiod NULL check
+>From 583ac685986963737997d0f6df569a3daab9c097 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Thu, 13 Jul 2017 00:47:35 -0500
+Subject: [PATCH] ASoC: tegra: constify snd_soc_dai_ops structure
 
-The gpiod API checks for NULL descriptors, so there is no need to
-duplicate the check in the driver.
+This structure is only stored in the ops field of a snd_soc_dai_driver
+structure. That field is declared const, so snd_soc_dai_ops structures
+that have this property can be declared as const also.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l34.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/tegra/tegra30_i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
-index 0a747c66cc6c..dade899b38dc 100644
---- a/sound/soc/codecs/cs35l34.c
-+++ b/sound/soc/codecs/cs35l34.c
-@@ -1138,8 +1138,7 @@ static int cs35l34_i2c_remove(struct i2c_client *client)
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index b2b279c96029..0b176ea24914 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -275,7 +275,7 @@ static int tegra30_i2s_probe(struct snd_soc_dai *dai)
+ 	return 0;
+ }
  
- 	snd_soc_unregister_codec(&client->dev);
- 
--	if (cs35l34->reset_gpio)
--		gpiod_set_value_cansleep(cs35l34->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs35l34->reset_gpio, 0);
- 
- 	pm_runtime_disable(&client->dev);
- 	regulator_bulk_disable(cs35l34->num_core_supplies,
+-static struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
++static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
+ 	.set_fmt	= tegra30_i2s_set_fmt,
+ 	.hw_params	= tegra30_i2s_hw_params,
+ 	.trigger	= tegra30_i2s_trigger,
 -- 
 2.13.2
