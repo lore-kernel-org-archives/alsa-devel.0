@@ -1,59 +1,60 @@
-From: Michael Stecklein <m-stecklein@ti.com>
-Subject: [PATCH v2 0/2] Add support for TI TAS6424 digital
-	amplifier
-Date: Mon, 17 Jul 2017 11:25:45 -0500
-Message-ID: <1500308747-27973-1-git-send-email-m-stecklein@ti.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] ASoC: rsnd: remove unnecessary static in
+ rsnd_ssiu_probe()
+Date: Mon, 17 Jul 2017 09:31:36 -0700
+Message-ID: <1500309096.25934.11.camel@perches.com>
+References: <20170717153020.GA19704@embeddedgus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id E81C1266D71
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:25:50 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Michael Stecklein <m-stecklein@ti.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170717153020.GA19704@embeddedgus>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+On Mon, 2017-07-17 at 10:30 -0500, Gustavo A. R. Silva wrote:
+> Remove unnecessary static on local variable ops.
+> Such variable is initialized before being used,
+> on every execution path throughout the function.
+> The static has no benefit and, removing it reduces
+> the code size.
+[]
+> In the following log you can see the difference in the code size. Also,
+> there is a significant difference in the bss segment. This log is the
+> output of the size command, before and after the code change:
+> 
+> before:
+>    text    data     bss     dec     hex filename
+>    3211     680      64    3955     f73 sound/soc/sh/rcar/ssiu.o
+> 
+> after:
+>    text    data     bss     dec     hex filename
+>    3207     592       0    3799     ed7 sound/soc/sh/rcar/ssiu.o
+[]
+> diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+[]
+> @@ -250,7 +250,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+>  {
+>  	struct device *dev = rsnd_priv_to_dev(priv);
+>  	struct rsnd_ssiu *ssiu;
+> -	static struct rsnd_mod_ops *ops;
+> +	struct rsnd_mod_ops *ops;
+>  	int i, nr, ret;
+>  
+>  	/* same number to SSI */
 
-This two-patch series adds the dt bindings, driver, and other related
-changes for the TAS6424 digital amplifier. I am upstreaming this driver
-on behalf of Andreas.
+I'm not an sh user anymore, but it's curious to me why
+the static removal has such a large impact on data size.
 
-Regards,
-Michael Stecklein <m-stecklein@ti.com>
+Is this for an allyesconfig with debug symbols?
 
-Changes since v1:
- - rebased on 4.13-rc1
+btw: this does compile for x86 and those sizes seem
+     more sensible.
 
-Original v1 patches:
- - https://patchwork.kernel.org/patch/9795235/
- - https://patchwork.kernel.org/patch/9795237/
-
-Andreas Dannenberg (1):
-  ASoC: add support for TAS6424 digital amplifier
-
-Michael Stecklein (1):
-  dt-bindings: sound: add bindings for TAS6424
-
- .../devicetree/bindings/sound/ti,tas6424.txt       |  31 +
- sound/soc/codecs/Kconfig                           |   8 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/tas6424.c                         | 755 +++++++++++++++++++++
- sound/soc/codecs/tas6424.h                         | 127 ++++
- 5 files changed, 923 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,tas6424.txt
- create mode 100644 sound/soc/codecs/tas6424.c
- create mode 100644 sound/soc/codecs/tas6424.h
-
--- 
-2.7.4
+$ size sound/soc/sh/rcar/ssiu.o*   text	   data	    bss	    dec	    hex	filename
+   1950	    248	      0	   2198	    896	sound/soc/sh/rcar/ssiu.o.defconfig.new
+   1950	    248	      8	   2206	    89e	sound/soc/sh/rcar/ssiu.o.defconfig.old
+   2692	    248	      0	   2940	    b7c	sound/soc/sh/rcar/ssiu.o.allyesconfig.new
+   2692	    248	      8	   2948	    b84	sound/soc/sh/rcar/ssiu.o.allyesconfig.old
