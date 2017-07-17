@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH 2/3] ASoC: qcom: apq8016-sbc: set default mclk rate
-Date: Mon, 17 Jul 2017 15:54:09 +0200
-Message-ID: <20170717135410.26812-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/3] ASoC: codecs: msm8916-wcd-digital: fix dmic support
+Date: Mon, 17 Jul 2017 15:54:10 +0200
+Message-ID: <20170717135410.26812-4-srinivas.kandagatla@linaro.org>
 References: <20170717135410.26812-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170717135410.26812-1-srinivas.kandagatla@linaro.org>
@@ -12,41 +12,73 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-MCLK for internal audio codec is expected to be at 9.6MHz by default.
-This patch adds support to 9.6MHz to make the default case possible.
+This patch fixes dmic support which was broken in this driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/apq8016_sbc.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/msm8916-wcd-digital.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index d084d7468299..1064c1b85c63 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -34,10 +34,12 @@ struct apq8016_sbc_data {
- #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
- #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
- #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
-+#define DEFAULT_MCLK_RATE		9600000
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index 126a0ee8aded..3265bd404fd7 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -168,6 +168,9 @@
  
- static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_card *card = rtd->card;
- 	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
- 	int rval = 0;
-@@ -68,6 +70,10 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- 
+ #define LPASS_CDC_TX2_VOL_CTL_CFG		(0x2A8)
+ #define LPASS_CDC_TX1_MUX_CTL			(0x28C)
++#define TX_MUX_CTL_ADC_DMIC_SEL_MASK		BIT(0)
++#define TX_MUX_CTL_ADC_DMIC_SEL_DMIC		BIT(0)
++#define TX_MUX_CTL_ADC_DMIC_SEL_ADC		0
+ #define TX_MUX_CTL_CUT_OFF_FREQ_MASK		GENMASK(5, 4)
+ #define TX_MUX_CTL_CUT_OFF_FREQ_SHIFT		4
+ #define TX_MUX_CTL_CF_NEG_3DB_4HZ		(0x0 << 4)
+@@ -439,17 +442,37 @@ static int msm8916_wcd_digital_enable_dmic(struct snd_soc_dapm_widget *w,
+ 				    DMIC_B1_CTL_DMIC0_CLK_SEL_DIV3);
+ 		switch (dmic) {
+ 		case 1:
++			snd_soc_update_bits(codec, LPASS_CDC_TX1_MUX_CTL,
++					    TX_MUX_CTL_ADC_DMIC_SEL_MASK,
++					    TX_MUX_CTL_ADC_DMIC_SEL_DMIC);
+ 			snd_soc_update_bits(codec, LPASS_CDC_TX1_DMIC_CTL,
+ 					    TXN_DMIC_CTL_CLK_SEL_MASK,
+ 					    TXN_DMIC_CTL_CLK_SEL_DIV3);
+ 			break;
+ 		case 2:
++			snd_soc_update_bits(codec, LPASS_CDC_TX2_MUX_CTL,
++					    TX_MUX_CTL_ADC_DMIC_SEL_MASK,
++					    TX_MUX_CTL_ADC_DMIC_SEL_DMIC);
+ 			snd_soc_update_bits(codec, LPASS_CDC_TX2_DMIC_CTL,
+ 					    TXN_DMIC_CTL_CLK_SEL_MASK,
+ 					    TXN_DMIC_CTL_CLK_SEL_DIV3);
+ 			break;
+ 		}
+ 		break;
++	case SND_SOC_DAPM_POST_PMD:
++		switch (dmic) {
++		case 1:
++			snd_soc_update_bits(codec, LPASS_CDC_TX1_MUX_CTL,
++					    TX_MUX_CTL_ADC_DMIC_SEL_MASK,
++					    0);
++			break;
++		case 2:
++			snd_soc_update_bits(codec, LPASS_CDC_TX2_MUX_CTL,
++					    TX_MUX_CTL_ADC_DMIC_SEL_MASK,
++					    0);
++			break;
++		}
++		break;
  	}
  
-+	/* Set default mclk for internal codec */
-+	snd_soc_dai_set_sysclk(codec_dai, 0, DEFAULT_MCLK_RATE,
-+			       SND_SOC_CLOCK_IN);
-+
- 	return rval;
- }
+ 	return 0;
+@@ -536,6 +559,8 @@ static const struct snd_soc_dapm_widget msm8916_wcd_digital_dapm_widgets[] = {
+ 	/* Connectivity Clock */
+ 	SND_SOC_DAPM_SUPPLY_S("CDC_CONN", -2, LPASS_CDC_CLK_OTHR_CTL, 2, 0,
+ 			      NULL, 0),
++	SND_SOC_DAPM_MIC("Digital Mic1", NULL),
++	SND_SOC_DAPM_MIC("Digital Mic2", NULL),
+ 
+ };
  
 -- 
 2.11.0
