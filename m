@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:23 +0100
-Message-ID: <E1dX8VT-0004QF-Iq@debutante>
-References: <b46ec58b34081fa70e5087d392e939f08488eb9c.1499974826.git.garsilva@embeddedor.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A2675266FD4
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:50 +0200 (CEST)
-In-Reply-To: <b46ec58b34081fa70e5087d392e939f08488eb9c.1499974826.git.garsilva@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Subject: Applied "ASoC: tlv320aic32x4: Add support for tlv320aic32x6" to the asoc tree
+Date: Mon, 17 Jul 2017 17:04:59 +0100
+Message-ID: <E1dX8W3-0004d5-UC@debutante>
+References: <20170712183700.15310-1-dmurphy@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170712183700.15310-1-dmurphy@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.orgbroonie@kernel.org, linux-kernel@vger.kernel.org, javier.martin@vista-silicon.com, lgirdwood@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dwc: constify snd_soc_dai_ops structure
+   ASoC: tlv320aic32x4: Add support for tlv320aic32x6
 
 has been applied to the asoc tree at
 
@@ -52,33 +37,79 @@ to this mail.
 Thanks,
 Mark
 
->From 73a995ca90544914a97ed33a4f7baef44ad110d0 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:38:43 -0500
-Subject: [PATCH] ASoC: dwc: constify snd_soc_dai_ops structure
+>From fde0543f1129967dfa73f1fa3477c7fe12052da5 Mon Sep 17 00:00:00 2001
+From: Dan Murphy <dmurphy@ti.com>
+Date: Wed, 12 Jul 2017 13:36:59 -0500
+Subject: [PATCH] ASoC: tlv320aic32x4: Add support for tlv320aic32x6
 
-This structure is only stored in the ops field of a snd_soc_dai_driver
-structure. That field is declared const, so snd_soc_dai_ops structures
-that have this property can be declared as const also.
+Add support for the tlv320aic32x6 family of devices.
+These devices share the same register set as the tlv320aic32x4
+and this driver can be re-used.
 
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+TLV320aic32x6 data sheets are here:
+tlv320aic3256 - http://www.ti.com/lit/gpn/tlv320aic3256
+tlv320aic3206 - http://www.ti.com/lit/gpn/tlv320aic3206
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/dwc-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/tlv320aic32x4.txt | 4 +++-
+ sound/soc/codecs/tlv320aic32x4-i2c.c                      | 2 ++
+ sound/soc/codecs/tlv320aic32x4-spi.c                      | 2 ++
+ 3 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index 916067638180..eebe9d34e7a0 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -381,7 +381,7 @@ static int dw_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 	return ret;
- }
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+index 5e2741af27be..9651fc7503a4 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic32x4.txt
+@@ -3,7 +3,9 @@ Texas Instruments - tlv320aic32x4 Codec module
+ The tlv320aic32x4 serial control bus communicates through I2C protocols
  
--static struct snd_soc_dai_ops dw_i2s_dai_ops = {
-+static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
- 	.startup	= dw_i2s_startup,
- 	.shutdown	= dw_i2s_shutdown,
- 	.hw_params	= dw_i2s_hw_params,
+ Required properties:
+- - compatible: Should be "ti,tlv320aic32x4"
++ - compatible - "string" - One of:
++	"ti,tlv320aic32x4" TLV320AIC3204
++	"ti,tlv320aic32x6" TLV320AIC3206, TLV320AIC3256
+  - reg: I2C slave address
+  - supply-*: Required supply regulators are:
+     "iov" - digital IO power supply
+diff --git a/sound/soc/codecs/tlv320aic32x4-i2c.c b/sound/soc/codecs/tlv320aic32x4-i2c.c
+index 59606cf3008f..385fa2e9525a 100644
+--- a/sound/soc/codecs/tlv320aic32x4-i2c.c
++++ b/sound/soc/codecs/tlv320aic32x4-i2c.c
+@@ -47,12 +47,14 @@ static int aic32x4_i2c_remove(struct i2c_client *i2c)
+ 
+ static const struct i2c_device_id aic32x4_i2c_id[] = {
+ 	{ "tlv320aic32x4", 0 },
++	{ "tlv320aic32x6", 1 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(i2c, aic32x4_i2c_id);
+ 
+ static const struct of_device_id aic32x4_of_id[] = {
+ 	{ .compatible = "ti,tlv320aic32x4", },
++	{ .compatible = "ti,tlv320aic32x6", },
+ 	{ /* senitel */ }
+ };
+ MODULE_DEVICE_TABLE(of, aic32x4_of_id);
+diff --git a/sound/soc/codecs/tlv320aic32x4-spi.c b/sound/soc/codecs/tlv320aic32x4-spi.c
+index 724fcdd491b2..07d78ae51e05 100644
+--- a/sound/soc/codecs/tlv320aic32x4-spi.c
++++ b/sound/soc/codecs/tlv320aic32x4-spi.c
+@@ -48,12 +48,14 @@ static int aic32x4_spi_remove(struct spi_device *spi)
+ 
+ static const struct spi_device_id aic32x4_spi_id[] = {
+ 	{ "tlv320aic32x4", 0 },
++	{ "tlv320aic32x6", 1 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(spi, aic32x4_spi_id);
+ 
+ static const struct of_device_id aic32x4_of_id[] = {
+ 	{ .compatible = "ti,tlv320aic32x4", },
++	{ .compatible = "ti,tlv320aic32x6", },
+ 	{ /* senitel */ }
+ };
+ MODULE_DEVICE_TABLE(of, aic32x4_of_id);
 -- 
 2.13.2
