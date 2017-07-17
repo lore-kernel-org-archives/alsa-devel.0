@@ -1,80 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] davinci-evm: extend it to support DM81xx
-	and derivatives
-Date: Mon, 17 Jul 2017 15:51:09 +0100
-Message-ID: <20170717145109.bwujyk66he2ehijc@sirena.org.uk>
-References: <20170712124318.39e5941b49d0da45602bd1c1@gmail.com>
- <c439ed79-1961-1781-1853-bcdc758592d3@ti.com>
- <CAMJBoFNxPsg8pjbWSc-vQQGKMPQOUQZ93=6NxY1YtzY1q16DfA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Revert "ASoC: ux500: drop platform DAI assignments"
+Date: Mon, 17 Jul 2017 15:51:27 +0100
+Message-ID: <20170717145127.ke5o65as35itamaf@sirena.org.uk>
+References: <20170712155530.17765-1-johan@kernel.org>
+ <20170712155530.17765-2-johan@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5583565698891767113=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7178D2669F3
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 16:51:18 +0200 (CEST)
-In-Reply-To: <CAMJBoFNxPsg8pjbWSc-vQQGKMPQOUQZ93=6NxY1YtzY1q16DfA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vitaly Wool <vitalywool@gmail.com>
-Cc: Vladimir Barinov <vbarinov@embeddedalley.com>, alsa-devel@alsa-project.org, trini@konsulko.com, Kevin Hilman <khilman@kernel.org>, Sekhar Nori <nsekhar@ti.com>, Jyri Sarah <jsarha@ti.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vt7ymtdjkujfaxl5"
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170712155530.17765-2-johan@kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Johan Hovold <johan@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5583565698891767113==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wsrzc6t5gpjy2t2w"
-Content-Disposition: inline
-
-
---wsrzc6t5gpjy2t2w
+--vt7ymtdjkujfaxl5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 13, 2017 at 07:26:43PM +0200, Vitaly Wool wrote:
-> 2017-07-13 10:01 GMT+02:00 Sekhar Nori <nsekhar@ti.com>:
+On Wed, Jul 12, 2017 at 05:55:30PM +0200, Johan Hovold wrote:
+> This reverts commit f1013cdeeeb9 ("ASoC: ux500: drop platform DAI
+> assignments"), which seems to have been based on a misunderstanding and
+> prevents the platform driver callbacks from being made (e.g. to
+> preallocate DMA memory).
 
-> > While there are some users of davinci-evm.c, I think a majority are
-> > using simple-audio-card instead. Curious on why you chose not to use
-> > that. It sounds like codec is not the bitclock and frame-sync master in
-> > your case. Did that end up creating issues ?
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
 
-> Well, one of the problems with simple-audio-card is that you can't
-> snd_soc_dai_set_clkdiv() from it, neither you can set SND_SOC_CLK_OUT
-> for a codec, so for some codecs this just doesn't fit.
-
-That's no excuse, the CODEC drivers *really* shouldn't use _set_clkdiv()
-- fix the drivers to work normally.
-
---wsrzc6t5gpjy2t2w
+--vt7ymtdjkujfaxl5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllsztwACgkQJNaLcl1U
-h9CRtQf/WWF7rUfy95OIDBxmuqEDB+iCS0thucr+x3KDFbwQuv8H3CSfOxcIZoRl
-UX2J7mHSELFYs+nqaPlp0VGJS+8yakrLlR+DdK7C+ENeglSY5Dp1sK3Tkq5zdgCT
-nIJR34NGwwulF7AvXYd7G4j+3Bg2y4CgnKb+iEiOdZos2ATL84kXCrSWox7wCSgM
-Q3bj8tujd6z12eks0iIDe+0v/5fZJj3ffeTX0KE+9qgABO2h6eZl+58tmSTuiFjo
-FwZGirjbGk2f9ITmgB1ij1a91iU9naBpU0GEeuMq1OAQ+OaStnusHThTN3h/QOTq
-6i0kpRAQ8EFwOpd8efv6C7RBGhQ7ow==
-=XLjF
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllszu4ACgkQJNaLcl1U
+h9CuEQf+LfYbqhRyi7dZZ6dtq9ImNadrrwmgcaz4YAkkQm/1kmR2gjhzwxwaHSo2
+zb/2o2mF0gI5OT9JerMpMSbm6exvPCiE3s7exofMoXdfyZrfLww5wZNi3LNawDkP
+XpyAoKHUXtuntQKfqKqtSri/PkOHgXzyZiXuEp2GITIWRMNhortLsPH96ark/JGT
+9iX1RJYCUqPvem3H0x1q3ABNVrz31B7ZujtxcszvmOhyMFdHNhYjKlzmSvYxW9ue
+7+eOYBqkI4ar61qw8ZhPqJJgDNn5Zbjc71Q4Npw6Cm3CfA626WjGkLXE4pwh+33P
+ABAdplKwsQHuyz9Qh17nW01Q6fgHyA==
+=FjyQ
 -----END PGP SIGNATURE-----
 
---wsrzc6t5gpjy2t2w--
-
---===============5583565698891767113==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5583565698891767113==--
+--vt7ymtdjkujfaxl5--
