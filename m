@@ -1,17 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: do not close shared backend dailink" to the asoc tree
-Date: Mon, 17 Jul 2017 17:06:12 +0100
-Message-ID: <E1dX8XE-00052d-Sn@debutante>
-References: <1500099305-16438-1-git-send-email-plai@codeaurora.org>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <1500099305-16438-1-git-send-email-plai@codeaurora.org>
-Sender: stable-owner@vger.kernel.org
-Cc: Gopikrishnaiah Anandan <agopik@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.orgGopikrishnaiah Anandan <agopik@codeaurora.org>Patrick Lai <plai@codeaurora.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: max9867: constify snd_soc_dai_ops
+	structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:04:32 +0100
+Message-ID: <E1dX8Vc-0004TH-J3@debutante>
+References: <d32f4b33d6f8fe1a88c40331c76e0886ae59d6ad.1499974826.git.garsilva@embeddedor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E27D266FCD
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:59 +0200 (CEST)
+In-Reply-To: <d32f4b33d6f8fe1a88c40331c76e0886ae59d6ad.1499974826.git.garsilva@embeddedor.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: do not close shared backend dailink
+   ASoC: max9867: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -36,41 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From b1cd2e34c69a2f3988786af451b6e17967c293a0 Mon Sep 17 00:00:00 2001
-From: Banajit Goswami <bgoswami@codeaurora.org>
-Date: Fri, 14 Jul 2017 23:15:05 -0700
-Subject: [PATCH] ASoC: do not close shared backend dailink
+>From df9401b47c346480e1c1068f12c1cd32e45809f1 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Thu, 13 Jul 2017 15:38:26 -0500
+Subject: [PATCH] ASoC: max9867: constify snd_soc_dai_ops structure
 
-Multiple frontend dailinks may be connected to a backend
-dailink at the same time. When one of frontend dailinks is
-closed, the associated backend dailink should not be closed
-if it is connected to other active frontend dailinks. Change
-ensures that backend dailink is closed only after all
-connected frontend dailinks are closed.
+This structure is only stored in the ops field of a snd_soc_dai_driver
+structure. That field is declared const, so snd_soc_dai_ops structures
+that have this property can be declared as const also.
 
-Signed-off-by: Gopikrishnaiah Anandan <agopik@codeaurora.org>
-Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
-Signed-off-by: Patrick Lai <plai@codeaurora.org>
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-pcm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/max9867.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index dcc5ece08668..93999b8a87d3 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -181,6 +181,10 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
- 		dev_dbg(be->dev, "ASoC: BE %s event %d dir %d\n",
- 				be->dai_link->name, event, dir);
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 2a40a69a7513..3e421e9d14a5 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -350,7 +350,7 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
  
-+		if ((event == SND_SOC_DAPM_STREAM_STOP) &&
-+		    (be->dpcm[dir].users >= 1))
-+			continue;
-+
- 		snd_soc_dapm_stream_event(be, dir, event);
- 	}
- 
+-static struct snd_soc_dai_ops max9867_dai_ops = {
++static const struct snd_soc_dai_ops max9867_dai_ops = {
+ 	.set_fmt = max9867_dai_set_fmt,
+ 	.set_sysclk	= max9867_set_dai_sysclk,
+ 	.prepare	= max9867_prepare,
 -- 
 2.13.2
