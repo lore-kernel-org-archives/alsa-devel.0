@@ -1,7 +1,7 @@
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 2/3] ASoC: psc-ac97: constify dev_pm_ops structure
-Date: Sun, 16 Jul 2017 21:12:39 -0500
-Message-ID: <4aef0a53684236f691ff485daa2944e9d79577cb.1500256845.git.gustavo@embeddedor.com>
+Subject: [PATCH 3/3] ASoC: au1x: psc-i2s: constify dev_pm_ops structure
+Date: Sun, 16 Jul 2017 21:12:49 -0500
+Message-ID: <3c065b884b1580f51dfcab79c20b762ea67b85b8.1500256845.git.gustavo@embeddedor.com>
 References: <cover.1500256845.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -20,21 +20,21 @@ as const also.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- sound/soc/au1x/psc-ac97.c | 2 +-
+ sound/soc/au1x/psc-i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
-index bb53c70..a2050ae 100644
---- a/sound/soc/au1x/psc-ac97.c
-+++ b/sound/soc/au1x/psc-ac97.c
-@@ -474,7 +474,7 @@ static int au1xpsc_ac97_drvresume(struct device *dev)
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index 0bf9d62..e6eec08 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -392,7 +392,7 @@ static int au1xpsc_i2s_drvresume(struct device *dev)
  	return 0;
  }
  
--static struct dev_pm_ops au1xpscac97_pmops = {
-+static const struct dev_pm_ops au1xpscac97_pmops = {
- 	.suspend	= au1xpsc_ac97_drvsuspend,
- 	.resume		= au1xpsc_ac97_drvresume,
+-static struct dev_pm_ops au1xpsci2s_pmops = {
++static const struct dev_pm_ops au1xpsci2s_pmops = {
+ 	.suspend	= au1xpsc_i2s_drvsuspend,
+ 	.resume		= au1xpsc_i2s_drvresume,
  };
 -- 
 2.5.0
