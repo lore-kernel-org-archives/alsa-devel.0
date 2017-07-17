@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sta32x: Remove unneeded gpiod NULL
+Subject: Applied "ASoC: cs53l30: Remove unneeded gpiod NULL
 	check" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:45 +0100
-Message-ID: <E1dX8Wn-0004tq-Fw@debutante>
-References: <1500239473-14886-8-git-send-email-festevam@gmail.com>
+Date: Mon, 17 Jul 2017 17:05:49 +0100
+Message-ID: <E1dX8Wr-0004un-OI@debutante>
+References: <1500239473-14886-7-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EB6AA267398
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:53 +0200 (CEST)
-In-Reply-To: <1500239473-14886-8-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4679C26740B
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:57 +0200 (CEST)
+In-Reply-To: <1500239473-14886-7-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sta32x: Remove unneeded gpiod NULL check
+   ASoC: cs53l30: Remove unneeded gpiod NULL check
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From c5efe232e09ef29cc2f9e8333a49dd8891366c22 Mon Sep 17 00:00:00 2001
+>From 55be663dc71ec50f0e383c50886cbd3be69fcd2e Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 16 Jul 2017 18:11:13 -0300
-Subject: [PATCH] ASoC: sta32x: Remove unneeded gpiod NULL check
+Date: Sun, 16 Jul 2017 18:11:12 -0300
+Subject: [PATCH] ASoC: cs53l30: Remove unneeded gpiod NULL check
 
 The gpiod API checks for NULL descriptors, so there is no need to
 duplicate the check in the driver.
@@ -64,22 +64,62 @@ duplicate the check in the driver.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sta32x.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/cs53l30.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index 0790ae8530d9..5b888476d9ff 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -847,8 +847,7 @@ static int sta32x_set_bias_level(struct snd_soc_codec *codec,
- 		msleep(300);
- 		sta32x_watchdog_stop(sta32x);
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index 06933a5d0a75..92fbe6303dd4 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -842,8 +842,7 @@ static int cs53l30_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ {
+ 	struct cs53l30_private *priv = snd_soc_codec_get_drvdata(dai->codec);
  
--		if (sta32x->gpiod_nreset)
--			gpiod_set_value(sta32x->gpiod_nreset, 0);
-+		gpiod_set_value(sta32x->gpiod_nreset, 0);
+-	if (priv->mute_gpio)
+-		gpiod_set_value_cansleep(priv->mute_gpio, mute);
++	gpiod_set_value_cansleep(priv->mute_gpio, mute);
  
- 		regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies),
- 				       sta32x->supplies);
+ 	return 0;
+ }
+@@ -960,8 +959,7 @@ static int cs53l30_i2c_probe(struct i2c_client *client,
+ 		goto error;
+ 	}
+ 
+-	if (cs53l30->reset_gpio)
+-		gpiod_set_value_cansleep(cs53l30->reset_gpio, 1);
++	gpiod_set_value_cansleep(cs53l30->reset_gpio, 1);
+ 
+ 	i2c_set_clientdata(client, cs53l30);
+ 
+@@ -1056,8 +1054,7 @@ static int cs53l30_i2c_remove(struct i2c_client *client)
+ 	snd_soc_unregister_codec(&client->dev);
+ 
+ 	/* Hold down reset */
+-	if (cs53l30->reset_gpio)
+-		gpiod_set_value_cansleep(cs53l30->reset_gpio, 0);
++	gpiod_set_value_cansleep(cs53l30->reset_gpio, 0);
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(cs53l30->supplies),
+ 			       cs53l30->supplies);
+@@ -1073,8 +1070,7 @@ static int cs53l30_runtime_suspend(struct device *dev)
+ 	regcache_cache_only(cs53l30->regmap, true);
+ 
+ 	/* Hold down reset */
+-	if (cs53l30->reset_gpio)
+-		gpiod_set_value_cansleep(cs53l30->reset_gpio, 0);
++	gpiod_set_value_cansleep(cs53l30->reset_gpio, 0);
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(cs53l30->supplies),
+ 			       cs53l30->supplies);
+@@ -1094,8 +1090,7 @@ static int cs53l30_runtime_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
+-	if (cs53l30->reset_gpio)
+-		gpiod_set_value_cansleep(cs53l30->reset_gpio, 1);
++	gpiod_set_value_cansleep(cs53l30->reset_gpio, 1);
+ 
+ 	regcache_cache_only(cs53l30->regmap, false);
+ 	ret = regcache_sync(cs53l30->regmap);
 -- 
 2.13.2
