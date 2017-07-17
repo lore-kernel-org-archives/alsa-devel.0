@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l42: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:53 +0100
-Message-ID: <E1dX8Vx-0004b8-R1@debutante>
-References: <3e8b7afdf834c3c33726128ba5f6dac6b5bcea9c.1499974826.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: msm8916-wcd-analog: constify
+	snd_soc_dai_ops structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:04:44 +0100
+Message-ID: <E1dX8Vo-0004Xh-NG@debutante>
+References: <d079cba8330b92b4b70bdcbc8c17f646c7391ef4.1499974826.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D502267399
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:13 +0200 (CEST)
-In-Reply-To: <3e8b7afdf834c3c33726128ba5f6dac6b5bcea9c.1499974826.git.garsilva@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A63C2673B5
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:17 +0200 (CEST)
+In-Reply-To: <d079cba8330b92b4b70bdcbc8c17f646c7391ef4.1499974826.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l42: constify snd_soc_dai_ops structure
+   ASoC: msm8916-wcd-analog: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 72a63c6e78887f5c2063ce147b57fdfecf366e0e Mon Sep 17 00:00:00 2001
+>From af2f010e0f12fdeb26fce502adf4b353daeb302c Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:37:26 -0500
-Subject: [PATCH] ASoC: cs42l42: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 15:37:48 -0500
+Subject: [PATCH] ASoC: msm8916-wcd-analog: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +64,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 2 +-
+ sound/soc/codecs/msm8916-wcd-analog.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 55caf5ff3e64..a2324a0e72ee 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -911,7 +911,7 @@ static int cs42l42_digital_mute(struct snd_soc_dai *dai, int mute)
- 			SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index a78802920c3c..aec1e1626993 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -753,7 +753,7 @@ static void pm8916_wcd_analog_shutdown(struct snd_pcm_substream *substream,
+ 			    RST_CTL_DIG_SW_RST_N_MASK, 0);
+ }
  
- 
--static struct snd_soc_dai_ops cs42l42_ops = {
-+static const struct snd_soc_dai_ops cs42l42_ops = {
- 	.hw_params	= cs42l42_pcm_hw_params,
- 	.set_fmt	= cs42l42_set_dai_fmt,
- 	.set_sysclk	= cs42l42_set_sysclk,
+-static struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
++static const struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
+ 	.startup = pm8916_wcd_analog_startup,
+ 	.shutdown = pm8916_wcd_analog_shutdown,
+ };
 -- 
 2.13.2
