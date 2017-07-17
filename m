@@ -1,33 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:32 +0100
-Message-ID: <E1dX8Vc-0004TH-J3@debutante>
-References: <d32f4b33d6f8fe1a88c40331c76e0886ae59d6ad.1499974826.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: sun8i-codec: constify snd_soc_dai_ops structure" to
+ the asoc tree
+Date: Mon, 17 Jul 2017 17:05:30 +0100
+Message-ID: <E1dX8WY-0004oV-5y@debutante>
+References: <20170713055223.GA18940@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E27D266FCD
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:59 +0200 (CEST)
-In-Reply-To: <d32f4b33d6f8fe1a88c40331c76e0886ae59d6ad.1499974826.git.garsilva@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170713055223.GA18940@embeddedgus>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: constify snd_soc_dai_ops structure
+   ASoC: sun8i-codec: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,33 +48,34 @@ to this mail.
 Thanks,
 Mark
 
->From df9401b47c346480e1c1068f12c1cd32e45809f1 Mon Sep 17 00:00:00 2001
+>From fe49cd980fc15cbb7eeb8d1a4ef45a14b807b55d Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:38:26 -0500
-Subject: [PATCH] ASoC: max9867: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 00:52:23 -0500
+Subject: [PATCH] ASoC: sun8i-codec: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
 that have this property can be declared as const also.
 
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 2 +-
+ sound/soc/sunxi/sun8i-codec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 2a40a69a7513..3e421e9d14a5 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -350,7 +350,7 @@ static int max9867_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 5723c3404f6b..253ae0b5a4d4 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -341,7 +341,7 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	  "AIF1 Slot 0 Right"},
+ };
  
--static struct snd_soc_dai_ops max9867_dai_ops = {
-+static const struct snd_soc_dai_ops max9867_dai_ops = {
- 	.set_fmt = max9867_dai_set_fmt,
- 	.set_sysclk	= max9867_set_dai_sysclk,
- 	.prepare	= max9867_prepare,
+-static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
++static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+ 	.hw_params = sun8i_codec_hw_params,
+ 	.set_fmt = sun8i_set_fmt,
+ };
 -- 
 2.13.2
