@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: msm8916-wcd-analog: constify
-	snd_soc_dai_ops structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:44 +0100
-Message-ID: <E1dX8Vo-0004Xh-NG@debutante>
-References: <d079cba8330b92b4b70bdcbc8c17f646c7391ef4.1499974826.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: zte: spdif: constify snd_soc_dai_ops
+	structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:05:02 +0100
+Message-ID: <E1dX8W6-0004e5-UF@debutante>
+References: <20170713053755.GA15267@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A63C2673B5
+ by alsa0.perex.cz (Postfix) with ESMTP id 13E8F2673B9
  for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:17 +0200 (CEST)
-In-Reply-To: <d079cba8330b92b4b70bdcbc8c17f646c7391ef4.1499974826.git.garsilva@embeddedor.com>
+In-Reply-To: <20170713053755.GA15267@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: msm8916-wcd-analog: constify snd_soc_dai_ops structure
+   ASoC: zte: spdif: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From af2f010e0f12fdeb26fce502adf4b353daeb302c Mon Sep 17 00:00:00 2001
+>From 4d2c7e09a5c8ea3b20748c2942b6a686dced34ab Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:37:48 -0500
-Subject: [PATCH] ASoC: msm8916-wcd-analog: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 00:37:55 -0500
+Subject: [PATCH] ASoC: zte: spdif: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +64,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 2 +-
+ sound/soc/zte/zx-spdif.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index a78802920c3c..aec1e1626993 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -753,7 +753,7 @@ static void pm8916_wcd_analog_shutdown(struct snd_pcm_substream *substream,
- 			    RST_CTL_DIG_SW_RST_N_MASK, 0);
- }
+diff --git a/sound/soc/zte/zx-spdif.c b/sound/soc/zte/zx-spdif.c
+index 9fa6463ce5d7..b143f9f682d2 100644
+--- a/sound/soc/zte/zx-spdif.c
++++ b/sound/soc/zte/zx-spdif.c
+@@ -264,7 +264,7 @@ static void zx_spdif_shutdown(struct snd_pcm_substream *substream,
+ 	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S18_3LE \
+ 	| SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE)
  
--static struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
-+static const struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
- 	.startup = pm8916_wcd_analog_startup,
- 	.shutdown = pm8916_wcd_analog_shutdown,
- };
+-static struct snd_soc_dai_ops zx_spdif_dai_ops = {
++static const struct snd_soc_dai_ops zx_spdif_dai_ops = {
+ 	.trigger	= zx_spdif_trigger,
+ 	.startup	= zx_spdif_startup,
+ 	.shutdown	= zx_spdif_shutdown,
 -- 
 2.13.2
