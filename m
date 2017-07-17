@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: constify snd_soc_dai_ops
-	structures" to the asoc tree
-Date: Mon, 17 Jul 2017 17:06:18 +0100
-Message-ID: <E1dX8XK-00054d-Ua@debutante>
-References: <20170713062606.GA27121@embeddedgus>
+Subject: Applied "ASoC: Intel: Skylake: constify
+	snd_soc_dai_ops structures" to the asoc tree
+Date: Mon, 17 Jul 2017 17:06:21 +0100
+Message-ID: <E1dX8XN-00055a-Te@debutante>
+References: <20170713061646.GA25608@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F6B72673CF
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:43 +0200 (CEST)
-In-Reply-To: <20170713062606.GA27121@embeddedgus>
+ by alsa0.perex.cz (Postfix) with ESMTP id 11F942674C0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:07:02 +0200 (CEST)
+In-Reply-To: <20170713061646.GA25608@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: constify snd_soc_dai_ops structures
+   ASoC: Intel: Skylake: constify snd_soc_dai_ops structures
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From c115a3178b1dfacd57b643934bb6bbbd1a9557f0 Mon Sep 17 00:00:00 2001
+>From 82e2b1e081906d3d86c4597250ab2939b209079f Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 01:26:06 -0500
-Subject: [PATCH] ASoC: Intel: Atom: constify snd_soc_dai_ops structures
+Date: Thu, 13 Jul 2017 01:16:46 -0500
+Subject: [PATCH] ASoC: Intel: Skylake: constify snd_soc_dai_ops structures
 
 These structures are only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,35 +64,40 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index b082b31023d5..49c7b88b5bdc 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -471,7 +471,7 @@ static void sst_disable_ssp(struct snd_pcm_substream *substream,
- 	}
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 0ebea34a4988..b1f2dba642c4 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -628,7 +628,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
--static struct snd_soc_dai_ops sst_media_dai_ops = {
-+static const struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.startup = sst_media_open,
- 	.shutdown = sst_media_close,
- 	.prepare = sst_media_prepare,
-@@ -480,11 +480,11 @@ static struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.mute_stream = sst_media_digital_mute,
+-static struct snd_soc_dai_ops skl_pcm_dai_ops = {
++static const struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ 	.startup = skl_pcm_open,
+ 	.shutdown = skl_pcm_close,
+ 	.prepare = skl_pcm_prepare,
+@@ -637,15 +637,15 @@ static struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ 	.trigger = skl_pcm_trigger,
  };
  
--static struct snd_soc_dai_ops sst_compr_dai_ops = {
-+static const struct snd_soc_dai_ops sst_compr_dai_ops = {
- 	.mute_stream = sst_media_digital_mute,
+-static struct snd_soc_dai_ops skl_dmic_dai_ops = {
++static const struct snd_soc_dai_ops skl_dmic_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
  };
  
--static struct snd_soc_dai_ops sst_be_dai_ops = {
-+static const struct snd_soc_dai_ops sst_be_dai_ops = {
- 	.startup = sst_enable_ssp,
- 	.hw_params = sst_be_hw_params,
- 	.set_fmt = sst_set_format,
+-static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
++static const struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
+ };
+ 
+-static struct snd_soc_dai_ops skl_link_dai_ops = {
++static const struct snd_soc_dai_ops skl_link_dai_ops = {
+ 	.prepare = skl_link_pcm_prepare,
+ 	.hw_params = skl_link_hw_params,
+ 	.hw_free = skl_link_hw_free,
 -- 
 2.13.2
