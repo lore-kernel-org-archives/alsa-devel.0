@@ -1,33 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98926: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:41 +0100
-Message-ID: <E1dX8Vl-0004Wi-Md@debutante>
-References: <9e23b49bd644e8c303308b408a9a3015a1c17015.1499974826.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: mmp-sspa: constify snd_soc_dai_ops structure" to the
+ asoc tree
+Date: Mon, 17 Jul 2017 17:05:12 +0100
+Message-ID: <E1dX8WG-0004hS-0D@debutante>
+References: <20170713060508.GA22657@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DCA8266FCB
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:59 +0200 (CEST)
-In-Reply-To: <9e23b49bd644e8c303308b408a9a3015a1c17015.1499974826.git.garsilva@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170713060508.GA22657@embeddedgus>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98926: constify snd_soc_dai_ops structure
+   ASoC: mmp-sspa: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +48,10 @@ to this mail.
 Thanks,
 Mark
 
->From dfcfd4b68a551b7038e046040dac2a467f5efd10 Mon Sep 17 00:00:00 2001
+>From cb7534437956650ab0dcebf7a7b4795eb904d22a Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:37:54 -0500
-Subject: [PATCH] ASoC: max98926: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 01:05:08 -0500
+Subject: [PATCH] ASoC: mmp-sspa: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +60,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 2 +-
+ sound/soc/pxa/mmp-sspa.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 1eff7e0b092e..f16145d8ee6b 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -459,7 +459,7 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
- #define MAX98926_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
- 		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index 9cc35012e6e5..64b85e30c1f8 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -380,7 +380,7 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
+ 		SNDRV_PCM_FMTBIT_S24_LE | \
+ 		SNDRV_PCM_FMTBIT_S32_LE)
  
--static struct snd_soc_dai_ops max98926_dai_ops = {
-+static const struct snd_soc_dai_ops max98926_dai_ops = {
- 	.set_fmt = max98926_dai_set_fmt,
- 	.hw_params = max98926_dai_hw_params,
- };
+-static struct snd_soc_dai_ops mmp_sspa_dai_ops = {
++static const struct snd_soc_dai_ops mmp_sspa_dai_ops = {
+ 	.startup	= mmp_sspa_startup,
+ 	.shutdown	= mmp_sspa_shutdown,
+ 	.trigger	= mmp_sspa_trigger,
 -- 
 2.13.2
