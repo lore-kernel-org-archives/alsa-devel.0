@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rk3036: constify snd_soc_dai_ops
+Subject: Applied "ASoC: hdac_hdmi: constify snd_soc_dai_ops
 	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:29 +0100
-Message-ID: <E1dX8VZ-0004SI-Gy@debutante>
-References: <4868cb10531b54c7eee312bf235125d0eb4dbf95.1499974826.git.garsilva@embeddedor.com>
+Date: Mon, 17 Jul 2017 17:04:26 +0100
+Message-ID: <E1dX8VW-0004RL-IG@debutante>
+References: <f8993aaa6db0fcd64aab7672da799fe4ef74966e.1499974826.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2162D266FCB
+ by alsa0.perex.cz (Postfix) with ESMTP id ADE42266FCD
  for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:54 +0200 (CEST)
-In-Reply-To: <4868cb10531b54c7eee312bf235125d0eb4dbf95.1499974826.git.garsilva@embeddedor.com>
+In-Reply-To: <f8993aaa6db0fcd64aab7672da799fe4ef74966e.1499974826.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rk3036: constify snd_soc_dai_ops structure
+   ASoC: hdac_hdmi: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From fcf005a645e6855d68f98b9455f6b47ac2ed161c Mon Sep 17 00:00:00 2001
+>From 61b3b3cc68c4161ba202f401a6572250360ff18c Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:38:32 -0500
-Subject: [PATCH] ASoC: rk3036: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 15:38:38 -0500
+Subject: [PATCH] ASoC: hdac_hdmi: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +64,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/inno_rk3036.c | 2 +-
+ sound/soc/codecs/hdac_hdmi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/inno_rk3036.c b/sound/soc/codecs/inno_rk3036.c
-index b918ba5c8ce5..edf42d252fa1 100644
---- a/sound/soc/codecs/inno_rk3036.c
-+++ b/sound/soc/codecs/inno_rk3036.c
-@@ -310,7 +310,7 @@ static int rk3036_codec_dai_hw_params(struct snd_pcm_substream *substream,
- 			   SNDRV_PCM_FMTBIT_S24_LE  | \
- 			   SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index bc2e74ff3b2d..e6de50acefd4 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1360,7 +1360,7 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdac)
  
--static struct snd_soc_dai_ops rk3036_codec_dai_ops = {
-+static const struct snd_soc_dai_ops rk3036_codec_dai_ops = {
- 	.set_fmt	= rk3036_codec_dai_set_fmt,
- 	.hw_params	= rk3036_codec_dai_hw_params,
- };
+ }
+ 
+-static struct snd_soc_dai_ops hdmi_dai_ops = {
++static const struct snd_soc_dai_ops hdmi_dai_ops = {
+ 	.startup = hdac_hdmi_pcm_open,
+ 	.shutdown = hdac_hdmi_pcm_close,
+ 	.hw_params = hdac_hdmi_set_hw_params,
 -- 
 2.13.2
