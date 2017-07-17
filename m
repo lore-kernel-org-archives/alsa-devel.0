@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zx-tdm: constify snd_soc_dai_ops
+Subject: Applied "ASoC: hisilicon: constify snd_soc_dai_ops
 	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:05 +0100
-Message-ID: <E1dX8W9-0004f5-VG@debutante>
-References: <20170713053052.GA13749@embeddedgus>
+Date: Mon, 17 Jul 2017 17:05:18 +0100
+Message-ID: <E1dX8WM-0004jM-0P@debutante>
+References: <20170713070853.GA29230@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E6802673D5
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:33 +0200 (CEST)
-In-Reply-To: <20170713053052.GA13749@embeddedgus>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FF782673E4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:40 +0200 (CEST)
+In-Reply-To: <20170713070853.GA29230@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: zx-tdm: constify snd_soc_dai_ops structure
+   ASoC: hisilicon: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 171dd51655b11331928dd39ff0e51a516e41424d Mon Sep 17 00:00:00 2001
+>From 94372fceb2fb5d3d05d6db61c9658865d5e27ee4 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 00:30:52 -0500
-Subject: [PATCH] ASoC: zx-tdm: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 02:08:53 -0500
+Subject: [PATCH] ASoC: hisilicon: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -64,21 +64,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/zte/zx-tdm.c | 2 +-
+ sound/soc/hisilicon/hi6210-i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/zte/zx-tdm.c b/sound/soc/zte/zx-tdm.c
-index bd632cc503b3..dc955272f58b 100644
---- a/sound/soc/zte/zx-tdm.c
-+++ b/sound/soc/zte/zx-tdm.c
-@@ -309,7 +309,7 @@ static void zx_tdm_shutdown(struct snd_pcm_substream *substream,
- 	clk_disable_unprepare(zx_tdm->dai_wclk);
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index b193d3beb253..0c8f86d4020e 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -517,7 +517,7 @@ static int hi6210_i2s_dai_probe(struct snd_soc_dai *dai)
  }
  
--static struct snd_soc_dai_ops zx_tdm_dai_ops = {
-+static const struct snd_soc_dai_ops zx_tdm_dai_ops = {
- 	.trigger	= zx_tdm_trigger,
- 	.hw_params	= zx_tdm_hw_params,
- 	.set_fmt	= zx_tdm_set_fmt,
+ 
+-static struct snd_soc_dai_ops hi6210_i2s_dai_ops = {
++static const struct snd_soc_dai_ops hi6210_i2s_dai_ops = {
+ 	.trigger	= hi6210_i2s_trigger,
+ 	.hw_params	= hi6210_i2s_hw_params,
+ 	.set_fmt	= hi6210_i2s_set_fmt,
 -- 
 2.13.2
