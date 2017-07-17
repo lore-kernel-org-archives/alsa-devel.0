@@ -1,153 +1,58 @@
-From: Kailang <kailang@realtek.com>
-Subject: ALC298 headset mode update
-Date: Mon, 17 Jul 2017 07:16:45 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A183F397B@RTITMBSV02.realtek.com.tw>
+From: Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: fix pcm-creation regression
+Date: Mon, 17 Jul 2017 10:03:48 +0200
+Message-ID: <20170717080348.GZ29638@localhost>
+References: <20170712155530.17765-1-johan@kernel.org>
+ <CACRpkdax+tYOsJphnnP7HE-0srhSZshDu+znDYo=092YotANiQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A183F397BRTITMBSV02realt_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 44DD126691A
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 09:16:55 +0200 (CEST)
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CACRpkdax+tYOsJphnnP7HE-0srhSZshDu+znDYo=092YotANiQ@mail.gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Johan Hovold <johan@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Brian Norris <briannorris@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F397BRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 14, 2017 at 03:35:46PM +0200, Linus Walleij wrote:
+> On Wed, Jul 12, 2017 at 5:55 PM, Johan Hovold <johan@kernel.org> wrote:
+> 
+> > This reverts commit 99b04f4c4051 ("ASoC: add Component level
+> > pcm_new/pcm_free"), which started calling the pcm_new callback for every
+> > component in a *card* when creating a new pcm, something which does not
+> > seem to make any sense.
+> >
+> > This specifically led to memory leaks in systems with more than one
+> > platform component and where DMA memory is allocated in the
+> > platform-driver callback. For example, when both mcasp devices are being
+> > used on an am335x board, DMA memory would be allocated twice for every
+> > DAI link during probe.
+> >
+> > When CONFIG_SND_VERBOSE_PROCFS was set this fortunately also led to
+> > warnings such as:
+> >
+> > WARNING: CPU: 0 PID: 565 at ../fs/proc/generic.c:346 proc_register+0x110/0x154
+> > proc_dir_entry 'sub0/prealloc' already registered
+> >
+> > Since there seems to be no users of the new component callbacks, and the
+> > current implementation introduced a regression, let's revert the
+> > offending commit for now.
+> >
+> > Fixes: 99b04f4c4051 ("ASoC: add Component level pcm_new/pcm_free")
+> > Cc: stable <stable@vger.kernel.org>     # 4.10
+> > Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > Cc: Brian Norris <briannorris@chromium.org>
+> > Signed-off-by: Johan Hovold <johan@kernel.org>
+> 
+> I have repeatedly ran into this bug, thanks a *lot* for fixing it.
+> It solves a problem not only on this old code but also in my
+> development tree where I try to move the Ux500 audio to DT-only
+> instantiation and this was a blocker that I just ran my head into
+> the last month or two.
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Tested-by: Linus Walleij <linus.walleij@linaro.org>
 
-Hi Takashi,
+Thanks for testing these, Linus.
 
-Dell new platform with new hardware layout.
-Old headset mode policy will cause headset mode check type has a chance to =
-check fail.
-So, we update new headset mode to match new hardware layout.
-New headset mode policy also could suitable to old hardware layout.
-
-This patch was tested by Ubuntu QA team.
-
-BR,
-Kailang
-=20
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F397BRTITMBSV02realt_
-Content-Type: application/octet-stream; name="0000-alc298-HSM-update.patch"
-Content-Description: 0000-alc298-HSM-update.patch
-Content-Disposition: attachment; filename="0000-alc298-HSM-update.patch";
-	size=5281; creation-date="Mon, 17 Jul 2017 07:25:23 GMT";
-	modification-date="Mon, 17 Jul 2017 07:12:43 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBhNzBjNjc3MjBmM2Y3YzUzZWYxYThmNzU1NmMwZjlhZTQ5NDYyNDJhIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IE1vbiwgMTcgSnVsIDIwMTcgMTU6MDM6NDMgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIFVwZGF0ZSBoZWFkc2V0IG1vZGUgZm9yIEFMQzI5OAoKRGVsbCBuZXcg
-cGxhdGZvcm0gd2l0aCBuZXcgaGFyZHdhcmUgbGF5b3V0LgpPbGQgaGVhZHNldCBtb2RlIHBvbGlj
-eSB3aWxsIGNhdXNlIGhlYWRzZXQgbW9kZSBjaGVjayB0eXBlIGhhcyBhIGNoYW5jZSB0byBjaGVj
-ayBmYWlsLgpTbywgd2UgdXBkYXRlIG5ldyBoZWFkc2V0IG1vZGUgdG8gbWF0Y2ggbmV3IGhhcmR3
-YXJlIGxheW91dC4KTmV3IGhlYWRzZXQgbW9kZSBwb2xpY3kgYWxzbyBjb3VsZCBzdWl0YWJsZSB0
-byBvbGQgaGFyZHdhcmUgbGF5b3V0LgoKU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWls
-YW5nQHJlYWx0ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
-ay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggNDVkNThmYy4uZDY5ZTdl
-YiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTM4NzMsNiArMzg3MywxMCBAQCBzdGF0aWMgdm9p
-ZCBhbGNfaGVhZHNldF9tb2RlX3VucGx1Z2dlZChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJ
-VVBEQVRFX0NPRUYoMHg2NywgMHgyMDAwLCAwKSwKIAkJe30KIAl9OworCXN0YXRpYyBzdHJ1Y3Qg
-Y29lZl9mdyBjb2VmMDI5OFtdID0geworCQlVUERBVEVfQ09FRigweDE5LCAweDEzMDAsIDB4MDMw
-MCksCisJCXt9CisJfTsKIAlzdGF0aWMgc3RydWN0IGNvZWZfZncgY29lZjAyOTJbXSA9IHsKIAkJ
-V1JJVEVfQ09FRigweDc2LCAweDAwMGUpLAogCQlXUklURV9DT0VGKDB4NmMsIDB4MjQwMCksCkBA
-IC0zOTM1LDcgKzM5MzksMTAgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV91bnBsdWdn
-ZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJCWJyZWFrOwogCWNhc2UgMHgxMGVjMDI4NjoK
-IAljYXNlIDB4MTBlYzAyODg6CisJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjg4
-KTsKKwkJYnJlYWs7CiAJY2FzZSAweDEwZWMwMjk4OgorCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNv
-ZGVjLCBjb2VmMDI5OCk7CiAJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjg4KTsK
-IAkJYnJlYWs7CiAJY2FzZSAweDEwZWMwMjkyOgpAQCAtMzk3Niw2ICszOTgzLDcgQEAgc3RhdGlj
-IHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9taWNfaW4oc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhk
-YV9uaWRfdCBocF9waW4sCiAJCXt9CiAJfTsKIAlzdGF0aWMgc3RydWN0IGNvZWZfZncgY29lZjAy
-ODhbXSA9IHsKKwkJVVBEQVRFX0NPRUYoMHg0ZiwgMHgwMGMwLCAwKSwKIAkJVVBEQVRFX0NPRUYo
-MHg1MCwgMHgyMDAwLCAwKSwKIAkJVVBEQVRFX0NPRUYoMHg1NiwgMHgwMDA2LCAwKSwKIAkJVVBE
-QVRFX0NPRUYoMHg0ZiwgMHhmY2MwLCAweGM0MDApLApAQCAtNDAzOSw3ICs0MDQ3LDYgQEAgc3Rh
-dGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9taWNfaW4oc3RydWN0IGhkYV9jb2RlYyAqY29kZWMs
-IGhkYV9uaWRfdCBocF9waW4sCiAJY2FzZSAweDEwZWMwMjg2OgogCWNhc2UgMHgxMGVjMDI4ODoK
-IAljYXNlIDB4MTBlYzAyOTg6Ci0JCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NGYsIDB4
-MDAwYywgMCk7CiAJCXNuZF9oZGFfc2V0X3Bpbl9jdGxfY2FjaGUoY29kZWMsIGhwX3BpbiwgMCk7
-CiAJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjg4KTsKIAkJc25kX2hkYV9zZXRf
-cGluX2N0bF9jYWNoZShjb2RlYywgbWljX3BpbiwgUElOX1ZSRUY1MCk7CkBAIC00MTc3LDYgKzQx
-ODQsOCBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX2RlZmF1bHQoc3RydWN0IGhkYV9j
-b2RlYyAqY29kZWMpCiAvKiBJcGhvbmUgdHlwZSAqLwogc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRf
-bW9kZV9jdGlhKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogeworCWludCB2YWw7CisKIAlzdGF0
-aWMgc3RydWN0IGNvZWZfZncgY29lZjAyNTVbXSA9IHsKIAkJV1JJVEVfQ09FRigweDQ1LCAweGQ0
-ODkpLCAvKiBTZXQgdG8gQ1RJQSB0eXBlICovCiAJCVdSSVRFX0NPRUYoMHgxYiwgMHgwYzJiKSwK
-QEAgLTQyNDQsOCArNDI1MywxNyBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX2N0aWEo
-c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNv
-ZWYwMjMzKTsKIAkJYnJlYWs7CiAJY2FzZSAweDEwZWMwMjk4OgotCQlhbGNfdXBkYXRlX2NvZWZf
-aWR4KGNvZGVjLCAweDhlLCAweDAwNzAsIDB4MDAyMCk7LyogSGVhZHNldCBvdXRwdXQgZW5hYmxl
-ICovCi0JCS8qIEFMQzI5OCBqYWNrIHR5cGUgc2V0dGluZyBpcyB0aGUgc2FtZSB3aXRoIEFMQzI4
-Ni9BTEMyODggKi8KKwkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NTApOworCQlp
-ZigodmFsICYgKDE8PDEyKSkpIHsKKwkJCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4OGUs
-IDB4MDA3MCwgMHgwMDIwKTsKKwkJCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NGYsIDB4
-ZmNjMCwgMHhkNDAwKTsKKwkJCW1zbGVlcCgzMDApOworCQl9IGVsc2UgeworCQkJYWxjX3VwZGF0
-ZV9jb2VmX2lkeChjb2RlYywgMHg4ZSwgMHgwMDcwLCAweDAwMTApOworCQkJYWxjX3VwZGF0ZV9j
-b2VmX2lkeChjb2RlYywgMHg0ZiwgMHhmY2MwLCAweGQ0MDApOworCQkJbXNsZWVwKDMwMCk7CisJ
-CX0KKwkJYnJlYWs7CiAJY2FzZSAweDEwZWMwMjg2OgogCWNhc2UgMHgxMGVjMDI4ODoKIAkJYWxj
-X3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0ZiwgMHhmY2MwLCAweGQ0MDApOwpAQCAtNDM0NCw3
-ICs0MzYyLDkgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9vbXRwKHN0cnVjdCBoZGFf
-Y29kZWMgKmNvZGVjKQogCQlicmVhazsKIAljYXNlIDB4MTBlYzAyOTg6CiAJCWFsY191cGRhdGVf
-Y29lZl9pZHgoY29kZWMsIDB4OGUsIDB4MDA3MCwgMHgwMDEwKTsvKiBIZWFkc2V0IG91dHB1dCBl
-bmFibGUgKi8KLQkJLyogQUxDMjk4IGphY2sgdHlwZSBzZXR0aW5nIGlzIHRoZSBzYW1lIHdpdGgg
-QUxDMjg2L0FMQzI4OCAqLworCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDRmLCAweGZj
-YzAsIDB4ZTQwMCk7CisJCW1zbGVlcCgzMDApOworCQlicmVhazsKIAljYXNlIDB4MTBlYzAyODY6
-CiAJY2FzZSAweDEwZWMwMjg4OgogCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDRmLCAw
-eGZjYzAsIDB4ZTQwMCk7CkBAIC00Mzg0LDYgKzQ0MDQsMTQgQEAgc3RhdGljIHZvaWQgYWxjX2Rl
-dGVybWluZV9oZWFkc2V0X3R5cGUoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJCVVQREFURV9D
-T0VGKDB4NGYsIDB4ZmNjMCwgMHhkNDAwKSwgLyogQ2hlY2sgVHlwZSAqLwogCQl7fQogCX07CisJ
-c3RhdGljIHN0cnVjdCBjb2VmX2Z3IGNvZWYwMjk4W10gPSB7CisJCVVQREFURV9DT0VGKDB4NTAs
-IDB4MjAwMCwgMHgyMDAwKSwKKwkJVVBEQVRFX0NPRUYoMHg1NiwgMHgwMDA2LCAweDAwMDYpLAor
-CQlVUERBVEVfQ09FRigweDY2LCAweDAwMDgsIDApLAorCQlVUERBVEVfQ09FRigweDY3LCAweDIw
-MDAsIDApLAorCQlVUERBVEVfQ09FRigweDE5LCAweDEzMDAsIDB4MTMwMCksCisJCXt9CisJfTsK
-IAlzdGF0aWMgc3RydWN0IGNvZWZfZncgY29lZjAyOTNbXSA9IHsKIAkJVVBEQVRFX0NPRUYoMHg0
-YSwgMHgwMDBmLCAweDAwMDgpLCAvKiBDb21ibyBKYWNrIGF1dG8gZGV0ZWN0ICovCiAJCVdSSVRF
-X0NPRUYoMHg0NSwgMHhENDI5KSwgLyogU2V0IHRvIGN0aWEgdHlwZSAqLwpAQCAtNDQzMyw4ICs0
-NDYxLDM0IEBAIHN0YXRpYyB2b2lkIGFsY19kZXRlcm1pbmVfaGVhZHNldF90eXBlKHN0cnVjdCBo
-ZGFfY29kZWMgKmNvZGVjKQogCQlpc19jdGlhID0gKHZhbCAmIDB4MDA3MCkgPT0gMHgwMDcwOwog
-CQlicmVhazsKIAljYXNlIDB4MTBlYzAyOTg6Ci0JCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMs
-IDB4OGUsIDB4MDA3MCwgMHgwMDIwKTsgLyogSGVhZHNldCBvdXRwdXQgZW5hYmxlICovCi0JCS8q
-IEFMQzI5OCBjaGVjayBqYWNrIHR5cGUgaXMgdGhlIHNhbWUgd2l0aCBBTEMyODYvQUxDMjg4ICov
-CisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MjEsIDAsCisJCQkgICAgQUNfVkVSQl9T
-RVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9NVVRFKTsKKwkJbXNsZWVwKDEwMCk7CisJCXNuZF9o
-ZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MjEsIDAsCisJCQkgICAgQUNfVkVSQl9TRVRfUElOX1dJ
-REdFVF9DT05UUk9MLCAweDApOworCQltc2xlZXAoMjAwKTsKKworCQl2YWwgPSBhbGNfcmVhZF9j
-b2VmX2lkeChjb2RlYywgMHg1MCk7CisJCWlmKCh2YWwgJiAoMTw8MTIpKSkgeworCQkJYWxjX3Vw
-ZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg4ZSwgMHgwMDcwLCAweDAwMjApOworCQkJYWxjX3Byb2Nl
-c3NfY29lZl9mdyhjb2RlYywgY29lZjAyODgpOworCQkJbXNsZWVwKDM1MCk7CisJCQl2YWwgPSBh
-bGNfcmVhZF9jb2VmX2lkeChjb2RlYywgMHg1MCk7CisJCQlpc19jdGlhID0gKHZhbCAmIDB4MDA3
-MCkgPT0gMHgwMDcwOworCQl9IGVsc2UgeworCQkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywg
-MHg4ZSwgMHgwMDcwLCAweDAwMTApOworCQkJYWxjX3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgY29l
-ZjAyODgpOworCQkJbXNsZWVwKDM1MCk7CisJCQl2YWwgPSBhbGNfcmVhZF9jb2VmX2lkeChjb2Rl
-YywgMHg1MCk7CisJCQlpc19jdGlhID0gKHZhbCAmIDB4MDA3MCkgPT0gMHgwMDcwOworCQl9CisJ
-CWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjk4KTsKKwkJc25kX2hkYV9jb2RlY193
-cml0ZShjb2RlYywgMHgyMSwgMCwKKwkJCSAgICBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRS
-T0wsIFBJTl9IUCk7CisJCW1zbGVlcCg3NSk7CisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMs
-IDB4MjEsIDAsCisJCQkgICAgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1V
-VEUpOworCQlicmVhazsKIAljYXNlIDB4MTBlYzAyODY6CiAJY2FzZSAweDEwZWMwMjg4OgogCQlh
-bGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDI4OCk7Cg==
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F397BRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F397BRTITMBSV02realt_--
+Johan
