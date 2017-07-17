@@ -1,29 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mmp-sspa: constify snd_soc_dai_ops structure" to the
- asoc tree
-Date: Mon, 17 Jul 2017 17:05:12 +0100
-Message-ID: <E1dX8WG-0004hS-0D@debutante>
-References: <20170713060508.GA22657@embeddedgus>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170713060508.GA22657@embeddedgus>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Subject: Applied "ASoC: do not close shared backend dailink" to the asoc tree
+Date: Mon, 17 Jul 2017 17:06:12 +0100
+Message-ID: <E1dX8XE-00052d-Sn@debutante>
+References: <1500099305-16438-1-git-send-email-plai@codeaurora.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1500099305-16438-1-git-send-email-plai@codeaurora.org>
+Sender: stable-owner@vger.kernel.org
+Cc: Gopikrishnaiah Anandan <agopik@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.orgGopikrishnaiah Anandan <agopik@codeaurora.org>Patrick Lai <plai@codeaurora.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mmp-sspa: constify snd_soc_dai_ops structure
+   ASoC: do not close shared backend dailink
 
 has been applied to the asoc tree at
 
@@ -48,33 +36,41 @@ to this mail.
 Thanks,
 Mark
 
->From cb7534437956650ab0dcebf7a7b4795eb904d22a Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 01:05:08 -0500
-Subject: [PATCH] ASoC: mmp-sspa: constify snd_soc_dai_ops structure
+>From b1cd2e34c69a2f3988786af451b6e17967c293a0 Mon Sep 17 00:00:00 2001
+From: Banajit Goswami <bgoswami@codeaurora.org>
+Date: Fri, 14 Jul 2017 23:15:05 -0700
+Subject: [PATCH] ASoC: do not close shared backend dailink
 
-This structure is only stored in the ops field of a snd_soc_dai_driver
-structure. That field is declared const, so snd_soc_dai_ops structures
-that have this property can be declared as const also.
+Multiple frontend dailinks may be connected to a backend
+dailink at the same time. When one of frontend dailinks is
+closed, the associated backend dailink should not be closed
+if it is connected to other active frontend dailinks. Change
+ensures that backend dailink is closed only after all
+connected frontend dailinks are closed.
 
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Signed-off-by: Gopikrishnaiah Anandan <agopik@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+Signed-off-by: Patrick Lai <plai@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/pxa/mmp-sspa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index 9cc35012e6e5..64b85e30c1f8 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -380,7 +380,7 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
- 		SNDRV_PCM_FMTBIT_S24_LE | \
- 		SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index dcc5ece08668..93999b8a87d3 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -181,6 +181,10 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 		dev_dbg(be->dev, "ASoC: BE %s event %d dir %d\n",
+ 				be->dai_link->name, event, dir);
  
--static struct snd_soc_dai_ops mmp_sspa_dai_ops = {
-+static const struct snd_soc_dai_ops mmp_sspa_dai_ops = {
- 	.startup	= mmp_sspa_startup,
- 	.shutdown	= mmp_sspa_shutdown,
- 	.trigger	= mmp_sspa_trigger,
++		if ((event == SND_SOC_DAPM_STREAM_STOP) &&
++		    (be->dpcm[dir].users >= 1))
++			continue;
++
+ 		snd_soc_dapm_stream_event(be, dir, event);
+ 	}
+ 
 -- 
 2.13.2
