@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau1977: Remove unneeded gpiod NULL
+Subject: Applied "ASoC: sun4i-codec: Remove unneeded gpiod NULL
 	check" to the asoc tree
-Date: Mon, 17 Jul 2017 17:06:04 +0100
-Message-ID: <E1dX8X6-0004zQ-O2@debutante>
-References: <1500239473-14886-3-git-send-email-festevam@gmail.com>
+Date: Mon, 17 Jul 2017 17:06:07 +0100
+Message-ID: <E1dX8X9-00050S-Nw@debutante>
+References: <1500239473-14886-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71D40267439
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:12 +0200 (CEST)
-In-Reply-To: <1500239473-14886-3-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 62756267443
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:15 +0200 (CEST)
+In-Reply-To: <1500239473-14886-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau1977: Remove unneeded gpiod NULL check
+   ASoC: sun4i-codec: Remove unneeded gpiod NULL check
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 68feed90070e5133c0bfe26648410a39e092018d Mon Sep 17 00:00:00 2001
+>From d51579e6effa19c1ca4d6a29c3841cb454d56af6 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 16 Jul 2017 18:11:08 -0300
-Subject: [PATCH] ASoC: adau1977: Remove unneeded gpiod NULL check
+Date: Sun, 16 Jul 2017 18:11:06 -0300
+Subject: [PATCH] ASoC: sun4i-codec: Remove unneeded gpiod NULL check
 
 The gpiod API checks for NULL descriptors, so there is no need to
 duplicate the check in the driver.
@@ -64,32 +64,24 @@ duplicate the check in the driver.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau1977.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
-index b319db6a69f8..ccc5cf0e4f80 100644
---- a/sound/soc/codecs/adau1977.c
-+++ b/sound/soc/codecs/adau1977.c
-@@ -388,8 +388,7 @@ static int adau1977_power_disable(struct adau1977 *adau1977)
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 150069987c0c..4c37231f254b 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1171,9 +1171,8 @@ static int sun4i_codec_spk_event(struct snd_soc_dapm_widget *w,
+ {
+ 	struct sun4i_codec *scodec = snd_soc_card_get_drvdata(w->dapm->card);
  
- 	regcache_mark_dirty(adau1977->regmap);
+-	if (scodec->gpio_pa)
+-		gpiod_set_value_cansleep(scodec->gpio_pa,
+-					 !!SND_SOC_DAPM_EVENT_ON(event));
++	gpiod_set_value_cansleep(scodec->gpio_pa,
++				 !!SND_SOC_DAPM_EVENT_ON(event));
  
--	if (adau1977->reset_gpio)
--		gpiod_set_value_cansleep(adau1977->reset_gpio, 0);
-+	gpiod_set_value_cansleep(adau1977->reset_gpio, 0);
- 
- 	regcache_cache_only(adau1977->regmap, true);
- 
-@@ -420,8 +419,7 @@ static int adau1977_power_enable(struct adau1977 *adau1977)
- 			goto err_disable_avdd;
- 	}
- 
--	if (adau1977->reset_gpio)
--		gpiod_set_value_cansleep(adau1977->reset_gpio, 1);
-+	gpiod_set_value_cansleep(adau1977->reset_gpio, 1);
- 
- 	regcache_cache_only(adau1977->regmap, false);
- 
+ 	return 0;
+ }
 -- 
 2.13.2
