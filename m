@@ -1,58 +1,76 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCHv2 3/6] ASoC: codec: cpcap: new codec
-Date: Mon, 17 Jul 2017 16:21:30 +0100
-Message-ID: <20170717152130.hvch7fuw655xpfq5@sirena.org.uk>
-References: <20170712151846.24621-1-sebastian.reichel@collabora.co.uk>
- <20170712151846.24621-4-sebastian.reichel@collabora.co.uk>
- <20170717092928.GH10026@atomide.com>
- <20170717141808.qsh2di4dzgirqiij@earth>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ASoC: rsnd: remove unnecessary static in rsnd_ssiu_probe()
+Date: Mon, 17 Jul 2017 10:30:20 -0500
+Message-ID: <20170717153020.GA19704@embeddedgus>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hvlqovgsavkodh6q"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170717141808.qsh2di4dzgirqiij@earth>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Cc: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
+Remove unnecessary static on local variable ops.
+Such variable is initialized before being used,
+on every execution path throughout the function.
+The static has no benefit and, removing it reduces
+the code size.
 
---hvlqovgsavkodh6q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This issue was detected using Coccinelle and the following semantic patch:
 
-On Mon, Jul 17, 2017 at 04:18:08PM +0200, Sebastian Reichel wrote:
-> On Mon, Jul 17, 2017 at 02:29:29AM -0700, Tony Lindgren wrote:
+@bad exists@
+position p;
+identifier x;
+type T;
+@@
 
-> > Should it also have depends on SND_AUDIO_GRAPH_CARD?
+static T x@p;
+...
+x = <+...x...+>
 
-> The codec does not depend on audio graph card. You can
-> also use it with (deprecated) simple card or a custom
-> written one. In case of a custom written one it would
-> make sense to add a dependency from the custom written
-> one to SND_SOC_CPCAP. So I think we should not add such
-> a dependency.
+@@
+identifier x;
+expression e;
+type T;
+position p != bad.p;
+@@
 
-Right, the dependencies should go in the opposite direction.
+-static
+ T x@p;
+ ... when != x
+     when strict
+?x = e;
 
---hvlqovgsavkodh6q
-Content-Type: application/pgp-signature; name="signature.asc"
+In the following log you can see the difference in the code size. Also,
+there is a significant difference in the bss segment. This log is the
+output of the size command, before and after the code change:
 
------BEGIN PGP SIGNATURE-----
+before:
+   text    data     bss     dec     hex filename
+   3211     680      64    3955     f73 sound/soc/sh/rcar/ssiu.o
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlls1fkACgkQJNaLcl1U
-h9DN1gf/VA1Ex0YDxPOKEH39+wuT6YokjrF9UC91dOGivT7oLX6b6LL7Z971vujW
-NvD4fEH4+nPiJXalI9J1NM8Y4uKh4ChgGGY1lXu3Ev6xrGGdEZhbYVUSR7ny5bM0
-Y/FaUuBmEhwm6ZWqHFEBGCTlwJG7Xq+8zMJw9+0HDyOl+w9qAPDomDXoNsi3eWxN
-Ac9/jmKN43mb81BEUn1tj49LAwqFhln9O4lQt858JAjzucq6dk++nFHIvLaL/FfP
-LVoY4Sb1OmgroLUc5h4axYy9Ay8EsGIScsbGHDq7nzHZYUzPgLp6IdLhALNmnsxU
-rIlXFH6r7sFzYC5eV3nMYeXxblpZ1A==
-=FNYw
------END PGP SIGNATURE-----
+after:
+   text    data     bss     dec     hex filename
+   3207     592       0    3799     ed7 sound/soc/sh/rcar/ssiu.o
 
---hvlqovgsavkodh6q--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/soc/sh/rcar/ssiu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index bed2c9c..4d94875 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -250,7 +250,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ {
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_ssiu *ssiu;
+-	static struct rsnd_mod_ops *ops;
++	struct rsnd_mod_ops *ops;
+ 	int i, nr, ret;
+ 
+ 	/* same number to SSI */
+-- 
+2.5.0
