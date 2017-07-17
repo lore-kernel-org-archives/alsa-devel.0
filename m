@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l42: Remove unneeded gpiod NULL
+Subject: Applied "ASoC: cs35l34: Remove unneeded gpiod NULL
 	check" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:52 +0100
-Message-ID: <E1dX8Wu-0004vi-PO@debutante>
-References: <1500239473-14886-6-git-send-email-festevam@gmail.com>
+Date: Mon, 17 Jul 2017 17:05:55 +0100
+Message-ID: <E1dX8Wx-0004wj-Q0@debutante>
+References: <1500239473-14886-5-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 553AE267400
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:00 +0200 (CEST)
-In-Reply-To: <1500239473-14886-6-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 154BA267414
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:03 +0200 (CEST)
+In-Reply-To: <1500239473-14886-5-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l42: Remove unneeded gpiod NULL check
+   ASoC: cs35l34: Remove unneeded gpiod NULL check
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 205cbac065f9589c77a79f26339cf63023f08f6e Mon Sep 17 00:00:00 2001
+>From db3be255a101da11f67c0f3053b750e767eb10fe Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 16 Jul 2017 18:11:11 -0300
-Subject: [PATCH] ASoC: cs42l42: Remove unneeded gpiod NULL check
+Date: Sun, 16 Jul 2017 18:11:10 -0300
+Subject: [PATCH] ASoC: cs35l34: Remove unneeded gpiod NULL check
 
 The gpiod API checks for NULL descriptors, so there is no need to
 duplicate the check in the driver.
@@ -64,42 +64,22 @@ duplicate the check in the driver.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs35l34.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 55e4520cdcaf..55caf5ff3e64 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1898,8 +1898,7 @@ static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
- 	snd_soc_unregister_codec(&i2c_client->dev);
+diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
+index 0a747c66cc6c..dade899b38dc 100644
+--- a/sound/soc/codecs/cs35l34.c
++++ b/sound/soc/codecs/cs35l34.c
+@@ -1138,8 +1138,7 @@ static int cs35l34_i2c_remove(struct i2c_client *client)
  
- 	/* Hold down reset */
--	if (cs42l42->reset_gpio)
--		gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
+ 	snd_soc_unregister_codec(&client->dev);
  
- 	return 0;
- }
-@@ -1913,8 +1912,7 @@ static int cs42l42_runtime_suspend(struct device *dev)
- 	regcache_mark_dirty(cs42l42->regmap);
+-	if (cs35l34->reset_gpio)
+-		gpiod_set_value_cansleep(cs35l34->reset_gpio, 0);
++	gpiod_set_value_cansleep(cs35l34->reset_gpio, 0);
  
- 	/* Hold down reset */
--	if (cs42l42->reset_gpio)
--		gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
- 
- 	/* remove power */
- 	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies),
-@@ -1937,8 +1935,7 @@ static int cs42l42_runtime_resume(struct device *dev)
- 		return ret;
- 	}
- 
--	if (cs42l42->reset_gpio)
--		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
-+	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
- 
- 	regcache_cache_only(cs42l42->regmap, false);
- 	regcache_sync(cs42l42->regmap);
+ 	pm_runtime_disable(&client->dev);
+ 	regulator_bulk_disable(cs35l34->num_core_supplies,
 -- 
 2.13.2
