@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l33: Remove unneeded gpiod NULL
+Subject: Applied "ASoC: wm8804: Remove unneeded gpiod NULL
 	check" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:58 +0100
-Message-ID: <E1dX8X0-0004xq-PK@debutante>
-References: <1500239473-14886-4-git-send-email-festevam@gmail.com>
+Date: Mon, 17 Jul 2017 17:06:01 +0100
+Message-ID: <E1dX8X3-0004yd-On@debutante>
+References: <1500239473-14886-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EA92267428
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:06 +0200 (CEST)
-In-Reply-To: <1500239473-14886-4-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B03826742C
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:09 +0200 (CEST)
+In-Reply-To: <1500239473-14886-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l33: Remove unneeded gpiod NULL check
+   ASoC: wm8804: Remove unneeded gpiod NULL check
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From c5660778b4851b1aea5d848ccfde3f27949f6418 Mon Sep 17 00:00:00 2001
+>From 89b13706c4bb6dae0263014051dd59986376faa5 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Sun, 16 Jul 2017 18:11:09 -0300
-Subject: [PATCH] ASoC: cs35l33: Remove unneeded gpiod NULL check
+Date: Sun, 16 Jul 2017 18:11:07 -0300
+Subject: [PATCH] ASoC: wm8804: Remove unneeded gpiod NULL check
 
 The gpiod API checks for NULL descriptors, so there is no need to
 duplicate the check in the driver.
@@ -64,52 +64,22 @@ duplicate the check in the driver.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l33.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8804.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 6df29fa30fb9..1eea91271ebb 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -869,8 +869,7 @@ static int __maybe_unused cs35l33_runtime_resume(struct device *dev)
- 
- 	dev_dbg(dev, "%s\n", __func__);
- 
--	if (cs35l33->reset_gpio)
--		gpiod_set_value_cansleep(cs35l33->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs35l33->reset_gpio, 0);
- 
- 	ret = regulator_bulk_enable(cs35l33->num_core_supplies,
- 		cs35l33->core_supplies);
-@@ -881,8 +880,7 @@ static int __maybe_unused cs35l33_runtime_resume(struct device *dev)
- 
- 	regcache_cache_only(cs35l33->regmap, false);
- 
--	if (cs35l33->reset_gpio)
--		gpiod_set_value_cansleep(cs35l33->reset_gpio, 1);
-+	gpiod_set_value_cansleep(cs35l33->reset_gpio, 1);
- 
- 	msleep(CS35L33_BOOT_DELAY);
- 
-@@ -1191,8 +1189,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index af95d648265b..fc69b87443d8 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -623,8 +623,7 @@ int wm8804_probe(struct device *dev, struct regmap *regmap)
  		return ret;
  	}
  
--	if (cs35l33->reset_gpio)
--		gpiod_set_value_cansleep(cs35l33->reset_gpio, 1);
-+	gpiod_set_value_cansleep(cs35l33->reset_gpio, 1);
+-	if (wm8804->reset)
+-		gpiod_set_value_cansleep(wm8804->reset, 1);
++	gpiod_set_value_cansleep(wm8804->reset, 1);
  
- 	msleep(CS35L33_BOOT_DELAY);
- 	regcache_cache_only(cs35l33->regmap, false);
-@@ -1262,8 +1259,7 @@ static int cs35l33_i2c_remove(struct i2c_client *client)
- 
- 	snd_soc_unregister_codec(&client->dev);
- 
--	if (cs35l33->reset_gpio)
--		gpiod_set_value_cansleep(cs35l33->reset_gpio, 0);
-+	gpiod_set_value_cansleep(cs35l33->reset_gpio, 0);
- 
- 	pm_runtime_disable(&client->dev);
- 	regulator_bulk_disable(cs35l33->num_core_supplies,
+ 	ret = regmap_read(regmap, WM8804_RST_DEVID1, &id1);
+ 	if (ret < 0) {
 -- 
 2.13.2
