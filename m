@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: psc-ac97: constify dev_pm_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:06:29 +0100
-Message-ID: <E1dX8XV-00058R-NT@debutante>
+Subject: Applied "ASoC: fsi: constify dev_pm_ops structure" to
+	the asoc tree
+Date: Mon, 17 Jul 2017 17:06:31 +0100
+Message-ID: <E1dX8XX-00059C-Qs@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 48B1D26746C
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B1274267474
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:39 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: psc-ac97: constify dev_pm_ops structure
+   ASoC: fsi: constify dev_pm_ops structure
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From da61a11823395c87db0471d8d54055fa5a961688 Mon Sep 17 00:00:00 2001
+>From 4b2983da22d30c53d778b2e5035dc347dc4b0037 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Sun, 16 Jul 2017 21:12:39 -0500
-Subject: [PATCH] ASoC: psc-ac97: constify dev_pm_ops structure
+Date: Sun, 16 Jul 2017 21:12:21 -0500
+Subject: [PATCH] ASoC: fsi: constify dev_pm_ops structure
 
 This dev_pm_ops structure is only stored in the pm field of a
 device_driver structure. This field is declared const, so
@@ -65,21 +65,21 @@ as const also.
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/psc-ac97.c | 2 +-
+ sound/soc/sh/fsi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
-index bb53c7059005..a2050ae5a3fe 100644
---- a/sound/soc/au1x/psc-ac97.c
-+++ b/sound/soc/au1x/psc-ac97.c
-@@ -474,7 +474,7 @@ static int au1xpsc_ac97_drvresume(struct device *dev)
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 7c4bdd82bb95..005b21506556 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -2109,7 +2109,7 @@ static int fsi_resume(struct device *dev)
  	return 0;
  }
  
--static struct dev_pm_ops au1xpscac97_pmops = {
-+static const struct dev_pm_ops au1xpscac97_pmops = {
- 	.suspend	= au1xpsc_ac97_drvsuspend,
- 	.resume		= au1xpsc_ac97_drvresume,
+-static struct dev_pm_ops fsi_pm_ops = {
++static const struct dev_pm_ops fsi_pm_ops = {
+ 	.suspend		= fsi_suspend,
+ 	.resume			= fsi_resume,
  };
 -- 
 2.13.2
