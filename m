@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: force using PLL if MCLK is not
-	suitable" to the asoc tree
-Date: Mon, 17 Jul 2017 17:06:15 +0100
-Message-ID: <E1dX8XH-00053g-Ux@debutante>
-References: <1500014192-1411-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: Intel: Atom: constify snd_soc_dai_ops
+	structures" to the asoc tree
+Date: Mon, 17 Jul 2017 17:06:18 +0100
+Message-ID: <E1dX8XK-00054d-Ua@debutante>
+References: <20170713062606.GA27121@embeddedgus>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A7BEF267483
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:40 +0200 (CEST)
-In-Reply-To: <1500014192-1411-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F6B72673CF
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:06:43 +0200 (CEST)
+In-Reply-To: <20170713062606.GA27121@embeddedgus>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: force using PLL if MCLK is not suitable
+   ASoC: Intel: Atom: constify snd_soc_dai_ops structures
 
 has been applied to the asoc tree at
 
@@ -53,41 +52,47 @@ to this mail.
 Thanks,
 Mark
 
->From fa05899c12d54d3a1befa742f62d3188e551a87c Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Fri, 14 Jul 2017 14:36:32 +0800
-Subject: [PATCH] ASoC: rt5665: force using PLL if MCLK is not suitable
+>From c115a3178b1dfacd57b643934bb6bbbd1a9557f0 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Thu, 13 Jul 2017 01:26:06 -0500
+Subject: [PATCH] ASoC: Intel: Atom: constify snd_soc_dai_ops structures
 
-Idealy PLL will be set in machine driver if MCLK doesn't meet the
-requirement of codec. To let the codec driver be more general, we
-can use a common PLL setting once sysclk/pll doesn't set properly
-in machine driver.
+These structures are only stored in the ops field of a snd_soc_dai_driver
+structure. That field is declared const, so snd_soc_dai_ops structures
+that have this property can be declared as const also.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 370ed54d1e15..d3103efcb135 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4098,9 +4098,12 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
- 	rt5665->lrck[dai->id] = params_rate(params);
- 	pre_div = rl6231_get_clk_info(rt5665->sysclk, rt5665->lrck[dai->id]);
- 	if (pre_div < 0) {
--		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
--			rt5665->lrck[dai->id], dai->id);
--		return -EINVAL;
-+		dev_warn(codec->dev, "Force using PLL");
-+		snd_soc_codec_set_pll(codec, 0, RT5665_PLL1_S_MCLK,
-+			rt5665->sysclk,	rt5665->lrck[dai->id] * 512);
-+		snd_soc_codec_set_sysclk(codec, RT5665_SCLK_S_PLL1, 0,
-+			rt5665->lrck[dai->id] * 512, 0);
-+		pre_div = 1;
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index b082b31023d5..49c7b88b5bdc 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -471,7 +471,7 @@ static void sst_disable_ssp(struct snd_pcm_substream *substream,
  	}
- 	frame_size = snd_soc_params_to_frame_size(params);
- 	if (frame_size < 0) {
+ }
+ 
+-static struct snd_soc_dai_ops sst_media_dai_ops = {
++static const struct snd_soc_dai_ops sst_media_dai_ops = {
+ 	.startup = sst_media_open,
+ 	.shutdown = sst_media_close,
+ 	.prepare = sst_media_prepare,
+@@ -480,11 +480,11 @@ static struct snd_soc_dai_ops sst_media_dai_ops = {
+ 	.mute_stream = sst_media_digital_mute,
+ };
+ 
+-static struct snd_soc_dai_ops sst_compr_dai_ops = {
++static const struct snd_soc_dai_ops sst_compr_dai_ops = {
+ 	.mute_stream = sst_media_digital_mute,
+ };
+ 
+-static struct snd_soc_dai_ops sst_be_dai_ops = {
++static const struct snd_soc_dai_ops sst_be_dai_ops = {
+ 	.startup = sst_enable_ssp,
+ 	.hw_params = sst_be_hw_params,
+ 	.set_fmt = sst_set_format,
 -- 
 2.13.2
