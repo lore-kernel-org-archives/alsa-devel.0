@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix pcm-creation regression" to the asoc tree
-Date: Mon, 17 Jul 2017 17:05:39 +0100
-Message-ID: <E1dX8Wh-0004rs-AZ@debutante>
-References: <20170712155530.17765-1-johan@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170712155530.17765-1-johan@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, stable <stable@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>Linus Walleij <linus.walleij@linaro.org>, Brian Norris <briannorris@chromium.org>, linux-kernel@vger.kernel.orgstable <stable@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: max98926: constify snd_soc_dai_ops
+	structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:04:41 +0100
+Message-ID: <E1dX8Vl-0004Wi-Md@debutante>
+References: <9e23b49bd644e8c303308b408a9a3015a1c17015.1499974826.git.garsilva@embeddedor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DCA8266FCB
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:04:59 +0200 (CEST)
+In-Reply-To: <9e23b49bd644e8c303308b408a9a3015a1c17015.1499974826.git.garsilva@embeddedor.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fix pcm-creation regression
+   ASoC: max98926: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -37,175 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From c641e5b207ed7dfaa692820aeb5b6dde3de3e9b0 Mon Sep 17 00:00:00 2001
-From: Johan Hovold <johan@kernel.org>
-Date: Wed, 12 Jul 2017 17:55:29 +0200
-Subject: [PATCH] ASoC: fix pcm-creation regression
+>From dfcfd4b68a551b7038e046040dac2a467f5efd10 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Thu, 13 Jul 2017 15:37:54 -0500
+Subject: [PATCH] ASoC: max98926: constify snd_soc_dai_ops structure
 
-This reverts commit 99b04f4c4051 ("ASoC: add Component level
-pcm_new/pcm_free"), which started calling the pcm_new callback for every
-component in a *card* when creating a new pcm, something which does not
-seem to make any sense.
+This structure is only stored in the ops field of a snd_soc_dai_driver
+structure. That field is declared const, so snd_soc_dai_ops structures
+that have this property can be declared as const also.
 
-This specifically led to memory leaks in systems with more than one
-platform component and where DMA memory is allocated in the
-platform-driver callback. For example, when both mcasp devices are being
-used on an am335x board, DMA memory would be allocated twice for every
-DAI link during probe.
-
-When CONFIG_SND_VERBOSE_PROCFS was set this fortunately also led to
-warnings such as:
-
-WARNING: CPU: 0 PID: 565 at ../fs/proc/generic.c:346 proc_register+0x110/0x154
-proc_dir_entry 'sub0/prealloc' already registered
-
-Since there seems to be no users of the new component callbacks, and the
-current implementation introduced a regression, let's revert the
-offending commit for now.
-
-Fixes: 99b04f4c4051 ("ASoC: add Component level pcm_new/pcm_free")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Tested-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable <stable@vger.kernel.org>	# 4.10
 ---
- include/sound/soc.h  |  6 ------
- sound/soc/soc-core.c | 25 -------------------------
- sound/soc/soc-pcm.c  | 32 +++++++++-----------------------
- 3 files changed, 9 insertions(+), 54 deletions(-)
+ sound/soc/codecs/max98926.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 9c94b97c17f8..c4a8b1947566 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -795,10 +795,6 @@ struct snd_soc_component_driver {
- 	int (*suspend)(struct snd_soc_component *);
- 	int (*resume)(struct snd_soc_component *);
+diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
+index 1eff7e0b092e..f16145d8ee6b 100644
+--- a/sound/soc/codecs/max98926.c
++++ b/sound/soc/codecs/max98926.c
+@@ -459,7 +459,7 @@ static int max98926_dai_hw_params(struct snd_pcm_substream *substream,
+ #define MAX98926_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+ 		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
  
--	/* pcm creation and destruction */
--	int (*pcm_new)(struct snd_soc_pcm_runtime *);
--	void (*pcm_free)(struct snd_pcm *);
--
- 	/* DT */
- 	int (*of_xlate_dai_name)(struct snd_soc_component *component,
- 				 struct of_phandle_args *args,
-@@ -874,8 +870,6 @@ struct snd_soc_component {
- 	void (*remove)(struct snd_soc_component *);
- 	int (*suspend)(struct snd_soc_component *);
- 	int (*resume)(struct snd_soc_component *);
--	int (*pcm_new)(struct snd_soc_pcm_runtime *);
--	void (*pcm_free)(struct snd_pcm *);
- 
- 	/* machine specific init */
- 	int (*init)(struct snd_soc_component *component);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 921622a01944..c240e13ba057 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3171,8 +3171,6 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	component->remove = component->driver->remove;
- 	component->suspend = component->driver->suspend;
- 	component->resume = component->driver->resume;
--	component->pcm_new = component->driver->pcm_new;
--	component->pcm_free = component->driver->pcm_free;
- 
- 	dapm = &component->dapm;
- 	dapm->dev = dev;
-@@ -3360,25 +3358,6 @@ static void snd_soc_platform_drv_remove(struct snd_soc_component *component)
- 	platform->driver->remove(platform);
- }
- 
--static int snd_soc_platform_drv_pcm_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_platform *platform = rtd->platform;
--
--	if (platform->driver->pcm_new)
--		return platform->driver->pcm_new(rtd);
--	else
--		return 0;
--}
--
--static void snd_soc_platform_drv_pcm_free(struct snd_pcm *pcm)
--{
--	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
--	struct snd_soc_platform *platform = rtd->platform;
--
--	if (platform->driver->pcm_free)
--		platform->driver->pcm_free(pcm);
--}
--
- /**
-  * snd_soc_add_platform - Add a platform to the ASoC core
-  * @dev: The parent device for the platform
-@@ -3402,10 +3381,6 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
- 		platform->component.probe = snd_soc_platform_drv_probe;
- 	if (platform_drv->remove)
- 		platform->component.remove = snd_soc_platform_drv_remove;
--	if (platform_drv->pcm_new)
--		platform->component.pcm_new = snd_soc_platform_drv_pcm_new;
--	if (platform_drv->pcm_free)
--		platform->component.pcm_free = snd_soc_platform_drv_pcm_free;
- 
- #ifdef CONFIG_DEBUG_FS
- 	platform->component.debugfs_prefix = "platform";
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index dcc5ece08668..553f7a76743c 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2628,25 +2628,12 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
- 	return ret;
- }
- 
--static void soc_pcm_free(struct snd_pcm *pcm)
--{
--	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
--	struct snd_soc_component *component;
--
--	list_for_each_entry(component, &rtd->card->component_dev_list,
--			    card_list) {
--		if (component->pcm_free)
--			component->pcm_free(pcm);
--	}
--}
--
- /* create a new pcm */
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- {
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_component *component;
- 	struct snd_pcm *pcm;
- 	char new_name[64];
- 	int ret = 0, playback = 0, capture = 0;
-@@ -2756,18 +2743,17 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	if (capture)
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
- 
--	list_for_each_entry(component, &rtd->card->component_dev_list, card_list) {
--		if (component->pcm_new) {
--			ret = component->pcm_new(rtd);
--			if (ret < 0) {
--				dev_err(component->dev,
--					"ASoC: pcm constructor failed: %d\n",
--					ret);
--				return ret;
--			}
-+	if (platform->driver->pcm_new) {
-+		ret = platform->driver->pcm_new(rtd);
-+		if (ret < 0) {
-+			dev_err(platform->dev,
-+				"ASoC: pcm constructor failed: %d\n",
-+				ret);
-+			return ret;
- 		}
- 	}
--	pcm->private_free = soc_pcm_free;
-+
-+	pcm->private_free = platform->driver->pcm_free;
- out:
- 	dev_info(rtd->card->dev, "%s <-> %s mapping ok\n",
- 		 (rtd->num_codecs > 1) ? "multicodec" : rtd->codec_dai->name,
+-static struct snd_soc_dai_ops max98926_dai_ops = {
++static const struct snd_soc_dai_ops max98926_dai_ops = {
+ 	.set_fmt = max98926_dai_set_fmt,
+ 	.hw_params = max98926_dai_hw_params,
+ };
 -- 
 2.13.2
