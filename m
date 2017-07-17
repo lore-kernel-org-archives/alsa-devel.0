@@ -1,58 +1,62 @@
 From: Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: fix pcm-creation regression
-Date: Mon, 17 Jul 2017 10:03:48 +0200
-Message-ID: <20170717080348.GZ29638@localhost>
+Subject: Re: [PATCH 2/2] Revert "ASoC: ux500: drop platform DAI
+	assignments"
+Date: Mon, 17 Jul 2017 10:07:37 +0200
+Message-ID: <20170717080737.GA29638@localhost>
 References: <20170712155530.17765-1-johan@kernel.org>
- <CACRpkdax+tYOsJphnnP7HE-0srhSZshDu+znDYo=092YotANiQ@mail.gmail.com>
+ <20170712155530.17765-2-johan@kernel.org>
+ <CACRpkdbOkxTstPdvUSMe3J+BF1ifnQoJNCf657U+UTHr=aBREQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B70E266E0B
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 10:07:29 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id t72so12587936lff.0
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 01:07:29 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <CACRpkdax+tYOsJphnnP7HE-0srhSZshDu+znDYo=092YotANiQ@mail.gmail.com>
-Sender: stable-owner@vger.kernel.org
+In-Reply-To: <CACRpkdbOkxTstPdvUSMe3J+BF1ifnQoJNCf657U+UTHr=aBREQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Johan Hovold <johan@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>, Brian Norris <briannorris@chromium.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, stable <stable@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Johan Hovold <johan@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 14, 2017 at 03:35:46PM +0200, Linus Walleij wrote:
+On Fri, Jul 14, 2017 at 03:36:57PM +0200, Linus Walleij wrote:
 > On Wed, Jul 12, 2017 at 5:55 PM, Johan Hovold <johan@kernel.org> wrote:
 > 
-> > This reverts commit 99b04f4c4051 ("ASoC: add Component level
-> > pcm_new/pcm_free"), which started calling the pcm_new callback for every
-> > component in a *card* when creating a new pcm, something which does not
-> > seem to make any sense.
+> > This reverts commit f1013cdeeeb9 ("ASoC: ux500: drop platform DAI
+> > assignments"), which seems to have been based on a misunderstanding and
+> > prevents the platform driver callbacks from being made (e.g. to
+> > preallocate DMA memory).
 > >
-> > This specifically led to memory leaks in systems with more than one
-> > platform component and where DMA memory is allocated in the
-> > platform-driver callback. For example, when both mcasp devices are being
-> > used on an am335x board, DMA memory would be allocated twice for every
-> > DAI link during probe.
+> > The real culprit for the warnings about attempts to create duplicate
+> > procfs entries was commit 99b04f4c4051 ("ASoC: add Component level
+> > pcm_new/pcm_free" that broke PCM creation on systems that use more than
+> > one platform component.
 > >
-> > When CONFIG_SND_VERBOSE_PROCFS was set this fortunately also led to
-> > warnings such as:
-> >
-> > WARNING: CPU: 0 PID: 565 at ../fs/proc/generic.c:346 proc_register+0x110/0x154
-> > proc_dir_entry 'sub0/prealloc' already registered
-> >
-> > Since there seems to be no users of the new component callbacks, and the
-> > current implementation introduced a regression, let's revert the
-> > offending commit for now.
-> >
-> > Fixes: 99b04f4c4051 ("ASoC: add Component level pcm_new/pcm_free")
-> > Cc: stable <stable@vger.kernel.org>     # 4.10
-> > Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > Cc: Brian Norris <briannorris@chromium.org>
+> > Fixes: f1013cdeeeb9 ("ASoC: ux500: drop platform DAI assignments")
+> > Cc: stable <stable@vger.kernel.org>     # 4.11
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
 > > Signed-off-by: Johan Hovold <johan@kernel.org>
-> 
-> I have repeatedly ran into this bug, thanks a *lot* for fixing it.
-> It solves a problem not only on this old code but also in my
-> development tree where I try to move the Ux500 audio to DT-only
-> instantiation and this was a blocker that I just ran my head into
-> the last month or two.
 > 
 > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > Tested-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> These static assignments should go away, but not for the wrong reason.
+> So this patch is fully in order given the source of the bug.
 
-Thanks for testing these, Linus.
+I assume you'll still need the of-related bits though (platform_of_node)
+even if you eventually make this driver use DT-instantiation only.
 
+Thanks again,
 Johan
