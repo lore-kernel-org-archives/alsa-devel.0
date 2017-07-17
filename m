@@ -1,27 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_esai: constify snd_soc_dai_ops structure" to the
- asoc tree
-Date: Mon, 17 Jul 2017 17:05:24 +0100
-Message-ID: <E1dX8WS-0004m0-3i@debutante>
-References: <20170713071925.GA32343@embeddedgus>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20170713071925.GA32343@embeddedgus>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Fabio Estevam <fabio.estevam@nxp.com>, Jaroslav Kysela <perex@perex.cz>, linuxppc-dev@lists.ozlabs.org
+Subject: Applied "ASoC: zx-i2s: constify snd_soc_dai_ops
+	structure" to the asoc tree
+Date: Mon, 17 Jul 2017 17:05:08 +0100
+Message-ID: <E1dX8WC-0004gN-VP@debutante>
+References: <20170713052208.GA11536@embeddedgus>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C28C267026
+ for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:30 +0200 (CEST)
+In-Reply-To: <20170713052208.GA11536@embeddedgus>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "Gustavo A. R. Silva" <garsilva@embededdor.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_esai: constify snd_soc_dai_ops structure
+   ASoC: zx-i2s: constify snd_soc_dai_ops structure
 
 has been applied to the asoc tree at
 
@@ -46,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5d29e95eec1451d35ef6ce5b851fbc8b04f82d39 Mon Sep 17 00:00:00 2001
+>From 45d059a33aa48cb19a5ff589f71abcc4de4a8fbf Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 02:19:25 -0500
-Subject: [PATCH] ASoC: fsl_esai: constify snd_soc_dai_ops structure
+Date: Thu, 13 Jul 2017 00:22:09 -0500
+Subject: [PATCH] ASoC: zx-i2s: constify snd_soc_dai_ops structure
 
 This structure is only stored in the ops field of a snd_soc_dai_driver
 structure. That field is declared const, so snd_soc_dai_ops structures
@@ -58,21 +65,21 @@ that have this property can be declared as const also.
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 2 +-
+ sound/soc/zte/zx-i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 809a069d490b..cef79a1a620b 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -620,7 +620,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
+diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
+index 8bbad1d72bc5..9a0565937d1f 100644
+--- a/sound/soc/zte/zx-i2s.c
++++ b/sound/soc/zte/zx-i2s.c
+@@ -357,7 +357,7 @@ static void zx_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	clk_disable_unprepare(zx_i2s->dai_pclk);
  }
  
--static struct snd_soc_dai_ops fsl_esai_dai_ops = {
-+static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
- 	.startup = fsl_esai_startup,
- 	.shutdown = fsl_esai_shutdown,
- 	.trigger = fsl_esai_trigger,
+-static struct snd_soc_dai_ops zx_i2s_dai_ops = {
++static const struct snd_soc_dai_ops zx_i2s_dai_ops = {
+ 	.trigger	= zx_i2s_trigger,
+ 	.hw_params	= zx_i2s_hw_params,
+ 	.set_fmt	= zx_i2s_set_fmt,
 -- 
 2.13.2
