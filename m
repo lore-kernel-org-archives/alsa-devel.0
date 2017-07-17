@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5616: constify snd_soc_dai_ops
-	structure" to the asoc tree
-Date: Mon, 17 Jul 2017 17:04:47 +0100
-Message-ID: <E1dX8Vr-0004Yq-Nc@debutante>
-References: <4be0b8fc4ac7bcb044e588386b1ff23914e0f144.1499974826.git.garsilva@embeddedor.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B42A266FCC
- for <alsa-devel@alsa-project.org>; Mon, 17 Jul 2017 18:05:04 +0200 (CEST)
-In-Reply-To: <4be0b8fc4ac7bcb044e588386b1ff23914e0f144.1499974826.git.garsilva@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Bard Liao <bardliao@realtek.com>
+Subject: Applied "ASoC: Intel: Skylake: fix type in debug message" to the asoc tree
+Date: Mon, 17 Jul 2017 17:06:24 +0100
+Message-ID: <E1dX8XQ-00056s-Vv@debutante>
+References: <20170713230406.15854-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170713230406.15854-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Dharageswari R <dharageswari.r@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, GuruprasadX Pawse <guruprasadx.pawse@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5616: constify snd_soc_dai_ops structure
+   ASoC: Intel: Skylake: fix type in debug message
 
 has been applied to the asoc tree at
 
@@ -52,33 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From f1d68ea36f4fe97ed1de8d40eaa43758b8386c29 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Thu, 13 Jul 2017 15:37:43 -0500
-Subject: [PATCH] ASoC: rt5616: constify snd_soc_dai_ops structure
+>From d5c6d43b3d94e7bf421ec2aaf21b4b7c79fa1850 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 14 Jul 2017 00:04:06 +0100
+Subject: [PATCH] ASoC: Intel: Skylake: fix type in debug message
 
-This structure is only stored in the ops field of a snd_soc_dai_driver
-structure. That field is declared const, so snd_soc_dai_ops structures
-that have this property can be declared as const also.
+Trivial fix to typo in debug message, dst_instacne should be
+dst_instance
 
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5616.c | 2 +-
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5616.c b/sound/soc/codecs/rt5616.c
-index 7d6e0823f98f..33bdfe7c394a 100644
---- a/sound/soc/codecs/rt5616.c
-+++ b/sound/soc/codecs/rt5616.c
-@@ -1265,7 +1265,7 @@ static int rt5616_resume(struct snd_soc_codec *codec)
- #define RT5616_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index fb2f1f603f3c..c5b4e0a9946c 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -950,7 +950,7 @@ static void skl_dump_bind_info(struct skl_sst *ctx, struct skl_module_cfg
+ {
+ 	dev_dbg(ctx->dev, "%s: src module_id = %d  src_instance=%d\n",
+ 		__func__, src_module->id.module_id, src_module->id.pvt_id);
+-	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instacne=%d\n", __func__,
++	dev_dbg(ctx->dev, "%s: dst_module=%d dst_instance=%d\n", __func__,
+ 		 dst_module->id.module_id, dst_module->id.pvt_id);
  
--static struct snd_soc_dai_ops rt5616_aif_dai_ops = {
-+static const struct snd_soc_dai_ops rt5616_aif_dai_ops = {
- 	.hw_params = rt5616_hw_params,
- 	.set_fmt = rt5616_set_dai_fmt,
- 	.set_sysclk = rt5616_set_dai_sysclk,
+ 	dev_dbg(ctx->dev, "src_module state = %d dst module state = %d\n",
 -- 
 2.13.2
