@@ -1,59 +1,52 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCHv2 0/6] Motorola Droid 4 Audio Support
-Date: Mon, 17 Jul 2017 22:48:33 -0700
-Message-ID: <20170718054833.GL10026@atomide.com>
-References: <20170712151846.24621-1-sebastian.reichel@collabora.co.uk>
- <20170717092904.GG10026@atomide.com>
- <20170717101258.llyly7kwfnwtoftr@earth>
- <20170717101709.GI10026@atomide.com>
- <20170717141347.t2642xbkol3g36rv@earth>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: board: Add Geminilake
+	platform support
+Date: Tue, 18 Jul 2017 13:41:06 +0530
+Message-ID: <20170718081105.GR3053@localhost>
+References: <1500304529-25804-1-git-send-email-pradeep.d.tewani@intel.com>
+ <1500304529-25804-2-git-send-email-pradeep.d.tewani@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AA09266C40
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 10:08:25 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20170717141347.t2642xbkol3g36rv@earth>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1500304529-25804-2-git-send-email-pradeep.d.tewani@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pradeep Tewani <pradeep.d.tewani@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-* Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170717 07:14]:
-> Hi,
-> 
-> On Mon, Jul 17, 2017 at 03:17:10AM -0700, Tony Lindgren wrote:
-> > * Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170717 03:13]:
-> > > On Mon, Jul 17, 2017 at 02:29:04AM -0700, Tony Lindgren wrote:
-> > > > * Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170712 08:19]:
-> > > > >  * Switch from simple-audio-card to audio-graph-card
-> > > > 
-> > > > Gave this a quick try against v4.13-rc1 with SND_AUDIO_GRAPH_CARD
-> > > > enabled as a loadable module. However loading it oopses for me,
-> > > > see below. Maybe some dependencies are missing?
-> > > 
-> > > It works for me on top of v4.13-rc1 (my kernel is monolithic).
-> > > Looking at the stacktrace it seems to be a bug in audio graph
-> > > card and not in the codec driver.
-> > 
-> > OK I do also have:
-> > 
-> > CONFIG_DEBUG_LOCKDEP=y
-> > CONFIG_DEBUG_ATOMIC_SLEEP=y
-> 
-> I added those and I do not get a stacktrace for anything sound
-> related and audio works. I noticed one issue in dapm routing,
-> that I accidently added. That will be fixed in PATCHv3, but its
-> in untestable path anyways (EXT capture, probably FM radio is
-> connected to EXT).
+On Mon, Jul 17, 2017 at 08:45:28PM +0530, Pradeep Tewani wrote:
 
-Hmm maybe that was not with DEBUG_ATOMIC_SLEEP then? I also
-verified it does not happen unless your dts patch
-"ARM: dts: omap4-droid4: add soundcard" is applied.
+> +static struct snd_soc_card geminilake_rt298 = {
+> +	.name = "geminilake-rt298",
+> +	.owner = THIS_MODULE,
 
-I doubt that having it as loadable module makes any difference
-here as it's the might_sleep() in __mutex_lock_common() producing
-the BUG.
+Do we need this, i though core set it up?
 
-Regards,
+>  static int broxton_audio_probe(struct platform_device *pdev)
+>  {
+>  	struct bxt_rt286_private *ctx;
+> +	struct snd_soc_card *card =
+> +			(struct snd_soc_card *)pdev->id_entry->driver_data;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(broxton_rt298_dais); i++) {
+> +		if (!strcmp(card->dai_link[i].codec_name, "i2c-INT343A:00")) {
+> +			if (!strcmp(card->name, "broxton-rt298")) {
 
-Tony
+can we use strncmp pls
+
+-- 
+~Vinod
