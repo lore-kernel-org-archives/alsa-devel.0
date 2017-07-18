@@ -1,32 +1,66 @@
-From: Richard Leitner <me@g0hl1n.net>
-Subject: Re: [PATCH] ASoC: sgtl5000: add AVC configuration controls
-Date: Tue, 18 Jul 2017 22:27:54 +0200
-Message-ID: <90a75d7e-539d-d048-9ed9-f6855e99321c@g0hl1n.net>
-References: <1496750662-19135-1-git-send-email-richard.leitner@skidata.com>
- <20170718135547.jujxmywdyteueuy2@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+Subject: [PATCH] sound: fsl_dma: remove dma_object path member
+Date: Tue, 18 Jul 2017 16:43:39 -0500
+Message-ID: <20170718214339.7774-59-robh@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170718135547.jujxmywdyteueuy2@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Richard Leitner <richard.leitner@skidata.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, clemens.gruber@pqgruber.com, eric@nelint.com, fabio.estevam@nxp.com, kalle.kankare@vincit.fi, dev@g0hl1n.net
+To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
+dma_object.path is unused, so rather than fix it to work with DT
+full_name changes, just remove it.
 
-On 07/18/2017 03:55 PM, Mark Brown wrote:
-> On Tue, Jun 06, 2017 at 02:04:22PM +0200, Richard Leitner wrote:
->> For the configuration of the automatic volume control block (AVC), which
->> reduces loud signals and amplifies low level signals for easier
->> listening, following controls are added:
->
-> This doesn't apply against current code, please check and resend.
+Signed-off-by: Rob Herring <robh@kernel.org>
+Cc: Timur Tabi <timur@tabi.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+---
+ sound/soc/fsl/fsl_dma.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-The changes from this patch were included in the already merged commit 
-a729526720059ae01980 ("ASoC: sgtl5000: add avc support").
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index ccadefceeff2..b38dd328c783 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -63,7 +63,6 @@ struct dma_object {
+ 	struct ccsr_dma_channel __iomem *channel;
+ 	unsigned int irq;
+ 	bool assigned;
+-	char path[1];
+ };
 
-Therefore please ignore this patch.
+ /*
+@@ -897,20 +896,19 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
 
-regards,
-Richard.L
+ 	ret = of_address_to_resource(ssi_np, 0, &res);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "could not determine resources for %s\n",
+-			ssi_np->full_name);
++		dev_err(&pdev->dev, "could not determine resources for %pOF\n",
++			ssi_np);
+ 		of_node_put(ssi_np);
+ 		return ret;
+ 	}
+
+-	dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
++	dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+ 	if (!dma) {
+ 		dev_err(&pdev->dev, "could not allocate dma object\n");
+ 		of_node_put(ssi_np);
+ 		return -ENOMEM;
+ 	}
+
+-	strcpy(dma->path, np->full_name);
+ 	dma->dai.ops = &fsl_dma_ops;
+ 	dma->dai.pcm_new = fsl_dma_new;
+ 	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
+--
+2.11.0
