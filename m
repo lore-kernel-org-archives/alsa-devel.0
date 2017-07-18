@@ -1,56 +1,59 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5663: Modify the default value for
-	ASRC function
-Date: Tue, 18 Jul 2017 10:12:58 +0800
-Message-ID: <1500343978-23246-1-git-send-email-oder_chiou@realtek.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv2 0/6] Motorola Droid 4 Audio Support
+Date: Mon, 17 Jul 2017 22:48:33 -0700
+Message-ID: <20170718054833.GL10026@atomide.com>
+References: <20170712151846.24621-1-sebastian.reichel@collabora.co.uk>
+ <20170717092904.GG10026@atomide.com>
+ <20170717101258.llyly7kwfnwtoftr@earth>
+ <20170717101709.GI10026@atomide.com>
+ <20170717141347.t2642xbkol3g36rv@earth>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 580542664EB
- for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 04:13:11 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170717141347.t2642xbkol3g36rv@earth>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch modifies the default value for ASRC function. It could prevent
-the pop noise and recording no sound with ASRC function.
+* Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170717 07:14]:
+> Hi,
+> 
+> On Mon, Jul 17, 2017 at 03:17:10AM -0700, Tony Lindgren wrote:
+> > * Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170717 03:13]:
+> > > On Mon, Jul 17, 2017 at 02:29:04AM -0700, Tony Lindgren wrote:
+> > > > * Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170712 08:19]:
+> > > > >  * Switch from simple-audio-card to audio-graph-card
+> > > > 
+> > > > Gave this a quick try against v4.13-rc1 with SND_AUDIO_GRAPH_CARD
+> > > > enabled as a loadable module. However loading it oopses for me,
+> > > > see below. Maybe some dependencies are missing?
+> > > 
+> > > It works for me on top of v4.13-rc1 (my kernel is monolithic).
+> > > Looking at the stacktrace it seems to be a bug in audio graph
+> > > card and not in the codec driver.
+> > 
+> > OK I do also have:
+> > 
+> > CONFIG_DEBUG_LOCKDEP=y
+> > CONFIG_DEBUG_ATOMIC_SLEEP=y
+> 
+> I added those and I do not get a stacktrace for anything sound
+> related and audio works. I noticed one issue in dapm routing,
+> that I accidently added. That will be fixed in PATCHv3, but its
+> in untestable path anyways (EXT capture, probably FM radio is
+> connected to EXT).
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5663.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hmm maybe that was not with DEBUG_ATOMIC_SLEEP then? I also
+verified it does not happen unless your dts patch
+"ARM: dts: omap4-droid4: add soundcard" is applied.
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index b262b6f..d324817 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -60,6 +60,7 @@ struct rt5663_priv {
- 
- static const struct reg_sequence rt5663_patch_list[] = {
- 	{ 0x002a, 0x8080 },
-+	{ 0x0086, 0x0028 },
- };
- 
- static const struct reg_default rt5663_v2_reg[] = {
-@@ -509,7 +510,7 @@ static const struct reg_default rt5663_reg[] = {
- 	{ 0x0082, 0x0000 },
- 	{ 0x0083, 0x0000 },
- 	{ 0x0084, 0x0000 },
--	{ 0x0086, 0x0008 },
-+	{ 0x0086, 0x0028 },
- 	{ 0x0087, 0x0000 },
- 	{ 0x008a, 0x0000 },
- 	{ 0x008b, 0x0000 },
--- 
-2.7.4
+I doubt that having it as loadable module makes any difference
+here as it's the might_sleep() in __mutex_lock_common() producing
+the BUG.
+
+Regards,
+
+Tony
