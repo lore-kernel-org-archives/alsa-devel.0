@@ -1,16 +1,16 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 2/3] ASoC: rt5677: Refactor code to avoid
-	comparison unsigned >= 0
-Date: Tue, 18 Jul 2017 20:34:18 +0300
-Message-ID: <20170718173419.65980-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/3] ASoC: rt5677: Hide platform data in the
+	module sources
+Date: Tue, 18 Jul 2017 20:34:17 +0300
+Message-ID: <20170718173419.65980-2-andriy.shevchenko@linux.intel.com>
 References: <20170718173419.65980-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 6631E267218
- for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 19:35:22 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32CFF267222
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 19:35:38 +0200 (CEST)
 In-Reply-To: <20170718173419.65980-1-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,52 +25,195 @@ To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam 
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-cnQ1Njc3X3RvX2lycSgpIGhhcyBjb3VwbGUgb2YgcmVkdW5kYW50IGNvbmRpdGlvbmFscywgb25l
-IG9mIHdoaWNoCmNvbXBhcmVzIHVuc2lnbmVkIHZhcmlhYmxlIHRvIGJlIGdyZWF0IHRoYW4gb3Ig
-ZXF1YWwgdG8gemVybyB3aGljaAppcyBhbHdheXMgdHJ1ZSBhcyBjb21waWxlciBub3RpY2VzOgoK
-c291bmQvc29jL2NvZGVjcy9ydDU2NzcuYzogSW4gZnVuY3Rpb24g4oCYcnQ1Njc3X3RvX2lyceKA
-mToKc291bmQvc29jL2NvZGVjcy9ydDU2NzcuYzo0NjI2OjEzOiB3YXJuaW5nOiBjb21wYXJpc29u
-IG9mIHVuc2lnbmVkIGV4cHJlc3Npb24gPj0gMCBpcyBhbHdheXMgdHJ1ZSBbLVd0eXBlLWxpbWl0
-c10KClJlZmFjdG9yIHRoZSBjb2RlIGJ5IHJlbW92aW5nIHJlZHVuZGFudCBjb25kaXRpb25hbHMu
-CgpTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4
-LmludGVsLmNvbT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL3J0NTY3Ny5jIHwgNTAgKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAy
-MSBpbnNlcnRpb25zKCspLCAyOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-Y29kZWNzL3J0NTY3Ny5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NzcuYwppbmRleCAwZjk2NDJj
-MjE5OGEuLmEzY2NlNTc3MzljMyAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDU2Nzcu
-YworKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY3Ny5jCkBAIC00NjI1LDM1ICs0NjI1LDI3IEBA
-IHN0YXRpYyBpbnQgcnQ1Njc3X3RvX2lycShzdHJ1Y3QgZ3Bpb19jaGlwICpjaGlwLCB1bnNpZ25l
-ZCBvZmZzZXQpCiAJc3RydWN0IHJlZ21hcF9pcnFfY2hpcF9kYXRhICpkYXRhID0gcnQ1Njc3LT5p
-cnFfZGF0YTsKIAlpbnQgaXJxOwogCi0JaWYgKG9mZnNldCA+PSBSVDU2NzdfR1BJTzEgJiYgb2Zm
-c2V0IDw9IFJUNTY3N19HUElPMykgewotCQlpZiAoKHJ0NTY3Ny0+cGRhdGEuamQxX2dwaW8gPT0g
-MSAmJiBvZmZzZXQgPT0gUlQ1Njc3X0dQSU8xKSB8fAotCQkJKHJ0NTY3Ny0+cGRhdGEuamQxX2dw
-aW8gPT0gMiAmJgotCQkJCW9mZnNldCA9PSBSVDU2NzdfR1BJTzIpIHx8Ci0JCQkocnQ1Njc3LT5w
-ZGF0YS5qZDFfZ3BpbyA9PSAzICYmCi0JCQkJb2Zmc2V0ID09IFJUNTY3N19HUElPMykpIHsKLQkJ
-CWlycSA9IFJUNTY3N19JUlFfSkQxOwotCQl9IGVsc2UgewotCQkJcmV0dXJuIC1FTlhJTzsKLQkJ
-fQotCX0KLQotCWlmIChvZmZzZXQgPj0gUlQ1Njc3X0dQSU80ICYmIG9mZnNldCA8PSBSVDU2Nzdf
-R1BJTzYpIHsKLQkJaWYgKChydDU2NzctPnBkYXRhLmpkMl9ncGlvID09IDEgJiYgb2Zmc2V0ID09
-IFJUNTY3N19HUElPNCkgfHwKLQkJCShydDU2NzctPnBkYXRhLmpkMl9ncGlvID09IDIgJiYKLQkJ
-CQlvZmZzZXQgPT0gUlQ1Njc3X0dQSU81KSB8fAotCQkJKHJ0NTY3Ny0+cGRhdGEuamQyX2dwaW8g
-PT0gMyAmJgotCQkJCW9mZnNldCA9PSBSVDU2NzdfR1BJTzYpKSB7Ci0JCQlpcnEgPSBSVDU2Nzdf
-SVJRX0pEMjsKLQkJfSBlbHNlIGlmICgocnQ1Njc3LT5wZGF0YS5qZDNfZ3BpbyA9PSAxICYmCi0J
-CQkJb2Zmc2V0ID09IFJUNTY3N19HUElPNCkgfHwKLQkJCShydDU2NzctPnBkYXRhLmpkM19ncGlv
-ID09IDIgJiYKLQkJCQlvZmZzZXQgPT0gUlQ1Njc3X0dQSU81KSB8fAotCQkJKHJ0NTY3Ny0+cGRh
-dGEuamQzX2dwaW8gPT0gMyAmJgotCQkJCW9mZnNldCA9PSBSVDU2NzdfR1BJTzYpKSB7Ci0JCQlp
-cnEgPSBSVDU2NzdfSVJRX0pEMzsKLQkJfSBlbHNlIHsKLQkJCXJldHVybiAtRU5YSU87Ci0JCX0K
-KwlpZiAoKHJ0NTY3Ny0+cGRhdGEuamQxX2dwaW8gPT0gMSAmJiBvZmZzZXQgPT0gUlQ1Njc3X0dQ
-SU8xKSB8fAorCQkocnQ1Njc3LT5wZGF0YS5qZDFfZ3BpbyA9PSAyICYmCisJCQlvZmZzZXQgPT0g
-UlQ1Njc3X0dQSU8yKSB8fAorCQkocnQ1Njc3LT5wZGF0YS5qZDFfZ3BpbyA9PSAzICYmCisJCQlv
-ZmZzZXQgPT0gUlQ1Njc3X0dQSU8zKSkgeworCQlpcnEgPSBSVDU2NzdfSVJRX0pEMTsKKwl9IGVs
-c2UgaWYgKChydDU2NzctPnBkYXRhLmpkMl9ncGlvID09IDEgJiYgb2Zmc2V0ID09IFJUNTY3N19H
-UElPNCkgfHwKKwkJKHJ0NTY3Ny0+cGRhdGEuamQyX2dwaW8gPT0gMiAmJgorCQkJb2Zmc2V0ID09
-IFJUNTY3N19HUElPNSkgfHwKKwkJKHJ0NTY3Ny0+cGRhdGEuamQyX2dwaW8gPT0gMyAmJgorCQkJ
-b2Zmc2V0ID09IFJUNTY3N19HUElPNikpIHsKKwkJaXJxID0gUlQ1Njc3X0lSUV9KRDI7CisJfSBl
-bHNlIGlmICgocnQ1Njc3LT5wZGF0YS5qZDNfZ3BpbyA9PSAxICYmCisJCQlvZmZzZXQgPT0gUlQ1
-Njc3X0dQSU80KSB8fAorCQkocnQ1Njc3LT5wZGF0YS5qZDNfZ3BpbyA9PSAyICYmCisJCQlvZmZz
-ZXQgPT0gUlQ1Njc3X0dQSU81KSB8fAorCQkocnQ1Njc3LT5wZGF0YS5qZDNfZ3BpbyA9PSAzICYm
-CisJCQlvZmZzZXQgPT0gUlQ1Njc3X0dQSU82KSkgeworCQlpcnEgPSBSVDU2NzdfSVJRX0pEMzsK
-Kwl9IGVsc2UgeworCQlyZXR1cm4gLUVOWElPOwogCX0KIAogCXJldHVybiByZWdtYXBfaXJxX2dl
-dF92aXJxKGRhdGEsIGlycSk7Ci0tIAoyLjExLjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+There is no user of legacy platform data.
+
+Remove separate header and hide its content inside module sources.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/sound/rt5677.h    | 45 ---------------------------------------------
+ sound/soc/codecs/rt5677.c | 29 +++++++++++++++++------------
+ sound/soc/codecs/rt5677.h | 30 +++++++++++++++++++++++++++++-
+ 3 files changed, 46 insertions(+), 58 deletions(-)
+ delete mode 100644 include/sound/rt5677.h
+
+diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
+deleted file mode 100644
+index a6207043ac3c..000000000000
+--- a/include/sound/rt5677.h
++++ /dev/null
+@@ -1,45 +0,0 @@
+-/*
+- * linux/sound/rt5677.h -- Platform data for RT5677
+- *
+- * Copyright 2013 Realtek Semiconductor Corp.
+- * Author: Oder Chiou <oder_chiou@realtek.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef __LINUX_SND_RT5677_H
+-#define __LINUX_SND_RT5677_H
+-
+-enum rt5677_dmic2_clk {
+-	RT5677_DMIC_CLK1 = 0,
+-	RT5677_DMIC_CLK2 = 1,
+-};
+-
+-
+-struct rt5677_platform_data {
+-	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
+-	bool in1_diff;
+-	bool in2_diff;
+-	bool lout1_diff;
+-	bool lout2_diff;
+-	bool lout3_diff;
+-	/* DMIC2 clock source selection */
+-	enum rt5677_dmic2_clk dmic2_clk_pin;
+-
+-	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
+-	u8 gpio_config[6];
+-
+-	/* jd1 can select 0 ~ 3 as OFF, GPIO1, GPIO2 and GPIO3 respectively */
+-	unsigned int jd1_gpio;
+-	/* jd2 and jd3 can select 0 ~ 3 as
+-		OFF, GPIO4, GPIO5 and GPIO6 respectively */
+-	unsigned int jd2_gpio;
+-	unsigned int jd3_gpio;
+-
+-	/* Set MICBIAS1 VDD 1v8 or 3v3 */
+-	bool micbias1_vdd_3v3;
+-};
+-
+-#endif
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 36e530a36c82..0f9642c2198a 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -21,6 +21,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/firmware.h>
++#include <linux/of_device.h>
+ #include <linux/property.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -5019,25 +5020,21 @@ static const struct regmap_config rt5677_regmap = {
+ };
+ 
+ static const struct i2c_device_id rt5677_i2c_id[] = {
+-	{ "rt5677", RT5677 },
+-	{ "rt5676", RT5676 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+ 
+ static const struct of_device_id rt5677_of_match[] = {
+-	{ .compatible = "realtek,rt5677", },
++	{ .compatible = "realtek,rt5677", RT5677 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, rt5677_of_match);
+ 
+-#ifdef CONFIG_ACPI
+ static const struct acpi_device_id rt5677_acpi_match[] = {
+ 	{ "RT5677CE", RT5677 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, rt5677_acpi_match);
+-#endif
+ 
+ static void rt5677_read_acpi_properties(struct rt5677_priv *rt5677,
+ 		struct device *dev)
+@@ -5147,7 +5144,6 @@ static void rt5677_free_irq(struct i2c_client *i2c)
+ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+-	struct rt5677_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt5677_priv *rt5677;
+ 	int ret;
+ 	unsigned int val;
+@@ -5159,16 +5155,25 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, rt5677);
+ 
+-	rt5677->type = id->driver_data;
++	if (i2c->dev.of_node) {
++		const struct of_device_id *match_id;
++
++		match_id = of_match_device(rt5677_of_match, &i2c->dev);
++		if (match_id)
++			rt5677->type = (enum rt5677_type)match_id->data;
+ 
+-	if (pdata)
+-		rt5677->pdata = *pdata;
+-	else if (i2c->dev.of_node)
+ 		rt5677_read_device_properties(rt5677, &i2c->dev);
+-	else if (ACPI_HANDLE(&i2c->dev))
++	} else if (ACPI_HANDLE(&i2c->dev)) {
++		const struct acpi_device_id *acpi_id;
++
++		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
++		if (acpi_id)
++			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
++
+ 		rt5677_read_acpi_properties(rt5677, &i2c->dev);
+-	else
++	} else {
+ 		return -EINVAL;
++	}
+ 
+ 	/* pow-ldo2 and reset are optional. The codec pins may be statically
+ 	 * connected on the board without gpios. If the gpio device property
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index d46855a42c40..97239973edc4 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -12,7 +12,6 @@
+ #ifndef __RT5677_H__
+ #define __RT5677_H__
+ 
+-#include <sound/rt5677.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/gpio/consumer.h>
+ 
+@@ -1761,6 +1760,35 @@ enum {
+ 	RT5677_I2S4_SOURCE = (0x1 << 18),
+ };
+ 
++enum rt5677_dmic2_clk {
++	RT5677_DMIC_CLK1 = 0,
++	RT5677_DMIC_CLK2 = 1,
++};
++
++struct rt5677_platform_data {
++	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
++	bool in1_diff;
++	bool in2_diff;
++	bool lout1_diff;
++	bool lout2_diff;
++	bool lout3_diff;
++	/* DMIC2 clock source selection */
++	enum rt5677_dmic2_clk dmic2_clk_pin;
++
++	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
++	u8 gpio_config[6];
++
++	/* jd1 can select 0 ~ 3 as OFF, GPIO1, GPIO2 and GPIO3 respectively */
++	unsigned int jd1_gpio;
++	/* jd2 and jd3 can select 0 ~ 3 as
++		OFF, GPIO4, GPIO5 and GPIO6 respectively */
++	unsigned int jd2_gpio;
++	unsigned int jd3_gpio;
++
++	/* Set MICBIAS1 VDD 1v8 or 3v3 */
++	bool micbias1_vdd_3v3;
++};
++
+ struct rt5677_priv {
+ 	struct snd_soc_codec *codec;
+ 	struct rt5677_platform_data pdata;
+-- 
+2.11.0
