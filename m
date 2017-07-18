@@ -1,21 +1,17 @@
-From: Fulup Ar Foll <fulup.arfoll@iot.bzh>
-Subject: Re: Reset to clean state after
- snd_ctl_add_integer_elem_set ?
-Date: Tue, 18 Jul 2017 13:26:01 +0200
-Message-ID: <fce8362a-04d4-a2f7-33b1-0660ff44b3c8@iot.bzh>
-References: <5e7c39f0-6eeb-4ef6-44f9-c281533f08a3@iot.bzh>
- <5fcd8cd2-a3b9-2384-66ec-99c69d5f8746@ladisch.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2 2/7] ALSA: cs423x: fix format string
+	overflow warning
+Date: Tue, 18 Jul 2017 13:48:05 +0200
+Message-ID: <20170718114820.3681255-2-arnd@arndb.de>
+References: <20170718114820.3681255-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f54.google.com (mail-lf0-f54.google.com
- [209.85.215.54])
- by alsa0.perex.cz (Postfix) with ESMTP id B3F3C267121
- for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 13:26:05 +0200 (CEST)
-Received: by mail-lf0-f54.google.com with SMTP id t72so11070091lff.1
- for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 04:26:05 -0700 (PDT)
-In-Reply-To: <5fcd8cd2-a3b9-2384-66ec-99c69d5f8746@ladisch.de>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F9FB2664EB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 13:48:49 +0200 (CEST)
+In-Reply-To: <20170718114820.3681255-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +21,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-Clement,
+The snd_pcm name may overflow the card->longname total size:
 
-This is more or less what I have todo today. Nevertheless I do not 
-understand how "alsactl init" which says in help "initialize driver to a 
-default state" does not do the job.
+sound/isa/cs423x/cs4231.c: In function 'snd_cs4231_probe':
+sound/isa/cs423x/cs4231.c:115:26: error: ' at 0x' directive writing 6 bytes into a region of size between 1 and 80 [-Werror=format-overflow=] 0x%lx, irq %d, dma %d",
+  sprintf(card->longname, "%s at 0x%lx, irq %d, dma %d",
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fulup
+This changes the driver to use snprintf() so we truncate the string
+instead of overflowing into the next field if that happens.
 
-On 18/07/17 13:03, Clemens Ladisch wrote:
-> Fulup Ar Foll wrote:
->> I'm using snd_ctl_add_boolean_elem_set and snd_ctl_add_integer_elem_set
->> to create some user kernel controls. While the operation work find I
->> did not find any simple command to erase all those controls.
->>
->> Even "/usr/sbin/alsactl --init" does not remove those added controls.
->> The only way I find is to prevent  /usr/sbin/alsactl to happen during
->> reboot to really reset the ALSA driver to an initial state, which is
->> really not pratical when developing/debugging.
->>
->> Question: is there a simple method to return to a clean and fresh state
->> after snd_ctl_add_xxxx without rebooting the machine ?
->
-> There is no ownership information for user controls, so "alsactl store"
-> and "alsactl restore" always keep them.
->
-> To remove them, you can write a tool to call snd_ctl_elem_remove() on
-> all of them.  Alternatively, unload the driver module, and remove the
-> entries from the saved state file (probably /var/lib/alsa/asound.state).
->
->
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+I decided to split out the second format string for the extra
+DMA channel to keep the code simpler.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/isa/cs423x/cs4231.c | 18 +++++++++++-------
+ sound/isa/cs423x/cs4236.c | 20 +++++++++++---------
+ 2 files changed, 22 insertions(+), 16 deletions(-)
+
+diff --git a/sound/isa/cs423x/cs4231.c b/sound/isa/cs423x/cs4231.c
+index e8edd9017a2f..d90ab9558f7f 100644
+--- a/sound/isa/cs423x/cs4231.c
++++ b/sound/isa/cs423x/cs4231.c
+@@ -109,13 +109,17 @@ static int snd_cs4231_probe(struct device *dev, unsigned int n)
+ 	if (error < 0)
+ 		goto out;
+ 
+-	strcpy(card->driver, "CS4231");
+-	strcpy(card->shortname, chip->pcm->name);
+-
+-	sprintf(card->longname, "%s at 0x%lx, irq %d, dma %d",
+-		chip->pcm->name, chip->port, irq[n], dma1[n]);
+-	if (dma2[n] >= 0)
+-		sprintf(card->longname + strlen(card->longname), "&%d", dma2[n]);
++	strlcpy(card->driver, "CS4231", sizeof(card->driver));
++	strlcpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
++
++	if (dma2[n] < 0)
++		snprintf(card->longname, sizeof(card->longname),
++			 "%s at 0x%lx, irq %d, dma %d",
++			 chip->pcm->name, chip->port, irq[n], dma1[n]);
++	else
++		snprintf(card->longname, sizeof(card->longname),
++			 "%s at 0x%lx, irq %d, dma %d&%d",
++			 chip->pcm->name, chip->port, irq[n], dma1[n], dma2[n]);
+ 
+ 	error = snd_wss_mixer(chip);
+ 	if (error < 0)
+diff --git a/sound/isa/cs423x/cs4236.c b/sound/isa/cs423x/cs4236.c
+index 1f9a3b2be7a1..4c09756c7353 100644
+--- a/sound/isa/cs423x/cs4236.c
++++ b/sound/isa/cs423x/cs4236.c
+@@ -419,15 +419,17 @@ static int snd_cs423x_probe(struct snd_card *card, int dev)
+ 		if (err < 0)
+ 			return err;
+ 	}
+-	strcpy(card->driver, chip->pcm->name);
+-	strcpy(card->shortname, chip->pcm->name);
+-	sprintf(card->longname, "%s at 0x%lx, irq %i, dma %i",
+-		chip->pcm->name,
+-		chip->port,
+-		irq[dev],
+-		dma1[dev]);
+-	if (dma2[dev] >= 0)
+-		sprintf(card->longname + strlen(card->longname), "&%d", dma2[dev]);
++	strlcpy(card->driver, chip->pcm->name, sizeof(card->driver));
++	strlcpy(card->shortname, chip->pcm->name, sizeof(card->shortname));
++	if (dma2[dev] < 0)
++		snprintf(card->longname, sizeof(card->longname),
++			 "%s at 0x%lx, irq %i, dma %i",
++			 chip->pcm->name, chip->port, irq[dev], dma1[dev]);
++	else
++		snprintf(card->longname, sizeof(card->longname),
++			 "%s at 0x%lx, irq %i, dma %i&%d",
++			 chip->pcm->name, chip->port, irq[dev], dma1[dev],
++			 dma2[dev]);
+ 
+ 	err = snd_wss_timer(chip, 0);
+ 	if (err < 0)
+-- 
+2.9.0
