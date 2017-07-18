@@ -1,16 +1,16 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 5/7] ALSA: mixart: fix string overflow
-	warning
-Date: Tue, 18 Jul 2017 13:48:08 +0200
-Message-ID: <20170718114820.3681255-5-arnd@arndb.de>
+Subject: [PATCH v2 4/7] ALSA: opti9xx: fix format string
+	overflow warning
+Date: Tue, 18 Jul 2017 13:48:07 +0200
+Message-ID: <20170718114820.3681255-4-arnd@arndb.de>
 References: <20170718114820.3681255-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D01E2671D1
- for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 13:49:51 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id E114C26719C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 13:50:29 +0200 (CEST)
 In-Reply-To: <20170718114820.3681255-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,78 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Using a temporary string produces warnings about a possible overflow
-in sprintf:
+We pass a long name from "codec->pcm->name" into the longname
+string of the same length:
 
-sound/pci/mixart/mixart.c: In function 'snd_mixart_probe':
-sound/pci/mixart/mixart.c:1353:28: error: ' [PCM #' directive writing 7 bytes into a region of size between 1 and 32 [-Werror=format-overflow=]
-   sprintf(card->shortname, "%s [PCM #%d]", mgr->shortname, i);
-                            ^~~~~~~~~~~~~~
-sound/pci/mixart/mixart.c:1353:28: note: using the range [-2147483648, 2147483647] for directive argument
-sound/pci/mixart/mixart.c:1353:3: note: 'sprintf' output between 10 and 51 bytes into a destination of size 32
-   sprintf(card->shortname, "%s [PCM #%d]", mgr->shortname, i);
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-sound/pci/mixart/mixart.c:1354:27: error: ' [PCM #' directive writing 7 bytes into a region of size between 1 and 80 [-Werror=format-overflow=]
-   sprintf(card->longname, "%s [PCM #%d]", mgr->longname, i);
-                           ^~~~~~~~~~~~~~
-sound/pci/mixart/mixart.c:1354:27: note: using the range [-2147483648, 2147483647] for directive argument
-sound/pci/mixart/mixart.c:1354:3: note: 'sprintf' output between 10 and 99 bytes into a destination of size 80
+sound/isa/opti9xx/miro.c: In function 'snd_miro_probe':
+sound/isa/opti9xx/miro.c:1356:39: error: '%s' directive writing up to 79 bytes into a region of size between 35 and 72 [-Werror=format-overflow=]
+  sprintf(card->longname, "%s: OPTi%s, %s at 0x%lx, irq %d, dma %d&%d",
+                                       ^~
+sound/isa/opti9xx/miro.c:1356:26: note: using the range [0, 4294967295] for directive argument
+  sprintf(card->longname, "%s: OPTi%s, %s at 0x%lx, irq %d, dma %d&%d",
+                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/isa/opti9xx/miro.c:1356:2: note: 'sprintf' output between 32 and 185 bytes into a destination of size 80
+  sprintf(card->longname, "%s: OPTi%s, %s at 0x%lx, irq %d, dma %d&%d",
 
-Skipping the intermediate, we can get gcc to see that it is in fact
-safe here.
+There is no easy way to avoid the theoretical overflow in this case,
+but using snprintf() will turn it into a harmless truncation.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/pci/mixart/mixart.c | 10 +++++-----
- sound/pci/mixart/mixart.h |  4 ----
- 2 files changed, 5 insertions(+), 9 deletions(-)
+ sound/isa/opti9xx/miro.c           |  7 ++++---
+ sound/isa/opti9xx/opti92x-ad1848.c | 14 ++++++++------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
-index 80d439944cb5..6d7fbf30618b 100644
---- a/sound/pci/mixart/mixart.c
-+++ b/sound/pci/mixart/mixart.c
-@@ -1313,9 +1313,6 @@ static int snd_mixart_probe(struct pci_dev *pci,
+diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+index bcbff56f060d..1c5a12fa8be3 100644
+--- a/sound/isa/opti9xx/miro.c
++++ b/sound/isa/opti9xx/miro.c
+@@ -1353,9 +1353,10 @@ static int snd_miro_probe(struct snd_card *card)
  	}
- 	mgr->irq = pci->irq;
  
--	sprintf(mgr->shortname, "Digigram miXart");
--	sprintf(mgr->longname, "%s at 0x%lx & 0x%lx, irq %i", mgr->shortname, mgr->mem[0].phys, mgr->mem[1].phys, mgr->irq);
--
- 	/* init mailbox  */
- 	mgr->msg_fifo_readptr = 0;
- 	mgr->msg_fifo_writeptr = 0;
-@@ -1350,8 +1347,11 @@ static int snd_mixart_probe(struct pci_dev *pci,
- 		}
+ 	strcpy(card->driver, "miro");
+-	sprintf(card->longname, "%s: OPTi%s, %s at 0x%lx, irq %d, dma %d&%d",
+-		card->shortname, miro->name, codec->pcm->name,
+-		miro->wss_base + 4, miro->irq, miro->dma1, miro->dma2);
++	snprintf(card->longname, sizeof(card->longname),
++		 "%s: OPTi%s, %s at 0x%lx, irq %d, dma %d&%d",
++		 card->shortname, miro->name, codec->pcm->name,
++		 miro->wss_base + 4, miro->irq, miro->dma1, miro->dma2);
  
- 		strcpy(card->driver, CARD_NAME);
--		sprintf(card->shortname, "%s [PCM #%d]", mgr->shortname, i);
--		sprintf(card->longname, "%s [PCM #%d]", mgr->longname, i);
-+		snprintf(card->shortname, sizeof(card->shortname),
-+			 "Digigram miXart [PCM #%d]", i);
-+		snprintf(card->longname, sizeof(card->longname),
-+			"Digigram miXart at 0x%lx & 0x%lx, irq %i [PCM #%d]",
-+			mgr->mem[0].phys, mgr->mem[1].phys, mgr->irq, i);
+ 	if (mpu_port <= 0 || mpu_port == SNDRV_AUTO_PORT)
+ 		rmidi = NULL;
+diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
+index ceddb392b1e3..56dc581c57d5 100644
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -879,13 +879,15 @@ static int snd_opti9xx_probe(struct snd_card *card)
+ 	strcpy(card->driver, chip->name);
+ 	sprintf(card->shortname, "OPTi %s", card->driver);
+ #if defined(CS4231) || defined(OPTi93X)
+-	sprintf(card->longname, "%s, %s at 0x%lx, irq %d, dma %d&%d",
+-		card->shortname, codec->pcm->name,
+-		chip->wss_base + 4, irq, dma1, xdma2);
++	snprintf(card->longname, sizeof(card->longname),
++		 "%s, %s at 0x%lx, irq %d, dma %d&%d",
++		 card->shortname, codec->pcm->name,
++		 chip->wss_base + 4, irq, dma1, xdma2);
+ #else
+-	sprintf(card->longname, "%s, %s at 0x%lx, irq %d, dma %d",
+-		card->shortname, codec->pcm->name, chip->wss_base + 4, irq,
+-		dma1);
++	snprintf(card->longname, sizeof(card->longname),
++		 "%s, %s at 0x%lx, irq %d, dma %d",
++		 card->shortname, codec->pcm->name, chip->wss_base + 4, irq,
++		 dma1);
+ #endif	/* CS4231 || OPTi93X */
  
- 		if ((err = snd_mixart_create(mgr, card, i)) < 0) {
- 			snd_card_free(card);
-diff --git a/sound/pci/mixart/mixart.h b/sound/pci/mixart/mixart.h
-index 426743871540..69b3ece099ad 100644
---- a/sound/pci/mixart/mixart.h
-+++ b/sound/pci/mixart/mixart.h
-@@ -74,10 +74,6 @@ struct mixart_mgr {
- 	/* memory-maps */
- 	struct mem_area mem[2];
- 
--	/* share the name */
--	char shortname[32];         /* short name of this soundcard */
--	char longname[80];          /* name of this soundcard */
--
- 	/* one and only blocking message or notification may be pending  */
- 	u32 pending_event;
- 	wait_queue_head_t msg_sleep;
+ 	if (mpu_port <= 0 || mpu_port == SNDRV_AUTO_PORT)
 -- 
 2.9.0
