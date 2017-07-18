@@ -1,16 +1,23 @@
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [PATCH v3 4/4] i2c: rcar: check for DMA-capable buffers
-Date: Tue, 18 Jul 2017 12:23:39 +0200
-Message-ID: <20170718102339.28726-5-wsa+renesas@sang-engineering.com>
-References: <20170718102339.28726-1-wsa+renesas@sang-engineering.com>
+From: Fulup Ar Foll <fulup.arfoll@iot.bzh>
+Subject: Reset to clean state after
+	snd_ctl_add_integer_elem_set ?
+Date: Tue, 18 Jul 2017 12:30:30 +0200
+Message-ID: <5e7c39f0-6eeb-4ef6-44f9-c281533f08a3@iot.bzh>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pokefinder.org (sauhun.de [88.99.104.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 7516F2670F6
- for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 12:24:17 +0200 (CEST)
-In-Reply-To: <20170718102339.28726-1-wsa+renesas@sang-engineering.com>
+Received: from mail-lf0-f48.google.com (mail-lf0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92D742664EB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 12:30:32 +0200 (CEST)
+Received: by mail-lf0-f48.google.com with SMTP id z78so10210080lff.0
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 03:30:32 -0700 (PDT)
+Received: from [10.20.1.21] ([46.18.96.42])
+ by smtp.googlemail.com with ESMTPSA id e37sm1691990edb.65.2017.07.18.03.30.30
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 18 Jul 2017 03:30:30 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,75 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-i2c@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-input@vger.kernel.org, linux-media@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Handling this is special for this driver. Because the hardware needs to
-initialize the next message in interrupt context, we cannot use the
-i2c_check_msg_for_dma() directly. This helper only works reliably in
-process context. So, we need to check during initial preparation of the
-whole transfer and need to disable DMA completely for the whole transfer
-once a message with a not-DMA-capable buffer is found.
+I'm using snd_ctl_add_boolean_elem_set and snd_ctl_add_integer_elem_set 
+to create some user kernel controls. While the operation work find I did 
+not find any simple command to erase all those controls.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- drivers/i2c/busses/i2c-rcar.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+Even "/usr/sbin/alsactl --init" does not remove those added controls. 
+The only way I find is to prevent  /usr/sbin/alsactlto happen during 
+reboot to really reset the ALSA driver to an initial state, which is 
+really not pratical when developing/debugging.
 
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 93c1a54981df08..5d0e820d708853 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -111,8 +111,11 @@
- #define ID_ARBLOST	(1 << 3)
- #define ID_NACK		(1 << 4)
- /* persistent flags */
-+#define ID_P_NODMA	(1 << 30)
- #define ID_P_PM_BLOCKED	(1 << 31)
--#define ID_P_MASK	ID_P_PM_BLOCKED
-+#define ID_P_MASK	(ID_P_PM_BLOCKED | ID_P_NODMA)
-+
-+#define RCAR_DMA_THRESHOLD 8
- 
- enum rcar_i2c_type {
- 	I2C_RCAR_GEN1,
-@@ -358,8 +361,7 @@ static void rcar_i2c_dma(struct rcar_i2c_priv *priv)
- 	unsigned char *buf;
- 	int len;
- 
--	/* Do not use DMA if it's not available or for messages < 8 bytes */
--	if (IS_ERR(chan) || msg->len < 8)
-+	if (IS_ERR(chan) || msg->len < RCAR_DMA_THRESHOLD || priv->flags & ID_P_NODMA)
- 		return;
- 
- 	if (read) {
-@@ -657,11 +659,15 @@ static void rcar_i2c_request_dma(struct rcar_i2c_priv *priv,
- 				 struct i2c_msg *msg)
- {
- 	struct device *dev = rcar_i2c_priv_to_dev(priv);
--	bool read;
-+	bool read = msg->flags & I2C_M_RD;
- 	struct dma_chan *chan;
- 	enum dma_transfer_direction dir;
- 
--	read = msg->flags & I2C_M_RD;
-+	/* we need to check here because we need the 'current' context */
-+	if (i2c_check_msg_for_dma(msg, RCAR_DMA_THRESHOLD, NULL) == -EFAULT) {
-+		dev_dbg(dev, "skipping DMA for this whole transfer\n");
-+		priv->flags |= ID_P_NODMA;
-+	}
- 
- 	chan = read ? priv->dma_rx : priv->dma_tx;
- 	if (PTR_ERR(chan) != -EPROBE_DEFER)
-@@ -740,6 +746,8 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *adap,
- 	if (ret < 0 && ret != -ENXIO)
- 		dev_err(dev, "error %d : %x\n", ret, priv->flags);
- 
-+	priv->flags &= ~ID_P_NODMA;
-+
- 	return ret;
- }
- 
--- 
-2.11.0
+Question: is there a simple method to return to a clean and fresh state 
+after snd_ctl_add_xxxx without rebooting the machine ?
+
+Thank you
+
+Fulup
