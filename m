@@ -1,34 +1,61 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 20/22] sound: pci: avoid string overflow warnings
-Date: Tue, 18 Jul 2017 13:52:30 +0200
-Message-ID: <CAK8P3a3G+scFLTbJhxNpGEwAw5TG18M27x6zYOGVZY0GUsnpPw@mail.gmail.com>
-References: <20170714120720.906842-1-arnd@arndb.de> <20170714120720.906842-21-arnd@arndb.de>
- <s5hinivfbic.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] Revert "ASoC: ux500: drop platform DAI assignments"
+Date: Tue, 18 Jul 2017 13:59:11 +0100
+Message-ID: <20170718125911.aw7syyjgbxbwv2za@sirena.org.uk>
+References: <20170712155530.17765-1-johan@kernel.org>
+ <20170712155530.17765-2-johan@kernel.org>
+ <20170717145127.ke5o65as35itamaf@sirena.org.uk>
+ <20170718082118.GG29638@localhost>
+ <20170718100655.topzzdu6n7rd6euk@sirena.org.uk>
+ <20170718103629.GI29638@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hinivfbic.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, "David S . Miller" <davem@davemloft.net>, Geliang Tang <geliangtang@gmail.com>, the arch/x86 maintainers <x86@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Martin K . Petersen" <martin.petersen@oracle.com>, Guenter Roeck <linux@roeck-us.net>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, linux-scsi <linux-scsi@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="npsiaupc6e7coghb"
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170718103629.GI29638@localhost>
+Sender: stable-owner@vger.kernel.org
+To: Johan Hovold <johan@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 14, 2017 at 2:28 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 14 Jul 2017 14:07:12 +0200,
->
-> Thanks for the patch.  I have seen it but ignored, so far, as not sure
-> which action is the best.  An alternative solution is to use
-> snprintf() blindly, for example.
->
-> For mixart, it's even better to drop mgr->shortname[] and longname[]
-> assignment.  The shortname is the fixed string, and the longname is
-> used only at copying to card->longname, so we can create a string
-> there from the scratch.
 
-I've done that now, and tried to be a little smarter with the other
-conversions. I also found related problems in ISA drivers after
-randconfig testing and fixed those as well.
+--npsiaupc6e7coghb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Sent a 7-patch series now as a replacement.
+On Tue, Jul 18, 2017 at 12:36:29PM +0200, Johan Hovold wrote:
+> On Tue, Jul 18, 2017 at 11:06:55AM +0100, Mark Brown wrote:
 
-       Arnd
+> > Reverts shouldn't be special - they're just regular patches and should
+> > have sensible changelogs like any others.
+
+> Stating that you're reverting a commit and which commit that is is in
+> the summary is arguable sensible (of course, you still also need further
+> details in the commit message body itself describing why it was needed).
+
+> Check the logs and you'll see that we have a ton of "Revert <reverted
+> commit summary>" for various subsystems. In fact, it seems to be by far
+> the most common summary for direct reverts.
+
+The easily findable ones are, and it doesn't mean it's good practice -
+reverts seem to attract particularly bad commit messages in general, not
+just the subject lines, and I happen to have a pre-canned response for
+this so...
+
+--npsiaupc6e7coghb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlluBh4ACgkQJNaLcl1U
+h9CS1AgAhfNE1+ey5LQ3jf0tXSlLNEAC1Jyd9WOVV0mQ/JvnmxTDMRGWDcY3vHrU
+mZZwzqQ4Yru0a8X4q48/qpxXOypLIBryyHXq0mIYijE7PBG3CnLQzKg2T6egVcUD
+PedKpKqXWFkmiKuCN5YDVBoT/CKOWPmSlDkLbr6l5ajgIZQbYnL6LxIakVFV6+hU
+pqYaL0VMtkB4BPB4OlF+GGnrcvzb/aHv9L+WTMe4PyKyhN/XvPgQDCdfOr1+5g47
+6cYhs91FbZ57Mx5Q0sHlLu9Yy+I5P0rtEw8CdeNCwZMuXQpnu6Pugtraa0kqkcz7
+8JNLhxFkQBzaZRHpWOGZeckiTAIdQA==
+=s3ie
+-----END PGP SIGNATURE-----
+
+--npsiaupc6e7coghb--
