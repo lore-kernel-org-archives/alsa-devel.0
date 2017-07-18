@@ -1,61 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] Revert "ASoC: ux500: drop platform DAI assignments"
-Date: Tue, 18 Jul 2017 13:59:11 +0100
-Message-ID: <20170718125911.aw7syyjgbxbwv2za@sirena.org.uk>
-References: <20170712155530.17765-1-johan@kernel.org>
- <20170712155530.17765-2-johan@kernel.org>
- <20170717145127.ke5o65as35itamaf@sirena.org.uk>
- <20170718082118.GG29638@localhost>
- <20170718100655.topzzdu6n7rd6euk@sirena.org.uk>
- <20170718103629.GI29638@localhost>
+From: Jean-Francois Dockes <jf@dockes.org>
+Subject: Alsa library plugin license
+Date: Tue, 18 Jul 2017 15:06:13 +0200
+Message-ID: <22894.1989.498625.590675@y.dockes.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="npsiaupc6e7coghb"
-Return-path: <stable-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170718103629.GI29638@localhost>
-Sender: stable-owner@vger.kernel.org
-To: Johan Hovold <johan@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aibo.runbox.com (aibo.runbox.com [91.220.196.211])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6F3F266C4D
+ for <alsa-devel@alsa-project.org>; Tue, 18 Jul 2017 15:08:01 +0200 (CEST)
+Received: from [10.9.9.211] (helo=mailfront11.runbox.com)
+ by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+ (envelope-from <jf@dockes.org>) id 1dXSEK-0006mZ-Se
+ for alsa-devel@alsa-project.org; Tue, 18 Jul 2017 15:08:00 +0200
+Received: from obs92-1-82-227-105-245.fbx.proxad.net ([82.227.105.245]
+ helo=y.dockes.com)
+ by mailfront11.runbox.com with esmtpsa (uid:844288 )
+ (TLS1.2:RSA_AES_128_CBC_SHA1:128) (Exim 4.82) id 1dXSCd-0005NJ-78
+ for alsa-devel@alsa-project.org; Tue, 18 Jul 2017 15:06:15 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---npsiaupc6e7coghb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hello,
 
-On Tue, Jul 18, 2017 at 12:36:29PM +0200, Johan Hovold wrote:
-> On Tue, Jul 18, 2017 at 11:06:55AM +0100, Mark Brown wrote:
+I was requested to study the possibility to implement an alsa library pcm
+plugin doing specific audio processing.
 
-> > Reverts shouldn't be special - they're just regular patches and should
-> > have sensible changelogs like any others.
+I had a look around, but I could not find an explicit answer to this
+question: is a closed source alsa library plugin possible ?
 
-> Stating that you're reverting a commit and which commit that is is in
-> the summary is arguable sensible (of course, you still also need further
-> details in the commit message body itself describing why it was needed).
+My guess would be that it has to be GPL'd, but I have to ask.
 
-> Check the logs and you'll see that we have a ton of "Revert <reverted
-> commit summary>" for various subsystems. In fact, it seems to be by far
-> the most common summary for direct reverts.
+Cheers,
 
-The easily findable ones are, and it doesn't mean it's good practice -
-reverts seem to attract particularly bad commit messages in general, not
-just the subject lines, and I happen to have a pre-canned response for
-this so...
-
---npsiaupc6e7coghb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlluBh4ACgkQJNaLcl1U
-h9CS1AgAhfNE1+ey5LQ3jf0tXSlLNEAC1Jyd9WOVV0mQ/JvnmxTDMRGWDcY3vHrU
-mZZwzqQ4Yru0a8X4q48/qpxXOypLIBryyHXq0mIYijE7PBG3CnLQzKg2T6egVcUD
-PedKpKqXWFkmiKuCN5YDVBoT/CKOWPmSlDkLbr6l5ajgIZQbYnL6LxIakVFV6+hU
-pqYaL0VMtkB4BPB4OlF+GGnrcvzb/aHv9L+WTMe4PyKyhN/XvPgQDCdfOr1+5g47
-6cYhs91FbZ57Mx5Q0sHlLu9Yy+I5P0rtEw8CdeNCwZMuXQpnu6Pugtraa0kqkcz7
-8JNLhxFkQBzaZRHpWOGZeckiTAIdQA==
-=s3ie
------END PGP SIGNATURE-----
-
---npsiaupc6e7coghb--
+jf
