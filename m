@@ -1,137 +1,63 @@
-From: Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>
-Subject: Re: [PATCH v3 4/4] i2c: rcar: check for DMA-capable
-	buffers
-Date: Wed, 19 Jul 2017 11:42:24 +0200
-Message-ID: <20170719094224.GO28538@bigcity.dyn.berto.se>
-References: <20170718102339.28726-1-wsa+renesas@sang-engineering.com>
- <20170718102339.28726-5-wsa+renesas@sang-engineering.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/9] add support for Sama5d2 audio PLLs and enable
+ ClassD
+Date: Wed, 19 Jul 2017 11:19:46 +0100
+Message-ID: <20170719101946.keezbqmlrgt3waq6@sirena.org.uk>
+References: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
+ <b3b59278-8c7f-b3d1-e143-7f013ac0b873@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f49.google.com (mail-lf0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id D3C162669F6
- for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 11:42:26 +0200 (CEST)
-Received: by mail-lf0-f49.google.com with SMTP id z78so30552616lff.0
- for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 02:42:26 -0700 (PDT)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gqzpn77cdxumuk2p"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170718102339.28726-5-wsa+renesas@sang-engineering.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, linux-media@vger.kernel.org
+In-Reply-To: <b3b59278-8c7f-b3d1-e143-7f013ac0b873@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Quentin Schulz <quentin.schulz@free-electrons.com>
+Cc: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com, cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Wolfram,
 
-On 2017-07-18 12:23:39 +0200, Wolfram Sang wrote:
-> Handling this is special for this driver. Because the hardware needs to
-> initialize the next message in interrupt context, we cannot use the
-> i2c_check_msg_for_dma() directly. This helper only works reliably in
-> process context. So, we need to check during initial preparation of the
-> whole transfer and need to disable DMA completely for the whole transfer
-> once a message with a not-DMA-capable buffer is found.
-> =
+--gqzpn77cdxumuk2p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  drivers/i2c/busses/i2c-rcar.c | 18 +++++++++++++-----
->  1 file changed, 13 insertions(+), 5 deletions(-)
-> =
+On Wed, Jul 19, 2017 at 08:28:17AM +0200, Quentin Schulz wrote:
+> Hi all,
+>=20
+> It's been almost a week with no comments on this patch set, so kindly
+> pinging.
 
-> diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-> index 93c1a54981df08..5d0e820d708853 100644
-> --- a/drivers/i2c/busses/i2c-rcar.c
-> +++ b/drivers/i2c/busses/i2c-rcar.c
-> @@ -111,8 +111,11 @@
->  #define ID_ARBLOST	(1 << 3)
->  #define ID_NACK		(1 << 4)
->  /* persistent flags */
-> +#define ID_P_NODMA	(1 << 30)
->  #define ID_P_PM_BLOCKED	(1 << 31)
-> -#define ID_P_MASK	ID_P_PM_BLOCKED
-> +#define ID_P_MASK	(ID_P_PM_BLOCKED | ID_P_NODMA)
-> +
-> +#define RCAR_DMA_THRESHOLD 8
->  =
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
->  enum rcar_i2c_type {
->  	I2C_RCAR_GEN1,
-> @@ -358,8 +361,7 @@ static void rcar_i2c_dma(struct rcar_i2c_priv *priv)
->  	unsigned char *buf;
->  	int len;
->  =
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
-> -	/* Do not use DMA if it's not available or for messages < 8 bytes */
-> -	if (IS_ERR(chan) || msg->len < 8)
-> +	if (IS_ERR(chan) || msg->len < RCAR_DMA_THRESHOLD || priv->flags & ID_P=
-_NODMA)
->  		return;
->  =
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, though there are some other maintainers who like them - if in
+doubt look at how patches for the subsystem are normally handled.
 
->  	if (read) {
-> @@ -657,11 +659,15 @@ static void rcar_i2c_request_dma(struct rcar_i2c_pr=
-iv *priv,
->  				 struct i2c_msg *msg)
->  {
->  	struct device *dev =3D rcar_i2c_priv_to_dev(priv);
-> -	bool read;
-> +	bool read =3D msg->flags & I2C_M_RD;
->  	struct dma_chan *chan;
->  	enum dma_transfer_direction dir;
->  =
+--gqzpn77cdxumuk2p
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> -	read =3D msg->flags & I2C_M_RD;
-> +	/* we need to check here because we need the 'current' context */
+-----BEGIN PGP SIGNATURE-----
 
-Maybe extend the comment here explaining that the check is primary here =
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllvMj4ACgkQJNaLcl1U
+h9CtMQf/TXKy0m4fKgwWz6+mZZpEKf/S41ay2VDZ2dunxlQqp3fV4bTUNrGPBS0X
+8XpSP2s2AO2ma6/cV5WYfPSEIrhFUq0EHRs5KyuqEYc4vySDIQS+cTVOiBO+Qygv
+EXZFzrT55rTqjrQXAVXwRkKZVnYzk8rNSi6LUYlPaDGNv2gnL2HOPAzkPcm0DmUr
+YcmYDe7tBm7SKjFYscs2WNB7u/JneXhEYZd+3Mv8D8JOMFUmn9hB8+vjFlrAAapA
+KJsvFS4UE3vr9A7r4fFUcw5CfdzToe2aCPPZiLnxdi4Z473ET6uf6esQdn6793Bh
+FZltcca0lRhwV6AM5sbCH1r13RMWWw==
+=PivX
+-----END PGP SIGNATURE-----
 
-to make sure the msg->buf is valid for DMA and that the bounce buffer =
-
-can't be used due to the special hardware feature? Else someone might be =
-
-tempted to try and enable the bounce buffer feature in the future?
-
-Nitpicking aside:
-
-Reviewed-by: Niklas S=F6derlund <niklas.soderlund+renesas@ragnatech.se>
-
-> +	if (i2c_check_msg_for_dma(msg, RCAR_DMA_THRESHOLD, NULL) =3D=3D -EFAULT=
-) {
-> +		dev_dbg(dev, "skipping DMA for this whole transfer\n");
-> +		priv->flags |=3D ID_P_NODMA;
-> +	}
->  =
-
->  	chan =3D read ? priv->dma_rx : priv->dma_tx;
->  	if (PTR_ERR(chan) !=3D -EPROBE_DEFER)
-> @@ -740,6 +746,8 @@ static int rcar_i2c_master_xfer(struct i2c_adapter *a=
-dap,
->  	if (ret < 0 && ret !=3D -ENXIO)
->  		dev_err(dev, "error %d : %x\n", ret, priv->flags);
->  =
-
-> +	priv->flags &=3D ~ID_P_NODMA;
-> +
->  	return ret;
->  }
->  =
-
-> -- =
-
-> 2.11.0
-> =
-
-
--- =
-
-Regards,
-Niklas S=F6derlund
+--gqzpn77cdxumuk2p--
