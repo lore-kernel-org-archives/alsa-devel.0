@@ -1,22 +1,22 @@
-From: Viktor Radnai <viktor.radnai@gmail.com>
-Subject: Re: Patch for Digidesign Mbox 2 (set sample rate)
-Date: Wed, 19 Jul 2017 10:35:01 +0100
-Message-ID: <CANx-tGj=MJkXcgNTqC-7qCbAhBL6RVmDfVvbRtqB-46h+cYTaA@mail.gmail.com>
-References: <CANx-tGgQ59u==FL-yAvR6QRZWZp7LNgU4Qaf6EQ45Ae8t-=VWw@mail.gmail.com>
- <s5h1ss6s0t9.wl-tiwai@suse.de>
- <8ff1733e-3ff5-0ba4-ebfa-866797ca35bf@zamaudio.com>
- <CANx-tGhmxJ3b7B0ECF2fYoWh4sruvguQaG7exZF_zGV3WcR=tg@mail.gmail.com>
+From: Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>
+Subject: Re: [PATCH v3 3/4] i2c: sh_mobile: use helper to
+ decide if DMA is useful
+Date: Wed, 19 Jul 2017 11:35:45 +0200
+Message-ID: <20170719093544.GN28538@bigcity.dyn.berto.se>
+References: <20170718102339.28726-1-wsa+renesas@sang-engineering.com>
+ <20170718102339.28726-4-wsa+renesas@sang-engineering.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
- [209.85.218.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A08242669F6
- for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 11:35:03 +0200 (CEST)
-Received: by mail-oi0-f65.google.com with SMTP id 191so611704oii.0
- for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 02:35:03 -0700 (PDT)
-In-Reply-To: <CANx-tGhmxJ3b7B0ECF2fYoWh4sruvguQaG7exZF_zGV3WcR=tg@mail.gmail.com>
+Received: from mail-lf0-f54.google.com (mail-lf0-f54.google.com
+ [209.85.215.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17C632669F6
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 11:35:46 +0200 (CEST)
+Received: by mail-lf0-f54.google.com with SMTP id t72so30420299lff.1
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 02:35:46 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20170718102339.28726-4-wsa+renesas@sang-engineering.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,192 +26,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Zammit <damien@zamaudio.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, linux-input@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+Hi Wolfram,
 
-I think this patch is ready to be applied. I have kept the "magic" init
-sequence but I have substituted the hexadecimal numbers with preprocessor
-macros to make the code easier to read.
+On 2017-07-18 12:23:38 +0200, Wolfram Sang wrote:
+> This ensures that we fall back to PIO if the buffer is too small for DMA
+> being useful. Otherwise, we use DMA. A bounce buffer might be applied if
+> the original message buffer is not DMA safe
+> =
 
-I will try to run without the init magic for a while and if I don't see any
-issues I will submit a follow-up patch to remove the entire
-mbox2_setup_48_24_magic function.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/i2c/busses/i2c-sh_mobile.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> =
 
-Cheers,
-Vik
+> diff --git a/drivers/i2c/busses/i2c-sh_mobile.c b/drivers/i2c/busses/i2c-=
+sh_mobile.c
+> index 2e097d97d258bc..19f45bcd9b35ca 100644
+> --- a/drivers/i2c/busses/i2c-sh_mobile.c
+> +++ b/drivers/i2c/busses/i2c-sh_mobile.c
+> @@ -145,6 +145,7 @@ struct sh_mobile_i2c_data {
+>  	struct dma_chan *dma_rx;
+>  	struct scatterlist sg;
+>  	enum dma_data_direction dma_direction;
+> +	u8 *bounce_buf;
+>  };
+>  =
 
-diff -ur linux-source-4.11-orig/sound/usb/quirks.c
-linux-source-4.11/sound/usb/quirks.c
---- linux-source-4.11-orig/sound/usb/quirks.c    2017-06-17
-05:47:27.000000000 +0100
-+++ linux-source-4.11/sound/usb/quirks.c    2017-07-18 22:37:58.522858262
-+0100
-@@ -768,23 +768,32 @@
+>  struct sh_mobile_dt_config {
+> @@ -548,6 +549,8 @@ static void sh_mobile_i2c_dma_callback(void *data)
+>  	pd->pos =3D pd->msg->len;
+>  	pd->stop_after_dma =3D true;
+>  =
 
- static void mbox2_setup_48_24_magic(struct usb_device *dev)
- {
--    u8 srate[3];
--    u8 temp[12];
--
-     /* Choose 48000Hz permanently */
--    srate[0] = 0x80;
--    srate[1] = 0xbb;
--    srate[2] = 0x00;
-+    u8 srate[3] = { 0x80, 0xbb, 0x00 };
-+    u8 temp[3];
-+    int err;
+> +	i2c_release_dma_bounce_buf(pd->msg, pd->bounce_buf);
+> +
+>  	iic_set_clr(pd, ICIC, 0, ICIC_TDMAE | ICIC_RDMAE);
+>  }
+>  =
 
-     /* Send the magic! */
--    snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
--        0x01, 0x22, 0x0100, 0x0085, &temp, 0x0003);
--    snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
--        0x81, 0xa2, 0x0100, 0x0085, &srate, 0x0003);
--    snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
--        0x81, 0xa2, 0x0100, 0x0086, &srate, 0x0003);
--    snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
--        0x81, 0xa2, 0x0100, 0x0003, &srate, 0x0003);
-+    if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC_SET_CUR,
-+        USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_OUT,
-+        UAC_EP_CS_ATTR_SAMPLE_RATE << 8, 0x0085, &temp, sizeof(temp))) < 0)
-+        dev_err(&dev->dev, "mbox2: magic setup step #1 failed\n");
-+
-+    if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_GET_CUR,
-+        USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
-+        UAC_EP_CS_ATTR_SAMPLE_RATE << 8, 0x0085, &srate, sizeof(srate))) <
-0)
-+        dev_err(&dev->dev, "mbox2: magic setup step #2 failed\n");
-+
-+    if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_GET_CUR,
-+        USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
-+        UAC_EP_CS_ATTR_SAMPLE_RATE << 8, 0x0086, &srate, sizeof(srate))) <
-0)
-+        dev_err(&dev->dev, "mbox2: magic setup step #3 failed\n");
-+
-+    if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_GET_CUR,
-+        USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
-+        UAC_EP_CS_ATTR_SAMPLE_RATE << 8, 0x0003, &srate, sizeof(srate))) <
-0)
-+        dev_err(&dev->dev, "mbox2: magic setup step #4 failed\n");
-+
-     return;
- }
+> @@ -595,6 +598,7 @@ static void sh_mobile_i2c_xfer_dma(struct sh_mobile_i=
+2c_data *pd)
+>  	struct dma_async_tx_descriptor *txdesc;
+>  	dma_addr_t dma_addr;
+>  	dma_cookie_t cookie;
+> +	u8 *dma_buf =3D pd->bounce_buf ?: pd->msg->buf;
 
-@@ -815,16 +824,16 @@
+This looked funny and I had to look it up, I learnt something new today =
 
-     count = 0;
-     bootresponse[0] = MBOX2_BOOT_LOADING;
--    while ((bootresponse[0] == MBOX2_BOOT_LOADING) && (count < 10)) {
--        msleep(500); /* 0.5 second delay */
-+    do {
-         snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
-             /* Control magic - load onboard firmware */
--            0x85, 0xc0, 0x0001, 0x0000, &bootresponse, 0x0012);
-+            UAC_GET_MEM, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
-0x0001, 0x0000, &bootresponse, sizeof(bootresponse));
-         if (bootresponse[0] == MBOX2_BOOT_READY)
-             break;
-+        msleep(500); /* 0.5 second delay */
-         dev_dbg(&dev->dev, "device not ready, resending boot
-sequence...\n");
-         count++;
--    }
-+    } while ((bootresponse[0] == MBOX2_BOOT_LOADING) && (count < 10));
+:-)
 
-     if (bootresponse[0] != MBOX2_BOOT_READY) {
-         dev_err(&dev->dev, "Unknown bootresponse=%d, or timed out,
-ignoring device.\n", bootresponse[0]);
-@@ -847,7 +856,7 @@
+>  =
 
-     mbox2_setup_48_24_magic(dev);
+>  	if (PTR_ERR(chan) =3D=3D -EPROBE_DEFER) {
+>  		if (read)
+> @@ -608,7 +612,7 @@ static void sh_mobile_i2c_xfer_dma(struct sh_mobile_i=
+2c_data *pd)
+>  	if (IS_ERR(chan))
+>  		return;
+>  =
 
--    dev_info(&dev->dev, "Digidesign Mbox 2: 24bit 48kHz");
-+    dev_info(&dev->dev, "Digidesign Mbox 2 configured");
+> -	dma_addr =3D dma_map_single(chan->device->dev, pd->msg->buf, pd->msg->l=
+en, dir);
+> +	dma_addr =3D dma_map_single(chan->device->dev, dma_buf, pd->msg->len, d=
+ir);
+>  	if (dma_mapping_error(chan->device->dev, dma_addr)) {
+>  		dev_dbg(pd->dev, "dma map failed, using PIO\n");
+>  		return;
+> @@ -665,7 +669,7 @@ static int start_ch(struct sh_mobile_i2c_data *pd, st=
+ruct i2c_msg *usr_msg,
+>  	pd->pos =3D -1;
+>  	pd->sr =3D 0;
+>  =
 
-     return 0; /* Successful boot */
- }
-@@ -1111,6 +1120,26 @@
-     subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ?
-4 : 0;
- }
+> -	if (pd->msg->len > 8)
+> +	if (i2c_check_msg_for_dma(pd->msg, 8, &pd->bounce_buf) =3D=3D 0)
 
-+static void set_format_mbox2_quirk(struct snd_usb_substream *subs,
-+                 struct audioformat *fmt)
-+{
-+    struct usb_device *dev = subs->dev;
-+    u8 srate[3];
-+    int err;
-+
-+    srate[0] = subs->cur_rate;
-+    srate[1] = subs->cur_rate >> 8;
-+    srate[2] = subs->cur_rate >> 16;
-+
-+    /* Set the sample rate for endpoint IN 5 (0x0085) until we succeed */
-+    while ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-UAC_SET_CUR,
-+        USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_OUT,
-+        UAC_EP_CS_ATTR_SAMPLE_RATE << 8, 0x0085, srate, sizeof(srate))) <
-0)
-+        dev_err(&dev->dev, "mbox2: set sample rate failed, retrying\n");
-+
-+    dev_info(&subs->dev->dev, "mbox2: set sample rate to %dHz\n",
-subs->cur_rate);
-+}
-+
- void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
-                   struct audioformat *fmt)
- {
-@@ -1121,6 +1150,9 @@
-     case USB_ID(0x041e, 0x3f19): /* E-Mu 0204 USB */
-         set_format_emu_quirk(subs, fmt);
-         break;
-+    case USB_ID(0x0dba, 0x3000): /* Digidesign Mbox 2 */
-+        set_format_mbox2_quirk(subs, fmt);
-+        break;
-     }
- }
+Maybe the 8 should be declared in a define to explain the value, like =
 
-diff -ur linux-source-4.11-orig/sound/usb/quirks-table.h
-linux-source-4.11/sound/usb/quirks-table.h
---- linux-source-4.11-orig/sound/usb/quirks-table.h    2017-06-17
-05:47:27.000000000 +0100
-+++ linux-source-4.11/sound/usb/quirks-table.h    2017-07-18
-17:33:57.620424012 +0100
-@@ -3020,12 +3020,13 @@
-                     .attributes = 0x00,
-                     .endpoint = 0x03,
-                     .ep_attr = USB_ENDPOINT_SYNC_ASYNC,
--                    .rates = SNDRV_PCM_RATE_48000,
--                    .rate_min = 48000,
-+                    .rates = SNDRV_PCM_RATE_44100|
-+                        SNDRV_PCM_RATE_48000,
-+                    .rate_min = 44100,
-                     .rate_max = 48000,
--                    .nr_rates = 1,
-+                    .nr_rates = 2,
-                     .rate_table = (unsigned int[]) {
--                        48000
-+                        44100, 48000
-                     }
-                 }
-             },
-@@ -3045,12 +3046,13 @@
-                     .attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-                     .endpoint = 0x85,
-                     .ep_attr = USB_ENDPOINT_SYNC_SYNC,
--                    .rates = SNDRV_PCM_RATE_48000,
--                    .rate_min = 48000,
-+                    .rates = SNDRV_PCM_RATE_44100|
-+                        SNDRV_PCM_RATE_48000,
-+                    .rate_min = 44100,
-                     .rate_max = 48000,
--                    .nr_rates = 1,
-+                    .nr_rates = 2,
-                     .rate_table = (unsigned int[]) {
--                        48000
-+                        44100, 48000
-                     }
-                 }
-             },
+you do in patch 4/4?
+
+This nitpick aside:
+
+Reviewed-by: Niklas S=F6derlund <niklas.soderlund+renesas@ragnatech.se>
+
+>  		sh_mobile_i2c_xfer_dma(pd);
+>  =
+
+>  	/* Enable all interrupts to begin with */
+> -- =
+
+> 2.11.0
+> =
+
+
+-- =
+
+Regards,
+Niklas S=F6derlund
