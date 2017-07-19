@@ -1,98 +1,71 @@
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: Re: [PATCH v3 0/9] add support for Sama5d2 audio PLLs and enable
- ClassD
-Date: Wed, 19 Jul 2017 08:28:17 +0200
-Message-ID: <b3b59278-8c7f-b3d1-e143-7f013ac0b873@free-electrons.com>
+From: Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v3 2/9] clk: at91: add audio plls to the compatible list
+ in DT binding
+Date: Wed, 19 Jul 2017 08:31:35 +0200
+Message-ID: <20170719083135.38ab7b07@bbrezillon>
 References: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
+        <20170713074927.10882-3-quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
-Cc: cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170713074927.10882-3-quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Thu, 13 Jul 2017 09:49:20 +0200
+Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
 
-It's been almost a week with no comments on this patch set, so kindly
-pinging.
+> This new clock driver set allows to have a fractional divided clock that
+> would generate a precise clock particularly suitable for audio
+> applications.
+> 
+> The main audio pll clock has two children clocks: one that is connected
+> to the PMC, the other that can directly drive a pad. As these two routes
+> have different enable bits and different dividers and divider formulas,
+> they are handled by two different drivers.
+> 
+> This adds the audio plls (frac, pad and pmc) to the compatible list of
+> at91 clocks in DT binding.
+> 
+> Signed-off-by: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+> Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-Thanks,
-Quentin
+Acked-by: Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 
-On 13/07/2017 09:49, Quentin Schulz wrote:
-> This patch series adds support for the audio PLLs and enables ClassD that
-> can be found in ATMEL Sama5d2 SoC.
+> ---
 > 
-> There are two audio PLLs (PMC and PAD) that shares the same parent (FRAC).
-> FRAC can output between 620 and 700MHz and only multiply the rate of its
-> parent. The two audio PLLs then divide the FRAC rate to best match the
-> asked rate.
+> added in v2:
+>   - split from big patch with pll drivers and dt-binding
 > 
-> I basically took an old patch series posted by Nicolas on December, 6th
-> 2016[1][2][3] and the comments Boris did on the first version[4] Nicolas
-> sent on July, 15th 2015.
+>  Documentation/devicetree/bindings/clock/at91-clock.txt | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> I also fixed the function used to compute the divisors, removed useless
-> spinlocks and added a range to the audio frac PLL to stay within vendor's
-> supported range. Clocks that are children of gclk (generated-clk) are now
-> able to propagate rate to the audio PLL clocks when needed.
-> 
-> However, there are multiple children clocks that could technically
-> change the rate of audio_pll (via gck). With the rate locking introduced
-> in Jerome Brunet's patch series[5], the first consumer to enable the clock
-> will be the one definitely setting the rate of the clock. Without the rate
-> locking, the last consumer to set the rate will be able to mess with the
-> rate.
-> Since audio IPs are most likely to request the same rate, we enforce
-> that the only clks able to modify gck rate are those of audio IPs.
-> 
-> To remain consistent, we deny other clocks to be children of audio_pll.
-> 
-> Thanks,
-> Quentin
-> 
-> [1] https://patchwork.kernel.org/patch/9462351/
-> [2] https://patchwork.kernel.org/patch/9462347/
-> [3] https://patchwork.kernel.org/patch/9462349/
-> [4] https://www.spinics.net/lists/arm-kernel/msg436120.html
-> [5] http://www.spinics.net/lists/linux-clk/msg17927.html
-> 
-> Cyrille Pitchen (2):
->   ARM: dts: at91: sama5d2: add classd nodes
->   ARM: dts: at91: sama5d2_xplained: add pin muxing and enable classd
-> 
-> Quentin Schulz (7):
->   clk: at91: clk-generated: remove useless divisor loop
->   clk: at91: add audio plls to the compatible list in DT binding
->   clk: at91: add audio pll clock drivers
->   clk: at91: clk-generated: create function to find best_diff
->   clk: at91: clk-generated: make gclk determine audio_pll rate
->   ASoC: atmel-classd: remove aclk clock from DT binding
->   ASoC: atmel-classd: remove aclk clock
-> 
->  .../devicetree/bindings/clock/at91-clock.txt       |  10 +
->  .../devicetree/bindings/sound/atmel-classd.txt     |   9 +-
->  arch/arm/boot/dts/at91-sama5d2_xplained.dts        |  16 ++
->  arch/arm/boot/dts/sama5d2.dtsi                     |  39 +++-
->  arch/arm/mach-at91/Kconfig                         |   4 +
->  drivers/clk/at91/Makefile                          |   2 +
->  drivers/clk/at91/clk-audio-pll-pad.c               | 206 ++++++++++++++++++
->  drivers/clk/at91/clk-audio-pll-pmc.c               | 174 +++++++++++++++
->  drivers/clk/at91/clk-audio-pll.c                   | 239 +++++++++++++++++++++
->  drivers/clk/at91/clk-generated.c                   | 101 +++++++--
->  include/linux/clk/at91_pmc.h                       |  25 +++
->  sound/soc/atmel/atmel-classd.c                     |  47 ++--
->  12 files changed, 813 insertions(+), 59 deletions(-)
->  create mode 100644 drivers/clk/at91/clk-audio-pll-pad.c
->  create mode 100644 drivers/clk/at91/clk-audio-pll-pmc.c
->  create mode 100644 drivers/clk/at91/clk-audio-pll.c
-> 
+> diff --git a/Documentation/devicetree/bindings/clock/at91-clock.txt b/Documentation/devicetree/bindings/clock/at91-clock.txt
+> index 5f3ad65daf69..51c259a92d02 100644
+> --- a/Documentation/devicetree/bindings/clock/at91-clock.txt
+> +++ b/Documentation/devicetree/bindings/clock/at91-clock.txt
+> @@ -81,6 +81,16 @@ Required properties:
+>  	"atmel,sama5d2-clk-generated":
+>  		at91 generated clock
+>  
+> +	"atmel,sama5d2-clk-audio-pll-frac":
+> +		at91 audio fractional pll
+> +
+> +	"atmel,sama5d2-clk-audio-pll-pad":
+> +		at91 audio pll CLK_AUDIO output pin
+> +
+> +	"atmel,sama5d2-clk-audio-pll-pmc"
+> +		at91 audio pll output on AUDIOPLLCLK that feeds the PMC
+> +		and can be used by peripheral clock or generic clock
+> +
+>  Required properties for SCKC node:
+>  - reg : defines the IO memory reserved for the SCKC.
+>  - #size-cells : shall be 0 (reg is used to encode clk id).
 
--- 
-Quentin Schulz, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
