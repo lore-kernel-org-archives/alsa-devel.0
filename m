@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt274: add rt274 codec driver
-Date: Wed, 19 Jul 2017 11:28:51 +0100
-Message-ID: <20170719102851.kzaw3y2dnedlklbn@sirena.org.uk>
-References: <1500013552-1304-1-git-send-email-bardliao@realtek.com>
- <20170718134815.xomcjskmytryvnmm@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70268F0ED@RTITMBSV02.realtek.com.tw>
+Subject: Re: [PATCH v3 2/2] ASoC: add support for TAS6424
+	digital amplifier
+Date: Wed, 19 Jul 2017 12:08:42 +0100
+Message-ID: <20170719110842.lb2f5cqawnkenhsb@sirena.org.uk>
+References: <1500405604-23511-1-git-send-email-m-stecklein@ti.com>
+ <1500405604-23511-3-git-send-email-m-stecklein@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2523428938390199946=="
+Content-Type: multipart/mixed; boundary="===============6252302597426377999=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F987266998
- for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 12:29:06 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70268F0ED@RTITMBSV02.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 468AC266998
+ for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 13:09:00 +0200 (CEST)
+In-Reply-To: <1500405604-23511-3-git-send-email-m-stecklein@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +22,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "guneshwor.o.singh@intel.com" <guneshwor.o.singh@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
+To: Michael Stecklein <m-stecklein@ti.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2523428938390199946==
+--===============6252302597426377999==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pecuubgu24ly4ulu"
+	protocol="application/pgp-signature"; boundary="dhu4rczr3qhcndvx"
 Content-Disposition: inline
 
 
---pecuubgu24ly4ulu
+--dhu4rczr3qhcndvx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 19, 2017 at 02:08:58AM +0000, Bard Liao wrote:
+On Tue, Jul 18, 2017 at 02:20:04PM -0500, Michael Stecklein wrote:
 
-> I have sent a patch for it. But I was wondering why checkpatch.pl can't
-> find the style issue?
+> +	if (!tx_mask) {
+> +		dev_err(codec->dev, "tdm mask must not be 0\n");
+> +		return -EINVAL;
+> +	}
 
-No idea, sorry.
+Setting the mask to 0 is used when turning off TDM.
 
---pecuubgu24ly4ulu
+> +	if ((reg & TAS6424_WARN_VDD_UV) && !(tas6424->last_warn & TAS6424_WARN_VDD_UV))
+> +		dev_warn(dev, "experienced a VDD under voltage condition\n");
+> +
+> +	if ((reg & TAS6424_WARN_VDD_POR) && !(tas6424->last_warn & TAS6424_WARN_VDD_POR))
+> +		dev_warn(dev, "experienced a VDD POR condition\n");
+
+These look like they are errors rather than warnings and should be
+critical prints like the other errors.
+
+> +	/* Store current warn value so we can detect any changes next time */
+> +	tas6424->last_warn = reg;
+
+It would be better to clear these at some point, perhaps after a delay.
+Especially with thermal issues they could come and go over device
+operation.
+
+> +static int tas6424_codec_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct tas6424_data *tas6424 = snd_soc_codec_get_drvdata(codec);
+> +	int ret;
+> +
+> +	tas6424->codec = codec;
+> +
+> +	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
+> +				    tas6424->supplies);
+> +	if (ret != 0) {
+> +		dev_err(codec->dev, "failed to enable supplies: %d\n", ret);
+> +		return ret;
+> +	}
+
+This init stuff should be in either the main I2C probe, DAPM or bias
+level management.  The CODEC probe should be very minimal.
+
+> +	if (event & SND_SOC_DAPM_POST_PMU) {
+
+> +	} else if (event & SND_SOC_DAPM_PRE_PMD) {
+
+You're trying to write a switch statement here.
+
+> +	switch (level) {
+> +	case SND_SOC_BIAS_ON:
+> +	case SND_SOC_BIAS_PREPARE:
+> +		msleep(500);
+> +		break;
+
+You need a 500ms sleep in all these cases?  That's a lot of sleeping.
+
+> +	case SND_SOC_BIAS_STANDBY:
+> +		ret = snd_soc_update_bits(codec, TAS6424_CH_STATE_CTRL_REG,
+> +					  0xff, TAS6424_CH1_STATE_MUTE | TAS6424_CH2_STATE_MUTE |
+> +					  TAS6424_CH3_STATE_MUTE | TAS6424_CH4_STATE_MUTE);
+> +
+> +		if (ret < 0) {
+> +			dev_err(codec->dev, "error resuming device: %d\n", ret);
+> +			return ret;
+> +		}
+> +		break;
+> +	case SND_SOC_BIAS_OFF:
+> +		ret = snd_soc_update_bits(codec, TAS6424_CH_STATE_CTRL_REG,
+> +					  0xff, TAS6424_CH1_STATE_HIZ | TAS6424_CH2_STATE_HIZ |
+> +					  TAS6424_CH3_STATE_HIZ | TAS6424_CH4_STATE_HIZ);
+> +
+> +		if (ret < 0) {
+> +			dev_err(codec->dev, "error suspending device: %d\n", ret);
+> +			return ret;
+> +		}
+
+These mutes seem very random disassociated from anything else?
+
+--dhu4rczr3qhcndvx
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllvNGIACgkQJNaLcl1U
-h9DgKwf5AQtBg3tDRS7Y1loPQwKIpySsZPu/gBBBTDVu+5ajeL5UPxy6864Q20cO
-HDGfQr/mFMj+CGGJ9vj3jaWKQWTd1oZ2FCVD5GfpWNUcu6OppaewysB1j3j5zgIV
-fE5srslO6vKWe2E47CO++J8ODvAA0Pw7Kg0DyMI1zyl77eKqO2OHbuzbq1Jgt7bZ
-VeDNMuBoI67Jv59iDVw2jhOZUdZezfOli4x2Wrv7v7+Ff65U50zKmGPgdPhtuOQ7
-5HkMRQRUMXyU4xjQVo4WnhBWXoVMbQsFAq2Y44wzGahudvbc8XbTwa7H1dNUbaGd
-WNIDyo7brvEAxFSy8YEPym65VMYbvg==
-=ZcSF
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllvPbkACgkQJNaLcl1U
+h9Dxugf/eJpPWVzXAnLcrdkQ2IJqfzWjJ4RSDiykX8ScdeYpR5osQswoiuWrwJFg
+2o6/3MXHlYZOhpJSKQhkJJqG6nNlrBCFuTd7Jyz8ugl2Lei7qTwD1dzsNCfjTcNz
+t2zekW6RjvMya+7j/6j1qNXS1+cNup5rSTQdv1/iYXsWsNtSG2PT+aDhLHTHd8OV
+TnMuRObJO5Iz2DHjKklKKE3NpvpW5I+naD2ssT97evp6Fds2GQSazW98fuPu00LZ
+5FZFANZMdCMvrcGzgSsvFgYu33R+t7SyS3RlamnWxcSTU+n3jFpz2e8wyDxl9TbL
+862VOQQAkM6ANHKcrEtYVDhf6OiNcQ==
+=d82M
 -----END PGP SIGNATURE-----
 
---pecuubgu24ly4ulu--
+--dhu4rczr3qhcndvx--
 
---===============2523428938390199946==
+--===============6252302597426377999==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2523428938390199946==--
+--===============6252302597426377999==--
