@@ -1,28 +1,13 @@
 From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH 097/102] ASoC: img: explicitly request
-	exclusive reset control
-Date: Wed, 19 Jul 2017 17:26:41 +0200
-Message-ID: <20170719152646.25903-98-p.zabel@pengutronix.de>
+Subject: [PATCH 098/102] ASoC: stm32: explicitly request exclusive reset control
+Date: Wed, 19 Jul 2017 17:26:42 +0200
+Message-ID: <20170719152646.25903-99-p.zabel@pengutronix.de>
 References: <20170719152646.25903-1-p.zabel@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3CCD126733F
- for <alsa-devel@alsa-project.org>; Wed, 19 Jul 2017 17:30:08 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170719152646.25903-1-p.zabel@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
@@ -35,80 +20,54 @@ No functional changes.
 
 Cc: Liam Girdwood <lgirdwood@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
 Cc: alsa-devel@alsa-project.org
 Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- sound/soc/img/img-i2s-in.c       | 2 +-
- sound/soc/img/img-i2s-out.c      | 2 +-
- sound/soc/img/img-parallel-out.c | 2 +-
- sound/soc/img/img-spdif-in.c     | 2 +-
- sound/soc/img/img-spdif-out.c    | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/stm/stm32_i2s.c     | 2 +-
+ sound/soc/stm/stm32_sai.c     | 2 +-
+ sound/soc/stm/stm32_spdifrx.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
-index 0389203f85608..567f9767fb73e 100644
---- a/sound/soc/img/img-i2s-in.c
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -443,7 +443,7 @@ static int img_i2s_in_probe(struct platform_device *pdev)
- 		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE;
- 	i2s->dai_driver.ops = &img_i2s_in_dai_ops;
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 8052629a89dfd..6d0bf78d114d0 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -840,7 +840,7 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+ 	}
  
--	rst = devm_reset_control_get(dev, "rst");
-+	rst = devm_reset_control_get_exclusive(dev, "rst");
- 	if (IS_ERR(rst)) {
- 		if (PTR_ERR(rst) == -EPROBE_DEFER) {
- 			ret = -EPROBE_DEFER;
-diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
-index 5f997135a8aec..78b7f6cd675b7 100644
---- a/sound/soc/img/img-i2s-out.c
-+++ b/sound/soc/img/img-i2s-out.c
-@@ -446,7 +446,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
+ 	/* Reset */
+-	rst = devm_reset_control_get(&pdev->dev, NULL);
++	rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+ 	if (!IS_ERR(rst)) {
+ 		reset_control_assert(rst);
+ 		udelay(2);
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index f7713314913b9..1258bef4dcb37 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -85,7 +85,7 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 	}
  
- 	i2s->channel_base = base + (max_i2s_chan_pow_2 * 0x20);
- 
--	i2s->rst = devm_reset_control_get(&pdev->dev, "rst");
-+	i2s->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
- 	if (IS_ERR(i2s->rst)) {
- 		if (PTR_ERR(i2s->rst) != -EPROBE_DEFER)
- 			dev_err(&pdev->dev, "No top level reset found\n");
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 33ceb207ee704..23b0f0f6ec9cb 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -224,7 +224,7 @@ static int img_prl_out_probe(struct platform_device *pdev)
- 
- 	prl->base = base;
- 
--	prl->rst = devm_reset_control_get(&pdev->dev, "rst");
-+	prl->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
- 	if (IS_ERR(prl->rst)) {
- 		if (PTR_ERR(prl->rst) != -EPROBE_DEFER)
- 			dev_err(&pdev->dev, "No top level reset found\n");
-diff --git a/sound/soc/img/img-spdif-in.c b/sound/soc/img/img-spdif-in.c
-index 4d9953d318af4..8adfd65d43902 100644
---- a/sound/soc/img/img-spdif-in.c
-+++ b/sound/soc/img/img-spdif-in.c
-@@ -727,7 +727,7 @@ static int img_spdif_in_probe(struct platform_device *pdev)
- 	if (ret)
+ 	/* reset */
+-	rst = reset_control_get(&pdev->dev, NULL);
++	rst = reset_control_get_exclusive(&pdev->dev, NULL);
+ 	if (!IS_ERR(rst)) {
+ 		reset_control_assert(rst);
+ 		udelay(2);
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index 4e4250bdb75a8..84cc5678beba5 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -930,7 +930,7 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
  		return ret;
+ 	}
  
--	rst = devm_reset_control_get(&pdev->dev, "rst");
-+	rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
- 	if (IS_ERR(rst)) {
- 		if (PTR_ERR(rst) == -EPROBE_DEFER) {
- 			ret = -EPROBE_DEFER;
-diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
-index 08f93a5dadfe9..383655da2e60d 100644
---- a/sound/soc/img/img-spdif-out.c
-+++ b/sound/soc/img/img-spdif-out.c
-@@ -334,7 +334,7 @@ static int img_spdif_out_probe(struct platform_device *pdev)
- 
- 	spdif->base = base;
- 
--	spdif->rst = devm_reset_control_get(&pdev->dev, "rst");
-+	spdif->rst = devm_reset_control_get_exclusive(&pdev->dev, "rst");
- 	if (IS_ERR(spdif->rst)) {
- 		if (PTR_ERR(spdif->rst) != -EPROBE_DEFER)
- 			dev_err(&pdev->dev, "No top level reset found\n");
+-	rst = devm_reset_control_get(&pdev->dev, NULL);
++	rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+ 	if (!IS_ERR(rst)) {
+ 		reset_control_assert(rst);
+ 		udelay(2);
 -- 
 2.11.0
