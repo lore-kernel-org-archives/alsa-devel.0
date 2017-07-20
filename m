@@ -1,14 +1,14 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/3] ASoC: rt5665: fix GPIO6 pin function define
-Date: Thu, 20 Jul 2017 13:07:49 +0800
-Message-ID: <1500527271-11188-1-git-send-email-bardliao@realtek.com>
+From: Pradeep Tewani <pradeep.d.tewani@intel.com>
+Subject: [PATCH v2 0/3]ASoC: Intel: Skylake: Enable hdmi for GLK
+Date: Thu, 20 Jul 2017 11:40:54 +0530
+Message-ID: <1500531057-4286-1-git-send-email-pradeep.d.tewani@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 802D526738F
- for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 07:08:06 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD102266AE1
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 08:13:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,31 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, zhongan@pinecone.net, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, lgirdwood@gmail.com, Pradeep Tewani <pradeep.d.tewani@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The GPIO6 pin function select value was wrong.
+GLK vendor nid is different from rest of the skylake platforms. Add vendor
+nid as part of driver data and use it. Also enable support for GLK
+platform.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5665.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Add the patch to remove the .owner initialization in bxt driver as well
 
-diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
-index 1db5c6a..d95249c 100644
---- a/sound/soc/codecs/rt5665.h
-+++ b/sound/soc/codecs/rt5665.h
-@@ -1692,8 +1692,8 @@
- #define RT5665_GP6_PIN_MASK			(0x3 << 5)
- #define RT5665_GP6_PIN_SFT			5
- #define RT5665_GP6_PIN_GPIO6			(0x0 << 5)
--#define RT5665_GP6_PIN_BCLK3			(0x0 << 5)
--#define RT5665_GP6_PIN_PDM_SCL			(0x1 << 5)
-+#define RT5665_GP6_PIN_BCLK3			(0x1 << 5)
-+#define RT5665_GP6_PIN_PDM_SCL			(0x2 << 5)
- #define RT5665_GP7_PIN_MASK			(0x3 << 3)
- #define RT5665_GP7_PIN_SFT			3
- #define RT5665_GP7_PIN_GPIO7			(0x0 << 3)
+Changes in v2:
+	Removed the .owner field in driver
+	Replaced the strcmp with strncmp for bxt_rt298 probe
+
+Pradeep Tewani (3):
+  ASoC: Intel: board: Remove .owner initialization in bxt_rt298 driver
+  ASoC: hdac_hdmi: Add the vendor nid for Geminilake HDMI
+  ASoC: Intel: board: Add Geminilake platform support
+
+ sound/soc/codecs/hdac_hdmi.c       | 39 ++++++++++++++---
+ sound/soc/intel/boards/bxt_rt298.c | 85 ++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 115 insertions(+), 9 deletions(-)
+
 -- 
 2.7.4
