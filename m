@@ -1,27 +1,67 @@
-From: Richard Leitner <dev@g0hl1n.net>
-Subject: Re: [alsa-devel] [PATCH v3] ASoC: sgtl5000: add avc support
-Date: Thu, 20 Jul 2017 19:44:46 +0200
-Message-ID: <59197112-4ad8-fe10-1c1f-29f6c2a7c00c@g0hl1n.net>
-References: <1497337054-4911-1-git-send-email-richard.leitner@skidata.com>
- <CAOMZO5Cx6OrYSKYcbj6DWhn=hzS51sENadWHLSYdTkjRk9qJXw@mail.gmail.com>
- <3b154ab9-6bbd-eb53-05e6-6d08cf3cc5c0@g0hl1n.net>
- <CAOMZO5Cp7keQSEcR+wV_Z6PTxYgr_xYxdcG_TDd+UUJne0R7xg@mail.gmail.com>
- <f499e55f-498b-9954-b3dc-52f704cecd7a@g0hl1n.net>
- <CAOMZO5DKkGVQCb9pho=GeQdCgFkST9fdcupAd=TZ90BaMM6BaQ@mail.gmail.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v3 06/12] mfd: wm97xx-core: core support for wm97xx Codec
+Date: Thu, 20 Jul 2017 22:30:45 +0200
+Message-ID: <8760emsvey.fsf@belgarion.home>
+References: <20170630194408.24978-1-robert.jarzmik@free.fr>
+        <20170630194408.24978-7-robert.jarzmik@free.fr>
+        <20170703090840.s5oae5qxd4fi6rhr@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAOMZO5DKkGVQCb9pho=GeQdCgFkST9fdcupAd=TZ90BaMM6BaQ@mail.gmail.com>
+In-Reply-To: <20170703090840.s5oae5qxd4fi6rhr@localhost.localdomain> (Charles
+        Keepax's message of "Mon, 3 Jul 2017 10:08:40 +0100")
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <festevam@gmail.com>, Richard Leitner <dev@g0hl1n.net>
-Cc: Richard Leitner <richard.leitner@skidata.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Clemens Gruber <clemens.gruber@pqgruber.com>, kalle.kankare@vincit.fi, Eric Nelson <eric@nelint.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Charles Keepax <ckeepax@opensource.cirrus.com> writes:
 
-On 07/20/2017 07:40 PM, Fabio Estevam wrote:
->> Do you want to send that patch or should I?
-> I have just sent the patch.
+> On Fri, Jun 30, 2017 at 09:44:02PM +0200, Robert Jarzmik wrote:
+>> The WM9705, WM9712 and WM9713 are highly integrated codecs, with an
+>> audio codec, DAC and ADC, GPIO unit and a touchscreen interface.
+...
+>> +static const struct reg_default wm97xx_reg_defaults[] = {
+>> +};
 >
+> Should we not have some defaults in here?
+Most certainly, I'll copy-paste the ones from :
+ - sound/soc/codecs/wm9705.c
+ - sound/soc/codecs/wm9712.c
+>> +static int wm9705_register(struct wm97xx_priv *wm97xx)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static int wm9712_register(struct wm97xx_priv *wm97xx)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>
+> So are we only adding stubs for the 9705 and 9712? If so we
+> should probably make that clear in the commit message at least.
+Mmmh, I think I've been too lazy here.
+I'll add the true functions, which will be on par with wm9713_register(), adding
+2 sub-cells, the codec and the touchscreen.
 
-Thanks!
+...zip..
+>> +	codec_pdata.ac97 = wm97xx->ac97;
+>> +	codec_pdata.regmap = devm_regmap_init_ac97(wm97xx->ac97,
+>> +						   &wm9713_regmap_config);
+>> +	codec_pdata.batt_pdata = pdata->batt_pdata;
+>> +	if (IS_ERR(codec_pdata.regmap))
+>> +		return PTR_ERR(codec_pdata.regmap);
+>> +
+>> +	return devm_mfd_add_devices(wm97xx->dev, -1, cells,
+>
+> Should probably use the define PLATFORM_DEVID_NONE here.
+Yeah sure.
+
+> Other than those minor comments looks ok to me.
+Thanks Charles, I'll include them for next iteration.
+
+Cheers.
+
+-- 
+Robert
