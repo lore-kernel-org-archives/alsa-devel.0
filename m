@@ -1,21 +1,14 @@
 From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH v2 3/3] ASoC: rt5677: Remove never used
-	variables
-Date: Thu, 20 Jul 2017 01:47:26 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D12694023B541D@RTITMBSV02.realtek.com.tw>
-References: <20170718173419.65980-1-andriy.shevchenko@linux.intel.com>
- <20170718173419.65980-4-andriy.shevchenko@linux.intel.com>
- <20170719112412.wrqgdk7typqie72d@sirena.org.uk>
- <1500464913.29303.105.camel@linux.intel.com>
+Subject: [PATCH] ASoC: rt5514: Support the TDM docking mode
+Date: Thu, 20 Jul 2017 10:07:40 +0800
+Message-ID: <1500516460-22008-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id C8E8D267343
- for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 03:47:41 +0200 (CEST)
-In-Reply-To: <1500464913.29303.105.camel@linux.intel.com>
-Content-Language: zh-TW
+ by alsa0.perex.cz (Postfix) with ESMTP id 1562F267343
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 04:08:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +18,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, harshapriya.n@intel.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-PiBPbiBXZWQsIDIwMTctMDctMTkgYXQgMTI6MjQgKzAxMDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+
-ID4gT24gVHVlLCBKdWwgMTgsIDIwMTcgYXQgMDg6MzQ6MTlQTSArMDMwMCwgQW5keSBTaGV2Y2hl
-bmtvIHdyb3RlOg0KPiA+ID4gVGhlcmUgYXJlIHR3byB2YXJpYWJsZXMgdGhhdCBoYXZlIG5ldmVy
-IGJlZW4gdXNlZC4NCj4gPiA+DQo+ID4gPiBzb3VuZC9zb2MvY29kZWNzL3J0NTY3Ny5jOjc4NToz
-NTogd2FybmluZzog4oCYaW5fdm9sX3RsduKAmSBkZWZpbmVkIGJ1dA0KPiA+ID4gbm90IHVzZWQg
-Wy1XdW51c2VkLWNvbnN0LXZhcmlhYmxlPV0gc3RhdGljIGNvbnN0DQo+ID4gPiBERUNMQVJFX1RM
-Vl9EQl9TQ0FMRShpbl92b2xfdGx2LCAtMzQ1MCwgMTUwLCAwKTsNCj4gPiA+DQo+ID4gPiBzb3Vu
-ZC9zb2MvY29kZWNzL3J0NTY3Ny5jOjc4MzozNTogd2FybmluZzog4oCYb3V0X3ZvbF90bHbigJkg
-ZGVmaW5lZCBidXQNCj4gPiA+IG5vdCB1c2VkIFstV3VudXNlZC1jb25zdC12YXJpYWJsZT1dIHN0
-YXRpYyBjb25zdA0KPiA+ID4gREVDTEFSRV9UTFZfREJfU0NBTEUob3V0X3ZvbF90bHYsIC00NjUw
-LCAxNTAsIDApOw0KPiA+ID4NCj4gPiA+IFNpbXBsZSByZW1vdmUgdGhlbS4NCj4gPg0KPiA+IEFy
-ZSB3ZSBzdXJlIHRoaXMgZG9lc24ndCBtZWFuIHNvbWV0aGluZyBoYXMgdGhlIHdyb25nIFRMViBv
-ciBhIG1pc3NpbmcNCj4gPiBUTFY/DQo+IA0KPiBHb29kIHF1ZXN0aW9uLg0KPiANCj4gSWYgaXQg
-c28sIGl0IHNob3VsZCBub3QgaGF2ZSBiZWVuIHdvcmtpbmcgKHByb3Blcmx5KSBhdCB0aGUgYmVn
-aW5uaW5nLg0KPiANCj4gR3V5cyBmcm9tIFJlYWx0ZWssIGNhbiB5b3UgY29tbWVudCBvbiB0aGlz
-Pw0KPiANClRoZXkgYXJlIHNlZW1lZCByZWR1bmRhbnQgZGVmaW5pdGlvbnMsIHRoYW5rcy4gDQoN
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The TDM ducking mode can share the bus to other devices simultaneously.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514.c | 33 ++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/rt5514.h | 12 ++++++++++++
+ 2 files changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 4ca73bf..a105c84 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -871,11 +871,38 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int val = 0;
++	unsigned int val = 0, val2 = 0;
+ 
+ 	if (rx_mask || tx_mask)
+ 		val |= RT5514_TDM_MODE;
+ 
++	switch (tx_mask) {
++	case 0x3:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH2 |
++			RT5514_TDM_DOCKING_START_SLOT0;
++		break;
++
++	case 0x30:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH2 |
++			RT5514_TDM_DOCKING_START_SLOT4;
++		break;
++
++	case 0xf:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH4 |
++			RT5514_TDM_DOCKING_START_SLOT0;
++		break;
++
++	case 0xf0:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH4 |
++			RT5514_TDM_DOCKING_START_SLOT4;
++		break;
++
++	default:
++		break;
++	}
++
++
++
+ 	switch (slots) {
+ 	case 4:
+ 		val |= RT5514_TDMSLOT_SEL_RX_4CH | RT5514_TDMSLOT_SEL_TX_4CH;
+@@ -921,6 +948,10 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 		RT5514_CH_LEN_RX_MASK | RT5514_CH_LEN_TX_MASK |
+ 		RT5514_TDM_MODE2, val);
+ 
++	regmap_update_bits(rt5514->regmap, RT5514_I2S_CTRL2,
++		RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH_MASK |
++		RT5514_TDM_DOCKING_START_MASK, val2);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 02bc212..75024a4 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -164,6 +164,18 @@
+ #define RT5514_I2S_DL_24			(0x2 << 0)
+ #define RT5514_I2S_DL_8				(0x3 << 0)
+ 
++/* RT5514_I2S_CTRL2 (0x2014) */
++#define RT5514_TDM_DOCKING_MODE			(0x1 << 31)
++#define RT5514_TDM_DOCKING_MODE_SFT		31
++#define RT5514_TDM_DOCKING_VALID_CH_MASK	(0x1 << 29)
++#define RT5514_TDM_DOCKING_VALID_CH_SFT		29
++#define RT5514_TDM_DOCKING_VALID_CH2		(0x0 << 29)
++#define RT5514_TDM_DOCKING_VALID_CH4		(0x1 << 29)
++#define RT5514_TDM_DOCKING_START_MASK		(0x1 << 28)
++#define RT5514_TDM_DOCKING_START_SFT		28
++#define RT5514_TDM_DOCKING_START_SLOT0		(0x0 << 28)
++#define RT5514_TDM_DOCKING_START_SLOT4		(0x1 << 28)
++
+ /* RT5514_DIG_SOURCE_CTRL (0x20a4) */
+ #define RT5514_AD1_DMIC_INPUT_SEL		(0x1 << 1)
+ #define RT5514_AD1_DMIC_INPUT_SEL_SFT		1
+-- 
+2.7.4
