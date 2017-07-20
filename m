@@ -1,64 +1,50 @@
-From: Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH 000/102] Convert drivers to explicit reset API
-Date: Wed, 19 Jul 2017 21:15:15 +0200
-Message-ID: <20170719211515.46a1196c@windsurf>
-References: <20170719152646.25903-1-p.zabel@pengutronix.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH v2 3/3] ASoC: rt5677: Remove never used
+	variables
+Date: Thu, 20 Jul 2017 01:47:26 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694023B541D@RTITMBSV02.realtek.com.tw>
+References: <20170718173419.65980-1-andriy.shevchenko@linux.intel.com>
+ <20170718173419.65980-4-andriy.shevchenko@linux.intel.com>
+ <20170719112412.wrqgdk7typqie72d@sirena.org.uk>
+ <1500464913.29303.105.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20170719152646.25903-1-p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, Prashant Gaikwad <pgaikwad-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Peter Chen <Peter.Chen-3arQi8VN3Tc@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Marc Dietrich <marvin24-Mmb7MZpHnFY@public.gmane.org>, Rakesh Iyer <riyer-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Xinliang Liu <z.liuxinliang-C8/M+/jPZTeaMJb+Lgu22Q@public.gmane.org>, Chanwoo Choi <cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Jiri Slaby <jslaby-IBi9RG/b67k@public.gmane.org>, Michael Turquette <mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Guenter Roeck <linux-0h96xk9xTtrk1uMJSBkQmQ@public.gmane.org>, Ohad Ben-Cohen <ohad-Ix1uc/W3ht7QT0dZR+AlfA@public.gmane.org>, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Vincent Abriou <vincent.abriou-qxv4g6HH51o@public.gmane.org>, Bin Liu <b-liu-l0cyMroinI0@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8E8D267343
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 03:47:41 +0200 (CEST)
+In-Reply-To: <1500464913.29303.105.camel@linux.intel.com>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, John Keeping <john@metanate.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-On Wed, 19 Jul 2017 17:25:04 +0200, Philipp Zabel wrote:
-> The reset control API has two modes: exclusive access, where the driver
-> expects to have full and immediate control over the state of the reset
-> line, and shared (clock-like) access, where drivers only request reset
-> deassertion while active, but don't care about the state of the reset line
-> while inactive.
-> 
-> Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
-> reset lines") started to transition the reset control request API calls
-> to explicitly state whether the driver needs exclusive or shared reset
-> control behavior.
-> 
-> This series converts all drivers that currently implicitly request
-> exclusive reset controls to the corresponding explicit API call. It is,
-> for the most part, generated from the following semantic patch:
-> 
-> @@
-> expression rstc, dev, id;
-> @@
-> -rstc = reset_control_get(dev, id);
-> +rstc = reset_control_get_exclusive(dev, id);
-
-I don't know if it has been discussed in the past, so forgive me if it
-has been. Have you considered adding a "int flags" argument to the
-existing reset_control_get_*() functions, rather than introducing
-separate exclusive variants ?
-
-Indeed, with a "int flags" argument you could in the future add more
-variants/behaviors without actually multiplying the number of
-functions. Something like the "flags" argument for request_irq() for
-example.
-
-Best regards,
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+PiBPbiBXZWQsIDIwMTctMDctMTkgYXQgMTI6MjQgKzAxMDAsIE1hcmsgQnJvd24gd3JvdGU6DQo+
+ID4gT24gVHVlLCBKdWwgMTgsIDIwMTcgYXQgMDg6MzQ6MTlQTSArMDMwMCwgQW5keSBTaGV2Y2hl
+bmtvIHdyb3RlOg0KPiA+ID4gVGhlcmUgYXJlIHR3byB2YXJpYWJsZXMgdGhhdCBoYXZlIG5ldmVy
+IGJlZW4gdXNlZC4NCj4gPiA+DQo+ID4gPiBzb3VuZC9zb2MvY29kZWNzL3J0NTY3Ny5jOjc4NToz
+NTogd2FybmluZzog4oCYaW5fdm9sX3RsduKAmSBkZWZpbmVkIGJ1dA0KPiA+ID4gbm90IHVzZWQg
+Wy1XdW51c2VkLWNvbnN0LXZhcmlhYmxlPV0gc3RhdGljIGNvbnN0DQo+ID4gPiBERUNMQVJFX1RM
+Vl9EQl9TQ0FMRShpbl92b2xfdGx2LCAtMzQ1MCwgMTUwLCAwKTsNCj4gPiA+DQo+ID4gPiBzb3Vu
+ZC9zb2MvY29kZWNzL3J0NTY3Ny5jOjc4MzozNTogd2FybmluZzog4oCYb3V0X3ZvbF90bHbigJkg
+ZGVmaW5lZCBidXQNCj4gPiA+IG5vdCB1c2VkIFstV3VudXNlZC1jb25zdC12YXJpYWJsZT1dIHN0
+YXRpYyBjb25zdA0KPiA+ID4gREVDTEFSRV9UTFZfREJfU0NBTEUob3V0X3ZvbF90bHYsIC00NjUw
+LCAxNTAsIDApOw0KPiA+ID4NCj4gPiA+IFNpbXBsZSByZW1vdmUgdGhlbS4NCj4gPg0KPiA+IEFy
+ZSB3ZSBzdXJlIHRoaXMgZG9lc24ndCBtZWFuIHNvbWV0aGluZyBoYXMgdGhlIHdyb25nIFRMViBv
+ciBhIG1pc3NpbmcNCj4gPiBUTFY/DQo+IA0KPiBHb29kIHF1ZXN0aW9uLg0KPiANCj4gSWYgaXQg
+c28sIGl0IHNob3VsZCBub3QgaGF2ZSBiZWVuIHdvcmtpbmcgKHByb3Blcmx5KSBhdCB0aGUgYmVn
+aW5uaW5nLg0KPiANCj4gR3V5cyBmcm9tIFJlYWx0ZWssIGNhbiB5b3UgY29tbWVudCBvbiB0aGlz
+Pw0KPiANClRoZXkgYXJlIHNlZW1lZCByZWR1bmRhbnQgZGVmaW5pdGlvbnMsIHRoYW5rcy4gDQoN
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
