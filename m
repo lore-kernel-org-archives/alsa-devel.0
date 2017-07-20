@@ -1,76 +1,148 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 000/102] Convert drivers to explicit reset API
-Date: Thu, 20 Jul 2017 14:55:12 +0200
-Message-ID: <1500555312.2354.75.camel@pengutronix.de>
-References: <20170719152646.25903-1-p.zabel@pengutronix.de>
-         <20170719211515.46a1196c@windsurf>
-         <1500543415.2354.37.camel@pengutronix.de>
-         <20170720123640.43c2ce01@windsurf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5514: Support the TDM docking mode"
+	to the asoc tree
+Date: Thu, 20 Jul 2017 13:23:45 +0100
+Message-ID: <E1dYAUb-000166-GB@debutante>
+References: <1500516460-22008-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mips-bounce@linux-mips.org>
-In-Reply-To: <20170720123640.43c2ce01@windsurf>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Prashant Gaikwad <pgaikwad@nvidia.com>, Heiko Stuebner <heiko@sntech.de>, Peter Chen <Peter.Chen@nxp.com>, Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org, Marc Dietrich <marvin24@gmx.de>, Rakesh Iyer <riyer@nvidia.com>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, linux-clk@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, Wolfram Sang <wsa@the-dreams.de>, Xinliang Liu <z.liuxinliang@hisilicon.com>, Chanwoo Choi <cw00.choi@samsung.com>, Alan Stern <stern@rowland.harvard.edu>, Jiri Slaby <jslaby@suse.com>, Michael Turquette <mturquette@baylibre.com>, Guenter Roeck <linux@roeck-us.net>, Ohad Ben-Cohen <ohad@wizery.com>, linux-pm@vger.kernel.org, Thomas Gleixner <tglx>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05ADD266CD2
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 14:24:01 +0200 (CEST)
+In-Reply-To: <1500516460-22008-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, harshapriya.n@intel.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Thomas,
+The patch
 
-On Thu, 2017-07-20 at 12:36 +0200, Thomas Petazzoni wrote:
-> Hello,
-> 
-> On Thu, 20 Jul 2017 11:36:55 +0200, Philipp Zabel wrote:
-> 
-> > > I don't know if it has been discussed in the past, so forgive me if it
-> > > has been. Have you considered adding a "int flags" argument to the
-> > > existing reset_control_get_*() functions, rather than introducing
-> > > separate exclusive variants ?
-> > > 
-> > > Indeed, with a "int flags" argument you could in the future add more
-> > > variants/behaviors without actually multiplying the number of
-> > > functions. Something like the "flags" argument for request_irq() for
-> > > example.  
-> > 
-> > I can't find the discussion right now, but I remember we had talked
-> > about this in the past.
-> > Behind the scenes, all the inline API functions already call common
-> > entry points with flags (well, currently separate bool parameters for
-> > shared and optional).
-> > One reason against exposing those as an int flags in the user facing API
-> > is the possibility to accidentally provide a wrong value.
-> 
-> This is a quite strange argument. You could also accidentally use the
-> wrong variant of the function, just like you could use the wrong flag.
+   ASoC: rt5514: Support the TDM docking mode
 
-You can't accidentally use no flag at all or a completely bogus value
-with the "plethora of inline functions" variant.
+has been applied to the asoc tree at
 
-> Once again, the next time you have another parameter for those reset
-> functions, beyond the exclusive/shared variant, you will multiply again
-> by two the number of functions ? You already have the  exclusive/shared
-> and optional/mandatory variants, so 4 variants. When you'll add a new
-> parameter, you'll have 8 variants. Doesn't seem really good.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I'd rather avoid adding more variants, if possible. The complexity
-increases regardless of whether the API is expressed as a bunch of
-functions or as a single function with a bunch of flags.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> What about reset_control_get(struct device *, const char *, int flags)
-> to replace all those variants ?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-While I like how this looks, unfortunately (devm_)reset_control_get
-already exists without the flags, so we can't change to that with a
-gentle transition.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-regards
-Philipp
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e8be3a5ad335316ddf1b90e0386426093187bfc7 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Thu, 20 Jul 2017 12:05:34 +0800
+Subject: [PATCH] ASoC: rt5514: Support the TDM docking mode
+
+The TDM docking mode can share the bus to other devices simultaneously.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5514.c | 33 ++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/rt5514.h | 12 ++++++++++++
+ 2 files changed, 44 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 4ca73bf83cc1..a105c84ef555 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -871,11 +871,38 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int val = 0;
++	unsigned int val = 0, val2 = 0;
+ 
+ 	if (rx_mask || tx_mask)
+ 		val |= RT5514_TDM_MODE;
+ 
++	switch (tx_mask) {
++	case 0x3:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH2 |
++			RT5514_TDM_DOCKING_START_SLOT0;
++		break;
++
++	case 0x30:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH2 |
++			RT5514_TDM_DOCKING_START_SLOT4;
++		break;
++
++	case 0xf:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH4 |
++			RT5514_TDM_DOCKING_START_SLOT0;
++		break;
++
++	case 0xf0:
++		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH4 |
++			RT5514_TDM_DOCKING_START_SLOT4;
++		break;
++
++	default:
++		break;
++	}
++
++
++
+ 	switch (slots) {
+ 	case 4:
+ 		val |= RT5514_TDMSLOT_SEL_RX_4CH | RT5514_TDMSLOT_SEL_TX_4CH;
+@@ -921,6 +948,10 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 		RT5514_CH_LEN_RX_MASK | RT5514_CH_LEN_TX_MASK |
+ 		RT5514_TDM_MODE2, val);
+ 
++	regmap_update_bits(rt5514->regmap, RT5514_I2S_CTRL2,
++		RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH_MASK |
++		RT5514_TDM_DOCKING_START_MASK, val2);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 02bc212a86d9..75024a4bb7f5 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -164,6 +164,18 @@
+ #define RT5514_I2S_DL_24			(0x2 << 0)
+ #define RT5514_I2S_DL_8				(0x3 << 0)
+ 
++/* RT5514_I2S_CTRL2 (0x2014) */
++#define RT5514_TDM_DOCKING_MODE			(0x1 << 31)
++#define RT5514_TDM_DOCKING_MODE_SFT		31
++#define RT5514_TDM_DOCKING_VALID_CH_MASK	(0x1 << 29)
++#define RT5514_TDM_DOCKING_VALID_CH_SFT		29
++#define RT5514_TDM_DOCKING_VALID_CH2		(0x0 << 29)
++#define RT5514_TDM_DOCKING_VALID_CH4		(0x1 << 29)
++#define RT5514_TDM_DOCKING_START_MASK		(0x1 << 28)
++#define RT5514_TDM_DOCKING_START_SFT		28
++#define RT5514_TDM_DOCKING_START_SLOT0		(0x0 << 28)
++#define RT5514_TDM_DOCKING_START_SLOT4		(0x1 << 28)
++
+ /* RT5514_DIG_SOURCE_CTRL (0x20a4) */
+ #define RT5514_AD1_DMIC_INPUT_SEL		(0x1 << 1)
+ #define RT5514_AD1_DMIC_INPUT_SEL_SFT		1
+-- 
+2.13.2
