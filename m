@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Support the TDM docking mode"
-	to the asoc tree
-Date: Thu, 20 Jul 2017 13:23:45 +0100
-Message-ID: <E1dYAUb-000166-GB@debutante>
-References: <1500516460-22008-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: Intel: board: Add Geminilake platform
+	support" to the asoc tree
+Date: Thu, 20 Jul 2017 13:23:51 +0100
+Message-ID: <E1dYAUh-00017z-FT@debutante>
+References: <1500531057-4286-4-git-send-email-pradeep.d.tewani@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05ADD266CD2
- for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 14:24:01 +0200 (CEST)
-In-Reply-To: <1500516460-22008-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D0EF7266CD9
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 14:24:02 +0200 (CEST)
+In-Reply-To: <1500531057-4286-4-git-send-email-pradeep.d.tewani@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, harshapriya.n@intel.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Pradeep Tewani <pradeep.d.tewani@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Support the TDM docking mode
+   ASoC: Intel: board: Add Geminilake platform support
 
 has been applied to the asoc tree at
 
@@ -52,97 +53,146 @@ to this mail.
 Thanks,
 Mark
 
->From e8be3a5ad335316ddf1b90e0386426093187bfc7 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Thu, 20 Jul 2017 12:05:34 +0800
-Subject: [PATCH] ASoC: rt5514: Support the TDM docking mode
+>From 669eb871c440e19351c2d476d1837ed8a62afe16 Mon Sep 17 00:00:00 2001
+From: Pradeep Tewani <pradeep.d.tewani@intel.com>
+Date: Thu, 20 Jul 2017 11:40:57 +0530
+Subject: [PATCH] ASoC: Intel: board: Add Geminilake platform support
 
-The TDM docking mode can share the bus to other devices simultaneously.
+Geminilake also features rt298 codec, so use the same machine driver
+as Broxton. Geminilake uses SSP2 instead of SSP5.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Pradeep Tewani <pradeep.d.tewani@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 33 ++++++++++++++++++++++++++++++++-
- sound/soc/codecs/rt5514.h | 12 ++++++++++++
- 2 files changed, 44 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bxt_rt298.c | 84 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 81 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 4ca73bf83cc1..a105c84ef555 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -871,11 +871,38 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 1daf98ef9d28..a4b5bcb1f6f8 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -114,7 +114,44 @@ static const struct snd_soc_dapm_route broxton_rt298_map[] = {
+ 	{ "iDisp2 Tx", NULL, "iDisp2_out"},
+ 	{ "hifi1", NULL, "iDisp1 Tx"},
+ 	{ "iDisp1 Tx", NULL, "iDisp1_out"},
++};
++
++static const struct snd_soc_dapm_route geminilake_rt298_map[] = {
++	/* speaker */
++	{"Speaker", NULL, "SPOR"},
++	{"Speaker", NULL, "SPOL"},
++
++	/* HP jack connectors - unknown if we have jack detect */
++	{"Headphone Jack", NULL, "HPO Pin"},
++
++	/* other jacks */
++	{"MIC1", NULL, "Mic Jack"},
++
++	/* digital mics */
++	{"DMIC1 Pin", NULL, "DMIC2"},
++	{"DMic", NULL, "SoC DMIC"},
++
++	{"HDMI1", NULL, "hif5-0 Output"},
++	{"HDMI2", NULL, "hif6-0 Output"},
++	{"HDMI2", NULL, "hif7-0 Output"},
++
++	/* CODEC BE connections */
++	{ "AIF1 Playback", NULL, "ssp2 Tx"},
++	{ "ssp2 Tx", NULL, "codec0_out"},
++	{ "ssp2 Tx", NULL, "codec1_out"},
++
++	{ "codec0_in", NULL, "ssp2 Rx" },
++	{ "ssp2 Rx", NULL, "AIF1 Capture" },
+ 
++	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
++	{ "DMIC01 Rx", NULL, "Capture" },
++
++	{ "hifi3", NULL, "iDisp3 Tx"},
++	{ "iDisp3 Tx", NULL, "iDisp3_out"},
++	{ "hifi2", NULL, "iDisp2 Tx"},
++	{ "iDisp2 Tx", NULL, "iDisp2_out"},
++	{ "hifi1", NULL, "iDisp1 Tx"},
++	{ "iDisp1 Tx", NULL, "iDisp1_out"},
+ };
+ 
+ static int broxton_rt298_fe_init(struct snd_soc_pcm_runtime *rtd)
+@@ -505,9 +542,41 @@ static struct snd_soc_card broxton_rt298 = {
+ 
+ };
+ 
++static struct snd_soc_card geminilake_rt298 = {
++	.name = "geminilake-rt298",
++	.dai_link = broxton_rt298_dais,
++	.num_links = ARRAY_SIZE(broxton_rt298_dais),
++	.controls = broxton_controls,
++	.num_controls = ARRAY_SIZE(broxton_controls),
++	.dapm_widgets = broxton_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(broxton_widgets),
++	.dapm_routes = geminilake_rt298_map,
++	.num_dapm_routes = ARRAY_SIZE(geminilake_rt298_map),
++	.fully_routed = true,
++	.late_probe = bxt_card_late_probe,
++};
++
+ static int broxton_audio_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
--	unsigned int val = 0;
-+	unsigned int val = 0, val2 = 0;
- 
- 	if (rx_mask || tx_mask)
- 		val |= RT5514_TDM_MODE;
- 
-+	switch (tx_mask) {
-+	case 0x3:
-+		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH2 |
-+			RT5514_TDM_DOCKING_START_SLOT0;
-+		break;
+ 	struct bxt_rt286_private *ctx;
++	struct snd_soc_card *card =
++			(struct snd_soc_card *)pdev->id_entry->driver_data;
++	int i;
 +
-+	case 0x30:
-+		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH2 |
-+			RT5514_TDM_DOCKING_START_SLOT4;
-+		break;
-+
-+	case 0xf:
-+		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH4 |
-+			RT5514_TDM_DOCKING_START_SLOT0;
-+		break;
-+
-+	case 0xf0:
-+		val2 |= RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH4 |
-+			RT5514_TDM_DOCKING_START_SLOT4;
-+		break;
-+
-+	default:
-+		break;
++	for (i = 0; i < ARRAY_SIZE(broxton_rt298_dais); i++) {
++		if (!strncmp(card->dai_link[i].codec_name, "i2c-INT343A:00",
++						I2C_NAME_SIZE)) {
++			if (!strncmp(card->name, "broxton-rt298",
++						PLATFORM_NAME_SIZE)) {
++				card->dai_link[i].name = "SSP5-Codec";
++				card->dai_link[i].cpu_dai_name = "SSP5 Pin";
++			} else if (!strncmp(card->name, "geminilake-rt298",
++						PLATFORM_NAME_SIZE)) {
++				card->dai_link[i].name = "SSP2-Codec";
++				card->dai_link[i].cpu_dai_name = "SSP2 Pin";
++			}
++		}
 +	}
-+
-+
-+
- 	switch (slots) {
- 	case 4:
- 		val |= RT5514_TDMSLOT_SEL_RX_4CH | RT5514_TDMSLOT_SEL_TX_4CH;
-@@ -921,6 +948,10 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		RT5514_CH_LEN_RX_MASK | RT5514_CH_LEN_TX_MASK |
- 		RT5514_TDM_MODE2, val);
  
-+	regmap_update_bits(rt5514->regmap, RT5514_I2S_CTRL2,
-+		RT5514_TDM_DOCKING_MODE | RT5514_TDM_DOCKING_VALID_CH_MASK |
-+		RT5514_TDM_DOCKING_START_MASK, val2);
-+
- 	return 0;
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
+ 	if (!ctx)
+@@ -515,18 +584,26 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 
+ 	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
+ 
+-	broxton_rt298.dev = &pdev->dev;
+-	snd_soc_card_set_drvdata(&broxton_rt298, ctx);
++	card->dev = &pdev->dev;
++	snd_soc_card_set_drvdata(card, ctx);
+ 
+-	return devm_snd_soc_register_card(&pdev->dev, &broxton_rt298);
++	return devm_snd_soc_register_card(&pdev->dev, card);
  }
  
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 02bc212a86d9..75024a4bb7f5 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -164,6 +164,18 @@
- #define RT5514_I2S_DL_24			(0x2 << 0)
- #define RT5514_I2S_DL_8				(0x3 << 0)
- 
-+/* RT5514_I2S_CTRL2 (0x2014) */
-+#define RT5514_TDM_DOCKING_MODE			(0x1 << 31)
-+#define RT5514_TDM_DOCKING_MODE_SFT		31
-+#define RT5514_TDM_DOCKING_VALID_CH_MASK	(0x1 << 29)
-+#define RT5514_TDM_DOCKING_VALID_CH_SFT		29
-+#define RT5514_TDM_DOCKING_VALID_CH2		(0x0 << 29)
-+#define RT5514_TDM_DOCKING_VALID_CH4		(0x1 << 29)
-+#define RT5514_TDM_DOCKING_START_MASK		(0x1 << 28)
-+#define RT5514_TDM_DOCKING_START_SFT		28
-+#define RT5514_TDM_DOCKING_START_SLOT0		(0x0 << 28)
-+#define RT5514_TDM_DOCKING_START_SLOT4		(0x1 << 28)
++static const struct platform_device_id bxt_board_ids[] = {
++	{ .name = "bxt_alc298s_i2s", .driver_data =
++				(unsigned long)&broxton_rt298 },
++	{ .name = "glk_alc298s_i2s", .driver_data =
++				(unsigned long)&geminilake_rt298 },
++};
 +
- /* RT5514_DIG_SOURCE_CTRL (0x20a4) */
- #define RT5514_AD1_DMIC_INPUT_SEL		(0x1 << 1)
- #define RT5514_AD1_DMIC_INPUT_SEL_SFT		1
+ static struct platform_driver broxton_audio = {
+ 	.probe = broxton_audio_probe,
+ 	.driver = {
+ 		.name = "bxt_alc298s_i2s",
+ 		.pm = &snd_soc_pm_ops,
+ 	},
++	.id_table = bxt_board_ids,
+ };
+ module_platform_driver(broxton_audio)
+ 
+@@ -536,3 +613,4 @@ MODULE_AUTHOR("Senthilnathan Veppur <senthilnathanx.veppur@intel.com>");
+ MODULE_DESCRIPTION("Intel SST Audio for Broxton");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("platform:bxt_alc298s_i2s");
++MODULE_ALIAS("platform:glk_alc298s_i2s");
 -- 
 2.13.2
