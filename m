@@ -1,59 +1,87 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 0/3]ASoC: Intel: Skylake: Enable hdmi
-	for GLK
-Date: Thu, 20 Jul 2017 13:56:36 +0530
-Message-ID: <20170720082634.GI3053@localhost>
-References: <1500531057-4286-1-git-send-email-pradeep.d.tewani@intel.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 000/102] Convert drivers to explicit reset API
+Date: Thu, 20 Jul 2017 11:24:24 +0200
+Message-ID: <1500542664.2354.27.camel@pengutronix.de>
+References: <20170719152646.25903-1-p.zabel@pengutronix.de>
+ <20170720081157.GA11630@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E939266C85
- for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 10:23:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1500531057-4286-1-git-send-email-pradeep.d.tewani@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pradeep Tewani <pradeep.d.tewani@intel.com>, \
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Return-path: <ath10k-bounces+gldad-ath10k=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170720081157.GA11630@kroah.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
+ <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/ath10k/>
+List-Post: <mailto:ath10k@lists.infradead.org>
+List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
+ <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
+Errors-To: ath10k-bounces+gldad-ath10k=m.gmane.org@lists.infradead.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Prashant Gaikwad <pgaikwad@nvidia.com>, Heiko Stuebner <heiko@sntech.de>, Peter Chen <Peter.Chen@nxp.com>, Linus Walleij <linus.walleij@linaro.org>, dri-devel@lists.freedesktop.org, Marc Dietrich <marvin24@gmx.de>, Rakesh Iyer <riyer@nvidia.com>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, linux-clk@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, Wolfram Sang <wsa@the-dreams.de>, Xinliang Liu <z.liuxinliang@hisilicon.com>, Chanwoo Choi <cw00.choi@samsung.com>, Alan Stern <stern@rowland.harvard.edu>, Jiri Slaby <jslaby@suse.com>, Michael Turquette <mturquette@baylibre.com>, Guenter Roeck <linux@roeck-us.net>, Ohad Ben-Cohen <ohad@wizery.com>, linux-pm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Vincent Abriou <vincent.abriou@st.com>, Bin Liu <b-liu@ti.com>, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 20, 2017 at 11:40:54AM +0530, Pradeep Tewani wrote:
-> GLK vendor nid is different from rest of the skylake platforms. Add vendor
-> nid as part of driver data and use it. Also enable support for GLK
-> platform.
-> 
-> Add the patch to remove the .owner initialization in bxt driver as well
+Hi Greg,
 
-Thanks Pradeep for fixing these
+The patches in this series are completely independent of each other, and
+I would like the subsystem maintainers to apply them at their own
+leisure.
+Well, except for the last one, which I will apply only after there are
+no more users of the transition helpers.
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+On Thu, 2017-07-20 at 10:11 +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 19, 2017 at 05:25:04PM +0200, Philipp Zabel wrote:
+> > The reset control API has two modes: exclusive access, where the driver
+> > expects to have full and immediate control over the state of the reset
+> > line, and shared (clock-like) access, where drivers only request reset
+> > deassertion while active, but don't care about the state of the reset line
+> > while inactive.
+> > 
+> > Commit a53e35db70d1 ("reset: Ensure drivers are explicit when requesting
+> > reset lines") started to transition the reset control request API calls
+> > to explicitly state whether the driver needs exclusive or shared reset
+> > control behavior.
+> > 
+> > This series converts all drivers that currently implicitly request
+> > exclusive reset controls to the corresponding explicit API call. It is,
+> > for the most part, generated from the following semantic patch:
+> 
+> Hey, I'm all for large api changes, but this really seems ackward, isn't
+> there a "better" way to do this?
 
-> 
-> Changes in v2:
-> 	Removed the .owner field in driver
-> 	Replaced the strcmp with strncmp for bxt_rt298 probe
-> 
-> Pradeep Tewani (3):
->   ASoC: Intel: board: Remove .owner initialization in bxt_rt298 driver
->   ASoC: hdac_hdmi: Add the vendor nid for Geminilake HDMI
->   ASoC: Intel: board: Add Geminilake platform support
-> 
->  sound/soc/codecs/hdac_hdmi.c       | 39 ++++++++++++++---
->  sound/soc/intel/boards/bxt_rt298.c | 85 ++++++++++++++++++++++++++++++++++++--
->  2 files changed, 115 insertions(+), 9 deletions(-)
-> 
-> -- 
-> 2.7.4
-> 
+It is a bit awkward. I am sorry I haven't done this earlier. Quite a few
+new drivers started using the old API after the explicit requests were
+introduced last year.
 
--- 
-~Vinod
+> Why not, as you say the "implicit" request is exclusive, just leave
+> everything alone and state that the "reset_control_get()" call is
+> exclusive 
+
+I think it is better to let the drivers explicitly state what they
+expect from the API, and using reset_control_get_exclusive vs _shared
+helps driver developers to make a conscious decision.
+
+Further, the implicit API call predates shared reset support, so it is
+not clear that all of the old users really need exclusive control.
+A few drivers have been switched to the shared API already.
+
+> and make the shared one the "odd" usage as that seems to not
+> be the normal case.
+
+I am not sure, there have been people arguing that the "clock-like" case
+really is the common one. I suppose some of those drivers touched by the
+100 patches in this series could also be changed to shared. But I don't
+dare to make this decision for each of them.
+
+> That should be a much smaller patch right?
+> 
+> That way you don't break everything here, and require 100+ patches to
+> just change the name of a function from one to another and do nothing
+> else.
+
+I don't break anything here, and I'm absolutely fine with squashing
+patches together per subsystem where that is preferable.
+
+regards
+Philipp
