@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: fix GPIO6 pin function define"
-	to the asoc tree
-Date: Thu, 20 Jul 2017 13:23:42 +0100
-Message-ID: <E1dYAUY-00014z-5E@debutante>
-References: <1500527271-11188-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rt5677: Remove never used variables" to
+	the asoc tree
+Date: Thu, 20 Jul 2017 13:23:48 +0100
+Message-ID: <E1dYAUe-000176-Gx@debutante>
+References: <20170718173419.65980-4-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3694826238082982004=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DC671266CC3
- for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 14:23:52 +0200 (CEST)
-In-Reply-To: <1500527271-11188-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D5713266CE1
+ for <alsa-devel@alsa-project.org>; Thu, 20 Jul 2017 14:24:02 +0200 (CEST)
+In-Reply-To: <20170718173419.65980-4-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, zhongan@pinecone.net, flove@realtek.com
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
+
+--===============3694826238082982004==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: rt5665: fix GPIO6 pin function define
+   ASoC: rt5677: Remove never used variables
 
 has been applied to the asoc tree at
 
@@ -53,33 +55,53 @@ to this mail.
 Thanks,
 Mark
 
->From b50e2842b25fc14299ccf98dc9467b6304082bcb Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Thu, 20 Jul 2017 13:07:49 +0800
-Subject: [PATCH] ASoC: rt5665: fix GPIO6 pin function define
+>From c0d1cb8366bab9963822c27b0d40cb8b32928cdc Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Tue, 18 Jul 2017 20:34:19 +0300
+Subject: [PATCH] ASoC: rt5677: Remove never used variables
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The GPIO6 pin function select value was wrong.
+There are two variables that have never been used.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+sound/soc/codecs/rt5677.c:785:35: warning: ‘in_vol_tlv’ defined but not used [-Wunused-const-variable=]
+static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
+
+sound/soc/codecs/rt5677.c:783:35: warning: ‘out_vol_tlv’ defined but not used [-Wunused-const-variable=]
+static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
+
+Simple remove them.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5677.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
-index 1db5c6a62a8e..d95249c4c47b 100644
---- a/sound/soc/codecs/rt5665.h
-+++ b/sound/soc/codecs/rt5665.h
-@@ -1692,8 +1692,8 @@
- #define RT5665_GP6_PIN_MASK			(0x3 << 5)
- #define RT5665_GP6_PIN_SFT			5
- #define RT5665_GP6_PIN_GPIO6			(0x0 << 5)
--#define RT5665_GP6_PIN_BCLK3			(0x0 << 5)
--#define RT5665_GP6_PIN_PDM_SCL			(0x1 << 5)
-+#define RT5665_GP6_PIN_BCLK3			(0x1 << 5)
-+#define RT5665_GP6_PIN_PDM_SCL			(0x2 << 5)
- #define RT5665_GP7_PIN_MASK			(0x3 << 3)
- #define RT5665_GP7_PIN_SFT			3
- #define RT5665_GP7_PIN_GPIO7			(0x0 << 3)
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index a3cce57739c3..9e9de0e274ea 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -780,9 +780,7 @@ static int rt5677_set_dsp_vad(struct snd_soc_codec *codec, bool on)
+ 	return 0;
+ }
+ 
+-static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -6525, 75, 0);
+-static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1725, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+ static const DECLARE_TLV_DB_SCALE(st_vol_tlv, -4650, 150, 0);
 -- 
 2.13.2
+
+
+--===============3694826238082982004==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3694826238082982004==--
