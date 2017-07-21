@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Use snd_soc_kcontrol_codec()"
-	to the asoc tree
-Date: Fri, 21 Jul 2017 17:46:06 +0100
-Message-ID: <E1dYb42-0005nu-F2@debutante>
-References: <1500572177-14939-1-git-send-email-fabio.estevam@nxp.com>
+From: Rob Herring <robh@kernel.org>
+Subject: [PATCH v2] sound: Convert to using %pOF instead of
+	full_name
+Date: Fri, 21 Jul 2017 14:28:34 -0500
+Message-ID: <20170721192835.25555-3-robh@kernel.org>
+References: <20170721192835.25555-1-robh@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 60C9526753D
- for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 18:46:18 +0200 (CEST)
-In-Reply-To: <1500572177-14939-1-git-send-email-fabio.estevam@nxp.com>
+Received: from mail-yb0-f194.google.com (mail-yb0-f194.google.com
+ [209.85.213.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 900A1266AF7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 21:28:56 +0200 (CEST)
+Received: by mail-yb0-f194.google.com with SMTP id c127so1787368ybf.4
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 12:28:56 -0700 (PDT)
+In-Reply-To: <20170721192835.25555-1-robh@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,85 +24,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, richard.leitner@skidata.com
+To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Now that we have a custom printf format specifier, convert users of
+full_name to use %pOF instead. This is preparation to remove storing
+of the full path string for each node.
 
-   ASoC: sgtl5000: Use snd_soc_kcontrol_codec()
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 364e93ca5dd6f4d266c3a5ff169961d2caac19fb Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Thu, 20 Jul 2017 14:36:17 -0300
-Subject: [PATCH] ASoC: sgtl5000: Use snd_soc_kcontrol_codec()
-
-Since commit a72952672005 ("ASoC: sgtl5000: add avc support") the
-following kernel crash happens after running a 'reboot' command:
-
-ALSA: Storing mixer settings...
-[   20.031604] Unable to handle kernel paging request at virtual address fffffffe
-[   20.039268] pgd = de2a0000
-[   20.041999] [fffffffe] *pgd=8fffd861, *pte=00000000, *ppte=00000000
-[   20.048387] Internal error: Oops: 80000007 [#1] SMP ARM
-
-The function that takes a kcontrol parameter and returns the
-codec that registered the control is snd_soc_kcontrol_codec(),
-so use the correct function to fix the problem.
-
-Fixes: a72952672005 ("ASoC: sgtl5000: add avc support")
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Tested-by: Richard Leitner <richard.leitner@skidata.com>
-Reviewed-by: Richard Leitner <richard.leitner@skidata.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Timur Tabi <timur@tabi.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org
 ---
- sound/soc/codecs/sgtl5000.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v2:
+- Add printf specifier change for fsl_dma.c
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 8f6814c1eb6b..80f6d1da7095 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -409,7 +409,7 @@ static int dac_put_volsw(struct snd_kcontrol *kcontrol,
- static int avc_get_threshold(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	int db, i;
- 	u16 reg = snd_soc_read(codec, SGTL5000_DAP_AVC_THRESHOLD);
+ sound/aoa/codecs/tas.c     |  4 ++--
+ sound/soc/fsl/fsl_dma.c    |  4 ++--
+ sound/soc/fsl/imx-audmux.c | 16 ++++++++--------
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/sound/aoa/codecs/tas.c b/sound/aoa/codecs/tas.c
+index 733b6365dad6..15c05755d270 100644
+--- a/sound/aoa/codecs/tas.c
++++ b/sound/aoa/codecs/tas.c
+@@ -905,8 +905,8 @@ static int tas_i2c_probe(struct i2c_client *client,
+ 		goto fail;
+ 	}
+ 	printk(KERN_DEBUG
+-	       "snd-aoa-codec-tas: tas found, addr 0x%02x on %s\n",
+-	       (unsigned int)client->addr, node->full_name);
++	       "snd-aoa-codec-tas: tas found, addr 0x%02x on %pOF\n",
++	       (unsigned int)client->addr, node);
+ 	return 0;
+  fail:
+ 	mutex_destroy(&tas->mtx);
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index ccadefceeff2..ed8ea002902d 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -897,8 +897,8 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
  
-@@ -442,7 +442,7 @@ static int avc_get_threshold(struct snd_kcontrol *kcontrol,
- static int avc_put_threshold(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_value *ucontrol)
- {
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
- 	int db;
- 	u16 reg;
+ 	ret = of_address_to_resource(ssi_np, 0, &res);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "could not determine resources for %s\n",
+-			ssi_np->full_name);
++		dev_err(&pdev->dev, "could not determine resources for %pOF\n",
++			ssi_np);
+ 		of_node_put(ssi_np);
+ 		return ret;
+ 	}
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index fc57da341d61..392d5eef356d 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -268,13 +268,13 @@ static int imx_audmux_parse_dt_defaults(struct platform_device *pdev,
  
+ 		ret = of_property_read_u32(child, "fsl,audmux-port", &port);
+ 		if (ret) {
+-			dev_warn(&pdev->dev, "Failed to get fsl,audmux-port of child node \"%s\"\n",
+-					child->full_name);
++			dev_warn(&pdev->dev, "Failed to get fsl,audmux-port of child node \"%pOF\"\n",
++					child);
+ 			continue;
+ 		}
+ 		if (!of_property_read_bool(child, "fsl,port-config")) {
+-			dev_warn(&pdev->dev, "child node \"%s\" does not have property fsl,port-config\n",
+-					child->full_name);
++			dev_warn(&pdev->dev, "child node \"%pOF\" does not have property fsl,port-config\n",
++					child);
+ 			continue;
+ 		}
+ 
+@@ -292,15 +292,15 @@ static int imx_audmux_parse_dt_defaults(struct platform_device *pdev,
+ 		}
+ 
+ 		if (ret != -EOVERFLOW) {
+-			dev_err(&pdev->dev, "Failed to read u32 at index %d of child %s\n",
+-					i, child->full_name);
++			dev_err(&pdev->dev, "Failed to read u32 at index %d of child %pOF\n",
++					i, child);
+ 			continue;
+ 		}
+ 
+ 		if (audmux_type == IMX31_AUDMUX) {
+ 			if (i % 2) {
+-				dev_err(&pdev->dev, "One pdcr value is missing in child node %s\n",
+-						child->full_name);
++				dev_err(&pdev->dev, "One pdcr value is missing in child node %pOF\n",
++						child);
+ 				continue;
+ 			}
+ 			imx_audmux_v2_configure_port(port, ptcr, pdcr);
 -- 
-2.13.2
+2.11.0
