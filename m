@@ -1,15 +1,15 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5514: Use the local variable to get
-	the data from SPI device
-Date: Fri, 21 Jul 2017 16:00:47 +0800
-Message-ID: <1500624047-21492-1-git-send-email-oder_chiou@realtek.com>
+From: Kailang <kailang@realtek.com>
+Subject: No Loopback for ALC225/ALC295
+Date: Fri, 21 Jul 2017 09:24:44 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A183F3E52@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A183F3E52RTITMBSV02realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 287CB266C39
- for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 10:00:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 60626266C39
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 11:24:51 +0200 (CEST)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,73 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch uses the local variable to get the data from SPI device to
-prevent to get all zero data.
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183F3E52RTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5514-spi.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 950d1ff..e693204 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -289,7 +289,7 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
- {
- 	u8 spi_cmd = RT5514_SPI_CMD_BURST_READ;
- 	int status;
--	u8 write_buf[8];
-+	u8 write_buf[8], read_buf[RT5514_SPI_BUF_LEN];
- 	unsigned int i, end, offset = 0;
- 
- 	struct spi_message message;
-@@ -319,7 +319,7 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
- 		spi_message_add_tail(&x[1], &message);
- 
- 		x[2].len = end;
--		x[2].rx_buf = rxbuf + offset;
-+		x[2].rx_buf = read_buf;
- 		spi_message_add_tail(&x[2], &message);
- 
- 		status = spi_sync(rt5514_spi, &message);
-@@ -327,6 +327,8 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
- 		if (status)
- 			return false;
- 
-+		memcpy(rxbuf + offset, read_buf, end);
-+
- 		offset += RT5514_SPI_BUF_LEN;
- 	}
- 
-@@ -365,14 +367,9 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
- int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
- {
- 	u8 spi_cmd = RT5514_SPI_CMD_BURST_WRITE;
--	u8 *write_buf;
-+	u8 write_buf[RT5514_SPI_BUF_LEN + 6];
- 	unsigned int i, end, offset = 0;
- 
--	write_buf = kmalloc(RT5514_SPI_BUF_LEN + 6, GFP_KERNEL);
--
--	if (write_buf == NULL)
--		return -ENOMEM;
--
- 	while (offset < len) {
- 		if (offset + RT5514_SPI_BUF_LEN <= len)
- 			end = RT5514_SPI_BUF_LEN;
-@@ -403,8 +400,6 @@ int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
- 		offset += RT5514_SPI_BUF_LEN;
- 	}
- 
--	kfree(write_buf);
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(rt5514_spi_burst_write);
--- 
-2.7.4
+Hi Takashi,
+
+There are also no loopback mixer for ALC225 / ALC295 codecs.
+Attach is the update patch.
+Many Thanks.
+
+BR,
+Kailang=
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183F3E52RTITMBSV02realt_
+Content-Type: application/octet-stream;
+	name="0000-no-loopback-alc225-alc295.patch"
+Content-Description: 0000-no-loopback-alc225-alc295.patch
+Content-Disposition: attachment;
+	filename="0000-no-loopback-alc225-alc295.patch"; size=786;
+	creation-date="Fri, 21 Jul 2017 09:22:33 GMT";
+	modification-date="Fri, 21 Jul 2017 09:20:57 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAwYjFkMmNjMGMyYzUyMzJlNTgzOWYwYzcyZWFhNDNkMzRmOTI4MjQwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IEZyaSwgMjEgSnVsIDIwMTcgMTc6MTU6MDcgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIE5vIGxvb3BiYWNrIG9uIEFMQzIyNS9BTEMyOTUgY29kZWMKCkFMQzIy
+NS9BTEMyOTUgYWxzbyBoYXZlIG5vIGxvb3BiYWNrIG1peGVyLgoKU2lnbmVkLW9mZi1ieTogS2Fp
+bGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9o
+ZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXgg
+MGNlMzJkZi4uNGY5YjdiZSAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
+LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTY3NzgsNiArNjc3OCw3
+IEBAIHN0YXRpYyBpbnQgcGF0Y2hfYWxjMjY5KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCWNh
+c2UgMHgxMGVjMDIyNToKIAljYXNlIDB4MTBlYzAyOTU6CiAJCXNwZWMtPmNvZGVjX3ZhcmlhbnQg
+PSBBTEMyNjlfVFlQRV9BTEMyMjU7CisJCXNwZWMtPmdlbi5taXhlcl9uaWQgPSAwOyAvKiBubyBs
+b29wYmFjayBvbiBBTEMyMjUgQUxDMjk1ICovCiAJCWJyZWFrOwogCWNhc2UgMHgxMGVjMDI5OToK
+IAkJc3BlYy0+Y29kZWNfdmFyaWFudCA9IEFMQzI2OV9UWVBFX0FMQzIyNTsK
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183F3E52RTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183F3E52RTITMBSV02realt_--
