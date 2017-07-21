@@ -1,15 +1,15 @@
-From: Kailang <kailang@realtek.com>
-Subject: ALC225 headset mode update
-Date: Fri, 21 Jul 2017 07:31:29 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A183F3DEF@RTITMBSV02.realtek.com.tw>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5514: Use the local variable to get
+	the data from SPI device
+Date: Fri, 21 Jul 2017 16:00:47 +0800
+Message-ID: <1500624047-21492-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A183F3DEFRTITMBSV02realt_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 07526266C39
- for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 09:31:39 +0200 (CEST)
-Content-Language: zh-TW
+ by alsa0.perex.cz (Postfix) with ESMTP id 287CB266C39
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 10:00:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,144 +19,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F3DEFRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The patch uses the local variable to get the data from SPI device to
+prevent to get all zero data.
 
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514-spi.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-Hi Takashi,
-
-Dell also create new layout for ALC225.
-Headset mode policy need to change to match new layout.
-Attach patch was the update.
-Many thanks.
-
-BR,
-Kailang=
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F3DEFRTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0000-alc225-headset-mode-update.patch"
-Content-Description: 0000-alc225-headset-mode-update.patch
-Content-Disposition: attachment;
-	filename="0000-alc225-headset-mode-update.patch"; size=5830;
-	creation-date="Fri, 21 Jul 2017 07:26:03 GMT";
-	modification-date="Fri, 21 Jul 2017 07:25:39 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSBhYWU3Y2QxM2Y2MDAyOGExZDRlM2Y4YzljNmRiZjVjNjYxODMxYzE1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IEZyaSwgMjEgSnVsIDIwMTcgMTU6MjM6NTMgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIFVwZGF0ZSBoZWFkc2V0IG1vZGUgZm9yIEFMQzIyNQoKRGVsbCBuZXcg
-cGxhdGZvcm0gd2l0aCBuZXcgaGFyZHdhcmUgbGF5b3V0LgpPbGQgaGVhZHNldCBtb2RlIHBvbGlj
-eSB3aWxsIGNhdXNlIGhlYWRzZXQgbW9kZSBjaGVjayB0eXBlIGhhcyBhIGNoYW5jZSB0byBjaGVj
-ayBmYWlsLgpTbywgd2UgdXBkYXRlIG5ldyBoZWFkc2V0IG1vZGUgdG8gbWF0Y2ggbmV3IGhhcmR3
-YXJlIGxheW91dC4KTmV3IGhlYWRzZXQgbW9kZSBwb2xpY3kgYWxzbyBjb3VsZCBzdWl0YWJsZSB0
-byBvbGQgaGFyZHdhcmUgbGF5b3V0LgoKU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWls
-YW5nQHJlYWx0ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
-ay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggMGNlMzJkZi4uODE3MGIz
-YyAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTM4MzgsNiArMzgzOCwxNyBAQCBzdGF0aWMgdm9p
-ZCBhbGMyNjlfZml4dXBfaHBfbGluZTFfbWljMV9sZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMs
-CiAJfQogfQogCitzdGF0aWMgc3RydWN0IGNvZWZfZncgYWxjMjI1X3ByZV9oc21vZGVbXSA9IHsK
-KwkJVVBEQVRFX0NPRUYoMHg0YSwgMTw8OCwgMCksCisJCVVQREFURV9DT0VGRVgoMHg1NywgMHgw
-NSwgMTw8MTQsIDApLAorCQlVUERBVEVfQ09FRigweDYzLCAzPDwxNCwgMzw8MTQpLAorCQlVUERB
-VEVfQ09FRigweDRhLCAzPDw0LCAyPDw0KSwKKwkJVVBEQVRFX0NPRUYoMHg0YSwgMzw8MTAsIDM8
-PDEwKSwKKwkJVVBEQVRFX0NPRUYoMHg0NSwgMHgzZjw8MTAsIDB4MzQ8PDEwKSwKKwkJVVBEQVRF
-X0NPRUYoMHg0YSwgMzw8MTAsIDApLAorCQl7fQorfTsKKwogc3RhdGljIHZvaWQgYWxjX2hlYWRz
-ZXRfbW9kZV91bnBsdWdnZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAJc3RhdGljIHN0
-cnVjdCBjb2VmX2Z3IGNvZWYwMjU1W10gPSB7CkBAIC0zODk5LDEzICszOTEwLDcgQEAgc3RhdGlj
-IHZvaWQgYWxjX2hlYWRzZXRfbW9kZV91bnBsdWdnZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMp
-CiAJCXt9CiAJfTsKIAlzdGF0aWMgc3RydWN0IGNvZWZfZncgY29lZjAyMjVbXSA9IHsKLQkJVVBE
-QVRFX0NPRUYoMHg0YSwgMTw8OCwgMCksCi0JCVVQREFURV9DT0VGRVgoMHg1NywgMHgwNSwgMTw8
-MTQsIDApLAotCQlVUERBVEVfQ09FRigweDYzLCAzPDwxNCwgMzw8MTQpLAotCQlVUERBVEVfQ09F
-RigweDRhLCAzPDw0LCAyPDw0KSwKLQkJVVBEQVRFX0NPRUYoMHg0YSwgMzw8MTAsIDM8PDEwKSwK
-LQkJVVBEQVRFX0NPRUYoMHg0NSwgMHgzZjw8MTAsIDB4MzQ8PDEwKSwKLQkJVVBEQVRFX0NPRUYo
-MHg0YSwgMzw8MTAsIDApLAorCQlVUERBVEVfQ09FRigweDYzLCAzPDwxNCwgMCksCiAJCXt9CiAJ
-fTsKIAlzdGF0aWMgc3RydWN0IGNvZWZfZncgY29lZjAyNzRbXSA9IHsKQEAgLTQwNzksNiArNDA4
-NCw3IEBAIHN0YXRpYyB2b2lkIGFsY19oZWFkc2V0X21vZGVfbWljX2luKHN0cnVjdCBoZGFfY29k
-ZWMgKmNvZGVjLCBoZGFfbmlkX3QgaHBfcGluLAogCWNhc2UgMHgxMGVjMDIyNToKIAljYXNlIDB4
-MTBlYzAyOTU6CiAJY2FzZSAweDEwZWMwMjk5OgorCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVj
-LCBhbGMyMjVfcHJlX2hzbW9kZSk7CiAJCWFsY191cGRhdGVfY29lZl9pZHgoY29kZWMsIDB4NDUs
-IDB4M2Y8PDEwLCAweDMxPDwxMCk7CiAJCXNuZF9oZGFfc2V0X3Bpbl9jdGxfY2FjaGUoY29kZWMs
-IGhwX3BpbiwgMCk7CiAJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjI1KTsKQEAg
-LTQwOTEsNyArNDA5NywxMiBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX21pY19pbihz
-dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgaGRhX25pZF90IGhwX3BpbiwKIHN0YXRpYyB2b2lkIGFs
-Y19oZWFkc2V0X21vZGVfZGVmYXVsdChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKIAlzdGF0
-aWMgc3RydWN0IGNvZWZfZncgY29lZjAyMjVbXSA9IHsKLQkJVVBEQVRFX0NPRUYoMHg0NSwgMHgz
-Zjw8MTAsIDB4MzQ8PDEwKSwKKwkJVVBEQVRFX0NPRUYoMHg0NSwgMHgzZjw8MTAsIDB4MzA8PDEw
-KSwKKwkJVVBEQVRFX0NPRUYoMHg0NSwgMHgzZjw8MTAsIDB4MzE8PDEwKSwKKwkJVVBEQVRFX0NP
-RUYoMHg0OSwgMzw8OCwgMDw8OCksCisJCVVQREFURV9DT0VGKDB4NGEsIDM8PDQsIDM8PDQpLAor
-CQlVUERBVEVfQ09FRigweDYzLCAzPDwxNCwgMCksCisJCVVQREFURV9DT0VGKDB4NjcsIDB4ZjAw
-MCwgMHgzMDAwKSwKIAkJe30KIAl9OwogCXN0YXRpYyBzdHJ1Y3QgY29lZl9mdyBjb2VmMDI1NVtd
-ID0gewpAQCAtNDE0NSw2ICs0MTU2LDcgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9k
-ZWZhdWx0KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCWNhc2UgMHgxMGVjMDIyNToKIAljYXNl
-IDB4MTBlYzAyOTU6CiAJY2FzZSAweDEwZWMwMjk5OgorCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNv
-ZGVjLCBhbGMyMjVfcHJlX2hzbW9kZSk7CiAJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNv
-ZWYwMjI1KTsKIAkJYnJlYWs7CiAJY2FzZSAweDEwZWMwMjU1OgpAQCAtNDIyOCwxMSArNDI0MCwx
-NCBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX2N0aWEoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMpCiAJCVdSSVRFX0NPRUYoMHhjMywgMHgwMDAwKSwKIAkJe30KIAl9OwotCXN0YXRpYyBz
-dHJ1Y3QgY29lZl9mdyBjb2VmMDIyNVtdID0geworCXN0YXRpYyBzdHJ1Y3QgY29lZl9mdyBjb2Vm
-MDIyNV8xW10gPSB7CiAJCVVQREFURV9DT0VGKDB4NDUsIDB4M2Y8PDEwLCAweDM1PDwxMCksCi0J
-CVVQREFURV9DT0VGKDB4NDksIDE8PDgsIDE8PDgpLAotCQlVUERBVEVfQ09FRigweDRhLCA3PDw2
-LCA3PDw2KSwKLQkJVVBEQVRFX0NPRUYoMHg0YSwgMzw8NCwgMzw8NCksCisJCVVQREFURV9DT0VG
-KDB4NjMsIDM8PDE0LCAyPDwxNCksCisJCXt9CisJfTsKKwlzdGF0aWMgc3RydWN0IGNvZWZfZncg
-Y29lZjAyMjVfMltdID0geworCQlVUERBVEVfQ09FRigweDQ1LCAweDNmPDwxMCwgMHgzNTw8MTAp
-LAorCQlVUERBVEVfQ09FRigweDYzLCAzPDwxNCwgMTw8MTQpLAogCQl7fQogCX07CiAKQEAgLTQy
-ODIsNyArNDI5NywxMSBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX2N0aWEoc3RydWN0
-IGhkYV9jb2RlYyAqY29kZWMpCiAJY2FzZSAweDEwZWMwMjI1OgogCWNhc2UgMHgxMGVjMDI5NToK
-IAljYXNlIDB4MTBlYzAyOTk6Ci0JCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjI1
-KTsKKwkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NDUpOworCQlpZigodmFsICYg
-KDE8PDkpKSkKKwkJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGNvZWYwMjI1XzIpOworCQll
-bHNlCisJCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDIyNV8xKTsKIAkJYnJlYWs7
-CiAJY2FzZSAweDEwZWMwODY3OgogCQlhbGNfdXBkYXRlX2NvZWZleF9pZHgoY29kZWMsIDB4NTcs
-IDB4NSwgMTw8MTQsIDApOwpAQCAtNDI5NCw2ICs0MzEzLDggQEAgc3RhdGljIHZvaWQgYWxjX2hl
-YWRzZXRfbW9kZV9jdGlhKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogLyogTm9raWEgdHlwZSAq
-Lwogc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9vbXRwKHN0cnVjdCBoZGFfY29kZWMgKmNv
-ZGVjKQogeworCWludCB2YWw7CisKIAlzdGF0aWMgc3RydWN0IGNvZWZfZncgY29lZjAyNTVbXSA9
-IHsKIAkJV1JJVEVfQ09FRigweDQ1LCAweGU0ODkpLCAvKiBTZXQgdG8gT01UUCBUeXBlICovCiAJ
-CVdSSVRFX0NPRUYoMHgxYiwgMHgwYzJiKSwKQEAgLTQzMzgsOSArNDM1OSw3IEBAIHN0YXRpYyB2
-b2lkIGFsY19oZWFkc2V0X21vZGVfb210cChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAl9Owog
-CXN0YXRpYyBzdHJ1Y3QgY29lZl9mdyBjb2VmMDIyNVtdID0gewogCQlVUERBVEVfQ09FRigweDQ1
-LCAweDNmPDwxMCwgMHgzOTw8MTApLAotCQlVUERBVEVfQ09FRigweDQ5LCAxPDw4LCAxPDw4KSwK
-LQkJVVBEQVRFX0NPRUYoMHg0YSwgNzw8NiwgNzw8NiksCi0JCVVQREFURV9DT0VGKDB4NGEsIDM8
-PDQsIDM8PDQpLAorCQlVUERBVEVfQ09FRigweDYzLCAzPDwxNCwgMjw8MTQpLAogCQl7fQogCX07
-CiAKQEAgLTQ0MjQsMTEgKzQ0NDMsNiBAQCBzdGF0aWMgdm9pZCBhbGNfZGV0ZXJtaW5lX2hlYWRz
-ZXRfdHlwZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJV1JJVEVfQ09FRigweGMzLCAweDBj
-MDApLAogCQl7fQogCX07Ci0Jc3RhdGljIHN0cnVjdCBjb2VmX2Z3IGNvZWYwMjI1W10gPSB7Ci0J
-CVVQREFURV9DT0VGKDB4NDUsIDB4M2Y8PDEwLCAweDM0PDwxMCksCi0JCVVQREFURV9DT0VGKDB4
-NDksIDE8PDgsIDE8PDgpLAotCQl7fQotCX07CiAJc3RhdGljIHN0cnVjdCBjb2VmX2Z3IGNvZWYw
-Mjc0W10gPSB7CiAJCVVQREFURV9DT0VGKDB4NGEsIDB4MDAxMCwgMCksCiAJCVVQREFURV9DT0VG
-KDB4NGEsIDB4ODAwMCwgMCksCkBAIC00NTE3LDEwICs0NTMxLDI1IEBAIHN0YXRpYyB2b2lkIGFs
-Y19kZXRlcm1pbmVfaGVhZHNldF90eXBlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCWNhc2Ug
-MHgxMGVjMDIyNToKIAljYXNlIDB4MTBlYzAyOTU6CiAJY2FzZSAweDEwZWMwMjk5OgotCQlhbGNf
-cHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDIyNSk7Ci0JCW1zbGVlcCg4MDApOwotCQl2YWwg
-PSBhbGNfcmVhZF9jb2VmX2lkeChjb2RlYywgMHg0Nik7Ci0JCWlzX2N0aWEgPSAodmFsICYgMHgw
-MGYwKSA9PSAweDAwZjA7CisJCWFsY19wcm9jZXNzX2NvZWZfZncoY29kZWMsIGFsYzIyNV9wcmVf
-aHNtb2RlKTsKKwkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg2NywgMHhmMDAwLCAweDEw
-MDApOworCQl2YWwgPSBhbGNfcmVhZF9jb2VmX2lkeChjb2RlYywgMHg0NSk7CisJCWlmKCh2YWwg
-JiAoMTw8OSkpKSB7CisJCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDQ1LCAweDNmPDwx
-MCwgMHgzNDw8MTApOworCQkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0OSwgMzw8OCwg
-Mjw8OCk7CisJCQltc2xlZXAoODAwKTsKKwkJCXZhbCA9IGFsY19yZWFkX2NvZWZfaWR4KGNvZGVj
-LCAweDQ2KTsKKwkJCWlzX2N0aWEgPSAodmFsICYgMHgwMGYwKSA9PSAweDAwZjA7CisJCX0gZWxz
-ZSB7CisJCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDQ1LCAweDNmPDwxMCwgMHgzNDw8
-MTApOworCQkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0OSwgMzw8OCwgMTw8OCk7CisJ
-CQltc2xlZXAoODAwKTsKKwkJCXZhbCA9IGFsY19yZWFkX2NvZWZfaWR4KGNvZGVjLCAweDQ2KTsK
-KwkJCWlzX2N0aWEgPSAodmFsICYgMHgwMGYwKSA9PSAweDAwZjA7CisJCX0KKwkJYWxjX3VwZGF0
-ZV9jb2VmX2lkeChjb2RlYywgMHg0YSwgNzw8NiwgNzw8Nik7CisJCWFsY191cGRhdGVfY29lZl9p
-ZHgoY29kZWMsIDB4NGEsIDM8PDQsIDM8PDQpOworCQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVj
-LCAweDY3LCAweGYwMDAsIDB4MzAwMCk7CiAJCWJyZWFrOwogCWNhc2UgMHgxMGVjMDg2NzoKIAkJ
-aXNfY3RpYSA9IHRydWU7Cg==
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F3DEFRTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A183F3DEFRTITMBSV02realt_--
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 950d1ff..e693204 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -289,7 +289,7 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
+ {
+ 	u8 spi_cmd = RT5514_SPI_CMD_BURST_READ;
+ 	int status;
+-	u8 write_buf[8];
++	u8 write_buf[8], read_buf[RT5514_SPI_BUF_LEN];
+ 	unsigned int i, end, offset = 0;
+ 
+ 	struct spi_message message;
+@@ -319,7 +319,7 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
+ 		spi_message_add_tail(&x[1], &message);
+ 
+ 		x[2].len = end;
+-		x[2].rx_buf = rxbuf + offset;
++		x[2].rx_buf = read_buf;
+ 		spi_message_add_tail(&x[2], &message);
+ 
+ 		status = spi_sync(rt5514_spi, &message);
+@@ -327,6 +327,8 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
+ 		if (status)
+ 			return false;
+ 
++		memcpy(rxbuf + offset, read_buf, end);
++
+ 		offset += RT5514_SPI_BUF_LEN;
+ 	}
+ 
+@@ -365,14 +367,9 @@ int rt5514_spi_burst_read(unsigned int addr, u8 *rxbuf, size_t len)
+ int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
+ {
+ 	u8 spi_cmd = RT5514_SPI_CMD_BURST_WRITE;
+-	u8 *write_buf;
++	u8 write_buf[RT5514_SPI_BUF_LEN + 6];
+ 	unsigned int i, end, offset = 0;
+ 
+-	write_buf = kmalloc(RT5514_SPI_BUF_LEN + 6, GFP_KERNEL);
+-
+-	if (write_buf == NULL)
+-		return -ENOMEM;
+-
+ 	while (offset < len) {
+ 		if (offset + RT5514_SPI_BUF_LEN <= len)
+ 			end = RT5514_SPI_BUF_LEN;
+@@ -403,8 +400,6 @@ int rt5514_spi_burst_write(u32 addr, const u8 *txbuf, size_t len)
+ 		offset += RT5514_SPI_BUF_LEN;
+ 	}
+ 
+-	kfree(write_buf);
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(rt5514_spi_burst_write);
+-- 
+2.7.4
