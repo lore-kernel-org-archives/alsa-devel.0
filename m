@@ -1,18 +1,17 @@
-From: Richard Leitner <richard.leitner@skidata.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: Use
-	snd_soc_kcontrol_codec()
-Date: Fri, 21 Jul 2017 11:31:28 +0200
-Message-ID: <f8c94238-1a68-f1b8-a74a-3543869b6356@skidata.com>
-References: <1500572177-14939-1-git-send-email-fabio.estevam@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5514: Use the local variable to
+ get the data from SPI device
+Date: Fri, 21 Jul 2017 11:51:05 +0100
+Message-ID: <20170721105105.4lsehuw6an7oclqd@sirena.org.uk>
+References: <1500624047-21492-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8080874254604987608=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.skidata.com (mail2.skidata.com [91.230.2.91])
- by alsa0.perex.cz (Postfix) with ESMTP id D17812674D4
- for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 11:31:31 +0200 (CEST)
-In-Reply-To: <1500572177-14939-1-git-send-email-fabio.estevam@nxp.com>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FB5326750A
+ for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 12:51:13 +0200 (CEST)
+In-Reply-To: <1500624047-21492-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07/20/2017 07:36 PM, Fabio Estevam wrote:
-> Since commit a72952672005 ("ASoC: sgtl5000: add avc support") the
-> following kernel crash happens after running a 'reboot' command:
-> 
-> ALSA: Storing mixer settings...
-> [   20.031604] Unable to handle kernel paging request at virtual address fffffffe
-> [   20.039268] pgd = de2a0000
-> [   20.041999] [fffffffe] *pgd=8fffd861, *pte=00000000, *ppte=00000000
-> [   20.048387] Internal error: Oops: 80000007 [#1] SMP ARM 
-> 
-> The function that takes a kcontrol parameter and returns the
-> codec that registered the control is snd_soc_kcontrol_codec(),
-> so use the correct function to fix the problem.
-> 
-> Fixes: a72952672005 ("ASoC: sgtl5000: add avc support")
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 
-I've tested this patch on a custom i.MX6-DL board.
-Although I wasn't able to reproduce the Ooops, setting and getting the
-'AVC Threshold' wasn't working before that patch.
-With this patch applied 'AVC Threshold' works fine! Thanks Fabio.
+--===============8080874254604987608==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rfrjxuucjkrpe47l"
+Content-Disposition: inline
 
-Therefore please feel free to add
 
-Tested-by: Richard Leitner <richard.leitner@skidata.com>
+--rfrjxuucjkrpe47l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And/Or
+On Fri, Jul 21, 2017 at 04:00:47PM +0800, Oder Chiou wrote:
+> The patch uses the local variable to get the data from SPI device to
+> prevent to get all zero data.
 
-Reviewed-by: Richard Leitner <richard.leitner@skidata.com>
+How do you end up with all zero data from reading directly into rxbuf?
 
-... whatever suits better.
+--rfrjxuucjkrpe47l
+Content-Type: application/pgp-signature; name="signature.asc"
 
-kind regards,
-Richard.L
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllx3JgACgkQJNaLcl1U
+h9AK1Af9H2+giDk1uOm9ywI3XpYUnCZ2uV0qkhdM3bGSd/AqQ2WY6NtjlBWl7Tv7
+Pg00mPkYlkV476hdiNDCnItJlYb31OsENGw3qlVE/4/lkPZxDvLB9LeuUJs92g0k
+2GXXgndbDnvkO62WglFonfHdyiApnuDzosGJ9xHfYSgbhJEZ+MrzMM/lA23gZn5u
+0TxfKAf99n/qBoW0rfWfvRkJyoScuxV5r1xwvqiiChKMM5DwMvNACR/1VX0oey9B
+LI8P0zu4XCTt9mAuOU5b7YFgiXQAEx/McjJ+kSCBj/oYKvgHg9+F2GWgT2sHhAuo
+djSNuQ4dCCS0aS4+/OW/fqJldzrCoQ==
+=iZD4
+-----END PGP SIGNATURE-----
+
+--rfrjxuucjkrpe47l--
+
+--===============8080874254604987608==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8080874254604987608==--
