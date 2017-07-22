@@ -1,16 +1,17 @@
-From: Benjamin <b_battenberg@yahoo.de>
-Subject: Boss BR 80 Problem
-Date: Fri, 21 Jul 2017 12:37:01 +0200
-Message-ID: <a7bff002-7142-4fc5-706e-8ffcea2b2da7@yahoo.de>
+From: fulgor fulgor <l.vanwinnendaele@gmail.com>
+Subject: I use manjaro but no device detected
+Date: Sat, 22 Jul 2017 19:52:24 +0200
+Message-ID: <CALmBKtk-UFLvyQ2mTGDVRfB5Z+z8-eWRM688x5u3WQPTUaD6nw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm17-vm8.bullet.mail.ir2.yahoo.com
- (nm17-vm8.bullet.mail.ir2.yahoo.com [212.82.96.223])
- by alsa0.perex.cz (Postfix) with ESMTP id 02259266CBB
- for <alsa-devel@alsa-project.org>; Fri, 21 Jul 2017 12:37:02 +0200 (CEST)
-Content-Language: de-AT-frami
+Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
+ [209.85.161.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id E27D0266C13
+ for <alsa-devel@alsa-project.org>; Sat, 22 Jul 2017 19:52:26 +0200 (CEST)
+Received: by mail-yw0-f195.google.com with SMTP id h189so3259671ywf.4
+ for <alsa-devel@alsa-project.org>; Sat, 22 Jul 2017 10:52:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,20 +24,17 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Alsa-Developpers!
+hello,
 
-Thank you for your excellent work. It's great how many devices have 
-worked flawlessly over the years of me using Linux;)
+I have no sound
 
-There seems to be a problem with the Boss Micro Br 80 that me and others 
-are experiencing:
+The sound device is not detected
 
-https://linuxmusicians.com/viewtopic.php?f=6&t=17248
+I have logging informations
 
-It's recognised but will only produce errors. It is reporting working 
-with older Kernels, so maybe someone could look into that!
+http://www.alsa-project.org/db/?f=6fb68d0201f421b41fe65677fde2ec5b1c9d4429
 
+thanks for all
 
-Thank you,
-
-Ben
+-- 
+Lionel Van Winnendaele
