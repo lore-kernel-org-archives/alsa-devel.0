@@ -1,81 +1,48 @@
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH] ASoC: max98090 - Expose HP out enable.
-Date: Mon, 24 Jul 2017 11:05:25 +0200
-Message-ID: <20170724090525.12710-1-enric.balletbo@collabora.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hsin-Yu Chao <hychao@chromium.org>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5665: add MONOVOL Playback Volume
+	control
+Date: Mon, 24 Jul 2017 19:11:52 +0800
+Message-ID: <1500894712-32034-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5110B266A0C
+ for <alsa-devel@alsa-project.org>; Mon, 24 Jul 2017 13:12:07 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Hsin-Yu Chao <hychao@chromium.org>
+MONOVOL Playback Volume is a playback volume control on "MONOVOL MIX".
 
-Expose the headphone output enables to user space.  This will allow
-userspace to ensure that there is stable output before the headphones
-are turned on, avoiding a pop on insertion.
-
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/max98090.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5665.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 6682848..f38c051 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1074,6 +1074,15 @@ static SOC_ENUM_SINGLE_DECL(mixhprsel_mux_enum,
- static const struct snd_kcontrol_new max98090_mixhprsel_mux =
- 	SOC_DAPM_ENUM("MIXHPRSEL Mux", mixhprsel_mux_enum);
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 7e64b25..54ace3b 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -1402,6 +1402,9 @@ static const struct snd_kcontrol_new rt5665_snd_controls[] = {
+ 		RT5665_L_VOL_SFT, 15, 1, snd_soc_get_volsw,
+ 		rt5665_mono_vol_put, mono_vol_tlv),
  
-+/* HP output enables. */
-+static const struct snd_kcontrol_new max98090_hpl_enable =
-+	SOC_DAPM_SINGLE("Switch", M98090_REG_OUTPUT_ENABLE,
-+			M98090_HPLEN_SHIFT, 1, 0);
++	SOC_SINGLE_TLV("MONOVOL Playback Volume", RT5665_MONO_OUT,
++		RT5665_L_VOL_SFT, 39, 1, out_vol_tlv),
 +
-+static const struct snd_kcontrol_new max98090_hpr_enable =
-+	SOC_DAPM_SINGLE("Switch", M98090_REG_OUTPUT_ENABLE,
-+			M98090_HPREN_SHIFT, 1, 0);
-+
- static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- 	SND_SOC_DAPM_INPUT("MIC1"),
- 	SND_SOC_DAPM_INPUT("MIC2"),
-@@ -1218,10 +1227,10 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("MIXHPRSEL Mux", M98090_REG_HP_CONTROL,
- 		M98090_MIXHPRSEL_SHIFT, 0, &max98090_mixhprsel_mux),
- 
--	SND_SOC_DAPM_PGA("HP Left Out", M98090_REG_OUTPUT_ENABLE,
--		M98090_HPLEN_SHIFT, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("HP Right Out", M98090_REG_OUTPUT_ENABLE,
--		M98090_HPREN_SHIFT, 0, NULL, 0),
-+	SND_SOC_DAPM_SWITCH("HP Left Out", SND_SOC_NOPM, 0, 0,
-+			    &max98090_hpl_enable),
-+	SND_SOC_DAPM_SWITCH("HP Right Out", SND_SOC_NOPM, 0, 0,
-+			    &max98090_hpr_enable),
- 
- 	SND_SOC_DAPM_PGA("SPK Left Out", M98090_REG_OUTPUT_ENABLE,
- 		M98090_SPLEN_SHIFT, 0, NULL, 0),
-@@ -1405,8 +1414,8 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
- 	 * Disable this for lowest power if bypassing
- 	 * the DAC with an analog signal
- 	 */
--	{"HP Left Out", NULL, "DACL"},
--	{"HP Left Out", NULL, "MIXHPLSEL Mux"},
-+	{"HP Left Out", "Switch", "DACL"},
-+	{"HP Left Out", "Switch", "MIXHPLSEL Mux"},
- 
- 	{"MIXHPRSEL Mux", "HP Mixer", "Right Headphone Mixer"},
- 
-@@ -1414,8 +1423,8 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
- 	 * Disable this for lowest power if bypassing
- 	 * the DAC with an analog signal
- 	 */
--	{"HP Right Out", NULL, "DACR"},
--	{"HP Right Out", NULL, "MIXHPRSEL Mux"},
-+	{"HP Right Out", "Switch", "DACR"},
-+	{"HP Right Out", "Switch", "MIXHPRSEL Mux"},
- 
- 	{"SPK Left Out", NULL, "Left Speaker Mixer"},
- 	{"SPK Right Out", NULL, "Right Speaker Mixer"},
+ 	/* Output Volume */
+ 	SOC_DOUBLE_TLV("OUT Playback Volume", RT5665_LOUT, RT5665_L_VOL_SFT,
+ 		RT5665_R_VOL_SFT, 39, 1, out_vol_tlv),
 -- 
-2.9.3
+2.7.4
