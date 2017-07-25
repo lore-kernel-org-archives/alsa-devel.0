@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 2/3] ASoC: qcom: apq8016-sbc: set default mclk rate
-Date: Wed, 26 Jul 2017 01:48:21 +0200
-Message-ID: <20170725234822.18763-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 1/3] ASoC: codecs: msm8916-wcd-digital: add support to set_sysclk
+Date: Wed, 26 Jul 2017 01:48:20 +0200
+Message-ID: <20170725234822.18763-2-srinivas.kandagatla@linaro.org>
 References: <20170725234822.18763-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170725234822.18763-1-srinivas.kandagatla@linaro.org>
@@ -12,63 +12,42 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-MCLK for internal audio codec is expected to be at 9.6MHz by default.
-This patch adds support to 9.6MHz to make the default case possible.
+This patch adds support to set_sysclk() which can let the sound
+card driver to set default mclk rate. In this case MCLK for
+internal audio codec is expected to be at 9.6MHz by default.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/apq8016_sbc.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ sound/soc/codecs/msm8916-wcd-digital.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index d084d74..f07aa1e 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -34,13 +34,16 @@ struct apq8016_sbc_data {
- #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
- #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
- #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
-+#define DEFAULT_MCLK_RATE		9600000
- 
- static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_codec *codec;
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
- 	struct snd_soc_card *card = rtd->card;
- 	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
--	int rval = 0;
-+	int i, rval;
- 
- 	switch (cpu_dai->id) {
- 	case MI2S_PRIMARY:
-@@ -63,12 +66,24 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	default:
- 		dev_err(card->dev, "unsupported cpu dai configuration\n");
--		rval = -EINVAL;
--		break;
-+		return -EINVAL;
-+
-+	}
- 
-+	for (i = 0 ; i < dai_link->num_codecs; i++) {
-+		struct snd_soc_dai *dai = rtd->codec_dais[i];
-+
-+		codec = dai->codec;
-+		/* Set default mclk for internal codec */
-+		rval = snd_soc_codec_set_sysclk(codec, 0, 0, DEFAULT_MCLK_RATE,
-+				       SND_SOC_CLOCK_IN);
-+		if (rval != 0 && rval != -ENOTSUPP) {
-+			dev_warn(card->dev, "Failed to set mclk: %d\n", rval);
-+			return rval;
-+		}
- 	}
- 
--	return rval;
-+	return 0;
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index f690442..825cc7d 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -568,6 +568,15 @@ static int msm8916_wcd_digital_codec_probe(struct snd_soc_codec *codec)
+ 	return 0;
  }
  
- static struct apq8016_sbc_data *apq8016_sbc_parse_of(struct snd_soc_card *card)
++static int msm8916_wcd_digital_codec_set_sysclk(struct snd_soc_codec *codec,
++						int clk_id, int source,
++						unsigned int freq, int dir)
++{
++	struct msm8916_wcd_digital_priv *p = dev_get_drvdata(codec->dev);
++
++	return clk_set_rate(p->mclk, freq);
++}
++
+ static int msm8916_wcd_digital_hw_params(struct snd_pcm_substream *substream,
+ 					 struct snd_pcm_hw_params *params,
+ 					 struct snd_soc_dai *dai)
+@@ -823,6 +832,7 @@ static struct snd_soc_dai_driver msm8916_wcd_digital_dai[] = {
+ 
+ static struct snd_soc_codec_driver msm8916_wcd_digital = {
+ 	.probe = msm8916_wcd_digital_codec_probe,
++	.set_sysclk = msm8916_wcd_digital_codec_set_sysclk,
+ 	.component_driver = {
+ 		.controls = msm8916_wcd_digital_snd_controls,
+ 		.num_controls = ARRAY_SIZE(msm8916_wcd_digital_snd_controls),
 -- 
 2.9.3
