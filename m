@@ -1,644 +1,150 @@
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: [PATCH v4 3/9] clk: at91: add audio pll clock drivers
-Date: Tue, 25 Jul 2017 09:37:04 +0200
-Message-ID: <296a2635da501c55a1539780b58fd27784858874.1500968090.git-series.quentin.schulz@free-electrons.com>
+From: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: [PATCH v4 8/9] ASoC: atmel-classd: remove aclk clock
+Date: Tue, 25 Jul 2017 09:37:09 +0200
+Message-ID: <645aa35fec4a2384ca2f3039615ee6598602f9e2.1500968090.git-series.quentin.schulz@free-electrons.com>
 References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
-Cc: cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Quentin Schulz <quentin.schulz@free-electrons.com>, Nicolas Ferre <nicolas.ferre@atmel.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org
+Cc: cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This new clock driver set allows to have a fractional divided clock that
-would generate a precise clock particularly suitable for audio
-applications.
+Since gclk (generated-clk) is now able to determine the rate of the
+audio_pll, there is no need for classd to have a direct phandle to the
+audio_pll while already having a phandle to gclk.
 
-The main audio pll clock has two children clocks: one that is connected
-to the PMC, the other that can directly drive a pad. As these two routes
-have different enable bits and different dividers and divider formulas,
-they are handled by two different drivers. Each of them could modify the
-rate of the main audio pll parent.
+Thus, remove all mentions to aclk in classd driver and update macros and
+variable names.
 
-The main audio pll clock can output 620MHz to 700MHz.
-
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
-Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- arch/arm/mach-at91/Kconfig       |   4 +-
- drivers/clk/at91/Makefile        |   1 +-
- drivers/clk/at91/clk-audio-pll.c | 531 ++++++++++++++++++++++++++++++++-
- include/linux/clk/at91_pmc.h     |  25 ++-
- 4 files changed, 561 insertions(+)
- create mode 100644 drivers/clk/at91/clk-audio-pll.c
+ sound/soc/atmel/atmel-classd.c | 47 ++++++++++-------------------------
+ 1 file changed, 14 insertions(+), 33 deletions(-)
 
-diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
-index d735e5f..9ae14d5 100644
---- a/arch/arm/mach-at91/Kconfig
-+++ b/arch/arm/mach-at91/Kconfig
-@@ -26,6 +26,7 @@ config SOC_SAMA5D2
- 	select HAVE_AT91_USB_CLK
- 	select HAVE_AT91_H32MX
- 	select HAVE_AT91_GENERATED_CLK
-+	select HAVE_AT91_AUDIO_PLL
- 	select PINCTRL_AT91PIO4
- 	help
- 	  Select this if ou are using one of Atmel's SAMA5D2 family SoC.
-@@ -125,6 +126,9 @@ config HAVE_AT91_H32MX
- config HAVE_AT91_GENERATED_CLK
- 	bool
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index b7ef8c5..be6b775 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -32,7 +32,6 @@ struct atmel_classd {
+ 	struct regmap *regmap;
+ 	struct clk *pclk;
+ 	struct clk *gclk;
+-	struct clk *aclk;
+ 	int irq;
+ 	const struct atmel_classd_pdata *pdata;
+ };
+@@ -330,11 +329,6 @@ static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+-	int ret;
+-
+-	ret = clk_prepare_enable(dd->aclk);
+-	if (ret)
+-		return ret;
  
-+config HAVE_AT91_AUDIO_PLL
-+	bool
-+
- config SOC_SAM_V4_V5
- 	bool
+ 	return clk_prepare_enable(dd->gclk);
+ }
+@@ -357,31 +351,31 @@ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
  
-diff --git a/drivers/clk/at91/Makefile b/drivers/clk/at91/Makefile
-index 13e67bd..c68947b 100644
---- a/drivers/clk/at91/Makefile
-+++ b/drivers/clk/at91/Makefile
-@@ -6,6 +6,7 @@ obj-y += pmc.o sckc.o
- obj-y += clk-slow.o clk-main.o clk-pll.o clk-plldiv.o clk-master.o
- obj-y += clk-system.o clk-peripheral.o clk-programmable.o
+-#define CLASSD_ACLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
+-#define CLASSD_ACLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
++#define CLASSD_GCLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
++#define CLASSD_GCLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
  
-+obj-$(CONFIG_HAVE_AT91_AUDIO_PLL)	+= clk-audio-pll.o
- obj-$(CONFIG_HAVE_AT91_UTMI)		+= clk-utmi.o
- obj-$(CONFIG_HAVE_AT91_USB_CLK)		+= clk-usb.o
- obj-$(CONFIG_HAVE_AT91_SMD)		+= clk-smd.o
-diff --git a/drivers/clk/at91/clk-audio-pll.c b/drivers/clk/at91/clk-audio-pll.c
-new file mode 100644
-index 0000000..fc113f0
---- /dev/null
-+++ b/drivers/clk/at91/clk-audio-pll.c
-@@ -0,0 +1,531 @@
-+/*
-+ *  Copyright (C) 2016 Atmel Corporation,
-+ *		       Songjun Wu <songjun.wu@atmel.com>,
-+ *                     Nicolas Ferre <nicolas.ferre@atmel.com>
-+ *  Copyright (C) 2017 Free Electrons,
-+ *		       Quentin Schulz <quentin.schulz@free-electrons.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * The Sama5d2 SoC has two audio PLLs (PMC and PAD) that shares the same parent
-+ * (FRAC). FRAC can output between 620 and 700MHz and only multiply the rate of
-+ * its own parent. PMC and PAD can then divide the FRAC rate to best match the
-+ * asked rate.
-+ *
-+ * Traits of FRAC clock:
-+ * enable - clk_enable writes nd, fracr parameters and enables PLL
-+ * rate - rate is adjustable.
-+ *        clk->rate = parent->rate * ((nd + 1) + (fracr / 2^22))
-+ * parent - fixed parent.  No clk_set_parent support
-+ *
-+ * Traits of PMC clock:
-+ * enable - clk_enable writes qdpmc, and enables PMC output
-+ * rate - rate is adjustable.
-+ *        clk->rate = parent->rate / (qdpmc + 1)
-+ * parent - fixed parent.  No clk_set_parent support
-+ *
-+ * Traits of PAD clock:
-+ * enable - clk_enable writes divisors and enables PAD output
-+ * rate - rate is adjustable.
-+ *        clk->rate = parent->rate / (qdaudio * div))
-+ * parent - fixed parent.  No clk_set_parent support
-+ *
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/clk/at91_pmc.h>
-+#include <linux/of.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+
-+#define AUDIO_PLL_DIV_FRAC	BIT(22)
-+#define AUDIO_PLL_ND_MAX	(AT91_PMC_AUDIO_PLL_ND_MASK >> \
-+					AT91_PMC_AUDIO_PLL_ND_OFFSET)
-+
-+#define AUDIO_PLL_QDPAD(qd, div)	((AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV(qd) & \
-+					  AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_MASK) | \
-+					 (AT91_PMC_AUDIO_PLL_QDPAD_DIV(div) & \
-+					  AT91_PMC_AUDIO_PLL_QDPAD_DIV_MASK))
-+
-+#define AUDIO_PLL_QDPMC_MAX		(AT91_PMC_AUDIO_PLL_QDPMC_MASK >> \
-+						AT91_PMC_AUDIO_PLL_QDPMC_OFFSET)
-+
-+#define AUDIO_PLL_FOUT_MIN	620000000UL
-+#define AUDIO_PLL_FOUT_MAX	700000000UL
-+
-+struct clk_audio_frac {
-+	struct clk_hw hw;
-+	struct regmap *regmap;
-+	u32 fracr;
-+	u8 nd;
-+};
-+
-+struct clk_audio_pad {
-+	struct clk_hw hw;
-+	struct regmap *regmap;
-+	u8 qdaudio;
-+	u8 div;
-+};
-+
-+struct clk_audio_pmc {
-+	struct clk_hw hw;
-+	struct regmap *regmap;
-+	u8 qdpmc;
-+};
-+
-+#define to_clk_audio_frac(hw) container_of(hw, struct clk_audio_frac, hw)
-+#define to_clk_audio_pad(hw) container_of(hw, struct clk_audio_pad, hw)
-+#define to_clk_audio_pmc(hw) container_of(hw, struct clk_audio_pmc, hw)
-+
-+static int clk_audio_pll_frac_enable(struct clk_hw *hw)
-+{
-+	struct clk_audio_frac *frac = to_clk_audio_frac(hw);
-+
-+	regmap_update_bits(frac->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_RESETN, 0);
-+	regmap_update_bits(frac->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_RESETN,
-+			   AT91_PMC_AUDIO_PLL_RESETN);
-+	regmap_update_bits(frac->regmap, AT91_PMC_AUDIO_PLL1,
-+			   AT91_PMC_AUDIO_PLL_FRACR_MASK, frac->fracr);
-+
-+	/*
-+	 * reset and enable have to be done in 2 separated writes
-+	 * for AT91_PMC_AUDIO_PLL0
-+	 */
-+	regmap_update_bits(frac->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_PLLEN |
-+			   AT91_PMC_AUDIO_PLL_ND_MASK,
-+			   AT91_PMC_AUDIO_PLL_PLLEN |
-+			   AT91_PMC_AUDIO_PLL_ND(frac->nd));
-+
-+	return 0;
-+}
-+
-+static int clk_audio_pll_pad_enable(struct clk_hw *hw)
-+{
-+	struct clk_audio_pad *apad_ck = to_clk_audio_pad(hw);
-+
-+	regmap_update_bits(apad_ck->regmap, AT91_PMC_AUDIO_PLL1,
-+			   AT91_PMC_AUDIO_PLL_QDPAD_MASK,
-+			   AUDIO_PLL_QDPAD(apad_ck->qdaudio, apad_ck->div));
-+	regmap_update_bits(apad_ck->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_PADEN, AT91_PMC_AUDIO_PLL_PADEN);
-+
-+	return 0;
-+}
-+
-+static int clk_audio_pll_pmc_enable(struct clk_hw *hw)
-+{
-+	struct clk_audio_pmc *apmc_ck = to_clk_audio_pmc(hw);
-+
-+	regmap_update_bits(apmc_ck->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_PMCEN |
-+			   AT91_PMC_AUDIO_PLL_QDPMC_MASK,
-+			   AT91_PMC_AUDIO_PLL_PMCEN |
-+			   AT91_PMC_AUDIO_PLL_QDPMC(apmc_ck->qdpmc));
-+	return 0;
-+}
-+
-+static void clk_audio_pll_frac_disable(struct clk_hw *hw)
-+{
-+	struct clk_audio_frac *frac = to_clk_audio_frac(hw);
-+
-+	regmap_update_bits(frac->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_PLLEN, 0);
-+	/* do it in 2 separated writes */
-+	regmap_update_bits(frac->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_RESETN, 0);
-+}
-+
-+static void clk_audio_pll_pad_disable(struct clk_hw *hw)
-+{
-+	struct clk_audio_pad *apad_ck = to_clk_audio_pad(hw);
-+
-+	regmap_update_bits(apad_ck->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_PADEN, 0);
-+}
-+
-+static void clk_audio_pll_pmc_disable(struct clk_hw *hw)
-+{
-+	struct clk_audio_pmc *apmc_ck = to_clk_audio_pmc(hw);
-+
-+	regmap_update_bits(apmc_ck->regmap, AT91_PMC_AUDIO_PLL0,
-+			   AT91_PMC_AUDIO_PLL_PMCEN, 0);
-+}
-+
-+static unsigned long clk_audio_pll_fout(unsigned long parent_rate,
-+					unsigned long nd, unsigned long fracr)
-+{
-+	unsigned long long fr = (unsigned long long)parent_rate * fracr;
-+
-+	pr_debug("A PLL: %s, fr = %llu\n", __func__, fr);
-+
-+	fr = DIV_ROUND_CLOSEST_ULL(fr, AUDIO_PLL_DIV_FRAC);
-+
-+	pr_debug("A PLL: %s, fr = %llu\n", __func__, fr);
-+
-+	return parent_rate * (nd + 1) + fr;
-+}
-+
-+static unsigned long clk_audio_pll_frac_recalc_rate(struct clk_hw *hw,
-+						    unsigned long parent_rate)
-+{
-+	struct clk_audio_frac *frac = to_clk_audio_frac(hw);
-+	unsigned long fout;
-+
-+	fout = clk_audio_pll_fout(parent_rate, frac->nd, frac->fracr);
-+
-+	pr_debug("A PLL: %s, fout = %lu (nd = %u, fracr = %lu)\n", __func__,
-+		 fout, frac->nd, (unsigned long)frac->fracr);
-+
-+	return fout;
-+}
-+
-+static unsigned long clk_audio_pll_pad_recalc_rate(struct clk_hw *hw,
-+						   unsigned long parent_rate)
-+{
-+	struct clk_audio_pad *apad_ck = to_clk_audio_pad(hw);
-+	unsigned long apad_rate = 0;
-+
-+	if (apad_ck->qdaudio && apad_ck->div)
-+		apad_rate = parent_rate / (apad_ck->qdaudio * apad_ck->div);
-+
-+	pr_debug("A PLL/PAD: %s, apad_rate = %lu (div = %u, qdaudio = %u)\n",
-+		 __func__, apad_rate, apad_ck->div, apad_ck->qdaudio);
-+
-+	return apad_rate;
-+}
-+
-+static unsigned long clk_audio_pll_pmc_recalc_rate(struct clk_hw *hw,
-+						   unsigned long parent_rate)
-+{
-+	struct clk_audio_pmc *apmc_ck = to_clk_audio_pmc(hw);
-+	unsigned long apmc_rate = 0;
-+
-+	apmc_rate = parent_rate / (apmc_ck->qdpmc + 1);
-+
-+	pr_debug("A PLL/PMC: %s, apmc_rate = %lu (qdpmc = %u)\n", __func__,
-+		 apmc_rate, apmc_ck->qdpmc);
-+
-+	return apmc_rate;
-+}
-+
-+static int clk_audio_pll_frac_compute_frac(unsigned long rate,
-+					   unsigned long parent_rate,
-+					   unsigned long *nd,
-+					   unsigned long *fracr)
-+{
-+	unsigned long long tmp, rem;
-+
-+	if (!rate)
-+		return -EINVAL;
-+
-+	tmp = rate;
-+	rem = do_div(tmp, parent_rate);
-+	if (!tmp || tmp >= AUDIO_PLL_ND_MAX)
-+		return -EINVAL;
-+
-+	*nd = tmp - 1;
-+
-+	tmp = rem * AUDIO_PLL_DIV_FRAC;
-+	tmp = DIV_ROUND_CLOSEST_ULL(tmp, parent_rate);
-+	if (tmp > AT91_PMC_AUDIO_PLL_FRACR_MASK)
-+		return -EINVAL;
-+
-+	/* we can cast here as we verified the bounds just above */
-+	*fracr = (unsigned long)tmp;
-+
-+	return 0;
-+}
-+
-+static long clk_audio_pll_frac_round_rate(struct clk_hw *hw, unsigned long rate,
-+					  unsigned long *parent_rate)
-+{
-+	long best_rate = -EINVAL;
-+	unsigned long fracr, nd;
-+	int ret;
-+
-+	pr_debug("A PLL: %s, rate = %lu (parent_rate = %lu)\n", __func__, rate,
-+		 *parent_rate);
-+
-+	rate = clamp(rate, AUDIO_PLL_FOUT_MIN, AUDIO_PLL_FOUT_MAX);
-+
-+	ret = clk_audio_pll_frac_compute_frac(rate, *parent_rate, &nd, &fracr);
-+	if (ret)
-+		return ret;
-+
-+	best_rate = clk_audio_pll_fout(*parent_rate, nd, fracr);
-+
-+	pr_debug("A PLL: %s, best_rate = %lu (nd = %lu, fracr = %lu)\n",
-+		 __func__, best_rate, nd, fracr);
-+
-+	return best_rate;
-+}
-+
-+static long clk_audio_pll_pad_round_rate(struct clk_hw *hw, unsigned long rate,
-+					 unsigned long *parent_rate)
-+{
-+	struct clk_hw *pclk = clk_hw_get_parent(hw);
-+	long best_rate = -EINVAL;
-+	unsigned long best_parent_rate;
-+	unsigned long tmp_qd;
-+	u32 div;
-+	long tmp_rate;
-+	int tmp_diff;
-+	int best_diff = -1;
-+
-+	pr_debug("A PLL/PAD: %s, rate = %lu (parent_rate = %lu)\n", __func__,
-+		 rate, *parent_rate);
-+
-+	/*
-+	 * Rate divisor is actually made of two different divisors, multiplied
-+	 * between themselves before dividing the rate.
-+	 * tmp_qd goes from 1 to 31 and div is either 2 or 3.
-+	 * In order to avoid testing twice the rate divisor (e.g. divisor 12 can
-+	 * be found with (tmp_qd, div) = (2, 6) or (3, 4)), we remove any loop
-+	 * for a rate divisor when div is 2 and tmp_qd is a multiple of 3.
-+	 * We cannot inverse it (condition div is 3 and tmp_qd is even) or we
-+	 * would miss some rate divisor that aren't reachable with div being 2
-+	 * (e.g. rate divisor 90 is made with div = 3 and tmp_qd = 30, thus
-+	 * tmp_qd is even so we skip it because we think div 2 could make this
-+	 * rate divisor which isn't possible since tmp_qd has to be <= 31).
-+	 */
-+	for (tmp_qd = 1; tmp_qd < AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_MAX; tmp_qd++)
-+		for (div = 2; div <= 3; div++) {
-+			if (div == 2 && tmp_qd % 3 == 0)
-+				continue;
-+
-+			best_parent_rate = clk_hw_round_rate(pclk,
-+							rate * tmp_qd * div);
-+			tmp_rate = best_parent_rate / (div * tmp_qd);
-+			tmp_diff = abs(rate - tmp_rate);
-+
-+			if (best_diff < 0 || best_diff > tmp_diff) {
-+				*parent_rate = best_parent_rate;
-+				best_rate = tmp_rate;
-+				best_diff = tmp_diff;
-+			}
-+		}
-+
-+	pr_debug("A PLL/PAD: %s, best_rate = %ld, best_parent_rate = %lu\n",
-+		 __func__, best_rate, best_parent_rate);
-+
-+	return best_rate;
-+}
-+
-+static long clk_audio_pll_pmc_round_rate(struct clk_hw *hw, unsigned long rate,
-+					 unsigned long *parent_rate)
-+{
-+	struct clk_hw *pclk = clk_hw_get_parent(hw);
-+	long best_rate = -EINVAL;
-+	unsigned long best_parent_rate = 0;
-+	u32 tmp_qd = 0, div;
-+	long tmp_rate;
-+	int tmp_diff;
-+	int best_diff = -1;
-+
-+	pr_debug("A PLL/PMC: %s, rate = %lu (parent_rate = %lu)\n", __func__,
-+		 rate, *parent_rate);
-+
-+	for (div = 1; div <= AUDIO_PLL_QDPMC_MAX; div++) {
-+		best_parent_rate = clk_round_rate(pclk->clk, rate * div);
-+		tmp_rate = best_parent_rate / div;
-+		tmp_diff = abs(rate - tmp_rate);
-+
-+		if (best_diff < 0 || best_diff > tmp_diff) {
-+			*parent_rate = best_parent_rate;
-+			best_rate = tmp_rate;
-+			best_diff = tmp_diff;
-+			tmp_qd = div;
-+		}
-+	}
-+
-+	pr_debug("A PLL/PMC: %s, best_rate = %ld, best_parent_rate = %lu (qd = %d)\n",
-+		 __func__, best_rate, *parent_rate, tmp_qd - 1);
-+
-+	return best_rate;
-+}
-+
-+static int clk_audio_pll_frac_set_rate(struct clk_hw *hw, unsigned long rate,
-+				       unsigned long parent_rate)
-+{
-+	struct clk_audio_frac *frac = to_clk_audio_frac(hw);
-+	unsigned long fracr, nd;
-+	int ret;
-+
-+	pr_debug("A PLL: %s, rate = %lu (parent_rate = %lu)\n", __func__, rate,
-+		 parent_rate);
-+
-+	if (rate < AUDIO_PLL_FOUT_MIN || rate > AUDIO_PLL_FOUT_MAX)
-+		return -EINVAL;
-+
-+	ret = clk_audio_pll_frac_compute_frac(rate, parent_rate, &nd, &fracr);
-+	if (ret)
-+		return ret;
-+
-+	frac->nd = nd;
-+	frac->fracr = fracr;
-+
-+	return 0;
-+}
-+
-+static int clk_audio_pll_pad_set_rate(struct clk_hw *hw, unsigned long rate,
-+				      unsigned long parent_rate)
-+{
-+	struct clk_audio_pad *apad_ck = to_clk_audio_pad(hw);
-+	u8 tmp_div;
-+
-+	pr_debug("A PLL/PAD: %s, rate = %lu (parent_rate = %lu)\n", __func__,
-+		 rate, parent_rate);
-+
-+	if (!rate)
-+		return -EINVAL;
-+
-+	tmp_div = parent_rate / rate;
-+	if (tmp_div % 3 == 0) {
-+		apad_ck->qdaudio = tmp_div / 3;
-+		apad_ck->div = 3;
-+	} else {
-+		apad_ck->qdaudio = tmp_div / 2;
-+		apad_ck->div = 2;
-+	}
-+
-+	return 0;
-+}
-+
-+static int clk_audio_pll_pmc_set_rate(struct clk_hw *hw, unsigned long rate,
-+				      unsigned long parent_rate)
-+{
-+	struct clk_audio_pmc *apmc_ck = to_clk_audio_pmc(hw);
-+
-+	if (!rate)
-+		return -EINVAL;
-+
-+	pr_debug("A PLL/PMC: %s, rate = %lu (parent_rate = %lu)\n", __func__,
-+		 rate, parent_rate);
-+
-+	apmc_ck->qdpmc = parent_rate / rate - 1;
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops audio_pll_frac_ops = {
-+	.enable = clk_audio_pll_frac_enable,
-+	.disable = clk_audio_pll_frac_disable,
-+	.recalc_rate = clk_audio_pll_frac_recalc_rate,
-+	.round_rate = clk_audio_pll_frac_round_rate,
-+	.set_rate = clk_audio_pll_frac_set_rate,
-+};
-+
-+static const struct clk_ops audio_pll_pad_ops = {
-+	.enable = clk_audio_pll_pad_enable,
-+	.disable = clk_audio_pll_pad_disable,
-+	.recalc_rate = clk_audio_pll_pad_recalc_rate,
-+	.round_rate = clk_audio_pll_pad_round_rate,
-+	.set_rate = clk_audio_pll_pad_set_rate,
-+};
-+
-+static const struct clk_ops audio_pll_pmc_ops = {
-+	.enable = clk_audio_pll_pmc_enable,
-+	.disable = clk_audio_pll_pmc_disable,
-+	.recalc_rate = clk_audio_pll_pmc_recalc_rate,
-+	.round_rate = clk_audio_pll_pmc_round_rate,
-+	.set_rate = clk_audio_pll_pmc_set_rate,
-+};
-+
-+static int of_sama5d2_clk_audio_pll_setup(struct device_node *np,
-+					  struct clk_init_data *init,
-+					  struct clk_hw *hw,
-+					  struct regmap **clk_audio_regmap)
-+{
-+	struct regmap *regmap;
-+	const char *parent_names[1];
-+	int ret;
-+
-+	regmap = syscon_node_to_regmap(of_get_parent(np));
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	init->name = np->name;
-+	of_clk_parent_fill(np, parent_names, 1);
-+	init->parent_names = parent_names;
-+	init->num_parents = 1;
-+
-+	hw->init = init;
-+	*clk_audio_regmap = regmap;
-+
-+	ret = clk_hw_register(NULL, hw);
-+	if (ret)
-+		return ret;
-+
-+	return of_clk_add_hw_provider(np, of_clk_hw_simple_get, hw);
-+}
-+
-+static void __init of_sama5d2_clk_audio_pll_frac_setup(struct device_node *np)
-+{
-+	struct clk_audio_frac *frac_ck;
-+	struct clk_init_data init = {};
-+
-+	frac_ck = kzalloc(sizeof(*frac_ck), GFP_KERNEL);
-+	if (!frac_ck)
-+		return;
-+
-+	init.ops = &audio_pll_frac_ops;
-+	init.flags = CLK_SET_RATE_GATE;
-+
-+	if (of_sama5d2_clk_audio_pll_setup(np, &init, &frac_ck->hw,
-+					   &frac_ck->regmap))
-+		kfree(frac_ck);
-+}
-+
-+static void __init of_sama5d2_clk_audio_pll_pad_setup(struct device_node *np)
-+{
-+	struct clk_audio_pad *apad_ck;
-+	struct clk_init_data init = {};
-+
-+	apad_ck = kzalloc(sizeof(*apad_ck), GFP_KERNEL);
-+	if (!apad_ck)
-+		return;
-+
-+	init.ops = &audio_pll_pad_ops;
-+	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
-+		CLK_SET_RATE_PARENT;
-+
-+	if (of_sama5d2_clk_audio_pll_setup(np, &init, &apad_ck->hw,
-+					   &apad_ck->regmap))
-+		kfree(apad_ck);
-+}
-+
-+static void __init of_sama5d2_clk_audio_pll_pmc_setup(struct device_node *np)
-+{
-+	struct clk_audio_pad *apmc_ck;
-+	struct clk_init_data init = {};
-+
-+	apmc_ck = kzalloc(sizeof(*apmc_ck), GFP_KERNEL);
-+	if (!apmc_ck)
-+		return;
-+
-+	init.ops = &audio_pll_pmc_ops;
-+	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
-+		CLK_SET_RATE_PARENT;
-+
-+	if (of_sama5d2_clk_audio_pll_setup(np, &init, &apmc_ck->hw,
-+					   &apmc_ck->regmap))
-+		kfree(apmc_ck);
-+}
-+
-+CLK_OF_DECLARE(of_sama5d2_clk_audio_pll_frac_setup,
-+	       "atmel,sama5d2-clk-audio-pll-frac",
-+	       of_sama5d2_clk_audio_pll_frac_setup);
-+CLK_OF_DECLARE(of_sama5d2_clk_audio_pll_pad_setup,
-+	       "atmel,sama5d2-clk-audio-pll-pad",
-+	       of_sama5d2_clk_audio_pll_pad_setup);
-+CLK_OF_DECLARE(of_sama5d2_clk_audio_pll_pmc_setup,
-+	       "atmel,sama5d2-clk-audio-pll-pmc",
-+	       of_sama5d2_clk_audio_pll_pmc_setup);
-diff --git a/include/linux/clk/at91_pmc.h b/include/linux/clk/at91_pmc.h
-index 17f413b..6aca5ce 100644
---- a/include/linux/clk/at91_pmc.h
-+++ b/include/linux/clk/at91_pmc.h
-@@ -185,4 +185,29 @@
- #define		AT91_PMC_PCR_EN			(0x1  <<  28)				/* Enable */
- #define		AT91_PMC_PCR_GCKEN		(0x1  <<  29)				/* GCK Enable */
+ static struct {
+ 	int rate;
+ 	int sample_rate;
+ 	int dsp_clk;
+-	unsigned long aclk_rate;
++	unsigned long gclk_rate;
+ } const sample_rates[] = {
+ 	{ 8000,  CLASSD_INTPMR_FRAME_8K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+ 	{ 16000, CLASSD_INTPMR_FRAME_16K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+ 	{ 32000, CLASSD_INTPMR_FRAME_32K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+ 	{ 48000, CLASSD_INTPMR_FRAME_48K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+ 	{ 96000, CLASSD_INTPMR_FRAME_96K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+ 	{ 22050, CLASSD_INTPMR_FRAME_22K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_GCLK_RATE_11M2896_MPY_8 },
+ 	{ 44100, CLASSD_INTPMR_FRAME_44K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_GCLK_RATE_11M2896_MPY_8 },
+ 	{ 88200, CLASSD_INTPMR_FRAME_88K,
+-	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
++	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_GCLK_RATE_11M2896_MPY_8 },
+ };
  
-+#define AT91_PMC_AUDIO_PLL0	0x14c
-+#define		AT91_PMC_AUDIO_PLL_PLLEN	(1  <<  0)
-+#define		AT91_PMC_AUDIO_PLL_PADEN	(1  <<  1)
-+#define		AT91_PMC_AUDIO_PLL_PMCEN	(1  <<  2)
-+#define		AT91_PMC_AUDIO_PLL_RESETN	(1  <<  3)
-+#define		AT91_PMC_AUDIO_PLL_ND_OFFSET	8
-+#define		AT91_PMC_AUDIO_PLL_ND_MASK	(0x7f << AT91_PMC_AUDIO_PLL_ND_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_ND(n)	((n)  << AT91_PMC_AUDIO_PLL_ND_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPMC_OFFSET	16
-+#define		AT91_PMC_AUDIO_PLL_QDPMC_MASK	(0x7f << AT91_PMC_AUDIO_PLL_QDPMC_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPMC(n)	((n)  << AT91_PMC_AUDIO_PLL_QDPMC_OFFSET)
-+
-+#define AT91_PMC_AUDIO_PLL1	0x150
-+#define		AT91_PMC_AUDIO_PLL_FRACR_MASK		0x3fffff
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_OFFSET		24
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_MASK		(0x7f << AT91_PMC_AUDIO_PLL_QDPAD_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPAD(n)		((n)  << AT91_PMC_AUDIO_PLL_QDPAD_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_DIV_OFFSET	AT91_PMC_AUDIO_PLL_QDPAD_OFFSET
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_DIV_MASK	(0x3  << AT91_PMC_AUDIO_PLL_QDPAD_DIV_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_DIV(n)		((n)  << AT91_PMC_AUDIO_PLL_QDPAD_DIV_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_OFFSET	26
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_MAX	0x1f
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_MASK	(AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_MAX << AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_OFFSET)
-+#define		AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV(n)	((n)  << AT91_PMC_AUDIO_PLL_QDPAD_EXTDIV_OFFSET)
-+
- #endif
+ static int
+@@ -410,13 +404,12 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	dev_dbg(codec->dev,
+-		"Selected SAMPLE_RATE of %dHz, ACLK_RATE of %ldHz\n",
+-		sample_rates[best].rate, sample_rates[best].aclk_rate);
++		"Selected SAMPLE_RATE of %dHz, GCLK_RATE of %ldHz\n",
++		sample_rates[best].rate, sample_rates[best].gclk_rate);
+ 
+ 	clk_disable_unprepare(dd->gclk);
+-	clk_disable_unprepare(dd->aclk);
+ 
+-	ret = clk_set_rate(dd->aclk, sample_rates[best].aclk_rate);
++	ret = clk_set_rate(dd->gclk, sample_rates[best].gclk_rate);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -426,10 +419,6 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	snd_soc_update_bits(codec, CLASSD_INTPMR, mask, val);
+ 
+-	ret = clk_prepare_enable(dd->aclk);
+-	if (ret)
+-		return ret;
+-
+ 	return clk_prepare_enable(dd->gclk);
+ }
+ 
+@@ -441,7 +430,6 @@ atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
+ 	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+ 
+ 	clk_disable_unprepare(dd->gclk);
+-	clk_disable_unprepare(dd->aclk);
+ }
+ 
+ static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
+@@ -596,13 +584,6 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	dd->aclk = devm_clk_get(dev, "aclk");
+-	if (IS_ERR(dd->aclk)) {
+-		ret = PTR_ERR(dd->aclk);
+-		dev_err(dev, "failed to get audio clock: %d\n", ret);
+-		return ret;
+-	}
+-
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	io_base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(io_base)) {
 -- 
 git-series 0.9.1
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
