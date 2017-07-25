@@ -1,19 +1,19 @@
 From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH v4 7/9] ASoC: atmel-classd: remove aclk
- clock from DT binding
-Date: Tue, 25 Jul 2017 17:38:19 +0200
-Message-ID: <d78d2769-5e05-b1e7-dec8-9b2c86ee3459@microchip.com>
+Subject: Re: [PATCH v4 8/9] ASoC: atmel-classd: remove aclk
+	clock
+Date: Tue, 25 Jul 2017 17:40:14 +0200
+Message-ID: <97863fa5-06aa-598b-050f-4454c720420a@microchip.com>
 References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
- <db5404c2be1d59603dd3770c5f95a065fe4c321f.1500968090.git-series.quentin.schulz@free-electrons.com>
+ <645aa35fec4a2384ca2f3039615ee6598602f9e2.1500968090.git-series.quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from esa6.microchip.iphmx.com (esa6.microchip.iphmx.com
  [216.71.154.253])
- by alsa0.perex.cz (Postfix) with ESMTP id CC27A267251
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 17:37:39 +0200 (CEST)
-In-Reply-To: <db5404c2be1d59603dd3770c5f95a065fe4c321f.1500968090.git-series.quentin.schulz@free-electrons.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EEA4266CFE
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 17:39:33 +0200 (CEST)
+In-Reply-To: <645aa35fec4a2384ca2f3039615ee6598602f9e2.1500968090.git-series.quentin.schulz@free-electrons.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,51 +33,135 @@ On 25/07/2017 at 09:37, Quentin Schulz wrote:
 > audio_pll, there is no need for classd to have a direct phandle to the
 > audio_pll while already having a phandle to gclk.
 > 
-> This binding is used by no board in mainline so it is safe to be
-> modified.
+> Thus, remove all mentions to aclk in classd driver and update macros and
+> variable names.
 > 
 > Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 > Acked-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
 
 Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
 > ---
->  Documentation/devicetree/bindings/sound/atmel-classd.txt |  9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+>  sound/soc/atmel/atmel-classd.c | 47 ++++++++++-------------------------
+>  1 file changed, 14 insertions(+), 33 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/atmel-classd.txt b/Documentation/devicetree/bindings/sound/atmel-classd.txt
-> index 549e701..8985510 100644
-> --- a/Documentation/devicetree/bindings/sound/atmel-classd.txt
-> +++ b/Documentation/devicetree/bindings/sound/atmel-classd.txt
-> @@ -13,13 +13,11 @@ Required properties:
->  	Must be "tx".
->  - clock-names
->  	Tuple listing input clock names.
-> -	Required elements: "pclk", "gclk" and "aclk".
-> +	Required elements: "pclk" and "gclk".
->  - clocks
->  	Please refer to clock-bindings.txt.
->  - assigned-clocks
->  	Should be <&classd_gclk>.
-> -- assigned-clock-parents
-> -	Should be <&audio_pll_pmc>.
+> diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+> index b7ef8c5..be6b775 100644
+> --- a/sound/soc/atmel/atmel-classd.c
+> +++ b/sound/soc/atmel/atmel-classd.c
+> @@ -32,7 +32,6 @@ struct atmel_classd {
+>  	struct regmap *regmap;
+>  	struct clk *pclk;
+>  	struct clk *gclk;
+> -	struct clk *aclk;
+>  	int irq;
+>  	const struct atmel_classd_pdata *pdata;
+>  };
+> @@ -330,11 +329,6 @@ static int atmel_classd_codec_dai_startup(struct snd_pcm_substream *substream,
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>  	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+> -	int ret;
+> -
+> -	ret = clk_prepare_enable(dd->aclk);
+> -	if (ret)
+> -		return ret;
 >  
->  Optional properties:
->  - pinctrl-names, pinctrl-0
-> @@ -45,10 +43,9 @@ classd: classd@fc048000 {
->  			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1)
->  			| AT91_XDMAC_DT_PERID(47))>;
->  		dma-names = "tx";
-> -		clocks = <&classd_clk>, <&classd_gclk>, <&audio_pll_pmc>;
-> -		clock-names = "pclk", "gclk", "aclk";
-> +		clocks = <&classd_clk>, <&classd_gclk>;
-> +		clock-names = "pclk", "gclk";
->  		assigned-clocks = <&classd_gclk>;
-> -		assigned-clock-parents = <&audio_pll_pmc>;
+>  	return clk_prepare_enable(dd->gclk);
+>  }
+> @@ -357,31 +351,31 @@ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
+>  	return 0;
+>  }
 >  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&pinctrl_classd_default>;
+> -#define CLASSD_ACLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
+> -#define CLASSD_ACLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
+> +#define CLASSD_GCLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
+> +#define CLASSD_GCLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
+>  
+>  static struct {
+>  	int rate;
+>  	int sample_rate;
+>  	int dsp_clk;
+> -	unsigned long aclk_rate;
+> +	unsigned long gclk_rate;
+>  } const sample_rates[] = {
+>  	{ 8000,  CLASSD_INTPMR_FRAME_8K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+>  	{ 16000, CLASSD_INTPMR_FRAME_16K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+>  	{ 32000, CLASSD_INTPMR_FRAME_32K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+>  	{ 48000, CLASSD_INTPMR_FRAME_48K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+>  	{ 96000, CLASSD_INTPMR_FRAME_96K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_ACLK_RATE_12M288_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_12M288, CLASSD_GCLK_RATE_12M288_MPY_8 },
+>  	{ 22050, CLASSD_INTPMR_FRAME_22K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_GCLK_RATE_11M2896_MPY_8 },
+>  	{ 44100, CLASSD_INTPMR_FRAME_44K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_GCLK_RATE_11M2896_MPY_8 },
+>  	{ 88200, CLASSD_INTPMR_FRAME_88K,
+> -	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_ACLK_RATE_11M2896_MPY_8 },
+> +	CLASSD_INTPMR_DSP_CLK_FREQ_11M2896, CLASSD_GCLK_RATE_11M2896_MPY_8 },
+>  };
+>  
+>  static int
+> @@ -410,13 +404,12 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+>  	}
+>  
+>  	dev_dbg(codec->dev,
+> -		"Selected SAMPLE_RATE of %dHz, ACLK_RATE of %ldHz\n",
+> -		sample_rates[best].rate, sample_rates[best].aclk_rate);
+> +		"Selected SAMPLE_RATE of %dHz, GCLK_RATE of %ldHz\n",
+> +		sample_rates[best].rate, sample_rates[best].gclk_rate);
+>  
+>  	clk_disable_unprepare(dd->gclk);
+> -	clk_disable_unprepare(dd->aclk);
+>  
+> -	ret = clk_set_rate(dd->aclk, sample_rates[best].aclk_rate);
+> +	ret = clk_set_rate(dd->gclk, sample_rates[best].gclk_rate);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -426,10 +419,6 @@ atmel_classd_codec_dai_hw_params(struct snd_pcm_substream *substream,
+>  
+>  	snd_soc_update_bits(codec, CLASSD_INTPMR, mask, val);
+>  
+> -	ret = clk_prepare_enable(dd->aclk);
+> -	if (ret)
+> -		return ret;
+> -
+>  	return clk_prepare_enable(dd->gclk);
+>  }
+>  
+> @@ -441,7 +430,6 @@ atmel_classd_codec_dai_shutdown(struct snd_pcm_substream *substream,
+>  	struct atmel_classd *dd = snd_soc_card_get_drvdata(rtd->card);
+>  
+>  	clk_disable_unprepare(dd->gclk);
+> -	clk_disable_unprepare(dd->aclk);
+>  }
+>  
+>  static int atmel_classd_codec_dai_prepare(struct snd_pcm_substream *substream,
+> @@ -596,13 +584,6 @@ static int atmel_classd_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> -	dd->aclk = devm_clk_get(dev, "aclk");
+> -	if (IS_ERR(dd->aclk)) {
+> -		ret = PTR_ERR(dd->aclk);
+> -		dev_err(dev, "failed to get audio clock: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	io_base = devm_ioremap_resource(dev, res);
+>  	if (IS_ERR(io_base)) {
 > 
 
 
