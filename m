@@ -1,105 +1,68 @@
-From: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: [PATCH v4 0/9] add support for Sama5d2 audio PLLs and enable ClassD
-Date: Tue, 25 Jul 2017 09:37:01 +0200
-Message-ID: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org
-Cc: cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: [PATCH v4 1/9] clk: at91: clk-generated: remove useless divisor loop
+Date: Tue, 25 Jul 2017 09:37:02 +0200
+Message-ID: <b9d92004d22f745e8acde0599359d67538c006a9.1500968090.git-series.quentin.schulz@free-electrons.com>
+References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
+In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
+References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
+Cc: cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Quentin Schulz <quentin.schulz@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds support for the audio PLLs and enables ClassD that
-can be found in ATMEL Sama5d2 SoC.
+The driver requests the current clk rate of each of its parent clocks to
+decide whether a clock rate is suitable or not. It does not request
+determine_rate from a parent clock which could request a rate change in
+parent clock (i.e. there is no parent rate propagation).
 
-There are two audio PLLs (PMC and PAD) that shares the same parent (FRAC).
-FRAC can output between 620 and 700MHz and only multiply the rate of its
-parent. The two audio PLLs then divide the FRAC rate to best match the
-asked rate.
+We know the rate we want (passed along req argument of the function) and
+the parent clock rate, thus we know the closest rounded divisor, we
+don't need to iterate over the available divisors to find the best one
+for a given clock.
 
-I basically took an old patch series posted by Nicolas on December, 6th
-2016[1][2][3] and the comments Boris did on the first version[4] Nicolas
-sent on July, 15th 2015.
+Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/clk/at91/clk-generated.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-I also fixed the function used to compute the divisors, removed useless
-spinlocks and added a range to the audio frac PLL to stay within vendor's
-supported range. Clocks that are children of gclk (generated-clk) are now
-able to propagate rate to the audio PLL clocks when needed.
-
-However, there are multiple children clocks that could technically
-change the rate of audio_pll (via gck). With the rate locking introduced
-in Jerome Brunet's patch series[5], the first consumer to enable the clock
-will be the one definitely setting the rate of the clock. Without the rate
-locking, the last consumer to set the rate will be able to mess with the
-rate.
-Since audio IPs are most likely to request the same rate, we enforce
-that the only clks able to modify gck rate are those of audio IPs.
-
-To remain consistent, we deny other clocks to be children of audio_pll.
-
-v4:
- - initialized the clk_init_data structure,
- - switched to of_clk_parent_fill instead of manually setting
- parent_names,
- - removed include of clkdev.h in favor of slab.h,
- - removed unnecessary second cast in operation,
- - used clamp instead of two conditions,
- - removed dependency on clock-output-names, the name is gotten from DT
- node,
- - merged all three drivers for audio PLLs (FRAC, PMC, PAD) into one,
-
-v3:
- - added a flag per generated clock to know which one is allowed to
- modify audio_pll rate,
- - set the flag in setup function depending on the compatible and the
- clock ID,
-
-v2:
- - split big patch containing dt-binding, pll drivers and classd
- modifications,
- - removed unused AUDIO_PLL_*FOUT* defines from clk-audio-pll-pmc,
- - added conditions for audio pll rate setting restriction for SSC and
- I2S,
- - renamed all mentions of ACLK to GCLK in classD driver,
-
-Thanks,
-Quentin
-
-[1] https://patchwork.kernel.org/patch/9462351/
-[2] https://patchwork.kernel.org/patch/9462347/
-[3] https://patchwork.kernel.org/patch/9462349/
-[4] https://www.spinics.net/lists/arm-kernel/msg436120.html
-[5] http://www.spinics.net/lists/linux-clk/msg17927.html
-
-Cyrille Pitchen (2):
-  ARM: dts: at91: sama5d2: add classd nodes
-  ARM: dts: at91: sama5d2_xplained: add pin muxing and enable classd
-
-Quentin Schulz (7):
-  clk: at91: clk-generated: remove useless divisor loop
-  dt-bindings: clk: at91: add audio plls to the compatible list
-  clk: at91: add audio pll clock drivers
-  clk: at91: clk-generated: create function to find best_diff
-  clk: at91: clk-generated: make gclk determine audio_pll rate
-  ASoC: atmel-classd: remove aclk clock from DT binding
-  ASoC: atmel-classd: remove aclk clock
-
- Documentation/devicetree/bindings/clock/at91-clock.txt   |  10 +-
- Documentation/devicetree/bindings/sound/atmel-classd.txt |   9 +-
- arch/arm/boot/dts/at91-sama5d2_xplained.dts              |  16 +-
- arch/arm/boot/dts/sama5d2.dtsi                           |  39 +-
- arch/arm/mach-at91/Kconfig                               |   4 +-
- drivers/clk/at91/Makefile                                |   1 +-
- drivers/clk/at91/clk-audio-pll.c                         | 531 ++++++++-
- drivers/clk/at91/clk-generated.c                         | 101 +-
- include/linux/clk/at91_pmc.h                             |  25 +-
- sound/soc/atmel/atmel-classd.c                           |  47 +-
- 10 files changed, 724 insertions(+), 59 deletions(-)
- create mode 100644 drivers/clk/at91/clk-audio-pll.c
-
-base-commit: 047a0f692a9354d730dad30f25e1ebd8437b32b1
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index f0b7ae9..ef4b4e0 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -124,19 +124,18 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ 		    (gck->range.max && min_rate > gck->range.max))
+ 			continue;
+ 
+-		for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
+-			tmp_rate = DIV_ROUND_CLOSEST(parent_rate, div);
+-			tmp_diff = abs(req->rate - tmp_rate);
+-
+-			if (best_diff < 0 || best_diff > tmp_diff) {
+-				best_rate = tmp_rate;
+-				best_diff = tmp_diff;
+-				req->best_parent_rate = parent_rate;
+-				req->best_parent_hw = parent;
+-			}
+-
+-			if (!best_diff || tmp_rate < req->rate)
+-				break;
++		div = DIV_ROUND_CLOSEST(parent_rate, req->rate);
++		if (!div)
++			tmp_rate = parent_rate;
++		else
++			tmp_rate = parent_rate / div;
++		tmp_diff = abs(req->rate - tmp_rate);
++
++		if (best_diff < 0 || best_diff > tmp_diff) {
++			best_rate = tmp_rate;
++			best_diff = tmp_diff;
++			req->best_parent_rate = parent_rate;
++			req->best_parent_hw = parent;
+ 		}
+ 
+ 		if (!best_diff)
 -- 
 git-series 0.9.1
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
