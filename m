@@ -1,19 +1,14 @@
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: [PATCH v4 4/9] ARM: dts: at91: sama5d2: add classd
-	nodes
-Date: Tue, 25 Jul 2017 09:37:05 +0200
-Message-ID: <57ca6c418774e826584f0308d064dec8139c04d2.1500968090.git-series.quentin.schulz@free-electrons.com>
-References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH 0/2] ASoC: codec: add DT support to dmic codec
+Date: Tue, 25 Jul 2017 10:48:12 +0200
+Message-ID: <1500972494-10696-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ED7F267071
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 09:41:14 +0200 (CEST)
-In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-In-Reply-To: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
-References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 53302266A8A
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 10:48:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +18,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mturquette@baylibre.com, sboyd@codeaurora.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Quentin Schulz <quentin.schulz@free-electrons.com>, cyrille.pitchen@wedev4u.fr, Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Takashi Iwai <tiwai@suse.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+These patches add of_table description in dmic codec to support DT probing.
+As this codec is a generic code to support simple digital microphone,
+compatibility field is generic.
 
-This patch adds nodes for the classd device and its generated clock.
+Arnaud Pouliquen (2):
+  ASoC: Add bindings for DMIC codec driver
+  ASoC: codec: add DT support in dmic codec
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
----
- arch/arm/boot/dts/sama5d2.dtsi | 39 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/dmic.txt | 12 ++++++++++++
+ sound/soc/codecs/dmic.c                          |  6 ++++++
+ 2 files changed, 18 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/dmic.txt
 
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index 534ee6f..38d2216 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -505,6 +505,24 @@
- 					clocks = <&plla>;
- 				};
- 
-+				audio_pll_frac: audiopll_fracck {
-+					compatible = "atmel,sama5d2-clk-audio-pll-frac";
-+					#clock-cells = <0>;
-+					clocks = <&main>;
-+				};
-+
-+				audio_pll_pad: audiopll_padck {
-+					compatible = "atmel,sama5d2-clk-audio-pll-pad";
-+					#clock-cells = <0>;
-+					clocks = <&audio_pll_frac>;
-+				};
-+
-+				audio_pll_pmc: audiopll_pmcck {
-+					compatible = "atmel,sama5d2-clk-audio-pll-pmc";
-+					#clock-cells = <0>;
-+					clocks = <&audio_pll_frac>;
-+				};
-+
- 				utmi: utmick {
- 					compatible = "atmel,at91sam9x5-clk-utmi";
- 					#clock-cells = <0>;
-@@ -906,7 +924,7 @@
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 					interrupt-parent = <&pmc>;
--					clocks = <&clk32k>, <&main>, <&plladiv>, <&utmi>, <&mck>;
-+					clocks = <&clk32k>, <&main>, <&plladiv>, <&utmi>, <&mck>, <&audio_pll_pmc>;
- 
- 					sdmmc0_gclk: sdmmc0_gclk {
- 						#clock-cells = <0>;
-@@ -967,6 +985,12 @@
- 						reg = <57>;
- 						atmel,clk-output-range = <0 80000000>;
- 					};
-+
-+					classd_gclk: classd_gclk {
-+						#clock-cells = <0>;
-+						reg = <59>;
-+						atmel,clk-output-range = <0 100000000>;
-+					};
- 				};
- 			};
- 
-@@ -1444,6 +1468,19 @@
- 				status = "okay";
- 			};
- 
-+			classd: classd@fc048000 {
-+				compatible = "atmel,sama5d2-classd";
-+				reg = <0xfc048000 0x100>;
-+				interrupts = <59 IRQ_TYPE_LEVEL_HIGH 7>;
-+				dmas = <&dma0
-+					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-+					 AT91_XDMAC_DT_PERID(47))>;
-+				dma-names = "tx";
-+				clocks = <&classd_clk>, <&classd_gclk>;
-+				clock-names = "pclk", "gclk";
-+				status = "disabled";
-+			};
-+
- 			can1: can@fc050000 {
- 				compatible = "bosch,m_can";
- 				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
 -- 
-git-series 0.9.1
+2.7.4
