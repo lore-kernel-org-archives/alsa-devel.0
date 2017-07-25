@@ -1,64 +1,86 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 05/11] ASoC: samsung: spdif: Handle return
-	value of clk_prepare_enable.
-Date: Tue, 25 Jul 2017 15:44:32 +0530
-Message-ID: <1500977674-27960-6-git-send-email-arvind.yadav.cs@gmail.com>
-References: <1500977674-27960-1-git-send-email-arvind.yadav.cs@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 1845F267174
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 12:15:42 +0200 (CEST)
-Received: by mail-pg0-f66.google.com with SMTP id d193so14089890pgc.2
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 03:15:42 -0700 (PDT)
-In-Reply-To: <1500977674-27960-1-git-send-email-arvind.yadav.cs@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 11/11] ASoC: pxa-ssp: Handle return value of clk_prepare_enable.
+Date: Tue, 25 Jul 2017 15:46:10 +0530
+Message-ID: <1500977770-28142-2-git-send-email-arvind.yadav.cs@gmail.com>
+References: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/samsung/spdif.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/pxa/pxa-ssp.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
-index 779504f..cb59911 100644
---- a/sound/soc/samsung/spdif.c
-+++ b/sound/soc/samsung/spdif.c
-@@ -391,7 +391,9 @@ static int spdif_probe(struct platform_device *pdev)
- 		ret = -ENOENT;
- 		goto err0;
- 	}
--	clk_prepare_enable(spdif->pclk);
-+	ret = clk_prepare_enable(spdif->pclk);
-+	if (ret)
-+		goto err0;
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 0291c7c..dad5cf62 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -97,7 +97,10 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
+ 	int ret = 0;
  
- 	spdif->sclk = devm_clk_get(&pdev->dev, "sclk_spdif");
- 	if (IS_ERR(spdif->sclk)) {
-@@ -399,7 +401,9 @@ static int spdif_probe(struct platform_device *pdev)
- 		ret = -ENOENT;
- 		goto err1;
+ 	if (!cpu_dai->active) {
+-		clk_prepare_enable(ssp->clk);
++		ret = clk_prepare_enable(ssp->clk);
++		if (ret)
++			return ret;
++
+ 		pxa_ssp_disable(ssp);
  	}
--	clk_prepare_enable(spdif->sclk);
-+	ret = clk_prepare_enable(spdif->sclk);
-+	if (ret)
-+		goto err1;
  
- 	/* Request S/PDIF Register's memory region */
- 	if (!request_mem_region(mem_res->start,
+@@ -134,9 +137,13 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
++	int ret;
+ 
+-	if (!cpu_dai->active)
+-		clk_prepare_enable(ssp->clk);
++	if (!cpu_dai->active) {
++		ret = clk_prepare_enable(ssp->clk);
++		if (ret)
++			return ret;
++	}
+ 
+ 	priv->cr0 = __raw_readl(ssp->mmio_base + SSCR0);
+ 	priv->cr1 = __raw_readl(ssp->mmio_base + SSCR1);
+@@ -153,8 +160,11 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 	uint32_t sssr = SSSR_ROR | SSSR_TUR | SSSR_BCE;
++	int ret;
+ 
+-	clk_prepare_enable(ssp->clk);
++	ret = clk_prepare_enable(ssp->clk);
++	if (ret)
++		return ret;
+ 
+ 	__raw_writel(sssr, ssp->mmio_base + SSSR);
+ 	__raw_writel(priv->cr0 & ~SSCR0_SSE, ssp->mmio_base + SSCR0);
+@@ -217,6 +227,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 	int val;
++	int ret = 0;
+ 
+ 	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0) &
+ 		~(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
+@@ -260,9 +271,9 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
+ 	pxa_ssp_write_reg(ssp, SSCR0, val);
+ 	if (ssp->type != PXA3xx_SSP)
+-		clk_prepare_enable(ssp->clk);
++		ret = clk_prepare_enable(ssp->clk);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ /*
 -- 
 1.9.1
