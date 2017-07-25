@@ -1,19 +1,19 @@
 From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH v4 5/9] clk: at91: clk-generated: create
- function to find best_diff
-Date: Tue, 25 Jul 2017 17:33:50 +0200
-Message-ID: <f384980c-6a01-6879-e60c-d261fb4ae388@microchip.com>
+Subject: Re: [PATCH v4 6/9] clk: at91: clk-generated: make gclk
+ determine audio_pll rate
+Date: Tue, 25 Jul 2017 17:37:37 +0200
+Message-ID: <a3a01f76-11b8-34cb-824d-329e7acdfaf5@microchip.com>
 References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
- <8fe980cd3343111a57bd1b099beaaf51b95396d4.1500968090.git-series.quentin.schulz@free-electrons.com>
+ <4ccbc456b4812f4e91cc446914759781e6933a48.1500968090.git-series.quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa6.microchip.iphmx.com (esa6.microchip.iphmx.com
- [216.71.154.253])
- by alsa0.perex.cz (Postfix) with ESMTP id 86DF8266CFE
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 17:33:10 +0200 (CEST)
-In-Reply-To: <8fe980cd3343111a57bd1b099beaaf51b95396d4.1500968090.git-series.quentin.schulz@free-electrons.com>
+Received: from esa5.microchip.iphmx.com (esa5.microchip.iphmx.com
+ [216.71.150.166])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76000266CFE
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 17:36:57 +0200 (CEST)
+In-Reply-To: <4ccbc456b4812f4e91cc446914759781e6933a48.1500968090.git-series.quentin.schulz@free-electrons.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,11 +29,18 @@ Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@
 List-Id: alsa-devel@alsa-project.org
 
 On 25/07/2017 at 09:37, Quentin Schulz wrote:
-> The way to find the best_diff and do the appropriate process afterwards
-> can be re-used.
+> This allows gclk to determine audio_pll rate and set the parent rate
+> accordingly.
 > 
-> This patch prepares the driver for an upcoming patch that will allow
-> clk_generated to determine the rate of the audio_pll.
+> However, there are multiple children clocks that could technically
+> change the rate of audio_pll (via gck). With the rate locking, the first
+> consumer to enable the clock will be the one definitely setting the rate
+> of the clock.
+> 
+> Since audio IPs are most likely to request the same rate, we enforce
+> that the only clks able to modify gck rate are those of audio IPs.
+> 
+> To remain consistent, we deny other clocks to be children of audio_pll.
 > 
 > Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
 > Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
@@ -41,75 +48,134 @@ On 25/07/2017 at 09:37, Quentin Schulz wrote:
 Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
 > ---
->  drivers/clk/at91/clk-generated.c | 41 +++++++++++++++++++++------------
->  1 file changed, 27 insertions(+), 14 deletions(-)
+>  drivers/clk/at91/clk-generated.c | 63 +++++++++++++++++++++++++++++----
+>  1 file changed, 57 insertions(+), 6 deletions(-)
 > 
 > diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
-> index ef4b4e0..7260e49 100644
+> index 7260e49..3348136 100644
 > --- a/drivers/clk/at91/clk-generated.c
 > +++ b/drivers/clk/at91/clk-generated.c
-> @@ -99,15 +99,36 @@ clk_generated_recalc_rate(struct clk_hw *hw,
->  	return DIV_ROUND_CLOSEST(parent_rate, gck->gckdiv + 1);
->  }
+> @@ -26,6 +26,13 @@
+>  #define GENERATED_SOURCE_MAX	6
+>  #define GENERATED_MAX_DIV	255
 >  
-> +static void clk_generated_best_diff(struct clk_rate_request *req,
-> +				    struct clk_hw *parent,
-> +				    unsigned long parent_rate, u32 div,
-> +				    int *best_diff, long *best_rate)
-> +{
-> +	unsigned long tmp_rate;
-> +	int tmp_diff;
+> +#define GCK_ID_SSC0		43
+> +#define GCK_ID_SSC1		44
+> +#define GCK_ID_I2S0		54
+> +#define GCK_ID_I2S1		55
+> +#define GCK_ID_CLASSD		59
+> +#define GCK_INDEX_DT_AUDIO_PLL	5
 > +
-> +	if (!div)
-> +		tmp_rate = parent_rate;
-> +	else
-> +		tmp_rate = parent_rate / div;
-> +	tmp_diff = abs(req->rate - tmp_rate);
-> +
-> +	if (*best_diff < 0 || *best_diff > tmp_diff) {
-> +		*best_rate = tmp_rate;
-> +		*best_diff = tmp_diff;
-> +		req->best_parent_rate = parent_rate;
-> +		req->best_parent_hw = parent;
-> +	}
-> +}
-> +
->  static int clk_generated_determine_rate(struct clk_hw *hw,
->  					struct clk_rate_request *req)
+>  struct clk_generated {
+>  	struct clk_hw hw;
+>  	struct regmap *regmap;
+> @@ -34,6 +41,7 @@ struct clk_generated {
+>  	u32 id;
+>  	u32 gckdiv;
+>  	u8 parent_id;
+> +	bool audio_pll_allowed;
+>  };
+>  
+>  #define to_clk_generated(hw) \
+> @@ -126,15 +134,14 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
 >  {
 >  	struct clk_generated *gck = to_clk_generated(hw);
 >  	struct clk_hw *parent = NULL;
+> +	struct clk_rate_request req_parent = *req;
 >  	long best_rate = -EINVAL;
-> -	unsigned long tmp_rate, min_rate;
-> +	unsigned long min_rate;
+> -	unsigned long min_rate;
+> +	unsigned long min_rate, parent_rate;
 >  	int best_diff = -1;
-> -	int tmp_diff;
 >  	int i;
+> +	u32 div;
 >  
->  	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-> @@ -125,18 +146,10 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
->  			continue;
->  
->  		div = DIV_ROUND_CLOSEST(parent_rate, req->rate);
-> -		if (!div)
-> -			tmp_rate = parent_rate;
-> -		else
-> -			tmp_rate = parent_rate / div;
-> -		tmp_diff = abs(req->rate - tmp_rate);
+> -	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+> -		u32 div;
+> -		unsigned long parent_rate;
 > -
-> -		if (best_diff < 0 || best_diff > tmp_diff) {
-> -			best_rate = tmp_rate;
-> -			best_diff = tmp_diff;
-> -			req->best_parent_rate = parent_rate;
-> -			req->best_parent_hw = parent;
-> -		}
+> +	for (i = 0; i < clk_hw_get_num_parents(hw) - 1; i++) {
+>  		parent = clk_hw_get_parent_by_index(hw, i);
+>  		if (!parent)
+>  			continue;
+> @@ -150,11 +157,38 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+>  		clk_generated_best_diff(req, parent, parent_rate, div,
+>  					&best_diff, &best_rate);
+>  
+> +		if (!best_diff)
+> +			break;
+> +	}
 > +
-> +		clk_generated_best_diff(req, parent, parent_rate, div,
+> +	/*
+> +	 * The audio_pll rate can be modified, unlike the five others clocks
+> +	 * that should never be altered.
+> +	 * The audio_pll can technically be used by multiple consumers. However,
+> +	 * with the rate locking, the first consumer to enable to clock will be
+> +	 * the one definitely setting the rate of the clock.
+> +	 * Since audio IPs are most likely to request the same rate, we enforce
+> +	 * that the only clks able to modify gck rate are those of audio IPs.
+> +	 */
+> +
+> +	if (!gck->audio_pll_allowed)
+> +		goto end;
+> +
+> +	parent = clk_hw_get_parent_by_index(hw, GCK_INDEX_DT_AUDIO_PLL);
+> +	if (!parent)
+> +		goto end;
+> +
+> +	for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
+> +		req_parent.rate = req->rate * div;
+> +		__clk_determine_rate(parent, &req_parent);
+> +		clk_generated_best_diff(req, parent, req_parent.rate, div,
 > +					&best_diff, &best_rate);
-> +
 >  
 >  		if (!best_diff)
 >  			break;
+>  	}
+>  
+> +end:
+>  	pr_debug("GCLK: %s, best_rate = %ld, parent clk: %s @ %ld\n",
+>  		 __func__, best_rate,
+>  		 __clk_get_name((req->best_parent_hw)->clk),
+> @@ -264,7 +298,8 @@ at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
+>  	init.ops = &generated_ops;
+>  	init.parent_names = parent_names;
+>  	init.num_parents = num_parents;
+> -	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
+> +	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
+> +		CLK_SET_RATE_PARENT;
+>  
+>  	gck->id = id;
+>  	gck->hw.init = &init;
+> @@ -296,6 +331,7 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
+>  	struct device_node *gcknp;
+>  	struct clk_range range = CLK_RANGE(0, 0);
+>  	struct regmap *regmap;
+> +	struct clk_generated *gck;
+>  
+>  	num_parents = of_clk_get_parent_count(np);
+>  	if (num_parents == 0 || num_parents > GENERATED_SOURCE_MAX)
+> @@ -327,6 +363,21 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
+>  		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock, name,
+>  						  parent_names, num_parents,
+>  						  id, &range);
+> +
+> +		gck = to_clk_generated(hw);
+> +
+> +		if (of_device_is_compatible(np,
+> +					    "atmel,sama5d2-clk-generated")) {
+> +			if (gck->id == GCK_ID_SSC0 || gck->id == GCK_ID_SSC1 ||
+> +			    gck->id == GCK_ID_I2S0 || gck->id == GCK_ID_I2S1 ||
+> +			    gck->id == GCK_ID_CLASSD)
+> +				gck->audio_pll_allowed = true;
+> +			else
+> +				gck->audio_pll_allowed = false;
+> +		} else {
+> +			gck->audio_pll_allowed = false;
+> +		}
+> +
+>  		if (IS_ERR(hw))
+>  			continue;
+>  
 > 
 
 
