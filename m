@@ -1,16 +1,22 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH] ALSA: hda - Add mute led support for HP
-	ProBook 440 G4
-Date: Wed, 26 Jul 2017 00:23:46 +0800
-Message-ID: <20170725162346.30724-1-kai.heng.feng@canonical.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 01/11] ASoC: samsung: s3c2412: Handle
+ return value of clk_prepare_enable.
+Date: Tue, 25 Jul 2017 19:43:53 +0200
+Message-ID: <20170725174353.GA8243@kozik-book>
+References: <1500977674-27960-1-git-send-email-arvind.yadav.cs@gmail.com>
+ <1500977674-27960-2-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 92C85266CFE
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 18:24:05 +0200 (CEST)
+Received: from mail-yw0-f170.google.com (mail-yw0-f170.google.com
+ [209.85.161.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09101267281
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 19:43:59 +0200 (CEST)
+Received: by mail-yw0-f170.google.com with SMTP id u207so11445817ywc.3
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 10:43:59 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1500977674-27960-2-git-send-email-arvind.yadav.cs@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +26,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mic mute led does not work on HP ProBook 440 G4.
-We can use CXT_FIXUP_MUTE_LED_GPIO fixup to support it.
+On Tue, Jul 25, 2017 at 03:44:28PM +0530, Arvind Yadav wrote:
+> clk_prepare_enable() can fail here and we must check its return value.
+> 
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> ---
+>  sound/soc/samsung/s3c2412-i2s.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+> index 0a47182..bcd1cbd 100644
+> --- a/sound/soc/samsung/s3c2412-i2s.c
+> +++ b/sound/soc/samsung/s3c2412-i2s.c
+> @@ -71,7 +71,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+>  	/* Set MPLL as the source for IIS CLK */
+>  
+>  	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
+> -	clk_prepare_enable(s3c2412_i2s.iis_cclk);
+> +	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
+> +	if (ret)
 
-BugLink: https://bugs.launchpad.net/bugs/1705586
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/patch_conexant.c | 1 +
- 1 file changed, 1 insertion(+)
+You miss here path for error handling for things done in
+s3c_i2sv2_probe().
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index e8253737c47a..615a69a32970 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -931,6 +931,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8174, "HP Spectre x360", CXT_FIXUP_HP_SPECTRE),
- 	SND_PCI_QUIRK(0x103c, 0x8115, "HP Z1 Gen3", CXT_FIXUP_HP_GATE_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x814f, "HP ZBook 15u G3", CXT_FIXUP_MUTE_LED_GPIO),
-+	SND_PCI_QUIRK(0x103c, 0x822e, "HP ProBook 440 G4", CXT_FIXUP_MUTE_LED_GPIO),
- 	SND_PCI_QUIRK(0x1043, 0x138d, "Asus", CXT_FIXUP_HEADPHONE_MIC_PIN),
- 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT_FIXUP_OLPC_XO),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400", CXT_PINCFG_LENOVO_TP410),
--- 
-2.13.3
+Best regards,
+Krzysztof
+
+> +		return ret;
+>  
+>  	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
+>  
+> -- 
+> 1.9.1
+> 
