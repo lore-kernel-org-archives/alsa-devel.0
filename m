@@ -1,112 +1,93 @@
-From: Antonio Borneo <borneo.antonio@gmail.com>
-Subject: [PATCH] ASoC: fix balance of of_node_get()/of_node_put()
-Date: Tue, 25 Jul 2017 23:49:52 +0200
-Message-ID: <20170725214952.6491-1-borneo.antonio@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: Antonio Borneo <borneo.antonio@gmail.com>, linux-kernel@vger.kernel.org, Wei Xu <xuwei5@hisilicon.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org
+From: Harsha Priya <harshapriya.n@intel.com>
+Subject: [PATCH] ASoC: Intel: Fix Kabylake machine driver for
+	pops and clicks
+Date: Tue, 25 Jul 2017 15:27:39 -0700
+Message-ID: <1501021659-8597-1-git-send-email-harshapriya.n@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06EA2266CD2
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 00:27:47 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: Harsha Priya <harshapriya.n@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Hikey target board, enabling CONFIG_OF_DYNAMIC triggers several
-errors at kernel boot, like the following one
-OF: ERROR: Bad of_node_put() on /soc/i2s@f7118000/ports/port@0/endpoint
-each followed by stack dump.
+This patch adds fixes for the following issues in Kabylake machine driver
 
-Fixed by:
-- removing of_node_put() in the body of of_for_each_phandle(){},
-  since already provided at each iteration. Add it in case the
-  loop is break out;
-- adding of_node_get() before calling of_graph_get_port_parent()
-  or asoc_graph_card_dai_link_of().
+1. crackling noise in rt5663 headset codec 
+2. enabling 4 slot IV feedback for max98927 speaker amp codec 
+3. pop noise while recording from rt5514 dmic codec 
 
-Tested with kernel v4.13-rc1 with hikey_defconfig taken from
-https://git.linaro.org/people/john.stultz/android-dev.git
-branch dev/hikey-mainline-WIP
-
-Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 ---
-To: Liam Girdwood <lgirdwood@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-To: Takashi Iwai <tiwai@suse.com>
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Wei Xu <xuwei5@hisilicon.com>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org
----
- sound/soc/generic/audio-graph-card.c  | 14 +++++++++-----
- sound/soc/generic/simple-card-utils.c |  5 +++++
- sound/soc/soc-core.c                  |  5 +++++
- 3 files changed, 19 insertions(+), 5 deletions(-)
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 28 ++++++++++++----------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index c0f08a6..7574c5f 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -228,10 +228,16 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	 */
- 
- 	of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
-+		/*
-+		 * asoc_graph_card_dai_link_of() will call
-+		 * of_node_put(). So, call of_node_get() here
-+		 */
-+		of_node_get(it.node);
- 		ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
--		of_node_put(it.node);
--		if (ret < 0)
-+		if (ret < 0) {
-+			of_node_put(it.node);
- 			return ret;
-+		}
- 	}
- 
- 	return asoc_simple_card_parse_card_name(card, NULL);
-@@ -244,10 +250,8 @@ static int asoc_graph_get_dais_count(struct device *dev)
- 	int count = 0;
- 	int rc;
- 
--	of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
-+	of_for_each_phandle(&it, rc, node, "dais", NULL, 0)
- 		count++;
--		of_node_put(it.node);
--	}
- 
- 	return count;
- }
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 26d64fa..144954b 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -250,6 +250,11 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
- 	if (ret != -ENOTSUPP)
- 		return ret;
- 
-+	/*
-+	 * of_graph_get_port_parent() will call
-+	 * of_node_put(). So, call of_node_get() here
-+	 */
-+	of_node_get(ep);
- 	node = of_graph_get_port_parent(ep);
- 
- 	/*
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 921622a..a0f39de 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4087,6 +4087,11 @@ int snd_soc_get_dai_id(struct device_node *ep)
- 	struct device_node *node;
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 3fe4a08..4c51965 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -319,7 +319,9 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
  	int ret;
  
-+	/*
-+	 * of_graph_get_port_parent() will call
-+	 * of_node_put(). So, call of_node_get() here
-+	 */
-+	of_node_get(ep);
- 	node = of_graph_get_port_parent(ep);
+ 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
+-	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
++	rt5663_sel_asrc_clk_src(codec_dai->codec,
++			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
++			RT5663_CLK_SEL_I2S1_ASRC);
  
- 	/*
+ 	ret = snd_soc_dai_set_sysclk(codec_dai,
+ 			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
+@@ -349,27 +351,27 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
+ 				return ret;
+ 			}
+ 
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-				RT5514_PLL1_S_BCLK, RT5514_AIF1_BCLK_FREQ,
+-						RT5514_AIF1_SYSCLK_FREQ);
++			ret = snd_soc_dai_set_sysclk(codec_dai,
++				RT5514_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
++
+ 			if (ret < 0) {
+-				dev_err(rtd->dev, "set bclk err: %d\n", ret);
++				dev_err(rtd->dev, "set sysclk err: %d\n", ret);
+ 				return ret;
+ 			}
++		}
+ 
+-			ret = snd_soc_dai_set_sysclk(codec_dai,
+-				RT5514_SCLK_S_PLL1, RT5514_AIF1_SYSCLK_FREQ,
+-							SND_SOC_CLOCK_IN);
++		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME)) {
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
+ 			if (ret < 0) {
+-				dev_err(rtd->dev, "set sclk err: %d\n", ret);
++				dev_err(rtd->dev, "DEV0 TDM slot err:%d\n", ret);
+ 				return ret;
+ 			}
+ 		}
+-		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME) ||
+-			!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
+-			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF0, 3, 8, 16);
++
++		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
+ 			if (ret < 0) {
+-				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
++				dev_err(rtd->dev, "DEV1 TDM slot err:%d\n", ret);
+ 				return ret;
+ 			}
+ 		}
 -- 
 1.9.1
