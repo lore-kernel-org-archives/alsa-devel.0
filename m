@@ -1,51 +1,56 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v4 09/12] ASoC: wm9712: add ac97 new bus support
-Date: Tue, 25 Jul 2017 11:20:57 +0100
-Message-ID: <20170725102057.hblyopxycgz55mr7@localhost.localdomain>
-References: <20170724204928.29505-1-robert.jarzmik@free.fr>
- <20170724204928.29505-10-robert.jarzmik@free.fr>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: Re: [PATCH v3 3/9] clk: at91: add audio pll clock drivers
+Date: Tue, 25 Jul 2017 13:30:29 +0200
+Message-ID: <5f6fd25b-8f99-8dec-39b6-0e7677675c24@free-electrons.com>
+References: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
+ <20170713074927.10882-4-quentin.schulz@free-electrons.com>
+ <20170721222029.GO19878@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20170724204928.29505-10-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170721222029.GO19878@codeaurora.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mturquette@baylibre.com, tiwai@suse.com, linux-clk@vger.kernel.org, lgirdwood@gmail.com, Nicolas Ferre <nicolas.ferre@atmel.com>, robh+dt@kernel.org, alexandre.belloni@free-electrons.com, broonie@kernel.org, cyrille.pitchen@wedev4u.fr, linux@armlinux.org.uk, perex@perex.cz, thomas.petazzoni@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 24, 2017 at 10:49:25PM +0200, Robert Jarzmik wrote:
-> Add support for the new ac97 bus model, where devices are automatically
-> discovered on AC-Links.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
-> +	} else {
-> +		wm9712->ac97 = snd_soc_new_ac97_codec(codec, WM9712_VENDOR_ID,
-> +						      WM9712_VENDOR_ID_MASK);
-> +		if (IS_ERR(wm9712->ac97)) {
-> +			ret = PTR_ERR(wm9712->ac97);
-> +			dev_err(codec->dev,
-> +				"Failed to register AC97 codec: %d\n", ret);
-> +			return ret;
-> +		}
-> +
-> +		regmap = regmap_init_ac97(wm9712->ac97, &wm9712_regmap_config);
-> +		if (IS_ERR(regmap)) {
-> +			ret = PTR_ERR(regmap);
-> +			goto err_free_ac97_codec;
+Hi Stephen,
 
-For the 9713 you had this wrapped in an ifdef? Why did it need an
-ifdef there but doesn't for this driver?
+I forgot to answer one of your questions:
+
+On 22/07/2017 00:20, Stephen Boyd wrote:
+> On 07/13, Quentin Schulz wrote:
+>> diff --git a/drivers/clk/at91/clk-audio-pll-pad.c b/drivers/clk/at91/clk-audio-pll-pad.c
+>> new file mode 100644
+>> index 000000000000..10dd6d625696
+>> --- /dev/null
+>> +++ b/drivers/clk/at91/clk-audio-pll-pad.c
+[...]
+>> +}
+>> +
+>> +CLK_OF_DECLARE(of_sama5d2_clk_audio_pll_pad_setup,
+>> +	       "atmel,sama5d2-clk-audio-pll-pad",
+>> +	       of_sama5d2_clk_audio_pll_pad_setup);
+> 
+> We can't have a device driver for this?
+> 
+
+I tried to work on that but the device does not get probed because the
+parent node (pmc) does not register its children. We would need to
+modify the DT to add such a support and break DT compat.
+
+As we are speaking about getting rid of clk subnodes (c.f. Rob and
+Alexandre answers on the first version of this patch series:
+https://patchwork.kernel.org/patch/9805991/) in favor of a clock
+controller node that would break the DT compat as well, IMHO it would be
+best to break the DT compat as few times as possible and thus, rework
+this driver once we switch to a clock controller node.
 
 Thanks,
-Charles
+Quentin
+-- 
+Quentin Schulz, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
