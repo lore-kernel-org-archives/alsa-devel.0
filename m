@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 02/11] ASoC: samsung: s3c24xx: Handle return value of clk_prepare_enable.
-Date: Tue, 25 Jul 2017 15:44:29 +0530
-Message-ID: <1500977674-27960-3-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 03/11] ASoC: samsung: pcm: Handle return value of clk_prepare_enable.
+Date: Tue, 25 Jul 2017 15:44:30 +0530
+Message-ID: <1500977674-27960-4-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1500977674-27960-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1500977674-27960-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -14,44 +14,34 @@ clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/samsung/s3c24xx-i2s.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/samsung/pcm.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index 91e6871..8d58d02 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -340,6 +340,7 @@ u32 s3c24xx_i2s_get_clockrate(void)
- 
- static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
- {
-+	int ret;
- 	snd_soc_dai_init_dma_data(dai, &s3c24xx_i2s_pcm_stereo_out,
- 					&s3c24xx_i2s_pcm_stereo_in);
- 
-@@ -348,7 +349,9 @@ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
- 		pr_err("failed to get iis_clock\n");
- 		return PTR_ERR(s3c24xx_i2s.iis_clk);
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index d50a637..37f95ee 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -522,7 +522,9 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "failed to get audio-bus clock\n");
+ 		return PTR_ERR(pcm->cclk);
  	}
--	clk_prepare_enable(s3c24xx_i2s.iis_clk);
-+	ret = clk_prepare_enable(s3c24xx_i2s.iis_clk);
+-	clk_prepare_enable(pcm->cclk);
++	ret = clk_prepare_enable(pcm->cclk);
 +	if (ret)
 +		return ret;
  
- 	/* Configure the I2S pins (GPE0...GPE4) in correct mode */
- 	s3c_gpio_cfgall_range(S3C2410_GPE(0), 5, S3C_GPIO_SFN(2),
-@@ -377,7 +380,11 @@ static int s3c24xx_i2s_suspend(struct snd_soc_dai *cpu_dai)
- 
- static int s3c24xx_i2s_resume(struct snd_soc_dai *cpu_dai)
- {
--	clk_prepare_enable(s3c24xx_i2s.iis_clk);
-+	int ret;
-+
-+	ret = clk_prepare_enable(s3c24xx_i2s.iis_clk);
+ 	/* record our pcm structure for later use in the callbacks */
+ 	dev_set_drvdata(&pdev->dev, pcm);
+@@ -533,7 +535,9 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(pcm->pclk);
+ 		goto err_dis_cclk;
+ 	}
+-	clk_prepare_enable(pcm->pclk);
++	ret = clk_prepare_enable(pcm->pclk);
 +	if (ret)
-+		return ret;
++		goto err_dis_cclk;
  
- 	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
- 	writel(s3c24xx_i2s.iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	s3c_pcm_stereo_in[pdev->id].addr = mem_res->start + S3C_PCM_RXFIFO;
+ 	s3c_pcm_stereo_out[pdev->id].addr = mem_res->start + S3C_PCM_TXFIFO;
 -- 
 1.9.1
