@@ -1,39 +1,45 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 10/11] ASoC: pxa: Handle return value of clk_prepare_enable.
-Date: Tue, 25 Jul 2017 15:46:09 +0530
-Message-ID: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v4 06/12] mfd: wm97xx-core: core support for wm97xx Codec
+Date: Tue, 25 Jul 2017 11:17:00 +0100
+Message-ID: <20170725101700.q4wrhl5klhn5amee@localhost.localdomain>
+References: <20170724204928.29505-1-robert.jarzmik@free.fr>
+ <20170724204928.29505-7-robert.jarzmik@free.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20170724204928.29505-7-robert.jarzmik@free.fr>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-clk_prepare_enable() can fail here and we must check its return value.
+On Mon, Jul 24, 2017 at 10:49:22PM +0200, Robert Jarzmik wrote:
+> The WM9705, WM9712 and WM9713 are highly integrated codecs, with an
+> audio codec, DAC and ADC, GPIO unit and a touchscreen interface.
+> 
+> Historically the support was spread across drivers/input/touchscreen and
+> sound/soc/codecs. The sharing was done through ac97 bus sharing. This
+> model will not withstand the new AC97 bus model, where codecs are
+> discovered on runtime.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+> Since v3:
+>  - added a "depends on AC97_BUS_NEW" Kconfig statement
+>  - added default values for wm9705, wm9712 per Charles's comment
+> ---
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
----
- sound/soc/pxa/pxa2xx-i2s.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 3fb60ba..2312c22 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -164,10 +164,14 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
-+	int ret;
- 
- 	if (WARN_ON(IS_ERR(clk_i2s)))
- 		return -EINVAL;
--	clk_prepare_enable(clk_i2s);
-+	ret = clk_prepare_enable(clk_i2s);
-+	if (ret)
-+		return ret;
-+
- 	clk_ena = 1;
- 	pxa_i2s_wait();
- 
--- 
-1.9.1
+Thanks,
+Charles
