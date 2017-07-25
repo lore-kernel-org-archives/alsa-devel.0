@@ -1,84 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [ANNOUNCE] Audio Mini Summit 2017 at Prague, Oct 27
-Date: Tue, 25 Jul 2017 15:52:42 +0100
-Message-ID: <20170725145242.sha5z5doxbyouh2j@sirena.org.uk>
-References: <s5hzibsk7ul.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4453675541327116722=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E85B9266CFE
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 16:52:51 +0200 (CEST)
-In-Reply-To: <s5hzibsk7ul.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Subject: [PATCHv3 0/6] Motorola Droid 4 Audio Support
+Date: Tue, 25 Jul 2017 17:10:24 +0200
+Message-ID: <20170725151030.26863-1-sebastian.reichel@collabora.co.uk>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============4453675541327116722==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qorwvjtdy5zipkk4"
-Content-Disposition: inline
+This adds audio support to Motorola Droid 4.
 
+Tested:
+ - Playing via both DACs using Speaker, Earpiece, Headphone
+ - Recording using internal Mic
+ - Volume Controls
 
---qorwvjtdy5zipkk4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Known not to work:
+ - 3.5mm detection support (requires closed source firmware,
+   needs further investigation)
+ - Modem / Bluetooth Audio (actually untested, but probably
+   needs some quirks)
 
-On Tue, Jul 25, 2017 at 02:40:34PM +0200, Takashi Iwai wrote:
+Changes since PATCHv2:
+ * Fix a whitespace issue
+ * Fix const notes Takashi provided
+ * Fix a DAPM route issue I accidently introduced in v2
 
-> Please note that the meeting will be held in a conference room of
-> SUSE Prague office, not in Hilton hotel where ELCE/OSSE is held.
-> It's located near Hilton, just a couple of blocks away.
-> The address of SUSE office is:
->   Corso II, K=C5=99i=C5=BE=C3=ADkova 148/34, 18600 Praha 8
->   https://goo.gl/maps/anET1yh3XXu
+Changes since PATCHv1:
+ * Add patch from Tony exporting soc_dpcm_runtime_update
+ * Integrate DT patch for vaudio initial mode
+ * Split dt-binding from codec patch and add Ack from Rob
+ * Fix CPCAP position in Kconfig/Makefile
+ * Avoid "err +=" constructs
+ * Simplify reset function
+ * Drop cpcap_audio_read/write helpers
+ * Do not use tertiary operator for mute register value
+ * Update Input Mux logic
+ * Switch from simple-audio-card to audio-graph-card
 
-> Also, since the conference room is hosted by SUSE, it's an open event
-> at this time; that is, you can attend only this meeting without
-> registration for other Linux Foundation events in that week, too.
+-- Sebastian
 
-Big thanks to SuSE for their generosity here!
+Sebastian Reichel (5):
+  dt-bindings: sound: add motorola,cpcap-audio-codec
+  ASoC: codec: cpcap: new codec
+  ARM: dts: motorola-cpcap-mapphone: add audio-codec
+  ARM: dts: motorola-cpcap-mapphone: set initial mode for vaudio
+  ARM: dts: omap4-droid4: add soundcard
 
-> And, now we are gathering the topics to discuss, too.  If you have any
-> interesting topics to be discussed in the meeting, feel free to post
-> to alsa-devel ML.  I'm going to write up later.
+Tony Lindgren (1):
+  ALSA: pcm: Export soc_dpcm_runtime_update
 
-Please keep Takashi and myself in the copies here.
+ .../bindings/sound/motorola,cpcap-audio-codec.txt  |   19 +
+ arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi     |    7 +
+ arch/arm/boot/dts/omap4-droid4-xt894.dts           |   84 ++
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/cpcap.c                           | 1594 ++++++++++++++++++++
+ sound/soc/soc-pcm.c                                |    2 +
+ 7 files changed, 1713 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/motorola,cpcap-audio-codec.txt
+ create mode 100644 sound/soc/codecs/cpcap.c
 
---qorwvjtdy5zipkk4
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.13.2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll3WzkACgkQJNaLcl1U
-h9DBPAf/b2hkjl5i4W65Dc3OlWvVjU+BbAym64RgGJ4mjKDJhuaDiL1fGdnMWZ7p
-IMChDXoeQ5a+jlhW+YaYrK8FVKD0lllr3XWsL19ywXsDb01a7W4Av3mFSL6iuPAG
-l97jSLlT+HDrVTnKY9N7f+5Vck974Q1uf3r8V32Ps1D/Rc4XNqFVOwoJgs81pjzP
-R0eWwhJgALboMcrFZnlkZQblJQpwQb4Ok5JSeXYIooklmlEexPOPTcNYvGDgOC8O
-YfPkn0rWYMzM9EJeVKNQPgy+C45MTuZKqdeNB5J3zI0lG0N1Isl46wFL1s85he+R
-4Rar68ihOoKWYCbnUezgoWmddBjMcg==
-=/erK
------END PGP SIGNATURE-----
-
---qorwvjtdy5zipkk4--
-
---===============4453675541327116722==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4453675541327116722==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
