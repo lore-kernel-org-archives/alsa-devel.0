@@ -1,317 +1,84 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] ASoC: sun4i-i2s: Add support for H3
-Date: Tue, 25 Jul 2017 16:36:46 +0200
-Message-ID: <20170725143646.mlqhzfqnoenwtg7v@flea>
-References: <20170722065352.7635-1-codekipper@gmail.com>
- <20170722065352.7635-3-codekipper@gmail.com>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [ANNOUNCE] Audio Mini Summit 2017 at Prague, Oct 27
+Date: Tue, 25 Jul 2017 15:52:42 +0100
+Message-ID: <20170725145242.sha5z5doxbyouh2j@sirena.org.uk>
+References: <s5hzibsk7ul.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="47eea77pdbrntzuw"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBB75O3XFQKGQENNVJUKY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20170722065352.7635-3-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4453675541327116722=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E85B9266CFE
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 16:52:51 +0200 (CEST)
+In-Reply-To: <s5hzibsk7ul.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---47eea77pdbrntzuw
-Content-Type: text/plain; charset="UTF-8"
+--===============4453675541327116722==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qorwvjtdy5zipkk4"
 Content-Disposition: inline
 
-Hi,
 
-On Sat, Jul 22, 2017 at 08:53:52AM +0200, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> 
-> The sun8i-h3 introduces a lot of changes to the i2s block such
-> as different register locations, extended clock division and
-> more operational modes. As we have to consider the earlier
-> implementation then these changes need to be isolated.
-> 
-> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
->  sound/soc/sunxi/sun4i-i2s.c                        | 202 +++++++++++++++++++++
->  2 files changed, 204 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> index ee21da865771..fc5da6080759 100644
-> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> @@ -8,6 +8,7 @@ Required properties:
->  - compatible: should be one of the following:
->     - "allwinner,sun4i-a10-i2s"
->     - "allwinner,sun6i-a31-i2s"
-> +   - "allwinner,sun8i-h3-i2s"
->  - reg: physical base address of the controller and length of memory mapped
->    region.
->  - interrupts: should contain the I2S interrupt.
-> @@ -22,6 +23,7 @@ Required properties:
->  
->  Required properties for the following compatibles:
->  	- "allwinner,sun6i-a31-i2s"
-> +	- "allwinner,sun8i-h3-i2s"
->  - resets: phandle to the reset line for this codec
->  
->  Example:
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index 1854405cbcb1..2b3c2b28059c 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -26,6 +26,8 @@
->  #include <sound/soc-dai.h>
->  
->  #define SUN4I_I2S_CTRL_REG		0x00
-> +#define SUN8I_I2S_CTRL_BCLK_OUT			BIT(18)
-> +#define SUN8I_I2S_CTRL_LRCK_OUT			BIT(17)
->  #define SUN4I_I2S_CTRL_SDO_EN_MASK		GENMASK(11, 8)
->  #define SUN4I_I2S_CTRL_SDO_EN(sdo)			BIT(8 + (sdo))
->  #define SUN4I_I2S_CTRL_MODE_MASK		BIT(5)
-> @@ -55,6 +57,7 @@
->  
->  #define SUN4I_I2S_FMT1_REG		0x08
->  #define SUN4I_I2S_FIFO_TX_REG		0x0c
-> +#define SUN8I_I2S_INT_STA_REG		0x0c
->  #define SUN4I_I2S_FIFO_RX_REG		0x10
->  
->  #define SUN4I_I2S_FIFO_CTRL_REG		0x14
-> @@ -72,8 +75,10 @@
->  #define SUN4I_I2S_DMA_INT_CTRL_RX_DRQ_EN	BIT(3)
->  
->  #define SUN4I_I2S_INT_STA_REG		0x20
-> +#define SUN8I_I2S_FIFO_TX_REG		0x20
->  
->  #define SUN4I_I2S_CLK_DIV_REG		0x24
-> +#define SUN8I_I2S_CLK_DIV_MCLK_EN		8
->  #define SUN4I_I2S_CLK_DIV_MCLK_EN		7
->  #define SUN4I_I2S_CLK_DIV_BCLK_MASK		GENMASK(6, 4)
->  #define SUN4I_I2S_CLK_DIV_BCLK(bclk)			((bclk) << 4)
-> @@ -86,16 +91,29 @@
->  #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
->  #define SUN4I_I2S_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
->  
-> +#define SUN8I_I2S_CHAN_CFG_REG		0x30
-> +
->  #define SUN4I_I2S_TX_CHAN_MAP_REG	0x34
->  #define SUN4I_I2S_TX_CHAN_MAP(chan, sample)	((sample) << (chan << 2))
-> +#define SUN8I_I2S_TX_CHAN_SEL_REG	0x34
-> +#define SUN8I_I2S_TX_CHAN_OFFSET(offset)	(offset << 12)
->  #define SUN4I_I2S_TX_CHAN_EN(num_chan)		(((1 << num_chan) - 1))
->  
->  #define SUN4I_I2S_RX_CHAN_SEL_REG	0x38
->  #define SUN4I_I2S_RX_CHAN_MAP_REG	0x3c
->  
-> +#define SUN8I_I2S_TX_CHAN_MAP_REG	0x44
-> +
-> +#define SUN8I_I2S_RX_CHAN_SEL_REG	0x54
-> +#define SUN8I_I2S_RX_CHAN_MAP_REG	0x58
-> +
+--qorwvjtdy5zipkk4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I would not interleave those defines. It's a bit hard to see which
-generation has which set of registers. I guess you could just move the
-new ones to the bottom of the defines.
+On Tue, Jul 25, 2017 at 02:40:34PM +0200, Takashi Iwai wrote:
 
->  struct sun4i_i2s_quirks {
->  	bool				has_reset;
->  	bool				has_master_slave_sel;
-> +	bool				has_fmt_set_lrck_period;
-> +	bool				has_chcfg;
-> +	bool				has_chsel_tx_chen;
-> +	bool				has_chsel_offset;
->  	unsigned int			reg_offset_txdata;	/* TX FIFO */
->  	unsigned int			reg_offset_txchanmap;
->  	unsigned int			reg_offset_rxchanmap;
-> @@ -113,6 +131,11 @@ struct sun4i_i2s_quirks {
->  	struct reg_field		field_fmt_set_mode;
->  	struct reg_field		field_txchansel;
->  	struct reg_field		field_rxchansel;
-> +	struct reg_field		field_fmt_set_lrck_period;
-> +	struct reg_field		field_chcfg_tx_slot_num;
-> +	struct reg_field		field_chcfg_rx_slot_num;
-> +	struct reg_field		field_chsel_tx_chen;
-> +	struct reg_field		field_chsel_offset;
+> Please note that the meeting will be held in a conference room of
+> SUSE Prague office, not in Hilton hotel where ELCE/OSSE is held.
+> It's located near Hilton, just a couple of blocks away.
+> The address of SUSE office is:
+>   Corso II, K=C5=99i=C5=BE=C3=ADkova 148/34, 18600 Praha 8
+>   https://goo.gl/maps/anET1yh3XXu
 
-If you have booleans already, I guess you don't really need the
-regmap_fields. You won't make that setup in the !h3 case, so the
-regmap_field mapping is going to be useless anyway.
+> Also, since the conference room is hosted by SUSE, it's an open event
+> at this time; that is, you can attend only this meeting without
+> registration for other Linux Foundation events in that week, too.
 
->  };
->  
->  struct sun4i_i2s {
-> @@ -136,6 +159,11 @@ struct sun4i_i2s {
->  	struct regmap_field	*field_fmt_set_mode;
->  	struct regmap_field	*field_txchansel;
->  	struct regmap_field	*field_rxchansel;
-> +	struct regmap_field	*field_fmt_set_lrck_period;
-> +	struct regmap_field	*field_chcfg_tx_slot_num;
-> +	struct regmap_field	*field_chcfg_rx_slot_num;
-> +	struct regmap_field	*field_chsel_tx_chen;
-> +	struct regmap_field	*field_chsel_offset;
->  
->  	const struct sun4i_i2s_quirks	*variant;
->  };
-> @@ -152,6 +180,14 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_bclk_div[] = {
->  	{ .div = 8, .val = 3 },
->  	{ .div = 12, .val = 4 },
->  	{ .div = 16, .val = 5 },
-> +	{ .div = 24, .val = 6 },
-> +	{ .div = 32, .val = 7 },
-> +	{ .div = 48, .val = 8 },
-> +	{ .div = 64, .val = 9 },
-> +	{ .div = 96, .val = 10 },
-> +	{ .div = 128, .val = 11 },
-> +	{ .div = 176, .val = 12 },
-> +	{ .div = 192, .val = 13 },
->  };
->  
->  static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
-> @@ -163,6 +199,13 @@ static const struct sun4i_i2s_clk_div sun4i_i2s_mclk_div[] = {
->  	{ .div = 12, .val = 5 },
->  	{ .div = 16, .val = 6 },
->  	{ .div = 24, .val = 7 },
-> +	{ .div = 32, .val = 8 },
-> +	{ .div = 48, .val = 9 },
-> +	{ .div = 64, .val = 10 },
-> +	{ .div = 96, .val = 11 },
-> +	{ .div = 128, .val = 12 },
-> +	{ .div = 176, .val = 13 },
-> +	{ .div = 192, .val = 14 },
->  };
+Big thanks to SuSE for their generosity here!
 
-I'm not sure about this one. We might end up on !h3 with an invalid
-divider.
+> And, now we are gathering the topics to discuss, too.  If you have any
+> interesting topics to be discussed in the meeting, feel free to post
+> to alsa-devel ML.  I'm going to write up later.
 
->  static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
-> @@ -270,6 +313,10 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
->  
->  	regmap_field_write(i2s->field_clkdiv_mclk_en, 1);
->  
-> +	/* Set sync period */
-> +	if (i2s->variant->has_fmt_set_lrck_period)
-> +		regmap_field_write(i2s->field_fmt_set_lrck_period, 0x1f);
-> +
->  	return 0;
->  }
->  
-> @@ -284,6 +331,13 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->  	if (params_channels(params) != 2)
->  		return -EINVAL;
->  
-> +	if (i2s->variant->has_chcfg) {
-> +		regmap_field_write(i2s->field_chcfg_tx_slot_num,
-> +				   params_channels(params) - 1);
-> +		regmap_field_write(i2s->field_chcfg_rx_slot_num,
-> +				   params_channels(params) - 1);
-> +	}
-> +
->  	/* Map the channels for playback */
->  	regmap_write(i2s->regmap, i2s->variant->reg_offset_txchanmap,
->  		     0x76543210);
-> @@ -299,6 +353,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->  	regmap_field_write(i2s->field_rxchansel,
->  			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
->  
-> +	if (i2s->variant->has_chsel_tx_chen)
-> +		regmap_field_write(i2s->field_chsel_tx_chen,
-> +				   SUN4I_I2S_TX_CHAN_EN(params_channels(params)));
->  
->  	switch (params_physical_width(params)) {
->  	case 16:
-> @@ -332,6 +389,7 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  {
->  	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
->  	u32 val;
-> +	u32 offset = 0;
->  	u32 bclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
->  	u32 lrclk_polarity = SUN4I_I2S_FMT0_POLARITY_NORMAL;
->  
-> @@ -339,6 +397,7 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->  	case SND_SOC_DAIFMT_I2S:
->  		val = SUN4I_I2S_FMT0_FMT_I2S;
-> +		offset = 1;
->  		break;
->  	case SND_SOC_DAIFMT_LEFT_J:
->  		val = SUN4I_I2S_FMT0_FMT_LEFT_J;
-> @@ -350,6 +409,19 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  		return -EINVAL;
->  	}
->  
-> +	if (i2s->variant->has_chsel_offset) {
-> +		/*
-> +		 * offset being set indicates that we're connected to an i2s
-> +		 * device, however offset is only used on the sun8i block and
-> +		 * i2s shares the same setting with the LJ format. Increment
-> +		 * val so that the bit to value to write is correct.
-> +		 */
-> +		if (offset > 0)
-> +			val++;
-> +		/* blck offset determines whether i2s or LJ */
-> +		regmap_field_write(i2s->field_chsel_offset, offset);
-> +	}
-> +
->  	regmap_field_write(i2s->field_fmt_set_mode, val);
->  
->  	/* DAI clock polarity */
-> @@ -393,6 +465,29 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->  		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
->  				   SUN4I_I2S_CTRL_MODE_MASK,
->  				   val);
-> +	} else {
-> +		/*
-> +		 * The newer i2s block does not have a slave select bit,
-> +		 * instead the clk pins are configured as inputs.
-> +		 */
-> +		/* DAI clock master masks */
-> +		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +		case SND_SOC_DAIFMT_CBS_CFS:
-> +			/* BCLK and LRCLK master */
-> +			val = SUN8I_I2S_CTRL_BCLK_OUT |
-> +				SUN8I_I2S_CTRL_LRCK_OUT;
-> +			break;
-> +		case SND_SOC_DAIFMT_CBM_CFM:
-> +			/* BCLK and LRCLK slave */
-> +			val = 0;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> +				   SUN8I_I2S_CTRL_BCLK_OUT |
-> +				   SUN8I_I2S_CTRL_LRCK_OUT,
-> +				   val);
->  	}
->  
->  	/* Set significant bits in our FIFOs */
-> @@ -642,6 +737,15 @@ static bool sun4i_i2s_volatile_reg(struct device *dev, unsigned int reg)
->  	}
->  }
->  
-> +static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
-> +{
-> +
-> +	if (reg == SUN8I_I2S_INT_STA_REG)
-> +		return true;
-> +
-> +	return sun4i_i2s_volatile_reg(dev, reg);
-> +}
+Please keep Takashi and myself in the copies here.
 
-This means that SUN8I_I2S_FIFO_TX_REG will be treated as volatile.
+--qorwvjtdy5zipkk4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks!
-maxime
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---47eea77pdbrntzuw--
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll3WzkACgkQJNaLcl1U
+h9DBPAf/b2hkjl5i4W65Dc3OlWvVjU+BbAym64RgGJ4mjKDJhuaDiL1fGdnMWZ7p
+IMChDXoeQ5a+jlhW+YaYrK8FVKD0lllr3XWsL19ywXsDb01a7W4Av3mFSL6iuPAG
+l97jSLlT+HDrVTnKY9N7f+5Vck974Q1uf3r8V32Ps1D/Rc4XNqFVOwoJgs81pjzP
+R0eWwhJgALboMcrFZnlkZQblJQpwQb4Ok5JSeXYIooklmlEexPOPTcNYvGDgOC8O
+YfPkn0rWYMzM9EJeVKNQPgy+C45MTuZKqdeNB5J3zI0lG0N1Isl46wFL1s85he+R
+4Rar68ihOoKWYCbnUezgoWmddBjMcg==
+=/erK
+-----END PGP SIGNATURE-----
+
+--qorwvjtdy5zipkk4--
+
+--===============4453675541327116722==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4453675541327116722==--
