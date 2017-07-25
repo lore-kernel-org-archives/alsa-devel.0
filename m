@@ -1,51 +1,33 @@
 From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: [PATCH v1 1/3] ASoC: codecs: msm8916-analog: fix
-	DIG_CLK_CTL_RXD3_CLK_EN define
-Date: Tue, 25 Jul 2017 13:51:24 -0400
-Message-ID: <20170725175126.26578-2-damien.riegel@savoirfairelinux.com>
-References: <20170725175126.26578-1-damien.riegel@savoirfairelinux.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
- [208.88.110.44])
- by alsa0.perex.cz (Postfix) with ESMTP id C5F722672AF
- for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 19:53:11 +0200 (CEST)
-In-Reply-To: <20170725175126.26578-1-damien.riegel@savoirfairelinux.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH v1 0/3] add jack detection to MSM8916 analog
+Date: Tue, 25 Jul 2017 13:51:23 -0400
+Message-ID: <20170725175126.26578-1-damien.riegel@savoirfairelinux.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Damien Riegel <damien.riegel@savoirfairelinux.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com, Damien Riegel <damien.riegel@savoirfairelinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-The wrong bit is assigned to DIG_CLK_CTL_RXD3_CLK_EN, change it for the
-correct one.
+This series adds support for the MBHC (Multi-Button Headset Control) of
+the PM8916's analog codec. This IP is capable to identify up to five
+buttons on a headset, but for now only the jack detection is supported.
+A complete implementation exists in the Android kernel, but it's quite
+complex and I'd rather go step by step.
 
-Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+First patch fixes a define that is squatting a bit used by the MBHC.
+Second patch is the actual implementation of the jack detection, and
+third patch plugs the jack detection in the sound card driver.
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index aec1e1626993..0c351700044a 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -36,7 +36,7 @@
- #define CDC_D_CDC_DIG_CLK_CTL		(0xf04A)
- #define DIG_CLK_CTL_RXD1_CLK_EN		BIT(0)
- #define DIG_CLK_CTL_RXD2_CLK_EN		BIT(1)
--#define DIG_CLK_CTL_RXD3_CLK_EN		BIT(3)
-+#define DIG_CLK_CTL_RXD3_CLK_EN		BIT(2)
- #define DIG_CLK_CTL_TXD_CLK_EN		BIT(4)
- #define DIG_CLK_CTL_NCP_CLK_EN_MASK	BIT(6)
- #define DIG_CLK_CTL_NCP_CLK_EN		BIT(6)
+Damien Riegel (3):
+  ASoC: codecs: msm8916-analog: fix DIG_CLK_CTL_RXD3_CLK_EN define
+  ASoC: codecs: msm8916-analog: support jack detection
+  ASoC: qcom: apq8016-sbc: enable jack detection
+
+ sound/soc/codecs/msm8916-wcd-analog.c | 105 +++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/msm8916-wcd-analog.h |  18 ++++++
+ sound/soc/qcom/apq8016_sbc.c          |  16 ++++++
+ 3 files changed, 138 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/codecs/msm8916-wcd-analog.h
+
 -- 
 2.13.3
