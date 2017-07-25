@@ -1,10 +1,8 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 11/11] ASoC: pxa-ssp: Handle return value of clk_prepare_enable.
-Date: Tue, 25 Jul 2017 15:46:10 +0530
-Message-ID: <1500977770-28142-2-git-send-email-arvind.yadav.cs@gmail.com>
-References: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 10/11] ASoC: pxa: Handle return value of clk_prepare_enable.
+Date: Tue, 25 Jul 2017 15:46:09 +0530
+Message-ID: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, lgirdwood@gmail.com
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
@@ -14,73 +12,28 @@ clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/pxa/pxa-ssp.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ sound/soc/pxa/pxa2xx-i2s.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 0291c7c..dad5cf62 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -97,7 +97,10 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
- 	int ret = 0;
- 
- 	if (!cpu_dai->active) {
--		clk_prepare_enable(ssp->clk);
-+		ret = clk_prepare_enable(ssp->clk);
-+		if (ret)
-+			return ret;
-+
- 		pxa_ssp_disable(ssp);
- 	}
- 
-@@ -134,9 +137,13 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 3fb60ba..2312c22 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -164,10 +164,14 @@ static int pxa2xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
  {
- 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ssp_device *ssp = priv->ssp;
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
 +	int ret;
  
--	if (!cpu_dai->active)
--		clk_prepare_enable(ssp->clk);
-+	if (!cpu_dai->active) {
-+		ret = clk_prepare_enable(ssp->clk);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	priv->cr0 = __raw_readl(ssp->mmio_base + SSCR0);
- 	priv->cr1 = __raw_readl(ssp->mmio_base + SSCR1);
-@@ -153,8 +160,11 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
- 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ssp_device *ssp = priv->ssp;
- 	uint32_t sssr = SSSR_ROR | SSSR_TUR | SSSR_BCE;
-+	int ret;
- 
--	clk_prepare_enable(ssp->clk);
-+	ret = clk_prepare_enable(ssp->clk);
+ 	if (WARN_ON(IS_ERR(clk_i2s)))
+ 		return -EINVAL;
+-	clk_prepare_enable(clk_i2s);
++	ret = clk_prepare_enable(clk_i2s);
 +	if (ret)
 +		return ret;
++
+ 	clk_ena = 1;
+ 	pxa_i2s_wait();
  
- 	__raw_writel(sssr, ssp->mmio_base + SSSR);
- 	__raw_writel(priv->cr0 & ~SSCR0_SSE, ssp->mmio_base + SSCR0);
-@@ -217,6 +227,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ssp_device *ssp = priv->ssp;
- 	int val;
-+	int ret = 0;
- 
- 	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0) &
- 		~(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
-@@ -260,9 +271,9 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
- 	pxa_ssp_write_reg(ssp, SSCR0, val);
- 	if (ssp->type != PXA3xx_SSP)
--		clk_prepare_enable(ssp->clk);
-+		ret = clk_prepare_enable(ssp->clk);
- 
--	return 0;
-+	return ret;
- }
- 
- /*
 -- 
 1.9.1
