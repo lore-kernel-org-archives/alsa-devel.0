@@ -1,48 +1,54 @@
-From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: codec: add DT support in dmic codec
-Date: Tue, 25 Jul 2017 10:48:14 +0200
-Message-ID: <1500972494-10696-3-git-send-email-arnaud.pouliquen@st.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH 1/2] ASoC: Add bindings for DMIC codec driver
+Date: Tue, 25 Jul 2017 10:48:13 +0200
+Message-ID: <1500972494-10696-2-git-send-email-arnaud.pouliquen@st.com>
 References: <1500972494-10696-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1500972494-10696-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 66ACE266C25
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 10:48:30 +0200 (CEST)
+In-Reply-To: <1500972494-10696-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Takashi Iwai <tiwai@suse.de>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add of_table to allows DT probing.
+This patch adds documentation of device tree bindings for audio DMIC codec.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- sound/soc/codecs/dmic.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/devicetree/bindings/sound/dmic.txt | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/dmic.txt
 
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index c82b9dc..d50f142 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -73,9 +73,15 @@ static int dmic_dev_remove(struct platform_device *pdev)
- 
- MODULE_ALIAS("platform:dmic-codec");
- 
-+static const struct of_device_id dmic_dev_match[] = {
-+	{.compatible = "dmic-codec"},
-+	{}
-+};
+diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
+new file mode 100644
+index 0000000..a0c58f2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/dmic.txt
+@@ -0,0 +1,12 @@
++Device-Tree bindings for Digital microphone (DMIC) codec
 +
- static struct platform_driver dmic_driver = {
- 	.driver = {
- 		.name = "dmic-codec",
-+		.of_match_table = dmic_dev_match,
- 	},
- 	.probe = dmic_dev_probe,
- 	.remove = dmic_dev_remove,
++This device support generic PDM digital microphone.
++
++Required properties:
++	- compatible: should be "dmic-codec".
++
++Example node:
++
++	dmic_codec: dmic@0 {
++		compatible = "dmic-codec";
++	};
 -- 
 2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
