@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: jz4740: Handle return value of clk_prepare_enable." to the asoc tree
-Date: Wed, 26 Jul 2017 15:16:54 +0100
-Message-ID: <E1daN7O-0003TF-0C@debutante>
-References: <1500977674-27960-8-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: atmel: ac97c: Handle return value of clk_prepare_enable." to the asoc tree
+Date: Wed, 26 Jul 2017 15:16:46 +0100
+Message-ID: <E1daN7G-0003RB-2f@debutante>
+References: <1500977737-28056-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1500977674-27960-8-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1500977737-28056-1-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.combroonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: jz4740: Handle return value of clk_prepare_enable.
+   ASoC: atmel: ac97c: Handle return value of clk_prepare_enable.
 
 has been applied to the asoc tree at
 
@@ -37,75 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From eae37345c8653a3c797c1763c95289d924ee37a2 Mon Sep 17 00:00:00 2001
+>From 260ea95cc027500ee5086e2ef568b8c915e66fb5 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Tue, 25 Jul 2017 15:44:34 +0530
-Subject: [PATCH] ASoC: jz4740: Handle return value of clk_prepare_enable.
+Date: Tue, 25 Jul 2017 15:45:37 +0530
+Subject: [PATCH] ASoC: atmel: ac97c: Handle return value of
+ clk_prepare_enable.
 
 clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ sound/atmel/ac97c.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 794a3499e567..99394c036998 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -133,6 +133,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 9d2c9d9af688..52b0522fda20 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -783,7 +783,9 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+ 		dev_dbg(&pdev->dev, "no peripheral clock\n");
+ 		return PTR_ERR(pclk);
+ 	}
+-	clk_prepare_enable(pclk);
++	retval = clk_prepare_enable(pclk);
++	if (retval)
++		return retval;
+ 
+ 	retval = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1,
+ 			      SNDRV_DEFAULT_STR1, THIS_MODULE,
+@@ -897,9 +899,9 @@ static int atmel_ac97c_resume(struct device *pdev)
  {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	uint32_t conf, ctrl;
-+	int ret;
+ 	struct snd_card *card = dev_get_drvdata(pdev);
+ 	struct atmel_ac97c *chip = card->private_data;
++	int ret = clk_prepare_enable(chip->pclk);
  
- 	if (dai->active)
- 		return 0;
-@@ -141,7 +142,9 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
- 	ctrl |= JZ_AIC_CTRL_FLUSH;
- 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
+-	clk_prepare_enable(chip->pclk);
+-	return 0;
++	return ret;
+ }
  
--	clk_prepare_enable(i2s->clk_i2s);
-+	ret = clk_prepare_enable(i2s->clk_i2s);
-+	if (ret)
-+		return ret;
- 
- 	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
- 	conf |= JZ_AIC_CONF_ENABLE;
-@@ -352,11 +355,18 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	uint32_t conf;
-+	int ret;
- 
--	clk_prepare_enable(i2s->clk_aic);
-+	ret = clk_prepare_enable(i2s->clk_aic);
-+	if (ret)
-+		return ret;
- 
- 	if (dai->active) {
--		clk_prepare_enable(i2s->clk_i2s);
-+		ret = clk_prepare_enable(i2s->clk_i2s);
-+		if (ret) {
-+			clk_disable_unprepare(i2s->clk_aic);
-+			return ret;
-+		}
- 
- 		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
- 		conf |= JZ_AIC_CONF_ENABLE;
-@@ -387,8 +397,11 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 	uint32_t conf;
-+	int ret;
- 
--	clk_prepare_enable(i2s->clk_aic);
-+	ret = clk_prepare_enable(i2s->clk_aic);
-+	if (ret)
-+		return ret;
- 
- 	jz4740_i2c_init_pcm_config(i2s);
- 	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
+ static SIMPLE_DEV_PM_OPS(atmel_ac97c_pm, atmel_ac97c_suspend, atmel_ac97c_resume);
 -- 
 2.13.2
