@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: s3c2412: Handle return value of clk_prepare_enable." to the asoc tree
-Date: Wed, 26 Jul 2017 15:17:12 +0100
-Message-ID: <E1daN7g-0003Ze-AF@debutante>
-References: <1500977674-27960-2-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1500977674-27960-2-git-send-email-arvind.yadav.cs@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: sun4i-spdif: Handle return value of
+ clk_prepare_enable." to the asoc tree
+Date: Wed, 26 Jul 2017 15:16:49 +0100
+Message-ID: <E1daN7J-0003SG-Kd@debutante>
+References: <1500977718-28010-1-git-send-email-arvind.yadav.cs@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1500977718-28010-1-git-send-email-arvind.yadav.cs@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.combroonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: s3c2412: Handle return value of clk_prepare_enable.
+   ASoC: sun4i-spdif: Handle return value of clk_prepare_enable.
 
 has been applied to the asoc tree at
 
@@ -37,34 +49,42 @@ to this mail.
 Thanks,
 Mark
 
->From d2d2c0a0f0e230e9650e778d0d5c7ed6d1bcffb0 Mon Sep 17 00:00:00 2001
+>From 3643e9172649f97f2e6301582890202abcc0f97e Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Tue, 25 Jul 2017 15:44:28 +0530
-Subject: [PATCH] ASoC: samsung: s3c2412: Handle return value of
- clk_prepare_enable.
+Date: Tue, 25 Jul 2017 15:45:18 +0530
+Subject: [PATCH] ASoC: sun4i-spdif: Handle return value of clk_prepare_enable.
 
 clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c2412-i2s.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-spdif.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 0a4718207e6e..bcd1cbdeac93 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -71,7 +71,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
- 	/* Set MPLL as the source for IIS CLK */
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index c49f3757b686..b4af4aabead1 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -458,11 +458,16 @@ static int sun4i_spdif_runtime_suspend(struct device *dev)
+ static int sun4i_spdif_runtime_resume(struct device *dev)
+ {
+ 	struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
++	int ret;
  
- 	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
--	clk_prepare_enable(s3c2412_i2s.iis_cclk);
-+	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
+-	clk_prepare_enable(host->spdif_clk);
+-	clk_prepare_enable(host->apb_clk);
++	ret = clk_prepare_enable(host->spdif_clk);
 +	if (ret)
 +		return ret;
++	ret = clk_prepare_enable(host->apb_clk);
++	if (ret)
++		clk_disable_unprepare(host->spdif_clk);
  
- 	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
+-	return 0;
++	return ret;
+ }
  
+ static int sun4i_spdif_probe(struct platform_device *pdev)
 -- 
 2.13.2
