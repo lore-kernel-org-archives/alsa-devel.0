@@ -1,47 +1,77 @@
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v2 01/11] ASoC: samsung: s3c2412: Handle return value of
- clk_prepare_enable.
-Date: Wed, 26 Jul 2017 17:45:07 +0200
-Message-ID: <20170726154507.GA2577@kozik-book>
-References: <84c0014d4dbd466f52c45d8efbd2c1080d8174fb.1501047400.git.arvind.yadav.cs@gmail.com>
+Subject: Re: Applied "ASoC: samsung: s3c2412: Handle return value of
+ clk_prepare_enable." to the asoc tree
+Date: Wed, 26 Jul 2017 17:46:42 +0200
+Message-ID: <20170726154642.GB2577@kozik-book>
+References: <1500977674-27960-2-git-send-email-arvind.yadav.cs@gmail.com>
+ <E1daN7g-0003Ze-AF@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <84c0014d4dbd466f52c45d8efbd2c1080d8174fb.1501047400.git.arvind.yadav.cs@gmail.com>
+In-Reply-To: <E1daN7g-0003Ze-AF@debutante>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, perex@perex.cz, tiwai@suse.com, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 26, 2017 at 11:15:25AM +0530, Arvind Yadav wrote:
+On Wed, Jul 26, 2017 at 03:17:12PM +0100, Mark Brown wrote:
+> The patch
+> 
+>    ASoC: samsung: s3c2412: Handle return value of clk_prepare_enable.
+> 
+> has been applied to the asoc tree at
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> 
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.  
+> 
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+> 
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+> 
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+> 
+> Thanks,
+> Mark
+> 
+> From d2d2c0a0f0e230e9650e778d0d5c7ed6d1bcffb0 Mon Sep 17 00:00:00 2001
+> From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> Date: Tue, 25 Jul 2017 15:44:28 +0530
+> Subject: [PATCH] ASoC: samsung: s3c2412: Handle return value of
+>  clk_prepare_enable.
+> 
 > clk_prepare_enable() can fail here and we must check its return value.
 > 
 > Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
-> Chnage in v2 :
->              Error handling for things done in s3c_i2sv2_probe().
-> 
->  sound/soc/samsung/s3c2412-i2s.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+>  sound/soc/samsung/s3c2412-i2s.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 > diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-> index 0a47182..0b96927 100644
+> index 0a4718207e6e..bcd1cbdeac93 100644
 > --- a/sound/soc/samsung/s3c2412-i2s.c
 > +++ b/sound/soc/samsung/s3c2412-i2s.c
-> @@ -65,13 +65,16 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
->  	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
->  	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
->  		pr_err("failed to get i2sclk clock\n");
-> -		return PTR_ERR(s3c2412_i2s.iis_cclk);
-> +		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
-> +		goto err;
+> @@ -71,7 +71,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+>  	/* Set MPLL as the source for IIS CLK */
+>  
+>  	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
+> -	clk_prepare_enable(s3c2412_i2s.iis_cclk);
+> +	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
+> +	if (ret)
+> +		return ret;
 
-No, this is kind of messy and error-prone. I think that each unit should
-rather clean by itself. You should not touch s3c_i2sv2 stuff directly.
-
-Instead define a s3c_i2sv2_cleanup() (or remove() to match the
-convention?) and call it here on error-paths.
+Mark, this is the patch still discussed. It does not handle the error
+correctly. I think it should be dropped.
 
 Best regards,
 Krzysztof
