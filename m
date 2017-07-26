@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mxs-saif: Handle return value of clk_prepare_enable/clk_prepare." to the asoc tree
-Date: Wed, 26 Jul 2017 15:16:57 +0100
-Message-ID: <E1daN7R-0003UE-4D@debutante>
-References: <1500977674-27960-7-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: samsung: pcm: Handle return value of clk_prepare_enable." to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:06 +0100
+Message-ID: <E1daN7a-0003XG-AM@debutante>
+References: <1500977674-27960-4-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1500977674-27960-7-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1500977674-27960-4-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.combroonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mxs-saif: Handle return value of clk_prepare_enable/clk_prepare.
+   ASoC: samsung: pcm: Handle return value of clk_prepare_enable.
 
 has been applied to the asoc tree at
 
@@ -37,65 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From 0d97ee867958a092f02e9cd7c865c278bcec18a6 Mon Sep 17 00:00:00 2001
+>From a7ad9a88300c813a945793e9dae84ceaf7809141 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Tue, 25 Jul 2017 15:44:33 +0530
-Subject: [PATCH] ASoC: mxs-saif: Handle return value of
- clk_prepare_enable/clk_prepare.
+Date: Tue, 25 Jul 2017 15:44:30 +0530
+Subject: [PATCH] ASoC: samsung: pcm: Handle return value of
+ clk_prepare_enable.
 
-clk_prepare_enable() and clk_prepare() can fail here and
-we must check its return value.
+clk_prepare_enable() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mxs/mxs-saif.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ sound/soc/samsung/pcm.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index b42f301c6b96..156aa7c00787 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -125,7 +125,9 @@ static int mxs_saif_set_clk(struct mxs_saif *saif,
- 	 *
- 	 * If MCLK is not used, we just set saif clk to 512*fs.
- 	 */
--	clk_prepare_enable(master_saif->clk);
-+	ret = clk_prepare_enable(master_saif->clk);
-+	if (ret)
-+		return ret;
- 
- 	if (master_saif->mclk_in_use) {
- 		switch (mclk / rate) {
-@@ -388,6 +390,7 @@ static int mxs_saif_startup(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *cpu_dai)
- {
- 	struct mxs_saif *saif = snd_soc_dai_get_drvdata(cpu_dai);
-+	int ret;
- 
- 	/* clear error status to 0 for each re-open */
- 	saif->fifo_underrun = 0;
-@@ -401,7 +404,9 @@ static int mxs_saif_startup(struct snd_pcm_substream *substream,
- 	__raw_writel(BM_SAIF_CTRL_CLKGATE,
- 		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
- 
--	clk_prepare(saif->clk);
-+	ret = clk_prepare(saif->clk);
-+	if (ret)
-+		return ret;
- 
- 	return 0;
- }
-@@ -468,7 +473,9 @@ static int mxs_saif_hw_params(struct snd_pcm_substream *substream,
- 		if (ret)
- 			return ret;
- 
--		clk_prepare(master_saif->clk);
-+		ret = clk_prepare(master_saif->clk);
-+		if (ret)
-+			return ret;
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index d50a6377c23d..37f95eee1558 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -522,7 +522,9 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "failed to get audio-bus clock\n");
+ 		return PTR_ERR(pcm->cclk);
  	}
+-	clk_prepare_enable(pcm->cclk);
++	ret = clk_prepare_enable(pcm->cclk);
++	if (ret)
++		return ret;
  
- 	scr = __raw_readl(saif->base + SAIF_CTRL);
+ 	/* record our pcm structure for later use in the callbacks */
+ 	dev_set_drvdata(&pdev->dev, pcm);
+@@ -533,7 +535,9 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR(pcm->pclk);
+ 		goto err_dis_cclk;
+ 	}
+-	clk_prepare_enable(pcm->pclk);
++	ret = clk_prepare_enable(pcm->pclk);
++	if (ret)
++		goto err_dis_cclk;
+ 
+ 	s3c_pcm_stereo_in[pdev->id].addr = mem_res->start + S3C_PCM_RXFIFO;
+ 	s3c_pcm_stereo_out[pdev->id].addr = mem_res->start + S3C_PCM_TXFIFO;
 -- 
 2.13.2
