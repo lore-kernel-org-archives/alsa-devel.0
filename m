@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix missing sentinels
-	in sst_acpi_mach" to the asoc tree
-Date: Wed, 26 Jul 2017 15:16:40 +0100
-Message-ID: <E1daN7A-0003Py-Ud@debutante>
-References: <1500964692-20866-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AF29A26742B
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:16:49 +0200 (CEST)
-In-Reply-To: <1500964692-20866-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: jz4740: Handle return value of clk_prepare_enable." to the asoc tree
+Date: Wed, 26 Jul 2017 15:16:54 +0100
+Message-ID: <E1daN7O-0003TF-0C@debutante>
+References: <1500977674-27960-8-git-send-email-arvind.yadav.cs@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1500977674-27960-8-git-send-email-arvind.yadav.cs@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.combroonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix missing sentinels in sst_acpi_mach
+   ASoC: jz4740: Handle return value of clk_prepare_enable.
 
 has been applied to the asoc tree at
 
@@ -53,39 +37,75 @@ to this mail.
 Thanks,
 Mark
 
->From b76e3f933327f9fd9df9a65a2d239e6e350cbee2 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Tue, 25 Jul 2017 12:08:12 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix missing sentinels in sst_acpi_mach
+>From eae37345c8653a3c797c1763c95289d924ee37a2 Mon Sep 17 00:00:00 2001
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Date: Tue, 25 Jul 2017 15:44:34 +0530
+Subject: [PATCH] ASoC: jz4740: Handle return value of clk_prepare_enable.
 
-Couple of instances of sst_acpi_mach were having missing sentinels
-so add them up
+clk_prepare_enable() can fail here and we must check its return value.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/jz4740/jz4740-i2s.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 334917ee41cf..9e3f8c04dd32 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -941,6 +941,7 @@ static struct sst_acpi_mach sst_bxtp_devdata[] = {
- 		.machine_quirk = sst_acpi_codec_list,
- 		.quirk_data = &bxt_codecs,
- 	},
-+	{}
- };
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index 794a3499e567..99394c036998 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -133,6 +133,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf, ctrl;
++	int ret;
  
- static struct sst_acpi_mach sst_kbl_devdata[] = {
-@@ -991,6 +992,7 @@ static struct sst_acpi_mach sst_glk_devdata[] = {
- 		.drv_name = "glk_alc298s_i2s",
- 		.fw_filename = "intel/dsp_fw_glk.bin",
- 	},
-+	{}
- };
+ 	if (dai->active)
+ 		return 0;
+@@ -141,7 +142,9 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
+ 	ctrl |= JZ_AIC_CTRL_FLUSH;
+ 	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
  
- /* PCI IDs */
+-	clk_prepare_enable(i2s->clk_i2s);
++	ret = clk_prepare_enable(i2s->clk_i2s);
++	if (ret)
++		return ret;
+ 
+ 	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
+ 	conf |= JZ_AIC_CONF_ENABLE;
+@@ -352,11 +355,18 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
+ {
+ 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
++	int ret;
+ 
+-	clk_prepare_enable(i2s->clk_aic);
++	ret = clk_prepare_enable(i2s->clk_aic);
++	if (ret)
++		return ret;
+ 
+ 	if (dai->active) {
+-		clk_prepare_enable(i2s->clk_i2s);
++		ret = clk_prepare_enable(i2s->clk_i2s);
++		if (ret) {
++			clk_disable_unprepare(i2s->clk_aic);
++			return ret;
++		}
+ 
+ 		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
+ 		conf |= JZ_AIC_CONF_ENABLE;
+@@ -387,8 +397,11 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
++	int ret;
+ 
+-	clk_prepare_enable(i2s->clk_aic);
++	ret = clk_prepare_enable(i2s->clk_aic);
++	if (ret)
++		return ret;
+ 
+ 	jz4740_i2c_init_pcm_config(i2s);
+ 	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
 -- 
 2.13.2
