@@ -1,7 +1,7 @@
 From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH RESEND v3 0/3] Add support for es8323 and hdmi audio to the firefly-rk3288
-Date: Wed, 26 Jul 2017 15:55:19 +0200
-Message-ID: <20170726135526.475-5-romain.perier@collabora.com>
+Subject: [PATCH RESEND v3 3/3] arm: dts: Add support for ES8323 to the Firefly-RK3288
+Date: Wed, 26 Jul 2017 15:55:18 +0200
+Message-ID: <20170726135526.475-4-romain.perier@collabora.com>
 References: <20170726135526.475-1-romain.perier@collabora.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <20170726135526.475-1-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
@@ -10,36 +10,85 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This set of patches enables support for the es8323 codecs on the
-firefly-rk3288. It adds the required DT definitions to link rockchip-i2s
-to the es8388 analog output. As the support for HDMI audio is also
-built-in in the corresponding ASoC machine driver, HDMI audio output is
-also enabled.
+This commit adds the DT definition of the es8388 i2c device found at
+address 0x10. It also adds the definition for connecting the Rockchip
+I2S to the es8323 analog output.
 
-Changes in v3:
- - Synced DT with the one of the Rock2, the properties have been
-   lexically re-ordered in the right order, I have splitted the
-   headphone pinctrl in two: phone_ctl and hp_det
-Changes in v2:
- - Adapted DT for the firefly-rk3288 to the ASoC machine driver
-   rk3288-hdmi-analog
- - Added patch 02/03 to this series
- - Re-wrote this cover letter
+Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+---
+ arch/arm/boot/dts/rk3288-firefly.dtsi | 38 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-Romain Perier (3):
-  SoC: es8328-i2c: Add compatible for ES8323
-  arm: dts: rockchip: Don't set otp-gpio pinctrl by default in
-    rk3288.dtsi
-  arm: dts: Add support for ES8323 to the Firefly-RK3288
-
- Documentation/devicetree/bindings/sound/es8328.txt |  5 ++-
- arch/arm/boot/dts/rk3288-evb.dtsi                  |  4 +++
- arch/arm/boot/dts/rk3288-firefly.dtsi              | 38 ++++++++++++++++++++++
- arch/arm/boot/dts/rk3288-veyron.dtsi               |  4 +++
- arch/arm/boot/dts/rk3288.dtsi                      |  4 ---
- sound/soc/codecs/es8328-i2c.c                      |  2 ++
- 6 files changed, 52 insertions(+), 5 deletions(-)
-
+diff --git a/arch/arm/boot/dts/rk3288-firefly.dtsi b/arch/arm/boot/dts/rk3288-firefly.dtsi
+index 32dabae12e67..24e3fe77bc42 100644
+--- a/arch/arm/boot/dts/rk3288-firefly.dtsi
++++ b/arch/arm/boot/dts/rk3288-firefly.dtsi
+@@ -116,6 +116,19 @@
+ 		};
+ 	};
+ 
++	sound-i2s {
++		compatible = "rockchip,rk3288-hdmi-analog";
++		pinctrl-names = "default";
++		pinctrl-0 = <&phone_ctl>, <&hp_det>;
++		rockchip,audio-codec = <&es8323>;
++		rockchip,hp-det-gpios = <&gpio7 15 GPIO_ACTIVE_HIGH>;
++		rockchip,hp-en-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;
++		rockchip,i2s-controller = <&i2s>;
++		rockchip,model = "I2S";
++		rockchip,routing = "Analog", "LOUT2",
++				   "Analog", "ROUT2";
++	};
++
+ 	vbat_wl: vcc_sys: vsys-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc_sys";
+@@ -389,6 +402,17 @@
+ 
+ &i2c2 {
+ 	status = "okay";
++
++	es8323: es8323@10 {
++		compatible = "everest,es8323", "everest,es8328";
++		reg = <0x10>;
++		AVDD-supply = <&vcca_33>;
++		DVDD-supply = <&vcca_33>;
++		HPVDD-supply = <&vcca_33>;
++		PVDD-supply = <&vcca_33>;
++		clocks = <&cru SCLK_I2S0_OUT>;
++		clock-names = "i2s_clk_out";
++	};
+ };
+ 
+ &i2c4 {
+@@ -399,6 +423,10 @@
+ 	status = "okay";
+ };
+ 
++&i2s {
++	status = "okay";
++};
++
+ &io_domains {
+ 	status = "okay";
+ 
+@@ -501,6 +529,16 @@
+ 		};
+ 	};
+ 
++	headphone {
++		hp_det: hp-det {
++			rockchip,pins = <7 15 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		phone_ctl: phone-ctl {
++			rockchip,pins = <0 10 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
+ 	usb_host {
+ 		host_vbus_drv: host-vbus-drv {
+ 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
 -- 
 2.11.0
 
