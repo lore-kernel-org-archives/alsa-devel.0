@@ -1,15 +1,16 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/2] ASoC: rt5670: fix wrong name of sto2 adc 2
-	mux
-Date: Wed, 26 Jul 2017 15:28:25 +0800
-Message-ID: <1501054106-25264-1-git-send-email-bardliao@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt5670: add symmetric_rates flag
+Date: Wed, 26 Jul 2017 15:28:26 +0800
+Message-ID: <1501054106-25264-2-git-send-email-bardliao@realtek.com>
+References: <1501054106-25264-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id C711B26648D
+ by alsa0.perex.cz (Postfix) with ESMTP id C95192673DF
  for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 09:28:51 +0200 (CEST)
+In-Reply-To: <1501054106-25264-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +24,32 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The kcontrol name of Stereo2 ADC 2 Mux is not matched with what we used
-in dapm widget.
+rt5670 requires symmetric rate of capture and playback.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt5670.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5670.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 0376667..2866f9b 100644
+index 2866f9b..0f4e5bc 100644
 --- a/sound/soc/codecs/rt5670.c
 +++ b/sound/soc/codecs/rt5670.c
-@@ -1175,7 +1175,7 @@ static const struct snd_kcontrol_new rt5670_sto_adc_2_mux =
- static SOC_ENUM_SINGLE_DECL(rt5670_stereo2_adc2_enum, RT5670_STO2_ADC_MIXER,
- 	RT5670_ADC_2_SRC_SFT, rt5670_stereo_adc2_src);
- 
--static const struct snd_kcontrol_new rt5670_sto2_adc_l_mux =
-+static const struct snd_kcontrol_new rt5670_sto2_adc_2_mux =
- 	SOC_DAPM_ENUM("Stereo2 ADC 2 Mux", rt5670_stereo2_adc2_enum);
- 
+@@ -2733,6 +2733,7 @@ static struct snd_soc_dai_driver rt5670_dai[] = {
+ 			.formats = RT5670_FORMATS,
+ 		},
+ 		.ops = &rt5670_aif_dai_ops,
++		.symmetric_rates = 1,
+ 	},
+ 	{
+ 		.name = "rt5670-aif2",
+@@ -2752,6 +2753,7 @@ static struct snd_soc_dai_driver rt5670_dai[] = {
+ 			.formats = RT5670_FORMATS,
+ 		},
+ 		.ops = &rt5670_aif_dai_ops,
++		.symmetric_rates = 1,
+ 	},
+ };
  
 -- 
 2.7.4
