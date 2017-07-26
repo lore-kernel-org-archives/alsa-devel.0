@@ -1,20 +1,19 @@
-From: fulgor fulgor <l.vanwinnendaele@gmail.com>
-Subject: intel sound device not detected
-Date: Wed, 26 Jul 2017 21:47:03 +0200
-Message-ID: <CALmBKtnKRHoVyqptM0Re_4OW+T1s=WZw5Cde+FTPADHLzkBFQw@mail.gmail.com>
-References: <CALmBKtm=GftMTgzpUAhkQdxmetHuLyUY3+We7Nt26TMWQOFy=w@mail.gmail.com>
- <CALmBKtkwQPN9Y+sD5Aw-mAr88mjs-nyKRqu-2db7HBapKKmnJQ@mail.gmail.com>
+From: "N, Harshapriya" <harshapriya.n@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Fix Kabylake machine driver
+ for pops and clicks
+Date: Wed, 26 Jul 2017 20:47:31 +0000
+Message-ID: <6030C7A2BCC49F4EBE16F6749B0C7F1A06D828D5@ORSMSX102.amr.corp.intel.com>
+References: <1501021659-8597-1-git-send-email-harshapriya.n@intel.com>
+ <20170726114943.dr4wktsn25vifcvb@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
- [209.85.161.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 11C87266BF5
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 21:47:04 +0200 (CEST)
-Received: by mail-yw0-f179.google.com with SMTP id l82so36050965ywc.2
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 12:47:04 -0700 (PDT)
-In-Reply-To: <CALmBKtkwQPN9Y+sD5Aw-mAr88mjs-nyKRqu-2db7HBapKKmnJQ@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82A00266B1C
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 22:47:36 +0200 (CEST)
+In-Reply-To: <20170726114943.dr4wktsn25vifcvb@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,17 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello
 
-I read a post from you in a mailling list
 
-I use manjaro with latest kernel but sound device is not detected
-
-could you help ?
-
-thanks
-
-fulgorit
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Wednesday, July 26, 2017 4:50 AM
+> To: N, Harshapriya <harshapriya.n@intel.com>
+> Cc: tiwai@suse.de; Koul, Vinod <vinod.koul@intel.com>; alsa-devel@alsa-
+> project.org
+> Subject: Re: [PATCH] ASoC: Intel: Fix Kabylake machine driver for pops and
+> clicks
+> 
+> On Tue, Jul 25, 2017 at 03:27:39PM -0700, Harsha Priya wrote:
+> > This patch adds fixes for the following issues in Kabylake machine
+> > driver
+> >
+> > 1. crackling noise in rt5663 headset codec 2. enabling 4 slot IV
+> > feedback for max98927 speaker amp codec 3. pop noise while recording
+> > from rt5514 dmic codec
+> 
+> This is three different fixes so I'd expect to see three different patches and
+> the changelog doesn't describe what the fixes actually do so it's much harder
+> to review.
+I am sending a patch series with 3 patches in it each fixing one issue. I have tried
+explaining in detail the fix in the commit message as well. 
