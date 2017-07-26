@@ -1,98 +1,156 @@
-From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH RESEND v3 3/3] arm: dts: Add support for ES8323 to the Firefly-RK3288
-Date: Wed, 26 Jul 2017 15:55:26 +0200
-Message-ID: <20170726135526.475-12-romain.perier@collabora.com>
-References: <20170726135526.475-1-romain.perier@collabora.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170726135526.475-1-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5670: merge ADC L/R Mux" to the asoc
+	tree
+Date: Wed, 26 Jul 2017 15:16:33 +0100
+Message-ID: <E1daN73-0003Nj-5u@debutante>
+References: <1501070420-17773-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C192B26742B
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:16:47 +0200 (CEST)
+In-Reply-To: <1501070420-17773-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the DT definition of the es8388 i2c device found at
-address 0x10. It also adds the definition for connecting the Rockchip
-I2S to the es8323 analog output.
+The patch
 
-Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+   ASoC: rt5670: merge ADC L/R Mux
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ea746a296df3670359ae7d43baa968b0a1a54a01 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 26 Jul 2017 20:00:19 +0800
+Subject: [PATCH] ASoC: rt5670: merge ADC L/R Mux
+
+Some ADC L/R Muxes share the some control bit. So, merge them.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm/boot/dts/rk3288-firefly.dtsi | 38 +++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ sound/soc/codecs/rt5670.c | 42 ++++++++++++++++--------------------------
+ 1 file changed, 16 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk3288-firefly.dtsi b/arch/arm/boot/dts/rk3288-firefly.dtsi
-index 32dabae12e67..24e3fe77bc42 100644
---- a/arch/arm/boot/dts/rk3288-firefly.dtsi
-+++ b/arch/arm/boot/dts/rk3288-firefly.dtsi
-@@ -116,6 +116,19 @@
- 		};
- 	};
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 174141fefc79..0f4e5bc4476f 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -1151,20 +1151,15 @@ static const char * const rt5670_stereo_adc1_src[] = {
+ static SOC_ENUM_SINGLE_DECL(rt5670_stereo1_adc1_enum, RT5670_STO1_ADC_MIXER,
+ 	RT5670_ADC_1_SRC_SFT, rt5670_stereo_adc1_src);
  
-+	sound-i2s {
-+		compatible = "rockchip,rk3288-hdmi-analog";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&phone_ctl>, <&hp_det>;
-+		rockchip,audio-codec = <&es8323>;
-+		rockchip,hp-det-gpios = <&gpio7 15 GPIO_ACTIVE_HIGH>;
-+		rockchip,hp-en-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;
-+		rockchip,i2s-controller = <&i2s>;
-+		rockchip,model = "I2S";
-+		rockchip,routing = "Analog", "LOUT2",
-+				   "Analog", "ROUT2";
-+	};
-+
- 	vbat_wl: vcc_sys: vsys-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc_sys";
-@@ -389,6 +402,17 @@
+-static const struct snd_kcontrol_new rt5670_sto_adc_l1_mux =
+-	SOC_DAPM_ENUM("Stereo1 ADC L1 source", rt5670_stereo1_adc1_enum);
+-
+-static const struct snd_kcontrol_new rt5670_sto_adc_r1_mux =
+-	SOC_DAPM_ENUM("Stereo1 ADC R1 source", rt5670_stereo1_adc1_enum);
++static const struct snd_kcontrol_new rt5670_sto_adc_1_mux =
++	SOC_DAPM_ENUM("Stereo1 ADC 1 Mux", rt5670_stereo1_adc1_enum);
  
- &i2c2 {
- 	status = "okay";
-+
-+	es8323: es8323@10 {
-+		compatible = "everest,es8323", "everest,es8328";
-+		reg = <0x10>;
-+		AVDD-supply = <&vcca_33>;
-+		DVDD-supply = <&vcca_33>;
-+		HPVDD-supply = <&vcca_33>;
-+		PVDD-supply = <&vcca_33>;
-+		clocks = <&cru SCLK_I2S0_OUT>;
-+		clock-names = "i2s_clk_out";
-+	};
- };
+ static SOC_ENUM_SINGLE_DECL(rt5670_stereo2_adc1_enum, RT5670_STO2_ADC_MIXER,
+ 	RT5670_ADC_1_SRC_SFT, rt5670_stereo_adc1_src);
  
- &i2c4 {
-@@ -399,6 +423,10 @@
- 	status = "okay";
- };
+-static const struct snd_kcontrol_new rt5670_sto2_adc_l1_mux =
+-	SOC_DAPM_ENUM("Stereo2 ADC L1 source", rt5670_stereo2_adc1_enum);
++static const struct snd_kcontrol_new rt5670_sto2_adc_1_mux =
++	SOC_DAPM_ENUM("Stereo2 ADC 1 Mux", rt5670_stereo2_adc1_enum);
  
-+&i2s {
-+	status = "okay";
-+};
-+
- &io_domains {
- 	status = "okay";
+-static const struct snd_kcontrol_new rt5670_sto2_adc_r1_mux =
+-	SOC_DAPM_ENUM("Stereo2 ADC R1 source", rt5670_stereo2_adc1_enum);
  
-@@ -501,6 +529,16 @@
- 		};
- 	};
+ /* MX-27 MX-26 [11] */
+ static const char * const rt5670_stereo_adc2_src[] = {
+@@ -1174,20 +1169,15 @@ static const char * const rt5670_stereo_adc2_src[] = {
+ static SOC_ENUM_SINGLE_DECL(rt5670_stereo1_adc2_enum, RT5670_STO1_ADC_MIXER,
+ 	RT5670_ADC_2_SRC_SFT, rt5670_stereo_adc2_src);
  
-+	headphone {
-+		hp_det: hp-det {
-+			rockchip,pins = <7 15 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		phone_ctl: phone-ctl {
-+			rockchip,pins = <0 10 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
- 	usb_host {
- 		host_vbus_drv: host-vbus-drv {
- 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
+-static const struct snd_kcontrol_new rt5670_sto_adc_l2_mux =
+-	SOC_DAPM_ENUM("Stereo1 ADC L2 source", rt5670_stereo1_adc2_enum);
+-
+-static const struct snd_kcontrol_new rt5670_sto_adc_r2_mux =
+-	SOC_DAPM_ENUM("Stereo1 ADC R2 source", rt5670_stereo1_adc2_enum);
++static const struct snd_kcontrol_new rt5670_sto_adc_2_mux =
++	SOC_DAPM_ENUM("Stereo1 ADC 2 Mux", rt5670_stereo1_adc2_enum);
+ 
+ static SOC_ENUM_SINGLE_DECL(rt5670_stereo2_adc2_enum, RT5670_STO2_ADC_MIXER,
+ 	RT5670_ADC_2_SRC_SFT, rt5670_stereo_adc2_src);
+ 
+-static const struct snd_kcontrol_new rt5670_sto2_adc_l2_mux =
+-	SOC_DAPM_ENUM("Stereo2 ADC L2 source", rt5670_stereo2_adc2_enum);
++static const struct snd_kcontrol_new rt5670_sto2_adc_2_mux =
++	SOC_DAPM_ENUM("Stereo2 ADC 2 Mux", rt5670_stereo2_adc2_enum);
+ 
+-static const struct snd_kcontrol_new rt5670_sto2_adc_r2_mux =
+-	SOC_DAPM_ENUM("Stereo2 ADC R2 source", rt5670_stereo2_adc2_enum);
+ 
+ /* MX-27 MX26 [10] */
+ static const char * const rt5670_stereo_adc_src[] = {
+@@ -1642,23 +1632,23 @@ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Stereo1 DMIC Mux", SND_SOC_NOPM, 0, 0,
+ 			 &rt5670_sto1_dmic_mux),
+ 	SND_SOC_DAPM_MUX("Stereo1 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto_adc_l2_mux),
++			 &rt5670_sto_adc_2_mux),
+ 	SND_SOC_DAPM_MUX("Stereo1 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto_adc_r2_mux),
++			 &rt5670_sto_adc_2_mux),
+ 	SND_SOC_DAPM_MUX("Stereo1 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto_adc_l1_mux),
++			 &rt5670_sto_adc_1_mux),
+ 	SND_SOC_DAPM_MUX("Stereo1 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto_adc_r1_mux),
++			 &rt5670_sto_adc_1_mux),
+ 	SND_SOC_DAPM_MUX("Stereo2 DMIC Mux", SND_SOC_NOPM, 0, 0,
+ 			 &rt5670_sto2_dmic_mux),
+ 	SND_SOC_DAPM_MUX("Stereo2 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto2_adc_l2_mux),
++			 &rt5670_sto2_adc_2_mux),
+ 	SND_SOC_DAPM_MUX("Stereo2 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto2_adc_r2_mux),
++			 &rt5670_sto2_adc_2_mux),
+ 	SND_SOC_DAPM_MUX("Stereo2 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto2_adc_l1_mux),
++			 &rt5670_sto2_adc_1_mux),
+ 	SND_SOC_DAPM_MUX("Stereo2 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
+-			 &rt5670_sto2_adc_r1_mux),
++			 &rt5670_sto2_adc_1_mux),
+ 	SND_SOC_DAPM_MUX("Stereo2 ADC LR Mux", SND_SOC_NOPM, 0, 0,
+ 			 &rt5670_sto2_adc_lr_mux),
+ 	SND_SOC_DAPM_MUX("Mono DMIC L Mux", SND_SOC_NOPM, 0, 0,
 -- 
-2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.13.2
