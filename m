@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: constify acpi_device_id." to the asoc tree
-Date: Wed, 26 Jul 2017 15:17:33 +0100
-Message-ID: <E1daN81-0003hF-A1@debutante>
-References: <1500830607-17268-2-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: rt5663: constify acpi_device_id." to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:30 +0100
+Message-ID: <E1daN7y-0003gF-8l@debutante>
+References: <1500830607-17268-3-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1500830607-17268-2-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1500830607-17268-3-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: constify acpi_device_id.
+   ASoC: rt5663: constify acpi_device_id.
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8a43c2240c862bbf3fc612d0533b891bd75ec771 Mon Sep 17 00:00:00 2001
+>From 1d89147cc3dfef185e701baad437fa91c0977384 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Sun, 23 Jul 2017 22:53:24 +0530
-Subject: [PATCH] ASoC: rt5514: constify acpi_device_id.
+Date: Sun, 23 Jul 2017 22:53:25 +0530
+Subject: [PATCH] ASoC: rt5663: constify acpi_device_id.
 
 acpi_device_id are not supposed to change at runtime. All functions
 working with acpi_device_id provided by <acpi/acpi_bus.h> work with
@@ -49,20 +49,20 @@ const acpi_device_id. So mark the non-const structs as const.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 2 +-
+ sound/soc/codecs/rt5663.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 882fdc4a6fd4..3d0aea8f3801 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -1134,7 +1134,7 @@ MODULE_DEVICE_TABLE(of, rt5514_of_match);
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index a33202affeb1..271cc81f2aef 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -2956,7 +2956,7 @@ MODULE_DEVICE_TABLE(of, rt5663_of_match);
  #endif
  
  #ifdef CONFIG_ACPI
--static struct acpi_device_id rt5514_acpi_match[] = {
-+static const struct acpi_device_id rt5514_acpi_match[] = {
- 	{ "10EC5514", 0},
+-static struct acpi_device_id rt5663_acpi_match[] = {
++static const struct acpi_device_id rt5663_acpi_match[] = {
+ 	{ "10EC5663", 0},
  	{},
  };
 -- 
