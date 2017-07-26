@@ -1,48 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 2/3] ASoC: codecs: msm8916-analog: support jack
- detection
-Date: Wed, 26 Jul 2017 17:23:18 +0100
-Message-ID: <20170726162318.hwomo5s56vxlzpkm@sirena.org.uk>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v1 3/3] ASoC: qcom: apq8016-sbc: enable jack detection
+Date: Wed, 26 Jul 2017 17:31:28 +0100
+Message-ID: <009fc5d3-9ee2-c153-f208-df10b62d7467@linaro.org>
 References: <20170725175126.26578-1-damien.riegel@savoirfairelinux.com>
- <20170725175126.26578-3-damien.riegel@savoirfairelinux.com>
+ <20170725175126.26578-4-damien.riegel@savoirfairelinux.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="psuwujjutheqfzxf"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170725175126.26578-3-damien.riegel@savoirfairelinux.com>
+In-Reply-To: <20170725175126.26578-4-damien.riegel@savoirfairelinux.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, kernel@savoirfairelinux.com
 List-Id: alsa-devel@alsa-project.org
 
 
---psuwujjutheqfzxf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jul 25, 2017 at 01:51:25PM -0400, Damien Riegel wrote:
+On 25/07/17 18:51, Damien Riegel wrote:
+> Now that the pm8916 audio codec has support for jack detection, let the
+> sound card driver use it.
 
-> +int pm8916_wcd_analog_jack_detect(struct snd_soc_codec *codec,
-> +				  struct snd_soc_jack *jack)
-> +{
+> 
+> Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+> ---
+>   sound/soc/qcom/apq8016_sbc.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+> index d084d7468299..5f03f6249397 100644
+> --- a/sound/soc/qcom/apq8016_sbc.c
+> +++ b/sound/soc/qcom/apq8016_sbc.c
+> @@ -19,11 +19,14 @@
+>   #include <linux/of.h>
+>   #include <linux/clk.h>
+>   #include <linux/platform_device.h>
+> +#include <sound/jack.h>
+>   #include <sound/pcm.h>
+>   #include <sound/pcm_params.h>
+>   #include <sound/soc.h>
+>   #include <dt-bindings/sound/apq8016-lpass.h>
+>   
+> +#include "../codecs/msm8916-wcd-analog.h"
+> +
+>   struct apq8016_sbc_data {
+>   	void __iomem *mic_iomux;
+>   	void __iomem *spkr_iomux;
+> @@ -35,13 +38,26 @@ struct apq8016_sbc_data {
+>   #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
+>   #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
+>   
+> +static struct snd_soc_jack apq8016_jack;
+> +
+>   static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+>   {
+>   	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	struct snd_soc_card *card = rtd->card;
+> +	struct snd_soc_codec *codec = rtd->codec;
 
-Sorry, also meant to mention: use the set_jack() operation to make it
-easier to use with generic cards.
+This driver uses multicodec, so this will not work to start with.
+Also this function is used for different codec devices on the SOC, so we 
+should take care that we are might be talking to 3 different possible 
+codecs.
 
---psuwujjutheqfzxf
-Content-Type: application/pgp-signature; name="signature.asc"
+>   	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
+>   	int rval = 0;
+>   
+> +	if (!apq8016_jack.jack) {
+> +		rval = snd_soc_card_jack_new(card, "headset",
+> +					     SND_JACK_MECHANICAL,
+> +					     &apq8016_jack, NULL, 0);
+> +		if (rval)
+> +			return rval;
+> +
+> +		pm8916_wcd_analog_jack_detect(codec, &apq8016_jack);
+We already have an api to do this snd_soc_codec_set_jack()
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll4wfYACgkQJNaLcl1U
-h9C6Ewf9EPXM9uxpBbXsDCJn+HXJHH22VpCfjkgPC8YuGhMDZXUfGGHr0xHFwKUr
-cvGyqGxbzsKZ++Z5p837yYtWiWp8a/UFwuZtnzrULdv0IIMMCQpzfwHWgSNb/6G5
-JsotTiSkrnqteanXPb84iAefjtqprk6lP+mDc5YN8+5LHbX2XMQE1IPGCuvDdOWH
-gy+K49vPykPbd8aqe6bA65+UudD8w+DqXBcSmb3zRCA4eVufuoevKdqEW5IiFjri
-8yAvqXc13/pWldNmujH1O6tjyg8sRuNSPFaH2G4Zv3ycxrLmafUyTOixGkRHo0VS
-H8ZpvhTSUi/ns4e/7Gj0UPvsdmdYoA==
-=J1vP
------END PGP SIGNATURE-----
-
---psuwujjutheqfzxf--
+> +	}
+> +
+>   	switch (cpu_dai->id) {
+>   	case MI2S_PRIMARY:
+>   		writel(readl(pdata->spkr_iomux) | SPKR_CTL_PRI_WS_SLAVE_SEL_11,
+> 
