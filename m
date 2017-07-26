@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Add the I2S ASRC support" to
-	the asoc tree
-Date: Wed, 26 Jul 2017 15:17:36 +0100
-Message-ID: <E1daN84-0003iM-A8@debutante>
-References: <1500881663-28990-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rsnd: don't use private_value on
+	rsnd_kctrl_new()" to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:39 +0100
+Message-ID: <E1daN87-0003ja-SR@debutante>
+References: <8760eiy5nj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B1DF267472
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:45 +0200 (CEST)
-In-Reply-To: <1500881663-28990-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BE55267467
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:46 +0200 (CEST)
+In-Reply-To: <8760eiy5nj.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, harshapriya.n@intel.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Add the I2S ASRC support
+   ASoC: rsnd: don't use private_value on rsnd_kctrl_new()
 
 has been applied to the asoc tree at
 
@@ -52,111 +53,104 @@ to this mail.
 Thanks,
 Mark
 
->From 1628ef89042fdb90aaea657942455e00e160174d Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Mon, 24 Jul 2017 15:34:23 +0800
-Subject: [PATCH] ASoC: rt5514: Add the I2S ASRC support
+>From 16d4498962c7b76a76553e8dd943abe1e9facc0d Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 24 Jul 2017 01:45:59 +0000
+Subject: [PATCH] ASoC: rsnd: don't use private_value on rsnd_kctrl_new()
 
-The patch adds the I2S ASRC support.
+Current rsnd kctrl is using both .private_value (for rsnd_kctrl_cfg)
+and .private_data (for rsnd_mod) on snd_kcontrol.
+But only 1 private data (= rsnd_kctrl_cfg) can be enough if it has
+rsnd_mod pointer.
+This patch doesn't use private_value.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 19 +++++++++++++++++++
- sound/soc/codecs/rt5514.h |  7 +++++++
- 2 files changed, 26 insertions(+)
+ sound/soc/sh/rcar/core.c | 14 ++++++--------
+ sound/soc/sh/rcar/rsnd.h |  1 +
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index a105c84ef555..882fdc4a6fd4 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -63,6 +63,7 @@ static const struct reg_sequence rt5514_patch[] = {
- 	{RT5514_SRC_CTRL,		0x44000eee},
- 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
- 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
-+	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 3f2ced26ed37..acafb838b7b7 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1169,11 +1169,10 @@ static struct snd_pcm_ops rsnd_pcm_ops = {
+ /*
+  *		snd_kcontrol
+  */
+-#define kcontrol_to_cfg(kctrl) ((struct rsnd_kctrl_cfg *)kctrl->private_value)
+ static int rsnd_kctrl_info(struct snd_kcontrol *kctrl,
+ 			   struct snd_ctl_elem_info *uinfo)
+ {
+-	struct rsnd_kctrl_cfg *cfg = kcontrol_to_cfg(kctrl);
++	struct rsnd_kctrl_cfg *cfg = snd_kcontrol_chip(kctrl);
+ 
+ 	if (cfg->texts) {
+ 		uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+@@ -1199,7 +1198,7 @@ static int rsnd_kctrl_info(struct snd_kcontrol *kctrl,
+ static int rsnd_kctrl_get(struct snd_kcontrol *kctrl,
+ 			  struct snd_ctl_elem_value *uc)
+ {
+-	struct rsnd_kctrl_cfg *cfg = kcontrol_to_cfg(kctrl);
++	struct rsnd_kctrl_cfg *cfg = snd_kcontrol_chip(kctrl);
+ 	int i;
+ 
+ 	for (i = 0; i < cfg->size; i++)
+@@ -1214,8 +1213,7 @@ static int rsnd_kctrl_get(struct snd_kcontrol *kctrl,
+ static int rsnd_kctrl_put(struct snd_kcontrol *kctrl,
+ 			  struct snd_ctl_elem_value *uc)
+ {
+-	struct rsnd_mod *mod = snd_kcontrol_chip(kctrl);
+-	struct rsnd_kctrl_cfg *cfg = kcontrol_to_cfg(kctrl);
++	struct rsnd_kctrl_cfg *cfg = snd_kcontrol_chip(kctrl);
+ 	int i, change = 0;
+ 
+ 	if (!cfg->accept(cfg->io))
+@@ -1232,7 +1230,7 @@ static int rsnd_kctrl_put(struct snd_kcontrol *kctrl,
+ 	}
+ 
+ 	if (change && cfg->update)
+-		cfg->update(cfg->io, mod);
++		cfg->update(cfg->io, cfg->mod);
+ 
+ 	return change;
+ }
+@@ -1284,14 +1282,13 @@ int rsnd_kctrl_new(struct rsnd_mod *mod,
+ 		.index		= rtd->num,
+ 		.get		= rsnd_kctrl_get,
+ 		.put		= rsnd_kctrl_put,
+-		.private_value	= (unsigned long)cfg,
+ 	};
+ 	int ret;
+ 
+ 	if (size > RSND_MAX_CHANNELS)
+ 		return -EINVAL;
+ 
+-	kctrl = snd_ctl_new1(&knew, mod);
++	kctrl = snd_ctl_new1(&knew, cfg);
+ 	if (!kctrl)
+ 		return -ENOMEM;
+ 
+@@ -1307,6 +1304,7 @@ int rsnd_kctrl_new(struct rsnd_mod *mod,
+ 	cfg->card	= card;
+ 	cfg->kctrl	= kctrl;
+ 	cfg->io		= io;
++	cfg->mod	= mod;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 99c57611df88..c5de71f2dc8c 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -614,6 +614,7 @@ struct rsnd_kctrl_cfg {
+ 	struct rsnd_dai_stream *io;
+ 	struct snd_card *card;
+ 	struct snd_kcontrol *kctrl;
++	struct rsnd_mod *mod;
  };
  
- static const struct reg_default rt5514_reg[] = {
-@@ -471,6 +472,15 @@ static int rt5514_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
- 		return 0;
- }
- 
-+static int rt5514_i2s_use_asrc(struct snd_soc_dapm_widget *source,
-+	struct snd_soc_dapm_widget *sink)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
-+	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
-+
-+	return (rt5514->sysclk > rt5514->lrck * 384);
-+}
-+
- static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
- 	/* Input Lines */
- 	SND_SOC_DAPM_INPUT("DMIC1L"),
-@@ -541,6 +551,10 @@ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
- 		RT5514_POW_PLL1_LDO_BIT, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("PLL1", RT5514_PWR_ANA2, RT5514_POW_PLL1_BIT, 0,
- 		NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ASRC AD1", 1, RT5514_CLK_CTRL2,
-+		RT5514_CLK_AD0_ASRC_EN_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("ASRC AD2", 1, RT5514_CLK_CTRL2,
-+		RT5514_CLK_AD1_ASRC_EN_BIT, 0, NULL, 0),
- 
- 	/* ADC Mux */
- 	SND_SOC_DAPM_MUX("Stereo1 DMIC Mux", SND_SOC_NOPM, 0, 0,
-@@ -638,6 +652,7 @@ static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
- 	{ "Stereo1 ADC MIX", NULL, "Stereo1 ADC MIXR" },
- 	{ "Stereo1 ADC MIX", NULL, "adc stereo1 filter" },
- 	{ "adc stereo1 filter", NULL, "PLL1", rt5514_is_sys_clk_from_pll },
-+	{ "adc stereo1 filter", NULL, "ASRC AD1", rt5514_i2s_use_asrc },
- 
- 	{ "Stereo2 DMIC Mux", "DMIC1", "DMIC1" },
- 	{ "Stereo2 DMIC Mux", "DMIC2", "DMIC2" },
-@@ -654,6 +669,7 @@ static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
- 	{ "Stereo2 ADC MIX", NULL, "Stereo2 ADC MIXR" },
- 	{ "Stereo2 ADC MIX", NULL, "adc stereo2 filter" },
- 	{ "adc stereo2 filter", NULL, "PLL1", rt5514_is_sys_clk_from_pll },
-+	{ "adc stereo2 filter", NULL, "ASRC AD2", rt5514_i2s_use_asrc },
- 
- 	{ "AIF1TX", NULL, "Stereo1 ADC MIX"},
- 	{ "AIF1TX", NULL, "Stereo2 ADC MIX"},
-@@ -706,6 +722,9 @@ static int rt5514_hw_params(struct snd_pcm_substream *substream,
- 
- 	regmap_update_bits(rt5514->regmap, RT5514_I2S_CTRL1, RT5514_I2S_DL_MASK,
- 		val_len);
-+	regmap_update_bits(rt5514->regmap, RT5514_CLK_CTRL1,
-+		RT5514_CLK_AD_ANA1_SEL_MASK,
-+		(pre_div + 1) << RT5514_CLK_AD_ANA1_SEL_SFT);
- 	regmap_update_bits(rt5514->regmap, RT5514_CLK_CTRL2,
- 		RT5514_CLK_SYS_DIV_OUT_MASK | RT5514_SEL_ADC_OSR_MASK,
- 		pre_div << RT5514_CLK_SYS_DIV_OUT_SFT |
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 75024a4bb7f5..2dc40e6d8b3f 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -37,6 +37,7 @@
- #define RT5514_PLL3_CALIB_CTRL5			0x2124
- #define RT5514_DELAY_BUF_CTRL1			0x2140
- #define RT5514_DELAY_BUF_CTRL3			0x2148
-+#define RT5514_ASRC_IN_CTRL1			0x2180
- #define RT5514_DOWNFILTER0_CTRL1		0x2190
- #define RT5514_DOWNFILTER0_CTRL2		0x2194
- #define RT5514_DOWNFILTER0_CTRL3		0x2198
-@@ -197,8 +198,14 @@
- #define RT5514_CLK_AD0_EN_BIT			23
- #define RT5514_CLK_DMIC_OUT_SEL_MASK		(0x7 << 8)
- #define RT5514_CLK_DMIC_OUT_SEL_SFT		8
-+#define RT5514_CLK_AD_ANA1_SEL_MASK		(0xf << 0)
-+#define RT5514_CLK_AD_ANA1_SEL_SFT		0
- 
- /* RT5514_CLK_CTRL2 (0x2108) */
-+#define RT5514_CLK_AD1_ASRC_EN			(0x1 << 17)
-+#define RT5514_CLK_AD1_ASRC_EN_BIT		17
-+#define RT5514_CLK_AD0_ASRC_EN			(0x1 << 16)
-+#define RT5514_CLK_AD0_ASRC_EN_BIT		16
- #define RT5514_CLK_SYS_DIV_OUT_MASK		(0x7 << 8)
- #define RT5514_CLK_SYS_DIV_OUT_SFT		8
- #define RT5514_SEL_ADC_OSR_MASK			(0x7 << 4)
+ #define RSND_MAX_CHANNELS	8
 -- 
 2.13.2
