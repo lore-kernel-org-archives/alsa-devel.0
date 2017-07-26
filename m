@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: board: Fix missing sentinel
-	for bxt_board_id
-Date: Wed, 26 Jul 2017 13:02:41 +0100
-Message-ID: <20170726120241.gqdnsqt5aaw4z6t2@sirena.org.uk>
-References: <1500964186-25956-1-git-send-email-pradeep.d.tewani@intel.com>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: Re: [PATCH v2 01/11] ASoC: samsung: s3c2412: Handle
+ return value of clk_prepare_enable.
+Date: Wed, 26 Jul 2017 17:35:32 +0530
+Message-ID: <b042a76a-4b18-faad-3d79-0d3132441250@gmail.com>
+References: <84c0014d4dbd466f52c45d8efbd2c1080d8174fb.1501047400.git.arvind.yadav.cs@gmail.com>
+ <20170726112817.sdcfz25nhiitkhd2@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6639269405912925097=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8211E26740A
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 14:02:48 +0200 (CEST)
-In-Reply-To: <1500964186-25956-1-git-send-email-pradeep.d.tewani@intel.com>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0A7926740A
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 14:06:20 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id k190so1469475pgk.4
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 05:06:20 -0700 (PDT)
+In-Reply-To: <20170726112817.sdcfz25nhiitkhd2@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pradeep Tewani <pradeep.d.tewani@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, fengguang.wu@intel.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6639269405912925097==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2jbtpal55uv7f3c7"
-Content-Disposition: inline
+Hi,
 
 
---2jbtpal55uv7f3c7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wednesday 26 July 2017 04:58 PM, Mark Brown wrote:
+> On Wed, Jul 26, 2017 at 11:15:25AM +0530, Arvind Yadav wrote:
+>
+>> --- a/sound/soc/samsung/s3c2412-i2s.c
+>> +++ b/sound/soc/samsung/s3c2412-i2s.c
+>> @@ -65,13 +65,16 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+>>   	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
+>>   	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
+>>   		pr_err("failed to get i2sclk clock\n");
+>> -		return PTR_ERR(s3c2412_i2s.iis_cclk);
+>> +		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
+>> +		goto err;
+>>   	}
+>>   
+> Why are we making this unrelated change?  None of the error handling we
+> jump to is relevant if this fails...
+3c_i2sv2_probe is enabling "iis" clock. If devm_clk_get(, "i2sclk") fails.
+we need to disable and free the clock "iis" .
+>
+>>   	/* Set MPLL as the source for IIS CLK */
+>>   
+>>   	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
+>> -	clk_prepare_enable(s3c2412_i2s.iis_cclk);
+>> +	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
+>> +	if (ret)
+>> +		goto err;
+>>   
+>>   	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
+>>   
+>> @@ -80,6 +83,11 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+>>   			      S3C_GPIO_PULL_NONE);
+>>   
+>>   	return 0;
+>> +
+>> +err:
+>> +	clk_disable(s3c2412_i2s.iis_pclk);
+> This will disable the clock if we failed to enable it which is clearly
+> not correct.  It's also matching a clk_prepare_enable() with a
+> clk_disable() which is going to leave an unbalanced prepare.
+s3c_i2sv2_probe is enabling "iis" clock. And s3c2412_i2s_probe is enabling
+"i2sclk"  and "mpll"clock. If, "mpll" clk_prepare_enable fails. We need 
+to disable and
+free the clock "iis".  and devm will handle other clock "i2sclk". In 
+this code we have used
+"s3c2412_i2s.iis_cclk" for all the clock which is more confusing for me.
+Please correct me if i am wrong.
 
-On Tue, Jul 25, 2017 at 11:59:46AM +0530, Pradeep Tewani wrote:
-> Without a sentinel in the array of platform devices, we can get a panic
-> so add a sentinel. Full stack dump below:
->=20
-> [  231.564705] BUG: KASAN: global-out-of-bounds in platform_match+0xb0/0x=
-146
-> [  231.565500] Read of size 1 at addr ffffffff8380a1a0 by task swapper/0/1
-> [  231.566280]
-> [  231.566594] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.12.0-00289-g15=
-2771f #1
-> [  231.567526] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
-S 1.9.3-20161025_171302-gandalf 04/01/2014
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
-
---2jbtpal55uv7f3c7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll4hOAACgkQJNaLcl1U
-h9BjZAf/cbEcz3ZE8uVofivbxGZRPB8y60Pk9sxo2V420U4FIY0t4vKfUKkneRyJ
-uQu3sMUV18hmoUtGFgzoXSw4730iyf28y8NDKyw5pGXKTDyHd1UPT9PvjAFwH9Dm
-hlBokDPqg/AsEUtnQsRZsEnb5dVrbSmpPnbHt1mbPRJmx7veBBnrM67bcsEO7lhv
-WlL7DXBww1dJnnLrqYXIR1QKIPKDxeySdQA6YcTZB9Dhd2a/sQpR2dW1qhcn9TSM
-e9F8n0JmcLoScl1BzfchoQDnfXkOGmZIhB8eZwspjmF7ufn5tHUb2vQCz6hjuym6
-UPyXQET9MTjfYnQiLwIYJ709haq7zA==
-=aOhV
------END PGP SIGNATURE-----
-
---2jbtpal55uv7f3c7--
-
---===============6639269405912925097==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6639269405912925097==--
+~arvind
