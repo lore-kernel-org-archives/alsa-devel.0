@@ -1,150 +1,119 @@
-From: Stephen Boyd <sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Subject: Re: [PATCH v3 3/9] clk: at91: add audio pll clock drivers
-Date: Tue, 25 Jul 2017 17:20:16 -0700
-Message-ID: <20170726002016.GE2146@codeaurora.org>
-References: <20170713074927.10882-1-quentin.schulz@free-electrons.com>
- <20170713074927.10882-4-quentin.schulz@free-electrons.com>
- <20170721222029.GO19878@codeaurora.org>
- <859d2f48-a987-afda-1e9d-02930e4fad7d@free-electrons.com>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v1 0/6] ASoC: codecs: msm8916-wcd-analog: Add
+	support to MBHC
+Date: Wed, 26 Jul 2017 02:35:06 +0200
+Message-ID: <20170726003512.18965-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <859d2f48-a987-afda-1e9d-02930e4fad7d-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, cyrille.pitchen-yU5RGvR974pGWvitb5QawA@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Nicolas Ferre <nicolas.ferre-AIFe0yeh4nAAvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f52.google.com (mail-it0-f52.google.com
+ [209.85.214.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36899267354
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 02:35:24 +0200 (CEST)
+Received: by mail-it0-f52.google.com with SMTP id v127so13341388itd.0
+ for <alsa-devel@alsa-project.org>; Tue, 25 Jul 2017 17:35:24 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/24, Quentin Schulz wrote:
-> Hi Stephen,
-> 
-> On 22/07/2017 00:20, Stephen Boyd wrote:
-> > On 07/13, Quentin Schulz wrote:
-> >> diff --git a/drivers/clk/at91/clk-audio-pll-pad.c b/drivers/clk/at91/clk-audio-pll-pad.c
-> >> new file mode 100644
-> >> index 000000000000..10dd6d625696
-> >> --- /dev/null
-> >> +++ b/drivers/clk/at91/clk-audio-pll-pad.c
-> >> +	struct regmap *regmap;
-> >> +	const char *parent_name;
-> >> +	const char *name = np->name;
-> >> +	int ret;
-> >> +
-> >> +	parent_name = of_clk_get_parent_name(np, 0);
-> >> +
-> >> +	of_property_read_string(np, "clock-output-names", &name);
-> >> +
-> >> +	regmap = syscon_node_to_regmap(of_get_parent(np));
-> >> +	if (IS_ERR(regmap))
-> >> +		return;
-> >> +
-> >> +	apad_ck = kzalloc(sizeof(*apad_ck), GFP_KERNEL);
-> >> +	if (!apad_ck)
-> >> +		return;
-> >> +
-> >> +	init.name = name;
-> >> +	init.ops = &audio_pll_pad_ops;
-> >> +	init.parent_names = (parent_name ? &parent_name : NULL);
-> > 
-> > Use of_clk_parent_fill()?
-> > 
-> 
-> [Deleting `parent_name = of_clk_get_parent_name(np, 0);`]
-> [Deleting `init.parent_names = (parent_name ? &parent_name : NULL);`]
-> 
-> + const char *parent_names[1];
-> [...]
-> + of_clk_parent_fill(np, parent_names, 1);
-> + init.parent_names = parent_names;
-> 
-> Is it what you're asking?
-> 
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Yes.
+This patchset adds support to MBHC(Multibutton headset control) block in PM8916
+analog block. MBHC support comes from2 blocks first mechanical headset detection
+and second headset type, 5 button detection.
 
-> >> +	init.num_parents = 1;
-> >> +	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
-> >> +		CLK_SET_RATE_PARENT;
-> >> +
-> >> +	apad_ck->hw.init = &init;
-> >> +	apad_ck->regmap = regmap;
-> >> +
-> >> +	ret = clk_hw_register(NULL, &apad_ck->hw);
-> >> +	if (ret)
-> >> +		kfree(apad_ck);
-> >> +	else
-> >> +		of_clk_add_hw_provider(np, of_clk_hw_simple_get, &apad_ck->hw);
-> > 
-> > Maybe we should make this register sequence a helper function.
-> > Seems common.
-> > 
-> 
-> I can put such an helper in an header if this is what you meant.
+This patchset adds support to:
+1> Support to NC and NO type of headset Jacks.
+2> Mechanical insertion and detection of headset jack.
+3> Detect a 3 pole Headphone and a 4 pole Headset.
+4> Detect 5 buttons.
 
-No big deal either way.
+First patch fixes error code returned by snd_soc_codec_set_jack() to be
+more precise for users. Second patch is patch from Damien, followed by few
+fixes to codec driver w.r.t mbhc and final patch to add mbhc support.
 
-> [...]
-> >> +static long clk_audio_pll_round_rate(struct clk_hw *hw, unsigned long rate,
-> >> +				     unsigned long *parent_rate)
-> >> +{
-> >> +	long best_rate = -EINVAL;
-> >> +	unsigned long fracr, nd;
-> >> +	int ret;
-> >> +
-> >> +	pr_debug("A PLL: %s, rate = %lu (parent_rate = %lu)\n", __func__, rate,
-> >> +		 *parent_rate);
-> >> +
-> >> +	if (rate < AUDIO_PLL_FOUT_MIN)
-> >> +		rate = AUDIO_PLL_FOUT_MIN;
-> >> +	else if (rate > AUDIO_PLL_FOUT_MAX)
-> >> +		rate = AUDIO_PLL_FOUT_MAX;
-> > 
-> > Use clamp. Also, did you want to use determine_rate callback and
-> > clamp the requested rate range?
-> > 
-> 
-> Didn't know this one, thanks!
-> 
-> I want determine_rate to return a valid rate for the pll so I clamp the
-> requested rate range in this one. In set_rate, I just tell the user that
-> any requested rate outside of the valid range is invalid. Does that
-> answer your question?
+Damien sent a similar patchset to add support to mechanical detection,
+but that patch has issues and will not work on most usecases (for example
+after a playback/capture session, multicodec case). So I only picked up
+the BIT mask patch from that series.
 
-I meant to use the determine rate op here instead of round_rate.
-That way, the min/max ranges can be updated here and the core
-should figure out that something went out of range. Of course,
-the rounded rate needs to be clamped still, but the ranges could
-be expressed back as well.
+Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+and during playback and recording use cases.
 
-> 
-> [...]
-> >> +static void __init of_sama5d2_clk_audio_pll_setup(struct device_node *np)
-> >> +{
-> >> +	struct clk_audio_frac *fck;
-> >> +	struct clk_init_data init;
-> >> +	struct regmap *regmap;
-> >> +	const char *parent_name;
-> >> +	const char *name = np->name;
-> >> +	int ret;
-> >> +
-> >> +	parent_name = of_clk_get_parent_name(np, 0);
-> >> +
-> >> +	of_property_read_string(np, "clock-output-names", &name);
-> > 
-> > Any way to not rely on clock-output-names?
-> > 
-> 
-> I guess we could use the name of the DT node (as it's done in the
-> variable initialization block above) and not override it by
-> clock-output-names?
+root@linaro-alip:~# evtest 
+No device specified, trying to scan all of /dev/input/event*
+Available devices:
+/dev/input/event0:      pm8941_pwrkey
+/dev/input/event1:      DB410c Headset Jack
+/dev/input/event2:      gpio_keys
+Select the device event number [0-2]: 1
+Input driver version is 1.0.1
+Input device ID: bus 0x0 vendor 0x0 product 0x0 version 0x0
+Input device name: "DB410c Headset Jack"
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 1 (EV_KEY)
+    Event code 114 (KEY_VOLUMEDOWN)
+    Event code 115 (KEY_VOLUMEUP)
+    Event code 226 (KEY_MEDIA)
+    Event code 260 (BTN_4)
+    Event code 582 (KEY_VOICECOMMAND)
+  Event type 5 (EV_SW)
+    Event code 2 (SW_HEADPHONE_INSERT) state 1
+    Event code 4 (SW_MICROPHONE_INSERT) state 1
+Properties:
+Testing ... (interrupt to exit)
+Event: time 1501001112.059684, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 1
+Event: time 1501001112.059684, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 0
+Event: time 1501001112.059684, type 5 (EV_SW), code 4 (SW_MICROPHONE_INSERT), value 0
+Event: time 1501001112.059684, -------------- SYN_REPORT ------------
+Event: time 1501001112.254116, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 0
+Event: time 1501001112.254116, -------------- SYN_REPORT ------------
+Event: time 1501001113.154184, type 1 (EV_KEY), code 114 (KEY_VOLUMEDOWN), value 1
+Event: time 1501001113.154184, -------------- SYN_REPORT ------------
+Event: time 1501001113.319658, type 1 (EV_KEY), code 114 (KEY_VOLUMEDOWN), value 0
+Event: time 1501001113.319658, -------------- SYN_REPORT ------------
+Event: time 1501001113.781084, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 1
+Event: time 1501001113.781084, -------------- SYN_REPORT ------------
+Event: time 1501001114.024930, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 0
+Event: time 1501001114.024930, -------------- SYN_REPORT ------------
+Event: time 1501001114.419082, type 1 (EV_KEY), code 114 (KEY_VOLUMEDOWN), value 1
+Event: time 1501001114.419082, -------------- SYN_REPORT ------------
+Event: time 1501001114.576011, type 1 (EV_KEY), code 114 (KEY_VOLUMEDOWN), value 0
+Event: time 1501001114.576011, -------------- SYN_REPORT ------------
+Event: time 1501001114.795281, type 1 (EV_KEY), code 114 (KEY_VOLUMEDOWN), value 1
+Event: time 1501001114.795281, -------------- SYN_REPORT ------------
+Event: time 1501001114.863333, type 1 (EV_KEY), code 114 (KEY_VOLUMEDOWN), value 0
+Event: time 1501001114.863333, -------------- SYN_REPORT ------------
+Event: time 1501001116.603372, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 1
+Event: time 1501001116.603372, -------------- SYN_REPORT ------------
+Damien Riegel (1):
+  ASoC: codecs: msm8916-analog: fix DIG_CLK_CTL_RXD3_CLK_EN define
 
-If that works, sure.
+Srinivas Kandagatla (5):
+  ASoC: jack: fix snd_soc_codec_set_jack return error
+  ASoC: codecs: msm8916-wcd-analog: move codec reset to probe
+  ASoC: codecs: msm8916-wcd-analog: set default micbias voltage to 1.8
+  ASoC: codecs: msm8916-wcd-analog: add MBHC support
+  ASoC: qcom: apq8016-sbc: Add support to Headset JACK
+
+ .../bindings/sound/qcom,msm8916-wcd-analog.txt     |   9 +
+ sound/soc/codecs/msm8916-wcd-analog.c              | 359 +++++++++++++++++++--
+ sound/soc/codecs/msm8916-wcd.h                     |  12 +
+ sound/soc/qcom/apq8016_sbc.c                       |  52 +++
+ sound/soc/soc-jack.c                               |   2 +-
+ 5 files changed, 410 insertions(+), 24 deletions(-)
+ create mode 100644 sound/soc/codecs/msm8916-wcd.h
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.9.3
