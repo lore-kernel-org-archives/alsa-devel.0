@@ -1,30 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-spdif: Handle return value of
- clk_prepare_enable." to the asoc tree
-Date: Wed, 26 Jul 2017 15:16:49 +0100
-Message-ID: <E1daN7J-0003SG-Kd@debutante>
-References: <1500977718-28010-1-git-send-email-arvind.yadav.cs@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1500977718-28010-1-git-send-email-arvind.yadav.cs@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Subject: Applied "ASoC: rt5659: constify acpi_device_id." to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:27 +0100
+Message-ID: <E1daN7v-0003ew-9C@debutante>
+References: <1500830607-17268-4-git-send-email-arvind.yadav.cs@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1500830607-17268-4-git-send-email-arvind.yadav.cs@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, krzk@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-spdif: Handle return value of clk_prepare_enable.
+   ASoC: rt5659: constify acpi_device_id.
 
 has been applied to the asoc tree at
 
@@ -49,42 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From 3643e9172649f97f2e6301582890202abcc0f97e Mon Sep 17 00:00:00 2001
+>From f36544a425d3b75281a1601fe663086aec5b36c7 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Tue, 25 Jul 2017 15:45:18 +0530
-Subject: [PATCH] ASoC: sun4i-spdif: Handle return value of clk_prepare_enable.
+Date: Sun, 23 Jul 2017 22:53:26 +0530
+Subject: [PATCH] ASoC: rt5659: constify acpi_device_id.
 
-clk_prepare_enable() can fail here and we must check its return value.
+acpi_device_id are not supposed to change at runtime. All functions
+working with acpi_device_id provided by <acpi/acpi_bus.h> work with
+const acpi_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5659.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index c49f3757b686..b4af4aabead1 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -458,11 +458,16 @@ static int sun4i_spdif_runtime_suspend(struct device *dev)
- static int sun4i_spdif_runtime_resume(struct device *dev)
- {
- 	struct sun4i_spdif_dev *host  = dev_get_drvdata(dev);
-+	int ret;
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 1b7060850340..0a99fad48392 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -4222,7 +4222,7 @@ MODULE_DEVICE_TABLE(of, rt5659_of_match);
+ #endif
  
--	clk_prepare_enable(host->spdif_clk);
--	clk_prepare_enable(host->apb_clk);
-+	ret = clk_prepare_enable(host->spdif_clk);
-+	if (ret)
-+		return ret;
-+	ret = clk_prepare_enable(host->apb_clk);
-+	if (ret)
-+		clk_disable_unprepare(host->spdif_clk);
- 
--	return 0;
-+	return ret;
- }
- 
- static int sun4i_spdif_probe(struct platform_device *pdev)
+ #ifdef CONFIG_ACPI
+-static struct acpi_device_id rt5659_acpi_match[] = {
++static const struct acpi_device_id rt5659_acpi_match[] = {
+ 	{ "10EC5658", 0, },
+ 	{ "10EC5659", 0, },
+ 	{ },
 -- 
 2.13.2
