@@ -1,14 +1,17 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/2] ASoC: rt5670: merge ADC L/R Mux
-Date: Wed, 26 Jul 2017 20:00:19 +0800
-Message-ID: <1501070420-17773-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: board: Fix missing sentinel
+	for bxt_board_id
+Date: Wed, 26 Jul 2017 13:02:41 +0100
+Message-ID: <20170726120241.gqdnsqt5aaw4z6t2@sirena.org.uk>
+References: <1500964186-25956-1-git-send-email-pradeep.d.tewani@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6639269405912925097=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id ED2D826740A
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 14:00:33 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8211E26740A
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 14:02:48 +0200 (CEST)
+In-Reply-To: <1500964186-25956-1-git-send-email-pradeep.d.tewani@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,102 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Pradeep Tewani <pradeep.d.tewani@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, fengguang.wu@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Some ADC L/R Muxes share the some control bit. So, merge them.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5670.c | 42 ++++++++++++++++--------------------------
- 1 file changed, 16 insertions(+), 26 deletions(-)
+--===============6639269405912925097==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2jbtpal55uv7f3c7"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 0ec7985..2866f9b 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -1151,20 +1151,15 @@ static const char * const rt5670_stereo_adc1_src[] = {
- static SOC_ENUM_SINGLE_DECL(rt5670_stereo1_adc1_enum, RT5670_STO1_ADC_MIXER,
- 	RT5670_ADC_1_SRC_SFT, rt5670_stereo_adc1_src);
- 
--static const struct snd_kcontrol_new rt5670_sto_adc_l1_mux =
--	SOC_DAPM_ENUM("Stereo1 ADC L1 source", rt5670_stereo1_adc1_enum);
--
--static const struct snd_kcontrol_new rt5670_sto_adc_r1_mux =
--	SOC_DAPM_ENUM("Stereo1 ADC R1 source", rt5670_stereo1_adc1_enum);
-+static const struct snd_kcontrol_new rt5670_sto_adc_1_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC 1 Mux", rt5670_stereo1_adc1_enum);
- 
- static SOC_ENUM_SINGLE_DECL(rt5670_stereo2_adc1_enum, RT5670_STO2_ADC_MIXER,
- 	RT5670_ADC_1_SRC_SFT, rt5670_stereo_adc1_src);
- 
--static const struct snd_kcontrol_new rt5670_sto2_adc_l1_mux =
--	SOC_DAPM_ENUM("Stereo2 ADC L1 source", rt5670_stereo2_adc1_enum);
-+static const struct snd_kcontrol_new rt5670_sto2_adc_1_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADC 1 Mux", rt5670_stereo2_adc1_enum);
- 
--static const struct snd_kcontrol_new rt5670_sto2_adc_r1_mux =
--	SOC_DAPM_ENUM("Stereo2 ADC R1 source", rt5670_stereo2_adc1_enum);
- 
- /* MX-27 MX-26 [11] */
- static const char * const rt5670_stereo_adc2_src[] = {
-@@ -1174,20 +1169,15 @@ static const char * const rt5670_stereo_adc2_src[] = {
- static SOC_ENUM_SINGLE_DECL(rt5670_stereo1_adc2_enum, RT5670_STO1_ADC_MIXER,
- 	RT5670_ADC_2_SRC_SFT, rt5670_stereo_adc2_src);
- 
--static const struct snd_kcontrol_new rt5670_sto_adc_l2_mux =
--	SOC_DAPM_ENUM("Stereo1 ADC L2 source", rt5670_stereo1_adc2_enum);
--
--static const struct snd_kcontrol_new rt5670_sto_adc_r2_mux =
--	SOC_DAPM_ENUM("Stereo1 ADC R2 source", rt5670_stereo1_adc2_enum);
-+static const struct snd_kcontrol_new rt5670_sto_adc_2_mux =
-+	SOC_DAPM_ENUM("Stereo1 ADC 2 Mux", rt5670_stereo1_adc2_enum);
- 
- static SOC_ENUM_SINGLE_DECL(rt5670_stereo2_adc2_enum, RT5670_STO2_ADC_MIXER,
- 	RT5670_ADC_2_SRC_SFT, rt5670_stereo_adc2_src);
- 
--static const struct snd_kcontrol_new rt5670_sto2_adc_l2_mux =
--	SOC_DAPM_ENUM("Stereo2 ADC L2 source", rt5670_stereo2_adc2_enum);
-+static const struct snd_kcontrol_new rt5670_sto2_adc_2_mux =
-+	SOC_DAPM_ENUM("Stereo2 ADC 2 Mux", rt5670_stereo2_adc2_enum);
- 
--static const struct snd_kcontrol_new rt5670_sto2_adc_r2_mux =
--	SOC_DAPM_ENUM("Stereo2 ADC R2 source", rt5670_stereo2_adc2_enum);
- 
- /* MX-27 MX26 [10] */
- static const char * const rt5670_stereo_adc_src[] = {
-@@ -1642,23 +1632,23 @@ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("Stereo1 DMIC Mux", SND_SOC_NOPM, 0, 0,
- 			 &rt5670_sto1_dmic_mux),
- 	SND_SOC_DAPM_MUX("Stereo1 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto_adc_l2_mux),
-+			 &rt5670_sto_adc_2_mux),
- 	SND_SOC_DAPM_MUX("Stereo1 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto_adc_r2_mux),
-+			 &rt5670_sto_adc_2_mux),
- 	SND_SOC_DAPM_MUX("Stereo1 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto_adc_l1_mux),
-+			 &rt5670_sto_adc_1_mux),
- 	SND_SOC_DAPM_MUX("Stereo1 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto_adc_r1_mux),
-+			 &rt5670_sto_adc_1_mux),
- 	SND_SOC_DAPM_MUX("Stereo2 DMIC Mux", SND_SOC_NOPM, 0, 0,
- 			 &rt5670_sto2_dmic_mux),
- 	SND_SOC_DAPM_MUX("Stereo2 ADC L2 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto2_adc_l2_mux),
-+			 &rt5670_sto2_adc_2_mux),
- 	SND_SOC_DAPM_MUX("Stereo2 ADC R2 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto2_adc_r2_mux),
-+			 &rt5670_sto2_adc_2_mux),
- 	SND_SOC_DAPM_MUX("Stereo2 ADC L1 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto2_adc_l1_mux),
-+			 &rt5670_sto2_adc_1_mux),
- 	SND_SOC_DAPM_MUX("Stereo2 ADC R1 Mux", SND_SOC_NOPM, 0, 0,
--			 &rt5670_sto2_adc_r1_mux),
-+			 &rt5670_sto2_adc_1_mux),
- 	SND_SOC_DAPM_MUX("Stereo2 ADC LR Mux", SND_SOC_NOPM, 0, 0,
- 			 &rt5670_sto2_adc_lr_mux),
- 	SND_SOC_DAPM_MUX("Mono DMIC L Mux", SND_SOC_NOPM, 0, 0,
--- 
-2.7.4
+
+--2jbtpal55uv7f3c7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 25, 2017 at 11:59:46AM +0530, Pradeep Tewani wrote:
+> Without a sentinel in the array of platform devices, we can get a panic
+> so add a sentinel. Full stack dump below:
+>=20
+> [  231.564705] BUG: KASAN: global-out-of-bounds in platform_match+0xb0/0x=
+146
+> [  231.565500] Read of size 1 at addr ffffffff8380a1a0 by task swapper/0/1
+> [  231.566280]
+> [  231.566594] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.12.0-00289-g15=
+2771f #1
+> [  231.567526] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
+S 1.9.3-20161025_171302-gandalf 04/01/2014
+
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative then it's
+usually better to pull out the relevant sections.
+
+--2jbtpal55uv7f3c7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll4hOAACgkQJNaLcl1U
+h9BjZAf/cbEcz3ZE8uVofivbxGZRPB8y60Pk9sxo2V420U4FIY0t4vKfUKkneRyJ
+uQu3sMUV18hmoUtGFgzoXSw4730iyf28y8NDKyw5pGXKTDyHd1UPT9PvjAFwH9Dm
+hlBokDPqg/AsEUtnQsRZsEnb5dVrbSmpPnbHt1mbPRJmx7veBBnrM67bcsEO7lhv
+WlL7DXBww1dJnnLrqYXIR1QKIPKDxeySdQA6YcTZB9Dhd2a/sQpR2dW1qhcn9TSM
+e9F8n0JmcLoScl1BzfchoQDnfXkOGmZIhB8eZwspjmF7ufn5tHUb2vQCz6hjuym6
+UPyXQET9MTjfYnQiLwIYJ709haq7zA==
+=aOhV
+-----END PGP SIGNATURE-----
+
+--2jbtpal55uv7f3c7--
+
+--===============6639269405912925097==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6639269405912925097==--
