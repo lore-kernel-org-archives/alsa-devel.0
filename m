@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: add symmetric_rates flag" to
-	the asoc tree
-Date: Wed, 26 Jul 2017 15:17:18 +0100
-Message-ID: <E1daN7m-0003bo-AD@debutante>
-References: <1501054106-25264-2-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: samsung: s3c24xx: Handle return value
+	of clk_prepare_enable." to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:09 +0100
+Message-ID: <E1daN7d-0003YF-9Y@debutante>
+References: <1500977674-27960-3-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BE3326746B
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:27 +0200 (CEST)
-In-Reply-To: <1501054106-25264-2-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CA97267497
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:29 +0200 (CEST)
+In-Reply-To: <1500977674-27960-3-git-send-email-arvind.yadav.cs@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org, tiwai@suse.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: add symmetric_rates flag
+   ASoC: samsung: s3c24xx: Handle return value of clk_prepare_enable.
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From 8215313c8bf487b6b15839be3c18fdd1598b1e79 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 26 Jul 2017 15:28:26 +0800
-Subject: [PATCH] ASoC: rt5670: add symmetric_rates flag
+>From 8698475a94d0b7eb21efaa346d507dc4932f2032 Mon Sep 17 00:00:00 2001
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Date: Tue, 25 Jul 2017 15:44:29 +0530
+Subject: [PATCH] ASoC: samsung: s3c24xx: Handle return value of
+ clk_prepare_enable.
 
-rt5670 requires symmetric rate of capture and playback.
+clk_prepare_enable() can fail here and we must check its return value.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/samsung/s3c24xx-i2s.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 0ec7985ed306..174141fefc79 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2743,6 +2743,7 @@ static struct snd_soc_dai_driver rt5670_dai[] = {
- 			.formats = RT5670_FORMATS,
- 		},
- 		.ops = &rt5670_aif_dai_ops,
-+		.symmetric_rates = 1,
- 	},
- 	{
- 		.name = "rt5670-aif2",
-@@ -2762,6 +2763,7 @@ static struct snd_soc_dai_driver rt5670_dai[] = {
- 			.formats = RT5670_FORMATS,
- 		},
- 		.ops = &rt5670_aif_dai_ops,
-+		.symmetric_rates = 1,
- 	},
- };
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 91e6871e5413..8d58d02183bf 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -340,6 +340,7 @@ EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
  
+ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
+ {
++	int ret;
+ 	snd_soc_dai_init_dma_data(dai, &s3c24xx_i2s_pcm_stereo_out,
+ 					&s3c24xx_i2s_pcm_stereo_in);
+ 
+@@ -348,7 +349,9 @@ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
+ 		pr_err("failed to get iis_clock\n");
+ 		return PTR_ERR(s3c24xx_i2s.iis_clk);
+ 	}
+-	clk_prepare_enable(s3c24xx_i2s.iis_clk);
++	ret = clk_prepare_enable(s3c24xx_i2s.iis_clk);
++	if (ret)
++		return ret;
+ 
+ 	/* Configure the I2S pins (GPE0...GPE4) in correct mode */
+ 	s3c_gpio_cfgall_range(S3C2410_GPE(0), 5, S3C_GPIO_SFN(2),
+@@ -377,7 +380,11 @@ static int s3c24xx_i2s_suspend(struct snd_soc_dai *cpu_dai)
+ 
+ static int s3c24xx_i2s_resume(struct snd_soc_dai *cpu_dai)
+ {
+-	clk_prepare_enable(s3c24xx_i2s.iis_clk);
++	int ret;
++
++	ret = clk_prepare_enable(s3c24xx_i2s.iis_clk);
++	if (ret)
++		return ret;
+ 
+ 	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
+ 	writel(s3c24xx_i2s.iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
 -- 
 2.13.2
