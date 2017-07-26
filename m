@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Use the IS_ENABLED to supports
-	the module build" to the asoc tree
-Date: Wed, 26 Jul 2017 15:17:21 +0100
-Message-ID: <E1daN7p-0003cr-98@debutante>
-References: <1501065140-14843-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rt5514: Add the I2S ASRC support" to
+	the asoc tree
+Date: Wed, 26 Jul 2017 15:17:36 +0100
+Message-ID: <E1daN84-0003iM-A8@debutante>
+References: <1500881663-28990-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 99AFA267465
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:30 +0200 (CEST)
-In-Reply-To: <1501065140-14843-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B1DF267472
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:45 +0200 (CEST)
+In-Reply-To: <1500881663-28990-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, harshapriya.n@intel.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Use the IS_ENABLED to supports the module build
+   ASoC: rt5514: Add the I2S ASRC support
 
 has been applied to the asoc tree at
 
@@ -52,50 +52,111 @@ to this mail.
 Thanks,
 Mark
 
->From c2bf252536577db77c719f62a54cad2e4be5c4d7 Mon Sep 17 00:00:00 2001
+>From 1628ef89042fdb90aaea657942455e00e160174d Mon Sep 17 00:00:00 2001
 From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Wed, 26 Jul 2017 18:32:20 +0800
-Subject: [PATCH] ASoC: rt5514: Use the IS_ENABLED to supports the module build
+Date: Mon, 24 Jul 2017 15:34:23 +0800
+Subject: [PATCH] ASoC: rt5514: Add the I2S ASRC support
 
-The patch uses the macro IS_ENABLED to make sure that the SPI function also
-supports the module build.
+The patch adds the I2S ASRC support.
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5514.c | 19 +++++++++++++++++++
+ sound/soc/codecs/rt5514.h |  7 +++++++
+ 2 files changed, 26 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 3d0aea8f3801..21cbb566c0d3 100644
+index a105c84ef555..882fdc4a6fd4 100644
 --- a/sound/soc/codecs/rt5514.c
 +++ b/sound/soc/codecs/rt5514.c
-@@ -31,7 +31,7 @@
+@@ -63,6 +63,7 @@ static const struct reg_sequence rt5514_patch[] = {
+ 	{RT5514_SRC_CTRL,		0x44000eee},
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
++	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+ };
  
- #include "rl6231.h"
- #include "rt5514.h"
--#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
- #include "rt5514-spi.h"
- #endif
+ static const struct reg_default rt5514_reg[] = {
+@@ -471,6 +472,15 @@ static int rt5514_is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
+ 		return 0;
+ }
  
-@@ -312,7 +312,7 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
++static int rt5514_i2s_use_asrc(struct snd_soc_dapm_widget *source,
++	struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(source->dapm);
++	struct rt5514_priv *rt5514 = snd_soc_codec_get_drvdata(codec);
++
++	return (rt5514->sysclk > rt5514->lrck * 384);
++}
++
+ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("DMIC1L"),
+@@ -541,6 +551,10 @@ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
+ 		RT5514_POW_PLL1_LDO_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("PLL1", RT5514_PWR_ANA2, RT5514_POW_PLL1_BIT, 0,
+ 		NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("ASRC AD1", 1, RT5514_CLK_CTRL2,
++		RT5514_CLK_AD0_ASRC_EN_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("ASRC AD2", 1, RT5514_CLK_CTRL2,
++		RT5514_CLK_AD1_ASRC_EN_BIT, 0, NULL, 0),
  
- 			request_firmware(&fw, RT5514_FIRMWARE1, codec->dev);
- 			if (fw) {
--#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
- 				rt5514_spi_burst_write(0x4ff60000, fw->data,
- 					((fw->size/8)+1)*8);
- #else
-@@ -325,7 +325,7 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
+ 	/* ADC Mux */
+ 	SND_SOC_DAPM_MUX("Stereo1 DMIC Mux", SND_SOC_NOPM, 0, 0,
+@@ -638,6 +652,7 @@ static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
+ 	{ "Stereo1 ADC MIX", NULL, "Stereo1 ADC MIXR" },
+ 	{ "Stereo1 ADC MIX", NULL, "adc stereo1 filter" },
+ 	{ "adc stereo1 filter", NULL, "PLL1", rt5514_is_sys_clk_from_pll },
++	{ "adc stereo1 filter", NULL, "ASRC AD1", rt5514_i2s_use_asrc },
  
- 			request_firmware(&fw, RT5514_FIRMWARE2, codec->dev);
- 			if (fw) {
--#if defined(CONFIG_SND_SOC_RT5514_SPI)
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
- 				rt5514_spi_burst_write(0x4ffc0000, fw->data,
- 					((fw->size/8)+1)*8);
- #else
+ 	{ "Stereo2 DMIC Mux", "DMIC1", "DMIC1" },
+ 	{ "Stereo2 DMIC Mux", "DMIC2", "DMIC2" },
+@@ -654,6 +669,7 @@ static const struct snd_soc_dapm_route rt5514_dapm_routes[] = {
+ 	{ "Stereo2 ADC MIX", NULL, "Stereo2 ADC MIXR" },
+ 	{ "Stereo2 ADC MIX", NULL, "adc stereo2 filter" },
+ 	{ "adc stereo2 filter", NULL, "PLL1", rt5514_is_sys_clk_from_pll },
++	{ "adc stereo2 filter", NULL, "ASRC AD2", rt5514_i2s_use_asrc },
+ 
+ 	{ "AIF1TX", NULL, "Stereo1 ADC MIX"},
+ 	{ "AIF1TX", NULL, "Stereo2 ADC MIX"},
+@@ -706,6 +722,9 @@ static int rt5514_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	regmap_update_bits(rt5514->regmap, RT5514_I2S_CTRL1, RT5514_I2S_DL_MASK,
+ 		val_len);
++	regmap_update_bits(rt5514->regmap, RT5514_CLK_CTRL1,
++		RT5514_CLK_AD_ANA1_SEL_MASK,
++		(pre_div + 1) << RT5514_CLK_AD_ANA1_SEL_SFT);
+ 	regmap_update_bits(rt5514->regmap, RT5514_CLK_CTRL2,
+ 		RT5514_CLK_SYS_DIV_OUT_MASK | RT5514_SEL_ADC_OSR_MASK,
+ 		pre_div << RT5514_CLK_SYS_DIV_OUT_SFT |
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 75024a4bb7f5..2dc40e6d8b3f 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -37,6 +37,7 @@
+ #define RT5514_PLL3_CALIB_CTRL5			0x2124
+ #define RT5514_DELAY_BUF_CTRL1			0x2140
+ #define RT5514_DELAY_BUF_CTRL3			0x2148
++#define RT5514_ASRC_IN_CTRL1			0x2180
+ #define RT5514_DOWNFILTER0_CTRL1		0x2190
+ #define RT5514_DOWNFILTER0_CTRL2		0x2194
+ #define RT5514_DOWNFILTER0_CTRL3		0x2198
+@@ -197,8 +198,14 @@
+ #define RT5514_CLK_AD0_EN_BIT			23
+ #define RT5514_CLK_DMIC_OUT_SEL_MASK		(0x7 << 8)
+ #define RT5514_CLK_DMIC_OUT_SEL_SFT		8
++#define RT5514_CLK_AD_ANA1_SEL_MASK		(0xf << 0)
++#define RT5514_CLK_AD_ANA1_SEL_SFT		0
+ 
+ /* RT5514_CLK_CTRL2 (0x2108) */
++#define RT5514_CLK_AD1_ASRC_EN			(0x1 << 17)
++#define RT5514_CLK_AD1_ASRC_EN_BIT		17
++#define RT5514_CLK_AD0_ASRC_EN			(0x1 << 16)
++#define RT5514_CLK_AD0_ASRC_EN_BIT		16
+ #define RT5514_CLK_SYS_DIV_OUT_MASK		(0x7 << 8)
+ #define RT5514_CLK_SYS_DIV_OUT_SFT		8
+ #define RT5514_SEL_ADC_OSR_MASK			(0x7 << 4)
 -- 
 2.13.2
