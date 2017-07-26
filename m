@@ -1,67 +1,75 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCHv3 2/6] dt-bindings: sound: add motorola,cpcap-audio-codec
-Date: Wed, 26 Jul 2017 12:48:28 +0100
-Message-ID: <20170726114827.pye3jm2b7x2nqo5v@sirena.org.uk>
-References: <20170725151030.26863-1-sebastian.reichel@collabora.co.uk>
- <20170725151030.26863-3-sebastian.reichel@collabora.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Fix Kabylake machine driver
+ for pops and clicks
+Date: Wed, 26 Jul 2017 12:49:43 +0100
+Message-ID: <20170726114943.dr4wktsn25vifcvb@sirena.org.uk>
+References: <1501021659-8597-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="o5iifoliloomo6zz"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170725151030.26863-3-sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sebastian Reichel <sebastian.reichel-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
-Cc: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============5827463948523032576=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1B872673F1
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 13:49:59 +0200 (CEST)
+In-Reply-To: <1501021659-8597-1-git-send-email-harshapriya.n@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Harsha Priya <harshapriya.n@intel.com>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---o5iifoliloomo6zz
-Content-Type: text/plain; charset=us-ascii
+--===============5827463948523032576==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hwbgbx5wwfkzq7v5"
 Content-Disposition: inline
 
-On Tue, Jul 25, 2017 at 05:10:26PM +0200, Sebastian Reichel wrote:
-> Motorola CPCAP is a PMIC with audio functionality, that can be
-> found on Motorola Droid 4 and probably a few other phones from
-> Motorola's Droid series.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.  Look at what existing commits in the area you're changing are
-doing and make sure your subject lines visually resemble what they're
-doing.
+--hwbgbx5wwfkzq7v5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +&cpcap {
-> +	audio-codec {
-> +		compatible = "motorola,cpcap-audio-codec";
-> +		vdd-supply = <&vaudio>;
-> +	};
-> +};
+On Tue, Jul 25, 2017 at 03:27:39PM -0700, Harsha Priya wrote:
+> This patch adds fixes for the following issues in Kabylake machine driver
+>=20
+> 1. crackling noise in rt5663 headset codec=20
+> 2. enabling 4 slot IV feedback for max98927 speaker amp codec=20
+> 3. pop noise while recording from rt5514 dmic codec=20
 
-I'd expect supplies (especially generically named supplies like this) to
-be looked up at the chip level - aside from my general concerns with MFD
-subnodes like this in the case of supplies it's especially problematic
-as it makes it harder to do the generic chip level hookup in the DT and
-it precludes other parts of the chip using the same supply (which seems
-especially likely with a generically named supply like this).
+This is three different fixes so I'd expect to see three different
+patches and the changelog doesn't describe what the fixes actually do so
+it's much harder to review.
 
---o5iifoliloomo6zz
+--hwbgbx5wwfkzq7v5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll4gYsACgkQJNaLcl1U
-h9BCmgf/R4AwjM6YPKKHbFIyOvTJZVM6XeLdYKAQ83CNWXOk/qdASb80MFx8pEgQ
-eRaNSoVLdeMkPMEiZXaGXpKnkGx9Dv+2nKYQ+9yjaPQhyyuKhHUyoyVWL0HUFfW0
-E1bBkq9xRdUwZaeN+Xt+zULOkh9QH5Uq8l3W6lC8GowBvlkDHKXhfpoKHu0tLGln
-zJevWQDlBN1sXqt1KZtDS7BSsoqjpnqyLuwRzkd8evJBiNQPlQ8mEfOrRXhV6ftF
-hCZneccaMnB1Mu13m4Gix+BGWrL37F17/Yi84usNeZ50abzNMLEn+LjP0DS99nyq
-ObGGx9/HTYJKwW+YCMWGHovMk+QZ8w==
-=TVoh
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll4gdcACgkQJNaLcl1U
+h9A4Agf/cco2BmDji/ykYzx54C1LZ8DgvFAS6A1q/SoeLHt60wy7OaVrhApvLhmA
+PVpOSi+avuYlxNTkxzWTYmKsp4GVYaNrvyL0iJ4NoVLU4FPQWk7AE4Jd1T4bnQWr
+CKyrIVG+Pxu1X0a7vUbin80dKtk5HJXUjra7kY+P00CXg4OdsnB1F0yC5XIS2Lid
+eFvgWBdDmHBzqe3CzDucN3gV4KW26PVcyQioBVqzO0nDO0dORWKT6P5VhVpKgXvK
+VJvdxUaA/Vjh2T75Z+R4142wNcVIw5M0Znr7G4bMczoBSeZtDl95CoUxLo7/1Dv7
+jqiNDyFZyri/6zdocoamRCsZFwXoGg==
+=JaUy
 -----END PGP SIGNATURE-----
 
---o5iifoliloomo6zz--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--hwbgbx5wwfkzq7v5--
+
+--===============5827463948523032576==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5827463948523032576==--
