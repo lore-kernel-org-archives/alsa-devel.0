@@ -1,76 +1,48 @@
-From: Quentin Schulz <quentin.schulz@free-electrons.com>
-Subject: Re: [PATCH v4 0/9] add support for Sama5d2 audio PLLs and enable
- ClassD
-Date: Wed, 26 Jul 2017 09:08:37 +0200
-Message-ID: <a2f50c1d-7889-8a62-a7d4-240d6310de15@free-electrons.com>
-References: <cover.c8ce78c15296190b2aa5c452c0c4512528e28518.1500968090.git-series.quentin.schulz@free-electrons.com>
- <194d2fc6-4c88-bc3b-1127-b4c0bdb7c6a1@microchip.com>
- <20170726065732.zphp7zaug4ypcqzj@piout.net>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5670: fix wrong name of sto2 adc 2
+	mux
+Date: Wed, 26 Jul 2017 15:28:25 +0800
+Message-ID: <1501054106-25264-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170726065732.zphp7zaug4ypcqzj@piout.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: mark.rutland@arm.com, boris.brezillon@free-electrons.com, alsa-devel@alsa-project.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mturquette@baylibre.com, tiwai@suse.com, sboyd@codeaurora.org, lgirdwood@gmail.com, linux@armlinux.org.uk, robh+dt@kernel.org, broonie@kernel.org, cyrille.pitchen@wedev4u.fr, perex@perex.cz, thomas.petazzoni@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id C711B26648D
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 09:28:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alexandre,
+The kcontrol name of Stereo2 ADC 2 Mux is not matched with what we used
+in dapm widget.
 
-On 26/07/2017 08:57, Alexandre Belloni wrote:
-> On 25/07/2017 at 17:44:19 +0200, Nicolas Ferre wrote:
->> On 25/07/2017 at 09:37, Quentin Schulz wrote:
->>> This patch series adds support for the audio PLLs and enables ClassD that
->>> can be found in ATMEL Sama5d2 SoC.
->>>
->>> There are two audio PLLs (PMC and PAD) that shares the same parent (FRAC).
->>> FRAC can output between 620 and 700MHz and only multiply the rate of its
->>> parent. The two audio PLLs then divide the FRAC rate to best match the
->>> asked rate.
->>>
->>> I basically took an old patch series posted by Nicolas on December, 6th
->>> 2016[1][2][3] and the comments Boris did on the first version[4] Nicolas
->>> sent on July, 15th 2015.
->>>
->>> I also fixed the function used to compute the divisors, removed useless
->>> spinlocks and added a range to the audio frac PLL to stay within vendor's
->>> supported range. Clocks that are children of gclk (generated-clk) are now
->>> able to propagate rate to the audio PLL clocks when needed.
->>>
->>> However, there are multiple children clocks that could technically
->>> change the rate of audio_pll (via gck). With the rate locking introduced
->>> in Jerome Brunet's patch series[5], the first consumer to enable the clock
->>> will be the one definitely setting the rate of the clock. Without the rate
->>> locking, the last consumer to set the rate will be able to mess with the
->>> rate.
->>> Since audio IPs are most likely to request the same rate, we enforce
->>> that the only clks able to modify gck rate are those of audio IPs.
->>>
->>> To remain consistent, we deny other clocks to be children of audio_pll.
->>
->> Quentin,
->>
->> Thanks for having revived this series. Everything's okay on my side for
->> this v4. I think that my tag isn't missing from any patch of this
->> series. Now we surely need to define which path it must take...
->>
-> 
-> I'll take the two dts patches now as the bindings have been acked.
-> Everything else should probably go through the clk tree.
-> 
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5670.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for taking the dts patches.
-
-I agree that the remaining should go through the clk tree. @Stephen,
-@Michael, any objection (apart from your reviews on the patches) on
-taking this through your tree?
-
-Thanks,
-Quentin
-
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 0376667..2866f9b 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -1175,7 +1175,7 @@ static const struct snd_kcontrol_new rt5670_sto_adc_2_mux =
+ static SOC_ENUM_SINGLE_DECL(rt5670_stereo2_adc2_enum, RT5670_STO2_ADC_MIXER,
+ 	RT5670_ADC_2_SRC_SFT, rt5670_stereo_adc2_src);
+ 
+-static const struct snd_kcontrol_new rt5670_sto2_adc_l_mux =
++static const struct snd_kcontrol_new rt5670_sto2_adc_2_mux =
+ 	SOC_DAPM_ENUM("Stereo2 ADC 2 Mux", rt5670_stereo2_adc2_enum);
+ 
+ 
 -- 
-Quentin Schulz, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+2.7.4
