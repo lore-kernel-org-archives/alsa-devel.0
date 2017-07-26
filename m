@@ -1,38 +1,57 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: Applied "ASoC: samsung: s3c2412: Handle return value of
- clk_prepare_enable." to the asoc tree
-Date: Wed, 26 Jul 2017 18:13:18 +0200
-Message-ID: <20170726161318.GA4093@kozik-book>
-References: <1500977674-27960-2-git-send-email-arvind.yadav.cs@gmail.com>
- <E1daN7g-0003Ze-AF@debutante>
- <20170726154642.GB2577@kozik-book>
- <20170726160700.tffy72uwhw4hilhw@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1 2/3] ASoC: codecs: msm8916-analog: support jack
+ detection
+Date: Wed, 26 Jul 2017 17:21:49 +0100
+Message-ID: <20170726162149.g72j5fdgtyyfrqs2@sirena.org.uk>
+References: <20170725175126.26578-1-damien.riegel@savoirfairelinux.com>
+ <20170725175126.26578-3-damien.riegel@savoirfairelinux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="feo6ukh7awfmnsgl"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170726160700.tffy72uwhw4hilhw@sirena.org.uk>
+In-Reply-To: <20170725175126.26578-3-damien.riegel@savoirfairelinux.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, perex@perex.cz, tiwai@suse.com, sbkim73@samsung.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 26, 2017 at 05:07:00PM +0100, Mark Brown wrote:
-> On Wed, Jul 26, 2017 at 05:46:42PM +0200, Krzysztof Kozlowski wrote:
-> 
-> > Mark, this is the patch still discussed. It does not handle the error
-> > correctly. I think it should be dropped.
-> 
-> Ugh, is that the same patch?  Sorry, got lost in the big series.  Now
-> I've applied it I'd rather do incremental updates to it if possible but
-> let's see if that can be done promptly...
 
-Fixing this is not that critical because error path of s3c2412_i2s_probe()
-already did not clean up what was needed. So merely we are duplicating
-same wrong pattern.
+--feo6ukh7awfmnsgl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I can prepare an incremental fix tomorrow or the day after, so, Arvind,
-if you can do it faster, please go ahead.
+On Tue, Jul 25, 2017 at 01:51:25PM -0400, Damien Riegel wrote:
 
-Best regards,
-Krzysztof
+> +	for (i = 0; i < ARRAY_SIZE(jack_detect_irqs); i++) {
+> +		int irq;
+> +
+> +		irq = platform_get_irq_byname(pdev, jack_detect_irqs[i].name);
+> +		if (irq < 0) {
+> +			dev_warn(dev, "failed to get irq '%s', jack insertion detection disabled\n",
+> +				 jack_detect_irqs[i].name);
+> +			break;
+> +		}
+> +
+> +		ret = devm_request_threaded_irq(dev, irq, NULL,
+
+Don't put the loop in when there's only one IRQ, wait till it's needed.
+This is an unusual pattern and it's not clear that just bombing out of
+the loop with interrupts half requested is a good idea.
+
+--feo6ukh7awfmnsgl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll4wZwACgkQJNaLcl1U
+h9AsVQf+Nsa9b6Pi0s3AfRvkC3DKTVV5xmGVTQop9uA/M3thssaGzmWGhYytn0Xl
+fnT4Dv2VXELI4UUJVy+e9gsQRQ8CuKn6hoeYcxujuvjcacRzc98K+5DLcNTfpYw/
+PPQNX0FPpi+QXhzDmucEJQa4WzU4ADxD4xVVCEpaDh9BbRX06ksB0TnHZI9KlwWV
+euO5urErl8hE+TusAbcdHBDZkPMCWc92snLJCbNBRmTAQ3kYCsBL644LFcFe8SQa
+SFS4Vu8vo4RC21p3j7fwLDqR3+HyyTN8tIr4ZImgbeJ6ak97M5VpHs+qSdypkP9B
+8hs7R0cym6fdWPzFPaO1odJ05/0AZg==
+=qfpy
+-----END PGP SIGNATURE-----
+
+--feo6ukh7awfmnsgl--
