@@ -1,16 +1,16 @@
 From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [v2 2/3] ASoC: Intel: Fix pop noise of dmic recording
-	in kabylake platform using rt5514
-Date: Wed, 26 Jul 2017 13:47:44 -0700
-Message-ID: <1501102065-11083-3-git-send-email-harshapriya.n@intel.com>
+Subject: [v2 1/3] ASoC: Intel: Fix cracking noise in rt5663
+	headphones for kabylake platform
+Date: Wed, 26 Jul 2017 13:47:43 -0700
+Message-ID: <1501102065-11083-2-git-send-email-harshapriya.n@intel.com>
 References: <1501102065-11083-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4119D267578
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 22:48:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 180C3267575
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 22:48:00 +0200 (CEST)
 In-Reply-To: <1501102065-11083-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,40 +25,35 @@ To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-pro
 Cc: Harsha Priya <harshapriya.n@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the pop noise in dmic recording using rt5514 on kabylake platform.
-This patch enables the rt5514 to use MCLK instead of BLCK as the sysclock which fixes
-the pop noise.
+This patch fixes the cracking noise in rt5663 headphones for kabylake platform
+by calling the rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER as well.
+
+The ASRC function is for asynchronous MCLK and LRCK. For RT5663 ASRC should be
+enabled to  support special i2s clock format like Intel's 100fs. ASRC function
+will track i2s clock and generate a corresponding system clock for codec.
+Calling this function helps select the clock source for both
+RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters which fixes the
+crackling sound.
 
 Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 ---
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index cfde894..cfd89ca 100644
+index 3fe4a08..cfde894 100644
 --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
 +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -351,19 +351,10 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
- 				return ret;
- 			}
+@@ -319,7 +319,9 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
+ 	int ret;
  
--			ret = snd_soc_dai_set_pll(codec_dai, 0,
--				RT5514_PLL1_S_BCLK, RT5514_AIF1_BCLK_FREQ,
--						RT5514_AIF1_SYSCLK_FREQ);
--			if (ret < 0) {
--				dev_err(rtd->dev, "set bclk err: %d\n", ret);
--				return ret;
--			}
--
- 			ret = snd_soc_dai_set_sysclk(codec_dai,
--				RT5514_SCLK_S_PLL1, RT5514_AIF1_SYSCLK_FREQ,
--							SND_SOC_CLOCK_IN);
-+				RT5514_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 			if (ret < 0) {
--				dev_err(rtd->dev, "set sclk err: %d\n", ret);
-+				dev_err(rtd->dev, "set sysclk err: %d\n", ret);
- 				return ret;
- 			}
- 		}
+ 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
+-	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
++	rt5663_sel_asrc_clk_src(codec_dai->codec,
++			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
++			RT5663_CLK_SEL_I2S1_ASRC);
+ 
+ 	ret = snd_soc_dai_set_sysclk(codec_dai,
+ 			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
 -- 
 1.9.1
