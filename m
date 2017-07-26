@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: constify acpi_device_id." to the asoc tree
-Date: Wed, 26 Jul 2017 15:17:30 +0100
-Message-ID: <E1daN7y-0003gF-8l@debutante>
-References: <1500830607-17268-3-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1500830607-17268-3-git-send-email-arvind.yadav.cs@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sh: hac: add missing "int ret"" to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:42 +0100
+Message-ID: <E1daN8A-0003kl-SR@debutante>
+References: <87379mxro6.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87379mxro6.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: constify acpi_device_id.
+   ASoC: sh: hac: add missing "int ret"
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 1d89147cc3dfef185e701baad437fa91c0977384 Mon Sep 17 00:00:00 2001
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Sun, 23 Jul 2017 22:53:25 +0530
-Subject: [PATCH] ASoC: rt5663: constify acpi_device_id.
+>From 295c5ba4c0886b7d55e229218b077fe3510b0ccd Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 24 Jul 2017 06:47:59 +0000
+Subject: [PATCH] ASoC: sh: hac: add missing "int ret"
 
-acpi_device_id are not supposed to change at runtime. All functions
-working with acpi_device_id provided by <acpi/acpi_bus.h> work with
-const acpi_device_id. So mark the non-const structs as const.
+commit b047e1cce8 ("ASoC: ac97: Support multi-platform AC'97")
+modified hac_soc_platform_probe(), but "int ret" was missed.
+This patch adds missing "int ret", otherwise, we will get
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+linux/sound/soc/sh/hac.c: In function 'hac_soc_platform_probe':
+linux/sound/soc/sh/hac.c:318: error: 'ret' undeclared (first use in this function)
+linux/sound/soc/sh/hac.c:318: error: (Each undeclared identifier is reported only once
+linux/sound/soc/sh/hac.c:318: error: for each function it appears in.)
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/hac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index a33202affeb1..271cc81f2aef 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -2956,7 +2956,7 @@ MODULE_DEVICE_TABLE(of, rt5663_of_match);
- #endif
+diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
+index 84c51037a7d0..624aaf569fef 100644
+--- a/sound/soc/sh/hac.c
++++ b/sound/soc/sh/hac.c
+@@ -315,6 +315,8 @@ static const struct snd_soc_component_driver sh4_hac_component = {
  
- #ifdef CONFIG_ACPI
--static struct acpi_device_id rt5663_acpi_match[] = {
-+static const struct acpi_device_id rt5663_acpi_match[] = {
- 	{ "10EC5663", 0},
- 	{},
- };
+ static int hac_soc_platform_probe(struct platform_device *pdev)
+ {
++	int ret;
++
+ 	ret = snd_soc_set_ac97_ops(&hac_ac97_ops);
+ 	if (ret != 0)
+ 		return ret;
 -- 
 2.13.2
