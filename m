@@ -1,81 +1,65 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: Re: [PATCH v2 01/11] ASoC: samsung: s3c2412: Handle
- return value of clk_prepare_enable.
-Date: Wed, 26 Jul 2017 17:35:32 +0530
-Message-ID: <b042a76a-4b18-faad-3d79-0d3132441250@gmail.com>
-References: <84c0014d4dbd466f52c45d8efbd2c1080d8174fb.1501047400.git.arvind.yadav.cs@gmail.com>
- <20170726112817.sdcfz25nhiitkhd2@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D0A7926740A
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 14:06:20 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id k190so1469475pgk.4
- for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 05:06:20 -0700 (PDT)
-In-Reply-To: <20170726112817.sdcfz25nhiitkhd2@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org, tiwai@suse.com
+From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Subject: [PATCH RESEND v3 1/3] SoC: es8328-i2c: Add compatible for ES8323
+Date: Wed, 26 Jul 2017 15:55:16 +0200
+Message-ID: <20170726135526.475-2-romain.perier@collabora.com>
+References: <20170726135526.475-1-romain.perier@collabora.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170726135526.475-1-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This commit adds a compatible string for everest,es8323. This is an
+audio codec that is compatible with es8328 and can be found for example
+on the Firefly-RK3288 board.
 
+Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/es8328.txt | 5 ++++-
+ sound/soc/codecs/es8328-i2c.c                      | 2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-On Wednesday 26 July 2017 04:58 PM, Mark Brown wrote:
-> On Wed, Jul 26, 2017 at 11:15:25AM +0530, Arvind Yadav wrote:
->
->> --- a/sound/soc/samsung/s3c2412-i2s.c
->> +++ b/sound/soc/samsung/s3c2412-i2s.c
->> @@ -65,13 +65,16 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
->>   	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
->>   	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
->>   		pr_err("failed to get i2sclk clock\n");
->> -		return PTR_ERR(s3c2412_i2s.iis_cclk);
->> +		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
->> +		goto err;
->>   	}
->>   
-> Why are we making this unrelated change?  None of the error handling we
-> jump to is relevant if this fails...
-3c_i2sv2_probe is enabling "iis" clock. If devm_clk_get(, "i2sclk") fails.
-we need to disable and free the clock "iis" .
->
->>   	/* Set MPLL as the source for IIS CLK */
->>   
->>   	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
->> -	clk_prepare_enable(s3c2412_i2s.iis_cclk);
->> +	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
->> +	if (ret)
->> +		goto err;
->>   
->>   	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
->>   
->> @@ -80,6 +83,11 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
->>   			      S3C_GPIO_PULL_NONE);
->>   
->>   	return 0;
->> +
->> +err:
->> +	clk_disable(s3c2412_i2s.iis_pclk);
-> This will disable the clock if we failed to enable it which is clearly
-> not correct.  It's also matching a clk_prepare_enable() with a
-> clk_disable() which is going to leave an unbalanced prepare.
-s3c_i2sv2_probe is enabling "iis" clock. And s3c2412_i2s_probe is enabling
-"i2sclk"  and "mpll"clock. If, "mpll" clk_prepare_enable fails. We need 
-to disable and
-free the clock "iis".  and devm will handle other clock "i2sclk". In 
-this code we have used
-"s3c2412_i2s.iis_cclk" for all the clock which is more confusing for me.
-Please correct me if i am wrong.
+diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
+index 33fbf058c997..86b6d6e99732 100644
+--- a/Documentation/devicetree/bindings/sound/es8328.txt
++++ b/Documentation/devicetree/bindings/sound/es8328.txt
+@@ -4,7 +4,10 @@ This device supports both I2C and SPI.
+ 
+ Required properties:
+ 
+-  - compatible  : Should be "everest,es8328" or "everest,es8388"
++  - compatible  : Should be one of the following:
++	- "everest,es8323"
++	- "everest,es8328"
++	- "everest,es8388"
+   - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
+   - AVDD-supply : Regulator providing analog supply voltage 3.3V
+   - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
+diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
+index 318ab28c5351..be3f03c35137 100644
+--- a/sound/soc/codecs/es8328-i2c.c
++++ b/sound/soc/codecs/es8328-i2c.c
+@@ -19,6 +19,7 @@
+ #include "es8328.h"
+ 
+ static const struct i2c_device_id es8328_id[] = {
++	{ "es8323", 0 },
+ 	{ "es8328", 0 },
+ 	{ "es8388", 0 },
+ 	{ }
+@@ -26,6 +27,7 @@ static const struct i2c_device_id es8328_id[] = {
+ MODULE_DEVICE_TABLE(i2c, es8328_id);
+ 
+ static const struct of_device_id es8328_of_match[] = {
++	{ .compatible = "everest,es8323", },
+ 	{ .compatible = "everest,es8328", },
+ 	{ .compatible = "everest,es8388", },
+ 	{ }
+-- 
+2.11.0
 
-~arvind
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
