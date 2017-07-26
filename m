@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: hac: add missing "int ret"" to the asoc tree
-Date: Wed, 26 Jul 2017 15:17:42 +0100
-Message-ID: <E1daN8A-0003kl-SR@debutante>
-References: <87379mxro6.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87379mxro6.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
+Subject: Applied "ASoC: remove cache_bypass from snd_soc_codec"
+	to the asoc tree
+Date: Wed, 26 Jul 2017 15:17:15 +0100
+Message-ID: <E1daN7j-0003aW-AL@debutante>
+References: <87vamfn5pe.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DAB82674B2
+ for <alsa-devel@alsa-project.org>; Wed, 26 Jul 2017 16:17:23 +0200 (CEST)
+In-Reply-To: <87vamfn5pe.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: hac: add missing "int ret"
+   ASoC: remove cache_bypass from snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -37,38 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 295c5ba4c0886b7d55e229218b077fe3510b0ccd Mon Sep 17 00:00:00 2001
+>From a7e1149b64091ac87dfb18b177abb63ba4cbbd3d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 24 Jul 2017 06:47:59 +0000
-Subject: [PATCH] ASoC: sh: hac: add missing "int ret"
+Date: Wed, 26 Jul 2017 05:17:08 +0000
+Subject: [PATCH] ASoC: remove cache_bypass from snd_soc_codec
 
-commit b047e1cce8 ("ASoC: ac97: Support multi-platform AC'97")
-modified hac_soc_platform_probe(), but "int ret" was missed.
-This patch adds missing "int ret", otherwise, we will get
-
-linux/sound/soc/sh/hac.c: In function 'hac_soc_platform_probe':
-linux/sound/soc/sh/hac.c:318: error: 'ret' undeclared (first use in this function)
-linux/sound/soc/sh/hac.c:318: error: (Each undeclared identifier is reported only once
-linux/sound/soc/sh/hac.c:318: error: for each function it appears in.)
+snd_soc_codec .cache_bypass related operation code has been removed.
+Let's remove remaining code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/hac.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/soc.h         | 1 -
+ sound/soc/codecs/max98927.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
-index 84c51037a7d0..624aaf569fef 100644
---- a/sound/soc/sh/hac.c
-+++ b/sound/soc/sh/hac.c
-@@ -315,6 +315,8 @@ static const struct snd_soc_component_driver sh4_hac_component = {
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 9c94b97c17f8..10b71beb9f13 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -894,7 +894,6 @@ struct snd_soc_codec {
+ 	struct list_head list;
  
- static int hac_soc_platform_probe(struct platform_device *pdev)
- {
-+	int ret;
-+
- 	ret = snd_soc_set_ac97_ops(&hac_ac97_ops);
- 	if (ret != 0)
- 		return ret;
+ 	/* runtime */
+-	unsigned int cache_bypass:1; /* Suppress access to the cache */
+ 	unsigned int cache_init:1; /* codec cache has been initialized */
+ 
+ 	/* codec IO */
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index b5ee29499e16..b0380b560bf5 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -577,7 +577,6 @@ static int max98927_probe(struct snd_soc_codec *codec)
+ 
+ 	max98927->codec = codec;
+ 	codec->control_data = max98927->regmap;
+-	codec->cache_bypass = 1;
+ 
+ 	/* Software Reset */
+ 	regmap_write(max98927->regmap,
 -- 
 2.13.2
