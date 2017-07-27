@@ -1,7 +1,7 @@
 From: Antonio Borneo <borneo.antonio@gmail.com>
-Subject: [PATCH v2 2/3] ASoC: soc-core: fix unbalanced of_node_get()/of_node_put()
-Date: Fri, 28 Jul 2017 01:26:11 +0200
-Message-ID: <20170727232612.23543-3-antonio.borneo@st.com>
+Subject: [PATCH v2 3/3] ASoC: simple-card-utils: fix unbalanced of_node_get()/of_node_put()
+Date: Fri, 28 Jul 2017 01:26:12 +0200
+Message-ID: <20170727232612.23543-4-antonio.borneo@st.com>
 References: <20170727232612.23543-1-antonio.borneo@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170727232612.23543-1-antonio.borneo@st.com>
@@ -29,8 +29,8 @@ Tested with kernel v4.13-rc2 with hikey_defconfig taken from
 https://git.linaro.org/people/john.stultz/android-dev.git
 branch dev/hikey-mainline-WIP
 
-This fixes commit a180e8b98843 ("ASoC: add snd_soc_get_dai_id()
-function").
+This fixes commit 1689333f8311 ("ASoC: simple-card-utils: add
+asoc_simple_card_parse_graph_dai()").
 
 Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
 ---
@@ -45,16 +45,16 @@ Cc: John Stultz <john.stultz@linaro.org>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 5 +++++
+ sound/soc/generic/simple-card-utils.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 921622a..a0f39de 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4087,6 +4087,11 @@ int snd_soc_get_dai_id(struct device_node *ep)
- 	struct device_node *node;
- 	int ret;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 26d64fa..144954b 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -250,6 +250,11 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
+ 	if (ret != -ENOTSUPP)
+ 		return ret;
  
 +	/*
 +	 * of_graph_get_port_parent() will call
