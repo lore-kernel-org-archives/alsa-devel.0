@@ -1,120 +1,63 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: Re: [RFT 2/2] ASoC: samsung: Add proper error paths to s3c24xx I2S
- driver
-Date: Thu, 27 Jul 2017 10:41:35 +0530
-Message-ID: <49f6f3df-f7c9-cf7e-95ad-e3d6fdc78014@gmail.com>
-References: <20170726185729.28897-1-krzk@kernel.org>
- <20170726185729.28897-2-krzk@kernel.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 0/2] ASoC: Intel: Add Kabylake machine
+ driver for RT5663
+Date: Thu, 27 Jul 2017 13:50:29 +0530
+Message-ID: <20170727082029.GO3053@localhost>
+References: <20170727025400.6426-1-kevin.cheng@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170726185729.28897-2-krzk@kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4701B266998
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 10:17:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170727025400.6426-1-kevin.cheng@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kevin Cheng <kevin.cheng@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, Jul 27, 2017 at 10:53:58AM +0800, Kevin Cheng wrote:
+> Add kabylake machine driver & corresponding driver entry in machine table for
+> rt5663 codec.
+> 
+> For this particular machine,
+>  the RT5663 is a headset codec connected on ssp1.
+>   there is no dmic and speaker connected.
+> 
+> Modify the machine driver in kbl_rt5663_max98927 to reuse the
+>   common codes.
 
+Hello Kevin,
 
-On Thursday 27 July 2017 12:27 AM, Krzysztof Kozlowski wrote:
-> s3c2412_i2s_probe() might fail so driver has to revert work done by
-> s3c_i2sv2_probe() (clock enabling).  Missing doing this would lead to
-> clock enable in-balance.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> ---
->
-> Please, kindly test on S3C24xx hardware.
-> ---
->   sound/soc/samsung/s3c-i2s-v2.c  |  9 +++++++++
->   sound/soc/samsung/s3c-i2s-v2.h  |  7 +++++++
->   sound/soc/samsung/s3c2412-i2s.c | 11 +++++++++--
->   3 files changed, 25 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-> index 9b28046eea8e..df83f2730a53 100644
-> --- a/sound/soc/samsung/s3c-i2s-v2.c
-> +++ b/sound/soc/samsung/s3c-i2s-v2.c
-> @@ -651,6 +651,15 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
->   }
->   EXPORT_SYMBOL_GPL(s3c_i2sv2_probe);
->   
-> +void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
-> +		      struct s3c_i2sv2_info *i2s)
-> +{
-> +	clk_disable(i2s->iis_pclk);
-> +	clk_put(i2s->iis_pclk);
-> +	i2s->iis_pclk = NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(s3c_i2sv2_cleanup);
-> +
->   #ifdef CONFIG_PM
->   static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
->   {
-> diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
-> index 182d80564e37..3fca20f7a853 100644
-> --- a/sound/soc/samsung/s3c-i2s-v2.h
-> +++ b/sound/soc/samsung/s3c-i2s-v2.h
-> @@ -92,6 +92,13 @@ extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
->   			   unsigned long base);
->   
->   /**
-> + * s3c_i2sv2_cleanup - cleanup resources allocated in s3c_i2sv2_probe
-> + * @dai: The ASoC DAI structure supplied to the original probe.
-> + * @i2s: Our local i2s structure to fill in.
-> + */
-> +extern void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
-> +			      struct s3c_i2sv2_info *i2s);
-> +/**
->    * s3c_i2sv2_register_component - register component and dai with soc core
->    * @dev: DAI device
->    * @id: DAI ID
-> diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-> index bcd1cbdeac93..005cd6db7d07 100644
-> --- a/sound/soc/samsung/s3c2412-i2s.c
-> +++ b/sound/soc/samsung/s3c2412-i2s.c
-> @@ -65,7 +65,8 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
->   	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
->   	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
->   		pr_err("failed to get i2sclk clock\n");
-> -		return PTR_ERR(s3c2412_i2s.iis_cclk);
-> +		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
-> +		goto err;
->   	}
->   
->   	/* Set MPLL as the source for IIS CLK */
-> @@ -73,7 +74,7 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
->   	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
-we can use devm_clk_get for "mpll" clock.
->   	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
->   	if (ret)
-> -		return ret;
-> +		goto err;
->   
->   	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
-Now s3c2412_i2s.iis_cclk and s3c2412_i2s.iis_pclk are holding "iis" clock.
-Now no one handling "mpll" clock. If we will call s3c2412_i2s_remove.
-It's means. we are disabling "iis" clock twice. Which is not correct.
->   
-> @@ -82,11 +83,17 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
->   			      S3C_GPIO_PULL_NONE);
->   
->   	return 0;
-> +
-> +err:
-> +	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
-> +
-> +	return ret;
->   }
->   
->   static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
->   {
->   	clk_disable_unprepare(s3c2412_i2s.iis_cclk);
-> +	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
-here, We are disabling "iis" clock twice. please check my previous comment.
->   
->   	return 0;
->   }
-~arvind
+The patch series looks good to me, but will unfortunately get ignored as you
+have not CCed maintainers.
+
+Please resend it and CC Takash and Mark
+
+> 
+> V2: adjust the code order.
+> 
+> Kevin Cheng (2):
+>   ASoC: Intel: Add Kabylake machine driver for RT5663
+>   ASoC: Intel: Add Kabylake RT5663 machine driver entry
+> 
+>  sound/soc/intel/boards/kbl_rt5663_max98927.c | 246 +++++++++++++++++++++++----
+>  sound/soc/intel/skylake/skl.c                |   5 +
+>  2 files changed, 214 insertions(+), 37 deletions(-)
+> 
+> -- 
+> 2.12.2
+> 
+
+-- 
+~Vinod
