@@ -1,143 +1,101 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v4 02/12] ALSA: ac97: add an ac97 bus
-Date: Thu, 27 Jul 2017 22:59:39 +0200
-Message-ID: <87a83pr3yc.fsf@belgarion.home>
-References: <20170724204928.29505-1-robert.jarzmik@free.fr>
- <20170724204928.29505-3-robert.jarzmik@free.fr>
- <s5h60eg8a8d.wl-tiwai@suse.de>
+From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] device property: Fix usecount for of_graph_get_port_parent()
+Date: Thu, 27 Jul 2017 17:18:36 -0500
+Message-ID: <CAL_JsqJ9Xmbws8gBRCxn2Nt=tj1HLnF-MGvnW+oOourvgbm9Nw@mail.gmail.com>
+References: <20170727094405.19778-1-tony@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp07.smtpout.orange.fr
- [80.12.242.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 8654A266A8A
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 23:00:17 +0200 (CEST)
-In-Reply-To: <s5h60eg8a8d.wl-tiwai@suse.de> (Takashi Iwai's message of "Tue,
- 25 Jul 2017 23:42:10 +0200")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170727094405.19778-1-tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Cc: Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-omap <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> On Mon, 24 Jul 2017 22:49:18 +0200,
-> Robert Jarzmik wrote:
-
-...zip...
->> +#ifndef AC97_COMPAT_H
->> +#define AC97_COMPAT_H
->> +
->> +#include <sound/ac97_codec.h>
->> +#include <sound/soc.h>
+On Thu, Jul 27, 2017 at 4:44 AM, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org> wrote:
+> Fix inconsistent use of of_graph_get_port_parent() where
+> asoc_simple_card_parse_graph_dai() does of_node_get() before
+> calling it while other callers do not. We can fix this by
+> not trashing the node passed to of_graph_get_port_parent().
 >
-> Is this inclusion needed?  The code here doesn't look ASoC-specific at
-> all.
-Mmm no, actually it's not, good point.
-
-...zip...
->> +#ifndef AC97_CONTROLLER_H
->> +#define AC97_CONTROLLER_H
->> +
->> +#include <linux/list.h>
->> +
->> +#define AC97_BUS_MAX_CODECS 4
->> +#define AC97_SLOTS_AVAILABLE_ALL 0xf
->> +
->> +struct device;
+> Let's make sure the users have correct refcounts and remove
+> related incorrect of_node_put() calls for of_for_each_phandle
+> as that's done by of_phandle_iterator_next().
 >
-> You need the definition struct device in below (it's no pointer), thus
-> you have to include <linux/device.h> instead.
-Fair enough, vor v5.
->> +struct ac97_controller {
->> +	const struct ac97_controller_ops *ops;
+> Let's fix both issues with a single patch to avoid kobject
+> refcounts getting messed up more if two patches are merged
+> separately.
 >
-> The struct isn't declared beforehand?  GCC will warn.
-Actually it doesn't.
-It's interesting as ac97_controller depends on ac97_controller_ops, and
-ac97_controller_ops depends on ac97_controller;
-
-As for why it doesn't warn, every time I used controller.h, I also used
-codec.h. And codec.h holds a :
-struct ac97_controller;
-
-So it's declared beforehand after all ...
-
-But I will add before "struct ac97_controller" a :
-struct ac97_controller_ops;
-
->> +	struct list_head controllers;
->> +	struct device adap;
->> +	int nr;
->> +	struct device *parent;
->> +	unsigned short slots_available;
+> Otherwise strange issues can happen caused by memory corruption
+> caused by too many kobject_del() calls such as:
 >
-> I'd move parent field below, so that 64bit pointer can be aligned
-> better.
-Okay, got it.
-
-...zip...
->> +
->> +	device_initialize(&codec->dev);
->> +	dev_set_name(&codec->dev, "%s:%u", dev_name(ac97_ctrl->parent), idx);
->> +
->> +	ret = device_add(&codec->dev);
->> +	if (ret)
->> +		goto err_free_codec;
->> +
->> +	return 0;
->> +err_free_codec:
->> +	kfree(codec);
+> BUG: sleeping function called from invalid context at
+> kernel/locking/mutex.c:747
+> ...
+> (___might_sleep)
+> (__mutex_lock)
+> (mutex_lock_nested)
+> (kernfs_remove)
+> (kobject_del)
+> (kobject_put)
+> (of_get_next_parent)
+> (of_graph_get_port_parent)
+> (asoc_simple_card_parse_graph_dai [snd_soc_simple_card_utils])
+> (asoc_graph_card_probe [snd_soc_audio_graph_card])
 >
-> This may leave the device name string.  You need to call
-> put_device() even if device_add() returns an error.
-You're right, I'll change that.
-
-...zip...
->> +int snd_ac97_codec_driver_register(struct ac97_codec_driver *drv)
->> +{
->> +	int ret;
->> +
->> +	drv->driver.bus = &ac97_bus_type;
->> +	ret = driver_register(&drv->driver);
->> +
->> +	return ret;
+> Fixes: 0ef472a973eb ("of_graph: add of_graph_get_port_parent()")
+> Fixes: 2692c1c63c29 ("ASoC: add audio-graph-card support")
+> Fixes: 1689333f8311 ("ASoC: simple-card-utils: add asoc_simple_card_parse_graph_dai()")
+> Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> Signed-off-by: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  drivers/of/property.c                 | 9 +++++++++
+>  sound/soc/generic/audio-graph-card.c  | 5 +----
+>  sound/soc/generic/simple-card-utils.c | 5 -----
+>  3 files changed, 10 insertions(+), 9 deletions(-)
 >
-> This can be simplified.
-Indeed.
-
->> +}
->> +EXPORT_SYMBOL(snd_ac97_codec_driver_register);
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -708,6 +708,15 @@ struct device_node *of_graph_get_port_parent(struct device_node *node)
+>  {
+>         unsigned int depth;
 >
-> No GPL?  (Ditto for other entries, too)
-Euh yeah, GPL forever. I will change all the occurrences.
+> +       if (!node)
+> +               return NULL;
+> +
+> +       /*
+> +        * Preserve usecount for passed in node as of_get_next_parent()
+> +        * will do of_node_put() on it.
+> +        */
+> +       of_node_get(node);
 
->> +int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
->> +	unsigned int id_mask)
->> +{
->> +	struct ac97_codec_device *adev = to_ac97_device(ac97->private_data);
->> +	struct ac97_controller *actrl = adev->ac97_ctrl;
->> +
->> +	if (try_warm) {
->> +		compat_ac97_warm_reset(ac97);
->> +		if (snd_ac97_bus_scan_one(actrl, adev->num) == adev->vendor_id)
+I think this messes up of_graph_get_remote_port_parent(). First it
+calls of_graph_get_remote_endpoint which returns the endpoint node
+with ref count incremented. Then you are incrementing it again here.
+
+> +
+>         /* Walk 3 levels up only if there is 'ports' node. */
+>         for (depth = 3; depth && node; depth--) {
+>                 node = of_get_next_parent(node);
+> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+> --- a/sound/soc/generic/audio-graph-card.c
+> +++ b/sound/soc/generic/audio-graph-card.c
+> @@ -224,7 +224,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
 >
-> Can we ignore id_mask here?  I'm not quite sure whether it's fixed...
-Probably not, but I will take a bit more time to cross-check that one.
+>         of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
+>                 ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
+> -               of_node_put(it.node);
+>                 if (ret < 0)
+>                         return ret;
 
-Thanks for the review, I'll follow up on that last question when I'll have
-settled on the correct answer.
+I think you need a put here.
 
-Cheers.
-
--- 
-Robert
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
