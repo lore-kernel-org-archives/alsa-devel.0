@@ -1,19 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [v2 2/3] ASoC: Intel: Fix pop noise of dmic
- recording in kabylake platform using rt5514
-Date: Thu, 27 Jul 2017 08:12:29 +0530
-Message-ID: <20170727024229.GN3053@localhost>
-References: <1501102065-11083-1-git-send-email-harshapriya.n@intel.com>
- <1501102065-11083-3-git-send-email-harshapriya.n@intel.com>
+From: Kevin Cheng <kevin.cheng@intel.com>
+Subject: [PATCH v2 0/2] ASoC: Intel: Add Kabylake machine
+	driver for RT5663
+Date: Thu, 27 Jul 2017 10:53:58 +0800
+Message-ID: <20170727025400.6426-1-kevin.cheng@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 835A3266AF9
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 04:39:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1501102065-11083-3-git-send-email-harshapriya.n@intel.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82EF2266AF9
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 04:53:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Harsha Priya <harshapriya.n@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+To: alsa-devel@alsa-project.org, vinod.koul@intel.com
+Cc: kevin.cheng@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 26, 2017 at 01:47:44PM -0700, Harsha Priya wrote:
-> This patch fixes the pop noise in dmic recording using rt5514 on kabylake platform.
-> This patch enables the rt5514 to use MCLK instead of BLCK as the sysclock which fixes
-> the pop noise.
+Add kabylake machine driver & corresponding driver entry in machine table for
+rt5663 codec.
 
-Please consider changing patch title to document the change you did so:
+For this particular machine,
+ the RT5663 is a headset codec connected on ssp1.
+  there is no dmic and speaker connected.
 
-"ASoC: Intel: use MCLK instead of BLCK as the sysclock"
+Modify the machine driver in kbl_rt5663_max98927 to reuse the
+  common codes.
 
-describes this patch rather than current one..
+V2: adjust the code order.
 
-> 
-> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-> ---
->  sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 13 ++-----------
->  1 file changed, 2 insertions(+), 11 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> index cfde894..cfd89ca 100644
-> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> @@ -351,19 +351,10 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
->  				return ret;
->  			}
->  
-> -			ret = snd_soc_dai_set_pll(codec_dai, 0,
-> -				RT5514_PLL1_S_BCLK, RT5514_AIF1_BCLK_FREQ,
-> -						RT5514_AIF1_SYSCLK_FREQ);
-> -			if (ret < 0) {
-> -				dev_err(rtd->dev, "set bclk err: %d\n", ret);
-> -				return ret;
-> -			}
-> -
->  			ret = snd_soc_dai_set_sysclk(codec_dai,
-> -				RT5514_SCLK_S_PLL1, RT5514_AIF1_SYSCLK_FREQ,
-> -							SND_SOC_CLOCK_IN);
-> +				RT5514_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
->  			if (ret < 0) {
-> -				dev_err(rtd->dev, "set sclk err: %d\n", ret);
-> +				dev_err(rtd->dev, "set sysclk err: %d\n", ret);
->  				return ret;
->  			}
->  		}
-> -- 
-> 1.9.1
-> 
+Kevin Cheng (2):
+  ASoC: Intel: Add Kabylake machine driver for RT5663
+  ASoC: Intel: Add Kabylake RT5663 machine driver entry
+
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 246 +++++++++++++++++++++++----
+ sound/soc/intel/skylake/skl.c                |   5 +
+ 2 files changed, 214 insertions(+), 37 deletions(-)
 
 -- 
-~Vinod
+2.12.2
