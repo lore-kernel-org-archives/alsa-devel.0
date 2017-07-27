@@ -1,19 +1,20 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: hdmi-codec: Allow drivers to
- restrict sample sizes.
-Date: Thu, 27 Jul 2017 13:34:30 +0300
-Message-ID: <ea28ff3a-f688-fda3-908b-67fd49244b9b@ti.com>
-References: <20170717140227.17312-1-srinivas.kandagatla@linaro.org>
- <20170717140227.17312-2-srinivas.kandagatla@linaro.org>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 07/17] regulator: arizona-micsupp: Add
+ support for Cirrus Logic Madera codecs
+Date: Thu, 27 Jul 2017 12:45:50 +0100
+Message-ID: <1501155950.5479.1.camel@rf-debian.wolfsonmicro.main>
+References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1496415790-19164-8-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20170605171006.3ppsjia2xvb22ld2@rob-hp-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 623CD266A8A
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 12:34:55 +0200 (CEST)
-In-Reply-To: <20170717140227.17312-2-srinivas.kandagatla@linaro.org>
-Content-Language: en-GB
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 077B8266A8A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 13:45:54 +0200 (CEST)
+In-Reply-To: <20170605171006.3ppsjia2xvb22ld2@rob-hp-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Archit Taneja <architt@codeaurora.org>, David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Andrzej Hajda <a.hajda@samsung.com>
+To: Rob Herring <robh@kernel.org>
+Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, tglx@linutronix.de, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/17/17 17:02, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Mon, 2017-06-05 at 12:10 -0500, Rob Herring wrote:
+> On Fri, Jun 02, 2017 at 04:03:00PM +0100, Richard Fitzgerald wrote:
+> > This adds a new driver identity "madera-micsupp" and probe function
+> > so that this driver can be used to control the micsupp regulator on
+> > Cirrus Logic Madera codecs.
+> > 
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > ---
+> > No changes since V2
+> > 
+> >  .../bindings/regulator/arizona-regulator.txt       |  3 +-
 > 
-> Currently hdmi client drivers does have means to limit the
-> sample sizes that it can only support. Having formats parameter
-> option would solve this.
+> I already acked v2. Please add acks when posting new versions.
+
+Some maintainers have bitten my head off when I've carried forward their
+ack so I never know what people want.
+
 > 
-> This issue was noticed on DB410c board when adv7511 hdmi codec driver
-> failed to play a 32 bits audio samples, as it does not support them.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-I left this feature out because I did not need it. All the HDMI encoders
-I have used are able to take all the i2s formats I am able to send.
-
-You should probably also update the comment above I2S_FORMATS
-definition. Othewise:
-
-Reviewed-by: Jyri Sarha <jsarha@ti.com>
-
-
-> ---
->  include/sound/hdmi-codec.h    | 1 +
->  sound/soc/codecs/hdmi-codec.c | 3 +++
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-> index 9483c55f871b..89fc4cce5785 100644
-> --- a/include/sound/hdmi-codec.h
-> +++ b/include/sound/hdmi-codec.h
-> @@ -104,6 +104,7 @@ struct hdmi_codec_pdata {
->  	uint i2s:1;
->  	uint spdif:1;
->  	int max_i2s_channels;
-> +	u64 formats;
->  	void *data;
->  };
->  
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> index 22ed0dc88f0a..1ece73f4be92 100644
-> --- a/sound/soc/codecs/hdmi-codec.c
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -780,6 +780,9 @@ static int hdmi_codec_probe(struct platform_device *pdev)
->  		hcp->daidrv[i] = hdmi_i2s_dai;
->  		hcp->daidrv[i].playback.channels_max =
->  			hcd->max_i2s_channels;
-> +
-> +		if (hcd->formats)
-> +			hcp->daidrv[i].playback.formats = hcd->formats;
->  		i++;
->  	}
->  
-> 
+> >  drivers/regulator/Kconfig                          |  7 ++-
+> >  drivers/regulator/arizona-micsupp.c                | 71 +++++++++++++++++++++-
+> >  3 files changed, 76 insertions(+), 5 deletions(-)
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
