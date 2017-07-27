@@ -1,55 +1,40 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3 07/17] regulator: arizona-micsupp: Add
- support for Cirrus Logic Madera codecs
-Date: Thu, 27 Jul 2017 12:45:50 +0100
-Message-ID: <1501155950.5479.1.camel@rf-debian.wolfsonmicro.main>
-References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1496415790-19164-8-git-send-email-rf@opensource.wolfsonmicro.com>
- <20170605171006.3ppsjia2xvb22ld2@rob-hp-laptop>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv3 0/6] Motorola Droid 4 Audio Support
+Date: Thu, 27 Jul 2017 05:01:06 -0700
+Message-ID: <20170727120106.GE10026@atomide.com>
+References: <20170725151030.26863-1-sebastian.reichel@collabora.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 077B8266A8A
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 13:45:54 +0200 (CEST)
-In-Reply-To: <20170605171006.3ppsjia2xvb22ld2@rob-hp-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, tglx@linutronix.de, lee.jones@linaro.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170725151030.26863-1-sebastian.reichel@collabora.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Cc: Sebastian Reichel <sre@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2017-06-05 at 12:10 -0500, Rob Herring wrote:
-> On Fri, Jun 02, 2017 at 04:03:00PM +0100, Richard Fitzgerald wrote:
-> > This adds a new driver identity "madera-micsupp" and probe function
-> > so that this driver can be used to control the micsupp regulator on
-> > Cirrus Logic Madera codecs.
-> > 
-> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > ---
-> > No changes since V2
-> > 
-> >  .../bindings/regulator/arizona-regulator.txt       |  3 +-
+* Sebastian Reichel <sebastian.reichel@collabora.co.uk> [170725 08:11]:
+> Hi,
 > 
-> I already acked v2. Please add acks when posting new versions.
-
-Some maintainers have bitten my head off when I've carried forward their
-ack so I never know what people want.
-
+> This adds audio support to Motorola Droid 4.
 > 
-> >  drivers/regulator/Kconfig                          |  7 ++-
-> >  drivers/regulator/arizona-micsupp.c                | 71 +++++++++++++++++++++-
-> >  3 files changed, 76 insertions(+), 5 deletions(-)
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Tested:
+>  - Playing via both DACs using Speaker, Earpiece, Headphone
+>  - Recording using internal Mic
+>  - Volume Controls
+> 
+> Known not to work:
+>  - 3.5mm detection support (requires closed source firmware,
+>    needs further investigation)
+>  - Modem / Bluetooth Audio (actually untested, but probably
+>    needs some quirks)
+> 
+> Changes since PATCHv2:
+>  * Fix a whitespace issue
+>  * Fix const notes Takashi provided
+>  * Fix a DAPM route issue I accidently introduced in v2
+
+Audio works for me after applying the cpcap-regulator fixes
+and with the dts kobject ref fix I posted earlier today:
+
+Tested-by: Tony Lindgren <tony@atomide.com>
