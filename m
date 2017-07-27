@@ -1,18 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [v2 0/3] ASoC: Intel: Fixes in Kabylake machine
- driver for clear playback and recording
-Date: Thu, 27 Jul 2017 08:08:48 +0530
-Message-ID: <20170727023836.GL3053@localhost>
+Subject: Re: [v2 1/3] ASoC: Intel: Fix cracking noise in rt5663
+ headphones for kabylake platform
+Date: Thu, 27 Jul 2017 08:10:57 +0530
+Message-ID: <20170727024057.GM3053@localhost>
 References: <1501102065-11083-1-git-send-email-harshapriya.n@intel.com>
+ <1501102065-11083-2-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 8827D266AF9
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 04:35:58 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5505E266AF9
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 04:38:03 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1501102065-11083-1-git-send-email-harshapriya.n@intel.com>
+In-Reply-To: <1501102065-11083-2-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,32 +27,43 @@ To: Harsha Priya <harshapriya.n@intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 26, 2017 at 01:47:42PM -0700, Harsha Priya wrote:
+On Wed, Jul 26, 2017 at 01:47:43PM -0700, Harsha Priya wrote:
+> This patch fixes the cracking noise in rt5663 headphones for kabylake platform
+> by calling the rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER as well.
 
-what happened to [PATCH .. in the title. I think you used
---subject-prefix=v2 insteadof --subject-prefix="PATCH v2"
+and it sets ASRC..?
 
-> This patch series includes fixes for clean playback and recording in kabylake machine driver.
-> It fixes the below issues in the corresponding patches and the details of each fix
-> is provided in the patch's commit message.
 > 
-> 1. Fix cracking noise in rt5663 headphones
+> The ASRC function is for asynchronous MCLK and LRCK. For RT5663 ASRC should be
+> enabled to  support special i2s clock format like Intel's 100fs. ASRC function
+	   ^^^^
+double space
+
+> will track i2s clock and generate a corresponding system clock for codec.
+> Calling this function helps select the clock source for both
+> RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters which fixes the
+> crackling sound.
 > 
-> 2. Fix pop noise of dmic recording 
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+> ---
+>  sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> 3. Enable 4 slot IV feedback for maxim amps
-> 
-> Harsha Priya (3):
->   ASoC: Intel: Fix cracking noise in rt5663 headphones for kabylake
->     platform
->   ASoC: Intel: Fix pop noise of dmic recording in kabylake platform
->     using rt5514
->   ASoC: Intel: Enabling 4 slot IV feedback for max98927 on Kabylake
->     platform
-> 
->  .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 28 +++++++++++-----------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
+> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> index 3fe4a08..cfde894 100644
+> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> @@ -319,7 +319,9 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
+>  	int ret;
+>  
+>  	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
+> -	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
+> +	rt5663_sel_asrc_clk_src(codec_dai->codec,
+> +			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
+> +			RT5663_CLK_SEL_I2S1_ASRC);
+>  
+>  	ret = snd_soc_dai_set_sysclk(codec_dai,
+>  			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
 > -- 
 > 1.9.1
 > 
