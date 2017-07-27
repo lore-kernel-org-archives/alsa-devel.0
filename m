@@ -1,68 +1,66 @@
 From: Antonio Borneo <borneo.antonio@gmail.com>
-Subject: [PATCH v2 3/3] ASoC: simple-card-utils: fix unbalanced of_node_get()/of_node_put()
-Date: Fri, 28 Jul 2017 01:26:12 +0200
-Message-ID: <20170727232612.23543-4-antonio.borneo@st.com>
-References: <20170727232612.23543-1-antonio.borneo@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170727232612.23543-1-antonio.borneo@st.com>
-In-Reply-To: <20170725214952.6491-1-borneo.antonio@gmail.com>
+Subject: [PATCH v2 0/3] ASoC: fix unbalanced
+	of_node_get()/of_node_put()
+Date: Fri, 28 Jul 2017 01:26:09 +0200
+Message-ID: <20170727232612.23543-1-antonio.borneo@st.com>
 References: <20170725214952.6491-1-borneo.antonio@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F51726760D
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 01:33:15 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id 184so25472236wmo.3
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 16:33:15 -0700 (PDT)
+In-Reply-To: <20170725214952.6491-1-borneo.antonio@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: Antonio Borneo <borneo.antonio@gmail.com>, linux-kernel@vger.kernel.org, Wei Xu <xuwei5@hisilicon.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Wei Xu <xuwei5@hisilicon.com>, Antonio Borneo <borneo.antonio@gmail.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Antonio Borneo <borneo.antonio@gmail.com>
 
 On Hikey target board, enabling CONFIG_OF_DYNAMIC triggers several
-errors at kernel boot, like the following one
+errors at kernel boot, like
+OF: ERROR: Bad of_node_put() on /soc/i2s@f7118000/ports/port@0
 OF: ERROR: Bad of_node_put() on /soc/i2s@f7118000/ports/port@0/endpoint
 each followed by stack dump.
 
-of_graph_get_port_parent() walks through the parents looking for a
-node named "ports". At each step it uses of_get_next_parent() that
-drops the current node with of_node_put().
-Avoid dropping the initial node by calling of_node_get() before
-of_graph_get_port_parent().
+Fixed by:
+- removing of_node_put() in the body of of_for_each_phandle(){},
+  since already provided at each iteration. Add it in case the
+  loop is break out;
+- adding of_node_get() before calling of_graph_get_port_parent().
 
 Tested with kernel v4.13-rc2 with hikey_defconfig taken from
 https://git.linaro.org/people/john.stultz/android-dev.git
 branch dev/hikey-mainline-WIP
 
-This fixes commit 1689333f8311 ("ASoC: simple-card-utils: add
-asoc_simple_card_parse_graph_dai()").
+v1 -> v2:
+- modify subject "s/fix balance of/fix unbalanced/";
+- split the patch per each individual issue. It also simplify the
+  backport;
+- add ref to the commit being fixed;
+- drop one fix not needed.
 
-Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
----
-To: Liam Girdwood <lgirdwood@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-To: Takashi Iwai <tiwai@suse.com>
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Wei Xu <xuwei5@hisilicon.com>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
----
+Antonio Borneo (3):
+  ASoC: fix use of of_node_put() in of_for_each_phandle() loops
+  ASoC: soc-core: fix unbalanced of_node_get()/of_node_put()
+  ASoC: simple-card-utils: fix unbalanced of_node_get()/of_node_put()
+
+ sound/soc/generic/audio-graph-card.c  | 9 ++++-----
  sound/soc/generic/simple-card-utils.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/soc-core.c                  | 5 +++++
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 26d64fa..144954b 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -250,6 +250,11 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
- 	if (ret != -ENOTSUPP)
- 		return ret;
- 
-+	/*
-+	 * of_graph_get_port_parent() will call
-+	 * of_node_put(). So, call of_node_get() here
-+	 */
-+	of_node_get(ep);
- 	node = of_graph_get_port_parent(ep);
- 
- 	/*
 -- 
 1.9.1
