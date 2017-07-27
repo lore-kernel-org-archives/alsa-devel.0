@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 0/6] Motorola Droid 4 Audio Support
-Date: Thu, 27 Jul 2017 11:23:21 +0100
-Message-ID: <20170727102321.gq5ttxd4vcxcn4yz@sirena.org.uk>
-References: <20170712151846.24621-1-sebastian.reichel@collabora.co.uk>
- <20170717092904.GG10026@atomide.com>
- <20170717101258.llyly7kwfnwtoftr@earth>
- <20170717101709.GI10026@atomide.com>
- <20170717141347.t2642xbkol3g36rv@earth>
- <20170718054833.GL10026@atomide.com>
- <20170718092931.be3lyp6m6xvjb5yv@earth>
- <s5h7ez6ccgm.wl-tiwai@suse.de> <20170727093943.GC10026@atomide.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: hdmi-codec: Allow drivers to
+ restrict sample sizes.
+Date: Thu, 27 Jul 2017 13:34:30 +0300
+Message-ID: <ea28ff3a-f688-fda3-908b-67fd49244b9b@ti.com>
+References: <20170717140227.17312-1-srinivas.kandagatla@linaro.org>
+ <20170717140227.17312-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5246149484835968958=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2A1E266A8A
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 12:23:36 +0200 (CEST)
-In-Reply-To: <20170727093943.GC10026@atomide.com>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 623CD266A8A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 12:34:55 +0200 (CEST)
+In-Reply-To: <20170717140227.17312-2-srinivas.kandagatla@linaro.org>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,61 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Sebastian Reichel <sebastian.reichel@collabora.co.uk>, linux-omap@vger.kernel.org
+To: srinivas.kandagatla@linaro.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Archit Taneja <architt@codeaurora.org>, David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Andrzej Hajda <a.hajda@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 07/17/17 17:02, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> 
+> Currently hdmi client drivers does have means to limit the
+> sample sizes that it can only support. Having formats parameter
+> option would solve this.
+> 
+> This issue was noticed on DB410c board when adv7511 hdmi codec driver
+> failed to play a 32 bits audio samples, as it does not support them.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
---===============5246149484835968958==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5pshuhw4ekdubyav"
-Content-Disposition: inline
+I left this feature out because I did not need it. All the HDMI encoders
+I have used are able to take all the i2s formats I am able to send.
 
+You should probably also update the comment above I2S_FORMATS
+definition. Othewise:
 
---5pshuhw4ekdubyav
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 27, 2017 at 02:39:43AM -0700, Tony Lindgren wrote:
-> * Takashi Iwai <tiwai@suse.de> [170718 02:38]:
-
-> > The problem manifests itself as an unblanaced of node reference.
-> > The node is released mistakenly at of_node_put() and this is caught as
-> > sleep-in-atomic, fortunately.
-
-> > So likely either something forgot to take the node ref or it hits the
-> > unreference due to the missing object by the implicit probe disorder,
-> > etc, I suppose.
-
-> Yup you're right. This is what happens, will send a fix for it shortly.
-
-There was also a separate thread where people were trying to fix this
-having run into it elsewhere.  The of_graph APIs look pretty confusing
-=66rom a user point of view sadly :(
-
---5pshuhw4ekdubyav
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll5vxgACgkQJNaLcl1U
-h9ABAAf/aUte/JM4cSp+xi85Km1CU0rB38QE5HFirgzYSf96aJdTA0gt78efZ9ba
-HszuD3Q0vK8wefBA929fcCtoycA/9zH4gKWRm6QLOGE5pG6bQyScjpUGDEA/e2NK
-2+eg0u4li2eRJ3BLOzHCiaP+UEbSMezhbA+ZaqR03q4ArWDiKyRHdWX/P1csUp4L
-rZaao2RWdufEkKfsM0IKpwqa/oWVC0QTX53OTIK7ssciO+/tKGBpYyOtg5SNxdwJ
-5rtsrqM0Q4r7v5rr3U0ASL/UP9ZTssyBUKPCQuC2BvcrwhD2Za30Dg58DvsrKdL/
-Wrpm7c3rkfwX+LGfHr9Vi2FAKfBvNg==
-=6EYK
------END PGP SIGNATURE-----
-
---5pshuhw4ekdubyav--
-
---===============5246149484835968958==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Reviewed-by: Jyri Sarha <jsarha@ti.com>
 
 
---===============5246149484835968958==--
+> ---
+>  include/sound/hdmi-codec.h    | 1 +
+>  sound/soc/codecs/hdmi-codec.c | 3 +++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+> index 9483c55f871b..89fc4cce5785 100644
+> --- a/include/sound/hdmi-codec.h
+> +++ b/include/sound/hdmi-codec.h
+> @@ -104,6 +104,7 @@ struct hdmi_codec_pdata {
+>  	uint i2s:1;
+>  	uint spdif:1;
+>  	int max_i2s_channels;
+> +	u64 formats;
+>  	void *data;
+>  };
+>  
+> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+> index 22ed0dc88f0a..1ece73f4be92 100644
+> --- a/sound/soc/codecs/hdmi-codec.c
+> +++ b/sound/soc/codecs/hdmi-codec.c
+> @@ -780,6 +780,9 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+>  		hcp->daidrv[i] = hdmi_i2s_dai;
+>  		hcp->daidrv[i].playback.channels_max =
+>  			hcd->max_i2s_channels;
+> +
+> +		if (hcd->formats)
+> +			hcp->daidrv[i].playback.formats = hcd->formats;
+>  		i++;
+>  	}
+>  
+> 
