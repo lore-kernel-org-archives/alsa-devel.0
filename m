@@ -1,153 +1,141 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 2/2] ASoC: add support for TAS6424 digital amplifier
-Date: Thu, 27 Jul 2017 17:41:54 +0100
-Message-ID: <20170727164154.vzfxwv4xc6sxvgty@sirena.org.uk>
-References: <1500405604-23511-1-git-send-email-m-stecklein@ti.com>
- <1500405604-23511-3-git-send-email-m-stecklein@ti.com>
- <20170719110842.lb2f5cqawnkenhsb@sirena.org.uk>
- <f94172dc-3e29-999f-ffb5-7eb955fcb1a5@ti.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [RFT 2/2] ASoC: samsung: Add proper error paths to
+ s3c24xx I2S driver
+Date: Thu, 27 Jul 2017 18:51:13 +0200
+Message-ID: <20170727165113.dkqx2djk2b2rgbp4@kozik-lap>
+References: <20170726185729.28897-1-krzk@kernel.org>
+ <20170726185729.28897-2-krzk@kernel.org>
+ <49f6f3df-f7c9-cf7e-95ad-e3d6fdc78014@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rh7wvcwhcbzyhtly"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF517266A8A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 18:51:16 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id t138so5588218wmt.4
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 09:51:16 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <f94172dc-3e29-999f-ffb5-7eb955fcb1a5-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Michael Stecklein <m-stecklein-l0cyMroinI0@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Andrew F . Davis" <afd-l0cyMroinI0@public.gmane.org>
+In-Reply-To: <49f6f3df-f7c9-cf7e-95ad-e3d6fdc78014@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jul 27, 2017 at 10:41:35AM +0530, Arvind Yadav wrote:
+> Hi,
+> 
+> 
+> On Thursday 27 July 2017 12:27 AM, Krzysztof Kozlowski wrote:
+> > s3c2412_i2s_probe() might fail so driver has to revert work done by
+> > s3c_i2sv2_probe() (clock enabling).  Missing doing this would lead to
+> > clock enable in-balance.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > 
+> > ---
+> > 
+> > Please, kindly test on S3C24xx hardware.
+> > ---
+> >   sound/soc/samsung/s3c-i2s-v2.c  |  9 +++++++++
+> >   sound/soc/samsung/s3c-i2s-v2.h  |  7 +++++++
+> >   sound/soc/samsung/s3c2412-i2s.c | 11 +++++++++--
+> >   3 files changed, 25 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+> > index 9b28046eea8e..df83f2730a53 100644
+> > --- a/sound/soc/samsung/s3c-i2s-v2.c
+> > +++ b/sound/soc/samsung/s3c-i2s-v2.c
+> > @@ -651,6 +651,15 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+> >   }
+> >   EXPORT_SYMBOL_GPL(s3c_i2sv2_probe);
+> > +void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
+> > +		      struct s3c_i2sv2_info *i2s)
+> > +{
+> > +	clk_disable(i2s->iis_pclk);
+> > +	clk_put(i2s->iis_pclk);
+> > +	i2s->iis_pclk = NULL;
+> > +}
+> > +EXPORT_SYMBOL_GPL(s3c_i2sv2_cleanup);
+> > +
+> >   #ifdef CONFIG_PM
+> >   static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
+> >   {
+> > diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
+> > index 182d80564e37..3fca20f7a853 100644
+> > --- a/sound/soc/samsung/s3c-i2s-v2.h
+> > +++ b/sound/soc/samsung/s3c-i2s-v2.h
+> > @@ -92,6 +92,13 @@ extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+> >   			   unsigned long base);
+> >   /**
+> > + * s3c_i2sv2_cleanup - cleanup resources allocated in s3c_i2sv2_probe
+> > + * @dai: The ASoC DAI structure supplied to the original probe.
+> > + * @i2s: Our local i2s structure to fill in.
+> > + */
+> > +extern void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
+> > +			      struct s3c_i2sv2_info *i2s);
+> > +/**
+> >    * s3c_i2sv2_register_component - register component and dai with soc core
+> >    * @dev: DAI device
+> >    * @id: DAI ID
+> > diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+> > index bcd1cbdeac93..005cd6db7d07 100644
+> > --- a/sound/soc/samsung/s3c2412-i2s.c
+> > +++ b/sound/soc/samsung/s3c2412-i2s.c
+> > @@ -65,7 +65,8 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+> >   	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
+> >   	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
+> >   		pr_err("failed to get i2sclk clock\n");
+> > -		return PTR_ERR(s3c2412_i2s.iis_cclk);
+> > +		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
+> > +		goto err;
+> >   	}
+> >   	/* Set MPLL as the source for IIS CLK */
+> > @@ -73,7 +74,7 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+> >   	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
+> we can use devm_clk_get for "mpll" clock.
 
---rh7wvcwhcbzyhtly
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This should be rather separate change from the fix... unless it is a fix
+by itself.
 
-On Wed, Jul 26, 2017 at 12:44:34PM -0500, Michael Stecklein wrote:
-> On 07/19/2017 06:08 AM, Mark Brown wrote:
-> > On Tue, Jul 18, 2017 at 02:20:04PM -0500, Michael Stecklein wrote:
+> >   	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
+> >   	if (ret)
+> > -		return ret;
+> > +		goto err;
+> >   	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
+> Now s3c2412_i2s.iis_cclk and s3c2412_i2s.iis_pclk are holding "iis" clock.
+> Now no one handling "mpll" clock. If we will call s3c2412_i2s_remove.
+> It's means. we are disabling "iis" clock twice. Which is not correct.
 
-Please leave blank lines between paragraphs, it makes things easier to
-read.
+Right, what a obfuscated code is this... Thanks for pointing this out.
+Also the s3c_i2sv2_probe() misses clk_prepare().
 
-> >> +	if (!tx_mask) {
-> >> +		dev_err(codec->dev, "tdm mask must not be 0\n");
-> >> +		return -EINVAL;
-> >> +	}
-
-> > Setting the mask to 0 is used when turning off TDM.
-
-> When turning off TDM, will the set_tdm_slot function ever get
-> called? (Since the TDM was turned off the slots don't need to
-
-Of course, that's how you turn off TDM mode.
-
-> be set.) Also, for this device TDM mode is automatically
-> selected based on the presence of a TDM clock, so there is
-> nothing to do to switch into or out of TDM mode. Similar
-> parts handle this the same way, such as: tlv320aic3x.c,
-> tas2552.c, tas5720.c, ssm4567.c
-
-It's possible there's bugs in older drivers, sometimes things get missed
-in review.
-
-> >> +	if ((reg & TAS6424_WARN_VDD_UV) && !(tas6424->last_warn & TAS6424_WARN_VDD_UV))
-> >> +		dev_warn(dev, "experienced a VDD under voltage condition\n");
-> >> +
-> >> +	if ((reg & TAS6424_WARN_VDD_POR) && !(tas6424->last_warn & TAS6424_WARN_VDD_POR))
-> >> +		dev_warn(dev, "experienced a VDD POR condition\n");
-
-> > These look like they are errors rather than warnings and should be
-> > critical prints like the other errors.
-
-> These conditions happened on the previous shutdown/reset
-> of the device. We are letting the user know about them, but
-> they are not critical to the current device state, so I have left
-> them as warnings.
-
-I'd expect errors from previous uses of the driver to be discarded,
-especially things that might've resulted from something like the reboot
-process.
-
-> >> +static int tas6424_codec_probe(struct snd_soc_codec *codec)
-> >> +{
-> >> +	struct tas6424_data *tas6424 = snd_soc_codec_get_drvdata(codec);
-> >> +	int ret;
-> >> +
-> >> +	tas6424->codec = codec;
-> >> +
-> >> +	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
-> >> +				    tas6424->supplies);
-> >> +	if (ret != 0) {
-> >> +		dev_err(codec->dev, "failed to enable supplies: %d\n", ret);
-> >> +		return ret;
-> >> +	}
-> > This init stuff should be in either the main I2C probe, DAPM or bias
-> > level management.  The CODEC probe should be very minimal.
-> This is a single codec device, does it make sense to leave the
-> device running without its codec? Other single codec devices
-> initialize regulators in codec probe similarly.
-
-I'm not sure what you mean by a "single CODEC device".  Most devices are
-so CODEC enables in I2C probe and then either leave everything on all
-the time or manage the regulators with runtime power management of some
-kind (either actual runtime PM or DAPM).  Managing things only in the
-ASoC level probe increases complexity and in actual running systems
-makes a marginal difference to real systems (you'd need to enable the
-CODEC but not the card).
-
-> >> +	switch (level) {
-> >> +	case SND_SOC_BIAS_ON:
-> >> +	case SND_SOC_BIAS_PREPARE:
-> >> +		msleep(500);
-> >> +		break;
-> > You need a 500ms sleep in all these cases?  That's a lot of sleeping.
-> Unfortunately, the device runs diagnostics at this point,
-> which take upwards of 480ms.
-
-On both entry to _ON and both entries to _PREPARE (from _ON and from
-_STANDBY)?  How does the device know we made these state changes?  It's
-a total sleep of 1s on power on.
+Best regards,
+Krzysztof
 
 
-> >> +	case SND_SOC_BIAS_OFF:
-> >> +		ret = snd_soc_update_bits(codec, TAS6424_CH_STATE_CTRL_REG,
-> >> +					  0xff, TAS6424_CH1_STATE_HIZ | TAS6424_CH2_STATE_HIZ |
-> >> +					  TAS6424_CH3_STATE_HIZ | TAS6424_CH4_STATE_HIZ);
-> >> +
-> >> +		if (ret < 0) {
-> >> +			dev_err(codec->dev, "error suspending device: %d\n", ret);
-> >> +			return ret;
-> >> +		}
-
-> > These mutes seem very random disassociated from anything else?
-
-> What do you mean by this comment? The control register is
-> set to STATE_MUTE and STATE_HIZ depending on what the
-> device needs for the new BIAS level.
-
-This doesn't seem very joined up with the rest of the power control of
-the device - you're setting the high impedence state here, it's not
-clear what undoes that and there's other power control in the suspend
-and resume stuff.  I didn't notice anything in a nearby place that
-cleared this state for example.
-
---rh7wvcwhcbzyhtly
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAll6F9EACgkQJNaLcl1U
-h9AG2gf/WCImb0pKbOcS//ns+AxWN1NGDYa57kuYStjgwJixeNZPJFddv34XdjmN
-RWTUZNNyK67Dsm3QX31J71icKb92NbkEEkrAGEe/Y0Eyn+gMP52unIv7GtsP92gQ
-ALmlQktg/dsMzC86SoMGUArysdXxjtPtJfFv8Je0CQuFxiJXn+WnbXZ4EosxiORI
-A/50V6bFfIOXbvkYPFBy/pIAX33PmyWd4Chy1dU4vLqoSNFU76w65vcdQFJxjSHX
-UpzgaSYH2GfePAO93izhbzP4qrAW6cs5W13671nzKVJJci0jr79Sm8XEEr/GWlFB
-755w2MnqyZHZyhH5rp6pFGH3V8WP1g==
-=FA1k
------END PGP SIGNATURE-----
-
---rh7wvcwhcbzyhtly--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > @@ -82,11 +83,17 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+> >   			      S3C_GPIO_PULL_NONE);
+> >   	return 0;
+> > +
+> > +err:
+> > +	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
+> > +
+> > +	return ret;
+> >   }
+> >   static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
+> >   {
+> >   	clk_disable_unprepare(s3c2412_i2s.iis_cclk);
+> > +	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
+> here, We are disabling "iis" clock twice. please check my previous comment.
+> >   	return 0;
+> >   }
+> ~arvind
