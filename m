@@ -1,70 +1,143 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-analog: fix DIG_CLK_CTL_RXD3_CLK_EN define" to the asoc tree
-Date: Thu, 27 Jul 2017 20:02:26 +0100
-Message-ID: <E1dao3G-0006TP-7U@debutante>
-References: <20170725175126.26578-2-damien.riegel@savoirfairelinux.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170725175126.26578-2-damien.riegel@savoirfairelinux.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.comalsa-devel@alsa-project.org
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v4 02/12] ALSA: ac97: add an ac97 bus
+Date: Thu, 27 Jul 2017 22:59:39 +0200
+Message-ID: <87a83pr3yc.fsf@belgarion.home>
+References: <20170724204928.29505-1-robert.jarzmik@free.fr>
+ <20170724204928.29505-3-robert.jarzmik@free.fr>
+ <s5h60eg8a8d.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.smtpout.orange.fr (smtp07.smtpout.orange.fr
+ [80.12.242.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8654A266A8A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 23:00:17 +0200 (CEST)
+In-Reply-To: <s5h60eg8a8d.wl-tiwai@suse.de> (Takashi Iwai's message of "Tue,
+ 25 Jul 2017 23:42:10 +0200")
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Takashi Iwai <tiwai@suse.de> writes:
 
-   ASoC: codecs: msm8916-analog: fix DIG_CLK_CTL_RXD3_CLK_EN define
+> On Mon, 24 Jul 2017 22:49:18 +0200,
+> Robert Jarzmik wrote:
 
-has been applied to the asoc tree at
+...zip...
+>> +#ifndef AC97_COMPAT_H
+>> +#define AC97_COMPAT_H
+>> +
+>> +#include <sound/ac97_codec.h>
+>> +#include <sound/soc.h>
+>
+> Is this inclusion needed?  The code here doesn't look ASoC-specific at
+> all.
+Mmm no, actually it's not, good point.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+...zip...
+>> +#ifndef AC97_CONTROLLER_H
+>> +#define AC97_CONTROLLER_H
+>> +
+>> +#include <linux/list.h>
+>> +
+>> +#define AC97_BUS_MAX_CODECS 4
+>> +#define AC97_SLOTS_AVAILABLE_ALL 0xf
+>> +
+>> +struct device;
+>
+> You need the definition struct device in below (it's no pointer), thus
+> you have to include <linux/device.h> instead.
+Fair enough, vor v5.
+>> +struct ac97_controller {
+>> +	const struct ac97_controller_ops *ops;
+>
+> The struct isn't declared beforehand?  GCC will warn.
+Actually it doesn't.
+It's interesting as ac97_controller depends on ac97_controller_ops, and
+ac97_controller_ops depends on ac97_controller;
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+As for why it doesn't warn, every time I used controller.h, I also used
+codec.h. And codec.h holds a :
+struct ac97_controller;
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+So it's declared beforehand after all ...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+But I will add before "struct ac97_controller" a :
+struct ac97_controller_ops;
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>> +	struct list_head controllers;
+>> +	struct device adap;
+>> +	int nr;
+>> +	struct device *parent;
+>> +	unsigned short slots_available;
+>
+> I'd move parent field below, so that 64bit pointer can be aligned
+> better.
+Okay, got it.
 
-Thanks,
-Mark
+...zip...
+>> +
+>> +	device_initialize(&codec->dev);
+>> +	dev_set_name(&codec->dev, "%s:%u", dev_name(ac97_ctrl->parent), idx);
+>> +
+>> +	ret = device_add(&codec->dev);
+>> +	if (ret)
+>> +		goto err_free_codec;
+>> +
+>> +	return 0;
+>> +err_free_codec:
+>> +	kfree(codec);
+>
+> This may leave the device name string.  You need to call
+> put_device() even if device_add() returns an error.
+You're right, I'll change that.
 
->From deab4563ad6a7f4668024455fa61b87f1d25ff73 Mon Sep 17 00:00:00 2001
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Date: Tue, 25 Jul 2017 13:51:24 -0400
-Subject: [PATCH] ASoC: codecs: msm8916-analog: fix DIG_CLK_CTL_RXD3_CLK_EN
- define
+...zip...
+>> +int snd_ac97_codec_driver_register(struct ac97_codec_driver *drv)
+>> +{
+>> +	int ret;
+>> +
+>> +	drv->driver.bus = &ac97_bus_type;
+>> +	ret = driver_register(&drv->driver);
+>> +
+>> +	return ret;
+>
+> This can be simplified.
+Indeed.
 
-The wrong bit is assigned to DIG_CLK_CTL_RXD3_CLK_EN, change it for the
-correct one.
+>> +}
+>> +EXPORT_SYMBOL(snd_ac97_codec_driver_register);
+>
+> No GPL?  (Ditto for other entries, too)
+Euh yeah, GPL forever. I will change all the occurrences.
 
-Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>> +int snd_ac97_reset(struct snd_ac97 *ac97, bool try_warm, unsigned int id,
+>> +	unsigned int id_mask)
+>> +{
+>> +	struct ac97_codec_device *adev = to_ac97_device(ac97->private_data);
+>> +	struct ac97_controller *actrl = adev->ac97_ctrl;
+>> +
+>> +	if (try_warm) {
+>> +		compat_ac97_warm_reset(ac97);
+>> +		if (snd_ac97_bus_scan_one(actrl, adev->num) == adev->vendor_id)
+>
+> Can we ignore id_mask here?  I'm not quite sure whether it's fixed...
+Probably not, but I will take a bit more time to cross-check that one.
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index a78802920c3c..5710fd440bcd 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -36,7 +36,7 @@
- #define CDC_D_CDC_DIG_CLK_CTL		(0xf04A)
- #define DIG_CLK_CTL_RXD1_CLK_EN		BIT(0)
- #define DIG_CLK_CTL_RXD2_CLK_EN		BIT(1)
--#define DIG_CLK_CTL_RXD3_CLK_EN		BIT(3)
-+#define DIG_CLK_CTL_RXD3_CLK_EN		BIT(2)
- #define DIG_CLK_CTL_TXD_CLK_EN		BIT(4)
- #define DIG_CLK_CTL_NCP_CLK_EN_MASK	BIT(6)
- #define DIG_CLK_CTL_NCP_CLK_EN		BIT(6)
+Thanks for the review, I'll follow up on that last question when I'll have
+settled on the correct answer.
+
+Cheers.
+
 -- 
-2.13.2
+Robert
