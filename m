@@ -1,101 +1,103 @@
-From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] device property: Fix usecount for of_graph_get_port_parent()
-Date: Thu, 27 Jul 2017 17:18:36 -0500
-Message-ID: <CAL_JsqJ9Xmbws8gBRCxn2Nt=tj1HLnF-MGvnW+oOourvgbm9Nw@mail.gmail.com>
-References: <20170727094405.19778-1-tony@atomide.com>
+From: Antonio Borneo <borneo.antonio@gmail.com>
+Subject: Re: [PATCH] ASoC: fix balance of
+	of_node_get()/of_node_put()
+Date: Fri, 28 Jul 2017 01:20:44 +0200
+Message-ID: <CAAj6DX3fwAY+vLDqYud7bMVjLFV2XcSix4YM8Z3FxP10n6R+_g@mail.gmail.com>
+References: <20170725214952.6491-1-borneo.antonio@gmail.com>
+ <20170726113728.fpj3kboxib5tnmzv@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170727094405.19778-1-tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Cc: Frank Rowand <frowand.list-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-omap <linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
+ [209.85.215.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 246DF266A8A
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 01:20:46 +0200 (CEST)
+Received: by mail-lf0-f67.google.com with SMTP id 65so5271877lfa.0
+ for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 16:20:46 -0700 (PDT)
+In-Reply-To: <20170726113728.fpj3kboxib5tnmzv@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Wei Xu <xuwei5@hisilicon.com>, Takashi Iwai <tiwai@suse.com>, Antonio Borneo <borneo.antonio@gmail.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 27, 2017 at 4:44 AM, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org> wrote:
-> Fix inconsistent use of of_graph_get_port_parent() where
-> asoc_simple_card_parse_graph_dai() does of_node_get() before
-> calling it while other callers do not. We can fix this by
-> not trashing the node passed to of_graph_get_port_parent().
->
-> Let's make sure the users have correct refcounts and remove
-> related incorrect of_node_put() calls for of_for_each_phandle
-> as that's done by of_phandle_iterator_next().
->
-> Let's fix both issues with a single patch to avoid kobject
-> refcounts getting messed up more if two patches are merged
-> separately.
->
-> Otherwise strange issues can happen caused by memory corruption
-> caused by too many kobject_del() calls such as:
->
-> BUG: sleeping function called from invalid context at
-> kernel/locking/mutex.c:747
-> ...
-> (___might_sleep)
-> (__mutex_lock)
-> (mutex_lock_nested)
-> (kernfs_remove)
-> (kobject_del)
-> (kobject_put)
-> (of_get_next_parent)
-> (of_graph_get_port_parent)
-> (asoc_simple_card_parse_graph_dai [snd_soc_simple_card_utils])
-> (asoc_graph_card_probe [snd_soc_audio_graph_card])
->
-> Fixes: 0ef472a973eb ("of_graph: add of_graph_get_port_parent()")
-> Fixes: 2692c1c63c29 ("ASoC: add audio-graph-card support")
-> Fixes: 1689333f8311 ("ASoC: simple-card-utils: add asoc_simple_card_parse_graph_dai()")
-> Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Cc: Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-> Signed-off-by: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-> ---
->  drivers/of/property.c                 | 9 +++++++++
->  sound/soc/generic/audio-graph-card.c  | 5 +----
->  sound/soc/generic/simple-card-utils.c | 5 -----
->  3 files changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -708,6 +708,15 @@ struct device_node *of_graph_get_port_parent(struct device_node *node)
->  {
->         unsigned int depth;
->
-> +       if (!node)
-> +               return NULL;
-> +
-> +       /*
-> +        * Preserve usecount for passed in node as of_get_next_parent()
-> +        * will do of_node_put() on it.
-> +        */
-> +       of_node_get(node);
+Hi Mark,
+thanks for the review.
 
-I think this messes up of_graph_get_remote_port_parent(). First it
-calls of_graph_get_remote_endpoint which returns the endpoint node
-with ref count incremented. Then you are incrementing it again here.
-
-> +
->         /* Walk 3 levels up only if there is 'ports' node. */
->         for (depth = 3; depth && node; depth--) {
->                 node = of_get_next_parent(node);
-> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-> --- a/sound/soc/generic/audio-graph-card.c
-> +++ b/sound/soc/generic/audio-graph-card.c
-> @@ -224,7 +224,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+On Wed, Jul 26, 2017 at 1:37 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jul 25, 2017 at 11:49:52PM +0200, Antonio Borneo wrote:
 >
->         of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
->                 ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
-> -               of_node_put(it.node);
->                 if (ret < 0)
->                         return ret;
+>> Fixed by:
+>> - removing of_node_put() in the body of of_for_each_phandle(){},
+>>   since already provided at each iteration. Add it in case the
+>>   loop is break out;
+>> - adding of_node_get() before calling of_graph_get_port_parent()
+>>   or asoc_graph_card_dai_link_of().
+>
+>>  sound/soc/generic/audio-graph-card.c  | 14 +++++++++-----
+>>  sound/soc/generic/simple-card-utils.c |  5 +++++
+>>  sound/soc/soc-core.c                  |  5 +++++
+>>  3 files changed, 19 insertions(+), 5 deletions(-)
+>
+> This is a series of different changes to fix different (although
+> related) problems which should be being submitted individually.  Sending
+> multiple changes in one patch makes it harder to review things and for
+> fixes like this makes it harder to backport the fixes where not all the
+> code being fixed was introduced in a single kernel version.
 
-I think you need a put here.
+Agree! Will split it and send a v2.
 
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>       of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
+>> +             /*
+>> +              * asoc_graph_card_dai_link_of() will call
+>> +              * of_node_put(). So, call of_node_get() here
+>> +              */
+>> +             of_node_get(it.node);
+>>               ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
+>
+> Why is this the most sensible fix?  It is really not at all obvious why
+> asoc_graph_card_dai_link_of() would drop a reference, or in what
+> situations callers might have a reference they're OK with dropping.
+
+Actually this part is wrong. Splitting for v2 and rechecking every
+step I get that it's not this function that drops the reference; the
+fix is already covered by the rest of the patch. Sorry for the
+mistake.
+
+>> +     /*
+>> +      * of_graph_get_port_parent() will call
+>> +      * of_node_put(). So, call of_node_get() here
+>> +      */
+>> +     of_node_get(ep);
+>>       node = of_graph_get_port_parent(ep);
+>
+> Same here, why does this make sense?  It is not in the least bit obvious
+> to me why looking up the parent of a node would cause us to drop the
+> reference to the current node, this seems like an error prone and
+> confusing API which would be better fixed.
+
+I tend to agree with you, quite error prone and confusing. I spent
+some time to identify who is dropping what.
+Actually there is a bunch of functions like this in driver/of/; they
+take a node as parameter and return a node, while doing a put of the
+parameter. While questionable, looks like there is at least some
+consistency.
+Maybe the "get" in the API name should match the implicit
+of_node_get() of the returned node (not sure it is the case on all
+such API). Something else in the name should indicate if the input
+node will be of_node_put(). Suggestions are welcome, but I think the
+discussion goes beyond the scope of this fix.
+In this specific case, I lazily reused some code already upstream here
+http://elixir.free-electrons.com/linux/v4.13-rc2/source/sound/soc/generic/simple-card-utils.c#L285
+I added in copy Kuninori Morimoto, the developer of the lines above,
+in case he has any hint.
+
+Antonio
