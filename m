@@ -1,68 +1,83 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [RFT v2 2/3] ASoC: samsung: Add missing prepare
- for iis clock of s3c24xx
-Date: Fri, 28 Jul 2017 07:44:40 +0200
-Message-ID: <20170728054440.GA2650@kozik-book>
-References: <20170727171338.13300-1-krzk@kernel.org>
- <20170727171338.13300-3-krzk@kernel.org>
- <36fcdba7-309b-68b0-f3e4-f2de89526af7@gmail.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] device property: Fix usecount for
+ of_graph_get_port_parent()
+Date: Thu, 27 Jul 2017 23:01:27 -0700
+Message-ID: <20170728060127.GH10026@atomide.com>
+References: <20170727094405.19778-1-tony@atomide.com>
+ <CAL_JsqJ9Xmbws8gBRCxn2Nt=tj1HLnF-MGvnW+oOourvgbm9Nw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 2238B26761A
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 07:44:53 +0200 (CEST)
-Received: by mail-it0-f68.google.com with SMTP id v127so14955283itd.2
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 22:44:53 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <36fcdba7-309b-68b0-f3e4-f2de89526af7@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+In-Reply-To: <CAL_JsqJ9Xmbws8gBRCxn2Nt=tj1HLnF-MGvnW+oOourvgbm9Nw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>, Grant Likely <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-omap <linux-omap@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 28, 2017 at 10:11:48AM +0530, Arvind Yadav wrote:
-> Hi,
+* Rob Herring <robh+dt@kernel.org> [170727 15:19]:
+> On Thu, Jul 27, 2017 at 4:44 AM, Tony Lindgren <tony@atomide.com> wrote:
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -708,6 +708,15 @@ struct device_node *of_graph_get_port_parent(struct device_node *node)
+> >  {
+> >         unsigned int depth;
+> >
+> > +       if (!node)
+> > +               return NULL;
+> > +
+> > +       /*
+> > +        * Preserve usecount for passed in node as of_get_next_parent()
+> > +        * will do of_node_put() on it.
+> > +        */
+> > +       of_node_get(node);
 > 
+> I think this messes up of_graph_get_remote_port_parent(). First it
+> calls of_graph_get_remote_endpoint which returns the endpoint node
+> with ref count incremented. Then you are incrementing it again here.
+
+Hmm OK looks like I missed that one. If we want to have
+of_graph_get_port_parent not trash the node passed to it, we should
+just change things there too:
+
+struct device_node *of_graph_get_remote_port_parent(
+		const struct device_node *node)
+{
+	struct device_node *np, *pp;
+
+	/* Get remote endpoint node. */
+	np = of_graph_get_remote_endpoint(node);
+
+	pp = of_graph_get_port_parent(np);
+	of_node_put(np);
+
+	return pp;
+}
+EXPORT_SYMBOL(of_graph_get_remote_port_parent);
+
+Does that make sense to you?
+
+> > diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+> > --- a/sound/soc/generic/audio-graph-card.c
+> > +++ b/sound/soc/generic/audio-graph-card.c
+> > @@ -224,7 +224,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+> >
+> >         of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
+> >                 ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
+> > -               of_node_put(it.node);
+> >                 if (ret < 0)
+> >                         return ret;
 > 
-> On Thursday 27 July 2017 10:43 PM, Krzysztof Kozlowski wrote:
-> >The s3c_i2sv2_probe() only enabled iis clock.  Missing prepare isn't
-> >probably fatal, because for SoC clocks this is usually no-op, but for
-> >correctness this clock should be prepared.
-> >
-> >Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >
-> >---
-> >
-> >Changes since v1:
-> >1. New patch
-> >---
-> >  sound/soc/samsung/s3c-i2s-v2.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> >diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-> >index 9b28046eea8e..3894bda06ebb 100644
-> >--- a/sound/soc/samsung/s3c-i2s-v2.c
-> >+++ b/sound/soc/samsung/s3c-i2s-v2.c
-> >@@ -637,7 +637,7 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
-> >  		return -ENOENT;
-> >  	}
-> >-	clk_enable(i2s->iis_pclk);
-> >+	clk_prepare_enable(i2s->iis_pclk);
-> Please, handle are return value of clk_prepare_enble.
+> I think you need a put here.
 
-Which is a different issue, different bug. We can fix it but it should
-be not mixed with this fix here.
+Do you mean on error it should be as below, right?
 
-Best regards,
-Krzysztof
+	ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
+	if (ret < 0) {
+		of_node_put(it.node);
+		return ret;
+	}
+
+Regards,
+
+Tony
