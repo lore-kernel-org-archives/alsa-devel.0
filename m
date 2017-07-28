@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Add proper error paths to s3c24xx I2S driver" to the asoc tree
-Date: Fri, 28 Jul 2017 11:17:55 +0100
-Message-ID: <E1db2LD-0003mG-H5@debutante>
-References: <20170727171338.13300-4-krzk@kernel.org>
+Subject: Applied "ASoC: samsung: Fix possible double iounmap on s3c24xx driver probe failure" to the asoc tree
+Date: Fri, 28 Jul 2017 11:18:29 +0100
+Message-ID: <E1db2Ll-0003pn-Ch@debutante>
+References: <20170726185729.28897-1-krzk@kernel.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170727171338.13300-4-krzk@kernel.org>
+In-Reply-To: <20170726185729.28897-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgArvind Yadav <arvind.yadav.cs@gmail.com>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Add proper error paths to s3c24xx I2S driver
+   ASoC: samsung: Fix possible double iounmap on s3c24xx driver probe failure
 
 has been applied to the asoc tree at
 
@@ -37,103 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From 6f187f7ef1c15dca9f720b18a7e928718fd1a8b3 Mon Sep 17 00:00:00 2001
+>From 776bac64bf13e20c27f7ad168811abdf3b72f14d Mon Sep 17 00:00:00 2001
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Thu, 27 Jul 2017 19:13:38 +0200
-Subject: [PATCH] ASoC: samsung: Add proper error paths to s3c24xx I2S driver
+Date: Thu, 27 Jul 2017 19:13:36 +0200
+Subject: [PATCH] ASoC: samsung: Fix possible double iounmap on s3c24xx driver
+ probe failure
 
-s3c2412_i2s_probe() might fail so driver has to revert work done by
-s3c_i2sv2_probe() (clock enabling).  Missing doing this would lead to
-clock enable in-balance.
+Commit 87b132bc0315 ("ASoC: samsung: s3c24{xx,12}-i2s: port to use
+generic dmaengine API") moved ioremap() call from
+s3c-i2s-v2.c:s3c_i2sv2_probe() to s3c2412-i2s.c:s3c2412_iis_dev_probe()
+and converted it to devm- resource managed interface.
 
+However the error path in first of them - s3c_i2sv2_probe() - was not
+updated.  If getting a iis clock in s3c_i2sv2_probe() failed, the
+address space would be unmapped there.  This could lead to:
+1. double iounmap() later from devm-interface of s3c2412_iis_dev_probe()),
+2. accessing the memory by other functions in s3c2412-i2s.c unit.
+
+Anyway, the owner of this mapped region should be s3c2412-i2s.c because
+it starts the mapping.
+
+Affected are drivers for S3C24xx family although issue was not reproduced.
+
+Fixes: 87b132bc0315 ("ASoC: samsung: s3c24{xx,12}-i2s: port to use generic dmaengine API")
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Acked-by: Arvind Yadav<arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c-i2s-v2.c  |  9 +++++++++
- sound/soc/samsung/s3c-i2s-v2.h  |  7 +++++++
- sound/soc/samsung/s3c2412-i2s.c | 13 +++++++++----
- 3 files changed, 25 insertions(+), 4 deletions(-)
+ sound/soc/samsung/s3c-i2s-v2.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index 3894bda06ebb..58c3e9bfc6b7 100644
+index ca522a95160b..9b28046eea8e 100644
 --- a/sound/soc/samsung/s3c-i2s-v2.c
 +++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -651,6 +651,15 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
- }
- EXPORT_SYMBOL_GPL(s3c_i2sv2_probe);
- 
-+void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
-+		      struct s3c_i2sv2_info *i2s)
-+{
-+	clk_disable_unprepare(i2s->iis_pclk);
-+	clk_put(i2s->iis_pclk);
-+	i2s->iis_pclk = NULL;
-+}
-+EXPORT_SYMBOL_GPL(s3c_i2sv2_cleanup);
-+
- #ifdef CONFIG_PM
- static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
- {
-diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
-index 182d80564e37..3fca20f7a853 100644
---- a/sound/soc/samsung/s3c-i2s-v2.h
-+++ b/sound/soc/samsung/s3c-i2s-v2.h
-@@ -92,6 +92,13 @@ extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
- 			   unsigned long base);
- 
- /**
-+ * s3c_i2sv2_cleanup - cleanup resources allocated in s3c_i2sv2_probe
-+ * @dai: The ASoC DAI structure supplied to the original probe.
-+ * @i2s: Our local i2s structure to fill in.
-+ */
-+extern void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
-+			      struct s3c_i2sv2_info *i2s);
-+/**
-  * s3c_i2sv2_register_component - register component and dai with soc core
-  * @dev: DAI device
-  * @id: DAI ID
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index bcd1cbdeac93..cc0840fff5aa 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -65,7 +65,8 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
- 	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
- 	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
- 		pr_err("failed to get i2sclk clock\n");
--		return PTR_ERR(s3c2412_i2s.iis_cclk);
-+		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
-+		goto err;
+@@ -634,7 +634,6 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+ 	i2s->iis_pclk = clk_get(dev, "iis");
+ 	if (IS_ERR(i2s->iis_pclk)) {
+ 		dev_err(dev, "failed to get iis_clock\n");
+-		iounmap(i2s->regs);
+ 		return -ENOENT;
  	}
  
- 	/* Set MPLL as the source for IIS CLK */
-@@ -73,20 +74,24 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
- 	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
- 	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
- 	if (ret)
--		return ret;
--
--	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
-+		goto err;
- 
- 	/* Configure the I2S pins (GPE0...GPE4) in correct mode */
- 	s3c_gpio_cfgall_range(S3C2410_GPE(0), 5, S3C_GPIO_SFN(2),
- 			      S3C_GPIO_PULL_NONE);
- 
- 	return 0;
-+
-+err:
-+	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
-+
-+	return ret;
- }
- 
- static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
- {
- 	clk_disable_unprepare(s3c2412_i2s.iis_cclk);
-+	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
- 
- 	return 0;
- }
 -- 
 2.13.2
