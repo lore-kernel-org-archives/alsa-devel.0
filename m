@@ -1,23 +1,21 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 4/6] ASoC: codecs: msm8916-wcd-analog:
- set default micbias voltage to 1.8
-Date: Fri, 28 Jul 2017 15:45:08 +0100
-Message-ID: <0f96d65a-f7d9-0139-e0c4-49069e717f34@linaro.org>
-References: <20170726003512.18965-1-srinivas.kandagatla@linaro.org>
- <20170726003512.18965-5-srinivas.kandagatla@linaro.org>
- <20170728134038.y5wnrurmwn4bxxsh@sirena.org.uk>
- <94765031-d840-bcae-11e3-16e1e55a7aa7@linaro.org>
- <20170728140108.ds5x4irfep4ss3lv@sirena.org.uk>
+Subject: Re: [PATCH v2 3/3] ASoC: codecs: msm8916-wcd-digital:
+ select DMIC source in CIC filter path
+Date: Fri, 28 Jul 2017 16:11:21 +0100
+Message-ID: <57f0b0db-5795-5999-0dc3-f9a161ed0340@linaro.org>
+References: <20170725234822.18763-1-srinivas.kandagatla@linaro.org>
+ <20170725234822.18763-4-srinivas.kandagatla@linaro.org>
+ <20170728133206.7ynzrbfvreclltkx@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CF6B2676F1
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 16:45:11 +0200 (CEST)
-Received: by mail-wm0-f48.google.com with SMTP id m85so119333331wma.1
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 07:45:11 -0700 (PDT)
-In-Reply-To: <20170728140108.ds5x4irfep4ss3lv@sirena.org.uk>
+Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA2AC2676F1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 17:11:23 +0200 (CEST)
+Received: by mail-wm0-f44.google.com with SMTP id t201so128435291wmt.1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 08:11:23 -0700 (PDT)
+In-Reply-To: <20170728133206.7ynzrbfvreclltkx@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,26 +32,19 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 28/07/17 15:01, Mark Brown wrote:
-> On Fri, Jul 28, 2017 at 02:54:59PM +0100, Srinivas Kandagatla wrote:
->> On 28/07/17 14:40, Mark Brown wrote:
->>> On Wed, Jul 26, 2017 at 02:35:10AM +0200, srinivas.kandagatla@linaro.org wrote:
->>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On 28/07/17 14:32, Mark Brown wrote:
+> On Wed, Jul 26, 2017 at 01:48:22AM +0200, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> This patch fixes a missing selection of DMIC in CIC filter source path.
+>> Without this patch dmic is not functional.
 > 
->>>> This patch sets the default internal micbias voltage to 1.8v. This
->>>> default value is required for mbhc buttons to work. Also adds dt
->>>> bindings to allow the board level file to specify the required default
->>>> micbias value.
-> 
->>> What was the default previously?
-> 
->> This was set to 2.7v previously for special headsets which have high
->> impedance.
-> 
-> So obviously this will break existing users.  That's not OK.
+> What happens when someone needs this filter connected somewhere else -
+> shouldn't this be controlled as part of the DAPM routing?
+There are only two paths for this, one is DMIC and other is AMIC.
 
-This would not break any exiting users, as this part is applicable for 
-only headset detect usecase. I will try to address this in ("PATCH 5/6 
-ASoC: codecs: msm8916-wcd-analog: add MBHC support") patch.
+Yes, its possible to add these as dapm routing, i will give it a go in 
+next version.
 
-The default voltage for most common usecase should be set to 1.8v anyway.
+thanks,
+srini
