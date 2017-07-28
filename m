@@ -1,15 +1,15 @@
 From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH v3 2/3] ASoC: Intel: Use MCLK instead of BLCK
-	as the sysclock for RT5514 codec on kabylake platform
-Date: Thu, 27 Jul 2017 17:41:26 -0700
-Message-ID: <1501202487-12617-3-git-send-email-harshapriya.n@intel.com>
+Subject: [PATCH v3 3/3] ASoC: Intel: Enabling 4 slot IV
+	feedback for max98927 on Kabylake platform
+Date: Thu, 27 Jul 2017 17:41:27 -0700
+Message-ID: <1501202487-12617-4-git-send-email-harshapriya.n@intel.com>
 References: <1501202487-12617-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id EC9FC267615
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DAF2267623
  for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 02:41:41 +0200 (CEST)
 In-Reply-To: <1501202487-12617-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,38 +25,37 @@ To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-pro
 Cc: Harsha Priya <harshapriya.n@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the pop noise in dmic recording using rt5514 on kabylake platform.
-This patch enables the rt5514 to use MCLK instead of BLCK as the sysclock which fixes
-the pop noise.
+This patch enables 4 slot IV feedback for max98927 speaker amp codec.
 
 Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 ---
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index cfde894..cfd89ca 100644
+index cfd89ca..a675ae5 100644
 --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
 +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -351,19 +351,10 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
+@@ -358,11 +358,18 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
  				return ret;
  			}
- 
--			ret = snd_soc_dai_set_pll(codec_dai, 0,
--				RT5514_PLL1_S_BCLK, RT5514_AIF1_BCLK_FREQ,
--						RT5514_AIF1_SYSCLK_FREQ);
--			if (ret < 0) {
--				dev_err(rtd->dev, "set bclk err: %d\n", ret);
--				return ret;
--			}
--
- 			ret = snd_soc_dai_set_sysclk(codec_dai,
--				RT5514_SCLK_S_PLL1, RT5514_AIF1_SYSCLK_FREQ,
--							SND_SOC_CLOCK_IN);
-+				RT5514_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
+ 		}
+-		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME) ||
+-			!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
+-			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF0, 3, 8, 16);
++		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME)) {
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
  			if (ret < 0) {
--				dev_err(rtd->dev, "set sclk err: %d\n", ret);
-+				dev_err(rtd->dev, "set sysclk err: %d\n", ret);
+-				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
++				dev_err(rtd->dev, "DEV0 TDM slot err:%d\n", ret);
++				return ret;
++			}
++		}
++
++		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
++			if (ret < 0) {
++				dev_err(rtd->dev, "DEV1 TDM slot err:%d\n", ret);
  				return ret;
  			}
  		}
