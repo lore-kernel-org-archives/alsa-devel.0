@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: merge snd_pcm_ops::open and snd_soc_dai_ops::startup" to the asoc tree
-Date: Fri, 28 Jul 2017 11:17:52 +0100
-Message-ID: <E1db2LA-0003lC-8Y@debutante>
-References: <87h8z0g2de.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h8z0g2de.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: samsung: Add proper error paths to s3c24xx I2S driver" to the asoc tree
+Date: Fri, 28 Jul 2017 11:17:55 +0100
+Message-ID: <E1db2LD-0003mG-H5@debutante>
+References: <20170727171338.13300-4-krzk@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170727171338.13300-4-krzk@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgArvind Yadav <arvind.yadav.cs@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: merge snd_pcm_ops::open and snd_soc_dai_ops::startup
+   ASoC: samsung: Add proper error paths to s3c24xx I2S driver
 
 has been applied to the asoc tree at
 
@@ -37,144 +37,103 @@ to this mail.
 Thanks,
 Mark
 
->From 3c9736aa1ab59e64ebc33b140b000f90c8f9de46 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 27 Jul 2017 01:32:06 +0000
-Subject: [PATCH] ASoC: rsnd: merge snd_pcm_ops::open and
- snd_soc_dai_ops::startup
+>From 6f187f7ef1c15dca9f720b18a7e928718fd1a8b3 Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Thu, 27 Jul 2017 19:13:38 +0200
+Subject: [PATCH] ASoC: samsung: Add proper error paths to s3c24xx I2S driver
 
-Current rsnd driver has snd_pcm_ops::open and snd_soc_dai_ops::startup,
-but, these are called from soc_pcm_open in same time.
-This patch merge these into rsnd_soc_dai_startup()
+s3c2412_i2s_probe() might fail so driver has to revert work done by
+s3c_i2sv2_probe() (clock enabling).  Missing doing this would lead to
+clock enable in-balance.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 80 +++++++++++++++++++-----------------------------
- 1 file changed, 31 insertions(+), 49 deletions(-)
+ sound/soc/samsung/s3c-i2s-v2.c  |  9 +++++++++
+ sound/soc/samsung/s3c-i2s-v2.h  |  7 +++++++
+ sound/soc/samsung/s3c2412-i2s.c | 13 +++++++++----
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index acafb838b7b7..c34562388cfa 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -844,12 +844,28 @@ static int rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
- 				ir, &ic);
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 3894bda06ebb..58c3e9bfc6b7 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -651,6 +651,15 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
  }
+ EXPORT_SYMBOL_GPL(s3c_i2sv2_probe);
  
--static void rsnd_soc_hw_constraint(struct snd_pcm_runtime *runtime,
--				   struct snd_soc_dai *dai)
-+static struct snd_pcm_hardware rsnd_pcm_hardware = {
-+	.info =		SNDRV_PCM_INFO_INTERLEAVED	|
-+			SNDRV_PCM_INFO_MMAP		|
-+			SNDRV_PCM_INFO_MMAP_VALID,
-+	.buffer_bytes_max	= 64 * 1024,
-+	.period_bytes_min	= 32,
-+	.period_bytes_max	= 8192,
-+	.periods_min		= 1,
-+	.periods_max		= 32,
-+	.fifo_size		= 256,
-+};
++void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
++		      struct s3c_i2sv2_info *i2s)
++{
++	clk_disable_unprepare(i2s->iis_pclk);
++	clk_put(i2s->iis_pclk);
++	i2s->iis_pclk = NULL;
++}
++EXPORT_SYMBOL_GPL(s3c_i2sv2_cleanup);
 +
-+static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
+ #ifdef CONFIG_PM
+ static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
  {
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
-+	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
- 	struct snd_pcm_hw_constraint_list *constraint = &rdai->constraint;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int max_channels = rsnd_rdai_channels_get(rdai);
-+	int ret;
- 	int i;
+diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
+index 182d80564e37..3fca20f7a853 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.h
++++ b/sound/soc/samsung/s3c-i2s-v2.h
+@@ -92,6 +92,13 @@ extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+ 			   unsigned long base);
  
- 	/*
-@@ -866,34 +882,26 @@ static void rsnd_soc_hw_constraint(struct snd_pcm_runtime *runtime,
- 		constraint->count = i + 1;
+ /**
++ * s3c_i2sv2_cleanup - cleanup resources allocated in s3c_i2sv2_probe
++ * @dai: The ASoC DAI structure supplied to the original probe.
++ * @i2s: Our local i2s structure to fill in.
++ */
++extern void s3c_i2sv2_cleanup(struct snd_soc_dai *dai,
++			      struct s3c_i2sv2_info *i2s);
++/**
+  * s3c_i2sv2_register_component - register component and dai with soc core
+  * @dev: DAI device
+  * @id: DAI ID
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index bcd1cbdeac93..cc0840fff5aa 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -65,7 +65,8 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+ 	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
+ 	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
+ 		pr_err("failed to get i2sclk clock\n");
+-		return PTR_ERR(s3c2412_i2s.iis_cclk);
++		ret = PTR_ERR(s3c2412_i2s.iis_cclk);
++		goto err;
  	}
  
-+	snd_soc_set_runtime_hwparams(substream, &rsnd_pcm_hardware);
-+
- 	snd_pcm_hw_constraint_list(runtime, 0,
- 				   SNDRV_PCM_HW_PARAM_CHANNELS, constraint);
+ 	/* Set MPLL as the source for IIS CLK */
+@@ -73,20 +74,24 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+ 	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
+ 	ret = clk_prepare_enable(s3c2412_i2s.iis_cclk);
+ 	if (ret)
+-		return ret;
+-
+-	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
++		goto err;
  
-+	snd_pcm_hw_constraint_integer(runtime,
-+				      SNDRV_PCM_HW_PARAM_PERIODS);
-+
- 	/*
- 	 * Sampling Rate / Channel Limitation
- 	 * It depends on Clock Master Mode
- 	 */
--	if (!rsnd_rdai_is_clk_master(rdai))
--		return;
--
--	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--			    rsnd_soc_hw_rule_rate, dai,
--			    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--			    rsnd_soc_hw_rule_channels, dai,
--			    SNDRV_PCM_HW_PARAM_RATE, -1);
--}
--
--static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
--				struct snd_soc_dai *dai)
--{
--	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
--	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
--	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
--	int ret;
--
--	/* rsnd_io_to_runtime() is not yet enabled here */
--	rsnd_soc_hw_constraint(substream->runtime, dai);
-+	if (rsnd_rdai_is_clk_master(rdai)) {
-+		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				    rsnd_soc_hw_rule_rate, dai,
-+				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				    rsnd_soc_hw_rule_channels, dai,
-+				    SNDRV_PCM_HW_PARAM_RATE, -1);
-+	}
+ 	/* Configure the I2S pins (GPE0...GPE4) in correct mode */
+ 	s3c_gpio_cfgall_range(S3C2410_GPE(0), 5, S3C_GPIO_SFN(2),
+ 			      S3C_GPIO_PULL_NONE);
  
- 	/*
- 	 * call rsnd_dai_call without spinlock
-@@ -1105,31 +1113,6 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
- /*
-  *		pcm ops
-  */
--static struct snd_pcm_hardware rsnd_pcm_hardware = {
--	.info =		SNDRV_PCM_INFO_INTERLEAVED	|
--			SNDRV_PCM_INFO_MMAP		|
--			SNDRV_PCM_INFO_MMAP_VALID,
--	.buffer_bytes_max	= 64 * 1024,
--	.period_bytes_min	= 32,
--	.period_bytes_max	= 8192,
--	.periods_min		= 1,
--	.periods_max		= 32,
--	.fifo_size		= 256,
--};
--
--static int rsnd_pcm_open(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int ret = 0;
--
--	snd_soc_set_runtime_hwparams(substream, &rsnd_pcm_hardware);
--
--	ret = snd_pcm_hw_constraint_integer(runtime,
--					    SNDRV_PCM_HW_PARAM_PERIODS);
--
--	return ret;
--}
--
- static int rsnd_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *hw_params)
- {
-@@ -1159,7 +1142,6 @@ static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
+ 	return 0;
++
++err:
++	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
++
++	return ret;
  }
  
- static struct snd_pcm_ops rsnd_pcm_ops = {
--	.open		= rsnd_pcm_open,
- 	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= rsnd_hw_params,
- 	.hw_free	= snd_pcm_lib_free_pages,
+ static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
+ {
+ 	clk_disable_unprepare(s3c2412_i2s.iis_cclk);
++	s3c_i2sv2_cleanup(dai, &s3c2412_i2s);
+ 
+ 	return 0;
+ }
 -- 
 2.13.2
