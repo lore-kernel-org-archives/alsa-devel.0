@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 2/5] ALSA: isa: constify snd_timer_hardware structures
-Date: Fri, 28 Jul 2017 18:38:27 +0530
-Message-ID: <1501247311-19803-3-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 3/5] ALSA: pci: constify snd_timer_hardware structures
+Date: Fri, 28 Jul 2017 18:38:28 +0530
+Message-ID: <1501247311-19803-4-git-send-email-bhumirks@gmail.com>
 References: <1501247311-19803-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1501247311-19803-1-git-send-email-bhumirks@gmail.com>
@@ -11,63 +11,40 @@ Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 Declare snd_timer_hardware structures as const as their only usage
-is during a copy operation. As they are not modified anywhere, they can
-be made const.
+is during a copy operation. As they are not modified anywhere, they
+can be made const.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/isa/ad1816a/ad1816a_lib.c | 2 +-
- sound/isa/gus/gus_timer.c       | 4 ++--
- sound/isa/wss/wss_lib.c         | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/emu10k1/timer.c      | 2 +-
+ sound/pci/ymfpci/ymfpci_main.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/ad1816a/ad1816a_lib.c b/sound/isa/ad1816a/ad1816a_lib.c
-index 5c815f5..6130fc3 100644
---- a/sound/isa/ad1816a/ad1816a_lib.c
-+++ b/sound/isa/ad1816a/ad1816a_lib.c
-@@ -431,7 +431,7 @@ static int snd_ad1816a_timer_stop(struct snd_timer *timer)
+diff --git a/sound/pci/emu10k1/timer.c b/sound/pci/emu10k1/timer.c
+index b69a7f8..cf43908 100644
+--- a/sound/pci/emu10k1/timer.c
++++ b/sound/pci/emu10k1/timer.c
+@@ -66,7 +66,7 @@ static int snd_emu10k1_timer_precise_resolution(struct snd_timer *timer,
  	return 0;
  }
  
--static struct snd_timer_hardware snd_ad1816a_timer_table = {
-+static const struct snd_timer_hardware snd_ad1816a_timer_table = {
- 	.flags =	SNDRV_TIMER_HW_AUTO,
- 	.resolution =	10000,
- 	.ticks =	65535,
-diff --git a/sound/isa/gus/gus_timer.c b/sound/isa/gus/gus_timer.c
-index c537271..8fd0327 100644
---- a/sound/isa/gus/gus_timer.c
-+++ b/sound/isa/gus/gus_timer.c
-@@ -123,7 +123,7 @@ static void snd_gf1_interrupt_timer2(struct snd_gus_card * gus)
- 
-  */
- 
--static struct snd_timer_hardware snd_gf1_timer1 =
-+static const struct snd_timer_hardware snd_gf1_timer1 =
- {
- 	.flags =	SNDRV_TIMER_HW_STOP,
- 	.resolution =	80000,
-@@ -132,7 +132,7 @@ static void snd_gf1_interrupt_timer2(struct snd_gus_card * gus)
- 	.stop =		snd_gf1_timer1_stop,
- };
- 
--static struct snd_timer_hardware snd_gf1_timer2 =
-+static const struct snd_timer_hardware snd_gf1_timer2 =
- {
- 	.flags =	SNDRV_TIMER_HW_STOP,
- 	.resolution =	320000,
-diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index 9f4e2e3..4016677 100644
---- a/sound/isa/wss/wss_lib.c
-+++ b/sound/isa/wss/wss_lib.c
-@@ -975,7 +975,7 @@ static int snd_wss_timer_close(struct snd_timer *timer)
+-static struct snd_timer_hardware snd_emu10k1_timer_hw = {
++static const struct snd_timer_hardware snd_emu10k1_timer_hw = {
+ 	.flags = SNDRV_TIMER_HW_AUTO,
+ 	.resolution = 20833, /* 1 sample @ 48KHZ = 20.833...us */
+ 	.ticks = 1024,
+diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
+index 1114166..39b1d11 100644
+--- a/sound/pci/ymfpci/ymfpci_main.c
++++ b/sound/pci/ymfpci/ymfpci_main.c
+@@ -1938,7 +1938,7 @@ static int snd_ymfpci_timer_precise_resolution(struct snd_timer *timer,
  	return 0;
  }
  
--static struct snd_timer_hardware snd_wss_timer_table =
-+static const struct snd_timer_hardware snd_wss_timer_table =
- {
- 	.flags =	SNDRV_TIMER_HW_AUTO,
- 	.resolution =	9945,
+-static struct snd_timer_hardware snd_ymfpci_timer_hw = {
++static const struct snd_timer_hardware snd_ymfpci_timer_hw = {
+ 	.flags = SNDRV_TIMER_HW_AUTO,
+ 	.resolution = 10417, /* 1 / 96 kHz = 10.41666...us */
+ 	.ticks = 0x10000,
 -- 
 1.9.1
