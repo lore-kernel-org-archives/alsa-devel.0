@@ -1,22 +1,23 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 5/6] ASoC: codecs: msm8916-wcd-analog:
-	add MBHC support
-Date: Fri, 28 Jul 2017 15:12:06 +0100
-Message-ID: <4f5d7239-5591-68db-5d1f-9fcc7cf45f6b@linaro.org>
+Subject: Re: [PATCH v1 4/6] ASoC: codecs: msm8916-wcd-analog:
+ set default micbias voltage to 1.8
+Date: Fri, 28 Jul 2017 15:45:08 +0100
+Message-ID: <0f96d65a-f7d9-0139-e0c4-49069e717f34@linaro.org>
 References: <20170726003512.18965-1-srinivas.kandagatla@linaro.org>
- <20170726003512.18965-6-srinivas.kandagatla@linaro.org>
- <20170728135156.ifdo2ev44eldrw4r@sirena.org.uk>
+ <20170726003512.18965-5-srinivas.kandagatla@linaro.org>
+ <20170728134038.y5wnrurmwn4bxxsh@sirena.org.uk>
+ <94765031-d840-bcae-11e3-16e1e55a7aa7@linaro.org>
+ <20170728140108.ds5x4irfep4ss3lv@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f172.google.com (mail-wr0-f172.google.com
- [209.85.128.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FFBE2676F1
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 16:12:10 +0200 (CEST)
-Received: by mail-wr0-f172.google.com with SMTP id y43so155601358wrd.3
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 07:12:10 -0700 (PDT)
-In-Reply-To: <20170728135156.ifdo2ev44eldrw4r@sirena.org.uk>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CF6B2676F1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 16:45:11 +0200 (CEST)
+Received: by mail-wm0-f48.google.com with SMTP id m85so119333331wma.1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 07:45:11 -0700 (PDT)
+In-Reply-To: <20170728140108.ds5x4irfep4ss3lv@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,76 +34,26 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 28/07/17 14:51, Mark Brown wrote:
-> On Wed, Jul 26, 2017 at 02:35:11AM +0200, srinivas.kandagatla@linaro.org wrote:
+On 28/07/17 15:01, Mark Brown wrote:
+> On Fri, Jul 28, 2017 at 02:54:59PM +0100, Srinivas Kandagatla wrote:
+>> On 28/07/17 14:40, Mark Brown wrote:
+>>> On Wed, Jul 26, 2017 at 02:35:10AM +0200, srinivas.kandagatla@linaro.org wrote:
+>>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
->> +	if (wcd->hphl_jack_type_normally_open)
->> +		plug_type = CDC_A_HPHL_PLUG_TYPE_NO;
->> +
->> +	if (wcd->gnd_jack_type_normally_open)
->> +		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
+>>>> This patch sets the default internal micbias voltage to 1.8v. This
+>>>> default value is required for mbhc buttons to work. Also adds dt
+>>>> bindings to allow the board level file to specify the required default
+>>>> micbias value.
 > 
-> It'd be clearer to use |= consistently, this is just confusing as it
-> makes it look like there's a path where things aren't initialized.
+>>> What was the default previously?
+> 
+>> This was set to 2.7v previously for special headsets which have high
+>> impedance.
+> 
+> So obviously this will break existing users.  That's not OK.
 
-Yep, I will fix this in next version.
-> 
->> +	btn_result = snd_soc_read(codec, CDC_A_MBHC_RESULT_1) &
->> +				  CDC_A_MBHC_RESULT_1_BTN_RESULT_MASK;
->> +
->> +	if (!btn_result)
->> +		priv->mbhc_btn0_pressed = false;
->> +
->> +	snd_jack_report(priv->jack->jack, 0);
-> 
-> This checks to see if the read worked, uses it to decide if it should
-> clear the button pressed flag but unconditionally reports that the
-> button is not pressed.  It also discards the read error if there was one
-> without reporting that.  This needs cleanup.
-Okay, will clean this part in next version.
-> 
->> +	btn_result = snd_soc_read(codec, CDC_A_MBHC_RESULT_1) &
->> +				  CDC_A_MBHC_RESULT_1_BTN_RESULT_MASK;
->> +
->> +	switch (btn_result) {
->> +	case 0xf:
->> +		snd_jack_report(priv->jack->jack, SND_JACK_BTN_4);
->> +		break;
->> +	case 0x7:
->> +		snd_jack_report(priv->jack->jack, SND_JACK_BTN_3);
->> +		break;
->> +	case 0x3:
->> +		snd_jack_report(priv->jack->jack, SND_JACK_BTN_2);
->> +		break;
->> +	case 0x1:
->> +		snd_jack_report(priv->jack->jack, SND_JACK_BTN_1);
->> +		break;
->> +	case 0:
->> +		priv->mbhc_btn0_pressed = true;
->> +		snd_jack_report(priv->jack->jack, SND_JACK_BTN_0);
->> +		break;
->> +	}
-> 
-> Here we silently ignore any value we get back from the chip that we
-> didn't expect and all read errors.
+This would not break any exiting users, as this part is applicable for 
+only headset detect usecase. I will try to address this in ("PATCH 5/6 
+ASoC: codecs: msm8916-wcd-analog: add MBHC support") patch.
 
-I would not expect anyother values if the vrefs are programmed 
-correctly, however i will add a error message in default case to notify 
-this to user.
-
-> 
->> +struct msm8916_wcd_mbhc_data {
->> +	/* Voltage threshold when internal current source of 100uA is used */
->> +	int vref_btn_cs[MBHC_MAX_BUTTONS];
->> +	/* Voltage threshold when microphone bias is ON */
->> +	int vref_btn_micb[MBHC_MAX_BUTTONS];
->> +};
-> 
-> I'd expect to see some mechanism for configuring the threasholds via DT,
-> not all vendors use the same specs for resistive buttons.
-
-Yep makes sense, I will do this in next version.
-
-
-
-> 
+The default voltage for most common usecase should be set to 1.8v anyway.
