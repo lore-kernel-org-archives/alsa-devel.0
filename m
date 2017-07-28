@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 3/5] ALSA: pci: constify snd_timer_hardware structures
-Date: Fri, 28 Jul 2017 18:38:29 +0530
-Message-ID: <1501247311-19803-5-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 4/5] ALSA: sparc: constify snd_timer_hardware structure
+Date: Fri, 28 Jul 2017 18:38:30 +0530
+Message-ID: <1501247311-19803-6-git-send-email-bhumirks@gmail.com>
 References: <1501247311-19803-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1501247311-19803-1-git-send-email-bhumirks@gmail.com>
@@ -10,41 +10,29 @@ To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-projec
 Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Declare snd_timer_hardware structures as const as their only usage
-is during a copy operation. As they are not modified anywhere, they
+Declare snd_timer_hardware structure as const as it is only used
+during a copy operation. As it is  not modified anywhere, it
 can be made const.
+
+Cross compiled for sparc architecture.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/emu10k1/timer.c      | 2 +-
- sound/pci/ymfpci/ymfpci_main.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/sparc/cs4231.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/emu10k1/timer.c b/sound/pci/emu10k1/timer.c
-index b69a7f8..cf43908 100644
---- a/sound/pci/emu10k1/timer.c
-+++ b/sound/pci/emu10k1/timer.c
-@@ -66,7 +66,7 @@ static int snd_emu10k1_timer_precise_resolution(struct snd_timer *timer,
+diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
+index 3d7d425..0a97e97 100644
+--- a/sound/sparc/cs4231.c
++++ b/sound/sparc/cs4231.c
+@@ -868,7 +868,7 @@ static int snd_cs4231_timer_close(struct snd_timer *timer)
  	return 0;
  }
  
--static struct snd_timer_hardware snd_emu10k1_timer_hw = {
-+static const struct snd_timer_hardware snd_emu10k1_timer_hw = {
- 	.flags = SNDRV_TIMER_HW_AUTO,
- 	.resolution = 20833, /* 1 sample @ 48KHZ = 20.833...us */
- 	.ticks = 1024,
-diff --git a/sound/pci/ymfpci/ymfpci_main.c b/sound/pci/ymfpci/ymfpci_main.c
-index 1114166..39b1d11 100644
---- a/sound/pci/ymfpci/ymfpci_main.c
-+++ b/sound/pci/ymfpci/ymfpci_main.c
-@@ -1938,7 +1938,7 @@ static int snd_ymfpci_timer_precise_resolution(struct snd_timer *timer,
- 	return 0;
- }
- 
--static struct snd_timer_hardware snd_ymfpci_timer_hw = {
-+static const struct snd_timer_hardware snd_ymfpci_timer_hw = {
- 	.flags = SNDRV_TIMER_HW_AUTO,
- 	.resolution = 10417, /* 1 / 96 kHz = 10.41666...us */
- 	.ticks = 0x10000,
+-static struct snd_timer_hardware snd_cs4231_timer_table = {
++static const struct snd_timer_hardware snd_cs4231_timer_table = {
+ 	.flags		=	SNDRV_TIMER_HW_AUTO,
+ 	.resolution	=	9945,
+ 	.ticks		=	65535,
 -- 
 1.9.1
