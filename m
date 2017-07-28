@@ -1,19 +1,15 @@
-From: Antonio Borneo <borneo.antonio@gmail.com>
-Subject: [PATCH v2 0/3] ASoC: fix unbalanced
-	of_node_get()/of_node_put()
-Date: Fri, 28 Jul 2017 01:26:09 +0200
-Message-ID: <20170727232612.23543-1-antonio.borneo@st.com>
-References: <20170725214952.6491-1-borneo.antonio@gmail.com>
+From: Harsha Priya <harshapriya.n@intel.com>
+Subject: [PATCH v3 0/3] ASoC: Intel: Fixes in Kabylake machine
+	driver for clear playback and recording
+Date: Thu, 27 Jul 2017 17:41:24 -0700
+Message-ID: <1501202487-12617-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F51726760D
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 01:33:15 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id 184so25472236wmo.3
- for <alsa-devel@alsa-project.org>; Thu, 27 Jul 2017 16:33:15 -0700 (PDT)
-In-Reply-To: <20170725214952.6491-1-borneo.antonio@gmail.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A00B267615
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 02:41:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Wei Xu <xuwei5@hisilicon.com>, Antonio Borneo <borneo.antonio@gmail.com>, John Stultz <john.stultz@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: Harsha Priya <harshapriya.n@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Antonio Borneo <borneo.antonio@gmail.com>
+This patch series includes fixes for clean playback and recording in kabylake machine driver.
+It fixes the below issues in the corresponding patches and the details of each fix
+is provided in the patch's commit message.
 
-On Hikey target board, enabling CONFIG_OF_DYNAMIC triggers several
-errors at kernel boot, like
-OF: ERROR: Bad of_node_put() on /soc/i2s@f7118000/ports/port@0
-OF: ERROR: Bad of_node_put() on /soc/i2s@f7118000/ports/port@0/endpoint
-each followed by stack dump.
+1. Fix cracking noise in rt5663 headphones
 
-Fixed by:
-- removing of_node_put() in the body of of_for_each_phandle(){},
-  since already provided at each iteration. Add it in case the
-  loop is break out;
-- adding of_node_get() before calling of_graph_get_port_parent().
+2. Fix pop noise of dmic recording 
 
-Tested with kernel v4.13-rc2 with hikey_defconfig taken from
-https://git.linaro.org/people/john.stultz/android-dev.git
-branch dev/hikey-mainline-WIP
+3. Enable 4 slot IV feedback for maxim amps
 
-v1 -> v2:
-- modify subject "s/fix balance of/fix unbalanced/";
-- split the patch per each individual issue. It also simplify the
-  backport;
-- add ref to the commit being fixed;
-- drop one fix not needed.
+Harsha Priya (3):
+  ASoC: Intel: Fix cracking noise in rt5663 headphones for kabylake
+    platform
+  ASoC: Intel: Fix pop noise of dmic recording in kabylake platform
+    using rt5514
+  ASoC: Intel: Enabling 4 slot IV feedback for max98927 on Kabylake
+    platform
 
-Antonio Borneo (3):
-  ASoC: fix use of of_node_put() in of_for_each_phandle() loops
-  ASoC: soc-core: fix unbalanced of_node_get()/of_node_put()
-  ASoC: simple-card-utils: fix unbalanced of_node_get()/of_node_put()
-
- sound/soc/generic/audio-graph-card.c  | 9 ++++-----
- sound/soc/generic/simple-card-utils.c | 5 +++++
- sound/soc/soc-core.c                  | 5 +++++
- 3 files changed, 14 insertions(+), 5 deletions(-)
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 28 +++++++++++-----------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 -- 
 1.9.1
