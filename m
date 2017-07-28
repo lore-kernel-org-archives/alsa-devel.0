@@ -1,17 +1,18 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 4/4] ASoC: Intel: Skylake: Fix potential null
-	pointer dereference
-Date: Fri, 28 Jul 2017 16:12:16 +0530
-Message-ID: <20170728104216.26859-4-guneshwor.o.singh@intel.com>
-References: <20170728104216.26859-1-guneshwor.o.singh@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: samsung: Add missing prepare for iis
+	clock of s3c24xx" to the asoc tree
+Date: Fri, 28 Jul 2017 11:18:05 +0100
+Message-ID: <E1db2LN-0003nf-Rr@debutante>
+References: <20170727171338.13300-3-krzk@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A360B2676BB
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 12:43:36 +0200 (CEST)
-In-Reply-To: <20170728104216.26859-1-guneshwor.o.singh@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A2F0267726
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 12:18:20 +0200 (CEST)
+In-Reply-To: <20170727171338.13300-3-krzk@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,30 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: alsa-devel@alsa-project.org, Arvind@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, "Yadav <arvind.yadav.cs"@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Check if the next sink is not null to avoid potential null pointer
-dereference in skl_tplg_bind_sinks().
+The patch
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+   ASoC: samsung: Add missing prepare for iis clock of s3c24xx
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 81ea6cc73c384e4093519e0c75394aa2a1941a10 Mon Sep 17 00:00:00 2001
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Thu, 27 Jul 2017 19:13:37 +0200
+Subject: [PATCH] ASoC: samsung: Add missing prepare for iis clock of s3c24xx
+
+The s3c_i2sv2_probe() only enabled iis clock.  Missing prepare isn't
+probably fatal, because for SoC clocks this is usually no-op, but for
+correctness this clock should be prepared.
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Arvind Yadav<arvind.yadav.cs@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
+ sound/soc/samsung/s3c-i2s-v2.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 68c3f121efc3..8c3ce08f366d 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -925,7 +925,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 		}
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 9b28046eea8e..3894bda06ebb 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -637,7 +637,7 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+ 		return -ENOENT;
  	}
  
--	if (!sink)
-+	if (!sink && next_sink)
- 		return skl_tplg_bind_sinks(next_sink, skl, src_w, src_mconfig);
+-	clk_enable(i2s->iis_pclk);
++	clk_prepare_enable(i2s->iis_pclk);
  
- 	return 0;
+ 	/* Mark ourselves as in TXRX mode so we can run through our cleanup
+ 	 * process without warnings. */
 -- 
-2.13.0
+2.13.2
