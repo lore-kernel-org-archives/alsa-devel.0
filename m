@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
 Subject: [PATCH 3/5] ALSA: pci: constify snd_timer_hardware structures
-Date: Fri, 28 Jul 2017 18:38:28 +0530
-Message-ID: <1501247311-19803-4-git-send-email-bhumirks@gmail.com>
+Date: Fri, 28 Jul 2017 18:38:29 +0530
+Message-ID: <1501247311-19803-5-git-send-email-bhumirks@gmail.com>
 References: <1501247311-19803-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1501247311-19803-1-git-send-email-bhumirks@gmail.com>
