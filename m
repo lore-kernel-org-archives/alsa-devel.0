@@ -1,50 +1,63 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 3/3] ASoC: codecs: msm8916-wcd-digital:
- select DMIC source in CIC filter path
-Date: Fri, 28 Jul 2017 16:11:21 +0100
-Message-ID: <57f0b0db-5795-5999-0dc3-f9a161ed0340@linaro.org>
-References: <20170725234822.18763-1-srinivas.kandagatla@linaro.org>
- <20170725234822.18763-4-srinivas.kandagatla@linaro.org>
- <20170728133206.7ynzrbfvreclltkx@sirena.org.uk>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: [PATCH 0/9 v2] Add ASoC support for AMD Stoney APUs
+Date: Fri, 28 Jul 2017 15:31:25 -0400
+Message-ID: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id CA2AC2676F1
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 17:11:23 +0200 (CEST)
-Received: by mail-wm0-f44.google.com with SMTP id t201so128435291wmt.1
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 08:11:23 -0700 (PDT)
-In-Reply-To: <20170728133206.7ynzrbfvreclltkx@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, airlied@gmail.com, broonie@kernel.org, Vijendar.Mukunda@amd.com, rajeevkumar.linux@gmail.com, perex@perex.cz
+Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 28/07/17 14:32, Mark Brown wrote:
-> On Wed, Jul 26, 2017 at 01:48:22AM +0200, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch fixes a missing selection of DMIC in CIC filter source path.
->> Without this patch dmic is not functional.
-> 
-> What happens when someone needs this filter connected somewhere else -
-> shouldn't this be controlled as part of the DAPM routing?
-There are only two paths for this, one is DMIC and other is AMIC.
-
-Yes, its possible to add these as dapm routing, i will give it a go in 
-next version.
-
-thanks,
-srini
+VGhpcyBwYXRjaCBzZXQgdXBkYXRlcyB0aGUgQU1EIEdQVSBhbmQgQXVkaW8gQ29Qcm9jZXNzb3Ig
+KEFDUCkKYXVkaW8gZHJpdmVycyBhbmQgdGhlIGRlc2lnbndhcmUgaTJzIGRyaXZlciBmb3IgU3Rv
+bmV5IChTVCkuClNUIGlzIGFuIEFQVSBzaW1pbGFyIHRvIENhcnJpem8gKENaKSB3aGljaCBhbHJl
+YWR5IGhhcyBBQ1AgYXVkaW8Kc3VwcG9ydC4gIFRoZSBpMnMgY29udHJvbGxlciBhbmQgQUNQIGF1
+ZGlvIERNQSBlbmdpbmUgYXJlIHBhcnQgb2YKdGhlIEdQVSBhbmQgYm90aCBuZWVkIHVwZGF0aW5n
+IHNvIEkgd291bGQgbGlrZSB0byB1cHN0cmVhbSB0aGUKd2hvbGUgcGF0Y2ggc2V0IHZpYSBvbmUg
+dHJlZSBpZiBwb3NzaWJsZS4KClRoZSBjdXJyZW50IGNvZGUgaXMgYmFzZWQgb24gZHJtLW5leHQs
+IGJ1dCBJJ20gaGFwcHkgdG8gcmViYXNlIG9uCndoYXRldmVyIHRyZWUgdGhpcyBlbmRzIHVwIGdv
+aW5nIHRocm91Z2ggaWYgdGhlcmUgYXJlIGFueSBwcm9ibGVtcwphcHBseWluZy4gIFRoZSBlbnRp
+cmUgcGF0Y2ggc2V0IGNhbiBiZSB2aWV3ZWQgaGVyZToKaHR0cHM6Ly9jZ2l0LmZyZWVkZXNrdG9w
+Lm9yZy9+YWdkNWYvbGludXgvbG9nLz9oPXN0b25leV9hY3AKClRoYW5rcyEKCkFsZXgKCnYyOgot
+IFBhdGNoIDEgaXMgYWxyZWFkeSBhcHBsaWVkIHRvIHRoZSBhdWRpbyB0cmVlLCBqdXN0IGluY2x1
+ZGluZyBpdCBmb3IKICBjb21wbGV0ZW5lc3Mgc2luY2UgaXQncyByZXF1aXJlZCBmb3IgdGhpcyBw
+YXRjaCBzZXQgYW5kIGl0J3Mgbm90IHlldAogIGluIHRoZSBkcm0gdHJlZS4KLSBOZXcgcGF0Y2gg
+dG8gc2hhcmUgYXNpYyB0eXBlcyBiZXR3ZWVuIGdwdSBhbmQgYXVkaW8gZHJpdmVycwotIEFDUEkg
+SUQgY2hhbmdlZCBmb3IgcnQ1NjUwIG1hY2hpbmUgZHJpdmVyCi0gSW50ZWdyYXRlIGZlZWRiYWNr
+IG9uIG90aGVyIHBhdGNoZXMKCkFrc2h1IEFncmF3YWwgKDIpOgogIGRybS9hbWRncHUgTW92aW5n
+IGFtZGdwdSBhc2ljIHR5cGVzIHRvIGEgc2VwYXJhdGUgZmlsZQogIEFTb0M6IEFNRDogQWRkIG1h
+Y2hpbmUgZHJpdmVyIGZvciBjeiBydDU2NTAKClZpamVuZGFyIE11a3VuZGEgKDcpOgogIEFTb0M6
+IGR3YzogQWRkZWQgYSBxdWlyayBEV19JMlNfUVVJUktfMTZCSVRfSURYX09WRVJSSURFIHRvIGR3
+YyBkcml2ZXIKICBkcm0vYW1kL2FtZGdwdTogQWRkZWQgYXNpY190eXBlIGFzIEFDUCBETUEgZHJp
+dmVyIHBsYXRmb3JtIGRhdGEKICBkcm0vYW1kL2FtZGdwdTogQWRkZWQgYSBxdWlyayBmb3IgU3Rv
+bmV5IHBsYXRmb3JtCiAgQVNvQzogQU1EOiBkaXNhYmxpbmcgbWVtb3J5IGdhdGluZyBpbiBzdG9u
+ZXkgcGxhdGZvcm0KICBBU29DOiBBTUQ6IERNQSBkcml2ZXIgY2hhbmdlcyBmb3IgU3RvbmV5IFBs
+YXRmb3JtCiAgQVNvQzogQU1EOiBBdWRpbyBidWZmZXIgcmVsYXRlZCBjaGFuZ2VzIGZvciBTdG9u
+ZXkKICBkcm0vYW1kL2FtZGdwdTogRGlzYWJsaW5nIFBvd2VyIEdhdGluZyBmb3IgU3RvbmV5IHBs
+YXRmb3JtCgogZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jICB8ICA3NCAr
+KysrKystLS0tCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2luY2x1ZGUvYW1kX3NoYXJlZC5oIHwgIDI5
+ICstLS0KIGluY2x1ZGUvZHJtL2FtZF9hc2ljX3R5cGUuaCAgICAgICAgICAgICAgfCAgNTIgKysr
+KysrKwogaW5jbHVkZS9zb3VuZC9kZXNpZ253YXJlX2kycy5oICAgICAgICAgICB8ICAgMSArCiBz
+b3VuZC9zb2MvYW1kL0tjb25maWcgICAgICAgICAgICAgICAgICAgIHwgICA3ICsKIHNvdW5kL3Nv
+Yy9hbWQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgfCAgIDIgKwogc291bmQvc29jL2FtZC9h
+Y3AtcGNtLWRtYS5jICAgICAgICAgICAgICB8IDI0MyArKysrKysrKysrKysrKysrKysrKysrKyst
+LS0tLS0tCiBzb3VuZC9zb2MvYW1kL2FjcC1ydDU2NDUuYyAgICAgICAgICAgICAgIHwgMjEwICsr
+KysrKysrKysrKysrKysrKysrKysrKysrCiBzb3VuZC9zb2MvYW1kL2FjcC5oICAgICAgICAgICAg
+ICAgICAgICAgIHwgICA5ICsrCiBzb3VuZC9zb2MvZHdjL2R3Yy1pMnMuYyAgICAgICAgICAgICAg
+ICAgIHwgICA2ICsKIDEwIGZpbGVzIGNoYW5nZWQsIDUyNSBpbnNlcnRpb25zKCspLCAxMDggZGVs
+ZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vYW1kX2FzaWNfdHlwZS5o
+CiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1LmMKCi0tIAoyLjUu
+NQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
+dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
