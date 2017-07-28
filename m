@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Add missing prepare for iis
-	clock of s3c24xx" to the asoc tree
-Date: Fri, 28 Jul 2017 11:18:05 +0100
-Message-ID: <E1db2LN-0003nf-Rr@debutante>
-References: <20170727171338.13300-3-krzk@kernel.org>
+Subject: Applied "ASoC: Intel: Add Kabylake RT5663 machine
+	driver entry" to the asoc tree
+Date: Fri, 28 Jul 2017 13:37:38 +0100
+Message-ID: <E1db4WQ-0004rI-1g@finisterre>
+References: <20170724032339.4304-3-kevin.cheng@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A2F0267726
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 12:18:20 +0200 (CEST)
-In-Reply-To: <20170727171338.13300-3-krzk@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 21C56266C13
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 14:37:54 +0200 (CEST)
+In-Reply-To: <20170724032339.4304-3-kevin.cheng@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: alsa-devel@alsa-project.org, Arvind@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, "Yadav <arvind.yadav.cs"@gmail.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kevin.cheng@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: Add missing prepare for iis clock of s3c24xx
+   ASoC: Intel: Add Kabylake RT5663 machine driver entry
 
 has been applied to the asoc tree at
 
@@ -53,34 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From 81ea6cc73c384e4093519e0c75394aa2a1941a10 Mon Sep 17 00:00:00 2001
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Thu, 27 Jul 2017 19:13:37 +0200
-Subject: [PATCH] ASoC: samsung: Add missing prepare for iis clock of s3c24xx
+>From 0dfa7a046aa9a3e3dcaee59bfc23598679fc4247 Mon Sep 17 00:00:00 2001
+From: Kevin Cheng <kevin.cheng@intel.com>
+Date: Thu, 27 Jul 2017 16:38:37 +0800
+Subject: [PATCH] ASoC: Intel: Add Kabylake RT5663 machine driver entry
 
-The s3c_i2sv2_probe() only enabled iis clock.  Missing prepare isn't
-probably fatal, because for SoC clocks this is usually no-op, but for
-correctness this clock should be prepared.
+Adds Kabylake rt5663 machine driver entry into machine table
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Arvind Yadav<arvind.yadav.cs@gmail.com
+Signed-off-by: Kevin Cheng <kevin.cheng@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/s3c-i2s-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index 9b28046eea8e..3894bda06ebb 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -637,7 +637,7 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
- 		return -ENOENT;
- 	}
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 334917ee41cf..01a2dd6518a4 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -981,6 +981,11 @@ static struct sst_acpi_mach sst_kbl_devdata[] = {
+ 		.quirk_data = &kbl_poppy_codecs,
+ 		.pdata = &skl_dmic_data
+ 	},
++	{
++		.id = "10EC5663",
++		.drv_name = "kbl_rt5663",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++	},
  
--	clk_enable(i2s->iis_pclk);
-+	clk_prepare_enable(i2s->iis_pclk);
- 
- 	/* Mark ourselves as in TXRX mode so we can run through our cleanup
- 	 * process without warnings. */
+ 	{}
+ };
 -- 
 2.13.2
