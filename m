@@ -1,184 +1,132 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v4 07/17] regulator: arizona-micsupp: Add
-	support for Cirrus Logic Madera codecs
-Date: Fri, 28 Jul 2017 10:47:09 +0100
-Message-ID: <1501235239-11145-8-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1501235239-11145-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: [PATCH v4 00/17] Add support for Cirrus Logic CS47L35/L85/L90/L91 codecs
+Date: Fri, 28 Jul 2017 10:47:02 +0100
+Message-ID: <1501235239-11145-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 3665D26766D
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 11:47:22 +0200 (CEST)
-In-Reply-To: <1501235239-11145-1-git-send-email-rf@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This adds a new driver identity "madera-micsupp" and probe function
-so that this driver can be used to control the micsupp regulator on
-Cirrus Logic Madera codecs.
+The Cirrus Logic CS47L35, CS47L85, CS47L90/91 codecs are complex audio SoC
+devices. In addition to the core audio capability they have onboard GPIO,
+regulators, DSPs and interrupt controller and a large register map space
+accessed over SPI or I2C. This family of codecs is based around common IP
+blocks and they are managed by a set of common drivers referred to as "Madera".
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
-No changes since V3
+Summary of changes since V3:
+- Manually stripped register definitions we're not using right now from 
+  registers.h to reduce the size and included some explanation in the
+  commit message for why we do it the way we do
+- Fixed review comments on MFD code
+- Fixed Kconfig dependency error on pinctrl (missing dependency in MFD)
+- minor bugfixes to routing in CS47L85 and CS47L90 codec drivers
 
- .../bindings/regulator/arizona-regulator.txt       |  3 +-
- drivers/regulator/Kconfig                          |  7 ++-
- drivers/regulator/arizona-micsupp.c                | 71 +++++++++++++++++++++-
- 3 files changed, 76 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/regulator/arizona-regulator.txt b/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
-index 443564d..91b00f9 100644
---- a/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
-+++ b/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
-@@ -5,7 +5,8 @@ of analogue I/O.
- 
- This document lists regulator specific bindings, see the primary binding
- document:
--  ../mfd/arizona.txt
-+  For Wolfson Arizona codecs: ../mfd/arizona.txt
-+  For Cirrus Logic Madera codecs: ../mfd/madera.txt
- 
- Optional properties:
-   - wlf,ldoena : GPIO specifier for the GPIO controlling LDOENA
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 99b9362..ed5679f 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -134,11 +134,12 @@ config REGULATOR_ARIZONA_LDO1
- 	  devices.
- 
- config REGULATOR_ARIZONA_MICSUPP
--	tristate "Wolfson Arizona class devices MICSUPP"
--	depends on MFD_ARIZONA
-+	tristate "Cirrus Madera and Wolfson Arizona class devices MICSUPP"
-+	depends on MFD_ARIZONA || MFD_MADERA
- 	depends on SND_SOC
- 	help
--	  Support for the MICSUPP regulators found on Wolfson Arizona class
-+	  Support for the MICSUPP regulators found on Cirrus Logic Madera codecs
-+	  and Wolfson Arizona codecs
- 	  devices.
- 
- config REGULATOR_AS3711
-diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
-index 120de94..36bf73c 100644
---- a/drivers/regulator/arizona-micsupp.c
-+++ b/drivers/regulator/arizona-micsupp.c
-@@ -30,6 +30,10 @@
- #include <linux/mfd/arizona/pdata.h>
- #include <linux/mfd/arizona/registers.h>
- 
-+#include <linux/mfd/madera/core.h>
-+#include <linux/mfd/madera/pdata.h>
-+#include <linux/mfd/madera/registers.h>
-+
- #include <linux/regulator/arizona-micsupp.h>
- 
- struct arizona_micsupp {
-@@ -205,6 +209,28 @@ static int arizona_micsupp_set_bypass(struct regulator_dev *rdev, bool ena)
- 	.num_consumer_supplies = 1,
- };
- 
-+static const struct regulator_desc madera_micsupp = {
-+	.name = "MICVDD",
-+	.supply_name = "CPVDD1",
-+	.type = REGULATOR_VOLTAGE,
-+	.n_voltages = 40,
-+	.ops = &arizona_micsupp_ops,
-+
-+	.vsel_reg = MADERA_LDO2_CONTROL_1,
-+	.vsel_mask = MADERA_LDO2_VSEL_MASK,
-+	.enable_reg = MADERA_MIC_CHARGE_PUMP_1,
-+	.enable_mask = MADERA_CPMIC_ENA,
-+	.bypass_reg = MADERA_MIC_CHARGE_PUMP_1,
-+	.bypass_mask = MADERA_CPMIC_BYPASS,
-+
-+	.linear_ranges = arizona_micsupp_ext_ranges,
-+	.n_linear_ranges = ARRAY_SIZE(arizona_micsupp_ext_ranges),
-+
-+	.enable_time = 3000,
-+
-+	.owner = THIS_MODULE,
-+};
-+
- static int arizona_micsupp_of_get_pdata(struct arizona_micsupp_pdata *pdata,
- 					struct regulator_config *config,
- 					const struct regulator_desc *desc)
-@@ -321,6 +347,24 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
- 					   &arizona->pdata.micvdd);
- }
- 
-+static int madera_micsupp_probe(struct platform_device *pdev)
-+{
-+	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-+	struct arizona_micsupp *micsupp;
-+
-+	micsupp = devm_kzalloc(&pdev->dev, sizeof(*micsupp), GFP_KERNEL);
-+	if (!micsupp)
-+		return -ENOMEM;
-+
-+	micsupp->regmap = madera->regmap;
-+	micsupp->dapm = &madera->dapm;
-+	micsupp->dev = madera->dev;
-+	micsupp->init_data = arizona_micsupp_ext_default;
-+
-+	return arizona_micsupp_common_init(pdev, micsupp, &madera_micsupp,
-+					   &madera->pdata.micvdd);
-+}
-+
- static struct platform_driver arizona_micsupp_driver = {
- 	.probe = arizona_micsupp_probe,
- 	.driver		= {
-@@ -328,10 +372,35 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
- 	},
- };
- 
--module_platform_driver(arizona_micsupp_driver);
-+static struct platform_driver madera_micsupp_driver = {
-+	.probe = madera_micsupp_probe,
-+	.driver		= {
-+		.name	= "madera-micsupp",
-+	},
-+};
-+
-+static struct platform_driver * const arizona_micsupp_drivers[] = {
-+	&arizona_micsupp_driver,
-+	&madera_micsupp_driver,
-+};
-+
-+static int __init arizona_micsupp_init(void)
-+{
-+	return platform_register_drivers(arizona_micsupp_drivers,
-+					 ARRAY_SIZE(arizona_micsupp_drivers));
-+}
-+module_init(arizona_micsupp_init);
-+
-+static void __exit arizona_micsupp_exit(void)
-+{
-+	platform_unregister_drivers(arizona_micsupp_drivers,
-+				    ARRAY_SIZE(arizona_micsupp_drivers));
-+}
-+module_exit(arizona_micsupp_exit);
- 
- /* Module information */
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_DESCRIPTION("Arizona microphone supply driver");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:arizona-micsupp");
-+MODULE_ALIAS("platform:madera-micsupp");
+Richard Fitzgerald (17):
+  mfd: madera: Add register definitions for Cirrus Logic Madera codecs
+  mfd: madera: Add DT bindings for Cirrus Logic Madera codecs
+  mfd: madera: Add common support for Cirrus Logic Madera codecs
+  mfd: madera: Register map tables for Cirrus Logic CS47L35
+  mfd: madera: Register map tables for Cirrus Logic CS47L85
+  mfd: madera: Register map tables for Cirrus Logic CS47L90/91
+  regulator: arizona-micsupp: Add support for Cirrus Logic Madera codecs
+  regulator: arizona-ldo1: Add support for Cirrus Logic Madera codecs
+  irqchip: Add driver for Cirrus Logic Madera codecs
+  pinctrl: madera: Add DT bindings for Cirrus Logic Madera codecs
+  pinctrl: madera: Add driver for Cirrus Logic Madera codecs
+  gpio: madera: Support Cirrus Logic Madera class codecs
+  ASoC: madera: Add DT bindings for Cirrus Logic Madera codecs
+  ASoC: madera: Add common support for Cirrus Logic Madera codecs
+  ASoC: cs47l35: Add codec driver for Cirrus Logic CS47L35
+  ASoC: cs47l85: Add codec driver for Cirrus Logic CS47L85
+  ASoC: cs47l90: Add codec driver for Cirrus Logic CS47L90
+
+ Documentation/devicetree/bindings/mfd/madera.txt   |  102 +
+ .../bindings/pinctrl/cirrus,madera-pinctrl.txt     |   99 +
+ .../bindings/regulator/arizona-regulator.txt       |    3 +-
+ Documentation/devicetree/bindings/sound/madera.txt |   67 +
+ MAINTAINERS                                        |   23 +
+ drivers/gpio/Kconfig                               |    6 +
+ drivers/gpio/Makefile                              |    1 +
+ drivers/gpio/gpio-madera.c                         |  196 +
+ drivers/irqchip/Kconfig                            |    3 +
+ drivers/irqchip/Makefile                           |    1 +
+ drivers/irqchip/irq-madera.c                       |  301 ++
+ drivers/mfd/Kconfig                                |   48 +
+ drivers/mfd/Makefile                               |   13 +
+ drivers/mfd/cs47l35-tables.c                       | 1610 +++++++
+ drivers/mfd/cs47l85-tables.c                       | 3010 +++++++++++++
+ drivers/mfd/cs47l90-tables.c                       | 2675 ++++++++++++
+ drivers/mfd/madera-core.c                          |  617 +++
+ drivers/mfd/madera-i2c.c                           |  135 +
+ drivers/mfd/madera-spi.c                           |  135 +
+ drivers/mfd/madera.h                               |   54 +
+ drivers/pinctrl/Kconfig                            |    1 +
+ drivers/pinctrl/Makefile                           |    1 +
+ drivers/pinctrl/cirrus/Kconfig                     |   15 +
+ drivers/pinctrl/cirrus/Makefile                    |   11 +
+ drivers/pinctrl/cirrus/pinctrl-cs47l35.c           |   46 +
+ drivers/pinctrl/cirrus/pinctrl-cs47l85.c           |   60 +
+ drivers/pinctrl/cirrus/pinctrl-cs47l90.c           |   58 +
+ drivers/pinctrl/cirrus/pinctrl-madera.c            | 1074 +++++
+ drivers/pinctrl/cirrus/pinctrl-madera.h            |   40 +
+ drivers/regulator/Kconfig                          |   15 +-
+ drivers/regulator/arizona-ldo1.c                   |   82 +-
+ drivers/regulator/arizona-micsupp.c                |   71 +-
+ include/dt-bindings/sound/madera.h                 |   27 +
+ include/linux/irqchip/irq-madera-pdata.h           |   23 +
+ include/linux/irqchip/irq-madera.h                 |   96 +
+ include/linux/mfd/madera/core.h                    |  179 +
+ include/linux/mfd/madera/pdata.h                   |   61 +
+ include/linux/mfd/madera/registers.h               | 3987 ++++++++++++++++++
+ include/sound/madera-pdata.h                       |   61 +
+ sound/soc/codecs/Kconfig                           |   23 +
+ sound/soc/codecs/Makefile                          |    8 +
+ sound/soc/codecs/cs47l35.c                         | 1747 ++++++++
+ sound/soc/codecs/cs47l85.c                         | 2722 ++++++++++++
+ sound/soc/codecs/cs47l90.c                         | 2661 ++++++++++++
+ sound/soc/codecs/madera.c                          | 4438 ++++++++++++++++++++
+ sound/soc/codecs/madera.h                          |  470 +++
+ 46 files changed, 27066 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/madera.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/madera.txt
+ create mode 100644 drivers/gpio/gpio-madera.c
+ create mode 100644 drivers/irqchip/irq-madera.c
+ create mode 100644 drivers/mfd/cs47l35-tables.c
+ create mode 100644 drivers/mfd/cs47l85-tables.c
+ create mode 100644 drivers/mfd/cs47l90-tables.c
+ create mode 100644 drivers/mfd/madera-core.c
+ create mode 100644 drivers/mfd/madera-i2c.c
+ create mode 100644 drivers/mfd/madera-spi.c
+ create mode 100644 drivers/mfd/madera.h
+ create mode 100644 drivers/pinctrl/cirrus/Kconfig
+ create mode 100644 drivers/pinctrl/cirrus/Makefile
+ create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l35.c
+ create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l85.c
+ create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l90.c
+ create mode 100644 drivers/pinctrl/cirrus/pinctrl-madera.c
+ create mode 100644 drivers/pinctrl/cirrus/pinctrl-madera.h
+ create mode 100644 include/dt-bindings/sound/madera.h
+ create mode 100644 include/linux/irqchip/irq-madera-pdata.h
+ create mode 100644 include/linux/irqchip/irq-madera.h
+ create mode 100644 include/linux/mfd/madera/core.h
+ create mode 100644 include/linux/mfd/madera/pdata.h
+ create mode 100644 include/linux/mfd/madera/registers.h
+ create mode 100644 include/sound/madera-pdata.h
+ create mode 100644 sound/soc/codecs/cs47l35.c
+ create mode 100644 sound/soc/codecs/cs47l85.c
+ create mode 100644 sound/soc/codecs/cs47l90.c
+ create mode 100644 sound/soc/codecs/madera.c
+ create mode 100644 sound/soc/codecs/madera.h
+
 -- 
 1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
