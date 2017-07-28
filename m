@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Use MCLK instead of BLCK as the
-	sysclock for RT5514 codec on kabylake platform" to the asoc tree
-Date: Fri, 28 Jul 2017 13:43:49 +0100
-Message-ID: <E1db4cP-0005hc-CX@finisterre>
-References: <1501102065-11083-3-git-send-email-harshapriya.n@intel.com>
+Subject: Applied "ASoC: Intel: Enabling ASRC for RT5663 codec
+	on kabylake platform" to the asoc tree
+Date: Fri, 28 Jul 2017 13:43:54 +0100
+Message-ID: <E1db4cU-0005iV-UB@finisterre>
+References: <1501102065-11083-2-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0378A267685
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 14:43:58 +0200 (CEST)
-In-Reply-To: <1501102065-11083-3-git-send-email-harshapriya.n@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 628892676B2
+ for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 14:44:04 +0200 (CEST)
+In-Reply-To: <1501102065-11083-2-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Use MCLK instead of BLCK as the sysclock for RT5514 codec on kabylake platform
+   ASoC: Intel: Enabling ASRC for RT5663 codec on kabylake platform
 
 has been applied to the asoc tree at
 
@@ -52,48 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 6512dd4dcf640412637ece8a412e83c3a0046d2f Mon Sep 17 00:00:00 2001
+>From 349d63c33a34e39b205cf116d2406e096a029f8b Mon Sep 17 00:00:00 2001
 From: Harsha Priya N <harshapriya.n@intel.com>
-Date: Thu, 27 Jul 2017 17:41:26 -0700
-Subject: [PATCH] ASoC: Intel: Use MCLK instead of BLCK as the sysclock for
- RT5514 codec on kabylake platform
+Date: Thu, 27 Jul 2017 17:41:25 -0700
+Subject: [PATCH] ASoC: Intel: Enabling ASRC for RT5663 codec on kabylake
+ platform
 
-This patch fixes the pop noise in dmic recording using rt5514 on kabylake platform.
-This patch enables the rt5514 to use MCLK instead of BLCK as the sysclock which fixes
-the pop noise.
+This patch fixes the cracking noise in rt5663 headphones for kabylake platform
+by calling rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER to set ASRC.
+
+The ASRC function is for asynchronous MCLK and LRCK. For RT5663 ASRC should be
+enabled to  support special i2s clock format like Intel's 100fs.
+ASRC function will track i2s clock and generate a corresponding
+system clock for codec. Calling this function helps select the clock source
+for both RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters
+which fixes the crackling sound.
 
 Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index cfde894d250f..cfd89ca6a18d 100644
+index 3fe4a0807095..cfde894d250f 100644
 --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
 +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -351,19 +351,10 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
- 				return ret;
- 			}
+@@ -319,7 +319,9 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
+ 	int ret;
  
--			ret = snd_soc_dai_set_pll(codec_dai, 0,
--				RT5514_PLL1_S_BCLK, RT5514_AIF1_BCLK_FREQ,
--						RT5514_AIF1_SYSCLK_FREQ);
--			if (ret < 0) {
--				dev_err(rtd->dev, "set bclk err: %d\n", ret);
--				return ret;
--			}
--
- 			ret = snd_soc_dai_set_sysclk(codec_dai,
--				RT5514_SCLK_S_PLL1, RT5514_AIF1_SYSCLK_FREQ,
--							SND_SOC_CLOCK_IN);
-+				RT5514_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 			if (ret < 0) {
--				dev_err(rtd->dev, "set sclk err: %d\n", ret);
-+				dev_err(rtd->dev, "set sysclk err: %d\n", ret);
- 				return ret;
- 			}
- 		}
+ 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
+-	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
++	rt5663_sel_asrc_clk_src(codec_dai->codec,
++			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
++			RT5663_CLK_SEL_I2S1_ASRC);
+ 
+ 	ret = snd_soc_dai_set_sysclk(codec_dai,
+ 			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
 -- 
 2.13.2
