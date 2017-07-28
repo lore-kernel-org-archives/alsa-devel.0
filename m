@@ -1,133 +1,54 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [PATCH 5/9 v2] ASoC: AMD: disabling memory gating in stoney platform
-Date: Fri, 28 Jul 2017 15:31:30 -0400
-Message-ID: <1501270294-31153-6-git-send-email-alexander.deucher@amd.com>
-References: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v4 09/12] ASoC: wm9712: add ac97 new bus support
+Date: Sat, 29 Jul 2017 00:14:09 +0200
+Message-ID: <8760ecqkem.fsf@belgarion.home>
+References: <20170724204928.29505-1-robert.jarzmik@free.fr>
+        <20170724204928.29505-10-robert.jarzmik@free.fr>
+        <20170725102057.hblyopxycgz55mr7@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, airlied@gmail.com, broonie@kernel.org, Vijendar.Mukunda@amd.com, rajeevkumar.linux@gmail.com, perex@perex.cz
-Cc: Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com
+Content-Type: text/plain
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20170725102057.hblyopxycgz55mr7@localhost.localdomain> (Charles
+        Keepax's message of "Tue, 25 Jul 2017 11:20:57 +0100")
+Sender: linux-input-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogVmlqZW5kYXIgTXVrdW5kYSA8VmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tPgoKRm9yIFN0
-b25leSBwbGF0Zm9ybSwgTWVtb3J5IGdhdGluZyBpcyBkaXNhYmxlZC5pLmUgU1JBTSBCYW5rcwp3
-b24ndCBiZSB0dXJuZWQgb2ZmLiBCeSBEZWZhdWx0LCBTUkFNIEJhbmsgc3RhdGUgc2V0IHRvIE9O
-LgpBZGRlZCBjb25kaXRpb24gY2hlY2tzIHRvIHNraXAgU1JBTSBCYW5rIHN0YXRlIHNldCBsb2dp
-YyBmb3IKU3RvbmV5IHBsYXRmb3JtLgoKU2lnbmVkLW9mZi1ieTogVmlqZW5kYXIgTXVrdW5kYSA8
-VmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tPgpTaWduZWQtb2ZmLWJ5OiBBbGV4IERldWNoZXIgPGFs
-ZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+Ci0tLQoKdjI6IEFkZGVkIGNvbW1lbnRzIGluIGNvZGUg
-YW5kIHJlbW92ZWQgbG9jYWxseSBkZWZpbmVkIG1hY3JvcwogICAgZm9yIFNUT05FWSBhbmQgQ2Fy
-cml6by4KCnNvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyB8IDc5ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDU1IGluc2VydGlv
-bnMoKyksIDI0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvYWNwLXBj
-bS1kbWEuYyBiL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwppbmRleCBkY2JmOTk3Li5mMDBi
-NmI5IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKKysrIGIvc291bmQv
-c29jL2FtZC9hY3AtcGNtLWRtYS5jCkBAIC0yMCw3ICsyMCw3IEBACiAjaW5jbHVkZSA8bGludXgv
-cG1fcnVudGltZS5oPgogCiAjaW5jbHVkZSA8c291bmQvc29jLmg+Ci0KKyNpbmNsdWRlIDxkcm0v
-YW1kX2FzaWNfdHlwZS5oPgogI2luY2x1ZGUgImFjcC5oIgogCiAjZGVmaW5lIFBMQVlCQUNLX01J
-Tl9OVU1fUEVSSU9EUyAgICAyCkBAIC00MTksNyArNDE5LDcgQEAgc3RhdGljIHZvaWQgYWNwX3Nl
-dF9zcmFtX2Jhbmtfc3RhdGUodm9pZCBfX2lvbWVtICphY3BfbW1pbywgdTE2IGJhbmssCiB9CiAK
-IC8qIEluaXRpYWxpemUgYW5kIGJyaW5nIEFDUCBoYXJkd2FyZSB0byBkZWZhdWx0IHN0YXRlLiAq
-Lwotc3RhdGljIGludCBhY3BfaW5pdCh2b2lkIF9faW9tZW0gKmFjcF9tbWlvKQorc3RhdGljIGlu
-dCBhY3BfaW5pdCh2b2lkIF9faW9tZW0gKmFjcF9tbWlvLCB1MzIgYXNpY190eXBlKQogewogCXUx
-NiBiYW5rOwogCXUzMiB2YWwsIGNvdW50LCBzcmFtX3B0ZV9vZmZzZXQ7CkBAIC00OTMsOSArNDkz
-LDE0IEBAIHN0YXRpYyBpbnQgYWNwX2luaXQodm9pZCBfX2lvbWVtICphY3BfbW1pbykKICAgICAg
-ICAvKiBXaGVuIEFDUF9USUxFX1AxIGlzIHR1cm5lZCBvbiwgYWxsIFNSQU0gYmFua3MgZ2V0IHR1
-cm5lZCBvbi4KIAkqIE5vdywgdHVybiBvZmYgYWxsIG9mIHRoZW0uIFRoaXMgY2FuJ3QgYmUgZG9u
-ZSBpbiAncG93ZXJvbicgb2YKIAkqIEFDUCBwbSBkb21haW4sIGFzIHRoaXMgcmVxdWlyZXMgQUNQ
-IHRvIGJlIGluaXRpYWxpemVkLgorCSogRm9yIFN0b25leSwgTWVtb3J5IGdhdGluZyBpcyBkaXNh
-YmxlZCxpLmUgU1JBTSBCYW5rcworCSogd29uJ3QgYmUgdHVybmVkIG9mZi4gVGhlIGRlZmF1bHQg
-c3RhdGUgZm9yIFNSQU0gYmFua3MgaXMgT04uCisJKiBTZXR0aW5nIFNSQU0gYmFuayBzdGF0ZSBj
-b2RlIHNraXBwZWQgZm9yIFNUT05FWSBwbGF0Zm9ybS4KIAkqLwotCWZvciAoYmFuayA9IDE7IGJh
-bmsgPCA0ODsgYmFuaysrKQotCQlhY3Bfc2V0X3NyYW1fYmFua19zdGF0ZShhY3BfbW1pbywgYmFu
-aywgZmFsc2UpOworCWlmIChhc2ljX3R5cGUgIT0gQ0hJUF9TVE9ORVkpIHsKKwkJZm9yIChiYW5r
-ID0gMTsgYmFuayA8IDQ4OyBiYW5rKyspCisJCQlhY3Bfc2V0X3NyYW1fYmFua19zdGF0ZShhY3Bf
-bW1pbywgYmFuaywgZmFsc2UpOworCX0KIAogCXJldHVybiAwOwogfQpAQCAtNjQ2LDE0ICs2NTEs
-MjIgQEAgc3RhdGljIGludCBhY3BfZG1hX29wZW4oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpz
-dWJzdHJlYW0pCiAKIAlpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9Q
-TEFZQkFDSykgewogCQlpbnRyX2RhdGEtPnBsYXlfc3RyZWFtID0gc3Vic3RyZWFtOwotCQlmb3Ig
-KGJhbmsgPSAxOyBiYW5rIDw9IDQ7IGJhbmsrKykKLQkJCWFjcF9zZXRfc3JhbV9iYW5rX3N0YXRl
-KGludHJfZGF0YS0+YWNwX21taW8sIGJhbmssCi0JCQkJCQl0cnVlKTsKKwkJLyogRm9yIFN0b25l
-eSwgTWVtb3J5IGdhdGluZyBpcyBkaXNhYmxlZCxpLmUgU1JBTSBCYW5rcworCQkgKiB3b24ndCBi
-ZSB0dXJuZWQgb2ZmLiBUaGUgZGVmYXVsdCBzdGF0ZSBmb3IgU1JBTSBiYW5rcyBpcyBPTi4KKwkJ
-ICogU2V0dGluZyBTUkFNIGJhbmsgc3RhdGUgY29kZSBza2lwcGVkIGZvciBTVE9ORVkgcGxhdGZv
-cm0uCisJCSAqLworCQlpZiAoaW50cl9kYXRhLT5hc2ljX3R5cGUgIT0gQ0hJUF9TVE9ORVkpIHsK
-KwkJCWZvciAoYmFuayA9IDE7IGJhbmsgPD0gNDsgYmFuaysrKQorCQkJCWFjcF9zZXRfc3JhbV9i
-YW5rX3N0YXRlKGludHJfZGF0YS0+YWNwX21taW8sCisJCQkJCQkJYmFuaywgdHJ1ZSk7CisJCX0K
-IAl9IGVsc2UgewogCQlpbnRyX2RhdGEtPmNhcHR1cmVfc3RyZWFtID0gc3Vic3RyZWFtOwotCQlm
-b3IgKGJhbmsgPSA1OyBiYW5rIDw9IDg7IGJhbmsrKykKLQkJCWFjcF9zZXRfc3JhbV9iYW5rX3N0
-YXRlKGludHJfZGF0YS0+YWNwX21taW8sIGJhbmssCi0JCQkJCQl0cnVlKTsKKwkJaWYgKGludHJf
-ZGF0YS0+YXNpY190eXBlICE9IENISVBfU1RPTkVZKSB7CisJCQlmb3IgKGJhbmsgPSA1OyBiYW5r
-IDw9IDg7IGJhbmsrKykKKwkJCQlhY3Bfc2V0X3NyYW1fYmFua19zdGF0ZShpbnRyX2RhdGEtPmFj
-cF9tbWlvLAorCQkJCQkJCWJhbmssIHRydWUpOworCQl9CiAJfQogCiAJcmV0dXJuIDA7CkBAIC04
-NjksMTQgKzg4MiwyMyBAQCBzdGF0aWMgaW50IGFjcF9kbWFfY2xvc2Uoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0pCiAKIAlpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZf
-UENNX1NUUkVBTV9QTEFZQkFDSykgewogCQlhZGF0YS0+cGxheV9zdHJlYW0gPSBOVUxMOwotCQlm
-b3IgKGJhbmsgPSAxOyBiYW5rIDw9IDQ7IGJhbmsrKykKLQkJCWFjcF9zZXRfc3JhbV9iYW5rX3N0
-YXRlKGFkYXRhLT5hY3BfbW1pbywgYmFuaywKLQkJCQkJCWZhbHNlKTsKLQl9IGVsc2UgeworCQkv
-KiBGb3IgU3RvbmV5LCBNZW1vcnkgZ2F0aW5nIGlzIGRpc2FibGVkLGkuZSBTUkFNIEJhbmtzCisJ
-CSAqIHdvbid0IGJlIHR1cm5lZCBvZmYuIFRoZSBkZWZhdWx0IHN0YXRlIGZvciBTUkFNIGJhbmtz
-IGlzIE9OLgorCQkgKiBTZXR0aW5nIFNSQU0gYmFuayBzdGF0ZSBjb2RlIHNraXBwZWQgZm9yIFNU
-T05FWSBwbGF0Zm9ybS4KKwkJICogYWRkZWQgY29uZGl0aW9uIGNoZWNrcyBmb3IgQ2Fycml6byBw
-bGF0Zm9ybSBvbmx5CisJCSAqLworCQlpZiAoYWRhdGEtPmFzaWNfdHlwZSAhPSBDSElQX1NUT05F
-WSkgeworCQkJZm9yIChiYW5rID0gMTsgYmFuayA8PSA0OyBiYW5rKyspCisJCQkJYWNwX3NldF9z
-cmFtX2Jhbmtfc3RhdGUoYWRhdGEtPmFjcF9tbWlvLCBiYW5rLAorCQkJCWZhbHNlKTsKKwkJfQor
-CX0gZWxzZSAgewogCQlhZGF0YS0+Y2FwdHVyZV9zdHJlYW0gPSBOVUxMOwotCQlmb3IgKGJhbmsg
-PSA1OyBiYW5rIDw9IDg7IGJhbmsrKykKLQkJCWFjcF9zZXRfc3JhbV9iYW5rX3N0YXRlKGFkYXRh
-LT5hY3BfbW1pbywgYmFuaywKLQkJCQkJCWZhbHNlKTsKKwkJaWYgKGFkYXRhLT5hc2ljX3R5cGUg
-IT0gQ0hJUF9TVE9ORVkpIHsKKwkJCWZvciAoYmFuayA9IDU7IGJhbmsgPD0gODsgYmFuaysrKQor
-CQkJCWFjcF9zZXRfc3JhbV9iYW5rX3N0YXRlKGFkYXRhLT5hY3BfbW1pbywgYmFuaywKKwkJCQkJ
-CSAgICAgZmFsc2UpOworCQl9CiAJfQogCiAJLyogRGlzYWJsZSBBQ1AgaXJxLCB3aGVuIHRoZSBj
-dXJyZW50IHN0cmVhbSBpcyBiZWluZyBjbG9zZWQgYW5kCkBAIC05NDUsNyArOTY3LDcgQEAgc3Rh
-dGljIGludCBhY3BfYXVkaW9fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAlk
-ZXZfc2V0X2RydmRhdGEoJnBkZXYtPmRldiwgYXVkaW9fZHJ2X2RhdGEpOwogCiAJLyogSW5pdGlh
-bGl6ZSB0aGUgQUNQICovCi0JYWNwX2luaXQoYXVkaW9fZHJ2X2RhdGEtPmFjcF9tbWlvKTsKKwlh
-Y3BfaW5pdChhdWRpb19kcnZfZGF0YS0+YWNwX21taW8sIGF1ZGlvX2Rydl9kYXRhLT5hc2ljX3R5
-cGUpOwogCiAJc3RhdHVzID0gc25kX3NvY19yZWdpc3Rlcl9wbGF0Zm9ybSgmcGRldi0+ZGV2LCAm
-YWNwX2Fzb2NfcGxhdGZvcm0pOwogCWlmIChzdGF0dXMgIT0gMCkgewpAQCAtOTc2LDE5ICs5OTgs
-MjcgQEAgc3RhdGljIGludCBhY3BfcGNtX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpCiAJdTE2
-IGJhbms7CiAJc3RydWN0IGF1ZGlvX2Rydl9kYXRhICphZGF0YSA9IGRldl9nZXRfZHJ2ZGF0YShk
-ZXYpOwogCi0JYWNwX2luaXQoYWRhdGEtPmFjcF9tbWlvKTsKKwlhY3BfaW5pdChhZGF0YS0+YWNw
-X21taW8sIGFkYXRhLT5hc2ljX3R5cGUpOwogCiAJaWYgKGFkYXRhLT5wbGF5X3N0cmVhbSAmJiBh
-ZGF0YS0+cGxheV9zdHJlYW0tPnJ1bnRpbWUpIHsKLQkJZm9yIChiYW5rID0gMTsgYmFuayA8PSA0
-OyBiYW5rKyspCi0JCQlhY3Bfc2V0X3NyYW1fYmFua19zdGF0ZShhZGF0YS0+YWNwX21taW8sIGJh
-bmssCisJCS8qIEZvciBTdG9uZXksIE1lbW9yeSBnYXRpbmcgaXMgZGlzYWJsZWQsaS5lIFNSQU0g
-QmFua3MKKwkJICogd29uJ3QgYmUgdHVybmVkIG9mZi4gVGhlIGRlZmF1bHQgc3RhdGUgZm9yIFNS
-QU0gYmFua3MgaXMgT04uCisJCSAqIFNldHRpbmcgU1JBTSBiYW5rIHN0YXRlIGNvZGUgc2tpcHBl
-ZCBmb3IgU1RPTkVZIHBsYXRmb3JtLgorCQkgKi8KKwkJaWYgKGFkYXRhLT5hc2ljX3R5cGUgIT0g
-Q0hJUF9TVE9ORVkpIHsKKwkJCWZvciAoYmFuayA9IDE7IGJhbmsgPD0gNDsgYmFuaysrKQorCQkJ
-CWFjcF9zZXRfc3JhbV9iYW5rX3N0YXRlKGFkYXRhLT5hY3BfbW1pbywgYmFuaywKIAkJCQkJCXRy
-dWUpOworCQl9CiAJCWNvbmZpZ19hY3BfZG1hKGFkYXRhLT5hY3BfbW1pbywKIAkJCQlhZGF0YS0+
-cGxheV9zdHJlYW0tPnJ1bnRpbWUtPnByaXZhdGVfZGF0YSk7CiAJfQogCWlmIChhZGF0YS0+Y2Fw
-dHVyZV9zdHJlYW0gJiYgYWRhdGEtPmNhcHR1cmVfc3RyZWFtLT5ydW50aW1lKSB7Ci0JCWZvciAo
-YmFuayA9IDU7IGJhbmsgPD0gODsgYmFuaysrKQotCQkJYWNwX3NldF9zcmFtX2Jhbmtfc3RhdGUo
-YWRhdGEtPmFjcF9tbWlvLCBiYW5rLAorCQlpZiAoYWRhdGEtPmFzaWNfdHlwZSAhPSBDSElQX1NU
-T05FWSkgeworCQkJZm9yIChiYW5rID0gNTsgYmFuayA8PSA4OyBiYW5rKyspCisJCQkJYWNwX3Nl
-dF9zcmFtX2Jhbmtfc3RhdGUoYWRhdGEtPmFjcF9tbWlvLCBiYW5rLAogCQkJCQkJdHJ1ZSk7CisJ
-CX0KIAkJY29uZmlnX2FjcF9kbWEoYWRhdGEtPmFjcF9tbWlvLAogCQkJCWFkYXRhLT5jYXB0dXJl
-X3N0cmVhbS0+cnVudGltZS0+cHJpdmF0ZV9kYXRhKTsKIAl9CkBAIC0xMDA5LDcgKzEwMzksNyBA
-QCBzdGF0aWMgaW50IGFjcF9wY21fcnVudGltZV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQog
-ewogCXN0cnVjdCBhdWRpb19kcnZfZGF0YSAqYWRhdGEgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsK
-IAotCWFjcF9pbml0KGFkYXRhLT5hY3BfbW1pbyk7CisJYWNwX2luaXQoYWRhdGEtPmFjcF9tbWlv
-LCBhZGF0YS0+YXNpY190eXBlKTsKIAlhY3BfcmVnX3dyaXRlKDEsIGFkYXRhLT5hY3BfbW1pbywg
-bW1BQ1BfRVhURVJOQUxfSU5UUl9FTkIpOwogCXJldHVybiAwOwogfQpAQCAtMTAzMSw2ICsxMDYx
-LDcgQEAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgYWNwX2RtYV9kcml2ZXIgPSB7CiAK
-IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYWNwX2RtYV9kcml2ZXIpOwogCitNT0RVTEVfQVVUSE9S
-KCJWaWplbmRhci5NdWt1bmRhQGFtZC5jb20iKTsKIE1PRFVMRV9BVVRIT1IoIk1hcnV0aGkuQmF5
-eWF2YXJhcHVAYW1kLmNvbSIpOwogTU9EVUxFX0RFU0NSSVBUSU9OKCJBTUQgQUNQIFBDTSBEcml2
-ZXIiKTsKIE1PRFVMRV9MSUNFTlNFKCJHUEwgdjIiKTsKLS0gCjIuNS41CgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0
-CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+Charles Keepax <ckeepax@opensource.cirrus.com> writes:
+
+> On Mon, Jul 24, 2017 at 10:49:25PM +0200, Robert Jarzmik wrote:
+>> Add support for the new ac97 bus model, where devices are automatically
+>> discovered on AC-Links.
+>> 
+>> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>> ---
+>> +	} else {
+>> +		wm9712->ac97 = snd_soc_new_ac97_codec(codec, WM9712_VENDOR_ID,
+>> +						      WM9712_VENDOR_ID_MASK);
+>> +		if (IS_ERR(wm9712->ac97)) {
+>> +			ret = PTR_ERR(wm9712->ac97);
+>> +			dev_err(codec->dev,
+>> +				"Failed to register AC97 codec: %d\n", ret);
+>> +			return ret;
+>> +		}
+>> +
+>> +		regmap = regmap_init_ac97(wm9712->ac97, &wm9712_regmap_config);
+>> +		if (IS_ERR(regmap)) {
+>> +			ret = PTR_ERR(regmap);
+>> +			goto err_free_ac97_codec;
+>
+> For the 9713 you had this wrapped in an ifdef? Why did it need an
+> ifdef there but doesn't for this driver?
+I have forgotten the ifdef, it's a very good catch, thanks.
+The trick is that in :
+  - include/sound/soc.h
+  - snd_soc_new_ac97_codec() is only defined under this ifdef
+
+And with the new ac97 bus support, these drivers can be compiled now with
+CONFIG_SND_SOC_AC97_BUS not defined, so I need to add the ifdef.
+
+Cheers.
+
+-- 
+Robert
