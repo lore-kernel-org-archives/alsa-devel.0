@@ -1,61 +1,70 @@
-From: Fulup Ar Foll <fulup.arfoll@iot.bzh>
-Subject: snd_ctl_add_enumerated_elem_set and TLV
-Date: Sat, 29 Jul 2017 16:12:27 +0200
-Message-ID: <9eb2ccd3-9574-26fc-cb5b-6defcc59578f@iot.bzh>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v3 02/12] ASoC: sun4i-i2s: Add clkdiv offsets to quirks
+Date: Sat, 29 Jul 2017 16:17:43 +0200
+Message-ID: <20170729141753.20174-3-codekipper@gmail.com>
+References: <20170729141753.20174-1-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 283CF266A63
- for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 16:12:30 +0200 (CEST)
-Received: by mail-wm0-f54.google.com with SMTP id t201so16238184wmt.0
- for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 07:12:30 -0700 (PDT)
-Received: from [10.20.101.100] (sne56-1-88-180-128-218.fbx.proxad.net.
- [88.180.128.218])
- by smtp.googlemail.com with ESMTPSA id e17sm19523454wma.19.2017.07.29.07.12.28
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 29 Jul 2017 07:12:28 -0700 (PDT)
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBF5S6LFQKGQEO6MQ5EA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170729141753.20174-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-I'm using snd_ctl_add_enumerated_elem_set to create user controls, I do 
-not understand why it set "TLV readable" option at true by default. I 
-have a simple enumeration without TLV. I use snd_ctl_elem_write but do 
-not call snd_ctl_elem_tlv_write. I do no understand how to prevent 
-snd_ctl_elem_info_is_tlv_readable to return true for this control, 
-obviously even if TLV is set as readable, it is empty and reading fail.
+The BCLKDIV and MCLKDIV found on newer SoCs start from an offset of 1.
+Add the functionality to adjust the division values according to the
+needs to the device being used.
 
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Example
-
-fulup@fulup-desktop:~/Workspace/AlsaPulse> amixer -D hw:USB cget numid=237
-numid=237,iface=MIXER,name='Hal-VolRamp-Mode'
-   ; type=ENUMERATED,access=rw---RW-,values=1,items=4
-   ; Item #0 'None'
-   ; Item #1 'Normal'
-   ; Item #2 'Smooth'
-   ; Item #3 'Emergency'
-   : values=1
-amixer: Control hw:USB element TLV read error: No such device or address
-
-Question: is there something special to set when a control does not have 
-a TLV ?
-
-Fulup
-
-PS: if I write a fake TLV everything goes fine, but this is not what I 
-expect for ENUM.
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index d7ee7a443e4e..1d538de4e4d0 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -94,9 +94,13 @@
+  * struct sun4i_i2s_quirks - Differences between SoC variants.
+  *
+  * @has_reset: SoC needs reset deasserted.
++ * @mclk_offset: Value by which mclkdiv needs to be adjusted.
++ * @bclk_offset: Value by which bclkdiv needs to be adjusted.
+  */
+ struct sun4i_i2s_quirks {
+ 	bool				has_reset;
++	unsigned int			mclk_offset;
++	unsigned int			bclk_offset;
+ };
+ 
+ struct sun4i_i2s {
+@@ -149,7 +153,7 @@ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
+ 		const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
+ 
+ 		if (bdiv->div == div)
+-			return bdiv->val;
++			return bdiv->val + i2s->variant->bclk_offset;
+ 	}
+ 
+ 	return -EINVAL;
+@@ -167,7 +171,7 @@ static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
+ 		const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
+ 
+ 		if (mdiv->div == div)
+-			return mdiv->val;
++			return mdiv->val + i2s->variant->mclk_offset;
+ 	}
+ 
+ 	return -EINVAL;
+-- 
+2.13.3
