@@ -1,101 +1,92 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v3 01/12] ASoC: sun4i-i2s: Extend quirks scope
-Date: Sat, 29 Jul 2017 16:17:42 +0200
-Message-ID: <20170729141753.20174-2-codekipper@gmail.com>
-References: <20170729141753.20174-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: codekipper@gmail.com
+Subject: [PATCH v3 00/12] ASoC: Add I2S support for Allwinner
+	H3 SoCs
+Date: Sat, 29 Jul 2017 16:17:41 +0200
+Message-ID: <20170729141753.20174-1-codekipper@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBFNS6LFQKGQELIML7YY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170729141753.20174-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C0BD266A63
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 16:17:55 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id t128so11570427lff.3
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 07:17:55 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: maxime.ripard@free-electrons.com
+Cc: alsa-devel@alsa-project.org, Marcus Cooper <codekipper@gmail.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Marcus Cooper <codekipper@gmail.com>
 
-In preparation for the changes required to support newer SoCs then
-quirks has been moved and also added to the device structure.
+Hi All,
+please find attached a series of patches to bring i2s support to the
+Allwinner H3 SoC. This has been tested with the following setups:
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+A20 Olimex EVB connected to a pcm5102
+Orange Pi 2 connected to a uda1380
+Orange Pi 2 hdmi audio playback
+Pine 64 connected to the audio DAC board
+
+To get i2s working some additional patches are required which will be
+delivered later. For now they have been pushed here
+
+https://github.com/codekipper/linux-sunxi/commits/sunxi-audio-h3
+
+I don't own a A33 device which uses the i2s block for the audio codec
+so if someone could test against that it would be much appreciated.
+
+I'm also wondering if there is a preferred way of setting the lrclk
+size in the dts?..currently it is set to the sample width but for example
+the pcm5102a wants it to be 32 bits whatever the sample rate.
+
+Thanks in advance,
+CK
+
 ---
- sound/soc/sunxi/sun4i-i2s.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 62b307b0c846..d7ee7a443e4e 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -90,6 +90,15 @@
- #define SUN4I_I2S_RX_CHAN_SEL_REG	0x38
- #define SUN4I_I2S_RX_CHAN_MAP_REG	0x3c
- 
-+/**
-+ * struct sun4i_i2s_quirks - Differences between SoC variants.
-+ *
-+ * @has_reset: SoC needs reset deasserted.
-+ */
-+struct sun4i_i2s_quirks {
-+	bool				has_reset;
-+};
-+
- struct sun4i_i2s {
- 	struct clk	*bus_clk;
- 	struct clk	*mod_clk;
-@@ -100,6 +109,8 @@ struct sun4i_i2s {
- 
- 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-+
-+	const struct sun4i_i2s_quirks	*variant;
- };
- 
- struct sun4i_i2s_clk_div {
-@@ -654,10 +665,6 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--struct sun4i_i2s_quirks {
--	bool has_reset;
--};
--
- static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.has_reset	= false,
- };
-@@ -669,7 +676,6 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- static int sun4i_i2s_probe(struct platform_device *pdev)
- {
- 	struct sun4i_i2s *i2s;
--	const struct sun4i_i2s_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *regs;
- 	int irq, ret;
-@@ -690,8 +696,8 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		return irq;
- 	}
- 
--	quirks = of_device_get_match_data(&pdev->dev);
--	if (!quirks) {
-+	i2s->variant = of_device_get_match_data(&pdev->dev);
-+	if (!i2s->variant) {
- 		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
- 		return -ENODEV;
- 	}
-@@ -715,7 +721,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2s->mod_clk);
- 	}
- 
--	if (quirks->has_reset) {
-+	if (i2s->variant->has_reset) {
- 		i2s->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 		if (IS_ERR(i2s->rst)) {
- 			dev_err(&pdev->dev, "Failed to get reset control\n");
+v3 changes compared to v2 are:
+- initial changes to prepare driver for newer SoCs has been broken down
+  into smaller patches
+- reduce use of regmap fields to where just needed.
+- clkdiv expansion will be delivered later.
+- defines for H3 variant segregated.
+- fixed regmap config issue with SUN8I_I2S_FIFO_TX_REG.
+
+
+v2 changes compared to v1 are:
+ - massive refactoring to remove duplicate code making use of regmap_fields.
+ - extending the clock divisors.
+ - removed code that should be delivered when we support 20/24bits
+
+---
+
+Marcus Cooper (12):
+  ASoC: sun4i-i2s: Extend quirks scope
+  ASoC: sun4i-i2s: Add clkdiv offsets to quirks
+  ASoC: sun4i-i2s: Add regmap config to quirks
+  ASoC: sun4i-i2s: Add TX FIFO offset to quirks
+  ASoC: sun4i-i2s: Add regmap fields for channels
+  ASoC: sun4i-i2s: Add changes for wss and sr
+  ASoC: sun4i-i2s: bclk and lrclk polarity tidyup
+  ASoC: sun4i-i2s: Add mclk enable regmap field
+  ASoC: sun4i-i2s: Add regmap field to set format
+  ASoC: sun4i-i2s: Check for slave select bit
+  ASoC: sun4i-i2s: Update global enable with bitmask
+  ASoC: sun4i-i2s: Add support for H3
+
+ .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
+ sound/soc/sunxi/sun4i-i2s.c                        | 460 ++++++++++++++++++---
+ 2 files changed, 398 insertions(+), 64 deletions(-)
+
 -- 
 2.13.3
