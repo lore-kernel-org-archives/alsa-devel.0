@@ -1,12 +1,12 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v3 02/12] ASoC: sun4i-i2s: Add clkdiv offsets to quirks
-Date: Sat, 29 Jul 2017 16:17:43 +0200
-Message-ID: <20170729141753.20174-3-codekipper@gmail.com>
+Subject: [PATCH v3 03/12] ASoC: sun4i-i2s: Add regmap config to quirks
+Date: Sat, 29 Jul 2017 16:17:44 +0200
+Message-ID: <20170729141753.20174-4-codekipper@gmail.com>
 References: <20170729141753.20174-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBF5S6LFQKGQEO6MQ5EA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBGFS6LFQKGQE5JOGSDQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20170729141753.20174-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -21,50 +21,57 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-The BCLKDIV and MCLKDIV found on newer SoCs start from an offset of 1.
-Add the functionality to adjust the division values according to the
-needs to the device being used.
+The newer SoCs have a larger range than the original SoC that this
+driver was developed for. By adding the regmap config to the quirks
+then the driver can initialise the managed register map correctly.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d7ee7a443e4e..1d538de4e4d0 100644
+index 1d538de4e4d0..73e991f5a81e 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -94,9 +94,13 @@
+@@ -94,11 +94,13 @@
   * struct sun4i_i2s_quirks - Differences between SoC variants.
   *
   * @has_reset: SoC needs reset deasserted.
-+ * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-+ * @bclk_offset: Value by which bclkdiv needs to be adjusted.
++ * @sun4i_i2s_regmap: regmap config to use.
+  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
   */
  struct sun4i_i2s_quirks {
  	bool				has_reset;
-+	unsigned int			mclk_offset;
-+	unsigned int			bclk_offset;
++	const struct regmap_config	*sun4i_i2s_regmap;
+ 	unsigned int			mclk_offset;
+ 	unsigned int			bclk_offset;
+ };
+@@ -670,11 +672,13 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
+ }
+ 
+ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+-	.has_reset	= false,
++	.has_reset		= false,
++	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
  };
  
- struct sun4i_i2s {
-@@ -149,7 +153,7 @@ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
- 		const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
+ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+-	.has_reset	= true,
++	.has_reset		= true,
++	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+ };
  
- 		if (bdiv->div == div)
--			return bdiv->val;
-+			return bdiv->val + i2s->variant->bclk_offset;
+ static int sun4i_i2s_probe(struct platform_device *pdev)
+@@ -713,7 +717,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
  	}
  
- 	return -EINVAL;
-@@ -167,7 +171,7 @@ static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
- 		const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
- 
- 		if (mdiv->div == div)
--			return mdiv->val;
-+			return mdiv->val + i2s->variant->mclk_offset;
- 	}
- 
- 	return -EINVAL;
+ 	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+-					    &sun4i_i2s_regmap_config);
++					    i2s->variant->sun4i_i2s_regmap);
+ 	if (IS_ERR(i2s->regmap)) {
+ 		dev_err(&pdev->dev, "Regmap initialisation failed\n");
+ 		return PTR_ERR(i2s->regmap);
 -- 
 2.13.3
