@@ -1,22 +1,23 @@
-From: Britt Yazel <bwyazel@ucdavis.edu>
-Subject: Gina 3g and Echomixer issue
-Date: Fri, 28 Jul 2017 21:58:17 -0700
-Message-ID: <1501304297.1407.0@smtp.gmail.com>
+From: Fulup Ar Foll <fulup.arfoll@iot.bzh>
+Subject: snd_ctl_add_enumerated_elem_set and TLV
+Date: Sat, 29 Jul 2017 16:12:27 +0200
+Message-ID: <9eb2ccd3-9574-26fc-cb5b-6defcc59578f@iot.bzh>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f43.google.com (mail-pg0-f43.google.com [74.125.83.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A84E266A51
- for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 06:58:21 +0200 (CEST)
-Received: by mail-pg0-f43.google.com with SMTP id c14so25792789pgn.0
- for <alsa-devel@alsa-project.org>; Fri, 28 Jul 2017 21:58:21 -0700 (PDT)
-Received: from [10.0.0.116] (c-73-12-161-237.hsd1.ca.comcast.net.
- [73.12.161.237])
- by smtp.gmail.com with ESMTPSA id e5sm46634007pfd.41.2017.07.28.21.58.18
+Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 283CF266A63
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 16:12:30 +0200 (CEST)
+Received: by mail-wm0-f54.google.com with SMTP id t201so16238184wmt.0
+ for <alsa-devel@alsa-project.org>; Sat, 29 Jul 2017 07:12:30 -0700 (PDT)
+Received: from [10.20.101.100] (sne56-1-88-180-128-218.fbx.proxad.net.
+ [88.180.128.218])
+ by smtp.googlemail.com with ESMTPSA id e17sm19523454wma.19.2017.07.29.07.12.28
  for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 28 Jul 2017 21:58:18 -0700 (PDT)
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Sat, 29 Jul 2017 07:12:28 -0700 (PDT)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,33 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hey guys,
+Hi,
 
-I work in an auditory neuroscience research lab, and we are using a PCI 
-Gina 3g to communicate with a Fireface 800 over ADAT.
+I'm using snd_ctl_add_enumerated_elem_set to create user controls, I do 
+not understand why it set "TLV readable" option at true by default. I 
+have a simple enumeration without TLV. I use snd_ctl_elem_write but do 
+not call snd_ctl_elem_tlv_write. I do no understand how to prevent 
+snd_ctl_elem_info_is_tlv_readable to return true for this control, 
+obviously even if TLV is set as readable, it is empty and reading fail.
 
-My issue is this, 1) each time I reboot the system the digital mode is 
-set to Coaxial digital, rather than ADAT, and I must set it after each 
-reboot. Is there a way to make this setting persist through reboot, or 
-perhaps a parameter that can be set when the kernel module is loaded to 
-force ADAT?
 
-2) The first time I switch from Coaxial digital to ADAT upon a reboot, 
-I consistently get a loud squeeling sound coming from my studio 
-monitors. I don't think this is the intended behaviuor, and it makes me 
-worried when switching into ADAT mode. Granted, after switching the 
-first time to ADAT, I can switch between coaxial digital and ADAT 
-without the squeeling happeneing, it is just that first time after the 
-reboot.
+Example
 
-Thanks for the help guys. The Gina 3g, even though it is an old audio 
-device, is still our most reliable sound card. We have tried many 
-others with horrible success, and most other ADAT capable PCI/PCIe 
-sound cards are far too expensive, and don't have robust Linux support. 
-However, if you guys have a good reccomendation of an ADAT capable PCIe 
-sound card with full Linux support, please let me know.
+fulup@fulup-desktop:~/Workspace/AlsaPulse> amixer -D hw:USB cget numid=237
+numid=237,iface=MIXER,name='Hal-VolRamp-Mode'
+   ; type=ENUMERATED,access=rw---RW-,values=1,items=4
+   ; Item #0 'None'
+   ; Item #1 'Normal'
+   ; Item #2 'Smooth'
+   ; Item #3 'Emergency'
+   : values=1
+amixer: Control hw:USB element TLV read error: No such device or address
 
--Britt
+Question: is there something special to set when a control does not have 
+a TLV ?
+
+Fulup
+
+PS: if I write a fake TLV everything goes fine, but this is not what I 
+expect for ENUM.
