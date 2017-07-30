@@ -1,36 +1,45 @@
-From: Paul Kocialkowski <contact@paulk.fr>
-Subject: [PATCH 3/3] ARM: configs: Add Tegra I2S interfaces to multi_v7_defconfig
-Date: Sun, 30 Jul 2017 13:22:20 +0200
-Message-ID: <20170730112220.15525-3-contact@paulk.fr>
-References: <20170730112220.15525-1-contact@paulk.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170730112220.15525-1-contact@paulk.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Russell King <linux@armlinux.org.uk>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Paul Kocialkowski <contact@paulk.fr>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Basic questions
+Date: Sun, 30 Jul 2017 16:24:29 +0200
+Message-ID: <4b177673-e96e-a7b9-7597-092b637ac52f@ladisch.de>
+References: <97e15f1e-2bd6-9eb8-45a8-4cfbd862ede9@t-online.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id A70D9266C9B
+ for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:24:49 +0200 (CEST)
+In-Reply-To: <97e15f1e-2bd6-9eb8-45a8-4cfbd862ede9@t-online.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tsepp2001@t-online.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This selects both the Tegra20 and Tegra30 I2S interfaces (that were
-previously auto-selected by Kconfig but are not anymore) to
-multi_v7_defconfig, as modules.
+tsepp2001@t-online.de wrote:
+> Am I right to use async mode
 
-Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
----
- arch/arm/configs/multi_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+No.  It is not supported by all devices, and almost impossible to use
+correctly.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 4d19c1b4b8e7..626cecdada61 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -653,6 +653,8 @@ CONFIG_SND_SOC_RCAR=m
- CONFIG_SND_SOC_RSRC_CARD=m
- CONFIG_SND_SUN4I_CODEC=m
- CONFIG_SND_SOC_TEGRA=m
-+CONFIG_SND_SOC_TEGRA20_I2S=m
-+CONFIG_SND_SOC_TEGRA30_I2S=m
- CONFIG_SND_SOC_TEGRA_RT5640=m
- CONFIG_SND_SOC_TEGRA_WM8753=m
- CONFIG_SND_SOC_TEGRA_WM8903=m
--- 
-2.13.3
+> to get lowest latency times
+
+Latency depends on the buffer size, and how fast your code can react to
+the notification that some space is available.
+
+> and using pause/play/stop?
+
+You probably want to use non-blocking mode.
+
+
+Regards,
+Clemens
