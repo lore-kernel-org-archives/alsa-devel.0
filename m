@@ -1,17 +1,21 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Basic questions
-Date: Sun, 30 Jul 2017 16:24:29 +0200
-Message-ID: <4b177673-e96e-a7b9-7597-092b637ac52f@ladisch.de>
-References: <97e15f1e-2bd6-9eb8-45a8-4cfbd862ede9@t-online.de>
+Subject: Re: Gina 3g and Echomixer issue
+Date: Sun, 30 Jul 2017 16:32:21 +0200
+Message-ID: <0c17fe9f-a231-10fe-3a92-d0279c40246d@ladisch.de>
+References: <1501304297.1407.0@smtp.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webclient5.webclient5.de (webclient5.webclient5.de
  [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id A70D9266C9B
- for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:24:49 +0200 (CEST)
-In-Reply-To: <97e15f1e-2bd6-9eb8-45a8-4cfbd862ede9@t-online.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 495F1266C9B
+ for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:32:41 +0200 (CEST)
+Received: from [192.168.42.63] (tmo-096-125.customers.d1-online.com
+ [80.187.96.125])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 9EE2E5582665
+ for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:32:40 +0200 (CEST)
+In-Reply-To: <1501304297.1407.0@smtp.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,23 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tsepp2001@t-online.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-tsepp2001@t-online.de wrote:
-> Am I right to use async mode
+Britt Yazel wrote:
+> each time I reboot the system the digital mode is set to Coaxial
+> digital, rather than ADAT, and I must set it after each reboot. Is
+> there a way to make this setting persist through reboot, or perhaps
+> a parameter that can be set when the kernel module is loaded to force
+> ADAT?
 
-No.  It is not supported by all devices, and almost impossible to use
-correctly.
+In theory, all mixer controls can be saved over reboots.  (Some boot
+script should call "alsactl store"/"alsactl restore").  Does this happen
+for other controls?
 
-> to get lowest latency times
+As a last resort, you could change that control separately:
 
-Latency depends on the buffer size, and how fast your code can react to
-the notification that some space is available.
-
-> and using pause/play/stop?
-
-You probably want to use non-blocking mode.
+  amixer set "Digital mode Switch" "ADAT Optical"
 
 
 Regards,
