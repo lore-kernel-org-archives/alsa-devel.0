@@ -1,21 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Gina 3g and Echomixer issue
-Date: Sun, 30 Jul 2017 16:32:21 +0200
-Message-ID: <0c17fe9f-a231-10fe-3a92-d0279c40246d@ladisch.de>
-References: <1501304297.1407.0@smtp.gmail.com>
+Subject: Re: snd_ctl_add_enumerated_elem_set and TLV
+Date: Sun, 30 Jul 2017 16:49:22 +0200
+Message-ID: <78debac2-b00f-706d-8beb-497f9ceb02d2@ladisch.de>
+References: <9eb2ccd3-9574-26fc-cb5b-6defcc59578f@iot.bzh>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webclient5.webclient5.de (webclient5.webclient5.de
  [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 495F1266C9B
- for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:32:41 +0200 (CEST)
-Received: from [192.168.42.63] (tmo-096-125.customers.d1-online.com
- [80.187.96.125])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 9EE2E5582665
- for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:32:40 +0200 (CEST)
-In-Reply-To: <1501304297.1407.0@smtp.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CED79266C9B
+ for <alsa-devel@alsa-project.org>; Sun, 30 Jul 2017 16:49:43 +0200 (CEST)
+In-Reply-To: <9eb2ccd3-9574-26fc-cb5b-6defcc59578f@iot.bzh>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,23 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Fulup Ar Foll <fulup.arfoll@iot.bzh>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Britt Yazel wrote:
-> each time I reboot the system the digital mode is set to Coaxial
-> digital, rather than ADAT, and I must set it after each reboot. Is
-> there a way to make this setting persist through reboot, or perhaps
-> a parameter that can be set when the kernel module is loaded to force
-> ADAT?
+Fulup Ar Foll wrote:
+> I'm using snd_ctl_add_enumerated_elem_set to create user controls, I
+> do not understand why it set "TLV readable" option at true by default.
 
-In theory, all mixer controls can be saved over reboots.  (Some boot
-script should call "alsactl store"/"alsactl restore").  Does this happen
-for other controls?
+As far as I can see, the library API has no mechanism to set or clear
+this access right, so it's set by default to allow TLVs for controls
+where it makes sense.
 
-As a last resort, you could change that control separately:
+(In theory, the code could be changed to clear the readable flag when
+there is no TLV.)
 
-  amixer set "Digital mode Switch" "ADAT Optical"
+> I have a simple enumeration without TLV. I use snd_ctl_elem_write but
+> do not call snd_ctl_elem_tlv_write. I do no understand how to prevent
+> snd_ctl_elem_info_is_tlv_readable to return true for this control,
+
+This is not possible at the moment.
+
+> obviously even if TLV is set as readable, it is empty and reading fail.
+
+You'll have to write a fake TLV (an empty container).
 
 
 Regards,
