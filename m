@@ -1,56 +1,39 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: codecs: fix wm8524 build error
-Date: Mon, 31 Jul 2017 18:05:46 +0200
-Message-ID: <20170731160713.3732735-1-arnd@arndb.de>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v2 0/2] ASoC: hdmi-codec: Allow driver to restrict sample size
+Date: Tue,  1 Aug 2017 00:49:42 +0200
+Message-ID: <20170731224944.9986-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 91CD5266FD2
- for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2017 18:07:26 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mihai Serban <mihai.serban@nxp.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, patches@opensource.cirrus.com, Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-When CONFIG_OF is disabled, we run into a build error:
-
-sound/soc/codecs/wm8524.c:257:21: error: 'wm8524_of_match' undeclared here (not in a function); did you mean 'wm8524_dai'?
-
-This removes the unnecessary #ifdef around the match table.
-
-Fixes: 007b6a54c305 ("ASoC: codecs: add wm8524 codec driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/codecs/wm8524.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8524.c b/sound/soc/codecs/wm8524.c
-index f42ec664877c..e22b76d64e32 100644
---- a/sound/soc/codecs/wm8524.c
-+++ b/sound/soc/codecs/wm8524.c
-@@ -206,13 +206,11 @@ static const struct snd_soc_codec_driver soc_codec_dev_wm8524 = {
- 	},
- };
- 
--#ifdef CONFIG_OF
- static const struct of_device_id wm8524_of_match[] = {
- 	{ .compatible = "wlf,wm8524" },
- 	{ /* sentinel*/ }
- };
- MODULE_DEVICE_TABLE(of, wm8524_of_match);
--#endif
- 
- static int wm8524_codec_probe(struct platform_device *pdev)
- {
--- 
-2.9.0
+RnJvbTogU3Jpbml2YXMgS2FuZGFnYXRsYSA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3Jn
+PgoKVGhpcyBwYXRjaCBhZGRzIG9wdGlvbiB0byBhbGxvdyBoZG1pLWNvZGVjIGRyaXZlcnMgdG8g
+cmVzdHJpY3QKdGhlIGF1ZGlvIHNhbXBsZSBzaXplIGJhc2VkIG9uIHRoZSB2YWx1ZXMgdGhhdCBh
+cmUgc3VwcG9yZWQgaW4gaGFyZHdhcmUuCgpGaXJzdCBwYXRjaCBpcyBhZGRpbmcgdGhhdCBmb3Jt
+YXRzIG9wdGlvbiB0byBoZG1pX2NvZGVjX3BkYXRhIGFuZApzZWNvbmQgcGF0Y2ggaXMgYSBmaXgg
+aW4gYWR2NzUxMSBjb2RlYyBkcml2ZXIgd2hpY2ggb25seSBzdXBwb3J0cwoxNiBhbmQgMjQgYml0
+IHNhbXBsZXMuIAoKQ2hhbmdlcyBzaW5jZSB2MToKCS0gQWRkZWQgUmV2aWV3IGJ5IEp5cmkKCS0g
+VXBkYXRlZCBjb21tZW50IGluIGNvZGUgc3VnZ2VzdGVkIGJ5IEp5cmkKClNyaW5pdmFzIEthbmRh
+Z2F0bGEgKDIpOgogIEFTb0M6IGhkbWktY29kZWM6IEFsbG93IGRyaXZlcnMgdG8gcmVzdHJpY3Qg
+c2FtcGxlIHNpemVzLgogIGRybS9icmlkZ2U6IGFkdjc1MTE6IHJlc3RyaWN0IGF1ZGlvIHNhbXBs
+ZSBzaXplcwoKIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2UvYWR2NzUxMS9hZHY3NTExX2F1ZGlvLmMg
+fCAyICsrCiBpbmNsdWRlL3NvdW5kL2hkbWktY29kZWMuaCAgICAgICAgICAgICAgICAgICAgIHwg
+MSArCiBzb3VuZC9zb2MvY29kZWNzL2hkbWktY29kZWMuYyAgICAgICAgICAgICAgICAgIHwgOCAr
+KysrKy0tLQogMyBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
+CgotLSAKMi4xMS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2
+ZWwK
