@@ -1,64 +1,61 @@
-From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 1/3] sound: ASoC: tegra: Remove SoC-specific Kconfig
- depends and selects
-Date: Mon, 31 Jul 2017 12:23:09 +0200
-Message-ID: <20170731102309.GE26667@ulmo>
-References: <20170730112220.15525-1-contact@paulk.fr>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v1 4/6] ASoC: codecs: msm8916-wcd-analog:
+ set default micbias voltage to 1.8
+Date: Mon, 31 Jul 2017 11:27:23 +0100
+Message-ID: <60dca225-d9d2-8570-2779-cf55bf605b87@linaro.org>
+References: <20170726003512.18965-1-srinivas.kandagatla@linaro.org>
+ <20170726003512.18965-5-srinivas.kandagatla@linaro.org>
+ <20170728134038.y5wnrurmwn4bxxsh@sirena.org.uk>
+ <94765031-d840-bcae-11e3-16e1e55a7aa7@linaro.org>
+ <20170728140108.ds5x4irfep4ss3lv@sirena.org.uk>
+ <0f96d65a-f7d9-0139-e0c4-49069e717f34@linaro.org>
+ <20170731100705.lbnodjfgnwxwhqyt@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pY3vCvL1qV+PayAL"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170730112220.15525-1-contact-W9ppeneeCTY@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Paul Kocialkowski <contact-W9ppeneeCTY@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Jonathan Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42086266A51
+ for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2017 12:27:24 +0200 (CEST)
+Received: by mail-wm0-f48.google.com with SMTP id m85so71451669wma.0
+ for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2017 03:27:24 -0700 (PDT)
+In-Reply-To: <20170731100705.lbnodjfgnwxwhqyt@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---pY3vCvL1qV+PayAL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 30, 2017 at 01:22:18PM +0200, Paul Kocialkowski wrote:
-> This removes the SoC-specific dependencies on the platform drivers,
-> as well as SoC-specific selections of platform drivers for the
-> machine drivers. The rationale behind this change is that the
-> dependencies are not actual build dependencies but run-time ones.
->=20
-> The previously listed SoCs were also incomplete: for instance, tegra124
-> uses the tegra30 platform drivers, which could not be built without
-> ARCH_TEGRA_3x_SOC set.
->=20
-> Descriptions of the tristates are also added to allow these options
-> to be set via defconfig/menuconfig.
->=20
-> Signed-off-by: Paul Kocialkowski <contact-W9ppeneeCTY@public.gmane.org>
-> ---
->  sound/soc/tegra/Kconfig | 42 ++++++++++++++----------------------------
->  1 file changed, 14 insertions(+), 28 deletions(-)
+On 31/07/17 11:07, Mark Brown wrote:
+> On Fri, Jul 28, 2017 at 03:45:08PM +0100, Srinivas Kandagatla wrote:
+>> On 28/07/17 15:01, Mark Brown wrote:
+>>> On Fri, Jul 28, 2017 at 02:54:59PM +0100, Srinivas Kandagatla wrote:
+> 
+>>>> This was set to 2.7v previously for special headsets which have high
+>>>> impedance.
+> 
+>>> So obviously this will break existing users.  That's not OK.
+> 
+>> This would not break any exiting users, as this part is applicable for only
+>> headset detect usecase. I will try to address this in ("PATCH 5/6 ASoC:
+>> codecs: msm8916-wcd-analog: add MBHC support") patch.
+> 
+>> The default voltage for most common usecase should be set to 1.8v anyway.
+> 
+> Just leave it at the hardware default like we do for everything else in
+> ASoC.
+Yep, makes sense, the hw default is at 1.8v.
 
-Acked-by: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-
---pY3vCvL1qV+PayAL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAll/BQ0ACgkQ3SOs138+
-s6Hgng//baRSeMP4UDCFD6q4KZtj5Yg0pm+LK5Dq0R3s9y4plbZDCoI+I/1qpEJI
-b1V3SwHI9PdQXuEb8TQ29xpskM8BoEqzmmNtBxCsn5iJf4myWZu5oN3CjJfTjhwA
-IYUe4KQzUb2dVkXpcxrrQk+ULoixFzVhJvOUnILOqNvnEaFiXutLOPl+SVe6Zilu
-FPiXQd/JV5tRzmJTGrTIlmiYnI8M6Dg4NP0XwIXCBwkPTn2udih9bciiNgCfjads
-AJyk+yI2PKXZ1NXVo4nzTVOhAOnKUeYrUTxGD8TXujxvx1Xcx2jptp1bG7s6MNGx
-F1bH/Wj/LqjyYdiMBtomvTgUkeDz1GbasnWzTvRSxXGHFeXJQLgmINoeXRoMyNRD
-mdqSz1eZ2SuYhhzcZSTKlJG+dymcmPbm0mGz+ojHIwzkDPYvUSVclMZTG+TtwS8k
-oKb1UKgoTrBvZqS899jaqXGAmTmPvikoRVvVcVnM71F+wd9C/JLMp4GPvrqDkKl7
-Y5xSlavBWfuJ1rc7Ll219+2pIsGkT4UKOtO0XFyoBcqDeSZ3eQKe/zj38sjtuyw6
-7TPHcOMkYUIRuXWYybgGPLS+rY/4dUTyCWnkjtAveEy4S+A3V9g43cPUKAsvJ1WQ
-IMRngs6NKq7OBEM8LAcaxZgfwFXJnPQ7H+0h2lbPHUB/xGBiCug=
-=uYBZ
------END PGP SIGNATURE-----
-
---pY3vCvL1qV+PayAL--
+thanks,
+srini
+> 
