@@ -1,61 +1,40 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v1 4/6] ASoC: codecs: msm8916-wcd-analog:
- set default micbias voltage to 1.8
-Date: Mon, 31 Jul 2017 11:27:23 +0100
-Message-ID: <60dca225-d9d2-8570-2779-cf55bf605b87@linaro.org>
-References: <20170726003512.18965-1-srinivas.kandagatla@linaro.org>
- <20170726003512.18965-5-srinivas.kandagatla@linaro.org>
- <20170728134038.y5wnrurmwn4bxxsh@sirena.org.uk>
- <94765031-d840-bcae-11e3-16e1e55a7aa7@linaro.org>
- <20170728140108.ds5x4irfep4ss3lv@sirena.org.uk>
- <0f96d65a-f7d9-0139-e0c4-49069e717f34@linaro.org>
- <20170731100705.lbnodjfgnwxwhqyt@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 42086266A51
- for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2017 12:27:24 +0200 (CEST)
-Received: by mail-wm0-f48.google.com with SMTP id m85so71451669wma.0
- for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2017 03:27:24 -0700 (PDT)
-In-Reply-To: <20170731100705.lbnodjfgnwxwhqyt@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+From: Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v2] ASoC: Intel: Reset hw_ptr on resume trigger
+Date: Mon, 31 Jul 2017 18:47:34 +0800
+Message-ID: <20170731104734.5776-1-cychiang@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "U . Artie Eoff" <ullysses.a.eoff@intel.com>, Cheng-Yi Chiang <cychiang@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+From: "U. Artie Eoff" <ullysses.a.eoff@intel.com>
 
+Reset the hw_ptr before queuing the restore_stream_context
+work to eradicate a nasty white audio noise on resume.
 
-On 31/07/17 11:07, Mark Brown wrote:
-> On Fri, Jul 28, 2017 at 03:45:08PM +0100, Srinivas Kandagatla wrote:
->> On 28/07/17 15:01, Mark Brown wrote:
->>> On Fri, Jul 28, 2017 at 02:54:59PM +0100, Srinivas Kandagatla wrote:
-> 
->>>> This was set to 2.7v previously for special headsets which have high
->>>> impedance.
-> 
->>> So obviously this will break existing users.  That's not OK.
-> 
->> This would not break any exiting users, as this part is applicable for only
->> headset detect usecase. I will try to address this in ("PATCH 5/6 ASoC:
->> codecs: msm8916-wcd-analog: add MBHC support") patch.
-> 
->> The default voltage for most common usecase should be set to 1.8v anyway.
-> 
-> Just leave it at the hardware default like we do for everything else in
-> ASoC.
-Yep, makes sense, the hw default is at 1.8v.
+Tested-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-thanks,
-srini
-> 
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 4765ad474544..e0db7070cd42 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -187,8 +187,10 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		sst_byt_stream_start(byt, pcm_data->stream, 0);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		if (pdata->restore_stream == true)
++		if (pdata->restore_stream == true) {
++			pcm_data->hw_ptr = 0;
+ 			schedule_work(&pcm_data->work);
++		}
+ 		else
+ 			sst_byt_stream_resume(byt, pcm_data->stream);
+ 		break;
+-- 
+2.12.2
