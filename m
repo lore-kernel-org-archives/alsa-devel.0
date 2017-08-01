@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Extend quirks scope" to the asoc tree
-Date: Tue, 01 Aug 2017 15:16:33 +0100
-Message-ID: <E1dcXyL-0008Lz-2M@debutante>
-References: <20170729141753.20174-2-codekipper@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170729141753.20174-2-codekipper@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marcus Cooper <codekipper@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.combroonie@kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5514: Add the sanity checks of the
+	buffer related address" to the asoc tree
+Date: Tue, 01 Aug 2017 15:16:28 +0100
+Message-ID: <E1dcXyG-0008Kv-NB@debutante>
+References: <1501480063-32225-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37D7126691A
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:38 +0200 (CEST)
+In-Reply-To: <1501480063-32225-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, chinyue@google.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Extend quirks scope
+   ASoC: rt5514: Add the sanity checks of the buffer related address
 
 has been applied to the asoc tree at
 
@@ -37,88 +52,40 @@ to this mail.
 Thanks,
 Mark
 
->From 47bea0c836867b6b1cdb714d58f2bfc8e2f5c386 Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Sat, 29 Jul 2017 16:17:42 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Extend quirks scope
+>From 818010dac09183e99ff02e35836544b2e1d659f3 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Mon, 31 Jul 2017 13:47:42 +0800
+Subject: [PATCH] ASoC: rt5514: Add the sanity checks of the buffer related
+ address
 
-In preparation for the changes required to support newer SoCs then
-quirks has been moved and also added to the device structure.
+The patch add the sanity checks of the buffer related address to make sure
+the addresses are valid.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 62b307b0c846..d7ee7a443e4e 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -90,6 +90,15 @@
- #define SUN4I_I2S_RX_CHAN_SEL_REG	0x38
- #define SUN4I_I2S_RX_CHAN_MAP_REG	0x3c
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 950d1ffdc06c..6f513cc4c56c 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -173,9 +173,14 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
+ 	rt5514_dsp->buf_rp = buf[0] | buf[1] << 8 | buf[2] << 16 |
+ 				buf[3] << 24;
  
-+/**
-+ * struct sun4i_i2s_quirks - Differences between SoC variants.
-+ *
-+ * @has_reset: SoC needs reset deasserted.
-+ */
-+struct sun4i_i2s_quirks {
-+	bool				has_reset;
-+};
++	if (rt5514_dsp->buf_rp % 8)
++		rt5514_dsp->buf_rp = (rt5514_dsp->buf_rp / 8) * 8;
 +
- struct sun4i_i2s {
- 	struct clk	*bus_clk;
- 	struct clk	*mod_clk;
-@@ -100,6 +109,8 @@ struct sun4i_i2s {
+ 	rt5514_dsp->buf_size = rt5514_dsp->buf_limit - rt5514_dsp->buf_base;
  
- 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
-+
-+	const struct sun4i_i2s_quirks	*variant;
- };
+-	schedule_delayed_work(&rt5514_dsp->copy_work, 0);
++	if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
++		rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
++		schedule_delayed_work(&rt5514_dsp->copy_work, 0);
  
- struct sun4i_i2s_clk_div {
-@@ -654,10 +665,6 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
- 	return 0;
+ 	return IRQ_HANDLED;
  }
- 
--struct sun4i_i2s_quirks {
--	bool has_reset;
--};
--
- static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.has_reset	= false,
- };
-@@ -669,7 +676,6 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- static int sun4i_i2s_probe(struct platform_device *pdev)
- {
- 	struct sun4i_i2s *i2s;
--	const struct sun4i_i2s_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *regs;
- 	int irq, ret;
-@@ -690,8 +696,8 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		return irq;
- 	}
- 
--	quirks = of_device_get_match_data(&pdev->dev);
--	if (!quirks) {
-+	i2s->variant = of_device_get_match_data(&pdev->dev);
-+	if (!i2s->variant) {
- 		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
- 		return -ENODEV;
- 	}
-@@ -715,7 +721,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2s->mod_clk);
- 	}
- 
--	if (quirks->has_reset) {
-+	if (i2s->variant->has_reset) {
- 		i2s->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 		if (IS_ERR(i2s->rst)) {
- 			dev_err(&pdev->dev, "Failed to get reset control\n");
 -- 
 2.13.2
