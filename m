@@ -1,25 +1,18 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 2/2] drm/bridge: adv7511: restrict audio
- sample sizes
-Date: Tue, 1 Aug 2017 13:52:35 +0100
-Message-ID: <e5506e72-9788-c65d-6467-6590174f825a@linaro.org>
-References: <20170731224944.9986-1-srinivas.kandagatla@linaro.org>
- <20170731224944.9986-3-srinivas.kandagatla@linaro.org>
- <7d700845-da72-5c40-31f9-c3faa7ca93a2@st.com>
- <ce018632-0b7a-7e34-6a3d-c191155a17ae@linaro.org>
- <20170801122840.6demhukafhtpeaby@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: rt5514: Set the pin GPIO6(IRQ)
+ to output low as default
+Date: Tue, 1 Aug 2017 14:10:31 +0100
+Message-ID: <20170801131031.xp5ub4vqvc4as5cn@sirena.org.uk>
+References: <1501480063-32225-1-git-send-email-oder_chiou@realtek.com>
+ <1501480063-32225-2-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0789932662253903633=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f177.google.com (mail-wr0-f177.google.com
- [209.85.128.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E04026691A
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 14:52:38 +0200 (CEST)
-Received: by mail-wr0-f177.google.com with SMTP id k71so6468626wrc.2
- for <alsa-devel@alsa-project.org>; Tue, 01 Aug 2017 05:52:38 -0700 (PDT)
-In-Reply-To: <20170801122840.6demhukafhtpeaby@sirena.org.uk>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0944B26691A
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 15:10:39 +0200 (CEST)
+In-Reply-To: <1501480063-32225-2-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,50 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Archit Taneja <architt@codeaurora.org>, Jyri Sarha <jsarha@ti.com>, linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>, dri-devel@lists.freedesktop.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, chinyue@google.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 01/08/17 13:28, Mark Brown wrote:
-> On Tue, Aug 01, 2017 at 01:24:03PM +0100, Srinivas Kandagatla wrote:
->> On 01/08/17 09:42, Arnaud Pouliquen wrote:
->>> On 08/01/2017 12:49 AM, srinivas.kandagatla@linaro.org wrote:
-> 
->>> I already used ADV7513 and i did not observe this limitation.
-> 
->>> I had a look to ADV7533 data-sheet. it should support 32 and 64 bits I2S
-> 
->> ADV7511_REG_AUDIO_CFG3(0x14) register definition in datasheet and the code
->> in this driver suggest that It only supports 16Bit and 24Bit samples.
-> 
-> The amount of data it pays attention to in the frame is not the same as
-> the size of the frame.
-I agree.
-
-> 
->>> format bus, with 16 or 24 bits precision sample. So it should support
->>> SNDRV_PCM_FMTBIT_S32_LE and SNDRV_PCM_FMTBIT_S32_BE
-> 
->>> As example, if you configure bus in Left justified format with 24 bits
->>> sample length, 32 bits application samples should be truncated to 24
->>> bits samples at ADV7533 I2S interface level (LSB dropped).
-> 
->> May be we can do that to make the user happy but isn't this just truncate
->> the resolution to 24Bit then?
-> 
->> And it's a false indication that we are supporting 32bit samples.
->> Which am not very happy with.
-> 
-> This is what the sample_bits field in the DAI structure is for.ya.
-But still reporting that driver supports 32 bit samples when it does not 
-really support all 32 bits, is kinda misleading to user.
-Isn't it?
-
-And the driver would be end up with hacked up code for each case.
+--===============0789932662253903633==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hzwyo23ru2npdqga"
+Content-Disposition: inline
 
 
---srini
+--hzwyo23ru2npdqga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
+On Mon, Jul 31, 2017 at 01:47:43PM +0800, Oder Chiou wrote:
+> The patch set the pin GPIO6(IRQ) to output low as default to prevent the
+> IRQ pin to trigger the IRQ function continuously in the float status.
+
+Isn't this going to be a board specific thing?  If it's a GPIO
+presumably it could have other configurations and it might cause
+problems (perhaps even damage) if it has been used for some other
+purpose.
+
+--hzwyo23ru2npdqga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAfcYACgkQJNaLcl1U
+h9BBTwf9Eu/uGAn9bpad2g5i077xrMZ4qi4XBHpBEGRUpLWJmHp0SlunEm279226
+oBh1Z9amtwLNp4mcRTHB/baJrceYQKPXDlW2GlZ1eG7iMcMDXrgPP+1Vfa/0sg5J
+t8hkB1zU9CphYNO43R+AmWL8XBA6PB20cFRyTrjhwDuD3F3vNcd+27jyCKvGJZWz
+WZNVhztVNWk0xYp87yeOYWCyZgGOWrIisDPMuBWOfafnQlrJYJxjjySy9OdaIgrG
+scUQls7jZzGw4gi0eeHUmirTAg8xI6iMSH6I3yOrLqtblE462UBnZORC4PAzffAF
+uYcl5badqyTM4QtzdPlX5HiDHmNTug==
+=+FNz
+-----END PGP SIGNATURE-----
+
+--hzwyo23ru2npdqga--
+
+--===============0789932662253903633==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0789932662253903633==--
