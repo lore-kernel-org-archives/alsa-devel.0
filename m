@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: Add the delay time to correct
-	the calibration" to the asoc tree
-Date: Tue, 01 Aug 2017 15:16:49 +0100
-Message-ID: <E1dcXyb-0008Rn-BW@debutante>
-References: <1501586042-15589-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rt5665: fix wrong register for bclk
+	ratio control" to the asoc tree
+Date: Tue, 01 Aug 2017 15:16:52 +0100
+Message-ID: <E1dcXye-0008St-HV@debutante>
+References: <1501554653-29727-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CE340267198
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:57 +0200 (CEST)
-In-Reply-To: <1501586042-15589-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BC8E267153
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:17:06 +0200 (CEST)
+In-Reply-To: <1501554653-29727-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: Add the delay time to correct the calibration
+   ASoC: rt5665: fix wrong register for bclk ratio control
 
 has been applied to the asoc tree at
 
@@ -52,30 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From c1bbaff6d7dd55314ee453df8dfe00befd7ce1b2 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Tue, 1 Aug 2017 19:14:02 +0800
-Subject: [PATCH] ASoC: rt5663: Add the delay time to correct the calibration
+>From 7e5824c93412c7fd6503e7769f8b6eb7199cd3b8 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Tue, 1 Aug 2017 10:30:53 +0800
+Subject: [PATCH] ASoC: rt5665: fix wrong register for bclk ratio control
 
-The patch adds the delay time to correct the calibration.
+The register of setting back ratio should be RT5665_ADDA_CLK_2
+instead of RT5665_ADDA_CLK_1.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5665.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 45f8a9888f7d..c1f0a72c0133 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -3058,6 +3058,7 @@ static void rt5663_calibrate(struct rt5663_priv *rt5663)
- 	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_3, 0x018c);
- 	regmap_write(rt5663->regmap, RT5663_HP_CHARGE_PUMP_1, 0x1e32);
- 	regmap_write(rt5663->regmap, RT5663_DACREF_LDO, 0x3b0b);
-+	msleep(40);
- 	regmap_write(rt5663->regmap, RT5663_STO_DAC_MIXER, 0x0000);
- 	regmap_write(rt5663->regmap, RT5663_BYPASS_STO_DAC, 0x000c);
- 	regmap_write(rt5663->regmap, RT5663_HP_BIAS, 0xafaa);
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 370ed54d1e15..e597c893536d 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4368,12 +4368,12 @@ static int rt5665_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
+ 		switch (dai->id) {
+ 		case RT5665_AIF2_1:
+ 		case RT5665_AIF2_2:
+-			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
++			snd_soc_update_bits(codec, RT5665_ADDA_CLK_2,
+ 				RT5665_I2S_BCLK_MS2_MASK,
+ 				RT5665_I2S_BCLK_MS2_64);
+ 			break;
+ 		case RT5665_AIF3:
+-			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
++			snd_soc_update_bits(codec, RT5665_ADDA_CLK_2,
+ 				RT5665_I2S_BCLK_MS3_MASK,
+ 				RT5665_I2S_BCLK_MS3_64);
+ 			break;
 -- 
 2.13.2
