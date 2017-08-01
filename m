@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxtn: Remove code loader
-	reference in cleanup" to the asoc tree
-Date: Tue, 01 Aug 2017 15:16:42 +0100
-Message-ID: <E1dcXyU-0008PK-8a@debutante>
-References: <20170728104216.26859-2-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Reset the controller in
+	probe" to the asoc tree
+Date: Tue, 01 Aug 2017 15:16:45 +0100
+Message-ID: <E1dcXyX-0008QO-Ax@debutante>
+References: <20170728104216.26859-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89B1126716A
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:51 +0200 (CEST)
-In-Reply-To: <20170728104216.26859-2-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9EC7926717C
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:54 +0200 (CEST)
+In-Reply-To: <20170728104216.26859-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dronamraju Santosh P K <santosh.pavan.kumarx.dronamraju@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxtn: Remove code loader reference in cleanup
+   ASoC: Intel: Skylake: Reset the controller in probe
 
 has been applied to the asoc tree at
 
@@ -53,38 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From 3fbbcf4dadb6c01d6411bac715a7448f96c3724c Mon Sep 17 00:00:00 2001
-From: Dronamraju Santosh P K <santosh.pavan.kumarx.dronamraju@intel.com>
-Date: Fri, 28 Jul 2017 16:12:14 +0530
-Subject: [PATCH] ASoC: Intel: bxtn: Remove code loader reference in cleanup
+>From 60767abcea3dd1d47a4bd38398e1e8c1864975eb Mon Sep 17 00:00:00 2001
+From: "guneshwor.o.singh@intel.com" <guneshwor.o.singh@intel.com>
+Date: Fri, 28 Jul 2017 16:12:13 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Reset the controller in probe
 
-Since Broxton does not use code loader DMA, remove code loader cleanup
-in its dsp cleanup routine. Remove the iounmap too as it is done in
-skl_free_dsp().
+Controller can be in reset state by default. Capability structure
+traversal requires the controller to be out of reset else it
+results in broken capability parsing. Hence make sure that controller is
+out of reset before parsing capabilities by doing a full reset.
 
-Signed-off-by: Dronamraju Santosh P K <santosh.pavan.kumarx.dronamraju@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/intel/skylake/skl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index cf11b84888b9..08a2c5eb59fa 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -629,11 +629,6 @@ void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
- 		release_firmware(ctx->dsp->fw);
- 	skl_freeup_uuid_list(ctx);
- 	skl_ipc_free(&ctx->ipc);
--	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
--
--	if (ctx->dsp->addr.lpe)
--		iounmap(ctx->dsp->addr.lpe);
--
- 	ctx->dsp->ops->free(ctx->dsp);
- }
- EXPORT_SYMBOL_GPL(bxt_sst_dsp_cleanup);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 01a2dd6518a4..b9e1310673f0 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -702,6 +702,8 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
+ 		return -ENXIO;
+ 	}
+ 
++	skl_init_chip(bus, true);
++
+ 	snd_hdac_bus_parse_capabilities(bus);
+ 
+ 	if (skl_acquire_irq(ebus, 0) < 0)
 -- 
 2.13.2
