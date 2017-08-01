@@ -1,71 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: improve RT5514 dependencies
-Date: Tue, 1 Aug 2017 15:21:17 +0100
-Message-ID: <20170801142117.oc3owynj74g5bmyi@sirena.org.uk>
-References: <20170731083217.4142512-1-arnd@arndb.de>
- <s5hh8xt0xwy.wl-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2 2/2] drm/bridge: adv7511: restrict audio
+ sample sizes
+Date: Tue, 1 Aug 2017 17:50:03 +0200
+Message-ID: <3bf60afb-d260-badd-7340-6d54a4decd62@st.com>
+References: <20170731224944.9986-1-srinivas.kandagatla@linaro.org>
+ <20170731224944.9986-3-srinivas.kandagatla@linaro.org>
+ <7d700845-da72-5c40-31f9-c3faa7ca93a2@st.com>
+ <ce018632-0b7a-7e34-6a3d-c191155a17ae@linaro.org>
+ <20170801122840.6demhukafhtpeaby@sirena.org.uk>
+ <e5506e72-9788-c65d-6467-6590174f825a@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0020928494787619397=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <s5hh8xt0xwy.wl-tiwai@suse.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Hsin-yu Chao <hychao@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-rockchip@lists.infradead.org, Harsha Priya N <harshapriya.n@intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Sugar Zhang <sugar.zhang@rock-chips.com>, Vinod Koul <vinod.koul@intel.com>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, Naveen M <naveen.m@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Xing Zheng <zhengxing@rock-chips.com>, linux-arm-kernel@lists.infradead.org, Heiko Stuebner <heiko@sntech.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F92B26691A
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 17:50:06 +0200 (CEST)
+In-Reply-To: <e5506e72-9788-c65d-6467-6590174f825a@linaro.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Airlie <airlied@linux.ie>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>, Archit Taneja <architt@codeaurora.org>, Andrzej Hajda <a.hajda@samsung.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Srinivas,
 
---===============0020928494787619397==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="c5orlciowmjagxeg"
-Content-Disposition: inline
+On 08/01/2017 02:52 PM, Srinivas Kandagatla wrote:
+>>>> As example, if you configure bus in Left justified format with 24 bits
+>>>> sample length, 32 bits application samples should be truncated to 24
+>>>> bits samples at ADV7533 I2S interface level (LSB dropped).
+>>
+>>> May be we can do that to make the user happy but isn't this just truncate
+>>> the resolution to 24Bit then?
+>>
+>>> And it's a false indication that we are supporting 32bit samples.
+>>> Which am not very happy with.
+>>
+>> This is what the sample_bits field in the DAI structure is for.ya.
+> But still reporting that driver supports 32 bit samples when it does not 
+> really support all 32 bits, is kinda misleading to user.
+> Isn't it?
+> 
+> And the driver would be end up with hacked up code for each case.
 
+By experience, this is usual. As example, if you have a look to codec
+ad193x (i take one randomly) it support 16, 20, 24 and 32 bits frames.
+But if you have a look to AD1939 data-sheet it supports 24-bits conversion.
+Some other examples could be 13-bits DAC/ADC with 16 bits samples.
 
---c5orlciowmjagxeg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In term of audio quality, truncation to a 24 bits sample should generate
+an negligible additional error equal to the LSB bit: -20log(2^24)= -144dB.
 
-On Mon, Jul 31, 2017 at 11:15:57AM +0200, Takashi Iwai wrote:
+It is just a personal opinion, but if have the choice between do
+truncation in software (application or alsa-lib) and in hardware, i
+would prefer the second one.
 
-> IMO, flipping the dependency looks saner to me.  The SPI function call
-> is a kind of add-on, after all.
-
-Yes, that's definitely the intention of the code.
-
---c5orlciowmjagxeg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAjlwACgkQJNaLcl1U
-h9A9MAf9EC43e7zsFHFItYPZoEpdPK9Sqp6Bx+EP4UGXrWc4Yzd37dNWLCPIIuar
-C5M53ZYp0Em2W1EtkxVYe3rRx2rKcjOgdMit/52DjNOrP5JwFZH8IMSpk0CNtQ5F
-G0PyPnDvBqbP4+bwIl4REu/JQE7DHJroD9VP+gB0A2nyg/MjWghEI+B9xn2mHDhr
-lLligmaL+pJ4n9/lyYL1xdtB+gqNVENNC5xpnwx1+N+18dhgtxjR6GPeEIBS0DSA
-p6geFBBQ2WDIvPp8uTZlXhvW9k8AnGXNvOfR95Nh+hMfwb9oeklW2LPNOuzTqPhf
-cdz9fsVLZh/t5GXfKdOJ4y5rKvOqgA==
-=xD2N
------END PGP SIGNATURE-----
-
---c5orlciowmjagxeg--
-
-
---===============0020928494787619397==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============0020928494787619397==--
+Regards
+arnaud
