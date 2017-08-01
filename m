@@ -1,14 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/9] ASoC: dwc: Added a quirk
- DW_I2S_QUIRK_16BIT_IDX_OVERRIDE to dwc driver
-Date: Tue, 1 Aug 2017 14:12:04 +0100
-Message-ID: <20170801131204.f5tpcnkhgkcpq7ns@sirena.org.uk>
-References: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
- <1501270294-31153-2-git-send-email-alexander.deucher@amd.com>
+Subject: Re: [alsa-devel] [PATCH v2 2/2] drm/bridge: adv7511: restrict audio
+ sample sizes
+Date: Tue, 1 Aug 2017 14:15:24 +0100
+Message-ID: <20170801131524.zv6nfyzmzal622fl@sirena.org.uk>
+References: <20170731224944.9986-1-srinivas.kandagatla@linaro.org>
+ <20170731224944.9986-3-srinivas.kandagatla@linaro.org>
+ <7d700845-da72-5c40-31f9-c3faa7ca93a2@st.com>
+ <ce018632-0b7a-7e34-6a3d-c191155a17ae@linaro.org>
+ <20170801122840.6demhukafhtpeaby@sirena.org.uk>
+ <e5506e72-9788-c65d-6467-6590174f825a@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1533441985=="
+Content-Type: multipart/mixed; boundary="===============0275480058=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1501270294-31153-2-git-send-email-alexander.deucher@amd.com>
+In-Reply-To: <e5506e72-9788-c65d-6467-6590174f825a@linaro.org>
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -18,47 +22,53 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, amd-gfx@lists.freedesktop.org, rajeevkumar.linux@gmail.com, dri-devel@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jyri Sarha <jsarha@ti.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1533441985==
+--===============0275480058==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n6cpcqa765mrnyvo"
+	protocol="application/pgp-signature"; boundary="mowmg6wnhl5skm5u"
 Content-Disposition: inline
 
 
---n6cpcqa765mrnyvo
+--mowmg6wnhl5skm5u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 28, 2017 at 03:31:26PM -0400, Alex Deucher wrote:
+On Tue, Aug 01, 2017 at 01:52:35PM +0100, Srinivas Kandagatla wrote:
+> On 01/08/17 13:28, Mark Brown wrote:
 
-> This patch is already applied to the audio tree, I'm just
-> including it here for completeness since it's not yet in
-> the drm tree.
+> > > And it's a false indication that we are supporting 32bit samples.
+> > > Which am not very happy with.
 
-It's in mainline, please don't resubmit already applied patches.
+> > This is what the sample_bits field in the DAI structure is for.ya.
 
---n6cpcqa765mrnyvo
+> But still reporting that driver supports 32 bit samples when it does not
+> really support all 32 bits, is kinda misleading to user.
+> Isn't it?
+
+No.  Please read what I wrote and look at what setting sample_bits does.
+
+--mowmg6wnhl5skm5u
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAfiMACgkQJNaLcl1U
-h9B8wgf+Ju27WKGJqvBv4r6f+uAeZ7/8ttMvxrlhsRPCLBw33YHStCpEQpAXCkBJ
-XQfxGmMeijvOK4BOMES7rqzKpBHGfFEOzqAQ1niqB6izi2wV2wd64x1CqC0OmnP2
-Ap3iq9ZylrJCxxmHuKcarpWBtZkxZtrwWTxs1T4Iip/VdKhlkuddNQEbdtjCAoPw
-1PoWvfX9N0AsnbIQZrRm1SAdi4E7CIYVO9bk8hCb4KfnOJoJOZT88FND8R4UIx4j
-f7onjlrXips9OvBtI9BfKZ4MQ3k3FlIXleJeycR1enHLOhSQRfJBzaw+NmI2LVge
-E1epDVJzH3vS1mbFoVqS5VxuM8cFZA==
-=d4bH
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAfusACgkQJNaLcl1U
+h9DrbAf/WNzRY28s68n77qwy6ZY3i5YFS9P7GtMjnk2ZbPJLeBUrrOPeJckyiGuJ
+8MkQbR4Pk/FUMjdraBaqEBKL8PH++lZQkt4RlaDAmEpx3cWwoULZo+TJgtEqYgYq
+pbw7khSTlF45VUMPe8bciq8w0m0k3W9GFqM3QOpk8crbe3LbFuOlR2KGPBExLKFD
+GB2NPrXk7TjUg385E/uC3a1p87LvUBn7IYWR9WWkNhYfRLewzf1ckbnoK8Ia0LDr
+qvT6j6cdxOuVuwbleyC6jA0kGcUzZHxUqS89ZzQRH8f1nchL7SUB1G36BA0E1mZF
+d9RqpXGzw+UmvmUZttT9Mls1/PqFcg==
+=4VO9
 -----END PGP SIGNATURE-----
 
---n6cpcqa765mrnyvo--
+--mowmg6wnhl5skm5u--
 
---===============1533441985==
+--===============0275480058==
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: base64
@@ -68,4 +78,4 @@ X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
 IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
 dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============1533441985==--
+--===============0275480058==--
