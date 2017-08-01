@@ -1,19 +1,19 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: Question about soc_bind_dai_link()
-Date: Tue, 1 Aug 2017 08:33:15 +0000
-Message-ID: <1501576394.5647.21.camel@nxp.com>
-References: <87k22nyelk.wl%kuninori.morimoto.gx@renesas.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2 2/2] drm/bridge: adv7511: restrict audio
+ sample sizes
+Date: Tue, 1 Aug 2017 10:42:57 +0200
+Message-ID: <7d700845-da72-5c40-31f9-c3faa7ca93a2@st.com>
+References: <20170731224944.9986-1-srinivas.kandagatla@linaro.org>
+ <20170731224944.9986-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-VE1-obe.outbound.protection.outlook.com
- (mail-eopbgr20089.outbound.protection.outlook.com [40.107.2.89])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DA9D266847
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 10:33:16 +0200 (CEST)
-In-Reply-To: <87k22nyelk.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id CA2E0266847
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 10:43:01 +0200 (CEST)
+In-Reply-To: <20170731224944.9986-3-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
-Content-ID: <6A3E32F49C17A54394F2B944D1C2DF19@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lars@metafoo.de" <lars@metafoo.de>, "broonie@kernel.org" <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: srinivas.kandagatla@linaro.org, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Archit Taneja <architt@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, David Airlie <airlied@linux.ie>, Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTWEsIDIwMTctMDgtMDEgYXQgMDY6NDcgKzAwMDAsIEt1bmlub3JpIE1vcmltb3RvIHdyb3Rl
-Og0KPiBIaSBBTFNBIE1MDQo+IA0KPiBJIG5vdGljZWQgYSBsaXR0bGUgYml0IHN0cmFuZ2Ugb3Bl
-cmF0aW9uIG9uIHNvY19iaW5kX2RhaV9saW5rKCkuDQo+IFRvIHJlc2VhcmNoIHBsYXRmb3JtLCBp
-dCBpcyB1c2luZyBsaXN0X2Zvcl9lYWNoX2VudHJ5KCkuDQo+IEFmdGVyIGZpbmRpbmcgcGxhdGZv
-cm0sIGl0IHNldHMgcnRkLT5wbGF0Zm9ybSwgYnV0IGl0IGRvZXNuJ3QgdXNlICJicmVhayIuDQo+
-IFRoaXMgbWVhbnMsIHJ0ZC0+cGxhdGZvcm0gbWlnaHQgYmUgb3Zlcndyb3RlLg0KPiBJcyB0aGlz
-IG9uIHB1cnBvc2UgPyBvciBidWcgPw0KPiANCj4gc3RhdGljIGludCBzb2NfYmluZF9kYWlfbGlu
-ayhzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJkLA0KPiAJc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsg
-KmRhaV9saW5rKQ0KPiB7DQo+IAkuLi4NCj4gCS8qIGZpbmQgb25lIGZyb20gdGhlIHNldCBvZiBy
-ZWdpc3RlcmVkIHBsYXRmb3JtcyAqLw0KPiAJbGlzdF9mb3JfZWFjaF9lbnRyeShwbGF0Zm9ybSwg
-JnBsYXRmb3JtX2xpc3QsIGxpc3QpIHsNCj4gCQlwbGF0Zm9ybV9vZl9ub2RlID0gcGxhdGZvcm0t
-PmRldi0+b2Zfbm9kZTsNCj4gCQlpZiAoIXBsYXRmb3JtX29mX25vZGUgJiYgcGxhdGZvcm0tPmRl
-di0+cGFyZW50LT5vZl9ub2RlKQ0KPiAJCQlwbGF0Zm9ybV9vZl9ub2RlID0gcGxhdGZvcm0tPmRl
-di0+cGFyZW50LT5vZl9ub2RlOw0KPiANCj4gCQlpZiAoZGFpX2xpbmstPnBsYXRmb3JtX29mX25v
-ZGUpIHsNCj4gCQkJaWYgKHBsYXRmb3JtX29mX25vZGUgIT0gZGFpX2xpbmstPnBsYXRmb3JtX29m
-X25vZGUpDQo+IAkJCQljb250aW51ZTsNCj4gCQl9IGVsc2Ugew0KPiAJCQlpZiAoc3RyY21wKHBs
-YXRmb3JtLT5jb21wb25lbnQubmFtZSwgcGxhdGZvcm1fbmFtZSkpDQo+IAkJCQljb250aW51ZTsN
-Cj4gCQl9DQo+IA0KPiA9PgkJcnRkLT5wbGF0Zm9ybSA9IHBsYXRmb3JtOw0KPsKgDQoNClRoaXMg
-aXNuJ3QgYWN0dWFsbHkgYSBidWcgYmVjYXVzZSB5b3UgcmVhY2ggaGVyZSBvbmx5IGlmIHRoZQ0K
-Z2l2ZW4gcGxhdGZvcm0gaXMgZm91bmQuDQoNCkFueWhvdywgaW4gdGhlIHBhc3QgdGhlIHVzZWQg
-dG8gYmUgYSBnb3RvIGhlcmUuIFRoaW5ncyBoYXZlIGNoYW5nZWQgd2l0aA0KDQpjb21taXQgYjE5
-ZTZlN2I3NjNjNzE0NGJmZTJjZWNjZjk4OGI2NGQ2NmQ2ZGQwYQ0KQXV0aG9yOiBNYXJrIEJyb3du
-IDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4NCkRhdGU6wqDCoMKgV2VkIE1h
-ciAxNCAyMToxODozOSAyMDEyICswMDAwDQoNCsKgwqDCoMKgQVNvQzogY29yZTogVXNlIGRyaXZl
-ciBjb3JlIHByb2JlIGRlZmVycmFsDQoNCnRoYW5rcywNCkRhbmllbC4KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello Srinivas,
+
+On 08/01/2017 12:49 AM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> 
+> ADV7533 only supports audio samples word width from 16-24 bits.
+> This patch restricts the audio sample sizes to the supported ones,
+> so that sound card does not report wrong list of supported hwparms.
+> 
+> Without this patch aplay would fail when playing a 32 bit audio.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+> index 67469c26bae8..d01d0aa0eef7 100644
+> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+> @@ -214,6 +214,8 @@ static struct hdmi_codec_pdata codec_data = {
+>  	.ops = &adv7511_codec_ops,
+>  	.max_i2s_channels = 2,
+>  	.i2s = 1,
+> +	.formats = (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
+> +		    SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE),
+>  };
+
+I'm not sure that this limitation is needed.
+I already used ADV7513 and i did not observe this limitation.
+
+I had a look to ADV7533 data-sheet. it should support 32 and 64 bits I2S
+format bus, with 16 or 24 bits precision sample. So it should support
+SNDRV_PCM_FMTBIT_S32_LE and SNDRV_PCM_FMTBIT_S32_BE
+
+As example, if you configure bus in Left justified format with 24 bits
+sample length, 32 bits application samples should be truncated to 24
+bits samples at ADV7533 I2S interface level (LSB dropped).
+
+Perhaps i missed something... but look like more an I2S bus
+configuration issue in your DT card description, that that a miss in the
+drivers.
+
+Regards
+Arnaud
+>  
+>  int adv7511_audio_init(struct device *dev, struct adv7511 *adv7511)
+> 
