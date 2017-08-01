@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix potential null
-	pointer dereference" to the asoc tree
-Date: Tue, 01 Aug 2017 15:16:36 +0100
-Message-ID: <E1dcXyO-0008My-2A@debutante>
-References: <20170728104216.26859-4-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: bxtn: Remove code loader
+	reference in cleanup" to the asoc tree
+Date: Tue, 01 Aug 2017 15:16:42 +0100
+Message-ID: <E1dcXyU-0008PK-8a@debutante>
+References: <20170728104216.26859-2-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 45912267168
+ by alsa0.perex.cz (Postfix) with ESMTP id 89B1126716A
  for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:51 +0200 (CEST)
-In-Reply-To: <20170728104216.26859-4-guneshwor.o.singh@intel.com>
+In-Reply-To: <20170728104216.26859-2-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Dronamraju Santosh P K <santosh.pavan.kumarx.dronamraju@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix potential null pointer dereference
+   ASoC: Intel: bxtn: Remove code loader reference in cleanup
 
 has been applied to the asoc tree at
 
@@ -52,33 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 10a5439f0e4db0b1c4c2a2f6c916d6501cfeae50 Mon Sep 17 00:00:00 2001
-From: "guneshwor.o.singh@intel.com" <guneshwor.o.singh@intel.com>
-Date: Fri, 28 Jul 2017 16:12:16 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix potential null pointer dereference
+>From 3fbbcf4dadb6c01d6411bac715a7448f96c3724c Mon Sep 17 00:00:00 2001
+From: Dronamraju Santosh P K <santosh.pavan.kumarx.dronamraju@intel.com>
+Date: Fri, 28 Jul 2017 16:12:14 +0530
+Subject: [PATCH] ASoC: Intel: bxtn: Remove code loader reference in cleanup
 
-Check if the next sink is not null to avoid potential null pointer
-dereference in skl_tplg_bind_sinks().
+Since Broxton does not use code loader DMA, remove code loader cleanup
+in its dsp cleanup routine. Remove the iounmap too as it is done in
+skl_free_dsp().
 
+Signed-off-by: Dronamraju Santosh P K <santosh.pavan.kumarx.dronamraju@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/bxt-sst.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 68c3f121efc3..8c3ce08f366d 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -925,7 +925,7 @@ static int skl_tplg_bind_sinks(struct snd_soc_dapm_widget *w,
- 		}
- 	}
- 
--	if (!sink)
-+	if (!sink && next_sink)
- 		return skl_tplg_bind_sinks(next_sink, skl, src_w, src_mconfig);
- 
- 	return 0;
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index cf11b84888b9..08a2c5eb59fa 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -629,11 +629,6 @@ void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ 		release_firmware(ctx->dsp->fw);
+ 	skl_freeup_uuid_list(ctx);
+ 	skl_ipc_free(&ctx->ipc);
+-	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
+-
+-	if (ctx->dsp->addr.lpe)
+-		iounmap(ctx->dsp->addr.lpe);
+-
+ 	ctx->dsp->ops->free(ctx->dsp);
+ }
+ EXPORT_SYMBOL_GPL(bxt_sst_dsp_cleanup);
 -- 
 2.13.2
