@@ -1,80 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Question about soc_bind_dai_link()
-Date: Tue, 1 Aug 2017 14:27:59 +0100
-Message-ID: <20170801132759.avulrza2s3wmucyx@sirena.org.uk>
-References: <87k22nyelk.wl%kuninori.morimoto.gx@renesas.com>
- <1501576394.5647.21.camel@nxp.com>
- <87bmnzy92z.wl%kuninori.morimoto.gx@renesas.com>
- <1501577664.5647.25.camel@nxp.com>
- <878tj3y6p1.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] device property: Fix usecount for
+ of_graph_get_port_parent()
+Date: Tue, 1 Aug 2017 15:15:08 +0100
+Message-ID: <20170801141508.l5dfu3bcimt5r5hc@sirena.org.uk>
+References: <20170727094405.19778-1-tony@atomide.com>
+ <CAL_JsqJ9Xmbws8gBRCxn2Nt=tj1HLnF-MGvnW+oOourvgbm9Nw@mail.gmail.com>
+ <20170728060127.GH10026@atomide.com>
+ <20170728082315.GL10026@atomide.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2892097927821884247=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E818026691A
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 15:28:11 +0200 (CEST)
-In-Reply-To: <878tj3y6p1.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="w3xb5inf3godddqn"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170728082315.GL10026@atomide.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Grant Likely <grant.likely@linaro.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-omap <linux-omap@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2892097927821884247==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="dxkj7be2hhrno4oo"
-Content-Disposition: inline
-
-
---dxkj7be2hhrno4oo
+--w3xb5inf3godddqn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 01, 2017 at 09:38:34AM +0000, Kuninori Morimoto wrote:
+On Fri, Jul 28, 2017 at 01:23:15AM -0700, Tony Lindgren wrote:
+> * Tony Lindgren <tony@atomide.com> [170727 23:02]:
+> > * Rob Herring <robh+dt@kernel.org> [170727 15:19]:
+> > > On Thu, Jul 27, 2017 at 4:44 AM, Tony Lindgren <tony@atomide.com> wro=
+te:
+> > > > --- a/drivers/of/property.c
+> > > > +++ b/drivers/of/property.c
+> > > > @@ -708,6 +708,15 @@ struct device_node *of_graph_get_port_parent(s=
+truct device_node *node)
+> > > >  {
+> Found few more things to fix with git grep -C20 of_graph_get_port_parent,
+> below is v2.
+>=20
+> Can you all prese review again and do some testing. I also fixed up
+> audio-graph-scu-card but can't test that one.
+>=20
+> Regards,
+>=20
+> Tony
+>=20
+> 8< ------
+> From tony Mon Sep 17 00:00:00 2001
 
-> > No, because we only do the assignment rtd->platform = platform if
-> > platform_of_node == dai_link->platform_of_node OR platform->name == platform_name.
+Like I've said before mangling patches into threads like this makes it
+harder to apply them - right now my workflow for when I'm online is
+based on pulling the patches out of patchwork rather than directly from
+e-mail and patchwork definitely doesn't understand this well.
 
-> > In case we are registering 2 platforms (like you said: own platform and dmaengine)
-> > they will be having different names/of_nodes.
-
-> I can't find concrete driver now, but I found
-> the driver which "own platform" and "dmaengine platform" are using same "dev".
-> Because of this, I confused about this.
-
-That doesn't ring any bells for me...
-
---dxkj7be2hhrno4oo
+--w3xb5inf3godddqn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAgd8ACgkQJNaLcl1U
-h9Dnngf9E1PXv1c6LFlsGaUk3ksgkmHODklqOpnWm68B/8yktoikG1jySQ3WMzXO
-X6FAzKNPI2Zzys8IK4/XqBXd+0bZpKFUaOOU41oxeReM1qYuENVPQ+vi1S3zKXep
-0xou4vPOGQlmruti5CT8ymLYa6Tu3DlMl5zOXh3guWG/BZHmsNTZGrd8/zbRSNnc
-03adkAvPGi7JbzcwKI1bZZGWVq9of2jfBGotCCBmoWWKC2+4P1+G6PP001fwaYZ5
-7TXXclbV47+qi0IgJFjWS6v56unFgdBGqfjKWNq7/icvUTDkb8f+lZFGCcCuwHUF
-jMfKGQgItKs6wezdNy4FscLtPCSVUQ==
-=C5fO
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAjOwACgkQJNaLcl1U
+h9A3MAf/eDoODYfLe4hUb4s8m/4eR3FuaHMf+jLUYVDb1ea07JbfswLmWgVNOI7Y
+OBXJqjg8/FPEwf1JuP4lnFBtLaC4vBdUIpUQugRLtnwhMWfaWGH2nUEUzSPFivMd
+wBcKR/mETggufHjKox6Tar9QrEIzpnnuU6UEK2e0fjkcgPrDuFdRgYRfaEGJ/M+w
+qY07+/X4hkN2iAEvhefNT4Zku5Uwl9jr9rWJ9T/8sXsUKmFw7Rm2OxSxmq6MZBJI
+ZzM6JFfS3Z6l/z0x2cJxwaQTtQYtvI9xQriXnFOr02JfAFKtAhtWqtoBS3KIDHK1
++Hk03oE33znD6swsMI4ymP5w7cY6Mg==
+=fXPN
 -----END PGP SIGNATURE-----
 
---dxkj7be2hhrno4oo--
-
---===============2892097927821884247==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2892097927821884247==--
+--w3xb5inf3godddqn--
