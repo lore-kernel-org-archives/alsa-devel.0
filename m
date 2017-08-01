@@ -1,22 +1,19 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
+From: Keyon Jie <yang.jie@linux.intel.com>
 Subject: Re: [PATCH v2] ASoC: Intel: Reset hw_ptr on resume
-	trigger
-Date: Tue, 1 Aug 2017 12:42:35 +0800
-Message-ID: <CAFv8Nw+QN8dSY-Pb_a5BX0PY1uQPkxP5U9uT_6+7bLe+W+PkEw@mail.gmail.com>
+ trigger
+Date: Tue, 1 Aug 2017 13:04:14 +0800
+Message-ID: <60e20968-28b2-dd91-c30c-318aee9d298f@linux.intel.com>
 References: <20170731104734.5776-1-cychiang@chromium.org>
  <20170801033006.GL3053@localhost>
- <8B5BDC21C48FAF4CA5D7E3FE1A63A9087407DE4D@ORSMSX111.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f53.google.com (mail-it0-f53.google.com
- [209.85.214.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 1961B266D44
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 06:43:07 +0200 (CEST)
-Received: by mail-it0-f53.google.com with SMTP id 77so2036448itj.1
- for <alsa-devel@alsa-project.org>; Mon, 31 Jul 2017 21:43:07 -0700 (PDT)
-In-Reply-To: <8B5BDC21C48FAF4CA5D7E3FE1A63A9087407DE4D@ORSMSX111.amr.corp.intel.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 392E7266D44
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 06:59:40 +0200 (CEST)
+In-Reply-To: <20170801033006.GL3053@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Eoff, Ullysses A" <ullysses.a.eoff@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "Koul, Vinod" <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>, Cheng-Yi Chiang <cychiang@chromium.org>, Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "U . Artie Eoff" <ullysses.a.eoff@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Eoff, thank you for the patch and providing the context.
-ChromiumOS now uses kernel 4.4 for BYT and I found that kernel 4.4 does not
-have this patch.
-We thought this should be useful in upstream.
-Thanks!
-
-On Tue, Aug 1, 2017 at 12:32 PM, Eoff, Ullysses A <ullysses.a.eoff@intel.com
-> wrote:
-
-> This patch was originally submitted in the context of the ChromiumOS
-> kernel 3.10 for BYT (https://groups.google.com/a/
-> chromium.org/forum/#!topic/chromium-os-reviews/AsoBhfHzQg8).
->
->
-> > -----Original Message-----
-> > From: Koul, Vinod
-> > Sent: Monday, July 31, 2017 8:30 PM
-> > To: Cheng-Yi Chiang <cychiang@chromium.org>; Jie, Yang <
-> yang.jie@intel.com>
-> > Cc: linux-kernel@vger.kernel.org; Liam Girdwood <lgirdwood@gmail.com>;
-> Mark Brown <broonie@kernel.org>; Jaroslav Kysela
-> > <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>; Eoff, Ullysses A <
-> ullysses.a.eoff@intel.com>; alsa-devel@alsa-project.org
-> > Subject: Re: [PATCH v2] ASoC: Intel: Reset hw_ptr on resume trigger
-> >
-> > On Mon, Jul 31, 2017 at 06:47:34PM +0800, Cheng-Yi Chiang wrote:
-> > > From: "U. Artie Eoff" <ullysses.a.eoff@intel.com>
-> > >
-> > > Reset the hw_ptr before queuing the restore_stream_context
-> > > work to eradicate a nasty white audio noise on resume.
-> >
-> > Liam, Jie? This on legacy BYT driver..
-> >
-> > >
-> > > Tested-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > > Signed-off-by: U. Artie Eoff <ullysses.a.eoff@intel.com>
-> > > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> > > ---
-> > >  sound/soc/intel/baytrail/sst-baytrail-pcm.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> > > index 4765ad474544..e0db7070cd42 100644
-> > > --- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> > > +++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-> > > @@ -187,8 +187,10 @@ static int sst_byt_pcm_trigger(struct
-> snd_pcm_substream *substream, int cmd)
-> > >             sst_byt_stream_start(byt, pcm_data->stream, 0);
-> > >             break;
-> > >     case SNDRV_PCM_TRIGGER_RESUME:
-> > > -           if (pdata->restore_stream == true)
-> > > +           if (pdata->restore_stream == true) {
-> > > +                   pcm_data->hw_ptr = 0;
-> > >                     schedule_work(&pcm_data->work);
-> > > +           }
-> > >             else
-> > >                     sst_byt_stream_resume(byt, pcm_data->stream);
-> > >             break;
-> > > --
-> > > 2.12.2
-> > >
-> >
-> > --
-> > ~Vinod
->
+Ck9uIDIwMTflubQwOOaciDAx5pelIDExOjMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9uIE1vbiwg
+SnVsIDMxLCAyMDE3IGF0IDA2OjQ3OjM0UE0gKzA4MDAsIENoZW5nLVlpIENoaWFuZyB3cm90ZToK
+Pj4gRnJvbTogIlUuIEFydGllIEVvZmYiIDx1bGx5c3Nlcy5hLmVvZmZAaW50ZWwuY29tPgo+Pgo+
+PiBSZXNldCB0aGUgaHdfcHRyIGJlZm9yZSBxdWV1aW5nIHRoZSByZXN0b3JlX3N0cmVhbV9jb250
+ZXh0Cj4+IHdvcmsgdG8gZXJhZGljYXRlIGEgbmFzdHkgd2hpdGUgYXVkaW8gbm9pc2Ugb24gcmVz
+dW1lLgo+IAo+IExpYW0sIEppZT8gVGhpcyBvbiBsZWdhY3kgQllUIGRyaXZlci4uCj4gCj4+Cj4+
+IFRlc3RlZC1ieTogQ2hlbmctWWkgQ2hpYW5nIDxjeWNoaWFuZ0BjaHJvbWl1bS5vcmc+Cj4+IFNp
+Z25lZC1vZmYtYnk6IFUuIEFydGllIEVvZmYgPHVsbHlzc2VzLmEuZW9mZkBpbnRlbC5jb20+Cj4+
+IFNpZ25lZC1vZmYtYnk6IENoZW5nLVlpIENoaWFuZyA8Y3ljaGlhbmdAY2hyb21pdW0ub3JnPgo+
+PiAtLS0KPj4gICBzb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwvc3N0LWJheXRyYWlsLXBjbS5jIHwg
+NCArKystCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
+KQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1iYXl0cmFp
+bC1wY20uYyBiL3NvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5dHJhaWwtcGNtLmMKPj4g
+aW5kZXggNDc2NWFkNDc0NTQ0Li5lMGRiNzA3MGNkNDIgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3Nv
+Yy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5dHJhaWwtcGNtLmMKPj4gKysrIGIvc291bmQvc29jL2lu
+dGVsL2JheXRyYWlsL3NzdC1iYXl0cmFpbC1wY20uYwo+PiBAQCAtMTg3LDggKzE4NywxMCBAQCBz
+dGF0aWMgaW50IHNzdF9ieXRfcGNtX3RyaWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpz
+dWJzdHJlYW0sIGludCBjbWQpCj4+ICAgCQlzc3RfYnl0X3N0cmVhbV9zdGFydChieXQsIHBjbV9k
+YXRhLT5zdHJlYW0sIDApOwo+PiAgIAkJYnJlYWs7Cj4+ICAgCWNhc2UgU05EUlZfUENNX1RSSUdH
+RVJfUkVTVU1FOgo+PiAtCQlpZiAocGRhdGEtPnJlc3RvcmVfc3RyZWFtID09IHRydWUpCj4+ICsJ
+CWlmIChwZGF0YS0+cmVzdG9yZV9zdHJlYW0gPT0gdHJ1ZSkgewo+PiArCQkJcGNtX2RhdGEtPmh3
+X3B0ciA9IDA7CgpXb24ndCB0aGlzIGJyZWFrIHRoZSBod19wdHIgYW5kIG1ha2UgdGhlIHJlc3Vt
+aW5nIHdvbid0IHBsYXkgZnJvbSB0aGUgCnBhdXNpbmcgcG9pbnQgb2YgdGhlIGxhc3Qgc3VzcGVu
+ZGluZz8KClRoYW5rcywKfktleW9uCgo+PiAgIAkJCXNjaGVkdWxlX3dvcmsoJnBjbV9kYXRhLT53
+b3JrKTsKPj4gKwkJfQo+PiAgIAkJZWxzZQo+PiAgIAkJCXNzdF9ieXRfc3RyZWFtX3Jlc3VtZShi
+eXQsIHBjbV9kYXRhLT5zdHJlYW0pOwo+PiAgIAkJYnJlYWs7Cj4+IC0tIAo+PiAyLjEyLjIKPj4K
+PiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
