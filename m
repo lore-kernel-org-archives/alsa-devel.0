@@ -1,73 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt5514: Set the pin GPIO6(IRQ)
- to output low as default
-Date: Tue, 1 Aug 2017 14:10:31 +0100
-Message-ID: <20170801131031.xp5ub4vqvc4as5cn@sirena.org.uk>
-References: <1501480063-32225-1-git-send-email-oder_chiou@realtek.com>
- <1501480063-32225-2-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH 1/9] ASoC: dwc: Added a quirk
+ DW_I2S_QUIRK_16BIT_IDX_OVERRIDE to dwc driver
+Date: Tue, 1 Aug 2017 14:12:04 +0100
+Message-ID: <20170801131204.f5tpcnkhgkcpq7ns@sirena.org.uk>
+References: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
+ <1501270294-31153-2-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0789932662253903633=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0944B26691A
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 15:10:39 +0200 (CEST)
-In-Reply-To: <1501480063-32225-2-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, chinyue@google.com, flove@realtek.com
+Content-Type: multipart/mixed; boundary="===============1533441985=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1501270294-31153-2-git-send-email-alexander.deucher@amd.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, amd-gfx@lists.freedesktop.org, rajeevkumar.linux@gmail.com, dri-devel@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0789932662253903633==
+--===============1533441985==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hzwyo23ru2npdqga"
+	protocol="application/pgp-signature"; boundary="n6cpcqa765mrnyvo"
 Content-Disposition: inline
 
 
---hzwyo23ru2npdqga
+--n6cpcqa765mrnyvo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 31, 2017 at 01:47:43PM +0800, Oder Chiou wrote:
-> The patch set the pin GPIO6(IRQ) to output low as default to prevent the
-> IRQ pin to trigger the IRQ function continuously in the float status.
+On Fri, Jul 28, 2017 at 03:31:26PM -0400, Alex Deucher wrote:
 
-Isn't this going to be a board specific thing?  If it's a GPIO
-presumably it could have other configurations and it might cause
-problems (perhaps even damage) if it has been used for some other
-purpose.
+> This patch is already applied to the audio tree, I'm just
+> including it here for completeness since it's not yet in
+> the drm tree.
 
---hzwyo23ru2npdqga
+It's in mainline, please don't resubmit already applied patches.
+
+--n6cpcqa765mrnyvo
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAfcYACgkQJNaLcl1U
-h9BBTwf9Eu/uGAn9bpad2g5i077xrMZ4qi4XBHpBEGRUpLWJmHp0SlunEm279226
-oBh1Z9amtwLNp4mcRTHB/baJrceYQKPXDlW2GlZ1eG7iMcMDXrgPP+1Vfa/0sg5J
-t8hkB1zU9CphYNO43R+AmWL8XBA6PB20cFRyTrjhwDuD3F3vNcd+27jyCKvGJZWz
-WZNVhztVNWk0xYp87yeOYWCyZgGOWrIisDPMuBWOfafnQlrJYJxjjySy9OdaIgrG
-scUQls7jZzGw4gi0eeHUmirTAg8xI6iMSH6I3yOrLqtblE462UBnZORC4PAzffAF
-uYcl5badqyTM4QtzdPlX5HiDHmNTug==
-=+FNz
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAfiMACgkQJNaLcl1U
+h9B8wgf+Ju27WKGJqvBv4r6f+uAeZ7/8ttMvxrlhsRPCLBw33YHStCpEQpAXCkBJ
+XQfxGmMeijvOK4BOMES7rqzKpBHGfFEOzqAQ1niqB6izi2wV2wd64x1CqC0OmnP2
+Ap3iq9ZylrJCxxmHuKcarpWBtZkxZtrwWTxs1T4Iip/VdKhlkuddNQEbdtjCAoPw
+1PoWvfX9N0AsnbIQZrRm1SAdi4E7CIYVO9bk8hCb4KfnOJoJOZT88FND8R4UIx4j
+f7onjlrXips9OvBtI9BfKZ4MQ3k3FlIXleJeycR1enHLOhSQRfJBzaw+NmI2LVge
+E1epDVJzH3vS1mbFoVqS5VxuM8cFZA==
+=d4bH
 -----END PGP SIGNATURE-----
 
---hzwyo23ru2npdqga--
+--n6cpcqa765mrnyvo--
 
---===============0789932662253903633==
-Content-Type: text/plain; charset="us-ascii"
+--===============1533441985==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============0789932662253903633==--
+--===============1533441985==--
