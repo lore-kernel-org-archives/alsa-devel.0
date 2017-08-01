@@ -1,54 +1,35 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5665: fix wrong register for bclk
-	ratio control
-Date: Tue, 1 Aug 2017 10:30:53 +0800
-Message-ID: <1501554653-29727-1-git-send-email-bardliao@realtek.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v3 01/12] ASoC: sun4i-i2s: Extend quirks scope
+Date: Tue, 1 Aug 2017 10:50:09 +0800
+Message-ID: <CAGb2v65EZZpQX2q-eT=HKaZL-0bV=Eito--T4EMt-f4kRV5S3Q@mail.gmail.com>
+References: <20170729141753.20174-1-codekipper@gmail.com> <20170729141753.20174-2-codekipper@gmail.com>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C114266B02
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 04:31:06 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, zhongan@pinecone.net, flove@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBB6OY77FQKGQEPJH3QTI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170729141753.20174-2-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The register of setting back ratio should be RT5665_ADDA_CLK_2
-instead of RT5665_ADDA_CLK_1.
+On Sat, Jul 29, 2017 at 10:17 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>
+> In preparation for the changes required to support newer SoCs then
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5665.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+                                                          typo? ^^^^
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index d0a9490..db2e5b9 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4411,12 +4411,12 @@ static int rt5665_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
- 		switch (dai->id) {
- 		case RT5665_AIF2_1:
- 		case RT5665_AIF2_2:
--			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			snd_soc_update_bits(codec, RT5665_ADDA_CLK_2,
- 				RT5665_I2S_BCLK_MS2_MASK,
- 				RT5665_I2S_BCLK_MS2_64);
- 			break;
- 		case RT5665_AIF3:
--			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			snd_soc_update_bits(codec, RT5665_ADDA_CLK_2,
- 				RT5665_I2S_BCLK_MS3_MASK,
- 				RT5665_I2S_BCLK_MS3_64);
- 			break;
--- 
-2.7.4
+> quirks has been moved and also added to the device structure.
+>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+
+Otherwise,
+
+Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
