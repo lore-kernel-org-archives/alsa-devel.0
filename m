@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Reset the controller in
-	probe" to the asoc tree
-Date: Tue, 01 Aug 2017 15:16:45 +0100
-Message-ID: <E1dcXyX-0008QO-Ax@debutante>
-References: <20170728104216.26859-1-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: rt5663: Add the delay time to correct
+	the calibration" to the asoc tree
+Date: Tue, 01 Aug 2017 15:16:49 +0100
+Message-ID: <E1dcXyb-0008Rn-BW@debutante>
+References: <1501586042-15589-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EC7926717C
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:54 +0200 (CEST)
-In-Reply-To: <20170728104216.26859-1-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CE340267198
+ for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:16:57 +0200 (CEST)
+In-Reply-To: <1501586042-15589-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Reset the controller in probe
+   ASoC: rt5663: Add the delay time to correct the calibration
 
 has been applied to the asoc tree at
 
@@ -52,35 +52,30 @@ to this mail.
 Thanks,
 Mark
 
->From 60767abcea3dd1d47a4bd38398e1e8c1864975eb Mon Sep 17 00:00:00 2001
-From: "guneshwor.o.singh@intel.com" <guneshwor.o.singh@intel.com>
-Date: Fri, 28 Jul 2017 16:12:13 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Reset the controller in probe
+>From c1bbaff6d7dd55314ee453df8dfe00befd7ce1b2 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Tue, 1 Aug 2017 19:14:02 +0800
+Subject: [PATCH] ASoC: rt5663: Add the delay time to correct the calibration
 
-Controller can be in reset state by default. Capability structure
-traversal requires the controller to be out of reset else it
-results in broken capability parsing. Hence make sure that controller is
-out of reset before parsing capabilities by doing a full reset.
+The patch adds the delay time to correct the calibration.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/rt5663.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 01a2dd6518a4..b9e1310673f0 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -702,6 +702,8 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
- 		return -ENXIO;
- 	}
- 
-+	skl_init_chip(bus, true);
-+
- 	snd_hdac_bus_parse_capabilities(bus);
- 
- 	if (skl_acquire_irq(ebus, 0) < 0)
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 45f8a9888f7d..c1f0a72c0133 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3058,6 +3058,7 @@ static void rt5663_calibrate(struct rt5663_priv *rt5663)
+ 	regmap_write(rt5663->regmap, RT5663_PWR_ANLG_3, 0x018c);
+ 	regmap_write(rt5663->regmap, RT5663_HP_CHARGE_PUMP_1, 0x1e32);
+ 	regmap_write(rt5663->regmap, RT5663_DACREF_LDO, 0x3b0b);
++	msleep(40);
+ 	regmap_write(rt5663->regmap, RT5663_STO_DAC_MIXER, 0x0000);
+ 	regmap_write(rt5663->regmap, RT5663_BYPASS_STO_DAC, 0x000c);
+ 	regmap_write(rt5663->regmap, RT5663_HP_BIAS, 0xafaa);
 -- 
 2.13.2
