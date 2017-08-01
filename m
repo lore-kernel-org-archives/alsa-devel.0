@@ -1,90 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: fix wrong register for bclk
-	ratio control" to the asoc tree
-Date: Tue, 01 Aug 2017 15:16:52 +0100
-Message-ID: <E1dcXye-0008St-HV@debutante>
-References: <1501554653-29727-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: improve RT5514 dependencies
+Date: Tue, 1 Aug 2017 15:21:17 +0100
+Message-ID: <20170801142117.oc3owynj74g5bmyi@sirena.org.uk>
+References: <20170731083217.4142512-1-arnd@arndb.de>
+ <s5hh8xt0xwy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BC8E267153
- for <alsa-devel@alsa-project.org>; Tue,  1 Aug 2017 16:17:06 +0200 (CEST)
-In-Reply-To: <1501554653-29727-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, zhongan@pinecone.net, flove@realtek.com
+Content-Type: multipart/mixed; boundary="===============0020928494787619397=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <s5hh8xt0xwy.wl-tiwai@suse.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Hsin-yu Chao <hychao@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-rockchip@lists.infradead.org, Harsha Priya N <harshapriya.n@intel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Sugar Zhang <sugar.zhang@rock-chips.com>, Vinod Koul <vinod.koul@intel.com>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, Naveen M <naveen.m@intel.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Xing Zheng <zhengxing@rock-chips.com>, linux-arm-kernel@lists.infradead.org, Heiko Stuebner <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5665: fix wrong register for bclk ratio control
+--===============0020928494787619397==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="c5orlciowmjagxeg"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--c5orlciowmjagxeg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Jul 31, 2017 at 11:15:57AM +0200, Takashi Iwai wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> IMO, flipping the dependency looks saner to me.  The SPI function call
+> is a kind of add-on, after all.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Yes, that's definitely the intention of the code.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--c5orlciowmjagxeg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 7e5824c93412c7fd6503e7769f8b6eb7199cd3b8 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 1 Aug 2017 10:30:53 +0800
-Subject: [PATCH] ASoC: rt5665: fix wrong register for bclk ratio control
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmAjlwACgkQJNaLcl1U
+h9A9MAf9EC43e7zsFHFItYPZoEpdPK9Sqp6Bx+EP4UGXrWc4Yzd37dNWLCPIIuar
+C5M53ZYp0Em2W1EtkxVYe3rRx2rKcjOgdMit/52DjNOrP5JwFZH8IMSpk0CNtQ5F
+G0PyPnDvBqbP4+bwIl4REu/JQE7DHJroD9VP+gB0A2nyg/MjWghEI+B9xn2mHDhr
+lLligmaL+pJ4n9/lyYL1xdtB+gqNVENNC5xpnwx1+N+18dhgtxjR6GPeEIBS0DSA
+p6geFBBQ2WDIvPp8uTZlXhvW9k8AnGXNvOfR95Nh+hMfwb9oeklW2LPNOuzTqPhf
+cdz9fsVLZh/t5GXfKdOJ4y5rKvOqgA==
+=xD2N
+-----END PGP SIGNATURE-----
 
-The register of setting back ratio should be RT5665_ADDA_CLK_2
-instead of RT5665_ADDA_CLK_1.
+--c5orlciowmjagxeg--
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5665.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 370ed54d1e15..e597c893536d 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4368,12 +4368,12 @@ static int rt5665_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
- 		switch (dai->id) {
- 		case RT5665_AIF2_1:
- 		case RT5665_AIF2_2:
--			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			snd_soc_update_bits(codec, RT5665_ADDA_CLK_2,
- 				RT5665_I2S_BCLK_MS2_MASK,
- 				RT5665_I2S_BCLK_MS2_64);
- 			break;
- 		case RT5665_AIF3:
--			snd_soc_update_bits(codec, RT5665_ADDA_CLK_1,
-+			snd_soc_update_bits(codec, RT5665_ADDA_CLK_2,
- 				RT5665_I2S_BCLK_MS3_MASK,
- 				RT5665_I2S_BCLK_MS3_64);
- 			break;
--- 
-2.13.2
+--===============0020928494787619397==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============0020928494787619397==--
