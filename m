@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8524: Don't use dev_err to show
-	supported sample rate" to the asoc tree
-Date: Wed, 02 Aug 2017 18:30:26 +0100
-Message-ID: <E1dcxTW-0003rU-9B@debutante>
-References: <20170802081346.8179-1-axel.lin@ingics.com>
+Subject: Applied "ASoC: wm8523: Constfiy lrclk_ratios and
+	bclk_ratios" to the asoc tree
+Date: Wed, 02 Aug 2017 18:30:29 +0100
+Message-ID: <E1dcxTZ-0003sO-Ik@debutante>
+References: <20170802095514.29138-2-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 267FF2673DC
- for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:30:36 +0200 (CEST)
-In-Reply-To: <20170802081346.8179-1-axel.lin@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 78EAA2673E9
+ for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:30:40 +0200 (CEST)
+In-Reply-To: <20170802095514.29138-2-axel.lin@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@ingics.com>
-Cc: Mihai Serban <mihai.serban@nxp.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Cc: patches@opensource.cirrus.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8524: Don't use dev_err to show supported sample rate
+   ASoC: wm8523: Constfiy lrclk_ratios and bclk_ratios
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 80bfd0431f7dc133f4edbc0b864f800c4ed7a3f4 Mon Sep 17 00:00:00 2001
+>From c0d088f04f115409287003b5fc0dfd3184d7d306 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 2 Aug 2017 16:13:46 +0800
-Subject: [PATCH] ASoC: wm8524: Don't use dev_err to show supported sample rate
-
-Switch to use dev_dbg instead.
+Date: Wed, 2 Aug 2017 17:55:14 +0800
+Subject: [PATCH] ASoC: wm8523: Constfiy lrclk_ratios and bclk_ratios
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Mihai Serban <mihai.serban@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8524.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm8523.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8524.c b/sound/soc/codecs/wm8524.c
-index e22b76d64e32..b66147e0631b 100644
---- a/sound/soc/codecs/wm8524.c
-+++ b/sound/soc/codecs/wm8524.c
-@@ -118,7 +118,7 @@ static int wm8524_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		case 96000:
- 		case 176400:
- 		case 192000:
--			dev_err(codec->dev, "Supported sample rate: %dHz\n",
-+			dev_dbg(codec->dev, "Supported sample rate: %dHz\n",
- 				val);
- 			wm8524->rate_constraint_list[j++] = val;
- 			wm8524->rate_constraint.count++;
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index b1e4ce72e533..c7c33e98fbcb 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -100,7 +100,7 @@ static const struct snd_soc_dapm_route wm8523_dapm_routes[] = {
+ 	{ "LINEVOUTR", NULL, "DAC" },
+ };
+ 
+-static struct {
++static const struct {
+ 	int value;
+ 	int ratio;
+ } lrclk_ratios[WM8523_NUM_RATES] = {
+@@ -113,7 +113,7 @@ static struct {
+ 	{ 7, 1152 },
+ };
+ 
+-static struct {
++static const struct {
+ 	int value;
+ 	int ratio;
+ } bclk_ratios[] = {
 -- 
 2.13.2
