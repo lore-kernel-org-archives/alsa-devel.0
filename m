@@ -1,16 +1,18 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 9/9] ASoC: Intel: cnl: add pci id for cnl
-Date: Wed,  2 Aug 2017 21:51:20 +0530
-Message-ID: <20170802162120.8935-10-guneshwor.o.singh@intel.com>
-References: <20170802162120.8935-1-guneshwor.o.singh@intel.com>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v2 0/6] ASoC: codecs: msm8916-wcd-analog: Add
+	support to MBHC
+Date: Wed,  2 Aug 2017 19:09:24 +0200
+Message-ID: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id D8F95267356
- for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 18:25:53 +0200 (CEST)
-In-Reply-To: <20170802162120.8935-1-guneshwor.o.singh@intel.com>
+Received: from mail-it0-f53.google.com (mail-it0-f53.google.com
+ [209.85.214.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDC4B266847
+ for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:09:42 +0200 (CEST)
+Received: by mail-it0-f53.google.com with SMTP id v127so25713508itd.0
+ for <alsa-devel@alsa-project.org>; Wed, 02 Aug 2017 10:09:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org
+Cc: damien.riegel@savoirfairelinux.com, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Enable cnl by adding its pci id in skl_ids[].
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
----
- sound/soc/intel/skylake/skl.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+This patchset adds support to MBHC(Multibutton headset control) block in PM8916
+analog block. MBHC support comes from2 blocks first mechanical headset detection
+and second headset type, 5 button detection.
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ab651517e8b8..e612a4097275 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -996,6 +996,14 @@ static struct sst_acpi_mach sst_glk_devdata[] = {
- 	},
- };
- 
-+static const struct sst_acpi_mach sst_cnl_devdata[] = {
-+	{
-+		.id = "INT34C2",
-+		.drv_name = "cnl_rt274",
-+		.fw_filename = "intel/dsp_fw_cnl.bin",
-+	},
-+};
-+
- /* PCI IDs */
- static const struct pci_device_id skl_ids[] = {
- 	/* Sunrise Point-LP */
-@@ -1010,6 +1018,9 @@ static const struct pci_device_id skl_ids[] = {
- 	/* GLK */
- 	{ PCI_DEVICE(0x8086, 0x3198),
- 		.driver_data = (unsigned long)&sst_glk_devdata},
-+	/* CNL */
-+	{ PCI_DEVICE(0x8086, 0x9dc8),
-+		.driver_data = (unsigned long)&sst_cnl_devdata},
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, skl_ids);
+This patchset adds support to:
+1> Support to NC and NO type of headset Jacks.
+2> Mechanical insertion and detection of headset jack.
+3> Detect a 3 pole Headphone and a 4 pole Headset.
+4> Detect 5 buttons.
+
+Damien sent a similar patchset to add support to mechanical detection,
+but that patch has issues and will not work on most usecases (for example
+after a playback/capture session, multicodec case). So I only picked up
+the BIT mask patch from that series.
+
+Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+and during playback and recording use cases.
+
+Changes since v1(https://www.spinics.net/lists/kernel/msg2565463.html):
+	- Micbias left to hardware default value suggested by Mark.
+	- Updated commit log to reflect low power state for mbhc
+	- cleaned up code spotted by Mark.
+	- Moved the button voltage threshold to dt, suggested by Mark
+	- Fixed key release issue reported by Damien
+
+Srinivas Kandagatla (6):
+  ASoC: jack: fix snd_soc_codec_set_jack return error
+  ASoC: codecs: msm8916-wcd-analog: move codec reset to probe
+  ASoC: codecs: msm8916-wcd-analog: get micbias voltage from dt
+  ASoC: codecs: msm8916-wcd-analog: add MBHC support
+  ASoC: qcom: apq8016-sbc: Add support to Headset JACK
+  arm64: dts: apq8016-sbc: add mbhc buttons support
+
+ .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  18 +-
+ arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi          |   2 +
+ sound/soc/codecs/msm8916-wcd-analog.c              | 412 +++++++++++++++++++--
+ sound/soc/qcom/apq8016_sbc.c                       |  34 ++
+ sound/soc/soc-jack.c                               |   2 +-
+ 5 files changed, 444 insertions(+), 24 deletions(-)
+
 -- 
-2.13.0
+2.9.3
