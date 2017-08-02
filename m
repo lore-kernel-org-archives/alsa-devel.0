@@ -1,15 +1,17 @@
 From: Naveen M <naveen.m@intel.com>
-Subject: [PATCH 0/3] ASoC: Intel: kbl: Add Multi-endpoint
-	Playback & Echo Ref support
-Date: Wed,  2 Aug 2017 11:43:32 +0530
-Message-ID: <1501654415-24590-1-git-send-email-naveen.m@intel.com>
+Subject: [PATCH 1/3] ASoC: Intel: kbl: Add new FEs for
+	Multi-Playback & Echo-Reference
+Date: Wed,  2 Aug 2017 11:43:33 +0530
+Message-ID: <1501654415-24590-2-git-send-email-naveen.m@intel.com>
+References: <1501654415-24590-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 56070266A8A
- for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 08:13:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 64043267026
+ for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 08:13:25 +0200 (CEST)
+In-Reply-To: <1501654415-24590-1-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,30 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
+Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-1. Add new FE capabilities to support:
-  a. Parallel playback on 2 ports simultaneously
-     Define new frontends to enable additional playback port.
-     This will be used when platform needs to support multi-playback
-     on different ports. Ex: Headset and Speaker simultaneously
-  b. Echo reference capture capability
-     Certain platforms need reference stream of playback to supplement
-     User-space post-processing algorithms. This pin enables platform
-     driver to provide such a FE.
-2. Add DAI links for parallel playback and echo ref
-3. Add map for new DAIs for parallel playback and echo ref
+Adding new frontends to support:
+1. Parallel playback on 2 ports simultaneously
+2. Echo reference capture capability
 
-Naveen M (3):
-  ASoC: Intel: kbl: Add new FEs for Multi-Playback & Echo-Reference
-  ASoC: Intel: kbl: Add DAI links for Multi-Playback & Echo-reference
-  ASoC: Intel: kbl: Add map for new DAIs for Multi-Playback & Echo Ref
+Signed-off-by: Naveen M <naveen.m@intel.com>
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
- sound/soc/intel/boards/kbl_rt5663_max98927.c       | 30 +++++++++++++++++++---
- .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 30 +++++++++++++++++++---
- sound/soc/intel/skylake/skl-pcm.c                  | 26 +++++++++++++++++++
- 3 files changed, 80 insertions(+), 6 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 0ebea34a..f18b4c9 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -675,6 +675,32 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	},
+ },
+ {
++	.name = "System Pin2",
++	.ops = &skl_pcm_dai_ops,
++	.playback = {
++		.stream_name = "Headset Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "Echoref Pin",
++	.ops = &skl_pcm_dai_ops,
++	.capture = {
++		.stream_name = "Echoreference Capture",
++		.channels_min = HDA_STEREO,
++		.channels_max = HDA_STEREO,
++		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 |
++			SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
+ 	.name = "Reference Pin",
+ 	.ops = &skl_pcm_dai_ops,
+ 	.capture = {
 -- 
 1.9.1
