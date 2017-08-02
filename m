@@ -1,10 +1,10 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: Add bindings for DMIC codec driver" to the asoc tree
-Date: Wed, 02 Aug 2017 18:30:20 +0100
-Message-ID: <E1dcxTQ-0003pQ-53@debutante>
-References: <1500972494-10696-2-git-send-email-arnaud.pouliquen@st.com>
+Subject: Applied "ASoC: codec: add DT support in dmic codec" to the asoc tree
+Date: Wed, 02 Aug 2017 18:30:17 +0100
+Message-ID: <E1dcxTN-0003oR-2M@debutante>
+References: <1500972494-10696-3-git-send-email-arnaud.pouliquen@st.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1500972494-10696-2-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+In-Reply-To: <1500972494-10696-3-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add bindings for DMIC codec driver
+   ASoC: codec: add DT support in dmic codec
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 5863e57c22b0e201a88679cd534f95f4338e7769 Mon Sep 17 00:00:00 2001
+>From 29685e207b37ad7f415e4bf21320076c025f3df1 Mon Sep 17 00:00:00 2001
 From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Date: Tue, 25 Jul 2017 10:48:13 +0200
-Subject: [PATCH] ASoC: Add bindings for DMIC codec driver
+Date: Tue, 25 Jul 2017 10:48:14 +0200
+Subject: [PATCH] ASoC: codec: add DT support in dmic codec
 
-This patch adds documentation of device tree bindings for audio DMIC codec.
+Add of_table to allows DT probing.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/dmic.txt | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/dmic.txt
+ sound/soc/codecs/dmic.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
-new file mode 100644
-index 000000000000..a0c58f2a162a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/dmic.txt
-@@ -0,0 +1,12 @@
-+Device-Tree bindings for Digital microphone (DMIC) codec
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index c82b9dc41e9a..d50f142e2972 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -73,9 +73,15 @@ static int dmic_dev_remove(struct platform_device *pdev)
+ 
+ MODULE_ALIAS("platform:dmic-codec");
+ 
++static const struct of_device_id dmic_dev_match[] = {
++	{.compatible = "dmic-codec"},
++	{}
++};
 +
-+This device support generic PDM digital microphone.
-+
-+Required properties:
-+	- compatible: should be "dmic-codec".
-+
-+Example node:
-+
-+	dmic_codec: dmic@0 {
-+		compatible = "dmic-codec";
-+	};
+ static struct platform_driver dmic_driver = {
+ 	.driver = {
+ 		.name = "dmic-codec",
++		.of_match_table = dmic_dev_match,
+ 	},
+ 	.probe = dmic_dev_probe,
+ 	.remove = dmic_dev_remove,
 -- 
 2.13.2
 
