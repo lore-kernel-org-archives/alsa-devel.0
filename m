@@ -1,53 +1,97 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v3 09/12] ASoC: sun4i-i2s: Add regmap field
- to set format
-Date: Wed, 2 Aug 2017 11:32:11 +0800
-Message-ID: <CAGb2v666z_Oj2mmDGRMYHvRwkEBr5sctWrFvSydBDyeZPp60iQ@mail.gmail.com>
-References: <20170729141753.20174-1-codekipper@gmail.com> <20170729141753.20174-10-codekipper@gmail.com>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [linux-sunxi] [PATCH v3 10/12] ASoC: sun4i-i2s: Check for slave
+ select bit
+Date: Wed, 2 Aug 2017 11:50:38 +0800
+Message-ID: <CAGb2v665f=OCZJfZY9VqoD8sgof7qLGUkkqMoTv9xtb=MXxa2w@mail.gmail.com>
+References: <20170729141753.20174-1-codekipper@gmail.com> <20170729141753.20174-11-codekipper@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBU4PQXGAKGQEHBPSXHQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170729141753.20174-10-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170729141753.20174-11-codekipper@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Code Kipper <codekipper@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 29, 2017 at 10:17 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+On Sat, Jul 29, 2017 at 10:17 PM,  <codekipper@gmail.com> wrote:
+> From: Marcus Cooper <codekipper@gmail.com>
 >
-> On the newer SoCs the bits to configure the operational mode are
-
-The subject says "format". Which is it? And please be clear what
-"mode" or "format" this configures. Is it the DAI controller's
-overall mode (PCM/I2S/Left-Justified/Right-Justified/TDM)? or the
-PCM mode (linear/u-law/a-law)?
-
-> located in a different register. Add a regmap field so that this
-> location can be configured.
+> The newer SoCs do not have this setting. Instead they set the pin
+> direction. Add a check to see if the bit is valid and if so set
+> it accordingly.
 >
-> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 > ---
->  sound/soc/sunxi/sun4i-i2s.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
+>  sound/soc/sunxi/sun4i-i2s.c | 38 ++++++++++++++++++++++----------------
+>  1 file changed, 22 insertions(+), 16 deletions(-)
 >
 > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index 6d8d2c4a675b..9e060d1b73d5 100644
+> index 9e060d1b73d5..1c4d763e3a8e 100644
 > --- a/sound/soc/sunxi/sun4i-i2s.c
 > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -106,6 +106,7 @@
->   * @field_fmt_set_sr: regmap field to set sample resolution.
->   * @field_fmt_set_bclk_polarity: regmap field to set clk polarity.
->   * @field_fmt_set_lrclk_polarity: regmap field to set frame polarity.
-> + * @field_fmt_set_mode: regmap field to set the operational mode.
+> @@ -96,6 +96,7 @@
+>   * struct sun4i_i2s_quirks - Differences between SoC variants.
+>   *
+>   * @has_reset: SoC needs reset deasserted.
+> + * @has_slave_select_bit: SoC has a bit to enable slave mode.
+>   * @reg_offset_txdata: offset of the tx fifo.
+>   * @sun4i_i2s_regmap: regmap config to use.
+>   * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+> @@ -114,6 +115,7 @@
+>   */
+>  struct sun4i_i2s_quirks {
+>         bool                            has_reset;
+> +       bool                            has_slave_select_bit;
+>         unsigned int                    reg_offset_txdata;      /* TX FIFO */
+>         const struct regmap_config      *sun4i_i2s_regmap;
+>         unsigned int                    mclk_offset;
+> @@ -391,30 +393,32 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>         regmap_field_write(i2s->field_fmt_set_bclk_polarity, bclk_polarity);
+>         regmap_field_write(i2s->field_fmt_set_lrclk_polarity, lrclk_polarity);
+>
+> -       /* DAI clock master masks */
+> -       switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> -       case SND_SOC_DAIFMT_CBS_CFS:
+> -               /* BCLK and LRCLK master */
+> -               val = SUN4I_I2S_CTRL_MODE_MASTER;
+> -               break;
+> -       case SND_SOC_DAIFMT_CBM_CFM:
+> -               /* BCLK and LRCLK slave */
+> -               val = SUN4I_I2S_CTRL_MODE_SLAVE;
+> -               break;
+> -       default:
+> -               return -EINVAL;
+> +       if (i2s->variant->has_slave_select_bit) {
+> +               /* DAI clock master masks */
+> +               switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +               case SND_SOC_DAIFMT_CBS_CFS:
+> +                       /* BCLK and LRCLK master */
+> +                       val = SUN4I_I2S_CTRL_MODE_MASTER;
+> +                       break;
+> +               case SND_SOC_DAIFMT_CBM_CFM:
+> +                       /* BCLK and LRCLK slave */
+> +                       val = SUN4I_I2S_CTRL_MODE_SLAVE;
+> +                       break;
+> +               default:
+> +                       return -EINVAL;
+> +               }
+> +               regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> +                                  SUN4I_I2S_CTRL_MODE_MASK,
+> +                                  val);
+>         }
+>
+> -       regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> -                          SUN4I_I2S_CTRL_MODE_MASK,
+> -                          val);
+> -
+>         /* Set significant bits in our FIFOs */
+>         regmap_update_bits(i2s->regmap, SUN4I_I2S_FIFO_CTRL_REG,
+>                            SUN4I_I2S_FIFO_CTRL_TX_MODE_MASK |
+>                            SUN4I_I2S_FIFO_CTRL_RX_MODE_MASK,
+>                            SUN4I_I2S_FIFO_CTRL_TX_MODE(1) |
+>                            SUN4I_I2S_FIFO_CTRL_RX_MODE(1));
+> +
 
-Drop the "_set_" part.
+Stray newline. Otherwise,
 
-ChenYu
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
