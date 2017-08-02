@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: codecs: msm8916-wcd-digital: add support to set_sysclk" to the asoc tree
-Date: Wed, 02 Aug 2017 18:30:06 +0100
-Message-ID: <E1dcxTC-0003m0-K0@debutante>
+Date: Wed, 02 Aug 2017 18:29:56 +0100
+Message-ID: <E1dcxT2-0003ky-Ax@debutante>
 References: <20170725234822.18763-2-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170725234822.18763-2-srinivas.kandagatla@linaro.org>
@@ -37,7 +37,7 @@ to this mail.
 Thanks,
 Mark
 
->From 2032ce4de818366adb78d8e0b29291ce58ae1e40 Mon Sep 17 00:00:00 2001
+>From 820f7541f952afa8db08ccd420f29a2c6c148709 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Date: Wed, 2 Aug 2017 15:17:46 +0200
 Subject: [PATCH] ASoC: codecs: msm8916-wcd-digital: add support to set_sysclk
@@ -53,7 +53,7 @@ Signed-off-by: Mark Brown <broonie@kernel.org>
  1 file changed, 10 insertions(+)
 
 diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index 7e3794fb8c2c..661cd6dd5473 100644
+index f690442af8c9..825cc7d70bb3 100644
 --- a/sound/soc/codecs/msm8916-wcd-digital.c
 +++ b/sound/soc/codecs/msm8916-wcd-digital.c
 @@ -568,6 +568,15 @@ static int msm8916_wcd_digital_codec_probe(struct snd_soc_codec *codec)
