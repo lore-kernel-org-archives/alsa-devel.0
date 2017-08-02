@@ -1,19 +1,19 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 2/6] ASoC: codecs: msm8916-wcd-analog: move
-	codec reset to probe
-Date: Wed,  2 Aug 2017 19:09:26 +0200
-Message-ID: <20170802170930.26083-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 5/6] ASoC: qcom: apq8016-sbc: Add support to
+	Headset JACK
+Date: Wed,  2 Aug 2017 19:09:29 +0200
+Message-ID: <20170802170930.26083-6-srinivas.kandagatla@linaro.org>
 References: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f44.google.com (mail-it0-f44.google.com
- [209.85.214.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 382FC267368
- for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:09:47 +0200 (CEST)
-Received: by mail-it0-f44.google.com with SMTP id h199so26982976ith.0
- for <alsa-devel@alsa-project.org>; Wed, 02 Aug 2017 10:09:47 -0700 (PDT)
+Received: from mail-io0-f180.google.com (mail-io0-f180.google.com
+ [209.85.223.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4A1F267379
+ for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:09:54 +0200 (CEST)
+Received: by mail-io0-f180.google.com with SMTP id o9so23006819iod.1
+ for <alsa-devel@alsa-project.org>; Wed, 02 Aug 2017 10:09:54 -0700 (PDT)
 In-Reply-To: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,92 +30,80 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch move the codec reset code from dai ops to codec probe, so
-that the codec is not held in reset when headset detection block is
-still active.
+This patch adds support to Headset JACK, also provides board specific
+vref ranges for mbhc buttons to be detected.
 
-Without this patch the codec block will be in reset as long as its not
-actively used, which means headset events will not be functional if the
-codec dai is not actively used. Point to note is that the headset
-detection blocks will work in low power when there is no active audio
-usecase and switch to micbias source when audio usecase is active.
-
-Existing dapms should put the codec in low power state anyway when there
-is no audio usecase.
+This headset supports both 3 pole and 4 pole headset type and 5 buttons.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 30 ++++++------------------------
- 1 file changed, 6 insertions(+), 24 deletions(-)
+ sound/soc/qcom/apq8016_sbc.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 5710fd4..6606954 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -536,6 +536,9 @@ static int pm8916_wcd_analog_probe(struct snd_soc_codec *codec)
- 		snd_soc_write(codec, wcd_reg_defaults_2_0[reg].reg,
- 			      wcd_reg_defaults_2_0[reg].def);
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index f07aa1e..e6e632a 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -21,12 +21,16 @@
+ #include <linux/platform_device.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/jack.h>
+ #include <sound/soc.h>
++#include <uapi/linux/input-event-codes.h>
+ #include <dt-bindings/sound/apq8016-lpass.h>
  
-+	snd_soc_update_bits(codec, CDC_D_CDC_RST_CTL,
-+			    RST_CTL_DIG_SW_RST_N_MASK,
-+			    RST_CTL_DIG_SW_RST_N_REMOVE_RESET);
- 	return 0;
- }
- 
-@@ -543,6 +546,9 @@ static int pm8916_wcd_analog_remove(struct snd_soc_codec *codec)
- {
- 	struct pm8916_wcd_analog_priv *priv = dev_get_drvdata(codec->dev);
- 
-+	snd_soc_update_bits(codec, CDC_D_CDC_RST_CTL,
-+			    RST_CTL_DIG_SW_RST_N_MASK, 0);
-+
- 	return regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
- 				      priv->supplies);
- }
-@@ -736,28 +742,6 @@ static struct regmap *pm8916_get_regmap(struct device *dev)
- 	return dev_get_regmap(dev->parent, NULL);
- }
- 
--static int pm8916_wcd_analog_startup(struct snd_pcm_substream *substream,
--				      struct snd_soc_dai *dai)
--{
--	snd_soc_update_bits(dai->codec, CDC_D_CDC_RST_CTL,
--			    RST_CTL_DIG_SW_RST_N_MASK,
--			    RST_CTL_DIG_SW_RST_N_REMOVE_RESET);
--
--	return 0;
--}
--
--static void pm8916_wcd_analog_shutdown(struct snd_pcm_substream *substream,
--					 struct snd_soc_dai *dai)
--{
--	snd_soc_update_bits(dai->codec, CDC_D_CDC_RST_CTL,
--			    RST_CTL_DIG_SW_RST_N_MASK, 0);
--}
--
--static struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
--	.startup = pm8916_wcd_analog_startup,
--	.shutdown = pm8916_wcd_analog_shutdown,
--};
--
- static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
- 	[0] = {
- 	       .name = "pm8916_wcd_analog_pdm_rx",
-@@ -769,7 +753,6 @@ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
- 			    .channels_min = 1,
- 			    .channels_max = 3,
- 			    },
--	       .ops = &pm8916_wcd_analog_dai_ops,
- 	       },
- 	[1] = {
- 	       .name = "pm8916_wcd_analog_pdm_tx",
-@@ -781,7 +764,6 @@ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
- 			   .channels_min = 1,
- 			   .channels_max = 4,
- 			   },
--	       .ops = &pm8916_wcd_analog_dai_ops,
- 	       },
+ struct apq8016_sbc_data {
+ 	void __iomem *mic_iomux;
+ 	void __iomem *spkr_iomux;
++	struct snd_soc_jack jack;
++	bool jack_setup;
+ 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
  };
  
+@@ -70,6 +74,31 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ 	}
+ 
++	if (!pdata->jack_setup) {
++		struct snd_jack *jack;
++
++		rval = snd_soc_card_jack_new(card, "Headset Jack",
++					     SND_JACK_HEADSET |
++					     SND_JACK_HEADPHONE |
++					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
++					     SND_JACK_BTN_4,
++					     &pdata->jack, NULL, 0);
++
++		if (rval < 0) {
++			dev_err(card->dev, "Unable to add Headphone Jack\n");
++			return rval;
++		}
++
++		jack = pdata->jack.jack;
++
++		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_MEDIA);
++		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++		pdata->jack_setup = true;
++	}
++
+ 	for (i = 0 ; i < dai_link->num_codecs; i++) {
+ 		struct snd_soc_dai *dai = rtd->codec_dais[i];
+ 
+@@ -81,6 +110,11 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			dev_warn(card->dev, "Failed to set mclk: %d\n", rval);
+ 			return rval;
+ 		}
++		rval = snd_soc_codec_set_jack(codec, &pdata->jack, NULL);
++		if (rval != 0 && rval != -ENOTSUPP) {
++			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
++			return rval;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.9.3
