@@ -1,100 +1,121 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 3/6] ASoC: codecs: msm8916-wcd-analog: get micbias voltage from dt
-Date: Wed,  2 Aug 2017 19:09:27 +0200
-Message-ID: <20170802170930.26083-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/6] ASoC: codecs: msm8916-wcd-analog: move
+	codec reset to probe
+Date: Wed,  2 Aug 2017 19:09:26 +0200
+Message-ID: <20170802170930.26083-3-srinivas.kandagatla@linaro.org>
 References: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f44.google.com (mail-it0-f44.google.com
+ [209.85.214.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 382FC267368
+ for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:09:47 +0200 (CEST)
+Received: by mail-it0-f44.google.com with SMTP id h199so26982976ith.0
+ for <alsa-devel@alsa-project.org>; Wed, 02 Aug 2017 10:09:47 -0700 (PDT)
 In-Reply-To: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org
-Cc: damien.riegel@savoirfairelinux.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: damien.riegel@savoirfairelinux.com, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds bindings in DT to provide required micbias voltage which
-could be specific to board. With this new binding, now the mic bias
-voltage is left at hardware default value if the device tree does not
-specify any mic bias voltage value. Correct micbias value is required
-for mbhc buttons to work.
+This patch move the codec reset code from dai ops to codec probe, so
+that the codec is not held in reset when headset detection block is
+still active.
+
+Without this patch the codec block will be in reset as long as its not
+actively used, which means headset events will not be functional if the
+codec dai is not actively used. Point to note is that the headset
+detection blocks will work in low power when there is no active audio
+usecase and switch to micbias source when audio usecase is active.
+
+Existing dapms should put the codec in low power state anyway when there
+is no audio usecase.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,msm8916-wcd-analog.txt       |  1 +
- sound/soc/codecs/msm8916-wcd-analog.c                | 20 ++++++++++++++------
- 2 files changed, 15 insertions(+), 6 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 30 ++++++------------------------
+ 1 file changed, 6 insertions(+), 24 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-index ccb401c..05b67a1 100644
---- a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-@@ -33,6 +33,7 @@ Required properties
-  - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator DT node.
- 
- Optional Properties:
-+- qcom,micbias-lvl:  Voltage (mV) for Mic Bias
- - qcom,micbias1-ext-cap: boolean, present if micbias1 has external capacitor
- 			 connected.
- - qcom,micbias2-ext-cap: boolean, present if micbias2 has external capacitor
 diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 6606954..dec4978 100644
+index 5710fd4..6606954 100644
 --- a/sound/soc/codecs/msm8916-wcd-analog.c
 +++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -93,8 +93,12 @@
- #define MICB_1_EN_TX3_GND_SEL_TX_GND	0
+@@ -536,6 +536,9 @@ static int pm8916_wcd_analog_probe(struct snd_soc_codec *codec)
+ 		snd_soc_write(codec, wcd_reg_defaults_2_0[reg].reg,
+ 			      wcd_reg_defaults_2_0[reg].def);
  
- #define CDC_A_MICB_1_VAL		(0xf141)
-+#define MICB_MIN_VAL 1600
-+#define MICB_STEP_SIZE 50
-+#define MICB_VOLTAGE_REGVAL(v)		((v - MICB_MIN_VAL)/MICB_STEP_SIZE)
- #define MICB_1_VAL_MICB_OUT_VAL_MASK	GENMASK(7, 3)
- #define MICB_1_VAL_MICB_OUT_VAL_V2P70V	((0x16)  << 3)
-+#define MICB_1_VAL_MICB_OUT_VAL_V1P80V	((0x4)  << 3)
- #define CDC_A_MICB_1_CTL		(0xf142)
- 
- #define MICB_1_CTL_CFILT_REF_SEL_MASK		BIT(1)
-@@ -225,6 +229,7 @@ struct pm8916_wcd_analog_priv {
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
- 	unsigned int micbias1_cap_mode;
- 	unsigned int micbias2_cap_mode;
-+	unsigned int micbias_mv;
- };
- 
- static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
-@@ -265,18 +270,18 @@ static const struct snd_kcontrol_new pm8916_wcd_analog_snd_controls[] = {
- 
- static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
- {
-+	struct pm8916_wcd_analog_priv *wcd = snd_soc_codec_get_drvdata(codec);
-+
- 	snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
- 			    MICB_1_CTL_EXT_PRECHARG_EN_MASK |
- 			    MICB_1_CTL_INT_PRECHARG_BYP_MASK,
- 			    MICB_1_CTL_INT_PRECHARG_BYP_EXT_PRECHRG_SEL
- 			    | MICB_1_CTL_EXT_PRECHARG_EN_ENABLE);
- 
--	snd_soc_write(codec, CDC_A_MICB_1_VAL, MICB_1_VAL_MICB_OUT_VAL_V2P70V);
--	/*
--	 * Special headset needs MICBIAS as 2.7V so wait for
--	 * 50 msec for the MICBIAS to reach 2.7 volts.
--	 */
--	msleep(50);
-+	if (wcd->micbias_mv)
-+		snd_soc_write(codec, CDC_A_MICB_1_VAL,
-+			      MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
-+
- 	snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
- 			    MICB_1_CTL_EXT_PRECHARG_EN_MASK |
- 			    MICB_1_CTL_INT_PRECHARG_BYP_MASK, 0);
-@@ -795,6 +800,9 @@ static int pm8916_wcd_analog_parse_dt(struct device *dev,
- 	else
- 		priv->micbias2_cap_mode = MICB_1_EN_NO_EXT_BYP_CAP;
- 
-+	of_property_read_u32(dev->of_node, "qcom,micbias-lvl",
-+			     &priv->micbias_mv);
-+
++	snd_soc_update_bits(codec, CDC_D_CDC_RST_CTL,
++			    RST_CTL_DIG_SW_RST_N_MASK,
++			    RST_CTL_DIG_SW_RST_N_REMOVE_RESET);
  	return 0;
  }
+ 
+@@ -543,6 +546,9 @@ static int pm8916_wcd_analog_remove(struct snd_soc_codec *codec)
+ {
+ 	struct pm8916_wcd_analog_priv *priv = dev_get_drvdata(codec->dev);
+ 
++	snd_soc_update_bits(codec, CDC_D_CDC_RST_CTL,
++			    RST_CTL_DIG_SW_RST_N_MASK, 0);
++
+ 	return regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
+ 				      priv->supplies);
+ }
+@@ -736,28 +742,6 @@ static struct regmap *pm8916_get_regmap(struct device *dev)
+ 	return dev_get_regmap(dev->parent, NULL);
+ }
+ 
+-static int pm8916_wcd_analog_startup(struct snd_pcm_substream *substream,
+-				      struct snd_soc_dai *dai)
+-{
+-	snd_soc_update_bits(dai->codec, CDC_D_CDC_RST_CTL,
+-			    RST_CTL_DIG_SW_RST_N_MASK,
+-			    RST_CTL_DIG_SW_RST_N_REMOVE_RESET);
+-
+-	return 0;
+-}
+-
+-static void pm8916_wcd_analog_shutdown(struct snd_pcm_substream *substream,
+-					 struct snd_soc_dai *dai)
+-{
+-	snd_soc_update_bits(dai->codec, CDC_D_CDC_RST_CTL,
+-			    RST_CTL_DIG_SW_RST_N_MASK, 0);
+-}
+-
+-static struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
+-	.startup = pm8916_wcd_analog_startup,
+-	.shutdown = pm8916_wcd_analog_shutdown,
+-};
+-
+ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
+ 	[0] = {
+ 	       .name = "pm8916_wcd_analog_pdm_rx",
+@@ -769,7 +753,6 @@ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
+ 			    .channels_min = 1,
+ 			    .channels_max = 3,
+ 			    },
+-	       .ops = &pm8916_wcd_analog_dai_ops,
+ 	       },
+ 	[1] = {
+ 	       .name = "pm8916_wcd_analog_pdm_tx",
+@@ -781,7 +764,6 @@ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
+ 			   .channels_min = 1,
+ 			   .channels_max = 4,
+ 			   },
+-	       .ops = &pm8916_wcd_analog_dai_ops,
+ 	       },
+ };
  
 -- 
 2.9.3
