@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd-digital: add support to set_sysclk" to the asoc tree
-Date: Wed, 02 Aug 2017 18:29:56 +0100
-Message-ID: <E1dcxT2-0003ky-Ax@debutante>
-References: <20170725234822.18763-2-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170725234822.18763-2-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rcar: unregister fixed rate on ADG" to the asoc tree
+Date: Wed, 02 Aug 2017 18:30:14 +0100
+Message-ID: <E1dcxTK-0003nA-0s@debutante>
+References: <87k22mp8zh.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87k22mp8zh.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: msm8916-wcd-digital: add support to set_sysclk
+   ASoC: rcar: unregister fixed rate on ADG
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,51 @@ to this mail.
 Thanks,
 Mark
 
->From 820f7541f952afa8db08ccd420f29a2c6c148709 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 2 Aug 2017 15:17:46 +0200
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-digital: add support to set_sysclk
+>From e3c6de48133ff1355f14a31a74a9027834c0fd65 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 2 Aug 2017 10:26:09 +0000
+Subject: [PATCH] ASoC: rcar: unregister fixed rate on ADG
 
-This patch adds support to set_sysclk() which can let the sound
-card driver to set default mclk rate. In this case MCLK for
-internal audio codec is expected to be at 9.6MHz by default.
+ADG is registering fixed rate clock for audio_clkout, but it had not
+been unregister clock when removing.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Salvator-X board is using ak4613 driver now, and it supports
+hw_constraints from commit 907cd8809eebc ("ASoC: ak4613: add
+hw_constraint rule for Sampling Rate").
+And this calculation is using input clk. This ak4613 input clock is
+ADG clkout on Salvator-X.
+
+Because ADG had not been unregister clkout when unbinding, it receives
+fixed rate clk register error when re-binding.
+Thus, ak4613 can't get correct input clock, and hw_constraints will be
+failed after re-binding.
+This means Salvator-X board can't use sound after unbind/bind.
+
+This patch solves this issue.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-digital.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/sh/rcar/adg.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index f690442af8c9..825cc7d70bb3 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -568,6 +568,15 @@ static int msm8916_wcd_digital_codec_probe(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
-+static int msm8916_wcd_digital_codec_set_sysclk(struct snd_soc_codec *codec,
-+						int clk_id, int source,
-+						unsigned int freq, int dir)
-+{
-+	struct msm8916_wcd_digital_priv *p = dev_get_drvdata(codec->dev);
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 197cb3ec075f..5b5389e5b92b 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -610,6 +610,13 @@ void rsnd_adg_remove(struct rsnd_priv *priv)
+ {
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct device_node *np = dev->of_node;
++	struct rsnd_adg *adg = priv->adg;
++	struct clk *clk;
++	int i;
 +
-+	return clk_set_rate(p->mclk, freq);
-+}
-+
- static int msm8916_wcd_digital_hw_params(struct snd_pcm_substream *substream,
- 					 struct snd_pcm_hw_params *params,
- 					 struct snd_soc_dai *dai)
-@@ -823,6 +832,7 @@ static struct snd_soc_dai_driver msm8916_wcd_digital_dai[] = {
++	for_each_rsnd_clkout(clk, adg, i)
++		if (adg->clkout[i])
++			clk_unregister_fixed_rate(adg->clkout[i]);
  
- static struct snd_soc_codec_driver msm8916_wcd_digital = {
- 	.probe = msm8916_wcd_digital_codec_probe,
-+	.set_sysclk = msm8916_wcd_digital_codec_set_sysclk,
- 	.component_driver = {
- 		.controls = msm8916_wcd_digital_snd_controls,
- 		.num_controls = ARRAY_SIZE(msm8916_wcd_digital_snd_controls),
+ 	of_clk_del_provider(np);
+ 
 -- 
 2.13.2
