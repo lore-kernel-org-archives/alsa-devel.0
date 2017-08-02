@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8523: Constfiy lrclk_ratios and
-	bclk_ratios" to the asoc tree
-Date: Wed, 02 Aug 2017 18:30:29 +0100
-Message-ID: <E1dcxTZ-0003sO-Ik@debutante>
-References: <20170802095514.29138-2-axel.lin@ingics.com>
+Subject: Applied "ASoC: wm8523: Fix array size for bclk_ratios"
+	to the asoc tree
+Date: Wed, 02 Aug 2017 18:30:32 +0100
+Message-ID: <E1dcxTc-0003tH-P9@debutante>
+References: <20170802095514.29138-1-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 78EAA2673E9
- for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:30:40 +0200 (CEST)
-In-Reply-To: <20170802095514.29138-2-axel.lin@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BF0202673EB
+ for <alsa-devel@alsa-project.org>; Wed,  2 Aug 2017 19:30:41 +0200 (CEST)
+In-Reply-To: <20170802095514.29138-1-axel.lin@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8523: Constfiy lrclk_ratios and bclk_ratios
+   ASoC: wm8523: Fix array size for bclk_ratios
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From c0d088f04f115409287003b5fc0dfd3184d7d306 Mon Sep 17 00:00:00 2001
+>From 19b4b7292615358b9599ff9410a3e564b4844e90 Mon Sep 17 00:00:00 2001
 From: Axel Lin <axel.lin@ingics.com>
-Date: Wed, 2 Aug 2017 17:55:14 +0800
-Subject: [PATCH] ASoC: wm8523: Constfiy lrclk_ratios and bclk_ratios
+Date: Wed, 2 Aug 2017 17:55:13 +0800
+Subject: [PATCH] ASoC: wm8523: Fix array size for bclk_ratios
+
+ARRAY_SIZE(bclk_ratios) returns 7 for current code, then it cannot catch
+the error if "no matching BCLK/fs ratio". Fix it.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8523.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8523.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
-index b1e4ce72e533..c7c33e98fbcb 100644
+index 6d0a2723bfde..b1e4ce72e533 100644
 --- a/sound/soc/codecs/wm8523.c
 +++ b/sound/soc/codecs/wm8523.c
-@@ -100,7 +100,7 @@ static const struct snd_soc_dapm_route wm8523_dapm_routes[] = {
- 	{ "LINEVOUTR", NULL, "DAC" },
- };
- 
--static struct {
-+static const struct {
+@@ -116,7 +116,7 @@ static struct {
+ static struct {
  	int value;
  	int ratio;
- } lrclk_ratios[WM8523_NUM_RATES] = {
-@@ -113,7 +113,7 @@ static struct {
- 	{ 7, 1152 },
- };
- 
--static struct {
-+static const struct {
- 	int value;
- 	int ratio;
- } bclk_ratios[] = {
+-} bclk_ratios[WM8523_NUM_RATES] = {
++} bclk_ratios[] = {
+ 	{ 2, 32 },
+ 	{ 3, 64 },
+ 	{ 4, 128 },
 -- 
 2.13.2
