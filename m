@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Use num_core to
-	allocate instead of macro" to the asoc tree
-Date: Thu, 03 Aug 2017 17:30:22 +0100
-Message-ID: <E1ddJ0w-0002Ym-T1@debutante>
-References: <20170802162120.8935-3-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: kbl: Add map for new DAIs for
+	Multi-Playback & Echo Ref" to the asoc tree
+Date: Thu, 03 Aug 2017 17:30:29 +0100
+Message-ID: <E1ddJ13-0002ap-1F@debutante>
+References: <1501654415-24590-4-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 88D6C26742B
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:37 +0200 (CEST)
-In-Reply-To: <20170802162120.8935-3-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF953267456
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:40 +0200 (CEST)
+In-Reply-To: <1501654415-24590-4-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Use num_core to allocate instead of macro
+   ASoC: Intel: kbl: Add map for new DAIs for Multi-Playback & Echo Ref
 
 has been applied to the asoc tree at
 
@@ -53,99 +52,65 @@ to this mail.
 Thanks,
 Mark
 
->From f0a550a88373b0b076785e059cca15f32ae9ffeb Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Wed, 2 Aug 2017 21:51:13 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Use num_core to allocate instead of
- macro
+>From 0b06122fc8d0949a0aa7b817d98e031104802611 Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Wed, 2 Aug 2017 11:43:35 +0530
+Subject: [PATCH] ASoC: Intel: kbl: Add map for new DAIs for Multi-Playback &
+ Echo Ref
 
-For different platforms, number of dsp cores can vary. So instead of
-creating array of size SKL_DSP_CORES_MAX, use num_core in dsp_ops() of
-the respective platform to allocate core usage counts and states.
+Modified DAPM Machine map for machine to suit the toplogy change
+required to enable features:
+Multi-Endpoint Playback
+Echo Reference Capture
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Naveen M <naveen.m@intel.com>
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 18 +++++++++++++++++-
- sound/soc/intel/skylake/skl-sst-dsp.c  |  2 +-
- sound/soc/intel/skylake/skl-sst-ipc.h  |  6 ++----
- 3 files changed, 20 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 6 +++---
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 7892e445e87b..c6b60ee5b196 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -253,6 +253,7 @@ int skl_init_dsp(struct skl *skl)
- 	struct skl_dsp_loader_ops loader_ops;
- 	int irq = bus->irq;
- 	const struct skl_dsp_ops *ops;
-+	struct skl_dsp_cores *cores;
- 	int ret;
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 4c70d5a3028c..12b34b9a0104 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -99,12 +99,12 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	/* CODEC BE connections */
+ 	{ "Left HiFi Playback", NULL, "ssp0 Tx" },
+ 	{ "Right HiFi Playback", NULL, "ssp0 Tx" },
+-	{ "ssp0 Tx", NULL, "codec0_out" },
++	{ "ssp0 Tx", NULL, "spk_out" },
  
- 	/* enable ppcap interrupt */
-@@ -279,7 +280,19 @@ int skl_init_dsp(struct skl *skl)
- 		return ret;
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "codec1_out" },
++	{ "ssp1 Tx", NULL, "hs_out" },
  
- 	skl->skl_sst->dsp_ops = ops;
--	skl->skl_sst->cores.count = ops->num_cores;
-+	cores = &skl->skl_sst->cores;
-+	cores->count = ops->num_cores;
-+
-+	cores->state = kcalloc(cores->count, sizeof(*cores->state), GFP_KERNEL);
-+	if (!cores->state)
-+		return -ENOMEM;
-+
-+	cores->usage_count = kcalloc(cores->count, sizeof(*cores->usage_count),
-+				     GFP_KERNEL);
-+	if (!cores->usage_count) {
-+		kfree(cores->state);
-+		return -ENOMEM;
-+	}
+-	{ "codec0_in", NULL, "ssp1 Rx" },
++	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
  
- 	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
+ 	/* DMIC */
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 64364de165be..5ec942885b69 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -107,12 +107,12 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	/* CODEC BE connections */
+ 	{ "Left HiFi Playback", NULL, "ssp0 Tx" },
+ 	{ "Right HiFi Playback", NULL, "ssp0 Tx" },
+-	{ "ssp0 Tx", NULL, "codec0_out" },
++	{ "ssp0 Tx", NULL, "spk_out" },
  
-@@ -297,6 +310,9 @@ int skl_free_dsp(struct skl *skl)
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "codec1_out" },
++	{ "ssp1 Tx", NULL, "hs_out" },
  
- 	ctx->dsp_ops->cleanup(bus->dev, ctx);
+-	{ "codec0_in", NULL, "ssp1 Rx" },
++	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
  
-+	kfree(ctx->cores.state);
-+	kfree(ctx->cores.usage_count);
-+
- 	if (ctx->dsp->addr.lpe)
- 		iounmap(ctx->dsp->addr.lpe);
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index 08332723c700..c2ba5ff1632c 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -47,7 +47,7 @@ void skl_dsp_init_core_state(struct sst_dsp *ctx)
- 	skl->cores.state[SKL_DSP_CORE0_ID] = SKL_DSP_RUNNING;
- 	skl->cores.usage_count[SKL_DSP_CORE0_ID] = 1;
- 
--	for (i = SKL_DSP_CORE0_ID + 1; i < SKL_DSP_CORES_MAX; i++) {
-+	for (i = SKL_DSP_CORE0_ID + 1; i < skl->cores.count; i++) {
- 		skl->cores.state[i] = SKL_DSP_RESET;
- 		skl->cores.usage_count[i] = 0;
- 	}
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index e057da2713c6..e485e8f5ea2c 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -44,12 +44,10 @@ struct skl_ipc_header {
- 	u32 extension;
- };
- 
--#define SKL_DSP_CORES_MAX  2
--
- struct skl_dsp_cores {
- 	unsigned int count;
--	enum skl_dsp_states state[SKL_DSP_CORES_MAX];
--	int usage_count[SKL_DSP_CORES_MAX];
-+	enum skl_dsp_states *state;
-+	int *usage_count;
- };
- 
- /**
+ 	{ "codec1_in", NULL, "ssp0 Rx" },
 -- 
 2.13.2
