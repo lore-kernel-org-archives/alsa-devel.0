@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cnl: Add cnl dsp functions and
-	registers" to the asoc tree
-Date: Thu, 03 Aug 2017 17:30:16 +0100
-Message-ID: <E1ddJ0q-0002Ws-GV@debutante>
-References: <20170802162120.8935-5-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add dsp cores
+	management" to the asoc tree
+Date: Thu, 03 Aug 2017 17:30:19 +0100
+Message-ID: <E1ddJ0t-0002Xr-Ql@debutante>
+References: <20170802162120.8935-4-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 080D4267416
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:26 +0200 (CEST)
-In-Reply-To: <20170802162120.8935-5-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0106D267418
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:30 +0200 (CEST)
+In-Reply-To: <20170802162120.8935-4-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cnl: Add cnl dsp functions and registers
+   ASoC: Intel: Skylake: Add dsp cores management
 
 has been applied to the asoc tree at
 
@@ -53,417 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From a838dcc286754f6ea6bcbee8eb76a5d626642fa7 Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Wed, 2 Aug 2017 21:51:15 +0530
-Subject: [PATCH] ASoC: Intel: cnl: Add cnl dsp functions and registers
+>From 4147a6e59a5c0b9cb0eeaa3e1f39fd9da491f35a Mon Sep 17 00:00:00 2001
+From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Date: Wed, 2 Aug 2017 21:51:14 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add dsp cores management
 
-This adds Cannonlake specific registers and support for CNL dsp related
-library functions for programming the registers to power up/down dsp cores,
-set/unset reset states for each core, enable/disable ipc interrupts and few
-wrappers to be called from elsewhere.
+This patch adds support to manage additional cores on a demand basis.
+For instance, if module is set to run on certain core, the particular
+core is powered up in module init. The same is again powered down in
+module unload.
 
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/cnl-sst-dsp.c | 274 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/cnl-sst-dsp.h | 106 +++++++++++++
- 2 files changed, 380 insertions(+)
- create mode 100644 sound/soc/intel/skylake/cnl-sst-dsp.c
- create mode 100644 sound/soc/intel/skylake/cnl-sst-dsp.h
+ sound/soc/intel/skylake/skl-topology.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/cnl-sst-dsp.c b/sound/soc/intel/skylake/cnl-sst-dsp.c
-new file mode 100644
-index 000000000000..2f8326707c21
---- /dev/null
-+++ b/sound/soc/intel/skylake/cnl-sst-dsp.c
-@@ -0,0 +1,274 @@
-+/*
-+ * cnl-sst-dsp.c - CNL SST library generic function
-+ *
-+ * Copyright (C) 2016-17, Intel Corporation.
-+ * Author: Guneshwor Singh <guneshwor.o.singh@intel.com>
-+ *
-+ * Modified from:
-+ *	SKL SST library generic function
-+ *	Copyright (C) 2014-15, Intel Corporation.
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as version 2, as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-+ * General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ */
-+#include <linux/device.h>
-+#include "../common/sst-dsp.h"
-+#include "../common/sst-ipc.h"
-+#include "../common/sst-dsp-priv.h"
-+#include "cnl-sst-dsp.h"
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 8c3ce08f366d..350d2387f737 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -596,24 +596,35 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
+ 		if (mconfig->id.pvt_id < 0)
+ 			return ret;
+ 		skl_tplg_set_module_init_data(w);
 +
-+/* various timeout values */
-+#define CNL_DSP_PU_TO		50
-+#define CNL_DSP_PD_TO		50
-+#define CNL_DSP_RESET_TO	50
++		ret = skl_dsp_get_core(ctx->dsp, mconfig->core_id);
++		if (ret < 0) {
++			dev_err(ctx->dev, "Failed to wake up core %d ret=%d\n",
++						mconfig->core_id, ret);
++			return ret;
++		}
 +
-+static int
-+cnl_dsp_core_set_reset_state(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	/* update bits */
-+	sst_dsp_shim_update_bits_unlocked(ctx,
-+			CNL_ADSP_REG_ADSPCS, CNL_ADSPCS_CRST(core_mask),
-+			CNL_ADSPCS_CRST(core_mask));
-+
-+	/* poll with timeout to check if operation successful */
-+	return sst_dsp_register_poll(ctx,
-+			CNL_ADSP_REG_ADSPCS,
-+			CNL_ADSPCS_CRST(core_mask),
-+			CNL_ADSPCS_CRST(core_mask),
-+			CNL_DSP_RESET_TO,
-+			"Set reset");
-+}
-+
-+static int
-+cnl_dsp_core_unset_reset_state(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	/* update bits */
-+	sst_dsp_shim_update_bits_unlocked(ctx, CNL_ADSP_REG_ADSPCS,
-+					CNL_ADSPCS_CRST(core_mask), 0);
-+
-+	/* poll with timeout to check if operation successful */
-+	return sst_dsp_register_poll(ctx,
-+			CNL_ADSP_REG_ADSPCS,
-+			CNL_ADSPCS_CRST(core_mask),
-+			0,
-+			CNL_DSP_RESET_TO,
-+			"Unset reset");
-+}
-+
-+static bool is_cnl_dsp_core_enable(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	int val;
-+	bool is_enable;
-+
-+	val = sst_dsp_shim_read_unlocked(ctx, CNL_ADSP_REG_ADSPCS);
-+
-+	is_enable = (val & CNL_ADSPCS_CPA(core_mask)) &&
-+			(val & CNL_ADSPCS_SPA(core_mask)) &&
-+			!(val & CNL_ADSPCS_CRST(core_mask)) &&
-+			!(val & CNL_ADSPCS_CSTALL(core_mask));
-+
-+	dev_dbg(ctx->dev, "DSP core(s) enabled? %d: core_mask %#x\n",
-+		is_enable, core_mask);
-+
-+	return is_enable;
-+}
-+
-+static int cnl_dsp_reset_core(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	/* stall core */
-+	sst_dsp_shim_update_bits_unlocked(ctx, CNL_ADSP_REG_ADSPCS,
-+			CNL_ADSPCS_CSTALL(core_mask),
-+			CNL_ADSPCS_CSTALL(core_mask));
-+
-+	/* set reset state */
-+	return cnl_dsp_core_set_reset_state(ctx, core_mask);
-+}
-+
-+static int cnl_dsp_start_core(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	int ret;
-+
-+	/* unset reset state */
-+	ret = cnl_dsp_core_unset_reset_state(ctx, core_mask);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* run core */
-+	sst_dsp_shim_update_bits_unlocked(ctx, CNL_ADSP_REG_ADSPCS,
-+				CNL_ADSPCS_CSTALL(core_mask), 0);
-+
-+	if (!is_cnl_dsp_core_enable(ctx, core_mask)) {
-+		cnl_dsp_reset_core(ctx, core_mask);
-+		dev_err(ctx->dev, "DSP core mask %#x enable failed\n",
-+			core_mask);
-+		ret = -EIO;
-+	}
-+
+ 		ret = skl_init_module(ctx, mconfig);
+ 		if (ret < 0) {
+ 			skl_put_pvt_id(ctx, uuid_mod, &mconfig->id.pvt_id);
+-			return ret;
++			goto err;
+ 		}
+ 		skl_tplg_alloc_pipe_mcps(skl, mconfig);
+ 		ret = skl_tplg_set_module_params(w, ctx);
+ 		if (ret < 0)
+-			return ret;
++			goto err;
+ 	}
+ 
+ 	return 0;
++err:
++	skl_dsp_put_core(ctx->dsp, mconfig->core_id);
 +	return ret;
-+}
+ }
+ 
+ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
+ 	 struct skl_pipe *pipe)
+ {
+-	int ret;
++	int ret = 0;
+ 	struct skl_pipe_module *w_module = NULL;
+ 	struct skl_module_cfg *mconfig = NULL;
+ 
+@@ -630,10 +641,17 @@ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
+ 				return -EIO;
+ 		}
+ 		skl_put_pvt_id(ctx, uuid_mod, &mconfig->id.pvt_id);
 +
-+static int cnl_dsp_core_power_up(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	/* update bits */
-+	sst_dsp_shim_update_bits_unlocked(ctx, CNL_ADSP_REG_ADSPCS,
-+					  CNL_ADSPCS_SPA(core_mask),
-+					  CNL_ADSPCS_SPA(core_mask));
-+
-+	/* poll with timeout to check if operation successful */
-+	return sst_dsp_register_poll(ctx, CNL_ADSP_REG_ADSPCS,
-+				    CNL_ADSPCS_CPA(core_mask),
-+				    CNL_ADSPCS_CPA(core_mask),
-+				    CNL_DSP_PU_TO,
-+				    "Power up");
-+}
-+
-+static int cnl_dsp_core_power_down(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	/* update bits */
-+	sst_dsp_shim_update_bits_unlocked(ctx, CNL_ADSP_REG_ADSPCS,
-+					CNL_ADSPCS_SPA(core_mask), 0);
-+
-+	/* poll with timeout to check if operation successful */
-+	return sst_dsp_register_poll(ctx,
-+			CNL_ADSP_REG_ADSPCS,
-+			CNL_ADSPCS_CPA(core_mask),
-+			0,
-+			CNL_DSP_PD_TO,
-+			"Power down");
-+}
-+
-+int cnl_dsp_enable_core(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	int ret;
-+
-+	/* power up */
-+	ret = cnl_dsp_core_power_up(ctx, core_mask);
-+	if (ret < 0) {
-+		dev_dbg(ctx->dev, "DSP core mask %#x power up failed",
-+			core_mask);
-+		return ret;
-+	}
-+
-+	return cnl_dsp_start_core(ctx, core_mask);
-+}
-+
-+int cnl_dsp_disable_core(struct sst_dsp *ctx, unsigned int core_mask)
-+{
-+	int ret;
-+
-+	ret = cnl_dsp_reset_core(ctx, core_mask);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "DSP core mask %#x reset failed\n",
-+			core_mask);
-+		return ret;
-+	}
-+
-+	/* power down core*/
-+	ret = cnl_dsp_core_power_down(ctx, core_mask);
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "DSP core mask %#x power down failed\n",
-+			core_mask);
-+		return ret;
-+	}
-+
-+	if (is_cnl_dsp_core_enable(ctx, core_mask)) {
-+		dev_err(ctx->dev, "DSP core mask %#x disable failed\n",
-+			core_mask);
-+		ret = -EIO;
-+	}
-+
++		ret = skl_dsp_put_core(ctx->dsp, mconfig->core_id);
++		if (ret < 0) {
++			/* don't return; continue with other modules */
++			dev_err(ctx->dev, "Failed to sleep core %d ret=%d\n",
++				mconfig->core_id, ret);
++		}
+ 	}
+ 
+ 	/* no modules to unload in this path, so return */
+-	return 0;
 +	return ret;
-+}
-+
-+irqreturn_t cnl_dsp_sst_interrupt(int irq, void *dev_id)
-+{
-+	struct sst_dsp *ctx = dev_id;
-+	u32 val;
-+	irqreturn_t ret = IRQ_NONE;
-+
-+	spin_lock(&ctx->spinlock);
-+
-+	val = sst_dsp_shim_read_unlocked(ctx, CNL_ADSP_REG_ADSPIS);
-+	ctx->intr_status = val;
-+
-+	if (val == 0xffffffff) {
-+		spin_unlock(&ctx->spinlock);
-+		return IRQ_NONE;
-+	}
-+
-+	if (val & CNL_ADSPIS_IPC) {
-+		cnl_ipc_int_disable(ctx);
-+		ret = IRQ_WAKE_THREAD;
-+	}
-+
-+	spin_unlock(&ctx->spinlock);
-+
-+	return ret;
-+}
-+
-+void cnl_dsp_free(struct sst_dsp *dsp)
-+{
-+	cnl_ipc_int_disable(dsp);
-+
-+	free_irq(dsp->irq, dsp);
-+	cnl_ipc_op_int_disable(dsp);
-+	cnl_dsp_disable_core(dsp, SKL_DSP_CORE0_MASK);
-+}
-+EXPORT_SYMBOL_GPL(cnl_dsp_free);
-+
-+void cnl_ipc_int_enable(struct sst_dsp *ctx)
-+{
-+	sst_dsp_shim_update_bits(ctx, CNL_ADSP_REG_ADSPIC,
-+				 CNL_ADSPIC_IPC, CNL_ADSPIC_IPC);
-+}
-+
-+void cnl_ipc_int_disable(struct sst_dsp *ctx)
-+{
-+	sst_dsp_shim_update_bits_unlocked(ctx, CNL_ADSP_REG_ADSPIC,
-+					  CNL_ADSPIC_IPC, 0);
-+}
-+
-+void cnl_ipc_op_int_enable(struct sst_dsp *ctx)
-+{
-+	/* enable IPC DONE interrupt */
-+	sst_dsp_shim_update_bits(ctx, CNL_ADSP_REG_HIPCCTL,
-+				 CNL_ADSP_REG_HIPCCTL_DONE,
-+				 CNL_ADSP_REG_HIPCCTL_DONE);
-+
-+	/* enable IPC BUSY interrupt */
-+	sst_dsp_shim_update_bits(ctx, CNL_ADSP_REG_HIPCCTL,
-+				 CNL_ADSP_REG_HIPCCTL_BUSY,
-+				 CNL_ADSP_REG_HIPCCTL_BUSY);
-+}
-+
-+void cnl_ipc_op_int_disable(struct sst_dsp *ctx)
-+{
-+	/* disable IPC DONE interrupt */
-+	sst_dsp_shim_update_bits(ctx, CNL_ADSP_REG_HIPCCTL,
-+				 CNL_ADSP_REG_HIPCCTL_DONE, 0);
-+
-+	/* disable IPC BUSY interrupt */
-+	sst_dsp_shim_update_bits(ctx, CNL_ADSP_REG_HIPCCTL,
-+				 CNL_ADSP_REG_HIPCCTL_BUSY, 0);
-+}
-+
-+bool cnl_ipc_int_status(struct sst_dsp *ctx)
-+{
-+	return sst_dsp_shim_read_unlocked(ctx, CNL_ADSP_REG_ADSPIS) &
-+							CNL_ADSPIS_IPC;
-+}
-+
-+void cnl_ipc_free(struct sst_generic_ipc *ipc)
-+{
-+	cnl_ipc_op_int_disable(ipc->dsp);
-+	sst_ipc_fini(ipc);
-+}
-diff --git a/sound/soc/intel/skylake/cnl-sst-dsp.h b/sound/soc/intel/skylake/cnl-sst-dsp.h
-new file mode 100644
-index 000000000000..2fe41b137a2c
---- /dev/null
-+++ b/sound/soc/intel/skylake/cnl-sst-dsp.h
-@@ -0,0 +1,106 @@
-+/*
-+ * Cannonlake SST DSP Support
-+ *
-+ * Copyright (C) 2016-17, Intel Corporation.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as version 2, as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ */
-+
-+#ifndef __CNL_SST_DSP_H__
-+#define __CNL_SST_DSP_H__
-+
-+struct sst_dsp;
-+struct skl_sst;
-+struct sst_dsp_device;
-+struct sst_generic_ipc;
-+
-+/* Intel HD Audio General DSP Registers */
-+#define CNL_ADSP_GEN_BASE		0x0
-+#define CNL_ADSP_REG_ADSPCS		(CNL_ADSP_GEN_BASE + 0x04)
-+#define CNL_ADSP_REG_ADSPIC		(CNL_ADSP_GEN_BASE + 0x08)
-+#define CNL_ADSP_REG_ADSPIS		(CNL_ADSP_GEN_BASE + 0x0c)
-+
-+/* Intel HD Audio Inter-Processor Communication Registers */
-+#define CNL_ADSP_IPC_BASE               0xc0
-+#define CNL_ADSP_REG_HIPCTDR            (CNL_ADSP_IPC_BASE + 0x00)
-+#define CNL_ADSP_REG_HIPCTDA            (CNL_ADSP_IPC_BASE + 0x04)
-+#define CNL_ADSP_REG_HIPCTDD            (CNL_ADSP_IPC_BASE + 0x08)
-+#define CNL_ADSP_REG_HIPCIDR            (CNL_ADSP_IPC_BASE + 0x10)
-+#define CNL_ADSP_REG_HIPCIDA            (CNL_ADSP_IPC_BASE + 0x14)
-+#define CNL_ADSP_REG_HIPCIDD            (CNL_ADSP_IPC_BASE + 0x18)
-+#define CNL_ADSP_REG_HIPCCTL            (CNL_ADSP_IPC_BASE + 0x28)
-+
-+/* HIPCTDR */
-+#define CNL_ADSP_REG_HIPCTDR_BUSY	BIT(31)
-+
-+/* HIPCTDA */
-+#define CNL_ADSP_REG_HIPCTDA_DONE	BIT(31)
-+
-+/* HIPCIDR */
-+#define CNL_ADSP_REG_HIPCIDR_BUSY	BIT(31)
-+
-+/* HIPCIDA */
-+#define CNL_ADSP_REG_HIPCIDA_DONE	BIT(31)
-+
-+/* CNL HIPCCTL */
-+#define CNL_ADSP_REG_HIPCCTL_DONE	BIT(1)
-+#define CNL_ADSP_REG_HIPCCTL_BUSY	BIT(0)
-+
-+/* CNL HIPCT */
-+#define CNL_ADSP_REG_HIPCT_BUSY		BIT(31)
-+
-+/* Intel HD Audio SRAM Window 1 */
-+#define CNL_ADSP_SRAM1_BASE		0xa0000
-+
-+#define CNL_ADSP_MMIO_LEN		0x10000
-+
-+#define CNL_ADSP_W0_STAT_SZ		0x1000
-+
-+#define CNL_ADSP_W0_UP_SZ		0x1000
-+
-+#define CNL_ADSP_W1_SZ			0x1000
-+
-+#define CNL_FW_STS_MASK			0xf
-+
-+#define CNL_ADSPIC_IPC			0x1
-+#define CNL_ADSPIS_IPC			0x1
-+
-+#define CNL_DSP_CORES		4
-+#define CNL_DSP_CORES_MASK	((1 << CNL_DSP_CORES) - 1)
-+
-+/* core reset - asserted high */
-+#define CNL_ADSPCS_CRST_SHIFT	0
-+#define CNL_ADSPCS_CRST(x)	(x << CNL_ADSPCS_CRST_SHIFT)
-+
-+/* core run/stall - when set to 1 core is stalled */
-+#define CNL_ADSPCS_CSTALL_SHIFT	8
-+#define CNL_ADSPCS_CSTALL(x)	(x << CNL_ADSPCS_CSTALL_SHIFT)
-+
-+/* set power active - when set to 1 turn core on */
-+#define CNL_ADSPCS_SPA_SHIFT	16
-+#define CNL_ADSPCS_SPA(x)	(x << CNL_ADSPCS_SPA_SHIFT)
-+
-+/* current power active - power status of cores, set by hardware */
-+#define CNL_ADSPCS_CPA_SHIFT	24
-+#define CNL_ADSPCS_CPA(x)	(x << CNL_ADSPCS_CPA_SHIFT)
-+
-+int cnl_dsp_enable_core(struct sst_dsp *ctx, unsigned int core);
-+int cnl_dsp_disable_core(struct sst_dsp *ctx, unsigned int core);
-+irqreturn_t cnl_dsp_sst_interrupt(int irq, void *dev_id);
-+void cnl_dsp_free(struct sst_dsp *dsp);
-+
-+void cnl_ipc_int_enable(struct sst_dsp *ctx);
-+void cnl_ipc_int_disable(struct sst_dsp *ctx);
-+void cnl_ipc_op_int_enable(struct sst_dsp *ctx);
-+void cnl_ipc_op_int_disable(struct sst_dsp *ctx);
-+bool cnl_ipc_int_status(struct sst_dsp *ctx);
-+void cnl_ipc_free(struct sst_generic_ipc *ipc);
-+
-+#endif /*__CNL_SST_DSP_H__*/
+ }
+ 
+ /*
 -- 
 2.13.2
