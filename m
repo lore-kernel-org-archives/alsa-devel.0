@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cnl: Unstatify common ipc
-	functions" to the asoc tree
-Date: Thu, 03 Aug 2017 17:30:10 +0100
-Message-ID: <E1ddJ0k-0002Uk-6Z@debutante>
-References: <20170802162120.8935-7-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Move platform specific
+	init to platform dsp_init()" to the asoc tree
+Date: Thu, 03 Aug 2017 17:30:13 +0100
+Message-ID: <E1ddJ0n-0002Vw-8l@debutante>
+References: <20170802162120.8935-6-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B26A267411
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:20 +0200 (CEST)
-In-Reply-To: <20170802162120.8935-7-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA65826741F
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:22 +0200 (CEST)
+In-Reply-To: <20170802162120.8935-6-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cnl: Unstatify common ipc functions
+   ASoC: Intel: Skylake: Move platform specific init to platform dsp_init()
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,82 @@ to this mail.
 Thanks,
 Mark
 
->From 4bdb04f0e1b7600b87a92b4f98ba5490ceffdf4f Mon Sep 17 00:00:00 2001
+>From 2eed1b024a11b497766604ee8f95e22711859af2 Mon Sep 17 00:00:00 2001
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Wed, 2 Aug 2017 21:51:17 +0530
-Subject: [PATCH] ASoC: Intel: cnl: Unstatify common ipc functions
+Date: Wed, 2 Aug 2017 21:51:16 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Move platform specific init to platform
+ dsp_init()
 
-Common ipc functions can be reused for cnl, so make them non-static.
+Move ipc_init() from helper function to respective platform's dsp_init()
+as ipc_init() per platform can be different.
 
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 6 +++---
- sound/soc/intel/skylake/skl-sst-ipc.h | 6 ++++++
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c       | 4 ++++
+ sound/soc/intel/skylake/skl-sst-utils.c | 6 +-----
+ sound/soc/intel/skylake/skl-sst.c       | 4 ++++
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 498b15345b1a..5234fafb758a 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -283,7 +283,7 @@ enum skl_ipc_module_msg {
- 	IPC_MOD_SET_D0IX = 8
- };
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index c404a42b670a..71042aceb25f 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -581,6 +581,10 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
+ 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
  
--static void skl_ipc_tx_data_copy(struct ipc_message *msg, char *tx_data,
-+void skl_ipc_tx_data_copy(struct ipc_message *msg, char *tx_data,
- 		size_t tx_size)
++	ret = skl_ipc_init(dev, skl);
++	if (ret)
++		return ret;
++
+ 	/* set the D0i3 check */
+ 	skl->ipc.ops.check_dsp_lp_on = skl_ipc_check_D0i0;
+ 
+diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+index 81ee251881b4..369ef7ce981c 100644
+--- a/sound/soc/intel/skylake/skl-sst-utils.c
++++ b/sound/soc/intel/skylake/skl-sst-utils.c
+@@ -368,7 +368,6 @@ int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
  {
- 	if (tx_size)
-@@ -347,7 +347,7 @@ static struct ipc_message *skl_ipc_reply_get_msg(struct sst_generic_ipc *ipc,
+ 	struct skl_sst *skl;
+ 	struct sst_dsp *sst;
+-	int ret;
  
+ 	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
+ 	if (skl == NULL)
+@@ -388,15 +387,12 @@ int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
+ 	sst->dsp_ops = dsp_ops;
+ 	init_waitqueue_head(&skl->mod_load_wait);
+ 	INIT_LIST_HEAD(&sst->module_list);
+-	ret = skl_ipc_init(dev, skl);
+-	if (ret)
+-		return ret;
+ 
+ 	skl->is_first_boot = true;
+ 	if (dsp)
+ 		*dsp = skl;
+ 
+-	return ret;
++	return 0;
  }
  
--static int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
-+int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_header header)
- {
- 	struct skl_sst *skl = container_of(ipc, struct skl_sst, ipc);
-@@ -406,7 +406,7 @@ static int skl_ipc_set_reply_error_code(u32 reply)
- 	}
- }
+ int skl_prepare_lib_load(struct skl_sst *skl, struct skl_lib_info *linfo,
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index fd99e74cda03..6cc586d3f03b 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -561,6 +561,10 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
+ 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
  
--static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
-+void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_header header)
- {
- 	struct ipc_message *msg;
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index e485e8f5ea2c..55f2d2ce09df 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -212,4 +212,10 @@ void skl_ipc_free(struct sst_generic_ipc *ipc);
- int skl_ipc_init(struct device *dev, struct skl_sst *skl);
- void skl_clear_module_cnt(struct sst_dsp *ctx);
++	ret = skl_ipc_init(dev, skl);
++	if (ret)
++		return ret;
++
+ 	sst->fw_ops = skl_fw_ops;
  
-+void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
-+		struct skl_ipc_header header);
-+int skl_ipc_process_notification(struct sst_generic_ipc *ipc,
-+		struct skl_ipc_header header);
-+void skl_ipc_tx_data_copy(struct ipc_message *msg, char *tx_data,
-+		size_t tx_size);
- #endif /* __SKL_IPC_H */
+ 	return 0;
 -- 
 2.13.2
