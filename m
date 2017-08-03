@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cnl: add pci id for cnl" to the
-	asoc tree
-Date: Thu, 03 Aug 2017 17:30:00 +0100
-Message-ID: <E1ddJ0a-0002Rs-Q1@debutante>
-References: <20170802162120.8935-10-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: cnl: add dsp ops for cannonlake"
+	to the asoc tree
+Date: Thu, 03 Aug 2017 17:30:03 +0100
+Message-ID: <E1ddJ0d-0002St-Tp@debutante>
+References: <20170802162120.8935-9-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 266F8266D9B
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:11 +0200 (CEST)
-In-Reply-To: <20170802162120.8935-10-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C141E2673F3
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:14 +0200 (CEST)
+In-Reply-To: <20170802162120.8935-9-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cnl: add pci id for cnl
+   ASoC: Intel: cnl: add dsp ops for cannonlake
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 86d7ce3dd717e09a442d35dae3f9c62c03e024d8 Mon Sep 17 00:00:00 2001
+>From b003a345dc67c7a1c468ad8ff10b24d7dd12e12c Mon Sep 17 00:00:00 2001
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Wed, 2 Aug 2017 21:51:20 +0530
-Subject: [PATCH] ASoC: Intel: cnl: add pci id for cnl
+Date: Wed, 2 Aug 2017 21:51:19 +0530
+Subject: [PATCH] ASoC: Intel: cnl: add dsp ops for cannonlake
 
-Enable cnl by adding its pci id in skl_ids[].
+Add cannonlake dsp support by adding its dsp_ops.
 
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/intel/skylake/skl-messages.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ab651517e8b8..e612a4097275 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -996,6 +996,14 @@ static struct sst_acpi_mach sst_glk_devdata[] = {
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index c6b60ee5b196..bfb3332a77ca 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -22,6 +22,7 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include "skl-sst-dsp.h"
++#include "cnl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ #include "skl.h"
+ #include "../common/sst-dsp.h"
+@@ -231,6 +232,14 @@ static const struct skl_dsp_ops dsp_ops[] = {
+ 		.init_fw = bxt_sst_init_fw,
+ 		.cleanup = bxt_sst_dsp_cleanup
  	},
++	{
++		.id = 0x9dc8,
++		.num_cores = 4,
++		.loader_ops = bxt_get_loader_ops,
++		.init = cnl_sst_dsp_init,
++		.init_fw = cnl_sst_init_fw,
++		.cleanup = cnl_sst_dsp_cleanup
++	},
  };
  
-+static const struct sst_acpi_mach sst_cnl_devdata[] = {
-+	{
-+		.id = "INT34C2",
-+		.drv_name = "cnl_rt274",
-+		.fw_filename = "intel/dsp_fw_cnl.bin",
-+	},
-+};
-+
- /* PCI IDs */
- static const struct pci_device_id skl_ids[] = {
- 	/* Sunrise Point-LP */
-@@ -1010,6 +1018,9 @@ static const struct pci_device_id skl_ids[] = {
- 	/* GLK */
- 	{ PCI_DEVICE(0x8086, 0x3198),
- 		.driver_data = (unsigned long)&sst_glk_devdata},
-+	/* CNL */
-+	{ PCI_DEVICE(0x8086, 0x9dc8),
-+		.driver_data = (unsigned long)&sst_cnl_devdata},
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, skl_ids);
+ const struct skl_dsp_ops *skl_get_dsp_ops(int pci_id)
 -- 
 2.13.2
