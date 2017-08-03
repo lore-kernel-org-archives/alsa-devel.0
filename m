@@ -1,22 +1,25 @@
-From: Cheng-yi Chiang <cychiang@chromium.org>
-Subject: Re: [PATCH v2] ASoC: Intel: Reset hw_ptr on resume
-	trigger
-Date: Thu, 3 Aug 2017 21:47:06 +0800
-Message-ID: <CAFv8NwJ05HS10XN34-LUuhk744PxXZvGaW_bwbb_uFTf5f6Y-Q@mail.gmail.com>
-References: <20170731104734.5776-1-cychiang@chromium.org>
- <20170801033006.GL3053@localhost>
- <60e20968-28b2-dd91-c30c-318aee9d298f@linux.intel.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Problem with DoP mode in Chord 2qute USB audio
+Date: Thu, 3 Aug 2017 17:00:59 +0200
+Message-ID: <939956ee-4e91-f726-84ee-59a9b9ddafd1@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f47.google.com (mail-it0-f47.google.com
- [209.85.214.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DA96266847
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 15:47:38 +0200 (CEST)
-Received: by mail-it0-f47.google.com with SMTP id h199so9378038ith.0
- for <alsa-devel@alsa-project.org>; Thu, 03 Aug 2017 06:47:38 -0700 (PDT)
-In-Reply-To: <60e20968-28b2-dd91-c30c-318aee9d298f@linux.intel.com>
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72ECE266847
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 17:01:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id 1E319A1F7ABD8
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 17:01:00 +0200 (CEST)
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id dJNkSznEzYTx for <alsa-devel@alsa-project.org>;
+ Thu,  3 Aug 2017 17:01:00 +0200 (CEST)
+Received: from [192.168.100.32] (unknown [192.168.100.32])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id E3977A1F7ABD6
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 17:00:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +29,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Keyon Jie <yang.jie@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "U . Artie Eoff" <ullysses.a.eoff@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-K0phcmtrbyBOaWt1bGEKCkhpIEtleW9uLAogIFNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseS4gSSBz
-cGVudCBzb21lIHRpbWUgdHJ5aW5nIHRvIGZpZ3VyZSBvdXQKcHJldmlvdXMgc3VzcGVuZCByZXN1
-bWUgcGF0Y2ggaW4gQllULgoKICBGcm9tIHRoZSBwYXRjaCBmb3IgcmVzdG9yZV9zdHJlYW0gZmxh
-ZzoKaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC80NzA2NjExLywgIHRoZSByZXN0
-b3JlX3N0cmVhbSBmbGFnCm1lYW5zIHRoYXQgQURTUCB3YXMgaW4gcG93ZXIgb2ZmIHN0YXRlIGR1
-cmluZyBzeXN0ZW0gc3VzcGVuZC9yZXN1bWUKY3ljbGUuIFlvdSBhcmUgcmlnaHQgdGhhdCB0aGUg
-cmVzdW1pbmcgd29uJ3QgcGxheSBmcm9tIHRoZSBwYXVzaW5nCnBvaW50IG9mIHRoZSBsYXN0IHN1
-c3BlbmRpbmcuIEkgYW0gbm90IHN1cmUgd2hldGhlciBpdCBpcyBpbnRlbmRlZCBpbgpBRFNQIGNv
-bWluZyBiYWNrIGZyb20gcG93ZXIgb2ZmIGNhc2UuIEphcmtrbyBhbmQgVWxseXNzZXMgbWlnaHQg
-aGF2ZQpiZXR0ZXIgaWRlYSBvbiB0aGlzLgoKSW4gbXkgdGVzdGluZyBJIGhhdmUgZm91bmQgdGhh
-dCB0aGlzIHBhdGNoIHNvbWV0aW1lcyBjYXVzZXMgcGxheWJhY2sKZmFpbHVyZSB1cG9uIHJlc3Vt
-ZS4gSSBoYXZlIHB1dCB0aGUgbG9ncyBpbgpodHRwczovL2J1Z3MuY2hyb21pdW0ub3JnL3AvY2hy
-b21pdW0vaXNzdWVzL2RldGFpbD9pZD03NTIxMDcuIEkgdGhpbmsKd2Ugc2hvdWxkIG5vdCBtZXJn
-ZSB0aGlzIHVudGlsIGl0IGlzIHJlc29sdmVkLiBJIGhhdmUgY2MnZWQgSW50ZWwKZm9sa3Mgb24g
-dGhlIGlzc3VlLgoKVGhhbmtzIQoKT24gVHVlLCBBdWcgMSwgMjAxNyBhdCAxOjA0IFBNLCBLZXlv
-biBKaWUgPHlhbmcuamllQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4KPiBPbiAyMDE35bm0MDjm
-nIgwMeaXpSAxMTozMCwgVmlub2QgS291bCB3cm90ZToKPj4KPj4gT24gTW9uLCBKdWwgMzEsIDIw
-MTcgYXQgMDY6NDc6MzRQTSArMDgwMCwgQ2hlbmctWWkgQ2hpYW5nIHdyb3RlOgo+Pj4KPj4+IEZy
-b206ICJVLiBBcnRpZSBFb2ZmIiA8dWxseXNzZXMuYS5lb2ZmQGludGVsLmNvbT4KPj4+Cj4+PiBS
-ZXNldCB0aGUgaHdfcHRyIGJlZm9yZSBxdWV1aW5nIHRoZSByZXN0b3JlX3N0cmVhbV9jb250ZXh0
-Cj4+PiB3b3JrIHRvIGVyYWRpY2F0ZSBhIG5hc3R5IHdoaXRlIGF1ZGlvIG5vaXNlIG9uIHJlc3Vt
-ZS4KPj4KPj4KPj4gTGlhbSwgSmllPyBUaGlzIG9uIGxlZ2FjeSBCWVQgZHJpdmVyLi4KPj4KPj4+
-Cj4+PiBUZXN0ZWQtYnk6IENoZW5nLVlpIENoaWFuZyA8Y3ljaGlhbmdAY2hyb21pdW0ub3JnPgo+
-Pj4gU2lnbmVkLW9mZi1ieTogVS4gQXJ0aWUgRW9mZiA8dWxseXNzZXMuYS5lb2ZmQGludGVsLmNv
-bT4KPj4+IFNpZ25lZC1vZmYtYnk6IENoZW5nLVlpIENoaWFuZyA8Y3ljaGlhbmdAY2hyb21pdW0u
-b3JnPgo+Pj4gLS0tCj4+PiAgIHNvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5dHJhaWwt
-cGNtLmMgfCA0ICsrKy0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwv
-c3N0LWJheXRyYWlsLXBjbS5jCj4+PiBiL3NvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5
-dHJhaWwtcGNtLmMKPj4+IGluZGV4IDQ3NjVhZDQ3NDU0NC4uZTBkYjcwNzBjZDQyIDEwMDY0NAo+
-Pj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1iYXl0cmFpbC1wY20uYwo+Pj4g
-KysrIGIvc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1iYXl0cmFpbC1wY20uYwo+Pj4gQEAg
-LTE4Nyw4ICsxODcsMTAgQEAgc3RhdGljIGludCBzc3RfYnl0X3BjbV90cmlnZ2VyKHN0cnVjdAo+
-Pj4gc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwgaW50IGNtZCkKPj4+ICAgICAgICAgICAg
-ICAgICBzc3RfYnl0X3N0cmVhbV9zdGFydChieXQsIHBjbV9kYXRhLT5zdHJlYW0sIDApOwo+Pj4g
-ICAgICAgICAgICAgICAgIGJyZWFrOwo+Pj4gICAgICAgICBjYXNlIFNORFJWX1BDTV9UUklHR0VS
-X1JFU1VNRToKPj4+IC0gICAgICAgICAgICAgICBpZiAocGRhdGEtPnJlc3RvcmVfc3RyZWFtID09
-IHRydWUpCj4+PiArICAgICAgICAgICAgICAgaWYgKHBkYXRhLT5yZXN0b3JlX3N0cmVhbSA9PSB0
-cnVlKSB7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBwY21fZGF0YS0+aHdfcHRyID0gMDsK
-Pgo+Cj4gV29uJ3QgdGhpcyBicmVhayB0aGUgaHdfcHRyIGFuZCBtYWtlIHRoZSByZXN1bWluZyB3
-b24ndCBwbGF5IGZyb20gdGhlCj4gcGF1c2luZyBwb2ludCBvZiB0aGUgbGFzdCBzdXNwZW5kaW5n
-Pwo+Cj4gVGhhbmtzLAo+IH5LZXlvbgo+Cj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgIHNj
-aGVkdWxlX3dvcmsoJnBjbV9kYXRhLT53b3JrKTsKPj4+ICsgICAgICAgICAgICAgICB9Cj4+PiAg
-ICAgICAgICAgICAgICAgZWxzZQo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgc3N0X2J5dF9z
-dHJlYW1fcmVzdW1lKGJ5dCwgcGNtX2RhdGEtPnN0cmVhbSk7Cj4+PiAgICAgICAgICAgICAgICAg
-YnJlYWs7Cj4+PiAtLQo+Pj4gMi4xMi4yCj4+Pgo+Pgo+Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hello,
+
+I am working with owner of Chord 2qute on the following problem (FYI 
+long discussion at 
+http://www.diyaudio.com/forums/pc-based/310578-chord-2qute-dop-challenge.html):
+
+Regular 176.4/24 PCM plays OK, however 176.4/24 DoP produces random 1-2 
+sec sound interruptions every several tens of seconds. Tested players - 
+squeezelite, MPD. The soundcard has its own power supply.
+
+I googled out several reports of simlar problem with this soundcard, 
+mostly on linux (did not see any problem report for OSX).
+
+alsainfo: http://www.fyn13.dk/diy/alsa_output_chord_2qute_4.4.0-62.txt
+
+lsusb -v : http://www.fyn13.dk/diy/chord_lsusb.txt
+
+hw_params and stream0 files are identical for both 176.4/24 PCM and DoP:
+
+/proc/asound/card1/pcm0p/sub0/hw_params:
+access: RW_INTERLEAVED
+format: S32_LE
+subformat: STD
+channels: 2
+rate: 176400 (176400/1)
+period_size: 1764
+buffer_size: 7056
+
+/proc/asound/card1/stream0:
+Chord Electronics Ltd 2Qute at usb-0000:00:14.0-2, high speed : USB Audio
+Playback:
+   Status: Running
+     Interface = 2
+     Altset = 1
+     Packet Size = 224
+     Momentary freq = 176402 Hz (0x16.0ce0)
+     Feedback Format = 16.16
+   Interface 2
+     Altset 1
+     Format: S32_LE
+     Channels: 2
+     Endpoint: 5 OUT (ASYNC)
+     Rates: 32000, 44100, 48000, 88200, 96000, 176400, 192000, 352800, 
+384000
+     Data packet interval: 125 us
+
+We checked for XRUNs, none were produced during the interruption in DoP 
+playback.
+
+Powerful 4-core CPU Intel Pentium 4405U @ 2.10GHz, idle > 99% of time in 
+DoP playback.
+
+However, the IRQs rate of the onboard XHCI controller is 8k/s for both 
+PCM and DoP playback which corresponds to 1 IRQ every 125us frame. The 
+rate drops to almost zero when playback is stopped in the player - 
+clearly it is related to the soundcard.  Could this perhaps be a sign of 
+the problem? Please is there a way to lower the rate, like the old 
+removed param nrpacks of the usb-audio driver?
+
+I suspect a buggy XMOS firmware. I very much appreciate any suggestion 
+or help, either with fixing in software, or further diagnostics to 
+support potential claim to the manufacturer.
+
+Thank you very much. With regards,
+
+
+Pavel.
