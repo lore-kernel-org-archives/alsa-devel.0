@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/5] ALSA: control: use counting semaphore as
-	write lock for TLV write/command operations
-Date: Thu,  3 Aug 2017 20:20:41 +0900
-Message-ID: <20170803112044.17138-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/5] ALSA: control: obsolete user_ctl_lock
+Date: Thu,  3 Aug 2017 20:20:42 +0900
+Message-ID: <20170803112044.17138-4-o-takashi@sakamocchi.jp>
 References: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BEC52266FC9
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C1CCF267346
  for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 13:20:49 +0200 (CEST)
 In-Reply-To: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,140 +24,129 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In ALSA control interface, applications can execute three types of request
-for Type-Length-Value (TLV) data to a set of elements; read, write and
-command. In ALSA control core, all of the requests are handled within read
-lock to a counting semaphore, therefore several processes can run to access
-to the data at the same time for any purposes. This has an issue because
-write and command requests have side effect to change state of a set of
-elements for the TLV data. Concurrent access should be controlled for each
-of reference/change case.
+At a previous commit, concurrent requests for TLV data are maintained
+exclusively between read requests and write/command requests. TLV
+callback handlers in each driver has no risk from concurrent access for
+reference/change.
 
-This commit uses the counting semaphore as read lock for TLV read requests,
-while use it as write lock for TLV write/command requests. The state of a
-set of elements for the TLV data is maintained exclusively between read
-requests and write/command requests, or between write and command requests.
+In current implementation, 'struct snd_card' has a mutex to control
+concurrent accesses to user-defined element sets. This commit obsoletes it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 72 +++++++++++++++++++++++++++-------------------------
- 1 file changed, 38 insertions(+), 34 deletions(-)
+ include/sound/core.h |  2 --
+ sound/core/control.c | 37 +++++++++++++------------------------
+ sound/core/init.c    |  1 -
+ 3 files changed, 13 insertions(+), 27 deletions(-)
 
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 55385588eefa..357f36b5ee80 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -118,8 +118,6 @@ struct snd_card {
+ 	int user_ctl_count;		/* count of all user controls */
+ 	struct list_head controls;	/* all controls for this card */
+ 	struct list_head ctl_files;	/* active control files */
+-	struct mutex user_ctl_lock;	/* protects user controls against
+-					   concurrent access */
+ 
+ 	struct snd_info_entry *proc_root;	/* root for soundcard specific files */
+ 	struct snd_info_entry *proc_id;	/* the card id */
 diff --git a/sound/core/control.c b/sound/core/control.c
-index 31334abe673c..3648fff28138 100644
+index 3648fff28138..c1795b42796e 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1414,7 +1414,6 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
- 	struct snd_kcontrol *kctl;
- 	struct snd_kcontrol_volatile *vd;
- 	unsigned int len;
--	int err = 0;
+@@ -1095,9 +1095,7 @@ static int snd_ctl_elem_user_get(struct snd_kcontrol *kcontrol,
+ 	char *src = ue->elem_data +
+ 			snd_ctl_get_ioff(kcontrol, &ucontrol->id) * size;
  
- 	if (copy_from_user(&tlv, _tlv, sizeof(tlv)))
- 		return -EFAULT;
-@@ -1422,53 +1421,49 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
- 		return -EINVAL;
- 	if (!tlv.numid)
- 		return -EINVAL;
--	down_read(&card->controls_rwsem);
-+
- 	kctl = snd_ctl_find_numid(card, tlv.numid);
--	if (kctl == NULL) {
--		err = -ENOENT;
--		goto __kctl_end;
--	}
--	if (kctl->tlv.p == NULL) {
--		err = -ENXIO;
--		goto __kctl_end;
--	}
-+	if (kctl == NULL)
-+		return -ENOENT;
-+
-+	if (kctl->tlv.p == NULL)
-+		return -ENXIO;
-+
- 	vd = &kctl->vd[tlv.numid - kctl->id.numid];
- 	if ((op_flag == SNDRV_CTL_TLV_OP_READ &&
- 	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) == 0) ||
- 	    (op_flag == SNDRV_CTL_TLV_OP_WRITE &&
- 	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) == 0) ||
- 	    (op_flag == SNDRV_CTL_TLV_OP_CMD &&
--	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0)) {
--	    	err = -ENXIO;
--	    	goto __kctl_end;
--	}
-+	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0))
-+		return -ENXIO;
-+
- 	if (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
--		if (vd->owner != NULL && vd->owner != file) {
--			err = -EPERM;
--			goto __kctl_end;
--		}
-+		int err;
-+
-+		if (vd->owner != NULL && vd->owner != file)
-+			return -EPERM;
-+
- 		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv);
-+		if (err < 0)
-+			return err;
- 		if (err > 0) {
- 			struct snd_ctl_elem_id id = kctl->id;
- 			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_TLV, &id);
--			err = 0;
- 		}
- 	} else {
--		if (op_flag != SNDRV_CTL_TLV_OP_READ) {
--			err = -ENXIO;
--			goto __kctl_end;
--		}
-+		if (op_flag != SNDRV_CTL_TLV_OP_READ)
-+			return -ENXIO;
-+
- 		len = kctl->tlv.p[1] + 2 * sizeof(unsigned int);
--		if (tlv.length < len) {
--			err = -ENOMEM;
--			goto __kctl_end;
--		}
-+		if (tlv.length < len)
-+			return -ENOMEM;
-+
- 		if (copy_to_user(_tlv->tlv, kctl->tlv.p, len))
--			err = -EFAULT;
-+			return -EFAULT;
- 	}
--      __kctl_end:
--	up_read(&card->controls_rwsem);
--	return err;
-+
-+	return 0;
+-	mutex_lock(&ue->card->user_ctl_lock);
+ 	memcpy(&ucontrol->value, src, size);
+-	mutex_unlock(&ue->card->user_ctl_lock);
+ 	return 0;
  }
  
- static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-@@ -1510,11 +1505,20 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
- 	case SNDRV_CTL_IOCTL_SUBSCRIBE_EVENTS:
- 		return snd_ctl_subscribe_events(ctl, ip);
- 	case SNDRV_CTL_IOCTL_TLV_READ:
--		return snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_READ);
-+		down_read(&ctl->card->controls_rwsem);
-+		err = snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_READ);
-+		up_read(&ctl->card->controls_rwsem);
-+		return err;
- 	case SNDRV_CTL_IOCTL_TLV_WRITE:
--		return snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_WRITE);
-+		down_write(&ctl->card->controls_rwsem);
-+		err = snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_WRITE);
-+		up_write(&ctl->card->controls_rwsem);
-+		return err;
- 	case SNDRV_CTL_IOCTL_TLV_COMMAND:
--		return snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_CMD);
-+		down_write(&ctl->card->controls_rwsem);
-+		err = snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_CMD);
-+		up_write(&ctl->card->controls_rwsem);
-+		return err;
- 	case SNDRV_CTL_IOCTL_POWER:
- 		return -ENOPROTOOPT;
- 	case SNDRV_CTL_IOCTL_POWER_STATE:
+@@ -1110,11 +1108,9 @@ static int snd_ctl_elem_user_put(struct snd_kcontrol *kcontrol,
+ 	char *dst = ue->elem_data +
+ 			snd_ctl_get_ioff(kcontrol, &ucontrol->id) * size;
+ 
+-	mutex_lock(&ue->card->user_ctl_lock);
+ 	change = memcmp(&ucontrol->value, dst, size) != 0;
+ 	if (change)
+ 		memcpy(dst, &ucontrol->value, size);
+-	mutex_unlock(&ue->card->user_ctl_lock);
+ 	return change;
+ }
+ 
+@@ -1124,44 +1120,37 @@ static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kcontrol,
+ 				 unsigned int __user *tlv)
+ {
+ 	struct user_element *ue = kcontrol->private_data;
+-	int change = 0;
+-	void *new_data;
+ 
+ 	if (op_flag == SNDRV_CTL_TLV_OP_WRITE) {
++		int change;
++		void *new_data;
++
+ 		if (size > 1024 * 128)	/* sane value */
+ 			return -EINVAL;
+ 
+ 		new_data = memdup_user(tlv, size);
+ 		if (IS_ERR(new_data))
+ 			return PTR_ERR(new_data);
+-		mutex_lock(&ue->card->user_ctl_lock);
+ 		change = ue->tlv_data_size != size;
+ 		if (!change)
+ 			change = memcmp(ue->tlv_data, new_data, size);
+ 		kfree(ue->tlv_data);
+ 		ue->tlv_data = new_data;
+ 		ue->tlv_data_size = size;
+-		mutex_unlock(&ue->card->user_ctl_lock);
++
++		return change;
+ 	} else {
+-		int ret = 0;
++		if (!ue->tlv_data_size || !ue->tlv_data)
++			return -ENXIO;
++
++		if (size < ue->tlv_data_size)
++			return -ENOSPC;
+ 
+-		mutex_lock(&ue->card->user_ctl_lock);
+-		if (!ue->tlv_data_size || !ue->tlv_data) {
+-			ret = -ENXIO;
+-			goto err_unlock;
+-		}
+-		if (size < ue->tlv_data_size) {
+-			ret = -ENOSPC;
+-			goto err_unlock;
+-		}
+ 		if (copy_to_user(tlv, ue->tlv_data, ue->tlv_data_size))
+-			ret = -EFAULT;
+-err_unlock:
+-		mutex_unlock(&ue->card->user_ctl_lock);
+-		if (ret)
+-			return ret;
++			return -EFAULT;
++
++		return 0;
+ 	}
+-	return change;
+ }
+ 
+ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 00f2cbb76e69..f1425f9af703 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -248,7 +248,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 	INIT_LIST_HEAD(&card->devices);
+ 	init_rwsem(&card->controls_rwsem);
+ 	rwlock_init(&card->ctl_files_rwlock);
+-	mutex_init(&card->user_ctl_lock);
+ 	INIT_LIST_HEAD(&card->controls);
+ 	INIT_LIST_HEAD(&card->ctl_files);
+ 	spin_lock_init(&card->files_lock);
 -- 
 2.11.0
