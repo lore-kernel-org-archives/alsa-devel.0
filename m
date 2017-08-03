@@ -1,139 +1,90 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/5] ALSA: control: code refactoring for TLV
-	request handler to user element set
-Date: Thu,  3 Aug 2017 20:20:44 +0900
-Message-ID: <20170803112044.17138-6-o-takashi@sakamocchi.jp>
-References: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: Re: [PATCH v2 4/6] ASoC: codecs: msm8916-wcd-analog: add MBHC support
+Date: Thu, 3 Aug 2017 08:53:55 -0400
+Message-ID: <20170803125355.l5m5mk5utl4nlbwk@workotop.localdomain>
+References: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
+ <20170802170930.26083-5-srinivas.kandagatla@linaro.org>
+ <20170802233323.blx36uutaytdexvb@workotop.localdomain>
+ <56b54da2-0e87-a466-6184-ffbd85f631c4@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 3A326266FC9
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 13:20:52 +0200 (CEST)
-In-Reply-To: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <56b54da2-0e87-a466-6184-ffbd85f631c4@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-User-defined element set registers own handler to get callbacks from TLV
-ioctl handler. In the handler, execution path bifurcates depending on
-requests from user space. At write request, container in given buffer is
-registered to the element set, or replaced old TLV data. At the read
-request, the registered data is copied to user space. The command request
-is not allowed.  In current implementation, function of the handler
-includes codes for the two cases.
+On Thu, Aug 03, 2017 at 12:11:04PM +0100, Srinivas Kandagatla wrote:
+> 
+> 
+> On 03/08/17 00:33, Damien Riegel wrote:
+> > Hi Srinivas,
+> > 
+> > 
+> > On Wed, Aug 02, 2017 at 07:09:28PM +0200, srinivas.kandagatla@linaro.org wrote:
+> > > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > 
+> > > MBHC (MultiButton Headset Control) support is available in pm8921 in two
+> > > blocks, one to detect mechanical headset insertion and removal and other
+> > > block to support headset type detection and 5 button detection and othe
+> > > features like impedance calculation.
+> > > 
+> > > This patch adds support to:
+> > > 1> Support to NC and NO type of headset Jacks.
+> > > 2> Mechanical insertion and detection of headset jack.
+> > > 3> Detect a 3 pole Headphone and a 4 pole Headset.
+> > > 4> Detect 5 buttons.
+> > > 
+> > > Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+> > > headset/headphones.
+> > 
+> 
+> > Good news! This version has better results. I still have an issue where
+> > a headphone is reported as a headset when I do this sequence:
+> 
+> Hi Damien,
+> 
+> Thanks for testing..
+> 
+> 
+> > 	1. connect headset
+> > 	2. disconnect headset
+> > 	3. connect headphone
+> 
+> > Following headphone connections/disconnections are reported correctly.
+> > Note that I don't press the media key, it's wrongly detected when I pull
+> > off the cable.
+> 
+> If you do step 3 slowly there is a chance that we get KEY_MEDIA events, as
+> headphone is a 3 pole, during hp inserting we would end up shorting the MIC
+> and GND lines on the connector, as 3-pole connectors have longer GND
+> pole/connector length, this action is same as pressing MEDIA KEY.
+> 
+> The logic in the driver uses this MEDIA KEY press release as advantage to
+> detect the accessory type before hs insertion, but this logic could break if
+> we are inserting headphone slowly, which is not a normal usecase.
+> 
+> Any solution to this issue can be always break if we are doing slow
+> insertion of hs or we endup making the driver complex. I will think about
+> this once again and see how other drivers handle this usecase.
 
-This commit adds two helper functions for these cases so that readers can
-easily get the above design.
+Understood, and you're right we should keep this driver as simple as
+possible.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/control.c | 76 +++++++++++++++++++++++++++++++---------------------
- 1 file changed, 46 insertions(+), 30 deletions(-)
+I get the KEY_MEDIA event when doing step 2 (disconnecting headset), and
+I understand why it's doing that (and I think it's okay if we don't
+filter out that spurious event), but we should at least get a KEY_MEDIA
+release event at the same time as SW_{MICROPHONE,HEADPHONE}_INSERT
+removal. It doesn't really matter if I disconnect it fast or slowly,
+sometimes I'll get the KEY_MEDIA, some other times I won't.
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index d8caf3745dea..1d411b83f758 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1114,43 +1114,59 @@ static int snd_ctl_elem_user_put(struct snd_kcontrol *kcontrol,
- 	return change;
- }
- 
--static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kcontrol,
--				 int op_flag,
--				 unsigned int size,
--				 unsigned int __user *tlv)
-+static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
-+			    unsigned int size)
- {
--	struct user_element *ue = kcontrol->private_data;
-+	struct user_element *ue = kctl->private_data;
-+	unsigned int *container;
-+	int change;
- 
--	if (op_flag == SNDRV_CTL_TLV_OP_WRITE) {
--		int change;
--		void *new_data;
-+	if (size > 1024 * 128)	/* sane value */
-+		return -EINVAL;
- 
--		if (size > 1024 * 128)	/* sane value */
--			return -EINVAL;
-+	container = memdup_user(buf, size);
-+	if (IS_ERR(container))
-+		return PTR_ERR(container);
- 
--		new_data = memdup_user(tlv, size);
--		if (IS_ERR(new_data))
--			return PTR_ERR(new_data);
--		change = ue->tlv_data_size != size;
--		if (!change)
--			change = memcmp(ue->tlv_data, new_data, size);
--		kfree(ue->tlv_data);
--		ue->tlv_data = new_data;
--		ue->tlv_data_size = size;
--
--		return change;
--	} else {
--		if (!ue->tlv_data_size || !ue->tlv_data)
--			return -ENXIO;
-+	change = ue->tlv_data_size != size;
-+	if (!change)
-+		change = memcmp(ue->tlv_data, container, size);
-+	if (!change) {
-+		kfree(container);
-+		return 0;
-+	}
- 
--		if (size < ue->tlv_data_size)
--			return -ENOSPC;
-+	kfree(ue->tlv_data);
-+	ue->tlv_data = container;
-+	ue->tlv_data_size = size;
- 
--		if (copy_to_user(tlv, ue->tlv_data, ue->tlv_data_size))
--			return -EFAULT;
-+	return change;
-+}
- 
--		return 0;
--	}
-+static int read_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
-+			 unsigned int size)
-+{
-+	struct user_element *ue = kctl->private_data;
-+
-+	if (ue->tlv_data_size == 0 || ue->tlv_data == NULL)
-+		return -ENXIO;
-+
-+	if (size < ue->tlv_data_size)
-+		return -ENOSPC;
-+
-+	if (copy_to_user(buf, ue->tlv_data, ue->tlv_data_size))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kctl, int op_flag,
-+				 unsigned int size, unsigned int __user *buf)
-+{
-+	if (op_flag == SNDRV_CTL_TLV_OP_WRITE)
-+		return replace_user_tlv(kctl, buf, size);
-+	else
-+		return read_user_tlv(kctl, buf, size);
- }
- 
- static int snd_ctl_elem_init_enum_names(struct user_element *ue)
+Shouldn't mbhc_btn0_pressed be reset to false when physical removal is
+detected? I think that would solve the issue of headphone being detected
+as headset.
+
+
+Regards,
 -- 
-2.11.0
+Damien
