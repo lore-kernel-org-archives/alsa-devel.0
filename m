@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/5] ALSA: control: code refactoring TLV ioctl
-	handler
-Date: Thu,  3 Aug 2017 20:20:43 +0900
-Message-ID: <20170803112044.17138-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: control: code refactoring for TLV
+	request handler to user element set
+Date: Thu,  3 Aug 2017 20:20:44 +0900
+Message-ID: <20170803112044.17138-6-o-takashi@sakamocchi.jp>
 References: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BD20B266847
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 13:20:49 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 3A326266FC9
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 13:20:52 +0200 (CEST)
 In-Reply-To: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,180 +25,115 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In a design of ALSA control core, execution path bifurcates depending on
-target element. When a set with the target element has a handler, it's
-called. Else, registered buffer is copied to user space. These two
-operations are apparently different.  In current implementation, they're
-on the same function with a condition statement. This makes it a bit hard
-to understand conditions of each case.
+User-defined element set registers own handler to get callbacks from TLV
+ioctl handler. In the handler, execution path bifurcates depending on
+requests from user space. At write request, container in given buffer is
+registered to the element set, or replaced old TLV data. At the read
+request, the registered data is copied to user space. The command request
+is not allowed.  In current implementation, function of the handler
+includes codes for the two cases.
 
-This commit splits codes for these two cases.
+This commit adds two helper functions for these cases so that readers can
+easily get the above design.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 132 +++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 91 insertions(+), 41 deletions(-)
+ sound/core/control.c | 76 +++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 46 insertions(+), 30 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index c1795b42796e..d8caf3745dea 100644
+index d8caf3745dea..1d411b83f758 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1394,65 +1394,115 @@ static int snd_ctl_subscribe_events(struct snd_ctl_file *file, int __user *ptr)
- 	return 0;
+@@ -1114,43 +1114,59 @@ static int snd_ctl_elem_user_put(struct snd_kcontrol *kcontrol,
+ 	return change;
  }
  
-+static int call_tlv_handler(struct snd_ctl_file *file, int op_flag,
-+			    struct snd_kcontrol *kctl,
-+			    struct snd_ctl_elem_id *id,
-+			    unsigned int __user *buf, unsigned int size)
-+{
-+	static const struct {
-+		int op;
-+		int perm;
-+	} pairs[] = {
-+		{SNDRV_CTL_TLV_OP_READ,  SNDRV_CTL_ELEM_ACCESS_TLV_READ},
-+		{SNDRV_CTL_TLV_OP_WRITE, SNDRV_CTL_ELEM_ACCESS_TLV_WRITE},
-+		{SNDRV_CTL_TLV_OP_CMD,   SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND},
-+	};
-+	struct snd_kcontrol_volatile *vd = &kctl->vd[snd_ctl_get_ioff(kctl, id)];
-+	int i;
-+	int err;
-+
-+	/* Check support of the request for this element. */
-+	for (i = 0; i < ARRAY_SIZE(pairs); ++i) {
-+		if (op_flag == pairs[i].op && (vd->access & pairs[i].perm))
-+			break;
+-static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kcontrol,
+-				 int op_flag,
+-				 unsigned int size,
+-				 unsigned int __user *tlv)
++static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
++			    unsigned int size)
+ {
+-	struct user_element *ue = kcontrol->private_data;
++	struct user_element *ue = kctl->private_data;
++	unsigned int *container;
++	int change;
+ 
+-	if (op_flag == SNDRV_CTL_TLV_OP_WRITE) {
+-		int change;
+-		void *new_data;
++	if (size > 1024 * 128)	/* sane value */
++		return -EINVAL;
+ 
+-		if (size > 1024 * 128)	/* sane value */
+-			return -EINVAL;
++	container = memdup_user(buf, size);
++	if (IS_ERR(container))
++		return PTR_ERR(container);
+ 
+-		new_data = memdup_user(tlv, size);
+-		if (IS_ERR(new_data))
+-			return PTR_ERR(new_data);
+-		change = ue->tlv_data_size != size;
+-		if (!change)
+-			change = memcmp(ue->tlv_data, new_data, size);
+-		kfree(ue->tlv_data);
+-		ue->tlv_data = new_data;
+-		ue->tlv_data_size = size;
+-
+-		return change;
+-	} else {
+-		if (!ue->tlv_data_size || !ue->tlv_data)
+-			return -ENXIO;
++	change = ue->tlv_data_size != size;
++	if (!change)
++		change = memcmp(ue->tlv_data, container, size);
++	if (!change) {
++		kfree(container);
++		return 0;
 +	}
-+	if (i == ARRAY_SIZE(pairs))
-+		return -ENXIO;
-+
-+	if (kctl->tlv.c == NULL)
-+		return -ENXIO;
-+
-+	/* When locked, this is unavailable. */
-+	if (vd->owner != NULL && vd->owner != file)
-+		return -EPERM;
-+
-+	err = kctl->tlv.c(kctl, op_flag, size, buf);
-+	if (err < 0)
-+		return err;
-+
-+	if (err > 0)
-+		snd_ctl_notify(file->card, SNDRV_CTL_EVENT_MASK_TLV, id);
-+
-+	return 0;
+ 
+-		if (size < ue->tlv_data_size)
+-			return -ENOSPC;
++	kfree(ue->tlv_data);
++	ue->tlv_data = container;
++	ue->tlv_data_size = size;
+ 
+-		if (copy_to_user(tlv, ue->tlv_data, ue->tlv_data_size))
+-			return -EFAULT;
++	return change;
 +}
-+
-+static int read_tlv_buf(struct snd_kcontrol *kctl, struct snd_ctl_elem_id *id,
-+			unsigned int __user *buf, unsigned int size)
+ 
+-		return 0;
+-	}
++static int read_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
++			 unsigned int size)
 +{
-+	struct snd_kcontrol_volatile *vd = &kctl->vd[snd_ctl_get_ioff(kctl, id)];
-+	unsigned int len;
++	struct user_element *ue = kctl->private_data;
 +
-+	if (!(vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ))
++	if (ue->tlv_data_size == 0 || ue->tlv_data == NULL)
 +		return -ENXIO;
 +
-+	if (kctl->tlv.p == NULL)
-+		return -ENXIO;
++	if (size < ue->tlv_data_size)
++		return -ENOSPC;
 +
-+	len = sizeof(unsigned int) * 2 + kctl->tlv.p[1];
-+	if (size < len)
-+		return -ENOMEM;
-+
-+	if (copy_to_user(buf, kctl->tlv.p, len))
++	if (copy_to_user(buf, ue->tlv_data, ue->tlv_data_size))
 +		return -EFAULT;
 +
 +	return 0;
 +}
 +
- static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
--                             struct snd_ctl_tlv __user *_tlv,
-+			     struct snd_ctl_tlv __user *buf,
-                              int op_flag)
- {
--	struct snd_card *card = file->card;
--	struct snd_ctl_tlv tlv;
-+	struct snd_ctl_tlv header;
-+	unsigned int *container;
-+	unsigned int container_size;
- 	struct snd_kcontrol *kctl;
-+	struct snd_ctl_elem_id id;
- 	struct snd_kcontrol_volatile *vd;
--	unsigned int len;
- 
--	if (copy_from_user(&tlv, _tlv, sizeof(tlv)))
-+	if (copy_from_user(&header, buf, sizeof(header)))
- 		return -EFAULT;
--	if (tlv.length < sizeof(unsigned int) * 2)
-+
-+	/* In design of control core, numerical ID starts at 1. */
-+	if (header.numid == 0)
- 		return -EINVAL;
--	if (!tlv.numid)
-+
-+	/* At least, container should include type and length fields.  */
-+	if (header.length < sizeof(unsigned int) * 2)
- 		return -EINVAL;
-+	container_size = header.length;
-+	container = buf->tlv;
- 
--	kctl = snd_ctl_find_numid(card, tlv.numid);
-+	kctl = snd_ctl_find_numid(file->card, header.numid);
- 	if (kctl == NULL)
- 		return -ENOENT;
- 
--	if (kctl->tlv.p == NULL)
--		return -ENXIO;
--
--	vd = &kctl->vd[tlv.numid - kctl->id.numid];
--	if ((op_flag == SNDRV_CTL_TLV_OP_READ &&
--	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) == 0) ||
--	    (op_flag == SNDRV_CTL_TLV_OP_WRITE &&
--	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) == 0) ||
--	    (op_flag == SNDRV_CTL_TLV_OP_CMD &&
--	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0))
--		return -ENXIO;
-+	/* Calculate index of the element in this set. */
-+	id = kctl->id;
-+	snd_ctl_build_ioff(&id, kctl, header.numid - id.numid);
-+	vd = &kctl->vd[snd_ctl_get_ioff(kctl, &id)];
- 
- 	if (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
--		int err;
--
--		if (vd->owner != NULL && vd->owner != file)
--			return -EPERM;
--
--		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv);
--		if (err < 0)
--			return err;
--		if (err > 0) {
--			struct snd_ctl_elem_id id = kctl->id;
--			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_TLV, &id);
--		}
-+		return call_tlv_handler(file, op_flag, kctl, &id, container,
-+					container_size);
- 	} else {
--		if (op_flag != SNDRV_CTL_TLV_OP_READ)
--			return -ENXIO;
--
--		len = kctl->tlv.p[1] + 2 * sizeof(unsigned int);
--		if (tlv.length < len)
--			return -ENOMEM;
--
--		if (copy_to_user(_tlv->tlv, kctl->tlv.p, len))
--			return -EFAULT;
-+		if (op_flag == SNDRV_CTL_TLV_OP_READ) {
-+			return read_tlv_buf(kctl, &id, container,
-+					    container_size);
-+		}
- 	}
- 
--	return 0;
-+	/* Not supported. */
-+	return -ENXIO;
++static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kctl, int op_flag,
++				 unsigned int size, unsigned int __user *buf)
++{
++	if (op_flag == SNDRV_CTL_TLV_OP_WRITE)
++		return replace_user_tlv(kctl, buf, size);
++	else
++		return read_user_tlv(kctl, buf, size);
  }
  
- static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
 -- 
 2.11.0
