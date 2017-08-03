@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Add new FEs for
-	Multi-Playback & Echo-Reference" to the asoc tree
-Date: Thu, 03 Aug 2017 17:30:36 +0100
-Message-ID: <E1ddJ1A-0002cw-4k@debutante>
-References: <1501654415-24590-2-git-send-email-naveen.m@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Problem with DoP mode in Chord 2qute USB audio
+Date: Thu, 3 Aug 2017 11:32:36 -0500
+Message-ID: <9feb9dce-db60-3624-02db-f431484c6ea6@linux.intel.com>
+References: <939956ee-4e91-f726-84ee-59a9b9ddafd1@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A10A9267411
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:45 +0200 (CEST)
-In-Reply-To: <1501654415-24590-2-git-send-email-naveen.m@intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E30EF267467
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:32:38 +0200 (CEST)
+In-Reply-To: <939956ee-4e91-f726-84ee-59a9b9ddafd1@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,90 +20,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
+To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 8/3/17 10:00 AM, Pavel Hofman wrote:
+> Hello,
+>
+> I am working with owner of Chord 2qute on the following problem (FYI
+> long discussion at
+> http://www.diyaudio.com/forums/pc-based/310578-chord-2qute-dop-challenge.html):
+>
+>
+> Regular 176.4/24 PCM plays OK, however 176.4/24 DoP produces random 1-2
+> sec sound interruptions every several tens of seconds. Tested players -
+> squeezelite, MPD. The soundcard has its own power supply.
+>
+> I googled out several reports of simlar problem with this soundcard,
+> mostly on linux (did not see any problem report for OSX).
+>
+> alsainfo: http://www.fyn13.dk/diy/alsa_output_chord_2qute_4.4.0-62.txt
+>
+> lsusb -v : http://www.fyn13.dk/diy/chord_lsusb.txt
+>
+> hw_params and stream0 files are identical for both 176.4/24 PCM and DoP:
+>
+> /proc/asound/card1/pcm0p/sub0/hw_params:
+> access: RW_INTERLEAVED
+> format: S32_LE
+> subformat: STD
+> channels: 2
+> rate: 176400 (176400/1)
+> period_size: 1764
+> buffer_size: 7056
+>
+> /proc/asound/card1/stream0:
+> Chord Electronics Ltd 2Qute at usb-0000:00:14.0-2, high speed : USB Audio
+> Playback:
+>   Status: Running
+>     Interface = 2
+>     Altset = 1
+>     Packet Size = 224
+>     Momentary freq = 176402 Hz (0x16.0ce0)
+>     Feedback Format = 16.16
+>   Interface 2
+>     Altset 1
+>     Format: S32_LE
+>     Channels: 2
+>     Endpoint: 5 OUT (ASYNC)
+>     Rates: 32000, 44100, 48000, 88200, 96000, 176400, 192000, 352800,
+> 384000
+>     Data packet interval: 125 us
+>
+> We checked for XRUNs, none were produced during the interruption in DoP
+> playback.
+>
+> Powerful 4-core CPU Intel Pentium 4405U @ 2.10GHz, idle > 99% of time in
+> DoP playback.
+>
+> However, the IRQs rate of the onboard XHCI controller is 8k/s for both
+> PCM and DoP playback which corresponds to 1 IRQ every 125us frame. The
+> rate drops to almost zero when playback is stopped in the player -
+> clearly it is related to the soundcard.  Could this perhaps be a sign of
+> the problem? Please is there a way to lower the rate, like the old
+> removed param nrpacks of the usb-audio driver?
+>
+> I suspect a buggy XMOS firmware. I very much appreciate any suggestion
+> or help, either with fixing in software, or further diagnostics to
+> support potential claim to the manufacturer.
 
-   ASoC: Intel: kbl: Add new FEs for Multi-Playback & Echo-Reference
+Suggestions:
+- try with regular PCM @ 176.4Khz 24 bits to rule out issues in the way 
+DSD is depacked from the stream
+- look into the ASYNC endpoint handling. It could be that the host 
+doesn't provide enough data and the device buffer is emptied at some 
+point. USB doesn't clearly define in how much time the host needs to 
+adjust to feedback information, the implementation may have defined its 
+buffer depth assuming a quick correction.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From da3cbb40f35b4b5ab66df9a23a717a4a5df1f992 Mon Sep 17 00:00:00 2001
-From: Naveen Manohar <naveen.m@intel.com>
-Date: Wed, 2 Aug 2017 11:43:33 +0530
-Subject: [PATCH] ASoC: Intel: kbl: Add new FEs for Multi-Playback &
- Echo-Reference
-
-Adding new frontends to support:
-1. Parallel playback on 2 ports simultaneously
-2. Echo reference capture capability
-
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-pcm.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index b1f2dba642c4..debdaac2c3a2 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -675,6 +675,32 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
- {
-+	.name = "System Pin2",
-+	.ops = &skl_pcm_dai_ops,
-+	.playback = {
-+		.stream_name = "Headset Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 |
-+			SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+},
-+{
-+	.name = "Echoref Pin",
-+	.ops = &skl_pcm_dai_ops,
-+	.capture = {
-+		.stream_name = "Echoreference Capture",
-+		.channels_min = HDA_STEREO,
-+		.channels_max = HDA_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_16000 |
-+			SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+},
-+{
- 	.name = "Reference Pin",
- 	.ops = &skl_pcm_dai_ops,
- 	.capture = {
--- 
-2.13.2
+>
+> Thank you very much. With regards,
+>
+>
+> Pavel.
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
