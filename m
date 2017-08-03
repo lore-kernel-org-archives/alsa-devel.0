@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: control: queue events within locking
-	of controls_rwsem for TLV operation
-Date: Thu,  3 Aug 2017 20:20:40 +0900
-Message-ID: <20170803112044.17138-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/5] ALSA: control: use counting semaphore as
+	write lock for TLV write/command operations
+Date: Thu,  3 Aug 2017 20:20:41 +0900
+Message-ID: <20170803112044.17138-3-o-takashi@sakamocchi.jp>
 References: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BFD42266FD1
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BEC52266FC9
  for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 13:20:49 +0200 (CEST)
 In-Reply-To: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,39 +25,140 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Any control event is queued by a call of snd_ctl_notify(). This function
-adds the event to each queue of opened file data corresponding to ALSA
-control character devices. This function acquired two types of lock; a
-counting semaphore for a list of the opened file data and a spinlock for
-card data opened by the file. Typically, this function is called after
-acquiring a counting semaphore for a list of elements in the card data.
+In ALSA control interface, applications can execute three types of request
+for Type-Length-Value (TLV) data to a set of elements; read, write and
+command. In ALSA control core, all of the requests are handled within read
+lock to a counting semaphore, therefore several processes can run to access
+to the data at the same time for any purposes. This has an issue because
+write and command requests have side effect to change state of a set of
+elements for the TLV data. Concurrent access should be controlled for each
+of reference/change case.
 
-In current implementation of TLV request handler, the function is called
-after releasing the semaphore for a list of elements in the card data.
-This release is not necessarily needed.
-
-This commit removes the release to call the function within the critical
-section so that later commits are simple.
+This commit uses the counting semaphore as read lock for TLV read requests,
+while use it as write lock for TLV write/command requests. The state of a
+set of elements for the TLV data is maintained exclusively between read
+requests and write/command requests, or between write and command requests.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/core/control.c | 72 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 38 insertions(+), 34 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index ecd358213b83..31334abe673c 100644
+index 31334abe673c..3648fff28138 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1450,9 +1450,8 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
+@@ -1414,7 +1414,6 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
+ 	struct snd_kcontrol *kctl;
+ 	struct snd_kcontrol_volatile *vd;
+ 	unsigned int len;
+-	int err = 0;
+ 
+ 	if (copy_from_user(&tlv, _tlv, sizeof(tlv)))
+ 		return -EFAULT;
+@@ -1422,53 +1421,49 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
+ 		return -EINVAL;
+ 	if (!tlv.numid)
+ 		return -EINVAL;
+-	down_read(&card->controls_rwsem);
++
+ 	kctl = snd_ctl_find_numid(card, tlv.numid);
+-	if (kctl == NULL) {
+-		err = -ENOENT;
+-		goto __kctl_end;
+-	}
+-	if (kctl->tlv.p == NULL) {
+-		err = -ENXIO;
+-		goto __kctl_end;
+-	}
++	if (kctl == NULL)
++		return -ENOENT;
++
++	if (kctl->tlv.p == NULL)
++		return -ENXIO;
++
+ 	vd = &kctl->vd[tlv.numid - kctl->id.numid];
+ 	if ((op_flag == SNDRV_CTL_TLV_OP_READ &&
+ 	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_READ) == 0) ||
+ 	    (op_flag == SNDRV_CTL_TLV_OP_WRITE &&
+ 	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_WRITE) == 0) ||
+ 	    (op_flag == SNDRV_CTL_TLV_OP_CMD &&
+-	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0)) {
+-	    	err = -ENXIO;
+-	    	goto __kctl_end;
+-	}
++	     (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND) == 0))
++		return -ENXIO;
++
+ 	if (vd->access & SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
+-		if (vd->owner != NULL && vd->owner != file) {
+-			err = -EPERM;
+-			goto __kctl_end;
+-		}
++		int err;
++
++		if (vd->owner != NULL && vd->owner != file)
++			return -EPERM;
++
  		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv);
++		if (err < 0)
++			return err;
  		if (err > 0) {
  			struct snd_ctl_elem_id id = kctl->id;
--			up_read(&card->controls_rwsem);
  			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_TLV, &id);
--			return 0;
-+			err = 0;
+-			err = 0;
  		}
  	} else {
- 		if (op_flag != SNDRV_CTL_TLV_OP_READ) {
+-		if (op_flag != SNDRV_CTL_TLV_OP_READ) {
+-			err = -ENXIO;
+-			goto __kctl_end;
+-		}
++		if (op_flag != SNDRV_CTL_TLV_OP_READ)
++			return -ENXIO;
++
+ 		len = kctl->tlv.p[1] + 2 * sizeof(unsigned int);
+-		if (tlv.length < len) {
+-			err = -ENOMEM;
+-			goto __kctl_end;
+-		}
++		if (tlv.length < len)
++			return -ENOMEM;
++
+ 		if (copy_to_user(_tlv->tlv, kctl->tlv.p, len))
+-			err = -EFAULT;
++			return -EFAULT;
+ 	}
+-      __kctl_end:
+-	up_read(&card->controls_rwsem);
+-	return err;
++
++	return 0;
+ }
+ 
+ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+@@ -1510,11 +1505,20 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ 	case SNDRV_CTL_IOCTL_SUBSCRIBE_EVENTS:
+ 		return snd_ctl_subscribe_events(ctl, ip);
+ 	case SNDRV_CTL_IOCTL_TLV_READ:
+-		return snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_READ);
++		down_read(&ctl->card->controls_rwsem);
++		err = snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_READ);
++		up_read(&ctl->card->controls_rwsem);
++		return err;
+ 	case SNDRV_CTL_IOCTL_TLV_WRITE:
+-		return snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_WRITE);
++		down_write(&ctl->card->controls_rwsem);
++		err = snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_WRITE);
++		up_write(&ctl->card->controls_rwsem);
++		return err;
+ 	case SNDRV_CTL_IOCTL_TLV_COMMAND:
+-		return snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_CMD);
++		down_write(&ctl->card->controls_rwsem);
++		err = snd_ctl_tlv_ioctl(ctl, argp, SNDRV_CTL_TLV_OP_CMD);
++		up_write(&ctl->card->controls_rwsem);
++		return err;
+ 	case SNDRV_CTL_IOCTL_POWER:
+ 		return -ENOPROTOOPT;
+ 	case SNDRV_CTL_IOCTL_POWER_STATE:
 -- 
 2.11.0
