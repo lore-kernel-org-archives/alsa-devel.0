@@ -1,437 +1,285 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] drm: exynos: Add driver for HDMI audio interface
-Date: Thu, 03 Aug 2017 11:22:33 +0200
-Message-ID: <1501752153-26669-1-git-send-email-s.nawrocki@samsung.com>
-References: <CGME20170803092244epcas2p22ba6f676780e3efb2cf7ae87edaa550c@epcas2p2.samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: inki.dae@samsung.com
-Cc: krzk@kernel.org, dri-devel@lists.freedesktop.org, sw0312.kim@samsung.com, jy0922.shim@samsung.com, linux-samsung-soc@vger.kernel.org, b.zolnierkie@samsung.com, alsa-devel@alsa-project.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 4/6] ASoC: codecs: msm8916-wcd-analog:
+	add MBHC support
+Date: Thu, 3 Aug 2017 12:11:04 +0100
+Message-ID: <56b54da2-0e87-a466-6184-ffbd85f631c4@linaro.org>
+References: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
+ <20170802170930.26083-5-srinivas.kandagatla@linaro.org>
+ <20170802233323.blx36uutaytdexvb@workotop.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86027266847
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 13:11:10 +0200 (CEST)
+Received: by mail-wm0-f50.google.com with SMTP id m85so12261339wma.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Aug 2017 04:11:10 -0700 (PDT)
+In-Reply-To: <20170802233323.blx36uutaytdexvb@workotop.localdomain>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The hdmi-codec interface added in this patch is required to properly
-support HDMI audio. Currently the audio part of the SoC internal
-HDMI transmitter is configured with fixed values, which makes HDMI
-audio working by chance, only on boards equipped with external audio
-codec connected in parallel with the HDMI audio transmitter I2S input
-interface.
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-Changes since RFC version:
- - fixed hdmi-codec locking issue
- - added a comment documenting struct hdmi_contex::mutex
----
- drivers/gpu/drm/exynos/Kconfig       |   1 +
- drivers/gpu/drm/exynos/exynos_hdmi.c | 226 +++++++++++++++++++++++++++++------
- 2 files changed, 193 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/Kconfig b/drivers/gpu/drm/exynos/Kconfig
-index 1d18534..a6edbb6 100644
---- a/drivers/gpu/drm/exynos/Kconfig
-+++ b/drivers/gpu/drm/exynos/Kconfig
-@@ -3,6 +3,7 @@ config DRM_EXYNOS
- 	depends on OF && DRM && (ARCH_S3C64XX || ARCH_EXYNOS || ARCH_MULTIPLATFORM)
- 	select DRM_KMS_HELPER
- 	select VIDEOMODE_HELPERS
-+	select SND_SOC_HDMI_CODEC if SND_SOC
- 	help
- 	  Choose this option if you have a Samsung SoC EXYNOS chipset.
- 	  If M is selected the module will be called exynosdrm.
-diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
-index 06bfbe4..64eadf58 100644
---- a/drivers/gpu/drm/exynos/exynos_hdmi.c
-+++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
-@@ -40,7 +40,7 @@
- #include <linux/component.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
--
-+#include <sound/hdmi-codec.h>
- #include <drm/exynos_drm.h>
- 
- #include <media/cec-notifier.h>
-@@ -111,12 +111,19 @@ struct hdmi_driver_data {
- 	struct string_array_spec clk_muxes;
- };
- 
-+struct hdmi_audio {
-+	struct platform_device *pdev;
-+	struct hdmi_audio_infoframe infoframe;
-+	unsigned int sample_rate;
-+	unsigned int sample_width;
-+	u8 enable;
-+};
-+
- struct hdmi_context {
- 	struct drm_encoder		encoder;
- 	struct device			*dev;
- 	struct drm_device		*drm_dev;
- 	struct drm_connector		connector;
--	bool				powered;
- 	bool				dvi_mode;
- 	struct delayed_work		hotplug_work;
- 	struct drm_display_mode		current_mode;
-@@ -137,6 +144,11 @@ struct hdmi_context {
- 	struct regulator		*reg_hdmi_en;
- 	struct exynos_drm_clk		phy_clk;
- 	struct drm_bridge		*bridge;
-+
-+	/* mutex protecting subsequent fields below */
-+	struct mutex			mutex;
-+	struct hdmi_audio		audio;
-+	bool				powered;
- };
- 
- static inline struct hdmi_context *encoder_to_hdmi(struct drm_encoder *e)
-@@ -768,6 +780,22 @@ static int hdmi_clk_set_parents(struct hdmi_context *hdata, bool to_phy)
- 	return ret;
- }
- 
-+static int hdmi_audio_infoframe_apply(struct hdmi_context *hdata)
-+{
-+	struct hdmi_audio_infoframe *infoframe = &hdata->audio.infoframe;
-+	u8 buf[HDMI_INFOFRAME_SIZE(AUDIO)];
-+	int len;
-+
-+	len = hdmi_audio_infoframe_pack(infoframe, buf, sizeof(buf));
-+	if (len < 0)
-+		return len;
-+
-+	hdmi_reg_writeb(hdata, HDMI_AUI_CON, HDMI_AUI_CON_EVERY_VSYNC);
-+	hdmi_reg_write_buf(hdata, HDMI_AUI_HEADER0, buf, len);
-+
-+	return 0;
-+}
-+
- static void hdmi_reg_infoframes(struct hdmi_context *hdata)
- {
- 	union hdmi_infoframe frm;
-@@ -805,15 +833,7 @@ static void hdmi_reg_infoframes(struct hdmi_context *hdata)
- 		hdmi_reg_write_buf(hdata, HDMI_VSI_DATA(0), buf + 3, ret - 3);
- 	}
- 
--	ret = hdmi_audio_infoframe_init(&frm.audio);
--	if (!ret) {
--		frm.audio.channels = 2;
--		ret = hdmi_audio_infoframe_pack(&frm.audio, buf, sizeof(buf));
--	}
--	if (ret > 0) {
--		hdmi_reg_writeb(hdata, HDMI_AUI_CON, HDMI_AUI_CON_EVERY_VSYNC);
--		hdmi_reg_write_buf(hdata, HDMI_AUI_HEADER0, buf, ret);
--	}
-+	hdmi_audio_infoframe_apply(hdata);
- }
- 
- static enum drm_connector_status hdmi_detect(struct drm_connector *connector,
-@@ -996,23 +1016,18 @@ static void hdmi_reg_acr(struct hdmi_context *hdata, u32 freq)
- 	hdmi_reg_writeb(hdata, HDMI_ACR_CON, 4);
- }
- 
--static void hdmi_audio_init(struct hdmi_context *hdata)
-+static void hdmi_audio_config(struct hdmi_context *hdata)
- {
--	u32 sample_rate, bits_per_sample;
--	u32 data_num, bit_ch, sample_frq;
--	u32 val;
-+	u32 data_num, sample_freq, val;
-+	u32 bit_ch = 1;
- 
--	sample_rate = 44100;
--	bits_per_sample = 16;
- 
--	switch (bits_per_sample) {
-+	switch (hdata->audio.sample_width) {
- 	case 20:
- 		data_num = 2;
--		bit_ch = 1;
- 		break;
- 	case 24:
- 		data_num = 3;
--		bit_ch = 1;
- 		break;
- 	default:
- 		data_num = 1;
-@@ -1020,7 +1035,7 @@ static void hdmi_audio_init(struct hdmi_context *hdata)
- 		break;
- 	}
- 
--	hdmi_reg_acr(hdata, sample_rate);
-+	hdmi_reg_acr(hdata, hdata->audio.sample_rate);
- 
- 	hdmi_reg_writeb(hdata, HDMI_I2S_MUX_CON, HDMI_I2S_IN_DISABLE
- 				| HDMI_I2S_AUD_I2S | HDMI_I2S_CUV_I2S_ENABLE
-@@ -1031,10 +1046,21 @@ static void hdmi_audio_init(struct hdmi_context *hdata)
- 
- 	hdmi_reg_writeb(hdata, HDMI_I2S_MUX_CUV, HDMI_I2S_CUV_RL_EN);
- 
--	sample_frq = (sample_rate == 44100) ? 0 :
--			(sample_rate == 48000) ? 2 :
--			(sample_rate == 32000) ? 3 :
--			(sample_rate == 96000) ? 0xa : 0x0;
-+	switch(hdata->audio.sample_rate) {
-+	case 32000:
-+		sample_freq = 0x3;
-+		break;
-+	case 48000:
-+		sample_freq = 0x2;
-+		break;
-+	case 96000:
-+		sample_freq = 0xa;
-+		break;
-+	case 44100:
-+	default:
-+		sample_freq = 0;
-+		break;
-+	}
- 
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CLK_CON, HDMI_I2S_CLK_DIS);
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CLK_CON, HDMI_I2S_CLK_EN);
-@@ -1068,7 +1094,7 @@ static void hdmi_audio_init(struct hdmi_context *hdata)
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CH_ST_1, HDMI_I2S_CD_PLAYER);
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CH_ST_2, HDMI_I2S_SET_SOURCE_NUM(0));
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CH_ST_3, HDMI_I2S_CLK_ACCUR_LEVEL_2
--			| HDMI_I2S_SET_SMP_FREQ(sample_frq));
-+			| HDMI_I2S_SET_SMP_FREQ(sample_freq));
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CH_ST_4,
- 			HDMI_I2S_ORG_SMP_FREQ_44_1
- 			| HDMI_I2S_WORD_LEN_MAX24_24BITS
-@@ -1077,13 +1103,15 @@ static void hdmi_audio_init(struct hdmi_context *hdata)
- 	hdmi_reg_writeb(hdata, HDMI_I2S_CH_ST_CON, HDMI_I2S_CH_STATUS_RELOAD);
- }
- 
--static void hdmi_audio_control(struct hdmi_context *hdata, bool onoff)
-+static void hdmi_audio_control(struct hdmi_context *hdata)
- {
-+	bool enable = hdata->audio.enable;
-+
- 	if (hdata->dvi_mode)
- 		return;
- 
--	hdmi_reg_writeb(hdata, HDMI_AUI_CON, onoff ? 2 : 0);
--	hdmi_reg_writemask(hdata, HDMI_CON_0, onoff ?
-+	hdmi_reg_writeb(hdata, HDMI_AUI_CON, enable ? 2 : 0);
-+	hdmi_reg_writemask(hdata, HDMI_CON_0, enable ?
- 			HDMI_ASP_EN : HDMI_ASP_DIS, HDMI_ASP_MASK);
- }
- 
-@@ -1403,9 +1431,9 @@ static void hdmi_conf_apply(struct hdmi_context *hdata)
- {
- 	hdmi_start(hdata, false);
- 	hdmi_conf_init(hdata);
--	hdmi_audio_init(hdata);
-+	hdmi_audio_config(hdata);
- 	hdmi_mode_apply(hdata);
--	hdmi_audio_control(hdata, true);
-+	hdmi_audio_control(hdata);
- }
- 
- static void hdmi_mode_set(struct drm_encoder *encoder,
-@@ -1479,17 +1507,24 @@ static void hdmi_enable(struct drm_encoder *encoder)
- {
- 	struct hdmi_context *hdata = encoder_to_hdmi(encoder);
- 
-+	mutex_lock(&hdata->mutex);
-+
- 	hdmiphy_enable(hdata);
- 	hdmi_conf_apply(hdata);
-+
-+	mutex_unlock(&hdata->mutex);
- }
- 
- static void hdmi_disable(struct drm_encoder *encoder)
- {
- 	struct hdmi_context *hdata = encoder_to_hdmi(encoder);
- 
--	if (!hdata->powered)
--		return;
-+	mutex_lock(&hdata->mutex);
- 
-+	if (!hdata->powered) {
-+		mutex_unlock(&hdata->mutex);
-+		return;
-+	}
- 	/*
- 	 * The SFRs of VP and Mixer are updated by Vertical Sync of
- 	 * Timing generator which is a part of HDMI so the sequence
-@@ -1503,6 +1538,8 @@ static void hdmi_disable(struct drm_encoder *encoder)
- 	cec_notifier_set_phys_addr(hdata->notifier, CEC_PHYS_ADDR_INVALID);
- 
- 	hdmiphy_disable(hdata);
-+
-+	mutex_unlock(&hdata->mutex);
- }
- 
- static const struct drm_encoder_helper_funcs exynos_hdmi_encoder_helper_funcs = {
-@@ -1516,6 +1553,109 @@ static void hdmi_disable(struct drm_encoder *encoder)
- 	.destroy = drm_encoder_cleanup,
- };
- 
-+static void hdmi_audio_shutdown(struct device *dev, void *data)
-+{
-+	struct hdmi_context *hdata = dev_get_drvdata(dev);
-+
-+	mutex_lock(&hdata->mutex);
-+
-+	hdata->audio.enable = false;
-+
-+	if (hdata->powered)
-+		hdmi_audio_control(hdata);
-+
-+	mutex_unlock(&hdata->mutex);
-+}
-+
-+static int hdmi_audio_hw_params(struct device *dev, void *data,
-+				struct hdmi_codec_daifmt *daifmt,
-+				struct hdmi_codec_params *params)
-+{
-+	struct hdmi_context *hdata = dev_get_drvdata(dev);
-+
-+	if (daifmt->fmt != HDMI_I2S || daifmt->bit_clk_inv ||
-+	    daifmt->frame_clk_inv || daifmt->bit_clk_master ||
-+	    daifmt->frame_clk_master) {
-+		dev_err(dev, "%s: Bad flags %d %d %d %d\n", __func__,
-+			daifmt->bit_clk_inv, daifmt->frame_clk_inv,
-+			daifmt->bit_clk_master,
-+			daifmt->frame_clk_master);
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&hdata->mutex);
-+
-+	hdata->audio.sample_rate = params->sample_rate;
-+	hdata->audio.sample_width = params->sample_width;
-+	hdata->audio.infoframe = params->cea;
-+
-+	if (hdata->powered) {
-+		hdmi_audio_config(hdata);
-+		hdmi_audio_infoframe_apply(hdata);
-+	}
-+
-+	mutex_unlock(&hdata->mutex);
-+
-+	return 0;
-+}
-+
-+static int hdmi_audio_digital_mute(struct device *dev, void *data, bool mute)
-+{
-+	struct hdmi_context *hdata = dev_get_drvdata(dev);
-+
-+	mutex_lock(&hdata->mutex);
-+
-+	hdata->audio.enable = !mute;
-+
-+	if (hdata->powered)
-+		hdmi_audio_control(hdata);
-+
-+	mutex_unlock(&hdata->mutex);
-+
-+	return 0;
-+}
-+
-+static int hdmi_audio_get_eld(struct device *dev, void *data, uint8_t *buf,
-+			      size_t len)
-+{
-+	struct hdmi_context *hdata = dev_get_drvdata(dev);
-+	struct drm_connector *connector = &hdata->connector;
-+
-+	memcpy(buf, connector->eld, min(sizeof(connector->eld), len));
-+
-+	return 0;
-+}
-+
-+static const struct hdmi_codec_ops audio_codec_ops = {
-+	.hw_params = hdmi_audio_hw_params,
-+	.audio_shutdown = hdmi_audio_shutdown,
-+	.digital_mute = hdmi_audio_digital_mute,
-+	.get_eld = hdmi_audio_get_eld,
-+};
-+
-+static int hdmi_register_audio_device(struct hdmi_context *hdata)
-+{
-+	struct hdmi_codec_pdata codec_data = {
-+		.ops = &audio_codec_ops,
-+		.max_i2s_channels = 6,
-+		.i2s = 1,
-+	};
-+
-+	hdata->audio.pdev = platform_device_register_data(
-+		hdata->dev, HDMI_CODEC_DRV_NAME, PLATFORM_DEVID_AUTO,
-+		&codec_data, sizeof(codec_data));
-+
-+	if (IS_ERR(hdata->audio.pdev))
-+		return PTR_ERR(hdata->audio.pdev);
-+
-+	return 0;
-+}
-+
-+static void hdmi_unregister_audio_device(struct hdmi_context *hdata)
-+{
-+	platform_device_unregister(hdata->audio.pdev);
-+}
-+
- static void hdmi_hotplug_work_func(struct work_struct *work)
- {
- 	struct hdmi_context *hdata;
-@@ -1700,6 +1840,7 @@ static int hdmi_bind(struct device *dev, struct device *master, void *data)
- 	struct drm_device *drm_dev = data;
- 	struct hdmi_context *hdata = dev_get_drvdata(dev);
- 	struct drm_encoder *encoder = &hdata->encoder;
-+	struct hdmi_audio_infoframe *audio_infoframe = &hdata->audio.infoframe;
- 	struct exynos_drm_crtc *exynos_crtc;
- 	struct drm_crtc *crtc;
- 	int ret, pipe;
-@@ -1721,6 +1862,12 @@ static int hdmi_bind(struct device *dev, struct device *master, void *data)
- 
- 	DRM_DEBUG_KMS("possible_crtcs = 0x%x\n", encoder->possible_crtcs);
- 
-+	hdmi_audio_infoframe_init(audio_infoframe);
-+	audio_infoframe->coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
-+	audio_infoframe->sample_size = HDMI_AUDIO_SAMPLE_SIZE_STREAM;
-+	audio_infoframe->sample_frequency = HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM;
-+	audio_infoframe->channels = 2;
-+
- 	drm_encoder_init(drm_dev, encoder, &exynos_hdmi_encoder_funcs,
- 			 DRM_MODE_ENCODER_TMDS, NULL);
- 
-@@ -1828,6 +1975,8 @@ static int hdmi_probe(struct platform_device *pdev)
- 
- 	hdata->dev = dev;
- 
-+	mutex_init(&hdata->mutex);
-+
- 	ret = hdmi_resources_init(hdata);
- 	if (ret) {
- 		if (ret != -EPROBE_DEFER)
-@@ -1887,12 +2036,19 @@ static int hdmi_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(dev);
- 
--	ret = component_add(&pdev->dev, &hdmi_component_ops);
-+	ret = hdmi_register_audio_device(hdata);
- 	if (ret)
- 		goto err_notifier_put;
- 
-+	ret = component_add(&pdev->dev, &hdmi_component_ops);
-+	if (ret)
-+		goto err_unregister_audio;
-+
- 	return ret;
- 
-+err_unregister_audio:
-+	hdmi_unregister_audio_device(hdata);
-+
- err_notifier_put:
- 	cec_notifier_put(hdata->notifier);
- 	pm_runtime_disable(dev);
-@@ -1931,6 +2087,8 @@ static int hdmi_remove(struct platform_device *pdev)
- 
- 	put_device(&hdata->ddc_adpt->dev);
- 
-+	mutex_destroy(&hdata->mutex);
-+
- 	return 0;
- }
- 
--- 
-1.9.1
+On 03/08/17 00:33, Damien Riegel wrote:
+> Hi Srinivas,
+> 
+> 
+> On Wed, Aug 02, 2017 at 07:09:28PM +0200, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> MBHC (MultiButton Headset Control) support is available in pm8921 in two
+>> blocks, one to detect mechanical headset insertion and removal and other
+>> block to support headset type detection and 5 button detection and othe
+>> features like impedance calculation.
+>>
+>> This patch adds support to:
+>> 1> Support to NC and NO type of headset Jacks.
+>> 2> Mechanical insertion and detection of headset jack.
+>> 3> Detect a 3 pole Headphone and a 4 pole Headset.
+>> 4> Detect 5 buttons.
+>>
+>> Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+>> headset/headphones.
+> 
+
+> Good news! This version has better results. I still have an issue where
+> a headphone is reported as a headset when I do this sequence:
+
+Hi Damien,
+
+Thanks for testing..
+
+
+> 	1. connect headset
+> 	2. disconnect headset
+> 	3. connect headphone
+
+> Following headphone connections/disconnections are reported correctly.
+> Note that I don't press the media key, it's wrongly detected when I pull
+> off the cable.
+
+If you do step 3 slowly there is a chance that we get KEY_MEDIA events, 
+as headphone is a 3 pole, during hp inserting we would end up shorting 
+the MIC and GND lines on the connector, as 3-pole connectors have longer 
+GND pole/connector length, this action is same as pressing MEDIA KEY.
+
+The logic in the driver uses this MEDIA KEY press release as advantage 
+to detect the accessory type before hs insertion, but this logic could 
+break if we are inserting headphone slowly, which is not a normal usecase.
+
+Any solution to this issue can be always break if we are doing slow 
+insertion of hs or we endup making the driver complex. I will think 
+about this once again and see how other drivers handle this usecase.
+
+> 
+> evtest logs:
+> 
+> 	Plugging headset:
+> Event: time 10181.936746, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 1
+> Event: time 10181.936746, type 5 (EV_SW), code 4 (SW_MICROPHONE_INSERT), value 1
+> Event: time 10181.936746, -------------- SYN_REPORT ------------
+> 	Unplugging headset:
+> Event: time 10183.432797, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 1
+> Event: time 10183.432797, -------------- SYN_REPORT ------------
+> Event: time 10183.871029, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 0
+> Event: time 10183.871029, -------------- SYN_REPORT ------------
+> Event: time 10183.971521, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 1
+> Event: time 10183.971521, -------------- SYN_REPORT ------------
+> Event: time 10184.249429, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 0
+> Event: time 10184.249429, type 5 (EV_SW), code 4 (SW_MICROPHONE_INSERT), value 0
+> Event: time 10184.249429, -------------- SYN_REPORT ------------
+> 	Plugin headphone:
+> Event: time 10190.033748, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 1
+> Event: time 10190.033748, type 5 (EV_SW), code 4 (SW_MICROPHONE_INSERT), value 1
+> Event: time 10190.033748, -------------- SYN_REPORT ------------
+> 	Unplugging headphone:
+> Event: time 10191.267473, type 1 (EV_KEY), code 226 (KEY_MEDIA), value 0
+> Event: time 10191.267473, -------------- SYN_REPORT ------------
+> Event: time 10191.548238, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 0
+> Event: time 10191.548238, type 5 (EV_SW), code 4 (SW_MICROPHONE_INSERT), value 0
+> Event: time 10191.548238, -------------- SYN_REPORT ------------
+> 	Plugging headphone:
+> Event: time 10194.342217, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 1
+> Event: time 10194.342217, -------------- SYN_REPORT ------------
+> 	Unplugging headphone:
+> Event: time 10195.446049, type 5 (EV_SW), code 2 (SW_HEADPHONE_INSERT), value 0
+> Event: time 10195.446049, -------------- SYN_REPORT -----------
+> 
+> 
+> Also, the microphone is not reported when cable is connected and a
+> button is pressed down. That might be a bit of a corner case, so I don't
+> think it's worth complexifying the driver to handle that.
+> 
+> A few additional comments inline.
+> 
+> =
+>     ^
+>     git am complains about the leading space
+> 
+>> +			      by internal current source, this is a low power.
+>> + - qcom,mbhc-vthreshold-high: Array of 5 thresold voltages in mV for 5 buttons
+>> + 			       detection on headset when mbhc is powered up
+>     ^
+>     same here
+
+Yep, I will fix this in next version.
+> 
+>> diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+>> index dec4978..04a2112 100644
+>> --- a/sound/soc/codecs/msm8916-wcd-analog.c
+>> +++ b/sound/soc/codecs/msm8916-wcd-analog.c
+> 
+> [...]
+> 
+>> +int btn_mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+>> +	       SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_BTN_4;
+>> +int hs_jack_mask = SND_JACK_HEADPHONE | SND_JACK_HEADSET;
+>> +
+> 
+> I think they're missing a 'static' (or should they be macros?).
+> 
+Yep.
+>> +#define MBHC_MAX_BUTTONS	(5)
+>> +
+>>   struct pm8916_wcd_analog_priv {
+>>   	u16 pmic_rev;
+>>   	u16 codec_version;
+>> +	int	mbhc_sw_irq;
+>> +	int	mbhc_btn_press_irq;
+>> +	int	mbhc_btn_release_irq;
+> 
+> Is is worth storing these irqs as these values are not used outside of
+> pm8916_wcd_analog_spmi_probe?
+Will clean this up in next version.
+> 
+>> +	bool	mbhc_btn_enabled;
+>> +	/* special event to detect accessory type */
+>> +	bool	mbhc_btn0_pressed;
+>> +	bool	detect_accessory_type;
+>>   	struct clk *mclk;
+>> +	struct snd_soc_codec *codec;
+>>   	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
+>> +	struct snd_soc_jack *jack;
+>> +	bool hphl_jack_type_normally_open;
+>> +	bool gnd_jack_type_normally_open;
+>> +	/* Voltage threshold when internal current source of 100uA is used */
+>> +	u32 vref_btn_cs[MBHC_MAX_BUTTONS];
+>> +	/* Voltage threshold when microphone bias is ON */
+>> +	u32 vref_btn_micb[MBHC_MAX_BUTTONS];
+>>   	unsigned int micbias1_cap_mode;
+>>   	unsigned int micbias2_cap_mode;
+>>   	unsigned int micbias_mv;
+> 
+> [...]
+> 
+>> +static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
+>> +				      bool micbias2_enabled)
+>> +{
+>> +	struct snd_soc_codec *codec = priv->codec;
+>> +	u32 coarse, fine, reg_val, reg_addr;
+>> +	int *vrefs, i;
+>> +
+>> +	if (!micbias2_enabled) { /* use internal 100uA Current source */
+>> +		/* Enable internal 2.2k Internal Rbias Resistor */
+>> +		snd_soc_update_bits(codec, CDC_A_MICB_1_INT_RBIAS,
+>> +				    MICB_1_INT_TX2_INT_RBIAS_EN_MASK,
+>> +				    MICB_1_INT_TX2_INT_RBIAS_EN_ENABLE);
+>> +		/* Remove pull down on MIC BIAS2 */
+>> +		snd_soc_update_bits(codec, CDC_A_MICB_2_EN,
+>> +				   CDC_A_MICB_2_PULL_DOWN_EN_MASK,
+>> +				   0);
+>> +		/* enable 100uA internal current source */
+>> +		snd_soc_update_bits(codec, CDC_A_MBHC_FSM_CTL,
+>> +				    CDC_A_MBHC_FSM_CTL_BTN_ISRC_CTRL_MASK,
+>> +				    CDC_A_MBHC_FSM_CTL_BTN_ISRC_CTRL_I_100UA);
+>> +	}
+>> +	snd_soc_update_bits(codec, CDC_A_MBHC_FSM_CTL,
+>> +			CDC_A_MBHC_FSM_CTL_MBHC_FSM_EN_MASK,
+>> +			CDC_A_MBHC_FSM_CTL_MBHC_FSM_EN);
+> 
+> Maybe test the value of priv->mbhc_btn_enabled here, otherwise it will
+> use erroneous values.
+This should be harmless, as we are not handling any of those interrupts, 
+but I will fix this in next version.
+> 
+>> +
+>> +	if (micbias2_enabled)
+>> +		vrefs = &priv->vref_btn_micb[0];
+>> +	else
+>> +		vrefs = &priv->vref_btn_cs[0];
+>> +
+>> +	/* program vref ranges for all the buttons */
+>> +	reg_addr = CDC_A_MBHC_BTN0_ZDET_CTL_0;
+>> +	for (i = 0; i <  MBHC_MAX_BUTTONS; i++) {
+>> +		/* split mv in to coarse parts of 100mv & fine parts of 12mv */
+>> +		coarse = (vrefs[i] / 100);
+>> +		fine = ((vrefs[i] % 100) / 12);
+>> +		reg_val = (coarse << CDC_A_MBHC_BTN_VREF_COARSE_SHIFT) |
+>> +			 (fine << CDC_A_MBHC_BTN_VREF_FINE_SHIFT);
+>> +		snd_soc_update_bits(codec, reg_addr,
+>> +			       CDC_A_MBHC_BTN_VREF_MASK,
+>> +			       reg_val);
+>> +		reg_addr++;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> [...]
+> 
+>> +static irqreturn_t pm8916_mbhc_switch_irq_handler(int irq, void *arg)
+>> +{
+>> +	struct pm8916_wcd_analog_priv *priv = arg;
+>> +	struct snd_soc_codec *codec = priv->codec;
+>> +	bool micbias_enabled = false;
+> 
+> micbias_enabled can be moved to the ins case as it's only used there.
+> 
+okay..
+
+>> +	bool ins = false;
+>> +
+>> +					  &priv->vref_btn_cs[0],
+>> +					  MBHC_MAX_BUTTONS);
+>> +	if (rval < 0)
+>> +		priv->mbhc_btn_enabled = false;
+> 
+> You should add brackets and maybe move the error message here (see my
+> comment at the end).
+
+Yes, if it make it more readable.
+> 
+>> +	else {
+>> +		rval = of_property_read_u32_array(dev->of_node,
+>> +						  "qcom,mbhc-vthreshold-high",
+>> +						  &priv->vref_btn_micb[0],
+>> +						  MBHC_MAX_BUTTONS);
+>> +		if (rval < 0)
+>> +			priv->mbhc_btn_enabled = false;
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+
+>> +		dev_err(dev, "MBHC button detection disabled\n");
+> 
+> imho, if you want to print an error message if this feature is
+> unavailable, you should do that when parsing properties and let the
+> users know which missing property caused the error.
+Okay will do that..
+> 
+> 
+> Regards,
+> 
