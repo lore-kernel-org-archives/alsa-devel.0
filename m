@@ -1,24 +1,22 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 4/6] ASoC: codecs: msm8916-wcd-analog:
-	add MBHC support
-Date: Thu, 3 Aug 2017 14:10:18 +0100
-Message-ID: <6fd8f95f-6378-c6bf-acd7-a4e0a9d1cc5e@linaro.org>
-References: <20170802170930.26083-1-srinivas.kandagatla@linaro.org>
- <20170802170930.26083-5-srinivas.kandagatla@linaro.org>
- <20170802233323.blx36uutaytdexvb@workotop.localdomain>
- <56b54da2-0e87-a466-6184-ffbd85f631c4@linaro.org>
- <20170803125355.l5m5mk5utl4nlbwk@workotop.localdomain>
+From: Cheng-yi Chiang <cychiang@chromium.org>
+Subject: Re: [PATCH v2] ASoC: Intel: Reset hw_ptr on resume
+	trigger
+Date: Thu, 3 Aug 2017 21:47:06 +0800
+Message-ID: <CAFv8NwJ05HS10XN34-LUuhk744PxXZvGaW_bwbb_uFTf5f6Y-Q@mail.gmail.com>
+References: <20170731104734.5776-1-cychiang@chromium.org>
+ <20170801033006.GL3053@localhost>
+ <60e20968-28b2-dd91-c30c-318aee9d298f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f45.google.com (mail-wm0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DBB3266847
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 15:10:20 +0200 (CEST)
-Received: by mail-wm0-f45.google.com with SMTP id t201so14894300wmt.1
- for <alsa-devel@alsa-project.org>; Thu, 03 Aug 2017 06:10:20 -0700 (PDT)
-In-Reply-To: <20170803125355.l5m5mk5utl4nlbwk@workotop.localdomain>
-Content-Language: en-US
+Received: from mail-it0-f47.google.com (mail-it0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DA96266847
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 15:47:38 +0200 (CEST)
+Received: by mail-it0-f47.google.com with SMTP id h199so9378038ith.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Aug 2017 06:47:38 -0700 (PDT)
+In-Reply-To: <60e20968-28b2-dd91-c30c-318aee9d298f@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,86 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Keyon Jie <yang.jie@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, "U . Artie Eoff" <ullysses.a.eoff@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 03/08/17 13:53, Damien Riegel wrote:
-> On Thu, Aug 03, 2017 at 12:11:04PM +0100, Srinivas Kandagatla wrote:
->>
->>
->> On 03/08/17 00:33, Damien Riegel wrote:
->>> Hi Srinivas,
->>>
->>>
->>> On Wed, Aug 02, 2017 at 07:09:28PM +0200, srinivas.kandagatla@linaro.org wrote:
->>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>
->>>> MBHC (MultiButton Headset Control) support is available in pm8921 in two
->>>> blocks, one to detect mechanical headset insertion and removal and other
->>>> block to support headset type detection and 5 button detection and othe
->>>> features like impedance calculation.
->>>>
->>>> This patch adds support to:
->>>> 1> Support to NC and NO type of headset Jacks.
->>>> 2> Mechanical insertion and detection of headset jack.
->>>> 3> Detect a 3 pole Headphone and a 4 pole Headset.
->>>> 4> Detect 5 buttons.
->>>>
->>>> Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
->>>> headset/headphones.
->>>
->>
->>> Good news! This version has better results. I still have an issue where
->>> a headphone is reported as a headset when I do this sequence:
->>
->> Hi Damien,
->>
->> Thanks for testing..
->>
->>
->>> 	1. connect headset
->>> 	2. disconnect headset
->>> 	3. connect headphone
->>
->>> Following headphone connections/disconnections are reported correctly.
->>> Note that I don't press the media key, it's wrongly detected when I pull
->>> off the cable.
->>
->> If you do step 3 slowly there is a chance that we get KEY_MEDIA events, as
->> headphone is a 3 pole, during hp inserting we would end up shorting the MIC
->> and GND lines on the connector, as 3-pole connectors have longer GND
->> pole/connector length, this action is same as pressing MEDIA KEY.
->>
->> The logic in the driver uses this MEDIA KEY press release as advantage to
->> detect the accessory type before hs insertion, but this logic could break if
->> we are inserting headphone slowly, which is not a normal usecase.
->>
->> Any solution to this issue can be always break if we are doing slow
->> insertion of hs or we endup making the driver complex. I will think about
->> this once again and see how other drivers handle this usecase.
-> 
-> Understood, and you're right we should keep this driver as simple as
-> possible.
-> 
-> I get the KEY_MEDIA event when doing step 2 (disconnecting headset), and
-> I understand why it's doing that (and I think it's okay if we don't
-> filter out that spurious event), but we should at least get a KEY_MEDIA
-> release event at the same time as SW_{MICROPHONE,HEADPHONE}_INSERT
-> removal. It doesn't really matter if I disconnect it fast or slowly,
-> sometimes I'll get the KEY_MEDIA, some other times I won't.
-
-I will see if I can fix this in a much better way and let you know.
-
-> 
-> Shouldn't mbhc_btn0_pressed be reset to false when physical removal is
-> detected? I think that would solve the issue of headphone being detected
-> as headset.
-> 
-Yes, I have considered that change to my next version.
-
-> 
-> Regards,
-> 
+K0phcmtrbyBOaWt1bGEKCkhpIEtleW9uLAogIFNvcnJ5IGZvciB0aGUgbGF0ZSByZXBseS4gSSBz
+cGVudCBzb21lIHRpbWUgdHJ5aW5nIHRvIGZpZ3VyZSBvdXQKcHJldmlvdXMgc3VzcGVuZCByZXN1
+bWUgcGF0Y2ggaW4gQllULgoKICBGcm9tIHRoZSBwYXRjaCBmb3IgcmVzdG9yZV9zdHJlYW0gZmxh
+ZzoKaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC80NzA2NjExLywgIHRoZSByZXN0
+b3JlX3N0cmVhbSBmbGFnCm1lYW5zIHRoYXQgQURTUCB3YXMgaW4gcG93ZXIgb2ZmIHN0YXRlIGR1
+cmluZyBzeXN0ZW0gc3VzcGVuZC9yZXN1bWUKY3ljbGUuIFlvdSBhcmUgcmlnaHQgdGhhdCB0aGUg
+cmVzdW1pbmcgd29uJ3QgcGxheSBmcm9tIHRoZSBwYXVzaW5nCnBvaW50IG9mIHRoZSBsYXN0IHN1
+c3BlbmRpbmcuIEkgYW0gbm90IHN1cmUgd2hldGhlciBpdCBpcyBpbnRlbmRlZCBpbgpBRFNQIGNv
+bWluZyBiYWNrIGZyb20gcG93ZXIgb2ZmIGNhc2UuIEphcmtrbyBhbmQgVWxseXNzZXMgbWlnaHQg
+aGF2ZQpiZXR0ZXIgaWRlYSBvbiB0aGlzLgoKSW4gbXkgdGVzdGluZyBJIGhhdmUgZm91bmQgdGhh
+dCB0aGlzIHBhdGNoIHNvbWV0aW1lcyBjYXVzZXMgcGxheWJhY2sKZmFpbHVyZSB1cG9uIHJlc3Vt
+ZS4gSSBoYXZlIHB1dCB0aGUgbG9ncyBpbgpodHRwczovL2J1Z3MuY2hyb21pdW0ub3JnL3AvY2hy
+b21pdW0vaXNzdWVzL2RldGFpbD9pZD03NTIxMDcuIEkgdGhpbmsKd2Ugc2hvdWxkIG5vdCBtZXJn
+ZSB0aGlzIHVudGlsIGl0IGlzIHJlc29sdmVkLiBJIGhhdmUgY2MnZWQgSW50ZWwKZm9sa3Mgb24g
+dGhlIGlzc3VlLgoKVGhhbmtzIQoKT24gVHVlLCBBdWcgMSwgMjAxNyBhdCAxOjA0IFBNLCBLZXlv
+biBKaWUgPHlhbmcuamllQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4KPiBPbiAyMDE35bm0MDjm
+nIgwMeaXpSAxMTozMCwgVmlub2QgS291bCB3cm90ZToKPj4KPj4gT24gTW9uLCBKdWwgMzEsIDIw
+MTcgYXQgMDY6NDc6MzRQTSArMDgwMCwgQ2hlbmctWWkgQ2hpYW5nIHdyb3RlOgo+Pj4KPj4+IEZy
+b206ICJVLiBBcnRpZSBFb2ZmIiA8dWxseXNzZXMuYS5lb2ZmQGludGVsLmNvbT4KPj4+Cj4+PiBS
+ZXNldCB0aGUgaHdfcHRyIGJlZm9yZSBxdWV1aW5nIHRoZSByZXN0b3JlX3N0cmVhbV9jb250ZXh0
+Cj4+PiB3b3JrIHRvIGVyYWRpY2F0ZSBhIG5hc3R5IHdoaXRlIGF1ZGlvIG5vaXNlIG9uIHJlc3Vt
+ZS4KPj4KPj4KPj4gTGlhbSwgSmllPyBUaGlzIG9uIGxlZ2FjeSBCWVQgZHJpdmVyLi4KPj4KPj4+
+Cj4+PiBUZXN0ZWQtYnk6IENoZW5nLVlpIENoaWFuZyA8Y3ljaGlhbmdAY2hyb21pdW0ub3JnPgo+
+Pj4gU2lnbmVkLW9mZi1ieTogVS4gQXJ0aWUgRW9mZiA8dWxseXNzZXMuYS5lb2ZmQGludGVsLmNv
+bT4KPj4+IFNpZ25lZC1vZmYtYnk6IENoZW5nLVlpIENoaWFuZyA8Y3ljaGlhbmdAY2hyb21pdW0u
+b3JnPgo+Pj4gLS0tCj4+PiAgIHNvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5dHJhaWwt
+cGNtLmMgfCA0ICsrKy0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBk
+ZWxldGlvbigtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwv
+c3N0LWJheXRyYWlsLXBjbS5jCj4+PiBiL3NvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5
+dHJhaWwtcGNtLmMKPj4+IGluZGV4IDQ3NjVhZDQ3NDU0NC4uZTBkYjcwNzBjZDQyIDEwMDY0NAo+
+Pj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1iYXl0cmFpbC1wY20uYwo+Pj4g
+KysrIGIvc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1iYXl0cmFpbC1wY20uYwo+Pj4gQEAg
+LTE4Nyw4ICsxODcsMTAgQEAgc3RhdGljIGludCBzc3RfYnl0X3BjbV90cmlnZ2VyKHN0cnVjdAo+
+Pj4gc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwgaW50IGNtZCkKPj4+ICAgICAgICAgICAg
+ICAgICBzc3RfYnl0X3N0cmVhbV9zdGFydChieXQsIHBjbV9kYXRhLT5zdHJlYW0sIDApOwo+Pj4g
+ICAgICAgICAgICAgICAgIGJyZWFrOwo+Pj4gICAgICAgICBjYXNlIFNORFJWX1BDTV9UUklHR0VS
+X1JFU1VNRToKPj4+IC0gICAgICAgICAgICAgICBpZiAocGRhdGEtPnJlc3RvcmVfc3RyZWFtID09
+IHRydWUpCj4+PiArICAgICAgICAgICAgICAgaWYgKHBkYXRhLT5yZXN0b3JlX3N0cmVhbSA9PSB0
+cnVlKSB7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBwY21fZGF0YS0+aHdfcHRyID0gMDsK
+Pgo+Cj4gV29uJ3QgdGhpcyBicmVhayB0aGUgaHdfcHRyIGFuZCBtYWtlIHRoZSByZXN1bWluZyB3
+b24ndCBwbGF5IGZyb20gdGhlCj4gcGF1c2luZyBwb2ludCBvZiB0aGUgbGFzdCBzdXNwZW5kaW5n
+Pwo+Cj4gVGhhbmtzLAo+IH5LZXlvbgo+Cj4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgIHNj
+aGVkdWxlX3dvcmsoJnBjbV9kYXRhLT53b3JrKTsKPj4+ICsgICAgICAgICAgICAgICB9Cj4+PiAg
+ICAgICAgICAgICAgICAgZWxzZQo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgc3N0X2J5dF9z
+dHJlYW1fcmVzdW1lKGJ5dCwgcGNtX2RhdGEtPnN0cmVhbSk7Cj4+PiAgICAgICAgICAgICAgICAg
+YnJlYWs7Cj4+PiAtLQo+Pj4gMi4xMi4yCj4+Pgo+Pgo+Cl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
