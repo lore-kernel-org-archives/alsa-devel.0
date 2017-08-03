@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Add map for new DAIs for
-	Multi-Playback & Echo Ref" to the asoc tree
-Date: Thu, 03 Aug 2017 17:30:29 +0100
-Message-ID: <E1ddJ13-0002ap-1F@debutante>
-References: <1501654415-24590-4-git-send-email-naveen.m@intel.com>
+Subject: Applied "ASoC: Intel: kbl: Add DAI links for
+	Multi-Playback & Echo-reference" to the asoc tree
+Date: Thu, 03 Aug 2017 17:30:33 +0100
+Message-ID: <E1ddJ17-0002bs-3V@debutante>
+References: <1501654415-24590-3-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AF953267456
- for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:40 +0200 (CEST)
-In-Reply-To: <1501654415-24590-4-git-send-email-naveen.m@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8728C267412
+ for <alsa-devel@alsa-project.org>; Thu,  3 Aug 2017 18:30:42 +0200 (CEST)
+In-Reply-To: <1501654415-24590-3-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl: Add map for new DAIs for Multi-Playback & Echo Ref
+   ASoC: Intel: kbl: Add DAI links for Multi-Playback & Echo-reference
 
 has been applied to the asoc tree at
 
@@ -52,65 +52,108 @@ to this mail.
 Thanks,
 Mark
 
->From 0b06122fc8d0949a0aa7b817d98e031104802611 Mon Sep 17 00:00:00 2001
+>From b32ee384ac18d3e4db0ef45d23c3ff1c67113529 Mon Sep 17 00:00:00 2001
 From: Naveen Manohar <naveen.m@intel.com>
-Date: Wed, 2 Aug 2017 11:43:35 +0530
-Subject: [PATCH] ASoC: Intel: kbl: Add map for new DAIs for Multi-Playback &
- Echo Ref
+Date: Wed, 2 Aug 2017 11:43:34 +0530
+Subject: [PATCH] ASoC: Intel: kbl: Add DAI links for Multi-Playback &
+ Echo-reference
 
-Modified DAPM Machine map for machine to suit the toplogy change
-required to enable features:
-Multi-Endpoint Playback
-Echo Reference Capture
+Add new FE DAI links to support:
+1. Parallel playback on 2 ports simultaneously
+2. Echo reference capture capability
 
 Signed-off-by: Naveen M <naveen.m@intel.com>
 Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 6 +++---
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c       | 24 ++++++++++++++++++++++
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 24 ++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
 
 diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 4c70d5a3028c..12b34b9a0104 100644
+index 090331bd6900..4c70d5a3028c 100644
 --- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
 +++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -99,12 +99,12 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
- 	/* CODEC BE connections */
- 	{ "Left HiFi Playback", NULL, "ssp0 Tx" },
- 	{ "Right HiFi Playback", NULL, "ssp0 Tx" },
--	{ "ssp0 Tx", NULL, "codec0_out" },
-+	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "codec1_out" },
-+	{ "ssp1 Tx", NULL, "hs_out" },
- 
--	{ "codec0_in", NULL, "ssp1 Rx" },
-+	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
- 
- 	/* DMIC */
+@@ -52,6 +52,8 @@ struct kbl_rt5663_private {
+ enum {
+ 	KBL_DPCM_AUDIO_PB = 0,
+ 	KBL_DPCM_AUDIO_CP,
++	KBL_DPCM_AUDIO_HS_PB,
++	KBL_DPCM_AUDIO_ECHO_REF_CP,
+ 	KBL_DPCM_AUDIO_REF_CP,
+ 	KBL_DPCM_AUDIO_DMIC_CP,
+ 	KBL_DPCM_AUDIO_HDMI1_PB,
+@@ -485,6 +487,28 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+ 		.dpcm_capture = 1,
+ 		.ops = &kabylake_rt5663_fe_ops,
+ 	},
++	[KBL_DPCM_AUDIO_HS_PB] = {
++		.name = "Kbl Audio Headset Playback",
++		.stream_name = "Headset Audio",
++		.cpu_dai_name = "System Pin2",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
++		.name = "Kbl Audio Echo Reference cap",
++		.stream_name = "Echoreference Capture",
++		.cpu_dai_name = "Echoref Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.init = NULL,
++		.capture_only = 1,
++		.nonatomic = 1,
++	},
+ 	[KBL_DPCM_AUDIO_REF_CP] = {
+ 		.name = "Kbl Audio Reference cap",
+ 		.stream_name = "Wake on Voice",
 diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 64364de165be..5ec942885b69 100644
+index 74bbc008c965..64364de165be 100644
 --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
 +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -107,12 +107,12 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
- 	/* CODEC BE connections */
- 	{ "Left HiFi Playback", NULL, "ssp0 Tx" },
- 	{ "Right HiFi Playback", NULL, "ssp0 Tx" },
--	{ "ssp0 Tx", NULL, "codec0_out" },
-+	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "codec1_out" },
-+	{ "ssp1 Tx", NULL, "hs_out" },
- 
--	{ "codec0_in", NULL, "ssp1 Rx" },
-+	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
- 
- 	{ "codec1_in", NULL, "ssp0 Rx" },
+@@ -62,6 +62,8 @@ struct kbl_codec_private {
+ enum {
+ 	KBL_DPCM_AUDIO_PB = 0,
+ 	KBL_DPCM_AUDIO_CP,
++	KBL_DPCM_AUDIO_HS_PB,
++	KBL_DPCM_AUDIO_ECHO_REF_CP,
+ 	KBL_DPCM_AUDIO_DMIC_CP,
+ 	KBL_DPCM_AUDIO_HDMI1_PB,
+ 	KBL_DPCM_AUDIO_HDMI2_PB,
+@@ -456,6 +458,28 @@ static struct snd_soc_dai_link kabylake_dais[] = {
+ 		.dpcm_capture = 1,
+ 		.ops = &kabylake_rt5663_fe_ops,
+ 	},
++	[KBL_DPCM_AUDIO_HS_PB] = {
++		.name = "Kbl Audio Headset Playback",
++		.stream_name = "Headset Audio",
++		.cpu_dai_name = "System Pin2",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.dpcm_playback = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[KBL_DPCM_AUDIO_ECHO_REF_CP] = {
++		.name = "Kbl Audio Echo Reference cap",
++		.stream_name = "Echoreference Capture",
++		.cpu_dai_name = "Echoref Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:1f.3",
++		.init = NULL,
++		.capture_only = 1,
++		.nonatomic = 1,
++	},
+ 	[KBL_DPCM_AUDIO_DMIC_CP] = {
+ 		.name = "Kbl Audio DMIC cap",
+ 		.stream_name = "dmiccap",
 -- 
 2.13.2
