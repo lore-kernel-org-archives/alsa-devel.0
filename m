@@ -1,243 +1,61 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ALSA: ice1712: add const to snd_akm4xxx structures
-Date: Fri,  4 Aug 2017 23:19:30 +0530
-Message-ID: <1501868970-3747-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/5] ALSA: control: fix issue of concurrent
+ access for TLV operations
+Date: Sat, 5 Aug 2017 07:53:09 +0900
+Message-ID: <1da1eaa4-73e8-91a5-8b95-895e908bd76c@sakamocchi.jp>
+References: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
+ <s5hy3qzgzay.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 9E06D266CC8
+ for <alsa-devel@alsa-project.org>; Sat,  5 Aug 2017 00:53:16 +0200 (CEST)
+In-Reply-To: <s5hy3qzgzay.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Declare snd_akm4xxx structures  as const as they are only passed
-to the function snd_ice1712_akm4xxx_init. This argument is of type
-const, so make the structures const.
-Done using Coccinelle:
-
-@match disable optional_qualifier@
-identifier s;
-position p;
-@@
-static struct snd_akm4xxx s@p={...};
-
-@good1@
-identifier match.s;
-position p;
-@@
-snd_ice1712_akm4xxx_init(...,&s@p,...)
-
-@bad@
-identifier match.s;
-position p!={match.p,good1.p};
-@@
-s@p
-
-@depends on !bad disable optional_qualifier@
-identifier match.s;
-@@
-static
-+const
-struct snd_akm4xxx s={...};
-
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/pci/ice1712/delta.c    | 12 ++++++------
- sound/pci/ice1712/ews.c      |  6 +++---
- sound/pci/ice1712/hoontech.c |  2 +-
- sound/pci/ice1712/juli.c     |  2 +-
- sound/pci/ice1712/phase.c    |  2 +-
- sound/pci/ice1712/quartet.c  |  2 +-
- sound/pci/ice1712/revo.c     | 10 +++++-----
- 7 files changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
-index da5f37b..ab4461d 100644
---- a/sound/pci/ice1712/delta.c
-+++ b/sound/pci/ice1712/delta.c
-@@ -445,7 +445,7 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
-  * initialize the chips on M-Audio cards
-  */
- 
--static struct snd_akm4xxx akm_audiophile = {
-+static const struct snd_akm4xxx akm_audiophile = {
- 	.type = SND_AK4528,
- 	.num_adcs = 2,
- 	.num_dacs = 2,
-@@ -466,7 +466,7 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_delta410 = {
-+static const struct snd_akm4xxx akm_delta410 = {
- 	.type = SND_AK4529,
- 	.num_adcs = 2,
- 	.num_dacs = 8,
-@@ -487,7 +487,7 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_delta1010lt = {
-+static const struct snd_akm4xxx akm_delta1010lt = {
- 	.type = SND_AK4524,
- 	.num_adcs = 8,
- 	.num_dacs = 8,
-@@ -509,7 +509,7 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_delta66e = {
-+static const struct snd_akm4xxx akm_delta66e = {
- 	.type = SND_AK4524,
- 	.num_adcs = 4,
- 	.num_dacs = 4,
-@@ -532,7 +532,7 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
- };
- 
- 
--static struct snd_akm4xxx akm_delta44 = {
-+static const struct snd_akm4xxx akm_delta44 = {
- 	.type = SND_AK4524,
- 	.num_adcs = 4,
- 	.num_dacs = 4,
-@@ -554,7 +554,7 @@ static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kco
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_vx442 = {
-+static const struct snd_akm4xxx akm_vx442 = {
- 	.type = SND_AK4524,
- 	.num_adcs = 4,
- 	.num_dacs = 4,
-diff --git a/sound/pci/ice1712/ews.c b/sound/pci/ice1712/ews.c
-index ec07136..de3603e 100644
---- a/sound/pci/ice1712/ews.c
-+++ b/sound/pci/ice1712/ews.c
-@@ -344,7 +344,7 @@ static void ews88_setup_spdif(struct snd_ice1712 *ice, int rate)
- 
- /*
-  */
--static struct snd_akm4xxx akm_ews88mt = {
-+static const struct snd_akm4xxx akm_ews88mt = {
- 	.num_adcs = 8,
- 	.num_dacs = 8,
- 	.type = SND_AK4524,
-@@ -366,7 +366,7 @@ static void ews88_setup_spdif(struct snd_ice1712 *ice, int rate)
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_ewx2496 = {
-+static const struct snd_akm4xxx akm_ewx2496 = {
- 	.num_adcs = 2,
- 	.num_dacs = 2,
- 	.type = SND_AK4524,
-@@ -387,7 +387,7 @@ static void ews88_setup_spdif(struct snd_ice1712 *ice, int rate)
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_6fire = {
-+static const struct snd_akm4xxx akm_6fire = {
- 	.num_adcs = 6,
- 	.num_dacs = 6,
- 	.type = SND_AK4524,
-diff --git a/sound/pci/ice1712/hoontech.c b/sound/pci/ice1712/hoontech.c
-index a40001c..0bbb5f4 100644
---- a/sound/pci/ice1712/hoontech.c
-+++ b/sound/pci/ice1712/hoontech.c
-@@ -269,7 +269,7 @@ static void stdsp24_ak4524_lock(struct snd_akm4xxx *ak, int chip)
- static int snd_ice1712_value_init(struct snd_ice1712 *ice)
- {
- 	/* Hoontech STDSP24 with modified hardware */
--	static struct snd_akm4xxx akm_stdsp24_mv = {
-+	static const struct snd_akm4xxx akm_stdsp24_mv = {
- 		.num_adcs = 2,
- 		.num_dacs = 2,
- 		.type = SND_AK4524,
-diff --git a/sound/pci/ice1712/juli.c b/sound/pci/ice1712/juli.c
-index 5bb1467..0dbaccf 100644
---- a/sound/pci/ice1712/juli.c
-+++ b/sound/pci/ice1712/juli.c
-@@ -282,7 +282,7 @@ static void juli_akm_set_rate_val(struct snd_akm4xxx *ak, unsigned int rate)
- };
- 
- 
--static struct snd_akm4xxx akm_juli_dac = {
-+static const struct snd_akm4xxx akm_juli_dac = {
- 	.type = SND_AK4358,
- 	.num_dacs = 8,	/* DAC1 - analog out
- 			   DAC2 - analog in monitor
-diff --git a/sound/pci/ice1712/phase.c b/sound/pci/ice1712/phase.c
-index e9ca89c..94bf8ed 100644
---- a/sound/pci/ice1712/phase.c
-+++ b/sound/pci/ice1712/phase.c
-@@ -102,7 +102,7 @@ struct phase28_spec {
- #define WM_VOL_MAX	(sizeof(wm_vol) - 1)
- #define WM_VOL_MUTE	0x8000
- 
--static struct snd_akm4xxx akm_phase22 = {
-+static const struct snd_akm4xxx akm_phase22 = {
- 	.type = SND_AK4524,
- 	.num_dacs = 2,
- 	.num_adcs = 2,
-diff --git a/sound/pci/ice1712/quartet.c b/sound/pci/ice1712/quartet.c
-index f1b3732..d145b5e 100644
---- a/sound/pci/ice1712/quartet.c
-+++ b/sound/pci/ice1712/quartet.c
-@@ -386,7 +386,7 @@ static void qtet_akm_set_rate_val(struct snd_akm4xxx *ak, unsigned int rate)
- 	AK_CONTROL(PCM_34_CAPTURE_VOLUME, 2),
- };
- 
--static struct snd_akm4xxx akm_qtet_dac = {
-+static const struct snd_akm4xxx akm_qtet_dac = {
- 	.type = SND_AK4620,
- 	.num_dacs = 4,	/* DAC1 - Output 12
- 	*/
-diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
-index 1d81ae6..5cd3225 100644
---- a/sound/pci/ice1712/revo.c
-+++ b/sound/pci/ice1712/revo.c
-@@ -235,7 +235,7 @@ static int revo51_i2c_init(struct snd_ice1712 *ice,
- 	},
- };
- 
--static struct snd_akm4xxx akm_revo_front = {
-+static const struct snd_akm4xxx akm_revo_front = {
- 	.type = SND_AK4381,
- 	.num_dacs = 2,
- 	.ops = {
-@@ -256,7 +256,7 @@ static int revo51_i2c_init(struct snd_ice1712 *ice,
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_revo_surround = {
-+static const struct snd_akm4xxx akm_revo_surround = {
- 	.type = SND_AK4355,
- 	.idx_offset = 1,
- 	.num_dacs = 6,
-@@ -278,7 +278,7 @@ static int revo51_i2c_init(struct snd_ice1712 *ice,
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_revo51 = {
-+static const struct snd_akm4xxx akm_revo51 = {
- 	.type = SND_AK4358,
- 	.num_dacs = 8,
- 	.ops = {
-@@ -299,7 +299,7 @@ static int revo51_i2c_init(struct snd_ice1712 *ice,
- 	.mask_flags = 0,
- };
- 
--static struct snd_akm4xxx akm_revo51_adc = {
-+static const struct snd_akm4xxx akm_revo51_adc = {
- 	.type = SND_AK5365,
- 	.num_adcs = 2,
- 	.adc_info = revo51_adc,
-@@ -346,7 +346,7 @@ static void ap192_set_rate_val(struct snd_akm4xxx *ak, unsigned int rate)
- 	AK_DAC("PCM Playback Volume", 2)
- };
- 
--static struct snd_akm4xxx akm_ap192 = {
-+static const struct snd_akm4xxx akm_ap192 = {
- 	.type = SND_AK4358,
- 	.num_dacs = 2,
- 	.ops = {
--- 
-1.9.1
+SGksCgpPbiAyMDE35bm0MDjmnIgwNOaXpSAyMzo1MiwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9u
+IFRodSwgMDMgQXVnIDIwMTcgMTM6MjA6MzkgKzAyMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90
+ZToKPj4KPj4gSGksCj4+Cj4+IEluIGEgZGVzaWduIG9mIEFMU0EgY29udHJvbCBjb3JlLCBlYWNo
+IHNldCBvZiBlbGVtZW50cyBoYXZlIGRhdGEgb2YKPj4gVHlwZS1MZW5ndGgtVmFsdWUgc2hhcGUu
+IFRoaXMgaXMgY2FsbGVkIGFzIFRMViBkYXRhLiBJbiBBTFNBIGNvbnRyb2wKPj4gaW50ZXJmYWNl
+LCBhcHBsaWNhdGlvbnMgY2FuIHRocmVlIHR5cGVzIG9mIHJlcXVlc3RzIHRvIGVsZW1lbnRzIGFi
+b3V0Cj4+IFRMViBkYXRhOyByZWFkLCB3cml0ZSBhbmQgY29tbWFuZC4KPj4KPj4gSW4gY3VycmVu
+dCBpbXBsZW1lbnRhdGlvbiBvZiBBTFNBIGNvbnRyb2wgY29yZSwgdGhlc2UgdGhyZWUgcmVxdWVz
+dHMKPj4gYXJlIGhhbmRsZWQgd2l0aCByZWFkIGxvY2sgb2YgYSBjb3VudGluZyBzZW1hcGhvcmUu
+IEhvd2V2ZXIsIHRoaXMgaGFzIGFuCj4+IGlzc3VlIG9mIGNvbmN1cnJlbnQgYWNjZXNzIGJlY2F1
+c2UgaW4gdGhlb3J5IHdyaXRlL2NvbW1hbmQgcmVxdWVzdHMgaGF2ZQo+PiBzdWItZWZmZWN0cyB0
+byBjaGFuZ2Ugc3RhdGUgb2YgdGhlIHNldCBvZiBlbGVtZW50cyBpbiBhIHBvaW50IG9mIFRMViBk
+YXRhLgo+PiBSZWFkIHJlcXVlc3RzIGFuZCB3cml0ZS9jb21tYW5kIHJlcXVlc3RzIGFyZSBoYW5k
+bGVkIGV4Y2x1c2l2ZWx5IGFzIHdlbGwKPj4gYXMgZWFjaCB3cml0ZS9jb21tYW5kIHJlcXVlc3Rz
+Lgo+Pgo+PiBUaGlzIHBhdGNoc2V0IGlzIGZvciB0aGlzIHB1cnBvc2UuIEFkZGl0aW9uYWxseSwg
+dGhpcyBhcHBsaWVzIGNvZGUKPj4gcmVmYWN0b3JpbmcgdG8gVExWIGlvY3RsIGhhbmRsZXIgYW5k
+IFRMViBoYW5kbGVyIGZvciB1c2VyLWRlZmluZWQgZWxlbWVudAo+PiBzZXQgc28gdGhhdCB0aGV5
+IGdldCBiZXR0ZXIgc2hhcGUgZm9yIHJlYWRlcnMuCj4gCj4gVGFraW5nIHRoZSBydyBtdXRleCBv
+dXRzaWRlIHNuZF9jdGxfdGx2X2lvY3RsKCkgaXMgYSBnb29kIGlkZWEuCj4gSXQgc2ltcGxpZmll
+ZCB0aGluZ3MgYSBsb3QsIGluZGVlZC4KPiAKPiBOb3cgYXBwbGllZCBhbGwgcGF0Y2hlcy4gIFRo
+YW5rcyEKClRoYW5rcy4gQnV0IEkgZm91bmQgdGhhdCBjb21taXQgMzBkODM0MGI1ODU3ICgiQUxT
+QTogY29udHJvbDogb2Jzb2xldGUgCnVzZXJfY3RsX2xvY2siKSBicm91Z2h0IGFub3RoZXIgY29u
+Y3VycmVudCBhY2Nlc3MgaXNzdWUgYmV0d2VlbiAKRUxFTV9SRUFEL0VMRU1fV1JJVEUgZm9yIHVz
+ZXItZGVmaW5lZCBlbGVtZW50IHNldHMsIGR1ZSB0byBhIGdlbmVyaWMgYnVnIAppbiBoYW5kbGVy
+cyBvZiB0aGVzZSB0d28gcmVxdWVzdHMgaW4gQUxTQSBjb250cm9sIGNvcmUuIEkgcHVzaGVkIG15
+IApjb21taXRzIGludG8gbXkgcmVwb3NpdG9yeSB0byBmaXggdGhpcy4gVGhlIGxhdGVzdCB0aHJl
+ZSBjb21taXRzLgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvc291bmQvY29tbWl0cy90b3Bp
+Yy9maXgtY3RsLXdyaXRlbG9jawoKSSdsbCBwb3N0IHRoZW0gYWZ0ZXIgZW5vdWdoIHRlc3RzLgoK
+ClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
