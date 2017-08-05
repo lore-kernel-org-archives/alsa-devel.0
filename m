@@ -1,19 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/5] ALSA: control: fix issue of concurrent
- access for TLV operations
-Date: Sat, 5 Aug 2017 07:53:09 +0900
-Message-ID: <1da1eaa4-73e8-91a5-8b95-895e908bd76c@sakamocchi.jp>
-References: <20170803112044.17138-1-o-takashi@sakamocchi.jp>
- <s5hy3qzgzay.wl-tiwai@suse.de>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH] ALSA: hda: Add Cannonlake PCI ID
+Date: Sat,  5 Aug 2017 14:05:46 +0530
+Message-ID: <20170805083546.24182-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 9E06D266CC8
- for <alsa-devel@alsa-project.org>; Sat,  5 Aug 2017 00:53:16 +0200 (CEST)
-In-Reply-To: <s5hy3qzgzay.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F23D266D9B
+ for <alsa-devel@alsa-project.org>; Sat,  5 Aug 2017 10:35:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +18,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAyMDE35bm0MDjmnIgwNOaXpSAyMzo1MiwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9u
-IFRodSwgMDMgQXVnIDIwMTcgMTM6MjA6MzkgKzAyMDAsCj4gVGFrYXNoaSBTYWthbW90byB3cm90
-ZToKPj4KPj4gSGksCj4+Cj4+IEluIGEgZGVzaWduIG9mIEFMU0EgY29udHJvbCBjb3JlLCBlYWNo
-IHNldCBvZiBlbGVtZW50cyBoYXZlIGRhdGEgb2YKPj4gVHlwZS1MZW5ndGgtVmFsdWUgc2hhcGUu
-IFRoaXMgaXMgY2FsbGVkIGFzIFRMViBkYXRhLiBJbiBBTFNBIGNvbnRyb2wKPj4gaW50ZXJmYWNl
-LCBhcHBsaWNhdGlvbnMgY2FuIHRocmVlIHR5cGVzIG9mIHJlcXVlc3RzIHRvIGVsZW1lbnRzIGFi
-b3V0Cj4+IFRMViBkYXRhOyByZWFkLCB3cml0ZSBhbmQgY29tbWFuZC4KPj4KPj4gSW4gY3VycmVu
-dCBpbXBsZW1lbnRhdGlvbiBvZiBBTFNBIGNvbnRyb2wgY29yZSwgdGhlc2UgdGhyZWUgcmVxdWVz
-dHMKPj4gYXJlIGhhbmRsZWQgd2l0aCByZWFkIGxvY2sgb2YgYSBjb3VudGluZyBzZW1hcGhvcmUu
-IEhvd2V2ZXIsIHRoaXMgaGFzIGFuCj4+IGlzc3VlIG9mIGNvbmN1cnJlbnQgYWNjZXNzIGJlY2F1
-c2UgaW4gdGhlb3J5IHdyaXRlL2NvbW1hbmQgcmVxdWVzdHMgaGF2ZQo+PiBzdWItZWZmZWN0cyB0
-byBjaGFuZ2Ugc3RhdGUgb2YgdGhlIHNldCBvZiBlbGVtZW50cyBpbiBhIHBvaW50IG9mIFRMViBk
-YXRhLgo+PiBSZWFkIHJlcXVlc3RzIGFuZCB3cml0ZS9jb21tYW5kIHJlcXVlc3RzIGFyZSBoYW5k
-bGVkIGV4Y2x1c2l2ZWx5IGFzIHdlbGwKPj4gYXMgZWFjaCB3cml0ZS9jb21tYW5kIHJlcXVlc3Rz
-Lgo+Pgo+PiBUaGlzIHBhdGNoc2V0IGlzIGZvciB0aGlzIHB1cnBvc2UuIEFkZGl0aW9uYWxseSwg
-dGhpcyBhcHBsaWVzIGNvZGUKPj4gcmVmYWN0b3JpbmcgdG8gVExWIGlvY3RsIGhhbmRsZXIgYW5k
-IFRMViBoYW5kbGVyIGZvciB1c2VyLWRlZmluZWQgZWxlbWVudAo+PiBzZXQgc28gdGhhdCB0aGV5
-IGdldCBiZXR0ZXIgc2hhcGUgZm9yIHJlYWRlcnMuCj4gCj4gVGFraW5nIHRoZSBydyBtdXRleCBv
-dXRzaWRlIHNuZF9jdGxfdGx2X2lvY3RsKCkgaXMgYSBnb29kIGlkZWEuCj4gSXQgc2ltcGxpZmll
-ZCB0aGluZ3MgYSBsb3QsIGluZGVlZC4KPiAKPiBOb3cgYXBwbGllZCBhbGwgcGF0Y2hlcy4gIFRo
-YW5rcyEKClRoYW5rcy4gQnV0IEkgZm91bmQgdGhhdCBjb21taXQgMzBkODM0MGI1ODU3ICgiQUxT
-QTogY29udHJvbDogb2Jzb2xldGUgCnVzZXJfY3RsX2xvY2siKSBicm91Z2h0IGFub3RoZXIgY29u
-Y3VycmVudCBhY2Nlc3MgaXNzdWUgYmV0d2VlbiAKRUxFTV9SRUFEL0VMRU1fV1JJVEUgZm9yIHVz
-ZXItZGVmaW5lZCBlbGVtZW50IHNldHMsIGR1ZSB0byBhIGdlbmVyaWMgYnVnIAppbiBoYW5kbGVy
-cyBvZiB0aGVzZSB0d28gcmVxdWVzdHMgaW4gQUxTQSBjb250cm9sIGNvcmUuIEkgcHVzaGVkIG15
-IApjb21taXRzIGludG8gbXkgcmVwb3NpdG9yeSB0byBmaXggdGhpcy4gVGhlIGxhdGVzdCB0aHJl
-ZSBjb21taXRzLgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvc291bmQvY29tbWl0cy90b3Bp
-Yy9maXgtY3RsLXdyaXRlbG9jawoKSSdsbCBwb3N0IHRoZW0gYWZ0ZXIgZW5vdWdoIHRlc3RzLgoK
-ClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+Cannonlake is next generation Intel platform. This commit adds PCI ID for
+it.
+
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ sound/pci/hda/hda_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 5ae8ddab6412..f958d8d54d15 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2389,6 +2389,9 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* Coffelake */
+ 	{ PCI_DEVICE(0x8086, 0xa348),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	/* Cannonlake */
++	{ PCI_DEVICE(0x8086, 0x9dc8),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Broxton-P(Apollolake) */
+ 	{ PCI_DEVICE(0x8086, 0x5a98),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+-- 
+2.13.0
