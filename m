@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 4/7] ALSA: usb-audio: constify usb_device_id.
-Date: Sun,  6 Aug 2017 12:18:56 +0530
-Message-ID: <1502002139-10787-5-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 5/7] ALSA: ua101: constify usb_device_id.
+Date: Sun,  6 Aug 2017 12:18:57 +0530
+Message-ID: <1502002139-10787-6-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502002139-10787-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502002139-10787-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,30 +16,21 @@ const usb_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/usb/card.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/misc/ua101.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 6640277..3dc36d9 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -486,7 +486,7 @@ static bool get_alias_id(struct usb_device *dev, unsigned int *id)
- 	return false;
+diff --git a/sound/usb/misc/ua101.c b/sound/usb/misc/ua101.c
+index c19a5dd..b05cd38 100644
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -1366,7 +1366,7 @@ static void ua101_disconnect(struct usb_interface *interface)
+ 	mutex_unlock(&devices_mutex);
  }
  
--static struct usb_device_id usb_audio_ids[]; /* defined below */
-+static const struct usb_device_id usb_audio_ids[]; /* defined below */
- 
- /* look for the corresponding quirk */
- static const struct snd_usb_audio_quirk *
-@@ -814,7 +814,7 @@ static int usb_audio_reset_resume(struct usb_interface *intf)
- #define usb_audio_reset_resume	NULL
- #endif		/* CONFIG_PM */
- 
--static struct usb_device_id usb_audio_ids [] = {
-+static const struct usb_device_id usb_audio_ids [] = {
- #include "quirks-table.h"
-     { .match_flags = (USB_DEVICE_ID_MATCH_INT_CLASS | USB_DEVICE_ID_MATCH_INT_SUBCLASS),
-       .bInterfaceClass = USB_CLASS_AUDIO,
+-static struct usb_device_id ua101_ids[] = {
++static const struct usb_device_id ua101_ids[] = {
+ 	{ USB_DEVICE(0x0582, 0x0044) }, /* UA-1000 high speed */
+ 	{ USB_DEVICE(0x0582, 0x007d) }, /* UA-101 high speed */
+ 	{ USB_DEVICE(0x0582, 0x008d) }, /* UA-101 full speed */
 -- 
 2.7.4
