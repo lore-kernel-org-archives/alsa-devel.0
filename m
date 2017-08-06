@@ -1,14 +1,18 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH] ALSA: hda: Add Cannonlake PCI ID
-Date: Sat,  5 Aug 2017 14:05:46 +0530
-Message-ID: <20170805083546.24182-1-guneshwor.o.singh@intel.com>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH 1/7] ALSA: 6fire: constify usb_device_id.
+Date: Sun,  6 Aug 2017 12:18:53 +0530
+Message-ID: <1502002139-10787-2-git-send-email-arvind.yadav.cs@gmail.com>
+References: <1502002139-10787-1-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F23D266D9B
- for <alsa-devel@alsa-project.org>; Sat,  5 Aug 2017 10:35:49 +0200 (CEST)
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D16B8266834
+ for <alsa-devel@alsa-project.org>; Sun,  6 Aug 2017 08:49:15 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id y192so5774104pgd.1
+ for <alsa-devel@alsa-project.org>; Sat, 05 Aug 2017 23:49:15 -0700 (PDT)
+In-Reply-To: <1502002139-10787-1-git-send-email-arvind.yadav.cs@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,31 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+To: perex@perex.cz, tiwai@suse.com, zonque@gmail.com, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Cannonlake is next generation Intel platform. This commit adds PCI ID for
-it.
+usb_device_id are not supposed to change at runtime. All functions
+working with usb_device_id provided by <linux/usb.h> work with
+const usb_device_id. So mark the non-const structs as const.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/usb/6fire/chip.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 5ae8ddab6412..f958d8d54d15 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2389,6 +2389,9 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Coffelake */
- 	{ PCI_DEVICE(0x8086, 0xa348),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	/* Cannonlake */
-+	{ PCI_DEVICE(0x8086, 0x9dc8),
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Broxton-P(Apollolake) */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
+diff --git a/sound/usb/6fire/chip.c b/sound/usb/6fire/chip.c
+index dcddfc3..bc2a24f 100644
+--- a/sound/usb/6fire/chip.c
++++ b/sound/usb/6fire/chip.c
+@@ -198,7 +198,7 @@ static void usb6fire_chip_disconnect(struct usb_interface *intf)
+ 	}
+ }
+ 
+-static struct usb_device_id device_table[] = {
++static const struct usb_device_id device_table[] = {
+ 	{
+ 		.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
+ 		.idVendor = 0x0ccd,
 -- 
-2.13.0
+2.7.4
