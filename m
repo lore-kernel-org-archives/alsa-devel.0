@@ -1,51 +1,82 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH 08/11] ALSA: vsnd: Add timer for period
- interrupt emulation
-Date: Mon, 7 Aug 2017 15:55:25 +0200
-Message-ID: <e857f6cf-0e82-aa2b-9291-6d0c40ac918a@ladisch.de>
-References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
- <1502091796-14413-9-git-send-email-andr2000@gmail.com>
- <ba0dd78b-8853-5cf9-197f-bed3b9f4bdb8@ladisch.de>
- <f2f54b55-3145-2533-c74a-9c3ea803739e@gmail.com>
- <4ce45eec-8657-66c4-c8c7-b851250da46a@ladisch.de>
- <45738e58-7ed2-8315-8d9c-138c3d3a2ecc@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: compress: Remove duplicated code
+Date: Mon, 7 Aug 2017 16:07:14 +0100
+Message-ID: <20170807150714.e7aecqskfelp7h5z@sirena.org.uk>
+References: <1502111504-7996-1-git-send-email-pengdonglin137@163.com>
+ <CAErzpmsPRYKmu_CMPPXEohjB-dbuqux4v12t5r9-E6dV3sXnMg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <45738e58-7ed2-8315-8d9c-138c3d3a2ecc@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com
+Content-Type: multipart/mixed; boundary="===============2408838166233867078=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17CA32672A8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:07:22 +0200 (CEST)
+In-Reply-To: <CAErzpmsPRYKmu_CMPPXEohjB-dbuqux4v12t5r9-E6dV3sXnMg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Oleksandr Andrushchenko wrote:
-> On 08/07/2017 04:11 PM, Clemens Ladisch wrote:
->> How does that interface work?
->
-> For the buffer received in .copy_user/.copy_kernel we send
-> a request to the backend and get response back (async) when it has copied
-> the bytes into HW/mixer/etc, so the buffer at frontend side can be reused.
 
-So if the frontend sends too many (too large) requests, does the
-backend wait until there is enough free space in the buffer before
-it does the actual copying and then acks?
-
-If yes, then these acks can be used as interrupts.  (You still
-have to count frames, and call snd_pcm_period_elapsed() exactly
-when a period boundary was reached or crossed.)
-
-Splitting a large read/write into smaller requests to the backend
-would improve the granularity of the known stream position.
-
-The overall latency would be the sum of the sizes of the frontend
-and backend buffers.
+--===============2408838166233867078==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cjvxitc7w7mztkoz"
+Content-Disposition: inline
 
 
-Why is the protocol designed this way?  Wasn't the goal to expose
-some 'real' sound card?
+--cjvxitc7w7mztkoz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Aug 07, 2017 at 09:18:09PM +0800, Donglin Peng wrote:
+
+> The value of the variable new_name is assigned repeatedly.
+
+> @@ -737,9 +737,6 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime
+> *rtd, int num)
+>         }
+>=20
+>         /* check client and interface hw capabilities */
+> -       snprintf(new_name, sizeof(new_name), "%s %s-%d",
+> -                       rtd->dai_link->stream_name, codec_dai->name, num);
+> -
+
+Are you sure that this is the assignment that should be deleted, and if
+so why?  Note that it's both conditionally and unconditionally assigned
+later on...  Some words in the commit log about why this copy is removed
+would be helpful.
+
+--cjvxitc7w7mztkoz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmIgiIACgkQJNaLcl1U
+h9CAOQf/Y1iJKOPnN2qi++MLSwLXoY4eikrqsm6LcD8GyHwZKfRjxDCdhmdaRQLW
+jB/cs6+P0QiBf1NCRLO9Djtsg2ZHKRgFDbqBddcxVIrV4j14aGMEo3tU6iqSQyqy
+RjMNF8BQ4+9HzsGxl9y/c5sIpugzD8Lzaj9FlocWikEi23YhlzT0dERqMzzp9Pvy
+E9vXdcG840w4JxxxUfjncNec/f58M/6E5z0YFwG0p0stRFUEdYOEvGOztTqvPZNF
+bTcxOY6G1WER6DZb63kssNZEalCL3uKN1oJ/5cC53+f73vaxqdkWFEnH3hoMzaKu
+zy6LLpQenjV+YGzrFBx+wIyjKb18Mg==
+=qu/k
+-----END PGP SIGNATURE-----
+
+--cjvxitc7w7mztkoz--
+
+--===============2408838166233867078==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-Regards,
-Clemens
+--===============2408838166233867078==--
