@@ -1,7 +1,7 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND1 10/12] ALSA: vsnd: Implement ALSA PCM operations
-Date: Mon,  7 Aug 2017 15:22:55 +0300
-Message-ID: <1502108577-8099-11-git-send-email-andr2000@gmail.com>
+Subject: [PATCH RESEND1 12/12] ALSA: vsnd: Introduce Kconfig option to enable Xen PV sound
+Date: Mon,  7 Aug 2017 15:22:57 +0300
+Message-ID: <1502108577-8099-13-git-send-email-andr2000@gmail.com>
 References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
@@ -12,261 +12,54 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Implement ALSA driver operations including:
-- start/stop period interrupt emulation
-- manage frontend/backend shraed buffers
-- manage Xen bus event channel state
+Introduce Kconfig option to enable Xen para-virtualized sound
+frontend driver. Also add sound frontend to the Makefile.
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- sound/drivers/xen-front.c | 175 ++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 163 insertions(+), 12 deletions(-)
+ sound/drivers/Kconfig  | 12 ++++++++++++
+ sound/drivers/Makefile |  2 ++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
-index 507c5eb343c8..7275e9cb38c0 100644
---- a/sound/drivers/xen-front.c
-+++ b/sound/drivers/xen-front.c
-@@ -151,6 +151,11 @@ struct xdrv_info {
- 	struct sdev_card_plat_data cfg_plat_data;
- };
+diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
+index 7144cc36e8ae..6b8fa6110ca3 100644
+--- a/sound/drivers/Kconfig
++++ b/sound/drivers/Kconfig
+@@ -235,4 +235,16 @@ config SND_AC97_POWER_SAVE_DEFAULT
  
-+static inline void sh_buf_clear(struct sh_buf_info *buf);
-+static void sh_buf_free(struct sh_buf_info *buf);
-+static int sh_buf_alloc(struct xenbus_device *xb_dev, struct sh_buf_info *buf,
-+	unsigned int buffer_size);
-+
- static struct sdev_pcm_stream_info *sdrv_stream_get(
- 	struct snd_pcm_substream *substream)
- {
-@@ -311,71 +316,217 @@ static void sdrv_copy_pcm_hw(struct snd_pcm_hardware *dst,
+ 	  See SND_AC97_POWER_SAVE for more details.
  
- static int sdrv_alsa_open(struct snd_pcm_substream *substream)
- {
--	return 0;
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct xdrv_info *xdrv_info;
-+	unsigned long flags;
-+	int ret;
++config SND_XEN_FRONTEND
++	tristate "Xen virtual sound front-end driver"
++	depends on SND_PCM && XEN
++	select XEN_XENBUS_FRONTEND
++	default n
++	help
++	  This driver implements a front-end for the Xen
++	  para-virtualized sound.
 +
-+	sdrv_copy_pcm_hw(&runtime->hw, &stream->pcm_hw, &pcm_instance->pcm_hw);
-+	runtime->hw.info &= ~(SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_MMAP_VALID |
-+		SNDRV_PCM_INFO_DOUBLE |
-+		SNDRV_PCM_INFO_BATCH |
-+		SNDRV_PCM_INFO_NONINTERLEAVED |
-+		SNDRV_PCM_INFO_RESUME |
-+		SNDRV_PCM_INFO_PAUSE);
-+	runtime->hw.info |= SNDRV_PCM_INFO_INTERLEAVED;
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-xen-front.
 +
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+
-+	ret = sdrv_alsa_timer_create(substream);
-+
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	sh_buf_clear(&stream->sh_buf);
-+	stream->evt_chnl = &xdrv_info->evt_chnls[stream->unique_id];
-+	if (ret < 0)
-+		stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
-+	else
-+		stream->evt_chnl->state = EVTCHNL_STATE_CONNECTED;
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
-+	return ret;
- }
+ endif	# SND_DRIVERS
+diff --git a/sound/drivers/Makefile b/sound/drivers/Makefile
+index 1a8440c8b138..70ed920a030f 100644
+--- a/sound/drivers/Makefile
++++ b/sound/drivers/Makefile
+@@ -11,6 +11,7 @@ snd-portman2x4-objs := portman2x4.o
+ snd-serial-u16550-objs := serial-u16550.o
+ snd-virmidi-objs := virmidi.o
+ snd-ml403-ac97cr-objs := ml403-ac97cr.o pcm-indirect2.o
++snd-xen-front-objs := xen-front.o
  
- static int sdrv_alsa_close(struct snd_pcm_substream *substream)
- {
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	struct xdrv_info *xdrv_info;
-+	unsigned long flags;
-+
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+
-+	sdrv_alsa_timer_stop(substream);
-+
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
- 	return 0;
- }
+ # Toplevel Module Dependency
+ obj-$(CONFIG_SND_DUMMY) += snd-dummy.o
+@@ -21,5 +22,6 @@ obj-$(CONFIG_SND_MTPAV) += snd-mtpav.o
+ obj-$(CONFIG_SND_MTS64) += snd-mts64.o
+ obj-$(CONFIG_SND_PORTMAN2X4) += snd-portman2x4.o
+ obj-$(CONFIG_SND_ML403_AC97CR) += snd-ml403-ac97cr.o
++obj-$(CONFIG_SND_XEN_FRONTEND) += snd-xen-front.o
  
- static int sdrv_alsa_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	struct xdrv_info *xdrv_info;
-+	unsigned int buffer_size;
-+	int ret;
-+
-+	buffer_size = params_buffer_bytes(params);
-+	sh_buf_clear(&stream->sh_buf);
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+	ret = sh_buf_alloc(xdrv_info->xb_dev,
-+		&stream->sh_buf, buffer_size);
-+	if (ret < 0)
-+		goto fail;
- 	return 0;
-+
-+fail:
-+	dev_err(&xdrv_info->xb_dev->dev,
-+		"Failed to allocate buffers for stream idx %d\n",
-+		stream->unique_id);
-+	return ret;
- }
- 
- static int sdrv_alsa_hw_free(struct snd_pcm_substream *substream)
- {
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	struct xdrv_info *xdrv_info;
-+	unsigned long flags;
-+
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	sh_buf_free(&stream->sh_buf);
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
- 	return 0;
- }
- 
- static int sdrv_alsa_prepare(struct snd_pcm_substream *substream)
- {
--	return 0;
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	int ret = 0;
-+
-+	if (!stream->is_open)
-+		ret = sdrv_alsa_timer_prepare(substream);
-+	return ret;
- }
- 
- static int sdrv_alsa_trigger(struct snd_pcm_substream *substream, int cmd)
- {
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		/* fall through */
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		return sdrv_alsa_timer_start(substream);
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		/* fall through */
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		return sdrv_alsa_timer_stop(substream);
-+
-+	default:
-+		break;
-+	}
- 	return 0;
- }
- 
- static inline snd_pcm_uframes_t sdrv_alsa_pointer(
- 	struct snd_pcm_substream *substream)
- {
-+	return sdrv_alsa_timer_pointer(substream);
-+}
-+
-+static int sdrv_alsa_playback_do_write(struct snd_pcm_substream *substream,
-+	unsigned long pos, unsigned long count)
-+{
- 	return 0;
- }
- 
- static int sdrv_alsa_playback_copy_user(struct snd_pcm_substream *substream,
--		int channel, unsigned long pos, void __user *buf,
--		unsigned long bytes)
-+		int channel, unsigned long pos, void __user *src,
-+		unsigned long count)
- {
--	return 0;
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+
-+	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
-+		return -EINVAL;
-+
-+	if (copy_from_user(stream->sh_buf.vbuffer + pos, src, count))
-+		return -EFAULT;
-+
-+	return sdrv_alsa_playback_do_write(substream, pos, count);
- }
- 
- static int sdrv_alsa_playback_copy_kernel(struct snd_pcm_substream *substream,
--		int channel, unsigned long pos, void *buf, unsigned long bytes)
-+		int channel, unsigned long pos, void *src, unsigned long count)
-+{
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+
-+	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
-+		return -EINVAL;
-+
-+	memcpy(stream->sh_buf.vbuffer + pos, src, count);
-+	return sdrv_alsa_playback_do_write(substream, pos, count);
-+}
-+
-+static int sdrv_alsa_playback_do_read(struct snd_pcm_substream *substream,
-+	unsigned long pos, unsigned long count)
- {
- 	return 0;
- }
- 
- static int sdrv_alsa_capture_copy_user(struct snd_pcm_substream *substream,
--		int channel, unsigned long pos, void __user *buf,
--		unsigned long bytes)
-+		int channel, unsigned long pos, void __user *dst,
-+		unsigned long count)
- {
--	return 0;
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	int ret;
-+
-+	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
-+		return -EINVAL;
-+
-+	ret = sdrv_alsa_playback_do_read(substream, pos, count);
-+	if (ret < 0)
-+		return ret;
-+
-+	return copy_to_user(dst, stream->sh_buf.vbuffer + pos, count) ?
-+		-EFAULT : 0;
- }
- 
- static int sdrv_alsa_capture_copy_kernel(struct snd_pcm_substream *substream,
--		int channel, unsigned long pos, void *buf, unsigned long bytes)
-+		int channel, unsigned long pos, void *dst, unsigned long count)
- {
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	int ret;
-+
-+	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
-+		return -EINVAL;
-+
-+	ret = sdrv_alsa_playback_do_read(substream, pos, count);
-+	if (ret < 0)
-+		return ret;
-+
-+	memcpy(dst, stream->sh_buf.vbuffer + pos, count);
- 	return 0;
- }
- 
- static int sdrv_alsa_playback_fill_silence(struct snd_pcm_substream *substream,
--	int channel, unsigned long pos, unsigned long bytes)
-+	int channel, unsigned long pos, unsigned long count)
- {
--	return 0;
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+
-+	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
-+		return -EINVAL;
-+
-+	memset(stream->sh_buf.vbuffer + pos, 0, count);
-+	return sdrv_alsa_playback_do_write(substream, pos, count);
- }
- 
- #define MAX_XEN_BUFFER_SIZE	(64 * 1024)
+ obj-$(CONFIG_SND) += opl3/ opl4/ mpu401/ vx/ pcsp/
 -- 
 2.7.4
