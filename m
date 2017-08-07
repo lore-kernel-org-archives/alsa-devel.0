@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: Use IS_ERR_OR_NULL()" to the
-	asoc tree
-Date: Mon, 07 Aug 2017 16:53:08 +0100
-Message-ID: <E1dekL6-0005Tn-Vl@debutante>
-References: <1502107733-29628-2-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: soc-core: Remove unneeded dentry member
+	from snd_soc_codec" to the asoc tree
+Date: Mon, 07 Aug 2017 16:53:12 +0100
+Message-ID: <E1dekLA-0005Uc-0T@debutante>
+References: <1502075586-23581-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B700267459
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:53:16 +0200 (CEST)
-In-Reply-To: <1502107733-29628-2-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 925F0267459
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:53:19 +0200 (CEST)
+In-Reply-To: <1502075586-23581-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: Use IS_ERR_OR_NULL()
+   ASoC: soc-core: Remove unneeded dentry member from snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From d9a02c552cd69c466998e3afdf420cb4c0b9d9d9 Mon Sep 17 00:00:00 2001
+>From 353c64dd19ebc99786c3578ea0444e1b5b1bb172 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 7 Aug 2017 09:08:53 -0300
-Subject: [PATCH] ASoC: soc-core: Use IS_ERR_OR_NULL()
+Date: Mon, 7 Aug 2017 09:08:52 -0300
+Subject: [PATCH] ASoC: soc-core: Remove unneeded dentry member from
+ snd_soc_codec
 
-The check of IS_ERR or NULL pointer can be replaced by IS_ERR_OR_NULL(),
-which helps readability.
+There is no need to have the *debugfs_reg dentry member as part of
+the snd_soc_codec structure as its only usage is inside
+soc_init_codec_debugfs().
+
+Use a local dentry variable instead.
 
 Signed-off-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc.h  | 4 ----
+ sound/soc/soc-core.c | 9 +++++----
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 10b71beb9f13..aad3f14966f1 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -903,10 +903,6 @@ struct snd_soc_codec {
+ 
+ 	/* component */
+ 	struct snd_soc_component component;
+-
+-#ifdef CONFIG_DEBUG_FS
+-	struct dentry *debugfs_reg;
+-#endif
+ };
+ 
+ /* codec driver */
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 558efdfd717d..07d708498500 100644
+index 921622a01944..558efdfd717d 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -495,7 +495,7 @@ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- static void snd_soc_debugfs_init(void)
+@@ -339,11 +339,12 @@ static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
+ static void soc_init_codec_debugfs(struct snd_soc_component *component)
  {
- 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
--	if (IS_ERR(snd_soc_debugfs_root) || !snd_soc_debugfs_root) {
-+	if (IS_ERR_OR_NULL(snd_soc_debugfs_root)) {
- 		pr_warn("ASoC: Failed to create debugfs directory\n");
- 		snd_soc_debugfs_root = NULL;
- 		return;
+ 	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
++	struct dentry *debugfs_reg;
+ 
+-	codec->debugfs_reg = debugfs_create_file("codec_reg", 0644,
+-						 codec->component.debugfs_root,
+-						 codec, &codec_reg_fops);
+-	if (!codec->debugfs_reg)
++	debugfs_reg = debugfs_create_file("codec_reg", 0644,
++					  codec->component.debugfs_root,
++					  codec, &codec_reg_fops);
++	if (!debugfs_reg)
+ 		dev_warn(codec->dev,
+ 			"ASoC: Failed to create codec register debugfs file\n");
+ }
 -- 
 2.13.3
