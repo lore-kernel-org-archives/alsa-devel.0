@@ -1,8 +1,10 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH 00/11] ALSA: vsnd: Add Xen para-virtualized frontend driver
-Date: Mon,  7 Aug 2017 10:43:05 +0300
-Message-ID: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
+Subject: [PATCH 06/11] ALSA: vsnd: Introduce ALSA virtual sound driver
+Date: Mon,  7 Aug 2017 10:43:11 +0300
+Message-ID: <1502091796-14413-7-git-send-email-andr2000@gmail.com>
+References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
 Cc: perex@perex.cz, tiwai@suse.com, andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
@@ -10,39 +12,230 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-This patch series adds support for Xen [1] para-virtualized
-sound frontend driver. It implements the protocol from
-include/xen/interface/io/sndif.h with the following limitations:
-- mute/unmute is not supported
-- get/set volume is not supported
-Volume control is not supported for the reason that most of the
-use-cases (at the moment) are based on scenarious where
-unprivileged OS (e.g. Android, AGL etc) use software mixers.
+Implement essential initialization of the sound driver:
+- introduce required data structures
+- handle driver registration
+- handle sound card registration
+- register sound driver on backend connection
+- remove sound driver on backend disconnect
 
-Both capture and playback are supported.
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ sound/drivers/xen-front.c | 161 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 159 insertions(+), 2 deletions(-)
 
-Thank you,
-Oleksandr
-
-[1] https://xenproject.org/
-
-Oleksandr Andrushchenko (11):
-  ALSA: vsnd: Implement driver's probe/remove
-  ALSA: vsnd: Implement Xen bus state handling
-  ALSA: vsnd: Read sound driver configuration from Xen store
-  ALSA: vsnd: Implement Xen event channel handling
-  ALSA: vsnd: Implement handling of shared buffers
-  ALSA: vsnd: Introduce ALSA virtual sound driver
-  ALSA: vsnd: Initialize virtul sound card
-  ALSA: vsnd: Add timer for period interrupt emulation
-  ALSA: vsnd: Implement ALSA PCM operations
-  ALSA: vsnd: Implement communication with backend
-  ALSA: vsnd: Introduce Kconfig option to enable Xen PV sound
-
- sound/drivers/Kconfig     |   12 +
- sound/drivers/Makefile    |    2 +
- sound/drivers/xen-front.c | 2029 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 2043 insertions(+)
-
+diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
+index 04ebc15757f4..f3e3f64f0aa6 100644
+--- a/sound/drivers/xen-front.c
++++ b/sound/drivers/xen-front.c
+@@ -19,13 +19,14 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+-#include <xen/platform_pci.h>
+ #include <xen/events.h>
+ #include <xen/grant_table.h>
++#include <xen/platform_pci.h>
+ #include <xen/xen.h>
+ #include <xen/xenbus.h>
+ 
+@@ -66,6 +67,33 @@ struct sh_buf_info {
+ 	size_t vbuffer_sz;
+ };
+ 
++struct sdev_pcm_stream_info {
++	int unique_id;
++	struct snd_pcm_hardware pcm_hw;
++	struct xdrv_evtchnl_info *evt_chnl;
++	bool is_open;
++	uint8_t req_next_id;
++	struct sh_buf_info sh_buf;
++};
++
++struct sdev_pcm_instance_info {
++	struct sdev_card_info *card_info;
++	struct snd_pcm *pcm;
++	struct snd_pcm_hardware pcm_hw;
++	int num_pcm_streams_pb;
++	struct sdev_pcm_stream_info *streams_pb;
++	int num_pcm_streams_cap;
++	struct sdev_pcm_stream_info *streams_cap;
++};
++
++struct sdev_card_info {
++	struct xdrv_info *xdrv_info;
++	struct snd_card *card;
++	struct snd_pcm_hardware pcm_hw;
++	int num_pcm_instances;
++	struct sdev_pcm_instance_info *pcm_instances;
++};
++
+ struct cfg_stream {
+ 	int unique_id;
+ 	char *xenstore_path;
+@@ -99,6 +127,8 @@ struct xdrv_info {
+ 	struct xenbus_device *xb_dev;
+ 	spinlock_t io_lock;
+ 	struct mutex mutex;
++	bool sdrv_registered;
++	struct platform_device *sdrv_pdev;
+ 	int num_evt_channels;
+ 	struct xdrv_evtchnl_info *evt_chnls;
+ 	struct sdev_card_plat_data cfg_plat_data;
+@@ -138,6 +168,132 @@ static struct snd_pcm_hardware sdrv_pcm_hw_default = {
+ 	.fifo_size = 0,
+ };
+ 
++static int sdrv_new_pcm(struct sdev_card_info *card_info,
++	struct cfg_pcm_instance *instance_config,
++	struct sdev_pcm_instance_info *pcm_instance_info)
++{
++	return 0;
++}
++
++static int sdrv_probe(struct platform_device *pdev)
++{
++	struct sdev_card_info *card_info;
++	struct sdev_card_plat_data *platdata;
++	struct snd_card *card;
++	int ret, i;
++
++	platdata = dev_get_platdata(&pdev->dev);
++
++	dev_dbg(&pdev->dev, "Creating virtual sound card\n");
++
++	ret = snd_card_new(&pdev->dev, 0, XENSND_DRIVER_NAME, THIS_MODULE,
++		sizeof(struct sdev_card_info), &card);
++	if (ret < 0)
++		return ret;
++
++	card_info = card->private_data;
++	card_info->xdrv_info = platdata->xdrv_info;
++	card_info->card = card;
++	card_info->pcm_instances = devm_kcalloc(&pdev->dev,
++			platdata->cfg_card.num_pcm_instances,
++			sizeof(struct sdev_pcm_instance_info), GFP_KERNEL);
++	if (!card_info->pcm_instances) {
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	card_info->num_pcm_instances = platdata->cfg_card.num_pcm_instances;
++	card_info->pcm_hw = platdata->cfg_card.pcm_hw;
++
++	for (i = 0; i < platdata->cfg_card.num_pcm_instances; i++) {
++		ret = sdrv_new_pcm(card_info,
++			&platdata->cfg_card.pcm_instances[i],
++			&card_info->pcm_instances[i]);
++		if (ret < 0)
++			goto fail;
++	}
++
++	strncpy(card->driver, XENSND_DRIVER_NAME, sizeof(card->driver));
++	strncpy(card->shortname, platdata->cfg_card.name_short,
++		sizeof(card->shortname));
++	strncpy(card->longname, platdata->cfg_card.name_long,
++		sizeof(card->longname));
++
++	ret = snd_card_register(card);
++	if (ret < 0)
++		goto fail;
++
++	platform_set_drvdata(pdev, card);
++	return 0;
++
++fail:
++	snd_card_free(card);
++	return ret;
++}
++
++static int sdrv_remove(struct platform_device *pdev)
++{
++	struct sdev_card_info *info;
++	struct snd_card *card = platform_get_drvdata(pdev);
++
++	info = card->private_data;
++	dev_dbg(&pdev->dev, "Removing virtual sound card %d\n",
++		info->card->number);
++	snd_card_free(card);
++	return 0;
++}
++
++static struct platform_driver sdrv_info = {
++	.probe	= sdrv_probe,
++	.remove	= sdrv_remove,
++	.driver	= {
++		.name	= XENSND_DRIVER_NAME,
++	},
++};
++
++static void sdrv_cleanup(struct xdrv_info *drv_info)
++{
++	if (!drv_info->sdrv_registered)
++		return;
++
++	if (drv_info->sdrv_pdev) {
++		struct platform_device *sdrv_pdev;
++
++		sdrv_pdev = drv_info->sdrv_pdev;
++		if (sdrv_pdev)
++			platform_device_unregister(sdrv_pdev);
++	}
++	platform_driver_unregister(&sdrv_info);
++	drv_info->sdrv_registered = false;
++}
++
++static int sdrv_init(struct xdrv_info *drv_info)
++{
++	struct platform_device *sdrv_pdev;
++	int ret;
++
++	ret = platform_driver_register(&sdrv_info);
++	if (ret < 0)
++		return ret;
++
++	drv_info->sdrv_registered = true;
++	/* pass card configuration via platform data */
++	sdrv_pdev = platform_device_register_data(NULL,
++		XENSND_DRIVER_NAME, 0, &drv_info->cfg_plat_data,
++		sizeof(drv_info->cfg_plat_data));
++	if (IS_ERR(sdrv_pdev))
++		goto fail;
++
++	drv_info->sdrv_pdev = sdrv_pdev;
++	return 0;
++
++fail:
++	dev_err(&drv_info->xb_dev->dev,
++		"failed to register virtual sound driver\n");
++	sdrv_cleanup(drv_info);
++	return -ENODEV;
++}
++
+ static irqreturn_t xdrv_evtchnl_interrupt(int irq, void *dev_id)
+ {
+ 	struct xdrv_evtchnl_info *channel = dev_id;
+@@ -830,6 +986,7 @@ static int cfg_card(struct xdrv_info *drv_info,
+ 
+ static void xdrv_remove_internal(struct xdrv_info *drv_info)
+ {
++	sdrv_cleanup(drv_info);
+ 	xdrv_evtchnl_free_all(drv_info);
+ }
+ 
+@@ -1018,7 +1175,7 @@ static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
+ 
+ static inline int xdrv_be_on_connected(struct xdrv_info *drv_info)
+ {
+-	return 0;
++	return sdrv_init(drv_info);
+ }
+ 
+ static inline void xdrv_be_on_disconnected(struct xdrv_info *drv_info)
 -- 
 2.7.4
