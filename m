@@ -1,80 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pxa: don't select SSP for COMPILE_TESTing
-Date: Mon, 7 Aug 2017 13:00:37 +0100
-Message-ID: <20170807120037.la3kt4amtfiosn7b@sirena.org.uk>
-References: <20170807104101.3540159-1-arnd@arndb.de>
- <20170807112030.zvz3flujilsixdj4@sirena.org.uk>
- <CAK8P3a3Zuu7HE4CphQR_wpbGvnupYRSdy3xFZu5UgsuvoOjnLQ@mail.gmail.com>
- <20170807114837.3bqsroayi3sipf4h@sirena.org.uk>
- <CAK8P3a0tjwxq+P+Ww+Rxjt9Z4+AsJMgvn3z0bHiPgO+4EWQHZw@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v3 1/2] ASoC: soc-core: Remove unneeded dentry
+	member from snd_soc_codec
+Date: Mon,  7 Aug 2017 09:08:52 -0300
+Message-ID: <1502107733-29628-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0824257529811429491=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAK8P3a0tjwxq+P+Ww+Rxjt9Z4+AsJMgvn3z0bHiPgO+4EWQHZw@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Jaroslav Kysela <perex@perex.cz>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
+ [209.85.220.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FE352669F6
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 14:09:01 +0200 (CEST)
+Received: by mail-qk0-f193.google.com with SMTP id q66so220189qki.1
+ for <alsa-devel@alsa-project.org>; Mon, 07 Aug 2017 05:09:01 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+There is no need to have the *debugfs_reg dentry member as part of
+the snd_soc_codec structure as its only usage is inside
+soc_init_codec_debugfs().
 
---===============0824257529811429491==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jtkazztcwqzryqtv"
-Content-Disposition: inline
+Use a local dentry variable instead.
 
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+Changes since v2:
+- None
 
---jtkazztcwqzryqtv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ include/sound/soc.h  | 4 ----
+ sound/soc/soc-core.c | 9 +++++----
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-On Mon, Aug 07, 2017 at 01:58:29PM +0200, Arnd Bergmann wrote:
-> On Mon, Aug 7, 2017 at 1:48 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > Still missing a few steps of reasoning here...
-
-> Sorry, I just realized that you were trying to point out the incomplete
-> changelog. I must have accidentally closed the editor while working on
-> it, and then sent it out today after getting no regressions.
-
-> I'll resend with a proper changelog.
-
-Thanks!
-
---jtkazztcwqzryqtv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmIVmQACgkQJNaLcl1U
-h9B3Lwf/fGvg2aUL3DANavmx7bPEWNHmvzgq6oIESpDOgYOkO5q6bUNg3nJmoemu
-hemQSdYuPJUIvawgKzjo7nkHXoVEJ27t0xNhq5i3bZb/ZzQYIwPE2vF1vKlGwemA
-XO/cG1+WCI2Y8/d3NrTOKkmZ5tW+U3LAiq02xuljw2YSdJ0WlyLem1hVB8pvvKxI
-zhFMheu7+dLkQdkER6R/TRbDKkoapDX+TvNvgcRAP8M0K2s8NMXEWFQAjVIxmuBt
-jms3Oei16zU+x7mq8bo1HbmFy+r+n68wND9OuU8uMjnR2fOliJ4GanhubIi6AD1x
-GHOp52krWlvYyw5VuZ0yEr58+fXDiw==
-=fCyR
------END PGP SIGNATURE-----
-
---jtkazztcwqzryqtv--
-
-
---===============0824257529811429491==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============0824257529811429491==--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 9d6e1db..42e2e50 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -897,10 +897,6 @@ struct snd_soc_codec {
+ 
+ 	/* component */
+ 	struct snd_soc_component component;
+-
+-#ifdef CONFIG_DEBUG_FS
+-	struct dentry *debugfs_reg;
+-#endif
+ };
+ 
+ /* codec driver */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 13c875e..e93a72c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -339,11 +339,12 @@ static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
+ static void soc_init_codec_debugfs(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
++	struct dentry *debugfs_reg;
+ 
+-	codec->debugfs_reg = debugfs_create_file("codec_reg", 0644,
+-						 codec->component.debugfs_root,
+-						 codec, &codec_reg_fops);
+-	if (!codec->debugfs_reg)
++	debugfs_reg = debugfs_create_file("codec_reg", 0644,
++					  codec->component.debugfs_root,
++					  codec, &codec_reg_fops);
++	if (!debugfs_reg)
+ 		dev_warn(codec->dev,
+ 			"ASoC: Failed to create codec register debugfs file\n");
+ }
+-- 
+2.7.4
