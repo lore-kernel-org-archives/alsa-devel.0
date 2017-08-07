@@ -1,105 +1,69 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND 08/11] ALSA: vsnd: Add timer for period
-	interrupt emulation
-Date: Mon,  7 Aug 2017 14:50:42 +0300
-Message-ID: <1502106645-6731-9-git-send-email-andr2000@gmail.com>
-References: <1502106645-6731-1-git-send-email-andr2000@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xen.org>
-In-Reply-To: <1502106645-6731-1-git-send-email-andr2000@gmail.com>
-List-Unsubscribe: <https://lists.xen.org/cgi-bin/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xen.org>
-List-Help: <mailto:xen-devel-request@lists.xen.org?subject=help>
-List-Subscribe: <https://lists.xen.org/cgi-bin/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xen.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xen.org>
-To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, perex@perex.cz
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: mediatek: Fix an error checking code" to the asoc tree
+Date: Mon, 07 Aug 2017 12:52:07 +0100
+Message-ID: <E1degZr-0006pT-7Y@debutante>
+References: <20170807002315.3512-1-christophe.jaillet@wanadoo.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20170807002315.3512-1-christophe.jaillet@wanadoo.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgChristophe JAILLET <christophe.jaillet@wanadoo.fr>, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVw
-YW0uY29tPgoKRnJvbnQgc291bmQgZHJpdmVyIGhhcyBubyByZWFsIGludGVycnVwdHMsIHNvCnBs
-YXliYWNrL2NhcHR1cmUgcGVyaW9kIHBhc3NlZCBpbnRlcnJ1cHQgbmVlZHMgdG8gYmUgZW11bGF0
-ZWQ6CnRoaXMgaXMgZG9uZSB2aWEgdGltZXIuIEFkZCByZXF1aXJlZCB0aW1lciBvcGVyYXRpb25z
-LAp0aGlzIGlzIGJhc2VkIG9uIHNvdW5kL2RyaXZlcnMvZHVtbXkuYy4KClNpZ25lZC1vZmYtYnk6
-IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNv
-bT4KLS0tCiBzb3VuZC9kcml2ZXJzL3hlbi1mcm9udC5jIHwgMTIxICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAxMjEgaW5zZXJ0
-aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL2RyaXZlcnMveGVuLWZyb250LmMgYi9zb3VuZC9k
-cml2ZXJzL3hlbi1mcm9udC5jCmluZGV4IDlmMzFlNjgzMjA4Ni4uNTA3YzVlYjM0M2M4IDEwMDY0
-NAotLS0gYS9zb3VuZC9kcml2ZXJzL3hlbi1mcm9udC5jCisrKyBiL3NvdW5kL2RyaXZlcnMveGVu
-LWZyb250LmMKQEAgLTY3LDEyICs2NywyOSBAQCBzdHJ1Y3Qgc2hfYnVmX2luZm8gewogCXNpemVf
-dCB2YnVmZmVyX3N6OwogfTsKIAorc3RydWN0IHNkZXZfYWxzYV90aW1lcl9pbmZvIHsKKwlzcGlu
-bG9ja190IGxvY2s7CisJc3RydWN0IHRpbWVyX2xpc3QgdGltZXI7CisJdW5zaWduZWQgbG9uZyBi
-YXNlX3RpbWU7CisJLyogZnJhY3Rpb25hbCBzYW1wbGUgcG9zaXRpb24gKGJhc2VkIEhaKSAqLwor
-CXVuc2lnbmVkIGludCBmcmFjX3BvczsKKwl1bnNpZ25lZCBpbnQgZnJhY19wZXJpb2RfcmVzdDsK
-KwkvKiBidWZmZXJfc2l6ZSAqIEhaICovCisJdW5zaWduZWQgaW50IGZyYWNfYnVmZmVyX3NpemU7
-CisJLyogcGVyaW9kX3NpemUgKiBIWiAqLworCXVuc2lnbmVkIGludCBmcmFjX3BlcmlvZF9zaXpl
-OworCXVuc2lnbmVkIGludCByYXRlOworCWludCBlbGFwc2VkOworCXN0cnVjdCBzbmRfcGNtX3N1
-YnN0cmVhbSAqc3Vic3RyZWFtOworfTsKKwogc3RydWN0IHNkZXZfcGNtX3N0cmVhbV9pbmZvIHsK
-IAlpbnQgdW5pcXVlX2lkOwogCXN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIHBjbV9odzsKIAlzdHJ1
-Y3QgeGRydl9ldnRjaG5sX2luZm8gKmV2dF9jaG5sOwogCWJvb2wgaXNfb3BlbjsKIAl1aW50OF90
-IHJlcV9uZXh0X2lkOworCXN0cnVjdCBzZGV2X2Fsc2FfdGltZXJfaW5mbyB0aW1lcjsKIAlzdHJ1
-Y3Qgc2hfYnVmX2luZm8gc2hfYnVmOwogfTsKIApAQCAtMTQ4LDYgKzE2NSwxMTAgQEAgc3RhdGlj
-IHN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5mbyAqc2Rydl9zdHJlYW1fZ2V0KAogCXJldHVybiBz
-dHJlYW07CiB9CiAKK3N0YXRpYyBpbmxpbmUgdm9pZCBzZHJ2X2Fsc2FfdGltZXJfcmVhcm0oc3Ry
-dWN0IHNkZXZfYWxzYV90aW1lcl9pbmZvICpkcGNtKQoreworCW1vZF90aW1lcigmZHBjbS0+dGlt
-ZXIsIGppZmZpZXMgKworCQkoZHBjbS0+ZnJhY19wZXJpb2RfcmVzdCArIGRwY20tPnJhdGUgLSAx
-KSAvIGRwY20tPnJhdGUpOworfQorCitzdGF0aWMgdm9pZCBzZHJ2X2Fsc2FfdGltZXJfdXBkYXRl
-KHN0cnVjdCBzZGV2X2Fsc2FfdGltZXJfaW5mbyAqZHBjbSkKK3sKKwl1bnNpZ25lZCBsb25nIGRl
-bHRhOworCisJZGVsdGEgPSBqaWZmaWVzIC0gZHBjbS0+YmFzZV90aW1lOworCWlmICghZGVsdGEp
-CisJCXJldHVybjsKKwlkcGNtLT5iYXNlX3RpbWUgKz0gZGVsdGE7CisJZGVsdGEgKj0gZHBjbS0+
-cmF0ZTsKKwlkcGNtLT5mcmFjX3BvcyArPSBkZWx0YTsKKwl3aGlsZSAoZHBjbS0+ZnJhY19wb3Mg
-Pj0gZHBjbS0+ZnJhY19idWZmZXJfc2l6ZSkKKwkJZHBjbS0+ZnJhY19wb3MgLT0gZHBjbS0+ZnJh
-Y19idWZmZXJfc2l6ZTsKKwl3aGlsZSAoZHBjbS0+ZnJhY19wZXJpb2RfcmVzdCA8PSBkZWx0YSkg
-eworCQlkcGNtLT5lbGFwc2VkKys7CisJCWRwY20tPmZyYWNfcGVyaW9kX3Jlc3QgKz0gZHBjbS0+
-ZnJhY19wZXJpb2Rfc2l6ZTsKKwl9CisJZHBjbS0+ZnJhY19wZXJpb2RfcmVzdCAtPSBkZWx0YTsK
-K30KKworc3RhdGljIGludCBzZHJ2X2Fsc2FfdGltZXJfc3RhcnQoc3RydWN0IHNuZF9wY21fc3Vi
-c3RyZWFtICpzdWJzdHJlYW0pCit7CisJc3RydWN0IHNkZXZfcGNtX3N0cmVhbV9pbmZvICpzdHJl
-YW0gPSBzZHJ2X3N0cmVhbV9nZXQoc3Vic3RyZWFtKTsKKwlzdHJ1Y3Qgc2Rldl9hbHNhX3RpbWVy
-X2luZm8gKmRwY20gPSAmc3RyZWFtLT50aW1lcjsKKworCXNwaW5fbG9jaygmZHBjbS0+bG9jayk7
-CisJZHBjbS0+YmFzZV90aW1lID0gamlmZmllczsKKwlzZHJ2X2Fsc2FfdGltZXJfcmVhcm0oZHBj
-bSk7CisJc3Bpbl91bmxvY2soJmRwY20tPmxvY2spOworCXJldHVybiAwOworfQorCitzdGF0aWMg
-aW50IHNkcnZfYWxzYV90aW1lcl9zdG9wKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3Ry
-ZWFtKQoreworCXN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5mbyAqc3RyZWFtID0gc2Rydl9zdHJl
-YW1fZ2V0KHN1YnN0cmVhbSk7CisJc3RydWN0IHNkZXZfYWxzYV90aW1lcl9pbmZvICpkcGNtID0g
-JnN0cmVhbS0+dGltZXI7CisKKwlzcGluX2xvY2soJmRwY20tPmxvY2spOworCWRlbF90aW1lcigm
-ZHBjbS0+dGltZXIpOworCXNwaW5fdW5sb2NrKCZkcGNtLT5sb2NrKTsKKwlyZXR1cm4gMDsKK30K
-Kworc3RhdGljIGludCBzZHJ2X2Fsc2FfdGltZXJfcHJlcGFyZShzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnN1YnN0cmVhbSkKK3sKKwlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0g
-c3Vic3RyZWFtLT5ydW50aW1lOworCXN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5mbyAqc3RyZWFt
-ID0gc2Rydl9zdHJlYW1fZ2V0KHN1YnN0cmVhbSk7CisJc3RydWN0IHNkZXZfYWxzYV90aW1lcl9p
-bmZvICpkcGNtID0gJnN0cmVhbS0+dGltZXI7CisKKwlkcGNtLT5mcmFjX3BvcyA9IDA7CisJZHBj
-bS0+cmF0ZSA9IHJ1bnRpbWUtPnJhdGU7CisJZHBjbS0+ZnJhY19idWZmZXJfc2l6ZSA9IHJ1bnRp
-bWUtPmJ1ZmZlcl9zaXplICogSFo7CisJZHBjbS0+ZnJhY19wZXJpb2Rfc2l6ZSA9IHJ1bnRpbWUt
-PnBlcmlvZF9zaXplICogSFo7CisJZHBjbS0+ZnJhY19wZXJpb2RfcmVzdCA9IGRwY20tPmZyYWNf
-cGVyaW9kX3NpemU7CisJZHBjbS0+ZWxhcHNlZCA9IDA7CisJcmV0dXJuIDA7Cit9CisKK3N0YXRp
-YyB2b2lkIHNkcnZfYWxzYV90aW1lcl9jYWxsYmFjayh1bnNpZ25lZCBsb25nIGRhdGEpCit7CisJ
-c3RydWN0IHNkZXZfYWxzYV90aW1lcl9pbmZvICpkcGNtID0gKHN0cnVjdCBzZGV2X2Fsc2FfdGlt
-ZXJfaW5mbyAqKWRhdGE7CisJaW50IGVsYXBzZWQ7CisKKwlzcGluX2xvY2soJmRwY20tPmxvY2sp
-OworCXNkcnZfYWxzYV90aW1lcl91cGRhdGUoZHBjbSk7CisJc2Rydl9hbHNhX3RpbWVyX3JlYXJt
-KGRwY20pOworCWVsYXBzZWQgPSBkcGNtLT5lbGFwc2VkOworCWRwY20tPmVsYXBzZWQgPSAwOwor
-CXNwaW5fdW5sb2NrKCZkcGNtLT5sb2NrKTsKKwlpZiAoZWxhcHNlZCkKKwkJc25kX3BjbV9wZXJp
-b2RfZWxhcHNlZChkcGNtLT5zdWJzdHJlYW0pOworfQorCitzdGF0aWMgc25kX3BjbV91ZnJhbWVz
-X3Qgc2Rydl9hbHNhX3RpbWVyX3BvaW50ZXIoCisJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpz
-dWJzdHJlYW0pCit7CisJc3RydWN0IHNkZXZfcGNtX3N0cmVhbV9pbmZvICpzdHJlYW0gPSBzZHJ2
-X3N0cmVhbV9nZXQoc3Vic3RyZWFtKTsKKwlzdHJ1Y3Qgc2Rldl9hbHNhX3RpbWVyX2luZm8gKmRw
-Y20gPSAmc3RyZWFtLT50aW1lcjsKKwlzbmRfcGNtX3VmcmFtZXNfdCBwb3M7CisKKwlzcGluX2xv
-Y2soJmRwY20tPmxvY2spOworCXNkcnZfYWxzYV90aW1lcl91cGRhdGUoZHBjbSk7CisJcG9zID0g
-ZHBjbS0+ZnJhY19wb3MgLyBIWjsKKwlzcGluX3VubG9jaygmZHBjbS0+bG9jayk7CisJcmV0dXJu
-IHBvczsKK30KKworc3RhdGljIGludCBzZHJ2X2Fsc2FfdGltZXJfY3JlYXRlKHN0cnVjdCBzbmRf
-cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQoreworCXN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5m
-byAqc3RyZWFtID0gc2Rydl9zdHJlYW1fZ2V0KHN1YnN0cmVhbSk7CisJc3RydWN0IHNkZXZfYWxz
-YV90aW1lcl9pbmZvICpkcGNtID0gJnN0cmVhbS0+dGltZXI7CisKKwlzcGluX2xvY2tfaW5pdCgm
-ZHBjbS0+bG9jayk7CisJZHBjbS0+c3Vic3RyZWFtID0gc3Vic3RyZWFtOworCXNldHVwX3RpbWVy
-KCZkcGNtLT50aW1lciwgc2Rydl9hbHNhX3RpbWVyX2NhbGxiYWNrLAorCQkodW5zaWduZWQgbG9u
-ZykgZHBjbSk7CisJcmV0dXJuIDA7Cit9CisKIHN0YXRpYyB2b2lkIHNkcnZfY29weV9wY21faHco
-c3RydWN0IHNuZF9wY21faGFyZHdhcmUgKmRzdCwKIAlzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSAq
-c3JjLAogCXN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlICpyZWZfcGNtX2h3KQotLSAKMi43LjQKCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpYZW4tZGV2ZWwg
-bWFpbGluZyBsaXN0Clhlbi1kZXZlbEBsaXN0cy54ZW4ub3JnCmh0dHBzOi8vbGlzdHMueGVuLm9y
-Zy94ZW4tZGV2ZWwK
+The patch
+
+   ASoC: mediatek: Fix an error checking code
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 8d7313bfb1bb7d71a6ebc503215e4fb4a8964741 Mon Sep 17 00:00:00 2001
+From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+Date: Mon, 7 Aug 2017 02:23:15 +0200
+Subject: [PATCH] ASoC: mediatek: Fix an error checking code
+
+Check the value returned by 'devm_clk_get()' instead of the clock
+identifier which can never be an ERR code.
+
+Fixes: d6f3710a56e1 ("ASoC: mediatek: add structure define and clock control for 2701")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
+index b815ecc6bbf6..affa7fb25dd9 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
+@@ -75,7 +75,7 @@ int mt2701_init_clock(struct mtk_base_afe *afe)
+ 
+ 	for (i = 0; i < MT2701_CLOCK_NUM; i++) {
+ 		afe_priv->clocks[i] = devm_clk_get(afe->dev, aud_clks[i]);
+-		if (IS_ERR(aud_clks[i])) {
++		if (IS_ERR(afe_priv->clocks[i])) {
+ 			dev_warn(afe->dev, "%s devm_clk_get %s fail\n",
+ 				 __func__, aud_clks[i]);
+ 			return PTR_ERR(aud_clks[i]);
+-- 
+2.13.3
+
