@@ -1,55 +1,72 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v3 2/2] ASoC: soc-core: Use IS_ERR_OR_NULL()
-Date: Mon,  7 Aug 2017 09:08:53 -0300
-Message-ID: <1502107733-29628-2-git-send-email-festevam@gmail.com>
-References: <1502107733-29628-1-git-send-email-festevam@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH RESEND 00/11] ALSA: vsnd: Add Xen para-virtualized
+ frontend driver
+Date: Mon, 7 Aug 2017 21:09:29 +0900
+Message-ID: <ccaa1c31-f733-c582-38b9-7e9eca25a0c2@sakamocchi.jp>
+References: <1502106645-6731-1-git-send-email-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
- [209.85.220.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 704322671E0
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 14:09:03 +0200 (CEST)
-Received: by mail-qk0-f195.google.com with SMTP id d145so220241qkc.0
- for <alsa-devel@alsa-project.org>; Mon, 07 Aug 2017 05:09:03 -0700 (PDT)
-In-Reply-To: <1502107733-29628-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502106645-6731-1-git-send-email-andr2000@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oleksandr Andrushchenko <andr2000@gmail.com>, alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-The check of IS_ERR or NULL pointer can be replaced by IS_ERR_OR_NULL(),
-which helps readability.
+Hi,
 
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
----
-Changes since v2:
-- Keep the error checking and use IS_ERR_OR_NULL() instead.
+On Aug 7 2017 20:50, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> 
+> This patch series adds support for Xen [1] para-virtualized
+> sound frontend driver. It implements the protocol from
+> include/xen/interface/io/sndif.h with the following limitations:
+> - mute/unmute is not supported
+> - get/set volume is not supported
+> Volume control is not supported for the reason that most of the
+> use-cases (at the moment) are based on scenarious where
+> unprivileged OS (e.g. Android, AGL etc) use software mixers.
+> 
+> Both capture and playback are supported.
+> 
+> Thank you,
+> Oleksandr
+> 
+> Resending because of rebase onto [2]
+> 
+> [1] https://xenproject.org/
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=for-next
+> 
+> Oleksandr Andrushchenko (11):
+>    ALSA: vsnd: Implement driver's probe/remove
+>    ALSA: vsnd: Implement Xen bus state handling
+>    ALSA: vsnd: Read sound driver configuration from Xen store
+>    ALSA: vsnd: Implement Xen event channel handling
+>    ALSA: vsnd: Implement handling of shared buffers
+>    ALSA: vsnd: Introduce ALSA virtual sound driver
+>    ALSA: vsnd: Initialize virtul sound card
+>    ALSA: vsnd: Add timer for period interrupt emulation
+>    ALSA: vsnd: Implement ALSA PCM operations
+>    ALSA: vsnd: Implement communication with backend
+>    ALSA: vsnd: Introduce Kconfig option to enable Xen PV sound
+> 
+>   sound/drivers/Kconfig     |   12 +
+>   sound/drivers/Makefile    |    2 +
+>   sound/drivers/xen-front.c | 2029 +++++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 2043 insertions(+)
 
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset is not proper yet.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e93a72c..0026eff 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -495,7 +495,7 @@ static void soc_cleanup_card_debugfs(struct snd_soc_card *card)
- static void snd_soc_debugfs_init(void)
- {
- 	snd_soc_debugfs_root = debugfs_create_dir("asoc", NULL);
--	if (IS_ERR(snd_soc_debugfs_root) || !snd_soc_debugfs_root) {
-+	if (IS_ERR_OR_NULL(snd_soc_debugfs_root)) {
- 		pr_warn("ASoC: Failed to create debugfs directory\n");
- 		snd_soc_debugfs_root = NULL;
- 		return;
--- 
-2.7.4
+Your first patch includes code difference under line 26, thus it expects 
+existence of a file 'sound/drivers/xen-front.c' in tree. However, the 
+file is not introduced in any upstream yet; at least, Linus's tree and 
+Iwai-san's tree.
+
+You still work on your local branch, not for us.
+
+
+Regards
+
+Takashi Sakamoto
