@@ -1,215 +1,146 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v3 05/12] ASoC: sun4i-i2s: Add regmap fields
- for channels
-Date: Mon, 7 Aug 2017 09:39:45 +0200
-Message-ID: <CAEKpxBnFu4ZKmGfRop-2c_Db9ELoaWzF5nsY1_bvQRPiA7OhDw@mail.gmail.com>
-References: <20170729141753.20174-1-codekipper@gmail.com> <20170729141753.20174-6-codekipper@gmail.com>
- <CAGb2v640QLn4oDWoFeT51xJqSN7FSBP9KRNdpRB4MuATSE2rVA@mail.gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBQ5SUDGAKGQELJYGQMY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <CAGb2v640QLn4oDWoFeT51xJqSN7FSBP9KRNdpRB4MuATSE2rVA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: [PATCH 02/11] ALSA: vsnd: Implement Xen bus state handling
+Date: Mon,  7 Aug 2017 10:43:07 +0300
+Message-ID: <1502091796-14413-3-git-send-email-andr2000@gmail.com>
+References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
+Cc: perex@perex.cz, tiwai@suse.com, andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 1 August 2017 at 10:31, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org> wrote:
-> On Sat, Jul 29, 2017 at 10:17 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
->> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->>
->> On the original i2s block the channel mapping and selection were
->> configured for stereo audio by default: This is not the case with
->> the newer SoCs and they are also located at different offsets.
->>
->> To support the newer SoC then regmap fields have been added to the
->> quirks and these are initialised to their correct settings during
->> probing.
->>
->> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->> ---
->>  sound/soc/sunxi/sun4i-i2s.c | 80 ++++++++++++++++++++++++++++++++++++++++-----
->>  1 file changed, 72 insertions(+), 8 deletions(-)
->>
->> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
->> index 2a25df22c2f8..120f797a38e8 100644
->> --- a/sound/soc/sunxi/sun4i-i2s.c
->> +++ b/sound/soc/sunxi/sun4i-i2s.c
->> @@ -82,7 +82,7 @@
->>  #define SUN4I_I2S_TX_CNT_REG           0x2c
->>
->>  #define SUN4I_I2S_TX_CHAN_SEL_REG      0x30
->> -#define SUN4I_I2S_TX_CHAN_SEL(num_chan)                (((num_chan) - 1) << 0)
->> +#define SUN4I_I2S_CHAN_SEL(num_chan)           (((num_chan) - 1) << 0)
->>
->>  #define SUN4I_I2S_TX_CHAN_MAP_REG      0x34
->>  #define SUN4I_I2S_TX_CHAN_MAP(chan, sample)    ((sample) << (chan << 2))
->> @@ -98,6 +98,10 @@
->>   * @sun4i_i2s_regmap: regmap config to use.
->>   * @mclk_offset: Value by which mclkdiv needs to be adjusted.
->>   * @bclk_offset: Value by which bclkdiv needs to be adjusted.
->> + * @field_txchanmap: location of the tx channel mapping register.
->> + * @field_rxchanmap: location of the rx channel mapping register.
->> + * @field_txchansel: location of the tx channel select bit fields.
->> + * @field_rxchansel: location of the rx channel select bit fields.
->>   */
->>  struct sun4i_i2s_quirks {
->>         bool                            has_reset;
->> @@ -105,6 +109,12 @@ struct sun4i_i2s_quirks {
->>         const struct regmap_config      *sun4i_i2s_regmap;
->>         unsigned int                    mclk_offset;
->>         unsigned int                    bclk_offset;
->> +
->> +       /* Register fields for i2s */
->> +       struct reg_field                field_txchanmap;
->> +       struct reg_field                field_rxchanmap;
->> +       struct reg_field                field_txchansel;
->> +       struct reg_field                field_rxchansel;
->>  };
->>
->>  struct sun4i_i2s {
->> @@ -118,6 +128,12 @@ struct sun4i_i2s {
->>         struct snd_dmaengine_dai_dma_data       capture_dma_data;
->>         struct snd_dmaengine_dai_dma_data       playback_dma_data;
->>
->> +       /* Register fields for i2s */
->> +       struct regmap_field     *field_txchanmap;
->> +       struct regmap_field     *field_rxchanmap;
->> +       struct regmap_field     *field_txchansel;
->> +       struct regmap_field     *field_rxchansel;
->> +
->>         const struct sun4i_i2s_quirks   *variant;
->>  };
->>
->> @@ -264,6 +280,18 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->>         if (params_channels(params) != 2)
->>                 return -EINVAL;
->>
->> +       /* Map the channels for playback and capture */
->> +       regmap_field_write(i2s->field_txchanmap, 0x76543210);
->> +       regmap_field_write(i2s->field_rxchanmap, 0x00003210);
->> +
->> +       /* Configure the channels */
->> +       regmap_field_write(i2s->field_txchansel,
->> +                          SUN4I_I2S_CHAN_SEL(params_channels(params)));
->> +
->> +       regmap_field_write(i2s->field_rxchansel,
->> +                          SUN4I_I2S_CHAN_SEL(params_channels(params)));
->> +
->> +
->
-> Checkpatch says don't use multiple blank lines.
->
->>         switch (params_physical_width(params)) {
->>         case 16:
->>                 width = DMA_SLAVE_BUSWIDTH_2_BYTES;
->> @@ -486,13 +514,6 @@ static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
->>                            SUN4I_I2S_CTRL_SDO_EN_MASK,
->>                            SUN4I_I2S_CTRL_SDO_EN(0));
->>
->> -       /* Enable the first two channels */
->> -       regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_SEL_REG,
->> -                    SUN4I_I2S_TX_CHAN_SEL(2));
->> -
->> -       /* Map them to the two first samples coming in */
->> -       regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG,
->> -                    SUN4I_I2S_TX_CHAN_MAP(0, 0) | SUN4I_I2S_TX_CHAN_MAP(1, 1));
->>
->>         return clk_prepare_enable(i2s->mod_clk);
->>  }
->> @@ -677,14 +698,51 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
->>         .has_reset              = false,
->>         .reg_offset_txdata      = SUN4I_I2S_FIFO_TX_REG,
->>         .sun4i_i2s_regmap       = &sun4i_i2s_regmap_config,
->> +       .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
->> +       .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
->> +       .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
->> +       .field_rxchansel        = REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
->>  };
->>
->>  static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
->>         .has_reset              = true,
->>         .reg_offset_txdata      = SUN4I_I2S_FIFO_TX_REG,
->>         .sun4i_i2s_regmap       = &sun4i_i2s_regmap_config,
->> +       .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
->> +       .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
->> +       .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
->> +       .field_rxchansel        = REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
->>  };
->>
->> +static int sun4i_i2s_init_regmap_fields(struct device *dev, struct sun4i_i2s *i2s)
->
-> This line is over 80 characters. Please wrap the line.
->
->> +{
->> +       i2s->field_txchanmap =
->> +               devm_regmap_field_alloc(dev, i2s->regmap,
->> +                                       i2s->variant->field_txchanmap);
->> +       if (IS_ERR(i2s->field_txchanmap))
->> +               return PTR_ERR(i2s->field_txchanmap);
->> +
->> +       i2s->field_rxchanmap =
->> +               devm_regmap_field_alloc(dev, i2s->regmap,
->> +                                       i2s->variant->field_rxchanmap);
->> +       if (IS_ERR(i2s->field_rxchanmap))
->> +               return PTR_ERR(i2s->field_rxchanmap);
->> +
->> +       i2s->field_txchansel =
->> +               devm_regmap_field_alloc(dev, i2s->regmap,
->> +                                       i2s->variant->field_txchansel);
->> +       if (IS_ERR(i2s->field_txchansel))
->> +               return PTR_ERR(i2s->field_txchansel);
->> +
->> +       i2s->field_rxchansel =
->> +               devm_regmap_field_alloc(dev, i2s->regmap,
->> +                                       i2s->variant->field_rxchansel);
->> +       if (IS_ERR(i2s->field_rxchansel))
->> +               return PTR_ERR(i2s->field_rxchansel);
->> +
->> +       return 0;
->
-> This seems to be the last "if (IS_ERR()) return PTR_ERR()" sequence.
-> So it looks like you could apply the PTR_ERR_OR_ZERO hunk from the
-> kbuild test robot. I wasn't aware of this preference before, and to
-> be honest I'm fine either way.
->
-ACK,
-BR,
-CK
-> Otherwise,
->
-> Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
->
->
->> +}
->> +
->>  static int sun4i_i2s_probe(struct platform_device *pdev)
->>  {
->>         struct sun4i_i2s *i2s;
->> @@ -778,6 +836,12 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
->>                 goto err_suspend;
->>         }
->>
->> +       ret = sun4i_i2s_init_regmap_fields(&pdev->dev, i2s);
->> +       if (ret) {
->> +               dev_err(&pdev->dev, "Could not initialise regmap fields\n");
->> +               goto err_suspend;
->> +       }
->> +
->>         return 0;
->>
->>  err_suspend:
->> --
->> 2.13.3
->>
->> --
->> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
->> For more options, visit https://groups.google.com/d/optout.
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+
+Initial handling for Xen bus states: implement
+Xen bus state machine for the front driver according to
+the state diagram and recovery flow from sound para-virtualized
+protocol: xen/interface/io/sndif.h.
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ sound/drivers/xen-front.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 92 insertions(+)
+
+diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
+index 8c5de7b0e7b5..c4fd21cac3a7 100644
+--- a/sound/drivers/xen-front.c
++++ b/sound/drivers/xen-front.c
+@@ -36,9 +36,99 @@ static void xdrv_remove_internal(struct xdrv_info *drv_info)
+ {
+ }
+ 
++static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
++{
++	return 0;
++}
++
++static inline int xdrv_be_on_connected(struct xdrv_info *drv_info)
++{
++	return 0;
++}
++
++static inline void xdrv_be_on_disconnected(struct xdrv_info *drv_info)
++{
++	xdrv_remove_internal(drv_info);
++}
++
+ static void xdrv_be_on_changed(struct xenbus_device *xb_dev,
+ 	enum xenbus_state backend_state)
+ {
++	struct xdrv_info *drv_info = dev_get_drvdata(&xb_dev->dev);
++	int ret;
++
++	switch (backend_state) {
++	case XenbusStateReconfiguring:
++		/* fall through */
++	case XenbusStateReconfigured:
++		/* fall through */
++	case XenbusStateInitialised:
++		/* fall through */
++		break;
++
++	case XenbusStateInitialising:
++		if (xb_dev->state == XenbusStateInitialising)
++			break;
++
++		/* recovering after backend unexpected closure */
++		mutex_lock(&drv_info->mutex);
++		xdrv_be_on_disconnected(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		xenbus_switch_state(xb_dev, XenbusStateInitialising);
++		break;
++
++	case XenbusStateInitWait:
++		if (xb_dev->state != XenbusStateInitialising)
++			break;
++
++		mutex_lock(&drv_info->mutex);
++		ret = xdrv_be_on_initwait(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		if (ret < 0) {
++			xenbus_dev_fatal(xb_dev, ret,
++				"initializing " XENSND_DRIVER_NAME);
++			break;
++		}
++
++		xenbus_switch_state(xb_dev, XenbusStateInitialised);
++		break;
++
++	case XenbusStateConnected:
++		if (xb_dev->state != XenbusStateInitialised)
++			break;
++
++		mutex_lock(&drv_info->mutex);
++		ret = xdrv_be_on_connected(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		if (ret < 0) {
++			xenbus_dev_fatal(xb_dev, ret,
++				"connecting " XENSND_DRIVER_NAME);
++			break;
++		}
++
++		xenbus_switch_state(xb_dev, XenbusStateConnected);
++		break;
++
++	case XenbusStateClosing:
++		/*
++		 * in this state backend starts freeing resources,
++		 * so let it go into closed state first, so we can also
++		 * remove ours
++		 */
++		break;
++
++	case XenbusStateUnknown:
++		/* fall through */
++	case XenbusStateClosed:
++		if (xb_dev->state == XenbusStateClosed)
++			break;
++
++		mutex_lock(&drv_info->mutex);
++		xdrv_be_on_disconnected(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		xenbus_switch_state(xb_dev, XenbusStateInitialising);
++		break;
++	}
+ }
+ 
+ static int xdrv_probe(struct xenbus_device *xb_dev,
+@@ -56,6 +146,7 @@ static int xdrv_probe(struct xenbus_device *xb_dev,
+ 	spin_lock_init(&drv_info->io_lock);
+ 	mutex_init(&drv_info->mutex);
+ 	dev_set_drvdata(&xb_dev->dev, drv_info);
++	xenbus_switch_state(xb_dev, XenbusStateInitialising);
+ 	return 0;
+ }
+ 
+@@ -63,6 +154,7 @@ static int xdrv_remove(struct xenbus_device *dev)
+ {
+ 	struct xdrv_info *drv_info = dev_get_drvdata(&dev->dev);
+ 
++	xenbus_switch_state(dev, XenbusStateClosed);
+ 	mutex_lock(&drv_info->mutex);
+ 	xdrv_remove_internal(drv_info);
+ 	mutex_unlock(&drv_info->mutex);
+-- 
+2.7.4
