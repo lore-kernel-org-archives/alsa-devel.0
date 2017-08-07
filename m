@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add bindings for i2s" to the asoc tree
-Date: Mon, 07 Aug 2017 12:51:57 +0100
-Message-ID: <E1degZh-0006lR-R0@debutante>
-References: <1501465671-22863-1-git-send-email-sugar.zhang@rock-chips.com>
+Subject: Applied "ASoC: sunxi: make snd_soc_codec_driver structures as const" to the asoc tree
+Date: Mon, 07 Aug 2017 12:52:00 +0100
+Message-ID: <E1degZk-0006mz-U3@debutante>
+References: <1501776020-3328-3-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1501465671-22863-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <1501776020-3328-3-git-send-email-bhumirks@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lars@metafoo.de, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, support.opensource@diasemi.com, mr.swami.reddy@ti.com, vishwas.a.deshpande@ti.com, peda@axentia.se, bardliao@realtek.com, baohua@kernel.org, peter.ujfalusi@ti.com, patches@opensource.cirrus.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add bindings for i2s
+   ASoC: sunxi: make snd_soc_codec_driver structures as const
 
 has been applied to the asoc tree at
 
@@ -37,36 +37,67 @@ to this mail.
 Thanks,
 Mark
 
->From 3508cade13ba43ebafbee9064fa6114e857afd20 Mon Sep 17 00:00:00 2001
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-Date: Mon, 31 Jul 2017 09:47:51 +0800
-Subject: [PATCH] ASoC: rockchip: add bindings for i2s
+>From 92ff5d085ecc8255600551055262bf98a8f3f1d0 Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Thu, 3 Aug 2017 21:30:20 +0530
+Subject: [PATCH] ASoC: sunxi: make snd_soc_codec_driver structures as const
 
-This patch add bindings for rk3036/rk3228/rk3328/rk3366 i2s.
+Declare snd_soc_codec_driver structures as const as they are either
+passed as an argument to the function snd_soc_register_codec or stored as
+reference in field codec of type sun4i_codec_quirks. Both the fucntion
+argument and the codec field are of type const, so declare the
+structures with this property as const.
 
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/sunxi/sun4i-codec.c | 6 +++---
+ sound/soc/sunxi/sun8i-codec.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index 206aba1b34bb..b208a752576c 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -7,8 +7,12 @@ Required properties:
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 73d054f466c2..c668b8b08b38 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -762,7 +762,7 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 	{ "Mic1", NULL, "VMIC" },
+ };
  
- - compatible: should be one of the following:
-    - "rockchip,rk3066-i2s": for rk3066
-+   - "rockchip,rk3036-i2s", "rockchip,rk3066-i2s": for rk3036
-    - "rockchip,rk3188-i2s", "rockchip,rk3066-i2s": for rk3188
-+   - "rockchip,rk3228-i2s", "rockchip,rk3066-i2s": for rk3228
-    - "rockchip,rk3288-i2s", "rockchip,rk3066-i2s": for rk3288
-+   - "rockchip,rk3328-i2s", "rockchip,rk3066-i2s": for rk3328
-+   - "rockchip,rk3366-i2s", "rockchip,rk3066-i2s": for rk3366
-    - "rockchip,rk3368-i2s", "rockchip,rk3066-i2s": for rk3368
-    - "rockchip,rk3399-i2s", "rockchip,rk3066-i2s": for rk3399
- - reg: physical base address of the controller and length of memory mapped
+-static struct snd_soc_codec_driver sun4i_codec_codec = {
++static const struct snd_soc_codec_driver sun4i_codec_codec = {
+ 	.component_driver = {
+ 		.controls		= sun4i_codec_controls,
+ 		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
+@@ -1068,7 +1068,7 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
+ 	{ "Right ADC", NULL, "Right ADC Mixer" },
+ };
+ 
+-static struct snd_soc_codec_driver sun6i_codec_codec = {
++static const struct snd_soc_codec_driver sun6i_codec_codec = {
+ 	.component_driver = {
+ 		.controls		= sun6i_codec_codec_widgets,
+ 		.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
+@@ -1096,7 +1096,7 @@ static const struct snd_soc_dapm_widget sun8i_a23_codec_codec_widgets[] = {
+ 
+ };
+ 
+-static struct snd_soc_codec_driver sun8i_a23_codec_codec = {
++static const struct snd_soc_codec_driver sun8i_a23_codec_codec = {
+ 	.component_driver = {
+ 		.controls		= sun8i_a23_codec_codec_controls,
+ 		.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 253ae0b5a4d4..abfb710df7cb 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -360,7 +360,7 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
+ 	.ops = &sun8i_codec_dai_ops,
+ };
+ 
+-static struct snd_soc_codec_driver sun8i_soc_codec = {
++static const struct snd_soc_codec_driver sun8i_soc_codec = {
+ 	.component_driver = {
+ 		.dapm_widgets		= sun8i_codec_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
 -- 
 2.13.3
