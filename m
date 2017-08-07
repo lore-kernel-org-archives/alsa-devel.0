@@ -1,49 +1,83 @@
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] ASoC: mediatek: Fix an error checking code
-Date: Mon,  7 Aug 2017 02:23:15 +0200
-Message-ID: <20170807002315.3512-1-christophe.jaillet@wanadoo.fr>
+From: Code Kipper <codekipper@gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v3 02/12] ASoC: sun4i-i2s: Add clkdiv
+ offsets to quirks
+Date: Mon, 7 Aug 2017 08:20:27 +0200
+Message-ID: <CAEKpxBnPHFt3wHBnPSrkbsgxf2tHVfFryGM0ywMNX0v8bJ5_ZA@mail.gmail.com>
+References: <20170729141753.20174-1-codekipper@gmail.com> <20170729141753.20174-3-codekipper@gmail.com>
+ <CAGb2v66cKxXuh_8o=0_yoLauHHqGjY1rkoDu_NQyC+bO8fNoPA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
- [80.12.242.123])
- by alsa0.perex.cz (Postfix) with ESMTP id C9F60266CC9
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 07:36:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAGb2v66cKxXuh_8o=0_yoLauHHqGjY1rkoDu_NQyC+bO8fNoPA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>
 List-Id: alsa-devel@alsa-project.org
 
-Check the value returned by 'devm_clk_get()' instead of the clock
-identifier which can never be an ERR code.
-
-Fixes: d6f3710a56e1 ("ASoC: mediatek: add structure define and clock control for 2701")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-index b815ecc6bbf6..affa7fb25dd9 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-@@ -75,7 +75,7 @@ int mt2701_init_clock(struct mtk_base_afe *afe)
- 
- 	for (i = 0; i < MT2701_CLOCK_NUM; i++) {
- 		afe_priv->clocks[i] = devm_clk_get(afe->dev, aud_clks[i]);
--		if (IS_ERR(aud_clks[i])) {
-+		if (IS_ERR(afe_priv->clocks[i])) {
- 			dev_warn(afe->dev, "%s devm_clk_get %s fail\n",
- 				 __func__, aud_clks[i]);
- 			return PTR_ERR(aud_clks[i]);
--- 
-2.11.0
+On 1 August 2017 at 04:55, Chen-Yu Tsai <wens@csie.org> wrote:
+> On Sat, Jul 29, 2017 at 10:17 PM,  <codekipper@gmail.com> wrote:
+>> From: Marcus Cooper <codekipper@gmail.com>
+>>
+>> The BCLKDIV and MCLKDIV found on newer SoCs start from an offset of 1.
+>> Add the functionality to adjust the division values according to the
+>> needs to the device being used.
+>>
+>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+>> ---
+>>  sound/soc/sunxi/sun4i-i2s.c | 8 ++++++--
+>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+>> index d7ee7a443e4e..1d538de4e4d0 100644
+>> --- a/sound/soc/sunxi/sun4i-i2s.c
+>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+>> @@ -94,9 +94,13 @@
+>>   * struct sun4i_i2s_quirks - Differences between SoC variants.
+>>   *
+>>   * @has_reset: SoC needs reset deasserted.
+>> + * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+>> + * @bclk_offset: Value by which bclkdiv needs to be adjusted.
+>>   */
+>>  struct sun4i_i2s_quirks {
+>>         bool                            has_reset;
+>> +       unsigned int                    mclk_offset;
+>> +       unsigned int                    bclk_offset;
+>>  };
+>>
+>>  struct sun4i_i2s {
+>> @@ -149,7 +153,7 @@ static int sun4i_i2s_get_bclk_div(struct sun4i_i2s *i2s,
+>>                 const struct sun4i_i2s_clk_div *bdiv = &sun4i_i2s_bclk_div[i];
+>>
+>>                 if (bdiv->div == div)
+>> -                       return bdiv->val;
+>> +                       return bdiv->val + i2s->variant->bclk_offset;
+>
+> The offset should best be applied when the value is written to the register,
+> in sun4i_i2s_set_clk_rate(). sun4i_i2s_get_*_div() should do what the name
+> says, that is calculate a divider based on the parameters it is given.
+>
+ACK,
+Thanks for the review,
+CK
+> Regards
+> ChenYu
+>
+>>         }
+>>
+>>         return -EINVAL;
+>> @@ -167,7 +171,7 @@ static int sun4i_i2s_get_mclk_div(struct sun4i_i2s *i2s,
+>>                 const struct sun4i_i2s_clk_div *mdiv = &sun4i_i2s_mclk_div[i];
+>>
+>>                 if (mdiv->div == div)
+>> -                       return mdiv->val;
+>> +                       return mdiv->val + i2s->variant->mclk_offset;
+>>         }
+>>
+>>         return -EINVAL;
+>> --
+>> 2.13.3
+>>
+>> --
+>> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+>> For more options, visit https://groups.google.com/d/optout.
