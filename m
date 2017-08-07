@@ -1,164 +1,272 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND1 03/12] ALSA: vsnd: Implement Xen bus
-	state handling
-Date: Mon,  7 Aug 2017 15:22:48 +0300
-Message-ID: <1502108577-8099-4-git-send-email-andr2000@gmail.com>
+Subject: [PATCH RESEND1 10/12] ALSA: vsnd: Implement ALSA PCM operations
+Date: Mon,  7 Aug 2017 15:22:55 +0300
+Message-ID: <1502108577-8099-11-git-send-email-andr2000@gmail.com>
 References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 70297267205
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 14:23:07 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id t128so214146lff.3
- for <alsa-devel@alsa-project.org>; Mon, 07 Aug 2017 05:23:07 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com
+Cc: perex@perex.cz, tiwai@suse.com, andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Initial handling for Xen bus states: implement
-Xen bus state machine for the front driver according to
-the state diagram and recovery flow from sound para-virtualized
-protocol: xen/interface/io/sndif.h.
+Implement ALSA driver operations including:
+- start/stop period interrupt emulation
+- manage frontend/backend shraed buffers
+- manage Xen bus event channel state
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- sound/drivers/xen-front.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 92 insertions(+)
+ sound/drivers/xen-front.c | 175 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 163 insertions(+), 12 deletions(-)
 
 diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
-index 8c5de7b0e7b5..c4fd21cac3a7 100644
+index 507c5eb343c8..7275e9cb38c0 100644
 --- a/sound/drivers/xen-front.c
 +++ b/sound/drivers/xen-front.c
-@@ -36,9 +36,99 @@ static void xdrv_remove_internal(struct xdrv_info *drv_info)
- {
- }
+@@ -151,6 +151,11 @@ struct xdrv_info {
+ 	struct sdev_card_plat_data cfg_plat_data;
+ };
  
-+static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
-+{
-+	return 0;
-+}
++static inline void sh_buf_clear(struct sh_buf_info *buf);
++static void sh_buf_free(struct sh_buf_info *buf);
++static int sh_buf_alloc(struct xenbus_device *xb_dev, struct sh_buf_info *buf,
++	unsigned int buffer_size);
 +
-+static inline int xdrv_be_on_connected(struct xdrv_info *drv_info)
-+{
-+	return 0;
-+}
-+
-+static inline void xdrv_be_on_disconnected(struct xdrv_info *drv_info)
-+{
-+	xdrv_remove_internal(drv_info);
-+}
-+
- static void xdrv_be_on_changed(struct xenbus_device *xb_dev,
- 	enum xenbus_state backend_state)
+ static struct sdev_pcm_stream_info *sdrv_stream_get(
+ 	struct snd_pcm_substream *substream)
  {
-+	struct xdrv_info *drv_info = dev_get_drvdata(&xb_dev->dev);
+@@ -311,71 +316,217 @@ static void sdrv_copy_pcm_hw(struct snd_pcm_hardware *dst,
+ 
+ static int sdrv_alsa_open(struct snd_pcm_substream *substream)
+ {
+-	return 0;
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct xdrv_info *xdrv_info;
++	unsigned long flags;
 +	int ret;
 +
-+	switch (backend_state) {
-+	case XenbusStateReconfiguring:
-+		/* fall through */
-+	case XenbusStateReconfigured:
-+		/* fall through */
-+	case XenbusStateInitialised:
-+		/* fall through */
-+		break;
++	sdrv_copy_pcm_hw(&runtime->hw, &stream->pcm_hw, &pcm_instance->pcm_hw);
++	runtime->hw.info &= ~(SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_DOUBLE |
++		SNDRV_PCM_INFO_BATCH |
++		SNDRV_PCM_INFO_NONINTERLEAVED |
++		SNDRV_PCM_INFO_RESUME |
++		SNDRV_PCM_INFO_PAUSE);
++	runtime->hw.info |= SNDRV_PCM_INFO_INTERLEAVED;
 +
-+	case XenbusStateInitialising:
-+		if (xb_dev->state == XenbusStateInitialising)
-+			break;
++	xdrv_info = pcm_instance->card_info->xdrv_info;
 +
-+		/* recovering after backend unexpected closure */
-+		mutex_lock(&drv_info->mutex);
-+		xdrv_be_on_disconnected(drv_info);
-+		mutex_unlock(&drv_info->mutex);
-+		xenbus_switch_state(xb_dev, XenbusStateInitialising);
-+		break;
++	ret = sdrv_alsa_timer_create(substream);
 +
-+	case XenbusStateInitWait:
-+		if (xb_dev->state != XenbusStateInitialising)
-+			break;
-+
-+		mutex_lock(&drv_info->mutex);
-+		ret = xdrv_be_on_initwait(drv_info);
-+		mutex_unlock(&drv_info->mutex);
-+		if (ret < 0) {
-+			xenbus_dev_fatal(xb_dev, ret,
-+				"initializing " XENSND_DRIVER_NAME);
-+			break;
-+		}
-+
-+		xenbus_switch_state(xb_dev, XenbusStateInitialised);
-+		break;
-+
-+	case XenbusStateConnected:
-+		if (xb_dev->state != XenbusStateInitialised)
-+			break;
-+
-+		mutex_lock(&drv_info->mutex);
-+		ret = xdrv_be_on_connected(drv_info);
-+		mutex_unlock(&drv_info->mutex);
-+		if (ret < 0) {
-+			xenbus_dev_fatal(xb_dev, ret,
-+				"connecting " XENSND_DRIVER_NAME);
-+			break;
-+		}
-+
-+		xenbus_switch_state(xb_dev, XenbusStateConnected);
-+		break;
-+
-+	case XenbusStateClosing:
-+		/*
-+		 * in this state backend starts freeing resources,
-+		 * so let it go into closed state first, so we can also
-+		 * remove ours
-+		 */
-+		break;
-+
-+	case XenbusStateUnknown:
-+		/* fall through */
-+	case XenbusStateClosed:
-+		if (xb_dev->state == XenbusStateClosed)
-+			break;
-+
-+		mutex_lock(&drv_info->mutex);
-+		xdrv_be_on_disconnected(drv_info);
-+		mutex_unlock(&drv_info->mutex);
-+		xenbus_switch_state(xb_dev, XenbusStateInitialising);
-+		break;
-+	}
++	spin_lock_irqsave(&xdrv_info->io_lock, flags);
++	sh_buf_clear(&stream->sh_buf);
++	stream->evt_chnl = &xdrv_info->evt_chnls[stream->unique_id];
++	if (ret < 0)
++		stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
++	else
++		stream->evt_chnl->state = EVTCHNL_STATE_CONNECTED;
++	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
++	return ret;
  }
  
- static int xdrv_probe(struct xenbus_device *xb_dev,
-@@ -56,6 +146,7 @@ static int xdrv_probe(struct xenbus_device *xb_dev,
- 	spin_lock_init(&drv_info->io_lock);
- 	mutex_init(&drv_info->mutex);
- 	dev_set_drvdata(&xb_dev->dev, drv_info);
-+	xenbus_switch_state(xb_dev, XenbusStateInitialising);
+ static int sdrv_alsa_close(struct snd_pcm_substream *substream)
+ {
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct xdrv_info *xdrv_info;
++	unsigned long flags;
++
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++
++	sdrv_alsa_timer_stop(substream);
++
++	spin_lock_irqsave(&xdrv_info->io_lock, flags);
++	stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
++	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
  	return 0;
  }
  
-@@ -63,6 +154,7 @@ static int xdrv_remove(struct xenbus_device *dev)
+ static int sdrv_alsa_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
  {
- 	struct xdrv_info *drv_info = dev_get_drvdata(&dev->dev);
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct xdrv_info *xdrv_info;
++	unsigned int buffer_size;
++	int ret;
++
++	buffer_size = params_buffer_bytes(params);
++	sh_buf_clear(&stream->sh_buf);
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++	ret = sh_buf_alloc(xdrv_info->xb_dev,
++		&stream->sh_buf, buffer_size);
++	if (ret < 0)
++		goto fail;
+ 	return 0;
++
++fail:
++	dev_err(&xdrv_info->xb_dev->dev,
++		"Failed to allocate buffers for stream idx %d\n",
++		stream->unique_id);
++	return ret;
+ }
  
-+	xenbus_switch_state(dev, XenbusStateClosed);
- 	mutex_lock(&drv_info->mutex);
- 	xdrv_remove_internal(drv_info);
- 	mutex_unlock(&drv_info->mutex);
+ static int sdrv_alsa_hw_free(struct snd_pcm_substream *substream)
+ {
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct xdrv_info *xdrv_info;
++	unsigned long flags;
++
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++	spin_lock_irqsave(&xdrv_info->io_lock, flags);
++	sh_buf_free(&stream->sh_buf);
++	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_prepare(struct snd_pcm_substream *substream)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	int ret = 0;
++
++	if (!stream->is_open)
++		ret = sdrv_alsa_timer_prepare(substream);
++	return ret;
+ }
+ 
+ static int sdrv_alsa_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* fall through */
++	case SNDRV_PCM_TRIGGER_RESUME:
++		return sdrv_alsa_timer_start(substream);
++
++	case SNDRV_PCM_TRIGGER_STOP:
++		/* fall through */
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		return sdrv_alsa_timer_stop(substream);
++
++	default:
++		break;
++	}
+ 	return 0;
+ }
+ 
+ static inline snd_pcm_uframes_t sdrv_alsa_pointer(
+ 	struct snd_pcm_substream *substream)
+ {
++	return sdrv_alsa_timer_pointer(substream);
++}
++
++static int sdrv_alsa_playback_do_write(struct snd_pcm_substream *substream,
++	unsigned long pos, unsigned long count)
++{
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_playback_copy_user(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void __user *buf,
+-		unsigned long bytes)
++		int channel, unsigned long pos, void __user *src,
++		unsigned long count)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	if (copy_from_user(stream->sh_buf.vbuffer + pos, src, count))
++		return -EFAULT;
++
++	return sdrv_alsa_playback_do_write(substream, pos, count);
+ }
+ 
+ static int sdrv_alsa_playback_copy_kernel(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void *buf, unsigned long bytes)
++		int channel, unsigned long pos, void *src, unsigned long count)
++{
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	memcpy(stream->sh_buf.vbuffer + pos, src, count);
++	return sdrv_alsa_playback_do_write(substream, pos, count);
++}
++
++static int sdrv_alsa_playback_do_read(struct snd_pcm_substream *substream,
++	unsigned long pos, unsigned long count)
+ {
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_capture_copy_user(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void __user *buf,
+-		unsigned long bytes)
++		int channel, unsigned long pos, void __user *dst,
++		unsigned long count)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	int ret;
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	ret = sdrv_alsa_playback_do_read(substream, pos, count);
++	if (ret < 0)
++		return ret;
++
++	return copy_to_user(dst, stream->sh_buf.vbuffer + pos, count) ?
++		-EFAULT : 0;
+ }
+ 
+ static int sdrv_alsa_capture_copy_kernel(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void *buf, unsigned long bytes)
++		int channel, unsigned long pos, void *dst, unsigned long count)
+ {
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	int ret;
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	ret = sdrv_alsa_playback_do_read(substream, pos, count);
++	if (ret < 0)
++		return ret;
++
++	memcpy(dst, stream->sh_buf.vbuffer + pos, count);
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_playback_fill_silence(struct snd_pcm_substream *substream,
+-	int channel, unsigned long pos, unsigned long bytes)
++	int channel, unsigned long pos, unsigned long count)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	memset(stream->sh_buf.vbuffer + pos, 0, count);
++	return sdrv_alsa_playback_do_write(substream, pos, count);
+ }
+ 
+ #define MAX_XEN_BUFFER_SIZE	(64 * 1024)
 -- 
 2.7.4
