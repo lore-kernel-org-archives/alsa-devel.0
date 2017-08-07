@@ -1,177 +1,114 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH 04/11] ALSA: vsnd: Implement Xen event channel
-	handling
-Date: Mon,  7 Aug 2017 10:43:09 +0300
-Message-ID: <1502091796-14413-5-git-send-email-andr2000@gmail.com>
-References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 15/17] ASoC: cs47l35: Add codec driver
+ for Cirrus Logic CS47L35
+Date: Mon, 7 Aug 2017 09:32:19 +0100
+Message-ID: <1502094739.5479.21.camel@rf-debian.wolfsonmicro.main>
+References: <201707300644.LqBZNeVM%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xen.org>
-In-Reply-To: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
-List-Unsubscribe: <https://lists.xen.org/cgi-bin/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xen.org>
-List-Help: <mailto:xen-devel-request@lists.xen.org?subject=help>
-List-Subscribe: <https://lists.xen.org/cgi-bin/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xen.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xen.org>
-To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1CF4267046
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 10:32:24 +0200 (CEST)
+In-Reply-To: <201707300644.LqBZNeVM%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, broonie@kernel.org, lee.jones@linaro.org
+Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVw
-YW0uY29tPgoKMS4gQ3JlYXRlIGV2ZW50IGNoYW5uZWxzIGZvciBhbGwgY29uZmlndXJlZCBzdHJl
-YW1zIGFuZCBwdWJsaXNoCmNvcnJlc3BvbmRpbmcgcmluZyByZWZlcmVuY2VzIGFuZCBldmVudCBj
-aGFubmVscyBpbiBYZW4gc3RvcmUsCnNvIGJhY2tlbmQgY2FuIGNvbm5lY3QuCjIuIEltcGxlbWVu
-dCBldmVudCBjaGFubmVsIGludGVycnVwdCBoYW5kbGVyLgozLiBDcmVhdGUgYW5kIGRlc3Ryb3kg
-ZXZlbnQgY2hhbm5lbHMgd2l0aCByZXNwZWN0IHRvIFhlbiBidXMgc3RhdGUuCgpTaWduZWQtb2Zm
-LWJ5OiBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyA8b2xla3NhbmRyX2FuZHJ1c2hjaGVua29AZXBh
-bS5jb20+Ci0tLQogc291bmQvZHJpdmVycy94ZW4tZnJvbnQuYyB8IDI2OSArKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCiAxIGZpbGUgY2hhbmdlZCwgMjY4IGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9kcml2ZXJzL3hl
-bi1mcm9udC5jIGIvc291bmQvZHJpdmVycy94ZW4tZnJvbnQuYwppbmRleCBlZjQ4Y2JmNDRjZjIu
-LmE5MjQ1OWIyNzM3ZSAxMDA2NDQKLS0tIGEvc291bmQvZHJpdmVycy94ZW4tZnJvbnQuYworKysg
-Yi9zb3VuZC9kcml2ZXJzL3hlbi1mcm9udC5jCkBAIC0yNCwxNCArMjQsNDAgQEAKICNpbmNsdWRl
-IDxzb3VuZC9wY20uaD4KIAogI2luY2x1ZGUgPHhlbi9wbGF0Zm9ybV9wY2kuaD4KKyNpbmNsdWRl
-IDx4ZW4vZXZlbnRzLmg+CisjaW5jbHVkZSA8eGVuL2dyYW50X3RhYmxlLmg+CiAjaW5jbHVkZSA8
-eGVuL3hlbi5oPgogI2luY2x1ZGUgPHhlbi94ZW5idXMuaD4KIAogI2luY2x1ZGUgPHhlbi9pbnRl
-cmZhY2UvaW8vc25kaWYuaD4KIAorLyoKKyAqIEZJWE1FOiB1c2FnZSBvZiBncmFudCByZWZlcmVu
-Y2UgMCBhcyBpbnZhbGlkIGdyYW50IHJlZmVyZW5jZToKKyAqIGdyYW50IHJlZmVyZW5jZSAwIGlz
-IHZhbGlkLCBidXQgbmV2ZXIgZXhwb3NlZCB0byBhIFBWIGRyaXZlciwKKyAqIGJlY2F1c2Ugb2Yg
-dGhlIGZhY3QgaXQgaXMgYWxyZWFkeSBpbiB1c2UvcmVzZXJ2ZWQgYnkgdGhlIFBWIGNvbnNvbGUu
-CisgKi8KKyNkZWZpbmUgR1JBTlRfSU5WQUxJRF9SRUYJMAogLyogbWF4aW11bSBudW1iZXIgb2Yg
-c3VwcG9ydGVkIHN0cmVhbXMgKi8KICNkZWZpbmUgVlNORF9NQVhfU1RSRUFNCQk4CiAKK2VudW0g
-eGRydl9ldnRjaG5sX3N0YXRlIHsKKwlFVlRDSE5MX1NUQVRFX0RJU0NPTk5FQ1RFRCwKKwlFVlRD
-SE5MX1NUQVRFX0NPTk5FQ1RFRCwKK307CisKK3N0cnVjdCB4ZHJ2X2V2dGNobmxfaW5mbyB7CisJ
-c3RydWN0IHhkcnZfaW5mbyAqZHJ2X2luZm87CisJc3RydWN0IHhlbl9zbmRpZl9mcm9udF9yaW5n
-IHJpbmc7CisJaW50IHJpbmdfcmVmOworCWludCBwb3J0OworCWludCBpcnE7CisJc3RydWN0IGNv
-bXBsZXRpb24gY29tcGxldGlvbjsKKwllbnVtIHhkcnZfZXZ0Y2hubF9zdGF0ZSBzdGF0ZTsKKwkv
-KiBsYXRlc3QgcmVzcG9uc2Ugc3RhdHVzIGFuZCBpdHMgY29ycmVzcG9uZGluZyBpZCAqLworCWlu
-dCByZXNwX3N0YXR1czsKKwl1aW50MTZfdCByZXNwX2lkOworfTsKKwogc3RydWN0IGNmZ19zdHJl
-YW0gewogCWludCB1bmlxdWVfaWQ7CiAJY2hhciAqeGVuc3RvcmVfcGF0aDsKQEAgLTY1LDYgKzkx
-LDggQEAgc3RydWN0IHhkcnZfaW5mbyB7CiAJc3RydWN0IHhlbmJ1c19kZXZpY2UgKnhiX2RldjsK
-IAlzcGlubG9ja190IGlvX2xvY2s7CiAJc3RydWN0IG11dGV4IG11dGV4OworCWludCBudW1fZXZ0
-X2NoYW5uZWxzOworCXN0cnVjdCB4ZHJ2X2V2dGNobmxfaW5mbyAqZXZ0X2NobmxzOwogCXN0cnVj
-dCBzZGV2X2NhcmRfcGxhdF9kYXRhIGNmZ19wbGF0X2RhdGE7CiB9OwogCkBAIC0xMDIsNiArMTMw
-LDI0NCBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY21faGFyZHdhcmUgc2Rydl9wY21faHdfZGVmYXVs
-dCA9IHsKIAkuZmlmb19zaXplID0gMCwKIH07CiAKK3N0YXRpYyBpcnFyZXR1cm5fdCB4ZHJ2X2V2
-dGNobmxfaW50ZXJydXB0KGludCBpcnEsIHZvaWQgKmRldl9pZCkKK3sKKwlzdHJ1Y3QgeGRydl9l
-dnRjaG5sX2luZm8gKmNoYW5uZWwgPSBkZXZfaWQ7CisJc3RydWN0IHhkcnZfaW5mbyAqZHJ2X2lu
-Zm8gPSBjaGFubmVsLT5kcnZfaW5mbzsKKwlzdHJ1Y3QgeGVuc25kX3Jlc3AgKnJlc3A7CisJUklO
-R19JRFggaSwgcnA7CisJdW5zaWduZWQgbG9uZyBmbGFnczsKKworCXNwaW5fbG9ja19pcnFzYXZl
-KCZkcnZfaW5mby0+aW9fbG9jaywgZmxhZ3MpOworCWlmICh1bmxpa2VseShjaGFubmVsLT5zdGF0
-ZSAhPSBFVlRDSE5MX1NUQVRFX0NPTk5FQ1RFRCkpCisJCWdvdG8gb3V0OworCithZ2FpbjoKKwly
-cCA9IGNoYW5uZWwtPnJpbmcuc3JpbmctPnJzcF9wcm9kOworCS8qIGVuc3VyZSB3ZSBzZWUgcXVl
-dWVkIHJlc3BvbnNlcyB1cCB0byBycCAqLworCXJtYigpOworCisJZm9yIChpID0gY2hhbm5lbC0+
-cmluZy5yc3BfY29uczsgaSAhPSBycDsgaSsrKSB7CisJCXJlc3AgPSBSSU5HX0dFVF9SRVNQT05T
-RSgmY2hhbm5lbC0+cmluZywgaSk7CisJCWlmIChyZXNwLT5pZCAhPSBjaGFubmVsLT5yZXNwX2lk
-KQorCQkJY29udGludWU7CisJCXN3aXRjaCAocmVzcC0+b3BlcmF0aW9uKSB7CisJCWNhc2UgWEVO
-U05EX09QX09QRU46CisJCQkvKiBmYWxsIHRocm91Z2ggKi8KKwkJY2FzZSBYRU5TTkRfT1BfQ0xP
-U0U6CisJCQkvKiBmYWxsIHRocm91Z2ggKi8KKwkJY2FzZSBYRU5TTkRfT1BfUkVBRDoKKwkJCS8q
-IGZhbGwgdGhyb3VnaCAqLworCQljYXNlIFhFTlNORF9PUF9XUklURToKKwkJCWNoYW5uZWwtPnJl
-c3Bfc3RhdHVzID0gcmVzcC0+c3RhdHVzOworCQkJY29tcGxldGUoJmNoYW5uZWwtPmNvbXBsZXRp
-b24pOworCQkJYnJlYWs7CisKKwkJZGVmYXVsdDoKKwkJCWRldl9lcnIoJmRydl9pbmZvLT54Yl9k
-ZXYtPmRldiwKKwkJCQkiT3BlcmF0aW9uICVkIGlzIG5vdCBzdXBwb3J0ZWRcbiIsCisJCQkJcmVz
-cC0+b3BlcmF0aW9uKTsKKwkJCWJyZWFrOworCQl9CisJfQorCisJY2hhbm5lbC0+cmluZy5yc3Bf
-Y29ucyA9IGk7CisJaWYgKGkgIT0gY2hhbm5lbC0+cmluZy5yZXFfcHJvZF9wdnQpIHsKKwkJaW50
-IG1vcmVfdG9fZG87CisKKwkJUklOR19GSU5BTF9DSEVDS19GT1JfUkVTUE9OU0VTKCZjaGFubmVs
-LT5yaW5nLCBtb3JlX3RvX2RvKTsKKwkJaWYgKG1vcmVfdG9fZG8pCisJCQlnb3RvIGFnYWluOwor
-CX0gZWxzZQorCQljaGFubmVsLT5yaW5nLnNyaW5nLT5yc3BfZXZlbnQgPSBpICsgMTsKKworb3V0
-OgorCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRydl9pbmZvLT5pb19sb2NrLCBmbGFncyk7CisJ
-cmV0dXJuIElSUV9IQU5ETEVEOworfQorCitzdGF0aWMgaW5saW5lIHZvaWQgeGRydl9ldnRjaG5s
-X2ZsdXNoKAorCQlzdHJ1Y3QgeGRydl9ldnRjaG5sX2luZm8gKmNoYW5uZWwpCit7CisJaW50IG5v
-dGlmeTsKKworCWNoYW5uZWwtPnJpbmcucmVxX3Byb2RfcHZ0Kys7CisJUklOR19QVVNIX1JFUVVF
-U1RTX0FORF9DSEVDS19OT1RJRlkoJmNoYW5uZWwtPnJpbmcsIG5vdGlmeSk7CisJaWYgKG5vdGlm
-eSkKKwkJbm90aWZ5X3JlbW90ZV92aWFfaXJxKGNoYW5uZWwtPmlycSk7Cit9CisKK3N0YXRpYyB2
-b2lkIHhkcnZfZXZ0Y2hubF9mcmVlKHN0cnVjdCB4ZHJ2X2luZm8gKmRydl9pbmZvLAorCQlzdHJ1
-Y3QgeGRydl9ldnRjaG5sX2luZm8gKmNoYW5uZWwpCit7CisJaWYgKCFjaGFubmVsLT5yaW5nLnNy
-aW5nKQorCQlyZXR1cm47CisKKwljaGFubmVsLT5zdGF0ZSA9IEVWVENITkxfU1RBVEVfRElTQ09O
-TkVDVEVEOworCWNoYW5uZWwtPnJlc3Bfc3RhdHVzID0gLUVJTzsKKwljb21wbGV0ZV9hbGwoJmNo
-YW5uZWwtPmNvbXBsZXRpb24pOworCisJaWYgKGNoYW5uZWwtPmlycSkKKwkJdW5iaW5kX2Zyb21f
-aXJxaGFuZGxlcihjaGFubmVsLT5pcnEsIGNoYW5uZWwpOworCWNoYW5uZWwtPmlycSA9IDA7CisK
-KwlpZiAoY2hhbm5lbC0+cG9ydCkKKwkJeGVuYnVzX2ZyZWVfZXZ0Y2huKGRydl9pbmZvLT54Yl9k
-ZXYsIGNoYW5uZWwtPnBvcnQpOworCWNoYW5uZWwtPnBvcnQgPSAwOworCisJaWYgKGNoYW5uZWwt
-PnJpbmdfcmVmICE9IEdSQU5UX0lOVkFMSURfUkVGKQorCQlnbnR0YWJfZW5kX2ZvcmVpZ25fYWNj
-ZXNzKGNoYW5uZWwtPnJpbmdfcmVmLCAwLAorCQkJKHVuc2lnbmVkIGxvbmcpY2hhbm5lbC0+cmlu
-Zy5zcmluZyk7CisJY2hhbm5lbC0+cmluZ19yZWYgPSBHUkFOVF9JTlZBTElEX1JFRjsKKwljaGFu
-bmVsLT5yaW5nLnNyaW5nID0gTlVMTDsKK30KKworc3RhdGljIHZvaWQgeGRydl9ldnRjaG5sX2Zy
-ZWVfYWxsKHN0cnVjdCB4ZHJ2X2luZm8gKmRydl9pbmZvKQoreworCWludCBpOworCisJaWYgKCFk
-cnZfaW5mby0+ZXZ0X2NobmxzKQorCQlyZXR1cm47CisKKwlmb3IgKGkgPSAwOyBpIDwgZHJ2X2lu
-Zm8tPm51bV9ldnRfY2hhbm5lbHM7IGkrKykKKwkJeGRydl9ldnRjaG5sX2ZyZWUoZHJ2X2luZm8s
-ICZkcnZfaW5mby0+ZXZ0X2NobmxzW2ldKTsKKworCWRldm1fa2ZyZWUoJmRydl9pbmZvLT54Yl9k
-ZXYtPmRldiwgZHJ2X2luZm8tPmV2dF9jaG5scyk7CisJZHJ2X2luZm8tPmV2dF9jaG5scyA9IE5V
-TEw7Cit9CisKK3N0YXRpYyBpbnQgeGRydl9ldnRjaG5sX2FsbG9jKHN0cnVjdCB4ZHJ2X2luZm8g
-KmRydl9pbmZvLAorCQlzdHJ1Y3QgeGRydl9ldnRjaG5sX2luZm8gKmV2dF9jaGFubmVsKQorewor
-CXN0cnVjdCB4ZW5idXNfZGV2aWNlICp4Yl9kZXYgPSBkcnZfaW5mby0+eGJfZGV2OworCXN0cnVj
-dCB4ZW5fc25kaWZfc3JpbmcgKnNyaW5nOworCWdyYW50X3JlZl90IGdyZWY7CisJaW50IHJldDsK
-KworCWV2dF9jaGFubmVsLT5kcnZfaW5mbyA9IGRydl9pbmZvOworCWluaXRfY29tcGxldGlvbigm
-ZXZ0X2NoYW5uZWwtPmNvbXBsZXRpb24pOworCWV2dF9jaGFubmVsLT5zdGF0ZSA9IEVWVENITkxf
-U1RBVEVfRElTQ09OTkVDVEVEOworCWV2dF9jaGFubmVsLT5yaW5nX3JlZiA9IEdSQU5UX0lOVkFM
-SURfUkVGOworCWV2dF9jaGFubmVsLT5yaW5nLnNyaW5nID0gTlVMTDsKKwlldnRfY2hhbm5lbC0+
-cG9ydCA9IDA7CisJZXZ0X2NoYW5uZWwtPmlycSA9IDA7CisKKwlzcmluZyA9IChzdHJ1Y3QgeGVu
-X3NuZGlmX3NyaW5nICopZ2V0X3plcm9lZF9wYWdlKAorCQlHRlBfTk9JTyB8IF9fR0ZQX0hJR0gp
-OworCWlmICghc3JpbmcpIHsKKwkJcmV0ID0gLUVOT01FTTsKKwkJZ290byBmYWlsOworCX0KKwor
-CVNIQVJFRF9SSU5HX0lOSVQoc3JpbmcpOworCUZST05UX1JJTkdfSU5JVCgmZXZ0X2NoYW5uZWwt
-PnJpbmcsIHNyaW5nLCBYRU5fUEFHRV9TSVpFKTsKKwlyZXQgPSB4ZW5idXNfZ3JhbnRfcmluZyh4
-Yl9kZXYsIHNyaW5nLCAxLCAmZ3JlZik7CisJaWYgKHJldCA8IDApCisJCWdvdG8gZmFpbDsKKwll
-dnRfY2hhbm5lbC0+cmluZ19yZWYgPSBncmVmOworCisJcmV0ID0geGVuYnVzX2FsbG9jX2V2dGNo
-bih4Yl9kZXYsICZldnRfY2hhbm5lbC0+cG9ydCk7CisJaWYgKHJldCA8IDApCisJCWdvdG8gZmFp
-bDsKKworCXJldCA9IGJpbmRfZXZ0Y2huX3RvX2lycWhhbmRsZXIoZXZ0X2NoYW5uZWwtPnBvcnQs
-CisJCXhkcnZfZXZ0Y2hubF9pbnRlcnJ1cHQsIDAsIHhiX2Rldi0+ZGV2aWNldHlwZSwgZXZ0X2No
-YW5uZWwpOworCWlmIChyZXQgPCAwKQorCQlnb3RvIGZhaWw7CisKKwlldnRfY2hhbm5lbC0+aXJx
-ID0gcmV0OworCXJldHVybiAwOworCitmYWlsOgorCWRldl9lcnIoJnhiX2Rldi0+ZGV2LCAiRmFp
-bGVkIHRvIGFsbG9jYXRlIHJpbmc6ICVkXG4iLCByZXQpOworCXJldHVybiByZXQ7Cit9CisKK3N0
-YXRpYyBpbnQgeGRydl9ldnRjaG5sX2NyZWF0ZShzdHJ1Y3QgeGRydl9pbmZvICpkcnZfaW5mbywK
-KwkJc3RydWN0IHhkcnZfZXZ0Y2hubF9pbmZvICpldnRfY2hhbm5lbCwKKwkJY29uc3QgY2hhciAq
-cGF0aCkKK3sKKwlpbnQgcmV0OworCisJcmV0ID0geGRydl9ldnRjaG5sX2FsbG9jKGRydl9pbmZv
-LCBldnRfY2hhbm5lbCk7CisJaWYgKHJldCA8IDApIHsKKwkJZGV2X2VycigmZHJ2X2luZm8tPnhi
-X2Rldi0+ZGV2LAorCQkJImFsbG9jYXRpbmcgZXZlbnQgY2hhbm5lbDogJWRcbiIsIHJldCk7CisJ
-CXJldHVybiByZXQ7CisJfQorCisJLyoKKwkgKiB3cml0ZSB2YWx1ZXMgdG8gWGVuIHN0b3JlLCBz
-byBiYWNrZW5kIGNhbiBmaW5kIHJpbmcgcmVmZXJlbmNlCisJICogYW5kIGV2ZW50IGNoYW5uZWwK
-KwkgKi8KKwlyZXQgPSB4ZW5idXNfcHJpbnRmKFhCVF9OSUwsIHBhdGgsIFhFTlNORF9GSUVMRF9S
-SU5HX1JFRiwgIiV1IiwKKwkJCWV2dF9jaGFubmVsLT5yaW5nX3JlZik7CisJaWYgKHJldCA8IDAp
-IHsKKwkJZGV2X2VycigmZHJ2X2luZm8tPnhiX2Rldi0+ZGV2LAorCQkJIndyaXRpbmcgIiBYRU5T
-TkRfRklFTERfUklOR19SRUYiOiAlZFxuIiwgcmV0KTsKKwkJcmV0dXJuIHJldDsKKwl9CisKKwly
-ZXQgPSB4ZW5idXNfcHJpbnRmKFhCVF9OSUwsIHBhdGgsIFhFTlNORF9GSUVMRF9FVlRfQ0hOTCwg
-IiV1IiwKKwkJZXZ0X2NoYW5uZWwtPnBvcnQpOworCWlmIChyZXQgPCAwKSB7CisJCWRldl9lcnIo
-JmRydl9pbmZvLT54Yl9kZXYtPmRldiwKKwkJCSJ3cml0aW5nICIgWEVOU05EX0ZJRUxEX0VWVF9D
-SE5MIjogJWRcbiIsIHJldCk7CisJCXJldHVybiByZXQ7CisJfQorCXJldHVybiAwOworfQorCitz
-dGF0aWMgaW50IHhkcnZfZXZ0Y2hubF9jcmVhdGVfYWxsKHN0cnVjdCB4ZHJ2X2luZm8gKmRydl9p
-bmZvLAorCQlpbnQgbnVtX3N0cmVhbXMpCit7CisJc3RydWN0IGNmZ19jYXJkICpjZmdfY2FyZDsK
-KwlpbnQgZCwgcmV0ID0gMDsKKworCWRydl9pbmZvLT5ldnRfY2hubHMgPSBkZXZtX2tjYWxsb2Mo
-JmRydl9pbmZvLT54Yl9kZXYtPmRldiwKKwkJbnVtX3N0cmVhbXMsIHNpemVvZihzdHJ1Y3QgeGRy
-dl9ldnRjaG5sX2luZm8pLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWRydl9pbmZvLT5ldnRfY2hubHMp
-IHsKKwkJcmV0ID0gLUVOT01FTTsKKwkJZ290byBmYWlsOworCX0KKworCWNmZ19jYXJkID0gJmRy
-dl9pbmZvLT5jZmdfcGxhdF9kYXRhLmNmZ19jYXJkOworCS8qIGl0ZXJhdGUgb3ZlciBkZXZpY2Vz
-IGFuZCB0aGVpciBzdHJlYW1zIGFuZCBjcmVhdGUgZXZlbnQgY2hhbm5lbHMgKi8KKwlmb3IgKGQg
-PSAwOyBkIDwgY2ZnX2NhcmQtPm51bV9wY21faW5zdGFuY2VzOyBkKyspIHsKKwkJc3RydWN0IGNm
-Z19wY21faW5zdGFuY2UgKnBjbV9pbnN0YW5jZTsKKwkJaW50IHMsIHN0cmVhbV9pZHg7CisKKwkJ
-cGNtX2luc3RhbmNlID0gJmNmZ19jYXJkLT5wY21faW5zdGFuY2VzW2RdOworCisJCWZvciAocyA9
-IDA7IHMgPCBwY21faW5zdGFuY2UtPm51bV9zdHJlYW1zX3BiOyBzKyspIHsKKwkJCXN0cmVhbV9p
-ZHggPSBwY21faW5zdGFuY2UtPnN0cmVhbXNfcGJbc10udW5pcXVlX2lkOworCQkJcmV0ID0geGRy
-dl9ldnRjaG5sX2NyZWF0ZShkcnZfaW5mbywKKwkJCQkmZHJ2X2luZm8tPmV2dF9jaG5sc1tzdHJl
-YW1faWR4XSwKKwkJCQlwY21faW5zdGFuY2UtPnN0cmVhbXNfcGJbc10ueGVuc3RvcmVfcGF0aCk7
-CisJCQlpZiAocmV0IDwgMCkKKwkJCQlnb3RvIGZhaWw7CisJCX0KKworCQlmb3IgKHMgPSAwOyBz
-IDwgcGNtX2luc3RhbmNlLT5udW1fc3RyZWFtc19jYXA7IHMrKykgeworCQkJc3RyZWFtX2lkeCA9
-IHBjbV9pbnN0YW5jZS0+c3RyZWFtc19jYXBbc10udW5pcXVlX2lkOworCQkJcmV0ID0geGRydl9l
-dnRjaG5sX2NyZWF0ZShkcnZfaW5mbywKKwkJCQkmZHJ2X2luZm8tPmV2dF9jaG5sc1tzdHJlYW1f
-aWR4XSwKKwkJCQlwY21faW5zdGFuY2UtPnN0cmVhbXNfY2FwW3NdLnhlbnN0b3JlX3BhdGgpOwor
-CQkJaWYgKHJldCA8IDApCisJCQkJZ290byBmYWlsOworCQl9CisJfQorCWlmIChyZXQgPCAwKQor
-CQlnb3RvIGZhaWw7CisKKwlkcnZfaW5mby0+bnVtX2V2dF9jaGFubmVscyA9IG51bV9zdHJlYW1z
-OworCXJldHVybiAwOworCitmYWlsOgorCXhkcnZfZXZ0Y2hubF9mcmVlX2FsbChkcnZfaW5mbyk7
-CisJcmV0dXJuIHJldDsKK30KKwogc3RydWN0IENGR19IV19TQU1QTEVfUkFURSB7CiAJY29uc3Qg
-Y2hhciAqbmFtZTsKIAl1bnNpZ25lZCBpbnQgbWFzazsKQEAgLTU1Niw2ICs4MjIsNyBAQCBzdGF0
-aWMgaW50IGNmZ19jYXJkKHN0cnVjdCB4ZHJ2X2luZm8gKmRydl9pbmZvLAogCiBzdGF0aWMgdm9p
-ZCB4ZHJ2X3JlbW92ZV9pbnRlcm5hbChzdHJ1Y3QgeGRydl9pbmZvICpkcnZfaW5mbykKIHsKKwl4
-ZHJ2X2V2dGNobmxfZnJlZV9hbGwoZHJ2X2luZm8pOwogfQogCiBzdGF0aWMgaW50IHhkcnZfYmVf
-b25faW5pdHdhaXQoc3RydWN0IHhkcnZfaW5mbyAqZHJ2X2luZm8pCkBAIC01NjgsNyArODM1LDcg
-QEAgc3RhdGljIGludCB4ZHJ2X2JlX29uX2luaXR3YWl0KHN0cnVjdCB4ZHJ2X2luZm8gKmRydl9p
-bmZvKQogCXJldCA9IGNmZ19jYXJkKGRydl9pbmZvLCAmZHJ2X2luZm8tPmNmZ19wbGF0X2RhdGEs
-ICZzdHJlYW1faWR4KTsKIAlpZiAocmV0IDwgMCkKIAkJcmV0dXJuIHJldDsKLQlyZXR1cm4gMDsK
-KwlyZXR1cm4geGRydl9ldnRjaG5sX2NyZWF0ZV9hbGwoZHJ2X2luZm8sIHN0cmVhbV9pZHgpOwog
-fQogCiBzdGF0aWMgaW5saW5lIGludCB4ZHJ2X2JlX29uX2Nvbm5lY3RlZChzdHJ1Y3QgeGRydl9p
-bmZvICpkcnZfaW5mbykKLS0gCjIuNy40CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KWGVuLWRldmVsIG1haWxpbmcgbGlzdApYZW4tZGV2ZWxAbGlzdHMu
-eGVuLm9yZwpodHRwczovL2xpc3RzLnhlbi5vcmcveGVuLWRldmVsCg==
+On Sun, 2017-07-30 at 07:01 +0800, kbuild test robot wrote:
+> Hi Richard,
+> 
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v4.13-rc2 next-20170728]
+> [cannot apply to ljones-mfd/for-mfd-next asoc/for-next]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Richard-Fitzgerald/Add-support-for-Cirrus-Logic-CS47L35-L85-L90-L91-codecs/20170730-062737
+> config: x86_64-allmodconfig (attached as .config)
+> compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
+> reproduce:
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+> 
+> Note: the linux-review/Richard-Fitzgerald/Add-support-for-Cirrus-Logic-CS47L35-L85-L90-L91-codecs/20170730-062737 HEAD 15487144eec6910ecfbbbbd97bb5a2c7efdb259f builds fine.
+>       It only hurts bisectibility.
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> sound/soc//codecs/madera.c:146:2: error: 'MADERA_IRQ_DSP1_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP1_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> sound/soc//codecs/madera.c:147:2: error: 'MADERA_IRQ_DSP2_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP2_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> sound/soc//codecs/madera.c:148:2: error: 'MADERA_IRQ_DSP3_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP3_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> sound/soc//codecs/madera.c:149:2: error: 'MADERA_IRQ_DSP4_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP4_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> sound/soc//codecs/madera.c:150:2: error: 'MADERA_IRQ_DSP5_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP5_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> sound/soc//codecs/madera.c:151:2: error: 'MADERA_IRQ_DSP6_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP6_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> >> sound/soc//codecs/madera.c:152:2: error: 'MADERA_IRQ_DSP7_BUS_ERROR' undeclared here (not in a function)
+>      MADERA_IRQ_DSP7_BUS_ERROR,
+>      ^~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+
+Oops. The rename of these somehow got merged into the top patch instead
+of going into #14 where it should be. I'll wait a while and see what
+comments I get on the earlier patches, maybe they will all be accepted
+for merge and then I'll only have to reissue the top 4 patches to fix
+this.
+
+> vim +/MADERA_IRQ_DSP1_BUS_ERROR +146 sound/soc//codecs/madera.c
+> 
+> da1efc4cc Richard Fitzgerald 2017-07-28  130  
+> da1efc4cc Richard Fitzgerald 2017-07-28  131  #define madera_fll_err(_fll, fmt, ...) \
+> da1efc4cc Richard Fitzgerald 2017-07-28  132  	dev_err(_fll->madera->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
+> da1efc4cc Richard Fitzgerald 2017-07-28  133  #define madera_fll_warn(_fll, fmt, ...) \
+> da1efc4cc Richard Fitzgerald 2017-07-28  134  	dev_warn(_fll->madera->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
+> da1efc4cc Richard Fitzgerald 2017-07-28  135  #define madera_fll_dbg(_fll, fmt, ...) \
+> da1efc4cc Richard Fitzgerald 2017-07-28  136  	dev_dbg(_fll->madera->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
+> da1efc4cc Richard Fitzgerald 2017-07-28  137  
+> da1efc4cc Richard Fitzgerald 2017-07-28  138  #define madera_aif_err(_dai, fmt, ...) \
+> da1efc4cc Richard Fitzgerald 2017-07-28  139  	dev_err(_dai->dev, "AIF%d: " fmt, _dai->id, ##__VA_ARGS__)
+> da1efc4cc Richard Fitzgerald 2017-07-28  140  #define madera_aif_warn(_dai, fmt, ...) \
+> da1efc4cc Richard Fitzgerald 2017-07-28  141  	dev_warn(_dai->dev, "AIF%d: " fmt, _dai->id, ##__VA_ARGS__)
+> da1efc4cc Richard Fitzgerald 2017-07-28  142  #define madera_aif_dbg(_dai, fmt, ...) \
+> da1efc4cc Richard Fitzgerald 2017-07-28  143  	dev_dbg(_dai->dev, "AIF%d: " fmt, _dai->id, ##__VA_ARGS__)
+> da1efc4cc Richard Fitzgerald 2017-07-28  144  
+> da1efc4cc Richard Fitzgerald 2017-07-28  145  static const int madera_dsp_bus_error_irqs[MADERA_MAX_ADSP] = {
+> da1efc4cc Richard Fitzgerald 2017-07-28 @146  	MADERA_IRQ_DSP1_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28 @147  	MADERA_IRQ_DSP2_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28 @148  	MADERA_IRQ_DSP3_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28 @149  	MADERA_IRQ_DSP4_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28 @150  	MADERA_IRQ_DSP5_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28 @151  	MADERA_IRQ_DSP6_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28 @152  	MADERA_IRQ_DSP7_BUS_ERROR,
+> da1efc4cc Richard Fitzgerald 2017-07-28  153  };
+> da1efc4cc Richard Fitzgerald 2017-07-28  154  
+> 
+> :::::: The code at line 146 was first introduced by commit
+> :::::: da1efc4cc715281f9599274bb5ff408b19cd3335 ASoC: madera: Add common support for Cirrus Logic Madera codecs
+> 
+> :::::: TO: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> :::::: CC: 0day robot <fengguang.wu@intel.com>
+> 
+> ---
+> 0-DAY kernel test infrastructure                Open Source Technology Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
