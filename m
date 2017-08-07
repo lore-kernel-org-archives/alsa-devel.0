@@ -1,219 +1,272 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH 10/11] ALSA: vsnd: Implement communication with
-	backend
-Date: Mon,  7 Aug 2017 10:43:15 +0300
-Message-ID: <1502091796-14413-11-git-send-email-andr2000@gmail.com>
+Subject: [PATCH 09/11] ALSA: vsnd: Implement ALSA PCM operations
+Date: Mon,  7 Aug 2017 10:43:14 +0300
+Message-ID: <1502091796-14413-10-git-send-email-andr2000@gmail.com>
 References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xen.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
-List-Unsubscribe: <https://lists.xen.org/cgi-bin/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xen.org>
-List-Help: <mailto:xen-devel-request@lists.xen.org?subject=help>
-List-Subscribe: <https://lists.xen.org/cgi-bin/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xen.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xen.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, perex@perex.cz
+Cc: perex@perex.cz, tiwai@suse.com, andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVw
-YW0uY29tPgoKSW1wbGVtZW50IGZyb250ZW5kIHRvIGJhY2tlbmQgY29tbXVuaWNhdGlvbiBhY2Nv
-cmRpbmcgdG8KdGhlIHBhcmEtdmlydHVhbGl6ZWQgc291bmQgcHJvdG9jb2w6IHhlbi9pbnRlcmZh
-Y2UvaW8vc25kaWYuaC4KClNpZ25lZC1vZmYtYnk6IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxv
-bGVrc2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNvbT4KLS0tCiBzb3VuZC9kcml2ZXJzL3hlbi1m
-cm9udC5jIHwgMzAyICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKyst
-LS0KIDEgZmlsZSBjaGFuZ2VkLCAyODggaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvc291bmQvZHJpdmVycy94ZW4tZnJvbnQuYyBiL3NvdW5kL2RyaXZlcnMveGVu
-LWZyb250LmMKaW5kZXggNzI3NWU5Y2IzOGMwLi44YmZlYzQzZWYwM2EgMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL2RyaXZlcnMveGVuLWZyb250LmMKKysrIGIvc291bmQvZHJpdmVycy94ZW4tZnJvbnQuYwpA
-QCAtMzgsNiArMzgsOCBAQAogICogYmVjYXVzZSBvZiB0aGUgZmFjdCBpdCBpcyBhbHJlYWR5IGlu
-IHVzZS9yZXNlcnZlZCBieSB0aGUgUFYgY29uc29sZS4KICAqLwogI2RlZmluZSBHUkFOVF9JTlZB
-TElEX1JFRgkwCisvKiB0aW1lb3V0IGluIG1zIHRvIHdhaXQgZm9yIGJhY2tlbmQgdG8gcmVzcG9u
-ZCAqLworI2RlZmluZSBWU05EX1dBSVRfQkFDS19NUwkzMDAwCiAvKiBtYXhpbXVtIG51bWJlciBv
-ZiBzdXBwb3J0ZWQgc3RyZWFtcyAqLwogI2RlZmluZSBWU05EX01BWF9TVFJFQU0JCTgKIApAQCAt
-MTUxLDEwICsxNTMsMTIgQEAgc3RydWN0IHhkcnZfaW5mbyB7CiAJc3RydWN0IHNkZXZfY2FyZF9w
-bGF0X2RhdGEgY2ZnX3BsYXRfZGF0YTsKIH07CiAKK3N0YXRpYyBpbmxpbmUgdm9pZCB4ZHJ2X2V2
-dGNobmxfZmx1c2goc3RydWN0IHhkcnZfZXZ0Y2hubF9pbmZvICpjaGFubmVsKTsKIHN0YXRpYyBp
-bmxpbmUgdm9pZCBzaF9idWZfY2xlYXIoc3RydWN0IHNoX2J1Zl9pbmZvICpidWYpOwogc3RhdGlj
-IHZvaWQgc2hfYnVmX2ZyZWUoc3RydWN0IHNoX2J1Zl9pbmZvICpidWYpOwogc3RhdGljIGludCBz
-aF9idWZfYWxsb2Moc3RydWN0IHhlbmJ1c19kZXZpY2UgKnhiX2Rldiwgc3RydWN0IHNoX2J1Zl9p
-bmZvICpidWYsCiAJdW5zaWduZWQgaW50IGJ1ZmZlcl9zaXplKTsKK3N0YXRpYyBncmFudF9yZWZf
-dCBzaF9idWZfZ2V0X2Rpcl9zdGFydChzdHJ1Y3Qgc2hfYnVmX2luZm8gKmJ1Zik7CiAKIHN0YXRp
-YyBzdHJ1Y3Qgc2Rldl9wY21fc3RyZWFtX2luZm8gKnNkcnZfc3RyZWFtX2dldCgKIAlzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKQEAgLTMxNCw2ICszMTgsMjM0IEBAIHN0YXRp
-YyB2b2lkIHNkcnZfY29weV9wY21faHcoc3RydWN0IHNuZF9wY21faGFyZHdhcmUgKmRzdCwKIAl9
-CiB9CiAKK3N0cnVjdCBBTFNBX1NORElGX1NBTVBMRV9GT1JNQVQgeworCXVpbnQ4X3Qgc25kaWY7
-CisJc25kX3BjbV9mb3JtYXRfdCBhbHNhOworfTsKKworc3RhdGljIHN0cnVjdCBBTFNBX1NORElG
-X1NBTVBMRV9GT1JNQVQgYWxzYV9zbmRpZl9mb3JtYXRzW10gPSB7CisJeworCQkuc25kaWYgPSBY
-RU5TTkRfUENNX0ZPUk1BVF9VOCwKKwkJLmFsc2EgPSBTTkRSVl9QQ01fRk9STUFUX1U4CisJfSwK
-Kwl7CisJCS5zbmRpZiA9IFhFTlNORF9QQ01fRk9STUFUX1M4LAorCQkuYWxzYSA9IFNORFJWX1BD
-TV9GT1JNQVRfUzgKKwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRfVTE2X0xF
-LAorCQkuYWxzYSA9IFNORFJWX1BDTV9GT1JNQVRfVTE2X0xFCisJfSwKKwl7CisJCS5zbmRpZiA9
-IFhFTlNORF9QQ01fRk9STUFUX1UxNl9CRSwKKwkJLmFsc2EgPSBTTkRSVl9QQ01fRk9STUFUX1Ux
-Nl9CRQorCX0sCisJeworCQkuc25kaWYgPSBYRU5TTkRfUENNX0ZPUk1BVF9TMTZfTEUsCisJCS5h
-bHNhID0gU05EUlZfUENNX0ZPUk1BVF9TMTZfTEUKKwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05E
-X1BDTV9GT1JNQVRfUzE2X0JFLAorCQkuYWxzYSA9IFNORFJWX1BDTV9GT1JNQVRfUzE2X0JFCisJ
-fSwKKwl7CisJCS5zbmRpZiA9IFhFTlNORF9QQ01fRk9STUFUX1UyNF9MRSwKKwkJLmFsc2EgPSBT
-TkRSVl9QQ01fRk9STUFUX1UyNF9MRQorCX0sCisJeworCQkuc25kaWYgPSBYRU5TTkRfUENNX0ZP
-Uk1BVF9VMjRfQkUsCisJCS5hbHNhID0gU05EUlZfUENNX0ZPUk1BVF9VMjRfQkUKKwl9LAorCXsK
-KwkJLnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRfUzI0X0xFLAorCQkuYWxzYSA9IFNORFJWX1BD
-TV9GT1JNQVRfUzI0X0xFCisJfSwKKwl7CisJCS5zbmRpZiA9IFhFTlNORF9QQ01fRk9STUFUX1My
-NF9CRSwKKwkJLmFsc2EgPSBTTkRSVl9QQ01fRk9STUFUX1MyNF9CRQorCX0sCisJeworCQkuc25k
-aWYgPSBYRU5TTkRfUENNX0ZPUk1BVF9VMzJfTEUsCisJCS5hbHNhID0gU05EUlZfUENNX0ZPUk1B
-VF9VMzJfTEUKKwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRfVTMyX0JFLAor
-CQkuYWxzYSA9IFNORFJWX1BDTV9GT1JNQVRfVTMyX0JFCisJfSwKKwl7CisJCS5zbmRpZiA9IFhF
-TlNORF9QQ01fRk9STUFUX1MzMl9MRSwKKwkJLmFsc2EgPSBTTkRSVl9QQ01fRk9STUFUX1MzMl9M
-RQorCX0sCisJeworCQkuc25kaWYgPSBYRU5TTkRfUENNX0ZPUk1BVF9TMzJfQkUsCisJCS5hbHNh
-ID0gU05EUlZfUENNX0ZPUk1BVF9TMzJfQkUKKwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05EX1BD
-TV9GT1JNQVRfQV9MQVcsCisJCS5hbHNhID0gU05EUlZfUENNX0ZPUk1BVF9BX0xBVworCX0sCisJ
-eworCQkuc25kaWYgPSBYRU5TTkRfUENNX0ZPUk1BVF9NVV9MQVcsCisJCS5hbHNhID0gU05EUlZf
-UENNX0ZPUk1BVF9NVV9MQVcKKwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRf
-RjMyX0xFLAorCQkuYWxzYSA9IFNORFJWX1BDTV9GT1JNQVRfRkxPQVRfTEUKKwl9LAorCXsKKwkJ
-LnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRfRjMyX0JFLAorCQkuYWxzYSA9IFNORFJWX1BDTV9G
-T1JNQVRfRkxPQVRfQkUKKwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRfRjY0
-X0xFLAorCQkuYWxzYSA9IFNORFJWX1BDTV9GT1JNQVRfRkxPQVQ2NF9MRQorCX0sCisJeworCQku
-c25kaWYgPSBYRU5TTkRfUENNX0ZPUk1BVF9GNjRfQkUsCisJCS5hbHNhID0gU05EUlZfUENNX0ZP
-Uk1BVF9GTE9BVDY0X0JFCisJfSwKKwl7CisJCS5zbmRpZiA9IFhFTlNORF9QQ01fRk9STUFUX0lF
-Qzk1OF9TVUJGUkFNRV9MRSwKKwkJLmFsc2EgPSBTTkRSVl9QQ01fRk9STUFUX0lFQzk1OF9TVUJG
-UkFNRV9MRQorCX0sCisJeworCQkuc25kaWYgPSBYRU5TTkRfUENNX0ZPUk1BVF9JRUM5NThfU1VC
-RlJBTUVfQkUsCisJCS5hbHNhID0gU05EUlZfUENNX0ZPUk1BVF9JRUM5NThfU1VCRlJBTUVfQkUK
-Kwl9LAorCXsKKwkJLnNuZGlmID0gWEVOU05EX1BDTV9GT1JNQVRfSU1BX0FEUENNLAorCQkuYWxz
-YSA9IFNORFJWX1BDTV9GT1JNQVRfSU1BX0FEUENNCisJfSwKKwl7CisJCS5zbmRpZiA9IFhFTlNO
-RF9QQ01fRk9STUFUX01QRUcsCisJCS5hbHNhID0gU05EUlZfUENNX0ZPUk1BVF9NUEVHCisJfSwK
-Kwl7CisJCS5zbmRpZiA9IFhFTlNORF9QQ01fRk9STUFUX0dTTSwKKwkJLmFsc2EgPSBTTkRSVl9Q
-Q01fRk9STUFUX0dTTQorCX0sCit9OworCitzdGF0aWMgaW50IGFsc2FfdG9fc25kaWZfZm9ybWF0
-KHNuZF9wY21fZm9ybWF0X3QgZm9ybWF0KQoreworCWludCBpOworCisJZm9yIChpID0gMDsgaSA8
-IEFSUkFZX1NJWkUoYWxzYV9zbmRpZl9mb3JtYXRzKTsgaSsrKQorCQlpZiAoYWxzYV9zbmRpZl9m
-b3JtYXRzW2ldLmFsc2EgPT0gZm9ybWF0KQorCQkJcmV0dXJuIGFsc2Ffc25kaWZfZm9ybWF0c1tp
-XS5zbmRpZjsKKwlyZXR1cm4gLUVJTlZBTDsKK30KKworc3RhdGljIHZvaWQgc2Rydl9zdHJlYW1f
-Y2xlYXIoc3RydWN0IHNkZXZfcGNtX3N0cmVhbV9pbmZvICpzdHJlYW0pCit7CisJc3RyZWFtLT5p
-c19vcGVuID0gZmFsc2U7CisJc3RyZWFtLT5yZXFfbmV4dF9pZCA9IDA7CisJc2hfYnVmX2NsZWFy
-KCZzdHJlYW0tPnNoX2J1Zik7Cit9CisKK3N0YXRpYyBzdHJ1Y3QgeGVuc25kX3JlcSAqc2Rydl9i
-ZV9zdHJlYW1fcHJlcGFyZV9yZXEoCisJc3RydWN0IHNkZXZfcGNtX3N0cmVhbV9pbmZvICpzdHJl
-YW0sIHVpbnQ4X3Qgb3BlcmF0aW9uKQoreworCXN0cnVjdCB4ZW5zbmRfcmVxICpyZXE7CisKKwly
-ZXEgPSBSSU5HX0dFVF9SRVFVRVNUKCZzdHJlYW0tPmV2dF9jaG5sLT5yaW5nLAorCQlzdHJlYW0t
-PmV2dF9jaG5sLT5yaW5nLnJlcV9wcm9kX3B2dCk7CisJcmVxLT5vcGVyYXRpb24gPSBvcGVyYXRp
-b247CisJcmVxLT5pZCA9IHN0cmVhbS0+cmVxX25leHRfaWQrKzsKKwlzdHJlYW0tPmV2dF9jaG5s
-LT5yZXNwX2lkID0gcmVxLT5pZDsKKwlyZXR1cm4gcmVxOworfQorCitzdGF0aWMgdm9pZCBzZHJ2
-X2JlX3N0cmVhbV9mcmVlKHN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5mbyAqc3RyZWFtKQorewor
-CXNoX2J1Zl9mcmVlKCZzdHJlYW0tPnNoX2J1Zik7CisJc2Rydl9zdHJlYW1fY2xlYXIoc3RyZWFt
-KTsKK30KKworc3RhdGljIGludCBzZHJ2X2JlX3N0cmVhbV9kb19pbyhzdHJ1Y3QgeGRydl9ldnRj
-aG5sX2luZm8gKmV2dGNobmwpCit7CisJaWYgKHVubGlrZWx5KGV2dGNobmwtPnN0YXRlICE9IEVW
-VENITkxfU1RBVEVfQ09OTkVDVEVEKSkKKwkJcmV0dXJuIC1FSU87CisKKwlyZWluaXRfY29tcGxl
-dGlvbigmZXZ0Y2hubC0+Y29tcGxldGlvbik7CisJeGRydl9ldnRjaG5sX2ZsdXNoKGV2dGNobmwp
-OworCXJldHVybiAwOworfQorCitzdGF0aWMgaW5saW5lIGludCBzZHJ2X2JlX3N0cmVhbV93YWl0
-X2lvKHN0cnVjdCB4ZHJ2X2V2dGNobmxfaW5mbyAqZXZ0Y2hubCkKK3sKKwlpZiAod2FpdF9mb3Jf
-Y29tcGxldGlvbl90aW1lb3V0KAorCQkJJmV2dGNobmwtPmNvbXBsZXRpb24sCisJCQltc2Vjc190
-b19qaWZmaWVzKFZTTkRfV0FJVF9CQUNLX01TKSkgPD0gMCkKKwkJcmV0dXJuIC1FVElNRURPVVQ7
-CisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgc2Rydl9iZV9zdHJlYW1fb3BlbihzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKKwlzdHJ1Y3Qgc2Rldl9wY21fc3RyZWFtX2lu
-Zm8gKnN0cmVhbSkKK3sKKwlzdHJ1Y3Qgc2Rldl9wY21faW5zdGFuY2VfaW5mbyAqcGNtX2luc3Rh
-bmNlID0KKwkJc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJlYW0pOworCXN0cnVjdCBzbmRf
-cGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisJc3RydWN0IHhkcnZf
-aW5mbyAqeGRydl9pbmZvOworCXN0cnVjdCB4ZW5zbmRfcmVxICpyZXE7CisJdW5zaWduZWQgbG9u
-ZyBmbGFnczsKKwlpbnQgcmV0OworCisJeGRydl9pbmZvID0gcGNtX2luc3RhbmNlLT5jYXJkX2lu
-Zm8tPnhkcnZfaW5mbzsKKworCXJldCA9IGFsc2FfdG9fc25kaWZfZm9ybWF0KHJ1bnRpbWUtPmZv
-cm1hdCk7CisJaWYgKHJldCA8IDApIHsKKwkJZGV2X2VycigmeGRydl9pbmZvLT54Yl9kZXYtPmRl
-diwKKwkJCSJVbnN1cHBvcnRlZCBzYW1wbGUgZm9ybWF0OiAlZFxuIiwgcnVudGltZS0+Zm9ybWF0
-KTsKKwkJcmV0dXJuIHJldDsKKwl9CisKKwlzcGluX2xvY2tfaXJxc2F2ZSgmeGRydl9pbmZvLT5p
-b19sb2NrLCBmbGFncyk7CisJc3RyZWFtLT5pc19vcGVuID0gZmFsc2U7CisJcmVxID0gc2Rydl9i
-ZV9zdHJlYW1fcHJlcGFyZV9yZXEoc3RyZWFtLCBYRU5TTkRfT1BfT1BFTik7CisJcmVxLT5vcC5v
-cGVuLnBjbV9mb3JtYXQgPSAodWludDhfdClyZXQ7CisJcmVxLT5vcC5vcGVuLnBjbV9jaGFubmVs
-cyA9IHJ1bnRpbWUtPmNoYW5uZWxzOworCXJlcS0+b3Aub3Blbi5wY21fcmF0ZSA9IHJ1bnRpbWUt
-PnJhdGU7CisJcmVxLT5vcC5vcGVuLmJ1ZmZlcl9zeiA9IHN0cmVhbS0+c2hfYnVmLnZidWZmZXJf
-c3o7CisJcmVxLT5vcC5vcGVuLmdyZWZfZGlyZWN0b3J5ID0gc2hfYnVmX2dldF9kaXJfc3RhcnQo
-JnN0cmVhbS0+c2hfYnVmKTsKKworCXJldCA9IHNkcnZfYmVfc3RyZWFtX2RvX2lvKHN0cmVhbS0+
-ZXZ0X2NobmwpOworCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnhkcnZfaW5mby0+aW9fbG9jaywg
-ZmxhZ3MpOworCisJaWYgKHJldCA8IDApCisJCXJldHVybiByZXQ7CisKKwlyZXQgPSBzZHJ2X2Jl
-X3N0cmVhbV93YWl0X2lvKHN0cmVhbS0+ZXZ0X2NobmwpOworCXN0cmVhbS0+aXNfb3BlbiA9IHJl
-dCA8IDAgPyBmYWxzZSA6IHRydWU7CisJcmV0dXJuIHJldDsKK30KKworc3RhdGljIGludCBzZHJ2
-X2JlX3N0cmVhbV9jbG9zZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKKwlz
-dHJ1Y3Qgc2Rldl9wY21fc3RyZWFtX2luZm8gKnN0cmVhbSkKK3sKKwlzdHJ1Y3Qgc2Rldl9wY21f
-aW5zdGFuY2VfaW5mbyAqcGNtX2luc3RhbmNlID0KKwkJc25kX3BjbV9zdWJzdHJlYW1fY2hpcChz
-dWJzdHJlYW0pOworCXN0cnVjdCB4ZHJ2X2luZm8gKnhkcnZfaW5mbzsKKwlzdHJ1Y3QgeGVuc25k
-X3JlcSAqcmVxOworCXVuc2lnbmVkIGxvbmcgZmxhZ3M7CisJaW50IHJldDsKKworCXhkcnZfaW5m
-byA9IHBjbV9pbnN0YW5jZS0+Y2FyZF9pbmZvLT54ZHJ2X2luZm87CisKKwlzcGluX2xvY2tfaXJx
-c2F2ZSgmeGRydl9pbmZvLT5pb19sb2NrLCBmbGFncyk7CisJc3RyZWFtLT5pc19vcGVuID0gZmFs
-c2U7CisJcmVxID0gc2Rydl9iZV9zdHJlYW1fcHJlcGFyZV9yZXEoc3RyZWFtLCBYRU5TTkRfT1Bf
-Q0xPU0UpOworCisJcmV0ID0gc2Rydl9iZV9zdHJlYW1fZG9faW8oc3RyZWFtLT5ldnRfY2hubCk7
-CisJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmeGRydl9pbmZvLT5pb19sb2NrLCBmbGFncyk7CisK
-KwlpZiAocmV0IDwgMCkKKwkJcmV0dXJuIHJldDsKKworCXJldHVybiBzZHJ2X2JlX3N0cmVhbV93
-YWl0X2lvKHN0cmVhbS0+ZXZ0X2NobmwpOworfQorCiBzdGF0aWMgaW50IHNkcnZfYWxzYV9vcGVu
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogewogCXN0cnVjdCBzZGV2X3Bj
-bV9pbnN0YW5jZV9pbmZvICpwY21faW5zdGFuY2UgPQpAQCAtMzM5LDcgKzU3MSw3IEBAIHN0YXRp
-YyBpbnQgc2Rydl9hbHNhX29wZW4oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0p
-CiAJcmV0ID0gc2Rydl9hbHNhX3RpbWVyX2NyZWF0ZShzdWJzdHJlYW0pOwogCiAJc3Bpbl9sb2Nr
-X2lycXNhdmUoJnhkcnZfaW5mby0+aW9fbG9jaywgZmxhZ3MpOwotCXNoX2J1Zl9jbGVhcigmc3Ry
-ZWFtLT5zaF9idWYpOworCXNkcnZfc3RyZWFtX2NsZWFyKHN0cmVhbSk7CiAJc3RyZWFtLT5ldnRf
-Y2hubCA9ICZ4ZHJ2X2luZm8tPmV2dF9jaG5sc1tzdHJlYW0tPnVuaXF1ZV9pZF07CiAJaWYgKHJl
-dCA8IDApCiAJCXN0cmVhbS0+ZXZ0X2NobmwtPnN0YXRlID0gRVZUQ0hOTF9TVEFURV9ESVNDT05O
-RUNURUQ7CkBAIC0zNzgsNyArNjEwLDcgQEAgc3RhdGljIGludCBzZHJ2X2Fsc2FfaHdfcGFyYW1z
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCWludCByZXQ7CiAKIAlidWZm
-ZXJfc2l6ZSA9IHBhcmFtc19idWZmZXJfYnl0ZXMocGFyYW1zKTsKLQlzaF9idWZfY2xlYXIoJnN0
-cmVhbS0+c2hfYnVmKTsKKwlzZHJ2X3N0cmVhbV9jbGVhcihzdHJlYW0pOwogCXhkcnZfaW5mbyA9
-IHBjbV9pbnN0YW5jZS0+Y2FyZF9pbmZvLT54ZHJ2X2luZm87CiAJcmV0ID0gc2hfYnVmX2FsbG9j
-KHhkcnZfaW5mby0+eGJfZGV2LAogCQkmc3RyZWFtLT5zaF9idWYsIGJ1ZmZlcl9zaXplKTsKQEAg
-LTM5MCwyMiArNjIyLDE4IEBAIHN0YXRpYyBpbnQgc2Rydl9hbHNhX2h3X3BhcmFtcyhzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAlkZXZfZXJyKCZ4ZHJ2X2luZm8tPnhiX2Rl
-di0+ZGV2LAogCQkiRmFpbGVkIHRvIGFsbG9jYXRlIGJ1ZmZlcnMgZm9yIHN0cmVhbSBpZHggJWRc
-biIsCiAJCXN0cmVhbS0+dW5pcXVlX2lkKTsKKwlzZHJ2X2JlX3N0cmVhbV9mcmVlKHN0cmVhbSk7
-CiAJcmV0dXJuIHJldDsKIH0KIAogc3RhdGljIGludCBzZHJ2X2Fsc2FfaHdfZnJlZShzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIHsKLQlzdHJ1Y3Qgc2Rldl9wY21faW5zdGFu
-Y2VfaW5mbyAqcGNtX2luc3RhbmNlID0KLQkJc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJl
-YW0pOwogCXN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5mbyAqc3RyZWFtID0gc2Rydl9zdHJlYW1f
-Z2V0KHN1YnN0cmVhbSk7Ci0Jc3RydWN0IHhkcnZfaW5mbyAqeGRydl9pbmZvOwotCXVuc2lnbmVk
-IGxvbmcgZmxhZ3M7CisJaW50IHJldDsKIAotCXhkcnZfaW5mbyA9IHBjbV9pbnN0YW5jZS0+Y2Fy
-ZF9pbmZvLT54ZHJ2X2luZm87Ci0Jc3Bpbl9sb2NrX2lycXNhdmUoJnhkcnZfaW5mby0+aW9fbG9j
-aywgZmxhZ3MpOwotCXNoX2J1Zl9mcmVlKCZzdHJlYW0tPnNoX2J1Zik7Ci0Jc3Bpbl91bmxvY2tf
-aXJxcmVzdG9yZSgmeGRydl9pbmZvLT5pb19sb2NrLCBmbGFncyk7Ci0JcmV0dXJuIDA7CisJcmV0
-ID0gc2Rydl9iZV9zdHJlYW1fY2xvc2Uoc3Vic3RyZWFtLCBzdHJlYW0pOworCXNkcnZfYmVfc3Ry
-ZWFtX2ZyZWUoc3RyZWFtKTsKKwlyZXR1cm4gcmV0OwogfQogCiBzdGF0aWMgaW50IHNkcnZfYWxz
-YV9wcmVwYXJlKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQpAQCAtNDEzLDgg
-KzY0MSwxMiBAQCBzdGF0aWMgaW50IHNkcnZfYWxzYV9wcmVwYXJlKHN0cnVjdCBzbmRfcGNtX3N1
-YnN0cmVhbSAqc3Vic3RyZWFtKQogCXN0cnVjdCBzZGV2X3BjbV9zdHJlYW1faW5mbyAqc3RyZWFt
-ID0gc2Rydl9zdHJlYW1fZ2V0KHN1YnN0cmVhbSk7CiAJaW50IHJldCA9IDA7CiAKLQlpZiAoIXN0
-cmVhbS0+aXNfb3BlbikKKwlpZiAoIXN0cmVhbS0+aXNfb3BlbikgeworCQlyZXQgPSBzZHJ2X2Jl
-X3N0cmVhbV9vcGVuKHN1YnN0cmVhbSwgc3RyZWFtKTsKKwkJaWYgKHJldCA8IDApCisJCQlyZXR1
-cm4gcmV0OwogCQlyZXQgPSBzZHJ2X2Fsc2FfdGltZXJfcHJlcGFyZShzdWJzdHJlYW0pOworCX0K
-IAlyZXR1cm4gcmV0OwogfQogCkBAIC00NDYsNyArNjc4LDI4IEBAIHN0YXRpYyBpbmxpbmUgc25k
-X3BjbV91ZnJhbWVzX3Qgc2Rydl9hbHNhX3BvaW50ZXIoCiBzdGF0aWMgaW50IHNkcnZfYWxzYV9w
-bGF5YmFja19kb193cml0ZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAl1
-bnNpZ25lZCBsb25nIHBvcywgdW5zaWduZWQgbG9uZyBjb3VudCkKIHsKLQlyZXR1cm4gMDsKKwlz
-dHJ1Y3Qgc2Rldl9wY21fc3RyZWFtX2luZm8gKnN0cmVhbSA9IHNkcnZfc3RyZWFtX2dldChzdWJz
-dHJlYW0pOworCXN0cnVjdCBzZGV2X3BjbV9pbnN0YW5jZV9pbmZvICpwY21faW5zdGFuY2UgPQor
-CQlzbmRfcGNtX3N1YnN0cmVhbV9jaGlwKHN1YnN0cmVhbSk7CisJc3RydWN0IHhkcnZfaW5mbyAq
-eGRydl9pbmZvOworCXN0cnVjdCB4ZW5zbmRfcmVxICpyZXE7CisJdW5zaWduZWQgbG9uZyBmbGFn
-czsKKwlpbnQgcmV0OworCisJeGRydl9pbmZvID0gcGNtX2luc3RhbmNlLT5jYXJkX2luZm8tPnhk
-cnZfaW5mbzsKKworCXNwaW5fbG9ja19pcnFzYXZlKCZ4ZHJ2X2luZm8tPmlvX2xvY2ssIGZsYWdz
-KTsKKwlyZXEgPSBzZHJ2X2JlX3N0cmVhbV9wcmVwYXJlX3JlcShzdHJlYW0sIFhFTlNORF9PUF9X
-UklURSk7CisJcmVxLT5vcC5ydy5sZW5ndGggPSBjb3VudDsKKwlyZXEtPm9wLnJ3Lm9mZnNldCA9
-IHBvczsKKworCXJldCA9IHNkcnZfYmVfc3RyZWFtX2RvX2lvKHN0cmVhbS0+ZXZ0X2NobmwpOwor
-CXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnhkcnZfaW5mby0+aW9fbG9jaywgZmxhZ3MpOworCisJ
-aWYgKHJldCA8IDApCisJCXJldHVybiByZXQ7CisKKwlyZXR1cm4gc2Rydl9iZV9zdHJlYW1fd2Fp
-dF9pbyhzdHJlYW0tPmV2dF9jaG5sKTsKIH0KIAogc3RhdGljIGludCBzZHJ2X2Fsc2FfcGxheWJh
-Y2tfY29weV91c2VyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLApAQCAtNDc5
-LDcgKzczMiwyOCBAQCBzdGF0aWMgaW50IHNkcnZfYWxzYV9wbGF5YmFja19jb3B5X2tlcm5lbChz
-dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIHN0YXRpYyBpbnQgc2Rydl9hbHNh
-X3BsYXliYWNrX2RvX3JlYWQoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJ
-dW5zaWduZWQgbG9uZyBwb3MsIHVuc2lnbmVkIGxvbmcgY291bnQpCiB7Ci0JcmV0dXJuIDA7CisJ
-c3RydWN0IHNkZXZfcGNtX3N0cmVhbV9pbmZvICpzdHJlYW0gPSBzZHJ2X3N0cmVhbV9nZXQoc3Vi
-c3RyZWFtKTsKKwlzdHJ1Y3Qgc2Rldl9wY21faW5zdGFuY2VfaW5mbyAqcGNtX2luc3RhbmNlID0K
-KwkJc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJlYW0pOworCXN0cnVjdCB4ZHJ2X2luZm8g
-KnhkcnZfaW5mbzsKKwlzdHJ1Y3QgeGVuc25kX3JlcSAqcmVxOworCXVuc2lnbmVkIGxvbmcgZmxh
-Z3M7CisJaW50IHJldDsKKworCXhkcnZfaW5mbyA9IHBjbV9pbnN0YW5jZS0+Y2FyZF9pbmZvLT54
-ZHJ2X2luZm87CisKKwlzcGluX2xvY2tfaXJxc2F2ZSgmeGRydl9pbmZvLT5pb19sb2NrLCBmbGFn
-cyk7CisJcmVxID0gc2Rydl9iZV9zdHJlYW1fcHJlcGFyZV9yZXEoc3RyZWFtLCBYRU5TTkRfT1Bf
-UkVBRCk7CisJcmVxLT5vcC5ydy5sZW5ndGggPSBjb3VudDsKKwlyZXEtPm9wLnJ3Lm9mZnNldCA9
-IHBvczsKKworCXJldCA9IHNkcnZfYmVfc3RyZWFtX2RvX2lvKHN0cmVhbS0+ZXZ0X2NobmwpOwor
-CXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJnhkcnZfaW5mby0+aW9fbG9jaywgZmxhZ3MpOworCisJ
-aWYgKHJldCA8IDApCisJCXJldHVybiByZXQ7CisKKwlyZXR1cm4gc2Rydl9iZV9zdHJlYW1fd2Fp
-dF9pbyhzdHJlYW0tPmV2dF9jaG5sKTsKIH0KIAogc3RhdGljIGludCBzZHJ2X2Fsc2FfY2FwdHVy
-ZV9jb3B5X3VzZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCi0tIAoyLjcu
-NAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClhlbi1k
-ZXZlbCBtYWlsaW5nIGxpc3QKWGVuLWRldmVsQGxpc3RzLnhlbi5vcmcKaHR0cHM6Ly9saXN0cy54
-ZW4ub3JnL3hlbi1kZXZlbAo=
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+
+Implement ALSA driver operations including:
+- start/stop period interrupt emulation
+- manage frontend/backend shraed buffers
+- manage Xen bus event channel state
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ sound/drivers/xen-front.c | 175 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 163 insertions(+), 12 deletions(-)
+
+diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
+index 507c5eb343c8..7275e9cb38c0 100644
+--- a/sound/drivers/xen-front.c
++++ b/sound/drivers/xen-front.c
+@@ -151,6 +151,11 @@ struct xdrv_info {
+ 	struct sdev_card_plat_data cfg_plat_data;
+ };
+ 
++static inline void sh_buf_clear(struct sh_buf_info *buf);
++static void sh_buf_free(struct sh_buf_info *buf);
++static int sh_buf_alloc(struct xenbus_device *xb_dev, struct sh_buf_info *buf,
++	unsigned int buffer_size);
++
+ static struct sdev_pcm_stream_info *sdrv_stream_get(
+ 	struct snd_pcm_substream *substream)
+ {
+@@ -311,71 +316,217 @@ static void sdrv_copy_pcm_hw(struct snd_pcm_hardware *dst,
+ 
+ static int sdrv_alsa_open(struct snd_pcm_substream *substream)
+ {
+-	return 0;
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct xdrv_info *xdrv_info;
++	unsigned long flags;
++	int ret;
++
++	sdrv_copy_pcm_hw(&runtime->hw, &stream->pcm_hw, &pcm_instance->pcm_hw);
++	runtime->hw.info &= ~(SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_DOUBLE |
++		SNDRV_PCM_INFO_BATCH |
++		SNDRV_PCM_INFO_NONINTERLEAVED |
++		SNDRV_PCM_INFO_RESUME |
++		SNDRV_PCM_INFO_PAUSE);
++	runtime->hw.info |= SNDRV_PCM_INFO_INTERLEAVED;
++
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++
++	ret = sdrv_alsa_timer_create(substream);
++
++	spin_lock_irqsave(&xdrv_info->io_lock, flags);
++	sh_buf_clear(&stream->sh_buf);
++	stream->evt_chnl = &xdrv_info->evt_chnls[stream->unique_id];
++	if (ret < 0)
++		stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
++	else
++		stream->evt_chnl->state = EVTCHNL_STATE_CONNECTED;
++	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
++	return ret;
+ }
+ 
+ static int sdrv_alsa_close(struct snd_pcm_substream *substream)
+ {
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct xdrv_info *xdrv_info;
++	unsigned long flags;
++
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++
++	sdrv_alsa_timer_stop(substream);
++
++	spin_lock_irqsave(&xdrv_info->io_lock, flags);
++	stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
++	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct xdrv_info *xdrv_info;
++	unsigned int buffer_size;
++	int ret;
++
++	buffer_size = params_buffer_bytes(params);
++	sh_buf_clear(&stream->sh_buf);
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++	ret = sh_buf_alloc(xdrv_info->xb_dev,
++		&stream->sh_buf, buffer_size);
++	if (ret < 0)
++		goto fail;
+ 	return 0;
++
++fail:
++	dev_err(&xdrv_info->xb_dev->dev,
++		"Failed to allocate buffers for stream idx %d\n",
++		stream->unique_id);
++	return ret;
+ }
+ 
+ static int sdrv_alsa_hw_free(struct snd_pcm_substream *substream)
+ {
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	struct xdrv_info *xdrv_info;
++	unsigned long flags;
++
++	xdrv_info = pcm_instance->card_info->xdrv_info;
++	spin_lock_irqsave(&xdrv_info->io_lock, flags);
++	sh_buf_free(&stream->sh_buf);
++	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_prepare(struct snd_pcm_substream *substream)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	int ret = 0;
++
++	if (!stream->is_open)
++		ret = sdrv_alsa_timer_prepare(substream);
++	return ret;
+ }
+ 
+ static int sdrv_alsa_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		/* fall through */
++	case SNDRV_PCM_TRIGGER_RESUME:
++		return sdrv_alsa_timer_start(substream);
++
++	case SNDRV_PCM_TRIGGER_STOP:
++		/* fall through */
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		return sdrv_alsa_timer_stop(substream);
++
++	default:
++		break;
++	}
+ 	return 0;
+ }
+ 
+ static inline snd_pcm_uframes_t sdrv_alsa_pointer(
+ 	struct snd_pcm_substream *substream)
+ {
++	return sdrv_alsa_timer_pointer(substream);
++}
++
++static int sdrv_alsa_playback_do_write(struct snd_pcm_substream *substream,
++	unsigned long pos, unsigned long count)
++{
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_playback_copy_user(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void __user *buf,
+-		unsigned long bytes)
++		int channel, unsigned long pos, void __user *src,
++		unsigned long count)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	if (copy_from_user(stream->sh_buf.vbuffer + pos, src, count))
++		return -EFAULT;
++
++	return sdrv_alsa_playback_do_write(substream, pos, count);
+ }
+ 
+ static int sdrv_alsa_playback_copy_kernel(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void *buf, unsigned long bytes)
++		int channel, unsigned long pos, void *src, unsigned long count)
++{
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	memcpy(stream->sh_buf.vbuffer + pos, src, count);
++	return sdrv_alsa_playback_do_write(substream, pos, count);
++}
++
++static int sdrv_alsa_playback_do_read(struct snd_pcm_substream *substream,
++	unsigned long pos, unsigned long count)
+ {
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_capture_copy_user(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void __user *buf,
+-		unsigned long bytes)
++		int channel, unsigned long pos, void __user *dst,
++		unsigned long count)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	int ret;
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	ret = sdrv_alsa_playback_do_read(substream, pos, count);
++	if (ret < 0)
++		return ret;
++
++	return copy_to_user(dst, stream->sh_buf.vbuffer + pos, count) ?
++		-EFAULT : 0;
+ }
+ 
+ static int sdrv_alsa_capture_copy_kernel(struct snd_pcm_substream *substream,
+-		int channel, unsigned long pos, void *buf, unsigned long bytes)
++		int channel, unsigned long pos, void *dst, unsigned long count)
+ {
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++	int ret;
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	ret = sdrv_alsa_playback_do_read(substream, pos, count);
++	if (ret < 0)
++		return ret;
++
++	memcpy(dst, stream->sh_buf.vbuffer + pos, count);
+ 	return 0;
+ }
+ 
+ static int sdrv_alsa_playback_fill_silence(struct snd_pcm_substream *substream,
+-	int channel, unsigned long pos, unsigned long bytes)
++	int channel, unsigned long pos, unsigned long count)
+ {
+-	return 0;
++	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
++
++	if (unlikely(pos + count > stream->sh_buf.vbuffer_sz))
++		return -EINVAL;
++
++	memset(stream->sh_buf.vbuffer + pos, 0, count);
++	return sdrv_alsa_playback_do_write(substream, pos, count);
+ }
+ 
+ #define MAX_XEN_BUFFER_SIZE	(64 * 1024)
+-- 
+2.7.4
