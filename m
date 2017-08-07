@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: make snd_soc_codec_driver structures as const" to the asoc tree
-Date: Mon, 07 Aug 2017 12:52:00 +0100
-Message-ID: <E1degZk-0006mz-U3@debutante>
-References: <1501776020-3328-3-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1501776020-3328-3-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lars@metafoo.de, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, support.opensource@diasemi.com, mr.swami.reddy@ti.com, vishwas.a.deshpande@ti.com, peda@axentia.se, bardliao@realtek.com, baohua@kernel.org, peter.ujfalusi@ti.com, patches@opensource.cirrus.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5514: reset dma_offset at hw_params"
+	to the asoc tree
+Date: Mon, 07 Aug 2017 12:52:04 +0100
+Message-ID: <E1degZo-0006o6-19@debutante>
+References: <1502102372-27635-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF1632671C3
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 13:52:13 +0200 (CEST)
+In-Reply-To: <1502102372-27635-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, Hsin-Yu Chao <hychao@chromium.org>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sunxi: make snd_soc_codec_driver structures as const
+   ASoC: rt5514: reset dma_offset at hw_params
 
 has been applied to the asoc tree at
 
@@ -37,67 +52,41 @@ to this mail.
 Thanks,
 Mark
 
->From 92ff5d085ecc8255600551055262bf98a8f3f1d0 Mon Sep 17 00:00:00 2001
-From: Bhumika Goyal <bhumirks@gmail.com>
-Date: Thu, 3 Aug 2017 21:30:20 +0530
-Subject: [PATCH] ASoC: sunxi: make snd_soc_codec_driver structures as const
+>From b56bff43a965ffe03b4a994fd1a102059d272807 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Mon, 7 Aug 2017 18:39:32 +0800
+Subject: [PATCH] ASoC: rt5514: reset dma_offset at hw_params
 
-Declare snd_soc_codec_driver structures as const as they are either
-passed as an argument to the function snd_soc_register_codec or stored as
-reference in field codec of type sun4i_codec_quirks. Both the fucntion
-argument and the codec field are of type const, so declare the
-structures with this property as const.
+dma_offset needs reset every time otherwise for consecutive PCM
+open the last dma_offset value will cause incorrect pointer position
+be reported to user space.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 6 +++---
- sound/soc/sunxi/sun8i-codec.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 73d054f466c2..c668b8b08b38 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -762,7 +762,7 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 	{ "Mic1", NULL, "VMIC" },
- };
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 6f513cc4c56c..640193d845be 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -151,7 +151,6 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
+ 	u8 buf[8];
  
--static struct snd_soc_codec_driver sun4i_codec_codec = {
-+static const struct snd_soc_codec_driver sun4i_codec_codec = {
- 	.component_driver = {
- 		.controls		= sun4i_codec_controls,
- 		.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
-@@ -1068,7 +1068,7 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
- 	{ "Right ADC", NULL, "Right ADC Mixer" },
- };
+ 	rt5514_dsp->get_size = 0;
+-	rt5514_dsp->dma_offset = 0;
  
--static struct snd_soc_codec_driver sun6i_codec_codec = {
-+static const struct snd_soc_codec_driver sun6i_codec_codec = {
- 	.component_driver = {
- 		.controls		= sun6i_codec_codec_widgets,
- 		.num_controls		= ARRAY_SIZE(sun6i_codec_codec_widgets),
-@@ -1096,7 +1096,7 @@ static const struct snd_soc_dapm_widget sun8i_a23_codec_codec_widgets[] = {
+ 	/**
+ 	 * The address area x1800XXXX is the register address, and it cannot
+@@ -205,6 +204,7 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+ 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 			params_buffer_bytes(hw_params));
+ 	rt5514_dsp->substream = substream;
++	rt5514_dsp->dma_offset = 0;
+ 	mutex_unlock(&rt5514_dsp->dma_lock);
  
- };
- 
--static struct snd_soc_codec_driver sun8i_a23_codec_codec = {
-+static const struct snd_soc_codec_driver sun8i_a23_codec_codec = {
- 	.component_driver = {
- 		.controls		= sun8i_a23_codec_codec_controls,
- 		.num_controls		= ARRAY_SIZE(sun8i_a23_codec_codec_controls),
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 253ae0b5a4d4..abfb710df7cb 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -360,7 +360,7 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
- 	.ops = &sun8i_codec_dai_ops,
- };
- 
--static struct snd_soc_codec_driver sun8i_soc_codec = {
-+static const struct snd_soc_codec_driver sun8i_soc_codec = {
- 	.component_driver = {
- 		.dapm_widgets		= sun8i_codec_dapm_widgets,
- 		.num_dapm_widgets	= ARRAY_SIZE(sun8i_codec_dapm_widgets),
+ 	return ret;
 -- 
 2.13.3
