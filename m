@@ -1,78 +1,65 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/11] ALSA: vsnd: Add Xen para-virtualized
- frontend driver
-Date: Mon, 7 Aug 2017 20:28:43 +0900
-Message-ID: <df5a5f1a-67df-9e8b-3b43-fbe77c212eeb@sakamocchi.jp>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 08/11] ALSA: vsnd: Add timer for period
+ interrupt emulation
+Date: Mon, 7 Aug 2017 14:30:21 +0300
+Message-ID: <f2f54b55-3145-2533-c74a-9c3ea803739e@gmail.com>
 References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
+ <1502091796-14413-9-git-send-email-andr2000@gmail.com>
+ <ba0dd78b-8853-5cf9-197f-bed3b9f4bdb8@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id CA8712669F6
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 13:28:49 +0200 (CEST)
-In-Reply-To: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ba0dd78b-8853-5cf9-197f-bed3b9f4bdb8@ladisch.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>, alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: tiwai@suse.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi, Clemens!
 
-On Aug 7 2017 16:43, Oleksandr Andrushchenko wrote:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> 
-> This patch series adds support for Xen [1] para-virtualized
-> sound frontend driver. It implements the protocol from
-> include/xen/interface/io/sndif.h with the following limitations:
-> - mute/unmute is not supported
-> - get/set volume is not supported
-> Volume control is not supported for the reason that most of the
-> use-cases (at the moment) are based on scenarious where
-> unprivileged OS (e.g. Android, AGL etc) use software mixers.
-> 
-> Both capture and playback are supported.
-> 
-> Thank you,
-> Oleksandr
-> 
-> [1] https://xenproject.org/
-> 
-> Oleksandr Andrushchenko (11):
->    ALSA: vsnd: Implement driver's probe/remove
->    ALSA: vsnd: Implement Xen bus state handling
->    ALSA: vsnd: Read sound driver configuration from Xen store
->    ALSA: vsnd: Implement Xen event channel handling
->    ALSA: vsnd: Implement handling of shared buffers
->    ALSA: vsnd: Introduce ALSA virtual sound driver
->    ALSA: vsnd: Initialize virtul sound card
->    ALSA: vsnd: Add timer for period interrupt emulation
->    ALSA: vsnd: Implement ALSA PCM operations
->    ALSA: vsnd: Implement communication with backend
->    ALSA: vsnd: Introduce Kconfig option to enable Xen PV sound
-> 
->   sound/drivers/Kconfig     |   12 +
->   sound/drivers/Makefile    |    2 +
->   sound/drivers/xen-front.c | 2029 +++++++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 2043 insertions(+)
+On 08/07/2017 01:27 PM, Clemens Ladisch wrote:
+> Oleksandr Andrushchenko wrote:
+>> Front sound driver has no real interrupts, so
+>> playback/capture period passed interrupt needs to be emulated:
+>> this is done via timer. Add required timer operations,
+>> this is based on sound/drivers/dummy.c.
+> A 'real' sound card use the interrupt to synchronize the stream position
+> between the hardware and the driver.  The hardware triggers an interrupt
+> immediately after a period has been completely read (for playback) from
+> the ring buffer by the DMA unit; this tells the driver that it is now
+> again allowed to write to that part of the buffer.
+Yes, I know that, thank you
+> The dummy driver has no hardware that accesses the buffer, so the period
+> interrupts are not synchronized to anything.
+Exactly
+>    This is not a suitable
+> implementation when the samples are actually used.
 
-As a quick glance of your first patch, it's apparently based on your 
-local working branch. I'd like you to post patchset again, which were 
-rebased on current upstream[1], so that code reviewers can do their work.
+> If you issue interrupts based on the system timer, the position reported
+> by the .pointer callback and the position where the hardware (backend)
+> actually accesses the buffer will diverge, which will eventually corrupt
+> data.
+Makes sense, but in my case the buffer from the frontend
+is copied into backend's memory, so they don't share the
+same buffer as real HW does. But it is still possible that
+the new portion of data may arrive and backend will overwrite
+the memory which hasn't been played yet because pointers are not
+synchronized
+> You have to implement period interrupts (and the .pointer callback)
+> based on when the samples are actually moved from/to the backend.
+Do you think I can implement this in a slightly different way,
+without a timer at all, by updating
+substream->runtime->hw_ptr_base explicitly in the frontend driver?
+Like it was implemented [1], see virtualcard_pcm_pointer
+(unfortunately, that driver didn't make it to the kernel).
+So, that way, whenever I get an ack/response from the backend that it has
+successfully played the buffer I can update hw_ptr_base at the frontend
+and thus be always in sync to the backend.
+> Regards,
+> Clemens
+Thank you,
+Oleksandr
 
-[1] 'for-next' branch in Iwai-san's tree
-https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=for-next
-
-
-Regards
-
-Takashi Sakamoto
+[1] http://marc.info/?l=xen-devel&m=142185395013970&w=4
