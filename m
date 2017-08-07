@@ -1,14 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] SPI: fix building SPI_PXA on MMP
-Date: Mon,  7 Aug 2017 17:42:55 +0200
-Message-ID: <20170807154409.205269-1-arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: soc-core: remove duplicate mutex_unlock
+	from snd_soc_unregister_component()" to the asoc tree
+Date: Mon, 07 Aug 2017 16:53:02 +0100
+Message-ID: <E1dekL0-0005S3-TW@debutante>
+References: <877eygjfx2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 0993A2672A8
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:44:21 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BF5C2672A8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:53:12 +0200 (CEST)
+In-Reply-To: <877eygjfx2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,57 +22,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mika Westeberg <mika.westerberg@linux.intel.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-When the audio driver selects CONFIG_PXA_SSP on ARCH_MMP as a
-loadable module, and the PXA SPI driver is built-in, we get
-a link error in the SPI driver:
+The patch
 
-drivers/spi/spi-pxa2xx.o: In function `pxa2xx_spi_remove':
-spi-pxa2xx.c:(.text+0x5f0): undefined reference to `pxa_ssp_free'
-drivers/spi/spi-pxa2xx.o: In function `pxa2xx_spi_probe':
-spi-pxa2xx.c:(.text+0xeac): undefined reference to `pxa_ssp_request'
-spi-pxa2xx.c:(.text+0x1468): undefined reference to `pxa_ssp_free'
-spi-pxa2xx.c:(.text+0x15bc): undefined reference to `pxa_ssp_free'
+   ASoC: soc-core: remove duplicate mutex_unlock from snd_soc_unregister_component()
 
-The problem is that the PXA SPI driver only uses 'select SSP'
-specifically when building it for PXA, but we can also build it
-for PCI, which is meant for Intel x86 SoCs that use the same SPI
-block. When the sound driver forces the SSP to be a loadable
-module, the IS_ENABLED() check in include/linux/pxa2xx_ssp.h
-triggers but the spi driver can't reference the exported symbols.
+has been applied to the asoc tree at
 
-I had a different approach before, making the PCI case depend
-on X86, which fixed the problem by avoiding the MMP case.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This goes a different route, making the driver select PXA_SSP
-also on MMP, which has an SSP that none of the boards in mainline
-Linux use for SPI. There is no harm in always enabling the build
-on MMP (PCI or not PCI), so I do that too, to document that this
-hardware is actually available on MMP.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Link: https://patchwork.kernel.org/patch/8879921/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 21a035287e28ec225fe7dfd1fffc509efd26a5db Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 7 Aug 2017 02:06:40 +0000
+Subject: [PATCH] ASoC: soc-core: remove duplicate mutex_unlock from
+ snd_soc_unregister_component()
+
+Current snd_soc_unregister_component() is using multiple mutex_unlock()
+for found/non-found cases. But it is unreadable and confusable code.
+This patch tidyup current code to be readable.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 9b31351fe429..f9f9b0940746 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -518,8 +518,8 @@ config SPI_PPC4xx
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b21488972198..3bb8c63564cf 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3328,21 +3328,25 @@ EXPORT_SYMBOL_GPL(snd_soc_register_component);
+ void snd_soc_unregister_component(struct device *dev)
+ {
+ 	struct snd_soc_component *component;
++	int found = 0;
  
- config SPI_PXA2XX
- 	tristate "PXA2xx SSP SPI master"
--	depends on (ARCH_PXA || PCI || ACPI)
--	select PXA_SSP if ARCH_PXA
-+	depends on (ARCH_PXA || ARCH_MMP || PCI || ACPI)
-+	select PXA_SSP if ARCH_PXA || ARCH_MMP
- 	help
- 	  This enables using a PXA2xx or Sodaville SSP port as a SPI master
- 	  controller. The driver can be configured to use any SSP port and
+ 	mutex_lock(&client_mutex);
+ 	list_for_each_entry(component, &component_list, list) {
+-		if (dev == component->dev && component->registered_as_component)
+-			goto found;
++		if (dev != component->dev ||
++		    !component->registered_as_component)
++			continue;
++
++		snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
++		snd_soc_component_del_unlocked(component);
++		found = 1;
++		break;
+ 	}
+ 	mutex_unlock(&client_mutex);
+-	return;
+ 
+-found:
+-	snd_soc_tplg_component_remove(component, SND_SOC_TPLG_INDEX_ALL);
+-	snd_soc_component_del_unlocked(component);
+-	mutex_unlock(&client_mutex);
+-	snd_soc_component_cleanup(component);
+-	kfree(component);
++	if (found) {
++		snd_soc_component_cleanup(component);
++		kfree(component);
++	}
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
+ 
 -- 
-2.9.0
+2.13.3
