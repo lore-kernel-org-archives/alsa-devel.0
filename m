@@ -1,20 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 08/11] ALSA: vsnd: Add timer for period
- interrupt emulation
-Date: Mon, 7 Aug 2017 12:27:01 +0200
-Message-ID: <ba0dd78b-8853-5cf9-197f-bed3b9f4bdb8@ladisch.de>
-References: <1502091796-14413-1-git-send-email-andr2000@gmail.com>
- <1502091796-14413-9-git-send-email-andr2000@gmail.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5514: reset dma_offset at hw_params
+Date: Mon, 7 Aug 2017 18:39:32 +0800
+Message-ID: <1502102372-27635-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 150F12669F6
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 12:27:07 +0200 (CEST)
-In-Reply-To: <1502091796-14413-9-git-send-email-andr2000@gmail.com>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id C66DD2669F6
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 12:39:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +18,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, xen-devel@lists.xen.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, Hsin-Yu Chao <hychao@chromium.org>, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Oleksandr Andrushchenko wrote:
-> Front sound driver has no real interrupts, so
-> playback/capture period passed interrupt needs to be emulated:
-> this is done via timer. Add required timer operations,
-> this is based on sound/drivers/dummy.c.
+dma_offset needs reset every time otherwise for consecutive PCM
+open the last dma_offset value will cause incorrect pointer position
+be reported to user space.
 
-A 'real' sound card use the interrupt to synchronize the stream position
-between the hardware and the driver.  The hardware triggers an interrupt
-immediately after a period has been completely read (for playback) from
-the ring buffer by the DMA unit; this tells the driver that it is now
-again allowed to write to that part of the buffer.
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The dummy driver has no hardware that accesses the buffer, so the period
-interrupts are not synchronized to anything.  This is not a suitable
-implementation when the samples are actually used.
-
-If you issue interrupts based on the system timer, the position reported
-by the .pointer callback and the position where the hardware (backend)
-actually accesses the buffer will diverge, which will eventually corrupt
-data.
-
-You have to implement period interrupts (and the .pointer callback)
-based on when the samples are actually moved from/to the backend.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 6f513cc..640193d 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -151,7 +151,6 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
+ 	u8 buf[8];
+ 
+ 	rt5514_dsp->get_size = 0;
+-	rt5514_dsp->dma_offset = 0;
+ 
+ 	/**
+ 	 * The address area x1800XXXX is the register address, and it cannot
+@@ -205,6 +204,7 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
+ 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 			params_buffer_bytes(hw_params));
+ 	rt5514_dsp->substream = substream;
++	rt5514_dsp->dma_offset = 0;
+ 	mutex_unlock(&rt5514_dsp->dma_lock);
+ 
+ 	return ret;
+-- 
+2.7.4
