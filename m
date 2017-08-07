@@ -1,7 +1,7 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND 11/11] ALSA: vsnd: Introduce Kconfig option to enable Xen PV sound
-Date: Mon,  7 Aug 2017 14:50:45 +0300
-Message-ID: <1502106645-6731-12-git-send-email-andr2000@gmail.com>
+Subject: [PATCH RESEND 07/11] ALSA: vsnd: Initialize virtul sound card
+Date: Mon,  7 Aug 2017 14:50:41 +0300
+Message-ID: <1502106645-6731-8-git-send-email-andr2000@gmail.com>
 References: <1502106645-6731-1-git-send-email-andr2000@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502106645-6731-1-git-send-email-andr2000@gmail.com>
@@ -12,54 +12,268 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Introduce Kconfig option to enable Xen para-virtualized sound
-frontend driver. Also add sound frontend to the Makefile.
+Initialize virtual sound card with streams according to the
+Xen store configuration.
+Add stubs for stream PCM operations.
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- sound/drivers/Kconfig  | 12 ++++++++++++
- sound/drivers/Makefile |  2 ++
- 2 files changed, 14 insertions(+)
+ sound/drivers/xen-front.c | 232 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 232 insertions(+)
 
-diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
-index 7144cc36e8ae..6b8fa6110ca3 100644
---- a/sound/drivers/Kconfig
-+++ b/sound/drivers/Kconfig
-@@ -235,4 +235,16 @@ config SND_AC97_POWER_SAVE_DEFAULT
+diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
+index f3e3f64f0aa6..9f31e6832086 100644
+--- a/sound/drivers/xen-front.c
++++ b/sound/drivers/xen-front.c
+@@ -134,6 +134,129 @@ struct xdrv_info {
+ 	struct sdev_card_plat_data cfg_plat_data;
+ };
  
- 	  See SND_AC97_POWER_SAVE for more details.
- 
-+config SND_XEN_FRONTEND
-+	tristate "Xen virtual sound front-end driver"
-+	depends on SND_PCM && XEN
-+	select XEN_XENBUS_FRONTEND
-+	default n
-+	help
-+	  This driver implements a front-end for the Xen
-+	  para-virtualized sound.
++static struct sdev_pcm_stream_info *sdrv_stream_get(
++	struct snd_pcm_substream *substream)
++{
++	struct sdev_pcm_instance_info *pcm_instance =
++		snd_pcm_substream_chip(substream);
++	struct sdev_pcm_stream_info *stream;
 +
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called snd-xen-front.
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		stream = &pcm_instance->streams_pb[substream->number];
++	else
++		stream = &pcm_instance->streams_cap[substream->number];
++	return stream;
++}
 +
- endif	# SND_DRIVERS
-diff --git a/sound/drivers/Makefile b/sound/drivers/Makefile
-index 1a8440c8b138..70ed920a030f 100644
---- a/sound/drivers/Makefile
-+++ b/sound/drivers/Makefile
-@@ -11,6 +11,7 @@ snd-portman2x4-objs := portman2x4.o
- snd-serial-u16550-objs := serial-u16550.o
- snd-virmidi-objs := virmidi.o
- snd-ml403-ac97cr-objs := ml403-ac97cr.o pcm-indirect2.o
-+snd-xen-front-objs := xen-front.o
++static void sdrv_copy_pcm_hw(struct snd_pcm_hardware *dst,
++	struct snd_pcm_hardware *src,
++	struct snd_pcm_hardware *ref_pcm_hw)
++{
++	*dst = *ref_pcm_hw;
++
++	if (src->formats)
++		dst->formats = src->formats;
++	if (src->buffer_bytes_max)
++		dst->buffer_bytes_max =
++			src->buffer_bytes_max;
++	if (src->period_bytes_min)
++		dst->period_bytes_min =
++			src->period_bytes_min;
++	if (src->period_bytes_max)
++		dst->period_bytes_max =
++			src->period_bytes_max;
++	if (src->periods_min)
++		dst->periods_min = src->periods_min;
++	if (src->periods_max)
++		dst->periods_max = src->periods_max;
++	if (src->rates)
++		dst->rates = src->rates;
++	if (src->rate_min)
++		dst->rate_min = src->rate_min;
++	if (src->rate_max)
++		dst->rate_max = src->rate_max;
++	if (src->channels_min)
++		dst->channels_min = src->channels_min;
++	if (src->channels_max)
++		dst->channels_max = src->channels_max;
++	if (src->buffer_bytes_max) {
++		dst->buffer_bytes_max = src->buffer_bytes_max;
++		dst->period_bytes_max = src->buffer_bytes_max /
++			src->periods_max;
++		dst->periods_max = dst->buffer_bytes_max /
++			dst->period_bytes_max;
++	}
++}
++
++static int sdrv_alsa_open(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int sdrv_alsa_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int sdrv_alsa_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	return 0;
++}
++
++static int sdrv_alsa_hw_free(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int sdrv_alsa_prepare(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int sdrv_alsa_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	return 0;
++}
++
++static inline snd_pcm_uframes_t sdrv_alsa_pointer(
++	struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static int sdrv_alsa_playback_copy_user(struct snd_pcm_substream *substream,
++		int channel, unsigned long pos, void __user *buf,
++		unsigned long bytes)
++{
++	return 0;
++}
++
++static int sdrv_alsa_playback_copy_kernel(struct snd_pcm_substream *substream,
++		int channel, unsigned long pos, void *buf, unsigned long bytes)
++{
++	return 0;
++}
++
++static int sdrv_alsa_capture_copy_user(struct snd_pcm_substream *substream,
++		int channel, unsigned long pos, void __user *buf,
++		unsigned long bytes)
++{
++	return 0;
++}
++
++static int sdrv_alsa_capture_copy_kernel(struct snd_pcm_substream *substream,
++		int channel, unsigned long pos, void *buf, unsigned long bytes)
++{
++	return 0;
++}
++
++static int sdrv_alsa_playback_fill_silence(struct snd_pcm_substream *substream,
++	int channel, unsigned long pos, unsigned long bytes)
++{
++	return 0;
++}
++
+ #define MAX_XEN_BUFFER_SIZE	(64 * 1024)
+ #define MAX_BUFFER_SIZE		MAX_XEN_BUFFER_SIZE
+ #define MIN_PERIOD_SIZE		64
+@@ -168,10 +291,119 @@ static struct snd_pcm_hardware sdrv_pcm_hw_default = {
+ 	.fifo_size = 0,
+ };
  
- # Toplevel Module Dependency
- obj-$(CONFIG_SND_DUMMY) += snd-dummy.o
-@@ -21,5 +22,6 @@ obj-$(CONFIG_SND_MTPAV) += snd-mtpav.o
- obj-$(CONFIG_SND_MTS64) += snd-mts64.o
- obj-$(CONFIG_SND_PORTMAN2X4) += snd-portman2x4.o
- obj-$(CONFIG_SND_ML403_AC97CR) += snd-ml403-ac97cr.o
-+obj-$(CONFIG_SND_XEN_FRONTEND) += snd-xen-front.o
++/*
++ * FIXME: The mmaped data transfer is asynchronous and there is no
++ * ack signal from user-space when it is done. This is the
++ * reason it is not implemented in the PV driver as we do need
++ * to know when the buffer can be transferred to the backend.
++ */
++
++static struct snd_pcm_ops sdrv_alsa_playback_ops = {
++	.open = sdrv_alsa_open,
++	.close = sdrv_alsa_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = sdrv_alsa_hw_params,
++	.hw_free = sdrv_alsa_hw_free,
++	.prepare = sdrv_alsa_prepare,
++	.trigger = sdrv_alsa_trigger,
++	.pointer = sdrv_alsa_pointer,
++	.copy_user = sdrv_alsa_playback_copy_user,
++	.copy_kernel = sdrv_alsa_playback_copy_kernel,
++	.fill_silence = sdrv_alsa_playback_fill_silence,
++};
++
++static struct snd_pcm_ops sdrv_alsa_capture_ops = {
++	.open = sdrv_alsa_open,
++	.close = sdrv_alsa_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = sdrv_alsa_hw_params,
++	.hw_free = sdrv_alsa_hw_free,
++	.prepare = sdrv_alsa_prepare,
++	.trigger = sdrv_alsa_trigger,
++	.pointer = sdrv_alsa_pointer,
++	.copy_user = sdrv_alsa_capture_copy_user,
++	.copy_kernel = sdrv_alsa_capture_copy_kernel,
++};
++
+ static int sdrv_new_pcm(struct sdev_card_info *card_info,
+ 	struct cfg_pcm_instance *instance_config,
+ 	struct sdev_pcm_instance_info *pcm_instance_info)
+ {
++	struct snd_pcm *pcm;
++	int ret, i;
++
++	dev_dbg(&card_info->xdrv_info->xb_dev->dev,
++		"New PCM device \"%s\" with id %d playback %d capture %d",
++		instance_config->name,
++		instance_config->device_id,
++		instance_config->num_streams_pb,
++		instance_config->num_streams_cap);
++
++	pcm_instance_info->card_info = card_info;
++
++	sdrv_copy_pcm_hw(&pcm_instance_info->pcm_hw,
++		&instance_config->pcm_hw, &card_info->pcm_hw);
++
++	if (instance_config->num_streams_pb) {
++		pcm_instance_info->streams_pb = devm_kcalloc(
++			&card_info->card->card_dev,
++			instance_config->num_streams_pb,
++			sizeof(struct sdev_pcm_stream_info),
++			GFP_KERNEL);
++		if (!pcm_instance_info->streams_pb)
++			return -ENOMEM;
++	}
++
++	if (instance_config->num_streams_cap) {
++		pcm_instance_info->streams_cap = devm_kcalloc(
++			&card_info->card->card_dev,
++			instance_config->num_streams_cap,
++			sizeof(struct sdev_pcm_stream_info),
++			GFP_KERNEL);
++		if (!pcm_instance_info->streams_cap)
++			return -ENOMEM;
++	}
++
++	pcm_instance_info->num_pcm_streams_pb =
++			instance_config->num_streams_pb;
++	pcm_instance_info->num_pcm_streams_cap =
++			instance_config->num_streams_cap;
++
++	for (i = 0; i < pcm_instance_info->num_pcm_streams_pb; i++) {
++		pcm_instance_info->streams_pb[i].pcm_hw =
++			instance_config->streams_pb[i].pcm_hw;
++		pcm_instance_info->streams_pb[i].unique_id =
++			instance_config->streams_pb[i].unique_id;
++	}
++
++	for (i = 0; i < pcm_instance_info->num_pcm_streams_cap; i++) {
++		pcm_instance_info->streams_cap[i].pcm_hw =
++			instance_config->streams_cap[i].pcm_hw;
++		pcm_instance_info->streams_cap[i].unique_id =
++			instance_config->streams_cap[i].unique_id;
++	}
++
++	ret = snd_pcm_new(card_info->card, instance_config->name,
++			instance_config->device_id,
++			instance_config->num_streams_pb,
++			instance_config->num_streams_cap,
++			&pcm);
++	if (ret < 0)
++		return ret;
++
++	pcm->private_data = pcm_instance_info;
++	pcm->info_flags = 0;
++	strncpy(pcm->name, "Virtual card PCM", sizeof(pcm->name));
++
++	if (instance_config->num_streams_pb)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++				&sdrv_alsa_playback_ops);
++
++	if (instance_config->num_streams_cap)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
++				&sdrv_alsa_capture_ops);
++
++	pcm_instance_info->pcm = pcm;
+ 	return 0;
+ }
  
- obj-$(CONFIG_SND) += opl3/ opl4/ mpu401/ vx/ pcsp/
 -- 
 2.7.4
