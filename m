@@ -1,14 +1,14 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5514: reset dma_offset at hw_params
-Date: Mon, 7 Aug 2017 18:39:32 +0800
-Message-ID: <1502102372-27635-1-git-send-email-oder_chiou@realtek.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: pxa: don't select SSP for COMPILE_TESTing
+Date: Mon,  7 Aug 2017 12:40:44 +0200
+Message-ID: <20170807104101.3540159-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id C66DD2669F6
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 12:39:41 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A5662669F6
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 12:41:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,39 +18,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, Hsin-Yu Chao <hychao@chromium.org>, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-dma_offset needs reset every time otherwise for consecutive PCM
-open the last dma_offset value will cause incorrect pointer position
-be reported to user space.
+When the audio driver selects CONFIG_PXA_SSP to be a loadable
+module on a platform other than PXA, and the PXA SPI driver
+is built-in, we get a link error in the SPI driver:
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+drivers/spi/spi-pxa2xx.o: In function `pxa2xx_spi_remove':
+spi-pxa2xx.c:(.text+0x5f0): undefined reference to `pxa_ssp_free'
+drivers/spi/spi-pxa2xx.o: In function `pxa2xx_spi_probe':
+spi-pxa2xx.c:(.text+0xeac): undefined reference to `pxa_ssp_request'
+spi-pxa2xx.c:(.text+0x1468): undefined reference to `pxa_ssp_free'
+spi-pxa2xx.c:(.text+0x15bc): undefined reference to `pxa_ssp_free'
+
+Fixes: 73d7ee2e831f ("ASoC: pxa: add COMPILE_TEST on SND_PXA2XX_SOC")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/codecs/rt5514-spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/pxa/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 6f513cc..640193d 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -151,7 +151,6 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
- 	u8 buf[8];
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 484ab3c2ad67..1d392582559d 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -33,7 +33,7 @@ config SND_PXA2XX_SOC_I2S
  
- 	rt5514_dsp->get_size = 0;
--	rt5514_dsp->dma_offset = 0;
+ config SND_PXA_SOC_SSP
+ 	tristate
+-	select PXA_SSP
++	select PXA_SSP if ARCH_PXA
  
- 	/**
- 	 * The address area x1800XXXX is the register address, and it cannot
-@@ -205,6 +204,7 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
- 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
- 			params_buffer_bytes(hw_params));
- 	rt5514_dsp->substream = substream;
-+	rt5514_dsp->dma_offset = 0;
- 	mutex_unlock(&rt5514_dsp->dma_lock);
- 
- 	return ret;
+ config SND_MMP_SOC_SSPA
+ 	tristate
+@@ -141,7 +141,6 @@ config SND_PXA910_SOC
+ config SND_SOC_TTC_DKB
+ 	tristate "SoC Audio support for TTC DKB"
+ 	depends on SND_PXA910_SOC && MACH_TTC_DKB && I2C=y
+-	select PXA_SSP
+ 	select SND_PXA_SOC_SSP
+ 	select SND_MMP_SOC
+ 	select MFD_88PM860X
 -- 
-2.7.4
+2.9.0
