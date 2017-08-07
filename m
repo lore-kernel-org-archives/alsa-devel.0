@@ -1,7 +1,7 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND1 05/12] ALSA: vsnd: Implement Xen event channel handling
-Date: Mon,  7 Aug 2017 15:22:50 +0300
-Message-ID: <1502108577-8099-6-git-send-email-andr2000@gmail.com>
+Subject: [PATCH RESEND1 06/12] ALSA: vsnd: Implement handling of shared buffers
+Date: Mon,  7 Aug 2017 15:22:51 +0300
+Message-ID: <1502108577-8099-7-git-send-email-andr2000@gmail.com>
 References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
@@ -12,332 +12,212 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-1. Create event channels for all configured streams and publish
-corresponding ring references and event channels in Xen store,
-so backend can connect.
-2. Implement event channel interrupt handler.
-3. Create and destroy event channels with respect to Xen bus state.
+Implement shared buffer handling according to the
+para-virtualized sound device protocol at xen/interface/io/sndif.h:
+- manage buffer memory
+- handle granted references
+- handle page directories
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- sound/drivers/xen-front.c | 269 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 268 insertions(+), 1 deletion(-)
+ sound/drivers/xen-front.c | 178 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 178 insertions(+)
 
 diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
-index ef48cbf44cf2..a92459b2737e 100644
+index a92459b2737e..04ebc15757f4 100644
 --- a/sound/drivers/xen-front.c
 +++ b/sound/drivers/xen-front.c
-@@ -24,14 +24,40 @@
- #include <sound/pcm.h>
+@@ -58,6 +58,14 @@ struct xdrv_evtchnl_info {
+ 	uint16_t resp_id;
+ };
  
- #include <xen/platform_pci.h>
-+#include <xen/events.h>
-+#include <xen/grant_table.h>
- #include <xen/xen.h>
- #include <xen/xenbus.h>
- 
- #include <xen/interface/io/sndif.h>
- 
-+/*
-+ * FIXME: usage of grant reference 0 as invalid grant reference:
-+ * grant reference 0 is valid, but never exposed to a PV driver,
-+ * because of the fact it is already in use/reserved by the PV console.
-+ */
-+#define GRANT_INVALID_REF	0
- /* maximum number of supported streams */
- #define VSND_MAX_STREAM		8
- 
-+enum xdrv_evtchnl_state {
-+	EVTCHNL_STATE_DISCONNECTED,
-+	EVTCHNL_STATE_CONNECTED,
-+};
-+
-+struct xdrv_evtchnl_info {
-+	struct xdrv_info *drv_info;
-+	struct xen_sndif_front_ring ring;
-+	int ring_ref;
-+	int port;
-+	int irq;
-+	struct completion completion;
-+	enum xdrv_evtchnl_state state;
-+	/* latest response status and its corresponding id */
-+	int resp_status;
-+	uint16_t resp_id;
++struct sh_buf_info {
++	int num_grefs;
++	grant_ref_t *grefs;
++	uint8_t *vdirectory;
++	uint8_t *vbuffer;
++	size_t vbuffer_sz;
 +};
 +
  struct cfg_stream {
  	int unique_id;
  	char *xenstore_path;
-@@ -65,6 +91,8 @@ struct xdrv_info {
- 	struct xenbus_device *xb_dev;
- 	spinlock_t io_lock;
- 	struct mutex mutex;
-+	int num_evt_channels;
-+	struct xdrv_evtchnl_info *evt_chnls;
- 	struct sdev_card_plat_data cfg_plat_data;
- };
+@@ -825,6 +833,176 @@ static void xdrv_remove_internal(struct xdrv_info *drv_info)
+ 	xdrv_evtchnl_free_all(drv_info);
+ }
  
-@@ -102,6 +130,244 @@ static struct snd_pcm_hardware sdrv_pcm_hw_default = {
- 	.fifo_size = 0,
- };
- 
-+static irqreturn_t xdrv_evtchnl_interrupt(int irq, void *dev_id)
++static inline grant_ref_t sh_buf_get_dir_start(struct sh_buf_info *buf)
 +{
-+	struct xdrv_evtchnl_info *channel = dev_id;
-+	struct xdrv_info *drv_info = channel->drv_info;
-+	struct xensnd_resp *resp;
-+	RING_IDX i, rp;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&drv_info->io_lock, flags);
-+	if (unlikely(channel->state != EVTCHNL_STATE_CONNECTED))
-+		goto out;
-+
-+again:
-+	rp = channel->ring.sring->rsp_prod;
-+	/* ensure we see queued responses up to rp */
-+	rmb();
-+
-+	for (i = channel->ring.rsp_cons; i != rp; i++) {
-+		resp = RING_GET_RESPONSE(&channel->ring, i);
-+		if (resp->id != channel->resp_id)
-+			continue;
-+		switch (resp->operation) {
-+		case XENSND_OP_OPEN:
-+			/* fall through */
-+		case XENSND_OP_CLOSE:
-+			/* fall through */
-+		case XENSND_OP_READ:
-+			/* fall through */
-+		case XENSND_OP_WRITE:
-+			channel->resp_status = resp->status;
-+			complete(&channel->completion);
-+			break;
-+
-+		default:
-+			dev_err(&drv_info->xb_dev->dev,
-+				"Operation %d is not supported\n",
-+				resp->operation);
-+			break;
-+		}
-+	}
-+
-+	channel->ring.rsp_cons = i;
-+	if (i != channel->ring.req_prod_pvt) {
-+		int more_to_do;
-+
-+		RING_FINAL_CHECK_FOR_RESPONSES(&channel->ring, more_to_do);
-+		if (more_to_do)
-+			goto again;
-+	} else
-+		channel->ring.sring->rsp_event = i + 1;
-+
-+out:
-+	spin_unlock_irqrestore(&drv_info->io_lock, flags);
-+	return IRQ_HANDLED;
++	if (!buf->grefs)
++		return GRANT_INVALID_REF;
++	return buf->grefs[0];
 +}
 +
-+static inline void xdrv_evtchnl_flush(
-+		struct xdrv_evtchnl_info *channel)
++static inline void sh_buf_clear(struct sh_buf_info *buf)
 +{
-+	int notify;
-+
-+	channel->ring.req_prod_pvt++;
-+	RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(&channel->ring, notify);
-+	if (notify)
-+		notify_remote_via_irq(channel->irq);
++	memset(buf, 0, sizeof(*buf));
 +}
 +
-+static void xdrv_evtchnl_free(struct xdrv_info *drv_info,
-+		struct xdrv_evtchnl_info *channel)
-+{
-+	if (!channel->ring.sring)
-+		return;
-+
-+	channel->state = EVTCHNL_STATE_DISCONNECTED;
-+	channel->resp_status = -EIO;
-+	complete_all(&channel->completion);
-+
-+	if (channel->irq)
-+		unbind_from_irqhandler(channel->irq, channel);
-+	channel->irq = 0;
-+
-+	if (channel->port)
-+		xenbus_free_evtchn(drv_info->xb_dev, channel->port);
-+	channel->port = 0;
-+
-+	if (channel->ring_ref != GRANT_INVALID_REF)
-+		gnttab_end_foreign_access(channel->ring_ref, 0,
-+			(unsigned long)channel->ring.sring);
-+	channel->ring_ref = GRANT_INVALID_REF;
-+	channel->ring.sring = NULL;
-+}
-+
-+static void xdrv_evtchnl_free_all(struct xdrv_info *drv_info)
++static void sh_buf_free(struct sh_buf_info *buf)
 +{
 +	int i;
 +
-+	if (!drv_info->evt_chnls)
-+		return;
-+
-+	for (i = 0; i < drv_info->num_evt_channels; i++)
-+		xdrv_evtchnl_free(drv_info, &drv_info->evt_chnls[i]);
-+
-+	devm_kfree(&drv_info->xb_dev->dev, drv_info->evt_chnls);
-+	drv_info->evt_chnls = NULL;
++	if (buf->grefs) {
++		for (i = 0; i < buf->num_grefs; i++)
++			if (buf->grefs[i] != GRANT_INVALID_REF)
++				gnttab_end_foreign_access(buf->grefs[i],
++						0, 0UL);
++		kfree(buf->grefs);
++	}
++	kfree(buf->vdirectory);
++	free_pages_exact(buf->vbuffer, buf->vbuffer_sz);
++	sh_buf_clear(buf);
 +}
 +
-+static int xdrv_evtchnl_alloc(struct xdrv_info *drv_info,
-+		struct xdrv_evtchnl_info *evt_channel)
++/*
++ * number of grant references a page can hold with respect to the
++ * xendispl_page_directory header
++ */
++#define XENSND_NUM_GREFS_PER_PAGE ((XEN_PAGE_SIZE - \
++	offsetof(struct xensnd_page_directory, gref)) / \
++	sizeof(grant_ref_t))
++
++static void sh_buf_fill_page_dir(struct sh_buf_info *buf, int num_pages_dir)
 +{
-+	struct xenbus_device *xb_dev = drv_info->xb_dev;
-+	struct xen_sndif_sring *sring;
-+	grant_ref_t gref;
-+	int ret;
++	struct xensnd_page_directory *page_dir;
++	unsigned char *ptr;
++	int i, cur_gref, grefs_left, to_copy;
 +
-+	evt_channel->drv_info = drv_info;
-+	init_completion(&evt_channel->completion);
-+	evt_channel->state = EVTCHNL_STATE_DISCONNECTED;
-+	evt_channel->ring_ref = GRANT_INVALID_REF;
-+	evt_channel->ring.sring = NULL;
-+	evt_channel->port = 0;
-+	evt_channel->irq = 0;
-+
-+	sring = (struct xen_sndif_sring *)get_zeroed_page(
-+		GFP_NOIO | __GFP_HIGH);
-+	if (!sring) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	SHARED_RING_INIT(sring);
-+	FRONT_RING_INIT(&evt_channel->ring, sring, XEN_PAGE_SIZE);
-+	ret = xenbus_grant_ring(xb_dev, sring, 1, &gref);
-+	if (ret < 0)
-+		goto fail;
-+	evt_channel->ring_ref = gref;
-+
-+	ret = xenbus_alloc_evtchn(xb_dev, &evt_channel->port);
-+	if (ret < 0)
-+		goto fail;
-+
-+	ret = bind_evtchn_to_irqhandler(evt_channel->port,
-+		xdrv_evtchnl_interrupt, 0, xb_dev->devicetype, evt_channel);
-+	if (ret < 0)
-+		goto fail;
-+
-+	evt_channel->irq = ret;
-+	return 0;
-+
-+fail:
-+	dev_err(&xb_dev->dev, "Failed to allocate ring: %d\n", ret);
-+	return ret;
-+}
-+
-+static int xdrv_evtchnl_create(struct xdrv_info *drv_info,
-+		struct xdrv_evtchnl_info *evt_channel,
-+		const char *path)
-+{
-+	int ret;
-+
-+	ret = xdrv_evtchnl_alloc(drv_info, evt_channel);
-+	if (ret < 0) {
-+		dev_err(&drv_info->xb_dev->dev,
-+			"allocating event channel: %d\n", ret);
-+		return ret;
-+	}
-+
++	ptr = buf->vdirectory;
++	grefs_left = buf->num_grefs - num_pages_dir;
 +	/*
-+	 * write values to Xen store, so backend can find ring reference
-+	 * and event channel
++	 * skip grant references at the beginning, they are for pages granted
++	 * for the page directory itself
 +	 */
-+	ret = xenbus_printf(XBT_NIL, path, XENSND_FIELD_RING_REF, "%u",
-+			evt_channel->ring_ref);
-+	if (ret < 0) {
-+		dev_err(&drv_info->xb_dev->dev,
-+			"writing " XENSND_FIELD_RING_REF": %d\n", ret);
-+		return ret;
++	cur_gref = num_pages_dir;
++	for (i = 0; i < num_pages_dir; i++) {
++		page_dir = (struct xensnd_page_directory *)ptr;
++		if (grefs_left <= XENSND_NUM_GREFS_PER_PAGE) {
++			to_copy = grefs_left;
++			page_dir->gref_dir_next_page = GRANT_INVALID_REF;
++		} else {
++			to_copy = XENSND_NUM_GREFS_PER_PAGE;
++			page_dir->gref_dir_next_page = buf->grefs[i + 1];
++		}
++		memcpy(&page_dir->gref, &buf->grefs[cur_gref],
++			to_copy * sizeof(grant_ref_t));
++		ptr += XEN_PAGE_SIZE;
++		grefs_left -= to_copy;
++		cur_gref += to_copy;
 +	}
-+
-+	ret = xenbus_printf(XBT_NIL, path, XENSND_FIELD_EVT_CHNL, "%u",
-+		evt_channel->port);
-+	if (ret < 0) {
-+		dev_err(&drv_info->xb_dev->dev,
-+			"writing " XENSND_FIELD_EVT_CHNL": %d\n", ret);
-+		return ret;
-+	}
-+	return 0;
 +}
 +
-+static int xdrv_evtchnl_create_all(struct xdrv_info *drv_info,
-+		int num_streams)
++static int sh_buf_grant_refs(struct xenbus_device *xb_dev,
++	struct sh_buf_info *buf,
++	int num_pages_dir, int num_pages_vbuffer, int num_grefs)
 +{
-+	struct cfg_card *cfg_card;
-+	int d, ret = 0;
++	grant_ref_t priv_gref_head;
++	int ret, i, j, cur_ref;
++	int otherend_id;
 +
-+	drv_info->evt_chnls = devm_kcalloc(&drv_info->xb_dev->dev,
-+		num_streams, sizeof(struct xdrv_evtchnl_info), GFP_KERNEL);
-+	if (!drv_info->evt_chnls) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
++	ret = gnttab_alloc_grant_references(num_grefs, &priv_gref_head);
++	if (ret)
++		return ret;
 +
-+	cfg_card = &drv_info->cfg_plat_data.cfg_card;
-+	/* iterate over devices and their streams and create event channels */
-+	for (d = 0; d < cfg_card->num_pcm_instances; d++) {
-+		struct cfg_pcm_instance *pcm_instance;
-+		int s, stream_idx;
++	buf->num_grefs = num_grefs;
++	otherend_id = xb_dev->otherend_id;
++	j = 0;
 +
-+		pcm_instance = &cfg_card->pcm_instances[d];
-+
-+		for (s = 0; s < pcm_instance->num_streams_pb; s++) {
-+			stream_idx = pcm_instance->streams_pb[s].unique_id;
-+			ret = xdrv_evtchnl_create(drv_info,
-+				&drv_info->evt_chnls[stream_idx],
-+				pcm_instance->streams_pb[s].xenstore_path);
-+			if (ret < 0)
-+				goto fail;
++	for (i = 0; i < num_pages_dir; i++) {
++		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
++		if (cur_ref < 0) {
++			ret = cur_ref;
++			goto fail;
 +		}
 +
-+		for (s = 0; s < pcm_instance->num_streams_cap; s++) {
-+			stream_idx = pcm_instance->streams_cap[s].unique_id;
-+			ret = xdrv_evtchnl_create(drv_info,
-+				&drv_info->evt_chnls[stream_idx],
-+				pcm_instance->streams_cap[s].xenstore_path);
-+			if (ret < 0)
-+				goto fail;
-+		}
++		gnttab_grant_foreign_access_ref(cur_ref, otherend_id,
++			xen_page_to_gfn(virt_to_page(buf->vdirectory +
++				XEN_PAGE_SIZE * i)), 0);
++		buf->grefs[j++] = cur_ref;
 +	}
-+	if (ret < 0)
-+		goto fail;
 +
-+	drv_info->num_evt_channels = num_streams;
++	for (i = 0; i < num_pages_vbuffer; i++) {
++		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
++		if (cur_ref < 0) {
++			ret = cur_ref;
++			goto fail;
++		}
++
++		gnttab_grant_foreign_access_ref(cur_ref, otherend_id,
++			xen_page_to_gfn(virt_to_page(buf->vbuffer +
++				XEN_PAGE_SIZE * i)), 0);
++		buf->grefs[j++] = cur_ref;
++	}
++
++	gnttab_free_grant_references(priv_gref_head);
++	sh_buf_fill_page_dir(buf, num_pages_dir);
 +	return 0;
 +
 +fail:
-+	xdrv_evtchnl_free_all(drv_info);
++	gnttab_free_grant_references(priv_gref_head);
 +	return ret;
 +}
 +
- struct CFG_HW_SAMPLE_RATE {
- 	const char *name;
- 	unsigned int mask;
-@@ -556,6 +822,7 @@ static int cfg_card(struct xdrv_info *drv_info,
- 
- static void xdrv_remove_internal(struct xdrv_info *drv_info)
- {
-+	xdrv_evtchnl_free_all(drv_info);
- }
- 
++static int sh_buf_alloc_int_buffers(struct sh_buf_info *buf,
++		int num_pages_dir, int num_pages_vbuffer, int num_grefs)
++{
++	buf->grefs = kcalloc(num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
++	if (!buf->grefs)
++		return -ENOMEM;
++
++	buf->vdirectory = kcalloc(num_pages_dir, XEN_PAGE_SIZE, GFP_KERNEL);
++	if (!buf->vdirectory)
++		goto fail;
++
++	buf->vbuffer_sz = num_pages_vbuffer * XEN_PAGE_SIZE;
++	buf->vbuffer = alloc_pages_exact(buf->vbuffer_sz, GFP_KERNEL);
++	if (!buf->vbuffer)
++		goto fail;
++	return 0;
++
++fail:
++	kfree(buf->grefs);
++	buf->grefs = NULL;
++	kfree(buf->vdirectory);
++	buf->vdirectory = NULL;
++	return -ENOMEM;
++}
++
++static int sh_buf_alloc(struct xenbus_device *xb_dev,
++	struct sh_buf_info *buf, unsigned int buffer_size)
++{
++	int num_pages_vbuffer, num_pages_dir, num_grefs;
++	int ret;
++
++	sh_buf_clear(buf);
++
++	num_pages_vbuffer = DIV_ROUND_UP(buffer_size, XEN_PAGE_SIZE);
++	/* number of pages the page directory consumes itself */
++	num_pages_dir = DIV_ROUND_UP(num_pages_vbuffer,
++		XENSND_NUM_GREFS_PER_PAGE);
++	num_grefs = num_pages_vbuffer + num_pages_dir;
++
++	ret = sh_buf_alloc_int_buffers(buf, num_pages_dir,
++		num_pages_vbuffer, num_grefs);
++	if (ret < 0)
++		return ret;
++
++	ret = sh_buf_grant_refs(xb_dev, buf,
++		num_pages_dir, num_pages_vbuffer, num_grefs);
++	if (ret < 0)
++		return ret;
++
++	sh_buf_fill_page_dir(buf, num_pages_dir);
++	return 0;
++}
++
  static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
-@@ -568,7 +835,7 @@ static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
- 	ret = cfg_card(drv_info, &drv_info->cfg_plat_data, &stream_idx);
- 	if (ret < 0)
- 		return ret;
--	return 0;
-+	return xdrv_evtchnl_create_all(drv_info, stream_idx);
- }
- 
- static inline int xdrv_be_on_connected(struct xdrv_info *drv_info)
+ {
+ 	int stream_idx;
 -- 
 2.7.4
