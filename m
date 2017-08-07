@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: Remove unneeded dentry member
-	from snd_soc_codec" to the asoc tree
-Date: Mon, 07 Aug 2017 16:53:12 +0100
-Message-ID: <E1dekLA-0005Uc-0T@debutante>
-References: <1502075586-23581-1-git-send-email-festevam@gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH] ASoC: compress: Remove duplicated code
+Date: Mon, 07 Aug 2017 16:59:14 +0100
+Message-ID: <1502121554.4828.70.camel@loki>
+References: <1502111504-7996-1-git-send-email-pengdonglin137@163.com>
+ <CAErzpmsPRYKmu_CMPPXEohjB-dbuqux4v12t5r9-E6dV3sXnMg@mail.gmail.com>
+ <20170807150714.e7aecqskfelp7h5z@sirena.org.uk>
+ <9bebfae0-5fd2-bb44-18dd-d7c25f59f1b1@linux.intel.com>
+ <20170807154253.sfmi6mmt4lj2d44k@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 925F0267459
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:53:19 +0200 (CEST)
-In-Reply-To: <1502075586-23581-1-git-send-email-festevam@gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28C852672A8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 17:59:22 +0200 (CEST)
+In-Reply-To: <20170807154253.sfmi6mmt4lj2d44k@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Donglin Peng <dolinux.peng@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, 2017-08-07 at 16:42 +0100, Mark Brown wrote:
+> On Mon, Aug 07, 2017 at 10:28:30AM -0500, Pierre-Louis Bossart wrote:
+> > On 8/7/17 10:07 AM, Mark Brown wrote:
+> 
+> > > Are you sure that this is the assignment that should be deleted, and if
+> > > so why?  Note that it's both conditionally and unconditionally assigned
+> > > later on...  Some words in the commit log about why this copy is removed
+> > > would be helpful.
+> 
+> > Thanks for the report. Yes, the logic escapes me as well, there were two
+> > separate changes from Liam and Richard Fitzgerald and I can't figure out why
+> > the reassignments of the variable new_name are required.
+> 
+> I've got a feeling it was people not working and testing against
+> mainline independently trying to fix similar issues and ending up
+> colliding when things went upstream.
 
-   ASoC: soc-core: Remove unneeded dentry member from snd_soc_codec
+Yeah, probably Richard and I working on something similar in the past. 
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 353c64dd19ebc99786c3578ea0444e1b5b1bb172 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 7 Aug 2017 09:08:52 -0300
-Subject: [PATCH] ASoC: soc-core: Remove unneeded dentry member from
- snd_soc_codec
-
-There is no need to have the *debugfs_reg dentry member as part of
-the snd_soc_codec structure as its only usage is inside
-soc_init_codec_debugfs().
-
-Use a local dentry variable instead.
-
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h  | 4 ----
- sound/soc/soc-core.c | 9 +++++----
- 2 files changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 10b71beb9f13..aad3f14966f1 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -903,10 +903,6 @@ struct snd_soc_codec {
- 
- 	/* component */
- 	struct snd_soc_component component;
--
--#ifdef CONFIG_DEBUG_FS
--	struct dentry *debugfs_reg;
--#endif
- };
- 
- /* codec driver */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 921622a01944..558efdfd717d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -339,11 +339,12 @@ static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
- static void soc_init_codec_debugfs(struct snd_soc_component *component)
- {
- 	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-+	struct dentry *debugfs_reg;
- 
--	codec->debugfs_reg = debugfs_create_file("codec_reg", 0644,
--						 codec->component.debugfs_root,
--						 codec, &codec_reg_fops);
--	if (!codec->debugfs_reg)
-+	debugfs_reg = debugfs_create_file("codec_reg", 0644,
-+					  codec->component.debugfs_root,
-+					  codec, &codec_reg_fops);
-+	if (!debugfs_reg)
- 		dev_warn(codec->dev,
- 			"ASoC: Failed to create codec register debugfs file\n");
- }
--- 
-2.13.3
+Liam
