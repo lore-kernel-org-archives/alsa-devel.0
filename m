@@ -1,405 +1,72 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND1 11/12] ALSA: vsnd: Implement communication with backend
-Date: Mon,  7 Aug 2017 15:22:56 +0300
-Message-ID: <1502108577-8099-12-git-send-email-andr2000@gmail.com>
+Subject: [PATCH RESEND1 01/12] ALSA: vsnd: Introduce Xen
+	para-virtualized sound frontend driver
+Date: Mon,  7 Aug 2017 15:22:46 +0300
+Message-ID: <1502108577-8099-2-git-send-email-andr2000@gmail.com>
 References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <xen-devel-bounces@lists.xen.org>
 In-Reply-To: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <https://lists.xen.org/cgi-bin/mailman/options/xen-devel>,
+ <mailto:xen-devel-request@lists.xen.org?subject=unsubscribe>
+List-Post: <mailto:xen-devel@lists.xen.org>
+List-Help: <mailto:xen-devel-request@lists.xen.org?subject=help>
+List-Subscribe: <https://lists.xen.org/cgi-bin/mailman/listinfo/xen-devel>,
+ <mailto:xen-devel-request@lists.xen.org?subject=subscribe>
+Errors-To: xen-devel-bounces@lists.xen.org
+Sender: "Xen-devel" <xen-devel-bounces@lists.xen.org>
 To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: perex@perex.cz, tiwai@suse.com, andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-
-Implement frontend to backend communication according to
-the para-virtualized sound protocol: xen/interface/io/sndif.h.
-
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
----
- sound/drivers/xen-front.c | 302 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 288 insertions(+), 14 deletions(-)
-
-diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
-index 7275e9cb38c0..8bfec43ef03a 100644
---- a/sound/drivers/xen-front.c
-+++ b/sound/drivers/xen-front.c
-@@ -38,6 +38,8 @@
-  * because of the fact it is already in use/reserved by the PV console.
-  */
- #define GRANT_INVALID_REF	0
-+/* timeout in ms to wait for backend to respond */
-+#define VSND_WAIT_BACK_MS	3000
- /* maximum number of supported streams */
- #define VSND_MAX_STREAM		8
- 
-@@ -151,10 +153,12 @@ struct xdrv_info {
- 	struct sdev_card_plat_data cfg_plat_data;
- };
- 
-+static inline void xdrv_evtchnl_flush(struct xdrv_evtchnl_info *channel);
- static inline void sh_buf_clear(struct sh_buf_info *buf);
- static void sh_buf_free(struct sh_buf_info *buf);
- static int sh_buf_alloc(struct xenbus_device *xb_dev, struct sh_buf_info *buf,
- 	unsigned int buffer_size);
-+static grant_ref_t sh_buf_get_dir_start(struct sh_buf_info *buf);
- 
- static struct sdev_pcm_stream_info *sdrv_stream_get(
- 	struct snd_pcm_substream *substream)
-@@ -314,6 +318,234 @@ static void sdrv_copy_pcm_hw(struct snd_pcm_hardware *dst,
- 	}
- }
- 
-+struct ALSA_SNDIF_SAMPLE_FORMAT {
-+	uint8_t sndif;
-+	snd_pcm_format_t alsa;
-+};
-+
-+static struct ALSA_SNDIF_SAMPLE_FORMAT alsa_sndif_formats[] = {
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U8,
-+		.alsa = SNDRV_PCM_FORMAT_U8
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S8,
-+		.alsa = SNDRV_PCM_FORMAT_S8
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U16_LE,
-+		.alsa = SNDRV_PCM_FORMAT_U16_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U16_BE,
-+		.alsa = SNDRV_PCM_FORMAT_U16_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S16_LE,
-+		.alsa = SNDRV_PCM_FORMAT_S16_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S16_BE,
-+		.alsa = SNDRV_PCM_FORMAT_S16_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U24_LE,
-+		.alsa = SNDRV_PCM_FORMAT_U24_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U24_BE,
-+		.alsa = SNDRV_PCM_FORMAT_U24_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S24_LE,
-+		.alsa = SNDRV_PCM_FORMAT_S24_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S24_BE,
-+		.alsa = SNDRV_PCM_FORMAT_S24_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U32_LE,
-+		.alsa = SNDRV_PCM_FORMAT_U32_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_U32_BE,
-+		.alsa = SNDRV_PCM_FORMAT_U32_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S32_LE,
-+		.alsa = SNDRV_PCM_FORMAT_S32_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_S32_BE,
-+		.alsa = SNDRV_PCM_FORMAT_S32_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_A_LAW,
-+		.alsa = SNDRV_PCM_FORMAT_A_LAW
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_MU_LAW,
-+		.alsa = SNDRV_PCM_FORMAT_MU_LAW
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F32_LE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F32_BE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F64_LE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT64_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_F64_BE,
-+		.alsa = SNDRV_PCM_FORMAT_FLOAT64_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_IEC958_SUBFRAME_LE,
-+		.alsa = SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_IEC958_SUBFRAME_BE,
-+		.alsa = SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_IMA_ADPCM,
-+		.alsa = SNDRV_PCM_FORMAT_IMA_ADPCM
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_MPEG,
-+		.alsa = SNDRV_PCM_FORMAT_MPEG
-+	},
-+	{
-+		.sndif = XENSND_PCM_FORMAT_GSM,
-+		.alsa = SNDRV_PCM_FORMAT_GSM
-+	},
-+};
-+
-+static int alsa_to_sndif_format(snd_pcm_format_t format)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(alsa_sndif_formats); i++)
-+		if (alsa_sndif_formats[i].alsa == format)
-+			return alsa_sndif_formats[i].sndif;
-+	return -EINVAL;
-+}
-+
-+static void sdrv_stream_clear(struct sdev_pcm_stream_info *stream)
-+{
-+	stream->is_open = false;
-+	stream->req_next_id = 0;
-+	sh_buf_clear(&stream->sh_buf);
-+}
-+
-+static struct xensnd_req *sdrv_be_stream_prepare_req(
-+	struct sdev_pcm_stream_info *stream, uint8_t operation)
-+{
-+	struct xensnd_req *req;
-+
-+	req = RING_GET_REQUEST(&stream->evt_chnl->ring,
-+		stream->evt_chnl->ring.req_prod_pvt);
-+	req->operation = operation;
-+	req->id = stream->req_next_id++;
-+	stream->evt_chnl->resp_id = req->id;
-+	return req;
-+}
-+
-+static void sdrv_be_stream_free(struct sdev_pcm_stream_info *stream)
-+{
-+	sh_buf_free(&stream->sh_buf);
-+	sdrv_stream_clear(stream);
-+}
-+
-+static int sdrv_be_stream_do_io(struct xdrv_evtchnl_info *evtchnl)
-+{
-+	if (unlikely(evtchnl->state != EVTCHNL_STATE_CONNECTED))
-+		return -EIO;
-+
-+	reinit_completion(&evtchnl->completion);
-+	xdrv_evtchnl_flush(evtchnl);
-+	return 0;
-+}
-+
-+static inline int sdrv_be_stream_wait_io(struct xdrv_evtchnl_info *evtchnl)
-+{
-+	if (wait_for_completion_timeout(
-+			&evtchnl->completion,
-+			msecs_to_jiffies(VSND_WAIT_BACK_MS)) <= 0)
-+		return -ETIMEDOUT;
-+	return 0;
-+}
-+
-+static int sdrv_be_stream_open(struct snd_pcm_substream *substream,
-+	struct sdev_pcm_stream_info *stream)
-+{
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct xdrv_info *xdrv_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+
-+	ret = alsa_to_sndif_format(runtime->format);
-+	if (ret < 0) {
-+		dev_err(&xdrv_info->xb_dev->dev,
-+			"Unsupported sample format: %d\n", runtime->format);
-+		return ret;
-+	}
-+
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	stream->is_open = false;
-+	req = sdrv_be_stream_prepare_req(stream, XENSND_OP_OPEN);
-+	req->op.open.pcm_format = (uint8_t)ret;
-+	req->op.open.pcm_channels = runtime->channels;
-+	req->op.open.pcm_rate = runtime->rate;
-+	req->op.open.buffer_sz = stream->sh_buf.vbuffer_sz;
-+	req->op.open.gref_directory = sh_buf_get_dir_start(&stream->sh_buf);
-+
-+	ret = sdrv_be_stream_do_io(stream->evt_chnl);
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = sdrv_be_stream_wait_io(stream->evt_chnl);
-+	stream->is_open = ret < 0 ? false : true;
-+	return ret;
-+}
-+
-+static int sdrv_be_stream_close(struct snd_pcm_substream *substream,
-+	struct sdev_pcm_stream_info *stream)
-+{
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct xdrv_info *xdrv_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	stream->is_open = false;
-+	req = sdrv_be_stream_prepare_req(stream, XENSND_OP_CLOSE);
-+
-+	ret = sdrv_be_stream_do_io(stream->evt_chnl);
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return sdrv_be_stream_wait_io(stream->evt_chnl);
-+}
-+
- static int sdrv_alsa_open(struct snd_pcm_substream *substream)
- {
- 	struct sdev_pcm_instance_info *pcm_instance =
-@@ -339,7 +571,7 @@ static int sdrv_alsa_open(struct snd_pcm_substream *substream)
- 	ret = sdrv_alsa_timer_create(substream);
- 
- 	spin_lock_irqsave(&xdrv_info->io_lock, flags);
--	sh_buf_clear(&stream->sh_buf);
-+	sdrv_stream_clear(stream);
- 	stream->evt_chnl = &xdrv_info->evt_chnls[stream->unique_id];
- 	if (ret < 0)
- 		stream->evt_chnl->state = EVTCHNL_STATE_DISCONNECTED;
-@@ -378,7 +610,7 @@ static int sdrv_alsa_hw_params(struct snd_pcm_substream *substream,
- 	int ret;
- 
- 	buffer_size = params_buffer_bytes(params);
--	sh_buf_clear(&stream->sh_buf);
-+	sdrv_stream_clear(stream);
- 	xdrv_info = pcm_instance->card_info->xdrv_info;
- 	ret = sh_buf_alloc(xdrv_info->xb_dev,
- 		&stream->sh_buf, buffer_size);
-@@ -390,22 +622,18 @@ static int sdrv_alsa_hw_params(struct snd_pcm_substream *substream,
- 	dev_err(&xdrv_info->xb_dev->dev,
- 		"Failed to allocate buffers for stream idx %d\n",
- 		stream->unique_id);
-+	sdrv_be_stream_free(stream);
- 	return ret;
- }
- 
- static int sdrv_alsa_hw_free(struct snd_pcm_substream *substream)
- {
--	struct sdev_pcm_instance_info *pcm_instance =
--		snd_pcm_substream_chip(substream);
- 	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
--	struct xdrv_info *xdrv_info;
--	unsigned long flags;
-+	int ret;
- 
--	xdrv_info = pcm_instance->card_info->xdrv_info;
--	spin_lock_irqsave(&xdrv_info->io_lock, flags);
--	sh_buf_free(&stream->sh_buf);
--	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
--	return 0;
-+	ret = sdrv_be_stream_close(substream, stream);
-+	sdrv_be_stream_free(stream);
-+	return ret;
- }
- 
- static int sdrv_alsa_prepare(struct snd_pcm_substream *substream)
-@@ -413,8 +641,12 @@ static int sdrv_alsa_prepare(struct snd_pcm_substream *substream)
- 	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
- 	int ret = 0;
- 
--	if (!stream->is_open)
-+	if (!stream->is_open) {
-+		ret = sdrv_be_stream_open(substream, stream);
-+		if (ret < 0)
-+			return ret;
- 		ret = sdrv_alsa_timer_prepare(substream);
-+	}
- 	return ret;
- }
- 
-@@ -446,7 +678,28 @@ static inline snd_pcm_uframes_t sdrv_alsa_pointer(
- static int sdrv_alsa_playback_do_write(struct snd_pcm_substream *substream,
- 	unsigned long pos, unsigned long count)
- {
--	return 0;
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct xdrv_info *xdrv_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	req = sdrv_be_stream_prepare_req(stream, XENSND_OP_WRITE);
-+	req->op.rw.length = count;
-+	req->op.rw.offset = pos;
-+
-+	ret = sdrv_be_stream_do_io(stream->evt_chnl);
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return sdrv_be_stream_wait_io(stream->evt_chnl);
- }
- 
- static int sdrv_alsa_playback_copy_user(struct snd_pcm_substream *substream,
-@@ -479,7 +732,28 @@ static int sdrv_alsa_playback_copy_kernel(struct snd_pcm_substream *substream,
- static int sdrv_alsa_playback_do_read(struct snd_pcm_substream *substream,
- 	unsigned long pos, unsigned long count)
- {
--	return 0;
-+	struct sdev_pcm_stream_info *stream = sdrv_stream_get(substream);
-+	struct sdev_pcm_instance_info *pcm_instance =
-+		snd_pcm_substream_chip(substream);
-+	struct xdrv_info *xdrv_info;
-+	struct xensnd_req *req;
-+	unsigned long flags;
-+	int ret;
-+
-+	xdrv_info = pcm_instance->card_info->xdrv_info;
-+
-+	spin_lock_irqsave(&xdrv_info->io_lock, flags);
-+	req = sdrv_be_stream_prepare_req(stream, XENSND_OP_READ);
-+	req->op.rw.length = count;
-+	req->op.rw.offset = pos;
-+
-+	ret = sdrv_be_stream_do_io(stream->evt_chnl);
-+	spin_unlock_irqrestore(&xdrv_info->io_lock, flags);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return sdrv_be_stream_wait_io(stream->evt_chnl);
- }
- 
- static int sdrv_alsa_capture_copy_user(struct snd_pcm_substream *substream,
--- 
-2.7.4
+RnJvbTogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVw
+YW0uY29tPgoKSW50cm9kdWNlIHNrZWxldG9uIG9mIHRoZSBwYXJhLXZpcnR1YWxpemVkIFhlbiBz
+b3VuZApmcm9udGVuZCBkcml2ZXIuIFRoaXMgcGF0Y2ggb25seSBhZGRzIHJlcXVpcmVkCmVzc2Vu
+dGlhbCBzdHVicy4KClNpZ25lZC1vZmYtYnk6IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIDxvbGVr
+c2FuZHJfYW5kcnVzaGNoZW5rb0BlcGFtLmNvbT4KLS0tCiBzb3VuZC9kcml2ZXJzL3hlbi1mcm9u
+dC5jIHwgNzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
+IDEgZmlsZSBjaGFuZ2VkLCA3OCBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291
+bmQvZHJpdmVycy94ZW4tZnJvbnQuYwoKZGlmZiAtLWdpdCBhL3NvdW5kL2RyaXZlcnMveGVuLWZy
+b250LmMgYi9zb3VuZC9kcml2ZXJzL3hlbi1mcm9udC5jCm5ldyBmaWxlIG1vZGUgMTAwNjQ0Cmlu
+ZGV4IDAwMDAwMDAwMDAwMC4uNjE3NzljMzZjYWUzCi0tLSAvZGV2L251bGwKKysrIGIvc291bmQv
+ZHJpdmVycy94ZW4tZnJvbnQuYwpAQCAtMCwwICsxLDc4IEBACisvKgorICogWGVuIHBhcmEtdmly
+dHVhbCBzb3VuZCBkZXZpY2UKKyAqCisgKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJl
+OyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisgKiAgIGl0IHVuZGVyIHRo
+ZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5
+CisgKiAgIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2Yg
+dGhlIExpY2Vuc2UsIG9yCisgKiAgIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24u
+CisgKgorICogICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBp
+dCB3aWxsIGJlIHVzZWZ1bCwKKyAqICAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0
+IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKKyAqICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJ
+VE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQorICogICBHTlUgR2VuZXJh
+bCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgorICoKKyAqIEJhc2VkIG9uOiBzb3Vu
+ZC9kcml2ZXJzL2R1bW15LmMKKyAqCisgKiBDb3B5cmlnaHQgKEMpIDIwMTYtMjAxNyBFUEFNIFN5
+c3RlbXMgSW5jLgorICoKKyAqIEF1dGhvcjogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gPG9sZWtz
+YW5kcl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPgorICovCisKKyNpbmNsdWRlIDxsaW51eC9tb2R1
+bGUuaD4KKworI2luY2x1ZGUgPHhlbi9wbGF0Zm9ybV9wY2kuaD4KKyNpbmNsdWRlIDx4ZW4veGVu
+Lmg+CisjaW5jbHVkZSA8eGVuL3hlbmJ1cy5oPgorCisjaW5jbHVkZSA8eGVuL2ludGVyZmFjZS9p
+by9zbmRpZi5oPgorCitzdGF0aWMgdm9pZCB4ZHJ2X2JlX29uX2NoYW5nZWQoc3RydWN0IHhlbmJ1
+c19kZXZpY2UgKnhiX2RldiwKKwllbnVtIHhlbmJ1c19zdGF0ZSBiYWNrZW5kX3N0YXRlKQorewor
+fQorCitzdGF0aWMgaW50IHhkcnZfcHJvYmUoc3RydWN0IHhlbmJ1c19kZXZpY2UgKnhiX2RldiwK
+Kwljb25zdCBzdHJ1Y3QgeGVuYnVzX2RldmljZV9pZCAqaWQpCit7CisJcmV0dXJuIDA7Cit9CisK
+K3N0YXRpYyBpbnQgeGRydl9yZW1vdmUoc3RydWN0IHhlbmJ1c19kZXZpY2UgKmRldikKK3sKKwly
+ZXR1cm4gMDsKK30KKworc3RhdGljIGNvbnN0IHN0cnVjdCB4ZW5idXNfZGV2aWNlX2lkIHhkcnZf
+aWRzW10gPSB7CisJeyBYRU5TTkRfRFJJVkVSX05BTUUgfSwKKwl7ICIiIH0KK307CisKK3N0YXRp
+YyBzdHJ1Y3QgeGVuYnVzX2RyaXZlciB4ZW5fZHJpdmVyID0geworCS5pZHMgPSB4ZHJ2X2lkcywK
+KwkucHJvYmUgPSB4ZHJ2X3Byb2JlLAorCS5yZW1vdmUgPSB4ZHJ2X3JlbW92ZSwKKwkub3RoZXJl
+bmRfY2hhbmdlZCA9IHhkcnZfYmVfb25fY2hhbmdlZCwKK307CisKK3N0YXRpYyBpbnQgX19pbml0
+IHhkcnZfaW5pdCh2b2lkKQoreworCWlmICgheGVuX2RvbWFpbigpKQorCQlyZXR1cm4gLUVOT0RF
+VjsKKworCXByX2luZm8oIkluaXRpYWxpc2luZyBYZW4gIiBYRU5TTkRfRFJJVkVSX05BTUUgIiBm
+cm9udGVuZCBkcml2ZXJcbiIpOworCXJldHVybiB4ZW5idXNfcmVnaXN0ZXJfZnJvbnRlbmQoJnhl
+bl9kcml2ZXIpOworfQorCitzdGF0aWMgdm9pZCBfX2V4aXQgeGRydl9jbGVhbnVwKHZvaWQpCit7
+CisJcHJfaW5mbygiVW5yZWdpc3RlcmluZyBYZW4gIiBYRU5TTkRfRFJJVkVSX05BTUUgIiBmcm9u
+dGVuZCBkcml2ZXJcbiIpOworCXhlbmJ1c191bnJlZ2lzdGVyX2RyaXZlcigmeGVuX2RyaXZlcik7
+Cit9CisKK21vZHVsZV9pbml0KHhkcnZfaW5pdCk7Cittb2R1bGVfZXhpdCh4ZHJ2X2NsZWFudXAp
+OworCitNT0RVTEVfREVTQ1JJUFRJT04oIlhlbiB2aXJ0dWFsIHNvdW5kIGRldmljZSBmcm9udGVu
+ZCIpOworTU9EVUxFX0xJQ0VOU0UoIkdQTCIpOworTU9EVUxFX0FMSUFTKCJ4ZW46IlhFTlNORF9E
+UklWRVJfTkFNRSk7CitNT0RVTEVfU1VQUE9SVEVEX0RFVklDRSgie3tBTFNBLFZpcnR1YWwgc291
+bmRjYXJkfX0iKTsKLS0gCjIuNy40CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KWGVuLWRldmVsIG1haWxpbmcgbGlzdApYZW4tZGV2ZWxAbGlzdHMueGVu
+Lm9yZwpodHRwczovL2xpc3RzLnhlbi5vcmcveGVuLWRldmVsCg==
