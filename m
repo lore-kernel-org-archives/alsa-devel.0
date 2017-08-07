@@ -1,223 +1,164 @@
 From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: [PATCH RESEND1 06/12] ALSA: vsnd: Implement handling of shared buffers
-Date: Mon,  7 Aug 2017 15:22:51 +0300
-Message-ID: <1502108577-8099-7-git-send-email-andr2000@gmail.com>
+Subject: [PATCH RESEND1 03/12] ALSA: vsnd: Implement Xen bus
+	state handling
+Date: Mon,  7 Aug 2017 15:22:48 +0300
+Message-ID: <1502108577-8099-4-git-send-email-andr2000@gmail.com>
 References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70297267205
+ for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 14:23:07 +0200 (CEST)
+Received: by mail-lf0-f66.google.com with SMTP id t128so214146lff.3
+ for <alsa-devel@alsa-project.org>; Mon, 07 Aug 2017 05:23:07 -0700 (PDT)
 In-Reply-To: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, xen-devel@lists.xen.org, linux-kernel@vger.kernel.org
-Cc: perex@perex.cz, tiwai@suse.com, andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Implement shared buffer handling according to the
-para-virtualized sound device protocol at xen/interface/io/sndif.h:
-- manage buffer memory
-- handle granted references
-- handle page directories
+Initial handling for Xen bus states: implement
+Xen bus state machine for the front driver according to
+the state diagram and recovery flow from sound para-virtualized
+protocol: xen/interface/io/sndif.h.
 
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- sound/drivers/xen-front.c | 178 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 178 insertions(+)
+ sound/drivers/xen-front.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 92 insertions(+)
 
 diff --git a/sound/drivers/xen-front.c b/sound/drivers/xen-front.c
-index a92459b2737e..04ebc15757f4 100644
+index 8c5de7b0e7b5..c4fd21cac3a7 100644
 --- a/sound/drivers/xen-front.c
 +++ b/sound/drivers/xen-front.c
-@@ -58,6 +58,14 @@ struct xdrv_evtchnl_info {
- 	uint16_t resp_id;
- };
- 
-+struct sh_buf_info {
-+	int num_grefs;
-+	grant_ref_t *grefs;
-+	uint8_t *vdirectory;
-+	uint8_t *vbuffer;
-+	size_t vbuffer_sz;
-+};
-+
- struct cfg_stream {
- 	int unique_id;
- 	char *xenstore_path;
-@@ -825,6 +833,176 @@ static void xdrv_remove_internal(struct xdrv_info *drv_info)
- 	xdrv_evtchnl_free_all(drv_info);
+@@ -36,9 +36,99 @@ static void xdrv_remove_internal(struct xdrv_info *drv_info)
+ {
  }
  
-+static inline grant_ref_t sh_buf_get_dir_start(struct sh_buf_info *buf)
++static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
 +{
-+	if (!buf->grefs)
-+		return GRANT_INVALID_REF;
-+	return buf->grefs[0];
-+}
-+
-+static inline void sh_buf_clear(struct sh_buf_info *buf)
-+{
-+	memset(buf, 0, sizeof(*buf));
-+}
-+
-+static void sh_buf_free(struct sh_buf_info *buf)
-+{
-+	int i;
-+
-+	if (buf->grefs) {
-+		for (i = 0; i < buf->num_grefs; i++)
-+			if (buf->grefs[i] != GRANT_INVALID_REF)
-+				gnttab_end_foreign_access(buf->grefs[i],
-+						0, 0UL);
-+		kfree(buf->grefs);
-+	}
-+	kfree(buf->vdirectory);
-+	free_pages_exact(buf->vbuffer, buf->vbuffer_sz);
-+	sh_buf_clear(buf);
-+}
-+
-+/*
-+ * number of grant references a page can hold with respect to the
-+ * xendispl_page_directory header
-+ */
-+#define XENSND_NUM_GREFS_PER_PAGE ((XEN_PAGE_SIZE - \
-+	offsetof(struct xensnd_page_directory, gref)) / \
-+	sizeof(grant_ref_t))
-+
-+static void sh_buf_fill_page_dir(struct sh_buf_info *buf, int num_pages_dir)
-+{
-+	struct xensnd_page_directory *page_dir;
-+	unsigned char *ptr;
-+	int i, cur_gref, grefs_left, to_copy;
-+
-+	ptr = buf->vdirectory;
-+	grefs_left = buf->num_grefs - num_pages_dir;
-+	/*
-+	 * skip grant references at the beginning, they are for pages granted
-+	 * for the page directory itself
-+	 */
-+	cur_gref = num_pages_dir;
-+	for (i = 0; i < num_pages_dir; i++) {
-+		page_dir = (struct xensnd_page_directory *)ptr;
-+		if (grefs_left <= XENSND_NUM_GREFS_PER_PAGE) {
-+			to_copy = grefs_left;
-+			page_dir->gref_dir_next_page = GRANT_INVALID_REF;
-+		} else {
-+			to_copy = XENSND_NUM_GREFS_PER_PAGE;
-+			page_dir->gref_dir_next_page = buf->grefs[i + 1];
-+		}
-+		memcpy(&page_dir->gref, &buf->grefs[cur_gref],
-+			to_copy * sizeof(grant_ref_t));
-+		ptr += XEN_PAGE_SIZE;
-+		grefs_left -= to_copy;
-+		cur_gref += to_copy;
-+	}
-+}
-+
-+static int sh_buf_grant_refs(struct xenbus_device *xb_dev,
-+	struct sh_buf_info *buf,
-+	int num_pages_dir, int num_pages_vbuffer, int num_grefs)
-+{
-+	grant_ref_t priv_gref_head;
-+	int ret, i, j, cur_ref;
-+	int otherend_id;
-+
-+	ret = gnttab_alloc_grant_references(num_grefs, &priv_gref_head);
-+	if (ret)
-+		return ret;
-+
-+	buf->num_grefs = num_grefs;
-+	otherend_id = xb_dev->otherend_id;
-+	j = 0;
-+
-+	for (i = 0; i < num_pages_dir; i++) {
-+		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
-+		if (cur_ref < 0) {
-+			ret = cur_ref;
-+			goto fail;
-+		}
-+
-+		gnttab_grant_foreign_access_ref(cur_ref, otherend_id,
-+			xen_page_to_gfn(virt_to_page(buf->vdirectory +
-+				XEN_PAGE_SIZE * i)), 0);
-+		buf->grefs[j++] = cur_ref;
-+	}
-+
-+	for (i = 0; i < num_pages_vbuffer; i++) {
-+		cur_ref = gnttab_claim_grant_reference(&priv_gref_head);
-+		if (cur_ref < 0) {
-+			ret = cur_ref;
-+			goto fail;
-+		}
-+
-+		gnttab_grant_foreign_access_ref(cur_ref, otherend_id,
-+			xen_page_to_gfn(virt_to_page(buf->vbuffer +
-+				XEN_PAGE_SIZE * i)), 0);
-+		buf->grefs[j++] = cur_ref;
-+	}
-+
-+	gnttab_free_grant_references(priv_gref_head);
-+	sh_buf_fill_page_dir(buf, num_pages_dir);
 +	return 0;
-+
-+fail:
-+	gnttab_free_grant_references(priv_gref_head);
-+	return ret;
 +}
 +
-+static int sh_buf_alloc_int_buffers(struct sh_buf_info *buf,
-+		int num_pages_dir, int num_pages_vbuffer, int num_grefs)
++static inline int xdrv_be_on_connected(struct xdrv_info *drv_info)
 +{
-+	buf->grefs = kcalloc(num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
-+	if (!buf->grefs)
-+		return -ENOMEM;
-+
-+	buf->vdirectory = kcalloc(num_pages_dir, XEN_PAGE_SIZE, GFP_KERNEL);
-+	if (!buf->vdirectory)
-+		goto fail;
-+
-+	buf->vbuffer_sz = num_pages_vbuffer * XEN_PAGE_SIZE;
-+	buf->vbuffer = alloc_pages_exact(buf->vbuffer_sz, GFP_KERNEL);
-+	if (!buf->vbuffer)
-+		goto fail;
 +	return 0;
-+
-+fail:
-+	kfree(buf->grefs);
-+	buf->grefs = NULL;
-+	kfree(buf->vdirectory);
-+	buf->vdirectory = NULL;
-+	return -ENOMEM;
 +}
 +
-+static int sh_buf_alloc(struct xenbus_device *xb_dev,
-+	struct sh_buf_info *buf, unsigned int buffer_size)
++static inline void xdrv_be_on_disconnected(struct xdrv_info *drv_info)
 +{
-+	int num_pages_vbuffer, num_pages_dir, num_grefs;
++	xdrv_remove_internal(drv_info);
++}
++
+ static void xdrv_be_on_changed(struct xenbus_device *xb_dev,
+ 	enum xenbus_state backend_state)
+ {
++	struct xdrv_info *drv_info = dev_get_drvdata(&xb_dev->dev);
 +	int ret;
 +
-+	sh_buf_clear(buf);
++	switch (backend_state) {
++	case XenbusStateReconfiguring:
++		/* fall through */
++	case XenbusStateReconfigured:
++		/* fall through */
++	case XenbusStateInitialised:
++		/* fall through */
++		break;
 +
-+	num_pages_vbuffer = DIV_ROUND_UP(buffer_size, XEN_PAGE_SIZE);
-+	/* number of pages the page directory consumes itself */
-+	num_pages_dir = DIV_ROUND_UP(num_pages_vbuffer,
-+		XENSND_NUM_GREFS_PER_PAGE);
-+	num_grefs = num_pages_vbuffer + num_pages_dir;
++	case XenbusStateInitialising:
++		if (xb_dev->state == XenbusStateInitialising)
++			break;
 +
-+	ret = sh_buf_alloc_int_buffers(buf, num_pages_dir,
-+		num_pages_vbuffer, num_grefs);
-+	if (ret < 0)
-+		return ret;
++		/* recovering after backend unexpected closure */
++		mutex_lock(&drv_info->mutex);
++		xdrv_be_on_disconnected(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		xenbus_switch_state(xb_dev, XenbusStateInitialising);
++		break;
 +
-+	ret = sh_buf_grant_refs(xb_dev, buf,
-+		num_pages_dir, num_pages_vbuffer, num_grefs);
-+	if (ret < 0)
-+		return ret;
++	case XenbusStateInitWait:
++		if (xb_dev->state != XenbusStateInitialising)
++			break;
 +
-+	sh_buf_fill_page_dir(buf, num_pages_dir);
-+	return 0;
-+}
++		mutex_lock(&drv_info->mutex);
++		ret = xdrv_be_on_initwait(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		if (ret < 0) {
++			xenbus_dev_fatal(xb_dev, ret,
++				"initializing " XENSND_DRIVER_NAME);
++			break;
++		}
 +
- static int xdrv_be_on_initwait(struct xdrv_info *drv_info)
++		xenbus_switch_state(xb_dev, XenbusStateInitialised);
++		break;
++
++	case XenbusStateConnected:
++		if (xb_dev->state != XenbusStateInitialised)
++			break;
++
++		mutex_lock(&drv_info->mutex);
++		ret = xdrv_be_on_connected(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		if (ret < 0) {
++			xenbus_dev_fatal(xb_dev, ret,
++				"connecting " XENSND_DRIVER_NAME);
++			break;
++		}
++
++		xenbus_switch_state(xb_dev, XenbusStateConnected);
++		break;
++
++	case XenbusStateClosing:
++		/*
++		 * in this state backend starts freeing resources,
++		 * so let it go into closed state first, so we can also
++		 * remove ours
++		 */
++		break;
++
++	case XenbusStateUnknown:
++		/* fall through */
++	case XenbusStateClosed:
++		if (xb_dev->state == XenbusStateClosed)
++			break;
++
++		mutex_lock(&drv_info->mutex);
++		xdrv_be_on_disconnected(drv_info);
++		mutex_unlock(&drv_info->mutex);
++		xenbus_switch_state(xb_dev, XenbusStateInitialising);
++		break;
++	}
+ }
+ 
+ static int xdrv_probe(struct xenbus_device *xb_dev,
+@@ -56,6 +146,7 @@ static int xdrv_probe(struct xenbus_device *xb_dev,
+ 	spin_lock_init(&drv_info->io_lock);
+ 	mutex_init(&drv_info->mutex);
+ 	dev_set_drvdata(&xb_dev->dev, drv_info);
++	xenbus_switch_state(xb_dev, XenbusStateInitialising);
+ 	return 0;
+ }
+ 
+@@ -63,6 +154,7 @@ static int xdrv_remove(struct xenbus_device *dev)
  {
- 	int stream_idx;
+ 	struct xdrv_info *drv_info = dev_get_drvdata(&dev->dev);
+ 
++	xenbus_switch_state(dev, XenbusStateClosed);
+ 	mutex_lock(&drv_info->mutex);
+ 	xdrv_remove_internal(drv_info);
+ 	mutex_unlock(&drv_info->mutex);
 -- 
 2.7.4
