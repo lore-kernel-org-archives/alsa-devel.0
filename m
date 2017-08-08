@@ -1,18 +1,17 @@
-From: "Zhang, Keqiao" <keqiao.zhang@intel.com>
-Subject: Re: XRUN support in alsabat
-Date: Tue, 8 Aug 2017 14:24:14 +0000
-Message-ID: <57E804B13068CF489D6E1F6E5365559B575CAC82@SHSMSX103.ccr.corp.intel.com>
-References: <57E804B13068CF489D6E1F6E5365559B575CAC37@SHSMSX103.ccr.corp.intel.com>
- <s5hlgmui1l6.wl-tiwai@suse.de>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: [PATCH 0/3] Add support for playing a given number of
+	samples
+Date: Wed,  9 Aug 2017 01:05:57 +0300
+Message-ID: <1502229960-8516-1-git-send-email-daniel.baluta@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 51AFF2664EB
- for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2017 16:24:22 +0200 (CEST)
-In-Reply-To: <s5hlgmui1l6.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BC1D266AA9
+ for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2017 00:06:15 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id x64so4817838wmg.1
+ for <alsa-devel@alsa-project.org>; Tue, 08 Aug 2017 15:06:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Keyon Jie <yang.jie@linux.intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: tiwai@suse.com, alsa-devel@alsa-project.org
+Cc: mihai.serban@nxp.com, shengjiu.wang@nxp.com, Daniel Baluta <daniel.baluta@gmail.com>, viorel.suman@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your input. I will give it a try.
-	
-Thanks 
-Keqiao
+We introduce (patch 1) the option of playing only a given number
+of samples in order to reduce our simple test running time. Until
+now we can only limit them at 1 second (-d parameter).
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Tuesday, August 8, 2017 10:20 PM
-To: Zhang, Keqiao <keqiao.zhang@intel.com>
-Cc: alsa-devel@alsa-project.org; Girdwood, Liam R <liam.r.girdwood@intel.com>; Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: XRUN support in alsabat
+This patch series also refactors the playback function (patch 2) and
+fixes a bug with small raw files (patch 3).
 
-On Tue, 08 Aug 2017 16:15:22 +0200,
-Zhang, Keqiao wrote:
-> 
-> Hi Takashi and all,
-> 
-> Sorry to bother you. I'm trying to get alsabat(alsa-utils:BAT) to 
-> support XRUN for driver testing and there have been no effective 
-> solutions on how to inject XRUN for playback or capture. So could you 
-> give me some suggestions on this?  Thanks in advance~
+Previous discussions about this started here:
 
-You can inject xrun by writing to a proc file, /proc/sound/card*/pcm*/sub*/xrun_injection,
-when CONFIG_SND_PCM_XRUN_DEBUG is set.
+https://www.spinics.net/lists/alsa-devel/msg64463.html
 
+Daniel Baluta (2):
+  aplay: Refactor playback code
+  aplay: Fix playback for small raw files
 
-Takashi
+Ion-Horia Petrisor (1):
+  aplay: Add samples argument for playing/recording a given number of
+    samples
+
+ aplay/aplay.c | 185 +++++++++++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 143 insertions(+), 42 deletions(-)
+
+-- 
+2.7.4
