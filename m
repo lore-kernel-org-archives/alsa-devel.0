@@ -1,24 +1,20 @@
 From: Donglin Peng <dolinux.peng@gmail.com>
-Subject: Re: [PATCH] ASoC: compress: Remove duplicated code
-Date: Tue, 8 Aug 2017 00:33:17 +0800
-Message-ID: <CAErzpmut8EtMp7RMk1SoHqz=v-DKaHg92g9Y_R6p1s-cO2xaoA@mail.gmail.com>
-References: <1502111504-7996-1-git-send-email-pengdonglin137@163.com>
- <CAErzpmsPRYKmu_CMPPXEohjB-dbuqux4v12t5r9-E6dV3sXnMg@mail.gmail.com>
- <20170807150714.e7aecqskfelp7h5z@sirena.org.uk>
- <9bebfae0-5fd2-bb44-18dd-d7c25f59f1b1@linux.intel.com>
- <20170807154253.sfmi6mmt4lj2d44k@sirena.org.uk>
- <1502121554.4828.70.camel@loki>
+Subject: [PATCH] ASoC: compress: Set reasonable compress id
+	string
+Date: Tue, 8 Aug 2017 10:59:23 +0800
+Message-ID: <CAErzpmus=RTyNfdjpReURV3iR2+zasRSh7+XjFVqD2nnSj3kgw@mail.gmail.com>
+References: <20170808025110.11351-1-pengdonglin137@163.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f174.google.com (mail-qt0-f174.google.com
- [209.85.216.174])
- by alsa0.perex.cz (Postfix) with ESMTP id A154E2672A8
- for <alsa-devel@alsa-project.org>; Mon,  7 Aug 2017 18:33:19 +0200 (CEST)
-Received: by mail-qt0-f174.google.com with SMTP id p3so5734659qtg.2
- for <alsa-devel@alsa-project.org>; Mon, 07 Aug 2017 09:33:19 -0700 (PDT)
-In-Reply-To: <1502121554.4828.70.camel@loki>
+Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
+ [209.85.220.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id D49CB2664EB
+ for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2017 04:59:25 +0200 (CEST)
+Received: by mail-qk0-f194.google.com with SMTP id d136so2157064qkg.3
+ for <alsa-devel@alsa-project.org>; Mon, 07 Aug 2017 19:59:24 -0700 (PDT)
+In-Reply-To: <20170808025110.11351-1-pengdonglin137@163.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,39 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: liam.r.girdwood@linux.intel.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: broonie@kernel.org, liam.r.girdwood@linux.intel.com, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ok, I need to think twice.
+For dynamic compress rtd, the codec_dai may not have any
+actual meaning(like snd-soc-dummy-dai), so compress id
+can just use the value of dai_link->stream_name. But for
+others, its codec_dai has actual meaning, so compress id
+can include codec_dai name.
 
-On Monday, August 7, 2017, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-wrote:
+Signed-off-by: pengdonglin <pengdonglin137@163.com>
+---
+ sound/soc/soc-compress.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-> On Mon, 2017-08-07 at 16:42 +0100, Mark Brown wrote:
-> > On Mon, Aug 07, 2017 at 10:28:30AM -0500, Pierre-Louis Bossart wrote:
-> > > On 8/7/17 10:07 AM, Mark Brown wrote:
-> >
-> > > > Are you sure that this is the assignment that should be deleted, and
-> if
-> > > > so why?  Note that it's both conditionally and unconditionally
-> assigned
-> > > > later on...  Some words in the commit log about why this copy is
-> removed
-> > > > would be helpful.
-> >
-> > > Thanks for the report. Yes, the logic escapes me as well, there were
-> two
-> > > separate changes from Liam and Richard Fitzgerald and I can't figure
-> out why
-> > > the reassignments of the variable new_name are required.
-> >
-> > I've got a feeling it was people not working and testing against
-> > mainline independently trying to fix similar issues and ending up
-> > colliding when things went upstream.
->
-> Yeah, probably Richard and I working on something similar in the past.
->
-> Liam
->
->
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 206f36bf43e8..589d6412c9f0 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -737,9 +737,6 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime
+*rtd, int num)
+        }
+
+        /* check client and interface hw capabilities */
+-       snprintf(new_name, sizeof(new_name), "%s %s-%d",
+-                       rtd->dai_link->stream_name, codec_dai->name, num);
+-
+        if (codec_dai->driver->playback.channels_min)
+                playback = 1;
+        if (codec_dai->driver->capture.channels_min)
+@@ -797,19 +794,18 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime
+*rtd, int num)
+                else if (rtd->dai_link->dpcm_capture)
+                        be_pcm->streams[SNDRV_PCM_STRE
+AM_CAPTURE].substream->private_data = rtd;
+                memcpy(compr->ops, &soc_compr_dyn_ops,
+sizeof(soc_compr_dyn_ops));
+-       } else
++       } else {
++               snprintf(new_name, sizeof(new_name), "%s %s-%d",
++                       rtd->dai_link->stream_name, codec_dai->name, num);
++
+                memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
++       }
+
+        /* Add copy callback for not memory mapped DSPs */
+        if (platform->driver->compr_ops && platform->driver->compr_ops->c
+opy)
+                compr->ops->copy = soc_compr_copy;
+
+        mutex_init(&compr->lock);
+-
+-       snprintf(new_name, sizeof(new_name), "%s %s-%d",
+-                rtd->dai_link->stream_name,
+-                rtd->codec_dai->name, num);
+-
+        ret = snd_compress_new(rtd->card->snd_card, num, direction,
+                                new_name, compr);
+        if (ret < 0) {
+--
+2.11.0
