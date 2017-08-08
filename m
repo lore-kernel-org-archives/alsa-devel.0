@@ -1,76 +1,79 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v4 01/17] mfd: madera: Add register
- definitions for Cirrus Logic Madera codecs
-Date: Tue, 8 Aug 2017 12:03:19 +0100
-Message-ID: <20170808110319.ssagukhfp72r5vys@dell>
-References: <1501235239-11145-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1501235239-11145-2-git-send-email-rf@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 1920226691A
- for <alsa-devel@alsa-project.org>; Tue,  8 Aug 2017 13:03:22 +0200 (CEST)
-Received: by mail-wm0-f47.google.com with SMTP id t201so4113613wmt.1
- for <alsa-devel@alsa-project.org>; Tue, 08 Aug 2017 04:03:22 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1501235239-11145-2-git-send-email-rf@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, tglx@linutronix.de
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: move rsnd_ssi_config_init() execute condition into it." to the asoc tree
+Date: Tue, 08 Aug 2017 12:06:14 +0100
+Message-ID: <E1df2L0-0004wX-4H@finisterre>
+References: <873792n94e.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <873792n94e.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyOCBKdWwgMjAxNywgUmljaGFyZCBGaXR6Z2VyYWxkIHdyb3RlOgoKPiBUaGlzIHBh
-dGNoIGFkZHMgYSBoZWFkZXIgZmlsZSBvZiByZWdpc3RlciBkZWZpbml0aW9ucyBmb3IgQ2lycnVz
-Cj4gTG9naWMgIk1hZGVyYSIgY2xhc3MgY29kZWNzLiBUaGVzZSBjb2RlY3MgYXJlIGFsbCBiYXNl
-ZCBvZmYgYSBjb21tb24KPiBzZXQgb2YgaGFyZHdhcmUgSVAgc28gaGF2ZSBhIGNvbW1vbiByZWdp
-c3RlciBtYXAgKHdpdGggYSBmZXcgbWlub3IKPiBkZXZpY2UtdG8tZGV2aWNlIHZhcmlhdGlvbnMp
-Lgo+IAo+IFRoZSByZWdpc3RlcnMuaCBmaWxlIGlzIHRvb2wtZ2VuZXJhdGVkIGRpcmVjdGx5IGZy
-b20gdGhlIGhhcmR3YXJlIGRlc2lnbgo+IGJ1dCBoYXMgYmVlbiBtYW51YWxseSBzdHJpcHBlZCBk
-b3duIHRvIHJlZHVjZSBzaXplIChmdWxsIHJlZ2lzdGVyCj4gbWFwIGlzID40NDAwMCBsaW5lcyku
-IEFsbCBuYW1lcyBhcmUga2VwdCB0aGUgc2FtZSBhcyBkYXRhc2hlZXQgbmFtZXMKPiBzbyB0aGF0
-IHRoZXkgY2FuIGJlIGNyb3NzLXJlZmVyZW5jZWQgYmV0d2VlbiBzb3VyY2UgYW5kIGRhdGFzaGVl
-dCB3aXRob3V0Cj4gY29uZnVzaW9uLgo+IAo+IFRoZSByZWdpc3RlciBtYXAgbGF5b3V0IGlzIGtl
-cHQgZnVsbHktZGVmaW5lZCByYXRoZXIgdGhhbiBmYWN0b3JlZCBpbnRvCj4gbWFjcm9zIGFuZC9v
-ciBibG9jay1pbmRleGluZyBjb2RlLiBUaGUgbWFqb3IgcmVhc29ucyBmb3IgdGhpcyBhcmU6Cj4g
-Cj4gIC0gIzEgaXMgdGhhdCBpdCBtYWtlcyB0aGUgc291cmNlIGhpZ2hseSBncmVwcGFibGUsIHdo
-aWNoIGlzIGltcG9ydGFudC4KPiAgICAiV2hhdCBkb2VzIHRoZSBkcml2ZXIgZG8gd2l0aCByZWdp
-c3RlciBiaXRzIFhZWiIgb3IgIldoZXJlIGRvZXMgaXQgdXNlCj4gICAgcmVnaXN0ZXIgYml0cyBY
-WVoiIGFyZSBjb21tb25seSB0eXBlcyBvZiBxdWVzdGlvbnMuIFRoZXNlIGNhbiBiZSBxdWlja2x5
-Cj4gICAgYW5zd2VyZWQgYnkgYSBncmVwLiBTcXVhc2hpbmcgZGVmaW5pdGlvbnMgaW50byBnZW5l
-cmF0b3IgbWFjcm9zIG9yIGJsb2NrLQo+ICAgIGluZGV4aW5nIGNvZGUgaXMgYSB3YXkgb2YgZGVm
-ZWF0aW5nIGdyZXAuCj4gCj4gIC0gbW9zdCBvZiB0aGUgcmVnaXN0ZXIgZGVmaW5pdGlvbnMgYXJl
-IHVzZWQgaW4gdGFibGVzLCBzbyBhIGNvbnN0YW50IHZhbHVlCj4gICAgaXMgcmVxdWlyZWQuIFVz
-aW5nIGdlbmVyYXRvciBtYWNyb3MgbWFrZSB0aGUgdGFibGUgZGVmaW5pdGlvbiBjbHVua3kgYW5k
-Cj4gICAgb2JzY3VyZS4KPiAKPiAgLSB0aGUgY29kZSBpcyBjbGVhcmVyIHdoZW4gaXQncyB0aGVy
-ZSBpbiB0aGUgc291cmNlIGV4YWN0bHkgd2hhdCByZWdpc3Rlcgo+ICAgIGFuZCBmaWVsZCBpdCBp
-cyB1c2luZwo+IAo+ICAtIGl0IGlzIGVhc2llciB0byBkaWZmIHRoZSByZWdpc3RlciBtYXAgb2Yg
-YSBuZXcgKHVuc3VwcG9ydGVkKSBjb2RlYyBhZ2FpbnN0Cj4gICAgd2hhdCBpcyBhbHJlYWR5IHN1
-cHBvcnRlZCBhbmQgbWVyZ2UgaW4gZGlmZmVyZW5jZXMKPiAKPiAgLSBpdCBtYWtlcyB0aGUgcmVn
-aXN0ZXIgbWFwIGF2YWlsYWJsZSBpbiBzb3VyY2UgZm9yIG1haW50ZW5hbmNlL2RlYnVnZ2luZwo+
-ICAgIGluc3RlYWQgb2YgaGF2aW5nIHRvIHJlZmVyIGJhY2sgdG8gdGhlIGRhdGFzaGVldCBmb3Ig
-YSByZWdpc3RlciBtYXAKPiAKPiBTaWduZWQtb2ZmLWJ5OiBSaWNoYXJkIEZpdHpnZXJhbGQgPHJm
-QG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiAtLS0KPiBDaGFuZ2VzIHNpbmNlIFYzOgo+
-IC0gTWFudWFsbHkgc3RyaXBwZWQgb3V0IGEgbG90IG1vcmUgc3R1ZmYsIGRlZmluZXMgd2UncmUg
-bm90IHVzaW5nIHJpZ2h0IG5vdwo+IC0gQWRkZWQgdGhlIGV4cGxhbmF0aW9uIGFib3ZlIHRvIHRo
-ZSBjb21taXQgbWVzc2FnZSBvZiB3aHkgd2UgZGVmaW5lIHRoZQo+ICAgbWFwIGVmZmVjdGl2ZWx5
-IHZlcmJhdGltCj4gCj4gIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
-MTAgKwo+ICBpbmNsdWRlL2xpbnV4L21mZC9tYWRlcmEvcmVnaXN0ZXJzLmggfCAzOTg3ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgMiBmaWxlcyBjaGFuZ2VkLCAzOTk3IGlu
-c2VydGlvbnMoKykKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbWZkL21hZGVy
-YS9yZWdpc3RlcnMuaAoKRm9yIG15IG93biByZWZlcmVuY2U6CiAgQWNrZWQtZm9yLU1GRC1ieTog
-TGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNU
-TWljcm9lbGVjdHJvbmljcyBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNv
-dXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0
-dGVyIHwgQmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: rsnd: move rsnd_ssi_config_init() execute condition into it.
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From bf23c6a3813aac96e0af01565aba012b25c8bae5 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 8 Aug 2017 01:32:08 +0000
+Subject: [PATCH] ASoC: rsnd: move rsnd_ssi_config_init() execute condition
+ into it.
+
+Make it the same style as other functions
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/ssi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 49cdc5e007b3..3ee7b2de7dea 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -335,6 +335,9 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	u32 wsr;
+ 	int is_tdm;
+ 
++	if (rsnd_ssi_is_parent(mod, io))
++		return;
++
+ 	is_tdm = rsnd_runtime_is_ssi_tdm(io);
+ 
+ 	/*
+@@ -472,8 +475,7 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (!rsnd_ssi_is_parent(mod, io))
+-		rsnd_ssi_config_init(mod, io);
++	rsnd_ssi_config_init(mod, io);
+ 
+ 	rsnd_ssi_register_setup(mod);
+ 
+-- 
+2.13.2
