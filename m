@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: control SSICR::EN correctly" to the asoc tree
-Date: Tue, 08 Aug 2017 12:06:06 +0100
-Message-ID: <E1df2Ks-0004uK-Kl@finisterre>
-References: <874ltin959.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: rsnd_ssi_can_output_clk() macro" to the asoc tree
+Date: Tue, 08 Aug 2017 12:06:10 +0100
+Message-ID: <E1df2Kw-0004ve-BA@finisterre>
+References: <871somn93g.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <874ltin959.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871somn93g.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: control SSICR::EN correctly
+   ASoC: rsnd: rsnd_ssi_can_output_clk() macro
 
 has been applied to the asoc tree at
 
@@ -37,131 +37,67 @@ to this mail.
 Thanks,
 Mark
 
->From 597b046f0d99b0b0123a715f8c8b1ea881d2bec6 Mon Sep 17 00:00:00 2001
+>From bb002f925ae18c0c9d72d87b74b311a5209d7178 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 8 Aug 2017 01:31:39 +0000
-Subject: [PATCH] ASoC: rsnd: control SSICR::EN correctly
+Date: Tue, 8 Aug 2017 01:32:42 +0000
+Subject: [PATCH] ASoC: rsnd: rsnd_ssi_can_output_clk() macro
 
-In case of SSI0 playback, SSI1 capture, SSI0 might be shared for
-clock output if clock master mode.
+For example SSI0/SSI1 case, SSI1 can share pin with SSI0.
+And then, SSI1 needs SSI0's clock.
+This clock controlling is very picky and difficult to understand
+in current code.
 
-Current rsnd driver had been assumed that SSI clock contiguous
-output which is needed for SSI parent needs SSICR::EN (SSI module
-enable) bit.
-But, this bit controls data input/output, not for clock.
-Clock contiguous output needs SSICR : FORCE, SCKD, SWSD,
-and SSIWSR : CONT. Not SSICR : EN.
+This patch adds new rsnd_ssi_can_output_clk() macro,
+the code will be more understandable.
 
-Because of this wrong assumption, and insufficient control, on current
-code, for example, if it starts SSI0(playback) -> SSI1(capture) order,
-SSI0 SSICR::EN bit will temporarily be 0.
-It causes playback side underrun error. This is bug.
-We can reproduce this issue with SSI+SRC (without DVC), and capture
-during playback operation.
-
-This patch fixup current (wrong) assumption, and control SSICR::EN bit
-correctly.
-
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 40 +++++++++++++++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 9 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 46feddd78ee2..c5d5c64152e9 100644
+index 3ee7b2de7dea..434996d4054a 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -72,6 +72,7 @@ struct rsnd_ssi {
- 	u32 cr_own;
- 	u32 cr_clk;
- 	u32 cr_mode;
-+	u32 cr_en;
- 	u32 wsr;
- 	int chan;
- 	int rate;
-@@ -291,6 +292,16 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 	if (ret < 0)
- 		return ret;
+@@ -106,6 +106,7 @@ struct rsnd_ssi {
+ 	(rsnd_ssi_multi_slaves(io) & (1 << rsnd_mod_id(mod)))
+ #define rsnd_ssi_is_run_mods(mod, io) \
+ 	(rsnd_ssi_run_mods(io) & (1 << rsnd_mod_id(mod)))
++#define rsnd_ssi_can_output_clk(mod) (!__rsnd_ssi_is_pin_sharing(mod))
  
-+	/*
-+	 * SSI clock will be output contiguously
-+	 * by below settings.
-+	 * This means, rsnd_ssi_master_clk_start()
-+	 * and rsnd_ssi_register_setup() are necessary
-+	 * for SSI parent
-+	 *
-+	 * SSICR  : FORCE, SCKD, SWSD
-+	 * SSIWSR : CONT
-+	 */
- 	ssi->cr_clk = FORCE | SWL_32 | SCKD | SWSD | CKDV(idx);
- 	ssi->wsr = CONT;
- 	ssi->rate = rate;
-@@ -393,7 +404,8 @@ static void rsnd_ssi_register_setup(struct rsnd_mod *mod)
- 	rsnd_mod_write(mod, SSIWSR,	ssi->wsr);
- 	rsnd_mod_write(mod, SSICR,	ssi->cr_own	|
- 					ssi->cr_clk	|
--					ssi->cr_mode); /* without EN */
-+					ssi->cr_mode	|
-+					ssi->cr_en);
- }
- 
- static void rsnd_ssi_pointer_init(struct rsnd_mod *mod,
-@@ -544,6 +556,8 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
- 			  struct rsnd_dai_stream *io,
- 			  struct rsnd_priv *priv)
+ int rsnd_ssi_hdmi_port(struct rsnd_dai_stream *io)
  {
-+	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+
- 	if (!rsnd_ssi_is_run_mods(mod, io))
+@@ -255,7 +256,6 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
+ 	int chan = rsnd_runtime_channel_for_ssi(io);
+ 	int idx, ret;
+ 	unsigned int main_rate;
+@@ -266,7 +266,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	if (!rsnd_rdai_is_clk_master(rdai))
  		return 0;
  
-@@ -554,7 +568,19 @@ static int rsnd_ssi_start(struct rsnd_mod *mod,
- 	if (rsnd_ssi_multi_slaves_runtime(io))
+-	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
++	if (!rsnd_ssi_can_output_clk(mod))
  		return 0;
  
--	rsnd_mod_bset(mod, SSICR, EN, EN);
-+	/*
-+	 * EN is for data output.
-+	 * SSI parent EN is not needed.
-+	 */
-+	if (rsnd_ssi_is_parent(mod, io))
-+		return 0;
-+
-+	ssi->cr_en = EN;
-+
-+	rsnd_mod_write(mod, SSICR,	ssi->cr_own	|
-+					ssi->cr_clk	|
-+					ssi->cr_mode	|
-+					ssi->cr_en);
+ 	if (rsnd_ssi_is_multi_slave(mod, io))
+@@ -307,12 +307,11 @@ static void rsnd_ssi_master_clk_stop(struct rsnd_mod *mod,
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
  
- 	return 0;
- }
-@@ -569,13 +595,7 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
+ 	if (!rsnd_rdai_is_clk_master(rdai))
+ 		return;
  
--	/*
--	 * don't stop if not last user
--	 * see also
--	 *	rsnd_ssi_start
--	 *	rsnd_ssi_interrupt
--	 */
--	if (ssi->usrcnt > 1)
-+	if (rsnd_ssi_is_parent(mod, io))
- 		return 0;
+-	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
++	if (!rsnd_ssi_can_output_clk(mod))
+ 		return;
  
- 	/*
-@@ -595,6 +615,8 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	rsnd_mod_write(mod, SSICR, cr);	/* disabled all */
- 	rsnd_ssi_status_check(mod, IIRQ);
- 
-+	ssi->cr_en = 0;
-+
- 	return 0;
- }
- 
+ 	if (ssi->usrcnt > 1)
 -- 
 2.13.2
