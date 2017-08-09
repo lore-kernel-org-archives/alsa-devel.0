@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove 16ch support for now" to the asoc tree
-Date: Wed, 09 Aug 2017 17:56:40 +0100
-Message-ID: <E1dfUHg-0005Kt-QQ@debutante>
-References: <87wp6decyf.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87wp6decyf.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Nguyen Viet Dung <dung.nguyen.aj@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.orgNguyen Viet Dung <dung.nguyen.aj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5514: Eliminate the noise in the ASRC
+	case" to the asoc tree
+Date: Wed, 09 Aug 2017 17:56:45 +0100
+Message-ID: <E1dfUHl-0005M2-Pd@debutante>
+References: <1502243774-31177-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 381AB267449
+ for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2017 18:57:03 +0200 (CEST)
+In-Reply-To: <1502243774-31177-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, harshapriya.n@intel.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove 16ch support for now
+   ASoC: rt5514: Eliminate the noise in the ASRC case
 
 has been applied to the asoc tree at
 
@@ -37,68 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From 29d03ff5c752e02918e8319fdcc86faa374d36ec Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 9 Aug 2017 01:46:23 +0000
-Subject: [PATCH] ASoC: rsnd: remove 16ch support for now
+>From ade82fdbae6905e80f107596f2e0b4df84490d28 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Wed, 9 Aug 2017 09:56:14 +0800
+Subject: [PATCH] ASoC: rt5514: Eliminate the noise in the ASRC case
 
-R-Car Gen3 sound device can use TDM 16ch, but its usage is very
-limited. It is not yet supported.
-Let's remove unexpected/unsupported channel settings for now.
-This patch makes xx_ADINR register settings sanity without
-runtime check.
+In the ASRC case, there is the noise if the clock is asynchronous with the
+LRCK. The default settings will eliminate the noise.
 
-R-Car Gen3 datasheet
-
-40.4.7 Note on Usage of the SSIU Module
-When an SSIU module is used in "TDM-16ch mode",
-only the transfer with the external memory is available.
-
-Reported-by: Nguyen Viet Dung <dung.nguyen.aj@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5514.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 3f2ced26ed37..7fa40fcad59e 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -726,7 +726,6 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	case 2:
- 	case 6:
- 	case 8:
--	case 16:
- 		/* TDM Extend Mode */
- 		rsnd_rdai_channels_set(rdai, slots);
- 		rsnd_rdai_ssi_lane_set(rdai, 1);
-@@ -740,7 +739,7 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
- }
- 
- static unsigned int rsnd_soc_hw_channels_list[] = {
--	2, 6, 8, 16,
-+	2, 6, 8,
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 21cbb566c0d3..0eabe569ab73 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -64,6 +64,8 @@ static const struct reg_sequence rt5514_patch[] = {
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000362},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000362},
  };
  
- static unsigned int rsnd_soc_hw_rate_list[] = {
-@@ -1017,7 +1016,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
- 	drv->playback.rates		= RSND_RATES;
- 	drv->playback.formats		= RSND_FMTS;
- 	drv->playback.channels_min	= 2;
--	drv->playback.channels_max	= 16;
-+	drv->playback.channels_max	= 8;
- 	drv->playback.stream_name	= rdai->playback.name;
- 
- 	snprintf(rdai->capture.name, RSND_DAI_NAME_SIZE,
-@@ -1025,7 +1024,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
- 	drv->capture.rates		= RSND_RATES;
- 	drv->capture.formats		= RSND_FMTS;
- 	drv->capture.channels_min	= 2;
--	drv->capture.channels_max	= 16;
-+	drv->capture.channels_max	= 8;
- 	drv->capture.stream_name	= rdai->capture.name;
- 
- 	rdai->playback.rdai		= rdai;
+ static const struct reg_default rt5514_reg[] = {
+@@ -89,10 +91,10 @@ static const struct reg_default rt5514_reg[] = {
+ 	{RT5514_DELAY_BUF_CTRL3,	0x00000000},
+ 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x00000362},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000362},
+ 	{RT5514_DOWNFILTER1_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER1_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x00000362},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000362},
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_LDO18_16,	0x02000345},
+ 	{RT5514_ANA_CTRL_ADC12,		0x0000a2a8},
 -- 
 2.13.3
