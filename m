@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: avoid duplicate free_irq()" to
-	the asoc tree
-Date: Wed, 09 Aug 2017 17:56:37 +0100
-Message-ID: <E1dfUHd-0005Js-Pc@debutante>
-References: <87valxebkk.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E6BC6266C25
- for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2017 18:56:48 +0200 (CEST)
-In-Reply-To: <87valxebkk.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: rsnd: remove 16ch support for now" to the asoc tree
+Date: Wed, 09 Aug 2017 17:56:40 +0100
+Message-ID: <E1dfUHg-0005Kt-QQ@debutante>
+References: <87wp6decyf.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87wp6decyf.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Cc: Nguyen Viet Dung <dung.nguyen.aj@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.orgNguyen Viet Dung <dung.nguyen.aj@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: avoid duplicate free_irq()
+   ASoC: rsnd: remove 16ch support for now
 
 has been applied to the asoc tree at
 
@@ -53,41 +37,68 @@ to this mail.
 Thanks,
 Mark
 
->From e0936c3471a8411a5df327641fa3ffe12a2fb07b Mon Sep 17 00:00:00 2001
+>From 29d03ff5c752e02918e8319fdcc86faa374d36ec Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 9 Aug 2017 02:16:20 +0000
-Subject: [PATCH] ASoC: rsnd: avoid duplicate free_irq()
+Date: Wed, 9 Aug 2017 01:46:23 +0000
+Subject: [PATCH] ASoC: rsnd: remove 16ch support for now
 
-commit 1f8754d4daea5f ("ASoC: rsnd: don't call free_irq() on
-Parent SSI") fixed Parent SSI duplicate free_irq().
-But on Renesas Sound, not only Parent SSI but also Multi SSI
-have same issue.
-This patch avoid duplicate free_irq() if it was not pure SSI.
+R-Car Gen3 sound device can use TDM 16ch, but its usage is very
+limited. It is not yet supported.
+Let's remove unexpected/unsupported channel settings for now.
+This patch makes xx_ADINR register settings sanity without
+runtime check.
 
-Fixes: 1f8754d4daea5f ("ASoC: rsnd: don't call free_irq() on Parent SSI")
+R-Car Gen3 datasheet
+
+40.4.7 Note on Usage of the SSIU Module
+When an SSIU module is used in "TDM-16ch mode",
+only the transfer with the external memory is available.
+
+Reported-by: Nguyen Viet Dung <dung.nguyen.aj@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index c5d5c64152e9..90cc9c13c4e0 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -845,10 +845,10 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
- 			       struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
--	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
-+	struct rsnd_mod *pure_ssi_mod = rsnd_io_to_mod_ssi(io);
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 3f2ced26ed37..7fa40fcad59e 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -726,7 +726,6 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	case 2:
+ 	case 6:
+ 	case 8:
+-	case 16:
+ 		/* TDM Extend Mode */
+ 		rsnd_rdai_channels_set(rdai, slots);
+ 		rsnd_rdai_ssi_lane_set(rdai, 1);
+@@ -740,7 +739,7 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ }
  
--	/* Do nothing for SSI parent mod */
--	if (ssi_parent_mod == mod)
-+	/* Do nothing if non SSI (= SSI parent, multi SSI) mod */
-+	if (pure_ssi_mod != mod)
- 		return 0;
+ static unsigned int rsnd_soc_hw_channels_list[] = {
+-	2, 6, 8, 16,
++	2, 6, 8,
+ };
  
- 	/* PIO will request IRQ again */
+ static unsigned int rsnd_soc_hw_rate_list[] = {
+@@ -1017,7 +1016,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 	drv->playback.rates		= RSND_RATES;
+ 	drv->playback.formats		= RSND_FMTS;
+ 	drv->playback.channels_min	= 2;
+-	drv->playback.channels_max	= 16;
++	drv->playback.channels_max	= 8;
+ 	drv->playback.stream_name	= rdai->playback.name;
+ 
+ 	snprintf(rdai->capture.name, RSND_DAI_NAME_SIZE,
+@@ -1025,7 +1024,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 	drv->capture.rates		= RSND_RATES;
+ 	drv->capture.formats		= RSND_FMTS;
+ 	drv->capture.channels_min	= 2;
+-	drv->capture.channels_max	= 16;
++	drv->capture.channels_max	= 8;
+ 	drv->capture.stream_name	= rdai->capture.name;
+ 
+ 	rdai->playback.rdai		= rdai;
 -- 
 2.13.3
