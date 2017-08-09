@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/4] ALSA: emux: Adjust four checks for null
-	pointers
-Date: Wed, 9 Aug 2017 10:03:51 +0200
-Message-ID: <ef3686fe-4f2d-8cdb-f2ed-0055f0a241c0@users.sourceforge.net>
+Subject: [PATCH 4/4] ALSA: emux: Delete two error messages for
+ a failed memory allocation in snd_emux_create_port()
+Date: Wed, 9 Aug 2017 10:04:46 +0200
+Message-ID: <ed0f8f37-928a-9996-5105-3b5794710954@users.sourceforge.net>
 References: <412aa3a5-c8b6-c1fe-febb-0d62927dacc2@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 80E082673DD
- for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2017 10:03:56 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 148FC2673DD
+ for <alsa-devel@alsa-project.org>; Wed,  9 Aug 2017 10:05:24 +0200 (CEST)
 In-Reply-To: <412aa3a5-c8b6-c1fe-febb-0d62927dacc2@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,38 +26,39 @@ To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Kees Cook <ke
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBXZWQsIDkgQXVnIDIwMTcgMDk6MjI6NDIgKzAyMDAKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVu
-dC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVURi04CkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
-bmc6IDhiaXQKClRoZSBzY3JpcHQg4oCcY2hlY2twYXRjaC5wbOKAnSBwb2ludGVkIGluZm9ybWF0
-aW9uIG91dCBsaWtlIHRoZSBmb2xsb3dpbmcuCgpDb21wYXJpc29uIHRvIE5VTEwgY291bGQgYmUg
-d3JpdHRlbiAh4oCmCgpUaHVzIGZpeCBhZmZlY3RlZCBzb3VyY2UgY29kZSBwbGFjZXMuCgpTaWdu
-ZWQtb2ZmLWJ5OiBNYXJrdXMgRWxmcmluZyA8ZWxmcmluZ0B1c2Vycy5zb3VyY2Vmb3JnZS5uZXQ+
-Ci0tLQogc291bmQvc3ludGgvZW11eC9lbXV4X3NlcS5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNo
-YW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3Vu
-ZC9zeW50aC9lbXV4L2VtdXhfc2VxLmMgYi9zb3VuZC9zeW50aC9lbXV4L2VtdXhfc2VxLmMKaW5k
-ZXggMTJhY2YxOGM1YmU0Li5mZDZjYmQ0Mzk1MTEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3N5bnRoL2Vt
-dXgvZW11eF9zZXEuYworKysgYi9zb3VuZC9zeW50aC9lbXV4L2VtdXhfc2VxLmMKQEAgLTk5LDcg
-Kzk5LDcgQEAgc25kX2VtdXhfaW5pdF9zZXEoc3RydWN0IHNuZF9lbXV4ICplbXUsIHN0cnVjdCBz
-bmRfY2FyZCAqY2FyZCwgaW50IGluZGV4KQogCQlzcHJpbnRmKHRtcG5hbWUsICIlcyBQb3J0ICVk
-IiwgZW11LT5uYW1lLCBpKTsKIAkJcCA9IHNuZF9lbXV4X2NyZWF0ZV9wb3J0KGVtdSwgdG1wbmFt
-ZSwgTUlESV9DSEFOTkVMUywKIAkJCQkJIDAsICZwaW5mbyk7Ci0JCWlmIChwID09IE5VTEwpIHsK
-KwkJaWYgKCFwKSB7CiAJCQlzbmRfcHJpbnRrKEtFUk5fRVJSICJjYW4ndCBjcmVhdGUgcG9ydFxu
-Iik7CiAJCQlyZXR1cm4gLUVOT01FTTsKIAkJfQpAQCAtMTUxLDcgKzE1MSw3IEBAIHNuZF9lbXV4
-X2NyZWF0ZV9wb3J0KHN0cnVjdCBzbmRfZW11eCAqZW11LCBjaGFyICpuYW1lLAogCX0KIAlwLT5j
-aHNldC5jaGFubmVscyA9IGtjYWxsb2MobWF4X2NoYW5uZWxzLCBzaXplb2YoKnAtPmNoc2V0LmNo
-YW5uZWxzKSwKIAkJCQkgICAgR0ZQX0tFUk5FTCk7Ci0JaWYgKHAtPmNoc2V0LmNoYW5uZWxzID09
-IE5VTEwpIHsKKwlpZiAoIXAtPmNoc2V0LmNoYW5uZWxzKSB7CiAJCXNuZF9wcmludGsoS0VSTl9F
-UlIgIm5vIG1lbW9yeVxuIik7CiAJCWtmcmVlKHApOwogCQlyZXR1cm4gTlVMTDsKQEAgLTM3Myw3
-ICszNzMsNyBAQCBpbnQgc25kX2VtdXhfaW5pdF92aXJtaWRpKHN0cnVjdCBzbmRfZW11eCAqZW11
-LCBzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQpCiAJCXJldHVybiAwOwogCiAJZW11LT52bWlkaSA9IGtj
-YWxsb2MoZW11LT5taWRpX3BvcnRzLCBzaXplb2YoKmVtdS0+dm1pZGkpLCBHRlBfS0VSTkVMKTsK
-LQlpZiAoZW11LT52bWlkaSA9PSBOVUxMKQorCWlmICghZW11LT52bWlkaSkKIAkJcmV0dXJuIC1F
-Tk9NRU07CiAKIAlmb3IgKGkgPSAwOyBpIDwgZW11LT5taWRpX3BvcnRzOyBpKyspIHsKQEAgLTQw
-NSw3ICs0MDUsNyBAQCBpbnQgc25kX2VtdXhfZGVsZXRlX3Zpcm1pZGkoc3RydWN0IHNuZF9lbXV4
-ICplbXUpCiB7CiAJaW50IGk7CiAKLQlpZiAoZW11LT52bWlkaSA9PSBOVUxMKQorCWlmICghZW11
-LT52bWlkaSkKIAkJcmV0dXJuIDA7CiAKIAlmb3IgKGkgPSAwOyBpIDwgZW11LT5taWRpX3BvcnRz
-OyBpKyspIHsKLS0gCjIuMTMuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 9 Aug 2017 09:30:34 +0200
+
+Omit extra messages for a memory allocation failure in this function.
+
+This issue was detected by using the Coccinelle software.
+
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/synth/emux/emux_seq.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/synth/emux/emux_seq.c b/sound/synth/emux/emux_seq.c
+index fd6cbd439511..396c406d0f77 100644
+--- a/sound/synth/emux/emux_seq.c
++++ b/sound/synth/emux/emux_seq.c
+@@ -145,14 +145,12 @@ snd_emux_create_port(struct snd_emux *emu, char *name,
+ 
+ 	/* Allocate structures for this channel */
+ 	p = kzalloc(sizeof(*p), GFP_KERNEL);
+-	if (!p) {
+-		snd_printk(KERN_ERR "no memory\n");
++	if (!p)
+ 		return NULL;
+-	}
++
+ 	p->chset.channels = kcalloc(max_channels, sizeof(*p->chset.channels),
+ 				    GFP_KERNEL);
+ 	if (!p->chset.channels) {
+-		snd_printk(KERN_ERR "no memory\n");
+ 		kfree(p);
+ 		return NULL;
+ 	}
+-- 
+2.13.4
