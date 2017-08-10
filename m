@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 2/5] ASoC: codecs: msm8916-wcd-analog:
- get micbias voltage from dt
-Date: Thu, 10 Aug 2017 16:24:37 +0100
-Message-ID: <20170810152437.ezfhi7cukutyabmt@sirena.org.uk>
-References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
- <20170809164927.19663-3-srinivas.kandagatla@linaro.org>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ASoC: rsnd: Delete an error message for a
+ failed memory allocation in three functions
+Date: Thu, 10 Aug 2017 17:25:48 +0200
+Message-ID: <181b6355-b6b6-eeae-d85b-9fb465d96b85@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5297846276085897116=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C81F92665D5
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 17:24:50 +0200 (CEST)
-In-Reply-To: <20170809164927.19663-3-srinivas.kandagatla@linaro.org>
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id F31C62665D5
+ for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 17:26:33 +0200 (CEST)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, damien.riegel@savoirfairelinux.com, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org, Fengguang Wu <fengguang.wu@intel.com>, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Marek Vasut <marek.vasut+renesas@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 10 Aug 2017 17:13:19 +0200
 
---===============5297846276085897116==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="z6ujwgqd7l5jrigt"
-Content-Disposition: inline
+Omit an extra message for a memory allocation failure in these functions.
 
+This issue was detected by using the Coccinelle software.
 
---z6ujwgqd7l5jrigt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/sh/rcar/adg.c  | 4 +---
+ sound/soc/sh/rcar/core.c | 4 +---
+ sound/soc/sh/rcar/gen.c  | 4 +---
+ 3 files changed, 3 insertions(+), 9 deletions(-)
 
-On Wed, Aug 09, 2017 at 06:49:24PM +0200, srinivas.kandagatla@linaro.org wrote:
-
-> -	snd_soc_write(codec, CDC_A_MICB_1_VAL, MICB_1_VAL_MICB_OUT_VAL_V2P70V);
-> -	/*
-> -	 * Special headset needs MICBIAS as 2.7V so wait for
-> -	 * 50 msec for the MICBIAS to reach 2.7 volts.
-> -	 */
-> -	msleep(50);
-> +	if (wcd->micbias_mv)
-
-We seem to have just completely lost this ramp time handling?
-
---z6ujwgqd7l5jrigt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMerQACgkQJNaLcl1U
-h9ANWQf/eOKmZtDl7Ev0tgUwV5RB3Rr6CkkerQlA6J0agUEYjoUim6b0nL+xQSKf
-IW2sncqldb51+d3owLVFbkiUc2U7incAShScipA0JKC0PNQ8pZfUlA7nnlnkYIp7
-nmXy6+fS343zJ80kKpPflCdGBqXOKH6LgTgzavyBfbgaYLOAIAESimIwPaJZTc51
-zREtM4+CpyzbLIoxRWR4npLoMXLiZREsxESrrFh1RQrkTMUrvaULlQ5kvbbMWb/G
-8pey4nAka3rbsRPBAwvml2tSux6mKxD/nKOpSg70pD+zvpqAIPHJiz2PzEczR30/
-iFCL8a3tTyDIHnNhcfujbNpoDeSBCg==
-=uTOH
------END PGP SIGNATURE-----
-
---z6ujwgqd7l5jrigt--
-
---===============5297846276085897116==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5297846276085897116==--
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 5b5389e5b92b..938baff86ef2 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -586,10 +586,8 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 	int ret;
+ 
+ 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
+-	if (!adg) {
+-		dev_err(dev, "ADG allocate failed\n");
++	if (!adg)
+ 		return -ENOMEM;
+-	}
+ 
+ 	ret = rsnd_mod_init(priv, &adg->mod, &adg_ops,
+ 		      NULL, NULL, 0, 0);
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index c34562388cfa..9e331a474a21 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1402,10 +1402,8 @@ static int rsnd_probe(struct platform_device *pdev)
+ 	 *	init priv data
+ 	 */
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv) {
+-		dev_err(dev, "priv allocate failed\n");
++	if (!priv)
+ 		return -ENODEV;
+-	}
+ 
+ 	priv->pdev	= pdev;
+ 	priv->flags	= (unsigned long)of_device_get_match_data(dev);
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index ee00e3516911..f04c4100043a 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -406,10 +406,8 @@ int rsnd_gen_probe(struct rsnd_priv *priv)
+ 	int ret;
+ 
+ 	gen = devm_kzalloc(dev, sizeof(*gen), GFP_KERNEL);
+-	if (!gen) {
+-		dev_err(dev, "GEN allocate failed\n");
++	if (!gen)
+ 		return -ENOMEM;
+-	}
+ 
+ 	priv->gen = gen;
+ 
+-- 
+2.14.0
