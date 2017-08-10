@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd-analog: move codec reset to probe" to the asoc tree
-Date: Thu, 10 Aug 2017 16:42:02 +0100
-Message-ID: <E1dfpb0-0001gO-0K@finisterre>
-References: <20170726003512.18965-4-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170726003512.18965-4-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: call request_irq/free_irq once in MIX case" to the asoc tree
+Date: Thu, 10 Aug 2017 16:42:19 +0100
+Message-ID: <E1dfpbH-0001js-DV@finisterre>
+References: <873790z3y6.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <873790z3y6.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: msm8916-wcd-analog: move codec reset to probe
+   ASoC: rsnd: call request_irq/free_irq once in MIX case
 
 has been applied to the asoc tree at
 
@@ -37,98 +37,89 @@ to this mail.
 Thanks,
 Mark
 
->From 52981e29eedf6e90ee381c2c1a64be1848d3353e Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 9 Aug 2017 18:49:23 +0200
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: move codec reset to probe
+>From b6e58fcacb3edc6245ecf700207ba675cba18018 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 10 Aug 2017 00:07:38 +0000
+Subject: [PATCH] ASoC: rsnd: call request_irq/free_irq once in MIX case
 
-This patch move the codec reset code from dai ops to codec probe, so
-that the codec is not held in reset when headset detection block is
-still active.
+Each module's dai callback function availability is controlled
+by mod->status. For example "always called", "call once".
+In .probe/.remove case, it needs to be called always, because
+.probe will call xxx_attach() function on .probe, especially
+if platform is using MIXer.
+For example, below case, MIX0/DVC0/SSI0 needs to be called twice.
 
-Without this patch the codec block will be in reset as long as its not
-actively used, which means headset events will not be functional if the
-codec dai is not actively used. Point to note is that the headset
-detection blocks will work in low power when there is no active audio
-usecase and switch to micbias source when audio usecase is active.
+        playback = <&src0 &ctu02 &mix0 &dvc0 &ssi0>;
+        playback = <&src2 &ctu03 &mix0 &dvc0 &ssi0>;
 
-Existing dapms should put the codec in low power state anyway when there
-is no audio usecase.
+But in this case, SSI0 will call request_irq() twice.
+This patch add new RSND_SSI_PROBED flag and control it
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 30 ++++++------------------------
- 1 file changed, 6 insertions(+), 24 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index a78802920c3c..f9a74ff2ce99 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -536,6 +536,9 @@ static int pm8916_wcd_analog_probe(struct snd_soc_codec *codec)
- 		snd_soc_write(codec, wcd_reg_defaults_2_0[reg].reg,
- 			      wcd_reg_defaults_2_0[reg].def);
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index ca9355b86bd9..8bb47144660b 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -90,6 +90,7 @@ struct rsnd_ssi {
+ #define RSND_SSI_NO_BUSIF		(1 << 1) /* SSI+DMA without BUSIF */
+ #define RSND_SSI_HDMI0			(1 << 2) /* for HDMI0 */
+ #define RSND_SSI_HDMI1			(1 << 3) /* for HDMI1 */
++#define RSND_SSI_PROBED			(1 << 4)
  
-+	snd_soc_update_bits(codec, CDC_D_CDC_RST_CTL,
-+			    RST_CTL_DIG_SW_RST_N_MASK,
-+			    RST_CTL_DIG_SW_RST_N_REMOVE_RESET);
+ #define for_each_rsnd_ssi(pos, priv, i)					\
+ 	for (i = 0;							\
+@@ -103,6 +104,7 @@ struct rsnd_ssi {
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+ #define rsnd_ssi_flags_has(p, f) ((p)->flags & f)
+ #define rsnd_ssi_flags_set(p, f) ((p)->flags |= f)
++#define rsnd_ssi_flags_del(p, f) ((p)->flags = ((p)->flags & ~f))
+ #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
+ #define rsnd_ssi_is_multi_slave(mod, io) \
+ 	(rsnd_ssi_multi_slaves(io) & (1 << rsnd_mod_id(mod)))
+@@ -784,11 +786,22 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	/*
+ 	 * SSI might be called again as PIO fallback
+ 	 * It is easy to manual handling for IRQ request/free
++	 *
++	 * OTOH, this function might be called many times if platform is
++	 * using MIX. It needs xxx_attach() many times on xxx_probe().
++	 * Because of it, we can't control .probe/.remove calling count by
++	 * mod->status.
++	 * But it don't need to call request_irq() many times.
++	 * Let's control it by RSND_SSI_PROBED flag.
+ 	 */
+-	ret = request_irq(ssi->irq,
+-			  rsnd_ssi_interrupt,
+-			  IRQF_SHARED,
+-			  dev_name(dev), mod);
++	if (!rsnd_ssi_flags_has(ssi, RSND_SSI_PROBED)) {
++		ret = request_irq(ssi->irq,
++				  rsnd_ssi_interrupt,
++				  IRQF_SHARED,
++				  dev_name(dev), mod);
++
++		rsnd_ssi_flags_set(ssi, RSND_SSI_PROBED);
++	}
+ 
+ 	return ret;
+ }
+@@ -805,7 +818,11 @@ static int rsnd_ssi_common_remove(struct rsnd_mod *mod,
+ 		return 0;
+ 
+ 	/* PIO will request IRQ again */
+-	free_irq(ssi->irq, mod);
++	if (rsnd_ssi_flags_has(ssi, RSND_SSI_PROBED)) {
++		free_irq(ssi->irq, mod);
++
++		rsnd_ssi_flags_del(ssi, RSND_SSI_PROBED);
++	}
+ 
  	return 0;
  }
- 
-@@ -543,6 +546,9 @@ static int pm8916_wcd_analog_remove(struct snd_soc_codec *codec)
- {
- 	struct pm8916_wcd_analog_priv *priv = dev_get_drvdata(codec->dev);
- 
-+	snd_soc_update_bits(codec, CDC_D_CDC_RST_CTL,
-+			    RST_CTL_DIG_SW_RST_N_MASK, 0);
-+
- 	return regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
- 				      priv->supplies);
- }
-@@ -736,28 +742,6 @@ static struct regmap *pm8916_get_regmap(struct device *dev)
- 	return dev_get_regmap(dev->parent, NULL);
- }
- 
--static int pm8916_wcd_analog_startup(struct snd_pcm_substream *substream,
--				      struct snd_soc_dai *dai)
--{
--	snd_soc_update_bits(dai->codec, CDC_D_CDC_RST_CTL,
--			    RST_CTL_DIG_SW_RST_N_MASK,
--			    RST_CTL_DIG_SW_RST_N_REMOVE_RESET);
--
--	return 0;
--}
--
--static void pm8916_wcd_analog_shutdown(struct snd_pcm_substream *substream,
--					 struct snd_soc_dai *dai)
--{
--	snd_soc_update_bits(dai->codec, CDC_D_CDC_RST_CTL,
--			    RST_CTL_DIG_SW_RST_N_MASK, 0);
--}
--
--static struct snd_soc_dai_ops pm8916_wcd_analog_dai_ops = {
--	.startup = pm8916_wcd_analog_startup,
--	.shutdown = pm8916_wcd_analog_shutdown,
--};
--
- static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
- 	[0] = {
- 	       .name = "pm8916_wcd_analog_pdm_rx",
-@@ -769,7 +753,6 @@ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
- 			    .channels_min = 1,
- 			    .channels_max = 3,
- 			    },
--	       .ops = &pm8916_wcd_analog_dai_ops,
- 	       },
- 	[1] = {
- 	       .name = "pm8916_wcd_analog_pdm_tx",
-@@ -781,7 +764,6 @@ static struct snd_soc_dai_driver pm8916_wcd_analog_dai[] = {
- 			   .channels_min = 1,
- 			   .channels_max = 4,
- 			   },
--	       .ops = &pm8916_wcd_analog_dai_ops,
- 	       },
- };
- 
 -- 
 2.13.2
