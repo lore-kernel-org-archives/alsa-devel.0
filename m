@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: add snd_soc_rtdcom_xxx()" to
-	the asoc tree
-Date: Thu, 10 Aug 2017 16:41:53 +0100
-Message-ID: <E1dfpar-0001dp-8a@finisterre>
-References: <87shh2lhbx.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 03B942665D5
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 17:42:04 +0200 (CEST)
-In-Reply-To: <87shh2lhbx.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Simon <horms@verge.net.au>
+Subject: Applied "ASoC: rsnd: Delete an error message for a failed memory allocation in three functions" to the asoc tree
+Date: Thu, 10 Aug 2017 16:41:57 +0100
+Message-ID: <E1dfpav-0001fF-Kv@finisterre>
+References: <181b6355-b6b6-eeae-d85b-9fb465d96b85@users.sourceforge.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <181b6355-b6b6-eeae-d85b-9fb465d96b85@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Elfring <elfring@users.sourceforge.net>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Fengguang Wu <fengguang.wu@intel.com>, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Marek Vasut <marek.vasut+renesas@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: add snd_soc_rtdcom_xxx()
+   ASoC: rsnd: Delete an error message for a failed memory allocation in three functions
 
 has been applied to the asoc tree at
 
@@ -53,139 +37,72 @@ to this mail.
 Thanks,
 Mark
 
->From a0ac441152238c9b474bafa46940511d9b2e9c7e Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 8 Aug 2017 06:17:47 +0000
-Subject: [PATCH] ASoC: soc-core: add snd_soc_rtdcom_xxx()
+>From 0d7820d0918efa6c2a53acdfc47cbfc3b48df727 Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 10 Aug 2017 17:13:19 +0200
+Subject: [PATCH] ASoC: rsnd: Delete an error message for a failed memory
+ allocation in three functions
 
-Current snd_soc_pcm_runtime has platform / codec pointers, and we could
-use these specific pointer. But these will be replaced to more generic
-"component" soon, and will need more generic method to get each
-connected component pointer from rtd.
+Omit an extra message for a memory allocation failure in these functions.
 
-This patch adds new snd_soc_rtdcom_xxx() to connect/disconnect
-component to rtd. It means same as previous "platform" / "codec"
-pointer style, but more generic.
-We can find necessary component pointer from rtd by using component
-driver name on snd_soc_rtdcom_lookup().
+This issue was detected by using the Coccinelle software.
 
-Here, the reason why it uses "driver name" is that "component name"
-was created by fmt_single_name() and difficult to use it from driver.
-Driver of course knows its "driver name", thus, using it is more easy.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 13 +++++++++++++
- sound/soc/soc-core.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+ sound/soc/sh/rcar/adg.c  | 4 +---
+ sound/soc/sh/rcar/core.c | 4 +---
+ sound/soc/sh/rcar/gen.c  | 4 +---
+ 3 files changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index aad3f14966f1..87dbe39797ca 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -886,6 +886,18 @@ struct snd_soc_component {
- #endif
- };
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 5b5389e5b92b..938baff86ef2 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -586,10 +586,8 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 	int ret;
  
-+struct snd_soc_rtdcom_list {
-+	struct snd_soc_component *component;
-+	struct list_head list; /* rtd::component_list */
-+};
-+struct snd_soc_component*
-+snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
-+		       const char *driver_name);
-+#define for_each_rtdcom(rtd, rtdcom) \
-+	list_for_each_entry(rtdcom, &(rtd)->component_list, list)
-+#define for_each_rtdcom_safe(rtd, rtdcom1, rtdcom2) \
-+	list_for_each_entry_safe(rtdcom1, rtdcom2, &(rtd)->component_list, list)
-+
- /* SoC Audio Codec device */
- struct snd_soc_codec {
- 	struct device *dev;
-@@ -1240,6 +1252,7 @@ struct snd_soc_pcm_runtime {
+ 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
+-	if (!adg) {
+-		dev_err(dev, "ADG allocate failed\n");
++	if (!adg)
+ 		return -ENOMEM;
+-	}
  
- 	unsigned int num; /* 0-based and monotonic increasing */
- 	struct list_head list; /* rtd list of the soc card */
-+	struct list_head component_list; /* list of connected components */
+ 	ret = rsnd_mod_init(priv, &adg->mod, &adg_ops,
+ 		      NULL, NULL, 0, 0);
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 2c12ad2b2b34..650cc28b0fb6 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1401,10 +1401,8 @@ static int rsnd_probe(struct platform_device *pdev)
+ 	 *	init priv data
+ 	 */
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv) {
+-		dev_err(dev, "priv allocate failed\n");
++	if (!priv)
+ 		return -ENODEV;
+-	}
  
- 	/* bit field */
- 	unsigned int dev_registered:1;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 07d708498500..c2462e0f0f0d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -551,6 +551,54 @@ static inline void snd_soc_debugfs_exit(void)
+ 	priv->pdev	= pdev;
+ 	priv->flags	= (unsigned long)of_device_get_match_data(dev);
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index ee00e3516911..f04c4100043a 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -406,10 +406,8 @@ int rsnd_gen_probe(struct rsnd_priv *priv)
+ 	int ret;
  
- #endif
+ 	gen = devm_kzalloc(dev, sizeof(*gen), GFP_KERNEL);
+-	if (!gen) {
+-		dev_err(dev, "GEN allocate failed\n");
++	if (!gen)
+ 		return -ENOMEM;
+-	}
  
-+static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
-+			      struct snd_soc_component *component)
-+{
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_rtdcom_list *new_rtdcom;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		/* already connected */
-+		if (rtdcom->component == component)
-+			return 0;
-+	}
-+
-+	new_rtdcom = kmalloc(sizeof(*new_rtdcom), GFP_KERNEL);
-+	if (!new_rtdcom)
-+		return -ENOMEM;
-+
-+	new_rtdcom->component = component;
-+	INIT_LIST_HEAD(&new_rtdcom->list);
-+
-+	list_add_tail(&new_rtdcom->list, &rtd->component_list);
-+
-+	return 0;
-+}
-+
-+static void snd_soc_rtdcom_del_all(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_rtdcom_list *rtdcom1, *rtdcom2;
-+
-+	for_each_rtdcom_safe(rtd, rtdcom1, rtdcom2)
-+		kfree(rtdcom1);
-+
-+	INIT_LIST_HEAD(&rtd->component_list);
-+}
-+
-+struct snd_soc_component *snd_soc_rtdcom_lookup(struct snd_soc_pcm_runtime *rtd,
-+						const char *driver_name)
-+{
-+	struct snd_soc_rtdcom_list *rtdcom;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		if ((rtdcom->component->driver->name == driver_name) ||
-+		    strcmp(rtdcom->component->driver->name, driver_name) == 0)
-+			return rtdcom->component;
-+	}
-+
-+	return NULL;
-+}
-+
- struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
- 		const char *dai_link, int stream)
- {
-@@ -575,6 +623,7 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
- 	if (!rtd)
- 		return NULL;
- 
-+	INIT_LIST_HEAD(&rtd->component_list);
- 	rtd->card = card;
- 	rtd->dai_link = dai_link;
- 	rtd->codec_dais = kzalloc(sizeof(struct snd_soc_dai *) *
-@@ -592,6 +641,7 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
- {
- 	if (rtd && rtd->codec_dais)
- 		kfree(rtd->codec_dais);
-+	snd_soc_rtdcom_del_all(rtd);
- 	kfree(rtd);
- }
+ 	priv->gen = gen;
  
 -- 
 2.13.2
