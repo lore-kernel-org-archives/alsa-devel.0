@@ -1,71 +1,46 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: remove unused rsnd_xxx_to_dma()
-Date: Thu, 10 Aug 2017 15:52:03 +0100
-Message-ID: <20170810145203.wjsihjmklrur5zbn@sirena.org.uk>
-References: <87r2wkxb76.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: ASoC: rockchip: Add
+ rockchip,codec-names property
+Date: Thu, 10 Aug 2017 15:56:07 +0100
+Message-ID: <20170810145607.g663oq7cfxjmaxtf@sirena.org.uk>
+References: <1502340898-28403-1-git-send-email-jeffy.chen@rock-chips.com>
+ <1502340898-28403-4-git-send-email-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2867061844383529701=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 852562665D5
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 16:52:13 +0200 (CEST)
-In-Reply-To: <87r2wkxb76.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="faaqy76szqpegs3z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1502340898-28403-4-git-send-email-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, dianders@chromium.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2867061844383529701==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ecn3bcpbkwrmfnyp"
-Content-Disposition: inline
-
-
---ecn3bcpbkwrmfnyp
+--faaqy76szqpegs3z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 10, 2017 at 05:13:58AM +0000, Kuninori Morimoto wrote:
->=20
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Thu, Aug 10, 2017 at 12:54:58PM +0800, Jeffy Chen wrote:
+> Add a new rockchip,codec-names property, so that the driver can parse
+> the codecs by name.
 
-This doesn't apply to current code, please check and resend.
+Why?  You're already referencing the CODECs by phandle and these names
+are not part of any ABI...
 
---ecn3bcpbkwrmfnyp
+--faaqy76szqpegs3z
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMcxIACgkQJNaLcl1U
-h9DdkQf+I8l5yXogXlKpORMi8bqZkElu4riARAVDVQBjNWQYnqu5gth5U2UlmuBn
-6arPXOUMQGGrodCaJW48PWkSD7k1I5mKHmKDhK2DsN7HP9t6kwHurdH5/S8id00T
-+49yOwf80aHQol3wKa17wLOmtxx36450xD7ZO6zFxw05Y8waQcjNuGO36VUvrzFx
-SrTwBRpqGr5D1xKGV8KcCYqLXfwYpzYCaEi0Fu4Nsg0wFmThTohr2K7by+rr5wXz
-S9EEnoQU6HBYLkEvSYV7oj6S/eSaNYemRTwu8KOY65dkFCHv2+6uxOgvWCw6fZDt
-1OMUZekyWoKRFskXO4b6ZplM41uDVg==
-=/SuJ
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMdAYACgkQJNaLcl1U
+h9Dnagf/aZxJVOsaZqXldjTeBwE/IwMytJ3nEKJxSv3g+L2gRYxj7WpiiZ2egki6
+YsLbpcydyyTOqdYEFNUdUPeBmoZ/lXvQ6Jt4v5+9apktmUIR81NBCpVnvynityMy
+bs6bbovTiUOJ0OXBL5VjGGmr0K7r8IlFuB6kbeO18WnVNUWHlJIsghn4c5vE01k0
+J36cd8WdfPzz+OS7kmtndxn5479d1xgT0K1ySFhCBOKxkA2O7L4UWsThBp3P865V
+6FUIBqTOdzTKA/twcMKTlxMlIYyLm1ZBDVrE4v/k4wPQIHZMcD8SzSuc2HzCLMhC
+drgYizLNsOzMoEACWe/vGjuTTD446w==
+=yAX5
 -----END PGP SIGNATURE-----
 
---ecn3bcpbkwrmfnyp--
-
---===============2867061844383529701==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2867061844383529701==--
+--faaqy76szqpegs3z--
