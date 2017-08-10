@@ -1,56 +1,44 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 5/7] ALSA: intel8x0m: constify snd_pcm_ops structures
-Date: Thu, 10 Aug 2017 17:17:36 +0530
-Message-ID: <1502365658-24723-6-git-send-email-arvind.yadav.cs@gmail.com>
-References: <1502365658-24723-1-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502365658-24723-1-git-send-email-arvind.yadav.cs@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/5] ASoC: dapm: Adjustments for some function
+	implementations
+Date: Thu, 10 Aug 2017 15:00:27 +0200
+Message-ID: <e8013ddb-687d-ee56-8153-2791bb9f46fe@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id D35B22665D5
+ for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 15:01:16 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_ops are not supposed to change at runtime. All functions
-working with snd_pcm_ops provided by <sound/pcm.h> work with
-const snd_pcm_ops. So mark the non-const structs as const.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 10 Aug 2017 14:54:32 +0200
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
----
- sound/pci/intel8x0m.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+A few update suggestions were taken into account
+from static source code analysis.
 
-diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
-index 18ff668..2f1b878 100644
---- a/sound/pci/intel8x0m.c
-+++ b/sound/pci/intel8x0m.c
-@@ -685,7 +685,7 @@ static int snd_intel8x0m_capture_close(struct snd_pcm_substream *substream)
- }
- 
- 
--static struct snd_pcm_ops snd_intel8x0m_playback_ops = {
-+static const struct snd_pcm_ops snd_intel8x0m_playback_ops = {
- 	.open =		snd_intel8x0m_playback_open,
- 	.close =	snd_intel8x0m_playback_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -696,7 +696,7 @@ static int snd_intel8x0m_capture_close(struct snd_pcm_substream *substream)
- 	.pointer =	snd_intel8x0m_pcm_pointer,
- };
- 
--static struct snd_pcm_ops snd_intel8x0m_capture_ops = {
-+static const struct snd_pcm_ops snd_intel8x0m_capture_ops = {
- 	.open =		snd_intel8x0m_capture_open,
- 	.close =	snd_intel8x0m_capture_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -710,8 +710,8 @@ static int snd_intel8x0m_capture_close(struct snd_pcm_substream *substream)
- 
- struct ich_pcm_table {
- 	char *suffix;
--	struct snd_pcm_ops *playback_ops;
--	struct snd_pcm_ops *capture_ops;
-+	const struct snd_pcm_ops *playback_ops;
-+	const struct snd_pcm_ops *capture_ops;
- 	size_t prealloc_size;
- 	size_t prealloc_max_size;
- 	int ac97_idx;
+Markus Elfring (5):
+  Delete error messages for a failed memory allocation in snd_soc_dapm_new_pcm()
+  Improve a size determination in two functions
+  Use kcalloc() in snd_soc_dapm_new_widgets()
+  Adjust one function call together with a variable assignment
+  Adjust seven checks for null pointers
+
+ sound/soc/soc-dapm.c | 36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
+
 -- 
-1.9.1
+2.14.0
