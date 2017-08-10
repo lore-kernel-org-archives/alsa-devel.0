@@ -1,16 +1,16 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: compress: Delete error messages for a
- failed memory allocation in snd_soc_new_compress()
-Date: Thu, 10 Aug 2017 16:26:23 +0200
-Message-ID: <f9abf5ea-0284-ba87-9f22-2111d8631dfa@users.sourceforge.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rsnd: remove unused rsnd_xxx_to_dma()
+Date: Thu, 10 Aug 2017 15:52:03 +0100
+Message-ID: <20170810145203.wjsihjmklrur5zbn@sirena.org.uk>
+References: <87r2wkxb76.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2867061844383529701=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id D0BE62665D5
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 16:26:45 +0200 (CEST)
-Content-Language: en-GB
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 852562665D5
+ for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 16:52:13 +0200 (CEST)
+In-Reply-To: <87r2wkxb76.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,44 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 10 Aug 2017 16:21:34 +0200
 
-Omit extra messages for a memory allocation failure in this function.
+--===============2867061844383529701==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ecn3bcpbkwrmfnyp"
+Content-Disposition: inline
 
-This issue was detected by using the Coccinelle software.
 
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/soc-compress.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+--ecn3bcpbkwrmfnyp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 206f36bf43e8..6c867d50e036 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -764,15 +764,12 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		direction = SND_COMPRESS_CAPTURE;
- 
- 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
--	if (compr == NULL) {
--		snd_printk(KERN_ERR "Cannot allocate compr\n");
-+	if (!compr)
- 		return -ENOMEM;
--	}
- 
- 	compr->ops = devm_kzalloc(rtd->card->dev, sizeof(soc_compr_ops),
- 				  GFP_KERNEL);
--	if (compr->ops == NULL) {
--		dev_err(rtd->card->dev, "Cannot allocate compressed ops\n");
-+	if (!compr->ops) {
- 		ret = -ENOMEM;
- 		goto compr_err;
- 	}
--- 
-2.14.0
+On Thu, Aug 10, 2017 at 05:13:58AM +0000, Kuninori Morimoto wrote:
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+This doesn't apply to current code, please check and resend.
+
+--ecn3bcpbkwrmfnyp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMcxIACgkQJNaLcl1U
+h9DdkQf+I8l5yXogXlKpORMi8bqZkElu4riARAVDVQBjNWQYnqu5gth5U2UlmuBn
+6arPXOUMQGGrodCaJW48PWkSD7k1I5mKHmKDhK2DsN7HP9t6kwHurdH5/S8id00T
++49yOwf80aHQol3wKa17wLOmtxx36450xD7ZO6zFxw05Y8waQcjNuGO36VUvrzFx
+SrTwBRpqGr5D1xKGV8KcCYqLXfwYpzYCaEi0Fu4Nsg0wFmThTohr2K7by+rr5wXz
+S9EEnoQU6HBYLkEvSYV7oj6S/eSaNYemRTwu8KOY65dkFCHv2+6uxOgvWCw6fZDt
+1OMUZekyWoKRFskXO4b6ZplM41uDVg==
+=/SuJ
+-----END PGP SIGNATURE-----
+
+--ecn3bcpbkwrmfnyp--
+
+--===============2867061844383529701==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2867061844383529701==--
