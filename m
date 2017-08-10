@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Delete an error message for a failed memory allocation in three functions" to the asoc tree
-Date: Thu, 10 Aug 2017 16:41:57 +0100
-Message-ID: <E1dfpav-0001fF-Kv@finisterre>
-References: <181b6355-b6b6-eeae-d85b-9fb465d96b85@users.sourceforge.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <181b6355-b6b6-eeae-d85b-9fb465d96b85@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Fengguang Wu <fengguang.wu@intel.com>, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Marek Vasut <marek.vasut+renesas@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: add rsnd_ssi_flags_has/add() macro" to the asoc tree
+Date: Thu, 10 Aug 2017 16:42:23 +0100
+Message-ID: <E1dfpbL-0001ki-Re@finisterre>
+References: <874ltgz3yp.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <874ltgz3yp.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Delete an error message for a failed memory allocation in three functions
+   ASoC: rsnd: add rsnd_ssi_flags_has/add() macro
 
 has been applied to the asoc tree at
 
@@ -37,72 +37,93 @@ to this mail.
 Thanks,
 Mark
 
->From 0d7820d0918efa6c2a53acdfc47cbfc3b48df727 Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 10 Aug 2017 17:13:19 +0200
-Subject: [PATCH] ASoC: rsnd: Delete an error message for a failed memory
- allocation in three functions
+>From bf9b29c784b393d1e506945f1e24e871d2587eb3 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 10 Aug 2017 00:07:20 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_ssi_flags_has/add() macro
 
-Omit an extra message for a memory allocation failure in these functions.
+Current rsnd_ssi_mode_flags() is not useful. This patch adds
+new rsnd_ssi_flags_has/add() macro for it.
 
-This issue was detected by using the Coccinelle software.
-
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c  | 4 +---
- sound/soc/sh/rcar/core.c | 4 +---
- sound/soc/sh/rcar/gen.c  | 4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 5b5389e5b92b..938baff86ef2 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -586,10 +586,8 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- 	int ret;
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 281ed0da6ba1..ca9355b86bd9 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -101,7 +101,8 @@ struct rsnd_ssi {
+ #define rsnd_ssi_to_dma(mod) ((ssi)->dma)
+ #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+-#define rsnd_ssi_mode_flags(p) ((p)->flags)
++#define rsnd_ssi_flags_has(p, f) ((p)->flags & f)
++#define rsnd_ssi_flags_set(p, f) ((p)->flags |= f)
+ #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
+ #define rsnd_ssi_is_multi_slave(mod, io) \
+ 	(rsnd_ssi_multi_slaves(io) & (1 << rsnd_mod_id(mod)))
+@@ -114,10 +115,10 @@ int rsnd_ssi_hdmi_port(struct rsnd_dai_stream *io)
+ 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
  
- 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
--	if (!adg) {
--		dev_err(dev, "ADG allocate failed\n");
-+	if (!adg)
- 		return -ENOMEM;
--	}
+-	if (rsnd_ssi_mode_flags(ssi) & RSND_SSI_HDMI0)
++	if (rsnd_ssi_flags_has(ssi, RSND_SSI_HDMI0))
+ 		return RSND_SSI_HDMI_PORT0;
  
- 	ret = rsnd_mod_init(priv, &adg->mod, &adg_ops,
- 		      NULL, NULL, 0, 0);
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 2c12ad2b2b34..650cc28b0fb6 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1401,10 +1401,8 @@ static int rsnd_probe(struct platform_device *pdev)
- 	 *	init priv data
- 	 */
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		dev_err(dev, "priv allocate failed\n");
-+	if (!priv)
- 		return -ENODEV;
--	}
+-	if (rsnd_ssi_mode_flags(ssi) & RSND_SSI_HDMI1)
++	if (rsnd_ssi_flags_has(ssi, RSND_SSI_HDMI1))
+ 		return RSND_SSI_HDMI_PORT1;
  
- 	priv->pdev	= pdev;
- 	priv->flags	= (unsigned long)of_device_get_match_data(dev);
-diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
-index ee00e3516911..f04c4100043a 100644
---- a/sound/soc/sh/rcar/gen.c
-+++ b/sound/soc/sh/rcar/gen.c
-@@ -406,10 +406,8 @@ int rsnd_gen_probe(struct rsnd_priv *priv)
- 	int ret;
+ 	return 0;
+@@ -132,7 +133,7 @@ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
+ 	if (!rsnd_ssi_is_dma_mode(mod))
+ 		return 0;
  
- 	gen = devm_kzalloc(dev, sizeof(*gen), GFP_KERNEL);
--	if (!gen) {
--		dev_err(dev, "GEN allocate failed\n");
-+	if (!gen)
- 		return -ENOMEM;
--	}
+-	if (!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_NO_BUSIF))
++	if (!(rsnd_ssi_flags_has(ssi, RSND_SSI_NO_BUSIF)))
+ 		use_busif = 1;
+ 	if (rsnd_io_to_mod_src(io))
+ 		use_busif = 1;
+@@ -986,13 +987,13 @@ static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+ 	ssi  = rsnd_mod_to_ssi(mod);
  
- 	priv->gen = gen;
+ 	if (strstr(remote_ep->full_name, "hdmi0")) {
+-		ssi->flags |= RSND_SSI_HDMI0;
++		rsnd_ssi_flags_set(ssi, RSND_SSI_HDMI0);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI0\n",
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
  
+ 	if (strstr(remote_ep->full_name, "hdmi1")) {
+-		ssi->flags |= RSND_SSI_HDMI1;
++		rsnd_ssi_flags_set(ssi, RSND_SSI_HDMI1);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI1\n",
+ 			rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+@@ -1025,7 +1026,7 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 
+-	return !!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_CLK_PIN_SHARE);
++	return !!(rsnd_ssi_flags_has(ssi, RSND_SSI_CLK_PIN_SHARE));
+ }
+ 
+ static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
+@@ -1108,10 +1109,10 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
+ 		}
+ 
+ 		if (of_get_property(np, "shared-pin", NULL))
+-			ssi->flags |= RSND_SSI_CLK_PIN_SHARE;
++			rsnd_ssi_flags_set(ssi, RSND_SSI_CLK_PIN_SHARE);
+ 
+ 		if (of_get_property(np, "no-busif", NULL))
+-			ssi->flags |= RSND_SSI_NO_BUSIF;
++			rsnd_ssi_flags_set(ssi, RSND_SSI_NO_BUSIF);
+ 
+ 		ssi->irq = irq_of_parse_and_map(np, 0);
+ 		if (!ssi->irq) {
 -- 
 2.13.2
