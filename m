@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: codecs: add const to
- snd_soc_codec_driver structures
-Date: Thu, 10 Aug 2017 16:20:10 +0100
-Message-ID: <20170810152010.hl2ea5tuyo7mhndf@sirena.org.uk>
-References: <1501776020-3328-1-git-send-email-bhumirks@gmail.com>
- <1501776020-3328-2-git-send-email-bhumirks@gmail.com>
+Subject: Re: [PATCH v3 2/5] ASoC: codecs: msm8916-wcd-analog:
+ get micbias voltage from dt
+Date: Thu, 10 Aug 2017 16:24:37 +0100
+Message-ID: <20170810152437.ezfhi7cukutyabmt@sirena.org.uk>
+References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
+ <20170809164927.19663-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8822236745526332796=="
+Content-Type: multipart/mixed; boundary="===============5297846276085897116=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 93A602665D5
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 17:20:37 +0200 (CEST)
-In-Reply-To: <1501776020-3328-2-git-send-email-bhumirks@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C81F92665D5
+ for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 17:24:50 +0200 (CEST)
+In-Reply-To: <20170809164927.19663-3-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lars@metafoo.de, support.opensource@diasemi.com, linux-kernel@vger.kernel.org, tiwai@suse.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, julia.lawall@lip6.fr, wens@csie.org, vishwas.a.deshpande@ti.com, mr.swami.reddy@ti.com, patches@opensource.cirrus.com, bardliao@realtek.com, maxime.ripard@free-electrons.com, peda@axentia.se, linux-arm-kernel@lists.infradead.org, baohua@kernel.org
+To: srinivas.kandagatla@linaro.org
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, damien.riegel@savoirfairelinux.com, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8822236745526332796==
+--===============5297846276085897116==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gkwa6ppgu6dmm3er"
+	protocol="application/pgp-signature"; boundary="z6ujwgqd7l5jrigt"
 Content-Disposition: inline
 
 
---gkwa6ppgu6dmm3er
+--z6ujwgqd7l5jrigt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 03, 2017 at 09:30:19PM +0530, Bhumika Goyal wrote:
+On Wed, Aug 09, 2017 at 06:49:24PM +0200, srinivas.kandagatla@linaro.org wrote:
 
->  sound/soc/codecs/88pm860x-codec.c      | 2 +-
->  sound/soc/codecs/ab8500-codec.c        | 2 +-
->  sound/soc/codecs/ac97.c                | 2 +-
->  sound/soc/codecs/ad1836.c              | 2 +-
->  sound/soc/codecs/ad193x.c              | 2 +-
->  sound/soc/codecs/ad1980.c              | 2 +-
->  sound/soc/codecs/ad73311.c             | 2 +-
->  sound/soc/codecs/adau1373.c            | 2 +-
->  sound/soc/codecs/adau1701.c            | 2 +-
+> -	snd_soc_write(codec, CDC_A_MICB_1_VAL, MICB_1_VAL_MICB_OUT_VAL_V2P70V);
+> -	/*
+> -	 * Special headset needs MICBIAS as 2.7V so wait for
+> -	 * 50 msec for the MICBIAS to reach 2.7 volts.
+> -	 */
+> -	msleep(50);
+> +	if (wcd->micbias_mv)
 
-This is difficult to apply against current code as it is a single commit
-over lots of files but the ASoC tree has lots of branches.  I've figured
-out the dependencies but it's easier to split things up (and avoids
-collisions with other changes causing the whole thing to not apply).
+We seem to have just completely lost this ramp time handling?
 
---gkwa6ppgu6dmm3er
+--z6ujwgqd7l5jrigt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMeakACgkQJNaLcl1U
-h9Alnwf+ISX733BOQGC2aQomRhNC7F7J2dHAuDey7CSP4RmhFTG9W8kUt3ObAsWo
-/iPCcxg+AmHCGTP/CJWUXTOvtLNSOjWT08eIdVTXfO64SFhIugLMf0xXMAjvMFs/
-q1JE6ztW0zglVMn+ARI860Inm1nPFIMLTVHlxJf3++J+hNqvge5zghruCG99SDtV
-ml4YakXx/eMNX8ZWxBjVPdWSyqjV/C/EkCKRVSlqSgAvh+EIldlp1EI+il4dYKLH
-iyx8x5KKInUfH4zY642VMubhKLS5RlFE/OSYmXZCAWa3jz/0fuOCSbo9etxBjZ+b
-zym6UbVCoX2utY5SGe8kAXhVIVf4dg==
-=cqXG
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMerQACgkQJNaLcl1U
+h9ANWQf/eOKmZtDl7Ev0tgUwV5RB3Rr6CkkerQlA6J0agUEYjoUim6b0nL+xQSKf
+IW2sncqldb51+d3owLVFbkiUc2U7incAShScipA0JKC0PNQ8pZfUlA7nnlnkYIp7
+nmXy6+fS343zJ80kKpPflCdGBqXOKH6LgTgzavyBfbgaYLOAIAESimIwPaJZTc51
+zREtM4+CpyzbLIoxRWR4npLoMXLiZREsxESrrFh1RQrkTMUrvaULlQ5kvbbMWb/G
+8pey4nAka3rbsRPBAwvml2tSux6mKxD/nKOpSg70pD+zvpqAIPHJiz2PzEczR30/
+iFCL8a3tTyDIHnNhcfujbNpoDeSBCg==
+=uTOH
 -----END PGP SIGNATURE-----
 
---gkwa6ppgu6dmm3er--
+--z6ujwgqd7l5jrigt--
 
---===============8822236745526332796==
+--===============5297846276085897116==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8822236745526332796==--
+--===============5297846276085897116==--
