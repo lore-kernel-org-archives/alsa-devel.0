@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 1/7] ALSA: ali5451: constify snd_pcm_ops structures
-Date: Thu, 10 Aug 2017 17:17:32 +0530
-Message-ID: <1502365658-24723-2-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 2/7] ALSA: au88x0: constify snd_pcm_ops structures
+Date: Thu, 10 Aug 2017 17:17:33 +0530
+Message-ID: <1502365658-24723-3-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502365658-24723-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502365658-24723-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,59 +16,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/pci/ali5451/ali5451.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/pci/au88x0/au88x0_pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
-index 8567f1e..39547e3 100644
---- a/sound/pci/ali5451/ali5451.c
-+++ b/sound/pci/ali5451/ali5451.c
-@@ -1540,7 +1540,7 @@ static int snd_ali_close(struct snd_pcm_substream *substream)
- 	return 0;
+diff --git a/sound/pci/au88x0/au88x0_pcm.c b/sound/pci/au88x0/au88x0_pcm.c
+index 1aa9701..848eb3c 100644
+--- a/sound/pci/au88x0/au88x0_pcm.c
++++ b/sound/pci/au88x0/au88x0_pcm.c
+@@ -439,7 +439,7 @@ static snd_pcm_uframes_t snd_vortex_pcm_pointer(struct snd_pcm_substream *substr
  }
  
--static struct snd_pcm_ops snd_ali_playback_ops = {
-+static const struct snd_pcm_ops snd_ali_playback_ops = {
- 	.open =		snd_ali_playback_open,
- 	.close =	snd_ali_playback_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -1551,7 +1551,7 @@ static int snd_ali_close(struct snd_pcm_substream *substream)
- 	.pointer =	snd_ali_playback_pointer,
- };
- 
--static struct snd_pcm_ops snd_ali_capture_ops = {
-+static const struct snd_pcm_ops snd_ali_capture_ops = {
- 	.open =		snd_ali_capture_open,
- 	.close =	snd_ali_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -1626,7 +1626,7 @@ static int snd_ali_modem_capture_open(struct snd_pcm_substream *substream)
- 	return snd_ali_modem_open(substream, 1, ALI_MODEM_IN_CHANNEL);
- }
- 
--static struct snd_pcm_ops snd_ali_modem_playback_ops = {
-+static const struct snd_pcm_ops snd_ali_modem_playback_ops = {
- 	.open =		snd_ali_modem_playback_open,
- 	.close =	snd_ali_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -1637,7 +1637,7 @@ static int snd_ali_modem_capture_open(struct snd_pcm_substream *substream)
- 	.pointer =	snd_ali_pointer,
- };
- 
--static struct snd_pcm_ops snd_ali_modem_capture_ops = {
-+static const struct snd_pcm_ops snd_ali_modem_capture_ops = {
- 	.open =		snd_ali_modem_capture_open,
- 	.close =	snd_ali_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -1653,8 +1653,8 @@ struct ali_pcm_description {
- 	char *name;
- 	unsigned int playback_num;
- 	unsigned int capture_num;
--	struct snd_pcm_ops *playback_ops;
--	struct snd_pcm_ops *capture_ops;
-+	const struct snd_pcm_ops *playback_ops;
-+	const struct snd_pcm_ops *capture_ops;
- 	unsigned short class;
- };
- 
+ /* operators */
+-static struct snd_pcm_ops snd_vortex_playback_ops = {
++static const struct snd_pcm_ops snd_vortex_playback_ops = {
+ 	.open = snd_vortex_pcm_open,
+ 	.close = snd_vortex_pcm_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
 -- 
 1.9.1
