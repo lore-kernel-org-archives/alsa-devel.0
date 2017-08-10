@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Delete error messages for a failed memory allocation in snd_soc_new_compress()" to the asoc tree
-Date: Thu, 10 Aug 2017 16:42:09 +0100
-Message-ID: <E1dfpb7-0001hZ-F5@finisterre>
-References: <f9abf5ea-0284-ba87-9f22-2111d8631dfa@users.sourceforge.net>
+Subject: Applied "ASoC: spear: Delete an error message for a failed memory allocation in two functions" to the asoc tree
+Date: Thu, 10 Aug 2017 16:42:43 +0100
+Message-ID: <E1dfpbf-0001mV-TK@finisterre>
+References: <1488018810-11973-1-git-send-email-despotovici.mihai@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f9abf5ea-0284-ba87-9f22-2111d8631dfa@users.sourceforge.net>
+In-Reply-To: <1488018810-11973-1-git-send-email-despotovici.mihai@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, dspmihai <despotovici.mihai@gmail.com>, alsa-devel@alsa-project.orgbroonie@kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: compress: Delete error messages for a failed memory allocation in snd_soc_new_compress()
+   ASoC: spear: Delete an error message for a failed memory allocation in two functions
 
 has been applied to the asoc tree at
 
@@ -37,44 +37,56 @@ to this mail.
 Thanks,
 Mark
 
->From 7a0cf42edd9cc335572aa8614df0ebefa2f537be Mon Sep 17 00:00:00 2001
+>From 65d55e8a3bb2d2a98078590cfa49cd508aa80e81 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 10 Aug 2017 16:21:34 +0200
-Subject: [PATCH] ASoC: compress: Delete error messages for a failed memory
- allocation in snd_soc_new_compress()
+Date: Thu, 10 Aug 2017 09:50:51 +0200
+Subject: [PATCH] ASoC: spear: Delete an error message for a failed memory
+ allocation in two functions
 
-Omit extra messages for a memory allocation failure in this function.
+Omit an extra message for a memory allocation failure in these functions.
 
 This issue was detected by using the Coccinelle software.
 
 Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-compress.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/spear/spdif_in.c  | 4 +---
+ sound/soc/spear/spdif_out.c | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 206f36bf43e8..6c867d50e036 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -764,15 +764,12 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		direction = SND_COMPRESS_CAPTURE;
+diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
+index 7f32527fc3c8..01b28e59b4c0 100644
+--- a/sound/soc/spear/spdif_in.c
++++ b/sound/soc/spear/spdif_in.c
+@@ -216,10 +216,8 @@ static int spdif_in_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  
- 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
--	if (compr == NULL) {
--		snd_printk(KERN_ERR "Cannot allocate compr\n");
-+	if (!compr)
+ 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+-	if (!host) {
+-		dev_warn(&pdev->dev, "kzalloc fail\n");
++	if (!host)
  		return -ENOMEM;
 -	}
  
- 	compr->ops = devm_kzalloc(rtd->card->dev, sizeof(soc_compr_ops),
- 				  GFP_KERNEL);
--	if (compr->ops == NULL) {
--		dev_err(rtd->card->dev, "Cannot allocate compressed ops\n");
-+	if (!compr->ops) {
- 		ret = -ENOMEM;
- 		goto compr_err;
- 	}
+ 	host->io_base = io_base;
+ 	host->irq = platform_get_irq(pdev, 0);
+diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
+index 0a72d52d533e..58d5843811f9 100644
+--- a/sound/soc/spear/spdif_out.c
++++ b/sound/soc/spear/spdif_out.c
+@@ -282,10 +282,8 @@ static int spdif_out_probe(struct platform_device *pdev)
+ 	int ret;
+ 
+ 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+-	if (!host) {
+-		dev_warn(&pdev->dev, "kzalloc fail\n");
++	if (!host)
+ 		return -ENOMEM;
+-	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	host->io_base = devm_ioremap_resource(&pdev->dev, res);
 -- 
 2.13.2
