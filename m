@@ -1,56 +1,57 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH] ASoC: samsung: i2s: Null pointer dereference on
- samsung_i2s_remove
-Date: Thu, 10 Aug 2017 18:23:48 +0200
-Message-ID: <152db371-4fe3-0c49-64c9-200fd3ebfbc8@samsung.com>
-References: <CGME20170810155722epcas3p231f6d4733d933b10461db96d9065674a@epcas3p2.samsung.com>
-        <1502380599-13535-1-git-send-email-vasilyev@ispras.ru>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ASoC: rockchip: Delete an error message for a
+ failed memory allocation in rockchip_i2s_probe()
+Date: Thu, 10 Aug 2017 18:46:28 +0200
+Message-ID: <85e3e6a2-ecbd-5988-2460-d4f8ca6062f9@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <1502380599-13535-1-git-send-email-vasilyev@ispras.ru>
-Content-language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: Anton Vasilyev <vasilyev@ispras.ru>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id C40012675DB
+ for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 18:46:38 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/10/2017 05:56 PM, Anton Vasilyev wrote:
-> If (quirks & QUIRK_SEC_DAI == 0) then samsung_i2s_probe() doesn't allocate
-> sec_dai and pri_dai->sec_dai remains Null, but samsung_i2s_remove()
-> permorms pri_dai->sec_dai dereference in any case.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 10 Aug 2017 18:38:09 +0200
 
-s/permorms/performs
+Omit an extra message for a memory allocation failure in this function.
 
-> The patch adds sec_dai check on Null before derefence at
-> samsung_i2s_remove().
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
-> ---
->   sound/soc/samsung/i2s.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index af3ba4d..6beeea8 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -1382,7 +1382,8 @@ static int samsung_i2s_remove(struct platform_device *pdev)
->   	sec_dai = pri_dai->sec_dai;
->   
->   	pri_dai->sec_dai = NULL;
-> -	sec_dai->pri_dai = NULL;
+This issue was detected by using the Coccinelle software.
 
-Thanks for the patch.  AFAICS above 4 lines could be removed altogether
-since pri_dai and sec_dai is being allocated with devm_kzalloc().
-So initializing in remove() is meaningless as afterwards the data will
-not be used any more.  The memory will be just freed by the devres code.
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/rockchip/rockchip_i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> +	if (sec_dai)
-> +		sec_dai->pri_dai = NULL;
-
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 199338fdeda0..b6590467fd14 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -579,10 +579,8 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	int val;
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+-	if (!i2s) {
+-		dev_err(&pdev->dev, "Can't allocate rk_i2s_dev\n");
++	if (!i2s)
+ 		return -ENOMEM;
+-	}
+ 
+ 	i2s->dev = &pdev->dev;
+ 
 -- 
-Regards,
-Sylwester
+2.14.0
