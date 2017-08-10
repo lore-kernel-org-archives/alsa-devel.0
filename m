@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 4/5] ASoC: dapm: Adjust one function call
- together with a variable assignment
-Date: Thu, 10 Aug 2017 15:04:05 +0200
-Message-ID: <38a6abaa-8b6c-509d-468e-fa34cf81069d@users.sourceforge.net>
+Subject: [PATCH 5/5] ASoC: dapm: Adjust seven checks for null
+	pointers
+Date: Thu, 10 Aug 2017 15:05:07 +0200
+Message-ID: <32343b0d-447a-6b1a-ff11-506d14a82d15@users.sourceforge.net>
 References: <e8013ddb-687d-ee56-8153-2791bb9f46fe@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id A399F2665D5
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 15:04:43 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3D66267554
+ for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 15:05:15 +0200 (CEST)
 In-Reply-To: <e8013ddb-687d-ee56-8153-2791bb9f46fe@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,33 +26,49 @@ To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 10 Aug 2017 14:34:35 +0200
-
-The script "checkpatch.pl" pointed information out like the following.
-
-ERROR: do not use assignment in if condition
-
-Thus fix the affected source code place.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/soc-dapm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 3fa9f023bff7..4eea84d821c4 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3441,7 +3441,8 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 	const char *prefix;
- 	int ret;
- 
--	if ((w = dapm_cnew_widget(widget)) == NULL)
-+	w = dapm_cnew_widget(widget);
-+	if (!w)
- 		return NULL;
- 
- 	switch (w->id) {
--- 
-2.14.0
+RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
+OiBUaHUsIDEwIEF1ZyAyMDE3IDE0OjQxOjMwICswMjAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
+bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
+aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
+dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
+IHdyaXR0ZW4gIeKApgoKVGh1cyBmaXggYWZmZWN0ZWQgc291cmNlIGNvZGUgcGxhY2VzLgoKU2ln
+bmVkLW9mZi1ieTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0
+PgotLS0KIHNvdW5kL3NvYy9zb2MtZGFwbS5jIHwgMTQgKysrKysrKy0tLS0tLS0KIDEgZmlsZSBj
+aGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
+bmQvc29jL3NvYy1kYXBtLmMgYi9zb3VuZC9zb2Mvc29jLWRhcG0uYwppbmRleCA0ZWVhODRkODIx
+YzQuLjVhODViODc3MzI4OSAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1kYXBtLmMKKysrIGIv
+c291bmQvc29jL3NvYy1kYXBtLmMKQEAgLTE0Niw3ICsxNDYsNyBAQCBzdGF0aWMgdm9pZCBwb3Bf
+ZGJnKHN0cnVjdCBkZXZpY2UgKmRldiwgdTMyIHBvcF90aW1lLCBjb25zdCBjaGFyICpmbXQsIC4u
+LikKIAkJcmV0dXJuOwogCiAJYnVmID0ga21hbGxvYyhQQUdFX1NJWkUsIEdGUF9LRVJORUwpOwot
+CWlmIChidWYgPT0gTlVMTCkKKwlpZiAoIWJ1ZikKIAkJcmV0dXJuOwogCiAJdmFfc3RhcnQoYXJn
+cywgZm10KTsKQEAgLTg4Myw3ICs4ODMsNyBAQCBzdGF0aWMgaW50IGRhcG1fY3JlYXRlX29yX3No
+YXJlX2tjb250cm9sKHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAogCQkJbG9uZ19uYW1l
+ID0ga2FzcHJpbnRmKEdGUF9LRVJORUwsICIlcyAlcyIsCiAJCQkJIHctPm5hbWUgKyBwcmVmaXhf
+bGVuLAogCQkJCSB3LT5rY29udHJvbF9uZXdzW2tjaV0ubmFtZSk7Ci0JCQlpZiAobG9uZ19uYW1l
+ID09IE5VTEwpCisJCQlpZiAoIWxvbmdfbmFtZSkKIAkJCQlyZXR1cm4gLUVOT01FTTsKIAogCQkJ
+bmFtZSA9IGxvbmdfbmFtZTsKQEAgLTEwODYsNyArMTA4Niw3IEBAIHN0YXRpYyBpbnQgZGFwbV93
+aWRnZXRfbGlzdF9jcmVhdGUoc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXRfbGlzdCAqKmxpc3Qs
+CiAJCXNpemUrKzsKIAogCSpsaXN0ID0ga3phbGxvYyhzaXplb2YoKipsaXN0KSArIHNpemUgKiBz
+aXplb2YoKncpLCBHRlBfS0VSTkVMKTsKLQlpZiAoKmxpc3QgPT0gTlVMTCkKKwlpZiAoISpsaXN0
+KQogCQlyZXR1cm4gLUVOT01FTTsKIAogCWxpc3RfZm9yX2VhY2hfZW50cnkodywgd2lkZ2V0cywg
+d29ya19saXN0KQpAQCAtMjY2OCw3ICsyNjY4LDcgQEAgc3RhdGljIGludCBzbmRfc29jX2RhcG1f
+YWRkX3BhdGgoc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0ICpkYXBtLAogCQlwYXRoLT5pc19z
+dXBwbHkgPSAxOwogCiAJLyogY29ubmVjdCBzdGF0aWMgcGF0aHMgKi8KLQlpZiAoY29udHJvbCA9
+PSBOVUxMKSB7CisJaWYgKCFjb250cm9sKSB7CiAJCXBhdGgtPmNvbm5lY3QgPSAxOwogCX0gZWxz
+ZSB7CiAJCXN3aXRjaCAod3NvdXJjZS0+aWQpIHsKQEAgLTI3NzcsMTIgKzI3NzcsMTIgQEAgc3Rh
+dGljIGludCBzbmRfc29jX2RhcG1fYWRkX3JvdXRlKHN0cnVjdCBzbmRfc29jX2RhcG1fY29udGV4
+dCAqZGFwbSwKIAlpZiAoIXdzb3VyY2UpCiAJCXdzb3VyY2UgPSB3dHNvdXJjZTsKIAotCWlmICh3
+c291cmNlID09IE5VTEwpIHsKKwlpZiAoIXdzb3VyY2UpIHsKIAkJZGV2X2VycihkYXBtLT5kZXYs
+ICJBU29DOiBubyBzb3VyY2Ugd2lkZ2V0IGZvdW5kIGZvciAlc1xuIiwKIAkJCXJvdXRlLT5zb3Vy
+Y2UpOwogCQlyZXR1cm4gLUVOT0RFVjsKIAl9Ci0JaWYgKHdzaW5rID09IE5VTEwpIHsKKwlpZiAo
+IXdzaW5rKSB7CiAJCWRldl9lcnIoZGFwbS0+ZGV2LCAiQVNvQzogbm8gc2luayB3aWRnZXQgZm91
+bmQgZm9yICVzXG4iLAogCQkJcm91dGUtPnNpbmspOwogCQlyZXR1cm4gLUVOT0RFVjsKQEAgLTM0
+ODksNyArMzQ4OSw3IEBAIHNuZF9zb2NfZGFwbV9uZXdfY29udHJvbF91bmxvY2tlZChzdHJ1Y3Qg
+c25kX3NvY19kYXBtX2NvbnRleHQgKmRhcG0sCiAJCXctPm5hbWUgPSBrYXNwcmludGYoR0ZQX0tF
+Uk5FTCwgIiVzICVzIiwgcHJlZml4LCB3aWRnZXQtPm5hbWUpOwogCWVsc2UKIAkJdy0+bmFtZSA9
+IGtzdHJkdXBfY29uc3Qod2lkZ2V0LT5uYW1lLCBHRlBfS0VSTkVMKTsKLQlpZiAody0+bmFtZSA9
+PSBOVUxMKSB7CisJaWYgKCF3LT5uYW1lKSB7CiAJCWtmcmVlKHcpOwogCQlyZXR1cm4gTlVMTDsK
+IAl9Ci0tIAoyLjE0LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
