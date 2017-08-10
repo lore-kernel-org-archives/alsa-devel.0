@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add rsnd_ssi_flags_has/add() macro" to the asoc tree
-Date: Thu, 10 Aug 2017 16:42:23 +0100
-Message-ID: <E1dfpbL-0001ki-Re@finisterre>
-References: <874ltgz3yp.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: call free_irq() both DMA/PIO mode" to the asoc tree
+Date: Thu, 10 Aug 2017 16:42:27 +0100
+Message-ID: <E1dfpbP-0001lX-RR@finisterre>
+References: <8760dwz3z9.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <874ltgz3yp.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760dwz3z9.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add rsnd_ssi_flags_has/add() macro
+   ASoC: rsnd: call free_irq() both DMA/PIO mode
 
 has been applied to the asoc tree at
 
@@ -37,93 +37,94 @@ to this mail.
 Thanks,
 Mark
 
->From bf9b29c784b393d1e506945f1e24e871d2587eb3 Mon Sep 17 00:00:00 2001
+>From 213691c7e873206742b39751895d15b41a02b3d1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 10 Aug 2017 00:07:20 +0000
-Subject: [PATCH] ASoC: rsnd: add rsnd_ssi_flags_has/add() macro
+Date: Thu, 10 Aug 2017 00:07:00 +0000
+Subject: [PATCH] ASoC: rsnd: call free_irq() both DMA/PIO mode
 
-Current rsnd_ssi_mode_flags() is not useful. This patch adds
-new rsnd_ssi_flags_has/add() macro for it.
+commit 701172dca15b ("ASoC: rsnd: don't use devm_request_irq() for SSI")
+exchanged devm_request_irq() to request_irq() for SSI, because SSI will
+fallback into PIO mode if DMA doesn't work.
+But, because of it, PIO mode needed to call free_irq() when removing,
+not only DMA mode.
+This patch call free_irq() both PIO/DMA. Otherwise, rsnd IRQ handler
+will be increased if user tried many unbind/bind.
 
+Fixes: 701172dca15b ("ASoC: rsnd: don't use devm_request_irq() for SSI")
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 281ed0da6ba1..ca9355b86bd9 100644
+index 0309de58bf18..281ed0da6ba1 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -101,7 +101,8 @@ struct rsnd_ssi {
- #define rsnd_ssi_to_dma(mod) ((ssi)->dma)
- #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
- #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
--#define rsnd_ssi_mode_flags(p) ((p)->flags)
-+#define rsnd_ssi_flags_has(p, f) ((p)->flags & f)
-+#define rsnd_ssi_flags_set(p, f) ((p)->flags |= f)
- #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
- #define rsnd_ssi_is_multi_slave(mod, io) \
- 	(rsnd_ssi_multi_slaves(io) & (1 << rsnd_mod_id(mod)))
-@@ -114,10 +115,10 @@ int rsnd_ssi_hdmi_port(struct rsnd_dai_stream *io)
- 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 
--	if (rsnd_ssi_mode_flags(ssi) & RSND_SSI_HDMI0)
-+	if (rsnd_ssi_flags_has(ssi, RSND_SSI_HDMI0))
- 		return RSND_SSI_HDMI_PORT0;
- 
--	if (rsnd_ssi_mode_flags(ssi) & RSND_SSI_HDMI1)
-+	if (rsnd_ssi_flags_has(ssi, RSND_SSI_HDMI1))
- 		return RSND_SSI_HDMI_PORT1;
- 
- 	return 0;
-@@ -132,7 +133,7 @@ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
- 	if (!rsnd_ssi_is_dma_mode(mod))
- 		return 0;
- 
--	if (!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_NO_BUSIF))
-+	if (!(rsnd_ssi_flags_has(ssi, RSND_SSI_NO_BUSIF)))
- 		use_busif = 1;
- 	if (rsnd_io_to_mod_src(io))
- 		use_busif = 1;
-@@ -986,13 +987,13 @@ static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
- 	ssi  = rsnd_mod_to_ssi(mod);
- 
- 	if (strstr(remote_ep->full_name, "hdmi0")) {
--		ssi->flags |= RSND_SSI_HDMI0;
-+		rsnd_ssi_flags_set(ssi, RSND_SSI_HDMI0);
- 		dev_dbg(dev, "%s[%d] connected to HDMI0\n",
- 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
- 	}
- 
- 	if (strstr(remote_ep->full_name, "hdmi1")) {
--		ssi->flags |= RSND_SSI_HDMI1;
-+		rsnd_ssi_flags_set(ssi, RSND_SSI_HDMI1);
- 		dev_dbg(dev, "%s[%d] connected to HDMI1\n",
- 			rsnd_mod_name(mod), rsnd_mod_id(mod));
- 	}
-@@ -1025,7 +1026,7 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 
--	return !!(rsnd_ssi_mode_flags(ssi) & RSND_SSI_CLK_PIN_SHARE);
-+	return !!(rsnd_ssi_flags_has(ssi, RSND_SSI_CLK_PIN_SHARE));
+@@ -792,6 +792,23 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	return ret;
  }
  
- static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
-@@ -1108,10 +1109,10 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
- 		}
++static int rsnd_ssi_common_remove(struct rsnd_mod *mod,
++				  struct rsnd_dai_stream *io,
++				  struct rsnd_priv *priv)
++{
++	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	struct rsnd_mod *pure_ssi_mod = rsnd_io_to_mod_ssi(io);
++
++	/* Do nothing if non SSI (= SSI parent, multi SSI) mod */
++	if (pure_ssi_mod != mod)
++		return 0;
++
++	/* PIO will request IRQ again */
++	free_irq(ssi->irq, mod);
++
++	return 0;
++}
++
+ static int rsnd_ssi_pointer(struct rsnd_mod *mod,
+ 			    struct rsnd_dai_stream *io,
+ 			    snd_pcm_uframes_t *pointer)
+@@ -807,6 +824,7 @@ static int rsnd_ssi_pointer(struct rsnd_mod *mod,
+ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.name	= SSI_NAME,
+ 	.probe	= rsnd_ssi_common_probe,
++	.remove	= rsnd_ssi_common_remove,
+ 	.init	= rsnd_ssi_init,
+ 	.quit	= rsnd_ssi_quit,
+ 	.start	= rsnd_ssi_start,
+@@ -841,23 +859,6 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
+ 	return ret;
+ }
  
- 		if (of_get_property(np, "shared-pin", NULL))
--			ssi->flags |= RSND_SSI_CLK_PIN_SHARE;
-+			rsnd_ssi_flags_set(ssi, RSND_SSI_CLK_PIN_SHARE);
- 
- 		if (of_get_property(np, "no-busif", NULL))
--			ssi->flags |= RSND_SSI_NO_BUSIF;
-+			rsnd_ssi_flags_set(ssi, RSND_SSI_NO_BUSIF);
- 
- 		ssi->irq = irq_of_parse_and_map(np, 0);
- 		if (!ssi->irq) {
+-static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
+-			       struct rsnd_dai_stream *io,
+-			       struct rsnd_priv *priv)
+-{
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	struct rsnd_mod *pure_ssi_mod = rsnd_io_to_mod_ssi(io);
+-
+-	/* Do nothing if non SSI (= SSI parent, multi SSI) mod */
+-	if (pure_ssi_mod != mod)
+-		return 0;
+-
+-	/* PIO will request IRQ again */
+-	free_irq(ssi->irq, mod);
+-
+-	return 0;
+-}
+-
+ static int rsnd_ssi_fallback(struct rsnd_mod *mod,
+ 			     struct rsnd_dai_stream *io,
+ 			     struct rsnd_priv *priv)
+@@ -899,7 +900,7 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
+ 	.name	= SSI_NAME,
+ 	.dma_req = rsnd_ssi_dma_req,
+ 	.probe	= rsnd_ssi_dma_probe,
+-	.remove	= rsnd_ssi_dma_remove,
++	.remove	= rsnd_ssi_common_remove,
+ 	.init	= rsnd_ssi_init,
+ 	.quit	= rsnd_ssi_quit,
+ 	.start	= rsnd_ssi_start,
 -- 
 2.13.2
