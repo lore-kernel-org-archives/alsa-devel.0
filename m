@@ -1,74 +1,83 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 5/5] ASoC: dapm: Adjust seven checks for null
-	pointers
-Date: Thu, 10 Aug 2017 15:05:07 +0200
-Message-ID: <32343b0d-447a-6b1a-ff11-506d14a82d15@users.sourceforge.net>
-References: <e8013ddb-687d-ee56-8153-2791bb9f46fe@users.sourceforge.net>
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: Re: [PATCH v3 3/5] ASoC: codecs: msm8916-wcd-analog: add MBHC support
+Date: Thu, 10 Aug 2017 09:33:29 -0400
+Message-ID: <20170810133329.7lqcg3tucgp5jxii@workotop.localdomain>
+References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
+ <20170809164927.19663-4-srinivas.kandagatla@linaro.org>
+ <20170809211054.4owecfeoxxud5evh@workotop.localdomain>
+ <76eb6edf-1754-6679-6218-028b12dce49a@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id B3D66267554
- for <alsa-devel@alsa-project.org>; Thu, 10 Aug 2017 15:05:15 +0200 (CEST)
-In-Reply-To: <e8013ddb-687d-ee56-8153-2791bb9f46fe@users.sourceforge.net>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <76eb6edf-1754-6679-6218-028b12dce49a@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBUaHUsIDEwIEF1ZyAyMDE3IDE0OjQxOjMwICswMjAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
-bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
-aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
-dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
-IHdyaXR0ZW4gIeKApgoKVGh1cyBmaXggYWZmZWN0ZWQgc291cmNlIGNvZGUgcGxhY2VzLgoKU2ln
-bmVkLW9mZi1ieTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0
-PgotLS0KIHNvdW5kL3NvYy9zb2MtZGFwbS5jIHwgMTQgKysrKysrKy0tLS0tLS0KIDEgZmlsZSBj
-aGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL3NvYy1kYXBtLmMgYi9zb3VuZC9zb2Mvc29jLWRhcG0uYwppbmRleCA0ZWVhODRkODIx
-YzQuLjVhODViODc3MzI4OSAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1kYXBtLmMKKysrIGIv
-c291bmQvc29jL3NvYy1kYXBtLmMKQEAgLTE0Niw3ICsxNDYsNyBAQCBzdGF0aWMgdm9pZCBwb3Bf
-ZGJnKHN0cnVjdCBkZXZpY2UgKmRldiwgdTMyIHBvcF90aW1lLCBjb25zdCBjaGFyICpmbXQsIC4u
-LikKIAkJcmV0dXJuOwogCiAJYnVmID0ga21hbGxvYyhQQUdFX1NJWkUsIEdGUF9LRVJORUwpOwot
-CWlmIChidWYgPT0gTlVMTCkKKwlpZiAoIWJ1ZikKIAkJcmV0dXJuOwogCiAJdmFfc3RhcnQoYXJn
-cywgZm10KTsKQEAgLTg4Myw3ICs4ODMsNyBAQCBzdGF0aWMgaW50IGRhcG1fY3JlYXRlX29yX3No
-YXJlX2tjb250cm9sKHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAogCQkJbG9uZ19uYW1l
-ID0ga2FzcHJpbnRmKEdGUF9LRVJORUwsICIlcyAlcyIsCiAJCQkJIHctPm5hbWUgKyBwcmVmaXhf
-bGVuLAogCQkJCSB3LT5rY29udHJvbF9uZXdzW2tjaV0ubmFtZSk7Ci0JCQlpZiAobG9uZ19uYW1l
-ID09IE5VTEwpCisJCQlpZiAoIWxvbmdfbmFtZSkKIAkJCQlyZXR1cm4gLUVOT01FTTsKIAogCQkJ
-bmFtZSA9IGxvbmdfbmFtZTsKQEAgLTEwODYsNyArMTA4Niw3IEBAIHN0YXRpYyBpbnQgZGFwbV93
-aWRnZXRfbGlzdF9jcmVhdGUoc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXRfbGlzdCAqKmxpc3Qs
-CiAJCXNpemUrKzsKIAogCSpsaXN0ID0ga3phbGxvYyhzaXplb2YoKipsaXN0KSArIHNpemUgKiBz
-aXplb2YoKncpLCBHRlBfS0VSTkVMKTsKLQlpZiAoKmxpc3QgPT0gTlVMTCkKKwlpZiAoISpsaXN0
-KQogCQlyZXR1cm4gLUVOT01FTTsKIAogCWxpc3RfZm9yX2VhY2hfZW50cnkodywgd2lkZ2V0cywg
-d29ya19saXN0KQpAQCAtMjY2OCw3ICsyNjY4LDcgQEAgc3RhdGljIGludCBzbmRfc29jX2RhcG1f
-YWRkX3BhdGgoc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0ICpkYXBtLAogCQlwYXRoLT5pc19z
-dXBwbHkgPSAxOwogCiAJLyogY29ubmVjdCBzdGF0aWMgcGF0aHMgKi8KLQlpZiAoY29udHJvbCA9
-PSBOVUxMKSB7CisJaWYgKCFjb250cm9sKSB7CiAJCXBhdGgtPmNvbm5lY3QgPSAxOwogCX0gZWxz
-ZSB7CiAJCXN3aXRjaCAod3NvdXJjZS0+aWQpIHsKQEAgLTI3NzcsMTIgKzI3NzcsMTIgQEAgc3Rh
-dGljIGludCBzbmRfc29jX2RhcG1fYWRkX3JvdXRlKHN0cnVjdCBzbmRfc29jX2RhcG1fY29udGV4
-dCAqZGFwbSwKIAlpZiAoIXdzb3VyY2UpCiAJCXdzb3VyY2UgPSB3dHNvdXJjZTsKIAotCWlmICh3
-c291cmNlID09IE5VTEwpIHsKKwlpZiAoIXdzb3VyY2UpIHsKIAkJZGV2X2VycihkYXBtLT5kZXYs
-ICJBU29DOiBubyBzb3VyY2Ugd2lkZ2V0IGZvdW5kIGZvciAlc1xuIiwKIAkJCXJvdXRlLT5zb3Vy
-Y2UpOwogCQlyZXR1cm4gLUVOT0RFVjsKIAl9Ci0JaWYgKHdzaW5rID09IE5VTEwpIHsKKwlpZiAo
-IXdzaW5rKSB7CiAJCWRldl9lcnIoZGFwbS0+ZGV2LCAiQVNvQzogbm8gc2luayB3aWRnZXQgZm91
-bmQgZm9yICVzXG4iLAogCQkJcm91dGUtPnNpbmspOwogCQlyZXR1cm4gLUVOT0RFVjsKQEAgLTM0
-ODksNyArMzQ4OSw3IEBAIHNuZF9zb2NfZGFwbV9uZXdfY29udHJvbF91bmxvY2tlZChzdHJ1Y3Qg
-c25kX3NvY19kYXBtX2NvbnRleHQgKmRhcG0sCiAJCXctPm5hbWUgPSBrYXNwcmludGYoR0ZQX0tF
-Uk5FTCwgIiVzICVzIiwgcHJlZml4LCB3aWRnZXQtPm5hbWUpOwogCWVsc2UKIAkJdy0+bmFtZSA9
-IGtzdHJkdXBfY29uc3Qod2lkZ2V0LT5uYW1lLCBHRlBfS0VSTkVMKTsKLQlpZiAody0+bmFtZSA9
-PSBOVUxMKSB7CisJaWYgKCF3LT5uYW1lKSB7CiAJCWtmcmVlKHcpOwogCQlyZXR1cm4gTlVMTDsK
-IAl9Ci0tIAoyLjE0LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+Hi,
+
+On Thu, Aug 10, 2017 at 11:02:34AM +0100, Srinivas Kandagatla wrote:
+> Hi Damien,
+> Thanks for testing.
+> 
+> On 09/08/17 22:10, Damien Riegel wrote:
+> > Hi Srinivas,
+> > 
+> > On Wed, Aug 09, 2017 at 06:49:25PM +0200, srinivas.kandagatla@linaro.org wrote:
+> > > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > 
+> > > MBHC (MultiButton Headset Control) support is available in pm8921 in two
+> > > blocks, one to detect mechanical headset insertion and removal and other
+> > > block to support headset type detection and 5 button detection and othe
+> > > features like impedance calculation.
+> > > 
+> > > This patch adds support to:
+> > > 1> Support to NC and NO type of headset Jacks.
+> > > 2> Mechanical insertion and detection of headset jack.
+> > > 3> Detect a 3 pole Headphone and a 4 pole Headset.
+> > > 4> Detect 5 buttons.
+> > > 
+> > > Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+> > > headset/headphones.
+> > 
+> > I have the same issue with this patchset, KEY_MEDIA is being reported
+> > when unplugging a headset. I added a few traces and what I observe is
+> Am unable to reproduce the same issue, I tried atleast 6 different mix of
+> headset/headphones.
+> here is my evtest log:  http://paste.ubuntu.com/25282592/
+> 
+> Could you explain bit more about your setup, so that I can try to reproduce
+> the same issue.
+> 
+> My setup is DB410c + Audio Mezz board
+> https://www.arrow.com/en/products/audiomezz/seeed-technology-limited
+
+I'm using a hardware based on Intrinsyc Open-Q 410 Development Kit:
+https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
+
+We use the same SoM with a different carrier board, but connections to
+the jack connector are routed the same way on both carrier boards.
+
+> > that the "button pressed" irq is fired when unplugging, but no "button
+> > released" irq follows. To get a "button released" irq, I need to either
+> > plug a headset, or plug-and-unplug headphones.
+> > 
+> > So basically, detection fails because we don't get the "button pressed"
+> > irq prior to the mechanical switch irq. Do you know what could explain
+> > the MBHC not firing the "button released" irq when unplugging headset?
+> > 
+> Can you also share output of evetest and /proc/interrupts so that i can see
+> if the extra logic of masking btn0 is creating the issue, we can also try
+> removing the btn0 accessory detect logic and see if we get correct button
+> press/releases.
+
+It's definitely what's causing the headphones to be reported as headset,
+but not what's causing the interrupt not to be triggered in the first
+place. I don't have access to the hardware right now, so I'll provide
+you with logs next week.
+
+Thanks,
+-- 
+Damien
