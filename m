@@ -1,52 +1,57 @@
-From: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
-Subject: [PATCH] ASoC: simple-scu-card: Parse off codec widgets
-Date: Fri, 11 Aug 2017 17:12:19 +0300
-Message-ID: <1502460739-12134-1-git-send-email-daniel.baluta@nxp.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ASoC: dwc: Delete an error message for a
+ failed memory allocation in dw_i2s_probe()
+Date: Fri, 11 Aug 2017 16:12:19 +0200
+Message-ID: <c6b7021a-ed0d-cc2e-d722-4960e060e8d3@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mihai.serban-3arQi8VN3Tc@public.gmane.org, shengjiu.wang-3arQi8VN3Tc@public.gmane.org, viorel.suman-3arQi8VN3Tc@public.gmane.org, Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7CE326762D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 16:13:16 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Alex Deucher <alexander.deucher@amd.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Jose Abreu <Jose.Abreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 11 Aug 2017 16:04:53 +0200
+
+Omit an extra message for a memory allocation failure in this function.
+
+This issue was detected by using the Coccinelle software.
+
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- Documentation/devicetree/bindings/sound/simple-scu-card.txt | 1 +
- sound/soc/generic/simple-scu-card.c                         | 4 ++++
- 2 files changed, 5 insertions(+)
+ sound/soc/dwc/dwc-i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
-index 327d229..32f8dbc 100644
---- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
-@@ -24,6 +24,7 @@ Optional subnode properties:
- - simple-audio-card,convert-rate	: platform specified sampling rate convert
- - simple-audio-card,convert-channels	: platform specified converted channel size (2 - 8 ch)
- - simple-audio-card,prefix		: see routing
-+- simple-audio-card,widgets		: Please refer to widgets.txt.
- - simple-audio-card,routing		: A list of the connections between audio components.
- 					  Each entry is a pair of strings, the first being the connection's sink,
- 					  the second being the connection's source. Valid names for sources.
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index a75b385..0bb3da7 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -191,6 +191,10 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (!node)
- 		return -EINVAL;
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index eebe9d34e7a0..e27e21f8569a 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -617,10 +617,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	const char *clk_id;
  
-+	ret = asoc_simple_card_of_parse_widgets(card, PREFIX);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 0);
- 	if (ret < 0)
- 		return ret;
+ 	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+-	if (!dev) {
+-		dev_warn(&pdev->dev, "kzalloc fail\n");
++	if (!dev)
+ 		return -ENOMEM;
+-	}
+ 
+ 	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
+ 	if (!dw_i2s_dai)
 -- 
-2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.14.0
