@@ -1,8 +1,9 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 10/11] ASoC: pxa: Handle return value of clk_prepare_enable.
-Date: Fri, 11 Aug 2017 21:08:40 +0200
-Message-ID: <874ltdq5vr.fsf@belgarion.home>
+Subject: Re: [PATCH 11/11] ASoC: pxa-ssp: Handle return value of clk_prepare_enable.
+Date: Fri, 11 Aug 2017 21:08:53 +0200
+Message-ID: <87wp69oray.fsf@belgarion.home>
 References: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
+        <1500977770-28142-2-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
