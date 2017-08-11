@@ -1,39 +1,58 @@
-From: Lin Huang <hl@rock-chips.com>
-Subject: [PATCH 2/2] dt-bindings: sound: add dmicen property in dmic driver
-Date: Fri, 11 Aug 2017 15:31:29 +0800
-Message-ID: <1502436689-21123-2-git-send-email-hl@rock-chips.com>
-References: <1502436689-21123-1-git-send-email-hl@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502436689-21123-1-git-send-email-hl@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, arnaud.pouliquen@st.com, dgreif@chromium.org
-Cc: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, briannorris@chromium.org, dianders@chromium.org, lgirdwood@gmail.com, Lin Huang <hl@rock-chips.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ASoC: kirkwood: Delete an error message for a
+ failed memory allocation in kirkwood_i2s_dev_probe()
+Date: Fri, 11 Aug 2017 09:45:15 +0200
+Message-ID: <2f32b2cf-dcde-ccef-24a5-f7b6ad9beb83@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1D37266B1C
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 09:46:12 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-there may use enable pin to control dmic start and stop,
-so add this property in dt-bindings.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 11 Aug 2017 09:35:33 +0200
 
-Signed-off-by: Lin Huang <hl@rock-chips.com>
+Omit an extra message for a memory allocation failure in this function.
+
+This issue was detected by using the Coccinelle software.
+
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- Documentation/devicetree/bindings/sound/dmic.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/kirkwood/kirkwood-i2s.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
-index a0c58f2..54c8ef6 100644
---- a/Documentation/devicetree/bindings/sound/dmic.txt
-+++ b/Documentation/devicetree/bindings/sound/dmic.txt
-@@ -5,8 +5,12 @@ This device support generic PDM digital microphone.
- Required properties:
- 	- compatible: should be "dmic-codec".
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index 3b09f71b9535..105a73cc5158 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -538,10 +538,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 	int err;
  
-+Optional properties:
-+	- dmicen-gpios: GPIO specifier for dmic to control start and stop
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv) {
+-		dev_err(&pdev->dev, "allocation failed\n");
++	if (!priv)
+ 		return -ENOMEM;
+-	}
 +
- Example node:
+ 	dev_set_drvdata(&pdev->dev, priv);
  
- 	dmic_codec: dmic@0 {
- 		compatible = "dmic-codec";
-+		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
- 	};
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 -- 
-2.7.4
+2.14.0
