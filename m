@@ -1,44 +1,50 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH v2] ASoC: samsung: i2s: Null pointer
- dereference on samsung_i2s_remove
-Date: Fri, 11 Aug 2017 15:00:22 +0200
-Message-ID: <029a9c75-b8ca-1969-d846-fb49c4bc41bf@samsung.com>
-References: <CGME20170811123601epcas4p49ca200aaa39cae3fa0f6cba5bf86f1f8@epcas4p4.samsung.com>
- <1502454942-739-1-git-send-email-vasilyev@ispras.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F09D2675CA
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 15:00:31 +0200 (CEST)
-In-reply-to: <1502454942-739-1-git-send-email-vasilyev@ispras.ru>
-Content-language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anton Vasilyev <vasilyev@ispras.ru>
-Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+From: Anton Vasilyev <vasilyev@ispras.ru>
+Subject: [PATCH v3] ASoC: samsung: i2s: Null pointer dereference on samsung_i2s_remove
+Date: Fri, 11 Aug 2017 16:06:23 +0300
+Message-ID: <1502456783-2047-1-git-send-email-vasilyev@ispras.ru>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Anton Vasilyev <vasilyev@ispras.ru>, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/11/2017 02:35 PM, Anton Vasilyev wrote:
-> If (quirks & QUIRK_SEC_DAI == 0) then samsung_i2s_probe() doesn't allocate
-> sec_dai and pri_dai->sec_dai remains Null, but samsung_i2s_remove()
-> permorms pri_dai->sec_dai dereference in any case.
-   ^^^^^^^^
-Still you have a typo here. ;)
+If (quirks & QUIRK_SEC_DAI == 0) then samsung_i2s_probe() doesn't allocate
+sec_dai and pri_dai->sec_dai remains Null, but samsung_i2s_remove()
+performs pri_dai->sec_dai dereference in any case.
 
-> The patch adds sec_dai check on Null before derefence at
-> samsung_i2s_remove().
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Anton Vasilyev<vasilyev@ispras.ru>
+The patch adds sec_dai check on Null before derefence at
+samsung_i2s_remove().
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
+---
+v2: Drop initialization of sec_dai by NULL at samsung_i2s_remove
+as Sylwester Nawrocki suggest.
+---
+v3: Fix typo in the comment
+---
+ sound/soc/samsung/i2s.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index af3ba4d..6f896e3 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1376,13 +1376,9 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 
+ static int samsung_i2s_remove(struct platform_device *pdev)
+ {
+-	struct i2s_dai *pri_dai, *sec_dai;
++	struct i2s_dai *pri_dai;
+ 
+ 	pri_dai = dev_get_drvdata(&pdev->dev);
+-	sec_dai = pri_dai->sec_dai;
+-
+-	pri_dai->sec_dai = NULL;
+-	sec_dai->pri_dai = NULL;
+ 
+ 	pm_runtime_get_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+-- 
+2.7.4
