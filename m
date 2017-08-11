@@ -1,16 +1,19 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ALSA: usb: caiaq: audio: Delete two error
- messages for a failed memory allocation in alloc_urbs()
-Date: Fri, 11 Aug 2017 20:00:30 +0200
-Message-ID: <8cb2a553-e247-f432-48ef-1a7438416366@users.sourceforge.net>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v5 06/12] mfd: wm97xx-core: core support
+	for wm97xx Codec
+Date: Fri, 11 Aug 2017 21:08:22 +0200
+Message-ID: <87bmnlq5w9.fsf@belgarion.home>
+References: <20170806213613.5600-1-robert.jarzmik@free.fr>
+ <20170806213613.5600-7-robert.jarzmik@free.fr>
+ <20170808110204.dt7bjfwkyfpbfr2w@dell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id D01A0266C85
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 20:00:39 +0200 (CEST)
-Content-Language: en-GB
+Received: from smtp.smtpout.orange.fr (smtp13.smtpout.orange.fr
+ [80.12.242.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70E25266C85
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 21:08:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 19:39:06 +0200
+Lee Jones <lee.jones@linaro.org> writes:
 
-Omit extra messages for a memory allocation failure in this function.
+> On Sun, 06 Aug 2017, Robert Jarzmik wrote:
 
-This issue was detected by using the Coccinelle software.
+Hi Lee,
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/usb/caiaq/audio.c | 2 --
- 1 file changed, 2 deletions(-)
+I basically agree with all your comments, so I will only answer to your
+questions.
+>> +#include <linux/module.h>
+>
+> Why separate this?
+No point, for v6.
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>
+> Can you use the short version?
+Yeah, sure.
 
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index 8f66ba730d69..1f306155e76a 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -731,7 +731,6 @@ static struct urb **alloc_urbs(struct snd_usb_caiaqdev *cdev, int dir, int *ret)
- 
- 	urbs = kmalloc(N_URBS * sizeof(*urbs), GFP_KERNEL);
- 	if (!urbs) {
--		dev_err(dev, "unable to kmalloc() urbs, OOM!?\n");
- 		*ret = -ENOMEM;
- 		return NULL;
- 	}
-@@ -746,7 +745,6 @@ static struct urb **alloc_urbs(struct snd_usb_caiaqdev *cdev, int dir, int *ret)
- 		urbs[i]->transfer_buffer =
- 			kmalloc(FRAMES_PER_URB * BYTES_PER_FRAME, GFP_KERNEL);
- 		if (!urbs[i]->transfer_buffer) {
--			dev_err(dev, "unable to kmalloc() transfer buffer, OOM!?\n");
- 			*ret = -ENOMEM;
- 			return urbs;
- 		}
+>> +#ifndef __LINUX_MFD_WM97XX_H
+>> +#define __LINUX_MFD_WM97XX_H
+>> +
+>> +struct regmap;
+>> +struct wm97xx_batt_pdata;
+>> +struct snd_ac97;
+>
+> What are you using these for?
+There are for the structure just below, which doesn't need the implementation
+details of these structures, but does need the definition to properly compile.
+
+>> +struct wm97xx_platform_data {
+>> +	struct snd_ac97 *ac97;
+>> +	struct regmap *regmap;
+>> +	struct wm97xx_batt_pdata *batt_pdata;
+>> +};
+This is the structure "just below" I'm speaking of.
+
+Thanks for the review.
+
 -- 
-2.14.0
+Robert
