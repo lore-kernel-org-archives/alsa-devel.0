@@ -1,36 +1,70 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 2/5] ASoC: codecs: msm8916-wcd-analog: get micbias
- voltage from dt
-Date: Fri, 11 Aug 2017 16:15:47 +0100
-Message-ID: <5a6db43c-3ba4-aba7-977e-0ea731d4f2f9@linaro.org>
-References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
- <20170809164927.19663-3-srinivas.kandagatla@linaro.org>
- <20170810152437.ezfhi7cukutyabmt@sirena.org.uk>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: Intel: kbl: make
+	snd_pcm_hw_constraint_list const
+Date: Fri, 11 Aug 2017 21:26:49 +0530
+Message-ID: <1502467009-27186-1-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170810152437.ezfhi7cukutyabmt@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, damien.riegel@savoirfairelinux.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64A6926768D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 17:57:06 +0200 (CEST)
+Received: by mail-pf0-f195.google.com with SMTP id c65so3822167pfl.0
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 08:57:06 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Make these const as they are only passed to the function
+snd_pcm_hw_constraint_list having the corresponding argument as const.
+Done using Coccinelle.
 
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On 10/08/17 16:24, Mark Brown wrote:
-> On Wed, Aug 09, 2017 at 06:49:24PM +0200, srinivas.kandagatla@linaro.org wrote:
-> 
->> -	snd_soc_write(codec, CDC_A_MICB_1_VAL, MICB_1_VAL_MICB_OUT_VAL_V2P70V);
->> -	/*
->> -	 * Special headset needs MICBIAS as 2.7V so wait for
->> -	 * 50 msec for the MICBIAS to reach 2.7 volts.
->> -	 */
->> -	msleep(50);
->> +	if (wcd->micbias_mv)
-> 
-> We seem to have just completely lost this ramp time handling?
-Yes, will take care of this in next version.
-
-> 
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 12b34b9..8bdd613 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -286,7 +286,7 @@ static int kabylake_5663_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
+ 	48000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_rates = {
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
+ 	.count = ARRAY_SIZE(rates),
+ 	.list  = rates,
+ 	.mask = 0,
+@@ -296,7 +296,7 @@ static int kabylake_5663_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
+ 	2,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ 	.count = ARRAY_SIZE(channels),
+ 	.list = channels,
+ 	.mask = 0,
+@@ -425,7 +425,7 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
+ 	16000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_16000 = {
++static const struct snd_pcm_hw_constraint_list constraints_16000 = {
+ 	.count = ARRAY_SIZE(rates_16000),
+ 	.list  = rates_16000,
+ };
+-- 
+1.9.1
