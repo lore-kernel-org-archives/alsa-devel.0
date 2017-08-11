@@ -1,18 +1,16 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ASoC: Intel: kbl: make
-	snd_pcm_hw_constraint_list const
-Date: Fri, 11 Aug 2017 21:26:49 +0530
-Message-ID: <1502467009-27186-1-git-send-email-bhumirks@gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ALSA: usx2y: Delete an error message for a
+ failed memory allocation in two functions
+Date: Fri, 11 Aug 2017 18:02:15 +0200
+Message-ID: <5ca1485e-5aaf-3c42-a24e-fb834239182e@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
- [209.85.192.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 64A6926768D
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 17:57:06 +0200 (CEST)
-Received: by mail-pf0-f195.google.com with SMTP id c65so3822167pfl.0
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 08:57:06 -0700 (PDT)
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2A5D26768D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 18:02:52 +0200 (CEST)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make these const as they are only passed to the function
-snd_pcm_hw_constraint_list having the corresponding argument as const.
-Done using Coccinelle.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 11 Aug 2017 17:40:57 +0200
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Omit an extra message for a memory allocation failure in these functions.
+
+This issue was detected by using the Coccinelle software.
+
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/usx2y/usbusx2yaudio.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 12b34b9..8bdd613 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -286,7 +286,7 @@ static int kabylake_5663_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
- 	48000,
- };
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index dd40ca9d858a..612aa7ff7e18 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -422,7 +422,5 @@ static int usX2Y_urbs_allocate(struct snd_usX2Y_substream *subs)
+-		if (NULL == subs->tmpbuf) {
+-			snd_printk(KERN_ERR "cannot malloc tmpbuf\n");
++		if (!subs->tmpbuf)
+ 			return -ENOMEM;
+-		}
+ 	}
+ 	/* allocate and initialize data urbs */
+ 	for (i = 0; i < NRURBS; i++) {
+@@ -952,7 +950,6 @@ static int usX2Y_audio_stream_new(struct snd_card *card, int playback_endpoint,
+-		if (NULL == usX2Y_substream[i]) {
+-			snd_printk(KERN_ERR "cannot malloc\n");
++		if (!usX2Y_substream[i])
+ 			return -ENOMEM;
+-		}
++
+ 		usX2Y_substream[i]->usX2Y = usX2Y(card);
+ 	}
  
--static struct snd_pcm_hw_constraint_list constraints_rates = {
-+static const struct snd_pcm_hw_constraint_list constraints_rates = {
- 	.count = ARRAY_SIZE(rates),
- 	.list  = rates,
- 	.mask = 0,
-@@ -296,7 +296,7 @@ static int kabylake_5663_hdmi2_init(struct snd_soc_pcm_runtime *rtd)
- 	2,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.count = ARRAY_SIZE(channels),
- 	.list = channels,
- 	.mask = 0,
-@@ -425,7 +425,7 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 	16000,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_16000 = {
-+static const struct snd_pcm_hw_constraint_list constraints_16000 = {
- 	.count = ARRAY_SIZE(rates_16000),
- 	.list  = rates_16000,
- };
 -- 
-1.9.1
+2.14.0
