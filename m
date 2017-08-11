@@ -1,16 +1,17 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: kirkwood: Delete an error message for a
- failed memory allocation in kirkwood_i2s_dev_probe()
-Date: Fri, 11 Aug 2017 09:45:15 +0200
-Message-ID: <2f32b2cf-dcde-ccef-24a5-f7b6ad9beb83@users.sourceforge.net>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Fix CONFIG_SND_SEQ_MIDI dependency
+Date: Fri, 11 Aug 2017 11:14:13 +0200
+Message-ID: <20170811091413.9329-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id C1D37266B1C
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 09:46:12 +0200 (CEST)
-Content-Language: en-GB
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F0F026648D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 11:14:15 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 72584ABB8
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 09:14:15 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 09:35:33 +0200
+The commit 0181307abc1d ("ALSA: seq: Reorganize kconfig and build")
+rewrote the dependency of each sequencer module in a standard way, but
+there was one change applied mistakenly: CONFIG_SND_SEQ_MIDI isn't
+enabled properly by CONFIG_SND_RAWMIDI.  I seem to have changed the
+wrong one instead, CONFIG_SND_SEQ_MIDI_EMUL, which is eventually
+reverse-selected by CONFIG_SND_SEQ_MIDI itself.  This ended up the
+lack of snd-seq-midi module as reported below.
 
-Omit an extra message for a memory allocation failure in this function.
+The fix is to put def_tristate properly to CONFIG_SND_SEQ_MIDI instead
+of *_MIDI_EMUL entry.
 
-This issue was detected by using the Coccinelle software.
-
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Fixes: 0181307abc1d ("ALSA: seq: Reorganize kconfig and build")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=196633
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/core/seq/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 3b09f71b9535..105a73cc5158 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -538,10 +538,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	int err;
+diff --git a/sound/core/seq/Kconfig b/sound/core/seq/Kconfig
+index a536760a94c2..45c1336c6597 100644
+--- a/sound/core/seq/Kconfig
++++ b/sound/core/seq/Kconfig
+@@ -47,10 +47,10 @@ config SND_SEQ_HRTIMER_DEFAULT
+ 	  timer.
  
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		dev_err(&pdev->dev, "allocation failed\n");
-+	if (!priv)
- 		return -ENOMEM;
--	}
-+
- 	dev_set_drvdata(&pdev->dev, priv);
+ config SND_SEQ_MIDI_EVENT
+-	def_tristate SND_RAWMIDI
++	tristate
  
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ config SND_SEQ_MIDI
+-	tristate
++	def_tristate SND_RAWMIDI
+ 	select SND_SEQ_MIDI_EVENT
+ 
+ config SND_SEQ_MIDI_EMUL
 -- 
-2.14.0
+2.13.3
