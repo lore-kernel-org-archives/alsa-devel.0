@@ -1,70 +1,52 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: Freescale: Delete an error message for a failed memory
- allocation in three functions
-Date: Fri, 11 Aug 2017 15:32:55 +0200
-Message-ID: <671f4a88-bee9-85b4-ea9b-68abcdb40443@users.sourceforge.net>
+From: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
+Subject: [PATCH] ASoC: simple-scu-card: Parse off codec widgets
+Date: Fri, 11 Aug 2017 17:12:19 +0300
+Message-ID: <1502460739-12134-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, Fabio Estevam <fabio.estevam@nxp.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mihai.serban-3arQi8VN3Tc@public.gmane.org, shengjiu.wang-3arQi8VN3Tc@public.gmane.org, viorel.suman-3arQi8VN3Tc@public.gmane.org, Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
->From 885ccd6c63291dcd4854a0cbaab5188cdc3db805 Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 15:10:43 +0200
-Subject: [PATCH] ASoC: Freescale: Delete an error message for a failed memory allocation in three functions
-
-Omit an extra message for a memory allocation failure in these functions.
-
-This issue was detected by using the Coccinelle software.
-
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Daniel Baluta <daniel.baluta-3arQi8VN3Tc@public.gmane.org>
 ---
- sound/soc/fsl/fsl_asrc_dma.c | 4 +---
- sound/soc/fsl/fsl_dma.c      | 1 -
- sound/soc/fsl/fsl_ssi.c      | 4 +---
- 3 files changed, 2 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/sound/simple-scu-card.txt | 1 +
+ sound/soc/generic/simple-scu-card.c                         | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index 282d841840b1..2baf19608bd0 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -282,7 +282,5 @@ static int fsl_asrc_dma_startup(struct snd_pcm_substream *substream)
--	if (!pair) {
--		dev_err(dev, "failed to allocate pair\n");
-+	if (!pair)
- 		return -ENOMEM;
--	}
+diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+index 327d229..32f8dbc 100644
+--- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+@@ -24,6 +24,7 @@ Optional subnode properties:
+ - simple-audio-card,convert-rate	: platform specified sampling rate convert
+ - simple-audio-card,convert-channels	: platform specified converted channel size (2 - 8 ch)
+ - simple-audio-card,prefix		: see routing
++- simple-audio-card,widgets		: Please refer to widgets.txt.
+ - simple-audio-card,routing		: A list of the connections between audio components.
+ 					  Each entry is a pair of strings, the first being the connection's sink,
+ 					  the second being the connection's source. Valid names for sources.
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index a75b385..0bb3da7 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -191,6 +191,10 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	if (!node)
+ 		return -EINVAL;
  
- 	pair->asrc_priv = asrc_priv;
- 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index ccadefceeff2..0ce172f86d6c 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -907,5 +907,4 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
- 	if (!dma) {
--		dev_err(&pdev->dev, "could not allocate dma object\n");
- 		of_node_put(ssi_np);
- 		return -ENOMEM;
- 	}
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 173cb8496641..64598d1183f8 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1435,7 +1435,5 @@ static int fsl_ssi_probe(struct platform_device *pdev)
--	if (!ssi_private) {
--		dev_err(&pdev->dev, "could not allocate DAI object\n");
-+	if (!ssi_private)
- 		return -ENOMEM;
--	}
- 
- 	ssi_private->soc = of_id->data;
- 	ssi_private->dev = &pdev->dev;
++	ret = asoc_simple_card_of_parse_widgets(card, PREFIX);
++	if (ret < 0)
++		return ret;
++
+ 	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 0);
+ 	if (ret < 0)
+ 		return ret;
 -- 
-2.14.0
+2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
