@@ -1,20 +1,16 @@
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH] ASoC: hdmi-codec: Use different name for
-	playback streams
-Date: Fri, 11 Aug 2017 09:59:09 -0700
-Message-ID: <20170811165908.GA67191@google.com>
-References: <1502440173-23429-1-git-send-email-jeffy.chen@rock-chips.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ALSA: usb: Delete an error message for a
+ failed memory allocation in two functions
+Date: Fri, 11 Aug 2017 19:04:41 +0200
+Message-ID: <cb279f5a-1994-ae47-7e8f-8aae793d16d2@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f46.google.com (mail-pg0-f46.google.com [74.125.83.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 9491F26768D
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 18:59:14 +0200 (CEST)
-Received: by mail-pg0-f46.google.com with SMTP id v189so17721890pgd.2
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 09:59:14 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1502440173-23429-1-git-send-email-jeffy.chen@rock-chips.com>
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A2AC26768D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 19:04:51 +0200 (CEST)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dianders@chromium.org
+To: alsa-devel@alsa-project.org, Akshay Bhat <akshay.bhat@timesys.com>, Daniel Mack <daniel@zonque.org>, Dennis Kadioglu <denk@post.com>, Jaroslav Kysela <perex@perex.cz>, Johan Hovold <johan@kernel.org>, Nobutaka Okabe <nob77413@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jeffy,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 11 Aug 2017 18:38:25 +0200
 
-You need to be more careful about the addressee's of your patches. No
-one on To/CC is a maintainer or a sufficiently-targeted mailing list. I
-doubt any of the maintainers will read your patch. (I've added
-alsa-devel for you, but given my understanding of at least Mark's
-patchwork workflow -- and of general patch etiquette -- it's important
-the patch is actually sent there in the first place.)
+Omit an extra message for a memory allocation failure in these functions.
 
-Probably worth resending.
+This issue was detected by using the Coccinelle software.
 
-Brian
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/usb/quirks.c | 5 ++---
+ sound/usb/stream.c | 4 +---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-On Fri, Aug 11, 2017 at 04:29:33PM +0800, Jeffy Chen wrote:
-> Currently the hdmi i2s playback stream and hdmi spdif playback stream
-> are using the same name. So when they are enabled at the same time,
-> kernel will print this warning:
-> 
-> [    2.201835] hdmi-audio-codec hdmi-audio-codec.1.auto: ASoC: Failed to
-> create Playback debugfs file
-> 
-> Assign different names to them to avoid that.
-> 
-> Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-> ---
-> 
->  sound/soc/codecs/hdmi-codec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> index 509ab51..a2af440 100644
-> --- a/sound/soc/codecs/hdmi-codec.c
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -696,7 +696,7 @@ static struct snd_soc_dai_driver hdmi_i2s_dai = {
->  	.name = "i2s-hifi",
->  	.id = DAI_ID_I2S,
->  	.playback = {
-> -		.stream_name = "Playback",
-> +		.stream_name = "I2S Playback",
->  		.channels_min = 2,
->  		.channels_max = 8,
->  		.rates = HDMI_RATES,
-> @@ -711,7 +711,7 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
->  	.name = "spdif-hifi",
->  	.id = DAI_ID_SPDIF,
->  	.playback = {
-> -		.stream_name = "Playback",
-> +		.stream_name = "SPDIF Playback",
->  		.channels_min = 2,
->  		.channels_max = 2,
->  		.rates = HDMI_RATES,
-> -- 
-> 2.1.4
-> 
-> 
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index d7b0b0a3a2db..9db40d58b4e2 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -146,10 +146,9 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 	unsigned *rate_table = NULL;
+ 
+ 	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
+-	if (!fp) {
+-		usb_audio_err(chip, "cannot memdup\n");
++	if (!fp)
+ 		return -ENOMEM;
+-	}
++
+ 	INIT_LIST_HEAD(&fp->list);
+ 	if (fp->nr_rates > MAX_NR_RATES) {
+ 		kfree(fp);
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 8e9548bc1f1a..d1776e5517ff 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -658,10 +658,8 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 			continue;
+ 
+ 		fp = kzalloc(sizeof(*fp), GFP_KERNEL);
+-		if (! fp) {
+-			dev_err(&dev->dev, "cannot malloc\n");
++		if (!fp)
+ 			return -ENOMEM;
+-		}
+ 
+ 		fp->iface = iface_no;
+ 		fp->altsetting = altno;
+-- 
+2.14.0
