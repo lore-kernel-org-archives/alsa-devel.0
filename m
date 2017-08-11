@@ -1,76 +1,24 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v5 06/12] mfd: wm97xx-core: core support
-	for wm97xx Codec
-Date: Fri, 11 Aug 2017 21:08:22 +0200
-Message-ID: <87bmnlq5w9.fsf@belgarion.home>
-References: <20170806213613.5600-1-robert.jarzmik@free.fr>
- <20170806213613.5600-7-robert.jarzmik@free.fr>
- <20170808110204.dt7bjfwkyfpbfr2w@dell>
+Subject: Re: [PATCH 10/11] ASoC: pxa: Handle return value of clk_prepare_enable.
+Date: Fri, 11 Aug 2017 21:08:40 +0200
+Message-ID: <874ltdq5vr.fsf@belgarion.home>
+References: <1500977770-28142-1-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp13.smtpout.orange.fr
- [80.12.242.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 70E25266C85
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 21:08:34 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: perex@perex.cz, tiwai@suse.com, broonie@kernel.org, krzk@kernel.org, sbkim73@samsung.com, daniel@zonque.org, haojian.zhuang@gmail.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Jones <lee.jones@linaro.org> writes:
+Arvind Yadav <arvind.yadav.cs@gmail.com> writes:
 
-> On Sun, 06 Aug 2017, Robert Jarzmik wrote:
-
-Hi Lee,
-
-I basically agree with all your comments, so I will only answer to your
-questions.
->> +#include <linux/module.h>
+> clk_prepare_enable() can fail here and we must check its return value.
 >
-> Why separate this?
-No point, for v6.
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License as published by
->> + * the Free Software Foundation; either version 2 of the License, or
->> + * (at your option) any later version.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->
-> Can you use the short version?
-Yeah, sure.
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
->> +#ifndef __LINUX_MFD_WM97XX_H
->> +#define __LINUX_MFD_WM97XX_H
->> +
->> +struct regmap;
->> +struct wm97xx_batt_pdata;
->> +struct snd_ac97;
->
-> What are you using these for?
-There are for the structure just below, which doesn't need the implementation
-details of these structures, but does need the definition to properly compile.
+Cheers.
 
->> +struct wm97xx_platform_data {
->> +	struct snd_ac97 *ac97;
->> +	struct regmap *regmap;
->> +	struct wm97xx_batt_pdata *batt_pdata;
->> +};
-This is the structure "just below" I'm speaking of.
-
-Thanks for the review.
-
--- 
+--
 Robert
