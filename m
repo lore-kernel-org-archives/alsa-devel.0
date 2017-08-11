@@ -1,54 +1,38 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: Broadwell RT5677: Delete an error
- message for a failed memory allocation in bdw_rt5677_probe()
-Date: Fri, 11 Aug 2017 13:23:10 +0200
-Message-ID: <30b48ffc-8149-e1bc-d3cd-b8ff3bc8062f@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id E884E26648D
- for <alsa-devel@alsa-project.org>; Fri, 11 Aug 2017 13:24:04 +0200 (CEST)
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Ben Zhang <benzh@chromium.org>, Dylan Reid <dgreid@chromium.org>, Jaroslav Kysela <perex@perex.cz>, John Keeping <john@metanate.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH 0/9] constify isa snd_pcm_ops structures
+Date: Fri, 11 Aug 2017 17:27:58 +0530
+Message-ID: <1502452687-8202-1-git-send-email-arvind.yadav.cs@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 13:05:40 +0200
+snd_pcm_ops are not supposed to change at runtime. All functions
+working with snd_pcm_ops provided by <sound/pcm.h> work with
+const snd_pcm_ops. So mark the non-const structs as const.
 
-Omit an extra message for a memory allocation failure in this function.
+Arvind Yadav (9):
+  [PATCH 1/9] ALSA: ad1816a: constify snd_pcm_ops structures
+  [PATCH 2/9] ALSA: es1688: constify snd_pcm_ops structures
+  [PATCH 3/9] ALSA: es18xx: constify snd_pcm_ops structures
+  [PATCH 4/9] ALSA: gus: constify snd_pcm_ops structures
+  [PATCH 5/9] ALSA: msnd: constify snd_pcm_ops structures
+  [PATCH 6/9] ALSA: emu8000: constify snd_pcm_ops structures
+  [PATCH 7/9] ALSA: sb16: constify snd_pcm_ops structures
+  [PATCH 8/9] ALSA: sb8: constify snd_pcm_ops structures
+  [PATCH 9/9] ALSA: wss: constify snd_pcm_ops structures
 
-This issue was detected by using the Coccinelle software.
+ sound/isa/ad1816a/ad1816a_lib.c | 4 ++--
+ sound/isa/es1688/es1688_lib.c   | 4 ++--
+ sound/isa/es18xx.c              | 4 ++--
+ sound/isa/gus/gus_pcm.c         | 4 ++--
+ sound/isa/msnd/msnd.c           | 4 ++--
+ sound/isa/sb/emu8000_pcm.c      | 2 +-
+ sound/isa/sb/sb16_main.c        | 4 ++--
+ sound/isa/sb/sb8_main.c         | 4 ++--
+ sound/isa/wss/wss_lib.c         | 4 ++--
+ 9 files changed, 17 insertions(+), 17 deletions(-)
 
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/intel/boards/bdw-rt5677.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 058b8ccedf02..4b1431c3b460 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -349,7 +349,5 @@ static int bdw_rt5677_probe(struct platform_device *pdev)
--	if (!bdw_rt5677) {
--		dev_err(&pdev->dev, "Can't allocate bdw_rt5677\n");
-+	if (!bdw_rt5677)
- 		return -ENOMEM;
--	}
- 
- 	snd_soc_card_set_drvdata(&bdw_rt5677_card, bdw_rt5677);
- 
 -- 
-2.14.0
+1.9.1
