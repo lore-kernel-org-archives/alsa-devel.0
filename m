@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ALSA: mpu401: Use common error handling
- code in snd_mpu401_uart_new()
-Date: Sat, 12 Aug 2017 21:12:39 +0200
-Message-ID: <06592078-5382-5f6a-f9aa-c85f293e1734@users.sourceforge.net>
+Subject: [PATCH 3/3] ALSA: mpu401: Adjust four checks for null
+	pointers
+Date: Sat, 12 Aug 2017 21:13:49 +0200
+Message-ID: <c64cc0e7-2c9b-c4b7-77bd-daae455852ba@users.sourceforge.net>
 References: <47947226-bd09-5d15-c0d2-a9f4a659e1b4@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 361072670AE
- for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 21:12:45 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 676AD2670A8
+ for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 21:13:55 +0200 (CEST)
 In-Reply-To: <47947226-bd09-5d15-c0d2-a9f4a659e1b4@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,63 +26,39 @@ To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai 
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 12 Aug 2017 20:40:17 +0200
-
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/drivers/mpu401/mpu401_uart.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/sound/drivers/mpu401/mpu401_uart.c b/sound/drivers/mpu401/mpu401_uart.c
-index cc347386fc2b..e8bdea193eab 100644
---- a/sound/drivers/mpu401/mpu401_uart.c
-+++ b/sound/drivers/mpu401/mpu401_uart.c
-@@ -545,8 +545,8 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
- 		return err;
- 	mpu = kzalloc(sizeof(*mpu), GFP_KERNEL);
- 	if (mpu == NULL) {
--		snd_device_free(card, rmidi);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_device;
- 	}
- 	rmidi->private_data = mpu;
- 	rmidi->private_free = snd_mpu401_uart_free;
-@@ -562,8 +562,8 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
- 			snd_printk(KERN_ERR "mpu401_uart: "
- 				   "unable to grab port 0x%lx size %d\n",
- 				   port, res_size);
--			snd_device_free(card, rmidi);
--			return -EBUSY;
-+			err = -EBUSY;
-+			goto free_device;
- 		}
- 	}
- 	if (info_flags & MPU401_INFO_MMIO) {
-@@ -583,8 +583,8 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
- 				"MPU401 UART", (void *) mpu)) {
- 			snd_printk(KERN_ERR "mpu401_uart: "
- 				   "unable to grab IRQ %d\n", irq);
--			snd_device_free(card, rmidi);
--			return -EBUSY;
-+			err = -EBUSY;
-+			goto free_device;
- 		}
- 	}
- 	if (irq < 0 && !(info_flags & MPU401_INFO_IRQ_HOOK))
-@@ -612,6 +612,9 @@ int snd_mpu401_uart_new(struct snd_card *card, int device,
- 	if (rrawmidi)
- 		*rrawmidi = rmidi;
- 	return 0;
-+free_device:
-+	snd_device_free(card, rmidi);
-+	return err;
- }
- 
- EXPORT_SYMBOL(snd_mpu401_uart_new);
--- 
-2.14.0
+RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
+OiBTYXQsIDEyIEF1ZyAyMDE3IDIwOjUwOjE2ICswMjAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
+bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
+aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
+dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
+IHdyaXR0ZW4gIeKApgoKVGh1cyBmaXggdGhlIGFmZmVjdGVkIHNvdXJjZSBjb2RlIHBsYWNlcy4K
+ClNpZ25lZC1vZmYtYnk6IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdl
+Lm5ldD4KLS0tCiBzb3VuZC9kcml2ZXJzL21wdTQwMS9tcHU0MDFfdWFydC5jIHwgOCArKysrLS0t
+LQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYg
+LS1naXQgYS9zb3VuZC9kcml2ZXJzL21wdTQwMS9tcHU0MDFfdWFydC5jIGIvc291bmQvZHJpdmVy
+cy9tcHU0MDEvbXB1NDAxX3VhcnQuYwppbmRleCBlOGJkZWExOTNlYWIuLmI5OTcyMjIyNzRiZCAx
+MDA2NDQKLS0tIGEvc291bmQvZHJpdmVycy9tcHU0MDEvbXB1NDAxX3VhcnQuYworKysgYi9zb3Vu
+ZC9kcml2ZXJzL21wdTQwMS9tcHU0MDFfdWFydC5jCkBAIC0xMzYsNyArMTM2LDcgQEAgaXJxcmV0
+dXJuX3Qgc25kX21wdTQwMV91YXJ0X2ludGVycnVwdChpbnQgaXJxLCB2b2lkICpkZXZfaWQpCiB7
+CiAJc3RydWN0IHNuZF9tcHU0MDEgKm1wdSA9IGRldl9pZDsKIAkKLQlpZiAobXB1ID09IE5VTEwp
+CisJaWYgKCFtcHUpCiAJCXJldHVybiBJUlFfTk9ORTsKIAlfc25kX21wdTQwMV91YXJ0X2ludGVy
+cnVwdChtcHUpOwogCXJldHVybiBJUlFfSEFORExFRDsKQEAgLTE1Nyw3ICsxNTcsNyBAQCBpcnFy
+ZXR1cm5fdCBzbmRfbXB1NDAxX3VhcnRfaW50ZXJydXB0X3R4KGludCBpcnEsIHZvaWQgKmRldl9p
+ZCkKIHsKIAlzdHJ1Y3Qgc25kX21wdTQwMSAqbXB1ID0gZGV2X2lkOwogCQotCWlmIChtcHUgPT0g
+TlVMTCkKKwlpZiAoIW1wdSkKIAkJcmV0dXJuIElSUV9OT05FOwogCXVhcnRfaW50ZXJydXB0X3R4
+KG1wdSk7CiAJcmV0dXJuIElSUV9IQU5ETEVEOwpAQCAtNTQ0LDcgKzU0NCw3IEBAIGludCBzbmRf
+bXB1NDAxX3VhcnRfbmV3KHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwgaW50IGRldmljZSwKIAkJCQkg
+ICBvdXRfZW5hYmxlLCBpbl9lbmFibGUsICZybWlkaSkpIDwgMCkKIAkJcmV0dXJuIGVycjsKIAlt
+cHUgPSBremFsbG9jKHNpemVvZigqbXB1KSwgR0ZQX0tFUk5FTCk7Ci0JaWYgKG1wdSA9PSBOVUxM
+KSB7CisJaWYgKCFtcHUpIHsKIAkJZXJyID0gLUVOT01FTTsKIAkJZ290byBmcmVlX2RldmljZTsK
+IAl9CkBAIC01NTgsNyArNTU4LDcgQEAgaW50IHNuZF9tcHU0MDFfdWFydF9uZXcoc3RydWN0IHNu
+ZF9jYXJkICpjYXJkLCBpbnQgZGV2aWNlLAogCWlmICghIChpbmZvX2ZsYWdzICYgTVBVNDAxX0lO
+Rk9fSU5URUdSQVRFRCkpIHsKIAkJaW50IHJlc19zaXplID0gaGFyZHdhcmUgPT0gTVBVNDAxX0hX
+X1BDOThJSSA/IDQgOiAyOwogCQltcHUtPnJlcyA9IHJlcXVlc3RfcmVnaW9uKHBvcnQsIHJlc19z
+aXplLCAiTVBVNDAxIFVBUlQiKTsKLQkJaWYgKG1wdS0+cmVzID09IE5VTEwpIHsKKwkJaWYgKCFt
+cHUtPnJlcykgewogCQkJc25kX3ByaW50ayhLRVJOX0VSUiAibXB1NDAxX3VhcnQ6ICIKIAkJCQkg
+ICAidW5hYmxlIHRvIGdyYWIgcG9ydCAweCVseCBzaXplICVkXG4iLAogCQkJCSAgIHBvcnQsIHJl
+c19zaXplKTsKLS0gCjIuMTQuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
