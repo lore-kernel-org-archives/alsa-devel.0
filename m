@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 03/16] ALSA: cs46xx: make snd_pcm_hardware const
-Date: Sat, 12 Aug 2017 21:01:15 +0530
-Message-ID: <1502551888-30325-4-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 04/16] ALSA: korg1212: make snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:16 +0530
+Message-ID: <1502551888-30325-5-git-send-email-bhumirks@gmail.com>
 References: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
@@ -15,30 +15,30 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/cs46xx/cs46xx_lib.c | 4 ++--
+ sound/pci/korg1212/korg1212.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
-index 709fb1a..0020fd0 100644
---- a/sound/pci/cs46xx/cs46xx_lib.c
-+++ b/sound/pci/cs46xx/cs46xx_lib.c
-@@ -1438,7 +1438,7 @@ static irqreturn_t snd_cs46xx_interrupt(int irq, void *dev_id)
- 	return IRQ_HANDLED;
+diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
+index b28fe49..04cd71c 100644
+--- a/sound/pci/korg1212/korg1212.c
++++ b/sound/pci/korg1212/korg1212.c
+@@ -1231,7 +1231,7 @@ static int snd_korg1212_downloadDSPCode(struct snd_korg1212 *korg1212)
+         return 0;
  }
  
--static struct snd_pcm_hardware snd_cs46xx_playback =
-+static const struct snd_pcm_hardware snd_cs46xx_playback =
+-static struct snd_pcm_hardware snd_korg1212_playback_info =
++static const struct snd_pcm_hardware snd_korg1212_playback_info =
  {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
- 				 SNDRV_PCM_INFO_INTERLEAVED | 
-@@ -1460,7 +1460,7 @@ static irqreturn_t snd_cs46xx_interrupt(int irq, void *dev_id)
- 	.fifo_size =		0,
+ 	.info =              (SNDRV_PCM_INFO_MMAP |
+                               SNDRV_PCM_INFO_MMAP_VALID |
+@@ -1252,7 +1252,7 @@ static int snd_korg1212_downloadDSPCode(struct snd_korg1212 *korg1212)
+         .fifo_size =          0,
  };
  
--static struct snd_pcm_hardware snd_cs46xx_capture =
-+static const struct snd_pcm_hardware snd_cs46xx_capture =
+-static struct snd_pcm_hardware snd_korg1212_capture_info =
++static const struct snd_pcm_hardware snd_korg1212_capture_info =
  {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
- 				 SNDRV_PCM_INFO_INTERLEAVED |
+         .info =              (SNDRV_PCM_INFO_MMAP |
+                               SNDRV_PCM_INFO_MMAP_VALID |
 -- 
 1.9.1
