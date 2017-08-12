@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ALSA: rme96: Use common error handling
- code in snd_rme96_probe()
-Date: Sat, 12 Aug 2017 15:41:23 +0200
-Message-ID: <2b3be152-3594-cab8-1949-99754e593e18@users.sourceforge.net>
+Subject: [PATCH 3/3] ALSA: rme96: Adjust five checks for null
+	pointers
+Date: Sat, 12 Aug 2017 15:42:24 +0200
+Message-ID: <9ae3600a-0a71-a957-15b2-f31e0ffab912@users.sourceforge.net>
 References: <b38ee17e-f2ed-2bd7-6bc1-524ab4b3eb02@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id ACB4F2669F6
- for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 15:41:31 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EEFD2669F6
+ for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 15:42:30 +0200 (CEST)
 In-Reply-To: <b38ee17e-f2ed-2bd7-6bc1-524ab4b3eb02@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,71 +26,44 @@ To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Julia Lawall 
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 12 Aug 2017 14:50:33 +0200
-
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/rme96.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
-
-diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
-index 82e8c78e48ca..0cdfd53b7796 100644
---- a/sound/pci/rme96.c
-+++ b/sound/pci/rme96.c
-@@ -2481,21 +2481,20 @@ snd_rme96_probe(struct pci_dev *pci,
- 	rme96 = card->private_data;
- 	rme96->card = card;
- 	rme96->pci = pci;
--	if ((err = snd_rme96_create(rme96)) < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	err = snd_rme96_create(rme96);
-+	if (err)
-+		goto free_card;
- 	
- #ifdef CONFIG_PM_SLEEP
- 	rme96->playback_suspend_buffer = vmalloc(RME96_BUFFER_SIZE);
- 	if (!rme96->playback_suspend_buffer) {
--		snd_card_free(card);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_card;
- 	}
- 	rme96->capture_suspend_buffer = vmalloc(RME96_BUFFER_SIZE);
- 	if (!rme96->capture_suspend_buffer) {
--		snd_card_free(card);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto free_card;
- 	}
- #endif
- 
-@@ -2521,14 +2520,16 @@ snd_rme96_probe(struct pci_dev *pci,
- 	}
- 	sprintf(card->longname, "%s at 0x%lx, irq %d", card->shortname,
- 		rme96->port, rme96->irq);
--	
--	if ((err = snd_card_register(card)) < 0) {
--		snd_card_free(card);
--		return err;	
--	}
-+	err = snd_card_register(card);
-+	if (err)
-+		goto free_card;
-+
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
-+free_card:
-+	snd_card_free(card);
-+	return err;
- }
- 
- static void snd_rme96_remove(struct pci_dev *pci)
--- 
-2.14.0
+RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
+OiBTYXQsIDEyIEF1ZyAyMDE3IDE1OjE4OjU2ICswMjAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
+bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
+aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
+dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
+IHdyaXR0ZW4g4oCmCgpUaHVzIGZpeCB0aGUgYWZmZWN0ZWQgc291cmNlIGNvZGUgcGxhY2VzLgoK
+U2lnbmVkLW9mZi1ieTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2Uu
+bmV0PgotLS0KIHNvdW5kL3BjaS9ybWU5Ni5jIHwgMTIgKysrKysrLS0tLS0tCiAxIGZpbGUgY2hh
+bmdlZCwgNiBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5k
+L3BjaS9ybWU5Ni5jIGIvc291bmQvcGNpL3JtZTk2LmMKaW5kZXggMGNkZmQ1M2I3Nzk2Li5iNDg4
+ZDc0YzNiOTkgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9ybWU5Ni5jCisrKyBiL3NvdW5kL3BjaS9y
+bWU5Ni5jCkBAIC0xMTk5LDcgKzExOTksNyBAQCBzbmRfcm1lOTZfcGxheWJhY2tfc3BkaWZfb3Bl
+bihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAogCXNuZF9wY21fc2V0X3N5
+bmMoc3Vic3RyZWFtKTsKIAlzcGluX2xvY2tfaXJxKCZybWU5Ni0+bG9jayk7CQotICAgICAgICBp
+ZiAocm1lOTYtPnBsYXliYWNrX3N1YnN0cmVhbSAhPSBOVUxMKSB7CisJaWYgKHJtZTk2LT5wbGF5
+YmFja19zdWJzdHJlYW0pIHsKIAkJc3Bpbl91bmxvY2tfaXJxKCZybWU5Ni0+bG9jayk7CiAgICAg
+ICAgICAgICAgICAgcmV0dXJuIC1FQlVTWTsKICAgICAgICAgfQpAQCAtMTI0OCw3ICsxMjQ4LDcg
+QEAgc25kX3JtZTk2X2NhcHR1cmVfc3BkaWZfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
+KnN1YnN0cmVhbSkKICAgICAgICAgfQogICAgICAgICAKIAlzcGluX2xvY2tfaXJxKCZybWU5Ni0+
+bG9jayk7Ci0gICAgICAgIGlmIChybWU5Ni0+Y2FwdHVyZV9zdWJzdHJlYW0gIT0gTlVMTCkgewor
+CWlmIChybWU5Ni0+Y2FwdHVyZV9zdWJzdHJlYW0pIHsKIAkJc3Bpbl91bmxvY2tfaXJxKCZybWU5
+Ni0+bG9jayk7CiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FQlVTWTsKICAgICAgICAgfQpAQCAt
+MTI2OCw3ICsxMjY4LDcgQEAgc25kX3JtZTk2X3BsYXliYWNrX2FkYXRfb3BlbihzdHJ1Y3Qgc25k
+X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAkKIAlzbmRfcGNtX3NldF9zeW5jKHN1YnN0cmVh
+bSk7CiAJc3Bpbl9sb2NrX2lycSgmcm1lOTYtPmxvY2spOwkKLSAgICAgICAgaWYgKHJtZTk2LT5w
+bGF5YmFja19zdWJzdHJlYW0gIT0gTlVMTCkgeworCWlmIChybWU5Ni0+cGxheWJhY2tfc3Vic3Ry
+ZWFtKSB7CiAJCXNwaW5fdW5sb2NrX2lycSgmcm1lOTYtPmxvY2spOwogICAgICAgICAgICAgICAg
+IHJldHVybiAtRUJVU1k7CiAgICAgICAgIH0KQEAgLTEzMTUsNyArMTMxNSw3IEBAIHNuZF9ybWU5
+Nl9jYXB0dXJlX2FkYXRfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkK
+ICAgICAgICAgfQogICAgICAgICAKIAlzcGluX2xvY2tfaXJxKCZybWU5Ni0+bG9jayk7CQotICAg
+ICAgICBpZiAocm1lOTYtPmNhcHR1cmVfc3Vic3RyZWFtICE9IE5VTEwpIHsKKwlpZiAocm1lOTYt
+PmNhcHR1cmVfc3Vic3RyZWFtKSB7CiAJCXNwaW5fdW5sb2NrX2lycSgmcm1lOTYtPmxvY2spOwog
+ICAgICAgICAgICAgICAgIHJldHVybiAtRUJVU1k7CiAgICAgICAgIH0KQEAgLTE1NzgsOSArMTU3
+OCw5IEBAIHNuZF9ybWU5Nl9mcmVlKHZvaWQgKnByaXZhdGVfZGF0YSkKIHsKIAlzdHJ1Y3Qgcm1l
+OTYgKnJtZTk2ID0gKHN0cnVjdCBybWU5NiAqKXByaXZhdGVfZGF0YTsKIAotCWlmIChybWU5NiA9
+PSBOVUxMKSB7CisJaWYgKCFybWU5NikKIAkgICAgICAgIHJldHVybjsKLQl9CisKIAlpZiAocm1l
+OTYtPmlycSA+PSAwKSB7CiAJCXNuZF9ybWU5Nl90cmlnZ2VyKHJtZTk2LCBSTUU5Nl9TVE9QX0JP
+VEgpOwogCQlybWU5Ni0+YXJlZyAmPSB+Uk1FOTZfQVJfREFDX0VOOwotLSAKMi4xNC4wCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
