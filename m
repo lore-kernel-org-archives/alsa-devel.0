@@ -1,49 +1,34 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [RESENT PATCH] ASoC: hdmi-codec: Use different name for playback streams
-Date: Sat, 12 Aug 2017 08:40:38 +0800
-Message-ID: <1502498438-18245-1-git-send-email-jeffy.chen@rock-chips.com>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: Use different name for playback streams
+Date: Sat, 12 Aug 2017 08:52:03 +0800
+Message-ID: <598E5133.5050909@rock-chips.com>
+References: <1502440173-23429-1-git-send-email-jeffy.chen@rock-chips.com> <20170811165908.GA67191@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170811165908.GA67191@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: briannorris@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Vincent Abriou <vincent.abriou@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, "Jon Medhurst (Tixy)" <tixy@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Colin Ian King <colin.king@canonical.com>
+To: Brian Norris <briannorris@chromium.org>
+Cc: linux-kernel@vger.kernel.org, dianders@chromium.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently the hdmi i2s playback stream and hdmi spdif playback stream
-are using the same name. So when they are enabled at the same time,
-kernel will print this warning:
+Hi Brian,
 
-[    2.201835] hdmi-audio-codec hdmi-audio-codec.1.auto: ASoC: Failed to
-create Playback debugfs file
+Thanks for noting.
 
-Assign different names to them to avoid that.
+On 08/12/2017 12:59 AM, Brian Norris wrote:
+> Hi Jeffy,
+>
+> You need to be more careful about the addressee's of your patches. No
+> one on To/CC is a maintainer or a sufficiently-targeted mailing list. I
+> doubt any of the maintainers will read your patch. (I've added
+> alsa-devel for you, but given my understanding of at least Mark's
+> patchwork workflow -- and of general patch etiquette -- it's important
+> the patch is actually sent there in the first place.)
+>
+> Probably worth resending.
+Ok, will do that.
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
----
-
- sound/soc/codecs/hdmi-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 509ab51..a2af440 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -696,7 +696,7 @@ static struct snd_soc_dai_driver hdmi_i2s_dai = {
- 	.name = "i2s-hifi",
- 	.id = DAI_ID_I2S,
- 	.playback = {
--		.stream_name = "Playback",
-+		.stream_name = "I2S Playback",
- 		.channels_min = 2,
- 		.channels_max = 8,
- 		.rates = HDMI_RATES,
-@@ -711,7 +711,7 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- 	.name = "spdif-hifi",
- 	.id = DAI_ID_SPDIF,
- 	.playback = {
--		.stream_name = "Playback",
-+		.stream_name = "SPDIF Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = HDMI_RATES,
--- 
-2.1.4
+I was using patman to send it, not sure why it didn't work correctly 
+that time...
