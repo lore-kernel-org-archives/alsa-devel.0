@@ -1,59 +1,65 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH] ASoC: Intel: constify snd_compr_codec_caps
-	structures
-Date: Sat, 12 Aug 2017 08:33:02 +0200
-Message-ID: <1502519582-3338-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v3] ASoC: samsung: i2s: Null pointer dereference on
+ samsung_i2s_remove
+Date: Sat, 12 Aug 2017 09:10:51 +0200
+Message-ID: <20170812071051.vslbtrgn732v7hvr@kozik-lap>
+References: <1502456783-2047-1-git-send-email-vasilyev@ispras.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ECAF266D57
- for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 08:58:37 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1502456783-2047-1-git-send-email-vasilyev@ispras.ru>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Anton Vasilyev <vasilyev@ispras.ru>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
 List-Id: alsa-devel@alsa-project.org
 
-These snd_compr_codec_caps structures are only copied into other
-structures, so they can be const.
+On Fri, Aug 11, 2017 at 04:06:23PM +0300, Anton Vasilyev wrote:
+> If (quirks & QUIRK_SEC_DAI == 0) then samsung_i2s_probe() doesn't allocate
+> sec_dai and pri_dai->sec_dai remains Null, but samsung_i2s_remove()
+> performs pri_dai->sec_dai dereference in any case.
+> 
+> The patch adds sec_dai check on Null before derefence at
+> samsung_i2s_remove().
 
-Done with the help of Coccinelle.
+No, I think this patch does not any check.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Best regards,
+Krzysztof
 
----
- sound/soc/intel/atom/sst/sst_drv_interface.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index ce689c5..71af544 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -407,7 +407,7 @@ static int sst_cdev_caps(struct snd_compr_caps *caps)
- 	return 0;
- }
- 
--static struct snd_compr_codec_caps caps_mp3 = {
-+static const struct snd_compr_codec_caps caps_mp3 = {
- 	.num_descriptors = 1,
- 	.descriptor[0].max_ch = 2,
- 	.descriptor[0].sample_rates[0] = 48000,
-@@ -424,7 +424,7 @@ static int sst_cdev_caps(struct snd_compr_caps *caps)
- 	.descriptor[0].formats = 0,
- };
- 
--static struct snd_compr_codec_caps caps_aac = {
-+static const struct snd_compr_codec_caps caps_aac = {
- 	.num_descriptors = 2,
- 	.descriptor[1].max_ch = 2,
- 	.descriptor[0].sample_rates[0] = 48000,
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
+> ---
+> v2: Drop initialization of sec_dai by NULL at samsung_i2s_remove
+> as Sylwester Nawrocki suggest.
+> ---
+> v3: Fix typo in the comment
+> ---
+>  sound/soc/samsung/i2s.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index af3ba4d..6f896e3 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -1376,13 +1376,9 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+>  
+>  static int samsung_i2s_remove(struct platform_device *pdev)
+>  {
+> -	struct i2s_dai *pri_dai, *sec_dai;
+> +	struct i2s_dai *pri_dai;
+>  
+>  	pri_dai = dev_get_drvdata(&pdev->dev);
+> -	sec_dai = pri_dai->sec_dai;
+> -
+> -	pri_dai->sec_dai = NULL;
+> -	sec_dai->pri_dai = NULL;
+>  
+>  	pm_runtime_get_sync(&pdev->dev);
+>  	pm_runtime_disable(&pdev->dev);
+> -- 
+> 2.7.4
+> 
