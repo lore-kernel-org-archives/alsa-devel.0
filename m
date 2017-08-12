@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 04/16] ALSA: korg1212: make snd_pcm_hardware const
-Date: Sat, 12 Aug 2017 21:01:16 +0530
-Message-ID: <1502551888-30325-5-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 05/16] ALSA: cs5535audio: make snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:17 +0530
+Message-ID: <1502551888-30325-6-git-send-email-bhumirks@gmail.com>
 References: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
@@ -15,30 +15,30 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/korg1212/korg1212.c | 4 ++--
+ sound/pci/cs5535audio/cs5535audio_pcm.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-index b28fe49..04cd71c 100644
---- a/sound/pci/korg1212/korg1212.c
-+++ b/sound/pci/korg1212/korg1212.c
-@@ -1231,7 +1231,7 @@ static int snd_korg1212_downloadDSPCode(struct snd_korg1212 *korg1212)
-         return 0;
- }
+diff --git a/sound/pci/cs5535audio/cs5535audio_pcm.c b/sound/pci/cs5535audio/cs5535audio_pcm.c
+index c208c1d..ee7065f 100644
+--- a/sound/pci/cs5535audio/cs5535audio_pcm.c
++++ b/sound/pci/cs5535audio/cs5535audio_pcm.c
+@@ -33,7 +33,7 @@
+ #include <sound/ac97_codec.h>
+ #include "cs5535audio.h"
  
--static struct snd_pcm_hardware snd_korg1212_playback_info =
-+static const struct snd_pcm_hardware snd_korg1212_playback_info =
+-static struct snd_pcm_hardware snd_cs5535audio_playback =
++static const struct snd_pcm_hardware snd_cs5535audio_playback =
  {
- 	.info =              (SNDRV_PCM_INFO_MMAP |
-                               SNDRV_PCM_INFO_MMAP_VALID |
-@@ -1252,7 +1252,7 @@ static int snd_korg1212_downloadDSPCode(struct snd_korg1212 *korg1212)
-         .fifo_size =          0,
+ 	.info =			(
+ 				SNDRV_PCM_INFO_MMAP |
+@@ -62,7 +62,7 @@
+ 	.fifo_size =		0,
  };
  
--static struct snd_pcm_hardware snd_korg1212_capture_info =
-+static const struct snd_pcm_hardware snd_korg1212_capture_info =
+-static struct snd_pcm_hardware snd_cs5535audio_capture =
++static const struct snd_pcm_hardware snd_cs5535audio_capture =
  {
-         .info =              (SNDRV_PCM_INFO_MMAP |
-                               SNDRV_PCM_INFO_MMAP_VALID |
+ 	.info =			(
+ 				SNDRV_PCM_INFO_MMAP |
 -- 
 1.9.1
