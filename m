@@ -1,11 +1,11 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ALSA: rme9652: Improve eight size determinations
-Date: Sat, 12 Aug 2017 17:34:38 +0200
-Message-ID: <ae12596b-becf-7af4-3959-5c2430b32eaf@users.sourceforge.net>
+Subject: [PATCH 3/3] ALSA: rme9652: Adjust seven checks for null pointers
+Date: Sat, 12 Aug 2017 17:35:41 +0200
+Message-ID: <10358741-a748-1e48-7508-2aff911bbee5@users.sourceforge.net>
 References: <a3223028-5b12-0efd-ffe0-aa7300334081@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <a3223028-5b12-0efd-ffe0-aa7300334081@users.sourceforge.net>
 Content-Language: en-GB
@@ -15,87 +15,92 @@ Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 12 Aug 2017 16:50:06 +0200
+Date: Sat, 12 Aug 2017 17:07:09 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Replace the specification of data structures by variable references
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+The script “checkpatch.pl” pointed information out like the following.
+
+Comparison to NULL could be written …
+
+Thus fix the affected source code places.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/rme9652/hdspm.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ sound/pci/rme9652/hdspm.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index d448cf474c1b..8d339fb7c24b 100644
+index 8d339fb7c24b..25284d8d9758 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -6221,7 +6221,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 		}
- 		levels->status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
+@@ -1521,7 +1521,7 @@ static void hdspm_silence_playback(struct hdspm *hdspm)
+ 	int n = hdspm->period_bytes;
+ 	void *buf = hdspm->playback_buffer;
  
--		s = copy_to_user(argp, levels, sizeof(struct hdspm_peak_rms));
-+		s = copy_to_user(argp, levels, sizeof(*levels));
- 		if (0 != s) {
- 			/* dev_err(hdspm->card->dev, "copy_to_user(.., .., %lu): %lu
- 			 [Levels]\n", sizeof(struct hdspm_peak_rms), s);
-@@ -6266,7 +6266,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 			ltc.input_format = no_video;
- 		}
+-	if (buf == NULL)
++	if (!buf)
+ 		return;
  
--		s = copy_to_user(argp, &ltc, sizeof(struct hdspm_ltc));
-+		s = copy_to_user(argp, &ltc, sizeof(ltc));
- 		if (0 != s) {
- 			/*
- 			  dev_err(hdspm->card->dev, "copy_to_user(.., .., %lu): %lu [LTC]\n", sizeof(struct hdspm_ltc), s); */
-@@ -6357,7 +6357,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 		if (copy_from_user(&mixer, argp, sizeof(mixer)))
- 			return -EFAULT;
- 		if (copy_to_user((void __user *)mixer.mixer, hdspm->mixer,
--					sizeof(struct hdspm_mixer)))
-+				 sizeof(*mixer.mixer)))
- 			return -EFAULT;
+ 	for (i = 0; i < HDSPM_MAX_CHANNELS; i++) {
+@@ -4706,7 +4706,7 @@ static int snd_hdspm_create_controls(struct snd_card *card,
  		break;
- 
-@@ -6636,8 +6636,8 @@ static int snd_hdspm_create(struct snd_card *card,
- 	hdspm->irq = pci->irq;
- 
- 	dev_dbg(card->dev, "kmalloc Mixer memory of %zd Bytes\n",
--			sizeof(struct hdspm_mixer));
--	hdspm->mixer = kzalloc(sizeof(struct hdspm_mixer), GFP_KERNEL);
-+		sizeof(*hdspm->mixer));
-+	hdspm->mixer = kzalloc(sizeof(*hdspm->mixer), GFP_KERNEL);
- 	if (!hdspm->mixer)
- 		return -ENOMEM;
- 
-@@ -6774,8 +6774,7 @@ static int snd_hdspm_create(struct snd_card *card,
- 		if (hdspm_read(hdspm, HDSPM_statusRegister2) &
- 				HDSPM_s2_tco_detect) {
- 			hdspm->midiPorts++;
--			hdspm->tco = kzalloc(sizeof(struct hdspm_tco),
--					GFP_KERNEL);
-+			hdspm->tco = kzalloc(sizeof(*hdspm->tco), GFP_KERNEL);
- 			if (NULL != hdspm->tco) {
- 				hdspm_tco_write(hdspm);
- 			}
-@@ -6789,8 +6788,7 @@ static int snd_hdspm_create(struct snd_card *card,
- 	case AES32:
- 		if (hdspm_read(hdspm, HDSPM_statusRegister) & HDSPM_tco_detect) {
- 			hdspm->midiPorts++;
--			hdspm->tco = kzalloc(sizeof(struct hdspm_tco),
--					GFP_KERNEL);
-+			hdspm->tco = kzalloc(sizeof(*hdspm->tco), GFP_KERNEL);
- 			if (NULL != hdspm->tco) {
- 				hdspm_tco_write(hdspm);
- 			}
-@@ -6941,7 +6939,7 @@ static int snd_hdspm_probe(struct pci_dev *pci,
  	}
  
- 	err = snd_card_new(&pci->dev, index[dev], id[dev],
--			   THIS_MODULE, sizeof(struct hdspm), &card);
-+			   THIS_MODULE, sizeof(*hdspm), &card);
- 	if (err < 0)
- 		return err;
+-	if (NULL != list) {
++	if (list) {
+ 		for (idx = 0; idx < limit; idx++) {
+ 			err = snd_ctl_add(card,
+ 					snd_ctl_new1(&list[idx], hdspm));
+@@ -6069,13 +6069,13 @@ static int snd_hdspm_open(struct snd_pcm_substream *substream)
+ 		snd_hdspm_capture_subinfo;
  
+ 	if (playback) {
+-		if (hdspm->capture_substream == NULL)
++		if (!hdspm->capture_substream)
+ 			hdspm_stop_audio(hdspm);
+ 
+ 		hdspm->playback_pid = current->pid;
+ 		hdspm->playback_substream = substream;
+ 	} else {
+-		if (hdspm->playback_substream == NULL)
++		if (!hdspm->playback_substream)
+ 			hdspm_stop_audio(hdspm);
+ 
+ 		hdspm->capture_pid = current->pid;
+@@ -6775,9 +6775,9 @@ static int snd_hdspm_create(struct snd_card *card,
+ 				HDSPM_s2_tco_detect) {
+ 			hdspm->midiPorts++;
+ 			hdspm->tco = kzalloc(sizeof(*hdspm->tco), GFP_KERNEL);
+-			if (NULL != hdspm->tco) {
++			if (hdspm->tco)
+ 				hdspm_tco_write(hdspm);
+-			}
++
+ 			dev_info(card->dev, "AIO/RayDAT TCO module found\n");
+ 		} else {
+ 			hdspm->tco = NULL;
+@@ -6789,9 +6789,9 @@ static int snd_hdspm_create(struct snd_card *card,
+ 		if (hdspm_read(hdspm, HDSPM_statusRegister) & HDSPM_tco_detect) {
+ 			hdspm->midiPorts++;
+ 			hdspm->tco = kzalloc(sizeof(*hdspm->tco), GFP_KERNEL);
+-			if (NULL != hdspm->tco) {
++			if (hdspm->tco)
+ 				hdspm_tco_write(hdspm);
+-			}
++
+ 			dev_info(card->dev, "MADI/AES TCO module found\n");
+ 		} else {
+ 			hdspm->tco = NULL;
+@@ -6868,7 +6868,7 @@ static int snd_hdspm_create(struct snd_card *card,
+ 		 * this case, we don't set card->id to avoid collisions
+ 		 * when running with multiple cards.
+ 		 */
+-		if (NULL == id[hdspm->dev] && hdspm->serial != 0xFFFFFF) {
++		if (!id[hdspm->dev] && hdspm->serial != 0xFFFFFF) {
+ 			snprintf(card->id, sizeof(card->id),
+ 				 "HDSPMx%06x", hdspm->serial);
+ 			snd_card_set_id(card, card->id);
 -- 
 2.14.0
