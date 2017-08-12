@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 12/16] ALSA: riptide: make snd_pcm_hardware const
-Date: Sat, 12 Aug 2017 21:01:24 +0530
-Message-ID: <1502551888-30325-13-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 13/16] ALSA: rme9652: make snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:25 +0530
+Message-ID: <1502551888-30325-14-git-send-email-bhumirks@gmail.com>
 References: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
@@ -15,30 +15,53 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/riptide/riptide.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/rme9652/hdsp.c    | 4 ++--
+ sound/pci/rme9652/rme9652.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index f067c76..44f3b48 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -1315,7 +1315,7 @@ static int riptide_reset(struct cmdif *cif, struct snd_riptide *chip)
- 	return 0;
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index fe36d44..9535e6a 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -4211,7 +4211,7 @@ static int snd_hdsp_prepare(struct snd_pcm_substream *substream)
+ 	return result;
  }
  
--static struct snd_pcm_hardware snd_riptide_playback = {
-+static const struct snd_pcm_hardware snd_riptide_playback = {
- 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
- 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP_VALID),
-@@ -1334,7 +1334,7 @@ static int riptide_reset(struct cmdif *cif, struct snd_riptide *chip)
- 	.periods_max = 64,
- 	.fifo_size = 0,
+-static struct snd_pcm_hardware snd_hdsp_playback_subinfo =
++static const struct snd_pcm_hardware snd_hdsp_playback_subinfo =
+ {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_MMAP_VALID |
+@@ -4241,7 +4241,7 @@ static int snd_hdsp_prepare(struct snd_pcm_substream *substream)
+ 	.fifo_size =		0
  };
--static struct snd_pcm_hardware snd_riptide_capture = {
-+static const struct snd_pcm_hardware snd_riptide_capture = {
- 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
- 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP_VALID),
+ 
+-static struct snd_pcm_hardware snd_hdsp_capture_subinfo =
++static const struct snd_pcm_hardware snd_hdsp_capture_subinfo =
+ {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_MMAP_VALID |
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 150d088..eff4993 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -2181,7 +2181,7 @@ static int snd_rme9652_prepare(struct snd_pcm_substream *substream)
+ 	return result;
+ }
+ 
+-static struct snd_pcm_hardware snd_rme9652_playback_subinfo =
++static const struct snd_pcm_hardware snd_rme9652_playback_subinfo =
+ {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_MMAP_VALID |
+@@ -2205,7 +2205,7 @@ static int snd_rme9652_prepare(struct snd_pcm_substream *substream)
+ 	.fifo_size =		0,
+ };
+ 
+-static struct snd_pcm_hardware snd_rme9652_capture_subinfo =
++static const struct snd_pcm_hardware snd_rme9652_capture_subinfo =
+ {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+ 				 SNDRV_PCM_INFO_MMAP_VALID |
 -- 
 1.9.1
