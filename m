@@ -1,69 +1,75 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ALSA: rme96: Adjust five checks for null
-	pointers
-Date: Sat, 12 Aug 2017 15:42:24 +0200
-Message-ID: <9ae3600a-0a71-a957-15b2-f31e0ffab912@users.sourceforge.net>
-References: <b38ee17e-f2ed-2bd7-6bc1-524ab4b3eb02@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EEFD2669F6
- for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 15:42:30 +0200 (CEST)
-In-Reply-To: <b38ee17e-f2ed-2bd7-6bc1-524ab4b3eb02@users.sourceforge.net>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH 00/16] ALSA: PCI: constify snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:12 +0530
+Message-ID: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+Sender: linux-parisc-owner@vger.kernel.org
+To: julia.lawall@lip6.fr, T-Bone@parisc-linux.org, perex@perex.cz, tiwai@suse.com, clemens@ladisch.de, jayakumar.alsa@gmail.com, linux-parisc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBTYXQsIDEyIEF1ZyAyMDE3IDE1OjE4OjU2ICswMjAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
-bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
-aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
-dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
-IHdyaXR0ZW4g4oCmCgpUaHVzIGZpeCB0aGUgYWZmZWN0ZWQgc291cmNlIGNvZGUgcGxhY2VzLgoK
-U2lnbmVkLW9mZi1ieTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2Uu
-bmV0PgotLS0KIHNvdW5kL3BjaS9ybWU5Ni5jIHwgMTIgKysrKysrLS0tLS0tCiAxIGZpbGUgY2hh
-bmdlZCwgNiBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5k
-L3BjaS9ybWU5Ni5jIGIvc291bmQvcGNpL3JtZTk2LmMKaW5kZXggMGNkZmQ1M2I3Nzk2Li5iNDg4
-ZDc0YzNiOTkgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9ybWU5Ni5jCisrKyBiL3NvdW5kL3BjaS9y
-bWU5Ni5jCkBAIC0xMTk5LDcgKzExOTksNyBAQCBzbmRfcm1lOTZfcGxheWJhY2tfc3BkaWZfb3Bl
-bihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAogCXNuZF9wY21fc2V0X3N5
-bmMoc3Vic3RyZWFtKTsKIAlzcGluX2xvY2tfaXJxKCZybWU5Ni0+bG9jayk7CQotICAgICAgICBp
-ZiAocm1lOTYtPnBsYXliYWNrX3N1YnN0cmVhbSAhPSBOVUxMKSB7CisJaWYgKHJtZTk2LT5wbGF5
-YmFja19zdWJzdHJlYW0pIHsKIAkJc3Bpbl91bmxvY2tfaXJxKCZybWU5Ni0+bG9jayk7CiAgICAg
-ICAgICAgICAgICAgcmV0dXJuIC1FQlVTWTsKICAgICAgICAgfQpAQCAtMTI0OCw3ICsxMjQ4LDcg
-QEAgc25kX3JtZTk2X2NhcHR1cmVfc3BkaWZfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
-KnN1YnN0cmVhbSkKICAgICAgICAgfQogICAgICAgICAKIAlzcGluX2xvY2tfaXJxKCZybWU5Ni0+
-bG9jayk7Ci0gICAgICAgIGlmIChybWU5Ni0+Y2FwdHVyZV9zdWJzdHJlYW0gIT0gTlVMTCkgewor
-CWlmIChybWU5Ni0+Y2FwdHVyZV9zdWJzdHJlYW0pIHsKIAkJc3Bpbl91bmxvY2tfaXJxKCZybWU5
-Ni0+bG9jayk7CiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FQlVTWTsKICAgICAgICAgfQpAQCAt
-MTI2OCw3ICsxMjY4LDcgQEAgc25kX3JtZTk2X3BsYXliYWNrX2FkYXRfb3BlbihzdHJ1Y3Qgc25k
-X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAkKIAlzbmRfcGNtX3NldF9zeW5jKHN1YnN0cmVh
-bSk7CiAJc3Bpbl9sb2NrX2lycSgmcm1lOTYtPmxvY2spOwkKLSAgICAgICAgaWYgKHJtZTk2LT5w
-bGF5YmFja19zdWJzdHJlYW0gIT0gTlVMTCkgeworCWlmIChybWU5Ni0+cGxheWJhY2tfc3Vic3Ry
-ZWFtKSB7CiAJCXNwaW5fdW5sb2NrX2lycSgmcm1lOTYtPmxvY2spOwogICAgICAgICAgICAgICAg
-IHJldHVybiAtRUJVU1k7CiAgICAgICAgIH0KQEAgLTEzMTUsNyArMTMxNSw3IEBAIHNuZF9ybWU5
-Nl9jYXB0dXJlX2FkYXRfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkK
-ICAgICAgICAgfQogICAgICAgICAKIAlzcGluX2xvY2tfaXJxKCZybWU5Ni0+bG9jayk7CQotICAg
-ICAgICBpZiAocm1lOTYtPmNhcHR1cmVfc3Vic3RyZWFtICE9IE5VTEwpIHsKKwlpZiAocm1lOTYt
-PmNhcHR1cmVfc3Vic3RyZWFtKSB7CiAJCXNwaW5fdW5sb2NrX2lycSgmcm1lOTYtPmxvY2spOwog
-ICAgICAgICAgICAgICAgIHJldHVybiAtRUJVU1k7CiAgICAgICAgIH0KQEAgLTE1NzgsOSArMTU3
-OCw5IEBAIHNuZF9ybWU5Nl9mcmVlKHZvaWQgKnByaXZhdGVfZGF0YSkKIHsKIAlzdHJ1Y3Qgcm1l
-OTYgKnJtZTk2ID0gKHN0cnVjdCBybWU5NiAqKXByaXZhdGVfZGF0YTsKIAotCWlmIChybWU5NiA9
-PSBOVUxMKSB7CisJaWYgKCFybWU5NikKIAkgICAgICAgIHJldHVybjsKLQl9CisKIAlpZiAocm1l
-OTYtPmlycSA+PSAwKSB7CiAJCXNuZF9ybWU5Nl90cmlnZ2VyKHJtZTk2LCBSTUU5Nl9TVE9QX0JP
-VEgpOwogCQlybWU5Ni0+YXJlZyAmPSB+Uk1FOTZfQVJfREFDX0VOOwotLSAKMi4xNC4wCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Declare snd_pcm_hardware const. 
+Done using Coccinelle.
+
+Bhumika Goyal (16):
+  ALSA: aw2: make snd_pcm_hardware const
+  ALSA: ca0106: make snd_pcm_hardware const
+  ALSA: cs46xx: make snd_pcm_hardware const
+  ALSA: korg1212: make snd_pcm_hardware const
+  ALSA: cs5535audio: make snd_pcm_hardware const
+  ALSA: emu10k1: make snd_pcm_hardware const
+  ALSA: lola: make snd_pcm_hardware const
+  ALSA: lx6464es: make snd_pcm_hardware const
+  ALSA: mixart: make snd_pcm_hardware const
+  ALSA: ctxfi: make snd_pcm_hardware const
+  ALSA: pcxhr: make snd_pcm_hardware const
+  ALSA: riptide: make snd_pcm_hardware const
+  ALSA: rme9652: make snd_pcm_hardware const
+  ALSA: trident: make snd_pcm_hardware const
+  ALSA: ymfpci: make snd_pcm_hardware const
+  ALSA: pci: make snd_pcm_hardware const
+
+ sound/pci/ad1889.c                      |  4 ++--
+ sound/pci/als300.c                      |  4 ++--
+ sound/pci/als4000.c                     |  4 ++--
+ sound/pci/atiixp.c                      |  2 +-
+ sound/pci/atiixp_modem.c                |  2 +-
+ sound/pci/aw2/aw2-alsa.c                |  4 ++--
+ sound/pci/bt87x.c                       |  4 ++--
+ sound/pci/ca0106/ca0106_main.c          |  4 ++--
+ sound/pci/cmipci.c                      | 12 ++++++------
+ sound/pci/cs4281.c                      |  4 ++--
+ sound/pci/cs46xx/cs46xx_lib.c           |  4 ++--
+ sound/pci/cs5535audio/cs5535audio_pcm.c |  4 ++--
+ sound/pci/ctxfi/ctpcm.c                 |  6 +++---
+ sound/pci/emu10k1/emu10k1x.c            |  4 ++--
+ sound/pci/emu10k1/emupcm.c              | 10 +++++-----
+ sound/pci/emu10k1/p16v.c                |  4 ++--
+ sound/pci/ens1370.c                     |  6 +++---
+ sound/pci/es1938.c                      |  4 ++--
+ sound/pci/es1968.c                      |  4 ++--
+ sound/pci/fm801.c                       |  4 ++--
+ sound/pci/intel8x0.c                    |  2 +-
+ sound/pci/intel8x0m.c                   |  2 +-
+ sound/pci/korg1212/korg1212.c           |  4 ++--
+ sound/pci/lola/lola_pcm.c               |  2 +-
+ sound/pci/lx6464es/lx6464es.c           |  2 +-
+ sound/pci/maestro3.c                    |  4 ++--
+ sound/pci/mixart/mixart.c               |  4 ++--
+ sound/pci/pcxhr/pcxhr.c                 |  2 +-
+ sound/pci/riptide/riptide.c             |  4 ++--
+ sound/pci/rme32.c                       |  8 ++++----
+ sound/pci/rme96.c                       |  8 ++++----
+ sound/pci/rme9652/hdsp.c                |  4 ++--
+ sound/pci/rme9652/rme9652.c             |  4 ++--
+ sound/pci/sis7019.c                     |  4 ++--
+ sound/pci/sonicvibes.c                  |  4 ++--
+ sound/pci/trident/trident_main.c        | 10 +++++-----
+ sound/pci/via82xx.c                     |  2 +-
+ sound/pci/via82xx_modem.c               |  2 +-
+ sound/pci/ymfpci/ymfpci_main.c          |  4 ++--
+ 39 files changed, 85 insertions(+), 85 deletions(-)
+
+-- 
+1.9.1
+
