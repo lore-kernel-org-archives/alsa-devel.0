@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 07/16] ALSA: lola: make snd_pcm_hardware const
-Date: Sat, 12 Aug 2017 21:01:19 +0530
-Message-ID: <1502551888-30325-8-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 08/16] ALSA: lx6464es: make snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:20 +0530
+Message-ID: <1502551888-30325-9-git-send-email-bhumirks@gmail.com>
 References: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
@@ -15,21 +15,21 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/lola/lola_pcm.c | 2 +-
+ sound/pci/lx6464es/lx6464es.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/lola/lola_pcm.c b/sound/pci/lola/lola_pcm.c
-index 1268ba3..310b26a 100644
---- a/sound/pci/lola/lola_pcm.c
-+++ b/sound/pci/lola/lola_pcm.c
-@@ -197,7 +197,7 @@ static void lola_stream_reset(struct lola *chip, struct lola_stream *str)
- 	}
- }
+diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
+index f9c3e86..9655b08 100644
+--- a/sound/pci/lx6464es/lx6464es.c
++++ b/sound/pci/lx6464es/lx6464es.c
+@@ -77,7 +77,7 @@
  
--static struct snd_pcm_hardware lola_pcm_hw = {
-+static const struct snd_pcm_hardware lola_pcm_hw = {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
- 				 SNDRV_PCM_INFO_INTERLEAVED |
- 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 
+ /* alsa callbacks */
+-static struct snd_pcm_hardware lx_caps = {
++static const struct snd_pcm_hardware lx_caps = {
+ 	.info             = (SNDRV_PCM_INFO_MMAP |
+ 			     SNDRV_PCM_INFO_INTERLEAVED |
+ 			     SNDRV_PCM_INFO_MMAP_VALID |
 -- 
 1.9.1
