@@ -1,106 +1,56 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ALSA: rme9652: Adjust seven checks for null pointers
-Date: Sat, 12 Aug 2017 17:35:41 +0200
-Message-ID: <10358741-a748-1e48-7508-2aff911bbee5@users.sourceforge.net>
-References: <a3223028-5b12-0efd-ffe0-aa7300334081@users.sourceforge.net>
+Subject: [PATCH] ALSA: pcxhr: Delete an error message for a
+ failed memory allocation in pcxhr_create()
+Date: Sat, 12 Aug 2017 18:28:06 +0200
+Message-ID: <f30e314b-4666-2880-8051-976c631b3718@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a3223028-5b12-0efd-ffe0-aa7300334081@users.sourceforge.net>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1113F26701D
+ for <alsa-devel@alsa-project.org>; Sat, 12 Aug 2017 18:28:14 +0200 (CEST)
 Content-Language: en-GB
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Colin Ian King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 12 Aug 2017 17:07:09 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Sat, 12 Aug 2017 18:14:54 +0200
 
-The script “checkpatch.pl” pointed information out like the following.
+Omit an extra message for a memory allocation failure in this function.
 
-Comparison to NULL could be written …
-
-Thus fix the affected source code places.
+This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/rme9652/hdspm.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/pci/pcxhr/pcxhr.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 8d339fb7c24b..25284d8d9758 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -1521,7 +1521,7 @@ static void hdspm_silence_playback(struct hdspm *hdspm)
- 	int n = hdspm->period_bytes;
- 	void *buf = hdspm->playback_buffer;
+diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
+index fa919f52e225..376fd76caec2 100644
+--- a/sound/pci/pcxhr/pcxhr.c
++++ b/sound/pci/pcxhr/pcxhr.c
+@@ -1215,10 +1215,8 @@ static int pcxhr_create(struct pcxhr_mgr *mgr,
+ 	};
  
--	if (buf == NULL)
-+	if (!buf)
- 		return;
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (! chip) {
+-		dev_err(card->dev, "cannot allocate chip\n");
++	if (!chip)
+ 		return -ENOMEM;
+-	}
  
- 	for (i = 0; i < HDSPM_MAX_CHANNELS; i++) {
-@@ -4706,7 +4706,7 @@ static int snd_hdspm_create_controls(struct snd_card *card,
- 		break;
- 	}
- 
--	if (NULL != list) {
-+	if (list) {
- 		for (idx = 0; idx < limit; idx++) {
- 			err = snd_ctl_add(card,
- 					snd_ctl_new1(&list[idx], hdspm));
-@@ -6069,13 +6069,13 @@ static int snd_hdspm_open(struct snd_pcm_substream *substream)
- 		snd_hdspm_capture_subinfo;
- 
- 	if (playback) {
--		if (hdspm->capture_substream == NULL)
-+		if (!hdspm->capture_substream)
- 			hdspm_stop_audio(hdspm);
- 
- 		hdspm->playback_pid = current->pid;
- 		hdspm->playback_substream = substream;
- 	} else {
--		if (hdspm->playback_substream == NULL)
-+		if (!hdspm->playback_substream)
- 			hdspm_stop_audio(hdspm);
- 
- 		hdspm->capture_pid = current->pid;
-@@ -6775,9 +6775,9 @@ static int snd_hdspm_create(struct snd_card *card,
- 				HDSPM_s2_tco_detect) {
- 			hdspm->midiPorts++;
- 			hdspm->tco = kzalloc(sizeof(*hdspm->tco), GFP_KERNEL);
--			if (NULL != hdspm->tco) {
-+			if (hdspm->tco)
- 				hdspm_tco_write(hdspm);
--			}
-+
- 			dev_info(card->dev, "AIO/RayDAT TCO module found\n");
- 		} else {
- 			hdspm->tco = NULL;
-@@ -6789,9 +6789,9 @@ static int snd_hdspm_create(struct snd_card *card,
- 		if (hdspm_read(hdspm, HDSPM_statusRegister) & HDSPM_tco_detect) {
- 			hdspm->midiPorts++;
- 			hdspm->tco = kzalloc(sizeof(*hdspm->tco), GFP_KERNEL);
--			if (NULL != hdspm->tco) {
-+			if (hdspm->tco)
- 				hdspm_tco_write(hdspm);
--			}
-+
- 			dev_info(card->dev, "MADI/AES TCO module found\n");
- 		} else {
- 			hdspm->tco = NULL;
-@@ -6868,7 +6868,7 @@ static int snd_hdspm_create(struct snd_card *card,
- 		 * this case, we don't set card->id to avoid collisions
- 		 * when running with multiple cards.
- 		 */
--		if (NULL == id[hdspm->dev] && hdspm->serial != 0xFFFFFF) {
-+		if (!id[hdspm->dev] && hdspm->serial != 0xFFFFFF) {
- 			snprintf(card->id, sizeof(card->id),
- 				 "HDSPMx%06x", hdspm->serial);
- 			snd_card_set_id(card, card->id);
+ 	chip->card = card;
+ 	chip->chip_idx = idx;
 -- 
 2.14.0
