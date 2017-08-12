@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 11/16] ALSA: pcxhr: make snd_pcm_hardware const
-Date: Sat, 12 Aug 2017 21:01:23 +0530
-Message-ID: <1502551888-30325-12-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 12/16] ALSA: riptide: make snd_pcm_hardware const
+Date: Sat, 12 Aug 2017 21:01:24 +0530
+Message-ID: <1502551888-30325-13-git-send-email-bhumirks@gmail.com>
 References: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502551888-30325-1-git-send-email-bhumirks@gmail.com>
@@ -10,26 +10,35 @@ To: julia.lawall@lip6.fr, T-Bone@parisc-linux.org, perex@perex.cz, tiwai@suse.co
 Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make this const as it is only used during a copy operation.
-Done using Coccinelle
+Make these const as they are only used during a copy operation.
+Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/pcxhr/pcxhr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/riptide/riptide.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index fa919f5..e6f9aa6 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -986,7 +986,7 @@ static int pcxhr_hw_free(struct snd_pcm_substream *subs)
- /*
-  *  CONFIGURATION SPACE for all pcms, mono pcm must update channels_max
-  */
--static struct snd_pcm_hardware pcxhr_caps =
-+static const struct snd_pcm_hardware pcxhr_caps =
- {
- 	.info             = (SNDRV_PCM_INFO_MMAP |
- 			     SNDRV_PCM_INFO_INTERLEAVED |
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index f067c76..44f3b48 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -1315,7 +1315,7 @@ static int riptide_reset(struct cmdif *cif, struct snd_riptide *chip)
+ 	return 0;
+ }
+ 
+-static struct snd_pcm_hardware snd_riptide_playback = {
++static const struct snd_pcm_hardware snd_riptide_playback = {
+ 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+ 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP_VALID),
+@@ -1334,7 +1334,7 @@ static int riptide_reset(struct cmdif *cif, struct snd_riptide *chip)
+ 	.periods_max = 64,
+ 	.fifo_size = 0,
+ };
+-static struct snd_pcm_hardware snd_riptide_capture = {
++static const struct snd_pcm_hardware snd_riptide_capture = {
+ 	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+ 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_MMAP_VALID),
 -- 
 1.9.1
