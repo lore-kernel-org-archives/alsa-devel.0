@@ -1,116 +1,104 @@
-From: codekipper@gmail.com
-Subject: [PATCH v3 05/11] ASoC: sun4i-i2s: Add regfields for word size select and sample resolution
-Date: Sat, 12 Aug 2017 13:00:53 +0200
-Message-ID: <20170812110059.5115-6-codekipper@gmail.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v3 08/11] ASoC: sun4i-i2s: Add regmap field to
+ set DAI format
+Date: Sat, 12 Aug 2017 13:00:56 +0200
+Message-ID: <20170812110059.5115-9-codekipper@gmail.com>
 References: <20170812110059.5115-1-codekipper@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170812110059.5115-1-codekipper@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: maxime.ripard@free-electrons.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com, lgirdwood@gmail.com, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it, Marcus Cooper <codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBB7N7XPGAKGQEW4PNKSI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170812110059.5115-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On newer SoCs the location of the slot width select and sample
-resolution are different and also there is a bigger range of
-support.
+On the newer SoCs the bits to configure the operational mode are
+located in a different register. Add a regmap field so that this
+location can be configured.
 
-For the current supported rates then an offset is required.
-
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 33 ++++++++++++++++++++++++++++++---
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index a65dcb013247..482fe0c65c1f 100644
+index 33af99076d62..b61ef87d0049 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -98,6 +98,9 @@
-  * @sun4i_i2s_regmap: regmap config to use.
-  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
-+ * @fmt_offset: Value by which wss and sr needs to be adjusted.
-+ * @field_fmt_wss: regmap field to set word select size.
-+ * @field_fmt_sr: regmap field to set sample resolution.
+@@ -106,6 +106,7 @@
+  * @field_fmt_sr: regmap field to set sample resolution.
+  * @field_fmt_bclk: regmap field to set clk polarity.
+  * @field_fmt_lrclk: regmap field to set frame polarity.
++ * @field_fmt_mode: regmap field to set the operational mode.
   * @field_txchanmap: location of the tx channel mapping register.
   * @field_rxchanmap: location of the rx channel mapping register.
   * @field_txchansel: location of the tx channel select bit fields.
-@@ -109,8 +112,11 @@ struct sun4i_i2s_quirks {
- 	const struct regmap_config	*sun4i_i2s_regmap;
- 	unsigned int			mclk_offset;
- 	unsigned int			bclk_offset;
-+	unsigned int			fmt_offset;
- 
- 	/* Register fields for i2s */
-+	struct reg_field		field_fmt_wss;
-+	struct reg_field		field_fmt_sr;
+@@ -125,6 +126,7 @@ struct sun4i_i2s_quirks {
+ 	struct reg_field		field_fmt_sr;
+ 	struct reg_field		field_fmt_bclk;
+ 	struct reg_field		field_fmt_lrclk;
++	struct reg_field		field_fmt_mode;
  	struct reg_field		field_txchanmap;
  	struct reg_field		field_rxchanmap;
  	struct reg_field		field_txchansel;
-@@ -129,6 +135,8 @@ struct sun4i_i2s {
- 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
- 
- 	/* Register fields for i2s */
-+	struct regmap_field	*field_fmt_wss;
-+	struct regmap_field	*field_fmt_sr;
+@@ -148,6 +150,7 @@ struct sun4i_i2s {
+ 	struct regmap_field	*field_fmt_sr;
+ 	struct regmap_field	*field_fmt_bclk;
+ 	struct regmap_field	*field_fmt_lrclk;
++	struct regmap_field	*field_fmt_mode;
  	struct regmap_field	*field_txchanmap;
  	struct regmap_field	*field_rxchanmap;
  	struct regmap_field	*field_txchansel;
-@@ -314,9 +322,10 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -365,9 +368,7 @@ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  		return -EINVAL;
  	}
  
 -	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
--			   SUN4I_I2S_FMT0_WSS_MASK | SUN4I_I2S_FMT0_SR_MASK,
--			   SUN4I_I2S_FMT0_WSS(wss) | SUN4I_I2S_FMT0_SR(sr));
-+	regmap_field_write(i2s->field_fmt_wss,
-+			   wss + i2s->variant->fmt_offset);
-+	regmap_field_write(i2s->field_fmt_sr,
-+			   sr + i2s->variant->fmt_offset);
+-			   SUN4I_I2S_FMT0_FMT_MASK,
+-			   val);
++	regmap_field_write(i2s->field_fmt_mode, val);
  
- 	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
- 				      params_width(params));
-@@ -701,6 +710,8 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
- 	.has_reset		= false,
- 	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
- 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
-+	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+ 	/* DAI clock polarity */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+@@ -722,6 +723,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+ 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
++	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
  	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
  	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
  	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -711,6 +722,8 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
- 	.has_reset		= true,
- 	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
- 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
-+	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+@@ -737,6 +739,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+ 	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
+ 	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
++	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
  	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
  	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
  	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-@@ -748,6 +761,20 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+@@ -781,6 +784,13 @@ static int sun4i_i2s_init_regmap_fields(struct device *dev,
  		ret = PTR_ERR_OR_ZERO(i2s->field_rxchansel);
  	}
  
 +	if (!ret) {
-+		i2s->field_fmt_wss =
++		i2s->field_fmt_mode =
 +			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_fmt_wss);
-+		ret = PTR_ERR_OR_ZERO(i2s->field_fmt_wss);
++						i2s->variant->field_fmt_mode);
++		ret = PTR_ERR_OR_ZERO(i2s->field_fmt_mode);
 +	}
 +
-+	if (!ret) {
-+		i2s->field_fmt_sr =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_fmt_sr);
-+		ret = PTR_ERR_OR_ZERO(i2s->field_fmt_sr);
-+	}
-+
- 	return ret;
- }
- 
+ 	if (!ret) {
+ 		i2s->field_fmt_wss =
+ 			devm_regmap_field_alloc(dev, i2s->regmap,
 -- 
 2.14.1
