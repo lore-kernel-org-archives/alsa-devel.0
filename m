@@ -1,57 +1,43 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: max98926: make max98926_spk_tlv and
-	max98926_current_tlv static
-Date: Sun, 13 Aug 2017 16:00:33 +0100
-Message-ID: <20170813150033.17049-1-colin.king@canonical.com>
+Subject: [PATCH] ASoC: rt5514: make array rt5514_dai static
+Date: Sun, 13 Aug 2017 16:08:03 +0100
+Message-ID: <20170813150803.17292-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id AE6B42669F3
- for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2017 17:00:52 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, "Gustavo A . R . Silva" <garsilva@embeddedor.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-max98926_spk_tlv and max98926_current_tlv are local to the source and do
-not need to be in global scope, so make them static.
+The array rt5514_dai is local to the source and does not need to be in
+global scope, so make it static.
 
 Cleans up sparse warnings:
-symbol 'max98926_spk_tlv' was not declared. Should it be static?
-symbol 'max98926_current_tlv' was not declared. Should it be static?
+symbol 'rt5514_dai' was not declared. Should it be static?
+
+warning: symbol 'rt5514_dai' was not declared. Should it be static?
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/codecs/max98926.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5514.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 59d03d036945..03d07bf4d942 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -213,8 +213,8 @@ static bool max98926_readable_register(struct device *dev, unsigned int reg)
- 	}
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 7afcb57989af..d7956ababd11 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -1066,7 +1066,7 @@ static const struct snd_soc_dai_ops rt5514_aif_dai_ops = {
+ 	.set_tdm_slot = rt5514_set_tdm_slot,
  };
  
--DECLARE_TLV_DB_SCALE(max98926_spk_tlv, -600, 100, 0);
--DECLARE_TLV_DB_RANGE(max98926_current_tlv,
-+static DECLARE_TLV_DB_SCALE(max98926_spk_tlv, -600, 100, 0);
-+static DECLARE_TLV_DB_RANGE(max98926_current_tlv,
- 	0, 11, TLV_DB_SCALE_ITEM(20, 20, 0),
- 	12, 15, TLV_DB_SCALE_ITEM(320, 40, 0),
- );
+-struct snd_soc_dai_driver rt5514_dai[] = {
++static struct snd_soc_dai_driver rt5514_dai[] = {
+ 	{
+ 		.name = "rt5514-aif1",
+ 		.id = 0,
 -- 
 2.11.0
