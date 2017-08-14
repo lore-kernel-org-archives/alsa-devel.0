@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Delete an error message for a failed memory allocation in rockchip_i2s_probe()" to the asoc tree
-Date: Mon, 14 Aug 2017 17:42:36 +0100
-Message-ID: <E1dhIRo-000569-KC@finisterre>
-References: <20170225101834.28232-1-mihai.dumitru2201@stud.acs.upb.ro>
+Subject: Applied "ASoC: fsi: Delete an error message for a failed memory allocation in fsi_probe()" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:40 +0100
+Message-ID: <E1dhIRs-000578-E6@finisterre>
+References: <c78da5a0-fd60-b9fd-7607-51995c1fee8c@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170225101834.28232-1-mihai.dumitru2201@stud.acs.upb.ro>
+In-Reply-To: <c78da5a0-fd60-b9fd-7607-51995c1fee8c@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, Mihai-Valentin DUMITRU <mihai.dumitru2201@gmail.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.orgbroonie@kernel.org, Mihai-Valentin DUMITRU <mihai.dumitru2201@stud.acs.upb.ro>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert@linux-m68k.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Delete an error message for a failed memory allocation in rockchip_i2s_probe()
+   ASoC: fsi: Delete an error message for a failed memory allocation in fsi_probe()
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From b48b2710913d583ff93c365413532e1a7cd60d84 Mon Sep 17 00:00:00 2001
+>From dd80627d0688709a77233787a9c9d7e1f8e419ac Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 10 Aug 2017 18:38:09 +0200
-Subject: [PATCH] ASoC: rockchip: Delete an error message for a failed memory
- allocation in rockchip_i2s_probe()
+Date: Thu, 10 Aug 2017 18:18:20 +0200
+Subject: [PATCH] ASoC: fsi: Delete an error message for a failed memory
+ allocation in fsi_probe()
 
 Omit an extra message for a memory allocation failure in this function.
 
@@ -51,24 +51,24 @@ Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 4 +---
+ sound/soc/sh/fsi.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 199338fdeda0..b6590467fd14 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -579,10 +579,8 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 	int val;
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 005b21506556..1f41cf1ff830 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1962,10 +1962,8 @@ static int fsi_probe(struct platform_device *pdev)
+ 	}
  
- 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
--	if (!i2s) {
--		dev_err(&pdev->dev, "Can't allocate rk_i2s_dev\n");
-+	if (!i2s)
+ 	master = devm_kzalloc(&pdev->dev, sizeof(*master), GFP_KERNEL);
+-	if (!master) {
+-		dev_err(&pdev->dev, "Could not allocate master\n");
++	if (!master)
  		return -ENOMEM;
 -	}
  
- 	i2s->dev = &pdev->dev;
- 
+ 	master->base = devm_ioremap_nocache(&pdev->dev,
+ 					    res->start, resource_size(res));
 -- 
 2.13.2
