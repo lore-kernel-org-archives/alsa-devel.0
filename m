@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Add clkdiv offsets to quirks" to the asoc tree
-Date: Mon, 14 Aug 2017 17:43:22 +0100
-Message-ID: <E1dhISY-0005FW-Ry@finisterre>
-References: <20170812110059.5115-2-codekipper@gmail.com>
+Subject: Applied "ASoC: sh: constify snd_pcm_ops structures" to the asoc tree
+Date: Mon, 14 Aug 2017 17:43:26 +0100
+Message-ID: <E1dhISc-0005GT-Sc@finisterre>
+References: <1502690193-29059-10-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170812110059.5115-2-codekipper@gmail.com>
+In-Reply-To: <1502690193-29059-10-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Marcus Cooper <codekipper@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.combroonie@kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Add clkdiv offsets to quirks
+   ASoC: sh: constify snd_pcm_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,75 @@ to this mail.
 Thanks,
 Mark
 
->From 0aef27cab880d9612331350c008aec00cbb3d247 Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Sat, 12 Aug 2017 13:00:49 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Add clkdiv offsets to quirks
+>From b23bd34c402d08a2c1d6facdba4a75e016601c12 Mon Sep 17 00:00:00 2001
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Date: Mon, 14 Aug 2017 11:26:32 +0530
+Subject: [PATCH] ASoC: sh: constify snd_pcm_ops structures
 
-The BCLKDIV and MCLKDIV found on newer SoCs start from an offset of 1.
-Add the functionality to adjust the division values according to the
-needs to the device being used.
+snd_pcm_ops are not supposed to change at runtime. All functions
+working with snd_pcm_ops provided by <sound/soc.h> work with
+const snd_pcm_ops. So mark the non-const structs as const.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/sh/dma-sh7760.c | 2 +-
+ sound/soc/sh/fsi.c        | 2 +-
+ sound/soc/sh/rcar/core.c  | 2 +-
+ sound/soc/sh/siu_pcm.c    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index d7ee7a443e4e..9a35313c4f9b 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -94,9 +94,13 @@
-  * struct sun4i_i2s_quirks - Differences between SoC variants.
-  *
-  * @has_reset: SoC needs reset deasserted.
-+ * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-+ * @bclk_offset: Value by which bclkdiv needs to be adjusted.
-  */
- struct sun4i_i2s_quirks {
- 	bool				has_reset;
-+	unsigned int			mclk_offset;
-+	unsigned int			bclk_offset;
- };
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 81c743322445..35788a6db963 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -294,7 +294,7 @@ static snd_pcm_uframes_t camelot_pos(struct snd_pcm_substream *substream)
+ 	return bytes_to_frames(runtime, pos);
+ }
  
- struct sun4i_i2s {
-@@ -237,6 +241,10 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
- 	if (mclk_div < 0)
- 		return -EINVAL;
+-static struct snd_pcm_ops camelot_pcm_ops = {
++static const struct snd_pcm_ops camelot_pcm_ops = {
+ 	.open		= camelot_pcm_open,
+ 	.close		= camelot_pcm_close,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 90021b8a799a..5d7d9fe8bc98 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1755,7 +1755,7 @@ static snd_pcm_uframes_t fsi_pointer(struct snd_pcm_substream *substream)
+ 	return fsi_sample2frame(fsi, io->buff_sample_pos);
+ }
  
-+	/* Adjust the clock division values if needed */
-+	bclk_div += i2s->variant->bclk_offset;
-+	mclk_div += i2s->variant->mclk_offset;
-+
- 	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
- 		     SUN4I_I2S_CLK_DIV_BCLK(bclk_div) |
- 		     SUN4I_I2S_CLK_DIV_MCLK(mclk_div) |
+-static struct snd_pcm_ops fsi_pcm_ops = {
++static const struct snd_pcm_ops fsi_pcm_ops = {
+ 	.open		= fsi_pcm_open,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= fsi_hw_params,
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index e50f7e7981c8..08f3a06978e1 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1158,7 +1158,7 @@ static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
+ 	return pointer;
+ }
+ 
+-static struct snd_pcm_ops rsnd_pcm_ops = {
++static const struct snd_pcm_ops rsnd_pcm_ops = {
+ 	.open		= rsnd_pcm_open,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= rsnd_hw_params,
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index 82902f56e82f..3118cb0ee3f2 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -593,7 +593,7 @@ static void siu_pcm_free(struct snd_pcm *pcm)
+ 	dev_dbg(pcm->card->dev, "%s\n", __func__);
+ }
+ 
+-static struct snd_pcm_ops siu_pcm_ops = {
++static const struct snd_pcm_ops siu_pcm_ops = {
+ 	.open		= siu_pcm_open,
+ 	.close		= siu_pcm_close,
+ 	.ioctl		= snd_pcm_lib_ioctl,
 -- 
 2.13.2
