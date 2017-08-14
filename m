@@ -1,31 +1,19 @@
-From: Dennis Wassenberg <dennis.wassenberg@secunet.com>
-Subject: No Headphone Jack Audio from Lenovo Docking Station
- with a T470 connected
-Date: Mon, 14 Aug 2017 12:00:21 +0200
-Message-ID: <d336e939-cec1-e56f-ce8a-2cf1dab2b6dd@secunet.com>
-References: <0ab67d57-7c49-d9c8-58df-c0aec7298d81@secunet.com>
+From: "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>
+Subject: [PATCH v2] ALSA: hda/realtek - Fix pincfg for Dell XPS
+	13 9370
+Date: Mon, 14 Aug 2017 18:00:47 +0800
+Message-ID: <1502704847-22246-1-git-send-email-sylee@canonical.com>
+References: <1502703359-20761-1-git-send-email-sylee@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B4BB267323
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 12:00:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by a.mx.secunet.com (Postfix) with ESMTP id 0B9E7201B1
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 12:00:18 +0200 (CEST)
-Received: from a.mx.secunet.com ([127.0.0.1])
- by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id YOCq-bGrYXnp for <alsa-devel@alsa-project.org>;
- Mon, 14 Aug 2017 12:00:16 +0200 (CEST)
-Received: from mail-essen-01.secunet.de (mail-essen-01.secunet.de
- [10.53.40.204])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by a.mx.secunet.com (Postfix) with ESMTPS id 4011E2018D
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 12:00:16 +0200 (CEST)
-In-Reply-To: <0ab67d57-7c49-d9c8-58df-c0aec7298d81@secunet.com>
-Content-Language: de-DE
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBD1B26731F
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 12:00:51 +0200 (CEST)
+Received: by mail-pg0-f68.google.com with SMTP id u185so9909360pgb.0
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 03:00:51 -0700 (PDT)
+In-Reply-To: <1502703359-20761-1-git-send-email-sylee@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,74 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Kailang Yang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The initial pin configs for Dell headset mode of ALC3271 has changed.
 
-are there any news on this?
+/sys/class/sound/hwC0D0/init_pin_configs: (BIOS 0.1.4)
+0x12 0xb7a60130
+0x13 0xb8a61140
+0x14 0x40000000
+0x16 0x411111f0
+0x17 0x90170110
+0x18 0x411111f0
+0x19 0x411111f0
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1d 0x4087992d
+0x1e 0x411111f0
+0x21 0x04211020
 
-I tested pin cfg 0x17 0x21211010 too. In general it looks good, but I
-can not hear anything.
+has changed to ...
 
-Does anyone have some hints what can I do or test to get the sound
-working on Dock HP?
+/sys/class/sound/hwC0D0/init_pin_configs: (BIOS 0.2.0)
+0x12 0xb7a60130
+0x13 0x40000000
+0x14 0x411111f0
+0x16 0x411111f0
+0x17 0x90170110
+0x18 0x411111f0
+0x19 0x411111f0
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1d 0x4067992d
+0x1e 0x411111f0
+0x21 0x04211020
 
-Thanks,
+Fixes: b4576de87243 ("ALSA: hda/realtek - Fix typo of pincfg for Dell
+quirk")
 
-Best regards,
-Dennis
+Signed-off-by: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Hello,
-> 
-> I'm unable to get any sound from the Headphone Jack of a Lenovo Ultra
-> Docking Station with a new Lenovo T470 connected. With a T440p however I
-> get sound from the Docking Station Headphone Jack.
-> 
-> I did some research on my alsa configuration and found out that there is
-> no pin configuration supplied from the Laptop BIOS that connects to the
-> Docking Headphone Jack.
-> 
-> The hdajacksensetest tool only shows this when the Laptop is docked and
-> a Headphone is pluged in:
-> Pin 0x18 (Black Mic, Left side): present = No
-> Pin 0x21 (Black Headphone, Left side): present = No
-> 
-> So I did some patchingOn 14.08.2017 11:36, Stefan Mark (JIRA) wrote:
->  using a early firmware load patch floating around the web targeting the
-> same docking station for my older T440p laptop:
-> echo 0x17 0x21211010 > /sys/class/sound/hwC0D0/user_pin_configs
-> echo 1 > /sys/class/sound/hwC0D0/reconfig
-> 
-> Now my Docking Station Headphone Jack is being detected! :)
-> 
-> With the Headphone Connected:
-> Pin 0x17 (Black Headphone, Docking station, Rear side): present = Yes
-> Pin 0x18 (Black Mic, Left side): present = No
-> Pin 0x21 (Black Headphone, Left side): present = No
-> 
-> And disconnected:
-> Pin 0x17 (Black Headphone, Docking station, Rear side): present = No
-> Pin 0x18 (Black Mic, Left side): present = No
-> Pin 0x21 (Black Headphone, Left side): present = No
-> 
-> However there is STILL no sound even after unmuting everything in alsamixer!
-> I'm pretty sure 0x17 is the right pincfg but I'm not sure about
-> 0x21211010 and how I obtain such an address for my laptop.
-> 
-> Could someone please help me out here or give me a hint?
-> 
-> Here is a alsa-info.sh dump when the Laptop is not connected to the Dock:
-> https://pastebin.com/eTNnfnzL
-> 
-> And here when the Laptop is connected to the Dock (No changes):
-> https://pastebin.com/ySBsKUeH
-> 
-> And here after setting the pin config 0x17 0x21211010:
-> https://pastebin.com/xmDfsNtQ
-> 
-> I'm sure I'm very close. But something is still missing. Any help is
-> much apprechiated!
-> 
-> Thanks in advance
-> Dieter
-> 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a91a9ef..217bb58 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6647,7 +6647,6 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 	SND_HDA_PIN_QUIRK(0x10ec0299, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+-		{0x13, 0xb8a61140},
+ 		{0x17, 0x90170110}),
+ 	{}
+ };
+-- 
+2.7.4
