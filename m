@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: au1x: constify snd_pcm_ops structures" to the asoc tree
-Date: Mon, 14 Aug 2017 17:44:31 +0100
-Message-ID: <E1dhITf-0005WG-MT@finisterre>
-References: <1502690193-29059-2-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: samsung: constify snd_pcm_ops structures" to the asoc tree
+Date: Mon, 14 Aug 2017 17:44:42 +0100
+Message-ID: <E1dhITq-0005Yu-W9@finisterre>
+References: <1502690193-29059-9-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502690193-29059-2-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1502690193-29059-9-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: au1x: constify snd_pcm_ops structures
+   ASoC: samsung: constify snd_pcm_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From e731a870153271c861f06dc09e6acb5781b973f3 Mon Sep 17 00:00:00 2001
+>From 0cc798651a7796712a7bee1f3c865e82967d933f Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Mon, 14 Aug 2017 11:26:24 +0530
-Subject: [PATCH] ASoC: au1x: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:31 +0530
+Subject: [PATCH] ASoC: samsung: constify snd_pcm_ops structures
 
 snd_pcm_ops are not supposed to change at runtime. All functions
 working with snd_pcm_ops provided by <sound/soc.h> work with
@@ -49,35 +49,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/dbdma2.c | 2 +-
- sound/soc/au1x/dma.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/samsung/idma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index b5d1caa04d8e..6a035ca0f521 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -304,7 +304,7 @@ static int au1xpsc_pcm_close(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/samsung/idma.c b/sound/soc/samsung/idma.c
+index 3e408158625d..5c59c95c5ade 100644
+--- a/sound/soc/samsung/idma.c
++++ b/sound/soc/samsung/idma.c
+@@ -325,7 +325,7 @@ static int idma_close(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static struct snd_pcm_ops au1xpsc_pcm_ops = {
-+static const struct snd_pcm_ops au1xpsc_pcm_ops = {
- 	.open		= au1xpsc_pcm_open,
- 	.close		= au1xpsc_pcm_close,
+-static struct snd_pcm_ops idma_ops = {
++static const struct snd_pcm_ops idma_ops = {
+ 	.open		= idma_open,
+ 	.close		= idma_close,
  	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
-index fcf5a9adde81..19457e2b351e 100644
---- a/sound/soc/au1x/dma.c
-+++ b/sound/soc/au1x/dma.c
-@@ -277,7 +277,7 @@ static snd_pcm_uframes_t alchemy_pcm_pointer(struct snd_pcm_substream *ss)
- 	return bytes_to_frames(ss->runtime, location);
- }
- 
--static struct snd_pcm_ops alchemy_pcm_ops = {
-+static const struct snd_pcm_ops alchemy_pcm_ops = {
- 	.open			= alchemy_pcm_open,
- 	.close			= alchemy_pcm_close,
- 	.ioctl			= snd_pcm_lib_ioctl,
 -- 
 2.13.2
