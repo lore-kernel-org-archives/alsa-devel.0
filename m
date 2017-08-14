@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: kirkwood: Delete an error message for a failed memory allocation in kirkwood_i2s_dev_probe()" to the asoc tree
-Date: Mon, 14 Aug 2017 17:42:43 +0100
-Message-ID: <E1dhIRv-000586-TL@finisterre>
-References: <2f32b2cf-dcde-ccef-24a5-f7b6ad9beb83@users.sourceforge.net>
+Subject: Applied "ASoC: blackfin: Use common error handling code in sport_create()" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:58 +0100
+Message-ID: <E1dhISA-0005BA-7h@finisterre>
+References: <ef3f99a2-7e51-ff07-8e68-3d74495854a9@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2f32b2cf-dcde-ccef-24a5-f7b6ad9beb83@users.sourceforge.net>
+In-Reply-To: <ef3f99a2-7e51-ff07-8e68-3d74495854a9@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Scott Jiang <scott.jiang.linux@gmail.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: kirkwood: Delete an error message for a failed memory allocation in kirkwood_i2s_dev_probe()
+   ASoC: blackfin: Use common error handling code in sport_create()
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,51 @@ to this mail.
 Thanks,
 Mark
 
->From c7591edc2abd279018abb68aea5bdc604b8f56dd Mon Sep 17 00:00:00 2001
+>From 11fca34b2783408dbf37e42a38e4b55d54d6fa3a Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 09:35:33 +0200
-Subject: [PATCH] ASoC: kirkwood: Delete an error message for a failed memory
- allocation in kirkwood_i2s_dev_probe()
+Date: Fri, 11 Aug 2017 22:02:47 +0200
+Subject: [PATCH] ASoC: blackfin: Use common error handling code in
+ sport_create()
 
-Omit an extra message for a memory allocation failure in this function.
+Add a jump target so that a bit of exception handling can be better reused
+at the end of this function.
 
-This issue was detected by using the Coccinelle software.
-
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-i2s.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/blackfin/bf6xx-sport.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 3b09f71b9535..105a73cc5158 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -538,10 +538,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	int err;
+diff --git a/sound/soc/blackfin/bf6xx-sport.c b/sound/soc/blackfin/bf6xx-sport.c
+index 1bc3e0a47a57..fcddebf2558c 100644
+--- a/sound/soc/blackfin/bf6xx-sport.c
++++ b/sound/soc/blackfin/bf6xx-sport.c
+@@ -394,19 +394,18 @@ struct sport_device *sport_create(struct platform_device *pdev)
+ 	sport->pdev = pdev;
  
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		dev_err(&pdev->dev, "allocation failed\n");
-+	if (!priv)
- 		return -ENOMEM;
+ 	ret = sport_get_resource(sport);
+-	if (ret) {
+-		kfree(sport);
+-		return NULL;
 -	}
-+
- 	dev_set_drvdata(&pdev->dev, priv);
++	if (ret)
++		goto free_data;
  
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	ret = sport_request_resource(sport);
+-	if (ret) {
+-		kfree(sport);
+-		return NULL;
+-	}
++	if (ret)
++		goto free_data;
+ 
+ 	dev_dbg(dev, "SPORT create success\n");
+ 	return sport;
++free_data:
++	kfree(sport);
++	return NULL;
+ }
+ EXPORT_SYMBOL(sport_create);
+ 
 -- 
 2.13.2
