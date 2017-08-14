@@ -1,16 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 Subject: [PATCH] arizona: anc: Correct setting of
 	FCx_MIC_MODE_SEL
-Date: Mon, 14 Aug 2017 15:45:57 +0100
-Message-ID: <20170814144557.6875-1-ckeepax@opensource.cirrus.com>
+Date: Mon, 14 Aug 2017 15:46:24 +0100
+Message-ID: <20170814144624.6930-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C95C1267368
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 16:46:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CA01267387
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 16:46:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,7 +21,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, sapthagiri.baratam@incubesol.com
+Cc: patches@opensource.cirrus.com, sapthagiri.baratam@cirrus.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Sapthagiri Baratam <sapthagiri.baratam@cirrus.com>
