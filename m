@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 06/10] ASoC: omap: constify snd_pcm_ops structures
-Date: Mon, 14 Aug 2017 11:26:29 +0530
-Message-ID: <1502690193-29059-7-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 05/10] ASoC: nuc900: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:28 +0530
+Message-ID: <1502690193-29059-6-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502690193-29059-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502690193-29059-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,21 +16,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/omap/omap-pcm.c | 2 +-
+ sound/soc/nuc900/nuc900-pcm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 94e9ff7..e2f1245 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -162,7 +162,7 @@ static int omap_pcm_mmap(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
+index 2cca055..7f2d55d 100644
+--- a/sound/soc/nuc900/nuc900-pcm.c
++++ b/sound/soc/nuc900/nuc900-pcm.c
+@@ -271,7 +271,7 @@ static int nuc900_dma_mmap(struct snd_pcm_substream *substream,
  			   runtime->dma_addr, runtime->dma_bytes);
  }
  
--static struct snd_pcm_ops omap_pcm_ops = {
-+static const struct snd_pcm_ops omap_pcm_ops = {
- 	.open		= omap_pcm_open,
- 	.close		= snd_dmaengine_pcm_close_release_chan,
+-static struct snd_pcm_ops nuc900_dma_ops = {
++static const struct snd_pcm_ops nuc900_dma_ops = {
+ 	.open		= nuc900_dma_open,
+ 	.close		= nuc900_dma_close,
  	.ioctl		= snd_pcm_lib_ioctl,
 -- 
 1.9.1
