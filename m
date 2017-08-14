@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nuc900: constify snd_pcm_ops structures" to the asoc tree
-Date: Mon, 14 Aug 2017 17:43:30 +0100
-Message-ID: <E1dhISg-0005Ho-Qb@finisterre>
-References: <1502690193-29059-6-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: txx9: constify snd_pcm_ops structures" to the asoc tree
+Date: Mon, 14 Aug 2017 17:43:45 +0100
+Message-ID: <E1dhISv-0005Ly-Im@finisterre>
+References: <1502690193-29059-11-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502690193-29059-6-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1502690193-29059-11-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nuc900: constify snd_pcm_ops structures
+   ASoC: txx9: constify snd_pcm_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From f70eab3aad004b7496755ec77763bfd6e2eff553 Mon Sep 17 00:00:00 2001
+>From 5144468efb076b1859477de19257dd7ec9c24ed3 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Mon, 14 Aug 2017 11:26:28 +0530
-Subject: [PATCH] ASoC: nuc900: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:33 +0530
+Subject: [PATCH] ASoC: txx9: constify snd_pcm_ops structures
 
 snd_pcm_ops are not supposed to change at runtime. All functions
 working with snd_pcm_ops provided by <sound/soc.h> work with
@@ -49,21 +49,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/nuc900/nuc900-pcm.c | 2 +-
+ sound/soc/txx9/txx9aclc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index cd0486cad7f5..bd6dfa218d59 100644
---- a/sound/soc/nuc900/nuc900-pcm.c
-+++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -271,7 +271,7 @@ static int nuc900_dma_mmap(struct snd_pcm_substream *substream,
- 			   runtime->dma_addr, runtime->dma_bytes);
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 7df95dfa8557..a2bb68fea5a3 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -271,7 +271,7 @@ static int txx9aclc_pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
  }
  
--static struct snd_pcm_ops nuc900_dma_ops = {
-+static const struct snd_pcm_ops nuc900_dma_ops = {
- 	.open		= nuc900_dma_open,
- 	.close		= nuc900_dma_close,
+-static struct snd_pcm_ops txx9aclc_pcm_ops = {
++static const struct snd_pcm_ops txx9aclc_pcm_ops = {
+ 	.open		= txx9aclc_pcm_open,
+ 	.close		= txx9aclc_pcm_close,
  	.ioctl		= snd_pcm_lib_ioctl,
 -- 
 2.13.2
