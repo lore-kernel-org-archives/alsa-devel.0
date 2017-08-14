@@ -1,24 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: non-blocking mode example
-Date: Sun, 13 Aug 2017 19:46:22 +0200
-Message-ID: <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
-References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
- <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
- <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5663: Fine tune for the headphone
+	output pop sound
+Date: Mon, 14 Aug 2017 09:46:59 +0800
+Message-ID: <1502675219-23718-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C2CA266884
- for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2017 19:47:02 +0200 (CEST)
-Received: from [192.168.42.221] (tmo-119-132.customers.d1-online.com
- [80.187.119.132])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id EA1CE5581B6B
- for <alsa-devel@alsa-project.org>; Sun, 13 Aug 2017 19:46:57 +0200 (CEST)
-In-Reply-To: <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92190266CC9
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 03:47:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,29 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-ThomasJF wrote:
-> I have read a file to buffer with "allframes".
->
-> 1.) Do I use snd_pcm_writei(...) with a size of "allframes" or loop it
->     with smaller packages (periodsize)
+The patch fine tunes for the headphone output pop sound.
 
-In blocking mode, the call would be able to write all bytes, eventually.
-But in non-blocking mode, it is never possible to write more than the
-buffer size immediately.  So if you try with more frames, the function
-will write as much as it can, and you have to retry with the remaining
-frames later anyway.
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5663.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-> 2.) What are the actual functions to get the interrupt and send the
->     frames needed into the ringbuffer (standard I/O or select)?
-
-The snd_pcm_writei() call sends the frames to the buffer.  The
-notification that the device is ready (i.e., that there is enough free
-space in the buffer to write more samples) comes through any of the
-file-handle-waiting functions (select, poll, epoll).
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 8119819..c98a8a7 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1565,6 +1565,10 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 		val = snd_soc_read(codec, RT5663_EM_JACK_TYPE_2) & 0x0003;
+ 		dev_dbg(codec->dev, "%s val = %d\n", __func__, val);
+ 
++		snd_soc_update_bits(codec, RT5663_HP_CHARGE_PUMP_1,
++			RT5663_OSW_HP_L_MASK | RT5663_OSW_HP_R_MASK,
++			RT5663_OSW_HP_L_EN | RT5663_OSW_HP_R_EN);
++
+ 		switch (val) {
+ 		case 1:
+ 		case 2:
+@@ -2073,6 +2077,8 @@ static int rt5663_hp_event(struct snd_soc_dapm_widget *w,
+ 			snd_soc_write(codec, RT5663_ANA_BIAS_CUR_1, 0x7766);
+ 			snd_soc_write(codec, RT5663_HP_BIAS, 0xafaa);
+ 			snd_soc_write(codec, RT5663_CHARGE_PUMP_2, 0x7777);
++			snd_soc_update_bits(codec, RT5663_STO_DRE_1, 0x8000,
++				0x8000);
+ 			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x3000,
+ 				0x3000);
+ 		}
+@@ -2105,14 +2111,19 @@ static int rt5663_charge_pump_event(struct snd_soc_dapm_widget *w,
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		if (rt5663->codec_ver == CODEC_VER_0)
+-			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x003b,
+-				0x003b);
++		if (rt5663->codec_ver == CODEC_VER_0) {
++			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0030,
++				0x0030);
++			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0003,
++				0x0003);
++		}
+ 		break;
+ 
+ 	case SND_SOC_DAPM_POST_PMD:
+-		if (rt5663->codec_ver == CODEC_VER_0)
+-			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x003b, 0);
++		if (rt5663->codec_ver == CODEC_VER_0) {
++			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0003, 0);
++			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0030, 0);
++		}
+ 		break;
+ 
+ 	default:
+-- 
+2.7.4
