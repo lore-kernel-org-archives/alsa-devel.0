@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsi: Delete an error message for a failed memory allocation in fsi_probe()" to the asoc tree
-Date: Mon, 14 Aug 2017 17:42:40 +0100
-Message-ID: <E1dhIRs-000578-E6@finisterre>
-References: <c78da5a0-fd60-b9fd-7607-51995c1fee8c@users.sourceforge.net>
+Subject: Applied "ASoC: kirkwood: Delete an error message for a failed memory allocation in kirkwood_i2s_dev_probe()" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:43 +0100
+Message-ID: <E1dhIRv-000586-TL@finisterre>
+References: <2f32b2cf-dcde-ccef-24a5-f7b6ad9beb83@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c78da5a0-fd60-b9fd-7607-51995c1fee8c@users.sourceforge.net>
+In-Reply-To: <2f32b2cf-dcde-ccef-24a5-f7b6ad9beb83@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert@linux-m68k.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsi: Delete an error message for a failed memory allocation in fsi_probe()
+   ASoC: kirkwood: Delete an error message for a failed memory allocation in kirkwood_i2s_dev_probe()
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From dd80627d0688709a77233787a9c9d7e1f8e419ac Mon Sep 17 00:00:00 2001
+>From c7591edc2abd279018abb68aea5bdc604b8f56dd Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 10 Aug 2017 18:18:20 +0200
-Subject: [PATCH] ASoC: fsi: Delete an error message for a failed memory
- allocation in fsi_probe()
+Date: Fri, 11 Aug 2017 09:35:33 +0200
+Subject: [PATCH] ASoC: kirkwood: Delete an error message for a failed memory
+ allocation in kirkwood_i2s_dev_probe()
 
 Omit an extra message for a memory allocation failure in this function.
 
@@ -51,24 +51,25 @@ Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/fsi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/kirkwood/kirkwood-i2s.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 005b21506556..1f41cf1ff830 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1962,10 +1962,8 @@ static int fsi_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
+index 3b09f71b9535..105a73cc5158 100644
+--- a/sound/soc/kirkwood/kirkwood-i2s.c
++++ b/sound/soc/kirkwood/kirkwood-i2s.c
+@@ -538,10 +538,9 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+ 	int err;
  
- 	master = devm_kzalloc(&pdev->dev, sizeof(*master), GFP_KERNEL);
--	if (!master) {
--		dev_err(&pdev->dev, "Could not allocate master\n");
-+	if (!master)
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv) {
+-		dev_err(&pdev->dev, "allocation failed\n");
++	if (!priv)
  		return -ENOMEM;
 -	}
++
+ 	dev_set_drvdata(&pdev->dev, priv);
  
- 	master->base = devm_ioremap_nocache(&pdev->dev,
- 					    res->start, resource_size(res));
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 -- 
 2.13.2
