@@ -1,85 +1,100 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 2/9 v2] drm/amd/amdgpu: Added asic_type as ACP DMA driver
- platform data
-Date: Mon, 14 Aug 2017 15:21:06 -0400
-Message-ID: <CADnq5_Mhqikze6zY5_Xz=RW_cfqG5VWyLEYdbSxzqshgBLsoPQ@mail.gmail.com>
-References: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
- <1501270294-31153-3-git-send-email-alexander.deucher@amd.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ALSA: rme9652: Use common error handling code
+ in two functions
+Date: Mon, 14 Aug 2017 22:10:10 +0200
+Message-ID: <fefeea4b-68a2-5b4c-2cfc-cb05383b5474@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <1501270294-31153-3-git-send-email-alexander.deucher-5C7GfCeVMHo@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Vijendar Mukunda <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, rajeev kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1707267390
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 22:10:23 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdWwgMjgsIDIwMTcgYXQgMzozMSBQTSwgQWxleCBEZXVjaGVyIDxhbGV4ZGV1Y2hl
-ckBnbWFpbC5jb20+IHdyb3RlOgo+IEZyb206IFZpamVuZGFyIE11a3VuZGEgPFZpamVuZGFyLk11
-a3VuZGFAYW1kLmNvbT4KPgo+IGFzaWNfdHlwZSBpbmZvcm1hdGlvbiBpcyBwYXNzZWQgdG8gQUNQ
-IERNQSBEcml2ZXIgYXMgcGxhdGZvcm0gZGF0YS4KPgo+IFNpZ25lZC1vZmYtYnk6IFZpamVuZGFy
-IE11a3VuZGEgPFZpamVuZGFyLk11a3VuZGFAYW1kLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBBbGV4
-IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+CgpTZXJpZXMgaXM6ClJldmlld2Vk
-LWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+CgoKPiAtLS0KPgo+
-IHYyOlJlbW92ZWQgYXNpY190eXBlIGxvY2FsIHZhcmlhYmxlIGFuZCBkaXJlY3RseSBwYXNzaW5n
-IGFzaWNfdHlwZQo+IGluc3RhbmNlIHRvIEFDUCBETUEgZHJpdmVyIGFzIHBsYXRmb3JtIGRhdGEu
-Cj4KPiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMgfCAyICsrCj4gIHNv
-dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyAgICAgICAgICAgICB8IDggKystLS0tLS0KPiAgc291
-bmQvc29jL2FtZC9hY3AuaCAgICAgICAgICAgICAgICAgICAgIHwgNyArKysrKysrCj4gIDMgZmls
-ZXMgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMgYi9kcml2ZXJzL2dw
-dS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMKPiBpbmRleCAwNjg3OWQxLi4wZmE4MTIyIDEw
-MDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+IEBAIC0zNTUsNiAr
-MzU1LDggQEAgc3RhdGljIGludCBhY3BfaHdfaW5pdCh2b2lkICpoYW5kbGUpCj4gICAgICAgICBh
-ZGV2LT5hY3AuYWNwX2NlbGxbMF0ubmFtZSA9ICJhY3BfYXVkaW9fZG1hIjsKPiAgICAgICAgIGFk
-ZXYtPmFjcC5hY3BfY2VsbFswXS5udW1fcmVzb3VyY2VzID0gNDsKPiAgICAgICAgIGFkZXYtPmFj
-cC5hY3BfY2VsbFswXS5yZXNvdXJjZXMgPSAmYWRldi0+YWNwLmFjcF9yZXNbMF07Cj4gKyAgICAg
-ICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ucGxhdGZvcm1fZGF0YSA9ICZhZGV2LT5hc2ljX3R5cGU7
-Cj4gKyAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ucGRhdGFfc2l6ZSA9IHNpemVvZihhZGV2
-LT5hc2ljX3R5cGUpOwo+Cj4gICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0ubmFtZSA9ICJk
-ZXNpZ253YXJlLWkycyI7Cj4gICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0ubnVtX3Jlc291
-cmNlcyA9IDE7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyBiL3Nv
-dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwo+IGluZGV4IDA4YjEzOTkuLmRjYmY5OTcgMTAwNjQ0
-Cj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCj4gKysrIGIvc291bmQvc29jL2Ft
-ZC9hY3AtcGNtLWRtYS5jCj4gQEAgLTczLDEyICs3Myw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX3BjbV9oYXJkd2FyZSBhY3BfcGNtX2hhcmR3YXJlX2NhcHR1cmUgPSB7Cj4gICAgICAgICAu
-cGVyaW9kc19tYXggPSBDQVBUVVJFX01BWF9OVU1fUEVSSU9EUywKPiAgfTsKPgo+IC1zdHJ1Y3Qg
-YXVkaW9fZHJ2X2RhdGEgewo+IC0gICAgICAgc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpwbGF5
-X3N0cmVhbTsKPiAtICAgICAgIHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqY2FwdHVyZV9zdHJl
-YW07Cj4gLSAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwo+IC19Owo+IC0KPiAgc3RhdGlj
-IHUzMiBhY3BfcmVnX3JlYWQodm9pZCBfX2lvbWVtICphY3BfbW1pbywgdTMyIHJlZykKPiAgewo+
-ICAgICAgICAgcmV0dXJuIHJlYWRsKGFjcF9tbWlvICsgKHJlZyAqIDQpKTsKPiBAQCAtOTE2LDYg
-KzkxMCw3IEBAIHN0YXRpYyBpbnQgYWNwX2F1ZGlvX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYpCj4gICAgICAgICBpbnQgc3RhdHVzOwo+ICAgICAgICAgc3RydWN0IGF1ZGlvX2Ry
-dl9kYXRhICphdWRpb19kcnZfZGF0YTsKPiAgICAgICAgIHN0cnVjdCByZXNvdXJjZSAqcmVzOwo+
-ICsgICAgICAgY29uc3QgdTMyICpwZGF0YSA9IHBkZXYtPmRldi5wbGF0Zm9ybV9kYXRhOwo+Cj4g
-ICAgICAgICBhdWRpb19kcnZfZGF0YSA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2Yo
-c3RydWN0IGF1ZGlvX2Rydl9kYXRhKSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgR0ZQX0tFUk5FTCk7Cj4gQEAgLTkzMiw2ICs5MjcsNyBAQCBzdGF0aWMgaW50IGFj
-cF9hdWRpb19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+Cj4gICAgICAgICBh
-dWRpb19kcnZfZGF0YS0+cGxheV9zdHJlYW0gPSBOVUxMOwo+ICAgICAgICAgYXVkaW9fZHJ2X2Rh
-dGEtPmNhcHR1cmVfc3RyZWFtID0gTlVMTDsKPiArICAgICAgIGF1ZGlvX2Rydl9kYXRhLT5hc2lj
-X3R5cGUgPSAgKnBkYXRhOwo+Cj4gICAgICAgICByZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2Uo
-cGRldiwgSU9SRVNPVVJDRV9JUlEsIDApOwo+ICAgICAgICAgaWYgKCFyZXMpIHsKPiBkaWZmIC0t
-Z2l0IGEvc291bmQvc29jL2FtZC9hY3AuaCBiL3NvdW5kL3NvYy9hbWQvYWNwLmgKPiBpbmRleCAz
-MzA4MzJlLi4yOGNmOTE0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9hbWQvYWNwLmgKPiArKysg
-Yi9zb3VuZC9zb2MvYW1kL2FjcC5oCj4gQEAgLTg0LDYgKzg0LDEzIEBAIHN0cnVjdCBhdWRpb19z
-dWJzdHJlYW1fZGF0YSB7Cj4gICAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwo+ICB9Owo+
-Cj4gK3N0cnVjdCBhdWRpb19kcnZfZGF0YSB7Cj4gKyAgICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnBsYXlfc3RyZWFtOwo+ICsgICAgICAgc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpj
-YXB0dXJlX3N0cmVhbTsKPiArICAgICAgIHZvaWQgX19pb21lbSAqYWNwX21taW87Cj4gKyAgICAg
-ICB1MzIgYXNpY190eXBlOwo+ICt9Owo+ICsKPiAgZW51bSB7Cj4gICAgICAgICBBQ1BfVElMRV9Q
-MSA9IDAsCj4gICAgICAgICBBQ1BfVElMRV9QMiwKPiAtLQo+IDIuNS41Cj4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QK
-YW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 14 Aug 2017 22:00:40 +0200
+
+Add a jump target so that a bit of exception handling can be better reused
+in these functions.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/pci/rme9652/hdsp.c    | 13 ++++++-------
+ sound/pci/rme9652/rme9652.c | 14 ++++++--------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index fe36d44d16c6..4750d14555bc 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -5381,17 +5381,16 @@ static int snd_hdsp_probe(struct pci_dev *pci,
+ 	card->private_free = snd_hdsp_card_free;
+ 	hdsp->dev = dev;
+ 	hdsp->pci = pci;
+-
+-	if ((err = snd_hdsp_create(card, hdsp)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	err = snd_hdsp_create(card, hdsp);
++	if (err)
++		goto free_card;
+ 
+ 	strcpy(card->shortname, "Hammerfall DSP");
+ 	sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name,
+ 		hdsp->port, hdsp->irq);
+-
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err) {
++free_card:
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 150d08898db8..b36ba7f9a7bf 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -2618,19 +2618,17 @@ static int snd_rme9652_probe(struct pci_dev *pci,
+ 	card->private_free = snd_rme9652_card_free;
+ 	rme9652->dev = dev;
+ 	rme9652->pci = pci;
+-
+-	if ((err = snd_rme9652_create(card, rme9652, precise_ptr[dev])) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	err = snd_rme9652_create(card, rme9652, precise_ptr[dev]);
++	if (err)
++		goto free_card;
+ 
+ 	strcpy(card->shortname, rme9652->card_name);
+ 
+ 	sprintf(card->longname, "%s at 0x%lx, irq %d",
+ 		card->shortname, rme9652->port, rme9652->irq);
+-
+-	
+-	if ((err = snd_card_register(card)) < 0) {
++	err = snd_card_register(card);
++	if (err) {
++free_card:
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-- 
+2.14.0
