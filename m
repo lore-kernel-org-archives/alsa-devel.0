@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98926: make max98926_spk_tlv and max98926_current_tlv static" to the asoc tree
-Date: Mon, 14 Aug 2017 17:44:57 +0100
-Message-ID: <E1dhIU5-0005cp-EE@finisterre>
-References: <20170813150033.17049-1-colin.king@canonical.com>
+Subject: Applied "ASoC: samsung: make tm2_dapm_widgets and tm2_pm_ops static" to the asoc tree
+Date: Mon, 14 Aug 2017 17:44:46 +0100
+Message-ID: <E1dhITu-0005Zv-MJ@finisterre>
+References: <20170813153715.18058-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170813150033.17049-1-colin.king@canonical.com>
+In-Reply-To: <20170813153715.18058-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, "Gustavo A . R . Silva" <garsilva@embeddedor.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98926: make max98926_spk_tlv and max98926_current_tlv static
+   ASoC: samsung: make tm2_dapm_widgets and tm2_pm_ops static
 
 has been applied to the asoc tree at
 
@@ -37,39 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From 9ab51b9469e6a63dbf4385bdd02704e87b65a039 Mon Sep 17 00:00:00 2001
+>From fa99125e2acca4e85de57cff55aea9fc7cb2930a Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Sun, 13 Aug 2017 16:00:33 +0100
-Subject: [PATCH] ASoC: max98926: make max98926_spk_tlv and
- max98926_current_tlv static
+Date: Sun, 13 Aug 2017 16:37:15 +0100
+Subject: [PATCH] ASoC: samsung: make tm2_dapm_widgets and tm2_pm_ops static
 
-max98926_spk_tlv and max98926_current_tlv are local to the source and do
-not need to be in global scope, so make them static.
+tm2_dapm_widgets and tm2_pm_ops are local to the source and do not need
+to be in global scope, so make them static.
 
 Cleans up sparse warnings:
-symbol 'max98926_spk_tlv' was not declared. Should it be static?
-symbol 'max98926_current_tlv' was not declared. Should it be static?
+symbol 'tm2_dapm_widgets' was not declared. Should it be static?
+symbol 'tm2_pm_ops' was not declared. Should it be static?
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 4 ++--
+ sound/soc/samsung/tm2_wm5110.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index f16145d8ee6b..13d2708657e1 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -213,8 +213,8 @@ static bool max98926_readable_register(struct device *dev, unsigned int reg)
- 	}
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index 24cc9d63ce87..68698f3d72f9 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -318,7 +318,7 @@ static const struct snd_kcontrol_new tm2_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
  };
  
--DECLARE_TLV_DB_SCALE(max98926_spk_tlv, -600, 100, 0);
--DECLARE_TLV_DB_RANGE(max98926_current_tlv,
-+static DECLARE_TLV_DB_SCALE(max98926_spk_tlv, -600, 100, 0);
-+static DECLARE_TLV_DB_RANGE(max98926_current_tlv,
- 	0, 11, TLV_DB_SCALE_ITEM(20, 20, 0),
- 	12, 15, TLV_DB_SCALE_ITEM(320, 40, 0),
- );
+-const struct snd_soc_dapm_widget tm2_dapm_widgets[] = {
++static const struct snd_soc_dapm_widget tm2_dapm_widgets[] = {
+ 	SND_SOC_DAPM_HP("HP", NULL),
+ 	SND_SOC_DAPM_SPK("SPK", NULL),
+ 	SND_SOC_DAPM_SPK("RCV", NULL),
+@@ -521,7 +521,7 @@ static void tm2_pm_complete(struct device *dev)
+ 	tm2_start_sysclk(card);
+ }
+ 
+-const struct dev_pm_ops tm2_pm_ops = {
++static const struct dev_pm_ops tm2_pm_ops = {
+ 	.prepare	= tm2_pm_prepare,
+ 	.suspend	= snd_soc_suspend,
+ 	.resume		= snd_soc_resume,
 -- 
 2.13.2
