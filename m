@@ -1,71 +1,133 @@
-From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Subject: Re: [PATCH 3/3] mfd: twl: move header file out of I2C realm
-Date: Mon, 14 Aug 2017 18:32:21 +0200
-Message-ID: <20170814163221.ef6rxfvtehmpq7qf@ninjato>
-References: <20170521220212.1404-1-wsa@the-dreams.de>
- <20170521220212.1404-4-wsa@the-dreams.de>
- <20170706064453.GH16144@ulmo.fritz.box>
- <20170706070352.xdecvsnremwqed72@dell>
- <20170813133700.tv4ka7anvbzcplr7@ninjato>
- <20170814064247.qvggx4ito4vgjqvs@dell>
- <20170814084340.65morabelapfegph@ninjato>
- <20170814162219.GX8569@atomide.com>
- <c5e65e34-f308-f601-ba0b-d96792591727@linaro.org>
-Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 3/5] ASoC: codecs: msm8916-wcd-analog:
+ add MBHC support
+Date: Mon, 14 Aug 2017 17:34:53 +0100
+Message-ID: <2731854d-c0fd-f8e3-456a-ba4d0d2e84c1@linaro.org>
+References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
+ <20170809164927.19663-4-srinivas.kandagatla@linaro.org>
+ <20170809211054.4owecfeoxxud5evh@workotop.localdomain>
+ <76eb6edf-1754-6679-6218-028b12dce49a@linaro.org>
+ <20170810133329.7lqcg3tucgp5jxii@workotop.localdomain>
+ <20170814141222.rg3v3oqwt5xh3363@workotop.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r5bnhd66xto22335"
-Return-path: <rtc-linux+bncBDP47C6LHEIJPIOHZQCRUBAE6K6WS-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <c5e65e34-f308-f601-ba0b-d96792591727-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/rtc-linux
-List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/rtc-linux/subscribe>
-To: Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kishon Vijay Abraham I <kishon-l0cyMroinI0@public.gmane.org>, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Jingoo Han <jingoohan1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Wim
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 922AD267383
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 18:34:55 +0200 (CEST)
+Received: by mail-wm0-f51.google.com with SMTP id i66so48200121wmg.0
+ for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 09:34:55 -0700 (PDT)
+In-Reply-To: <20170814141222.rg3v3oqwt5xh3363@workotop.localdomain>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---r5bnhd66xto22335
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
 
-> Acked-by: Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+On 14/08/17 15:12, Damien Riegel wrote:
+> Hi,
+> 
+> 
+> On Thu, Aug 10, 2017 at 09:33:29AM -0400, Damien Riegel wrote:
+>> Hi,
+>>
+>> On Thu, Aug 10, 2017 at 11:02:34AM +0100, Srinivas Kandagatla wrote:
+>>> Hi Damien,
+>>> Thanks for testing.
+>>>
+>>> On 09/08/17 22:10, Damien Riegel wrote:
+>>>> Hi Srinivas,
+>>>>
+>>>> On Wed, Aug 09, 2017 at 06:49:25PM +0200, srinivas.kandagatla@linaro.org wrote:
+>>>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>>>
+>>>>> MBHC (MultiButton Headset Control) support is available in pm8921 in two
+>>>>> blocks, one to detect mechanical headset insertion and removal and other
+>>>>> block to support headset type detection and 5 button detection and othe
+>>>>> features like impedance calculation.
+>>>>>
+>>>>> This patch adds support to:
+>>>>> 1> Support to NC and NO type of headset Jacks.
+>>>>> 2> Mechanical insertion and detection of headset jack.
+>>>>> 3> Detect a 3 pole Headphone and a 4 pole Headset.
+>>>>> 4> Detect 5 buttons.
+>>>>>
+>>>>> Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+>>>>> headset/headphones.
+>>>>
+>>>> I have the same issue with this patchset, KEY_MEDIA is being reported
+>>>> when unplugging a headset. I added a few traces and what I observe is
+>>> Am unable to reproduce the same issue, I tried atleast 6 different mix of
+>>> headset/headphones.
+>>> here is my evtest log:  http://paste.ubuntu.com/25282592/
+>>>
+>>> Could you explain bit more about your setup, so that I can try to reproduce
+>>> the same issue.
+>>>
+>>> My setup is DB410c + Audio Mezz board
+>>> https://www.arrow.com/en/products/audiomezz/seeed-technology-limited
+>>
+>> I'm using a hardware based on Intrinsyc Open-Q 410 Development Kit:
+>> https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
+>>
+>> We use the same SoM with a different carrier board, but connections to
+>> the jack connector are routed the same way on both carrier boards.
+>>
+>>>> that the "button pressed" irq is fired when unplugging, but no "button
+>>>> released" irq follows. To get a "button released" irq, I need to either
+>>>> plug a headset, or plug-and-unplug headphones.
+>>>>
+>>>> So basically, detection fails because we don't get the "button pressed"
+>>>> irq prior to the mechanical switch irq. Do you know what could explain
+>>>> the MBHC not firing the "button released" irq when unplugging headset?
+>>>>
+>>> Can you also share output of evetest and /proc/interrupts so that i can see
+>>> if the extra logic of masking btn0 is creating the issue, we can also try
+>>> removing the btn0 accessory detect logic and see if we get correct button
+>>> press/releases.
+>>
+>> It's definitely what's causing the headphones to be reported as headset,
+>> but not what's causing the interrupt not to be triggered in the first
+>> place. I don't have access to the hardware right now, so I'll provide
+>> you with logs next week.
+> 
+> I did the test, and addded the content of /proc/interrupts.
+> 
+>      https://paste.ubuntu.com/25312443/
+> 
+> As you can see, after "[INSERT HEADPHONE]", we only get "mbhc switch
+> irq", but not "mbhc btn press irq". Let me know if you need more
+> details.
+> 
+> As I said before, I don't see that 100% of the time, but I don't do
+> anything special to trigger it either (like pulling the cable extra
+> slowly or whatnot), it just happens.
 
-Added, thanks!
+Looking at the interrupts count its clear that there was a real button 
+press event from the hardware, so My suspect is the voltage threshold 
+values programmed for the buttons, which might not be very much correct 
+if you are using same values as db410c. These values are partly board 
+specific.
 
--- 
-You received this message because you are subscribed to "rtc-linux".
-Membership options at http://groups.google.com/group/rtc-linux .
-Please read http://groups.google.com/group/rtc-linux/web/checklist
-before submitting a driver.
---- 
-You received this message because you are subscribed to the Google Groups "rtc-linux" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+Can you tune those values and give it a try, specially btn0 values.
 
---r5bnhd66xto22335
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+thanks,
+srini
 
-iQIzBAABCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlmR0JUACgkQFA3kzBSg
-Kbb3UBAAgndBbA09/crNsM5iaqnA/DYgD6njMNag0No8CkC8WzDc8c1dZ3mD3+/b
-85cDD+WHMumbLsRhoqoiCMIk9izQTouKfop/DZZAA2pN0gEAcDJNyjL+4NuH/k2G
-suO6XQnuKEuNzUOcXQIrY6W3GEvO8W9WVBD2thjcu8Uf3UYFELAtAMgexqlB7JPa
-bvTGlLeCEhx8XcDz7utEjeiqJ/Ip1LjBXovQto0j/vioZ5BRaJWlfPJHDJquB9Uz
-fxJm0G4VfmT1OszuWMSZv5gTlazDKNOAadsw7swrp5jmuf3qNjCKkmztcq6rVnkm
-W5A8qOJcxjzPk9V/OmuLk/hlQAMrTHv9xmH4AuW/xnwP0OOrDb3lt9DnSGzW+pCi
-NAZfPEe5DzVlqvQ+RYWG1aM4f2lgJdGrX3EzwcPymVpN9qi+PtB+3oYgqky6CSew
-+X5sULm/xrwoh2zdgiVWTRKrdfthPtk/XfNSTpXOGtGf0ZZsUTMYrSuckTd6zmxW
-TxuuZn4fPEx18Zfpy6uxof6nnrZbEZ6jGAF+s/nWHHAPCfn+aPPFOoIF6XsTkwyE
-q6iUSzT7QIaKQ3G5p9zYzCdaWDWq5ks3mhsa9nivBKKM15V9OMBgrKAMJtl2HmYY
-YQv+A1FOXchHAzSyKL/vhyCeu0gOValLeFdtzTIJZRjyYTvhtTk=
-=ltAb
------END PGP SIGNATURE-----
 
---r5bnhd66xto22335--
+> 
+> 
+> Thank you,
+> 
