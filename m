@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: constify snd_pcm_ops structures" to the asoc tree
-Date: Mon, 14 Aug 2017 17:44:24 +0100
-Message-ID: <E1dhITY-0005UU-8j@finisterre>
-References: <1502690193-29059-4-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: blackfin: constify snd_pcm_ops structures" to the asoc tree
+Date: Mon, 14 Aug 2017 17:44:27 +0100
+Message-ID: <E1dhITb-0005VN-Ue@finisterre>
+References: <1502690193-29059-3-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502690193-29059-4-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1502690193-29059-3-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: constify snd_pcm_ops structures
+   ASoC: blackfin: constify snd_pcm_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From b6ed072028705620ea2937ddafd77a202df034af Mon Sep 17 00:00:00 2001
+>From e76b3f41a3c39fae342fe4db530c3917199cfa96 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Mon, 14 Aug 2017 11:26:26 +0530
-Subject: [PATCH] ASoC: fsl: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:25 +0530
+Subject: [PATCH] ASoC: blackfin: constify snd_pcm_ops structures
 
 snd_pcm_ops are not supposed to change at runtime. All functions
 working with snd_pcm_ops provided by <sound/soc.h> work with
@@ -49,49 +49,35 @@ const snd_pcm_ops. So mark the non-const structs as const.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_dma.c     | 2 +-
- sound/soc/fsl/imx-pcm-fiq.c | 2 +-
- sound/soc/fsl/mpc5200_dma.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/blackfin/bf5xx-ac97-pcm.c | 2 +-
+ sound/soc/blackfin/bf5xx-i2s-pcm.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index ed8ea002902d..979ed1b3ecc4 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -870,7 +870,7 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
- 	return NULL;
+diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
+index 913e29275f4e..8c1d1983b8f9 100644
+--- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
++++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
+@@ -308,7 +308,7 @@ static	int bf5xx_pcm_copy_user(struct snd_pcm_substream *substream,
  }
+ #endif
  
--static struct snd_pcm_ops fsl_dma_ops = {
-+static const struct snd_pcm_ops fsl_dma_ops = {
- 	.open   	= fsl_dma_open,
- 	.close  	= fsl_dma_close,
- 	.ioctl  	= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 92410f7ca1fa..9ce37616ef5d 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -227,7 +227,7 @@ static int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_pcm_ops imx_pcm_ops = {
-+static const struct snd_pcm_ops imx_pcm_ops = {
- 	.open		= snd_imx_open,
- 	.close		= snd_imx_close,
+-static struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
++static const struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
+ 	.open		= bf5xx_pcm_open,
  	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 1f7e70bfbd55..66042ce86edc 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -287,7 +287,7 @@ psc_dma_hw_params(struct snd_pcm_substream *substream,
+ 	.hw_params	= bf5xx_pcm_hw_params,
+diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+index 470d99abf6f6..51cae76f14e6 100644
+--- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
++++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
+@@ -318,7 +318,7 @@ static int bf5xx_pcm_silence(struct snd_pcm_substream *substream,
  	return 0;
  }
  
--static struct snd_pcm_ops psc_dma_ops = {
-+static const struct snd_pcm_ops psc_dma_ops = {
- 	.open		= psc_dma_open,
- 	.close		= psc_dma_close,
- 	.hw_free	= psc_dma_hw_free,
+-static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
++static const struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
+ 	.open		= bf5xx_pcm_open,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ 	.hw_params	= bf5xx_pcm_hw_params,
 -- 
 2.13.2
