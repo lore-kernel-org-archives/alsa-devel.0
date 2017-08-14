@@ -1,61 +1,85 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 03/11] ASoC: fsl: make snd_soc_platform_driver const
-Date: Mon, 14 Aug 2017 12:16:50 -0700
-Message-ID: <20170814191649.GA23972@Asurada-Nvidia>
-References: <1502710730-18912-1-git-send-email-bhumirks@gmail.com>
- <1502710730-18912-4-git-send-email-bhumirks@gmail.com>
+From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 2/9 v2] drm/amd/amdgpu: Added asic_type as ACP DMA driver
+ platform data
+Date: Mon, 14 Aug 2017 15:21:06 -0400
+Message-ID: <CADnq5_Mhqikze6zY5_Xz=RW_cfqG5VWyLEYdbSxzqshgBLsoPQ@mail.gmail.com>
+References: <1501270294-31153-1-git-send-email-alexander.deucher@amd.com>
+ <1501270294-31153-3-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1502710730-18912-4-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: julia.lawall@lip6.fr, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, bardliao@realtek.com, chiou@realtek.com, timur@tabi.org, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, yang.jie@linux.intel.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, plai@codeaurora.org, bgoswami@codeaurora.org, krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <1501270294-31153-3-git-send-email-alexander.deucher-5C7GfCeVMHo@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Vijendar Mukunda <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, rajeev kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 14, 2017 at 05:08:42PM +0530, Bhumika Goyal wrote:
-> Make these const as they are only passed as the 2nd argument to the function
-> snd_soc_register_platform, which is of type const.
-> Done using Coccinelle.
-> 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
-Thanks
-
-> ---
->  sound/soc/fsl/imx-pcm-fiq.c | 2 +-
->  sound/soc/fsl/mpc5200_dma.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-> index 92410f7..3fcc7b5 100644
-> --- a/sound/soc/fsl/imx-pcm-fiq.c
-> +++ b/sound/soc/fsl/imx-pcm-fiq.c
-> @@ -341,7 +341,7 @@ static void imx_pcm_fiq_free(struct snd_pcm *pcm)
->  	imx_pcm_free(pcm);
->  }
->  
-> -static struct snd_soc_platform_driver imx_soc_platform_fiq = {
-> +static const struct snd_soc_platform_driver imx_soc_platform_fiq = {
->  	.ops		= &imx_pcm_ops,
->  	.pcm_new	= imx_pcm_fiq_new,
->  	.pcm_free	= imx_pcm_fiq_free,
-> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-> index 1f7e70b..cdd848c 100644
-> --- a/sound/soc/fsl/mpc5200_dma.c
-> +++ b/sound/soc/fsl/mpc5200_dma.c
-> @@ -356,7 +356,7 @@ static void psc_dma_free(struct snd_pcm *pcm)
->  	}
->  }
->  
-> -static struct snd_soc_platform_driver mpc5200_audio_dma_platform = {
-> +static const struct snd_soc_platform_driver mpc5200_audio_dma_platform = {
->  	.ops		= &psc_dma_ops,
->  	.pcm_new	= &psc_dma_new,
->  	.pcm_free	= &psc_dma_free,
-> -- 
-> 1.9.1
-> 
+T24gRnJpLCBKdWwgMjgsIDIwMTcgYXQgMzozMSBQTSwgQWxleCBEZXVjaGVyIDxhbGV4ZGV1Y2hl
+ckBnbWFpbC5jb20+IHdyb3RlOgo+IEZyb206IFZpamVuZGFyIE11a3VuZGEgPFZpamVuZGFyLk11
+a3VuZGFAYW1kLmNvbT4KPgo+IGFzaWNfdHlwZSBpbmZvcm1hdGlvbiBpcyBwYXNzZWQgdG8gQUNQ
+IERNQSBEcml2ZXIgYXMgcGxhdGZvcm0gZGF0YS4KPgo+IFNpZ25lZC1vZmYtYnk6IFZpamVuZGFy
+IE11a3VuZGEgPFZpamVuZGFyLk11a3VuZGFAYW1kLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBBbGV4
+IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+CgpTZXJpZXMgaXM6ClJldmlld2Vk
+LWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+CgoKPiAtLS0KPgo+
+IHYyOlJlbW92ZWQgYXNpY190eXBlIGxvY2FsIHZhcmlhYmxlIGFuZCBkaXJlY3RseSBwYXNzaW5n
+IGFzaWNfdHlwZQo+IGluc3RhbmNlIHRvIEFDUCBETUEgZHJpdmVyIGFzIHBsYXRmb3JtIGRhdGEu
+Cj4KPiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMgfCAyICsrCj4gIHNv
+dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyAgICAgICAgICAgICB8IDggKystLS0tLS0KPiAgc291
+bmQvc29jL2FtZC9hY3AuaCAgICAgICAgICAgICAgICAgICAgIHwgNyArKysrKysrCj4gIDMgZmls
+ZXMgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMgYi9kcml2ZXJzL2dw
+dS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMKPiBpbmRleCAwNjg3OWQxLi4wZmE4MTIyIDEw
+MDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+ICsr
+KyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+IEBAIC0zNTUsNiAr
+MzU1LDggQEAgc3RhdGljIGludCBhY3BfaHdfaW5pdCh2b2lkICpoYW5kbGUpCj4gICAgICAgICBh
+ZGV2LT5hY3AuYWNwX2NlbGxbMF0ubmFtZSA9ICJhY3BfYXVkaW9fZG1hIjsKPiAgICAgICAgIGFk
+ZXYtPmFjcC5hY3BfY2VsbFswXS5udW1fcmVzb3VyY2VzID0gNDsKPiAgICAgICAgIGFkZXYtPmFj
+cC5hY3BfY2VsbFswXS5yZXNvdXJjZXMgPSAmYWRldi0+YWNwLmFjcF9yZXNbMF07Cj4gKyAgICAg
+ICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ucGxhdGZvcm1fZGF0YSA9ICZhZGV2LT5hc2ljX3R5cGU7
+Cj4gKyAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ucGRhdGFfc2l6ZSA9IHNpemVvZihhZGV2
+LT5hc2ljX3R5cGUpOwo+Cj4gICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0ubmFtZSA9ICJk
+ZXNpZ253YXJlLWkycyI7Cj4gICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0ubnVtX3Jlc291
+cmNlcyA9IDE7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyBiL3Nv
+dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwo+IGluZGV4IDA4YjEzOTkuLmRjYmY5OTcgMTAwNjQ0
+Cj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCj4gKysrIGIvc291bmQvc29jL2Ft
+ZC9hY3AtcGNtLWRtYS5jCj4gQEAgLTczLDEyICs3Myw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c25kX3BjbV9oYXJkd2FyZSBhY3BfcGNtX2hhcmR3YXJlX2NhcHR1cmUgPSB7Cj4gICAgICAgICAu
+cGVyaW9kc19tYXggPSBDQVBUVVJFX01BWF9OVU1fUEVSSU9EUywKPiAgfTsKPgo+IC1zdHJ1Y3Qg
+YXVkaW9fZHJ2X2RhdGEgewo+IC0gICAgICAgc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpwbGF5
+X3N0cmVhbTsKPiAtICAgICAgIHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqY2FwdHVyZV9zdHJl
+YW07Cj4gLSAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwo+IC19Owo+IC0KPiAgc3RhdGlj
+IHUzMiBhY3BfcmVnX3JlYWQodm9pZCBfX2lvbWVtICphY3BfbW1pbywgdTMyIHJlZykKPiAgewo+
+ICAgICAgICAgcmV0dXJuIHJlYWRsKGFjcF9tbWlvICsgKHJlZyAqIDQpKTsKPiBAQCAtOTE2LDYg
+KzkxMCw3IEBAIHN0YXRpYyBpbnQgYWNwX2F1ZGlvX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UgKnBkZXYpCj4gICAgICAgICBpbnQgc3RhdHVzOwo+ICAgICAgICAgc3RydWN0IGF1ZGlvX2Ry
+dl9kYXRhICphdWRpb19kcnZfZGF0YTsKPiAgICAgICAgIHN0cnVjdCByZXNvdXJjZSAqcmVzOwo+
+ICsgICAgICAgY29uc3QgdTMyICpwZGF0YSA9IHBkZXYtPmRldi5wbGF0Zm9ybV9kYXRhOwo+Cj4g
+ICAgICAgICBhdWRpb19kcnZfZGF0YSA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2Yo
+c3RydWN0IGF1ZGlvX2Rydl9kYXRhKSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgR0ZQX0tFUk5FTCk7Cj4gQEAgLTkzMiw2ICs5MjcsNyBAQCBzdGF0aWMgaW50IGFj
+cF9hdWRpb19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+Cj4gICAgICAgICBh
+dWRpb19kcnZfZGF0YS0+cGxheV9zdHJlYW0gPSBOVUxMOwo+ICAgICAgICAgYXVkaW9fZHJ2X2Rh
+dGEtPmNhcHR1cmVfc3RyZWFtID0gTlVMTDsKPiArICAgICAgIGF1ZGlvX2Rydl9kYXRhLT5hc2lj
+X3R5cGUgPSAgKnBkYXRhOwo+Cj4gICAgICAgICByZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2Uo
+cGRldiwgSU9SRVNPVVJDRV9JUlEsIDApOwo+ICAgICAgICAgaWYgKCFyZXMpIHsKPiBkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2FtZC9hY3AuaCBiL3NvdW5kL3NvYy9hbWQvYWNwLmgKPiBpbmRleCAz
+MzA4MzJlLi4yOGNmOTE0IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9hbWQvYWNwLmgKPiArKysg
+Yi9zb3VuZC9zb2MvYW1kL2FjcC5oCj4gQEAgLTg0LDYgKzg0LDEzIEBAIHN0cnVjdCBhdWRpb19z
+dWJzdHJlYW1fZGF0YSB7Cj4gICAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwo+ICB9Owo+
+Cj4gK3N0cnVjdCBhdWRpb19kcnZfZGF0YSB7Cj4gKyAgICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJz
+dHJlYW0gKnBsYXlfc3RyZWFtOwo+ICsgICAgICAgc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpj
+YXB0dXJlX3N0cmVhbTsKPiArICAgICAgIHZvaWQgX19pb21lbSAqYWNwX21taW87Cj4gKyAgICAg
+ICB1MzIgYXNpY190eXBlOwo+ICt9Owo+ICsKPiAgZW51bSB7Cj4gICAgICAgICBBQ1BfVElMRV9Q
+MSA9IDAsCj4gICAgICAgICBBQ1BfVElMRV9QMiwKPiAtLQo+IDIuNS41Cj4KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QK
+YW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
