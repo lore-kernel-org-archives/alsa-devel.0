@@ -1,83 +1,48 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5663: Fine tune for the headphone
-	output pop sound
-Date: Mon, 14 Aug 2017 09:46:59 +0800
-Message-ID: <1502675219-23718-1-git-send-email-oder_chiou@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 92190266CC9
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 03:47:14 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: [PATCH 00/10] constify ASoC snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:23 +0530
+Message-ID: <1502690193-29059-1-git-send-email-arvind.yadav.cs@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch fine tunes for the headphone output pop sound.
+snd_pcm_ops are not supposed to change at runtime. All functions
+working with snd_pcm_ops provided by <sound/soc.h> work with
+const snd_pcm_ops. So mark the non-const structs as const.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5663.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+Arvind Yadav (10):
+  [PATCH 01/10] ASoC: au1x: constify snd_pcm_ops structures
+  [PATCH 02/10] ASoC: blackfin: constify snd_pcm_ops structures
+  [PATCH 03/10] ASoC: fsl: constify snd_pcm_ops structures
+  [PATCH 04/10] ASoC: intel: constify snd_pcm_ops structures
+  [PATCH 05/10] ASoC: nuc900: constify snd_pcm_ops structures
+  [PATCH 06/10] ASoC: omap: constify snd_pcm_ops structures
+  [PATCH 07/10] ASoC: pxa: constify snd_pcm_ops structures
+  [PATCH 08/10] ASoC: samsung: constify snd_pcm_ops structures
+  [PATCH 09/10] ASoC: sh: constify snd_pcm_ops structures
+  [PATCH 10/10] ASoC: txx9: constify snd_pcm_ops structures
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 8119819..c98a8a7 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1565,6 +1565,10 @@ static int rt5663_jack_detect(struct snd_soc_codec *codec, int jack_insert)
- 		val = snd_soc_read(codec, RT5663_EM_JACK_TYPE_2) & 0x0003;
- 		dev_dbg(codec->dev, "%s val = %d\n", __func__, val);
- 
-+		snd_soc_update_bits(codec, RT5663_HP_CHARGE_PUMP_1,
-+			RT5663_OSW_HP_L_MASK | RT5663_OSW_HP_R_MASK,
-+			RT5663_OSW_HP_L_EN | RT5663_OSW_HP_R_EN);
-+
- 		switch (val) {
- 		case 1:
- 		case 2:
-@@ -2073,6 +2077,8 @@ static int rt5663_hp_event(struct snd_soc_dapm_widget *w,
- 			snd_soc_write(codec, RT5663_ANA_BIAS_CUR_1, 0x7766);
- 			snd_soc_write(codec, RT5663_HP_BIAS, 0xafaa);
- 			snd_soc_write(codec, RT5663_CHARGE_PUMP_2, 0x7777);
-+			snd_soc_update_bits(codec, RT5663_STO_DRE_1, 0x8000,
-+				0x8000);
- 			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x3000,
- 				0x3000);
- 		}
-@@ -2105,14 +2111,19 @@ static int rt5663_charge_pump_event(struct snd_soc_dapm_widget *w,
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		if (rt5663->codec_ver == CODEC_VER_0)
--			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x003b,
--				0x003b);
-+		if (rt5663->codec_ver == CODEC_VER_0) {
-+			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0030,
-+				0x0030);
-+			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0003,
-+				0x0003);
-+		}
- 		break;
- 
- 	case SND_SOC_DAPM_POST_PMD:
--		if (rt5663->codec_ver == CODEC_VER_0)
--			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x003b, 0);
-+		if (rt5663->codec_ver == CODEC_VER_0) {
-+			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0003, 0);
-+			snd_soc_update_bits(codec, RT5663_DEPOP_1, 0x0030, 0);
-+		}
- 		break;
- 
- 	default:
+ sound/soc/au1x/dbdma2.c                     | 2 +-
+ sound/soc/au1x/dma.c                        | 2 +-
+ sound/soc/blackfin/bf5xx-ac97-pcm.c         | 2 +-
+ sound/soc/blackfin/bf5xx-i2s-pcm.c          | 2 +-
+ sound/soc/fsl/fsl_dma.c                     | 2 +-
+ sound/soc/fsl/imx-pcm-fiq.c                 | 2 +-
+ sound/soc/fsl/mpc5200_dma.c                 | 2 +-
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
+ sound/soc/nuc900/nuc900-pcm.c               | 2 +-
+ sound/soc/omap/omap-pcm.c                   | 2 +-
+ sound/soc/pxa/mmp-pcm.c                     | 2 +-
+ sound/soc/pxa/pxa2xx-pcm.c                  | 2 +-
+ sound/soc/samsung/idma.c                    | 2 +-
+ sound/soc/sh/dma-sh7760.c                   | 2 +-
+ sound/soc/sh/fsi.c                          | 2 +-
+ sound/soc/sh/rcar/core.c                    | 2 +-
+ sound/soc/sh/siu_pcm.c                      | 2 +-
+ sound/soc/txx9/txx9aclc.c                   | 2 +-
+ 18 files changed, 18 insertions(+), 18 deletions(-)
+
 -- 
-2.7.4
+1.9.1
