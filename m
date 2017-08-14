@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 03/10] ASoC: fsl: constify snd_pcm_ops structures
-Date: Mon, 14 Aug 2017 11:26:26 +0530
-Message-ID: <1502690193-29059-4-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 04/10] ASoC: intel: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:27 +0530
+Message-ID: <1502690193-29059-5-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502690193-29059-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502690193-29059-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,49 +16,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/fsl/fsl_dma.c     | 2 +-
- sound/soc/fsl/imx-pcm-fiq.c | 2 +-
- sound/soc/fsl/mpc5200_dma.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index ccadefc..dc71942 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -870,7 +870,7 @@ static struct device_node *find_ssi_node(struct device_node *dma_channel_np)
- 	return NULL;
+diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+index 4765ad4..0bdc057 100644
+--- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
++++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
+@@ -309,7 +309,7 @@ static int sst_byt_pcm_mmap(struct snd_pcm_substream *substream,
+ 	return snd_pcm_lib_default_mmap(substream, vma);
  }
  
--static struct snd_pcm_ops fsl_dma_ops = {
-+static const struct snd_pcm_ops fsl_dma_ops = {
- 	.open   	= fsl_dma_open,
- 	.close  	= fsl_dma_close,
- 	.ioctl  	= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index 92410f7..9ce3761 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -227,7 +227,7 @@ static int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_pcm_ops imx_pcm_ops = {
-+static const struct snd_pcm_ops imx_pcm_ops = {
- 	.open		= snd_imx_open,
- 	.close		= snd_imx_close,
+-static struct snd_pcm_ops sst_byt_pcm_ops = {
++static const struct snd_pcm_ops sst_byt_pcm_ops = {
+ 	.open		= sst_byt_pcm_open,
+ 	.close		= sst_byt_pcm_close,
  	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 1f7e70b..66042ce 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -287,7 +287,7 @@ static int psc_dma_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static struct snd_pcm_ops psc_dma_ops = {
-+static const struct snd_pcm_ops psc_dma_ops = {
- 	.open		= psc_dma_open,
- 	.close		= psc_dma_close,
- 	.hw_free	= psc_dma_hw_free,
 -- 
 1.9.1
