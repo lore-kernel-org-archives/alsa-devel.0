@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: blackfin: Use common error handling code in sport_create()" to the asoc tree
-Date: Mon, 14 Aug 2017 17:42:58 +0100
-Message-ID: <E1dhISA-0005BA-7h@finisterre>
-References: <ef3f99a2-7e51-ff07-8e68-3d74495854a9@users.sourceforge.net>
+Subject: Applied "ASoC: sun4i-i2s: Add regmap config to quirks" to the asoc tree
+Date: Mon, 14 Aug 2017 17:43:09 +0100
+Message-ID: <E1dhISL-0005EA-9q@finisterre>
+References: <20170729141753.20174-4-codekipper@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ef3f99a2-7e51-ff07-8e68-3d74495854a9@users.sourceforge.net>
+In-Reply-To: <20170729141753.20174-4-codekipper@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Scott Jiang <scott.jiang.linux@gmail.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+To: Marcus Cooper <codekipper@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.combroonie@kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: blackfin: Use common error handling code in sport_create()
+   ASoC: sun4i-i2s: Add regmap config to quirks
 
 has been applied to the asoc tree at
 
@@ -37,51 +37,64 @@ to this mail.
 Thanks,
 Mark
 
->From 11fca34b2783408dbf37e42a38e4b55d54d6fa3a Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 22:02:47 +0200
-Subject: [PATCH] ASoC: blackfin: Use common error handling code in
- sport_create()
+>From cd1c63df5fa8196d8ed5138f1ecc22bbabf5f6df Mon Sep 17 00:00:00 2001
+From: Marcus Cooper <codekipper@gmail.com>
+Date: Sat, 12 Aug 2017 13:00:50 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Add regmap config to quirks
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
+The newer SoCs have a larger range than the original SoC that this
+driver was developed for. By adding the regmap config to the quirks
+then the driver can initialise the managed register map correctly.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/blackfin/bf6xx-sport.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf6xx-sport.c b/sound/soc/blackfin/bf6xx-sport.c
-index 1bc3e0a47a57..fcddebf2558c 100644
---- a/sound/soc/blackfin/bf6xx-sport.c
-+++ b/sound/soc/blackfin/bf6xx-sport.c
-@@ -394,19 +394,18 @@ struct sport_device *sport_create(struct platform_device *pdev)
- 	sport->pdev = pdev;
- 
- 	ret = sport_get_resource(sport);
--	if (ret) {
--		kfree(sport);
--		return NULL;
--	}
-+	if (ret)
-+		goto free_data;
- 
- 	ret = sport_request_resource(sport);
--	if (ret) {
--		kfree(sport);
--		return NULL;
--	}
-+	if (ret)
-+		goto free_data;
- 
- 	dev_dbg(dev, "SPORT create success\n");
- 	return sport;
-+free_data:
-+	kfree(sport);
-+	return NULL;
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 9a35313c4f9b..f6f3c409f25e 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -94,11 +94,13 @@
+  * struct sun4i_i2s_quirks - Differences between SoC variants.
+  *
+  * @has_reset: SoC needs reset deasserted.
++ * @sun4i_i2s_regmap: regmap config to use.
+  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
+  */
+ struct sun4i_i2s_quirks {
+ 	bool				has_reset;
++	const struct regmap_config	*sun4i_i2s_regmap;
+ 	unsigned int			mclk_offset;
+ 	unsigned int			bclk_offset;
+ };
+@@ -674,11 +676,13 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
  }
- EXPORT_SYMBOL(sport_create);
  
+ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+-	.has_reset	= false,
++	.has_reset		= false,
++	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+-	.has_reset	= true,
++	.has_reset		= true,
++	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+ };
+ 
+ static int sun4i_i2s_probe(struct platform_device *pdev)
+@@ -717,7 +721,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+-					    &sun4i_i2s_regmap_config);
++					    i2s->variant->sun4i_i2s_regmap);
+ 	if (IS_ERR(i2s->regmap)) {
+ 		dev_err(&pdev->dev, "Regmap initialisation failed\n");
+ 		return PTR_ERR(i2s->regmap);
 -- 
 2.13.2
