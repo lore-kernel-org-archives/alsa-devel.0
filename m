@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: make array rt5514_dai static" to the asoc tree
-Date: Mon, 14 Aug 2017 17:44:54 +0100
-Message-ID: <E1dhIU2-0005bq-7n@finisterre>
-References: <20170813150803.17292-1-colin.king@canonical.com>
+Subject: Applied "ASoC: zx_aud96p22: make array aud96p22_dt_ids static" to the asoc tree
+Date: Mon, 14 Aug 2017 17:44:50 +0100
+Message-ID: <E1dhITy-0005aq-ID@finisterre>
+References: <20170626090014.8977-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170813150803.17292-1-colin.king@canonical.com>
+In-Reply-To: <20170626090014.8977-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawn.guo@linaro.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: make array rt5514_dai static
+   ASoC: zx_aud96p22: make array aud96p22_dt_ids static
 
 has been applied to the asoc tree at
 
@@ -37,37 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From e5e8e6182a3b9514cde41d957684b59ee8f6cf21 Mon Sep 17 00:00:00 2001
+>From def4b1243e56774fdc47de9292111a344f14e88c Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Sun, 13 Aug 2017 16:08:03 +0100
-Subject: [PATCH] ASoC: rt5514: make array rt5514_dai static
+Date: Sun, 13 Aug 2017 16:28:08 +0100
+Subject: [PATCH] ASoC: zx_aud96p22: make array aud96p22_dt_ids static
 
-The array rt5514_dai is local to the source and does not need to be in
-global scope, so make it static.
+The array aud96p22_dt_ids is local to the source and does not need to be
+in global scope, so make it static.
 
-Cleans up sparse warnings:
-symbol 'rt5514_dai' was not declared. Should it be static?
-
-warning: symbol 'rt5514_dai' was not declared. Should it be static?
+Cleans up sparse warning:
+symbol 'aud96p22_dt_ids' was not declared. Should it be static?
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 2 +-
+ sound/soc/codecs/zx_aud96p22.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 0eabe569ab73..a694ce9fed86 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -1066,7 +1066,7 @@ static const struct snd_soc_dai_ops rt5514_aif_dai_ops = {
- 	.set_tdm_slot = rt5514_set_tdm_slot,
- };
+diff --git a/sound/soc/codecs/zx_aud96p22.c b/sound/soc/codecs/zx_aud96p22.c
+index 032fb7cf6cbd..bc23ce1a30a1 100644
+--- a/sound/soc/codecs/zx_aud96p22.c
++++ b/sound/soc/codecs/zx_aud96p22.c
+@@ -382,7 +382,7 @@ static int aud96p22_i2c_remove(struct i2c_client *i2c)
+ 	return 0;
+ }
  
--struct snd_soc_dai_driver rt5514_dai[] = {
-+static struct snd_soc_dai_driver rt5514_dai[] = {
- 	{
- 		.name = "rt5514-aif1",
- 		.id = 0,
+-const struct of_device_id aud96p22_dt_ids[] = {
++static const struct of_device_id aud96p22_dt_ids[] = {
+ 	{ .compatible = "zte,zx-aud96p22", },
+ 	{ }
+ };
 -- 
 2.13.2
