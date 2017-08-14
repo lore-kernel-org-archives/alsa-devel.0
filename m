@@ -1,100 +1,136 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ALSA: rme9652: Use common error handling code
- in two functions
-Date: Mon, 14 Aug 2017 22:10:10 +0200
-Message-ID: <fefeea4b-68a2-5b4c-2cfc-cb05383b5474@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id E1707267390
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 22:10:23 +0200 (CEST)
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From: Daniel Mentz <danielmentz@google.com>
+Subject: [PATCH v2] ALSA: seq: 2nd attempt at fixing race creating a q
+Date: Mon, 14 Aug 2017 14:46:01 -0700
+Message-ID: <20170814214601.3106-1-danielmentz@google.com>
+References: <20170811030734.37741-1-danielmentz@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170811030734.37741-1-danielmentz@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz
+Cc: Daniel Mentz <danielmentz@google.com>, stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 14 Aug 2017 22:00:40 +0200
+commit 4842e98f26dd80be3623c4714a244ba52ea096a8 ("ALSA: seq: Fix race at
+creating a queue") attempted to fix a race reported by syzkaller. That
+fix has been described as follows:
 
-Add a jump target so that a bit of exception handling can be better reused
-in these functions.
+"
+When a sequencer queue is created in snd_seq_queue_alloc(),it adds the
+new queue element to the public list before referencing it.  Thus the
+queue might be deleted before the call of snd_seq_queue_use(), and it
+results in the use-after-free error, as spotted by syzkaller.
 
-This issue was detected by using the Coccinelle software.
+The fix is to reference the queue object at the right time.
+"
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Even with that fix in place, syzkaller reported a use-after-free error.
+It specifically pointed to the last instruction "return q->queue" in
+snd_seq_queue_alloc(). The pointer q is being used after kfree() has
+been called on it.
+
+It turned out that there is still a small window where a race can
+happen. The window opens at
+snd_seq_ioctl_create_queue()->snd_seq_queue_alloc()->queue_list_add()
+and closes at
+snd_seq_ioctl_create_queue()->queueptr()->snd_use_lock_use(). Between
+these two calls, a different thread could delete the queue and possibly
+re-create a different queue in the same location in queue_list.
+
+This change prevents this situation by calling snd_use_lock_use() from
+snd_seq_queue_alloc() prior to calling queue_list_add(). It is then the
+caller's responsibility to call snd_use_lock_free(&q->use_lock).
+
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Cc: <stable@vger.kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Daniel Mentz <danielmentz@google.com>
 ---
- sound/pci/rme9652/hdsp.c    | 13 ++++++-------
- sound/pci/rme9652/rme9652.c | 14 ++++++--------
- 2 files changed, 12 insertions(+), 15 deletions(-)
+ sound/core/seq/seq_clientmgr.c | 13 ++++---------
+ sound/core/seq/seq_queue.c     | 14 +++++++++-----
+ sound/core/seq/seq_queue.h     |  2 +-
+ 3 files changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index fe36d44d16c6..4750d14555bc 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -5381,17 +5381,16 @@ static int snd_hdsp_probe(struct pci_dev *pci,
- 	card->private_free = snd_hdsp_card_free;
- 	hdsp->dev = dev;
- 	hdsp->pci = pci;
--
--	if ((err = snd_hdsp_create(card, hdsp)) < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	err = snd_hdsp_create(card, hdsp);
-+	if (err)
-+		goto free_card;
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 272c55fe17c8..ea2d0ae85bd3 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -1502,16 +1502,11 @@ static int snd_seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
+ static int snd_seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
+ {
+ 	struct snd_seq_queue_info *info = arg;
+-	int result;
+ 	struct snd_seq_queue *q;
  
- 	strcpy(card->shortname, "Hammerfall DSP");
- 	sprintf(card->longname, "%s at 0x%lx, irq %d", hdsp->card_name,
- 		hdsp->port, hdsp->irq);
+-	result = snd_seq_queue_alloc(client->number, info->locked, info->flags);
+-	if (result < 0)
+-		return result;
 -
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err) {
-+free_card:
- 		snd_card_free(card);
- 		return err;
+-	q = queueptr(result);
+-	if (q == NULL)
+-		return -EINVAL;
++	q = snd_seq_queue_alloc(client->number, info->locked, info->flags);
++	if (IS_ERR(q))
++		return PTR_ERR(q);
+ 
+ 	info->queue = q->queue;
+ 	info->locked = q->locked;
+@@ -1521,7 +1516,7 @@ static int snd_seq_ioctl_create_queue(struct snd_seq_client *client, void *arg)
+ 	if (!info->name[0])
+ 		snprintf(info->name, sizeof(info->name), "Queue-%d", q->queue);
+ 	strlcpy(q->name, info->name, sizeof(q->name));
+-	queuefree(q);
++	snd_use_lock_free(&q->use_lock);
+ 
+ 	return 0;
+ }
+diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
+index 450c5187eecb..79e0c5604ef8 100644
+--- a/sound/core/seq/seq_queue.c
++++ b/sound/core/seq/seq_queue.c
+@@ -184,22 +184,26 @@ void __exit snd_seq_queues_delete(void)
+ static void queue_use(struct snd_seq_queue *queue, int client, int use);
+ 
+ /* allocate a new queue -
+- * return queue index value or negative value for error
++ * return pointer to new queue or ERR_PTR(-errno) for error
++ * The new queue's use_lock is set to 1. It is the caller's responsibility to
++ * call snd_use_lock_free(&q->use_lock).
+  */
+-int snd_seq_queue_alloc(int client, int locked, unsigned int info_flags)
++struct snd_seq_queue *snd_seq_queue_alloc(int client, int locked, unsigned int info_flags)
+ {
+ 	struct snd_seq_queue *q;
+ 
+ 	q = queue_new(client, locked);
+ 	if (q == NULL)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
+ 	q->info_flags = info_flags;
+ 	queue_use(q, client, 1);
++	snd_use_lock_use(&q->use_lock);
+ 	if (queue_list_add(q) < 0) {
++		snd_use_lock_free(&q->use_lock);
+ 		queue_delete(q);
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
  	}
-diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
-index 150d08898db8..b36ba7f9a7bf 100644
---- a/sound/pci/rme9652/rme9652.c
-+++ b/sound/pci/rme9652/rme9652.c
-@@ -2618,19 +2618,17 @@ static int snd_rme9652_probe(struct pci_dev *pci,
- 	card->private_free = snd_rme9652_card_free;
- 	rme9652->dev = dev;
- 	rme9652->pci = pci;
--
--	if ((err = snd_rme9652_create(card, rme9652, precise_ptr[dev])) < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	err = snd_rme9652_create(card, rme9652, precise_ptr[dev]);
-+	if (err)
-+		goto free_card;
+-	return q->queue;
++	return q;
+ }
  
- 	strcpy(card->shortname, rme9652->card_name);
+ /* delete a queue - queue must be owned by the client */
+diff --git a/sound/core/seq/seq_queue.h b/sound/core/seq/seq_queue.h
+index 30c8111477f6..719093489a2c 100644
+--- a/sound/core/seq/seq_queue.h
++++ b/sound/core/seq/seq_queue.h
+@@ -71,7 +71,7 @@ void snd_seq_queues_delete(void);
  
- 	sprintf(card->longname, "%s at 0x%lx, irq %d",
- 		card->shortname, rme9652->port, rme9652->irq);
--
--	
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err) {
-+free_card:
- 		snd_card_free(card);
- 		return err;
- 	}
+ 
+ /* create new queue (constructor) */
+-int snd_seq_queue_alloc(int client, int locked, unsigned int flags);
++struct snd_seq_queue *snd_seq_queue_alloc(int client, int locked, unsigned int flags);
+ 
+ /* delete queue (destructor) */
+ int snd_seq_queue_delete(int client, int queueid);
 -- 
-2.14.0
+2.14.0.434.g98096fd7a8-goog
