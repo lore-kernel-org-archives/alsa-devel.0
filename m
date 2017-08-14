@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: constify snd_pcm_ops structures" to the asoc tree
-Date: Mon, 14 Aug 2017 17:43:34 +0100
-Message-ID: <E1dhISk-0005Iv-DY@finisterre>
-References: <1502690193-29059-5-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: nuc900: constify snd_pcm_ops structures" to the asoc tree
+Date: Mon, 14 Aug 2017 17:43:30 +0100
+Message-ID: <E1dhISg-0005Ho-Qb@finisterre>
+References: <1502690193-29059-6-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502690193-29059-5-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1502690193-29059-6-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: constify snd_pcm_ops structures
+   ASoC: nuc900: constify snd_pcm_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From f2c402ba55fe7cc3924de683ac5eef99c75eab04 Mon Sep 17 00:00:00 2001
+>From f70eab3aad004b7496755ec77763bfd6e2eff553 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Mon, 14 Aug 2017 11:26:27 +0530
-Subject: [PATCH] ASoC: intel: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:28 +0530
+Subject: [PATCH] ASoC: nuc900: constify snd_pcm_ops structures
 
 snd_pcm_ops are not supposed to change at runtime. All functions
 working with snd_pcm_ops provided by <sound/soc.h> work with
@@ -49,21 +49,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/baytrail/sst-baytrail-pcm.c | 2 +-
+ sound/soc/nuc900/nuc900-pcm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/baytrail/sst-baytrail-pcm.c b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-index 84cb568c3ad6..c54529320f07 100644
---- a/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/baytrail/sst-baytrail-pcm.c
-@@ -309,7 +309,7 @@ static int sst_byt_pcm_mmap(struct snd_pcm_substream *substream,
- 	return snd_pcm_lib_default_mmap(substream, vma);
+diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
+index cd0486cad7f5..bd6dfa218d59 100644
+--- a/sound/soc/nuc900/nuc900-pcm.c
++++ b/sound/soc/nuc900/nuc900-pcm.c
+@@ -271,7 +271,7 @@ static int nuc900_dma_mmap(struct snd_pcm_substream *substream,
+ 			   runtime->dma_addr, runtime->dma_bytes);
  }
  
--static struct snd_pcm_ops sst_byt_pcm_ops = {
-+static const struct snd_pcm_ops sst_byt_pcm_ops = {
- 	.open		= sst_byt_pcm_open,
- 	.close		= sst_byt_pcm_close,
+-static struct snd_pcm_ops nuc900_dma_ops = {
++static const struct snd_pcm_ops nuc900_dma_ops = {
+ 	.open		= nuc900_dma_open,
+ 	.close		= nuc900_dma_close,
  	.ioctl		= snd_pcm_lib_ioctl,
 -- 
 2.13.2
