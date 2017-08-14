@@ -1,133 +1,92 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 3/5] ASoC: codecs: msm8916-wcd-analog:
- add MBHC support
-Date: Mon, 14 Aug 2017 17:34:53 +0100
-Message-ID: <2731854d-c0fd-f8e3-456a-ba4d0d2e84c1@linaro.org>
-References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
- <20170809164927.19663-4-srinivas.kandagatla@linaro.org>
- <20170809211054.4owecfeoxxud5evh@workotop.localdomain>
- <76eb6edf-1754-6679-6218-028b12dce49a@linaro.org>
- <20170810133329.7lqcg3tucgp5jxii@workotop.localdomain>
- <20170814141222.rg3v3oqwt5xh3363@workotop.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 922AD267383
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 18:34:55 +0200 (CEST)
-Received: by mail-wm0-f51.google.com with SMTP id i66so48200121wmg.0
- for <alsa-devel@alsa-project.org>; Mon, 14 Aug 2017 09:34:55 -0700 (PDT)
-In-Reply-To: <20170814141222.rg3v3oqwt5xh3363@workotop.localdomain>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdmi-codec: make a function and two arrays static" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:29 +0100
+Message-ID: <E1dhIRh-00054N-P2@finisterre>
+References: <20170812225028.7437-1-colin.king@canonical.com>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20170812225028.7437-1-colin.king@canonical.com>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Bhumika Goyal <bhumirks@gmail.com>, Vincent Abriou <vincent.abriou@st.com>, Jon Medhurst <tixy@linaro.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: hdmi-codec: make a function and two arrays static
 
-On 14/08/17 15:12, Damien Riegel wrote:
-> Hi,
-> 
-> 
-> On Thu, Aug 10, 2017 at 09:33:29AM -0400, Damien Riegel wrote:
->> Hi,
->>
->> On Thu, Aug 10, 2017 at 11:02:34AM +0100, Srinivas Kandagatla wrote:
->>> Hi Damien,
->>> Thanks for testing.
->>>
->>> On 09/08/17 22:10, Damien Riegel wrote:
->>>> Hi Srinivas,
->>>>
->>>> On Wed, Aug 09, 2017 at 06:49:25PM +0200, srinivas.kandagatla@linaro.org wrote:
->>>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>>
->>>>> MBHC (MultiButton Headset Control) support is available in pm8921 in two
->>>>> blocks, one to detect mechanical headset insertion and removal and other
->>>>> block to support headset type detection and 5 button detection and othe
->>>>> features like impedance calculation.
->>>>>
->>>>> This patch adds support to:
->>>>> 1> Support to NC and NO type of headset Jacks.
->>>>> 2> Mechanical insertion and detection of headset jack.
->>>>> 3> Detect a 3 pole Headphone and a 4 pole Headset.
->>>>> 4> Detect 5 buttons.
->>>>>
->>>>> Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
->>>>> headset/headphones.
->>>>
->>>> I have the same issue with this patchset, KEY_MEDIA is being reported
->>>> when unplugging a headset. I added a few traces and what I observe is
->>> Am unable to reproduce the same issue, I tried atleast 6 different mix of
->>> headset/headphones.
->>> here is my evtest log:  http://paste.ubuntu.com/25282592/
->>>
->>> Could you explain bit more about your setup, so that I can try to reproduce
->>> the same issue.
->>>
->>> My setup is DB410c + Audio Mezz board
->>> https://www.arrow.com/en/products/audiomezz/seeed-technology-limited
->>
->> I'm using a hardware based on Intrinsyc Open-Q 410 Development Kit:
->> https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
->>
->> We use the same SoM with a different carrier board, but connections to
->> the jack connector are routed the same way on both carrier boards.
->>
->>>> that the "button pressed" irq is fired when unplugging, but no "button
->>>> released" irq follows. To get a "button released" irq, I need to either
->>>> plug a headset, or plug-and-unplug headphones.
->>>>
->>>> So basically, detection fails because we don't get the "button pressed"
->>>> irq prior to the mechanical switch irq. Do you know what could explain
->>>> the MBHC not firing the "button released" irq when unplugging headset?
->>>>
->>> Can you also share output of evetest and /proc/interrupts so that i can see
->>> if the extra logic of masking btn0 is creating the issue, we can also try
->>> removing the btn0 accessory detect logic and see if we get correct button
->>> press/releases.
->>
->> It's definitely what's causing the headphones to be reported as headset,
->> but not what's causing the interrupt not to be triggered in the first
->> place. I don't have access to the hardware right now, so I'll provide
->> you with logs next week.
-> 
-> I did the test, and addded the content of /proc/interrupts.
-> 
->      https://paste.ubuntu.com/25312443/
-> 
-> As you can see, after "[INSERT HEADPHONE]", we only get "mbhc switch
-> irq", but not "mbhc btn press irq". Let me know if you need more
-> details.
-> 
-> As I said before, I don't see that 100% of the time, but I don't do
-> anything special to trigger it either (like pulling the cable extra
-> slowly or whatnot), it just happens.
+has been applied to the asoc tree at
 
-Looking at the interrupts count its clear that there was a real button 
-press event from the hardware, so My suspect is the voltage threshold 
-values programmed for the buttons, which might not be very much correct 
-if you are using same values as db410c. These values are partly board 
-specific.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Can you tune those values and give it a try, specially btn0 values.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-thanks,
-srini
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> 
-> 
-> Thank you,
-> 
+Thanks,
+Mark
+
+>From 3013c75fadc581160be8d89c2c0f29219971c58f Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Sat, 12 Aug 2017 23:50:28 +0100
+Subject: [PATCH] ASoC: hdmi-codec: make a function and two arrays static
+
+The function hdmi_codec_eld_chmap and arrays hdmi_codec_stereo_chmaps
+and hdmi_codec_8ch_chmaps are local to the source and do not need to
+be in global scope, so make them static.
+
+Cleans up sparse warnings:
+symbol 'hdmi_codec_eld_chmap' was not declared. Should it be static?
+symbol 'hdmi_codec_stereo_chmaps' was not declared. Should it be static?
+symbol 'hdmi_codec_8ch_chmaps' was not declared. Should it be static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdmi-codec.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 509ab513b4b2..f7520413c671 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -67,14 +67,14 @@ struct hdmi_codec_cea_spk_alloc {
+ };
+ 
+ /* Channel maps  stereo HDMI */
+-const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
++static const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
+ 	{ .channels = 2,
+ 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+ 	{ }
+ };
+ 
+ /* Channel maps for multi-channel playbacks, up to 8 n_ch */
+-const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
++static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
+ 	{ .channels = 2, /* CA_ID 0x00 */
+ 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+ 	{ .channels = 4, /* CA_ID 0x01 */
+@@ -340,7 +340,7 @@ static unsigned long hdmi_codec_spk_mask_from_alloc(int spk_alloc)
+ 	return spk_mask;
+ }
+ 
+-void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
++static void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
+ {
+ 	u8 spk_alloc;
+ 	unsigned long spk_mask;
+-- 
+2.13.2
+
