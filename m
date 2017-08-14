@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Add regmap config to quirks" to the asoc tree
-Date: Mon, 14 Aug 2017 17:43:09 +0100
-Message-ID: <E1dhISL-0005EA-9q@finisterre>
-References: <20170729141753.20174-4-codekipper@gmail.com>
+Subject: Applied "ASoC: sun4i-i2s: Add clkdiv offsets to quirks" to the asoc tree
+Date: Mon, 14 Aug 2017 17:43:22 +0100
+Message-ID: <E1dhISY-0005FW-Ry@finisterre>
+References: <20170812110059.5115-2-codekipper@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170729141753.20174-4-codekipper@gmail.com>
+In-Reply-To: <20170812110059.5115-2-codekipper@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Marcus Cooper <codekipper@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, maxime.ripard@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.combroonie@kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Add regmap config to quirks
+   ASoC: sun4i-i2s: Add clkdiv offsets to quirks
 
 has been applied to the asoc tree at
 
@@ -37,64 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From cd1c63df5fa8196d8ed5138f1ecc22bbabf5f6df Mon Sep 17 00:00:00 2001
+>From 0aef27cab880d9612331350c008aec00cbb3d247 Mon Sep 17 00:00:00 2001
 From: Marcus Cooper <codekipper@gmail.com>
-Date: Sat, 12 Aug 2017 13:00:50 +0200
-Subject: [PATCH] ASoC: sun4i-i2s: Add regmap config to quirks
+Date: Sat, 12 Aug 2017 13:00:49 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Add clkdiv offsets to quirks
 
-The newer SoCs have a larger range than the original SoC that this
-driver was developed for. By adding the regmap config to the quirks
-then the driver can initialise the managed register map correctly.
+The BCLKDIV and MCLKDIV found on newer SoCs start from an offset of 1.
+Add the functionality to adjust the division values according to the
+needs to the device being used.
 
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 9a35313c4f9b..f6f3c409f25e 100644
+index d7ee7a443e4e..9a35313c4f9b 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -94,11 +94,13 @@
+@@ -94,9 +94,13 @@
   * struct sun4i_i2s_quirks - Differences between SoC variants.
   *
   * @has_reset: SoC needs reset deasserted.
-+ * @sun4i_i2s_regmap: regmap config to use.
-  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
-  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
++ * @mclk_offset: Value by which mclkdiv needs to be adjusted.
++ * @bclk_offset: Value by which bclkdiv needs to be adjusted.
   */
  struct sun4i_i2s_quirks {
  	bool				has_reset;
-+	const struct regmap_config	*sun4i_i2s_regmap;
- 	unsigned int			mclk_offset;
- 	unsigned int			bclk_offset;
- };
-@@ -674,11 +676,13 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
- }
- 
- static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
--	.has_reset	= false,
-+	.has_reset		= false,
-+	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
++	unsigned int			mclk_offset;
++	unsigned int			bclk_offset;
  };
  
- static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
--	.has_reset	= true,
-+	.has_reset		= true,
-+	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
- };
+ struct sun4i_i2s {
+@@ -237,6 +241,10 @@ static int sun4i_i2s_set_clk_rate(struct sun4i_i2s *i2s,
+ 	if (mclk_div < 0)
+ 		return -EINVAL;
  
- static int sun4i_i2s_probe(struct platform_device *pdev)
-@@ -717,7 +721,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 	}
- 
- 	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
--					    &sun4i_i2s_regmap_config);
-+					    i2s->variant->sun4i_i2s_regmap);
- 	if (IS_ERR(i2s->regmap)) {
- 		dev_err(&pdev->dev, "Regmap initialisation failed\n");
- 		return PTR_ERR(i2s->regmap);
++	/* Adjust the clock division values if needed */
++	bclk_div += i2s->variant->bclk_offset;
++	mclk_div += i2s->variant->mclk_offset;
++
+ 	regmap_write(i2s->regmap, SUN4I_I2S_CLK_DIV_REG,
+ 		     SUN4I_I2S_CLK_DIV_BCLK(bclk_div) |
+ 		     SUN4I_I2S_CLK_DIV_MCLK(mclk_div) |
 -- 
 2.13.2
