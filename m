@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: blackfin: constify snd_pcm_ops structures" to the asoc tree
-Date: Mon, 14 Aug 2017 17:44:27 +0100
-Message-ID: <E1dhITb-0005VN-Ue@finisterre>
-References: <1502690193-29059-3-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: au1x: constify snd_pcm_ops structures" to the asoc tree
+Date: Mon, 14 Aug 2017 17:44:31 +0100
+Message-ID: <E1dhITf-0005WG-MT@finisterre>
+References: <1502690193-29059-2-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502690193-29059-3-git-send-email-arvind.yadav.cs@gmail.com>
+In-Reply-To: <1502690193-29059-2-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: blackfin: constify snd_pcm_ops structures
+   ASoC: au1x: constify snd_pcm_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From e76b3f41a3c39fae342fe4db530c3917199cfa96 Mon Sep 17 00:00:00 2001
+>From e731a870153271c861f06dc09e6acb5781b973f3 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Mon, 14 Aug 2017 11:26:25 +0530
-Subject: [PATCH] ASoC: blackfin: constify snd_pcm_ops structures
+Date: Mon, 14 Aug 2017 11:26:24 +0530
+Subject: [PATCH] ASoC: au1x: constify snd_pcm_ops structures
 
 snd_pcm_ops are not supposed to change at runtime. All functions
 working with snd_pcm_ops provided by <sound/soc.h> work with
@@ -49,35 +49,35 @@ const snd_pcm_ops. So mark the non-const structs as const.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/blackfin/bf5xx-ac97-pcm.c | 2 +-
- sound/soc/blackfin/bf5xx-i2s-pcm.c  | 2 +-
+ sound/soc/au1x/dbdma2.c | 2 +-
+ sound/soc/au1x/dma.c    | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-index 913e29275f4e..8c1d1983b8f9 100644
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-@@ -308,7 +308,7 @@ static	int bf5xx_pcm_copy_user(struct snd_pcm_substream *substream,
- }
- #endif
- 
--static struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
-+static const struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
- 	.open		= bf5xx_pcm_open,
- 	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= bf5xx_pcm_hw_params,
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-index 470d99abf6f6..51cae76f14e6 100644
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-@@ -318,7 +318,7 @@ static int bf5xx_pcm_silence(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
+index b5d1caa04d8e..6a035ca0f521 100644
+--- a/sound/soc/au1x/dbdma2.c
++++ b/sound/soc/au1x/dbdma2.c
+@@ -304,7 +304,7 @@ static int au1xpsc_pcm_close(struct snd_pcm_substream *substream)
  	return 0;
  }
  
--static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
-+static const struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
- 	.open		= bf5xx_pcm_open,
+-static struct snd_pcm_ops au1xpsc_pcm_ops = {
++static const struct snd_pcm_ops au1xpsc_pcm_ops = {
+ 	.open		= au1xpsc_pcm_open,
+ 	.close		= au1xpsc_pcm_close,
  	.ioctl		= snd_pcm_lib_ioctl,
- 	.hw_params	= bf5xx_pcm_hw_params,
+diff --git a/sound/soc/au1x/dma.c b/sound/soc/au1x/dma.c
+index fcf5a9adde81..19457e2b351e 100644
+--- a/sound/soc/au1x/dma.c
++++ b/sound/soc/au1x/dma.c
+@@ -277,7 +277,7 @@ static snd_pcm_uframes_t alchemy_pcm_pointer(struct snd_pcm_substream *ss)
+ 	return bytes_to_frames(ss->runtime, location);
+ }
+ 
+-static struct snd_pcm_ops alchemy_pcm_ops = {
++static const struct snd_pcm_ops alchemy_pcm_ops = {
+ 	.open			= alchemy_pcm_open,
+ 	.close			= alchemy_pcm_close,
+ 	.ioctl			= snd_pcm_lib_ioctl,
 -- 
 2.13.2
