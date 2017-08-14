@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: txx9: constify snd_pcm_ops structures" to the asoc tree
-Date: Mon, 14 Aug 2017 17:43:45 +0100
-Message-ID: <E1dhISv-0005Ly-Im@finisterre>
-References: <1502690193-29059-11-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502690193-29059-11-git-send-email-arvind.yadav.cs@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: sun4i-i2s: Add TX FIFO offset to quirks" to the asoc
+ tree
+Date: Mon, 14 Aug 2017 17:43:05 +0100
+Message-ID: <E1dhISH-0005DC-Lv@finisterre>
+References: <20170729141753.20174-5-codekipper@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170729141753.20174-5-codekipper@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Marcus Cooper <codekipper@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, be17068@iperbole.bo.it, linux-sunxi@googlegroups.com, broonie@kernel.org, maxime.ripard@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: txx9: constify snd_pcm_ops structures
+   ASoC: sun4i-i2s: Add TX FIFO offset to quirks
 
 has been applied to the asoc tree at
 
@@ -37,33 +49,63 @@ to this mail.
 Thanks,
 Mark
 
->From 5144468efb076b1859477de19257dd7ec9c24ed3 Mon Sep 17 00:00:00 2001
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Mon, 14 Aug 2017 11:26:33 +0530
-Subject: [PATCH] ASoC: txx9: constify snd_pcm_ops structures
+>From 3509476e522baaa68813609801c48aa428bae81a Mon Sep 17 00:00:00 2001
+From: Marcus Cooper <codekipper@gmail.com>
+Date: Sat, 12 Aug 2017 13:00:51 +0200
+Subject: [PATCH] ASoC: sun4i-i2s: Add TX FIFO offset to quirks
 
-snd_pcm_ops are not supposed to change at runtime. All functions
-working with snd_pcm_ops provided by <sound/soc.h> work with
-const snd_pcm_ops. So mark the non-const structs as const.
+It has been seen that the newer SoCs have a different TX FIFO
+address. Add this to the quirks structure.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/txx9/txx9aclc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sunxi/sun4i-i2s.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 7df95dfa8557..a2bb68fea5a3 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -271,7 +271,7 @@ static int txx9aclc_pcm_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index f6f3c409f25e..dfb794ffff92 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -94,12 +94,14 @@
+  * struct sun4i_i2s_quirks - Differences between SoC variants.
+  *
+  * @has_reset: SoC needs reset deasserted.
++ * @reg_offset_txdata: offset of the tx fifo.
+  * @sun4i_i2s_regmap: regmap config to use.
+  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
+  */
+ struct sun4i_i2s_quirks {
+ 	bool				has_reset;
++	unsigned int			reg_offset_txdata;	/* TX FIFO */
+ 	const struct regmap_config	*sun4i_i2s_regmap;
+ 	unsigned int			mclk_offset;
+ 	unsigned int			bclk_offset;
+@@ -677,11 +679,13 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
  
--static struct snd_pcm_ops txx9aclc_pcm_ops = {
-+static const struct snd_pcm_ops txx9aclc_pcm_ops = {
- 	.open		= txx9aclc_pcm_open,
- 	.close		= txx9aclc_pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
+ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	.has_reset		= false,
++	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
+ 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+ };
+ 
+ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.has_reset		= true,
++	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
+ 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
+ };
+ 
+@@ -750,7 +754,8 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
++	i2s->playback_dma_data.addr = res->start +
++					i2s->variant->reg_offset_txdata;
+ 	i2s->playback_dma_data.maxburst = 8;
+ 
+ 	i2s->capture_dma_data.addr = res->start + SUN4I_I2S_FIFO_RX_REG;
 -- 
 2.13.2
