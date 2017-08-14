@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: Delete an error message for a failed memory allocation in dw_i2s_probe()" to the asoc tree
-Date: Mon, 14 Aug 2017 17:42:49 +0100
-Message-ID: <E1dhIS1-00059C-US@finisterre>
-References: <c6b7021a-ed0d-cc2e-d722-4960e060e8d3@users.sourceforge.net>
+Subject: Applied "ASoC: blackfin: Add some spaces for better code readability" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:53 +0100
+Message-ID: <E1dhIS5-0005AB-H8@finisterre>
+References: <2c2fabf2-3238-ab23-4df8-d93c702ff51e@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c6b7021a-ed0d-cc2e-d722-4960e060e8d3@users.sourceforge.net>
+In-Reply-To: <2c2fabf2-3238-ab23-4df8-d93c702ff51e@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Alex Deucher <alexander.deucher@amd.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Jose Abreu <Jose.Abreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Scott Jiang <scott.jiang.linux@gmail.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dwc: Delete an error message for a failed memory allocation in dw_i2s_probe()
+   ASoC: blackfin: Add some spaces for better code readability
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,97 @@ to this mail.
 Thanks,
 Mark
 
->From b88845484d05c2910ffc40a7d30fa36e58b2dd0d Mon Sep 17 00:00:00 2001
+>From 11f25bbaaa87bf583a453b202db9c8ee9b3cbd50 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 16:04:53 +0200
-Subject: [PATCH] ASoC: dwc: Delete an error message for a failed memory
- allocation in dw_i2s_probe()
+Date: Fri, 11 Aug 2017 22:20:07 +0200
+Subject: [PATCH] ASoC: blackfin: Add some spaces for better code readability
 
-Omit an extra message for a memory allocation failure in this function.
+Use space characters at some source code places according to
+the Linux coding style convention.
 
-This issue was detected by using the Coccinelle software.
-
-Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/dwc/dwc-i2s.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/blackfin/bf6xx-sport.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-index eebe9d34e7a0..e27e21f8569a 100644
---- a/sound/soc/dwc/dwc-i2s.c
-+++ b/sound/soc/dwc/dwc-i2s.c
-@@ -617,10 +617,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 	const char *clk_id;
+diff --git a/sound/soc/blackfin/bf6xx-sport.c b/sound/soc/blackfin/bf6xx-sport.c
+index fcddebf2558c..d2caadfe7b6d 100644
+--- a/sound/soc/blackfin/bf6xx-sport.c
++++ b/sound/soc/blackfin/bf6xx-sport.c
+@@ -129,7 +129,7 @@ static void setup_desc(struct dmasg *desc, void *buf, int fragcount,
  
- 	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
--	if (!dev) {
--		dev_warn(&pdev->dev, "kzalloc fail\n");
-+	if (!dev)
- 		return -ENOMEM;
--	}
+ 	for (i = 0; i < fragcount; ++i) {
+ 		desc[i].next_desc_addr  = &(desc[i + 1]);
+-		desc[i].start_addr = (unsigned long)buf + i*fragsize;
++		desc[i].start_addr = (unsigned long)buf + i * fragsize;
+ 		desc[i].cfg = cfg;
+ 		desc[i].x_count = count;
+ 		desc[i].x_modify = wdsize;
+@@ -138,7 +138,7 @@ static void setup_desc(struct dmasg *desc, void *buf, int fragcount,
+ 	}
  
- 	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
- 	if (!dw_i2s_dai)
+ 	/* make circular */
+-	desc[fragcount-1].next_desc_addr = desc;
++	desc[fragcount - 1].next_desc_addr = desc;
+ }
+ 
+ int sport_config_tx_dma(struct sport_device *sport, void *buf,
+@@ -148,7 +148,7 @@ int sport_config_tx_dma(struct sport_device *sport, void *buf,
+ 	unsigned int cfg;
+ 	dma_addr_t addr;
+ 
+-	count = fragsize/sport->wdsize;
++	count = fragsize / sport->wdsize;
+ 
+ 	if (sport->tx_desc)
+ 		dma_free_coherent(NULL, sport->tx_desc_size,
+@@ -166,8 +166,7 @@ int sport_config_tx_dma(struct sport_device *sport, void *buf,
+ 	cfg = DMAFLOW_LIST | DI_EN | compute_wdsize(sport->wdsize) | NDSIZE_6;
+ 
+ 	setup_desc(sport->tx_desc, buf, fragcount, fragsize,
+-			cfg|DMAEN, count, sport->wdsize);
+-
++		   cfg | DMAEN, count, sport->wdsize);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(sport_config_tx_dma);
+@@ -179,7 +178,7 @@ int sport_config_rx_dma(struct sport_device *sport, void *buf,
+ 	unsigned int cfg;
+ 	dma_addr_t addr;
+ 
+-	count = fragsize/sport->wdsize;
++	count = fragsize / sport->wdsize;
+ 
+ 	if (sport->rx_desc)
+ 		dma_free_coherent(NULL, sport->rx_desc_size,
+@@ -198,8 +197,7 @@ int sport_config_rx_dma(struct sport_device *sport, void *buf,
+ 		| WNR | NDSIZE_6;
+ 
+ 	setup_desc(sport->rx_desc, buf, fragcount, fragsize,
+-			cfg|DMAEN, count, sport->wdsize);
+-
++		   cfg | DMAEN, count, sport->wdsize);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(sport_config_rx_dma);
+@@ -226,7 +224,7 @@ static irqreturn_t sport_tx_irq(int irq, void *dev_id)
+ 	static unsigned long status;
+ 
+ 	status = get_dma_curr_irqstat(sport->tx_dma_chan);
+-	if (status & (DMA_DONE|DMA_ERR)) {
++	if (status & (DMA_DONE | DMA_ERR)) {
+ 		clear_dma_irqstat(sport->tx_dma_chan);
+ 		SSYNC();
+ 	}
+@@ -241,7 +239,7 @@ static irqreturn_t sport_rx_irq(int irq, void *dev_id)
+ 	unsigned long status;
+ 
+ 	status = get_dma_curr_irqstat(sport->rx_dma_chan);
+-	if (status & (DMA_DONE|DMA_ERR)) {
++	if (status & (DMA_DONE | DMA_ERR)) {
+ 		clear_dma_irqstat(sport->rx_dma_chan);
+ 		SSYNC();
+ 	}
 -- 
 2.13.2
