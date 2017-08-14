@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: make a function and two arrays static" to the asoc tree
-Date: Mon, 14 Aug 2017 17:42:29 +0100
-Message-ID: <E1dhIRh-00054N-P2@finisterre>
-References: <20170812225028.7437-1-colin.king@canonical.com>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20170812225028.7437-1-colin.king@canonical.com>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Bhumika Goyal <bhumirks@gmail.com>, Vincent Abriou <vincent.abriou@st.com>, Jon Medhurst <tixy@linaro.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rockchip: Delete an error message for a failed memory allocation in rockchip_i2s_probe()" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:36 +0100
+Message-ID: <E1dhIRo-000569-KC@finisterre>
+References: <20170225101834.28232-1-mihai.dumitru2201@stud.acs.upb.ro>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170225101834.28232-1-mihai.dumitru2201@stud.acs.upb.ro>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Elfring <elfring@users.sourceforge.net>
+Cc: Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, Mihai-Valentin DUMITRU <mihai.dumitru2201@gmail.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.orgbroonie@kernel.org, Mihai-Valentin DUMITRU <mihai.dumitru2201@stud.acs.upb.ro>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: make a function and two arrays static
+   ASoC: rockchip: Delete an error message for a failed memory allocation in rockchip_i2s_probe()
 
 has been applied to the asoc tree at
 
@@ -37,56 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 3013c75fadc581160be8d89c2c0f29219971c58f Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Sat, 12 Aug 2017 23:50:28 +0100
-Subject: [PATCH] ASoC: hdmi-codec: make a function and two arrays static
+>From b48b2710913d583ff93c365413532e1a7cd60d84 Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 10 Aug 2017 18:38:09 +0200
+Subject: [PATCH] ASoC: rockchip: Delete an error message for a failed memory
+ allocation in rockchip_i2s_probe()
 
-The function hdmi_codec_eld_chmap and arrays hdmi_codec_stereo_chmaps
-and hdmi_codec_8ch_chmaps are local to the source and do not need to
-be in global scope, so make them static.
+Omit an extra message for a memory allocation failure in this function.
 
-Cleans up sparse warnings:
-symbol 'hdmi_codec_eld_chmap' was not declared. Should it be static?
-symbol 'hdmi_codec_stereo_chmaps' was not declared. Should it be static?
-symbol 'hdmi_codec_8ch_chmaps' was not declared. Should it be static?
+This issue was detected by using the Coccinelle software.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 509ab513b4b2..f7520413c671 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -67,14 +67,14 @@ struct hdmi_codec_cea_spk_alloc {
- };
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 199338fdeda0..b6590467fd14 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -579,10 +579,8 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	int val;
  
- /* Channel maps  stereo HDMI */
--const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
-+static const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
- 	{ .channels = 2,
- 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
- 	{ }
- };
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+-	if (!i2s) {
+-		dev_err(&pdev->dev, "Can't allocate rk_i2s_dev\n");
++	if (!i2s)
+ 		return -ENOMEM;
+-	}
  
- /* Channel maps for multi-channel playbacks, up to 8 n_ch */
--const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
-+static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
- 	{ .channels = 2, /* CA_ID 0x00 */
- 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
- 	{ .channels = 4, /* CA_ID 0x01 */
-@@ -340,7 +340,7 @@ static unsigned long hdmi_codec_spk_mask_from_alloc(int spk_alloc)
- 	return spk_mask;
- }
+ 	i2s->dev = &pdev->dev;
  
--void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
-+static void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
- {
- 	u8 spk_alloc;
- 	unsigned long spk_mask;
 -- 
 2.13.2
-
