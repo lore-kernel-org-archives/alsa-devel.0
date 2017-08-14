@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: blackfin: Delete an error message for a failed memory allocation in sport_create()" to the asoc tree
-Date: Mon, 14 Aug 2017 17:43:02 +0100
-Message-ID: <E1dhISE-0005CD-0r@finisterre>
-References: <d3eaf797-a4a3-f4ff-c368-3961b4e16fb1@users.sourceforge.net>
+Subject: Applied "ASoC: dwc: Delete an error message for a failed memory allocation in dw_i2s_probe()" to the asoc tree
+Date: Mon, 14 Aug 2017 17:42:49 +0100
+Message-ID: <E1dhIS1-00059C-US@finisterre>
+References: <c6b7021a-ed0d-cc2e-d722-4960e060e8d3@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d3eaf797-a4a3-f4ff-c368-3961b4e16fb1@users.sourceforge.net>
+In-Reply-To: <c6b7021a-ed0d-cc2e-d722-4960e060e8d3@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Scott Jiang <scott.jiang.linux@gmail.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Alex Deucher <alexander.deucher@amd.com>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, Jaroslav Kysela <perex@perex.cz>, Jose Abreu <Jose.Abreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: blackfin: Delete an error message for a failed memory allocation in sport_create()
+   ASoC: dwc: Delete an error message for a failed memory allocation in dw_i2s_probe()
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 60ea0394a602d5abc24bd2381fa0966a8720eec1 Mon Sep 17 00:00:00 2001
+>From b88845484d05c2910ffc40a7d30fa36e58b2dd0d Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 11 Aug 2017 21:45:37 +0200
-Subject: [PATCH] ASoC: blackfin: Delete an error message for a failed memory
- allocation in sport_create()
+Date: Fri, 11 Aug 2017 16:04:53 +0200
+Subject: [PATCH] ASoC: dwc: Delete an error message for a failed memory
+ allocation in dw_i2s_probe()
 
 Omit an extra message for a memory allocation failure in this function.
 
 This issue was detected by using the Coccinelle software.
 
+Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/blackfin/bf6xx-sport.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/dwc/dwc-i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf6xx-sport.c b/sound/soc/blackfin/bf6xx-sport.c
-index dfb744381c42..1bc3e0a47a57 100644
---- a/sound/soc/blackfin/bf6xx-sport.c
-+++ b/sound/soc/blackfin/bf6xx-sport.c
-@@ -388,10 +388,9 @@ struct sport_device *sport_create(struct platform_device *pdev)
- 	int ret;
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index eebe9d34e7a0..e27e21f8569a 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -617,10 +617,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	const char *clk_id;
  
- 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
--	if (!sport) {
--		dev_err(dev, "Unable to allocate memory for sport device\n");
-+	if (!sport)
- 		return NULL;
+ 	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+-	if (!dev) {
+-		dev_warn(&pdev->dev, "kzalloc fail\n");
++	if (!dev)
+ 		return -ENOMEM;
 -	}
-+
- 	sport->pdev = pdev;
  
- 	ret = sport_get_resource(sport);
+ 	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
+ 	if (!dw_i2s_dai)
 -- 
 2.13.2
