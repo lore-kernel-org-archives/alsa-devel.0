@@ -1,43 +1,83 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v4] ASoC: samsung: i2s: Null pointer dereference on
- samsung_i2s_remove
-Date: Tue, 15 Aug 2017 19:29:58 +0200
-Message-ID: <20170815172958.q2kd75w2p2seypsa@kozik-lap>
-References: <1502799594-596-1-git-send-email-vasilyev@ispras.ru>
+From: Harsha Priya <harshapriya.n@intel.com>
+Subject: [PATCH v2] ASoC: Intel: kbl_rt5663_rt5514_max98927:
+	Add rt5514 spi dailink
+Date: Tue, 15 Aug 2017 11:39:40 -0700
+Message-ID: <1502822380-24047-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1502799594-596-1-git-send-email-vasilyev@ispras.ru>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Anton Vasilyev <vasilyev@ispras.ru>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id D022D2665D5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 20:39:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: Harsha Priya <harshapriya.n@intel.com>, Hsin-yu Chao <hychao@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 15, 2017 at 03:19:54PM +0300, Anton Vasilyev wrote:
-> If (quirks & QUIRK_SEC_DAI == 0) then samsung_i2s_probe() doesn't allocate
-> sec_dai and pri_dai->sec_dai remains Null, but samsung_i2s_remove()
-> performs pri_dai->sec_dai dereference in any case.
-> 
-> The patch removes useless reinitialization of sec_dai at
-> samsung_i2s_remove(), because resources are under devm control.
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
-> ---
-> v2: Drop initialization of sec_dai by NULL at samsung_i2s_remove
-> as Sylwester Nawrocki suggest.
-> ---
-> v3: Fix typo in the comment
-> ---
-> v4: Change comment based on Krzysztof review.
-> ---
->  sound/soc/samsung/i2s.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
+This patch adds a dai to rt5514-spi driver for wake on voice functionality.
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+This v2 patch adds the dependency on SPI in Kconfig
 
-Best regards,
-Krzysztof
+Signed-off-by: Hsin-yu Chao <hychao@google.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+---
+ sound/soc/intel/Kconfig                             | 3 ++-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 9 +++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index b301bff..b3c7f55 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -255,11 +255,12 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
+-        depends on X86_INTEL_LPSS && I2C
++        depends on X86_INTEL_LPSS && I2C && SPI
+         select SND_SOC_INTEL_SST
+         select SND_SOC_INTEL_SKYLAKE
+         select SND_SOC_RT5663
+         select SND_SOC_RT5514
++        select SND_SOC_RT5514_SPI
+         select SND_SOC_MAX98927
+         select SND_SOC_HDAC_HDMI
+         help
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 0fab2df..c2ef538 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -65,6 +65,7 @@ enum {
+ 	KBL_DPCM_AUDIO_HS_PB,
+ 	KBL_DPCM_AUDIO_ECHO_REF_CP,
+ 	KBL_DPCM_AUDIO_DMIC_CP,
++	KBL_DPCM_AUDIO_RT5514_DSP,
+ 	KBL_DPCM_AUDIO_HDMI1_PB,
+ 	KBL_DPCM_AUDIO_HDMI2_PB,
+ };
+@@ -473,6 +474,14 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
+ 		.capture_only = 1,
+ 		.nonatomic = 1,
+ 	},
++	[KBL_DPCM_AUDIO_RT5514_DSP] = {
++		.name = "rt5514 dsp",
++		.stream_name = "Wake on Voice",
++		.cpu_dai_name = "spi-PRP0001:00",
++		.platform_name = "spi-PRP0001:00",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++	},
+ 	[KBL_DPCM_AUDIO_DMIC_CP] = {
+ 		.name = "Kbl Audio DMIC cap",
+ 		.stream_name = "dmiccap",
+-- 
+1.9.1
