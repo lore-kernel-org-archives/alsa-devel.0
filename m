@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: constify snd_soc_dai_ops structures" to the asoc tree
-Date: Tue, 15 Aug 2017 18:15:24 +0100
-Message-ID: <E1dhfR6-0003dt-LY@debutante>
-References: <1502809812-13891-3-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Applied "ASoC: blackfin: constify snd_soc_dai_ops structures" to the asoc tree
+Date: Tue, 15 Aug 2017 18:15:27 +0100
+Message-ID: <E1dhfR9-0003es-W5@debutante>
+References: <1502809812-13891-2-git-send-email-Julia.Lawall@lip6.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502809812-13891-3-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1502809812-13891-2-git-send-email-Julia.Lawall@lip6.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.orgMark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, bhumirks@gmail.comalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, bhumirks@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: constify snd_soc_dai_ops structures
+   ASoC: blackfin: constify snd_soc_dai_ops structures
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From 0966a2588779d0d44706f973c1e8ff240be43017 Mon Sep 17 00:00:00 2001
+>From a4fe6f37269623b3be21e3697d59677809ef512b Mon Sep 17 00:00:00 2001
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Tue, 15 Aug 2017 17:10:09 +0200
-Subject: [PATCH] ASoC: rockchip: constify snd_soc_dai_ops structures
+Date: Tue, 15 Aug 2017 17:10:08 +0200
+Subject: [PATCH] ASoC: blackfin: constify snd_soc_dai_ops structures
 
 These snd_soc_dai_ops structures are only stored in the ops field of
 a snd_soc_dai_driver structure, which is const.  Thus, the
@@ -51,21 +51,21 @@ Done with the help of Coccinelle.
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_pdm.c | 2 +-
+ sound/soc/blackfin/bf6xx-i2s.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index c5ddeed97260..400e29edb1c9 100644
---- a/sound/soc/rockchip/rockchip_pdm.c
-+++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -249,7 +249,7 @@ static int rockchip_pdm_dai_probe(struct snd_soc_dai *dai)
- 	return 0;
- }
+diff --git a/sound/soc/blackfin/bf6xx-i2s.c b/sound/soc/blackfin/bf6xx-i2s.c
+index bd3b4d464145..819cff149a25 100644
+--- a/sound/soc/blackfin/bf6xx-i2s.c
++++ b/sound/soc/blackfin/bf6xx-i2s.c
+@@ -164,7 +164,7 @@ static int bfin_i2s_resume(struct snd_soc_dai *dai)
+ #define BFIN_I2S_FORMATS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
+ 		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
  
--static struct snd_soc_dai_ops rockchip_pdm_dai_ops = {
-+static const struct snd_soc_dai_ops rockchip_pdm_dai_ops = {
- 	.set_fmt = rockchip_pdm_set_fmt,
- 	.trigger = rockchip_pdm_trigger,
- 	.hw_params = rockchip_pdm_hw_params,
+-static struct snd_soc_dai_ops bfin_i2s_dai_ops = {
++static const struct snd_soc_dai_ops bfin_i2s_dai_ops = {
+ 	.hw_params	= bfin_i2s_hw_params,
+ 	.set_fmt	= bfin_i2s_set_dai_fmt,
+ };
 -- 
 2.13.3
