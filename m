@@ -1,56 +1,80 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Apply sample rate quirk to
-	Sennheiser headset
-Date: Tue, 15 Aug 2017 09:09:10 +0200
-Message-ID: <20170815070910.18687-1-tiwai@suse.de>
+From: Code Kipper <codekipper@gmail.com>
+Subject: Re: [linux-sunxi] [PATCH v3 11/11] ASoC: sun4i-i2s: Add support for H3
+Date: Tue, 15 Aug 2017 09:23:53 +0200
+Message-ID: <CAEKpxBnc_M9f5Muou6Z00X0UaM_tnXBwU96grtLJjVHnDv7XuQ@mail.gmail.com>
+References: <20170812110059.5115-1-codekipper@gmail.com> <20170812110059.5115-12-codekipper@gmail.com>
+ <CAGb2v66T9gNhnuvM-z8ZVwtWjgg=i0O-H2QXuR_vvz9Vy_YbWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 667A126683B
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 09:09:13 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A7C3CAE93
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 07:09:13 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAGb2v66T9gNhnuvM-z8ZVwtWjgg=i0O-H2QXuR_vvz9Vy_YbWg@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>
 List-Id: alsa-devel@alsa-project.org
 
-A Senheisser headset requires the typical sample-rate quirk for
-avoiding spurious errors from inquiring the current sample rate like:
- usb 1-1: 2:1: cannot get freq at ep 0x4
- usb 1-1: 3:1: cannot get freq at ep 0x83
+On 12 August 2017 at 14:27, Chen-Yu Tsai <wens@csie.org> wrote:
+> On Sat, Aug 12, 2017 at 7:00 PM,  <codekipper@gmail.com> wrote:
+>> From: Marcus Cooper <codekipper@gmail.com>
+>>
+>> The sun8i-h3 introduces a lot of changes to the i2s block such
+>> as different register locations, extended clock division and
+>> more operational modes. As we have to consider the earlier
+>> implementation then these changes need to be isolated.
+>>
+>> None of the new functionality has been implemented yet, the
+>> driver has just been expanded to allow it work on the H3 SoC.
+>>
+>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+>> ---
+>>  .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
+>>  sound/soc/sunxi/sun4i-i2s.c                        | 176 ++++++++++++++++++++-
+>>  2 files changed, 176 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> index ee21da865771..fc5da6080759 100644
+>> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> @@ -8,6 +8,7 @@ Required properties:
+>>  - compatible: should be one of the following:
+>>     - "allwinner,sun4i-a10-i2s"
+>>     - "allwinner,sun6i-a31-i2s"
+>> +   - "allwinner,sun8i-h3-i2s"
+>>  - reg: physical base address of the controller and length of memory mapped
+>>    region.
+>>  - interrupts: should contain the I2S interrupt.
+>> @@ -22,6 +23,7 @@ Required properties:
+>>
+>>  Required properties for the following compatibles:
+>>         - "allwinner,sun6i-a31-i2s"
+>> +       - "allwinner,sun8i-h3-i2s"
+>>  - resets: phandle to the reset line for this codec
+>>
+>>  Example:
+>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+>> index a6b464c8cc6c..b6faa95d972a 100644
+>> --- a/sound/soc/sunxi/sun4i-i2s.c
+>> +++ b/sound/soc/sunxi/sun4i-i2s.c
+>> @@ -92,11 +92,41 @@
+>>  #define SUN4I_I2S_RX_CHAN_SEL_REG      0x38
+>>  #define SUN4I_I2S_RX_CHAN_MAP_REG      0x3c
+>>
+>> +/* Defines required for sun8i-h3 support */
+>> +#define SUN8I_I2S_CTRL_BCLK_OUT                        BIT(18)
+>> +#define SUN8I_I2S_CTRL_LRCK_OUT                        BIT(17)
+>> +
+>> +#define SUN8I_I2S_FMT0_LRCK_PERIOD_MASK                GENMASK(17, 8)
+>> +#define SUN8I_I2S_FMT0_LRCK_PERIOD(period)     ((period << 8) - 1)
+>
+> I'm pretty sure this should be ((period - 1) << 8).
+>
+> Once fixed,
+>
+> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+>
+> P.S. the version tag for this series in the subject is wrong.
 
-The USB ID 1395:740a has to be added to the entries in
-snd_usb_get_sample_rate_quirk().
-
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1052580
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index d7b0b0a3a2db..f3e9e30172f3 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1142,6 +1142,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
- 	case USB_ID(0x0556, 0x0014): /* Phoenix Audio TMX320VC */
- 	case USB_ID(0x05A3, 0x9420): /* ELP HD USB Camera */
- 	case USB_ID(0x074D, 0x3553): /* Outlaw RR2150 (Micronas UAC3553B) */
-+	case USB_ID(0x1395, 0x740a): /* Sennheiser DECT */
- 	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
- 	case USB_ID(0x1de7, 0x0013): /* Phoenix Audio MT202exe */
- 	case USB_ID(0x1de7, 0x0014): /* Phoenix Audio TMX320 */
--- 
-2.13.3
+Hi Wens,
+thanks for the reviews..I've ack'd them all and will push again once tested.
+BR,
+CK
