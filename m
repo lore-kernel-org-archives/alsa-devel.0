@@ -1,18 +1,18 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 3/5] ASoC: codecs: es8316: constify
-	snd_soc_dai_ops structures
-Date: Tue, 15 Aug 2017 17:10:10 +0200
-Message-ID: <1502809812-13891-4-git-send-email-Julia.Lawall@lip6.fr>
-References: <1502809812-13891-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/9] ASoC: cygnus: Update bindings for
+	audio clock changes
+Date: Tue, 15 Aug 2017 18:14:24 +0100
+Message-ID: <20170815171424.whcy4mftex6sgzgj@sirena.org.uk>
+References: <1502748417-26417-1-git-send-email-lori.hikichi@broadcom.com>
+ <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0657323401445315278=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 66CAB26745A
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 17:35:54 +0200 (CEST)
-In-Reply-To: <1502809812-13891-1-git-send-email-Julia.Lawall@lip6.fr>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 790A02665D5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 19:14:39 +0200 (CEST)
+In-Reply-To: <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, bhumirks@gmail.com
+To: Lori Hikichi <lori.hikichi@broadcom.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-These snd_soc_dai_ops structures are only stored in the ops field of
-a snd_soc_dai_driver structure, which is const.  Thus, the
-snd_soc_dai_ops structures can be const too.
 
-Done with the help of Coccinelle.
+--===============0657323401445315278==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="66mfxpv5mjvo5zls"
+Content-Disposition: inline
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
----
- sound/soc/codecs/es8316.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--66mfxpv5mjvo5zls
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 4f35af6..da2d353 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -502,7 +502,7 @@ static int es8316_mute(struct snd_soc_dai *dai, int mute)
- #define ES8316_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE)
- 
--static struct snd_soc_dai_ops es8316_ops = {
-+static const struct snd_soc_dai_ops es8316_ops = {
- 	.startup = es8316_pcm_startup,
- 	.hw_params = es8316_pcm_hw_params,
- 	.set_fmt = es8316_set_dai_fmt,
+On Mon, Aug 14, 2017 at 03:06:50PM -0700, Lori Hikichi wrote:
+> Allow each audio port to select which clock (if any) it wants to use.
+
+Why is this in DT for the port and not either using standard clock
+bindings to configure the clock tree or allowing the machine driver to
+pick?
+
+--66mfxpv5mjvo5zls
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmTK+8ACgkQJNaLcl1U
+h9BdDQf/XoW2PfmCiGhijMR5GDKi7Wu5sOxP1t5FlXac9JAVPMsrizz71HR3m+5K
+4OvSczZs94VPMjw77lNMgaS1MrCUkoXU8rnhD1CaO/UGuIx2oaJVtvOvPy/TZh0g
+mCYqgQKO/dv3Iam+zNrH89cuS9NeekGtM7yle4/6Ab7wj3TnX09G1rRaOVEZj4UU
+Rl9d87kSNzmK3j4QmdMccMkJBED+I14PxqlIjZ9/jSOcUz9aMvO8HAFcFhNTA/Vn
+Bqdt27Gs7kbN7OpE/BK5PFMIbubyM4ruwfMJxhtT4WLnk/L2yDyKvDwANY8yYaaj
+I5hgYg9fn0oR2RWVH42l12vLSSmm4g==
+=YcJp
+-----END PGP SIGNATURE-----
+
+--66mfxpv5mjvo5zls--
+
+--===============0657323401445315278==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0657323401445315278==--
