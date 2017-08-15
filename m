@@ -1,71 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/9] ASoC: cygnus: Update bindings for
-	audio clock changes
-Date: Tue, 15 Aug 2017 18:14:24 +0100
-Message-ID: <20170815171424.whcy4mftex6sgzgj@sirena.org.uk>
-References: <1502748417-26417-1-git-send-email-lori.hikichi@broadcom.com>
- <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0657323401445315278=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 790A02665D5
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 19:14:39 +0200 (CEST)
-In-Reply-To: <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lori Hikichi <lori.hikichi@broadcom.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: codecs: zx_aud96p22: constify snd_soc_dai_ops structures" to the asoc tree
+Date: Tue, 15 Aug 2017 18:15:17 +0100
+Message-ID: <E1dhfQz-0003bZ-Tv@debutante>
+References: <1502809812-13891-5-git-send-email-Julia.Lawall@lip6.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502809812-13891-5-git-send-email-Julia.Lawall@lip6.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, bhumirks@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0657323401445315278==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="66mfxpv5mjvo5zls"
-Content-Disposition: inline
+   ASoC: codecs: zx_aud96p22: constify snd_soc_dai_ops structures
 
+has been applied to the asoc tree at
 
---66mfxpv5mjvo5zls
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Aug 14, 2017 at 03:06:50PM -0700, Lori Hikichi wrote:
-> Allow each audio port to select which clock (if any) it wants to use.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Why is this in DT for the port and not either using standard clock
-bindings to configure the clock tree or allowing the machine driver to
-pick?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---66mfxpv5mjvo5zls
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmTK+8ACgkQJNaLcl1U
-h9BdDQf/XoW2PfmCiGhijMR5GDKi7Wu5sOxP1t5FlXac9JAVPMsrizz71HR3m+5K
-4OvSczZs94VPMjw77lNMgaS1MrCUkoXU8rnhD1CaO/UGuIx2oaJVtvOvPy/TZh0g
-mCYqgQKO/dv3Iam+zNrH89cuS9NeekGtM7yle4/6Ab7wj3TnX09G1rRaOVEZj4UU
-Rl9d87kSNzmK3j4QmdMccMkJBED+I14PxqlIjZ9/jSOcUz9aMvO8HAFcFhNTA/Vn
-Bqdt27Gs7kbN7OpE/BK5PFMIbubyM4ruwfMJxhtT4WLnk/L2yDyKvDwANY8yYaaj
-I5hgYg9fn0oR2RWVH42l12vLSSmm4g==
-=YcJp
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---66mfxpv5mjvo5zls--
+>From 66f41da341cd97ad362c4a40e1c9a0a28d746f81 Mon Sep 17 00:00:00 2001
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Tue, 15 Aug 2017 17:10:11 +0200
+Subject: [PATCH] ASoC: codecs: zx_aud96p22: constify snd_soc_dai_ops
+ structures
 
---===============0657323401445315278==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+These snd_soc_dai_ops structures are only stored in the ops field of
+a snd_soc_dai_driver structure, which is const.  Thus, the
+snd_soc_dai_ops structures can be const too.
 
+Done with the help of Coccinelle.
 
---===============0657323401445315278==--
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/zx_aud96p22.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/zx_aud96p22.c b/sound/soc/codecs/zx_aud96p22.c
+index bc23ce1a30a1..0e5b43b948b4 100644
+--- a/sound/soc/codecs/zx_aud96p22.c
++++ b/sound/soc/codecs/zx_aud96p22.c
+@@ -312,7 +312,7 @@ static int aud96p22_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops aud96p22_dai_ops = {
++static const struct snd_soc_dai_ops aud96p22_dai_ops = {
+ 	.set_fmt = aud96p22_set_fmt,
+ };
+ 
+-- 
+2.13.3
