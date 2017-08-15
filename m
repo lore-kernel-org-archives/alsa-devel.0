@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: es8316: constify
-	snd_soc_dai_ops structures" to the asoc tree
-Date: Tue, 15 Aug 2017 18:15:20 +0100
-Message-ID: <E1dhfR2-0003cW-UR@debutante>
-References: <1502809812-13891-4-git-send-email-Julia.Lawall@lip6.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 28398267476
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 19:15:25 +0200 (CEST)
-In-Reply-To: <1502809812-13891-4-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: spear: constify snd_soc_dai_ops structures" to the asoc tree
+Date: Tue, 15 Aug 2017 18:15:14 +0100
+Message-ID: <E1dhfQw-0003aM-TQ@debutante>
+References: <20170713055710.GA21105@embeddedgus>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170713055710.GA21105@embeddedgus>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, bhumirks@gmail.com
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: es8316: constify snd_soc_dai_ops structures
+   ASoC: spear: constify snd_soc_dai_ops structures
 
 has been applied to the asoc tree at
 
@@ -53,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From a6a67da3da332dbde7c04cba9fccef04648c704a Mon Sep 17 00:00:00 2001
+>From a1150d40b219af1344f7bcc9b365dc5ec7bfbb65 Mon Sep 17 00:00:00 2001
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Tue, 15 Aug 2017 17:10:10 +0200
-Subject: [PATCH] ASoC: codecs: es8316: constify snd_soc_dai_ops structures
+Date: Tue, 15 Aug 2017 17:10:12 +0200
+Subject: [PATCH] ASoC: spear: constify snd_soc_dai_ops structures
 
 These snd_soc_dai_ops structures are only stored in the ops field of
 a snd_soc_dai_driver structure, which is const.  Thus, the
@@ -67,21 +51,21 @@ Done with the help of Coccinelle.
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 2 +-
+ sound/soc/spear/spdif_in.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index ecc02449c569..f5cf48c9c3b0 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -502,7 +502,7 @@ static int es8316_mute(struct snd_soc_dai *dai, int mute)
- #define ES8316_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE)
+diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
+index 01b28e59b4c0..78a6a360b4a6 100644
+--- a/sound/soc/spear/spdif_in.c
++++ b/sound/soc/spear/spdif_in.c
+@@ -151,7 +151,7 @@ static int spdif_in_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return ret;
+ }
  
--static struct snd_soc_dai_ops es8316_ops = {
-+static const struct snd_soc_dai_ops es8316_ops = {
- 	.startup = es8316_pcm_startup,
- 	.hw_params = es8316_pcm_hw_params,
- 	.set_fmt = es8316_set_dai_fmt,
+-static struct snd_soc_dai_ops spdif_in_dai_ops = {
++static const struct snd_soc_dai_ops spdif_in_dai_ops = {
+ 	.shutdown	= spdif_in_shutdown,
+ 	.trigger	= spdif_in_trigger,
+ 	.hw_params	= spdif_in_hw_params,
 -- 
 2.13.3
