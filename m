@@ -1,52 +1,40 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: non-blocking mode example
-Date: Tue, 15 Aug 2017 14:49:16 +0200
-Message-ID: <f811f743-3433-2b1a-f932-677290d5d562@ladisch.de>
-References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
- <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
- <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
- <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
- <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
+From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH] ASoC: mediatek: Correct the interrupt property
+Date: Tue, 15 Aug 2017 21:51:40 +0800
+Message-ID: <1502805100.25910.8.camel@mtkswgap22>
+References: <43a7fb98e7252d0b7b73cdabf1eedd0bf896d68c.1502784169.git.ryder.lee@mediatek.com>
+         <20170815115309.glj52jx3kpq4jxq3@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 211C7267440
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 14:49:16 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 313065581313
- for <alsa-devel@alsa-project.org>; Tue, 15 Aug 2017 14:49:16 +0200 (CEST)
-In-Reply-To: <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170815115309.glj52jx3kpq4jxq3-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ThomasJF wrote:
-> Now I have a do-while loop with select.
+On Tue, 2017-08-15 at 12:53 +0100, Mark Brown wrote:
+> On Tue, Aug 15, 2017 at 04:07:02PM +0800, Ryder Lee wrote:
+> 
+> > This patch update interrupt property since we only use ASYS IRQ
+> > in the driver, and this may confuse people.
+> 
+> > -		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
+> > -			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
+> > +		interrupts = <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
+> 
+> What harm does having the extra information in the bindings do?  If it's
+> possible there might be a use for the extra interrupt it seems better to
+> have people describe it.
 
-Better use poll(); select() is cumbersome with the ALSA's API.
-
-> To get the tcp-commands for stop/pause:
->
-> 1.) Do I have to adapt the tcp-commands inside this loop or...
->
-> 2.) Do I have to work with any poll descriptors (which?)
-
-These function allow to wait for multiple file descriptors to become
-ready.  So wait for all the fds from the ALSA device _and_ the fd of
-the socket.
+Yes you're right. The current driver get IRQ number by index "0" but
+actually it should be "1" (GIC 132). Perhaps we can switch to use the
+platform_get_irq_byname() and add interrupt-name in DT so that binding
+can be agnostic of the IRQ order. 
 
 
-Regards,
-Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
