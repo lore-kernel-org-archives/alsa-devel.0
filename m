@@ -1,59 +1,65 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 3/3] ALSA: hda: make snd_kcontrol_new const
-Date: Wed, 16 Aug 2017 14:14:11 +0530
-Message-ID: <1502873051-28437-4-git-send-email-bhumirks@gmail.com>
-References: <1502873051-28437-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502873051-28437-1-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, johannes@sipsolutions.net, perex@perex.cz, tiwai@suse.com, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: Naveen M <naveen.m@intel.com>
+Subject: [PATCH] ASoC: Intel: kbl: Enabling ASRC for RT5663
+	codec on kabylake platform
+Date: Wed, 16 Aug 2017 15:55:59 +0530
+Message-ID: <1502879159-23771-1-git-send-email-naveen.m@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E1393266B1C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 12:26:08 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Shruthi Sudhakar <shruthi.sudhakar@intel.com>, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, Harsha Priya N <harshapriya.n@intel.com>, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Make these const as they are only passed as the 3rd argument to the
-function snd_hda_gen_add_kctl, which is of type const.
-Done using Coccinelle.
+From: Harsha Priya N <harshapriya.n@intel.com>
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/pci/hda/patch_analog.c   | 4 ++--
- sound/pci/hda/patch_sigmatel.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Patch fixes cracking noise in rt5663 headphones for kbl platform by
+calling rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER to set
+ASRC.
 
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index e0fb8c6..7578573 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -505,7 +505,7 @@ static int ad1983_auto_smux_enum_put(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
+The ASRC function is for asynchronous MCLK and LRCLK. For RT5663 ASRC
+should be enabled to support pcm format with 100fs.
+ASRC function will track i2s clock and generate corresponding
+system clock for codec. Calling this func helps select clock source
+for both RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters
+which fixes the crackling sound.
+
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Shruthi Sudhakar <shruthi.sudhakar@intel.com>
+Signed-off-by: Naveen M <naveen.m@intel.com>
+
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index f9ba977..29b50e4 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -312,11 +312,13 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int ret;
  
--static struct snd_kcontrol_new ad1983_auto_smux_mixer = {
-+static const struct snd_kcontrol_new ad1983_auto_smux_mixer = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "IEC958 Playback Source",
- 	.info = ad1983_auto_smux_enum_info,
-@@ -788,7 +788,7 @@ static int ad1988_auto_smux_enum_put(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
+-	ret = snd_soc_dai_set_sysclk(codec_dai,
+-			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
+ 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
+-	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
++	rt5663_sel_asrc_clk_src(codec_dai->codec,
++			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
++			RT5663_CLK_SEL_I2S1_ASRC);
  
--static struct snd_kcontrol_new ad1988_auto_smux_mixer = {
-+static const struct snd_kcontrol_new ad1988_auto_smux_mixer = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "IEC958 Playback Source",
- 	.info = ad1988_auto_smux_enum_info,
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 6cefdf6..63d15b5 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -961,7 +961,7 @@ static int stac_smux_enum_put(struct snd_kcontrol *kcontrol,
- 				     &spec->cur_smux[smux_idx]);
- }
++	ret = snd_soc_dai_set_sysclk(codec_dai,
++			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
  
--static struct snd_kcontrol_new stac_smux_mixer = {
-+static const struct snd_kcontrol_new stac_smux_mixer = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "IEC958 Playback Source",
- 	/* count set later */
 -- 
 1.9.1
