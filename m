@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: compress: Set reasonable compress
-	id string
-Date: Wed, 16 Aug 2017 13:06:52 +0100
-Message-ID: <20170816120652.77eqk6tni5g4sn3u@sirena.org.uk>
-References: <20170808032829.11859-1-pengdonglin137@163.com>
- <CAErzpmsV-q5dN8ukdWxgNbGTaDq=MeKNf=AXKQKoHtrdMuzvxg@mail.gmail.com>
+Subject: Applied "ASoC: soc-core:
+	snd_soc_unregister_component() unregister all component" to
+	the asoc tree
+Date: Wed, 16 Aug 2017 13:09:07 +0100
+Message-ID: <E1dhx8F-0005bE-As@finisterre>
+References: <8760e0jfwl.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7221096169160302405=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0027E266B1C
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 14:07:02 +0200 (CEST)
-In-Reply-To: <CAErzpmsV-q5dN8ukdWxgNbGTaDq=MeKNf=AXKQKoHtrdMuzvxg@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 093EF266B1C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 14:09:13 +0200 (CEST)
+In-Reply-To: <8760e0jfwl.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7221096169160302405==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3o2iahlknj6yxgz7"
-Content-Disposition: inline
+   ASoC: soc-core: snd_soc_unregister_component() unregister all component
 
+has been applied to the asoc tree at
 
---3o2iahlknj6yxgz7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Aug 08, 2017 at 11:31:21AM +0800, Donglin Peng wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> --- a/sound/soc/soc-compress.c
-> +++ b/sound/soc/soc-compress.c
-> @@ -737,9 +737,6 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime
-> *rtd, int num)
->         }
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-It looks like your mail has whitespace damage, it's been at least word
-wrapped, so I can't apply - please check and resend (git send-email will
-usually do the right thing).
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---3o2iahlknj6yxgz7
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmUNVsACgkQJNaLcl1U
-h9DzOQf/byUzHGS3OGFGXjccNjGSnxGSBHQ3+b3tHAevrb7NvC6D05G3TQmDHBNz
-GWSXxE8nrGwYMGxst6iUBF3UNY9lLJSq3q1QikDEP+FeQ6EvlPXpTnUhKob59ECy
-SIeazo+WRZCe9ACkuXgxcYrlAPM5227HZufiveVXtKOSU9WBgwKWlISBvUuYNtgE
-COYYzQPfOvC2GKf4e2MWqtT7rQ0W7RmU5CI1KP9R7flnFit2iL7Z/OCZe0tlttdS
-W5mWIH7njS2Ecs6Juw/cEaUGViYsrEpur9popxM88fzDUAdEBfsnwWDVpTEBL6UZ
-f8NiwzG3k+1P/6B35L4uHednVQ5Vtw==
-=3csF
------END PGP SIGNATURE-----
+>From 2eccea8cdeb8fe455fc3a45b4e097f118449c3ef Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 7 Aug 2017 02:06:55 +0000
+Subject: [PATCH] ASoC: soc-core: snd_soc_unregister_component() unregister all
+ component
 
---3o2iahlknj6yxgz7--
+Current snd_soc_unregister_component() unregisters first found
+component only which was specified by dev.
+This style can't specify concrete component if system registered some
+component with same dev. And system need to call this function many
+times.
+This patch unregister all related component by 1 call.
 
---===============7221096169160302405==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-
---===============7221096169160302405==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b1860b14b075..50c8dba54649 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3365,11 +3365,12 @@ int snd_soc_register_component(struct device *dev,
+ EXPORT_SYMBOL_GPL(snd_soc_register_component);
+ 
+ /**
+- * snd_soc_unregister_component - Unregister a component from the ASoC core
++ * snd_soc_unregister_component - Unregister all related component
++ * from the ASoC core
+  *
+  * @dev: The device to unregister
+  */
+-void snd_soc_unregister_component(struct device *dev)
++static int __snd_soc_unregister_component(struct device *dev)
+ {
+ 	struct snd_soc_component *component;
+ 	int found = 0;
+@@ -3391,6 +3392,13 @@ void snd_soc_unregister_component(struct device *dev)
+ 		snd_soc_component_cleanup(component);
+ 		kfree(component);
+ 	}
++
++	return found;
++}
++
++void snd_soc_unregister_component(struct device *dev)
++{
++	while (__snd_soc_unregister_component(dev));
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
+ 
+-- 
+2.13.2
