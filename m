@@ -1,146 +1,34 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: Re: [PATCH v3 3/5] ASoC: codecs: msm8916-wcd-analog:
- add MBHC support
-Date: Wed, 16 Aug 2017 13:48:40 -0400
-Message-ID: <20170816174840.sduoh2nm4hxye5jg@workotop.localdomain>
-References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
- <20170809164927.19663-4-srinivas.kandagatla@linaro.org>
- <20170809211054.4owecfeoxxud5evh@workotop.localdomain>
- <76eb6edf-1754-6679-6218-028b12dce49a@linaro.org>
- <20170810133329.7lqcg3tucgp5jxii@workotop.localdomain>
- <20170814141222.rg3v3oqwt5xh3363@workotop.localdomain>
- <2731854d-c0fd-f8e3-456a-ba4d0d2e84c1@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 6/7] ASoC: samsung: make snd_soc_ops const
+Date: Wed, 16 Aug 2017 21:22:32 +0200
+Message-ID: <20170816192232.5g7armlu5xpxwz62@kozik-lap>
+References: <1502902770-3758-1-git-send-email-bhumirks@gmail.com>
+ <1502902770-3758-7-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
- [208.88.110.44])
- by alsa0.perex.cz (Postfix) with ESMTP id B5E7A266B1C
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 19:50:10 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <2731854d-c0fd-f8e3-456a-ba4d0d2e84c1@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <1502902770-3758-7-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, heiko@sntech.de, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 14, 2017 at 05:34:53PM +0100, Srinivas Kandagatla wrote:
+On Wed, Aug 16, 2017 at 10:29:29PM +0530, Bhumika Goyal wrote:
+> Make these const as they are only stored in the ops field of a
+> snd_soc_dai_link structure, which is const.
+> Done using Coccinelle.
 > 
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+> ---
+>  sound/soc/samsung/jive_wm8750.c     | 2 +-
+>  sound/soc/samsung/s3c24xx_simtec.c  | 2 +-
+>  sound/soc/samsung/s3c24xx_uda134x.c | 2 +-
+>  sound/soc/samsung/smdk_spdif.c      | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> On 14/08/17 15:12, Damien Riegel wrote:
-> > Hi,
-> > 
-> > 
-> > On Thu, Aug 10, 2017 at 09:33:29AM -0400, Damien Riegel wrote:
-> > > Hi,
-> > > 
-> > > On Thu, Aug 10, 2017 at 11:02:34AM +0100, Srinivas Kandagatla wrote:
-> > > > Hi Damien,
-> > > > Thanks for testing.
-> > > > 
-> > > > On 09/08/17 22:10, Damien Riegel wrote:
-> > > > > Hi Srinivas,
-> > > > > 
-> > > > > On Wed, Aug 09, 2017 at 06:49:25PM +0200, srinivas.kandagatla@linaro.org wrote:
-> > > > > > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > > > > > 
-> > > > > > MBHC (MultiButton Headset Control) support is available in pm8921 in two
-> > > > > > blocks, one to detect mechanical headset insertion and removal and other
-> > > > > > block to support headset type detection and 5 button detection and othe
-> > > > > > features like impedance calculation.
-> > > > > > 
-> > > > > > This patch adds support to:
-> > > > > > 1> Support to NC and NO type of headset Jacks.
-> > > > > > 2> Mechanical insertion and detection of headset jack.
-> > > > > > 3> Detect a 3 pole Headphone and a 4 pole Headset.
-> > > > > > 4> Detect 5 buttons.
-> > > > > > 
-> > > > > > Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
-> > > > > > headset/headphones.
-> > > > > 
-> > > > > I have the same issue with this patchset, KEY_MEDIA is being reported
-> > > > > when unplugging a headset. I added a few traces and what I observe is
-> > > > Am unable to reproduce the same issue, I tried atleast 6 different mix of
-> > > > headset/headphones.
-> > > > here is my evtest log:  http://paste.ubuntu.com/25282592/
-> > > > 
-> > > > Could you explain bit more about your setup, so that I can try to reproduce
-> > > > the same issue.
-> > > > 
-> > > > My setup is DB410c + Audio Mezz board
-> > > > https://www.arrow.com/en/products/audiomezz/seeed-technology-limited
-> > > 
-> > > I'm using a hardware based on Intrinsyc Open-Q 410 Development Kit:
-> > > https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
-> > > 
-> > > We use the same SoM with a different carrier board, but connections to
-> > > the jack connector are routed the same way on both carrier boards.
-> > > 
-> > > > > that the "button pressed" irq is fired when unplugging, but no "button
-> > > > > released" irq follows. To get a "button released" irq, I need to either
-> > > > > plug a headset, or plug-and-unplug headphones.
-> > > > > 
-> > > > > So basically, detection fails because we don't get the "button pressed"
-> > > > > irq prior to the mechanical switch irq. Do you know what could explain
-> > > > > the MBHC not firing the "button released" irq when unplugging headset?
-> > > > > 
-> > > > Can you also share output of evetest and /proc/interrupts so that i can see
-> > > > if the extra logic of masking btn0 is creating the issue, we can also try
-> > > > removing the btn0 accessory detect logic and see if we get correct button
-> > > > press/releases.
-> > > 
-> > > It's definitely what's causing the headphones to be reported as headset,
-> > > but not what's causing the interrupt not to be triggered in the first
-> > > place. I don't have access to the hardware right now, so I'll provide
-> > > you with logs next week.
-> > 
-> > I did the test, and addded the content of /proc/interrupts.
-> > 
-> >      https://paste.ubuntu.com/25312443/
-> > 
-> > As you can see, after "[INSERT HEADPHONE]", we only get "mbhc switch
-> > irq", but not "mbhc btn press irq". Let me know if you need more
-> > details.
-> > 
-> > As I said before, I don't see that 100% of the time, but I don't do
-> > anything special to trigger it either (like pulling the cable extra
-> > slowly or whatnot), it just happens.
-> 
-> Looking at the interrupts count its clear that there was a real button press
-> event from the hardware, so My suspect is the voltage threshold values
-> programmed for the buttons, which might not be very much correct if you are
-> using same values as db410c. These values are partly board specific.
-> 
-> Can you tune those values and give it a try, specially btn0 values.
 
-Correct me if I'm wrong, but if the design is the same, the values
-should be more a less the same as well, right? Moreover, the driver
-detects the right key press in normal use cases.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Anyway, I tried to tweak the values but ended up with the same results.
-Pressing btn0 brings the DC tension to 0V, so I'm not sure changing the
-detection threshold of btn0 has any impact.
-
-Another explanation could be the jack connector. I did a few tests on
-the Open-Q 410 [1] and could not reproduce the issue of the spurious key
-when unplugging headset, it only happens on the in-house device. So I
-guess they have slightly different jack connectors and only one kind
-triggers that issue. With that conclusion:
-
-
-Tested-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
-
-[1] https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
-
-Thank you,
--- 
-Damien
+Best regards,
+Krzysztof
