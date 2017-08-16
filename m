@@ -1,72 +1,100 @@
-From: Lori Hikichi <lori.hikichi@broadcom.com>
-Subject: Re: [PATCH 2/9] ASoC: cygnus: Update bindings for audio clock changes
-Date: Wed, 16 Aug 2017 12:39:42 -0700
-Message-ID: <8c2fc92d-5ea8-8163-a588-0a4cba55e0f8@broadcom.com>
-References: <1502748417-26417-1-git-send-email-lori.hikichi@broadcom.com>
- <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
- <20170815171424.whcy4mftex6sgzgj@sirena.org.uk>
- <d7e7144b-26c7-b96a-663d-03744bb60c36@broadcom.com>
- <20170816105954.ve434zeeqinweo5a@sirena.org.uk>
+From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Subject: Re: [PATCH v3 1/4] i2c: add helpers to ease DMA handling
+Date: Wed, 16 Aug 2017 22:58:26 +0200
+Message-ID: <20170816205825.zq5u7gqgyrcqptsb@ninjato>
+References: <20170718102339.28726-1-wsa+renesas@sang-engineering.com>
+ <20170718102339.28726-2-wsa+renesas@sang-engineering.com>
+ <20170723122242.7fd0edf4@jic23.retrosnub.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170816105954.ve434zeeqinweo5a@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iw76m45wyrc7u532"
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170723122242.7fd0edf4-tko9wxEg+fIOOJlXag/Snyp2UmYkHbXO@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jonathan Cameron <jic23-tko9wxEg+fIOOJlXag/Snyp2UmYkHbXO@public.gmane.org>
+Cc: Wolfram Sang <wsa+renesas-jBu1N2QxHDJrcw3mvpCnnVaTQe2KTcn/@public.gmane.org>, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 8/16/2017 3:59 AM, Mark Brown wrote:
-> On Tue, Aug 15, 2017 at 12:29:44PM -0700, Lori Hikichi wrote:
->
->> I have put the mux assignment in DT because the assignment is a
->> static property and did not need run time programmability from the
->> machine driver.
-> Why is this a static property, what prevents something wanting to change
-> things at runtime?  You might be running with simpler setups now but
-> perhaps you'll run into a more complex use case later?
-The short answer is I have analyzed the possible use cases for Cygnus'
-audio block, and nothing should need to change the assignments at
-runtime.  The longer explanation follows.
+--iw76m45wyrc7u532
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The clocking configuration is this. There is one pll with its output run
-through 3 post dividers. The audio ports can select one of these
-outputs.  There are only 5 possible consumers of these 3 clocks.
-The 3 i2s/tdm ports, 1 spdif port, and an exceptional case of another
-"non-audio" IP block. For the i2s/tdm ports this clock is the MCLK.
+Hi Jonathan,
 
-By far the most common usage case for Cygnus is a configuration which
-uses only the three i2s/tdm ports. In this case each port is assigned
-a clock.  Each clock has the same capabilities so there would never be
-a reason change the static mapping.
+> I like the basic idea of this patch set a lot btw!
 
-Now for the case when the "non-audio block" uses one of these clocks.
-In this situation we will only need one i2s port because this
-configuration of the chip is not audio intensive.  When the system
-is designed we know if this non-audio block will be in use, it is not
-a runtime configurable thing. Again, a static mapping is fine.
+Thanks!
 
-The only situation which could get more complex is with SPDIF.
-First off, the SPDIF port is not actively used in any current
-configuration and I do not think there are any plans for it to be used.
-But, we are talking about possible future configurations.  The only
-limitation the current static scheme would introduce is if SPDIF is
-active along with all 3 i2s ports. Additionally, all 3 of the i2s ports
-would need to be in master mode (slave mode would free up a clock for
-SPDIF). In this case, two of the clock consumers would need to share a
-clock. In this situation I envisioned that both consumers would agree on
-a fixed rate and work within those limitation.  For example, the ports
-would choose 24.576 MHz as their mclk and be limited to the the frame
-rates that could be derived from that clock. 
+> Jonathan
 
-At the time it did not seem necessary to make addition driver changes to
-support a use case that will very likely never arise. As it turns out,
-we are working on a new version of this audio block.  The clocking
-configuration for this new version is more complex and I am already in
-the process of creating clock bindings for all this this. I am hopeful
-that the driver for this new version will be applicable to Cygnus.
+Could you delete irrelevant parts of the message, please? I nearly
+missed your other comment which would have been a great loss!
 
-Lori.
+> I'm trying to get my head around whether this is a sufficient set of cond=
+itions
+> for a dma safe buffer and I'm not sure it is.
+>=20
+> We go to a lot of effort with SPI buffers to ensure they are in their own=
+ cache
+> lines.  Do we not need to do the same here?  The issue would be the
+> classic case of embedding a buffer inside a larger structure which is on
+> the stack.  Need the magic of __cacheline_aligned to force it into it's
+> own line for devices with dma-incoherent caches.
+> DMA-API-HOWTO.txt (not read that for a while at it is a rather good
+> at describing this stuff these days!)
+>=20
+> So that one is easy enough to check by checking if it is cache line align=
+ed,
+> but what do you do to know there is nothing much after it?
+
+Thank you, really!
+
+This patch series addressed all cases I have created, but I also
+wondered if there are cases left which I missed. Now, also because you
+mentioned cacheline alignments, the faint idea of "maybe it could be
+fragile" became a strong "it is too fragile"! lib/dma-debug.c is >40KB
+for a reason. I just rewrote this series...
+
+> Not sure there is a way around this short of auditing i2c drivers to
+> change any that do this.
+
+=2E.. to do something like this, more precisely: an opt-in approach. I
+introduce a new flag for i2c_msg, namely I2C_M_DMA_SAFE which can opt-in
+DMA if we know the i2c_msg buffer is DMA safe. I finished a
+proof-of-concept this evening and pushed it here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/topic/i=
+2c-core-dma-rfc-v4
+
+I will test it on HW tomorrow and send it out, then. There are still
+some bits missing, but for getting opinions, it should be good enough.
+
+Thanks and kind regards,
+
+   Wolfram
+
+
+--iw76m45wyrc7u532
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlmUsfEACgkQFA3kzBSg
+KbYvTA/9GfvNkpGoyhvY6GHFOWPKNXd8Z3pDbev1Kh9OZIV9fveLjRa8Sq20pdiI
+o0YKCO4ljVL41BDXt/4GOHbONYjmrbPO6KequfqRhn/Eb1QZHgO5lpLuFkIqnSbW
+oWecM6dZqzzhRHIteRKgUYw+d7CU7FdT7RFOZrRllRaPjxZ+fnbw+Mh/fWXapQlK
+/Qz73224MOCDoQgmVqfGIlvwK4pAB6pv7rpV+Qu0S8TOI5NT/j3Ne/hFgMHDQj/E
+fphOGr4/V9UKPAoz6KasbuUgAlqqN8qIs2MwOwLBB+qZV/odTJDvG7+JvH2rLIMe
+QOGZwFxbTVnEllEdKgk056a7rFkSBVFA5jmmLKAPw8CtbNKvpYVKMYXPUih5ea4u
+FNKl2bcxXawuVLyvmovfPzZOhRu85Cw6eS+MFsMZGK32XVL6fd6ZjX0YDhA6+wkt
+BEtFQHLO1K1UCeEFtLmFn9f71pXOX+RZtGgKFuGzNSb9tDN540kanc1Oxpm4KEuz
+jJv9FM9QWkUGFxT+yuRaX4AxXAQNBt46HiWjPNEbpf906Ef4ghf74vj+xM9UxuRQ
+ABhKkOp5RIFYpUHJgnUfgdco36XIMLoF52aUP5+5OAYZ4msnGMy0sEcr3sHQ7Nlg
+Y1zlV9yyesdPAI5soo126qDlFbEpIljXOoMKGk/G5oI5ANl3xD4=
+=UtP7
+-----END PGP SIGNATURE-----
+
+--iw76m45wyrc7u532--
