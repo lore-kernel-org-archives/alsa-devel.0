@@ -1,54 +1,102 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Medfield: Delete an error message for a failed
- memory allocation in snd_mfld_mc_probe()
-Date: Wed, 16 Aug 2017 10:28:53 +0530
-Message-ID: <20170816045853.GP3053@localhost>
-References: <161e9c4c-1c97-d06f-35ec-3f165ad9e52e@users.sourceforge.net>
+Subject: Re: [PATCH v2] ASoC: Intel:
+ kbl_rt5663_rt5514_max98927: Add rt5514 spi dailink
+Date: Wed, 16 Aug 2017 10:32:54 +0530
+Message-ID: <20170816050253.GQ3053@localhost>
+References: <1502822380-24047-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AC2E2674A8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 06:59:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <161e9c4c-1c97-d06f-35ec-3f165ad9e52e@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+In-Reply-To: <1502822380-24047-1-git-send-email-harshapriya.n@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Harsha Priya <harshapriya.n@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Hsin-yu Chao <hychao@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 11, 2017 at 11:33:56AM +0200, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 11 Aug 2017 11:25:41 +0200
-> 
-> Omit an extra message for a memory allocation failure in this function.
-> 
-> This issue was detected by using the Coccinelle software.
+On Tue, Aug 15, 2017 at 11:39:40AM -0700, Harsha Priya wrote:
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Hi Harsha,
+
+> This patch adds a dai to rt5514-spi driver for wake on voice functionality.
+> 
+> This v2 patch adds the dependency on SPI in Kconfig
+
+The v2 bit is irrelevant for the log, depends part makes sense.
+
+The version information is useful one but we don't want to apply with that,
+so it is kept after s-o-b line. Git am skips it while applying
 
 > 
-> Link: http://events.linuxfoundation.org/sites/events/files/slides/LCJ16-Refactor_Strings-WSang_0.pdf
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> Signed-off-by: Hsin-yu Chao <hychao@google.com>
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 > ---
->  sound/soc/intel/boards/mfld_machine.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+
+This is the right place to talk about v2..
+
+>  sound/soc/intel/Kconfig                             | 3 ++-
+>  sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 9 +++++++++
+>  2 files changed, 11 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
-> index 4e08885f37aa..6f44acfb4aae 100644
-> --- a/sound/soc/intel/boards/mfld_machine.c
-> +++ b/sound/soc/intel/boards/mfld_machine.c
-> @@ -376,10 +376,8 @@ static int snd_mfld_mc_probe(struct platform_device *pdev)
->  	/* audio interrupt base of SRAM location where
->  	 * interrupts are stored by System FW */
->  	mc_drv_ctx = devm_kzalloc(&pdev->dev, sizeof(*mc_drv_ctx), GFP_ATOMIC);
-> -	if (!mc_drv_ctx) {
-> -		pr_err("allocation failed\n");
-> +	if (!mc_drv_ctx)
->  		return -ENOMEM;
-> -	}
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index b301bff..b3c7f55 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -255,11 +255,12 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
 >  
->  	irq_mem = platform_get_resource_byname(
->  				pdev, IORESOURCE_MEM, "IRQ_BASE");
+>  config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+>          tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
+> -        depends on X86_INTEL_LPSS && I2C
+> +        depends on X86_INTEL_LPSS && I2C && SPI
+>          select SND_SOC_INTEL_SST
+>          select SND_SOC_INTEL_SKYLAKE
+>          select SND_SOC_RT5663
+>          select SND_SOC_RT5514
+> +        select SND_SOC_RT5514_SPI
+>          select SND_SOC_MAX98927
+>          select SND_SOC_HDAC_HDMI
+>          help
+> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> index 0fab2df..c2ef538 100644
+> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> @@ -65,6 +65,7 @@ enum {
+>  	KBL_DPCM_AUDIO_HS_PB,
+>  	KBL_DPCM_AUDIO_ECHO_REF_CP,
+>  	KBL_DPCM_AUDIO_DMIC_CP,
+> +	KBL_DPCM_AUDIO_RT5514_DSP,
+>  	KBL_DPCM_AUDIO_HDMI1_PB,
+>  	KBL_DPCM_AUDIO_HDMI2_PB,
+>  };
+> @@ -473,6 +474,14 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
+>  		.capture_only = 1,
+>  		.nonatomic = 1,
+>  	},
+> +	[KBL_DPCM_AUDIO_RT5514_DSP] = {
+> +		.name = "rt5514 dsp",
+> +		.stream_name = "Wake on Voice",
+> +		.cpu_dai_name = "spi-PRP0001:00",
+> +		.platform_name = "spi-PRP0001:00",
+> +		.codec_name = "snd-soc-dummy",
+> +		.codec_dai_name = "snd-soc-dummy-dai",
+> +	},
+>  	[KBL_DPCM_AUDIO_DMIC_CP] = {
+>  		.name = "Kbl Audio DMIC cap",
+>  		.stream_name = "dmiccap",
 > -- 
-> 2.14.0
+> 1.9.1
 > 
 
 -- 
