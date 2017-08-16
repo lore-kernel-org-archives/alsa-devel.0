@@ -1,86 +1,37 @@
-From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH v3] ASoC: Intel: kbl_rt5663_rt5514_max98927:
-	Add rt5514 spi dailink
-Date: Wed, 16 Aug 2017 15:37:11 -0700
-Message-ID: <1502923031-335-1-git-send-email-harshapriya.n@intel.com>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH v2 1/3] ASoC: rockchip: Parse dai links from dts
+Date: Thu, 17 Aug 2017 06:55:20 +0800
+Message-ID: <5994CD58.7030406@rock-chips.com>
+References: <1502340898-28403-1-git-send-email-jeffy.chen@rock-chips.com> <1502340898-28403-2-git-send-email-jeffy.chen@rock-chips.com> <20170816215909.GC109008@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0156C266BF6
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 00:37:19 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Harsha Priya <harshapriya.n@intel.com>, Hsin-yu Chao <hychao@google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170816215909.GC109008@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a dai to rt5514-spi driver for wake on voice functionality.
+hi matthias,
 
-Signed-off-by: Hsin-yu Chao <hychao@google.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+thanks for your suggestion.
 
----
-
-v2 patch adds the dependency on SPI in Kconfig
-v3 patch changes the commit message to move the version specific info
-
- sound/soc/intel/Kconfig                             | 3 ++-
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 9 +++++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index b301bff..b3c7f55 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -255,11 +255,12 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 
- config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
--        depends on X86_INTEL_LPSS && I2C
-+        depends on X86_INTEL_LPSS && I2C && SPI
-         select SND_SOC_INTEL_SST
-         select SND_SOC_INTEL_SKYLAKE
-         select SND_SOC_RT5663
-         select SND_SOC_RT5514
-+        select SND_SOC_RT5514_SPI
-         select SND_SOC_MAX98927
-         select SND_SOC_HDAC_HDMI
-         help
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 5ec9428..b51dff6 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -65,6 +65,7 @@ enum {
- 	KBL_DPCM_AUDIO_HS_PB,
- 	KBL_DPCM_AUDIO_ECHO_REF_CP,
- 	KBL_DPCM_AUDIO_DMIC_CP,
-+	KBL_DPCM_AUDIO_RT5514_DSP,
- 	KBL_DPCM_AUDIO_HDMI1_PB,
- 	KBL_DPCM_AUDIO_HDMI2_PB,
- };
-@@ -480,6 +481,14 @@ static int kabylake_dmic_startup(struct snd_pcm_substream *substream)
- 		.capture_only = 1,
- 		.nonatomic = 1,
- 	},
-+	[KBL_DPCM_AUDIO_RT5514_DSP] = {
-+		.name = "rt5514 dsp",
-+		.stream_name = "Wake on Voice",
-+		.cpu_dai_name = "spi-PRP0001:00",
-+		.platform_name = "spi-PRP0001:00",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
- 		.stream_name = "dmiccap",
--- 
-1.9.1
+On 08/17/2017 05:59 AM, Matthias Kaehlcke wrote:
+> El Thu, Aug 10, 2017 at 12:54:56PM +0800 Jeffy Chen ha dit:
+>
+>> >Refactor rockchip_sound_probe, parse dai links from dts instead of
+>> >hard coding them.
+> Mark doesn't seem to be overly convinced that 'rockchip,codec-names'
+> is a good idea (https://lkml.org/lkml/2017/8/10/511).
+>
+> How about using something like this instead:
+>
+> static const char *dailink_compat[] = {
+> 	[DAILINK_MAX98357A] = "maxim,max98357a",
+> 	[DAILINK_RT5514] = "realtek,rt5514",
+> 	[DAILINK_DA7219] = "dlg,da7219",
+> };
+i've thought about this too, but i'm working on converting rt5514 
+dsp(spi) from codec name matching to of_node, and it would have the same 
+compatible with rt5514(i2c)
