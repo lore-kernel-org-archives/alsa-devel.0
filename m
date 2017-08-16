@@ -1,35 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core:
-	snd_soc_unregister_component() unregister all component" to
-	the asoc tree
-Date: Wed, 16 Aug 2017 13:09:07 +0100
-Message-ID: <E1dhx8F-0005bE-As@finisterre>
-References: <8760e0jfwl.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 093EF266B1C
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 14:09:13 +0200 (CEST)
-In-Reply-To: <8760e0jfwl.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Subject: Applied "ASoC: codecs: make snd_compr_ops const" to the asoc tree
+Date: Wed, 16 Aug 2017 13:09:10 +0100
+Message-ID: <E1dhx8I-0005cJ-R3@finisterre>
+References: <1502879941-16010-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502879941-16010-1-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: snd_soc_unregister_component() unregister all component
+   ASoC: codecs: make snd_compr_ops const
 
 has been applied to the asoc tree at
 
@@ -54,57 +37,61 @@ to this mail.
 Thanks,
 Mark
 
->From 2eccea8cdeb8fe455fc3a45b4e097f118449c3ef Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 7 Aug 2017 02:06:55 +0000
-Subject: [PATCH] ASoC: soc-core: snd_soc_unregister_component() unregister all
- component
+>From 4dbcc5ff2513f2192dc2a5dfdbb9ad3d7e891e85 Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Wed, 16 Aug 2017 16:09:01 +0530
+Subject: [PATCH] ASoC: codecs: make snd_compr_ops const
 
-Current snd_soc_unregister_component() unregisters first found
-component only which was specified by dev.
-This style can't specify concrete component if system registered some
-component with same dev. And system need to call this function many
-times.
-This patch unregister all related component by 1 call.
+Make these const as they are only stored in the compr_ops field of a
+snd_soc_platform_driver structure, which is of type const.
+Done using Coccinelle
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs47l24.c | 2 +-
+ sound/soc/codecs/wm5102.c  | 2 +-
+ sound/soc/codecs/wm5110.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b1860b14b075..50c8dba54649 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3365,11 +3365,12 @@ int snd_soc_register_component(struct device *dev,
- EXPORT_SYMBOL_GPL(snd_soc_register_component);
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 47e6fddef92b..c1cbe23169d7 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1203,7 +1203,7 @@ static struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
+ 	},
+ };
  
- /**
-- * snd_soc_unregister_component - Unregister a component from the ASoC core
-+ * snd_soc_unregister_component - Unregister all related component
-+ * from the ASoC core
-  *
-  * @dev: The device to unregister
-  */
--void snd_soc_unregister_component(struct device *dev)
-+static int __snd_soc_unregister_component(struct device *dev)
- {
- 	struct snd_soc_component *component;
- 	int found = 0;
-@@ -3391,6 +3392,13 @@ void snd_soc_unregister_component(struct device *dev)
- 		snd_soc_component_cleanup(component);
- 		kfree(component);
- 	}
-+
-+	return found;
-+}
-+
-+void snd_soc_unregister_component(struct device *dev)
-+{
-+	while (__snd_soc_unregister_component(dev));
- }
- EXPORT_SYMBOL_GPL(snd_soc_unregister_component);
+-static struct snd_compr_ops cs47l24_compr_ops = {
++static const struct snd_compr_ops cs47l24_compr_ops = {
+ 	.open = cs47l24_open,
+ 	.free = wm_adsp_compr_free,
+ 	.set_params = wm_adsp_compr_set_params,
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 1fe358e6be61..a8bdbe464f2e 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2017,7 +2017,7 @@ static const struct snd_soc_codec_driver soc_codec_dev_wm5102 = {
+ 	},
+ };
  
+-static struct snd_compr_ops wm5102_compr_ops = {
++static const struct snd_compr_ops wm5102_compr_ops = {
+ 	.open = wm5102_open,
+ 	.free = wm_adsp_compr_free,
+ 	.set_params = wm_adsp_compr_set_params,
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 1bc942152eff..8aa136c28ec1 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2372,7 +2372,7 @@ static const struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
+ 	},
+ };
+ 
+-static struct snd_compr_ops wm5110_compr_ops = {
++static const struct snd_compr_ops wm5110_compr_ops = {
+ 	.open = wm5110_open,
+ 	.free = wm_adsp_compr_free,
+ 	.set_params = wm_adsp_compr_set_params,
 -- 
 2.13.2
