@@ -1,69 +1,70 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: codec: use enable pin to control
- dmic start and stop
-Date: Wed, 16 Aug 2017 15:50:05 +0100
-Message-ID: <20170816145005.t425cvny6uzdchd7@sirena.org.uk>
-References: <1502436689-21123-1-git-send-email-hl@rock-chips.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v3 1/4] i2c: add helpers to ease DMA handling
+Date: Wed, 16 Aug 2017 16:51:33 +0200
+Message-ID: <CAMuHMdUiVH5FarZLaJ=_aon2LOApoTgH6aZomjS3BgcdCcPY7Q@mail.gmail.com>
+References: <20170718102339.28726-1-wsa+renesas@sang-engineering.com> <20170718102339.28726-2-wsa+renesas@sang-engineering.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4801023036710724124=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FF5E266B1C
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 16:50:44 +0200 (CEST)
-In-Reply-To: <1502436689-21123-1-git-send-email-hl@rock-chips.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lin Huang <hl@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, dianders@chromium.org, lgirdwood@gmail.com, arnaud.pouliquen@st.com, briannorris@chromium.org, dgreif@chromium.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <20170718102339.28726-2-wsa+renesas@sang-engineering.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: Linux I2C <linux-i2c@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, linux-iio@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Wolfram,
 
---===============4801023036710724124==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="frdhubpke34qum3c"
-Content-Disposition: inline
+On Tue, Jul 18, 2017 at 12:23 PM, Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> One helper checks if DMA is suitable and optionally creates a bounce
+> buffer, if not. The other function returns the bounce buffer and makes
+> sure the data is properly copied back to the message.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+> Changes since v2:
+>
+> * rebased to v4.13-rc1
+> * helper functions are not inlined anymore but moved to i2c core
+> * __must_check has been added to the buffer check helper
+> * the release function has been renamed to contain 'dma' as well
 
+Right:
 
---frdhubpke34qum3c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+drivers/i2c/i2c-core-base.c:2310:15: error: 'i2c_release_bounce_buf'
+undeclared here (not in a function)
+ EXPORT_SYMBOL_GPL(i2c_release_bounce_buf);
 
-On Fri, Aug 11, 2017 at 03:31:28PM +0800, Lin Huang wrote:
-> on some board use enable pin to control dmic start and stop,
-> so add this feature in dmic driver.
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
 
-This doens't apply against current code, please check and resend.
+> +/**
+> + * i2c_release_bounce_buf - copy data back from bounce buffer and release it
+      ^^^^^^^^^^^^^^^^^^^^^^
+> + * @msg: the message to be copied back to
+> + * @bounce_buf: the bounce buffer obtained from i2c_check_msg_for_dma().
+> + *             May be NULL.
+> + */
+> +void i2c_release_dma_bounce_buf(struct i2c_msg *msg, u8 *bounce_buf)
+> +{
+> +       if (!bounce_buf)
+> +               return;
+> +
+> +       if (msg->flags & I2C_M_RD)
+> +               memcpy(msg->buf, bounce_buf, msg->len);
+> +
+> +       kfree(bounce_buf);
+> +}
+> +EXPORT_SYMBOL_GPL(i2c_release_bounce_buf);
+                     ^^^^^^^^^^^^^^^^^^^^^^
 
---frdhubpke34qum3c
-Content-Type: application/pgp-signature; name="signature.asc"
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
+                        Geert
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmUW5kACgkQJNaLcl1U
-h9AGfgf7BxZiZ+k3yHfGcvGM0moN+MVFD6krcbiI+WZCLUtGeJaQDd6IFwQKhIHH
-TvF7PzYt2QhxOgzn0w7Ik8oMszB8hW12InvSK6CfCVrOXwGdjv9TcET5fHN4xH6x
-01IQxwwXfUz6pJfK0PeoEGhSsD8xP3/Tu8KmrxzU4AHz/lLE+DJ1VJoFC7d8PWg6
-l/zDhqOkz9qO4tAOnvIhmxQBaKwvgEuIKk0jZaLJ77mS4HvsoNeTCyJLlhAwBVoD
-E0MLO/SLFFa7LjXVio39zghXdYHBj870ADk7r86ZKjdbr4PCU2y0txQ0Tlx73gyK
-KCtOiOdQTf8PSES7/YV5FeTgGOBqyw==
-=YAh9
------END PGP SIGNATURE-----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---frdhubpke34qum3c--
-
---===============4801023036710724124==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4801023036710724124==--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
