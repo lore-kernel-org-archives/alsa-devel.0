@@ -1,65 +1,146 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 2/2] ASoC: codecs: make snd_soc_dai_driver and snd_soc_component_driver const
-Date: Wed, 16 Aug 2017 22:45:09 +0530
-Message-ID: <1502903709-7411-3-git-send-email-bhumirks@gmail.com>
-References: <1502903709-7411-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502903709-7411-1-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, rjui@broadcom.com, sbranden@broadcom.com, jonmason@broadcom.com, bcm-kernel-feedback-list@broadcom.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: Re: [PATCH v3 3/5] ASoC: codecs: msm8916-wcd-analog:
+ add MBHC support
+Date: Wed, 16 Aug 2017 13:48:40 -0400
+Message-ID: <20170816174840.sduoh2nm4hxye5jg@workotop.localdomain>
+References: <20170809164927.19663-1-srinivas.kandagatla@linaro.org>
+ <20170809164927.19663-4-srinivas.kandagatla@linaro.org>
+ <20170809211054.4owecfeoxxud5evh@workotop.localdomain>
+ <76eb6edf-1754-6679-6218-028b12dce49a@linaro.org>
+ <20170810133329.7lqcg3tucgp5jxii@workotop.localdomain>
+ <20170814141222.rg3v3oqwt5xh3363@workotop.localdomain>
+ <2731854d-c0fd-f8e3-456a-ba4d0d2e84c1@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com
+ [208.88.110.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5E7A266B1C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 19:50:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <2731854d-c0fd-f8e3-456a-ba4d0d2e84c1@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make these two structure variables const as they are either used in a
-copy operation or passed to devm_snd_soc_register_component having the
-corresponding argument as const.
-Done using Coccinelle.
+On Mon, Aug 14, 2017 at 05:34:53PM +0100, Srinivas Kandagatla wrote:
+> 
+> 
+> On 14/08/17 15:12, Damien Riegel wrote:
+> > Hi,
+> > 
+> > 
+> > On Thu, Aug 10, 2017 at 09:33:29AM -0400, Damien Riegel wrote:
+> > > Hi,
+> > > 
+> > > On Thu, Aug 10, 2017 at 11:02:34AM +0100, Srinivas Kandagatla wrote:
+> > > > Hi Damien,
+> > > > Thanks for testing.
+> > > > 
+> > > > On 09/08/17 22:10, Damien Riegel wrote:
+> > > > > Hi Srinivas,
+> > > > > 
+> > > > > On Wed, Aug 09, 2017 at 06:49:25PM +0200, srinivas.kandagatla@linaro.org wrote:
+> > > > > > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > > > > 
+> > > > > > MBHC (MultiButton Headset Control) support is available in pm8921 in two
+> > > > > > blocks, one to detect mechanical headset insertion and removal and other
+> > > > > > block to support headset type detection and 5 button detection and othe
+> > > > > > features like impedance calculation.
+> > > > > > 
+> > > > > > This patch adds support to:
+> > > > > > 1> Support to NC and NO type of headset Jacks.
+> > > > > > 2> Mechanical insertion and detection of headset jack.
+> > > > > > 3> Detect a 3 pole Headphone and a 4 pole Headset.
+> > > > > > 4> Detect 5 buttons.
+> > > > > > 
+> > > > > > Tested it on DB410c with Audio Mezz board with 4 pole and 3 pole
+> > > > > > headset/headphones.
+> > > > > 
+> > > > > I have the same issue with this patchset, KEY_MEDIA is being reported
+> > > > > when unplugging a headset. I added a few traces and what I observe is
+> > > > Am unable to reproduce the same issue, I tried atleast 6 different mix of
+> > > > headset/headphones.
+> > > > here is my evtest log:  http://paste.ubuntu.com/25282592/
+> > > > 
+> > > > Could you explain bit more about your setup, so that I can try to reproduce
+> > > > the same issue.
+> > > > 
+> > > > My setup is DB410c + Audio Mezz board
+> > > > https://www.arrow.com/en/products/audiomezz/seeed-technology-limited
+> > > 
+> > > I'm using a hardware based on Intrinsyc Open-Q 410 Development Kit:
+> > > https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
+> > > 
+> > > We use the same SoM with a different carrier board, but connections to
+> > > the jack connector are routed the same way on both carrier boards.
+> > > 
+> > > > > that the "button pressed" irq is fired when unplugging, but no "button
+> > > > > released" irq follows. To get a "button released" irq, I need to either
+> > > > > plug a headset, or plug-and-unplug headphones.
+> > > > > 
+> > > > > So basically, detection fails because we don't get the "button pressed"
+> > > > > irq prior to the mechanical switch irq. Do you know what could explain
+> > > > > the MBHC not firing the "button released" irq when unplugging headset?
+> > > > > 
+> > > > Can you also share output of evetest and /proc/interrupts so that i can see
+> > > > if the extra logic of masking btn0 is creating the issue, we can also try
+> > > > removing the btn0 accessory detect logic and see if we get correct button
+> > > > press/releases.
+> > > 
+> > > It's definitely what's causing the headphones to be reported as headset,
+> > > but not what's causing the interrupt not to be triggered in the first
+> > > place. I don't have access to the hardware right now, so I'll provide
+> > > you with logs next week.
+> > 
+> > I did the test, and addded the content of /proc/interrupts.
+> > 
+> >      https://paste.ubuntu.com/25312443/
+> > 
+> > As you can see, after "[INSERT HEADPHONE]", we only get "mbhc switch
+> > irq", but not "mbhc btn press irq". Let me know if you need more
+> > details.
+> > 
+> > As I said before, I don't see that 100% of the time, but I don't do
+> > anything special to trigger it either (like pulling the cable extra
+> > slowly or whatnot), it just happens.
+> 
+> Looking at the interrupts count its clear that there was a real button press
+> event from the hardware, so My suspect is the voltage threshold values
+> programmed for the buttons, which might not be very much correct if you are
+> using same values as db410c. These values are partly board specific.
+> 
+> Can you tune those values and give it a try, specially btn0 values.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/soc/codecs/hdmi-codec.c | 2 +-
- sound/soc/codecs/lm4857.c     | 2 +-
- sound/soc/codecs/max9768.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Correct me if I'm wrong, but if the design is the same, the values
+should be more a less the same as well, right? Moreover, the driver
+detects the right key press in normal use cases.
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 7aba4f3..ce1be8b 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -692,7 +692,7 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 	return snd_ctl_add(rtd->card->snd_card, kctl);
- }
- 
--static struct snd_soc_dai_driver hdmi_i2s_dai = {
-+static const struct snd_soc_dai_driver hdmi_i2s_dai = {
- 	.name = "i2s-hifi",
- 	.id = DAI_ID_I2S,
- 	.playback = {
-diff --git a/sound/soc/codecs/lm4857.c b/sound/soc/codecs/lm4857.c
-index 558de10..1e96407 100644
---- a/sound/soc/codecs/lm4857.c
-+++ b/sound/soc/codecs/lm4857.c
-@@ -100,7 +100,7 @@ static SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL(lm4857_mode_enum,
- 	{ "EP", "Earpiece", "Mode" },
- };
- 
--static struct snd_soc_component_driver lm4857_component_driver = {
-+static const struct snd_soc_component_driver lm4857_component_driver = {
- 	.controls = lm4857_controls,
- 	.num_controls = ARRAY_SIZE(lm4857_controls),
- 	.dapm_widgets = lm4857_dapm_widgets,
-diff --git a/sound/soc/codecs/max9768.c b/sound/soc/codecs/max9768.c
-index 5b82e26..7017c03 100644
---- a/sound/soc/codecs/max9768.c
-+++ b/sound/soc/codecs/max9768.c
-@@ -151,7 +151,7 @@ static int max9768_probe(struct snd_soc_component *component)
- 	return 0;
- }
- 
--static struct snd_soc_component_driver max9768_component_driver = {
-+static const struct snd_soc_component_driver max9768_component_driver = {
- 	.probe = max9768_probe,
- 	.controls = max9768_volume,
- 	.num_controls = ARRAY_SIZE(max9768_volume),
+Anyway, I tried to tweak the values but ended up with the same results.
+Pressing btn0 brings the DC tension to 0V, so I'm not sure changing the
+detection threshold of btn0 has any impact.
+
+Another explanation could be the jack connector. I did a few tests on
+the Open-Q 410 [1] and could not reproduce the issue of the spurious key
+when unplugging headset, it only happens on the in-house device. So I
+guess they have slightly different jack connectors and only one kind
+triggers that issue. With that conclusion:
+
+
+Tested-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+
+[1] https://www.intrinsyc.com/snapdragon-embedded-development-kits/snapdragon-410-development-kit/
+
+Thank you,
 -- 
-1.9.1
+Damien
