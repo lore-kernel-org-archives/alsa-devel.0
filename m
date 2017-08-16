@@ -1,62 +1,37 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ASoC: codecs: make snd_compr_ops const
-Date: Wed, 16 Aug 2017 16:09:01 +0530
-Message-ID: <1502879941-16010-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: fulgor fulgor <l.vanwinnendaele@gmail.com>
+Subject: alsa settings for sound device Intel cherry trail
+	chipset
+Date: Wed, 16 Aug 2017 12:46:19 +0200
+Message-ID: <CALmBKt=sRsJvQOR6vWUa_hCjrzL3t2WFGxhm2+pm0C2mCt8ibA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f176.google.com (mail-qt0-f176.google.com
+ [209.85.216.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B8BF266B1C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 12:46:20 +0200 (CEST)
+Received: by mail-qt0-f176.google.com with SMTP id a18so18444648qta.0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 03:46:20 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Make these const as they are only stored in the compr_ops field of a
-snd_soc_platform_driver structure, which is of type const.
-Done using Coccinelle
+hello from europe
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/soc/codecs/cs47l24.c | 2 +-
- sound/soc/codecs/wm5102.c  | 2 +-
- sound/soc/codecs/wm5110.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+I can provide logging informations
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 505dbc9..e09fc8f 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1203,7 +1203,7 @@ static struct regmap *cs47l24_get_regmap(struct device *dev)
- 	},
- };
- 
--static struct snd_compr_ops cs47l24_compr_ops = {
-+static const struct snd_compr_ops cs47l24_compr_ops = {
- 	.open = cs47l24_open,
- 	.free = wm_adsp_compr_free,
- 	.set_params = wm_adsp_compr_set_params,
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index f500692..72486bf 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -2017,7 +2017,7 @@ static struct regmap *wm5102_get_regmap(struct device *dev)
- 	},
- };
- 
--static struct snd_compr_ops wm5102_compr_ops = {
-+static const struct snd_compr_ops wm5102_compr_ops = {
- 	.open = wm5102_open,
- 	.free = wm_adsp_compr_free,
- 	.set_params = wm_adsp_compr_set_params,
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index d6fae139..858a24f 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2372,7 +2372,7 @@ static struct regmap *wm5110_get_regmap(struct device *dev)
- 	},
- };
- 
--static struct snd_compr_ops wm5110_compr_ops = {
-+static const struct snd_compr_ops wm5110_compr_ops = {
- 	.open = wm5110_open,
- 	.free = wm_adsp_compr_free,
- 	.set_params = wm_adsp_compr_set_params,
+http://www.alsa-project.org/db/?f=6fb68d0201f421b41fe65677fde2ec5b1c9d4429
+
+Thanks you
+
 -- 
-1.9.1
+Lionel Van Winnendaele
