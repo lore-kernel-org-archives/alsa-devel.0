@@ -1,18 +1,16 @@
-From: Naveen M <naveen.m@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl: Enabling ASRC for RT5663
- codec on kabylake platform
-Date: Wed, 16 Aug 2017 16:17:47 +0530
-Message-ID: <1900.55125062845$1505308748@news.gmane.org>
-References: <1502879159-23771-1-git-send-email-naveen.m@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
+Return-Path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  by alsa0.perex.cz (Postfix) with ESMTP id 830C5266B1C
  for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 12:47:54 +0200 (CEST)
+Date: Wed, 16 Aug 2017 16:17:47 +0530
+From: Naveen M <naveen.m@intel.com>
+Message-ID: <20170816104747.GA26215@nm-B85M-D3Hnaveen.m@intel.com>
+References: <1502879159-23771-1-git-send-email-naveen.m@intel.com>
+MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <1502879159-23771-1-git-send-email-naveen.m@intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: kbl: Enabling ASRC for RT5663
+ codec on kabylake platform
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,11 +18,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 Cc: Shruthi Sudhakar <shruthi.sudhakar@intel.com>, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Harsha Priya N <harshapriya.n@intel.com>, pierre-louis.bossart@intel.com
-List-Id: alsa-devel@alsa-project.org
+List-ID: <alsa-devel@alsa-project.org>
 
 On Wed, Aug 16, 2017 at 03:55:59PM +0530, Naveen M wrote:
 
@@ -73,3 +73,7 @@ Missed Version tagging, shall repost. Thanks
 > 
 
 -- 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
