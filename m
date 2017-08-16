@@ -1,65 +1,62 @@
-From: Naveen M <naveen.m@intel.com>
-Subject: [PATCH] ASoC: Intel: kbl: Enabling ASRC for RT5663
-	codec on kabylake platform
-Date: Wed, 16 Aug 2017 15:55:59 +0530
-Message-ID: <1502879159-23771-1-git-send-email-naveen.m@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E1393266B1C
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 12:26:08 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Shruthi Sudhakar <shruthi.sudhakar@intel.com>, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, Harsha Priya N <harshapriya.n@intel.com>, pierre-louis.bossart@intel.com
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: codecs: make snd_compr_ops const
+Date: Wed, 16 Aug 2017 16:09:01 +0530
+Message-ID: <1502879941-16010-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: julia.lawall@lip6.fr, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Harsha Priya N <harshapriya.n@intel.com>
+Make these const as they are only stored in the compr_ops field of a
+snd_soc_platform_driver structure, which is of type const.
+Done using Coccinelle
 
-Patch fixes cracking noise in rt5663 headphones for kbl platform by
-calling rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER to set
-ASRC.
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/codecs/cs47l24.c | 2 +-
+ sound/soc/codecs/wm5102.c  | 2 +-
+ sound/soc/codecs/wm5110.c  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-The ASRC function is for asynchronous MCLK and LRCLK. For RT5663 ASRC
-should be enabled to support pcm format with 100fs.
-ASRC function will track i2s clock and generate corresponding
-system clock for codec. Calling this func helps select clock source
-for both RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters
-which fixes the crackling sound.
-
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Shruthi Sudhakar <shruthi.sudhakar@intel.com>
-Signed-off-by: Naveen M <naveen.m@intel.com>
-
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index f9ba977..29b50e4 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -312,11 +312,13 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 505dbc9..e09fc8f 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1203,7 +1203,7 @@ static struct regmap *cs47l24_get_regmap(struct device *dev)
+ 	},
+ };
  
--	ret = snd_soc_dai_set_sysclk(codec_dai,
--			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
--	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
-+	rt5663_sel_asrc_clk_src(codec_dai->codec,
-+			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
-+			RT5663_CLK_SEL_I2S1_ASRC);
+-static struct snd_compr_ops cs47l24_compr_ops = {
++static const struct snd_compr_ops cs47l24_compr_ops = {
+ 	.open = cs47l24_open,
+ 	.free = wm_adsp_compr_free,
+ 	.set_params = wm_adsp_compr_set_params,
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index f500692..72486bf 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2017,7 +2017,7 @@ static struct regmap *wm5102_get_regmap(struct device *dev)
+ 	},
+ };
  
-+	ret = snd_soc_dai_set_sysclk(codec_dai,
-+			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
+-static struct snd_compr_ops wm5102_compr_ops = {
++static const struct snd_compr_ops wm5102_compr_ops = {
+ 	.open = wm5102_open,
+ 	.free = wm_adsp_compr_free,
+ 	.set_params = wm_adsp_compr_set_params,
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index d6fae139..858a24f 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2372,7 +2372,7 @@ static struct regmap *wm5110_get_regmap(struct device *dev)
+ 	},
+ };
  
+-static struct snd_compr_ops wm5110_compr_ops = {
++static const struct snd_compr_ops wm5110_compr_ops = {
+ 	.open = wm5110_open,
+ 	.free = wm_adsp_compr_free,
+ 	.set_params = wm_adsp_compr_set_params,
 -- 
 1.9.1
