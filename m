@@ -1,15 +1,20 @@
-From: Naveen M <naveen.m@intel.com>
-Subject: [PATCH v2] ASoC: Intel: kbl: Enabling ASRC for RT5663
-	codec on kabylake platform
-Date: Wed, 16 Aug 2017 16:19:55 +0530
-Message-ID: <1502880595-26583-1-git-send-email-naveen.m@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/9] ASoC: cygnus: Update bindings for
+	audio clock changes
+Date: Wed, 16 Aug 2017 11:59:54 +0100
+Message-ID: <20170816105954.ve434zeeqinweo5a@sirena.org.uk>
+References: <1502748417-26417-1-git-send-email-lori.hikichi@broadcom.com>
+ <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
+ <20170815171424.whcy4mftex6sgzgj@sirena.org.uk>
+ <d7e7144b-26c7-b96a-663d-03744bb60c36@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4049168930419354795=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id D2F50266B1C
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 12:50:10 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C398266B1C
+ for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 13:00:06 +0200 (CEST)
+In-Reply-To: <d7e7144b-26c7-b96a-663d-03744bb60c36@broadcom.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,47 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Shruthi Sudhakar <shruthi.sudhakar@intel.com>, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, Harsha Priya N <harshapriya.n@intel.com>, pierre-louis.bossart@intel.com
+To: Lori Hikichi <lori.hikichi@broadcom.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Harsha Priya N <harshapriya.n@intel.com>
 
-Patch fixes cracking noise in rt5663 headphones for kbl platform by
-calling rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER to set
-ASRC.
+--===============4049168930419354795==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hu3g6i46vczsjiqa"
+Content-Disposition: inline
 
-The ASRC function is for asynchronous MCLK and LRCLK. For RT5663 ASRC
-should be enabled to support pcm format with 100fs.
-ASRC function will track i2s clock and generate corresponding
-system clock for codec. Calling this func helps select clock source
-for both RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters
-which fixes the crackling sound.
 
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Shruthi Sudhakar <shruthi.sudhakar@intel.com>
-Signed-off-by: Naveen M <naveen.m@intel.com>
+--hu3g6i46vczsjiqa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index f9ba977..29b50e4 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -312,11 +312,13 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
- 
--	ret = snd_soc_dai_set_sysclk(codec_dai,
--			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
--	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
-+	rt5663_sel_asrc_clk_src(codec_dai->codec,
-+			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
-+			RT5663_CLK_SEL_I2S1_ASRC);
- 
-+	ret = snd_soc_dai_set_sysclk(codec_dai,
-+			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
- 
--- 
-1.9.1
+On Tue, Aug 15, 2017 at 12:29:44PM -0700, Lori Hikichi wrote:
+
+> I have put the mux assignment in DT because the assignment is a
+> static property and did not need run time programmability from the
+> machine driver.
+
+Why is this a static property, what prevents something wanting to change
+things at runtime?  You might be running with simpler setups now but
+perhaps you'll run into a more complex use case later?
+
+--hu3g6i46vczsjiqa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmUJaoACgkQJNaLcl1U
+h9DBVQf/QYakhCkjI6NH7WGhvsWA5pimykDByuAWlb1OYQtKrfLZOI8PypKA3Qxv
+3l94ooRw/VJyaQ+EN8mGfAJHhKRkSOKyBbTaPZgYG1xfO++2q+bOgUF4rmI2tvgZ
+MohWccAMean5OUpvIHRjWGdmjRYPh04HhMQB8sa1lKqVy8NTSkSPxOCUnOFV7PSz
+oX2L9haenpow4IuaUXZuWGpG/dqmHt+GAjF2/2IwEsClKvFL1DhclVoP6NMLQQcq
+irKN9eAkWaJ/4hDczz+/rDDdEkBf07lSxJKaJCk5vqL8bPmqN5Zx1XMl14wM/N7Z
+EZRJPW36rJLHv/xsmKsc0PL2aXB/IA==
+=o7VN
+-----END PGP SIGNATURE-----
+
+--hu3g6i46vczsjiqa--
+
+--===============4049168930419354795==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4049168930419354795==--
