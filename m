@@ -1,105 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Set reasonable compress id string" to the asoc tree
-Date: Wed, 16 Aug 2017 17:02:06 +0100
-Message-ID: <E1di0li-0003O2-WD@debutante>
-References: <1502894873-15063-1-git-send-email-dolinux.peng@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502894873-15063-1-git-send-email-dolinux.peng@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peng Donglin <dolinux.peng@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, liam.r.girdwood@linux.intel.com, rf@opensource.wolfsonmicro.com, pierre-louis.bossart@linux.intel.com, vinod.koul@intel.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Wolfram Sang <wsa@the-dreams.de>
+Subject: Re: [PATCH v3 1/4] i2c: add helpers to ease DMA handling
+Date: Wed, 16 Aug 2017 18:06:29 +0200
+Message-ID: <20170816160628.nlthmtgusg3qtkkh@ninjato>
+References: <20170718102339.28726-1-wsa+renesas@sang-engineering.com>
+ <20170718102339.28726-2-wsa+renesas@sang-engineering.com>
+ <CAMuHMdUiVH5FarZLaJ=_aon2LOApoTgH6aZomjS3BgcdCcPY7Q@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nsrjp7y3b3zb64fa"
+Return-path: <linux-i2c-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUiVH5FarZLaJ=_aon2LOApoTgH6aZomjS3BgcdCcPY7Q@mail.gmail.com>
+Sender: linux-i2c-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>, Linux I2C <linux-i2c@vger.kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, linux-iio@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: compress: Set reasonable compress id string
+--nsrjp7y3b3zb64fa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> Right:
+>=20
+> drivers/i2c/i2c-core-base.c:2310:15: error: 'i2c_release_bounce_buf'
+> undeclared here (not in a function)
+>  EXPORT_SYMBOL_GPL(i2c_release_bounce_buf);
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Thanks. I am just now working on V4 currently which is a redesign.
+I'll write more in an hour or so.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--nsrjp7y3b3zb64fa
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQIzBAABCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlmUbYEACgkQFA3kzBSg
+Kba39g//X32uCcGGCEPDlgr0TB3ouPKuyEiPphMokvbPgcxxwlOnZWfsbo5wP2aN
+WdiDI99ElKtFO/o4/bD39yvteWVR6Twp3z+kvbqXfUzP/2WMQOb5vU6VhnqmLjyl
+0sClEEnfFsmmzJakIx7f+Vbh719MQpR2JM6UZ9SzYZ34fQqfPQRa40bg7zdX4CaU
++6lDv8195SmlSIdLZf0vjo8YAfRUHYd9ptCVeld+Kp9D+rZSugGjOWXyUnZDpjvR
+Gq9jf/ZLwWJDl04mIR8kcRtmDJzp7gYMtJua042T7I+qzE3NU86RUGKnbyagB5p+
+o+MRouHQjNaBqP9xTfkdqjg1DqHR87KJ299hAOFmzIQMFBjgCjNNf3HkttZij9o9
+40HPj2ox45uzCoxJ8wTxEqyxUW+DIKI2fZTE37yGH46MhchKyl2FflpYAHFF+twA
+RGuBea1GtBHgghamk94W+lfVKR1Wl+iCCkAZU26mzus0ahH3SvJ/xeHRGFHFDlJ4
+LV731GUhReuNJWUjQcRuAepU7/6wUZxwthOgKpyQBdeu0IPCYfPGMD3dnHjorosc
+45s7GuEpczxurtbv/r+ldha9bj8MYcRi11N/YRNleQp8HLmazZPu9oMHeXNQp7yi
+1zs0o71HwZlKLpur3/ALHH5JLgbuOyPHfN4io2MrLI1oyvLWs30=
+=WI+Q
+-----END PGP SIGNATURE-----
 
->From aeb6fa0f15c71a18f757d1686822b6c34cf81399 Mon Sep 17 00:00:00 2001
-From: Peng Donglin <dolinux.peng@gmail.com>
-Date: Wed, 16 Aug 2017 22:47:53 +0800
-Subject: [PATCH] ASoC: compress: Set reasonable compress id string
-
-For dynamic compress rtd, the codec_dai may not have any actual
-meaning(like snd-soc-dummy-dai), so compress id can just use the
-value of dai_link->stream_name. But for others, its codec_dai
-has actual meaning, so compress id can include codec_dai name.
-
-Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-compress.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 6c867d50e036..2cb8d3b55fbc 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -737,9 +737,6 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	}
- 
- 	/* check client and interface hw capabilities */
--	snprintf(new_name, sizeof(new_name), "%s %s-%d",
--			rtd->dai_link->stream_name, codec_dai->name, num);
--
- 	if (codec_dai->driver->playback.channels_min)
- 		playback = 1;
- 	if (codec_dai->driver->capture.channels_min)
-@@ -758,7 +755,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		return -EINVAL;
- 	}
- 
--	if(playback)
-+	if (playback)
- 		direction = SND_COMPRESS_PLAYBACK;
- 	else
- 		direction = SND_COMPRESS_CAPTURE;
-@@ -794,19 +791,18 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 		else if (rtd->dai_link->dpcm_capture)
- 			be_pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream->private_data = rtd;
- 		memcpy(compr->ops, &soc_compr_dyn_ops, sizeof(soc_compr_dyn_ops));
--	} else
-+	} else {
-+		snprintf(new_name, sizeof(new_name), "%s %s-%d",
-+			rtd->dai_link->stream_name, codec_dai->name, num);
-+
- 		memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
-+	}
- 
- 	/* Add copy callback for not memory mapped DSPs */
- 	if (platform->driver->compr_ops && platform->driver->compr_ops->copy)
- 		compr->ops->copy = soc_compr_copy;
- 
- 	mutex_init(&compr->lock);
--
--	snprintf(new_name, sizeof(new_name), "%s %s-%d",
--		 rtd->dai_link->stream_name,
--		 rtd->codec_dai->name, num);
--
- 	ret = snd_compress_new(rtd->card->snd_card, num, direction,
- 				new_name, compr);
- 	if (ret < 0) {
--- 
-2.13.3
+--nsrjp7y3b3zb64fa--
