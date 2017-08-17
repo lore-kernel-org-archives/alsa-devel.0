@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 06/15] ALSA: azt2320: constify pnp_card_device_id
-Date: Thu, 17 Aug 2017 15:36:21 +0530
-Message-ID: <1502964390-6927-7-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 09/15] ALSA: es1688: constify pnp_card_device_id
+Date: Thu, 17 Aug 2017 15:36:24 +0530
+Message-ID: <1502964390-6927-10-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,21 +16,21 @@ const pnp_card_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/isa/azt2320.c | 2 +-
+ sound/isa/es1688/es1688.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/isa/azt2320.c b/sound/isa/azt2320.c
-index fff186f..4e6fad4 100644
---- a/sound/isa/azt2320.c
-+++ b/sound/isa/azt2320.c
-@@ -79,7 +79,7 @@ struct snd_card_azt2320 {
- 	struct snd_wss *chip;
- };
+diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
+index 36320e7..a826c13 100644
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -321,7 +321,7 @@ static int snd_es968_pnp_resume(struct pnp_card_link *pcard)
+ }
+ #endif
  
--static struct pnp_card_device_id snd_azt2320_pnpids[] = {
-+static const struct pnp_card_device_id snd_azt2320_pnpids[] = {
- 	/* PRO16V */
- 	{ .id = "AZT1008", .devs = { { "AZT1008" }, { "AZT2001" }, } },
- 	/* Aztech Sound Galaxy 16 */
+-static struct pnp_card_device_id snd_es968_pnpids[] = {
++static const struct pnp_card_device_id snd_es968_pnpids[] = {
+ 	{ .id = "ESS0968", .devs = { { "@@@0968" }, } },
+ 	{ .id = "ESS0968", .devs = { { "ESS0968" }, } },
+ 	{ .id = "", } /* end */
 -- 
 2.7.4
