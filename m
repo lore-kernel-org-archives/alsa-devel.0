@@ -1,85 +1,116 @@
-From: Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH v2 1/3] ASoC: rockchip: Parse dai links
-	from dts
-Date: Wed, 16 Aug 2017 16:50:58 -0700
-Message-ID: <20170816235058.GA173745@google.com>
-References: <1502340898-28403-1-git-send-email-jeffy.chen@rock-chips.com>
- <1502340898-28403-2-git-send-email-jeffy.chen@rock-chips.com>
- <20170816215909.GC109008@google.com>
- <5994CD58.7030406@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f52.google.com (mail-pg0-f52.google.com [74.125.83.52])
- by alsa0.perex.cz (Postfix) with ESMTP id A4165266BF6
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 01:51:02 +0200 (CEST)
-Received: by mail-pg0-f52.google.com with SMTP id t80so3261233pgb.5
- for <alsa-devel@alsa-project.org>; Wed, 16 Aug 2017 16:51:02 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <5994CD58.7030406@rock-chips.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jeffy <jeffy.chen@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
+From: Lin Huang <hl@rock-chips.com>
+Subject: [PATCH v2 1/2] ASoC: codec: use enable pin to control dmic start and stop
+Date: Thu, 17 Aug 2017 10:24:44 +0800
+Message-ID: <1502936685-24414-1-git-send-email-hl@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, arnaud.pouliquen@st.com, dgreif@chromium.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, briannorris@chromium.org, linux-kernel@vger.kernel.org, tiwai@suse.com, mka@chromium.org, dianders@chromium.org, huang lin <hl@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-El Thu, Aug 17, 2017 at 06:55:20AM +0800 jeffy ha dit:
+From: huang lin <hl@rock-chips.com>
 
-> hi matthias,
-> 
-> thanks for your suggestion.
-> 
-> On 08/17/2017 05:59 AM, Matthias Kaehlcke wrote:
-> >El Thu, Aug 10, 2017 at 12:54:56PM +0800 Jeffy Chen ha dit:
-> >
-> >>>Refactor rockchip_sound_probe, parse dai links from dts instead of
-> >>>hard coding them.
-> >Mark doesn't seem to be overly convinced that 'rockchip,codec-names'
-> >is a good idea (https://lkml.org/lkml/2017/8/10/511).
-> >
-> >How about using something like this instead:
-> >
-> >static const char *dailink_compat[] = {
-> >	[DAILINK_MAX98357A] = "maxim,max98357a",
-> >	[DAILINK_RT5514] = "realtek,rt5514",
-> >	[DAILINK_DA7219] = "dlg,da7219",
-> >};
-> i've thought about this too, but i'm working on converting rt5514
-> dsp(spi) from codec name matching to of_node, and it would have the
-> same compatible with rt5514(i2c)
+on some board use enable pin to control dmic start and stop,
+so add this feature in dmic driver.
 
-Bummer!
+Signed-off-by: Lin Huang <hl@rock-chips.com>
+---
+ sound/soc/codecs/Kconfig |  2 +-
+ sound/soc/codecs/dmic.c  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+), 1 deletion(-)
 
-I wonder if a relatively inoffensive DT hack would be an appropriate
-solution in this case, since the conflicting compatible string is a
-somewhat special case and this change only affects the DT and the
-driver/glue of a specific device (family).
-
-The hack would consist in adding an additional 'compatible' entry to
-the DT entry of the codec, which is ignored by the rt5514 driver, and
-only used by the sound glue to identify it:
-
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-@@ -671,7 +671,7 @@ ap_i2c_mic: &i2c1 {
-        i2c-scl-rising-time-ns = <300>;
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 010811e..d98233b 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -71,7 +71,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_DA732X if I2C
+ 	select SND_SOC_DA9055 if I2C
+ 	select SND_SOC_DIO2125
+-	select SND_SOC_DMIC
++	select SND_SOC_DMIC if GPIOLIB
+ 	select SND_SOC_ES8316 if I2C
+ 	select SND_SOC_ES8328_SPI if SPI_MASTER
+ 	select SND_SOC_ES8328_I2C if I2C
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index 12e07f9..b88a1ee 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -19,6 +19,8 @@
+  *
+  */
  
-        headsetcodec: rt5514@57 {
--               compatible = "realtek,rt5514";
-+               compatible = "realtek,rt5514", "realtek,rt5514-i2c";
-
-
-And then use "realtek,rt5514-i2c" in dailink_compat.
-
-Mark, would you prefer a hack like this over the list of codec names
-or do you have any other suggestions?
-
-Matthias
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -27,6 +29,34 @@
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ 
++static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
++		int cmd, struct snd_soc_dai *dai)
++{
++	struct gpio_desc *dmic_en = snd_soc_dai_get_drvdata(dai);
++
++	if (!dmic_en)
++		return 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		gpiod_set_value(dmic_en, 1);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		gpiod_set_value(dmic_en, 0);
++		break;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops dmic_dai_ops = {
++	.trigger	= dmic_daiops_trigger,
++};
++
+ static struct snd_soc_dai_driver dmic_dai = {
+ 	.name = "dmic-hifi",
+ 	.capture = {
+@@ -38,8 +68,23 @@ static struct snd_soc_dai_driver dmic_dai = {
+ 			| SNDRV_PCM_FMTBIT_S24_LE
+ 			| SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
++	.ops    = &dmic_dai_ops,
+ };
+ 
++static int dmic_codec_probe(struct snd_soc_codec *codec)
++{
++	struct gpio_desc *dmic_en;
++
++	dmic_en = devm_gpiod_get_optional(codec->dev,
++					"dmicen", GPIOD_OUT_LOW);
++	if (IS_ERR(dmic_en))
++		return PTR_ERR(dmic_en);
++
++	snd_soc_codec_set_drvdata(codec, dmic_en);
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget dmic_dapm_widgets[] = {
+ 	SND_SOC_DAPM_AIF_OUT("DMIC AIF", "Capture", 0,
+ 			     SND_SOC_NOPM, 0, 0),
+@@ -51,6 +96,7 @@ static const struct snd_soc_dapm_route intercon[] = {
+ };
+ 
+ static const struct snd_soc_codec_driver soc_dmic = {
++	.probe = dmic_codec_probe,
+ 	.component_driver = {
+ 		.dapm_widgets		= dmic_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(dmic_dapm_widgets),
+-- 
+2.7.4
