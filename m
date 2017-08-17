@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: generic: make snd_soc_ops const" to the asoc tree
-Date: Thu, 17 Aug 2017 18:13:08 +0100
-Message-ID: <E1diOM0-0008OR-Bl@debutante>
-References: <1502902770-3758-4-git-send-email-bhumirks@gmail.com>
+Subject: Applied "ASoC: aux1x: make snd_soc_ops const" to the asoc tree
+Date: Thu, 17 Aug 2017 18:13:15 +0100
+Message-ID: <E1diOM7-0008Qv-6W@debutante>
+References: <1502902770-3758-2-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502902770-3758-4-git-send-email-bhumirks@gmail.com>
+In-Reply-To: <1502902770-3758-2-git-send-email-bhumirks@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Bhumika Goyal <bhumirks@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, heiko@sntech.de, krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: generic: make snd_soc_ops const
+   ASoC: aux1x: make snd_soc_ops const
 
 has been applied to the asoc tree at
 
@@ -37,47 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From e23d834876390d6b8d4d35057e9ecd899a44193a Mon Sep 17 00:00:00 2001
+>From 052fba77f57b9f243ad3a45a21c809bddcd03627 Mon Sep 17 00:00:00 2001
 From: Bhumika Goyal <bhumirks@gmail.com>
-Date: Wed, 16 Aug 2017 22:29:26 +0530
-Subject: [PATCH] ASoC: generic: make snd_soc_ops const
+Date: Wed, 16 Aug 2017 22:29:24 +0530
+Subject: [PATCH] ASoC: aux1x: make snd_soc_ops const
 
-Make these const as they are only stored in the ops field of a
+Make this const as it is only stored in the ops field of a
 snd_soc_dai_link structure, which is const.
 Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c     | 2 +-
- sound/soc/generic/audio-graph-scu-card.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/au1x/db1200.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 105ec3a6e30d..d3497a3e14ca 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -95,7 +95,7 @@ static void asoc_graph_card_shutdown(struct snd_pcm_substream *substream)
- 	asoc_simple_card_clk_disable(&dai_props->codec_dai);
+diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
+index 5c73061d912a..301e1fc9a377 100644
+--- a/sound/soc/au1x/db1200.c
++++ b/sound/soc/au1x/db1200.c
+@@ -99,7 +99,7 @@ static int db1200_i2s_startup(struct snd_pcm_substream *substream)
+ 	return 0;
  }
  
--static struct snd_soc_ops asoc_graph_card_ops = {
-+static const struct snd_soc_ops asoc_graph_card_ops = {
- 	.startup = asoc_graph_card_startup,
- 	.shutdown = asoc_graph_card_shutdown,
+-static struct snd_soc_ops db1200_i2s_wm8731_ops = {
++static const struct snd_soc_ops db1200_i2s_wm8731_ops = {
+ 	.startup	= db1200_i2s_startup,
  };
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index dcd2df37bc3b..3da9acd6844e 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -56,7 +56,7 @@ static void asoc_graph_card_shutdown(struct snd_pcm_substream *substream)
- 	asoc_simple_card_clk_disable(dai_props);
- }
  
--static struct snd_soc_ops asoc_graph_card_ops = {
-+static const struct snd_soc_ops asoc_graph_card_ops = {
- 	.startup = asoc_graph_card_startup,
- 	.shutdown = asoc_graph_card_shutdown,
- };
 -- 
 2.13.3
