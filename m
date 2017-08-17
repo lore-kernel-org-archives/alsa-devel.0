@@ -1,11 +1,11 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 06/12] ALSA: pci: make snd_pcm_hardware const
-Date: Thu, 17 Aug 2017 14:45:54 +0530
-Message-ID: <1502961360-22063-7-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 08/12] ALSA: ppc: make snd_pcm_hardware const
+Date: Thu, 17 Aug 2017 14:45:56 +0530
+Message-ID: <1502961360-22063-9-git-send-email-bhumirks@gmail.com>
 References: <1502961360-22063-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
 In-Reply-To: <1502961360-22063-1-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-parisc-owner@vger.kernel.org
 To: julia.lawall@lip6.fr, linux@armlinux.org.uk, perex@perex.cz, tiwai@suse.com, benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
@@ -15,48 +15,31 @@ Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/au88x0/au88x0_pcm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/ppc/pmac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/au88x0/au88x0_pcm.c b/sound/pci/au88x0/au88x0_pcm.c
-index 848eb3c..53714e0 100644
---- a/sound/pci/au88x0/au88x0_pcm.c
-+++ b/sound/pci/au88x0/au88x0_pcm.c
-@@ -30,7 +30,7 @@
- #define VORTEX_PCM_TYPE(x) (x->name[40])
+diff --git a/sound/ppc/pmac.c b/sound/ppc/pmac.c
+index a5843fc..45f0295 100644
+--- a/sound/ppc/pmac.c
++++ b/sound/ppc/pmac.c
+@@ -509,7 +509,7 @@ static void snd_pmac_pcm_update(struct snd_pmac *chip, struct pmac_stream *rec)
+  * hw info
+  */
  
- /* hardware definition */
--static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
-+static const struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
- 	.info =
- 	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
- 	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-@@ -51,7 +51,7 @@
+-static struct snd_pcm_hardware snd_pmac_playback =
++static const struct snd_pcm_hardware snd_pmac_playback =
+ {
+ 	.info =			(SNDRV_PCM_INFO_INTERLEAVED |
+ 				 SNDRV_PCM_INFO_MMAP |
+@@ -528,7 +528,7 @@ static void snd_pmac_pcm_update(struct snd_pmac *chip, struct pmac_stream *rec)
+ 	.periods_max =		PMAC_MAX_FRAGS,
  };
  
- #ifndef CHIP_AU8820
--static struct snd_pcm_hardware snd_vortex_playback_hw_a3d = {
-+static const struct snd_pcm_hardware snd_vortex_playback_hw_a3d = {
- 	.info =
- 	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
- 	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-@@ -71,7 +71,7 @@
- 	.periods_max = 64,
- };
- #endif
--static struct snd_pcm_hardware snd_vortex_playback_hw_spdif = {
-+static const struct snd_pcm_hardware snd_vortex_playback_hw_spdif = {
- 	.info =
- 	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
- 	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
-@@ -94,7 +94,7 @@
- };
- 
- #ifndef CHIP_AU8810
--static struct snd_pcm_hardware snd_vortex_playback_hw_wt = {
-+static const struct snd_pcm_hardware snd_vortex_playback_hw_wt = {
- 	.info = (SNDRV_PCM_INFO_MMAP |
- 		 SNDRV_PCM_INFO_INTERLEAVED |
- 		 SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_MMAP_VALID),
+-static struct snd_pcm_hardware snd_pmac_capture =
++static const struct snd_pcm_hardware snd_pmac_capture =
+ {
+ 	.info =			(SNDRV_PCM_INFO_INTERLEAVED |
+ 				 SNDRV_PCM_INFO_MMAP |
 -- 
 1.9.1
+
