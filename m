@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 21/23] aplay: add a parser for channel map
-	API
-Date: Thu, 17 Aug 2017 21:00:02 +0900
-Message-ID: <20170817120004.15326-22-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 17/23] aplay: add a sub-command to print
+	list of PCMs/devices
+Date: Thu, 17 Aug 2017 20:59:58 +0900
+Message-ID: <20170817120004.15326-18-o-takashi@sakamocchi.jp>
 References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 18E3C266F03
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:16 +0200 (CEST)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F105C266EF9
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:15 +0200 (CEST)
 In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,251 +25,320 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Current implementation of aplay uses channel map API, by an option
-'--chmap' (-m). This API allows applications to get/set channel
-position by getting position array; e.g. 'FR,FL'.
+In current implementation of aplay, available PCM nodes and devices are
+listed by options '--list-pcms' (-L) and '--list-devices' (-l).
 
-However, current implementation of ALSA PCM cure disallows applications
-to set it as they prefer. This commit adds partly support for this API.
+This commit adds a file to handle the action. In future commit, this is
+handled by 'list' sub-command.
 ---
- aplay/options.c   | 28 +++++++++++++++++++++++---
- aplay/options.h   |  1 +
- aplay/xfer-alsa.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++--
- aplay/xfer-alsa.h |  2 ++
- 4 files changed, 86 insertions(+), 5 deletions(-)
+ aplay/Makefile.am   |   7 +-
+ aplay/main.h        |  32 ++++++++
+ aplay/subcmd-list.c | 233 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 270 insertions(+), 2 deletions(-)
+ create mode 100644 aplay/main.h
+ create mode 100644 aplay/subcmd-list.c
 
-diff --git a/aplay/options.c b/aplay/options.c
-index c16269d..7663703 100644
---- a/aplay/options.c
-+++ b/aplay/options.c
-@@ -199,7 +199,8 @@ static int apply_policies(struct context_options *opts,
- 			  const char *cntr_format_literal,
- 			  const char *node_literal,
- 			  const char *sample_format_literal,
--			  const char *vu_mode_literal)
-+			  const char *vu_mode_literal,
-+			  const char *chmap_literal)
- {
- 	int err;
+diff --git a/aplay/Makefile.am b/aplay/Makefile.am
+index c55fac7..0113b5c 100644
+--- a/aplay/Makefile.am
++++ b/aplay/Makefile.am
+@@ -12,7 +12,8 @@ noinst_HEADERS = \
+ 	waiter.h \
+ 	options.h \
+ 	xfer.h \
+-	xfer-alsa.h
++	xfer-alsa.h \
++	main.h
  
-@@ -232,6 +233,20 @@ static int apply_policies(struct context_options *opts,
- 			return err;
- 	}
+ aplay_SOURCES = \
+ 	formats.h \
+@@ -39,7 +40,9 @@ aplay_SOURCES = \
+ 	xfer-alsa-io-mmap.c \
+ 	xfer-alsa-io-rw.c \
+ 	xfer-alsa-sched-irq.c \
+-	xfer-alsa-sched-timer.c
++	xfer-alsa-sched-timer.c \
++	main.h \
++	subcmd-list.c
  
-+	if (chmap_literal) {
-+		snd_pcm_chmap_t *chmap;
-+		chmap = snd_pcm_chmap_parse_string(chmap_literal);
-+		if (chmap == NULL) {
-+			printf(_("Unable to parse channel map string: '%s'\n"),
-+			       chmap_literal);
-+			return -EINVAL;
+ EXTRA_DIST = aplay.1 arecord.1
+ EXTRA_CLEAN = arecord
+diff --git a/aplay/main.h b/aplay/main.h
+new file mode 100644
+index 0000000..21f2269
+--- /dev/null
++++ b/aplay/main.h
+@@ -0,0 +1,32 @@
++/*
++ * main.h - a header for main routine of each sub-commands.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#ifndef __ALSA_UTILS_APLAY_MAIN__H_
++#define __ALSA_UTILS_APLAY_MAIN__H_
++
++#include <stdbool.h>
++#include <gettext.h>
++
++#include <alsa/asoundlib.h>
++
++#ifndef ARRAY_SIZE
++#define ARRAY_SIZE(array)	(sizeof(array)/sizeof(array[0]))
++#endif
++
++enum subcmds {
++	SUBCMD_TRANSFER = 0,
++	SUBCMD_LIST,
++	SUBCMD_HELP,
++	SUBCMD_VERSION,
++};
++
++int subcmd_list(int argc, char *const *argv, snd_pcm_stream_t direction);
++
++int subcmd_transfer(int argc, char *const *argv, snd_pcm_stream_t direction);
++
++#endif
+diff --git a/aplay/subcmd-list.c b/aplay/subcmd-list.c
+new file mode 100644
+index 0000000..28862e1
+--- /dev/null
++++ b/aplay/subcmd-list.c
+@@ -0,0 +1,233 @@
++/*
++ * subcmd-list.c - operations for list sub command.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "main.h"
++
++#include <getopt.h>
++
++static int dump_device(snd_ctl_t *handle, const char *id, const char *name,
++		       snd_pcm_stream_t direction, snd_pcm_info_t *info)
++{
++	unsigned int count;
++	int i;
++	int err;
++
++	printf(_("card %i: %s [%s], device %i: %s [%s]\n"),
++	       snd_pcm_info_get_card(info), id, name,
++	       snd_pcm_info_get_device(info), snd_pcm_info_get_id(info),
++	       snd_pcm_info_get_name(info));
++
++	count = snd_pcm_info_get_subdevices_count(info);
++	printf(_("  Subdevices: %i/%i\n"),
++	       snd_pcm_info_get_subdevices_avail(info), count);
++
++	for (i = 0; i < count; ++i) {
++		snd_pcm_info_set_subdevice(info, i);
++
++		err = snd_ctl_pcm_info(handle, info);
++		if (err < 0) {
++			printf("control digital audio playback info (%i): %s",
++			       snd_pcm_info_get_card(info), snd_strerror(err));
++			continue;
 +		}
-+		free(chmap);
-+		opts->chmap_literal = strdup(chmap_literal);
-+		if (opts->chmap_literal == NULL)
-+			return -ENOMEM;
++
++		printf(_("  Subdevice #%i: %s\n"),
++		       i, snd_pcm_info_get_subdevice_name(info));
 +	}
 +
- 	if (opts->samples_per_frame > 0) {
- 		if (opts->samples_per_frame < 1 ||
- 		    opts->samples_per_frame > 256) {
-@@ -316,7 +331,7 @@ static int apply_policies(struct context_options *opts,
- int context_options_init(struct context_options *opts, int argc,
- 			 char *const *argv, snd_pcm_stream_t direction)
- {
--	static const char *s_opts = "hqid:vt:D:c:f:r:MNF:A:R:T:B:IV:";
-+	static const char *s_opts = "hqid:vt:D:c:f:r:MNF:A:R:T:B:IV:m:";
- 	static const struct option l_opts[] = {
- 		/* For generic purposes. */
- 		{"help",		0, 0, 'h'},
-@@ -353,12 +368,14 @@ int context_options_init(struct context_options *opts, int argc,
- 		{"dump-hw-params",	0, 0, OPT_DUMP_HWPARAMS},
- 		{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
- 		{"vumeter",		1, 0, 'V'},
-+		{"chmap",		1, 0, 'm'},
- 		{NULL,			0, 0, 0},
- 	};
- 	const char *cntr_format_literal = NULL;
- 	const char *node_literal = NULL;
- 	const char *sample_format_literal = NULL;
- 	const char *vu_mode_literal = NULL;
-+	const char *chmap_literal = NULL;
- 	int c;
- 	int err = 0;
- 
-@@ -428,6 +445,8 @@ int context_options_init(struct context_options *opts, int argc,
- 			opts->dump_hw_params = true;
- 		else if (c == OPT_FATAL_ERRORS)
- 			opts->fatal_errors = true;
-+		else if (c == 'm')
-+			chmap_literal = optarg;
- 		else
- 			continue;
- 
-@@ -441,7 +460,7 @@ int context_options_init(struct context_options *opts, int argc,
- 
- 	return apply_policies(opts, direction, cntr_format_literal,
- 			      node_literal, sample_format_literal,
--			      vu_mode_literal);
-+			      vu_mode_literal, chmap_literal);
- }
- 
- /*
-@@ -614,6 +633,9 @@ void context_options_destroy(struct context_options *opts)
- 	}
- 	if (opts->node)
- 		free(opts->node);
-+	if (opts->chmap_literal)
-+		free(opts->chmap_literal);
- 	opts->paths = NULL;
- 	opts->node = NULL;
-+	opts->chmap_literal = NULL;
- }
-diff --git a/aplay/options.h b/aplay/options.h
-index 2536275..3bece52 100644
---- a/aplay/options.h
-+++ b/aplay/options.h
-@@ -53,6 +53,7 @@ struct context_options {
- 	bool fatal_errors;
- 
- 	enum vumeter_mode vu_mode;
-+	char *chmap_literal;
- 
- 	char **paths;
- 	unsigned int path_count;
-diff --git a/aplay/xfer-alsa.c b/aplay/xfer-alsa.c
-index 2092f3e..e939005 100644
---- a/aplay/xfer-alsa.c
-+++ b/aplay/xfer-alsa.c
-@@ -53,7 +53,18 @@ static int set_access_hw_param(snd_pcm_t *handle,
- 	return err;
- }
- 
--static void dump_available_hw_params(snd_pcm_hw_params_t *hw_params,
-+static void dump_chmap(const snd_pcm_chmap_t *chmap)
-+{
-+	int i;
-+
-+	printf("    channels: %u\n", chmap->channels);
-+	for (i = 0; i < chmap->channels; ++i)
-+		printf("      ch%u: %s\n",
-+		       i, snd_pcm_chmap_name(chmap->pos[i]));
++	return 0;
 +}
 +
-+static void dump_available_hw_params(snd_pcm_t *handle,
-+				     snd_pcm_hw_params_t *hw_params,
- 				     const char *const node)
- {
- 	unsigned int min_i, max_i;
-@@ -61,6 +72,7 @@ static void dump_available_hw_params(snd_pcm_hw_params_t *hw_params,
- 	snd_pcm_access_mask_t *access_mask;
- 	snd_pcm_format_mask_t *format_mask;
- 	snd_pcm_subformat_mask_t *subformat_mask;
-+	snd_pcm_chmap_query_t **maps;
- 	int i;
- 	int err;
- 
-@@ -158,6 +170,19 @@ static void dump_available_hw_params(snd_pcm_hw_params_t *hw_params,
- 			continue;
- 		printf("    '%s'\n", snd_pcm_subformat_name(i));
- 	}
++static int dump_devices(snd_ctl_t *handle, const char *id, const char *name,
++			snd_pcm_stream_t direction)
++{
++	snd_pcm_info_t *info;
++	int device = -1;
++	int err;
 +
-+	maps = snd_pcm_query_chmaps(handle);
-+	if (maps == NULL)
-+		return;
++	err = snd_pcm_info_malloc(&info);
++	if (err < 0)
++		return err;
 +
-+	printf("  available channel maps:\n");
-+	for (i = 0; maps[i] != NULL; ++i) {
-+		printf("    %u: %s\n", i,
-+		       snd_pcm_chmap_type_name(maps[i]->type));
-+		dump_chmap(&maps[i]->map);
-+	}
-+	snd_pcm_free_chmaps(maps);
++	while (1) {
++		err = snd_ctl_pcm_next_device(handle, &device);
++		if (err < 0)
++			break;
++		if (device < 0)
++			break;
 +
- 	printf("\n");
- }
- 
-@@ -204,8 +229,19 @@ static int xfer_alsa_init(struct xfer_context *xfer,
- 	if (err < 0)
- 		return err;
- 
-+	if (opts->chmap_literal != NULL) {
-+		state->chmap = snd_pcm_chmap_parse_string(opts->chmap_literal);
-+		if (state->chmap == NULL)
-+			return -ENOMEM;
++		snd_pcm_info_set_device(info, device);
++		snd_pcm_info_set_subdevice(info, 0);
++		snd_pcm_info_set_stream(info, direction);
++		err = snd_ctl_pcm_info(handle, info);
++		if (err < 0)
++			continue;
 +
-+		if (xfer->verbose) {
-+			printf("Chmap argument:\n");
-+			dump_chmap(state->chmap);
-+		}
++		err = dump_device(handle, id, name, direction, info);
++		if (err < 0)
++			break;
 +	}
 +
- 	if (xfer->verbose)
--		dump_available_hw_params(state->hw_params, node);
-+		dump_available_hw_params(state->handle, state->hw_params, node);
- 
- 	return set_access_hw_param(state->handle, state->hw_params, opts);
- }
-@@ -262,6 +298,14 @@ static int configure_requested_params(struct alsa_state *state,
- 	}
- 
- 	if (samples_per_frame > 0) {
-+		if (state->chmap) {
-+			if (samples_per_frame != state->chmap->channels) {
-+				printf(_("Mismatch between channel number and "
-+					 "given map: %u %u\n"),
-+				samples_per_frame, state->chmap->channels);
++	free(info);
++	return err;
++}
++
++static int list_devices(snd_pcm_stream_t direction)
++{
++	int card = -1;
++	char name[32];
++	snd_ctl_t *handle;
++	snd_ctl_card_info_t *info;
++	int err;
++
++	err = snd_ctl_card_info_malloc(&info);
++	if (err < 0)
++		return err;
++
++	/* Not found. */
++	if (snd_card_next(&card) < 0 || card < 0)
++		goto end;
++
++	printf(_("**** List of %s Hardware Devices ****\n"),
++	       snd_pcm_stream_name(direction));
++
++	while (card >= 0) {
++		sprintf(name, "hw:%d", card);
++		err = snd_ctl_open(&handle, name, 0);
++		if (err < 0) {
++			printf("control open (%i): %s",
++			       card, snd_strerror(err));
++		} else {
++			err = snd_ctl_card_info(handle, info);
++			if (err < 0) {
++				printf("control hardware info (%i): %s",
++				       card, snd_strerror(err));
++			} else {
++				err = dump_devices(handle,
++					snd_ctl_card_info_get_id(info),
++					snd_ctl_card_info_get_name(info),
++					direction);
 +			}
++			snd_ctl_close(handle);
 +		}
 +
- 		err = snd_pcm_hw_params_set_channels(state->handle,
- 						     state->hw_params,
- 						     samples_per_frame);
-@@ -319,6 +363,7 @@ static int retrieve_actual_params(snd_pcm_hw_params_t *hw_params,
- static void dump_sw_params(struct alsa_state *state)
- {
- 	snd_pcm_uframes_t val_l;
-+	snd_pcm_chmap_t *chmap;
- 	int val_i;
- 	int err;
- 
-@@ -354,6 +399,13 @@ static void dump_sw_params(struct alsa_state *state)
- 		return;
- 	printf("  silence-size: %lu\n", val_l);
- 
-+	chmap = snd_pcm_get_chmap(state->handle);
-+	if (chmap != NULL) {
-+		printf("  current-chmap:\n");
-+		dump_chmap(chmap);
-+		free(chmap);
++		if (err < 0)
++			break;
++
++		/* Go to next. */
++		if (snd_card_next(&card) < 0) {
++			printf("snd_card_next");
++			break;
++		}
++	}
++end:
++	free(info);
++	return err;
++}
++
++static int list_pcms(snd_pcm_stream_t direction)
++{
++	static const char *const filters[] = {
++		[SND_PCM_STREAM_CAPTURE]	= "Input",
++		[SND_PCM_STREAM_PLAYBACK]	= "Output",
++	};
++	const char *filter;
++	void **hints;
++	void **n;
++	char *io;
++	char *name;
++	char *desc;
++
++	if (snd_device_name_hint(-1, "pcm", &hints) < 0)
++		return -EINVAL;
++
++	filter = filters[direction];
++
++	n = hints;
++	for (n = hints; *n != NULL; ++n) {
++		io = snd_device_name_get_hint(*n, "IOID");
++		if (io != NULL && strcmp(io, filter) != 0) {
++			free(io);
++			continue;
++		}
++
++		name = snd_device_name_get_hint(*n, "NAME");
++		desc = snd_device_name_get_hint(*n, "DESC");
++
++		printf("%s\n", name);
++		if (desc == NULL) {
++			free(name);
++			free(desc);
++			continue;
++		}
++
++
++		printf("    ");
++		while (*desc) {
++			if (*desc == '\n')
++				printf("\n    ");
++			else
++				putchar(*desc);
++			desc++;
++		}
++		putchar('\n');
 +	}
 +
- 	printf("\n");
- }
- 
-@@ -539,6 +591,10 @@ static void xfer_alsa_destroy(struct xfer_context *xfer)
- 		snd_pcm_sw_params_free(state->sw_params);
- 	state->hw_params = NULL;
- 	state->sw_params = NULL;
++	snd_device_name_free_hint(hints);
 +
-+	if (state->chmap)
-+		free(state->chmap);
-+	state->chmap = NULL;
- }
- 
- const struct xfer_data xfer_alsa = {
-diff --git a/aplay/xfer-alsa.h b/aplay/xfer-alsa.h
-index 8702685..0257702 100644
---- a/aplay/xfer-alsa.h
-+++ b/aplay/xfer-alsa.h
-@@ -38,6 +38,8 @@ struct alsa_state {
- 	void *private_data;
- 
- 	bool verbose;
++	return 0;
++}
 +
-+	snd_pcm_chmap_t *chmap;
- };
- 
- struct xfer_alsa_io_ops {
++static void print_help(void)
++{
++	printf("help for list sub-command.\n");
++}
++
++int subcmd_list(int argc, char *const *argv, snd_pcm_stream_t direction)
++{
++	static const struct {
++		const char *const category;
++		int (*func)(snd_pcm_stream_t direction);
++	} ops[] = {
++		{"device",	list_devices},
++		{"pcm",		list_pcms},
++	};
++	int i;
++	static const char *s_opts = "hlL";
++	static const struct option l_opts[] = {
++		{"list-devices",	0, NULL, 'l'},
++		{"list-pcms",		0, NULL, 'L'},
++		{NULL,			0, NULL, 0}
++	};
++	int c;
++
++	/* Renewed command system. */
++	if (argc > 2 && !strcmp(argv[1], "list")) {
++		for (i = 0; i < ARRAY_SIZE(ops); ++i) {
++			if (!strcmp(ops[i].category, argv[2]))
++				return ops[i].func(direction);
++		}
++	}
++
++	/* Original command system. */
++	optind = 0;
++	opterr = 0;
++	while (1) {
++		c = getopt_long(argc, argv, s_opts, l_opts, NULL);
++		if (c < 0)
++			break;
++		if (c == 'l')
++			return list_devices(direction);
++		if (c == 'L')
++			return list_pcms(direction);
++	}
++
++	print_help();
++
++	return 1;
++}
 -- 
 2.11.0
