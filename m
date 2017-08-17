@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 08/23] aplay: add an implementation of
-	aligner for multiple target
-Date: Thu, 17 Aug 2017 20:59:49 +0900
-Message-ID: <20170817120004.15326-9-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 16/23] aplay: add implementations to
+	scheduling
+Date: Thu, 17 Aug 2017 20:59:57 +0900
+Message-ID: <20170817120004.15326-17-o-takashi@sakamocchi.jp>
 References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 173A8266EE0
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:13 +0200 (CEST)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id EF5E6266812
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:15 +0200 (CEST)
 In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,442 +25,133 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for aligner with 'multiple' target. This handles
-several files via 'container' functions.
+This commit is planned to add an implementation for scheduling model.
 ---
- aplay/Makefile.am        |   3 +-
- aplay/aligner-multiple.c | 337 +++++++++++++++++++++++++++++++++++++++++++++++
- aplay/aligner.c          |  17 ++-
- aplay/aligner.h          |   4 +
- 4 files changed, 359 insertions(+), 2 deletions(-)
- create mode 100644 aplay/aligner-multiple.c
+ aplay/Makefile.am             |  4 +++-
+ aplay/xfer-alsa-sched-irq.c   | 18 ++++++++++++++++
+ aplay/xfer-alsa-sched-timer.c | 49 +++++++++++++++++++++++++++++++++++++++++++
+ aplay/xfer-alsa.c             |  1 +
+ aplay/xfer-alsa.h             |  3 +++
+ 5 files changed, 74 insertions(+), 1 deletion(-)
+ create mode 100644 aplay/xfer-alsa-sched-irq.c
+ create mode 100644 aplay/xfer-alsa-sched-timer.c
 
 diff --git a/aplay/Makefile.am b/aplay/Makefile.am
-index 68f6411..79f1535 100644
+index 9d5e044..c55fac7 100644
 --- a/aplay/Makefile.am
 +++ b/aplay/Makefile.am
-@@ -20,7 +20,8 @@ aplay_SOURCES = \
- 	container-voc.c \
- 	aligner.h \
- 	aligner.c \
--	aligner-single.c
-+	aligner-single.c \
-+	aligner-multiple.c
+@@ -37,7 +37,9 @@ aplay_SOURCES = \
+ 	xfer-alsa.h \
+ 	xfer-alsa.c \
+ 	xfer-alsa-io-mmap.c \
+-	xfer-alsa-io-rw.c
++	xfer-alsa-io-rw.c \
++	xfer-alsa-sched-irq.c \
++	xfer-alsa-sched-timer.c
  
  EXTRA_DIST = aplay.1 arecord.1
  EXTRA_CLEAN = arecord
-diff --git a/aplay/aligner-multiple.c b/aplay/aligner-multiple.c
+diff --git a/aplay/xfer-alsa-sched-irq.c b/aplay/xfer-alsa-sched-irq.c
 new file mode 100644
-index 0000000..437e3cc
+index 0000000..135819f
 --- /dev/null
-+++ b/aplay/aligner-multiple.c
-@@ -0,0 +1,337 @@
++++ b/aplay/xfer-alsa-sched-irq.c
+@@ -0,0 +1,18 @@
 +/*
-+ * aligner-multiple.c - a muxer/demuxer for multiple containers.
++ * xfer-alsa-sched-irq.c - interrupt-based scheduling model of ALSA.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "aligner.h"
++#include "xfer-alsa.h"
 +
-+struct multiple_state {
-+	void (*align_frames)(void *frame_buf, unsigned int frame_count,
-+			     char **buf, unsigned int bytes_per_sample,
-+			     struct container_context *cntrs,
-+			     unsigned int cntr_count);
-+	char **bufs;
-+};
-+
-+static void align_to_i(void *frame_buf, unsigned int frame_count,
-+		       char **src_bufs, unsigned int bytes_per_sample,
-+		       struct container_context *cntrs, unsigned int cntr_count)
++static int alsa_irq_pre_process(struct xfer_context *xfer)
 +{
-+	char *dst = frame_buf;
-+	char *src;
-+	unsigned int dst_pos;
-+	unsigned int src_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	/*
-+	 * src: first channel in each of interleaved buffers in containers =>
-+	 * dst:interleaved.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		src = src_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+			dst_pos = i + bytes_per_sample * cntr_count * j;
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
-+}
-+
-+static void align_to_n(void *frame_buf, unsigned int frame_count,
-+		       char **src_bufs, unsigned int bytes_per_sample,
-+		       struct container_context *cntrs, unsigned int cntr_count)
-+{
-+	char *dst = frame_buf;
-+	char *src;
-+	unsigned int dst_pos;
-+	unsigned int src_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	/*
-+	 * src: first channel in each of interleaved buffers in containers =>
-+	 * dst:noninterleaved.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		src = src_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+			dst_pos = j + bytes_per_sample * cntr_count * i;
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
-+}
-+
-+static void align_from_i(void *frame_buf, unsigned int frame_count,
-+			 char **dst_bufs, unsigned int bytes_per_sample,
-+			 struct container_context *cntrs,
-+			 unsigned int cntr_count)
-+{
-+	char *src = frame_buf;
-+	char *dst;
-+	unsigned int src_pos;
-+	unsigned int dst_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		dst = dst_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * cntr_count * j + i;
-+			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
-+}
-+
-+static void align_from_n(void *frame_buf, unsigned int frame_count,
-+			 char **dst_bufs, unsigned int bytes_per_sample,
-+			 struct container_context *cntrs,
-+			 unsigned int cntr_count)
-+{
-+	char *src = frame_buf;
-+	char *dst;
-+	unsigned int src_pos;
-+	unsigned int dst_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		dst = dst_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * cntr_count * i + j;
-+			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
-+}
-+
-+static int multiple_pre_process(struct aligner_context *aligner,
-+				struct container_context *cntrs,
-+				unsigned int cntr_count)
-+{
-+	static const struct {
-+		enum aligner_type type;
-+		int access;
-+		void (*align_frames)(void *frame_buf, unsigned int frame_count,
-+				     char **buf, unsigned int bytes_per_sample,
-+				     struct container_context *cntrs,
-+				     unsigned int cntr_count);
-+	} entries[] = {
-+		{
-+			ALIGNER_TYPE_MUXER,
-+			SND_PCM_ACCESS_RW_INTERLEAVED,
-+			align_to_i,
-+		},
-+		{
-+			ALIGNER_TYPE_MUXER,
-+			SND_PCM_ACCESS_RW_NONINTERLEAVED,
-+			align_to_n,
-+		},
-+		{
-+			ALIGNER_TYPE_DEMUXER,
-+			SND_PCM_ACCESS_MMAP_INTERLEAVED,
-+			align_from_i,
-+		},
-+		{
-+			ALIGNER_TYPE_DEMUXER,
-+			SND_PCM_ACCESS_MMAP_NONINTERLEAVED,
-+			align_from_n,
-+		},
-+	};
-+	struct multiple_state *state = aligner->private_data;
-+	struct container_context *cntr;
-+	int i;
-+
-+	/*
-+	 * Additionally, format of samples in the containers should be the same
-+	 * as the format in PCM substream.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = cntrs + i;
-+		if (aligner->bytes_per_sample != cntr->bytes_per_sample)
-+			return -EINVAL;
-+	}
-+
-+	state->align_frames = NULL;
-+	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
-+		if (entries[i].type == aligner->type &&
-+		    (entries[i].access == aligner->access)) {
-+			state->align_frames = entries[i].align_frames;
-+			break;
-+		}
-+	}
-+
-+	if (state->align_frames) {
-+		/*
-+		 * Furthermore, in demuxer case, each container should be
-+		 * configured to store one sample per frame.
-+		 */
-+		if (aligner->type == ALIGNER_TYPE_DEMUXER) {
-+			for (i = 0; i < cntr_count; ++i) {
-+				cntr = cntrs + i;
-+				if (cntrs->samples_per_frame != 1)
-+					return -EINVAL;
-+			}
-+		}
-+
-+		state->bufs = calloc(cntr_count, sizeof(char *));
-+		if (state->bufs == NULL)
-+			return -ENOMEM;
-+
-+		for (i = 0; i < cntr_count; ++i) {
-+			unsigned int bytes_per_buffer;
-+
-+			/*
-+			 * Allocate intermediate buffer as the same size as a
-+			 * period for each of containers.
-+			 */
-+			cntr = cntrs + i;
-+
-+			bytes_per_buffer = aligner->bytes_per_sample *
-+					   cntr->samples_per_frame *
-+					   aligner->frames_per_buffer;
-+
-+			state->bufs[i] = malloc(bytes_per_buffer);
-+			if (state->bufs[i] == NULL)
-+				return -ENOMEM;
-+			memset(state->bufs[i], 0, bytes_per_buffer);
-+		}
-+	}
-+
 +	return 0;
 +}
 +
-+static int process_containers(char **src_bufs, unsigned int *frame_count,
-+			      struct container_context *cntrs,
-+			      unsigned int cntr_count)
++const struct xfer_alsa_sched_ops xfer_alsa_sched_irq_ops =  {
++	.pre_process	= alsa_irq_pre_process,
++};
+diff --git a/aplay/xfer-alsa-sched-timer.c b/aplay/xfer-alsa-sched-timer.c
+new file mode 100644
+index 0000000..72187cc
+--- /dev/null
++++ b/aplay/xfer-alsa-sched-timer.c
+@@ -0,0 +1,49 @@
++/*
++ * xfer-alsa-sched-timer.c - timer-based scheduling model of ALSA.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "xfer-alsa.h"
++
++static int alsa_timer_pre_process(struct xfer_context *xfer)
 +{
-+	struct container_context *cntr;
-+	char *src;
-+	int i;
-+	int err = 0;
-+
-+	/* TODO: arrangement for *frame_count. */
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = &cntrs[i];
-+		src = src_bufs[i];
-+
-+		err = container_context_process_frames(cntr, src, frame_count);
-+		if (err < 0)
-+			break;
-+	}
-+
-+	return err;
-+}
-+
-+static int multiple_muxer_process_frames(struct aligner_context *aligner,
-+					 void *frame_buf,
-+					 unsigned int *frame_count,
-+					 struct container_context *cntrs,
-+					 unsigned int cntr_count)
-+{
-+	struct multiple_state *state = aligner->private_data;
-+	char **src_bufs;
++	struct alsa_state *state = xfer->private_data;
++	snd_pcm_uframes_t boundary;
++	snd_pcm_uframes_t avail_min;
 +	int err;
 +
-+	/*
-+	 * If need to align PCM frames, process PCM frames to the intermediate
-+	 * buffer once.
-+	 */
-+	if (!state->align_frames) {
-+		/* The most likely. */
-+		src_bufs = frame_buf;
-+	} else {
-+		src_bufs = state->bufs;
-+	}
-+	err = process_containers(src_bufs, frame_count, cntrs, cntr_count);
++	err = snd_pcm_sw_params_get_boundary(state->sw_params, &boundary);
 +	if (err < 0)
 +		return err;
 +
-+	/* Unlikely. */
-+	if (src_bufs != frame_buf && *frame_count > 0) {
-+		state->align_frames(frame_buf, *frame_count, src_bufs,
-+				    aligner->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
++	err = snd_pcm_sw_params_set_stop_threshold(state->handle,
++						   state->sw_params, boundary);
++	if (err < 0)
++		return err;
 +
-+	return 0;
++	err = snd_pcm_sw_params_set_start_threshold(state->handle,
++						    state->sw_params, -1);
++	if (err < 0)
++		return err;
++
++	/* TODO: calculate proper value fo ravail_min. */
++	err = snd_pcm_hw_params_get_period_size(state->hw_params, &avail_min,
++						NULL);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_sw_params_set_avail_min(state->handle, state->sw_params,
++					      avail_min);
++	if (err < 0)
++		return err;
++
++	return snd_pcm_sw_params_set_period_event(state->handle,
++						  state->sw_params, 1);
 +}
 +
-+static int multiple_demuxer_process_frames(struct aligner_context *aligner,
-+					   void *frame_buf,
-+					   unsigned int *frame_count,
-+					   struct container_context *cntrs,
-+					   unsigned int cntr_count)
-+{
-+	struct multiple_state *state = aligner->private_data;
-+	char **dst_bufs;
-+
-+	/*
-+	 * If need to align PCM frames, process PCM frames to the intermediate
-+	 * buffer once.
-+	 */
-+	if (!state->align_frames) {
-+		/* The most likely. */
-+		dst_bufs = frame_buf;
-+	} else {
-+		dst_bufs = state->bufs;
-+		state->align_frames(frame_buf, *frame_count, dst_bufs,
-+				    aligner->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
-+
-+	return process_containers(dst_bufs, frame_count, cntrs, cntr_count);
-+}
-+
-+static void multiple_post_process(struct aligner_context *aligner)
-+{
-+	struct multiple_state *state = aligner->private_data;
-+
-+	if (state->bufs) {
-+		if (state->bufs[0])
-+			free(state->bufs[0]);
-+		free(state->bufs);
-+	}
-+
-+	state->bufs = NULL;
-+	state->align_frames = NULL;
-+}
-+
-+const struct aligner_data aligner_muxer_multiple = {
-+	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_muxer_process_frames,
-+		.post_process = multiple_post_process,
-+	},
-+	.private_size = sizeof(struct multiple_state),
++const struct xfer_alsa_sched_ops xfer_alsa_sched_timer_ops =  {
++	.pre_process	= alsa_timer_pre_process,
 +};
-+
-+const struct aligner_data aligner_demuxer_multiple = {
-+	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_demuxer_process_frames,
-+		.post_process = multiple_post_process,
-+	},
-+	.private_size = sizeof(struct multiple_state),
-+};
-diff --git a/aplay/aligner.c b/aplay/aligner.c
-index e578031..6d260a3 100644
---- a/aplay/aligner.c
-+++ b/aplay/aligner.c
-@@ -17,23 +17,30 @@ static const char *const aligner_type_labels[] = {
+diff --git a/aplay/xfer-alsa.c b/aplay/xfer-alsa.c
+index 57be488..05e6e7e 100644
+--- a/aplay/xfer-alsa.c
++++ b/aplay/xfer-alsa.c
+@@ -415,6 +415,7 @@ static int xfer_alsa_pre_process(struct xfer_context *xfer,
+ 		return err;
  
- static const char *const aligner_target_labels[] = {
- 	[ALIGNER_TARGET_SINGLE] = "single",
-+	[ALIGNER_TARGET_MULTIPLE] = "multiple",
- };
+ 	/* Assign scheduling operation. */
++	state->sched_ops = &xfer_alsa_sched_irq_ops;
+ 	err = state->sched_ops->pre_process(xfer);
+ 	if (err < 0)
+ 		return err;
+diff --git a/aplay/xfer-alsa.h b/aplay/xfer-alsa.h
+index 1731f04..9cc079d 100644
+--- a/aplay/xfer-alsa.h
++++ b/aplay/xfer-alsa.h
+@@ -58,4 +58,7 @@ extern const struct xfer_alsa_io_ops xfer_alsa_mmap_ops;
+ extern const struct xfer_alsa_io_ops xfer_alsa_r_ops;
+ extern const struct xfer_alsa_io_ops xfer_alsa_w_ops;
  
- int aligner_context_init(struct aligner_context *aligner,
- 			enum aligner_type type, unsigned int cntr_count,
- 			unsigned int verbose)
- {
--	const struct aligner_data *data = NULL;
-+	const struct aligner_data *data;
- 
- 	if (type == ALIGNER_TYPE_MUXER) {
- 		if (cntr_count == 1) {
- 			data = &aligner_muxer_single;
- 			aligner->target = ALIGNER_TARGET_SINGLE;
-+		} else {
-+			data = &aligner_muxer_multiple;
-+			aligner->target = ALIGNER_TARGET_MULTIPLE;
- 		}
- 	} else {
- 		if (cntr_count == 1) {
- 			data = &aligner_demuxer_single;
- 			aligner->target = ALIGNER_TARGET_SINGLE;
-+		} else {
-+			data = &aligner_demuxer_multiple;
-+			aligner->target = ALIGNER_TARGET_MULTIPLE;
- 		}
- 	}
- 	aligner->ops = &data->ops;
-@@ -59,6 +66,14 @@ int aligner_context_pre_process(struct aligner_context *aligner,
- {
- 	int err;
- 
-+	/*
-+	 * The purpose of multiple target is to mux/demux each channels to/from
-+	 * containers.
-+	 */
-+	if (aligner->target == ALIGNER_TARGET_MULTIPLE &&
-+	    samples_per_frame != aligner->cntr_count)
-+		return -EINVAL;
-+
- 	aligner->access = access;
- 	aligner->bytes_per_sample = snd_pcm_format_physical_width(format) / 8;
- 	aligner->samples_per_frame = samples_per_frame;
-diff --git a/aplay/aligner.h b/aplay/aligner.h
-index 333b584..bf8b689 100644
---- a/aplay/aligner.h
-+++ b/aplay/aligner.h
-@@ -21,6 +21,7 @@ enum aligner_type {
- 
- enum aligner_target {
- 	ALIGNER_TARGET_SINGLE = 0,
-+	ALIGNER_TARGET_MULTIPLE,
- 	ALIGNER_TARGET_COUNT,
- };
- 
-@@ -81,4 +82,7 @@ struct aligner_data {
- extern const struct aligner_data aligner_muxer_single;
- extern const struct aligner_data aligner_demuxer_single;
- 
-+extern const struct aligner_data aligner_muxer_multiple;
-+extern const struct aligner_data aligner_demuxer_multiple;
++extern const struct xfer_alsa_sched_ops xfer_alsa_sched_irq_ops;
++extern const struct xfer_alsa_sched_ops xfer_alsa_sched_timer_ops;
 +
  #endif
 -- 
