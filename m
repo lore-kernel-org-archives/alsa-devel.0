@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 10/23] aplay: add an implementation of
-	waiter for poll(2)
-Date: Thu, 17 Aug 2017 20:59:51 +0900
-Message-ID: <20170817120004.15326-11-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 09/23] aplay: add an abstruction of waiter
+	for I/O event notification
+Date: Thu, 17 Aug 2017 20:59:50 +0900
+Message-ID: <20170817120004.15326-10-o-takashi@sakamocchi.jp>
 References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F0EF4266EB5
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E7DE2266BFD
  for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:13 +0200 (CEST)
 In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,37 +25,54 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for poll(2) system call.
+There're several types of system calls for multiplexed I/O. They're used to
+receive notifications of I/O events. Typically, userspace applications call
+it for file descriptor to yield CPU. When I/O is enabled, process of the
+application is rescheduled, then the application execute I/O calls.
+
+This commit adds an abstraction of the calls, named as 'waiter'. This is
+expected to be used with non-blocking file operation.
 ---
- aplay/Makefile.am   |  3 ++-
- aplay/waiter-poll.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- aplay/waiter.c      |  2 +-
- aplay/waiter.h      |  3 +++
- 4 files changed, 72 insertions(+), 2 deletions(-)
- create mode 100644 aplay/waiter-poll.c
+ aplay/Makefile.am |  7 +++++--
+ aplay/waiter.c    | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ aplay/waiter.h    | 54 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 119 insertions(+), 2 deletions(-)
+ create mode 100644 aplay/waiter.c
+ create mode 100644 aplay/waiter.h
 
 diff --git a/aplay/Makefile.am b/aplay/Makefile.am
-index 634124b..a4a353e 100644
+index 79f1535..634124b 100644
 --- a/aplay/Makefile.am
 +++ b/aplay/Makefile.am
-@@ -24,7 +24,8 @@ aplay_SOURCES = \
+@@ -8,7 +8,8 @@ man_MANS = aplay.1 arecord.1
+ noinst_HEADERS = \
+ 	formats.h \
+ 	container.h \
+-	aligner.h
++	aligner.h \
++	waiter.h
+ 
+ aplay_SOURCES = \
+ 	formats.h \
+@@ -21,7 +22,9 @@ aplay_SOURCES = \
+ 	aligner.h \
+ 	aligner.c \
  	aligner-single.c \
- 	aligner-multiple.c \
- 	waiter.h \
--	waiter.c
-+	waiter.c \
-+	waiter-poll.c
+-	aligner-multiple.c
++	aligner-multiple.c \
++	waiter.h \
++	waiter.c
  
  EXTRA_DIST = aplay.1 arecord.1
  EXTRA_CLEAN = arecord
-diff --git a/aplay/waiter-poll.c b/aplay/waiter-poll.c
+diff --git a/aplay/waiter.c b/aplay/waiter.c
 new file mode 100644
-index 0000000..68ef4ae
+index 0000000..d29a533
 --- /dev/null
-+++ b/aplay/waiter-poll.c
-@@ -0,0 +1,66 @@
++++ b/aplay/waiter.c
+@@ -0,0 +1,60 @@
 +/*
-+ * waiter-waiter-poll.c - Waiter for event notification by poll(2).
++ * waiter.c - I/O event waiter.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
@@ -64,93 +81,115 @@ index 0000000..68ef4ae
 +
 +#include "waiter.h"
 +
-+#include <poll.h>
-+
-+struct poll_state {
-+	struct pollfd *pfds;
-+	unsigned int count;
-+};
-+
-+static int poll_prepare(struct waiter_context *waiter, int *fds,
-+			unsigned int fd_count)
++int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
 +{
-+	struct poll_state *state = waiter->private_data;
++	struct {
++		enum waiter_type type;
++		const struct waiter_data *waiter;
++	} entries[] = {
++		{WAITER_TYPE_COUNT,	NULL},
++	};
 +	int i;
 +
-+	state->pfds = calloc(fd_count, sizeof(struct pollfd));
-+	if (state->pfds == NULL)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < fd_count; ++i) {
-+		state->pfds[i].fd = fds[i];
-+		state->pfds[i].events = POLLIN | POLLOUT;
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		if (entries[i].type == type)
++			break;
 +	}
++	if (i == ARRAY_SIZE(entries))
++		return -EINVAL;
 +
-+	state->count = fd_count;
++	waiter->private_data = malloc(entries[i].waiter->private_size);
++	if (waiter->private_data == NULL)
++		return -ENOMEM;
++	memset(waiter->private_data, 0, entries[i].waiter->private_size);
 +
-+	return 0;
-+}
-+
-+static int poll_wait_event(struct waiter_context *waiter)
-+{
-+	struct poll_state *state = waiter->private_data;
-+	int err;
-+
-+
-+	err = poll(state->pfds, state->count, -1);
-+	if (err < 0)
-+		return -errno;
++	waiter->type = type;
++	waiter->ops = &entries[i].waiter->ops;
 +
 +	return 0;
 +}
 +
-+static void poll_release(struct waiter_context *waiter)
++int waiter_context_prepare(struct waiter_context *waiter, int *fds,
++			   unsigned int fd_count)
 +{
-+	struct poll_state *state = waiter->private_data;
-+
-+	free(state->pfds);
-+	state->pfds = 0;
++	return waiter->ops->prepare(waiter, fds, fd_count);
 +}
 +
-+const struct waiter_data waiter_poll = {
-+	.ops = {
-+		.prepare	= poll_prepare,
-+		.wait_event	= poll_wait_event,
-+		.release	= poll_release,
-+	},
-+	.private_size = sizeof(struct poll_state),
-+};
-diff --git a/aplay/waiter.c b/aplay/waiter.c
-index d29a533..c238bf1 100644
---- a/aplay/waiter.c
-+++ b/aplay/waiter.c
-@@ -14,7 +14,7 @@ int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
- 		enum waiter_type type;
- 		const struct waiter_data *waiter;
- 	} entries[] = {
--		{WAITER_TYPE_COUNT,	NULL},
-+		{WAITER_TYPE_POLL, &waiter_poll},
- 	};
- 	int i;
- 
++int waiter_context_wait_event(struct waiter_context *waiter)
++{
++	return waiter->ops->wait_event(waiter);
++}
++
++void waiter_context_release(struct waiter_context *waiter)
++{
++	waiter->ops->release(waiter);
++}
++
++void waiter_context_destroy(struct waiter_context *waiter)
++{
++	if (waiter->private_data)
++		free(waiter->private_data);
++	waiter->private_data = NULL;
++}
 diff --git a/aplay/waiter.h b/aplay/waiter.h
-index c63274a..5059a00 100644
---- a/aplay/waiter.h
+new file mode 100644
+index 0000000..c63274a
+--- /dev/null
 +++ b/aplay/waiter.h
-@@ -19,6 +19,7 @@
- #endif
- 
- enum waiter_type {
-+	WAITER_TYPE_POLL = 0,
- 	WAITER_TYPE_COUNT,
- };
- 
-@@ -51,4 +52,6 @@ struct waiter_data {
- 	unsigned int private_size;
- };
- 
-+extern const struct waiter_data waiter_poll;
+@@ -0,0 +1,54 @@
++/*
++ * waiter.h - a header for I/O event waiter.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
- #endif
++#ifndef __ALSA_UTILS_APLAY_WAITER__H_
++#define __ALSA_UTILS_APLAY_WAITER__H_
++
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <errno.h>
++
++#ifndef ARRAY_SIZE
++#define ARRAY_SIZE(array)	(sizeof(array)/sizeof(array[0]))
++#endif
++
++enum waiter_type {
++	WAITER_TYPE_COUNT,
++};
++
++struct waiter_ops;
++
++struct waiter_context {
++	enum waiter_type type;
++	const struct waiter_ops *ops;
++	void *private_data;
++};
++
++int waiter_context_init(struct waiter_context *waiter, enum waiter_type type);
++int waiter_context_prepare(struct waiter_context *waiter, int *fds,
++			   unsigned int fd_count);
++int waiter_context_wait_event(struct waiter_context *waiter);
++void waiter_context_release(struct waiter_context *waiter);
++void waiter_context_destroy(struct waiter_context *waiter);
++
++/* For internal use in 'waiter' module. */
++
++struct waiter_ops {
++	int (*prepare)(struct waiter_context *waiter, int *fds,
++		       unsigned int fd_count);
++	int (*wait_event)(struct waiter_context *waiter);
++	void (*release)(struct waiter_context *waiter);
++};
++
++struct waiter_data {
++	struct waiter_ops ops;
++	unsigned int private_size;
++};
++
++#endif
 -- 
 2.11.0
