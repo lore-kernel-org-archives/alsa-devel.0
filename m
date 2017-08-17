@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 00/23] alsa-utils: rewrite aplay
-Date: Thu, 17 Aug 2017 20:59:41 +0900
-Message-ID: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 03/23] aplay: add an implementation of
+	container for Sparc AU format
+Date: Thu, 17 Aug 2017 20:59:44 +0900
+Message-ID: <20170817120004.15326-4-o-takashi@sakamocchi.jp>
+References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 354F826684C
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 3AEF7266A8A
  for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:10 +0200 (CEST)
+In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,135 +25,292 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I think all of you in this mailing list might have used the command 'aplay',
-at least once. This patchset is my attempt to rewrite it because current
-shape of code is not enough good. Especially, ALSA PCM interface have got
-extensions since aplay was firstly developed. One of my motivation is to
-refine the tool to test such extensions.
-
-Below diagram illustrates new internal design of this program:
-
-                                             <-> container <-> (file)
-(device) <-> (alsa-lib) <-> xfer <-> aligner <-> container <-> (file)
-                                             <-> container <-> (file)
-
-For description of each modules, please read patch comment.
-
-This patchset is early preview for developers to see the above design, thus
-some features of original aplay are not still implemented. Especially, some
-options have no actual effect even if they're parsed. Presently, I see below
-command lines run as I expected:
-
-$ ./aplay -C (-v) (-M)(-N) -D [hw:0,0|default] record.wav 
-$ ./aplay -P (-v) (-M)(-N) -D [hw:0,0|default] playback.wav
-$ ./aplay --list-devices
-$ ./aplay --list-pcm
-$ ./aplay --version
-
-Here, I work with Intel HDA (hw:0,0) and pulse PCM plugin (default).
-
-It's my pleasure if received some comments from you.
-
-Takashi Sakamoto (23):
-  aplay: add an abstraction of container to parse/build audio-specific
-    data format
-  aplay: add an implementation of container for Microsoft/IBM RIFF/Wave
-    format
-  aplay: add an implementation of container for Sparc AU format
-  aplay: add an implementation of container for Creative Tech. voice
-    format
-  aplay: add an implementation of container for raw format
-  aplay: aligner: add an abstraction to align buffers with different
-    data
-  aplay: add an implementation of aligner for single target
-  aplay: add an implementation of aligner for multiple target
-  aplay: add an abstruction of waiter for I/O event notification
-  aplay: add an implementation of waiter for poll(2)
-  aplay: add an implementation of waiter for epoll(7)
-  aplay: options: add a parser for command-line options
-  aplay: add an abstraction for transferring of PCM frames
-  aplay: add an implementation for transferring by ALSA PCM APIs
-  aplay: add implementation of I/O
-  aplay: add implementations to scheduling
-  aplay: add a sub-command to print list of PCMs/devices
-  aplay: add a sub-command to transfer data frames
-  aplay: obsolete main routine and introduce sub-command style
-  aplay: add an implementation for volume unit meter
-  aplay: add a parser for channel map API
-  aplay: add a handler for key events
-  aplay: add a feature to generate PID file
-
- aplay/Makefile.am             |   48 +-
- aplay/aligner-multiple.c      |  337 ++++
- aplay/aligner-single.c        |  256 +++
- aplay/aligner.c               |  122 ++
- aplay/aligner.h               |   88 ++
- aplay/aplay.c                 | 3425 -----------------------------------------
- aplay/container-au.c          |  203 +++
- aplay/container-riff-wave.c   |  549 +++++++
- aplay/container-voc.c         |  736 +++++++++
- aplay/container.c             |  375 +++++
- aplay/container.h             |  127 ++
- aplay/formats.h               |  134 --
- aplay/key-event.c             |  120 ++
- aplay/key-event.h             |   21 +
- aplay/main.c                  |  178 +++
- aplay/main.h                  |   32 +
- aplay/options.c               |  674 ++++++++
- aplay/options.h               |   71 +
- aplay/subcmd-list.c           |  233 +++
- aplay/subcmd-transfer.c       |  431 ++++++
- aplay/vumeter.c               |  299 ++++
- aplay/vumeter.h               |   50 +
- aplay/waiter-epoll.c          |   76 +
- aplay/waiter-poll.c           |   66 +
- aplay/waiter.c                |   61 +
- aplay/waiter.h                |   59 +
- aplay/xfer-alsa-io-mmap.c     |  135 ++
- aplay/xfer-alsa-io-rw.c       |  370 +++++
- aplay/xfer-alsa-sched-irq.c   |   18 +
- aplay/xfer-alsa-sched-timer.c |   49 +
- aplay/xfer-alsa.c             |  610 ++++++++
- aplay/xfer-alsa.h             |   67 +
- aplay/xfer.c                  |  124 ++
- aplay/xfer.h                  |   74 +
- configure.ac                  |    2 +-
- 35 files changed, 6655 insertions(+), 3565 deletions(-)
- create mode 100644 aplay/aligner-multiple.c
- create mode 100644 aplay/aligner-single.c
- create mode 100644 aplay/aligner.c
- create mode 100644 aplay/aligner.h
- delete mode 100644 aplay/aplay.c
+This commit adds support for data of Sparc AU format. In this data format,
+each of field has value in big endian-ness.
+---
+ aplay/Makefile.am    |   3 +-
+ aplay/container-au.c | 203 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ aplay/container.c    |   6 +-
+ aplay/container.h    |   4 +
+ 4 files changed, 214 insertions(+), 2 deletions(-)
  create mode 100644 aplay/container-au.c
- create mode 100644 aplay/container-riff-wave.c
- create mode 100644 aplay/container-voc.c
- create mode 100644 aplay/container.c
- create mode 100644 aplay/container.h
- delete mode 100644 aplay/formats.h
- create mode 100644 aplay/key-event.c
- create mode 100644 aplay/key-event.h
- create mode 100644 aplay/main.c
- create mode 100644 aplay/main.h
- create mode 100644 aplay/options.c
- create mode 100644 aplay/options.h
- create mode 100644 aplay/subcmd-list.c
- create mode 100644 aplay/subcmd-transfer.c
- create mode 100644 aplay/vumeter.c
- create mode 100644 aplay/vumeter.h
- create mode 100644 aplay/waiter-epoll.c
- create mode 100644 aplay/waiter-poll.c
- create mode 100644 aplay/waiter.c
- create mode 100644 aplay/waiter.h
- create mode 100644 aplay/xfer-alsa-io-mmap.c
- create mode 100644 aplay/xfer-alsa-io-rw.c
- create mode 100644 aplay/xfer-alsa-sched-irq.c
- create mode 100644 aplay/xfer-alsa-sched-timer.c
- create mode 100644 aplay/xfer-alsa.c
- create mode 100644 aplay/xfer-alsa.h
- create mode 100644 aplay/xfer.c
- create mode 100644 aplay/xfer.h
 
+diff --git a/aplay/Makefile.am b/aplay/Makefile.am
+index 854b54e..8e4a31f 100644
+--- a/aplay/Makefile.am
++++ b/aplay/Makefile.am
+@@ -14,7 +14,8 @@ aplay_SOURCES = \
+ 	aplay.c \
+ 	container.h \
+ 	container.c \
+-	container-riff-wave.c
++	container-riff-wave.c \
++	container-au.c
+ 
+ EXTRA_DIST = aplay.1 arecord.1
+ EXTRA_CLEAN = arecord
+diff --git a/aplay/container-au.c b/aplay/container-au.c
+new file mode 100644
+index 0000000..b418d75
+--- /dev/null
++++ b/aplay/container-au.c
+@@ -0,0 +1,203 @@
++/*
++ * container-au.c - a parser/builder for a container of Sun Audio File.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "container.h"
++
++/*
++ * Reference:
++ *  * http://pubs.opengroup.org/external/auformat.html
++ */
++
++#define AU_MAGIC	".snd"
++#define UNKNOWN_SIZE	((uint32_t)~0)
++
++enum code_id {
++	CODE_ID_CCIT_MU_LAW_BE		= 0x01,
++	CODE_ID_GENERIC_MBLA_S8		= 0x02,
++	CODE_ID_GENERIC_MBLA_S16_BE	= 0x03,
++	CODE_ID_GENERIC_MBLA_S32_BE	= 0x05,
++	CODE_ID_IEEE754_FLOAT_S32_BE	= 0x06,
++	CODE_ID_IEEE754_DOUBLE_S64_BE	= 0x07,
++	CODE_ID_CCIT_ADPCM_G721_4BIT_BE	= 0x17,
++	CODE_ID_CCIT_ADPCM_G723_3BIT_BE	= 0x19,
++	CODE_ID_CCIT_A_LAW_BE		= 0x1b,
++};
++
++struct format_map {
++	enum code_id code_id;
++	snd_pcm_format_t format;
++};
++
++static const struct format_map format_maps[] = {
++	{CODE_ID_CCIT_MU_LAW_BE,		SND_PCM_FORMAT_MU_LAW},
++	{CODE_ID_GENERIC_MBLA_S8,		SND_PCM_FORMAT_S8},
++	{CODE_ID_GENERIC_MBLA_S16_BE,		SND_PCM_FORMAT_S16_BE},
++	{CODE_ID_GENERIC_MBLA_S32_BE,		SND_PCM_FORMAT_S32_BE},
++	{CODE_ID_IEEE754_FLOAT_S32_BE,		SND_PCM_FORMAT_FLOAT_BE},
++	{CODE_ID_IEEE754_DOUBLE_S64_BE,		SND_PCM_FORMAT_FLOAT64_BE},
++	/* CODE_ID_CCIT_ADPCM_G721_4BIT_BE is not supported by ALSA. */
++	{CODE_ID_CCIT_ADPCM_G723_3BIT_BE,	SND_PCM_FORMAT_G723_24},
++	{CODE_ID_CCIT_A_LAW_BE,			SND_PCM_FORMAT_A_LAW},
++};
++
++struct container_header {
++	uint8_t magic[4];
++	uint32_t hdr_size;
++	uint32_t data_size;
++	uint32_t code_id;
++	uint32_t frames_per_second;
++	uint32_t samples_per_frame;
++};
++
++struct container_annotation {
++	uint32_t chunks[0];
++};
++
++struct parser_state {
++	enum code_id code_id;
++	unsigned int samples_per_frame;
++	unsigned int bytes_per_sample;
++};
++
++static int au_parser_pre_process(struct container_context *cntr,
++				 snd_pcm_format_t *format,
++				 unsigned int *samples_per_frame,
++				 unsigned int *frames_per_second,
++				 uint64_t *frame_count)
++{
++	struct parser_state *state = cntr->private_data;
++	struct container_header header;
++	unsigned int data_size;
++	enum code_id code_id;
++	int i;
++	int err;
++
++	/* Parse header. 4 bytes are enough to detect supported containers. */
++	memcpy(&header.magic, cntr->magic, sizeof(cntr->magic));
++	err = container_recursive_read(cntr,
++				       (char *)&header + sizeof(cntr->magic),
++				       sizeof(header) - sizeof(cntr->magic));
++	if (err < 0)
++		return err;
++
++	if (memcmp(header.magic, AU_MAGIC, sizeof(header.magic)) != 0)
++		return -EINVAL;
++	if (be32toh(header.hdr_size) != sizeof(struct container_header))
++		return -EINVAL;
++
++	data_size = be32toh(header.data_size);
++	code_id = be32toh(header.code_id);
++	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
++		if (format_maps[i].code_id == code_id)
++			break;
++	}
++	if (i == ARRAY_SIZE(format_maps))
++		return -EINVAL;
++	*format = format_maps[0].format;
++	*frames_per_second = be32toh(header.frames_per_second);
++	*samples_per_frame = be32toh(header.samples_per_frame);
++
++	state->code_id = code_id;
++	state->samples_per_frame = *samples_per_frame;
++	state->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++
++	*frame_count = data_size / state->bytes_per_sample / *samples_per_frame;
++
++	return 0;
++}
++
++struct builder_state {
++	unsigned int bytes_per_sample;
++	unsigned int samples_per_frame;
++	unsigned int frames_per_second;
++	enum code_id code_id;
++};
++
++static void build_container_header(struct builder_state *state,
++				   struct container_header *header,
++				   unsigned int frames_per_second,
++				   uint64_t byte_count)
++{
++	memcpy(header->magic, AU_MAGIC, sizeof(header->magic));
++	header->hdr_size = htobe32(sizeof(struct container_header));
++	header->data_size = htobe32(byte_count);
++	header->code_id = htobe32(state->code_id);
++	header->frames_per_second = htobe32(frames_per_second);
++	header->samples_per_frame = htobe32(state->samples_per_frame);
++}
++
++static int write_container_header(struct container_context *cntr,
++				  uint64_t frame_count)
++{
++	struct builder_state *state = cntr->private_data;
++	uint64_t byte_count;
++	struct container_header header;
++
++	byte_count = state->bytes_per_sample * state->samples_per_frame *
++		     frame_count;
++
++	build_container_header(state, &header, state->frames_per_second,
++			       byte_count);
++
++	return container_recursive_write(cntr, &header, sizeof(header));
++}
++
++static int au_builder_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *frame_count)
++{
++	struct builder_state *status = cntr->private_data;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
++		if (format_maps[i].format == *format)
++			break;
++	}
++	if (i == ARRAY_SIZE(format_maps))
++		return -EINVAL;
++
++	status->code_id = format_maps[i].code_id;
++	status->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++	status->samples_per_frame = *samples_per_frame;
++
++	return write_container_header(cntr, *frame_count);
++}
++
++static int au_builder_post_process(struct container_context *cntr,
++				   uint64_t actual_frame_count)
++{
++	int err;
++
++	err = container_seek_offset(cntr, 0);
++	if (err < 0)
++		return err;
++
++	return write_container_header(cntr, actual_frame_count);
++}
++
++const struct container_parser container_parser_au = {
++	.format = CONTAINER_FORMAT_AU,
++	.magic = AU_MAGIC,
++	.max_size = 0x7fffffffffffffff,	/* LLONG_MAX */
++	.ops = {
++		.pre_process = au_parser_pre_process,
++	},
++	.private_size = sizeof(struct parser_state),
++};
++
++const struct container_builder container_builder_au = {
++	.format = CONTAINER_FORMAT_AU,
++	.max_size = 0x7fffffffffffffff,	/* LLONG_MAX */
++	.ops = {
++		.pre_process	= au_builder_pre_process,
++		.post_process	= au_builder_post_process,
++	},
++	.private_size = sizeof(struct builder_state),
++};
+diff --git a/aplay/container.c b/aplay/container.c
+index 1b35d4e..6214bbf 100644
+--- a/aplay/container.c
++++ b/aplay/container.c
+@@ -21,10 +21,12 @@ static const char *const cntr_type_labels[] = {
+ 
+ static const char *const cntr_format_labels[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
++	[CONTAINER_FORMAT_AU] = "au",
+ };
+ 
+ static const char *const suffixes[] = {
+-	[CONTAINER_FORMAT_RIFF_WAVE] = ".wav",
++	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
++	[CONTAINER_FORMAT_AU]		= ".au",
+ };
+ 
+ 
+@@ -148,6 +150,7 @@ int container_parser_init(struct container_context *cntr,
+ {
+ 	const struct container_parser *parsers[] = {
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
++		[CONTAINER_FORMAT_AU] = &container_parser_au,
+ 	};
+ 	const struct container_parser *parser;
+ 	unsigned int size;
+@@ -216,6 +219,7 @@ int container_builder_init(struct container_context *cntr,
+ {
+ 	const struct container_builder *builders[] = {
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
++		[CONTAINER_FORMAT_AU] = &container_builder_au,
+ 	};
+ 	const struct container_builder *builder;
+ 	int err;
+diff --git a/aplay/container.h b/aplay/container.h
+index 5cb77bd..73029f4 100644
+--- a/aplay/container.h
++++ b/aplay/container.h
+@@ -31,6 +31,7 @@ enum container_type {
+ 
+ enum container_format {
+ 	CONTAINER_FORMAT_RIFF_WAVE = 0,
++	CONTAINER_FORMAT_AU,
+ 	CONTAINER_FORMAT_COUNT,
+ };
+ 
+@@ -115,4 +116,7 @@ int container_seek_offset(struct container_context *cntr, off64_t offset);
+ extern const struct container_parser container_parser_riff_wave;
+ extern const struct container_builder container_builder_riff_wave;
+ 
++extern const struct container_parser container_parser_au;
++extern const struct container_builder container_builder_au;
++
+ #endif
 -- 
 2.11.0
