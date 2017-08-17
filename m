@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Enabling ASRC for RT5663
-	codec on kabylake platform" to the asoc tree
-Date: Thu, 17 Aug 2017 18:13:18 +0100
-Message-ID: <E1diOMA-0008S0-6U@debutante>
-References: <1502427646-18880-1-git-send-email-naveen.m@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C6A07266FEC
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:13:29 +0200 (CEST)
-In-Reply-To: <1502427646-18880-1-git-send-email-naveen.m@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Shruthi Sudhakar <shruthi.sudhakar@intel.com>, Harsha Priya <harshapriya.n@intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, tiwai@suse.de, naveen.m@intel.com, pierre-louis.bossart@intel.com
+Subject: Applied "ASoC: fsl: make snd_pcm_hardware const" to the asoc tree
+Date: Thu, 17 Aug 2017 18:13:46 +0100
+Message-ID: <E1diOMc-0000BR-5U@debutante>
+References: <1502964972-22722-2-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502964972-22722-2-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, plai@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl: Enabling ASRC for RT5663 codec on kabylake platform
+   ASoC: fsl: make snd_pcm_hardware const
 
 has been applied to the asoc tree at
 
@@ -52,52 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From d46b1828406f74bc2d9ffe15e9a7b76ddbffbf7f Mon Sep 17 00:00:00 2001
-From: Harsha Priya N <harshapriya.n@intel.com>
-Date: Wed, 16 Aug 2017 16:19:55 +0530
-Subject: [PATCH] ASoC: Intel: kbl: Enabling ASRC for RT5663 codec on kabylake
- platform
+>From f77bb3b778e85d3477a9e3e0236545663f16793e Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Thu, 17 Aug 2017 15:46:07 +0530
+Subject: [PATCH] ASoC: fsl: make snd_pcm_hardware const
 
-Patch fixes cracking noise in rt5663 headphones for kbl platform by
-calling rt5663_sel_asrc_clk_src() for RT5663_AD_STEREO_FILTER to set
-ASRC.
+Make these const as they are only passed as the 2nd argument to the
+function snd_soc_set_runtime_hwparams, which is const.
+Done using Coccinelle.
 
-The ASRC function is for asynchronous MCLK and LRCLK. For RT5663 ASRC
-should be enabled to support pcm format with 100fs.
-ASRC function will track i2s clock and generate corresponding
-system clock for codec. Calling this func helps select clock source
-for both RT5663_AD_STEREO_FILTER and RT5663_DA_STEREO_FILTER filters
-which fixes the crackling sound.
-
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Shruthi Sudhakar <shruthi.sudhakar@intel.com>
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/fsl/fsl_asrc_dma.c | 2 +-
+ sound/soc/fsl/imx-pcm-fiq.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 8bdd6131c6ad..c1442147d138 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -356,11 +356,13 @@ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 2baf19608bd0..e1b97e59275a 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -20,7 +20,7 @@
  
--	ret = snd_soc_dai_set_sysclk(codec_dai,
--			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
--	rt5663_sel_asrc_clk_src(codec_dai->codec, RT5663_DA_STEREO_FILTER, 1);
-+	rt5663_sel_asrc_clk_src(codec_dai->codec,
-+			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
-+			RT5663_CLK_SEL_I2S1_ASRC);
+ #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
  
-+	ret = snd_soc_dai_set_sysclk(codec_dai,
-+			RT5663_SCLK_S_MCLK, 24576000, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
+-static struct snd_pcm_hardware snd_imx_hardware = {
++static const struct snd_pcm_hardware snd_imx_hardware = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_MMAP |
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index aef1f7819c40..4e5fefee111e 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -154,7 +154,7 @@ static snd_pcm_uframes_t snd_imx_pcm_pointer(struct snd_pcm_substream *substream
+ 	return bytes_to_frames(substream->runtime, iprtd->offset);
+ }
  
+-static struct snd_pcm_hardware snd_imx_hardware = {
++static const struct snd_pcm_hardware snd_imx_hardware = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		SNDRV_PCM_INFO_MMAP |
 -- 
 2.13.3
