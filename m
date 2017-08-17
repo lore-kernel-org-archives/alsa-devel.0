@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 05/23] aplay: add an implementation of
-	container for raw format
-Date: Thu, 17 Aug 2017 20:59:46 +0900
-Message-ID: <20170817120004.15326-6-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 10/23] aplay: add an implementation of
+	waiter for poll(2)
+Date: Thu, 17 Aug 2017 20:59:51 +0900
+Message-ID: <20170817120004.15326-11-o-takashi@sakamocchi.jp>
 References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id EFC9B266EB1
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F0EF4266EB5
  for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:13 +0200 (CEST)
 In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,100 +25,132 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for raw data without any headers/chunks/blocks.
+This commit adds support for poll(2) system call.
 ---
- aplay/container.c | 30 ++++++++++++++++++++++++++++--
- aplay/container.h |  1 +
- 2 files changed, 29 insertions(+), 2 deletions(-)
+ aplay/Makefile.am   |  3 ++-
+ aplay/waiter-poll.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ aplay/waiter.c      |  2 +-
+ aplay/waiter.h      |  3 +++
+ 4 files changed, 72 insertions(+), 2 deletions(-)
+ create mode 100644 aplay/waiter-poll.c
 
-diff --git a/aplay/container.c b/aplay/container.c
-index 1cd7ada..f8fe296 100644
---- a/aplay/container.c
-+++ b/aplay/container.c
-@@ -23,14 +23,24 @@ static const char *const cntr_format_labels[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
- 	[CONTAINER_FORMAT_AU] = "au",
- 	[CONTAINER_FORMAT_VOC] = "voc",
-+	[CONTAINER_FORMAT_RAW] = "raw",
- };
+diff --git a/aplay/Makefile.am b/aplay/Makefile.am
+index 634124b..a4a353e 100644
+--- a/aplay/Makefile.am
++++ b/aplay/Makefile.am
+@@ -24,7 +24,8 @@ aplay_SOURCES = \
+ 	aligner-single.c \
+ 	aligner-multiple.c \
+ 	waiter.h \
+-	waiter.c
++	waiter.c \
++	waiter-poll.c
  
- static const char *const suffixes[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
- 	[CONTAINER_FORMAT_AU]		= ".au",
- 	[CONTAINER_FORMAT_VOC]		= ".voc",
-+	[CONTAINER_FORMAT_RAW]		= "",
- };
- 
-+/* Raw container. */
-+static const struct container_parser container_parser_raw = {
-+	.format = CONTAINER_FORMAT_RAW,
+ EXTRA_DIST = aplay.1 arecord.1
+ EXTRA_CLEAN = arecord
+diff --git a/aplay/waiter-poll.c b/aplay/waiter-poll.c
+new file mode 100644
+index 0000000..68ef4ae
+--- /dev/null
++++ b/aplay/waiter-poll.c
+@@ -0,0 +1,66 @@
++/*
++ * waiter-waiter-poll.c - Waiter for event notification by poll(2).
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "waiter.h"
++
++#include <poll.h>
++
++struct poll_state {
++	struct pollfd *pfds;
++	unsigned int count;
 +};
 +
-+static const struct container_builder container_builder_raw = {
-+	.format = CONTAINER_FORMAT_RAW,
-+};
- 
- const char *const container_suffix_from_format(enum container_format format)
- {
-@@ -112,7 +122,7 @@ enum container_format container_format_from_path(const char *path)
- 	}
- 
- 	/* Unsupported. */
--	return CONTAINER_FORMAT_COUNT;
-+	return CONTAINER_FORMAT_RAW;
- }
- 
- int container_seek_offset(struct container_context *cntr, off64_t offset)
-@@ -196,7 +206,7 @@ int container_parser_init(struct container_context *cntr,
- 	 * Unless detected, use raw container.
- 	 */
- 	if (i == ARRAY_SIZE(parsers))
--		return -EINVAL;
-+		parser = &container_parser_raw;
- 
- 	/* Allocate private data for the parser. */
- 	if (parser->private_size > 0) {
-@@ -224,6 +234,7 @@ int container_builder_init(struct container_context *cntr,
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
- 		[CONTAINER_FORMAT_AU] = &container_builder_au,
- 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
-+		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
- 	};
- 	const struct container_builder *builder;
- 	int err;
-@@ -306,6 +317,21 @@ int container_context_process_frames(struct container_context *cntr,
- 			    *frame_count;
- 	int err;
- 
-+	/*
-+	 * A parser of cotainers already read first 4 bytes to detect format
-+	 * of container, however they includes PCM frames when any format was
-+	 * undetected. Surely to write out them.
-+	 */
-+	if (!cntr->magic_handled && cntr->type == CONTAINER_TYPE_PARSER &&
-+	    cntr->format == CONTAINER_FORMAT_RAW) {
-+		memcpy(buf, cntr->magic, sizeof(cntr->magic));
-+		buf += sizeof(cntr->magic);
-+		size -= sizeof(cntr->magic);
-+		cntr->magic_handled = true;
++static int poll_prepare(struct waiter_context *waiter, int *fds,
++			unsigned int fd_count)
++{
++	struct poll_state *state = waiter->private_data;
++	int i;
 +
-+		cntr->handled_byte_count += sizeof(cntr->magic);
++	state->pfds = calloc(fd_count, sizeof(struct pollfd));
++	if (state->pfds == NULL)
++		return -ENOMEM;
++
++	for (i = 0; i < fd_count; ++i) {
++		state->pfds[i].fd = fds[i];
++		state->pfds[i].events = POLLIN | POLLOUT;
 +	}
 +
- 	/* All of supported containers include interleaved PCM frames. */
- 	err = cntr->process_bytes(cntr, buf, size);
- 	if (err < 0) {
-diff --git a/aplay/container.h b/aplay/container.h
-index 994ff9b..01ad7af 100644
---- a/aplay/container.h
-+++ b/aplay/container.h
-@@ -33,6 +33,7 @@ enum container_format {
- 	CONTAINER_FORMAT_RIFF_WAVE = 0,
- 	CONTAINER_FORMAT_AU,
- 	CONTAINER_FORMAT_VOC,
-+	CONTAINER_FORMAT_RAW,
- 	CONTAINER_FORMAT_COUNT,
++	state->count = fd_count;
++
++	return 0;
++}
++
++static int poll_wait_event(struct waiter_context *waiter)
++{
++	struct poll_state *state = waiter->private_data;
++	int err;
++
++
++	err = poll(state->pfds, state->count, -1);
++	if (err < 0)
++		return -errno;
++
++	return 0;
++}
++
++static void poll_release(struct waiter_context *waiter)
++{
++	struct poll_state *state = waiter->private_data;
++
++	free(state->pfds);
++	state->pfds = 0;
++}
++
++const struct waiter_data waiter_poll = {
++	.ops = {
++		.prepare	= poll_prepare,
++		.wait_event	= poll_wait_event,
++		.release	= poll_release,
++	},
++	.private_size = sizeof(struct poll_state),
++};
+diff --git a/aplay/waiter.c b/aplay/waiter.c
+index d29a533..c238bf1 100644
+--- a/aplay/waiter.c
++++ b/aplay/waiter.c
+@@ -14,7 +14,7 @@ int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
+ 		enum waiter_type type;
+ 		const struct waiter_data *waiter;
+ 	} entries[] = {
+-		{WAITER_TYPE_COUNT,	NULL},
++		{WAITER_TYPE_POLL, &waiter_poll},
+ 	};
+ 	int i;
+ 
+diff --git a/aplay/waiter.h b/aplay/waiter.h
+index c63274a..5059a00 100644
+--- a/aplay/waiter.h
++++ b/aplay/waiter.h
+@@ -19,6 +19,7 @@
+ #endif
+ 
+ enum waiter_type {
++	WAITER_TYPE_POLL = 0,
+ 	WAITER_TYPE_COUNT,
  };
  
+@@ -51,4 +52,6 @@ struct waiter_data {
+ 	unsigned int private_size;
+ };
+ 
++extern const struct waiter_data waiter_poll;
++
+ #endif
 -- 
 2.11.0
