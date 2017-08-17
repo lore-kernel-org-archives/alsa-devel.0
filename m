@@ -1,31 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: non-blocking mode example
-Date: Thu, 17 Aug 2017 19:18:07 +0200
-Message-ID: <a4c8de7b-4ebd-ad71-722d-5e40260f9512@ladisch.de>
-References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
- <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
- <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
- <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
- <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
- <f811f743-3433-2b1a-f932-677290d5d562@ladisch.de>
- <a0bfdc84-d5d3-3d0f-7113-ad95440e9f3d@t-online.de>
- <c2b0d797-0cb4-6592-5a2f-f7661b0871fb@ladisch.de>
- <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
- <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
+From: Paul Kocialkowski <contact@paulk.fr>
+Subject: [PATCH] ASoC: tegra: Remove SoC-specific Kconfig
+	depends and selects
+Date: Thu, 17 Aug 2017 21:05:52 +0200
+Message-ID: <20170817190552.4404-1-contact@paulk.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E412267036
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:18:46 +0200 (CEST)
-Received: from [192.168.42.4] (tmo-114-22.customers.d1-online.com
- [80.187.114.22])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 0772555828A8
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:18:45 +0200 (CEST)
-In-Reply-To: <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
-Content-Language: en-US
+Received: from gagarine.paulk.fr (gagarine.paulk.fr [109.190.93.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 109EB266FEB
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 21:06:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,20 +19,175 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Stephen Warren <swarren@nvidia.com>, Paul Kocialkowski <contact@paulk.fr>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-ThomasJF wrote:
-> If I use a higher timeout than 0 with poll, the stream starts without snd_pcm_wait().
->
-> Now I get these snd_pcm_writei errors:
->
-> stop: File descriptor in bad state
-> pause: ok
-> play (after pause): Resource temporarily unavailable
+This removes the SoC-specific dependencies on the platform drivers,
+as well as SoC-specific selections of platform drivers for the
+machine drivers. The rationale behind this change is that the
+dependencies are not actual build dependencies but run-time ones.
 
-I don't see the actual code.  But EAGAIN is not an error.
+The previously listed SoCs were also incomplete: for instance, tegra124
+uses the tegra30 platform drivers, which could not be built without
+ARCH_TEGRA_3x_SOC set.
 
+Descriptions of the tristates are also added to allow these options
+to be set via defconfig/menuconfig.
 
-Regards,
-Clemens
+Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+Acked-by: Thierry Reding <treding@nvidia.com>
+---
+ sound/soc/tegra/Kconfig | 42 ++++++++++++++----------------------------
+ 1 file changed, 14 insertions(+), 28 deletions(-)
+
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index efbe8d4c019e..6875fc39a575 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -9,8 +9,8 @@ config SND_SOC_TEGRA
+ 	  Say Y or M here if you want support for SoC audio on Tegra.
+ 
+ config SND_SOC_TEGRA20_AC97
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 AC97 interface"
++	depends on SND_SOC_TEGRA
+ 	select SND_SOC_AC97_BUS
+ 	select SND_SOC_TEGRA20_DAS
+ 	help
+@@ -19,16 +19,16 @@ config SND_SOC_TEGRA20_AC97
+ 	  machine drivers to support below.
+ 
+ config SND_SOC_TEGRA20_DAS
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 DAS module"
++	depends on SND_SOC_TEGRA
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 DAS module.
+ 	  You will also need to select the individual machine drivers to
+ 	  support below.
+ 
+ config SND_SOC_TEGRA20_I2S
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 I2S interface"
++	depends on SND_SOC_TEGRA
+ 	select SND_SOC_TEGRA20_DAS
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+@@ -36,8 +36,8 @@ config SND_SOC_TEGRA20_I2S
+ 	  machine drivers to support below.
+ 
+ config SND_SOC_TEGRA20_SPDIF
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 SPDIF interface"
++	depends on SND_SOC_TEGRA
+ 	default m
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
+@@ -45,16 +45,16 @@ config SND_SOC_TEGRA20_SPDIF
+ 	  below.
+ 
+ config SND_SOC_TEGRA30_AHUB
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
++	tristate "Tegra30 AHUB module"
++	depends on SND_SOC_TEGRA
+ 	help
+-	  Say Y or M if you want to add support for the Tegra20 AHUB module.
++	  Say Y or M if you want to add support for the Tegra30 AHUB module.
+ 	  You will also need to select the individual machine drivers to
+ 	  support below.
+ 
+ config SND_SOC_TEGRA30_I2S
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
++	tristate "Tegra30 I2S interface"
++	depends on SND_SOC_TEGRA
+ 	select SND_SOC_TEGRA30_AHUB
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+@@ -64,8 +64,6 @@ config SND_SOC_TEGRA30_I2S
+ config SND_SOC_TEGRA_RT5640
+ 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_RT5640
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -74,8 +72,6 @@ config SND_SOC_TEGRA_RT5640
+ config SND_SOC_TEGRA_WM8753
+ 	tristate "SoC Audio support for Tegra boards using a WM8753 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8753
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -84,8 +80,6 @@ config SND_SOC_TEGRA_WM8753
+ config SND_SOC_TEGRA_WM8903
+ 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8903
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -94,7 +88,7 @@ config SND_SOC_TEGRA_WM8903
+ 
+ config SND_SOC_TEGRA_WM9712
+ 	tristate "SoC Audio support for Tegra boards using a WM9712 codec"
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC && GPIOLIB
++	depends on SND_SOC_TEGRA && GPIOLIB
+ 	select SND_SOC_TEGRA20_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -104,7 +98,6 @@ config SND_SOC_TEGRA_WM9712
+ config SND_SOC_TEGRA_TRIMSLICE
+ 	tristate "SoC Audio support for TrimSlice board"
+ 	depends on SND_SOC_TEGRA && I2C
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_TLV320AIC23_I2C
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on the
+@@ -113,7 +106,6 @@ config SND_SOC_TEGRA_TRIMSLICE
+ config SND_SOC_TEGRA_ALC5632
+ 	tristate "SoC Audio support for Tegra boards using an ALC5632 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_ALC5632
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on the
+@@ -122,8 +114,6 @@ config SND_SOC_TEGRA_ALC5632
+ config SND_SOC_TEGRA_MAX98090
+ 	tristate "SoC Audio support for Tegra boards using a MAX98090 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -132,8 +122,6 @@ config SND_SOC_TEGRA_MAX98090
+ config SND_SOC_TEGRA_RT5677
+ 	tristate "SoC Audio support for Tegra boards using a RT5677 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_RT5677
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -142,8 +130,6 @@ config SND_SOC_TEGRA_RT5677
+ config SND_SOC_TEGRA_SGTL5000
+ 	tristate "SoC Audio support for Tegra boards using a SGTL5000 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_SGTL5000
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+-- 
+2.13.4
