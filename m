@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 09/23] aplay: add an abstruction of waiter
-	for I/O event notification
-Date: Thu, 17 Aug 2017 20:59:50 +0900
-Message-ID: <20170817120004.15326-10-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 13/23] aplay: add an abstraction for
+	transferring of PCM frames
+Date: Thu, 17 Aug 2017 20:59:54 +0900
+Message-ID: <20170817120004.15326-14-o-takashi@sakamocchi.jp>
 References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E7DE2266BFD
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F2C6A266EC4
  for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:13 +0200 (CEST)
 In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,69 +25,74 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-There're several types of system calls for multiplexed I/O. They're used to
-receive notifications of I/O events. Typically, userspace applications call
-it for file descriptor to yield CPU. When I/O is enabled, process of the
-application is rescheduled, then the application execute I/O calls.
+ALSA has PCM interface to transfer data frames, while the interface includes
+several variations of use cases.
 
-This commit adds an abstraction of the calls, named as 'waiter'. This is
-expected to be used with non-blocking file operation.
+This commit adds an abstraction to transfer data frames, named as 'xfer'.
+This includes some functions expected to be called by main program.
 ---
- aplay/Makefile.am |  7 +++++--
- aplay/waiter.c    | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- aplay/waiter.h    | 54 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 119 insertions(+), 2 deletions(-)
- create mode 100644 aplay/waiter.c
- create mode 100644 aplay/waiter.h
+ aplay/Makefile.am |   7 ++--
+ aplay/xfer.c      | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ aplay/xfer.h      |  71 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 177 insertions(+), 2 deletions(-)
+ create mode 100644 aplay/xfer.c
+ create mode 100644 aplay/xfer.h
 
 diff --git a/aplay/Makefile.am b/aplay/Makefile.am
-index 79f1535..634124b 100644
+index 196e1ca..9056f56 100644
 --- a/aplay/Makefile.am
 +++ b/aplay/Makefile.am
-@@ -8,7 +8,8 @@ man_MANS = aplay.1 arecord.1
- noinst_HEADERS = \
- 	formats.h \
+@@ -10,7 +10,8 @@ noinst_HEADERS = \
  	container.h \
--	aligner.h
-+	aligner.h \
-+	waiter.h
+ 	aligner.h \
+ 	waiter.h \
+-	options.h
++	options.h \
++	xfer.h
  
  aplay_SOURCES = \
  	formats.h \
-@@ -21,7 +22,9 @@ aplay_SOURCES = \
- 	aligner.h \
- 	aligner.c \
- 	aligner-single.c \
--	aligner-multiple.c
-+	aligner-multiple.c \
-+	waiter.h \
-+	waiter.c
+@@ -29,7 +30,9 @@ aplay_SOURCES = \
+ 	waiter-poll.c \
+ 	waiter-epoll.c \
+ 	options.h \
+-	options.c
++	options.c \
++	xfer.h \
++	xfer.c
  
  EXTRA_DIST = aplay.1 arecord.1
  EXTRA_CLEAN = arecord
-diff --git a/aplay/waiter.c b/aplay/waiter.c
+diff --git a/aplay/xfer.c b/aplay/xfer.c
 new file mode 100644
-index 0000000..d29a533
+index 0000000..3fe094e
 --- /dev/null
-+++ b/aplay/waiter.c
-@@ -0,0 +1,60 @@
++++ b/aplay/xfer.c
+@@ -0,0 +1,101 @@
 +/*
-+ * waiter.c - I/O event waiter.
++ * xfer.c - receiver/transmiter of data frames.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "waiter.h"
++#include "xfer.h"
 +
-+int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
++#include <gettext.h>
++
++static const char *const xfer_type_labels[] = {
++	[XFER_TYPE_ALSA] = "alsa",
++};
++
++int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
++		      snd_pcm_stream_t direction, struct context_options *opts)
 +{
 +	struct {
-+		enum waiter_type type;
-+		const struct waiter_data *waiter;
++		enum xfer_type type;
++		const struct xfer_data *data;
 +	} entries[] = {
-+		{WAITER_TYPE_COUNT,	NULL},
++		{XFER_TYPE_ALSA, NULL},
 +	};
 +	int i;
 +
@@ -98,97 +103,148 @@ index 0000000..d29a533
 +	if (i == ARRAY_SIZE(entries))
 +		return -EINVAL;
 +
-+	waiter->private_data = malloc(entries[i].waiter->private_size);
-+	if (waiter->private_data == NULL)
-+		return -ENOMEM;
-+	memset(waiter->private_data, 0, entries[i].waiter->private_size);
++	xfer->type = type;
++	xfer->ops = &entries[i].data->ops;
++	xfer->verbose = opts->verbose;
 +
-+	waiter->type = type;
-+	waiter->ops = &entries[i].waiter->ops;
++	xfer->private_data = malloc(entries[i].data->private_size);
++	if (xfer->private_data == NULL)
++		return -ENOMEM;
++	memset(xfer->private_data, 0, entries[i].data->private_size);
++
++	return xfer->ops->init(xfer, direction, opts);
++}
++
++void xfer_context_destroy(struct xfer_context *xfer)
++{
++	if (xfer->ops->destroy)
++		xfer->ops->destroy(xfer);
++	if (xfer->private_data)
++		free(xfer->private_data);
++}
++
++int xfer_context_pre_process(struct xfer_context *xfer,
++			     snd_pcm_format_t *format,
++			     unsigned int *samples_per_frame,
++			     unsigned int *frames_per_second,
++			     snd_pcm_access_t *access,
++			     snd_pcm_uframes_t *frames_per_buffer)
++{
++	int err;
++
++	err = xfer->ops->pre_process(xfer, format, samples_per_frame,
++				     frames_per_second, access,
++				     frames_per_buffer);
++	if (err < 0)
++		return err;
++
++	if (xfer->verbose > 0) {
++		printf("Transfer: %s\n", xfer_type_labels[xfer->type]);
++		printf("  access: %s\n", snd_pcm_access_name(*access));
++		printf("  sample format: %s\n", snd_pcm_format_name(*format));
++		printf("  bytes/sample: %u\n",
++		       snd_pcm_format_physical_width(*format) / 8);
++		printf("  samples/frame: %u\n", *samples_per_frame);
++		printf("  frames/second: %u\n", *frames_per_second);
++		printf("  frames/buffer: %lu\n", *frames_per_buffer);
++		printf("\n");
++	}
 +
 +	return 0;
 +}
 +
-+int waiter_context_prepare(struct waiter_context *waiter, int *fds,
-+			   unsigned int fd_count)
++int xfer_context_process_frames(struct xfer_context *xfer,
++				struct aligner_context *aligner,
++				struct container_context *cntrs,
++				unsigned int *frame_count)
 +{
-+	return waiter->ops->prepare(waiter, fds, fd_count);
++	return xfer->ops->process_frames(xfer, frame_count, aligner, cntrs);
 +}
 +
-+int waiter_context_wait_event(struct waiter_context *waiter)
++void xfer_context_pause(struct xfer_context *xfer, bool enable)
 +{
-+	return waiter->ops->wait_event(waiter);
++	xfer->ops->pause(xfer, enable);
 +}
 +
-+void waiter_context_release(struct waiter_context *waiter)
++void xfer_context_post_process(struct xfer_context *xfer)
 +{
-+	waiter->ops->release(waiter);
++	xfer->ops->post_process(xfer);
 +}
-+
-+void waiter_context_destroy(struct waiter_context *waiter)
-+{
-+	if (waiter->private_data)
-+		free(waiter->private_data);
-+	waiter->private_data = NULL;
-+}
-diff --git a/aplay/waiter.h b/aplay/waiter.h
+diff --git a/aplay/xfer.h b/aplay/xfer.h
 new file mode 100644
-index 0000000..c63274a
+index 0000000..749fa6c
 --- /dev/null
-+++ b/aplay/waiter.h
-@@ -0,0 +1,54 @@
++++ b/aplay/xfer.h
+@@ -0,0 +1,71 @@
 +/*
-+ * waiter.h - a header for I/O event waiter.
++ * xfer.h - a header for receiver/transmiter of data frames.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#ifndef __ALSA_UTILS_APLAY_WAITER__H_
-+#define __ALSA_UTILS_APLAY_WAITER__H_
++#ifndef __ALSA_UTILS_APLAY_XFER__H_
++#define __ALSA_UTILS_APLAY_XFER__H_
 +
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
++#include "aligner.h"
++#include "options.h"
 +
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(array)	(sizeof(array)/sizeof(array[0]))
-+#endif
-+
-+enum waiter_type {
-+	WAITER_TYPE_COUNT,
++enum xfer_type {
++	XFER_TYPE_ALSA = 0,
 +};
 +
-+struct waiter_ops;
++struct xfer_ops;
 +
-+struct waiter_context {
-+	enum waiter_type type;
-+	const struct waiter_ops *ops;
++struct xfer_context  {
++	enum xfer_type type;
++	const struct xfer_ops *ops;
 +	void *private_data;
++
++	unsigned int verbose;
 +};
 +
-+int waiter_context_init(struct waiter_context *waiter, enum waiter_type type);
-+int waiter_context_prepare(struct waiter_context *waiter, int *fds,
-+			   unsigned int fd_count);
-+int waiter_context_wait_event(struct waiter_context *waiter);
-+void waiter_context_release(struct waiter_context *waiter);
-+void waiter_context_destroy(struct waiter_context *waiter);
++int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
++		      snd_pcm_stream_t direction, struct context_options *opts);
++void xfer_context_destroy(struct xfer_context *xfer);
++int xfer_context_pre_process(struct xfer_context *xfer,
++			     snd_pcm_format_t *format,
++			     unsigned int *samples_per_frame,
++			     unsigned int *frames_per_second,
++			     snd_pcm_access_t *access,
++			     snd_pcm_uframes_t *frames_per_buffer);
++int xfer_context_process_frames(struct xfer_context *xfer,
++				struct aligner_context *aligner,
++				struct container_context *cntrs,
++				unsigned int *frame_count);
++void xfer_context_pause(struct xfer_context *xfer, bool enable);
++void xfer_context_post_process(struct xfer_context *xfer);
 +
-+/* For internal use in 'waiter' module. */
++/* For internal use in 'xfer' module. */
 +
-+struct waiter_ops {
-+	int (*prepare)(struct waiter_context *waiter, int *fds,
-+		       unsigned int fd_count);
-+	int (*wait_event)(struct waiter_context *waiter);
-+	void (*release)(struct waiter_context *waiter);
++struct xfer_ops {
++	int (*init)(struct xfer_context *xfer, snd_pcm_stream_t direction,
++		    struct context_options *opts);
++	int (*pre_process)(struct xfer_context *xfer, snd_pcm_format_t *format,
++			   unsigned int *samples_per_frame,
++			   unsigned int *frames_per_second,
++			   snd_pcm_access_t *access,
++			   snd_pcm_uframes_t *frames_per_buffer);
++	int (*process_frames)(struct xfer_context *xfer,
++			      unsigned int *frame_count,
++			      struct aligner_context *aligner,
++			      struct container_context *cntrs);
++	void (*post_process)(struct xfer_context *xfer);
++	void (*destroy)(struct xfer_context *xfer);
++	void (*pause)(struct xfer_context *xfer, bool enable);
 +};
 +
-+struct waiter_data {
-+	struct waiter_ops ops;
++struct xfer_data {
++	struct xfer_ops ops;
 +	unsigned int private_size;
 +};
++
++extern const struct xfer_data xfer_alsa;
 +
 +#endif
 -- 
