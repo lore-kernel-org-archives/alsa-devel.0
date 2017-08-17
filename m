@@ -1,18 +1,17 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 04/15] ALSA: ad1816a: constify
-	pnp_card_device_id
-Date: Thu, 17 Aug 2017 15:36:19 +0530
-Message-ID: <1502964390-6927-5-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 05/15] ALSA: als100: constify pnp_card_device_id
+Date: Thu, 17 Aug 2017 15:36:20 +0530
+Message-ID: <1502964390-6927-6-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id C538026763C
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 12:07:09 +0200 (CEST)
-Received: by mail-pg0-f66.google.com with SMTP id 123so9097212pga.5
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 03:07:09 -0700 (PDT)
+Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D4A2267640
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 12:07:12 +0200 (CEST)
+Received: by mail-pg0-f67.google.com with SMTP id 83so9124062pgb.4
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 03:07:11 -0700 (PDT)
 In-Reply-To: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,21 +32,21 @@ const pnp_card_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/isa/ad1816a/ad1816a.c | 2 +-
+ sound/isa/als100.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/isa/ad1816a/ad1816a.c b/sound/isa/ad1816a/ad1816a.c
-index 7692265..4be6c12 100644
---- a/sound/isa/ad1816a/ad1816a.c
-+++ b/sound/isa/ad1816a/ad1816a.c
-@@ -63,7 +63,7 @@ MODULE_PARM_DESC(enable, "Enable ad1816a based soundcard.");
- module_param_array(clockfreq, int, NULL, 0444);
- MODULE_PARM_DESC(clockfreq, "Clock frequency for ad1816a driver (default = 0).");
+diff --git a/sound/isa/als100.c b/sound/isa/als100.c
+index bc9ea30..dde6ba4 100644
+--- a/sound/isa/als100.c
++++ b/sound/isa/als100.c
+@@ -79,7 +79,7 @@ struct snd_card_als100 {
+ 	struct snd_sb *chip;
+ };
  
--static struct pnp_card_device_id snd_ad1816a_pnpids[] = {
-+static const struct pnp_card_device_id snd_ad1816a_pnpids[] = {
- 	/* Analog Devices AD1815 */
- 	{ .id = "ADS7150", .devs = { { .id = "ADS7150" }, { .id = "ADS7151" } } },
- 	/* Analog Device AD1816? */
+-static struct pnp_card_device_id snd_als100_pnpids[] = {
++static const struct pnp_card_device_id snd_als100_pnpids[] = {
+ 	/* DT197A30 */
+ 	{ .id = "RWB1688",
+ 	  .devs = { { "@@@0001" }, { "@X@0001" }, { "@H@0001" } },
 -- 
 2.7.4
