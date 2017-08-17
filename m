@@ -1,32 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec: use enable pin to control dmic
-	start and stop" to the asoc tree
-Date: Thu, 17 Aug 2017 18:13:20 +0100
-Message-ID: <E1diOMC-0008Sl-RK@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 25593266F7A
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:13:23 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lin Huang <hl@rock-chips.com>
+Subject: Applied "ASoC: sh: make snd_soc_ops const" to the asoc tree
+Date: Thu, 17 Aug 2017 18:12:58 +0100
+Message-ID: <E1diOLq-0008Kf-J9@debutante>
+References: <1502902770-3758-8-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1502902770-3758-8-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, heiko@sntech.de, krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec: use enable pin to control dmic start and stop
+   ASoC: sh: make snd_soc_ops const
 
 has been applied to the asoc tree at
 
@@ -51,115 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From 23c7159a799f3364720b3d250f57bc8e26b17287 Mon Sep 17 00:00:00 2001
-From: huang lin <hl@rock-chips.com>
-Date: Thu, 17 Aug 2017 10:24:44 +0800
-Subject: [PATCH] ASoC: codec: use enable pin to control dmic start and stop
+>From a46d0592d164c017342d2d86e5d123735ec046ae Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Wed, 16 Aug 2017 22:29:30 +0530
+Subject: [PATCH] ASoC: sh: make snd_soc_ops const
 
-on some board use enable pin to control dmic start and stop,
-so add this feature in dmic driver.
+Make this const as it is only stored in the ops field of a
+snd_soc_dai_link structure, which is const.
+Done using Coccinelle.
 
-Signed-off-by: Lin Huang <hl@rock-chips.com>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig |  2 +-
- sound/soc/codecs/dmic.c  | 48 +++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 48 insertions(+), 2 deletions(-)
+ sound/soc/sh/migor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 6c78b0b49b81..952c44dd5e90 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -71,7 +71,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_DA732X if I2C
- 	select SND_SOC_DA9055 if I2C
- 	select SND_SOC_DIO2125
--	select SND_SOC_DMIC
-+	select SND_SOC_DMIC if GPIOLIB
- 	select SND_SOC_ES8316 if I2C
- 	select SND_SOC_ES8328_SPI if SPI_MASTER
- 	select SND_SOC_ES8328_I2C if I2C
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index d50f142e2972..b88a1ee66f80 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -19,6 +19,8 @@
-  *
-  */
+diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
+index 672bcd4c252b..ecb057ff9fbb 100644
+--- a/sound/soc/sh/migor.c
++++ b/sound/soc/sh/migor.c
+@@ -98,7 +98,7 @@ static int migor_hw_free(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
  
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -27,6 +29,34 @@
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
- 
-+static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
-+{
-+	struct gpio_desc *dmic_en = snd_soc_dai_get_drvdata(dai);
-+
-+	if (!dmic_en)
-+		return 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		gpiod_set_value(dmic_en, 1);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		gpiod_set_value(dmic_en, 0);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops dmic_dai_ops = {
-+	.trigger	= dmic_daiops_trigger,
-+};
-+
- static struct snd_soc_dai_driver dmic_dai = {
- 	.name = "dmic-hifi",
- 	.capture = {
-@@ -38,8 +68,23 @@ static struct snd_soc_dai_driver dmic_dai = {
- 			| SNDRV_PCM_FMTBIT_S24_LE
- 			| SNDRV_PCM_FMTBIT_S16_LE,
- 	},
-+	.ops    = &dmic_dai_ops,
+-static struct snd_soc_ops migor_dai_ops = {
++static const struct snd_soc_ops migor_dai_ops = {
+ 	.hw_params = migor_hw_params,
+ 	.hw_free = migor_hw_free,
  };
- 
-+static int dmic_codec_probe(struct snd_soc_codec *codec)
-+{
-+	struct gpio_desc *dmic_en;
-+
-+	dmic_en = devm_gpiod_get_optional(codec->dev,
-+					"dmicen", GPIOD_OUT_LOW);
-+	if (IS_ERR(dmic_en))
-+		return PTR_ERR(dmic_en);
-+
-+	snd_soc_codec_set_drvdata(codec, dmic_en);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget dmic_dapm_widgets[] = {
- 	SND_SOC_DAPM_AIF_OUT("DMIC AIF", "Capture", 0,
- 			     SND_SOC_NOPM, 0, 0),
-@@ -50,7 +95,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"DMIC AIF", NULL, "DMic"},
- };
- 
--static struct snd_soc_codec_driver soc_dmic = {
-+static const struct snd_soc_codec_driver soc_dmic = {
-+	.probe = dmic_codec_probe,
- 	.component_driver = {
- 		.dapm_widgets		= dmic_dapm_widgets,
- 		.num_dapm_widgets	= ARRAY_SIZE(dmic_dapm_widgets),
 -- 
 2.13.3
