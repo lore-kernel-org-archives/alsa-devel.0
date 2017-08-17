@@ -1,83 +1,48 @@
-From: ThomasJF <tsepp2001@t-online.de>
-Subject: Re: non-blocking mode example
-Date: Thu, 17 Aug 2017 18:47:06 +0200
-Message-ID: <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
-References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
- <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
- <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
- <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
- <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
- <f811f743-3433-2b1a-f932-677290d5d562@ladisch.de>
- <a0bfdc84-d5d3-3d0f-7113-ad95440e9f3d@t-online.de>
- <c2b0d797-0cb4-6592-5a2f-f7661b0871fb@ladisch.de>
- <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/9] ASoC: rt5514: Switch to snd_soc_register_codec
+Date: Thu, 17 Aug 2017 18:11:20 +0100
+Message-ID: <20170817171120.xvvsmx2fleeqj2s5@sirena.org.uk>
+References: <20170817044417.22069-1-jeffy.chen@rock-chips.com>
+ <20170817044417.22069-2-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout10.t-online.de (mailout10.t-online.de [194.25.134.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 123DA266F7E
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 18:47:16 +0200 (CEST)
-Received: from fwd26.aul.t-online.de (fwd26.aul.t-online.de [172.20.26.131])
- by mailout10.t-online.de (Postfix) with SMTP id 75D1741FD607
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 18:47:16 +0200 (CEST)
-In-Reply-To: <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bt2krtj4o6aa3c5m"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170817044417.22069-2-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-If I use a higher timeout than 0 with poll, the stream starts without 
-snd_pcm_wait().
 
-Now I get these snd_pcm_writei errors:
+--bt2krtj4o6aa3c5m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-stop: File descriptor in bad state
-pause: ok
-play (after pause): Resource temporarily unavailable
+On Thu, Aug 17, 2017 at 12:44:09PM +0800, Jeffy Chen wrote:
+> Currently we are using devm_snd_soc_register_component, which would
+> use legacy dai name.
 
-Regards
-Thomas
+> Switch to snd_soc_register_codec to use dai driver name.
 
+This is the wrong direction to be going in, we are trying to move all
+drivers to use component.  Whatever you want to do make components use
+it.
 
-Am 17.08.2017 um 18:03 schrieb ThomasJF:
-> Without snd_pcm_wait() I get an open error (Device or resource busy).
->
-> In short I have inside the loop:
->
-> poll(ufds, 2, 0);
-> snd_pcm_wait()
-> snd_pcm_writei(...)
->
-> Regards
-> Thomas
->
->
-> Am 17.08.2017 um 16:48 schrieb Clemens Ladisch:
->> ThomasJF wrote:
->>> now it is working with poll and the two fds. Also pause, play and stop.
->>>
->>> If it stops, the snd_pcm_wait in my loop returns a negative error code
->> Why are you calling snd_pcm_wait() when you already have poll()?
->>
->>
->> Regards,
->> Clemens
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+--bt2krtj4o6aa3c5m
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmVzjgACgkQJNaLcl1U
+h9CEWgf/Wez1qnIb4+lnvG+1eL095p1DMFeQuKAozpb1iIMabI8Lw4G4lttkg4oM
+e6HTf9XIrT99vwGkVyG+kFGmx4JkzI80BeCCTnRwtkCu+ETQ8s4CUsbOdLRYA8Np
+qpi7A+CCgiKKdZRq6k/fXQbjagl4LLOB3w3TMD8U5nyWUqbwHUpYt0o1W6JHtsnx
+1p4Bf0/jnSTCwCLyCPAKtoU5dsDEeRJGSZwHAGqHQM5ziA3p4BneQa7VMuLQMGrf
+jCmISBfCCMMbciP/ibqm40EL8QwE3bOfEn13KCnkTQKr5AfkXgG/G7VNyIJSNMxp
+bYxsgqI3x5MxKw3kHB+ITc5B9xccgw==
+=wESh
+-----END PGP SIGNATURE-----
+
+--bt2krtj4o6aa3c5m--
