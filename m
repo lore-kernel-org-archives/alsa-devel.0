@@ -1,125 +1,91 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v4 1/3] ASoC: codecs: msm8916-wcd-analog: get
-	micbias voltage from dt
-Date: Thu, 17 Aug 2017 10:02:09 +0200
-Message-ID: <20170817080211.11453-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 3/3] ASoC: qcom: apq8016-sbc: Add support to Headset JACK
+Date: Thu, 17 Aug 2017 10:02:11 +0200
+Message-ID: <20170817080211.11453-4-srinivas.kandagatla@linaro.org>
 References: <20170817080211.11453-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f41.google.com (mail-it0-f41.google.com
- [209.85.214.41])
- by alsa0.perex.cz (Postfix) with ESMTP id E165D266D8D
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 10:02:20 +0200 (CEST)
-Received: by mail-it0-f41.google.com with SMTP id 76so27824065ith.0
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 01:02:20 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170817080211.11453-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org
-Cc: damien.riegel@savoirfairelinux.com, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: damien.riegel@savoirfairelinux.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds bindings in DT to provide required micbias voltage which
-could be specific to board. With this new binding, now the mic bias
-voltage is left at hardware default value if the device tree does not
-specify any mic bias voltage value. Correct micbias value is required
-for mbhc buttons to work.
+This patch adds support to Headset JACK, also provides board specific
+vref ranges for mbhc buttons to be detected.
+
+This headset supports both 3 pole and 4 pole headset type and 5 buttons.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  1 +
- sound/soc/codecs/msm8916-wcd-analog.c              | 27 +++++++++++++++++-----
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ sound/soc/qcom/apq8016_sbc.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-index ccb401cfef9d..05b67a1d4851 100644
---- a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
-@@ -33,6 +33,7 @@ Required properties
-  - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator DT node.
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index f07aa1e1cdfe..e6e632aa0fab 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -21,12 +21,16 @@
+ #include <linux/platform_device.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
++#include <sound/jack.h>
+ #include <sound/soc.h>
++#include <uapi/linux/input-event-codes.h>
+ #include <dt-bindings/sound/apq8016-lpass.h>
  
- Optional Properties:
-+- qcom,micbias-lvl:  Voltage (mV) for Mic Bias
- - qcom,micbias1-ext-cap: boolean, present if micbias1 has external capacitor
- 			 connected.
- - qcom,micbias2-ext-cap: boolean, present if micbias2 has external capacitor
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index a0de3e7204d5..8633524b1961 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -93,8 +93,12 @@
- #define MICB_1_EN_TX3_GND_SEL_TX_GND	0
- 
- #define CDC_A_MICB_1_VAL		(0xf141)
-+#define MICB_MIN_VAL 1600
-+#define MICB_STEP_SIZE 50
-+#define MICB_VOLTAGE_REGVAL(v)		((v - MICB_MIN_VAL)/MICB_STEP_SIZE)
- #define MICB_1_VAL_MICB_OUT_VAL_MASK	GENMASK(7, 3)
- #define MICB_1_VAL_MICB_OUT_VAL_V2P70V	((0x16)  << 3)
-+#define MICB_1_VAL_MICB_OUT_VAL_V1P80V	((0x4)  << 3)
- #define CDC_A_MICB_1_CTL		(0xf142)
- 
- #define MICB_1_CTL_CFILT_REF_SEL_MASK		BIT(1)
-@@ -225,6 +229,7 @@ struct pm8916_wcd_analog_priv {
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
- 	unsigned int micbias1_cap_mode;
- 	unsigned int micbias2_cap_mode;
-+	unsigned int micbias_mv;
+ struct apq8016_sbc_data {
+ 	void __iomem *mic_iomux;
+ 	void __iomem *spkr_iomux;
++	struct snd_soc_jack jack;
++	bool jack_setup;
+ 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
  };
  
- static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
-@@ -265,18 +270,25 @@ static const struct snd_kcontrol_new pm8916_wcd_analog_snd_controls[] = {
+@@ -70,6 +74,31 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
  
- static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
- {
-+	struct pm8916_wcd_analog_priv *wcd = snd_soc_codec_get_drvdata(codec);
+ 	}
+ 
++	if (!pdata->jack_setup) {
++		struct snd_jack *jack;
 +
- 	snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
- 			    MICB_1_CTL_EXT_PRECHARG_EN_MASK |
- 			    MICB_1_CTL_INT_PRECHARG_BYP_MASK,
- 			    MICB_1_CTL_INT_PRECHARG_BYP_EXT_PRECHRG_SEL
- 			    | MICB_1_CTL_EXT_PRECHARG_EN_ENABLE);
- 
--	snd_soc_write(codec, CDC_A_MICB_1_VAL, MICB_1_VAL_MICB_OUT_VAL_V2P70V);
--	/*
--	 * Special headset needs MICBIAS as 2.7V so wait for
--	 * 50 msec for the MICBIAS to reach 2.7 volts.
--	 */
--	msleep(50);
-+	if (wcd->micbias_mv) {
-+		snd_soc_write(codec, CDC_A_MICB_1_VAL,
-+			      MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
-+		/*
-+		 * Special headset needs MICBIAS as 2.7V so wait for
-+		 * 50 msec for the MICBIAS to reach 2.7 volts.
-+		 */
-+		if (wcd->micbias_mv >= 2700)
-+			msleep(50);
++		rval = snd_soc_card_jack_new(card, "Headset Jack",
++					     SND_JACK_HEADSET |
++					     SND_JACK_HEADPHONE |
++					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
++					     SND_JACK_BTN_4,
++					     &pdata->jack, NULL, 0);
++
++		if (rval < 0) {
++			dev_err(card->dev, "Unable to add Headphone Jack\n");
++			return rval;
++		}
++
++		jack = pdata->jack.jack;
++
++		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_MEDIA);
++		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++		pdata->jack_setup = true;
 +	}
 +
- 	snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
- 			    MICB_1_CTL_EXT_PRECHARG_EN_MASK |
- 			    MICB_1_CTL_INT_PRECHARG_BYP_MASK, 0);
-@@ -795,6 +807,9 @@ static int pm8916_wcd_analog_parse_dt(struct device *dev,
- 	else
- 		priv->micbias2_cap_mode = MICB_1_EN_NO_EXT_BYP_CAP;
+ 	for (i = 0 ; i < dai_link->num_codecs; i++) {
+ 		struct snd_soc_dai *dai = rtd->codec_dais[i];
  
-+	of_property_read_u32(dev->of_node, "qcom,micbias-lvl",
-+			     &priv->micbias_mv);
-+
+@@ -81,6 +110,11 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			dev_warn(card->dev, "Failed to set mclk: %d\n", rval);
+ 			return rval;
+ 		}
++		rval = snd_soc_codec_set_jack(codec, &pdata->jack, NULL);
++		if (rval != 0 && rval != -ENOTSUPP) {
++			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
++			return rval;
++		}
+ 	}
+ 
  	return 0;
- }
- 
 -- 
 2.11.0
