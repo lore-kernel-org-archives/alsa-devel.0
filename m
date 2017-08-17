@@ -1,83 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cirrus: make snd_soc_ops const" to the asoc tree
-Date: Thu, 17 Aug 2017 18:13:11 +0100
-Message-ID: <E1diOM3-0008Pg-Bn@debutante>
-References: <1502902770-3758-3-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502902770-3758-3-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, heiko@sntech.de, krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.orgalsa-devel@alsa-project.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: non-blocking mode example
+Date: Thu, 17 Aug 2017 19:18:07 +0200
+Message-ID: <a4c8de7b-4ebd-ad71-722d-5e40260f9512@ladisch.de>
+References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
+ <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
+ <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
+ <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
+ <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
+ <f811f743-3433-2b1a-f932-677290d5d562@ladisch.de>
+ <a0bfdc84-d5d3-3d0f-7113-ad95440e9f3d@t-online.de>
+ <c2b0d797-0cb4-6592-5a2f-f7661b0871fb@ladisch.de>
+ <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
+ <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E412267036
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:18:46 +0200 (CEST)
+Received: from [192.168.42.4] (tmo-114-22.customers.d1-online.com
+ [80.187.114.22])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 0772555828A8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:18:45 +0200 (CEST)
+In-Reply-To: <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+ThomasJF wrote:
+> If I use a higher timeout than 0 with poll, the stream starts without snd_pcm_wait().
+>
+> Now I get these snd_pcm_writei errors:
+>
+> stop: File descriptor in bad state
+> pause: ok
+> play (after pause): Resource temporarily unavailable
 
-   ASoC: cirrus: make snd_soc_ops const
+I don't see the actual code.  But EAGAIN is not an error.
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7f8159acecb3bb58c0d782813dc605ebef63b317 Mon Sep 17 00:00:00 2001
-From: Bhumika Goyal <bhumirks@gmail.com>
-Date: Wed, 16 Aug 2017 22:29:25 +0530
-Subject: [PATCH] ASoC: cirrus: make snd_soc_ops const
-
-Make these const as they are only stored in the ops field of a
-snd_soc_dai_link structure, which is const.
-Done using Coccinelle.
-
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/cirrus/edb93xx.c     | 2 +-
- sound/soc/cirrus/snappercl15.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-index 85962657aabe..c53bd6f2c2d7 100644
---- a/sound/soc/cirrus/edb93xx.c
-+++ b/sound/soc/cirrus/edb93xx.c
-@@ -56,7 +56,7 @@ static int edb93xx_hw_params(struct snd_pcm_substream *substream,
- 				      SND_SOC_CLOCK_OUT);
- }
- 
--static struct snd_soc_ops edb93xx_ops = {
-+static const struct snd_soc_ops edb93xx_ops = {
- 	.hw_params	= edb93xx_hw_params,
- };
- 
-diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
-index 98089df08df6..2334ec19e7eb 100644
---- a/sound/soc/cirrus/snappercl15.c
-+++ b/sound/soc/cirrus/snappercl15.c
-@@ -45,7 +45,7 @@ static int snappercl15_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops snappercl15_ops = {
-+static const struct snd_soc_ops snappercl15_ops = {
- 	.hw_params	= snappercl15_hw_params,
- };
- 
--- 
-2.13.3
+Regards,
+Clemens
