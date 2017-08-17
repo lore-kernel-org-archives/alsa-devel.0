@@ -1,61 +1,62 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 3/3] dt-bindings: ASoC: rockchip: Add
- rockchip,codec-names property
-Date: Thu, 17 Aug 2017 10:10:45 -0500
-Message-ID: <20170817140945.ahakyr6vhut5zalf@rob-hp-laptop>
-References: <1502340898-28403-1-git-send-email-jeffy.chen@rock-chips.com>
- <1502340898-28403-4-git-send-email-jeffy.chen@rock-chips.com>
+From: ThomasJF <tsepp2001@t-online.de>
+Subject: Re: non-blocking mode example
+Date: Thu, 17 Aug 2017 18:03:15 +0200
+Message-ID: <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
+References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
+ <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
+ <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
+ <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
+ <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
+ <f811f743-3433-2b1a-f932-677290d5d562@ladisch.de>
+ <a0bfdc84-d5d3-3d0f-7113-ad95440e9f3d@t-online.de>
+ <c2b0d797-0cb4-6592-5a2f-f7661b0871fb@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1502340898-28403-4-git-send-email-jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout08.t-online.de (mailout08.t-online.de [194.25.134.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 746AA266998
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 18:03:21 +0200 (CEST)
+Received: from fwd20.aul.t-online.de (fwd20.aul.t-online.de [172.20.26.140])
+ by mailout08.t-online.de (Postfix) with SMTP id E976B41C96C6
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 18:03:20 +0200 (CEST)
+In-Reply-To: <c2b0d797-0cb4-6592-5a2f-f7661b0871fb@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 10, 2017 at 12:54:58PM +0800, Jeffy Chen wrote:
-> Add a new rockchip,codec-names property, so that the driver can parse
-> the codecs by name.
-> 
-> Signed-off-by: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> ---
-> 
-> Changes in v2:
-> Let rockchip,codec-names be a required property.
-> 
->  Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-> index eac91db..05351df 100644
-> --- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-> +++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-> @@ -5,6 +5,7 @@ Required properties:
->  - rockchip,cpu: The phandle of the Rockchip I2S controller that's
->    connected to the codecs
->  - rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
-> +- rockchip,codec-names: The names of the MAX98357A/RT5514/DA7219 codecs
+Without snd_pcm_wait() I get an open error (Device or resource busy).
 
-No, just lookup the handle and get the compatible for the codec if you 
-need a name.
+In short I have inside the loop:
 
->  
->  Optional properties:
->  - dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
-> @@ -18,5 +19,6 @@ sound {
->  	compatible = "rockchip,rk3399-gru-sound";
->  	rockchip,cpu = <&i2s0>;
->  	rockchip,codec = <&max98357a &rt5514 &da7219>;
-> +	rockchip,codec-names = "MAX98357A", "RT5514", "DA7219";
->  	dmic-wakeup-delay-ms = <20>;
->  };
-> -- 
-> 2.1.4
-> 
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+poll(ufds, 2, 0);
+snd_pcm_wait()
+snd_pcm_writei(...)
+
+Regards
+Thomas
+
+
+Am 17.08.2017 um 16:48 schrieb Clemens Ladisch:
+> ThomasJF wrote:
+>> now it is working with poll and the two fds. Also pause, play and stop.
+>>
+>> If it stops, the snd_pcm_wait in my loop returns a negative error code
+> Why are you calling snd_pcm_wait() when you already have poll()?
+>
+>
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
