@@ -1,90 +1,75 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Add mute TLV for playback
-	volumes on C-Media devices
-Date: Thu, 17 Aug 2017 16:14:11 +0200
-Message-ID: <20170817141411.28239-1-tiwai@suse.de>
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 1/3] sound: ASoC: tegra: Remove SoC-specific Kconfig
+ depends and selects
+Date: Thu, 17 Aug 2017 16:22:11 +0200
+Message-ID: <20170817142211.GH6854@ulmo>
+References: <20170730112220.15525-1-contact@paulk.fr>
+ <20170731102309.GE26667@ulmo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 98DD8266998
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 16:14:13 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 08D72AD8E
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:14:13 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OgApRN/oydYDdnYz"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170731102309.GE26667@ulmo>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Paul Kocialkowski <contact-W9ppeneeCTY@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Jonathan Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-C-Media devices (at least some models) mute the playback stream when
-volumes are set to the minimum value.  But this isn't informed via TLV
-and the user-space, typically PulseAudio, gets confused as if it's
-still played in a low volume.
 
-This patch adds the new flag, min_mute, to struct usb_mixer_elem_info
-for indicating that the mixer element is with the minimum-mute volume.
-This flag is set for known C-Media devices in
-snd_usb_mixer_fu_apply_quirk() in turn.
+--OgApRN/oydYDdnYz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=196669
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer.c        | 2 ++
- sound/usb/mixer.h        | 1 +
- sound/usb/mixer_quirks.c | 6 ++++++
- 3 files changed, 9 insertions(+)
+On Mon, Jul 31, 2017 at 12:23:09PM +0200, Thierry Reding wrote:
+> On Sun, Jul 30, 2017 at 01:22:18PM +0200, Paul Kocialkowski wrote:
+> > This removes the SoC-specific dependencies on the platform drivers,
+> > as well as SoC-specific selections of platform drivers for the
+> > machine drivers. The rationale behind this change is that the
+> > dependencies are not actual build dependencies but run-time ones.
+> >=20
+> > The previously listed SoCs were also incomplete: for instance, tegra124
+> > uses the tegra30 platform drivers, which could not be built without
+> > ARCH_TEGRA_3x_SOC set.
+> >=20
+> > Descriptions of the tristates are also added to allow these options
+> > to be set via defconfig/menuconfig.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <contact-W9ppeneeCTY@public.gmane.org>
+> > ---
+> >  sound/soc/tegra/Kconfig | 42 ++++++++++++++----------------------------
+> >  1 file changed, 14 insertions(+), 28 deletions(-)
+>=20
+> Acked-by: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 082736c539bc..e630813c5008 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -542,6 +542,8 @@ int snd_usb_mixer_vol_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 
- 	if (size < sizeof(scale))
- 		return -ENOMEM;
-+	if (cval->min_mute)
-+		scale[0] = SNDRV_CTL_TLVT_DB_MINMAX_MUTE;
- 	scale[2] = cval->dBmin;
- 	scale[3] = cval->dBmax;
- 	if (copy_to_user(_tlv, scale, sizeof(scale)))
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index 3417ef347e40..2b4b067646ab 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -64,6 +64,7 @@ struct usb_mixer_elem_info {
- 	int cached;
- 	int cache_val[MAX_CHANNELS];
- 	u8 initialized;
-+	u8 min_mute;
- 	void *private_data;
- };
- 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index e3d1dec48ee4..e1e7ce9ab217 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1878,6 +1878,12 @@ void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
- 		if (unitid == 7 && cval->control == UAC_FU_VOLUME)
- 			snd_dragonfly_quirk_db_scale(mixer, cval, kctl);
- 		break;
-+	/* lowest playback value is muted on C-Media devices */
-+	case USB_ID(0x0d8c, 0x000c):
-+	case USB_ID(0x0d8c, 0x0014):
-+		if (strstr(kctl->id.name, "Playback"))
-+			cval->min_mute = 1;
-+		break;
- 	}
- }
- 
--- 
-2.14.1
+Hi Mark,
+
+do you want to pick this up, or would you rather provide an Acked-by so
+that I can take it through the Tegra tree along with the defconfig
+changes? I can provide a branch with this patch in case we ever need it
+for conflict resolution.
+
+Thierry
+
+--OgApRN/oydYDdnYz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAlmVpo8ACgkQ3SOs138+
+s6FU7xAAjwFfvWqIGrLd9ruDIKqwJ2gc8WBZK51YX9V7m99A/+8ThLLtL1y23Ijr
+x5kJDX7h6El0dxr8Wd9paHkMuQEYXeQ7+xXZxPlU7ivIUMY8xEfrcUMtizRbBagH
+iWiVUGJIS84QCjqXDQYvjjwRYZIH3iA2ZiupcQCLeCpXiL/h9fk8TQywj+YiZeCW
+1QgtjPALcYlLyhcQ5yfn9iPwp9ig5YNk6OgxcLBp9bsLIfKefkIZKOSz6Sdvmm4X
+1W2UYtWBxII0zP6HJdWPLg815cXY+aSFd1smlfE9sSS73PXvkp7gn9aJQ2V1ZG6w
+/z3vowmcskGo985KK3oNADhmOQyaxhSL7ZXIFLAJ5+rF81qOW/pvIU/LlxIeXpas
+fhG+qnTXX7zgc+giY0OT7yS852HnO3cN54p8CrTMXuDs49Pg1Whovj14Hl4W/GV5
+GR+HY+O7Ghb9xtZkp25OM9BJTIrKeqXNaZAMoHhNjp8ub1P+MFXWFp+v704bG1TZ
+1RCznqUD8EkpZoO8xHCdehi43UnPPaIGP1CLijZKqqYnSyQt4WGerLqFeBGKFJKf
+9L0IL3/c//4B/XidyLAzwS/LDPfm0Pgce1htqhQ/pHWpv5K/96mQVzPkspHcM1ZD
+qkS+G+ZXWgEG6yGEqmcZk1GEovs4KZr12HvvxwOX5ZiULNNQtZ0=
+=QSiD
+-----END PGP SIGNATURE-----
+
+--OgApRN/oydYDdnYz--
