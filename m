@@ -1,76 +1,53 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl: Add map for Maxim IV
-	Feedback
-Date: Thu, 17 Aug 2017 08:55:29 +0530
-Message-ID: <20170817032529.GW3053@localhost>
-References: <1502864677-11596-1-git-send-email-naveen.m@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CF422675E0
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 05:22:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1502864677-11596-1-git-send-email-naveen.m@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Naveen M <naveen.m@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, pierre-louis.bossart@intel.com
+From: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v3 0/9] ASoC: rockchip: Parse dai links from dts
+Date: Thu, 17 Aug 2017 12:44:08 +0800
+Message-ID: <20170817044417.22069-1-jeffy.chen@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
+Cc: briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Catalin Marinas <catalin.marinas-5wv7dgnIgG8@public.gmane.org>, Oder Chiou <oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Will Deacon <will.deacon-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Klaus Goger <klaus.goger-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>, Caesar Wang <wxt-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 16, 2017 at 11:54:37AM +0530, Naveen M wrote:
-> MAX98927 provides IV feedback on the capture widget.
-> Here we are connecting the capture widget to SSP0_RX and
-> SSP0_RX to the algorithm running on host.
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Currently we are using a fixed list of dai links in the driver.
+This serial of patches would let the driver parse dai links from
+dts, so that we can make some of them optional for future boards.
 
-> Signed-off-by: Naveen M <naveen.m@intel.com>
-> Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-> 
-> diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-> index 5b68ee9..c99b121 100644
-> --- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-> @@ -103,6 +103,11 @@ enum {
->  	{ "codec0_in", NULL, "ssp1 Rx" },
->  	{ "ssp1 Rx", NULL, "AIF Capture" },
->  
-> +	/* IV feedback path */
-> +	{ "codec0_fb_in", NULL, "ssp0 Rx"},
-> +	{ "ssp0 Rx", NULL, "Left HiFi Capture" },
-> +	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
-> +
->  	/* DMIC */
->  	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
->  	{ "DMIC01 Rx", NULL, "DMIC AIF" },
-> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> index 60a7e72..60bae42 100644
-> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-> @@ -113,6 +113,11 @@ enum {
->  	{ "codec1_in", NULL, "ssp0 Rx" },
->  	{ "ssp0 Rx", NULL, "AIF1 Capture" },
->  
-> +	/* IV feedback path */
-> +	{ "codec0_fb_in", NULL, "ssp0 Rx"},
-> +	{ "ssp0 Rx", NULL, "Left HiFi Capture" },
-> +	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
-> +
->  	/* DMIC */
->  	{ "DMIC1L", NULL, "DMIC" },
->  	{ "DMIC1R", NULL, "DMIC" },
-> -- 
-> 1.9.1
-> 
+Tested on my chromebook bob(with cros 4.4 kernel), it still works
+after disabled rt5514 codecs in the dts.
+
+
+Changes in v3:
+Use compatible to match audio codecs
+        -- Suggested-by Matthias Kaehlcke <mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+
+Changes in v2:
+Let rockchip,codec-names be a required property, because we plan to
+add more supported codecs to the fixed dai link list in the driver.
+
+Jeffy Chen (9):
+  ASoC: rt5514: Switch to snd_soc_register_codec
+  ASoC: rockchip: Remove obsolete dmic-delay
+  ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
+  arm64: dts: rockchip: Add rt5514 dsp for Gru
+  arm64: dts: rockchip: Update rt5514 devices' compatible for Gru
+  ASoC: rockchip: Parse dai links from dts
+  ASoC: rockchip: Add support for DP codec
+  ASoC: rockchip: Add support for DMIC codec
+  dt-bindings: ASoC: rockchip: Update description of rockchip,codec
+
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt   |   9 +-
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |   7 +-
+ sound/soc/codecs/rt5514-spi.c                      |  19 +-
+ sound/soc/rockchip/Kconfig                         |   2 +
+ sound/soc/rockchip/rk3399_gru_sound.c              | 263 ++++++++++++++-------
+ 5 files changed, 196 insertions(+), 104 deletions(-)
 
 -- 
-~Vinod
+2.11.0
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
