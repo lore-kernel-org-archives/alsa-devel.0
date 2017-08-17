@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: kirkwood: make snd_pcm_hardware const" to the asoc tree
-Date: Thu, 17 Aug 2017 18:13:43 +0100
-Message-ID: <E1diOMZ-0000AB-6c@debutante>
-References: <1502964972-22722-5-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502964972-22722-5-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, plai@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "dt-bindings: sound: add dmicen property in
+	dmic driver" to the asoc tree
+Date: Thu, 17 Aug 2017 18:13:23 +0100
+Message-ID: <E1diOMF-0008U6-9b@debutante>
+References: <1502436689-21123-2-git-send-email-hl@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5F4A266FED
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:13:29 +0200 (CEST)
+In-Reply-To: <1502436689-21123-2-git-send-email-hl@rock-chips.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Lin Huang <hl@rock-chips.com>, arnaud.pouliquen@st.com, briannorris@chromium.org, dgreif@chromium.org, lgirdwood@gmail.com, dianders@chromium.org, broonie@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: kirkwood: make snd_pcm_hardware const
+   dt-bindings: sound: add dmicen property in dmic driver
 
 has been applied to the asoc tree at
 
@@ -37,34 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From 636d7e289c0a59dd3febfe6a2e7e5bd56eaa91b8 Mon Sep 17 00:00:00 2001
-From: Bhumika Goyal <bhumirks@gmail.com>
-Date: Thu, 17 Aug 2017 15:46:10 +0530
-Subject: [PATCH] ASoC: kirkwood: make snd_pcm_hardware const
+>From 8c9741b1b91d9fb4f094bfa66f0ae02c9a495f48 Mon Sep 17 00:00:00 2001
+From: huang lin <hl@rock-chips.com>
+Date: Thu, 17 Aug 2017 10:24:45 +0800
+Subject: [PATCH] dt-bindings: sound: add dmicen property in dmic driver
 
-Make this const as it is either passed as the 2nd argument
-to the function snd_soc_set_runtime_hwparams, which is const or used in
-a copy operation.
-Done using Coccinelle.
+there may use enable pin to control dmic start and stop,
+so add this property in dt-bindings.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: Lin Huang <hl@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/dmic.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index dafd22e874e9..cf23af159acf 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -27,7 +27,7 @@ static struct kirkwood_dma_data *kirkwood_priv(struct snd_pcm_substream *subs)
- 	return snd_soc_dai_get_drvdata(soc_runtime->cpu_dai);
- }
+diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
+index a0c58f2a162a..54c8ef6498a8 100644
+--- a/Documentation/devicetree/bindings/sound/dmic.txt
++++ b/Documentation/devicetree/bindings/sound/dmic.txt
+@@ -5,8 +5,12 @@ This device support generic PDM digital microphone.
+ Required properties:
+ 	- compatible: should be "dmic-codec".
  
--static struct snd_pcm_hardware kirkwood_dma_snd_hw = {
-+static const struct snd_pcm_hardware kirkwood_dma_snd_hw = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_MMAP |
- 		SNDRV_PCM_INFO_MMAP_VALID |
++Optional properties:
++	- dmicen-gpios: GPIO specifier for dmic to control start and stop
++
+ Example node:
+ 
+ 	dmic_codec: dmic@0 {
+ 		compatible = "dmic-codec";
++		dmicen-gpios = <&gpio4 3 GPIO_ACTIVE_HIGH>;
+ 	};
 -- 
 2.13.3
