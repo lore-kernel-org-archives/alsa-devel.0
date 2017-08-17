@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: aux1x: make snd_soc_ops const" to the asoc tree
-Date: Thu, 17 Aug 2017 18:13:15 +0100
-Message-ID: <E1diOM7-0008Qv-6W@debutante>
-References: <1502902770-3758-2-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502902770-3758-2-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: bcm: make snd_soc_dai_driver const" to
+	the asoc tree
+Date: Thu, 17 Aug 2017 18:12:55 +0100
+Message-ID: <E1diOLn-0008JO-HS@debutante>
+References: <1502903709-7411-2-git-send-email-bhumirks@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6C42266FEA
+ for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 19:13:29 +0200 (CEST)
+In-Reply-To: <1502903709-7411-2-git-send-email-bhumirks@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, heiko@sntech.de, krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, sbranden@broadcom.com, jonmason@broadcom.com, rjui@broadcom.com, tiwai@suse.com, lgirdwood@gmail.com, julia.lawall@lip6.fr, broonie@kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: aux1x: make snd_soc_ops const
+   ASoC: bcm: make snd_soc_dai_driver const
 
 has been applied to the asoc tree at
 
@@ -37,33 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 052fba77f57b9f243ad3a45a21c809bddcd03627 Mon Sep 17 00:00:00 2001
+>From cc6e25631ddd4f3295fc79568f2145c437849e63 Mon Sep 17 00:00:00 2001
 From: Bhumika Goyal <bhumirks@gmail.com>
-Date: Wed, 16 Aug 2017 22:29:24 +0530
-Subject: [PATCH] ASoC: aux1x: make snd_soc_ops const
+Date: Wed, 16 Aug 2017 22:45:08 +0530
+Subject: [PATCH] ASoC: bcm: make snd_soc_dai_driver const
 
-Make this const as it is only stored in the ops field of a
-snd_soc_dai_link structure, which is const.
+Make this const as it is only used during a copy operation.
 Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/au1x/db1200.c | 2 +-
+ sound/soc/bcm/cygnus-ssp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
-index 5c73061d912a..301e1fc9a377 100644
---- a/sound/soc/au1x/db1200.c
-+++ b/sound/soc/au1x/db1200.c
-@@ -99,7 +99,7 @@ static int db1200_i2s_startup(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static struct snd_soc_ops db1200_i2s_wm8731_ops = {
-+static const struct snd_soc_ops db1200_i2s_wm8731_ops = {
- 	.startup	= db1200_i2s_startup,
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index e710bb0c5637..cdd5e82439dd 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -1288,7 +1288,7 @@ static const struct snd_soc_dai_driver cygnus_ssp_dai_info[] = {
+ 	INIT_CPU_DAI(2),
  };
  
+-static struct snd_soc_dai_driver cygnus_spdif_dai_info = {
++static const struct snd_soc_dai_driver cygnus_spdif_dai_info = {
+ 	.name = "cygnus-spdif",
+ 	.playback = {
+ 		.channels_min = 2,
 -- 
 2.13.3
