@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 03/23] aplay: add an implementation of
-	container for Sparc AU format
-Date: Thu, 17 Aug 2017 20:59:44 +0900
-Message-ID: <20170817120004.15326-4-o-takashi@sakamocchi.jp>
+Subject: [RFC][PATCH 02/23] aplay: add an implementation of
+	container for Microsoft/IBM RIFF/Wave format
+Date: Thu, 17 Aug 2017 20:59:43 +0900
+Message-ID: <20170817120004.15326-3-o-takashi@sakamocchi.jp>
 References: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 3AEF7266A8A
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 3D616266B23
  for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 14:00:10 +0200 (CEST)
 In-Reply-To: <20170817120004.15326-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,38 +25,40 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for data of Sparc AU format. In this data format,
-each of field has value in big endian-ness.
+This commit adds support for data of Microsoft/IBM RIFF/Wave format. In
+this data format, each of field can have value in both of big/little
+endian-ness. Magic bytes in the beginning of data indicates the
+endian-ness.
 ---
- aplay/Makefile.am    |   3 +-
- aplay/container-au.c | 203 +++++++++++++++++++++++++++++++++++++++++++++++++++
- aplay/container.c    |   6 +-
- aplay/container.h    |   4 +
- 4 files changed, 214 insertions(+), 2 deletions(-)
- create mode 100644 aplay/container-au.c
+ aplay/Makefile.am           |   3 +-
+ aplay/container-riff-wave.c | 549 ++++++++++++++++++++++++++++++++++++++++++++
+ aplay/container.c           |   9 +-
+ aplay/container.h           |   4 +
+ 4 files changed, 560 insertions(+), 5 deletions(-)
+ create mode 100644 aplay/container-riff-wave.c
 
 diff --git a/aplay/Makefile.am b/aplay/Makefile.am
-index 854b54e..8e4a31f 100644
+index 44143e0..854b54e 100644
 --- a/aplay/Makefile.am
 +++ b/aplay/Makefile.am
-@@ -14,7 +14,8 @@ aplay_SOURCES = \
+@@ -13,7 +13,8 @@ aplay_SOURCES = \
+ 	formats.h \
  	aplay.c \
  	container.h \
- 	container.c \
--	container-riff-wave.c
-+	container-riff-wave.c \
-+	container-au.c
+-	container.c
++	container.c \
++	container-riff-wave.c
  
  EXTRA_DIST = aplay.1 arecord.1
  EXTRA_CLEAN = arecord
-diff --git a/aplay/container-au.c b/aplay/container-au.c
+diff --git a/aplay/container-riff-wave.c b/aplay/container-riff-wave.c
 new file mode 100644
-index 0000000..b418d75
+index 0000000..c9815c0
 --- /dev/null
-+++ b/aplay/container-au.c
-@@ -0,0 +1,203 @@
++++ b/aplay/container-riff-wave.c
+@@ -0,0 +1,549 @@
 +/*
-+ * container-au.c - a parser/builder for a container of Sun Audio File.
++ * container-riff-wave.c - a parser/builder for a container of RIFF/Wave File.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
@@ -66,153 +68,496 @@ index 0000000..b418d75
 +#include "container.h"
 +
 +/*
-+ * Reference:
-+ *  * http://pubs.opengroup.org/external/auformat.html
++ * References:
++ * - 'Resource Interchange File Format (RIFF)' at msdn.microsoft.com
++ * - 'Multiple channel audio data and WAVE files' at msdn.microsoft.com
++ * - RFC 2361 'WAVE and AVI Codec Registries' at ietf.org
++ * - 'mmreg.h' in Wine project
++ * - 'mmreg.h' in ReactOS project
 + */
 +
-+#define AU_MAGIC	".snd"
-+#define UNKNOWN_SIZE	((uint32_t)~0)
++#define RIFF_MAGIC		"RIF"	/* A common part. */
 +
-+enum code_id {
-+	CODE_ID_CCIT_MU_LAW_BE		= 0x01,
-+	CODE_ID_GENERIC_MBLA_S8		= 0x02,
-+	CODE_ID_GENERIC_MBLA_S16_BE	= 0x03,
-+	CODE_ID_GENERIC_MBLA_S32_BE	= 0x05,
-+	CODE_ID_IEEE754_FLOAT_S32_BE	= 0x06,
-+	CODE_ID_IEEE754_DOUBLE_S64_BE	= 0x07,
-+	CODE_ID_CCIT_ADPCM_G721_4BIT_BE	= 0x17,
-+	CODE_ID_CCIT_ADPCM_G723_3BIT_BE	= 0x19,
-+	CODE_ID_CCIT_A_LAW_BE		= 0x1b,
++#define RIFF_CHUNK_ID_LE	"RIFF"
++#define RIFF_CHUNK_ID_BE	"RIFX"
++#define RIFF_FORM_WAVE		"WAVE"
++#define FMT_SUBCHUNK_ID		"fmt "
++#define DATA_SUBCHUNK_ID	"data"
++
++/*
++ * See 'WAVE and AVI Codec Registries (Historic Registry)' in 'iana.org'.
++ * https://www.iana.org/assignments/wave-avi-codec-registry/
++ */
++enum wave_format {
++	WAVE_FORMAT_PCM			= 0x0001,
++	WAVE_FORMAT_ADPCM		= 0x0002,
++	WAVE_FORMAT_IEEE_FLOAT		= 0x0003,
++	WAVE_FORMAT_ALAW		= 0x0006,
++	WAVE_FORMAT_MULAW		= 0x0007,
++	WAVE_FORMAT_G723_ADPCM		= 0x0014,
++	/* The others are not supported. */
 +};
 +
 +struct format_map {
-+	enum code_id code_id;
++	enum wave_format wformat;
 +	snd_pcm_format_t format;
 +};
 +
 +static const struct format_map format_maps[] = {
-+	{CODE_ID_CCIT_MU_LAW_BE,		SND_PCM_FORMAT_MU_LAW},
-+	{CODE_ID_GENERIC_MBLA_S8,		SND_PCM_FORMAT_S8},
-+	{CODE_ID_GENERIC_MBLA_S16_BE,		SND_PCM_FORMAT_S16_BE},
-+	{CODE_ID_GENERIC_MBLA_S32_BE,		SND_PCM_FORMAT_S32_BE},
-+	{CODE_ID_IEEE754_FLOAT_S32_BE,		SND_PCM_FORMAT_FLOAT_BE},
-+	{CODE_ID_IEEE754_DOUBLE_S64_BE,		SND_PCM_FORMAT_FLOAT64_BE},
-+	/* CODE_ID_CCIT_ADPCM_G721_4BIT_BE is not supported by ALSA. */
-+	{CODE_ID_CCIT_ADPCM_G723_3BIT_BE,	SND_PCM_FORMAT_G723_24},
-+	{CODE_ID_CCIT_A_LAW_BE,			SND_PCM_FORMAT_A_LAW},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S8},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U8},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S16_LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S16_BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U16_LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U16_BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S24_LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S24_BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U24_LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U24_BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S32_LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S32_BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U32_LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U32_BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S24_3LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S24_3BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U24_3LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U24_3BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S20_3LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S20_3BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U20_3LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U20_3BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S18_3LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_S18_3BE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U18_3LE},
++	{WAVE_FORMAT_PCM,	SND_PCM_FORMAT_U18_3BE},
++	{WAVE_FORMAT_ADPCM,	SND_PCM_FORMAT_IMA_ADPCM},
++	{WAVE_FORMAT_IEEE_FLOAT, SND_PCM_FORMAT_FLOAT_LE},
++	{WAVE_FORMAT_IEEE_FLOAT, SND_PCM_FORMAT_FLOAT_BE},
++	{WAVE_FORMAT_IEEE_FLOAT, SND_PCM_FORMAT_FLOAT64_LE},
++	{WAVE_FORMAT_IEEE_FLOAT, SND_PCM_FORMAT_FLOAT64_BE},
++	{WAVE_FORMAT_ALAW,	SND_PCM_FORMAT_A_LAW},
++	{WAVE_FORMAT_MULAW,	SND_PCM_FORMAT_MU_LAW},
++	{WAVE_FORMAT_G723_ADPCM, SND_PCM_FORMAT_G723_24},
++	{WAVE_FORMAT_G723_ADPCM, SND_PCM_FORMAT_G723_24_1B},
++	{WAVE_FORMAT_G723_ADPCM, SND_PCM_FORMAT_G723_40},
++	{WAVE_FORMAT_G723_ADPCM, SND_PCM_FORMAT_G723_40_1B},
 +};
 +
-+struct container_header {
-+	uint8_t magic[4];
-+	uint32_t hdr_size;
-+	uint32_t data_size;
-+	uint32_t code_id;
++struct riff_chunk {
++	uint8_t id[4];
++	uint32_t size;
++
++	uint8_t data[0];
++};
++
++struct riff_chunk_data {
++	uint8_t id[4];
++
++	uint8_t subchunks[0];
++};
++
++struct riff_subchunk {
++	uint8_t id[4];
++	uint32_t size;
++
++	uint8_t data[0];
++};
++
++struct wave_fmt_subchunk {
++	uint8_t id[4];
++	uint32_t size;
++
++	uint16_t format;
++	uint16_t samples_per_frame;
 +	uint32_t frames_per_second;
-+	uint32_t samples_per_frame;
++	uint32_t average_bytes_per_second;
++	uint16_t bytes_per_frame;
++	uint16_t bits_per_sample;
++	uint8_t extension[0];
 +};
 +
-+struct container_annotation {
-+	uint32_t chunks[0];
++struct wave_data_subchunk {
++	uint8_t id[4];
++	uint32_t size;
++
++	uint8_t frames[0];
 +};
 +
 +struct parser_state {
-+	enum code_id code_id;
++	bool be;
++	enum wave_format format;
 +	unsigned int samples_per_frame;
++	unsigned int frames_per_second;
++	unsigned int average_bytes_per_second;
++	unsigned int bytes_per_frame;
 +	unsigned int bytes_per_sample;
++	unsigned int byte_count;
 +};
 +
-+static int au_parser_pre_process(struct container_context *cntr,
-+				 snd_pcm_format_t *format,
-+				 unsigned int *samples_per_frame,
-+				 unsigned int *frames_per_second,
-+				 uint64_t *frame_count)
++static int parse_riff_chunk_header(struct parser_state *state,
++				   struct riff_chunk *chunk,
++				   uint64_t *byte_count)
++{
++	if (!memcmp(chunk->id, RIFF_CHUNK_ID_BE, sizeof(chunk->id)))
++		state->be = true;
++	else if (!memcmp(chunk->id, RIFF_CHUNK_ID_LE, sizeof(chunk->id)))
++		state->be = false;
++	else
++		return -EINVAL;
++
++	if (state->be)
++		*byte_count = be32toh(chunk->size);
++	else
++		*byte_count = le32toh(chunk->size);
++
++	return 0;
++}
++
++static int parse_riff_chunk(struct container_context *cntr,
++			    uint64_t *byte_count)
 +{
 +	struct parser_state *state = cntr->private_data;
-+	struct container_header header;
-+	unsigned int data_size;
-+	enum code_id code_id;
-+	int i;
++	union {
++		struct riff_chunk chunk;
++		struct riff_chunk_data chunk_data;
++	} buf = {0};
 +	int err;
 +
-+	/* Parse header. 4 bytes are enough to detect supported containers. */
-+	memcpy(&header.magic, cntr->magic, sizeof(cntr->magic));
++	/* Chunk header. 4 bytes were alread read to detect container type. */
++	memcpy(buf.chunk.id, cntr->magic, sizeof(cntr->magic));
 +	err = container_recursive_read(cntr,
-+				       (char *)&header + sizeof(cntr->magic),
-+				       sizeof(header) - sizeof(cntr->magic));
++				       (char *)&buf.chunk + sizeof(cntr->magic),
++				       sizeof(buf.chunk) - sizeof(cntr->magic));
++	if (err < 0)
++		return err;
++	err = parse_riff_chunk_header(state, &buf.chunk, byte_count);
 +	if (err < 0)
 +		return err;
 +
-+	if (memcmp(header.magic, AU_MAGIC, sizeof(header.magic)) != 0)
-+		return -EINVAL;
-+	if (be32toh(header.hdr_size) != sizeof(struct container_header))
++	/* Chunk data header. */
++	err = container_recursive_read(cntr, &buf, sizeof(buf.chunk_data));
++	if (err < 0)
++		return err;
++	if (memcmp(buf.chunk_data.id, RIFF_FORM_WAVE,
++		   sizeof(buf.chunk_data.id)))
 +		return -EINVAL;
 +
-+	data_size = be32toh(header.data_size);
-+	code_id = be32toh(header.code_id);
++	return 0;
++}
++
++static void parse_wave_fmt_subchunk(struct parser_state *state,
++				    struct wave_fmt_subchunk *subchunk)
++{
++	if (state->be) {
++		state->format = be16toh(subchunk->format);
++		state->samples_per_frame = be16toh(subchunk->samples_per_frame);
++		state->frames_per_second = be32toh(subchunk->frames_per_second);
++		state->average_bytes_per_second =
++				be32toh(subchunk->average_bytes_per_second);
++		state->bytes_per_frame = be16toh(subchunk->bytes_per_frame);
++		state->bytes_per_sample = be16toh(subchunk->bits_per_sample) / 8;
++	} else {
++		state->format = le16toh(subchunk->format);
++		state->samples_per_frame = le16toh(subchunk->samples_per_frame);
++		state->frames_per_second = le32toh(subchunk->frames_per_second);
++		state->average_bytes_per_second =
++				le32toh(subchunk->average_bytes_per_second);
++		state->bytes_per_frame = le16toh(subchunk->bytes_per_frame);
++		state->bytes_per_sample = le16toh(subchunk->bits_per_sample) / 8;
++	}
++}
++
++static void parse_wave_data_subchunk(struct parser_state *state,
++				     struct wave_data_subchunk *subchunk)
++{
++	if (state->be)
++		state->byte_count = be32toh(subchunk->size);
++	else
++		state->byte_count = le32toh(subchunk->size);
++}
++
++static int parse_wave_subchunk(struct container_context *cntr)
++{
++	union {
++		struct riff_subchunk subchunk;
++		struct wave_fmt_subchunk fmt_subchunk;
++		struct wave_data_subchunk data_subchunk;
++	} buf = {0};
++	enum {
++		SUBCHUNK_TYPE_UNKNOWN = -1,
++		SUBCHUNK_TYPE_FMT,
++		SUBCHUNK_TYPE_DATA,
++	} subchunk_type;
++	struct parser_state *state = cntr->private_data;
++	unsigned int required_size;
++	unsigned int subchunk_data_size;
++	int err;
++
++	while (1) {
++		err = container_recursive_read(cntr, &buf,
++					       sizeof(buf.subchunk));
++		if (err < 0)
++			return err;
++
++		/* Calculate the size of subchunk data. */
++		if (state->be)
++			subchunk_data_size = be32toh(buf.subchunk.size);
++		else
++			subchunk_data_size = le32toh(buf.subchunk.size);
++
++		/* Detect type of subchunk. */
++		if (!memcmp(buf.subchunk.id, FMT_SUBCHUNK_ID,
++			    sizeof(buf.subchunk.id))) {
++			subchunk_type = SUBCHUNK_TYPE_FMT;
++		} else if (!memcmp(buf.subchunk.id, DATA_SUBCHUNK_ID,
++				   sizeof(buf.subchunk.id))) {
++			subchunk_type = SUBCHUNK_TYPE_DATA;
++		} else {
++			subchunk_type = SUBCHUNK_TYPE_UNKNOWN;
++		}
++
++		if (subchunk_type != SUBCHUNK_TYPE_UNKNOWN) {
++			/* Parse data of this subchunk. */
++			if (subchunk_type == SUBCHUNK_TYPE_FMT) {
++				required_size =
++					sizeof(struct wave_fmt_subchunk) -
++					sizeof(struct riff_chunk);
++			} else {
++				required_size =
++					sizeof(struct wave_data_subchunk)-
++					sizeof(struct riff_chunk);
++			}
++
++			if (subchunk_data_size < required_size)
++				return -EINVAL;
++
++			err = container_recursive_read(cntr, &buf.subchunk.data,
++						       required_size);
++			if (err < 0)
++				return err;
++			subchunk_data_size -= required_size;
++
++			if (subchunk_type == SUBCHUNK_TYPE_FMT) {
++				parse_wave_fmt_subchunk(state,
++							&buf.fmt_subchunk);
++			} else if (subchunk_type == SUBCHUNK_TYPE_DATA) {
++				parse_wave_data_subchunk(state,
++							 &buf.data_subchunk);
++			}
++
++			/* Found frame data. */
++			if (subchunk_type == SUBCHUNK_TYPE_DATA)
++				break;
++		}
++
++		/* Go to next subchunk. */
++		while (subchunk_data_size > 0) {
++			unsigned int consume;
++
++			if (subchunk_data_size > sizeof(buf))
++				consume = sizeof(buf);
++			else
++				consume = subchunk_data_size;
++
++			err = container_recursive_read(cntr, &buf, consume);
++			if (err < 0)
++				return err;
++			subchunk_data_size -= consume;
++		}
++	}
++
++	return 0;
++}
++
++static int parse_riff_wave_format(struct container_context *cntr)
++{
++	uint64_t byte_count;
++	int err;
++
++	err = parse_riff_chunk(cntr, &byte_count);
++	if (err < 0)
++		return err;
++
++	err = parse_wave_subchunk(cntr);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++static int wave_parser_pre_process(struct container_context *cntr,
++				   snd_pcm_format_t *format,
++				   unsigned int *samples_per_frame,
++				   unsigned int *frames_per_second,
++				   uint64_t *frame_count)
++{
++	struct parser_state *state = cntr->private_data;
++	int width;
++	int phys_width;
++	const struct format_map *map;
++	int i;
++	int err;
++
++	err = parse_riff_wave_format(cntr);
++	if (err < 0)
++		return err;
++
++	width = state->bytes_per_sample * 8;
++	phys_width = 8 * state->average_bytes_per_second /
++		     state->samples_per_frame / state->frames_per_second;
++
 +	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
-+		if (format_maps[i].code_id == code_id)
-+			break;
++		map = &format_maps[i];
++		if (state->format != map->wformat)
++			continue;
++		if (width != snd_pcm_format_width(map->format))
++			continue;
++		if (phys_width != snd_pcm_format_physical_width(map->format))
++			continue;
++		if (state->be != !!snd_pcm_format_big_endian(map->format))
++			continue;
++
++		break;
 +	}
 +	if (i == ARRAY_SIZE(format_maps))
 +		return -EINVAL;
-+	*format = format_maps[0].format;
-+	*frames_per_second = be32toh(header.frames_per_second);
-+	*samples_per_frame = be32toh(header.samples_per_frame);
 +
-+	state->code_id = code_id;
-+	state->samples_per_frame = *samples_per_frame;
-+	state->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
-+
-+	*frame_count = data_size / state->bytes_per_sample / *samples_per_frame;
++	/* Set parameters. */
++	*format = format_maps[i].format;
++	*samples_per_frame = state->samples_per_frame;
++	*frames_per_second = state->frames_per_second;
++	*frame_count = state->byte_count / state->bytes_per_sample /
++		       state->samples_per_frame;
 +
 +	return 0;
 +}
 +
 +struct builder_state {
++	bool be;
++	enum wave_format format;
++	unsigned int avail_bytes_in_sample;
 +	unsigned int bytes_per_sample;
 +	unsigned int samples_per_frame;
 +	unsigned int frames_per_second;
-+	enum code_id code_id;
 +};
 +
-+static void build_container_header(struct builder_state *state,
-+				   struct container_header *header,
-+				   unsigned int frames_per_second,
-+				   uint64_t byte_count)
++static void build_riff_chunk_header(struct riff_chunk *chunk,
++				    uint64_t byte_count, bool be)
 +{
-+	memcpy(header->magic, AU_MAGIC, sizeof(header->magic));
-+	header->hdr_size = htobe32(sizeof(struct container_header));
-+	header->data_size = htobe32(byte_count);
-+	header->code_id = htobe32(state->code_id);
-+	header->frames_per_second = htobe32(frames_per_second);
-+	header->samples_per_frame = htobe32(state->samples_per_frame);
++	uint64_t data_size = sizeof(struct riff_chunk_data) +
++			     sizeof(struct wave_fmt_subchunk) +
++			     sizeof(struct wave_data_subchunk) + byte_count;
++
++	memcpy(chunk->id, RIFF_CHUNK_ID_LE, sizeof(chunk->id));
++	if (be)
++		chunk->size = htobe32(data_size);
++	else
++		chunk->size = htole32(data_size);
 +}
 +
-+static int write_container_header(struct container_context *cntr,
-+				  uint64_t frame_count)
++static void build_subchunk_header(struct riff_subchunk *subchunk,
++				  const char *const form, uint64_t size,
++				  bool be)
++{
++	memcpy(subchunk->id, form, sizeof(subchunk->id));
++	if (be)
++		subchunk->size = htobe32(size);
++	else
++		subchunk->size = htole32(size);
++}
++
++static void build_wave_format_subchunk(struct wave_fmt_subchunk *subchunk,
++				       struct builder_state *state)
++{
++	unsigned int bytes_per_frame =
++			state->bytes_per_sample * state->samples_per_frame;
++	unsigned int average_bytes_per_second =
++			state->avail_bytes_in_sample *
++			state->samples_per_frame * state->frames_per_second;
++	uint64_t size;
++
++	/* No extensions. */
++	size = sizeof(struct wave_fmt_subchunk) - sizeof(struct riff_subchunk);
++	build_subchunk_header((struct riff_subchunk *)subchunk, FMT_SUBCHUNK_ID,
++			      size, state->be);
++
++	if (state->be) {
++		subchunk->format = htobe16(state->format);
++		subchunk->samples_per_frame = htobe16(state->samples_per_frame);
++		subchunk->frames_per_second = htobe32(state->frames_per_second);
++		subchunk->average_bytes_per_second =
++			   		htobe32(average_bytes_per_second);
++		subchunk->bytes_per_frame = htobe16(bytes_per_frame);
++		subchunk->bits_per_sample =
++			   		htobe16(state->bytes_per_sample * 8);
++	} else {
++		subchunk->format = htole16(state->format);
++		subchunk->samples_per_frame = htole16(state->samples_per_frame);
++		subchunk->frames_per_second = htole32(state->frames_per_second);
++		subchunk->average_bytes_per_second =
++			   		htole32(average_bytes_per_second);
++		subchunk->bytes_per_frame = htole16(bytes_per_frame);
++		subchunk->bits_per_sample =
++					htole16(state->bytes_per_sample * 8);
++	}
++}
++
++static void build_wave_data_subchunk(struct wave_data_subchunk *subchunk,
++				     uint64_t byte_count, bool be)
++{
++	build_subchunk_header((struct riff_subchunk *)subchunk,
++			      DATA_SUBCHUNK_ID, byte_count, be);
++}
++
++static int write_riff_chunk_for_wave(struct container_context *cntr,
++				     uint64_t frame_count)
 +{
 +	struct builder_state *state = cntr->private_data;
++	union {
++		struct riff_chunk chunk;
++		struct riff_chunk_data chunk_data;
++		struct wave_fmt_subchunk fmt_subchunk;
++		struct wave_data_subchunk data_subchunk;
++	} buf = {0};
 +	uint64_t byte_count;
-+	struct container_header header;
++	int err;
 +
 +	byte_count = state->bytes_per_sample * state->samples_per_frame *
 +		     frame_count;
 +
-+	build_container_header(state, &header, state->frames_per_second,
-+			       byte_count);
++	/* Chunk header. */
++	build_riff_chunk_header(&buf.chunk, byte_count, state->be);
++	err = container_recursive_write(cntr, &buf, sizeof(buf.chunk));
++	if (err < 0)
++		return err;
 +
-+	return container_recursive_write(cntr, &header, sizeof(header));
++	/* Chunk data header. */
++	memcpy(buf.chunk_data.id, RIFF_FORM_WAVE, sizeof(buf.chunk_data.id));
++	err = container_recursive_write(cntr, &buf, sizeof(buf.chunk_data));
++	if (err < 0)
++		return err;
++
++	/* A subchunk in the chunk data for WAVE format. */
++	build_wave_format_subchunk(&buf.fmt_subchunk, state);
++	err = container_recursive_write(cntr, &buf, sizeof(buf.fmt_subchunk));
++	if (err < 0)
++		return err;
++
++	/* A subchunk in the chunk data for WAVE data. */
++	build_wave_data_subchunk(&buf.data_subchunk, byte_count, state->be);
++	return container_recursive_write(cntr, &buf, sizeof(buf.data_subchunk));
 +}
 +
-+static int au_builder_pre_process(struct container_context *cntr,
-+				  snd_pcm_format_t *format,
-+				  unsigned int *samples_per_frame,
-+				  unsigned int *frames_per_second,
-+				  uint64_t *frame_count)
++static int wave_builder_pre_process(struct container_context *cntr,
++				    snd_pcm_format_t *format,
++				    unsigned int *samples_per_frame,
++				    unsigned int *frames_per_second,
++				    uint64_t *frame_count)
 +{
-+	struct builder_state *status = cntr->private_data;
++	struct builder_state *state = cntr->private_data;
 +	int i;
 +
++	/* Validate parameters. */
 +	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
 +		if (format_maps[i].format == *format)
 +			break;
@@ -220,15 +565,18 @@ index 0000000..b418d75
 +	if (i == ARRAY_SIZE(format_maps))
 +		return -EINVAL;
 +
-+	status->code_id = format_maps[i].code_id;
-+	status->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
-+	status->samples_per_frame = *samples_per_frame;
++	state->format = format_maps[i].wformat;
++	state->avail_bytes_in_sample = snd_pcm_format_width(*format) / 8;
++	state->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++	state->samples_per_frame = *samples_per_frame;
++	state->frames_per_second = *frames_per_second;
++	state->be = !!snd_pcm_format_big_endian(*format);
 +
-+	return write_container_header(cntr, *frame_count);
++	return write_riff_chunk_for_wave(cntr, *frame_count);
 +}
 +
-+static int au_builder_post_process(struct container_context *cntr,
-+				   uint64_t actual_frame_count)
++static int wave_builder_post_process(struct container_context *cntr,
++				     uint64_t actual_frame_count)
 +{
 +	int err;
 +
@@ -236,80 +584,85 @@ index 0000000..b418d75
 +	if (err < 0)
 +		return err;
 +
-+	return write_container_header(cntr, actual_frame_count);
++	return write_riff_chunk_for_wave(cntr, actual_frame_count);
 +}
 +
-+const struct container_parser container_parser_au = {
-+	.format = CONTAINER_FORMAT_AU,
-+	.magic = AU_MAGIC,
-+	.max_size = 0x7fffffffffffffff,	/* LLONG_MAX */
++const struct container_parser container_parser_riff_wave = {
++	.format = CONTAINER_FORMAT_RIFF_WAVE,
++	.magic =  RIFF_MAGIC,
++	.max_size = 0x7fffffff,	/* INT_MAX */
 +	.ops = {
-+		.pre_process = au_parser_pre_process,
++		.pre_process	= wave_parser_pre_process,
 +	},
 +	.private_size = sizeof(struct parser_state),
 +};
 +
-+const struct container_builder container_builder_au = {
-+	.format = CONTAINER_FORMAT_AU,
-+	.max_size = 0x7fffffffffffffff,	/* LLONG_MAX */
++const struct container_builder container_builder_riff_wave = {
++	.format = CONTAINER_FORMAT_RIFF_WAVE,
++	.max_size = 0x7fffffff,	/* INT_MAX */
 +	.ops = {
-+		.pre_process	= au_builder_pre_process,
-+		.post_process	= au_builder_post_process,
++		.pre_process	= wave_builder_pre_process,
++		.post_process	= wave_builder_post_process,
 +	},
 +	.private_size = sizeof(struct builder_state),
 +};
 diff --git a/aplay/container.c b/aplay/container.c
-index 1b35d4e..6214bbf 100644
+index 7f8e31b..1b35d4e 100644
 --- a/aplay/container.c
 +++ b/aplay/container.c
-@@ -21,10 +21,12 @@ static const char *const cntr_type_labels[] = {
+@@ -20,13 +20,14 @@ static const char *const cntr_type_labels[] = {
+ };
  
  static const char *const cntr_format_labels[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
-+	[CONTAINER_FORMAT_AU] = "au",
+-	[CONTAINER_FORMAT_COUNT] = "",
++	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
  };
  
  static const char *const suffixes[] = {
--	[CONTAINER_FORMAT_RIFF_WAVE] = ".wav",
-+	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
-+	[CONTAINER_FORMAT_AU]		= ".au",
+-	[CONTAINER_FORMAT_COUNT] = "",
++	[CONTAINER_FORMAT_RIFF_WAVE] = ".wav",
  };
  
- 
-@@ -148,6 +150,7 @@ int container_parser_init(struct container_context *cntr,
++
+ const char *const container_suffix_from_format(enum container_format format)
+ {
+ 	return suffixes[format];
+@@ -146,7 +147,7 @@ int container_parser_init(struct container_context *cntr,
+ 			  const char *const path, unsigned int verbose)
  {
  	const struct container_parser *parsers[] = {
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
-+		[CONTAINER_FORMAT_AU] = &container_parser_au,
+-		NULL,
++		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
  	};
  	const struct container_parser *parser;
  	unsigned int size;
-@@ -216,6 +219,7 @@ int container_builder_init(struct container_context *cntr,
+@@ -214,7 +215,7 @@ int container_builder_init(struct container_context *cntr,
+ 			   unsigned int verbose)
  {
  	const struct container_builder *builders[] = {
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
-+		[CONTAINER_FORMAT_AU] = &container_builder_au,
+-		NULL,
++		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
  	};
  	const struct container_builder *builder;
  	int err;
 diff --git a/aplay/container.h b/aplay/container.h
-index 5cb77bd..73029f4 100644
+index df1a90c..5cb77bd 100644
 --- a/aplay/container.h
 +++ b/aplay/container.h
-@@ -31,6 +31,7 @@ enum container_type {
+@@ -30,6 +30,7 @@ enum container_type {
+ };
  
  enum container_format {
- 	CONTAINER_FORMAT_RIFF_WAVE = 0,
-+	CONTAINER_FORMAT_AU,
++	CONTAINER_FORMAT_RIFF_WAVE = 0,
  	CONTAINER_FORMAT_COUNT,
  };
  
-@@ -115,4 +116,7 @@ int container_seek_offset(struct container_context *cntr, off64_t offset);
- extern const struct container_parser container_parser_riff_wave;
- extern const struct container_builder container_builder_riff_wave;
+@@ -111,4 +112,7 @@ int container_recursive_write(struct container_context *cntr, void *buf,
+ 			      unsigned int size);
+ int container_seek_offset(struct container_context *cntr, off64_t offset);
  
-+extern const struct container_parser container_parser_au;
-+extern const struct container_builder container_builder_au;
++extern const struct container_parser container_parser_riff_wave;
++extern const struct container_builder container_builder_riff_wave;
 +
  #endif
 -- 
