@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 13/15] ALSA: sb16: constify pnp_card_device_id
-Date: Thu, 17 Aug 2017 15:36:28 +0530
-Message-ID: <1502964390-6927-14-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 11/15] ALSA: msnd: constify pnp_card_device_id
+Date: Thu, 17 Aug 2017 15:36:26 +0530
+Message-ID: <1502964390-6927-12-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,21 +16,21 @@ const pnp_card_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/isa/sb/sb16.c | 2 +-
+ sound/isa/msnd/msnd_pinnacle.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/isa/sb/sb16.c b/sound/isa/sb/sb16.c
-index 917a93d..8f9ebeb 100644
---- a/sound/isa/sb/sb16.c
-+++ b/sound/isa/sb/sb16.c
-@@ -145,7 +145,7 @@ struct snd_card_sb16 {
+diff --git a/sound/isa/msnd/msnd_pinnacle.c b/sound/isa/msnd/msnd_pinnacle.c
+index ad48973..86db009 100644
+--- a/sound/isa/msnd/msnd_pinnacle.c
++++ b/sound/isa/msnd/msnd_pinnacle.c
+@@ -1191,7 +1191,7 @@ static void snd_msnd_pnp_remove(struct pnp_card_link *pcard)
+ static int isa_registered;
+ static int pnp_registered;
  
- #ifdef CONFIG_PNP
- 
--static struct pnp_card_device_id snd_sb16_pnpids[] = {
-+static const struct pnp_card_device_id snd_sb16_pnpids[] = {
- #ifndef SNDRV_SBAWE
- 	/* Sound Blaster 16 PnP */
- 	{ .id = "CTL0024", .devs = { { "CTL0031" } } },
+-static struct pnp_card_device_id msnd_pnpids[] = {
++static const struct pnp_card_device_id msnd_pnpids[] = {
+ 	/* Pinnacle PnP */
+ 	{ .id = "BVJ0440", .devs = { { "TBS0000" }, { "TBS0001" } } },
+ 	{ .id = "" }	/* end */
 -- 
 2.7.4
