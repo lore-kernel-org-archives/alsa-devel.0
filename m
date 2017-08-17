@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 09/15] ALSA: es1688: constify pnp_card_device_id
-Date: Thu, 17 Aug 2017 15:36:24 +0530
-Message-ID: <1502964390-6927-10-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 07/15] ALSA: cmi8330: constify pnp_card_device_id
+Date: Thu, 17 Aug 2017 15:36:22 +0530
+Message-ID: <1502964390-6927-8-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502964390-6927-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,21 +16,21 @@ const pnp_card_device_id. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/isa/es1688/es1688.c | 2 +-
+ sound/isa/cmi8330.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
-index 36320e7..a826c13 100644
---- a/sound/isa/es1688/es1688.c
-+++ b/sound/isa/es1688/es1688.c
-@@ -321,7 +321,7 @@ static int snd_es968_pnp_resume(struct pnp_card_link *pcard)
- }
- #endif
+diff --git a/sound/isa/cmi8330.c b/sound/isa/cmi8330.c
+index f64b29a..6b8c469 100644
+--- a/sound/isa/cmi8330.c
++++ b/sound/isa/cmi8330.c
+@@ -182,7 +182,7 @@ struct snd_cmi8330 {
  
--static struct pnp_card_device_id snd_es968_pnpids[] = {
-+static const struct pnp_card_device_id snd_es968_pnpids[] = {
- 	{ .id = "ESS0968", .devs = { { "@@@0968" }, } },
- 	{ .id = "ESS0968", .devs = { { "ESS0968" }, } },
- 	{ .id = "", } /* end */
+ #ifdef CONFIG_PNP
+ 
+-static struct pnp_card_device_id snd_cmi8330_pnpids[] = {
++static const struct pnp_card_device_id snd_cmi8330_pnpids[] = {
+ 	{ .id = "CMI0001", .devs = { { "@X@0001" }, { "@@@0001" }, { "@H@0001" }, { "A@@0001" } } },
+ 	{ .id = "CMI0001", .devs = { { "@@@0001" }, { "@X@0001" }, { "@H@0001" } } },
+ 	{ .id = "" }
 -- 
 2.7.4
