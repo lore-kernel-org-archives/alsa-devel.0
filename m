@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 1/6] ASoC: fsl: make snd_pcm_hardware const
-Date: Thu, 17 Aug 2017 15:46:07 +0530
-Message-ID: <1502964972-22722-2-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 2/6] ASoC: Intel: Atom: make snd_pcm_hardware const
+Date: Thu, 17 Aug 2017 15:46:08 +0530
+Message-ID: <1502964972-22722-3-git-send-email-bhumirks@gmail.com>
 References: <1502964972-22722-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1502964972-22722-1-git-send-email-bhumirks@gmail.com>
@@ -10,41 +10,26 @@ To: julia.lawall@lip6.fr, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmai
 Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make these const as they are only passed as the 2nd argument to the
-function snd_soc_set_runtime_hwparams, which is const.
+Make this const as it is only used in a copy operation.
 Done using Coccinelle.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/soc/fsl/fsl_asrc_dma.c | 2 +-
- sound/soc/fsl/imx-pcm-fiq.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index 2baf196..e1b97e5 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -20,7 +20,7 @@
- 
- #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
- 
--static struct snd_pcm_hardware snd_imx_hardware = {
-+static const struct snd_pcm_hardware snd_imx_hardware = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_MMAP |
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index aef1f78..4e5fefe 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -154,7 +154,7 @@ static snd_pcm_uframes_t snd_imx_pcm_pointer(struct snd_pcm_substream *substream
- 	return bytes_to_frames(substream->runtime, iprtd->offset);
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index b272df5..43e7fdd 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -76,7 +76,7 @@ int sst_unregister_dsp(struct sst_device *dev)
  }
+ EXPORT_SYMBOL_GPL(sst_unregister_dsp);
  
--static struct snd_pcm_hardware snd_imx_hardware = {
-+static const struct snd_pcm_hardware snd_imx_hardware = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_MMAP |
+-static struct snd_pcm_hardware sst_platform_pcm_hw = {
++static const struct snd_pcm_hardware sst_platform_pcm_hw = {
+ 	.info =	(SNDRV_PCM_INFO_INTERLEAVED |
+ 			SNDRV_PCM_INFO_DOUBLE |
+ 			SNDRV_PCM_INFO_PAUSE |
 -- 
 1.9.1
