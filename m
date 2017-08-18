@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 08/14] ASoC: pxa: constify snd_soc_dai_ops structures
-Date: Fri, 18 Aug 2017 17:36:05 +0530
-Message-ID: <1503057971-16033-9-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 11/14] ASoC: sunxi: constify snd_soc_dai_ops structures
+Date: Fri, 18 Aug 2017 17:36:08 +0530
+Message-ID: <1503057971-16033-12-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,21 +16,21 @@ const snd_soc_dai_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/pxa/mmp-sspa.c | 2 +-
+ sound/soc/sunxi/sun8i-codec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index 9cc3501..64b85e3 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -380,7 +380,7 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
- 		SNDRV_PCM_FMTBIT_S24_LE | \
- 		SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 5723c34..253ae0b 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -341,7 +341,7 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 	  "AIF1 Slot 0 Right"},
+ };
  
--static struct snd_soc_dai_ops mmp_sspa_dai_ops = {
-+static const struct snd_soc_dai_ops mmp_sspa_dai_ops = {
- 	.startup	= mmp_sspa_startup,
- 	.shutdown	= mmp_sspa_shutdown,
- 	.trigger	= mmp_sspa_trigger,
+-static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
++static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+ 	.hw_params = sun8i_codec_hw_params,
+ 	.set_fmt = sun8i_set_fmt,
+ };
 -- 
 1.9.1
