@@ -1,62 +1,51 @@
-From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [PATCH v3 1/9] ASoC: rt5514: Switch to
-	snd_soc_register_codec
-Date: Fri, 18 Aug 2017 10:48:39 +0800
-Message-ID: <59965587.7040409@rock-chips.com>
-References: <20170817044417.22069-1-jeffy.chen@rock-chips.com>
- <20170817044417.22069-2-jeffy.chen@rock-chips.com>
- <20170817171120.xvvsmx2fleeqj2s5@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.140])
- by alsa0.perex.cz (Postfix) with ESMTP id B006226648D
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 04:49:02 +0200 (CEST)
-In-Reply-To: <20170817171120.xvvsmx2fleeqj2s5@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>, dgreid@chromium.org
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Subject: [PATCH v4 0/9] ASoC: rockchip: Parse dai links from dts
+Date: Fri, 18 Aug 2017 11:11:38 +0800
+Message-ID: <20170818031147.16810-1-jeffy.chen@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de
+Cc: briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Will Deacon <will.deacon@arm.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Klaus Goger <klaus.goger@theobroma-systems.com>, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Bard Liao <bardliao@realtek.com>, Catalin Marinas <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 08/18/2017 01:11 AM, Mark Brown wrote:
-> On Thu, Aug 17, 2017 at 12:44:09PM +0800, Jeffy Chen wrote:
->> Currently we are using devm_snd_soc_register_component, which would
->> use legacy dai name.
->
->> Switch to snd_soc_register_codec to use dai driver name.
->
-> This is the wrong direction to be going in, we are trying to move all
-> drivers to use component.  Whatever you want to do make components use
-> it.
->
+Currently we are using a fixed list of dai links in the driver.
+This serial of patches would let the driver parse dai links from
+dts, so that we can make some of them optional for future boards.
 
-i was trying to make dai name use dai driver name:
-
-         /*
-          * Back in the old days when we still had component-less DAIs,
-          * instead of having a static name, component-less DAIs would
-          * inherit the name of the parent device so it is possible to
-          * register multiple instances of the DAI. We still need to keep
-          * the same naming style even though those DAIs are not
-          * component-less anymore.
-          */
-         if (legacy_dai_naming &&
-            (dai_drv->id == 0 || dai_drv->name == NULL)) {
-                 dai->name = fmt_single_name(dev, &dai->id);
-         } else {
-                 dai->name = fmt_multiple_name(dev, dai_drv);
+Tested on my chromebook bob(with cros 4.4 kernel), it still works
+after disabled rt5514 codecs in the dts.
 
 
-specify an non-zero id for dai driver works too, i'll do it in new 
-patches :)
+Changes in v4:
+Use non-zero drv id to avoid legacy dai naming instead of switching to
+snd_soc_register_codec.
+
+Changes in v3:
+Use compatible to match audio codecs
+        -- Suggested-by Matthias Kaehlcke <mka@chromium.org>
+
+Changes in v2:
+Let rockchip,codec-names be a required property, because we plan to
+add more supported codecs to the fixed dai link list in the driver.
+
+Jeffy Chen (9):
+  ASoC: rt5514: Avoid legacy dai naming
+  ASoC: rockchip: Remove obsolete dmic-delay
+  ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
+  arm64: dts: rockchip: Add rt5514 dsp for Gru
+  arm64: dts: rockchip: Update rt5514 devices' compatible for Gru
+  ASoC: rockchip: Parse dai links from dts
+  ASoC: rockchip: Add support for DP codec
+  ASoC: rockchip: Add support for DMIC codec
+  dt-bindings: ASoC: rockchip: Update description of rockchip,codec
+
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt   |   9 +-
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |   7 +-
+ sound/soc/codecs/rt5514-spi.c                      |   2 +-
+ sound/soc/rockchip/Kconfig                         |   2 +
+ sound/soc/rockchip/rk3399_gru_sound.c              | 263 ++++++++++++++-------
+ 5 files changed, 183 insertions(+), 100 deletions(-)
+
+-- 
+2.11.0
