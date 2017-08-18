@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 06/14] ASoC: intel: constify snd_soc_dai_ops structures
-Date: Fri, 18 Aug 2017 17:36:03 +0530
-Message-ID: <1503057971-16033-7-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 03/14] ASoC: dwc: constify snd_soc_dai_ops structures
+Date: Fri, 18 Aug 2017 17:36:00 +0530
+Message-ID: <1503057971-16033-4-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,68 +16,21 @@ const snd_soc_dai_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
- sound/soc/intel/skylake/skl-pcm.c            | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/dwc/dwc-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index b082b31..49c7b88 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -471,7 +471,7 @@ static void sst_disable_ssp(struct snd_pcm_substream *substream,
- 	}
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 9160676..eebe9d3 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -381,7 +381,7 @@ static int dw_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	return ret;
  }
  
--static struct snd_soc_dai_ops sst_media_dai_ops = {
-+static const struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.startup = sst_media_open,
- 	.shutdown = sst_media_close,
- 	.prepare = sst_media_prepare,
-@@ -480,11 +480,11 @@ static void sst_disable_ssp(struct snd_pcm_substream *substream,
- 	.mute_stream = sst_media_digital_mute,
- };
- 
--static struct snd_soc_dai_ops sst_compr_dai_ops = {
-+static const struct snd_soc_dai_ops sst_compr_dai_ops = {
- 	.mute_stream = sst_media_digital_mute,
- };
- 
--static struct snd_soc_dai_ops sst_be_dai_ops = {
-+static const struct snd_soc_dai_ops sst_be_dai_ops = {
- 	.startup = sst_enable_ssp,
- 	.hw_params = sst_be_hw_params,
- 	.set_fmt = sst_set_format,
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 0ebea34a..b1f2dba 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -628,7 +628,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_dai_ops skl_pcm_dai_ops = {
-+static const struct snd_soc_dai_ops skl_pcm_dai_ops = {
- 	.startup = skl_pcm_open,
- 	.shutdown = skl_pcm_close,
- 	.prepare = skl_pcm_prepare,
-@@ -637,15 +637,15 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
- 	.trigger = skl_pcm_trigger,
- };
- 
--static struct snd_soc_dai_ops skl_dmic_dai_ops = {
-+static const struct snd_soc_dai_ops skl_dmic_dai_ops = {
- 	.hw_params = skl_be_hw_params,
- };
- 
--static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
-+static const struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
- 	.hw_params = skl_be_hw_params,
- };
- 
--static struct snd_soc_dai_ops skl_link_dai_ops = {
-+static const struct snd_soc_dai_ops skl_link_dai_ops = {
- 	.prepare = skl_link_pcm_prepare,
- 	.hw_params = skl_link_hw_params,
- 	.hw_free = skl_link_hw_free,
+-static struct snd_soc_dai_ops dw_i2s_dai_ops = {
++static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
+ 	.startup	= dw_i2s_startup,
+ 	.shutdown	= dw_i2s_shutdown,
+ 	.hw_params	= dw_i2s_hw_params,
 -- 
 1.9.1
