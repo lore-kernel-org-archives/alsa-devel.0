@@ -1,73 +1,49 @@
-From: ThomasJF <tsepp2001@t-online.de>
-Subject: Re: non-blocking mode example
-Date: Fri, 18 Aug 2017 13:41:11 +0200
-Message-ID: <ff2dff4b-e1a5-23ec-fb8b-5f4b3d172e4a@t-online.de>
-References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
- <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
- <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
- <693e0d31-9b74-3ccf-e4a5-aac3b94ee4da@ladisch.de>
- <2a3cecc4-730c-208b-0674-68bbbe5d72d4@t-online.de>
- <f811f743-3433-2b1a-f932-677290d5d562@ladisch.de>
- <a0bfdc84-d5d3-3d0f-7113-ad95440e9f3d@t-online.de>
- <c2b0d797-0cb4-6592-5a2f-f7661b0871fb@ladisch.de>
- <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
- <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
- <a4c8de7b-4ebd-ad71-722d-5e40260f9512@ladisch.de>
- <e1b1e328-d961-714d-c4cc-66786bd763d9@t-online.de>
- <5a7c7b85-6116-6807-8e18-649840551c82@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/9] ASoC: rt5514: Avoid legacy dai naming
+Date: Fri, 18 Aug 2017 12:45:44 +0100
+Message-ID: <20170818114544.szfxl5pbul7gwgxg@sirena.org.uk>
+References: <20170818031147.16810-1-jeffy.chen@rock-chips.com>
+ <20170818031147.16810-2-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout06.t-online.de (mailout06.t-online.de [194.25.134.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D86E266943
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 13:41:20 +0200 (CEST)
-Received: from fwd06.aul.t-online.de (fwd06.aul.t-online.de [172.20.26.150])
- by mailout06.t-online.de (Postfix) with SMTP id 7BE2741CC55F
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 13:41:20 +0200 (CEST)
-In-Reply-To: <5a7c7b85-6116-6807-8e18-649840551c82@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="i5iao33e5l3rmp5z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170818031147.16810-2-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thank you Clemens,
 
-but while the stream is running the snd_pcm_poll_descriptors_count 
-couldn't change - or...?
-Then it should be inside the loop.
+--i5iao33e5l3rmp5z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards
-Thomas
+On Fri, Aug 18, 2017 at 11:11:39AM +0800, Jeffy Chen wrote:
+> Currently we are using devm_snd_soc_register_component, which would
+> use legacy dai naming when dai drv id is zero.
+>=20
+> Set a non-zero dai drv id to use dai drv name for dai name.
 
+Why?  This is clearly not good, we shouldn't be expecting all devices
+with a single DAI to set the DAI number to 1 and the changelog doesn't
+articulate any reason why anything cares what the name is.
 
+--i5iao33e5l3rmp5z
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Am 18.08.2017 um 12:37 schrieb Clemens Ladisch:
-> ThomasJF wrote:
->> I could change the code (attached a short part)
-> This mailing list does not have attachments.
->
->> After stop, the stream stops and everything looks good(?), but with this message from snd_pcm_writei:
->> -77 (-EBADFD)
-> You cannot write to a device in the stopped state. This is to be expected
->
->
-> And you must actually use the return value of snd_pcm_poll_descriptors_count()
-> (there are device types with more than one fd), and you must not look at the
-> returned event flags except with snd_pcm_poll_descriptors_revents().
->
->
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmW02cACgkQJNaLcl1U
+h9CPcAf+Ju6NbxRsKuFWso08GxyqgMyB9ZzQ6xIbRbS316AwX9+AHNLXqelgs58g
+Znvx5FR82TQzidTV4pKcaRxiZuz6vQmiw1Zpi2RABKAMPUqGGFA2ZXgg1Pa696F1
+T4jOAMGZ8/OdkL03xVtu8a08C1olMF6mlLAcpBWo/IkV43DucLkkg2TSDJp9xdnX
+xVRO6YmZOdLxJM4bxbvnKl/hvYT2Ey8okLWCZALKLOF76jNWumBcBzWJ24t+lw7m
+rctyZuykM7Psid445Pso/7GHdObgmR5QHKjZa3pmfndLDt+FQuq8joFk00lcb8qO
+BPzTWLXAh2T+siWjxUPOleQr/MMxKg==
+=GunK
+-----END PGP SIGNATURE-----
+
+--i5iao33e5l3rmp5z--
