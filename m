@@ -1,48 +1,60 @@
-From: Lucas Stach <l.stach@pengutronix.de>
-Subject: [PATCH] ASoC: fsl-asoc-card: don't print EPROBE_DEFER
-	as error
-Date: Fri, 18 Aug 2017 18:33:35 +0200
-Message-ID: <20170818163335.23695-1-l.stach@pengutronix.de>
+From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
+Date: Fri, 18 Aug 2017 14:10:24 -0400
+Message-ID: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id DA174266A74
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 18:33:39 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, alsa-devel@alsa-project.org, "Wladimir J . van der Laan" <laanwj@gmail.com>, patchwork-lst@pengutronix.de, Ilia Mirkin <imirkin@alum.mit.edu>, kernel@pengutronix.de, Chris Healy <cphealy@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org, rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Cc: tiwai-l3A5Bk7waGM@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Probe deferral is to be expected during normal operation, so avoid
-printing an error when it is encountered.
-
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
----
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 9998aea23597..2db4d0c80d33 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -683,7 +683,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(&priv->card, priv);
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
--	if (ret)
-+	if (ret && ret != -EPROBE_DEFER)
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
- 
- asrc_fail:
--- 
-2.11.0
+VGhpcyBwYXRjaCBzZXQgdXBkYXRlcyB0aGUgQU1EIEdQVSBhbmQgQXVkaW8gQ29Qcm9jZXNzb3Ig
+KEFDUCkKYXVkaW8gZHJpdmVycyBhbmQgdGhlIGRlc2lnbndhcmUgaTJzIGRyaXZlciBmb3IgU3Rv
+bmV5IChTVCkuClNUIGlzIGFuIEFQVSBzaW1pbGFyIHRvIENhcnJpem8gKENaKSB3aGljaCBhbHJl
+YWR5IGhhcyBBQ1AgYXVkaW8Kc3VwcG9ydC4gIFRoZSBpMnMgY29udHJvbGxlciBhbmQgQUNQIGF1
+ZGlvIERNQSBlbmdpbmUgYXJlIHBhcnQgb2YKdGhlIEdQVSBhbmQgYm90aCBuZWVkIHVwZGF0aW5n
+IHNvIEkgd291bGQgbGlrZSB0byB1cHN0cmVhbSB0aGUKd2hvbGUgcGF0Y2ggc2V0IHZpYSBvbmUg
+dHJlZSBpZiBwb3NzaWJsZS4KClRoZSBjdXJyZW50IGNvZGUgaXMgYmFzZWQgb24gZHJtLW5leHQs
+IGJ1dCBJJ20gaGFwcHkgdG8gcmViYXNlIG9uCndoYXRldmVyIHRyZWUgdGhpcyBlbmRzIHVwIGdv
+aW5nIHRocm91Z2ggaWYgdGhlcmUgYXJlIGFueSBwcm9ibGVtcwphcHBseWluZy4gIFRoZXNlIHBh
+dGNoZXMgdG91Y2ggYm90aCBhdWRpbyBhbmQgZHJtLgoKVGhlIGVudGlyZSBwYXRjaCBzZXQgY2Fu
+IGJlIHZpZXdlZCBoZXJlOgpodHRwczovL2NnaXQuZnJlZWRlc2t0b3Aub3JnL35hZ2Q1Zi9saW51
+eC9sb2cvP2g9c3RvbmV5X2FjcDIKClRoYW5rcyEKCkFsZXgKCnYyOgotIFBhdGNoIDEgaXMgYWxy
+ZWFkeSBhcHBsaWVkIHRvIHRoZSBhdWRpbyB0cmVlLCBqdXN0IGluY2x1ZGluZyBpdCBmb3IKICBj
+b21wbGV0ZW5lc3Mgc2luY2UgaXQncyByZXF1aXJlZCBmb3IgdGhpcyBwYXRjaCBzZXQgYW5kIGl0
+J3Mgbm90IHlldAogIGluIHRoZSBkcm0gdHJlZS4KLSBOZXcgcGF0Y2ggdG8gc2hhcmUgYXNpYyB0
+eXBlcyBiZXR3ZWVuIGdwdSBhbmQgYXVkaW8gZHJpdmVycwotIEFDUEkgSUQgY2hhbmdlZCBmb3Ig
+cnQ1NjUwIG1hY2hpbmUgZHJpdmVyCi0gSW50ZWdyYXRlIGZlZWRiYWNrIG9uIG90aGVyIHBhdGNo
+ZXMKCnYzOgotIHJlc2VuZCByZW1haW5pbmcgcGF0Y2hlcyB0aGF0IGhhdmUgbm90IGJlZW4gYXBw
+bGllZCB5ZXQKCkFrc2h1IEFncmF3YWwgKDIpOgogIGRybS9hbWRncHUgTW92aW5nIGFtZGdwdSBh
+c2ljIHR5cGVzIHRvIGEgc2VwYXJhdGUgZmlsZQogIEFTb0M6IEFNRDogQWRkIG1hY2hpbmUgZHJp
+dmVyIGZvciBjeiBydDU2NTAKClZpamVuZGFyIE11a3VuZGEgKDQpOgogIGRybS9hbWQvYW1kZ3B1
+OiBBZGRlZCBhc2ljX3R5cGUgYXMgQUNQIERNQSBkcml2ZXIgcGxhdGZvcm0gZGF0YQogIEFTb0M6
+IEFNRDogZGlzYWJsaW5nIG1lbW9yeSBnYXRpbmcgaW4gc3RvbmV5IHBsYXRmb3JtCiAgQVNvQzog
+QU1EOiBETUEgZHJpdmVyIGNoYW5nZXMgZm9yIFN0b25leSBQbGF0Zm9ybQogIEFTb0M6IEFNRDog
+QXVkaW8gYnVmZmVyIHJlbGF0ZWQgY2hhbmdlcyBmb3IgU3RvbmV5CgogZHJpdmVycy9ncHUvZHJt
+L2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jICB8ICAgMiArCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2lu
+Y2x1ZGUvYW1kX3NoYXJlZC5oIHwgIDI5ICstLS0KIGluY2x1ZGUvZHJtL2FtZF9hc2ljX3R5cGUu
+aCAgICAgICAgICAgICAgfCAgNTIgKysrKysrKwogc291bmQvc29jL2FtZC9LY29uZmlnICAgICAg
+ICAgICAgICAgICAgICB8ICAgNyArCiBzb3VuZC9zb2MvYW1kL01ha2VmaWxlICAgICAgICAgICAg
+ICAgICAgIHwgICAyICsKIHNvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyAgICAgICAgICAgICAg
+fCAyNDMgKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLQogc291bmQvc29jL2FtZC9hY3At
+cnQ1NjQ1LmMgICAgICAgICAgICAgICB8IDIxMCArKysrKysrKysrKysrKysrKysrKysrKysrKwog
+c291bmQvc29jL2FtZC9hY3AuaCAgICAgICAgICAgICAgICAgICAgICB8ICAgOSArKwogOCBmaWxl
+cyBjaGFuZ2VkLCA0NzIgaW5zZXJ0aW9ucygrKSwgODIgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9k
+ZSAxMDA2NDQgaW5jbHVkZS9kcm0vYW1kX2FzaWNfdHlwZS5oCiBjcmVhdGUgbW9kZSAxMDA2NDQg
+c291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1LmMKCi0tIAoyLjUuNQoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdm
+eEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
