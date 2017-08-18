@@ -1,8 +1,10 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 00/14] constify asoc snd_soc_dai_ops structures
-Date: Fri, 18 Aug 2017 17:35:57 +0530
-Message-ID: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 06/14] ASoC: intel: constify snd_soc_dai_ops structures
+Date: Fri, 18 Aug 2017 17:36:03 +0530
+Message-ID: <1503057971-16033-7-git-send-email-arvind.yadav.cs@gmail.com>
+References: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1503057971-16033-1-git-send-email-arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: bardliao@realtek.com, oder_chiou@realtek.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
@@ -12,53 +14,70 @@ snd_soc_dai_ops are not supposed to change at runtime. All functions
 working with snd_soc_dai_ops provided by <sound/soc-dai.h> work with
 const snd_soc_dai_ops. So mark the non-const structs as const.
 
-Arvind Yadav (14):
-  [PATCH 01/14] ASoC: blackfin: constify snd_soc_dai_ops structures
-  [PATCH 02/14] ASoC: codecs: constify snd_soc_dai_ops structures
-  [PATCH 03/14] ASoC: dwc: constify snd_soc_dai_ops structures
-  [PATCH 04/14] ASoC: fsl: constify snd_soc_dai_ops structures
-  [PATCH 05/14] ASoC: hisilicon: constify snd_soc_dai_ops structures
-  [PATCH 06/14] ASoC: intel: constify snd_soc_dai_ops structures
-  [PATCH 07/14] ASoC: mediatek: constify snd_soc_dai_ops structures
-  [PATCH 08/14] ASoC: pxa: constify snd_soc_dai_ops structures
-  [PATCH 09/14] ASoC: rockchip: constify snd_soc_dai_ops structures
-  [PATCH 10/14] ASoC: spear: constify snd_soc_dai_ops structures
-  [PATCH 11/14] ASoC: sunxi: constify snd_soc_dai_ops structures
-  [PATCH 12/14] ASoC: tegra: constify snd_soc_dai_ops structures
-  [PATCH 13/14] ASoC: ux500: constify snd_soc_dai_ops structures
-  [PATCH 14/14] ASoC: zte: constify snd_soc_dai_ops structures
-
- sound/soc/blackfin/bf6xx-i2s.c               | 2 +-
- sound/soc/codecs/cs42l42.c                   | 2 +-
- sound/soc/codecs/es8316.c                    | 2 +-
- sound/soc/codecs/hdac_hdmi.c                 | 2 +-
- sound/soc/codecs/inno_rk3036.c               | 2 +-
- sound/soc/codecs/max9867.c                   | 2 +-
- sound/soc/codecs/max98926.c                  | 2 +-
- sound/soc/codecs/msm8916-wcd-analog.c        | 2 +-
- sound/soc/codecs/msm8916-wcd-digital.c       | 2 +-
- sound/soc/codecs/rt5616.c                    | 2 +-
- sound/soc/codecs/rt5663.c                    | 2 +-
- sound/soc/codecs/tas5720.c                   | 2 +-
- sound/soc/codecs/zx_aud96p22.c               | 2 +-
- sound/soc/dwc/dwc-i2s.c                      | 2 +-
- sound/soc/fsl/fsl_asrc.c                     | 2 +-
- sound/soc/fsl/fsl_esai.c                     | 2 +-
- sound/soc/fsl/fsl_spdif.c                    | 2 +-
- sound/soc/hisilicon/hi6210-i2s.c             | 2 +-
+Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+---
  sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
  sound/soc/intel/skylake/skl-pcm.c            | 8 ++++----
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c   | 2 +-
- sound/soc/pxa/mmp-sspa.c                     | 2 +-
- sound/soc/rockchip/rockchip_pdm.c            | 2 +-
- sound/soc/spear/spdif_in.c                   | 2 +-
- sound/soc/sunxi/sun8i-codec.c                | 2 +-
- sound/soc/tegra/tegra30_i2s.c                | 2 +-
- sound/soc/ux500/ux500_msp_dai.c              | 2 +-
- sound/soc/zte/zx-i2s.c                       | 2 +-
- sound/soc/zte/zx-spdif.c                     | 2 +-
- sound/soc/zte/zx-tdm.c                       | 2 +-
- 30 files changed, 35 insertions(+), 35 deletions(-)
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index b082b31..49c7b88 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -471,7 +471,7 @@ static void sst_disable_ssp(struct snd_pcm_substream *substream,
+ 	}
+ }
+ 
+-static struct snd_soc_dai_ops sst_media_dai_ops = {
++static const struct snd_soc_dai_ops sst_media_dai_ops = {
+ 	.startup = sst_media_open,
+ 	.shutdown = sst_media_close,
+ 	.prepare = sst_media_prepare,
+@@ -480,11 +480,11 @@ static void sst_disable_ssp(struct snd_pcm_substream *substream,
+ 	.mute_stream = sst_media_digital_mute,
+ };
+ 
+-static struct snd_soc_dai_ops sst_compr_dai_ops = {
++static const struct snd_soc_dai_ops sst_compr_dai_ops = {
+ 	.mute_stream = sst_media_digital_mute,
+ };
+ 
+-static struct snd_soc_dai_ops sst_be_dai_ops = {
++static const struct snd_soc_dai_ops sst_be_dai_ops = {
+ 	.startup = sst_enable_ssp,
+ 	.hw_params = sst_be_hw_params,
+ 	.set_fmt = sst_set_format,
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 0ebea34a..b1f2dba 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -628,7 +628,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops skl_pcm_dai_ops = {
++static const struct snd_soc_dai_ops skl_pcm_dai_ops = {
+ 	.startup = skl_pcm_open,
+ 	.shutdown = skl_pcm_close,
+ 	.prepare = skl_pcm_prepare,
+@@ -637,15 +637,15 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
+ 	.trigger = skl_pcm_trigger,
+ };
+ 
+-static struct snd_soc_dai_ops skl_dmic_dai_ops = {
++static const struct snd_soc_dai_ops skl_dmic_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
+ };
+ 
+-static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
++static const struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
+ 	.hw_params = skl_be_hw_params,
+ };
+ 
+-static struct snd_soc_dai_ops skl_link_dai_ops = {
++static const struct snd_soc_dai_ops skl_link_dai_ops = {
+ 	.prepare = skl_link_pcm_prepare,
+ 	.hw_params = skl_link_hw_params,
+ 	.hw_free = skl_link_hw_free,
 -- 
 1.9.1
