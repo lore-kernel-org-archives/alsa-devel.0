@@ -1,50 +1,62 @@
-From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v1 1/2] ASoC: mediatek: Add interrupt-names property in binding text
-Date: Fri, 18 Aug 2017 09:28:49 +0800
-Message-ID: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
+From: Ryder Lee <ryder.lee@mediatek.com>
+Subject: [PATCH v1 2/2] ASoC: mediatek: switch to use platform_get_irq_byname()
+Date: Fri, 18 Aug 2017 09:28:50 +0800
+Message-ID: <3c24b787fab90c898450a3027b2d11bf1c04ff24.1503019482.git.ryder.lee@mediatek.com>
+References: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>, Garlic Tseng <garlic.tseng@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add interrupt-names property in DT - if future revisions of the IP
-have different sets of interrupts the binding can adapt gracefully.
+Switch to use platform_get_irq_byname() so that binding can be agnostic
+of the IRQ order.
 
-Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-CC: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+CC: Garlic Tseng <garlic.tseng@mediatek.com>
 ---
- Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-index 9800a56..77a57f8 100644
---- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-+++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-@@ -3,7 +3,8 @@ Mediatek AFE PCM controller for mt2701
- Required properties:
- - compatible = "mediatek,mt2701-audio";
- - reg: register location and size
--- interrupts: Should contain AFE interrupt
-+- interrupts: should contain AFE and ASYS interrupts
-+- interrupt-names: should be "afe" and "asys"
- - power-domains: should define the power domain
- - clock-names: should have these clock names:
- 		"infra_sys_audio_clk",
-@@ -59,6 +60,7 @@ Example:
- 		      <0 0x112A0000 0 0x20000>;
- 		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names	= "afe", "asys";
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
- 		clocks = <&infracfg CLK_INFRA_AUDIO>,
- 			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index bc5d4db..c7d38bf 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -1496,14 +1496,12 @@ static int mt2701_afe_runtime_resume(struct device *dev)
+ 
+ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ {
+-	int ret, i;
+-	unsigned int irq_id;
+ 	struct mtk_base_afe *afe;
+ 	struct mt2701_afe_private *afe_priv;
+ 	struct resource *res;
+ 	struct device *dev;
++	int i, irq_id, ret;
+ 
+-	ret = 0;
+ 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+ 	if (!afe)
+ 		return -ENOMEM;
+@@ -1516,11 +1514,12 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	afe->dev = &pdev->dev;
+ 	dev = afe->dev;
+ 
+-	irq_id = platform_get_irq(pdev, 0);
+-	if (!irq_id) {
+-		dev_err(dev, "%s no irq found\n", dev->of_node->name);
+-		return -ENXIO;
++	irq_id = platform_get_irq_byname(pdev, "asys");
++	if (irq_id < 0) {
++		dev_err(dev, "unable to get ASYS IRQ\n");
++		return irq_id;
+ 	}
++
+ 	ret = devm_request_irq(dev, irq_id, mt2701_asys_isr,
+ 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
+ 	if (ret) {
 -- 
 1.9.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
