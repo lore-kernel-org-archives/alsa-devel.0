@@ -1,62 +1,54 @@
-From: Ryder Lee <ryder.lee@mediatek.com>
-Subject: [PATCH v1 2/2] ASoC: mediatek: switch to use platform_get_irq_byname()
-Date: Fri, 18 Aug 2017 09:28:50 +0800
-Message-ID: <3c24b787fab90c898450a3027b2d11bf1c04ff24.1503019482.git.ryder.lee@mediatek.com>
-References: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH v3 2/9] ASoC: rockchip: Remove obsolete
+	dmic-delay
+Date: Fri, 18 Aug 2017 09:41:54 +0800
+Message-ID: <599645E2.4020402@rock-chips.com>
+References: <20170817044417.22069-1-jeffy.chen@rock-chips.com>
+ <20170817044417.22069-3-jeffy.chen@rock-chips.com>
+ <20170817171152.abf3ngr6nr22jfif@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular2.263xmail.com (regular2.263xmail.com [211.157.152.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 965A926648D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 03:42:46 +0200 (CEST)
+Received: from regular1.263xmail.com (unknown [192.168.165.231])
+ by regular2.263xmail.com (Postfix) with ESMTP id B20FC1EC67
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 09:42:42 +0800 (CST)
+In-Reply-To: <20170817171152.abf3ngr6nr22jfif@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>, Garlic Tseng <garlic.tseng@mediatek.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Switch to use platform_get_irq_byname() so that binding can be agnostic
-of the IRQ order.
+Hi Mark,
 
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-CC: Garlic Tseng <garlic.tseng@mediatek.com>
----
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+thanks for your reply
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index bc5d4db..c7d38bf 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1496,14 +1496,12 @@ static int mt2701_afe_runtime_resume(struct device *dev)
- 
- static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- {
--	int ret, i;
--	unsigned int irq_id;
- 	struct mtk_base_afe *afe;
- 	struct mt2701_afe_private *afe_priv;
- 	struct resource *res;
- 	struct device *dev;
-+	int i, irq_id, ret;
- 
--	ret = 0;
- 	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
- 	if (!afe)
- 		return -ENOMEM;
-@@ -1516,11 +1514,12 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	afe->dev = &pdev->dev;
- 	dev = afe->dev;
- 
--	irq_id = platform_get_irq(pdev, 0);
--	if (!irq_id) {
--		dev_err(dev, "%s no irq found\n", dev->of_node->name);
--		return -ENXIO;
-+	irq_id = platform_get_irq_byname(pdev, "asys");
-+	if (irq_id < 0) {
-+		dev_err(dev, "unable to get ASYS IRQ\n");
-+		return irq_id;
- 	}
-+
- 	ret = devm_request_irq(dev, irq_id, mt2701_asys_isr,
- 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
- 	if (ret) {
--- 
-1.9.1
+On 08/18/2017 01:11 AM, Mark Brown wrote:
+> On Thu, Aug 17, 2017 at 12:44:10PM +0800, Jeffy Chen wrote:
+>
+>> This property is no longer used.
+>
+>> -Optional properties:
+>> -- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
+>> -  If this option is specified, which means it's required dmic need
+>> -  delay for DMIC to ready so that rt5514 can avoid recording before
+>> -  DMIC send valid data
+>
+> Why would nobody ever want to use this in future?
+>
+
+hmmm, check again, rt5514 fixed this issue in there driver instead in:
+a5461fd6c8f7 ASoC: rt5514: Add the DMIC initial delay to wait it ready.
+
+so we don't need this...
