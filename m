@@ -1,123 +1,50 @@
-From: Sam Mulvey <sam@vis.nu>
-Subject: Digigram VX222e not seen as card
-Date: Thu, 17 Aug 2017 16:18:11 -0700
-Message-ID: <3c44e553-7b05-5d9f-8590-271e1176b3b5@vis.nu>
+From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH v1 1/2] ASoC: mediatek: Add interrupt-names property in binding text
+Date: Fri, 18 Aug 2017 09:28:49 +0800
+Message-ID: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.vis.nu (vac.vis.nu [167.114.122.66])
- by alsa0.perex.cz (Postfix) with ESMTP id A4CD126648D
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 01:18:14 +0200 (CEST)
-Received: from smtp.vis.nu (vac [127.0.0.1])
- by smtp.vis.nu (Postfix) with ESMTP id 0F30D2005225
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 16:18:13 -0700 (PDT)
-Received: from [100.82.1.0] (50-197-82-238-static.hfc.comcastbusiness.net
- [50.197.82.238])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: sam@vis.nu)
- by smtp.vis.nu (Postfix) with ESMTPSA id B4CA62005448
- for <alsa-devel@alsa-project.org>; Thu, 17 Aug 2017 16:18:12 -0700 (PDT)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Add interrupt-names property in DT - if future revisions of the IP
+have different sets of interrupts the binding can adapt gracefully.
 
-A radio station I'm working on has a machine with a Digigram VX222e
-connected to it.
+Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+CC: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-According to the Digigram site and the ALSA website, the sound card is
-supported by ALSA. Unfortunately, it doesn't appear to be detected as a
-sound card. Reading online, it requires some firmware, but it appears
-that my system has the proper firmware installed.
+diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+index 9800a56..77a57f8 100644
+--- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
++++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
+@@ -3,7 +3,8 @@ Mediatek AFE PCM controller for mt2701
+ Required properties:
+ - compatible = "mediatek,mt2701-audio";
+ - reg: register location and size
+-- interrupts: Should contain AFE interrupt
++- interrupts: should contain AFE and ASYS interrupts
++- interrupt-names: should be "afe" and "asys"
+ - power-domains: should define the power domain
+ - clock-names: should have these clock names:
+ 		"infra_sys_audio_clk",
+@@ -59,6 +60,7 @@ Example:
+ 		      <0 0x112A0000 0 0x20000>;
+ 		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
+ 			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names	= "afe", "asys";
+ 		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
+ 		clocks = <&infracfg CLK_INFRA_AUDIO>,
+ 			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
+-- 
+1.9.1
 
-The VX222e is a PCIe card, but it appears to be PCI on the card with a
-PCIe to PCI bridge. According to Digigram's support site, they made a
-hardware change in March of 2017, and I suspect that this might be the
-problem.
-
-I'm guessing it might be as simple enough as an ID match that I need to
-add to a module, but I've never worked with the card before, and I'm a
-little stuck.
-
-There's nothing regarding the card in dmesg, but it is visible in lspci:
-
-03:00.0 PCI bridge: PLX Technology, Inc. PEX 8111 PCI Express-to-PCI
-Bridge (rev 21) (prog-if 00 [Normal decode])
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 0, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 3
-        NUMA node: 0
-        Bus: primary=03, secondary=04, subordinate=04, sec-latency=32
-        I/O behind bridge: 0000e000-0000efff [size=4K]
-        Memory behind bridge: fde00000-fdefffff [size=1M]
-        Prefetchable memory behind bridge: fdd00000-fddfffff [size=1M]
-        Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort+ <SERR- <PERR-
-        BridgeCtl: Parity- SERR- NoISA- VGA- MAbort- >Reset- FastB2B-
-                PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-        Capabilities: [50] MSI: Enable- Count=1/1 Maskable- 64bit+
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [60] Express (v1) PCI-Express to PCI/PCI-X Bridge,
-MSI 00
-                DevCap: MaxPayload 128 bytes, PhantFunc 0
-                        ExtTag- AttnBtn- AttnInd- PwrInd- RBE-
-SlotPowerLimit 25.000W
-                DevCtl: Report errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                        RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
-BrConfRtry-
-                        MaxPayload 128 bytes, MaxReadReq 512 bytes
-                DevSta: CorrErr- UncorrErr+ FatalErr- UnsuppReq+ AuxPwr-
-TransPend-
-                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
-Exit Latency L0s <1us, L1 <16us
-                        ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-                LnkCtl: ASPM Disabled; RCB 64 bytes Disabled- CommClk+
-                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-                LnkSta: Speed 2.5GT/s, Width x1, TrErr- Train- SlotClk-
-DLActive- BWMgmt- ABWMgmt-
-        Capabilities: [100 v1] Power Budgeting <?>
-        Kernel modules: shpchp
-
-04:04.0 Multimedia audio controller: PLX Technology, Inc. PCI9056 32-bit
-66MHz PCI <-> IOBus Bridge
-        Subsystem: Digigram Device ba41
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 32, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 3
-        NUMA node: 0
-        Region 0: Memory at fdeff000 (32-bit, non-prefetchable) [size=512]
-        Region 1: I/O ports at ec00 [size=256]
-        Region 2: I/O ports at ef00 [size=128]
-        Capabilities: [40] Power Management version 0
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [48] #00 [0000]
-        Capabilities: [4c] Vital Product Data
-pcilib: sysfs_read_vpd: read failed: Input/output error
-
-
-
-I'm also documenting what I've got and what I've tried here:
-https://vis.nu/blog/digigram_vx222e_isn_t_seen_in_arch_linux
-
-Any pointers would be helpful.   Thanks!
-
--Sam
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
