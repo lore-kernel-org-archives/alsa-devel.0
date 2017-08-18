@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: Add interrupt-names property in binding text" to the asoc tree
-Date: Fri, 18 Aug 2017 12:48:42 +0100
-Message-ID: <E1difla-0000tV-Sq@finisterre>
-References: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee@mediatek.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <8e309915033984c0b949254beef44a8307f479f4.1503019482.git.ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tegra: Remove SoC-specific Kconfig depends and selects" to the asoc tree
+Date: Fri, 18 Aug 2017 12:48:53 +0100
+Message-ID: <E1difll-0000uY-4a@finisterre>
+References: <20170730112220.15525-1-contact@paulk.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170730112220.15525-1-contact@paulk.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Paul Kocialkowski <contact@paulk.fr>
+Cc: Thierry Reding <treding@nvidia.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.com>, Russell King <linux@armlinux.org.uk>Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: Add interrupt-names property in binding text
+   ASoC: tegra: Remove SoC-specific Kconfig depends and selects
 
 has been applied to the asoc tree at
 
@@ -37,47 +37,177 @@ to this mail.
 Thanks,
 Mark
 
->From 57127d9b8bcbecaac9470f62361570939dde49fd Mon Sep 17 00:00:00 2001
-From: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Fri, 18 Aug 2017 09:28:49 +0800
-Subject: [PATCH] ASoC: mediatek: Add interrupt-names property in binding text
+>From 3bcfe80f1c471b6bbade9f1a725778ea0471bb49 Mon Sep 17 00:00:00 2001
+From: Paul Kocialkowski <contact@paulk.fr>
+Date: Thu, 17 Aug 2017 21:05:52 +0200
+Subject: [PATCH] ASoC: tegra: Remove SoC-specific Kconfig depends and selects
 
-Add interrupt-names property in DT - if future revisions of the IP
-have different sets of interrupts the binding can adapt gracefully.
+This removes the SoC-specific dependencies on the platform drivers,
+as well as SoC-specific selections of platform drivers for the
+machine drivers. The rationale behind this change is that the
+dependencies are not actual build dependencies but run-time ones.
 
-Signed-off-by: Ryder Lee <ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-CC: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+The previously listed SoCs were also incomplete: for instance, tegra124
+uses the tegra30 platform drivers, which could not be built without
+ARCH_TEGRA_3x_SOC set.
+
+Descriptions of the tristates are also added to allow these options
+to be set via defconfig/menuconfig.
+
+Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/tegra/Kconfig | 42 ++++++++++++++----------------------------
+ 1 file changed, 14 insertions(+), 28 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-index 9800a560e0c2..77a57f84bed4 100644
---- a/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-+++ b/Documentation/devicetree/bindings/sound/mt2701-afe-pcm.txt
-@@ -3,7 +3,8 @@ Mediatek AFE PCM controller for mt2701
- Required properties:
- - compatible = "mediatek,mt2701-audio";
- - reg: register location and size
--- interrupts: Should contain AFE interrupt
-+- interrupts: should contain AFE and ASYS interrupts
-+- interrupt-names: should be "afe" and "asys"
- - power-domains: should define the power domain
- - clock-names: should have these clock names:
- 		"infra_sys_audio_clk",
-@@ -59,6 +60,7 @@ Example:
- 		      <0 0x112A0000 0 0x20000>;
- 		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_SPI 132 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names	= "afe", "asys";
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
- 		clocks = <&infracfg CLK_INFRA_AUDIO>,
- 			 <&topckgen CLK_TOP_AUD_MUX1_SEL>,
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index efbe8d4c019e..6875fc39a575 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -9,8 +9,8 @@ config SND_SOC_TEGRA
+ 	  Say Y or M here if you want support for SoC audio on Tegra.
+ 
+ config SND_SOC_TEGRA20_AC97
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 AC97 interface"
++	depends on SND_SOC_TEGRA
+ 	select SND_SOC_AC97_BUS
+ 	select SND_SOC_TEGRA20_DAS
+ 	help
+@@ -19,16 +19,16 @@ config SND_SOC_TEGRA20_AC97
+ 	  machine drivers to support below.
+ 
+ config SND_SOC_TEGRA20_DAS
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 DAS module"
++	depends on SND_SOC_TEGRA
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 DAS module.
+ 	  You will also need to select the individual machine drivers to
+ 	  support below.
+ 
+ config SND_SOC_TEGRA20_I2S
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 I2S interface"
++	depends on SND_SOC_TEGRA
+ 	select SND_SOC_TEGRA20_DAS
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+@@ -36,8 +36,8 @@ config SND_SOC_TEGRA20_I2S
+ 	  machine drivers to support below.
+ 
+ config SND_SOC_TEGRA20_SPDIF
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
++	tristate "Tegra20 SPDIF interface"
++	depends on SND_SOC_TEGRA
+ 	default m
+ 	help
+ 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
+@@ -45,16 +45,16 @@ config SND_SOC_TEGRA20_SPDIF
+ 	  below.
+ 
+ config SND_SOC_TEGRA30_AHUB
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
++	tristate "Tegra30 AHUB module"
++	depends on SND_SOC_TEGRA
+ 	help
+-	  Say Y or M if you want to add support for the Tegra20 AHUB module.
++	  Say Y or M if you want to add support for the Tegra30 AHUB module.
+ 	  You will also need to select the individual machine drivers to
+ 	  support below.
+ 
+ config SND_SOC_TEGRA30_I2S
+-	tristate
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
++	tristate "Tegra30 I2S interface"
++	depends on SND_SOC_TEGRA
+ 	select SND_SOC_TEGRA30_AHUB
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
+@@ -64,8 +64,6 @@ config SND_SOC_TEGRA30_I2S
+ config SND_SOC_TEGRA_RT5640
+ 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_RT5640
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -74,8 +72,6 @@ config SND_SOC_TEGRA_RT5640
+ config SND_SOC_TEGRA_WM8753
+ 	tristate "SoC Audio support for Tegra boards using a WM8753 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8753
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -84,8 +80,6 @@ config SND_SOC_TEGRA_WM8753
+ config SND_SOC_TEGRA_WM8903
+ 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_WM8903
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -94,7 +88,7 @@ config SND_SOC_TEGRA_WM8903
+ 
+ config SND_SOC_TEGRA_WM9712
+ 	tristate "SoC Audio support for Tegra boards using a WM9712 codec"
+-	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC && GPIOLIB
++	depends on SND_SOC_TEGRA && GPIOLIB
+ 	select SND_SOC_TEGRA20_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -104,7 +98,6 @@ config SND_SOC_TEGRA_WM9712
+ config SND_SOC_TEGRA_TRIMSLICE
+ 	tristate "SoC Audio support for TrimSlice board"
+ 	depends on SND_SOC_TEGRA && I2C
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_TLV320AIC23_I2C
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on the
+@@ -113,7 +106,6 @@ config SND_SOC_TEGRA_TRIMSLICE
+ config SND_SOC_TEGRA_ALC5632
+ 	tristate "SoC Audio support for Tegra boards using an ALC5632 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_ALC5632
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on the
+@@ -122,8 +114,6 @@ config SND_SOC_TEGRA_ALC5632
+ config SND_SOC_TEGRA_MAX98090
+ 	tristate "SoC Audio support for Tegra boards using a MAX98090 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -132,8 +122,6 @@ config SND_SOC_TEGRA_MAX98090
+ config SND_SOC_TEGRA_RT5677
+ 	tristate "SoC Audio support for Tegra boards using a RT5677 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_RT5677
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+@@ -142,8 +130,6 @@ config SND_SOC_TEGRA_RT5677
+ config SND_SOC_TEGRA_SGTL5000
+ 	tristate "SoC Audio support for Tegra boards using a SGTL5000 codec"
+ 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
+-	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+-	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_SGTL5000
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
 -- 
 2.13.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
