@@ -1,7 +1,7 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: ThomasJF <tsepp2001@t-online.de>
 Subject: Re: non-blocking mode example
-Date: Fri, 18 Aug 2017 12:37:53 +0200
-Message-ID: <5a7c7b85-6116-6807-8e18-649840551c82@ladisch.de>
+Date: Fri, 18 Aug 2017 13:41:11 +0200
+Message-ID: <ff2dff4b-e1a5-23ec-fb8b-5f4b3d172e4a@t-online.de>
 References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
  <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
  <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
@@ -14,19 +14,18 @@ References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
  <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
  <a4c8de7b-4ebd-ad71-722d-5e40260f9512@ladisch.de>
  <e1b1e328-d961-714d-c4cc-66786bd763d9@t-online.de>
+ <5a7c7b85-6116-6807-8e18-649840551c82@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 354A0266BF6
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 12:37:54 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 44F2255828CF
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 12:37:52 +0200 (CEST)
-In-Reply-To: <e1b1e328-d961-714d-c4cc-66786bd763d9@t-online.de>
-Content-Language: en-US
+Received: from mailout06.t-online.de (mailout06.t-online.de [194.25.134.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D86E266943
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 13:41:20 +0200 (CEST)
+Received: from fwd06.aul.t-online.de (fwd06.aul.t-online.de [172.20.26.150])
+ by mailout06.t-online.de (Postfix) with SMTP id 7BE2741CC55F
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 13:41:20 +0200 (CEST)
+In-Reply-To: <5a7c7b85-6116-6807-8e18-649840551c82@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,21 +38,36 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ThomasJF wrote:
-> I could change the code (attached a short part)
+Thank you Clemens,
 
-This mailing list does not have attachments.
+but while the stream is running the snd_pcm_poll_descriptors_count 
+couldn't change - or...?
+Then it should be inside the loop.
 
-> After stop, the stream stops and everything looks good(?), but with this message from snd_pcm_writei:
-> -77 (-EBADFD)
-
-You cannot write to a device in the stopped state. This is to be expected.
-
-
-And you must actually use the return value of snd_pcm_poll_descriptors_count()
-(there are device types with more than one fd), and you must not look at the
-returned event flags except with snd_pcm_poll_descriptors_revents().
+Regards
+Thomas
 
 
-Regards,
-Clemens
+
+Am 18.08.2017 um 12:37 schrieb Clemens Ladisch:
+> ThomasJF wrote:
+>> I could change the code (attached a short part)
+> This mailing list does not have attachments.
+>
+>> After stop, the stream stops and everything looks good(?), but with this message from snd_pcm_writei:
+>> -77 (-EBADFD)
+> You cannot write to a device in the stopped state. This is to be expected
+>
+>
+> And you must actually use the return value of snd_pcm_poll_descriptors_count()
+> (there are device types with more than one fd), and you must not look at the
+> returned event flags except with snd_pcm_poll_descriptors_revents().
+>
+>
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
