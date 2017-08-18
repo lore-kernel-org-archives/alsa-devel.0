@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 10/13] ALSA: sh: constify snd_pcm_ops structures
-Date: Fri, 18 Aug 2017 13:15:18 +0530
-Message-ID: <1503042321-26758-9-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 12/13] ALSA: spi: constify snd_pcm_ops structures
+Date: Fri, 18 Aug 2017 13:15:20 +0530
+Message-ID: <1503042321-26758-11-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1503042321-26758-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1503042321-26758-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,35 +16,21 @@ const snd_pcm_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/sh/aica.c         | 2 +-
- sound/sh/sh_dac_audio.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/spi/at73c213.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/sh/aica.c b/sound/sh/aica.c
-index ab4802d..c1635f7 100644
---- a/sound/sh/aica.c
-+++ b/sound/sh/aica.c
-@@ -436,7 +436,7 @@ static unsigned long snd_aicapcm_pcm_pointer(struct snd_pcm_substream
- 	return readl(AICA_CONTROL_CHANNEL_SAMPLE_NUMBER);
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index fac7e6e..1ef52ed 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -322,7 +322,7 @@ static int snd_at73c213_pcm_trigger(struct snd_pcm_substream *substream,
+ 	return pos;
  }
  
--static struct snd_pcm_ops snd_aicapcm_playback_ops = {
-+static const struct snd_pcm_ops snd_aicapcm_playback_ops = {
- 	.open = snd_aicapcm_pcm_open,
- 	.close = snd_aicapcm_pcm_close,
- 	.ioctl = snd_pcm_lib_ioctl,
-diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
-index c1e00ed..b348be9 100644
---- a/sound/sh/sh_dac_audio.c
-+++ b/sound/sh/sh_dac_audio.c
-@@ -252,7 +252,7 @@ snd_pcm_uframes_t snd_sh_dac_pcm_pointer(struct snd_pcm_substream *substream)
- }
- 
- /* pcm ops */
--static struct snd_pcm_ops snd_sh_dac_pcm_ops = {
-+static const struct snd_pcm_ops snd_sh_dac_pcm_ops = {
- 	.open		= snd_sh_dac_pcm_open,
- 	.close		= snd_sh_dac_pcm_close,
+-static struct snd_pcm_ops at73c213_playback_ops = {
++static const struct snd_pcm_ops at73c213_playback_ops = {
+ 	.open		= snd_at73c213_pcm_open,
+ 	.close		= snd_at73c213_pcm_close,
  	.ioctl		= snd_pcm_lib_ioctl,
 -- 
 1.9.1
