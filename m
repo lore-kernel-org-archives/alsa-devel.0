@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 02/13] ALSA: arm: constify snd_pcm_ops structures
-Date: Fri, 18 Aug 2017 13:15:10 +0530
-Message-ID: <1503042321-26758-3-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 03/13] ALSA: atmel: constify snd_pcm_ops structures
+Date: Fri, 18 Aug 2017 13:15:11 +0530
+Message-ID: <1503042321-26758-4-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1503042321-26758-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1503042321-26758-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,44 +16,30 @@ const snd_pcm_ops. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/arm/aaci.c       | 4 ++--
- sound/arm/pxa2xx-pcm.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/atmel/ac97c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index 4140b1b..e93b327 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -635,7 +635,7 @@ static int aaci_pcm_playback_trigger(struct snd_pcm_substream *substream, int cm
- 	return ret;
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 52b0522..70616da 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -461,7 +461,7 @@ static int atmel_ac97c_capture_prepare(struct snd_pcm_substream *substream)
+ 	return frames;
  }
  
--static struct snd_pcm_ops aaci_playback_ops = {
-+static const struct snd_pcm_ops aaci_playback_ops = {
- 	.open		= aaci_pcm_open,
- 	.close		= aaci_pcm_close,
+-static struct snd_pcm_ops atmel_ac97_playback_ops = {
++static const struct snd_pcm_ops atmel_ac97_playback_ops = {
+ 	.open		= atmel_ac97c_playback_open,
+ 	.close		= atmel_ac97c_playback_close,
  	.ioctl		= snd_pcm_lib_ioctl,
-@@ -738,7 +738,7 @@ static int aaci_pcm_capture_prepare(struct snd_pcm_substream *substream)
- 	return 0;
- }
+@@ -472,7 +472,7 @@ static int atmel_ac97c_capture_prepare(struct snd_pcm_substream *substream)
+ 	.pointer	= atmel_ac97c_playback_pointer,
+ };
  
--static struct snd_pcm_ops aaci_capture_ops = {
-+static const struct snd_pcm_ops aaci_capture_ops = {
- 	.open		= aaci_pcm_open,
- 	.close		= aaci_pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-diff --git a/sound/arm/pxa2xx-pcm.c b/sound/arm/pxa2xx-pcm.c
-index 83fcfac..1c6f4b4 100644
---- a/sound/arm/pxa2xx-pcm.c
-+++ b/sound/arm/pxa2xx-pcm.c
-@@ -68,7 +68,7 @@ static int pxa2xx_pcm_close(struct snd_pcm_substream *substream)
- 	return __pxa2xx_pcm_close(substream);
- }
- 
--static struct snd_pcm_ops pxa2xx_pcm_ops = {
-+static const struct snd_pcm_ops pxa2xx_pcm_ops = {
- 	.open		= pxa2xx_pcm_open,
- 	.close		= pxa2xx_pcm_close,
+-static struct snd_pcm_ops atmel_ac97_capture_ops = {
++static const struct snd_pcm_ops atmel_ac97_capture_ops = {
+ 	.open		= atmel_ac97c_capture_open,
+ 	.close		= atmel_ac97c_capture_close,
  	.ioctl		= snd_pcm_lib_ioctl,
 -- 
 1.9.1
