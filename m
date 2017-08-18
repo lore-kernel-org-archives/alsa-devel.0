@@ -1,68 +1,50 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 04/13] ALSA: drivers: constify snd_pcm_ops structures
-Date: Fri, 18 Aug 2017 13:15:12 +0530
-Message-ID: <1503042321-26758-5-git-send-email-arvind.yadav.cs@gmail.com>
-References: <1503042321-26758-1-git-send-email-arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1503042321-26758-1-git-send-email-arvind.yadav.cs@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, johannes@sipsolutions.net, linux@armlinux.org.uk, daniel@zonque.org, clemens@ladisch.de
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: [PATCH] ALSA: usb-audio: add DSD support for new
+	Amanero PID
+Date: Fri, 18 Aug 2017 10:42:14 +0300
+Message-ID: <1503042134-6681-1-git-send-email-jussi@sonarnerd.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id E49CE2671D3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 09:42:43 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jussi Laako <jussi@sonarnerd.net>
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_ops are not supposed to change at runtime. All functions
-working with snd_pcm_ops provided by <sound/pcm.h> work with
-const snd_pcm_ops. So mark the non-const structs as const.
+Add DSD support for new Amanero Combo384 firmware version with a new
+PID. This firmware uses DSD_U32_BE.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
 ---
- sound/drivers/aloop.c        | 4 ++--
- sound/drivers/ml403-ac97cr.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/usb/quirks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
-index 54f348a..f9f0edf 100644
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -750,7 +750,7 @@ static int loopback_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 2eb6e0d..c09a28b 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1374,6 +1374,10 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 			}
+ 		}
+ 		break;
++	case USB_ID(0x16d0, 0x0a23):
++		if (fp->altsetting == 2)
++			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
++		break;
  
--static struct snd_pcm_ops loopback_playback_ops = {
-+static const struct snd_pcm_ops loopback_playback_ops = {
- 	.open =		loopback_open,
- 	.close =	loopback_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-@@ -763,7 +763,7 @@ static int loopback_close(struct snd_pcm_substream *substream)
- 	.mmap =		snd_pcm_lib_mmap_vmalloc,
- };
- 
--static struct snd_pcm_ops loopback_capture_ops = {
-+static const struct snd_pcm_ops loopback_capture_ops = {
- 	.open =		loopback_open,
- 	.close =	loopback_close,
- 	.ioctl =	snd_pcm_lib_ioctl,
-diff --git a/sound/drivers/ml403-ac97cr.c b/sound/drivers/ml403-ac97cr.c
-index bdcb572..8195ae8 100644
---- a/sound/drivers/ml403-ac97cr.c
-+++ b/sound/drivers/ml403-ac97cr.c
-@@ -759,7 +759,7 @@ static int snd_ml403_ac97cr_capture_close(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static struct snd_pcm_ops snd_ml403_ac97cr_playback_ops = {
-+static const struct snd_pcm_ops snd_ml403_ac97cr_playback_ops = {
- 	.open = snd_ml403_ac97cr_playback_open,
- 	.close = snd_ml403_ac97cr_playback_close,
- 	.ioctl = snd_pcm_lib_ioctl,
-@@ -770,7 +770,7 @@ static int snd_ml403_ac97cr_capture_close(struct snd_pcm_substream *substream)
- 	.pointer = snd_ml403_ac97cr_pcm_pointer,
- };
- 
--static struct snd_pcm_ops snd_ml403_ac97cr_capture_ops = {
-+static const struct snd_pcm_ops snd_ml403_ac97cr_capture_ops = {
- 	.open = snd_ml403_ac97cr_capture_open,
- 	.close = snd_ml403_ac97cr_capture_close,
- 	.ioctl = snd_pcm_lib_ioctl,
+ 	default:
+ 		break;
 -- 
-1.9.1
+2.7.4
