@@ -1,213 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: Remove SoC-specific Kconfig depends and selects" to the asoc tree
-Date: Fri, 18 Aug 2017 12:48:53 +0100
-Message-ID: <E1difll-0000uY-4a@finisterre>
-References: <20170730112220.15525-1-contact@paulk.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170730112220.15525-1-contact@paulk.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Kocialkowski <contact@paulk.fr>
-Cc: Thierry Reding <treding@nvidia.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.com>, Russell King <linux@armlinux.org.uk>Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 2/9] ASoC: rockchip: Remove obsolete dmic-delay
+Date: Fri, 18 Aug 2017 12:52:23 +0100
+Message-ID: <20170818115223.pyfqji5jkplt6isx@sirena.org.uk>
+References: <20170817044417.22069-1-jeffy.chen@rock-chips.com>
+ <20170817044417.22069-3-jeffy.chen@rock-chips.com>
+ <20170817171152.abf3ngr6nr22jfif@sirena.org.uk>
+ <599645E2.4020402@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="m6wid7jysdtjmmci"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <599645E2.4020402-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: jeffy <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: tegra: Remove SoC-specific Kconfig depends and selects
+--m6wid7jysdtjmmci
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Fri, Aug 18, 2017 at 09:41:54AM +0800, jeffy wrote:
+> On 08/18/2017 01:11 AM, Mark Brown wrote:
+> > On Thu, Aug 17, 2017 at 12:44:10PM +0800, Jeffy Chen wrote:
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> > > -Optional properties:
+> > > -- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
+> > > -  If this option is specified, which means it's required dmic need
+> > > -  delay for DMIC to ready so that rt5514 can avoid recording before
+> > > -  DMIC send valid data
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> > Why would nobody ever want to use this in future?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> hmmm, check again, rt5514 fixed this issue in there driver instead in:
+> a5461fd6c8f7 ASoC: rt5514: Add the DMIC initial delay to wait it ready.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> so we don't need this...
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+You don't need it on your board for new DTs but why is it not possible
+that another board might need it?
 
-Thanks,
-Mark
+--m6wid7jysdtjmmci
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 3bcfe80f1c471b6bbade9f1a725778ea0471bb49 Mon Sep 17 00:00:00 2001
-From: Paul Kocialkowski <contact@paulk.fr>
-Date: Thu, 17 Aug 2017 21:05:52 +0200
-Subject: [PATCH] ASoC: tegra: Remove SoC-specific Kconfig depends and selects
+-----BEGIN PGP SIGNATURE-----
 
-This removes the SoC-specific dependencies on the platform drivers,
-as well as SoC-specific selections of platform drivers for the
-machine drivers. The rationale behind this change is that the
-dependencies are not actual build dependencies but run-time ones.
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmW1PcACgkQJNaLcl1U
+h9Ajwgf9HA9rtrdJwNVlAtEKNVupp1jzWXvXw7UIeADdamflEQ3RP9vYmENUHoLn
+VinUjB0TGRRqb5hQedf/p5N8x1kuytGXrkfucoQqJ8V7YJR8NKiINQI7yTRCYW7X
+OcJOj44puTm/pSlOWaexhC+rGmcDjEKpY0beZI0jHt79r+Ayv1/3FxHuNCHR498l
+KXmDKHgfgI1vSNZeDpV3DisCZvp7/J6WdghOMvqnnvrtmvWWK6+umOWSaHG2PGZE
+iy96mfapluf9MCfvGfCm8zFoxit2mYNcnAweHZSNQuoCe+Nh8rX4A+77SPsMEZUx
+Qn303i4WoIEaXc62qr/4ewAETN+73A==
+=TCfK
+-----END PGP SIGNATURE-----
 
-The previously listed SoCs were also incomplete: for instance, tegra124
-uses the tegra30 platform drivers, which could not be built without
-ARCH_TEGRA_3x_SOC set.
-
-Descriptions of the tristates are also added to allow these options
-to be set via defconfig/menuconfig.
-
-Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/tegra/Kconfig | 42 ++++++++++++++----------------------------
- 1 file changed, 14 insertions(+), 28 deletions(-)
-
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index efbe8d4c019e..6875fc39a575 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -9,8 +9,8 @@ config SND_SOC_TEGRA
- 	  Say Y or M here if you want support for SoC audio on Tegra.
- 
- config SND_SOC_TEGRA20_AC97
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	tristate "Tegra20 AC97 interface"
-+	depends on SND_SOC_TEGRA
- 	select SND_SOC_AC97_BUS
- 	select SND_SOC_TEGRA20_DAS
- 	help
-@@ -19,16 +19,16 @@ config SND_SOC_TEGRA20_AC97
- 	  machine drivers to support below.
- 
- config SND_SOC_TEGRA20_DAS
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	tristate "Tegra20 DAS module"
-+	depends on SND_SOC_TEGRA
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 DAS module.
- 	  You will also need to select the individual machine drivers to
- 	  support below.
- 
- config SND_SOC_TEGRA20_I2S
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	tristate "Tegra20 I2S interface"
-+	depends on SND_SOC_TEGRA
- 	select SND_SOC_TEGRA20_DAS
- 	help
- 	  Say Y or M if you want to add support for codecs attached to the
-@@ -36,8 +36,8 @@ config SND_SOC_TEGRA20_I2S
- 	  machine drivers to support below.
- 
- config SND_SOC_TEGRA20_SPDIF
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC
-+	tristate "Tegra20 SPDIF interface"
-+	depends on SND_SOC_TEGRA
- 	default m
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
-@@ -45,16 +45,16 @@ config SND_SOC_TEGRA20_SPDIF
- 	  below.
- 
- config SND_SOC_TEGRA30_AHUB
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-+	tristate "Tegra30 AHUB module"
-+	depends on SND_SOC_TEGRA
- 	help
--	  Say Y or M if you want to add support for the Tegra20 AHUB module.
-+	  Say Y or M if you want to add support for the Tegra30 AHUB module.
- 	  You will also need to select the individual machine drivers to
- 	  support below.
- 
- config SND_SOC_TEGRA30_I2S
--	tristate
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-+	tristate "Tegra30 I2S interface"
-+	depends on SND_SOC_TEGRA
- 	select SND_SOC_TEGRA30_AHUB
- 	help
- 	  Say Y or M if you want to add support for codecs attached to the
-@@ -64,8 +64,6 @@ config SND_SOC_TEGRA30_I2S
- config SND_SOC_TEGRA_RT5640
- 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_RT5640
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -74,8 +72,6 @@ config SND_SOC_TEGRA_RT5640
- config SND_SOC_TEGRA_WM8753
- 	tristate "SoC Audio support for Tegra boards using a WM8753 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_WM8753
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -84,8 +80,6 @@ config SND_SOC_TEGRA_WM8753
- config SND_SOC_TEGRA_WM8903
- 	tristate "SoC Audio support for Tegra boards using a WM8903 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_WM8903
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -94,7 +88,7 @@ config SND_SOC_TEGRA_WM8903
- 
- config SND_SOC_TEGRA_WM9712
- 	tristate "SoC Audio support for Tegra boards using a WM9712 codec"
--	depends on SND_SOC_TEGRA && ARCH_TEGRA_2x_SOC && GPIOLIB
-+	depends on SND_SOC_TEGRA && GPIOLIB
- 	select SND_SOC_TEGRA20_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -104,7 +98,6 @@ config SND_SOC_TEGRA_WM9712
- config SND_SOC_TEGRA_TRIMSLICE
- 	tristate "SoC Audio support for TrimSlice board"
- 	depends on SND_SOC_TEGRA && I2C
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
- 	select SND_SOC_TLV320AIC23_I2C
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on the
-@@ -113,7 +106,6 @@ config SND_SOC_TEGRA_TRIMSLICE
- config SND_SOC_TEGRA_ALC5632
- 	tristate "SoC Audio support for Tegra boards using an ALC5632 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
- 	select SND_SOC_ALC5632
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on the
-@@ -122,8 +114,6 @@ config SND_SOC_TEGRA_ALC5632
- config SND_SOC_TEGRA_MAX98090
- 	tristate "SoC Audio support for Tegra boards using a MAX98090 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_MAX98090
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -132,8 +122,6 @@ config SND_SOC_TEGRA_MAX98090
- config SND_SOC_TEGRA_RT5677
- 	tristate "SoC Audio support for Tegra boards using a RT5677 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_RT5677
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
-@@ -142,8 +130,6 @@ config SND_SOC_TEGRA_RT5677
- config SND_SOC_TEGRA_SGTL5000
- 	tristate "SoC Audio support for Tegra boards using a SGTL5000 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
--	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
--	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
- 	select SND_SOC_SGTL5000
- 	help
- 	  Say Y or M here if you want to add support for SoC audio on Tegra
--- 
-2.13.2
+--m6wid7jysdtjmmci--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
