@@ -1,7 +1,7 @@
-From: ThomasJF <tsepp2001@t-online.de>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: non-blocking mode example
-Date: Fri, 18 Aug 2017 12:21:21 +0200
-Message-ID: <e1b1e328-d961-714d-c4cc-66786bd763d9@t-online.de>
+Date: Fri, 18 Aug 2017 12:37:53 +0200
+Message-ID: <5a7c7b85-6116-6807-8e18-649840551c82@ladisch.de>
 References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
  <a9bcf062-f4cf-1466-dbfa-90e67148fb13@ladisch.de>
  <e6600808-5f98-335f-9b58-bce7b15f6c63@t-online.de>
@@ -13,17 +13,20 @@ References: <86b4d23e-d214-ccbc-33b3-4f7d2de9600f@t-online.de>
  <c57a7ec3-a69b-342e-759c-049a98abc14a@t-online.de>
  <e19ddc02-4098-2036-1959-8ec82cd4e31e@t-online.de>
  <a4c8de7b-4ebd-ad71-722d-5e40260f9512@ladisch.de>
+ <e1b1e328-d961-714d-c4cc-66786bd763d9@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
- by alsa0.perex.cz (Postfix) with ESMTP id BCC2F266BF6
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 12:21:25 +0200 (CEST)
-Received: from fwd20.aul.t-online.de (fwd20.aul.t-online.de [172.20.26.140])
- by mailout05.t-online.de (Postfix) with SMTP id 0604E426ABBF
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 12:21:24 +0200 (CEST)
-In-Reply-To: <a4c8de7b-4ebd-ad71-722d-5e40260f9512@ladisch.de>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 354A0266BF6
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 12:37:54 +0200 (CEST)
+Received: from [10.1.2.4] (unknown [94.101.37.79])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 44F2255828CF
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 12:37:52 +0200 (CEST)
+In-Reply-To: <e1b1e328-d961-714d-c4cc-66786bd763d9@t-online.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,30 +39,21 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I could change the code (attached a short part), so I have only one 
-problem. After stop, the stream stops and everything looks good(?), but 
-with this message from snd_pcm_writei:
--77 (-EBADFD)
+ThomasJF wrote:
+> I could change the code (attached a short part)
 
-Regards
-Thomas
+This mailing list does not have attachments.
 
-Am 17.08.2017 um 19:18 schrieb Clemens Ladisch:
-> ThomasJF wrote:
->> If I use a higher timeout than 0 with poll, the stream starts without snd_pcm_wait().
->>
->> Now I get these snd_pcm_writei errors:
->>
->> stop: File descriptor in bad state
->> pause: ok
->> play (after pause): Resource temporarily unavailable
-> I don't see the actual code.  But EAGAIN is not an error.
->
->
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+> After stop, the stream stops and everything looks good(?), but with this message from snd_pcm_writei:
+> -77 (-EBADFD)
+
+You cannot write to a device in the stopped state. This is to be expected.
+
+
+And you must actually use the return value of snd_pcm_poll_descriptors_count()
+(there are device types with more than one fd), and you must not look at the
+returned event flags except with snd_pcm_poll_descriptors_revents().
+
+
+Regards,
+Clemens
