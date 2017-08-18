@@ -1,22 +1,19 @@
 From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [PATCH v3 2/9] ASoC: rockchip: Remove obsolete
-	dmic-delay
-Date: Fri, 18 Aug 2017 09:41:54 +0800
-Message-ID: <599645E2.4020402@rock-chips.com>
+Subject: Re: [PATCH v3 1/9] ASoC: rt5514: Switch to
+	snd_soc_register_codec
+Date: Fri, 18 Aug 2017 10:48:39 +0800
+Message-ID: <59965587.7040409@rock-chips.com>
 References: <20170817044417.22069-1-jeffy.chen@rock-chips.com>
- <20170817044417.22069-3-jeffy.chen@rock-chips.com>
- <20170817171152.abf3ngr6nr22jfif@sirena.org.uk>
+ <20170817044417.22069-2-jeffy.chen@rock-chips.com>
+ <20170817171120.xvvsmx2fleeqj2s5@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular2.263xmail.com (regular2.263xmail.com [211.157.152.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 965A926648D
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 03:42:46 +0200 (CEST)
-Received: from regular1.263xmail.com (unknown [192.168.165.231])
- by regular2.263xmail.com (Postfix) with ESMTP id B20FC1EC67
- for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 09:42:42 +0800 (CST)
-In-Reply-To: <20170817171152.abf3ngr6nr22jfif@sirena.org.uk>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id B006226648D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 04:49:02 +0200 (CEST)
+In-Reply-To: <20170817171120.xvvsmx2fleeqj2s5@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,28 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi Mark,
 
-thanks for your reply
-
 On 08/18/2017 01:11 AM, Mark Brown wrote:
-> On Thu, Aug 17, 2017 at 12:44:10PM +0800, Jeffy Chen wrote:
+> On Thu, Aug 17, 2017 at 12:44:09PM +0800, Jeffy Chen wrote:
+>> Currently we are using devm_snd_soc_register_component, which would
+>> use legacy dai name.
 >
->> This property is no longer used.
+>> Switch to snd_soc_register_codec to use dai driver name.
 >
->> -Optional properties:
->> -- dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
->> -  If this option is specified, which means it's required dmic need
->> -  delay for DMIC to ready so that rt5514 can avoid recording before
->> -  DMIC send valid data
->
-> Why would nobody ever want to use this in future?
+> This is the wrong direction to be going in, we are trying to move all
+> drivers to use component.  Whatever you want to do make components use
+> it.
 >
 
-hmmm, check again, rt5514 fixed this issue in there driver instead in:
-a5461fd6c8f7 ASoC: rt5514: Add the DMIC initial delay to wait it ready.
+i was trying to make dai name use dai driver name:
 
-so we don't need this...
+         /*
+          * Back in the old days when we still had component-less DAIs,
+          * instead of having a static name, component-less DAIs would
+          * inherit the name of the parent device so it is possible to
+          * register multiple instances of the DAI. We still need to keep
+          * the same naming style even though those DAIs are not
+          * component-less anymore.
+          */
+         if (legacy_dai_naming &&
+            (dai_drv->id == 0 || dai_drv->name == NULL)) {
+                 dai->name = fmt_single_name(dev, &dai->id);
+         } else {
+                 dai->name = fmt_multiple_name(dev, dai_drv);
+
+
+specify an non-zero id for dai driver works too, i'll do it in new 
+patches :)
