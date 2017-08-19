@@ -1,12 +1,14 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v5 0/8] ASoC: Add I2S support for Allwinner H3 SoCs
-Date: Sat, 19 Aug 2017 14:48:31 +0200
-Message-ID: <20170819124839.4034-1-codekipper@gmail.com>
+Subject: [PATCH v5 1/8] ASoC: sun4i-i2s: Add regmap fields for channels
+Date: Sat, 19 Aug 2017 14:48:32 +0200
+Message-ID: <20170819124839.4034-2-codekipper@gmail.com>
+References: <20170819124839.4034-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBKXH4DGAKGQEL5UZABI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBLHH4DGAKGQE3OKHKGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170819124839.4034-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -19,76 +21,164 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hi All,
-please find attached a series of patches to bring i2s support to the
-Allwinner H3 SoC. This has been tested with the following setups:
+On the original i2s block the channel mapping and selection were
+configured for stereo audio by default: This is not the case with
+the newer SoCs and they are also located at different offsets.
 
-A20 Olimex EVB connected to a pcm5102
-Orange Pi 2 connected to a uda1380
-Orange Pi 2 hdmi audio playback
-Pine 64 connected to the audio DAC board
+To support the newer SoC then regmap fields have been added to the
+quirks and these are initialised to their correct settings during
+probing.
 
-To get i2s working some additional patches are required which will be
-delivered later. For now they have been pushed here
-
-https://github.com/codekipper/linux-sunxi/commits/sunxi-audio-h3
-
-I don't own a A33 device which uses the i2s block for the audio codec
-so if someone could test against that it would be much appreciated.
-
-I'm also wondering if there is a preferred way of setting the lrclk
-size in the dts?..currently it is set to the sample width but for example
-the pcm5102a wants it to be 32 bits whatever the sample rate.
-
-Thanks in advance,
-CK
-
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
+ sound/soc/sunxi/sun4i-i2s.c | 77 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 69 insertions(+), 8 deletions(-)
 
-v5 changes compared to v4 are:
-- fixed bad logic in fmt0 set LRCK period define.
-- fixed PTR_ERR checks in init of regmap fields
-- added reviewed-by to commit messages
-- removed delivered patches
-
-v4 changes compared to v3 are:
-- moved clkdiv variant adjustment out of function
-- used PTR_ERR_OR_ZERO for checks
-- tidy up of extra lines and lines over 80 chars.
-- reduced names of polarity, wss and sr reg fields.
-- added reviewed-by to commit messages
-- added comments for functionality that hasn't been implemented yet.
-- removed delivered patches
-
-v3 changes compared to v2 are:
-- initial changes to prepare driver for newer SoCs has been broken down
-  into smaller patches
-- reduce use of regmap fields to where just needed.
-- clkdiv expansion will be delivered later.
-- defines for H3 variant segregated.
-- fixed regmap config issue with SUN8I_I2S_FIFO_TX_REG.
-
-v2 changes compared to v1 are:
- - massive refactoring to remove duplicate code making use of regmap_fields.
- - extending the clock divisors.
- - removed code that should be delivered when we support 20/24bits
-
----
-
-Marcus Cooper (8):
-  ASoC: sun4i-i2s: Add regmap fields for channels
-  ASoC: sun4i-i2s: Add regfields for word size select and sample
-    resolution
-  ASoC: sun4i-i2s: bclk and lrclk polarity tidyup
-  ASoC: sun4i-i2s: Add mclk enable regmap field
-  ASoC: sun4i-i2s: Add regmap field to set DAI format
-  ASoC: sun4i-i2s: Check for slave select bit
-  ASoC: sun4i-i2s: Update global enable with bitmask
-  ASoC: sun4i-i2s: Add support for H3
-
- .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
- sound/soc/sunxi/sun4i-i2s.c                        | 406 ++++++++++++++++++---
- 2 files changed, 357 insertions(+), 51 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index dfb794ffff92..87feb5a14cff 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -82,7 +82,7 @@
+ #define SUN4I_I2S_TX_CNT_REG		0x2c
+ 
+ #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
+-#define SUN4I_I2S_TX_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
++#define SUN4I_I2S_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
+ 
+ #define SUN4I_I2S_TX_CHAN_MAP_REG	0x34
+ #define SUN4I_I2S_TX_CHAN_MAP(chan, sample)	((sample) << (chan << 2))
+@@ -98,6 +98,10 @@
+  * @sun4i_i2s_regmap: regmap config to use.
+  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
++ * @field_txchanmap: location of the tx channel mapping register.
++ * @field_rxchanmap: location of the rx channel mapping register.
++ * @field_txchansel: location of the tx channel select bit fields.
++ * @field_rxchansel: location of the rx channel select bit fields.
+  */
+ struct sun4i_i2s_quirks {
+ 	bool				has_reset;
+@@ -105,6 +109,12 @@ struct sun4i_i2s_quirks {
+ 	const struct regmap_config	*sun4i_i2s_regmap;
+ 	unsigned int			mclk_offset;
+ 	unsigned int			bclk_offset;
++
++	/* Register fields for i2s */
++	struct reg_field		field_txchanmap;
++	struct reg_field		field_rxchanmap;
++	struct reg_field		field_txchansel;
++	struct reg_field		field_rxchansel;
+ };
+ 
+ struct sun4i_i2s {
+@@ -118,6 +128,12 @@ struct sun4i_i2s {
+ 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data	playback_dma_data;
+ 
++	/* Register fields for i2s */
++	struct regmap_field	*field_txchanmap;
++	struct regmap_field	*field_rxchanmap;
++	struct regmap_field	*field_txchansel;
++	struct regmap_field	*field_rxchansel;
++
+ 	const struct sun4i_i2s_quirks	*variant;
+ };
+ 
+@@ -268,6 +284,17 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	if (params_channels(params) != 2)
+ 		return -EINVAL;
+ 
++	/* Map the channels for playback and capture */
++	regmap_field_write(i2s->field_txchanmap, 0x76543210);
++	regmap_field_write(i2s->field_rxchanmap, 0x00003210);
++
++	/* Configure the channels */
++	regmap_field_write(i2s->field_txchansel,
++			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
++
++	regmap_field_write(i2s->field_rxchansel,
++			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
++
+ 	switch (params_physical_width(params)) {
+ 	case 16:
+ 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+@@ -490,13 +517,6 @@ static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
+ 			   SUN4I_I2S_CTRL_SDO_EN_MASK,
+ 			   SUN4I_I2S_CTRL_SDO_EN(0));
+ 
+-	/* Enable the first two channels */
+-	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_SEL_REG,
+-		     SUN4I_I2S_TX_CHAN_SEL(2));
+-
+-	/* Map them to the two first samples coming in */
+-	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG,
+-		     SUN4I_I2S_TX_CHAN_MAP(0, 0) | SUN4I_I2S_TX_CHAN_MAP(1, 1));
+ 
+ 	return clk_prepare_enable(i2s->mod_clk);
+ }
+@@ -681,14 +701,49 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	.has_reset		= false,
+ 	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
+ 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
++	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
++	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
++	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
++	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ };
+ 
+ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ 	.has_reset		= true,
+ 	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
+ 	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
++	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
++	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
++	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
++	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
+ };
+ 
++static int sun4i_i2s_init_regmap_fields(struct device *dev,
++					struct sun4i_i2s *i2s)
++{
++	i2s->field_txchanmap =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_txchanmap);
++	if (IS_ERR(i2s->field_txchanmap))
++		return PTR_ERR(i2s->field_txchanmap);
++
++	i2s->field_rxchanmap =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_rxchanmap);
++	if (IS_ERR(i2s->field_rxchanmap))
++		return PTR_ERR(i2s->field_rxchanmap);
++
++	i2s->field_txchansel =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_txchansel);
++	if (IS_ERR(i2s->field_txchansel))
++		return PTR_ERR(i2s->field_txchansel);
++
++	i2s->field_rxchansel =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_rxchansel);
++	return PTR_ERR_OR_ZERO(i2s->field_rxchansel);
++}
++
+ static int sun4i_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct sun4i_i2s *i2s;
+@@ -782,6 +837,12 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 		goto err_suspend;
+ 	}
+ 
++	ret = sun4i_i2s_init_regmap_fields(&pdev->dev, i2s);
++	if (ret) {
++		dev_err(&pdev->dev, "Could not initialise regmap fields\n");
++		goto err_suspend;
++	}
++
+ 	return 0;
+ 
+ err_suspend:
 -- 
 2.14.1
