@@ -1,12 +1,13 @@
 From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v5 1/8] ASoC: sun4i-i2s: Add regmap fields for channels
-Date: Sat, 19 Aug 2017 14:48:32 +0200
-Message-ID: <20170819124839.4034-2-codekipper@gmail.com>
+Subject: [PATCH v5 2/8] ASoC: sun4i-i2s: Add regfields for word
+ size select and sample resolution
+Date: Sat, 19 Aug 2017 14:48:33 +0200
+Message-ID: <20170819124839.4034-3-codekipper@gmail.com>
 References: <20170819124839.4034-1-codekipper@gmail.com>
 Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBLHH4DGAKGQE3OKHKGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBLPH4DGAKGQEQWTTY7I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20170819124839.4034-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -21,164 +22,103 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On the original i2s block the channel mapping and selection were
-configured for stereo audio by default: This is not the case with
-the newer SoCs and they are also located at different offsets.
+On newer SoCs the location of the slot width select and sample
+resolution are different and also there is a bigger range of
+support.
 
-To support the newer SoC then regmap fields have been added to the
-quirks and these are initialised to their correct settings during
-probing.
+For the current supported rates then an offset is required.
 
 Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 77 ++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 69 insertions(+), 8 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index dfb794ffff92..87feb5a14cff 100644
+index 87feb5a14cff..563de785d639 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -82,7 +82,7 @@
- #define SUN4I_I2S_TX_CNT_REG		0x2c
- 
- #define SUN4I_I2S_TX_CHAN_SEL_REG	0x30
--#define SUN4I_I2S_TX_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
-+#define SUN4I_I2S_CHAN_SEL(num_chan)		(((num_chan) - 1) << 0)
- 
- #define SUN4I_I2S_TX_CHAN_MAP_REG	0x34
- #define SUN4I_I2S_TX_CHAN_MAP(chan, sample)	((sample) << (chan << 2))
-@@ -98,6 +98,10 @@
+@@ -98,6 +98,9 @@
   * @sun4i_i2s_regmap: regmap config to use.
   * @mclk_offset: Value by which mclkdiv needs to be adjusted.
   * @bclk_offset: Value by which bclkdiv needs to be adjusted.
-+ * @field_txchanmap: location of the tx channel mapping register.
-+ * @field_rxchanmap: location of the rx channel mapping register.
-+ * @field_txchansel: location of the tx channel select bit fields.
-+ * @field_rxchansel: location of the rx channel select bit fields.
-  */
- struct sun4i_i2s_quirks {
- 	bool				has_reset;
-@@ -105,6 +109,12 @@ struct sun4i_i2s_quirks {
++ * @fmt_offset: Value by which wss and sr needs to be adjusted.
++ * @field_fmt_wss: regmap field to set word select size.
++ * @field_fmt_sr: regmap field to set sample resolution.
+  * @field_txchanmap: location of the tx channel mapping register.
+  * @field_rxchanmap: location of the rx channel mapping register.
+  * @field_txchansel: location of the tx channel select bit fields.
+@@ -109,8 +112,11 @@ struct sun4i_i2s_quirks {
  	const struct regmap_config	*sun4i_i2s_regmap;
  	unsigned int			mclk_offset;
  	unsigned int			bclk_offset;
-+
-+	/* Register fields for i2s */
-+	struct reg_field		field_txchanmap;
-+	struct reg_field		field_rxchanmap;
-+	struct reg_field		field_txchansel;
-+	struct reg_field		field_rxchansel;
- };
++	unsigned int			fmt_offset;
  
- struct sun4i_i2s {
-@@ -118,6 +128,12 @@ struct sun4i_i2s {
- 	struct snd_dmaengine_dai_dma_data	capture_dma_data;
+ 	/* Register fields for i2s */
++	struct reg_field		field_fmt_wss;
++	struct reg_field		field_fmt_sr;
+ 	struct reg_field		field_txchanmap;
+ 	struct reg_field		field_rxchanmap;
+ 	struct reg_field		field_txchansel;
+@@ -129,6 +135,8 @@ struct sun4i_i2s {
  	struct snd_dmaengine_dai_dma_data	playback_dma_data;
  
-+	/* Register fields for i2s */
-+	struct regmap_field	*field_txchanmap;
-+	struct regmap_field	*field_rxchanmap;
-+	struct regmap_field	*field_txchansel;
-+	struct regmap_field	*field_rxchansel;
-+
- 	const struct sun4i_i2s_quirks	*variant;
- };
- 
-@@ -268,6 +284,17 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	if (params_channels(params) != 2)
+ 	/* Register fields for i2s */
++	struct regmap_field	*field_fmt_wss;
++	struct regmap_field	*field_fmt_sr;
+ 	struct regmap_field	*field_txchanmap;
+ 	struct regmap_field	*field_rxchanmap;
+ 	struct regmap_field	*field_txchansel;
+@@ -314,9 +322,10 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
  		return -EINVAL;
+ 	}
  
-+	/* Map the channels for playback and capture */
-+	regmap_field_write(i2s->field_txchanmap, 0x76543210);
-+	regmap_field_write(i2s->field_rxchanmap, 0x00003210);
-+
-+	/* Configure the channels */
-+	regmap_field_write(i2s->field_txchansel,
-+			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
-+
-+	regmap_field_write(i2s->field_rxchansel,
-+			   SUN4I_I2S_CHAN_SEL(params_channels(params)));
-+
- 	switch (params_physical_width(params)) {
- 	case 16:
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-@@ -490,13 +517,6 @@ static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
- 			   SUN4I_I2S_CTRL_SDO_EN_MASK,
- 			   SUN4I_I2S_CTRL_SDO_EN(0));
+-	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
+-			   SUN4I_I2S_FMT0_WSS_MASK | SUN4I_I2S_FMT0_SR_MASK,
+-			   SUN4I_I2S_FMT0_WSS(wss) | SUN4I_I2S_FMT0_SR(sr));
++	regmap_field_write(i2s->field_fmt_wss,
++			   wss + i2s->variant->fmt_offset);
++	regmap_field_write(i2s->field_fmt_sr,
++			   sr + i2s->variant->fmt_offset);
  
--	/* Enable the first two channels */
--	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_SEL_REG,
--		     SUN4I_I2S_TX_CHAN_SEL(2));
--
--	/* Map them to the two first samples coming in */
--	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG,
--		     SUN4I_I2S_TX_CHAN_MAP(0, 0) | SUN4I_I2S_TX_CHAN_MAP(1, 1));
- 
- 	return clk_prepare_enable(i2s->mod_clk);
- }
-@@ -681,14 +701,49 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
+ 	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
+ 				      params_width(params));
+@@ -701,6 +710,8 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
  	.has_reset		= false,
  	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-+	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-+	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-+	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
- };
- 
- static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+ 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -711,6 +722,8 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
  	.has_reset		= true,
  	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-+	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-+	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-+	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
- };
- 
-+static int sun4i_i2s_init_regmap_fields(struct device *dev,
-+					struct sun4i_i2s *i2s)
-+{
-+	i2s->field_txchanmap =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_txchanmap);
-+	if (IS_ERR(i2s->field_txchanmap))
-+		return PTR_ERR(i2s->field_txchanmap);
-+
-+	i2s->field_rxchanmap =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_rxchanmap);
-+	if (IS_ERR(i2s->field_rxchanmap))
-+		return PTR_ERR(i2s->field_rxchanmap);
-+
-+	i2s->field_txchansel =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_txchansel);
-+	if (IS_ERR(i2s->field_txchansel))
-+		return PTR_ERR(i2s->field_txchansel);
-+
-+	i2s->field_rxchansel =
-+			devm_regmap_field_alloc(dev, i2s->regmap,
-+						i2s->variant->field_rxchansel);
-+	return PTR_ERR_OR_ZERO(i2s->field_rxchansel);
-+}
-+
- static int sun4i_i2s_probe(struct platform_device *pdev)
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
+ 	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
+ 	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
+ 	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
+@@ -720,6 +733,18 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
+ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 					struct sun4i_i2s *i2s)
  {
- 	struct sun4i_i2s *i2s;
-@@ -782,6 +837,12 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		goto err_suspend;
- 	}
- 
-+	ret = sun4i_i2s_init_regmap_fields(&pdev->dev, i2s);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Could not initialise regmap fields\n");
-+		goto err_suspend;
-+	}
++	i2s->field_fmt_wss =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_fmt_wss);
++	if (IS_ERR(i2s->field_fmt_wss))
++		return PTR_ERR(i2s->field_fmt_wss);
 +
- 	return 0;
- 
- err_suspend:
++	i2s->field_fmt_sr =
++			devm_regmap_field_alloc(dev, i2s->regmap,
++						i2s->variant->field_fmt_sr);
++	if (IS_ERR(i2s->field_fmt_sr))
++		return PTR_ERR(i2s->field_fmt_sr);
++
+ 	i2s->field_txchanmap =
+ 			devm_regmap_field_alloc(dev, i2s->regmap,
+ 						i2s->variant->field_txchanmap);
 -- 
 2.14.1
