@@ -1,159 +1,276 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 6/6 v3] ASoC: AMD: Add machine driver for cz rt5650
-Date: Fri, 18 Aug 2017 14:10:30 -0400
-Message-ID: <1503079830-16072-7-git-send-email-alexander.deucher@amd.com>
-References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
+From: yesanishhere@gmail.com
+Subject: [PATCH] ASoC: dapm: Avoid creating kcontrol for params
+Date: Fri, 18 Aug 2017 23:39:04 -0700
+Message-ID: <1503124744-13547-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <1503079830-16072-1-git-send-email-alexander.deucher-5C7GfCeVMHo@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org, rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
-Cc: tiwai-l3A5Bk7waGM@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Akshu Agrawal <akshu.agrawal-5C7GfCeVMHo@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC6A1266A74
+ for <alsa-devel@alsa-project.org>; Sat, 19 Aug 2017 08:39:09 +0200 (CEST)
+Received: by mail-pg0-f66.google.com with SMTP id i12so2456531pgr.1
+ for <alsa-devel@alsa-project.org>; Fri, 18 Aug 2017 23:39:09 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQWtzaHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPgoKVGhlIGRyaXZlciBp
-cyB1c2VkIGZvciBBTUQgYm9hcmQgdXNpbmcgcnQ1NjUwIGNvZGVjLgoKUmV2aWV3ZWQtYnk6IEFs
-ZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KU2lnbmVkLW9mZi1ieTogQWtz
-aHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPgpTaWduZWQtb2ZmLWJ5OiBBbGV4IERl
-dWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+Ci0tLQoKdjI6IENoYW5nZSBBQ1BJIElE
-IHRvIEFNREkxMDAyCnYzOiBhZGQgUi1iLCByZXNlbmQKCiBzb3VuZC9zb2MvYW1kL0tjb25maWcg
-ICAgICB8ICAgNyArKwogc291bmQvc29jL2FtZC9NYWtlZmlsZSAgICAgfCAgIDIgKwogc291bmQv
-c29jL2FtZC9hY3AtcnQ1NjQ1LmMgfCAyMTAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDIxOSBpbnNlcnRpb25zKCspCiBjcmVh
-dGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1LmMKCmRpZmYgLS1naXQgYS9z
-b3VuZC9zb2MvYW1kL0tjb25maWcgYi9zb3VuZC9zb2MvYW1kL0tjb25maWcKaW5kZXggNzgxODdl
-Yi4uZWIwYWU2MCAxMDA2NDQKLS0tIGEvc291bmQvc29jL2FtZC9LY29uZmlnCisrKyBiL3NvdW5k
-L3NvYy9hbWQvS2NvbmZpZwpAQCAtMiwzICsyLDEwIEBAIGNvbmZpZyBTTkRfU09DX0FNRF9BQ1AK
-IAl0cmlzdGF0ZSAiQU1EIEF1ZGlvIENvcHJvY2Vzc29yIHN1cHBvcnQiCiAJaGVscAogCSBUaGlz
-IG9wdGlvbiBlbmFibGVzIEFDUCBETUEgc3VwcG9ydCBvbiBBTUQgcGxhdGZvcm0uCitjb25maWcg
-U05EX1NPQ19BTURfQ1pfUlQ1NjQ1X01BQ0gKKwl0cmlzdGF0ZSAiQU1EIENaIHN1cHBvcnQgZm9y
-IFJUNTY0NSIKKwlzZWxlY3QgU05EX1NPQ19SVDU2NDUKKwlzZWxlY3QgU05EX1NPQ19BTURfQUNQ
-CisJZGVwZW5kcyBvbiBJMkNfREVTSUdOV0FSRV9QTEFURk9STQorCWhlbHAKKwkgVGhpcyBvcHRp
-b24gZW5hYmxlcyBtYWNoaW5lIGRyaXZlciBmb3IgcnQ1NjQ1LgpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2FtZC9NYWtlZmlsZSBiL3NvdW5kL3NvYy9hbWQvTWFrZWZpbGUKaW5kZXggMWE2NmVjMC4u
-ZWVkNjRmZiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2FtZC9NYWtlZmlsZQorKysgYi9zb3VuZC9z
-b2MvYW1kL01ha2VmaWxlCkBAIC0xLDMgKzEsNSBAQAogc25kLXNvYy1hY3AtcGNtLW9ianMJOj0g
-YWNwLXBjbS1kbWEubworc25kLXNvYy1hY3AtcnQ1NjQ1LW1hY2gtb2JqcyA6PSBhY3AtcnQ1NjQ1
-Lm8KIAogb2JqLSQoQ09ORklHX1NORF9TT0NfQU1EX0FDUCkgKz0gc25kLXNvYy1hY3AtcGNtLm8K
-K29iai0kKENPTkZJR19TTkRfU09DX0FNRF9DWl9SVDU2NDVfTUFDSCkgKz0gc25kLXNvYy1hY3At
-cnQ1NjQ1LW1hY2gubwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1LmMgYi9z
-b3VuZC9zb2MvYW1kL2FjcC1ydDU2NDUuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAw
-MDAwLi5hMTdkYmVhCi0tLSAvZGV2L251bGwKKysrIGIvc291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1
-LmMKQEAgLTAsMCArMSwyMTAgQEAKKy8qCisgKiBNYWNoaW5lIGRyaXZlciBmb3IgQU1EIEFDUCBB
-dWRpbyBlbmdpbmUgdXNpbmcgUmVhbHRlayBSVDU2NDUgY29kZWMKKyAqCisgKiBDb3B5cmlnaHQg
-MjAxNyBBZHZhbmNlZCBNaWNybyBEZXZpY2VzLCBJbmMuCisgKgorICogVGhpcyBmaWxlIGlzIG1v
-ZGlmaWVkIGZyb20gcnQyODggbWFjaGluZSBkcml2ZXIKKyAqCisgKiBQZXJtaXNzaW9uIGlzIGhl
-cmVieSBncmFudGVkLCBmcmVlIG9mIGNoYXJnZSwgdG8gYW55IHBlcnNvbiBvYnRhaW5pbmcgYQor
-ICogY29weSBvZiB0aGlzIHNvZnR3YXJlIGFuZCBhc3NvY2lhdGVkIGRvY3VtZW50YXRpb24gZmls
-ZXMgKHRoZSAiU29mdHdhcmUiKSwKKyAqIHRvIGRlYWwgaW4gdGhlIFNvZnR3YXJlIHdpdGhvdXQg
-cmVzdHJpY3Rpb24sIGluY2x1ZGluZyB3aXRob3V0IGxpbWl0YXRpb24KKyAqIHRoZSByaWdodHMg
-dG8gdXNlLCBjb3B5LCBtb2RpZnksIG1lcmdlLCBwdWJsaXNoLCBkaXN0cmlidXRlLCBzdWJsaWNl
-bnNlLAorICogYW5kL29yIHNlbGwgY29waWVzIG9mIHRoZSBTb2Z0d2FyZSwgYW5kIHRvIHBlcm1p
-dCBwZXJzb25zIHRvIHdob20gdGhlCisgKiBTb2Z0d2FyZSBpcyBmdXJuaXNoZWQgdG8gZG8gc28s
-IHN1YmplY3QgdG8gdGhlIGZvbGxvd2luZyBjb25kaXRpb25zOgorICoKKyAqIFRoZSBhYm92ZSBj
-b3B5cmlnaHQgbm90aWNlIGFuZCB0aGlzIHBlcm1pc3Npb24gbm90aWNlIHNoYWxsIGJlIGluY2x1
-ZGVkIGluCisgKiBhbGwgY29waWVzIG9yIHN1YnN0YW50aWFsIHBvcnRpb25zIG9mIHRoZSBTb2Z0
-d2FyZS4KKyAqCisgKiBUSEUgU09GVFdBUkUgSVMgUFJPVklERUQgIkFTIElTIiwgV0lUSE9VVCBX
-QVJSQU5UWSBPRiBBTlkgS0lORCwgRVhQUkVTUyBPUgorICogSU1QTElFRCwgSU5DTFVESU5HIEJV
-VCBOT1QgTElNSVRFRCBUTyBUSEUgV0FSUkFOVElFUyBPRiBNRVJDSEFOVEFCSUxJVFksCisgKiBG
-SVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRSBBTkQgTk9OSU5GUklOR0VNRU5ULiAgSU4g
-Tk8gRVZFTlQgU0hBTEwKKyAqIFRIRSBDT1BZUklHSFQgSE9MREVSKFMpIE9SIEFVVEhPUihTKSBC
-RSBMSUFCTEUgRk9SIEFOWSBDTEFJTSwgREFNQUdFUyBPUgorICogT1RIRVIgTElBQklMSVRZLCBX
-SEVUSEVSIElOIEFOIEFDVElPTiBPRiBDT05UUkFDVCwgVE9SVCBPUiBPVEhFUldJU0UsCisgKiBB
-UklTSU5HIEZST00sIE9VVCBPRiBPUiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFNPRlRXQVJFIE9S
-IFRIRSBVU0UgT1IKKyAqIE9USEVSIERFQUxJTkdTIElOIFRIRSBTT0ZUV0FSRS4KKyAqCisgKgor
-ICovCisKKyNpbmNsdWRlIDxzb3VuZC9jb3JlLmg+CisjaW5jbHVkZSA8c291bmQvc29jLmg+Cisj
-aW5jbHVkZSA8c291bmQvcGNtLmg+CisjaW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgorI2lu
-Y2x1ZGUgPHNvdW5kL3NvYy1kYXBtLmg+CisjaW5jbHVkZSA8c291bmQvamFjay5oPgorI2luY2x1
-ZGUgPGxpbnV4L2dwaW8uaD4KKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KKyNpbmNsdWRlIDxs
-aW51eC9pMmMuaD4KKyNpbmNsdWRlIDxsaW51eC9hY3BpLmg+CisKKyNpbmNsdWRlICIuLi9jb2Rl
-Y3MvcnQ1NjQ1LmgiCisKKyNkZWZpbmUgQ1pfUExBVF9DTEsgMjQwMDAwMDAKKworc3RhdGljIHN0
-cnVjdCBzbmRfc29jX2phY2sgY3pfamFjazsKKworc3RhdGljIGludCBjel9haWYxX2h3X3BhcmFt
-cyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKKwkJCSAgICAgc3RydWN0IHNu
-ZF9wY21faHdfcGFyYW1zICpwYXJhbXMpCit7CisJaW50IHJldCA9IDA7CisJc3RydWN0IHNuZF9z
-b2NfcGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRhOworCXN0cnVjdCBz
-bmRfc29jX2RhaSAqY29kZWNfZGFpID0gcnRkLT5jb2RlY19kYWk7CisKKwlyZXQgPSBzbmRfc29j
-X2RhaV9zZXRfcGxsKGNvZGVjX2RhaSwgMCwgUlQ1NjQ1X1BMTDFfU19NQ0xLLAorCQkJCSAgQ1pf
-UExBVF9DTEssIHBhcmFtc19yYXRlKHBhcmFtcykgKiA1MTIpOworCWlmIChyZXQgPCAwKSB7CisJ
-CWRldl9lcnIocnRkLT5kZXYsICJjYW4ndCBzZXQgY29kZWMgcGxsOiAlZFxuIiwgcmV0KTsKKwkJ
-cmV0dXJuIHJldDsKKwl9CisKKwlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGNvZGVjX2Rh
-aSwgUlQ1NjQ1X1NDTEtfU19QTEwxLAorCQkJCXBhcmFtc19yYXRlKHBhcmFtcykgKiA1MTIsIFNO
-RF9TT0NfQ0xPQ0tfT1VUKTsKKwlpZiAocmV0IDwgMCkgeworCQlkZXZfZXJyKHJ0ZC0+ZGV2LCAi
-Y2FuJ3Qgc2V0IGNvZGVjIHN5c2NsazogJWRcbiIsIHJldCk7CisJCXJldHVybiByZXQ7CisJfQor
-CisJcmV0dXJuIHJldDsKK30KKworc3RhdGljIGludCBjel9pbml0KHN0cnVjdCBzbmRfc29jX3Bj
-bV9ydW50aW1lICpydGQpCit7CisJaW50IHJldDsKKwlzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJk
-OworCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYzsKKworCWNvZGVjID0gcnRkLT5jb2RlYzsK
-KwljYXJkID0gcnRkLT5jYXJkOworCisJcmV0ID0gc25kX3NvY19jYXJkX2phY2tfbmV3KGNhcmQs
-ICJIZWFkc2V0IEphY2siLAorCQkJCVNORF9KQUNLX0hFQURQSE9ORSB8IFNORF9KQUNLX01JQ1JP
-UEhPTkUgfAorCQkJCVNORF9KQUNLX0JUTl8wIHwgU05EX0pBQ0tfQlROXzEgfAorCQkJCVNORF9K
-QUNLX0JUTl8yIHwgU05EX0pBQ0tfQlROXzMsCisJCQkJJmN6X2phY2ssIE5VTEwsIDApOworCWlm
-IChyZXQpIHsKKwkJZGV2X2VycihjYXJkLT5kZXYsICJIUCBqYWNrIGNyZWF0aW9uIGZhaWxlZCAl
-ZFxuIiwgcmV0KTsKKwkJcmV0dXJuIHJldDsKKwl9CisKKwlydDU2NDVfc2V0X2phY2tfZGV0ZWN0
-KGNvZGVjLCAmY3pfamFjaywgJmN6X2phY2ssICZjel9qYWNrKTsKKworCXJldHVybiAwOworfQor
-CitzdGF0aWMgc3RydWN0IHNuZF9zb2Nfb3BzIGN6X2FpZjFfb3BzID0geworCS5od19wYXJhbXMg
-PSBjel9haWYxX2h3X3BhcmFtcywKK307CisKK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGlu
-ayBjel9kYWlfcnQ1NjUwW10gPSB7CisJeworCQkubmFtZSA9ICJhbWQtcnQ1NjQ1LXBsYXkiLAor
-CQkuc3RyZWFtX25hbWUgPSAiUlQ1NjQ1X0FJRjEiLAorCQkucGxhdGZvcm1fbmFtZSA9ICJhY3Bf
-YXVkaW9fZG1hLjAuYXV0byIsCisJCS5jcHVfZGFpX25hbWUgPSAiZGVzaWdud2FyZS1pMnMuMS5h
-dXRvIiwKKwkJLmNvZGVjX2RhaV9uYW1lID0gInJ0NTY0NS1haWYxIiwKKwkJLmNvZGVjX25hbWUg
-PSAiaTJjLTEwRUM1NjUwOjAwIiwKKwkJLmRhaV9mbXQgPSBTTkRfU09DX0RBSUZNVF9JMlMgfCBT
-TkRfU09DX0RBSUZNVF9OQl9ORgorCQkJCXwgU05EX1NPQ19EQUlGTVRfQ0JNX0NGTSwKKwkJLmlu
-aXQgPSBjel9pbml0LAorCQkub3BzID0gJmN6X2FpZjFfb3BzLAorCX0sCisJeworCQkubmFtZSA9
-ICJhbWQtcnQ1NjQ1LWNhcCIsCisJCS5zdHJlYW1fbmFtZSA9ICJSVDU2NDVfQUlGMSIsCisJCS5w
-bGF0Zm9ybV9uYW1lID0gImFjcF9hdWRpb19kbWEuMC5hdXRvIiwKKwkJLmNwdV9kYWlfbmFtZSA9
-ICJkZXNpZ253YXJlLWkycy4yLmF1dG8iLAorCQkuY29kZWNfZGFpX25hbWUgPSAicnQ1NjQ1LWFp
-ZjEiLAorCQkuY29kZWNfbmFtZSA9ICJpMmMtMTBFQzU2NTA6MDAiLAorCQkuZGFpX2ZtdCA9IFNO
-RF9TT0NfREFJRk1UX0kyUyB8IFNORF9TT0NfREFJRk1UX05CX05GCisJCQkJfCBTTkRfU09DX0RB
-SUZNVF9DQk1fQ0ZNLAorCQkuaW5pdCA9IGN6X2luaXQsCisJCS5vcHMgPSAmY3pfYWlmMV9vcHMs
-CisJfSwKK307CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBjel93
-aWRnZXRzW10gPSB7CisJU05EX1NPQ19EQVBNX0hQKCJIZWFkcGhvbmVzIiwgTlVMTCksCisJU05E
-X1NPQ19EQVBNX1NQSygiU3BlYWtlcnMiLCBOVUxMKSwKKwlTTkRfU09DX0RBUE1fTUlDKCJIZWFk
-c2V0IE1pYyIsIE5VTEwpLAorCVNORF9TT0NfREFQTV9NSUMoIkludCBNaWMiLCBOVUxMKSwKK307
-CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlIGN6X2F1ZGlvX3JvdXRl
-W10gPSB7CisJeyJIZWFkcGhvbmVzIiwgTlVMTCwgIkhQT0wifSwKKwl7IkhlYWRwaG9uZXMiLCBO
-VUxMLCAiSFBPUiJ9LAorCXsiUkVDTUlYTCIsIE5VTEwsICJIZWFkc2V0IE1pYyJ9LAorCXsiUkVD
-TUlYUiIsIE5VTEwsICJIZWFkc2V0IE1pYyJ9LAorCXsiU3BlYWtlcnMiLCBOVUxMLCAiU1BPTCJ9
-LAorCXsiU3BlYWtlcnMiLCBOVUxMLCAiU1BPUiJ9LAorCXsiRE1JQyBMMiIsIE5VTEwsICJJbnQg
-TWljIn0sCisJeyJETUlDIFIyIiwgTlVMTCwgIkludCBNaWMifSwKK307CisKK3N0YXRpYyBjb25z
-dCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBjel9tY19jb250cm9sc1tdID0geworCVNPQ19EQVBN
-X1BJTl9TV0lUQ0goIkhlYWRwaG9uZXMiKSwKKwlTT0NfREFQTV9QSU5fU1dJVENIKCJTcGVha2Vy
-cyIpLAorCVNPQ19EQVBNX1BJTl9TV0lUQ0goIkhlYWRzZXQgTWljIiksCisJU09DX0RBUE1fUElO
-X1NXSVRDSCgiSW50IE1pYyIpLAorfTsKKworc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgY3pf
-Y2FyZCA9IHsKKwkubmFtZSA9ICJhY3BydDU2NTAiLAorCS5vd25lciA9IFRISVNfTU9EVUxFLAor
-CS5kYWlfbGluayA9IGN6X2RhaV9ydDU2NTAsCisJLm51bV9saW5rcyA9IEFSUkFZX1NJWkUoY3pf
-ZGFpX3J0NTY1MCksCisJLmRhcG1fd2lkZ2V0cyA9IGN6X3dpZGdldHMsCisJLm51bV9kYXBtX3dp
-ZGdldHMgPSBBUlJBWV9TSVpFKGN6X3dpZGdldHMpLAorCS5kYXBtX3JvdXRlcyA9IGN6X2F1ZGlv
-X3JvdXRlLAorCS5udW1fZGFwbV9yb3V0ZXMgPSBBUlJBWV9TSVpFKGN6X2F1ZGlvX3JvdXRlKSwK
-KwkuY29udHJvbHMgPSBjel9tY19jb250cm9scywKKwkubnVtX2NvbnRyb2xzID0gQVJSQVlfU0la
-RShjel9tY19jb250cm9scyksCit9OworCitzdGF0aWMgaW50IGN6X3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCit7CisJaW50IHJldDsKKwlzdHJ1Y3Qgc25kX3NvY19jYXJkICpj
-YXJkOworCisJY2FyZCA9ICZjel9jYXJkOworCWN6X2NhcmQuZGV2ID0gJnBkZXYtPmRldjsKKwlw
-bGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBjYXJkKTsKKwlyZXQgPSBzbmRfc29jX3JlZ2lzdGVy
-X2NhcmQoY2FyZCk7CisJaWYgKHJldCkgeworCQlkZXZfZXJyKCZwZGV2LT5kZXYsCisJCQkJInNu
-ZF9zb2NfcmVnaXN0ZXJfY2FyZCglcykgZmFpbGVkOiAlZFxuIiwKKwkJCQljel9jYXJkLm5hbWUs
-IHJldCk7CisJCXJldHVybiByZXQ7CisJfQorCXJldHVybiAwOworfQorCitzdGF0aWMgaW50IGN6
-X3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQoreworCXN0cnVjdCBzbmRfc29j
-X2NhcmQgKmNhcmQ7CisKKwljYXJkID0gcGxhdGZvcm1fZ2V0X2RydmRhdGEocGRldik7CisJc25k
-X3NvY191bnJlZ2lzdGVyX2NhcmQoY2FyZCk7CisKKwlyZXR1cm4gMDsKK30KKworc3RhdGljIGNv
-bnN0IHN0cnVjdCBhY3BpX2RldmljZV9pZCBjel9hdWRpb19hY3BpX21hdGNoW10gPSB7CisJeyAi
-QU1ESTEwMDIiLCAwIH0sCisJe30sCit9OworCitzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZl
-ciBjel9wY21fZHJpdmVyID0geworCS5kcml2ZXIgPSB7CisJCS5uYW1lID0gImN6LXJ0NTY0NSIs
-CisJCS5hY3BpX21hdGNoX3RhYmxlID0gQUNQSV9QVFIoY3pfYXVkaW9fYWNwaV9tYXRjaCksCisJ
-CS5wbSA9ICZzbmRfc29jX3BtX29wcywKKwl9LAorCS5wcm9iZSA9IGN6X3Byb2JlLAorCS5yZW1v
-dmUgPSBjel9yZW1vdmUsCit9OworCittb2R1bGVfcGxhdGZvcm1fZHJpdmVyKGN6X3BjbV9kcml2
-ZXIpOworCitNT0RVTEVfQVVUSE9SKCJha3NodS5hZ3Jhd2FsQGFtZC5jb20iKTsKK01PRFVMRV9E
-RVNDUklQVElPTigiY3otcnQ1NjQ1IGF1ZGlvIHN1cHBvcnQiKTsKK01PRFVMRV9MSUNFTlNFKCJH
-UEwgdjIiKTsKLS0gCjIuNS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphbWQtZ2Z4IG1haWxpbmcgbGlzdAphbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1n
-ZngK
+From: anish kumar <yesanishhere@gmail.com>
+
+When num_params is defined as one in case of
+codec to codec dai link, there is no point in
+allocating memory for kcontrol.
+
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+---
+ include/sound/soc-dapm.h |   1 -
+ sound/soc/soc-dapm.c     | 147 ++++++++++++++++++++++++-----------------------
+ 2 files changed, 76 insertions(+), 72 deletions(-)
+
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 344b96c..dc5c336 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -582,7 +582,6 @@ struct snd_soc_dapm_widget {
+ 	void *priv;				/* widget specific data */
+ 	struct regulator *regulator;		/* attached regulator */
+ 	const struct snd_soc_pcm_stream *params; /* params for dai links */
+-	unsigned int num_params; /* number of params for dai links */
+ 	unsigned int params_select; /* currently selected param for dai link */
+ 
+ 	/* dapm control */
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index dcef67a..0a26905 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1032,10 +1032,6 @@ static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct snd_card *card = dapm->card->snd_card;
+ 
+-	/* create control for links with > 1 config */
+-	if (w->num_params <= 1)
+-		return 0;
+-
+ 	/* add kcontrol */
+ 	for (i = 0; i < w->num_kcontrols; i++) {
+ 		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
+@@ -3770,108 +3766,125 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
+ 	if (ucontrol->value.enumerated.item[0] == w->params_select)
+ 		return 0;
+ 
+-	if (ucontrol->value.enumerated.item[0] >= w->num_params)
+-		return -EINVAL;
+-
+ 	w->params_select = ucontrol->value.enumerated.item[0];
+ 
+ 	return 0;
+ }
+ 
+-int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+-			 const struct snd_soc_pcm_stream *params,
+-			 unsigned int num_params,
+-			 struct snd_soc_dapm_widget *source,
+-			 struct snd_soc_dapm_widget *sink)
++struct snd_kcontrol_new *snd_soc_dapm_new_kcontrol(struct snd_soc_card *card,
++		char *link_name,
++		const struct snd_soc_pcm_stream *params,
++		int num_params)
+ {
+-	struct snd_soc_dapm_widget template;
+-	struct snd_soc_dapm_widget *w;
+-	char *link_name;
+-	int ret, count;
+-	unsigned long private_value;
+ 	const char **w_param_text;
++	int count;
++	unsigned long private_value;
+ 	struct soc_enum w_param_enum[] = {
+ 		SOC_ENUM_SINGLE(0, 0, 0, NULL),
+ 	};
+ 	struct snd_kcontrol_new kcontrol_dai_link[] = {
+ 		SOC_ENUM_EXT(NULL, w_param_enum[0],
+-			     snd_soc_dapm_dai_link_get,
+-			     snd_soc_dapm_dai_link_put),
++				snd_soc_dapm_dai_link_get,
++				snd_soc_dapm_dai_link_put),
+ 	};
++	struct snd_kcontrol_new *kcontrol_news = NULL;
+ 	const struct snd_soc_pcm_stream *config = params;
+ 
+ 	w_param_text = devm_kcalloc(card->dev, num_params,
+ 					sizeof(char *), GFP_KERNEL);
+ 	if (!w_param_text)
+-		return -ENOMEM;
+-
+-	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
+-				   source->name, sink->name);
+-	if (!link_name) {
+-		ret = -ENOMEM;
+-		goto outfree_w_param;
+-	}
++		return NULL;
+ 
+ 	for (count = 0 ; count < num_params; count++) {
+ 		if (!config->stream_name) {
+ 			dev_warn(card->dapm.dev,
+-				"ASoC: anonymous config %d for dai link %s\n",
+-				count, link_name);
++					"ASoC: anonymous config %d for dai link %s\n",
++					count, link_name);
+ 			w_param_text[count] =
+ 				devm_kasprintf(card->dev, GFP_KERNEL,
+-					       "Anonymous Configuration %d",
+-					       count);
+-			if (!w_param_text[count]) {
+-				ret = -ENOMEM;
+-				goto outfree_link_name;
+-			}
++						"Anonymous Configuration %d",
++						count);
+ 		} else {
+ 			w_param_text[count] = devm_kmemdup(card->dev,
+-						config->stream_name,
+-						strlen(config->stream_name) + 1,
+-						GFP_KERNEL);
+-			if (!w_param_text[count]) {
+-				ret = -ENOMEM;
+-				goto outfree_link_name;
+-			}
++					config->stream_name,
++					strlen(config->stream_name) + 1,
++					GFP_KERNEL);
+ 		}
++		if (!w_param_text[count])
++			goto outfree_w_param;
+ 		config++;
+ 	}
++
+ 	w_param_enum[0].items = num_params;
+ 	w_param_enum[0].texts = w_param_text;
+ 
+-	memset(&template, 0, sizeof(template));
+-	template.reg = SND_SOC_NOPM;
+-	template.id = snd_soc_dapm_dai_link;
+-	template.name = link_name;
+-	template.event = snd_soc_dai_link_event;
+-	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-		SND_SOC_DAPM_PRE_PMD;
+-	template.num_kcontrols = 1;
+-	/* duplicate w_param_enum on heap so that memory persists */
+ 	private_value =
+ 		(unsigned long) devm_kmemdup(card->dev,
+-			(void *)(kcontrol_dai_link[0].private_value),
+-			sizeof(struct soc_enum), GFP_KERNEL);
++				(void *)(kcontrol_dai_link[0].private_value),
++				sizeof(struct soc_enum), GFP_KERNEL);
+ 	if (!private_value) {
+ 		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+-			link_name);
+-		ret = -ENOMEM;
+-		goto outfree_link_name;
++				link_name);
++		goto outfree_w_param;
+ 	}
+ 	kcontrol_dai_link[0].private_value = private_value;
+ 	/* duplicate kcontrol_dai_link on heap so that memory persists */
+-	template.kcontrol_news =
+-				devm_kmemdup(card->dev, &kcontrol_dai_link[0],
+-					sizeof(struct snd_kcontrol_new),
+-					GFP_KERNEL);
+-	if (!template.kcontrol_news) {
++	kcontrol_news =
++		devm_kmemdup(card->dev, &kcontrol_dai_link[0],
++				sizeof(struct snd_kcontrol_new),
++				GFP_KERNEL);
++	if (!kcontrol_news) {
+ 		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+-			link_name);
+-		ret = -ENOMEM;
++				link_name);
+ 		goto outfree_private_value;
+ 	}
++	return kcontrol_news;
++
++outfree_private_value:
++	devm_kfree(card->dev, (void *)private_value);
++outfree_w_param:
++	for (count = 0 ; count < num_params; count++)
++		if (w_param_text[count] != NULL)
++			devm_kfree(card->dev, (void *)w_param_text[count]);
++	devm_kfree(card->dev, w_param_text);
++	return NULL;
++}
++
++int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
++			 const struct snd_soc_pcm_stream *params,
++			 unsigned int num_params,
++			 struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_dapm_widget template;
++	struct snd_soc_dapm_widget *w;
++	char *link_name;
++	int ret;
+ 
++	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
++				   source->name, sink->name);
++	if (!link_name)
++		return -ENOMEM;
++
++	memset(&template, 0, sizeof(template));
++	template.reg = SND_SOC_NOPM;
++	template.id = snd_soc_dapm_dai_link;
++	template.name = link_name;
++	template.event = snd_soc_dai_link_event;
++	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++		SND_SOC_DAPM_PRE_PMD;
++	template.kcontrol_news = NULL;
++
++	/* allocate memory for control, only in case of multiple configs */
++	if (num_params > 1) {
++		template.num_kcontrols = 1;
++		template.kcontrol_news =
++			snd_soc_dapm_new_kcontrol(card, link_name, params, num_params);
++		if (!template.kcontrol_news) {
++			ret = -ENOMEM;
++			goto outfree_link_name;
++		}
++	}
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+ 
+ 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+@@ -3892,7 +3905,6 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	}
+ 
+ 	w->params = params;
+-	w->num_params = num_params;
+ 
+ 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
+ 	if (ret)
+@@ -3903,15 +3915,8 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	devm_kfree(card->dev, w);
+ outfree_kcontrol_news:
+ 	devm_kfree(card->dev, (void *)template.kcontrol_news);
+-outfree_private_value:
+-	devm_kfree(card->dev, (void *)private_value);
+ outfree_link_name:
+ 	devm_kfree(card->dev, link_name);
+-outfree_w_param:
+-	for (count = 0 ; count < num_params; count++)
+-		devm_kfree(card->dev, (void *)w_param_text[count]);
+-	devm_kfree(card->dev, w_param_text);
+-
+ 	return ret;
+ }
+ 
+-- 
+2.5.4 (Apple Git-61)
