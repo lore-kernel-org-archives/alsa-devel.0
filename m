@@ -1,24 +1,32 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [linux-sunxi] [PATCH v5 4/8] ASoC: sun4i-i2s: Add mclk enable
- regmap field
-Date: Sat, 19 Aug 2017 23:12:31 +0800
-Message-ID: <CAGb2v65pagZHJdgTfezhH5-iYdWS+4FWF9OV8jTCp4YrFNomnQ@mail.gmail.com>
-References: <20170819124839.4034-1-codekipper@gmail.com> <20170819124839.4034-5-codekipper@gmail.com>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v5 5/8] ASoC: sun4i-i2s: Add regmap field to
+ set DAI format
+Date: Sat, 19 Aug 2017 23:12:52 +0800
+Message-ID: <CAGb2v64d06Av8eLwN3gqXbrNPyTJMFV4EhT=65Vf=sc4cbTRrA@mail.gmail.com>
+References: <20170819124839.4034-1-codekipper@gmail.com> <20170819124839.4034-6-codekipper@gmail.com>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170819124839.4034-5-codekipper@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Code Kipper <codekipper@gmail.com>
-Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBDFL4HGAKGQEWVSQ3PI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170819124839.4034-6-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 19, 2017 at 8:48 PM,  <codekipper@gmail.com> wrote:
-> From: Marcus Cooper <codekipper@gmail.com>
+On Sat, Aug 19, 2017 at 8:48 PM,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 >
-> The location of the mclk output enable bit is different on newer
-> SoCs. Use a regmap field to enable it.
+> On the newer SoCs the bits to configure the operational mode are
+> located in a different register. Add a regmap field so that this
+> location can be configured.
 >
-> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
