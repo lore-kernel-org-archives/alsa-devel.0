@@ -1,15 +1,18 @@
-From: Naveen M <naveen.m@intel.com>
-Subject: [PATCH v3] ASoC: Intel: kbl: Add map for Maxim IV
-	Feedback
-Date: Wed, 23 Aug 2017 10:53:11 +0530
-Message-ID: <1503465791-9281-1-git-send-email-naveen.m@intel.com>
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Subject: usb 1-2: 1:1: cannot set freq 44100 to ep 0x81 and
+	potential fix
+Date: Sun, 20 Aug 2017 13:14:57 +0000
+Message-ID: <1503234895.16771.4.camel@infinera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 39AC6266ED0
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 07:24:19 +0200 (CEST)
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam03on0047.outbound.protection.outlook.com [104.47.40.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F94D266EB0
+ for <alsa-devel@alsa-project.org>; Sun, 20 Aug 2017 15:15:03 +0200 (CEST)
+Content-Language: en-US
+Content-ID: <B620E084CB270448AF790931864F62B8@infinera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,55 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
+To: "tiwai@suse.com" <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-MAX98927 provides IV feedback on the capture widget.
-Here we are connecting the capture widget to SSP0_RX and
-SSP0_RX to the algorithm running on host.
+I have two USB headsets (Logitech Inc Logitech Stereo H650e and
+Jabra Jabra UC VOICE 550a) who both causes lots of:
 
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+    usb 1-2: 1:1: cannot set freq 44100 to ep 0x81
 
-v2: rebased on newer kernel (d46b182)
-v3: moved version changelog info after s-o-b lines
----
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 5 +++++
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 5 +++++
- 2 files changed, 10 insertions(+)
+errors when using them for pidgin audio chats. The actual freq
+varies though.
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index c144214..8d2a1c0 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -107,6 +107,11 @@ enum {
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
+I found that adding a small delay here:
+ diff -u sound/usb/clock.c.org  sound/usb/clock.c 
+--- sound/usb/clock.c.org	2017-08-18 14:38:05.597977669 +0200
++++ sound/usb/clock.c	2017-08-18 14:20:14.653661513 +0200
+@@ -304,6 +304,7 @@
+ 			iface, fmt->altsetting, rate, ep);
+ 		return err;
+ 	}
++        msleep(1);
  
-+	/* IV feedback path */
-+	{ "codec0_fb_in", NULL, "ssp0 Rx"},
-+	{ "ssp0 Rx", NULL, "Left HiFi Capture" },
-+	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
-+
- 	/* DMIC */
- 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
- 	{ "DMIC01 Rx", NULL, "DMIC AIF" },
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index c2ef538..8d19da9 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -119,6 +119,11 @@ enum {
- 	{ "codec1_in", NULL, "ssp0 Rx" },
- 	{ "ssp0 Rx", NULL, "AIF1 Capture" },
+ 	/* Don't check the sample rate for devices which we know don't
+ 	 * support reading */
+
+it seems one cannot do these settings too fast
+Ant better idea for a fix? kernel 4.9.44
+
+ Jocke
+
+PS.
+   When starting a chat with pidgin-sipe, I see the same sample rate
+freq setting twice, not sure where that comes from.
  
-+	/* IV feedback path */
-+	{ "codec0_fb_in", NULL, "ssp0 Rx"},
-+	{ "ssp0 Rx", NULL, "Left HiFi Capture" },
-+	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
-+
- 	/* DMIC */
- 	{ "DMIC1L", NULL, "DMIC" },
- 	{ "DMIC1R", NULL, "DMIC" },
--- 
-1.9.1
