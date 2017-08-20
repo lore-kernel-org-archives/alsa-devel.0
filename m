@@ -1,80 +1,226 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/2] ALSA: firewire-motu: add support for
-	AudioExpress
-Date: Sun, 20 Aug 2017 21:25:02 +0900
-Message-ID: <20170820122504.24486-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/2] ALSA: firewire-motu: add specification flag for position
+ of flag for MIDI messages
+Date: Sun, 20 Aug 2017 21:25:03 +0900
+Message-ID: <20170820122504.24486-2-o-takashi@sakamocchi.jp>
+References: <20170820122504.24486-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id EFC412673DF
- for <alsa-devel@alsa-project.org>; Sun, 20 Aug 2017 14:25:15 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <20170820122504.24486-1-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/options/linux1394-devel>,
+ <mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+ <mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
 To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, clemens@ladisch.de, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In protocols of MOTU FireWire series, when transferring MIDI messages,
+transmitter set existence flag to one byte on first several quadlets. The
+position differs depending on protocols and models, however two cases are
+confirmed; in 5th byte and 8th byte from MSB side.
 
-This patchset is to add support for MOTU AudioExpress. Any PCM frames and
-MIDI messages are transferred in rx/tx isochronous packets.
-Correspondingly, this adds an arrangement for specification flag for
-position of existence flag of MIDI messages.
+This commit adds a series of specification flag to describe them. When
+the existence flag is in the 5th byte, SND_MOTU_SPEC_[R|T]X_MIDI_2ND_Q is
+used. Else, another set of the flag is used. Here, '_Q' means quadlet.
 
-I note that this unit has a quirk of acknowledge code against request
-subaction on asynchronous communication. In detail, please refer to 2nd
-patch of this set. To easy my development, I applied a patch to
-'firewire-ohci' module on my develop ment tree. You can see the content in
-the end of this message. It's really a band-aid for the aim and can not be
-merged as what it is.
-
-Unfortunately, current implementations of IEC 61883-1/6 packet streaming
-engine is not good enough in a point to presentation timestamp, as I
-reported[1]. Any plaback stream for the unit still causes periodical noise.
-
-[1] [alsa-devel] Status of ALSA firewire stack at Linux v4.12 development period
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/120061.html
-
--------- 8< --------
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 8bf89267dc25..06a0906a9b56 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -1499,6 +1499,10 @@ static int handle_at_packet(struct context *context,
-                packet->ack = evt - 0x10;
-                break;
- 
-+       case 0x10:
-+               packet->ack = ACK_PENDING;
-+               break;
-+
-        case OHCI1394_evt_no_status:
-                if (context->flushing) {
-                        packet->ack = RCODE_GENERATION;
--------- 8< --------
-
-
-Takashi Sakamoto (2):
-  ALSA: firewire-motu: add specification flag for position of flag for
-    MIDI messages
-  ALSA: firewire-motu: add support for MOTU Audio Express
-
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
  sound/firewire/motu/motu-pcm.c         |  2 +-
  sound/firewire/motu/motu-protocol-v2.c |  5 -----
  sound/firewire/motu/motu-protocol-v3.c |  5 -----
  sound/firewire/motu/motu-stream.c      | 38 ++++++++++++++++++++++++++++++++--
- sound/firewire/motu/motu.c             | 24 ++++++++++++++++++---
+ sound/firewire/motu/motu.c             | 11 +++++++---
  sound/firewire/motu/motu.h             |  6 +++++-
- 6 files changed, 63 insertions(+), 17 deletions(-)
+ 6 files changed, 50 insertions(+), 17 deletions(-)
 
+diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
+index 1466e46a101e..4330220890e8 100644
+--- a/sound/firewire/motu/motu-pcm.c
++++ b/sound/firewire/motu/motu-pcm.c
+@@ -145,7 +145,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 
+ 	mutex_lock(&motu->mutex);
+ 
+-	err = protocol->cache_packet_formats(motu);
++	err = snd_motu_stream_cache_packet_formats(motu);
+ 	if (err < 0)
+ 		goto err_locked;
+ 
+diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
+index 05b5d287c2f3..525b746330be 100644
+--- a/sound/firewire/motu/motu-protocol-v2.c
++++ b/sound/firewire/motu/motu-protocol-v2.c
+@@ -217,12 +217,7 @@ static int v2_cache_packet_formats(struct snd_motu *motu)
+ 	calculate_differed_part(&motu->rx_packet_formats, motu->spec->flags,
+ 			data, V2_OPT_OUT_IFACE_MASK, V2_OPT_OUT_IFACE_SHIFT);
+ 
+-	motu->tx_packet_formats.midi_flag_offset = 4;
+-	motu->tx_packet_formats.midi_byte_offset = 6;
+ 	motu->tx_packet_formats.pcm_byte_offset = 10;
+-
+-	motu->rx_packet_formats.midi_flag_offset = 4;
+-	motu->rx_packet_formats.midi_byte_offset = 6;
+ 	motu->rx_packet_formats.pcm_byte_offset = 10;
+ 
+ 	return 0;
+diff --git a/sound/firewire/motu/motu-protocol-v3.c b/sound/firewire/motu/motu-protocol-v3.c
+index ddb647254ed2..c7cd9864dc4d 100644
+--- a/sound/firewire/motu/motu-protocol-v3.c
++++ b/sound/firewire/motu/motu-protocol-v3.c
+@@ -291,12 +291,7 @@ static int v3_cache_packet_formats(struct snd_motu *motu)
+ 			V3_ENABLE_OPT_OUT_IFACE_A, V3_NO_ADAT_OPT_OUT_IFACE_A,
+ 			V3_ENABLE_OPT_OUT_IFACE_B, V3_NO_ADAT_OPT_OUT_IFACE_B);
+ 
+-	motu->tx_packet_formats.midi_flag_offset = 8;
+-	motu->tx_packet_formats.midi_byte_offset = 7;
+ 	motu->tx_packet_formats.pcm_byte_offset = 10;
+-
+-	motu->rx_packet_formats.midi_flag_offset = 8;
+-	motu->rx_packet_formats.midi_byte_offset = 7;
+ 	motu->rx_packet_formats.pcm_byte_offset = 10;
+ 
+ 	return 0;
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index bd458029099e..dc5541c8b359 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -33,7 +33,8 @@ static int start_both_streams(struct snd_motu *motu, unsigned int rate)
+ 	u32 data;
+ 	int err;
+ 
+-	if (motu->spec->flags & SND_MOTU_SPEC_HAS_MIDI)
++	if ((motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) ||
++	    (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q))
+ 		midi_ports = 1;
+ 
+ 	/* Set packet formation to our packet streaming engine. */
+@@ -42,6 +43,12 @@ static int start_both_streams(struct snd_motu *motu, unsigned int rate)
+ 	if (err < 0)
+ 		return err;
+ 
++	if ((motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) ||
++	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q))
++		midi_ports = 1;
++	else
++		midi_ports = 0;
++
+ 	err = amdtp_motu_set_parameters(&motu->tx_stream, rate, midi_ports,
+ 					&motu->tx_packet_formats);
+ 	if (err < 0)
+@@ -141,6 +148,33 @@ static void stop_isoc_ctx(struct snd_motu *motu, struct amdtp_stream *stream)
+ 	fw_iso_resources_free(resources);
+ }
+ 
++int snd_motu_stream_cache_packet_formats(struct snd_motu *motu)
++{
++	int err;
++
++	err = motu->spec->protocol->cache_packet_formats(motu);
++	if (err < 0)
++		return err;
++
++	if (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) {
++		motu->tx_packet_formats.midi_flag_offset = 4;
++		motu->tx_packet_formats.midi_byte_offset = 6;
++	} else if (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q) {
++		motu->tx_packet_formats.midi_flag_offset = 8;
++		motu->tx_packet_formats.midi_byte_offset = 7;
++	}
++
++	if (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) {
++		motu->rx_packet_formats.midi_flag_offset = 4;
++		motu->rx_packet_formats.midi_byte_offset = 6;
++	} else if (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q) {
++		motu->rx_packet_formats.midi_flag_offset = 8;
++		motu->rx_packet_formats.midi_byte_offset = 7;
++	}
++
++	return 0;
++}
++
+ static int ensure_packet_formats(struct snd_motu *motu)
+ {
+ 	__be32 reg;
+@@ -184,7 +218,7 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate)
+ 		stop_both_streams(motu);
+ 	}
+ 
+-	err = protocol->cache_packet_formats(motu);
++	err = snd_motu_stream_cache_packet_formats(motu);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
+index bf779cfeef0d..13d26e36fe00 100644
+--- a/sound/firewire/motu/motu.c
++++ b/sound/firewire/motu/motu.c
+@@ -103,7 +103,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	if (motu->spec->flags & SND_MOTU_SPEC_HAS_MIDI) {
++	if ((motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) ||
++	    (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q) ||
++	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) ||
++	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q)) {
+ 		err = snd_motu_create_midi_devices(motu);
+ 		if (err < 0)
+ 			goto error;
+@@ -197,7 +200,8 @@ static struct snd_motu_spec motu_828mk2 = {
+ 		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
+ 		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
+-		 SND_MOTU_SPEC_HAS_MIDI,
++		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
++		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
+ 
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 8,
+@@ -213,7 +217,8 @@ static struct snd_motu_spec motu_828mk3 = {
+ 		 SND_MOTU_SPEC_TX_REVERB_CHUNK |
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
+ 		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
+-		 SND_MOTU_SPEC_HAS_MIDI,
++		 SND_MOTU_SPEC_RX_MIDI_3RD_Q |
++		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
+ 
+ 	.analog_in_ports = 8,
+ 	.analog_out_ports = 8,
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+index 8d6a4a3af9cc..4b23cf337c4b 100644
+--- a/sound/firewire/motu/motu.h
++++ b/sound/firewire/motu/motu.h
+@@ -82,7 +82,10 @@ enum snd_motu_spec_flags {
+ 	SND_MOTU_SPEC_TX_AESEBU_CHUNK	= 0x0020,
+ 	SND_MOTU_SPEC_HAS_OPT_IFACE_A	= 0x0040,
+ 	SND_MOTU_SPEC_HAS_OPT_IFACE_B	= 0x0080,
+-	SND_MOTU_SPEC_HAS_MIDI		= 0x0100,
++	SND_MOTU_SPEC_RX_MIDI_2ND_Q	= 0x0100,
++	SND_MOTU_SPEC_RX_MIDI_3RD_Q	= 0x0200,
++	SND_MOTU_SPEC_TX_MIDI_2ND_Q	= 0x0400,
++	SND_MOTU_SPEC_TX_MIDI_3RD_Q	= 0x0800,
+ };
+ 
+ #define SND_MOTU_CLOCK_RATE_COUNT	6
+@@ -146,6 +149,7 @@ void snd_motu_transaction_unregister(struct snd_motu *motu);
+ 
+ int snd_motu_stream_init_duplex(struct snd_motu *motu);
+ void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
++int snd_motu_stream_cache_packet_formats(struct snd_motu *motu);
+ int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
+ void snd_motu_stream_stop_duplex(struct snd_motu *motu);
+ int snd_motu_stream_lock_try(struct snd_motu *motu);
 -- 
 2.11.0
+
+
+------------------------------------------------------------------------------
+Check out the vibrant tech community on one of the world's most
+engaging tech sites, Slashdot.org! http://sdm.link/slashdot
