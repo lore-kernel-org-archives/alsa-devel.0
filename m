@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/3] ALSA: control: fix issue of concurrent
-	access of ELEM_READ/ELEM_WRITE
-Date: Sun, 20 Aug 2017 13:49:05 +0900
-Message-ID: <20170820044908.17972-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] ALSA: control: use counting semaphore as
+	write lock for ELEM_WRITE operation
+Date: Sun, 20 Aug 2017 13:49:08 +0900
+Message-ID: <20170820044908.17972-4-o-takashi@sakamocchi.jp>
+References: <20170820044908.17972-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 44693266BCF
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 458C2266BD4
  for <alsa-devel@alsa-project.org>; Sun, 20 Aug 2017 06:49:16 +0200 (CEST)
+In-Reply-To: <20170820044908.17972-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,37 +25,64 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In ALSA control interface, applications can execute two types of request
+for value of members on each element; ELEM_READ and ELEM_WRITE. In ALSA
+control core, these two requests are handled within read lock of a
+counting semaphore, therefore several processes can run to execute these
+two requests at the same time. This has an issue because ELEM_WRITE
+requests have an effect to change state of the target element. Concurrent
+access should be controlled for each of ELEM_READ/ELEM_WRITE case.
 
-This patchset is to fix an issue of concurrent access to operate
-ELEM_READ/ELEM_WRITE, which I found in my previous patch:
+This commit uses the counting semaphore as write lock for ELEM_WRITE
+requests, while use it as read lock for ELEM_READ requests. The state of
+a target element is maintained exclusively between ELEM_WRITE/ELEM_READ
+operations.
 
-[PATCH 0/5] ALSA: control: fix issue of concurrent access for TLV operations
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-August/123561.html
+There's a concern. If the counting semaphore is acquired for read lock
+in implementations of 'struct snd_kcontrol.put()' in each driver, this
+commit shall cause dead lock. As of v4.13-rc5, 'snd-mixer-oss.ko',
+'snd-emu10k1.ko' and 'snd-soc-sst-atom-hifi2-platform.ko' includes codes
+for read locks, but these are not in a call graph from
+'struct snd_kcontrol.put(). Therefore, this commit is safe.
 
-In current implementation of ALSA control core, concurrent accesses with 
-ELEM_READ/ELEM_WRITE are managed with counting semaphore, however lock
-acquisition for both of these operations is a type of 'read'. In this case,
-ELEM_READ can be going to be handled for a target element when ELEM_WRITE
-is handled for the element. A purpose of the ELEM_WRITE operation is to
-change state of the target element. It's better to guarantee that
-concurrent accesses to the same element with these two operations are
-properly managed.
+In current implementation, the same solution is applied for the other
+operations to element; e.g. ELEM_LOCK and ELEM_UNLOCK. There's another
+discussion about an overhead to maintain concurrent access to an element
+during operating the other elements on the same card instance, because the
+lock primitive is originally implemented to maintain a list of elements on
+the card instance. There's a substantial difference between
+per-element-list lock and per-element lock.
 
-For the above aim, this patchset uses the counting semaphore as 'write'
-lock for ELEM_WRITE operation. But I can imagine an discussion to add
-'per-element' lock for this issue. In a comment of patch 03, I investigate
-it. Please refer to it.
+Here, let me investigate another idea to add per-element lock to maintain
+the concurrent accesses with inquiry/change requests to an element. It's
+not so frequent for applications to operate members on elements, while
+adding a new lock primitive to structure increases memory footprint for
+all of element sets somehow. Experimentally, inquiry operation is more
+frequent than change operation and usage of counting semaphore for the
+inquiry operation brings no blocking to the other inquiry operations. Thus
+the overhead is not so critical for usual applications. For the above
+reasons, in this commit, the per-element lock is not introduced.
 
-Takashi Sakamoto (3):
-  ALSA: control: queue events within locking of controls_rwsem for
-    ELEM_WRITE operation
-  ALSA: control: code refactoring for ELEM_READ/ELEM_WRITE operations
-  ALSA: control: use counting semaphore as write lock for ELEM_WRITE
-    operation
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/control.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- sound/core/control.c | 78 +++++++++++++++++++++++++---------------------------
- 1 file changed, 38 insertions(+), 40 deletions(-)
-
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 1c1fc0898afb..249140c15d64 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -967,9 +967,9 @@ static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
+ 	snd_power_lock(card);
+ 	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
+ 	if (result >= 0) {
+-		down_read(&card->controls_rwsem);
++		down_write(&card->controls_rwsem);
+ 		result = snd_ctl_elem_write(card, file, control);
+-		up_read(&card->controls_rwsem);
++		up_write(&card->controls_rwsem);
+ 	}
+ 	snd_power_unlock(card);
+ 	if (result >= 0)
 -- 
 2.11.0
