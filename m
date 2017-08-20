@@ -1,61 +1,100 @@
 From: Peng Donglin <dolinux.peng@gmail.com>
-Subject: [PATCH 02/12] ASoC: mediatek: Remove unnecessary function call
-Date: Sun, 20 Aug 2017 13:22:00 +0800
-Message-ID: <1503206520-15031-1-git-send-email-dolinux.peng@gmail.com>
+Subject: [PATCH 03/12] ASoC: Intel: Remove unnecessary function call
+Date: Sun, 20 Aug 2017 13:22:27 +0800
+Message-ID: <1503206547-15121-1-git-send-email-dolinux.peng@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, Peng Donglin <dolinux.peng@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Peng Donglin <dolinux.peng@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-First of all,the address of pdev->dev is assigned to card->dev,then
-the function platform_set_drvdata copies the value the variable card
-to pdev->dev.driver_data, but when calling snd_soc_register_card,the
-function dev_set_drvdata(card->dev, card) will also do the same copy
-operation,so i think that the former copy operation can be removed.
+First of all,the address of pdev->dev is assigned to card->dev, when
+calling snd_soc_register_card,the function dev_set_drvdata(card->dev, card)
+copies the value the variable card to card->dev->driver_data.After
+that,the function platform_set_drvdata does the same copy operation,
+so i think that the latter copy operation can be removed.
 
 Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 1 -
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 1 -
- sound/soc/mediatek/mt8173/mt8173-rt5650.c        | 1 -
- 3 files changed, 3 deletions(-)
+ sound/soc/intel/boards/bytcht_da7213.c       | 1 -
+ sound/soc/intel/boards/bytcht_es8316.c       | 1 -
+ sound/soc/intel/boards/bytcr_rt5651.c        | 1 -
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 1 -
+ sound/soc/intel/boards/cht_bsw_rt5645.c      | 1 -
+ sound/soc/intel/boards/cht_bsw_rt5672.c      | 1 -
+ 6 files changed, 6 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-index 5e383eb..99c1521 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-@@ -222,7 +222,6 @@ static int mt8173_rt5650_rt5514_dev_probe(struct platform_device *pdev)
- 		mt8173_rt5650_rt5514_codecs[1].of_node;
- 
- 	card->dev = &pdev->dev;
--	platform_set_drvdata(pdev, card);
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-index fed1f15..42de84c 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-@@ -279,7 +279,6 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
+index 18873e2..fbc870b 100644
+--- a/sound/soc/intel/boards/bytcht_da7213.c
++++ b/sound/soc/intel/boards/bytcht_da7213.c
+@@ -265,7 +265,6 @@ static int bytcht_da7213_probe(struct platform_device *pdev)
+ 			"snd_soc_register_card failed %d\n", ret_val);
+ 		return ret_val;
  	}
- 
- 	card->dev = &pdev->dev;
 -	platform_set_drvdata(pdev, card);
+ 	return ret_val;
+ }
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index a784708..e69c141 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -311,7 +311,6 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 		return -EINVAL;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 5263546..5e6e8e9 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -282,7 +282,6 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
+ 		return ret;
  	}
- 	card->dev = &pdev->dev;
--	platform_set_drvdata(pdev, card);
+-	platform_set_drvdata(pdev, &byt_cht_es8316_card);
+ 	return ret;
+ }
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 4a3516b..77702aa 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -310,7 +310,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 			ret_val);
+ 		return ret_val;
+ 	}
+-	platform_set_drvdata(pdev, &byt_rt5651_card);
+ 	return ret_val;
+ }
+ 
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 20755ec..8583c0c 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -300,7 +300,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 			"snd_soc_register_card failed %d\n", ret_val);
+ 		return ret_val;
+ 	}
+-	platform_set_drvdata(pdev, &snd_soc_card_cht);
+ 	return ret_val;
+ }
+ 
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 5bcde01..0e6a24c 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -699,7 +699,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 			"snd_soc_register_card failed %d\n", ret_val);
+ 		return ret_val;
+ 	}
+-	platform_set_drvdata(pdev, card);
+ 	return ret_val;
+ }
+ 
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index bc2a52d..e8bd22b 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -448,7 +448,6 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 			"snd_soc_register_card failed %d\n", ret_val);
+ 		return ret_val;
+ 	}
+-	platform_set_drvdata(pdev, &snd_soc_card_cht);
+ 	return ret_val;
+ }
+ 
 -- 
 1.9.1
