@@ -1,8 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/2] ALSA: firewire-motu: add specification flag for position
- of flag for MIDI messages
-Date: Sun, 20 Aug 2017 21:25:03 +0900
-Message-ID: <20170820122504.24486-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/2] ALSA: firewire-motu: add support for MOTU Audio Express
+Date: Sun, 20 Aug 2017 21:25:04 +0900
+Message-ID: <20170820122504.24486-3-o-takashi@sakamocchi.jp>
 References: <20170820122504.24486-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,202 +20,103 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In protocols of MOTU FireWire series, when transferring MIDI messages,
-transmitter set existence flag to one byte on first several quadlets. The
-position differs depending on protocols and models, however two cases are
-confirmed; in 5th byte and 8th byte from MSB side.
+MOTU Audio Express is one of third generation in MOTU FireWire
+series, produced in 2011. This model consists of three chips:
+ * TI TSB41AB2 (Physical layer for IEEE 1394 bus)
+ * Microchip USB3300 (Hi-Speed USB Device with ULPI interface)
+ * Xilinx Spartan-3A FPGA, XC3S400A (Link layer for IEEE 1394 bus, packet
+   processing and data block processing layer)
 
-This commit adds a series of specification flag to describe them. When
-the existence flag is in the 5th byte, SND_MOTU_SPEC_[R|T]X_MIDI_2ND_Q is
-used. Else, another set of the flag is used. Here, '_Q' means quadlet.
+This commit adds support for this model. As I expected, it works with
+current implementaion of protocol version 3. On the other hand, the unit
+has a quirk to request subaction originated by any driver.
+
+11:45:51.287643 firewire_ohci 0000:03:00.0: AT spd 2 tl 1f, ffc1 -> ffc0, -reserved-, QW req, fffff0000b14 = 02000200
+11:45:51.289193 firewire_ohci 0000:03:00.0: AR spd 2 tl 1f, ffc0 -> ffc1, ack_complete, W resp
+11:45:51.289381 fireire_core 0000:03:00.0: unsolicited response (source ffc0, tlabel 1f)
+11:45:51.313071 firewire_ohci 0000:03:00.0: AT spd 2 tl 20, ffc1 -> ffc0, ack_pending , QW req, fffff0000b14 = 02000200
+11:45:51.314539 firewire_ohci 0000:03:00.0: AR spd 2 tl 20, ffc0 -> ffc1, ack_complete, W resp
+
+In 1394 OHCI (rev.1.1), after OUTPUT_LAST* descriptors is processed,
+'xferStaus' field is filled with 'ContextControl[0:15]' (see clause 7.1.3).
+5 bits in LSB side of the field has ack code in acknowledge from the unit
+(see clause 7.2.2). A list of the code is shown in Table 3-2.
+
+As long as I investigated, in a case of the '-reserved-' acknowledge
+message from the unit, the field has 0x10. On the table, this value is
+'Reserved for definition by future 1394 standards'. As long as I know,
+any specifications of IEEE 1394 has no such extensions, thus the unit is
+out of specification. Besides, I note that the unit does not always
+acknowledge with the invalid code. I guess this is a bug of firmware. I
+confirmed the bug in firmware version 1.04 and this is the latest one.
+
+$ cd linux-firewire-utils
+$ python2 ./src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  0410a756  bus_info_length 4, crc_length 16, crc 42838
+404  31333934  bus_name "1394"
+408  20ff7000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 7 (256)
+40c  0001f200  company_id 0001f2     |
+410  000a8a7b  device_id 00000a8a7b  | EUI-64 0001f200000a8a7b
+
+               root directory
+               -----------------------------------------------------------------
+414  0004ef04  directory_length 4, crc 61188
+418  030001f2  vendor
+41c  0c0083c0  node capabilities per IEEE 1394
+420  d1000002  --> unit directory at 428
+424  8d000005  --> eui-64 leaf at 438
+
+               unit directory at 428
+               -----------------------------------------------------------------
+428  00031680  directory_length 3, crc 5760
+42c  120001f2  specifier id
+430  13000033  version
+434  17104800  model
+
+               eui-64 leaf at 438
+               -----------------------------------------------------------------
+438  00025ef3  leaf_length 2, crc 24307
+43c  0001f200  company_id 0001f2     |
+440  000a8a7b  device_id 00000a8a7b  | EUI-64 0001f200000a8a7b
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu-pcm.c         |  2 +-
- sound/firewire/motu/motu-protocol-v2.c |  5 -----
- sound/firewire/motu/motu-protocol-v3.c |  5 -----
- sound/firewire/motu/motu-stream.c      | 38 ++++++++++++++++++++++++++++++++--
- sound/firewire/motu/motu.c             | 11 +++++++---
- sound/firewire/motu/motu.h             |  6 +++++-
- 6 files changed, 50 insertions(+), 17 deletions(-)
+ sound/firewire/motu/motu.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
-index 1466e46a101e..4330220890e8 100644
---- a/sound/firewire/motu/motu-pcm.c
-+++ b/sound/firewire/motu/motu-pcm.c
-@@ -145,7 +145,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 
- 	mutex_lock(&motu->mutex);
- 
--	err = protocol->cache_packet_formats(motu);
-+	err = snd_motu_stream_cache_packet_formats(motu);
- 	if (err < 0)
- 		goto err_locked;
- 
-diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index 05b5d287c2f3..525b746330be 100644
---- a/sound/firewire/motu/motu-protocol-v2.c
-+++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -217,12 +217,7 @@ static int v2_cache_packet_formats(struct snd_motu *motu)
- 	calculate_differed_part(&motu->rx_packet_formats, motu->spec->flags,
- 			data, V2_OPT_OUT_IFACE_MASK, V2_OPT_OUT_IFACE_SHIFT);
- 
--	motu->tx_packet_formats.midi_flag_offset = 4;
--	motu->tx_packet_formats.midi_byte_offset = 6;
- 	motu->tx_packet_formats.pcm_byte_offset = 10;
--
--	motu->rx_packet_formats.midi_flag_offset = 4;
--	motu->rx_packet_formats.midi_byte_offset = 6;
- 	motu->rx_packet_formats.pcm_byte_offset = 10;
- 
- 	return 0;
-diff --git a/sound/firewire/motu/motu-protocol-v3.c b/sound/firewire/motu/motu-protocol-v3.c
-index ddb647254ed2..c7cd9864dc4d 100644
---- a/sound/firewire/motu/motu-protocol-v3.c
-+++ b/sound/firewire/motu/motu-protocol-v3.c
-@@ -291,12 +291,7 @@ static int v3_cache_packet_formats(struct snd_motu *motu)
- 			V3_ENABLE_OPT_OUT_IFACE_A, V3_NO_ADAT_OPT_OUT_IFACE_A,
- 			V3_ENABLE_OPT_OUT_IFACE_B, V3_NO_ADAT_OPT_OUT_IFACE_B);
- 
--	motu->tx_packet_formats.midi_flag_offset = 8;
--	motu->tx_packet_formats.midi_byte_offset = 7;
- 	motu->tx_packet_formats.pcm_byte_offset = 10;
--
--	motu->rx_packet_formats.midi_flag_offset = 8;
--	motu->rx_packet_formats.midi_byte_offset = 7;
- 	motu->rx_packet_formats.pcm_byte_offset = 10;
- 
- 	return 0;
-diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
-index bd458029099e..dc5541c8b359 100644
---- a/sound/firewire/motu/motu-stream.c
-+++ b/sound/firewire/motu/motu-stream.c
-@@ -33,7 +33,8 @@ static int start_both_streams(struct snd_motu *motu, unsigned int rate)
- 	u32 data;
- 	int err;
- 
--	if (motu->spec->flags & SND_MOTU_SPEC_HAS_MIDI)
-+	if ((motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) ||
-+	    (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q))
- 		midi_ports = 1;
- 
- 	/* Set packet formation to our packet streaming engine. */
-@@ -42,6 +43,12 @@ static int start_both_streams(struct snd_motu *motu, unsigned int rate)
- 	if (err < 0)
- 		return err;
- 
-+	if ((motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) ||
-+	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q))
-+		midi_ports = 1;
-+	else
-+		midi_ports = 0;
-+
- 	err = amdtp_motu_set_parameters(&motu->tx_stream, rate, midi_ports,
- 					&motu->tx_packet_formats);
- 	if (err < 0)
-@@ -141,6 +148,33 @@ static void stop_isoc_ctx(struct snd_motu *motu, struct amdtp_stream *stream)
- 	fw_iso_resources_free(resources);
- }
- 
-+int snd_motu_stream_cache_packet_formats(struct snd_motu *motu)
-+{
-+	int err;
-+
-+	err = motu->spec->protocol->cache_packet_formats(motu);
-+	if (err < 0)
-+		return err;
-+
-+	if (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) {
-+		motu->tx_packet_formats.midi_flag_offset = 4;
-+		motu->tx_packet_formats.midi_byte_offset = 6;
-+	} else if (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q) {
-+		motu->tx_packet_formats.midi_flag_offset = 8;
-+		motu->tx_packet_formats.midi_byte_offset = 7;
-+	}
-+
-+	if (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) {
-+		motu->rx_packet_formats.midi_flag_offset = 4;
-+		motu->rx_packet_formats.midi_byte_offset = 6;
-+	} else if (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q) {
-+		motu->rx_packet_formats.midi_flag_offset = 8;
-+		motu->rx_packet_formats.midi_byte_offset = 7;
-+	}
-+
-+	return 0;
-+}
-+
- static int ensure_packet_formats(struct snd_motu *motu)
- {
- 	__be32 reg;
-@@ -184,7 +218,7 @@ int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate)
- 		stop_both_streams(motu);
- 	}
- 
--	err = protocol->cache_packet_formats(motu);
-+	err = snd_motu_stream_cache_packet_formats(motu);
- 	if (err < 0)
- 		return err;
- 
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index bf779cfeef0d..13d26e36fe00 100644
+index 13d26e36fe00..fddeb11283c3 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -103,7 +103,10 @@ static void do_registration(struct work_struct *work)
- 	if (err < 0)
- 		goto error;
- 
--	if (motu->spec->flags & SND_MOTU_SPEC_HAS_MIDI) {
-+	if ((motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_2ND_Q) ||
-+	    (motu->spec->flags & SND_MOTU_SPEC_RX_MIDI_3RD_Q) ||
-+	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_2ND_Q) ||
-+	    (motu->spec->flags & SND_MOTU_SPEC_TX_MIDI_3RD_Q)) {
- 		err = snd_motu_create_midi_devices(motu);
- 		if (err < 0)
- 			goto error;
-@@ -197,7 +200,8 @@ static struct snd_motu_spec motu_828mk2 = {
- 		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
- 		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
--		 SND_MOTU_SPEC_HAS_MIDI,
-+		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
-+		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
- 
- 	.analog_in_ports = 8,
+@@ -224,6 +224,18 @@ static struct snd_motu_spec motu_828mk3 = {
  	.analog_out_ports = 8,
-@@ -213,7 +217,8 @@ static struct snd_motu_spec motu_828mk3 = {
- 		 SND_MOTU_SPEC_TX_REVERB_CHUNK |
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
- 		 SND_MOTU_SPEC_HAS_OPT_IFACE_B |
--		 SND_MOTU_SPEC_HAS_MIDI,
-+		 SND_MOTU_SPEC_RX_MIDI_3RD_Q |
-+		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
- 
- 	.analog_in_ports = 8,
- 	.analog_out_ports = 8,
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 8d6a4a3af9cc..4b23cf337c4b 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -82,7 +82,10 @@ enum snd_motu_spec_flags {
- 	SND_MOTU_SPEC_TX_AESEBU_CHUNK	= 0x0020,
- 	SND_MOTU_SPEC_HAS_OPT_IFACE_A	= 0x0040,
- 	SND_MOTU_SPEC_HAS_OPT_IFACE_B	= 0x0080,
--	SND_MOTU_SPEC_HAS_MIDI		= 0x0100,
-+	SND_MOTU_SPEC_RX_MIDI_2ND_Q	= 0x0100,
-+	SND_MOTU_SPEC_RX_MIDI_3RD_Q	= 0x0200,
-+	SND_MOTU_SPEC_TX_MIDI_2ND_Q	= 0x0400,
-+	SND_MOTU_SPEC_TX_MIDI_3RD_Q	= 0x0800,
  };
  
- #define SND_MOTU_CLOCK_RATE_COUNT	6
-@@ -146,6 +149,7 @@ void snd_motu_transaction_unregister(struct snd_motu *motu);
- 
- int snd_motu_stream_init_duplex(struct snd_motu *motu);
- void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
-+int snd_motu_stream_cache_packet_formats(struct snd_motu *motu);
- int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
- void snd_motu_stream_stop_duplex(struct snd_motu *motu);
- int snd_motu_stream_lock_try(struct snd_motu *motu);
++static struct snd_motu_spec motu_audio_express = {
++	.name = "AudioExpress",
++	.protocol = &snd_motu_protocol_v3,
++	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
++		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
++		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
++		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
++		 SND_MOTU_SPEC_TX_MIDI_3RD_Q,
++	.analog_in_ports = 2,
++	.analog_out_ports = 4,
++};
++
+ #define SND_MOTU_DEV_ENTRY(model, data)			\
+ {							\
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
+@@ -239,6 +251,7 @@ static const struct ieee1394_device_id motu_id_table[] = {
+ 	SND_MOTU_DEV_ENTRY(0x101800, &motu_828mk2),
+ 	SND_MOTU_DEV_ENTRY(0x106800, &motu_828mk3),	/* FireWire only. */
+ 	SND_MOTU_DEV_ENTRY(0x100800, &motu_828mk3),	/* Hybrid. */
++	SND_MOTU_DEV_ENTRY(0x104800, &motu_audio_express),
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
 -- 
 2.11.0
 
