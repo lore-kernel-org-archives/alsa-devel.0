@@ -1,78 +1,138 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/3] ASoC: codecs: msm8916-wcd-analog:
- get micbias voltage from dt
-Date: Mon, 21 Aug 2017 19:24:09 +0100
-Message-ID: <20170821182409.c6vnzcuomrygrwjh@sirena.org.uk>
-References: <20170817080211.11453-1-srinivas.kandagatla@linaro.org>
- <20170817080211.11453-2-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8040538316276532230=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 11CF8266C78
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 20:24:12 +0200 (CEST)
+Subject: Applied "ASoC: codecs: msm8916-wcd-analog: get micbias voltage from dt" to the asoc tree
+Date: Mon, 21 Aug 2017 19:33:35 +0100
+Message-ID: <E1djrW3-0007tw-Ny@debutante>
+References: <20170817080211.11453-2-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170817080211.11453-2-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, damien.riegel@savoirfairelinux.com, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, alsa-devel@alsa-project.org, damien.riegel@savoirfairelinux.com, Patrick Lai <plai@codeaurora.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8040538316276532230==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="w3xsrwssywqnafqp"
-Content-Disposition: inline
+   ASoC: codecs: msm8916-wcd-analog: get micbias voltage from dt
 
+has been applied to the asoc tree at
 
---w3xsrwssywqnafqp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Aug 17, 2017 at 10:02:09AM +0200, srinivas.kandagatla@linaro.org wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +		/*
-> +		 * Special headset needs MICBIAS as 2.7V so wait for
-> +		 * 50 msec for the MICBIAS to reach 2.7 volts.
-> +		 */
-> +		if (wcd->micbias_mv >= 2700)
-> +			msleep(50);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This doesn't sound like how ramping usually works?  Normally it'd be at
-least somewhat proportional to voltage, a sudden cutoff like this seems
-strange.  I'll apply but this looks like it needs fixing, please send an
-incremental patch.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---w3xsrwssywqnafqp
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmbJUgACgkQJNaLcl1U
-h9BKgQgAhXLjflrbzfqvOIAtDBG5wriC6659FYOqjGsGbdKCT17fXGxG3vDHZysr
-R/1OaYS84KtynAPgksfChCKnFc+HREay+vtI4cdtPknELFsVwXEKgYO1uPC2D9T7
-r7Vnt9SVtKAGlk2u90o0VQ0Nb+hitiAq7A8O7xWvPG/AlF3UOgAoHyVqRAWudwWu
-TMqESaDckjxkOCa2dj/CCLkuZtDEwTdtiTCARrvAF31rY3Gvbqco4Zj77+8iBW3l
-pe3Xy6HsvlZsyaNaSOHex1ukeUHVjEs9fLSQllo+hl6vDCr8ED0vsdJIxZaUSBBz
-W+zdp2VjPx3QfMcr+0YRCtfIZGe4CA==
-=SqjU
------END PGP SIGNATURE-----
+>From e269998d588f8ad96eaf86916e23b8ee3d2b9f1b Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 17 Aug 2017 10:02:09 +0200
+Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: get micbias voltage from dt
 
---w3xsrwssywqnafqp--
+This patch adds bindings in DT to provide required micbias voltage which
+could be specific to board. With this new binding, now the mic bias
+voltage is left at hardware default value if the device tree does not
+specify any mic bias voltage value. Correct micbias value is required
+for mbhc buttons to work.
 
---===============8040538316276532230==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/sound/qcom,msm8916-wcd-analog.txt     |  1 +
+ sound/soc/codecs/msm8916-wcd-analog.c              | 27 +++++++++++++++++-----
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
-
---===============8040538316276532230==--
+diff --git a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+index ccb401cfef9d..05b67a1d4851 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,msm8916-wcd-analog.txt
+@@ -33,6 +33,7 @@ Required properties
+  - vdd-micbias-supply: phandle of VDD_MICBIAS supply's regulator DT node.
+ 
+ Optional Properties:
++- qcom,micbias-lvl:  Voltage (mV) for Mic Bias
+ - qcom,micbias1-ext-cap: boolean, present if micbias1 has external capacitor
+ 			 connected.
+ - qcom,micbias2-ext-cap: boolean, present if micbias2 has external capacitor
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index a0de3e7204d5..8633524b1961 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -93,8 +93,12 @@
+ #define MICB_1_EN_TX3_GND_SEL_TX_GND	0
+ 
+ #define CDC_A_MICB_1_VAL		(0xf141)
++#define MICB_MIN_VAL 1600
++#define MICB_STEP_SIZE 50
++#define MICB_VOLTAGE_REGVAL(v)		((v - MICB_MIN_VAL)/MICB_STEP_SIZE)
+ #define MICB_1_VAL_MICB_OUT_VAL_MASK	GENMASK(7, 3)
+ #define MICB_1_VAL_MICB_OUT_VAL_V2P70V	((0x16)  << 3)
++#define MICB_1_VAL_MICB_OUT_VAL_V1P80V	((0x4)  << 3)
+ #define CDC_A_MICB_1_CTL		(0xf142)
+ 
+ #define MICB_1_CTL_CFILT_REF_SEL_MASK		BIT(1)
+@@ -225,6 +229,7 @@ struct pm8916_wcd_analog_priv {
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
+ 	unsigned int micbias1_cap_mode;
+ 	unsigned int micbias2_cap_mode;
++	unsigned int micbias_mv;
+ };
+ 
+ static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
+@@ -265,18 +270,25 @@ static const struct snd_kcontrol_new pm8916_wcd_analog_snd_controls[] = {
+ 
+ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
+ {
++	struct pm8916_wcd_analog_priv *wcd = snd_soc_codec_get_drvdata(codec);
++
+ 	snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
+ 			    MICB_1_CTL_EXT_PRECHARG_EN_MASK |
+ 			    MICB_1_CTL_INT_PRECHARG_BYP_MASK,
+ 			    MICB_1_CTL_INT_PRECHARG_BYP_EXT_PRECHRG_SEL
+ 			    | MICB_1_CTL_EXT_PRECHARG_EN_ENABLE);
+ 
+-	snd_soc_write(codec, CDC_A_MICB_1_VAL, MICB_1_VAL_MICB_OUT_VAL_V2P70V);
+-	/*
+-	 * Special headset needs MICBIAS as 2.7V so wait for
+-	 * 50 msec for the MICBIAS to reach 2.7 volts.
+-	 */
+-	msleep(50);
++	if (wcd->micbias_mv) {
++		snd_soc_write(codec, CDC_A_MICB_1_VAL,
++			      MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
++		/*
++		 * Special headset needs MICBIAS as 2.7V so wait for
++		 * 50 msec for the MICBIAS to reach 2.7 volts.
++		 */
++		if (wcd->micbias_mv >= 2700)
++			msleep(50);
++	}
++
+ 	snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
+ 			    MICB_1_CTL_EXT_PRECHARG_EN_MASK |
+ 			    MICB_1_CTL_INT_PRECHARG_BYP_MASK, 0);
+@@ -795,6 +807,9 @@ static int pm8916_wcd_analog_parse_dt(struct device *dev,
+ 	else
+ 		priv->micbias2_cap_mode = MICB_1_EN_NO_EXT_BYP_CAP;
+ 
++	of_property_read_u32(dev->of_node, "qcom,micbias-lvl",
++			     &priv->micbias_mv);
++
+ 	return 0;
+ }
+ 
+-- 
+2.13.3
