@@ -1,15 +1,15 @@
-From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH] ASoC: Intel: Headset button support in
-	kabylake machine driver
-Date: Mon, 21 Aug 2017 12:26:52 -0700
-Message-ID: <1503343612-15606-1-git-send-email-harshapriya.n@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: GPIO issue with RT5670
+Date: Mon, 21 Aug 2017 16:18:45 -0500
+Message-ID: <5568f645-b001-3628-06a7-36c2b41fed5f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 31651266C78
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 21:27:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F3D7F266C99
+ for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 23:18:48 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Harsha Priya <harshapriya.n@intel.com>, Hsin-yu Chao <hychao@google.com>
+To: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Bard Liao <bardliao@realtek.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds headset button support for kabylake machine driver
-(kbl_rt5663_rt5514_max98927).
+the commit f10e4bf6632b5be11cea875b66ba959833a69258
+     gpio: acpi: Even more tighten up ACPI GPIO lookups
 
-Signed-off-by: Hsin-yu Chao <hychao@google.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+now generates the following issue
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 441a397..b350aa7 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -18,6 +18,7 @@
-  * GNU General Public License for more details.
-  */
- 
-+#include <linux/input.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <sound/core.h>
-@@ -174,6 +175,7 @@ static int kabylake_rt5663_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	int ret;
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_jack *jack;
- 
- 	/*
- 	 * Headset buttons map to the google Reference headset.
-@@ -188,6 +190,12 @@ static int kabylake_rt5663_codec_init(struct snd_soc_pcm_runtime *rtd)
- 		return ret;
- 	}
- 
-+	jack = &ctx->kabylake_headset;
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
- 	rt5663_set_jack_detect(codec, &ctx->kabylake_headset);
- 
- 	ret = snd_soc_dapm_ignore_suspend(&rtd->card->dapm, "DMIC");
--- 
-1.9.1
+[    9.694204] rt5670 i2c-10EC5672:00: ASoC: Cannot get gpio at index 0: -2
+[    9.694293] rt5670 i2c-10EC5672:00: Adding jack GPIO failed
+
+This is the 3rd occurrence of an audio issue with this commit [1][2], 
+what is the recommended fix here since this codec is not only used in 
+ACPI-based devices and do we need to check for more issues in audio drivers?
+
+Thanks
+
+-Pierre
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-next&id=7c197881e163f34679b941c75500a6c85560b7c9
+
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=115531
