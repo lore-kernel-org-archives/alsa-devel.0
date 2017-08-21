@@ -1,21 +1,18 @@
-From: Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH v4 6/9] ASoC: rockchip: Parse dai links
-	from dts
-Date: Mon, 21 Aug 2017 14:56:19 -0700
-Message-ID: <20170821215619.GC173745@google.com>
-References: <20170818031147.16810-1-jeffy.chen@rock-chips.com>
- <20170818031147.16810-7-jeffy.chen@rock-chips.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: GPIO issue with RT5670
+Date: Mon, 21 Aug 2017 17:02:45 -0500
+Message-ID: <8b70e5c5-4603-2884-1306-b8dbedd7f736@linux.intel.com>
+References: <5568f645-b001-3628-06a7-36c2b41fed5f@linux.intel.com>
+ <s5ha82svcod.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f49.google.com (mail-pg0-f49.google.com [74.125.83.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 17790266C99
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 23:56:22 +0200 (CEST)
-Received: by mail-pg0-f49.google.com with SMTP id s14so2493153pgs.1
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 14:56:22 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20170818031147.16810-7-jeffy.chen@rock-chips.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B51F2674BD
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 00:02:48 +0200 (CEST)
+In-Reply-To: <s5ha82svcod.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,216 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-El Fri, Aug 18, 2017 at 11:11:44AM +0800 Jeffy Chen ha dit:
 
-> Refactor rockchip_sound_probe, parse dai links from dts instead of
-> hard coding them.
-> 
-> Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+
+On 08/21/2017 04:22 PM, Takashi Iwai wrote:
+> On Mon, 21 Aug 2017 23:18:45 +0200,
+> Pierre-Louis Bossart wrote:
+>> the commit f10e4bf6632b5be11cea875b66ba959833a69258
+>>      gpio: acpi: Even more tighten up ACPI GPIO lookups
+>>
+>> now generates the following issue
+>>
+>> [    9.694204] rt5670 i2c-10EC5672:00: ASoC: Cannot get gpio at index 0: -2
+>> [    9.694293] rt5670 i2c-10EC5672:00: Adding jack GPIO failed
+>>
+>> This is the 3rd occurrence of an audio issue with this commit [1][2],
+>> what is the recommended fix here since this codec is not only used in
+>> ACPI-based devices and do we need to check for more issues in audio
+>> drivers?
+> Likely you need to give the proper mapping in the machine driver, and
+> correct the hp_gpio.name to the corresponding one.
+>
+> It's cht_bsw_rt5672?  If so, the required change would be something
+> like below.
+
+yep, this works, thanks Takashi. With an additional DMI fix i'll submit 
+later I get sound on the Dell 5585.
+
+Tested-by: Pierre Bossart <pierre-louis.bossart@linux.intel.com>
+>
+>
+> Takashi
+>
 > ---
-> 
-> Changes in v4: None
-> Changes in v3:
-> Use compatible to match audio codecs
->         -- Suggested-by Matthias Kaehlcke <mka@chromium.org>
-> 
-> Changes in v2:
-> Let rockchip,codec-names be a required property, because we plan to
-> add more supported codecs to the fixed dai link list in the driver.
-> 
->  sound/soc/rockchip/rk3399_gru_sound.c | 139 ++++++++++++++++++++++------------
->  1 file changed, 91 insertions(+), 48 deletions(-)
-
-Looks good to me, though I'm by no means an audio expert. On kevin the
-codecs are enumerated at boot.
-
-FWIW:
-
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-
-> diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-> index 9b7e28703bfb..d532336871d7 100644
-> --- a/sound/soc/rockchip/rk3399_gru_sound.c
-> +++ b/sound/soc/rockchip/rk3399_gru_sound.c
-> @@ -235,14 +235,42 @@ static const struct snd_soc_ops rockchip_sound_da7219_ops = {
->  	.hw_params = rockchip_sound_da7219_hw_params,
->  };
->  
-> +static struct snd_soc_card rockchip_sound_card = {
-> +	.name = "rk3399-gru-sound",
-> +	.owner = THIS_MODULE,
-> +	.dapm_widgets = rockchip_dapm_widgets,
-> +	.num_dapm_widgets = ARRAY_SIZE(rockchip_dapm_widgets),
-> +	.dapm_routes = rockchip_dapm_routes,
-> +	.num_dapm_routes = ARRAY_SIZE(rockchip_dapm_routes),
-> +	.controls = rockchip_controls,
-> +	.num_controls = ARRAY_SIZE(rockchip_controls),
+> diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+> index 0ec7985ed306..054b613cb0d0 100644
+> --- a/sound/soc/codecs/rt5670.c
+> +++ b/sound/soc/codecs/rt5670.c
+> @@ -567,7 +567,7 @@ int rt5670_set_jack_detect(struct snd_soc_codec *codec,
+>   
+>   	rt5670->jack = jack;
+>   	rt5670->hp_gpio.gpiod_dev = codec->dev;
+> -	rt5670->hp_gpio.name = "headphone detect";
+> +	rt5670->hp_gpio.name = "headset";
+>   	rt5670->hp_gpio.report = SND_JACK_HEADSET |
+>   		SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2;
+>   	rt5670->hp_gpio.debounce_time = 150;
+> diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+> index bc2a52de06a3..f597d5582223 100644
+> --- a/sound/soc/intel/boards/cht_bsw_rt5672.c
+> +++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+> @@ -184,6 +184,13 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+>   	return 0;
+>   }
+>   
+> +static const struct acpi_gpio_params headset_gpios = { 0, 0, false };
+> +
+> +static const struct acpi_gpio_mapping cht_rt5672_gpios[] = {
+> +	{ "headset-gpios", &headset_gpios, 1 },
+> +	{},
 > +};
 > +
->  enum {
-> +	DAILINK_DA7219,
->  	DAILINK_MAX98357A,
->  	DAILINK_RT5514,
-> -	DAILINK_DA7219,
->  	DAILINK_RT5514_DSP,
->  };
->  
-> -static struct snd_soc_dai_link rockchip_dailinks[] = {
-> +static const char * const dailink_compat[] = {
-> +	[DAILINK_DA7219] = "dlg,da7219",
-> +	[DAILINK_MAX98357A] = "maxim,max98357a",
-> +	[DAILINK_RT5514] = "realtek,rt5514-i2c",
-> +	[DAILINK_RT5514_DSP] = "realtek,rt5514-spi",
-> +};
+>   static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+>   {
+>   	int ret;
+> @@ -191,6 +198,9 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+>   	struct snd_soc_codec *codec = codec_dai->codec;
+>   	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+>   
+> +	if (devm_acpi_dev_add_driver_gpios(codec->dev, cht_rt5672_gpios))
+> +		dev_warn(runtime->dev, "Unable to add GPIO mapping table\n");
 > +
-> +static const struct snd_soc_dai_link rockchip_dais[] = {
-> +	[DAILINK_DA7219] = {
-> +		.name = "DA7219",
-> +		.stream_name = "DA7219 PCM",
-> +		.codec_dai_name = "da7219-hifi",
-> +		.init = rockchip_sound_da7219_init,
-> +		.ops = &rockchip_sound_da7219_ops,
-> +		/* set da7219 as slave */
-> +		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> +			SND_SOC_DAIFMT_CBS_CFS,
-> +	},
->  	[DAILINK_MAX98357A] = {
->  		.name = "MAX98357A",
->  		.stream_name = "MAX98357A PCM",
-> @@ -261,16 +289,6 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
->  		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
->  			SND_SOC_DAIFMT_CBS_CFS,
->  	},
-> -	[DAILINK_DA7219] = {
-> -		.name = "DA7219",
-> -		.stream_name = "DA7219 PCM",
-> -		.codec_dai_name = "da7219-hifi",
-> -		.init = rockchip_sound_da7219_init,
-> -		.ops = &rockchip_sound_da7219_ops,
-> -		/* set da7219 as slave */
-> -		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> -			SND_SOC_DAIFMT_CBS_CFS,
-> -	},
->  	/* RT5514 DSP for voice wakeup via spi bus */
->  	[DAILINK_RT5514_DSP] = {
->  		.name = "RT5514 DSP",
-> @@ -279,53 +297,78 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
->  	},
->  };
->  
-> -static struct snd_soc_card rockchip_sound_card = {
-> -	.name = "rk3399-gru-sound",
-> -	.owner = THIS_MODULE,
-> -	.dai_link = rockchip_dailinks,
-> -	.num_links =  ARRAY_SIZE(rockchip_dailinks),
-> -	.dapm_widgets = rockchip_dapm_widgets,
-> -	.num_dapm_widgets = ARRAY_SIZE(rockchip_dapm_widgets),
-> -	.dapm_routes = rockchip_dapm_routes,
-> -	.num_dapm_routes = ARRAY_SIZE(rockchip_dapm_routes),
-> -	.controls = rockchip_controls,
-> -	.num_controls = ARRAY_SIZE(rockchip_controls),
-> -};
-> -
-> -static int rockchip_sound_probe(struct platform_device *pdev)
-> +static int rockchip_sound_codec_node_match(struct device_node *np_codec)
->  {
-> -	struct snd_soc_card *card = &rockchip_sound_card;
-> -	struct device_node *cpu_node;
-> -	int i, ret;
-> +	int i;
->  
-> -	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
-> -	if (!cpu_node) {
-> -		dev_err(&pdev->dev, "Property 'rockchip,cpu' missing or invalid\n");
-> -		return -EINVAL;
-> +	for (i = 0; i < ARRAY_SIZE(dailink_compat); i++) {
-> +		if (of_device_is_compatible(np_codec, dailink_compat[i]))
-> +			return i;
->  	}
-> +	return -1;
-> +}
->  
-> -	for (i = 0; i < ARRAY_SIZE(rockchip_dailinks); i++) {
-> -		rockchip_dailinks[i].platform_of_node = cpu_node;
-> -		rockchip_dailinks[i].cpu_of_node = cpu_node;
-> -
-> -		rockchip_dailinks[i].codec_of_node =
-> -			of_parse_phandle(pdev->dev.of_node, "rockchip,codec", i);
-> -		if (!rockchip_dailinks[i].codec_of_node) {
-> -			dev_err(&pdev->dev,
-> -				"Property[%d] 'rockchip,codec' missing or invalid\n", i);
-> +static int rockchip_sound_of_parse_dais(struct device *dev,
-> +					struct snd_soc_card *card)
-> +{
-> +	struct device_node *np_cpu;
-> +	struct device_node *np_codec;
-> +	struct snd_soc_dai_link *dai;
-> +	int i, index;
-> +
-> +	card->dai_link = devm_kzalloc(dev, sizeof(rockchip_dais),
-> +				      GFP_KERNEL);
-> +	if (!card->dai_link)
-> +		return -ENOMEM;
-> +
-> +	np_cpu = of_parse_phandle(dev->of_node, "rockchip,cpu", 0);
-> +
-> +	card->num_links = 0;
-> +	for (i = 0; i < ARRAY_SIZE(rockchip_dais); i++) {
-> +		np_codec = of_parse_phandle(dev->of_node,
-> +					    "rockchip,codec", i);
-> +		if (!np_codec)
-> +			break;
-> +
-> +		if (!of_device_is_available(np_codec))
-> +			continue;
-> +
-> +		index = rockchip_sound_codec_node_match(np_codec);
-> +		if (index < 0)
-> +			continue;
-> +
-> +		if (!np_cpu) {
-> +			dev_err(dev, "Missing 'rockchip,cpu' for %s\n",
-> +				rockchip_dais[index].name);
->  			return -EINVAL;
->  		}
-> +
-> +		dai = &card->dai_link[card->num_links++];
-> +		*dai = rockchip_dais[index];
-> +
-> +		dai->codec_of_node = np_codec;
-> +		dai->platform_of_node = np_cpu;
-> +		dai->cpu_of_node = np_cpu;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rockchip_sound_probe(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_card *card = &rockchip_sound_card;
-> +	int ret;
-> +
-> +	ret = rockchip_sound_of_parse_dais(&pdev->dev, card);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "Failed to parse dais: %d\n", ret);
-> +		return ret;
->  	}
->  
->  	card->dev = &pdev->dev;
->  	platform_set_drvdata(pdev, card);
->  
-> -	ret = devm_snd_soc_register_card(&pdev->dev, card);
-> -	if (ret)
-> -		dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
-> -			__func__, ret);
-> -
-> -	return ret;
-> +	return devm_snd_soc_register_card(&pdev->dev, card);
->  }
->  
->  static const struct of_device_id rockchip_sound_of_match[] = {
+>   	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+>   	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
+>   	if (ret < 0) {
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
