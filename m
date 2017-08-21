@@ -1,62 +1,32 @@
-From: Banajit Goswami <bgoswami@codeaurora.org>
-Subject: Re: [PATCH 09/12] ASoC: qcom: Remove unnecessary
- function call
-Date: Mon, 21 Aug 2017 01:09:49 -0700
-Message-ID: <20170821080949.GB8000@codeaurora.org>
-References: <1503207898-16378-1-git-send-email-dolinux.peng@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 23456266BCF
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 10:09:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1503207898-16378-1-git-send-email-dolinux.peng@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peng Donglin <dolinux.peng@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+From: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v2 0/2] Patches to add support pdm controller for rk3328
+Date: Mon, 21 Aug 2017 16:25:05 +0800
+Message-ID: <1503303907-57630-1-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liang Chen <cl-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Shawn Lin <shawn.lin-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Will Deacon <will.deacon-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Catalin Marinas <catalin.marinas-5wv7dgnIgG8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 20, 2017 at 01:44:58PM +0800, Peng Donglin wrote:
-> First of all,the address of pdev->dev is assigned to card->dev,then
-> the function platform_set_drvdata copies the value the variable card
-> to pdev->dev.driver_data, but when calling snd_soc_register_card,the
-> function dev_set_drvdata(card->dev, card) will also do the same copy
-> operation,so i think that the former copy operation can be removed.
-> 
-> Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
+These patches to add support pdm for rk3328 socs.
 
-Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
+Changes in v2:
+- separate pinctrl pins
+  remove unused fsync clk, it's debug pins
 
-> ---
->  sound/soc/qcom/storm.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/soc/qcom/storm.c b/sound/soc/qcom/storm.c
-> index c5207af..a9fa972 100644
-> --- a/sound/soc/qcom/storm.c
-> +++ b/sound/soc/qcom/storm.c
-> @@ -99,7 +99,6 @@ static int storm_platform_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	card->dev = &pdev->dev;
-> -	platform_set_drvdata(pdev, card);
->  
->  	ret = snd_soc_of_parse_card_name(card, "qcom,model");
->  	if (ret) {
-> -- 
-> 1.9.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Sugar Zhang (2):
+  arm64: dts: rockchip: add rk3328 pdm node
+  ASoC: rockchip: separate pinctrl pins from each other
+
+ .../devicetree/bindings/sound/rockchip,pdm.txt     |  7 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           | 77 ++++++++++++++++++++++
+ 2 files changed, 82 insertions(+), 2 deletions(-)
+
+-- 
+2.7.4
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
