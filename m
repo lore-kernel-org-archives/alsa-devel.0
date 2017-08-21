@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: Remove unnecessary function call" to the asoc tree
-Date: Mon, 21 Aug 2017 18:16:33 +0100
-Message-ID: <E1djqJV-0003xv-Ez@debutante>
-References: <1503206520-15031-1-git-send-email-dolinux.peng@gmail.com>
+Subject: Applied "ASoC: ux500: Remove unnecessary function call" to the asoc tree
+Date: Mon, 21 Aug 2017 18:21:16 +0100
+Message-ID: <E1djqO4-0004ff-9y@debutante>
+References: <1503208870-4313-1-git-send-email-dolinux.peng@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1503206520-15031-1-git-send-email-dolinux.peng@gmail.com>
+In-Reply-To: <1503208870-4313-1-git-send-email-dolinux.peng@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Peng Donglin <dolinux.peng@gmail.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgPeng Donglin <dolinux.peng@gmail.com>alsa-devel@alsa-project.org
+Cc: Peng Donglin <dolinux.peng@gmail.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgPeng Donglin <dolinux.peng@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: Remove unnecessary function call
+   ASoC: ux500: Remove unnecessary function call
 
 has been applied to the asoc tree at
 
@@ -36,60 +36,34 @@ to this mail.
 Thanks,
 Mark
 
->From b286401752c61de9c2335a1c9748243bb53649de Mon Sep 17 00:00:00 2001
+>From c996b52df44b83d227d7664d2838ed1c6739c850 Mon Sep 17 00:00:00 2001
 From: Donglin Peng <dolinux.peng@gmail.com>
-Date: Sun, 20 Aug 2017 13:22:00 +0800
-Subject: [PATCH] ASoC: mediatek: Remove unnecessary function call
+Date: Sun, 20 Aug 2017 14:01:10 +0800
+Subject: [PATCH] ASoC: ux500: Remove unnecessary function call
 
-First of all,the address of pdev->dev is assigned to card->dev,then
-the function platform_set_drvdata copies the value the variable card
-to pdev->dev.driver_data, but when calling snd_soc_register_card,the
-function dev_set_drvdata(card->dev, card) will also do the same copy
-operation,so i think that the former copy operation can be removed.
+First of all,the address of pdev->dev is assigned to mop500_card.dev,
+then the function platform_set_drvdata copies the value the variable
+card to pdev->dev.driver_data,but when calling snd_soc_register_card,
+the function dev_set_drvdata(card->dev, card) will also do the same
+copy operation,so i think that the former copy operation can be removed.
 
 Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 1 -
- sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 1 -
- sound/soc/mediatek/mt8173/mt8173-rt5650.c        | 1 -
- 3 files changed, 3 deletions(-)
+ sound/soc/ux500/mop500.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-index 5e383eb456a4..99c15219dbc8 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-@@ -222,7 +222,6 @@ static int mt8173_rt5650_rt5514_dev_probe(struct platform_device *pdev)
- 		mt8173_rt5650_rt5514_codecs[1].of_node;
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index b50f68a439ce..9298580e4c2a 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -111,7 +111,6 @@ static int mop500_probe(struct platform_device *pdev)
  
- 	card->dev = &pdev->dev;
--	platform_set_drvdata(pdev, card);
+ 	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
+ 		__func__, mop500_card.name);
+-	platform_set_drvdata(pdev, &mop500_card);
  
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-index fed1f15a39c2..42de84ca8c84 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-@@ -279,7 +279,6 @@ static int mt8173_rt5650_rt5676_dev_probe(struct platform_device *pdev)
- 	}
+ 	snd_soc_card_set_drvdata(&mop500_card, NULL);
  
- 	card->dev = &pdev->dev;
--	platform_set_drvdata(pdev, card);
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index a78470839b65..e69c141d8ed4 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -311,7 +311,6 @@ static int mt8173_rt5650_dev_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 	card->dev = &pdev->dev;
--	platform_set_drvdata(pdev, card);
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret)
 -- 
 2.13.3
