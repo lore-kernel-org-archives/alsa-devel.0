@@ -1,16 +1,16 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 2/7] ASoC: Intel: uapi: Add new tokens for
-	module common data
-Date: Mon, 21 Aug 2017 14:16:41 +0530
-Message-ID: <20170821084646.6525-3-guneshwor.o.singh@intel.com>
+Subject: [PATCH 3/7] ASoC: Intel: Skylake: Commonize parsing of
+	format tokens
+Date: Mon, 21 Aug 2017 14:16:42 +0530
+Message-ID: <20170821084646.6525-4-guneshwor.o.singh@intel.com>
 References: <20170821084646.6525-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 117CB26745E
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 10:46:57 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 799F526745E
+ for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 10:47:00 +0200 (CEST)
 In-Reply-To: <20170821084646.6525-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,136 +27,91 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Shreyas NC <shreyas.nc@intel.com>
 
-The module private data can be modelled independent of its instances so
-that it can be reused by the module instances. So move module data to
-common manifest which can be referenced by the module instances.
+Format resource tokens can be a part of either the widget or manifest
+private data. In the current model, format resources come as a part of
+widget private data and they come as a part of topology manifest in the
+newly introduced model.
 
-This requires new tokens to be defined to accommodate these changes. The
-new tokens will specify buffer sizes, DSP cycles and respective indexes
-corresponding to the pcm params in the topology manifest so that driver
-need not compute them.
+So add a common function that can fill up either of the structures.
 
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 ---
- include/uapi/sound/snd_sst_tokens.h | 96 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 95 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 47 +++++++++++++++++++---------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
-index dedb2056160d..7b294d9c32cf 100644
---- a/include/uapi/sound/snd_sst_tokens.h
-+++ b/include/uapi/sound/snd_sst_tokens.h
-@@ -163,8 +163,74 @@
-  *
-  * %SKL_TKN_U32_DMA_BUF_SIZE:	DMA buffer size in millisec
-  *
-+ * %SKL_TKN_U32_PIPE_DIR:       Specifies pipe direction. Can be
-+ *                              playback/capture.
-+ *
-+ * %SKL_TKN_U32_NUM_CONFIGS:    Number of pipe configs
-+ *
-+ * %SKL_TKN_U32_PATH_MEM_PGS:   Size of memory (in pages) required for pipeline
-+ *                              and its data
-+ *
-+ * %SKL_TKN_U32_PIPE_CONFIG_ID: Config id for the modules in the pipe
-+ *                              and PCM params supported by that pipe
-+ *                              config. This is used as index to fill
-+ *                              up the pipe config and module config
-+ *                              structure.
-+ *
-+ * %SKL_TKN_U32_CFG_FREQ:
-+ * %SKL_TKN_U8_CFG_CHAN:
-+ * %SKL_TKN_U8_CFG_BPS:         PCM params (freq, channels, bits per sample)
-+ *                              supported for each of the pipe configs.
-+ *
-+ * %SKL_TKN_CFG_MOD_RES_ID:     Module's resource index for each of the
-+ *                              pipe config
-+ *
-+ * %SKL_TKN_CFG_MOD_FMT_ID:     Module's interface index for each of the
-+ *                              pipe config
-+ *
-+ * %SKL_TKN_U8_NUM_MOD:         Number of modules in the manifest
-+ *
-+ * %SKL_TKN_MM_U8_MOD_IDX:      Current index of the module in the manifest
-+ *
-+ * %SKL_TKN_MM_U8_MAX_INST_COUNT:
-+ *                              Max allowed instance count for modules
-+ *
-+ * %SKL_TKN_MM_U8_NUM_RES:      Number of resources for the module
-+ *
-+ * %SKL_TKN_MM_U8_NUM_INTF:     Number of interfaces for the module
-+ *
-+ * %SKL_TKN_MM_U32_RES_ID:      Resource index for the resource info to
-+ *                              be filled into.
-+ *                              A module can support multiple resource
-+ *                              configuration and is represnted as a
-+ *                              resource table. This index is used to
-+ *                              fill information into appropriate index.
-+ *
-+ * %SKL_TKN_MM_U32_CPS:         DSP cycles per second
-+ *
-+ * %SKL_TKN_MM_U32_DMA_SIZE:    Allocated buffer size for gateway DMA
-+ *
-+ * %SKL_TKN_MM_U32_CPC:         DSP cycles allocated per frame
-+ *
-+ * %SKL_TKN_MM_U32_RES_PIN_ID:  Resource pin index in the module
-+ *
-+ * %SKL_TKN_MM_U32_INTF_PIN_ID: Interface index in the module
-+ *
-+ * %SKL_TKN_MM_U32_PIN_BUF:     Buffer size of the module pin
-+ *
-+ * %SKL_TKN_MM_U32_FMT_ID:      Format index for each of the interface/
-+ *                              format information to be filled into.
-+ *
-+ * %SKL_TKN_MM_U32_NUM_IN_FMT:  Number of input formats
-+ * %SKL_TKN_MM_U32_NUM_OUT_FMT: Number of output formats
-+ *
-  * module_id and loadable flags dont have tokens as these values will be
-  * read from the DSP FW manifest
-+ *
-+ * Tokens defined can be used either in the manifest or widget private data.
-+ *
-+ * SKL_TKN_MM is used as a suffix for all tokens that represent
-+ * module data in the manifest.
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index f14b373f65d7..df808fbf14b5 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1948,27 +1948,9 @@ static int skl_tplg_fill_pins_info(struct device *dev,
+  * on the direction
   */
- enum SKL_TKNS {
- 	SKL_TKN_UUID = 1,
-@@ -218,7 +284,35 @@ enum SKL_TKNS {
- 	SKL_TKL_U32_D0I3_CAPS, /* Typo added at v4.10 */
- 	SKL_TKN_U32_D0I3_CAPS = SKL_TKL_U32_D0I3_CAPS,
- 	SKL_TKN_U32_DMA_BUF_SIZE,
--	SKL_TKN_MAX = SKL_TKN_U32_DMA_BUF_SIZE,
-+
-+	SKL_TKN_U32_PIPE_DIRECTION,
-+	SKL_TKN_U32_PIPE_CONFIG_ID,
-+	SKL_TKN_U32_NUM_CONFIGS,
-+	SKL_TKN_U32_PATH_MEM_PGS,
-+
-+	SKL_TKN_U32_CFG_FREQ,
-+	SKL_TKN_U8_CFG_CHAN,
-+	SKL_TKN_U8_CFG_BPS,
-+	SKL_TKN_CFG_MOD_RES_ID,
-+	SKL_TKN_CFG_MOD_FMT_ID,
-+	SKL_TKN_U8_NUM_MOD,
-+
-+	SKL_TKN_MM_U8_MOD_IDX,
-+	SKL_TKN_MM_U8_MAX_INST_COUNT,
-+	SKL_TKN_MM_U8_NUM_RES,
-+	SKL_TKN_MM_U8_NUM_INTF,
-+	SKL_TKN_MM_U32_RES_ID,
-+	SKL_TKN_MM_U32_CPS,
-+	SKL_TKN_MM_U32_DMA_SIZE,
-+	SKL_TKN_MM_U32_CPC,
-+	SKL_TKN_MM_U32_RES_PIN_ID,
-+	SKL_TKN_MM_U32_INTF_PIN_ID,
-+	SKL_TKN_MM_U32_PIN_BUF,
-+	SKL_TKN_MM_U32_FMT_ID,
-+	SKL_TKN_MM_U32_NUM_IN_FMT,
-+	SKL_TKN_MM_U32_NUM_OUT_FMT,
-+
-+	SKL_TKN_MAX = SKL_TKN_MM_U32_NUM_OUT_FMT,
- };
+ static int skl_tplg_fill_fmt(struct device *dev,
+-		struct skl_module_cfg *mconfig,	u32 tkn,
+-		u32 value, u32 dir, u32 pin_count)
++		struct skl_module_fmt *dst_fmt,
++		u32 tkn, u32 value)
+ {
+-	struct skl_module_fmt *dst_fmt;
+-
+-	switch (dir) {
+-	case SKL_DIR_IN:
+-		dst_fmt = mconfig->in_fmt;
+-		dst_fmt += pin_count;
+-		break;
+-
+-	case SKL_DIR_OUT:
+-		dst_fmt = mconfig->out_fmt;
+-		dst_fmt += pin_count;
+-		break;
+-
+-	default:
+-		dev_err(dev, "Invalid direction value\n");
+-		return -EINVAL;
+-	}
+-
+ 	switch (tkn) {
+ 	case SKL_TKN_U32_FMT_CH:
+ 		dst_fmt->channels  = value;
+@@ -2010,6 +1992,29 @@ static int skl_tplg_fill_fmt(struct device *dev,
+ 	return 0;
+ }
  
- #endif
++static int skl_tplg_widget_fill_fmt(struct device *dev,
++		struct skl_module_cfg *mconfig,
++		u32 tkn, u32 val, u32 dir, int fmt_idx)
++{
++	struct skl_module_fmt *dst_fmt;
++
++	switch (dir) {
++	case SKL_DIR_IN:
++		dst_fmt = &mconfig->in_fmt[fmt_idx];
++		break;
++
++	case SKL_DIR_OUT:
++		dst_fmt = &mconfig->out_fmt[fmt_idx];
++		break;
++
++	default:
++		dev_err(dev, "Invalid direction: %d\n", dir);
++		return -EINVAL;
++	}
++
++	return skl_tplg_fill_fmt(dev, dst_fmt, tkn, val);
++}
++
+ static int skl_tplg_get_uuid(struct device *dev, struct skl_module_cfg *mconfig,
+ 	      struct snd_soc_tplg_vendor_uuid_elem *uuid_tkn)
+ {
+@@ -2190,7 +2195,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 	case SKL_TKN_U32_FMT_INTERLEAVE:
+ 	case SKL_TKN_U32_FMT_SAMPLE_TYPE:
+ 	case SKL_TKN_U32_FMT_CH_MAP:
+-		ret = skl_tplg_fill_fmt(dev, mconfig, tkn_elem->token,
++		ret = skl_tplg_widget_fill_fmt(dev, mconfig, tkn_elem->token,
+ 				tkn_elem->value, dir, pin_index);
+ 
+ 		if (ret < 0)
 -- 
 2.14.1
