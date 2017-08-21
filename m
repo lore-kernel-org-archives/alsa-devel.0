@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Avoid creating kcontrol for
-	params
-Date: Mon, 21 Aug 2017 12:00:51 +0100
-Message-ID: <20170821110051.nn2wfijkb4tlzm26@sirena.org.uk>
-References: <1503124744-13547-1-git-send-email-yesanishhere@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: don't print
+ EPROBE_DEFER as error
+Date: Mon, 21 Aug 2017 10:31:35 -0300
+Message-ID: <CAOMZO5AWQjVfsbJmZMO974SGQy1yGvZsSSZR-QBZzhDFrdfejQ@mail.gmail.com>
+References: <20170818163335.23695-1-l.stach@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1820079568874566846=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C4EA1266B48
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 13:00:54 +0200 (CEST)
-In-Reply-To: <1503124744-13547-1-git-send-email-yesanishhere@gmail.com>
+Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
+ [209.85.218.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33F0C266C78
+ for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 15:31:37 +0200 (CEST)
+Received: by mail-oi0-f43.google.com with SMTP id r200so18800700oie.2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 06:31:37 -0700 (PDT)
+In-Reply-To: <20170818163335.23695-1-l.stach@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yesanishhere@gmail.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wladimir J . van der Laan" <laanwj@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Chris Healy <cphealy@gmail.com>, Sascha Hauer <kernel@pengutronix.de>, patchwork-lst@pengutronix.de, Ilia Mirkin <imirkin@alum.mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Aug 18, 2017 at 1:33 PM, Lucas Stach <l.stach@pengutronix.de> wrote:
+> Probe deferral is to be expected during normal operation, so avoid
+> printing an error when it is encountered.
+>
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 
---===============1820079568874566846==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="k47vlyd6l36idnoc"
-Content-Disposition: inline
-
-
---k47vlyd6l36idnoc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Aug 18, 2017 at 11:39:04PM -0700, yesanishhere@gmail.com wrote:
-> From: anish kumar <yesanishhere@gmail.com>
->=20
-> When num_params is defined as one in case of
-> codec to codec dai link, there is no point in
-> allocating memory for kcontrol.
->=20
-> Signed-off-by: anish kumar <yesanishhere@gmail.com>
-> ---
->  include/sound/soc-dapm.h |   1 -
->  sound/soc/soc-dapm.c     | 147 ++++++++++++++++++++++++-----------------=
-------
-
-This is a very big change and that commit log doesn't describe it in any
-detail or really motivate it.  What exactly does this do and why?
-
---k47vlyd6l36idnoc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmavV8ACgkQJNaLcl1U
-h9BnQgf9Eg5GjP1PwBfbk6WM9zWMKuk2sc16DiZGULShAw7Ty0z3OgH86m27Kday
-203emTDzMiezRzKtsi4HDCqkK7BuvrMcDDBOwfSytbev9CyVCQ218wq5J9sg1dVw
-yU3GpEzeu6Xf2rv8mtxmJcHPria0vBszXyjrlVG7ohGrR78eENxBNvRgHivioIzf
-7HTUxD6WjCzU4VQcOMwvm6BJY3nkiwavzNjeA64SgJ5WT2+XOuJWzmPAcl+3eFzc
-2pn/2gESb1wZuwKgSLd7WpeYWXOzZ64mKngTv4vRCX1b3FG/HreiryAGU9kt9vds
-VeBN4NQVUxuYw8Us+0duFTi/wG0lVQ==
-=nyYX
------END PGP SIGNATURE-----
-
---k47vlyd6l36idnoc--
-
---===============1820079568874566846==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1820079568874566846==--
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
