@@ -1,14 +1,17 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 0/7] ASoC: Intel: Introduce tokens for CNL
-Date: Mon, 21 Aug 2017 14:16:39 +0530
-Message-ID: <20170821084646.6525-1-guneshwor.o.singh@intel.com>
+Subject: [PATCH 1/7] ASoC: Intel: Skylake: Parse multiple
+	manifest data blocks
+Date: Mon, 21 Aug 2017 14:16:40 +0530
+Message-ID: <20170821084646.6525-2-guneshwor.o.singh@intel.com>
+References: <20170821084646.6525-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E328267453
- for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 10:46:52 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FD4E267454
+ for <alsa-devel@alsa-project.org>; Mon, 21 Aug 2017 10:46:55 +0200 (CEST)
+In-Reply-To: <20170821084646.6525-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series introduces topology changes for CNL platform. Cannonlake
-DSP supports various formats, rates and channels for each module. To
-represent the buffer size, cycles per second and required memory page
-per format/channel/rate per module, common module data are abstracted
-out and are now part of the topology manifest. This is necessary for
-pipelines which involve algo modules as they required floating point
-calculations.
+From: Shreyas NC <shreyas.nc@intel.com>
 
-With the addition of manifest tokens, buffer size, formats and page
-required by dsp modules can be pre-calculated and populate in the conf
-manifest instead of computing them in the driver.
+Currently we can parse a single manifest data block. But manifest
+private data can have multiple data blocks.
 
-This change is backward compatible with the existing model.
+So, fix the parsing logic to parse multiple data blocks by returning
+offset of each parsed data block.
 
-Jeeja KP (1):
-  ASoC: Intel: Skylake: Update module id in pin connections
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ sound/soc/intel/skylake/skl-topology.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-Ramesh Babu (1):
-  ASoC: Intel: Skylake: Parse and update module config structure
-
-Shreyas NC (5):
-  ASoC: Intel: Skylake: Parse multiple manifest data blocks
-  ASoC: Intel: uapi: Add new tokens for module common data
-  ASoC: Intel: Skylake: Commonize parsing of format tokens
-  ASoC: Intel: Skylake: Add driver structures to be filled from topology
-    manifest
-  ASoC: Intel: Skylake: Populate module data from topology manifest
-
- include/uapi/sound/snd_sst_tokens.h    |  96 ++++-
- sound/soc/intel/skylake/skl-messages.c |  59 ++-
- sound/soc/intel/skylake/skl-pcm.c      |  44 +-
- sound/soc/intel/skylake/skl-topology.c | 718 ++++++++++++++++++++++++++++-----
- sound/soc/intel/skylake/skl-topology.h |  79 ++++
- sound/soc/intel/skylake/skl.h          |   2 +
- 6 files changed, 871 insertions(+), 127 deletions(-)
-
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 350d2387f737..f14b373f65d7 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2721,14 +2721,12 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
+ 
+ 			tkn_count = tkn_count + ret;
+ 			tkn_elem++;
+-			tuple_size += tkn_count *
+-				sizeof(struct snd_soc_tplg_vendor_value_elem);
+-			break;
+ 		}
++		tuple_size += (tkn_count * sizeof(*tkn_elem));
+ 		tkn_count = 0;
+ 	}
+ 
+-	return 0;
++	return off;
+ }
+ 
+ /*
+@@ -2751,11 +2749,10 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
+ 	num_blocks = ret;
+ 
+ 	off += array->size;
+-	array = (struct snd_soc_tplg_vendor_array *)
+-			(manifest->priv.data + off);
+-
+ 	/* Read the BLOCK_TYPE and BLOCK_SIZE descriptor */
+ 	while (num_blocks > 0) {
++		array = (struct snd_soc_tplg_vendor_array *)
++				(manifest->priv.data + off);
+ 		ret = skl_tplg_get_desc_blocks(dev, array);
+ 
+ 		if (ret < 0)
+@@ -2789,6 +2786,7 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
+ 		} else {
+ 			return -EINVAL;
+ 		}
++		off += ret;
+ 	}
+ 
+ 	return 0;
 -- 
 2.14.1
