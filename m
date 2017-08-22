@@ -1,83 +1,25 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt5670: Fix GPIO headset detection
-	regression
-Date: Tue, 22 Aug 2017 12:22:41 +0300
-Message-ID: <1503393761.25945.38.camel@linux.intel.com>
-References: <20170822054452.25380-1-tiwai@suse.de>
- <1503390802.25945.36.camel@linux.intel.com> <s5hk21wt2d5.wl-tiwai@suse.de>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH v5 6/9] ASoC: rockchip: Parse dai links from dts
+Date: Tue, 22 Aug 2017 17:25:05 +0800
+Message-ID: <599BF871.8000408@rock-chips.com>
+References: <20170822075729.8438-1-jeffy.chen@rock-chips.com> <20170822075729.8438-7-jeffy.chen@rock-chips.com> <CAErzpmsfgW47ezbUUVkqhdrca8Bwti3MMXWkBJDu_YDcow0vHw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id CEF4F267578
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 11:22:48 +0200 (CEST)
-In-Reply-To: <s5hk21wt2d5.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAErzpmsfgW47ezbUUVkqhdrca8Bwti3MMXWkBJDu_YDcow0vHw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, =?UTF-8?B?SGVpa28g?= =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>, briannorris@chromium.org, mengdong.lin@linux.intel.com, mka@chromium.org, lars@metafoo.de, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE3LTA4LTIyIGF0IDEwOjQ4ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gVHVlLCAyMiBBdWcgMjAxNyAxMDozMzoyMiArMDIwMCwKPiBBbmR5IFNoZXZjaGVua28gd3Jv
-dGU6Cj4gPiAKPiA+IE9uIFR1ZSwgMjAxNy0wOC0yMiBhdCAwNzo0NCArMDIwMCwgVGFrYXNoaSBJ
-d2FpIHdyb3RlOgo+ID4gPiBSVDU2NzAgY29kZWMgZHJpdmVyIGFuZCBpdHMgbWFjaGluZSBkcml2
-ZXIgZm9yIEludGVsIENIVCBhc3N1bWUKPiA+ID4gdGhlCj4gPiA+IGltcGxpY2l0IEdQSU8gbWFw
-cGluZyBvbiB0aGUgaW5kZXggMCB3aGlsZSBCSU9TIG9uIG1vc3QgZGV2aWNlcwo+ID4gPiBkb24n
-dAo+ID4gPiBwcm92aWRlIGl0LsKgwqBUaGUgcmVjZW50IGNvbW1pdCBmMTBlNGJmNjYzMmIgKCJn
-cGlvOiBhY3BpOiBFdmVuCj4gPiA+IG1vcmUKPiA+ID4gdGlnaHRlbiB1cCBBQ1BJIEdQSU8gbG9v
-a3VwcyIpIHJlc3RyaWN0cyBzdWNoIGNhc2VzIGFuZCBpdAo+ID4gPiByZXN1bHRlZCBpbgo+ID4g
-PiBhIHJlZ3Jlc3Npb24gd2hlcmUgdGhlIGhlYWRzZXQgamFjayBzZXR1cCBmYWlscyBsaWtlOgo+
-ID4gPiAKPiA+ID4gwqAgcnQ1NjcwIGkyYy0xMEVDNTY3MjowMDogQVNvQzogQ2Fubm90IGdldCBn
-cGlvIGF0IGluZGV4IDA6IC0yCj4gPiA+IMKgIHJ0NTY3MCBpMmMtMTBFQzU2NzI6MDA6IEFkZGlu
-ZyBqYWNrIEdQSU8gZmFpbGVkCj4gPiA+IAo+ID4gPiBGb3IgZml4aW5nIHRoaXMsIHdlIG5lZWQg
-dG8gcHJvdmlkZSB0aGUgR1BJTyBtYXBwaW5nIGV4cGxpY2l0bHkgaW4KPiA+ID4gdGhlCj4gPiA+
-IG1hY2hpbmUgZHJpdmVyLsKgwqBBbHNvIHRoaXMgcGF0Y2ggY29ycmVjdHMgdGhlIHN0cmluZyB0
-byBiZSBwYXNzZWQKPiA+ID4gdG8KPiA+ID4gZ3Bpb2xpYiB0byBtYXRjaCB3aXRoIHRoZSBwcmUt
-Z2l2ZW4gbWFwcGluZywgdG9vLgo+ID4gPiAKPiA+ID4gRml4ZXM6IGYxMGU0YmY2NjMyYiAoImdw
-aW86IGFjcGk6IEV2ZW4gbW9yZSB0aWdodGVuIHVwIEFDUEkgR1BJTwo+ID4gPiBsb29rdXBzIikK
-PiA+IAo+ID4gSSBkb24ndCB0aGluayBpdCBmaXhlcyB0aGF0IGV4YWN0IGNvbW1pdC4gd2l0aCB0
-aGlzIG1hcHBpbmcgdGhlCj4gPiBkcml2ZXIKPiA+IHdpbGwgd29yayBwcmV0dHkgbXVjaCB3ZWxs
-IGZvciBwcmV2aW91cyB2ZXJzaW9ucyBvZiBrZXJuZWwgKHRoYXQgZG8KPiA+IG5vdAo+ID4gaGF2
-ZSBtZW50aW9uZWQgY29tbWl0KS4KPiA+IAo+ID4gU28sIGZvciBteSBvcGluaW9uIGl0IHNob3Vs
-ZCBoYXZlIHJlZmVycmVkIHRvIHRoZSBpbml0aWFsIGNvbW1pdCBvZgo+ID4gdGhhdAo+ID4gYm9h
-cmQgZmlsZSB3aGljaCBicmluZ3MgR1BJTyByZXF1ZXN0IGluIHRoZSBmaXJzdCBwbGFjZS4KPiAK
-PiBZZWFoLCBpdCdzIGEgYml0IHVuY2xlYXIgd2hpY2ggY29tbWl0IHNob3VsZCBiZSBwb2ludGVk
-IGFzICJmaXhlcyIgaW4KPiBzdWNoIGEgY2FzZS7CoMKgQ2xlYXJseSwgdGhlIHJlZ3Jlc3Npb24g
-Y2FtZSBieSB0aGUgbWVudGlvbmVkIGNvbW1pdCwgc28KPiBJIHBpY2tlZCBpdCB1cCBmb3IgZml4
-ZXMtdGFnIGFzIHRoZSBpbmRpY2F0b3IgdG8gd2hpY2gga2VybmVsIGl0Cj4gc2hvdWxkIGJlIGJh
-Y2twb3J0ZWQgLS0gaW4gdGhlIGNhc2Ugd2hlbiBpdCBzbGlwcGVkIGZyb20gNC4xMyBjeWNsZS4K
-PiBXZSBkb24ndCBoYXZlIHRvIGFwcGx5IHRoZSBmaXggZm9yIHBhdGNoZXMgb2xkZXIgdGhhbiA0
-LjEyLCBpdCBqdXN0Cj4gd29ya3MuwqDCoFRoZSBvcmlnaW5hbCBHUElPIGNvZGUgaGFkIHNvbWUg
-aW1wbGljaXQgYXNzdW1wdGlvbiBhbmQgaXQKPiB3b3JrZWQgc29tZWhvdyAtLSBubyBtYXR0ZXIg
-d2hldGhlciBpdCdzIHRoZSByaWdodCB0aGluZyBvciBub3QuCj4gCj4gU28sIHdoaWxlIEknbSBm
-aW5lIHRvIGNoYW5nZSB0aGUgZml4ZXMgdGFnIHRvIHBvaW50IGFub3RoZXIgY29tbWl0LAo+IGl0
-IGJlY29tZXMgc2xpZ2h0bHkgYXBhcnQgZnJvbSB0aGUgInJlZ3Jlc3Npb24gZml4IiB0aGF0IHRo
-ZSBjb21taXQKPiB3YXMgaW50ZW5kZWQgZm9yLgo+IAo+IFRoYXQgc2FpZCwgdGhpcyBjb21lcyBm
-cm9tIHRoZSBtdWx0aXBsZSB1c2FnZXMgb2YgZml4ZXMgdGFnOiBpdCBjYW4KPiBwb2ludCB0byBh
-IHJlZ3Jlc3Npb24gcG9pbnQgdGhhdCB0aGUgcGF0Y2ggZml4ZXMsIGFuZCBpdCBjYW4gcG9pbnQg
-dG8KPiB0aGUgb3JpZ2luYWwgY29tbWl0IHRoZSAocG90ZW50aWFsKSBpc3N1ZSB3YXMgaW50cm9k
-dWNlZC4KCkl0IGRlcGVuZHMgb24gdHdvIHRoaW5nczoKMSkgd2hpY2ggY29tbWl0IHdhcyBmaXJz
-dDogdGhlIG1lbnRpb25lZCBvbmUgb3IgdGhlIGJvYXJkIGZpbGU7CjIpIGhvdyB3ZSBmb3JtdWxh
-dGUgdGhlIHBhdGNoOiBmaXggYSAicmVncmVzc2lvbiIgb3IgbWFrZSBpdCByb2J1c3QKYWdhaW5z
-dCBjaGFuZ2VzLgoKT2theSwgYnJpZWZseSBsb29raW5nIHNlZW1zIGxpa2UgR1BJTyBjb21taXQg
-Y29tZXMgbGF0ZXIsIHNvLCBpdCdzIGEKZ29vZCBwb2ludCB0byBsZWF2ZSBmaXhlcyBhcyBpcyBu
-b3cuIEkgbWlzc2VkIHRob3NlIGZpbGVzIHNpbmNlIEkgaGF2ZQpjaGVja2VkIGEgbGlzdCBhZ2Fp
-bnN0IG1vZHVsZXMgdGhhdCBoYXZlIGJvdGggQUNQSSBJRCB0YWJsZSBhbmQgb25lIG9mCipncGlv
-ZF9nZXQqKCkgZnVuY3Rpb24uIEkgZm9yZ290IHRvIGNoZWNrIGFnYWluc3Qgc3BlY2lmaWMgc291
-bmQgR1BJTwpoZWxwZXIuCgpTbywgdGFrZSBteSB0YWcgZGlzcmVnYXJkaW5nIG9uIG15IGNvbW1l
-bnQuClRoYW5rcyEKClAuUy4gQWxsIEFTb0MgYm9hcmQgZmlsZXMgdGhhdCBhcmUgdXNlZCBmb3Ig
-QUNQSSBlbmFibGVkIHBsYXRmb3JtcyBoYXZlCnRvIGJlIGZpeGVkIGFjY29yZGluZ2x5LgoKLS0g
-CkFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgpJbnRl
-bCBGaW5sYW5kIE95Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Hi Donglin,
+
+On 08/22/2017 05:08 PM, Donglin Peng wrote:
+>> >         card->dev = &pdev->dev;
+>> >         platform_set_drvdata(pdev, card);
+> There is no need to call platform_set_drvdata, because
+> devm_snd_soc_register_card will do it.
+>
+
+right, will remove it in next version, thanks:)
