@@ -1,16 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 06/14] ASoC: Intel: atom: add support for
-	Baytrail Chromebooks
-Date: Tue, 22 Aug 2017 15:32:31 -0500
-Message-ID: <20170822203239.19891-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/14] ASoC: ts3a227e: add acpi table
+Date: Tue, 22 Aug 2017 15:32:30 -0500
+Message-ID: <20170822203239.19891-6-pierre-louis.bossart@linux.intel.com>
 References: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CCC502670BE
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9307A267044
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:12 +0200 (CEST)
 In-Reply-To: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,36 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, "Fang, Yang A" <yang.a.fang@intel.com>, broonie@kernel.org, Fang@alsa-project.org, Thierry Escande <thierry.escande@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-Baytrail Chromebooks used to be managed with legacy driver which
-is not compatible with atom/sst drivers. Reuse CHT driver to
-handle max98098 codec
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This patch adds the acpi match table for the ts3a227e audio accessory
+detection device. This enables headset features like jack plug/unplug
+notifications, mic presence, and button pressed events.
+
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+Signed-off-by: Thierry Escande <thierry.escande@collabora.com>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/ts3a227e.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 0e928d5..ff4a517 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -536,6 +536,14 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
- 		.board = "cht-bsw",
- 		.pdata = &byt_rvp_platform_data
+diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+index 4356843..738e04b 100644
+--- a/sound/soc/codecs/ts3a227e.c
++++ b/sound/soc/codecs/ts3a227e.c
+@@ -15,6 +15,7 @@
+ #include <linux/module.h>
+ #include <linux/of_gpio.h>
+ #include <linux/regmap.h>
++#include <linux/acpi.h>
+ 
+ #include <sound/core.h>
+ #include <sound/jack.h>
+@@ -374,11 +375,20 @@ static const struct of_device_id ts3a227e_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ts3a227e_of_match);
+ 
++#ifdef CONFIG_ACPI
++static struct acpi_device_id ts3a227e_acpi_match[] = {
++	{ "104C227E", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, ts3a227e_acpi_match);
++#endif
++
+ static struct i2c_driver ts3a227e_driver = {
+ 	.driver = {
+ 		.name = "ts3a227e",
+ 		.pm = &ts3a227e_pm,
+ 		.of_match_table = of_match_ptr(ts3a227e_of_match),
++		.acpi_match_table = ACPI_PTR(ts3a227e_acpi_match),
  	},
-+	/* use CHT driver to Baytrail Chromebooks */
-+	{
-+		.id = "193C9890",
-+		.drv_name = "cht-bsw-max98090",
-+		.fw_filename = "intel/fw_sst_0f28.bin",
-+		.board = "cht-bsw",
-+		.pdata = &byt_rvp_platform_data
-+	},
- #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
- 	/*
- 	 * This is always last in the table so that it is selected only when
+ 	.probe = ts3a227e_i2c_probe,
+ 	.id_table = ts3a227e_i2c_ids,
 -- 
 2.9.3
