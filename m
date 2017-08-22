@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 11/14] ASoC: Intel: bytcr_rt5640: simplify MCLK
-	quirk tests
-Date: Tue, 22 Aug 2017 15:32:36 -0500
-Message-ID: <20170822203239.19891-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/14] ASoC: Intel: cht_bsw_rt5672: use actual
+	HID in suspend/resume
+Date: Tue, 22 Aug 2017 15:32:38 -0500
+Message-ID: <20170822203239.19891-14-pierre-louis.bossart@linux.intel.com>
 References: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 68A28267079
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F40F92670FB
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:17 +0200 (CEST)
 In-Reply-To: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,44 +25,47 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-remove redundant tests to check MCLK (align with other
-machine drivers)
+The code scans all components looking for the default name
+i2c-10EC5670:00, which of course doesn't work in platforms
+where the BIOS uses a different HID such as Dell 5585
+
+Since we already have the correct information available, just
+use the actual codec name and length.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 15b1e29..7cee09d 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -178,7 +178,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	}
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index ad2f27e..a637bb5 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -348,9 +348,11 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ static int cht_suspend_pre(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_component *component;
++	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk) {
-+		if (priv->mclk) {
- 			ret = clk_prepare_enable(priv->mclk);
- 			if (ret < 0) {
- 				dev_err(card->dev,
-@@ -199,7 +199,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 					     48000 * 512,
- 					     SND_SOC_CLOCK_IN);
- 		if (!ret) {
--			if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk)
-+			if (priv->mclk)
- 				clk_disable_unprepare(priv->mclk);
- 		}
- 	}
-@@ -549,7 +549,7 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
- 	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
+ 	list_for_each_entry(component, &card->component_dev_list, card_list) {
+-		if (!strcmp(component->name, "i2c-10EC5670:00")) {
++		if (!strncmp(component->name,
++			     ctx->codec_name, sizeof(ctx->codec_name))) {
+ 			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
  
--	if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk) {
-+	if (priv->mclk) {
- 		/*
- 		 * The firmware might enable the clock at
- 		 * boot (this information may or may not
+ 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
+@@ -364,9 +366,11 @@ static int cht_suspend_pre(struct snd_soc_card *card)
+ static int cht_resume_post(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_component *component;
++	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 
+ 	list_for_each_entry(component, &card->component_dev_list, card_list) {
+-		if (!strcmp(component->name, "i2c-10EC5670:00")) {
++		if (!strncmp(component->name,
++			     ctx->codec_name, sizeof(ctx->codec_name))) {
+ 			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+ 
+ 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
 -- 
 2.9.3
