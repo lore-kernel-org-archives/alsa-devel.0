@@ -1,76 +1,67 @@
 From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [PATCH v6 1/8] ASoC: rockchip: Correct 'dmic-delay' property name
-Date: Tue, 22 Aug 2017 23:10:02 +0800
-Message-ID: <20170822151009.19014-2-jeffy.chen@rock-chips.com>
-References: <20170822151009.19014-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170822151009.19014-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v6 0/8] ASoC: rockchip: Parse dai links from dts
+Date: Tue, 22 Aug 2017 23:10:01 +0800
+Message-ID: <20170822151009.19014-1-jeffy.chen@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id C503F266812
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 17:10:30 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de
-Cc: briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Mark Brown <broonie@kernel.org>, Jeffy Chen <jeffy.chen@rock-chips.com>, Will Deacon <will.deacon@arm.com>, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, linux-rockchip@lists.infradead.org, mka@chromium.org, Klaus Goger <klaus.goger@theobroma-systems.com>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, Caesar Wang <wxt@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-The 'dmic-delay' property name is different with the dt-binding.
 
-So correct it with 'dmic-wakeup-delay-ms'.
+Currently we are using a fixed list of dai links in the driver.
+This serial of patches would let the driver parse dai links from
+dts, so that we can make some of them optional for future boards.
 
-Fixes: 3a6f9dce6116 (ASoC: rk3399_gru_sound: fix recording pop at first attempt)
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Tested on my chromebook bob(with cros 4.4 kernel), it still works
+after disabled rt5514 codecs in the dts.
 
----
 
-Changes in v6: None
+Changes in v6:
+Add dmic wakeup delay(not used for now).
+
 Changes in v5:
 Keep the dmic-delay property, but correct it with the name in
 dt-binding.
         -- Suggested-by Mark Brown <broonie@kernel.org>
 
-Changes in v3: None
-Changes in v2: None
+Changes in v3:
+Use compatible to match audio codecs
+        -- Suggested-by Matthias Kaehlcke <mka@chromium.org>
 
- sound/soc/rockchip/rk3399_gru_sound.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Changes in v2:
+Let rockchip,codec-names be a required property, because we plan to
+add more supported codecs to the fixed dai link list in the driver.
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 3475c61a5fa0..70b5821afb17 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -38,7 +38,7 @@
- 
- #define SOUND_FS	256
- 
--static unsigned int rt5514_dmic_delay;
-+static unsigned int dmic_wakeup_delay;
- 
- static struct snd_soc_jack rockchip_sound_jack;
- 
-@@ -126,7 +126,7 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	/* Wait for DMIC stable */
--	msleep(rt5514_dmic_delay);
-+	msleep(dmic_wakeup_delay);
- 
- 	return 0;
- }
-@@ -348,13 +348,13 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	/* Set DMIC delay */
--	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
--					&rt5514_dmic_delay);
-+	/* Set DMIC wakeup delay */
-+	ret = device_property_read_u32(&pdev->dev, "dmic-wakeup-delay-ms",
-+					&dmic_wakeup_delay);
- 	if (ret) {
--		rt5514_dmic_delay = 0;
-+		dmic_wakeup_delay = 0;
- 		dev_dbg(&pdev->dev,
--			"no optional property 'dmic-delay' found, default: no delay\n");
-+			"no optional property 'dmic-wakeup-delay-ms' found, default: no delay\n");
- 	}
- 
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+Jeffy Chen (8):
+  ASoC: rockchip: Correct 'dmic-delay' property name
+  ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
+  arm64: dts: rockchip: Add rt5514 dsp for Gru
+  arm64: dts: rockchip: Update rt5514 devices' compatible for Gru
+  ASoC: rockchip: Parse dai links from dts
+  ASoC: rockchip: Add support for DP codec
+  ASoC: rockchip: Add support for DMIC codec
+  dt-bindings: ASoC: rockchip: Update description of rockchip,codec
+
+ .../bindings/sound/rockchip,rk3399-gru-sound.txt   |   2 +-
+ arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |   7 +-
+ sound/soc/rockchip/Kconfig                         |   2 +
+ sound/soc/rockchip/rk3399_gru_sound.c              | 270 ++++++++++++++-------
+ 4 files changed, 193 insertions(+), 88 deletions(-)
+
 -- 
 2.11.0
