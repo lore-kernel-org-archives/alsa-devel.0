@@ -1,98 +1,123 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Correct 'dmic-delay' property name" to the asoc tree
-Date: Tue, 22 Aug 2017 17:21:01 +0100
-Message-ID: <E1dkBvJ-0004PE-KG@debutante>
-References: <20170822151009.19014-2-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170822151009.19014-2-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, alsa-devel@alsa-project.org, briannorris@chromium.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ALSA: ctxfi: Use common error handling code in
+	two functions
+Date: Tue, 22 Aug 2017 18:50:16 +0200
+Message-ID: <6293f7ce-a3c7-ace8-cab4-26d09f4e0c91@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 765312669F6
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 18:50:24 +0200 (CEST)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 22 Aug 2017 18:43:42 +0200
 
-   ASoC: rockchip: Correct 'dmic-delay' property name
+Add jump targets so that a bit of exception handling can be better reused
+at the end of these functions.
 
-has been applied to the asoc tree at
+This issue was detected by using the Coccinelle software.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f628c4ed3de499f027d3ae70cbb46c6dfadfc098 Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Tue, 22 Aug 2017 23:35:48 +0800
-Subject: [PATCH] ASoC: rockchip: Correct 'dmic-delay' property name
-
-The 'dmic-delay' property name is different with the dt-binding.
-
-So correct it with 'dmic-wakeup-delay-ms'.
-
-Fixes: 3a6f9dce6116 (ASoC: rk3399_gru_sound: fix recording pop at first attempt)
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/pci/ctxfi/ctpcm.c | 42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 70c0908fb9b4..566ccb39fb31 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -38,7 +38,7 @@
+diff --git a/sound/pci/ctxfi/ctpcm.c b/sound/pci/ctxfi/ctpcm.c
+index 974978041558..dece6a81060d 100644
+--- a/sound/pci/ctxfi/ctpcm.c
++++ b/sound/pci/ctxfi/ctpcm.c
+@@ -140,27 +140,28 @@ static int ct_pcm_playback_open(struct snd_pcm_substream *substream)
  
- #define SOUND_FS	256
+ 	err = snd_pcm_hw_constraint_integer(runtime,
+ 					    SNDRV_PCM_HW_PARAM_PERIODS);
+-	if (err < 0) {
+-		kfree(apcm);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_pcm;
++
+ 	err = snd_pcm_hw_constraint_minmax(runtime,
+ 					   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 					   1024, UINT_MAX);
+-	if (err < 0) {
+-		kfree(apcm);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_pcm;
  
--static unsigned int rt5514_dmic_delay;
-+static unsigned int dmic_wakeup_delay;
- 
- static struct snd_soc_jack rockchip_sound_jack;
- 
-@@ -126,7 +126,7 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 	apcm->timer = ct_timer_instance_new(atc->timer, apcm);
+ 	if (!apcm->timer) {
+-		kfree(apcm);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_pcm;
  	}
- 
- 	/* Wait for DMIC stable */
--	msleep(rt5514_dmic_delay);
-+	msleep(dmic_wakeup_delay);
+ 	runtime->private_data = apcm;
+ 	runtime->private_free = ct_atc_pcm_free_substream;
  
  	return 0;
++
++free_pcm:
++	kfree(apcm);
++	return err;
  }
-@@ -348,13 +348,13 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
  
--	/* Set DMIC delay */
--	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
--					&rt5514_dmic_delay);
-+	/* Set DMIC wakeup delay */
-+	ret = device_property_read_u32(&pdev->dev, "dmic-wakeup-delay-ms",
-+					&dmic_wakeup_delay);
- 	if (ret) {
--		rt5514_dmic_delay = 0;
-+		dmic_wakeup_delay = 0;
- 		dev_dbg(&pdev->dev,
--			"no optional property 'dmic-delay' found, default: no delay\n");
-+			"no optional property 'dmic-wakeup-delay-ms' found, default: no delay\n");
- 	}
+ static int ct_pcm_playback_close(struct snd_pcm_substream *substream)
+@@ -286,27 +287,28 @@ static int ct_pcm_capture_open(struct snd_pcm_substream *substream)
  
- 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+ 	err = snd_pcm_hw_constraint_integer(runtime,
+ 					    SNDRV_PCM_HW_PARAM_PERIODS);
+-	if (err < 0) {
+-		kfree(apcm);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_pcm;
++
+ 	err = snd_pcm_hw_constraint_minmax(runtime,
+ 					   SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
+ 					   1024, UINT_MAX);
+-	if (err < 0) {
+-		kfree(apcm);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_pcm;
+ 
+ 	apcm->timer = ct_timer_instance_new(atc->timer, apcm);
+ 	if (!apcm->timer) {
+-		kfree(apcm);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_pcm;
+ 	}
+ 	runtime->private_data = apcm;
+ 	runtime->private_free = ct_atc_pcm_free_substream;
+ 
+ 	return 0;
++
++free_pcm:
++	kfree(apcm);
++	return err;
+ }
+ 
+ static int ct_pcm_capture_close(struct snd_pcm_substream *substream)
 -- 
-2.13.3
+2.14.0
