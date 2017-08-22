@@ -1,23 +1,15 @@
-From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [PATCH v5 2/9] ASoC: soc-core: Allow searching dai
- driver name in snd_soc_find_dai
-Date: Tue, 22 Aug 2017 22:39:06 +0800
-Message-ID: <599C420A.80601@rock-chips.com>
-References: <20170822075729.8438-1-jeffy.chen@rock-chips.com>
- <20170822075729.8438-3-jeffy.chen@rock-chips.com>
- <CAErzpmtbbWbt28KPaFLVdwzuWy3A7se7_WBN8q6aJrHLbtT-LQ@mail.gmail.com>
- <20170822140255.t2wfwkjr67v3eoxu@sirena.org.uk>
- <CAErzpmsg9fi0-ukHG13-dy2r02892h+oPXmtsusCbu-xLzazFQ@mail.gmail.com>
- <20170822142111.zlosryhkyi75htod@sirena.org.uk>
- <s5h8tib8yq4.wl-tiwai@suse.de>
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Subject: [PATCH] ASoC: Add a sanity check before using dai
+	driver name
+Date: Tue, 22 Aug 2017 22:45:12 +0800
+Message-ID: <20170822144512.12976-1-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 080C6266812
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 16:39:20 +0200 (CEST)
-In-Reply-To: <s5h8tib8yq4.wl-tiwai@suse.de>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id D57AB266812
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 16:45:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,34 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com, lars@metafoo.de, linux-kernel@vger.kernel.org, briannorris@chromium.org, dianders@chromium.org, Donglin Peng <dolinux.peng@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, mka@chromium.org, dgreid@chromium.org, =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>
+To: linux-kernel@vger.kernel.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Jeffy Chen <jeffy.chen@rock-chips.com>, Takashi Iwai <tiwai@suse.com>, dolinux.peng@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+The dai driver's name is allowed to be NULL. So add a sanity check for
+that.
 
-On 08/22/2017 10:26 PM, Takashi Iwai wrote:
-> On Tue, 22 Aug 2017 16:21:11 +0200,
-> Mark Brown wrote:
->>
->> On Tue, Aug 22, 2017 at 10:15:32PM +0800, Donglin Peng wrote:
->>> On Tue, Aug 22, 2017 at 10:02 PM, Mark Brown <broonie@kernel.org> wrote:
->>
->>>> We should be already verifying that drivers have a name, we assume one
->>>> elsewhere.
->>
->>> But I can't find any codes that set or check dai_driver->name in
->>> function snd_soc_register_codec or snd_soc_register_component.
->>
->> We should fix that then.
->
-> Hmm, as far as I read the code, the NULL dai driver name is valid for
-> a single component.  The dai name is determined by fmt_single_name().
->
->
-> Takashi
->
->
-sorry, i though that is checked too... new patch is coming, thanks for 
-noticing :)
->
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Reported-by: Donglin Peng <dolinux.peng@gmail.com>
+---
+
+ sound/soc/soc-core.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 77e7e2a11af0..8ab9ee2b460a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -978,11 +978,13 @@ struct snd_soc_dai *snd_soc_find_dai(
+ 		if (dlc->name && strcmp(component->name, dlc->name))
+ 			continue;
+ 		list_for_each_entry(dai, &component->dai_list, list) {
+-			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
+-			    && strcmp(dai->driver->name, dlc->dai_name))
+-				continue;
+-
+-			return dai;
++			if (!dlc->dai_name)
++				return dai;
++			if (!strcmp(dai->name, dlc->dai_name))
++				return dai;
++			if (dai->driver->name &&
++			    !strcmp(dai->driver->name, dlc->dai_name))
++				return dai;
+ 		}
+ 	}
+ 
+-- 
+2.11.0
