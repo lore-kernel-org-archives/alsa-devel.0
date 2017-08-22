@@ -1,49 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 2/9] ASoC: soc-core: Allow searching dai driver name
- in snd_soc_find_dai
-Date: Tue, 22 Aug 2017 15:02:55 +0100
-Message-ID: <20170822140255.t2wfwkjr67v3eoxu@sirena.org.uk>
-References: <20170822075729.8438-1-jeffy.chen@rock-chips.com>
- <20170822075729.8438-3-jeffy.chen@rock-chips.com>
- <CAErzpmtbbWbt28KPaFLVdwzuWy3A7se7_WBN8q6aJrHLbtT-LQ@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH] ALSA: maestro3: Use common error handling
+ code in two functions
+Date: Tue, 22 Aug 2017 17:03:43 +0300
+Message-ID: <20170822140343.yg7bh3qylthja3tn@mwanda>
+References: <e6f4f769-eef7-75e7-19b2-7052328f4b9a@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="q2ooj6hesboci4oh"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22F0F266812
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 16:04:03 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <CAErzpmtbbWbt28KPaFLVdwzuWy3A7se7_WBN8q6aJrHLbtT-LQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: Jeffy Chen <jeffy.chen@rock-chips.com>, linux-kernel@vger.kernel.org, dgreid@chromium.org, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, briannorris@chromium.org, mengdong.lin@linux.intel.com, mka@chromium.org, lars@metafoo.de, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <e6f4f769-eef7-75e7-19b2-7052328f4b9a@users.sourceforge.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>, Julia Lawall <Julia.Lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Aug 22, 2017 at 03:43:03PM +0200, SF Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 22 Aug 2017 15:00:27 +0200
+> 
+> Add jump targets so that a bit of exception handling can be better reused
+> at the end of these functions.
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  sound/pci/maestro3.c | 55 +++++++++++++++++++++++++---------------------------
+>  1 file changed, 26 insertions(+), 29 deletions(-)
+> 
+> diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+> index cafea6dc5c01..759c3f6ad7aa 100644
+> --- a/sound/pci/maestro3.c
+> +++ b/sound/pci/maestro3.c
+> @@ -2622,22 +2622,18 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+>  
+>  	err = request_firmware(&chip->assp_kernel_image,
+>  			       "ess/maestro3_assp_kernel.fw", &pci->dev);
+> -	if (err < 0) {
+> -		snd_m3_free(chip);
+> -		return err;
+> -	}
+> +	if (err)
+> +		goto free_chip;
 
---q2ooj6hesboci4oh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You never mention in the changelog you've changed these checks from
+"if (err < 0)" to "if (err)".  Don't slip in unexpected little changes
+like this.
 
-On Tue, Aug 22, 2017 at 09:24:32PM +0800, Donglin Peng wrote:
-
-> In case that dai->driver->name is NULL, strcmp(dai->driver->name,
-> dlc->dai_name) will cause segmentation fault.
-> so I think that we can change it as the follows:
-
-We should be already verifying that drivers have a name, we assume one
-elsewhere.
-
---q2ooj6hesboci4oh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmcOY8ACgkQJNaLcl1U
-h9DRqQf9HABKxxKR1wr5MvrVrkZ55Ey6i5VzbpzCaYoa/jfT1HP4gwQ/UNlnWZbd
-/DGURWMmc1EIBaCuwcWKI579AY+jCsHyjmEQU36vK407Lo6yuEaDigVLxV5Ffixw
-+moEHpHpii8VtT0DekzzFwHau+Vot44qizVvhgCSJ/yYCx1WOAFG0dYmCUSssmcM
-a/jZKQRYmBC8aiztClFy2iA8MYKVvCCNqtwu9vVJxadUlKpy/e1RfLl248xYqxpI
-gXoCKHSvOwRhq37/Got2MlpftH+cminWwACLw3q1Ds3q37S/541CCAUCT+lRClLj
-r/dZ1p3Wr594tJ11IBmU+Ph0RszkMA==
-=uQWo
------END PGP SIGNATURE-----
-
---q2ooj6hesboci4oh--
+regards,
+dan carpenter
