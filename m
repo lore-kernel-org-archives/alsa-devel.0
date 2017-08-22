@@ -1,117 +1,47 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [RESENT PATCH v6 7/8] ASoC: rockchip: Add support for DMIC codec
-Date: Tue, 22 Aug 2017 23:35:54 +0800
-Message-ID: <20170822153555.20735-8-jeffy.chen@rock-chips.com>
+From: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [RESENT PATCH v6 8/8] dt-bindings: ASoC: rockchip: Update description of rockchip,codec
+Date: Tue, 22 Aug 2017 23:35:55 +0800
+Message-ID: <20170822153555.20735-9-jeffy.chen@rock-chips.com>
 References: <20170822153555.20735-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170822153555.20735-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de
-Cc: briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170822153555.20735-1-jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
+Cc: briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for optional dmic codec.
+Update description for newly added optional audio codecs.
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Signed-off-by: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
 
-Changes in v6:
-Add dmic wakeup delay(not used for now).
-
+Changes in v6: None
 Changes in v5: None
 Changes in v3: None
 Changes in v2: None
 
- sound/soc/rockchip/Kconfig            |  1 +
- sound/soc/rockchip/rk3399_gru_sound.c | 36 +++++++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index 8f0d0d8d34e6..b0825370d262 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -69,6 +69,7 @@ config SND_SOC_RK3399_GRU_SOUND
- 	select SND_SOC_DA7219
- 	select SND_SOC_RT5514_SPI
- 	select SND_SOC_HDMI_CODEC
-+	select SND_SOC_DMIC
- 	help
- 	  Say Y or M here if you want to add support multiple codecs for SoC
- 	  audio on Rockchip RK3399 GRU boards.
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 91aab5c18f3b..5ab25962cabd 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -267,6 +267,28 @@ static int rockchip_sound_cdndp_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+index eac91db07178..72d3cf4c2606 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+@@ -4,7 +4,7 @@ Required properties:
+ - compatible: "rockchip,rk3399-gru-sound"
+ - rockchip,cpu: The phandle of the Rockchip I2S controller that's
+   connected to the codecs
+-- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
++- rockchip,codec: The phandle of the audio codecs
  
-+static int rockchip_sound_dmic_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	unsigned int mclk;
-+	int ret;
-+
-+	mclk = params_rate(params) * SOUND_FS;
-+
-+	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, 0, mclk, 0);
-+	if (ret) {
-+		dev_err(rtd->card->dev, "%s() error setting sysclk to %u: %d\n",
-+				__func__, mclk, ret);
-+		return ret;
-+	}
-+
-+	/* Wait for DMIC stable */
-+	msleep(dmic_wakeup_delay);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_ops rockchip_sound_max98357a_ops = {
- 	.hw_params = rockchip_sound_max98357a_hw_params,
- };
-@@ -283,6 +305,10 @@ static struct snd_soc_ops rockchip_sound_cdndp_ops = {
- 	.hw_params = rockchip_sound_cdndp_hw_params,
- };
- 
-+static struct snd_soc_ops rockchip_sound_dmic_ops = {
-+	.hw_params = rockchip_sound_dmic_hw_params,
-+};
-+
- static struct snd_soc_card rockchip_sound_card = {
- 	.name = "rk3399-gru-sound",
- 	.owner = THIS_MODULE,
-@@ -297,6 +323,7 @@ static struct snd_soc_card rockchip_sound_card = {
- enum {
- 	DAILINK_CDNDP,
- 	DAILINK_DA7219,
-+	DAILINK_DMIC,
- 	DAILINK_MAX98357A,
- 	DAILINK_RT5514,
- 	DAILINK_RT5514_DSP,
-@@ -305,6 +332,7 @@ enum {
- static const char * const dailink_compat[] = {
- 	[DAILINK_CDNDP] = "rockchip,rk3399-cdn-dp",
- 	[DAILINK_DA7219] = "dlg,da7219",
-+	[DAILINK_DMIC] = "dmic-codec",
- 	[DAILINK_MAX98357A] = "maxim,max98357a",
- 	[DAILINK_RT5514] = "realtek,rt5514-i2c",
- 	[DAILINK_RT5514_DSP] = "realtek,rt5514-spi",
-@@ -329,6 +357,14 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 	},
-+	[DAILINK_DMIC] = {
-+		.name = "DMIC",
-+		.stream_name = "DMIC PCM",
-+		.codec_dai_name = "dmic-hifi",
-+		.ops = &rockchip_sound_dmic_ops,
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			SND_SOC_DAIFMT_CBS_CFS,
-+	},
- 	[DAILINK_MAX98357A] = {
- 		.name = "MAX98357A",
- 		.stream_name = "MAX98357A PCM",
+ Optional properties:
+ - dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
 -- 
 2.11.0
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
