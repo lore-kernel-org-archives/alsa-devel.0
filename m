@@ -1,15 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire: add const qualifier to
-	identifiers for read-only symbols
-Date: Tue, 22 Aug 2017 22:58:15 +0900
-Message-ID: <20170822135815.28691-1-o-takashi@sakamocchi.jp>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH v2] ALSA: pcsp: Use common error handling code
+ in snd_card_pcsp_probe()
+Date: Tue, 22 Aug 2017 16:00:26 +0200
+Message-ID: <1b3cea97-e99e-ec7e-9b5c-0de728f8f383@users.sourceforge.net>
+References: <08ee0d6b-788b-2845-6964-e1e55c2d2292@users.sourceforge.net>
+ <20170822121625.syvr64kwyh5xjexg@mwanda> <s5hziar9483.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id EFE88266812
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 15:58:20 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56E36266812
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 16:00:35 +0200 (CEST)
+In-Reply-To: <s5hziar9483.wl-tiwai@suse.de>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,256 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: alsa-devel@alsa-project.org, Dan Carpenter <dan.carpenter@oracle.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Drivers in ALSA firewire stack still includes some symbols which can be
-moved to a section for read-only symbols.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 22 Aug 2017 15:50:53 +0200
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Add a jump target so that a bit of exception handling can be better reused
+at the end of this function.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/firewire/bebob/bebob.h                 |  2 +-
- sound/firewire/bebob/bebob_focusrite.c       |  6 +++---
- sound/firewire/bebob/bebob_maudio.c          |  2 +-
- sound/firewire/bebob/bebob_terratec.c        |  2 +-
- sound/firewire/bebob/bebob_yamaha_terratec.c |  2 +-
- sound/firewire/dice/dice.c                   |  2 +-
- sound/firewire/fireface/ff-protocol-ff400.c  |  2 +-
- sound/firewire/fireface/ff.c                 |  2 +-
- sound/firewire/fireface/ff.h                 |  4 ++--
- sound/firewire/fireworks/fireworks_proc.c    |  2 +-
- sound/firewire/motu/motu.c                   |  6 +++---
- sound/firewire/oxfw/oxfw-scs1x.c             | 11 +++++------
- sound/firewire/tascam/tascam.c               |  2 +-
- 13 files changed, 22 insertions(+), 23 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 17678d6ab5a2..df1b1e94c43c 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -58,7 +58,7 @@ enum snd_bebob_clock_type {
- struct snd_bebob_clock_spec {
- 	unsigned int num;
- 	const char *const *labels;
--	enum snd_bebob_clock_type *types;
-+	const enum snd_bebob_clock_type *types;
- 	int (*get)(struct snd_bebob *bebob, unsigned int *id);
- };
- struct snd_bebob_rate_spec {
-diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
-index f11090057949..52b8b61ecddd 100644
---- a/sound/firewire/bebob/bebob_focusrite.c
-+++ b/sound/firewire/bebob/bebob_focusrite.c
-@@ -103,12 +103,12 @@ saffire_write_quad(struct snd_bebob *bebob, u64 offset, u32 value)
- 				  &data, sizeof(__be32), 0);
- }
+v2:
+Do you find this refactoring acceptable instead?
+
+ sound/drivers/pcsp/pcsp.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
+
+diff --git a/sound/drivers/pcsp/pcsp.c b/sound/drivers/pcsp/pcsp.c
+index 72e2d0012084..fc83139fcfa2 100644
+--- a/sound/drivers/pcsp/pcsp.c
++++ b/sound/drivers/pcsp/pcsp.c
+@@ -108,22 +108,17 @@ static int snd_card_pcsp_probe(int devnum, struct device *dev)
+ 		return err;
  
--static enum snd_bebob_clock_type saffirepro_10_clk_src_types[] = {
-+static const enum snd_bebob_clock_type saffirepro_10_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
- };
--static enum snd_bebob_clock_type saffirepro_26_clk_src_types[] = {
-+static const enum snd_bebob_clock_type saffirepro_26_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* ADAT1 */
-@@ -201,7 +201,7 @@ saffirepro_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- }
- 
- const struct snd_bebob_spec saffire_le_spec;
--static enum snd_bebob_clock_type saffire_both_clk_src_types[] = {
-+static const enum snd_bebob_clock_type saffire_both_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,
- };
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index d10208f92edf..bd55620c6a47 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -340,7 +340,7 @@ static int special_set_rate(struct snd_bebob *bebob, unsigned int rate)
- }
- 
- /* Clock source control for special firmware */
--static enum snd_bebob_clock_type special_clk_types[] = {
-+static const enum snd_bebob_clock_type special_clk_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,	/* With digital mute */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* SPDIF/ADAT */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
-index 2fdaf93e7a8d..9770c2127a7a 100644
---- a/sound/firewire/bebob/bebob_terratec.c
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -8,7 +8,7 @@
- 
- #include "./bebob.h"
- 
--static enum snd_bebob_clock_type phase88_rack_clk_src_types[] = {
-+static const enum snd_bebob_clock_type phase88_rack_clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* Word Clock */
-diff --git a/sound/firewire/bebob/bebob_yamaha_terratec.c b/sound/firewire/bebob/bebob_yamaha_terratec.c
-index a6be3e7138e0..8bd78fef3516 100644
---- a/sound/firewire/bebob/bebob_yamaha_terratec.c
-+++ b/sound/firewire/bebob/bebob_yamaha_terratec.c
-@@ -31,7 +31,7 @@
-  * Yamaha GO 44 and GO 46. Yamaha and Terratec had cooperated for these models.
-  */
- 
--static enum snd_bebob_clock_type clk_src_types[] = {
-+static const enum snd_bebob_clock_type clk_src_types[] = {
- 	SND_BEBOB_CLOCK_TYPE_INTERNAL,
- 	SND_BEBOB_CLOCK_TYPE_EXTERNAL,	/* S/PDIF */
- };
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 25e9f77275c4..4ddb4cdd054b 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -26,7 +26,7 @@ MODULE_LICENSE("GPL v2");
-  */
- static bool force_two_pcm_support(struct fw_unit *unit)
- {
--	const char *const models[] = {
-+	static const char *const models[] = {
- 		/* TC Electronic models. */
- 		"StudioKonnekt48",
- 		/* Focusrite models. */
-diff --git a/sound/firewire/fireface/ff-protocol-ff400.c b/sound/firewire/fireface/ff-protocol-ff400.c
-index fcec6de80eeb..12aa15df435d 100644
---- a/sound/firewire/fireface/ff-protocol-ff400.c
-+++ b/sound/firewire/fireface/ff-protocol-ff400.c
-@@ -356,7 +356,7 @@ static void ff400_dump_clock_config(struct snd_ff *ff,
- 	snd_iprintf(buffer, "Sync to clock source: %s\n", src);
- }
- 
--struct snd_ff_protocol snd_ff_protocol_ff400 = {
-+const struct snd_ff_protocol snd_ff_protocol_ff400 = {
- 	.get_clock		= ff400_get_clock,
- 	.begin_session		= ff400_begin_session,
- 	.finish_session		= ff400_finish_session,
-diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index eee7c8eac7a6..4974bc7980e9 100644
---- a/sound/firewire/fireface/ff.c
-+++ b/sound/firewire/fireface/ff.c
-@@ -157,7 +157,7 @@ static void snd_ff_remove(struct fw_unit *unit)
+ 	err = snd_pcsp_create(card);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err)
++		goto free_card;
++
+ 	if (!nopcm) {
+ 		err = snd_pcsp_new_pcm(&pcsp_chip);
+-		if (err < 0) {
+-			snd_card_free(card);
+-			return err;
+-		}
++		if (err)
++			goto free_card;
  	}
- }
+ 	err = snd_pcsp_new_mixer(&pcsp_chip, nopcm);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err)
++		goto free_card;
  
--static struct snd_ff_spec spec_ff400 = {
-+static const struct snd_ff_spec spec_ff400 = {
- 	.name = "Fireface400",
- 	.pcm_capture_channels = {18, 14, 10},
- 	.pcm_playback_channels = {18, 14, 10},
-diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index 3cb812a50030..64df44beb950 100644
---- a/sound/firewire/fireface/ff.h
-+++ b/sound/firewire/fireface/ff.h
-@@ -47,7 +47,7 @@ struct snd_ff_spec {
- 	unsigned int midi_in_ports;
- 	unsigned int midi_out_ports;
+ 	strcpy(card->driver, "PC-Speaker");
+ 	strcpy(card->shortname, "pcsp");
+@@ -131,12 +126,13 @@ static int snd_card_pcsp_probe(int devnum, struct device *dev)
+ 		pcsp_chip.port);
  
--	struct snd_ff_protocol *protocol;
-+	const struct snd_ff_protocol *protocol;
- };
+ 	err = snd_card_register(card);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err)
++		goto free_card;
  
- struct snd_ff {
-@@ -112,7 +112,7 @@ struct snd_ff_protocol {
- 	u64 midi_rx_port_1_reg;
- };
- 
--extern struct snd_ff_protocol snd_ff_protocol_ff400;
-+extern const struct snd_ff_protocol snd_ff_protocol_ff400;
- 
- int snd_ff_transaction_register(struct snd_ff *ff);
- int snd_ff_transaction_reregister(struct snd_ff *ff);
-diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
-index beb0a0ffee57..9c21f31b8b21 100644
---- a/sound/firewire/fireworks/fireworks_proc.c
-+++ b/sound/firewire/fireworks/fireworks_proc.c
-@@ -12,7 +12,7 @@
- static inline const char*
- get_phys_name(struct snd_efw_phys_grp *grp, bool input)
- {
--	const char *const ch_type[] = {
-+	static const char *const ch_type[] = {
- 		"Analog", "S/PDIF", "ADAT", "S/PDIF or ADAT", "Mirroring",
- 		"Headphones", "I2S", "Guitar", "Pirzo Guitar", "Guitar String",
- 	};
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 2bbb764822fc..0d6b526105ab 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -194,7 +194,7 @@ static void motu_bus_update(struct fw_unit *unit)
- 	snd_motu_transaction_reregister(motu);
- }
- 
--static struct snd_motu_spec motu_828mk2 = {
-+static const struct snd_motu_spec motu_828mk2 = {
- 	.name = "828mk2",
- 	.protocol = &snd_motu_protocol_v2,
- 	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-@@ -208,7 +208,7 @@ static struct snd_motu_spec motu_828mk2 = {
- 	.analog_out_ports = 8,
- };
- 
--static struct snd_motu_spec motu_828mk3 = {
-+static const struct snd_motu_spec motu_828mk3 = {
- 	.name = "828mk3",
- 	.protocol = &snd_motu_protocol_v3,
- 	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-@@ -225,7 +225,7 @@ static struct snd_motu_spec motu_828mk3 = {
- 	.analog_out_ports = 8,
- };
- 
--static struct snd_motu_spec motu_audio_express = {
-+static const struct snd_motu_spec motu_audio_express = {
- 	.name = "AudioExpress",
- 	.protocol = &snd_motu_protocol_v3,
- 	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-diff --git a/sound/firewire/oxfw/oxfw-scs1x.c b/sound/firewire/oxfw/oxfw-scs1x.c
-index 93209ebd9121..02d595665898 100644
---- a/sound/firewire/oxfw/oxfw-scs1x.c
-+++ b/sound/firewire/oxfw/oxfw-scs1x.c
-@@ -297,12 +297,6 @@ static void midi_capture_trigger(struct snd_rawmidi_substream *stream, int up)
- 	}
- }
- 
--static const struct snd_rawmidi_ops midi_capture_ops = {
--	.open    = midi_capture_open,
--	.close   = midi_capture_close,
--	.trigger = midi_capture_trigger,
--};
--
- static int midi_playback_open(struct snd_rawmidi_substream *stream)
- {
  	return 0;
-@@ -363,6 +357,11 @@ void snd_oxfw_scs1x_update(struct snd_oxfw *oxfw)
++free_card:
++	snd_card_free(card);
++	return err;
+ }
  
- int snd_oxfw_scs1x_add(struct snd_oxfw *oxfw)
- {
-+	static const struct snd_rawmidi_ops midi_capture_ops = {
-+		.open    = midi_capture_open,
-+		.close   = midi_capture_close,
-+		.trigger = midi_capture_trigger,
-+	};
- 	static const struct snd_rawmidi_ops midi_playback_ops = {
- 		.open    = midi_playback_open,
- 		.close   = midi_playback_close,
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 9dc93a7eb9da..44ad41fb7374 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -12,7 +12,7 @@ MODULE_DESCRIPTION("TASCAM FireWire series Driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
- MODULE_LICENSE("GPL v2");
- 
--static struct snd_tscm_spec model_specs[] = {
-+static const struct snd_tscm_spec model_specs[] = {
- 	{
- 		.name = "FW-1884",
- 		.has_adat = true,
+ static int alsa_card_pcsp_init(struct device *dev)
 -- 
-2.11.0
+2.14.0
