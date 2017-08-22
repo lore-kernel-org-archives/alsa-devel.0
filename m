@@ -1,47 +1,91 @@
-From: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH v5 9/9] dt-bindings: ASoC: rockchip: Update description of rockchip,codec
-Date: Tue, 22 Aug 2017 15:57:28 +0800
-Message-ID: <20170822075729.8438-10-jeffy.chen@rock-chips.com>
-References: <20170822075729.8438-1-jeffy.chen@rock-chips.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170822075729.8438-1-jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
-Cc: briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mengdong.lin-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] ASoC: rt5670: Fix GPIO headset detection
+	regression
+Date: Tue, 22 Aug 2017 11:33:22 +0300
+Message-ID: <1503390802.25945.36.camel@linux.intel.com>
+References: <20170822054452.25380-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF488266B2C
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 10:33:27 +0200 (CEST)
+In-Reply-To: <20170822054452.25380-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Update description for newly added optional audio codecs.
-
-Signed-off-by: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
-
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
-
- Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-index f19b6c830a34..f54b4e91e97c 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
-@@ -4,7 +4,7 @@ Required properties:
- - compatible: "rockchip,rk3399-gru-sound"
- - rockchip,cpu: The phandle of the Rockchip I2S controller that's
-   connected to the codecs
--- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
-+- rockchip,codec: The phandle of the audio codecs
- 
- Example:
- 
--- 
-2.11.0
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gVHVlLCAyMDE3LTA4LTIyIGF0IDA3OjQ0ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+UlQ1NjcwIGNvZGVjIGRyaXZlciBhbmQgaXRzIG1hY2hpbmUgZHJpdmVyIGZvciBJbnRlbCBDSFQg
+YXNzdW1lIHRoZQo+IGltcGxpY2l0IEdQSU8gbWFwcGluZyBvbiB0aGUgaW5kZXggMCB3aGlsZSBC
+SU9TIG9uIG1vc3QgZGV2aWNlcyBkb24ndAo+IHByb3ZpZGUgaXQuwqDCoFRoZSByZWNlbnQgY29t
+bWl0IGYxMGU0YmY2NjMyYiAoImdwaW86IGFjcGk6IEV2ZW4gbW9yZQo+IHRpZ2h0ZW4gdXAgQUNQ
+SSBHUElPIGxvb2t1cHMiKSByZXN0cmljdHMgc3VjaCBjYXNlcyBhbmQgaXQgcmVzdWx0ZWQgaW4K
+PiBhIHJlZ3Jlc3Npb24gd2hlcmUgdGhlIGhlYWRzZXQgamFjayBzZXR1cCBmYWlscyBsaWtlOgo+
+IAo+IMKgIHJ0NTY3MCBpMmMtMTBFQzU2NzI6MDA6IEFTb0M6IENhbm5vdCBnZXQgZ3BpbyBhdCBp
+bmRleCAwOiAtMgo+IMKgIHJ0NTY3MCBpMmMtMTBFQzU2NzI6MDA6IEFkZGluZyBqYWNrIEdQSU8g
+ZmFpbGVkCj4gCj4gRm9yIGZpeGluZyB0aGlzLCB3ZSBuZWVkIHRvIHByb3ZpZGUgdGhlIEdQSU8g
+bWFwcGluZyBleHBsaWNpdGx5IGluIHRoZQo+IG1hY2hpbmUgZHJpdmVyLsKgwqBBbHNvIHRoaXMg
+cGF0Y2ggY29ycmVjdHMgdGhlIHN0cmluZyB0byBiZSBwYXNzZWQgdG8KPiBncGlvbGliIHRvIG1h
+dGNoIHdpdGggdGhlIHByZS1naXZlbiBtYXBwaW5nLCB0b28uCj4gCgo+IEZpeGVzOiBmMTBlNGJm
+NjYzMmIgKCJncGlvOiBhY3BpOiBFdmVuIG1vcmUgdGlnaHRlbiB1cCBBQ1BJIEdQSU8KPiBsb29r
+dXBzIikKCkkgZG9uJ3QgdGhpbmsgaXQgZml4ZXMgdGhhdCBleGFjdCBjb21taXQuIHdpdGggdGhp
+cyBtYXBwaW5nIHRoZSBkcml2ZXIKd2lsbCB3b3JrIHByZXR0eSBtdWNoIHdlbGwgZm9yIHByZXZp
+b3VzIHZlcnNpb25zIG9mIGtlcm5lbCAodGhhdCBkbyBub3QKaGF2ZSBtZW50aW9uZWQgY29tbWl0
+KS4KClNvLCBmb3IgbXkgb3BpbmlvbiBpdCBzaG91bGQgaGF2ZSByZWZlcnJlZCB0byB0aGUgaW5p
+dGlhbCBjb21taXQgb2YgdGhhdApib2FyZCBmaWxlIHdoaWNoIGJyaW5ncyBHUElPIHJlcXVlc3Qg
+aW4gdGhlIGZpcnN0IHBsYWNlLgoKQWZ0ZXIgYWRkcmVzc2luZyB0aGF0LApSZXZpZXdlZC1ieTog
+QW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+Cgo+IEJ1
+Z3ppbGxhOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTExNTUz
+MQo+IFJlcG9ydGVkLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3Nh
+cnRAbGludXguaW50ZWwuY28KPiBtPgo+IFRlc3RlZC1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQg
+PHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBU
+YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4gLS0tCj4gwqBzb3VuZC9zb2MvY29kZWNzL3J0
+NTY3MC5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfMKgwqAyICstCj4gwqBzb3VuZC9z
+b2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjcyLmMgfCAxMCArKysrKysrKysrCj4gwqAyIGZp
+bGVzIGNoYW5nZWQsIDExIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2NvZGVjcy9ydDU2NzAuYyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1Njcw
+LmMKPiBpbmRleCAwZWM3OTg1ZWQzMDYuLjA1NGI2MTNjYjBkMCAxMDA2NDQKPiAtLS0gYS9zb3Vu
+ZC9zb2MvY29kZWNzL3J0NTY3MC5jCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NzAuYwo+
+IEBAIC01NjcsNyArNTY3LDcgQEAgaW50IHJ0NTY3MF9zZXRfamFja19kZXRlY3Qoc3RydWN0IHNu
+ZF9zb2NfY29kZWMKPiAqY29kZWMsCj4gwqAKPiDCoAlydDU2NzAtPmphY2sgPSBqYWNrOwo+IMKg
+CXJ0NTY3MC0+aHBfZ3Bpby5ncGlvZF9kZXYgPSBjb2RlYy0+ZGV2Owo+IC0JcnQ1NjcwLT5ocF9n
+cGlvLm5hbWUgPSAiaGVhZHBob25lIGRldGVjdCI7Cj4gKwlydDU2NzAtPmhwX2dwaW8ubmFtZSA9
+ICJoZWFkc2V0IjsKPiDCoAlydDU2NzAtPmhwX2dwaW8ucmVwb3J0ID0gU05EX0pBQ0tfSEVBRFNF
+VCB8Cj4gwqAJCVNORF9KQUNLX0JUTl8wIHwgU05EX0pBQ0tfQlROXzEgfCBTTkRfSkFDS19CVE5f
+MjsKPiDCoAlydDU2NzAtPmhwX2dwaW8uZGVib3VuY2VfdGltZSA9IDE1MDsKPiBkaWZmIC0tZ2l0
+IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY3Mi5jCj4gYi9zb3VuZC9zb2Mv
+aW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjcyLmMKPiBpbmRleCBiYzJhNTJkZTA2YTMuLmY1OTdk
+NTU4MjIyMyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1
+NjcyLmMKPiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjcyLmMKPiBA
+QCAtMTg0LDYgKzE4NCwxMyBAQCBzdGF0aWMgaW50IGNodF9haWYxX2h3X3BhcmFtcyhzdHJ1Y3QK
+PiBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+IMKgCXJldHVybiAwOwo+IMKgfQo+IMKg
+Cj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgYWNwaV9ncGlvX3BhcmFtcyBoZWFkc2V0X2dwaW9zID0g
+eyAwLCAwLCBmYWxzZSB9Owo+ICsKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBhY3BpX2dwaW9fbWFw
+cGluZyBjaHRfcnQ1NjcyX2dwaW9zW10gPSB7Cj4gKwl7ICJoZWFkc2V0LWdwaW9zIiwgJmhlYWRz
+ZXRfZ3Bpb3MsIDEgfSwKPiArCXt9LAo+ICt9Owo+ICsKPiDCoHN0YXRpYyBpbnQgY2h0X2NvZGVj
+X2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ1bnRpbWUpCj4gwqB7Cj4gwqAJaW50
+IHJldDsKPiBAQCAtMTkxLDYgKzE5OCw5IEBAIHN0YXRpYyBpbnQgY2h0X2NvZGVjX2luaXQoc3Ry
+dWN0Cj4gc25kX3NvY19wY21fcnVudGltZSAqcnVudGltZSkKPiDCoAlzdHJ1Y3Qgc25kX3NvY19j
+b2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVjOwo+IMKgCXN0cnVjdCBjaHRfbWNfcHJpdmF0
+ZSAqY3R4ID0KPiBzbmRfc29jX2NhcmRfZ2V0X2RydmRhdGEocnVudGltZS0+Y2FyZCk7Cj4gwqAK
+PiArCWlmIChkZXZtX2FjcGlfZGV2X2FkZF9kcml2ZXJfZ3Bpb3MoY29kZWMtPmRldiwKPiBjaHRf
+cnQ1NjcyX2dwaW9zKSkKPiArCQlkZXZfd2FybihydW50aW1lLT5kZXYsICJVbmFibGUgdG8gYWRk
+IEdQSU8gbWFwcGluZwo+IHRhYmxlXG4iKTsKPiArCj4gwqAJLyogVERNIDQgc2xvdHMgMjQgYml0
+LCBzZXQgUnggJiBUeCBiaXRtYXNrIHRvIDQgYWN0aXZlIHNsb3RzCj4gKi8KPiDCoAlyZXQgPSBz
+bmRfc29jX2RhaV9zZXRfdGRtX3Nsb3QoY29kZWNfZGFpLCAweEYsIDB4RiwgNCwgMjQpOwo+IMKg
+CWlmIChyZXQgPCAwKSB7CgotLSAKQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0Bs
+aW51eC5pbnRlbC5jb20+CkludGVsIEZpbmxhbmQgT3kKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
