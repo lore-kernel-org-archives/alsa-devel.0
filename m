@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 14/14] ASoC: Intel: cht_bsw_rt5672: fix card
-	name
-Date: Tue, 22 Aug 2017 15:32:39 -0500
-Message-ID: <20170822203239.19891-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/14] ASoC: Intel: bytcr_rt5640: simplify MCLK
+	quirk tests
+Date: Tue, 22 Aug 2017 15:32:36 -0500
+Message-ID: <20170822203239.19891-12-pierre-louis.bossart@linux.intel.com>
 References: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D3F1526718B
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 68A28267079
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:16 +0200 (CEST)
 In-Reply-To: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,27 +25,44 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For now reason the current card name is a ridiculous
-'cherrytrailcraudio'. This isn't very useful or self-explanatory,
-change to driver name cht-bsw-rt5672.
+remove redundant tests to check MCLK (align with other
+machine drivers)
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index a637bb5..a139362 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -384,7 +384,7 @@ static int cht_resume_post(struct snd_soc_card *card)
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 15b1e29..7cee09d 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -178,7 +178,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	}
  
- /* SoC card */
- static struct snd_soc_card snd_soc_card_cht = {
--	.name = "cherrytrailcraudio",
-+	.name = "cht-bsw-rt5672",
- 	.owner = THIS_MODULE,
- 	.dai_link = cht_dailink,
- 	.num_links = ARRAY_SIZE(cht_dailink),
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk) {
++		if (priv->mclk) {
+ 			ret = clk_prepare_enable(priv->mclk);
+ 			if (ret < 0) {
+ 				dev_err(card->dev,
+@@ -199,7 +199,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 					     48000 * 512,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (!ret) {
+-			if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk)
++			if (priv->mclk)
+ 				clk_disable_unprepare(priv->mclk);
+ 		}
+ 	}
+@@ -549,7 +549,7 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
+ 	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
+ 
+-	if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk) {
++	if (priv->mclk) {
+ 		/*
+ 		 * The firmware might enable the clock at
+ 		 * boot (this information may or may not
 -- 
 2.9.3
