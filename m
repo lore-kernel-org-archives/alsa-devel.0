@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 07/14] ASoC: Intel: bytcr-rt5651: fix capture
-	routes
-Date: Tue, 22 Aug 2017 15:32:32 -0500
-Message-ID: <20170822203239.19891-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/14] ASoC: Intel: bytcr_rt5651: filter codec
+	name
+Date: Tue, 22 Aug 2017 15:32:34 -0500
+Message-ID: <20170822203239.19891-10-pierre-louis.bossart@linux.intel.com>
 References: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1CD60266998
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FFBA267041
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 22:33:15 +0200 (CEST)
 In-Reply-To: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,54 +25,66 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-There is only one dmic path and the routes were not added.
-Probably a copy-paste mistake when initially creating the
-file
+Use same fix as other codecs to work around BIOS/ACPI issues
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 4a3516b..441f735 100644
+index b813c4c..17d3e144 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -54,12 +54,9 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
- 	{"Speaker", NULL, "LOUTR"},
+@@ -33,6 +33,7 @@
+ #include <sound/jack.h>
+ #include "../../codecs/rt5651.h"
+ #include "../atom/sst-atom-controls.h"
++#include "../common/sst-acpi.h"
+ 
+ enum {
+ 	BYT_RT5651_DMIC_MAP,
+@@ -443,9 +444,15 @@ static struct snd_soc_card byt_rt5651_card = {
+ 	.fully_routed = true,
  };
  
--static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic1_map[] = {
--	{"DMIC1", NULL, "Internal Mic"},
--};
--
--static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic2_map[] = {
--	{"DMIC2", NULL, "Internal Mic"},
-+static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic_map[] = {
-+	{"DMIC L1", NULL, "Internal Mic"},
-+	{"DMIC R1", NULL, "Internal Mic"},
- };
++static char byt_rt5651_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++
+ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret_val = 0;
++	struct sst_acpi_mach *mach;
++	const char *i2c_name = NULL;
++	int i;
++	int dai_index;
+ 	struct byt_rt5651_private *priv;
  
- static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
-@@ -133,14 +130,13 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 		custom_map = byt_rt5651_intmic_in1_map;
- 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in1_map);
- 		break;
--	case BYT_RT5651_DMIC2_MAP:
--		custom_map = byt_rt5651_intmic_dmic2_map;
--		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic2_map);
--		break;
- 	default:
--		custom_map = byt_rt5651_intmic_dmic1_map;
--		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic1_map);
-+		custom_map = byt_rt5651_intmic_dmic_map;
-+		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic_map);
- 	}
-+	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
-+	if (ret)
-+		return ret;
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+@@ -454,6 +461,25 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  
- 	ret = snd_soc_add_card_controls(card, byt_rt5651_controls,
- 					ARRAY_SIZE(byt_rt5651_controls));
+ 	/* register the soc card */
+ 	byt_rt5651_card.dev = &pdev->dev;
++	mach = byt_rt5651_card.dev->platform_data;
++
++	/* fix index of codec dai */
++	dai_index = MERR_DPCM_COMPR + 1;
++	for (i = 0; i < ARRAY_SIZE(byt_rt5651_dais); i++) {
++		if (!strcmp(byt_rt5651_dais[i].codec_name, "i2c-10EC5651:00")) {
++			dai_index = i;
++			break;
++		}
++	}
++
++	/* fixup codec name based on HID */
++	i2c_name = sst_acpi_find_name_from_hid(mach->id);
++	if (i2c_name != NULL) {
++		snprintf(byt_rt5651_codec_name, sizeof(byt_rt5651_codec_name),
++			"%s%s", "i2c-", i2c_name);
++
++		byt_rt5651_dais[dai_index].codec_name = byt_rt5651_codec_name;
++	}
+ 
+ 	mach = byt_rt5651_card.dev->platform_data;
+ 	snd_soc_card_set_drvdata(&byt_rt5651_card, priv);
 -- 
 2.9.3
