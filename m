@@ -1,100 +1,49 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH v2] ALSA: pcsp: Use common error handling code
- in snd_card_pcsp_probe()
-Date: Tue, 22 Aug 2017 16:00:26 +0200
-Message-ID: <1b3cea97-e99e-ec7e-9b5c-0de728f8f383@users.sourceforge.net>
-References: <08ee0d6b-788b-2845-6964-e1e55c2d2292@users.sourceforge.net>
- <20170822121625.syvr64kwyh5xjexg@mwanda> <s5hziar9483.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 2/9] ASoC: soc-core: Allow searching dai driver name
+ in snd_soc_find_dai
+Date: Tue, 22 Aug 2017 15:02:55 +0100
+Message-ID: <20170822140255.t2wfwkjr67v3eoxu@sirena.org.uk>
+References: <20170822075729.8438-1-jeffy.chen@rock-chips.com>
+ <20170822075729.8438-3-jeffy.chen@rock-chips.com>
+ <CAErzpmtbbWbt28KPaFLVdwzuWy3A7se7_WBN8q6aJrHLbtT-LQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 56E36266812
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 16:00:35 +0200 (CEST)
-In-Reply-To: <s5hziar9483.wl-tiwai@suse.de>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Dan Carpenter <dan.carpenter@oracle.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="q2ooj6hesboci4oh"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAErzpmtbbWbt28KPaFLVdwzuWy3A7se7_WBN8q6aJrHLbtT-LQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Jeffy Chen <jeffy.chen@rock-chips.com>, linux-kernel@vger.kernel.org, dgreid@chromium.org, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>, briannorris@chromium.org, mengdong.lin@linux.intel.com, mka@chromium.org, lars@metafoo.de, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 22 Aug 2017 15:50:53 +0200
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
+--q2ooj6hesboci4oh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This issue was detected by using the Coccinelle software.
+On Tue, Aug 22, 2017 at 09:24:32PM +0800, Donglin Peng wrote:
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
+> In case that dai->driver->name is NULL, strcmp(dai->driver->name,
+> dlc->dai_name) will cause segmentation fault.
+> so I think that we can change it as the follows:
 
-v2:
-Do you find this refactoring acceptable instead?
+We should be already verifying that drivers have a name, we assume one
+elsewhere.
 
- sound/drivers/pcsp/pcsp.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+--q2ooj6hesboci4oh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/sound/drivers/pcsp/pcsp.c b/sound/drivers/pcsp/pcsp.c
-index 72e2d0012084..fc83139fcfa2 100644
---- a/sound/drivers/pcsp/pcsp.c
-+++ b/sound/drivers/pcsp/pcsp.c
-@@ -108,22 +108,17 @@ static int snd_card_pcsp_probe(int devnum, struct device *dev)
- 		return err;
- 
- 	err = snd_pcsp_create(card);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err)
-+		goto free_card;
-+
- 	if (!nopcm) {
- 		err = snd_pcsp_new_pcm(&pcsp_chip);
--		if (err < 0) {
--			snd_card_free(card);
--			return err;
--		}
-+		if (err)
-+			goto free_card;
- 	}
- 	err = snd_pcsp_new_mixer(&pcsp_chip, nopcm);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err)
-+		goto free_card;
- 
- 	strcpy(card->driver, "PC-Speaker");
- 	strcpy(card->shortname, "pcsp");
-@@ -131,12 +126,13 @@ static int snd_card_pcsp_probe(int devnum, struct device *dev)
- 		pcsp_chip.port);
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err)
-+		goto free_card;
- 
- 	return 0;
-+free_card:
-+	snd_card_free(card);
-+	return err;
- }
- 
- static int alsa_card_pcsp_init(struct device *dev)
--- 
-2.14.0
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmcOY8ACgkQJNaLcl1U
+h9DRqQf9HABKxxKR1wr5MvrVrkZ55Ey6i5VzbpzCaYoa/jfT1HP4gwQ/UNlnWZbd
+/DGURWMmc1EIBaCuwcWKI579AY+jCsHyjmEQU36vK407Lo6yuEaDigVLxV5Ffixw
++moEHpHpii8VtT0DekzzFwHau+Vot44qizVvhgCSJ/yYCx1WOAFG0dYmCUSssmcM
+a/jZKQRYmBC8aiztClFy2iA8MYKVvCCNqtwu9vVJxadUlKpy/e1RfLl248xYqxpI
+gXoCKHSvOwRhq37/Got2MlpftH+cminWwACLw3q1Ds3q37S/541CCAUCT+lRClLj
+r/dZ1p3Wr594tJ11IBmU+Ph0RszkMA==
+=uQWo
+-----END PGP SIGNATURE-----
+
+--q2ooj6hesboci4oh--
