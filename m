@@ -1,16 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/8] ASoC: omap: Remove superfluous
-	snd_soc_jack_free_gpios() call
-Date: Tue, 22 Aug 2017 13:59:48 +0200
-Message-ID: <20170822115951.6679-6-tiwai@suse.de>
+Subject: [PATCH 1/8] ASoC: jack: Manage gpios via devres
+Date: Tue, 22 Aug 2017 13:59:44 +0200
+Message-ID: <20170822115951.6679-2-tiwai@suse.de>
 References: <20170822115951.6679-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id ADCBC2675E0
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 13:59:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 732262675B6
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 13:59:54 +0200 (CEST)
 In-Reply-To: <20170822115951.6679-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,101 +24,116 @@ To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since jack gpios are managed via devres, we don't have to call
-snd_jack_free_gpios() at release any longer.
+Let's be lazy -- this patch adds the devres code to
+snd_soc_jack_add_gpios() for releasing the gpio resources at device
+removal automagically.  After this patch, you don't have to call
+snd_soc_jack_free_gpios() manually as long as it's managed from the
+machine driver.
+
+What about the gpios assigned in other levels?  Well, you might still
+need to free the resources manually, depending on how the component
+unbind works.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/omap/ams-delta.c    | 10 ----------
- sound/soc/omap/omap-twl4030.c | 13 -------------
- sound/soc/omap/rx51.c         |  9 ---------
- 3 files changed, 32 deletions(-)
+ sound/soc/soc-jack.c | 52 +++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 41 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
-index 16cc95fa4573..6c49f3d6fd96 100644
---- a/sound/soc/omap/ams-delta.c
-+++ b/sound/soc/omap/ams-delta.c
-@@ -513,15 +513,6 @@ static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 7daf21fee355..2bb37ce48e38 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -22,6 +22,12 @@
+ #include <linux/suspend.h>
+ #include <trace/events/asoc.h>
+ 
++struct jack_gpio_tbl {
++	int count;
++	struct snd_soc_jack *jack;
++	struct snd_soc_jack_gpio *gpios;
++};
++
+ /**
+  * snd_soc_codec_set_jack - configure codec jack.
+  * @codec: CODEC
+@@ -333,6 +339,28 @@ static int snd_soc_jack_pm_notifier(struct notifier_block *nb,
+ 	return NOTIFY_DONE;
  }
  
--static int ams_delta_card_remove(struct snd_soc_card *card)
--{
--	snd_soc_jack_free_gpios(&ams_delta_hook_switch,
--			ARRAY_SIZE(ams_delta_hook_switch_gpios),
--			ams_delta_hook_switch_gpios);
--
--	return 0;
--}
--
- /* DAI glue - connects codec <--> CPU */
- static struct snd_soc_dai_link ams_delta_dai_link = {
- 	.name = "CX20442",
-@@ -540,7 +531,6 @@ static struct snd_soc_dai_link ams_delta_dai_link = {
- static struct snd_soc_card ams_delta_audio_card = {
- 	.name = "AMS_DELTA",
- 	.owner = THIS_MODULE,
--	.remove = ams_delta_card_remove,
- 	.dai_link = &ams_delta_dai_link,
- 	.num_links = 1,
++static void jack_free_gpios(struct snd_soc_jack *jack, int count,
++			    struct snd_soc_jack_gpio *gpios)
++{
++	int i;
++
++	for (i = 0; i < count; i++) {
++		gpiod_unexport(gpios[i].desc);
++		unregister_pm_notifier(&gpios[i].pm_notifier);
++		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
++		cancel_delayed_work_sync(&gpios[i].work);
++		gpiod_put(gpios[i].desc);
++		gpios[i].jack = NULL;
++	}
++}
++
++static void jack_devres_free_gpios(struct device *dev, void *res)
++{
++	struct jack_gpio_tbl *tbl = res;
++
++	jack_free_gpios(tbl->jack, tbl->count, tbl->gpios);
++}
++
+ /**
+  * snd_soc_jack_add_gpios - Associate GPIO pins with an ASoC jack
+  *
+@@ -347,6 +375,14 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios)
+ {
+ 	int i, ret;
++	struct jack_gpio_tbl *tbl;
++
++	tbl = devres_alloc(jack_devres_free_gpios, sizeof(*tbl), GFP_KERNEL);
++	if (!tbl)
++		return -ENOMEM;
++	tbl->jack = jack;
++	tbl->count = count;
++	tbl->gpios = gpios;
  
-diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
-index a24b0dedabb9..cccc316743fa 100644
---- a/sound/soc/omap/omap-twl4030.c
-+++ b/sound/soc/omap/omap-twl4030.c
-@@ -208,18 +208,6 @@ static int omap_twl4030_init(struct snd_soc_pcm_runtime *rtd)
+ 	for (i = 0; i < count; i++) {
+ 		if (!gpios[i].name) {
+@@ -424,12 +460,14 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 				      msecs_to_jiffies(gpios[i].debounce_time));
+ 	}
+ 
++	devres_add(jack->card->dev, tbl);
+ 	return 0;
+ 
+ err:
+ 	gpio_free(gpios[i].gpio);
+ undo:
+-	snd_soc_jack_free_gpios(jack, i, gpios);
++	jack_free_gpios(jack, i, gpios);
++	devres_free(tbl);
+ 
  	return ret;
  }
- 
--static int omap_twl4030_card_remove(struct snd_soc_card *card)
--{
--	struct omap_twl4030 *priv = snd_soc_card_get_drvdata(card);
+@@ -471,16 +509,8 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_add_gpiods);
+ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios)
+ {
+-	int i;
 -
--	if (priv->jack_detect > 0)
--		snd_soc_jack_free_gpios(&priv->hs_jack,
--					ARRAY_SIZE(hs_jack_gpios),
--					hs_jack_gpios);
--
--	return 0;
--}
--
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
- 	{
-@@ -247,7 +235,6 @@ static struct snd_soc_dai_link omap_twl4030_dai_links[] = {
- /* Audio machine driver */
- static struct snd_soc_card omap_twl4030_card = {
- 	.owner = THIS_MODULE,
--	.remove = omap_twl4030_card_remove,
- 	.dai_link = omap_twl4030_dai_links,
- 	.num_links = ARRAY_SIZE(omap_twl4030_dai_links),
- 
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 3aeb65feaea1..57448bd5ad77 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -311,14 +311,6 @@ static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
- 	return err;
+-	for (i = 0; i < count; i++) {
+-		gpiod_unexport(gpios[i].desc);
+-		unregister_pm_notifier(&gpios[i].pm_notifier);
+-		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
+-		cancel_delayed_work_sync(&gpios[i].work);
+-		gpiod_put(gpios[i].desc);
+-		gpios[i].jack = NULL;
+-	}
++	jack_free_gpios(jack, count, gpios);
++	devres_destroy(jack->card->dev, jack_devres_free_gpios, NULL, NULL);
  }
- 
--static int rx51_card_remove(struct snd_soc_card *card)
--{
--	snd_soc_jack_free_gpios(&rx51_av_jack, ARRAY_SIZE(rx51_av_jack_gpios),
--				rx51_av_jack_gpios);
--
--	return 0;
--}
--
- /* Digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link rx51_dai[] = {
- 	{
-@@ -361,7 +353,6 @@ static struct snd_soc_codec_conf rx51_codec_conf[] = {
- static struct snd_soc_card rx51_sound_card = {
- 	.name = "RX-51",
- 	.owner = THIS_MODULE,
--	.remove = rx51_card_remove,
- 	.dai_link = rx51_dai,
- 	.num_links = ARRAY_SIZE(rx51_dai),
- 	.aux_dev = rx51_aux_dev,
+ EXPORT_SYMBOL_GPL(snd_soc_jack_free_gpios);
+ #endif	/* CONFIG_GPIOLIB */
 -- 
 2.14.0
