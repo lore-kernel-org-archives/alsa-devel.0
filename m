@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove unused rsnd_xxx_to_dma()"
-	to the asoc tree
-Date: Tue, 22 Aug 2017 17:21:05 +0100
-Message-ID: <E1dkBvN-0004QR-7I@debutante>
-References: <87r2wkxb76.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 463782676D4
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 18:21:11 +0200 (CEST)
-In-Reply-To: <87r2wkxb76.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Subject: Applied "ASoC: rockchip: Correct 'dmic-delay' property name" to the asoc tree
+Date: Tue, 22 Aug 2017 17:21:01 +0100
+Message-ID: <E1dkBvJ-0004PE-KG@debutante>
+References: <20170822151009.19014-2-jeffy.chen@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170822151009.19014-2-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, alsa-devel@alsa-project.org, briannorris@chromium.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove unused rsnd_xxx_to_dma()
+   ASoC: rockchip: Correct 'dmic-delay' property name
 
 has been applied to the asoc tree at
 
@@ -53,41 +37,62 @@ to this mail.
 Thanks,
 Mark
 
->From c16293560a1c188a05cba1dcc46548d33b641c06 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 22 Aug 2017 00:02:03 +0000
-Subject: [PATCH] ASoC: rsnd: remove unused rsnd_xxx_to_dma()
+>From f628c4ed3de499f027d3ae70cbb46c6dfadfc098 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 22 Aug 2017 23:35:48 +0800
+Subject: [PATCH] ASoC: rockchip: Correct 'dmic-delay' property name
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The 'dmic-delay' property name is different with the dt-binding.
+
+So correct it with 'dmic-wakeup-delay-ms'.
+
+Fixes: 3a6f9dce6116 (ASoC: rk3399_gru_sound: fix recording pop at first attempt)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 1 -
- sound/soc/sh/rcar/ssi.c | 1 -
- 2 files changed, 2 deletions(-)
+ sound/soc/rockchip/rk3399_gru_sound.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 46400397dbbd..510b68a483b4 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -27,7 +27,6 @@ struct rsnd_src {
- #define RSND_SRC_NAME_SIZE 16
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 70c0908fb9b4..566ccb39fb31 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -38,7 +38,7 @@
  
- #define rsnd_src_get(priv, id) ((struct rsnd_src *)(priv->src) + id)
--#define rsnd_src_to_dma(src) ((src)->dma)
- #define rsnd_src_nr(priv) ((priv)->src_nr)
- #define rsnd_src_sync_is_enabled(mod) (rsnd_mod_to_src(mod)->sen.val)
+ #define SOUND_FS	256
  
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 8bb47144660b..fffc07e72627 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -99,7 +99,6 @@ struct rsnd_ssi {
- 	     i++)
+-static unsigned int rt5514_dmic_delay;
++static unsigned int dmic_wakeup_delay;
  
- #define rsnd_ssi_get(priv, id) ((struct rsnd_ssi *)(priv->ssi) + id)
--#define rsnd_ssi_to_dma(mod) ((ssi)->dma)
- #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
- #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
- #define rsnd_ssi_flags_has(p, f) ((p)->flags & f)
+ static struct snd_soc_jack rockchip_sound_jack;
+ 
+@@ -126,7 +126,7 @@ static int rockchip_sound_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Wait for DMIC stable */
+-	msleep(rt5514_dmic_delay);
++	msleep(dmic_wakeup_delay);
+ 
+ 	return 0;
+ }
+@@ -348,13 +348,13 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	/* Set DMIC delay */
+-	ret = device_property_read_u32(&pdev->dev, "dmic-delay",
+-					&rt5514_dmic_delay);
++	/* Set DMIC wakeup delay */
++	ret = device_property_read_u32(&pdev->dev, "dmic-wakeup-delay-ms",
++					&dmic_wakeup_delay);
+ 	if (ret) {
+-		rt5514_dmic_delay = 0;
++		dmic_wakeup_delay = 0;
+ 		dev_dbg(&pdev->dev,
+-			"no optional property 'dmic-delay' found, default: no delay\n");
++			"no optional property 'dmic-wakeup-delay-ms' found, default: no delay\n");
+ 	}
+ 
+ 	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
 -- 
 2.13.3
