@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: Remove superfluous
-	snd_soc_jack_free_gpios() call" to the asoc tree
-Date: Tue, 22 Aug 2017 13:47:45 +0100
-Message-ID: <E1dk8av-0008VV-CZ@finisterre>
-References: <20170822115951.6679-3-tiwai@suse.de>
+Subject: Applied "ASoC: jack: Manage gpios via devres" to the
+	asoc tree
+Date: Tue, 22 Aug 2017 13:47:49 +0100
+Message-ID: <E1dk8az-0008WO-3x@finisterre>
+References: <20170822115951.6679-2-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7331026684C
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 14:47:46 +0200 (CEST)
-In-Reply-To: <20170822115951.6679-3-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 44393267658
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 14:47:49 +0200 (CEST)
+In-Reply-To: <20170822115951.6679-2-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: Remove superfluous snd_soc_jack_free_gpios() call
+   ASoC: jack: Manage gpios via devres
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,122 @@ to this mail.
 Thanks,
 Mark
 
->From 8244fd7e489a586e63a36302105a2a1ece28a3c6 Mon Sep 17 00:00:00 2001
+>From bd29ae969042c87413157c02d4f2a787d0212da3 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 22 Aug 2017 13:59:45 +0200
-Subject: [PATCH] ASoC: fsl: Remove superfluous snd_soc_jack_free_gpios() call
+Date: Tue, 22 Aug 2017 13:59:44 +0200
+Subject: [PATCH] ASoC: jack: Manage gpios via devres
 
-Since jack gpios are managed via devres, we don't have to call
-snd_jack_free_gpios() at release any longer.
+Let's be lazy -- this patch adds the devres code to
+snd_soc_jack_add_gpios() for releasing the gpio resources at device
+removal automagically.  After this patch, you don't have to call
+snd_soc_jack_free_gpios() manually as long as it's managed from the
+machine driver.
+
+What about the gpios assigned in other levels?  Well, you might still
+need to free the resources manually, depending on how the component
+unbind works.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-es8328.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/soc-jack.c | 52 +++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 41 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-index 20e7400e2611..9953438086e4 100644
---- a/sound/soc/fsl/imx-es8328.c
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -203,9 +203,6 @@ static int imx_es8328_remove(struct platform_device *pdev)
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 42ca9f19843b..4c83734ae596 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -22,6 +22,12 @@
+ #include <linux/suspend.h>
+ #include <trace/events/asoc.h>
+ 
++struct jack_gpio_tbl {
++	int count;
++	struct snd_soc_jack *jack;
++	struct snd_soc_jack_gpio *gpios;
++};
++
+ /**
+  * snd_soc_codec_set_jack - configure codec jack.
+  * @codec: CODEC
+@@ -333,6 +339,28 @@ static int snd_soc_jack_pm_notifier(struct notifier_block *nb,
+ 	return NOTIFY_DONE;
+ }
+ 
++static void jack_free_gpios(struct snd_soc_jack *jack, int count,
++			    struct snd_soc_jack_gpio *gpios)
++{
++	int i;
++
++	for (i = 0; i < count; i++) {
++		gpiod_unexport(gpios[i].desc);
++		unregister_pm_notifier(&gpios[i].pm_notifier);
++		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
++		cancel_delayed_work_sync(&gpios[i].work);
++		gpiod_put(gpios[i].desc);
++		gpios[i].jack = NULL;
++	}
++}
++
++static void jack_devres_free_gpios(struct device *dev, void *res)
++{
++	struct jack_gpio_tbl *tbl = res;
++
++	jack_free_gpios(tbl->jack, tbl->count, tbl->gpios);
++}
++
+ /**
+  * snd_soc_jack_add_gpios - Associate GPIO pins with an ASoC jack
+  *
+@@ -347,6 +375,14 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios)
  {
- 	struct imx_es8328_data *data = platform_get_drvdata(pdev);
+ 	int i, ret;
++	struct jack_gpio_tbl *tbl;
++
++	tbl = devres_alloc(jack_devres_free_gpios, sizeof(*tbl), GFP_KERNEL);
++	if (!tbl)
++		return -ENOMEM;
++	tbl->jack = jack;
++	tbl->count = count;
++	tbl->gpios = gpios;
  
--	snd_soc_jack_free_gpios(&headset_jack, ARRAY_SIZE(headset_jack_gpios),
--				headset_jack_gpios);
--
- 	snd_soc_unregister_card(&data->card);
+ 	for (i = 0; i < count; i++) {
+ 		if (!gpios[i].name) {
+@@ -424,12 +460,14 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 				      msecs_to_jiffies(gpios[i].debounce_time));
+ 	}
  
++	devres_add(jack->card->dev, tbl);
  	return 0;
+ 
+ err:
+ 	gpio_free(gpios[i].gpio);
+ undo:
+-	snd_soc_jack_free_gpios(jack, i, gpios);
++	jack_free_gpios(jack, i, gpios);
++	devres_free(tbl);
+ 
+ 	return ret;
+ }
+@@ -471,16 +509,8 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_add_gpiods);
+ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios)
+ {
+-	int i;
+-
+-	for (i = 0; i < count; i++) {
+-		gpiod_unexport(gpios[i].desc);
+-		unregister_pm_notifier(&gpios[i].pm_notifier);
+-		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
+-		cancel_delayed_work_sync(&gpios[i].work);
+-		gpiod_put(gpios[i].desc);
+-		gpios[i].jack = NULL;
+-	}
++	jack_free_gpios(jack, count, gpios);
++	devres_destroy(jack->card->dev, jack_devres_free_gpios, NULL, NULL);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_jack_free_gpios);
+ #endif	/* CONFIG_GPIOLIB */
 -- 
 2.13.2
