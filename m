@@ -1,45 +1,33 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH v2 1/2] ASoC: cs43130: Add support for
- CS43130 codec
-Date: Tue, 22 Aug 2017 01:41:19 +0000
-Message-ID: <298a3712-a367-47b4-878d-72cf6d55aea7@EX4.ad.cirrus.com>
-References: <a71e2771-fec4-4d15-af95-ec15e010fd0c@EX3.ad.cirrus.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 2/9] ASoC: rockchip: Remove obsolete dmic-delay
+Date: Mon, 21 Aug 2017 21:42:09 -0500
+Message-ID: <20170822024209.ej6y7pv77ztupvrq@rob-hp-laptop>
+References: <20170818031147.16810-1-jeffy.chen@rock-chips.com>
+ <20170818031147.16810-3-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 828B3266D86
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 03:41:24 +0200 (CEST)
-In-Reply-To: <a71e2771-fec4-4d15-af95-ec15e010fd0c@EX3.ad.cirrus.com>
-Content-Language: en-US
-Content-ID: <2639A216243C404F941F7D589C7667E5@ad.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Xu, Li" <Li.Xu@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "tiwai@suse.com" <tiwai@suse.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170818031147.16810-3-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Aug 18, 2017 at 11:11:40AM +0800, Jeffy Chen wrote:
+> This property is no longer used.
+> 
+> Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+> ---
+> 
+> Changes in v4: None
+> Changes in v3: None
+> Changes in v2: None
+> 
+>  .../bindings/sound/rockchip,rk3399-gru-sound.txt           |  7 -------
+>  sound/soc/rockchip/rk3399_gru_sound.c                      | 14 --------------
+>  2 files changed, 21 deletions(-)
 
+Well, obviously not used since they don't even match.
 
-On 8/19/17, 2:57 AM, "alsa-devel-bounces@alsa-project.org on behalf of Li Xu" <alsa-devel-bounces@alsa-project.org on behalf of li.xu@cirrus.com> wrote:
-
-    Add support for Cirrus Logic CS43130 codec.
-    
-    Support:
-    I2S/DSP PCM playback.
-    DoP/DSD playback.
-    HP detection and DC/AC impedance measurement.
-    
-    Signed-off-by: Li Xu <li.xu@cirrus.com>
-    ---
-Acked-by: Brian Austin <brian.austin@cirrus.com> 
+Acked-by: Rob Herring <robh@kernel.org>
