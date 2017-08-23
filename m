@@ -1,8 +1,8 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/6] ALSA: pcm: Use common error handling code
- in _snd_pcm_new()
-Date: Wed, 23 Aug 2017 10:23:23 +0200
-Message-ID: <60478d72-9d5a-9eff-9372-0fb4dbb2dbc4@users.sourceforge.net>
+Subject: [PATCH 2/6] ALSA: pcm: Adjust nine function calls
+ together with a variable assignment
+Date: Wed, 23 Aug 2017 10:24:34 +0200
+Message-ID: <9fcdbe5a-b17a-dfb8-f4af-a1261da93a38@users.sourceforge.net>
 References: <b8c9e41b-a47e-1d99-3d1a-5d39772e4b54@users.sourceforge.net>
  <s5h378isw2d.wl-tiwai@suse.de>
  <800d7aa6-d8f2-cbf5-caaa-7e4006976e68@users.sourceforge.net>
@@ -10,9 +10,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id A49E92665D5
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 10:23:30 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2BE62665D5
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 10:24:43 +0200 (CEST)
 In-Reply-To: <800d7aa6-d8f2-cbf5-caaa-7e4006976e68@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -29,61 +29,123 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 23 Aug 2017 08:40:37 +0200
+Date: Wed, 23 Aug 2017 09:20:29 +0200
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
+The script "checkpatch.pl" pointed information out like the following.
 
-This issue was detected by using the Coccinelle software.
+ERROR: do not use assignment in if condition
+
+Thus fix the affected source code places.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/core/pcm.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ sound/core/pcm.c | 38 +++++++++++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 15 deletions(-)
 
 diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 89c7485519cb..048df9658f50 100644
+index 048df9658f50..c790f79e45ae 100644
 --- a/sound/core/pcm.c
 +++ b/sound/core/pcm.c
-@@ -783,21 +783,27 @@ static int _snd_pcm_new(struct snd_card *card, const char *id, int device,
- 	INIT_LIST_HEAD(&pcm->list);
- 	if (id)
- 		strlcpy(pcm->id, id, sizeof(pcm->id));
--	if ((err = snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_PLAYBACK, playback_count)) < 0) {
--		snd_pcm_free(pcm);
--		return err;
--	}
--	if ((err = snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_CAPTURE, capture_count)) < 0) {
--		snd_pcm_free(pcm);
--		return err;
--	}
--	if ((err = snd_device_new(card, SNDRV_DEV_PCM, pcm, &ops)) < 0) {
--		snd_pcm_free(pcm);
--		return err;
--	}
-+
-+	err = snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-+				 playback_count);
-+	if (err < 0)
-+		goto free_pcm;
-+
-+	err = snd_pcm_new_stream(pcm, SNDRV_PCM_STREAM_CAPTURE, capture_count);
-+	if (err < 0)
-+		goto free_pcm;
-+
-+	err = snd_device_new(card, SNDRV_DEV_PCM, pcm, &ops);
-+	if (err < 0)
-+		goto free_pcm;
-+
- 	if (rpcm)
- 		*rpcm = pcm;
- 	return 0;
-+
-+free_pcm:
-+	snd_pcm_free(pcm);
-+	return err;
- }
+@@ -523,7 +523,9 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
  
- /**
+ 	sprintf(name, "pcm%i%c", pcm->device, 
+ 		pstr->stream == SNDRV_PCM_STREAM_PLAYBACK ? 'p' : 'c');
+-	if ((entry = snd_info_create_card_entry(pcm->card, name, pcm->card->proc_root)) == NULL)
++	entry = snd_info_create_card_entry(pcm->card, name,
++					   pcm->card->proc_root);
++	if (!entry)
+ 		return -ENOMEM;
+ 	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
+ 	if (snd_info_register(entry) < 0) {
+@@ -531,8 +533,8 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
+ 		return -ENOMEM;
+ 	}
+ 	pstr->proc_root = entry;
+-
+-	if ((entry = snd_info_create_card_entry(pcm->card, "info", pstr->proc_root)) != NULL) {
++	entry = snd_info_create_card_entry(pcm->card, "info", pstr->proc_root);
++	if (entry) {
+ 		snd_info_set_text_ops(entry, pstr, snd_pcm_stream_proc_info_read);
+ 		if (snd_info_register(entry) < 0) {
+ 			snd_info_free_entry(entry);
+@@ -542,8 +544,9 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
+ 	pstr->proc_info_entry = entry;
+ 
+ #ifdef CONFIG_SND_PCM_XRUN_DEBUG
+-	if ((entry = snd_info_create_card_entry(pcm->card, "xrun_debug",
+-						pstr->proc_root)) != NULL) {
++	entry = snd_info_create_card_entry(pcm->card, "xrun_debug",
++					   pstr->proc_root);
++	if (entry) {
+ 		entry->c.text.read = snd_pcm_xrun_debug_read;
+ 		entry->c.text.write = snd_pcm_xrun_debug_write;
+ 		entry->mode |= S_IWUSR;
+@@ -580,7 +583,9 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ 	card = substream->pcm->card;
+ 
+ 	sprintf(name, "sub%i", substream->number);
+-	if ((entry = snd_info_create_card_entry(card, name, substream->pstr->proc_root)) == NULL)
++	entry = snd_info_create_card_entry(card, name,
++					   substream->pstr->proc_root);
++	if (!entry)
+ 		return -ENOMEM;
+ 	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
+ 	if (snd_info_register(entry) < 0) {
+@@ -588,8 +593,8 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ 		return -ENOMEM;
+ 	}
+ 	substream->proc_root = entry;
+-
+-	if ((entry = snd_info_create_card_entry(card, "info", substream->proc_root)) != NULL) {
++	entry = snd_info_create_card_entry(card, "info", substream->proc_root);
++	if (entry) {
+ 		snd_info_set_text_ops(entry, substream,
+ 				      snd_pcm_substream_proc_info_read);
+ 		if (snd_info_register(entry) < 0) {
+@@ -598,8 +603,9 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 	substream->proc_info_entry = entry;
+-
+-	if ((entry = snd_info_create_card_entry(card, "hw_params", substream->proc_root)) != NULL) {
++	entry = snd_info_create_card_entry(card, "hw_params",
++					   substream->proc_root);
++	if (entry) {
+ 		snd_info_set_text_ops(entry, substream,
+ 				      snd_pcm_substream_proc_hw_params_read);
+ 		if (snd_info_register(entry) < 0) {
+@@ -608,8 +614,9 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 	substream->proc_hw_params_entry = entry;
+-
+-	if ((entry = snd_info_create_card_entry(card, "sw_params", substream->proc_root)) != NULL) {
++	entry = snd_info_create_card_entry(card, "sw_params",
++					   substream->proc_root);
++	if (entry) {
+ 		snd_info_set_text_ops(entry, substream,
+ 				      snd_pcm_substream_proc_sw_params_read);
+ 		if (snd_info_register(entry) < 0) {
+@@ -618,8 +625,8 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 	substream->proc_sw_params_entry = entry;
+-
+-	if ((entry = snd_info_create_card_entry(card, "status", substream->proc_root)) != NULL) {
++	entry = snd_info_create_module_entry(THIS_MODULE, "pcm", NULL);
++	if (entry) {
+ 		snd_info_set_text_ops(entry, substream,
+ 				      snd_pcm_substream_proc_status_read);
+ 		if (snd_info_register(entry) < 0) {
+@@ -1230,7 +1237,8 @@ static void snd_pcm_proc_init(void)
+ {
+ 	struct snd_info_entry *entry;
+ 
+-	if ((entry = snd_info_create_module_entry(THIS_MODULE, "pcm", NULL)) != NULL) {
++	entry = snd_info_create_module_entry(THIS_MODULE, "pcm", NULL);
++	if (entry) {
+ 		snd_info_set_text_ops(entry, NULL, snd_pcm_proc_read);
+ 		if (snd_info_register(entry) < 0) {
+ 			snd_info_free_entry(entry);
 -- 
 2.14.0
