@@ -1,53 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Wed, 23 Aug 2017 10:28:28 +0100
-Message-ID: <20170823092828.7ijy7rthvqkzcgtz@sirena.org.uk>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][next] ASoC: tegra: remove unused variable machine, fixes build warning
+Date: Wed, 23 Aug 2017 10:37:41 +0100
+Message-ID: <20170823093741.26739-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ct75u5b6vovkseer"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1503453106-5564-1-git-send-email-trini@konsulko.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Tom Rini <trini@konsulko.com>
-Cc: linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Codrut Grosu <codrut.cristian.grosu@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Donglin Peng <dolinux.peng@gmail.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---ct75u5b6vovkseer
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Remove unused variable 'machine', fixes build warning:
+sound/soc/tegra/tegra_wm8903.c: In function 'tegra_wm8903_remove':
+sound/soc/tegra/tegra_wm8903.c:206:23: warning: unused variable
+  'machine' [-Wunused-variable]
+  struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
+                       ^~~~~~~
+Fixes: 2a8bd83af30e ("ASoC: tegra: Remove superfluous snd_soc_jack_free_gpios() call")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/tegra/tegra_wm8903.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Tue, Aug 22, 2017 at 09:51:46PM -0400, Tom Rini wrote:
-
-> Not all devices with ACPI and this combination of sound devices will
-> have the required information provided via ACPI.  Reintroduce the I2C
-> device ID to restore sound functionality on on the Chromebook 'Samus'
-> model.
-
->  	{ "rt5677", RT5677 },
->  	{ "rt5676", RT5676 },
-> +	{ "RT5677CE:00", RT5677 },
->  	{ }
->  };
-
-You're going to have to provide a clearer changelog here, that's
-obviously an ACPI ID...
-
---ct75u5b6vovkseer
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmdSrgACgkQJNaLcl1U
-h9BFfwf+JP3IhxwtyOYCijR1XgpEWrvRIC3EXl3RA4en5NyWLOVu4+OrZXKJBrOV
-2PF1voS+B7qNPJHbTgzrhoOzVP2PH17cO/h5FXv8mr36iSb8vH9GVeiZ4wFWBmXb
-Pm7KZgjo4QNbKwQT7xefCUvlqxcJH+TLkkVUL7w6fnAW56f/6VnhsxcPvi+cFnnG
-FwydDg2FLbzp7czcJqbydmOzRfbNstt+6satLXeoHBahrydrtTXtHaXkCVuyPkJN
-2OY58+fYOMQIC5/PwipHgP9qvTbq6Hby5yRIw53dYNGe/ZJBbR8gCOaNrnAyBjIt
-gWQx4y59zVCDv7SwPS1d6soWWsOUqA==
-=XuVw
------END PGP SIGNATURE-----
-
---ct75u5b6vovkseer--
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index 2384cb9cb95c..18bdae59a4df 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -203,7 +203,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ 		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
+ 
+ 	wm8903_mic_detect(codec, NULL, 0, 0);
+ 
+-- 
+2.14.1
