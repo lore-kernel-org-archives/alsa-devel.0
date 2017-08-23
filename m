@@ -1,16 +1,19 @@
-From: Hsin-Yu Chao <hychao@chromium.org>
-Subject: [PATCH] ASoC: rt5514: expose Hotword Model control
-Date: Wed, 23 Aug 2017 18:29:31 +0800
-Message-ID: <20170823102931.184967-1-hychao@chromium.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] ALSA: USB-MIDI: Use common error handling
+ code in __snd_usbmidi_create()
+Date: Wed, 23 Aug 2017 12:49:16 +0200
+Message-ID: <e78ed11b-3456-d093-957f-5e9ab702b18c@ladisch.de>
+References: <328d3b62-2113-e51a-5d66-79d515de3179@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f45.google.com (mail-pg0-f45.google.com [74.125.83.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DD062664EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 12:29:49 +0200 (CEST)
-Received: by mail-pg0-f45.google.com with SMTP id t3so5756272pgt.0
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 03:29:49 -0700 (PDT)
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19AF82664EB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 12:49:23 +0200 (CEST)
+In-Reply-To: <328d3b62-2113-e51a-5d66-79d515de3179@users.sourceforge.net>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,124 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Hsin-Yu Chao <hychao@chromium.org>, dgreid@chromium.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, SF Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This change exposes mixer control 'Hotword Model' for switching
-hotword model in runtime. This new function requires updated
-firmware to load hotword model at address 0x4ff80000.
+SF Markus Elfring wrote:
+> Add jump targets so that a bit of exception handling can be better reused
+> at the end of this function.
+>
+> This issue was detected by using the Coccinelle software.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
----
- sound/soc/codecs/rt5514.c | 52 +++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt5514.h |  3 +++
- 2 files changed, 55 insertions(+)
+Acked-by: Clemens Ladisch <clemens@ladisch.de>
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index a2722177470e..7482df8ff737 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -299,6 +299,7 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
- 	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
- 	struct snd_soc_codec *codec = rt5514->codec;
- 	const struct firmware *fw = NULL;
-+	int ret = 0;
- 
- 	if (ucontrol->value.integer.value[0] == rt5514->dsp_enabled)
- 		return 0;
-@@ -335,6 +336,27 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
- 				fw = NULL;
- 			}
- 
-+			if (rt5514->model_buf && rt5514->model_len) {
-+				ret = rt5514_spi_burst_write(0x4ff80000,
-+					rt5514->model_buf,
-+					((rt5514->model_len / 8) + 1) * 8);
-+				if (ret) {
-+					dev_err(codec->dev,
-+						"Model load failed %d\n", ret);
-+					return ret;
-+				}
-+			} else {
-+				request_firmware(&fw, RT5514_FIRMWARE3,
-+						 codec->dev);
-+				if (fw) {
-+					rt5514_spi_burst_write(0x4ff80000,
-+						fw->data,
-+						((fw->size/8)+1)*8);
-+					release_firmware(fw);
-+					fw = NULL;
-+				}
-+			}
-+
- 			/* DSP run */
- 			regmap_write(rt5514->i2c_regmap, 0x18002f00,
- 				0x00055148);
-@@ -349,6 +371,34 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static int rt5514_hotword_model_put(struct snd_kcontrol *kcontrol,
-+		const unsigned int __user *bytes, unsigned int size)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_codec *codec = rt5514->codec;
-+	int ret = 0;
-+
-+	if (rt5514->model_buf || rt5514->model_len < size) {
-+		if (rt5514->model_buf)
-+			devm_kfree(codec->dev, rt5514->model_buf);
-+		rt5514->model_buf = devm_kmalloc(codec->dev, size, GFP_KERNEL);
-+		if (!rt5514->model_buf) {
-+			ret = -ENOMEM;
-+			goto done;
-+		}
-+	}
-+
-+	/* Skips the TLV header. */
-+	bytes += 2;
-+
-+	if (copy_from_user(rt5514->model_buf, bytes, size))
-+		ret = -EFAULT;
-+done:
-+	rt5514->model_len = (ret ? 0 : size);
-+	return ret;
-+}
-+
- static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
- 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
-@@ -360,6 +410,8 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
- 		adc_vol_tlv),
- 	SOC_SINGLE_EXT("DSP Voice Wake Up", SND_SOC_NOPM, 0, 1, 0,
- 		rt5514_dsp_voice_wake_up_get, rt5514_dsp_voice_wake_up_put),
-+	SND_SOC_BYTES_TLV("Hotword Model", 0x8504,
-+		NULL, rt5514_hotword_model_put),
- };
- 
- /* ADC Mixer*/
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 02bc212a86d9..07475a9918d2 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -236,6 +236,7 @@
- 
- #define RT5514_FIRMWARE1	"rt5514_dsp_fw1.bin"
- #define RT5514_FIRMWARE2	"rt5514_dsp_fw2.bin"
-+#define RT5514_FIRMWARE3	"rt5514_dsp_fw3.bin"
- 
- /* System Clock Source */
- enum {
-@@ -262,6 +263,8 @@ struct rt5514_priv {
- 	int pll_in;
- 	int pll_out;
- 	int dsp_enabled;
-+	u8 *model_buf;
-+	unsigned int model_len;
- };
- 
- #endif /* __RT5514_H__ */
--- 
-2.12.2
+> ---
+>  sound/usb/midi.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+>
+> diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+> index a35f41467237..bd9d02268724 100644
+> --- a/sound/usb/midi.c
+> +++ b/sound/usb/midi.c
+> @@ -2435,10 +2435,8 @@ int __snd_usbmidi_create(struct snd_card *card,
+>  		err = -ENXIO;
+>  		break;
+>  	}
+> -	if (err < 0) {
+> -		kfree(umidi);
+> -		return err;
+> -	}
+> +	if (err < 0)
+> +		goto free_midi;
+>
+>  	/* create rawmidi device */
+>  	out_ports = 0;
+> @@ -2448,23 +2446,25 @@ int __snd_usbmidi_create(struct snd_card *card,
+>  		in_ports += hweight16(endpoints[i].in_cables);
+>  	}
+>  	err = snd_usbmidi_create_rawmidi(umidi, out_ports, in_ports);
+> -	if (err < 0) {
+> -		kfree(umidi);
+> -		return err;
+> -	}
+> +	if (err < 0)
+> +		goto free_midi;
+>
+>  	/* create endpoint/port structures */
+>  	if (quirk && quirk->type == QUIRK_MIDI_MIDIMAN)
+>  		err = snd_usbmidi_create_endpoints_midiman(umidi, &endpoints[0]);
+>  	else
+>  		err = snd_usbmidi_create_endpoints(umidi, endpoints);
+> -	if (err < 0) {
+> -		return err;
+> -	}
+> +	if (err < 0)
+> +		goto exit;
+>
+>  	usb_autopm_get_interface_no_resume(umidi->iface);
+>
+>  	list_add_tail(&umidi->list, midi_list);
+>  	return 0;
+> +
+> +free_midi:
+> +	kfree(umidi);
+> +exit:
+> +	return err;
+>  }
+>  EXPORT_SYMBOL(__snd_usbmidi_create);
+>
