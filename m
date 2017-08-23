@@ -1,22 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Attempting to understand odd snd-usb-audio code
- and behavior
-Date: Wed, 23 Aug 2017 12:23:00 +0200
-Message-ID: <ac221250-a87f-0875-1172-846530607635@ladisch.de>
-References: <2006820.TBXnYHJvYE@kamdesktop>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ALSA: USB-MIDI: Use common error handling code
+ in __snd_usbmidi_create()
+Date: Wed, 23 Aug 2017 12:25:50 +0200
+Message-ID: <328d3b62-2113-e51a-5d66-79d515de3179@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 695D42664EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 12:23:01 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id A0DDC558044F
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 12:23:00 +0200 (CEST)
-In-Reply-To: <2006820.TBXnYHJvYE@kamdesktop>
-Content-Language: en-US
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C4452664EB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 12:26:01 +0200 (CEST)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,38 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Keith A. Milner wrote:
-> I'm struggling to understand why the code is behaving as it does in
-> practice
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 23 Aug 2017 12:20:07 +0200
 
-Because the code has evolved over a long time, and it tries to handle
-not only both versions of the USB audio specification, but also devices
-as they are behaving in practice.
+Add jump targets so that a bit of exception handling can be better reused
+at the end of this function.
 
-> My observation when plugging the USB device in is that, as expected, it tries
-> to build the audio device, and add components to it including attaching
-> capture and playback streams. It seems to go through this phase without too
-> many surprises, and we get to the standard dmesg output:
->
-> usbcore: registered new interface driver snd-usb-audio
->
-> After this, it gets confusing.
->
-> It seems to open and close the PCMs
+This issue was detected by using the Coccinelle software.
 
-That happens due to requests from user space, probably PulseAudio.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/usb/midi.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-> kernel: [ 1987.452947] usb 1-1: Unable to change format on ep #8e: already in use
-
-So this is a Roland device?  Playback-synchronized-to-capture is a very
-special case; at the moment, nobody understands this code completely.
-
-But the problem for this device might be that it requires some
-vendor-specific messages to enable it in the first place.
-
-
-Regards,
-Clemens
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index a35f41467237..bd9d02268724 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -2435,10 +2435,8 @@ int __snd_usbmidi_create(struct snd_card *card,
+ 		err = -ENXIO;
+ 		break;
+ 	}
+-	if (err < 0) {
+-		kfree(umidi);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_midi;
+ 
+ 	/* create rawmidi device */
+ 	out_ports = 0;
+@@ -2448,23 +2446,25 @@ int __snd_usbmidi_create(struct snd_card *card,
+ 		in_ports += hweight16(endpoints[i].in_cables);
+ 	}
+ 	err = snd_usbmidi_create_rawmidi(umidi, out_ports, in_ports);
+-	if (err < 0) {
+-		kfree(umidi);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_midi;
+ 
+ 	/* create endpoint/port structures */
+ 	if (quirk && quirk->type == QUIRK_MIDI_MIDIMAN)
+ 		err = snd_usbmidi_create_endpoints_midiman(umidi, &endpoints[0]);
+ 	else
+ 		err = snd_usbmidi_create_endpoints(umidi, endpoints);
+-	if (err < 0) {
+-		return err;
+-	}
++	if (err < 0)
++		goto exit;
+ 
+ 	usb_autopm_get_interface_no_resume(umidi->iface);
+ 
+ 	list_add_tail(&umidi->list, midi_list);
+ 	return 0;
++
++free_midi:
++	kfree(umidi);
++exit:
++	return err;
+ }
+ EXPORT_SYMBOL(__snd_usbmidi_create);
+-- 
+2.14.0
