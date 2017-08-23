@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: Add pm callbacks to
+Subject: Applied "ASoC: audio-graph-card: Add pm callbacks to
 	platform driver" to the asoc tree
-Date: Wed, 23 Aug 2017 12:24:51 +0100
-Message-ID: <E1dkTmF-0007Cx-Qs@debutante>
-References: <87wp5w4379.wl%kuninori.morimoto.gx@renesas.com>
+Date: Wed, 23 Aug 2017 12:24:47 +0100
+Message-ID: <E1dkTmB-0007C2-RC@debutante>
+References: <87valg4367.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 607FC26725C
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:55 +0200 (CEST)
-In-Reply-To: <87wp5w4379.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 31DE42672AA
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:52 +0200 (CEST)
+In-Reply-To: <87valg4367.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: Add pm callbacks to platform driver
+   ASoC: audio-graph-card: Add pm callbacks to platform driver
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From b4e0180306f10a9d808b855dd77cdd0d7ae4f3fa Mon Sep 17 00:00:00 2001
+>From 7b828a35ff834e45e5758a8a3f9d11db0526f9e1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 22 Aug 2017 04:56:06 +0000
-Subject: [PATCH] ASoC: simple-scu-card: Add pm callbacks to platform driver
+Date: Tue, 22 Aug 2017 04:56:44 +0000
+Subject: [PATCH] ASoC: audio-graph-card: Add pm callbacks to platform driver
 
 Set snd_soc_pm_ops for the pm ops to make sure that the ASoC level of PM
 operations are going to happen. This is needed to get suspend/resume
-working correctly when the audio is using simple-scu-card.
+working correctly when the audio is using audio-graph-card.
 
 Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 1 +
+ sound/soc/generic/audio-graph-card.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 0bb3da755532..48606c63562a 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -300,6 +300,7 @@ MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
- static struct platform_driver asoc_simple_card = {
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 105ec3a6e30d..63048915efbb 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -325,6 +325,7 @@ MODULE_DEVICE_TABLE(of, asoc_graph_of_match);
+ static struct platform_driver asoc_graph_card = {
  	.driver = {
- 		.name = "simple-scu-audio-card",
+ 		.name = "asoc-audio-graph-card",
 +		.pm = &snd_soc_pm_ops,
- 		.of_match_table = asoc_simple_of_match,
+ 		.of_match_table = asoc_graph_of_match,
  	},
- 	.probe = asoc_simple_card_probe,
+ 	.probe = asoc_graph_card_probe,
 -- 
 2.14.1
