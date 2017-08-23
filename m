@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix DSP core ref count
-	for init failure" to the asoc tree
-Date: Wed, 23 Aug 2017 12:24:32 +0100
-Message-ID: <E1dkTlw-00077V-TF@debutante>
-References: <1503400553-15377-5-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to free correct dev
+	id in free_irq" to the asoc tree
+Date: Wed, 23 Aug 2017 12:24:35 +0100
+Message-ID: <E1dkTlz-00078Q-T2@debutante>
+References: <1503400553-15377-4-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 49B882664EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:42 +0200 (CEST)
-In-Reply-To: <1503400553-15377-5-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BAA9B267247
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:43 +0200 (CEST)
+In-Reply-To: <1503400553-15377-4-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix DSP core ref count for init failure
+   ASoC: Intel: Skylake: Fix to free correct dev id in free_irq
 
 has been applied to the asoc tree at
 
@@ -52,49 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From 7b992c24de78a206b3abd07192686d2d5db5012c Mon Sep 17 00:00:00 2001
+>From c360e0c3ab8ef8d0fd6b5501a407b9a2be4f204d Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 22 Aug 2017 16:45:53 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix DSP core ref count for init failure
+Date: Tue, 22 Aug 2017 16:45:52 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to free correct dev id in free_irq
 
-During dsp init failure, the ref count is not incremented and dsp is
-powered down. But as the skl driver calls put_core for the init failure it
-decrements the dsp core ref count and ref count becomes unbalanced.
-
-This results in dsp core powered up in further runtime suspend/resume
-cycles and never powered down.
-
-So increment the ref count before dsp core powerup and for any failure,
-decrement in put_core will be balanced.
+The dev_id passed by the driver in request_threaded_irq is an ebus pointer,
+whereas to free_irq it is hdac_bus. Fix by passing correct dev_id to
+free_irq.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-dsp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index c2ba5ff1632c..19ee1d4f3bdf 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -351,6 +351,8 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index e612a4097275..d62ffbc93d54 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -415,7 +415,7 @@ static int skl_free(struct hdac_ext_bus *ebus)
+ 	snd_hdac_ext_stop_streams(ebus);
  
-+	skl->cores.usage_count[core_id]++;
-+
- 	if (skl->cores.state[core_id] == SKL_DSP_RESET) {
- 		ret = ctx->fw_ops.set_state_D0(ctx, core_id);
- 		if (ret < 0) {
-@@ -359,8 +361,6 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
- 		}
- 	}
- 
--	skl->cores.usage_count[core_id]++;
--
- out:
- 	dev_dbg(ctx->dev, "core id %d state %d usage_count %d\n",
- 			core_id, skl->cores.state[core_id],
+ 	if (bus->irq >= 0)
+-		free_irq(bus->irq, (void *)bus);
++		free_irq(bus->irq, (void *)ebus);
+ 	snd_hdac_bus_free_stream_pages(bus);
+ 	snd_hdac_stream_free_all(ebus);
+ 	snd_hdac_link_free_all(ebus);
 -- 
 2.14.1
