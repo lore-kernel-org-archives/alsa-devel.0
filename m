@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix uninitialized
-	return" to the asoc tree
-Date: Wed, 23 Aug 2017 16:54:19 +0100
-Message-ID: <E1dkXz1-0005Py-83@debutante>
-References: <1503497232-21345-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Re: Developing a ti-pcm1863 (adc) codec driver
+Date: Wed, 23 Aug 2017 17:41:46 +0100
+Message-ID: <20170823164146.x53bi4wnzz5funym@sirena.org.uk>
+References: <0d6606df-5770-62a0-0187-2abf995b5ff1@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2782024375712265245=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5398B266B38
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 17:54:30 +0200 (CEST)
-In-Reply-To: <1503497232-21345-1-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FF30266AF8
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 18:41:47 +0200 (CEST)
+In-Reply-To: <0d6606df-5770-62a0-0187-2abf995b5ff1@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +20,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, kbuild test robot <fengguang.wu@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Oleksandr =?iso-8859-1?Q?M=FCller?= <sanj3k@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Fix uninitialized return
+--===============2782024375712265245==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="yuwuve6nkgwybgmg"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--yuwuve6nkgwybgmg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Aug 23, 2017 at 06:32:03PM +0200, Oleksandr M=FCller wrote:
+> Hello Mr. Brown,
+>=20
+> I have a soundcard which doesnt have a linux driver. Quick information it
+> has a pcm1863 adc and a pcm5142 dac on it.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This looks like you've got most of a driver here, probably the easiest
+thing to do is submit it using the process outlined in
+SubmittingPatches.  The code looks mostly fine so this shouldn't be too
+much of an issue.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> 1. Question would be towards the dapm_widgets and dapm_routes definitions.
+> When defining the dapm_adc widget do I put there the Capture stream or do=
+ I
+> seperate it with "NULL" and then adding the dapm_routes definitions? Which
+> one is correct since I have seen both possibilities (which ad-/disadventa=
+ges
+> do  I have?)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Use a route, that's the more modern way.
 
-Thanks,
-Mark
+> 2. Question in my layout plan I need to set the ADC to VIN4 l/r because o=
+nly
+> this one is connected to the microphone port. I have put it into the sound
+> controls but how would I make this switch from the command line (arecord)=
+ or
+> in the players (like vlc)
 
->From 9149916f1e8c912c585ddebf12a98e99bd81aafe Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Wed, 23 Aug 2017 19:37:12 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix uninitialized return
+I'm not sure I understand the question here.
 
-On failure to get dsp_ops, dsp_init returns error without assigning ret. ret
-is assigned in code path which will never be executed. Fix it.
+> Furthermore I would really be interested in gaining more knowledge about =
+the
+> accesses and routines from e.g. the vlc player using alsa (?) and then the
+> accesses to the hardware? Also the whole registering process in which ord=
+er
+> are which files executed to get into the state where the os knows my
+> soundcard. Since in a stracktrace I dont see this high level functions
 
-Fixes: f77d443c4c29 ("ASoC: Intel: Skylake: Fix to free resources for dsp_init failure"
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-messages.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You can see the card initialization in the code.  There's no defined
+ordering for the device model probing, even if things are currently
+redicatable on your system you shouldn't rely on anything.
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index f0f11f597b21..697d07bc1b5a 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -278,8 +278,8 @@ int skl_init_dsp(struct skl *skl)
- 
- 	ops = skl_get_dsp_ops(skl->pci->device);
- 	if (!ops) {
--		goto unmap_mmio;
- 		ret = -EIO;
-+		goto unmap_mmio;
- 	}
- 
- 	loader_ops = ops->loader_ops();
--- 
-2.14.1
+> //Register Addresses
+
+Please follow the kernel coding style.
+
+> static const struct snd_kcontrol_new pcm1863_controls[] =3D {
+> 	SOC_SINGLE("ADC MUX VIN4L", PCM1863_ADC1_INPUT_SEL_L, //not possible wit=
+h SOC_DOUBLE since
+> 			PCM1863_SEL_L_VIN4, 1, 0),	                    //two different registe=
+r?
+
+SOC_DOUBLE_R()
+
+> 				"Failed to enable clock divider autoset: %d\n",
+> 				ret);
+> 				return ret;
+> 		}
+> 	case SND_SOC_DAIFMT_CBM_CFM:=09
+
+Missing break;
+
+> MODULE_DESCRIPTION("ASoC pcm1863 driver");
+> MODULE_AUTHOR("Dummy Name <test@gmail.com>");
+
+Fill it in or omit it.
+
+> static const struct of_device_id pcm1863_of_match[] =3D {
+> 	{ .compatible =3D "ti,pcm1863", },
+> 	{ }
+> };
+> MODULE_DEVICE_TABLE(of, pcm1863_of_match);
+
+You need a binding document for this.
+
+--yuwuve6nkgwybgmg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmdsEkACgkQJNaLcl1U
+h9Amngf+ILxc4GLCPOhDRCPnfNDYYyHMylREzPgp060gA9zvEeCcQM19hXV3KznI
+s0q73ULT6MYz+hiDBEcOtqmcx8maLMq8M6yl8LjeFOxQ8LYyT1BG59+ieig3ZHKO
+L+sIkfB+KQvK1W7LCsJ0XwnsVYiSwWn8pX4mdBR5xzRPtyiXJRFogTvgllmAo7kb
+Z+B2xLudDMIEe8ZdYmEiomijxZeaI9ZRCXWqZqYB3Anz88RC8ytX6JBSCYBQu9n6
+eo7zfrVt6WmQJYGWAXU7grsxH1/WjsKZrIRhFIiWjTRFj7SMa+9pwtFpS0o+nkJl
+0PfMdkLWpgXWlO++KgLZTtG0kvKKZQ==
+=WVCl
+-----END PGP SIGNATURE-----
+
+--yuwuve6nkgwybgmg--
+
+--===============2782024375712265245==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2782024375712265245==--
