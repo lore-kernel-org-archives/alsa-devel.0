@@ -1,17 +1,17 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v2 7/7] ASoC: Intel: Skylake: Update module id
-	in pin connections
-Date: Wed, 23 Aug 2017 19:33:54 +0530
-Message-ID: <20170823140354.792-8-guneshwor.o.singh@intel.com>
-References: <20170823140354.792-1-guneshwor.o.singh@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tegra: Remove superfluous 'machine'
+	variable
+Date: Wed, 23 Aug 2017 15:21:38 +0100
+Message-ID: <20170823142138.ps65qu3ohvhrrubl@sirena.org.uk>
+References: <20170823134715.1088951-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2401243018471223801=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E44226779B
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 16:04:24 +0200 (CEST)
-In-Reply-To: <20170823140354.792-1-guneshwor.o.singh@intel.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF4172664EB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 16:21:47 +0200 (CEST)
+In-Reply-To: <20170823134715.1088951-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,97 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
 
-Each module's id comes from the topology and gets updated in the
-driver. This patch updates the input and output pin connections of
-each module by matching the uuid for each module.
+--===============2401243018471223801==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="l227on6bvzgx3x2i"
+Content-Disposition: inline
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c      | 41 +++++++++++++++++++++++++++++++---
- sound/soc/intel/skylake/skl-topology.h |  1 +
- 2 files changed, 39 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index a756882b9029..2b1e513b1680 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1220,8 +1220,11 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
- static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
- {
- 	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_module_inst_id *pin_id;
-+	uuid_le *uuid_mod, *uuid_tplg;
-+	struct skl_module *skl_module;
- 	struct uuid_module *module;
--	uuid_le *uuid_mod;
-+	int i, ret = -EIO;
- 
- 	uuid_mod = (uuid_le *)mconfig->guid;
- 
-@@ -1235,11 +1238,43 @@ static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
- 			mconfig->id.module_id = module->id;
- 			if (mconfig->module)
- 				mconfig->module->loadable = module->is_loadable;
--			return 0;
-+			ret = 0;
-+			break;
- 		}
- 	}
- 
--	return -EIO;
-+	if (ret)
-+		return ret;
-+
-+	uuid_mod = &module->uuid;
-+	ret = -EIO;
-+	for (i = 0; i < skl->nr_modules; i++) {
-+		skl_module = skl->modules[i];
-+		uuid_tplg = &skl_module->uuid;
-+		if (!uuid_le_cmp(*uuid_mod, *uuid_tplg)) {
-+			mconfig->module = skl_module;
-+			ret = 0;
-+			break;
-+		}
-+	}
-+	if (skl->nr_modules && ret)
-+		return ret;
-+
-+	list_for_each_entry(module, &ctx->uuid_list, list) {
-+		for (i = 0; i < MAX_IN_QUEUE; i++) {
-+			pin_id = &mconfig->m_in_pin[i].id;
-+			if (!uuid_le_cmp(pin_id->mod_uuid, module->uuid))
-+				pin_id->module_id = module->id;
-+		}
-+
-+		for (i = 0; i < MAX_OUT_QUEUE; i++) {
-+			pin_id = &mconfig->m_out_pin[i].id;
-+			if (!uuid_le_cmp(pin_id->mod_uuid, module->uuid))
-+				pin_id->module_id = module->id;
-+		}
-+	}
-+
-+	return 0;
- }
- 
- static int skl_populate_modules(struct skl *skl)
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 6f76b69b041e..a2db3ab525e7 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -222,6 +222,7 @@ struct skl_kpb_params {
- };
- 
- struct skl_module_inst_id {
-+	uuid_le mod_uuid;
- 	int module_id;
- 	u32 instance_id;
- 	int pvt_id;
--- 
-2.14.1
+--l227on6bvzgx3x2i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 23, 2017 at 03:46:30PM +0200, Arnd Bergmann wrote:
+> The last cleanup left behind an unused variable:
+
+This doesn't apply against current code, please check and resend.
+
+--l227on6bvzgx3x2i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmdj3EACgkQJNaLcl1U
+h9Cdywf+MewE5AjLlKDBpV9z179RBudbRVMy/AWCTfT3VfTh2MOydZBNM59A4TNx
+sxuaUCMGbHDTuh+/gGaXRj4yBnWxNtuXajt0A1HExUqdA3vwPcS72vFnGrWMT4Z9
+i1A6KfrhfHJZ/DdGqThBbCXo73K7f7eHSKHjkYPLB4SLRkm2ZKVv7lfyDbYVa6Lv
+GHoxYF7PwKbkKqaNGW6K8Ba0CpvMGmYP05D0H/T+ZK1C53QKXImSjT4oR0Sk/Cbc
+jmWKllJtqBuw1n7g8xtEo8R6nOh3DdZAMDDKTc7unwDJvhxLvW2xCTHl9kkgcqNW
+sfLEhJ10STlraIMQZAlSI9w5t/uaeA==
+=AxSE
+-----END PGP SIGNATURE-----
+
+--l227on6bvzgx3x2i--
+
+--===============2401243018471223801==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2401243018471223801==--
