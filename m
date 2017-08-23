@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix to free correct dev
-	id in free_irq" to the asoc tree
-Date: Wed, 23 Aug 2017 12:24:35 +0100
-Message-ID: <E1dkTlz-00078Q-T2@debutante>
-References: <1503400553-15377-4-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to free dsp
+	resource on ipc_init failure" to the asoc tree
+Date: Wed, 23 Aug 2017 12:24:41 +0100
+Message-ID: <E1dkTm5-0007AG-SS@debutante>
+References: <1503400553-15377-2-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BAA9B267247
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:43 +0200 (CEST)
-In-Reply-To: <1503400553-15377-4-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 63D3A267258
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:46 +0200 (CEST)
+In-Reply-To: <1503400553-15377-2-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix to free correct dev id in free_irq
+   ASoC: Intel: Skylake: Fix to free dsp resource on ipc_init failure
 
 has been applied to the asoc tree at
 
@@ -52,34 +52,72 @@ to this mail.
 Thanks,
 Mark
 
->From c360e0c3ab8ef8d0fd6b5501a407b9a2be4f204d Mon Sep 17 00:00:00 2001
+>From 3b3011adada3bba47c56c205634e1b32512e0c7c Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 22 Aug 2017 16:45:52 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix to free correct dev id in free_irq
+Date: Tue, 22 Aug 2017 16:45:50 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to free dsp resource on ipc_init
+ failure
 
-The dev_id passed by the driver in request_threaded_irq is an ebus pointer,
-whereas to free_irq it is hdac_bus. Fix by passing correct dev_id to
-free_irq.
+For some dsp init error path, irq and few more resources are not freed.
+This results in oops. So, fix it by freeing up the resources on ipc_init
+failure.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/bxt-sst.c | 4 +++-
+ sound/soc/intel/skylake/cnl-sst.c | 4 +++-
+ sound/soc/intel/skylake/skl-sst.c | 4 +++-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index e612a4097275..d62ffbc93d54 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -415,7 +415,7 @@ static int skl_free(struct hdac_ext_bus *ebus)
- 	snd_hdac_ext_stop_streams(ebus);
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 5e1ac99ffa8b..4524211960e4 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -582,8 +582,10 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
  
- 	if (bus->irq >= 0)
--		free_irq(bus->irq, (void *)bus);
-+		free_irq(bus->irq, (void *)ebus);
- 	snd_hdac_bus_free_stream_pages(bus);
- 	snd_hdac_stream_free_all(ebus);
- 	snd_hdac_link_free_all(ebus);
+ 	ret = skl_ipc_init(dev, skl);
+-	if (ret)
++	if (ret) {
++		skl_dsp_free(sst);
+ 		return ret;
++	}
+ 
+ 	/* set the D0i3 check */
+ 	skl->ipc.ops.check_dsp_lp_on = skl_ipc_check_D0i0;
+diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
+index 48ef04d5da89..387de388ce29 100644
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -450,8 +450,10 @@ int cnl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 			     CNL_ADSP_W1_SZ);
+ 
+ 	ret = cnl_ipc_init(dev, cnl);
+-	if (ret)
++	if (ret) {
++		skl_dsp_free(sst);
+ 		return ret;
++	}
+ 
+ 	cnl->boot_complete = false;
+ 	init_waitqueue_head(&cnl->boot_wait);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index a7ad734f591d..a436abf2fe3f 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -562,8 +562,10 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+ 
+ 	ret = skl_ipc_init(dev, skl);
+-	if (ret)
++	if (ret) {
++		skl_dsp_free(sst);
+ 		return ret;
++	}
+ 
+ 	sst->fw_ops = skl_fw_ops;
+ 
 -- 
 2.14.1
