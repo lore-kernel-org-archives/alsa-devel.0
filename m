@@ -1,24 +1,31 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v5 00/12] AC97 device/driver model revamp
-Date: Wed, 23 Aug 2017 21:33:15 +0200
-Message-ID: <874lsyqdtw.fsf@belgarion.home>
-References: <20170806213613.5600-1-robert.jarzmik@free.fr>
+Subject: Re: [PATCH 06/11] ASoC: pxa: make snd_soc_platform_driver const
+Date: Wed, 23 Aug 2017 21:33:26 +0200
+Message-ID: <87wp5uoz95.fsf@belgarion.home>
+References: <1502710730-18912-1-git-send-email-bhumirks@gmail.com>
+        <1502710730-18912-7-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: julia.lawall@lip6.fr, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, bardliao@realtek.com, chiou@realtek.com, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, yang.jie@linux.intel.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, daniel@zonque.org, haojian.zhuang@gmail.com, plai@codeaurora.org, bgoswami@codeaurora.org, krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Robert Jarzmik <robert.jarzmik@free.fr> writes:
+Bhumika Goyal <bhumirks@gmail.com> writes:
 
-> Hi Lars, Mark, Charles, Lee,
+> Make these const as they are only passed as the 2nd argument to the
+> function devm_snd_soc_register_platform, which is of type const.
+> Done using Coccinelle.
+>
+> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+> ---
+>  sound/soc/pxa/mmp-pcm.c    | 2 +-
+>  sound/soc/pxa/pxa2xx-pcm.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Hi again,
-
-I have Lee's comments covered now. If there are no more comments, I'll send out
-a v6 for Lee to verify my work is dealing with his concerns.
+For sound/soc/pxa/pxa2xx-pcm.c :
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
 Cheers.
 
