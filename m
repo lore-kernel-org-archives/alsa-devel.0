@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 2/4] ALSA: ac97c: constify ac97_pcm structures
-Date: Wed, 23 Aug 2017 17:39:26 +0530
-Message-ID: <1503490168-26501-3-git-send-email-arvind.yadav.cs@gmail.com>
+Subject: [PATCH 3/4] ALSA: atiixp: constify ac97_pcm structures
+Date: Wed, 23 Aug 2017 17:39:27 +0530
+Message-ID: <1503490168-26501-4-git-send-email-arvind.yadav.cs@gmail.com>
 References: <1503490168-26501-1-git-send-email-arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1503490168-26501-1-git-send-email-arvind.yadav.cs@gmail.com>
@@ -16,20 +16,20 @@ const ac97_pcm. So mark the non-const structs as const.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
- sound/atmel/ac97c.c | 2 +-
+ sound/pci/atiixp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index 70616da..345b943 100644
---- a/sound/atmel/ac97c.c
-+++ b/sound/atmel/ac97c.c
-@@ -558,7 +558,7 @@ static irqreturn_t atmel_ac97c_interrupt(int irq, void *dev)
- 	return retval;
- }
+diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
+index a40c918..fa70804 100644
+--- a/sound/pci/atiixp.c
++++ b/sound/pci/atiixp.c
+@@ -1183,7 +1183,7 @@ static int snd_atiixp_spdif_close(struct snd_pcm_substream *substream)
+ 	.pointer =	snd_atiixp_pcm_pointer,
+ };
  
--static struct ac97_pcm at91_ac97_pcm_defs[] = {
-+static const struct ac97_pcm at91_ac97_pcm_defs[] = {
- 	/* Playback */
+-static struct ac97_pcm atiixp_pcm_defs[] = {
++static const struct ac97_pcm atiixp_pcm_defs[] = {
+ 	/* front PCM */
  	{
  		.exclusive = 1,
 -- 
