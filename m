@@ -1,16 +1,27 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] sound/oss/pss: fix spelling mistake:
-	"compoents" -> "components"
-Date: Wed, 23 Aug 2017 23:49:34 +0100
-Message-ID: <20170823224934.12385-1-colin.king@canonical.com>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Attempting to understand odd snd-usb-audio code
+	and behavior
+Date: Wed, 23 Aug 2017 23:49:51 +0100
+Message-ID: <4630623.QtToMlzcyD@kamdesktop>
+References: <2006820.TBXnYHJvYE@kamdesktop> <1954362.aJMGcWAYHc@kamdesktop>
+ <f5769b3d-0bb1-cd15-90a6-3983cb28f8ff@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E23D266A7C
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 00:49:41 +0200 (CEST)
+Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2189826780D
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 00:49:54 +0200 (CEST)
+Received: by mail-wm0-f44.google.com with SMTP id l19so8687485wmi.1
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 15:49:54 -0700 (PDT)
+Received: from kamdesktop.localnet
+ (e.5.5.f.4.0.b.1.0.d.6.9.3.d.9.8.d.a.9.2.a.0.e.b.0.b.8.0.1.0.0.2.ip6.arpa.
+ [2001:8b0:be0a:29ad:89d3:96d0:1b04:f55e])
+ by smtp.gmail.com with ESMTPSA id x4sm1862641wrd.66.2017.08.23.15.49.52
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 23 Aug 2017 15:49:52 -0700 (PDT)
+In-Reply-To: <f5769b3d-0bb1-cd15-90a6-3983cb28f8ff@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +31,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, David Howells <dhowells@redhat.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wednesday 23 Aug 2017 14:52:43 Clemens Ladisch wrote:
+> Keith A. Milner wrote:
+> >>> kernel: [ 1987.452947] usb 1-1: Unable to change format on ep #8e:
+> >>> already in use> 
+> > So the error messages are due to a userspace app trying to open playback
+> > and capture at the same time?
+> 
+> For this device, playback requires a running capture stream to determine
+> the rate of packets.
 
-Trivial fix to spelling mistake in MODULE_PARM_DESC text
+Interestingly, the device works for playback (using aplay) until I try to 
+capture, when it stops working until I reset it.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/oss/pss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> This error happens when the application tries to
+> open the capture stream after the playback stream.  (If the format does
+> not actually need to change, the error message is misleading.)
+> 
+> Your actual problem is that the device does not send any capture packets.
+> 
 
-diff --git a/sound/oss/pss.c b/sound/oss/pss.c
-index 33c3a442e162..951b14dec73a 100644
---- a/sound/oss/pss.c
-+++ b/sound/oss/pss.c
-@@ -1156,7 +1156,7 @@ MODULE_PARM_DESC(pss_cdrom_port, "Set the PSS CDROM port i/o base (0x340 or othe
- module_param(pss_enable_joystick, bool, 0);
- MODULE_PARM_DESC(pss_enable_joystick, "Enables the PSS joystick port (1 to enable, 0 to disable)");
- module_param(pss_no_sound, bool, 0);
--MODULE_PARM_DESC(pss_no_sound, "Configure sound compoents (0 - no, 1 - yes)");
-+MODULE_PARM_DESC(pss_no_sound, "Configure sound components (0 - no, 1 - yes)");
- module_param(pss_keep_settings, bool, 0);
- MODULE_PARM_DESC(pss_keep_settings, "Keep hardware setting at driver unloading (0 - no, 1 - yes)");
- module_param(pss_firmware, charp, 0);
--- 
-2.14.1
+Presumably this should (in principle) be taken care of by the driver. The 
+application should not care. So the driver should detect the dependency and 
+open the corresponding capture stream if a playback stream is opened?
+
+There's definitely something hooky with this device and the capture stream 
+though, which I need to explore further. So far I cannot get capture working 
+at all.
+
+Cheers,
+
+Keith
