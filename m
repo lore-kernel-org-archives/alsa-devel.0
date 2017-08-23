@@ -1,121 +1,57 @@
-From: Tom Rini <trini@konsulko.com>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Wed, 23 Aug 2017 18:35:24 -0400
-Message-ID: <20170823223524.GW17193@bill-the-cat>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
- <20170823092828.7ijy7rthvqkzcgtz@sirena.org.uk>
+From: "Keith A. Milner" <maillist@superlative.org>
+Subject: Re: Attempting to understand odd snd-usb-audio code
+	and behavior
+Date: Wed, 23 Aug 2017 23:43:49 +0100
+Message-ID: <2465148.6KUvh8QIGJ@kamdesktop>
+References: <2006820.TBXnYHJvYE@kamdesktop> <1954362.aJMGcWAYHc@kamdesktop>
+ <f5769b3d-0bb1-cd15-90a6-3983cb28f8ff@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gkEBo/XPSfx+3zOU"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170823092828.7ijy7rthvqkzcgtz@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f173.google.com (mail-wr0-f173.google.com
+ [209.85.128.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6C0F266A7C
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 00:43:52 +0200 (CEST)
+Received: by mail-wr0-f173.google.com with SMTP id f8so4645438wrf.3
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 15:43:52 -0700 (PDT)
+Received: from kamdesktop.localnet
+ (e.5.5.f.4.0.b.1.0.d.6.9.3.d.9.8.d.a.9.2.a.0.e.b.0.b.8.0.1.0.0.2.ip6.arpa.
+ [2001:8b0:be0a:29ad:89d3:96d0:1b04:f55e])
+ by smtp.gmail.com with ESMTPSA id b96sm5016967wrd.94.2017.08.23.15.43.50
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 23 Aug 2017 15:43:50 -0700 (PDT)
+In-Reply-To: <f5769b3d-0bb1-cd15-90a6-3983cb28f8ff@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wednesday 23 Aug 2017 14:52:43 Clemens Ladisch wrote:
+> Keith A. Milner wrote:
+> >>> kernel: [ 1987.452947] usb 1-1: Unable to change format on ep #8e:
+> >>> already in use> 
+> > So the error messages are due to a userspace app trying to open playback
+> > and capture at the same time?
+> 
+> For this device, playback requires a running capture stream to determine
+> the rate of packets.  This error happens when the application tries to
+> open the capture stream after the playback stream.  (If the format does
+> not actually need to change, the error message is misleading.)
+> 
+> Your actual problem is that the device does not send any capture packets.
 
---gkEBo/XPSfx+3zOU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you for the clarification. Hopefully I will find some time to explore 
+this further.
 
-[stupid google spam filtered _this_ as spam, I don't know why]
+Cheers,
 
-On Wed, Aug 23, 2017 at 10:28:28AM +0100, Mark Brown wrote:
-> On Tue, Aug 22, 2017 at 09:51:46PM -0400, Tom Rini wrote:
->=20
-> > Not all devices with ACPI and this combination of sound devices will
-> > have the required information provided via ACPI.  Reintroduce the I2C
-> > device ID to restore sound functionality on on the Chromebook 'Samus'
-> > model.
->=20
-> >  	{ "rt5677", RT5677 },
-> >  	{ "rt5676", RT5676 },
-> > +	{ "RT5677CE:00", RT5677 },
-> >  	{ }
-> >  };
->=20
-> You're going to have to provide a clearer changelog here, that's
-> obviously an ACPI ID...
-
-After looking at 89128534f925 (which introduced the above line, and thus
-support for the Chromebook), I think that 36afb0ab648 and 55e59aa0525a
-are wrong and should be reverted.  It seems like they're an attempt to
-make 89128534f925 be done 'properly' but it also seems like the
-Chromebook is the only platform in question that triggers that code and
-it results in a NULL pointer dereference, so it's a regression on the
-only platform that makes use of the code paths in question.  I'd also be
-happy to try a patch on top of master to see if that resolves things.
-The oops in question looks like:
-BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
-IP: rt5677_i2c_probe+0x4a/0x730 [snd_soc_rt5677]
-PGD 0=20
-P4D 0=20
-
-Oops: 0000 [#1] SMP
-Modules linked in: snd_soc_rt5677(+) btusb(+) btrtl iwlwifi(+) snd_soc_rl62=
-31 btbcm snd_
-CPU: 1 PID: 403 Comm: systemd-udevd Not tainted 4.12.0-rc1ph+ #119
-Hardware name: GOOGLE Samus, BIOS          04/02/2015
-task: ffff947de8ca1cc0 task.stack: ffffaf5641fe0000
-RIP: 0010:rt5677_i2c_probe+0x4a/0x730 [snd_soc_rt5677]
-RSP: 0000:ffffaf5641fe3b30 EFLAGS: 00010246
-RAX: ffff947de8e02618 RBX: ffff947de8e02618 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: 0000000000000286 RDI: ffff947dec7ece98
-RBP: ffffaf5641fe3b68 R08: ffff947dfec9bda0 R09: ffff947de8e02600
-R10: ffff947dfec9bd20 R11: ffffd7ef91a12180 R12: ffff947dec7ecc20
-R13: ffff947dec7ecc00 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f9bd7fdb8c0(0000) GS:ffff947dfec80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000018 CR3: 000000046872b000 CR4: 00000000003406e0
-Call Trace:
- ? acpi_dev_pm_attach+0xa4/0xe0
- ? rt5677_to_irq+0xe0/0xe0 [snd_soc_rt5677]
- i2c_device_probe+0x17c/0x230
- driver_probe_device+0x2a1/0x460
- __driver_attach+0xd8/0xe0
- ? driver_probe_device+0x460/0x460
- bus_for_each_dev+0x58/0x90
- driver_attach+0x19/0x20
- bus_add_driver+0x40/0x270
- driver_register+0x5b/0xe0
- i2c_register_driver+0x3b/0x80
- ? 0xffffffffc072b000
- rt5677_i2c_driver_init+0x17/0x1000 [snd_soc_rt5677]
- do_one_initcall+0x4c/0x1a0
- ? kmem_cache_alloc+0xf7/0x150
- do_init_module+0x56/0x1e8
- load_module+0x1f54/0x2710
- ? symbol_put_addr+0x30/0x30
- SyS_finit_module+0x96/0xd0
- do_syscall_64+0x4e/0xb0
- entry_SYSCALL64_slow_path+0x25/0x25
-
---=20
-Tom
-
---gkEBo/XPSfx+3zOU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJZngMrAAoJEIf59jXTHXZSGM8P/2N8zdel8jK6zzkkAqAYGKmM
-mSqz+ruzoQr0ZG5cdZ8P34ILv8eA4JHuR8I3VWBfdczAjhdRMkkqd3BoKiHwcL1b
-3jSBDATQoXh1IC94Vxee0uO88qinDrQiEdMR21R60NLqqaNcnDtBRCmSGtHaik5u
-97BR/UuXh7IVaGHSb8jBYocLsuBLczhpcqQR6KY3n/VPMeCtO5BaOPSQRFMbYCEq
-eoqVgO5W0eHb99uI/Pag+ohF5vkyYC57tqv8bd8mE2PtuQO19BzHv/u3xCdd5lNU
-fdeUfPdth9ttZBb8NVLS4k0UIG/bJKWVFh5BIkxHUcafRU1RW4niIVojDUPXnnc4
-SJgIWEegfbIOxDSRbi7txGjv8/hjinMwH2XZQqBcZt6V7TW73l1JtgBUPkLJh3Hz
-EzCvScU6jN0CvEIZGCAve3RdrtfjJsTbwIk3p6ZBTEbsrnRcsCALwG3Qj1JsNbxi
-ddl/VRpKnltZLlsEUxLbNCYgj9g7LyibEdZz2IgRNyAMf87lUOqIk4E6kmaE3Hvf
-0bl/TXRIO+4d6mvKXHHPXhUhRqs6VMc3g8lsi4Zjx42lzo9LNSTaY+vpKteHa/Ia
-IhvDcuHs1ywRCr4B9pwATuqi//kSJ44RG7rOqAI9HF1er17JCzuio+dsnqpA6/8H
-qWG6Z4eIyxiJBDMygPH8
-=gK6A
------END PGP SIGNATURE-----
-
---gkEBo/XPSfx+3zOU--
+Keith
