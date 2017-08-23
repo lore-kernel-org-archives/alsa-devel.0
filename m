@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: Fix unused variable warning" to
-	the asoc tree
-Date: Wed, 23 Aug 2017 12:24:57 +0100
-Message-ID: <E1dkTmL-0007Eb-QH@debutante>
-References: <20170823060343.25275-1-tiwai@suse.de>
+Subject: Applied "ASoC: wm8524: remove unnecessary
+	snd_soc_unregister_platform()" to the asoc tree
+Date: Wed, 23 Aug 2017 12:24:54 +0100
+Message-ID: <E1dkTmI-0007Dm-Qu@debutante>
+References: <87o9r6x4b5.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 34A3E26731F
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:25:01 +0200 (CEST)
-In-Reply-To: <20170823060343.25275-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C554267328
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:25:00 +0200 (CEST)
+In-Reply-To: <87o9r6x4b5.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra: Fix unused variable warning
+   ASoC: wm8524: remove unnecessary snd_soc_unregister_platform()
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From f3f7df7635bd5fb6dbc8de150613d327a3bd6171 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 23 Aug 2017 08:03:43 +0200
-Subject: [PATCH] ASoC: tegra: Fix unused variable warning
+>From 6cbcad079ecdb8ecd214d33688fd7f19167fe57a Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 23 Aug 2017 05:11:44 +0000
+Subject: [PATCH] ASoC: wm8524: remove unnecessary
+ snd_soc_unregister_platform()
 
-Fixes: 2a8bd83af30e ("ASoC: tegra: Remove superfluous snd_soc_jack_free_gpios() call")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+wm8524 doesn't register platform, unregister platform is not needed
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_wm8903.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/wm8524.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index ce498cc0914b..05f95944669a 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -203,7 +203,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
- 		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
+diff --git a/sound/soc/codecs/wm8524.c b/sound/soc/codecs/wm8524.c
+index b66147e0631b..856a6950a451 100644
+--- a/sound/soc/codecs/wm8524.c
++++ b/sound/soc/codecs/wm8524.c
+@@ -233,10 +233,8 @@ static int wm8524_codec_probe(struct platform_device *pdev)
  
- 	wm8903_mic_detect(codec, NULL, 0, 0);
+ 	ret =  snd_soc_register_codec(&pdev->dev,
+ 			&soc_codec_dev_wm8524, &wm8524_dai, 1);
+-	if (ret < 0) {
++	if (ret < 0)
+ 		dev_err(&pdev->dev, "Failed to register codec: %d\n", ret);
+-		snd_soc_unregister_platform(&pdev->dev);
+-	}
  
+ 	return ret;
+ }
 -- 
 2.14.1
