@@ -1,18 +1,18 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/6] ALSA: pcm: Adjust nine function calls
- together with a variable assignment
-Date: Wed, 23 Aug 2017 10:24:34 +0200
-Message-ID: <9fcdbe5a-b17a-dfb8-f4af-a1261da93a38@users.sourceforge.net>
+Subject: [PATCH 3/6] ALSA: pcm: Adjust 11 checks for null
+	pointers
+Date: Wed, 23 Aug 2017 10:25:49 +0200
+Message-ID: <fc79090d-7ed8-9083-4726-29769e0ef8d8@users.sourceforge.net>
 References: <b8c9e41b-a47e-1d99-3d1a-5d39772e4b54@users.sourceforge.net>
  <s5h378isw2d.wl-tiwai@suse.de>
  <800d7aa6-d8f2-cbf5-caaa-7e4006976e68@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id D2BE62665D5
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 10:24:43 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23AD12665D5
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 10:25:56 +0200 (CEST)
 In-Reply-To: <800d7aa6-d8f2-cbf5-caaa-7e4006976e68@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,124 +28,71 @@ To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Arvind Yadav <ar
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 23 Aug 2017 09:20:29 +0200
-
-The script "checkpatch.pl" pointed information out like the following.
-
-ERROR: do not use assignment in if condition
-
-Thus fix the affected source code places.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/core/pcm.c | 38 +++++++++++++++++++++++---------------
- 1 file changed, 23 insertions(+), 15 deletions(-)
-
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 048df9658f50..c790f79e45ae 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -523,7 +523,9 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
- 
- 	sprintf(name, "pcm%i%c", pcm->device, 
- 		pstr->stream == SNDRV_PCM_STREAM_PLAYBACK ? 'p' : 'c');
--	if ((entry = snd_info_create_card_entry(pcm->card, name, pcm->card->proc_root)) == NULL)
-+	entry = snd_info_create_card_entry(pcm->card, name,
-+					   pcm->card->proc_root);
-+	if (!entry)
- 		return -ENOMEM;
- 	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
- 	if (snd_info_register(entry) < 0) {
-@@ -531,8 +533,8 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
- 		return -ENOMEM;
- 	}
- 	pstr->proc_root = entry;
--
--	if ((entry = snd_info_create_card_entry(pcm->card, "info", pstr->proc_root)) != NULL) {
-+	entry = snd_info_create_card_entry(pcm->card, "info", pstr->proc_root);
-+	if (entry) {
- 		snd_info_set_text_ops(entry, pstr, snd_pcm_stream_proc_info_read);
- 		if (snd_info_register(entry) < 0) {
- 			snd_info_free_entry(entry);
-@@ -542,8 +544,9 @@ static int snd_pcm_stream_proc_init(struct snd_pcm_str *pstr)
- 	pstr->proc_info_entry = entry;
- 
- #ifdef CONFIG_SND_PCM_XRUN_DEBUG
--	if ((entry = snd_info_create_card_entry(pcm->card, "xrun_debug",
--						pstr->proc_root)) != NULL) {
-+	entry = snd_info_create_card_entry(pcm->card, "xrun_debug",
-+					   pstr->proc_root);
-+	if (entry) {
- 		entry->c.text.read = snd_pcm_xrun_debug_read;
- 		entry->c.text.write = snd_pcm_xrun_debug_write;
- 		entry->mode |= S_IWUSR;
-@@ -580,7 +583,9 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
- 	card = substream->pcm->card;
- 
- 	sprintf(name, "sub%i", substream->number);
--	if ((entry = snd_info_create_card_entry(card, name, substream->pstr->proc_root)) == NULL)
-+	entry = snd_info_create_card_entry(card, name,
-+					   substream->pstr->proc_root);
-+	if (!entry)
- 		return -ENOMEM;
- 	entry->mode = S_IFDIR | S_IRUGO | S_IXUGO;
- 	if (snd_info_register(entry) < 0) {
-@@ -588,8 +593,8 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
- 		return -ENOMEM;
- 	}
- 	substream->proc_root = entry;
--
--	if ((entry = snd_info_create_card_entry(card, "info", substream->proc_root)) != NULL) {
-+	entry = snd_info_create_card_entry(card, "info", substream->proc_root);
-+	if (entry) {
- 		snd_info_set_text_ops(entry, substream,
- 				      snd_pcm_substream_proc_info_read);
- 		if (snd_info_register(entry) < 0) {
-@@ -598,8 +603,9 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
- 		}
- 	}
- 	substream->proc_info_entry = entry;
--
--	if ((entry = snd_info_create_card_entry(card, "hw_params", substream->proc_root)) != NULL) {
-+	entry = snd_info_create_card_entry(card, "hw_params",
-+					   substream->proc_root);
-+	if (entry) {
- 		snd_info_set_text_ops(entry, substream,
- 				      snd_pcm_substream_proc_hw_params_read);
- 		if (snd_info_register(entry) < 0) {
-@@ -608,8 +614,9 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
- 		}
- 	}
- 	substream->proc_hw_params_entry = entry;
--
--	if ((entry = snd_info_create_card_entry(card, "sw_params", substream->proc_root)) != NULL) {
-+	entry = snd_info_create_card_entry(card, "sw_params",
-+					   substream->proc_root);
-+	if (entry) {
- 		snd_info_set_text_ops(entry, substream,
- 				      snd_pcm_substream_proc_sw_params_read);
- 		if (snd_info_register(entry) < 0) {
-@@ -618,8 +625,8 @@ static int snd_pcm_substream_proc_init(struct snd_pcm_substream *substream)
- 		}
- 	}
- 	substream->proc_sw_params_entry = entry;
--
--	if ((entry = snd_info_create_card_entry(card, "status", substream->proc_root)) != NULL) {
-+	entry = snd_info_create_module_entry(THIS_MODULE, "pcm", NULL);
-+	if (entry) {
- 		snd_info_set_text_ops(entry, substream,
- 				      snd_pcm_substream_proc_status_read);
- 		if (snd_info_register(entry) < 0) {
-@@ -1230,7 +1237,8 @@ static void snd_pcm_proc_init(void)
- {
- 	struct snd_info_entry *entry;
- 
--	if ((entry = snd_info_create_module_entry(THIS_MODULE, "pcm", NULL)) != NULL) {
-+	entry = snd_info_create_module_entry(THIS_MODULE, "pcm", NULL);
-+	if (entry) {
- 		snd_info_set_text_ops(entry, NULL, snd_pcm_proc_read);
- 		if (snd_info_register(entry) < 0) {
- 			snd_info_free_entry(entry);
--- 
-2.14.0
+RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
+OiBXZWQsIDIzIEF1ZyAyMDE3IDA5OjI4OjAwICswMjAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
+bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
+aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
+dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
+IHdyaXR0ZW4g4oCmCgpUaHVzIGZpeCB0aGUgYWZmZWN0ZWQgc291cmNlIGNvZGUgcGxhY2VzLgoK
+U2lnbmVkLW9mZi1ieTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2Uu
+bmV0PgotLS0KIHNvdW5kL2NvcmUvcGNtLmMgfCAyMiArKysrKysrKysrKy0tLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvc291bmQvY29yZS9wY20uYyBiL3NvdW5kL2NvcmUvcGNtLmMKaW5kZXggYzc5MGY3OWU0
+NWFlLi4yNDA0N2EwN2RjN2YgMTAwNjQ0Ci0tLSBhL3NvdW5kL2NvcmUvcGNtLmMKKysrIGIvc291
+bmQvY29yZS9wY20uYwpAQCAtMTMyLDcgKzEzMiw3IEBAIHN0YXRpYyBpbnQgc25kX3BjbV9jb250
+cm9sX2lvY3RsKHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwKIAkJCQlyZXR1cm4gLUVGQVVMVDsKIAkJ
+CW11dGV4X2xvY2soJnJlZ2lzdGVyX211dGV4KTsKIAkJCXBjbSA9IHNuZF9wY21fZ2V0KGNhcmQs
+IGRldmljZSk7Ci0JCQlpZiAocGNtID09IE5VTEwpIHsKKwkJCWlmICghcGNtKSB7CiAJCQkJZXJy
+ID0gLUVOWElPOwogCQkJCWdvdG8gX2Vycm9yOwogCQkJfQpAQCAtMTQ5LDcgKzE0OSw3IEBAIHN0
+YXRpYyBpbnQgc25kX3BjbV9jb250cm9sX2lvY3RsKHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwKIAkJ
+CSAgICAgc3Vic3RyZWFtID0gc3Vic3RyZWFtLT5uZXh0KQogCQkJCWlmIChzdWJzdHJlYW0tPm51
+bWJlciA9PSAoaW50KXN1YmRldmljZSkKIAkJCQkJYnJlYWs7Ci0JCQlpZiAoc3Vic3RyZWFtID09
+IE5VTEwpIHsKKwkJCWlmICghc3Vic3RyZWFtKSB7CiAJCQkJZXJyID0gLUVOWElPOwogCQkJCWdv
+dG8gX2Vycm9yOwogCQkJfQpAQCAtNzMzLDcgKzczMyw3IEBAIGludCBzbmRfcGNtX25ld19zdHJl
+YW0oc3RydWN0IHNuZF9wY20gKnBjbSwgaW50IHN0cmVhbSwgaW50IHN1YnN0cmVhbV9jb3VudCkK
+IAkJc3Vic3RyZWFtLT5zdHJlYW0gPSBzdHJlYW07CiAJCXNwcmludGYoc3Vic3RyZWFtLT5uYW1l
+LCAic3ViZGV2aWNlICMlaSIsIGlkeCk7CiAJCXN1YnN0cmVhbS0+YnVmZmVyX2J5dGVzX21heCA9
+IFVJTlRfTUFYOwotCQlpZiAocHJldiA9PSBOVUxMKQorCQlpZiAoIXByZXYpCiAJCQlwc3RyLT5z
+dWJzdHJlYW0gPSBzdWJzdHJlYW07CiAJCWVsc2UKIAkJCXByZXYtPm5leHQgPSBzdWJzdHJlYW07
+CkBAIC03NDMsNyArNzQzLDcgQEAgaW50IHNuZF9wY21fbmV3X3N0cmVhbShzdHJ1Y3Qgc25kX3Bj
+bSAqcGNtLCBpbnQgc3RyZWFtLCBpbnQgc3Vic3RyZWFtX2NvdW50KQogCQkJaWYgKGVyciA8IDAp
+IHsKIAkJCQlwY21fZXJyKHBjbSwKIAkJCQkJIkVycm9yIGluIHNuZF9wY21fc3RyZWFtX3Byb2Nf
+aW5pdFxuIik7Ci0JCQkJaWYgKHByZXYgPT0gTlVMTCkKKwkJCQlpZiAoIXByZXYpCiAJCQkJCXBz
+dHItPnN1YnN0cmVhbSA9IE5VTEw7CiAJCQkJZWxzZQogCQkJCQlwcmV2LT5uZXh0ID0gTlVMTDsK
+QEAgLTk1MSw3ICs5NTEsNyBAQCBpbnQgc25kX3BjbV9hdHRhY2hfc3Vic3RyZWFtKHN0cnVjdCBz
+bmRfcGNtICpwY20sIGludCBzdHJlYW0sCiAJCXJldHVybiAtRUlOVkFMOwogCSpyc3Vic3RyZWFt
+ID0gTlVMTDsKIAlwc3RyID0gJnBjbS0+c3RyZWFtc1tzdHJlYW1dOwotCWlmIChwc3RyLT5zdWJz
+dHJlYW0gPT0gTlVMTCB8fCBwc3RyLT5zdWJzdHJlYW1fY291bnQgPT0gMCkKKwlpZiAoIXBzdHIt
+PnN1YnN0cmVhbSB8fCBwc3RyLT5zdWJzdHJlYW1fY291bnQgPT0gMCkKIAkJcmV0dXJuIC1FTk9E
+RVY7CiAKIAljYXJkID0gcGNtLT5jYXJkOwpAQCAtOTkzLDE2ICs5OTMsMTYgQEAgaW50IHNuZF9w
+Y21fYXR0YWNoX3N1YnN0cmVhbShzdHJ1Y3Qgc25kX3BjbSAqcGNtLCBpbnQgc3RyZWFtLAogCQkg
+ICAgIHN1YnN0cmVhbS0+bnVtYmVyID09IHByZWZlcl9zdWJkZXZpY2UpKQogCQkJYnJlYWs7CiAJ
+fQotCWlmIChzdWJzdHJlYW0gPT0gTlVMTCkKKwlpZiAoIXN1YnN0cmVhbSkKIAkJcmV0dXJuIC1F
+QUdBSU47CiAKIAlydW50aW1lID0ga3phbGxvYyhzaXplb2YoKnJ1bnRpbWUpLCBHRlBfS0VSTkVM
+KTsKLQlpZiAocnVudGltZSA9PSBOVUxMKQorCWlmICghcnVudGltZSkKIAkJcmV0dXJuIC1FTk9N
+RU07CiAKIAlzaXplID0gUEFHRV9BTElHTihzaXplb2Yoc3RydWN0IHNuZF9wY21fbW1hcF9zdGF0
+dXMpKTsKIAlydW50aW1lLT5zdGF0dXMgPSBzbmRfbWFsbG9jX3BhZ2VzKHNpemUsIEdGUF9LRVJO
+RUwpOwotCWlmIChydW50aW1lLT5zdGF0dXMgPT0gTlVMTCkgeworCWlmICghcnVudGltZS0+c3Rh
+dHVzKSB7CiAJCWtmcmVlKHJ1bnRpbWUpOwogCQlyZXR1cm4gLUVOT01FTTsKIAl9CkBAIC0xMDEw
+LDcgKzEwMTAsNyBAQCBpbnQgc25kX3BjbV9hdHRhY2hfc3Vic3RyZWFtKHN0cnVjdCBzbmRfcGNt
+ICpwY20sIGludCBzdHJlYW0sCiAKIAlzaXplID0gUEFHRV9BTElHTihzaXplb2Yoc3RydWN0IHNu
+ZF9wY21fbW1hcF9jb250cm9sKSk7CiAJcnVudGltZS0+Y29udHJvbCA9IHNuZF9tYWxsb2NfcGFn
+ZXMoc2l6ZSwgR0ZQX0tFUk5FTCk7Ci0JaWYgKHJ1bnRpbWUtPmNvbnRyb2wgPT0gTlVMTCkgewor
+CWlmICghcnVudGltZS0+Y29udHJvbCkgewogCQlzbmRfZnJlZV9wYWdlcygodm9pZCopcnVudGlt
+ZS0+c3RhdHVzLAogCQkJICAgICAgIFBBR0VfQUxJR04oc2l6ZW9mKHN0cnVjdCBzbmRfcGNtX21t
+YXBfc3RhdHVzKSkpOwogCQlrZnJlZShydW50aW1lKTsKQEAgLTEwNDAsNyArMTA0MCw3IEBAIHZv
+aWQgc25kX3BjbV9kZXRhY2hfc3Vic3RyZWFtKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vi
+c3RyZWFtKQogCWlmIChQQ01fUlVOVElNRV9DSEVDSyhzdWJzdHJlYW0pKQogCQlyZXR1cm47CiAJ
+cnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsKLQlpZiAocnVudGltZS0+cHJpdmF0ZV9mcmVl
+ICE9IE5VTEwpCisJaWYgKHJ1bnRpbWUtPnByaXZhdGVfZnJlZSkKIAkJcnVudGltZS0+cHJpdmF0
+ZV9mcmVlKHJ1bnRpbWUpOwogCXNuZF9mcmVlX3BhZ2VzKCh2b2lkKilydW50aW1lLT5zdGF0dXMs
+CiAJCSAgICAgICBQQUdFX0FMSUdOKHNpemVvZihzdHJ1Y3Qgc25kX3BjbV9tbWFwX3N0YXR1cykp
+KTsKQEAgLTExMDcsNyArMTEwNyw3IEBAIHN0YXRpYyBpbnQgc25kX3BjbV9kZXZfcmVnaXN0ZXIo
+c3RydWN0IHNuZF9kZXZpY2UgKmRldmljZSkKIAkJZ290byB1bmxvY2s7CiAJZm9yIChjaWR4ID0g
+MDsgY2lkeCA8IDI7IGNpZHgrKykgewogCQlpbnQgZGV2dHlwZSA9IC0xOwotCQlpZiAocGNtLT5z
+dHJlYW1zW2NpZHhdLnN1YnN0cmVhbSA9PSBOVUxMKQorCQlpZiAoIXBjbS0+c3RyZWFtc1tjaWR4
+XS5zdWJzdHJlYW0pCiAJCQljb250aW51ZTsKIAkJc3dpdGNoIChjaWR4KSB7CiAJCWNhc2UgU05E
+UlZfUENNX1NUUkVBTV9QTEFZQkFDSzoKLS0gCjIuMTQuMAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
