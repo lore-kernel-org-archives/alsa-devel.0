@@ -1,21 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Fixed latency between multiple channels
-Date: Wed, 23 Aug 2017 15:41:36 +0200
-Message-ID: <b6c4c2f2-a01c-fc06-e1bb-73e14b3cf56c@ladisch.de>
-References: <be709368c93d9e0c7b13f52b0e75ac83.squirrel@postamt.eit.uni-kl.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: tegra: Remove superfluous 'machine'
+	variable
+Date: Wed, 23 Aug 2017 15:46:30 +0200
+Message-ID: <20170823134715.1088951-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 192E726779C
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 15:41:38 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 290D55580F43
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 15:41:36 +0200 (CEST)
-In-Reply-To: <be709368c93d9e0c7b13f52b0e75ac83.squirrel@postamt.eit.uni-kl.de>
-Content-Language: en-US
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EDDB2664EB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 15:47:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-cuhl@eit.uni-kl.de wrote:
-> I've read, that even with a realtime kernel the input-output latency
-> varies with time - especially if USB is inbetween.
+The last cleanup left behind an unused variable:
 
-Yes, USB cam have a small but unknown delay between playback and capture.
+sound/soc/tegra/tegra_wm8903.c: In function 'tegra_wm8903_remove':
+sound/soc/tegra/tegra_wm8903.c:206:23: error: unused variable 'machine' [-Werror=unused-variable]
 
-> I expect to require a fixed latency between multiple ( I2S ) channels.
+This removes it as welremoves it as welll
 
-> So every channel's signal shall be exactly determined to its
-> relative position with respect to the other channels, e. g. it shall be
-> known inside the system which events occured simultanously.
->
-> Likewise, the processed or generated signals shall be transferred to the
-> outputs in a way, that they occur there with intended and modifiable
-> relative latency to each other.
+Fixes: 2a8bd83af30e ("ASoC: tegra: Remove superfluous snd_soc_jack_free_gpios() call")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/tegra/tegra_wm8903.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-This is essentially a hardware problem.
-
-Can't you just use a single device with many channels?
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index 2384cb9cb95c..18bdae59a4df 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -203,7 +203,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ 		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
+ 
+ 	wm8903_mic_detect(codec, NULL, 0, 0);
+ 
+-- 
+2.9.0
