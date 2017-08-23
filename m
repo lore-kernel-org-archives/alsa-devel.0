@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: rt5645: add quirks for Asus
-	T100HA" to the asoc tree
-Date: Wed, 23 Aug 2017 12:24:29 +0100
-Message-ID: <E1dkTlt-00076Z-Tn@debutante>
-References: <20170822203239.19891-11-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix DSP core ref count
+	for init failure" to the asoc tree
+Date: Wed, 23 Aug 2017 12:24:32 +0100
+Message-ID: <E1dkTlw-00077V-TF@debutante>
+References: <1503400553-15377-5-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 13FCF2664EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:32 +0200 (CEST)
-In-Reply-To: <20170822203239.19891-11-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 49B882664EB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:42 +0200 (CEST)
+In-Reply-To: <1503400553-15377-5-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: rt5645: add quirks for Asus T100HA
+   ASoC: Intel: Skylake: Fix DSP core ref count for init failure
 
 has been applied to the asoc tree at
 
@@ -53,56 +52,49 @@ to this mail.
 Thanks,
 Mark
 
->From cb0236eca79c8ceb5cdb8d2a15ce272e754d2921 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 22 Aug 2017 15:32:35 -0500
-Subject: [PATCH] ASoC: codecs: rt5645: add quirks for Asus T100HA
+>From 7b992c24de78a206b3abd07192686d2d5db5012c Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Tue, 22 Aug 2017 16:45:53 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix DSP core ref count for init failure
 
-Fix jack detection and dmic setup
+During dsp init failure, the ref count is not incremented and dsp is
+powered down. But as the skl driver calls put_core for the init failure it
+decrements the dsp core ref count and ref count becomes unbalanced.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This results in dsp core powered up in further runtime suspend/resume
+cycles and never powered down.
+
+So increment the ref count before dsp core powerup and for any failure,
+decrement in put_core will be balanced.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/intel/skylake/skl-sst-dsp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 9ec58166f7c4..500bb42d0804 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3637,6 +3637,24 @@ static const struct dmi_system_id dmi_platform_gpd_win[] = {
- 	{}
- };
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+index c2ba5ff1632c..19ee1d4f3bdf 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.c
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -351,6 +351,8 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
+ 		return -EINVAL;
+ 	}
  
-+static struct rt5645_platform_data general_platform_data2 = {
-+	.dmic1_data_pin = RT5645_DMIC_DATA_IN2N,
-+	.dmic2_data_pin = RT5645_DMIC2_DISABLE,
-+	.jd_mode = 3,
-+	.inv_jd1_1 = true,
-+};
++	skl->cores.usage_count[core_id]++;
 +
-+static struct dmi_system_id dmi_platform_asus_t100ha[] = {
-+	{
-+		.ident = "ASUS T100HAN",
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "T100HAN"),
-+		},
-+	},
-+	{ }
-+};
-+
- static bool rt5645_check_dp(struct device *dev)
- {
- 	if (device_property_present(dev, "realtek,in2-differential") ||
-@@ -3689,6 +3707,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		rt5645->pdata = general_platform_data;
- 	else if (dmi_check_system(dmi_platform_gpd_win))
- 		rt5645->pdata = gpd_win_platform_data;
-+	else if (dmi_check_system(dmi_platform_asus_t100ha))
-+		rt5645->pdata = general_platform_data2;
+ 	if (skl->cores.state[core_id] == SKL_DSP_RESET) {
+ 		ret = ctx->fw_ops.set_state_D0(ctx, core_id);
+ 		if (ret < 0) {
+@@ -359,8 +361,6 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
+ 		}
+ 	}
  
- 	if (quirk != -1) {
- 		rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
+-	skl->cores.usage_count[core_id]++;
+-
+ out:
+ 	dev_dbg(ctx->dev, "core id %d state %d usage_count %d\n",
+ 			core_id, skl->cores.state[core_id],
 -- 
 2.14.1
