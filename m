@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: Add pm callbacks to
-	platform driver" to the asoc tree
-Date: Wed, 23 Aug 2017 12:24:47 +0100
-Message-ID: <E1dkTmB-0007C2-RC@debutante>
-References: <87valg4367.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tegra: Fix unused variable warning" to
+	the asoc tree
+Date: Wed, 23 Aug 2017 12:24:57 +0100
+Message-ID: <E1dkTmL-0007Eb-QH@debutante>
+References: <20170823060343.25275-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 31DE42672AA
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:24:52 +0200 (CEST)
-In-Reply-To: <87valg4367.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 34A3E26731F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 13:25:01 +0200 (CEST)
+In-Reply-To: <20170823060343.25275-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: Add pm callbacks to platform driver
+   ASoC: tegra: Fix unused variable warning
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 7b828a35ff834e45e5758a8a3f9d11db0526f9e1 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 22 Aug 2017 04:56:44 +0000
-Subject: [PATCH] ASoC: audio-graph-card: Add pm callbacks to platform driver
+>From f3f7df7635bd5fb6dbc8de150613d327a3bd6171 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 23 Aug 2017 08:03:43 +0200
+Subject: [PATCH] ASoC: tegra: Fix unused variable warning
 
-Set snd_soc_pm_ops for the pm ops to make sure that the ASoC level of PM
-operations are going to happen. This is needed to get suspend/resume
-working correctly when the audio is using audio-graph-card.
-
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Fixes: 2a8bd83af30e ("ASoC: tegra: Remove superfluous snd_soc_jack_free_gpios() call")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/tegra/tegra_wm8903.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 105ec3a6e30d..63048915efbb 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -325,6 +325,7 @@ MODULE_DEVICE_TABLE(of, asoc_graph_of_match);
- static struct platform_driver asoc_graph_card = {
- 	.driver = {
- 		.name = "asoc-audio-graph-card",
-+		.pm = &snd_soc_pm_ops,
- 		.of_match_table = asoc_graph_of_match,
- 	},
- 	.probe = asoc_graph_card_probe,
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index ce498cc0914b..05f95944669a 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -203,7 +203,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ 		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
+ 
+ 	wm8903_mic_detect(codec, NULL, 0, 0);
+ 
 -- 
 2.14.1
