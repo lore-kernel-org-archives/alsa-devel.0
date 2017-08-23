@@ -1,18 +1,14 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 01/14] ASoC: Intel: boards: use
- devm_clk_get() unconditionally
-Date: Wed, 23 Aug 2017 17:22:11 +0300
-Message-ID: <1503498131.25945.66.camel@linux.intel.com>
-References: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
- <20170822203239.19891-2-pierre-louis.bossart@linux.intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH] ASoC: Intel: Skylake: Fix uninitialized return
+Date: Wed, 23 Aug 2017 19:37:12 +0530
+Message-ID: <1503497232-21345-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 893142664EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 16:23:44 +0200 (CEST)
-In-Reply-To: <20170822203239.19891-2-pierre-louis.bossart@linux.intel.com>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3324C2677A2
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 16:24:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE3LTA4LTIyIGF0IDE1OjMyIC0wNTAwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3
-cm90ZToKPiBUaGUgY2xvY2sgZnJhbWV3b3JrIHdhcyBvbmx5IHVzZWQgaW4gQmF5dHJhaWwsIG9u
-IENoZXJyeXRyYWlsCj4gdGhlIGZpcm13YXJlIHRha2VzIGNhcmUgb2YgdGhlIE1DTEsvcGx0X2Ns
-a18zLgo+IAo+IFdpdGggdGhlIGZpeCBpbiAnY29tbWl0IGQzMWZkNDNjMGY5YQo+ICgiY2xrOiB4
-ODY6IERvIG5vdCBnYXRlIGNsb2NrcyBlbmFibGVkIGJ5IHRoZSBmaXJtd2FyZSIpJwo+IAo+IHRo
-ZSBmaXJtd2FyZS1tYW5hZ2VkIGNsb2NrcyBhcmUgbm90IGltcGFjdGVkIGJ5IGVuYWJsZS9kaXNh
-YmxlCj4gcmVxdWVzdHMgbWFrZSBhdCB0aGUgZHJpdmVyIGxldmVsLCBhbmQgdGhlIHJhdGVzIGFy
-ZSBpZGVudGljYWwuCj4gCj4gUmVtb3ZlIGFsbCBjaGVja3MgZm9yIEJheXRyYWlsIGFuZCB1c2Ug
-ZGV2bV9jbGtfZ2V0KCkKPiB1bmNvbmRpdGlvbmFsbHkuIFRlc3RlZCBvbiBBc3VzIFQxMDBIQSAo
-Q0hUKSBhbmQgQXN1cyBUMTAwVEFGIChCWVQpCj4gCj4gQ2M6IEFuZHkgU2hldmNoZW5rbyA8YW5k
-cml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1M
-b3VpcyBCb3NzYXJ0IDxwaWVycmUtCj4gbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+CgpJ
-dCdzIGEgZ29vZCBjbGVhbiB1cCEgKEkgYmVsaWV2ZSBpdCBoYWQgYmVlbiB0ZXN0ZWQgb24gQ0hU
-IHBsYXRmb3JtcyBhcwp3ZWxsKQoKUmV2aWV3ZWQtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5
-LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgoKUC5TLiBTaG91bGRuJ3QgdGhlIGNvcnJlc3Bv
-bmRpbmcgYXNtL2NwdV9kZXZpY2VfaWQuaCBoZWFkZXIsIG9yIHNvbWUKb3RoZXIocyksIGJlIHJl
-bW92ZWQgZnJvbSBpbmNsdXNpb24gYXMgd2VsbD8KCj4gLS0tCj4gwqBzb3VuZC9zb2MvaW50ZWwv
-Ym9hcmRzL2J5dGNyX3J0NTY0MC5jwqDCoMKgfMKgwqAyICstCj4gwqBzb3VuZC9zb2MvaW50ZWwv
-Ym9hcmRzL2NodF9ic3dfcnQ1NjQ1LmMgfCAxNCArKysrKystLS0tLS0tLQo+IMKgc291bmQvc29j
-L2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY3Mi5jIHwgMjYgKysrKysrLS0tLS0tLS0tLS0tLS0t
-LQo+IC0tLS0KPiDCoDMgZmlsZXMgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMjkgZGVsZXRp
-b25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1
-NjQwLmMKPiBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMKPiBpbmRleCA0
-YTc2YjA5Li4xNWIxZTI5IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0
-Y3JfcnQ1NjQwLmMKPiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5j
-Cj4gQEAgLTg5MSw3ICs4OTEsNyBAQCBzdGF0aWMgaW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2Jl
-KHN0cnVjdAo+IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiDCoAkJCWJ5dF9ydDU2NDBfY3B1X2Rh
-aV9uYW1lOwo+IMKgCX0KPiDCoAo+IC0JaWYgKChieXRfcnQ1NjQwX3F1aXJrICYgQllUX1JUNTY0
-MF9NQ0xLX0VOKSAmJgo+IChpc192YWxsZXl2aWV3KCkpKSB7Cj4gKwlpZiAoYnl0X3J0NTY0MF9x
-dWlyayAmIEJZVF9SVDU2NDBfTUNMS19FTikgewo+IMKgCQlwcml2LT5tY2xrID0gZGV2bV9jbGtf
-Z2V0KCZwZGV2LT5kZXYsCj4gInBtY19wbHRfY2xrXzMiKTsKPiDCoAkJaWYgKElTX0VSUihwcml2
-LT5tY2xrKSkgewo+IMKgCQkJcmV0X3ZhbCA9IFBUUl9FUlIocHJpdi0+bWNsayk7Cj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvY2h0X2Jzd19ydDU2NDUuYwo+IGIvc291bmQv
-c29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY0NS5jCj4gaW5kZXggNWJjZGUwMS4uZDU1M2Uy
-YiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjQ1LmMK
-PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjQ1LmMKPiBAQCAtNjgy
-LDE0ICs2ODIsMTIgQEAgc3RhdGljIGludCBzbmRfY2h0X21jX3Byb2JlKHN0cnVjdAo+IHBsYXRm
-b3JtX2RldmljZSAqcGRldikKPiDCoAkJCWNodF9ydDU2NDVfY3B1X2RhaV9uYW1lOwo+IMKgCX0K
-PiDCoAo+IC0JaWYgKGlzX3ZhbGxleXZpZXcoKSkgewo+IC0JCWRydi0+bWNsayA9IGRldm1fY2xr
-X2dldCgmcGRldi0+ZGV2LAo+ICJwbWNfcGx0X2Nsa18zIik7Cj4gLQkJaWYgKElTX0VSUihkcnYt
-Pm1jbGspKSB7Cj4gLQkJCWRldl9lcnIoJnBkZXYtPmRldiwKPiAtCQkJCSJGYWlsZWQgdG8gZ2V0
-IE1DTEsgZnJvbQo+IHBtY19wbHRfY2xrXzM6ICVsZFxuIiwKPiAtCQkJCVBUUl9FUlIoZHJ2LT5t
-Y2xrKSk7Cj4gLQkJCXJldHVybiBQVFJfRVJSKGRydi0+bWNsayk7Cj4gLQkJfQo+ICsJZHJ2LT5t
-Y2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJwbWNfcGx0X2Nsa18zIik7Cj4gKwlpZiAo
-SVNfRVJSKGRydi0+bWNsaykpIHsKPiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsCj4gKwkJCSJGYWls
-ZWQgdG8gZ2V0IE1DTEsgZnJvbSBwbWNfcGx0X2Nsa18zOgo+ICVsZFxuIiwKPiArCQkJUFRSX0VS
-UihkcnYtPm1jbGspKTsKPiArCQlyZXR1cm4gUFRSX0VSUihkcnYtPm1jbGspOwo+IMKgCX0KPiDC
-oAo+IMKgCXNuZF9zb2NfY2FyZF9zZXRfZHJ2ZGF0YShjYXJkLCBkcnYpOwo+IGRpZmYgLS1naXQg
-YS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9ic3dfcnQ1NjcyLmMKPiBiL3NvdW5kL3NvYy9p
-bnRlbC9ib2FyZHMvY2h0X2Jzd19ydDU2NzIuYwo+IGluZGV4IGY1OTdkNTUuLmFkMmYyN2UgMTAw
-NjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY3Mi5jCj4gKysr
-IGIvc291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY3Mi5jCj4gQEAgLTM5NCwxOCAr
-Mzk0LDYgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgc25kX3NvY19jYXJkX2NodCA9IHsK
-PiDCoAkucmVzdW1lX3Bvc3QgPSBjaHRfcmVzdW1lX3Bvc3QsCj4gwqB9Owo+IMKgCj4gLXN0YXRp
-YyBib29sIGlzX3ZhbGxleXZpZXcodm9pZCkKPiAtewo+IC0Jc3RhdGljIGNvbnN0IHN0cnVjdCB4
-ODZfY3B1X2lkIGNwdV9pZHNbXSA9IHsKPiAtCQl7IFg4Nl9WRU5ET1JfSU5URUwsIDYsIDU1IH0s
-IC8qIFZhbGxleXZpZXcsIEJheSBUcmFpbAo+ICovCj4gLQkJe30KPiAtCX07Cj4gLQo+IC0JaWYg
-KCF4ODZfbWF0Y2hfY3B1KGNwdV9pZHMpKQo+IC0JCXJldHVybiBmYWxzZTsKPiAtCXJldHVybiB0
-cnVlOwo+IC19Cj4gLQo+IMKgI2RlZmluZSBSVDU2NzJfSTJDX0RFRkFVTFQJImkyYy0xMEVDNTY3
-MDowMCIKPiDCoAo+IMKgc3RhdGljIGludCBzbmRfY2h0X21jX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCj4gQEAgLTQzOSwxNCArNDI3LDEyIEBAIHN0YXRpYyBpbnQgc25kX2No
-dF9tY19wcm9iZShzdHJ1Y3QKPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqAJCX0KPiDCoAl9
-Cj4gwqAKPiAtCWlmIChpc192YWxsZXl2aWV3KCkpIHsKPiAtCQlkcnYtPm1jbGsgPSBkZXZtX2Ns
-a19nZXQoJnBkZXYtPmRldiwKPiAicG1jX3BsdF9jbGtfMyIpOwo+IC0JCWlmIChJU19FUlIoZHJ2
-LT5tY2xrKSkgewo+IC0JCQlkZXZfZXJyKCZwZGV2LT5kZXYsCj4gLQkJCQkiRmFpbGVkIHRvIGdl
-dCBNQ0xLIGZyb20KPiBwbWNfcGx0X2Nsa18zOiAlbGRcbiIsCj4gLQkJCQlQVFJfRVJSKGRydi0+
-bWNsaykpOwo+IC0JCQlyZXR1cm4gUFRSX0VSUihkcnYtPm1jbGspOwo+IC0JCX0KPiArCWRydi0+
-bWNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAicG1jX3BsdF9jbGtfMyIpOwo+ICsJaWYg
-KElTX0VSUihkcnYtPm1jbGspKSB7Cj4gKwkJZGV2X2VycigmcGRldi0+ZGV2LAo+ICsJCQkiRmFp
-bGVkIHRvIGdldCBNQ0xLIGZyb20gcG1jX3BsdF9jbGtfMzoKPiAlbGRcbiIsCj4gKwkJCVBUUl9F
-UlIoZHJ2LT5tY2xrKSk7Cj4gKwkJcmV0dXJuIFBUUl9FUlIoZHJ2LT5tY2xrKTsKPiDCoAl9Cj4g
-wqAJc25kX3NvY19jYXJkX3NldF9kcnZkYXRhKCZzbmRfc29jX2NhcmRfY2h0LCBkcnYpOwo+IMKg
-CgotLSAKQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+
-CkludGVsIEZpbmxhbmQgT3kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On failure to get dsp_ops, dsp_init returns error without assigning ret. ret
+is assigned in code path which will never be executed. Fix it.
+
+Fixes: f77d443c4c29 ("ASoC: Intel: Skylake: Fix to free resources for dsp_init failure"
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index f0f11f597b21..697d07bc1b5a 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -278,8 +278,8 @@ int skl_init_dsp(struct skl *skl)
+ 
+ 	ops = skl_get_dsp_ops(skl->pci->device);
+ 	if (!ops) {
+-		goto unmap_mmio;
+ 		ret = -EIO;
++		goto unmap_mmio;
+ 	}
+ 
+ 	loader_ops = ops->loader_ops();
+-- 
+1.9.1
