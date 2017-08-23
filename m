@@ -1,61 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Wed, 23 Aug 2017 23:47:52 +0100
-Message-ID: <20170823224752.p3ebgenlnstkd5jg@sirena.org.uk>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
- <20170823092828.7ijy7rthvqkzcgtz@sirena.org.uk>
- <20170823223524.GW17193@bill-the-cat>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] sound/oss/pss: fix spelling mistake:
+	"compoents" -> "components"
+Date: Wed, 23 Aug 2017 23:49:34 +0100
+Message-ID: <20170823224934.12385-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fdwx3g5mbnzdoxcy"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170823223524.GW17193@bill-the-cat>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tom Rini <trini@konsulko.com>
-Cc: linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E23D266A7C
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 00:49:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, David Howells <dhowells@redhat.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---fdwx3g5mbnzdoxcy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Trivial fix to spelling mistake in MODULE_PARM_DESC text
 
-On Wed, Aug 23, 2017 at 06:35:24PM -0400, Tom Rini wrote:
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/oss/pss.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> After looking at 89128534f925 (which introduced the above line, and thus
-
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
-
-> support for the Chromebook), I think that 36afb0ab648 and 55e59aa0525a
-> are wrong and should be reverted.  It seems like they're an attempt to
-> make 89128534f925 be done 'properly' but it also seems like the
-
-Please be more specific.  The only obvious issue with the original patch
-"ASoC: rt5677: Add ACPI support" is that it adds an I2C ID instead of an
-ACPI ID.  I don't have 36afb0ab648 so I've no idea what it is and
-55e59aa0525a is "ASoC: rt5677: Move platform code to board file" which
-is a code motion patch and looks more like stylistic faff around the
-shambles that is ACPI than anything else.
-
---fdwx3g5mbnzdoxcy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmeBhcACgkQJNaLcl1U
-h9BvqQf/XjM4VI+tobAUeYKBXrlmaJ8PhDHlVFjHG0S6P6F6NgM2HFZi5DWyGdC+
-ZUrMncVYeQQUjlNB7TNjznjNoiYjMqFLiCvzQOTH8izTXLTLwP/UgU1aeOdLbItC
-NV2yfhLYSDbTXZCoB+KO00mgwcd+Gh121cpo5lZrBwtZXVtFtbedUuDr/NeOKQyD
-N9oYQ2CXY7JCgucjtqRPj5odPmazTHxukpv2C4VTbtTMlM6M6q8B/V0FMTlOdeWC
-BZRLnOpeK18vXeCMYcqMrsgVoqmloFtffVyEhUJAA2LdryCbIzo0KcdfOMnsbBKI
-gI8oUpw5XzYpGOIWOSAv3iHVug/QOA==
-=bgbB
------END PGP SIGNATURE-----
-
---fdwx3g5mbnzdoxcy--
+diff --git a/sound/oss/pss.c b/sound/oss/pss.c
+index 33c3a442e162..951b14dec73a 100644
+--- a/sound/oss/pss.c
++++ b/sound/oss/pss.c
+@@ -1156,7 +1156,7 @@ MODULE_PARM_DESC(pss_cdrom_port, "Set the PSS CDROM port i/o base (0x340 or othe
+ module_param(pss_enable_joystick, bool, 0);
+ MODULE_PARM_DESC(pss_enable_joystick, "Enables the PSS joystick port (1 to enable, 0 to disable)");
+ module_param(pss_no_sound, bool, 0);
+-MODULE_PARM_DESC(pss_no_sound, "Configure sound compoents (0 - no, 1 - yes)");
++MODULE_PARM_DESC(pss_no_sound, "Configure sound components (0 - no, 1 - yes)");
+ module_param(pss_keep_settings, bool, 0);
+ MODULE_PARM_DESC(pss_keep_settings, "Keep hardware setting at driver unloading (0 - no, 1 - yes)");
+ module_param(pss_firmware, charp, 0);
+-- 
+2.14.1
