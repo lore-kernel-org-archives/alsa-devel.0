@@ -1,59 +1,125 @@
-From: Oleksandr Grytsov <al1img@gmail.com>
-Subject: Re: [PATCH RESEND1 00/12] ALSA: vsnd: Add Xen
- para-virtualized frontend driver
-Date: Wed, 23 Aug 2017 17:51:20 +0300
-Message-ID: <CACvf2oUJtxVTuV0qu4z4kV=aSOH5O_8v=UjH_3tr4wCJdXuEjw@mail.gmail.com>
-References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
- <7e62a406-7dcd-b5c9-b2de-ea52e1d2afd0@sakamocchi.jp>
- <b9e34f0e-4a9a-9ccf-6165-04cd22a070ac@gmail.com>
- <CACvf2oU4puqSuNj2k5REpmFJdvWcTWY+AaNEJtknLP4XMPdbsg@mail.gmail.com>
- <e5d52c8a-09e0-2823-dcff-e595868c7dee@sakamocchi.jp>
- <2a2fd222-fc54-1709-bfc8-a530efc3f307@gmail.com>
- <ad4f2201-bfab-415d-0120-308989653628@sakamocchi.jp>
- <b129960e-b38f-ea94-3e4a-3cd409f7a707@gmail.com>
- <3f8e535b-8607-6b15-6e17-da755a06cc1e@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f181.google.com (mail-io0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B81F267782
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 16:51:22 +0200 (CEST)
-Received: by mail-io0-f181.google.com with SMTP id o196so1319998ioe.0
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 07:51:22 -0700 (PDT)
-In-Reply-To: <3f8e535b-8607-6b15-6e17-da755a06cc1e@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Oleksandr Andrushchenko <andr2000@gmail.com>, clemens@ladisch.de, tiwai@suse.com, linux-kernel@vger.kernel.org, xen-devel@lists.xen.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5645: make rt5645_platform_data const" to the asoc tree
+Date: Wed, 23 Aug 2017 16:54:22 +0100
+Message-ID: <E1dkXz4-0005RK-74@debutante>
+References: <1503498922-6023-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1503498922-6023-1-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-Thank you for detailed explanation.
+   ASoC: rt5645: make rt5645_platform_data const
 
-We understand that emulated interrupt on the frontend side is completely not
-acceptable and definitely we need to provide some feedback mechanism from
-Dom0 to DomU.
+has been applied to the asoc tree at
 
-In our case it is technically impossible to provide precise period interrupt
-(mostly because our backend is a user space application).
-The best we can implement it is provide number of frames (time, bytes etc.)
-consumed by real HW. This info will be outdated due to different delays but
-we can provide precise timestamps when this info was acquired.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Would this info be useful to update the frontend driver state?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-If you have in mind any other solution we would appreciate.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From cd6d6477f130c861c42e6eddc060e7c880e94bf3 Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Wed, 23 Aug 2017 20:05:22 +0530
+Subject: [PATCH] ASoC: rt5645: make rt5645_platform_data const
+
+Make these const as they are only used during a copy operation.
+Done using Coccinelle.
+
+@match disable optional_qualifier@
+identifier s;
+@@
+static struct rt5645_platform_data s = {...};
+
+@ref@
+position p;
+identifier match.s;
+@@
+s@p
+
+@good1@
+position ref.p;
+identifier match.s,f,c;
+expression e;
+@@
+(
+e = s@p
+|
+e = s@p.f
+|
+c(...,s@p.f,...)
+|
+c(...,s@p,...)
+)
+
+@bad depends on  !good1@
+position ref.p;
+identifier match.s;
+@@
+s@p
+
+@depends on forall !bad disable optional_qualifier@
+identifier match.s;
+@@
+static
++ const
+struct rt5645_platform_data s;
+
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 500bb42d0804..d2f038001908 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3559,7 +3559,7 @@ static const struct acpi_device_id rt5645_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5645_acpi_match);
+ #endif
+ 
+-static struct rt5645_platform_data general_platform_data = {
++static const struct rt5645_platform_data general_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
+@@ -3593,7 +3593,7 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 	{ }
+ };
+ 
+-static struct rt5645_platform_data buddy_platform_data = {
++static const struct rt5645_platform_data buddy_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
+@@ -3610,7 +3610,7 @@ static struct dmi_system_id dmi_platform_intel_broadwell[] = {
+ 	{ }
+ };
+ 
+-static struct rt5645_platform_data gpd_win_platform_data = {
++static const struct rt5645_platform_data gpd_win_platform_data = {
+ 	.jd_mode = 3,
+ 	.inv_jd1_1 = true,
+ };
 -- 
-Best Regards,
-Oleksandr Grytsov.
+2.14.1
