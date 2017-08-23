@@ -1,34 +1,86 @@
-From: Peng Donglin <dolinux.peng@gmail.com>
-Subject: [PATCH v2 10/10] ASoC: ux500: Remove unnecessary function call
-Date: Wed, 23 Aug 2017 05:21:43 -0700
-Message-ID: <32013b183a9bf0eeb22e98039324bd04df4276a7.1503484313.git.dolinux.peng@gmail.com>
-References: <cover.1503484313.git.dolinux.peng@gmail.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ALSA: ctxfi: make hw structures const
+Date: Wed, 23 Aug 2017 17:58:42 +0530
+Message-ID: <1503491322-32332-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1503484313.git.dolinux.peng@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, Peng Donglin <dolinux.peng@gmail.com>
+To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The work of the function platform_set_drvdata is done by
-devm_snd_soc_register_card.
+Make these const as they are only used in a copy operation.
+Done using Coccinelle:
 
-Signed-off-by: Peng Donglin <dolinux.peng@gmail.com>
+@match disable optional_qualifier@
+identifier s;
+@@
+static struct hw s = {...};
+
+@ref@
+position p;
+identifier match.s;
+@@
+s@p
+
+@good1@
+position ref.p;
+identifier match.s,f,c;
+expression e;
+@@
+(
+e = s@p
+|
+e = s@p.f
+|
+c(...,s@p.f,...)
+|
+c(...,s@p,...)
+)
+
+@bad depends on  !good1@
+position ref.p;
+identifier match.s;
+@@
+s@p
+
+@depends on forall !bad disable optional_qualifier@
+identifier match.s;
+@@
+static
++ const
+struct hw s;
+
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/soc/ux500/mop500.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/pci/ctxfi/cthw20k1.c | 2 +-
+ sound/pci/ctxfi/cthw20k2.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index ba9fc099cf67..070a6880980e 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -115,7 +115,6 @@ static int mop500_probe(struct platform_device *pdev)
+diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
+index 79edd88..8e6eb9d 100644
+--- a/sound/pci/ctxfi/cthw20k1.c
++++ b/sound/pci/ctxfi/cthw20k1.c
+@@ -2154,7 +2154,7 @@ static void hw_write_pci(struct hw *hw, u32 reg, u32 data)
+ 		&container_of(hw, struct hw20k1, hw)->reg_pci_lock, flags);
+ }
  
- 	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
- 		__func__, mop500_card.name);
--	platform_set_drvdata(pdev, &mop500_card);
+-static struct hw ct20k1_preset = {
++static const struct hw ct20k1_preset = {
+ 	.irq = -1,
  
- 	snd_soc_card_set_drvdata(&mop500_card, NULL);
+ 	.card_init = hw_card_init,
+diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
+index 18ee776..b866d6b 100644
+--- a/sound/pci/ctxfi/cthw20k2.c
++++ b/sound/pci/ctxfi/cthw20k2.c
+@@ -2220,7 +2220,7 @@ static void hw_write_20kx(struct hw *hw, u32 reg, u32 data)
+ 	writel(data, hw->mem_base + reg);
+ }
  
+-static struct hw ct20k2_preset = {
++static const struct hw ct20k2_preset = {
+ 	.irq = -1,
+ 
+ 	.card_init = hw_card_init,
 -- 
-2.14.1
+1.9.1
