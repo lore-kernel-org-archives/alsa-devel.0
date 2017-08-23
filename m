@@ -1,50 +1,24 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH] ASoC: Intel: Skylake: Fix uninitialized return
-Date: Wed, 23 Aug 2017 19:37:12 +0530
-Message-ID: <1503497232-21345-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: tegra: Remove superfluous 'machine' variable
+Date: Wed, 23 Aug 2017 16:28:42 +0200
+Message-ID: <CAK8P3a1qb+uQP3WaAPXesBcW9aXsq1Kif61xjJkykysay1r8VQ@mail.gmail.com>
+References: <20170823134715.1088951-1-arnd@arndb.de> <20170823142138.ps65qu3ohvhrrubl@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 3324C2677A2
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 16:24:20 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170823142138.ps65qu3ohvhrrubl@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org, "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On failure to get dsp_ops, dsp_init returns error without assigning ret. ret
-is assigned in code path which will never be executed. Fix it.
+On Wed, Aug 23, 2017 at 4:21 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Aug 23, 2017 at 03:46:30PM +0200, Arnd Bergmann wrote:
+>> The last cleanup left behind an unused variable:
+>
+> This doesn't apply against current code, please check and resend.
 
-Fixes: f77d443c4c29 ("ASoC: Intel: Skylake: Fix to free resources for dsp_init failure"
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/skylake/skl-messages.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I built against today's linux-next, but you already applied the same fix this
+morning after Stephen reported the problem.
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index f0f11f597b21..697d07bc1b5a 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -278,8 +278,8 @@ int skl_init_dsp(struct skl *skl)
- 
- 	ops = skl_get_dsp_ops(skl->pci->device);
- 	if (!ops) {
--		goto unmap_mmio;
- 		ret = -EIO;
-+		goto unmap_mmio;
- 	}
- 
- 	loader_ops = ops->loader_ops();
--- 
-1.9.1
+     Arnd
