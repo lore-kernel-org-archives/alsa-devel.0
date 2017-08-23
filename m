@@ -1,58 +1,90 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Wed, 23 Aug 2017 17:29:33 +0300
-Message-ID: <1503498573.25945.69.camel@linux.intel.com>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: rt5645: make rt5645_platform_data const
+Date: Wed, 23 Aug 2017 20:05:22 +0530
+Message-ID: <1503498922-6023-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1503453106-5564-1-git-send-email-trini@konsulko.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Tom Rini <trini@konsulko.com>, linux-kernel@vger.kernel.org
-Cc: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: julia.lawall@lip6.fr, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-08-22 at 21:51 -0400, Tom Rini wrote:
-> Not all devices with ACPI and this combination of sound devices will
-> have the required information provided via ACPI.  Reintroduce the I2C
-> device ID to restore sound functionality on on the Chromebook 'Samus'
-> model.
+Make these const as they are only used during a copy operation.
+Done using Coccinelle.
 
-> This is a regression from v4.12 on my laptop (a Chromebook 'Samus'
-> that's not running ChromeOS).  My fault for getting out of the habit
-> of
-> trying -rc1 when it comes out and not spotting this sooner.  I'm not
-> 100% sure if this fix is correct for all cases as I'm only able to
-> test
-> my hardware here, and this does fix my laptop.
+@match disable optional_qualifier@
+identifier s;
+@@
+static struct rt5645_platform_data s = {...};
 
-Are you sure the commit ddc9e69b9dc2 ("ASoC: rt5677: Hide platform data
-in the module sources") does not fix your issue?
+@ref@
+position p;
+identifier match.s;
+@@
+s@p
 
-> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-> index 36e530a36c82..6f629278d982 100644
-> --- a/sound/soc/codecs/rt5677.c
-> +++ b/sound/soc/codecs/rt5677.c
-> @@ -5021,6 +5021,7 @@ static int rt5677_write(void *context, unsigned
-> int reg, unsigned int val)
->  static const struct i2c_device_id rt5677_i2c_id[] = {
->  	{ "rt5677", RT5677 },
->  	{ "rt5676", RT5676 },
-> +	{ "RT5677CE:00", RT5677 },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+@good1@
+position ref.p;
+identifier match.s,f,c;
+expression e;
+@@
+(
+e = s@p
+|
+e = s@p.f
+|
+c(...,s@p.f,...)
+|
+c(...,s@p,...)
+)
 
-This one looks weird.
+@bad depends on  !good1@
+position ref.p;
+identifier match.s;
+@@
+s@p
 
-The board code has this 
+@depends on forall !bad disable optional_qualifier@
+identifier match.s;
+@@
+static
++ const
+struct rt5645_platform_data s;
 
-sound/soc/intel/boards/bdw-rt5677.c:285:                .codec_name =
-"i2c-RT5677CE:00",
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/codecs/rt5645.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-It's clearly a match to ACPI enumerated I2C slave device.
-
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index f14f648..efec452 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3559,7 +3559,7 @@ static int rt5645_resume(struct snd_soc_codec *codec)
+ MODULE_DEVICE_TABLE(acpi, rt5645_acpi_match);
+ #endif
+ 
+-static struct rt5645_platform_data general_platform_data = {
++static const struct rt5645_platform_data general_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
+@@ -3593,7 +3593,7 @@ static int rt5645_resume(struct snd_soc_codec *codec)
+ 	{ }
+ };
+ 
+-static struct rt5645_platform_data buddy_platform_data = {
++static const struct rt5645_platform_data buddy_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
+@@ -3610,7 +3610,7 @@ static int rt5645_resume(struct snd_soc_codec *codec)
+ 	{ }
+ };
+ 
+-static struct rt5645_platform_data gpd_win_platform_data = {
++static const struct rt5645_platform_data gpd_win_platform_data = {
+ 	.jd_mode = 3,
+ 	.inv_jd1_1 = true,
+ };
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+1.9.1
