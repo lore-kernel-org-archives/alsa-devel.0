@@ -1,18 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 0/4] ASoC: Intel: Skylake: Fixes to free
- resources on init failure
-Date: Wed, 23 Aug 2017 06:41:55 +0530
-Message-ID: <20170823011154.GD3053@localhost>
-References: <1503400553-15377-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Tom Rini <trini@konsulko.com>
+Subject: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+Date: Tue, 22 Aug 2017 21:51:46 -0400
+Message-ID: <1503453106-5564-1-git-send-email-trini@konsulko.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id B0922266834
- for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 03:08:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1503400553-15377-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from mail-yw0-f196.google.com (mail-yw0-f196.google.com
+ [209.85.161.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 792C2266834
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 03:51:39 +0200 (CEST)
+Received: by mail-yw0-f196.google.com with SMTP id y64so244886ywf.1
+ for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 18:51:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +21,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: linux-kernel@vger.kernel.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 22, 2017 at 04:45:49PM +0530, Subhransu S. Prusty wrote:
-> Some resources are not freed for ipc and dsp init failures. This results in
-> random failures in a stress test environment. So fixed to free the required
-> resources and also fixed the DSP core reference counting for firmware load
-> failure.
+Not all devices with ACPI and this combination of sound devices will
+have the required information provided via ACPI.  Reintroduce the I2C
+device ID to restore sound functionality on on the Chromebook 'Samus'
+model.
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Fixes: a36afb0ab648 ("ASoC: rt5677: Introduce proper table for ACPI enumeration")
+Cc: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+CC: linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tom Rini <trini@konsulko.com>
+---
+This is a regression from v4.12 on my laptop (a Chromebook 'Samus'
+that's not running ChromeOS).  My fault for getting out of the habit of
+trying -rc1 when it comes out and not spotting this sooner.  I'm not
+100% sure if this fix is correct for all cases as I'm only able to test
+my hardware here, and this does fix my laptop.
+---
+ sound/soc/codecs/rt5677.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Subhransu S. Prusty (4):
->   ASoC: Intel: Skylake: Fix to free dsp resource on ipc_init failure
->   ASoC: Intel: Skylake: Fix to free resources for dsp_init failure
->   ASoC: Intel: Skylake: Fix to free correct dev id in free_irq
->   ASoC: Intel: Skylake: Fix DSP core ref count for init failure
-> 
->  sound/soc/intel/skylake/bxt-sst.c      |  4 +++-
->  sound/soc/intel/skylake/cnl-sst.c      |  4 +++-
->  sound/soc/intel/skylake/skl-messages.c | 26 +++++++++++++++++++-------
->  sound/soc/intel/skylake/skl-sst-dsp.c  |  4 ++--
->  sound/soc/intel/skylake/skl-sst.c      |  4 +++-
->  sound/soc/intel/skylake/skl.c          |  2 +-
->  6 files changed, 31 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 1.9.1
-> 
-
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 36e530a36c82..6f629278d982 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5021,6 +5021,7 @@ static int rt5677_write(void *context, unsigned int reg, unsigned int val)
+ static const struct i2c_device_id rt5677_i2c_id[] = {
+ 	{ "rt5677", RT5677 },
+ 	{ "rt5676", RT5676 },
++	{ "RT5677CE:00", RT5677 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
 -- 
-~Vinod
+1.9.1
