@@ -1,93 +1,34 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: Fireface: Use common error handling code in
- pcm_open()
-Date: Wed, 23 Aug 2017 09:22:53 +0900
-Message-ID: <bd318065-7a0b-efd5-8ce0-0dffe37b92cf@sakamocchi.jp>
-References: <05f76303-7370-ea37-20c2-116c04b850db@users.sourceforge.net>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 2/2] ASoC: rockchip: separate pinctrl pins from each
+ other
+Date: Tue, 22 Aug 2017 19:38:03 -0500
+Message-ID: <20170823003803.om33jtnfrsna5x4n@rob-hp-laptop>
+References: <1503303907-57630-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1503303907-57630-3-git-send-email-sugar.zhang@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <05f76303-7370-ea37-20c2-116c04b850db@users.sourceforge.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1503303907-57630-3-git-send-email-sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Aug 23 2017 04:51, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 22 Aug 2017 21:45:42 +0200
+On Mon, Aug 21, 2017 at 04:25:07PM +0800, Sugar Zhang wrote:
+> pdm sdi0~3 pins are optional, for example, if 4ch required,
+> only sdi0~1 need to be enabled.
 > 
-> Add a jump target so that a bit of exception handling can be better reused
-> at the end of this function.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> Signed-off-by: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 > ---
->   sound/firewire/fireface/ff-pcm.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
-> index d12a0e3a4219..40975395a64a 100644
-> --- a/sound/firewire/fireface/ff-pcm.c
-> +++ b/sound/firewire/fireface/ff-pcm.c
-> @@ -138,16 +138,12 @@ static int pcm_open(struct snd_pcm_substream *substream)
->   		return err;
->   
->   	err = pcm_init_hw_params(ff, substream);
-> -	if (err < 0) {
-> -		snd_ff_stream_lock_release(ff);
-> -		return err;
-> -	}
-> +	if (err < 0)
-> +		goto release_lock;
->   
->   	err = ff->spec->protocol->get_clock(ff, &rate, &src);
-> -	if (err < 0) {
-> -		snd_ff_stream_lock_release(ff);
-> -		return err;
-> -	}
-> +	if (err < 0)
-> +		goto release_lock;
->   
->   	if (src != SND_FF_CLOCK_SRC_INTERNAL) {
->   		for (i = 0; i < CIP_SFC_COUNT; ++i) {
-> @@ -177,6 +173,10 @@ static int pcm_open(struct snd_pcm_substream *substream)
->   	snd_pcm_set_sync(substream);
->   
->   	return 0;
-> +
-> +release_lock:
-> +	snd_ff_stream_lock_release(ff);
-> +	return err;
->   }
->   
->   static int pcm_close(struct snd_pcm_substream *substream)
+> Changes in v2: None
+> 
+>  Documentation/devicetree/bindings/sound/rockchip,pdm.txt | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 
-
-A line to return for err is still left after applying this patch.
-
-148         if (src != SND_FF_CLOCK_SRC_INTERNAL) {
-149                 for (i = 0; i < CIP_SFC_COUNT; ++i) {
-150                         if (amdtp_rate_table[i] == rate)
-151                                 break;
-152                 }
-153                 /*
-154                  * The unit is configured at sampling frequency 
-which packet
-155                  * streaming engine can't support.
-156                  */
-157                 if (i >= CIP_SFC_COUNT) {
-158                         snd_ff_stream_lock_release(ff);
-159                         return -EIO;
-160                 }
-161
-
-
-Regards
-
-Takashi Sakamoto
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
