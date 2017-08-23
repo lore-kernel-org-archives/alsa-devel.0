@@ -1,41 +1,75 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: tegra: remove unused variable machine, fixes build warning
-Date: Wed, 23 Aug 2017 10:37:41 +0100
-Message-ID: <20170823093741.26739-1-colin.king@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-ac97: replace codec to component
+Date: Wed, 23 Aug 2017 11:18:24 +0100
+Message-ID: <20170823101824.5vjwgegngfhfwq3o@sirena.org.uk>
+References: <87mv6qx46y.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Codrut Grosu <codrut.cristian.grosu@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Donglin Peng <dolinux.peng@gmail.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0443839153430873966=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 060292664EB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 12:18:26 +0200 (CEST)
+In-Reply-To: <87mv6qx46y.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Remove unused variable 'machine', fixes build warning:
-sound/soc/tegra/tegra_wm8903.c: In function 'tegra_wm8903_remove':
-sound/soc/tegra/tegra_wm8903.c:206:23: warning: unused variable
-  'machine' [-Wunused-variable]
-  struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
-                       ^~~~~~~
-Fixes: 2a8bd83af30e ("ASoC: tegra: Remove superfluous snd_soc_jack_free_gpios() call")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/tegra/tegra_wm8903.c | 1 -
- 1 file changed, 1 deletion(-)
+--===============0443839153430873966==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jzbpeykmns5hoojd"
+Content-Disposition: inline
 
-diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
-index 2384cb9cb95c..18bdae59a4df 100644
---- a/sound/soc/tegra/tegra_wm8903.c
-+++ b/sound/soc/tegra/tegra_wm8903.c
-@@ -203,7 +203,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
- 		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_codec *codec = codec_dai->codec;
--	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
- 
- 	wm8903_mic_detect(codec, NULL, 0, 0);
- 
--- 
-2.14.1
+
+--jzbpeykmns5hoojd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 23, 2017 at 05:14:10AM +0000, Kuninori Morimoto wrote:
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> codec will be replaced to component soon.
+> AC97 is codec related feature now. Thus this patch replaces codec
+> to component on AC97.
+
+Given that there's Robert's big AC'97 refactoring patch in review right
+now I don't want to apply this and cause him to have to rebase, I'm
+expecting this version to go in.
+
+--jzbpeykmns5hoojd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmdVnAACgkQJNaLcl1U
+h9BP+gf+Mv0UvCtazKFBGbqHZ0lX0LuOMvbhXy3ITCRUxa3DFr9rfsHu7EjlRSE8
+IYOhlInia+y2a6nj2ykX6shOMr9TdSxoqYSED+JS7ljb2V2MESzdHrqIagbTu89k
+pF+pri+nrAl2PC89mjYxIn88qyggRLvMi46zwOMBnMOSqQzudnHMxcFMHFhbuY4J
+c2N0a60S+Pn5cQscdBdLhx6EyEWt4ZvUHD5poDVcvWTsRtQrJeIGZX6qFVJPy+0v
+X8QYamWZEOcwbfFoZbuKDgmPISm3os8/Zbrb4BJnxG8Bunnf1Tm7HmQZzWVe4Gl5
+ajNsUlWpV34A7yfrh2JZs5gARyHAkQ==
+=urt6
+-----END PGP SIGNATURE-----
+
+--jzbpeykmns5hoojd--
+
+--===============0443839153430873966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0443839153430873966==--
