@@ -1,15 +1,14 @@
-From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Subject: [PATCH] ASoC: Add delay quirk for H650e/Jabra 550a USB
-	headsets
-Date: Tue, 22 Aug 2017 08:33:53 +0200
-Message-ID: <20170822063353.3612-1-joakim.tjernlund@infinera.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: tegra: Fix unused variable warning
+Date: Wed, 23 Aug 2017 08:03:43 +0200
+Message-ID: <20170823060343.25275-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.transmode.se (smtp.transmode.se [31.15.61.139])
- by alsa0.perex.cz (Postfix) with ESMTP id 72FE1266D86
- for <alsa-devel@alsa-project.org>; Tue, 22 Aug 2017 08:34:04 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBA52266834
+ for <alsa-devel@alsa-project.org>; Wed, 23 Aug 2017 08:03:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "alsa-devel @ alsa-project . org" <alsa-devel@alsa-project.org>
-Cc: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-These headsets reports a lot of: cannot set freq 44100 to ep 0x81
-and need a small delay between sample rate settings, just like
-Zoom R16/24. Add both headsets to the Zoom R16/24 quirk for
-a 1 ms delay between control msgs.
-
-Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Fixes: 2a8bd83af30e ("ASoC: tegra: Remove superfluous snd_soc_jack_free_gpios() call")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/quirks.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/tegra/tegra_wm8903.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index eb4b9f7a571e..6f395150243f 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1308,10 +1308,13 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		mdelay(20);
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index ce498cc0914b..05f95944669a 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -203,7 +203,6 @@ static int tegra_wm8903_remove(struct snd_soc_card *card)
+ 		snd_soc_get_pcm_runtime(card, card->dai_link[0].name);
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct tegra_wm8903 *machine = snd_soc_card_get_drvdata(card);
  
--	/* Zoom R16/24 needs a tiny delay here, otherwise requests like
--	 * get/set frequency return as failed despite actually succeeding.
-+	/* Zoom R16/24, Logitech H650e, Jabra 550a needs a tiny delay here,
-+	 * otherwise requests like get/set frequency return as failed despite
-+	 * actually succeeding.
- 	 */
--	if (chip->usb_id == USB_ID(0x1686, 0x00dd) &&
-+	if ((chip->usb_id == USB_ID(0x1686, 0x00dd) ||
-+	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
-+	     chip->usb_id == USB_ID(0x0b0e, 0x0349)) &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
- 		mdelay(1);
- }
+ 	wm8903_mic_detect(codec, NULL, 0, 0);
+ 
 -- 
-2.13.5
+2.14.0
