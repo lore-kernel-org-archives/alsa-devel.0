@@ -1,72 +1,59 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] ASoC: rt5677: Convert I2C driver to
-	->probe_new()
-Date: Thu, 24 Aug 2017 16:41:10 +0300
-Message-ID: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+Date: Thu, 24 Aug 2017 14:41:47 +0100
+Message-ID: <20170824134147.2a5noeas4or33d2p@sirena.org.uk>
+References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
+ <1503498573.25945.69.camel@linux.intel.com>
+ <20170823173912.GN17193@bill-the-cat>
+ <20170824000525.GY17193@bill-the-cat>
+ <1503560349.25945.72.camel@linux.intel.com>
+ <20170824111547.GA17193@bill-the-cat>
+ <1503577560.25945.84.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id EDA0E266DE5
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 15:41:17 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="e5chi6jsxmwai27x"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1503577560.25945.84.camel@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Tom Rini <trini@konsulko.com>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is no platform code that uses i2c module table.
-Remove it altogether and adjust ->probe() to be ->probe_new().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- sound/soc/codecs/rt5677.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+--e5chi6jsxmwai27x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index c735590c5a25..6448b7a00203 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5009,11 +5009,6 @@ static const struct regmap_config rt5677_regmap = {
- 	.num_ranges = ARRAY_SIZE(rt5677_ranges),
- };
- 
--static const struct i2c_device_id rt5677_i2c_id[] = {
--	{ }
--};
--MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
--
- static const struct of_device_id rt5677_of_match[] = {
- 	{ .compatible = "realtek,rt5677", RT5677 },
- 	{ }
-@@ -5131,8 +5126,7 @@ static void rt5677_free_irq(struct i2c_client *i2c)
- 		regmap_del_irq_chip(i2c->irq, rt5677->irq_data);
- }
- 
--static int rt5677_i2c_probe(struct i2c_client *i2c,
--		    const struct i2c_device_id *id)
-+static int rt5677_i2c_probe(struct i2c_client *i2c)
- {
- 	struct rt5677_priv *rt5677;
- 	int ret;
-@@ -5279,9 +5273,8 @@ static struct i2c_driver rt5677_i2c_driver = {
- 		.of_match_table = rt5677_of_match,
- 		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
- 	},
--	.probe = rt5677_i2c_probe,
-+	.probe_new = rt5677_i2c_probe,
- 	.remove   = rt5677_i2c_remove,
--	.id_table = rt5677_i2c_id,
- };
- module_i2c_driver(rt5677_i2c_driver);
- 
--- 
-2.14.1
+On Thu, Aug 24, 2017 at 03:26:00PM +0300, Andy Shevchenko wrote:
+
+> Thus, I'm suspecting that your user space helper either has some hard
+> coded values for previous case, or just broken.
+>=20
+> Can you also check is the codec module loaded (lsmod) and, if it's not,
+> load it manually and check if sound works again.
+
+Not sure what userspace helper you mean here?  The kernel is oopsing,
+userspace shouldn't be able to do that.
+
+> P.S. In any case you need the patch mentioned in bug #196397
+
+What is that?
+
+--e5chi6jsxmwai27x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlme15oACgkQJNaLcl1U
+h9CgkggAgBwi1PZM73FGE7blwoOUb3EWRwWE4dltbKbwwLOT9jylC570lgcPGXSH
+g2sfgHssfZIIMEvYnHlCtfp1rT34iw213zS9KszVpkRbkpAoiDbfWinvrFNP474Y
+3G6ZahzsGop6oo2Gp78un+HbMEcRvLOJg60wbgA/H3QAngKhdT90GHJpJPOCQk/9
+8ZB1akE9s5rR4w4fRm7OFEEK4hlHEopR3V6b7F/h6CYfWMHYNWb1UtsFEkiQVu3I
+XjYU8K85bwxCf45xXOGweSXDH1UMnNExIhGmpNDtiaVzhhYah87RDsnGVOpmSLJC
+BBTSEFV5hbDjKmvtPm1RgOpt8H1+mQ==
+=KRoI
+-----END PGP SIGNATURE-----
+
+--e5chi6jsxmwai27x--
