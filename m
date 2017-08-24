@@ -1,131 +1,72 @@
-From: Tom Rini <trini@konsulko.com>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Thu, 24 Aug 2017 09:47:37 -0400
-Message-ID: <20170824134737.GB17193@bill-the-cat>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
- <1503498573.25945.69.camel@linux.intel.com>
- <20170823173912.GN17193@bill-the-cat>
- <20170824000525.GY17193@bill-the-cat>
- <1503560349.25945.72.camel@linux.intel.com>
- <20170824111547.GA17193@bill-the-cat>
- <1503577560.25945.84.camel@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
+	->probe_new()
+Date: Thu, 24 Aug 2017 14:49:24 +0100
+Message-ID: <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
+References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="xwCJTF497Cudft2o"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1503577560.25945.84.camel@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0113643558390417894=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64BAD266DE5
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 15:49:31 +0200 (CEST)
+In-Reply-To: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---xwCJTF497Cudft2o
-Content-Type: text/plain; charset=iso-8859-1
+--===============0113643558390417894==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vsaeo73eazkfqtfe"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 24, 2017 at 03:26:00PM +0300, Andy Shevchenko wrote:
-> On Thu, 2017-08-24 at 07:15 -0400, Tom Rini wrote:
-> > On Thu, Aug 24, 2017 at 10:39:09AM +0300, Andy Shevchenko wrote:
-> > > On Wed, 2017-08-23 at 20:05 -0400, Tom Rini wrote:
-> > > > On Wed, Aug 23, 2017 at 01:39:12PM -0400, Tom Rini wrote:
-> > > > > On Wed, Aug 23, 2017 at 05:29:33PM +0300, Andy Shevchenko wrote:
-> > > > >=20
-> > > > > > Are you sure the commit ddc9e69b9dc2 ("ASoC: rt5677: Hide
-> > > > > > platform
-> > > > > > data
-> > > > > > in the module sources") does not fix your issue?
-> > > > >=20
-> > > > > As that's not in master yet I can't tell.=A0=A0Can you give me a
-> > > > > pointer
-> > > > > to
-> > > > > somewhere?
-> > >=20
-> > > It's in ASoC next at least.
-> > >=20
-> > > > > =A0=A0Thanks!
-> > > >=20
-> > > > OK, my bad, it has a different hash upstream, but no, that change
-> > > > doesn't fix things as I see the problem on top of Linus'
-> > > > tree.=A0=A0Thanks!
-> > >=20
-> > > Interesting...
-> > >=20
-> > > The only bug so far I saw is the following one
-> > >=20
-> > > https://bugzilla.kernel.org/show_bug.cgi?id=3D196397
-> > >=20
-> > > ...and above commit fixes it.
-> > >=20
-> > > Can you place somewhere the bundle of the following:
-> > >=20
-> > > 1. Output file (tables.dat) of
-> > > 	% acpidump -o tables.dat
-> >=20
-> > https://gist.github.com/trini/b9a9a547e37cb812506a22e18cd2aff5
-> >=20
-> > > 2. Output of
-> > > 	% cat /proc/interrupts
-> >=20
-> > https://gist.github.com/trini/39a5d88a5ecb9b71336ff5fe9da7c720
-> >=20
-> > > 3. Output of
-> > > 	% lspci -vv -xx
-> >=20
-> > https://gist.github.com/trini/e81ab21909eeaa05ea50dc0596d23c14
-> >=20
-> > > 4. Output of
-> > > 	% grep -H 15 /sys/bus/acpi/devices/*/status
-> >=20
-> > https://gist.github.com/trini/698dc284634ad9e1cfbafad8e705de5f
->=20
-> Thanks!
->=20
-> I have checked those files and found that device is in the table and
-> pretty much properly defined ACPI I2C slave.
->=20
-> The change in the driver you referred to makes the change to modalias.
->=20
-> Thus, I'm suspecting that your user space helper either has some hard
-> coded values for previous case, or just broken.
->=20
-> Can you also check is the codec module loaded (lsmod) and, if it's not,
-> load it manually and check if sound works again.
->=20
-> P.S. In any case you need the patch mentioned in bug #196397
 
-I've applied "ASoC: rt5677: Hide platform data in the module sources"
-manually to Linus' tree and still see the same problem.  Perhaps there's
-now some missing alias information that really needs to still be
-provided?  snd-soc-sst-bdw-rt5677-mach is not loaded and I can't
-manually load it later on.  What user space helper configuration am I
-supposed to need to have now, for this to work?  Thanks!
+--vsaeo73eazkfqtfe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---=20
-Tom
+On Thu, Aug 24, 2017 at 04:41:10PM +0300, Andy Shevchenko wrote:
 
---xwCJTF497Cudft2o
+> There is no platform code that uses i2c module table.
+> Remove it altogether and adjust ->probe() to be ->probe_new().
+
+What is the value in doing this?  Removing the ability to instantiate
+via board files is just inconveniencing people doing that, it's not a
+goal in itself.
+
+--vsaeo73eazkfqtfe
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iQIcBAEBAgAGBQJZntj4AAoJEIf59jXTHXZS0oYP/jEL7vMsVDLGiVbwnw4YAiK2
-Y59SJLIEx4103+datlHyMaEUSE1YO0qIWhqtTj1vYfntM1TDYAe8TOB4Zb+6O7Tn
-a8A7x2BoM5nJJUz12XmsvwM+ZOrsRL+COhvh8jMRVW0cJPNs6Twciie0H+y8nrlK
-TXtpe7nlaPQCENWiXPmbYpFXQmTI5HrdqQWp7gmnGqR4Ke0XfCtKfj+CCenx9lYY
-TjNSMcqAkjNHqvW2c6U8MTxwqV0byOPy2x+fQAOh1WspzPt/4QCyBs3PdBGQpjL5
-qBAN1mtgLWf/2j+Yi6w7sYS0ht8vvFu3Btjl886BFzoKyByu5RdjidEE3+iONYXZ
-p9/mrA8r8d4CvF/AmV9Z7aOzaZkdaqSZicY78jWZK+Y1p22Rv7m/VCXQFtRCf8ay
-24G+uZkdgBcXLAhWGilk6J4wzZYk8ZaCjuza0Jz2G1BQVYoFQ2SRmSy3ByiJ48kD
-sQrv7mty/OGuKs70N4OtEiM9KgsbWleCqacmJHDmwVav14VJsDby8AIx3uSl5nt9
-4UGcwcSCqyI4q9IJg7wWpFq389Sp45oyMIvwC/wI9Jto0fh6SscFbSyjK9TQKLev
-wYRU+vGMEPeDj6ez9aWLFx2CayQQ6JbF7G6wM0pLidPSZb8h39zF0Wfl0lnn2v6o
-1o2+npVjkUhvRzgWBRiE
-=EIqR
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlme2WQACgkQJNaLcl1U
+h9Ba4gf+KtCYFO3YmVkrcPhBuVIzTIEmjpEJlqLxYMhFznd2gHrHqIinFHa9yVyR
+I7K6jGDc0hmbpbizkcDhLMQcs5B59ndyU0nCz3J2Taly6nNUSlcPOD+TfFWNaRl+
+eqtvG8FrdsuQThfriSZKYUiyEKmSAHI9eIRZSU1A+4xPEtVJ4vHmprNorAJ3w+3N
+7mjeBlzefonLedbksU5rQAuXX9hnU8uGgrcedoEMac9cSVs1+9JtWFGncWp4M0Io
+q64obrMiZUQhDKkqqaEiBPBPuze2bHT7l3YWeleVD1Z5JKOi4kQPBfyIOncIZ025
+a232a2xPbk+X/3d6paH27zOF6a/0Uw==
+=8AC0
 -----END PGP SIGNATURE-----
 
---xwCJTF497Cudft2o--
+--vsaeo73eazkfqtfe--
+
+--===============0113643558390417894==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0113643558390417894==--
