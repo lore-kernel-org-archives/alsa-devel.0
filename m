@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Add a sanity check before using dai
-	driver name
-Date: Thu, 24 Aug 2017 11:18:26 +0100
-Message-ID: <20170824101826.htrevrhhgez2pgoe@sirena.org.uk>
-References: <20170822144512.12976-1-jeffy.chen@rock-chips.com>
- <20170822161756.5h6smkjz6kkvl5i7@sirena.org.uk>
- <599CC17F.90806@rock-chips.com>
- <20170823110628.xergjdexrmxyqrza@sirena.org.uk>
- <599E4826.1060607@rock-chips.com>
+Subject: Re: [PATCH 4/4] ASoC: add Component level
+	set_bias_level
+Date: Thu, 24 Aug 2017 11:32:54 +0100
+Message-ID: <20170824103254.sw2dsc7wj63nnyw4@sirena.org.uk>
+References: <87bmn5rdqf.wl%kuninori.morimoto.gx@renesas.com>
+ <8760ddrdnw.wl%kuninori.morimoto.gx@renesas.com>
+ <87shghpmg6.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1228767031074779133=="
+Content-Type: multipart/mixed; boundary="===============1454528174435354374=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B46762669F3
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 12:18:34 +0200 (CEST)
-In-Reply-To: <599E4826.1060607@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 076E52669F3
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 12:33:04 +0200 (CEST)
+In-Reply-To: <87shghpmg6.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,57 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jeffy <jeffy.chen@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, dolinux.peng@gmail.com, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1228767031074779133==
+--===============1454528174435354374==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i7ujv7jw52cjgojj"
+	protocol="application/pgp-signature"; boundary="vv3ij6rr2z5erwnh"
 Content-Disposition: inline
 
 
---i7ujv7jw52cjgojj
+--vv3ij6rr2z5erwnh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 24, 2017 at 11:29:42AM +0800, jeffy wrote:
+On Thu, Aug 24, 2017 at 05:31:36AM +0000, Kuninori Morimoto wrote:
 
-> and i was trying to do something like:
-> if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
->     && (!dai->driver->name || strcmp(dai->driver->name, dlc->dai_name)))
->    continue;
+> Oops... new component want to have .idle_bias_off / .suspend_bias_off ?
 
-> which is add an accept case for: dai driver name is valid and matches the
-> dai name we are looking for...
+Yes, they're different and both useful.
 
-Writing it as one if statement would at least be clearer.  I can't
-remember the patch you proposed at this point but the above looks
-plausible.
-
---i7ujv7jw52cjgojj
+--vv3ij6rr2z5erwnh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmep/EACgkQJNaLcl1U
-h9DOqAgAgHK6aqo4bc+E8dHCbgBPsySuK58Fci7g8O8zTwY4+hk9uCdWq74iM3kT
-xHRWOJ6tEsAgY1H1O69KLrDuiPI3CF8zqfgQWPRb/RlzImegQnjS8zdZs+3Z1wo4
-aKOUVMa7+hy5n31cqzGJr5+u/zj5XSQYsi7jo8TUHMq+d6/BhtIuahAEemQzwr5F
-VK95vDrD+65ifFeBI7RMtOd05JlvwmtG1bo7RgG3hNcg1xAxiRr5N9kSdfuTsl/U
-RT7xmasetM2yTvCRPq3AsHPFFszCHkXZHJmZsoeeX4KO0TFvduR2bqx770M16u8b
-imvi0hfDXtAggvwZmUgfA1yU1b12iw==
-=uOp7
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmeq1YACgkQJNaLcl1U
+h9AfwQf/cfKwMdbr0FHgEUINWEuyCxeb8iRezz/WTY+PrHX9lDojTgjex24zSeK6
+s76JACxBcmbj0EKUWdcnTAWLlCMAK+ZVMNxu0ikRCm1JCGw90ustD4MSmFS1Yqyl
+rW5ZT2M61AXlT7b4lkOFYJRLyAlHGnntr2y7EeUBBaaERwUFMKaJ/ppj1fVqFXLW
+4RJYWzshafAWBzQEhHzpwJ/Gy1Fv7toHgz3OKgbGUID+8gOCXU2aIRAcIjpS5Cy8
+ZHk+TEY3ZJm32ie/R8rsorpRZV2rN25Zj9khd31XWfnJKva+R3rvav93W3V9fp+N
+kjZ2bwvh1rE82GWyPvZKT1zuTMPKjg==
+=dysQ
 -----END PGP SIGNATURE-----
 
---i7ujv7jw52cjgojj--
+--vv3ij6rr2z5erwnh--
 
---===============1228767031074779133==
+--===============1454528174435354374==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1228767031074779133==--
+--===============1454528174435354374==--
