@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/3] ALSA: control: delegate TLV eventing to
-	each driver
-Date: Thu, 24 Aug 2017 10:46:13 +0900
-Message-ID: <20170824014616.28859-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/3] ALSA: control: queue TLV event for a set
+	of user-defined element
+Date: Thu, 24 Aug 2017 10:46:15 +0900
+Message-ID: <20170824014616.28859-3-o-takashi@sakamocchi.jp>
+References: <20170824014616.28859-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 86213266D16
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 88491266D90
  for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 03:46:45 +0200 (CEST)
+In-Reply-To: <20170824014616.28859-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,24 +25,42 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, fulup.arfoll@iot.bzh
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In a design of user-defined element set, applications allow to change TLV
+data on the set. This operation doesn't only affects to a target element,
+but also to elements in the set.
 
-This patchse is the same one which I posted and for merge to upstream.
+This commit generates TLV event for all of elements in the set when the TLV
+data is changed.
 
-[alsa-devel] [RFC][PATCH 0/3] ALSA: control: delegate TLV eventing to each driver
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-August/124382.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/control.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Nothing changed from the original one.
-
-
-Takashi Sakamoto (3):
-  ALSA: control: delegate TLV eventing to each driver
-  ALSA: control: queue TLV event for a set of user-defined element
-  ALSA: control: TLV data is unavailable at initial state of
-    user-defined element set
-
- sound/core/control.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
-
+diff --git a/sound/core/control.c b/sound/core/control.c
+index d6a8502da828..6ddffe85126f 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1117,6 +1117,8 @@ static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
+ {
+ 	struct user_element *ue = kctl->private_data;
+ 	unsigned int *container;
++	struct snd_ctl_elem_id id;
++	int i;
+ 	int change;
+ 
+ 	if (size > 1024 * 128)	/* sane value */
+@@ -1138,7 +1140,10 @@ static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
+ 	ue->tlv_data = container;
+ 	ue->tlv_data_size = size;
+ 
+-	snd_ctl_notify(ue->card, SNDRV_CTL_EVENT_MASK_TLV, &kctl->id);
++	for (i = 0; i < kctl->count; ++i) {
++		snd_ctl_build_ioff(&id, kctl, i);
++		snd_ctl_notify(ue->card, SNDRV_CTL_EVENT_MASK_TLV, &id);
++	}
+ 
+ 	return change;
+ }
 -- 
 2.11.0
