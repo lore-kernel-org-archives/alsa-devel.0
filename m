@@ -1,56 +1,107 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
-	->probe_new()
-Date: Thu, 24 Aug 2017 20:12:12 +0300
-Message-ID: <1503594732.25945.90.camel@linux.intel.com>
-References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
- <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
- <s5hh8wxjarq.wl-tiwai@suse.de>
- <20170824154947.li6yke5vv5llcxhh@sirena.org.uk>
- <s5hziaphrof.wl-tiwai@suse.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+Date: Thu, 24 Aug 2017 20:16:11 +0300
+Message-ID: <1503594971.25945.93.camel@linux.intel.com>
+References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
+         <1503498573.25945.69.camel@linux.intel.com>
+         <20170823173912.GN17193@bill-the-cat> <20170824000525.GY17193@bill-the-cat>
+         <s5hk21tjb02.wl-tiwai@suse.de> <s5hinhdjav6.wl-tiwai@suse.de>
+         <20170824144152.GC17193@bill-the-cat> <s5h60ddj7l8.wl-tiwai@suse.de>
+         <20170824155235.2nrqjiwlo3afk4ei@sirena.org.uk>
+         <20170824155437.GF17193@bill-the-cat> <s5h1so1j6gz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 72CF3266DE5
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 19:13:25 +0200 (CEST)
-In-Reply-To: <s5hziaphrof.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h1so1j6gz.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Tom Rini <trini@konsulko.com>
+Cc: Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDE3LTA4LTI0IGF0IDE4OjExICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gVGh1LCAyNCBBdWcgMjAxNyAxNzo0OTo0NyArMDIwMCwKPiBNYXJrIEJyb3duIHdyb3RlOgo+
-ID4gCj4gPiBPbiBUaHUsIEF1ZyAyNCwgMjAxNyBhdCAwNDozMzoyOVBNICswMjAwLCBUYWthc2hp
-IEl3YWkgd3JvdGU6Cj4gPiA+IE1hcmsgQnJvd24gd3JvdGU6Cj4gPiA+ID4gT24gVGh1LCBBdWcg
-MjQsIDIwMTcgYXQgMDQ6NDE6MTBQTSArMDMwMCwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOgo+ID4g
-PiA+IAo+ID4gPiA+ID4gVGhlcmUgaXMgbm8gcGxhdGZvcm0gY29kZSB0aGF0IHVzZXMgaTJjIG1v
-ZHVsZSB0YWJsZS4KPiA+ID4gPiA+IFJlbW92ZSBpdCBhbHRvZ2V0aGVyIGFuZCBhZGp1c3QgLT5w
-cm9iZSgpIHRvIGJlIC0+cHJvYmVfbmV3KCkuCj4gPiA+ID4gV2hhdCBpcyB0aGUgdmFsdWUgaW4g
-ZG9pbmcgdGhpcz/CoMKgUmVtb3ZpbmcgdGhlIGFiaWxpdHkgdG8KPiA+ID4gPiBpbnN0YW50aWF0
-ZQo+ID4gPiA+IHZpYSBib2FyZCBmaWxlcyBpcyBqdXN0IGluY29udmVuaWVuY2luZyBwZW9wbGUg
-ZG9pbmcgdGhhdCwgaXQncwo+ID4gPiA+IG5vdCBhCj4gPiA+ID4gZ29hbCBpbiBpdHNlbGYuCj4g
-PiA+IEJ1dCB0aGUgaWQgdGFibGUgaXMgYWxyZWFkeSBlbXB0eS4uLj8KPiA+IAo+ID4gUmlnaHQs
-IHRoYXQgc2VlbXMgbGlrZSBhIGJ1ZyB0aG91Z2guCj4gCj4gV2VsbCwgdGhhdCdzIHdoYXQgdGhl
-IGNvbW1pdCBkZGM5ZTY5YjlkYzIgZG9lcyBhZnRlciBhbGw6IGl0IGNsZWFucyB1cAo+IHRoZSBs
-ZWdhY3kgdXNhZ2UsIGFuZCBtb3ZlcyBhbGwgZWl0aGVyIE9GIG9yIEFDUEkgbWF0Y2hpbmcuCj4g
-Cj4gSWYgd2Ugd2FudCB0byB0YWtlIGJhY2sgb2xkIGkyYyBpZHMsIGJldHRlciB0byBwdXQgdGhl
-IGV4cGxpY2l0Cj4gaTJjX21hdGNoX2lkKCkgY2hlY2sgaW4gcnQ1Njc3X2kyY19wcm9iZSgpIGlu
-c3RlYWQgb2Ygc3RpY2tpbmcgd2l0aAo+IHRoZSBvbGQgaTJjIHByb2JlIGNhbGxiYWNrLgoKV2Vs
-bCwgdGhlcmUgd2FzIG5ldmVyIHVzZXIgZm9yIHJ0NTY3NiwgdGh1cywgcGxhdGZvcm0gY29kZSBj
-YW4gdXNlCmRyaXZlciBuYW1lIHRvIHJlZ2lzdGVyIC8gY3JlYXRlIHBsYXRmb3JtIGRldmljZSB0
-byBiZSBtYXRjaGVkLgoKLS0gCkFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGlu
-dXguaW50ZWwuY29tPgpJbnRlbCBGaW5sYW5kIE95Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, 2017-08-24 at 18:06 +0200, Takashi Iwai wrote:
+> On Thu, 24 Aug 2017 17:54:37 +0200,
+> Tom Rini wrote:
+> > 
+> > On Thu, Aug 24, 2017 at 04:52:35PM +0100, Mark Brown wrote:
+> > > On Thu, Aug 24, 2017 at 05:42:11PM +0200, Takashi Iwai wrote:
+> > > 
+> > > > OK, so the fix for 4.13 would be either to cherry-pick this
+> > > > commit, or
+> > > > just to re-add "RT5677CE:00" to i2c_id temporarily as a quick
+> > > > band-aid
+> > > > fix (and remove again in 4.14).
+> > > > The former is cleaner, but it's bigger, while the latter is a
+> > > > safer
+> > > > oneliner at the late RC stage.
+> > > > I leave the decision to Mark.
+> > > 
+> > > I'm happier with the oneline change TBH, like you say it's pretty
+> > > late
+> > > in the release cycle.  Can you just apply the patch directly and
+> > > send it
+> > > to Linus with my ack or should I put together a pull request?
+> > 
+> > FWIW, I'd be happy to give the change a quick spin and Tested-by it.
+> 
+> Well, it's your patch, after all :)
+> Below is the patch I'm going to queue.
+> 
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Tom Rini <trini@konsulko.com>
+> Subject: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+> 
+> Not all devices with ACPI and this combination of sound devices will
+> have the required information provided via ACPI.  Reintroduce the I2C
+> device ID to restore sound functionality on on the Chromebook 'Samus'
+> model.
+> 
+> [ More background note:
+>  the commit a36afb0ab648 ("ASoC: rt5677: Introduce proper table...")
+>  moved the i2c ID probed via ACPI ("RT5677CE:00") to a proper
+>  acpi_device_id table.  Although the action itself is correct per se,
+>  the overseen issue is the reference id->driver_data at
+>  rt5677_i2c_probe() for retrieving the corresponding chip model for
+>  the given id.  Since id=NULL is passed for ACPI matching case, we get
+>  an Oops now.
+> 
+>  We already have queued more fixes for 4.14 and they already address
+>  the issue, but they are bigger changes that aren't preferable for the
+>  late 4.13-rc stage.  So, this patch just papers over the bug as a
+>  once-off quick fix for a particular ACPI matching.  -- tiwai ]
+> 
+> Fixes: a36afb0ab648 ("ASoC: rt5677: Introduce proper table for ACPI
+> enumeration")
+> Signed-off-by: Tom Rini <trini@konsulko.com>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+Thanks for this and sorry for bisectability issue. I didn't noticed it
+before Takashi got my attention to the bug report.
+
+I'm fine with this quick fix for v4.13 only.
+
+> ---
+>  sound/soc/codecs/rt5677.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+> index 36e530a36c82..6f629278d982 100644
+> --- a/sound/soc/codecs/rt5677.c
+> +++ b/sound/soc/codecs/rt5677.c
+> @@ -5021,6 +5021,7 @@ static const struct regmap_config rt5677_regmap
+> = {
+>  static const struct i2c_device_id rt5677_i2c_id[] = {
+>  	{ "rt5677", RT5677 },
+>  	{ "rt5676", RT5676 },
+> +	{ "RT5677CE:00", RT5677 },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
