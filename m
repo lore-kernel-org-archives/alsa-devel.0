@@ -1,39 +1,27 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [PATCH v2] ASoC: Add a sanity check before using dai driver name
-Date: Thu, 24 Aug 2017 11:34:11 +0800
-Message-ID: <20170824033411.5788-1-jeffy.chen@rock-chips.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Subject: Re: [PATCH v2] ASoC: Add a sanity check before using dai driver name
+Date: Thu, 24 Aug 2017 11:46:39 +0800
+Message-ID: <CAErzpmvnDs-WBRVCn+wdQw2cxiT+h0gdBci5UqPXEvffRtBmMw@mail.gmail.com>
+References: <20170824033411.5788-1-jeffy.chen@rock-chips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170824033411.5788-1-jeffy.chen@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, broonie@kernel.org
-Cc: tiwai@suse.de, dolinux.peng@gmail.com, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, tiwai@suse.de, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The dai driver's name is allowed to be NULL. So add a sanity check for
-that.
+On Thu, Aug 24, 2017 at 11:34 AM, Jeffy Chen <jeffy.chen@rock-chips.com> wrote:
+>                 list_for_each_entry(dai, &component->dai_list, list) {
+>                         if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
+> -                           && strcmp(dai->driver->name, dlc->dai_name))
+> +                           && (!dai->driver->name
+> +                               || !strcmp(dai->driver->name, dlc->dai_name))
+>                                 continue;
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-Reported-by: Donglin Peng <dolinux.peng@gmail.com>
----
+If the dai->driver->name is match with the dlc->dai_name, does it need
+to continue?
 
-Changes in v2:
-Keep the oringinal check style.
-
- sound/soc/soc-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index fc1bb2da3e2e..c38c8f844546 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1029,7 +1029,8 @@ struct snd_soc_dai *snd_soc_find_dai(
- 			continue;
- 		list_for_each_entry(dai, &component->dai_list, list) {
- 			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
--			    && strcmp(dai->driver->name, dlc->dai_name))
-+			    && (!dai->driver->name
-+				|| !strcmp(dai->driver->name, dlc->dai_name))
- 				continue;
- 
- 			return dai;
--- 
-2.11.0
+>
+>                         return dai;
