@@ -1,65 +1,114 @@
 From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [RESENT PATCH v7 0/7] ASoC: rockchip: Parse dai links
-	from dts
-Date: Thu, 24 Aug 2017 12:52:20 +0800
-Message-ID: <20170824045227.15504-1-jeffy.chen@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 20E57266BED
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 06:52:39 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [RESENT PATCH v7 1/7] ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
+Date: Thu, 24 Aug 2017 12:52:21 +0800
+Message-ID: <20170824045227.15504-2-jeffy.chen@rock-chips.com>
+References: <20170824045227.15504-1-jeffy.chen@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170824045227.15504-1-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Mark Brown <broonie@kernel.org>, Jeffy Chen <jeffy.chen@rock-chips.com>, Will Deacon <will.deacon@arm.com>, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, linux-rockchip@lists.infradead.org, mka@chromium.org, Klaus Goger <klaus.goger@theobroma-systems.com>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, Caesar Wang <wxt@rock-chips.com>
+Cc: briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Currently we are using codec name for rt5514 dsp dai link, use codec
+of_node instead.
 
-Currently we are using a fixed list of dai links in the driver.
-This serial of patches would let the driver parse dai links from
-dts, so that we can make some of them optional for future boards.
-
-Tested on my chromebook bob(with cros 4.4 kernel), it still works
-after disabled rt5514 codecs in the dts.
-
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
 
 Changes in v7:
 Rebase on the newest for-next
 
-Changes in v6:
-Add dmic wakeup delay(not used for now).
+Changes in v6: None
+Changes in v3: None
+Changes in v2: None
 
-Changes in v3:
-Use compatible to match audio codecs
-        -- Suggested-by Matthias Kaehlcke <mka@chromium.org>
+ sound/soc/rockchip/rk3399_gru_sound.c | 34 ++--------------------------------
+ 1 file changed, 2 insertions(+), 32 deletions(-)
 
-Changes in v2:
-Let rockchip,codec-names be a required property, because we plan to
-add more supported codecs to the fixed dai link list in the driver.
-
-Jeffy Chen (7):
-  ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
-  arm64: dts: rockchip: Add rt5514 dsp for Gru
-  arm64: dts: rockchip: Update rt5514 devices' compatible for Gru
-  ASoC: rockchip: Parse dai links from dts
-  ASoC: rockchip: Add support for DP codec
-  ASoC: rockchip: Add support for DMIC codec
-  dt-bindings: ASoC: rockchip: Update description of rockchip,codec
-
- .../bindings/sound/rockchip,rk3399-gru-sound.txt   |   2 +-
- arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi       |   7 +-
- sound/soc/rockchip/Kconfig                         |   2 +
- sound/soc/rockchip/rk3399_gru_sound.c              | 255 +++++++++++++++------
- 4 files changed, 186 insertions(+), 80 deletions(-)
-
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 566ccb39fb31..cd2fdba922f1 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -247,8 +247,6 @@ enum {
+ 	DAILINK_RT5514_DSP,
+ };
+ 
+-#define DAILINK_ENTITIES	(DAILINK_DA7219 + 1)
+-
+ static struct snd_soc_dai_link rockchip_dailinks[] = {
+ 	[DAILINK_MAX98357A] = {
+ 		.name = "MAX98357A",
+@@ -282,8 +280,7 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
+ 	[DAILINK_RT5514_DSP] = {
+ 		.name = "RT5514 DSP",
+ 		.stream_name = "Wake on Voice",
+-		.codec_name = "snd-soc-dummy",
+-		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_dai_name = "rt5514-dsp-cpu-dai",
+ 	},
+ };
+ 
+@@ -300,17 +297,10 @@ static struct snd_soc_card rockchip_sound_card = {
+ 	.num_controls = ARRAY_SIZE(rockchip_controls),
+ };
+ 
+-static int rockchip_sound_match_stub(struct device *dev, void *data)
+-{
+-	return 1;
+-}
+-
+ static int rockchip_sound_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &rockchip_sound_card;
+ 	struct device_node *cpu_node;
+-	struct device *dev;
+-	struct device_driver *drv;
+ 	int i, ret;
+ 
+ 	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
+@@ -319,7 +309,7 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	for (i = 0; i < DAILINK_ENTITIES; i++) {
++	for (i = 0; i < ARRAY_SIZE(rockchip_dailinks); i++) {
+ 		rockchip_dailinks[i].platform_of_node = cpu_node;
+ 		rockchip_dailinks[i].cpu_of_node = cpu_node;
+ 
+@@ -332,22 +322,6 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	/**
+-	 * To acquire the spi driver of the rt5514 and set the dai-links names
+-	 * for soc_bind_dai_link
+-	 */
+-	drv = driver_find("rt5514", &spi_bus_type);
+-	if (!drv) {
+-		dev_err(&pdev->dev, "Can not find the rt5514 driver at the spi bus\n");
+-		return -EINVAL;
+-	}
+-
+-	dev = driver_find_device(drv, NULL, NULL, rockchip_sound_match_stub);
+-	if (!dev) {
+-		dev_err(&pdev->dev, "Can not find the rt5514 device\n");
+-		return -ENODEV;
+-	}
+-
+ 	/* Set DMIC wakeup delay */
+ 	ret = device_property_read_u32(&pdev->dev, "dmic-wakeup-delay-ms",
+ 					&dmic_wakeup_delay);
+@@ -357,10 +331,6 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+ 			"no optional property 'dmic-wakeup-delay-ms' found, default: no delay\n");
+ 	}
+ 
+-	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+-	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+-	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+-
+ 	card->dev = &pdev->dev;
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 -- 
 2.11.0
