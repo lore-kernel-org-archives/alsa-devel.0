@@ -1,16 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH][alsa-lib] test: apply optimization for v4.14
-	kernel about changes for TLV data handling on user-defined
-	element set
-Date: Thu, 24 Aug 2017 10:48:35 +0900
-Message-ID: <20170824014835.29008-1-o-takashi@sakamocchi.jp>
+Subject: Re: [RFC][PATCH 0/3] ALSA: control: delegate TLV
+ eventing to each driver
+Date: Thu, 24 Aug 2017 10:50:58 +0900
+Message-ID: <09faa6d2-d652-cd96-ebfa-d3b6bfccfdb1@sakamocchi.jp>
+References: <20170821234222.25556-1-o-takashi@sakamocchi.jp>
+ <s5hziast8vd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id F093D266BED
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 03:48:46 +0200 (CEST)
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6882E266BED
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 03:51:03 +0200 (CEST)
+In-Reply-To: <s5hziast8vd.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,214 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, fulup.arfoll@iot.bzh
 List-Id: alsa-devel@alsa-project.org
 
-At kernel v4.14, in initial state, elements on user-defined sets have
-write-only flag. When applications write TLV data, then the elements
-get readable flag and the TLV data is available. Originally TLV data
-is shared by elements in the same set, thus events are generated for
-all of elements in the set by the write operation.
+Hi,
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- test/user-ctl-element-set.c | 84 +++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 73 insertions(+), 11 deletions(-)
+On Aug 22 2017 15:27, Takashi Iwai wrote:
+> On Tue, 22 Aug 2017 01:42:19 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> This patchset is to avoid a trouble on ALSA control core, kernel API of
+>> ALSA control component and ALSA control interface/protocol to handle TLV
+>> operations from user space.
+>>
+>> In a design of ALSA control core, a set of elements is represented by
+>> 'struct snd_kcontrol' to share common attributes. The set of elements
+>> shares TLV (Type-Length-Value) data, too.
+>>
+>> On the other hand, in ALSA control interface/protocol for applications,
+>> a TLV operation is committed to an element. Totally, the operation can
+>> have sub-effect to the other elements in the set. For example, TLV_WRITE
+>> operation is expected to change TLV data, which returns to applications.
+>> Applications attempt to change the TLV data per element, but in the above
+>> design, they can effect to elements in the same set.
+>>
+>> As a default, ALSA control core has no implementation except for TLV_READ
+>> operation. Thus, the above design looks to have no issue. However, in
+>> kernel APIs of ALSA control component, developers can program a handler
+>> for any request of the TLV operation. Therefore, for elements in a set
+>> which has the handler, applications can commit TLV_WRITE and TLV_COMMAND
+>> requests.
+>>
+>> For the above scenario, ALSA control core assist notification. When the
+>> handler returns positive value, the core queueing an event for a requested
+>> element. However, this includes design defects that the event is not
+>> queued for the other element in a set. Actually, developers can program
+>> the handlers to keep per-element TLV data, but it depends on each driver.
+>>
+>> In this patchset, I attempts to solve the above issue, by delegating the
+>> event notification to each driver of ALSA control component.
+>>
+>> Additionally, this patchset includes a solution against an issue in below
+>> message thread:
+>>
+>> [alsa-devel] snd_ctl_add_enumerated_elem_set and TLV
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-July/123364.html
+>>
+>>
+>> Takashi Sakamoto (3):
+>>    ALSA: control: delegate TLV eventing to each driver
+>>    ALSA: control: queue TLV event for all of elements in an user-defined
+>>      set
+>>    ALSA: control: disable TLV data at initial state of user-defined
+>>      element set
+> 
+> The patch set looks OK to me through a quick glance.
+> If it's confirmed to work with your tests, feel free to resubmit as
+> the patches for merge.
 
-diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
-index 8635c156..f3710732 100644
---- a/test/user-ctl-element-set.c
-+++ b/test/user-ctl-element-set.c
-@@ -9,6 +9,7 @@
- 
- #include "../include/asoundlib.h"
- #include <sound/tlv.h>
-+#include <stdbool.h>
- 
- struct elem_set_trial {
- 	snd_ctl_t *handle;
-@@ -28,6 +29,8 @@ struct elem_set_trial {
- 				    snd_ctl_elem_value_t *elem_data);
- 	int (*allocate_elem_set_tlv)(struct elem_set_trial *trial,
- 				     unsigned int **tlv);
-+
-+	bool tlv_readable;
- };
- 
- struct chmap_entry {
-@@ -420,9 +423,9 @@ static int check_event(struct elem_set_trial *trial, unsigned int mask,
- 			continue;
- 		/*
- 		 * I expect each event is generated separately to the same
--		 * element.
-+		 * element or several events are generated at once.
- 		 */
--		if (!(snd_ctl_event_elem_get_mask(event) & mask))
-+		if ((snd_ctl_event_elem_get_mask(event) & mask) != mask)
- 			continue;
- 		--expected_count;
- 	}
-@@ -561,6 +564,16 @@ static int check_elem_set_props(struct elem_set_trial *trial)
- 		if (!snd_ctl_elem_info_is_locked(info))
- 			return -EIO;
- 
-+		/*
-+		 * In initial state, any application can register TLV data for
-+		 * user-defined element set except for IEC 958 type, thus
-+		 * elements in any user-defined set should allow any write
-+		 * operation.
-+		 */
-+		if (trial->type != SND_CTL_ELEM_TYPE_IEC958 &&
-+		    !snd_ctl_elem_info_is_tlv_writable(info))
-+			return -EIO;
-+
- 		/* Check type-specific properties. */
- 		if (trial->check_elem_props != NULL) {
- 			err = trial->check_elem_props(trial, info);
-@@ -572,6 +585,25 @@ static int check_elem_set_props(struct elem_set_trial *trial)
- 		err = snd_ctl_elem_unlock(trial->handle, id);
- 		if (err < 0)
- 			return err;
-+
-+		/*
-+		 * Till kernel v4.14, ALSA control core allows elements in any
-+		 * user-defined set to have TLV_READ flag even if they have no
-+		 * TLV data in their initial state. In this case, any read
-+		 * operation for TLV data should return -ENXIO.
-+		 */
-+		if (snd_ctl_elem_info_is_tlv_readable(info)) {
-+			unsigned int data[32];
-+			err = snd_ctl_elem_tlv_read(trial->handle, trial->id,
-+						    data, sizeof(data));
-+			if (err >= 0)
-+				return -EIO;
-+			if (err != -ENXIO)
-+				return err;
-+
-+			trial->tlv_readable = true;
-+		}
-+
- 	}
- 
- 	return 0;
-@@ -619,6 +651,8 @@ static int check_elems(struct elem_set_trial *trial)
- static int check_tlv(struct elem_set_trial *trial)
- {
- 	unsigned int *tlv;
-+	int mask;
-+	unsigned int count;
- 	unsigned int len;
- 	unsigned int *curr;
- 	int err;
-@@ -644,6 +678,36 @@ static int check_tlv(struct elem_set_trial *trial)
- 	if (err < 0)
- 		goto end;
- 
-+	/*
-+	 * Since kernel v4.14, any write operation to an element in user-defined
-+	 * set can change state of the other elements in the same set. In this
-+	 * case, any TLV data is firstly available after the operation.
-+	 */
-+	if (!trial->tlv_readable) {
-+		mask = SND_CTL_EVENT_MASK_INFO | SND_CTL_EVENT_MASK_TLV;
-+		count = trial->element_count;
-+	} else {
-+		mask = SND_CTL_EVENT_MASK_TLV;
-+		count = 1;
-+	}
-+	err = check_event(trial, mask, count);
-+	if (err < 0)
-+		goto end;
-+	if (!trial->tlv_readable) {
-+		snd_ctl_elem_info_t *info;
-+		snd_ctl_elem_info_alloca(&info);
-+
-+		snd_ctl_elem_info_set_id(info, trial->id);
-+		err = snd_ctl_elem_info(trial->handle, info);
-+		if (err < 0)
-+			return err;
-+		if (!snd_ctl_elem_info_is_tlv_readable(info))
-+			return -EIO;
-+
-+		/* Now TLV data is available for this element set. */
-+		trial->tlv_readable = true;
-+	}
-+
- 	err = snd_ctl_elem_tlv_read(trial->handle, trial->id, curr, len);
- 	if (err < 0)
- 		goto end;
-@@ -690,6 +754,7 @@ int main(void)
- 			trial.change_elem_members = change_bool_elem_members;
- 			trial.allocate_elem_set_tlv =
- 						allocate_bool_elem_set_tlv;
-+			trial.tlv_readable = false;
- 			break;
- 		case SND_CTL_ELEM_TYPE_INTEGER:
- 			trial.element_count = 900;
-@@ -703,6 +768,7 @@ int main(void)
- 			trial.change_elem_members = change_int_elem_members;
- 			trial.allocate_elem_set_tlv =
- 						allocate_int_elem_set_tlv;
-+			trial.tlv_readable = false;
- 			break;
- 		case SND_CTL_ELEM_TYPE_ENUMERATED:
- 			trial.element_count = 900;
-@@ -715,6 +781,7 @@ int main(void)
- 			trial.check_elem_props = check_enum_elem_props;
- 			trial.change_elem_members = change_enum_elem_members;
- 			trial.allocate_elem_set_tlv = NULL;
-+			trial.tlv_readable = false;
- 			break;
- 		case SND_CTL_ELEM_TYPE_BYTES:
- 			trial.element_count = 900;
-@@ -728,6 +795,7 @@ int main(void)
- 			trial.change_elem_members = change_bytes_elem_members;
- 			trial.allocate_elem_set_tlv =
- 						allocate_bytes_elem_set_tlv;
-+			trial.tlv_readable = false;
- 			break;
- 		case SND_CTL_ELEM_TYPE_IEC958:
- 			trial.element_count = 1;
-@@ -740,6 +808,7 @@ int main(void)
- 			trial.check_elem_props = NULL;
- 			trial.change_elem_members = change_iec958_elem_members;
- 			trial.allocate_elem_set_tlv = NULL;
-+			trial.tlv_readable = false;
- 			break;
- 		case SND_CTL_ELEM_TYPE_INTEGER64:
- 		default:
-@@ -754,6 +823,7 @@ int main(void)
- 			trial.change_elem_members = change_int64_elem_members;
- 			trial.allocate_elem_set_tlv =
- 						allocate_int64_elem_set_tlv;
-+			trial.tlv_readable = false;
- 			break;
- 		}
- 
-@@ -784,7 +854,7 @@ int main(void)
- 		/* Check properties of each element in this element set. */
- 		err = check_elem_set_props(&trial);
- 		if (err < 0) {
--			printf("Fail to check propetries of each element with "
-+			printf("Fail to check properties of each element with "
- 			       "%s type.\n",
- 			       snd_ctl_elem_type_name(trial.type));
- 			break;
-@@ -822,14 +892,6 @@ int main(void)
- 				       snd_ctl_elem_type_name(trial.type));
- 				break;
- 			}
--			err = check_event(&trial, SND_CTL_EVENT_MASK_TLV, 1);
--			if (err < 0) {
--				printf("Fail to check an event to change TLV"
--				       "data of an an element set with %s "
--				       "type.\n",
--				       snd_ctl_elem_type_name(trial.type));
--				break;
--			}
- 		}
- 
- 		/* Test an operation to remove elements in this element set. */
--- 
-2.11.0
+Thanks for your positive comment. After re-investigating again and I 
+posted it with a patch for test program in alsa-lib.
+
+
+Takashi Sakamoto
