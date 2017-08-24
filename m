@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
-	->probe_new()
-Date: Thu, 24 Aug 2017 14:49:24 +0100
-Message-ID: <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
-References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 1/3] ASoC: remove duplicate definition of
+ controls/num_controls
+Date: Thu, 24 Aug 2017 14:50:05 +0100
+Message-ID: <20170824135005.6fqhutprcakq6aqj@sirena.org.uk>
+References: <874lsxrdgl.wl%kuninori.morimoto.gx@renesas.com>
+ <87378hrdfe.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0113643558390417894=="
+Content-Type: multipart/mixed; boundary="===============5005145641749073813=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 64BAD266DE5
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 15:49:31 +0200 (CEST)
-In-Reply-To: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B30A1266DE5
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 15:50:15 +0200 (CEST)
+In-Reply-To: <87378hrdfe.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0113643558390417894==
+--===============5005145641749073813==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vsaeo73eazkfqtfe"
+	protocol="application/pgp-signature"; boundary="sutb2r3pdsjgmik2"
 Content-Disposition: inline
 
 
---vsaeo73eazkfqtfe
+--sutb2r3pdsjgmik2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 24, 2017 at 04:41:10PM +0300, Andy Shevchenko wrote:
+On Thu, Aug 24, 2017 at 01:03:32AM +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> snd_soc_component and snd_soc_component_driver both have
+> controls/num_controls, but these are duplicated.
+> Let's remove duplicated definition.
 
-> There is no platform code that uses i2c module table.
-> Remove it altogether and adjust ->probe() to be ->probe_new().
+This doesn't apply against current code, please check and resend.
 
-What is the value in doing this?  Removing the ability to instantiate
-via board files is just inconveniencing people doing that, it's not a
-goal in itself.
-
---vsaeo73eazkfqtfe
+--sutb2r3pdsjgmik2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlme2WQACgkQJNaLcl1U
-h9Ba4gf+KtCYFO3YmVkrcPhBuVIzTIEmjpEJlqLxYMhFznd2gHrHqIinFHa9yVyR
-I7K6jGDc0hmbpbizkcDhLMQcs5B59ndyU0nCz3J2Taly6nNUSlcPOD+TfFWNaRl+
-eqtvG8FrdsuQThfriSZKYUiyEKmSAHI9eIRZSU1A+4xPEtVJ4vHmprNorAJ3w+3N
-7mjeBlzefonLedbksU5rQAuXX9hnU8uGgrcedoEMac9cSVs1+9JtWFGncWp4M0Io
-q64obrMiZUQhDKkqqaEiBPBPuze2bHT7l3YWeleVD1Z5JKOi4kQPBfyIOncIZ025
-a232a2xPbk+X/3d6paH27zOF6a/0Uw==
-=8AC0
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlme2YwACgkQJNaLcl1U
+h9CGqgf/d101QcoieCsNAg0xaqEAgEOD1+/jlZuk3sGCN3VqFd45SVanYZVKICd5
+bKrGDSAQBQdLGT5d/lmo1LTSlQtU714VyEbJ00hkCThkVKe1/p1N6cnwwEQ6w05s
+ZnA4gS6gMa9KTIDRjbkRl2iXqeNrNJMc5W9/+ljHkKdd/BzWAkuRVL2e/qd1ic9a
+QSbD/nqacS1CadvMb3eLEdgbMx7uO/LU/j78Wez9znjLvrhCAdilFJ8MhBzen8Yu
+WVX0mJzgV5mjDNQS7RGuiRUtexbIBkHmyAxg4J1r36O7ykeMEm1q4/kCJN2TGRLc
+vfAIsG8Km8hEEemLgQ1MGzREihws5g==
+=1Nfd
 -----END PGP SIGNATURE-----
 
---vsaeo73eazkfqtfe--
+--sutb2r3pdsjgmik2--
 
---===============0113643558390417894==
+--===============5005145641749073813==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0113643558390417894==--
+--===============5005145641749073813==--
