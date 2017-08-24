@@ -1,91 +1,72 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Thu, 24 Aug 2017 15:26:00 +0300
-Message-ID: <1503577560.25945.84.camel@linux.intel.com>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
-         <1503498573.25945.69.camel@linux.intel.com>
-         <20170823173912.GN17193@bill-the-cat> <20170824000525.GY17193@bill-the-cat>
-         <1503560349.25945.72.camel@linux.intel.com>
-         <20170824111547.GA17193@bill-the-cat>
+Subject: [PATCH v1] ASoC: rt5677: Convert I2C driver to
+	->probe_new()
+Date: Thu, 24 Aug 2017 16:41:10 +0300
+Message-ID: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170824111547.GA17193@bill-the-cat>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tom Rini <trini@konsulko.com>
-Cc: linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDA0E266DE5
+ for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 15:41:17 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2017-08-24 at 07:15 -0400, Tom Rini wrote:
-> On Thu, Aug 24, 2017 at 10:39:09AM +0300, Andy Shevchenko wrote:
-> > On Wed, 2017-08-23 at 20:05 -0400, Tom Rini wrote:
-> > > On Wed, Aug 23, 2017 at 01:39:12PM -0400, Tom Rini wrote:
-> > > > On Wed, Aug 23, 2017 at 05:29:33PM +0300, Andy Shevchenko wrote:
-> > > > 
-> > > > > Are you sure the commit ddc9e69b9dc2 ("ASoC: rt5677: Hide
-> > > > > platform
-> > > > > data
-> > > > > in the module sources") does not fix your issue?
-> > > > 
-> > > > As that's not in master yet I can't tell.  Can you give me a
-> > > > pointer
-> > > > to
-> > > > somewhere?
-> > 
-> > It's in ASoC next at least.
-> > 
-> > > >   Thanks!
-> > > 
-> > > OK, my bad, it has a different hash upstream, but no, that change
-> > > doesn't fix things as I see the problem on top of Linus'
-> > > tree.  Thanks!
-> > 
-> > Interesting...
-> > 
-> > The only bug so far I saw is the following one
-> > 
-> > https://bugzilla.kernel.org/show_bug.cgi?id=196397
-> > 
-> > ...and above commit fixes it.
-> > 
-> > Can you place somewhere the bundle of the following:
-> > 
-> > 1. Output file (tables.dat) of
-> > 	% acpidump -o tables.dat
-> 
-> https://gist.github.com/trini/b9a9a547e37cb812506a22e18cd2aff5
-> 
-> > 2. Output of
-> > 	% cat /proc/interrupts
-> 
-> https://gist.github.com/trini/39a5d88a5ecb9b71336ff5fe9da7c720
-> 
-> > 3. Output of
-> > 	% lspci -vv -xx
-> 
-> https://gist.github.com/trini/e81ab21909eeaa05ea50dc0596d23c14
-> 
-> > 4. Output of
-> > 	% grep -H 15 /sys/bus/acpi/devices/*/status
-> 
-> https://gist.github.com/trini/698dc284634ad9e1cfbafad8e705de5f
+There is no platform code that uses i2c module table.
+Remove it altogether and adjust ->probe() to be ->probe_new().
 
-Thanks!
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/codecs/rt5677.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-I have checked those files and found that device is in the table and
-pretty much properly defined ACPI I2C slave.
-
-The change in the driver you referred to makes the change to modalias.
-
-Thus, I'm suspecting that your user space helper either has some hard
-coded values for previous case, or just broken.
-
-Can you also check is the codec module loaded (lsmod) and, if it's not,
-load it manually and check if sound works again.
-
-P.S. In any case you need the patch mentioned in bug #196397
-
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index c735590c5a25..6448b7a00203 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5009,11 +5009,6 @@ static const struct regmap_config rt5677_regmap = {
+ 	.num_ranges = ARRAY_SIZE(rt5677_ranges),
+ };
+ 
+-static const struct i2c_device_id rt5677_i2c_id[] = {
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+-
+ static const struct of_device_id rt5677_of_match[] = {
+ 	{ .compatible = "realtek,rt5677", RT5677 },
+ 	{ }
+@@ -5131,8 +5126,7 @@ static void rt5677_free_irq(struct i2c_client *i2c)
+ 		regmap_del_irq_chip(i2c->irq, rt5677->irq_data);
+ }
+ 
+-static int rt5677_i2c_probe(struct i2c_client *i2c,
+-		    const struct i2c_device_id *id)
++static int rt5677_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct rt5677_priv *rt5677;
+ 	int ret;
+@@ -5279,9 +5273,8 @@ static struct i2c_driver rt5677_i2c_driver = {
+ 		.of_match_table = rt5677_of_match,
+ 		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
+ 	},
+-	.probe = rt5677_i2c_probe,
++	.probe_new = rt5677_i2c_probe,
+ 	.remove   = rt5677_i2c_remove,
+-	.id_table = rt5677_i2c_id,
+ };
+ module_i2c_driver(rt5677_i2c_driver);
+ 
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+2.14.1
