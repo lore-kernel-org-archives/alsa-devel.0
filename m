@@ -1,50 +1,123 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: proc_dir_entry 'asound/pcm' already registered
-Date: Thu, 24 Aug 2017 17:43:38 -0300
-Message-ID: <CAOMZO5CNFdLRO7azsyL=nY0uabJG6P_4q-=3h6N4+6uvPkuPuw@mail.gmail.com>
-References: <CAOMZO5CMogVduV2K4QMKOiEjJ2u+zQaDymt9aYhHQ+ZMih7TKQ@mail.gmail.com>
- <s5hmv6ou303.wl-tiwai@suse.de>
+From: Matthias Kaehlcke <mka@chromium.org>
+Subject: Re: [RESENT PATCH v7 1/7] ASoC: rockchip: Use codec of_node and
+ dai_name for rt5514 dsp
+Date: Thu, 24 Aug 2017 14:19:51 -0700
+Message-ID: <20170824211951.GG173745@google.com>
+References: <20170824045227.15504-1-jeffy.chen@rock-chips.com>
+ <20170824045227.15504-2-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f68.google.com (mail-oi0-f68.google.com
- [209.85.218.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 305C9267825
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 22:43:40 +0200 (CEST)
-Received: by mail-oi0-f68.google.com with SMTP id y193so545503oie.5
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 13:43:40 -0700 (PDT)
-In-Reply-To: <s5hmv6ou303.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Markus Elfring <elfring@users.sourceforge.net>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset=utf-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170824045227.15504-2-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+El Thu, Aug 24, 2017 at 12:52:21PM +0800 Jeffy Chen ha dit:
 
-On Thu, Aug 24, 2017 at 5:25 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> Currently we are using codec name for rt5514 dsp dai link, use codec
+> of_node instead.
+> 
+> Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+> ---
 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: pcm: Correct broken procfs set up
->
-> The commit c8da9be4a75f ("ALSA: pcm: Adjust nine function calls
-> together with a variable assignment") contained a badly incorrect
-> conversion, a "status" PCM procfs creation was replaced with the next
-> one.  Luckily, this could be spotted easily by the kernel runtime
-> warning.
->
-> Fixes: c8da9be4a75f ("ALSA: pcm: Adjust nine function calls together...")
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
+(The codec is still 'detected' on kevin, with the name spi32765.0)
 
-Thanks for the fix:
-
-Tested-by: Fabio Estevam <fabio.estevam@nxp.com>
+> Changes in v7:
+> Rebase on the newest for-next
+> 
+> Changes in v6: None
+> Changes in v3: None
+> Changes in v2: None
+> 
+>  sound/soc/rockchip/rk3399_gru_sound.c | 34 ++--------------------------------
+>  1 file changed, 2 insertions(+), 32 deletions(-)
+> 
+> diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+> index 566ccb39fb31..cd2fdba922f1 100644
+> --- a/sound/soc/rockchip/rk3399_gru_sound.c
+> +++ b/sound/soc/rockchip/rk3399_gru_sound.c
+> @@ -247,8 +247,6 @@ enum {
+>  	DAILINK_RT5514_DSP,
+>  };
+>  
+> -#define DAILINK_ENTITIES	(DAILINK_DA7219 + 1)
+> -
+>  static struct snd_soc_dai_link rockchip_dailinks[] = {
+>  	[DAILINK_MAX98357A] = {
+>  		.name = "MAX98357A",
+> @@ -282,8 +280,7 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
+>  	[DAILINK_RT5514_DSP] = {
+>  		.name = "RT5514 DSP",
+>  		.stream_name = "Wake on Voice",
+> -		.codec_name = "snd-soc-dummy",
+> -		.codec_dai_name = "snd-soc-dummy-dai",
+> +		.codec_dai_name = "rt5514-dsp-cpu-dai",
+>  	},
+>  };
+>  
+> @@ -300,17 +297,10 @@ static struct snd_soc_card rockchip_sound_card = {
+>  	.num_controls = ARRAY_SIZE(rockchip_controls),
+>  };
+>  
+> -static int rockchip_sound_match_stub(struct device *dev, void *data)
+> -{
+> -	return 1;
+> -}
+> -
+>  static int rockchip_sound_probe(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_card *card = &rockchip_sound_card;
+>  	struct device_node *cpu_node;
+> -	struct device *dev;
+> -	struct device_driver *drv;
+>  	int i, ret;
+>  
+>  	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
+> @@ -319,7 +309,7 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+>  		return -EINVAL;
+>  	}
+>  
+> -	for (i = 0; i < DAILINK_ENTITIES; i++) {
+> +	for (i = 0; i < ARRAY_SIZE(rockchip_dailinks); i++) {
+>  		rockchip_dailinks[i].platform_of_node = cpu_node;
+>  		rockchip_dailinks[i].cpu_of_node = cpu_node;
+>  
+> @@ -332,22 +322,6 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	/**
+> -	 * To acquire the spi driver of the rt5514 and set the dai-links names
+> -	 * for soc_bind_dai_link
+> -	 */
+> -	drv = driver_find("rt5514", &spi_bus_type);
+> -	if (!drv) {
+> -		dev_err(&pdev->dev, "Can not find the rt5514 driver at the spi bus\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	dev = driver_find_device(drv, NULL, NULL, rockchip_sound_match_stub);
+> -	if (!dev) {
+> -		dev_err(&pdev->dev, "Can not find the rt5514 device\n");
+> -		return -ENODEV;
+> -	}
+> -
+>  	/* Set DMIC wakeup delay */
+>  	ret = device_property_read_u32(&pdev->dev, "dmic-wakeup-delay-ms",
+>  					&dmic_wakeup_delay);
+> @@ -357,10 +331,6 @@ static int rockchip_sound_probe(struct platform_device *pdev)
+>  			"no optional property 'dmic-wakeup-delay-ms' found, default: no delay\n");
+>  	}
+>  
+> -	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+> -	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+> -	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
+> -
+>  	card->dev = &pdev->dev;
+>  
+>  	ret = devm_snd_soc_register_card(&pdev->dev, card);
