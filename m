@@ -1,88 +1,77 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Fri, 25 Aug 2017 17:49:20 +0300
-Message-ID: <1503672560.25945.104.camel@linux.intel.com>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
-         <1503669407.25945.102.camel@linux.intel.com>
-         <20170825142426.GN2827@bill-the-cat>
+Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
+	->probe_new()
+Date: Fri, 25 Aug 2017 18:09:52 +0300
+Message-ID: <1503673792.25945.106.camel@linux.intel.com>
+References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
+ <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
+ <s5hh8wxjarq.wl-tiwai@suse.de>
+ <20170824154947.li6yke5vv5llcxhh@sirena.org.uk>
+ <s5hziaphrof.wl-tiwai@suse.de>
+ <20170825131103.ow3jwntmeshczhff@sirena.org.uk>
+ <1503667988.25945.100.camel@linux.intel.com>
+ <20170825142140.bobbc2pclcw4x3vh@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170825142426.GN2827@bill-the-cat>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tom Rini <trini@konsulko.com>
-Cc: linux-kernel@vger.kernel.org, John Keeping <john@metanate.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F1672673DA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 17:09:58 +0200 (CEST)
+In-Reply-To: <20170825142140.bobbc2pclcw4x3vh@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2017-08-25 at 10:24 -0400, Tom Rini wrote:
-> On Fri, Aug 25, 2017 at 04:56:47PM +0300, Andy Shevchenko wrote:
-> > +John
-> > 
-> > On Tue, 2017-08-22 at 21:51 -0400, Tom Rini wrote:
-> > > Not all devices with ACPI and this combination of sound devices
-> > > will
-> > > have the required information provided via ACPI.  Reintroduce the
-> > > I2C
-> > > device ID to restore sound functionality on on the Chromebook
-> > > 'Samus'
-> > > model.
-> > 
-> > Tom, one more question.
-
-Just to be clear, the below has nothing to do with this patch or my
-patches against rt5677.c. It points to a possible separate issue.
-
-> > 
-> > Apparently you are the one who tested the commit
-> > 	89128534f925 ("ASoC: rt5677: Add ACPI support")
-> > year ago.
+On Fri, 2017-08-25 at 15:21 +0100, Mark Brown wrote:
+> On Fri, Aug 25, 2017 at 04:33:08PM +0300, Andy Shevchenko wrote:
+> > On Fri, 2017-08-25 at 14:11 +0100, Mark Brown wrote:
+> > > On Thu, Aug 24, 2017 at 06:11:12PM +0200, Takashi Iwai wrote:
+> > > > Well, that's what the commit ddc9e69b9dc2 does after all: it
+> > > > cleans
+> > > > up
+> > > > the legacy usage, and moves all either OF or ACPI matching.
+> > > Which is broken since not all the world is ACPI or DT.
+> > While I agree on the second part, I don't think it's broken per se,
+> > there never was a single user of that, and looking how ASoC board
+> > files
+> > are organized it is quite unlikely there will be one...
 > 
-> Yes.
-> 
-> > The commit states that ACPI properties that are used in Chromebook
-> > Pixel
-> > 2015 is non-standard (not the same as for DT).
-> > 
-> > However, DSDT shows the opposite!
-> 
-> Interesting.  I'm not an ACPI person, I just tested what John came up
-> with.
-> 
-> > I would like to ask yuo and John what is the status of that
-> > currently?
-> > Do we have any publicly available laptop with non-standard
-> > properties?
-> 
-> Is there any sort of "build date" or similar in the dump I provided
-> yesterday?
+> I have no idea why you say the ASoC machine drivers would prevent
+> someone adding a platform based user,
 
-Header has this
+For example, looking into
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+I see a direct use of codec driver without any platform driver
+involvement.
 
- *     Signature        "DSDT"
- *     Length           0x00004720 (18208)
- *     Revision         0x02
- *     Checksum         0x6E
- *     OEM ID           "COREv4"
- *     OEM Table ID     "COREBOOT"
- *     OEM Revision     0x20110725 (537986853)
- *     Compiler ID      "INTL"
- *     Compiler Version 0x20130117 (538116375)
+Is it exception from the rule, or a common use?
 
-...if it's ever changed.
+>  obviously ASoC predates the use of
+> both ACPI and DT quite considerably.
 
->   Every once in a while my laptop accidentally books into
-> ChromeOS and then it might grab and apply some updates and it's not
-> impossible that Google updated things in the interim.
+Yep, the current users of driver in question either DT or ACPI, would it
+be pure platform in the future?
+
 > 
-> I'm quite happy to test patches or provide further dumps / etc from my
-> system.  You might want to start by talking with the person behind
-> https://github.com/raphael/linux-samus to see if they know more about
-> different versions of the hardware or at least point you towards more
-> testers.  Thanks!
+> > > That's what I said, yes.
+> > ...though we can (re)introduce this dead code back for a potential
+> > user
+> > in the future.
+> 
+> The IDs are back as a result of the merge resolution I did.
 
-It's just a heads up to point to a potential problem with this board. I
-suspect Google would take care of this.
+I'm fine as long as it doesn't include broken 'ACPI instance as I2C ID'.
+Thanks!
 
 -- 
 Andy Shevchenko <andriy.shevchenko@linux.intel.com>
