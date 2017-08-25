@@ -1,77 +1,96 @@
-From: John Keeping <john@metanate.com>
-Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
-Date: Fri, 25 Aug 2017 18:09:13 +0100
-Message-ID: <20170825180913.4f95ce5d.john@metanate.com>
-References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
-        <1503669407.25945.102.camel@linux.intel.com>
-        <20170825142426.GN2827@bill-the-cat>
-        <20170825170504.7d547aa4.john@metanate.com>
-        <1503679371.25945.110.camel@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
+	->probe_new()
+Date: Fri, 25 Aug 2017 19:59:09 +0100
+Message-ID: <20170825185909.5axsneqpswnawmfr@sirena.org.uk>
+References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
+ <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
+ <s5hh8wxjarq.wl-tiwai@suse.de>
+ <20170824154947.li6yke5vv5llcxhh@sirena.org.uk>
+ <s5hziaphrof.wl-tiwai@suse.de>
+ <20170825131103.ow3jwntmeshczhff@sirena.org.uk>
+ <1503667988.25945.100.camel@linux.intel.com>
+ <20170825142140.bobbc2pclcw4x3vh@sirena.org.uk>
+ <1503673792.25945.106.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1503679371.25945.110.camel@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0364817381297544636=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 264662673F1
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 20:59:14 +0200 (CEST)
+In-Reply-To: <1503673792.25945.106.camel@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Tom Rini <trini@konsulko.com>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Aug 2017 19:42:51 +0300, Andy Shevchenko wrote:
 
-> On Fri, 2017-08-25 at 17:05 +0100, John Keeping wrote:
-> > On Fri, 25 Aug 2017 10:24:26 -0400, Tom Rini wrote: =20
-> > > On Fri, Aug 25, 2017 at 04:56:47PM +0300, Andy Shevchenko wrote: =20
->=20
-> > > > Apparently you are the one who tested the commit
-> > > > 	89128534f925 ("ASoC: rt5677: Add ACPI support")
-> > > > year ago.=C2=A0=C2=A0 =20
-> > >=20
-> > > Yes.
-> > >  =20
-> > > > The commit states that ACPI properties that are used in Chromebook
-> > > > Pixel
-> > > > 2015 is non-standard (not the same as for DT).
-> > > >=20
-> > > > However, DSDT shows the opposite!=C2=A0=C2=A0 =20
-> > >=20
-> > > Interesting.=C2=A0=C2=A0I'm not an ACPI person, I just tested what Jo=
-hn came
-> > > up
-> > > with. =20
-> >=20
-> > And the patch adding this was the first (and still only) time I've
-> > really looked at ACPI, so it's quite possible that I misunderstood
-> > something at the time. =20
->=20
-> Maybe.
->=20
-> > From memory, I think the particular problem I was referring to in the
-> > commit message was that certain GPIOs were only defined by index and
-> > not
-> > by property name (specifically "plug-det-gpios", "mic-present-gpios"
-> > and
-> > "headphone-enable-gpios"), and having dumped DSDT just now I do not
-> > see
-> > those strings appearing anywhere. =20
->=20
-> Exactly, and this part of the patch I'm _not_ talking about (it's pretty
-> much good and working).
->=20
-> What I'm talking about is a specific function called
->=20
-> rt5677_read_acpi_properties()
->=20
-> in the rt5677.c codec driver.
+--===============0364817381297544636==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lsdrt366pbphbm7i"
+Content-Disposition: inline
 
-Right, I don't see any reason why it shouldn't be possible to replace
-that with rt5677_read_device_properties() given the DSDT I have.
 
-I expect that exists because I was using the chromeos-3.14 tree as a
-reference (which was the supported kernel on this hardware at the time),
-but it looks like the unified device property API was added in 3.18 so
-of course was not used there, and I did not realise that the device
-property versions could be used here.
+--lsdrt366pbphbm7i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'll try to find time to test this change over the weekend, if Tom
-doesn't beat me to it!
+On Fri, Aug 25, 2017 at 06:09:52PM +0300, Andy Shevchenko wrote:
+> On Fri, 2017-08-25 at 15:21 +0100, Mark Brown wrote:
+
+> > I have no idea why you say the ASoC machine drivers would prevent
+> > someone adding a platform based user,
+
+> For example, looking into
+>  sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+> I see a direct use of codec driver without any platform driver
+> involvement.
+
+> Is it exception from the rule, or a common use?
+
+That's an entirely standard driver using normally registered devices?
+
+> >  obviously ASoC predates the use of
+> > both ACPI and DT quite considerably.
+
+> Yep, the current users of driver in question either DT or ACPI, would it
+> be pure platform in the future?
+
+It could be potentially (well, I2C but registered using a board file).
+Most architectures still use board files and neither ACPI nor DT has a
+sensible story for instantiating plugin modules yet.
+
+--lsdrt366pbphbm7i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmgc3kACgkQJNaLcl1U
+h9DCWwf9EKCnsy6T2yuYpeIonsHu72ToDnOvd5WHUOWYyEu9nJw027ca+MEuICt5
+pLOX4/N58gv/YYMMm1MggAzY+VT8TvxDnZu52Q03tMTJEeg/bm3gGOJ9ojlsQGud
+AVyfDwnoKq66/Axa7NCOPJ/tuPfbh8jBorFdv1nvXImzM5NYI6hA7RxmpybiES5R
+CalM95Ky/UK+6u3uyqkHhlSti7vo3wC5x8UMwBVEKZ2zPySkWFYLGOGsHd7PU0rU
+X65HOwI8CSm9wCyY65UPuFoNXsGTrEFcxRJO4HdpmLxx9rpT4/Hjcd6EoysPqaQf
+PJNCk17asEhYY1yKRW1Ad5ZP95cP2g==
+=75jn
+-----END PGP SIGNATURE-----
+
+--lsdrt366pbphbm7i--
+
+--===============0364817381297544636==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0364817381297544636==--
