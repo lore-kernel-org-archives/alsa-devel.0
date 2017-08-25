@@ -1,25 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
-	->probe_new()
-Date: Fri, 25 Aug 2017 19:59:09 +0100
-Message-ID: <20170825185909.5axsneqpswnawmfr@sirena.org.uk>
-References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
- <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
- <s5hh8wxjarq.wl-tiwai@suse.de>
- <20170824154947.li6yke5vv5llcxhh@sirena.org.uk>
- <s5hziaphrof.wl-tiwai@suse.de>
- <20170825131103.ow3jwntmeshczhff@sirena.org.uk>
- <1503667988.25945.100.camel@linux.intel.com>
- <20170825142140.bobbc2pclcw4x3vh@sirena.org.uk>
- <1503673792.25945.106.camel@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: rt5514: expose Hotword Model
+	control
+Date: Fri, 25 Aug 2017 19:59:44 +0100
+Message-ID: <20170825185944.j7forf7ene72t23n@sirena.org.uk>
+References: <20170825170947.32241-1-hychao@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0364817381297544636=="
+Content-Type: multipart/mixed; boundary="===============0186281138137012628=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 264662673F1
- for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 20:59:14 +0200 (CEST)
-In-Reply-To: <1503673792.25945.106.camel@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E33B6267885
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 20:59:45 +0200 (CEST)
+In-Reply-To: <20170825170947.32241-1-hychao@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,68 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Hsin-Yu Chao <hychao@chromium.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0364817381297544636==
+--===============0186281138137012628==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lsdrt366pbphbm7i"
+	protocol="application/pgp-signature"; boundary="2evie4gvqow43ypc"
 Content-Disposition: inline
 
 
---lsdrt366pbphbm7i
+--2evie4gvqow43ypc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 25, 2017 at 06:09:52PM +0300, Andy Shevchenko wrote:
-> On Fri, 2017-08-25 at 15:21 +0100, Mark Brown wrote:
+On Sat, Aug 26, 2017 at 01:09:47AM +0800, Hsin-Yu Chao wrote:
+> This change exposes mixer control 'Hotword Model' for switching
+> hotword model in runtime. This new function requires updated
+> firmware to load hotword model at address 0x4ff80000.
 
-> > I have no idea why you say the ASoC machine drivers would prevent
-> > someone adding a platform based user,
+Please do not submit new versions of already applied patches, please
+submit incremental updates to the existing code.  Modifying existing
+commits creates problems for other users building on top of those
+commits so it's best practice to only change pubished git commits if
+absolutely essential.
 
-> For example, looking into
->  sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
-> I see a direct use of codec driver without any platform driver
-> involvement.
-
-> Is it exception from the rule, or a common use?
-
-That's an entirely standard driver using normally registered devices?
-
-> >  obviously ASoC predates the use of
-> > both ACPI and DT quite considerably.
-
-> Yep, the current users of driver in question either DT or ACPI, would it
-> be pure platform in the future?
-
-It could be potentially (well, I2C but registered using a board file).
-Most architectures still use board files and neither ACPI nor DT has a
-sensible story for instantiating plugin modules yet.
-
---lsdrt366pbphbm7i
+--2evie4gvqow43ypc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmgc3kACgkQJNaLcl1U
-h9DCWwf9EKCnsy6T2yuYpeIonsHu72ToDnOvd5WHUOWYyEu9nJw027ca+MEuICt5
-pLOX4/N58gv/YYMMm1MggAzY+VT8TvxDnZu52Q03tMTJEeg/bm3gGOJ9ojlsQGud
-AVyfDwnoKq66/Axa7NCOPJ/tuPfbh8jBorFdv1nvXImzM5NYI6hA7RxmpybiES5R
-CalM95Ky/UK+6u3uyqkHhlSti7vo3wC5x8UMwBVEKZ2zPySkWFYLGOGsHd7PU0rU
-X65HOwI8CSm9wCyY65UPuFoNXsGTrEFcxRJO4HdpmLxx9rpT4/Hjcd6EoysPqaQf
-PJNCk17asEhYY1yKRW1Ad5ZP95cP2g==
-=75jn
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmgc58ACgkQJNaLcl1U
+h9B52wf/RRXrvLVCv+87MDGct7FpZk7oUpV0OVaAahuU86+PQ0UekqG3IAwcBq1Y
+OyOkIhRxP62Jsgy+BihZskBfMjXvvn+fFemNywIMRnR+BZ9NmrzJpZWa/fsfKsea
+Jx2TKdA2fYCrIjMCJKBLA2u4bvCWuP/cOHV+ZGpTJg7PSqq3ZGNonFDc0UgLHZqc
+g0thNhakXJp4S8Kw3wiMysb1j+V4pV819Lm7jaCnEKrkSYf6OuqvL10Yo3STqZQW
+FCatHybWIyftH0hYOIdXm1gS8KHy5Ar7SWaUm3QA9TcFf5LUIvN9QgjogFiLz9S7
+joGC8uMshmBtfzljWjNbyUymCLr9pQ==
+=SjU/
 -----END PGP SIGNATURE-----
 
---lsdrt366pbphbm7i--
+--2evie4gvqow43ypc--
 
---===============0364817381297544636==
+--===============0186281138137012628==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0364817381297544636==--
+--===============0186281138137012628==--
