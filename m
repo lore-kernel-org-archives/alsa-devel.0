@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1] ASoC: rt5677: Convert I2C driver to
-	->probe_new()
-Date: Fri, 25 Aug 2017 15:21:40 +0100
-Message-ID: <20170825142140.bobbc2pclcw4x3vh@sirena.org.uk>
-References: <20170824134110.63335-1-andriy.shevchenko@linux.intel.com>
- <20170824134924.uwzksz6ln43nurdd@sirena.org.uk>
- <s5hh8wxjarq.wl-tiwai@suse.de>
- <20170824154947.li6yke5vv5llcxhh@sirena.org.uk>
- <s5hziaphrof.wl-tiwai@suse.de>
- <20170825131103.ow3jwntmeshczhff@sirena.org.uk>
- <1503667988.25945.100.camel@linux.intel.com>
+From: Tom Rini <trini@konsulko.com>
+Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+Date: Fri, 25 Aug 2017 10:24:26 -0400
+Message-ID: <20170825142426.GN2827@bill-the-cat>
+References: <1503453106-5564-1-git-send-email-trini@konsulko.com>
+ <1503669407.25945.102.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0380320078226639200=="
+Content-Type: multipart/mixed; boundary="===============1805623791241116321=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8439C2673DA
- for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 16:21:45 +0200 (CEST)
-In-Reply-To: <1503667988.25945.100.camel@linux.intel.com>
+Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
+ [209.85.161.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE9D42673DA
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 16:24:15 +0200 (CEST)
+Received: by mail-yw0-f179.google.com with SMTP id s143so13751103ywg.0
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 07:24:15 -0700 (PDT)
+In-Reply-To: <1503669407.25945.102.camel@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,67 +24,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Bard Liao <bardliao@realtek.com>, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0380320078226639200==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qichjcxhvtosaov5"
+--===============1805623791241116321==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="i6vqABX3nJKXLk01"
 Content-Disposition: inline
 
 
---qichjcxhvtosaov5
-Content-Type: text/plain; charset=us-ascii
+--i6vqABX3nJKXLk01
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 25, 2017 at 04:33:08PM +0300, Andy Shevchenko wrote:
-> On Fri, 2017-08-25 at 14:11 +0100, Mark Brown wrote:
-> > On Thu, Aug 24, 2017 at 06:11:12PM +0200, Takashi Iwai wrote:
+On Fri, Aug 25, 2017 at 04:56:47PM +0300, Andy Shevchenko wrote:
+> +John
+>=20
+> On Tue, 2017-08-22 at 21:51 -0400, Tom Rini wrote:
+> > Not all devices with ACPI and this combination of sound devices will
+> > have the required information provided via ACPI.=A0=A0Reintroduce the I=
+2C
+> > device ID to restore sound functionality on on the Chromebook 'Samus'
+> > model.
+>=20
+> Tom, one more question.
+>=20
+> Apparently you are the one who tested the commit
+> 	89128534f925 ("ASoC: rt5677: Add ACPI support")
+> year ago.
 
-> > > Well, that's what the commit ddc9e69b9dc2 does after all: it cleans
-> > > up
-> > > the legacy usage, and moves all either OF or ACPI matching.
+Yes.
 
-> > Which is broken since not all the world is ACPI or DT.
+> The commit states that ACPI properties that are used in Chromebook Pixel
+> 2015 is non-standard (not the same as for DT).
+>=20
+> However, DSDT shows the opposite!
 
-> While I agree on the second part, I don't think it's broken per se,
-> there never was a single user of that, and looking how ASoC board files
-> are organized it is quite unlikely there will be one...
+Interesting.  I'm not an ACPI person, I just tested what John came up
+with.
 
-I have no idea why you say the ASoC machine drivers would prevent
-someone adding a platform based user, obviously ASoC predates the use of
-both ACPI and DT quite considerably.
+> I would like to ask yuo and John what is the status of that currently?
+> Do we have any publicly available laptop with non-standard properties?
 
-> > That's what I said, yes.
+Is there any sort of "build date" or similar in the dump I provided
+yesterday?  Every once in a while my laptop accidentally books into
+ChromeOS and then it might grab and apply some updates and it's not
+impossible that Google updated things in the interim.
 
-> ...though we can (re)introduce this dead code back for a potential user
-> in the future.
+I'm quite happy to test patches or provide further dumps / etc from my
+system.  You might want to start by talking with the person behind
+https://github.com/raphael/linux-samus to see if they know more about
+different versions of the hardware or at least point you towards more
+testers.  Thanks!
 
-The IDs are back as a result of the merge resolution I did.
+--=20
+Tom
 
---qichjcxhvtosaov5
+--i6vqABX3nJKXLk01
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmgMnQACgkQJNaLcl1U
-h9Ad3Af+MsZMOrir3LI7W2nNXhoWSpF3yFuKhCV+9A6YmxzjPK5UOWRPgsWI4kzn
-XaT3MOBQIpFGkHNot6ROVbRrw6WStaSEEvxR/9boRipb2hZIb+XaPM/W5EFCSZCf
-7nhwMAjzne9Uat53iTagsqWbnDUmZro1LBhCYjgJdCnnJpKqbY+VX7Ba+idqb3Sb
-bs14FerEXXVDW2hZxQzzvw2Zx/iFs5Tqs9CphAUdLBMQedP6nEajR0eHKlq150f5
-54NvvY7qlwutM+GNAfSAd3s8fanFqfPGo0JZuhVeNw2zWrfx2XfGPDFVHWSFsSM9
-0uO0NyIUnNVA9NF+/aLd9y+i3Tkmzg==
-=WZsM
+iQIcBAEBAgAGBQJZoDMaAAoJEIf59jXTHXZSpE0QAMQ0fp58U6Uba2kTmh9CMZz1
+gJVRSyg48xYSi5hmcM6IYUjJd8SR64qyflvFU4bWIknJYCnmnYlw99gpxomysMXy
+4fLkk6xh9kyM0vmyz6Jy73eojTowj33+mttlKlF2xpvkgnGl3v8iUbLzzNQsmLpx
+bn72bJO7tf2EAvMsQeIJfP+xfQliYzrXqLwhZj1bGHww5RT1t3qfYfiiRn2fzeJt
+ewLkZ3CKzVdsLU+vE7ySDkLuHOzoAYdV6MnDzAUnviHPe9fYpxdZ94kMJD7UqFuN
+EbcRuys2ZTKGxvWcDjjlXUdZ3k96ZJAP1qT+cZ0XAHZUw6BzVSOrs9b1J4Y10G9x
+0WRGuqqRV7St00CYyOVO87BI6jix+UjhIsVd8G7Sho48NnvLPfnCp3t7KUbB/1Z+
+lXXtANgmaQuv5w+r4TXOcjldXEVu9X4NIGvzmD1FqgwcScvsxGQwwUntOq/WkApa
+zqPosGEcq+oG5on7Q2kVs1Z1ygUimg1j9IhcQ3Ej/Uor23GYJC3waq9G4QUL5HHH
+JITjdzsGFfCWNWZ2eNKaTT+1DkDS0hI989eV4xbpiDNtpAfe8r3uSOvQmPDOzfAx
+rq5ldC82MqdVANy75QimykitgAdoWJIYd3AUVkj2Y+h/SHUs8ViByLaQNWBN6LnZ
+/vv8uSDONJzGZ/Uy2YtE
+=Jt/Y
 -----END PGP SIGNATURE-----
 
---qichjcxhvtosaov5--
+--i6vqABX3nJKXLk01--
 
---===============0380320078226639200==
+--===============1805623791241116321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0380320078226639200==--
+--===============1805623791241116321==--
