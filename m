@@ -1,15 +1,24 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ASoC: pcm: Sync delayed work before releasing
-	resources
-Date: Fri, 25 Aug 2017 12:04:07 +0200
-Message-ID: <20170825100407.5640-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+Date: Fri, 25 Aug 2017 14:09:00 +0100
+Message-ID: <20170825130900.3pnovoktgv47nobq@sirena.org.uk>
+References: <1503498573.25945.69.camel@linux.intel.com>
+ <20170823173912.GN17193@bill-the-cat>
+ <20170824000525.GY17193@bill-the-cat>
+ <s5hk21tjb02.wl-tiwai@suse.de> <s5hinhdjav6.wl-tiwai@suse.de>
+ <20170824144152.GC17193@bill-the-cat>
+ <s5h60ddj7l8.wl-tiwai@suse.de>
+ <20170824155235.2nrqjiwlo3afk4ei@sirena.org.uk>
+ <20170824155437.GF17193@bill-the-cat>
+ <s5h1so1j6gz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5176509309721593886=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4772B266EA7
- for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 12:04:12 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FF5F266EA7
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 15:09:53 +0200 (CEST)
+In-Reply-To: <s5h1so1j6gz.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,69 +28,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Tom Rini <trini@konsulko.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-When ASoC driver is unbound dynamically during its operation (i.e. a
-kind of hot-unplug), we may hit Oops due to the resource access after
-the release by a delayed work, something like:
 
-  Unable to handle kernel paging request at virtual address dead000000000220
-  ....
-  PC is at soc_dapm_dai_stream_event.isra.14+0x20/0xd0
-  LR is at snd_soc_dapm_stream_event+0x74/0xa8
-  ....
-  [<ffff000008715610>] soc_dapm_dai_stream_event.isra.14+0x20/0xd0
-  [<ffff00000871989c>] snd_soc_dapm_stream_event+0x74/0xa8
-  [<ffff00000871b23c>] close_delayed_work+0x3c/0x50
-  [<ffff0000080bbd6c>] process_one_work+0x1ac/0x318
-  [<ffff0000080bbf20>] worker_thread+0x48/0x420
-  [<ffff0000080c201c>] kthread+0xfc/0x128
-  [<ffff0000080842f0>] ret_from_fork+0x10/0x18
+--===============5176509309721593886==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wd5nnm76vktvaa2b"
+Content-Disposition: inline
 
-For fixing the race, this patch adds a sync-point in pcm private_free
-callback to finish the delayed work before actually releasing the
-resources.
 
-Reported-by: Hiep Cao Minh <cm-hiep@jinso.co.jp>
-Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/soc-pcm.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+--wd5nnm76vktvaa2b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 94b88b897c3b..c0f0b09cb433 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2632,6 +2632,17 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
- 	return ret;
- }
- 
-+static void soc_pcm_private_free(struct snd_pcm *pcm)
-+{
-+	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
-+	struct snd_soc_platform *platform = rtd->platform;
-+
-+	/* need to sync the delayed work before releasing resources */
-+	flush_delayed_work(&rtd->delayed_work);
-+	if (platform->driver->pcm_free)
-+		platform->driver->pcm_free(pcm);
-+}
-+
- /* create a new pcm */
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- {
-@@ -2757,7 +2768,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 		}
- 	}
- 
--	pcm->private_free = platform->driver->pcm_free;
-+	pcm->private_free = soc_pcm_private_free;
- out:
- 	dev_info(rtd->card->dev, "%s <-> %s mapping ok\n",
- 		 (rtd->num_codecs > 1) ? "multicodec" : rtd->codec_dai->name,
--- 
-2.14.0
+On Thu, Aug 24, 2017 at 06:06:20PM +0200, Takashi Iwai wrote:
+
+> From: Tom Rini <trini@konsulko.com>
+> Subject: [PATCH] ASoC: rt5677: Reintroduce I2C device IDs
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+Can you send me a pull request for -next so I can revert it with the
+better fix being there please?
+
+--wd5nnm76vktvaa2b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmgIWkACgkQJNaLcl1U
+h9AgVQf/c0FcIiOofgQeGHy19KGSBRCXbUlUDjnLpDhR/6cDgcp0aXO6eC4egU8m
+i6XguhTjLoBUgjFS4zXibr0Wz4U87CifyJeztKXQsRdwADCiRkwCbmtzI940uPPR
+TQFcpY4RiFrrrvb52FN3Q1gvVNhGt9hx/2ugEF4B6BMz3ZWfPyRa4FDWVYZZAurS
+lkU/BwMMb6Zh/iytCnYIApn+yREHH52+yIq05jcMeoESP5uYrx0VFJSQ6BhB2Q2q
+O+ZtPwF/WHZvvKZQVtWWkfFLvSRvnOWt1UORfojOnxS2wYyW9uVKPk764bYKHyq+
+D53nLb87okJR0RBofne5Eor1u0Tsgg==
+=AIDo
+-----END PGP SIGNATURE-----
+
+--wd5nnm76vktvaa2b--
+
+--===============5176509309721593886==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5176509309721593886==--
