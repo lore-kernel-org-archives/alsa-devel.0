@@ -1,18 +1,15 @@
-From: =?UTF-8?Q?Oleksandr_M=c3=bcller?= <sanj3k@gmail.com>
-Subject: Re: Developing a ti-pcm1863 (adc) codec driver
-Date: Fri, 25 Aug 2017 11:24:24 +0200
-Message-ID: <15f613ba-a877-630b-9e13-93095c3a219e@gmail.com>
-References: <0d6606df-5770-62a0-0187-2abf995b5ff1@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: pcm: Sync delayed work before releasing
+	resources
+Date: Fri, 25 Aug 2017 12:04:07 +0200
+Message-ID: <20170825100407.5640-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------514118D3000610B8DB6BFE8A"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f171.google.com (mail-wr0-f171.google.com
- [209.85.128.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 98C81266EA7
- for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 11:24:27 +0200 (CEST)
-Received: by mail-wr0-f171.google.com with SMTP id p8so5606873wrf.2
- for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 02:24:27 -0700 (PDT)
-In-Reply-To: <0d6606df-5770-62a0-0187-2abf995b5ff1@gmail.com>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4772B266EA7
+ for <alsa-devel@alsa-project.org>; Fri, 25 Aug 2017 12:04:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,214 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------514118D3000610B8DB6BFE8A
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+When ASoC driver is unbound dynamically during its operation (i.e. a
+kind of hot-unplug), we may hit Oops due to the resource access after
+the release by a delayed work, something like:
 
-Hello Mr. Brown,
+  Unable to handle kernel paging request at virtual address dead000000000220
+  ....
+  PC is at soc_dapm_dai_stream_event.isra.14+0x20/0xd0
+  LR is at snd_soc_dapm_stream_event+0x74/0xa8
+  ....
+  [<ffff000008715610>] soc_dapm_dai_stream_event.isra.14+0x20/0xd0
+  [<ffff00000871989c>] snd_soc_dapm_stream_event+0x74/0xa8
+  [<ffff00000871b23c>] close_delayed_work+0x3c/0x50
+  [<ffff0000080bbd6c>] process_one_work+0x1ac/0x318
+  [<ffff0000080bbf20>] worker_thread+0x48/0x420
+  [<ffff0000080c201c>] kthread+0xfc/0x128
+  [<ffff0000080842f0>] ret_from_fork+0x10/0x18
 
- >  Use a route, that's the more modern way.
-Would then this be correct?
+For fixing the race, this patch adds a sync-point in pcm private_free
+callback to finish the delayed work before actually releasing the
+resources.
 
-static const struct snd_soc_dapm_widget pcm1863_dapm_widgets[] = {
-     SND_SOC_DAPM_ADC("ADC1", NULL, SND_SOC_NOPM, 0, 0),
-     SND_SOC_DAPM_INPUT("SE_IN_L"),
-     SND_SOC_DAPM_INPUT("SE_IN_R"),
-};
+Reported-by: Hiep Cao Minh <cm-hiep@jinso.co.jp>
+Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/soc-pcm.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-static const struct snd_soc_dapm_route pcm1863_dapm_routes[] = {
-     { "ADC1", NULL, "SE_IN_L" },
-     { "ADC1", NULL, "SE_IN_R" },
-     { "SE_IN_L", NULL, "Capture" },
-     { "SE_IN_R", NULL, "Capture" },
-};
-
- >  I'm not sure I understand the question here.
-I mean by default the adc takes VIN1 as an input and I need him to take 
-VIN4. If I put my switch under sound controls do I have to trigger it, 
-and if yes how? The corrected line should look like this?
-
-static const struct snd_kcontrol_new pcm1863_controls[] = {
-         SOC_DOUBLE_R("ADC MUX VIN4", PCM1863_ADC1_INPUT_SEL_L,
-                     PCM1863_ADC1_INPUT_SEL_R, 4, 1, 0),
-     //I need an 8 viewed from the 0 position so shifting an "1" 4 times
-};
-
- > Please follow the kernel coding style.
-Updated codec driver is attached, with a vim plugin it seems that this 
-should be better now. I updated the missing break statements but I get 
-the same error even now. Please take a look again.
-
- > This looks like you've got most of a driver here, probably the easiest
- > thing to do is submit it using the process outlined in
- > SubmittingPatches. The code looks mostly fine so this shouldn't be too
- > much of an issue.
-I dont know this process. At first I would want to get it working with 
-my hardware before I would begin with a more detailed development with a 
-lot more functionalities.
-
-Sanj3k
-
---------------514118D3000610B8DB6BFE8A
-Content-Type: text/plain; charset=UTF-8;
- name="pcm1863.c"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="pcm1863.c"
-
-I2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCiNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCiNp
-bmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCiNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4NCiNp
-bmNsdWRlIDxsaW51eC9yZWdtYXAuaD4NCiNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQojaW5j
-bHVkZSA8c291bmQvc29jLmg+DQojaW5jbHVkZSA8c291bmQvc29jLWRhcG0uaD4NCiNpbmNs
-dWRlIDxzb3VuZC90bHYuaD4NCiNpbmNsdWRlIDxzb3VuZC9pbml0dmFsLmg+DQojaW5jbHVk
-ZSA8c291bmQvcGNtLmg+DQojaW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPg0KI2luY2x1
-ZGUgPHNvdW5kL2NvcmUuaD4NCg0KDQojaW5jbHVkZSAicGNtMTg2My5oIg0KDQpzdHJ1Y3Qg
-cGNtMTg2M19wcml2IHsNCglzdHJ1Y3QgcmVnbWFwICpyZWdtYXA7DQoJaW50IHJhdGU7DQoJ
-aW50IGZtdDsNCn07DQoNCnN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBw
-Y20xODYzX2NvbnRyb2xzW10gPSB7DQogICAgICAgIFNPQ19ET1VCTEVfUigiQURDIE1VWCBW
-SU40IiwgUENNMTg2M19BREMxX0lOUFVUX1NFTF9MLCANCiAgICAgICAgICAgICAgICAgICAg
-UENNMTg2M19BREMxX0lOUFVUX1NFTF9SLCA0LCAxLCAwKSwgDQogICAgLy9JIG5lZWQgYW4g
-OCB2aWV3ZWQgZnJvbSB0aGUgMCBwb3NpdGlvbiBzbyBzaGlmdGluZyBhbiAiMSIgNCB0aW1l
-cw0KfTsNCg0Kc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IHBjbTE4
-NjNfZGFwbV93aWRnZXRzW10gPSB7DQogICAgICAgIFNORF9TT0NfREFQTV9BREMoIkFEQzEi
-LCBOVUxMLCBTTkRfU09DX05PUE0sIDAsIDApLA0KCVNORF9TT0NfREFQTV9JTlBVVCgiU0Vf
-SU5fTCIpLA0KCVNORF9TT0NfREFQTV9JTlBVVCgiU0VfSU5fUiIpLA0KfTsNCg0Kc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUgcGNtMTg2M19kYXBtX3JvdXRlc1td
-ID0gew0KCXsgIkFEQzEiLCBOVUxMLCAiU0VfSU5fTCIgfSwNCgl7ICJBREMxIiwgTlVMTCwg
-IlNFX0lOX1IiIH0sDQoJeyAiU0VfSU5fTCIsIE5VTEwsICJDYXB0dXJlIiB9LA0KCXsgIlNF
-X0lOX1IiLCBOVUxMLCAiQ2FwdHVyZSIgfSwJDQp9Ow0KDQpzdGF0aWMgc3RydWN0IHNuZF9z
-b2NfY29kZWNfZHJpdmVyIHNvY19jb2RlY19kZXZfcGNtMTg2MyA9IHsNCgkuY29tcG9uZW50
-X2RyaXZlciA9IHsNCgkJLmNvbnRyb2xzCQk9IHBjbTE4NjNfY29udHJvbHMsDQoJCS5udW1f
-Y29udHJvbHMJCT0gQVJSQVlfU0laRShwY20xODYzX2NvbnRyb2xzKSwNCgkJLmRhcG1fd2lk
-Z2V0cwkJPSBwY20xODYzX2RhcG1fd2lkZ2V0cywNCgkJLm51bV9kYXBtX3dpZGdldHMJPSBB
-UlJBWV9TSVpFKHBjbTE4NjNfZGFwbV93aWRnZXRzKSwNCgkJLmRhcG1fcm91dGVzCQk9IHBj
-bTE4NjNfZGFwbV9yb3V0ZXMsDQoJCS5udW1fZGFwbV9yb3V0ZXMJPSBBUlJBWV9TSVpFKHBj
-bTE4NjNfZGFwbV9yb3V0ZXMpLA0KCX0sDQp9Ow0KDQpzdGF0aWMgaW50IHBjbTE4NjNfc2V0
-X2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSwgdW5zaWduZWQgaW50IGZtdCkgDQp7DQoJ
-c3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjID0gZGFpLT5jb2RlYzsNCglzdHJ1Y3QgcGNt
-MTg2M19wcml2ICpwcml2ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0YShjb2RlYyk7DQoJ
-CQ0KCXByaXYtPmZtdCA9IGZtdDsNCgkJDQoJcmV0dXJuIDA7DQp9DQoNCnN0YXRpYyBpbnQg
-cGNtMTg2M19od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0s
-DQoJCQkgICAgIHN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFyYW1zLA0KCQkJICAgICBz
-dHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkNCnsNCglzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29k
-ZWMgPSBkYWktPmNvZGVjOw0KCXN0cnVjdCBwY20xODYzX3ByaXYgKnBjbTE4NjMgPSBzbmRf
-c29jX2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsNCglpbnQgcnhsZW47DQoJaW50IHR4bGVu
-Ow0KCWludCBkaXZpZGVyOw0KCWludCByZXQ7DQoNCglkZXZfZGJnKGNvZGVjLT5kZXYsICJo
-d19wYXJhbXMgJXUgSHosICV1IGNoYW5uZWxzXG4iLA0KICAgICAgICAgICAgcGFyYW1zX3Jh
-dGUocGFyYW1zKSwNCgkJCXBhcmFtc19jaGFubmVscyhwYXJhbXMpKTsNCg0KCXN3aXRjaCAo
-cGFyYW1zX3dpZHRoKHBhcmFtcykpIHsNCgljYXNlIDE2Og0KCQlyeGxlbiA9IFBDTTE4NjNf
-UlhfV0xFTl8xNjsNCgkJdHhsZW4gPSBQQ00xODYzX1RYX1dMRU5fMTY7CQkJDQoJCWJyZWFr
-Ow0KCWNhc2UgMjA6DQoJCXJ4bGVuID0gUENNMTg2M19SWF9XTEVOXzIwOw0KCQl0eGxlbiA9
-IFBDTTE4NjNfVFhfV0xFTl8yMDsNCgkJYnJlYWs7DQoJY2FzZSAyNDoNCgkJcnhsZW4gPSBQ
-Q00xODYzX1JYX1dMRU5fMjQ7DQoJCXR4bGVuID0gUENNMTg2M19UWF9XTEVOXzI0Ow0KCQli
-cmVhazsNCglkZWZhdWx0Og0KCQlkZXZfZXJyKGNvZGVjLT5kZXYsICJCYWQgZnJhbWUgc2l6
-ZTogJWRcbiIsDQogICAgICAgICAgICAgICAgICAgICAgICBwYXJhbXNfd2lkdGgocGFyYW1z
-KSk7DQoJCXJldHVybiAtRUlOVkFMOw0KCX0NCg0KCXN3aXRjaCAocGNtMTg2My0+Zm10ICYg
-U05EX1NPQ19EQUlGTVRfTUFTVEVSX01BU0spIHsNCgljYXNlIFNORF9TT0NfREFJRk1UX0NC
-U19DRlM6IA0KICAgICAgICAvL21heWJlIG5vdCBwb3NzaWJsZSBiZWNhdXNlIGl0IHNlZW1z
-IGxpa2UgdGhlIGJjayBpcyBvbmx5IGFuIG91dHB1dCANCgkJcmV0ID0gcmVnbWFwX3VwZGF0
-ZV9iaXRzKHBjbTE4NjMtPnJlZ21hcCwNCgkJCQkJUENNMTg2M19DTEtfU1JDLA0KCQkJCQlQ
-Q00xODYzX01TVF9NT0RFLA0KCQkJCQkwKTsNCgkJcmV0ID0gcmVnbWFwX3VwZGF0ZV9iaXRz
-KHBjbTE4NjMtPnJlZ21hcCwNCgkJCQkJUENNMTg2M19DTEtfU1JDLA0KCQkJCQlQQ00xODYz
-X01TVF9TQ0tfU1JDLA0KCQkJCQkxKTsJDQoJCWlmIChyZXQgIT0gMCkgew0KCQkJZGV2X2Vy
-cihjb2RlYy0+ZGV2LA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiRmFpbGVk
-IHRvIGVuYWJsZSBzbGF2ZSBtb2RlOiAlZFxuIiwgcmV0KTsNCgkJCXJldHVybiByZXQ7DQoJ
-CX0NCgkJcmV0ID0gcmVnbWFwX3VwZGF0ZV9iaXRzKHBjbTE4NjMtPnJlZ21hcCwgUENNMTg2
-M19DTEtfU1JDLA0KCQkJCQkJCVBDTTE4NjNfQ0xLREVUX0VOLCAxKTsNCgkJaWYgKHJldCAh
-PSAwKSB7DQoJCQlkZXZfZXJyKGNvZGVjLT5kZXYsDQogICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICJGYWlsZWQgdG8gZW5hYmxlIGNsb2NrIGRpdmlkZXIgYXV0b3NldDogJWRc
-biIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldCk7DQoJCQlyZXR1cm4g
-cmV0Ow0KCQl9DQogICAgICAgIGJyZWFrOw0KCWNhc2UgU05EX1NPQ19EQUlGTVRfQ0JNX0NG
-TToJDQoJCXJldCA9IHJlZ21hcF91cGRhdGVfYml0cyhwY20xODYzLT5yZWdtYXAsDQoJCQkJ
-CVBDTTE4NjNfQ0xLX1NSQywNCgkJCQkJUENNMTg2M19NU1RfTU9ERSwNCgkJCQkJMSk7CQ0K
-CQlyZXQgPSByZWdtYXBfdXBkYXRlX2JpdHMocGNtMTg2My0+cmVnbWFwLA0KCQkJCQlQQ00x
-ODYzX0NMS19TUkMsDQoJCQkJCVBDTTE4NjNfTVNUX1NDS19TUkMsDQoJCQkJCTApOwkNCgkJ
-aWYgKHJldCAhPSAwKSB7DQoJCQkJZGV2X2Vycihjb2RlYy0+ZGV2LA0KCQkJCSJGYWlsZWQg
-dG8gZW5hYmxlIG1hc3RlciBtb2RlOiAlZFxuIiwgcmV0KTsNCgkJCQlyZXR1cm4gcmV0Ow0K
-CQl9DQoJCWJyZWFrOw0KCWRlZmF1bHQ6DQoJCXJldHVybiAtRUlOVkFMOwkJCQ0KCX0NCgkJ
-DQoJcmV0ID0gcmVnbWFwX3VwZGF0ZV9iaXRzKHBjbTE4NjMtPnJlZ21hcCwgUENNMTg2M19G
-TVRfUkVHLA0KCQkJCQkJUENNMTg2M19SWF9XTEVOLCByeGxlbik7DQoJcmV0ID0gcmVnbWFw
-X3VwZGF0ZV9iaXRzKHBjbTE4NjMtPnJlZ21hcCwgUENNMTg2M19GTVRfUkVHLA0KCQkJCQkJ
-UENNMTg2M19UWF9XTEVOLCB0eGxlbik7CQ0KDQoJc3dpdGNoIChwY20xODYzLT5yYXRlKSB7
-DQoJY2FzZSA0NDEwMDoNCgljYXNlIDQ4MDAwOg0KCQlkaXZpZGVyID0gUENNMTg2M19ESVZf
-TlVNXzE4Ow0KICAgICAgICAgICAgICAgIGJyZWFrOw0KCWNhc2UgODgyMDA6DQoJY2FzZSA5
-NjAwMDoNCgkJZGl2aWRlciA9IFBDTTE4NjNfRElWX05VTV8xNDsNCiAgICAgICAgICAgICAg
-ICBicmVhazsNCgljYXNlIDE5MjAwMDoNCgkJZGl2aWRlciA9IFBDTTE4NjNfRElWX05VTV8x
-MjsJDQogICAgICAgICAgICAgICAgYnJlYWs7DQoJZGVmYXVsdDoNCgkJcmV0dXJuIC1FSU5W
-QUw7DQoJfQ0KCXJldCA9IHJlZ21hcF91cGRhdGVfYml0cyhwY20xODYzLT5yZWdtYXAsIFBD
-TTE4NjNfU0NLX0RJViwNCgkJCQlQQ00xODYzX0RJVl9OVU0sIGRpdmlkZXIpOwkNCgkJCQkJ
-CQkJDQoJcmV0dXJuIDA7DQp9CQ0KDQpzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFp
-X29wcyBwY20xODYzX2RhaV9vcHMgPSB7DQoJLmh3X3BhcmFtcyA9IHBjbTE4NjNfaHdfcGFy
-YW1zLA0KCS5zZXRfZm10ID0gcGNtMTg2M19zZXRfZm10LA0KfTsNCg0Kc3RhdGljIHN0cnVj
-dCBzbmRfc29jX2RhaV9kcml2ZXIgcGNtMTg2M19kYWkgPSB7DQoJLm5hbWUgPSAicGNtMTg2
-MyIsDQoJLmNhcHR1cmUgPSB7DQoJCS5zdHJlYW1fbmFtZSA9ICJDYXB0dXJlIiwNCgkJLmNo
-YW5uZWxzX21pbiA9IDIsDQoJCS5jaGFubmVsc19tYXggPSAyLA0KCQkucmF0ZXMgPSBTTkRS
-Vl9QQ01fUkFURV9DT05USU5VT1VTLA0KICAgICAgICAgICAgICAgIC5yYXRlX21pbiA9IDgw
-MDAsDQoJCS5yYXRlX21heCA9IDM4NDAwMCwJDQoJCS5mb3JtYXRzID0gU05EUlZfUENNX0ZN
-VEJJVF9TMTZfTEUgfCBTTkRSVl9QQ01fRk1UQklUX1MyNF9MRQ0KCQl9LA0KCQkub3BzID0g
-JnBjbTE4NjNfZGFpX29wcywNCn07DQoNCnN0YXRpYyBjb25zdCBzdHJ1Y3QgcmVnbWFwX3Jh
-bmdlX2NmZyBwY20xODYzX3JhbmdlID0gew0KCS5uYW1lID0gIlBhZ2VzIiwgLnJhbmdlX21p
-biA9IDB4MDAwLA0KCS5yYW5nZV9tYXggPSAweEZEMDAsDQoJLnNlbGVjdG9yX3JlZyA9IDAs
-DQoJLnNlbGVjdG9yX21hc2sgPSAweGZmLA0KCS53aW5kb3dfc3RhcnQgPSAwLCAud2luZG93
-X2xlbiA9IDB4MTAwLA0KfTsNCg0KY29uc3Qgc3RydWN0IHJlZ21hcF9jb25maWcgcGNtMTg2
-M19yZWdtYXAgPSB7DQoJLnJlZ19iaXRzID0gOCwNCgkudmFsX2JpdHMgPSA4LA0KDQoJLnJh
-bmdlcyA9ICZwY20xODYzX3JhbmdlLA0KCS5udW1fcmFuZ2VzID0gMSwNCg0KCS5tYXhfcmVn
-aXN0ZXIgPSAweEZEMDAsDQoJLmNhY2hlX3R5cGUgPSBSRUdDQUNIRV9SQlRSRUUsDQp9Ow0K
-RVhQT1JUX1NZTUJPTF9HUEwocGNtMTg2M19yZWdtYXApOw0KDQoNCmludCBwY20xODYzX3By
-b2JlKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IHJlZ21hcCAqcmVnbWFwKQ0Kew0KCWlu
-dCByZXQ7DQoJc3RydWN0IHBjbTE4NjNfcHJpdiAqcGNtMTg2MzsNCg0KCWlmIChJU19FUlIo
-cmVnbWFwKSkNCgkJcmV0dXJuIFBUUl9FUlIocmVnbWFwKTsNCg0KCXBjbTE4NjMgPSBkZXZt
-X2t6YWxsb2MoZGV2LCBzaXplb2YoKnBjbTE4NjMpLCBHRlBfS0VSTkVMKTsNCglpZiAocGNt
-MTg2MyA9PSBOVUxMKQ0KCQlyZXR1cm4gLUVOT01FTTsNCg0KCXBjbTE4NjMtPnJlZ21hcCA9
-IHJlZ21hcDsNCg0KCWRldl9zZXRfZHJ2ZGF0YShkZXYsIHBjbTE4NjMpOw0KDQoJcmV0ID0g
-c25kX3NvY19yZWdpc3Rlcl9jb2RlYyhkZXYsICZzb2NfY29kZWNfZGV2X3BjbTE4NjMsDQoJ
-CSZwY20xODYzX2RhaSwgMSk7DQoNCglyZXR1cm4gcmV0Ow0KfQ0KRVhQT1JUX1NZTUJPTF9H
-UEwocGNtMTg2M19wcm9iZSk7DQoNCnZvaWQgcGNtMTg2M19yZW1vdmUoc3RydWN0IGRldmlj
-ZSAqZGV2KQ0Kew0KCXNuZF9zb2NfdW5yZWdpc3Rlcl9jb2RlYyhkZXYpOw0KfQ0KRVhQT1JU
-X1NZTUJPTF9HUEwocGNtMTg2M19yZW1vdmUpOw0KDQpNT0RVTEVfREVTQ1JJUFRJT04oIkFT
-b0MgcGNtMTg2MyBkcml2ZXIiKTsNCk1PRFVMRV9BVVRIT1IoIkR1bW15IE5hbWUgPHRlc3RA
-Z21haWwuY29tPiIpOw0KTU9EVUxFX0xJQ0VOU0UoIkdQTCB2MiIpOw==
---------------514118D3000610B8DB6BFE8A
-Content-Type: text/plain; charset=UTF-8;
- name="pcm1863_i2c.c"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="pcm1863_i2c.c"
-
-I2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCiNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCiNp
-bmNsdWRlIDxsaW51eC9pMmMuaD4NCg0KI2luY2x1ZGUgInBjbTE4NjMuaCINCg0Kc3RhdGlj
-IGludCBwY20xODYzX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjLA0KCQkJICAg
-ICBjb25zdCBzdHJ1Y3QgaTJjX2RldmljZV9pZCAqaWQpDQp7DQoJc3RydWN0IHJlZ21hcCAq
-cmVnbWFwOw0KCXN0cnVjdCByZWdtYXBfY29uZmlnIGNvbmZpZyA9IHBjbTE4NjNfcmVnbWFw
-Ow0KDQoJY29uZmlnLnJlYWRfZmxhZ19tYXNrID0gMHg4MDsNCgljb25maWcud3JpdGVfZmxh
-Z19tYXNrID0gMHg4MDsNCg0KCXJlZ21hcCA9IGRldm1fcmVnbWFwX2luaXRfaTJjKGkyYywg
-JmNvbmZpZyk7DQoJaWYgKElTX0VSUihyZWdtYXApKQ0KCQlyZXR1cm4gUFRSX0VSUihyZWdt
-YXApOw0KDQoJcmV0dXJuIHBjbTE4NjNfcHJvYmUoJmkyYy0+ZGV2LCByZWdtYXApOw0KfQ0K
-DQpzdGF0aWMgaW50IHBjbTE4NjNfaTJjX3JlbW92ZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJj
-KQ0Kew0KCXBjbTE4NjNfcmVtb3ZlKCZpMmMtPmRldik7DQoJcmV0dXJuIDA7DQp9DQoNCnN0
-YXRpYyBjb25zdCBzdHJ1Y3QgaTJjX2RldmljZV9pZCBwY20xODYzX2kyY19pZFtdID0gew0K
-CXsgInBjbTE4NjMiLCB9LA0KCXsgfQ0KfTsNCk1PRFVMRV9ERVZJQ0VfVEFCTEUoaTJjLCBw
-Y20xODYzX2kyY19pZCk7DQoNCi8qc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQg
-cGNtMTg2M19vZl9tYXRjaFtdID0gew0KCXsgLmNvbXBhdGlibGUgPSAidGkscGNtMTg2MyIs
-IH0sDQoJeyB9DQp9Ow0KTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgcGNtMTg2M19vZl9tYXRj
-aCk7Ki8NCg0Kc3RhdGljIHN0cnVjdCBpMmNfZHJpdmVyIHBjbTE4NjNfaTJjX2RyaXZlciA9
-IHsNCgkucHJvYmUgCQk9IHBjbTE4NjNfaTJjX3Byb2JlLA0KCS5yZW1vdmUgCT0gcGNtMTg2
-M19pMmNfcmVtb3ZlLA0KCS5pZF90YWJsZQk9IHBjbTE4NjNfaTJjX2lkLA0KCS5kcml2ZXIJ
-CT0gew0KCQkubmFtZQk9ICJwY20xODYzIiwNCgkJLm9mX21hdGNoX3RhYmxlID0gcGNtMTg2
-M19vZl9tYXRjaCwNCgkJLnBtICAgICA9ICZwY20xODYzX3BtX29wcywNCgl9LA0KfTsNCg0K
-bW9kdWxlX2kyY19kcml2ZXIocGNtMTg2M19pMmNfZHJpdmVyKTsNCg0KTU9EVUxFX0RFU0NS
-SVBUSU9OKCJBU29DIHBjbTE4NjMgY29kZWMgZHJpdmVyIC0gSTJDIik7DQpNT0RVTEVfQVVU
-SE9SKCJEdW1teSBOYW1lIDx0ZXN0QGdtYWlsLmNvbT4iKTsNCk1PRFVMRV9MSUNFTlNFKCJH
-UEwgdjIiKTs=
---------------514118D3000610B8DB6BFE8A
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------514118D3000610B8DB6BFE8A--
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 94b88b897c3b..c0f0b09cb433 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2632,6 +2632,17 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
+ 	return ret;
+ }
+ 
++static void soc_pcm_private_free(struct snd_pcm *pcm)
++{
++	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
++	struct snd_soc_platform *platform = rtd->platform;
++
++	/* need to sync the delayed work before releasing resources */
++	flush_delayed_work(&rtd->delayed_work);
++	if (platform->driver->pcm_free)
++		platform->driver->pcm_free(pcm);
++}
++
+ /* create a new pcm */
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ {
+@@ -2757,7 +2768,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		}
+ 	}
+ 
+-	pcm->private_free = platform->driver->pcm_free;
++	pcm->private_free = soc_pcm_private_free;
+ out:
+ 	dev_info(rtd->card->dev, "%s <-> %s mapping ok\n",
+ 		 (rtd->num_codecs > 1) ? "multicodec" : rtd->codec_dai->name,
+-- 
+2.14.0
