@@ -1,17 +1,17 @@
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Subject: [PATCH 5/9] ASoC: max98927: Removed obsolete variables
-Date: Fri, 25 Aug 2017 17:41:06 -0700
-Message-ID: <1503708070-7906-5-git-send-email-ryans.lee@maximintegrated.com>
-References: <1503708070-7906-1-git-send-email-ryans.lee@maximintegrated.com>
+From: anish kumar <yesanishhere@gmail.com>
+Subject: [patch 0/4] ASoC: dapm: Avoid creating kcontrol for
+	params
+Date: Sat, 26 Aug 2017 01:29:02 -0700
+Message-ID: <20170826082902.35422-1-yesanishhere@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-cys01nam02on0108.outbound.protection.outlook.com [104.47.37.108])
- by alsa0.perex.cz (Postfix) with ESMTP id F40DA267408
- for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2017 02:41:41 +0200 (CEST)
-In-Reply-To: <1503708070-7906-1-git-send-email-ryans.lee@maximintegrated.com>
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id A644A267414
+ for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2017 10:29:09 +0200 (CEST)
+Received: by mail-pg0-f68.google.com with SMTP id 63so2431372pgc.1
+ for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2017 01:29:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: ryan.lee.maxim@gmail.com
+To: broonie@kernel.org
+Cc: anish kumar <yesanishhere@gmail.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
----
-Changes : Removed obsolete variables from max98927_priv
+Currently in codec to codec dai link if there are multiple
+params defined then dapm can use created kcontrol to
+decide which param to apply at runtime.
 
- sound/soc/codecs/max98927.h | 4 ----
- 1 file changed, 4 deletions(-)
- mode change 100644 => 100755 sound/soc/codecs/max98927.h
+However, in case there is only single param configuration
+then there is no point in creating the kcontrol and also there
+is no point in allocating memory for kcontrol.
 
-diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
-old mode 100644
-new mode 100755
-index 3069a09..30cc40a
---- a/sound/soc/codecs/max98927.h
-+++ b/sound/soc/codecs/max98927.h
-@@ -263,16 +263,12 @@
- struct max98927_priv {
- 	struct regmap *regmap;
- 	struct snd_soc_codec *codec;
--	struct max98927_pdata *pdata;
--	unsigned int spk_gain;
- 	unsigned int sysclk;
- 	unsigned int v_l_slot;
- 	unsigned int i_l_slot;
- 	bool interleave_mode;
- 	unsigned int ch_size;
--	unsigned int rate;
- 	unsigned int iface;
- 	unsigned int master;
--	unsigned int digital_gain;
- };
- #endif
+In the snd_soc_dapm_new_pcm function, there is memory
+allocation happening for kcontrol which is later used
+or not used based on num_param. It is better to not
+allocate memory when there is only a single configuration.
+This change is to remedy that anomaly.
+
+This code change doesn't do much except just refactor 
+snd_soc_dapm_new_pcm function. Now the part of allocating
+memory for kcontrol is allocated to a new function and it
+is called only in the case it is needed.
+
+anish kumar (4):
+  ASoC: dapm: fix error path in snd_soc_dapm_new_pcm
+  ASoC: dapm: Refactor the code in snd_soc_dapm_new_pcm
+  ASoC: dapm: Avoid creating kcontrol for params
+  ASoC: dapm: Remove the redundant check
+
+ sound/soc/soc-dapm.c | 123 ++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 67 insertions(+), 56 deletions(-)
+
 -- 
-1.9.1
+2.10.1 (Apple Git-78)
