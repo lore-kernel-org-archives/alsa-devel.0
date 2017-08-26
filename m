@@ -1,111 +1,43 @@
-From: Jens Verwiebe <info@jensverwiebe.de>
-Subject: Scarlett 6i6 gain switches patch
-Date: Sat, 26 Aug 2017 16:56:02 +0200
-Message-ID: <f9bc23ea-64ea-a87b-8a9d-1891790d4a35@jensverwiebe.de>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Subject: Re: [PATCH v2] ASoC: Add a sanity check before using dai driver name
+Date: Sat, 26 Aug 2017 23:09:49 +0800
+Message-ID: <CAErzpmupMr=RZj4yDni3xEp-f+fLBJ2KqnD8GcarMmGOH0JxXg@mail.gmail.com>
+References: <20170824033411.5788-1-jeffy.chen@rock-chips.com> <201708262141.5hey2M3k%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 36D64266998
- for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2017 16:56:02 +0200 (CEST)
-Received: from [192.168.178.21] ([77.188.16.129]) by mrelayeu.kundenserver.de
- (mreue002 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 0LzCmv-1dPKbb2Qhl-014PiN for <alsa-devel@alsa-project.org>; Sat, 26 Aug 2017
- 16:56:02 +0200
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <201708262141.5hey2M3k%fengguang.wu@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: kbuild test robot <lkp@intel.com>
+Cc: Jeffy Chen <jeffy.chen@rock-chips.com>, kbuild-all@01.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, tiwai@suse.de, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks
+Hi Mark,
 
-As an owner of an Focusrite Scarlett 6i6 (gen 1)i was bothered that i 
-could not
+On Sat, Aug 26, 2017 at 10:13 PM, kbuild test robot <lkp@intel.com> wrote:
+> Hi Jeffy,
+>
+> [auto build test ERROR on asoc/for-next]
+> [also build test ERROR on next-20170825]
+> [cannot apply to v4.13-rc6]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+>
+> url:    https://github.com/0day-ci/linux/commits/Jeffy-Chen/ASoC-Add-a-sanity-check-before-using-dai-driver-name/20170826-195851
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> config: x86_64-randconfig-it0-08261958 (attached as .config)
+> compiler: gcc-4.9 (Debian 4.9.4-2) 4.9.4
+> reproduce:
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64
+>
+> All error/warnings (new ones prefixed by >>):
+>
+>    sound//soc/soc-core.c: In function 'snd_soc_find_dai':
+>>> sound//soc/soc-core.c:4321:0: error: unterminated argument list invoking macro "if"
+>     MODULE_ALIAS("platform:soc-audio");
+>     ^
+>>> sound//soc/soc-core.c:1031:4: error: expected '(' at end of input
+>        if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
+>        ^
 
-switch rear inputs 3/4 gain. After investigating the code i found the 
-specs of
-
-that interface not used right. I wrote a patch and tested this well so far.
-
-Afaik the same could be used also for the 18i18 and 18i20, but i left 
-those untouched
-
-for i could not test myself. Pls review and take over in case its accepted.
-
-
-Cheers ... Jens
-
-The patch:
-
---- /sound/usb/mixer_scarlett_nv.c    2017-04-08 09:53:53.000000000 +0200
-+++ /sound/usb/mixer_scarlett.c    2017-08-26 03:15:15.734930629 +0200
-@@ -152,6 +152,7 @@
-      SCARLETT_OUTPUTS,
-      SCARLETT_SWITCH_IMPEDANCE,
-      SCARLETT_SWITCH_PAD,
-+    SCARLETT_SWITCH_GAIN,
-  };
-
-  enum {
-@@ -202,6 +203,15 @@
-      }
-  };
-
-+static const struct scarlett_mixer_elem_enum_info opt_gain = {
-+    .start = 0,
-+    .len = 2,
-+    .offsets = {},
-+    .names = (char const * const []){
-+        "Lo", "Hi"
-+    }
-+};
-+
-  static const struct scarlett_mixer_elem_enum_info opt_impedance = {
-      .start = 0,
-      .len = 2,
-@@ -664,8 +674,8 @@
-          { .num = 1, .type = SCARLETT_SWITCH_PAD, .name = NULL},
-          { .num = 2, .type = SCARLETT_SWITCH_IMPEDANCE, .name = NULL},
-          { .num = 2, .type = SCARLETT_SWITCH_PAD, .name = NULL},
--        { .num = 3, .type = SCARLETT_SWITCH_PAD, .name = NULL},
--        { .num = 4, .type = SCARLETT_SWITCH_PAD, .name = NULL},
-+        { .num = 3, .type = SCARLETT_SWITCH_GAIN, .name = NULL},
-+        { .num = 4, .type = SCARLETT_SWITCH_GAIN, .name = NULL},
-      },
-
-      .matrix_mux_init = {
-@@ -895,6 +905,15 @@
-              if (err < 0)
-                  return err;
-              break;
-+        case SCARLETT_SWITCH_GAIN:
-+            sprintf(mx, "Input %d Gain Switch", ctl->num);
-+            err = add_new_ctl(mixer, &usb_scarlett_ctl_enum,
-+                      scarlett_ctl_enum_resume, 0x01,
-+                      0x08, ctl->num, USB_MIXER_S16, 1, mx,
-+                      &opt_gain, &elem);
-+            if (err < 0)
-+                return err;
-+            break;
-          }
-      }
-
-
--- 
-
-Jens Verwiebe
-Allerskehre 44 - 22309 Hamburg
-
-Tel.: +49 40 68 78 50
-mobile: +49 172 400 49 07
-mailto: info@jensverwiebe.de
-web: http://www.jensverwiebe.de
+It seems that the v3 patch should be applied other than v2.
