@@ -1,43 +1,37 @@
-From: Donglin Peng <dolinux.peng@gmail.com>
-Subject: Re: [PATCH v2] ASoC: Add a sanity check before using dai driver name
-Date: Sat, 26 Aug 2017 23:09:49 +0800
-Message-ID: <CAErzpmupMr=RZj4yDni3xEp-f+fLBJ2KqnD8GcarMmGOH0JxXg@mail.gmail.com>
-References: <20170824033411.5788-1-jeffy.chen@rock-chips.com> <201708262141.5hey2M3k%fengguang.wu@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ASoC: davinci-mcasp: check memory allocation failure
+Date: Sun, 27 Aug 2017 08:46:50 +0200
+Message-ID: <20170827064650.7562-1-christophe.jaillet@wanadoo.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201708262141.5hey2M3k%fengguang.wu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: kbuild test robot <lkp@intel.com>
-Cc: Jeffy Chen <jeffy.chen@rock-chips.com>, kbuild-all@01.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, tiwai@suse.de, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, peter.ujfalusi@ti.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Check memory allocation failures and return -ENOMEM in such cases, as
+already done above for another memory allocation.
 
-On Sat, Aug 26, 2017 at 10:13 PM, kbuild test robot <lkp@intel.com> wrote:
-> Hi Jeffy,
->
-> [auto build test ERROR on asoc/for-next]
-> [also build test ERROR on next-20170825]
-> [cannot apply to v4.13-rc6]
-> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
->
-> url:    https://github.com/0day-ci/linux/commits/Jeffy-Chen/ASoC-Add-a-sanity-check-before-using-dai-driver-name/20170826-195851
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> config: x86_64-randconfig-it0-08261958 (attached as .config)
-> compiler: gcc-4.9 (Debian 4.9.4-2) 4.9.4
-> reproduce:
->         # save the attached .config to linux build tree
->         make ARCH=x86_64
->
-> All error/warnings (new ones prefixed by >>):
->
->    sound//soc/soc-core.c: In function 'snd_soc_find_dai':
->>> sound//soc/soc-core.c:4321:0: error: unterminated argument list invoking macro "if"
->     MODULE_ALIAS("platform:soc-audio");
->     ^
->>> sound//soc/soc-core.c:1031:4: error: expected '(' at end of input
->        if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
->        ^
+This avoids NULL pointers dereference.
 
-It seems that the v3 patch should be applied other than v2.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/davinci/davinci-mcasp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index d486908d4e0e..f395bbc7c354 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1851,6 +1851,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	mcasp->context.xrsr_regs = devm_kzalloc(&pdev->dev,
+ 					sizeof(u32) * mcasp->num_serializer,
+ 					GFP_KERNEL);
++	if (!mcasp->context.xrsr_regs) {
++		ret = -ENOMEM;
++		goto err;
++	}
+ #endif
+ 	mcasp->serial_dir = pdata->serial_dir;
+ 	mcasp->version = pdata->version;
+-- 
+2.11.0
