@@ -1,53 +1,27 @@
-From: Roger Dannenberg <rbd@cs.cmu.edu>
-Subject: Can ALSA MIDI use timestamps for precise timing?
-Date: Thu, 24 Aug 2017 13:51:00 -0400
-Message-ID: <fdc3abae-84b8-d94c-991d-cdd30c4d9f64@cs.cmu.edu>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH v2] ASoC: Add a sanity check before using dai driver name
+Date: Mon, 28 Aug 2017 06:21:18 +0800
+Message-ID: <59A345DE.3070302@rock-chips.com>
+References: <CAErzpmvF_N5fskRQe7yv9JsyYXKqG6u5R55B2q5RmAB-i_b7LQ@mail.gmail.com> <c8fut2564q2ilhtdm8q39a40.1503844312370@email.android.com> <20170827143457.tqc73fkhcly7dej2@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp02.srv.cs.cmu.edu (smtp02.srv.cs.cmu.edu [128.2.217.201])
- by alsa0.perex.cz (Postfix) with ESMTP id C821D266DE5
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 19:51:07 +0200 (CEST)
-Received: from count.music.cs.cmu.edu ([172.31.53.93]) (authenticated bits=0)
- by smtp02.srv.cs.cmu.edu (8.13.6/8.13.6) with ESMTP id v7OHp1uL029883
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
- for <alsa-devel@alsa-project.org>; Thu, 24 Aug 2017 13:51:04 -0400 (EDT)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170827143457.tqc73fkhcly7dej2@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, kbuild test robot <lkp@intel.com>, kbuild-all@01.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgrCoMKgwqAgSSB3cm90ZSBQb3J0TUlESSBsb25nIGFnbyBhbmQgbm93IHRoYXQgaXQncyBn
-b2luZyBpbnRvIEF1ZGFjaXR5IGFuZAp3ZSdyZSBoYXZpbmcgdGltaW5nIHByb2JsZW1zIGluIExp
-bnV4LCBJJ20gcmV2aXNpdGluZyB0aGUgY29kZSBhbmQKd29uZGVyaW5nIGlmIEFMU0EgaGFzIGEg
-ZnVuZGFtZW50YWwgZGVzaWduIHByb2JsZW0uIEknbSBob3BpbmcgSSdtCm1pc3Npbmcgc29tZXRo
-aW5nLCBidXQgaGVyZSdzIHRoZSBwcm9ibGVtOgoKwqDCoMKgIFBvcnRNSURJIHdhbnRzIHRvIHNl
-bmQgTUlESSBtZXNzYWdlcyBhdCBwcmVjaXNlIHRpbWVzIGFjY29yZGluZyB0bwphcmJpdHJhcnkg
-Y2xvY2tzLiBJbiBBdWRhY2l0eSwgdGhlIGltcG9ydGFudCBjbG9jayB0byBzeW5jaHJvbml6ZSB0
-byBpcwp0aGUgYXVkaW8gc2FtcGxlIGNsb2NrLiBUbyBzeW5jaHJvbml6ZSBNSURJLCBvbmUgY2Fu
-IGluIHByaW5jaXBsZSB1c2UKdGltZXN0YW1wcyBhbmQgbGV0IHRoZSBkZXZpY2UgZHJpdmVyLCB3
-aGljaCBwcmVzdW1hYmx5IHJ1bnMgd2l0aCB2ZXJ5CmxvdyBsYXRlbmN5LCBkaXNwYXRjaCBNSURJ
-IGZyb20gYSBxdWV1ZSB0byB0aGUgZGV2aWNlIG9yIGRlc3RpbmF0aW9uLgpUaGUgcXVlc3Rpb24g
-aXMgdGhlbiB3aGF0IHRpbWVzdGFtcCB0byB1c2UuIEFMU0EgaGFzIHNvbWUgb3B0aW9ucy4KVGhl
-cmUncyByZWxhdGl2ZSB0aW1pbmcsIGJ1dCBpZiB5b3Ugc2VuZCB3aXRoIHJlbGF0aXZlIHRpbWUg
-YW5kIHlvdSBnZXQKdW5zY2hlZHVsZWQganVzdCBhcyB5b3UgYXJlIGV4ZWN1dGluZyB0aGUgd3Jp
-dGUgY2FsbCwgeW91J2xsIGJlIGxhdGUuClRoZXJlJ3MgYWJzb2x1dGUgdGltaW5nLCBidXQgdGhl
-IGRvY3Mgc2F5IHRoYXQncyByZWxhdGl2ZSB0byB3aGVuIHlvdQpzdGFydCB0aGUgcXVldWUsIGJ1
-dCB3aGVuIGV4YWN0bHkgaXMgdGhhdD8gVGhlIHByb2JsZW0gYmVjb21lcyBwcmVjaXNlCnRpbWlu
-ZyBvZiBxdWV1ZSBjcmVhdGlvbiBkb2Vzbid0IGl0PyBBbmQgdGhlcmUncyBubyB0aW1lc3RhbXAg
-cHJvdmlkZWQKZm9yIHdoZW4gdG8gc3RhcnQuIElmICJhYnNvbHV0ZSIgbWVhbiBleGFjdGx5IHRo
-ZSBzeXN0ZW0gdGltZSwgdGhhdAp3b3VsZCBiZSBncmVhdCwgYnV0IEkgdGhpbmsgdGhhdCdzIG5v
-dCB0aGUgY2FzZS4KCsKgwqDCoCBJcyB0aGlzIGEgZnVuZGFtZW50YWwgZGVzaWduIGVycm9yLCBv
-ciBhbSBJIG1pc3Npbmcgc29tZXRoaW5nPwoKwqDCoMKgIFRoYW5rcy4gLVJvZ2VyIERhbm5lbmJl
-cmcKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+hi Mark,
+
+On 08/27/2017 10:34 PM, Mark Brown wrote:
+> On Sun, Aug 27, 2017 at 10:31:52PM +0800, Jeffy Chen wrote:
+>
+> This is a HTML only mail and I have a text only client...
+>
+sorry, i was replying with my phone, didn't notice it would use html by 
+default...
+
+i think you've applied the right version of patch(v3), and the robot is 
+warning the v2 version :)
