@@ -1,16 +1,18 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v2] ASoC: Add a sanity check before using
- dai driver name
-Date: Sun, 27 Aug 2017 22:31:52 +0800
-Message-ID: <c8fut2564q2ilhtdm8q39a40.1503844312370@email.android.com>
+	dai driver name
+Date: Sun, 27 Aug 2017 15:34:57 +0100
+Message-ID: <20170827143457.tqc73fkhcly7dej2@sirena.org.uk>
 References: <CAErzpmvF_N5fskRQe7yv9JsyYXKqG6u5R55B2q5RmAB-i_b7LQ@mail.gmail.com>
+ <c8fut2564q2ilhtdm8q39a40.1503844312370@email.android.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6878963698761213782=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D9DB26684C
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 16:32:03 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27FB026684C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 16:35:04 +0200 (CEST)
+In-Reply-To: <c8fut2564q2ilhtdm8q39a40.1503844312370@email.android.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,27 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Donglin Peng <dolinux.peng@gmail.com>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-ICAgaGkgZG9uZywKCiAgIHRoYW5rcyBmb3Igbm90aWNpbmcsIGJ1dCBpIHRoaW5rIG1hcmsndmUg
-YXBwbGllZCB0aGUgcmlnaHQgdmVyc2lvbi4KCiAgIHRoaXMgYW1hemluZyByb2JvdCB3b3VsZCBo
-ZWxwIHRvIHRlc3QgYWxsIHBhdGNoZXMsIG5vdCBvbmx5IHRoZSBvbmVzCiAgIGFscmVhZHkgYXBw
-bGllZCA6KQoKICAgw6XFk8KoIFsxXTIwMTfDpcK5wrQ4w6bFk8uGMjfDpuKAlMKlIMOkwrjigLnD
-pe+/vcuGOTo1NMOvwrzFkkRvbmdsaW4gUGVuZwogICA8WzJdZG9saW51eC5wZW5nQGdtYWlsLmNv
-bT7DpeKAoOKEosOp77+94oCcw6/CvMWhCgogICBIaSBKZWZmeSwKCiAgIE9uIFN1biwgQXVnIDI3
-LCBbM10yMDE3IGF0IDg6MTkgUE0sIE1hcmsgQnJvd24gPFs0XWJyb29uaWVAa2VybmVsLm9yZz4K
-ICAgd3JvdGU6CgogICA+IE9uIFNhdCwgQXVnIDI2LCBbNV0yMDE3IGF0IDExOjA5OjQ5UE0gKzA4
-MDAsIERvbmdsaW4gUGVuZyB3cm90ZToKCiAgID4KCiAgID4+IEl0IHNlZW1zIHRoYXQgdGhlIHYz
-IHBhdGNoIHNob3VsZCBiZSBhcHBsaWVkIG90aGVyIHRoYW4gdjIuCgogICA+CgogICA+IFBsZWFz
-ZSBzZW5kIGluY3JlbWVudGFsIGZpeGVzIHJhdGhlciB0aGFuIG5ldyB2ZXJzaW9ucyBmb3IgdGhp
-bmdzCiAgIHRoYXQKCiAgID4gYXJlIGFyZSBhbHJlYWR5IGFwcGxpZWQuCgogICBZb3Ugc2hvdWxk
-IHNlbmQgYSBpbmNyZW1lbnRhbCBwYXRjaCByYXRoZXIgdGhhbiB2MyBwYXRjaCwgYmVjYXVzZSB5
-b3VyCgogICB2MiBwYXRjaCBoYWQgYmVlbiBhcHBsaWVkIGFuZCBjYXVzZWQgdGhpcyBpc3N1ZS4K
-ClJlZmVyZW5jZXMKCiAgIDEuIHRlbDoyMDE3CiAgIDIuIG1haWx0bzpkb2xpbnV4LnBlbmdAZ21h
-aWwuY29tCiAgIDMuIHRlbDoyMDE3CiAgIDQuIG1haWx0bzpicm9vbmllQGtlcm5lbC5vcmcKICAg
-NS4gdGVsOjIwMTcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+
+--===============6878963698761213782==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="xw5bdckufr7mvuur"
+Content-Disposition: inline
+
+
+--xw5bdckufr7mvuur
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Aug 27, 2017 at 10:31:52PM +0800, Jeffy Chen wrote:
+
+This is a HTML only mail and I have a text only client...
+
+--xw5bdckufr7mvuur
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmi2JEACgkQJNaLcl1U
+h9C/Hgf/eAD/1LUsoCVemtQaF2tGTWSGcWlH2qYCl8m/I/CCWq4i5Hr2TUhrVu0l
+H/DFKRC62nmGH67+0k9AZ2OU7GeMbCaPncYUS1vFjyMu98sdPC1xfdADMZIqLc5a
+7CccG/zf3zvdJcDB6Afx20uVMlo6Kx3zVKruBDpIXliNYy6op6XwGBbtbJcG7se4
+wx/a1nF2Xla+5ypiAud3magMuooulRkKnWQ8bGr8xj3QsmPzYg2e88+SlfNiIiaH
+W5bczkMH5z2aJJOvihb3CayPvPELo8DDA7sUfPuxy0wGaOzwMzQ8ulxPRVZqaPNP
+163l7EnwYzdFud4MhkT6jrUCAVxyGA==
+=N+Fc
+-----END PGP SIGNATURE-----
+
+--xw5bdckufr7mvuur--
+
+--===============6878963698761213782==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6878963698761213782==--
