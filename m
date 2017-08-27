@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: check memory allocation
-	failure" to the asoc tree
-Date: Sun, 27 Aug 2017 14:37:32 +0100 (BST)
-Message-ID: <20170827133732.BF3E34400E7@finisterre.ee.mobilebroadband>
-References: <20170827064650.7562-1-christophe.jaillet@wanadoo.fr>
+Subject: Applied "ASoC: remove duplicate definition of
+	dapm_routes/num_dapm_routes" to the asoc tree
+Date: Sun, 27 Aug 2017 14:37:45 +0100 (BST)
+Message-ID: <20170827133745.B99A44400E7@finisterre.ee.mobilebroadband>
+References: <871so0sdgr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2883426684C
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:37:35 +0200 (CEST)
-In-Reply-To: <20170827064650.7562-1-christophe.jaillet@wanadoo.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id BF29B26684C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:37:48 +0200 (CEST)
+In-Reply-To: <871so0sdgr.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: check memory allocation failure
+   ASoC: remove duplicate definition of dapm_routes/num_dapm_routes
 
 has been applied to the asoc tree at
 
@@ -52,36 +53,63 @@ to this mail.
 Thanks,
 Mark
 
->From 4243e0457c9b1fe5e96fba19296469466eb24b1d Mon Sep 17 00:00:00 2001
-From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
-Date: Sun, 27 Aug 2017 08:46:50 +0200
-Subject: [PATCH] ASoC: davinci-mcasp: check memory allocation failure
+>From 6969b2bae6dbe7f277a7c018b66d2f3ad662129f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 25 Aug 2017 00:29:41 +0000
+Subject: [PATCH] ASoC: remove duplicate definition of
+ dapm_routes/num_dapm_routes
 
-Check memory allocation failures and return -ENOMEM in such cases, as
-already done above for another memory allocation.
+snd_soc_component and snd_soc_component_driver both have
+dapm_routes/num_dapm_routes, but these are duplicated.
+Let's remove duplicated definition.
 
-This avoids NULL pointers dereference.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/sound/soc.h  |  2 --
+ sound/soc/soc-core.c | 10 ++++------
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index d486908d4e0e..f395bbc7c354 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1851,6 +1851,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	mcasp->context.xrsr_regs = devm_kzalloc(&pdev->dev,
- 					sizeof(u32) * mcasp->num_serializer,
- 					GFP_KERNEL);
-+	if (!mcasp->context.xrsr_regs) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
- #endif
- 	mcasp->serial_dir = pdata->serial_dir;
- 	mcasp->version = pdata->version;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 3e0070ed6883..2bcb38045dc1 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -862,8 +862,6 @@ struct snd_soc_component {
+ 	/* Don't use these, use snd_soc_component_get_dapm() */
+ 	struct snd_soc_dapm_context dapm;
+ 
+-	const struct snd_soc_dapm_route *dapm_routes;
+-	unsigned int num_dapm_routes;
+ 	struct snd_soc_codec *codec;
+ 
+ 	int (*probe)(struct snd_soc_component *);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 3a3236dc996d..b8f96a41b594 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1500,9 +1500,10 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		snd_soc_add_component_controls(component,
+ 					       component->driver->controls,
+ 					       component->driver->num_controls);
+-	if (component->dapm_routes)
+-		snd_soc_dapm_add_routes(dapm, component->dapm_routes,
+-					component->num_dapm_routes);
++	if (component->driver->dapm_routes)
++		snd_soc_dapm_add_routes(dapm,
++					component->driver->dapm_routes,
++					component->driver->num_dapm_routes);
+ 
+ 	list_add(&dapm->list, &card->dapm_list);
+ 	list_add(&component->card_list, &card->component_dev_list);
+@@ -3186,9 +3187,6 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	if (driver->stream_event)
+ 		dapm->stream_event = snd_soc_component_stream_event;
+ 
+-	component->dapm_routes = driver->dapm_routes;
+-	component->num_dapm_routes = driver->num_dapm_routes;
+-
+ 	INIT_LIST_HEAD(&component->dai_list);
+ 	mutex_init(&component->io_mutex);
+ 
 -- 
 2.13.2
