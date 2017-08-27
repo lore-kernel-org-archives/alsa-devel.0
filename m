@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Update module id in pin
-	connections" to the asoc tree
-Date: Sun, 27 Aug 2017 14:38:28 +0100 (BST)
-Message-ID: <20170827133828.209474400E7@finisterre.ee.mobilebroadband>
-References: <20170821084646.6525-8-guneshwor.o.singh@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D67526745C
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:38:32 +0200 (CEST)
-In-Reply-To: <20170821084646.6525-8-guneshwor.o.singh@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Subject: Applied "ASoC: Add a sanity check before using dai driver name" to the asoc tree
+Date: Sun, 27 Aug 2017 14:39:19 +0100 (BST)
+Message-ID: <20170827133919.9E1624400E7@finisterre.ee.mobilebroadband>
+References: <20170824044017.10368-1-jeffy.chen@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170824044017.10368-1-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: Donglin Peng <dolinux.peng@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Takashi Iwai <tiwai@suse.com>dolinux.peng@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Update module id in pin connections
+   ASoC: Add a sanity check before using dai driver name
 
 has been applied to the asoc tree at
 
@@ -53,98 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 91fe0e70dbfb1142e17cebaa9186794b51a28cf7 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Wed, 23 Aug 2017 19:33:54 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Update module id in pin connections
+>From 6a6dafda937cfcdbbfe46a3e093de8bb929ba52d Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 24 Aug 2017 12:40:17 +0800
+Subject: [PATCH] ASoC: Add a sanity check before using dai driver name
 
-Each module's id comes from the topology and gets updated in the
-driver. This patch updates the input and output pin connections of
-each module by matching the uuid for each module.
+The dai driver's name is allowed to be NULL. So add a sanity check for
+that.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Reported-by: Donglin Peng <dolinux.peng@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c      | 41 +++++++++++++++++++++++++++++++---
- sound/soc/intel/skylake/skl-topology.h |  1 +
- 2 files changed, 39 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index a756882b9029..2b1e513b1680 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1220,8 +1220,11 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
- static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
- {
- 	struct skl_sst *ctx = skl->skl_sst;
-+	struct skl_module_inst_id *pin_id;
-+	uuid_le *uuid_mod, *uuid_tplg;
-+	struct skl_module *skl_module;
- 	struct uuid_module *module;
--	uuid_le *uuid_mod;
-+	int i, ret = -EIO;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6fab0ff213ef..74c17068bb11 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1029,7 +1029,8 @@ struct snd_soc_dai *snd_soc_find_dai(
+ 			continue;
+ 		list_for_each_entry(dai, &component->dai_list, list) {
+ 			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
+-			    && strcmp(dai->driver->name, dlc->dai_name))
++			    && (!dai->driver->name
++				|| strcmp(dai->driver->name, dlc->dai_name)))
+ 				continue;
  
- 	uuid_mod = (uuid_le *)mconfig->guid;
- 
-@@ -1235,11 +1238,43 @@ static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
- 			mconfig->id.module_id = module->id;
- 			if (mconfig->module)
- 				mconfig->module->loadable = module->is_loadable;
--			return 0;
-+			ret = 0;
-+			break;
- 		}
- 	}
- 
--	return -EIO;
-+	if (ret)
-+		return ret;
-+
-+	uuid_mod = &module->uuid;
-+	ret = -EIO;
-+	for (i = 0; i < skl->nr_modules; i++) {
-+		skl_module = skl->modules[i];
-+		uuid_tplg = &skl_module->uuid;
-+		if (!uuid_le_cmp(*uuid_mod, *uuid_tplg)) {
-+			mconfig->module = skl_module;
-+			ret = 0;
-+			break;
-+		}
-+	}
-+	if (skl->nr_modules && ret)
-+		return ret;
-+
-+	list_for_each_entry(module, &ctx->uuid_list, list) {
-+		for (i = 0; i < MAX_IN_QUEUE; i++) {
-+			pin_id = &mconfig->m_in_pin[i].id;
-+			if (!uuid_le_cmp(pin_id->mod_uuid, module->uuid))
-+				pin_id->module_id = module->id;
-+		}
-+
-+		for (i = 0; i < MAX_OUT_QUEUE; i++) {
-+			pin_id = &mconfig->m_out_pin[i].id;
-+			if (!uuid_le_cmp(pin_id->mod_uuid, module->uuid))
-+				pin_id->module_id = module->id;
-+		}
-+	}
-+
-+	return 0;
- }
- 
- static int skl_populate_modules(struct skl *skl)
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 90903a15fa1d..4975904480e9 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -221,6 +221,7 @@ struct skl_kpb_params {
- };
- 
- struct skl_module_inst_id {
-+	uuid_le mod_uuid;
- 	int module_id;
- 	u32 instance_id;
- 	int pvt_id;
+ 			return dai;
 -- 
 2.13.2
