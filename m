@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [patch 1/4] ASoC: dapm: fix error path in
-	snd_soc_dapm_new_pcm
-Date: Sun, 27 Aug 2017 13:43:05 +0100
-Message-ID: <20170827124305.ux5jj3uzycf5eqm7@sirena.org.uk>
-References: <20170826082925.35472-1-yesanishhere@gmail.com>
+Subject: Applied "ASoC: davinci-mcasp: check memory allocation
+	failure" to the asoc tree
+Date: Sun, 27 Aug 2017 14:37:32 +0100 (BST)
+Message-ID: <20170827133732.BF3E34400E7@finisterre.ee.mobilebroadband>
+References: <20170827064650.7562-1-christophe.jaillet@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7532623693645062903=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C76A266998
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 14:43:09 +0200 (CEST)
-In-Reply-To: <20170826082925.35472-1-yesanishhere@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2883426684C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:37:35 +0200 (CEST)
+In-Reply-To: <20170827064650.7562-1-christophe.jaillet@wanadoo.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: anish kumar <yesanishhere@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7532623693645062903==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uygekdp76rlxnsu3"
-Content-Disposition: inline
+   ASoC: davinci-mcasp: check memory allocation failure
 
+has been applied to the asoc tree at
 
---uygekdp76rlxnsu3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Sat, Aug 26, 2017 at 01:29:25AM -0700, anish kumar wrote:
-> Before freeing the memory, check if it was allcoated.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> -outfree_w_param:
->  	for (count = 0 ; count < num_params; count++)
-> -		devm_kfree(card->dev, (void *)w_param_text[count]);
-> +            if (w_param_text[count])
-> +	        devm_kfree(card->dev, (void *)w_param_text[count]);
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-There's no need to do this, devm_kfree() will handle null pointers fine.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---uygekdp76rlxnsu3
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmivhoACgkQJNaLcl1U
-h9AeNwf8DyJb15LHy7IO8LmznVZH9Dxb75EeV/U0XMuIYy0lKUjk8BSLcsOfDfNT
-aVJg9fpjK7UsO3XPrTy0SIjqBGuFyeXaGvAHwqx6XpBs7O/efRyk7jWRd4seltxv
-6FuN3KiU7A8D/2t/ovb0ii/gbXKF2Aq9+ZEzAwt69dmICAv8ZLSzfPtw7eFIeDBd
-QOGzvctZ9oybEd6U+c+Gvk397pLZbSLyPNEpO5aR+QX7myOjiGIQGyJ14etNZJIM
-Oz8LP3Z2Yn9uuEK1fQ3scxpKr3uto+pAvaEMajfOoN+prR/IP2Z/o/t+T6UD1/Yz
-onU+mhd46PB+3Zpejs4MTOE3StzpwA==
-=lfeS
------END PGP SIGNATURE-----
+>From 4243e0457c9b1fe5e96fba19296469466eb24b1d Mon Sep 17 00:00:00 2001
+From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+Date: Sun, 27 Aug 2017 08:46:50 +0200
+Subject: [PATCH] ASoC: davinci-mcasp: check memory allocation failure
 
---uygekdp76rlxnsu3--
+Check memory allocation failures and return -ENOMEM in such cases, as
+already done above for another memory allocation.
 
---===============7532623693645062903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This avoids NULL pointers dereference.
 
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/davinci/davinci-mcasp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---===============7532623693645062903==--
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index d486908d4e0e..f395bbc7c354 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1851,6 +1851,10 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	mcasp->context.xrsr_regs = devm_kzalloc(&pdev->dev,
+ 					sizeof(u32) * mcasp->num_serializer,
+ 					GFP_KERNEL);
++	if (!mcasp->context.xrsr_regs) {
++		ret = -ENOMEM;
++		goto err;
++	}
+ #endif
+ 	mcasp->serial_dir = pdata->serial_dir;
+ 	mcasp->version = pdata->version;
+-- 
+2.13.2
