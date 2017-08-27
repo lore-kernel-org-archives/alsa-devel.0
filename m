@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: uapi: Add new tokens for module
-	common data" to the asoc tree
-Date: Sun, 27 Aug 2017 14:39:10 +0100 (BST)
-Message-ID: <20170827133910.1FA374400E7@finisterre.ee.mobilebroadband>
-References: <20170823140354.792-3-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Parse multiple manifest
+	data blocks" to the asoc tree
+Date: Sun, 27 Aug 2017 14:39:13 +0100 (BST)
+Message-ID: <20170827133913.B0EC84400E7@finisterre.ee.mobilebroadband>
+References: <20170821084646.6525-2-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ED932674F6
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:39:10 +0200 (CEST)
-In-Reply-To: <20170823140354.792-3-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E8D92674F7
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:39:14 +0200 (CEST)
+In-Reply-To: <20170821084646.6525-2-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: uapi: Add new tokens for module common data
+   ASoC: Intel: Skylake: Parse multiple manifest data blocks
 
 has been applied to the asoc tree at
 
@@ -53,139 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 3d52a7924172adf651eda8f1c95ff38146059307 Mon Sep 17 00:00:00 2001
+>From 9fc129f6e5de01ce5fccf033485e40dfa429b45c Mon Sep 17 00:00:00 2001
 From: Shreyas NC <shreyas.nc@intel.com>
-Date: Wed, 23 Aug 2017 19:33:49 +0530
-Subject: [PATCH] ASoC: Intel: uapi: Add new tokens for module common data
+Date: Wed, 23 Aug 2017 19:33:48 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Parse multiple manifest data blocks
 
-The module private data can be modelled independent of its instances so
-that it can be reused by the module instances. So move module data to
-common manifest which can be referenced by the module instances.
+Currently we can parse a single manifest data block. But manifest
+private data can have multiple data blocks.
 
-This requires new tokens to be defined to accommodate these changes. The
-new tokens will specify buffer sizes, DSP cycles and respective indexes
-corresponding to the pcm params in the topology manifest so that driver
-need not compute them.
+So, fix the parsing logic to parse multiple data blocks by returning
+offset of each parsed data block.
 
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/sound/snd_sst_tokens.h | 92 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 91 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
-index dedb2056160d..f691e421f5e8 100644
---- a/include/uapi/sound/snd_sst_tokens.h
-+++ b/include/uapi/sound/snd_sst_tokens.h
-@@ -163,8 +163,71 @@
-  *
-  * %SKL_TKN_U32_DMA_BUF_SIZE:	DMA buffer size in millisec
-  *
-+ * %SKL_TKN_U32_PIPE_DIR:       Specifies pipe direction. Can be
-+ *                              playback/capture.
-+ *
-+ * %SKL_TKN_U32_NUM_CONFIGS:    Number of pipe configs
-+ *
-+ * %SKL_TKN_U32_PATH_MEM_PGS:   Size of memory (in pages) required for pipeline
-+ *                              and its data
-+ *
-+ * %SKL_TKN_U32_PIPE_CONFIG_ID: Config id for the modules in the pipe
-+ *                              and PCM params supported by that pipe
-+ *                              config. This is used as index to fill
-+ *                              up the pipe config and module config
-+ *                              structure.
-+ *
-+ * %SKL_TKN_U32_CFG_FREQ:
-+ * %SKL_TKN_U8_CFG_CHAN:
-+ * %SKL_TKN_U8_CFG_BPS:         PCM params (freq, channels, bits per sample)
-+ *                              supported for each of the pipe configs.
-+ *
-+ * %SKL_TKN_CFG_MOD_RES_ID:     Module's resource index for each of the
-+ *                              pipe config
-+ *
-+ * %SKL_TKN_CFG_MOD_FMT_ID:     Module's interface index for each of the
-+ *                              pipe config
-+ *
-+ * %SKL_TKN_U8_NUM_MOD:         Number of modules in the manifest
-+ *
-+ * %SKL_TKN_MM_U8_MOD_IDX:      Current index of the module in the manifest
-+ *
-+ * %SKL_TKN_MM_U8_NUM_RES:      Number of resources for the module
-+ *
-+ * %SKL_TKN_MM_U8_NUM_INTF:     Number of interfaces for the module
-+ *
-+ * %SKL_TKN_MM_U32_RES_ID:      Resource index for the resource info to
-+ *                              be filled into.
-+ *                              A module can support multiple resource
-+ *                              configuration and is represnted as a
-+ *                              resource table. This index is used to
-+ *                              fill information into appropriate index.
-+ *
-+ * %SKL_TKN_MM_U32_CPS:         DSP cycles per second
-+ *
-+ * %SKL_TKN_MM_U32_DMA_SIZE:    Allocated buffer size for gateway DMA
-+ *
-+ * %SKL_TKN_MM_U32_CPC:         DSP cycles allocated per frame
-+ *
-+ * %SKL_TKN_MM_U32_RES_PIN_ID:  Resource pin index in the module
-+ *
-+ * %SKL_TKN_MM_U32_INTF_PIN_ID: Interface index in the module
-+ *
-+ * %SKL_TKN_MM_U32_PIN_BUF:     Buffer size of the module pin
-+ *
-+ * %SKL_TKN_MM_U32_FMT_ID:      Format index for each of the interface/
-+ *                              format information to be filled into.
-+ *
-+ * %SKL_TKN_MM_U32_NUM_IN_FMT:  Number of input formats
-+ * %SKL_TKN_MM_U32_NUM_OUT_FMT: Number of output formats
-+ *
-  * module_id and loadable flags dont have tokens as these values will be
-  * read from the DSP FW manifest
-+ *
-+ * Tokens defined can be used either in the manifest or widget private data.
-+ *
-+ * SKL_TKN_MM is used as a suffix for all tokens that represent
-+ * module data in the manifest.
-  */
- enum SKL_TKNS {
- 	SKL_TKN_UUID = 1,
-@@ -218,7 +281,34 @@ enum SKL_TKNS {
- 	SKL_TKL_U32_D0I3_CAPS, /* Typo added at v4.10 */
- 	SKL_TKN_U32_D0I3_CAPS = SKL_TKL_U32_D0I3_CAPS,
- 	SKL_TKN_U32_DMA_BUF_SIZE,
--	SKL_TKN_MAX = SKL_TKN_U32_DMA_BUF_SIZE,
-+
-+	SKL_TKN_U32_PIPE_DIRECTION,
-+	SKL_TKN_U32_PIPE_CONFIG_ID,
-+	SKL_TKN_U32_NUM_CONFIGS,
-+	SKL_TKN_U32_PATH_MEM_PGS,
-+
-+	SKL_TKN_U32_CFG_FREQ,
-+	SKL_TKN_U8_CFG_CHAN,
-+	SKL_TKN_U8_CFG_BPS,
-+	SKL_TKN_CFG_MOD_RES_ID,
-+	SKL_TKN_CFG_MOD_FMT_ID,
-+	SKL_TKN_U8_NUM_MOD,
-+
-+	SKL_TKN_MM_U8_MOD_IDX,
-+	SKL_TKN_MM_U8_NUM_RES,
-+	SKL_TKN_MM_U8_NUM_INTF,
-+	SKL_TKN_MM_U32_RES_ID,
-+	SKL_TKN_MM_U32_CPS,
-+	SKL_TKN_MM_U32_DMA_SIZE,
-+	SKL_TKN_MM_U32_CPC,
-+	SKL_TKN_MM_U32_RES_PIN_ID,
-+	SKL_TKN_MM_U32_INTF_PIN_ID,
-+	SKL_TKN_MM_U32_PIN_BUF,
-+	SKL_TKN_MM_U32_FMT_ID,
-+	SKL_TKN_MM_U32_NUM_IN_FMT,
-+	SKL_TKN_MM_U32_NUM_OUT_FMT,
-+
-+	SKL_TKN_MAX = SKL_TKN_MM_U32_NUM_OUT_FMT,
- };
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 350d2387f737..f14b373f65d7 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2721,14 +2721,12 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
  
- #endif
+ 			tkn_count = tkn_count + ret;
+ 			tkn_elem++;
+-			tuple_size += tkn_count *
+-				sizeof(struct snd_soc_tplg_vendor_value_elem);
+-			break;
+ 		}
++		tuple_size += (tkn_count * sizeof(*tkn_elem));
+ 		tkn_count = 0;
+ 	}
+ 
+-	return 0;
++	return off;
+ }
+ 
+ /*
+@@ -2751,11 +2749,10 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
+ 	num_blocks = ret;
+ 
+ 	off += array->size;
+-	array = (struct snd_soc_tplg_vendor_array *)
+-			(manifest->priv.data + off);
+-
+ 	/* Read the BLOCK_TYPE and BLOCK_SIZE descriptor */
+ 	while (num_blocks > 0) {
++		array = (struct snd_soc_tplg_vendor_array *)
++				(manifest->priv.data + off);
+ 		ret = skl_tplg_get_desc_blocks(dev, array);
+ 
+ 		if (ret < 0)
+@@ -2789,6 +2786,7 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
+ 		} else {
+ 			return -EINVAL;
+ 		}
++		off += ret;
+ 	}
+ 
+ 	return 0;
 -- 
 2.13.2
