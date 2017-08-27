@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove duplicate definition of
-	controls/num_controls" to the asoc tree
-Date: Sun, 27 Aug 2017 14:37:57 +0100 (BST)
-Message-ID: <20170827133757.D0DDC4400E7@finisterre.ee.mobilebroadband>
-References: <874lswsdhw.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: use snd_soc_component_get_dapm()" to
+	the asoc tree
+Date: Sun, 27 Aug 2017 14:38:19 +0100 (BST)
+Message-ID: <20170827133819.51C0D4400E7@finisterre.ee.mobilebroadband>
+References: <87ziaoqx7n.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CD335267455
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:37:58 +0200 (CEST)
-In-Reply-To: <874lswsdhw.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EEE4266F1C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:38:20 +0200 (CEST)
+In-Reply-To: <87ziaoqx7n.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove duplicate definition of controls/num_controls
+   ASoC: use snd_soc_component_get_dapm()
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From b8972bf0521ca7ee3c8d27da0fd101fe648acfc2 Mon Sep 17 00:00:00 2001
+>From 88c27465dc7e3f11c43de295f623c44f593a0912 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 25 Aug 2017 00:29:01 +0000
-Subject: [PATCH] ASoC: remove duplicate definition of controls/num_controls
+Date: Fri, 25 Aug 2017 01:06:04 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_get_dapm()
 
-snd_soc_component and snd_soc_component_driver both have
-controls/num_controls, but these are duplicated.
-Let's remove duplicated definition.
+Now we have snd_soc_component_get_dapm(),
+and as soc.h say below, let's use it.
+
+/* Don't use these, use snd_soc_component_get_dapm() */
+struct snd_soc_dapm_context dapm;
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 2 --
- sound/soc/soc-core.c | 9 ++++-----
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index de57a8ad057b..e4b4746032ba 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -862,8 +862,6 @@ struct snd_soc_component {
- 	/* Don't use these, use snd_soc_component_get_dapm() */
- 	struct snd_soc_dapm_context dapm;
- 
--	const struct snd_kcontrol_new *controls;
--	unsigned int num_controls;
- 	const struct snd_soc_dapm_widget *dapm_widgets;
- 	unsigned int num_dapm_widgets;
- 	const struct snd_soc_dapm_route *dapm_routes;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3bb8c63564cf..1317706f8e69 100644
+index 74c17068bb11..92e09cb7fda4 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1495,9 +1495,10 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		}
- 	}
+@@ -3220,7 +3220,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	component->pcm_new = component->driver->pcm_new;
+ 	component->pcm_free = component->driver->pcm_free;
  
--	if (component->controls)
--		snd_soc_add_component_controls(component, component->controls,
--				     component->num_controls);
-+	if (component->driver->controls)
-+		snd_soc_add_component_controls(component,
-+					       component->driver->controls,
-+					       component->driver->num_controls);
- 	if (component->dapm_routes)
- 		snd_soc_dapm_add_routes(dapm, component->dapm_routes,
- 					component->num_dapm_routes);
-@@ -3184,8 +3185,6 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	if (driver->stream_event)
- 		dapm->stream_event = snd_soc_component_stream_event;
- 
--	component->controls = driver->controls;
--	component->num_controls = driver->num_controls;
- 	component->dapm_widgets = driver->dapm_widgets;
- 	component->num_dapm_widgets = driver->num_dapm_widgets;
- 	component->dapm_routes = driver->dapm_routes;
+-	dapm = &component->dapm;
++	dapm = snd_soc_component_get_dapm(component);
+ 	dapm->dev = dev;
+ 	dapm->component = component;
+ 	dapm->bias_level = SND_SOC_BIAS_OFF;
 -- 
 2.13.2
