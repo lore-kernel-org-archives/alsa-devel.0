@@ -1,16 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/9] ASoC: max98927: Added TDM support
-Date: Sun, 27 Aug 2017 15:02:38 +0100
-Message-ID: <20170827140238.bqav6pkpxd2yogch@sirena.org.uk>
-References: <1503708070-7906-1-git-send-email-ryans.lee@maximintegrated.com>
+Subject: Re: [PATCH v2] ASoC: Add a sanity check before using
+	dai driver name
+Date: Sun, 27 Aug 2017 15:26:17 +0100
+Message-ID: <20170827142617.ddavw3tip2ufaeui@sirena.org.uk>
+References: <20170824033411.5788-1-jeffy.chen@rock-chips.com>
+ <201708262141.5hey2M3k%fengguang.wu@intel.com>
+ <CAErzpmupMr=RZj4yDni3xEp-f+fLBJ2KqnD8GcarMmGOH0JxXg@mail.gmail.com>
+ <20170827121900.h6k5ab3lkgvfuozu@sirena.org.uk>
+ <CAErzpmvF_N5fskRQe7yv9JsyYXKqG6u5R55B2q5RmAB-i_b7LQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1918431481792019397=="
+Content-Type: multipart/mixed; boundary="===============3790869444244357741=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EA40C26684C
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 16:02:41 +0200 (CEST)
-In-Reply-To: <1503708070-7906-1-git-send-email-ryans.lee@maximintegrated.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6610826684C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 16:26:29 +0200 (CEST)
+In-Reply-To: <CAErzpmvF_N5fskRQe7yv9JsyYXKqG6u5R55B2q5RmAB-i_b7LQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,63 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ryan Lee <ryans.lee@maximintegrated.com>
-Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <lkp@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de, Jeffy Chen <jeffy.chen@rock-chips.com>, linux-kernel@vger.kernel.org, kbuild-all@01.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1918431481792019397==
+--===============3790869444244357741==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ozghonnujalcj4qi"
+	protocol="application/pgp-signature"; boundary="sj7yj4tgfgsei4cg"
 Content-Disposition: inline
 
 
---ozghonnujalcj4qi
+--sj7yj4tgfgsei4cg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 25, 2017 at 05:41:02PM -0700, Ryan Lee wrote:
-> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+On Sun, Aug 27, 2017 at 09:54:09PM +0800, Donglin Peng wrote:
+> On Sun, Aug 27, 2017 at 8:19 PM, Mark Brown <broonie@kernel.org> wrote:
 
-This says it's adding support for TDM mode but...
+> > Please send incremental fixes rather than new versions for things that
+> > are are already applied.
 
-> +	case SND_SOC_DAIFMT_DSP_A:
-> +		format = MAX98927_PCM_FORMAT_TDM_MODE1;
-> +		break;
-> +	case SND_SOC_DAIFMT_DSP_B:
-> +		format = MAX98927_PCM_FORMAT_TDM_MODE0;
-> +		break;
->  	case SND_SOC_DAIFMT_PDM:
-> -		max98927->iface |= SND_SOC_DAIFMT_PDM;
-> +		use_pdm = true;
->  		break;
+> You should send a incremental patch rather than v3 patch, because your
+> v2 patch had been applied and caused this issue.
 
-...it looks like it's adding support for two new DSP modes and generally
-making a bunch of other changes.  This probably needs splitting up, or
-at least a bit more of a changelog.
+Right, so I actually just looked at this and I think the right thing got
+applied as everything seems to be building fine but I could be confused
+here.
 
---ozghonnujalcj4qi
+--sj7yj4tgfgsei4cg
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmi0PkACgkQJNaLcl1U
-h9CmQQf+Mdba/LEwNXEp60e9gowmM0eWXqYV72DTD/LDevnesYy/JcgrAh0zZuE8
-TaXfzw9wkccvgxu6Tf5VBxyngoidm2kl9NKg38S/WWGCdsRqygqBsvVmzWK/MjaF
-Mfaz0yZ4hvEkmuHN6Dr++Fl69zfKsln/cDus1EJ4aigO4wDl6RQzRifvnLRjRI8w
-ebfeg+f71Yjz8uJWD38ZP+tcxu/3lwbIyuri9xBJHcN12RTgv/OijmzYwl1s+CgD
-gAgfmG7DLQIrCnU2xiieMXS1XYr7/VqU4+C1ZQTRV9ZKIzHLDmgusp28msY8Kqni
-XjnSVJP0D+wB9xKpPl6L0fWxfc+r2A==
-=9xtP
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmi1oUACgkQJNaLcl1U
+h9DMJAf+PTgbDifQIkhnWVlMsgmxvBS3VbUFn0qNeU2b1PHfyp9IYP6IQsdgjIhh
+sLcjM5962rEHIJJC2iI0Iv4Eq2Fo6718DIwgqnBxzLhhdjMeFdwW05uvUuoBc9+X
+sARAON+zjO7AliIQl2WyOKPwa9EllknCJleKQNX4QadcrwFY5rBCiSAD5gSieuPm
+e/tnGkFOe17mcoiD4dcGSlwhse8PAPyHGKMh2cRPKuFklHiTa7IxoPjiPjY/ObTW
+vVOvDDNYl0d6bY5ZJJH46Vc6kNCjFVCFJDd7U8gSVFQr1MACuBbQ6Ym6NYhi7oTs
+8hrAZgti+a34s9kmgz6VtV5nTd1nIQ==
+=bCqZ
 -----END PGP SIGNATURE-----
 
---ozghonnujalcj4qi--
+--sj7yj4tgfgsei4cg--
 
---===============1918431481792019397==
+--===============3790869444244357741==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1918431481792019397==--
+--===============3790869444244357741==--
