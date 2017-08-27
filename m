@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: correct typo of semaphore
-	comment" to the asoc tree
-Date: Sun, 27 Aug 2017 14:38:12 +0100 (BST)
-Message-ID: <20170827133813.03D184400E7@finisterre.ee.mobilebroadband>
-References: <1503632144-32732-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: Intel: Skylake: Update module id in pin
+	connections" to the asoc tree
+Date: Sun, 27 Aug 2017 14:38:28 +0100 (BST)
+Message-ID: <20170827133828.209474400E7@finisterre.ee.mobilebroadband>
+References: <20170821084646.6525-8-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CB474267478
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:38:22 +0200 (CEST)
-In-Reply-To: <1503632144-32732-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D67526745C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:38:32 +0200 (CEST)
+In-Reply-To: <20170821084646.6525-8-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, lgirdwood@gmail.com, YHCHuang@nuvoton.com, mac.chiang@intel.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: correct typo of semaphore comment
+   ASoC: Intel: Skylake: Update module id in pin connections
 
 has been applied to the asoc tree at
 
@@ -53,136 +53,98 @@ to this mail.
 Thanks,
 Mark
 
->From 3dfcd3468cf05861654b1c7857500da6c8a9fc88 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Fri, 25 Aug 2017 11:35:44 +0800
-Subject: [PATCH] ASoC: nau8825: correct typo of semaphore comment
+>From 91fe0e70dbfb1142e17cebaa9186794b51a28cf7 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Wed, 23 Aug 2017 19:33:54 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Update module id in pin connections
 
-There are a lot of typo about semaphore in the comment.
-Correct it from semaphone to semaphore.
+Each module's id comes from the topology and gets updated in the
+driver. This patch updates the input and output pin connections of
+each module by matching the uuid for each module.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c      | 41 +++++++++++++++++++++++++++++++---
+ sound/soc/intel/skylake/skl-topology.h |  1 +
+ 2 files changed, 39 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 46a30eaa7ace..a97b0b6d9086 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -260,11 +260,11 @@ static int nau8825_sema_acquire(struct nau8825 *nau8825, long timeout)
- 	if (timeout) {
- 		ret = down_timeout(&nau8825->xtalk_sem, timeout);
- 		if (ret < 0)
--			dev_warn(nau8825->dev, "Acquire semaphone timeout\n");
-+			dev_warn(nau8825->dev, "Acquire semaphore timeout\n");
- 	} else {
- 		ret = down_interruptible(&nau8825->xtalk_sem);
- 		if (ret < 0)
--			dev_warn(nau8825->dev, "Acquire semaphone fail\n");
-+			dev_warn(nau8825->dev, "Acquire semaphore fail\n");
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index a756882b9029..2b1e513b1680 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1220,8 +1220,11 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
+ {
+ 	struct skl_sst *ctx = skl->skl_sst;
++	struct skl_module_inst_id *pin_id;
++	uuid_le *uuid_mod, *uuid_tplg;
++	struct skl_module *skl_module;
+ 	struct uuid_module *module;
+-	uuid_le *uuid_mod;
++	int i, ret = -EIO;
+ 
+ 	uuid_mod = (uuid_le *)mconfig->guid;
+ 
+@@ -1235,11 +1238,43 @@ static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
+ 			mconfig->id.module_id = module->id;
+ 			if (mconfig->module)
+ 				mconfig->module->loadable = module->is_loadable;
+-			return 0;
++			ret = 0;
++			break;
+ 		}
  	}
  
- 	return ret;
-@@ -1299,7 +1299,7 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL1,
- 		NAU8825_I2S_DL_MASK, val_len);
+-	return -EIO;
++	if (ret)
++		return ret;
++
++	uuid_mod = &module->uuid;
++	ret = -EIO;
++	for (i = 0; i < skl->nr_modules; i++) {
++		skl_module = skl->modules[i];
++		uuid_tplg = &skl_module->uuid;
++		if (!uuid_le_cmp(*uuid_mod, *uuid_tplg)) {
++			mconfig->module = skl_module;
++			ret = 0;
++			break;
++		}
++	}
++	if (skl->nr_modules && ret)
++		return ret;
++
++	list_for_each_entry(module, &ctx->uuid_list, list) {
++		for (i = 0; i < MAX_IN_QUEUE; i++) {
++			pin_id = &mconfig->m_in_pin[i].id;
++			if (!uuid_le_cmp(pin_id->mod_uuid, module->uuid))
++				pin_id->module_id = module->id;
++		}
++
++		for (i = 0; i < MAX_OUT_QUEUE; i++) {
++			pin_id = &mconfig->m_out_pin[i].id;
++			if (!uuid_le_cmp(pin_id->mod_uuid, module->uuid))
++				pin_id->module_id = module->id;
++		}
++	}
++
++	return 0;
+ }
  
--	/* Release the semaphone. */
-+	/* Release the semaphore. */
- 	nau8825_sema_release(nau8825);
+ static int skl_populate_modules(struct skl *skl)
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 90903a15fa1d..4975904480e9 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -221,6 +221,7 @@ struct skl_kpb_params {
+ };
  
- 	return 0;
-@@ -1361,7 +1361,7 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
- 		NAU8825_I2S_MS_MASK, ctrl2_val);
- 
--	/* Release the semaphone. */
-+	/* Release the semaphore. */
- 	nau8825_sema_release(nau8825);
- 
- 	return 0;
-@@ -2140,7 +2140,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 
- 		break;
- 	case NAU8825_CLK_MCLK:
--		/* Acquire the semaphone to synchronize the playback and
-+		/* Acquire the semaphore to synchronize the playback and
- 		 * interrupt handler. In order to avoid the playback inter-
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
-@@ -2150,7 +2150,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		/* MCLK not changed by clock tree */
- 		regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
- 			NAU8825_CLK_MCLK_SRC_MASK, 0);
--		/* Release the semaphone. */
-+		/* Release the semaphore. */
- 		nau8825_sema_release(nau8825);
- 
- 		ret = nau8825_mclk_prepare(nau8825, freq);
-@@ -2188,7 +2188,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 
- 		break;
- 	case NAU8825_CLK_FLL_MCLK:
--		/* Acquire the semaphone to synchronize the playback and
-+		/* Acquire the semaphore to synchronize the playback and
- 		 * interrupt handler. In order to avoid the playback inter-
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
-@@ -2201,7 +2201,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 		regmap_update_bits(regmap, NAU8825_REG_FLL3,
- 			NAU8825_FLL_CLK_SRC_MASK | NAU8825_GAIN_ERR_MASK,
- 			NAU8825_FLL_CLK_SRC_MCLK | 0);
--		/* Release the semaphone. */
-+		/* Release the semaphore. */
- 		nau8825_sema_release(nau8825);
- 
- 		ret = nau8825_mclk_prepare(nau8825, freq);
-@@ -2210,7 +2210,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 
- 		break;
- 	case NAU8825_CLK_FLL_BLK:
--		/* Acquire the semaphone to synchronize the playback and
-+		/* Acquire the semaphore to synchronize the playback and
- 		 * interrupt handler. In order to avoid the playback inter-
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
-@@ -2226,7 +2226,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 			NAU8825_FLL_CLK_SRC_MASK | NAU8825_GAIN_ERR_MASK,
- 			NAU8825_FLL_CLK_SRC_BLK |
- 			(0xf << NAU8825_GAIN_ERR_SFT));
--		/* Release the semaphone. */
-+		/* Release the semaphore. */
- 		nau8825_sema_release(nau8825);
- 
- 		if (nau8825->mclk_freq) {
-@@ -2236,7 +2236,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 
- 		break;
- 	case NAU8825_CLK_FLL_FS:
--		/* Acquire the semaphone to synchronize the playback and
-+		/* Acquire the semaphore to synchronize the playback and
- 		 * interrupt handler. In order to avoid the playback inter-
- 		 * fered by cross talk process, the driver make the playback
- 		 * preparation halted until cross talk process finish.
-@@ -2252,7 +2252,7 @@ static int nau8825_configure_sysclk(struct nau8825 *nau8825, int clk_id,
- 			NAU8825_FLL_CLK_SRC_MASK | NAU8825_GAIN_ERR_MASK,
- 			NAU8825_FLL_CLK_SRC_FS |
- 			(0xf << NAU8825_GAIN_ERR_SFT));
--		/* Release the semaphone. */
-+		/* Release the semaphore. */
- 		nau8825_sema_release(nau8825);
- 
- 		if (nau8825->mclk_freq) {
-@@ -2563,7 +2563,7 @@ static int nau8825_i2c_probe(struct i2c_client *i2c,
- 		return PTR_ERR(nau8825->regmap);
- 	nau8825->dev = dev;
- 	nau8825->irq = i2c->irq;
--	/* Initiate parameters, semaphone and work queue which are needed in
-+	/* Initiate parameters, semaphore and work queue which are needed in
- 	 * cross talk suppression measurment function.
- 	 */
- 	nau8825->xtalk_state = NAU8825_XTALK_DONE;
+ struct skl_module_inst_id {
++	uuid_le mod_uuid;
+ 	int module_id;
+ 	u32 instance_id;
+ 	int pvt_id;
 -- 
 2.13.2
