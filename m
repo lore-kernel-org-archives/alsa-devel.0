@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add driver structures
-	to be filled from topology manifest" to the asoc tree
-Date: Sun, 27 Aug 2017 14:38:51 +0100 (BST)
-Message-ID: <20170827133851.669E64400E7@finisterre.ee.mobilebroadband>
-References: <20170823140354.792-5-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Commonize parsing of
+	format tokens" to the asoc tree
+Date: Sun, 27 Aug 2017 14:38:57 +0100 (BST)
+Message-ID: <20170827133857.093E34400E7@finisterre.ee.mobilebroadband>
+References: <20170821084646.6525-4-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B331267478
- for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:38:53 +0200 (CEST)
-In-Reply-To: <20170823140354.792-5-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DB37267475
+ for <alsa-devel@alsa-project.org>; Sun, 27 Aug 2017 15:38:57 +0200 (CEST)
+In-Reply-To: <20170821084646.6525-4-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add driver structures to be filled from topology manifest
+   ASoC: Intel: Skylake: Commonize parsing of format tokens
 
 has been applied to the asoc tree at
 
@@ -53,112 +53,98 @@ to this mail.
 Thanks,
 Mark
 
->From 822c3b044f7fbecc9894fcd3d19fc2ad51232fdb Mon Sep 17 00:00:00 2001
+>From ca312fda690e94c704bcb0e21b73b5d5bd1cf1ff Mon Sep 17 00:00:00 2001
 From: Shreyas NC <shreyas.nc@intel.com>
-Date: Wed, 23 Aug 2017 19:33:51 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add driver structures to be filled from
- topology manifest
+Date: Wed, 23 Aug 2017 19:33:50 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Commonize parsing of format tokens
 
-The topology manifest would include module common data including resource
-and interface table. The resource table consists of resources required by
-the dsp module such as buffer size, cycles per second, number of
-input/output pins. And, the interface table consists of pcm parameters per
-module which can be referenced later.
+Format resource tokens can be a part of either the widget or manifest
+private data. In the current model, format resources come as a part of
+widget private data and they come as a part of topology manifest in the
+newly introduced model.
 
-So define the structures accordingly to represent topology manifest data in
-the driver.
+So add a common function that can fill up either of the structures.
 
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.h | 52 ++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.h          |  2 ++
- 2 files changed, 54 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 47 +++++++++++++++++++---------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index c25e8868b84e..93b2ba8c40f7 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -44,6 +44,13 @@
- #define SKL_DEFAULT_MIC_SEL_GAIN	0x3FF
- #define SKL_MIC_SEL_SWITCH	0x3
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index f14b373f65d7..df808fbf14b5 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1948,27 +1948,9 @@ static int skl_tplg_fill_pins_info(struct device *dev,
+  * on the direction
+  */
+ static int skl_tplg_fill_fmt(struct device *dev,
+-		struct skl_module_cfg *mconfig,	u32 tkn,
+-		u32 value, u32 dir, u32 pin_count)
++		struct skl_module_fmt *dst_fmt,
++		u32 tkn, u32 value)
+ {
+-	struct skl_module_fmt *dst_fmt;
+-
+-	switch (dir) {
+-	case SKL_DIR_IN:
+-		dst_fmt = mconfig->in_fmt;
+-		dst_fmt += pin_count;
+-		break;
+-
+-	case SKL_DIR_OUT:
+-		dst_fmt = mconfig->out_fmt;
+-		dst_fmt += pin_count;
+-		break;
+-
+-	default:
+-		dev_err(dev, "Invalid direction value\n");
+-		return -EINVAL;
+-	}
+-
+ 	switch (tkn) {
+ 	case SKL_TKN_U32_FMT_CH:
+ 		dst_fmt->channels  = value;
+@@ -2010,6 +1992,29 @@ static int skl_tplg_fill_fmt(struct device *dev,
+ 	return 0;
+ }
  
-+#define SKL_OUTPUT_PIN		0
-+#define SKL_INPUT_PIN		1
-+#define SKL_MAX_PATH_CONFIGS	8
-+#define SKL_MAX_MODULES_IN_PIPE	8
-+#define SKL_MAX_MODULE_FORMATS		32
-+#define SKL_MAX_MODULE_RESOURCES	32
++static int skl_tplg_widget_fill_fmt(struct device *dev,
++		struct skl_module_cfg *mconfig,
++		u32 tkn, u32 val, u32 dir, int fmt_idx)
++{
++	struct skl_module_fmt *dst_fmt;
 +
- enum skl_channel_index {
- 	SKL_CHANNEL_LEFT = 0,
- 	SKL_CHANNEL_RIGHT = 1,
-@@ -292,6 +299,51 @@ enum d0i3_capability {
- 	SKL_D0I3_NON_STREAMING = 2,
- };
++	switch (dir) {
++	case SKL_DIR_IN:
++		dst_fmt = &mconfig->in_fmt[fmt_idx];
++		break;
++
++	case SKL_DIR_OUT:
++		dst_fmt = &mconfig->out_fmt[fmt_idx];
++		break;
++
++	default:
++		dev_err(dev, "Invalid direction: %d\n", dir);
++		return -EINVAL;
++	}
++
++	return skl_tplg_fill_fmt(dev, dst_fmt, tkn, val);
++}
++
+ static int skl_tplg_get_uuid(struct device *dev, struct skl_module_cfg *mconfig,
+ 	      struct snd_soc_tplg_vendor_uuid_elem *uuid_tkn)
+ {
+@@ -2190,7 +2195,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 	case SKL_TKN_U32_FMT_INTERLEAVE:
+ 	case SKL_TKN_U32_FMT_SAMPLE_TYPE:
+ 	case SKL_TKN_U32_FMT_CH_MAP:
+-		ret = skl_tplg_fill_fmt(dev, mconfig, tkn_elem->token,
++		ret = skl_tplg_widget_fill_fmt(dev, mconfig, tkn_elem->token,
+ 				tkn_elem->value, dir, pin_index);
  
-+struct skl_module_pin_fmt {
-+	u8 id;
-+	struct skl_module_fmt fmt;
-+};
-+
-+struct skl_module_iface {
-+	u8 fmt_idx;
-+	u8 nr_in_fmt;
-+	u8 nr_out_fmt;
-+	struct skl_module_pin_fmt inputs[MAX_IN_QUEUE];
-+	struct skl_module_pin_fmt outputs[MAX_OUT_QUEUE];
-+};
-+
-+struct skl_module_pin_resources {
-+	u8 pin_index;
-+	u32 buf_size;
-+};
-+
-+struct skl_module_res {
-+	u8 id;
-+	u32 is_pages;
-+	u32 cps;
-+	u32 ibs;
-+	u32 obs;
-+	u32 dma_buffer_size;
-+	u32 cpc;
-+	u8 nr_input_pins;
-+	u8 nr_output_pins;
-+	struct skl_module_pin_resources input[MAX_IN_QUEUE];
-+	struct skl_module_pin_resources output[MAX_OUT_QUEUE];
-+};
-+
-+struct skl_module {
-+	uuid_le uuid;
-+	u8 loadable;
-+	u8 input_pin_type;
-+	u8 output_pin_type;
-+	u8 max_input_pins;
-+	u8 max_output_pins;
-+	u8 nr_resources;
-+	u8 nr_interfaces;
-+	struct skl_module_res resources[SKL_MAX_MODULE_RESOURCES];
-+	struct skl_module_iface formats[SKL_MAX_MODULE_FORMATS];
-+};
-+
- struct skl_module_cfg {
- 	u8 guid[16];
- 	struct skl_module_inst_id id;
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 20017ee4685c..8d9d6899f761 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -71,6 +71,8 @@ struct skl {
- 	struct work_struct probe_work;
- 
- 	struct skl_debug *debugfs;
-+	u8 nr_modules;
-+	struct skl_module **modules;
- };
- 
- #define skl_to_ebus(s)	(&(s)->ebus)
+ 		if (ret < 0)
 -- 
 2.13.2
