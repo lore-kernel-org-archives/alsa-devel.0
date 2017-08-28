@@ -1,16 +1,24 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/14] BYT/CHT codec/machine drivers update
-Date: Mon, 28 Aug 2017 06:38:25 -0500
-Message-ID: <d5b1f491-523a-734c-76fd-86991039353c@linux.intel.com>
-References: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
+From: "S. Christian Collins" <s.chriscollins@gmail.com>
+Subject: "alsactl store" fails to save Echo Gina3G mixer
+Date: Mon, 28 Aug 2017 10:34:34 -0500
+Message-ID: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DE91266884
- for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2017 13:38:22 +0200 (CEST)
-In-Reply-To: <20170822203239.19891-1-pierre-louis.bossart@linux.intel.com>
+Received: from mail-it0-f51.google.com (mail-it0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 778982664EB
+ for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2017 17:34:39 +0200 (CEST)
+Received: by mail-it0-f51.google.com with SMTP id o132so3455489itc.1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2017 08:34:39 -0700 (PDT)
+Received: from [192.168.0.50] (68-190-167-211.dhcp.eucl.wi.charter.com.
+ [68.190.167.211])
+ by smtp.gmail.com with ESMTPSA id y1sm306223itd.8.2017.08.28.08.34.35
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 28 Aug 2017 08:34:35 -0700 (PDT)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +28,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark, please don't merge this for now. There were a couple of minor 
-comments sent privately to me and I need to address them. I will send an 
-update later this week. Thanks.
+Greetings,
 
-On 8/22/17 3:32 PM, Pierre-Louis Bossart wrote:
-> Finally took the time to cleanup known fixes for codec and machine
-> drivers. I tested on Baytrail/Cherrytrail and w/ RT5640, 45 and 72.
->
-> This should be the last batch of fixes before we move on to the
-> integration of SOF (Sound Open Firmware) support in the mainline.
->
-> This batch contains two patches already submitted by Thierry Escande
-> on alsa-devel but never merged.
->
-> Fang, Yang A (1):
->   ASoC: ts3a227e: add acpi table
->
-> Pierre-Louis Bossart (12):
->   ASoC: Intel: boards: use devm_clk_get() unconditionally
->   ASoC: intel: cht_bsw_max98090: add support for clock framework
->   ASoC: Intel: cht_bsw_max98090: Fix I2S config + unused code
->   ASoC: Intel: atom: add support for Baytrail Chromebooks
->   ASoC: Intel: bytcr-rt5651: fix capture routes
->   ASoC: Intel: bytcr_rt5651: add MCLK support
->   ASoC: Intel: bytcr_rt5651: filter codec name
->   ASoC: codecs: rt5645: add quirks for Asus T100HA
->   ASoC: Intel: bytcr_rt5640: simplify MCLK quirk tests
->   ASoC: codecs: rt5670: add jack detection quirk for Dell Venue 5585
->   ASoC: Intel: cht_bsw_rt5672: use actual HID in suspend/resume
->   ASoC: Intel: cht_bsw_rt5672: fix card name
->
-> Thierry Escande (1):
->   ASoc: cht_bsw_max98090_ti: Fix jack initialization
->
->  sound/soc/codecs/rt5645.c                    |  20 ++
->  sound/soc/codecs/rt5670.c                    |  16 ++
->  sound/soc/codecs/ts3a227e.c                  |  10 +
->  sound/soc/intel/atom/sst/sst_acpi.c          |   8 +
->  sound/soc/intel/boards/bytcr_rt5640.c        |   8 +-
->  sound/soc/intel/boards/bytcr_rt5651.c        | 278 ++++++++++++++++++++++++---
->  sound/soc/intel/boards/cht_bsw_max98090_ti.c | 157 ++++++++++++---
->  sound/soc/intel/boards/cht_bsw_rt5645.c      |  14 +-
->  sound/soc/intel/boards/cht_bsw_rt5672.c      |  36 ++--
->  9 files changed, 460 insertions(+), 87 deletions(-)
->
+I have two PCI sound cards in my PC:
+   1. Sound Blaster Audigy 2 ZS Gold (primary card)
+   2. Echo Gina3G
+
+If I save the mixer for the Audigy 2 via:
+
+   alsactl -f ~/asound0.state store 0
+
+...the Audigy 2's mixer is properly saved.
+
+However, when I try to save the Gina3G mixer:
+
+   alsactl -f ~/asound1.state store 1
+
+...I get the following error:
+
+alsactl: control.c:2513: snd_ctl_elem_value_get_integer: Assertion `idx 
+< sizeof(obj->value.integer.value) / 
+sizeof(obj->value.integer.value[0])' failed.
+Aborted
+
+I have tried to find any info on this error online, but to no avail. 
+Does anybody know what is going on here?
+
+** My System **
+OS: KDE Neon 5.10.5 64-bit (Plasma Desktop 5.10.5, KDE Frameworks 
+5.37.0, Qt 5.9.1)
+Linux Kernel: 4.10.0.32-generic
+Motherboard: ASRock X58 Extreme3 (Intel X58 chipset)
+CPU: Intel Core i7 930 (2.8 GHz quad-core)
+RAM: 12GB DDR3
+Video: NVIDIA GeForce GTX 970 w/ 4GB RAM (PCI Express)
+Sound Card #1: Sound Blaster Audigy 2 ZS Gold
+Sound Card #2: Echo Gina3G
+NVIDIA video driver: 375.66
