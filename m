@@ -1,7 +1,7 @@
 From: Ryan Lee <ryans.lee@maximintegrated.com>
-Subject: [PATCH 3/9] ASoC: max98927: Updated volatile register list
-Date: Mon, 28 Aug 2017 16:30:55 -0700
-Message-ID: <1503963061-14763-3-git-send-email-ryans.lee@maximintegrated.com>
+Subject: [PATCH 6/9] ASoC: max98927: Modified chip default register values
+Date: Mon, 28 Aug 2017 16:30:58 -0700
+Message-ID: <1503963061-14763-6-git-send-email-ryans.lee@maximintegrated.com>
 References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -14,26 +14,42 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
- sound/soc/codecs/max98927.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/max98927.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 1dfcb7b..c72a244 100644
+index 208d5ba..3ab8220 100644
 --- a/sound/soc/codecs/max98927.c
 +++ b/sound/soc/codecs/max98927.c
-@@ -586,6 +586,13 @@ static bool max98927_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case MAX98927_R0001_INT_RAW1 ... MAX98927_R0009_INT_FLAG3:
-+	case MAX98927_R004C_MEAS_ADC_CH0_READ:
-+	case MAX98927_R004D_MEAS_ADC_CH1_READ:
-+	case MAX98927_R004E_MEAS_ADC_CH2_READ:
-+	case MAX98927_R0051_BROWNOUT_STATUS:
-+	case MAX98927_R0087_ENV_TRACK_BOOST_VOUT_READ:
-+	case MAX98927_R01FF_REV_ID:
-+	case MAX98927_R0100_SOFT_RESET:
- 		return true;
- 	default:
- 		return false;
+@@ -44,9 +44,9 @@
+ 	{MAX98927_R0011_CLK_MON,  0x00},
+ 	{MAX98927_R0012_WDOG_CTRL,  0x00},
+ 	{MAX98927_R0013_WDOG_RST,  0x00},
+-	{MAX98927_R0014_MEAS_ADC_THERM_WARN_THRESH,  0x00},
+-	{MAX98927_R0015_MEAS_ADC_THERM_SHDN_THRESH,  0x00},
+-	{MAX98927_R0016_MEAS_ADC_THERM_HYSTERESIS,  0x00},
++	{MAX98927_R0014_MEAS_ADC_THERM_WARN_THRESH,  0x75},
++	{MAX98927_R0015_MEAS_ADC_THERM_SHDN_THRESH,  0x8c},
++	{MAX98927_R0016_MEAS_ADC_THERM_HYSTERESIS,  0x08},
+ 	{MAX98927_R0017_PIN_CFG,  0x55},
+ 	{MAX98927_R0018_PCM_RX_EN_A,  0x00},
+ 	{MAX98927_R0019_PCM_RX_EN_B,  0x00},
+@@ -82,14 +82,14 @@
+ 	{MAX98927_R003A_AMP_EN,  0x00},
+ 	{MAX98927_R003B_SPK_SRC_SEL,  0x00},
+ 	{MAX98927_R003C_SPK_GAIN,  0x00},
+-	{MAX98927_R003D_SSM_CFG,  0x01},
++	{MAX98927_R003D_SSM_CFG,  0x04},
+ 	{MAX98927_R003E_MEAS_EN,  0x00},
+ 	{MAX98927_R003F_MEAS_DSP_CFG,  0x04},
+ 	{MAX98927_R0040_BOOST_CTRL0,  0x00},
+ 	{MAX98927_R0041_BOOST_CTRL3,  0x00},
+ 	{MAX98927_R0042_BOOST_CTRL1,  0x00},
+ 	{MAX98927_R0043_MEAS_ADC_CFG,  0x00},
+-	{MAX98927_R0044_MEAS_ADC_BASE_MSB,  0x00},
++	{MAX98927_R0044_MEAS_ADC_BASE_MSB,  0x01},
+ 	{MAX98927_R0045_MEAS_ADC_BASE_LSB,  0x00},
+ 	{MAX98927_R0046_ADC_CH0_DIVIDE,  0x00},
+ 	{MAX98927_R0047_ADC_CH1_DIVIDE,  0x00},
 -- 
 1.9.1
