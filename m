@@ -1,70 +1,268 @@
-From: "S. Christian Collins" <s.chriscollins@gmail.com>
-Subject: "alsactl store" fails to save Echo Gina3G mixer
-Date: Mon, 28 Aug 2017 10:34:34 -0500
-Message-ID: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Subject: [PATCH 1/9] ASoC: max98927: Added support for DSP_A and DSP_B format
+Date: Mon, 28 Aug 2017 16:30:53 -0700
+Message-ID: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f51.google.com (mail-it0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 778982664EB
- for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2017 17:34:39 +0200 (CEST)
-Received: by mail-it0-f51.google.com with SMTP id o132so3455489itc.1
- for <alsa-devel@alsa-project.org>; Mon, 28 Aug 2017 08:34:39 -0700 (PDT)
-Received: from [192.168.0.50] (68-190-167-211.dhcp.eucl.wi.charter.com.
- [68.190.167.211])
- by smtp.gmail.com with ESMTPSA id y1sm306223itd.8.2017.08.28.08.34.35
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 28 Aug 2017 08:34:35 -0700 (PDT)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+---
+ sound/soc/codecs/max98927.c | 141 ++++++++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/max98927.h |   6 +-
+ 2 files changed, 120 insertions(+), 27 deletions(-)
 
-I have two PCI sound cards in my PC:
-   1. Sound Blaster Audigy 2 ZS Gold (primary card)
-   2. Echo Gina3G
-
-If I save the mixer for the Audigy 2 via:
-
-   alsactl -f ~/asound0.state store 0
-
-...the Audigy 2's mixer is properly saved.
-
-However, when I try to save the Gina3G mixer:
-
-   alsactl -f ~/asound1.state store 1
-
-...I get the following error:
-
-alsactl: control.c:2513: snd_ctl_elem_value_get_integer: Assertion `idx 
-< sizeof(obj->value.integer.value) / 
-sizeof(obj->value.integer.value[0])' failed.
-Aborted
-
-I have tried to find any info on this error online, but to no avail. 
-Does anybody know what is going on here?
-
-** My System **
-OS: KDE Neon 5.10.5 64-bit (Plasma Desktop 5.10.5, KDE Frameworks 
-5.37.0, Qt 5.9.1)
-Linux Kernel: 4.10.0.32-generic
-Motherboard: ASRock X58 Extreme3 (Intel X58 chipset)
-CPU: Intel Core i7 930 (2.8 GHz quad-core)
-RAM: 12GB DDR3
-Video: NVIDIA GeForce GTX 970 w/ 4GB RAM (PCI Express)
-Sound Card #1: Sound Blaster Audigy 2 ZS Gold
-Sound Card #2: Echo Gina3G
-NVIDIA video driver: 375.66
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index b0380b5..951cc05 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -1,7 +1,7 @@
+ /*
+  * max98927.c  --  MAX98927 ALSA Soc Audio driver
+  *
+- * Copyright (C) 2016 Maxim Integrated Products
++ * Copyright (C) 2016-2017 Maxim Integrated Products
+  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+@@ -146,6 +146,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int mode = 0;
+ 	unsigned int format = 0;
++	bool use_pdm = false;
+ 	unsigned int invert = 0;
+ 
+ 	dev_dbg(codec->dev, "%s: fmt 0x%08X\n", __func__, fmt);
+@@ -187,22 +188,27 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		max98927->iface |= SND_SOC_DAIFMT_I2S;
+ 		format = MAX98927_PCM_FORMAT_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		max98927->iface |= SND_SOC_DAIFMT_LEFT_J;
+ 		format = MAX98927_PCM_FORMAT_LJ;
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		format = MAX98927_PCM_FORMAT_TDM_MODE1;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		format = MAX98927_PCM_FORMAT_TDM_MODE0;
++		break;
+ 	case SND_SOC_DAIFMT_PDM:
+-		max98927->iface |= SND_SOC_DAIFMT_PDM;
++		use_pdm = true;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
++	max98927->iface = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
+-	/* pcm channel configuration */
+-	if (max98927->iface & (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J)) {
++	if (!use_pdm) {
++		/* pcm channel configuration */
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R0018_PCM_RX_EN_A,
+ 			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN,
+@@ -217,13 +223,12 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 			MAX98927_R003B_SPK_SRC_SEL,
+ 			MAX98927_SPK_SRC_MASK, 0);
+ 
+-	} else
+ 		regmap_update_bits(max98927->regmap,
+-			MAX98927_R0018_PCM_RX_EN_A,
+-			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
++			MAX98927_R0035_PDM_RX_CTRL,
++			MAX98927_PDM_RX_EN_MASK, 0);
+ 
+-	/* pdm channel configuration */
+-	if (max98927->iface & SND_SOC_DAIFMT_PDM) {
++	} else {
++		/* pdm channel configuration */
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R0035_PDM_RX_CTRL,
+ 			MAX98927_PDM_RX_EN_MASK, 1);
+@@ -231,10 +236,12 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R003B_SPK_SRC_SEL,
+ 			MAX98927_SPK_SRC_MASK, 3);
+-	} else
++
+ 		regmap_update_bits(max98927->regmap,
+-			MAX98927_R0035_PDM_RX_CTRL,
+-			MAX98927_PDM_RX_EN_MASK, 0);
++			MAX98927_R0018_PCM_RX_EN_A,
++			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
++
++	}
+ 	return 0;
+ }
+ 
+@@ -245,6 +252,21 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	13000000, 19200000,
+ };
+ 
++/* BCLKs per LRCLK */
++static const int bclk_sel_table[] = {
++	32, 48, 64, 96, 128, 192, 256, 384, 512,
++};
++
++static int max98927_get_bclk_sel(int bclk)
++{
++	int i;
++	/* match BCLKs per LRCLK */
++	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
++		if (bclk_sel_table[i] == bclk)
++			return i + 2;
++	}
++	return 0;
++}
+ static int max98927_set_clock(struct max98927_priv *max98927,
+ 	struct snd_pcm_hw_params *params)
+ {
+@@ -270,19 +292,17 @@ static int max98927_set_clock(struct max98927_priv *max98927,
+ 			i << MAX98927_PCM_MASTER_MODE_MCLK_RATE_SHIFT);
+ 	}
+ 
+-	switch (blr_clk_ratio) {
+-	case 32:
+-		value = 2;
+-		break;
+-	case 48:
+-		value = 3;
+-		break;
+-	case 64:
+-		value = 4;
+-		break;
+-	default:
++	if ((max98927->iface == SND_SOC_DAIFMT_DSP_A) ||
++	    (max98927->iface == SND_SOC_DAIFMT_DSP_B))
++		return 0;
++
++	/* BCLK configuration */
++	value = max98927_get_bclk_sel(blr_clk_ratio);
++	if (!value) {
++		dev_err(codec->dev, "BCLK %d not supported\n", blr_clk_ratio);
+ 		return -EINVAL;
+ 	}
++
+ 	regmap_update_bits(max98927->regmap,
+ 		MAX98927_R0022_PCM_CLK_SETUP,
+ 		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
+@@ -386,6 +406,76 @@ static int max98927_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return -EINVAL;
+ }
+ 
++static int max98927_dai_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask,
++	int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
++	int bsel = 0;
++	unsigned int chan_sz = 0;
++
++	/* BCLK configuration */
++	bsel = max98927_get_bclk_sel(slots * slot_width);
++	if (bsel == 0) {
++		dev_err(codec->dev, "BCLK %d not supported\n",
++			slots * slot_width);
++		return -EINVAL;
++	}
++
++	regmap_update_bits(max98927->regmap,
++		MAX98927_R0022_PCM_CLK_SETUP,
++		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
++		bsel);
++
++	/* Channel size configuration */
++	switch (slot_width) {
++	case 16:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_16;
++		break;
++	case 24:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_24;
++		break;
++	case 32:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_32;
++		break;
++	default:
++		dev_err(codec->dev, "format unsupported %d\n",
++			slot_width);
++		return -EINVAL;
++	}
++
++	regmap_update_bits(max98927->regmap,
++		MAX98927_R0020_PCM_MODE_CFG,
++		MAX98927_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
++
++	/* Rx slot configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R0018_PCM_RX_EN_A,
++		rx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R0019_PCM_RX_EN_B,
++		(rx_mask & 0xFF00) >> 8);
++
++	/* Tx slot configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R001A_PCM_TX_EN_A,
++		tx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R001B_PCM_TX_EN_B,
++		(tx_mask & 0xFF00) >> 8);
++
++	/* Tx slot Hi-Z configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R001C_PCM_TX_HIZ_CTRL_A,
++		~tx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R001D_PCM_TX_HIZ_CTRL_B,
++		(~tx_mask & 0xFF00) >> 8);
++
++	return 0;
++}
++
+ #define MAX98927_RATES SNDRV_PCM_RATE_8000_48000
+ 
+ #define MAX98927_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -405,6 +495,7 @@ static int max98927_dai_set_sysclk(struct snd_soc_dai *dai,
+ 	.set_sysclk = max98927_dai_set_sysclk,
+ 	.set_fmt = max98927_dai_set_fmt,
+ 	.hw_params = max98927_dai_hw_params,
++	.set_tdm_slot = max98927_dai_tdm_slot,
+ };
+ 
+ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+index ece6a60..bf7a6f92 100644
+--- a/sound/soc/codecs/max98927.h
++++ b/sound/soc/codecs/max98927.h
+@@ -1,7 +1,7 @@
+ /*
+  * max98927.h  --  MAX98927 ALSA Soc Audio driver
+  *
+- * Copyright 2013-15 Maxim Integrated Products
++ * Copyright (C) 2016-2017 Maxim Integrated Products
+  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+@@ -161,7 +161,9 @@
+ #define MAX98927_PCM_MODE_CFG_FORMAT_SHIFT (3)
+ #define MAX98927_PCM_FORMAT_I2S (0x0 << 0)
+ #define MAX98927_PCM_FORMAT_LJ (0x1 << 0)
+-
++#define MAX98927_PCM_FORMAT_TDM_MODE0 (0x3 << 0)
++#define MAX98927_PCM_FORMAT_TDM_MODE1 (0x4 << 0)
++#define MAX98927_PCM_FORMAT_TDM_MODE2 (0x5 << 0)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_MASK (0x3 << 6)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_16 (0x1 << 6)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_24 (0x2 << 6)
+-- 
+1.9.1
