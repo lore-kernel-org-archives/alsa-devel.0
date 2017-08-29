@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/9] ASoC: max98927: Added support for
- DSP_A and DSP_B format
-Date: Tue, 29 Aug 2017 20:00:15 +0100
-Message-ID: <20170829190015.kpscn3uuwbvwlp6e@sirena.org.uk>
-References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
+Subject: Applied "ASoC: rockchip: Update description of
+	rockchip, codec" to the asoc tree
+Date: Tue, 29 Aug 2017 20:25:47 +0100 (BST)
+Message-ID: <20170829192547.A15614400E7@finisterre.ee.mobilebroadband>
+References: <20170822153555.20735-9-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4197254592494657695=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 31679266E37
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:24:14 +0200 (CEST)
-In-Reply-To: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E206A266E37
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:25:50 +0200 (CEST)
+In-Reply-To: <20170822153555.20735-9-jeffy.chen@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ryan Lee <ryans.lee@maximintegrated.com>
-Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, heiko@sntech.de, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, dgreid@chromium.org, mka@chromium.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4197254592494657695==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="euhoxbrlqmbpsmvn"
-Content-Disposition: inline
+   ASoC: rockchip: Update description of rockchip, codec
 
+has been applied to the asoc tree at
 
---euhoxbrlqmbpsmvn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Aug 28, 2017 at 04:30:53PM -0700, Ryan Lee wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +	if ((max98927->iface == SND_SOC_DAIFMT_DSP_A) ||
-> +	    (max98927->iface == SND_SOC_DAIFMT_DSP_B))
-> +		return 0;
-> +
-> +	/* BCLK configuration */
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Why do we not configure the BCLK in DSP modes?  That's unusual and seems
-likely to break some systems that rely on exact clocking.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Also if we're selecting on format a switch statement is generally better
-to make any further special casing easier in future.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---euhoxbrlqmbpsmvn
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From aa71fba41b6fdcfe7d7772b057b76177304775dd Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 24 Aug 2017 12:52:27 +0800
+Subject: [PATCH] ASoC: rockchip: Update description of rockchip, codec
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmlub8ACgkQJNaLcl1U
-h9ATgwgAg7A9FD5vNeKfNbMaPuGscSKHWiIlwzXlpaDCS09BPMKQaIU03LIQ6/47
-Qgg2Mf5WPY+c4TPwebR9a1+6m5wUPKf1p6fsY7lCCqCyBhIuvTjI2nPHtotY6Frh
-waKFm4taKvAfQ+AkP1gUMX4sY9OrzRulUm+sxJdfwF09bmowV57/+EDtTvRvbCGI
-FarNEN7qfhIClAS/UVv+SbJ51Q8sX8JYj5HuigXMQO2PExt32zzaI3Owy+d/cO/e
-JR2q3cCjPx6SzNqgMXIxitJUPwSyhJ4l31A3kXjfdJ8hMTzGBEmk2SzvMJFf0W1i
-oC3+70UEJEBbvoJ804xxQFdPrrrJ+A==
-=CIKk
------END PGP SIGNATURE-----
+Update description for newly added optional audio codecs.
 
---euhoxbrlqmbpsmvn--
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============4197254592494657695==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4197254592494657695==--
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+index eac91db07178..72d3cf4c2606 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk3399-gru-sound.txt
+@@ -4,7 +4,7 @@ Required properties:
+ - compatible: "rockchip,rk3399-gru-sound"
+ - rockchip,cpu: The phandle of the Rockchip I2S controller that's
+   connected to the codecs
+-- rockchip,codec: The phandle of the MAX98357A/RT5514/DA7219 codecs
++- rockchip,codec: The phandle of the audio codecs
+ 
+ Optional properties:
+ - dmic-wakeup-delay-ms : specify delay time (ms) for DMIC ready.
+-- 
+2.13.2
