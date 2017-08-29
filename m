@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Guard Hotword Model bytes
-	loading" to the asoc tree
-Date: Tue, 29 Aug 2017 20:29:38 +0100 (BST)
-Message-ID: <20170829192938.A19E94400E7@finisterre.ee.mobilebroadband>
-References: <20170828071350.160958-1-hychao@chromium.org>
+Subject: Applied "ASoC: Intel: kbl: Add map for Maxim IV
+	Feedback" to the asoc tree
+Date: Tue, 29 Aug 2017 20:29:31 +0100 (BST)
+Message-ID: <20170829192931.795894400E7@finisterre.ee.mobilebroadband>
+References: <1503393562-31613-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A65E1266F89
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:29:41 +0200 (CEST)
-In-Reply-To: <20170828071350.160958-1-hychao@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 386B4267022
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:29:46 +0200 (CEST)
+In-Reply-To: <1503393562-31613-1-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hsin-Yu Chao <hychao@chromium.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Guard Hotword Model bytes loading
+   ASoC: Intel: kbl: Add map for Maxim IV Feedback
 
 has been applied to the asoc tree at
 
@@ -53,65 +52,55 @@ to this mail.
 Thanks,
 Mark
 
->From eb33869c720656c16e614ea40a175a014f60007b Mon Sep 17 00:00:00 2001
-From: Hsin-Yu Chao <hychao@chromium.org>
-Date: Mon, 28 Aug 2017 15:13:50 +0800
-Subject: [PATCH] ASoC: rt5514: Guard Hotword Model bytes loading
+>From 64220b9d10a5546b6dd1154ccaf43522ae7d02fc Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Sat, 26 Aug 2017 03:21:39 +0530
+Subject: [PATCH] ASoC: Intel: kbl: Add map for Maxim IV Feedback
 
-If the rt5514-spi driver is not enabled in kernel, hotword model will
-not be loaded when "DSP Voice Wake Up" is set to turn on DSP mode, and
-an error is logged instead.
+MAX98927 provides IV feedback on the capture widget.
+Here we are connecting the capture widget to SSP0_RX and
+SSP0_RX to the algorithm running on host.
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+Signed-off-by: Naveen M <naveen.m@intel.com>
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 5 +++++
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 5 +++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 0e239e8c7bf8..23fccdf3e84a 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -302,7 +302,6 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
- 	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
- 	struct snd_soc_codec *codec = rt5514->codec;
- 	const struct firmware *fw = NULL;
--	int ret = 0;
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 3fa85c32b9f8..7f7607420706 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -105,6 +105,11 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
  
- 	if (ucontrol->value.integer.value[0] == rt5514->dsp_enabled)
- 		return 0;
-@@ -340,6 +339,9 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
- 			}
- 
- 			if (rt5514->model_buf && rt5514->model_len) {
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
-+				int ret;
++	/* IV feedback path */
++	{ "codec0_fb_in", NULL, "ssp0 Rx"},
++	{ "ssp0 Rx", NULL, "Left HiFi Capture" },
++	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
 +
- 				ret = rt5514_spi_burst_write(0x4ff80000,
- 					rt5514->model_buf,
- 					((rt5514->model_len / 8) + 1) * 8);
-@@ -348,13 +350,22 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
- 						"Model load failed %d\n", ret);
- 					return ret;
- 				}
-+#else
-+				dev_err(codec->dev,
-+					"No SPI driver for loading firmware\n");
-+#endif
- 			} else {
- 				request_firmware(&fw, RT5514_FIRMWARE3,
- 						 codec->dev);
- 				if (fw) {
-+#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
- 					rt5514_spi_burst_write(0x4ff80000,
- 						fw->data,
- 						((fw->size/8)+1)*8);
-+#else
-+					dev_err(codec->dev,
-+						"No SPI driver to load fw\n");
-+#endif
- 					release_firmware(fw);
- 					fw = NULL;
- 				}
+ 	/* DMIC */
+ 	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
+ 	{ "DMIC01 Rx", NULL, "DMIC AIF" },
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 11bd5ef1e3b2..4689991bcc86 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -117,6 +117,11 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "codec1_in", NULL, "ssp0 Rx" },
+ 	{ "ssp0 Rx", NULL, "AIF1 Capture" },
+ 
++	/* IV feedback path */
++	{ "codec0_fb_in", NULL, "ssp0 Rx"},
++	{ "ssp0 Rx", NULL, "Left HiFi Capture" },
++	{ "ssp0 Rx", NULL, "Right HiFi Capture" },
++
+ 	/* DMIC */
+ 	{ "DMIC1L", NULL, "DMIC" },
+ 	{ "DMIC1R", NULL, "DMIC" },
 -- 
 2.13.2
