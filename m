@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp" to the asoc tree
-Date: Tue, 29 Aug 2017 20:29:24 +0100 (BST)
-Message-ID: <20170829192924.CC5144400E7@finisterre.ee.mobilebroadband>
-References: <20170824045227.15504-2-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170824045227.15504-2-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Matthias Kaehlcke <mka@chromium.org>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, alsa-devel@alsa-project.org, briannorris@chromium.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.orgmka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5514: Guard Hotword Model bytes
+	loading" to the asoc tree
+Date: Tue, 29 Aug 2017 20:29:38 +0100 (BST)
+Message-ID: <20170829192938.A19E94400E7@finisterre.ee.mobilebroadband>
+References: <20170828071350.160958-1-hychao@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A65E1266F89
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:29:41 +0200 (CEST)
+In-Reply-To: <20170828071350.160958-1-hychao@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hsin-Yu Chao <hychao@chromium.org>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
+   ASoC: rt5514: Guard Hotword Model bytes loading
 
 has been applied to the asoc tree at
 
@@ -37,105 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From 72cfb0f20c75c1e580597c164b9d74426e583f37 Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Thu, 24 Aug 2017 12:52:21 +0800
-Subject: [PATCH] ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp
+>From eb33869c720656c16e614ea40a175a014f60007b Mon Sep 17 00:00:00 2001
+From: Hsin-Yu Chao <hychao@chromium.org>
+Date: Mon, 28 Aug 2017 15:13:50 +0800
+Subject: [PATCH] ASoC: rt5514: Guard Hotword Model bytes loading
 
-Currently we are using codec name for rt5514 dsp dai link, use codec
-of_node instead.
+If the rt5514-spi driver is not enabled in kernel, hotword model will
+not be loaded when "DSP Voice Wake Up" is set to turn on DSP mode, and
+an error is logged instead.
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 34 ++--------------------------------
- 1 file changed, 2 insertions(+), 32 deletions(-)
+ sound/soc/codecs/rt5514.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 566ccb39fb31..cd2fdba922f1 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -247,8 +247,6 @@ enum {
- 	DAILINK_RT5514_DSP,
- };
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 0e239e8c7bf8..23fccdf3e84a 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -302,7 +302,6 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
+ 	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
+ 	struct snd_soc_codec *codec = rt5514->codec;
+ 	const struct firmware *fw = NULL;
+-	int ret = 0;
  
--#define DAILINK_ENTITIES	(DAILINK_DA7219 + 1)
--
- static struct snd_soc_dai_link rockchip_dailinks[] = {
- 	[DAILINK_MAX98357A] = {
- 		.name = "MAX98357A",
-@@ -282,8 +280,7 @@ static struct snd_soc_dai_link rockchip_dailinks[] = {
- 	[DAILINK_RT5514_DSP] = {
- 		.name = "RT5514 DSP",
- 		.stream_name = "Wake on Voice",
--		.codec_name = "snd-soc-dummy",
--		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_dai_name = "rt5514-dsp-cpu-dai",
- 	},
- };
+ 	if (ucontrol->value.integer.value[0] == rt5514->dsp_enabled)
+ 		return 0;
+@@ -340,6 +339,9 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
+ 			}
  
-@@ -300,17 +297,10 @@ static struct snd_soc_card rockchip_sound_card = {
- 	.num_controls = ARRAY_SIZE(rockchip_controls),
- };
- 
--static int rockchip_sound_match_stub(struct device *dev, void *data)
--{
--	return 1;
--}
--
- static int rockchip_sound_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &rockchip_sound_card;
- 	struct device_node *cpu_node;
--	struct device *dev;
--	struct device_driver *drv;
- 	int i, ret;
- 
- 	cpu_node = of_parse_phandle(pdev->dev.of_node, "rockchip,cpu", 0);
-@@ -319,7 +309,7 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < DAILINK_ENTITIES; i++) {
-+	for (i = 0; i < ARRAY_SIZE(rockchip_dailinks); i++) {
- 		rockchip_dailinks[i].platform_of_node = cpu_node;
- 		rockchip_dailinks[i].cpu_of_node = cpu_node;
- 
-@@ -332,22 +322,6 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	/**
--	 * To acquire the spi driver of the rt5514 and set the dai-links names
--	 * for soc_bind_dai_link
--	 */
--	drv = driver_find("rt5514", &spi_bus_type);
--	if (!drv) {
--		dev_err(&pdev->dev, "Can not find the rt5514 driver at the spi bus\n");
--		return -EINVAL;
--	}
--
--	dev = driver_find_device(drv, NULL, NULL, rockchip_sound_match_stub);
--	if (!dev) {
--		dev_err(&pdev->dev, "Can not find the rt5514 device\n");
--		return -ENODEV;
--	}
--
- 	/* Set DMIC wakeup delay */
- 	ret = device_property_read_u32(&pdev->dev, "dmic-wakeup-delay-ms",
- 					&dmic_wakeup_delay);
-@@ -357,10 +331,6 @@ static int rockchip_sound_probe(struct platform_device *pdev)
- 			"no optional property 'dmic-wakeup-delay-ms' found, default: no delay\n");
- 	}
- 
--	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
--	rockchip_dailinks[DAILINK_RT5514_DSP].cpu_dai_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
--	rockchip_dailinks[DAILINK_RT5514_DSP].platform_name = kstrdup_const(dev_name(dev), GFP_KERNEL);
--
- 	card->dev = &pdev->dev;
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 			if (rt5514->model_buf && rt5514->model_len) {
++#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
++				int ret;
++
+ 				ret = rt5514_spi_burst_write(0x4ff80000,
+ 					rt5514->model_buf,
+ 					((rt5514->model_len / 8) + 1) * 8);
+@@ -348,13 +350,22 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
+ 						"Model load failed %d\n", ret);
+ 					return ret;
+ 				}
++#else
++				dev_err(codec->dev,
++					"No SPI driver for loading firmware\n");
++#endif
+ 			} else {
+ 				request_firmware(&fw, RT5514_FIRMWARE3,
+ 						 codec->dev);
+ 				if (fw) {
++#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
+ 					rt5514_spi_burst_write(0x4ff80000,
+ 						fw->data,
+ 						((fw->size/8)+1)*8);
++#else
++					dev_err(codec->dev,
++						"No SPI driver to load fw\n");
++#endif
+ 					release_firmware(fw);
+ 					fw = NULL;
+ 				}
 -- 
 2.13.2
