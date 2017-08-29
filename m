@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_dma: remove dma_object path member"
-	to the asoc tree
-Date: Tue, 29 Aug 2017 20:29:44 +0100 (BST)
-Message-ID: <20170829192944.48E884400E7@finisterre.ee.mobilebroadband>
-References: <20170829123755.9496-1-robh@kernel.org>
+Subject: Applied "ASoC: Intel: kbl: Add MST route change to kbl
+	machine drivers" to the asoc tree
+Date: Tue, 29 Aug 2017 20:29:59 +0100 (BST)
+Message-ID: <20170829192959.56AF74400E7@finisterre.ee.mobilebroadband>
+References: <1503700450-7964-2-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 527C8267026
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:29:51 +0200 (CEST)
-In-Reply-To: <20170829123755.9496-1-robh@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4168426706F
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:30:02 +0200 (CEST)
+In-Reply-To: <1503700450-7964-2-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_dma: remove dma_object path member
+   ASoC: Intel: kbl: Add MST route change to kbl machine drivers
 
 has been applied to the asoc tree at
 
@@ -53,57 +52,72 @@ to this mail.
 Thanks,
 Mark
 
->From b1dc00abcf18d27b36de500c150be88022c82270 Mon Sep 17 00:00:00 2001
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 29 Aug 2017 07:37:55 -0500
-Subject: [PATCH] ASoC: fsl_dma: remove dma_object path member
+>From c20252cf9230eb7abd8bce9fdb2ce9bdd6743689 Mon Sep 17 00:00:00 2001
+From: Naveen M <naveen.m@intel.com>
+Date: Sat, 26 Aug 2017 04:04:09 +0530
+Subject: [PATCH] ASoC: Intel: kbl: Add MST route change to kbl machine drivers
 
-dma_object.path is unused, so rather than fix it to work with DT
-full_name changes, just remove it.
+To support MST hdmi audio, modify the current routes to be based
+on port in rt5663_max98927 & rt5663_rt5514_max98927 machine.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Cc: Timur Tabi <timur@tabi.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Naveen M <naveen.m@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_dma.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 8 +++-----
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 7 ++-----
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index c17359648915..0c11f434a374 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -63,7 +63,6 @@ struct dma_object {
- 	struct ccsr_dma_channel __iomem *channel;
- 	unsigned int irq;
- 	bool assigned;
--	char path[1];
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index c1442147d138..941480c3e906 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -74,8 +74,9 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Left Spk", NULL),
+ 	SND_SOC_DAPM_SPK("Right Spk", NULL),
+ 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+-	SND_SOC_DAPM_SPK("DP", NULL),
+-	SND_SOC_DAPM_SPK("HDMI", NULL),
++	SND_SOC_DAPM_SPK("HDMI1", NULL),
++	SND_SOC_DAPM_SPK("HDMI2", NULL),
++	SND_SOC_DAPM_SPK("HDMI3", NULL),
+ 
  };
  
- /*
-@@ -903,13 +902,12 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+@@ -93,9 +94,6 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "IN1N", NULL, "Headset Mic" },
+ 	{ "DMic", NULL, "SoC DMIC" },
  
--	dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
-+	dma = kzalloc(sizeof(*dma), GFP_KERNEL);
- 	if (!dma) {
- 		of_node_put(ssi_np);
- 		return -ENOMEM;
- 	}
+-	{ "HDMI", NULL, "hif5 Output" },
+-	{ "DP", NULL, "hif6 Output" },
+-
+ 	/* CODEC BE connections */
+ 	{ "Left HiFi Playback", NULL, "ssp0 Tx" },
+ 	{ "Right HiFi Playback", NULL, "ssp0 Tx" },
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 69681b04d7fc..d042255235c1 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -85,8 +85,8 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Left Spk", NULL),
+ 	SND_SOC_DAPM_SPK("Right Spk", NULL),
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
+-	SND_SOC_DAPM_SPK("DP", NULL),
+-	SND_SOC_DAPM_SPK("HDMI", NULL),
++	SND_SOC_DAPM_SPK("HDMI1", NULL),
++	SND_SOC_DAPM_SPK("HDMI2", NULL),
  
--	strcpy(dma->path, np->full_name);
- 	dma->dai.ops = &fsl_dma_ops;
- 	dma->dai.pcm_new = fsl_dma_new;
- 	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
+ };
+ 
+@@ -103,9 +103,6 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 	{ "IN1N", NULL, "Headset Mic" },
+ 
+-	{ "HDMI", NULL, "hif5 Output" },
+-	{ "DP", NULL, "hif6 Output" },
+-
+ 	/* CODEC BE connections */
+ 	{ "Left HiFi Playback", NULL, "ssp0 Tx" },
+ 	{ "Right HiFi Playback", NULL, "ssp0 Tx" },
 -- 
 2.13.2
