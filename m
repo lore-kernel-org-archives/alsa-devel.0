@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Add jack port initialize in
-	kbl machine drivers" to the asoc tree
-Date: Tue, 29 Aug 2017 20:29:50 +0100 (BST)
-Message-ID: <20170829192950.20DEF4400E7@finisterre.ee.mobilebroadband>
-References: <1503700450-7964-3-git-send-email-naveen.m@intel.com>
+Subject: Applied "ASoC: fsl_dma: remove dma_object path member"
+	to the asoc tree
+Date: Tue, 29 Aug 2017 20:29:44 +0100 (BST)
+Message-ID: <20170829192944.48E884400E7@finisterre.ee.mobilebroadband>
+References: <20170829123755.9496-1-robh@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 537A8267048
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:29:52 +0200 (CEST)
-In-Reply-To: <1503700450-7964-3-git-send-email-naveen.m@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 527C8267026
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:29:51 +0200 (CEST)
+In-Reply-To: <20170829123755.9496-1-robh@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
+To: Rob Herring <robh@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl: Add jack port initialize in kbl machine drivers
+   ASoC: fsl_dma: remove dma_object path member
 
 has been applied to the asoc tree at
 
@@ -52,82 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From 3a13347f05fdba9d889891245f154816197868f4 Mon Sep 17 00:00:00 2001
-From: Naveen M <naveen.m@intel.com>
-Date: Sat, 26 Aug 2017 04:04:10 +0530
-Subject: [PATCH] ASoC: Intel: kbl: Add jack port initialize in kbl machine
- drivers
+>From b1dc00abcf18d27b36de500c150be88022c82270 Mon Sep 17 00:00:00 2001
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 29 Aug 2017 07:37:55 -0500
+Subject: [PATCH] ASoC: fsl_dma: remove dma_object path member
 
-After the pcm jack is created, create and initialize the pin switch
-widget for each port. For hdmi audio, invoke hdac_hdmi_jack_port_init
-func() in rt5663_max98927 & rt5663_rt5514_max98927 to enable the pin,
-when monitor is connected.
+dma_object.path is unused, so rather than fix it to work with DT
+full_name changes, just remove it.
 
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Cc: Timur Tabi <timur@tabi.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 7 ++++++-
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 7 ++++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_dma.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 941480c3e906..3fa85c32b9f8 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -767,10 +767,12 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- {
- 	struct kbl_rt5663_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct kbl_hdmi_pcm *pcm;
-+	struct snd_soc_codec *codec = NULL;
- 	int err, i = 0;
- 	char jack_name[NAME_SIZE];
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		codec = pcm->codec_dai->codec;
- 		snprintf(jack_name, sizeof(jack_name),
- 			"HDMI/DP, pcm=%d Jack", pcm->device);
- 		err = snd_soc_card_jack_new(card, jack_name,
-@@ -788,7 +790,10 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- 		i++;
- 	}
- 
--	return 0;
-+	if (!codec)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(codec, &card->dapm);
- }
- 
- /* kabylake audio machine driver for SPT + RT5663 */
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index d042255235c1..11bd5ef1e3b2 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -600,10 +600,12 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- {
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct kbl_hdmi_pcm *pcm;
-+	struct snd_soc_codec *codec = NULL;
- 	int err, i = 0;
- 	char jack_name[NAME_SIZE];
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		codec = pcm->codec_dai->codec;
- 		err = snd_soc_card_jack_new(card, jack_name,
- 				SND_JACK_AVOUT, &ctx->kabylake_hdmi[i],
- 				NULL, 0);
-@@ -617,7 +619,10 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- 		i++;
- 	}
- 
--	return 0;
-+	if (!codec)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(codec, &card->dapm);
- }
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index c17359648915..0c11f434a374 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -63,7 +63,6 @@ struct dma_object {
+ 	struct ccsr_dma_channel __iomem *channel;
+ 	unsigned int irq;
+ 	bool assigned;
+-	char path[1];
+ };
  
  /*
+@@ -903,13 +902,12 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
++	dma = kzalloc(sizeof(*dma), GFP_KERNEL);
+ 	if (!dma) {
+ 		of_node_put(ssi_np);
+ 		return -ENOMEM;
+ 	}
+ 
+-	strcpy(dma->path, np->full_name);
+ 	dma->dai.ops = &fsl_dma_ops;
+ 	dma->dai.pcm_new = fsl_dma_new;
+ 	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
 -- 
 2.13.2
