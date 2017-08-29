@@ -1,15 +1,19 @@
-From: Lucas Stach <l.stach@pengutronix.de>
-Subject: [PATCH] ASoC: simple_card_utils: fix fallback when
-	"label" property isn't present
-Date: Tue, 29 Aug 2017 17:51:22 +0200
-Message-ID: <20170829155122.28606-1-l.stach@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 03/10] ASoC: Intel: Remove unnecessary
+	function call
+Date: Tue, 29 Aug 2017 19:29:06 +0100
+Message-ID: <20170829182906.uhtxf2tgowrmgknr@sirena.org.uk>
+References: <cover.1503484313.git.dolinux.peng@gmail.com>
+ <63f080c9ef444ef32486914be97ed5f8c8c55d9f.1503484313.git.dolinux.peng@gmail.com>
+ <CAErzpmvHOfqrM-ArGr=q69nZtAvU-DQ6mOUDxEO=aeByn_ZWCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8866437692187084825=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3F66E266C6D
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 17:52:02 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF589266E37
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 20:29:29 +0200 (CEST)
+In-Reply-To: <CAErzpmvHOfqrM-ArGr=q69nZtAvU-DQ6mOUDxEO=aeByn_ZWCQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, patchwork-lst@pengutronix.de, Takashi Iwai <tiwai@suse.com>, kernel@pengutronix.de
+To: Donglin Peng <dolinux.peng@gmail.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_of_parse_card_name() doesn't return an error if the requested
-property isn't present, but silently fails to fill the card name. This can
-not be changed, as it is a backwards compatibility measure itself.
 
-We can not rely on the return value of this function alone, but must check
-if the card name has been filled sucessfully when deciding to skip the
-fallback path, which is in place for existing users.
+--===============8866437692187084825==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rs6vniy2m3f4xlko"
+Content-Disposition: inline
 
-Fixes: dedfaa1eedc7 (ASoC: simple-card-utils: enable "label" on
-                     asoc_simple_card_parse_card_name)
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
----
-This may be applied instead of the revert I just sent. After examining the
-function more closely, the fix seems easy enough to go into 4.13 final.
----
- sound/soc/generic/simple-card-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 7d7ab4aee42e..d72f7d58102f 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -132,7 +132,7 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
- 
- 	/* Parse the card name from DT */
- 	ret = snd_soc_of_parse_card_name(card, "label");
--	if (ret < 0) {
-+	if (ret < 0 || !card->name) {
- 		char prop[128];
- 
- 		snprintf(prop, sizeof(prop), "%sname", prefix);
--- 
-2.11.0
+--rs6vniy2m3f4xlko
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Aug 28, 2017 at 10:20:52AM +0800, Donglin Peng wrote:
+> On Wed, Aug 23, 2017 at 8:19 PM, Peng Donglin <dolinux.peng@gmail.com> wr=
+ote:
+
+> I found that this patch had not been applied, perhaps you missed it.
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+Sending content free pings just adds to the mail volume (if they are
+seen at all) and if something has gone wrong you'll have to resend the
+patches anyway.
+
+--rs6vniy2m3f4xlko
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmlsm8ACgkQJNaLcl1U
+h9C1Xgf+JFlrcn1wW5z3bCJOXAs1myZxT9jbPyCPs+EupPCoBOlFWcTWVRvJi+cX
+//Px6P/d/g3a1hOIiPnj+QjUMvS5yxhWfWDvtsgqHtseFSAzOmvz7MEemMebFfvc
+6sa/KEX/CJ34cfl7ML3RyNb73nSV4W3Gt5vFowMfqcuuCAls3n4rVHTvRntDIZzz
+Gb0QluP32kbaFVdpuYpx54WF2bpx34YrCPZKWZtYfl6KkcR5XchQwXrd3Il7O6gM
+0bENBIomILcIlZHxo+IlRaiY3w7lz9Fl1k9Lm57G+hxA+3/Q1jm2lvDJsGZe9cHK
+9kpIssGoZ5BxcEGUnriOyKhkHiqO4A==
+=jHo7
+-----END PGP SIGNATURE-----
+
+--rs6vniy2m3f4xlko--
+
+--===============8866437692187084825==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8866437692187084825==--
