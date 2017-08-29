@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas2552: Fix fraction overflow in PLL
-	calculation" to the asoc tree
-Date: Tue, 29 Aug 2017 20:51:35 +0100 (BST)
-Message-ID: <20170829195135.EFFAB4400FC@finisterre.ee.mobilebroadband>
-References: <1503697016-21422-1-git-send-email-oskar@scara.com>
+From: Mark Hills <mark@xwax.org>
+Subject: Re: "alsactl store" fails to save Echo Gina3G mixer
+Date: Tue, 29 Aug 2017 21:36:44 +0100 (BST)
+Message-ID: <1708292129400.21841@stax.localdomain>
+References: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
+ <1fa01cef-7159-b1b2-8ec6-5eab7f2a7e29@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AD59266E37
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 21:51:41 +0200 (CEST)
-In-Reply-To: <1503697016-21422-1-git-send-email-oskar@scara.com>
+Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9BED266E37
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 22:36:46 +0200 (CEST)
+In-Reply-To: <1fa01cef-7159-b1b2-8ec6-5eab7f2a7e29@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,101 +21,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oskar Schirmer <oskar@scara.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Dan Murphy <dmurphy@ti.com>, Fabio Estevam <fabio.estevam@nxp.com>, Andrew Morton <akpm@linux-foundation.org>, Andreas Dannenberg <dannenberg@ti.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "S. Christian Collins" <s.chriscollins@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, 29 Aug 2017, Takashi Sakamoto wrote:
 
-   ASoC: tas2552: Fix fraction overflow in PLL calculation
+> On Aug 29 2017 00:34, S. Christian Collins wrote:
+> > However, when I try to save the Gina3G mixer:
+> > 
+> >    alsactl -f ~/asound1.state store 1
+> > 
+> > ...I get the following error:
+> > 
+> > alsactl: control.c:2513: snd_ctl_elem_value_get_integer: Assertion `idx <
+> > sizeof(obj->value.integer.value) / sizeof(obj->value.integer.value[0])'
+> > failed.
+> > Aborted
+> > 
+> > I have tried to find any info on this error online, but to no avail. Does
+> > anybody know what is going on here?
+> 
+> The value of 'sizeof(obj->value.integer.value) /
+> sizeof(obj->value.integer.value[0])' has fixed value (=128), therefore the
+> value of 'idx' is greater than 128, against expectation.
+> 
+> Would you get output from below command line for your Gina 3G?
+> 
+> $ amixer scontrols
+> 
+> And typically state data is stored into '/var/lib/alsa/asound.state' as a
+> default. For my information, could you disclose it if possible?
 
-has been applied to the asoc tree at
+I think you're suffering the same problem I am with my Echo Layla 3G. Does 
+'echomixer' work?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+For some time now I have been running with commit 275353bb6 (copied below) 
+reverted.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I did my most recent tests on kernel 4.10.3, resulting in the revert of 
+that commit. I with the reverted commit. I recall that alsactl, alsamier 
+were also affected.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I have been intending to make a 'proper' report to the list, or even 
+investigate more myself. But priorities did not permit that yet. I also 
+wasn't able to find information on what these fields actually mean. As far 
+as I could tell, some of these attributes are unique to the echo3g and 
+echomixer.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Thanks
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
+-- 
 Mark
 
->From 1bb7cb68feb73a8106546cbd3379590297b0a950 Mon Sep 17 00:00:00 2001
-From: Oskar Schirmer <oskar@scara.com>
-Date: Fri, 25 Aug 2017 21:36:56 +0000
-Subject: [PATCH] ASoC: tas2552: Fix fraction overflow in PLL calculation
 
-Setting the PLL involves the calculation of a fixed point ratio
-with 4 decimal digits fraction, referred to as "J.D". The
-fraction "D" is stored separately from the integer part "J"
-and is limited to 0..9999.
+>From 275353bb684ecfeb42f7a353fead81d43a01c519 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Sat, 16 Jul 2016 22:24:32 +0900
+Subject: [PATCH] ALSA: echoaudio: purge contradictions between dimension
+ matrix members and total number of members
 
-The current algorithm uses integer registers to calculate the
-fraction part, but failed to compensate for rounding errors,
-resulting in values larger than 9999 for the fraction part
-occasionally, e.g. for 44.1kHz audio rate and pll_clkin =
-3763400 it would set J to 11 and D to 10002, which will at
-best result in wrong pitch.
+Currently, sound device drivers for PCI cards produced by Echo Audio
+support dimension parameter of element information. But the information
+has contradictions to the number of members of each element. I guess that
+this comes from the assumption that these sound cards are used only by
+'echomixer' in userspace. But ideally, they should be used with usual ALSA
+control applications.
 
-The critical part is the "pll_clkin / 10000", which would be
-ok with real numbers, but using integer arithmetic the rounding
-decreases the divisor, thus increasing the final quotient.
+This commit removes the contradiction. As a result, 'Monitor Mixer Volume'
+and 'VMixer Volume' elements are shown in usual ALSA control applications
+such as 'amixer' and 'alsamixer' in series.
 
-The issue is solved by linear interpolation over the reciprocal
-function between the two adjacent points with integer divisor,
-i.e. pll_clkin / 10000 and pll_clkin / 10000 + 1, and doing
-all rounding to the lower result.
-
-As a side effect to the bug fix, the approximation to the
-desired frequency is much better, for the above mentioned
-example we get 11.9993, while the true ratio is 11.9993623.
-
-Signed-off-by: Oskar Schirmer <oskar@scara.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/tas2552.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ sound/pci/echoaudio/echoaudio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 8840f72f3c4a..10116169a239 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -192,7 +192,7 @@ static int tas2552_setup_pll(struct snd_soc_codec *codec,
- 		 * pll_clk = (.5 * pll_clkin * J.D) / 2^p
- 		 * Need to fill in J and D here based on incoming freq
- 		 */
--		unsigned int d;
-+		unsigned int d, q, t;
- 		u8 j;
- 		u8 pll_sel = (tas2552->pll_clk_id << 3) & TAS2552_PLL_SRC_MASK;
- 		u8 p = snd_soc_read(codec, TAS2552_PLL_CTRL_1);
-@@ -200,9 +200,12 @@ static int tas2552_setup_pll(struct snd_soc_codec *codec,
- 		p = (p >> 7);
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 1cb85aeb0cea..3a8e8d5a5617 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -1272,11 +1272,11 @@ static int snd_echo_mixer_info(struct snd_kcontrol *kcontrol,
  
- recalc:
--		j = (pll_clk * 2 * (1 << p)) / pll_clkin;
--		d = (pll_clk * 2 * (1 << p)) % pll_clkin;
--		d /= (pll_clkin / 10000);
-+		t = (pll_clk * 2) << p;
-+		j = t / pll_clkin;
-+		d = t % pll_clkin;
-+		t = pll_clkin / 10000;
-+		q = d / (t + 1);
-+		d = q + ((9999 - pll_clkin % 10000) * (d / t - q)) / 10000;
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_busses_in(chip);
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
  
- 		if (d && (pll_clkin < 512000 || pll_clkin > 9200000)) {
- 			if (tas2552->pll_clk_id == TAS2552_PLL_CLKIN_BCLK) {
+@@ -1344,11 +1344,11 @@ static int snd_echo_vmixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_pipes_out(chip);
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1728,7 +1728,6 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_info *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	uinfo->count = 96;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = 0;
+ #ifdef ECHOCARD_HAS_VMIXER
+@@ -1738,6 +1737,7 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ #endif
+ 	uinfo->dimen.d[1] = 16;	/* 16 channels */
+ 	uinfo->dimen.d[2] = 2;	/* 0=level, 1=peak */
++	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1] * uinfo->dimen.d[2];
+ 	return 0;
+ }
+ 
 -- 
-2.13.2
+2.14.1
