@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
 Subject: Re: [PATCH v2] ASoC: rt5645: Add jack detection
  workaround for MINIX Z83-4 based devices
-Date: Wed, 30 Aug 2017 22:12:17 +0100
-Message-ID: <20170830211217.5s3ubddjrpngkbb7@sirena.org.uk>
+Date: Thu, 31 Aug 2017 07:16:10 +1000
+Message-ID: <CAFXWsS_GL+xGPZc-ySjRqEejp=GPU9qkE80zaCZge63QiwnQkw@mail.gmail.com>
 References: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
+ <20170830211217.5s3ubddjrpngkbb7@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7956029486896301517=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 219D1267217
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:12:18 +0200 (CEST)
-In-Reply-To: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
+Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B894267217
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:16:12 +0200 (CEST)
+Received: by mail-pg0-f67.google.com with SMTP id t193so5882459pgc.4
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 14:16:11 -0700 (PDT)
+In-Reply-To: <20170830211217.5s3ubddjrpngkbb7@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ian W MORRISON <ianwmorrison@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 31 August 2017 at 07:12, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Aug 31, 2017 at 07:04:31AM +1000, Ian W MORRISON wrote:
+>
+>> v2: Applied and tested again sound -b for-next and linux-next -b master
+>
+> You're submitting this to me, it needs to apply to *my* tree:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
---===============7956029486896301517==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tco6obknnz5tjmuj"
-Content-Disposition: inline
-
-
---tco6obknnz5tjmuj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 31, 2017 at 07:04:31AM +1000, Ian W MORRISON wrote:
-
-> v2: Applied and tested again sound -b for-next and linux-next -b master
-
-You're submitting this to me, it needs to apply to *my* tree:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-
---tco6obknnz5tjmuj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmnKjAACgkQJNaLcl1U
-h9BX+Qf/W5JOvr+LM2nMNN4T8PDw9sI0qm0gKWuZQRg1t4yS3igDjCq6OfxFaZ1R
-hrH+gHSea52Mz9Al71a1yHtl6+49NCec9CLMu1b0vu2lrpWhxG+uHc14HZOFlNnL
-+XLZIMHT8gxi479kCJuYHzC7xe+bEakDKWhmXQynHGRCy7YtUOUUOeDe9BZv0dPJ
-uietUZj9cVNyNTaRGIE6MQBcvinMCHMTGCGclUhrn6CKS2098Wezf82qMHkFRmTz
-hOzTXpZ5HhzUDQMwgzqFcQZ3R4deb/+tIQotVXwMkiZ8FlNr3TbALXvutAw8UEYy
-zU1hgO7bvltRhVus2sH65+WqCidyiw==
-=JK1p
------END PGP SIGNATURE-----
-
---tco6obknnz5tjmuj--
-
---===============7956029486896301517==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7956029486896301517==--
+Yes, v2 is now applied and tested against your
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git using
+branch for-next. Is that correct or should I use a different branch?
