@@ -1,20 +1,18 @@
-From: Jack Bates <muyyxo@nottheoilrig.com>
-Subject: USB dB data
-Date: Wed, 30 Aug 2017 12:53:54 -0700
-Message-ID: <4842a60f-1f6b-deef-0ea5-b79a6b9d0dd3@nottheoilrig.com>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: [PATCH v2] ASoC: rt5645: Add jack detection workaround
+ for MINIX Z83-4 based devices
+Date: Thu, 31 Aug 2017 07:04:31 +1000
+Message-ID: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.nottheoilrig.com (mail.nottheoilrig.com [52.27.13.164])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A49A267217
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 21:53:56 +0200 (CEST)
-Received: from mail.nottheoilrig.com (localhost [127.0.0.1])
- by mail.nottheoilrig.com (Postfix) with ESMTP id B81A3204A2
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 19:53:54 +0000 (UTC)
-Received: from [192.168.1.102] (198-48-156-162.cpe.pppoe.ca [198.48.156.162])
- by mail.nottheoilrig.com (Postfix) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 19:53:54 +0000 (UTC)
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9902A267217
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:04:34 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id t3so5848809pgt.5
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 14:04:34 -0700 (PDT)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-I confirmed with Wireshark that my USB sound card responds to GET_MIN 
-with 0x0000 and GET_MAX with 0x6300 .. The audio device class definition 
-[1] says the units are 1/256 dB (section 5.2.2.2.3: Mixer Control) ... 
-So by my calculation, the min and max are 0 and 99 dB (0x6300 / 256 == 
-99) ... Why then does alsactl print:
+The MINIX NEO Z83-4 and MINIX NEO Z83-4 Pro devices requires jd_mode=3
+to make the jack detection work. Using a BIOS DMI product of "Z83-4"
+will match both devices of 'NEO Z83-4' and 'Z83-4 Pro'.
 
-> range '0 - 99'
-> dbmin 0
-> dbmax 38
+Signed-off-by: Ian W Morrison <ianwmorrison@gmail.com>
+---
+v2: Applied and tested again sound -b for-next and linux-next -b master
+v1: Applied and tested again linux -b master
+---
+ sound/soc/codecs/rt5645.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-(/usr/sbin/aslactl -f - store)
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index cd82302..6a7778a 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3655,6 +3655,21 @@ static int rt5645_resume(struct snd_soc_codec *codec)
+        { }
+ };
 
-I originally asked about this on the pulseaudio-discuss list [2] because 
-it uses "dB data" [3].
++static struct rt5645_platform_data minix_z83_4_platform_data = {
++       .jd_mode = 3,
++};
++
++static struct dmi_system_id dmi_platform_minix_z83_4[] = {
++       {
++               .ident = "MINIX Z83-4",
++               .matches = {
++                       DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MINIX"),
++                       DMI_MATCH(DMI_PRODUCT_NAME, "Z83-4"),
++               },
++       },
++       { }
++};
++
+ static bool rt5645_check_dp(struct device *dev)
+ {
+        if (device_property_present(dev, "realtek,in2-differential") ||
+@@ -3709,6 +3724,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+                rt5645->pdata = gpd_win_platform_data;
+        else if (dmi_check_system(dmi_platform_asus_t100ha))
+                rt5645->pdata = general_platform_data2;
++       else if (dmi_check_system(dmi_platform_minix_z83_4))
++               rt5645->pdata = minix_z83_4_platform_data;
 
-The "0 - 99" makes sense -- it lines up with my calculation ... Where 
-does the 38 come from? (I expect it's obvious, I just haven't found the 
-explanation?)
-
-Background: I just got a Bose SoundLink Revolve ... When I connect it 
-with USB, the volume is silent from 0 to 99% and deafening at 100% 
-(using PulseAudio). Directly adjusting the volume with alsamixer works 
-properly: It increases smoothly from 0 to 100% -- changes that are 
-reflected in the PulseAudio volume as fine adjustments in between 99 and 
-100% (64587 to 65536 PulseAudio volume).
-
- From what I've read there's a common problem where especially USB 
-devices report the wrong dB data (don't follow the spec [4]) -- this has 
-previously been handled by patching the USB audio driver [5] ... However 
-I haven't figured out how my device deviates from the spec (0x0000 to 
-0x6300 or 0 to 99 dB seem plausible) -- my understanding is incomplete: 
-I haven't figured out where the value 38 comes from ...
-
-[1] http://www.usb.org/developers/docs/devclass_docs/audio10.pdf
-[2] 
-https://lists.freedesktop.org/archives/pulseaudio-discuss/2017-August/028600.html
-[3] http://0pointer.de/blog/projects/decibel-data
-[4] https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/637066
-[5] https://bugs.freedesktop.org/show_bug.cgi?id=93193#c14
+        if (quirk != -1) {
+                rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
+-- 
+1.9.1
