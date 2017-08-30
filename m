@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: Add jack detection
- workaround for MINIX Z83-4 based devices
-Date: Wed, 30 Aug 2017 16:07:40 +0100
-Message-ID: <20170830150740.rxqizok6abyiulff@sirena.org.uk>
-References: <c98257b6-a5bc-a1b6-5194-cc29b6aec571@gmail.com>
+Subject: Re: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
+Date: Wed, 30 Aug 2017 16:19:13 +0100
+Message-ID: <20170830151913.6vknazyhh4se5524@sirena.org.uk>
+References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
+ <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3367017565892503569=="
+Content-Type: multipart/mixed; boundary="===============8186172359512041445=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2122A266C5E
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 17:07:42 +0200 (CEST)
-In-Reply-To: <c98257b6-a5bc-a1b6-5194-cc29b6aec571@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 769DC266C5E
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 17:19:17 +0200 (CEST)
+In-Reply-To: <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ian W MORRISON <ianwmorrison@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3367017565892503569==
+--===============8186172359512041445==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="sje35lktrd2sc5gu"
+	protocol="application/pgp-signature"; boundary="sjcpgh5jq7plao2j"
 Content-Disposition: inline
 
 
---sje35lktrd2sc5gu
+--sjcpgh5jq7plao2j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 30, 2017 at 04:07:36PM +1000, Ian W MORRISON wrote:
-> The MINIX NEO Z83-4 and MINIX NEO Z83-4 Pro devices requires jd_mode=3
-> to make the jack detection work. Using a BIOS DMI product of "Z83-4"
-> will match both devices of 'NEO Z83-4' and 'Z83-4 Pro'.
+On Wed, Aug 30, 2017 at 09:33:35AM -0400, Alex Deucher wrote:
 
-This doens't apply against current code, please check and resend.
+> Any comments?  Can this patch set go in?  This is the second time I've
+> resent it since the addressing the initial feedback.  Does anyone have
+> a preference on which tree?
 
---sje35lktrd2sc5gu
+You need to get someone from the DRM side to pay attention to the second
+patch and you need to stop resending the first patch since as has been
+pointed out a few times now you need to stop sending the first patch
+which is already in Linus' tree.
+
+--sjcpgh5jq7plao2j
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmm1LsACgkQJNaLcl1U
-h9B4uQf9FPqQJhDApDE0iNWQ+To+ahTgwupSqdfpbYnF1qXrA+o3ZRy1oLx6p/pf
-PkrOD83vzo2Q1MMcHHyssRhLhhj0JOSgCo5HuWsTwJ8k8EqiREVzWigeDNeqW5Fp
-NFAkrYbEd5q9BKkEaHE5Y1u/O8eGIj0197gq3CV6kbf0ohrRkSAGdPvwDO+fes18
-wLQH+cs3xuFo5BbjrGf+c4lWWFA3ANvcP5DOUTN2DxkI7QujKCtVqATzy+2C8GCc
-CJKFDxu0E4Vp2ZOyBVDCBaOZprUnt5Rjux4G0JOvsK4k0FrIK1uTp7mTADf+GKPK
-iwMt5Ehj/zGYnyMjjRNcucg4esb0kQ==
-=kvKp
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmm13EACgkQJNaLcl1U
+h9BGIgf+KgVCeyyGl+6N3ODbUSCCTKQ+KtjGNtPc2C/Tt7g7IGhmYr7rjKu9pxbT
+HrDoEu5b3Bb+jmtvr6hpk7yAbt990aO1cH4qamhkuIZfJSZB0TTLMXapwi2o0Oes
+lRoKA0q4zwrsDKTNrjWApc4X3dCULbLEgoyw+70i0FMDPj3oOm/4zFw2Tn1j9idu
+U5K25GLzcPZOSmA5vHlqnLmH/w/6x3PLF0GPBnCUK5gKuMy5YgAKMMPBSL+vQNgF
+rbTfYM5v/EgS9JRktHoKSqxuZHsUVeUC4cmWdpIqWKEd1ZX0zM9GMEE3K/J2bQgD
+8HRHYjpiJnKDwSnUgL7aOTTI+Ku8zw==
+=FGM4
 -----END PGP SIGNATURE-----
 
---sje35lktrd2sc5gu--
+--sjcpgh5jq7plao2j--
 
---===============3367017565892503569==
+--===============8186172359512041445==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3367017565892503569==--
+--===============8186172359512041445==--
