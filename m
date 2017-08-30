@@ -1,83 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5645: Add jack detection
- workaround for MINIX Z83-4 based devices
-Date: Wed, 30 Aug 2017 22:23:19 +0100
-Message-ID: <20170830212318.4tolhwdafspddcry@sirena.org.uk>
-References: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
- <20170830211217.5s3ubddjrpngkbb7@sirena.org.uk>
- <CAFXWsS_GL+xGPZc-ySjRqEejp=GPU9qkE80zaCZge63QiwnQkw@mail.gmail.com>
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Subject: RE: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
+Date: Wed, 30 Aug 2017 21:40:07 +0000
+Message-ID: <BN6PR12MB16524B7C3F9BC4CA56552828F79C0@BN6PR12MB1652.namprd12.prod.outlook.com>
+References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
+ <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
+ <20170830151913.6vknazyhh4se5524@sirena.org.uk> <87h8wo28o1.fsf@anholt.net>
+ <20170830211003.3qyilnuylzwjeium@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4244281005140495762=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 747A2267217
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:23:20 +0200 (CEST)
-In-Reply-To: <CAFXWsS_GL+xGPZc-ySjRqEejp=GPU9qkE80zaCZge63QiwnQkw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ian W MORRISON <ianwmorrison@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20170830211003.3qyilnuylzwjeium@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: 'Mark Brown' <broonie@kernel.org>, Eric Anholt <eric@anholt.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, "perex@perex.cz" <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4244281005140495762==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i3uqgyek7l4zu6xp"
-Content-Disposition: inline
-
-
---i3uqgyek7l4zu6xp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 31, 2017 at 07:16:10AM +1000, Ian W MORRISON wrote:
-> On 31 August 2017 at 07:12, Mark Brown <broonie@kernel.org> wrote:
-> > On Thu, Aug 31, 2017 at 07:04:31AM +1000, Ian W MORRISON wrote:
-
-> >> v2: Applied and tested again sound -b for-next and linux-next -b master
-
-> > You're submitting this to me, it needs to apply to *my* tree:
-
-> >    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-
-> Yes, v2 is now applied and tested against your
-> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git using
-> branch for-next. Is that correct or should I use a different branch?
-
-Are you sure you're up to date there?  It didn't apply against either
-the rt5645 branch or my for-next branch, I applied a few Realtek patches
-earlier today.
-
---i3uqgyek7l4zu6xp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmnLMYACgkQJNaLcl1U
-h9C6Ugf+KG36fmOUhI46irTzdRLGiWM3PZG+7GbBE6A2jXq3zaH3oh37ZI1ov75P
-LWOzYHt+XreEEkcVjW5UjfWBXIwzNjsg2Hq2CNla/PYOnxghxnHNeI/Tc7lTbsu4
-vinVaIyR8CiPO5hLZHLMu7to10ixS9+OOQ3WMTAM1uTS77tswlwpEodmxYi2m707
-UZEiqv1B6irxIfWOn4pyFmbZljlNjnrwJMhhIznqutYseVdgIz+aFYH650ARgdLR
-/szL7sVLNSxHgXZUKYKn4R73LL+B4Vhuv1eUqwnacLJOEVr9GmkTuoZqCHJ+7sC/
-vib/ocf40ctJz0R24CtiNTVCK1SCHw==
-=44f4
------END PGP SIGNATURE-----
-
---i3uqgyek7l4zu6xp--
-
---===============4244281005140495762==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4244281005140495762==--
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IE1hcmsgQnJvd24gW21haWx0bzpi
+cm9vbmllQGtlcm5lbC5vcmddCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMzAsIDIwMTcgNTox
+MCBQTQo+IFRvOiBFcmljIEFuaG9sdAo+IENjOiBBbGV4IERldWNoZXI7IGFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZzsgTGlhbSBHaXJkd29vZDsgTWFsaW5nIGxpc3QgLQo+IERSSSBkZXZlbG9w
+ZXJzOyByYWplZXYga3VtYXI7IGFtZC1nZnggbGlzdDsgTXVrdW5kYSwgVmlqZW5kYXI7IERldWNo
+ZXIsCj4gQWxleGFuZGVyOyBwZXJleEBwZXJleC5jego+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMC82
+IHYzXSBBZGQgQVNvQyBzdXBwb3J0IGZvciBBTUQgU3RvbmV5IEFQVXMKPiAKPiBPbiBXZWQsIEF1
+ZyAzMCwgMjAxNyBhdCAxMTo0OTowMkFNIC0wNzAwLCBFcmljIEFuaG9sdCB3cm90ZToKPiA+IE1h
+cmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JpdGVzOgo+IAo+ID4gPiBZb3UgbmVlZCB0
+byBnZXQgc29tZW9uZSBmcm9tIHRoZSBEUk0gc2lkZSB0byBwYXkgYXR0ZW50aW9uIHRvIHRoZQo+
+IHNlY29uZAo+ID4gPiBwYXRjaCBhbmQgeW91IG5lZWQgdG8gc3RvcCByZXNlbmRpbmcgdGhlIGZp
+cnN0IHBhdGNoIHNpbmNlIGFzIGhhcyBiZWVuCj4gPiA+IHBvaW50ZWQgb3V0IGEgZmV3IHRpbWVz
+IG5vdyB5b3UgbmVlZCB0byBzdG9wIHNlbmRpbmcgdGhlIGZpcnN0IHBhdGNoCj4gPiA+IHdoaWNo
+IGlzIGFscmVhZHkgaW4gTGludXMnIHRyZWUuCj4gCj4gPiBBbGV4ICppcyogZnJvbSB0aGUgRFJN
+IHNpZGUgYW5kIGhhcyByZXZpZXdlZCB0aGF0IHBhdGNoLgo+IAo+ICpzaWdoKiAgUmlnaHQsIE9L
+IGluIHRoYXQgY2FzZSBpdCB3b3VsZCBoYXZlIGJlZW4gcmVhbGx5IGhlbHBmdWwgdG8gc2VlCj4g
+ZWl0aGVyIHNvbWUgbWVudGlvbiBvZiB0aGlzIGVpdGhlciBpbiB0ZXh0IG9yIHZpYSBhIHB1bGwg
+cmVxdWVzdCAod2hpY2gKPiB3b3VsZCBzaG93IHRoZSBwYXRjaCBoYXZpbmcgYmVlbiBhcHBsaWVk
+KS4gIEl0J3MgZGlmZmljdWx0IHRvIGtlZXAgdHJhY2sKPiBvZiBhbGwgdGhlIGRpZmZlcmVudCBw
+ZW9wbGUgd2hvIG1pZ2h0IGJlIERSTSBtYWludGFpbmVycyBlc3BlY2lhbGx5IHdoZW4KPiB0aGVy
+ZSdzIHByb2Nlc3MgdGhpbmdzIGxpa2UgdGhlIHJlc2VuZCBvZiB0aGUgcGF0Y2ggZnJvbSBMaW51
+cycgdHJlZQo+IGdvaW5nIG9uLgoKSSBzZW50IG9uZSBwYXRjaCBpbiB0aGUgdjIgcGF0Y2ggc2V0
+IHRoYXQgaGFkIGFscmVhZHkgZ29uZSB1cHN0cmVhbSBiZWNhdXNlIEkgZGlkbid0IGtub3cgdGhh
+dCBpdCBoYWQgbGFuZGVkIGluIExpbnVzJyB0cmVlIHlldC4gIEkgaGFkIHRob3VnaHQgaXQgaGFk
+IGp1c3QgbGFuZGVkIGluIHRoZSBhdWRpbyB0cmVlLiAgSSBhcG9sb2dpemUgZm9yIHRoYXQuICBP
+biB0aGUgdjMgY292ZXIgcGFnZSwgSSBtZW50aW9uZWQgdGhhdCB2MyB3YXMgYSByZXNlbmQgb2Yg
+dGhlIHBhdGNoZXMgdGhhdCBoYWQgbm90IGJlZW4gYXBwbGllZCB0byBhbnkgdHJlZSB5ZXQ7IEkg
+ZGlkIG5vdCByZXNlbmQgYW55IHBhdGNoZXMgdGhhdCB3ZXJlIGFscmVhZHkgYXBwbGllZC4gIEkg
+YmVsaWV2ZSBhbGwgdGhlIHByZXZpb3VzIGNvbW1lbnRzIHdlcmUgYWRkcmVzc2VkLiAgTm93IHRo
+YXQgd2UndmUgY2xhcmlmaWVkIHRoYXQsIGFyZSB0aGVyZSBhbiBvdXRzdGFuZGluZyBvYmplY3Rp
+b25zIHRvIHRoZXNlIHBhdGNoZXM/ICBUaGUgcGF0Y2hlcyB0b3VjaCBib3RoIGRybSBhbmQgYXVk
+aW8uICBNeSBwcmVmZXJlbmNlIHdvdWxkIGJlIHRvIHRha2UgdGhlbSB0aHJvdWdoIHRoZSBkcm0g
+dHJlZSwgYnV0IEknbSBoYXBweSB0byBoYXZlIHRoZW0gZ28gdGhyb3VnaCB0aGUgYXVkaW8gdHJl
+ZSBpZiB5b3UgcHJlZmVyLgoKVGhhbmtzLAoKQWxleAoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxA
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vZHJpLWRldmVsCg==
