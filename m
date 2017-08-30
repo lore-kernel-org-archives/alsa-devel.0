@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
-Date: Wed, 30 Aug 2017 22:10:03 +0100
-Message-ID: <20170830211003.3qyilnuylzwjeium@sirena.org.uk>
-References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
- <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
- <20170830151913.6vknazyhh4se5524@sirena.org.uk>
- <87h8wo28o1.fsf@anholt.net>
+Subject: Re: [PATCH v2] ASoC: rt5645: Add jack detection
+ workaround for MINIX Z83-4 based devices
+Date: Wed, 30 Aug 2017 22:12:17 +0100
+Message-ID: <20170830211217.5s3ubddjrpngkbb7@sirena.org.uk>
+References: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6621469559267433925=="
+Content-Type: multipart/mixed; boundary="===============7956029486896301517=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DDF38267217
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:10:08 +0200 (CEST)
-In-Reply-To: <87h8wo28o1.fsf@anholt.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 219D1267217
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:12:18 +0200 (CEST)
+In-Reply-To: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eric Anholt <eric@anholt.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Alex Deucher <alexander.deucher@amd.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexdeucher@gmail.com>
+To: Ian W MORRISON <ianwmorrison@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6621469559267433925==
+--===============7956029486896301517==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="kdga3jgkexuzuwxn"
+	protocol="application/pgp-signature"; boundary="tco6obknnz5tjmuj"
 Content-Disposition: inline
 
 
---kdga3jgkexuzuwxn
+--tco6obknnz5tjmuj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 30, 2017 at 11:49:02AM -0700, Eric Anholt wrote:
-> Mark Brown <broonie@kernel.org> writes:
+On Thu, Aug 31, 2017 at 07:04:31AM +1000, Ian W MORRISON wrote:
 
-> > You need to get someone from the DRM side to pay attention to the second
-> > patch and you need to stop resending the first patch since as has been
-> > pointed out a few times now you need to stop sending the first patch
-> > which is already in Linus' tree.
+> v2: Applied and tested again sound -b for-next and linux-next -b master
 
-> Alex *is* from the DRM side and has reviewed that patch.
+You're submitting this to me, it needs to apply to *my* tree:
 
-*sigh*  Right, OK in that case it would have been really helpful to see
-either some mention of this either in text or via a pull request (which
-would show the patch having been applied).  It's difficult to keep track
-of all the different people who might be DRM maintainers especially when
-there's process things like the resend of the patch from Linus' tree
-going on.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
---kdga3jgkexuzuwxn
+--tco6obknnz5tjmuj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmnKaoACgkQJNaLcl1U
-h9B1mAf+Mq9Y+4OevcPeaMP3ivrgW3bF1JvxUzFR7eaNjjfOJlf/3HLL8UZ8SCLi
-3eRKAsxC1inzfq7HbaJe+471BnPkhxWKUMwRgRvaLKbTAXN+S+ShSDBkKHKekC3W
-QgZ0fj3WIXBq0aThjfweSZjPMAixBRCjBjPDZbxM8CVRMIK5eArh9UAURWRHc/tT
-qzYPjYOM2MOeOPxLdOAOsRjOotA6cRJGO+1dK0FNeEpTU+Y6iBuB5SlJot3EiOw8
-w91YcSl2LxxCgyhcOEacPrPA2mEogZ9+HPW8qOEPugTLvdFXRsG4+UlOhw6deA/W
-n1C6clLCfGNMGy2MyvpoA8Z4jale0A==
-=rgvt
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmnKjAACgkQJNaLcl1U
+h9BX+Qf/W5JOvr+LM2nMNN4T8PDw9sI0qm0gKWuZQRg1t4yS3igDjCq6OfxFaZ1R
+hrH+gHSea52Mz9Al71a1yHtl6+49NCec9CLMu1b0vu2lrpWhxG+uHc14HZOFlNnL
++XLZIMHT8gxi479kCJuYHzC7xe+bEakDKWhmXQynHGRCy7YtUOUUOeDe9BZv0dPJ
+uietUZj9cVNyNTaRGIE6MQBcvinMCHMTGCGclUhrn6CKS2098Wezf82qMHkFRmTz
+hOzTXpZ5HhzUDQMwgzqFcQZ3R4deb/+tIQotVXwMkiZ8FlNr3TbALXvutAw8UEYy
+zU1hgO7bvltRhVus2sH65+WqCidyiw==
+=JK1p
 -----END PGP SIGNATURE-----
 
---kdga3jgkexuzuwxn--
+--tco6obknnz5tjmuj--
 
---===============6621469559267433925==
+--===============7956029486896301517==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6621469559267433925==--
+--===============7956029486896301517==--
