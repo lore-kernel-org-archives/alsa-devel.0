@@ -1,19 +1,19 @@
-From: boozer asm <asmboozer@gmail.com>
-Subject: Re: memory leak in mix/pcm_upmix.c mix/pcm_downmix.c!!!
-Date: Wed, 30 Aug 2017 13:55:20 +0800
-Message-ID: <CAOccgsX93oB0K3tuj+Q9yCGz3q1S4rFeY_-Jgo-Qh4GX6t1N6Q@mail.gmail.com>
-References: <CAOccgsWUyUujUUzeKLwXhgYG+1axUvcWtTpiWmdoZ4WH0rWqUg@mail.gmail.com>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: [PATCH] ASoC: rt5645: Add jack detection workaround
+ for MINIX Z83-4 based devices
+Date: Wed, 30 Aug 2017 16:07:36 +1000
+Message-ID: <c98257b6-a5bc-a1b6-5194-cc29b6aec571@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f43.google.com (mail-oi0-f43.google.com
- [209.85.218.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 20D05266C52
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 07:55:21 +0200 (CEST)
-Received: by mail-oi0-f43.google.com with SMTP id k77so43844789oib.2
- for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 22:55:21 -0700 (PDT)
-In-Reply-To: <CAOccgsWUyUujUUzeKLwXhgYG+1axUvcWtTpiWmdoZ4WH0rWqUg@mail.gmail.com>
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B15D266C52
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 08:07:42 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id r187so3724526pfr.5
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 23:07:42 -0700 (PDT)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, broonie@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-i notice some ioplug plugin does free. but most extplug plugin do NOT free
-pointer  allocated at open function.
+The MINIX NEO Z83-4 and MINIX NEO Z83-4 Pro devices requires jd_mode=3
+to make the jack detection work. Using a BIOS DMI product of "Z83-4"
+will match both devices of 'NEO Z83-4' and 'Z83-4 Pro'.
 
-2017-08-30 13:51 GMT+08:00 boozer asm <asmboozer@gmail.com>:
+Signed-off-by: Ian W Morrison <ianwmorrison@gmail.com>
+---
+ sound/soc/codecs/rt5645.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-> eg.
-> in function:SND_PCM_PLUGIN_DEFINE_FUNC(upmix)
-> 487     mix = calloc(1, sizeof(*mix));
-> 488     if (mix == NULL)
-> 489         return -ENOMEM;
->
-> mix is allocated here. but at close function, it is not freed, and no
-> __destructor function available to free it.
->
-> and in alsa-lib/src/pcm/pcm_extplug.c
-> static int snd_pcm_extplug_close(snd_pcm_t *pcm)
-> {
->     extplug_priv_t *ext = pcm->private_data;
->
->     snd_pcm_close(ext->plug.gen.slave);
->     clear_ext_params(ext);
->     if (ext->data->callback->close)
->     {
->         ext->data->callback->close(ext->data);
->     }
->     free(ext);
->     return 0;
-> }
-> this function does NOT free ext->data.
-> and
-> 366 static int upmix_close(snd_pcm_extplug_t *ext)
-> 367 {
-> 368     snd_pcm_upmix_t *mix = (snd_pcm_upmix_t *)ext;
-> 369     free(mix->delayline[0]);
-> 370     free(mix->delayline[1]);
-> 371     return 0;
-> 372 }
->
-> and this function does NOT free mix itself.
->
-> so I think there is memory leak.
->
->
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9ec5816..7d889b6 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3637,6 +3637,21 @@ static int rt5645_resume(struct snd_soc_codec *codec)
+        {}
+ };
+
++static struct rt5645_platform_data minix_z83_4_platform_data = {
++       .jd_mode = 3,
++};
++
++static struct dmi_system_id dmi_platform_minix_z83_4[] = {
++       {
++               .ident = "MINIX Z83-4",
++               .matches = {
++                       DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MINIX"),
++                       DMI_MATCH(DMI_PRODUCT_NAME, "Z83-4"),
++               },
++       },
++       { }
++};
++
+ static bool rt5645_check_dp(struct device *dev)
+ {
+        if (device_property_present(dev, "realtek,in2-differential") ||
+@@ -3689,6 +3704,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+                rt5645->pdata = general_platform_data;
+        else if (dmi_check_system(dmi_platform_gpd_win))
+                rt5645->pdata = gpd_win_platform_data;
++       else if (dmi_check_system(dmi_platform_minix_z83_4))
++               rt5645->pdata = minix_z83_4_platform_data;
+
+        if (quirk != -1) {
+                rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
+-- 
+1.9.1
