@@ -1,17 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: Get rid of card power_lock
-Date: Wed, 30 Aug 2017 20:45:22 +0200
-Message-ID: <20170830184523.13727-1-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: pcm: Unify ioctl functions for
+	playback and capture streams
+Date: Wed, 30 Aug 2017 20:45:23 +0200
+Message-ID: <20170830184523.13727-2-tiwai@suse.de>
+References: <20170830184523.13727-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 956BE2665D5
+ by alsa0.perex.cz (Postfix) with ESMTP id 97FF0266A7C
  for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 20:45:25 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 09FE6ADDF
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 09C1BAC5D
  for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 18:45:25 +0000 (UTC)
+In-Reply-To: <20170830184523.13727-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,340 +27,371 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently we're taking power_lock at each card component for assuring
-the power-up sequence, but it doesn't help anything in the
-implementation at the moment: it just serializes unnecessarily the
-callers, but it doesn't protect about the power state change itself.
-It used to have some usefulness in the early days where we managed the
-PM manually.  But now the suspend/resume core procedure is beyond our
-hands, and power_lock lost its meaning.
-
-This patch drops the power_lock from allover the places.
-There shouldn't be any issues by this change, as it's no helper
-regarding the power state change.  Rather we'll get better performance
-by removing the serialization; which is the only slight concern of any
-behavior change, but it can't be a showstopper, after all.
+Some ioctl functions are implemented individually for both playback
+and capture streams although most of the codes are identical with just
+a few different stream-specific function calls.  This patch unifies
+these places, removes the superfluous trivial check and flattens the
+call paths as a cleanup.  Meanwhile, for better readability, some
+codes (e.g. xfer ioctls or forward/rewind ioctls) are factored out as
+functions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h        | 13 ----------
- sound/core/control.c        | 58 ++++++++++++++++++++++++---------------------
- sound/core/control_compat.c | 34 ++++++++++++--------------
- sound/core/init.c           |  5 ----
- sound/core/pcm_native.c     | 30 ++++++-----------------
- sound/soc/soc-core.c        |  2 --
- 6 files changed, 53 insertions(+), 89 deletions(-)
+ sound/core/pcm_compat.c |   5 +-
+ sound/core/pcm_native.c | 283 ++++++++++++++++++------------------------------
+ 2 files changed, 105 insertions(+), 183 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 357f36b5ee80..4104a9d1001f 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -136,7 +136,6 @@ struct snd_card {
- 
- #ifdef CONFIG_PM
- 	unsigned int power_state;	/* power state */
--	struct mutex power_lock;	/* power lock */
- 	wait_queue_head_t power_sleep;
- #endif
- 
-@@ -149,16 +148,6 @@ struct snd_card {
- #define dev_to_snd_card(p)	container_of(p, struct snd_card, card_dev)
- 
- #ifdef CONFIG_PM
--static inline void snd_power_lock(struct snd_card *card)
--{
--	mutex_lock(&card->power_lock);
--}
--
--static inline void snd_power_unlock(struct snd_card *card)
--{
--	mutex_unlock(&card->power_lock);
--}
--
- static inline unsigned int snd_power_get_state(struct snd_card *card)
- {
- 	return card->power_state;
-@@ -175,8 +164,6 @@ int snd_power_wait(struct snd_card *card, unsigned int power_state);
- 
- #else /* ! CONFIG_PM */
- 
--#define snd_power_lock(card)		do { (void)(card); } while (0)
--#define snd_power_unlock(card)		do { (void)(card); } while (0)
- static inline int snd_power_wait(struct snd_card *card, unsigned int state) { return 0; }
- #define snd_power_get_state(card)	({ (void)(card); SNDRV_CTL_POWER_D0; })
- #define snd_power_change_state(card, state)	do { (void)(card); } while (0)
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 51d4b4ad3e1d..56b3e2d49c82 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -864,14 +864,14 @@ static int snd_ctl_elem_info_user(struct snd_ctl_file *ctl,
- 
- 	if (copy_from_user(&info, _info, sizeof(info)))
- 		return -EFAULT;
--	snd_power_lock(ctl->card);
- 	result = snd_power_wait(ctl->card, SNDRV_CTL_POWER_D0);
--	if (result >= 0)
--		result = snd_ctl_elem_info(ctl, &info);
--	snd_power_unlock(ctl->card);
--	if (result >= 0)
--		if (copy_to_user(_info, &info, sizeof(info)))
--			return -EFAULT;
-+	if (result < 0)
-+		return result;
-+	result = snd_ctl_elem_info(ctl, &info);
-+	if (result < 0)
-+		return result;
-+	if (copy_to_user(_info, &info, sizeof(info)))
-+		return -EFAULT;
- 	return result;
- }
- 
-@@ -905,17 +905,19 @@ static int snd_ctl_elem_read_user(struct snd_card *card,
- 	if (IS_ERR(control))
- 		return PTR_ERR(control);
- 
--	snd_power_lock(card);
- 	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
--	if (result >= 0) {
--		down_read(&card->controls_rwsem);
--		result = snd_ctl_elem_read(card, control);
--		up_read(&card->controls_rwsem);
--	}
--	snd_power_unlock(card);
--	if (result >= 0)
--		if (copy_to_user(_control, control, sizeof(*control)))
--			result = -EFAULT;
-+	if (result < 0)
-+		goto error;
-+
-+	down_read(&card->controls_rwsem);
-+	result = snd_ctl_elem_read(card, control);
-+	up_read(&card->controls_rwsem);
-+	if (result < 0)
-+		goto error;
-+
-+	if (copy_to_user(_control, control, sizeof(*control)))
-+		result = -EFAULT;
-+ error:
- 	kfree(control);
- 	return result;
- }
-@@ -964,17 +966,19 @@ static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
- 		return PTR_ERR(control);
- 
- 	card = file->card;
--	snd_power_lock(card);
- 	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
--	if (result >= 0) {
--		down_write(&card->controls_rwsem);
--		result = snd_ctl_elem_write(card, file, control);
--		up_write(&card->controls_rwsem);
--	}
--	snd_power_unlock(card);
--	if (result >= 0)
--		if (copy_to_user(_control, control, sizeof(*control)))
--			result = -EFAULT;
-+	if (result < 0)
-+		goto error;
-+
-+	down_write(&card->controls_rwsem);
-+	result = snd_ctl_elem_write(card, file, control);
-+	up_write(&card->controls_rwsem);
-+	if (result < 0)
-+		goto error;
-+
-+	if (copy_to_user(_control, control, sizeof(*control)))
-+		result = -EFAULT;
-+ error:
- 	kfree(control);
- 	return result;
- }
-diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-index 1fa70766ffab..a848836a5de0 100644
---- a/sound/core/control_compat.c
-+++ b/sound/core/control_compat.c
-@@ -111,12 +111,10 @@ static int snd_ctl_elem_info_compat(struct snd_ctl_file *ctl,
- 	if (get_user(data->value.enumerated.item, &data32->value.enumerated.item))
- 		goto error;
- 
--	snd_power_lock(ctl->card);
- 	err = snd_power_wait(ctl->card, SNDRV_CTL_POWER_D0);
--	if (err >= 0)
--		err = snd_ctl_elem_info(ctl, data);
--	snd_power_unlock(ctl->card);
--
-+	if (err < 0)
-+		goto error;
-+	err = snd_ctl_elem_info(ctl, data);
- 	if (err < 0)
- 		goto error;
- 	/* restore info to 32bit */
-@@ -315,14 +313,13 @@ static int ctl_elem_read_user(struct snd_card *card,
- 	if (err < 0)
- 		goto error;
- 
--	snd_power_lock(card);
- 	err = snd_power_wait(card, SNDRV_CTL_POWER_D0);
--	if (err >= 0)
--		err = snd_ctl_elem_read(card, data);
--	snd_power_unlock(card);
--	if (err >= 0)
--		err = copy_ctl_value_to_user(userdata, valuep, data,
--					     type, count);
-+	if (err < 0)
-+		goto error;
-+	err = snd_ctl_elem_read(card, data);
-+	if (err < 0)
-+		goto error;
-+	err = copy_ctl_value_to_user(userdata, valuep, data, type, count);
-  error:
- 	kfree(data);
- 	return err;
-@@ -344,14 +341,13 @@ static int ctl_elem_write_user(struct snd_ctl_file *file,
- 	if (err < 0)
- 		goto error;
- 
--	snd_power_lock(card);
- 	err = snd_power_wait(card, SNDRV_CTL_POWER_D0);
--	if (err >= 0)
--		err = snd_ctl_elem_write(card, file, data);
--	snd_power_unlock(card);
--	if (err >= 0)
--		err = copy_ctl_value_to_user(userdata, valuep, data,
--					     type, count);
-+	if (err < 0)
-+		goto error;
-+	err = snd_ctl_elem_write(card, file, data);
-+	if (err < 0)
-+		goto error;
-+	err = copy_ctl_value_to_user(userdata, valuep, data, type, count);
-  error:
- 	kfree(data);
- 	return err;
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 6e219dc23f96..32ebe2f6bc59 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -253,7 +253,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	spin_lock_init(&card->files_lock);
- 	INIT_LIST_HEAD(&card->files_list);
- #ifdef CONFIG_PM
--	mutex_init(&card->power_lock);
- 	init_waitqueue_head(&card->power_sleep);
- #endif
- 
-@@ -978,8 +977,6 @@ EXPORT_SYMBOL(snd_card_file_remove);
-  *  Waits until the power-state is changed.
-  *
-  *  Return: Zero if successful, or a negative error code.
-- *
-- *  Note: the power lock must be active before call.
-  */
- int snd_power_wait(struct snd_card *card, unsigned int power_state)
- {
-@@ -999,9 +996,7 @@ int snd_power_wait(struct snd_card *card, unsigned int power_state)
- 		if (snd_power_get_state(card) == power_state)
- 			break;
- 		set_current_state(TASK_UNINTERRUPTIBLE);
--		snd_power_unlock(card);
- 		schedule_timeout(30 * HZ);
--		snd_power_lock(card);
- 	}
- 	remove_wait_queue(&card->power_sleep, &wait);
- 	return result;
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 10f537f4d735..3a1cc7b97e46 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -689,10 +689,7 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 	case SNDRV_PCM_IOCTL_XRUN:
+ 	case SNDRV_PCM_IOCTL_LINK:
+ 	case SNDRV_PCM_IOCTL_UNLINK:
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			return snd_pcm_playback_ioctl1(file, substream, cmd, argp);
+-		else
+-			return snd_pcm_capture_ioctl1(file, substream, cmd, argp);
++		return snd_pcm_common_ioctl(file, substream, cmd, argp);
+ 	case SNDRV_PCM_IOCTL_HW_REFINE32:
+ 		return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
+ 	case SNDRV_PCM_IOCTL_HW_PARAMS32:
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index cf0433f80067..621142ea9ec6 100644
+index 621142ea9ec6..2fec2feac387 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -1830,7 +1830,6 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
- 		add_wait_queue(&to_check->sleep, &wait);
- 		snd_pcm_stream_unlock_irq(substream);
- 		up_read(&snd_pcm_link_rwsem);
--		snd_power_unlock(card);
- 		if (runtime->no_period_wakeup)
- 			tout = MAX_SCHEDULE_TIMEOUT;
- 		else {
-@@ -1842,7 +1841,6 @@ static int snd_pcm_drain(struct snd_pcm_substream *substream,
- 			tout = msecs_to_jiffies(tout * 1000);
- 		}
- 		tout = schedule_timeout_interruptible(tout);
--		snd_power_lock(card);
- 		down_read(&snd_pcm_link_rwsem);
- 		snd_pcm_stream_lock_irq(substream);
- 		remove_wait_queue(&to_check->sleep, &wait);
-@@ -2764,11 +2762,16 @@ static int snd_pcm_tstamp(struct snd_pcm_substream *substream, int __user *_arg)
+@@ -2761,14 +2761,103 @@ static int snd_pcm_tstamp(struct snd_pcm_substream *substream, int __user *_arg)
+ 	runtime->tstamp_type = arg;
  	return 0;
  }
- 		
--static int snd_pcm_common_ioctl(struct file *file,
-+static int snd_pcm_common_ioctl1(struct file *file,
+-		
+-static int snd_pcm_common_ioctl1(struct file *file,
++
++static int snd_pcm_xferi_frames_ioctl(struct snd_pcm_substream *substream,
++				      struct snd_xferi __user *_xferi)
++{
++	struct snd_xferi xferi;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	snd_pcm_sframes_t result;
++
++	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		return -EBADFD;
++	if (put_user(0, &_xferi->result))
++		return -EFAULT;
++	if (copy_from_user(&xferi, _xferi, sizeof(xferi)))
++		return -EFAULT;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		result = snd_pcm_lib_write(substream, xferi.buf, xferi.frames);
++	else
++		result = snd_pcm_lib_read(substream, xferi.buf, xferi.frames);
++	__put_user(result, &_xferi->result);
++	return result < 0 ? result : 0;
++}
++
++static int snd_pcm_xfern_frames_ioctl(struct snd_pcm_substream *substream,
++				      struct snd_xfern __user *_xfern)
++{
++	struct snd_xfern xfern;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	void *bufs;
++	snd_pcm_sframes_t result;
++
++	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		return -EBADFD;
++	if (runtime->channels > 128)
++		return -EINVAL;
++	if (put_user(0, &_xfern->result))
++		return -EFAULT;
++	if (copy_from_user(&xfern, _xfern, sizeof(xfern)))
++		return -EFAULT;
++
++	bufs = memdup_user(xfern.bufs, sizeof(void *) * runtime->channels);
++	if (IS_ERR(bufs))
++		return PTR_ERR(bufs);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		result = snd_pcm_lib_writev(substream, bufs, xfern.frames);
++	else
++		result = snd_pcm_lib_readv(substream, bufs, xfern.frames);
++	kfree(bufs);
++	__put_user(result, &_xfern->result);
++	return result < 0 ? result : 0;
++}
++
++static int snd_pcm_rewind_ioctl(struct snd_pcm_substream *substream,
++				snd_pcm_uframes_t __user *_frames)
++{
++	snd_pcm_uframes_t frames;
++	snd_pcm_sframes_t result;
++
++	if (get_user(frames, _frames))
++		return -EFAULT;
++	if (put_user(0, _frames))
++		return -EFAULT;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		result = snd_pcm_playback_rewind(substream, frames);
++	else
++		result = snd_pcm_capture_rewind(substream, frames);
++	__put_user(result, _frames);
++	return result < 0 ? result : 0;
++}
++
++static int snd_pcm_forward_ioctl(struct snd_pcm_substream *substream,
++				 snd_pcm_uframes_t __user *_frames)
++{
++	snd_pcm_uframes_t frames;
++	snd_pcm_sframes_t result;
++
++	if (get_user(frames, _frames))
++		return -EFAULT;
++	if (put_user(0, _frames))
++		return -EFAULT;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		result = snd_pcm_playback_forward(substream, frames);
++	else
++		result = snd_pcm_capture_forward(substream, frames);
++	__put_user(result, _frames);
++	return result < 0 ? result : 0;
++}
++
++static int snd_pcm_common_ioctl(struct file *file,
  				 struct snd_pcm_substream *substream,
  				 unsigned int cmd, void __user *arg)
  {
  	struct snd_pcm_file *pcm_file = file->private_data;
-+	int res;
+ 	int res;
+ 
++	if (PCM_RUNTIME_CHECK(substream))
++		return -ENXIO;
 +
-+	res = snd_power_wait(substream->pcm->card, SNDRV_CTL_POWER_D0);
-+	if (res < 0)
-+		return res;
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_IOCTL_PVERSION:
-@@ -2846,21 +2849,6 @@ static int snd_pcm_common_ioctl(struct file *file,
- 	return -ENOTTY;
- }
- 
--static int snd_pcm_common_ioctl1(struct file *file,
--				 struct snd_pcm_substream *substream,
--				 unsigned int cmd, void __user *arg)
--{
--	struct snd_card *card = substream->pcm->card;
--	int res;
--
--	snd_power_lock(card);
--	res = snd_power_wait(card, SNDRV_CTL_POWER_D0);
--	if (res >= 0)
--		res = snd_pcm_common_ioctl(file, substream, cmd, arg);
--	snd_power_unlock(card);
--	return res;
+ 	res = snd_power_wait(substream->pcm->card, SNDRV_CTL_POWER_D0);
+ 	if (res < 0)
+ 		return res;
+@@ -2844,187 +2933,23 @@ static int snd_pcm_common_ioctl1(struct file *file,
+ 		return snd_pcm_action_lock_irq(&snd_pcm_action_pause,
+ 					       substream,
+ 					       (int)(unsigned long)arg);
+-	}
+-	pcm_dbg(substream->pcm, "unknown ioctl = 0x%x\n", cmd);
+-	return -ENOTTY;
 -}
 -
- static int snd_pcm_playback_ioctl1(struct file *file,
- 				   struct snd_pcm_substream *substream,
- 				   unsigned int cmd, void __user *arg)
-@@ -3064,7 +3052,6 @@ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream,
- {
- 	snd_pcm_uframes_t *frames = arg;
- 	snd_pcm_sframes_t result;
--	int err;
- 	
- 	switch (cmd) {
+-static int snd_pcm_playback_ioctl1(struct file *file,
+-				   struct snd_pcm_substream *substream,
+-				   unsigned int cmd, void __user *arg)
+-{
+-	if (PCM_RUNTIME_CHECK(substream))
+-		return -ENXIO;
+-	if (snd_BUG_ON(substream->stream != SNDRV_PCM_STREAM_PLAYBACK))
+-		return -EINVAL;
+-	switch (cmd) {
+ 	case SNDRV_PCM_IOCTL_WRITEI_FRAMES:
+-	{
+-		struct snd_xferi xferi;
+-		struct snd_xferi __user *_xferi = arg;
+-		struct snd_pcm_runtime *runtime = substream->runtime;
+-		snd_pcm_sframes_t result;
+-		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-			return -EBADFD;
+-		if (put_user(0, &_xferi->result))
+-			return -EFAULT;
+-		if (copy_from_user(&xferi, _xferi, sizeof(xferi)))
+-			return -EFAULT;
+-		result = snd_pcm_lib_write(substream, xferi.buf, xferi.frames);
+-		__put_user(result, &_xferi->result);
+-		return result < 0 ? result : 0;
+-	}
+-	case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
+-	{
+-		struct snd_xfern xfern;
+-		struct snd_xfern __user *_xfern = arg;
+-		struct snd_pcm_runtime *runtime = substream->runtime;
+-		void __user **bufs;
+-		snd_pcm_sframes_t result;
+-		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-			return -EBADFD;
+-		if (runtime->channels > 128)
+-			return -EINVAL;
+-		if (put_user(0, &_xfern->result))
+-			return -EFAULT;
+-		if (copy_from_user(&xfern, _xfern, sizeof(xfern)))
+-			return -EFAULT;
+-
+-		bufs = memdup_user(xfern.bufs,
+-				   sizeof(void *) * runtime->channels);
+-		if (IS_ERR(bufs))
+-			return PTR_ERR(bufs);
+-		result = snd_pcm_lib_writev(substream, bufs, xfern.frames);
+-		kfree(bufs);
+-		__put_user(result, &_xfern->result);
+-		return result < 0 ? result : 0;
+-	}
+-	case SNDRV_PCM_IOCTL_REWIND:
+-	{
+-		snd_pcm_uframes_t frames;
+-		snd_pcm_uframes_t __user *_frames = arg;
+-		snd_pcm_sframes_t result;
+-		if (get_user(frames, _frames))
+-			return -EFAULT;
+-		if (put_user(0, _frames))
+-			return -EFAULT;
+-		result = snd_pcm_playback_rewind(substream, frames);
+-		__put_user(result, _frames);
+-		return result < 0 ? result : 0;
+-	}
+-	case SNDRV_PCM_IOCTL_FORWARD:
+-	{
+-		snd_pcm_uframes_t frames;
+-		snd_pcm_uframes_t __user *_frames = arg;
+-		snd_pcm_sframes_t result;
+-		if (get_user(frames, _frames))
+-			return -EFAULT;
+-		if (put_user(0, _frames))
+-			return -EFAULT;
+-		result = snd_pcm_playback_forward(substream, frames);
+-		__put_user(result, _frames);
+-		return result < 0 ? result : 0;
+-	}
+-	}
+-	return snd_pcm_common_ioctl1(file, substream, cmd, arg);
+-}
+-
+-static int snd_pcm_capture_ioctl1(struct file *file,
+-				  struct snd_pcm_substream *substream,
+-				  unsigned int cmd, void __user *arg)
+-{
+-	if (PCM_RUNTIME_CHECK(substream))
+-		return -ENXIO;
+-	if (snd_BUG_ON(substream->stream != SNDRV_PCM_STREAM_CAPTURE))
+-		return -EINVAL;
+-	switch (cmd) {
+ 	case SNDRV_PCM_IOCTL_READI_FRAMES:
+-	{
+-		struct snd_xferi xferi;
+-		struct snd_xferi __user *_xferi = arg;
+-		struct snd_pcm_runtime *runtime = substream->runtime;
+-		snd_pcm_sframes_t result;
+-		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-			return -EBADFD;
+-		if (put_user(0, &_xferi->result))
+-			return -EFAULT;
+-		if (copy_from_user(&xferi, _xferi, sizeof(xferi)))
+-			return -EFAULT;
+-		result = snd_pcm_lib_read(substream, xferi.buf, xferi.frames);
+-		__put_user(result, &_xferi->result);
+-		return result < 0 ? result : 0;
+-	}
++		return snd_pcm_xferi_frames_ioctl(substream, arg);
++	case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
+ 	case SNDRV_PCM_IOCTL_READN_FRAMES:
+-	{
+-		struct snd_xfern xfern;
+-		struct snd_xfern __user *_xfern = arg;
+-		struct snd_pcm_runtime *runtime = substream->runtime;
+-		void *bufs;
+-		snd_pcm_sframes_t result;
+-		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-			return -EBADFD;
+-		if (runtime->channels > 128)
+-			return -EINVAL;
+-		if (put_user(0, &_xfern->result))
+-			return -EFAULT;
+-		if (copy_from_user(&xfern, _xfern, sizeof(xfern)))
+-			return -EFAULT;
+-
+-		bufs = memdup_user(xfern.bufs,
+-				   sizeof(void *) * runtime->channels);
+-		if (IS_ERR(bufs))
+-			return PTR_ERR(bufs);
+-		result = snd_pcm_lib_readv(substream, bufs, xfern.frames);
+-		kfree(bufs);
+-		__put_user(result, &_xfern->result);
+-		return result < 0 ? result : 0;
+-	}
++		return snd_pcm_xfern_frames_ioctl(substream, arg);
+ 	case SNDRV_PCM_IOCTL_REWIND:
+-	{
+-		snd_pcm_uframes_t frames;
+-		snd_pcm_uframes_t __user *_frames = arg;
+-		snd_pcm_sframes_t result;
+-		if (get_user(frames, _frames))
+-			return -EFAULT;
+-		if (put_user(0, _frames))
+-			return -EFAULT;
+-		result = snd_pcm_capture_rewind(substream, frames);
+-		__put_user(result, _frames);
+-		return result < 0 ? result : 0;
+-	}
++		return snd_pcm_rewind_ioctl(substream, arg);
  	case SNDRV_PCM_IOCTL_FORWARD:
-@@ -3084,10 +3071,7 @@ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_IOCTL_START:
- 		return snd_pcm_start_lock_irq(substream);
- 	case SNDRV_PCM_IOCTL_DRAIN:
--		snd_power_lock(substream->pcm->card);
--		err = snd_pcm_drain(substream, NULL);
--		snd_power_unlock(substream->pcm->card);
--		return err;
-+		return snd_pcm_drain(substream, NULL);
- 	case SNDRV_PCM_IOCTL_DROP:
- 		return snd_pcm_drop(substream);
- 	case SNDRV_PCM_IOCTL_DELAY:
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 13c875e2392a..62c11e26ce5c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -653,9 +653,7 @@ int snd_soc_suspend(struct device *dev)
- 	/* Due to the resume being scheduled into a workqueue we could
- 	* suspend before that's finished - wait for it to complete.
- 	 */
--	snd_power_lock(card->snd_card);
- 	snd_power_wait(card->snd_card, SNDRV_CTL_POWER_D0);
--	snd_power_unlock(card->snd_card);
+-	{
+-		snd_pcm_uframes_t frames;
+-		snd_pcm_uframes_t __user *_frames = arg;
+-		snd_pcm_sframes_t result;
+-		if (get_user(frames, _frames))
+-			return -EFAULT;
+-		if (put_user(0, _frames))
+-			return -EFAULT;
+-		result = snd_pcm_capture_forward(substream, frames);
+-		__put_user(result, _frames);
+-		return result < 0 ? result : 0;
++		return snd_pcm_forward_ioctl(substream, arg);
+ 	}
+-	}
+-	return snd_pcm_common_ioctl1(file, substream, cmd, arg);
+-}
+-
+-static long snd_pcm_playback_ioctl(struct file *file, unsigned int cmd,
+-				   unsigned long arg)
+-{
+-	struct snd_pcm_file *pcm_file;
+-
+-	pcm_file = file->private_data;
+-
+-	if (((cmd >> 8) & 0xff) != 'A')
+-		return -ENOTTY;
+-
+-	return snd_pcm_playback_ioctl1(file, pcm_file->substream, cmd,
+-				       (void __user *)arg);
++	pcm_dbg(substream->pcm, "unknown ioctl = 0x%x\n", cmd);
++	return -ENOTTY;
+ }
  
- 	/* we're going to block userspace touching us until resume completes */
- 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D3hot);
+-static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
+-				  unsigned long arg)
++static long snd_pcm_ioctl(struct file *file, unsigned int cmd,
++			  unsigned long arg)
+ {
+ 	struct snd_pcm_file *pcm_file;
+ 
+@@ -3033,8 +2958,8 @@ static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
+ 	if (((cmd >> 8) & 0xff) != 'A')
+ 		return -ENOTTY;
+ 
+-	return snd_pcm_capture_ioctl1(file, pcm_file->substream, cmd,
+-				      (void __user *)arg);
++	return snd_pcm_common_ioctl(file, pcm_file->substream, cmd,
++				     (void __user *)arg);
+ }
+ 
+ /**
+@@ -3775,7 +3700,7 @@ const struct file_operations snd_pcm_f_ops[2] = {
+ 		.release =		snd_pcm_release,
+ 		.llseek =		no_llseek,
+ 		.poll =			snd_pcm_playback_poll,
+-		.unlocked_ioctl =	snd_pcm_playback_ioctl,
++		.unlocked_ioctl =	snd_pcm_ioctl,
+ 		.compat_ioctl = 	snd_pcm_ioctl_compat,
+ 		.mmap =			snd_pcm_mmap,
+ 		.fasync =		snd_pcm_fasync,
+@@ -3789,7 +3714,7 @@ const struct file_operations snd_pcm_f_ops[2] = {
+ 		.release =		snd_pcm_release,
+ 		.llseek =		no_llseek,
+ 		.poll =			snd_pcm_capture_poll,
+-		.unlocked_ioctl =	snd_pcm_capture_ioctl,
++		.unlocked_ioctl =	snd_pcm_ioctl,
+ 		.compat_ioctl = 	snd_pcm_ioctl_compat,
+ 		.mmap =			snd_pcm_mmap,
+ 		.fasync =		snd_pcm_fasync,
 -- 
 2.14.1
