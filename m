@@ -1,83 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: Use different name for playback streams" to the asoc tree
-Date: Wed, 30 Aug 2017 22:19:48 +0100
-Message-ID: <E1dnAOq-00079i-L4@debutante>
-References: <1502498438-18245-1-git-send-email-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1502498438-18245-1-git-send-email-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, "Jon Medhurst (Tixy)" <tixy@linaro.org>, alsa-devel@alsa-project.org, briannorris@chromium.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, dianders@chromium.orgMark Brown <broonie@kernel.org>, Colin Ian King <colin.king@canonical.com>, Takashi Iwai <tiwai@suse.com>, Vincent Abriou <vincent.abriou@st.com>alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2] ASoC: rt5645: Add jack detection
+ workaround for MINIX Z83-4 based devices
+Date: Wed, 30 Aug 2017 22:23:19 +0100
+Message-ID: <20170830212318.4tolhwdafspddcry@sirena.org.uk>
+References: <29ad0cbd-b58d-70e3-0647-a2d633b7e57e@gmail.com>
+ <20170830211217.5s3ubddjrpngkbb7@sirena.org.uk>
+ <CAFXWsS_GL+xGPZc-ySjRqEejp=GPU9qkE80zaCZge63QiwnQkw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============4244281005140495762=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 747A2267217
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 23:23:20 +0200 (CEST)
+In-Reply-To: <CAFXWsS_GL+xGPZc-ySjRqEejp=GPU9qkE80zaCZge63QiwnQkw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ian W MORRISON <ianwmorrison@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdmi-codec: Use different name for playback streams
+--===============4244281005140495762==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="i3uqgyek7l4zu6xp"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--i3uqgyek7l4zu6xp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Aug 31, 2017 at 07:16:10AM +1000, Ian W MORRISON wrote:
+> On 31 August 2017 at 07:12, Mark Brown <broonie@kernel.org> wrote:
+> > On Thu, Aug 31, 2017 at 07:04:31AM +1000, Ian W MORRISON wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> >> v2: Applied and tested again sound -b for-next and linux-next -b master
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > You're submitting this to me, it needs to apply to *my* tree:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> >    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
 
-Thanks,
-Mark
+> Yes, v2 is now applied and tested against your
+> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git using
+> branch for-next. Is that correct or should I use a different branch?
 
->From 943fa0228252320de503b923dfe46334f755aaae Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Sat, 12 Aug 2017 08:40:38 +0800
-Subject: [PATCH] ASoC: hdmi-codec: Use different name for playback streams
+Are you sure you're up to date there?  It didn't apply against either
+the rt5645 branch or my for-next branch, I applied a few Realtek patches
+earlier today.
 
-Currently the hdmi i2s playback stream and hdmi spdif playback stream
-are using the same name. So when they are enabled at the same time,
-kernel will print this warning:
+--i3uqgyek7l4zu6xp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[    2.201835] hdmi-audio-codec hdmi-audio-codec.1.auto: ASoC: Failed to
-create Playback debugfs file
+-----BEGIN PGP SIGNATURE-----
 
-Assign different names to them to avoid that.
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmnLMYACgkQJNaLcl1U
+h9C6Ugf+KG36fmOUhI46irTzdRLGiWM3PZG+7GbBE6A2jXq3zaH3oh37ZI1ov75P
+LWOzYHt+XreEEkcVjW5UjfWBXIwzNjsg2Hq2CNla/PYOnxghxnHNeI/Tc7lTbsu4
+vinVaIyR8CiPO5hLZHLMu7to10ixS9+OOQ3WMTAM1uTS77tswlwpEodmxYi2m707
+UZEiqv1B6irxIfWOn4pyFmbZljlNjnrwJMhhIznqutYseVdgIz+aFYH650ARgdLR
+/szL7sVLNSxHgXZUKYKn4R73LL+B4Vhuv1eUqwnacLJOEVr9GmkTuoZqCHJ+7sC/
+vib/ocf40ctJz0R24CtiNTVCK1SCHw==
+=44f4
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdmi-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--i3uqgyek7l4zu6xp--
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index f7520413c671..189af068f28d 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -696,7 +696,7 @@ static struct snd_soc_dai_driver hdmi_i2s_dai = {
- 	.name = "i2s-hifi",
- 	.id = DAI_ID_I2S,
- 	.playback = {
--		.stream_name = "Playback",
-+		.stream_name = "I2S Playback",
- 		.channels_min = 2,
- 		.channels_max = 8,
- 		.rates = HDMI_RATES,
-@@ -711,7 +711,7 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- 	.name = "spdif-hifi",
- 	.id = DAI_ID_SPDIF,
- 	.playback = {
--		.stream_name = "Playback",
-+		.stream_name = "SPDIF Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = HDMI_RATES,
--- 
-2.14.1
+--===============4244281005140495762==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4244281005140495762==--
