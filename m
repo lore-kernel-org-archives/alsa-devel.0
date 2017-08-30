@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: constify snd_soc_ops structures" to the asoc tree
-Date: Wed, 30 Aug 2017 16:22:44 +0100
-Message-ID: <E1dn4pI-0003SU-7O@debutante>
-References: <20170830095814.2030-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170830095814.2030-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5663: Add delay for jack plug in" to
+	the asoc tree
+Date: Wed, 30 Aug 2017 16:22:47 +0100
+Message-ID: <E1dn4pL-0003Th-7F@debutante>
+References: <1504069711-6549-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3340B2671BA
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 17:22:50 +0200 (CEST)
+In-Reply-To: <1504069711-6549-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, Hsinyu Chao <hychao@chromium.org>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: constify snd_soc_ops structures
+   ASoC: rt5663: Add delay for jack plug in
 
 has been applied to the asoc tree at
 
@@ -37,38 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From 1fe165b7e9c3e1b1cfa98310979db0814c7445ea Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Wed, 30 Aug 2017 17:58:14 +0800
-Subject: [PATCH] ASoC: rockchip: constify snd_soc_ops structures
+>From 9c324afe3b90e406b15938acafaa2636a7e85ff3 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Wed, 30 Aug 2017 13:08:31 +0800
+Subject: [PATCH] ASoC: rt5663: Add delay for jack plug in
 
-Add const to dp/dmic snd_soc_ops.
+Codec initialize takes some time when 3.5mm jack plugged in. Add a
+delay to report jack plugged event to user space to avoid pop noise.
 
-Fixes: 626d84db64d7 (ASoC: rockchip: Add support for DMIC codec)
-Fixes: 3313faf1053e (ASoC: rockchip: Add support for DP codec)
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Signed-off-by: Hsinyu Chao <hychao@chromium.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5663.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 5ab25962cabd..0513fe480353 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -301,11 +301,11 @@ static const struct snd_soc_ops rockchip_sound_da7219_ops = {
- 	.hw_params = rockchip_sound_da7219_hw_params,
- };
- 
--static struct snd_soc_ops rockchip_sound_cdndp_ops = {
-+static const struct snd_soc_ops rockchip_sound_cdndp_ops = {
- 	.hw_params = rockchip_sound_cdndp_hw_params,
- };
- 
--static struct snd_soc_ops rockchip_sound_dmic_ops = {
-+static const struct snd_soc_ops rockchip_sound_dmic_ops = {
- 	.hw_params = rockchip_sound_dmic_hw_params,
- };
- 
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index fdc2bbcb67c2..14716d25173b 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1705,6 +1705,9 @@ static void rt5663_jack_detect_work(struct work_struct *work)
+ 			default:
+ 				dev_err(codec->dev, "Unknown CODEC Version\n");
+ 			}
++
++			/* Delay the jack insert report to avoid pop noise */
++			msleep(30);
+ 		} else {
+ 			/* jack is already in, report button event */
+ 			report = SND_JACK_HEADSET;
 -- 
 2.14.1
