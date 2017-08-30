@@ -1,20 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: pcm: Unify ioctl functions for
-	playback and capture streams
-Date: Wed, 30 Aug 2017 20:45:23 +0200
-Message-ID: <20170830184523.13727-2-tiwai@suse.de>
-References: <20170830184523.13727-1-tiwai@suse.de>
+From: Eric Anholt <eric@anholt.net>
+Subject: Re: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
+Date: Wed, 30 Aug 2017 11:49:02 -0700
+Message-ID: <87h8wo28o1.fsf@anholt.net>
+References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
+ <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
+ <20170830151913.6vknazyhh4se5524@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5604301862887114362=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 97FF0266A7C
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 20:45:25 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 09C1BAC5D
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 18:45:25 +0000 (UTC)
-In-Reply-To: <20170830184523.13727-1-tiwai@suse.de>
+Received: from anholt.net (anholt.net [50.246.234.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7997C2665D5
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 20:52:15 +0200 (CEST)
+In-Reply-To: <20170830151913.6vknazyhh4se5524@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,374 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some ioctl functions are implemented individually for both playback
-and capture streams although most of the codes are identical with just
-a few different stream-specific function calls.  This patch unifies
-these places, removes the superfluous trivial check and flattens the
-call paths as a cleanup.  Meanwhile, for better readability, some
-codes (e.g. xfer ioctls or forward/rewind ioctls) are factored out as
-functions.
+--===============5604301862887114362==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_compat.c |   5 +-
- sound/core/pcm_native.c | 283 ++++++++++++++++++------------------------------
- 2 files changed, 105 insertions(+), 183 deletions(-)
+--=-=-=
+Content-Type: text/plain
 
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index 10f537f4d735..3a1cc7b97e46 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -689,10 +689,7 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
- 	case SNDRV_PCM_IOCTL_XRUN:
- 	case SNDRV_PCM_IOCTL_LINK:
- 	case SNDRV_PCM_IOCTL_UNLINK:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			return snd_pcm_playback_ioctl1(file, substream, cmd, argp);
--		else
--			return snd_pcm_capture_ioctl1(file, substream, cmd, argp);
-+		return snd_pcm_common_ioctl(file, substream, cmd, argp);
- 	case SNDRV_PCM_IOCTL_HW_REFINE32:
- 		return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
- 	case SNDRV_PCM_IOCTL_HW_PARAMS32:
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 621142ea9ec6..2fec2feac387 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2761,14 +2761,103 @@ static int snd_pcm_tstamp(struct snd_pcm_substream *substream, int __user *_arg)
- 	runtime->tstamp_type = arg;
- 	return 0;
- }
--		
--static int snd_pcm_common_ioctl1(struct file *file,
-+
-+static int snd_pcm_xferi_frames_ioctl(struct snd_pcm_substream *substream,
-+				      struct snd_xferi __user *_xferi)
-+{
-+	struct snd_xferi xferi;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_pcm_sframes_t result;
-+
-+	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
-+		return -EBADFD;
-+	if (put_user(0, &_xferi->result))
-+		return -EFAULT;
-+	if (copy_from_user(&xferi, _xferi, sizeof(xferi)))
-+		return -EFAULT;
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		result = snd_pcm_lib_write(substream, xferi.buf, xferi.frames);
-+	else
-+		result = snd_pcm_lib_read(substream, xferi.buf, xferi.frames);
-+	__put_user(result, &_xferi->result);
-+	return result < 0 ? result : 0;
-+}
-+
-+static int snd_pcm_xfern_frames_ioctl(struct snd_pcm_substream *substream,
-+				      struct snd_xfern __user *_xfern)
-+{
-+	struct snd_xfern xfern;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	void *bufs;
-+	snd_pcm_sframes_t result;
-+
-+	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
-+		return -EBADFD;
-+	if (runtime->channels > 128)
-+		return -EINVAL;
-+	if (put_user(0, &_xfern->result))
-+		return -EFAULT;
-+	if (copy_from_user(&xfern, _xfern, sizeof(xfern)))
-+		return -EFAULT;
-+
-+	bufs = memdup_user(xfern.bufs, sizeof(void *) * runtime->channels);
-+	if (IS_ERR(bufs))
-+		return PTR_ERR(bufs);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		result = snd_pcm_lib_writev(substream, bufs, xfern.frames);
-+	else
-+		result = snd_pcm_lib_readv(substream, bufs, xfern.frames);
-+	kfree(bufs);
-+	__put_user(result, &_xfern->result);
-+	return result < 0 ? result : 0;
-+}
-+
-+static int snd_pcm_rewind_ioctl(struct snd_pcm_substream *substream,
-+				snd_pcm_uframes_t __user *_frames)
-+{
-+	snd_pcm_uframes_t frames;
-+	snd_pcm_sframes_t result;
-+
-+	if (get_user(frames, _frames))
-+		return -EFAULT;
-+	if (put_user(0, _frames))
-+		return -EFAULT;
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		result = snd_pcm_playback_rewind(substream, frames);
-+	else
-+		result = snd_pcm_capture_rewind(substream, frames);
-+	__put_user(result, _frames);
-+	return result < 0 ? result : 0;
-+}
-+
-+static int snd_pcm_forward_ioctl(struct snd_pcm_substream *substream,
-+				 snd_pcm_uframes_t __user *_frames)
-+{
-+	snd_pcm_uframes_t frames;
-+	snd_pcm_sframes_t result;
-+
-+	if (get_user(frames, _frames))
-+		return -EFAULT;
-+	if (put_user(0, _frames))
-+		return -EFAULT;
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		result = snd_pcm_playback_forward(substream, frames);
-+	else
-+		result = snd_pcm_capture_forward(substream, frames);
-+	__put_user(result, _frames);
-+	return result < 0 ? result : 0;
-+}
-+
-+static int snd_pcm_common_ioctl(struct file *file,
- 				 struct snd_pcm_substream *substream,
- 				 unsigned int cmd, void __user *arg)
- {
- 	struct snd_pcm_file *pcm_file = file->private_data;
- 	int res;
- 
-+	if (PCM_RUNTIME_CHECK(substream))
-+		return -ENXIO;
-+
- 	res = snd_power_wait(substream->pcm->card, SNDRV_CTL_POWER_D0);
- 	if (res < 0)
- 		return res;
-@@ -2844,187 +2933,23 @@ static int snd_pcm_common_ioctl1(struct file *file,
- 		return snd_pcm_action_lock_irq(&snd_pcm_action_pause,
- 					       substream,
- 					       (int)(unsigned long)arg);
--	}
--	pcm_dbg(substream->pcm, "unknown ioctl = 0x%x\n", cmd);
--	return -ENOTTY;
--}
--
--static int snd_pcm_playback_ioctl1(struct file *file,
--				   struct snd_pcm_substream *substream,
--				   unsigned int cmd, void __user *arg)
--{
--	if (PCM_RUNTIME_CHECK(substream))
--		return -ENXIO;
--	if (snd_BUG_ON(substream->stream != SNDRV_PCM_STREAM_PLAYBACK))
--		return -EINVAL;
--	switch (cmd) {
- 	case SNDRV_PCM_IOCTL_WRITEI_FRAMES:
--	{
--		struct snd_xferi xferi;
--		struct snd_xferi __user *_xferi = arg;
--		struct snd_pcm_runtime *runtime = substream->runtime;
--		snd_pcm_sframes_t result;
--		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
--			return -EBADFD;
--		if (put_user(0, &_xferi->result))
--			return -EFAULT;
--		if (copy_from_user(&xferi, _xferi, sizeof(xferi)))
--			return -EFAULT;
--		result = snd_pcm_lib_write(substream, xferi.buf, xferi.frames);
--		__put_user(result, &_xferi->result);
--		return result < 0 ? result : 0;
--	}
--	case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
--	{
--		struct snd_xfern xfern;
--		struct snd_xfern __user *_xfern = arg;
--		struct snd_pcm_runtime *runtime = substream->runtime;
--		void __user **bufs;
--		snd_pcm_sframes_t result;
--		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
--			return -EBADFD;
--		if (runtime->channels > 128)
--			return -EINVAL;
--		if (put_user(0, &_xfern->result))
--			return -EFAULT;
--		if (copy_from_user(&xfern, _xfern, sizeof(xfern)))
--			return -EFAULT;
--
--		bufs = memdup_user(xfern.bufs,
--				   sizeof(void *) * runtime->channels);
--		if (IS_ERR(bufs))
--			return PTR_ERR(bufs);
--		result = snd_pcm_lib_writev(substream, bufs, xfern.frames);
--		kfree(bufs);
--		__put_user(result, &_xfern->result);
--		return result < 0 ? result : 0;
--	}
--	case SNDRV_PCM_IOCTL_REWIND:
--	{
--		snd_pcm_uframes_t frames;
--		snd_pcm_uframes_t __user *_frames = arg;
--		snd_pcm_sframes_t result;
--		if (get_user(frames, _frames))
--			return -EFAULT;
--		if (put_user(0, _frames))
--			return -EFAULT;
--		result = snd_pcm_playback_rewind(substream, frames);
--		__put_user(result, _frames);
--		return result < 0 ? result : 0;
--	}
--	case SNDRV_PCM_IOCTL_FORWARD:
--	{
--		snd_pcm_uframes_t frames;
--		snd_pcm_uframes_t __user *_frames = arg;
--		snd_pcm_sframes_t result;
--		if (get_user(frames, _frames))
--			return -EFAULT;
--		if (put_user(0, _frames))
--			return -EFAULT;
--		result = snd_pcm_playback_forward(substream, frames);
--		__put_user(result, _frames);
--		return result < 0 ? result : 0;
--	}
--	}
--	return snd_pcm_common_ioctl1(file, substream, cmd, arg);
--}
--
--static int snd_pcm_capture_ioctl1(struct file *file,
--				  struct snd_pcm_substream *substream,
--				  unsigned int cmd, void __user *arg)
--{
--	if (PCM_RUNTIME_CHECK(substream))
--		return -ENXIO;
--	if (snd_BUG_ON(substream->stream != SNDRV_PCM_STREAM_CAPTURE))
--		return -EINVAL;
--	switch (cmd) {
- 	case SNDRV_PCM_IOCTL_READI_FRAMES:
--	{
--		struct snd_xferi xferi;
--		struct snd_xferi __user *_xferi = arg;
--		struct snd_pcm_runtime *runtime = substream->runtime;
--		snd_pcm_sframes_t result;
--		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
--			return -EBADFD;
--		if (put_user(0, &_xferi->result))
--			return -EFAULT;
--		if (copy_from_user(&xferi, _xferi, sizeof(xferi)))
--			return -EFAULT;
--		result = snd_pcm_lib_read(substream, xferi.buf, xferi.frames);
--		__put_user(result, &_xferi->result);
--		return result < 0 ? result : 0;
--	}
-+		return snd_pcm_xferi_frames_ioctl(substream, arg);
-+	case SNDRV_PCM_IOCTL_WRITEN_FRAMES:
- 	case SNDRV_PCM_IOCTL_READN_FRAMES:
--	{
--		struct snd_xfern xfern;
--		struct snd_xfern __user *_xfern = arg;
--		struct snd_pcm_runtime *runtime = substream->runtime;
--		void *bufs;
--		snd_pcm_sframes_t result;
--		if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
--			return -EBADFD;
--		if (runtime->channels > 128)
--			return -EINVAL;
--		if (put_user(0, &_xfern->result))
--			return -EFAULT;
--		if (copy_from_user(&xfern, _xfern, sizeof(xfern)))
--			return -EFAULT;
--
--		bufs = memdup_user(xfern.bufs,
--				   sizeof(void *) * runtime->channels);
--		if (IS_ERR(bufs))
--			return PTR_ERR(bufs);
--		result = snd_pcm_lib_readv(substream, bufs, xfern.frames);
--		kfree(bufs);
--		__put_user(result, &_xfern->result);
--		return result < 0 ? result : 0;
--	}
-+		return snd_pcm_xfern_frames_ioctl(substream, arg);
- 	case SNDRV_PCM_IOCTL_REWIND:
--	{
--		snd_pcm_uframes_t frames;
--		snd_pcm_uframes_t __user *_frames = arg;
--		snd_pcm_sframes_t result;
--		if (get_user(frames, _frames))
--			return -EFAULT;
--		if (put_user(0, _frames))
--			return -EFAULT;
--		result = snd_pcm_capture_rewind(substream, frames);
--		__put_user(result, _frames);
--		return result < 0 ? result : 0;
--	}
-+		return snd_pcm_rewind_ioctl(substream, arg);
- 	case SNDRV_PCM_IOCTL_FORWARD:
--	{
--		snd_pcm_uframes_t frames;
--		snd_pcm_uframes_t __user *_frames = arg;
--		snd_pcm_sframes_t result;
--		if (get_user(frames, _frames))
--			return -EFAULT;
--		if (put_user(0, _frames))
--			return -EFAULT;
--		result = snd_pcm_capture_forward(substream, frames);
--		__put_user(result, _frames);
--		return result < 0 ? result : 0;
-+		return snd_pcm_forward_ioctl(substream, arg);
- 	}
--	}
--	return snd_pcm_common_ioctl1(file, substream, cmd, arg);
--}
--
--static long snd_pcm_playback_ioctl(struct file *file, unsigned int cmd,
--				   unsigned long arg)
--{
--	struct snd_pcm_file *pcm_file;
--
--	pcm_file = file->private_data;
--
--	if (((cmd >> 8) & 0xff) != 'A')
--		return -ENOTTY;
--
--	return snd_pcm_playback_ioctl1(file, pcm_file->substream, cmd,
--				       (void __user *)arg);
-+	pcm_dbg(substream->pcm, "unknown ioctl = 0x%x\n", cmd);
-+	return -ENOTTY;
- }
- 
--static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
--				  unsigned long arg)
-+static long snd_pcm_ioctl(struct file *file, unsigned int cmd,
-+			  unsigned long arg)
- {
- 	struct snd_pcm_file *pcm_file;
- 
-@@ -3033,8 +2958,8 @@ static long snd_pcm_capture_ioctl(struct file *file, unsigned int cmd,
- 	if (((cmd >> 8) & 0xff) != 'A')
- 		return -ENOTTY;
- 
--	return snd_pcm_capture_ioctl1(file, pcm_file->substream, cmd,
--				      (void __user *)arg);
-+	return snd_pcm_common_ioctl(file, pcm_file->substream, cmd,
-+				     (void __user *)arg);
- }
- 
- /**
-@@ -3775,7 +3700,7 @@ const struct file_operations snd_pcm_f_ops[2] = {
- 		.release =		snd_pcm_release,
- 		.llseek =		no_llseek,
- 		.poll =			snd_pcm_playback_poll,
--		.unlocked_ioctl =	snd_pcm_playback_ioctl,
-+		.unlocked_ioctl =	snd_pcm_ioctl,
- 		.compat_ioctl = 	snd_pcm_ioctl_compat,
- 		.mmap =			snd_pcm_mmap,
- 		.fasync =		snd_pcm_fasync,
-@@ -3789,7 +3714,7 @@ const struct file_operations snd_pcm_f_ops[2] = {
- 		.release =		snd_pcm_release,
- 		.llseek =		no_llseek,
- 		.poll =			snd_pcm_capture_poll,
--		.unlocked_ioctl =	snd_pcm_capture_ioctl,
-+		.unlocked_ioctl =	snd_pcm_ioctl,
- 		.compat_ioctl = 	snd_pcm_ioctl_compat,
- 		.mmap =			snd_pcm_mmap,
- 		.fasync =		snd_pcm_fasync,
--- 
-2.14.1
+Mark Brown <broonie@kernel.org> writes:
+
+> [ Unknown signature status ]
+> On Wed, Aug 30, 2017 at 09:33:35AM -0400, Alex Deucher wrote:
+>
+>> Any comments?  Can this patch set go in?  This is the second time I've
+>> resent it since the addressing the initial feedback.  Does anyone have
+>> a preference on which tree?
+>
+> You need to get someone from the DRM side to pay attention to the second
+> patch and you need to stop resending the first patch since as has been
+> pointed out a few times now you need to stop sending the first patch
+> which is already in Linus' tree.
+
+Alex *is* from the DRM side and has reviewed that patch.
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAlmnCJ4ACgkQtdYpNtH8
+nuj2rg//WuWP2g3pwImSx9E9E7BNvmfVTbnGJbdd/oy9Duijw1r8WIyJJKbZk0Dw
+CWbck2zveT6rbH8nWv62JIkYXlIS3t59xd1Bm01IKkHDB82rsiiBDSw51aRXtU+t
+aD1l8BgAhV13N7yQZwdchwcP9ob71rRJY7MP8y7oCrso4pOEHLGD3s5LOHR//vvA
+LTSPje6qxNnOXRRlWRZaDzcZE3u4H6/egOpPPWFnW/npM6OC6hMbUu8ovmIjSTjh
+3pHXDW//PTJiL7rJaTikLzniJ98I6HOfZE897CsJT1dEqV88DtvNOGTMo+WTSQOR
+yroHv/PWpJf1HgJ0JgVyJBjO2vsQxizoyS5OzGxMs9+/movOkYoNXNCDs0V8Q413
+YyKy5MmKJoEKGq+YNdCSv1VCSO6g1YI0cMR5INdLWpdG+E1xbyGJwzxGWma4s5vE
+YSOoa8Yxdi3DC7flOiPyG/R+WVvR6L7KK/cFotmdmVm0bWcq6ZTfffAv65LTqlDk
+nvpRJ6b63EKQUuCJo16IRs0Ej4Vh/oQGPEcbGj/SGZQOTCFKyxOkzqghroz0zl60
+U1TFyvXERPvVt+DSOJtCX1oCjfUlf2DbUY0U3ZEYTma8eSrAh+dHkyskB8UnAxEt
+vwHffowRkhuFV2xBMD1R7CRuZnordL+1hsaTJvEbX7yaeqcc84I=
+=Q8Lc
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============5604301862887114362==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5604301862887114362==--
