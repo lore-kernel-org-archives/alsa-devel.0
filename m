@@ -1,65 +1,77 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: RE: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
-Date: Wed, 30 Aug 2017 21:40:07 +0000
-Message-ID: <BN6PR12MB16524B7C3F9BC4CA56552828F79C0@BN6PR12MB1652.namprd12.prod.outlook.com>
-References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
- <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
- <20170830151913.6vknazyhh4se5524@sirena.org.uk> <87h8wo28o1.fsf@anholt.net>
- <20170830211003.3qyilnuylzwjeium@sirena.org.uk>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: [PATCH v3] ASoC: rt5645: Add jack detection workaround
+ for MINIX Z83-4 based devices
+Date: Thu, 31 Aug 2017 08:35:47 +1000
+Message-ID: <c4388022-ba28-6b87-e34d-97af0cbdbd39@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20170830211003.3qyilnuylzwjeium@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 005A226723F
+ for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 00:35:49 +0200 (CEST)
+Received: by mail-pg0-f66.google.com with SMTP id 83so5992798pgb.3
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 15:35:49 -0700 (PDT)
 Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: 'Mark Brown' <broonie@kernel.org>, Eric Anholt <eric@anholt.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, "perex@perex.cz" <perex@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IE1hcmsgQnJvd24gW21haWx0bzpi
-cm9vbmllQGtlcm5lbC5vcmddCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMzAsIDIwMTcgNTox
-MCBQTQo+IFRvOiBFcmljIEFuaG9sdAo+IENjOiBBbGV4IERldWNoZXI7IGFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZzsgTGlhbSBHaXJkd29vZDsgTWFsaW5nIGxpc3QgLQo+IERSSSBkZXZlbG9w
-ZXJzOyByYWplZXYga3VtYXI7IGFtZC1nZnggbGlzdDsgTXVrdW5kYSwgVmlqZW5kYXI7IERldWNo
-ZXIsCj4gQWxleGFuZGVyOyBwZXJleEBwZXJleC5jego+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMC82
-IHYzXSBBZGQgQVNvQyBzdXBwb3J0IGZvciBBTUQgU3RvbmV5IEFQVXMKPiAKPiBPbiBXZWQsIEF1
-ZyAzMCwgMjAxNyBhdCAxMTo0OTowMkFNIC0wNzAwLCBFcmljIEFuaG9sdCB3cm90ZToKPiA+IE1h
-cmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JpdGVzOgo+IAo+ID4gPiBZb3UgbmVlZCB0
-byBnZXQgc29tZW9uZSBmcm9tIHRoZSBEUk0gc2lkZSB0byBwYXkgYXR0ZW50aW9uIHRvIHRoZQo+
-IHNlY29uZAo+ID4gPiBwYXRjaCBhbmQgeW91IG5lZWQgdG8gc3RvcCByZXNlbmRpbmcgdGhlIGZp
-cnN0IHBhdGNoIHNpbmNlIGFzIGhhcyBiZWVuCj4gPiA+IHBvaW50ZWQgb3V0IGEgZmV3IHRpbWVz
-IG5vdyB5b3UgbmVlZCB0byBzdG9wIHNlbmRpbmcgdGhlIGZpcnN0IHBhdGNoCj4gPiA+IHdoaWNo
-IGlzIGFscmVhZHkgaW4gTGludXMnIHRyZWUuCj4gCj4gPiBBbGV4ICppcyogZnJvbSB0aGUgRFJN
-IHNpZGUgYW5kIGhhcyByZXZpZXdlZCB0aGF0IHBhdGNoLgo+IAo+ICpzaWdoKiAgUmlnaHQsIE9L
-IGluIHRoYXQgY2FzZSBpdCB3b3VsZCBoYXZlIGJlZW4gcmVhbGx5IGhlbHBmdWwgdG8gc2VlCj4g
-ZWl0aGVyIHNvbWUgbWVudGlvbiBvZiB0aGlzIGVpdGhlciBpbiB0ZXh0IG9yIHZpYSBhIHB1bGwg
-cmVxdWVzdCAod2hpY2gKPiB3b3VsZCBzaG93IHRoZSBwYXRjaCBoYXZpbmcgYmVlbiBhcHBsaWVk
-KS4gIEl0J3MgZGlmZmljdWx0IHRvIGtlZXAgdHJhY2sKPiBvZiBhbGwgdGhlIGRpZmZlcmVudCBw
-ZW9wbGUgd2hvIG1pZ2h0IGJlIERSTSBtYWludGFpbmVycyBlc3BlY2lhbGx5IHdoZW4KPiB0aGVy
-ZSdzIHByb2Nlc3MgdGhpbmdzIGxpa2UgdGhlIHJlc2VuZCBvZiB0aGUgcGF0Y2ggZnJvbSBMaW51
-cycgdHJlZQo+IGdvaW5nIG9uLgoKSSBzZW50IG9uZSBwYXRjaCBpbiB0aGUgdjIgcGF0Y2ggc2V0
-IHRoYXQgaGFkIGFscmVhZHkgZ29uZSB1cHN0cmVhbSBiZWNhdXNlIEkgZGlkbid0IGtub3cgdGhh
-dCBpdCBoYWQgbGFuZGVkIGluIExpbnVzJyB0cmVlIHlldC4gIEkgaGFkIHRob3VnaHQgaXQgaGFk
-IGp1c3QgbGFuZGVkIGluIHRoZSBhdWRpbyB0cmVlLiAgSSBhcG9sb2dpemUgZm9yIHRoYXQuICBP
-biB0aGUgdjMgY292ZXIgcGFnZSwgSSBtZW50aW9uZWQgdGhhdCB2MyB3YXMgYSByZXNlbmQgb2Yg
-dGhlIHBhdGNoZXMgdGhhdCBoYWQgbm90IGJlZW4gYXBwbGllZCB0byBhbnkgdHJlZSB5ZXQ7IEkg
-ZGlkIG5vdCByZXNlbmQgYW55IHBhdGNoZXMgdGhhdCB3ZXJlIGFscmVhZHkgYXBwbGllZC4gIEkg
-YmVsaWV2ZSBhbGwgdGhlIHByZXZpb3VzIGNvbW1lbnRzIHdlcmUgYWRkcmVzc2VkLiAgTm93IHRo
-YXQgd2UndmUgY2xhcmlmaWVkIHRoYXQsIGFyZSB0aGVyZSBhbiBvdXRzdGFuZGluZyBvYmplY3Rp
-b25zIHRvIHRoZXNlIHBhdGNoZXM/ICBUaGUgcGF0Y2hlcyB0b3VjaCBib3RoIGRybSBhbmQgYXVk
-aW8uICBNeSBwcmVmZXJlbmNlIHdvdWxkIGJlIHRvIHRha2UgdGhlbSB0aHJvdWdoIHRoZSBkcm0g
-dHJlZSwgYnV0IEknbSBoYXBweSB0byBoYXZlIHRoZW0gZ28gdGhyb3VnaCB0aGUgYXVkaW8gdHJl
-ZSBpZiB5b3UgcHJlZmVyLgoKVGhhbmtzLAoKQWxleAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+The MINIX NEO Z83-4 and MINIX NEO Z83-4 Pro devices requires jd_mode=3
+to make the jack detection work. Using a BIOS DMI product of "Z83-4"
+will match both devices of 'NEO Z83-4' and 'Z83-4 Pro'.
+
+Signed-off-by: Ian W Morrison <ianwmorrison@gmail.com>
+---
+v3: Tabs are now tabs and not spaces
+v2: Applied and tested again sound -b for-next and linux-next -b master
+v1: Applied and tested again linux -b master
+---
+ sound/soc/codecs/rt5645.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index cd82302..6a7778a 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3655,6 +3655,21 @@ static int rt5645_resume(struct snd_soc_codec *codec)
+ 	{ }
+ };
+ 
++static struct rt5645_platform_data minix_z83_4_platform_data = {
++	.jd_mode = 3,
++};
++
++static struct dmi_system_id dmi_platform_minix_z83_4[] = {
++	{
++		.ident = "MINIX Z83-4",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MINIX"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Z83-4"),
++		},
++	},
++	{ }
++};
++
+ static bool rt5645_check_dp(struct device *dev)
+ {
+ 	if (device_property_present(dev, "realtek,in2-differential") ||
+@@ -3709,6 +3724,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		rt5645->pdata = gpd_win_platform_data;
+ 	else if (dmi_check_system(dmi_platform_asus_t100ha))
+ 		rt5645->pdata = general_platform_data2;
++	else if (dmi_check_system(dmi_platform_minix_z83_4))
++		rt5645->pdata = minix_z83_4_platform_data;
+ 
+ 	if (quirk != -1) {
+ 		rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
+-- 
+1.9.1
