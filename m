@@ -1,14 +1,14 @@
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/component 6/8] include/sound/soc.h:809:8:
- error: duplicate member 'set_sysclk'
-Date: Thu, 31 Aug 2017 02:11:19 +0800
-Message-ID: <201708310216.XkXrGkwX%fengguang.wu@intel.com>
+Subject: [asoc:topic/component 7/8] include/sound/soc.h:811:8:
+ error: duplicate member 'set_pll'
+Date: Thu, 31 Aug 2017 02:23:07 +0800
+Message-ID: <201708310204.zbyVeHPy%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="LQksG6bCIzRHxTLp"
+Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 65D7B2671BA
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 20:12:11 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEA4C2671C5
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 20:23:18 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,33 +24,39 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.
 List-Id: alsa-devel@alsa-project.org
 
 
---LQksG6bCIzRHxTLp
+--FCuugMFkClbJLl1L
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/component
 head:   880f02224c624fa2d6e4f8b2d37410fdc98b35fe
-commit: 9cfeb53411be7c08d7dd19bc4bf0599a6d211390 [6/8] ASoC: add Component level set_sysclk
+commit: 47bdbaa2c9a6dd7b112fb403b05dd9293b35a41c [7/8] ASoC: add Component level set_pll
 config: xtensa-allmodconfig (attached as .config)
 compiler: xtensa-linux-gcc (GCC) 4.9.0
 reproduce:
         wget https://raw.githubusercontent.com/01org/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout 9cfeb53411be7c08d7dd19bc4bf0599a6d211390
+        git checkout 47bdbaa2c9a6dd7b112fb403b05dd9293b35a41c
         # save the attached .config to linux build tree
         make.cross ARCH=xtensa 
 
 All errors (new ones prefixed by >>):
 
-   In file included from sound//soc/adi/axi-i2s.c:20:0:
->> include/sound/soc.h:809:8: error: duplicate member 'set_sysclk'
+   In file included from sound/soc/adi/axi-i2s.c:20:0:
+   include/sound/soc.h:809:8: error: duplicate member 'set_sysclk'
      int (*set_sysclk)(struct snd_soc_component *component,
            ^
-   include/sound/soc.h:889:8: error: duplicate member 'set_sysclk'
+>> include/sound/soc.h:811:8: error: duplicate member 'set_pll'
+     int (*set_pll)(struct snd_soc_component *component, int pll_id,
+           ^
+   include/sound/soc.h:891:8: error: duplicate member 'set_sysclk'
      int (*set_sysclk)(struct snd_soc_component *component,
+           ^
+   include/sound/soc.h:893:8: error: duplicate member 'set_pll'
+     int (*set_pll)(struct snd_soc_component *component, int pll_id,
            ^
 
-vim +/set_sysclk +809 include/sound/soc.h
+vim +/set_pll +811 include/sound/soc.h
 
    780	
    781	/* component interface */
@@ -83,33 +89,35 @@ vim +/set_sysclk +809 include/sound/soc.h
    808		/* component wide operations */
  > 809		int (*set_sysclk)(struct snd_soc_component *component,
    810				  int clk_id, int source, unsigned int freq, int dir);
-   811	
-   812		/* DT */
-   813		int (*of_xlate_dai_name)(struct snd_soc_component *component,
-   814					 struct of_phandle_args *args,
-   815					 const char **dai_name);
-   816		int (*of_xlate_dai_id)(struct snd_soc_component *comment,
-   817				       struct device_node *endpoint);
-   818		void (*seq_notifier)(struct snd_soc_component *, enum snd_soc_dapm_type,
-   819			int subseq);
-   820		int (*stream_event)(struct snd_soc_component *, int event);
-   821	
-   822		/* probe ordering - for components with runtime dependencies */
-   823		int probe_order;
-   824		int remove_order;
-   825	};
-   826	
+ > 811		int (*set_pll)(struct snd_soc_component *component, int pll_id,
+   812			       int source, unsigned int freq_in, unsigned int freq_out);
+   813	
+   814		/* DT */
+   815		int (*of_xlate_dai_name)(struct snd_soc_component *component,
+   816					 struct of_phandle_args *args,
+   817					 const char **dai_name);
+   818		int (*of_xlate_dai_id)(struct snd_soc_component *comment,
+   819				       struct device_node *endpoint);
+   820		void (*seq_notifier)(struct snd_soc_component *, enum snd_soc_dapm_type,
+   821			int subseq);
+   822		int (*stream_event)(struct snd_soc_component *, int event);
+   823	
+   824		/* probe ordering - for components with runtime dependencies */
+   825		int probe_order;
+   826		int remove_order;
+   827	};
+   828	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---LQksG6bCIzRHxTLp
+--FCuugMFkClbJLl1L
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICPf+plkAAy5jb25maWcAlFxbc9u4kn6fX6HK7MNu1ZmJLWc0md3yA0iCIo5IgiZAyfYL
+H4sICJwBp1kAAy5jb25maWcAlFxbc9u4kn6fX6HK7MNu1ZmJLWc0md3yA0iCIo5IgiZAyfYL
 S7GVxDW25JKUmcm/327whhvpnJfE/LpxazT6BlI///TzjHw7H16256eH7fPz99mX3X533J53
 j7PPT8+7/5tFfJZzOaMRk78Cc/q0//bP+3/Ou/1pO/vw6+XVrxe/HB8uZ6vdcb97noWH/een
 L9+gg6fD/qeffwp5HrNlfc9zWkcZuf7eIbeS5kJ7LjeCZvVtmCxJFNUkXfKSySQbGJY0pyUL
@@ -1053,11 +1061,11 @@ vmnLS7QPkBqmRcxja7hvBPRNSCQaRtnFuKe6ovsSmzyr3FPYiGrBtPyxdBDaIQ20+EGP8Bro
 /Md4JiCMo5x4ClTQCpkHx5gb9eyH52EjAY1HP8bybr3PPDUFdDz5MSFCQ6OrdUK3SzRGZM4T
 Nr3gMMDeqLEzqTgb8nYLo4I65+nGsajXMIVTECg4aVRnIDit/9L/AeMESai/IQMA
 
---LQksG6bCIzRHxTLp
+--FCuugMFkClbJLl1L
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---LQksG6bCIzRHxTLp--
+--FCuugMFkClbJLl1L--
