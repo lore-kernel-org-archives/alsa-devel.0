@@ -1,82 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt274: add acpi id" to the asoc tree
-Date: Wed, 30 Aug 2017 16:22:50 +0100
-Message-ID: <E1dn4pO-0003Up-BM@debutante>
-References: <1504067311-6416-1-git-send-email-bardliao@realtek.com>
+From: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>
+Subject: RE: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
+Date: Wed, 30 Aug 2017 15:46:02 +0000
+Message-ID: <BN6PR12MB16520B3DEC6531D112440D58F79C0@BN6PR12MB1652.namprd12.prod.outlook.com>
+References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
+ <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
+ <20170830151913.6vknazyhh4se5524@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CFDD2671BA
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 17:23:07 +0200 (CEST)
-In-Reply-To: <1504067311-6416-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, guneshwor.o.singh@intel.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <20170830151913.6vknazyhh4se5524-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: 'Mark Brown' <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, rajeev kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rt274: add acpi id
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 60b0fdeac19945107b956a8a2a0ba3a14827db60 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 30 Aug 2017 12:28:31 +0800
-Subject: [PATCH] ASoC: rt274: add acpi id
-
-Add ACPI id for Intel platform.
-
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt274.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index fb683ffc4e03..0be69c112c45 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -1102,6 +1102,7 @@ MODULE_DEVICE_TABLE(i2c, rt274_i2c_id);
- 
- static const struct acpi_device_id rt274_acpi_match[] = {
- 	{ "10EC0274", 0 },
-+	{ "INT34C2", 0 },
- 	{},
- };
- MODULE_DEVICE_TABLE(acpi, rt274_acpi_match);
--- 
-2.14.1
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IE1hcmsgQnJvd24gW21haWx0bzpi
+cm9vbmllQGtlcm5lbC5vcmddCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1c3QgMzAsIDIwMTcgMTE6
+MTkgQU0KPiBUbzogQWxleCBEZXVjaGVyCj4gQ2M6IGFtZC1nZnggbGlzdDsgTWFsaW5nIGxpc3Qg
+LSBEUkkgZGV2ZWxvcGVyczsgRGF2ZSBBaXJsaWU7IGFsc2EtZGV2ZWxAYWxzYS0KPiBwcm9qZWN0
+Lm9yZzsgTXVrdW5kYSwgVmlqZW5kYXI7IHJhamVldiBrdW1hcjsgcGVyZXhAcGVyZXguY3o7IExp
+YW0KPiBHaXJkd29vZDsgVGFrYXNoaSBJd2FpOyBEZXVjaGVyLCBBbGV4YW5kZXIKPiBTdWJqZWN0
+OiBSZTogW1BBVENIIDAvNiB2M10gQWRkIEFTb0Mgc3VwcG9ydCBmb3IgQU1EIFN0b25leSBBUFVz
+Cj4gCj4gT24gV2VkLCBBdWcgMzAsIDIwMTcgYXQgMDk6MzM6MzVBTSAtMDQwMCwgQWxleCBEZXVj
+aGVyIHdyb3RlOgo+IAo+ID4gQW55IGNvbW1lbnRzPyAgQ2FuIHRoaXMgcGF0Y2ggc2V0IGdvIGlu
+PyAgVGhpcyBpcyB0aGUgc2Vjb25kIHRpbWUgSSd2ZQo+ID4gcmVzZW50IGl0IHNpbmNlIHRoZSBh
+ZGRyZXNzaW5nIHRoZSBpbml0aWFsIGZlZWRiYWNrLiAgRG9lcyBhbnlvbmUgaGF2ZQo+ID4gYSBw
+cmVmZXJlbmNlIG9uIHdoaWNoIHRyZWU/Cj4gCj4gWW91IG5lZWQgdG8gZ2V0IHNvbWVvbmUgZnJv
+bSB0aGUgRFJNIHNpZGUgdG8gcGF5IGF0dGVudGlvbiB0byB0aGUgc2Vjb25kCj4gcGF0Y2ggYW5k
+IHlvdSBuZWVkIHRvIHN0b3AgcmVzZW5kaW5nIHRoZSBmaXJzdCBwYXRjaCBzaW5jZSBhcyBoYXMg
+YmVlbgo+IHBvaW50ZWQgb3V0IGEgZmV3IHRpbWVzIG5vdyB5b3UgbmVlZCB0byBzdG9wIHNlbmRp
+bmcgdGhlIGZpcnN0IHBhdGNoCj4gd2hpY2ggaXMgYWxyZWFkeSBpbiBMaW51cycgdHJlZS4KCkkg
+ZGlkbid0IHJlc2VudCBhbnkgcGF0Y2hlcyB0aGF0IGFyZSBhbHJlYWR5IHVwc3RyZWFtIGluIHYz
+IG9mIHRoaXMgcGF0Y2ggc2V0LiAgVGhlIHJlc3Qgb2YgdGhlIHBhdGNoZXMgaGF2ZSBkZXBlbmRl
+bmNpZXMgYmV0d2VlbiBkcm0gYW5kIGF1ZGlvLiAgSSdkIGxpa2UgdG8gZ2V0IHRoZW0gaW4gYWxs
+IHRvZ2V0aGVyIHZpYSBvbmUgdHJlZSBvciB0aGUgb3RoZXIuCgpBbGV4CgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphbWQtZ2Z4IG1haWxpbmcgbGlzdAph
+bWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1nZngK
