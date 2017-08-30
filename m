@@ -1,14 +1,17 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5663: Add delay for jack plug in
-Date: Wed, 30 Aug 2017 13:08:31 +0800
-Message-ID: <1504069711-6549-1-git-send-email-oder_chiou@realtek.com>
+From: boozer asm <asmboozer@gmail.com>
+Subject: memory leak in mix/pcm_upmix.c mix/pcm_downmix.c!!!
+Date: Wed, 30 Aug 2017 13:51:59 +0800
+Message-ID: <CAOccgsWUyUujUUzeKLwXhgYG+1axUvcWtTpiWmdoZ4WH0rWqUg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 646C5267049
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 07:08:47 +0200 (CEST)
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3E79266C52
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 07:52:01 +0200 (CEST)
+Received: by mail-oi0-f45.google.com with SMTP id r203so43837619oih.0
+ for <alsa-devel@alsa-project.org>; Tue, 29 Aug 2017 22:52:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,32 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, Hsinyu Chao <hychao@chromium.org>, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Codec initialize takes some time when 3.5mm jack plugged in. Add a
-delay to report jack plugged event to user space to avoid pop noise.
+eg.
+in function:SND_PCM_PLUGIN_DEFINE_FUNC(upmix)
+487     mix = calloc(1, sizeof(*mix));
+488     if (mix == NULL)
+489         return -ENOMEM;
 
-Signed-off-by: Hsinyu Chao <hychao@chromium.org>
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5663.c | 3 +++
- 1 file changed, 3 insertions(+)
+mix is allocated here. but at close function, it is not freed, and no
+__destructor function available to free it.
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index c98a8a7..ab9e0eb 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1705,6 +1705,9 @@ static void rt5663_jack_detect_work(struct work_struct *work)
- 			default:
- 				dev_err(codec->dev, "Unknown CODEC Version\n");
- 			}
-+
-+			/* Delay the jack insert report to avoid pop noise */
-+			msleep(30);
- 		} else {
- 			/* jack is already in, report button event */
- 			report = SND_JACK_HEADSET;
--- 
-2.7.4
+and in alsa-lib/src/pcm/pcm_extplug.c
+static int snd_pcm_extplug_close(snd_pcm_t *pcm)
+{
+    extplug_priv_t *ext = pcm->private_data;
+
+    snd_pcm_close(ext->plug.gen.slave);
+    clear_ext_params(ext);
+    if (ext->data->callback->close)
+    {
+        ext->data->callback->close(ext->data);
+    }
+    free(ext);
+    return 0;
+}
+this function does NOT free ext->data.
+and
+366 static int upmix_close(snd_pcm_extplug_t *ext)
+367 {
+368     snd_pcm_upmix_t *mix = (snd_pcm_upmix_t *)ext;
+369     free(mix->delayline[0]);
+370     free(mix->delayline[1]);
+371     return 0;
+372 }
+
+and this function does NOT free mix itself.
+
+so I think there is memory leak.
