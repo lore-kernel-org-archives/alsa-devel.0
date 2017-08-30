@@ -1,68 +1,53 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 0/6 v3] Add ASoC support for AMD Stoney APUs
-Date: Wed, 30 Aug 2017 09:33:35 -0400
-Message-ID: <CADnq5_NV0wmstpos9Hqc_dbTAOOOUozb=B_-6vd1PhD=zCMLhQ@mail.gmail.com>
-References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
+From: "S. Christian Collins" <s.chriscollins@gmail.com>
+Subject: Re: "alsactl store" fails to save Echo Gina3G mixer
+Date: Wed, 30 Aug 2017 09:17:49 -0500
+Message-ID: <13fd0b91-d0ed-3b8e-4042-1ad996135661@gmail.com>
+References: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
+ <1fa01cef-7159-b1b2-8ec6-5eab7f2a7e29@sakamocchi.jp>
+ <1708292129400.21841@stax.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <1503079830-16072-1-git-send-email-alexander.deucher-5C7GfCeVMHo@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Vijendar Mukunda <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, rajeev kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
+ [209.85.214.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12113266C5E
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 16:17:54 +0200 (CEST)
+Received: by mail-it0-f67.google.com with SMTP id 77so1126219itj.0
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 07:17:54 -0700 (PDT)
+In-Reply-To: <1708292129400.21841@stax.localdomain>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Hills <mark@xwax.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgMTgsIDIwMTcgYXQgMjoxMCBQTSwgQWxleCBEZXVjaGVyIDxhbGV4ZGV1Y2hl
-ckBnbWFpbC5jb20+IHdyb3RlOgo+IFRoaXMgcGF0Y2ggc2V0IHVwZGF0ZXMgdGhlIEFNRCBHUFUg
-YW5kIEF1ZGlvIENvUHJvY2Vzc29yIChBQ1ApCj4gYXVkaW8gZHJpdmVycyBhbmQgdGhlIGRlc2ln
-bndhcmUgaTJzIGRyaXZlciBmb3IgU3RvbmV5IChTVCkuCj4gU1QgaXMgYW4gQVBVIHNpbWlsYXIg
-dG8gQ2Fycml6byAoQ1opIHdoaWNoIGFscmVhZHkgaGFzIEFDUCBhdWRpbwo+IHN1cHBvcnQuICBU
-aGUgaTJzIGNvbnRyb2xsZXIgYW5kIEFDUCBhdWRpbyBETUEgZW5naW5lIGFyZSBwYXJ0IG9mCj4g
-dGhlIEdQVSBhbmQgYm90aCBuZWVkIHVwZGF0aW5nIHNvIEkgd291bGQgbGlrZSB0byB1cHN0cmVh
-bSB0aGUKPiB3aG9sZSBwYXRjaCBzZXQgdmlhIG9uZSB0cmVlIGlmIHBvc3NpYmxlLgo+Cj4gVGhl
-IGN1cnJlbnQgY29kZSBpcyBiYXNlZCBvbiBkcm0tbmV4dCwgYnV0IEknbSBoYXBweSB0byByZWJh
-c2Ugb24KPiB3aGF0ZXZlciB0cmVlIHRoaXMgZW5kcyB1cCBnb2luZyB0aHJvdWdoIGlmIHRoZXJl
-IGFyZSBhbnkgcHJvYmxlbXMKPiBhcHBseWluZy4gIFRoZXNlIHBhdGNoZXMgdG91Y2ggYm90aCBh
-dWRpbyBhbmQgZHJtLgo+Cj4gVGhlIGVudGlyZSBwYXRjaCBzZXQgY2FuIGJlIHZpZXdlZCBoZXJl
-Ogo+IGh0dHBzOi8vY2dpdC5mcmVlZGVza3RvcC5vcmcvfmFnZDVmL2xpbnV4L2xvZy8/aD1zdG9u
-ZXlfYWNwMgo+CgpBbnkgY29tbWVudHM/ICBDYW4gdGhpcyBwYXRjaCBzZXQgZ28gaW4/ICBUaGlz
-IGlzIHRoZSBzZWNvbmQgdGltZSBJJ3ZlCnJlc2VudCBpdCBzaW5jZSB0aGUgYWRkcmVzc2luZyB0
-aGUgaW5pdGlhbCBmZWVkYmFjay4gIERvZXMgYW55b25lIGhhdmUKYSBwcmVmZXJlbmNlIG9uIHdo
-aWNoIHRyZWU/CgpUaGFua3MsCgpBbGV4Cgo+IFRoYW5rcyEKPgo+IEFsZXgKPgo+IHYyOgo+IC0g
-UGF0Y2ggMSBpcyBhbHJlYWR5IGFwcGxpZWQgdG8gdGhlIGF1ZGlvIHRyZWUsIGp1c3QgaW5jbHVk
-aW5nIGl0IGZvcgo+ICAgY29tcGxldGVuZXNzIHNpbmNlIGl0J3MgcmVxdWlyZWQgZm9yIHRoaXMg
-cGF0Y2ggc2V0IGFuZCBpdCdzIG5vdCB5ZXQKPiAgIGluIHRoZSBkcm0gdHJlZS4KPiAtIE5ldyBw
-YXRjaCB0byBzaGFyZSBhc2ljIHR5cGVzIGJldHdlZW4gZ3B1IGFuZCBhdWRpbyBkcml2ZXJzCj4g
-LSBBQ1BJIElEIGNoYW5nZWQgZm9yIHJ0NTY1MCBtYWNoaW5lIGRyaXZlcgo+IC0gSW50ZWdyYXRl
-IGZlZWRiYWNrIG9uIG90aGVyIHBhdGNoZXMKPgo+IHYzOgo+IC0gcmVzZW5kIHJlbWFpbmluZyBw
-YXRjaGVzIHRoYXQgaGF2ZSBub3QgYmVlbiBhcHBsaWVkIHlldAo+Cj4gQWtzaHUgQWdyYXdhbCAo
-Mik6Cj4gICBkcm0vYW1kZ3B1IE1vdmluZyBhbWRncHUgYXNpYyB0eXBlcyB0byBhIHNlcGFyYXRl
-IGZpbGUKPiAgIEFTb0M6IEFNRDogQWRkIG1hY2hpbmUgZHJpdmVyIGZvciBjeiBydDU2NTAKPgo+
-IFZpamVuZGFyIE11a3VuZGEgKDQpOgo+ICAgZHJtL2FtZC9hbWRncHU6IEFkZGVkIGFzaWNfdHlw
-ZSBhcyBBQ1AgRE1BIGRyaXZlciBwbGF0Zm9ybSBkYXRhCj4gICBBU29DOiBBTUQ6IGRpc2FibGlu
-ZyBtZW1vcnkgZ2F0aW5nIGluIHN0b25leSBwbGF0Zm9ybQo+ICAgQVNvQzogQU1EOiBETUEgZHJp
-dmVyIGNoYW5nZXMgZm9yIFN0b25leSBQbGF0Zm9ybQo+ICAgQVNvQzogQU1EOiBBdWRpbyBidWZm
-ZXIgcmVsYXRlZCBjaGFuZ2VzIGZvciBTdG9uZXkKPgo+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2Ft
-ZGdwdS9hbWRncHVfYWNwLmMgIHwgICAyICsKPiAgZHJpdmVycy9ncHUvZHJtL2FtZC9pbmNsdWRl
-L2FtZF9zaGFyZWQuaCB8ICAyOSArLS0tCj4gIGluY2x1ZGUvZHJtL2FtZF9hc2ljX3R5cGUuaCAg
-ICAgICAgICAgICAgfCAgNTIgKysrKysrKwo+ICBzb3VuZC9zb2MvYW1kL0tjb25maWcgICAgICAg
-ICAgICAgICAgICAgIHwgICA3ICsKPiAgc291bmQvc29jL2FtZC9NYWtlZmlsZSAgICAgICAgICAg
-ICAgICAgICB8ICAgMiArCj4gIHNvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyAgICAgICAgICAg
-ICAgfCAyNDMgKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLQo+ICBzb3VuZC9zb2MvYW1k
-L2FjcC1ydDU2NDUuYyAgICAgICAgICAgICAgIHwgMjEwICsrKysrKysrKysrKysrKysrKysrKysr
-KysrCj4gIHNvdW5kL3NvYy9hbWQvYWNwLmggICAgICAgICAgICAgICAgICAgICAgfCAgIDkgKysK
-PiAgOCBmaWxlcyBjaGFuZ2VkLCA0NzIgaW5zZXJ0aW9ucygrKSwgODIgZGVsZXRpb25zKC0pCj4g
-IGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9hbWRfYXNpY190eXBlLmgKPiAgY3JlYXRl
-IG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9hbWQvYWNwLXJ0NTY0NS5jCj4KPiAtLQo+IDIuNS41Cj4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBt
-YWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5m
-cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
+On 08/29/2017 03:36 PM, Mark Hills wrote:
+> I think you're suffering the same problem I am with my Echo Layla 3G. Does
+> 'echomixer' work?
+
+Yes, 'echomixer' works fine for me. I have to launch it on occasion to 
+properly set my audio output level (just launching it restores the 
+correct level). I didn't have to do this in the past, so I'm guessing 
+it's probably related to the problem with 'alsactl store' not working 
+anymore for the card.
+
+> I have been intending to make a 'proper' report to the list, or even
+> investigate more myself. But priorities did not permit that yet. I also
+> wasn't able to find information on what these fields actually mean. As far
+> as I could tell, some of these attributes are unique to the echo3g and
+> echomixer.
+
+Yeah, I've never seen a mixer quite like this one. Using 'alsamixer' to 
+adjust my Echo3G is almost pointless, since it is impossible to tell 
+what is what.
+
+-~Chris
