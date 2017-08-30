@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: Add delay for jack plug in" to
-	the asoc tree
-Date: Wed, 30 Aug 2017 16:22:47 +0100
-Message-ID: <E1dn4pL-0003Th-7F@debutante>
-References: <1504069711-6549-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rt274: add acpi id" to the asoc tree
+Date: Wed, 30 Aug 2017 16:22:50 +0100
+Message-ID: <E1dn4pO-0003Up-BM@debutante>
+References: <1504067311-6416-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3340B2671BA
- for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 17:22:50 +0200 (CEST)
-In-Reply-To: <1504069711-6549-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CFDD2671BA
+ for <alsa-devel@alsa-project.org>; Wed, 30 Aug 2017 17:23:07 +0200 (CEST)
+In-Reply-To: <1504067311-6416-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, Hsinyu Chao <hychao@chromium.org>, flove@realtek.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, guneshwor.o.singh@intel.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: Add delay for jack plug in
+   ASoC: rt274: add acpi id
 
 has been applied to the asoc tree at
 
@@ -52,34 +52,31 @@ to this mail.
 Thanks,
 Mark
 
->From 9c324afe3b90e406b15938acafaa2636a7e85ff3 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Wed, 30 Aug 2017 13:08:31 +0800
-Subject: [PATCH] ASoC: rt5663: Add delay for jack plug in
+>From 60b0fdeac19945107b956a8a2a0ba3a14827db60 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 30 Aug 2017 12:28:31 +0800
+Subject: [PATCH] ASoC: rt274: add acpi id
 
-Codec initialize takes some time when 3.5mm jack plugged in. Add a
-delay to report jack plugged event to user space to avoid pop noise.
+Add ACPI id for Intel platform.
 
-Signed-off-by: Hsinyu Chao <hychao@chromium.org>
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/rt274.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index fdc2bbcb67c2..14716d25173b 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1705,6 +1705,9 @@ static void rt5663_jack_detect_work(struct work_struct *work)
- 			default:
- 				dev_err(codec->dev, "Unknown CODEC Version\n");
- 			}
-+
-+			/* Delay the jack insert report to avoid pop noise */
-+			msleep(30);
- 		} else {
- 			/* jack is already in, report button event */
- 			report = SND_JACK_HEADSET;
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index fb683ffc4e03..0be69c112c45 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -1102,6 +1102,7 @@ MODULE_DEVICE_TABLE(i2c, rt274_i2c_id);
+ 
+ static const struct acpi_device_id rt274_acpi_match[] = {
+ 	{ "10EC0274", 0 },
++	{ "INT34C2", 0 },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(acpi, rt274_acpi_match);
 -- 
 2.14.1
