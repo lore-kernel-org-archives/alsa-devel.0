@@ -1,86 +1,96 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6 v3] ASoC: AMD: Audio buffer related
-	changes for Stoney
-Date: Thu, 31 Aug 2017 12:27:27 +0100
-Message-ID: <20170831112727.rsqk6kiiakn6xb5k@sirena.org.uk>
+Subject: Re: [PATCH 6/6 v3] ASoC: AMD: Add machine driver for cz rt5650
+Date: Thu, 31 Aug 2017 12:38:02 +0100
+Message-ID: <20170831113802.x75watdrylvjivkl@sirena.org.uk>
 References: <1503079830-16072-1-git-send-email-alexander.deucher@amd.com>
- <1503079830-16072-6-git-send-email-alexander.deucher@amd.com>
+ <1503079830-16072-7-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4112981904083623036=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 32807267217
- for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 13:27:29 +0200 (CEST)
-In-Reply-To: <1503079830-16072-6-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============1340287793=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1503079830-16072-7-git-send-email-alexander.deucher@amd.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, airlied@gmail.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4112981904083623036==
+--===============1340287793==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jlj4fajhflrc3ecs"
+	protocol="application/pgp-signature"; boundary="dnjdc4dixqcdcuhz"
 Content-Disposition: inline
 
 
---jlj4fajhflrc3ecs
+--dnjdc4dixqcdcuhz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 18, 2017 at 02:10:29PM -0400, Alex Deucher wrote:
+On Fri, Aug 18, 2017 at 02:10:30PM -0400, Alex Deucher wrote:
 
-> +#define ST_PLAYBACK_MAX_PERIOD_SIZE 8192
-> +#define ST_CAPTURE_MAX_PERIOD_SIZE  8192
-> +#define ST_MAX_BUFFER (ST_PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
+> +++ b/sound/soc/amd/Kconfig
+> @@ -2,3 +2,10 @@ config SND_SOC_AMD_ACP
+>  	tristate "AMD Audio Coprocessor support"
+>  	help
+>  	 This option enables ACP DMA support on AMD platform.
+> +config SND_SOC_AMD_CZ_RT5645_MACH
+> +	tristate "AMD CZ support for RT5645"
 
-These defines will go wrong if the capture size is changed independently
-of the playback size.  Either just use a single define for both or have
-separate defines for the maximum buffer as well as for the period.
+Missing blank line between the stanzas.
 
-> +#define ST_MIN_BUFFER ST_MAX_BUFFER
->  static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
+> +	select SND_SOC_RT5645
+> +	select SND_SOC_AMD_ACP
+> +	depends on I2C_DESIGNWARE_PLATFORM
 
-Missing blank line between the defines and here.
+No system dependencies of any kind?  Looking at this I'd expect at least
+CONFIG_ACPI || COMPILE_TEST.  It's also unclear to me how the DesignWare
+device is going to be instantiated here or if that should be a direct
+depenency at all here.
 
-> +	if (adata->asic_type == CHIP_STONEY)
-> +		return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
+> +	ret = snd_soc_register_card(card);
 
-As I've said previously it's better to write these variant checks as
-switch statements, that way if more variants appear (or special handling
-is discovered for existing chips) the code can be modified more cleanly.
+devm_snd_soc_register_card() and then you don't need the remove
+function.
 
---jlj4fajhflrc3ecs
+> +static const struct acpi_device_id cz_audio_acpi_match[] = {
+> +	{ "AMDI1002", 0 },
+> +	{},
+> +};
+> +
+
+Missing MODULE_DEVICE_TABLE().
+
+--dnjdc4dixqcdcuhz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmn8p8ACgkQJNaLcl1U
-h9AneAf+JyzM8W/whRquV7oxf5g6K5o4KublyXowFGWfvySrletHk0HY63dk+Xdv
-WIeNgQlI1j3yQLW03LbPz+FfTdjRRyrm887jCFIxjulAujY3p6pAJaDVaPLabLKG
-x1bCfdvRM8T18Yy+yzvUKidBNj55Eu0QDdFCyUBCW3O21Zp/b4AnXotWJnNU7nJV
-Dq2KkMU8pIA4LM9DfD/9VtH58j8nKiCOoHdYSB/L54bUmM+4Qf1sHnpXUd1H+rJn
-+lx+lWhvarayUZuuGE972GeN7XU1lLYbVxGSutRuEl0q9xe5Kuk+Yv3n9AlVSgGk
-zNK25rrl1G9OOw4ZeiJcF9QySRbosQ==
-=CR21
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmn9RkACgkQJNaLcl1U
+h9AaiQf7BCnOCHyg/cG8zLQjVhg6uvoa60zVKgDdQ8CvCG9Ii9jPZpBP98U2IkVk
+rutX+rj/f3m7/klKG1MCLSonIcmAve+eEKKPygmFr/DtRIPq4AprmKzx2ua81W6o
+pCTF+x9t8PNQFTFspmrsBS+oougRYqKinzzb7XypMcljNn/1iK5SWhQrL8ipLLAU
+vhVX+9aQxUko713DTuIhV5q4bKCQ6ixRBrYqGHt2crUd76BbEaNhw29NZNtRTgZX
+TTRs4LphvEPVlmBFPXCvWOfoNob6M4AAI6ceroXQquK06bUn/XcbEvHqrKRuW43o
+Jb+JjE0UBzhdATeYbtnnPXe0poj15Q==
+=/ZCT
 -----END PGP SIGNATURE-----
 
---jlj4fajhflrc3ecs--
+--dnjdc4dixqcdcuhz--
 
---===============4112981904083623036==
-Content-Type: text/plain; charset="us-ascii"
+--===============1340287793==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============4112981904083623036==--
+--===============1340287793==--
