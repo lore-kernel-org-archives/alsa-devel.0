@@ -1,104 +1,52 @@
-From: Code Kipper <codekipper@gmail.com>
-Subject: Re: [PATCH v5 0/8] ASoC: Add I2S support for Allwinner H3 SoCs
-Date: Thu, 31 Aug 2017 13:53:01 +0200
-Message-ID: <CAEKpxBkCWMHNZKkyioEBqj7-GMLwQmaW6wVTXD5+MUDeMz_DjA@mail.gmail.com>
-References: <20170819124839.4034-1-codekipper@gmail.com> <CAEKpxBngDox_f3nv=RPuKCnKAqzUB=7--k6y2wHKAFtWtsU_9w@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/9] ASoC: max98927: Removed obsolete variables
+Date: Thu, 31 Aug 2017 12:53:59 +0100
+Message-ID: <20170831115359.bjw3wbihjzcuh3nh@sirena.org.uk>
+References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
+ <1503963061-14763-5-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2xu6zc3r5huj2vbz"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAEKpxBngDox_f3nv=RPuKCnKAqzUB=7--k6y2wHKAFtWtsU_9w@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <1503963061-14763-5-git-send-email-ryans.lee@maximintegrated.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-sunxi <linux-sunxi@googlegroups.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "Andrea Venturi (pers)" <be17068@iperbole.bo.it>, Marcus Cooper <codekipper@gmail.com>
+To: Ryan Lee <ryans.lee@maximintegrated.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 31 August 2017 at 13:50, Code Kipper <codekipper@gmail.com> wrote:
-> Hi Mark,
->
-> Wens has given this patch series his blessing so it's good to go.
->
-> Let us know if you need me to resubmit,
-I take that back as I can see that's all been submitted.
-Thanks,
-CK
 
->
-> BR,
-> CK
-> On 19 August 2017 at 14:48,  <codekipper@gmail.com> wrote:
->> From: Marcus Cooper <codekipper@gmail.com>
->>
->> Hi All,
->> please find attached a series of patches to bring i2s support to the
->> Allwinner H3 SoC. This has been tested with the following setups:
->>
->> A20 Olimex EVB connected to a pcm5102
->> Orange Pi 2 connected to a uda1380
->> Orange Pi 2 hdmi audio playback
->> Pine 64 connected to the audio DAC board
->>
->> To get i2s working some additional patches are required which will be
->> delivered later. For now they have been pushed here
->>
->> https://github.com/codekipper/linux-sunxi/commits/sunxi-audio-h3
->>
->> I don't own a A33 device which uses the i2s block for the audio codec
->> so if someone could test against that it would be much appreciated.
->>
->> I'm also wondering if there is a preferred way of setting the lrclk
->> size in the dts?..currently it is set to the sample width but for example
->> the pcm5102a wants it to be 32 bits whatever the sample rate.
->>
->> Thanks in advance,
->> CK
->>
->> ---
->>
->> v5 changes compared to v4 are:
->> - fixed bad logic in fmt0 set LRCK period define.
->> - fixed PTR_ERR checks in init of regmap fields
->> - added reviewed-by to commit messages
->> - removed delivered patches
->>
->> v4 changes compared to v3 are:
->> - moved clkdiv variant adjustment out of function
->> - used PTR_ERR_OR_ZERO for checks
->> - tidy up of extra lines and lines over 80 chars.
->> - reduced names of polarity, wss and sr reg fields.
->> - added reviewed-by to commit messages
->> - added comments for functionality that hasn't been implemented yet.
->> - removed delivered patches
->>
->> v3 changes compared to v2 are:
->> - initial changes to prepare driver for newer SoCs has been broken down
->>   into smaller patches
->> - reduce use of regmap fields to where just needed.
->> - clkdiv expansion will be delivered later.
->> - defines for H3 variant segregated.
->> - fixed regmap config issue with SUN8I_I2S_FIFO_TX_REG.
->>
->> v2 changes compared to v1 are:
->>  - massive refactoring to remove duplicate code making use of regmap_fields.
->>  - extending the clock divisors.
->>  - removed code that should be delivered when we support 20/24bits
->>
->> ---
->>
->> Marcus Cooper (8):
->>   ASoC: sun4i-i2s: Add regmap fields for channels
->>   ASoC: sun4i-i2s: Add regfields for word size select and sample
->>     resolution
->>   ASoC: sun4i-i2s: bclk and lrclk polarity tidyup
->>   ASoC: sun4i-i2s: Add mclk enable regmap field
->>   ASoC: sun4i-i2s: Add regmap field to set DAI format
->>   ASoC: sun4i-i2s: Check for slave select bit
->>   ASoC: sun4i-i2s: Update global enable with bitmask
->>   ASoC: sun4i-i2s: Add support for H3
->>
->>  .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
->>  sound/soc/sunxi/sun4i-i2s.c                        | 406 ++++++++++++++++++---
->>  2 files changed, 357 insertions(+), 51 deletions(-)
->>
->> --
->> 2.14.1
->>
+--2xu6zc3r5huj2vbz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Aug 28, 2017 at 04:30:57PM -0700, Ryan Lee wrote:
+> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+
+Why are these variables obsolete?  If their use was removed in earlier
+patches in the series they should be handled in that patch, if they're
+just unused say so.  In general your changelogs could really benefit
+=66rom being a bit longer and explaining why changes are being made.
+
+>  mode change 100644 =3D> 100755 sound/soc/codecs/max98927.h
+
+This also changes the permissions to be executable which isn't what we
+want.
+
+--2xu6zc3r5huj2vbz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmn+NYACgkQJNaLcl1U
+h9DKHwgAgxiQ+BPpJqoVBHq2jCx+bf63FCdSLRmtlRifXyCmYtMXrKIYOMfypBS0
+eMa+iorl+lG4sprZ1k3+Cxt4WiiNu4WHk1Ej7Z9kbU+3F8+K8uaI6Juj6WGSIKSK
+UXU8QjecdPwEMc7+ii9lr4xehfCjkUL0FtrtCqwHl22BeztcAe3w+3xGw/ydtLLd
+zalQcpiSRkJdVirY+sK/43dR08nktuuO638HgDG02/pXi9KKK7mYhmzn6rmngfP+
+fn0yvxrbd04/+zRgNv4NOHWOgYH1Cey1/rWBHiMrObbVC3CJpKJwO65IGJsmcHDR
+7nsDa+5aHB/anAX+4oAL82qJiaWHYw==
+=5ISB
+-----END PGP SIGNATURE-----
+
+--2xu6zc3r5huj2vbz--
