@@ -1,33 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98927: Modified DAPM widget and map
-	to enable/disable VI sense path" to the asoc tree
-Date: Thu, 31 Aug 2017 12:54:37 +0100
-Message-ID: <E1dnO3R-0000iK-1o@debutante>
-References: <1503708070-7906-8-git-send-email-ryans.lee@maximintegrated.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0ECF42673A1
- for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 13:54:48 +0200 (CEST)
-In-Reply-To: <1503708070-7906-8-git-send-email-ryans.lee@maximintegrated.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Subject: Applied "ALSA: ac97c: Fix an error handling path in 'atmel_ac97c_probe()'" to the asoc tree
+Date: Thu, 31 Aug 2017 12:55:00 +0100
+Message-ID: <E1dnO3o-0000oV-Qv@debutante>
+References: <20170831044042.23306-1-christophe.jaillet@wanadoo.fr>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20170831044042.23306-1-christophe.jaillet@wanadoo.fr>
+Sender: kernel-janitors-owner@vger.kernel.org
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, arvind.yadav.cs@gmail.com, nicolas.ferre@microchip.combroonie@kernel.org, garsilva@embeddedor.com, andriy.shevchenko@linux.intel.com, bhumirks@gmail.comChristophe JAILLET <christophe.jaillet@wanadoo.fr>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98927: Modified DAPM widget and map to enable/disable VI sense path
+   ALSA: ac97c: Fix an error handling path in 'atmel_ac97c_probe()'
 
 has been applied to the asoc tree at
 
@@ -52,88 +36,45 @@ to this mail.
 Thanks,
 Mark
 
->From 607f7777bf0c0224bfadd31a37acc8d1fd25324d Mon Sep 17 00:00:00 2001
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Date: Mon, 28 Aug 2017 16:31:00 -0700
-Subject: [PATCH] ASoC: max98927: Modified DAPM widget and map to
- enable/disable VI sense path
+>From 0515760fa1159ffa863c7b2b73466aaff7d11a80 Mon Sep 17 00:00:00 2001
+From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+Date: Thu, 31 Aug 2017 06:40:42 +0200
+Subject: [PATCH] ALSA: ac97c: Fix an error handling path in
+ 'atmel_ac97c_probe()'
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+If 'clk_prepare_enable()' fails, we must release some resources before
+returning. Add a new label in the existing error handling path and 'goto'
+there.
+
+Fixes: 260ea95cc027 ("ASoC: atmel: ac97c: Handle return value of clk_prepare_enable.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98927.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ sound/atmel/ac97c.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index caf5340ca6bb..4bbf2098f255 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -418,11 +418,6 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R003A_AMP_EN,
- 			MAX98927_AMP_EN_MASK, 1);
--		/* enable VMON and IMON */
--		regmap_update_bits(max98927->regmap,
--			MAX98927_R003E_MEAS_EN,
--			MAX98927_MEAS_V_EN | MAX98927_MEAS_I_EN,
--			MAX98927_MEAS_V_EN | MAX98927_MEAS_I_EN);
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R00FF_GLOBAL_SHDN,
- 			MAX98927_GLOBAL_EN_MASK, 1);
-@@ -434,10 +429,6 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R003A_AMP_EN,
- 			MAX98927_AMP_EN_MASK, 0);
--		/* disable VMON and IMON */
--		regmap_update_bits(max98927->regmap,
--			MAX98927_R003E_MEAS_EN,
--			MAX98927_MEAS_V_EN | MAX98927_MEAS_I_EN, 0);
- 		break;
- 	default:
- 		return 0;
-@@ -456,14 +447,24 @@ static const struct soc_enum dai_sel_enum =
- static const struct snd_kcontrol_new max98927_dai_controls =
- 	SOC_DAPM_ENUM("DAI Sel", dai_sel_enum);
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 52b0522fda20..d78405329ceb 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -785,7 +785,7 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+ 	}
+ 	retval = clk_prepare_enable(pclk);
+ 	if (retval)
+-		return retval;
++		goto err_prepare_enable;
  
-+static const struct snd_kcontrol_new max98927_vi_control =
-+	SOC_DAPM_SINGLE("Switch", MAX98927_R003F_MEAS_DSP_CFG, 2, 1, 0);
-+
- static const struct snd_soc_dapm_widget max98927_dapm_widgets[] = {
--	SND_SOC_DAPM_AIF_IN("DAI_OUT", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback", MAX98927_R003A_AMP_EN,
- 		0, 0, max98927_dac_event,
- 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_MUX("DAI Sel Mux", SND_SOC_NOPM, 0, 0,
- 		&max98927_dai_controls),
- 	SND_SOC_DAPM_OUTPUT("BE_OUT"),
-+	SND_SOC_DAPM_AIF_OUT("Voltage Sense", "HiFi Capture",  0,
-+		MAX98927_R003E_MEAS_EN, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("Current Sense", "HiFi Capture",  0,
-+		MAX98927_R003E_MEAS_EN, 1, 0),
-+	SND_SOC_DAPM_SWITCH("VI Sense", SND_SOC_NOPM, 0, 0,
-+		&max98927_vi_control),
-+	SND_SOC_DAPM_SIGGEN("VMON"),
-+	SND_SOC_DAPM_SIGGEN("IMON"),
- };
- 
- static DECLARE_TLV_DB_SCALE(max98927_spk_tlv, 300, 300, 0);
-@@ -550,11 +551,16 @@ static const struct snd_kcontrol_new max98927_snd_controls[] = {
- };
- 
- static const struct snd_soc_dapm_route max98927_audio_map[] = {
--	{"Amp Enable", NULL, "DAI_OUT"},
-+	/* Plabyack */
- 	{"DAI Sel Mux", "Left", "Amp Enable"},
- 	{"DAI Sel Mux", "Right", "Amp Enable"},
- 	{"DAI Sel Mux", "LeftRight", "Amp Enable"},
- 	{"BE_OUT", NULL, "DAI Sel Mux"},
-+	/* Capture */
-+	{ "VI Sense", "Switch", "VMON" },
-+	{ "VI Sense", "Switch", "IMON" },
-+	{ "Voltage Sense", NULL, "VI Sense" },
-+	{ "Current Sense", NULL, "VI Sense" },
- };
- 
- static struct snd_soc_dai_driver max98927_dai[] = {
+ 	retval = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1,
+ 			      SNDRV_DEFAULT_STR1, THIS_MODULE,
+@@ -881,6 +881,7 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+ 	snd_card_free(card);
+ err_snd_card_new:
+ 	clk_disable_unprepare(pclk);
++err_prepare_enable:
+ 	clk_put(pclk);
+ 	return retval;
+ }
 -- 
 2.14.1
+
