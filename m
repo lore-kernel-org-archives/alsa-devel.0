@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98927: Changed device property read function" to the asoc tree
-Date: Thu, 31 Aug 2017 12:54:29 +0100
-Message-ID: <E1dnO3J-0000h2-BV@debutante>
-References: <1503708070-7906-9-git-send-email-ryans.lee@maximintegrated.com>
+Subject: Applied "ASoC: max98927: Added PM suspend and resume function" to the asoc tree
+Date: Thu, 31 Aug 2017 12:54:42 +0100
+Message-ID: <E1dnO3W-0000jL-PV@debutante>
+References: <1497910046-3369-7-git-send-email-ryans.lee@maximintegrated.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1503708070-7906-9-git-send-email-ryans.lee@maximintegrated.com>
+In-Reply-To: <1497910046-3369-7-git-send-email-ryans.lee@maximintegrated.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.comalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98927: Changed device property read function
+   ASoC: max98927: Added PM suspend and resume function
 
 has been applied to the asoc tree at
 
@@ -36,39 +36,61 @@ to this mail.
 Thanks,
 Mark
 
->From dea110501745734baf7a90dc1e1b50481ade6191 Mon Sep 17 00:00:00 2001
+>From f81991ddd001981bbe4ea0d25f88a4f95fb018be Mon Sep 17 00:00:00 2001
 From: Ryan Lee <ryans.lee@maximintegrated.com>
-Date: Mon, 28 Aug 2017 16:31:01 -0700
-Subject: [PATCH] ASoC: max98927: Changed device property read function
+Date: Mon, 28 Aug 2017 16:30:59 -0700
+Subject: [PATCH] ASoC: max98927: Added PM suspend and resume function
 
 Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98927.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max98927.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 4bbf2098f255..926871e36132 100644
+index 5b853604120a..caf5340ca6bb 100644
 --- a/sound/soc/codecs/max98927.c
 +++ b/sound/soc/codecs/max98927.c
-@@ -759,14 +759,14 @@ static void max98927_slot_config(struct i2c_client *i2c,
- 	struct max98927_priv *max98927)
- {
- 	int value;
-+	struct device *dev = &i2c->dev;
+@@ -701,6 +701,31 @@ static int max98927_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
  
--	if (!of_property_read_u32(i2c->dev.of_node,
--		"vmon-slot-no", &value))
-+	if (!device_property_read_u32(dev, "vmon-slot-no", &value))
- 		max98927->v_l_slot = value & 0xF;
- 	else
- 		max98927->v_l_slot = 0;
--	if (!of_property_read_u32(i2c->dev.of_node,
--		"imon-slot-no", &value))
++#ifdef CONFIG_PM_SLEEP
++static int max98927_suspend(struct device *dev)
++{
++	struct max98927_priv *max98927 = dev_get_drvdata(dev);
 +
-+	if (!device_property_read_u32(dev, "imon-slot-no", &value))
- 		max98927->i_l_slot = value & 0xF;
- 	else
- 		max98927->i_l_slot = 1;
++	regcache_cache_only(max98927->regmap, true);
++	regcache_mark_dirty(max98927->regmap);
++	return 0;
++}
++static int max98927_resume(struct device *dev)
++{
++	struct max98927_priv *max98927 = dev_get_drvdata(dev);
++
++	regmap_write(max98927->regmap,
++		MAX98927_R0100_SOFT_RESET, MAX98927_SOFT_RESET);
++	regcache_cache_only(max98927->regmap, false);
++	regcache_sync(max98927->regmap);
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops max98927_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(max98927_suspend, max98927_resume)
++};
++
+ static const struct snd_soc_codec_driver soc_codec_dev_max98927 = {
+ 	.probe = max98927_probe,
+ 	.component_driver = {
+@@ -834,7 +859,7 @@ static struct i2c_driver max98927_i2c_driver = {
+ 		.name = "max98927",
+ 		.of_match_table = of_match_ptr(max98927_of_match),
+ 		.acpi_match_table = ACPI_PTR(max98927_acpi_match),
+-		.pm = NULL,
++		.pm = &max98927_pm,
+ 	},
+ 	.probe  = max98927_i2c_probe,
+ 	.remove = max98927_i2c_remove,
 -- 
 2.14.1
