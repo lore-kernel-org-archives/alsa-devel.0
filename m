@@ -1,16 +1,15 @@
 From: Zhang Keqiao <keqiao.zhang@intel.com>
-Subject: [PATCH v1 2/4] alsabat: parse the card and PCM ID for
-	XRUN injections path
-Date: Thu, 31 Aug 2017 21:37:07 +0800
-Message-ID: <20170831133709.25537-3-keqiao.zhang@intel.com>
+Subject: [PATCH v1 4/4] alsabat: XRUN injections test criteria
+Date: Thu, 31 Aug 2017 21:37:09 +0800
+Message-ID: <20170831133709.25537-5-keqiao.zhang@intel.com>
 References: <20170831133709.25537-1-keqiao.zhang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 22D912673C7
- for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 15:40:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BA8EE2673C4
+ for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 15:40:43 +0200 (CEST)
 In-Reply-To: <20170831133709.25537-1-keqiao.zhang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,122 +24,45 @@ To: alsa-devel@alsa-project.org
 Cc: keqiao.zhang@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch intends to parse the card ID and PCM ID of playback
-and capture, then replace it in the path macro.
+Check if target number of frames can be detected after XRUNs.
 
 Signed-off-by: Zhang Keqiao <keqiao.zhang@intel.com>
 ---
- bat/bat.c    | 69 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- bat/common.h |  3 +++
- 2 files changed, 72 insertions(+)
+ bat/analyze.c | 22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/bat/bat.c b/bat/bat.c
-index bf6873a..b12e5d3 100644
---- a/bat/bat.c
-+++ b/bat/bat.c
-@@ -127,6 +127,69 @@ static void get_sine_frequencies(struct bat *bat, char *freq)
- 	}
- }
+diff --git a/bat/analyze.c b/bat/analyze.c
+index 17fff50..1c48a6b 100644
+--- a/bat/analyze.c
++++ b/bat/analyze.c
+@@ -471,9 +471,25 @@ int analyze_capture(struct bat *bat)
+ 		goto exit2;
  
-+/* parse the card and pcm ID of playback device and capture device */
-+/* Then we can get the path for specify device to do the XRUN injection */
-+static int parse_card_and_pcm_id(struct bat *bat)
-+{
-+	char *tmp1;
-+	char *tmp2;
-+	char playback_device[MAX_DEV];
-+	char capture_device[MAX_DEV];
+ 	items = fread(bat->buf, bat->frame_size, bat->frames, bat->fp);
+-	if (items != bat->frames) {
+-		err = -EIO;
+-		goto exit2;
 +
-+	strcpy(playback_device, bat->playback.device);
-+	strcpy(capture_device, bat->capture.device);
-+
-+	if (bat->playback.device == bat->capture.device) {
-+		tmp1 = strchr(playback_device, ',');
-+		if (tmp1 != NULL) {
-+			*tmp1 = '\0';
-+			bat->playback.pcm_id = bat->capture.pcm_id = (tmp1 + 1);
++	/* check the number of frames recorded after XRUNs */
++	if (bat->xarg) {
++		if (items != bat->frames) {
++			fprintf(bat->err, _("\nXRUN injection test FAILED\n"));
++			fprintf(bat->err, _("Target frames number %d, actually got %zu\n"),
++				bat->frames, items);
++			err = -EIO;
++			goto exit2;
 +		} else {
-+			fprintf(bat->err, _("err, cannot find the pcm ID\n"));
-+			return -EINVAL;
-+		}
-+		tmp2 = strchr(playback_device, ':');
-+		if (tmp2 != NULL) {
-+			bat->playback.card_id = bat->capture.card_id = (tmp2 + 1);
-+		} else {
-+			fprintf(bat->err, _("err, cannot find the card ID\n"));
-+			return -EINVAL;
++			fprintf(bat->log, _("\nXRUN injection test PASSED\n"));
++			err = 0; /* target frames can be detected after XRUNs */
++			goto exit2;
 +		}
 +	} else {
-+		tmp1 = strchr(playback_device, ',');
-+		if (tmp1 != NULL) {
-+			*tmp1 = '\0';
-+			bat->playback.pcm_id = (tmp1 + 1);
-+		} else {
-+			fprintf(bat->err, _("err, cannot find the pcm ID of playback\n"));
-+			return -EINVAL;
++		if (items != bat->frames) {
++			err = -EIO;
++			goto exit2;
 +		}
-+		tmp2 = strchr(playback_device, ':');
-+		if (tmp2 != NULL)
-+			bat->playback.card_id = (tmp2 + 1);
-+		else {
-+			fprintf(bat->err, _("err, cannot find the card ID of playback\n"));
-+			return -EINVAL;
-+		}
-+		tmp1 = strchr(capture_device, ',');
-+		if (tmp1 != NULL) {
-+			*tmp1 = '\0';
-+			bat->capture.pcm_id = (tmp1 + 1);
-+		} else {
-+			fprintf(bat->err, _("err, cannot find the pcm ID of capture"));
-+			return -EINVAL;
-+		}
-+		tmp2 = strchr(capture_device, ':');
-+		if (tmp2 != NULL)
-+			bat->capture.card_id = (tmp2 + 1);
-+		else {
-+			fprintf(bat->err, _("err, cannot find the card ID of capture"));
-+			return -EINVAL;
-+		}
-+	}
-+	return 0;
-+}
-+
- static void get_format(struct bat *bat, char *optarg)
- {
- 	if (strcasecmp(optarg, "cd") == 0) {
-@@ -561,6 +624,12 @@ static int bat_init(struct bat *bat)
- 			return err;
  	}
  
-+	if (bat->xarg) {
-+		err = parse_card_and_pcm_id(bat);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	/* Set default playback and capture devices */
- 	if (bat->playback.device == NULL && bat->capture.device == NULL)
- 		bat->playback.device = bat->capture.device = DEFAULT_DEV_NAME;
-diff --git a/bat/common.h b/bat/common.h
-index a014f87..9f71c6c 100644
---- a/bat/common.h
-+++ b/bat/common.h
-@@ -16,6 +16,7 @@
- #define TEMP_RECORD_FILE_NAME		"/tmp/bat.wav.XXXXXX"
- #define DEFAULT_DEV_NAME		"default"
- 
-+#define MAX_DEV				15
- #define OPT_BASE			300
- #define OPT_LOG				(OPT_BASE + 1)
- #define OPT_READFILE			(OPT_BASE + 2)
-@@ -167,6 +168,8 @@ struct pcm {
- 	unsigned int device_tiny;
- 	char *device;
- 	char *file;
-+	char *pcm_id;
-+	char *card_id;
- 	enum _bat_op_mode mode;
- 	void *(*fct)(struct bat *);
- };
+ 	err = reorder_data(bat);
 -- 
 2.9.3
