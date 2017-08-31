@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/6] ALSA: opl3: Put missing KERN_CONT prefix
-Date: Thu, 31 Aug 2017 11:33:29 +0200
-Message-ID: <20170831093334.9050-2-tiwai@suse.de>
+Subject: [PATCH 6/6] ALSA: sh: Put missing KERN_* prefix
+Date: Thu, 31 Aug 2017 11:33:34 +0200
+Message-ID: <20170831093334.9050-7-tiwai@suse.de>
 References: <20170831093334.9050-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B7BA267256
- for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 11:33:37 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 29CF0ACF2
+ by alsa0.perex.cz (Postfix) with ESMTP id 61A312672C1
+ for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 11:33:39 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 92DD9AF10
  for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 09:33:37 +0000 (UTC)
 In-Reply-To: <20170831093334.9050-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,29 +26,27 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The opl3 driver has a debug printk code without proper KERN_ prefix.
-On recent kernels, KERN_CONT prefix is mandatory for continued output
-lines.  Put it properly.
+sh audio driver prints its presence at probe function but a proper
+KERN_ prefix is missing.  Put KERN_INFO there as it's merely an
+advertisement.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/opl3/opl3_midi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/sh/sh_dac_audio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/drivers/opl3/opl3_midi.c b/sound/drivers/opl3/opl3_midi.c
-index 7821b07415a7..13c0a7e1bc2b 100644
---- a/sound/drivers/opl3/opl3_midi.c
-+++ b/sound/drivers/opl3/opl3_midi.c
-@@ -131,8 +131,8 @@ static void debug_alloc(struct snd_opl3 *opl3, char *s, int voice) {
+diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
+index e71e6a718802..834b2574786f 100644
+--- a/sound/sh/sh_dac_audio.c
++++ b/sound/sh/sh_dac_audio.c
+@@ -424,7 +424,7 @@ static int snd_sh_dac_probe(struct platform_device *devptr)
+ 	if (err < 0)
+ 		goto probe_error;
  
- 	printk(KERN_DEBUG "time %.5i: %s [%.2i]: ", opl3->use_time, s, voice);
- 	for (i = 0; i < opl3->max_voices; i++)
--		printk("%c", *(str + opl3->voices[i].state + 1));
--	printk("\n");
-+		printk(KERN_CONT "%c", *(str + opl3->voices[i].state + 1));
-+	printk(KERN_CONT "\n");
- }
- #endif
+-	snd_printk("ALSA driver for SuperH DAC audio");
++	snd_printk(KERN_INFO "ALSA driver for SuperH DAC audio");
  
+ 	platform_set_drvdata(devptr, card);
+ 	return 0;
 -- 
 2.14.1
