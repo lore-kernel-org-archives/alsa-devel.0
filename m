@@ -1,107 +1,94 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 0/8] ASoC: Add I2S support for Allwinner
- H3 SoCs
-Date: Thu, 31 Aug 2017 13:50:47 +0200
-Message-ID: <CAEKpxBngDox_f3nv=RPuKCnKAqzUB=7--k6y2wHKAFtWtsU_9w@mail.gmail.com>
-References: <20170819124839.4034-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v4.13
+Date: Thu, 31 Aug 2017 12:51:35 +0100
+Message-ID: <20170831115135.p4yzf77cy7hkdfwk@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBGHQT7GQKGQE55HWSDQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170819124839.4034-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1364477981320547086=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3AB9267217
+ for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 13:51:37 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-Wens has given this patch series his blessing so it's good to go.
+--===============1364477981320547086==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6vmfvbsc5aq6rrln"
+Content-Disposition: inline
 
-Let us know if you need me to resubmit,
 
-BR,
-CK
-On 19 August 2017 at 14:48,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->
-> Hi All,
-> please find attached a series of patches to bring i2s support to the
-> Allwinner H3 SoC. This has been tested with the following setups:
->
-> A20 Olimex EVB connected to a pcm5102
-> Orange Pi 2 connected to a uda1380
-> Orange Pi 2 hdmi audio playback
-> Pine 64 connected to the audio DAC board
->
-> To get i2s working some additional patches are required which will be
-> delivered later. For now they have been pushed here
->
-> https://github.com/codekipper/linux-sunxi/commits/sunxi-audio-h3
->
-> I don't own a A33 device which uses the i2s block for the audio codec
-> so if someone could test against that it would be much appreciated.
->
-> I'm also wondering if there is a preferred way of setting the lrclk
-> size in the dts?..currently it is set to the sample width but for example
-> the pcm5102a wants it to be 32 bits whatever the sample rate.
->
-> Thanks in advance,
-> CK
->
-> ---
->
-> v5 changes compared to v4 are:
-> - fixed bad logic in fmt0 set LRCK period define.
-> - fixed PTR_ERR checks in init of regmap fields
-> - added reviewed-by to commit messages
-> - removed delivered patches
->
-> v4 changes compared to v3 are:
-> - moved clkdiv variant adjustment out of function
-> - used PTR_ERR_OR_ZERO for checks
-> - tidy up of extra lines and lines over 80 chars.
-> - reduced names of polarity, wss and sr reg fields.
-> - added reviewed-by to commit messages
-> - added comments for functionality that hasn't been implemented yet.
-> - removed delivered patches
->
-> v3 changes compared to v2 are:
-> - initial changes to prepare driver for newer SoCs has been broken down
->   into smaller patches
-> - reduce use of regmap fields to where just needed.
-> - clkdiv expansion will be delivered later.
-> - defines for H3 variant segregated.
-> - fixed regmap config issue with SUN8I_I2S_FIFO_TX_REG.
->
-> v2 changes compared to v1 are:
->  - massive refactoring to remove duplicate code making use of regmap_fields.
->  - extending the clock divisors.
->  - removed code that should be delivered when we support 20/24bits
->
-> ---
->
-> Marcus Cooper (8):
->   ASoC: sun4i-i2s: Add regmap fields for channels
->   ASoC: sun4i-i2s: Add regfields for word size select and sample
->     resolution
->   ASoC: sun4i-i2s: bclk and lrclk polarity tidyup
->   ASoC: sun4i-i2s: Add mclk enable regmap field
->   ASoC: sun4i-i2s: Add regmap field to set DAI format
->   ASoC: sun4i-i2s: Check for slave select bit
->   ASoC: sun4i-i2s: Update global enable with bitmask
->   ASoC: sun4i-i2s: Add support for H3
->
->  .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
->  sound/soc/sunxi/sun4i-i2s.c                        | 406 ++++++++++++++++++---
->  2 files changed, 357 insertions(+), 51 deletions(-)
->
-> --
-> 2.14.1
->
+--6vmfvbsc5aq6rrln
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 5771a8c08880cdca3bfb4a3fc6d309d6bba20877:
+
+  Linux v4.13-rc1 (2017-07-15 15:22:10 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.13-rc7
+
+for you to fetch changes up to 05997302b7aa56a7f4a7b9d49d0661865c17874d:
+
+  Merge remote-tracking branch 'asoc/fix/rt5670' into asoc-fixes (2017-08-31 12:49:46 +0100)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.13
+
+A couple of fixes, one for a regression in simple-card introduced during
+the merge window that was only reported this week and another for a
+regression in registration of ACPI GPIOs.
+
+----------------------------------------------------------------
+Lucas Stach (1):
+      ASoC: simple_card_utils: fix fallback when "label" property isn't present
+
+Mark Brown (1):
+      Merge remote-tracking branch 'asoc/fix/rt5670' into asoc-fixes
+
+Takashi Iwai (1):
+      ASoC: rt5670: Fix GPIO headset detection regression
+
+ sound/soc/codecs/rt5670.c               |  2 +-
+ sound/soc/generic/simple-card-utils.c   |  2 +-
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 10 ++++++++++
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+
+--6vmfvbsc5aq6rrln
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmn+EcACgkQJNaLcl1U
+h9CBwQf8C8RVtxzNZZNbzjUgqFzbeabBjSyhbkhmxWXlClHcLDSSXLtC5iQ/pDfB
+5tOymVWG+ye64lenOwbHyFXme5CXrunwLHCTIjZ5gfGfc8Kn/zcWKoTP1sHe+cl1
+Mh1uEGbP8Guen79j45O9fH8Qm9FniVVCcfeMvuIiitReNqSrWFTYdzeQ7i76uqmd
+C5MDvgGszLonPML1VBUhInyZNRefhZOayLu/KLl4DJt1a7UGRbsFLiLOmL2yn/5G
+yvmOKMcKfUvYs1jIs5+bpDlyzh5UxmyCtuRKG5EAc3pXch8jlxR1UCc/p2iKWITd
+/QbJjTzw9umqPsNUvUEl0amtXPj66g==
+=EhM1
+-----END PGP SIGNATURE-----
+
+--6vmfvbsc5aq6rrln--
+
+--===============1364477981320547086==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1364477981320547086==--
