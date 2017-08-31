@@ -1,59 +1,107 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/9] ASoC: max98927: Added controls for Envelope tracking
-Date: Thu, 31 Aug 2017 12:43:57 +0100
-Message-ID: <20170831114357.dekzz4wa7j6vqi4t@sirena.org.uk>
-References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
- <1503963061-14763-2-git-send-email-ryans.lee@maximintegrated.com>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v5 0/8] ASoC: Add I2S support for Allwinner
+ H3 SoCs
+Date: Thu, 31 Aug 2017 13:50:47 +0200
+Message-ID: <CAEKpxBngDox_f3nv=RPuKCnKAqzUB=7--k6y2wHKAFtWtsU_9w@mail.gmail.com>
+References: <20170819124839.4034-1-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wi4vy2ai5lkxtx25"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1503963061-14763-2-git-send-email-ryans.lee@maximintegrated.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ryan Lee <ryans.lee@maximintegrated.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBGHQT7GQKGQE55HWSDQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170819124839.4034-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
---wi4vy2ai5lkxtx25
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Wens has given this patch series his blessing so it's good to go.
 
-On Mon, Aug 28, 2017 at 04:30:54PM -0700, Ryan Lee wrote:
+Let us know if you need me to resubmit,
 
->  	/* Envelope Tracking configuration */
->  	regmap_write(max98927->regmap,
->  		MAX98927_R0082_ENV_TRACK_VOUT_HEADROOM,
-> -		0x08);
-> +		0x0A);
->  	regmap_write(max98927->regmap,
->  		MAX98927_R0086_ENV_TRACK_CTRL,
->  		0x01);
-> -	regmap_write(max98927->regmap,
-> -		MAX98927_R0087_ENV_TRACK_BOOST_VOUT_READ,
-> -		0x10);
-
-Why are we changing the defaults here?  It was understandable to have a
-fixed default that differed from the chip value when there was no
-control but now there is a control and we're changing the default again
-for some undocumented reason.  It'd be better to leave the values here
-to avoid breaking compatibility with existing users and let users who
-need different values change things using the newly added controls.
-
---wi4vy2ai5lkxtx25
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmn9nwACgkQJNaLcl1U
-h9Ab3wf/c2tkqhjM4cdFvgxwmCMgMwGEYJFsvILlo2dd53JbkVlNkUCPYlJfzW4m
-G5988yE+BmRRYRddCkpxpDNNsxsSVCA3omAsdf1g4cKpi3H7BusEWK9Gz76ef0Mx
-wzt8BvBpADGJ0tcV3NSNAc9epGTm1C4D0POqOpqaHpPt1g6ehBb3SPv4ZqLiLXPK
-EtBKn0EAbj/Hw2irTgNvlKDvGTrgheSy96AojdI/QCU+a4ccE0QMhv49ahTPmbkC
-cF42Pj/Y3oVL8TRAcilfsm2nnb+rOvpLFjPbTcZrDmtqSzlN+rnFdcJBFwr2kCmj
-gkeMRKN1vTSs29B/UNU/IOki6uEgCQ==
-=K1Lo
------END PGP SIGNATURE-----
-
---wi4vy2ai5lkxtx25--
+BR,
+CK
+On 19 August 2017 at 14:48,  <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>
+> Hi All,
+> please find attached a series of patches to bring i2s support to the
+> Allwinner H3 SoC. This has been tested with the following setups:
+>
+> A20 Olimex EVB connected to a pcm5102
+> Orange Pi 2 connected to a uda1380
+> Orange Pi 2 hdmi audio playback
+> Pine 64 connected to the audio DAC board
+>
+> To get i2s working some additional patches are required which will be
+> delivered later. For now they have been pushed here
+>
+> https://github.com/codekipper/linux-sunxi/commits/sunxi-audio-h3
+>
+> I don't own a A33 device which uses the i2s block for the audio codec
+> so if someone could test against that it would be much appreciated.
+>
+> I'm also wondering if there is a preferred way of setting the lrclk
+> size in the dts?..currently it is set to the sample width but for example
+> the pcm5102a wants it to be 32 bits whatever the sample rate.
+>
+> Thanks in advance,
+> CK
+>
+> ---
+>
+> v5 changes compared to v4 are:
+> - fixed bad logic in fmt0 set LRCK period define.
+> - fixed PTR_ERR checks in init of regmap fields
+> - added reviewed-by to commit messages
+> - removed delivered patches
+>
+> v4 changes compared to v3 are:
+> - moved clkdiv variant adjustment out of function
+> - used PTR_ERR_OR_ZERO for checks
+> - tidy up of extra lines and lines over 80 chars.
+> - reduced names of polarity, wss and sr reg fields.
+> - added reviewed-by to commit messages
+> - added comments for functionality that hasn't been implemented yet.
+> - removed delivered patches
+>
+> v3 changes compared to v2 are:
+> - initial changes to prepare driver for newer SoCs has been broken down
+>   into smaller patches
+> - reduce use of regmap fields to where just needed.
+> - clkdiv expansion will be delivered later.
+> - defines for H3 variant segregated.
+> - fixed regmap config issue with SUN8I_I2S_FIFO_TX_REG.
+>
+> v2 changes compared to v1 are:
+>  - massive refactoring to remove duplicate code making use of regmap_fields.
+>  - extending the clock divisors.
+>  - removed code that should be delivered when we support 20/24bits
+>
+> ---
+>
+> Marcus Cooper (8):
+>   ASoC: sun4i-i2s: Add regmap fields for channels
+>   ASoC: sun4i-i2s: Add regfields for word size select and sample
+>     resolution
+>   ASoC: sun4i-i2s: bclk and lrclk polarity tidyup
+>   ASoC: sun4i-i2s: Add mclk enable regmap field
+>   ASoC: sun4i-i2s: Add regmap field to set DAI format
+>   ASoC: sun4i-i2s: Check for slave select bit
+>   ASoC: sun4i-i2s: Update global enable with bitmask
+>   ASoC: sun4i-i2s: Add support for H3
+>
+>  .../devicetree/bindings/sound/sun4i-i2s.txt        |   2 +
+>  sound/soc/sunxi/sun4i-i2s.c                        | 406 ++++++++++++++++++---
+>  2 files changed, 357 insertions(+), 51 deletions(-)
+>
+> --
+> 2.14.1
+>
