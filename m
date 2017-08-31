@@ -1,52 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/9] ASoC: max98927: Removed obsolete variables
-Date: Thu, 31 Aug 2017 12:53:59 +0100
-Message-ID: <20170831115359.bjw3wbihjzcuh3nh@sirena.org.uk>
-References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
- <1503963061-14763-5-git-send-email-ryans.lee@maximintegrated.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2xu6zc3r5huj2vbz"
+Subject: Applied "ASoC: max98927: Changed device property read function" to the asoc tree
+Date: Thu, 31 Aug 2017 12:54:29 +0100
+Message-ID: <E1dnO3J-0000h2-BV@debutante>
+References: <1503708070-7906-9-git-send-email-ryans.lee@maximintegrated.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1503963061-14763-5-git-send-email-ryans.lee@maximintegrated.com>
+In-Reply-To: <1503708070-7906-9-git-send-email-ryans.lee@maximintegrated.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ryan Lee <ryans.lee@maximintegrated.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.com
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---2xu6zc3r5huj2vbz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: max98927: Changed device property read function
 
-On Mon, Aug 28, 2017 at 04:30:57PM -0700, Ryan Lee wrote:
-> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+has been applied to the asoc tree at
 
-Why are these variables obsolete?  If their use was removed in earlier
-patches in the series they should be handled in that patch, if they're
-just unused say so.  In general your changelogs could really benefit
-=66rom being a bit longer and explaining why changes are being made.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
->  mode change 100644 =3D> 100755 sound/soc/codecs/max98927.h
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This also changes the permissions to be executable which isn't what we
-want.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---2xu6zc3r5huj2vbz
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmn+NYACgkQJNaLcl1U
-h9DKHwgAgxiQ+BPpJqoVBHq2jCx+bf63FCdSLRmtlRifXyCmYtMXrKIYOMfypBS0
-eMa+iorl+lG4sprZ1k3+Cxt4WiiNu4WHk1Ej7Z9kbU+3F8+K8uaI6Juj6WGSIKSK
-UXU8QjecdPwEMc7+ii9lr4xehfCjkUL0FtrtCqwHl22BeztcAe3w+3xGw/ydtLLd
-zalQcpiSRkJdVirY+sK/43dR08nktuuO638HgDG02/pXi9KKK7mYhmzn6rmngfP+
-fn0yvxrbd04/+zRgNv4NOHWOgYH1Cey1/rWBHiMrObbVC3CJpKJwO65IGJsmcHDR
-7nsDa+5aHB/anAX+4oAL82qJiaWHYw==
-=5ISB
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---2xu6zc3r5huj2vbz--
+>From dea110501745734baf7a90dc1e1b50481ade6191 Mon Sep 17 00:00:00 2001
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Date: Mon, 28 Aug 2017 16:31:01 -0700
+Subject: [PATCH] ASoC: max98927: Changed device property read function
+
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98927.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index 4bbf2098f255..926871e36132 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -759,14 +759,14 @@ static void max98927_slot_config(struct i2c_client *i2c,
+ 	struct max98927_priv *max98927)
+ {
+ 	int value;
++	struct device *dev = &i2c->dev;
+ 
+-	if (!of_property_read_u32(i2c->dev.of_node,
+-		"vmon-slot-no", &value))
++	if (!device_property_read_u32(dev, "vmon-slot-no", &value))
+ 		max98927->v_l_slot = value & 0xF;
+ 	else
+ 		max98927->v_l_slot = 0;
+-	if (!of_property_read_u32(i2c->dev.of_node,
+-		"imon-slot-no", &value))
++
++	if (!device_property_read_u32(dev, "imon-slot-no", &value))
+ 		max98927->i_l_slot = value & 0xF;
+ 	else
+ 		max98927->i_l_slot = 1;
+-- 
+2.14.1
