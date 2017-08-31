@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98927: Modified chip default register values" to the asoc tree
-Date: Thu, 31 Aug 2017 12:54:48 +0100
-Message-ID: <E1dnO3c-0000kK-38@debutante>
-References: <1497910046-3369-6-git-send-email-ryans.lee@maximintegrated.com>
+Subject: Applied "ASoC: max98927: Added missing \n to end of dev_err messages" to the asoc tree
+Date: Thu, 31 Aug 2017 12:54:54 +0100
+Message-ID: <E1dnO3i-0000mH-Lr@debutante>
+References: <1495162913-21616-1-git-send-email-ryans.lee@maximintegrated.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1497910046-3369-6-git-send-email-ryans.lee@maximintegrated.com>
+In-Reply-To: <1495162913-21616-1-git-send-email-ryans.lee@maximintegrated.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ryan.lee.maxim@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98927: Modified chip default register values
+   ASoC: max98927: Added missing \n to end of dev_err messages
 
 has been applied to the asoc tree at
 
@@ -36,50 +36,47 @@ to this mail.
 Thanks,
 Mark
 
->From 848844b87a26265019215dbb7fb588a5fac0a110 Mon Sep 17 00:00:00 2001
+>From 01c6f1b5c832b75af5d34555201050db896285a8 Mon Sep 17 00:00:00 2001
 From: Ryan Lee <ryans.lee@maximintegrated.com>
-Date: Mon, 28 Aug 2017 16:30:58 -0700
-Subject: [PATCH] ASoC: max98927: Modified chip default register values
+Date: Mon, 28 Aug 2017 16:30:56 -0700
+Subject: [PATCH] ASoC: max98927: Added missing \n to end of dev_err messages
 
 Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98927.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/max98927.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index f74cdb065bf2..5b853604120a 100644
+index 768e84dbcdf6..f74cdb065bf2 100644
 --- a/sound/soc/codecs/max98927.c
 +++ b/sound/soc/codecs/max98927.c
-@@ -44,9 +44,9 @@ static struct reg_default max98927_reg[] = {
- 	{MAX98927_R0011_CLK_MON,  0x00},
- 	{MAX98927_R0012_WDOG_CTRL,  0x00},
- 	{MAX98927_R0013_WDOG_RST,  0x00},
--	{MAX98927_R0014_MEAS_ADC_THERM_WARN_THRESH,  0x00},
--	{MAX98927_R0015_MEAS_ADC_THERM_SHDN_THRESH,  0x00},
--	{MAX98927_R0016_MEAS_ADC_THERM_HYSTERESIS,  0x00},
-+	{MAX98927_R0014_MEAS_ADC_THERM_WARN_THRESH,  0x75},
-+	{MAX98927_R0015_MEAS_ADC_THERM_SHDN_THRESH,  0x8c},
-+	{MAX98927_R0016_MEAS_ADC_THERM_HYSTERESIS,  0x08},
- 	{MAX98927_R0017_PIN_CFG,  0x55},
- 	{MAX98927_R0018_PCM_RX_EN_A,  0x00},
- 	{MAX98927_R0019_PCM_RX_EN_B,  0x00},
-@@ -82,14 +82,14 @@ static struct reg_default max98927_reg[] = {
- 	{MAX98927_R003A_AMP_EN,  0x00},
- 	{MAX98927_R003B_SPK_SRC_SEL,  0x00},
- 	{MAX98927_R003C_SPK_GAIN,  0x00},
--	{MAX98927_R003D_SSM_CFG,  0x01},
-+	{MAX98927_R003D_SSM_CFG,  0x04},
- 	{MAX98927_R003E_MEAS_EN,  0x00},
- 	{MAX98927_R003F_MEAS_DSP_CFG,  0x04},
- 	{MAX98927_R0040_BOOST_CTRL0,  0x00},
- 	{MAX98927_R0041_BOOST_CTRL3,  0x00},
- 	{MAX98927_R0042_BOOST_CTRL1,  0x00},
- 	{MAX98927_R0043_MEAS_ADC_CFG,  0x00},
--	{MAX98927_R0044_MEAS_ADC_BASE_MSB,  0x00},
-+	{MAX98927_R0044_MEAS_ADC_BASE_MSB,  0x01},
- 	{MAX98927_R0045_MEAS_ADC_BASE_LSB,  0x00},
- 	{MAX98927_R0046_ADC_CH0_DIVIDE,  0x00},
- 	{MAX98927_R0047_ADC_CH1_DIVIDE,  0x00},
+@@ -159,7 +159,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		mode = MAX98927_PCM_MASTER_MODE_MASTER;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "DAI clock mode unsupported");
++		dev_err(codec->dev, "DAI clock mode unsupported\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -175,7 +175,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		invert = MAX98927_PCM_MODE_CFG_PCM_BCLKEDGE;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "DAI invert mode unsupported");
++		dev_err(codec->dev, "DAI invert mode unsupported\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -311,7 +311,7 @@ static int max98927_dai_hw_params(struct snd_pcm_substream *substream,
+ 		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_32;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "format unsupported %d",
++		dev_err(codec->dev, "format unsupported %d\n",
+ 			params_format(params));
+ 		goto err;
+ 	}
 -- 
 2.14.1
