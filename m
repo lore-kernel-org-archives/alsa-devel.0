@@ -1,20 +1,23 @@
 From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Subject: Re: [PATCH] ALSA: ac97c: Fix an error handling path in
  'atmel_ac97c_probe()'
-Date: Thu, 31 Aug 2017 11:56:16 +0200
-Message-ID: <20170831095615.lpon4a36vil6avma@piout.net>
+Date: Thu, 31 Aug 2017 11:57:54 +0200
+Message-ID: <20170831095754.t2impdwghk3z3tz6@piout.net>
 References: <20170831044042.23306-1-christophe.jaillet@wanadoo.fr>
  <20170831081021.g4luo557ggtnyfyg@piout.net>
  <alpine.DEB.2.20.1708311020340.3243@hadrien>
+ <1504170243.25945.170.camel@linux.intel.com>
+ <20170831093557.mhr5txmaiox7gxiq@piout.net>
+ <1504172297.25945.171.camel@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 24B3F26731C
- for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 11:56:26 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 19CEA26731C
+ for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 11:58:04 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.20.1708311020340.3243@hadrien>
+In-Reply-To: <1504172297.25945.171.camel@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +27,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia.lawall@lip6.fr>
-Cc: alsa-devel@alsa-project.org, andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org, garsilva@embeddedor.com, kernel-janitors@vger.kernel.org, nicolas.ferre@microchip.com, tiwai@suse.com, broonie@kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, arvind.yadav.cs@gmail.com, bhumirks@gmail.com
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, garsilva@embeddedor.com, kernel-janitors@vger.kernel.org, nicolas.ferre@microchip.com, tiwai@suse.com, Julia Lawall <julia.lawall@lip6.fr>, broonie@kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, arvind.yadav.cs@gmail.com, bhumirks@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 31/08/2017 at 10:23:19 +0200, Julia Lawall wrote:
+On 31/08/2017 at 12:38:17 +0300, Andy Shevchenko wrote:
+> On Thu, 2017-08-31 at 11:35 +0200, Alexandre Belloni wrote:
+> > On 31/08/2017 at 12:04:03 +0300, Andy Shevchenko wrote:
+> > > On Thu, 2017-08-31 at 10:23 +0200, Julia Lawall wrote:
+> > > > 
+> > > > On Thu, 31 Aug 2017, Alexandre Belloni wrote:
+> > > > 
+> > > > > On 31/08/2017 at 06:40:42 +0200, Christophe JAILLET wrote:
+> > > > > > 
 > 
+> > > I didn't look into the code, though speculating it might be the case
+> > > when CLK framework is not enabled, though many drivers are dependent
+> > > to
+> > > it, so, it would never fail in such cases.
+> > 
+> > It is not the case, it would return 0. Anyway, this will not happen
+> > because that driver depends on ARCH_AT91 which selects COMMON_CLK_AT91
+> > which selects COMMON_CLK.
+> > 
+> > > Nevertheless there might be
+> > > other cases for CLK API to fail.
+> > > 
+> > 
+> > The only case would be for a clock to be enabled without being
+> > prepared
+> > and this will never happen because clk_prepare_enable is used.
+> > 
+> > This call will just never fail.
 > 
-> On Thu, 31 Aug 2017, Alexandre Belloni wrote:
-> 
-> > On 31/08/2017 at 06:40:42 +0200, Christophe JAILLET wrote:
-> > > If 'clk_prepare_enable()' fails, we must release some resources before
-> > > returning. Add a new label in the existing error handling path and 'goto'
-> > > there.
-> > >
-> > > Fixes: 260ea95cc027 ("ASoC: atmel: ac97c: Handle return value of clk_prepare_enable.")
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> >
-> > And here is the fallout of the stupid, brainless "fixing" of issues
-> > reported by static analysis tools.
-> >
-> > This clk_prepare_enable will never fail. If it was going to fail, the
-> > platform would never boot to a point were it is able to execute that
-> > code. It is really annoying to have so much churn for absolutely 0
-> > benefit.
-> 
-> Would it be more productive to put the code back like it was before, ie no
-> return value and no check, and add a comment to the definition of
-> clk_prepare_enable indicating that there are many case where the call
-> cannot fail?  Grepping through the code suggests that it is about 50-50 on
-> checking the return value or not doing so, which might suggest that
-> checking the value is often not required.
+> So, then this is a bug of CLK API per se to have a prototype to return
+> int, right?
 > 
 
-I'd say that it is often useless to test the value. I don't have any
-problem with the test as it doesn't add much (at least it doesn't print
-an error message). So it may stays here. What I'm really unhappy about
-is people sending hundreds of similar, autogenerated patches to
-maintainers without actually putting any thought into them. That put all
-the burden on the maintainers to weed out the incorrect patches.
+No because it may fail on other platforms.
 
 -- 
 Alexandre Belloni, Free Electrons
