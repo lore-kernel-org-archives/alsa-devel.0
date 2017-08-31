@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Support for OCMV
-	configuration
-Date: Thu, 31 Aug 2017 11:06:05 +0300
-Message-ID: <ca5e6705-47e7-12bd-6391-b22156aa31d7@ti.com>
-References: <20170831080045.28999-1-peter.ujfalusi@ti.com>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: [PATCH] ALSA: ac97c: Fix an error handling path in
+ 'atmel_ac97c_probe()'
+Date: Thu, 31 Aug 2017 10:10:21 +0200
+Message-ID: <20170831081021.g4luo557ggtnyfyg@piout.net>
+References: <20170831044042.23306-1-christophe.jaillet@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 40C96267256
- for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 10:06:04 +0200 (CEST)
-In-Reply-To: <20170831080045.28999-1-peter.ujfalusi@ti.com>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id E70B1267256
+ for <alsa-devel@alsa-project.org>; Thu, 31 Aug 2017 10:10:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170831044042.23306-1-christophe.jaillet@wanadoo.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,72 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: alsa-devel@alsa-project.org, andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, nicolas.ferre@microchip.com, tiwai@suse.com, broonie@kernel.org, garsilva@embeddedor.com, arvind.yadav.cs@gmail.com, bhumirks@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-77u/CgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwgMDAx
-ODAgSGVsc2lua2kuIFktdHVubnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2Ev
-RG9taWNpbGU6IEhlbHNpbmtpCgpPbiAyMDE3LTA4LTMxIDExOjAwLCBQZXRlciBVamZhbHVzaSB3
-cm90ZToKPiBJbiBhaWMzeCBjbGFzcyBvZiBkZXZpY2VzIE91dHB1dCBDb21tb24tTW9kZSBWb2x0
-YWdlIGNhbiBiZSBjb25maWd1cmVkIGZvcgo+IGJldHRlciBhbmFsb2cgcGVyZm9ybWFuY2UuCj4g
-VGhlIE9DTVYgdmFsdWUgZGVwZW5kcyBvbiB0aGUgQW5hbG9nIGFuZCBkaWdpdGFsIGRvbWFpbiBw
-b3dlciBzdXBwbHkKPiB2b2x0YWdlIGNvbmZpZ3VyYXRpb24uCj4gCj4gVGhlIGRlZmF1bHQgT0NN
-ViBvZiAxLjM1ViBnaXZlcyBiZXN0IHBlcmZvcm1hbmNlIHdoZW4gQVZERCBpcyBhcm91bmQgMi43
-Vgo+IGFuZCBEVkREIGlzIDEuNTI1ViwgYnV0IGZvciBoaWdoZXIgQVZERC9EVkREIGhpZ2hlciBP
-Q01WIHNldHRpbmcgaXMKPiByZWNvbW1lbmRlZC4KPiAKPiBUaGUgcGF0Y2ggZ2l2ZXMgYW4gYXV0
-b21hdGljIHdheSBvZiBndWVzc2luZyB0aGUgYmVzdCBPQ01WIHdoaWNoIGNhbiBiZQo+IG92ZXJ3
-cml0dGVuIGJ5IGEgRFQgcGFyYW1ldGVyIGlmIG5lZWRlZC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBQ
-ZXRlciBVamZhbHVzaSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPgo+IC0tLQo+ICAuLi4vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9zb3VuZC90bHYzMjBhaWMzeC50eHQgICAgICB8ICA1ICsrKwo+ICBzb3Vu
-ZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMgICAgICAgICAgICAgICAgICAgICB8IDQ1ICsrKysr
-KysrKysrKysrKysrKysrKysKPiAgc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5oICAgICAg
-ICAgICAgICAgICAgICAgfCAgOCArKysrCj4gIDMgZmlsZXMgY2hhbmdlZCwgNTggaW5zZXJ0aW9u
-cygrKQo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-c291bmQvdGx2MzIwYWljM3gudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NvdW5kL3RsdjMyMGFpYzN4LnR4dAo+ICtzdGF0aWMgdm9pZCBhaWMzeF9jb25maWd1cmVfb2Nt
-dihzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50KQo+ICt7Cj4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUg
-Km5wID0gY2xpZW50LT5kZXYub2Zfbm9kZTsKPiArCXN0cnVjdCBhaWMzeF9wcml2ICphaWMzeCA9
-IGkyY19nZXRfY2xpZW50ZGF0YShjbGllbnQpOwo+ICsJdTMyIHZhbHVlOwo+ICsJaW50IGR2ZGQs
-IGF2ZGQ7Cj4gKwo+ICsJaWYgKG5wICYmICFvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgImFpM3gt
-b2NtdiIsICZ2YWx1ZSkpIHsKPiArCQkvKiBPQ01WIHNldHRpbmcgaXMgZm9yY2VkIGJ5IERUICov
-Cj4gKwkJaWYgKHZhbHVlIDw9IDMpIHsKPiArCQkJYWljM3gtPm9jbXYgPSB2YWx1ZTsKPiArCQkJ
-cmV0dXJuOwo+ICsJCX0KPiArCX0KPiArCj4gKwlkdmRkID0gcmVndWxhdG9yX2dldF92b2x0YWdl
-KGFpYzN4LT5zdXBwbGllc1sxXS5jb25zdW1lcik7Cj4gKwlhdmRkID0gcmVndWxhdG9yX2dldF92
-b2x0YWdlKGFpYzN4LT5zdXBwbGllc1syXS5jb25zdW1lcik7Cj4gKwo+ICsJaWYgKGF2ZGQgPiAz
-NjAwMDAwIHx8IGR2ZGQgPiAxOTUwMDAwKSB7Cj4gKwkJZGV2X3dhcm4oJmNsaWVudC0+ZGV2LAo+
-ICsJCQkgIlRvbyBoaWdoIHN1cHBseSB2b2x0YWdlKHMpIEFWREQ6ICVkLCBEVkREOiAlZFxuIiwK
-PiArCQkJIGF2ZGQsIGR2ZGQpOwo+ICsJfSBlbHNlIGlmIChhdmRkID09IDM2MDAwMDAgJiYgZHZk
-ZCA9PSAxOTUwMDAwKSB7Cj4gKwkJYWljM3gtPm9jbXYgPSBIUE9VVF9TQ19PQ01WXzFfOFY7Cj4g
-Kwl9IGVsc2UgaWYgKGF2ZGQgPiAzMzAwMDAwICYmIGR2ZGQgPiAxODAwMDAwKSB7Cj4gKwkJYWlj
-M3gtPm9jbXYgPSBIUE9VVF9TQ19PQ01WXzFfNjVWOwo+ICsJfSBlbHNlIGlmIChhdmRkID4gMzAw
-MDAwMCAmJiBkdmRkID4gMTY1MDAwMCkgewo+ICsJCWFpYzN4LT5vY212ID0gSFBPVVRfU0NfT0NN
-Vl8xXzVWOwo+ICsJfSBlbHNlIGlmIChhdmRkID4gMjcwMDAwMCAmJiBkdmRkID4gMTUyNTAwMCkg
-ewoKdGhpcyBzaG91bGQgaGF2ZSBiZWVuOgp9IGVsc2UgaWYgKGF2ZGQgPj0gMjcwMDAwMCAmJiBk
-dmRkID49IDE1MjUwMDApIHsKCmFzIEFWREQgMi43ViBhbmQgRFZERCAxLjUyNVYgaXMgdGhlIGxv
-d2VzdCBzdXBwb3J0ZWQgc3VwcGx5IHZvbHRhZ2VzLgoKPiArCQlhaWMzeC0+b2NtdiA9IEhQT1VU
-X1NDX09DTVZfMV8zNVY7Cj4gKwl9IGVsc2Ugewo+ICsJCWRldl93YXJuKCZjbGllbnQtPmRldiwK
-PiArCQkJICJJbnZhbGlkIHN1cHBseSB2b2x0YWdlKHMpIEFWREQ6ICVkLCBEVkREOiAlZFxuIiwK
-PiArCQkJIGF2ZGQsIGR2ZGQpOwo+ICsJfQo+ICt9Cj4gKwo+ICAvKgo+ICAgKiBBSUMzWCAyIHdp
-cmUgYWRkcmVzcyBjYW4gYmUgdXAgdG8gNCBkZXZpY2VzIHdpdGggZGV2aWNlIGFkZHJlc3Nlcwo+
-ICAgKiAweDE4LCAweDE5LCAweDFBLCAweDFCCj4gQEAgLTE4MTYsNiArMTg1OSw4IEBAIHN0YXRp
-YyBpbnQgYWljM3hfaTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICppMmMsCj4gIAkJZ290byBl
-cnJfZ3BpbzsKPiAgCX0KPiAgCj4gKwlhaWMzeF9jb25maWd1cmVfb2NtdihpMmMpOwo+ICsKPiAg
-CWlmIChhaWMzeC0+bW9kZWwgPT0gQUlDM1hfTU9ERUxfMzAwNykgewo+ICAJCXJldCA9IHJlZ21h
-cF9yZWdpc3Rlcl9wYXRjaChhaWMzeC0+cmVnbWFwLCBhaWMzMDA3X2NsYXNzX2QsCj4gIAkJCQkJ
-ICAgIEFSUkFZX1NJWkUoYWljMzAwN19jbGFzc19kKSk7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9jb2RlY3MvdGx2MzIwYWljM3guaCBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guaAo+
-IGluZGV4IDg5ZmE2OTJkZjIwNi4uMzRjMzUxOTZhYTBkIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Nv
-Yy9jb2RlY3MvdGx2MzIwYWljM3guaAo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWlj
-M3guaAo+IEBAIC0yNDMsNiArMjQzLDE0IEBACj4gICNkZWZpbmUgTUlDQklBU19MRVZFTF9TSElG
-VAkoNikKPiAgI2RlZmluZSBNSUNCSUFTX0xFVkVMX01BU0sJKDMgPDwgNikKPiAgCj4gKy8qIEhQ
-T1VUX1NDICovCj4gKyNkZWZpbmUgSFBPVVRfU0NfT0NNVl9NQVNLCSgzIDw8IDYpCj4gKyNkZWZp
-bmUgSFBPVVRfU0NfT0NNVl9TSElGVAkoNikKPiArI2RlZmluZSBIUE9VVF9TQ19PQ01WXzFfMzVW
-CTAKPiArI2RlZmluZSBIUE9VVF9TQ19PQ01WXzFfNVYJMQo+ICsjZGVmaW5lIEhQT1VUX1NDX09D
-TVZfMV82NVYJMgo+ICsjZGVmaW5lIEhQT1VUX1NDX09DTVZfMV84VgkzCj4gKwo+ICAvKiBoZWFk
-c2V0IGRldGVjdGlvbiAvIGJ1dHRvbiBBUEkgKi8KPiAgCj4gIC8qIFRoZSBBSUMzeCBzdXBwb3J0
-cyBkZXRlY3Rpb24gb2Ygc3RlcmVvIGhlYWRzZXRzIChHTkQgKyBsZWZ0ICsgcmlnaHQgc2lnbmFs
-KQo+IAoKLSBQw6l0ZXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On 31/08/2017 at 06:40:42 +0200, Christophe JAILLET wrote:
+> If 'clk_prepare_enable()' fails, we must release some resources before
+> returning. Add a new label in the existing error handling path and 'goto'
+> there.
+> 
+> Fixes: 260ea95cc027 ("ASoC: atmel: ac97c: Handle return value of clk_prepare_enable.")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+And here is the fallout of the stupid, brainless "fixing" of issues
+reported by static analysis tools.
+
+This clk_prepare_enable will never fail. If it was going to fail, the
+platform would never boot to a point were it is able to execute that
+code. It is really annoying to have so much churn for absolutely 0
+benefit.
+
+Anyway,
+Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+
+> ---
+>  sound/atmel/ac97c.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+> index 30c64ab210d9..5ffefac2fa8f 100644
+> --- a/sound/atmel/ac97c.c
+> +++ b/sound/atmel/ac97c.c
+> @@ -785,7 +785,7 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+>  	}
+>  	retval = clk_prepare_enable(pclk);
+>  	if (retval)
+> -		return retval;
+> +		goto err_prepare_enable;
+>  
+>  	retval = snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1,
+>  			      SNDRV_DEFAULT_STR1, THIS_MODULE,
+> @@ -881,6 +881,7 @@ static int atmel_ac97c_probe(struct platform_device *pdev)
+>  	snd_card_free(card);
+>  err_snd_card_new:
+>  	clk_disable_unprepare(pclk);
+> +err_prepare_enable:
+>  	clk_put(pclk);
+>  	return retval;
+>  }
+> -- 
+> 2.11.0
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
