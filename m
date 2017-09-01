@@ -1,65 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/2] ASoC: cs43130: Add support for CS43130 codec
-Date: Fri, 1 Sep 2017 11:43:45 +0100
-Message-ID: <20170901104345.4syoutjbskq75v55@sirena.org.uk>
-References: <a71e2771-fec4-4d15-af95-ec15e010fd0c@EX3.ad.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: add missing compile rule for
+	sirf-audio-codec
+Date: Fri, 1 Sep 2017 11:46:05 +0100
+Message-ID: <20170901104605.fomg4ykycmuhn6oa@sirena.org.uk>
+References: <878thznixc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jibxpyh5rz3x7loz"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <a71e2771-fec4-4d15-af95-ec15e010fd0c-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============8943042635618118284=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0FFA266DBC
+ for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:46:06 +0200 (CEST)
+In-Reply-To: <878thznixc.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 
---jibxpyh5rz3x7loz
-Content-Type: text/plain; charset=us-ascii
+--===============8943042635618118284==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qpwffax22c6pck46"
 Content-Disposition: inline
 
-On Fri, Aug 18, 2017 at 11:00:19AM -0500, Li Xu wrote:
 
-This is mostly good, there's a couple of stylistic issues - please send
-incremental patches fixing them:
+--qpwffax22c6pck46
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	case SND_SOC_DAPM_POST_PMU:
-> +		regmap_update_bits(cs43130->regmap, CS43130_DSD_PATH_CTL_1,
-> +				   CS43130_MUTE_MASK, 0);
-> +		switch (cs43130->dev_id) {
-> +		case CS43130_CHIP_ID:
-> +		case CS4399_CHIP_ID:
-> +			regmap_multi_reg_write(cs43130->regmap, unmute_seq,
-> +					       ARRAY_SIZE(unmute_seq));
-> +		}
+On Fri, Sep 01, 2017 at 04:33:27AM +0000, Kuninori Morimoto wrote:
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> It is still using old driver style, this patch also
+> fixup it.
 
-I'd expect to see break statements at the end of each case in a switch -
-this is an issue throughout the driver.
+Same here, this should really have been two patches.
 
-> +	if (cs43130->reset_gpio)
-> +		gpiod_set_value_cansleep(cs43130->reset_gpio, 0);
-
-The check here isn't needed and isn't done elsewhere in the driver, best
-to remove it for consistency.
-
---jibxpyh5rz3x7loz
+--qpwffax22c6pck46
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmpOeEACgkQJNaLcl1U
-h9B+egf+MzL0oEUO+GwsATN8NSrPhEsmNVZ8dkeEe/PcQh7pBU76e4GhXD5f2mSs
-u+Db2uEcMZC9L6nbVq4jyqGYgiUVIx8jLFKTMQfRrWBIp6lcrdjIKkLoB809wkwe
-oVYCq44jY4baCCNASyEU276l3+oEA2fACl94PHI1RVkfguhsvPCDv8msP4j0E5i6
-x1ExnHQBYSP6KB+4X1i/gTNEQjrGGPGpKmLRQ07cBuaNmguXTpHokjt1s2V5qxia
-tiRvqNWQ8IKpAfeymcNwDIsCOzu58W1+pJ/TUYnqNzu4hNO9GQKw4Gi02GW5HxsS
-0LcUz/xZVnELL86vvaaEIeo6KxNYPQ==
-=lEL9
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmpOm0ACgkQJNaLcl1U
+h9CHKAf+M/QOQghfQLqpgzfTJ+gHH2ybyKkawHKoXphxYSsZvWXNuD+XSsUHW+F+
+RK8nqPAD+gfsaVtiFX1sbJfvzA6qCUfSMQwKeD6B3YD1b4o8+abbb1TX6XMtwuK+
+AEe4WWVAmsMWprqnVfDSOFgmbMAeHA2ljR31CrM/q430m1JcTCxBTgKrV9StG1cP
+KpPMFS1EYEaPQT2o9gWtUAo23hPnAjSmwsJjpF3uMe5KCum5p0781CJKYm8XB3JR
+UbCs+/0yCopXi/GCIJQNyJEX6N3iVnMomJEL5pRFpFOhd1ZKdaSTjTAKDBMa2c6c
+ax7w9c9YBsWkbThgEwZVXuckPEB0fg==
+=wyXV
 -----END PGP SIGNATURE-----
 
---jibxpyh5rz3x7loz--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--qpwffax22c6pck46--
+
+--===============8943042635618118284==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8943042635618118284==--
