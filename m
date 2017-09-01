@@ -1,164 +1,65 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 23/25] ALSA/dummy: Replace tasklet with
-	softirq hrtimer
-Date: Fri,  1 Sep 2017 19:25:37 +0900
-Message-ID: <20170901102537.8066-1-o-takashi@sakamocchi.jp>
-References: <s5hh8wnvjei.wl-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] ASoC: cs43130: Add support for CS43130 codec
+Date: Fri, 1 Sep 2017 11:43:45 +0100
+Message-ID: <20170901104345.4syoutjbskq75v55@sirena.org.uk>
+References: <a71e2771-fec4-4d15-af95-ec15e010fd0c@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 6C3DF266DBC
- for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:25:41 +0200 (CEST)
-In-Reply-To: <s5hh8wnvjei.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz, anna-maria@linutronix.de
-Cc: alsa-devel@alsa-project.org, keescook@chromium.org, peterz@infradead.org, linux-kernel@vger.kernel.org, mingo@redhat.com, john.stultz@linaro.org, tglx@linutronix.de, hch@lst.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jibxpyh5rz3x7loz"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <a71e2771-fec4-4d15-af95-ec15e010fd0c-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Sep 1 2017 00:36, Takashi Iwai wrote:
-> I gave it at try, but it caused a kernel hang, unfortunately.
-> 
-> The reason is that snd_pcm_period_elapased() may stop the stream
-> (e.g. when reaching at the end).  With this patchset, it'll lead to
-> the call of hrtimer_cancel() from the hrtimer callback itself, thus it
-> stalls.
- 
-I can reproduce this bug.
+--jibxpyh5rz3x7loz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Below is the additional fix over your patch for working around it.
-> I believe it should cover most corner cases, and seems working fine
-> through quick tests, so far.
+On Fri, Aug 18, 2017 at 11:00:19AM -0500, Li Xu wrote:
 
-This patch looks good to me, too. But I have an alternative.
+This is mostly good, there's a couple of stylistic issues - please send
+incremental patches fixing them:
 
-We can use 'hrtimer_callback_running()' to detect whether to be on hrtimer
-callback or not (please read '__run_hrtimer()' in 'kernel/time/hrtimer.c').
-Usage of this helper function on .stop callback to skip cancellation can
-avoid the stall. In this case, after stopping PCM substream, the hrtimer
-callback should return HRTIMER_NORESTART to avoid restarting, as well as
-your patch.  Please test a patch in this message.
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		regmap_update_bits(cs43130->regmap, CS43130_DSD_PATH_CTL_1,
+> +				   CS43130_MUTE_MASK, 0);
+> +		switch (cs43130->dev_id) {
+> +		case CS43130_CHIP_ID:
+> +		case CS4399_CHIP_ID:
+> +			regmap_multi_reg_write(cs43130->regmap, unmute_seq,
+> +					       ARRAY_SIZE(unmute_seq));
+> +		}
 
-> ---
-> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-> index 273d60c42125..b5dd64e3dab1 100644
-> --- a/sound/drivers/dummy.c
-> +++ b/sound/drivers/dummy.c
-> @@ -375,6 +375,7 @@ struct dummy_hrtimer_pcm {
->   	ktime_t base_time;
->   	ktime_t period_time;
->   	atomic_t running;
-> +	atomic_t callback_running;
->   	struct hrtimer timer;
->   	struct snd_pcm_substream *substream;
->   };
-> @@ -387,8 +388,15 @@ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
->   	if (!atomic_read(&dpcm->running))
->   		return HRTIMER_NORESTART;
->   
-> +	atomic_inc(&dpcm->callback_running);
->   	snd_pcm_period_elapsed(dpcm->substream);
-> +	atomic_dec(&dpcm->callback_running);
-> +	/* may be flipped during snd_pcm_period_elapsed() */
-> +	if (!atomic_read(&dpcm->running))
-> +		return HRTIMER_NORESTART;
-> +
->   	hrtimer_forward_now(timer, dpcm->period_time);
-> +	atomic_dec(&dpcm->callback_running);
->   	return HRTIMER_RESTART;
->   }
->   
-> @@ -407,7 +415,9 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
->   	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
->   
->   	atomic_set(&dpcm->running, 0);
-> -	hrtimer_cancel(&dpcm->timer);
-> +	/* issue hrtimer_cancel() only when called outside the callback */
-> +	if (!atomic_read(&dpcm->callback_running))
-> +		hrtimer_cancel(&dpcm->timer);
->   	return 0;
->   }
->   
-> @@ -462,6 +472,7 @@ static int dummy_hrtimer_create(struct snd_pcm_substream *substream)
->   	dpcm->timer.function = dummy_hrtimer_callback;
->   	dpcm->substream = substream;
->   	atomic_set(&dpcm->running, 0);
-> +	atomic_set(&dpcm->callback_running, 0);
->   	return 0;
->   }
+I'd expect to see break statements at the end of each case in a switch -
+this is an issue throughout the driver.
 
->From 07d61ba2a1c0e06e914443225e194d99f2d8c58d Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Fri, 1 Sep 2017 19:10:18 +0900
-Subject: [PATCH] ALSA: dummy: avoid stall due to a call of hrtimer_cancel() on
- a callback of hrtimer
+> +	if (cs43130->reset_gpio)
+> +		gpiod_set_value_cansleep(cs43130->reset_gpio, 0);
 
-A call of 'htrimer_cancel()' on a callback of hrtimer brings endless loop
-because 'struct hrtimer_clock_base.running' is not NULL on the callback.
-In hrtimer subsystem, this member is used to indicate the instance of
-hrtimer gets callbacks and there's a helper function,
-'hrtimer_callback_running()' to check it.
+The check here isn't needed and isn't done elsewhere in the driver, best
+to remove it for consistency.
 
-ALSA dummy driver uses hrtimer to emulate hardware interrupt per period
-of PCM buffer. When XRUN occurs on PCM substream, in a call of
-'snd_pcm_period_elapsed()', 'struct snd_pcm_ops.stop()' is called to
-stop the substream. In current implementation, 'hrtimer_cancel()' is
-used to wait for cancellation of hrtimer. However, as described, this
-brings endless loop.
+--jibxpyh5rz3x7loz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-For this problem, this commit uses 'hrtimer_callback_running()' to
-detect whether to be on a callback of hrtimer or not, then skip
-cancellation of hrtimer in hrtimer callbacks. Furthermore, at a case of
-XRUN, hrtimer callback returns HRTIMER_NORESTART after a call of
-'snd_pcm_period_elapsed()' to discontinue hrtimr because cancellation is
-skipped.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/drivers/dummy.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmpOeEACgkQJNaLcl1U
+h9B+egf+MzL0oEUO+GwsATN8NSrPhEsmNVZ8dkeEe/PcQh7pBU76e4GhXD5f2mSs
+u+Db2uEcMZC9L6nbVq4jyqGYgiUVIx8jLFKTMQfRrWBIp6lcrdjIKkLoB809wkwe
+oVYCq44jY4baCCNASyEU276l3+oEA2fACl94PHI1RVkfguhsvPCDv8msP4j0E5i6
+x1ExnHQBYSP6KB+4X1i/gTNEQjrGGPGpKmLRQ07cBuaNmguXTpHokjt1s2V5qxia
+tiRvqNWQ8IKpAfeymcNwDIsCOzu58W1+pJ/TUYnqNzu4hNO9GQKw4Gi02GW5HxsS
+0LcUz/xZVnELL86vvaaEIeo6KxNYPQ==
+=lEL9
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 273d60c42125..9caf754c6135 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -387,7 +387,11 @@ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
- 	if (!atomic_read(&dpcm->running))
- 		return HRTIMER_NORESTART;
- 
-+	/* In a case of XRUN, this calls .trigger to stop PCM substream. */
- 	snd_pcm_period_elapsed(dpcm->substream);
-+	if (!atomic_read(&dpcm->running))
-+		return HRTIMER_NORESTART;
-+
- 	hrtimer_forward_now(timer, dpcm->period_time);
- 	return HRTIMER_RESTART;
- }
-@@ -407,7 +411,8 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
- 	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
- 
- 	atomic_set(&dpcm->running, 0);
--	hrtimer_cancel(&dpcm->timer);
-+	if (!hrtimer_callback_running(&dpcm->timer))
-+		hrtimer_cancel(&dpcm->timer);
- 	return 0;
- }
- 
--- 
-2.11.0
-
-
-Regards
-
-Takashi Sakamoto
+--jibxpyh5rz3x7loz--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
