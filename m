@@ -1,109 +1,46 @@
-From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH 1/2] ASoC: Intel: Enable tdm slots for max98927
-Date: Fri,  1 Sep 2017 11:41:17 -0700
-Message-ID: <1504291278-4482-2-git-send-email-harshapriya.n@intel.com>
-References: <1504291278-4482-1-git-send-email-harshapriya.n@intel.com>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Subject: [PATCH 3/3] ASoC: max98927: Removed obsolete variables
+Date: Fri,  1 Sep 2017 14:35:08 -0700
+Message-ID: <1504301708-24389-3-git-send-email-ryans.lee@maximintegrated.com>
+References: <1504301708-24389-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id B0770266F94
- for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 20:41:29 +0200 (CEST)
-In-Reply-To: <1504291278-4482-1-git-send-email-harshapriya.n@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Harsha Priya <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1504301708-24389-1-git-send-email-ryans.lee@maximintegrated.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-In this patch the SSP0 BE's mode is changed from I2S mode to DSP_B
-with 8 slots of 16 bits. It enables 4 slot for IV feedback and 2 slots for
-playback on max98927 for kabylake machine driver
-
-The layout of SSP0 Tx and Rx slots is as follows;
-1. Playback uses Tx slots 0 and 1
-2. Capture uses Rx slots 4,5,6,7.
-
-Slots 0 through 3 of Rx are used by DMIC codec RT5514 in another flavor
-of Kabylake platform. We are using the same slots 4 through 7 on all
-Kabylake platforms for max98927 in order to reuse same NHLT configuration.
-
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 40 +++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+Changelog:
+	Removed obsolete variables that have never been referred from driver before.
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index c144214..f3f957d 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -387,6 +387,43 @@ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
-+static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int ret = 0, j;
-+
-+	for (j = 0; j < rtd->num_codecs; j++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
-+
-+		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME)) {
-+			/*
-+			 * Use channel 4 and 5 for the first amp
-+			 */
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
-+			if (ret < 0) {
-+				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
-+			/*
-+			 * Use channel 6 and 7 for the second amp
-+			 */
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
-+			if (ret < 0) {
-+				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+	}
-+	return ret;
-+}
-+
-+static struct snd_soc_ops kabylake_ssp0_ops = {
-+	.hw_params = kabylake_ssp0_hw_params,
-+};
-+
- static unsigned int channels_dmic[] = {
- 	2, 4,
+ sound/soc/codecs/max98927.h | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+index 98b5f17..d215f60 100644
+--- a/sound/soc/codecs/max98927.h
++++ b/sound/soc/codecs/max98927.h
+@@ -263,17 +263,13 @@
+ struct max98927_priv {
+ 	struct regmap *regmap;
+ 	struct snd_soc_codec *codec;
+-	struct max98927_pdata *pdata;
+-	unsigned int spk_gain;
+ 	unsigned int sysclk;
+ 	unsigned int v_l_slot;
+ 	unsigned int i_l_slot;
+ 	bool interleave_mode;
+ 	unsigned int ch_size;
+-	unsigned int rate;
+ 	unsigned int iface;
+ 	unsigned int master;
+-	unsigned int digital_gain;
+ 	bool tdm_mode;
  };
-@@ -590,12 +627,13 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
- 		.no_pcm = 1,
- 		.codecs = max98927_codec_components,
- 		.num_codecs = ARRAY_SIZE(max98927_codec_components),
--		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
- 			SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = kabylake_ssp_fixup,
- 		.dpcm_playback = 1,
-+		.ops = &kabylake_ssp0_ops,
- 	},
- 	{
- 		/* SSP1 - Codec */
+ #endif
 -- 
 1.9.1
