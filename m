@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add missing compile rule for max98371
-Date: Fri, 1 Sep 2017 11:21:00 +0100
-Message-ID: <20170901102100.vh7v2zu53m7z7z7x@sirena.org.uk>
-References: <87a82fniy2.wl%kuninori.morimoto.gx@renesas.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 23/25] ALSA/dummy: Replace tasklet with
+	softirq hrtimer
+Date: Fri,  1 Sep 2017 19:25:37 +0900
+Message-ID: <20170901102537.8066-1-o-takashi@sakamocchi.jp>
+References: <s5hh8wnvjei.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6097586673236156466=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7716A266DBC
- for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:21:04 +0200 (CEST)
-In-Reply-To: <87a82fniy2.wl%kuninori.morimoto.gx@renesas.com>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 6C3DF266DBC
+ for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:25:41 +0200 (CEST)
+In-Reply-To: <s5hh8wnvjei.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+To: tiwai@suse.de, perex@perex.cz, anna-maria@linutronix.de
+Cc: alsa-devel@alsa-project.org, keescook@chromium.org, peterz@infradead.org, linux-kernel@vger.kernel.org, mingo@redhat.com, john.stultz@linaro.org, tglx@linutronix.de, hch@lst.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============6097586673236156466==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gewkqcyqgxgiet2d"
-Content-Disposition: inline
+On Sep 1 2017 00:36, Takashi Iwai wrote:
+> I gave it at try, but it caused a kernel hang, unfortunately.
+> 
+> The reason is that snd_pcm_period_elapased() may stop the stream
+> (e.g. when reaching at the end).  With this patchset, it'll lead to
+> the call of hrtimer_cancel() from the hrtimer callback itself, thus it
+> stalls.
+ 
+I can reproduce this bug.
 
+> Below is the additional fix over your patch for working around it.
+> I believe it should cover most corner cases, and seems working fine
+> through quick tests, so far.
 
---gewkqcyqgxgiet2d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch looks good to me, too. But I have an alternative.
 
-On Fri, Sep 01, 2017 at 04:33:01AM +0000, Kuninori Morimoto wrote:
+We can use 'hrtimer_callback_running()' to detect whether to be on hrtimer
+callback or not (please read '__run_hrtimer()' in 'kernel/time/hrtimer.c').
+Usage of this helper function on .stop callback to skip cancellation can
+avoid the stall. In this case, after stopping PCM substream, the hrtimer
+callback should return HRTIMER_NORESTART to avoid restarting, as well as
+your patch.  Please test a patch in this message.
 
-> It is still using old driver style, this patch also
-> fixup it.
->=20
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  sound/soc/codecs/Makefile   |  1 +
->  sound/soc/codecs/max98371.c | 14 ++++++++------
+> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+> index 273d60c42125..b5dd64e3dab1 100644
+> --- a/sound/drivers/dummy.c
+> +++ b/sound/drivers/dummy.c
+> @@ -375,6 +375,7 @@ struct dummy_hrtimer_pcm {
+>   	ktime_t base_time;
+>   	ktime_t period_time;
+>   	atomic_t running;
+> +	atomic_t callback_running;
+>   	struct hrtimer timer;
+>   	struct snd_pcm_substream *substream;
+>   };
+> @@ -387,8 +388,15 @@ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
+>   	if (!atomic_read(&dpcm->running))
+>   		return HRTIMER_NORESTART;
+>   
+> +	atomic_inc(&dpcm->callback_running);
+>   	snd_pcm_period_elapsed(dpcm->substream);
+> +	atomic_dec(&dpcm->callback_running);
+> +	/* may be flipped during snd_pcm_period_elapsed() */
+> +	if (!atomic_read(&dpcm->running))
+> +		return HRTIMER_NORESTART;
+> +
+>   	hrtimer_forward_now(timer, dpcm->period_time);
+> +	atomic_dec(&dpcm->callback_running);
+>   	return HRTIMER_RESTART;
+>   }
+>   
+> @@ -407,7 +415,9 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
+>   	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
+>   
+>   	atomic_set(&dpcm->running, 0);
+> -	hrtimer_cancel(&dpcm->timer);
+> +	/* issue hrtimer_cancel() only when called outside the callback */
+> +	if (!atomic_read(&dpcm->callback_running))
+> +		hrtimer_cancel(&dpcm->timer);
+>   	return 0;
+>   }
+>   
+> @@ -462,6 +472,7 @@ static int dummy_hrtimer_create(struct snd_pcm_substream *substream)
+>   	dpcm->timer.function = dummy_hrtimer_callback;
+>   	dpcm->substream = substream;
+>   	atomic_set(&dpcm->running, 0);
+> +	atomic_set(&dpcm->callback_running, 0);
+>   	return 0;
+>   }
 
-The changes in the body of the driver should really be split out and
-explained separately.
+>From 07d61ba2a1c0e06e914443225e194d99f2d8c58d Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Fri, 1 Sep 2017 19:10:18 +0900
+Subject: [PATCH] ALSA: dummy: avoid stall due to a call of hrtimer_cancel() on
+ a callback of hrtimer
 
---gewkqcyqgxgiet2d
-Content-Type: application/pgp-signature; name="signature.asc"
+A call of 'htrimer_cancel()' on a callback of hrtimer brings endless loop
+because 'struct hrtimer_clock_base.running' is not NULL on the callback.
+In hrtimer subsystem, this member is used to indicate the instance of
+hrtimer gets callbacks and there's a helper function,
+'hrtimer_callback_running()' to check it.
 
------BEGIN PGP SIGNATURE-----
+ALSA dummy driver uses hrtimer to emulate hardware interrupt per period
+of PCM buffer. When XRUN occurs on PCM substream, in a call of
+'snd_pcm_period_elapsed()', 'struct snd_pcm_ops.stop()' is called to
+stop the substream. In current implementation, 'hrtimer_cancel()' is
+used to wait for cancellation of hrtimer. However, as described, this
+brings endless loop.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmpNIwACgkQJNaLcl1U
-h9D12wf/Tdo8ugpsIqtHtjfkax2cZRvB1exWCyq2ojqsLkR4ALmMsr5KvGS8zWce
-zU3fK4+PofFTHIJj7LOp/3T4zMAfRZTzsZBI6GEW1NXdIy6xA55Usq5INhrfBYyL
-AQ4oXjY1jSbEUyIvWNY7BxQK2CqiuXNWOW9BrJUSc9PX+mOhTGLExNlNMH0uqSW7
-vfrdlajtottb0olg7qR5reGpE30vgwgFPUo08nb/3bIfUbu8t3UqpO0hGgCpMQta
-G+JLz/+Q2eaQfzYnMkve5sqD87s5ffz0G1mbKMNik4OsHbK1YM5wT6N1r69wMtR0
-9L1D0uv7nieuL8ITK9Nveirqq8plog==
-=0eID
------END PGP SIGNATURE-----
+For this problem, this commit uses 'hrtimer_callback_running()' to
+detect whether to be on a callback of hrtimer or not, then skip
+cancellation of hrtimer in hrtimer callbacks. Furthermore, at a case of
+XRUN, hrtimer callback returns HRTIMER_NORESTART after a call of
+'snd_pcm_period_elapsed()' to discontinue hrtimr because cancellation is
+skipped.
 
---gewkqcyqgxgiet2d--
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/drivers/dummy.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---===============6097586673236156466==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+index 273d60c42125..9caf754c6135 100644
+--- a/sound/drivers/dummy.c
++++ b/sound/drivers/dummy.c
+@@ -387,7 +387,11 @@ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
+ 	if (!atomic_read(&dpcm->running))
+ 		return HRTIMER_NORESTART;
+ 
++	/* In a case of XRUN, this calls .trigger to stop PCM substream. */
+ 	snd_pcm_period_elapsed(dpcm->substream);
++	if (!atomic_read(&dpcm->running))
++		return HRTIMER_NORESTART;
++
+ 	hrtimer_forward_now(timer, dpcm->period_time);
+ 	return HRTIMER_RESTART;
+ }
+@@ -407,7 +411,8 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
+ 	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
+ 
+ 	atomic_set(&dpcm->running, 0);
+-	hrtimer_cancel(&dpcm->timer);
++	if (!hrtimer_callback_running(&dpcm->timer))
++		hrtimer_cancel(&dpcm->timer);
+ 	return 0;
+ }
+ 
+-- 
+2.11.0
 
 
---===============6097586673236156466==--
+Regards
+
+Takashi Sakamoto
