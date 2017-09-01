@@ -1,15 +1,15 @@
 From: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Subject: RE: [PATCH 1/9] ASoC: max98927: Added support for DSP_A and DSP_B
- format
-Date: Fri, 1 Sep 2017 21:37:48 +0000
-Message-ID: <BY2PR11MB0837062B05627DCD5540CBB8E7920@BY2PR11MB0837.namprd11.prod.outlook.com>
+Subject: RE: [PATCH 2/9] ASoC: max98927: Added controls for Envelope tracking
+Date: Fri, 1 Sep 2017 21:38:13 +0000
+Message-ID: <BY2PR11MB083746D8B7157462EDB24861E7920@BY2PR11MB0837.namprd11.prod.outlook.com>
 References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
- <20170829190015.kpscn3uuwbvwlp6e@sirena.org.uk>
+ <1503963061-14763-2-git-send-email-ryans.lee@maximintegrated.com>
+ <20170831114357.dekzz4wa7j6vqi4t@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170829190015.kpscn3uuwbvwlp6e@sirena.org.uk>
+In-Reply-To: <20170831114357.dekzz4wa7j6vqi4t@sirena.org.uk>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
@@ -18,34 +18,40 @@ List-Id: alsa-devel@alsa-project.org
 
 >-----Original Message-----
 >From: Mark Brown [mailto:broonie@kernel.org]
->Sent: Tuesday, August 29, 2017 12:00 PM
+>Sent: Thursday, August 31, 2017 4:44 AM
 >To: Ryan Lee <RyanS.Lee@maximintegrated.com>
 >Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com;
 >kuninori.morimoto.gx@renesas.com; alsa-devel@alsa-project.org; linux-
 >kernel@vger.kernel.org; ryan.lee.maxim@gmail.com
->Subject: Re: [PATCH 1/9] ASoC: max98927: Added support for DSP_A and DSP_B
->format
+>Subject: Re: [PATCH 2/9] ASoC: max98927: Added controls for Envelope track=
+ing
 >
->On Mon, Aug 28, 2017 at 04:30:53PM -0700, Ryan Lee wrote:
+>On Mon, Aug 28, 2017 at 04:30:54PM -0700, Ryan Lee wrote:
 >
->> +	if ((max98927->iface =3D=3D SND_SOC_DAIFMT_DSP_A) ||
->> +	    (max98927->iface =3D=3D SND_SOC_DAIFMT_DSP_B))
->> +		return 0;
->> +
->> +	/* BCLK configuration */
+>>  	/* Envelope Tracking configuration */
+>>  	regmap_write(max98927->regmap,
+>>  		MAX98927_R0082_ENV_TRACK_VOUT_HEADROOM,
+>> -		0x08);
+>> +		0x0A);
+>>  	regmap_write(max98927->regmap,
+>>  		MAX98927_R0086_ENV_TRACK_CTRL,
+>>  		0x01);
+>> -	regmap_write(max98927->regmap,
+>> -		MAX98927_R0087_ENV_TRACK_BOOST_VOUT_READ,
+>> -		0x10);
 >
->Why do we not configure the BCLK in DSP modes?  That's unusual and seems
->likely to break some systems that rely on exact clocking.
+>Why are we changing the defaults here?  It was understandable to have a fi=
+xed
+>default that differed from the chip value when there was no control but no=
+w
+>there is a control and we're changing the default again for some undocumen=
+ted
+>reason.  It'd be better to leave the values here to avoid breaking compati=
+bility
+>with existing users and let users who need different values change things =
+using
+>the newly added controls.
 
-I put this code to avoid overwrite BCLK value in TDM mode. BCLK is being co=
-nfigured by ' max98927_dai_tdm_slot'.
-Now I added one more variable to check TDM mode instead of checking DAI_FMT=
-.
-
->
->Also if we're selecting on format a switch statement is generally better t=
-o make
->any further special casing easier in future.
-
-OK. Thanks. But I kept if statement on the modified version because it only=
- have two cases, tdm and non-tdm.
+Thank you for feedback. Let me keep existing value.
+I still need to remove regmap_write for R:0x87 because it is read-only regi=
+ster.
