@@ -1,45 +1,41 @@
-From: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Subject: RE: [PATCH 5/9] ASoC: max98927: Removed obsolete variables
-Date: Fri, 1 Sep 2017 21:38:33 +0000
-Message-ID: <BY2PR11MB0837C940D1C26C78A4D1224CE7920@BY2PR11MB0837.namprd11.prod.outlook.com>
-References: <1503963061-14763-1-git-send-email-ryans.lee@maximintegrated.com>
- <1503963061-14763-5-git-send-email-ryans.lee@maximintegrated.com>
- <20170831115359.bjw3wbihjzcuh3nh@sirena.org.uk>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH v5 2/7] dt-bindings: clk: at91: add audio plls to the
+ compatible list
+Date: Fri, 1 Sep 2017 15:55:12 -0700
+Message-ID: <20170901225512.GD21656@codeaurora.org>
+References: <cover.ada7bc60e0b3a0f7429afc6ea9e4869131d1b757.1502346448.git-series.quentin.schulz@free-electrons.com>
+ <09230b9714c7d8fee053d1b014ef6af43c1bebbc.1502346448.git-series.quentin.schulz@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170831115359.bjw3wbihjzcuh3nh@sirena.org.uk>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <09230b9714c7d8fee053d1b014ef6af43c1bebbc.1502346448.git-series.quentin.schulz@free-electrons.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+To: Quentin Schulz <quentin.schulz@free-electrons.com>
+Cc: mturquette@baylibre.com, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, broonie@kernel.org, nicolas.ferre@microchip.com, alexandre.belloni@free-electrons.com, linux@armlinux.org.uk, boris.brezillon@free-electrons.com, perex@perex.cz, tiwai@suse.com, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, cyrille.pitchen@wedev4u.fr, thomas.petazzoni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
->-----Original Message-----
->From: Mark Brown [mailto:broonie@kernel.org]
->Sent: Thursday, August 31, 2017 4:54 AM
->To: Ryan Lee <RyanS.Lee@maximintegrated.com>
->Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com;
->kuninori.morimoto.gx@renesas.com; alsa-devel@alsa-project.org; linux-
->kernel@vger.kernel.org; ryan.lee.maxim@gmail.com
->Subject: Re: [PATCH 5/9] ASoC: max98927: Removed obsolete variables
->
->On Mon, Aug 28, 2017 at 04:30:57PM -0700, Ryan Lee wrote:
->> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
->
->Why are these variables obsolete?  If their use was removed in earlier pat=
-ches in
->the series they should be handled in that patch, if they're just unused sa=
-y so.  In
->general your changelogs could really benefit from being a bit longer and
->explaining why changes are being made.
->
->>  mode change 100644 =3D> 100755 sound/soc/codecs/max98927.h
->
->This also changes the permissions to be executable which isn't what we wan=
-t.
+On 08/10, Quentin Schulz wrote:
+> This new clock driver set allows to have a fractional divided clock that
+> would generate a precise clock particularly suitable for audio
+> applications.
+> 
+> The main audio pll clock has two children clocks: one that is connected
+> to the PMC, the other that can directly drive a pad. As these two routes
+> have different enable bits and different dividers and divider formulas,
+> they are handled by two different drivers.
+> 
+> This adds the audio plls (frac, pad and pmc) to the compatible list of
+> at91 clocks in DT binding.
+> 
+> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> ---
 
-Thank you for your comment.
-I wanted to remove these variables because it have never been referred in m=
-ax98927.c from the beginning.
+Applied to clk-next
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
