@@ -1,73 +1,135 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add missing compile rule for
-	sirf-audio-codec
-Date: Fri, 1 Sep 2017 11:46:05 +0100
-Message-ID: <20170901104605.fomg4ykycmuhn6oa@sirena.org.uk>
-References: <878thznixc.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8943042635618118284=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A0FFA266DBC
- for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:46:06 +0200 (CEST)
-In-Reply-To: <878thznixc.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: cs43130: Add devicetree bindings for CS43130" to the asoc tree
+Date: Fri, 01 Sep 2017 11:47:05 +0100
+Message-ID: <E1dnjTd-0005zm-E4@debutante>
+References: <65594a37-aecf-4be2-bc5e-f392b4d9a129@EX3.ad.cirrus.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <65594a37-aecf-4be2-bc5e-f392b4d9a129-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8943042635618118284==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qpwffax22c6pck46"
-Content-Disposition: inline
+   ASoC: cs43130: Add devicetree bindings for CS43130
 
+has been applied to the asoc tree at
 
---qpwffax22c6pck46
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Sep 01, 2017 at 04:33:27AM +0000, Kuninori Morimoto wrote:
->=20
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> It is still using old driver style, this patch also
-> fixup it.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Same here, this should really have been two patches.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---qpwffax22c6pck46
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmpOm0ACgkQJNaLcl1U
-h9CHKAf+M/QOQghfQLqpgzfTJ+gHH2ybyKkawHKoXphxYSsZvWXNuD+XSsUHW+F+
-RK8nqPAD+gfsaVtiFX1sbJfvzA6qCUfSMQwKeD6B3YD1b4o8+abbb1TX6XMtwuK+
-AEe4WWVAmsMWprqnVfDSOFgmbMAeHA2ljR31CrM/q430m1JcTCxBTgKrV9StG1cP
-KpPMFS1EYEaPQT2o9gWtUAo23hPnAjSmwsJjpF3uMe5KCum5p0781CJKYm8XB3JR
-UbCs+/0yCopXi/GCIJQNyJEX6N3iVnMomJEL5pRFpFOhd1ZKdaSTjTAKDBMa2c6c
-ax7w9c9YBsWkbThgEwZVXuckPEB0fg==
-=wyXV
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---qpwffax22c6pck46--
+>From 465c925695593b43695e2396f7279879a72275eb Mon Sep 17 00:00:00 2001
+From: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Date: Fri, 18 Aug 2017 11:00:20 -0500
+Subject: [PATCH] ASoC: cs43130: Add devicetree bindings for CS43130
 
---===============8943042635618118284==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Add devicetree bindings documentation file for Cirrus
+Logic CS43130 codec.
 
+Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ .../devicetree/bindings/sound/cs43130.txt          | 67 ++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs43130.txt
 
---===============8943042635618118284==--
+diff --git a/Documentation/devicetree/bindings/sound/cs43130.txt b/Documentation/devicetree/bindings/sound/cs43130.txt
+new file mode 100644
+index 000000000000..8b1dd5aeb004
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs43130.txt
+@@ -0,0 +1,67 @@
++CS43130 DAC
++
++Required properties:
++
++  - compatible : "cirrus,cs43130", "cirrus,cs4399", "cirrus,cs43131",
++                 "cirrus,cs43198"
++
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply, VL-supply, VCP-supply, VD-supply:
++	power supplies for the device, as covered in
++	Documentation/devicetree/bindings/regulator/regulator.txt.
++
++
++Optional properties:
++
++  - reset-gpios : Active low GPIO used to reset the device
++
++  - cirrus,xtal-ibias:
++   When external MCLK is generated by external crystal
++   oscillator, CS43130 can be used to provide bias current
++   for external crystal.  Amount of bias current sent is
++   set as:
++   1 = 7.5uA
++   2 = 12.5uA
++   3 = 15uA
++
++  - cirrus,dc-measure:
++   Boolean, define to enable headphone DC impedance measurement.
++
++  - cirrus,ac-measure:
++   Boolean, define to enable headphone AC impedance measurement.
++   DC impedance must also be enabled for AC impedance measurement.
++
++  - cirrus,dc-threshold:
++   Define 2 DC impedance thresholds in ohms for HP output control.
++   Default values are 50 and 120 Ohms.
++
++  - cirrus,ac-freq:
++   Define the frequencies at which to measure HP AC impedance.
++   Only used if "cirrus,dc-measure" is defined.
++   Exactly 10 frequencies must be defined.
++   If this properties is undefined, by default,
++   following frequencies are used:
++   <24 43 93 200 431 928 2000 4309 9283 20000>
++   The above frequencies are logarithmically equally spaced.
++   Log base is 10.
++
++Example:
++
++cs43130: audio-codec@30 {
++   compatible = "cirrus,cs43130";
++   reg = <0x30>;
++   reset-gpios = <&axi_gpio 54 0>;
++   VA-supply = <&dummy_vreg>;
++   VP-supply = <&dummy_vreg>;
++   VL-supply = <&dummy_vreg>;
++   VCP-supply = <&dummy_vreg>;
++   VD-supply = <&dummy_vreg>;
++   cirrus,xtal-ibias = <2>;
++   interrupt-parent = <&gpio0>;
++   interrupts = <55 8>;
++   cirrus,dc-measure;
++   cirrus,ac-measure;
++   cirrus,dc-threshold = /bits/ 16 <20 100>;
++   cirrus,ac-freq = /bits/ 16 <24 43 93 200 431 928 2000 4309 9283 20000>;
++};
+-- 
+2.14.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
