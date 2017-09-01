@@ -1,16 +1,15 @@
 From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: Fix setting of SSP parameters
-	in Kabylake machine driver
-Date: Fri,  1 Sep 2017 11:41:18 -0700
-Message-ID: <1504291278-4482-3-git-send-email-harshapriya.n@intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: Enable tdm slots for max98927
+Date: Fri,  1 Sep 2017 11:41:17 -0700
+Message-ID: <1504291278-4482-2-git-send-email-harshapriya.n@intel.com>
 References: <1504291278-4482-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FDD7266FCB
- for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 20:41:30 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B0770266F94
+ for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 20:41:29 +0200 (CEST)
 In-Reply-To: <1504291278-4482-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,53 +24,86 @@ To: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, alsa-devel@alsa-pro
 Cc: Harsha Priya <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch sets the SSP params based on FE and BE dai links
-for kabylake machine driver that uses rt5663 and max98927 codecs
+In this patch the SSP0 BE's mode is changed from I2S mode to DSP_B
+with 8 slots of 16 bits. It enables 4 slot for IV feedback and 2 slots for
+playback on max98927 for kabylake machine driver
+
+The layout of SSP0 Tx and Rx slots is as follows;
+1. Playback uses Tx slots 0 and 1
+2. Capture uses Rx slots 4,5,6,7.
+
+Slots 0 through 3 of Rx are used by DMIC codec RT5514 in another flavor
+of Kabylake platform. We are using the same slots 4 through 7 on all
+Kabylake platforms for max98927 in order to reuse same NHLT configuration.
 
 Signed-off-by: Naveen M <naveen.m@intel.com>
 Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 27 +++++++++++++++++++++------
- 1 file changed, 21 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 40 +++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index f3f957d..62c03a2 100644
+index c144214..f3f957d 100644
 --- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
 +++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -338,13 +338,28 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_interval *channels = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+	struct snd_soc_dpcm *dpcm = container_of(
-+			params, struct snd_soc_dpcm, hw_params);
-+	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
-+	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
- 
--	/* The ADSP will convert the FE rate to 48k, stereo */
--	rate->min = rate->max = 48000;
--	channels->min = channels->max = 2;
--	/* set SSP1 to 24 bit */
--	snd_mask_none(fmt);
--	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+	/*
-+	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
-+	 */
-+	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
-+	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
-+	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
-+		rate->min = rate->max = 48000;
-+		channels->min = channels->max = 2;
-+		snd_mask_none(fmt);
-+		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+	}
-+	/*
-+	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
-+	 * thus changing the mask here
-+	 */
-+	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
-+		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
+@@ -387,6 +387,43 @@ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
+ 
++static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	int ret = 0, j;
++
++	for (j = 0; j < rtd->num_codecs; j++) {
++		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
++
++		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME)) {
++			/*
++			 * Use channel 4 and 5 for the first amp
++			 */
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
++			if (ret < 0) {
++				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
++				return ret;
++			}
++		}
++		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
++			/*
++			 * Use channel 6 and 7 for the second amp
++			 */
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
++			if (ret < 0) {
++				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
++				return ret;
++			}
++		}
++	}
++	return ret;
++}
++
++static struct snd_soc_ops kabylake_ssp0_ops = {
++	.hw_params = kabylake_ssp0_hw_params,
++};
++
+ static unsigned int channels_dmic[] = {
+ 	2, 4,
+ };
+@@ -590,12 +627,13 @@ static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
+ 		.no_pcm = 1,
+ 		.codecs = max98927_codec_components,
+ 		.num_codecs = ARRAY_SIZE(max98927_codec_components),
+-		.dai_fmt = SND_SOC_DAIFMT_I2S |
++		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
+ 			SND_SOC_DAIFMT_NB_NF |
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+ 		.be_hw_params_fixup = kabylake_ssp_fixup,
+ 		.dpcm_playback = 1,
++		.ops = &kabylake_ssp0_ops,
+ 	},
+ 	{
+ 		/* SSP1 - Codec */
 -- 
 1.9.1
