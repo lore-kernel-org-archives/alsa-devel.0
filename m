@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add missing compile rule for max98371"
-	to the asoc tree
-Date: Fri, 01 Sep 2017 11:47:01 +0100
-Message-ID: <E1dnjTZ-0005yj-W3@debutante>
-References: <87a82fniy2.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: make clock direction configurable in
+	asoc-simple" to the asoc tree
+Date: Fri, 01 Sep 2017 11:47:12 +0100
+Message-ID: <E1dnjTk-00061n-7K@debutante>
+References: <20170817134236.a89f513737877efd7c176a3c@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E5D23266DBC
- for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:47:05 +0200 (CEST)
-In-Reply-To: <87a82fniy2.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BB9472676D8
+ for <alsa-devel@alsa-project.org>; Fri,  1 Sep 2017 12:47:18 +0200 (CEST)
+In-Reply-To: <20170817134236.a89f513737877efd7c176a3c@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Vitaly Wool <vitalywool@gmail.com>
+Cc: trini@konsulko.com, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kevin Hilman <khilman@kernel.org>, Sekhar Nori <nsekhar@ti.com>, Mark Brown <broonie@kernel.org>, Vitaly Wool <vitaly.wool@konsulko.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add missing compile rule for max98371
+   ASoC: make clock direction configurable in asoc-simple
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,79 @@ to this mail.
 Thanks,
 Mark
 
->From a3dcadd220b4572f9baaad5f3c0c00044273c961 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 1 Sep 2017 04:33:01 +0000
-Subject: [PATCH] ASoC: add missing compile rule for max98371
+>From a728f56094e7cf60a1dc0642fe86901d1a4dfb4e Mon Sep 17 00:00:00 2001
+From: Vitaly Wool <vitalywool@gmail.com>
+Date: Thu, 17 Aug 2017 13:42:36 +0200
+Subject: [PATCH] ASoC: make clock direction configurable in asoc-simple
 
-It is still using old driver style, this patch also
-fixup it.
+Some CPU drivers (e. g. davinci-mcasp) may require the system clock to
+be configured as OUT, while there's no good way currently to set
+SND_SOC_CLK_OUT in simple-soc driver if the clock is fixed-rate.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch makes asoc_simple_card_init_dai() initialize clock to
+SND_SOCK_CLK_OUT if explicitly stated in the relevant dts file. This
+change is transparent and doesn't change the default behavior.
+
+Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Makefile   |  1 +
- sound/soc/codecs/max98371.c | 14 ++++++++------
- 2 files changed, 9 insertions(+), 6 deletions(-)
+ Documentation/devicetree/bindings/sound/simple-card.txt | 3 +++
+ include/sound/simple_card_utils.h                       | 1 +
+ sound/soc/generic/simple-card-utils.c                   | 9 +++++++--
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 1755a54e3dc9..b4d576dab48a 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -320,6 +320,7 @@ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
- obj-$(CONFIG_SND_SOC_MAX98095)	+= snd-soc-max98095.o
- obj-$(CONFIG_SND_SOC_MAX98357A)	+= snd-soc-max98357a.o
-+obj-$(CONFIG_SND_SOC_MAX98371)	+= snd-soc-max98371.o
- obj-$(CONFIG_SND_SOC_MAX9867)	+= snd-soc-max9867.o
- obj-$(CONFIG_SND_SOC_MAX98925)	+= snd-soc-max98925.o
- obj-$(CONFIG_SND_SOC_MAX98926)	+= snd-soc-max98926.o
-diff --git a/sound/soc/codecs/max98371.c b/sound/soc/codecs/max98371.c
-index 781be9ba8dba..7bc2a17c1e94 100644
---- a/sound/soc/codecs/max98371.c
-+++ b/sound/soc/codecs/max98371.c
-@@ -349,12 +349,14 @@ static struct snd_soc_dai_driver max98371_dai[] = {
- };
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index c7a93931fad2..166f2290233b 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -86,6 +86,9 @@ Optional CPU/CODEC subnodes properties:
+ 					  in dai startup() and disabled with
+ 					  clk_disable_unprepare() in dai
+ 					  shutdown().
++- system-clock-direction-out		: specifies clock direction as 'out' on
++					  initialization. It is useful for some aCPUs with
++					  fixed clocks.
  
- static const struct snd_soc_codec_driver max98371_codec = {
--	.controls = max98371_snd_controls,
--	.num_controls = ARRAY_SIZE(max98371_snd_controls),
--	.dapm_routes = max98371_audio_map,
--	.num_dapm_routes = ARRAY_SIZE(max98371_audio_map),
--	.dapm_widgets = max98371_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(max98371_dapm_widgets),
-+	.component_driver = {
-+		.controls = max98371_snd_controls,
-+		.num_controls = ARRAY_SIZE(max98371_snd_controls),
-+		.dapm_routes = max98371_audio_map,
-+		.num_dapm_routes = ARRAY_SIZE(max98371_audio_map),
-+		.dapm_widgets = max98371_dapm_widgets,
-+		.num_dapm_widgets = ARRAY_SIZE(max98371_dapm_widgets),
-+	},
- };
+ Example 1 - single DAI link:
  
- static const struct regmap_config max98371_regmap = {
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 42c6a6ac3ce6..7e25afce6566 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -15,6 +15,7 @@
+ struct asoc_simple_dai {
+ 	const char *name;
+ 	unsigned int sysclk;
++	int clk_direction;
+ 	int slots;
+ 	int slot_width;
+ 	unsigned int tx_slot_mask;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 26d64fa40c9c..af44c8c52a19 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -196,7 +196,11 @@ int asoc_simple_card_parse_clk(struct device *dev,
+ 			simple_dai->sysclk = clk_get_rate(clk);
+ 	}
+ 
+-	dev_dbg(dev, "%s : sysclk = %d\n", name, simple_dai->sysclk);
++	if (of_property_read_bool(node, "system-clock-direction-out"))
++		simple_dai->clk_direction = SND_SOC_CLOCK_OUT;
++
++	dev_dbg(dev, "%s : sysclk = %d, direction %d\n", name,
++		simple_dai->sysclk, simple_dai->clk_direction);
+ 
+ 	return 0;
+ }
+@@ -310,7 +314,8 @@ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+ 	int ret;
+ 
+ 	if (simple_dai->sysclk) {
+-		ret = snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk, 0);
++		ret = snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk,
++					     simple_dai->clk_direction);
+ 		if (ret && ret != -ENOTSUPP) {
+ 			dev_err(dai->dev, "simple-card: set_sysclk error\n");
+ 			return ret;
 -- 
 2.14.1
