@@ -1,67 +1,56 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: fsl_spdif: make const arrays rate static
-Date: Sun,  3 Sep 2017 14:54:08 +0100
-Message-ID: <20170903135408.7602-1-colin.king@canonical.com>
+From: Wang YanQing <udknight@gmail.com>
+Subject: [PATCH] ALSA: hda: Fix assign invalid fixed slots pcm numbers to
+ HDA_PCM_TYPE_HDMI in get_empty_pcm_device
+Date: Sun, 3 Sep 2017 21:52:31 +0800
+Message-ID: <20170903135231.GB2278@udknight>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A50A266E25
- for <alsa-devel@alsa-project.org>; Sun,  3 Sep 2017 15:54:17 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fengguang.wu@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The length of pcm_dev_bits in hda_bus is SNDRV_PCM_DEVICES,
+and the definiton of SNDRV_PCM_DEVICES is:
+"
+ #if defined(CONFIG_SND_DYNAMIC_MINORS)
+ #define SNDRV_PCM_DEVICES       (SNDRV_OS_MINORS-2)
+ #else
+ #define SNDRV_PCM_DEVICES       8
+ #endif
+"
 
-Don't populate the const arrays rate on the stack, instead make them
-static. Makes the object code smaller by 220 bytes:
+So the max valid fixed slots pcm number is 7, and the first
+non-fixed slot is 8.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  24385	   9776	    128	  34289	   85f1	sound/soc/fsl/fsl_spdif.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
-  24005	   9936	    128	  34069	   8515	sound/soc/fsl/fsl_spdif.o
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Wang YanQing <udknight@gmail.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 4 ++--
+ sound/pci/hda/hda_codec.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 7e6cc4da0088..4f7469c1864c 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1110,7 +1110,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 				struct clk *clk, u64 savesub,
- 				enum spdif_txrate index, bool round)
- {
--	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
-+	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
- 	u64 rate_ideal, rate_actual, sub;
- 	u32 sysclk_dfmin, sysclk_dfmax;
-@@ -1169,7 +1169,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 				enum spdif_txrate index)
- {
--	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
-+	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	struct device *dev = &pdev->dev;
- 	u64 savesub = 100000, ret;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 3db26c4..df6b57e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3118,7 +3118,7 @@ static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
+ 	static int audio_idx[HDA_PCM_NTYPES][5] = {
+ 		[HDA_PCM_TYPE_AUDIO] = { 0, 2, 4, 5, -1 },
+ 		[HDA_PCM_TYPE_SPDIF] = { 1, -1 },
+-		[HDA_PCM_TYPE_HDMI]  = { 3, 7, 8, 9, -1 },
++		[HDA_PCM_TYPE_HDMI]  = { 3, 7, -1 },
+ 		[HDA_PCM_TYPE_MODEM] = { 6, -1 },
+ 	};
+ 	int i;
+@@ -3139,7 +3139,7 @@ static int get_empty_pcm_device(struct hda_bus *bus, unsigned int type)
+ 
+ #ifdef CONFIG_SND_DYNAMIC_MINORS
+ 	/* non-fixed slots starting from 10 */
+-	for (i = 10; i < 32; i++) {
++	for (i = 8; i < 32; i++) {
+ 		if (!test_and_set_bit(i, bus->pcm_dev_bits))
+ 			return i;
+ 	}
 -- 
-2.14.1
+1.8.5.6.2.g3d8a54e.dirty
