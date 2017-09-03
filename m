@@ -1,50 +1,41 @@
-From: Lukasz Majewski <lukma@denx.de>
-Subject: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal to system freq
-Date: Sun,  3 Sep 2017 13:05:01 +0200
-Message-ID: <1504436701-20700-1-git-send-email-lukma@denx.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ASoC: samsung: i2s: Fix error handling path in i2s_set_sysclk()
+Date: Sun,  3 Sep 2017 14:29:02 +0200
+Message-ID: <20170903122902.3591-1-christophe.jaillet@wanadoo.fr>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
+To: krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 List-Id: alsa-devel@alsa-project.org
 
-The problem is visible in the following setup (on the imx6q):
-"simple-audio-card" -> ssi2 -> I2S + I2C -> codec
+If 'clk_prepare_enable()' fails, we must 'put' the corresponding clock.
+Othewise, there is a resource leak.
 
-The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
-
-asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
-snd_soc_dai_set_sysclk()
-fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
-
-The last call is changing the bit clock (BCLK) frequency to SSI's IP
-block clock (ipg = 66 MHz) [1].
-This is wrong, since IMX SSI block requires the I2S BCLK to be less
-than 1/5 of [1].
-
-As a result the driver initialization passes without any errors, but the
-speaker-test test case breaks.
-
-This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
-not equal to [1].
-
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
+Fixes: f5c97c7b0438 ("ASoC: samsung: i2s: Handle return value of clk_prepare_enable.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- sound/soc/fsl/fsl_ssi.c | 2 ++
- 1 file changed, 2 insertions(+)
+I'm not 100% confident in this patch.
+It is mostly inspired by surrounding error handling. (L533 and L550)
+---
+ sound/soc/samsung/i2s.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 173cb84..1186fa9 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 		int clk_id, unsigned int freq, int dir)
- {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
-+	if (clk_get_rate(ssi_private->clk) == freq)
-+		return 0;
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 10a4da06c0a1..d7e7f4244d38 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -552,8 +552,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+ 			}
  
- 	ssi_private->bitclk_freq = freq;
+ 			ret = clk_prepare_enable(i2s->op_clk);
+-			if (ret)
++			if (ret) {
++				clk_put(i2s->op_clk);
++				i2s->op_clk = NULL;
+ 				goto err;
++			}
+ 			i2s->rclk_srcrate = clk_get_rate(i2s->op_clk);
  
+ 			/* Over-ride the other's */
 -- 
-2.1.4
+2.11.0
