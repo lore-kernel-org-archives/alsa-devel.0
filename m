@@ -1,130 +1,66 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Sun, 3 Sep 2017 16:40:21 +0200
-Message-ID: <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+From: Wang YanQing <udknight@gmail.com>
+Subject: [PATCH] ALSA: hda: Fix resource leak issue in
+ snd_hda_codec_build_controls and snd_hda_codec_parse_pcms
+Date: Sun, 3 Sep 2017 23:27:32 +0800
+Message-ID: <20170903152731.GA27302@udknight>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E2A4266F0D
+ for <alsa-devel@alsa-project.org>; Sun,  3 Sep 2017 17:27:38 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id g13so2967263pfm.2
+ for <alsa-devel@alsa-project.org>; Sun, 03 Sep 2017 08:27:38 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
+When patch_ops.init, patch_ops.build_pcms and patch_ops.build_controls
+return failure, we need to free resource with patch_ops.free, or we will
+get resource leak.
 
+Signed-off-by: Wang YanQing <udknight@gmail.com>
+---
+ sound/pci/hda/hda_codec.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-> [Sorry for the top-posting]
-> 
-> 
-> The driver currently has:
-> 
-> 
-> /*
-> * Hardware limitation: The bclk rate must be
-> * never greater than 1/5 IPG clock rate
-> */
-> if (freq * 5 > clk_get_rate(ssi_private->clk)) {
-> dev_err(cpu_dai->dev, "bitclk > ipgclk/5\n");
-> return -EINVAL;
-> }
-> 
-
-Unfortunately not.
-
-This is the part of fsl_ssi_set_bclk() function which is called after 
-fsl_ssi_set_dai_sysclk() (which sets ssi_private->bitclk_freq = freq;).
-
-Before the aforementioned check we do have:
-
-	if (ssi_private->bitclk_freq)
-		freq = ssi_private->bitclk_freq;
-	else
-		freq = params_channels(hw_params) * 32 * 	params_rate(hw_params);
-
-
-Which assigns freq = bitclk_freq (66 MHz)
-
-And then we break on this particular check:
-
-66MHz * 5 > 66 MHz.
-
-
-
-The culprit IMHO is the  ssi_private->bitclk_freq = freq; in the 
-fsl_ssi_set_dai_sysclk(), since we _should_ set SSI's IP block clock 
-(ssi_private->clk), not the bit clock (BCLK).
-
-
-This patch just quits early if it detects change, which don't need to be 
-done.
-
-> 
-> Isn't this properly taking care of the clock restriction?
-> 
-> ________________________________
-> From: Lukasz Majewski <lukma@denx.de>
-> Sent: Sunday, September 3, 2017 8:05:01 AM
-> To: Timur Tabi; Nicolin Chen; Xiubo Li; Fabio Estevam; Liam Girdwood; Mark Brown; Jaroslav Kysela; Takashi Iwai
-> Cc: alsa-devel@alsa-project.org; linuxppc-dev@lists.ozlabs.org; linux-kernel@vger.kernel.org; Lukasz Majewski
-> Subject: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal to system freq
-> 
-> The problem is visible in the following setup (on the imx6q):
-> "simple-audio-card" -> ssi2 -> I2S + I2C -> codec
-> 
-> The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
-> 
-> asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
-> snd_soc_dai_set_sysclk()
-> fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
-> 
-> The last call is changing the bit clock (BCLK) frequency to SSI's IP
-> block clock (ipg = 66 MHz) [1].
-> This is wrong, since IMX SSI block requires the I2S BCLK to be less
-> than 1/5 of [1].
-> 
-> As a result the driver initialization passes without any errors, but the
-> speaker-test test case breaks.
-> 
-> This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
-> not equal to [1].
-> 
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> ---
->   sound/soc/fsl/fsl_ssi.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 173cb84..1186fa9 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
->                   int clk_id, unsigned int freq, int dir)
->   {
->           struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
-> +       if (clk_get_rate(ssi_private->clk) == freq)
-> +               return 0;
-> 
->           ssi_private->bitclk_freq = freq;
-> 
-> --
-> 2.1.4
-> 
-> 
-
-
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index df6b57e..4e3e613 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2973,8 +2973,11 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
+ 		err = codec->patch_ops.init(codec);
+ 	if (!err && codec->patch_ops.build_controls)
+ 		err = codec->patch_ops.build_controls(codec);
+-	if (err < 0)
++	if (err < 0) {
++		if (codec->patch_ops.free)
++			codec->patch_ops.free(codec);
+ 		return err;
++	}
+ 
+ 	/* we create chmaps here instead of build_pcms */
+ 	err = add_std_chmaps(codec);
+@@ -3170,6 +3173,8 @@ int snd_hda_codec_parse_pcms(struct hda_codec *codec)
+ 	if (err < 0) {
+ 		codec_err(codec, "cannot build PCMs for #%d (error %d)\n",
+ 			  codec->core.addr, err);
++		if (codec->patch_ops.free)
++			codec->patch_ops.free(codec);
+ 		return err;
+ 	}
+ 
 -- 
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+1.8.5.6.2.g3d8a54e.dirty
