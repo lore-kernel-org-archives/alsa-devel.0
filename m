@@ -1,123 +1,50 @@
-From: Petr Kulhavy <brain@jikos.cz>
-Subject: Raspberry PI reports no channels, period and buffer
-Date: Sun, 3 Sep 2017 11:46:17 +0200
-Message-ID: <7b5bd5bb-8394-432f-dfa8-d55cac3d52c7@jikos.cz>
-Reply-To: brain@jikos.cz
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from twin.jikos.cz (twin.jikos.cz [89.185.236.188])
- by alsa0.perex.cz (Postfix) with ESMTP id 72A5526691F
- for <alsa-devel@alsa-project.org>; Sun,  3 Sep 2017 11:46:24 +0200 (CEST)
-Received: from [192.168.100.100] (162.41.150.83.ftth.as8758.net
- [83.150.41.162]) (authenticated bits=0)
- by twin.jikos.cz (8.13.6/8.13.6) with ESMTP id v839kN6N008154
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
- for <alsa-devel@alsa-project.org>; Sun, 3 Sep 2017 11:46:24 +0200
-Content-Language: de-CH
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal to system freq
+Date: Sun,  3 Sep 2017 13:05:01 +0200
+Message-ID: <1504436701-20700-1-git-send-email-lukma@denx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The problem is visible in the following setup (on the imx6q):
+"simple-audio-card" -> ssi2 -> I2S + I2C -> codec
 
-I'm writing an audio decoding program for ALSA, which among others 
-detects audio capabilities.
-It uses the snd_pcm_hw_params_get_XXX() functions for that.
-This works well on my Ubuntu PC but on Raspberry PI 3 these calls return 
-no information. They return success but the min and max values are 
-meaningless.
+The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
 
-For instance the period:
+asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
+snd_soc_dai_set_sysclk()
+fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
 
-     err = snd_pcm_hw_params_get_period_size_min(hw_params, 
-&m_period_min, NULL);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed to get minimum period time: 
-%s\n", snd_strerror(err));
-         goto fail;
-     }
-     err = snd_pcm_hw_params_get_period_size_max(hw_params, 
-&m_period_max, NULL);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed to get maximum period time: 
-%s\n", snd_strerror(err));
-         goto fail;
-     }
-     err = snd_pcm_hw_params_get_period_time_min(hw_params, 
-&m_period_min_us, NULL);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed to get minimum period time: 
-%s\n", snd_strerror(err));
-         goto fail;
-     }
-     err = snd_pcm_hw_params_get_period_time_max(hw_params, 
-&m_period_max_us, NULL);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed to get maximum period time: 
-%s\n", snd_strerror(err));
-         goto fail;
-     }
-     LOG(LOG_DEBUG, LOG_OBJ "Supported period: %lu to %lu frames (%u to 
-%u us)\n",
-             (unsigned long)m_period_min, (unsigned long)m_period_max,
-             m_period_min_us, m_period_max_us);
+The last call is changing the bit clock (BCLK) frequency to SSI's IP
+block clock (ipg = 66 MHz) [1].
+This is wrong, since IMX SSI block requires the I2S BCLK to be less
+than 1/5 of [1].
 
+As a result the driver initialization passes without any errors, but the
+speaker-test test case breaks.
 
-This prints:
-Supported period: 0 to 0 frames (1 to 0 us)
+This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
+not equal to [1].
 
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+ sound/soc/fsl/fsl_ssi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-     // query buffer size
-     err = snd_pcm_hw_params_get_buffer_size_min(hw_params, &m_buffer_min);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed get minimum buffer time: %s\n", 
-snd_strerror(err));
-         goto fail;
-     }
-     err = snd_pcm_hw_params_get_buffer_size_max(hw_params, &m_buffer_max);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed get maximum buffer time: %s\n", 
-snd_strerror(err));
-         goto fail;
-     }
-     err = snd_pcm_hw_params_get_buffer_time_min(hw_params, 
-&m_buffer_min_us, NULL);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed get minimum buffer time: %s\n", 
-snd_strerror(err));
-         goto fail;
-     }
-     err = snd_pcm_hw_params_get_buffer_time_max(hw_params, 
-&m_buffer_max_us, NULL);
-     if (err < 0) {
-         LOG(LOG_ERROR, LOG_OBJ "Failed get maximum buffer time: %s\n", 
-snd_strerror(err));
-         goto fail;
-     }
-     LOG(LOG_DEBUG, LOG_OBJ "Supported buffer size: %lu to %lu frames 
-(%u to %u us)\n",
-             (unsigned long)m_buffer_min, (unsigned long)m_buffer_max,
-             m_buffer_min_us, m_buffer_max_us);
-
-This prints:
-Supported buffer size: 0 to 0 frames (1 to 0 us)
-
-
-And so on. Same for the number of periods and channels.
-On the other hand the snd_pcm_hw_params_test_XXX() calls do work and 
-that way I can detect the rates, formats, accesses.
-Why is that? Am I doing something wrong? And more importantly, how can I 
-get the buffering and channel information?
-
-Thanks
-Petr
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 173cb84..1186fa9 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
++	if (clk_get_rate(ssi_private->clk) == freq)
++		return 0;
+ 
+ 	ssi_private->bitclk_freq = freq;
+ 
+-- 
+2.1.4
