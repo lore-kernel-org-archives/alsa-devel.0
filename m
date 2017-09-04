@@ -1,48 +1,45 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v6 09/12] ASoC: wm9712: add ac97 new bus support
-Date: Mon, 04 Sep 2017 15:14:40 +0200
-Message-ID: <8760cyppvj.fsf@belgarion.home>
-References: <20170902195414.3699-1-robert.jarzmik@free.fr>
-        <20170902195414.3699-10-robert.jarzmik@free.fr>
-        <20170904101849.7uefwhuqz4vtntrp@localhost.localdomain>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ASoC: cs43130: Fix possible Oops with
+	invalid dev_id
+Date: Mon,  4 Sep 2017 15:14:44 +0200
+Message-ID: <20170904131445.32438-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170904101849.7uefwhuqz4vtntrp@localhost.localdomain> (Charles
-        Keepax's message of "Mon, 4 Sep 2017 11:18:49 +0100")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A9AD267054
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 15:14:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Charles Keepax <ckeepax@opensource.cirrus.com> writes:
-
-> On Sat, Sep 02, 2017 at 09:54:11PM +0200, Robert Jarzmik wrote:
->> Add support for the new ac97 bus model, where devices are automatically
->> discovered on AC-Links.
->> 
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->> ---
->> Since v4:
->>  - added #ifdef spotted by Charles
->> ---
->>  	snd_soc_codec_init_regmap(codec, regmap);
->> @@ -666,7 +677,8 @@ static int wm9712_soc_remove(struct snd_soc_codec *codec)
->>  	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
->>  
->>  	snd_soc_codec_exit_regmap(codec);
->> -	snd_soc_free_ac97_codec(wm9712->ac97);
->> +	if (!wm9712->mfd_pdata)
->> +		snd_soc_free_ac97_codec(wm9712->ac97);
->
-> This bit is still missing the ifdef it has in the preceeding
-> patch.
-Damn, you're right, it's missing in both wm9705 and wm9712, but not in wm9713.
-That will be for the hopefully last volley of this serie.
-
-Thanks for spotting that.
-
-Cheers.
-
--- 
-Robert
+QXMgY29tcGlsZXIgc3BvdHRlZCBvdXQsIHRoZXJlIGlzIHRoZSBwb3RlbnRpYWwgTlVMTC1kZXJl
+ZmVyZW5jZSBpbgp0aGUgY29kZSB3aGVuIGRjLW1lYXN1cmUgT0YgaXMgZ2l2ZW4gZm9yIG90aGVy
+IHRoYW4gNDMxMzAvNDMxMzE6CiAgc291bmQvc29jL2NvZGVjcy9jczQzMTMwLmM6MjA4OToxODog
+d2FybmluZzog4oCYaHBsb2FkX3NlceKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRo
+aXMgZnVuY3Rpb24gWy1XbWF5YmUtdW5pbml0aWFsaXplZF0KCldhcm4gaXQgYW5kIHJldHVybiBi
+ZWZvcmUgdHJpZ2dlcmluZyBPb3BzLgoKRml4ZXM6IDhmMWU1YmY5YjQ0MCAoIkFTb0M6IGNzNDMx
+MzA6IEFkZCBzdXBwb3J0IGZvciBDUzQzMTMwIGNvZGVjIikKU2lnbmVkLW9mZi1ieTogVGFrYXNo
+aSBJd2FpIDx0aXdhaUBzdXNlLmRlPgotLS0KIHNvdW5kL3NvYy9jb2RlY3MvY3M0MzEzMC5jIHwg
+NCArKysrCiAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291
+bmQvc29jL2NvZGVjcy9jczQzMTMwLmMgYi9zb3VuZC9zb2MvY29kZWNzL2NzNDMxMzAuYwppbmRl
+eCAyMjBlMzAxOTljNWIuLjNmZTNiOGQ2NDRiNyAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVj
+cy9jczQzMTMwLmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9jczQzMTMwLmMKQEAgLTIwNzksNiAr
+MjA3OSwxMCBAQCBzdGF0aWMgdm9pZCBjczQzMTMwX2ltcF9tZWFzKHN0cnVjdCB3b3JrX3N0cnVj
+dCAqd2spCiAJY2FzZSBDUzQzMTMxX0NISVBfSUQ6CiAJCWhwbG9hZF9zZXEgPSBocGxvYWRfc2Vx
+MjsKIAkJc2VxX3NpemUgPSBBUlJBWV9TSVpFKGhwbG9hZF9zZXEyKTsKKwkJYnJlYWs7CisJZGVm
+YXVsdDoKKwkJV0FSTigxLCAiSW52YWxpZCBkZXZfaWQgZm9yIG1lYXM6ICVkIiwgY3M0MzEzMC0+
+ZGV2X2lkKTsKKwkJcmV0dXJuOwogCX0KIAogCWkgPSAwOwotLSAKMi4xNC4xCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
