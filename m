@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v6 09/12] ASoC: wm9712: add ac97 new bus
-	support
-Date: Mon, 4 Sep 2017 11:18:49 +0100
-Message-ID: <20170904101849.7uefwhuqz4vtntrp@localhost.localdomain>
-References: <20170902195414.3699-1-robert.jarzmik@free.fr>
- <20170902195414.3699-10-robert.jarzmik@free.fr>
+From: happy musicmaker <happy.musicmaker@gmail.com>
+Subject: ALSA MIDI exclusive mode ?
+Date: Mon, 4 Sep 2017 18:34:54 +0800
+Message-ID: <CAJDJRCqNBANLhyc0RpUrz+3G_fzmGO0nGddi2j_WVx8NAo+qdQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 73EFB266F04
- for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 12:18:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170902195414.3699-10-robert.jarzmik@free.fr>
+Received: from mail-yw0-f181.google.com (mail-yw0-f181.google.com
+ [209.85.161.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 221AC266F04
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 12:34:55 +0200 (CEST)
+Received: by mail-yw0-f181.google.com with SMTP id i66so478362ywc.0
+ for <alsa-devel@alsa-project.org>; Mon, 04 Sep 2017 03:34:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,32 +21,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 02, 2017 at 09:54:11PM +0200, Robert Jarzmik wrote:
-> Add support for the new ac97 bus model, where devices are automatically
-> discovered on AC-Links.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
-> Since v4:
->  - added #ifdef spotted by Charles
-> ---
->  	snd_soc_codec_init_regmap(codec, regmap);
-> @@ -666,7 +677,8 @@ static int wm9712_soc_remove(struct snd_soc_codec *codec)
->  	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
->  
->  	snd_soc_codec_exit_regmap(codec);
-> -	snd_soc_free_ac97_codec(wm9712->ac97);
-> +	if (!wm9712->mfd_pdata)
-> +		snd_soc_free_ac97_codec(wm9712->ac97);
-
-This bit is still missing the ifdef it has in the preceeding
-patch.
-
-Otherwise looks good to me.
-
-Thanks,
-Charles
+I ready somewhere that some applications, like Bitwig, allocate(?) MIDI
+ports in "exclusive" mode so that other application cannot connect to the
+MIDI ports. I used Bitwig and confirmed  that after starting Bitwig in
+qjackctrl you cannot connect any of the MIDI write/read ports. ( qjackctrl
+MIDI option  is set to "none") I could not find any documentation on such
+"exclusive" feature though ?
