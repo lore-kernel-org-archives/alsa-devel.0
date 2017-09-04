@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs43130: fix spelling mistake: "irq_occurrance" -> "irq_occurrence"" to the asoc tree
-Date: Mon,  4 Sep 2017 13:46:31 +0100 (BST)
-Message-ID: <20170904124631.EB2F74400FC@finisterre.ee.mobilebroadband>
-References: <20170904101232.22339-1-colin.king@canonical.com>
+Subject: Applied "ASoC: fsl_spdif: make const arrays rate static" to the asoc tree
+Date: Mon,  4 Sep 2017 13:46:35 +0100 (BST)
+Message-ID: <20170904124635.667A24400FC@finisterre.ee.mobilebroadband>
+References: <20170903135408.7602-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170904101232.22339-1-colin.king@canonical.com>
+In-Reply-To: <20170903135408.7602-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs43130: fix spelling mistake: "irq_occurrance" -> "irq_occurrence"
+   ASoC: fsl_spdif: make const arrays rate static
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From 83ef26ac1326fdd2fc8d160967cdca2e8b46ccd4 Mon Sep 17 00:00:00 2001
+>From 2db5f9e9fa0ebc3c023f7ac906946a3eef8f5498 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Mon, 4 Sep 2017 11:12:32 +0100
-Subject: [PATCH] ASoC: cs43130: fix spelling mistake: "irq_occurrance" ->
- "irq_occurrence"
+Date: Sun, 3 Sep 2017 14:54:08 +0100
+Subject: [PATCH] ASoC: fsl_spdif: make const arrays rate static
 
-Trivial fix to spelling mistake in variable name
+Don't populate the const arrays rate on the stack, instead make them
+static. Makes the object code smaller by 220 bytes:
+
+Before:
+   text	   data	    bss	    dec	    hex	filename
+  24385	   9776	    128	  34289	   85f1	sound/soc/fsl/fsl_spdif.o
+
+After:
+   text	   data	    bss	    dec	    hex	filename
+  24005	   9936	    128	  34069	   8515	sound/soc/fsl/fsl_spdif.o
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 220e30199c5b..9f1aa0516fd0 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -2147,7 +2147,7 @@ static irqreturn_t cs43130_irq_thread(int irq, void *data)
- 	struct cs43130_private *cs43130 = (struct cs43130_private *)data;
- 	struct snd_soc_codec *codec = cs43130->codec;
- 	unsigned int stickies[CS43130_NUM_INT];
--	unsigned int irq_occurrance = 0;
-+	unsigned int irq_occurrence = 0;
- 	unsigned int masks[CS43130_NUM_INT];
- 	int i, j;
- 
-@@ -2161,12 +2161,12 @@ static irqreturn_t cs43130_irq_thread(int irq, void *data)
- 	for (i = 0; i < ARRAY_SIZE(stickies); i++) {
- 		stickies[i] = stickies[i] & (~masks[i]);
- 		for (j = 0; j < 8; j++)
--			irq_occurrance += (stickies[i] >> j) & 1;
-+			irq_occurrence += (stickies[i] >> j) & 1;
- 	}
- 	dev_dbg(codec->dev, "number of interrupts occurred (%u)\n",
--		irq_occurrance);
-+		irq_occurrence);
- 
--	if (!irq_occurrance)
-+	if (!irq_occurrence)
- 		return IRQ_NONE;
- 
- 	if (stickies[0] & CS43130_XTAL_RDY_INT) {
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 7e6cc4da0088..4f7469c1864c 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1110,7 +1110,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				struct clk *clk, u64 savesub,
+ 				enum spdif_txrate index, bool round)
+ {
+-	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
++	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
+ 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
+ 	u64 rate_ideal, rate_actual, sub;
+ 	u32 sysclk_dfmin, sysclk_dfmax;
+@@ -1169,7 +1169,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
+ 				enum spdif_txrate index)
+ {
+-	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
++	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
+ 	struct platform_device *pdev = spdif_priv->pdev;
+ 	struct device *dev = &pdev->dev;
+ 	u64 savesub = 100000, ret;
 -- 
 2.13.2
