@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 4/7] mfd: arizona: Remove audio related device
-	tree code
-Date: Mon, 4 Sep 2017 16:41:51 +0100
-Message-ID: <20170904154154.4395-5-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 6/7] ASoC: arizona: Add support for setting the
+	output volume limits
+Date: Mon, 4 Sep 2017 16:41:53 +0100
+Message-ID: <20170904154154.4395-7-ckeepax@opensource.cirrus.com>
 References: <20170904154154.4395-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 449032670AC
+ by alsa0.perex.cz (Postfix) with ESMTP id 41B37266F9D
  for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 17:41:57 +0200 (CEST)
 In-Reply-To: <20170904154154.4395-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,178 +26,145 @@ To: broonie@kernel.org, lee.jones@linaro.org
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This code has now been moved to the audio subsystem so is no longer
-required in the MFD code.
+The output volume limits allow signals to be limited to specific levels
+appropriate for the hardware attached. As this is a property of the
+hardware itself these will be configured through device tree.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- drivers/mfd/arizona-core.c | 132 +--------------------------------------------
- 1 file changed, 1 insertion(+), 131 deletions(-)
+ include/linux/mfd/arizona/pdata.h |  3 +++
+ sound/soc/codecs/arizona.c        | 25 +++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h        |  1 +
+ sound/soc/codecs/cs47l24.c        |  3 +++
+ sound/soc/codecs/wm5102.c         |  3 +++
+ sound/soc/codecs/wm5110.c         |  3 +++
+ sound/soc/codecs/wm8997.c         |  3 +++
+ 7 files changed, 41 insertions(+)
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 8d46e3ad9529..77875250abe5 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -797,12 +797,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_type);
- static int arizona_of_get_core_pdata(struct arizona *arizona)
- {
- 	struct arizona_pdata *pdata = &arizona->pdata;
--	struct property *prop;
--	const __be32 *cur;
--	u32 val;
--	u32 pdm_val[ARIZONA_MAX_PDM_SPK];
- 	int ret, i;
--	int count = 0;
+diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/arizona/pdata.h
+index bfeecf179895..f72dc53848d7 100644
+--- a/include/linux/mfd/arizona/pdata.h
++++ b/include/linux/mfd/arizona/pdata.h
+@@ -174,6 +174,9 @@ struct arizona_pdata {
+ 	/** Mode for outputs */
+ 	int out_mono[ARIZONA_MAX_OUTPUT];
  
- 	pdata->reset = of_get_named_gpio(arizona->dev->of_node, "wlf,reset", 0);
- 	if (pdata->reset == -EPROBE_DEFER) {
-@@ -836,64 +831,6 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 			ret);
- 	}
++	/** Limit output volumes */
++	unsigned int out_vol_limit[2 * ARIZONA_MAX_OUTPUT];
++
+ 	/** PDM speaker mute setting */
+ 	unsigned int spk_mute[ARIZONA_MAX_PDM_SPK];
  
--	of_property_for_each_u32(arizona->dev->of_node, "wlf,inmode", prop,
--				 cur, val) {
--		if (count == ARRAY_SIZE(pdata->inmode))
--			break;
--
--		pdata->inmode[count] = val;
--		count++;
--	}
--
--	count = 0;
--	of_property_for_each_u32(arizona->dev->of_node, "wlf,dmic-ref", prop,
--				 cur, val) {
--		if (count == ARRAY_SIZE(pdata->dmic_ref))
--			break;
--
--		pdata->dmic_ref[count] = val;
--		count++;
--	}
--
--	count = 0;
--	of_property_for_each_u32(arizona->dev->of_node, "wlf,out-mono", prop,
--				 cur, val) {
--		if (count == ARRAY_SIZE(pdata->out_mono))
--			break;
--
--		pdata->out_mono[count] = !!val;
--		count++;
--	}
--
--	count = 0;
--	of_property_for_each_u32(arizona->dev->of_node,
--				 "wlf,max-channels-clocked",
--				 prop, cur, val) {
--		if (count == ARRAY_SIZE(pdata->max_channels_clocked))
--			break;
--
--		pdata->max_channels_clocked[count] = val;
--		count++;
--	}
--
--	ret = of_property_read_u32_array(arizona->dev->of_node,
--					 "wlf,spk-fmt",
--					 pdm_val,
--					 ARRAY_SIZE(pdm_val));
--
--	if (ret >= 0)
--		for (count = 0; count < ARRAY_SIZE(pdata->spk_fmt); ++count)
--			pdata->spk_fmt[count] = pdm_val[count];
--
--	ret = of_property_read_u32_array(arizona->dev->of_node,
--					 "wlf,spk-mute",
--					 pdm_val,
--					 ARRAY_SIZE(pdm_val));
--
--	if (ret >= 0)
--		for (count = 0; count < ARRAY_SIZE(pdata->spk_mute); ++count)
--			pdata->spk_mute[count] = pdm_val[count];
--
- 	return 0;
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e6967385dccb..b3375e19598a 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -372,6 +372,22 @@ int arizona_init_common(struct arizona *arizona)
  }
+ EXPORT_SYMBOL_GPL(arizona_init_common);
  
-@@ -1026,7 +963,7 @@ int arizona_dev_init(struct arizona *arizona)
- 	const char * const mclk_name[] = { "mclk1", "mclk2" };
- 	struct device *dev = arizona->dev;
- 	const char *type_name = NULL;
--	unsigned int reg, val, mask;
-+	unsigned int reg, val;
- 	int (*apply_patch)(struct arizona *) = NULL;
- 	const struct mfd_cell *subdevs = NULL;
- 	int n_subdevs, ret, i;
-@@ -1429,73 +1366,6 @@ int arizona_dev_init(struct arizona *arizona)
- 				   ARIZONA_MICB1_RATE, val);
++int arizona_init_vol_limit(struct arizona *arizona)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(arizona->pdata.out_vol_limit); ++i) {
++		if (arizona->pdata.out_vol_limit[i])
++			regmap_update_bits(arizona->regmap,
++					   ARIZONA_DAC_VOLUME_LIMIT_1L + i * 4,
++					   ARIZONA_OUT1L_VOL_LIM_MASK,
++					   arizona->pdata.out_vol_limit[i]);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(arizona_init_vol_limit);
++
+ const char * const arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
+ 	"None",
+ 	"Tone Generator 1",
+@@ -2810,6 +2826,15 @@ int arizona_of_get_audio_pdata(struct arizona *arizona)
+ 		count++;
  	}
  
--	for (i = 0; i < ARIZONA_MAX_INPUT; i++) {
--		/* Default for both is 0 so noop with defaults */
--		val = arizona->pdata.dmic_ref[i]
--			<< ARIZONA_IN1_DMIC_SUP_SHIFT;
--		if (arizona->pdata.inmode[i] & ARIZONA_INMODE_DMIC)
--			val |= 1 << ARIZONA_IN1_MODE_SHIFT;
--
--		switch (arizona->type) {
--		case WM8998:
--		case WM1814:
--			regmap_update_bits(arizona->regmap,
--				ARIZONA_ADC_DIGITAL_VOLUME_1L + (i * 8),
--				ARIZONA_IN1L_SRC_SE_MASK,
--				(arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
--					<< ARIZONA_IN1L_SRC_SE_SHIFT);
--
--			regmap_update_bits(arizona->regmap,
--				ARIZONA_ADC_DIGITAL_VOLUME_1R + (i * 8),
--				ARIZONA_IN1R_SRC_SE_MASK,
--				(arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
--					<< ARIZONA_IN1R_SRC_SE_SHIFT);
--
--			mask = ARIZONA_IN1_DMIC_SUP_MASK |
--				ARIZONA_IN1_MODE_MASK;
--			break;
--		default:
--			if (arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
--				val |= 1 << ARIZONA_IN1_SINGLE_ENDED_SHIFT;
--
--			mask = ARIZONA_IN1_DMIC_SUP_MASK |
--				ARIZONA_IN1_MODE_MASK |
--				ARIZONA_IN1_SINGLE_ENDED_MASK;
--			break;
--		}
--
--		regmap_update_bits(arizona->regmap,
--				   ARIZONA_IN1L_CONTROL + (i * 8),
--				   mask, val);
--	}
--
--	for (i = 0; i < ARIZONA_MAX_OUTPUT; i++) {
--		/* Default is 0 so noop with defaults */
--		if (arizona->pdata.out_mono[i])
--			val = ARIZONA_OUT1_MONO;
--		else
--			val = 0;
--
--		regmap_update_bits(arizona->regmap,
--				   ARIZONA_OUTPUT_PATH_CONFIG_1L + (i * 8),
--				   ARIZONA_OUT1_MONO, val);
--	}
--
--	for (i = 0; i < ARIZONA_MAX_PDM_SPK; i++) {
--		if (arizona->pdata.spk_mute[i])
--			regmap_update_bits(arizona->regmap,
--					   ARIZONA_PDM_SPK1_CTRL_1 + (i * 2),
--					   ARIZONA_SPK1_MUTE_ENDIAN_MASK |
--					   ARIZONA_SPK1_MUTE_SEQ1_MASK,
--					   arizona->pdata.spk_mute[i]);
--
--		if (arizona->pdata.spk_fmt[i])
--			regmap_update_bits(arizona->regmap,
--					   ARIZONA_PDM_SPK1_CTRL_2 + (i * 2),
--					   ARIZONA_SPK1_FMT_MASK,
--					   arizona->pdata.spk_fmt[i]);
--	}
--
- 	pm_runtime_set_active(arizona->dev);
- 	pm_runtime_enable(arizona->dev);
++	count = 0;
++	of_property_for_each_u32(np, "wlf,out-volume-limit", prop, cur, val) {
++		if (count == ARRAY_SIZE(pdata->out_vol_limit))
++			break;
++
++		pdata->out_vol_limit[count] = val;
++		count++;
++	}
++
+ 	ret = of_property_read_u32_array(np, "wlf,spk-fmt",
+ 					 pdm_val, ARRAY_SIZE(pdm_val));
  
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 2d198fb2ce97..dfdf6d8c9687 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -315,6 +315,7 @@ int arizona_init_gpio(struct snd_soc_codec *codec);
+ int arizona_init_mono(struct snd_soc_codec *codec);
+ 
+ int arizona_init_common(struct arizona *arizona);
++int arizona_init_vol_limit(struct arizona *arizona);
+ 
+ int arizona_init_spk_irqs(struct arizona *arizona);
+ int arizona_free_spk_irqs(struct arizona *arizona);
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 0fe7d7a87ff3..94c0209977d0 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1297,6 +1297,9 @@ static int cs47l24_probe(struct platform_device *pdev)
+ 
+ 	arizona_init_common(arizona);
+ 
++	ret = arizona_init_vol_limit(arizona);
++	if (ret < 0)
++		goto err_dsp_irq;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+ 		goto err_dsp_irq;
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 5a917dd73f32..4f0481d3c7a7 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2107,6 +2107,9 @@ static int wm5102_probe(struct platform_device *pdev)
+ 
+ 	arizona_init_common(arizona);
+ 
++	ret = arizona_init_vol_limit(arizona);
++	if (ret < 0)
++		goto err_dsp_irq;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+ 		goto err_dsp_irq;
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index ba1e90ca8be4..6ed1e1f9ce51 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2463,6 +2463,9 @@ static int wm5110_probe(struct platform_device *pdev)
+ 
+ 	arizona_init_common(arizona);
+ 
++	ret = arizona_init_vol_limit(arizona);
++	if (ret < 0)
++		goto err_dsp_irq;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+ 		goto err_dsp_irq;
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index c5aef9ecdecc..77f512767273 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1176,6 +1176,9 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ 	arizona_init_common(arizona);
+ 
++	ret = arizona_init_vol_limit(arizona);
++	if (ret < 0)
++		return ret;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+ 		return ret;
 -- 
 2.11.0
