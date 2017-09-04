@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_spdif: make const arrays rate static" to the asoc tree
-Date: Mon,  4 Sep 2017 13:46:35 +0100 (BST)
-Message-ID: <20170904124635.667A24400FC@finisterre.ee.mobilebroadband>
-References: <20170903135408.7602-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170903135408.7602-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: samsung: i2s: Fix error handling path
+	in i2s_set_sysclk()" to the asoc tree
+Date: Mon,  4 Sep 2017 13:46:38 +0100 (BST)
+Message-ID: <20170904124638.DB4C44400FC@finisterre.ee.mobilebroadband>
+References: <20170903122902.3591-1-christophe.jaillet@wanadoo.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16D1D267026
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 14:46:40 +0200 (CEST)
+In-Reply-To: <20170903122902.3591-1-christophe.jaillet@wanadoo.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, kernel-janitors@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org, broonie@kernel.org, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, s.nawrocki@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_spdif: make const arrays rate static
+   ASoC: samsung: i2s: Fix error handling path in i2s_set_sysclk()
 
 has been applied to the asoc tree at
 
@@ -37,49 +52,38 @@ to this mail.
 Thanks,
 Mark
 
->From 2db5f9e9fa0ebc3c023f7ac906946a3eef8f5498 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Sun, 3 Sep 2017 14:54:08 +0100
-Subject: [PATCH] ASoC: fsl_spdif: make const arrays rate static
+>From 6431a7e36652517df82855ee79c8240001812a55 Mon Sep 17 00:00:00 2001
+From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+Date: Sun, 3 Sep 2017 14:29:02 +0200
+Subject: [PATCH] ASoC: samsung: i2s: Fix error handling path in
+ i2s_set_sysclk()
 
-Don't populate the const arrays rate on the stack, instead make them
-static. Makes the object code smaller by 220 bytes:
+If 'clk_prepare_enable()' fails, we must 'put' the corresponding clock.
+Othewise, there is a resource leak.
 
-Before:
-   text	   data	    bss	    dec	    hex	filename
-  24385	   9776	    128	  34289	   85f1	sound/soc/fsl/fsl_spdif.o
-
-After:
-   text	   data	    bss	    dec	    hex	filename
-  24005	   9936	    128	  34069	   8515	sound/soc/fsl/fsl_spdif.o
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: f5c97c7b0438 ("ASoC: samsung: i2s: Handle return value of clk_prepare_enable.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_spdif.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/samsung/i2s.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 7e6cc4da0088..4f7469c1864c 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1110,7 +1110,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 				struct clk *clk, u64 savesub,
- 				enum spdif_txrate index, bool round)
- {
--	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
-+	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
- 	u64 rate_ideal, rate_actual, sub;
- 	u32 sysclk_dfmin, sysclk_dfmax;
-@@ -1169,7 +1169,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 				enum spdif_txrate index)
- {
--	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
-+	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	struct device *dev = &pdev->dev;
- 	u64 savesub = 100000, ret;
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 10a4da06c0a1..d7e7f4244d38 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -552,8 +552,11 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
+ 			}
+ 
+ 			ret = clk_prepare_enable(i2s->op_clk);
+-			if (ret)
++			if (ret) {
++				clk_put(i2s->op_clk);
++				i2s->op_clk = NULL;
+ 				goto err;
++			}
+ 			i2s->rclk_srcrate = clk_get_rate(i2s->op_clk);
+ 
+ 			/* Over-ride the other's */
 -- 
 2.13.2
