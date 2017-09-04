@@ -1,97 +1,62 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 3/7] ASoC: arizona: Add audio device tree bindings
-Date: Mon, 4 Sep 2017 16:41:50 +0100
-Message-ID: <20170904154154.4395-4-ckeepax@opensource.cirrus.com>
-References: <20170904154154.4395-1-ckeepax@opensource.cirrus.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix memory leak at error path
+Date: Mon,  4 Sep 2017 17:41:59 +0200
+Message-ID: <20170904154159.29073-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170904154154.4395-1-ckeepax@opensource.cirrus.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lee.jones@linaro.org
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37056266F9D
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 17:42:09 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 89EA4AB1E
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 15:42:09 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In keeping with the style of the rest of this drivers device tree
-bindings split the audio device tree bindings into their own document.
-It should be noted this patch makes no change to the binding itself
-just moves the documentation into a specific file for the audio
-binding. For easy of merging a separate patch removes the current
-documentation from the MFD binding documentation.
+The CA0132 codec driver doesn't call the free function at its error
+path of the probe, which leaves the allocated memory.  Call
+ca0132_free() properly at the error handling.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Fixes: a73d511c4867 ("ALSA: hda/ca0132: Add unsol handler for DSP and jack detection")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../devicetree/bindings/sound/wlf,arizona.txt      | 49 ++++++++++++++++++++++
- MAINTAINERS                                        |  1 +
- 2 files changed, 50 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,arizona.txt
+ sound/pci/hda/patch_ca0132.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/wlf,arizona.txt b/Documentation/devicetree/bindings/sound/wlf,arizona.txt
-new file mode 100644
-index 000000000000..4e67224488d8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,arizona.txt
-@@ -0,0 +1,49 @@
-+Cirrus Logic Arizona class audio SoCs
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index a148176c16a9..3e73d5c6ccfc 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -4774,13 +4774,17 @@ static int patch_ca0132(struct hda_codec *codec)
+ 
+ 	err = ca0132_prepare_verbs(codec);
+ 	if (err < 0)
+-		return err;
++		goto error;
+ 
+ 	err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL);
+ 	if (err < 0)
+-		return err;
++		goto error;
+ 
+ 	return 0;
 +
-+These devices are audio SoCs with extensive digital capabilities and a range
-+of analogue I/O.
-+
-+This document lists sound specific bindings, see the primary binding
-+document:
-+  ../mfd/arizona.txt
-+
-+Optional properties:
-+
-+  - wlf,inmode : A list of INn_MODE register values, where n is the number
-+    of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
-+    2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
-+    If present, values must be specified less than or equal to the number of
-+    input signals. If values less than the number of input signals, elements
-+    that have not been specified are set to 0 by default. Entries are:
-+    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
-+    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
-+  - wlf,out-mono : A list of boolean values indicating whether each output is
-+    mono or stereo. Position within the list indicates the output affected
-+    (eg. First entry in the list corresponds to output 1). A non-zero value
-+    indicates a mono output. If present, the number of values should be less
-+    than or equal to the number of outputs, if less values are supplied the
-+    additional outputs will be treated as stereo.
-+
-+  - wlf,dmic-ref : DMIC reference voltage source for each input, can be
-+    selected from either MICVDD or one of the MICBIAS's, defines
-+    (ARIZONA_DMIC_xxxx) are provided in <dt-bindings/mfd/arizona.txt>. If
-+    present, the number of values should be less than or equal to the
-+    number of inputs, unspecified inputs will use the chip default.
-+
-+  - wlf,max-channels-clocked : The maximum number of channels to be clocked on
-+    each AIF, useful for I2S systems with multiple data lines being mastered.
-+    Specify one cell for each AIF to be configured, specify zero for AIFs that
-+    should be handled normally.
-+    If present, number of cells must be less than or equal to the number of
-+    AIFs. If less than the number of AIFs, for cells that have not been
-+    specified the corresponding AIFs will be treated as default setting.
-+
-+  - wlf,spk-fmt : PDM speaker data format, must contain 2 cells (OUT5 and OUT6).
-+    See the datasheet for values.
-+    The second cell is ignored for codecs that do not have OUT6 (wm5102, wm8997,
-+      wm8998, wm1814)
-+
-+  - wlf,spk-mute : PDM speaker mute setting, must contain 2 cells (OUT5 and OUT6).
-+    See the datasheet for values.
-+    The second cell is ignored for codecs that do not have OUT6 (wm5102, wm8997,
-+    wm8998, wm1814)
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1c3feffb1c1c..9018b9584b1b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14288,6 +14288,7 @@ F:	Documentation/devicetree/bindings/extcon/extcon-arizona.txt
- F:	Documentation/devicetree/bindings/regulator/arizona-regulator.txt
- F:	Documentation/devicetree/bindings/mfd/arizona.txt
- F:	Documentation/devicetree/bindings/mfd/wm831x.txt
-+F:	Documentation/devicetree/bindings/sound/wlf,arizona.txt
- F:	arch/arm/mach-s3c64xx/mach-crag6410*
- F:	drivers/clk/clk-wm83*.c
- F:	drivers/extcon/extcon-arizona.c
++ error:
++	ca0132_free(codec);
++	return err;
+ }
+ 
+ /*
 -- 
-2.11.0
+2.14.1
