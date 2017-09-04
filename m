@@ -1,53 +1,55 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][sound-next] ASoC: cs43130: fix spelling mistake: "irq_occurrance" -> "irq_occurrence"
-Date: Mon,  4 Sep 2017 11:12:32 +0100
-Message-ID: <20170904101232.22339-1-colin.king@canonical.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v6 09/12] ASoC: wm9712: add ac97 new bus
+	support
+Date: Mon, 4 Sep 2017 11:18:49 +0100
+Message-ID: <20170904101849.7uefwhuqz4vtntrp@localhost.localdomain>
+References: <20170902195414.3699-1-robert.jarzmik@free.fr>
+ <20170902195414.3699-10-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73EFB266F04
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 12:18:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170902195414.3699-10-robert.jarzmik@free.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Sep 02, 2017 at 09:54:11PM +0200, Robert Jarzmik wrote:
+> Add support for the new ac97 bus model, where devices are automatically
+> discovered on AC-Links.
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+> Since v4:
+>  - added #ifdef spotted by Charles
+> ---
+>  	snd_soc_codec_init_regmap(codec, regmap);
+> @@ -666,7 +677,8 @@ static int wm9712_soc_remove(struct snd_soc_codec *codec)
+>  	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
+>  
+>  	snd_soc_codec_exit_regmap(codec);
+> -	snd_soc_free_ac97_codec(wm9712->ac97);
+> +	if (!wm9712->mfd_pdata)
+> +		snd_soc_free_ac97_codec(wm9712->ac97);
 
-Trivial fix to spelling mistake in variable name
+This bit is still missing the ifdef it has in the preceeding
+patch.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/cs43130.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Otherwise looks good to me.
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 220e30199c5b..9f1aa0516fd0 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -2147,7 +2147,7 @@ static irqreturn_t cs43130_irq_thread(int irq, void *data)
- 	struct cs43130_private *cs43130 = (struct cs43130_private *)data;
- 	struct snd_soc_codec *codec = cs43130->codec;
- 	unsigned int stickies[CS43130_NUM_INT];
--	unsigned int irq_occurrance = 0;
-+	unsigned int irq_occurrence = 0;
- 	unsigned int masks[CS43130_NUM_INT];
- 	int i, j;
- 
-@@ -2161,12 +2161,12 @@ static irqreturn_t cs43130_irq_thread(int irq, void *data)
- 	for (i = 0; i < ARRAY_SIZE(stickies); i++) {
- 		stickies[i] = stickies[i] & (~masks[i]);
- 		for (j = 0; j < 8; j++)
--			irq_occurrance += (stickies[i] >> j) & 1;
-+			irq_occurrence += (stickies[i] >> j) & 1;
- 	}
- 	dev_dbg(codec->dev, "number of interrupts occurred (%u)\n",
--		irq_occurrance);
-+		irq_occurrence);
- 
--	if (!irq_occurrance)
-+	if (!irq_occurrence)
- 		return IRQ_NONE;
- 
- 	if (stickies[0] & CS43130_XTAL_RDY_INT) {
--- 
-2.14.1
+Thanks,
+Charles
