@@ -1,92 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add new ac97 bus support" to the asoc tree
-Date: Mon, 04 Sep 2017 18:25:29 +0100
-Message-ID: <E1dov7p-0003uP-6C@debutante>
-References: <20170724204928.29505-4-robert.jarzmik@free.fr>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: stop all working stream
+	when	.remove
+Date: Mon, 4 Sep 2017 17:44:36 +0000
+Message-ID: <PS1PR0601MB1881FD07A3E16E039943DA7FD4910@PS1PR0601MB1881.apcprd06.prod.outlook.com>
+References: <874lsnniv3.wl%kuninori.morimoto.gx@renesas.com>
+ <s5htw0mx4ek.wl-tiwai@suse.de>
+ <87d17akgqr.wl%kuninori.morimoto.gx@renesas.com>
+ <s5h1snqvnnc.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170724204928.29505-4-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Takashi Iwai <tiwai@suse.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, patches@opensource.wolfsonmicro.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relmlie1.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDD6326710B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Sep 2017 19:44:43 +0200 (CEST)
+In-Reply-To: <s5h1snqvnnc.wl-tiwai@suse.de>
+Content-Language: ja-JP
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Takasi-san
 
-   ASoC: add new ac97 bus support
+> > The lack of stop sync is a known problem in the ALSA PCM 
+> > infrastructure.  The standard idiom is to do sync at both prepare 
+> > and hw_free (or close) callbacks.
+> 
+> Thanks.
+> This path main sync is for clk ON/OFF
+>
+> Hm, but it's managed as PCM trigger, no?
+> How can the rsnd_io_is_working() return true after PCM streams are stopped?
 
-has been applied to the asoc tree at
+It is based on PCM trigger, thus, it returns false if PCM streams are stopped.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+This driver calls clk_get() when PCM started, and clk_put() when stopped.
+And it calles clk_enable() on .probe, and clk_disable() on .remove.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8d43344108c9945456128b75b69beee594b64ed6 Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Sat, 2 Sep 2017 21:54:05 +0200
-Subject: [PATCH] ASoC: add new ac97 bus support
-
-Add the new ac97 bus support, with ac97 bus automatic probing.
-
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/Kconfig  | 2 ++
- sound/Makefile | 1 +
- 2 files changed, 3 insertions(+)
-
-diff --git a/sound/Kconfig b/sound/Kconfig
-index d7d2aac9542e..ed34218d38b8 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -80,6 +80,8 @@ source "sound/hda/Kconfig"
- 
- source "sound/ppc/Kconfig"
- 
-+source "sound/ac97/Kconfig"
-+
- source "sound/aoa/Kconfig"
- 
- source "sound/arm/Kconfig"
-diff --git a/sound/Makefile b/sound/Makefile
-index 6de45d2c32f7..c03b0bed65d5 100644
---- a/sound/Makefile
-+++ b/sound/Makefile
-@@ -10,6 +10,7 @@ obj-$(CONFIG_SND_AOA) += aoa/
- 
- # This one must be compilable even if sound is configured out
- obj-$(CONFIG_AC97_BUS) += ac97_bus.o
-+obj-$(CONFIG_AC97_BUS_NEW) += ac97/
- 
- ifeq ($(CONFIG_SND),y)
-   obj-y += last.o
--- 
-2.14.1
+My problem is that user unbinds driver during Sound playing, this means clk_get() is called, but clk_put() is not called. Then, .remove will call clk_disable(), but clk_put() is not yet called. Then, kernel indicates clk user count mismatch. This patch calls missing PCM stop (= clk_put()) position function if needed.
+Is this clear answer for you ?
