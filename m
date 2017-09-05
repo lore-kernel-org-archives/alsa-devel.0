@@ -1,18 +1,23 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/2] ALSA: rme9652: Use common error handling
- code in snd_hdspm_probe()
-Date: Tue, 5 Sep 2017 22:38:16 +0200
-Message-ID: <684da935-9423-70bd-2dca-32bea89cae92@users.sourceforge.net>
-References: <9832906e-3b04-b708-2c26-4755e0beb811@users.sourceforge.net>
+From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
+ when it is equal to system freq
+Date: Tue, 5 Sep 2017 23:13:40 +0200
+Message-ID: <cfb8f844-87aa-f1f3-bd55-4f2b60f3cf88@denx.de>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+ <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
+ <20170905052031.GB2774@Asurada-CZ80>
+ <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
+ <20170905181108.GB23906@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DE3E267342
- for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 22:38:24 +0200 (CEST)
-In-Reply-To: <9832906e-3b04-b708-2c26-4755e0beb811@users.sourceforge.net>
-Content-Language: en-GB
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id A087E267236
+ for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 23:13:45 +0200 (CEST)
+In-Reply-To: <20170905181108.GB23906@Asurada-Nvidia>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +27,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 5 Sep 2017 22:22:21 +0200
-
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
-
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/rme9652/hdspm.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 25284d8d9758..f20d42714e4d 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6949,10 +6949,8 @@ static int snd_hdspm_probe(struct pci_dev *pci,
- 	hdspm->pci = pci;
- 
- 	err = snd_hdspm_create(card, hdspm);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
- 
- 	if (hdspm->io_type != MADIface) {
- 		snprintf(card->shortname, sizeof(card->shortname), "%s_%x",
-@@ -6970,15 +6968,17 @@ static int snd_hdspm_probe(struct pci_dev *pci,
- 	}
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
- 
- 	pci_set_drvdata(pci, card);
- 
- 	dev++;
- 	return 0;
-+
-+free_card:
-+	snd_card_free(card);
-+	return err;
- }
- 
- static void snd_hdspm_remove(struct pci_dev *pci)
--- 
-2.14.1
+SGkgTmljb2xpbiwKCj4gT24gVHVlLCBTZXAgMDUsIDIwMTcgYXQgMTA6MzU6MzRBTSArMDIwMCwg
+xYF1a2FzeiBNYWpld3NraSB3cm90ZToKPiAKPj4+IEFuZCBhcHBhcmVudGx5LCB3ZSBzaG91bGRu
+J3Qgc2V0IGJpdGNsayB0byA2Nk1IeiBlaXRoZXIuIENhbgo+Pj4geW91IGhlbHAgdG8gZmluZCB3
+aGVyZSB0aGlzIDY2TUh6IGNvbWVzIGZyb20/Cj4gCj4+IDIuIGludCBhc29jX3NpbXBsZV9jYXJk
+X2luaXRfZGFpKCkgQCBzaW1wbGUtY2FyZC11dGlscy5jCj4gCj4gT2gsIEkganVzdCBzZWFyY2hl
+ZCBpbiB0aGUgc2ltcGxlLWNhcmQuYyBidXQgbWlzc2VkIHRoaXMgZmlsZS4KPiAKPj4gSW4gdGhp
+cyBmdW5jdGlvbiAocG9pbnQgMi4pIHRoZQo+PiBzaW1wbGVfZGFpLT5zeXNjbGsgaXMgc2V0IGFu
+ZDoKPj4gc25kX3NvY19kYWlfc2V0X3N5c2NsayhkYWksIDAsIHNpbXBsZV9kYWktPnN5c2Nsaywg
+MCkKPj4gd2hpY2ggc2V0cyBmcmVxdWVuY3kgdG8gNjYgTUh6IFsqXS4KPj4KPj4gVGhlIGFzb2Nf
+c2ltcGxlX2NhcmRfaW5pdF9kYWkoKSBpcyBjYWxsZWQgaW4KPj4gYXNvY19zaW1wbGVfY2FyZF9k
+YWlfaW5pdCgpIEAgc2ltcGxlLWNhcmQuYwo+PiB3aGljaCBpcyBhc3NpZ25lZCB0byBkYWlfbGlu
+ay0+aW5pdAo+PiBkYWlfbGluay0+aW5pdAkJPSBhc29jX3NpbXBsZV9jYXJkX2RhaV9pbml0OyBA
+IHNpbXBsZV9jYXJkLmMKPj4KPj4gQW5kIHRoZSBzeXNjbGsgaXRzZWxmIGlzIGRlZmluZWQgYXQ6
+Cj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gZGFpX3Byb3BzLT5j
+b2RlY19kYWktPnN5c2Nsaywgd2hpY2ggaXMgdXNlZCBhdDphCj4gCj4gV2h5IGNvZGVjX2RhaT8g
+V2h5IG5vdCBkYWlfcHJvcHMtPmNwdV9kYWktPnN5c2NsayBzaW5jZSB3ZSBhcmUgdGFsa2luZwo+
+IGFib3V0IFNTST8KClRoaXMgaXMgaG93IHRoZSBzaW1wbGUtY2FyZCAoc2ltcGxlLXNvdW5kLWNh
+cmQpIGlzIHdyaXR0ZW4uCgo+IAo+PiBhc29jX3NpbXBsZV9jYXJkX3N0YXJ0dXAoKSwgYXNvY19z
+aW1wbGVfY2FyZF9zaHV0ZG93bigpIGFuZCBvdGhlcnMKPj4gZnVuY3Rpb25zIGF0IHNpbXBsZS1j
+YXJkLmMKPj4gSXQgaXMgc2V0dXAgYXQ6Cj4+IGFzb2Nfc2ltcGxlX2NhcmRfcGFyc2VfY2xrKCkg
+QCBzaW1wbGUtY2FyZC11dGlscy5jIGZyb20gbWFjcm86Cj4+ICNkZWZpbmUgYXNvY19zaW1wbGVf
+Y2FyZF9wYXJzZV9jbGtfY3B1KCkKPj4gQW5kIHRoZSBwcm9ibGVtIGlzOgo+PiAtLS0tLS0tLS0t
+LS0tLS0tLS0tCj4+Cj4+IEF0IHRoZQo+PiBhc29jX3NpbXBsZV9jYXJkX3BhcnNlX2NsaygpCj4+
+IHdlIGZpbmFsbHkgZ28gdG8gZHRzIG5vZGU6Cj4+IC9zb2MvYWlwcy1idXNAMDIxMDAwMDAvaTJj
+QDAyMWEwMDAwL3RmYTk4NzlANkMKPiAKPiBUaGlzIHRmYTk4Nzkgc2hvdWxkIGJlIHRoZSBDT0RF
+QyByaWdodD8KClllcy4gVGhlIHRmYTk4NzkgaXMgYSBjb2RlYyAodmVyeSBzaW1wbGUgLT4gSTJT
+ICsgSTJDLCBtb25vKS4KClRoZXkga2V5IHBvaW50IGhlcmUgaXMgdGhlIGFzb2Nfc2ltcGxlX2Nh
+cmRfcGFyc2VfY2xrKCkgZnVuY3Rpb24gZnJvbSAKc2ltcGxlLWNhcmQtdXRpbHMuYwoKUGxlYXNl
+IGxvb2sgaG93IHRoZSBjbG9jayBpcyBhc3NpZ25lZDsgSXQgZmlyc3QgY2hlY2tzIGZvciBjcHUg
+Y2xvY2ssIAp0aGVuIGZvciAic3lzdGVtLWNsb2NrLWZyZXF1ZW5jeSIgRFRTIG5vZGUgYW5kIF9m
+aW5hbGx5XyBsb29rcyBmb3IgCmFub3RoZXIgImNoaWxkIiBjbG9jayBbMV0sIHdoaWNoIGlzIHRo
+ZSBjb2RlYyBhdHRhY2hlZCB0byBJMkMuCgpBbmQgZnJvbSB0aGVyZSBpdCB0YWtlcyB0aGUgNjYg
+TUh6IENMSzoKL3NvYy9haXBzLWJ1c0AwMjEwMDAwMC9pMmNAMDIxYTAwMDAvdGZhOTg3OUA2QwoK
+Cgo+IAo+PiB3aGljaCBoYXMgY2xvY2sgZnJvbSBJMkMgKDY2IE1IeikuCj4gCj4gWW91IG1lYW4g
+STJDIHNjbCBvciBJMlMgc2Nsaz8KCkkyQyBzY2wuCgo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gCj4gQnV0IGFu
+eXdheSwgSSBmZWVsIHZlcnkgY29uZnVzZWQgaGVyZSBhcyB5b3UgaGF2ZSA2Nk1IeiBjbG9jayBy
+YXRlCj4gKHJlZ2FyZGxlc3Mgb2YgaXQgcHVycG9zZSkgZm9yIGEgY29kZWMgZGFpIGJ1dCBpdCdz
+IGJlZW4gcGFzc2VkIHRvCj4gYSBjcHUgZGFpIChTU0kpLgoKUGxlYXNlIGxvb2sgaW50byBhc29j
+X3NpbXBsZV9jYXJkX3BhcnNlX2NsaygpLgoKCk15IERUUyBbMV0gKGl0IGlzIGRpZmZlcmVudCB0
+aGFuIG90aGVyIGluLXRyZWUgc3VwcG9ydGVkIGNvZGVjcyAtIGF0IApsZWFzdCBJIGRpZCBub3Qg
+ZmluZCBzaW1pbGFyIHNldHVwIGluIERUU2VzKToKCglzb3VuZCB7CgkJY29tcGF0aWJsZSA9ICJz
+aW1wbGUtYXVkaW8tY2FyZCI7CgkJbGFiZWwgPSAidGZhOTg3OS1tb25vIjsKCgkJc2ltcGxlLWF1
+ZGlvLWNhcmQsZGFpLWxpbmsgewoJCQkvKiBEQUMgKi8KCQkJZm9ybWF0ID0gImkycyI7CgkJCWJp
+dGNsb2NrLW1hc3RlciA9IDwmZGFpbGlua19tYXN0ZXI+OwoJCQlmcmFtZS1tYXN0ZXIgPSA8JmRh
+aWxpbmtfbWFzdGVyPjsKCgkJCWRhaWxpbmtfbWFzdGVyOiBjcHUgewoJCQkgICAgc291bmQtZGFp
+ID0gPCZzc2kyPjsKCQkJfTsKCQkJY29kZWMgewoJCQkgICAgc291bmQtZGFpID0gPCZjb2RlYz47
+CgkJCX07CgkJfTsKCX07CgoKJmkyYzEgewoJY2xvY2stZnJlcXVlbmN5ID0gPDQwMDAwMD47Cglw
+aW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOwoJcGluY3RybC0wID0gPCZwaW5jdHJsX2kyYzE+OwoJ
+c3RhdHVzID0gIm9rYXkiOwoKCWNvZGVjOiB0ZmE5ODc5QDZDIHsKCQkjc291bmQtZGFpLWNlbGxz
+ID0gPDA+OwoJCWNvbXBhdGlibGUgPSAidGZhOTg3OSI7CgkJcmVnID0gPDB4NkM+OwoJfTsKfTsK
+CiZzc2kyIHsKCWZzbCxtb2RlID0gImkycy1tYXN0ZXIiOwoJc3RhdHVzID0gIm9rYXkiOwp9OwoK
+dGhlIHNzaTIgbm9kZSBpcyBkZWZpbmVkIGluIGlteDZxZGwuZHRzaSBmaWxlIChubyBjaGFuZ2Vz
+KS4KClRoZSBTT0MgaXMgSU1YNlEuCgpUaGUgVEZBOTg3OSBpcyBhIHNsYXZlIGZvciBJMlMgdHJh
+bnNtaXNzaW9uLgoKCj4gCj4+IFsqXSAtIEkgY291bGQgd29ya2Fyb3VuZCB0aGlzIHByb2JsZW0g
+Ynkgc2V0dGluZzoKPj4KPj4gc3lzdGVtLWNsb2NrLWZyZXF1ZW5jeSA9IDwwPiBpbgo+Pgo+PiAJ
+CQlkYWlsaW5rX21hc3RlcjogY3B1IHsKPj4gCQkJICAgIHNvdW5kLWRhaSA9IDwmc3NpMj47Cj4+
+IAkJCX07Cj4+Cj4+IGJ1dCB0aGlzIGlzIElNSE8gZXZlbiB3b3JzZSBoYWNrLi4uLiB0aGFuIHRo
+aXMgcGF0Y2guCj4gCj4gSSBoYXZlbid0IHVzZWQgc2ltcGxlLWNhcmQgZm9yIGEgd2hpbGUgc28g
+SSBmb3Jnb3QgaG93IHRvIGRlZmluZQo+IGl0cyBEVCBiaW5kaW5ncyBzcGVjaWZpY2FsbHkuIEJ1
+dCB5b3Ugc2hvdWxkIGFzc2lnbiBzc2kyIGFzIHRoZQo+IENQVSBkYWkgYW5kIGFzc2lnbiB0ZmE5
+ODc5IGFzIGEgQ09ERUMgZGFpLgo+IAoKCi0tIApCZXN0IHJlZ2FyZHMsCgpMdWthc3ogTWFqZXdz
+a2kKCi0tCgpERU5YIFNvZnR3YXJlIEVuZ2luZWVyaW5nIEdtYkgsICAgICAgTWFuYWdpbmcgRGly
+ZWN0b3I6IFdvbGZnYW5nIERlbmsKSFJCIDE2NTIzNSBNdW5pY2gsIE9mZmljZTogS2lyY2hlbnN0
+ci41LCBELTgyMTk0IEdyb2ViZW56ZWxsLCBHZXJtYW55ClBob25lOiAoKzQ5KS04MTQyLTY2OTg5
+LTEwIEZheDogKCs0OSktODE0Mi02Njk4OS04MCBFbWFpbDogd2RAZGVueC5kZQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
