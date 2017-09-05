@@ -1,70 +1,69 @@
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Subject: Different audio sample rate between in and out(44100
- Hz resp. 44100 Hz)
-Date: Tue, 5 Sep 2017 17:25:57 +0000
-Message-ID: <1504632355.27247.43.camel@infinera.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
+ to system freq
+Date: Tue, 5 Sep 2017 10:45:29 -0700
+Message-ID: <20170905174528.GA23906@Asurada-Nvidia>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <20170905050602.GA2774@Asurada-CZ80>
+ <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
+ <20170905075247.GA6112@Asurada>
+ <deb40031-9db0-d667-7314-352cf548c295@denx.de>
+ <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com
- (mail-bl2nam02on0075.outbound.protection.outlook.com [104.47.38.75])
- by alsa0.perex.cz (Postfix) with ESMTP id F267B266C6D
- for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 19:26:01 +0200 (CEST)
-Content-Language: en-US
-Content-ID: <7AA684E49B24FB408C35CCBB18D2D9D4@infinera.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When starting a audio chat I often have problems with my microphon and recenly I
-found that the sample rate is different for in and out:
-# > cat /proc/asound/card1/stream0
-Logitech Inc Logitech Stereo H650e at usb-0000:00:1d.0-1.7, full speed : USB Audio
+On Tue, Sep 05, 2017 at 04:15:50PM +0100, Mark Brown wrote:
+ 
+> > Just to be clear:
+> 
+> > What clock shall be set with:
+> 
+> > struct snd_soc_dai_ops {
+> > 	int (*set_sysclk)(struct snd_soc_dai *dai,
+> > 		int clk_id, unsigned int freq, int dir);
+> > }
+> 
+> > callback?
+> 
+> > The SSI IP block or BCLK ?
+> 
+> Not the BCLK, probably the IP clock but perhaps nothing.  The bclk is
+> usually derived from the sample rate and width, the system clock is the
+> clock rate going into the device.  It doesn't *have* to be configured
+> (particuarly if it's discoverable by the IP and managable via the clock
+> API).
 
-Playback:
-  Status: Running
-    Interface = 2
-    Altset = 1
-    Packet Size = 192
-    Momentary freq = 48000 Hz (0x30.0000)
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 8000, 16000, 24000, 32000, 44100, 48000
+Hmm...to clarify the things, some background here:
+	
+SSI has mainly two different clock inputs internally (not external
+pads such as bclk or lrclk): IP block clock (ipg_clk in Reference
+Manual) and sys clock (ccm_ssi_clk in Reference Manual). According
+to RM, ccm_ssi_clk: "module/system clock for bit clock generation".
 
-Capture:
-  Status: Running
-    Interface = 1
-    Altset = 1
-    Packet Size = 200
-    Momentary freq = 44100 Hz (0x2c.199a)
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 1 IN (ASYNC)
-    Rates: 8000, 16000, 24000, 32000, 44100, 48000
+The ipg clock is merely used to access registers, and has nothing
+(directly) to do with external clock outputs. The driver shall not
+change the ipg clock as the system ipg clock (its parent clock)
+might be messed and even system time would get weird -- happened
+once when the fsl_spdif driver used to call clk_set_rate() on its
+ipg clock. Although the clock controller should have some kind of
+protection in my opinion, we just avoid IP clock rate change in all
+audio drivers as well.
 
-This seems odd to me. Adding some debug to kernel I see:
-[  129.858365] usb 1-2: 1:1: setting freq 44100 to ep 0x81
-[  129.860514] usb 1-2: 1:1: setting freq 44100 to ep 0x81
-[  131.884314] usb 1-2: 2:1: setting freq 44100 to ep 0x1
-[  131.886567] usb 1-2: 2:1: setting freq 44100 to ep 0x1
-[  131.898714] usb 1-2: 2:1: setting freq 48000 to ep 0x1
-[  131.900847] usb 1-2: 2:1: setting freq 48000 to ep 0x1
+On the other hand, the sys clock (baudclk in the driver) should be
+configured whenever it's related to external clock outputs. When I
+implemented this set_sysclk() for fsl_ssi.c, I used it to set this
+sys clock (baudclk) by a machine driver, in order to set bit clock.
+Then someone patched the driver by moving all the code to set_bclk()
+to make machine drivers simpler. Now the set_sysclk() is remained
+to give machine drivers a chance to override clock configurations
+in the hw_params(). This could be used in TDM or some other special
+cases (It could also have a purpose for backwards compatibility).
 
-
-Is this expected or should I try make both the same?
-
- Jocke
+So here, we should set baudclk (BCLK generator).
