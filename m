@@ -1,85 +1,71 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Tue, 5 Sep 2017 11:11:09 -0700
-Message-ID: <20170905181108.GB23906@Asurada-Nvidia>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
- <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
- <20170905052031.GB2774@Asurada-CZ80>
- <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
+From: Sergej Sawazki <sergej@taudac.com>
+Subject: Re: [PATCH 1/3] ASoC: wm8741: Add digital mute callback
+Date: Tue, 5 Sep 2017 20:15:05 +0200
+Message-ID: <2fae023a-25cc-01cf-2972-312dd7f48e43@taudac.com>
+References: <1504553653-8144-1-git-send-email-sergej@taudac.com>
+ <1504553653-8144-2-git-send-email-sergej@taudac.com>
+ <20170905133351.tfqsa6s33aeigfxy@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from s62.goserver.host (s62.goserver.host [37.17.224.62])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88593266C6D
+ for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 20:15:07 +0200 (CEST)
+In-Reply-To: <20170905133351.tfqsa6s33aeigfxy@localhost.localdomain>
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 05, 2017 at 10:35:34AM +0200, Łukasz Majewski wrote:
+Thanks Charles,
 
-> >And apparently, we shouldn't set bitclk to 66MHz either. Can
-> >you help to find where this 66MHz comes from?
+agreed about the __func__. But, I would like to keep the debug message, 
+in order to be consistent with the other callbacks. They all print debug 
+messages.
 
-> 2. int asoc_simple_card_init_dai() @ simple-card-utils.c
+Would it be ok for you?
 
-Oh, I just searched in the simple-card.c but missed this file.
+Regards,
+Sergej
 
-> In this function (point 2.) the
-> simple_dai->sysclk is set and:
-> snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk, 0)
-> which sets frequency to 66 MHz [*].
+Am 05.09.2017 um 15:33 schrieb Charles Keepax:
+> On Mon, Sep 04, 2017 at 09:34:11PM +0200, Sergej Sawazki wrote:
+>> Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+>> ---
+>>   sound/soc/codecs/wm8741.c | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+>> index b8c1940..d552a8a 100644
+>> --- a/sound/soc/codecs/wm8741.c
+>> +++ b/sound/soc/codecs/wm8741.c
+>> @@ -351,6 +351,17 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
+>>   	return 0;
+>>   }
+>>   
+>> +int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
+>> +{
+>> +	struct snd_soc_codec *codec = codec_dai->codec;
+>> +
+>> +	dev_dbg(codec->dev, "%s:    mute = %d\n", __func__, mute);
 > 
-> The asoc_simple_card_init_dai() is called in
-> asoc_simple_card_dai_init() @ simple-card.c
-> which is assigned to dai_link->init
-> dai_link->init		= asoc_simple_card_dai_init; @ simple_card.c
+> Its not really normal style to use __func__ in this sort of
+> print, just make it descriptive of what it does. Although I would
+> also say you could just drop it as well if you fancied it is a
+> little verbose even for debug output.
 > 
-> And the sysclk itself is defined at:
-> -------------------------------------
-> dai_props->codec_dai->sysclk, which is used at:a
-
-Why codec_dai? Why not dai_props->cpu_dai->sysclk since we are talking
-about SSI?
-
-> asoc_simple_card_startup(), asoc_simple_card_shutdown() and others
-> functions at simple-card.c
-> It is setup at:
-> asoc_simple_card_parse_clk() @ simple-card-utils.c from macro:
-> #define asoc_simple_card_parse_clk_cpu()
-> And the problem is:
-> -------------------
+> Otherwise this patch looks ok to me.
 > 
-> At the
-> asoc_simple_card_parse_clk()
-> we finally go to dts node:
-> /soc/aips-bus@02100000/i2c@021a0000/tfa9879@6C
-
-This tfa9879 should be the CODEC right?
-
-> which has clock from I2C (66 MHz).
-
-You mean I2C scl or I2S sclk?
-
------------------------------------------------------------------
-
-But anyway, I feel very confused here as you have 66MHz clock rate
-(regardless of it purpose) for a codec dai but it's been passed to
-a cpu dai (SSI).
-
-> [*] - I could workaround this problem by setting:
+> Thanks,
+> Charles
 > 
-> system-clock-frequency = <0> in
-> 
-> 			dailink_master: cpu {
-> 			    sound-dai = <&ssi2>;
-> 			};
-> 
-> but this is IMHO even worse hack.... than this patch.
-
-I haven't used simple-card for a while so I forgot how to define
-its DT bindings specifically. But you should assign ssi2 as the
-CPU dai and assign tfa9879 as a CODEC dai.
