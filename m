@@ -1,82 +1,66 @@
-From: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Subject: [PATCH v8 1/2] ASoC: rt5514: Add devicetree bindings for rt5514-spi
-Date: Tue,  5 Sep 2017 12:24:59 +0800
-Message-ID: <20170905042500.25656-1-jeffy.chen@rock-chips.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org
-Cc: briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
+ to system freq
+Date: Mon, 4 Sep 2017 22:06:03 -0700
+Message-ID: <20170905050602.GA2774@Asurada-CZ80>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1504436701-20700-1-git-send-email-lukma@denx.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lukasz Majewski <lukma@denx.de>
+Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree bindings documentation file for rt5514 spi dsp codec.
+On Sun, Sep 03, 2017 at 01:05:01PM +0200, Lukasz Majewski wrote:
+> The problem is visible in the following setup (on the imx6q):
+> "simple-audio-card" -> ssi2 -> I2S + I2C -> codec
+> 
+> The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
+> 
+> asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
+> snd_soc_dai_set_sysclk()
+> fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
+> 
+> The last call is changing the bit clock (BCLK) frequency to SSI's IP
+> block clock (ipg = 66 MHz) [1].
 
-Also update rt5514 i2c dt-binding's compatible.
+I think a bigger question here is why the routine sets BCLK to 66MHz.
 
-Signed-off-by: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
----
+> This is wrong, since IMX SSI block requires the I2S BCLK to be less
+> than 1/5 of [1].
+> 
+> As a result the driver initialization passes without any errors, but the
+> speaker-test test case breaks.
+> 
+> This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
+> not equal to [1].
 
-Changes in v8: None
+I don't feel it's quite comprehensive...what if it's being set to 67MHz.
 
- .../devicetree/bindings/sound/rt5514-spi.txt       | 32 ++++++++++++++++++++++
- Documentation/devicetree/bindings/sound/rt5514.txt |  2 +-
- 2 files changed, 33 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5514-spi.txt
+Thanks
+Nicolin
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5514-spi.txt b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
-new file mode 100644
-index 000000000000..8a63d9423dd9
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
-@@ -0,0 +1,32 @@
-+RT5514 SPI audio CODEC
-+
-+This device supports SPI only.
-+
-+Required properties:
-+
-+- compatible : "realtek,rt5514".
-+
-+- reg : The SPI address of the device.
-+
-+Optional properties:
-+
-+- interrupt-parent: Should be the phandle for the interrupt controller
-+- interrupts: The interrupt number to the cpu. The interrupt specifier format
-+	      depends on the interrupt controller.
-+
-+Example:
-+
-+codec: rt5514-spi@0 {
-+	compatible = "realtek,rt5514", "realtek,rt5514-spi";
-+	reg = <0>;
-+
-+        /* May run faster once verified. */
-+        spi-max-frequency = <10000000>;
-+
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&mic_int>;
-+
-+        interrupt-parent = <&gpio1>;
-+        interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
-+        wakeup-source;
-+};
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index 929ca6756b02..12a8c93a67cc 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -28,6 +28,6 @@ Pins on the device (for linking into audio routes) for RT5514:
- Example:
- 
- codec: rt5514@57 {
--	compatible = "realtek,rt5514";
-+	compatible = "realtek,rt5514", "realtek,rt5514-i2c";
- 	reg = <0x57>;
- };
--- 
-2.11.0
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 173cb84..1186fa9 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+>  		int clk_id, unsigned int freq, int dir)
+>  {
+>  	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+> +	if (clk_get_rate(ssi_private->clk) == freq)
+> +		return 0;
+>  
+>  	ssi_private->bitclk_freq = freq;
+>  
+> -- 
+> 2.1.4
+> 
