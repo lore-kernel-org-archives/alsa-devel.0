@@ -1,175 +1,66 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Tue, 5 Sep 2017 10:35:34 +0200
-Message-ID: <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
- <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
- <20170905052031.GB2774@Asurada-CZ80>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: stop all working stream
+	when	.remove
+Date: Tue, 5 Sep 2017 08:58:37 +0000
+Message-ID: <PS1PR0601MB188127AD25441AE8543A0EE1D4960@PS1PR0601MB1881.apcprd06.prod.outlook.com>
+References: <874lsnniv3.wl%kuninori.morimoto.gx@renesas.com>
+ <s5htw0mx4ek.wl-tiwai@suse.de>
+ <87d17akgqr.wl%kuninori.morimoto.gx@renesas.com>
+ <s5h1snqvnnc.wl-tiwai@suse.de>
+ <PS1PR0601MB1881FD07A3E16E039943DA7FD4910@PS1PR0601MB1881.apcprd06.prod.outlook.com>
+ <s5h1snmuwxk.wl-tiwai@suse.de>	<s5hziaati7p.wl-tiwai@suse.de>
+ <PS1PR0601MB18818E81D00F3056E7F7D54CD4960@PS1PR0601MB1881.apcprd06.prod.outlook.com>
+ <s5hk21dtvm6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170905052031.GB2774@Asurada-CZ80>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relmlie2.idc.renesas.com (relmlor3.renesas.com
+ [210.160.252.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75195266E25
+ for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 10:58:42 +0200 (CEST)
+In-Reply-To: <s5hk21dtvm6.wl-tiwai@suse.de>
+Content-Language: ja-JP
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/05/2017 07:20 AM, Nicolin Chen wrote:
-> On Sun, Sep 03, 2017 at 04:40:21PM +0200, Łukasz Majewski wrote:
->>> /*
->>> * Hardware limitation: The bclk rate must be
->>> * never greater than 1/5 IPG clock rate
->>> */
->>> if (freq * 5 > clk_get_rate(ssi_private->clk)) {
->>> dev_err(cpu_dai->dev, "bitclk > ipgclk/5\n");
->>> return -EINVAL;
->>> }
->>>
->>
->> Unfortunately not.
->>
->> This is the part of fsl_ssi_set_bclk() function which is called after
->> fsl_ssi_set_dai_sysclk() (which sets ssi_private->bitclk_freq = freq;).
->>
->> Before the aforementioned check we do have:
->>
->> 	if (ssi_private->bitclk_freq)
->> 		freq = ssi_private->bitclk_freq;
->> 	else
->> 		freq = params_channels(hw_params) * 32 * 	params_rate(hw_params);
->>
->>
->> Which assigns freq = bitclk_freq (66 MHz)
->>
-> [...]
->> And then we break on this particular check:
->> 66MHz * 5 > 66 MHz.
-> [...]
-> 
-> Does the check fail and return an error here, or not?
+Hi Takashi-san
 
-Yes, this check fails and return error (-EINVAL).
+Thank you for your feedback
 
-> 
->> The culprit IMHO is the  ssi_private->bitclk_freq = freq; in the
->> fsl_ssi_set_dai_sysclk(), since we _should_ set SSI's IP block clock
->> (ssi_private->clk), not the bit clock (BCLK).
-> 
-> No. We should not set the IP block clock. That's from IPG bus
-> on certain IMX SoCs. Setting it might change IPG bus clocks
-> which might break the system.
-> 
-> And apparently, we shouldn't set bitclk to 66MHz either. Can
-> you help to find where this 66MHz comes from?
+> Right, you can't cancel or return an error at that point.
+> That is, you'd need to sync (wait) until the all top-level operations are canceled at remove callback.
+>
+> For example, snd_card_free() processes the disconnection procedure at first,
+> then waits for the completion.  That's how the hot-unplug works safely.
+> It's implemented, at least, in the top-level driver removal.
+>
+> Now for the lower level driver, you'd need a similar strategy; notify to the toplevel for
+> hot-unplug (disconnect in ALSA), and sync with the stop operation, then continue the rest of its own remove procedure.
 
-OK.
+OK, it needs ALSA SoC framework side new feature.
+But can I confirm current situation ?
 
-The fsi_ssi.c file defines:
+In ALSA SoC, it has Card/CPU/Codec/Platform drivers, and we can unbind these randomly.
+Now, if I unbind CPU first, it checks connected Card, and will disconnect it if needed (Then, other drivers are as-is).
+Because of this, Card will be disconnected automatically, and we can't use it again if user didn't remove all other
+remaining drivers and re-bind all drivers again. This is current ALSA SoC I think.
 
-ops->set_sysclk() routine:
+If my understanding was correct, your idea is that we want to call remove function for all connected drivers somehow.
+And then, Card want to wait all drivers are removed. Correct ?
 
-	.set_sysclk	= fsl_ssi_set_dai_sysclk,
+I'm happy to work for it.
+But adding new unplug feature is for sync with all "drivers", and this patch is sync for "clk" for my CPU driver.
+Can we separate these ?
 
-This routine is called in:
-int snd_soc_dai_set_sysclk() @ soc-core.c
-
-which is called in two places for my setup:
-
-1. asoc_simple_card_hw_params() @ simple-card.c
-
-and
-
-2. int asoc_simple_card_init_dai() @ simple-card-utils.c
-
-In this function (point 2.) the
-
-simple_dai->sysclk is set and:
-
-snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk, 0)
-
-which sets frequency to 66 MHz [*].
-
-
-
-The asoc_simple_card_init_dai() is called in
-
-asoc_simple_card_dai_init() @ simple-card.c
-
-which is assigned to dai_link->init
-
-dai_link->init		= asoc_simple_card_dai_init; @ simple_card.c
-
-
-
-And the sysclk itself is defined at:
--------------------------------------
-
-dai_props->codec_dai->sysclk, which is used at:
-
-asoc_simple_card_startup(), asoc_simple_card_shutdown() and others 
-functions at simple-card.c
-
-
-It is setup at:
-
-asoc_simple_card_parse_clk() @ simple-card-utils.c from macro:
-#define asoc_simple_card_parse_clk_cpu()
-
-
-And the problem is:
--------------------
-
-At the
-asoc_simple_card_parse_clk()
-we finally go to dts node:
-
-/soc/aips-bus@02100000/i2c@021a0000/tfa9879@6C
-
-which has clock from I2C (66 MHz).
-
-(So the [*] hack may help here, since it is checked before checking the 
-i2c node).
-
-
-Note:
-[*] - I could workaround this problem by setting:
-
-system-clock-frequency = <0> in
-
-			dailink_master: cpu {
-			    sound-dai = <&ssi2>;
-			};
-
-but this is IMHO even worse hack.... than this patch.
-
-> 
->> This patch just quits early if it detects change, which don't need to be
->> done.
-> 
-> I kinda see your point is to error out before hw_params(). So
-> I feel it would be better to have a similar 5-times-check in
-> the set_sysclk() too, if it's really necessary.
-> 
-> Btw, I don't see simple card calling set_sysclk() function in
-> any earlier stage than hw_params(). I am wondering how did you
-> encounter the problem?
-> 
-> Thanks
-> Nicolin
-> 
-
-
--- 
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Morimoto
