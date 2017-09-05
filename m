@@ -1,64 +1,175 @@
 From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
- when it is equal to system freq
-Date: Tue, 5 Sep 2017 10:19:05 +0200
-Message-ID: <deb40031-9db0-d667-7314-352cf548c295@denx.de>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
+ to system freq
+Date: Tue, 5 Sep 2017 10:35:34 +0200
+Message-ID: <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
 References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <20170905050602.GA2774@Asurada-CZ80>
- <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
- <20170905075247.GA6112@Asurada>
+ <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+ <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
+ <20170905052031.GB2774@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 7814C266E25
- for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 10:19:10 +0200 (CEST)
-In-Reply-To: <20170905075247.GA6112@Asurada>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170905052031.GB2774@Asurada-CZ80>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDkvMDUvMjAxNyAwOTo1MiBBTSwgTmljb2xpbiBDaGVuIHdyb3RlOgo+IE9uIFR1ZSwgU2Vw
-IDA1LCAyMDE3IGF0IDA5OjM3OjQzQU0gKzAyMDAsIMWBdWthc3ogTWFqZXdza2kgd3JvdGU6Cj4g
-Cj4+Pj4gVGhlIGxhc3QgY2FsbCBpcyBjaGFuZ2luZyB0aGUgYml0IGNsb2NrIChCQ0xLKSBmcmVx
-dWVuY3kgdG8gU1NJJ3MgSVAKPj4+PiBibG9jayBjbG9jayAoaXBnID0gNjYgTUh6KSBbMV0uCj4+
-Pgo+Pj4gSSB0aGluayBhIGJpZ2dlciBxdWVzdGlvbiBoZXJlIGlzIHdoeSB0aGUgcm91dGluZSBz
-ZXRzIEJDTEsgdG8gNjZNSHouCj4+Cj4+IFllcywgZXhhY3RseS4KPj4KPj4gSW4gbXkgY2FzZSB0
-aGUgYmNsayBpcyBzZXQgdG8gaXBnIGNsb2NrLCB3aGljaCBpcyB0aGUgU1NJIElQIGJsb2NrIGNs
-b2NrCj4+IChpcGcpLgo+IAo+IENhbiB5b3UgZWxhYm9yYXRlIHdoeSB5b3Ugc2V0IGlwZyBjbG9j
-ayBhcyBiY2xrPyBJIGRvbid0IHJlbWVtYmVyIFNTSSBjb3VsZAo+IGRlcml2ZSBiaXRjbG9jayBm
-cm9tIGlwZyBjbG9jay4KCkp1c3QgdG8gYmUgY2xlYXI6CgpXaGF0IGNsb2NrIHNoYWxsIGJlIHNl
-dCB3aXRoOgoKc3RydWN0IHNuZF9zb2NfZGFpX29wcyB7CgoJaW50ICgqc2V0X3N5c2Nsaykoc3Ry
-dWN0IHNuZF9zb2NfZGFpICpkYWksCgkJaW50IGNsa19pZCwgdW5zaWduZWQgaW50IGZyZXEsIGlu
-dCBkaXIpOwp9CgpjYWxsYmFjaz8KClRoZSBTU0kgSVAgYmxvY2sgb3IgQkNMSyA/CgoKPiAKPj4+
-PiBUaGlzIGlzIHdyb25nLCBzaW5jZSBJTVggU1NJIGJsb2NrIHJlcXVpcmVzIHRoZSBJMlMgQkNM
-SyB0byBiZSBsZXNzCj4+Pj4gdGhhbiAxLzUgb2YgWzFdLgo+Pj4+Cj4+Pj4gQXMgYSByZXN1bHQg
-dGhlIGRyaXZlciBpbml0aWFsaXphdGlvbiBwYXNzZXMgd2l0aG91dCBhbnkgZXJyb3JzLCBidXQg
-dGhlCj4+Pj4gc3BlYWtlci10ZXN0IHRlc3QgY2FzZSBicmVha3MuCj4+Pj4KPj4+PiBUaGlzIGNv
-bW1pdCBjaGVja3MgaWYgdGhlIGZzbF9zc2lfc2V0X2RhaV9zeXNjbGsoKSBmcmVxdWVuY3kgcGFz
-c2VkIGlzCj4+Pj4gbm90IGVxdWFsIHRvIFsxXS4KPj4+Cj4+PiBJIGRvbid0IGZlZWwgaXQncyBx
-dWl0ZSBjb21wcmVoZW5zaXZlLi4ud2hhdCBpZiBpdCdzIGJlaW5nIHNldCB0byA2N01Iei4KPj4K
-Pj4gSSB0aGluayB0aGF0IHRoaXMgY2xvY2sgaXMgbm90IGNoYW5naW5nIGZvciB0aGUgU29DLiBJ
-dCBzaG91bGQgYmUgNjYgTUh6Cj4+IGZpeGVkLgo+IAo+IFdoYXQgSSBtZWFuIGlzIHRoYXQgd2Ug
-Y2Fubm90IGp1c3QgbG9vayBhdCB0aGlzIFNvQy4gVG9kYXkgaXMgNjZNSHogZm9yIHRoaXMKPiBT
-b0MuIFRvbW9ycm93IGNvdWxkIGJlIDEzM01IeiBmb3IgYW5vdGhlciBvbmUuIFdlIHNob3VsZCBw
-dXQgYSBjaGVjayB0aGF0IG5vbmUKPiBvZiB0aGVzZSBzaGFsbCBwYXNzIC0tIHRoZSAxLzUgbGlt
-aXQuCj4gCgpPay4gR29vZCBwb2ludC4KCgotLSAKQmVzdCByZWdhcmRzLAoKTHVrYXN6IE1hamV3
-c2tpCgotLQoKREVOWCBTb2Z0d2FyZSBFbmdpbmVlcmluZyBHbWJILCAgICAgIE1hbmFnaW5nIERp
-cmVjdG9yOiBXb2xmZ2FuZyBEZW5rCkhSQiAxNjUyMzUgTXVuaWNoLCBPZmZpY2U6IEtpcmNoZW5z
-dHIuNSwgRC04MjE5NCBHcm9lYmVuemVsbCwgR2VybWFueQpQaG9uZTogKCs0OSktODE0Mi02Njk4
-OS0xMCBGYXg6ICgrNDkpLTgxNDItNjY5ODktODAgRW1haWw6IHdkQGRlbnguZGUKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 09/05/2017 07:20 AM, Nicolin Chen wrote:
+> On Sun, Sep 03, 2017 at 04:40:21PM +0200, Łukasz Majewski wrote:
+>>> /*
+>>> * Hardware limitation: The bclk rate must be
+>>> * never greater than 1/5 IPG clock rate
+>>> */
+>>> if (freq * 5 > clk_get_rate(ssi_private->clk)) {
+>>> dev_err(cpu_dai->dev, "bitclk > ipgclk/5\n");
+>>> return -EINVAL;
+>>> }
+>>>
+>>
+>> Unfortunately not.
+>>
+>> This is the part of fsl_ssi_set_bclk() function which is called after
+>> fsl_ssi_set_dai_sysclk() (which sets ssi_private->bitclk_freq = freq;).
+>>
+>> Before the aforementioned check we do have:
+>>
+>> 	if (ssi_private->bitclk_freq)
+>> 		freq = ssi_private->bitclk_freq;
+>> 	else
+>> 		freq = params_channels(hw_params) * 32 * 	params_rate(hw_params);
+>>
+>>
+>> Which assigns freq = bitclk_freq (66 MHz)
+>>
+> [...]
+>> And then we break on this particular check:
+>> 66MHz * 5 > 66 MHz.
+> [...]
+> 
+> Does the check fail and return an error here, or not?
+
+Yes, this check fails and return error (-EINVAL).
+
+> 
+>> The culprit IMHO is the  ssi_private->bitclk_freq = freq; in the
+>> fsl_ssi_set_dai_sysclk(), since we _should_ set SSI's IP block clock
+>> (ssi_private->clk), not the bit clock (BCLK).
+> 
+> No. We should not set the IP block clock. That's from IPG bus
+> on certain IMX SoCs. Setting it might change IPG bus clocks
+> which might break the system.
+> 
+> And apparently, we shouldn't set bitclk to 66MHz either. Can
+> you help to find where this 66MHz comes from?
+
+OK.
+
+The fsi_ssi.c file defines:
+
+ops->set_sysclk() routine:
+
+	.set_sysclk	= fsl_ssi_set_dai_sysclk,
+
+This routine is called in:
+int snd_soc_dai_set_sysclk() @ soc-core.c
+
+which is called in two places for my setup:
+
+1. asoc_simple_card_hw_params() @ simple-card.c
+
+and
+
+2. int asoc_simple_card_init_dai() @ simple-card-utils.c
+
+In this function (point 2.) the
+
+simple_dai->sysclk is set and:
+
+snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk, 0)
+
+which sets frequency to 66 MHz [*].
+
+
+
+The asoc_simple_card_init_dai() is called in
+
+asoc_simple_card_dai_init() @ simple-card.c
+
+which is assigned to dai_link->init
+
+dai_link->init		= asoc_simple_card_dai_init; @ simple_card.c
+
+
+
+And the sysclk itself is defined at:
+-------------------------------------
+
+dai_props->codec_dai->sysclk, which is used at:
+
+asoc_simple_card_startup(), asoc_simple_card_shutdown() and others 
+functions at simple-card.c
+
+
+It is setup at:
+
+asoc_simple_card_parse_clk() @ simple-card-utils.c from macro:
+#define asoc_simple_card_parse_clk_cpu()
+
+
+And the problem is:
+-------------------
+
+At the
+asoc_simple_card_parse_clk()
+we finally go to dts node:
+
+/soc/aips-bus@02100000/i2c@021a0000/tfa9879@6C
+
+which has clock from I2C (66 MHz).
+
+(So the [*] hack may help here, since it is checked before checking the 
+i2c node).
+
+
+Note:
+[*] - I could workaround this problem by setting:
+
+system-clock-frequency = <0> in
+
+			dailink_master: cpu {
+			    sound-dai = <&ssi2>;
+			};
+
+but this is IMHO even worse hack.... than this patch.
+
+> 
+>> This patch just quits early if it detects change, which don't need to be
+>> done.
+> 
+> I kinda see your point is to error out before hw_params(). So
+> I feel it would be better to have a similar 5-times-check in
+> the set_sysclk() too, if it's really necessary.
+> 
+> Btw, I don't see simple card calling set_sysclk() function in
+> any earlier stage than hw_params(). I am wondering how did you
+> encounter the problem?
+> 
+> Thanks
+> Nicolin
+> 
+
+
+-- 
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
