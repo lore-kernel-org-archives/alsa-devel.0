@@ -1,72 +1,92 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH RESEND1 00/12] ALSA: vsnd: Add Xen
- para-virtualized frontend driver
-Date: Tue, 5 Sep 2017 09:24:04 +0200
-Message-ID: <8542f293-f2d0-9ba3-7082-967b32fcec17@ladisch.de>
-References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
- <7e62a406-7dcd-b5c9-b2de-ea52e1d2afd0@sakamocchi.jp>
- <b9e34f0e-4a9a-9ccf-6165-04cd22a070ac@gmail.com>
- <CACvf2oU4puqSuNj2k5REpmFJdvWcTWY+AaNEJtknLP4XMPdbsg@mail.gmail.com>
- <e5d52c8a-09e0-2823-dcff-e595868c7dee@sakamocchi.jp>
- <2a2fd222-fc54-1709-bfc8-a530efc3f307@gmail.com>
- <ad4f2201-bfab-415d-0120-308989653628@sakamocchi.jp>
- <b129960e-b38f-ea94-3e4a-3cd409f7a707@gmail.com>
- <3f8e535b-8607-6b15-6e17-da755a06cc1e@sakamocchi.jp>
- <CACvf2oUJtxVTuV0qu4z4kV=aSOH5O_8v=UjH_3tr4wCJdXuEjw@mail.gmail.com>
- <3fde10f8-4727-e37b-8001-ce2356fffb2b@sakamocchi.jp>
- <162b7251-4040-c61f-1fcd-c32f65bd3c67@gmail.com>
+From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
+ to system freq
+Date: Tue, 5 Sep 2017 09:37:43 +0200
+Message-ID: <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <20170905050602.GA2774@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <162b7251-4040-c61f-1fcd-c32f65bd3c67@gmail.com>
+In-Reply-To: <20170905050602.GA2774@Asurada-CZ80>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Oleksandr Andrushchenko <andr2000@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Oleksandr Grytsov <al1img@gmail.com>
-Cc: alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, xen-devel@lists.xen.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Oleksandr Andrushchenko wrote:
->>> We understand that emulated interrupt on the frontend side is completely not
->>> acceptable
+On 09/05/2017 07:06 AM, Nicolin Chen wrote:
+> On Sun, Sep 03, 2017 at 01:05:01PM +0200, Lukasz Majewski wrote:
+>> The problem is visible in the following setup (on the imx6q):
+>> "simple-audio-card" -> ssi2 -> I2S + I2C -> codec
+>>
+>> The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
+>>
+>> asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
+>> snd_soc_dai_set_sysclk()
+>> fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
+>>
+>> The last call is changing the bit clock (BCLK) frequency to SSI's IP
+>> block clock (ipg = 66 MHz) [1].
+> 
+> I think a bigger question here is why the routine sets BCLK to 66MHz.
 
-Allow me to expand on that:  Proper synchronization requires that the
-exact position is communicated, not estimated.  Just because the nominal
-rate of the stream is known does not imply that you know the actual rate.
-Forget for the moment that there even is a nominal rate; assume that it
-works like, e.g., a storage controller, and that you can know that a DMA
-buffer was consumed by the device only after it has told you.
+Yes, exactly.
 
-It's possible and likely that there is a latency when reporting the
-stream position, but that is still better than guessing what the DMA
-is doing.  (You would never just try to guess when writing data to
-disk, would you?)
+In my case the bclk is set to ipg clock, which is the SSI IP block clock 
+(ipg).
 
->>> and definitely we need to provide some feedback mechanism from
->>> Dom0 to DomU.
->>>
->>> In our case it is technically impossible to provide precise period interrupt
->>> (mostly because our backend is a user space application).
+> 
+>> This is wrong, since IMX SSI block requires the I2S BCLK to be less
+>> than 1/5 of [1].
+>>
+>> As a result the driver initialization passes without any errors, but the
+>> speaker-test test case breaks.
+>>
+>> This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
+>> not equal to [1].
+> 
+> I don't feel it's quite comprehensive...what if it's being set to 67MHz.
 
-As far as I can see, all audio APIs (ALSA, PulseAudio, etc.) have poll()
-or callbacks or similar mechanisms to inform you when new data can be
-written, and always allow to query the current position.
+I think that this clock is not changing for the SoC. It should be 66 MHz 
+fixed.
 
-> [...]
-> ok, so the main concern here is that we cannot properly synchronize Dom0-DomU.
-> If we put this apart for a second are there any other concerns on having ALSA
-> frontend driver? If not, can we have the driver with timer implementation upstreamed
-> as experimental until we have some acceptable synchronization solution?
-> This will allow broader audience to try and feel the solution and probably contribute?
+> 
+> Thanks
+> Nicolin
+> 
+>> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+>> ---
+>>   sound/soc/fsl/fsl_ssi.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+>> index 173cb84..1186fa9 100644
+>> --- a/sound/soc/fsl/fsl_ssi.c
+>> +++ b/sound/soc/fsl/fsl_ssi.c
+>> @@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+>>   		int clk_id, unsigned int freq, int dir)
+>>   {
+>>   	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+>> +	if (clk_get_rate(ssi_private->clk) == freq)
+>> +		return 0;
+>>   
+>>   	ssi_private->bitclk_freq = freq;
+>>   
+>> -- 
+>> 2.1.4
+>>
+> 
 
-I doubt that the driver architecture will stay completely the same, so I
-do not think that this experimental driver would demonstrate how the
-solution would feel.
 
-As the first step, I would suggest creating a driver with proper
-synchronization, even if it has high latency.  Reducing the latency
-would then be 'just' an optimization.
+-- 
+Best regards,
 
+Lukasz Majewski
 
-Regards,
-Clemens
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
