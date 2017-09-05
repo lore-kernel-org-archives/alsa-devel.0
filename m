@@ -1,23 +1,20 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 23/25 v3] ALSA/dummy: Replace tasklet with
-	softirq hrtimer
-Date: Tue, 5 Sep 2017 18:18:21 +0200
-Message-ID: <20170905161820.jtysvxtfleunbbmf@breakpoint.cc>
-References: <s5hh8wnvjei.wl-tiwai@suse.de>
- <20170901102537.8066-1-o-takashi@sakamocchi.jp>
- <s5hbmmutytt.wl-tiwai@suse.de>
- <19775981-a3f2-5f65-e934-bfe25db62a43@sakamocchi.jp>
- <20170905155351.2xmwyxrirndfwtgo@breakpoint.cc>
- <4cf46286-daf8-d52c-dacc-fa16052dcdb2@sakamocchi.jp>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 3/3] ASoC: wm8741: Set SR mode in
+	hw_params()
+Date: Tue, 5 Sep 2017 17:23:00 +0100
+Message-ID: <20170905162300.zrmwyz3niarqzcr4@localhost.localdomain>
+References: <1504553653-8144-1-git-send-email-sergej@taudac.com>
+ <1504553653-8144-4-git-send-email-sergej@taudac.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Chamillionaire.breakpoint.cc (chamillionaire.breakpoint.cc
- [146.0.238.67]) by alsa0.perex.cz (Postfix) with ESMTP id E9BAD266C6D
- for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 18:18:23 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71432266C6D
+ for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 18:23:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4cf46286-daf8-d52c-dacc-fa16052dcdb2@sakamocchi.jp>
+In-Reply-To: <1504553653-8144-4-git-send-email-sergej@taudac.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,78 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, keescook@chromium.org, Takashi Iwai <tiwai@suse.de>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, john.stultz@linaro.org, tglx@linutronix.de, anna-maria@linutronix.de, hch@lst.de
+To: Sergej Sawazki <sergej@taudac.com>
+Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+CgpUaGUgdGFza2xldCBp
-cyB1c2VkIHRvIGRlZmVyIHRoZSBleGVjdXRpb24gb2Ygc25kX3BjbV9wZXJpb2RfZWxhcHNlZCgp
-IHRvCnRoZSBzb2Z0aXJxIGNvbnRleHQuIFVzaW5nIHRoZSBDTE9DS19NT05PVE9OSUNfU09GVCBi
-YXNlIGludm9rZXMgdGhlIHRpbWVyCmNhbGxiYWNrIGluIHNvZnRpcnEgY29udGV4dCBhcyB3ZWxs
-IHdoaWNoIHJlbmRlcnMgdGhlIHRhc2tsZXQgdXNlbGVzcy4KClNpZ25lZC1vZmYtYnk6IFRob21h
-cyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4LmRlPgpTaWduZWQtb2ZmLWJ5OiBBbm5hLU1hcmlh
-IEdsZWl4bmVyIDxhbm5hLW1hcmlhQGxpbnV0cm9uaXguZGU+CkNjOiBKYXJvc2xhdiBLeXNlbGEg
-PHBlcmV4QHBlcmV4LmN6PgpDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmNvbT4KQ2M6IFRh
-a2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgpDYzogYWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCltvLXRha2FzaGk6IGF2b2lkIHN0YWxsIGR1ZSB0byBhIGNhbGwgb2Yg
-aHJ0aW1lcl9jYW5jZWwoKSBvbiBhIGNhbGxiYWNrCiAgICAgICAgICAgIG9mIGhydGltZXJdClNp
-Z25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgpT
-aWduZWQtb2ZmLWJ5OiBTZWJhc3RpYW4gQW5kcnplaiBTaWV3aW9yIDxiaWdlYXN5QGxpbnV0cm9u
-aXguZGU+Ci0tLQpPbiAyMDE3LTA5LTA2IDAxOjA1OjQzIFsrMDkwMF0sIFRha2FzaGkgU2FrYW1v
-dG8gd3JvdGU6Cj4gQXMgSXdhaS1zYW4gbWVudGlvbmVkLCBpbiB0aGlzIGZ1bmN0aW9uLCAudHJp
-Z2dlciBjYW4gYmUgY2FsbGVkIGluIHR3bwo+IGNhc2VzOyBYUlVOIG9jY3VycyBhbmQgZHJhaW5p
-bmcgaXMgZG9uZS4gVGh1cywgbGV0IHlvdSBjaGFuZ2UgdGhlIGNvbW1lbnQgYXMKPiAnSW4gY2Fz
-ZXMgb2YgWFJVTiBhbmQgZHJhaW5pbmcsIHRoaXMgY2FsbHMgLnRyaWdnZXIgdG8gc3RvcCBQQ00g
-c3Vic3RyZWFtLicuCj4gSSdtIHNvcnJ5IHRvIHRyb3VibGUgeW91Lgo+IAo+IHNuZF9wY21fcGVy
-aW9kX2VsYXBzZWQoKQo+IC0+c25kX3BjbV91cGRhdGVfaHdfcHRyMCgpCj4gICAtPnNuZF9wY21f
-dXBkYXRlX3N0YXRlKCkKPiAgICAgLT5zbmRfcGNtX2RyYWluX2RvbmUoKQo+ICAgICAgIC4uLgo+
-ICAgICAgIC0+LnRyaWdnZXIoVFJJR0dFUl9TVE9QKQo+ICAgICAtPnhydW4oKQo+ICAgICAgIC0+
-c25kX3BjbV9zdG9wKCkKPiAgICAgICAgIC4uLgo+ICAgICAgICAgLT4udHJpZ2dlcihUUklHR0VS
-X1NUT1ApCj4gCgpJIHRoaW5rIHlvdSBhc2tlZCBtZSBqdXN0IHRvIHVwZGF0ZSB0aGUgY29tbWVu
-dC4gRGlkIEkgZG8gaXQgcmlnaHQ/Cgp2MuKApnYzOiB1cGRhdGVkIHRoZSBjb21tZW50IGFzIHBl
-ciBUYWthc2hpIFNha2Ftb3RvJ3Mgc3VnZ2VzdGlvbi4KdjHigKZ2MjogbWVyZ2VkIFRha2FzaGkg
-U2FrYW1vdG8gZml4dXAgb2YgdGhlIG9yaWdpbmFsIHBhdGNoIGludG8gdjIuCgogc291bmQvZHJp
-dmVycy9kdW1teS5jIHwgMjUgKysrKysrKysrKystLS0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5n
-ZWQsIDExIGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5k
-L2RyaXZlcnMvZHVtbXkuYyBiL3NvdW5kL2RyaXZlcnMvZHVtbXkuYwppbmRleCBkZDVlZDAzN2Fk
-ZjIuLmNkZDg1MTI4NmY5MiAxMDA2NDQKLS0tIGEvc291bmQvZHJpdmVycy9kdW1teS5jCisrKyBi
-L3NvdW5kL2RyaXZlcnMvZHVtbXkuYwpAQCAtMzc2LDE3ICszNzYsOSBAQCBzdHJ1Y3QgZHVtbXlf
-aHJ0aW1lcl9wY20gewogCWt0aW1lX3QgcGVyaW9kX3RpbWU7CiAJYXRvbWljX3QgcnVubmluZzsK
-IAlzdHJ1Y3QgaHJ0aW1lciB0aW1lcjsKLQlzdHJ1Y3QgdGFza2xldF9zdHJ1Y3QgdGFza2xldDsK
-IAlzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbTsKIH07CiAKLXN0YXRpYyB2b2lk
-IGR1bW15X2hydGltZXJfcGNtX2VsYXBzZWQodW5zaWduZWQgbG9uZyBwcml2KQotewotCXN0cnVj
-dCBkdW1teV9ocnRpbWVyX3BjbSAqZHBjbSA9IChzdHJ1Y3QgZHVtbXlfaHJ0aW1lcl9wY20gKilw
-cml2OwotCWlmIChhdG9taWNfcmVhZCgmZHBjbS0+cnVubmluZykpCi0JCXNuZF9wY21fcGVyaW9k
-X2VsYXBzZWQoZHBjbS0+c3Vic3RyZWFtKTsKLX0KLQogc3RhdGljIGVudW0gaHJ0aW1lcl9yZXN0
-YXJ0IGR1bW15X2hydGltZXJfY2FsbGJhY2soc3RydWN0IGhydGltZXIgKnRpbWVyKQogewogCXN0
-cnVjdCBkdW1teV9ocnRpbWVyX3BjbSAqZHBjbTsKQEAgLTM5NCw3ICszODYsMTQgQEAgc3RhdGlj
-IGVudW0gaHJ0aW1lcl9yZXN0YXJ0IGR1bW15X2hydGltZXJfY2FsbGJhY2soc3RydWN0IGhydGlt
-ZXIgKnRpbWVyKQogCWRwY20gPSBjb250YWluZXJfb2YodGltZXIsIHN0cnVjdCBkdW1teV9ocnRp
-bWVyX3BjbSwgdGltZXIpOwogCWlmICghYXRvbWljX3JlYWQoJmRwY20tPnJ1bm5pbmcpKQogCQly
-ZXR1cm4gSFJUSU1FUl9OT1JFU1RBUlQ7Ci0JdGFza2xldF9zY2hlZHVsZSgmZHBjbS0+dGFza2xl
-dCk7CisJLyoKKwkgKiBJbiBjYXNlcyBvZiBYUlVOIGFuZCBkcmFpbmluZywgdGhpcyBjYWxscyAu
-dHJpZ2dlciB0byBzdG9wIFBDTQorCSAqIHN1YnN0cmVhbS4KKwkgKi8KKwlzbmRfcGNtX3Blcmlv
-ZF9lbGFwc2VkKGRwY20tPnN1YnN0cmVhbSk7CisJaWYgKCFhdG9taWNfcmVhZCgmZHBjbS0+cnVu
-bmluZykpCisJCXJldHVybiBIUlRJTUVSX05PUkVTVEFSVDsKKwogCWhydGltZXJfZm9yd2FyZF9u
-b3codGltZXIsIGRwY20tPnBlcmlvZF90aW1lKTsKIAlyZXR1cm4gSFJUSU1FUl9SRVNUQVJUOwog
-fQpAQCAtNDE0LDE0ICs0MTMsMTQgQEAgc3RhdGljIGludCBkdW1teV9ocnRpbWVyX3N0b3Aoc3Ry
-dWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJc3RydWN0IGR1bW15X2hydGltZXJf
-cGNtICpkcGNtID0gc3Vic3RyZWFtLT5ydW50aW1lLT5wcml2YXRlX2RhdGE7CiAKIAlhdG9taWNf
-c2V0KCZkcGNtLT5ydW5uaW5nLCAwKTsKLQlocnRpbWVyX2NhbmNlbCgmZHBjbS0+dGltZXIpOwor
-CWlmICghaHJ0aW1lcl9jYWxsYmFja19ydW5uaW5nKCZkcGNtLT50aW1lcikpCisJCWhydGltZXJf
-Y2FuY2VsKCZkcGNtLT50aW1lcik7CiAJcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyBpbmxpbmUgdm9p
-ZCBkdW1teV9ocnRpbWVyX3N5bmMoc3RydWN0IGR1bW15X2hydGltZXJfcGNtICpkcGNtKQogewog
-CWhydGltZXJfY2FuY2VsKCZkcGNtLT50aW1lcik7Ci0JdGFza2xldF9raWxsKCZkcGNtLT50YXNr
-bGV0KTsKIH0KIAogc3RhdGljIHNuZF9wY21fdWZyYW1lc190CkBAIC00NjYsMTIgKzQ2NSwxMCBA
-QCBzdGF0aWMgaW50IGR1bW15X2hydGltZXJfY3JlYXRlKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
-bSAqc3Vic3RyZWFtKQogCWlmICghZHBjbSkKIAkJcmV0dXJuIC1FTk9NRU07CiAJc3Vic3RyZWFt
-LT5ydW50aW1lLT5wcml2YXRlX2RhdGEgPSBkcGNtOwotCWhydGltZXJfaW5pdCgmZHBjbS0+dGlt
-ZXIsIENMT0NLX01PTk9UT05JQywgSFJUSU1FUl9NT0RFX1JFTCk7CisJaHJ0aW1lcl9pbml0KCZk
-cGNtLT50aW1lciwgQ0xPQ0tfTU9OT1RPTklDX1NPRlQsIEhSVElNRVJfTU9ERV9SRUwpOwogCWRw
-Y20tPnRpbWVyLmZ1bmN0aW9uID0gZHVtbXlfaHJ0aW1lcl9jYWxsYmFjazsKIAlkcGNtLT5zdWJz
-dHJlYW0gPSBzdWJzdHJlYW07CiAJYXRvbWljX3NldCgmZHBjbS0+cnVubmluZywgMCk7Ci0JdGFz
-a2xldF9pbml0KCZkcGNtLT50YXNrbGV0LCBkdW1teV9ocnRpbWVyX3BjbV9lbGFwc2VkLAotCQkg
-ICAgICh1bnNpZ25lZCBsb25nKWRwY20pOwogCXJldHVybiAwOwogfQogCi0tIAoyLjE0LjEKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Sep 04, 2017 at 09:34:13PM +0200, Sergej Sawazki wrote:
+> Set the ratio of MCLK/LRCLK in hw_params() instead of relying on the
+> auto-detection.
+> 
+> The ratio of MCLK/LRCLK is known to the driver, there is no need to let
+> the device to detect it.
+> 
+
+But also no reason to not let it do so, are there some problems
+with the auto-detect?
+
+> Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+> ---
+>  sound/soc/codecs/wm8741.c | 29 +++++++++++++++++++++--------
+>  1 file changed, 21 insertions(+), 8 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+> index 7e8a7fe..534741b 100644
+> --- a/sound/soc/codecs/wm8741.c
+> +++ b/sound/soc/codecs/wm8741.c
+> @@ -198,7 +198,6 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
+>  	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
+>  	u16 iface = snd_soc_read(codec, WM8741_FORMAT_CONTROL) & 0x1FC;
+>  	u16 mode = snd_soc_read(codec, WM8741_MODE_CONTROL_1) & 0x183;
+> -	int i;
+>  
+>  	/* The set of sample rates that can be supported depends on the
+>  	 * MCLK supplied to the CODEC - enforce this.
+> @@ -209,13 +208,27 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
+>  		return -EINVAL;
+>  	}
+>  
+> -	/* Find a supported LRCLK rate */
+> -	for (i = 0; i < wm8741->sysclk_constraints->count; i++) {
+> -		if (wm8741->sysclk_constraints->list[i] == params_rate(params))
+> -			break;
+> -	}
+
+This looks like it should be in a separate patch, is removing
+this part of this patch? It feels like the constraints should
+have already been applied by startup so we should never be able
+to fail here in hw_params, is that why you are removing it?
+
+Thanks,
+Charles
