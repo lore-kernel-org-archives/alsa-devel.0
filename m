@@ -1,92 +1,51 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Tue, 5 Sep 2017 09:37:43 +0200
-Message-ID: <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <20170905050602.GA2774@Asurada-CZ80>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: stop all working stream
+	when	.remove
+Date: Tue, 5 Sep 2017 07:40:11 +0000
+Message-ID: <PS1PR0601MB18818E81D00F3056E7F7D54CD4960@PS1PR0601MB1881.apcprd06.prod.outlook.com>
+References: <874lsnniv3.wl%kuninori.morimoto.gx@renesas.com>
+ <s5htw0mx4ek.wl-tiwai@suse.de>
+ <87d17akgqr.wl%kuninori.morimoto.gx@renesas.com>
+ <s5h1snqvnnc.wl-tiwai@suse.de>
+ <PS1PR0601MB1881FD07A3E16E039943DA7FD4910@PS1PR0601MB1881.apcprd06.prod.outlook.com>
+ <s5h1snmuwxk.wl-tiwai@suse.de> <s5hziaati7p.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170905050602.GA2774@Asurada-CZ80>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relmlie3.idc.renesas.com (relmlor4.renesas.com
+ [210.160.252.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E264267208
+ for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 09:40:18 +0200 (CEST)
+In-Reply-To: <s5hziaati7p.wl-tiwai@suse.de>
+Content-Language: ja-JP
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/05/2017 07:06 AM, Nicolin Chen wrote:
-> On Sun, Sep 03, 2017 at 01:05:01PM +0200, Lukasz Majewski wrote:
->> The problem is visible in the following setup (on the imx6q):
->> "simple-audio-card" -> ssi2 -> I2S + I2C -> codec
->>
->> The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
->>
->> asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
->> snd_soc_dai_set_sysclk()
->> fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
->>
->> The last call is changing the bit clock (BCLK) frequency to SSI's IP
->> block clock (ipg = 66 MHz) [1].
-> 
-> I think a bigger question here is why the routine sets BCLK to 66MHz.
+Hi Takashi-san
 
-Yes, exactly.
+Thank you for your feedback
 
-In my case the bclk is set to ipg clock, which is the SSI IP block clock 
-(ipg).
+> This isn't something you shouldn't fiddle with the codec layer.
+> If the driver gets removed during the operation, you have to cancel 
+> the operation and sync with it in a proper way, then proceed the rest 
+> of the remove, not only a codec-specific resource management.
+(snip)
+> Here I mentioned the codec driver, but it's applied to each lower-level
+> component.  It'd need some graceful way to communicate with the
+> top-level card to assure the removal of the component.
 
-> 
->> This is wrong, since IMX SSI block requires the I2S BCLK to be less
->> than 1/5 of [1].
->>
->> As a result the driver initialization passes without any errors, but the
->> speaker-test test case breaks.
->>
->> This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
->> not equal to [1].
-> 
-> I don't feel it's quite comprehensive...what if it's being set to 67MHz.
-
-I think that this clock is not changing for the SoC. It should be 66 MHz 
-fixed.
-
-> 
-> Thanks
-> Nicolin
-> 
->> Signed-off-by: Lukasz Majewski <lukma@denx.de>
->> ---
->>   sound/soc/fsl/fsl_ssi.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
->> index 173cb84..1186fa9 100644
->> --- a/sound/soc/fsl/fsl_ssi.c
->> +++ b/sound/soc/fsl/fsl_ssi.c
->> @@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
->>   		int clk_id, unsigned int freq, int dir)
->>   {
->>   	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
->> +	if (clk_get_rate(ssi_private->clk) == freq)
->> +		return 0;
->>   
->>   	ssi_private->bitclk_freq = freq;
->>   
->> -- 
->> 2.1.4
->>
-> 
-
-
--- 
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+I agree.
+I can't access to source code now (I'm in business-trip), but my head-acke is that kernel doesn't check return value from .remove when unbind case.
+Thus, we can't "cancel" remove operation.
+I'm happy if you can confirm it.
