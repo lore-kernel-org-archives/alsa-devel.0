@@ -1,108 +1,85 @@
-From: Brian Norris <briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCH v8 1/2] ASoC: rt5514: Add devicetree bindings for
- rt5514-spi
-Date: Tue, 5 Sep 2017 10:55:33 -0700
-Message-ID: <20170905175532.GA9393@google.com>
-References: <20170905042500.25656-1-jeffy.chen@rock-chips.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
+ to system freq
+Date: Tue, 5 Sep 2017 11:11:09 -0700
+Message-ID: <20170905181108.GB23906@Asurada-Nvidia>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+ <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
+ <20170905052031.GB2774@Asurada-CZ80>
+ <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170905042500.25656-1-jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+In-Reply-To: <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 05, 2017 at 12:24:59PM +0800, Jeffy Chen wrote:
-> Add devicetree bindings documentation file for rt5514 spi dsp codec.
+On Tue, Sep 05, 2017 at 10:35:34AM +0200, Łukasz Majewski wrote:
+
+> >And apparently, we shouldn't set bitclk to 66MHz either. Can
+> >you help to find where this 66MHz comes from?
+
+> 2. int asoc_simple_card_init_dai() @ simple-card-utils.c
+
+Oh, I just searched in the simple-card.c but missed this file.
+
+> In this function (point 2.) the
+> simple_dai->sysclk is set and:
+> snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk, 0)
+> which sets frequency to 66 MHz [*].
 > 
-> Also update rt5514 i2c dt-binding's compatible.
-
-You should probably describe *why*?
-
-> Signed-off-by: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> ---
+> The asoc_simple_card_init_dai() is called in
+> asoc_simple_card_dai_init() @ simple-card.c
+> which is assigned to dai_link->init
+> dai_link->init		= asoc_simple_card_dai_init; @ simple_card.c
 > 
-> Changes in v8: None
+> And the sysclk itself is defined at:
+> -------------------------------------
+> dai_props->codec_dai->sysclk, which is used at:a
+
+Why codec_dai? Why not dai_props->cpu_dai->sysclk since we are talking
+about SSI?
+
+> asoc_simple_card_startup(), asoc_simple_card_shutdown() and others
+> functions at simple-card.c
+> It is setup at:
+> asoc_simple_card_parse_clk() @ simple-card-utils.c from macro:
+> #define asoc_simple_card_parse_clk_cpu()
+> And the problem is:
+> -------------------
 > 
->  .../devicetree/bindings/sound/rt5514-spi.txt       | 32 ++++++++++++++++++++++
->  Documentation/devicetree/bindings/sound/rt5514.txt |  2 +-
->  2 files changed, 33 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/sound/rt5514-spi.txt
+> At the
+> asoc_simple_card_parse_clk()
+> we finally go to dts node:
+> /soc/aips-bus@02100000/i2c@021a0000/tfa9879@6C
+
+This tfa9879 should be the CODEC right?
+
+> which has clock from I2C (66 MHz).
+
+You mean I2C scl or I2S sclk?
+
+-----------------------------------------------------------------
+
+But anyway, I feel very confused here as you have 66MHz clock rate
+(regardless of it purpose) for a codec dai but it's been passed to
+a cpu dai (SSI).
+
+> [*] - I could workaround this problem by setting:
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/rt5514-spi.txt b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
-> new file mode 100644
-> index 000000000000..8a63d9423dd9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
-> @@ -0,0 +1,32 @@
-> +RT5514 SPI audio CODEC
-> +
-> +This device supports SPI only.
-> +
-> +Required properties:
-> +
-> +- compatible : "realtek,rt5514".
-
-You list one string here, but there's 2 in the example. The point of
-this exercise was to document (not just in an Example) the strings
-you're using.
-
-> +
-> +- reg : The SPI address of the device.
-> +
-> +Optional properties:
-> +
-> +- interrupt-parent: Should be the phandle for the interrupt controller
-> +- interrupts: The interrupt number to the cpu. The interrupt specifier format
-> +	      depends on the interrupt controller.
-> +
-> +Example:
-> +
-> +codec: rt5514-spi@0 {
-> +	compatible = "realtek,rt5514", "realtek,rt5514-spi";
-> +	reg = <0>;
-> +
-> +        /* May run faster once verified. */
-
-Really? That was barely useful in the rk3399-gru DTSI, but it's
-definitely not worth sticking in an example.
-
-Also, you switch between tabs and spaces for indentation. Please be
-consistent. (And as with C code, I think the right answer is tabs?)
-
-> +        spi-max-frequency = <10000000>;
-> +
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&mic_int>;
-> +
-> +        interrupt-parent = <&gpio1>;
-> +        interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
-> +        wakeup-source;
-> +};
-> diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-> index 929ca6756b02..12a8c93a67cc 100644
-> --- a/Documentation/devicetree/bindings/sound/rt5514.txt
-> +++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-> @@ -28,6 +28,6 @@ Pins on the device (for linking into audio routes) for RT5514:
->  Example:
->  
->  codec: rt5514@57 {
-> -	compatible = "realtek,rt5514";
-> +	compatible = "realtek,rt5514", "realtek,rt5514-i2c";
-
-Example != Documentation. Please document the string properly.
-
-Brian
-
->  	reg = <0x57>;
->  };
-> -- 
-> 2.11.0
+> system-clock-frequency = <0> in
 > 
+> 			dailink_master: cpu {
+> 			    sound-dai = <&ssi2>;
+> 			};
 > 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> but this is IMHO even worse hack.... than this patch.
+
+I haven't used simple-card for a while so I forgot how to define
+its DT bindings specifically. But you should assign ssi2 as the
+CPU dai and assign tfa9879 as a CODEC dai.
