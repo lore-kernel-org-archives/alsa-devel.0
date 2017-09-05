@@ -1,66 +1,76 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
  to system freq
-Date: Mon, 4 Sep 2017 22:06:03 -0700
-Message-ID: <20170905050602.GA2774@Asurada-CZ80>
+Date: Mon, 4 Sep 2017 22:20:32 -0700
+Message-ID: <20170905052031.GB2774@Asurada-CZ80>
 References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+ <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1504436701-20700-1-git-send-email-lukma@denx.de>
+In-Reply-To: <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "festevam@gmail.com" <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 03, 2017 at 01:05:01PM +0200, Lukasz Majewski wrote:
-> The problem is visible in the following setup (on the imx6q):
-> "simple-audio-card" -> ssi2 -> I2S + I2C -> codec
+On Sun, Sep 03, 2017 at 04:40:21PM +0200, Łukasz Majewski wrote:
+> >/*
+> >* Hardware limitation: The bclk rate must be
+> >* never greater than 1/5 IPG clock rate
+> >*/
+> >if (freq * 5 > clk_get_rate(ssi_private->clk)) {
+> >dev_err(cpu_dai->dev, "bitclk > ipgclk/5\n");
+> >return -EINVAL;
+> >}
+> >
 > 
-> The function call log (simple-card probe -> CONFIG_SND_SIMPLE_CARD):
+> Unfortunately not.
 > 
-> asoc_simple_card_init_dai() @ sound/soc/generic/simple-card-utils.c
-> snd_soc_dai_set_sysclk()
-> fsl_ssi_set_dai_sysclk() @ sound/soc/fsl/fsl_ssi.c
+> This is the part of fsl_ssi_set_bclk() function which is called after
+> fsl_ssi_set_dai_sysclk() (which sets ssi_private->bitclk_freq = freq;).
 > 
-> The last call is changing the bit clock (BCLK) frequency to SSI's IP
-> block clock (ipg = 66 MHz) [1].
+> Before the aforementioned check we do have:
+> 
+> 	if (ssi_private->bitclk_freq)
+> 		freq = ssi_private->bitclk_freq;
+> 	else
+> 		freq = params_channels(hw_params) * 32 * 	params_rate(hw_params);
+> 
+> 
+> Which assigns freq = bitclk_freq (66 MHz)
+> 
+[...]
+> And then we break on this particular check:
+> 66MHz * 5 > 66 MHz.
+[...]
 
-I think a bigger question here is why the routine sets BCLK to 66MHz.
+Does the check fail and return an error here, or not?
 
-> This is wrong, since IMX SSI block requires the I2S BCLK to be less
-> than 1/5 of [1].
-> 
-> As a result the driver initialization passes without any errors, but the
-> speaker-test test case breaks.
-> 
-> This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
-> not equal to [1].
+> The culprit IMHO is the  ssi_private->bitclk_freq = freq; in the
+> fsl_ssi_set_dai_sysclk(), since we _should_ set SSI's IP block clock
+> (ssi_private->clk), not the bit clock (BCLK).
 
-I don't feel it's quite comprehensive...what if it's being set to 67MHz.
+No. We should not set the IP block clock. That's from IPG bus
+on certain IMX SoCs. Setting it might change IPG bus clocks
+which might break the system.
+
+And apparently, we shouldn't set bitclk to 66MHz either. Can
+you help to find where this 66MHz comes from?
+
+> This patch just quits early if it detects change, which don't need to be
+> done.
+
+I kinda see your point is to error out before hw_params(). So
+I feel it would be better to have a similar 5-times-check in
+the set_sysclk() too, if it's really necessary.
+
+Btw, I don't see simple card calling set_sysclk() function in
+any earlier stage than hw_params(). I am wondering how did you
+encounter the problem?
 
 Thanks
 Nicolin
-
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> ---
->  sound/soc/fsl/fsl_ssi.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index 173cb84..1186fa9 100644
-> --- a/sound/soc/fsl/fsl_ssi.c
-> +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -809,6 +809,8 @@ static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
->  		int clk_id, unsigned int freq, int dir)
->  {
->  	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
-> +	if (clk_get_rate(ssi_private->clk) == freq)
-> +		return 0;
->  
->  	ssi_private->bitclk_freq = freq;
->  
-> -- 
-> 2.1.4
-> 
