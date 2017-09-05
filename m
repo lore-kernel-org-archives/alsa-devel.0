@@ -1,56 +1,93 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Tue, 5 Sep 2017 23:14:17 +0200
-Message-ID: <3070f459-3898-7cc1-0c08-3ea66fa39bad@denx.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
+ when it is equal to system freq
+Date: Tue, 5 Sep 2017 15:52:26 -0700
+Message-ID: <20170905225225.GA14132@Asurada-Nvidia>
 References: <1504436701-20700-1-git-send-email-lukma@denx.de>
  <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
  <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
  <20170905052031.GB2774@Asurada-CZ80>
  <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
- <CAOMZO5DULuCZowTeNKXGKJjtiguN+ZX9hPgKvWSAx-r4E-NpdQ@mail.gmail.com>
+ <20170905181108.GB23906@Asurada-Nvidia>
+ <cfb8f844-87aa-f1f3-bd55-4f2b60f3cf88@denx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAOMZO5DULuCZowTeNKXGKJjtiguN+ZX9hPgKvWSAx-r4E-NpdQ@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADC5B267236
+ for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 00:52:03 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id g13so1928311pfm.2
+ for <alsa-devel@alsa-project.org>; Tue, 05 Sep 2017 15:52:03 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <cfb8f844-87aa-f1f3-bd55-4f2b60f3cf88@denx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
-
-> Hi Lukasz,
-> 
-> On Tue, Sep 5, 2017 at 5:35 AM, Łukasz Majewski <lukma@denx.de> wrote:
-> 
->> Note:
->> [*] - I could workaround this problem by setting:
->>
->> system-clock-frequency = <0> in
->>
->>                          dailink_master: cpu {
->>                              sound-dai = <&ssi2>;
->>                          };
->>
-> 
-> Which mx6 type are you using? Can you post the complete audio related
-> bindings of your dts?
-> 
-> Still trying to understand why we do not see this error on other imx6 boards.
-> 
-
-I've sent my DTS in the other e-mail.
-
--- 
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+T24gVHVlLCBTZXAgMDUsIDIwMTcgYXQgMTE6MTM6NDBQTSArMDIwMCwgxYF1a2FzeiBNYWpld3Nr
+aSB3cm90ZToKCj4gVGhleSBrZXkgcG9pbnQgaGVyZSBpcyB0aGUgYXNvY19zaW1wbGVfY2FyZF9w
+YXJzZV9jbGsoKSBmdW5jdGlvbgo+IGZyb20gc2ltcGxlLWNhcmQtdXRpbHMuYwo+IAo+IFBsZWFz
+ZSBsb29rIGhvdyB0aGUgY2xvY2sgaXMgYXNzaWduZWQ7IEl0IGZpcnN0IGNoZWNrcyBmb3IgY3B1
+Cj4gY2xvY2ssIHRoZW4gZm9yICJzeXN0ZW0tY2xvY2stZnJlcXVlbmN5IiBEVFMgbm9kZSBhbmQg
+X2ZpbmFsbHlfCj4gbG9va3MgZm9yIGFub3RoZXIgImNoaWxkIiBjbG9jayBbMV0sIHdoaWNoIGlz
+IHRoZSBjb2RlYyBhdHRhY2hlZCB0bwo+IEkyQy4KCkhlcmUgaXMgdGhlIHJvdXRpbmUgdGhhdCBJ
+IHVuZGVyc3Rvb2QgZnJvbSB0aGUgY29kZToKMSkgYXNvY19zaW1wbGVfY2FyZF9wYXJzZV9jbGtf
+Y3B1KGRldiwgY3B1LCBkYWlfbGluaywgY3B1X2RhaSk7CiAgID0+IGFzb2Nfc2ltcGxlX2NhcmRf
+cGFyc2VfY2xrKGRldiwgY3B1LCAgICAgICAgLy8gY3B1IG5vZGUgaW4gc291bmR7fSBbMV0KCQkg
+ICAJCSBkYWlfbGluay0+Y3B1X29mX25vZGUsICAgICAvLyBub2RlIHNzaTIgWzJdCgkJCQkgY3B1
+X2RhaSwgZGFpX2xpbmstPmNwdV9kYWlfbmFtZSk7CiAgID09PiAxLjEpIGRldm1fZ2V0X2Nsa19m
+cm9tX2NoaWxkKGRldiwgbm9kZSwgTlVMTCk7ICAgICAgICAgICAgICAgICAvLyBbMV0KICAgPT0+
+IDEuMikgb2ZfcHJvcGVydHlfcmVhZF91MzIobm9kZSwgInN5c3RlbS1jbG9jay1mcmVxdWVuY3ki
+LCAmdmFsKS8vIFsxXQogICA9PT4gMS4zKSBkZXZtX2dldF9jbGtfZnJvbV9jaGlsZChkZXYsIGRh
+aV9vZl9ub2RlLCBOVUxMKTsgICAgICAgICAgLy8gWzJdCgoyKSBhc29jX3NpbXBsZV9jYXJkX3Bh
+cnNlX2Nsa19jb2RlYyhkZXYsIGNvZGVjLCBkYWlfbGluaywgY29kZWNfZGFpKTsKICAgPT4gYXNv
+Y19zaW1wbGVfY2FyZF9wYXJzZV9jbGsoZGV2LCBjb2RlYywgICAgLy8gY29kZWMgbm9kZSBpbiBz
+b3VuZHt9IFszXQoJCSAgIAkJIGRhaV9saW5rLT5jb2RlY19vZl9ub2RlLC8vIG5vZGUgdGZhOTg3
+OSBbNF0KCQkJCSBjb2RlY19kYWksIGRhaV9saW5rLT5jb2RlY19kYWlfbmFtZSk7CiAgID09PiAy
+LjEpIGRldm1fZ2V0X2Nsa19mcm9tX2NoaWxkKGRldiwgbm9kZSwgTlVMTCk7ICAgICAgICAgICAg
+ICAgICAvLyBbM10KICAgPT0+IDIuMikgb2ZfcHJvcGVydHlfcmVhZF91MzIobm9kZSwgInN5c3Rl
+bS1jbG9jay1mcmVxdWVuY3kiLCAmdmFsKS8vIFszXQogICA9PT4gMi4zKSBkZXZtX2dldF9jbGtf
+ZnJvbV9jaGlsZChkZXYsIGRhaV9vZl9ub2RlLCBOVUxMKTsgICAgICAgICAgLy8gWzRdCgpGb3Ig
+dGhlIGNwdSByb3V0aW5lLCBpdCBmaXJzdCBjaGVja3MgZm9yIGNsb2NrIHByb3BlcnR5IHVuZGVy
+IGNwdQpub2RlIG9mIHNpbXBsZS1jYXJkLCB0aGVuIGZvciAic3lzdGVtLWNsb2NrLWZyZXF1ZW5j
+eSIgaW4gdGhlIGNwdQpub2RlIG9mIHNpbXBsZS1jYXJkLCBhbmQgZmluYWxseSBsb29rcyBmb3Ig
+Y2xvY2sgcHJvcGVydHkgaW4gc3NpMgpub2RlLgoKRm9yIGNvZGVjIHJvdXRpbmUsIGl0IGZpcnN0
+IGNoZWNrcyBmb3IgY2xvY2sgcHJvcGVydHkgdW5kZXIgY29kZWMKbm9kZSBvZiBzaW1wbGUtY2Fy
+ZCwgdGhlbiBmb3IgInN5c3RlbS1jbG9jay1mcmVxdWVuY3kiIGluIGNvZGVjCm5vZGUgb2Ygc2lt
+cGxlLWNhcmQsIGFuZCBmaW5hbGx5IGxvb2tzIGZvciBjbG9jayBwcm9wZXJ0eSBpbiB0aGUKdGZh
+OTg3OSBub2RlLgoKVGhlIGNwdSBhbmQgY29kZWMgYXJlIHRvdGFsbHkgc2VwYXJhdGUsIGFyZW4n
+dCB0aGV5PyBBbmQgSSBkb24ndAp0aGluayBpdCdzIHJpZ2h0IGlmIG5vdC4KCj4gPj53aGljaCBo
+YXMgY2xvY2sgZnJvbSBJMkMgKDY2IE1IeikuCj4gPgo+ID5Zb3UgbWVhbiBJMkMgc2NsIG9yIEky
+UyBzY2xrPwo+IAo+IEkyQyBzY2wuCgpBIGNvdXBsZSBvZiB0aGluZ3MgaGVyZS4uLi4uCjEpIEkg
+ZG9uJ3QgdGhpbmsgSTJDIHNjbCBjYW4gcnVuIGF0IDY2TUh6Li4uVGhlIDY2TUh6IGlzIHByb2Jh
+Ymx5CiAgIHRoZSBpcGcgY2xvY2sgb2YgSTJDIGNvbnRyb2xsZXIuCjIpIEV2ZW4gaWYgdGhlIHNj
+bCBkb2VzIHJ1biBhdCA2Nk1IeiwgdGhlcmUgaXMgbm8gcG9pbnQgaW4gcGFzc2luZwogICB0aGUg
+Y2xvY2sgb2YgSTJDIHNjbCBpbnRvIGFuIEkyUyBkYWktbGluay4KICAgClNvIEkgZmVlbCBzb21l
+dGhpbmcgbXVzdCBiZSB3cm9uZy4gSSBzdWdnZXN0IHlvdSB0byBhZGQgc29tZSBwcmludGsKdG8g
+Y2hlY2sgdGhlIG5hbWVzIG9mIHRob3NlIG5vZGVzIGFuZCB4X29mX25vZGUgaW4gdGhlIHNpbXBs
+ZSBjYXJkCmRyaXZlci4KCj4gTXkgRFRTIFsxXSAoaXQgaXMgZGlmZmVyZW50IHRoYW4gb3RoZXIg
+aW4tdHJlZSBzdXBwb3J0ZWQgY29kZWNzIC0gYXQKPiBsZWFzdCBJIGRpZCBub3QgZmluZCBzaW1p
+bGFyIHNldHVwIGluIERUU2VzKToKPiAKPiAJc291bmQgewo+IAkJY29tcGF0aWJsZSA9ICJzaW1w
+bGUtYXVkaW8tY2FyZCI7Cj4gCQlsYWJlbCA9ICJ0ZmE5ODc5LW1vbm8iOwo+IAo+IAkJc2ltcGxl
+LWF1ZGlvLWNhcmQsZGFpLWxpbmsgewo+IAkJCS8qIERBQyAqLwo+IAkJCWZvcm1hdCA9ICJpMnMi
+Owo+IAkJCWJpdGNsb2NrLW1hc3RlciA9IDwmZGFpbGlua19tYXN0ZXI+Owo+IAkJCWZyYW1lLW1h
+c3RlciA9IDwmZGFpbGlua19tYXN0ZXI+Owo+IAo+IAkJCWRhaWxpbmtfbWFzdGVyOiBjcHUgewo+
+IAkJCSAgICBzb3VuZC1kYWkgPSA8JnNzaTI+Owo+IAkJCX07Cj4gCQkJY29kZWMgewo+IAkJCSAg
+ICBzb3VuZC1kYWkgPSA8JmNvZGVjPjsKPiAJCQl9Owo+IAkJfTsKCkkgcmVtZW1iZXIgdGhlcmUg
+aXMgYW5vdGhlciBzdHlsZSBmb3IgYSBzaW5nbGUgZGFpLWxpbmsuIENvdWxkIHlvdQpwbGVhc2Ug
+dHJ5IHRoYXQgb25lPyBUaGVyZSBpcyBhbiBleGFtcGxlIGluOgogICAgRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJkLnR4dApfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
