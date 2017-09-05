@@ -1,147 +1,167 @@
-From: hl <hl@rock-chips.com>
-Subject: Re: [PATCH v2 1/2] ASoC: codec: use enable pin to control dmic start
- and stop
-Date: Tue, 5 Sep 2017 10:26:26 +0800
-Message-ID: <2f3a0248-33c8-eb25-ca06-fac23b7adcbc@rock-chips.com>
-References: <1502936685-24414-1-git-send-email-hl@rock-chips.com>
- <63c1d120-9c50-93ef-9ea0-be882ac8de1c@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Subject: [PATCH] Asoc: rockchip: Init dapm routes dynamically
+Date: Tue,  5 Sep 2017 12:14:01 +0800
+Message-ID: <20170905041401.23866-1-jeffy.chen@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <63c1d120-9c50-93ef-9ea0-be882ac8de1c@st.com>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, "broonie@kernel.org" <broonie@kernel.org>, "dgreif@chromium.org" <dgreif@chromium.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "briannorris@chromium.org" <briannorris@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "mka@chromium.org" <mka@chromium.org>, "dianders@chromium.org" <dianders@chromium.org>
+To: linux-kernel@vger.kernel.org
+Cc: briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Currently we are using a fixed list of dapm routes.
 
+Init dapm routes dynamically when parsing dailinks, since we are
+supporting optional codecs.
 
-On Monday, September 04, 2017 06:03 PM, Arnaud Pouliquen wrote:
-> Hello Lin,
->
-> Sorry for this late answer.
-> I'm not maintainer, just a contributor... but as some update seems
-> strange for me, so i prefer to highlight it to clarify them.
->
-> On 08/17/2017 04:24 AM, Lin Huang wrote:
->> From: huang lin <hl@rock-chips.com>
->>
->> on some board use enable pin to control dmic start and stop,
->> so add this feature in dmic driver.
-> Please, Could you give data-sheet reference of your DMIC, to help me
-> to understand your use-case?
->> Signed-off-by: Lin Huang <hl@rock-chips.com>
->> ---
->>   sound/soc/codecs/Kconfig |  2 +-
->>   sound/soc/codecs/dmic.c  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 47 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
->> index 010811e..d98233b 100644
->> --- a/sound/soc/codecs/Kconfig
->> +++ b/sound/soc/codecs/Kconfig
->> @@ -71,7 +71,7 @@ config SND_SOC_ALL_CODECS
->>   	select SND_SOC_DA732X if I2C
->>   	select SND_SOC_DA9055 if I2C
->>   	select SND_SOC_DIO2125
->> -	select SND_SOC_DMIC
->> +	select SND_SOC_DMIC if GPIOLIB
-> Dependency also for DMIC without GPIO to handle gating?
->>   	select SND_SOC_ES8316 if I2C
->>   	select SND_SOC_ES8328_SPI if SPI_MASTER
->>   	select SND_SOC_ES8328_I2C if I2C
->> diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
->> index 12e07f9..b88a1ee 100644
->> --- a/sound/soc/codecs/dmic.c
->> +++ b/sound/soc/codecs/dmic.c
->> @@ -19,6 +19,8 @@
->>    *
->>    */
->>   
->> +#include <linux/gpio.h>
->> +#include <linux/gpio/consumer.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/slab.h>
->>   #include <linux/module.h>
->> @@ -27,6 +29,34 @@
->>   #include <sound/soc.h>
->>   #include <sound/soc-dapm.h>
->>   
->> +static int dmic_daiops_trigger(struct snd_pcm_substream *substream,
->> +		int cmd, struct snd_soc_dai *dai)
->> +{
->> +	struct gpio_desc *dmic_en = snd_soc_dai_get_drvdata(dai);
->> +
->> +	if (!dmic_en)
->> +		return 0;
->> +
->> +	switch (cmd) {
->> +	case SNDRV_PCM_TRIGGER_START:
->> +	case SNDRV_PCM_TRIGGER_RESUME:
->> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->> +		gpiod_set_value(dmic_en, 1);
->> +		break;
->> +	case SNDRV_PCM_TRIGGER_STOP:
->> +	case SNDRV_PCM_TRIGGER_SUSPEND:
->> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->> +		gpiod_set_value(dmic_en, 0);
->> +		break;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct snd_soc_dai_ops dmic_dai_ops = {
->> +	.trigger	= dmic_daiops_trigger,
->> +};
->> +
-> should it be handle by trigger or DAPM?
->
->
->
->>   static struct snd_soc_dai_driver dmic_dai = {
->>   	.name = "dmic-hifi",
->>   	.capture = {
->> @@ -38,8 +68,23 @@ static struct snd_soc_dai_driver dmic_dai = {
->>   			| SNDRV_PCM_FMTBIT_S24_LE
->>   			| SNDRV_PCM_FMTBIT_S16_LE,
->>   	},
->> +	.ops    = &dmic_dai_ops,
->>   };
->>   
->> +static int dmic_codec_probe(struct snd_soc_codec *codec)
->> +{
->> +	struct gpio_desc *dmic_en;
->> +
->> +	dmic_en = devm_gpiod_get_optional(codec->dev,
->> +					"dmicen", GPIOD_OUT_LOW);
-> Hypothesis here is that GPIO is always set to low? seems too limiting.
-Yes, you are right, maybe i can set it to 
-devm_gpiod_get_optional(codec->dev, "dmicen", GPIOD_ASIS);
->
-> Regards
-> Arnaud
->> +	if (IS_ERR(dmic_en))
->> +		return PTR_ERR(dmic_en);
->> +
->> +	snd_soc_codec_set_drvdata(codec, dmic_en);
->> +
->> +	return 0;
->> +}
->> +
->>   static const struct snd_soc_dapm_widget dmic_dapm_widgets[] = {
->>   	SND_SOC_DAPM_AIF_OUT("DMIC AIF", "Capture", 0,
->>   			     SND_SOC_NOPM, 0, 0),
->> @@ -51,6 +96,7 @@ static const struct snd_soc_dapm_route intercon[] = {
->>   };
->>   
->>   static const struct snd_soc_codec_driver soc_dmic = {
->> +	.probe = dmic_codec_probe,
->>   	.component_driver = {
->>   		.dapm_widgets		= dmic_dapm_widgets,
->>   		.num_dapm_widgets	= ARRAY_SIZE(dmic_dapm_widgets),
->>
->
->
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+
+ sound/soc/rockchip/rk3399_gru_sound.c | 88 +++++++++++++++++++++++++++++------
+ 1 file changed, 74 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 0513fe480353..c537781f8054 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -47,18 +47,7 @@ static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Speakers", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_MIC("Int Mic", NULL),
+-};
+-
+-static const struct snd_soc_dapm_route rockchip_dapm_routes[] = {
+-	/* Input Lines */
+-	{"MIC", NULL, "Headset Mic"},
+-	{"DMIC1L", NULL, "Int Mic"},
+-	{"DMIC1R", NULL, "Int Mic"},
+-
+-	/* Output Lines */
+-	{"Headphones", NULL, "HPL"},
+-	{"Headphones", NULL, "HPR"},
+-	{"Speakers", NULL, "Speaker"},
++	SND_SOC_DAPM_LINE("HDMI", NULL),
+ };
+ 
+ static const struct snd_kcontrol_new rockchip_controls[] = {
+@@ -66,6 +55,7 @@ static const struct snd_kcontrol_new rockchip_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Speakers"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Int Mic"),
++	SOC_DAPM_PIN_SWITCH("HDMI"),
+ };
+ 
+ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
+@@ -314,8 +304,6 @@ static struct snd_soc_card rockchip_sound_card = {
+ 	.owner = THIS_MODULE,
+ 	.dapm_widgets = rockchip_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(rockchip_dapm_widgets),
+-	.dapm_routes = rockchip_dapm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(rockchip_dapm_routes),
+ 	.controls = rockchip_controls,
+ 	.num_controls = ARRAY_SIZE(rockchip_controls),
+ };
+@@ -391,6 +379,65 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
+ 	},
+ };
+ 
++static const struct snd_soc_dapm_route rockchip_sound_cdndp_routes[] = {
++	/* Output */
++	{"HDMI", NULL, "TX"},
++};
++
++static const struct snd_soc_dapm_route rockchip_sound_da7219_routes[] = {
++	/* Output */
++	{"Headphones", NULL, "HPL"},
++	{"Headphones", NULL, "HPR"},
++
++	/* Input */
++	{"MIC", NULL, "Headset Mic"},
++};
++
++static const struct snd_soc_dapm_route rockchip_sound_dmic_routes[] = {
++	/* Input */
++	{"Dmic", NULL, "Int Mic"},
++};
++
++static const struct snd_soc_dapm_route rockchip_sound_max98357a_routes[] = {
++	/* Output */
++	{"Speakers", NULL, "Speaker"},
++};
++
++static const struct snd_soc_dapm_route rockchip_sound_rt5514_routes[] = {
++	/* Input */
++	{"DMIC1L", NULL, "Int Mic"},
++	{"DMIC1R", NULL, "Int Mic"},
++};
++
++struct rockchip_sound_route {
++	const struct snd_soc_dapm_route *routes;
++	int num_routes;
++};
++
++static const struct rockchip_sound_route rockchip_routes[] = {
++	[DAILINK_CDNDP] = {
++		.routes = rockchip_sound_cdndp_routes,
++		.num_routes = ARRAY_SIZE(rockchip_sound_cdndp_routes),
++	},
++	[DAILINK_DA7219] = {
++		.routes = rockchip_sound_da7219_routes,
++		.num_routes = ARRAY_SIZE(rockchip_sound_da7219_routes),
++	},
++	[DAILINK_DMIC] = {
++		.routes = rockchip_sound_dmic_routes,
++		.num_routes = ARRAY_SIZE(rockchip_sound_dmic_routes),
++	},
++	[DAILINK_MAX98357A] = {
++		.routes = rockchip_sound_max98357a_routes,
++		.num_routes = ARRAY_SIZE(rockchip_sound_max98357a_routes),
++	},
++	[DAILINK_RT5514] = {
++		.routes = rockchip_sound_rt5514_routes,
++		.num_routes = ARRAY_SIZE(rockchip_sound_rt5514_routes),
++	},
++	[DAILINK_RT5514_DSP] = {},
++};
++
+ static int rockchip_sound_codec_node_match(struct device_node *np_codec)
+ {
+ 	int i;
+@@ -408,6 +455,7 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 	struct device_node *np_cpu, *np_cpu0, *np_cpu1;
+ 	struct device_node *np_codec;
+ 	struct snd_soc_dai_link *dai;
++	struct snd_soc_dapm_route *routes;
+ 	int i, index;
+ 
+ 	card->dai_link = devm_kzalloc(dev, sizeof(rockchip_dais),
+@@ -415,9 +463,16 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 	if (!card->dai_link)
+ 		return -ENOMEM;
+ 
++	routes = devm_kzalloc(dev, sizeof(rockchip_routes),
++			      GFP_KERNEL);
++	if (!routes)
++		return -ENOMEM;
++	card->dapm_routes = routes;
++
+ 	np_cpu0 = of_parse_phandle(dev->of_node, "rockchip,cpu", 0);
+ 	np_cpu1 = of_parse_phandle(dev->of_node, "rockchip,cpu", 1);
+ 
++	card->num_dapm_routes = 0;
+ 	card->num_links = 0;
+ 	for (i = 0; i < ARRAY_SIZE(rockchip_dais); i++) {
+ 		np_codec = of_parse_phandle(dev->of_node,
+@@ -445,6 +500,11 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 		dai->codec_of_node = np_codec;
+ 		dai->platform_of_node = np_cpu;
+ 		dai->cpu_of_node = np_cpu;
++
++		memcpy(routes + card->num_dapm_routes,
++		       rockchip_routes[index].routes,
++		       rockchip_routes[index].num_routes * sizeof(*routes));
++		card->num_dapm_routes += rockchip_routes[index].num_routes;
+ 	}
+ 
+ 	return 0;
+-- 
+2.11.0
