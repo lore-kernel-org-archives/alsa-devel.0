@@ -1,69 +1,108 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Tue, 5 Sep 2017 10:45:29 -0700
-Message-ID: <20170905174528.GA23906@Asurada-Nvidia>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <20170905050602.GA2774@Asurada-CZ80>
- <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
- <20170905075247.GA6112@Asurada>
- <deb40031-9db0-d667-7314-352cf548c295@denx.de>
- <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
+From: Brian Norris <briannorris-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: Re: [PATCH v8 1/2] ASoC: rt5514: Add devicetree bindings for
+ rt5514-spi
+Date: Tue, 5 Sep 2017 10:55:33 -0700
+Message-ID: <20170905175532.GA9393@google.com>
+References: <20170905042500.25656-1-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20170905042500.25656-1-jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, mka-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 05, 2017 at 04:15:50PM +0100, Mark Brown wrote:
- 
-> > Just to be clear:
+On Tue, Sep 05, 2017 at 12:24:59PM +0800, Jeffy Chen wrote:
+> Add devicetree bindings documentation file for rt5514 spi dsp codec.
 > 
-> > What clock shall be set with:
-> 
-> > struct snd_soc_dai_ops {
-> > 	int (*set_sysclk)(struct snd_soc_dai *dai,
-> > 		int clk_id, unsigned int freq, int dir);
-> > }
-> 
-> > callback?
-> 
-> > The SSI IP block or BCLK ?
-> 
-> Not the BCLK, probably the IP clock but perhaps nothing.  The bclk is
-> usually derived from the sample rate and width, the system clock is the
-> clock rate going into the device.  It doesn't *have* to be configured
-> (particuarly if it's discoverable by the IP and managable via the clock
-> API).
+> Also update rt5514 i2c dt-binding's compatible.
 
-Hmm...to clarify the things, some background here:
-	
-SSI has mainly two different clock inputs internally (not external
-pads such as bclk or lrclk): IP block clock (ipg_clk in Reference
-Manual) and sys clock (ccm_ssi_clk in Reference Manual). According
-to RM, ccm_ssi_clk: "module/system clock for bit clock generation".
+You should probably describe *why*?
 
-The ipg clock is merely used to access registers, and has nothing
-(directly) to do with external clock outputs. The driver shall not
-change the ipg clock as the system ipg clock (its parent clock)
-might be messed and even system time would get weird -- happened
-once when the fsl_spdif driver used to call clk_set_rate() on its
-ipg clock. Although the clock controller should have some kind of
-protection in my opinion, we just avoid IP clock rate change in all
-audio drivers as well.
+> Signed-off-by: Jeffy Chen <jeffy.chen-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+> ---
+> 
+> Changes in v8: None
+> 
+>  .../devicetree/bindings/sound/rt5514-spi.txt       | 32 ++++++++++++++++++++++
+>  Documentation/devicetree/bindings/sound/rt5514.txt |  2 +-
+>  2 files changed, 33 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/rt5514-spi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/rt5514-spi.txt b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
+> new file mode 100644
+> index 000000000000..8a63d9423dd9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
+> @@ -0,0 +1,32 @@
+> +RT5514 SPI audio CODEC
+> +
+> +This device supports SPI only.
+> +
+> +Required properties:
+> +
+> +- compatible : "realtek,rt5514".
 
-On the other hand, the sys clock (baudclk in the driver) should be
-configured whenever it's related to external clock outputs. When I
-implemented this set_sysclk() for fsl_ssi.c, I used it to set this
-sys clock (baudclk) by a machine driver, in order to set bit clock.
-Then someone patched the driver by moving all the code to set_bclk()
-to make machine drivers simpler. Now the set_sysclk() is remained
-to give machine drivers a chance to override clock configurations
-in the hw_params(). This could be used in TDM or some other special
-cases (It could also have a purpose for backwards compatibility).
+You list one string here, but there's 2 in the example. The point of
+this exercise was to document (not just in an Example) the strings
+you're using.
 
-So here, we should set baudclk (BCLK generator).
+> +
+> +- reg : The SPI address of the device.
+> +
+> +Optional properties:
+> +
+> +- interrupt-parent: Should be the phandle for the interrupt controller
+> +- interrupts: The interrupt number to the cpu. The interrupt specifier format
+> +	      depends on the interrupt controller.
+> +
+> +Example:
+> +
+> +codec: rt5514-spi@0 {
+> +	compatible = "realtek,rt5514", "realtek,rt5514-spi";
+> +	reg = <0>;
+> +
+> +        /* May run faster once verified. */
+
+Really? That was barely useful in the rk3399-gru DTSI, but it's
+definitely not worth sticking in an example.
+
+Also, you switch between tabs and spaces for indentation. Please be
+consistent. (And as with C code, I think the right answer is tabs?)
+
+> +        spi-max-frequency = <10000000>;
+> +
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&mic_int>;
+> +
+> +        interrupt-parent = <&gpio1>;
+> +        interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
+> +        wakeup-source;
+> +};
+> diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+> index 929ca6756b02..12a8c93a67cc 100644
+> --- a/Documentation/devicetree/bindings/sound/rt5514.txt
+> +++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+> @@ -28,6 +28,6 @@ Pins on the device (for linking into audio routes) for RT5514:
+>  Example:
+>  
+>  codec: rt5514@57 {
+> -	compatible = "realtek,rt5514";
+> +	compatible = "realtek,rt5514", "realtek,rt5514-i2c";
+
+Example != Documentation. Please document the string properly.
+
+Brian
+
+>  	reg = <0x57>;
+>  };
+> -- 
+> 2.11.0
+> 
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
