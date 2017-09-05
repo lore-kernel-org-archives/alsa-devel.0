@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
- when it is equal to system freq
-Date: Tue, 5 Sep 2017 16:15:50 +0100
-Message-ID: <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <20170905050602.GA2774@Asurada-CZ80>
- <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
- <20170905075247.GA6112@Asurada>
- <deb40031-9db0-d667-7314-352cf548c295@denx.de>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 23/25 v2] ALSA/dummy: Replace tasklet with
+	softirq hrtimer
+Date: Tue, 5 Sep 2017 17:53:51 +0200
+Message-ID: <20170905155351.2xmwyxrirndfwtgo@breakpoint.cc>
+References: <s5hh8wnvjei.wl-tiwai@suse.de>
+ <20170901102537.8066-1-o-takashi@sakamocchi.jp>
+ <s5hbmmutytt.wl-tiwai@suse.de>
+ <19775981-a3f2-5f65-e934-bfe25db62a43@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8994037538014909024=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 42C0B266BCF
- for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 17:16:30 +0200 (CEST)
-In-Reply-To: <deb40031-9db0-d667-7314-352cf548c295@denx.de>
+Received: from Chamillionaire.breakpoint.cc (chamillionaire.breakpoint.cc
+ [146.0.238.67]) by alsa0.perex.cz (Postfix) with ESMTP id 78485267217
+ for <alsa-devel@alsa-project.org>; Tue,  5 Sep 2017 17:53:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <19775981-a3f2-5f65-e934-bfe25db62a43@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,70 +25,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, keescook@chromium.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, john.stultz@linaro.org, tglx@linutronix.de, anna-maria@linutronix.de, hch@lst.de
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8994037538014909024==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3iuz7zolhzcycwef"
-Content-Disposition: inline
-
-
---3iuz7zolhzcycwef
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Sep 05, 2017 at 10:19:05AM +0200, =C5=81ukasz Majewski wrote:
-> On 09/05/2017 09:52 AM, Nicolin Chen wrote:
-
-> > Can you elaborate why you set ipg clock as bclk? I don't remember SSI c=
-ould
-> > derive bitclock from ipg clock.
-
-> Just to be clear:
-
-> What clock shall be set with:
-
-> struct snd_soc_dai_ops {
-> 	int (*set_sysclk)(struct snd_soc_dai *dai,
-> 		int clk_id, unsigned int freq, int dir);
-> }
-
-> callback?
-
-> The SSI IP block or BCLK ?
-
-Not the BCLK, probably the IP clock but perhaps nothing.  The bclk is
-usually derived from the sample rate and width, the system clock is the
-clock rate going into the device.  It doesn't *have* to be configured
-(particuarly if it's discoverable by the IP and managable via the clock
-API).
-
---3iuz7zolhzcycwef
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmuv6UACgkQJNaLcl1U
-h9AtnAf9EKIG4u66WmYu2NBsfi05jokTgDc1bNTu0zLnl/+F8ryoGAMkfvzlrJGX
-Mpu73cneyDQuN7H6EVrt57xrlERwnObjioUeBED5gS1z+ViM2j1AEShfIkC3msC5
-ug0jgq8gO+IpnJssqag5FfVtToVFvvJNzKP48Y5O9cq2kN0Up81bXom6iLYPKaIF
-WNJKezxlmZ1GbvvJ3u+fbi6IR9ECIwgkcxndrU4Z6wIJZSsaynA6JerTsqpcwj+b
-ycCppn4IpOqVtd6XmOpj5wxUb+lPbzzJlWl0PpDOCb8Vnk0zbEq2rHBJy1pNQZ1c
-ZQts3u2G4Xm+ZXqZn2G1yNyTVwF8fw==
-=Kce/
------END PGP SIGNATURE-----
-
---3iuz7zolhzcycwef--
-
---===============8994037538014909024==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8994037538014909024==--
+RnJvbTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+CgpUaGUgdGFza2xldCBp
+cyB1c2VkIHRvIGRlZmVyIHRoZSBleGVjdXRpb24gb2Ygc25kX3BjbV9wZXJpb2RfZWxhcHNlZCgp
+IHRvCnRoZSBzb2Z0aXJxIGNvbnRleHQuIFVzaW5nIHRoZSBDTE9DS19NT05PVE9OSUNfU09GVCBi
+YXNlIGludm9rZXMgdGhlIHRpbWVyCmNhbGxiYWNrIGluIHNvZnRpcnEgY29udGV4dCBhcyB3ZWxs
+IHdoaWNoIHJlbmRlcnMgdGhlIHRhc2tsZXQgdXNlbGVzcy4KClNpZ25lZC1vZmYtYnk6IFRob21h
+cyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4LmRlPgpTaWduZWQtb2ZmLWJ5OiBBbm5hLU1hcmlh
+IEdsZWl4bmVyIDxhbm5hLW1hcmlhQGxpbnV0cm9uaXguZGU+CkNjOiBKYXJvc2xhdiBLeXNlbGEg
+PHBlcmV4QHBlcmV4LmN6PgpDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmNvbT4KQ2M6IFRh
+a2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgpDYzogYWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCltvLXRha2FzaGk6IGF2b2lkIHN0YWxsIGR1ZSB0byBhIGNhbGwgb2Yg
+aHJ0aW1lcl9jYW5jZWwoKSBvbiBhIGNhbGxiYWNrCiAgICAgICAgICAgIG9mIGhydGltZXJdClNp
+Z25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgpT
+aWduZWQtb2ZmLWJ5OiBTZWJhc3RpYW4gQW5kcnplaiBTaWV3aW9yIDxiaWdlYXN5QGxpbnV0cm9u
+aXguZGU+Ci0tLQpPbiAyMDE3LTA5LTAyIDEwOjE5OjQ1IFsrMDkwMF0sIFRha2FzaGkgU2FrYW1v
+dG8gd3JvdGU6Cj4gWWVwLiBJIHJlcXVlc3QgdGhlIGF1dGhvcnMgdG8gaW5jbHVkZSB0aGlzIApU
+aGFuayB5b3UgZm9yIHByb3ZpZGluZyBhIGZpeC4KCnYx4oCmdjI6IG1lcmdlZCBUYWthc2hpIFNh
+a2Ftb3RvIGZpeHVwIG9mIHRoZSBvcmlnaW5hbCBwYXRjaCBpbnRvIHYyLgoKU28gdGhpcyBwYXRj
+aCBub3cgaXMgb2theT8KCiBzb3VuZC9kcml2ZXJzL2R1bW15LmMgfCAyMyArKysrKysrKystLS0t
+LS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25z
+KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvZHJpdmVycy9kdW1teS5jIGIvc291bmQvZHJpdmVycy9k
+dW1teS5jCmluZGV4IGRkNWVkMDM3YWRmMi4uM2QwMWZlMTdlZDM2IDEwMDY0NAotLS0gYS9zb3Vu
+ZC9kcml2ZXJzL2R1bW15LmMKKysrIGIvc291bmQvZHJpdmVycy9kdW1teS5jCkBAIC0zNzYsMTcg
+KzM3Niw5IEBAIHN0cnVjdCBkdW1teV9ocnRpbWVyX3BjbSB7CiAJa3RpbWVfdCBwZXJpb2RfdGlt
+ZTsKIAlhdG9taWNfdCBydW5uaW5nOwogCXN0cnVjdCBocnRpbWVyIHRpbWVyOwotCXN0cnVjdCB0
+YXNrbGV0X3N0cnVjdCB0YXNrbGV0OwogCXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3Ry
+ZWFtOwogfTsKIAotc3RhdGljIHZvaWQgZHVtbXlfaHJ0aW1lcl9wY21fZWxhcHNlZCh1bnNpZ25l
+ZCBsb25nIHByaXYpCi17Ci0Jc3RydWN0IGR1bW15X2hydGltZXJfcGNtICpkcGNtID0gKHN0cnVj
+dCBkdW1teV9ocnRpbWVyX3BjbSAqKXByaXY7Ci0JaWYgKGF0b21pY19yZWFkKCZkcGNtLT5ydW5u
+aW5nKSkKLQkJc25kX3BjbV9wZXJpb2RfZWxhcHNlZChkcGNtLT5zdWJzdHJlYW0pOwotfQotCiBz
+dGF0aWMgZW51bSBocnRpbWVyX3Jlc3RhcnQgZHVtbXlfaHJ0aW1lcl9jYWxsYmFjayhzdHJ1Y3Qg
+aHJ0aW1lciAqdGltZXIpCiB7CiAJc3RydWN0IGR1bW15X2hydGltZXJfcGNtICpkcGNtOwpAQCAt
+Mzk0LDcgKzM4NiwxMiBAQCBzdGF0aWMgZW51bSBocnRpbWVyX3Jlc3RhcnQgZHVtbXlfaHJ0aW1l
+cl9jYWxsYmFjayhzdHJ1Y3QgaHJ0aW1lciAqdGltZXIpCiAJZHBjbSA9IGNvbnRhaW5lcl9vZih0
+aW1lciwgc3RydWN0IGR1bW15X2hydGltZXJfcGNtLCB0aW1lcik7CiAJaWYgKCFhdG9taWNfcmVh
+ZCgmZHBjbS0+cnVubmluZykpCiAJCXJldHVybiBIUlRJTUVSX05PUkVTVEFSVDsKLQl0YXNrbGV0
+X3NjaGVkdWxlKCZkcGNtLT50YXNrbGV0KTsKKworCS8qIEluIGEgY2FzZSBvZiBYUlVOLCB0aGlz
+IGNhbGxzIC50cmlnZ2VyIHRvIHN0b3AgUENNIHN1YnN0cmVhbS4gKi8KKwlzbmRfcGNtX3Blcmlv
+ZF9lbGFwc2VkKGRwY20tPnN1YnN0cmVhbSk7CisJaWYgKCFhdG9taWNfcmVhZCgmZHBjbS0+cnVu
+bmluZykpCisJCXJldHVybiBIUlRJTUVSX05PUkVTVEFSVDsKKwogCWhydGltZXJfZm9yd2FyZF9u
+b3codGltZXIsIGRwY20tPnBlcmlvZF90aW1lKTsKIAlyZXR1cm4gSFJUSU1FUl9SRVNUQVJUOwog
+fQpAQCAtNDE0LDE0ICs0MTEsMTQgQEAgc3RhdGljIGludCBkdW1teV9ocnRpbWVyX3N0b3Aoc3Ry
+dWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJc3RydWN0IGR1bW15X2hydGltZXJf
+cGNtICpkcGNtID0gc3Vic3RyZWFtLT5ydW50aW1lLT5wcml2YXRlX2RhdGE7CiAKIAlhdG9taWNf
+c2V0KCZkcGNtLT5ydW5uaW5nLCAwKTsKLQlocnRpbWVyX2NhbmNlbCgmZHBjbS0+dGltZXIpOwor
+CWlmICghaHJ0aW1lcl9jYWxsYmFja19ydW5uaW5nKCZkcGNtLT50aW1lcikpCisJCWhydGltZXJf
+Y2FuY2VsKCZkcGNtLT50aW1lcik7CiAJcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyBpbmxpbmUgdm9p
+ZCBkdW1teV9ocnRpbWVyX3N5bmMoc3RydWN0IGR1bW15X2hydGltZXJfcGNtICpkcGNtKQogewog
+CWhydGltZXJfY2FuY2VsKCZkcGNtLT50aW1lcik7Ci0JdGFza2xldF9raWxsKCZkcGNtLT50YXNr
+bGV0KTsKIH0KIAogc3RhdGljIHNuZF9wY21fdWZyYW1lc190CkBAIC00NjYsMTIgKzQ2MywxMCBA
+QCBzdGF0aWMgaW50IGR1bW15X2hydGltZXJfY3JlYXRlKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVh
+bSAqc3Vic3RyZWFtKQogCWlmICghZHBjbSkKIAkJcmV0dXJuIC1FTk9NRU07CiAJc3Vic3RyZWFt
+LT5ydW50aW1lLT5wcml2YXRlX2RhdGEgPSBkcGNtOwotCWhydGltZXJfaW5pdCgmZHBjbS0+dGlt
+ZXIsIENMT0NLX01PTk9UT05JQywgSFJUSU1FUl9NT0RFX1JFTCk7CisJaHJ0aW1lcl9pbml0KCZk
+cGNtLT50aW1lciwgQ0xPQ0tfTU9OT1RPTklDX1NPRlQsIEhSVElNRVJfTU9ERV9SRUwpOwogCWRw
+Y20tPnRpbWVyLmZ1bmN0aW9uID0gZHVtbXlfaHJ0aW1lcl9jYWxsYmFjazsKIAlkcGNtLT5zdWJz
+dHJlYW0gPSBzdWJzdHJlYW07CiAJYXRvbWljX3NldCgmZHBjbS0+cnVubmluZywgMCk7Ci0JdGFz
+a2xldF9pbml0KCZkcGNtLT50YXNrbGV0LCBkdW1teV9ocnRpbWVyX3BjbV9lbGFwc2VkLAotCQkg
+ICAgICh1bnNpZ25lZCBsb25nKWRwY20pOwogCXJldHVybiAwOwogfQogCi0tIAoyLjE0LjEKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
