@@ -1,51 +1,184 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
- to system freq
-Date: Tue, 5 Sep 2017 00:52:48 -0700
-Message-ID: <20170905075247.GA6112@Asurada>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <20170905050602.GA2774@Asurada-CZ80>
- <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v6 06/12] mfd: wm97xx-core: core support for wm97xx Codec
+Date: Tue, 5 Sep 2017 09:04:53 +0100
+Message-ID: <20170905080453.d624xdn7c3l4kpwv@dell>
+References: <20170902195414.3699-1-robert.jarzmik@free.fr>
+ <20170902195414.3699-7-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20170902195414.3699-7-robert.jarzmik@free.fr>
+Sender: linux-input-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 05, 2017 at 09:37:43AM +0200, Łukasz Majewski wrote:
+On Sat, 02 Sep 2017, Robert Jarzmik wrote:
 
-> >>The last call is changing the bit clock (BCLK) frequency to SSI's IP
-> >>block clock (ipg = 66 MHz) [1].
-> >
-> >I think a bigger question here is why the routine sets BCLK to 66MHz.
+> The WM9705, WM9712 and WM9713 are highly integrated codecs, with an
+> audio codec, DAC and ADC, GPIO unit and a touchscreen interface.
 > 
-> Yes, exactly.
+> Historically the support was spread across drivers/input/touchscreen and
+> sound/soc/codecs. The sharing was done through ac97 bus sharing. This
+> model will not withstand the new AC97 bus model, where codecs are
+> discovered on runtime.
 > 
-> In my case the bclk is set to ipg clock, which is the SSI IP block clock
-> (ipg).
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+> Since v3:
+>  - added a "depends on AC97_BUS_NEW" Kconfig statement
+>  - added default values for wm9705, wm9712 per Charles's comment
+> Since v4:
+>  - added Charles's ack
+> Since v5:
+>  - took into account Lee's comments
+> ---
+>  drivers/mfd/Kconfig        |  14 ++
+>  drivers/mfd/Makefile       |   1 +
+>  drivers/mfd/wm97xx-core.c  | 379 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/wm97xx.h |  25 +++
+>  4 files changed, 419 insertions(+)
+>  create mode 100644 drivers/mfd/wm97xx-core.c
+>  create mode 100644 include/linux/mfd/wm97xx.h
 
-Can you elaborate why you set ipg clock as bclk? I don't remember SSI could
-derive bitclock from ipg clock.
+[...]
 
-> >>This is wrong, since IMX SSI block requires the I2S BCLK to be less
-> >>than 1/5 of [1].
-> >>
-> >>As a result the driver initialization passes without any errors, but the
-> >>speaker-test test case breaks.
-> >>
-> >>This commit checks if the fsl_ssi_set_dai_sysclk() frequency passed is
-> >>not equal to [1].
-> >
-> >I don't feel it's quite comprehensive...what if it's being set to 67MHz.
-> 
-> I think that this clock is not changing for the SoC. It should be 66 MHz
-> fixed.
+> +static struct mfd_cell wm9705_cells[] = {
+> +	{
+> +		.name = "wm9705-codec",
+> +	},
+> +	{
+> +		.name = "wm97xx-ts",
+> +	},
+> +};
 
-What I mean is that we cannot just look at this SoC. Today is 66MHz for this
-SoC. Tomorrow could be 133MHz for another one. We should put a check that none
-of these shall pass -- the 1/5 limit.
+Nit: These should be one line entries:
+
+     {	   .name = "wm9705-codec"	},
+     { 	   .name = "wm97xx-ts"		},
+
+[...]
+
+> +static struct mfd_cell wm9712_cells[] = {
+> +	{
+> +		.name = "wm9712-codec",
+> +	},
+> +	{
+> +		.name = "wm97xx-ts",
+> +	},
+> +};
+
+As above.
+
+[...]
+
+> +static struct mfd_cell wm9713_cells[] = {
+> +	{
+> +		.name = "wm9713-codec",
+> +	},
+> +	{
+> +		.name = "wm97xx-ts",
+> +	},
+> +};
+
+And again.
+
+> +static int wm97xx_ac97_probe(struct ac97_codec_device *adev)
+> +{
+> +	struct wm97xx_priv *wm97xx;
+> +	const struct regmap_config *config;
+> +	struct wm97xx_platform_data *codec_pdata;
+> +	struct mfd_cell *cells;
+> +	int ret = 0, nb_cells, i;
+> +	struct wm97xx_pdata *pdata = snd_ac97_codec_get_platdata(adev);
+> +
+> +	wm97xx = devm_kzalloc(ac97_codec_dev2dev(adev),
+> +			      sizeof(*wm97xx), GFP_KERNEL);
+> +	if (!wm97xx)
+> +		return -ENOMEM;
+> +
+> +	wm97xx->dev = ac97_codec_dev2dev(adev);
+> +	wm97xx->ac97 = snd_ac97_compat_alloc(adev);
+> +	if (IS_ERR(wm97xx->ac97))
+> +		return PTR_ERR(wm97xx->ac97);
+> +
+> +
+> +	ac97_set_drvdata(adev, wm97xx);
+> +	dev_info(wm97xx->dev, "wm97xx core found, id=0x%x\n",
+> +		 adev->vendor_id);
+> +
+> +	codec_pdata = &wm97xx->codec_pdata;
+> +	codec_pdata->ac97 = wm97xx->ac97;
+> +	codec_pdata->batt_pdata = pdata->batt_pdata;
+> +
+> +	switch (adev->vendor_id) {
+> +	case WM9705_VENDOR_ID:
+> +		config = &wm9705_regmap_config;
+> +		cells = wm9705_cells;
+> +		nb_cells = ARRAY_SIZE(wm9705_cells);
+> +		break;
+> +	case WM9712_VENDOR_ID:
+> +		config = &wm9712_regmap_config;
+> +		cells = wm9712_cells;
+> +		nb_cells = ARRAY_SIZE(wm9712_cells);
+> +		break;
+> +	case WM9713_VENDOR_ID:
+> +		config = &wm9713_regmap_config;
+> +		cells = wm9713_cells;
+> +		nb_cells = ARRAY_SIZE(wm9713_cells);
+> +		break;
+> +	default:
+> +		config = NULL;
+
+goto an error label here.
+
+> +	}
+> +
+> +	for (i = 0; i < nb_cells; i++) {
+> +		cells[i].platform_data = codec_pdata;
+> +		cells[i].pdata_size = sizeof(*codec_pdata);
+> +	}
+> +
+> +	if (config) {
+> +		codec_pdata->regmap =
+> +			devm_regmap_init_ac97(wm97xx->ac97, config);
+> +		if (IS_ERR(codec_pdata->regmap))
+> +			ret = PTR_ERR(codec_pdata->regmap);
+
+Remove the if and do this regardless.
+
+> +	} else {
+> +		ret = -ENODEV;
+> +	}
+
+remove this.
+
+> +	if (!ret)
+> +		ret = devm_mfd_add_devices(wm97xx->dev, PLATFORM_DEVID_NONE,
+> +					   cells, nb_cells, NULL, 0, NULL);
+
+Remove the if and do this regardless.
+
+No need to allocate to a variable.  Just return the result directly.
+
+> +	if (ret)
+> +		snd_ac97_compat_release(wm97xx->ac97);
+
+Place this in the error path, under the goto label.
+
+> +	return ret;
+> +}
+
+Once fixed, please apply my:
+
+For my own reference:
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
