@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ALSA: bebob: Adjust six checks for null
-	pointers
-Date: Wed, 6 Sep 2017 12:23:22 +0200
-Message-ID: <3ef7ccac-9bab-4030-da89-92f5c488e8bf@users.sourceforge.net>
+Subject: [PATCH 3/3] ALSA: bebob: Improve a size determination
+ in parse_stream_formation()
+Date: Wed, 6 Sep 2017 12:24:22 +0200
+Message-ID: <3092a93b-9991-eca8-bc77-5c973355477e@users.sourceforge.net>
 References: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CA01266E02
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 12:23:28 +0200 (CEST)
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32763266E02
+ for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 12:24:57 +0200 (CEST)
 In-Reply-To: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,51 +26,30 @@ To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav 
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBXZWQsIDYgU2VwIDIwMTcgMTE6NDg6NDQgKzAyMDAKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVu
-dC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVURi04CkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
-bmc6IDhiaXQKClRoZSBzY3JpcHQg4oCcY2hlY2twYXRjaC5wbOKAnSBwb2ludGVkIGluZm9ybWF0
-aW9uIG91dCBsaWtlIHRoZSBmb2xsb3dpbmcuCgpDb21wYXJpc29uIHRvIE5VTEwgY291bGQgYmUg
-d3JpdHRlbiDigKYKClRodXMgZml4IHRoZSBhZmZlY3RlZCBzb3VyY2UgY29kZSBwbGFjZXMuCgpT
-aWduZWQtb2ZmLWJ5OiBNYXJrdXMgRWxmcmluZyA8ZWxmcmluZ0B1c2Vycy5zb3VyY2Vmb3JnZS5u
-ZXQ+Ci0tLQogc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMgfCAxMiArKysrKyst
-LS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMgYi9zb3VuZC9m
-aXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYwppbmRleCBiYzllNDJiNjM2OGUuLjIxMWZmNDMy
-MDdkNiAxMDA2NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMKKysr
-IGIvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMKQEAgLTI2OCw3ICsyNjgsNyBA
-QCBtYXBfZGF0YV9jaGFubmVscyhzdHJ1Y3Qgc25kX2JlYm9iICpiZWJvYiwgc3RydWN0IGFtZHRw
-X3N0cmVhbSAqcykKIAkgKiB1c2UgdGhlIG1heGltdW0gbGVuZ3RoIG9mIEZDUC4KIAkgKi8KIAli
-dWYgPSBremFsbG9jKDI1NiwgR0ZQX0tFUk5FTCk7Ci0JaWYgKGJ1ZiA9PSBOVUxMKQorCWlmICgh
-YnVmKQogCQlyZXR1cm4gLUVOT01FTTsKIAogCWlmIChzID09ICZiZWJvYi0+dHhfc3RyZWFtKQpA
-QCAtNDcyLDcgKzQ3Miw3IEBAIGJyZWFrX2JvdGhfY29ubmVjdGlvbnMoc3RydWN0IHNuZF9iZWJv
-YiAqYmVib2IpCiAJYmVib2ItPmNvbm5lY3RlZCA9IGZhbHNlOwogCiAJLyogVGhlc2UgbW9kZWxz
-IHNlZW1zIHRvIGJlIGluIHRyYW5zaXRpb24gc3RhdGUgZm9yIGEgbG9uZ2VyIHRpbWUuICovCi0J
-aWYgKGJlYm9iLT5tYXVkaW9fc3BlY2lhbF9xdWlyayAhPSBOVUxMKQorCWlmIChiZWJvYi0+bWF1
-ZGlvX3NwZWNpYWxfcXVpcmspCiAJCW1zbGVlcCgyMDApOwogfQogCkBAIC00OTYsNyArNDk2LDcg
-QEAgc3RhcnRfc3RyZWFtKHN0cnVjdCBzbmRfYmVib2IgKmJlYm9iLCBzdHJ1Y3QgYW1kdHBfc3Ry
-ZWFtICpzdHJlYW0sCiAJCWNvbm4gPSAmYmVib2ItPm91dF9jb25uOwogCiAJLyogY2hhbm5lbCBt
-YXBwaW5nICovCi0JaWYgKGJlYm9iLT5tYXVkaW9fc3BlY2lhbF9xdWlyayA9PSBOVUxMKSB7CisJ
-aWYgKCFiZWJvYi0+bWF1ZGlvX3NwZWNpYWxfcXVpcmspIHsKIAkJZXJyID0gbWFwX2RhdGFfY2hh
-bm5lbHMoYmVib2IsIHN0cmVhbSk7CiAJCWlmIChlcnIgPCAwKQogCQkJZ290byBlbmQ7CkBAIC02
-MTEsNyArNjExLDcgQEAgaW50IHNuZF9iZWJvYl9zdHJlYW1fc3RhcnRfZHVwbGV4KHN0cnVjdCBz
-bmRfYmVib2IgKmJlYm9iLCB1bnNpZ25lZCBpbnQgcmF0ZSkKIAkJICoKIAkJICogRm9yIGZpcm13
-YXJlIGN1c3RvbWl6ZWQgYnkgTS1BdWRpbywgcmVmZXIgdG8gbmV4dCBOT1RFLgogCQkgKi8KLQkJ
-aWYgKGJlYm9iLT5tYXVkaW9fc3BlY2lhbF9xdWlyayA9PSBOVUxMKSB7CisJCWlmICghYmVib2It
-Pm1hdWRpb19zcGVjaWFsX3F1aXJrKSB7CiAJCQllcnIgPSByYXRlX3NwZWMtPnNldChiZWJvYiwg
-cmF0ZSk7CiAJCQlpZiAoZXJyIDwgMCkgewogCQkJCWRldl9lcnIoJmJlYm9iLT51bml0LT5kZXZp
-Y2UsCkBAIC02MzcsNyArNjM3LDcgQEAgaW50IHNuZF9iZWJvYl9zdHJlYW1fc3RhcnRfZHVwbGV4
-KHN0cnVjdCBzbmRfYmVib2IgKmJlYm9iLCB1bnNpZ25lZCBpbnQgcmF0ZSkKIAkJICogVGhlIGZp
-cm13YXJlIGN1c3RvbWl6ZWQgYnkgTS1BdWRpbyB1c2VzIHRoZXNlIGNvbW1hbmRzIHRvCiAJCSAq
-IHN0YXJ0IHRyYW5zbWl0dGluZyBzdHJlYW0uIFRoaXMgaXMgbm90IHVzdWFsIHdheS4KIAkJICov
-Ci0JCWlmIChiZWJvYi0+bWF1ZGlvX3NwZWNpYWxfcXVpcmsgIT0gTlVMTCkgeworCQlpZiAoYmVi
-b2ItPm1hdWRpb19zcGVjaWFsX3F1aXJrKSB7CiAJCQllcnIgPSByYXRlX3NwZWMtPnNldChiZWJv
-YiwgcmF0ZSk7CiAJCQlpZiAoZXJyIDwgMCkgewogCQkJCWRldl9lcnIoJmJlYm9iLT51bml0LT5k
-ZXZpY2UsCkBAIC03OTQsNyArNzk0LDcgQEAgZmlsbF9zdHJlYW1fZm9ybWF0aW9ucyhzdHJ1Y3Qg
-c25kX2JlYm9iICpiZWJvYiwgZW51bSBhdmNfYnJpZGdlY29fcGx1Z19kaXIgZGlyLAogCWludCBl
-cnI7CiAKIAlidWYgPSBrbWFsbG9jKEZPUk1BVF9NQVhJTVVNX0xFTkdUSCwgR0ZQX0tFUk5FTCk7
-Ci0JaWYgKGJ1ZiA9PSBOVUxMKQorCWlmICghYnVmKQogCQlyZXR1cm4gLUVOT01FTTsKIAogCWlm
-IChkaXIgPT0gQVZDX0JSSURHRUNPX1BMVUdfRElSX0lOKQotLSAKMi4xNC4xCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 6 Sep 2017 11:55:45 +0200
+
+Replace the specification of a data structure by a pointer dereference
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/firewire/bebob/bebob_stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+index 211ff43207d6..a26863b82330 100644
+--- a/sound/firewire/bebob/bebob_stream.c
++++ b/sound/firewire/bebob/bebob_stream.c
+@@ -736,7 +736,7 @@ parse_stream_formation(u8 *buf, unsigned int len,
+ 		return -ENOSYS;
+ 
+ 	/* Avoid double count by different entries for the same rate. */
+-	memset(&formation[i], 0, sizeof(struct snd_bebob_stream_formation));
++	memset(&formation[i], 0, sizeof(*formation));
+ 
+ 	for (e = 0; e < buf[4]; e++) {
+ 		channels = buf[5 + e * 2];
+-- 
+2.14.1
