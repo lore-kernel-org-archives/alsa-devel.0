@@ -1,25 +1,16 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
- when it is equal to system freq
-Date: Wed, 6 Sep 2017 11:22:48 +0200
-Message-ID: <ae1d3e2a-d618-05e2-1572-5593caff1ee0@denx.de>
-References: <1504436701-20700-1-git-send-email-lukma@denx.de>
- <AM5PR0401MB262706674539BFE651706CC6E3900@AM5PR0401MB2627.eurprd04.prod.outlook.com>
- <07e54d28-3bbc-aad2-146b-30867c0bc337@denx.de>
- <20170905052031.GB2774@Asurada-CZ80>
- <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
- <20170905181108.GB23906@Asurada-Nvidia>
- <cfb8f844-87aa-f1f3-bd55-4f2b60f3cf88@denx.de>
- <20170905225225.GA14132@Asurada-Nvidia>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/3] ALSA: BeBoB: Fine-tuning for six function
+	implementations
+Date: Wed, 6 Sep 2017 12:21:14 +0200
+Message-ID: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F8A8266DD6
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 11:22:53 +0200 (CEST)
-In-Reply-To: <20170905225225.GA14132@Asurada-Nvidia>
-Content-Language: en-US
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD6B2266E02
+ for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 12:21:23 +0200 (CEST)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,89 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTmljb2xpbiwKCj4gT24gVHVlLCBTZXAgMDUsIDIwMTcgYXQgMTE6MTM6NDBQTSArMDIwMCwg
-xYF1a2FzeiBNYWpld3NraSB3cm90ZToKPiAKPj4gVGhleSBrZXkgcG9pbnQgaGVyZSBpcyB0aGUg
-YXNvY19zaW1wbGVfY2FyZF9wYXJzZV9jbGsoKSBmdW5jdGlvbgo+PiBmcm9tIHNpbXBsZS1jYXJk
-LXV0aWxzLmMKPj4KPj4gUGxlYXNlIGxvb2sgaG93IHRoZSBjbG9jayBpcyBhc3NpZ25lZDsgSXQg
-Zmlyc3QgY2hlY2tzIGZvciBjcHUKPj4gY2xvY2ssIHRoZW4gZm9yICJzeXN0ZW0tY2xvY2stZnJl
-cXVlbmN5IiBEVFMgbm9kZSBhbmQgX2ZpbmFsbHlfCj4+IGxvb2tzIGZvciBhbm90aGVyICJjaGls
-ZCIgY2xvY2sgWzFdLCB3aGljaCBpcyB0aGUgY29kZWMgYXR0YWNoZWQgdG8KPj4gSTJDLgo+IAo+
-IEhlcmUgaXMgdGhlIHJvdXRpbmUgdGhhdCBJIHVuZGVyc3Rvb2QgZnJvbSB0aGUgY29kZToKPiAx
-KSBhc29jX3NpbXBsZV9jYXJkX3BhcnNlX2Nsa19jcHUoZGV2LCBjcHUsIGRhaV9saW5rLCBjcHVf
-ZGFpKTsKPiAgICAgPT4gYXNvY19zaW1wbGVfY2FyZF9wYXJzZV9jbGsoZGV2LCBjcHUsICAgICAg
-ICAvLyBjcHUgbm9kZSBpbiBzb3VuZHt9IFsxXQo+IAkJICAgCQkgZGFpX2xpbmstPmNwdV9vZl9u
-b2RlLCAgICAgLy8gbm9kZSBzc2kyIFsyXQo+IAkJCQkgY3B1X2RhaSwgZGFpX2xpbmstPmNwdV9k
-YWlfbmFtZSk7Cj4gICAgID09PiAxLjEpIGRldm1fZ2V0X2Nsa19mcm9tX2NoaWxkKGRldiwgbm9k
-ZSwgTlVMTCk7ICAgICAgICAgICAgICAgICAvLyBbMV0KPiAgICAgPT0+IDEuMikgb2ZfcHJvcGVy
-dHlfcmVhZF91MzIobm9kZSwgInN5c3RlbS1jbG9jay1mcmVxdWVuY3kiLCAmdmFsKS8vIFsxXQo+
-ICAgICA9PT4gMS4zKSBkZXZtX2dldF9jbGtfZnJvbV9jaGlsZChkZXYsIGRhaV9vZl9ub2RlLCBO
-VUxMKTsgICAgICAgICAgLy8gWzJdCj4gCj4gMikgYXNvY19zaW1wbGVfY2FyZF9wYXJzZV9jbGtf
-Y29kZWMoZGV2LCBjb2RlYywgZGFpX2xpbmssIGNvZGVjX2RhaSk7Cj4gICAgID0+IGFzb2Nfc2lt
-cGxlX2NhcmRfcGFyc2VfY2xrKGRldiwgY29kZWMsICAgIC8vIGNvZGVjIG5vZGUgaW4gc291bmR7
-fSBbM10KPiAJCSAgIAkJIGRhaV9saW5rLT5jb2RlY19vZl9ub2RlLC8vIG5vZGUgdGZhOTg3OSBb
-NF0KPiAJCQkJIGNvZGVjX2RhaSwgZGFpX2xpbmstPmNvZGVjX2RhaV9uYW1lKTsKPiAgICAgPT0+
-IDIuMSkgZGV2bV9nZXRfY2xrX2Zyb21fY2hpbGQoZGV2LCBub2RlLCBOVUxMKTsgICAgICAgICAg
-ICAgICAgIC8vIFszXQo+ICAgICA9PT4gMi4yKSBvZl9wcm9wZXJ0eV9yZWFkX3UzMihub2RlLCAi
-c3lzdGVtLWNsb2NrLWZyZXF1ZW5jeSIsICZ2YWwpLy8gWzNdCj4gICAgID09PiAyLjMpIGRldm1f
-Z2V0X2Nsa19mcm9tX2NoaWxkKGRldiwgZGFpX29mX25vZGUsIE5VTEwpOyAgICAgICAgICAvLyBb
-NF0KPiAKPiBGb3IgdGhlIGNwdSByb3V0aW5lLCBpdCBmaXJzdCBjaGVja3MgZm9yIGNsb2NrIHBy
-b3BlcnR5IHVuZGVyIGNwdQo+IG5vZGUgb2Ygc2ltcGxlLWNhcmQsIHRoZW4gZm9yICJzeXN0ZW0t
-Y2xvY2stZnJlcXVlbmN5IiBpbiB0aGUgY3B1Cj4gbm9kZSBvZiBzaW1wbGUtY2FyZCwgYW5kIGZp
-bmFsbHkgbG9va3MgZm9yIGNsb2NrIHByb3BlcnR5IGluIHNzaTIKPiBub2RlLgoKSSd2ZSBkb3Vi
-bGUgY2hlY2tlZCB0aGlzIGFuZCB0aGUKc2ltcGxlX2RhaS0+c3lzY2xrIGlzIGFzc2lnbmVkIGlu
-IHRoZQoKYXNvY19zaW1wbGVfY2FyZF9wYXJzZV9jbGsoKQoKLS0tLS0+IGRldjogc291bmQKLS0t
-LS0+IGNsayBub2RlOiAvc29jL2FpcHMtYnVzQDAyMDAwMDAwL3NwYmEtYnVzQDAyMDAwMDAwL3Nz
-aUAwMjAyYzAwMAotLS0tLT4gQ2xrIGFzaWdubWVudAoKQW5kIHRoaXMgY2xvY2sgaXMgdGFrZW4g
-ZnJvbSB0aGlzIG5vZGUuIEl0IGxvb2tzIGxpa2UgaXBnIGNsb2NrIGZvciBzc2kuLi4KCj4gCj4g
-Rm9yIGNvZGVjIHJvdXRpbmUsIGl0IGZpcnN0IGNoZWNrcyBmb3IgY2xvY2sgcHJvcGVydHkgdW5k
-ZXIgY29kZWMKPiBub2RlIG9mIHNpbXBsZS1jYXJkLCB0aGVuIGZvciAic3lzdGVtLWNsb2NrLWZy
-ZXF1ZW5jeSIgaW4gY29kZWMKPiBub2RlIG9mIHNpbXBsZS1jYXJkLCBhbmQgZmluYWxseSBsb29r
-cyBmb3IgY2xvY2sgcHJvcGVydHkgaW4gdGhlCj4gdGZhOTg3OSBub2RlLgo+IAo+IFRoZSBjcHUg
-YW5kIGNvZGVjIGFyZSB0b3RhbGx5IHNlcGFyYXRlLCBhcmVuJ3QgdGhleT8gQW5kIEkgZG9uJ3QK
-PiB0aGluayBpdCdzIHJpZ2h0IGlmIG5vdC4KClllcywgdGhleSBzaG91bGQgYmUgc2VwYXJhdGVk
-LgoKPiAKPj4+PiB3aGljaCBoYXMgY2xvY2sgZnJvbSBJMkMgKDY2IE1IeikuCj4+Pgo+Pj4gWW91
-IG1lYW4gSTJDIHNjbCBvciBJMlMgc2Nsaz8KPj4KPj4gSTJDIHNjbC4KPiAKPiBBIGNvdXBsZSBv
-ZiB0aGluZ3MgaGVyZS4uLi4uCj4gMSkgSSBkb24ndCB0aGluayBJMkMgc2NsIGNhbiBydW4gYXQg
-NjZNSHouLi5UaGUgNjZNSHogaXMgcHJvYmFibHkKPiAgICAgdGhlIGlwZyBjbG9jayBvZiBJMkMg
-Y29udHJvbGxlci4KCkkgYWdyZWUuIEkyQyBzY2wgcnVucyB3aXRoIDQwMCBrSHogKGFzIHJlY29t
-bWVuZGVkIGJ5IEkyQyBoaWdoIHNwZWVkIHNwZWMpLgoKQW5kIGNvbnNpZGVyaW5nIGFib3ZlLCB0
-aGUgNjYgTUh6IGNsb2NrIHNlZW1zIHRvIGJlIGZyb20gc3NpIElQIGJsb2NrLgoKPiAyKSBFdmVu
-IGlmIHRoZSBzY2wgZG9lcyBydW4gYXQgNjZNSHosIHRoZXJlIGlzIG5vIHBvaW50IGluIHBhc3Np
-bmcKPiAgICAgdGhlIGNsb2NrIG9mIEkyQyBzY2wgaW50byBhbiBJMlMgZGFpLWxpbmsuCgpZZXMu
-Cgo+ICAgICAKPiBTbyBJIGZlZWwgc29tZXRoaW5nIG11c3QgYmUgd3JvbmcuIEkgc3VnZ2VzdCB5
-b3UgdG8gYWRkIHNvbWUgcHJpbnRrCj4gdG8gY2hlY2sgdGhlIG5hbWVzIG9mIHRob3NlIG5vZGVz
-IGFuZCB4X29mX25vZGUgaW4gdGhlIHNpbXBsZSBjYXJkCj4gZHJpdmVyLgoKVGhlIHByb2JsZW0g
-aXMgd2l0aCB0aGUgImxhY2siIG9mIGNsb2NrIG5vZGVzL3Byb3BlcnRpZXMgYXQKCiAgCQkJZGFp
-bGlua19tYXN0ZXI6IGNwdSB7CiAgCQkJICAgIHNvdW5kLWRhaSA9IDwmc3NpMj47CgkJCSAgICBj
-bG9jayA9IDwmU1NTUz47CgkJCSAgICBzeXN0ZW0tY2xvY2stZnJlcXVlbmN5ID0gPFhYWFg+Owog
-IAkJCX07CgoKYW5kIGFzIGEgcmVzdWx0IHdlIHRha2Ugc29tZSAiZGVmYXVsdCIgY2xvY2suCgo+
-IAo+PiBNeSBEVFMgWzFdIChpdCBpcyBkaWZmZXJlbnQgdGhhbiBvdGhlciBpbi10cmVlIHN1cHBv
-cnRlZCBjb2RlY3MgLSBhdAo+PiBsZWFzdCBJIGRpZCBub3QgZmluZCBzaW1pbGFyIHNldHVwIGlu
-IERUU2VzKToKPj4KPj4gCXNvdW5kIHsKPj4gCQljb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1j
-YXJkIjsKPj4gCQlsYWJlbCA9ICJ0ZmE5ODc5LW1vbm8iOwo+Pgo+PiAJCXNpbXBsZS1hdWRpby1j
-YXJkLGRhaS1saW5rIHsKPj4gCQkJLyogREFDICovCj4+IAkJCWZvcm1hdCA9ICJpMnMiOwo+PiAJ
-CQliaXRjbG9jay1tYXN0ZXIgPSA8JmRhaWxpbmtfbWFzdGVyPjsKPj4gCQkJZnJhbWUtbWFzdGVy
-ID0gPCZkYWlsaW5rX21hc3Rlcj47Cj4+Cj4+IAkJCWRhaWxpbmtfbWFzdGVyOiBjcHUgewo+PiAJ
-CQkgICAgc291bmQtZGFpID0gPCZzc2kyPjsKPj4gCQkJfTsKPj4gCQkJY29kZWMgewo+PiAJCQkg
-ICAgc291bmQtZGFpID0gPCZjb2RlYz47Cj4+IAkJCX07Cj4+IAkJfTsKPiAKPiBJIHJlbWVtYmVy
-IHRoZXJlIGlzIGFub3RoZXIgc3R5bGUgZm9yIGEgc2luZ2xlIGRhaS1saW5rLiBDb3VsZCB5b3UK
-PiBwbGVhc2UgdHJ5IHRoYXQgb25lPyBUaGVyZSBpcyBhbiBleGFtcGxlIGluOgo+ICAgICAgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJkLnR4dAoKWWVz
-LCB0aGUKCnNpbXBsZS1hdWRpby1jYXJkLGNwdQpzaW1wbGUtYXVkaW8tY2FyZCxmb3JtYXQsCi4u
-Li4KCmV0Yy4KCkkndmUgb21pdHRlZCBpdCBzaW5jZSBpbiB0aGUgY29kZSBpdCBpcyByZWdhcmRl
-ZCBhcyAib2xkIjoKKHNpbXBsZS1jYXJkLmMgbGluZSAzODQpLgoKCj4gCgoKSSB0aGluayB0aGF0
-IHRoZSBwcm9wZXIgc29sdXRpb24gd291bGQgYmUgdG8gYWRkIGNoZWNrIGZvcjoKCmZyZXEgPCBz
-eXNjbGsvNSBpbiBmc2xfc3NpX3NldF9kYWlfc3lzY2xrKCkgYW5kIHJldHVybiAtRU5PVFNVUFAg
-dG8gbWFrZSAKdGhlIHNpbXBsZS1hdWRvLWNhcmQgZHJpdmVyIGhhcHB5IChhbmQgbm90IGludHJv
-ZHVjaW5nIHJlZ3Jlc3Npb25zKS4KCgotLSAKQmVzdCByZWdhcmRzLAoKTHVrYXN6IE1hamV3c2tp
-CgotLQoKREVOWCBTb2Z0d2FyZSBFbmdpbmVlcmluZyBHbWJILCAgICAgIE1hbmFnaW5nIERpcmVj
-dG9yOiBXb2xmZ2FuZyBEZW5rCkhSQiAxNjUyMzUgTXVuaWNoLCBPZmZpY2U6IEtpcmNoZW5zdHIu
-NSwgRC04MjE5NCBHcm9lYmVuemVsbCwgR2VybWFueQpQaG9uZTogKCs0OSktODE0Mi02Njk4OS0x
-MCBGYXg6ICgrNDkpLTgxNDItNjY5ODktODAgRW1haWw6IHdkQGRlbnguZGUKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 6 Sep 2017 12:16:54 +0200
+
+Three update suggestions were taken into account
+from static source code analysis.
+
+Markus Elfring (3):
+  Use common error handling code in snd_bebob_stream_start_duplex()
+  Adjust six checks for null pointers
+  Improve a size determination in parse_stream_formation()
+
+ sound/firewire/bebob/bebob_stream.c | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
+
+-- 
+2.14.1
