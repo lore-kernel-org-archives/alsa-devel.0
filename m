@@ -1,121 +1,49 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ALSA: ymfpci: Adjust 17 checks for null
-	pointers
-Date: Wed, 6 Sep 2017 21:50:09 +0200
-Message-ID: <35478693-5c8a-38b8-d2b3-fc8a964d5137@users.sourceforge.net>
-References: <dafe6d86-1bfd-41a8-e189-bde7ae30dea9@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 08E03266A8A
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 21:50:19 +0200 (CEST)
-In-Reply-To: <dafe6d86-1bfd-41a8-e189-bde7ae30dea9@users.sourceforge.net>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, David Howells <dhowells@redhat.com>, Ingo Molnar <mingo@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [PATCH 14/14] sound/core: Use %pS printk format for direct addresses
+Date: Wed,  6 Sep 2017 22:28:01 +0200
+Message-ID: <1504729681-3504-15-git-send-email-deller@gmx.de>
+References: <1504729681-3504-1-git-send-email-deller@gmx.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1504729681-3504-1-git-send-email-deller@gmx.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Petr Mladek <pmladek@suse.com>, Andrew Morton <akpm@linux-foundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBXZWQsIDYgU2VwIDIwMTcgMjE6MzA6MzcgKzAyMDAKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVu
-dC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVURi04CkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
-bmc6IDhiaXQKClRoZSBzY3JpcHQg4oCcY2hlY2twYXRjaC5wbOKAnSBwb2ludGVkIGluZm9ybWF0
-aW9uIG91dCBsaWtlIHRoZSBmb2xsb3dpbmcuCgpDb21wYXJpc29uIHRvIE5VTEwgY291bGQgYmUg
-d3JpdHRlbiDigKYKClRodXMgZml4IGFmZmVjdGVkIHNvdXJjZSBjb2RlIHBsYWNlcy4KClNpZ25l
-ZC1vZmYtYnk6IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdlLm5ldD4K
-LS0tCiBzb3VuZC9wY2kveW1mcGNpL3ltZnBjaV9tYWluLmMgfCAzMSArKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygrKSwgMTUgZGVs
-ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL3ltZnBjaS95bWZwY2lfbWFpbi5jIGIv
-c291bmQvcGNpL3ltZnBjaS95bWZwY2lfbWFpbi5jCmluZGV4IDhjYTJlNDFlNTgyNy4uNGRhNmU0
-M2FkMDA3IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kveW1mcGNpL3ltZnBjaV9tYWluLmMKKysrIGIv
-c291bmQvcGNpL3ltZnBjaS95bWZwY2lfbWFpbi5jCkBAIC0zMDgsNyArMzA4LDcgQEAgc3RhdGlj
-IHZvaWQgc25kX3ltZnBjaV9wY21faW50ZXJydXB0KHN0cnVjdCBzbmRfeW1mcGNpICpjaGlwLCBz
-dHJ1Y3Qgc25kX3ltZnBjaV8KIAkKIAlpZiAoKHlwY20gPSB2b2ljZS0+eXBjbSkgPT0gTlVMTCkK
-IAkJcmV0dXJuOwotCWlmICh5cGNtLT5zdWJzdHJlYW0gPT0gTlVMTCkKKwlpZiAoIXlwY20tPnN1
-YnN0cmVhbSkKIAkJcmV0dXJuOwogCXNwaW5fbG9jaygmY2hpcC0+cmVnX2xvY2spOwogCWlmICh5
-cGNtLT5ydW5uaW5nKSB7CkBAIC0zOTYsNyArMzk2LDcgQEAgc3RhdGljIGludCBzbmRfeW1mcGNp
-X3BsYXliYWNrX3RyaWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJ
-aW50IHJlc3VsdCA9IDA7CiAKIAlzcGluX2xvY2soJmNoaXAtPnJlZ19sb2NrKTsKLQlpZiAoeXBj
-bS0+dm9pY2VzWzBdID09IE5VTEwpIHsKKwlpZiAoIXlwY20tPnZvaWNlc1swXSkgewogCQlyZXN1
-bHQgPSAtRUlOVkFMOwogCQlnb3RvIF9fdW5sb2NrOwogCX0KQEAgLTQwNSw3ICs0MDUsNyBAQCBz
-dGF0aWMgaW50IHNuZF95bWZwY2lfcGxheWJhY2tfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnN1YnN0cmVhbSwKIAljYXNlIFNORFJWX1BDTV9UUklHR0VSX1BBVVNFX1JFTEVBU0U6
-CiAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9SRVNVTUU6CiAJCWNoaXAtPmN0cmxfcGxheWJhY2tb
-eXBjbS0+dm9pY2VzWzBdLT5udW1iZXIgKyAxXSA9IGNwdV90b19sZTMyKHlwY20tPnZvaWNlc1sw
-XS0+YmFua19hZGRyKTsKLQkJaWYgKHlwY20tPnZvaWNlc1sxXSAhPSBOVUxMICYmICF5cGNtLT51
-c2VfNDQxX3Nsb3QpCisJCWlmICh5cGNtLT52b2ljZXNbMV0gJiYgIXlwY20tPnVzZV80NDFfc2xv
-dCkKIAkJCWNoaXAtPmN0cmxfcGxheWJhY2tbeXBjbS0+dm9pY2VzWzFdLT5udW1iZXIgKyAxXSA9
-IGNwdV90b19sZTMyKHlwY20tPnZvaWNlc1sxXS0+YmFua19hZGRyKTsKIAkJeXBjbS0+cnVubmlu
-ZyA9IDE7CiAJCWJyZWFrOwpAQCAtNDE4LDcgKzQxOCw3IEBAIHN0YXRpYyBpbnQgc25kX3ltZnBj
-aV9wbGF5YmFja190cmlnZ2VyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAog
-CWNhc2UgU05EUlZfUENNX1RSSUdHRVJfUEFVU0VfUFVTSDoKIAljYXNlIFNORFJWX1BDTV9UUklH
-R0VSX1NVU1BFTkQ6CiAJCWNoaXAtPmN0cmxfcGxheWJhY2tbeXBjbS0+dm9pY2VzWzBdLT5udW1i
-ZXIgKyAxXSA9IDA7Ci0JCWlmICh5cGNtLT52b2ljZXNbMV0gIT0gTlVMTCAmJiAheXBjbS0+dXNl
-XzQ0MV9zbG90KQorCQlpZiAoeXBjbS0+dm9pY2VzWzFdICYmICF5cGNtLT51c2VfNDQxX3Nsb3Qp
-CiAJCQljaGlwLT5jdHJsX3BsYXliYWNrW3lwY20tPnZvaWNlc1sxXS0+bnVtYmVyICsgMV0gPSAw
-OwogCQl5cGNtLT5ydW5uaW5nID0gMDsKIAkJYnJlYWs7CkBAIC00NjgsMTYgKzQ2OCwxNiBAQCBz
-dGF0aWMgaW50IHNuZF95bWZwY2lfcGNtX3ZvaWNlX2FsbG9jKHN0cnVjdCBzbmRfeW1mcGNpX3Bj
-bSAqeXBjbSwgaW50IHZvaWNlcykKIHsKIAlpbnQgZXJyOwogCi0JaWYgKHlwY20tPnZvaWNlc1sx
-XSAhPSBOVUxMICYmIHZvaWNlcyA8IDIpIHsKKwlpZiAoeXBjbS0+dm9pY2VzWzFdICYmIHZvaWNl
-cyA8IDIpIHsKIAkJc25kX3ltZnBjaV92b2ljZV9mcmVlKHlwY20tPmNoaXAsIHlwY20tPnZvaWNl
-c1sxXSk7CiAJCXlwY20tPnZvaWNlc1sxXSA9IE5VTEw7CiAJfQotCWlmICh2b2ljZXMgPT0gMSAm
-JiB5cGNtLT52b2ljZXNbMF0gIT0gTlVMTCkKKwlpZiAodm9pY2VzID09IDEgJiYgeXBjbS0+dm9p
-Y2VzWzBdKQogCQlyZXR1cm4gMDsJCS8qIGFscmVhZHkgYWxsb2NhdGVkICovCi0JaWYgKHZvaWNl
-cyA9PSAyICYmIHlwY20tPnZvaWNlc1swXSAhPSBOVUxMICYmIHlwY20tPnZvaWNlc1sxXSAhPSBO
-VUxMKQorCWlmICh2b2ljZXMgPT0gMiAmJiB5cGNtLT52b2ljZXNbMF0gJiYgeXBjbS0+dm9pY2Vz
-WzFdKQogCQlyZXR1cm4gMDsJCS8qIGFscmVhZHkgYWxsb2NhdGVkICovCiAJaWYgKHZvaWNlcyA+
-IDEpIHsKLQkJaWYgKHlwY20tPnZvaWNlc1swXSAhPSBOVUxMICYmIHlwY20tPnZvaWNlc1sxXSA9
-PSBOVUxMKSB7CisJCWlmICh5cGNtLT52b2ljZXNbMF0gJiYgIXlwY20tPnZvaWNlc1sxXSkgewog
-CQkJc25kX3ltZnBjaV92b2ljZV9mcmVlKHlwY20tPmNoaXAsIHlwY20tPnZvaWNlc1swXSk7CiAJ
-CQl5cGNtLT52b2ljZXNbMF0gPSBOVUxMOwogCQl9CQkKQEAgLTY1NSw3ICs2NTUsNyBAQCBzdGF0
-aWMgaW50IHNuZF95bWZwY2lfcGxheWJhY2tfaHdfZnJlZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0gKnN1YnN0cmVhbSkKIAlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0gc3Vic3Ry
-ZWFtLT5ydW50aW1lOwogCXN0cnVjdCBzbmRfeW1mcGNpX3BjbSAqeXBjbTsKIAkKLQlpZiAocnVu
-dGltZS0+cHJpdmF0ZV9kYXRhID09IE5VTEwpCisJaWYgKCFydW50aW1lLT5wcml2YXRlX2RhdGEp
-CiAJCXJldHVybiAwOwogCXlwY20gPSBydW50aW1lLT5wcml2YXRlX2RhdGE7CiAKQEAgLTkxMyw3
-ICs5MTMsNyBAQCBzdGF0aWMgaW50IHNuZF95bWZwY2lfcGxheWJhY2tfb3Blbl8xKHN0cnVjdCBz
-bmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogCQlyZXR1cm4gZXJyOwogCiAJeXBjbSA9IGt6
-YWxsb2Moc2l6ZW9mKCp5cGNtKSwgR0ZQX0tFUk5FTCk7Ci0JaWYgKHlwY20gPT0gTlVMTCkKKwlp
-ZiAoIXlwY20pCiAJCXJldHVybiAtRU5PTUVNOwogCXlwY20tPmNoaXAgPSBjaGlwOwogCXlwY20t
-PnR5cGUgPSBQTEFZQkFDS19WT0lDRTsKQEAgLTEwMzgsNyArMTAzOCw3IEBAIHN0YXRpYyBpbnQg
-c25kX3ltZnBjaV9jYXB0dXJlX29wZW4oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
-YW0sCiAJCXJldHVybiBlcnI7CiAKIAl5cGNtID0ga3phbGxvYyhzaXplb2YoKnlwY20pLCBHRlBf
-S0VSTkVMKTsKLQlpZiAoeXBjbSA9PSBOVUxMKQorCWlmICgheXBjbSkKIAkJcmV0dXJuIC1FTk9N
-RU07CiAJeXBjbS0+Y2hpcCA9IGNoaXA7CiAJeXBjbS0+dHlwZSA9IGNhcHR1cmVfYmFua19udW1i
-ZXIgKyBDQVBUVVJFX1JFQzsKQEAgLTExMTYsNyArMTExNiw3IEBAIHN0YXRpYyBpbnQgc25kX3lt
-ZnBjaV9jYXB0dXJlX2Nsb3NlKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQog
-CXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CiAJ
-c3RydWN0IHNuZF95bWZwY2lfcGNtICp5cGNtID0gcnVudGltZS0+cHJpdmF0ZV9kYXRhOwogCi0J
-aWYgKHlwY20gIT0gTlVMTCkgeworCWlmICh5cGNtKSB7CiAJCWNoaXAtPmNhcHR1cmVfc3Vic3Ry
-ZWFtW3lwY20tPmNhcHR1cmVfYmFua19udW1iZXJdID0gTlVMTDsKIAkJc25kX3ltZnBjaV9od19z
-dG9wKGNoaXApOwogCX0KQEAgLTEzMTAsNyArMTMxMCw4IEBAIHN0YXRpYyBpbnQgc25kX3ltZnBj
-aV9zcGRpZl9kZWZhdWx0X3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKIAlzcGlu
-X2xvY2tfaXJxKCZjaGlwLT5yZWdfbG9jayk7CiAJY2hhbmdlID0gY2hpcC0+c3BkaWZfYml0cyAh
-PSB2YWw7CiAJY2hpcC0+c3BkaWZfYml0cyA9IHZhbDsKLQlpZiAoKHNuZF95bWZwY2lfcmVhZHco
-Y2hpcCwgWURTWEdSX1NQRElGT1VUQ1RSTCkgJiAxKSAmJiBjaGlwLT5wY21fc3BkaWYgPT0gTlVM
-TCkKKwlpZiAoKHNuZF95bWZwY2lfcmVhZHcoY2hpcCwgWURTWEdSX1NQRElGT1VUQ1RSTCkgJiAx
-KSAmJgorCSAgICAhY2hpcC0+cGNtX3NwZGlmKQogCQlzbmRfeW1mcGNpX3dyaXRldyhjaGlwLCBZ
-RFNYR1JfU1BESUZPVVRTVEFUVVMsIGNoaXAtPnNwZGlmX2JpdHMpOwogCXNwaW5fdW5sb2NrX2ly
-cSgmY2hpcC0+cmVnX2xvY2spOwogCXJldHVybiBjaGFuZ2U7CkBAIC0yMzc2LDcgKzIzNzcsNyBA
-QCBpbnQgc25kX3ltZnBjaV9jcmVhdGUoc3RydWN0IHNuZF9jYXJkICpjYXJkLAogCQlyZXR1cm4g
-ZXJyOwogCiAJY2hpcCA9IGt6YWxsb2Moc2l6ZW9mKCpjaGlwKSwgR0ZQX0tFUk5FTCk7Ci0JaWYg
-KGNoaXAgPT0gTlVMTCkgeworCWlmICghY2hpcCkgewogCQlwY2lfZGlzYWJsZV9kZXZpY2UocGNp
-KTsKIAkJcmV0dXJuIC1FTk9NRU07CiAJfQpAQCAtMjQzNyw3ICsyNDM4LDcgQEAgaW50IHNuZF95
-bWZwY2lfY3JlYXRlKHN0cnVjdCBzbmRfY2FyZCAqY2FyZCwKICNpZmRlZiBDT05GSUdfUE1fU0xF
-RVAKIAljaGlwLT5zYXZlZF9yZWdzID0ga21hbGxvYyhZRFNYR1JfTlVNX1NBVkVEX1JFR1MgKiBz
-aXplb2YodTMyKSwKIAkJCQkgICBHRlBfS0VSTkVMKTsKLQlpZiAoY2hpcC0+c2F2ZWRfcmVncyA9
-PSBOVUxMKSB7CisJaWYgKCFjaGlwLT5zYXZlZF9yZWdzKSB7CiAJCWVyciA9IC1FTk9NRU07CiAJ
-CWdvdG8gZnJlZV9jaGlwOwogCX0KLS0gCjIuMTQuMQoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The debug functions uses wrongly the %pF instead of the %pS printk format
+specifier for printing symbols for the address returned by
+_builtin_return_address(0). Fix it for the ia64, ppc64 and parisc64
+architectures.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/core/device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/device.c b/sound/core/device.c
+index 8918838..cb0e46f 100644
+--- a/sound/core/device.c
++++ b/sound/core/device.c
+@@ -128,7 +128,7 @@ void snd_device_disconnect(struct snd_card *card, void *device_data)
+ 	if (dev)
+ 		__snd_device_disconnect(dev);
+ 	else
+-		dev_dbg(card->dev, "device disconnect %p (from %pF), not found\n",
++		dev_dbg(card->dev, "device disconnect %p (from %pS), not found\n",
+ 			device_data, __builtin_return_address(0));
+ }
+ EXPORT_SYMBOL_GPL(snd_device_disconnect);
+@@ -152,7 +152,7 @@ void snd_device_free(struct snd_card *card, void *device_data)
+ 	if (dev)
+ 		__snd_device_free(dev);
+ 	else
+-		dev_dbg(card->dev, "device free %p (from %pF), not found\n",
++		dev_dbg(card->dev, "device free %p (from %pS), not found\n",
+ 			device_data, __builtin_return_address(0));
+ }
+ EXPORT_SYMBOL(snd_device_free);
+-- 
+2.1.0
