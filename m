@@ -1,154 +1,135 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v5 02/17] mfd: madera: Add DT bindings for
-	Cirrus Logic Madera codecs
-Date: Wed, 6 Sep 2017 14:20:28 +0100
-Message-ID: <1504704043-8052-3-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v5 10/17] pinctrl: madera: Add DT bindings for Cirrus Logic Madera codecs
+Date: Wed, 6 Sep 2017 14:20:36 +0100
+Message-ID: <1504704043-8052-11-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1504704043-8052-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id F041F266B60
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 15:20:46 +0200 (CEST)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1504704043-8052-1-git-send-email-rf@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Specification of the bindings for the parent MFD driver component
-of the Cirrus Logic Madera codec drivers.
-
-Note that although the interrupt controller and GPIO are child
-drivers their required bindings are trivial, mandatory, and exist
-within the parent MFD node so are documented here.
+This is the binding description of the pinctrl driver for Cirru Logic
+Madera codecs. The binding uses the generic pinctrl binding so  the main
+purpose here is to describe the device-specific names for groups and
+functions.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Acked-by: Rob Herring <robh@kernel.org>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
 ---
- Documentation/devicetree/bindings/mfd/madera.txt | 102 +++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/madera.txt
+No changes since V4
 
-diff --git a/Documentation/devicetree/bindings/mfd/madera.txt b/Documentation/devicetree/bindings/mfd/madera.txt
+ .../bindings/pinctrl/cirrus,madera-pinctrl.txt     | 99 ++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
+
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
 new file mode 100644
-index 0000000..db32660
+index 0000000..b0e36cf
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/madera.txt
-@@ -0,0 +1,102 @@
-+Cirrus Logic Madera class audio codecs Multi-Functional Device
++++ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
+@@ -0,0 +1,99 @@
++Cirrus Logic Madera class audio codecs pinctrl driver
 +
-+These devices are audio SoCs with extensive digital capabilities and a range
-+of analogue I/O.
++The Cirrus Logic Madera codecs provide a number of GPIO functions for
++interfacing to external hardware and to provide logic outputs to other devices.
++Certain groups of GPIO pins also have an alternate function, normally as an
++audio interface.
 +
-+See also the child driver bindings in:
-+bindings/pinctrl/cirrus,madera-pinctrl.txt
-+bindings/regulator/arizona-regulator.txt
-+bindings/sound/madera.txt
++The set of available GPIOs, functions and alternate function groups differs
++between codecs so refer to the datasheet for the codec for further information
++on what is supported on that device.
 +
-+Required properties:
++The properties for this driver exist within the parent MFD driver node.
 +
-+  - compatible : One of the following chip-specific strings:
-+        "cirrus,cs47l35"
-+        "cirrus,cs47l85"
-+        "cirrus,cs47l90"
-+        "cirrus,cs47l91"
-+        "cirrus,wm1840"
++See also
++  the core bindings for the parent MFD driver:
++    Documentation/devicetree/bindings/mfd/madera.txt
 +
-+  - reg : I2C slave address when connected using I2C, chip select number when
-+    using SPI.
++  the generic pinmix bindings:
++    Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
 +
-+  - DCVDD-supply : Power supply for the device as defined in
-+    bindings/regulator/regulator.txt
-+    Mandatory on CS47L35, CS47L90, CS47L91
-+    Optional on CS47L85, WM1840
++Required properties of parent mfd node:
++  - pinctrl-names : must be "default"
++  - pinctrl-0 : a phandle to the node containing the subnodes containing default
++      configurations
 +
-+  - AVDD-supply, DBVDD1-supply, DBVDD2-supply, CPVDD1-supply, CPVDD2-supply :
-+    Power supplies for the device
++Required subnodes:
++  One subnode is required to contain the default settings. It contains an
++  arbitrary number of configuration subnodes, one for each group or pin
++  configuration you want to apply as a default.
 +
-+  - DBVDD3-supply, DBVDD4-supply : Power supplies for the device
-+    (CS47L85, CS47L90, CS47L91, WM1840)
++Required properties of configuration subnodes:
++  - groups : name of one pin group to configure. One of:
++	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
++	dmic4, dmic5, dmic6,
++	gpio1, gpio2, ..., gpio40
++    The gpioN groups select the single pin of this name for configuration
 +
-+  - SPKVDDL-supply, SPKVDDR-supply : Power supplies for the device
-+    (CS47L85, WM1840)
++Optional properties of configuration subnodes:
++  Any configuration option not explicitly listed in the dts will be left at
++  chip default setting.
 +
-+  - SPKVDD-supply : Power supply for the device
-+    (CS47L35)
++  - function : name of function to assign to this group. One of:
++	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
++	dmic3, dmic4, dmic5, dmic6,
++	io, dsp-gpio, irq1, irq2,
++	fll1-clk, fll1-lock, fll2-clk, fll2-lock, fll3-clk, fll3-lock,
++	fllao-clk, fllao-lock,
++	opclk, opclk-async, pwm1, pwm2, spdif,
++	asrc1-in1-lock, asrc1-in2-lock, asrc2-in1-lock, asrc2-in2-lock,
++	spkl-short-circuit, spkr-short-circuit, spk-shutdown,
++	spk-overheat-shutdown, spk-overheat-warn,
++	timer1-sts, timer2-sts, timer3-sts, timer4-sts, timer5-sts, timer6-sts,
++	timer7-sts, timer8-sts,
++	log1-fifo-ne, log2-fifo-ne, log3-fifo-ne, log4-fifo-ne, log5-fifo-ne,
++	log6-fifo-ne, log7-fifo-ne, log8-fifo-ne,
 +
-+  - interrupt-controller : Indicates that this device is an interrupt controller
-+
-+  - #interrupt-cells: the number of cells to describe an IRQ, must be 2.
-+    The first cell is the IRQ number.
-+    The second cell is the flags, encoded as the trigger masks from
-+    bindings/interrupt-controller/interrupts.txt
-+
-+  - gpio-controller : Indicates this device is a GPIO controller.
-+
-+  - #gpio-cells : Must be 2. The first cell is the pin number. The second cell
-+    is reserved for future use and must be zero
-+
-+  - interrupt-parent : The parent interrupt controller.
-+
-+  - interrupts : The interrupt line the /IRQ signal for the device is
-+    connected to.
-+
-+Optional properties:
-+
-+  - MICVDD-supply : Power supply, only need to be specified if
-+    powered externally
-+
-+  - reset-gpios : One entry specifying the GPIO controlling /RESET.
-+    As defined in bindings/gpio.txt.
-+    Although optional, it is strongly recommended to use a hardware reset
-+
-+  - MICBIASx : Initial data for the MICBIAS regulators, as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt.
-+    One for each MICBIAS generator (MICBIAS1, MICBIAS2, ...)
-+    (all codecs)
-+
-+    One for each output pin (MICBIAS1A, MIBCIAS1B, MICBIAS2A, ...)
-+    (all except CS47L85, WM1840)
-+
-+    The following following additional property is supported for the generator
-+    nodes:
-+      - cirrus,ext-cap : Set to 1 if the MICBIAS has external decoupling
-+        capacitors attached.
-+
-+Optional child nodes:
-+    micvdd : Node containing initialization data for the micvdd regulator
-+    See bindings/regulator/arizona-regulator.txt
-+
-+    ldo1 : Node containing initialization data for the LDO1 regulator
-+    See bindings/regulator/arizona-regulator.txt
-+    (cs47l85, wm1840)
++  - bias-disable : disable pull-up and pull-down
++  - bias-bus-hold : enable buskeeper
++  - bias-pull-up : output is pulled-up
++  - bias-pull-down : output is pulled-down
++  - drive-push-pull : CMOS output
++  - drive-open-drain : open-drain output
++  - drive-strength : drive strength in mA. Valid values are 4 or 8
++  - input-schmitt-enable : enable schmitt-trigger mode
++  - input-schmitt-disable : disable schmitt-trigger mode
++  - input-debounce : A value of 0 disables debounce, a value !=0 enables
++	debounce
++  - output-low : set the pin to output mode with low level
++  - output-high : set the pin to output mode with high level
 +
 +Example:
 +
 +cs47l85@0 {
 +	compatible = "cirrus,cs47l85";
-+	reg = <0>;
 +
-+	reset-gpios = <&gpio 0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&cs47l85_defaults>;
 +
-+	interrupt-controller;
-+	#interrupt-cells = <2>;
-+	interrupts = <&host_irq1>;
-+	interrupt-parent = <&gic>;
++	cs47l85_defaults: cs47l85-gpio-defaults {
++		aif1 {
++			groups = "aif1";
++			function = "aif1";
++			bias-bus-hold;
++		};
 +
-+	gpio-controller;
-+	#gpio-cells = <2>;
++		aif2 {
++			groups = "aif2";
++			function = "aif2";
++			bias-bus-hold;
++		};
++
++		opclk {
++			groups = "gpio1";
++			function = "opclk";
++			bias-pull-up;
++			drive-strength = <8>;
++		};
++	};
 +};
 -- 
 1.9.1
