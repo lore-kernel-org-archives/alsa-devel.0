@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/3] ALSA: bebob: Use common error handling
- code in snd_bebob_stream_start_duplex()
-Date: Wed, 6 Sep 2017 12:22:16 +0200
-Message-ID: <541f0f9f-fc87-f65b-bbd8-fec5d45d5d2e@users.sourceforge.net>
+Subject: [PATCH 2/3] ALSA: bebob: Adjust six checks for null
+	pointers
+Date: Wed, 6 Sep 2017 12:23:22 +0200
+Message-ID: <3ef7ccac-9bab-4030-da89-92f5c488e8bf@users.sourceforge.net>
 References: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 497C7266E02
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 12:22:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CA01266E02
+ for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 12:23:28 +0200 (CEST)
 In-Reply-To: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,78 +26,51 @@ To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav 
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 6 Sep 2017 11:40:53 +0200
-
-Add jump targets so that a bit of exception handling can be better reused
-at the end of this function.
-
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/firewire/bebob/bebob_stream.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index 4d3034a68bdf..bc9e42b6368e 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -629,8 +629,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
- 		if (err < 0) {
- 			dev_err(&bebob->unit->device,
- 				"fail to run AMDTP master stream:%d\n", err);
--			break_both_connections(bebob);
--			goto end;
-+			goto break_connections;
- 		}
- 
- 		/*
-@@ -644,19 +643,15 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
- 				dev_err(&bebob->unit->device,
- 					"fail to ensure sampling rate: %d\n",
- 					err);
--				amdtp_stream_stop(&bebob->rx_stream);
--				break_both_connections(bebob);
--				goto end;
-+				goto stop_rx_stream;
- 			}
- 		}
- 
- 		/* wait first callback */
- 		if (!amdtp_stream_wait_callback(&bebob->rx_stream,
- 						CALLBACK_TIMEOUT)) {
--			amdtp_stream_stop(&bebob->rx_stream);
--			break_both_connections(bebob);
- 			err = -ETIMEDOUT;
--			goto end;
-+			goto stop_rx_stream;
- 		}
- 	}
- 
-@@ -666,9 +661,7 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
- 		if (err < 0) {
- 			dev_err(&bebob->unit->device,
- 				"fail to run AMDTP slave stream:%d\n", err);
--			amdtp_stream_stop(&bebob->rx_stream);
--			break_both_connections(bebob);
--			goto end;
-+			goto stop_rx_stream;
- 		}
- 
- 		/* wait first callback */
-@@ -682,6 +675,12 @@ int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
- 	}
- end:
- 	return err;
-+
-+stop_rx_stream:
-+	amdtp_stream_stop(&bebob->rx_stream);
-+break_connections:
-+	break_both_connections(bebob);
-+	return err;
- }
- 
- void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob)
--- 
-2.14.1
+RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
+OiBXZWQsIDYgU2VwIDIwMTcgMTE6NDg6NDQgKzAyMDAKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVu
+dC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVURi04CkNvbnRlbnQtVHJhbnNmZXItRW5jb2Rp
+bmc6IDhiaXQKClRoZSBzY3JpcHQg4oCcY2hlY2twYXRjaC5wbOKAnSBwb2ludGVkIGluZm9ybWF0
+aW9uIG91dCBsaWtlIHRoZSBmb2xsb3dpbmcuCgpDb21wYXJpc29uIHRvIE5VTEwgY291bGQgYmUg
+d3JpdHRlbiDigKYKClRodXMgZml4IHRoZSBhZmZlY3RlZCBzb3VyY2UgY29kZSBwbGFjZXMuCgpT
+aWduZWQtb2ZmLWJ5OiBNYXJrdXMgRWxmcmluZyA8ZWxmcmluZ0B1c2Vycy5zb3VyY2Vmb3JnZS5u
+ZXQ+Ci0tLQogc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMgfCAxMiArKysrKyst
+LS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpk
+aWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMgYi9zb3VuZC9m
+aXJld2lyZS9iZWJvYi9iZWJvYl9zdHJlYW0uYwppbmRleCBiYzllNDJiNjM2OGUuLjIxMWZmNDMy
+MDdkNiAxMDA2NDQKLS0tIGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMKKysr
+IGIvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2Jfc3RyZWFtLmMKQEAgLTI2OCw3ICsyNjgsNyBA
+QCBtYXBfZGF0YV9jaGFubmVscyhzdHJ1Y3Qgc25kX2JlYm9iICpiZWJvYiwgc3RydWN0IGFtZHRw
+X3N0cmVhbSAqcykKIAkgKiB1c2UgdGhlIG1heGltdW0gbGVuZ3RoIG9mIEZDUC4KIAkgKi8KIAli
+dWYgPSBremFsbG9jKDI1NiwgR0ZQX0tFUk5FTCk7Ci0JaWYgKGJ1ZiA9PSBOVUxMKQorCWlmICgh
+YnVmKQogCQlyZXR1cm4gLUVOT01FTTsKIAogCWlmIChzID09ICZiZWJvYi0+dHhfc3RyZWFtKQpA
+QCAtNDcyLDcgKzQ3Miw3IEBAIGJyZWFrX2JvdGhfY29ubmVjdGlvbnMoc3RydWN0IHNuZF9iZWJv
+YiAqYmVib2IpCiAJYmVib2ItPmNvbm5lY3RlZCA9IGZhbHNlOwogCiAJLyogVGhlc2UgbW9kZWxz
+IHNlZW1zIHRvIGJlIGluIHRyYW5zaXRpb24gc3RhdGUgZm9yIGEgbG9uZ2VyIHRpbWUuICovCi0J
+aWYgKGJlYm9iLT5tYXVkaW9fc3BlY2lhbF9xdWlyayAhPSBOVUxMKQorCWlmIChiZWJvYi0+bWF1
+ZGlvX3NwZWNpYWxfcXVpcmspCiAJCW1zbGVlcCgyMDApOwogfQogCkBAIC00OTYsNyArNDk2LDcg
+QEAgc3RhcnRfc3RyZWFtKHN0cnVjdCBzbmRfYmVib2IgKmJlYm9iLCBzdHJ1Y3QgYW1kdHBfc3Ry
+ZWFtICpzdHJlYW0sCiAJCWNvbm4gPSAmYmVib2ItPm91dF9jb25uOwogCiAJLyogY2hhbm5lbCBt
+YXBwaW5nICovCi0JaWYgKGJlYm9iLT5tYXVkaW9fc3BlY2lhbF9xdWlyayA9PSBOVUxMKSB7CisJ
+aWYgKCFiZWJvYi0+bWF1ZGlvX3NwZWNpYWxfcXVpcmspIHsKIAkJZXJyID0gbWFwX2RhdGFfY2hh
+bm5lbHMoYmVib2IsIHN0cmVhbSk7CiAJCWlmIChlcnIgPCAwKQogCQkJZ290byBlbmQ7CkBAIC02
+MTEsNyArNjExLDcgQEAgaW50IHNuZF9iZWJvYl9zdHJlYW1fc3RhcnRfZHVwbGV4KHN0cnVjdCBz
+bmRfYmVib2IgKmJlYm9iLCB1bnNpZ25lZCBpbnQgcmF0ZSkKIAkJICoKIAkJICogRm9yIGZpcm13
+YXJlIGN1c3RvbWl6ZWQgYnkgTS1BdWRpbywgcmVmZXIgdG8gbmV4dCBOT1RFLgogCQkgKi8KLQkJ
+aWYgKGJlYm9iLT5tYXVkaW9fc3BlY2lhbF9xdWlyayA9PSBOVUxMKSB7CisJCWlmICghYmVib2It
+Pm1hdWRpb19zcGVjaWFsX3F1aXJrKSB7CiAJCQllcnIgPSByYXRlX3NwZWMtPnNldChiZWJvYiwg
+cmF0ZSk7CiAJCQlpZiAoZXJyIDwgMCkgewogCQkJCWRldl9lcnIoJmJlYm9iLT51bml0LT5kZXZp
+Y2UsCkBAIC02MzcsNyArNjM3LDcgQEAgaW50IHNuZF9iZWJvYl9zdHJlYW1fc3RhcnRfZHVwbGV4
+KHN0cnVjdCBzbmRfYmVib2IgKmJlYm9iLCB1bnNpZ25lZCBpbnQgcmF0ZSkKIAkJICogVGhlIGZp
+cm13YXJlIGN1c3RvbWl6ZWQgYnkgTS1BdWRpbyB1c2VzIHRoZXNlIGNvbW1hbmRzIHRvCiAJCSAq
+IHN0YXJ0IHRyYW5zbWl0dGluZyBzdHJlYW0uIFRoaXMgaXMgbm90IHVzdWFsIHdheS4KIAkJICov
+Ci0JCWlmIChiZWJvYi0+bWF1ZGlvX3NwZWNpYWxfcXVpcmsgIT0gTlVMTCkgeworCQlpZiAoYmVi
+b2ItPm1hdWRpb19zcGVjaWFsX3F1aXJrKSB7CiAJCQllcnIgPSByYXRlX3NwZWMtPnNldChiZWJv
+YiwgcmF0ZSk7CiAJCQlpZiAoZXJyIDwgMCkgewogCQkJCWRldl9lcnIoJmJlYm9iLT51bml0LT5k
+ZXZpY2UsCkBAIC03OTQsNyArNzk0LDcgQEAgZmlsbF9zdHJlYW1fZm9ybWF0aW9ucyhzdHJ1Y3Qg
+c25kX2JlYm9iICpiZWJvYiwgZW51bSBhdmNfYnJpZGdlY29fcGx1Z19kaXIgZGlyLAogCWludCBl
+cnI7CiAKIAlidWYgPSBrbWFsbG9jKEZPUk1BVF9NQVhJTVVNX0xFTkdUSCwgR0ZQX0tFUk5FTCk7
+Ci0JaWYgKGJ1ZiA9PSBOVUxMKQorCWlmICghYnVmKQogCQlyZXR1cm4gLUVOT01FTTsKIAogCWlm
+IChkaXIgPT0gQVZDX0JSSURHRUNPX1BMVUdfRElSX0lOKQotLSAKMi4xNC4xCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
