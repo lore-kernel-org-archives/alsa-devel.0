@@ -1,15 +1,24 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [RESENT PATCH v9 1/2] ASoC: rt5514: Add devicetree
-	bindings for rt5514-spi
-Date: Wed,  6 Sep 2017 10:50:09 +0800
-Message-ID: <20170906025010.10750-1-jeffy.chen@rock-chips.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 23/25 v3] ALSA/dummy: Replace tasklet with
+	softirq hrtimer
+Date: Wed, 6 Sep 2017 13:30:03 +0900
+Message-ID: <4d532df1-1581-f390-322d-39de5595d26f@sakamocchi.jp>
+References: <s5hh8wnvjei.wl-tiwai@suse.de>
+ <20170901102537.8066-1-o-takashi@sakamocchi.jp>
+ <s5hbmmutytt.wl-tiwai@suse.de>
+ <19775981-a3f2-5f65-e934-bfe25db62a43@sakamocchi.jp>
+ <20170905155351.2xmwyxrirndfwtgo@breakpoint.cc>
+ <4cf46286-daf8-d52c-dacc-fa16052dcdb2@sakamocchi.jp>
+ <20170905161820.jtysvxtfleunbbmf@breakpoint.cc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.138])
- by alsa0.perex.cz (Postfix) with ESMTP id D2D5426734C
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 04:50:22 +0200 (CEST)
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id B5DE226734C
+ for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 06:30:06 +0200 (CEST)
+In-Reply-To: <20170905161820.jtysvxtfleunbbmf@breakpoint.cc>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,81 +28,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Mark Brown <broonie@kernel.org>, Jeffy Chen <jeffy.chen@rock-chips.com>, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, mka@chromium.org
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: alsa-devel@alsa-project.org, keescook@chromium.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, john.stultz@linaro.org, tglx@linutronix.de, anna-maria@linutronix.de, hch@lst.de
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree bindings documentation file for rt5514 spi dsp codec.
-
-Also update rt5514 i2c dt-binding's compatible to distinguish it from
-rt5514 spi.
-
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
----
-
-Changes in v9:
-Address comments from Brian.
-
- .../devicetree/bindings/sound/rt5514-spi.txt       | 29 ++++++++++++++++++++++
- Documentation/devicetree/bindings/sound/rt5514.txt |  4 +--
- 2 files changed, 31 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/rt5514-spi.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/rt5514-spi.txt b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
-new file mode 100644
-index 000000000000..7911d1adbd29
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rt5514-spi.txt
-@@ -0,0 +1,29 @@
-+RT5514 SPI audio CODEC
-+
-+This device supports SPI only.
-+
-+Required properties:
-+
-+- compatible : "realtek,rt5514" or "realtek,rt5514", "realtek,rt5514-spi".
-+
-+- reg : The SPI address of the device.
-+
-+Optional properties:
-+
-+- interrupt-parent: Should be the phandle for the interrupt controller
-+- interrupts: The interrupt number to the cpu. The interrupt specifier format
-+	      depends on the interrupt controller.
-+
-+Example:
-+
-+codec: rt5514-spi@0 {
-+	compatible = "realtek,rt5514", "realtek,rt5514-spi";
-+	reg = <0>;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mic_int>;
-+
-+	interrupt-parent = <&gpio1>;
-+	interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
-+	wakeup-source;
-+};
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index 929ca6756b02..841a1159e234 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -4,7 +4,7 @@ This device supports I2C only.
- 
- Required properties:
- 
--- compatible : "realtek,rt5514".
-+- compatible : "realtek,rt5514" or "realtek,rt5514", "realtek,rt5514-i2c".
- 
- - reg : The I2C address of the device.
- 
-@@ -28,6 +28,6 @@ Pins on the device (for linking into audio routes) for RT5514:
- Example:
- 
- codec: rt5514@57 {
--	compatible = "realtek,rt5514";
-+	compatible = "realtek,rt5514", "realtek,rt5514-i2c";
- 	reg = <0x57>;
- };
--- 
-2.11.0
+T24gU2VwIDYgMjAxNyAwMToxOCwgU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvciB3cm90ZToKPiBG
+cm9tOiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4KPiAKPiBUaGUgdGFza2xl
+dCBpcyB1c2VkIHRvIGRlZmVyIHRoZSBleGVjdXRpb24gb2Ygc25kX3BjbV9wZXJpb2RfZWxhcHNl
+ZCgpIHRvCj4gdGhlIHNvZnRpcnEgY29udGV4dC4gVXNpbmcgdGhlIENMT0NLX01PTk9UT05JQ19T
+T0ZUIGJhc2UgaW52b2tlcyB0aGUgdGltZXIKPiBjYWxsYmFjayBpbiBzb2Z0aXJxIGNvbnRleHQg
+YXMgd2VsbCB3aGljaCByZW5kZXJzIHRoZSB0YXNrbGV0IHVzZWxlc3MuCj4gCj4gU2lnbmVkLW9m
+Zi1ieTogVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+Cj4gU2lnbmVkLW9mZi1i
+eTogQW5uYS1NYXJpYSBHbGVpeG5lciA8YW5uYS1tYXJpYUBsaW51dHJvbml4LmRlPgo+IENjOiBK
+YXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pgo+IENjOiBUYWthc2hpIEl3YWkgPHRpd2Fp
+QHN1c2UuY29tPgo+IENjOiBUYWthc2hpIFNha2Ftb3RvIDxvLXRha2FzaGlAc2FrYW1vY2NoaS5q
+cD4KPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gW28tdGFrYXNoaTogYXZvaWQg
+c3RhbGwgZHVlIHRvIGEgY2FsbCBvZiBocnRpbWVyX2NhbmNlbCgpIG9uIGEgY2FsbGJhY2sKPiAg
+ICAgICAgICAgICAgb2YgaHJ0aW1lcl0KPiBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIFNha2Ftb3Rv
+IDxvLXRha2FzaGlAc2FrYW1vY2NoaS5qcD4KPiBTaWduZWQtb2ZmLWJ5OiBTZWJhc3RpYW4gQW5k
+cnplaiBTaWV3aW9yIDxiaWdlYXN5QGxpbnV0cm9uaXguZGU+Cj4gLS0tCj4gT24gMjAxNy0wOS0w
+NiAwMTowNTo0MyBbKzA5MDBdLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+PiBBcyBJd2FpLXNh
+biBtZW50aW9uZWQsIGluIHRoaXMgZnVuY3Rpb24sIC50cmlnZ2VyIGNhbiBiZSBjYWxsZWQgaW4g
+dHdvCj4+IGNhc2VzOyBYUlVOIG9jY3VycyBhbmQgZHJhaW5pbmcgaXMgZG9uZS4gVGh1cywgbGV0
+IHlvdSBjaGFuZ2UgdGhlIGNvbW1lbnQgYXMKPj4gJ0luIGNhc2VzIG9mIFhSVU4gYW5kIGRyYWlu
+aW5nLCB0aGlzIGNhbGxzIC50cmlnZ2VyIHRvIHN0b3AgUENNIHN1YnN0cmVhbS4nLgo+PiBJJ20g
+c29ycnkgdG8gdHJvdWJsZSB5b3UuCj4+Cj4+IHNuZF9wY21fcGVyaW9kX2VsYXBzZWQoKQo+PiAt
+PnNuZF9wY21fdXBkYXRlX2h3X3B0cjAoKQo+PiAgICAtPnNuZF9wY21fdXBkYXRlX3N0YXRlKCkK
+Pj4gICAgICAtPnNuZF9wY21fZHJhaW5fZG9uZSgpCj4+ICAgICAgICAuLi4KPj4gICAgICAgIC0+
+LnRyaWdnZXIoVFJJR0dFUl9TVE9QKQo+PiAgICAgIC0+eHJ1bigpCj4+ICAgICAgICAtPnNuZF9w
+Y21fc3RvcCgpCj4+ICAgICAgICAgIC4uLgo+PiAgICAgICAgICAtPi50cmlnZ2VyKFRSSUdHRVJf
+U1RPUCkKPj4KPiAKPiBJIHRoaW5rIHlvdSBhc2tlZCBtZSBqdXN0IHRvIHVwZGF0ZSB0aGUgY29t
+bWVudC4gRGlkIEkgZG8gaXQgcmlnaHQ/Cj4gCj4gdjLigKZ2MzogdXBkYXRlZCB0aGUgY29tbWVu
+dCBhcyBwZXIgVGFrYXNoaSBTYWthbW90bydzIHN1Z2dlc3Rpb24uCj4gdjHigKZ2MjogbWVyZ2Vk
+IFRha2FzaGkgU2FrYW1vdG8gZml4dXAgb2YgdGhlIG9yaWdpbmFsIHBhdGNoIGludG8gdjIuCj4g
+Cj4gICBzb3VuZC9kcml2ZXJzL2R1bW15LmMgfCAyNSArKysrKysrKysrKy0tLS0tLS0tLS0tLS0t
+Cj4gICAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCgpU
+aGlzIExvb2tzIGdvb2QgdG8gbWUuIEkgZGlkIHF1aWNrIHRlc3QgYW5kIGNvbmZpcm1lZCB0aGF0
+IGl0IGJyaW5ncyBubyAKc3RhbGxzLgoKVGVzdGVkLWJ5OiBUYWthc2hpIFNha2Ftb3RvIDxvLXRh
+a2FzaGlAc2FrYW1vY2NoaS5qcD4KCj4gZGlmZiAtLWdpdCBhL3NvdW5kL2RyaXZlcnMvZHVtbXku
+YyBiL3NvdW5kL2RyaXZlcnMvZHVtbXkuYwo+IGluZGV4IGRkNWVkMDM3YWRmMi4uY2RkODUxMjg2
+ZjkyIDEwMDY0NAo+IC0tLSBhL3NvdW5kL2RyaXZlcnMvZHVtbXkuYwo+ICsrKyBiL3NvdW5kL2Ry
+aXZlcnMvZHVtbXkuYwo+IEBAIC0zNzYsMTcgKzM3Niw5IEBAIHN0cnVjdCBkdW1teV9ocnRpbWVy
+X3BjbSB7Cj4gICAJa3RpbWVfdCBwZXJpb2RfdGltZTsKPiAgIAlhdG9taWNfdCBydW5uaW5nOwo+
+ICAgCXN0cnVjdCBocnRpbWVyIHRpbWVyOwo+IC0Jc3RydWN0IHRhc2tsZXRfc3RydWN0IHRhc2ts
+ZXQ7Cj4gICAJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW07Cj4gICB9Owo+ICAg
+Cj4gLXN0YXRpYyB2b2lkIGR1bW15X2hydGltZXJfcGNtX2VsYXBzZWQodW5zaWduZWQgbG9uZyBw
+cml2KQo+IC17Cj4gLQlzdHJ1Y3QgZHVtbXlfaHJ0aW1lcl9wY20gKmRwY20gPSAoc3RydWN0IGR1
+bW15X2hydGltZXJfcGNtICopcHJpdjsKPiAtCWlmIChhdG9taWNfcmVhZCgmZHBjbS0+cnVubmlu
+ZykpCj4gLQkJc25kX3BjbV9wZXJpb2RfZWxhcHNlZChkcGNtLT5zdWJzdHJlYW0pOwo+IC19Cj4g
+LQo+ICAgc3RhdGljIGVudW0gaHJ0aW1lcl9yZXN0YXJ0IGR1bW15X2hydGltZXJfY2FsbGJhY2so
+c3RydWN0IGhydGltZXIgKnRpbWVyKQo+ICAgewo+ICAgCXN0cnVjdCBkdW1teV9ocnRpbWVyX3Bj
+bSAqZHBjbTsKPiBAQCAtMzk0LDcgKzM4NiwxNCBAQCBzdGF0aWMgZW51bSBocnRpbWVyX3Jlc3Rh
+cnQgZHVtbXlfaHJ0aW1lcl9jYWxsYmFjayhzdHJ1Y3QgaHJ0aW1lciAqdGltZXIpCj4gICAJZHBj
+bSA9IGNvbnRhaW5lcl9vZih0aW1lciwgc3RydWN0IGR1bW15X2hydGltZXJfcGNtLCB0aW1lcik7
+Cj4gICAJaWYgKCFhdG9taWNfcmVhZCgmZHBjbS0+cnVubmluZykpCj4gICAJCXJldHVybiBIUlRJ
+TUVSX05PUkVTVEFSVDsKPiAtCXRhc2tsZXRfc2NoZWR1bGUoJmRwY20tPnRhc2tsZXQpOwo+ICsJ
+LyoKPiArCSAqIEluIGNhc2VzIG9mIFhSVU4gYW5kIGRyYWluaW5nLCB0aGlzIGNhbGxzIC50cmln
+Z2VyIHRvIHN0b3AgUENNCj4gKwkgKiBzdWJzdHJlYW0uCj4gKwkgKi8KPiArCXNuZF9wY21fcGVy
+aW9kX2VsYXBzZWQoZHBjbS0+c3Vic3RyZWFtKTsKPiArCWlmICghYXRvbWljX3JlYWQoJmRwY20t
+PnJ1bm5pbmcpKQo+ICsJCXJldHVybiBIUlRJTUVSX05PUkVTVEFSVDsKPiArCj4gICAJaHJ0aW1l
+cl9mb3J3YXJkX25vdyh0aW1lciwgZHBjbS0+cGVyaW9kX3RpbWUpOwo+ICAgCXJldHVybiBIUlRJ
+TUVSX1JFU1RBUlQ7Cj4gICB9Cj4gQEAgLTQxNCwxNCArNDEzLDE0IEBAIHN0YXRpYyBpbnQgZHVt
+bXlfaHJ0aW1lcl9zdG9wKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQo+ICAg
+CXN0cnVjdCBkdW1teV9ocnRpbWVyX3BjbSAqZHBjbSA9IHN1YnN0cmVhbS0+cnVudGltZS0+cHJp
+dmF0ZV9kYXRhOwo+ICAgCj4gICAJYXRvbWljX3NldCgmZHBjbS0+cnVubmluZywgMCk7Cj4gLQlo
+cnRpbWVyX2NhbmNlbCgmZHBjbS0+dGltZXIpOwo+ICsJaWYgKCFocnRpbWVyX2NhbGxiYWNrX3J1
+bm5pbmcoJmRwY20tPnRpbWVyKSkKPiArCQlocnRpbWVyX2NhbmNlbCgmZHBjbS0+dGltZXIpOwo+
+ICAgCXJldHVybiAwOwo+ICAgfQo+ICAgCj4gICBzdGF0aWMgaW5saW5lIHZvaWQgZHVtbXlfaHJ0
+aW1lcl9zeW5jKHN0cnVjdCBkdW1teV9ocnRpbWVyX3BjbSAqZHBjbSkKPiAgIHsKPiAgIAlocnRp
+bWVyX2NhbmNlbCgmZHBjbS0+dGltZXIpOwo+IC0JdGFza2xldF9raWxsKCZkcGNtLT50YXNrbGV0
+KTsKPiAgIH0KPiAgIAo+ICAgc3RhdGljIHNuZF9wY21fdWZyYW1lc190Cj4gQEAgLTQ2NiwxMiAr
+NDY1LDEwIEBAIHN0YXRpYyBpbnQgZHVtbXlfaHJ0aW1lcl9jcmVhdGUoc3RydWN0IHNuZF9wY21f
+c3Vic3RyZWFtICpzdWJzdHJlYW0pCj4gICAJaWYgKCFkcGNtKQo+ICAgCQlyZXR1cm4gLUVOT01F
+TTsKPiAgIAlzdWJzdHJlYW0tPnJ1bnRpbWUtPnByaXZhdGVfZGF0YSA9IGRwY207Cj4gLQlocnRp
+bWVyX2luaXQoJmRwY20tPnRpbWVyLCBDTE9DS19NT05PVE9OSUMsIEhSVElNRVJfTU9ERV9SRUwp
+Owo+ICsJaHJ0aW1lcl9pbml0KCZkcGNtLT50aW1lciwgQ0xPQ0tfTU9OT1RPTklDX1NPRlQsIEhS
+VElNRVJfTU9ERV9SRUwpOwo+ICAgCWRwY20tPnRpbWVyLmZ1bmN0aW9uID0gZHVtbXlfaHJ0aW1l
+cl9jYWxsYmFjazsKPiAgIAlkcGNtLT5zdWJzdHJlYW0gPSBzdWJzdHJlYW07Cj4gICAJYXRvbWlj
+X3NldCgmZHBjbS0+cnVubmluZywgMCk7Cj4gLQl0YXNrbGV0X2luaXQoJmRwY20tPnRhc2tsZXQs
+IGR1bW15X2hydGltZXJfcGNtX2VsYXBzZWQsCj4gLQkJICAgICAodW5zaWduZWQgbG9uZylkcGNt
+KTsKPiAgIAlyZXR1cm4gMDsKPiAgIH0KCgpUaGFua3MKClRha2FzaGkgU2FrYW1vdG8KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
