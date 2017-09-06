@@ -1,19 +1,19 @@
-From: happy musicmaker <happy.musicmaker@gmail.com>
-Subject: Re: ALSA MIDI exclusive mode ?
-Date: Wed, 6 Sep 2017 14:27:39 +0800
-Message-ID: <CAJDJRCq3dP+ZMB4EW8iCyRwi_4nd39_Gv4Zc__JAzCrCAAgV8w@mail.gmail.com>
-References: <CAJDJRCqNBANLhyc0RpUrz+3G_fzmGO0nGddi2j_WVx8NAo+qdQ@mail.gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH v2] ALSA: maestro3: Use common error handling
+ code in two functions
+Date: Wed, 6 Sep 2017 08:32:23 +0200
+Message-ID: <83b1ba49-253d-72ed-b3b0-ec7d5e72a12c@users.sourceforge.net>
+References: <e6f4f769-eef7-75e7-19b2-7052328f4b9a@users.sourceforge.net>
+ <20170822140343.yg7bh3qylthja3tn@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f182.google.com (mail-yw0-f182.google.com
- [209.85.161.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 16DCD26734C
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 08:27:40 +0200 (CEST)
-Received: by mail-yw0-f182.google.com with SMTP id r85so3920303ywg.1
- for <alsa-devel@alsa-project.org>; Tue, 05 Sep 2017 23:27:40 -0700 (PDT)
-In-Reply-To: <CAJDJRCqNBANLhyc0RpUrz+3G_fzmGO0nGddi2j_WVx8NAo+qdQ@mail.gmail.com>
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8654826734C
+ for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 08:33:13 +0200 (CEST)
+In-Reply-To: <20170822140343.yg7bh3qylthja3tn@mwanda>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +23,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Jaroslav Kysela <perex@perex.cz>, Julia Lawall <Julia.Lawall@lip6.fr>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Figured it out. The so called "exclusive" mode is because of the
-application opening the port in "raw mode"
-So far I only used sequencer mode in my code and this did not bump into
-this situation.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 6 Sep 2017 08:18:30 +0200
 
+Add jump targets so that a bit of exception handling can be better reused
+at the end of these functions.
 
-On Mon, Sep 4, 2017 at 6:34 PM, happy musicmaker <happy.musicmaker@gmail.com
-> wrote:
+This issue was detected by using the Coccinelle software.
 
->
-> I ready somewhere that some applications, like Bitwig, allocate(?) MIDI
-> ports in "exclusive" mode so that other application cannot connect to the
-> MIDI ports. I used Bitwig and confirmed  that after starting Bitwig in
-> qjackctrl you cannot connect any of the MIDI write/read ports. ( qjackctrl
-> MIDI option  is set to "none") I could not find any documentation on such
-> "exclusive" feature though ?
->
->
->
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+
+v2:
+* An approach to make a few checks for a failure predicate a bit safer
+  was rejected so far.
+
+* Extra blank lines were added before labels.
+
+ sound/pci/maestro3.c | 57 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 28 insertions(+), 29 deletions(-)
+
+diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+index 97ac80af4447..8f20dec97843 100644
+--- a/sound/pci/maestro3.c
++++ b/sound/pci/maestro3.c
+@@ -2622,22 +2622,18 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	err = request_firmware(&chip->assp_kernel_image,
+ 			       "ess/maestro3_assp_kernel.fw", &pci->dev);
+-	if (err < 0) {
+-		snd_m3_free(chip);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_chip;
+ 
+ 	err = request_firmware(&chip->assp_minisrc_image,
+ 			       "ess/maestro3_assp_minisrc.fw", &pci->dev);
+-	if (err < 0) {
+-		snd_m3_free(chip);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_chip;
++
++	err = pci_request_regions(pci, card->driver);
++	if (err < 0)
++		goto free_chip;
+ 
+-	if ((err = pci_request_regions(pci, card->driver)) < 0) {
+-		snd_m3_free(chip);
+-		return err;
+-	}
+ 	chip->iobase = pci_resource_start(pci, 0);
+ 	
+ 	/* just to be sure */
+@@ -2655,8 +2651,8 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	if (request_irq(pci->irq, snd_m3_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_m3_free(chip);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto free_chip;
+ 	}
+ 	chip->irq = pci->irq;
+ 
+@@ -2666,10 +2662,9 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 		dev_warn(card->dev, "can't allocate apm buffer\n");
+ #endif
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+-		snd_m3_free(chip);
+-		return err;
+-	}
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
++	if (err < 0)
++		goto free_chip;
+ 
+ 	if ((err = snd_m3_mixer(chip)) < 0)
+ 		return err;
+@@ -2699,6 +2694,10 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
+ 	*chip_ret = chip;
+ 
+ 	return 0; 
++
++free_chip:
++	snd_m3_free(chip);
++	return err;
+ }
+ 
+ /*
+@@ -2741,23 +2740,19 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		break;
+ 	}
+ 
+-	if ((err = snd_m3_create(card, pci,
+-				 external_amp[dev],
+-				 amp_gpio[dev],
+-				 &chip)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	err = snd_m3_create(card, pci, external_amp[dev], amp_gpio[dev], &chip);
++	if (err < 0)
++		goto free_card;
++
+ 	card->private_data = chip;
+ 
+ 	sprintf(card->shortname, "ESS %s PCI", card->driver);
+ 	sprintf(card->longname, "%s at 0x%lx, irq %d",
+ 		card->shortname, chip->iobase, chip->irq);
+ 
+-	if ((err = snd_card_register(card)) < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	err = snd_card_register(card);
++	if (err < 0)
++		goto free_card;
+ 
+ #if 0 /* TODO: not supported yet */
+ 	/* TODO enable MIDI IRQ and I/O */
+@@ -2772,6 +2767,10 @@ snd_m3_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	pci_set_drvdata(pci, card);
+ 	dev++;
+ 	return 0;
++
++free_card:
++	snd_card_free(card);
++	return err;
+ }
+ 
+ static void snd_m3_remove(struct pci_dev *pci)
+-- 
+2.14.1
