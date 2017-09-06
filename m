@@ -1,82 +1,76 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: alsa-utils uses incorrect format for 24 bit audio?
-Date: Wed, 6 Sep 2017 09:28:15 +0900
-Message-ID: <e2ffedd4-a1db-a76b-3bb0-598aa352a74f@sakamocchi.jp>
-References: <alpine.DEB.2.11.1709052122100.24087@lnxricardw1.se.axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id BF9B526734C
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 02:28:21 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.11.1709052122100.24087@lnxricardw1.se.axis.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, alsa-devel <alsa-devel@alsa-project.org>
+From: Jaechul Lee <jcsing.lee@samsung.com>
+Subject: [PATCH v2 1/3] ASoC: samsung: i2s: Use specific name for i2s dais
+Date: Wed, 06 Sep 2017 10:04:13 +0900
+Message-ID: <20170906010415.26952-2-jcsing.lee@samsung.com>
+References: <20170906010415.26952-1-jcsing.lee@samsung.com>
+        <CGME20170906010417epcas2p208db637d89a670d01fa3dbeb78ff0da0@epcas2p2.samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20170906010415.26952-1-jcsing.lee@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, galaxyra@gmail.com, Jaechul Lee <jcsing.lee@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Add specific dais name when components are registered. Component and dai
+name will follow their parent dev name, if the name isn't described.  In
+case of this driver, each dais will have same name like '11440000.i2s0' by
+fmt_single_name function.
 
-On Sep 6 2017 04:32, Ricard Wanderlof wrote:
-> When attempting to use arecord to capture audio from a 24 bit source, and
-> create a 24-bit .wav file I ran into the problem that the resulting file
-> does not seem valid. Looking closer at the contents, it appears that
-> arecord writes the 32-bit S24_LE samples verbatim to the file, and sets
-> the number of bits per sample specifier to 24 in the .wav header, at the
-> same time as it sets the 'block align' to 4 which I suppose is logical,
-> although normally the block align corresponds to the frame size (in bytes)
-> for the sample size specified in the bits per sample specifier.
-> 
-> A number of utilities and applications I tried refused to play the file
-> back properly, including Audacity, VLC, sox and kwave, so I'm guessing the
-> format written by arecord is not valid in this case. 24 bit audio as
-> exported from Audacity for instance in reality corresponds to the ALSA
-> S24_3LE format, i.e. the data is sent with no padding (resulting in a .wav
-> 'block align' specifier of 3 for a mono stream).
-> 
-> Is this a known problem with arecord/aplay, or is it the other
-> applications which have been less than accurate when implementing .wav
-> file standard?
+The problem having same name is that TM2 machine driver can't detect
+capture devices correctly. Machine driver doesn't know which one is proper
+to use for cpu dai. The driver just selects to use 'samsung-i2c-sec' that
+doesn't have capture functionality because the component of
+samsung-i2s-sec is located in the first of the component_list.
 
-Would you please dump headers of RIFF/Wave format file with the captured 
-samples? Like:
+I add dai name like 'samsung-i2s', 'samsung-i2s-sec' for each dais. The
+reason why adding dai id to 1 is that it doesn't allow to use particular
+dai name in case of when I use 0 for dai id.
 
-$ hexdump -C /tmp/test.wav | head -n5
-00000000  52 49 46 46 70 31 00 00  57 41 56 45 66 6d 74 20 
-|RIFFp1..WAVEfmt |
-00000010  10 00 00 00 01 00 01 00  a0 0f 00 00 80 3e 00 00 
-|.............>..|
-00000020  04 00 18 00 64 61 74 61  28 31 00 00 00 00 00 00 
-|....data(1......|
-00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
-|................|
-*
+Signed-off-by: Jaechul Lee <jcsing.lee@samsung.com>
+---
+ sound/soc/samsung/i2s.c | 4 ++++
+ sound/soc/samsung/i2s.h | 3 +++
+ 2 files changed, 7 insertions(+)
 
-For confirmation, when capturing any samples, please add '-v' option to 
-arecord command line to dump the type of handled samples. Like:
-
-$ LANG=C arecord -v -D plughw:0,0 -t wav -f S24_LE /tmp/hoge.wav
-Recording WAVE '/tmp/hoge.wav' : Signed 24 bit Little Endian, Rate 8000 
-Hz, Mono
-Plug PCM: Rate conversion PCM (48000, sformat=S24_LE)
-Converter: libspeex (external)
-Protocol version: 10002
-Its setup is:
-   stream       : CAPTURE
-   access       : RW_INTERLEAVED
-   format       : S24_LE
-...
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 10a4da06c0a1..3aa2e7d54ea9 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1096,6 +1096,7 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev,
+ 	i2s->pdev = pdev;
+ 	i2s->pri_dai = NULL;
+ 	i2s->sec_dai = NULL;
++	i2s->i2s_dai_drv.id = 1;
+ 	i2s->i2s_dai_drv.symmetric_rates = 1;
+ 	i2s->i2s_dai_drv.probe = samsung_i2s_dai_probe;
+ 	i2s->i2s_dai_drv.remove = samsung_i2s_dai_remove;
+@@ -1108,10 +1109,13 @@ static struct i2s_dai *i2s_alloc_dai(struct platform_device *pdev,
+ 	i2s->i2s_dai_drv.playback.formats = SAMSUNG_I2S_FMTS;
+ 
+ 	if (!sec) {
++		i2s->i2s_dai_drv.name = SAMSUNG_I2S_DAI;
+ 		i2s->i2s_dai_drv.capture.channels_min = 1;
+ 		i2s->i2s_dai_drv.capture.channels_max = 2;
+ 		i2s->i2s_dai_drv.capture.rates = i2s_dai_data->pcm_rates;
+ 		i2s->i2s_dai_drv.capture.formats = SAMSUNG_I2S_FMTS;
++	} else {
++		i2s->i2s_dai_drv.name = SAMSUNG_I2S_DAI_SEC;
+ 	}
+ 	return i2s;
+ }
+diff --git a/sound/soc/samsung/i2s.h b/sound/soc/samsung/i2s.h
+index 21ff24e930db..79781de2f247 100644
+--- a/sound/soc/samsung/i2s.h
++++ b/sound/soc/samsung/i2s.h
+@@ -13,6 +13,9 @@
+ #ifndef __SND_SOC_SAMSUNG_I2S_H
+ #define __SND_SOC_SAMSUNG_I2S_H
+ 
++#define SAMSUNG_I2S_DAI        "samsung-i2s"
++#define SAMSUNG_I2S_DAI_SEC    "samsung-i2s-sec"
++
+ #define SAMSUNG_I2S_DIV_BCLK	1
+ 
+ #define SAMSUNG_I2S_RCLKSRC_0	0
+-- 
+2.14.1
