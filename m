@@ -1,46 +1,64 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 1/3] ALSA: ymfpci: Use common error
- handling code in snd_card_ymfpci_probe()
-Date: Thu, 7 Sep 2017 00:51:20 +0300
-Message-ID: <20170906215120.m7ifun3doq5famva@mwanda>
-References: <dafe6d86-1bfd-41a8-e189-bde7ae30dea9@users.sourceforge.net>
- <c3b3d66c-1fb1-8bb9-cf00-674fd4e20afb@users.sourceforge.net>
+From: Lori Hikichi <lori.hikichi-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>
+Subject: Re: [PATCH 2/9] ASoC: cygnus: Update bindings for audio clock changes
+Date: Wed, 6 Sep 2017 18:45:22 -0700
+Message-ID: <492cb202-f4cb-4f5d-5d32-3dee4f1226b5@broadcom.com>
+References: <1502748417-26417-1-git-send-email-lori.hikichi@broadcom.com>
+ <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
+ <20170815171424.whcy4mftex6sgzgj@sirena.org.uk>
+ <d7e7144b-26c7-b96a-663d-03744bb60c36@broadcom.com>
+ <20170816105954.ve434zeeqinweo5a@sirena.org.uk>
+ <8c2fc92d-5ea8-8163-a588-0a4cba55e0f8@broadcom.com>
+ <20170822160703.nusf7sv6k4gj3pti@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id CC9972673FE
- for <alsa-devel@alsa-project.org>; Wed,  6 Sep 2017 23:51:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <c3b3d66c-1fb1-8bb9-cf00-674fd4e20afb@users.sourceforge.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, David Howells <dhowells@redhat.com>, Ingo Molnar <mingo@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170822160703.nusf7sv6k4gj3pti-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ray Jui <rjui-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Scott Branden <sbranden-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, Jon Mason <jonmason-dY08KVG/lbpWk0Htik3J/w@public.gmane.org>, bcm-kernel-feedback-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 06, 2017 at 09:46:52PM +0200, SF Markus Elfring wrote:
-> @@ -336,21 +331,24 @@ static int snd_card_ymfpci_probe(struct pci_dev *pci,
->  			legacy_ctrl &= ~YMFPCI_LEGACY_FMEN;
->  			pci_write_config_word(pci, PCIR_DSXG_LEGACY, legacy_ctrl);
->  		} else if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
-> -			snd_card_free(card);
-                        ^^^^^^^^^^^^^^^^^^^
->  			dev_err(card->dev, "cannot create opl3 hwdep\n");
-                                ^^^^^^^^^
-> -			return err;
-> +			goto free_card;
 
-Heh.  I was worried that some of these re-orderings would introduce bugs
-but actually this one fixes a use after free.
 
-regards,
-dan carpenter
+On 8/22/2017 9:07 AM, Mark Brown wrote:
+> On Wed, Aug 16, 2017 at 12:39:42PM -0700, Lori Hikichi wrote:
+>
+>> By far the most common usage case for Cygnus is a configuration which
+>> uses only the three i2s/tdm ports. In this case each port is assigned
+>> a clock.  Each clock has the same capabilities so there would never be
+>> a reason change the static mapping.
+> The usual reason would be to bring things into sync.
+>
+>> Now for the case when the "non-audio block" uses one of these clocks.
+>> In this situation we will only need one i2s port because this
+>> configuration of the chip is not audio intensive.  When the system
+>> is designed we know if this non-audio block will be in use, it is not
+>> a runtime configurable thing. Again, a static mapping is fine.
+> Is this limitation when the other block is in use a physical limitation
+> or is it just a case of not seeing the use case.
+>
+>> At the time it did not seem necessary to make addition driver changes to
+>> support a use case that will very likely never arise. As it turns out,
+>> we are working on a new version of this audio block.  The clocking
+>> configuration for this new version is more complex and I am already in
+>> the process of creating clock bindings for all this this. I am hopeful
+>> that the driver for this new version will be applicable to Cygnus.
+> If the clocking is more complex that seems like even more reason to not
+> fix this in the binding, and possibly to do as I think I suggested
+> earlier and use the common clock bindings to manage this rather than
+> doing something custom and driver specific.
+Ok, I will create the necessary clocks to allow this to work.
+This will likely impact a couple of the other patches in the series, but
+most should be applicable. What would be the best way to have some of the
+other patches in this series reviewed?  Should I just drop this series and
+resubmit new individual patches for review.
+
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
