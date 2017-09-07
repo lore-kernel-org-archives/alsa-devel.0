@@ -1,14 +1,23 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: [PATCH] ASoC: adau17x1: Workaround for noise bug in ADC
-Date: Thu, 7 Sep 2017 15:31:38 +0200
-Message-ID: <alpine.DEB.2.11.1709061745140.14549@lnxricardw1.se.axis.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
+ when it is equal to system freq
+Date: Thu, 7 Sep 2017 14:44:11 +0100
+Message-ID: <20170907134411.uzwh54lstzmvp6dd@sirena.co.uk>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <20170905050602.GA2774@Asurada-CZ80>
+ <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
+ <20170905075247.GA6112@Asurada>
+ <deb40031-9db0-d667-7314-352cf548c295@denx.de>
+ <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
+ <20170905174528.GA23906@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3579945189696855673=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 23BC92669F3
- for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 15:31:45 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36AC12669F3
+ for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 15:44:23 +0200 (CEST)
+In-Reply-To: <20170905174528.GA23906@Asurada-Nvidia>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,100 +27,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The ADC in the ADAU1361 (and possibly other Analog Devices codecs) =
+--===============3579945189696855673==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rgvmcye5ctp4qbis"
+Content-Disposition: inline
 
-exhibits a cyclic variation in the noise floor (in our test setup between =
 
--87 and -93 dB), a new value being attained within this range whenever a =
+--rgvmcye5ctp4qbis
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-new capture stream is started. The cycle repeats after about 10 or 11 =
+On Tue, Sep 05, 2017 at 10:45:29AM -0700, Nicolin Chen wrote:
 
-restarts.
+> The ipg clock is merely used to access registers, and has nothing
+> (directly) to do with external clock outputs. The driver shall not
+> change the ipg clock as the system ipg clock (its parent clock)
+> might be messed and even system time would get weird -- happened
+> once when the fsl_spdif driver used to call clk_set_rate() on its
+> ipg clock. Although the clock controller should have some kind of
+> protection in my opinion, we just avoid IP clock rate change in all
+> audio drivers as well.
 
-The workaround recommended by the manufacturer is to toggle the ADOSR bit =
+Yes, the clock API needs constraints code.
 
-in the Converter Control 0 register each time a new capture stream is =
+> On the other hand, the sys clock (baudclk in the driver) should be
+> configured whenever it's related to external clock outputs. When I
+> implemented this set_sysclk() for fsl_ssi.c, I used it to set this
+> sys clock (baudclk) by a machine driver, in order to set bit clock.
+> Then someone patched the driver by moving all the code to set_bclk()
+> to make machine drivers simpler. Now the set_sysclk() is remained
+> to give machine drivers a chance to override clock configurations
+> in the hw_params(). This could be used in TDM or some other special
+> cases (It could also have a purpose for backwards compatibility).
 
-started.
+> So here, we should set baudclk (BCLK generator).
 
-I have verified that the patch fixes this problem on the ADAU1361, and =
+No, that's just going to cause confusion - if all the other drivers are
+using set_sysclk() to set an input clock rate to the IP rather than an
+output clock but your driver does something else then sooner or later
+someone will run into trouble with that. =20
 
-according to the manufacturer toggling the bit in question in this manner =
+--rgvmcye5ctp4qbis
+Content-Type: application/pgp-signature; name="signature.asc"
 
-will at least have no detrimental effect on other chips served by this =
+-----BEGIN PGP SIGNATURE-----
 
-driver.
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmxTSoACgkQJNaLcl1U
+h9D6BggAhvgy6CFp6gK7LdASMfJ/yXPXLKrd5loBZcc6V768OgfLWhV27lMkZVR2
+Y4x6glGIG0CdkZEgpFdb8IFXnYuMXk6dHLSDPVHs2Um/1J2w0QzvEO2IttSfJhuc
+G1HCx+TRKn6XmTX2nmC+gkj3Tr8D6ANVbnFOg22/CnUgdiPF+eDeQwCUEuFuytR3
+Zy24+99zVI2C7N/wZl4CwX0bQjYoyql21OxHWwF6BNo2fa7XGMDcqqnX7EorLW8E
+CslI/0j7agznM0wQhdY7Jy2DgVJOmACSbtsuiPlslPzzt+32axY0oWXIEGoSnGRc
+2SplsrX9DOPbqVN9jamSMZ/AjJHwOA==
+=pAg9
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
----
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 2c1bd27..6758f78 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -90,6 +90,27 @@ static int adau17x1_pll_event(struct snd_soc_dapm_widget=
- *w,
- 	return 0;
- }
- =
+--rgvmcye5ctp4qbis--
 
-+static int adau17x1_adc_fixup(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec =3D snd_soc_dapm_to_codec(w->dapm);
-+	struct adau *adau =3D snd_soc_codec_get_drvdata(codec);
-+
-+	/*
-+	 * If we are capturing, toggle the ADOSR bit in Converter Control 0 to
-+	 * avoid losing SNR (workaround from ADI). This must be done after
-+	 * the ADC(s) have been enabled. According to the data sheet, it is
-+	 * normally illegal to set this bit when the sampling rate is 96 kHz,
-+	 * but according to ADI it is acceptable for this workaround.
-+	 */
-+	regmap_update_bits(adau->regmap, ADAU17X1_CONVERTER0,
-+		ADAU17X1_CONVERTER0_ADOSR, ADAU17X1_CONVERTER0_ADOSR);
-+	regmap_update_bits(adau->regmap, ADAU17X1_CONVERTER0,
-+		ADAU17X1_CONVERTER0_ADOSR, 0);
-+
-+	return 0;
-+}
-+
- static const char * const adau17x1_mono_stereo_text[] =3D {
- 	"Stereo",
- 	"Mono Left Channel (L+R)",
-@@ -121,7 +142,8 @@ static const struct snd_soc_dapm_widget adau17x1_dapm_w=
-idgets[] =3D {
- 	SND_SOC_DAPM_MUX("Right DAC Mode Mux", SND_SOC_NOPM, 0, 0,
- 		&adau17x1_dac_mode_mux),
- =
+--===============3579945189696855673==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--	SND_SOC_DAPM_ADC("Left Decimator", NULL, ADAU17X1_ADC_CONTROL, 0, 0),
-+	SND_SOC_DAPM_ADC_E("Left Decimator", NULL, ADAU17X1_ADC_CONTROL, 0, 0,
-+			   adau17x1_adc_fixup, SND_SOC_DAPM_POST_PMU),
- 	SND_SOC_DAPM_ADC("Right Decimator", NULL, ADAU17X1_ADC_CONTROL, 1, 0),
- 	SND_SOC_DAPM_DAC("Left DAC", NULL, ADAU17X1_DAC_CONTROL0, 0, 0),
- 	SND_SOC_DAPM_DAC("Right DAC", NULL, ADAU17X1_DAC_CONTROL0, 1, 0),
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index bf04b7ef..db35003 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -129,5 +129,7 @@ bool adau17x1_has_dsp(struct adau *adau);
- =
 
- #define ADAU17X1_CONVERTER0_CONVSR_MASK		0x7
- =
-
-+#define ADAU17X1_CONVERTER0_ADOSR		BIT(3)
-+
- =
-
- #endif
-
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--===============3579945189696855673==--
