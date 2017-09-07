@@ -1,17 +1,17 @@
 From: Russell Treleaven <rtreleaven@bunnykick.ca>
-Subject: autopoint should be required for bootstrap.sh
-Date: Thu, 7 Sep 2017 13:14:51 -0400
-Message-ID: <CAHzfiZ7L88DTgopcjdF6xp4-2JxE+CBfd7U9Kp_5pLKjOaKDag@mail.gmail.com>
+Subject: bootstrap.sh
+Date: Thu, 7 Sep 2017 13:17:51 -0400
+Message-ID: <CAHzfiZ6kq10Fca-Rs+h04tnFxwrbHda5yHTRi2ZgSigfeG+p1w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A4A026750B
- for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 19:14:53 +0200 (CEST)
-Received: by mail-qk0-f193.google.com with SMTP id g128so186618qke.0
- for <alsa-devel@alsa-project.org>; Thu, 07 Sep 2017 10:14:53 -0700 (PDT)
+Received: from mail-qt0-f180.google.com (mail-qt0-f180.google.com
+ [209.85.216.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C17F26751B
+ for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 19:17:52 +0200 (CEST)
+Received: by mail-qt0-f180.google.com with SMTP id k2so904494qte.2
+ for <alsa-devel@alsa-project.org>; Thu, 07 Sep 2017 10:17:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +24,7 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I attempted to bootstrap pulseaudio and got a non obvious error.
-
-log is here https://pastebin.com/CctNdLwD
-
-installing autopoint fixed the problem
-
-the following patch makes bootstrap.sh fail if autopoint is not available.
-
-diff --git a/bootstrap.sh b/bootstrap.sh
-index 57494fc..0a05a3e 100755
---- a/bootstrap.sh
-+++ b/bootstrap.sh
-@@ -32,13 +32,17 @@ fi
- # configure file faulty.
- if ! pkg-config --version &>/dev/null; then
-     echo "pkg-config is required to bootstrap this program"
--    DIE=1
-+    exit 1
- fi
--
- # Other necessary programs
--intltoolize --version >/dev/null || DIE=1
--test "$DIE" = 1 && exit 1
--
-+if ! autopoint --version &>/dev/null ; then
-+    echo "autopoint is required to bootstrap this program"
-+    exit 1
-+fi
-+if ! intltoolize --version >/dev/null ; then
-+    echo "intltoolize is required to bootstrap this program"
-+    exit 1
-+fi
- autopoint --force
- AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install
---verbose
-
+sorry wrong list.
 
 
 -- 
