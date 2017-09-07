@@ -1,94 +1,44 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 6/6] ASoC: Intel: kbl: Enable mclk and ssp
- sclk early
-Date: Thu, 7 Sep 2017 17:19:25 -0500
-Message-ID: <f1f70b1f-7b83-876a-f0ce-0db6d3542f18@linux.intel.com>
-References: <1504794565-19168-1-git-send-email-subhransu.s.prusty@intel.com>
- <1504794565-19168-7-git-send-email-subhransu.s.prusty@intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk when it is equal
+ to system freq
+Date: Thu, 7 Sep 2017 16:03:48 -0700
+Message-ID: <20170907230345.GA20531@Asurada-Nvidia>
+References: <1504436701-20700-1-git-send-email-lukma@denx.de>
+ <20170905050602.GA2774@Asurada-CZ80>
+ <bbcb123b-8700-501f-e6d9-cab9e212de40@denx.de>
+ <20170905075247.GA6112@Asurada>
+ <deb40031-9db0-d667-7314-352cf548c295@denx.de>
+ <20170905151550.5mhb535p22lsohlh@sirena.org.uk>
+ <20170905174528.GA23906@Asurada-Nvidia>
+ <20170907134411.uzwh54lstzmvp6dd@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <1504794565-19168-7-git-send-email-subhransu.s.prusty@intel.com>
-Content-Language: en-US
-Sender: linux-clk-owner@vger.kernel.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
-Cc: harshapriya.n@intel.com, tiwai@suse.de, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, patches.audio@intel.com, broonie@kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170907134411.uzwh54lstzmvp6dd@sirena.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 07, 2017 at 02:44:11PM +0100, Mark Brown wrote:
+ 
+> > On the other hand, the sys clock (baudclk in the driver) should be
+> > configured whenever it's related to external clock outputs. When I
+> > implemented this set_sysclk() for fsl_ssi.c, I used it to set this
+> > sys clock (baudclk) by a machine driver, in order to set bit clock.
+> > Then someone patched the driver by moving all the code to set_bclk()
+> > to make machine drivers simpler. Now the set_sysclk() is remained
+> > to give machine drivers a chance to override clock configurations
+> > in the hw_params(). This could be used in TDM or some other special
+> > cases (It could also have a purpose for backwards compatibility).
+> 
+> > So here, we should set baudclk (BCLK generator).
+> 
+> No, that's just going to cause confusion - if all the other drivers are
+> using set_sysclk() to set an input clock rate to the IP rather than an
+> output clock but your driver does something else then sooner or later
+> someone will run into trouble with that.  
 
-> +static int platform_clock_control(struct snd_soc_dapm_widget *w,
-> +			struct snd_kcontrol *k, int  event)
-> +{
-> +	struct snd_soc_dapm_context *dapm = w->dapm;
-> +	struct snd_soc_card *card = dapm->card;
-> +	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
-> +
-> +	clk_disable_unprepare(priv->mclk);
-> +	clk_disable_unprepare(priv->sclk);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct snd_soc_dapm_widget kabylake_widgets[] = {
->   	SND_SOC_DAPM_HP("Headphone Jack", NULL),
->   	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-> @@ -77,7 +95,8 @@ enum {
->   	SND_SOC_DAPM_SPK("HDMI1", NULL),
->   	SND_SOC_DAPM_SPK("HDMI2", NULL),
->   	SND_SOC_DAPM_SPK("HDMI3", NULL),
-> -
-> +	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-> +			platform_clock_control, SND_SOC_DAPM_POST_PMD),
-[snip]
-> +static int kabylake_enable_ssp_clks(struct snd_soc_card *card)
-> +{
-> +
-> +	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
-> +	int ret;
-> +
-> +	/* Enable MCLK */
-> +	ret = clk_set_rate(priv->mclk, 24000000);
-> +	if (ret < 0) {
-> +		dev_err(card->dev, "Can't set rate for mclk, err: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(priv->mclk);
-> +	if (ret < 0) {
-> +		dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Enable SCLK */
-> +	ret = clk_set_rate(priv->sclk, 3072000);
-> +	if (ret < 0) {
-> +		dev_err(card->dev, "Can't set rate for sclk, err: %d\n", ret);
-> +		clk_disable_unprepare(priv->mclk);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(priv->sclk);
-> +	if (ret < 0) {
-> +		dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
-> +		clk_disable_unprepare(priv->mclk);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->   static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
->   	struct snd_pcm_hw_params *params)
->   {
->   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->   	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +	struct snd_soc_card *card = rtd->card;
->   	int ret;
->   
-> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
-> +		ret = kabylake_enable_ssp_clks(card);
-
-Is there a reason why the clocks need to be enabled in the hw_params() 
-instead of platform_clock_control()?
-The code is not symmetrical between enable/disable, is this intended? I 
-remember seeing this in a different context (dialog codec?).
+I admit I had that concern. Probably I should have deprecated this
+set_sysclk(). I will try to patch it and hw_params() accordingly.
