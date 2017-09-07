@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ASoC: intel: Kill BUG_ON() usage
-Date: Thu,  7 Sep 2017 10:59:18 +0200
-Message-ID: <20170907085918.4496-4-tiwai@suse.de>
+Subject: [PATCH 2/3] ASoC: davinci: Kill BUG_ON() usage
+Date: Thu,  7 Sep 2017 10:59:17 +0200
+Message-ID: <20170907085918.4496-3-tiwai@suse.de>
 References: <20170907085918.4496-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 002702673FD
+ by alsa0.perex.cz (Postfix) with ESMTP id 00DF12674AB
  for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 10:59:29 +0200 (CEST)
 In-Reply-To: <20170907085918.4496-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,37 +25,27 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Don't use BUG_ON() for a non-critical sanity check on production
-systems.  This patch either removes useless BUG_ON() calls.
+systems.  This patch replaces with a softer WARN_ON() and an error
+path.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/intel/atom/sst/sst_loader.c | 1 -
- sound/soc/intel/atom/sst/sst_stream.c | 1 -
- 2 files changed, 2 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
-index 33917146d9c4..a686eef2cf7f 100644
---- a/sound/soc/intel/atom/sst/sst_loader.c
-+++ b/sound/soc/intel/atom/sst/sst_loader.c
-@@ -415,7 +415,6 @@ int sst_load_fw(struct intel_sst_drv *sst_drv_ctx)
- 			return ret_val;
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index f395bbc7c354..8372ecd1d1e9 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1721,7 +1721,8 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
+ 				PTR_ERR(chan));
+ 		return PTR_ERR(chan);
  	}
+-	BUG_ON(!chan->device || !chan->device->dev);
++	if (WARN_ON(!chan->device || !chan->device->dev))
++		return -EINVAL;
  
--	BUG_ON(!sst_drv_ctx->fw_in_mem);
- 	block = sst_create_block(sst_drv_ctx, 0, FW_DWNL_ID);
- 	if (block == NULL)
- 		return -ENOMEM;
-diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-index 83d8dda15233..65e257b17a7e 100644
---- a/sound/soc/intel/atom/sst/sst_stream.c
-+++ b/sound/soc/intel/atom/sst/sst_stream.c
-@@ -45,7 +45,6 @@ int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
- 	void *data = NULL;
- 
- 	dev_dbg(sst_drv_ctx->dev, "Enter\n");
--	BUG_ON(!params);
- 
- 	str_params = (struct snd_sst_params *)params;
- 	memset(&alloc_param, 0, sizeof(alloc_param));
+ 	if (chan->device->dev->of_node)
+ 		ret = of_property_read_string(chan->device->dev->of_node,
 -- 
 2.14.1
