@@ -1,7 +1,7 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 5/6] ASoC: Intel: Skylake: Add ssp clock driver
-Date: Thu,  7 Sep 2017 19:59:24 +0530
-Message-ID: <1504794565-19168-6-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 6/6] ASoC: Intel: kbl: Enable mclk and ssp sclk early
+Date: Thu,  7 Sep 2017 19:59:25 +0530
+Message-ID: <1504794565-19168-7-git-send-email-subhransu.s.prusty@intel.com>
 References: <1504794565-19168-1-git-send-email-subhransu.s.prusty@intel.com>
 Return-path: <linux-clk-owner@vger.kernel.org>
 In-Reply-To: <1504794565-19168-1-git-send-email-subhransu.s.prusty@intel.com>
@@ -10,350 +10,192 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com, patches.audio@intel.com, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, harshapriya.n@intel.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
+From: Harsha Priya <harshapriya.n@intel.com>
 
-For certain platforms it is required to start the clocks (mclk/sclk/fs)
-before the stream start. Example: for few chrome systems, codec needs the
-mclk/sclk to be enabled early for a successful clock synchronization and
-for few IVI platforms, clock need to be enabled at boot and should be ON
-always.
+rt5663 needs mclk/sclk early to synchronize its internal clocks. Enable
+these clocks early.
 
-This patch creates virtual clock driver, which allows the machine driver to
-use the clock interface to send IPCs to DSP to enable/disable the clocks.
-
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 Signed-off-by: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/Kconfig               |   7 +
- sound/soc/intel/skylake/Makefile      |   5 +
- sound/soc/intel/skylake/skl-ssp-clk.c | 287 ++++++++++++++++++++++++++++++++++
- 3 files changed, 299 insertions(+)
- create mode 100644 sound/soc/intel/skylake/skl-ssp-clk.c
+ sound/soc/intel/Kconfig                      |  1 +
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 94 +++++++++++++++++++++++++++-
+ 2 files changed, 94 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index b3c7f554ec30..b9d9d692b4e3 100644
+index b9d9d692b4e3..6f05119e9df2 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -269,6 +269,13 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
-           Say Y if you have such a device.
-           If unsure select "N".
- 
-+config SND_SOC_INTEL_SKYLAKE_SSP_CLK
-+	tristate
-+	help
-+	   Enabling this will make the clk driver to be compiled and allow to
-+	   control MCLK/SCLK/FS clocks independent of the stream. It should be
-+	   enabled by the respective machine driver.
-+
- config SND_SOC_INTEL_SKYLAKE
- 	tristate
- 	select SND_HDA_EXT_CORE
-diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index 3380deb81015..9131c35ad4bb 100644
---- a/sound/soc/intel/skylake/Makefile
-+++ b/sound/soc/intel/skylake/Makefile
-@@ -13,3 +13,8 @@ snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o cnl-sst-dsp.o \
- 		skl-sst-utils.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
-+
-+#Skylake Clock device support
-+snd-soc-skl-ssp-clk-objs := skl-ssp-clk.o
-+
-+obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE_SSP_CLK) += snd-soc-skl-ssp-clk.o
-diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
-new file mode 100644
-index 000000000000..5b4016826fdc
---- /dev/null
-+++ b/sound/soc/intel/skylake/skl-ssp-clk.c
-@@ -0,0 +1,287 @@
-+/*
-+ *  skl-ssp-clk.c - ASoC skylake ssp clock driver
-+ *
-+ *  Copyright (C) 2017 Intel Corp
-+ *  Author: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
-+ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-+ *
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/err.h>
-+#include <linux/platform_device.h>
+@@ -247,6 +247,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
++	select SND_SOC_INTEL_SKYLAKE_SSP_CLK
+ 	help
+ 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+ 	  create an alsa sound card for RT5663 + MAX98927.
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 7f7607420706..b20804c850a7 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -27,6 +27,9 @@
+ #include "../../codecs/rt5663.h"
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../skylake/skl.h"
 +#include <linux/clk.h>
 +#include <linux/clk-provider.h>
 +#include <linux/clkdev.h>
-+#include "skl-ssp-clk.h"
-+
-+#define to_skl_clk(_hw)	container_of(_hw, struct skl_clk, hw)
-+
-+struct skl_clk_parent {
-+	struct clk_hw *hw;
-+	struct clk_lookup *lookup;
-+};
-+
-+struct skl_clk {
-+	struct clk_hw hw;
-+	struct clk_lookup *lookup;
-+	struct skl_clk_ops *ops;
-+	unsigned long rate;
-+	void *pvt_data;
-+	u32 id;
-+};
-+
-+struct skl_clk_data {
-+	struct skl_clk_parent parent[SKL_MAX_CLK_SRC];
-+	struct skl_clk *clk[SKL_MAX_CLK_CNT];
-+	u8 avail_clk_cnt;
-+};
-+
-+static int skl_clk_prepare(struct clk_hw *hw)
+ 
+ #define KBL_REALTEK_CODEC_DAI "rt5663-aif"
+ #define KBL_MAXIM_CODEC_DAI "max98927-aif1"
+@@ -47,6 +50,8 @@ struct kbl_hdmi_pcm {
+ struct kbl_rt5663_private {
+ 	struct snd_soc_jack kabylake_headset;
+ 	struct list_head hdmi_pcm_list;
++	struct clk *mclk;
++	struct clk *sclk;
+ };
+ 
+ enum {
+@@ -68,6 +73,19 @@ enum {
+ 	SOC_DAPM_PIN_SWITCH("Right Spk"),
+ };
+ 
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++			struct snd_kcontrol *k, int  event)
 +{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
 +
-+	if (!clkdev->ops || !clkdev->ops->prepare)
-+		return -EIO;
-+
-+	if (!clkdev->rate)
-+		return -EINVAL;
-+
-+	return clkdev->ops->prepare(clkdev->pvt_data, clkdev->id, clkdev->rate);
-+}
-+
-+static void skl_clk_unprepare(struct clk_hw *hw)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+
-+	if (!clkdev->ops || !clkdev->ops->unprepare)
-+		return;
-+
-+	if (!clkdev->rate)
-+		return;
-+
-+	clkdev->ops->unprepare(clkdev->pvt_data, clkdev->id, clkdev->rate);
-+}
-+
-+static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
-+					unsigned long parent_rate)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+	int ret;
-+
-+	if (!clkdev->ops || !clkdev->ops->set_rate)
-+		return -EIO;
-+
-+	ret = clkdev->ops->set_rate(clkdev->id, rate);
-+	if (!ret)
-+		clkdev->rate = rate;
-+
-+	return ret;
-+}
-+
-+unsigned long skl_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+
-+	if (clkdev->rate)
-+		return clkdev->rate;
-+
-+	if (!clkdev->ops || !clkdev->ops->recalc_rate)
-+		return -EIO;
-+
-+	clkdev->rate = clkdev->ops->recalc_rate(clkdev->id, parent_rate);
-+
-+	return clkdev->rate;
-+}
-+
-+/* Not supported by clk driver. Implemented to satisfy clk fw */
-+long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-+				unsigned long *parent_rate)
-+{
-+	return rate;
-+}
-+
-+static const struct clk_ops skl_clk_ops = {
-+	.prepare = skl_clk_prepare,
-+	.unprepare = skl_clk_unprepare,
-+	.set_rate = skl_clk_set_rate,
-+	.round_rate = skl_clk_round_rate,
-+	.recalc_rate = skl_clk_recalc_rate,
-+};
-+
-+static void unregister_parent_src_clk(struct skl_clk_parent *pclk, u8 id)
-+{
-+	while (id--) {
-+		clkdev_drop(pclk[id].lookup);
-+		clk_hw_unregister_fixed_rate(pclk[id].hw);
-+	}
-+}
-+
-+static void unregister_src_clk(struct skl_clk_data *dclk)
-+{
-+	u8 cnt = dclk->avail_clk_cnt;
-+
-+	while (cnt--)
-+		clkdev_drop(dclk->clk[cnt]->lookup);
-+}
-+
-+static int skl_register_parent_clks(struct device *dev,
-+			struct skl_clk_parent *parent,
-+			struct skl_clk_parent_src *pclk)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < SKL_MAX_CLK_SRC; i++) {
-+
-+		/* Register Parent clock */
-+		parent[i].hw = clk_hw_register_fixed_rate(dev, pclk[i].name,
-+				pclk[i].parent_name, 0, pclk[i].rate);
-+		if (IS_ERR(parent[i].hw)) {
-+			ret = PTR_ERR_OR_ZERO(parent[i].hw);
-+			goto err;
-+		}
-+
-+		parent[i].lookup = clkdev_hw_create(parent[i].hw, pclk[i].name,
-+									NULL);
-+		if (!parent[i].lookup) {
-+			clk_hw_unregister_fixed_rate(parent[i].hw);
-+			ret = PTR_ERR_OR_ZERO(parent[i].lookup);
-+			goto err;
-+		}
-+	}
++	clk_disable_unprepare(priv->mclk);
++	clk_disable_unprepare(priv->sclk);
 +
 +	return 0;
-+err:
-+	unregister_parent_src_clk(parent, i);
-+	return ret;
 +}
 +
-+/* REMOVE: send only ssp_clks[i], ops */
-+/* Assign fmt_config to clk_data */
-+static struct skl_clk *register_skl_clk(struct device *dev,
-+			struct skl_ssp_clk *clk,
-+			struct skl_clk_pdata *clk_pdata, int id)
+ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+@@ -77,7 +95,8 @@ enum {
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
+-
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route kabylake_map[] = {
+@@ -90,6 +109,7 @@ enum {
+ 	{ "Right Spk", NULL, "Right BE_OUT" },
+ 
+ 	/* other jacks */
++	{ "Headset Mic", NULL, "Platform Clock" },
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 	{ "IN1N", NULL, "Headset Mic" },
+ 	{ "DMic", NULL, "SoC DMIC" },
+@@ -352,13 +372,56 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
++static int kabylake_enable_ssp_clks(struct snd_soc_card *card)
 +{
-+	struct skl_clk *clkdev;
-+	struct clk_init_data init;
++
++	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
 +	int ret;
 +
-+	clkdev = devm_kzalloc(dev, sizeof(*clkdev), GFP_KERNEL);
-+	if (!clkdev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	init.name = clk->name;
-+	init.ops = &skl_clk_ops;
-+	init.flags = 0;
-+	init.parent_names = &clk->parent_name;
-+	init.num_parents = 1;
-+	clkdev->hw.init = &init;
-+	clkdev->ops = clk_pdata->ops;
-+	clkdev->pvt_data = clk_pdata->pvt_data;
-+
-+	clkdev->id = id;
-+	ret = devm_clk_hw_register(dev, &clkdev->hw);
-+	if (ret) {
-+		clkdev = ERR_PTR(ret);
-+		return clkdev;
-+	}
-+
-+	clkdev->lookup = clkdev_hw_create(&clkdev->hw, init.name, NULL);
-+	if (!clkdev->lookup)
-+		clkdev = ERR_PTR(-ENOMEM);
-+
-+	return clkdev;
-+}
-+
-+static int skl_clk_dev_probe(struct platform_device *pdev)
-+{
-+	struct skl_clk_pdata *clk_pdata;
-+	struct skl_clk_parent_src *parent_clks;
-+	struct skl_ssp_clk *clks;
-+	struct skl_clk_data *data;
-+	struct device *dev = &pdev->dev;
-+	int ret, i;
-+
-+	clk_pdata = dev_get_platdata(&pdev->dev);
-+	parent_clks = clk_pdata->parent_clks;
-+	clks = clk_pdata->ssp_clks;
-+	if (!parent_clks || !clks)
-+		return -EIO;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	/* Register Parent clock */
-+	ret = skl_register_parent_clks(dev, data->parent, parent_clks);
-+	if (ret)
++	/* Enable MCLK */
++	ret = clk_set_rate(priv->mclk, 24000000);
++	if (ret < 0) {
++		dev_err(card->dev, "Can't set rate for mclk, err: %d\n", ret);
 +		return ret;
-+
-+	for (i = 0; i < clk_pdata->num_clks; i++) {
-+		/*
-+		 * Only register valid clocks
-+		 * i.e. for which nhlt entry is present.
-+		 */
-+		if (clks[i].rate_cfg[0].rate == 0)
-+			continue;
-+
-+		data->clk[i] = register_skl_clk(dev, &clks[i], clk_pdata, i);
-+		if (IS_ERR(data->clk[i])) {
-+			ret = PTR_ERR(data->clk[i]);
-+			goto err_unreg_skl_clk;
-+		}
-+
-+		data->avail_clk_cnt++;
 +	}
 +
-+	platform_set_drvdata(pdev, data);
++	ret = clk_prepare_enable(priv->mclk);
++	if (ret < 0) {
++		dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
++		return ret;
++	}
 +
-+	return 0;
++	/* Enable SCLK */
++	ret = clk_set_rate(priv->sclk, 3072000);
++	if (ret < 0) {
++		dev_err(card->dev, "Can't set rate for sclk, err: %d\n", ret);
++		clk_disable_unprepare(priv->mclk);
++		return ret;
++	}
 +
-+err_unreg_skl_clk:
-+	unregister_src_clk(data);
-+	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
++	ret = clk_prepare_enable(priv->sclk);
++	if (ret < 0) {
++		dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
++		clk_disable_unprepare(priv->mclk);
++	}
 +
 +	return ret;
 +}
 +
-+static int skl_clk_dev_remove(struct platform_device *pdev)
-+{
-+	struct skl_clk_data *data;
+ static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_card *card = rtd->card;
+ 	int ret;
+ 
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		ret = kabylake_enable_ssp_clks(card);
++		if (ret < 0)
++			return ret;
++	}
 +
-+	data = platform_get_drvdata(pdev);
-+	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
-+	unregister_src_clk(data);
+ 	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
+ 	rt5663_sel_asrc_clk_src(codec_dai->codec,
+ 			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
+@@ -839,6 +902,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_rt5663_private *ctx;
+ 	struct skl_machine_pdata *pdata;
++	int ret;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
+ 	if (!ctx)
+@@ -857,6 +921,34 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 		dmic_constraints = pdata->dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+ 
++	ctx->mclk = devm_clk_get(&pdev->dev, "ssp1_mclk");
++	if (IS_ERR(ctx->mclk)) {
++		ret = PTR_ERR(ctx->mclk);
++		if (ret == -ENOENT) {
++			dev_info(&pdev->dev,
++				"Failed to get ssp1_sclk, defer probe\n");
++			return -EPROBE_DEFER;
++		}
 +
-+	return 0;
-+}
++		dev_err(&pdev->dev, "Failed to get ssp1_mclk with err:%d\n",
++								ret);
++		return ret;
++	}
 +
-+static struct platform_driver skl_clk_driver = {
-+	.driver = {
-+		.name = "skl-ssp-clk",
-+	},
-+	.probe = skl_clk_dev_probe,
-+	.remove = skl_clk_dev_remove,
-+};
++	ctx->sclk = devm_clk_get(&pdev->dev, "ssp1_sclk");
++	if (IS_ERR(ctx->sclk)) {
++		ret = PTR_ERR(ctx->sclk);
++		if (ret == -ENOENT) {
++			dev_info(&pdev->dev,
++				"Failed to get ssp1_sclk, defer probe\n");
++			return -EPROBE_DEFER;
++		}
 +
-+module_platform_driver(skl_clk_driver);
++		dev_err(&pdev->dev, "Failed to get ssp1_sclk with err:%d\n",
++								ret);
++		return ret;
++	}
 +
-+MODULE_DESCRIPTION("Skylake clock driver");
-+MODULE_AUTHOR("Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>");
-+MODULE_AUTHOR("Subhransu S. Prusty <subhransu.s.prusty@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:skl-ssp-clk");
+ 	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
+ }
+ 
 -- 
 1.9.1
 
