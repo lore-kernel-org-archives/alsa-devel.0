@@ -1,16 +1,23 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [bug] Missing "front" definition for byt-max98090
-Date: Thu, 07 Sep 2017 19:33:17 +0300
-Message-ID: <1504801997.2980.25.camel@iki.fi>
-References: <1504787144.2980.23.camel@iki.fi> <s5hpob2havm.wl-tiwai@suse.de>
+From: =?UTF-8?Q?Oleksandr_M=c3=bcller?= <sanj3k@gmail.com>
+Subject: SOC_DAPM_MUX implementation,
+ routes missing and do I need more dapm definitions?
+Date: Thu, 7 Sep 2017 18:33:42 +0200
+Message-ID: <81326d89-262b-b79c-31fb-13671c314b81@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 5E7D9267465
- for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 18:33:22 +0200 (CEST)
-In-Reply-To: <s5hpob2havm.wl-tiwai@suse.de>
+Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB30E2674E4
+ for <alsa-devel@alsa-project.org>; Thu,  7 Sep 2017 18:33:43 +0200 (CEST)
+Received: by mail-wm0-f50.google.com with SMTP id f199so2261646wme.0
+ for <alsa-devel@alsa-project.org>; Thu, 07 Sep 2017 09:33:43 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:4b40:11c0:68e6:23e:6256:3b00?
+ ([2a02:8108:4b40:11c0:68e6:23e:6256:3b00])
+ by smtp.gmail.com with ESMTPSA id e34sm42802wre.15.2017.09.07.09.33.41
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 07 Sep 2017 09:33:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +27,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2017-09-07 at 15:54 +0200, Takashi Iwai wrote:
-> On Thu, 07 Sep 2017 14:25:44 +0200,
-> Tanu Kaskinen wrote:
-> > 
-> > PulseAudio 11 stopped using "hw:" as a fallback for analog stereo if
-> > "front:" doesn't work. This caused a regression on "Toshiba Chromebook
-> > 2 (Swanky)", because PulseAudio doesn't any more do automatic mixer
-> > adjustments when plugging in headphones. Apparently on this machine
-> > "hw:1,0" works fine as a substitute for "front:1,0", but we're not
-> > going to revert the change in PulseAudio, so could someone add the
-> > "front" definition for this machine in alsa-lib? Unfortunately I'm not
-> > proficient enough in the alsa-lib configuration system to make a patch
-> > myself.
-> 
-> Well, this is about the device that has no alsa-lib config.  So far,
-> we assumed that 'front' is available only when defined for the card.
-> But now PA mandates it...  Hmm.  I guess it's no big problem to add a
-> fallback to hw for the front PCM.
-> 
-> The patch below should work for such a device.  It's a patch to
-> alsa-lib source, but basically you can modify similarly the file
-> /usr/share/alsa/pcm/front.conf directly, too.
-> 
-> If it's confirmed to work, I'll merge the patch.
-> 
-> Maybe we can release alsa-lib 1.1.5 along with 4.13 kernel, so a
-> quicker reply would be appreciated.
+Hello guys,
 
-The reporter said[1] that your patch works fine.
+I began with the implementation of a dapm mux and am almost done but I 
+don't get how to configure the routes and I am not sure if I need more 
+dapm definitions. As the capture stream is the source into the 
+SE_IN_L/SE_IN_R I would say this should be the source for the left/right 
+mux (right side of the route definition). Then I would need a switch in 
+the middle and on the left side as the output should be the ADC1 (left 
+side).
 
-I have a concern, though: what about those cases where hw:x,0 is not an
-analog stereo device? The reason why PulseAudio was changed is that
-with the Intel HDMI LPE driver PulseAudio thought that the card had an
-analog stereo device, when in reality it only had HDMI. Doesn't your
-patch reintroduce this problem?
+{ "ADC1", ADC1VINSWITCHLEFT, "SE_IN_L" }, I would think it should look 
+something like this. But then I would need some SOC_DAPM_SINGLE, I think 
+you can see I am clearly confused right now :)
 
-[1] https://bugs.freedesktop.org/show_bug.cgi?id=102560#c6
+I would like to have a mux where I can switch the vin source from vin1 
+to vin4 in alsamixer and then its saved as a default. Because in the 
+layout plan the vin4 is connected and needs to be selected...
 
--- 
-Tanu
+My code so far looks like this:
 
-https://www.patreon.com/tanuk
+static const char * const pcm1863_adc_vinl_src[] = {
+         "VIN1l", "VIN4l"
+};
+
+static const char * const pcm1863_adc_vinr_src[] = {
+         "VIN1r", "VIN4r"
+};
+/*Stereo ADC Source VIN1 left/right */
+static SOC_ENUM_SINGLE_DECL(
+         pcm1863_adc_vin1l_enum, PCM1863_ADC1_INPUT_SEL_L,
+         PCM1863_SEL_L_VIN1_SFT, pcm1863_adc_vinl_src);
+
+static SOC_ENUM_SINGLE_DECL(
+         pcm1863_adc_vin1r_enum, PCM1863_ADC1_INPUT_SEL_R,
+         PCM1863_SEL_R_VIN1_SFT, pcm1863_adc_vinr_src);
+/*Stereo ADC Source VIN4 left/right */
+static SOC_ENUM_SINGLE_DECL(
+         pcm1863_adc_vin4l_enum, PCM1863_ADC1_INPUT_SEL_L,
+         PCM1863_SEL_L_VIN4_SFT, pcm1863_adc_vinl_src);
+
+static SOC_ENUM_SINGLE_DECL(
+         pcm1863_adc_vin4r_enum, PCM1863_ADC1_INPUT_SEL_R,
+         PCM1863_SEL_R_VIN4_SFT, pcm1863_adc_vinr_src);
+
+static const struct snd_kcontrol_new pcm1863_adc_vin1l_mux =
+         SOC_DAPM_ENUM("ADC VIN1l Source", pcm1863_adc_vin1l_enum);
+
+static const struct snd_kcontrol_new pcm1863_adc_vin1r_mux =
+         SOC_DAPM_ENUM("ADC VIN1r Source", pcm1863_adc_vin1r_enum);
+
+static const struct snd_kcontrol_new pcm1863_adc_vin4l_mux =
+         SOC_DAPM_ENUM("ADC VIN4l Source", pcm1863_adc_vin4l_enum);
+
+static const struct snd_kcontrol_new pcm1863_adc_vin4r_mux =
+         SOC_DAPM_ENUM("ADC VIN4r Source", pcm1863_adc_vin4r_enum);
+
+static const struct snd_soc_dapm_widget pcm1863_dapm_widgets[] = {
+         SND_SOC_DAPM_ADC("ADC1", NULL, SND_SOC_NOPM, 0, 0),
+         SND_SOC_DAPM_INPUT("SE_IN_L"),
+         SND_SOC_DAPM_INPUT("SE_IN_R"),
+         SND_SOC_DAPM_MUX("ADC VIN1l Mux", SND_SOC_NOPM, 0, 0,
+                                 &pcm1863_adc_vin1l_mux),
+         SND_SOC_DAPM_MUX("ADC VIN1r Mux", SND_SOC_NOPM, 0, 0,
+                                 &pcm1863_adc_vin1r_mux),
+         SND_SOC_DAPM_MUX("ADC VIN1l Mux", SND_SOC_NOPM, 0, 0,
+                                 &pcm1863_adc_vin4l_mux),
+         SND_SOC_DAPM_MUX("ADC VIN1r Mux", SND_SOC_NOPM, 0, 0,
+                                 &pcm1863_adc_vin4r_mux),
+};
+
+static const struct snd_soc_dapm_route pcm1863_dapm_routes[] = {
+         { "ADC1", NULL, "SE_IN_L" },
+         { "ADC1", NULL, "SE_IN_R" },
+         { "SE_IN_L", NULL, "Capture" },
+         { "SE_IN_R", NULL, "Capture" },
+};
