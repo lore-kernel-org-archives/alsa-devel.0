@@ -1,14 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/7] BYT/CHT clocks/max98090 updates
-Date: Fri,  8 Sep 2017 00:13:02 -0500
-Message-ID: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/7] ASoC: Intel: cht_bsw_max98090: add
+	gpio-based jack detection
+Date: Fri,  8 Sep 2017 00:13:09 -0500
+Message-ID: <20170908051309.19028-8-pierre-louis.bossart@linux.intel.com>
+References: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 80FB7266943
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 07:13:25 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 140D626753F
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 07:13:33 +0200 (CEST)
+In-Reply-To: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +25,115 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patchset corrects issues with an earlier submission (missing
-signoffs, error case not consistent) and enables the cht_bsw_max98090
-machine driver on Baytrail. This should help distributions solve
-problems with Baytrail Chromebooks which required a specific build.
-These patches were tested on Lenovo 100s ('orco'/Baytrail) and Acer
-R11 ('cyan'/Cherrytrail), using the same build based on
-CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH=m.  Playback on
-speakers/headphone and capture from internal mic work fine. UCM files
-are available at
-https://github.com/plbossart/UCM/tree/master/byt-max98090
+Jacks are created but only enabled when the external TI chip is
+present, this probably never worked as well. Forklift the gpio-based
+code from the legacy byt-max98090 driver, with however a less strict
+error check. It's fine to let users enjoy their device even if
+jack detection doesn't work - it almost never does without quirks...
 
-Thanks to Jarkko Nikula and Andy Shevchenko for their comments on an
-initial version reviewed internally at Intel.
+Tested on Lenovo100s
 
-Fang, Yang A (1):
-  ASoC: ts3a227e: add acpi table
+CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 56 +++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-Pierre-Louis Bossart (5):
-  ASoC: max98090: reduce verbosity on PLL unlock
-  ASoC: Intel: cht_bsw_max98090: Fix I2S config + unused code
-  ASoC: Intel: cht_bsw_max98090: add support for Baytrail
-  ASoC: Intel: atom: use cht_bsw_max98090 for Baytrail Chromebooks
-  ASoC: Intel: cht_bsw_max98090: add gpio-based jack detection
-
-Thierry Escande (1):
-  ASoc: Intel: cht_bsw_max98090_ti: Fix jack initialization
-
- sound/soc/codecs/max98090.c                  |   2 +-
- sound/soc/codecs/ts3a227e.c                  |  10 ++
- sound/soc/intel/atom/sst/sst_acpi.c          |   8 ++
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 185 ++++++++++++++++++++++++---
- 4 files changed, 186 insertions(+), 19 deletions(-)
-
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index a1502c7..74c047a 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -159,6 +159,40 @@ static struct notifier_block cht_jack_nb = {
+ 	.notifier_call = cht_ti_jack_event,
+ };
+ 
++static struct snd_soc_jack_pin hs_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
++
++static struct snd_soc_jack_gpio hs_jack_gpios[] = {
++	{
++		.name		= "hp",
++		.report		= SND_JACK_HEADPHONE | SND_JACK_LINEOUT,
++		.debounce_time	= 200,
++	},
++	{
++		.name		= "mic",
++		.invert		= 1,
++		.report		= SND_JACK_MICROPHONE,
++		.debounce_time	= 200,
++	},
++};
++
++static const struct acpi_gpio_params hp_gpios = { 0, 0, false };
++static const struct acpi_gpio_params mic_gpios = { 1, 0, false };
++
++static const struct acpi_gpio_mapping acpi_max98090_gpios[] = {
++	{ "hp-gpios", &hp_gpios, 1 },
++	{ "mic-gpios", &mic_gpios, 1 },
++	{},
++};
++
+ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	int ret;
+@@ -178,15 +212,29 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
+ 
+ 	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
+-					jack_type, jack, NULL, 0);
++				    jack_type, jack,
++				    hs_jack_pins, ARRAY_SIZE(hs_jack_pins));
+ 	if (ret) {
+ 		dev_err(runtime->dev, "Headset Jack creation failed %d\n", ret);
+ 		return ret;
+ 	}
+ 
++
+ 	if (ctx->ts3a227e_present)
+ 		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
+ 
++	ret = snd_soc_jack_add_gpiods(runtime->card->dev->parent, jack,
++				      ARRAY_SIZE(hs_jack_gpios),
++				      hs_jack_gpios);
++	if (ret) {
++		/*
++		 * flag error but don't bail if jack detect is broken
++		 * due to platform issues or bad BIOS/configuration
++		 */
++		dev_err(runtime->dev,
++			"jack detection gpios not added, error %d\n", ret);
++	}
++
+ 	/*
+ 	 * The firmware might enable the clock at
+ 	 * boot (this information may or may not
+@@ -363,6 +411,7 @@ static struct snd_soc_card snd_soc_card_cht = {
+ 
+ static int snd_cht_mc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	int ret_val = 0;
+ 	struct cht_mc_private *drv;
+ 
+@@ -375,6 +424,11 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 		/* no need probe TI jack detection chip */
+ 		snd_soc_card_cht.aux_dev = NULL;
+ 		snd_soc_card_cht.num_aux_devs = 0;
++
++		ret_val = devm_acpi_dev_add_driver_gpios(dev->parent,
++							 acpi_max98090_gpios);
++		if (ret_val)
++			dev_dbg(dev, "Unable to add GPIO mapping table\n");
+ 	}
+ 
+ 	/* register the soc card */
 -- 
 2.9.3
