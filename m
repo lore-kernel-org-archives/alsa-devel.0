@@ -1,29 +1,14 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] sound: soc: fsl: Do not set DAI sysclk
- when it is equal to system freq
-Date: Thu, 7 Sep 2017 17:39:16 -0700
-Message-ID: <20170908003915.GA9464@Asurada-Nvidia>
-References: <20170905052031.GB2774@Asurada-CZ80>
- <819784e1-910b-6833-997a-2097e147bd0c@denx.de>
- <20170905181108.GB23906@Asurada-Nvidia>
- <cfb8f844-87aa-f1f3-bd55-4f2b60f3cf88@denx.de>
- <20170905225225.GA14132@Asurada-Nvidia>
- <ae1d3e2a-d618-05e2-1572-5593caff1ee0@denx.de>
- <20170906173348.GA28104@Asurada-Nvidia>
- <69352458-2e90-a847-2c2f-bba259a32162@denx.de>
- <20170906194748.GA31334@Asurada-Nvidia>
- <76aeecd9-bff8-7b25-ca10-73d0743f724e@denx.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/3] Intel-rt5670 updates
+Date: Thu,  7 Sep 2017 20:12:53 -0500
+Message-ID: <20170908011256.7706-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f53.google.com (mail-pg0-f53.google.com [74.125.83.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 52DCB266943
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 02:38:52 +0200 (CEST)
-Received: by mail-pg0-f53.google.com with SMTP id v66so2173103pgb.5
- for <alsa-devel@alsa-project.org>; Thu, 07 Sep 2017 17:38:51 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <76aeecd9-bff8-7b25-ca10-73d0743f724e@denx.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B808266ED0
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 03:13:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,17 +18,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?Q?=C5=81ukasz?= Majewski <lukma@denx.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, "festevam@gmail.com" <festevam@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, bardliao@realtek.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBTZXAgMDgsIDIwMTcgYXQgMDE6MTA6MTJBTSArMDIwMCwgxYF1a2FzeiBNYWpld3Nr
-aSB3cm90ZToKCj4gPkp1c3QgYWRkIGEgcHJvcGVydHkgdG8gdGhpcyBjcHUgbm9kZSBsaWtlOgo+
-ID4JY2xvY2sgPSA8JmNsa3MgSU1YNlFETF9DTEtfU1NJMj47Cj4gCj4gVGhpcyBkb2Vzbid0IHNv
-bHZlIHRoZSBpc3N1ZToKCkkgaGF2ZSBhIHBhdGNoIGxvY2FsbHkgdGhhdCBzaG91bGQgYmUgYWJs
-ZSB0byBzb2x2ZSB5b3VyIHByb2JsZW0uCkJ1dCBJIG5lZWQgdG8gZmlyc3QgdmVyaWZ5IG9uIG15
-IGJvYXJkIHRvbmlnaHQgYW5kIHdpbGwgc2VuZCBpdApsYXRlciAod2lsbCBwdXQgeW91IGluIHRo
-ZSBUTy9DQyBsaXN0KS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Instead of submitting all my patches at ones, I broke them by
+platforms/codecs. This series is only for Intel-rt5670 platforms. It
+fixes a mistake on the Dell Venue 5585 - corrected with the help from
+Realtek and Dell who kindly provided schematics and data sheet
+information needed to fix non-working DMIC capture. Since there are
+still some reports of non-functional audio on some platforms, I added
+quirks that can be changed from the kernel command line (and later
+added as DMI-based quirks). The last two patches are minor corrections
+to fix ACPI HID naming issues and use a more meaningful card name.
+
+Pierre-Louis Bossart (3):
+  ASoC: rt5670: refactor DMI quirks and fix Dell Venue settings
+  ASoC: Intel: cht_bsw_rt5672: use actual HID in suspend/resume
+  ASoC: Intel: cht_bsw_rt5672: fix card name
+
+ sound/soc/codecs/rt5670.c               | 124 +++++++++++++++++++++++++++-----
+ sound/soc/intel/boards/cht_bsw_rt5672.c |  10 ++-
+ 2 files changed, 112 insertions(+), 22 deletions(-)
+
+-- 
+2.9.3
