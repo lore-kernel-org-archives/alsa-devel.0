@@ -1,66 +1,89 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 5/7] ASoC: ts3a227e: add acpi table
-Date: Fri, 8 Sep 2017 08:30:37 -0500
-Message-ID: <20292830-6f66-a67e-8030-a7eaf808c3fe@linux.intel.com>
-References: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
- <20170908051309.19028-6-pierre-louis.bossart@linux.intel.com>
- <20170908132705.GH3053@localhost>
+Subject: Re: [alsa-devel] [PATCH 4/6] ASoC: Intel: Skylake: Register clock
+ device and ops
+Date: Fri, 8 Sep 2017 08:41:54 -0500
+Message-ID: <77992acc-bf07-0c59-1429-74c5162dbd0e@linux.intel.com>
+References: <1504794565-19168-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1504794565-19168-5-git-send-email-subhransu.s.prusty@intel.com>
+ <6e21a038-96d4-b58d-b1c7-ba5a5f32e7a8@linux.intel.com>
+ <20170908033135.GB19877@subhransu-desktop>
+ <20170908050120.GC19877@subhransu-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 17F38266DCE
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 15:30:41 +0200 (CEST)
-In-Reply-To: <20170908132705.GH3053@localhost>
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <20170908050120.GC19877@subhransu-desktop>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Thierry Escande <thierry.escande@collabora.com>, tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
+Sender: linux-clk-owner@vger.kernel.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, harshapriya.n@intel.com, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
->> +#ifdef CONFIG_ACPI
->> +static struct acpi_device_id ts3a227e_acpi_match[] = {
->> +	{ "104C227E", 0 },
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(acpi, ts3a227e_acpi_match);
->> +#endif
+On 9/8/17 12:01 AM, Subhransu S. Prusty wrote:
+> On Fri, Sep 08, 2017 at 09:01:36AM +0530, Subhransu S. Prusty wrote:
+>> On Thu, Sep 07, 2017 at 08:48:38PM -0500, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> On 09/07/2017 09:29 AM, Subhransu S. Prusty wrote:
+>>>> From: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
+>>>>
+>>>> Create a platform device and register the clock ops. Clock
+>>>> prepare/unprepare are used to enable/disable the clock as the IPC will be
+>>>> sent in non-atomic context. The clk set_dma_control IPC structures are
+>>>> populated during the set_rate callback and IPC is sent to enable the clock
+>>>> during prepare callback.
+>>>>
+>>> [snip]
+>>>> +
+>>>> +static int skl_clk_prepare(void *pvt_data, u32 id, unsigned long rate)
+>>>> +{
+>>>> +	struct skl *skl = pvt_data;
+>>>> +	struct skl_clk_rate_cfg_table *rcfg;
+>>>> +	int vbus_id, clk_type, ret;
+>>>> +
+>>>> +	clk_type = skl_get_clk_type(id);
+>>>> +	if (clk_type < 0)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	ret = skl_get_vbus_id(id, clk_type);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>> +
+>>>> +	vbus_id = ret;
+>>>> +
+>>>> +	rcfg = skl_get_rate_cfg(skl_ssp_clks[id].rate_cfg, rate);
+>>>> +	if (!rcfg)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	ret = skl_send_clk_dma_control(skl, rcfg, vbus_id, clk_type, true);
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>> In this patchset, the clocks are configured from the machine driver,
+>>> and the enable/disable conveniently placed in
+>>> platform_clock_control() or hw_params(), where the DSP is most
+>>> likely active.
+>>> If you expose a clock, codec driver implementers may want to use
+>>> them directly instead of relying on a machine driver. A number of
+>>> existing codecs do use the clk API, so there could be a case where a
+>>> codec driver calls devm_clk_get and clk_prepare_enable(), without
+>>> any ability to know what state the DSP is in.
+>>> What happens then if the DSP is in suspend? Does this force it back
+>>> to D0? Does the virtual clock driver return an error? Or are you
+>>> using the clk API with some restrictions on when the clock can be
+>>> configured?
+>>
+>> No, clk enable will not force the DSP to D0. So if the DSP is not active,
+>> the IPC will timeout and error will be propagated to the caller.
 > 
-> so this is not present for non ACPI system,... fine
-> 
->> +
->>   static struct i2c_driver ts3a227e_driver = {
->>   	.driver = {
->>   		.name = "ts3a227e",
->>   		.pm = &ts3a227e_pm,
->>   		.of_match_table = of_match_ptr(ts3a227e_of_match),
->> +		.acpi_match_table = ACPI_PTR(ts3a227e_acpi_match),
-> 
-> but then this would give compiler error on those systems as .acpi_match_table is
-> defined in driver core... can you compile this on non acpi and check
+> Or may be it makes sense to enable the runtime pm for clk driver so that it
+> can activate the DSP. I will check this.
 
-This is not any different from what is done for other codecs.
-
-static struct i2c_driver rt5677_i2c_driver = {
-	.driver = {
-		.name = "rt5677",
-		.of_match_table = rt5677_of_match,
-		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
-	},
-
-And the 0day checks did not report any issues, probably because the 
-pre-processor takes the table out when CONFIG_ACPI is not enabled:
-
-#define ACPI_PTR(_ptr)	(NULL)
-
-so no change...
+I was thinking of another case: we should not make the assumption that 
+there is always a platform clock control and a hw_params callback, e.g. 
+when an external component seen as a dummy codec needs the mclk/bitclock 
+at all times to drive a second-level set of audio devices. In those 
+cases the machine driver will get/enable the clock at startup and it 
+needs to remain on no matter what the DSP state is. That's probably 
+another case for disabling runtime-pm for as long as the machine driver 
+wants the clock.
