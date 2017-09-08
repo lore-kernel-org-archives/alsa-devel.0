@@ -1,242 +1,139 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [alsa-devel] [PATCH 4/6] ASoC: Intel: Skylake: Register clock
- device and ops
-Date: Fri, 8 Sep 2017 10:31:21 +0530
-Message-ID: <20170908050120.GC19877@subhransu-desktop>
-References: <1504794565-19168-1-git-send-email-subhransu.s.prusty@intel.com>
- <1504794565-19168-5-git-send-email-subhransu.s.prusty@intel.com>
- <6e21a038-96d4-b58d-b1c7-ba5a5f32e7a8@linux.intel.com>
- <20170908033135.GB19877@subhransu-desktop>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: fsl_ssi: Override bit clock rate based
+	on slot number
+Date: Thu,  7 Sep 2017 22:23:43 -0700
+Message-ID: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170908033135.GB19877@subhransu-desktop>
-Sender: linux-clk-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, harshapriya.n@intel.com, tiwai@suse.de, mturquette@baylibre.com, sboyd@codeaurora.org, lgirdwood@gmail.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, patches.audio@intel.com, broonie@kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id D19B9267400
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 07:24:56 +0200 (CEST)
+Received: by mail-pf0-f194.google.com with SMTP id g65so707730pfe.1
+ for <alsa-devel@alsa-project.org>; Thu, 07 Sep 2017 22:24:56 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, arnaud.mouiche@invoxia.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, caleb@crome.org, mpa@pengutronix.de, max.krummenacher@toradex.com, lukma@denx.de, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 08, 2017 at 09:01:36AM +0530, Subhransu S. Prusty wrote:
-> On Thu, Sep 07, 2017 at 08:48:38PM -0500, Pierre-Louis Bossart wrote:
-> > 
-> > 
-> > On 09/07/2017 09:29 AM, Subhransu S. Prusty wrote:
-> > >From: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
-> > >
-> > >Create a platform device and register the clock ops. Clock
-> > >prepare/unprepare are used to enable/disable the clock as the IPC will be
-> > >sent in non-atomic context. The clk set_dma_control IPC structures are
-> > >populated during the set_rate callback and IPC is sent to enable the clock
-> > >during prepare callback.
-> > >
-> > [snip]
-> > >+
-> > >+static int skl_clk_prepare(void *pvt_data, u32 id, unsigned long rate)
-> > >+{
-> > >+	struct skl *skl = pvt_data;
-> > >+	struct skl_clk_rate_cfg_table *rcfg;
-> > >+	int vbus_id, clk_type, ret;
-> > >+
-> > >+	clk_type = skl_get_clk_type(id);
-> > >+	if (clk_type < 0)
-> > >+		return -EINVAL;
-> > >+
-> > >+	ret = skl_get_vbus_id(id, clk_type);
-> > >+	if (ret < 0)
-> > >+		return ret;
-> > >+
-> > >+	vbus_id = ret;
-> > >+
-> > >+	rcfg = skl_get_rate_cfg(skl_ssp_clks[id].rate_cfg, rate);
-> > >+	if (!rcfg)
-> > >+		return -EINVAL;
-> > >+
-> > >+	ret = skl_send_clk_dma_control(skl, rcfg, vbus_id, clk_type, true);
-> > >+
-> > >+	return ret;
-> > >+}
-> > In this patchset, the clocks are configured from the machine driver,
-> > and the enable/disable conveniently placed in
-> > platform_clock_control() or hw_params(), where the DSP is most
-> > likely active.
-> > If you expose a clock, codec driver implementers may want to use
-> > them directly instead of relying on a machine driver. A number of
-> > existing codecs do use the clk API, so there could be a case where a
-> > codec driver calls devm_clk_get and clk_prepare_enable(), without
-> > any ability to know what state the DSP is in.
-> > What happens then if the DSP is in suspend? Does this force it back
-> > to D0? Does the virtual clock driver return an error? Or are you
-> > using the clk API with some restrictions on when the clock can be
-> > configured?
-> 
-> No, clk enable will not force the DSP to D0. So if the DSP is not active,
-> the IPC will timeout and error will be propagated to the caller.
+The set_sysclk() now is used to override the output bit clock rate.
+But this is not a common way to implement a set_dai_sysclk(). And
+this creates a problem when a general machine driver (simple-card
+for example) tries to do set_dai_sysclk() by passing an input clock
+rate for the baud clock instead of setting the bit clock rate as
+fsl_ssi driver expected.
 
-Or may be it makes sense to enable the runtime pm for clk driver so that it
-can activate the DSP. I will check this.
+So this patch solves this problem by firstly removing set_sysclk()
+since the hw_params() can calculate the bit clock rate. Secondly,
+in order not to break those TDM use cases which previously might
+have been using set_sysclk() to override the bit clock rate, this
+patch changes the driver to override it based on the slot number.
 
-> 
-> > 
-> > Note that I am not against this idea, it's fine, but I'd like more
-> > clarity on the assumptions. Thanks!
-> 
-> I agree. I will add some comments explaining the expectation.
-> 
-> Thanks
-> Subhransu
-> 
-> > 
-> > >+
-> > >+static int skl_clk_unprepare(void *pvt_data, u32 id, unsigned long rate)
-> > >+{
-> > >+	struct skl *skl = pvt_data;
-> > >+	struct skl_clk_rate_cfg_table *rcfg;
-> > >+	int vbus_id, ret;
-> > >+	u8 clk_type;
-> > >+
-> > >+	clk_type = skl_get_clk_type(id);
-> > >+	ret = skl_get_vbus_id(id, clk_type);
-> > >+	if (ret < 0)
-> > >+		return ret;
-> > >+
-> > >+	vbus_id = ret;
-> > >+
-> > >+	rcfg = skl_get_rate_cfg(skl_ssp_clks[id].rate_cfg, rate);
-> > >+	if (!rcfg)
-> > >+		return -EINVAL;
-> > >+
-> > >+	return skl_send_clk_dma_control(skl, rcfg, vbus_id, clk_type, false);
-> > >+}
-> > >+
-> > >+static int skl_clk_set_rate(u32 id, unsigned long rate)
-> > >+{
-> > >+	struct skl_clk_rate_cfg_table *rcfg;
-> > >+	u8 clk_type;
-> > >+
-> > >+	if (!rate)
-> > >+		return -EINVAL;
-> > >+
-> > >+	clk_type = skl_get_clk_type(id);
-> > >+	rcfg = skl_get_rate_cfg(skl_ssp_clks[id].rate_cfg, rate);
-> > >+	if (!rcfg)
-> > >+		return -EINVAL;
-> > >+
-> > >+	skl_fill_clk_ipc(rcfg, clk_type);
-> > >+
-> > >+	return 0;
-> > >+}
-> > >+
-> > >+unsigned long skl_clk_recalc_rate(u32 id, unsigned long parent_rate)
-> > >+{
-> > >+	struct skl_clk_rate_cfg_table *rcfg;
-> > >+	u8 clk_type;
-> > >+
-> > >+	clk_type = skl_get_clk_type(id);
-> > >+	rcfg = skl_get_rate_cfg(skl_ssp_clks[id].rate_cfg, parent_rate);
-> > >+	if (!rcfg)
-> > >+		return 0;
-> > >+
-> > >+	skl_fill_clk_ipc(rcfg, clk_type);
-> > >+
-> > >+	return rcfg->rate;
-> > >+}
-> > >+
-> > >  static int skl_machine_device_register(struct skl *skl, void *driver_data)
-> > >  {
-> > >  	struct hdac_bus *bus = ebus_to_hbus(&skl->ebus);
-> > >@@ -555,10 +682,21 @@ void init_skl_xtal_rate(int pci_id)
-> > >  	}
-> > >  }
-> > >+/*
-> > >+ * prepare/unprepare are used instead of enable/disable as IPC will be sent
-> > >+ * in non-atomic context.
-> > >+ */
-> > >+static struct skl_clk_ops clk_ops = {
-> > >+	.prepare = skl_clk_prepare,
-> > >+	.unprepare = skl_clk_unprepare,
-> > >+	.set_rate = skl_clk_set_rate,
-> > >+	.recalc_rate = skl_clk_recalc_rate,
-> > >+};
-> > >+
-> > >  static int skl_clock_device_register(struct skl *skl)
-> > >  {
-> > >  	struct skl_clk_pdata *clk_pdata;
-> > >-
-> > >+	struct platform_device_info pdevinfo = {NULL};
-> > >  	clk_pdata = devm_kzalloc(&skl->pci->dev, sizeof(*clk_pdata),
-> > >  							GFP_KERNEL);
-> > >@@ -573,10 +711,28 @@ static int skl_clock_device_register(struct skl *skl)
-> > >  	/* Query NHLT to fill the rates and parent */
-> > >  	skl_get_clks(skl, clk_pdata->ssp_clks);
-> > >+	clk_pdata->ops = &clk_ops;
-> > >+	clk_pdata->pvt_data = skl;
-> > >+
-> > >+	/* Register Platform device */
-> > >+	pdevinfo.parent = &skl->pci->dev;
-> > >+	pdevinfo.id = -1;
-> > >+	pdevinfo.name = "skl-ssp-clk";
-> > >+	pdevinfo.data = clk_pdata;
-> > >+	pdevinfo.size_data = sizeof(*clk_pdata);
-> > >+	skl->clk_dev = platform_device_register_full(&pdevinfo);
-> > >+	if (IS_ERR(skl->clk_dev))
-> > >+		return PTR_ERR(skl->clk_dev);
-> > >  	return 0;
-> > >  }
-> > >+static void skl_clock_device_unregister(struct skl *skl)
-> > >+{
-> > >+	if (skl->clk_dev)
-> > >+		platform_device_unregister(skl->clk_dev);
-> > >+}
-> > >+
-> > >  /*
-> > >   * Probe the given codec address
-> > >   */
-> > >@@ -859,6 +1015,11 @@ static int skl_probe(struct pci_dev *pci,
-> > >  	/* check if dsp is there */
-> > >  	if (bus->ppcap) {
-> > >+		/* create device for dsp clk */
-> > >+		err = skl_clock_device_register(skl);
-> > >+		if (err < 0)
-> > >+			goto out_clk_free;
-> > >+
-> > >  		err = skl_machine_device_register(skl,
-> > >  				  (void *)pci_id->driver_data);
-> > >  		if (err < 0)
-> > >@@ -890,6 +1051,8 @@ static int skl_probe(struct pci_dev *pci,
-> > >  	skl_free_dsp(skl);
-> > >  out_mach_free:
-> > >  	skl_machine_device_unregister(skl);
-> > >+out_clk_free:
-> > >+	skl_clock_device_unregister(skl);
-> > >  out_nhlt_free:
-> > >  	skl_nhlt_free(skl->nhlt);
-> > >  out_free:
-> > >@@ -940,6 +1103,7 @@ static void skl_remove(struct pci_dev *pci)
-> > >  	skl_free_dsp(skl);
-> > >  	skl_machine_device_unregister(skl);
-> > >  	skl_dmic_device_unregister(skl);
-> > >+	skl_clock_device_unregister(skl);
-> > >  	skl_nhlt_remove_sysfs(skl);
-> > >  	skl_nhlt_free(skl->nhlt);
-> > >  	skl_free(ebus);
-> > >diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-> > >index f06e98962a0b..df0fcf1bfe40 100644
-> > >--- a/sound/soc/intel/skylake/skl.h
-> > >+++ b/sound/soc/intel/skylake/skl.h
-> > >@@ -57,6 +57,7 @@ struct skl {
-> > >  	unsigned int init_done:1; /* delayed init status */
-> > >  	struct platform_device *dmic_dev;
-> > >  	struct platform_device *i2s_dev;
-> > >+	struct platform_device *clk_dev;
-> > >  	struct snd_soc_platform *platform;
-> > >  	struct nhlt_acpi_table *nhlt; /* nhlt ptr */
-> > 
-> 
-> -- 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-clk" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The patch also removes an obsolete comment of the dir parameter.
 
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 64598d1..3657c88 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -197,12 +197,12 @@ struct fsl_ssi_soc_data {
+  * @use_dma: DMA is used or FIQ with stream filter
+  * @use_dual_fifo: DMA with support for both FIFOs used
+  * @fifo_deph: Depth of the SSI FIFOs
++ * @slots: number of slots
+  * @rxtx_reg_val: Specific register settings for receive/transmit configuration
+  *
+  * @clk: SSI clock
+  * @baudclk: SSI baud clock for master mode
+  * @baudclk_streams: Active streams that are using baudclk
+- * @bitclk_freq: bitclock frequency set by .set_dai_sysclk
+  *
+  * @dma_params_tx: DMA transmit parameters
+  * @dma_params_rx: DMA receive parameters
+@@ -233,12 +233,12 @@ struct fsl_ssi_private {
+ 	bool use_dual_fifo;
+ 	bool has_ipg_clk_name;
+ 	unsigned int fifo_depth;
++	unsigned int slots;
+ 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
+ 
+ 	struct clk *clk;
+ 	struct clk *baudclk;
+ 	unsigned int baudclk_streams;
+-	unsigned int bitclk_freq;
+ 
+ 	/* regcache for volatile regs */
+ 	u32 regcache_sfcsr;
+@@ -700,8 +700,7 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+  * Note: This function can be only called when using SSI as DAI master
+  *
+  * Quick instruction for parameters:
+- * freq: Output BCLK frequency = samplerate * 32 (fixed) * channels
+- * dir: SND_SOC_CLOCK_OUT -> TxBCLK, SND_SOC_CLOCK_IN -> RxBCLK.
++ * freq: Output BCLK frequency = samplerate * 32 (fixed) * slots (or channels)
+  */
+ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai,
+@@ -716,9 +715,9 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	unsigned int freq;
+ 	bool baudclk_is_used;
+ 
+-	/* Prefer the explicitly set bitclock frequency */
+-	if (ssi_private->bitclk_freq)
+-		freq = ssi_private->bitclk_freq;
++	/* Generate bit clock based on the slot or channel number */
++	if (ssi_private->slots)
++		freq = ssi_private->slots * 32 * params_rate(hw_params);
+ 	else
+ 		freq = params_channels(hw_params) * 32 * params_rate(hw_params);
+ 
+@@ -805,16 +804,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+-		int clk_id, unsigned int freq, int dir)
+-{
+-	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+-
+-	ssi_private->bitclk_freq = freq;
+-
+-	return 0;
+-}
+-
+ /**
+  * fsl_ssi_hw_params - program the sample size
+  *
+@@ -1121,6 +1110,8 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+ 
+ 	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN, val);
+ 
++	ssi_private->slots = slots;
++
+ 	return 0;
+ }
+ 
+@@ -1191,7 +1182,6 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+ 	.hw_params	= fsl_ssi_hw_params,
+ 	.hw_free	= fsl_ssi_hw_free,
+ 	.set_fmt	= fsl_ssi_set_dai_fmt,
+-	.set_sysclk	= fsl_ssi_set_dai_sysclk,
+ 	.set_tdm_slot	= fsl_ssi_set_dai_tdm_slot,
+ 	.trigger	= fsl_ssi_trigger,
+ };
 -- 
+2.7.4
