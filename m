@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/7] ASoC: Intel: cht_bsw_max98090: add support
-	for Baytrail
-Date: Fri,  8 Sep 2017 00:13:05 -0500
-Message-ID: <20170908051309.19028-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/7] ASoC: Intel: atom: use cht_bsw_max98090
+	for Baytrail Chromebooks
+Date: Fri,  8 Sep 2017 00:13:06 -0500
+Message-ID: <20170908051309.19028-5-pierre-louis.bossart@linux.intel.com>
 References: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E6E4267506
+ by alsa0.perex.cz (Postfix) with ESMTP id 6789826751B
  for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 07:13:30 +0200 (CEST)
 In-Reply-To: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,157 +25,37 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Distributions such as Fedora, Ubuntu and Gallium don't currently
-have a means to support Baytrail Chromebooks and other platforms
-with the same build [1][2] due to incompatible platform drivers.
+Baytrail Chromebooks used to be managed with legacy driver which
+is not compatible with atom/sst drivers. Reuse CHT driver to
+handle max98098 codec and allow distributions to support all
+Atom platforms with the same build.
 
-Add MCLK management to reuse this machine driver for Baytrail
-platforms and solve this coexistence problem at last. UCM files are
-provided at [3] and will eventually be submitted to the new repo.
-
-The legacy byt-max98090 machine driver is still maintained but can
-only be used when the other Atom/DPCM driver is not compiled in, or
-when users don't want to configure extra mixers required by the
-Atom/sst driver.
-
-Tested on Lenovo 100s Baytrail Chromebook w/ Mr. Chromebox BOOT_STUB
-firmware and Acer R11 Cherrytrail Chromebook
-
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=1335196
-[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/
-111641.html
-[3] https://github.com/plbossart/UCM/tree/master/byt-max98090
+The legacy byt-max98090 can still be used but in a build for
+Baytrail+max98090 only.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 78 ++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+ sound/soc/intel/atom/sst/sst_acpi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 455a55a..01bacca 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -23,6 +23,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/acpi.h>
-+#include <linux/clk.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -35,15 +36,60 @@
- #define CHT_CODEC_DAI	"HiFi"
- 
- struct cht_mc_private {
-+	struct clk *mclk;
- 	struct snd_soc_jack jack;
- 	bool ts3a227e_present;
- };
- 
-+static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
-+			     strlen(CHT_CODEC_DAI)))
-+			return rtd->codec_dai;
-+	}
-+	return NULL;
-+}
-+
-+static int platform_clock_control(struct snd_soc_dapm_widget *w,
-+					  struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct snd_soc_dai *codec_dai;
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	codec_dai = cht_get_codec_dai(card);
-+	if (!codec_dai) {
-+		dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
-+		return -EIO;
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		ret = clk_prepare_enable(ctx->mclk);
-+		if (ret < 0) {
-+			dev_err(card->dev,
-+				"could not configure MCLK state");
-+			return ret;
-+		}
-+	} else {
-+		clk_disable_unprepare(ctx->mclk);
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
- 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
-+			    SND_SOC_DAPM_POST_PMD),
- };
- 
- static const struct snd_soc_dapm_route cht_audio_map[] = {
-@@ -60,6 +106,10 @@ static const struct snd_soc_dapm_route cht_audio_map[] = {
- 	{"codec_in0", NULL, "ssp2 Rx" },
- 	{"codec_in1", NULL, "ssp2 Rx" },
- 	{"ssp2 Rx", NULL, "HiFi Capture"},
-+	{"Headphone", NULL, "Platform Clock"},
-+	{"Headset Mic", NULL, "Platform Clock"},
-+	{"Int Mic", NULL, "Platform Clock"},
-+	{"Ext Spk", NULL, "Platform Clock"},
- };
- 
- static const struct snd_kcontrol_new cht_mc_controls[] = {
-@@ -141,6 +191,25 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	if (ctx->ts3a227e_present)
- 		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
- 
-+	/*
-+	 * The firmware might enable the clock at
-+	 * boot (this information may or may not
-+	 * be reflected in the enable clock register).
-+	 * To change the rate we must disable the clock
-+	 * first to cover these cases. Due to common
-+	 * clock framework restrictions that do not allow
-+	 * to disable a clock that has not been enabled,
-+	 * we need to enable the clock first.
-+	 */
-+	ret = clk_prepare_enable(ctx->mclk);
-+	if (!ret)
-+		clk_disable_unprepare(ctx->mclk);
-+
-+	ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
-+
-+	if (ret)
-+		dev_err(runtime->dev, "unable to set MCLK rate\n");
-+
- 	return ret;
- }
- 
-@@ -294,6 +363,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	/* register the soc card */
- 	snd_soc_card_cht.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
-+
-+	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+	if (IS_ERR(drv->mclk)) {
-+		dev_err(&pdev->dev,
-+			"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
-+			PTR_ERR(drv->mclk));
-+		return PTR_ERR(drv->mclk);
-+	}
-+
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
- 	if (ret_val) {
- 		dev_err(&pdev->dev,
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 0e928d5..ff4a517 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -536,6 +536,14 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ 		.board = "cht-bsw",
+ 		.pdata = &byt_rvp_platform_data
+ 	},
++	/* use CHT driver to Baytrail Chromebooks */
++	{
++		.id = "193C9890",
++		.drv_name = "cht-bsw-max98090",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "cht-bsw",
++		.pdata = &byt_rvp_platform_data
++	},
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
+ 	/*
+ 	 * This is always last in the table so that it is selected only when
 -- 
 2.9.3
