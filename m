@@ -1,75 +1,63 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 3/3] ASoC: intel: Kill BUG_ON() usage
-Date: Fri, 8 Sep 2017 14:14:05 +0530
-Message-ID: <20170908084404.GD3053@localhost>
-References: <20170907085918.4496-1-tiwai@suse.de>
- <20170907085918.4496-4-tiwai@suse.de>
+From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate based on slot
+ number
+Date: Fri, 8 Sep 2017 10:41:56 +0200
+Message-ID: <0844824e-ae66-2337-8d58-7bd835f564a2@denx.de>
+References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
+ <20170908054235.GA9603@Asurada-CZ80>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 307D0266A89
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 10:40:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170907085918.4496-4-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170908054235.GA9603@Asurada-CZ80>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org, caleb@crome.org, max.krummenacher@toradex.com, arnaud.mouiche@invoxia.com, mpa@pengutronix.de, mail@maciej.szmigiero.name
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 07, 2017 at 10:59:18AM +0200, Takashi Iwai wrote:
-> Don't use BUG_ON() for a non-critical sanity check on production
-> systems.  This patch either removes useless BUG_ON() calls.
+Hi Nicolin,
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+> On Thu, Sep 07, 2017 at 10:23:43PM -0700, Nicolin Chen wrote:
+>> The set_sysclk() now is used to override the output bit clock rate.
+>> But this is not a common way to implement a set_dai_sysclk(). And
+>> this creates a problem when a general machine driver (simple-card
+>> for example) tries to do set_dai_sysclk() by passing an input clock
+>> rate for the baud clock instead of setting the bit clock rate as
+>> fsl_ssi driver expected.
+>>
+>> So this patch solves this problem by firstly removing set_sysclk()
+>> since the hw_params() can calculate the bit clock rate. Secondly,
+>> in order not to break those TDM use cases which previously might
+>> have been using set_sysclk() to override the bit clock rate, this
+>> patch changes the driver to override it based on the slot number.
+>>
+>> The patch also removes an obsolete comment of the dir parameter.
+>>
+>> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> 
+> Forgot to mention, I think that it's better to wait for a couple of
+> Tested-by from those who use the TDM mode of SSI before applying it.
+
+Although, I'm not the PCM user, I've tested your patch and it works :-)
+
+Tested-by: Łukasz Majewski <lukma@denx.de>
+
+Test HW: imx6q + tfa9879 codec
 
 > 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/soc/intel/atom/sst/sst_loader.c | 1 -
->  sound/soc/intel/atom/sst/sst_stream.c | 1 -
->  2 files changed, 2 deletions(-)
+> Thanks
+> Nicolin
 > 
-> diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
-> index 33917146d9c4..a686eef2cf7f 100644
-> --- a/sound/soc/intel/atom/sst/sst_loader.c
-> +++ b/sound/soc/intel/atom/sst/sst_loader.c
-> @@ -415,7 +415,6 @@ int sst_load_fw(struct intel_sst_drv *sst_drv_ctx)
->  			return ret_val;
->  	}
->  
-> -	BUG_ON(!sst_drv_ctx->fw_in_mem);
->  	block = sst_create_block(sst_drv_ctx, 0, FW_DWNL_ID);
->  	if (block == NULL)
->  		return -ENOMEM;
-> diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
-> index 83d8dda15233..65e257b17a7e 100644
-> --- a/sound/soc/intel/atom/sst/sst_stream.c
-> +++ b/sound/soc/intel/atom/sst/sst_stream.c
-> @@ -45,7 +45,6 @@ int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
->  	void *data = NULL;
->  
->  	dev_dbg(sst_drv_ctx->dev, "Enter\n");
-> -	BUG_ON(!params);
->  
->  	str_params = (struct snd_sst_params *)params;
->  	memset(&alloc_param, 0, sizeof(alloc_param));
-> -- 
-> 2.14.1
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
 
 -- 
-~Vinod
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
