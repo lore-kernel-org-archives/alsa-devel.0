@@ -1,14 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 0/5] BYT/CHT-Realtek remaining fixes
-Date: Fri,  8 Sep 2017 12:43:51 -0500
-Message-ID: <20170908174356.23788-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: Intel: bytcr-rt5651: fix capture
+	routes
+Date: Fri,  8 Sep 2017 12:43:53 -0500
+Message-ID: <20170908174356.23788-3-pierre-louis.bossart@linux.intel.com>
+References: <20170908174356.23788-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 278D5266DF0
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 19:44:02 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C485266E13
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 19:44:03 +0200 (CEST)
+In-Reply-To: <20170908174356.23788-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +25,54 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This last batch for the week is about simplification of the
-MCLK-related code for byt/cht-realtek machine drivers and fixes for
-rt5651. This is mostly a v2 of patches I submitted earlier, with
-improvements suggested by Andy Shevchenko, a fixed mistake on quirk
-management flagged by Vinod Koul and better commit messages. No new
-functionality otherwise.
+There is only one dmic path and the routes were not added.
+Probably a copy-paste mistake when initially creating the
+file
 
-Pierre-Louis Bossart (5):
-  ASoC: Intel: boards: use devm_clk_get() unconditionally
-  ASoC: Intel: bytcr-rt5651: fix capture routes
-  ASoC: Intel: bytcr_rt5651: add MCLK support and fix quirks
-  ASoC: Intel: bytcr_rt5651: filter codec name
-  ASoC: Intel: bytcr_rt5640: simplify MCLK quirk tests
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/bytcr_rt5651.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
- sound/soc/intel/boards/bytcr_rt5640.c   |   8 +-
- sound/soc/intel/boards/bytcr_rt5651.c   | 277 ++++++++++++++++++++++++++++----
- sound/soc/intel/boards/cht_bsw_rt5645.c |  14 +-
- sound/soc/intel/boards/cht_bsw_rt5672.c |  27 +---
- 4 files changed, 265 insertions(+), 61 deletions(-)
-
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 4a3516b..441f735 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -54,12 +54,9 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
+ 	{"Speaker", NULL, "LOUTR"},
+ };
+ 
+-static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic1_map[] = {
+-	{"DMIC1", NULL, "Internal Mic"},
+-};
+-
+-static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic2_map[] = {
+-	{"DMIC2", NULL, "Internal Mic"},
++static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic_map[] = {
++	{"DMIC L1", NULL, "Internal Mic"},
++	{"DMIC R1", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
+@@ -133,14 +130,13 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 		custom_map = byt_rt5651_intmic_in1_map;
+ 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in1_map);
+ 		break;
+-	case BYT_RT5651_DMIC2_MAP:
+-		custom_map = byt_rt5651_intmic_dmic2_map;
+-		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic2_map);
+-		break;
+ 	default:
+-		custom_map = byt_rt5651_intmic_dmic1_map;
+-		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic1_map);
++		custom_map = byt_rt5651_intmic_dmic_map;
++		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic_map);
+ 	}
++	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
++	if (ret)
++		return ret;
+ 
+ 	ret = snd_soc_add_card_controls(card, byt_rt5651_controls,
+ 					ARRAY_SIZE(byt_rt5651_controls));
 -- 
 2.9.3
