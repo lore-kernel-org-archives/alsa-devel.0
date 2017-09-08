@@ -1,72 +1,54 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl-asoc-card: Don't error out if ENOTSUPP
-Date: Thu,  7 Sep 2017 22:27:33 -0700
-Message-ID: <1504848453-9524-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate
+ based on slot number
+Date: Thu, 7 Sep 2017 22:42:36 -0700
+Message-ID: <20170908054235.GA9603@Asurada-CZ80>
+References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13A62267400
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 07:42:42 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id a2so951409pfj.4
+ for <alsa-devel@alsa-project.org>; Thu, 07 Sep 2017 22:42:42 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, arnaud.mouiche@invoxia.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, caleb@crome.org, mpa@pengutronix.de, max.krummenacher@toradex.com, lukma@denx.de, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_soc_component_set_sysclk() and snd_soc_dai_set_tdm_slot()
-in the soc-core.c will return -ENOTSUPP if there is no function
-implementation for them in the dai and component drivers.
+On Thu, Sep 07, 2017 at 10:23:43PM -0700, Nicolin Chen wrote:
+> The set_sysclk() now is used to override the output bit clock rate.
+> But this is not a common way to implement a set_dai_sysclk(). And
+> this creates a problem when a general machine driver (simple-card
+> for example) tries to do set_dai_sysclk() by passing an input clock
+> rate for the baud clock instead of setting the bit clock rate as
+> fsl_ssi driver expected.
+> 
+> So this patch solves this problem by firstly removing set_sysclk()
+> since the hw_params() can calculate the bit clock rate. Secondly,
+> in order not to break those TDM use cases which previously might
+> have been using set_sysclk() to override the bit clock rate, this
+> patch changes the driver to override it based on the slot number.
+> 
+> The patch also removes an obsolete comment of the dir parameter.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-So this patch tries to ignore this errno.
+Forgot to mention, I think that it's better to wait for a couple of
+Tested-by from those who use the TDM mode of SSI before applying it.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 2db4d0c..3772abb 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -166,7 +166,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
- 	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, cpu_priv->sysclk_id[tx],
- 				     cpu_priv->sysclk_freq[tx],
- 				     cpu_priv->sysclk_dir[tx]);
--	if (ret) {
-+	if (ret && ret != -ENOTSUPP) {
- 		dev_err(dev, "failed to set sysclk for cpu dai\n");
- 		return ret;
- 	}
-@@ -174,7 +174,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
- 	if (cpu_priv->slot_width) {
- 		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2,
- 					       cpu_priv->slot_width);
--		if (ret) {
-+		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dev, "failed to set TDM slot for cpu dai\n");
- 			return ret;
- 		}
-@@ -270,7 +270,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
- 
- 		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->fll_id,
- 					     pll_out, SND_SOC_CLOCK_IN);
--		if (ret) {
-+		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dev, "failed to set SYSCLK: %d\n", ret);
- 			return ret;
- 		}
-@@ -283,7 +283,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
- 		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
- 					     codec_priv->mclk_freq,
- 					     SND_SOC_CLOCK_IN);
--		if (ret) {
-+		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dev, "failed to switch away from FLL: %d\n", ret);
- 			return ret;
- 		}
-@@ -459,7 +459,7 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
- 
- 	ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
- 				     codec_priv->mclk_freq, SND_SOC_CLOCK_IN);
--	if (ret) {
-+	if (ret && ret != -ENOTSUPP) {
- 		dev_err(dev, "failed to set sysclk in %s\n", __func__);
- 		return ret;
- 	}
--- 
-2.7.4
+Thanks
+Nicolin
