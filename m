@@ -1,16 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: cht_bsw_rt5672: use actual
-	HID in suspend/resume
-Date: Thu,  7 Sep 2017 20:12:55 -0500
-Message-ID: <20170908011256.7706-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: cht_bsw_rt5672: fix card name
+Date: Thu,  7 Sep 2017 20:12:56 -0500
+Message-ID: <20170908011256.7706-4-pierre-louis.bossart@linux.intel.com>
 References: <20170908011256.7706-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B07B266943
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 03:13:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B0E9266F0A
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 03:13:23 +0200 (CEST)
 In-Reply-To: <20170908011256.7706-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,47 +24,27 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, bardliao@realtek.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The code scans all components looking for the default name
-i2c-10EC5670:00, which of course doesn't work in platforms
-where the BIOS uses a different HID such as Dell 5585
-
-Since we already have the correct information available, just
-use the actual codec name and length.
+For now reason the current card name is a ridiculous
+'cherrytrailcraudio'. This isn't very useful or self-explanatory,
+change to driver name cht-bsw-rt5672.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index f597d55..6d077de 100644
+index 6d077de..b13d6222 100644
 --- a/sound/soc/intel/boards/cht_bsw_rt5672.c
 +++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -348,9 +348,11 @@ static struct snd_soc_dai_link cht_dailink[] = {
- static int cht_suspend_pre(struct snd_soc_card *card)
- {
- 	struct snd_soc_component *component;
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
+@@ -384,7 +384,7 @@ static int cht_resume_post(struct snd_soc_card *card)
  
- 	list_for_each_entry(component, &card->component_dev_list, card_list) {
--		if (!strcmp(component->name, "i2c-10EC5670:00")) {
-+		if (!strncmp(component->name,
-+			     ctx->codec_name, sizeof(ctx->codec_name))) {
- 			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
- 
- 			dev_dbg(codec->dev, "disabling jack detect before going to suspend.\n");
-@@ -364,9 +366,11 @@ static int cht_suspend_pre(struct snd_soc_card *card)
- static int cht_resume_post(struct snd_soc_card *card)
- {
- 	struct snd_soc_component *component;
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
- 
- 	list_for_each_entry(component, &card->component_dev_list, card_list) {
--		if (!strcmp(component->name, "i2c-10EC5670:00")) {
-+		if (!strncmp(component->name,
-+			     ctx->codec_name, sizeof(ctx->codec_name))) {
- 			struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
- 
- 			dev_dbg(codec->dev, "enabling jack detect for resume.\n");
+ /* SoC card */
+ static struct snd_soc_card snd_soc_card_cht = {
+-	.name = "cherrytrailcraudio",
++	.name = "cht-bsw-rt5672",
+ 	.owner = THIS_MODULE,
+ 	.dai_link = cht_dailink,
+ 	.num_links = ARRAY_SIZE(cht_dailink),
 -- 
 2.9.3
