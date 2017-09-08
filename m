@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 2/8] ASoC: Intel: common: use c99 syntax
-	for ACPI/machine tables
-Date: Fri,  8 Sep 2017 15:56:56 -0500
-Message-ID: <20170908205702.1985-3-pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 3/8] ASoC: ACPI: add new fields for SOF
+	support
+Date: Fri,  8 Sep 2017 15:56:57 -0500
+Message-ID: <20170908205702.1985-4-pierre-louis.bossart@linux.intel.com>
 References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D802C266E29
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 22:57:15 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BA1C3266E38
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 22:57:17 +0200 (CEST)
 In-Reply-To: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,69 +25,51 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Before we add new fields for SOF support, move to C99 syntax
-as done for atom/sst and legacy hsw/bdw code
+To prepare for SOF integration, we need new fields in the machine table.
+It is intended that the same table is used for both closed-source and
+open-source firmware to avoid repeating ACPI-related information
+multiple times
 No functional change
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/common/sst-acpi.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ include/sound/soc-acpi.h | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-index 9866998..32d74ba 100644
---- a/sound/soc/intel/common/sst-acpi.c
-+++ b/sound/soc/intel/common/sst-acpi.c
-@@ -180,7 +180,11 @@ static int sst_acpi_remove(struct platform_device *pdev)
- }
- 
- static struct snd_soc_acpi_mach haswell_machines[] = {
--	{ "INT33CA", "haswell-audio", "intel/IntcSST1.bin", NULL, NULL, NULL },
-+	{
-+		.id = "INT33CA",
-+		.drv_name = "haswell-audio",
-+		.fw_filename = "intel/IntcSST1.bin",
-+	},
- 	{}
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 75fb32e..3e61f93 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -60,12 +60,29 @@ struct snd_soc_acpi_mach {
+ 	const char *drv_name;
+ 	/* firmware file name */
+ 	const char *fw_filename;
+-
+ 	/* board name */
+ 	const char *board;
+ 	struct snd_soc_acpi_mach * (*machine_quirk)(void *arg);
+ 	const void *quirk_data;
++
++	/* intended for platform data or machine specific-ops */
+ 	void *pdata;
++
++	/* SOF firmware file name */
++	const char *sof_fw_filename;
++	/* SOF default topology */
++	const char *sof_tplg_filename;
++
++	/* ASoC platform name - used for binding machine drivers if non NULL */
++	const char *asoc_plat_name;
++
++	/* machine driver private data fixup */
++	struct platform_device * (*new_mach_data)(void *pdata);
++
++	/* FIXME: is this needed, was only used for BYTCR-detection
++	   int (*confirm_mach)(struct device *dev,
++	   const struct sof_dev_desc **desc);
++	*/
  };
  
-@@ -198,8 +202,16 @@ static struct sst_acpi_desc sst_acpi_haswell_desc = {
- };
- 
- static struct snd_soc_acpi_mach broadwell_machines[] = {
--	{ "INT343A", "broadwell-audio", "intel/IntcSST2.bin", NULL, NULL, NULL },
--	{ "RT5677CE", "bdw-rt5677", "intel/IntcSST2.bin", NULL, NULL, NULL },
-+	{
-+		.id = "INT343A",
-+		.drv_name = "broadwell-audio",
-+		.fw_filename =  "intel/IntcSST2.bin",
-+	},
-+	{
-+		.id = "RT5677CE",
-+		.drv_name = "bdw-rt5677",
-+		.fw_filename =  "intel/IntcSST2.bin",
-+	},
- 	{}
- };
- 
-@@ -218,8 +230,16 @@ static struct sst_acpi_desc sst_acpi_broadwell_desc = {
- 
- #if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
- static struct snd_soc_acpi_mach baytrail_machines[] = {
--	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
--	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
-+	{
-+		.id = "10EC5640",
-+		.drv_name = "byt-rt5640",
-+		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-+	},
-+	{
-+		.id = "193C9890",
-+		.drv_name = "byt-max98090",
-+		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-+	},
- 	{}
- };
- 
+ #define SND_SOC_ACPI_MAX_CODECS 3
 -- 
 2.9.3
