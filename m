@@ -1,63 +1,82 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma@denx.de>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate based on slot
- number
-Date: Fri, 8 Sep 2017 10:41:56 +0200
-Message-ID: <0844824e-ae66-2337-8d58-7bd835f564a2@denx.de>
-References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
- <20170908054235.GA9603@Asurada-CZ80>
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+Subject: [PATCH] pcm: softvol: add support for S24_LE
+Date: Fri,  8 Sep 2017 12:11:51 +0200
+Message-ID: <20170908101151.29368-1-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170908054235.GA9603@Asurada-CZ80>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org, caleb@crome.org, max.krummenacher@toradex.com, arnaud.mouiche@invoxia.com, mpa@pengutronix.de, mail@maciej.szmigiero.name
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01C5E266A63
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 12:11:57 +0200 (CEST)
+Received: from customer (localhost [127.0.0.1])
+ by submission (posteo.de) with ESMTPSA id 3xpY5R3J6pzypM
+ for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 12:11:55 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
-
-> On Thu, Sep 07, 2017 at 10:23:43PM -0700, Nicolin Chen wrote:
->> The set_sysclk() now is used to override the output bit clock rate.
->> But this is not a common way to implement a set_dai_sysclk(). And
->> this creates a problem when a general machine driver (simple-card
->> for example) tries to do set_dai_sysclk() by passing an input clock
->> rate for the baud clock instead of setting the bit clock rate as
->> fsl_ssi driver expected.
->>
->> So this patch solves this problem by firstly removing set_sysclk()
->> since the hw_params() can calculate the bit clock rate. Secondly,
->> in order not to break those TDM use cases which previously might
->> have been using set_sysclk() to override the bit clock rate, this
->> patch changes the driver to override it based on the slot number.
->>
->> The patch also removes an obsolete comment of the dir parameter.
->>
->> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> 
-> Forgot to mention, I think that it's better to wait for a couple of
-> Tested-by from those who use the TDM mode of SSI before applying it.
-
-Although, I'm not the PCM user, I've tested your patch and it works :-)
-
-Tested-by: Łukasz Majewski <lukma@denx.de>
-
-Test HW: imx6q + tfa9879 codec
-
-> 
-> Thanks
-> Nicolin
-> 
-
-
--- 
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+VGVzdGVkIHdpdGggYSBXb2xmc29uIFdNODUyNCBEQUMgb24gYSBpLk1YNlVMIGJvYXJkIHJ1bm5p
+bmcgTGludXggdmVyc2lvbgo0LjEzLjAtbmV4dC0yMDE3MDkwNy4KClNpZ25lZC1vZmYtYnk6IErD
+tnJnIEtyYXVzZSA8am9lcmcua3JhdXNlQGVtYmVkZGVkLnJvY2tzPgotLS0KIHNyYy9wY20vcGNt
+X3NvZnR2b2wuYyB8IDE0ICsrKysrKysrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0
+aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zcmMvcGNtL3BjbV9zb2Z0dm9s
+LmMgYi9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKaW5kZXggMWZlNTc4NGQuLmQxNTlmYjFmIDEwMDY0
+NAotLS0gYS9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKKysrIGIvc3JjL3BjbS9wY21fc29mdHZvbC5j
+CkBAIC0zMDksNiArMzA5LDggQEAgc3RhdGljIHZvaWQgc29mdHZvbF9jb252ZXJ0X3N0ZXJlb192
+b2woc25kX3BjbV9zb2Z0dm9sX3QgKnN2b2wsCiAJCUNPTlZFUlRfQVJFQShzaG9ydCwgCiAJCQkg
+ICAgICFzbmRfcGNtX2Zvcm1hdF9jcHVfZW5kaWFuKHN2b2wtPnNmb3JtYXQpKTsKIAkJYnJlYWs7
+CisJY2FzZSBTTkRfUENNX0ZPUk1BVF9TMjRfTEU6CisJCS8qIDI0Yml0IHNhbXBsZXMsIGZhbGx0
+aHJvdWdoICovCiAJY2FzZSBTTkRfUENNX0ZPUk1BVF9TMzJfTEU6CiAJY2FzZSBTTkRfUENNX0ZP
+Uk1BVF9TMzJfQkU6CiAJCS8qIDMyYml0IHNhbXBsZXMgKi8KQEAgLTM2MCw2ICszNjIsOCBAQCBz
+dGF0aWMgdm9pZCBzb2Z0dm9sX2NvbnZlcnRfbW9ub192b2woc25kX3BjbV9zb2Z0dm9sX3QgKnN2
+b2wsCiAJCUNPTlZFUlRfQVJFQShzaG9ydCwgCiAJCQkgICAgICFzbmRfcGNtX2Zvcm1hdF9jcHVf
+ZW5kaWFuKHN2b2wtPnNmb3JtYXQpKTsKIAkJYnJlYWs7CisJY2FzZSBTTkRfUENNX0ZPUk1BVF9T
+MjRfTEU6CisJCS8qIDI0Yml0IHNhbXBsZXMsIGZhbGx0aHJvdWdoICovCiAJY2FzZSBTTkRfUENN
+X0ZPUk1BVF9TMzJfTEU6CiAJY2FzZSBTTkRfUENNX0ZPUk1BVF9TMzJfQkU6CiAJCS8qIDMyYml0
+IHNhbXBsZXMgKi8KQEAgLTQyMiw2ICs0MjYsNyBAQCBzdGF0aWMgaW50IHNuZF9wY21fc29mdHZv
+bF9od19yZWZpbmVfY3ByZXBhcmUoc25kX3BjbV90ICpwY20sCiAJCXsKIAkJCSgxVUxMIDw8IFNO
+RF9QQ01fRk9STUFUX1MxNl9MRSkgfAogCQkJKDFVTEwgPDwgU05EX1BDTV9GT1JNQVRfUzE2X0JF
+KSB8CisJCQkoMVVMTCA8PCBTTkRfUENNX0ZPUk1BVF9TMjRfTEUpIHwKIAkJCSgxVUxMIDw8IFNO
+RF9QQ01fRk9STUFUX1MzMl9MRSkgfAogIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFUX1MzMl9C
+RSksCiAJCQkoMVVMTCA8PCAoU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAtIDMyKSkKQEAgLTU3Nywx
+MCArNTgyLDExIEBAIHN0YXRpYyBpbnQgc25kX3BjbV9zb2Z0dm9sX2h3X3BhcmFtcyhzbmRfcGNt
+X3QgKnBjbSwgc25kX3BjbV9od19wYXJhbXNfdCAqIHBhcmFtCiAJaWYgKHNsYXZlLT5mb3JtYXQg
+IT0gU05EX1BDTV9GT1JNQVRfUzE2X0xFICYmCiAJICAgIHNsYXZlLT5mb3JtYXQgIT0gU05EX1BD
+TV9GT1JNQVRfUzE2X0JFICYmCiAJICAgIHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRf
+UzI0XzNMRSAmJiAKKwkgICAgc2xhdmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUg
+JiYKIAkgICAgc2xhdmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfTEUgJiYKIAkgICAg
+c2xhdmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfQkUpIHsKLQkJU05ERVJSKCJzb2Z0
+dm9sIHN1cHBvcnRzIG9ubHkgUzE2X0xFLCBTMTZfQkUsIFMyNF8zTEUsIFMzMl9MRSAiCi0JCSAg
+ICAgICAiIG9yIFMzMl9CRSIpOworCQlTTkRFUlIoInNvZnR2b2wgc3VwcG9ydHMgb25seSBTMTZf
+TEUsIFMxNl9CRSwgUzI0X0xFLCBTMjRfM0xFLCAiCisJCSAgICAgICAiUzMyX0xFIG9yIFMzMl9C
+RSIpOwogCQlyZXR1cm4gLUVJTlZBTDsKIAl9CiAJc3ZvbC0+c2Zvcm1hdCA9IHNsYXZlLT5mb3Jt
+YXQ7CkBAIC04NjMsNiArODY5LDcgQEAgaW50IHNuZF9wY21fc29mdHZvbF9vcGVuKHNuZF9wY21f
+dCAqKnBjbXAsIGNvbnN0IGNoYXIgKm5hbWUsCiAJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JN
+QVRfUzE2X0xFICYmCiAJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2X0JFICYmCiAJ
+ICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAmJiAKKwkgICAgc2Zvcm1hdCAh
+PSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUgJiYKIAkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1B
+VF9TMzJfTEUgJiYKIAkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfQkUpCiAJCXJl
+dHVybiAtRUlOVkFMOwpAQCAtMTA4Miw5ICsxMDg5LDEwIEBAIGludCBfc25kX3BjbV9zb2Z0dm9s
+X29wZW4oc25kX3BjbV90ICoqcGNtcCwgY29uc3QgY2hhciAqbmFtZSwKIAkJICAgIHNmb3JtYXQg
+IT0gU05EX1BDTV9GT1JNQVRfUzE2X0xFICYmCiAJCSAgICBzZm9ybWF0ICE9IFNORF9QQ01fRk9S
+TUFUX1MxNl9CRSAmJgogCQkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfM0xFICYm
+IAorCQkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUgJiYKIAkJICAgIHNmb3Jt
+YXQgIT0gU05EX1BDTV9GT1JNQVRfUzMyX0xFICYmCiAJCSAgICBzZm9ybWF0ICE9IFNORF9QQ01f
+Rk9STUFUX1MzMl9CRSkgewotCQkJU05ERVJSKCJvbmx5IFMxNl9MRSwgUzE2X0JFLCBTMjRfM0xF
+LCBTMzJfTEUgb3IgUzMyX0JFIGZvcm1hdCBpcyBzdXBwb3J0ZWQiKTsKKwkJCVNOREVSUigib25s
+eSBTMTZfTEUsIFMxNl9CRSwgUzI0X0xFLCBTMjRfM0xFLCBTMzJfTEUgb3IgUzMyX0JFIGZvcm1h
+dCBpcyBzdXBwb3J0ZWQiKTsKIAkJCXNuZF9jb25maWdfZGVsZXRlKHNjb25mKTsKIAkJCXJldHVy
+biAtRUlOVkFMOwogCQl9Ci0tIAoyLjE0LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
