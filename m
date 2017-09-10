@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Workaround for noise bug in ADC" to the asoc tree
-Date: Sun, 10 Sep 2017 05:58:43 +0100
-Message-ID: <E1dquKR-0005QK-Qz@debutante>
-References: <alpine.DEB.2.11.1709061745140.14549@lnxricardw1.se.axis.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.11.1709061745140.14549@lnxricardw1.se.axis.com>
-Sender: stable-owner@vger.kernel.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: Ricard Wanderlof <ricardw@axis.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: cs43130: Add break keyword to switch case" to the asoc tree
+Date: Sun, 10 Sep 2017 05:58:49 +0100
+Message-ID: <E1dquKX-0005RS-EQ@debutante>
+References: <cdb2768e-7853-4ada-b1e3-dd48d09d0d15@EX4.ad.cirrus.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <cdb2768e-7853-4ada-b1e3-dd48d09d0d15-k7YZYYsDncjfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau17x1: Workaround for noise bug in ADC
+   ASoC: cs43130: Add break keyword to switch case
 
 has been applied to the asoc tree at
 
@@ -37,87 +37,142 @@ to this mail.
 Thanks,
 Mark
 
->From 1e6f4fc06f6411adf98bbbe7fcd79442cd2b2a75 Mon Sep 17 00:00:00 2001
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Thu, 7 Sep 2017 15:31:38 +0200
-Subject: [PATCH] ASoC: adau17x1: Workaround for noise bug in ADC
+>From 574ff444b9fcc2554e381054f5052cb9c0e91de7 Mon Sep 17 00:00:00 2001
+From: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Date: Tue, 5 Sep 2017 20:33:04 -0500
+Subject: [PATCH] ASoC: cs43130: Add break keyword to switch case
 
-The ADC in the ADAU1361 (and possibly other Analog Devices codecs)
-exhibits a cyclic variation in the noise floor (in our test setup between
--87 and -93 dB), a new value being attained within this range whenever a
-new capture stream is started. The cycle repeats after about 10 or 11
-restarts.
+Add break keyword to all switch case unless the case is returning.
+Also remove gpio check for consistency.
 
-The workaround recommended by the manufacturer is to toggle the ADOSR bit
-in the Converter Control 0 register each time a new capture stream is
-started.
-
-I have verified that the patch fixes this problem on the ADAU1361, and
-according to the manufacturer toggling the bit in question in this manner
-will at least have no detrimental effect on other chips served by this
-driver.
-
-Signed-off-by: Ricard Wanderlof <ricardw@axis.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
+Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/adau17x1.c | 24 +++++++++++++++++++++++-
- sound/soc/codecs/adau17x1.h |  2 ++
- 2 files changed, 25 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs43130.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 2c1bd2763864..6758f789b712 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -90,6 +90,27 @@ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 643e37fc218e..5ba0edc19df4 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -909,6 +909,7 @@ static int cs43130_hw_params(struct snd_pcm_substream *substream,
+ 		regmap_update_bits(cs43130->regmap, CS43130_DSD_PATH_CTL_2,
+ 				   CS43130_DSD_SRC_MASK, CS43130_DSD_SRC_XSP <<
+ 				   CS43130_DSD_SRC_SHIFT);
++		break;
+ 	}
  
-+static int adau17x1_adc_fixup(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct adau *adau = snd_soc_codec_get_drvdata(codec);
-+
-+	/*
-+	 * If we are capturing, toggle the ADOSR bit in Converter Control 0 to
-+	 * avoid losing SNR (workaround from ADI). This must be done after
-+	 * the ADC(s) have been enabled. According to the data sheet, it is
-+	 * normally illegal to set this bit when the sampling rate is 96 kHz,
-+	 * but according to ADI it is acceptable for this workaround.
-+	 */
-+	regmap_update_bits(adau->regmap, ADAU17X1_CONVERTER0,
-+		ADAU17X1_CONVERTER0_ADOSR, ADAU17X1_CONVERTER0_ADOSR);
-+	regmap_update_bits(adau->regmap, ADAU17X1_CONVERTER0,
-+		ADAU17X1_CONVERTER0_ADOSR, 0);
-+
-+	return 0;
-+}
-+
- static const char * const adau17x1_mono_stereo_text[] = {
- 	"Stereo",
- 	"Mono Left Channel (L+R)",
-@@ -121,7 +142,8 @@ static const struct snd_soc_dapm_widget adau17x1_dapm_widgets[] = {
- 	SND_SOC_DAPM_MUX("Right DAC Mode Mux", SND_SOC_NOPM, 0, 0,
- 		&adau17x1_dac_mode_mux),
+ 	if (!sclk && cs43130->dais[dai->id].dai_mode == SND_SOC_DAIFMT_CBM_CFM)
+@@ -1039,6 +1040,7 @@ static int cs43130_pcm_ch_put(struct snd_kcontrol *kcontrol,
+ 		else
+ 			regmap_multi_reg_write(cs43130->regmap, pcm_ch_dis_seq,
+ 					       ARRAY_SIZE(pcm_ch_dis_seq));
++		break;
+ 	}
  
--	SND_SOC_DAPM_ADC("Left Decimator", NULL, ADAU17X1_ADC_CONTROL, 0, 0),
-+	SND_SOC_DAPM_ADC_E("Left Decimator", NULL, ADAU17X1_ADC_CONTROL, 0, 0,
-+			   adau17x1_adc_fixup, SND_SOC_DAPM_POST_PMU),
- 	SND_SOC_DAPM_ADC("Right Decimator", NULL, ADAU17X1_ADC_CONTROL, 1, 0),
- 	SND_SOC_DAPM_DAC("Left DAC", NULL, ADAU17X1_DAC_CONTROL0, 0, 0),
- 	SND_SOC_DAPM_DAC("Right DAC", NULL, ADAU17X1_DAC_CONTROL0, 1, 0),
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index bf04b7efee40..db350035fad7 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -129,5 +129,7 @@ bool adau17x1_has_dsp(struct adau *adau);
+ 	return snd_soc_put_enum_double(kcontrol, ucontrol);
+@@ -1152,6 +1154,7 @@ static int cs43130_dsd_event(struct snd_soc_dapm_widget *w,
+ 		case CS4399_CHIP_ID:
+ 			regmap_multi_reg_write(cs43130->regmap, dsd_seq,
+ 					       ARRAY_SIZE(dsd_seq));
++			break;
+ 		}
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -1162,6 +1165,7 @@ static int cs43130_dsd_event(struct snd_soc_dapm_widget *w,
+ 		case CS4399_CHIP_ID:
+ 			regmap_multi_reg_write(cs43130->regmap, unmute_seq,
+ 					       ARRAY_SIZE(unmute_seq));
++			break;
+ 		}
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+@@ -1184,6 +1188,7 @@ static int cs43130_dsd_event(struct snd_soc_dapm_widget *w,
+ 			regmap_update_bits(cs43130->regmap,
+ 					   CS43130_DSD_PATH_CTL_1,
+ 					   CS43130_MUTE_MASK, CS43130_MUTE_EN);
++			break;
+ 		}
+ 		break;
+ 	default:
+@@ -1206,6 +1211,7 @@ static int cs43130_pcm_event(struct snd_soc_dapm_widget *w,
+ 		case CS4399_CHIP_ID:
+ 			regmap_multi_reg_write(cs43130->regmap, pcm_seq,
+ 					       ARRAY_SIZE(pcm_seq));
++			break;
+ 		}
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -1216,6 +1222,7 @@ static int cs43130_pcm_event(struct snd_soc_dapm_widget *w,
+ 		case CS4399_CHIP_ID:
+ 			regmap_multi_reg_write(cs43130->regmap, unmute_seq,
+ 					       ARRAY_SIZE(unmute_seq));
++			break;
+ 		}
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+@@ -1238,6 +1245,7 @@ static int cs43130_pcm_event(struct snd_soc_dapm_widget *w,
+ 			regmap_update_bits(cs43130->regmap,
+ 					   CS43130_PCM_PATH_CTL_1,
+ 					   CS43130_MUTE_MASK, CS43130_MUTE_EN);
++			break;
+ 		}
+ 		break;
+ 	default:
+@@ -1277,6 +1285,7 @@ static int cs43130_dac_event(struct snd_soc_dapm_widget *w,
+ 		case CS43198_CHIP_ID:
+ 			regmap_multi_reg_write(cs43130->regmap, pop_free_seq2,
+ 					       ARRAY_SIZE(pop_free_seq2));
++			break;
+ 		}
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+@@ -1301,6 +1310,7 @@ static int cs43130_dac_event(struct snd_soc_dapm_widget *w,
+ 		case CS43198_CHIP_ID:
+ 			usleep_range(12000, 12010);
+ 			regmap_write(cs43130->regmap, CS43130_DXD13, 0);
++			break;
+ 		}
  
- #define ADAU17X1_CONVERTER0_CONVSR_MASK		0x7
+ 		regmap_write(cs43130->regmap, CS43130_DXD1, 0);
+@@ -1311,6 +1321,7 @@ static int cs43130_dac_event(struct snd_soc_dapm_widget *w,
+ 		case CS4399_CHIP_ID:
+ 			regmap_multi_reg_write(cs43130->regmap, dac_postpmd_seq,
+ 					       ARRAY_SIZE(dac_postpmd_seq));
++			break;
+ 		}
+ 		break;
+ 	default:
+@@ -2133,6 +2144,7 @@ static void cs43130_imp_meas(struct work_struct *wk)
+ 		cs43130_hpload_proc(cs43130, hp_dis_cal_seq2,
+ 				    ARRAY_SIZE(hp_dis_cal_seq2),
+ 				    CS43130_HPLOAD_OFF_INT, ac_idx);
++		break;
+ 	}
  
-+#define ADAU17X1_CONVERTER0_ADOSR		BIT(3)
-+
+ 	regmap_multi_reg_write(cs43130->regmap, hp_cln_seq,
+@@ -2543,6 +2555,7 @@ static int cs43130_i2c_probe(struct i2c_client *client,
+ 			digital_hp_routes;
+ 		soc_codec_dev_cs43130.component_driver.num_dapm_routes =
+ 			ARRAY_SIZE(digital_hp_routes);
++		break;
+ 	}
  
- #endif
+ 	ret = snd_soc_register_codec(&client->dev, &soc_codec_dev_cs43130,
+@@ -2586,8 +2599,7 @@ static int cs43130_i2c_remove(struct i2c_client *client)
+ 		device_remove_file(&client->dev, &dev_attr_hpload_ac_r);
+ 	}
+ 
+-	if (cs43130->reset_gpio)
+-		gpiod_set_value_cansleep(cs43130->reset_gpio, 0);
++	gpiod_set_value_cansleep(cs43130->reset_gpio, 0);
+ 
+ 	pm_runtime_disable(&client->dev);
+ 	regulator_bulk_disable(CS43130_NUM_SUPPLIES, cs43130->supplies);
 -- 
 2.14.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
