@@ -1,108 +1,100 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: usb/midi: use-after-free in snd_rawmidi_dev_seq_free
-Date: Mon, 11 Sep 2017 13:17:39 +0200
-Message-ID: <CAAeHK+yXrm5MnkodE1GNj4EKr=ydq2T8kr5SKPB_fnYBO7fh9w@mail.gmail.com>
-References: <CAAeHK+ygnu48z2JcmtCOvSUTFQFNqEvavj+UGo2wkG67i3u9rQ@mail.gmail.com>
- <s5hzia9ku1g.wl-tiwai@suse.de>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Subject: [PATCH 2/3] ASoC: max98927: Added controls for
+	Envelope tracking
+Date: Mon, 11 Sep 2017 09:12:19 -0700
+Message-ID: <1505146339-19380-2-git-send-email-ryans.lee@maximintegrated.com>
+References: <1505146339-19380-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hzia9ku1g.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ingo Molnar <mingo@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Fabian Frederick <fabf@skynet.be>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM01-BY2-obe.outbound.protection.outlook.com
+ (mail-by2nam01on0091.outbound.protection.outlook.com [104.47.34.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id A95C1266C6D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2017 18:12:59 +0200 (CEST)
+In-Reply-To: <1505146339-19380-1-git-send-email-ryans.lee@maximintegrated.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 5, 2017 at 6:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 05 Sep 2017 13:12:14 +0200,
-> Andrey Konovalov wrote:
->>
->> Hi!
->>
->> While working on adding USB fuzzing support to syzkaller, I got the
->> following crash.
->>
->> On commit 81a84ad3cb5711cec79f4dd53a4ce026b092c432 (4.13+).
->>
->> My .config is attached. I don't have a reproducer for this bug.
->>
->> ==================================================================
->> BUG: KASAN: use-after-free in snd_rawmidi_dev_seq_free+0x69/0x70
->> sound/core/rawmidi.c:1617
->> Write of size 8 at addr ffff88006c611d90 by task kworker/2:1/567
->>
->> CPU: 2 PID: 567 Comm: kworker/2:1 Not tainted 4.13.0+ #29
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->> Workqueue: events autoload_drivers
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:16 [inline]
->>  dump_stack+0x192/0x22c lib/dump_stack.c:52
->>  print_address_description+0x78/0x280 mm/kasan/report.c:252
->>  kasan_report_error mm/kasan/report.c:351 [inline]
->>  kasan_report+0x230/0x340 mm/kasan/report.c:409
->>  __asan_report_store8_noabort+0x1c/0x20 mm/kasan/report.c:435
->>  snd_rawmidi_dev_seq_free+0x69/0x70 sound/core/rawmidi.c:1617
->>  snd_seq_dev_release+0x4f/0x70 sound/core/seq_device.c:192
->>  device_release+0x13f/0x210 drivers/base/core.c:814
->>  kobject_cleanup lib/kobject.c:648 [inline]
->>  kobject_release lib/kobject.c:677 [inline]
->>  kref_put include/linux/kref.h:70 [inline]
->>  kobject_put+0x145/0x240 lib/kobject.c:694
->>  put_device+0x25/0x30 drivers/base/core.c:1799
->>  klist_devices_put+0x36/0x40 drivers/base/bus.c:827
->>  klist_next+0x264/0x4a0 lib/klist.c:403
->>  next_device drivers/base/bus.c:270 [inline]
->>  bus_for_each_dev+0x17e/0x210 drivers/base/bus.c:312
->>  autoload_drivers+0x3b/0x50 sound/core/seq_device.c:117
->>  process_one_work+0x9fb/0x1570 kernel/workqueue.c:2097
->>  worker_thread+0x1e4/0x1350 kernel/workqueue.c:2231
->>  kthread+0x324/0x3f0 kernel/kthread.c:231
->>  ret_from_fork+0x25/0x30 arch/x86/entry/entry_64.S:425
->
-> So this looks like a pending work triggering the issue when performed
-> during the card free.  What about the patch below as a quick band-aid
-> fix?
->
->
-> thanks,
->
-> Takashi
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+---
+Changelog:
+Added a control("EnvTrack Headroom") to set different headroom value for envelop tracking function.
+Added one more control for envelop tracking function enable/disable("EnvTrack Switch").
+Removed writing process to register 0x0087 because it is read only register.
 
-Hi Takashi,
+ sound/soc/codecs/max98927.c | 19 +++++++++++++++----
+ sound/soc/codecs/max98927.h |  4 ++++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
-I've been running syzkaller with your patch for a few days and didn't
-see any more of those reports.
-
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-
-Thanks!
-
->
-> ---
-> diff --git a/sound/core/seq_device.c b/sound/core/seq_device.c
-> --- a/sound/core/seq_device.c
-> +++ b/sound/core/seq_device.c
-> @@ -148,8 +148,10 @@ void snd_seq_device_load_drivers(void)
->         flush_work(&autoload_work);
->  }
->  EXPORT_SYMBOL(snd_seq_device_load_drivers);
-> +#define cancel_autoload_drivers()      cancel_work_sync(&autoload_work)
->  #else
->  #define queue_autoload_drivers() /* NOP */
-> +#define cancel_autoload_drivers() /* NOP */
->  #endif
->
->  /*
-> @@ -159,6 +161,7 @@ static int snd_seq_device_dev_free(struct snd_device *device)
->  {
->         struct snd_seq_device *dev = device->device_data;
->
-> +       cancel_autoload_drivers();
->         put_device(&dev->dev);
->         return 0;
->  }
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
-> For more options, visit https://groups.google.com/d/optout.
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index a1d3935..73c7a33 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -624,6 +624,18 @@ static SOC_ENUM_SINGLE_DECL(max98927_current_limit,
+ 		MAX98927_R0042_BOOST_CTRL1, 1,
+ 		max98927_current_limit_text);
+ 
++static const char * const max98927_env_track_headroom_text[] = {
++	"0.000V", "0.125V", "0.250V", "0.375V", "0.500V", "0.625V",
++	"0.750V", "0.875V", "1.000V", "1.125V", "1.250V", "1.375V",
++	"1.500V", "1.625V", "1.750V", "1.875V", "2.000V", "2.125V",
++	"2.250V", "2.375V", "2.500V", "2.625V", "2.750V", "2.875V",
++	"3.000V", "3.125V", "3.250V", "3.375V", "3.500V"
++};
++
++static SOC_ENUM_SINGLE_DECL(max98927_env_track_headroom,
++		MAX98927_R0082_ENV_TRACK_VOUT_HEADROOM, 0,
++		max98927_env_track_headroom_text);
++
+ static const struct snd_kcontrol_new max98927_snd_controls[] = {
+ 	SOC_SINGLE_TLV("Speaker Volume", MAX98927_R003C_SPK_GAIN,
+ 		0, 6, 0,
+@@ -641,6 +653,9 @@ static SOC_ENUM_SINGLE_DECL(max98927_current_limit,
+ 		MAX98927_AMP_VOL_SEL_SHIFT, 1, 0),
+ 	SOC_ENUM("Boost Output Voltage", max98927_boost_voltage),
+ 	SOC_ENUM("Current Limit", max98927_current_limit),
++	SOC_SINGLE("EnvTrack Switch", MAX98927_R0086_ENV_TRACK_CTRL,
++		MAX98927_ENV_TRACKER_EN_SHIFT, 1, 0),
++	SOC_ENUM("EnvTrack Headroom", max98927_env_track_headroom),
+ };
+ 
+ static const struct snd_soc_dapm_route max98927_audio_map[] = {
+@@ -744,10 +759,6 @@ static int max98927_probe(struct snd_soc_codec *codec)
+ 	regmap_write(max98927->regmap,
+ 		MAX98927_R0086_ENV_TRACK_CTRL,
+ 		0x01);
+-	regmap_write(max98927->regmap,
+-		MAX98927_R0087_ENV_TRACK_BOOST_VOUT_READ,
+-		0x10);
+-
+ 	/* voltage, current slot configuration */
+ 	regmap_write(max98927->regmap,
+ 		MAX98927_R001E_PCM_TX_CH_SRC_A,
+diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+index 9ea8397..98b5f17 100644
+--- a/sound/soc/codecs/max98927.h
++++ b/sound/soc/codecs/max98927.h
+@@ -250,6 +250,10 @@
+ #define MAX98927_BROWNOUT_DSP_EN (0x1 << 2)
+ #define MAX98927_BROWNOUT_DSP_SHIFT (2)
+ 
++/* MAX98927_R0086_ENV_TRACK_CTRL */
++#define MAX98927_ENV_TRACKER_EN (0x1 << 0)
++#define MAX98927_ENV_TRACKER_EN_SHIFT (0)
++
+ /* MAX98927_R0100_SOFT_RESET */
+ #define MAX98927_SOFT_RESET (0x1 << 0)
+ 
+-- 
+1.9.1
