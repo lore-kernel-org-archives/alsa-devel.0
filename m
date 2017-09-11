@@ -1,292 +1,108 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v3 01/11] iio: Add hardware consumer support
-Date: Mon, 11 Sep 2017 11:01:34 +0200
-Message-ID: <eea6504a-314f-3d30-ec5a-e42e8a2e24f6@st.com>
-References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
- <1489759704-30217-2-git-send-email-arnaud.pouliquen@st.com>
- <2f1ea8dc-ff6b-3526-bc9e-50dde1ae9a66@st.com>
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: usb/midi: use-after-free in snd_rawmidi_dev_seq_free
+Date: Mon, 11 Sep 2017 13:17:39 +0200
+Message-ID: <CAAeHK+yXrm5MnkodE1GNj4EKr=ydq2T8kr5SKPB_fnYBO7fh9w@mail.gmail.com>
+References: <CAAeHK+ygnu48z2JcmtCOvSUTFQFNqEvavj+UGo2wkG67i3u9rQ@mail.gmail.com>
+ <s5hzia9ku1g.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id CF8A12668BF
- for <alsa-devel@alsa-project.org>; Mon, 11 Sep 2017 11:02:01 +0200 (CEST)
-In-Reply-To: <2f1ea8dc-ff6b-3526-bc9e-50dde1ae9a66@st.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Benjamin GAIGNARD <benjamin.gaignard@st.com>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hzia9ku1g.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ingo Molnar <mingo@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Fabian Frederick <fabf@skynet.be>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Lars,
-
-New gentlemen Reminder.
-
-I suppose that you have to treat a lot of subjects with more priority
-than this one, but on my side I'm starting to have a lot of pressure
-from project, as STM32 DFSDM upstream is blocked since close to 6 months.
-
-As you proposed the interface, I would be fair you could push it for
-upstream this month.
-
-If you don't have time for this, another solution could be that I push
-it for you.
-Please tell me your preference.
-
-Regards,
-Arnaud
-
-
-On 06/06/2017 12:15 PM, Arnaud Pouliquen wrote:
-> Hello Lars,
-> 
-> Any news on the upstream of your HW consumer interface, prerequisite for
-> my STM32 DFSDM upstream?
-> Don't hesitate if i can help...
-> 
-> Regards
-> Arnaud
-> 
-> 
-> On 03/17/2017 03:08 PM, Arnaud POULIQUEN wrote:
->> From: Lars-Peter Clausen <lars@metafoo.de>
+On Tue, Sep 5, 2017 at 6:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 05 Sep 2017 13:12:14 +0200,
+> Andrey Konovalov wrote:
 >>
->> Hardware consumer's can be used when one IIO device has a direct connection
->> to another device in hardware.
+>> Hi!
 >>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->> V2 -> V3:
->> 	 Just Adding sign off.  No update but Jonathan comment.
->>          Need to be taken into account (in agreement with Lars)
->>          when transforming rfc in patch.
->> ---
->>  drivers/iio/Kconfig             |   6 ++
->>  drivers/iio/Makefile            |   1 +
->>  drivers/iio/hw_consumer.c       | 156 ++++++++++++++++++++++++++++++++++++++++
->>  include/linux/iio/hw_consumer.h |  12 ++++
->>  4 files changed, 175 insertions(+)
->>  create mode 100644 drivers/iio/hw_consumer.c
->>  create mode 100644 include/linux/iio/hw_consumer.h
+>> While working on adding USB fuzzing support to syzkaller, I got the
+>> following crash.
 >>
->> diff --git a/drivers/iio/Kconfig b/drivers/iio/Kconfig
->> index 6743b18..956dd18 100644
->> --- a/drivers/iio/Kconfig
->> +++ b/drivers/iio/Kconfig
->> @@ -30,6 +30,12 @@ config IIO_CONFIGFS
->>  	  (e.g. software triggers). For more info see
->>  	  Documentation/iio/iio_configfs.txt.
->>  
->> +config IIO_HW_CONSUMER
->> +	tristate
->> +	help
->> +	  Hardware consumer buffer
->> +
->> +
->>  config IIO_TRIGGER
->>  	bool "Enable triggered sampling support"
->>  	help
->> diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
->> index 87e4c43..8472b97 100644
->> --- a/drivers/iio/Makefile
->> +++ b/drivers/iio/Makefile
->> @@ -6,6 +6,7 @@ obj-$(CONFIG_IIO) += industrialio.o
->>  industrialio-y := industrialio-core.o industrialio-event.o inkern.o
->>  industrialio-$(CONFIG_IIO_BUFFER) += industrialio-buffer.o
->>  industrialio-$(CONFIG_IIO_TRIGGER) += industrialio-trigger.o
->> +obj-$(CONFIG_IIO_HW_CONSUMER) += hw_consumer.o
->>  
->>  obj-$(CONFIG_IIO_CONFIGFS) += industrialio-configfs.o
->>  obj-$(CONFIG_IIO_SW_DEVICE) += industrialio-sw-device.o
->> diff --git a/drivers/iio/hw_consumer.c b/drivers/iio/hw_consumer.c
->> new file mode 100644
->> index 0000000..66f0732
->> --- /dev/null
->> +++ b/drivers/iio/hw_consumer.c
->> @@ -0,0 +1,156 @@
->> +#include <linux/err.h>
->> +#include <linux/export.h>
->> +#include <linux/slab.h>
->> +#include <linux/mutex.h>
->> +#include <linux/of.h>
->> +
->> +#include <linux/iio/iio.h>
->> +#include "iio_core.h"
->> +#include <linux/iio/machine.h>
->> +#include <linux/iio/driver.h>
->> +#include <linux/iio/consumer.h>
->> +#include <linux/iio/hw_consumer.h>
->> +#include <linux/iio/buffer.h>
->> +
->> +struct iio_hw_consumer {
->> +	struct list_head buffers;
->> +	struct iio_channel *channels;
->> +};
->> +
->> +struct hw_consumer_buffer {
->> +	struct list_head head;
->> +	struct iio_dev *indio_dev;
->> +	struct iio_buffer buffer;
->> +};
->> +
->> +static struct hw_consumer_buffer *iio_buffer_to_hw_consumer_buffer(
->> +	struct iio_buffer *buffer)
->> +{
->> +	return container_of(buffer, struct hw_consumer_buffer, buffer);
->> +}
->> +
->> +static void iio_hw_buf_release(struct iio_buffer *buffer)
->> +{
->> +	struct hw_consumer_buffer *hw_buf =
->> +		iio_buffer_to_hw_consumer_buffer(buffer);
->> +	kfree(hw_buf->buffer.scan_mask);
->> +	kfree(hw_buf);
->> +}
->> +
->> +static const struct iio_buffer_access_funcs iio_hw_buf_access = {
->> +	.release = &iio_hw_buf_release,
->> +	.modes = INDIO_BUFFER_HARDWARE,
->> +};
->> +
->> +static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
->> +	struct iio_hw_consumer *hwc, struct iio_dev *indio_dev)
->> +{
->> +	struct hw_consumer_buffer *buf;
->> +
->> +	list_for_each_entry(buf, &hwc->buffers, head) {
->> +		if (buf->indio_dev == indio_dev)
->> +			return buf;
->> +	}
->> +
->> +	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
->> +	if (!buf)
->> +		return NULL;
->> +
->> +	buf->buffer.access = &iio_hw_buf_access;
->> +	buf->indio_dev = indio_dev;
->> +	buf->buffer.scan_mask = kcalloc(BITS_TO_LONGS(indio_dev->masklength),
->> +		sizeof(long), GFP_KERNEL);
->> +	if (!buf->buffer.scan_mask)
->> +		goto err_free_buf;
->> +
->> +	iio_buffer_init(&buf->buffer);
->> +	list_add_tail(&buf->head, &hwc->buffers);
->> +
->> +	return buf;
->> +
->> +err_free_buf:
->> +	kfree(buf);
->> +	return NULL;
->> +}
->> +
->> +struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev)
->> +{
->> +	struct hw_consumer_buffer *buf;
->> +	struct iio_hw_consumer *hwc;
->> +	struct iio_channel *chan;
->> +	int ret;
->> +
->> +	hwc = kzalloc(sizeof(*hwc), GFP_KERNEL);
->> +	if (!hwc)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	INIT_LIST_HEAD(&hwc->buffers);
->> +
->> +	hwc->channels = iio_channel_get_all(dev);
->> +	if (IS_ERR(hwc->channels)) {
->> +		ret = PTR_ERR(hwc->channels);
->> +		goto err_free_hwc;
->> +	}
->> +
->> +	chan = &hwc->channels[0];
->> +	while (chan->indio_dev) {
->> +		buf = iio_hw_consumer_get_buffer(hwc, chan->indio_dev);
->> +		if (buf == NULL) {
->> +			ret = -ENOMEM;
->> +			goto err_put_buffers;
->> +		}
->> +		set_bit(chan->channel->scan_index, buf->buffer.scan_mask);
->> +		chan++;
->> +	}
->> +
->> +	return hwc;
->> +
->> +err_put_buffers:
->> +	list_for_each_entry(buf, &hwc->buffers, head)
->> +		iio_buffer_put(&buf->buffer);
->> +	iio_channel_release_all(hwc->channels);
->> +err_free_hwc:
->> +	kfree(hwc);
->> +	return ERR_PTR(ret);
->> +}
->> +EXPORT_SYMBOL_GPL(iio_hw_consumer_alloc);
->> +
->> +void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
->> +{
->> +	struct hw_consumer_buffer *buf;
->> +
->> +	iio_channel_release_all(hwc->channels);
->> +	list_for_each_entry(buf, &hwc->buffers, head)
->> +		iio_buffer_put(&buf->buffer);
->> +	kfree(hwc);
->> +}
->> +EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
->> +
->> +int iio_hw_consumer_enable(struct iio_hw_consumer *hwc)
->> +{
->> +	struct hw_consumer_buffer *buf;
->> +	int ret;
->> +
->> +	list_for_each_entry(buf, &hwc->buffers, head) {
->> +		ret = iio_update_buffers(buf->indio_dev, &buf->buffer, NULL);
->> +		if (ret)
->> +			goto err_disable_buffers;
->> +	}
->> +
->> +	return 0;
->> +
->> +err_disable_buffers:
->> +	list_for_each_entry_continue_reverse(buf, &hwc->buffers, head)
->> +		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(iio_hw_consumer_enable);
->> +
->> +void iio_hw_consumer_disable(struct iio_hw_consumer *hwc)
->> +{
->> +	struct hw_consumer_buffer *buf;
->> +
->> +	list_for_each_entry(buf, &hwc->buffers, head)
->> +		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
->> +}
->> +EXPORT_SYMBOL_GPL(iio_hw_consumer_disable);
->> diff --git a/include/linux/iio/hw_consumer.h b/include/linux/iio/hw_consumer.h
->> new file mode 100644
->> index 0000000..f12653d
->> --- /dev/null
->> +++ b/include/linux/iio/hw_consumer.h
->> @@ -0,0 +1,12 @@
->> +#ifndef LINUX_IIO_HW_CONSUMER_BUFFER_H
->> +#define LINUX_IIO_HW_CONSUMER_BUFFER_H
->> +
->> +struct device;
->> +struct iio_hw_consumer;
->> +
->> +struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
->> +void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
->> +int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
->> +void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
->> +
->> +#endif
+>> On commit 81a84ad3cb5711cec79f4dd53a4ce026b092c432 (4.13+).
 >>
+>> My .config is attached. I don't have a reproducer for this bug.
+>>
+>> ==================================================================
+>> BUG: KASAN: use-after-free in snd_rawmidi_dev_seq_free+0x69/0x70
+>> sound/core/rawmidi.c:1617
+>> Write of size 8 at addr ffff88006c611d90 by task kworker/2:1/567
+>>
+>> CPU: 2 PID: 567 Comm: kworker/2:1 Not tainted 4.13.0+ #29
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+>> Workqueue: events autoload_drivers
+>> Call Trace:
+>>  __dump_stack lib/dump_stack.c:16 [inline]
+>>  dump_stack+0x192/0x22c lib/dump_stack.c:52
+>>  print_address_description+0x78/0x280 mm/kasan/report.c:252
+>>  kasan_report_error mm/kasan/report.c:351 [inline]
+>>  kasan_report+0x230/0x340 mm/kasan/report.c:409
+>>  __asan_report_store8_noabort+0x1c/0x20 mm/kasan/report.c:435
+>>  snd_rawmidi_dev_seq_free+0x69/0x70 sound/core/rawmidi.c:1617
+>>  snd_seq_dev_release+0x4f/0x70 sound/core/seq_device.c:192
+>>  device_release+0x13f/0x210 drivers/base/core.c:814
+>>  kobject_cleanup lib/kobject.c:648 [inline]
+>>  kobject_release lib/kobject.c:677 [inline]
+>>  kref_put include/linux/kref.h:70 [inline]
+>>  kobject_put+0x145/0x240 lib/kobject.c:694
+>>  put_device+0x25/0x30 drivers/base/core.c:1799
+>>  klist_devices_put+0x36/0x40 drivers/base/bus.c:827
+>>  klist_next+0x264/0x4a0 lib/klist.c:403
+>>  next_device drivers/base/bus.c:270 [inline]
+>>  bus_for_each_dev+0x17e/0x210 drivers/base/bus.c:312
+>>  autoload_drivers+0x3b/0x50 sound/core/seq_device.c:117
+>>  process_one_work+0x9fb/0x1570 kernel/workqueue.c:2097
+>>  worker_thread+0x1e4/0x1350 kernel/workqueue.c:2231
+>>  kthread+0x324/0x3f0 kernel/kthread.c:231
+>>  ret_from_fork+0x25/0x30 arch/x86/entry/entry_64.S:425
+>
+> So this looks like a pending work triggering the issue when performed
+> during the card free.  What about the patch below as a quick band-aid
+> fix?
+>
+>
+> thanks,
+>
+> Takashi
+
+Hi Takashi,
+
+I've been running syzkaller with your patch for a few days and didn't
+see any more of those reports.
+
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
+
+Thanks!
+
+>
+> ---
+> diff --git a/sound/core/seq_device.c b/sound/core/seq_device.c
+> --- a/sound/core/seq_device.c
+> +++ b/sound/core/seq_device.c
+> @@ -148,8 +148,10 @@ void snd_seq_device_load_drivers(void)
+>         flush_work(&autoload_work);
+>  }
+>  EXPORT_SYMBOL(snd_seq_device_load_drivers);
+> +#define cancel_autoload_drivers()      cancel_work_sync(&autoload_work)
+>  #else
+>  #define queue_autoload_drivers() /* NOP */
+> +#define cancel_autoload_drivers() /* NOP */
+>  #endif
+>
+>  /*
+> @@ -159,6 +161,7 @@ static int snd_seq_device_dev_free(struct snd_device *device)
+>  {
+>         struct snd_seq_device *dev = device->device_data;
+>
+> +       cancel_autoload_drivers();
+>         put_device(&dev->dev);
+>         return 0;
+>  }
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
+> For more options, visit https://groups.google.com/d/optout.
