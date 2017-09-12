@@ -1,18 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: rt5670: add set_bclk_ratio in dai
- ops
-Date: Tue, 12 Sep 2017 09:53:35 -0500
-Message-ID: <81332721-16ed-2442-61e3-8483df66258d@linux.intel.com>
-References: <1505203979-12794-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/7] ASoC: ts3a227e: add acpi table
+Date: Tue, 12 Sep 2017 07:54:48 -0700
+Message-ID: <20170912145448.ygzvb3em3zqp63jr@sirena.org.uk>
+References: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
+ <20170908051309.19028-6-pierre-louis.bossart@linux.intel.com>
+ <20170908132705.GH3053@localhost>
+ <20292830-6f66-a67e-8030-a7eaf808c3fe@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9078345641215594313=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 4794D26704A
- for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 16:53:38 +0200 (CEST)
-In-Reply-To: <1505203979-12794-1-git-send-email-bardliao@realtek.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58F00266B23
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 16:55:02 +0200 (CEST)
+In-Reply-To: <20292830-6f66-a67e-8030-a7eaf808c3fe@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, shumingf@realtek.com, flove@realtek.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Thierry Escande <thierry.escande@collabora.com>, Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, tiwai@suse.de, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 9/12/17 3:12 AM, Bard Liao wrote:
-> We need to set a specific bit for 50 bclk rate. So add set_bclk_ratio
-> function to set the bit.
 
-When is this supposed to be used? the cht_bsw_rt5672 machine driver uses 
-a 19.2MHz MCLK/2.4 MHz bclk, so there's a typical 50x ratio.
+--===============9078345641215594313==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="oe5ukxwyia7vzlly"
+Content-Disposition: inline
 
-> 
-> Signed-off-by: Bard Liao <bardliao@realtek.com>
-> ---
-> v2:
-> * add define for tdm data format select bit.
-> ---
->   sound/soc/codecs/rt5670.c | 19 +++++++++++++++++++
->   sound/soc/codecs/rt5670.h |  4 ++++
->   2 files changed, 23 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-> index 9545764..da7614c 100644
-> --- a/sound/soc/codecs/rt5670.c
-> +++ b/sound/soc/codecs/rt5670.c
-> @@ -2582,6 +2582,24 @@ static int rt5670_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
->   	return 0;
->   }
->   
-> +static int rt5670_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-> +{
-> +	struct snd_soc_codec *codec = dai->codec;
-> +
-> +	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
-> +	if (dai->id != RT5670_AIF1)
-> +		return 0;
-> +
-> +	if (ratio == 50)
-> +		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
-> +			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_50FS);
-> +	else
-> +		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
-> +			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_NOR);
-> +
-> +	return 0;
-> +}
-> +
->   static int rt5670_set_bias_level(struct snd_soc_codec *codec,
->   			enum snd_soc_bias_level level)
->   {
-> @@ -2712,6 +2730,7 @@ static const struct snd_soc_dai_ops rt5670_aif_dai_ops = {
->   	.set_fmt = rt5670_set_dai_fmt,
->   	.set_tdm_slot = rt5670_set_tdm_slot,
->   	.set_pll = rt5670_set_dai_pll,
-> +	.set_bclk_ratio = rt5670_set_bclk_ratio,
->   };
->   
->   static struct snd_soc_dai_driver rt5670_dai[] = {
-> diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-> index 5ba485c..265df80 100644
-> --- a/sound/soc/codecs/rt5670.h
-> +++ b/sound/soc/codecs/rt5670.h
-> @@ -1816,6 +1816,10 @@
->   #define RT5670_ZCD_HP_DIS			(0x0 << 15)
->   #define RT5670_ZCD_HP_EN			(0x1 << 15)
->   
-> +/* General Control 3 (0xfc) */
-> +#define RT5670_TDM_DATA_MODE_SEL		(0x1 << 11)
-> +#define RT5670_TDM_DATA_MODE_NOR		(0x0 << 11)
-> +#define RT5670_TDM_DATA_MODE_50FS		(0x1 << 11)
->   
->   /* Codec Private Register definition */
->   /* 3D Speaker Control (0x63) */
-> 
+
+--oe5ukxwyia7vzlly
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Sep 08, 2017 at 08:30:37AM -0500, Pierre-Louis Bossart wrote:
+
+> > >   		.of_match_table = of_match_ptr(ts3a227e_of_match),
+> > > +		.acpi_match_table = ACPI_PTR(ts3a227e_acpi_match),
+
+> > but then this would give compiler error on those systems as .acpi_match_table is
+> > defined in driver core... can you compile this on non acpi and check
+
+> This is not any different from what is done for other codecs.
+
+> And the 0day checks did not report any issues, probably because the
+> pre-processor takes the table out when CONFIG_ACPI is not enabled:
+
+> #define ACPI_PTR(_ptr)	(NULL)
+
+> so no change...
+
+Right, this is the whole point of the of_match_ptr() and ACPI_PTR()
+macros.
+
+--oe5ukxwyia7vzlly
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm39TUACgkQJNaLcl1U
+h9BOLAf/dhtSblgxKqJGJ+dE4/SJvvGI736J7xqJe4oCOsInPsKLp+OkEvqNHRcx
+N2KR6mVur3z+w+P1za9Y8sMd3qczqPZESZKO7FUAvTvcV3YI8H9KtwfbopENIrRI
+6v/B7MWl385ZvAhj5tQxRQmIV0oBCuMiblvfrrRkMpqbRrANy+4eXYoVArlTBb/3
+5CqlYfUMV668E7+s2V9pIEF+nlGtrlbWoP9a1IHOArTXGEOWM47XdjJsFHKXf7L3
+53qHKP00VxgHbYXw+Ix9YmwG3ijQBHTi3tevkN5ERLVerM8vXRut+QwotbmRKv9E
+M6EM3dUVv8MJxvg7XL9yRrjZM70r0g==
+=/pFY
+-----END PGP SIGNATURE-----
+
+--oe5ukxwyia7vzlly--
+
+--===============9078345641215594313==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9078345641215594313==--
