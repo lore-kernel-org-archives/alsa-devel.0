@@ -1,99 +1,45 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: [RFC] ASoC: codecs: msm8916-wcd-analog: use btn0 released detection
-Date: Wed, 13 Sep 2017 16:43:55 -0400
-Message-ID: <20170913204355.26186-1-damien.riegel@savoirfairelinux.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Damien Riegel <damien.riegel@savoirfairelinux.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] pcm: softvol: add support for S24_LE
+Date: Tue, 12 Sep 2017 23:53:19 +0900
+Message-ID: <3c215843-344c-0e32-c870-a8f133b867cb@sakamocchi.jp>
+References: <20170908101151.29368-1-joerg.krause@embedded.rocks>
+ <720f5f32-9d90-35a5-ec4c-9b0af013f905@ladisch.de>
+ <1505196817.26012.4.camel@embedded.rocks>
+ <3587a5fe-6624-109b-d291-10ee592f02ba@ladisch.de>
+ <1505198948.26012.15.camel@embedded.rocks>
+ <c6d2072a-5403-cc67-519e-f7dda0ceb147@ladisch.de>
+ <s5h377spezh.wl-tiwai@suse.de> <1505225758.2863.11.camel@embedded.rocks>
+ <s5hshfsasxi.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6F4F8266B23
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 16:53:25 +0200 (CEST)
+In-Reply-To: <s5hshfsasxi.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-msm8916-wcd-analog uses button0 to differentiate between headphone and
-headset. Under some circumstances, button pressed and released
-interrupts are not fired as the driver expects it.
-
-For instance, with some connectors, there are spurious button-pressed
-interrupts when unplugging a headphone, without the corresponding
-button-released interrupt. But the codec always alternates between
-button pressed and released interrupts, it cannot fire two interrupts of
-the same kind in a row. That means that when the headphone is plugged
-back, only a button-released interrupt will be fired instead of pressed
-then released. This causes the driver to report headphone as headset.
-
-By changing the logic and relying on button 0 release interrupt, the
-driver could be made more robust for connectors that differ from the one
-used on the Dragonboard's audio mezzanine.
-
-Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 549c269acc7d..f562f2d86907 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -285,7 +285,7 @@ struct pm8916_wcd_analog_priv {
- 	u16 codec_version;
- 	bool	mbhc_btn_enabled;
- 	/* special event to detect accessory type */
--	bool	mbhc_btn0_pressed;
-+	int	mbhc_btn0_released;
- 	bool	detect_accessory_type;
- 	struct clk *mclk;
- 	struct snd_soc_codec *codec;
-@@ -483,7 +483,7 @@ static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
- 
- 	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
- 	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
--	wcd->mbhc_btn0_pressed = false;
-+	wcd->mbhc_btn0_released = false;
- 	wcd->detect_accessory_type = true;
- }
- 
-@@ -950,7 +950,7 @@ static irqreturn_t mbhc_btn_release_irq_handler(int irq, void *arg)
- 
- 		/* check if its BTN0 thats released */
- 		if ((val != -1) && !(val & CDC_A_MBHC_RESULT_1_BTN_RESULT_MASK))
--			priv->mbhc_btn0_pressed = false;
-+			priv->mbhc_btn0_released = true;
- 
- 	} else {
- 		snd_soc_jack_report(priv->jack, 0, btn_mask);
-@@ -983,9 +983,7 @@ static irqreturn_t mbhc_btn_press_irq_handler(int irq, void *arg)
- 		break;
- 	case 0x0:
- 		/* handle BTN_0 specially for type detection */
--		if (priv->detect_accessory_type)
--			priv->mbhc_btn0_pressed = true;
--		else
-+		if (!priv->detect_accessory_type)
- 			snd_soc_jack_report(priv->jack,
- 					    SND_JACK_BTN_0, btn_mask);
- 		break;
-@@ -1029,19 +1027,19 @@ static irqreturn_t pm8916_mbhc_switch_irq_handler(int irq, void *arg)
- 		 * both press and release event received then its
- 		 * a headset.
- 		 */
--		if (priv->mbhc_btn0_pressed)
-+		if (priv->mbhc_btn0_released)
- 			snd_soc_jack_report(priv->jack,
--					    SND_JACK_HEADPHONE, hs_jack_mask);
-+					    SND_JACK_HEADSET, hs_jack_mask);
- 		else
- 			snd_soc_jack_report(priv->jack,
--					    SND_JACK_HEADSET, hs_jack_mask);
-+					    SND_JACK_HEADPHONE, hs_jack_mask);
- 
- 		priv->detect_accessory_type = false;
- 
- 	} else { /* removal */
- 		snd_soc_jack_report(priv->jack, 0, hs_jack_mask);
- 		priv->detect_accessory_type = true;
--		priv->mbhc_btn0_pressed = false;
-+		priv->mbhc_btn0_released = false;
- 	}
- 
- 	return IRQ_HANDLED;
--- 
-2.14.1
+SGksCgpPbiAyMDE35bm0MDnmnIgxMuaXpSAyMzozMiwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IFlv
+dSBjYW4gc2ltcGx5IG1hc2sgMHhmZmZmZmYgKG9yIDB4ZmZmZmZmMDAsIGRlcGVuZGluZyBvbiBD
+UFUtbmF0aXZlCj4gb3Igbm90KSB0byB0aGUgaW50IHZhbHVlIGluc3RlYWQgb2YgYXNzaWduaW5n
+IC8gY2FsY3VsYXRpbmcgZWFjaCBieXRlLgo+IEFuZCBpdCdzIG5lZWRlZCBvbmx5IHdoZW4gdm9s
+X3NjYWxlICE9MCAmJiB2b2xfc2NhbGUgIT0gMHhmZmZmLgoKVnVtZXRlciBpbXBsZW1lbnRhdGlv
+biBvZiBhcGxheSBpbiBhbHNhLXV0aWxzLmdpdCBnZW5lcmF0ZXMgbWFzayBmcm9tIApyZXR1cm4g
+dmFsdWUgb2YgJ3NuZF9wY21fZm9ybWF0X3NpbGVuY2VbfF8xNnxfMzJ8XzY0XSgpJy4gSSBzdXBw
+b3NlIHRoaXMgCmlzIGFsc28gdXNlZnVsIGluIHlvdXIgY2FzZS4KCgpSZWdhcmRzCgpUYWthc2hp
+IFNha2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
