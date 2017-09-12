@@ -1,73 +1,90 @@
-From: Oleksandr Grytsov <al1img@gmail.com>
-Subject: Re: [alsa-devel] [PATCH RESEND1 00/12] ALSA: vsnd: Add Xen
- para-virtualized frontend driver
-Date: Tue, 12 Sep 2017 10:52:01 +0300
-Message-ID: <CACvf2oUYM5_KWKsv1Q8=fkqzgMHieYQ76GyiwPTh8UsB+K9iFg@mail.gmail.com>
-References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
- <7e62a406-7dcd-b5c9-b2de-ea52e1d2afd0@sakamocchi.jp> <b9e34f0e-4a9a-9ccf-6165-04cd22a070ac@gmail.com>
- <CACvf2oU4puqSuNj2k5REpmFJdvWcTWY+AaNEJtknLP4XMPdbsg@mail.gmail.com>
- <e5d52c8a-09e0-2823-dcff-e595868c7dee@sakamocchi.jp> <2a2fd222-fc54-1709-bfc8-a530efc3f307@gmail.com>
- <ad4f2201-bfab-415d-0120-308989653628@sakamocchi.jp> <b129960e-b38f-ea94-3e4a-3cd409f7a707@gmail.com>
- <3f8e535b-8607-6b15-6e17-da755a06cc1e@sakamocchi.jp> <CACvf2oUJtxVTuV0qu4z4kV=aSOH5O_8v=UjH_3tr4wCJdXuEjw@mail.gmail.com>
- <3fde10f8-4727-e37b-8001-ce2356fffb2b@sakamocchi.jp> <162b7251-4040-c61f-1fcd-c32f65bd3c67@gmail.com>
- <8542f293-f2d0-9ba3-7082-967b32fcec17@ladisch.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt5670: add set_bclk_ratio in dai ops
+Date: Tue, 12 Sep 2017 16:12:59 +0800
+Message-ID: <1505203979-12794-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8542f293-f2d0-9ba3-7082-967b32fcec17@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Oleksandr Andrushchenko <andr2000@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, tiwai@suse.com, linux-kernel@vger.kernel.org, xen-devel@lists.xen.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3796E266D07
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 10:13:25 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 5, 2017 at 10:24 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Oleksandr Andrushchenko wrote:
->>>> We understand that emulated interrupt on the frontend side is completely not
->>>> acceptable
->
-> Allow me to expand on that:  Proper synchronization requires that the
-> exact position is communicated, not estimated.  Just because the nominal
-> rate of the stream is known does not imply that you know the actual rate.
-> Forget for the moment that there even is a nominal rate; assume that it
-> works like, e.g., a storage controller, and that you can know that a DMA
-> buffer was consumed by the device only after it has told you.
->
-> It's possible and likely that there is a latency when reporting the
-> stream position, but that is still better than guessing what the DMA
-> is doing.  (You would never just try to guess when writing data to
-> disk, would you?)
->
->>>> and definitely we need to provide some feedback mechanism from
->>>> Dom0 to DomU.
->>>>
->>>> In our case it is technically impossible to provide precise period interrupt
->>>> (mostly because our backend is a user space application).
->
-> As far as I can see, all audio APIs (ALSA, PulseAudio, etc.) have poll()
-> or callbacks or similar mechanisms to inform you when new data can be
-> written, and always allow to query the current position.
->
->> [...]
->> ok, so the main concern here is that we cannot properly synchronize Dom0-DomU.
->> If we put this apart for a second are there any other concerns on having ALSA
->> frontend driver? If not, can we have the driver with timer implementation upstreamed
->> as experimental until we have some acceptable synchronization solution?
->> This will allow broader audience to try and feel the solution and probably contribute?
->
-> I doubt that the driver architecture will stay completely the same, so I
-> do not think that this experimental driver would demonstrate how the
-> solution would feel.
->
-> As the first step, I would suggest creating a driver with proper
-> synchronization, even if it has high latency.  Reducing the latency
-> would then be 'just' an optimization.
->
->
-> Regards,
-> Clemens
+We need to set a specific bit for 50 bclk rate. So add set_bclk_ratio
+function to set the bit.
 
-Definitely feedback from the backend side is required. Currently
-we are working on synchronized version on the backend
-and frontend side. We will be back once we have the solution.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+v2:
+* add define for tdm data format select bit.
+---
+ sound/soc/codecs/rt5670.c | 19 +++++++++++++++++++
+ sound/soc/codecs/rt5670.h |  4 ++++
+ 2 files changed, 23 insertions(+)
 
-Thanks.
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 9545764..da7614c 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2582,6 +2582,24 @@ static int rt5670_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	return 0;
+ }
+ 
++static int rt5670_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
++	if (dai->id != RT5670_AIF1)
++		return 0;
++
++	if (ratio == 50)
++		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
++			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_50FS);
++	else
++		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
++			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_NOR);
++
++	return 0;
++}
++
+ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
+ 			enum snd_soc_bias_level level)
+ {
+@@ -2712,6 +2730,7 @@ static const struct snd_soc_dai_ops rt5670_aif_dai_ops = {
+ 	.set_fmt = rt5670_set_dai_fmt,
+ 	.set_tdm_slot = rt5670_set_tdm_slot,
+ 	.set_pll = rt5670_set_dai_pll,
++	.set_bclk_ratio = rt5670_set_bclk_ratio,
+ };
+ 
+ static struct snd_soc_dai_driver rt5670_dai[] = {
+diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
+index 5ba485c..265df80 100644
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -1816,6 +1816,10 @@
+ #define RT5670_ZCD_HP_DIS			(0x0 << 15)
+ #define RT5670_ZCD_HP_EN			(0x1 << 15)
+ 
++/* General Control 3 (0xfc) */
++#define RT5670_TDM_DATA_MODE_SEL		(0x1 << 11)
++#define RT5670_TDM_DATA_MODE_NOR		(0x0 << 11)
++#define RT5670_TDM_DATA_MODE_50FS		(0x1 << 11)
+ 
+ /* Codec Private Register definition */
+ /* 3D Speaker Control (0x63) */
+-- 
+2.7.4
