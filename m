@@ -1,19 +1,17 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH v2] ASoC: rt5670: add set_bclk_ratio in dai
-	ops
-Date: Wed, 13 Sep 2017 04:35:21 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D7026C854D@RTITMBSV02.realtek.com.tw>
-References: <1505203979-12794-1-git-send-email-bardliao@realtek.com>
- <81332721-16ed-2442-61e3-8483df66258d@linux.intel.com>
+From: gianluca a <gianagl@outlook.com>
+Subject: Question: alsa-lib snd_pcm_htimestamp inner working
+	and precision
+Date: Tue, 12 Sep 2017 12:00:23 +0000
+Message-ID: <AM4PR0301MB19549D13427B387747556E0AAC690@AM4PR0301MB1954.eurprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id CDF87266B1C
- for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 06:35:31 +0200 (CEST)
-In-Reply-To: <81332721-16ed-2442-61e3-8483df66258d@linux.intel.com>
-Content-Language: zh-TW
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-oln040092066041.outbound.protection.outlook.com [40.92.66.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48A96266D07
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 14:00:24 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,74 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "tiwai@suse.de" <tiwai@suse.de>, =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQaWVycmUtTG91aXMgQm9zc2Fy
-dCBbbWFpbHRvOnBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDog
-VHVlc2RheSwgU2VwdGVtYmVyIDEyLCAyMDE3IDEwOjU0IFBNDQo+IFRvOiBCYXJkIExpYW87IGJy
-b29uaWVAa2VybmVsLm9yZzsgbGdpcmR3b29kQGdtYWlsLmNvbQ0KPiBDYzogT2RlciBDaGlvdTsg
-SmFjayBZdTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsYXJzQG1ldGFmb28uZGU7DQo+
-IHRpd2FpQHN1c2UuZGU7IFNodW1pbmcgW+iMg+abuOmKmF07IEZsb3ZlKEhzaW5GdSkNCj4gU3Vi
-amVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0ggdjJdIEFTb0M6IHJ0NTY3MDogYWRkIHNldF9i
-Y2xrX3JhdGlvIGluIGRhaSBvcHMNCj4gDQo+IE9uIDkvMTIvMTcgMzoxMiBBTSwgQmFyZCBMaWFv
-IHdyb3RlOg0KPiA+IFdlIG5lZWQgdG8gc2V0IGEgc3BlY2lmaWMgYml0IGZvciA1MCBiY2xrIHJh
-dGUuIFNvIGFkZCBzZXRfYmNsa19yYXRpbw0KPiA+IGZ1bmN0aW9uIHRvIHNldCB0aGUgYml0Lg0K
-PiANCj4gV2hlbiBpcyB0aGlzIHN1cHBvc2VkIHRvIGJlIHVzZWQ/IHRoZSBjaHRfYnN3X3J0NTY3
-MiBtYWNoaW5lIGRyaXZlciB1c2VzDQo+IGEgMTkuMk1IeiBNQ0xLLzIuNCBNSHogYmNsaywgc28g
-dGhlcmUncyBhIHR5cGljYWwgNTB4IHJhdGlvLg0KDQpJIHRoaW5rIGl0IHNob3VsZCBiZSB1c2Vk
-IGZvciBhbGwgSW50ZWwgcGxhdGZvcm0uIFRoZSBiaXQgd2lsbCBvbmx5IGJlDQplZmZlY3RpdmUg
-aW4gUENNIG1vZGUgd2l0aCBURE0gZW5hYmxlZC4gSXQgd2lsbCBpbmZsdWVuY2UgdGhlIGRhdGEN
-CmFsbG9jYXRpb24gZm9ybWF0Lg0KMDogdGhlIGR1bW15IGJpdHMgd2lsbCBiZSBhbGxvY2F0ZSBh
-dCB0aGUgZW5kIG9mIGVhY2ggc2xvdC4NCjE6IHRoZSBkdW1teSBiaXRzIHdpbGwgYmUgYWxsb2Nh
-dGUgYXQgdGhlIGVuZCBvZiBhbGwgc2xvdHMuDQpGb3IgZXhhbXBsZSwgNTBmcyB3aXRoIDI0IGJp
-dHMgZGF0YSBsZW5ndGguDQowOiAyNCBiaXRzIHNsb3QwIGRhdGEgKyAxIGR1bW15IGJpdCArIDI0
-IGJpdHMgc2xvdDEgZGF0YSArIDEgZHVtbXkgYml0DQoxOiAyNCBiaXRzIHNsb3QwIGRhdGEgKyAy
-NCBiaXRzIHNsb3QxIGRhdGEgKyAyIGR1bW15IGJpdHMNCg0KSSB3aWxsIGRvIHNsaWdodCBtb2Rp
-ZmljYXRpb24gb24gdGhlIHBhdGNoIHNpbmNlIHRoZSBiaXQgc2hvdWxkIGJlIHNldCBmb3INCmFs
-bCBiY2xrIHJhdGUgd2hpY2ggaXMgZGl2aXNpYmxlIGJ5IDUwLg0KDQo+IA0KPiA+DQo+ID4gU2ln
-bmVkLW9mZi1ieTogQmFyZCBMaWFvIDxiYXJkbGlhb0ByZWFsdGVrLmNvbT4NCj4gPiAtLS0NCj4g
-PiB2MjoNCj4gPiAqIGFkZCBkZWZpbmUgZm9yIHRkbSBkYXRhIGZvcm1hdCBzZWxlY3QgYml0Lg0K
-PiA+IC0tLQ0KPiA+ICAgc291bmQvc29jL2NvZGVjcy9ydDU2NzAuYyB8IDE5ICsrKysrKysrKysr
-KysrKysrKysNCj4gPiAgIHNvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmggfCAgNCArKysrDQo+ID4g
-ICAyIGZpbGVzIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQg
-YS9zb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NzAuYw0K
-PiA+IGluZGV4IDk1NDU3NjQuLmRhNzYxNGMgMTAwNjQ0DQo+ID4gLS0tIGEvc291bmQvc29jL2Nv
-ZGVjcy9ydDU2NzAuYw0KPiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMNCj4gPiBA
-QCAtMjU4Miw2ICsyNTgyLDI0IEBAIHN0YXRpYyBpbnQgcnQ1NjcwX3NldF90ZG1fc2xvdChzdHJ1
-Y3Qgc25kX3NvY19kYWkNCj4gKmRhaSwgdW5zaWduZWQgaW50IHR4X21hc2ssDQo+ID4gICAJcmV0
-dXJuIDA7DQo+ID4gICB9DQo+ID4NCj4gPiArc3RhdGljIGludCBydDU2NzBfc2V0X2JjbGtfcmF0
-aW8oc3RydWN0IHNuZF9zb2NfZGFpICpkYWksIHVuc2lnbmVkIGludCByYXRpbykNCj4gPiArew0K
-PiA+ICsJc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjID0gZGFpLT5jb2RlYzsNCj4gPiArDQo+
-ID4gKwlkZXZfZGJnKGNvZGVjLT5kZXYsICIlcyByYXRpbz0lZFxuIiwgX19mdW5jX18sIHJhdGlv
-KTsNCj4gPiArCWlmIChkYWktPmlkICE9IFJUNTY3MF9BSUYxKQ0KPiA+ICsJCXJldHVybiAwOw0K
-PiA+ICsNCj4gPiArCWlmIChyYXRpbyA9PSA1MCkNCj4gPiArCQlzbmRfc29jX3VwZGF0ZV9iaXRz
-KGNvZGVjLCBSVDU2NzBfR0VOX0NUUkwzLA0KPiA+ICsJCQlSVDU2NzBfVERNX0RBVEFfTU9ERV9T
-RUwsDQo+IFJUNTY3MF9URE1fREFUQV9NT0RFXzUwRlMpOw0KPiA+ICsJZWxzZQ0KPiA+ICsJCXNu
-ZF9zb2NfdXBkYXRlX2JpdHMoY29kZWMsIFJUNTY3MF9HRU5fQ1RSTDMsDQo+ID4gKwkJCVJUNTY3
-MF9URE1fREFUQV9NT0RFX1NFTCwNCj4gUlQ1NjcwX1RETV9EQVRBX01PREVfTk9SKTsNCj4gPiAr
-DQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+ICsNCj4gPiAgIHN0YXRpYyBpbnQgcnQ1Njcw
-X3NldF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywNCj4gPiAgIAkJCWVu
-dW0gc25kX3NvY19iaWFzX2xldmVsIGxldmVsKQ0KPiA+ICAgew0KPiA+IEBAIC0yNzEyLDYgKzI3
-MzAsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFpX29wcw0KPiBydDU2NzBfYWlm
-X2RhaV9vcHMgPSB7DQo+ID4gICAJLnNldF9mbXQgPSBydDU2NzBfc2V0X2RhaV9mbXQsDQo+ID4g
-ICAJLnNldF90ZG1fc2xvdCA9IHJ0NTY3MF9zZXRfdGRtX3Nsb3QsDQo+ID4gICAJLnNldF9wbGwg
-PSBydDU2NzBfc2V0X2RhaV9wbGwsDQo+ID4gKwkuc2V0X2JjbGtfcmF0aW8gPSBydDU2NzBfc2V0
-X2JjbGtfcmF0aW8sDQo+ID4gICB9Ow0KPiA+DQo+ID4gICBzdGF0aWMgc3RydWN0IHNuZF9zb2Nf
-ZGFpX2RyaXZlciBydDU2NzBfZGFpW10gPSB7DQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9j
-b2RlY3MvcnQ1NjcwLmggYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5oDQo+ID4gaW5kZXggNWJh
-NDg1Yy4uMjY1ZGY4MCAxMDA2NDQNCj4gPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5o
-DQo+ID4gKysrIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NzAuaA0KPiA+IEBAIC0xODE2LDYgKzE4
-MTYsMTAgQEANCj4gPiAgICNkZWZpbmUgUlQ1NjcwX1pDRF9IUF9ESVMJCQkoMHgwIDw8IDE1KQ0K
-PiA+ICAgI2RlZmluZSBSVDU2NzBfWkNEX0hQX0VOCQkJKDB4MSA8PCAxNSkNCj4gPg0KPiA+ICsv
-KiBHZW5lcmFsIENvbnRyb2wgMyAoMHhmYykgKi8NCj4gPiArI2RlZmluZSBSVDU2NzBfVERNX0RB
-VEFfTU9ERV9TRUwJCSgweDEgPDwgMTEpDQo+ID4gKyNkZWZpbmUgUlQ1NjcwX1RETV9EQVRBX01P
-REVfTk9SCQkoMHgwIDw8IDExKQ0KPiA+ICsjZGVmaW5lIFJUNTY3MF9URE1fREFUQV9NT0RFXzUw
-RlMJCSgweDEgPDwgMTEpDQo+ID4NCj4gPiAgIC8qIENvZGVjIFByaXZhdGUgUmVnaXN0ZXIgZGVm
-aW5pdGlvbiAqLw0KPiA+ICAgLyogM0QgU3BlYWtlciBDb250cm9sICgweDYzKSAqLw0KPiA+DQo+
-IA0KPiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJp
-bnRpbmcgdGhpcyBlLW1haWwuDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+
+Hi all,
+
+I am trying to understand the precision of htimestamp for sample captured and I am not sure if I understood well, because I have found old informations togheter with new informations and I've the doubt that something changed. I am interested in this because of a project for my degree thesis.
+
+snd_pcm_hw_params_supports_audio_wallclock_ts returns 0 on capture, so my hardware doesn't support wallclock timestamps on capture.
+
+I've understood that SND_PCM_TSTAMP_ENABLE is equivalent to SND_PCM_TSTAMP_MMAP, so it updates timestamp at every position update on DMA from the driver. I've read elsewhere that this timestamp is updated every period-size ( equal interrupt), is it correct?
+
+I've digged in the code to understand well inner working of htimestamp, but I've found that snd_pcm_htimestamp in pcm.c calls:
+
+err = pcm->fast_ops->htimestamp(pcm->fast_op_arg, avail, tstamp);
+
+And I have not found where fast_ops is initialized, maybe in the driver? Anyway I thougth that maybe in my case the called function is snd_pcm_hw_htimestamp in pcm_hw.c :
+
+"while (1) {
+		avail1 = snd_pcm_hw_avail_update(pcm);
+		if (avail1 < 0)
+			return avail1;
+		if (ok && (snd_pcm_uframes_t)avail1 == *avail)
+			break;
+		*avail = avail1;
+		*tstamp = snd_pcm_hw_fast_tstamp(pcm);
+		ok = 1;
+	}"
+
+that calls snd_pcm_hw_fast_tstamp, that calls finally:
+
+"#define FAST_PCM_TSTAMP(hw) \
+	((hw)->mmap_status->tstamp)
+"
+And finally is this the timestamp that is updated every period-size? Am I correct that in the case that hardware doesn't support wallclock timestamp is snd_pcm_hw_htimestamp in pcm_hw.c the called function?
+
+Thanks in advance
