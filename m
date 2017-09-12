@@ -1,28 +1,28 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 5/7] mfd: arizona: Remove audio bindings from MFD binding
- document
-Date: Tue, 12 Sep 2017 16:15:22 -0500
-Message-ID: <20170912211522.obvj4vnpm75diftq@rob-hp-laptop>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 7/7] ASoC: arizona: Add device tree binding doc for
+ volume limits
+Date: Tue, 12 Sep 2017 16:21:17 -0500
+Message-ID: <20170912212117.yv5bpqkrxmofg3o5@rob-hp-laptop>
 References: <20170904154154.4395-1-ckeepax@opensource.cirrus.com>
- <20170904154154.4395-6-ckeepax@opensource.cirrus.com>
+ <20170904154154.4395-8-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20170904154154.4395-6-ckeepax@opensource.cirrus.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee.jones@linaro.org, lgirdwood@gmail.com, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20170904154154.4395-8-ckeepax-yzvPICuk2AA4QjBA90+/kJqQE7yCjDx5@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AA4QjBA90+/kJqQE7yCjDx5@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AA4QjBA90+/kJqQE7yCjDx5@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 04, 2017 at 04:41:52PM +0100, Charles Keepax wrote:
-> Now the audio bindings have their own binding document update the main
-> MFD document to point to that file and remove the audio binding
-> documentation.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Mon, Sep 04, 2017 at 04:41:54PM +0100, Charles Keepax wrote:
+> Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AA4QjBA90+/kJqQE7yCjDx5@public.gmane.org>
 > ---
->  Documentation/devicetree/bindings/mfd/arizona.txt | 40 +----------------------
->  1 file changed, 1 insertion(+), 39 deletions(-)
+>  Documentation/devicetree/bindings/sound/wlf,arizona.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Acked-by: Rob Herring <robh@kernel.org> 
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
