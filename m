@@ -1,44 +1,45 @@
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Subject: [PATCH 3/3] ASoC: max98927: Removed obsolete variables
-Date: Mon, 11 Sep 2017 09:15:15 -0700
-Message-ID: <1505146515-19501-1-git-send-email-ryans.lee@maximintegrated.com>
+From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
+Subject: Re: [PATCH] pcm: softvol: add support for S24_LE
+Date: Tue, 12 Sep 2017 08:13:37 +0200
+Message-ID: <1505196817.26012.4.camel@embedded.rocks>
+References: <20170908101151.29368-1-joerg.krause@embedded.rocks>
+ <720f5f32-9d90-35a5-ec4c-9b0af013f905@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: ryan.lee.maxim@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED844266B23
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 08:13:41 +0200 (CEST)
+In-Reply-To: <720f5f32-9d90-35a5-ec4c-9b0af013f905@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
----
-Changelog:
-Removed obsolete variables that have never been referred from driver before.
-
- sound/soc/codecs/max98927.h | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
-index 98b5f17..d215f60 100644
---- a/sound/soc/codecs/max98927.h
-+++ b/sound/soc/codecs/max98927.h
-@@ -263,17 +263,13 @@
- struct max98927_priv {
- 	struct regmap *regmap;
- 	struct snd_soc_codec *codec;
--	struct max98927_pdata *pdata;
--	unsigned int spk_gain;
- 	unsigned int sysclk;
- 	unsigned int v_l_slot;
- 	unsigned int i_l_slot;
- 	bool interleave_mode;
- 	unsigned int ch_size;
--	unsigned int rate;
- 	unsigned int iface;
- 	unsigned int master;
--	unsigned int digital_gain;
- 	bool tdm_mode;
- };
- #endif
--- 
-1.9.1
+T24gRnJpLCAyMDE3LTA5LTA4IGF0IDEyOjUyICswMjAwLCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6
+Cj4gSsO2cmcgS3JhdXNlIHdyb3RlOgo+ID4gVGVzdGVkIHdpdGggYSBXb2xmc29uIFdNODUyNCBE
+QUMgb24gYSBpLk1YNlVMIGJvYXJkIHJ1bm5pbmcgTGludXggdmVyc2lvbgo+ID4gNC4xMy4wLW5l
+eHQtMjAxNzA5MDcuCj4gPiArCWNhc2UgU05EX1BDTV9GT1JNQVRfUzI0X0xFOgo+ID4gKwkJLyog
+MjRiaXQgc2FtcGxlcywgZmFsbHRocm91Z2ggKi8KPiA+ICAJY2FzZSBTTkRfUENNX0ZPUk1BVF9T
+MzJfTEU6Cj4gCj4gUzI0X0xFIGNhbm5vdCBiZSBoYW5kbGVkIHdpdGggdGhlIHNhbWUgYWxnb3Jp
+dGhtIGFzIFMzMl9MRS4KClRoYXQgd291bGQgaGF2ZSBiZWVuIHRvbyBlYXN5LgoKPiBJIHN1c3Bl
+Y3QgdGhhdCB0aGUgaGFyZHdhcmUgZG9lcyBub3QgYWN0dWFsbHkgdXNlIFMyNF9MRSwgYW5kCj4g
+dGhhdCB0aGUgZHJpdmVyIHVzZXMgdGhlIHdyb25nIGxhYmVsIGZvciB0aGlzIGZvcm1hdC4KCk1h
+eWJlIHlvdSBhcmUgcmlnaHQgYWJvdXQgdGhhdC4gSSB3aWxsIGhhdmUgYSBsb29rLgoKPiBQbGVh
+c2UgZGVzY3JpYmUgZXhhY3RseSBob3cgdGhlIDI0LWJpdCBzYW1wbGUgaXMgYWxpZ25lZCBpbnRv
+Cj4gdGhlIDMyLWJpdCBtZW1vcnkgY2VsbC4KCkFjY29yZGluZyB0byB0aGlzIG9sZCBwb3N0IFsx
+XSBpdCBpcyBhbGlnbmVkIGFzIGZvbGxvd2VkOgoKMDBmZmZmM2YgMDBmZmZmM2YgMDBlYmQ5NmUg
+MDBlYmQ5NmUgMDBmZmZmN2YgMDBmZmZmN2YKTWVhbmluZyB0aGUgbGVmdC1tb3N0IGJ5dGUgaXMg
+emVyb2VkLCByaWdodD8KClsxXSBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVy
+bWFpbC9hbHNhLWRldmVsLzIwMDgtSnVseS8wMDkwCjk5Lmh0bWwKCkJlc3QgcmVnYXJkcywKSsO2
+cmcgS3JhdXNlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
