@@ -1,14 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5670: add set_bclk_ratio in dai ops
-Date: Tue, 12 Sep 2017 14:20:05 +0800
-Message-ID: <1505197205-12237-1-git-send-email-bardliao@realtek.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] pcm: softvol: add support for S24_LE
+Date: Tue, 12 Sep 2017 08:19:28 +0200
+Message-ID: <3587a5fe-6624-109b-d291-10ee592f02ba@ladisch.de>
+References: <20170908101151.29368-1-joerg.krause@embedded.rocks>
+ <720f5f32-9d90-35a5-ec4c-9b0af013f905@ladisch.de>
+ <1505196817.26012.4.camel@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D03C266B23
- for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 08:20:16 +0200 (CEST)
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13E55266B23
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 08:20:33 +0200 (CEST)
+In-Reply-To: <1505196817.26012.4.camel@embedded.rocks>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,52 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: =?UTF-8?Q?J=c3=b6rg_Krause?= <joerg.krause@embedded.rocks>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We need to set a specific bit for 50 bclk rate. So add set_bclk_ratio
-function to set the bit.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5670.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 9545764..dbdd01c 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2582,6 +2582,22 @@ static int rt5670_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	return 0;
- }
- 
-+static int rt5670_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
-+	if (dai->id != RT5670_AIF1)
-+		return 0;
-+
-+	if (ratio == 50)
-+		snd_soc_update_bits(codec, RT5670_GEN_CTRL3, 0x0800, 0x0800);
-+	else
-+		snd_soc_update_bits(codec, RT5670_GEN_CTRL3, 0x0800, 0x0);
-+
-+	return 0;
-+}
-+
- static int rt5670_set_bias_level(struct snd_soc_codec *codec,
- 			enum snd_soc_bias_level level)
- {
-@@ -2712,6 +2728,7 @@ static const struct snd_soc_dai_ops rt5670_aif_dai_ops = {
- 	.set_fmt = rt5670_set_dai_fmt,
- 	.set_tdm_slot = rt5670_set_tdm_slot,
- 	.set_pll = rt5670_set_dai_pll,
-+	.set_bclk_ratio = rt5670_set_bclk_ratio,
- };
- 
- static struct snd_soc_dai_driver rt5670_dai[] = {
--- 
-2.7.4
+SsO2cmcgS3JhdXNlIHdyb3RlOgo+IE9uIEZyaSwgMjAxNy0wOS0wOCBhdCAxMjo1MiArMDIwMCwg
+Q2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+PiBQbGVhc2UgZGVzY3JpYmUgZXhhY3RseSBob3cgdGhl
+IDI0LWJpdCBzYW1wbGUgaXMgYWxpZ25lZCBpbnRvCj4+IHRoZSAzMi1iaXQgbWVtb3J5IGNlbGwu
+Cj4KPiBBY2NvcmRpbmcgdG8gdGhpcyBvbGQgcG9zdCBbMV0gaXQgaXMgYWxpZ25lZCBhcyBmb2xs
+b3dlZDoKClRoYXQgcG9zdCB0YWxrcyBhYm91dCBTMjRfTEUuICBJIHdhcyBhc2tpbmcgYWJvdXQg
+dGhlIGFjdHVhbCBoYXJkd2FyZS4KCj4gTWVhbmluZyB0aGUgbGVmdC1tb3N0IGJ5dGUgaXMgemVy
+b2VkLCByaWdodD8KCldoYXQgZG9lcyAibGVmdCIgbWVhbiB3aGVuIHRhbGtpbmcgYWJvdXQgbWVt
+b3J5PwoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
