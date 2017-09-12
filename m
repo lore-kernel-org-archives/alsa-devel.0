@@ -1,169 +1,81 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: usb/midi: use-after-free in snd_rawmidi_dev_seq_free
-Date: Tue, 12 Sep 2017 15:16:14 +0200
-Message-ID: <CAAeHK+yjCcU5h572MYH2UfbjOj3aA_gjUS5+2EhCZwLUjd7uGQ@mail.gmail.com>
-References: <CAAeHK+ygnu48z2JcmtCOvSUTFQFNqEvavj+UGo2wkG67i3u9rQ@mail.gmail.com>
- <s5hzia9ku1g.wl-tiwai@suse.de> <CAAeHK+yXrm5MnkodE1GNj4EKr=ydq2T8kr5SKPB_fnYBO7fh9w@mail.gmail.com>
- <s5hr2vcchzd.wl-tiwai@suse.de>
+From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
+Subject: Re: [PATCH] pcm: softvol: add support for S24_LE
+Date: Tue, 12 Sep 2017 16:15:58 +0200
+Message-ID: <1505225758.2863.11.camel@embedded.rocks>
+References: <20170908101151.29368-1-joerg.krause@embedded.rocks>
+ <720f5f32-9d90-35a5-ec4c-9b0af013f905@ladisch.de>
+ <1505196817.26012.4.camel@embedded.rocks>
+ <3587a5fe-6624-109b-d291-10ee592f02ba@ladisch.de>
+ <1505198948.26012.15.camel@embedded.rocks>
+ <c6d2072a-5403-cc67-519e-f7dda0ceb147@ladisch.de>
+ <s5h377spezh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr2vcchzd.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Ingo Molnar <mingo@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Fabian Frederick <fabf@skynet.be>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B7FD266B23
+ for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 16:16:02 +0200 (CEST)
+In-Reply-To: <s5h377spezh.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 12, 2017 at 12:46 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 11 Sep 2017 13:17:39 +0200,
-> Andrey Konovalov wrote:
->>
->> On Tue, Sep 5, 2017 at 6:08 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Tue, 05 Sep 2017 13:12:14 +0200,
->> > Andrey Konovalov wrote:
->> >>
->> >> Hi!
->> >>
->> >> While working on adding USB fuzzing support to syzkaller, I got the
->> >> following crash.
->> >>
->> >> On commit 81a84ad3cb5711cec79f4dd53a4ce026b092c432 (4.13+).
->> >>
->> >> My .config is attached. I don't have a reproducer for this bug.
->> >>
->> >> ==================================================================
->> >> BUG: KASAN: use-after-free in snd_rawmidi_dev_seq_free+0x69/0x70
->> >> sound/core/rawmidi.c:1617
->> >> Write of size 8 at addr ffff88006c611d90 by task kworker/2:1/567
->> >>
->> >> CPU: 2 PID: 567 Comm: kworker/2:1 Not tainted 4.13.0+ #29
->> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->> >> Workqueue: events autoload_drivers
->> >> Call Trace:
->> >>  __dump_stack lib/dump_stack.c:16 [inline]
->> >>  dump_stack+0x192/0x22c lib/dump_stack.c:52
->> >>  print_address_description+0x78/0x280 mm/kasan/report.c:252
->> >>  kasan_report_error mm/kasan/report.c:351 [inline]
->> >>  kasan_report+0x230/0x340 mm/kasan/report.c:409
->> >>  __asan_report_store8_noabort+0x1c/0x20 mm/kasan/report.c:435
->> >>  snd_rawmidi_dev_seq_free+0x69/0x70 sound/core/rawmidi.c:1617
->> >>  snd_seq_dev_release+0x4f/0x70 sound/core/seq_device.c:192
->> >>  device_release+0x13f/0x210 drivers/base/core.c:814
->> >>  kobject_cleanup lib/kobject.c:648 [inline]
->> >>  kobject_release lib/kobject.c:677 [inline]
->> >>  kref_put include/linux/kref.h:70 [inline]
->> >>  kobject_put+0x145/0x240 lib/kobject.c:694
->> >>  put_device+0x25/0x30 drivers/base/core.c:1799
->> >>  klist_devices_put+0x36/0x40 drivers/base/bus.c:827
->> >>  klist_next+0x264/0x4a0 lib/klist.c:403
->> >>  next_device drivers/base/bus.c:270 [inline]
->> >>  bus_for_each_dev+0x17e/0x210 drivers/base/bus.c:312
->> >>  autoload_drivers+0x3b/0x50 sound/core/seq_device.c:117
->> >>  process_one_work+0x9fb/0x1570 kernel/workqueue.c:2097
->> >>  worker_thread+0x1e4/0x1350 kernel/workqueue.c:2231
->> >>  kthread+0x324/0x3f0 kernel/kthread.c:231
->> >>  ret_from_fork+0x25/0x30 arch/x86/entry/entry_64.S:425
->> >
->> > So this looks like a pending work triggering the issue when performed
->> > during the card free.  What about the patch below as a quick band-aid
->> > fix?
->> >
->> >
->> > thanks,
->> >
->> > Takashi
->>
->> Hi Takashi,
->>
->> I've been running syzkaller with your patch for a few days and didn't
->> see any more of those reports.
->>
->> Tested-by: Andrey Konovalov <andreyknvl@google.com>
->
-> Thanks, I merged the fix now.
-> FWIW, below is the official patch I merged.
-
-Great, thanks!
-
->
->
-> Takashi
->
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: seq: Cancel pending autoload work at unbinding device
->
-> ALSA sequencer core has a mechanism to load the enumerated devices
-> automatically, and it's performed in an off-load work.  This seems
-> causing some race when a sequencer is removed while the pending
-> autoload work is running.  As syzkaller spotted, it may lead to some
-> use-after-free:
->   BUG: KASAN: use-after-free in snd_rawmidi_dev_seq_free+0x69/0x70
->   sound/core/rawmidi.c:1617
->   Write of size 8 at addr ffff88006c611d90 by task kworker/2:1/567
->
->   CPU: 2 PID: 567 Comm: kworker/2:1 Not tainted 4.13.0+ #29
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->   Workqueue: events autoload_drivers
->   Call Trace:
->    __dump_stack lib/dump_stack.c:16 [inline]
->    dump_stack+0x192/0x22c lib/dump_stack.c:52
->    print_address_description+0x78/0x280 mm/kasan/report.c:252
->    kasan_report_error mm/kasan/report.c:351 [inline]
->    kasan_report+0x230/0x340 mm/kasan/report.c:409
->    __asan_report_store8_noabort+0x1c/0x20 mm/kasan/report.c:435
->    snd_rawmidi_dev_seq_free+0x69/0x70 sound/core/rawmidi.c:1617
->    snd_seq_dev_release+0x4f/0x70 sound/core/seq_device.c:192
->    device_release+0x13f/0x210 drivers/base/core.c:814
->    kobject_cleanup lib/kobject.c:648 [inline]
->    kobject_release lib/kobject.c:677 [inline]
->    kref_put include/linux/kref.h:70 [inline]
->    kobject_put+0x145/0x240 lib/kobject.c:694
->    put_device+0x25/0x30 drivers/base/core.c:1799
->    klist_devices_put+0x36/0x40 drivers/base/bus.c:827
->    klist_next+0x264/0x4a0 lib/klist.c:403
->    next_device drivers/base/bus.c:270 [inline]
->    bus_for_each_dev+0x17e/0x210 drivers/base/bus.c:312
->    autoload_drivers+0x3b/0x50 sound/core/seq_device.c:117
->    process_one_work+0x9fb/0x1570 kernel/workqueue.c:2097
->    worker_thread+0x1e4/0x1350 kernel/workqueue.c:2231
->    kthread+0x324/0x3f0 kernel/kthread.c:231
->    ret_from_fork+0x25/0x30 arch/x86/entry/entry_64.S:425
->
-> The fix is simply to assure canceling the autoload work at removing
-> the device.
->
-> Reported-by: Andrey Konovalov <andreyknvl@google.com>
-> Tested-by: Andrey Konovalov <andreyknvl@google.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/seq_device.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/sound/core/seq_device.c b/sound/core/seq_device.c
-> index c4acf17e9f5e..e40a2cba5002 100644
-> --- a/sound/core/seq_device.c
-> +++ b/sound/core/seq_device.c
-> @@ -148,8 +148,10 @@ void snd_seq_device_load_drivers(void)
->         flush_work(&autoload_work);
->  }
->  EXPORT_SYMBOL(snd_seq_device_load_drivers);
-> +#define cancel_autoload_drivers()      cancel_work_sync(&autoload_work)
->  #else
->  #define queue_autoload_drivers() /* NOP */
-> +#define cancel_autoload_drivers() /* NOP */
->  #endif
->
->  /*
-> @@ -159,6 +161,7 @@ static int snd_seq_device_dev_free(struct snd_device *device)
->  {
->         struct snd_seq_device *dev = device->device_data;
->
-> +       cancel_autoload_drivers();
->         put_device(&dev->dev);
->         return 0;
->  }
-> --
-> 2.14.1
->
+T24gVHVlLCAyMDE3LTA5LTEyIGF0IDA5OjEyICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+T24gVHVlLCAxMiBTZXAgMjAxNyAwOTowMjo0NyArMDIwMCwKPiBDbGVtZW5zIExhZGlzY2ggd3Jv
+dGU6Cj4gPiAKPiA+IErDtnJnIEtyYXVzZSB3cm90ZToKPiA+ID4gVGhlIGkuTVg2VUwgaGFzIGEg
+U3luY2hyb25vdXMgQXVkaW8gSW50ZXJmYWNlIChTQUkpLCB3aGVyZSB0aGUgZGF0YSBpbgo+ID4g
+PiB0aGUgRklGTyBjYW4gYmUgYWxpZ25lZCBhbnl3aGVyZSB3aXRoaW4gdGhlIDMyLWJpdCB3aWRl
+IHJlZ2lzdGVyCj4gPiA+IHRocm91Z2ggdGhlIHVzZSBvZiB0aGUgRmlyc3QgQml0IFNoaWZ0ZWQg
+Y29uZmlndXJhdGlvbiBmaWVsZC4gSW4gdGhlCj4gPiA+IGNvcnJlc3BvbmRpbmcgTGludXggU0FJ
+IGRyaXZlciB0aGUgRkJTIGZpZWxkIGlzIHNldCB0aGUgd2F5IHRoYXQgZGF0YQo+ID4gPiBhbGln
+bm1lbnQgZm9yIDI0LWJpdCBkYXRhIGlzOgo+ID4gPiAKPiA+ID4gMzEgMzAgMjkgMjggfCAyNyAy
+NiAyNSAyNCB8IDIzIDIyIDIxIDIwIHwgLi4gfCAzIDIgMSAwCj4gPiA+ICMjICMjICMjICMjICAg
+IyMgIyMgIyMgIyMgWyAgICAgICAgICAgREFUQVsyMzowXSAgICAgICBdCj4gPiAKPiA+IFRoaXMg
+aW5kZWVkIGlzIFMyNF9MRS4KPiA+IAo+ID4gV2hpY2ggaXMgYW4gZXh0cmVtZWx5IHVuY29tbW9u
+IGZvcm1hdC4gIElmIHBvc3NpYmxlLCB0aGUgZHJpdmVyIHNob3VsZAo+ID4gYmUgY2hhbmdlZCB0
+byBhbGlnbiB0byB0aGUgc2FtcGxlJ3MgTVNCIHRvIHRoZSBtZW1vcnkgd29yZCdzIE1TQiwgYW5k
+Cj4gPiB0aGVuIGxhYmVsIGl0IGFzIFMzMl9MRS4KPiA+IAo+ID4gPiA+IFMyNF9MRSBjYW5ub3Qg
+YmUgaGFuZGxlZCB3aXRoIHRoZSBzYW1lIGFsZ29yaXRobSBhcyBTMzJfTEUuCj4gPiAKPiA+IFRv
+IGJlIHByZWNpc2U6IHRoZSBzaWduIGluIGJpdCAyMyBtdXN0IGJlIHByZXNlcnZlZC4KPiAKPiBJ
+IGd1ZXNzIHRoZSBzaW1wbGUgY2FsY3VsYXRpb24gd2l0aCBTMjRfTEUgdXNpbmcgdGhlIGN1cnJl
+bnQgY29kZQo+IHdvdWxkIHdvcmsgYXMgbG9uZyBhcyB0aGUgdXBwZXIgOCBiaXRzIGFyZSBpZ25v
+cmVkIGJ5IGhhcmR3YXJlLgo+IFRoZSB1cHBlciA4IGJpdHMgd291bGQgaG9sZCBib2d1cyBiaXRz
+LCBhbmQgY2xlYXJpbmcgdGhpcyB3b3VsZCBiZSBhbgo+IGV4dHJhIGFjdGlvbiB3ZSdkIG5lZWQg
+aW4gYWRkaXRpb24uCgpUaGFua3MhIEkndmUgY29waWVkIHRoZSBhcmVhIGNvbnZlcnRpb24gbWFj
+cm8gZm9yIFMyNF8zTEUgYW5kCmV4cGxpY2l0bHkgc2V0IHRoZSB1cHBlciA4IGJpdHMgdG8gMDoK
+CiIiIgojZGVmaW5lIENPTlZFUlRfQVJFQV9TMjRfTEUoKSBkbyB7CQkJCQlcCgl1bnNpZ25lZCBp
+bnQgY2gsIGZyOwkJCQkJCVwKCXVuc2lnbmVkIGNoYXIgKnNyYywgKmRzdDsJCQkJCVwKCWludCB0
+bXA7CQkJCQkJCVwKCWZvciAoY2ggPSAwOyBjaCA8IGNoYW5uZWxzOyBjaCsrKSB7CQkJCVwKCQlz
+cmNfYXJlYSA9ICZzcmNfYXJlYXNbY2hdOwkJCQlcCgkJZHN0X2FyZWEgPSAmZHN0X2FyZWFzW2No
+XTsJCQkJXAoJCXNyYyA9IHNuZF9wY21fY2hhbm5lbF9hcmVhX2FkZHIoc3JjX2FyZWEsIHNyY19v
+ZmZzZXQpOwlcCgkJZHN0ID0gc25kX3BjbV9jaGFubmVsX2FyZWFfYWRkcihkc3RfYXJlYSwgZHN0
+X29mZnNldCk7CVwKCQlzcmNfc3RlcCA9IHNuZF9wY21fY2hhbm5lbF9hcmVhX3N0ZXAoc3JjX2Fy
+ZWEpOwkJXAoJCWRzdF9zdGVwID0gc25kX3BjbV9jaGFubmVsX2FyZWFfc3RlcChkc3RfYXJlYSk7
+CQlcCgkJR0VUX1ZPTF9TQ0FMRTsJCQkJCQlcCgkJZnIgPSBmcmFtZXM7CQkJCQkJXAoJCWlmICgh
+IHZvbF9zY2FsZSkgewkJCQkJXAoJCQl3aGlsZSAoZnItLSkgewkJCQkJXAoJCQkJZHN0WzBdID0g
+ZHN0WzFdID0gZHN0WzJdID0gZHN0WzNdID0gMDsJXAoJCQkJZHN0ICs9IGRzdF9zdGVwOwkJCVwK
+CQkJfQkJCQkJCVwKCQl9IGVsc2UgaWYgKHZvbF9zY2FsZSA9PSAweGZmZmYpIHsJCQlcCgkJCXdo
+aWxlIChmci0tKSB7CQkJCQlcCgkJCQlkc3RbMF0gPSBzcmNbMF07CQkJXAoJCQkJZHN0WzFdID0g
+c3JjWzFdOwkJCVwKCQkJCWRzdFsyXSA9IHNyY1syXTsJCQlcCgkJCQlkc3RbM10gPSAwOwkJCQlc
+CgkJCQlzcmMgKz0gZHN0X3N0ZXA7CQkJXAoJCQkJZHN0ICs9IHNyY19zdGVwOwkJCVwKCQkJfQkJ
+CQkJCVwKCQl9IGVsc2UgewkJCQkJCVwKCQkJd2hpbGUgKGZyLS0pIHsJCQkJCVwKCQkJCXRtcCA9
+IHNyY1swXSB8CQkJCVwKCQkJCSAgICAgIChzcmNbMV0gPDwgOCkgfAkJCVwKCQkJCSAgICAgICgo
+KHNpZ25lZCBjaGFyICopIHNyYylbMl0gPDwgMTYpOwlcCgkJCQl0bXAgPSBNVUxUSV9ESVZfMjQo
+dG1wLCB2b2xfc2NhbGUpOwlcCgkJCQlkc3RbMF0gPSB0bXA7CQkJCVwKCQkJCWRzdFsxXSA9IHRt
+cCA+PiA4OwkJCVwKCQkJCWRzdFsyXSA9IHRtcCA+PiAxNjsJCQlcCgkJCQlkc3RbM10gPSAwOwkJ
+CQlcCgkJCQlzcmMgKz0gZHN0X3N0ZXA7CQkJXAoJCQkJZHN0ICs9IHNyY19zdGVwOwkJCVwKCQkJ
+fQkJCQkJCVwKCQl9CQkJCQkJCVwKCX0JCQkJCQkJCVwKfSB3aGlsZSAoMCkKIiIiCgpJcyB0aGF0
+IG9rYXk/CgpKw7ZyZyBLcmF1c2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
