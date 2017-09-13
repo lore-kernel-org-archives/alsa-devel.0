@@ -1,32 +1,70 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 3/7] ASoC: arizona: Add audio device tree bindings
-Date: Tue, 12 Sep 2017 16:14:57 -0500
-Message-ID: <20170912211457.uenpih5b7bfdzv6j@rob-hp-laptop>
-References: <20170904154154.4395-1-ckeepax@opensource.cirrus.com>
- <20170904154154.4395-4-ckeepax@opensource.cirrus.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate based on slot
+ number
+Date: Wed, 13 Sep 2017 16:01:48 -0700
+Message-ID: <20170913230147.GA21287@Asurada-Nvidia>
+References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
+ <2020d72a-4517-55d0-59a1-171c71f91c7b@invoxia.com>
+ <20170912213233.GA11419@Asurada-Nvidia>
+ <fdb71350-0b89-8c5a-9ed0-c744bb6f2118@invoxia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170904154154.4395-4-ckeepax@opensource.cirrus.com>
+In-Reply-To: <fdb71350-0b89-8c5a-9ed0-c744bb6f2118@invoxia.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: broonie@kernel.org, lee.jones@linaro.org, lgirdwood@gmail.com, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org, lukma@denx.de, caleb@crome.org, max.krummenacher@toradex.com, mpa@pengutronix.de, mail@maciej.szmigiero.name
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 04, 2017 at 04:41:50PM +0100, Charles Keepax wrote:
-> In keeping with the style of the rest of this drivers device tree
-> bindings split the audio device tree bindings into their own document.
-> It should be noted this patch makes no change to the binding itself
-> just moves the documentation into a specific file for the audio
-> binding. For easy of merging a separate patch removes the current
-> documentation from the MFD binding documentation.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  .../devicetree/bindings/sound/wlf,arizona.txt      | 49 ++++++++++++++++++++++
->  MAINTAINERS                                        |  1 +
->  2 files changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/wlf,arizona.txt
+On Wed, Sep 13, 2017 at 10:02:20AM +0200, Arnaud Mouiche wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> >Could you please give me a few set of examples of how you set
+> >set_sysclk(), set_tdm_slot() with the current driver? The idea
+> >here is to figure out a way to calculate the bclk in hw_params
+> >without getting set_sysclk() involved any more.
+
+> Here is one, where a bclk = 4*16*fs is expected
+
+> In another setup, there are 8 x 16 bits slots, whatever the number
+> of active channels is.
+> In this case bclk = 128 * fs
+> The number of slots is completely arbitrary. Some slots can even be
+> reserved for communication between codecs that don't communicate
+> with linux.
+
+In summary, bclk = sample rate * slots * slot_width;
+
+I will update my patch soon.
+
+> >Unfortunately, it looks like a work around to me. I understand
+> >the idea of leaving set_sysclk() out there to override the bit
+> >clock is convenient, but it is not a standard ALSA design and
+> >may eventually introduce new problems like today.
+> 
+> I agree. I'm not conservative at all concerning this question.
+> I don't see a way to remove set_sysclk without breaking current TDM
+> users anyway, at least for those who don't have their code
+> upstreamed.
+
+Which TDM case would be broken by this removal? The only impact
+that I can see is that the ASoC core returns an ENOTSUPP for a
+set_sysclk() call now, which is something that a dai-link driver
+should have taken care of anyway.
+
+> All information provided through snd_soc_dai_set_tdm_slot( cpu_dai,
+> mask, mask, slots, width ) should be enough
+> In this case, for TDM users
+> 
+>    bclk = slots * width * fs   (where slots is != channels)
+
+> will manage 99 % of the cases.
+> And the remaining 1% will concern people who need to hack the kernel
+> so widely they don't care about the set_sysclk removal.
+
+A patch from those people will be always welcome.
+
+> - fsl-asoc-card.c : *something will break since
+> snd_soc_dai_set_sysclk returned code is checked*
+
+I've already submitted a patch to ignore all ENOTSUPP.
