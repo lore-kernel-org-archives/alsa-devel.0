@@ -1,41 +1,223 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 0/6 v4] Add ASoC support for AMD Stoney APUs
-Date: Wed, 13 Sep 2017 14:49:08 -0400
-Message-ID: <CADnq5_PdpjS448n6u6tPBqgKfEw278BENMTjVPiEQ4zQx313AA@mail.gmail.com>
-References: <1505325475-22602-1-git-send-email-alexander.deucher@amd.com>
- <20170913181218.bb2br4zehzjoatyq@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20170913181218.bb2br4zehzjoatyq-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, rajeev kumar <rajeevkumar.linux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Vijendar Mukunda <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v7 0/8] AC97 device/driver model revamp
+Date: Wed, 13 Sep 2017 21:37:15 +0200
+Message-ID: <20170913193723.16234-1-robert.jarzmik@free.fr>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBTZXAgMTMsIDIwMTcgYXQgMjoxMiBQTSwgTWFyayBCcm93biA8YnJvb25pZUBrZXJu
-ZWwub3JnPiB3cm90ZToKPiBPbiBXZWQsIFNlcCAxMywgMjAxNyBhdCAwMTo1Nzo0OVBNIC0wNDAw
-LCBBbGV4IERldWNoZXIgd3JvdGU6Cj4KPj4gSSBqdXN0IG5lZWQgYWNrcyBmcm9tIGF1ZGlvIG9u
-IHRoZSByZW1haW5pbmcgcGF0Y2hlcyB0aGF0IHRvdWNoIGF1ZGlvCj4+ICgxLCA1LCA2KSwgYW5k
-IHRoZW4gSSBjYW4gc2VuZCBhIHB1bGwgcmVxdWVzdC4KPgo+IE5vLCBzZW5kIG1lIGEgcHVsbCBy
-ZXF1ZXN0IGZvciB0aGUgZGVwZW5kZW5jaWVzIHNvIHdlIGNhbiBkbyBhIGNyb3NzCj4gbWVyZ2Uu
-ICBJIHdhbnQgdG8gbWFrZSBzdXJlIHRoYXQgd2hlbiB0aGlzIGdldHMgcmV2aWV3ZWQgaXQgYWN0
-dWFsbHkKPiBnZXRzIG1lcmdlZC4KCkknbSBub3QgcXVpdGUgc3VyZSB3aGF0IHlvdSBtZWFuIGJ5
-IHRoZSBjcm9zcyBtZXJnZS4gIFRoZXJlIGFyZSBubwpkZXBlbmRlbmNpZXMgb3V0c2lkZSB0aGlz
-IHBhdGNoIHNldC4gIFRoZSBvbmx5IHBhdGNoZXMgdGhhdCB0b3VjaCBkcm0KYXJlIHBhdGNoZXMg
-MSBhbmQgMi4gIFBhdGNoIDEgdG91Y2hlcyBib3RoIGF1ZGlvIGFuZCBkcm0sIHBhdGNoIDIganVz
-dAp0b3VjaGVzIGRybS4gIERvIHlvdSB3YW50IG1lIHRvIHNlbmQgeW91IGEgcHVsbCByZXF1ZXN0
-IGZvciBwYXRjaGVzIDEKYW5kIDIgYW5kIHRoZW4gd291bGQgeW91J2Qgc2VuZCBEYXZlIGEgcHVs
-bCByZXF1ZXN0IGZvciB0aGUgYXVkaW8gc2lkZQoocGF0Y2hlcyAzLTYpPwoKQWxleApfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphbWQtZ2Z4IG1haWxpbmcg
-bGlzdAphbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1nZngK
+Hi Lars, Mark, Charles, Lee,
+
+This is a revision for Lee and Charles, only targetted at wm97xx-core changes
+(second round) suggested by Lee and codecs remove path for Charles.
+
+I removed the leading 4 patches as Mark has already scheduled them.
+
+For easier spotting, I included in [1] the diff from the last serie.
+
+As before Charles, I think your ack is not granted anymore for codecs, could you have a look please ?
+
+Cheers.
+
+--
+Robert
+
+Robert Jarzmik (8):
+  Input: wm97xx: split out touchscreen registering
+  mfd: wm97xx-core: core support for wm97xx Codec
+  Input: wm97xx: add new AC97 bus support
+  ASoC: wm9713: add ac97 new bus support
+  ASoC: wm9712: add ac97 new bus support
+  ASoC: wm9705: add private structure
+  ASoC: wm9705: add ac97 new bus support
+  ASoC: pxa: switch to new ac97 bus support
+
+ drivers/input/touchscreen/Kconfig       |   2 +-
+ drivers/input/touchscreen/wm97xx-core.c | 252 +++++++++++++++-------
+ drivers/mfd/Kconfig                     |  14 ++
+ drivers/mfd/Makefile                    |   1 +
+ drivers/mfd/wm97xx-core.c               | 366 ++++++++++++++++++++++++++++++++
+ include/linux/mfd/wm97xx.h              |  25 +++
+ sound/arm/Kconfig                       |   1 -
+ sound/soc/codecs/Kconfig                |   9 +-
+ sound/soc/codecs/wm9705.c               |  66 ++++--
+ sound/soc/codecs/wm9712.c               |  44 ++--
+ sound/soc/codecs/wm9713.c               |  39 ++--
+ sound/soc/pxa/Kconfig                   |   5 +-
+ sound/soc/pxa/pxa2xx-ac97.c             |  46 ++--
+ 13 files changed, 712 insertions(+), 158 deletions(-)
+ create mode 100644 drivers/mfd/wm97xx-core.c
+ create mode 100644 include/linux/mfd/wm97xx.h
+
+-- 
+2.11.0
+
+[1] Diff from the previous serie
+---8>---
+diff --git a/drivers/mfd/wm97xx-core.c b/drivers/mfd/wm97xx-core.c
+index 66e477fffd43..4141ee52a70b 100644
+--- a/drivers/mfd/wm97xx-core.c
++++ b/drivers/mfd/wm97xx-core.c
+@@ -109,12 +109,8 @@ static const struct regmap_config wm9705_regmap_config = {
+ };
+ 
+ static struct mfd_cell wm9705_cells[] = {
+-	{
+-		.name = "wm9705-codec",
+-	},
+-	{
+-		.name = "wm97xx-ts",
+-	},
++	{ .name = "wm9705-codec", },
++	{ .name = "wm97xx-ts", },
+ };
+ 
+ static bool wm9712_volatile_reg(struct device *dev, unsigned int reg)
+@@ -181,12 +177,8 @@ static const struct regmap_config wm9712_regmap_config = {
+ };
+ 
+ static struct mfd_cell wm9712_cells[] = {
+-	{
+-		.name = "wm9712-codec",
+-	},
+-	{
+-		.name = "wm97xx-ts",
+-	},
++	{ .name = "wm9712-codec", },
++	{ .name = "wm97xx-ts", },
+ };
+ 
+ static const struct reg_default wm9713_reg_defaults[] = {
+@@ -256,12 +248,8 @@ static const struct regmap_config wm9713_regmap_config = {
+ };
+ 
+ static struct mfd_cell wm9713_cells[] = {
+-	{
+-		.name = "wm9713-codec",
+-	},
+-	{
+-		.name = "wm97xx-ts",
+-	},
++	{ .name = "wm9713-codec", },
++	{ .name = "wm97xx-ts", },
+ };
+ 
+ static int wm97xx_ac97_probe(struct ac97_codec_device *adev)
+@@ -270,7 +258,7 @@ static int wm97xx_ac97_probe(struct ac97_codec_device *adev)
+ 	const struct regmap_config *config;
+ 	struct wm97xx_platform_data *codec_pdata;
+ 	struct mfd_cell *cells;
+-	int ret = 0, nb_cells, i;
++	int ret = -ENODEV, nb_cells, i;
+ 	struct wm97xx_pdata *pdata = snd_ac97_codec_get_platdata(adev);
+ 
+ 	wm97xx = devm_kzalloc(ac97_codec_dev2dev(adev),
+@@ -309,7 +297,7 @@ static int wm97xx_ac97_probe(struct ac97_codec_device *adev)
+ 		nb_cells = ARRAY_SIZE(wm9713_cells);
+ 		break;
+ 	default:
+-		config = NULL;
++		goto err_free_compat;
+ 	}
+ 
+ 	for (i = 0; i < nb_cells; i++) {
+@@ -317,23 +305,22 @@ static int wm97xx_ac97_probe(struct ac97_codec_device *adev)
+ 		cells[i].pdata_size = sizeof(*codec_pdata);
+ 	}
+ 
+-	if (config) {
+-		codec_pdata->regmap =
+-			devm_regmap_init_ac97(wm97xx->ac97, config);
+-		if (IS_ERR(codec_pdata->regmap))
+-			ret = PTR_ERR(codec_pdata->regmap);
+-	} else {
+-		ret = -ENODEV;
++	codec_pdata->regmap = devm_regmap_init_ac97(wm97xx->ac97, config);
++	if (IS_ERR(codec_pdata->regmap)) {
++		ret = PTR_ERR(codec_pdata->regmap);
++		goto err_free_compat;
+ 	}
+ 
+-	if (!ret)
+-		ret = devm_mfd_add_devices(wm97xx->dev, PLATFORM_DEVID_NONE,
+-					   cells, nb_cells, NULL, 0, NULL);
+-
++	ret = devm_mfd_add_devices(wm97xx->dev, PLATFORM_DEVID_NONE,
++				   cells, nb_cells, NULL, 0, NULL);
+ 	if (ret)
+-		snd_ac97_compat_release(wm97xx->ac97);
++		goto err_free_compat;
+ 
+ 	return ret;
++
++err_free_compat:
++	snd_ac97_compat_release(wm97xx->ac97);
++	return ret;
+ }
+ 
+ static int wm97xx_ac97_remove(struct ac97_codec_device *adev)
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index 46b5a77c53e4..68c204e3599f 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -354,11 +354,14 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ 
+ static int wm9705_soc_remove(struct snd_soc_codec *codec)
+ {
++#ifdef CONFIG_SND_SOC_AC97_BUS
+ 	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
+ 
+-	snd_soc_codec_exit_regmap(codec);
+-	if (!wm9705->mfd_pdata)
++	if (!wm9705->mfd_pdata) {
++		snd_soc_codec_exit_regmap(codec);
+ 		snd_soc_free_ac97_codec(wm9705->ac97);
++	}
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 7ebbb48b18c5..1e228bf9f1ae 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -674,11 +674,14 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
+ 
+ static int wm9712_soc_remove(struct snd_soc_codec *codec)
+ {
++#ifdef CONFIG_SND_SOC_AC97_BUS
+ 	struct wm9712_priv *wm9712 = snd_soc_codec_get_drvdata(codec);
+ 
+-	snd_soc_codec_exit_regmap(codec);
+-	if (!wm9712->mfd_pdata)
++	if (!wm9712->mfd_pdata) {
++		snd_soc_codec_exit_regmap(codec);
+ 		snd_soc_free_ac97_codec(wm9712->ac97);
++	}
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index 3df2c01d751d..df7220656d98 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1238,14 +1238,14 @@ static int wm9713_soc_probe(struct snd_soc_codec *codec)
+ 
+ static int wm9713_soc_remove(struct snd_soc_codec *codec)
+ {
++#ifdef CONFIG_SND_SOC_AC97_BUS
+ 	struct wm9713_priv *wm9713 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (!wm9713->mfd_pdata) {
+ 		snd_soc_codec_exit_regmap(codec);
+-#ifdef CONFIG_SND_SOC_AC97_BUS
+ 		snd_soc_free_ac97_codec(wm9713->ac97);
+-#endif
+ 	}
++#endif
+ 	return 0;
+ }
+ 
