@@ -1,114 +1,77 @@
-From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
-Subject: [PATCH v2] pcm: softvol: add support for S24_LE
-Date: Wed, 13 Sep 2017 16:21:10 +0200
-Message-ID: <20170913142110.31072-1-joerg.krause@embedded.rocks>
+From: Tom Rini <trini@konsulko.com>
+Subject: Problems with Chromebook Pixel 2015 audio
+Date: Wed, 13 Sep 2017 10:55:48 -0400
+Message-ID: <20170913145548.GC25597@bill-the-cat>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
- by alsa0.perex.cz (Postfix) with ESMTP id B43A1266986
- for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 16:21:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGVzdGVkIHdpdGggdGhlIFdvbGZzb24gV004NTI0IERBQyBvbiBhIGkuTVg2VUwgYm9hcmQgYW5k
-IHRoZSBmb2xsb3dpbmcKQUxTQSBjb25maWd1cmF0aW9uIGZpbGUgdXNpbmcgdGhlIHBjbSB0ZXN0
-IHV0aWxpdHkgZnJvbSBhbHNhLWxpYjoKCiIiIgokIGNhdCAvZXRjL2Fzb3VuZC5jb25mCnBjbS4h
-ZGVmYXVsdCB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZlLnBjbSAic29mdHZvbCIKfQpwY20uc29m
-dHZvbCB7CiAgICB0eXBlIHNvZnR2b2wKICAgIHNsYXZlIHsKICAgICAgICBwY20gImh3OjAiCiAg
-ICB9CiAgICBjb250cm9sIHsKICAgICAgICBuYW1lICJNYXN0ZXIiCiAgICAgICAgY2FyZCAwCiAg
-ICB9Cn0KY3RsLiFkZWZhdWx0IHsKICAgIHR5cGUgaHcKICAgIGNhcmQgMAp9CmN0bC5zb2Z0dm9s
-IHsKICAgIHR5cGUgaHcKICAgIGNhcmQgMAp9CgokIHBjbSAtRCBzb2Z0dm9sIC1vIFMyNF9MRSAt
-YyAyIC1yIDQ4MDAwCiIiIgoKVGhlIGRhdGEgaW4gdGhlIFN5bmNocm9ub3VzIEF1ZGlvIEludGVy
-ZmFjZSAoU0FJKSBvZiB0aGUgaS5NWDZVTCBpcwphbGlnbmVkIHRoZSBmb2xsb3dpbmcgd2F5OgoK
-IiIiCjMxIDMwIDI5IDI4IHwgMjcgMjYgMjUgMjQgfCAyMyAyMiAyMSAyMCB8IC4uIHwgMyAyIDEg
-MAojIyAjIyAjIyAjIyAgICMjICMjICMjICMjIFsgICAgICAgICAgIERBVEFbMjM6MF0gICAgICAg
-XQoiIiIKClNpZ25lZC1vZmYtYnk6IErDtnJnIEtyYXVzZSA8am9lcmcua3JhdXNlQGVtYmVkZGVk
-LnJvY2tzPgotLS0KdjI6CiAqIGFkZCBDT05WRVJUX0FSRUFfUzI0X0xFIGFsZ29yaXRobSBpbnN0
-ZWFkIG9mIHVzaW5nIHRoZSBzYW1lIG9uZSBhcyBTMzJfTEUKLS0tCiBzcmMvcGNtL3BjbV9zb2Z0
-dm9sLmMgfCA1NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KystLS0KIDEgZmlsZSBjaGFuZ2VkLCA1MyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoK
-ZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX3NvZnR2b2wuYyBiL3NyYy9wY20vcGNtX3NvZnR2b2wu
-YwppbmRleCAxZmU1Nzg0ZC4uNjhhMzViNTYgMTAwNjQ0Ci0tLSBhL3NyYy9wY20vcGNtX3NvZnR2
-b2wuYworKysgYi9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKQEAgLTI1MSw2ICsyNTEsNDQgQEAgc3Rh
-dGljIGlubGluZSBzaG9ydCBNVUxUSV9ESVZfc2hvcnQoc2hvcnQgYSwgdW5zaWduZWQgaW50IGIs
-IGludCBzd2FwKQogCQl9CQkJCQkJCVwKIAl9CQkJCQkJCQlcCiB9IHdoaWxlICgwKQorCisjZGVm
-aW5lIENPTlZFUlRfQVJFQV9TMjRfTEUoKSBkbyB7CQkJCQlcCisJdW5zaWduZWQgaW50IGNoLCBm
-cjsJCQkJCQlcCisJaW50ICpzcmMsICpkc3Q7CQkJCQkJCVwKKwlpbnQgdG1wOwkJCQkJCQlcCisJ
-Zm9yIChjaCA9IDA7IGNoIDwgY2hhbm5lbHM7IGNoKyspIHsJCQkJXAorCQlzcmNfYXJlYSA9ICZz
-cmNfYXJlYXNbY2hdOwkJCQlcCisJCWRzdF9hcmVhID0gJmRzdF9hcmVhc1tjaF07CQkJCVwKKwkJ
-c3JjID0gc25kX3BjbV9jaGFubmVsX2FyZWFfYWRkcihzcmNfYXJlYSwgc3JjX29mZnNldCk7CVwK
-KwkJZHN0ID0gc25kX3BjbV9jaGFubmVsX2FyZWFfYWRkcihkc3RfYXJlYSwgZHN0X29mZnNldCk7
-CVwKKwkJc3JjX3N0ZXAgPSBzbmRfcGNtX2NoYW5uZWxfYXJlYV9zdGVwKHNyY19hcmVhKQkJXAor
-CQkJCS8gc2l6ZW9mKGludCk7CQkJCVwKKwkJZHN0X3N0ZXAgPSBzbmRfcGNtX2NoYW5uZWxfYXJl
-YV9zdGVwKGRzdF9hcmVhKQkJXAorCQkJCS8gc2l6ZW9mKGludCk7CQkJCVwKKwkJR0VUX1ZPTF9T
-Q0FMRTsJCQkJCQlcCisJCWZyID0gZnJhbWVzOwkJCQkJCVwKKwkJaWYgKCEgdm9sX3NjYWxlKSB7
-CQkJCQlcCisJCQl3aGlsZSAoZnItLSkgewkJCQkJXAorCQkJCSpkc3QgPSAwOwkJCQlcCisJCQkJ
-ZHN0ICs9IGRzdF9zdGVwOwkJCVwKKwkJCX0JCQkJCQlcCisJCX0gZWxzZSBpZiAodm9sX3NjYWxl
-ID09IDB4ZmZmZikgewkJCVwKKwkJCXdoaWxlIChmci0tKSB7CQkJCQlcCisJCQkJKmRzdCA9ICpz
-cmM7CQkJCVwKKwkJCQlzcmMgKz0gZHN0X3N0ZXA7CQkJXAorCQkJCWRzdCArPSBzcmNfc3RlcDsJ
-CQlcCisJCQl9CQkJCQkJXAorCQl9IGVsc2UgewkJCQkJCVwKKwkJCXdoaWxlIChmci0tKSB7CQkJ
-CQlcCisJCQkJdG1wID0gKnNyYyA8PCA4OwkJCVwKKwkJCQl0bXAgPSAoc2lnbmVkIGludCkgdG1w
-ID4+IDg7CQlcCisJCQkJKmRzdCA9IE1VTFRJX0RJVl8yNCh0bXAsIHZvbF9zY2FsZSk7CVwKKwkJ
-CQlzcmMgKz0gZHN0X3N0ZXA7CQkJXAorCQkJCWRzdCArPSBzcmNfc3RlcDsJCQlcCisJCQl9CQkJ
-CQkJXAorCQl9CQkJCQkJCVwKKwl9CQkJCQkJCQlcCit9IHdoaWxlICgwKQogCQkKICNkZWZpbmUg
-R0VUX1ZPTF9TQ0FMRSBcCiAJc3dpdGNoIChjaCkgeyBcCkBAIC0zMTUsNiArMzUzLDEwIEBAIHN0
-YXRpYyB2b2lkIHNvZnR2b2xfY29udmVydF9zdGVyZW9fdm9sKHNuZF9wY21fc29mdHZvbF90ICpz
-dm9sLAogCQlDT05WRVJUX0FSRUEoaW50LAogCQkJICAgICAhc25kX3BjbV9mb3JtYXRfY3B1X2Vu
-ZGlhbihzdm9sLT5zZm9ybWF0KSk7CiAJCWJyZWFrOworCWNhc2UgU05EX1BDTV9GT1JNQVRfUzI0
-X0xFOgorCQkvKiAyNGJpdCBzYW1wbGVzICovCisJCUNPTlZFUlRfQVJFQV9TMjRfTEUoKTsKKwkJ
-YnJlYWs7CiAJY2FzZSBTTkRfUENNX0ZPUk1BVF9TMjRfM0xFOgogCQlDT05WRVJUX0FSRUFfUzI0
-XzNMRSgpOwogCQlicmVhazsKQEAgLTM2Niw2ICs0MDgsMTAgQEAgc3RhdGljIHZvaWQgc29mdHZv
-bF9jb252ZXJ0X21vbm9fdm9sKHNuZF9wY21fc29mdHZvbF90ICpzdm9sLAogCQlDT05WRVJUX0FS
-RUEoaW50LAogCQkJICAgICAhc25kX3BjbV9mb3JtYXRfY3B1X2VuZGlhbihzdm9sLT5zZm9ybWF0
-KSk7CiAJCWJyZWFrOworCWNhc2UgU05EX1BDTV9GT1JNQVRfUzI0X0xFOgorCQkvKiAyNGJpdCBz
-YW1wbGVzICovCisJCUNPTlZFUlRfQVJFQV9TMjRfTEUoKTsKKwkJYnJlYWs7CiAJY2FzZSBTTkRf
-UENNX0ZPUk1BVF9TMjRfM0xFOgogCQlDT05WRVJUX0FSRUFfUzI0XzNMRSgpOwogCQlicmVhazsK
-QEAgLTQyMiw2ICs0NjgsNyBAQCBzdGF0aWMgaW50IHNuZF9wY21fc29mdHZvbF9od19yZWZpbmVf
-Y3ByZXBhcmUoc25kX3BjbV90ICpwY20sCiAJCXsKIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFU
-X1MxNl9MRSkgfAogCQkJKDFVTEwgPDwgU05EX1BDTV9GT1JNQVRfUzE2X0JFKSB8CisJCQkoMVVM
-TCA8PCBTTkRfUENNX0ZPUk1BVF9TMjRfTEUpIHwKIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFU
-X1MzMl9MRSkgfAogIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFUX1MzMl9CRSksCiAJCQkoMVVM
-TCA8PCAoU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAtIDMyKSkKQEAgLTU3NywxMCArNjI0LDExIEBA
-IHN0YXRpYyBpbnQgc25kX3BjbV9zb2Z0dm9sX2h3X3BhcmFtcyhzbmRfcGNtX3QgKnBjbSwgc25k
-X3BjbV9od19wYXJhbXNfdCAqIHBhcmFtCiAJaWYgKHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9G
-T1JNQVRfUzE2X0xFICYmCiAJICAgIHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2
-X0JFICYmCiAJICAgIHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAmJiAK
-KwkgICAgc2xhdmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUgJiYKIAkgICAgc2xh
-dmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfTEUgJiYKIAkgICAgc2xhdmUtPmZvcm1h
-dCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfQkUpIHsKLQkJU05ERVJSKCJzb2Z0dm9sIHN1cHBvcnRz
-IG9ubHkgUzE2X0xFLCBTMTZfQkUsIFMyNF8zTEUsIFMzMl9MRSAiCi0JCSAgICAgICAiIG9yIFMz
-Ml9CRSIpOworCQlTTkRFUlIoInNvZnR2b2wgc3VwcG9ydHMgb25seSBTMTZfTEUsIFMxNl9CRSwg
-UzI0X0xFLCBTMjRfM0xFLCAiCisJCSAgICAgICAiUzMyX0xFIG9yIFMzMl9CRSIpOwogCQlyZXR1
-cm4gLUVJTlZBTDsKIAl9CiAJc3ZvbC0+c2Zvcm1hdCA9IHNsYXZlLT5mb3JtYXQ7CkBAIC04NjMs
-NiArOTExLDcgQEAgaW50IHNuZF9wY21fc29mdHZvbF9vcGVuKHNuZF9wY21fdCAqKnBjbXAsIGNv
-bnN0IGNoYXIgKm5hbWUsCiAJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2X0xFICYm
-CiAJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2X0JFICYmCiAJICAgIHNmb3JtYXQg
-IT0gU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAmJiAKKwkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZP
-Uk1BVF9TMjRfTEUgJiYKIAkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfTEUgJiYK
-IAkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfQkUpCiAJCXJldHVybiAtRUlOVkFM
-OwpAQCAtMTA4Miw5ICsxMTMxLDEwIEBAIGludCBfc25kX3BjbV9zb2Z0dm9sX29wZW4oc25kX3Bj
-bV90ICoqcGNtcCwgY29uc3QgY2hhciAqbmFtZSwKIAkJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9G
-T1JNQVRfUzE2X0xFICYmCiAJCSAgICBzZm9ybWF0ICE9IFNORF9QQ01fRk9STUFUX1MxNl9CRSAm
-JgogCQkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfM0xFICYmIAorCQkgICAgc2Zv
-cm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUgJiYKIAkJICAgIHNmb3JtYXQgIT0gU05EX1BD
-TV9GT1JNQVRfUzMyX0xFICYmCiAJCSAgICBzZm9ybWF0ICE9IFNORF9QQ01fRk9STUFUX1MzMl9C
-RSkgewotCQkJU05ERVJSKCJvbmx5IFMxNl9MRSwgUzE2X0JFLCBTMjRfM0xFLCBTMzJfTEUgb3Ig
-UzMyX0JFIGZvcm1hdCBpcyBzdXBwb3J0ZWQiKTsKKwkJCVNOREVSUigib25seSBTMTZfTEUsIFMx
-Nl9CRSwgUzI0X0xFLCBTMjRfM0xFLCBTMzJfTEUgb3IgUzMyX0JFIGZvcm1hdCBpcyBzdXBwb3J0
-ZWQiKTsKIAkJCXNuZF9jb25maWdfZGVsZXRlKHNjb25mKTsKIAkJCXJldHVybiAtRUlOVkFMOwog
-CQl9Ci0tIAoyLjE0LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey folks,
+
+Entirely unrelated to the regression on this board that we dealt with
+the other week, I have (and have had for a bit), a problem with audio on
+this laptop.  After a while of use, I'll have a problem like this:
+
+Sep 12 20:59:30 oliver kernel: haswell-pcm-audio haswell-pcm-audio: FW
+loaded, mailbox readback FW info: type 01, - version: 00.00, build 77,
+source commit id: 876ac6906f31a43b6772b23c7c983ce9dcb18a19
+(everything is fine, audio works, is in use)
+Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio:
+error: audio DSP boot timeout IPCD 0x0 IPCX 0x0
+Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio: ipc:
+--message timeout-- ipcx 0x83000000 isr 0x00000000 ipcd 0x00000000 imrx
+0x7fff0000
+Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio:
+error: stream commit failed
+Sep 12 21:24:04 oliver kernel:  System PCM: error: failed to commit
+stream -110
+Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio:
+ASoC: haswell-pcm-audio hw params failed: -110
+Sep 12 21:24:04 oliver kernel:  System PCM: ASoC: hw_params FE failed
+-110
+
+With those last 4 messages repeating constantly (~3 sets per second, and
+the above are from v4.13, but I've had similar for as long as the driver
+has been mainline I think) and it only stops when I reboot.  Rebooting
+may or may not clear the problem, last night I had to power off to get
+audio to come back up.  I'm not quite sure where to begin debugging this
+issue.  Does anyone have any suggestions?  Thanks!
+
+--=20
+Tom
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJZuUbzAAoJEIf59jXTHXZSCfUP/31c4pdOIpWAGm1swjwrkCAx
+uMY5N881nlwUhHauvHY2wjyBMW0dYqLWPrnNTRmQlXQZ6Cg3Q0TePepGUb5cSLyI
+ZW8qfMb7WTGySdtsB62WH6xEQHi3sCgrb/JVq0ScFe3dN2jEK7DiGCCL8SgdBEH2
+rSWXigMOTtaPuBoT1Jj5z1Os5Pd4QAztP/JvZ6E8oYU97nJyLsEWHcmvKx6nCCdZ
+Ji++4evV6nZv7yzaz7KFDGzHvZc/6lF80lRT95ZT6WRfPTvJX2EzLj4Bbk6UufDk
+t9M1ELlotUoiLv1INvOkZJLOFGJABeaNGNWHS55w8o61skwLrcGmh2MchnIt0OnP
+FL0S5LonPbNP6L2B0vZF918HKM2hqWvGisUhMPhIARo33j1QuypOCw1EVRd4c6cD
+MdAtK/z84dEXltmfwMnQt1O+7EfGQqqYmyJ/8oOdniBjPCamWA96ntsW6KAXcYsu
+io/QxWKcq+n6LgQRnNu7Si6cc1ZthYM+MEIJ5ZPRP51b8vB7pq8k6PdUqzOmIECX
+u6fMYkxhjRgP9UfjIdmvyHu6gZfYCuAoiVLIWdGQBR64deEtKyQkM6QqHuP1DN42
+VCti+PtxT5e1HZtpuDfC9hq5TdR9SfNMFp4bzu1f82J6NY84+bIxrO6+AMns75VU
+IkmY6cc4fo3bDYgKFt2i
+=Y2rP
+-----END PGP SIGNATURE-----
+
+--f2QGlHpHGjS2mn6Y--
