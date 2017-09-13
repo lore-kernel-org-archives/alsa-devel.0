@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514-spi: check irq status to
-	schedule data copy" to the asoc tree
-Date: Wed, 13 Sep 2017 17:49:28 +0100 (BST)
-Message-ID: <20170913164928.E8583440011@finisterre.ee.mobilebroadband>
-References: <20170913095428.27036-1-hychao@chromium.org>
+Subject: Applied "ASoC: rsnd: fix ADG flags" to the asoc tree
+Date: Wed, 13 Sep 2017 17:49:27 +0100 (BST)
+Message-ID: <20170913164927.C26E944000B@finisterre.ee.mobilebroadband>
+References: <87zia1lvtt.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 20195266DCF
- for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 19:07:20 +0200 (CEST)
-In-Reply-To: <20170913095428.27036-1-hychao@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A48FD266DD5
+ for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 19:07:22 +0200 (CEST)
+In-Reply-To: <87zia1lvtt.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hsin-Yu Chao <hychao@chromium.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514-spi: check irq status to schedule data copy
+   ASoC: rsnd: fix ADG flags
 
 has been applied to the asoc tree at
 
@@ -53,86 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From 659178f5d1bb5164480c35e5a749c4fe1dde5867 Mon Sep 17 00:00:00 2001
-From: Hsin-Yu Chao <hychao@chromium.org>
-Date: Wed, 13 Sep 2017 17:54:28 +0800
-Subject: [PATCH] ASoC: rt5514-spi: check irq status to schedule data copy
+>From b7165d26bf730567ab081bb9383aff82cd43d9ea Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 11 Sep 2017 04:17:26 +0000
+Subject: [PATCH] ASoC: rsnd: fix ADG flags
 
-For wake on voice use case, we need to copy data from DSP buffer
-to PCM stream when system wakes up by voice. However the edge
-triggered IRQ could be missed when system wakes up, in that case
-the irq function will not be called. Fix that by checking the irq
-status bit and schedule data copy accordingly.
+Current ADG driver is over-writing flags. This patch fixes it.
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 17 +++++++++++++++--
- sound/soc/codecs/rt5514-spi.h |  3 +++
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/adg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index ed6e5373916c..12f2ecf3a4fe 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -145,9 +145,8 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- 	mutex_unlock(&rt5514_dsp->dma_lock);
- }
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 938baff86ef2..e11ce5036bcf 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -479,10 +479,10 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	}
  
--static irqreturn_t rt5514_spi_irq(int irq, void *data)
-+static void rt5514_schedule_copy(struct rt5514_dsp *rt5514_dsp)
- {
--	struct rt5514_dsp *rt5514_dsp = data;
- 	u8 buf[8];
+ 	if (req_rate[0] % 48000 == 0)
+-		adg->flags = AUDIO_OUT_48;
++		adg->flags |= AUDIO_OUT_48;
  
- 	rt5514_dsp->get_size = 0;
-@@ -180,6 +179,13 @@ static irqreturn_t rt5514_spi_irq(int irq, void *data)
- 	if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
- 		rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
- 		schedule_delayed_work(&rt5514_dsp->copy_work, 0);
-+}
-+
-+static irqreturn_t rt5514_spi_irq(int irq, void *data)
-+{
-+	struct rt5514_dsp *rt5514_dsp = data;
-+
-+	rt5514_schedule_copy(rt5514_dsp);
+ 	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
+-		adg->flags = LRCLK_ASYNC;
++		adg->flags |= LRCLK_ASYNC;
  
- 	return IRQ_HANDLED;
- }
-@@ -199,12 +205,19 @@ static int rt5514_spi_hw_params(struct snd_pcm_substream *substream,
- 	struct rt5514_dsp *rt5514_dsp =
- 			snd_soc_platform_get_drvdata(rtd->platform);
- 	int ret;
-+	u8 buf[8];
- 
- 	mutex_lock(&rt5514_dsp->dma_lock);
- 	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
- 			params_buffer_bytes(hw_params));
- 	rt5514_dsp->substream = substream;
- 	rt5514_dsp->dma_offset = 0;
-+
-+	/* Read IRQ status and schedule copy accordingly. */
-+	rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf, sizeof(buf));
-+	if (buf[0] & RT5514_IRQ_STATUS_BIT)
-+		rt5514_schedule_copy(rt5514_dsp);
-+
- 	mutex_unlock(&rt5514_dsp->dma_lock);
- 
- 	return ret;
-diff --git a/sound/soc/codecs/rt5514-spi.h b/sound/soc/codecs/rt5514-spi.h
-index a6434ee6ff03..c1a36647c119 100644
---- a/sound/soc/codecs/rt5514-spi.h
-+++ b/sound/soc/codecs/rt5514-spi.h
-@@ -20,6 +20,9 @@
- #define RT5514_BUFFER_VOICE_BASE	0x18000200
- #define RT5514_BUFFER_VOICE_LIMIT	0x18000204
- #define RT5514_BUFFER_VOICE_WP		0x1800020c
-+#define RT5514_IRQ_CTRL			0x18002094
-+
-+#define RT5514_IRQ_STATUS_BIT		(0x1 << 5)
- 
- /* SPI Command */
- enum {
+ 	/*
+ 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
 -- 
 2.13.2
