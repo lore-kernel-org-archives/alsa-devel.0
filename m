@@ -1,77 +1,76 @@
-From: Tom Rini <trini@konsulko.com>
-Subject: Problems with Chromebook Pixel 2015 audio
-Date: Wed, 13 Sep 2017 10:55:48 -0400
-Message-ID: <20170913145548.GC25597@bill-the-cat>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5663: Add the function of
+	impedance sensing
+Date: Wed, 13 Sep 2017 09:45:50 -0700
+Message-ID: <20170913164550.4xknya7m6tlkcidk@sirena.org.uk>
+References: <1505112768-27727-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: multipart/mixed; boundary="===============0759504314062249059=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DE22266986
+ for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 19:07:20 +0200 (CEST)
+In-Reply-To: <1505112768-27727-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---f2QGlHpHGjS2mn6Y
+--===============0759504314062249059==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="exfqevgbwfp23t6u"
+Content-Disposition: inline
+
+
+--exfqevgbwfp23t6u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hey folks,
+On Mon, Sep 11, 2017 at 02:52:48PM +0800, Oder Chiou wrote:
 
-Entirely unrelated to the regression on this board that we dealt with
-the other week, I have (and have had for a bit), a problem with audio on
-this laptop.  After a while of use, I'll have a problem like this:
+> +- "realtek,impedance_sensing_num"
+> +  The range number of impedance sensing.
+> +- "realtek,impedance_sensing_table"
+> +  The parameters table of impedance sensing.
 
-Sep 12 20:59:30 oliver kernel: haswell-pcm-audio haswell-pcm-audio: FW
-loaded, mailbox readback FW info: type 01, - version: 00.00, build 77,
-source commit id: 876ac6906f31a43b6772b23c7c983ce9dcb18a19
-(everything is fine, audio works, is in use)
-Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio:
-error: audio DSP boot timeout IPCD 0x0 IPCX 0x0
-Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio: ipc:
---message timeout-- ipcx 0x83000000 isr 0x00000000 ipcd 0x00000000 imrx
-0x7fff0000
-Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio:
-error: stream commit failed
-Sep 12 21:24:04 oliver kernel:  System PCM: error: failed to commit
-stream -110
-Sep 12 21:24:04 oliver kernel: haswell-pcm-audio haswell-pcm-audio:
-ASoC: haswell-pcm-audio hw params failed: -110
-Sep 12 21:24:04 oliver kernel:  System PCM: ASoC: hw_params FE failed
--110
+I really can't tell what format these are supposed to be in from this
+documentation.  If the realtek,impedance_sensing_num is some number
+defined in the datasheet it's OK to just reference the datasheet, for
+the table you probably need a bit of detail on the format of the table
+and it's contents.
 
-With those last 4 messages repeating constantly (~3 sets per second, and
-the above are from v4.13, but I've had similar for as long as the driver
-has been mainline I think) and it only stops when I reboot.  Rebooting
-may or may not clear the problem, last night I had to power off to get
-audio to come back up.  I'm not quite sure where to begin debugging this
-issue.  Does anyone have any suggestions?  Thanks!
-
---=20
-Tom
-
---f2QGlHpHGjS2mn6Y
+--exfqevgbwfp23t6u
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iQIcBAEBAgAGBQJZuUbzAAoJEIf59jXTHXZSCfUP/31c4pdOIpWAGm1swjwrkCAx
-uMY5N881nlwUhHauvHY2wjyBMW0dYqLWPrnNTRmQlXQZ6Cg3Q0TePepGUb5cSLyI
-ZW8qfMb7WTGySdtsB62WH6xEQHi3sCgrb/JVq0ScFe3dN2jEK7DiGCCL8SgdBEH2
-rSWXigMOTtaPuBoT1Jj5z1Os5Pd4QAztP/JvZ6E8oYU97nJyLsEWHcmvKx6nCCdZ
-Ji++4evV6nZv7yzaz7KFDGzHvZc/6lF80lRT95ZT6WRfPTvJX2EzLj4Bbk6UufDk
-t9M1ELlotUoiLv1INvOkZJLOFGJABeaNGNWHS55w8o61skwLrcGmh2MchnIt0OnP
-FL0S5LonPbNP6L2B0vZF918HKM2hqWvGisUhMPhIARo33j1QuypOCw1EVRd4c6cD
-MdAtK/z84dEXltmfwMnQt1O+7EfGQqqYmyJ/8oOdniBjPCamWA96ntsW6KAXcYsu
-io/QxWKcq+n6LgQRnNu7Si6cc1ZthYM+MEIJ5ZPRP51b8vB7pq8k6PdUqzOmIECX
-u6fMYkxhjRgP9UfjIdmvyHu6gZfYCuAoiVLIWdGQBR64deEtKyQkM6QqHuP1DN42
-VCti+PtxT5e1HZtpuDfC9hq5TdR9SfNMFp4bzu1f82J6NY84+bIxrO6+AMns75VU
-IkmY6cc4fo3bDYgKFt2i
-=Y2rP
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm5YL0ACgkQJNaLcl1U
+h9CDSQf/Up2Qccmjf3gX088wdl6cxfhRr2CyKysx44PVwiqpi6WQyeG4lj/zwSeu
+JJKn9dlDE4yVI0X+DYjQY5kjwSHg7wXiFauUv/CBmJvg7o4M3zSP4cSB6EAp29Dc
+/VAyBzRPV9PyY9RhjsnmTBKGXboOoHxccZOHp9mN5sGeBy5/vipqjospDtmctjeZ
+/SqJmGBOsnPBi0RDxy5qoTxGEmJ8fYFz9N4AaoWLGAbRU+xuQZ3w0nB8RfBzIC2c
+mZAShkI7JGEZYWlT9GHNevxF4ICI1KLamQcwrdrhl4+HP6Y4NtbSA8j+fXDYhKan
+aQX4SItO60GI2a5yRM4lDPi6XJTMuQ==
+=cCfL
 -----END PGP SIGNATURE-----
 
---f2QGlHpHGjS2mn6Y--
+--exfqevgbwfp23t6u--
+
+--===============0759504314062249059==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0759504314062249059==--
