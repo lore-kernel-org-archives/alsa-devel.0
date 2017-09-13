@@ -1,15 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [RFC PATCH 0/8] Prepare Sound Open Firmware (SOF)
-	driver integration
-Date: Fri,  8 Sep 2017 15:56:54 -0500
-Message-ID: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+Subject: [PATCH v2] pcm: softvol: add support for S24_LE
+Date: Wed, 13 Sep 2017 16:21:10 +0200
+Message-ID: <20170913142110.31072-1-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D595F266AE1
- for <alsa-devel@alsa-project.org>; Fri,  8 Sep 2017 22:57:15 +0200 (CEST)
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id B43A1266986
+ for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 16:21:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,83 +19,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vinod.koul@intel.com
+Cc: Takashi Iwai <tiwai@suse.de>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-The Sound Open Firmware work [1] is progressing quickly and drivers
-for the 1.0 release will soon be submitted upstream. Before we do so,
-there is a new to reshuffle the ACPI integration and Intel
-Kconfig/Makefiles. This RFC is a preview of what's coming, feedback
-would be greatly appreciated.
-
-We already have three incompatible drivers (BYT/HSW/BDW, Atom/BYT/CHT,
-SKL+) for historical reasons, blindly adding yet another one would be
-silly.  We need to avoid having the same ACPI routines and machine
-tables duplicated in 3 locations (soc/intel/common, soc/atom/sst and
-the upcoming soc/sof).
-
-The ACPI routines should be part of sound/soc since there is no real
-hardware dependency (ACPI is not limited to Intel).
-
-The ACPI table definitions and quirks are moved to a soc/intel/common module
-so that when new HIDs or quirks are added "legacy" and the SOF drivers
-are updated at once.
-
-The Makefiles/Kconfig are also modified to select the SOC(s) first and
-the machine driver(s) second. The existing code only exposes machine
-drivers which precludes reuse of machine drivers when SOF platform
-drivers are selected. SOF drivers will be exposed in parallel to the
-'Intel SST' ones (with an exclusive choice needed), but machine
-drivers will be shared.
-
-These patches apply on top of broonie/for-next + all the patches I
-submitted this week (no dependency on SOF). For people with allergic
-reactions to patches over email, the code is here:
-https://github.com/plbossart/sound/commits/topic/acpi-updates
-
-This patchset does not address the case where two drivers are selected
-for the same ACPI HID. I just don't know of any technical solution to
-that problem.
-
-[1] https://www.alsa-project.org/main/index.php/Firmware
-
-Pierre-Louis Bossart (8):
-  ASoC: move ACPI common code out of Intel/sst tree
-  ASoC: Intel: common: use c99 syntax for ACPI/machine tables
-  ASoC: ACPI: add new fields for SOF support
-  ASoC: Intel: move all ACPI match tables to common module
-  ASoC: Intel: add SOF firmare/topology file information
-  ASoC: Intel: move machine drivers to dedicated KConfig
-  ASoC: Intel: reorder boards Kconfig by chronological order
-  ASoC: Intel: clarify Kconfig dependencies
-
- include/sound/soc-acpi-intel-match.h               |  32 ++
- include/sound/soc-acpi.h                           | 107 ++++++
- sound/soc/Kconfig                                  |   3 +
- sound/soc/Makefile                                 |   6 +
- sound/soc/intel/Kconfig                            | 299 ++-------------
- sound/soc/intel/Makefile                           |   2 +-
- sound/soc/intel/atom/sst/sst_acpi.c                | 319 ++--------------
- sound/soc/intel/boards/Kconfig                     | 286 +++++++++++++++
- sound/soc/intel/boards/bytcht_da7213.c             |   6 +-
- sound/soc/intel/boards/bytcht_es8316.c             |   2 +-
- sound/soc/intel/boards/bytcr_rt5640.c              |  11 +-
- sound/soc/intel/boards/bytcr_rt5651.c              |   8 +-
- sound/soc/intel/boards/cht_bsw_rt5645.c            |  11 +-
- sound/soc/intel/boards/cht_bsw_rt5672.c            |   7 +-
- sound/soc/intel/common/Makefile                    |   4 +-
- sound/soc/intel/common/soc-acpi-intel-match.c      | 400 +++++++++++++++++++++
- sound/soc/intel/common/sst-acpi.c                  |  36 +-
- sound/soc/intel/common/sst-acpi.h                  |  82 -----
- sound/soc/intel/skylake/skl.c                      |  40 +--
- .../{intel/common/sst-match-acpi.c => soc-acpi.c}  |  56 +--
- 20 files changed, 965 insertions(+), 752 deletions(-)
- create mode 100644 include/sound/soc-acpi-intel-match.h
- create mode 100644 include/sound/soc-acpi.h
- create mode 100644 sound/soc/intel/boards/Kconfig
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-match.c
- delete mode 100644 sound/soc/intel/common/sst-acpi.h
- rename sound/soc/{intel/common/sst-match-acpi.c => soc-acpi.c} (63%)
-
--- 
-2.9.3
+VGVzdGVkIHdpdGggdGhlIFdvbGZzb24gV004NTI0IERBQyBvbiBhIGkuTVg2VUwgYm9hcmQgYW5k
+IHRoZSBmb2xsb3dpbmcKQUxTQSBjb25maWd1cmF0aW9uIGZpbGUgdXNpbmcgdGhlIHBjbSB0ZXN0
+IHV0aWxpdHkgZnJvbSBhbHNhLWxpYjoKCiIiIgokIGNhdCAvZXRjL2Fzb3VuZC5jb25mCnBjbS4h
+ZGVmYXVsdCB7CiAgICB0eXBlIHBsdWcKICAgIHNsYXZlLnBjbSAic29mdHZvbCIKfQpwY20uc29m
+dHZvbCB7CiAgICB0eXBlIHNvZnR2b2wKICAgIHNsYXZlIHsKICAgICAgICBwY20gImh3OjAiCiAg
+ICB9CiAgICBjb250cm9sIHsKICAgICAgICBuYW1lICJNYXN0ZXIiCiAgICAgICAgY2FyZCAwCiAg
+ICB9Cn0KY3RsLiFkZWZhdWx0IHsKICAgIHR5cGUgaHcKICAgIGNhcmQgMAp9CmN0bC5zb2Z0dm9s
+IHsKICAgIHR5cGUgaHcKICAgIGNhcmQgMAp9CgokIHBjbSAtRCBzb2Z0dm9sIC1vIFMyNF9MRSAt
+YyAyIC1yIDQ4MDAwCiIiIgoKVGhlIGRhdGEgaW4gdGhlIFN5bmNocm9ub3VzIEF1ZGlvIEludGVy
+ZmFjZSAoU0FJKSBvZiB0aGUgaS5NWDZVTCBpcwphbGlnbmVkIHRoZSBmb2xsb3dpbmcgd2F5OgoK
+IiIiCjMxIDMwIDI5IDI4IHwgMjcgMjYgMjUgMjQgfCAyMyAyMiAyMSAyMCB8IC4uIHwgMyAyIDEg
+MAojIyAjIyAjIyAjIyAgICMjICMjICMjICMjIFsgICAgICAgICAgIERBVEFbMjM6MF0gICAgICAg
+XQoiIiIKClNpZ25lZC1vZmYtYnk6IErDtnJnIEtyYXVzZSA8am9lcmcua3JhdXNlQGVtYmVkZGVk
+LnJvY2tzPgotLS0KdjI6CiAqIGFkZCBDT05WRVJUX0FSRUFfUzI0X0xFIGFsZ29yaXRobSBpbnN0
+ZWFkIG9mIHVzaW5nIHRoZSBzYW1lIG9uZSBhcyBTMzJfTEUKLS0tCiBzcmMvcGNtL3BjbV9zb2Z0
+dm9sLmMgfCA1NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KystLS0KIDEgZmlsZSBjaGFuZ2VkLCA1MyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoK
+ZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX3NvZnR2b2wuYyBiL3NyYy9wY20vcGNtX3NvZnR2b2wu
+YwppbmRleCAxZmU1Nzg0ZC4uNjhhMzViNTYgMTAwNjQ0Ci0tLSBhL3NyYy9wY20vcGNtX3NvZnR2
+b2wuYworKysgYi9zcmMvcGNtL3BjbV9zb2Z0dm9sLmMKQEAgLTI1MSw2ICsyNTEsNDQgQEAgc3Rh
+dGljIGlubGluZSBzaG9ydCBNVUxUSV9ESVZfc2hvcnQoc2hvcnQgYSwgdW5zaWduZWQgaW50IGIs
+IGludCBzd2FwKQogCQl9CQkJCQkJCVwKIAl9CQkJCQkJCQlcCiB9IHdoaWxlICgwKQorCisjZGVm
+aW5lIENPTlZFUlRfQVJFQV9TMjRfTEUoKSBkbyB7CQkJCQlcCisJdW5zaWduZWQgaW50IGNoLCBm
+cjsJCQkJCQlcCisJaW50ICpzcmMsICpkc3Q7CQkJCQkJCVwKKwlpbnQgdG1wOwkJCQkJCQlcCisJ
+Zm9yIChjaCA9IDA7IGNoIDwgY2hhbm5lbHM7IGNoKyspIHsJCQkJXAorCQlzcmNfYXJlYSA9ICZz
+cmNfYXJlYXNbY2hdOwkJCQlcCisJCWRzdF9hcmVhID0gJmRzdF9hcmVhc1tjaF07CQkJCVwKKwkJ
+c3JjID0gc25kX3BjbV9jaGFubmVsX2FyZWFfYWRkcihzcmNfYXJlYSwgc3JjX29mZnNldCk7CVwK
+KwkJZHN0ID0gc25kX3BjbV9jaGFubmVsX2FyZWFfYWRkcihkc3RfYXJlYSwgZHN0X29mZnNldCk7
+CVwKKwkJc3JjX3N0ZXAgPSBzbmRfcGNtX2NoYW5uZWxfYXJlYV9zdGVwKHNyY19hcmVhKQkJXAor
+CQkJCS8gc2l6ZW9mKGludCk7CQkJCVwKKwkJZHN0X3N0ZXAgPSBzbmRfcGNtX2NoYW5uZWxfYXJl
+YV9zdGVwKGRzdF9hcmVhKQkJXAorCQkJCS8gc2l6ZW9mKGludCk7CQkJCVwKKwkJR0VUX1ZPTF9T
+Q0FMRTsJCQkJCQlcCisJCWZyID0gZnJhbWVzOwkJCQkJCVwKKwkJaWYgKCEgdm9sX3NjYWxlKSB7
+CQkJCQlcCisJCQl3aGlsZSAoZnItLSkgewkJCQkJXAorCQkJCSpkc3QgPSAwOwkJCQlcCisJCQkJ
+ZHN0ICs9IGRzdF9zdGVwOwkJCVwKKwkJCX0JCQkJCQlcCisJCX0gZWxzZSBpZiAodm9sX3NjYWxl
+ID09IDB4ZmZmZikgewkJCVwKKwkJCXdoaWxlIChmci0tKSB7CQkJCQlcCisJCQkJKmRzdCA9ICpz
+cmM7CQkJCVwKKwkJCQlzcmMgKz0gZHN0X3N0ZXA7CQkJXAorCQkJCWRzdCArPSBzcmNfc3RlcDsJ
+CQlcCisJCQl9CQkJCQkJXAorCQl9IGVsc2UgewkJCQkJCVwKKwkJCXdoaWxlIChmci0tKSB7CQkJ
+CQlcCisJCQkJdG1wID0gKnNyYyA8PCA4OwkJCVwKKwkJCQl0bXAgPSAoc2lnbmVkIGludCkgdG1w
+ID4+IDg7CQlcCisJCQkJKmRzdCA9IE1VTFRJX0RJVl8yNCh0bXAsIHZvbF9zY2FsZSk7CVwKKwkJ
+CQlzcmMgKz0gZHN0X3N0ZXA7CQkJXAorCQkJCWRzdCArPSBzcmNfc3RlcDsJCQlcCisJCQl9CQkJ
+CQkJXAorCQl9CQkJCQkJCVwKKwl9CQkJCQkJCQlcCit9IHdoaWxlICgwKQogCQkKICNkZWZpbmUg
+R0VUX1ZPTF9TQ0FMRSBcCiAJc3dpdGNoIChjaCkgeyBcCkBAIC0zMTUsNiArMzUzLDEwIEBAIHN0
+YXRpYyB2b2lkIHNvZnR2b2xfY29udmVydF9zdGVyZW9fdm9sKHNuZF9wY21fc29mdHZvbF90ICpz
+dm9sLAogCQlDT05WRVJUX0FSRUEoaW50LAogCQkJICAgICAhc25kX3BjbV9mb3JtYXRfY3B1X2Vu
+ZGlhbihzdm9sLT5zZm9ybWF0KSk7CiAJCWJyZWFrOworCWNhc2UgU05EX1BDTV9GT1JNQVRfUzI0
+X0xFOgorCQkvKiAyNGJpdCBzYW1wbGVzICovCisJCUNPTlZFUlRfQVJFQV9TMjRfTEUoKTsKKwkJ
+YnJlYWs7CiAJY2FzZSBTTkRfUENNX0ZPUk1BVF9TMjRfM0xFOgogCQlDT05WRVJUX0FSRUFfUzI0
+XzNMRSgpOwogCQlicmVhazsKQEAgLTM2Niw2ICs0MDgsMTAgQEAgc3RhdGljIHZvaWQgc29mdHZv
+bF9jb252ZXJ0X21vbm9fdm9sKHNuZF9wY21fc29mdHZvbF90ICpzdm9sLAogCQlDT05WRVJUX0FS
+RUEoaW50LAogCQkJICAgICAhc25kX3BjbV9mb3JtYXRfY3B1X2VuZGlhbihzdm9sLT5zZm9ybWF0
+KSk7CiAJCWJyZWFrOworCWNhc2UgU05EX1BDTV9GT1JNQVRfUzI0X0xFOgorCQkvKiAyNGJpdCBz
+YW1wbGVzICovCisJCUNPTlZFUlRfQVJFQV9TMjRfTEUoKTsKKwkJYnJlYWs7CiAJY2FzZSBTTkRf
+UENNX0ZPUk1BVF9TMjRfM0xFOgogCQlDT05WRVJUX0FSRUFfUzI0XzNMRSgpOwogCQlicmVhazsK
+QEAgLTQyMiw2ICs0NjgsNyBAQCBzdGF0aWMgaW50IHNuZF9wY21fc29mdHZvbF9od19yZWZpbmVf
+Y3ByZXBhcmUoc25kX3BjbV90ICpwY20sCiAJCXsKIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFU
+X1MxNl9MRSkgfAogCQkJKDFVTEwgPDwgU05EX1BDTV9GT1JNQVRfUzE2X0JFKSB8CisJCQkoMVVM
+TCA8PCBTTkRfUENNX0ZPUk1BVF9TMjRfTEUpIHwKIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFU
+X1MzMl9MRSkgfAogIAkJCSgxVUxMIDw8IFNORF9QQ01fRk9STUFUX1MzMl9CRSksCiAJCQkoMVVM
+TCA8PCAoU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAtIDMyKSkKQEAgLTU3NywxMCArNjI0LDExIEBA
+IHN0YXRpYyBpbnQgc25kX3BjbV9zb2Z0dm9sX2h3X3BhcmFtcyhzbmRfcGNtX3QgKnBjbSwgc25k
+X3BjbV9od19wYXJhbXNfdCAqIHBhcmFtCiAJaWYgKHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9G
+T1JNQVRfUzE2X0xFICYmCiAJICAgIHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2
+X0JFICYmCiAJICAgIHNsYXZlLT5mb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAmJiAK
+KwkgICAgc2xhdmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUgJiYKIAkgICAgc2xh
+dmUtPmZvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfTEUgJiYKIAkgICAgc2xhdmUtPmZvcm1h
+dCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfQkUpIHsKLQkJU05ERVJSKCJzb2Z0dm9sIHN1cHBvcnRz
+IG9ubHkgUzE2X0xFLCBTMTZfQkUsIFMyNF8zTEUsIFMzMl9MRSAiCi0JCSAgICAgICAiIG9yIFMz
+Ml9CRSIpOworCQlTTkRFUlIoInNvZnR2b2wgc3VwcG9ydHMgb25seSBTMTZfTEUsIFMxNl9CRSwg
+UzI0X0xFLCBTMjRfM0xFLCAiCisJCSAgICAgICAiUzMyX0xFIG9yIFMzMl9CRSIpOwogCQlyZXR1
+cm4gLUVJTlZBTDsKIAl9CiAJc3ZvbC0+c2Zvcm1hdCA9IHNsYXZlLT5mb3JtYXQ7CkBAIC04NjMs
+NiArOTExLDcgQEAgaW50IHNuZF9wY21fc29mdHZvbF9vcGVuKHNuZF9wY21fdCAqKnBjbXAsIGNv
+bnN0IGNoYXIgKm5hbWUsCiAJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2X0xFICYm
+CiAJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9GT1JNQVRfUzE2X0JFICYmCiAJICAgIHNmb3JtYXQg
+IT0gU05EX1BDTV9GT1JNQVRfUzI0XzNMRSAmJiAKKwkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZP
+Uk1BVF9TMjRfTEUgJiYKIAkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfTEUgJiYK
+IAkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMzJfQkUpCiAJCXJldHVybiAtRUlOVkFM
+OwpAQCAtMTA4Miw5ICsxMTMxLDEwIEBAIGludCBfc25kX3BjbV9zb2Z0dm9sX29wZW4oc25kX3Bj
+bV90ICoqcGNtcCwgY29uc3QgY2hhciAqbmFtZSwKIAkJICAgIHNmb3JtYXQgIT0gU05EX1BDTV9G
+T1JNQVRfUzE2X0xFICYmCiAJCSAgICBzZm9ybWF0ICE9IFNORF9QQ01fRk9STUFUX1MxNl9CRSAm
+JgogCQkgICAgc2Zvcm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfM0xFICYmIAorCQkgICAgc2Zv
+cm1hdCAhPSBTTkRfUENNX0ZPUk1BVF9TMjRfTEUgJiYKIAkJICAgIHNmb3JtYXQgIT0gU05EX1BD
+TV9GT1JNQVRfUzMyX0xFICYmCiAJCSAgICBzZm9ybWF0ICE9IFNORF9QQ01fRk9STUFUX1MzMl9C
+RSkgewotCQkJU05ERVJSKCJvbmx5IFMxNl9MRSwgUzE2X0JFLCBTMjRfM0xFLCBTMzJfTEUgb3Ig
+UzMyX0JFIGZvcm1hdCBpcyBzdXBwb3J0ZWQiKTsKKwkJCVNOREVSUigib25seSBTMTZfTEUsIFMx
+Nl9CRSwgUzI0X0xFLCBTMjRfM0xFLCBTMzJfTEUgb3IgUzMyX0JFIGZvcm1hdCBpcyBzdXBwb3J0
+ZWQiKTsKIAkJCXNuZF9jb25maWdfZGVsZXRlKHNjb25mKTsKIAkJCXJldHVybiAtRUlOVkFMOwog
+CQl9Ci0tIAoyLjE0LjEKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
