@@ -1,16 +1,22 @@
-From: gianluca a <gianagl@outlook.com>
-Subject: Question: alsa-lib snd_pcm_htimestamp inner working
-	and precision
-Date: Tue, 12 Sep 2017 12:00:23 +0000
-Message-ID: <AM4PR0301MB19549D13427B387747556E0AAC690@AM4PR0301MB1954.eurprd03.prod.outlook.com>
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate
+ based on slot number
+Date: Wed, 13 Sep 2017 10:02:20 +0200
+Message-ID: <fdb71350-0b89-8c5a-9ed0-c744bb6f2118@invoxia.com>
+References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
+ <2020d72a-4517-55d0-59a1-171c71f91c7b@invoxia.com>
+ <20170912213233.GA11419@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-oln040092066041.outbound.protection.outlook.com [40.92.66.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 48A96266D07
- for <alsa-devel@alsa-project.org>; Tue, 12 Sep 2017 14:00:24 +0200 (CEST)
+Received: from mail-wr0-f176.google.com (mail-wr0-f176.google.com
+ [209.85.128.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id C8AE32668BF
+ for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 10:02:24 +0200 (CEST)
+Received: by mail-wr0-f176.google.com with SMTP id v109so26969168wrc.1
+ for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 01:02:24 -0700 (PDT)
+In-Reply-To: <20170912213233.GA11419@Asurada-Nvidia>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,40 +27,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, lgirdwood@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org, caleb@crome.org, mpa@pengutronix.de, broonie@kernel.org, max.krummenacher@toradex.com, lukma@denx.de, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi all,
 
-I am trying to understand the precision of htimestamp for sample captured and I am not sure if I understood well, because I have found old informations togheter with new informations and I've the doubt that something changed. I am interested in this because of a project for my degree thesis.
+On 12/09/2017 23:32, Nicolin Chen wrote:
+> On Tue, Sep 12, 2017 at 04:35:13PM +0200, Arnaud Mouiche wrote:
+>
+>>> - * freq: Output BCLK frequency = samplerate * 32 (fixed) * channels
+>>> - * dir: SND_SOC_CLOCK_OUT -> TxBCLK, SND_SOC_CLOCK_IN -> RxBCLK.
+>>> + * freq: Output BCLK frequency = samplerate * 32 (fixed) * slots (or channels)
+>> Slots are not necessarily 32 bits width.
+>> Indeed, a simple grep of snd_soc_dai_set_tdm_slot shows 16, 24, 32
+>> and 0 bits usage. (don't know the real meaning of 0 BTW...)
+>> So, it should be good to also remember the slots width given in
+>> snd_soc_dai_set_tdm_slot() call.
+> RM says that the word length is fixed to 32 in I2S Master mode.
+> So I used it here. But I think using it with the slots could be
+> wrong here as you stated. What kind of clock rates (bit and lr)
+> does a TDM case have?
+>
+> The problem of slot width here is handled in the set_tdm_slot()
+> at all. So I tried to ignored that. But we probably do need it
+> when calculating things with the slot number.
+>
+> Could you please give me a few set of examples of how you set
+> set_sysclk(), set_tdm_slot() with the current driver? The idea
+> here is to figure out a way to calculate the bclk in hw_params
+> without getting set_sysclk() involved any more.
 
-snd_pcm_hw_params_supports_audio_wallclock_ts returns 0 on capture, so my hardware doesn't support wallclock timestamps on capture.
+Here is one, where a bclk = 4*16*fs is expected
 
-I've understood that SND_PCM_TSTAMP_ENABLE is equivalent to SND_PCM_TSTAMP_MMAP, so it updates timestamp at every position update on DMA from the driver. I've read elsewhere that this timestamp is updated every period-size ( equal interrupt), is it correct?
+    static int imx_hifi_hw_params(struct snd_pcm_substream *substream,
+                          struct snd_pcm_hw_params *params)
+    {
+         struct snd_soc_pcm_runtime *rtd = substream->private_data;
+         struct imx_priv *priv = &card_priv;
+         struct device *dev = &priv->pdev->dev;
 
-I've digged in the code to understand well inner working of htimestamp, but I've found that snd_pcm_htimestamp in pcm.c calls:
+         int ret = 0;
+         struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+         unsigned int freq;
+         int ch;
 
-err = pcm->fast_ops->htimestamp(pcm->fast_op_arg, avail, tstamp);
+         /* configuring cpu_dai
+          * - bitclk  (fclk is computed automatically)
+          *      16bit * 4 (max) channels * sampling rate
+          * - tdm maskto select the active channels
+          */
 
-And I have not found where fast_ops is initialized, maybe in the driver? Anyway I thougth that maybe in my case the called function is snd_pcm_hw_htimestamp in pcm_hw.c :
+         freq = 4 * 16 * params_rate(params);
+         if (freq != priv->current_freq) {
+             /* clk_id and direction are not taken in count by fsl_ssi
+    driver */
+             ret = snd_soc_dai_set_sysclk( cpu_dai, 0, freq, 0 );
+             if (ret) {
+                 dev_err(dev, "failed to set cpu dai bitclk: %u\n", freq);
+                 return ret;
+             }
+             priv->current_freq = freq;
+         }
+         ch = params_channels(params);
+         if (ch != priv->current_ch) {
+             ret = snd_soc_dai_set_tdm_slot( cpu_dai, (1 << ch)-1, (1 <<
+    ch)-1, 4, 16 );
+             if (ret) {
+                 dev_err(dev, "failed to set cpu dai tdm slots:
+    ch=%d\n", ch);
+                 return ret;
+             }
+             priv->current_ch = ch;
+         }
+         return 0;
+    }
 
-"while (1) {
-		avail1 = snd_pcm_hw_avail_update(pcm);
-		if (avail1 < 0)
-			return avail1;
-		if (ok && (snd_pcm_uframes_t)avail1 == *avail)
-			break;
-		*avail = avail1;
-		*tstamp = snd_pcm_hw_fast_tstamp(pcm);
-		ok = 1;
-	}"
+In another setup, there are 8 x 16 bits slots, whatever the number of 
+active channels is.
+In this case bclk = 128 * fs
+The number of slots is completely arbitrary. Some slots can even be 
+reserved for communication between codecs that don't communicate with linux.
 
-that calls snd_pcm_hw_fast_tstamp, that calls finally:
+>
+>> Anyway, there is something wrong in the snd_soc_codec_set_sysclk
+>> usage by fsl_ssi
+>> Let's get a look again at the description:
+>>
+>>     /**
+>>       * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+>>       * @dai: DAI
+>>       * @clk_id: DAI specific clock ID
+>>       * @freq: new clock frequency in Hz
+>>       * @dir: new clock direction - input/output.
+>>       *
+>>       * Configures the DAI master (MCLK) or system (SYSCLK) clocking.
+>>       */
+>>     int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+>>          unsigned int freq, int dir)
+>>
+>> So, it can be used to configure 2 different clocks (and more) with
+>> different usages.
+>>
+>> Lukasz complains that simple-card is configuring MCLK incorrectly.
+>> but simple-card, only want to configure the SYSCLK, whereas fsl_ssi
+>> understand "configure the MCLK..." (fsl_ssi doesn't check the clk_id
+>> at all)
+> It's more than a clock_id in my opinion. The driver now sets
+> the bit clock rate via set_sysclk() other than the MCLK rate
+> actually.
+>
+>> I think the problem is here.
+>> I would propose a new clk_id
+>>
+>>      #define FSL_SSI_SYSCLK_MCLK 1
+>>
+>> And leave fsl_ssi_set_dai_sysclk(xxx, FSL_SSI_SYSCLK_MCLK, ...)
+>> override the computed mlck.
+>> This will leave a way for obscure TDM users to specify a specific a
+>> random mclk frequency for obscure reasons...
+>> Unfortunately, such generic clock_id (sysclk, mclk) were never
+>> defined widely.
+> Unfortunately, it looks like a work around to me. I understand
+> the idea of leaving set_sysclk() out there to override the bit
+> clock is convenient, but it is not a standard ALSA design and
+> may eventually introduce new problems like today.
 
-"#define FAST_PCM_TSTAMP(hw) \
-	((hw)->mmap_status->tstamp)
-"
-And finally is this the timestamp that is updated every period-size? Am I correct that in the case that hardware doesn't support wallclock timestamp is snd_pcm_hw_htimestamp in pcm_hw.c the called function?
+I agree. I'm not conservative at all concerning this question.
+I don't see a way to remove set_sysclk without breaking current TDM 
+users anyway, at least for those who don't have their code upstreamed.
 
-Thanks in advance
+
+All information provided through snd_soc_dai_set_tdm_slot( cpu_dai, 
+mask, mask, slots, width ) should be enough
+In this case, for TDM users
+
+    bclk = slots * width * fs   (where slots is != channels)
+
+
+
+will manage 99 % of the cases.
+And the remaining 1% will concern people who need to hack the kernel so 
+widely they don't care about the set_sysclk removal.
+
+Now, looking at the code currently in linus/master:sound/soc/fsl 
+concerning TDM
+- imx-mc13783.c : the codec is master => OK
+- fsl-asoc-card.c : *something will break since snd_soc_dai_set_sysclk 
+returned code is checked*
+- eukrea-tlv320.c : based on imx-ssi.c, so not affected by changes in 
+fsl_ssi.c.  Use set_sysclk() only to setup the clock direction
+- wm1133-ev1.c : bclk generated by the codec. set_sysclk() not called 
+for cpu_dai
+
+Consequently, we can say that few things is broken in linux upstream if 
+set_sysclk is removed, and this can be fixed easily for fsl-asoc-card.c
+
+
+Arnaud
