@@ -1,79 +1,86 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5663: Add the function of
-	impedance sensing
-Date: Thu, 14 Sep 2017 10:28:00 -0700
-Message-ID: <20170914172800.dst524eo6emmjl3d@sirena.org.uk>
-References: <1505368256-27250-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH 0/6 v4] Add ASoC support for AMD Stoney APUs
+Date: Thu, 14 Sep 2017 10:42:28 -0700
+Message-ID: <20170914174228.esh6lvih3yjs46ur@sirena.org.uk>
+References: <1505325475-22602-1-git-send-email-alexander.deucher@amd.com>
+ <20170913181218.bb2br4zehzjoatyq@sirena.org.uk>
+ <CADnq5_PdpjS448n6u6tPBqgKfEw278BENMTjVPiEQ4zQx313AA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2951438092392610057=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EE18266986
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 19:28:04 +0200 (CEST)
-In-Reply-To: <1505368256-27250-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+Content-Type: multipart/mixed; boundary="===============1192938193=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CADnq5_PdpjS448n6u6tPBqgKfEw278BENMTjVPiEQ4zQx313AA@mail.gmail.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2951438092392610057==
+--===============1192938193==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="a3u2svjlzjbwlkks"
+	protocol="application/pgp-signature"; boundary="uhety2vnu65tf6iv"
 Content-Disposition: inline
 
 
---a3u2svjlzjbwlkks
+--uhety2vnu65tf6iv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 14, 2017 at 01:50:56PM +0800, Oder Chiou wrote:
+On Wed, Sep 13, 2017 at 02:49:08PM -0400, Alex Deucher wrote:
+> On Wed, Sep 13, 2017 at 2:12 PM, Mark Brown <broonie@kernel.org> wrote:
 
-> +- "realtek,impedance_sensing_num"
-> +  The matrix row number of the impedance sensing table.
+> > No, send me a pull request for the dependencies so we can do a cross
+> > merge.  I want to make sure that when this gets reviewed it actually
+> > gets merged.
 
-Which table - one in the datasheet?
+> I'm not quite sure what you mean by the cross merge.  There are no
+> dependencies outside this patch set.  The only patches that touch drm
+> are patches 1 and 2.  Patch 1 touches both audio and drm, patch 2 just
+> touches drm.  Do you want me to send you a pull request for patches 1
 
-> +- "realtek,impedance_sensing_table"
-> +  The matrix rows of the impedance sensing table are consisted by impedance
-> +  minimum, impedance maximun, volume, DC offset w/o and w/ mic of each L and
-> +  R channel accordingly.
+I can't see any reason for patch 1 to be a single patch, just have a DRM
+patch that adds the property and then a separate audio patch that uses
+it.  Send me a pull request for that and patch 2 then I can handle the
+audio stuff.
 
-I can't understand what this property is supposed to look like based on
-this, sorry.  What does the property actually look like, what are the
-values in it and what units are they specified in?
+> and 2 and then would you'd send Dave a pull request for the audio side
+> (patches 3-6)?
 
---a3u2svjlzjbwlkks
+I guess, but I thought you were a maintainer for this stuff and could
+merge things yourself?
+
+--uhety2vnu65tf6iv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm6vB8ACgkQJNaLcl1U
-h9Dg2Qf8CgkAFHDZZWVf1KoLDy2UNuvyfu0d6cONbqEJGWxTwyMlZXeB00iRGTGH
-06vIIytj66BwyopitHBsUsC9MNv40ajFxjPNFqFfUBfe5YyKh+aBdt4qE3wCHZNE
-4MGWYfNxy+8f/otOHwMT/CwGtrDHvnt11peTOYTumlNs8wc+g/ek5PCug7Fp4GUY
-wf1DR4i2dsAY3Qv78GVUM60XgoMTBauBGokiQXiKpewd2jjkRY43CtuK6a9Ai/p7
-BprniW9j8/PIlVIBHhEt+w0hA720EmTnPshIuK34QWPXX+LjkDSf9i/PDQpciIvJ
-yhiSSiQ3iEt2qAqwmRwzdsEWArKu2Q==
-=UMw9
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm6v4QACgkQJNaLcl1U
+h9C12gf+K4piz3HzkL8bfoL0aOpEufeZ2lzdAB0iozeO3lUgNvVcOhs5Eaybgz1l
+rVRSMf7NSh9m/v+Qf/sUcZsLLyQQ22UCGrexVVnry0x5bsHFddomeThny4ETptmy
+kzmtvt/GONq6yrsAxzaZOEU1I21is0Oxs+C10F/+byHh/FIholeyOm7fucNORzHf
+AeF2utnKuJ/MhlcEfVpDcykV67NtVDxjmFrHBqIYVksUy3YCic4Yza6yQp9vnlDZ
+eCJkJChLC/VL4MG4wdinuptDLAomRldNR+hprFqmXzl6UNffIfglBuhZ4XWPS2BQ
+0Uwvn/QQVfqbrRUu5ZUkVoB6iG71sw==
+=3+6X
 -----END PGP SIGNATURE-----
 
---a3u2svjlzjbwlkks--
+--uhety2vnu65tf6iv--
 
---===============2951438092392610057==
-Content-Type: text/plain; charset="us-ascii"
+--===============1192938193==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
 
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============2951438092392610057==--
+--===============1192938193==--
