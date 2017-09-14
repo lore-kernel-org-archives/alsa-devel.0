@@ -1,17 +1,18 @@
-From: Nagendra Kumar <nagen_kr@yahoo.co.in>
-Subject: Need help in getting ALSA information
-Date: Thu, 14 Sep 2017 13:57:57 +0000 (UTC)
-Message-ID: <1454319472.2577795.1505397477906@mail.yahoo.com>
-References: <1454319472.2577795.1505397477906.ref@mail.yahoo.com>
-Reply-To: Nagendra Kumar <nagen_kr@yahoo.co.in>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ALSA: oxygen: Xonar DG(X): make model_xonar_dg
+	const
+Date: Thu, 14 Sep 2017 19:34:15 +0530
+Message-ID: <1505397855-10618-1-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sonic309-19.consmr.mail.sg3.yahoo.com
- (sonic309-19.consmr.mail.sg3.yahoo.com [106.10.244.82])
- by alsa0.perex.cz (Postfix) with ESMTP id F28AE266986
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 15:58:01 +0200 (CEST)
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FEFF266986
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 16:04:39 +0200 (CEST)
+Received: by mail-pf0-f195.google.com with SMTP id g65so1552243pfe.1
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 07:04:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,23 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: julia.lawall@lip6.fr, clemens@ladisch.de, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkswqDCoMKgwqDCoCBNeSBwcm9qZWN0IG5lZWRzIEFMU0EgZGV2aWNlIGRyaXZlciBpbnRlZ3Jh
-dGlvbi4gQ2FuIHlvdSBwbGVhc2UgaGVscCBpbiBpbiBnZXR0aW5nOjEuIERlbW8gYXBwbGljYXRp
-b24obWF5IGJlIHNvdW5kIHJlY29yZGVyIGFuZCBwbGF5ZXIpIHVzaW5nIEFMU0EgZGV2aWNlIGRy
-aXZlci4KMi4gaW4ga25vd2luZyBmdW5jdGlvbiBjYWxsIHRyYWNlcyBhYm91dCBwYWNrZXRzIGNv
-bWluZyBmcm9tIHNvdW5kIGNhcmQgYW5kIGJlaW5nIGRlbGl2ZXJpbmcgdG8gZGVtbyhkdXJpbmcg
-cmVjb3JkaW5nKS4zLiBpbiBrbm93aW5nIGZ1bmN0aW9uIGNhbGwgdHJhY2VzIGFib3V0IHBhY2tl
-dHMgZ29pbmcgZnJvbSBhcHBsaWNhdGlvbiB0byBBTFNBIHRpbGwgc291bmQgY2FyZCAoZHVyaW5n
-IHBsYXlpbmcgc291bmQpLgoKSSBqdXN0IHdhbnQgdG8gdW5kZXJzdGFuZCB0aGUgZnVuY3Rpb24v
-Y2FsbCBmbG93IGZyb20vdG8gYXBwbGljYXRpb24gdG8vZnJvbSBzb3VuZCBjYXJkLgpNeSBwcm9q
-ZWN0IGhhdmUgcmVxdWlyZW1lbnQgdG8gY2hhbmdlIHRoZSBwYWNrZXQgZmxvdyBhbmQgYWRkIHNv
-bWUgY29kZSBhbmQgdGVzdCBpbiB0aGUgcGFja2V0IGZsb3cgcGF0aCBsaWtlIGRlbGF5IHRoZSBz
-b3VuZCBwYWNrZXQsIG1vZGlmeSB0aGUgc291bmQgcGFja2V0IGZyb20gYXBwIHRpbGwgc291bmQg
-Y2FyZCBhbmQgdmljZSB2ZXJzYS4KUGxlYXNlIGtpbmRseSBwcm92aWRlIHNvbWUgcG9pbnRlcnMu
-ClRoYW5rcy1OYWdlbmRyYQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Make this const as it not modified anywhere. It is only used during a
+copy operation. Also, add const to the declaration in header.
+
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/pci/oxygen/xonar_dg.h       | 2 +-
+ sound/pci/oxygen/xonar_dg_mixer.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/oxygen/xonar_dg.h b/sound/pci/oxygen/xonar_dg.h
+index d461df3..5a07cda 100644
+--- a/sound/pci/oxygen/xonar_dg.h
++++ b/sound/pci/oxygen/xonar_dg.h
+@@ -51,6 +51,6 @@ void dump_cs4245_registers(struct oxygen *chip,
+ void dg_resume(struct oxygen *chip);
+ void dg_cleanup(struct oxygen *chip);
+ 
+-extern struct oxygen_model model_xonar_dg;
++extern const struct oxygen_model model_xonar_dg;
+ 
+ #endif
+diff --git a/sound/pci/oxygen/xonar_dg_mixer.c b/sound/pci/oxygen/xonar_dg_mixer.c
+index b885dac..d22fbe8 100644
+--- a/sound/pci/oxygen/xonar_dg_mixer.c
++++ b/sound/pci/oxygen/xonar_dg_mixer.c
+@@ -449,7 +449,7 @@ static int dg_mixer_init(struct oxygen *chip)
+ 	return 0;
+ }
+ 
+-struct oxygen_model model_xonar_dg = {
++const struct oxygen_model model_xonar_dg = {
+ 	.longname = "C-Media Oxygen HD Audio",
+ 	.chip = "CMI8786",
+ 	.init = dg_init,
+-- 
+1.9.1
