@@ -1,22 +1,22 @@
-From: Hsin-yu Chao <hychao@chromium.org>
-Subject: Re: Applied "ASoC: rt5514: expose Hotword Model
-	control" to the asoc tree
-Date: Thu, 14 Sep 2017 14:28:25 +0800
-Message-ID: <CANyK0SnMG+TBz2xu0VtRpR--VOjG4CaFW764UaHPpOjfEdFrkg@mail.gmail.com>
-References: <E1dkpi0-0000rj-Vu@debutante>
- <d9e62043-fa21-7159-c310-86c962ffb8e0@sakamocchi.jp>
- <4cb3fcb2-1182-956d-3594-92a654274cc5@sakamocchi.jp>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for
+	wm97xx Codec
+Date: Thu, 14 Sep 2017 08:41:47 +0100
+Message-ID: <20170914074146.dnibkvom4yuzejf3@dell>
+References: <20170913193723.16234-1-robert.jarzmik@free.fr>
+ <20170913193723.16234-3-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f170.google.com (mail-io0-f170.google.com
- [209.85.223.170])
- by alsa0.perex.cz (Postfix) with ESMTP id CC639266986
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 08:28:27 +0200 (CEST)
-Received: by mail-io0-f170.google.com with SMTP id v36so14142877ioi.1
- for <alsa-devel@alsa-project.org>; Wed, 13 Sep 2017 23:28:27 -0700 (PDT)
-In-Reply-To: <4cb3fcb2-1182-956d-3594-92a654274cc5@sakamocchi.jp>
+Received: from mail-wr0-f171.google.com (mail-wr0-f171.google.com
+ [209.85.128.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2698D266C85
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 09:41:50 +0200 (CEST)
+Received: by mail-wr0-f171.google.com with SMTP id v109so4544317wrc.1
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 00:41:50 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20170913193723.16234-3-robert.jarzmik@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,35 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Dylan Reid <dgreid@chromium.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-Thank you for the detailed explanation.
-I will discuss with Oder about the blob used for voice wake up, and
-see if we can come up with a proposal to generalize this by basic
-types.
-
-Hi Mark,
-There's a related patch "ASoC: rt5514: Guard Hotword Model bytes
-loading" might need to be reverted as well.
-If there's anything I should do please let me know.
-
-Thanks,
-Hsin-yu
-
-On Thu, Sep 14, 2017 at 1:03 PM, Takashi Sakamoto
-<o-takashi@sakamocchi.jp> wrote:
-> On Sep 14 2017 12:54, Takashi Sakamoto wrote:
->>
->> As the subject notes, please revert the commit including the below lines.
->
->
-> Ah... I forgot to modify the subject line as 'Please revert d18420b0a0b8
-> ("ASoC: rt5514: expose Hotword Model control")'.
->
->
-> Regards
->
-> Takashi Sakamoto
+T24gV2VkLCAxMyBTZXAgMjAxNywgUm9iZXJ0IEphcnptaWsgd3JvdGU6Cgo+IFRoZSBXTTk3MDUs
+IFdNOTcxMiBhbmQgV005NzEzIGFyZSBoaWdobHkgaW50ZWdyYXRlZCBjb2RlY3MsIHdpdGggYW4K
+PiBhdWRpbyBjb2RlYywgREFDIGFuZCBBREMsIEdQSU8gdW5pdCBhbmQgYSB0b3VjaHNjcmVlbiBp
+bnRlcmZhY2UuCj4gCj4gSGlzdG9yaWNhbGx5IHRoZSBzdXBwb3J0IHdhcyBzcHJlYWQgYWNyb3Nz
+IGRyaXZlcnMvaW5wdXQvdG91Y2hzY3JlZW4gYW5kCj4gc291bmQvc29jL2NvZGVjcy4gVGhlIHNo
+YXJpbmcgd2FzIGRvbmUgdGhyb3VnaCBhYzk3IGJ1cyBzaGFyaW5nLiBUaGlzCj4gbW9kZWwgd2ls
+bCBub3Qgd2l0aHN0YW5kIHRoZSBuZXcgQUM5NyBidXMgbW9kZWwsIHdoZXJlIGNvZGVjcyBhcmUK
+PiBkaXNjb3ZlcmVkIG9uIHJ1bnRpbWUuCj4gCj4gU2lnbmVkLW9mZi1ieTogUm9iZXJ0IEphcnpt
+aWsgPHJvYmVydC5qYXJ6bWlrQGZyZWUuZnI+Cj4gQWNrZWQtYnk6IENoYXJsZXMgS2VlcGF4IDxj
+a2VlcGF4QG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiBBY2tlZC1ieTogTGVlIEpvbmVz
+IDxsZWUuam9uZXNAbGluYXJvLm9yZz4KPiAtLS0KPiBTaW5jZSB2MzoKPiAgLSBhZGRlZCBhICJk
+ZXBlbmRzIG9uIEFDOTdfQlVTX05FVyIgS2NvbmZpZyBzdGF0ZW1lbnQKPiAgLSBhZGRlZCBkZWZh
+dWx0IHZhbHVlcyBmb3Igd205NzA1LCB3bTk3MTIgcGVyIENoYXJsZXMncyBjb21tZW50Cj4gU2lu
+Y2UgdjQ6Cj4gIC0gYWRkZWQgQ2hhcmxlcydzIGFjawo+IFNpbmNlIHY1Ogo+ICAtIHRvb2sgaW50
+byBhY2NvdW50IExlZSdzIGNvbW1lbnRzCj4gU2luY2UgdjY6Cj4gIC0gdG9vayBpbnRvIGFjY291
+bnQgTGVlJ3MgY29tbWVudHMKPiAtLS0KPiAgZHJpdmVycy9tZmQvS2NvbmZpZyAgICAgICAgfCAg
+MTQgKysKPiAgZHJpdmVycy9tZmQvTWFrZWZpbGUgICAgICAgfCAgIDEgKwo+ICBkcml2ZXJzL21m
+ZC93bTk3eHgtY29yZS5jICB8IDM2NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysKPiAgaW5jbHVkZS9saW51eC9tZmQvd205N3h4LmggfCAgMjUgKysrKwo+ICA0
+IGZpbGVzIGNoYW5nZWQsIDQwNiBpbnNlcnRpb25zKCspCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
+cml2ZXJzL21mZC93bTk3eHgtY29yZS5jCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xp
+bnV4L21mZC93bTk3eHguaAoKQXBwbGllZCwgdGhhbmtzLgoKLS0gCkxlZSBKb25lcwpMaW5hcm8g
+U1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcgVGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4g
+c291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3
+aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
