@@ -1,153 +1,128 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v2] ASoC: fsl_ssi: Caculate bit clock rate using slot number and width
-Date: Wed, 13 Sep 2017 20:07:09 -0700
-Message-ID: <1505358429-18314-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com, fabio.estevam@nxp.com, timur@tabi.org, lukma@denx.de, caleb@crome.org, max.krummenacher@toradex.com, arnaud.mouiche@invoxia.com, mail@maciej.szmigiero.name
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH v2] ASoC: rt5670: add set_bclk_ratio in dai
+	ops
+Date: Thu, 14 Sep 2017 03:14:17 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7026CA107@RTITMBSV02.realtek.com.tw>
+References: <1505203979-12794-1-git-send-email-bardliao@realtek.com>
+ <81332721-16ed-2442-61e3-8483df66258d@linux.intel.com>
+ <ABFD875FF5FB574BA706497D987D48D7026C854D@RTITMBSV02.realtek.com.tw>
+ <9b2386ef-3002-1e44-8b39-8ec50fb9623a@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 485B9266986
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 05:14:30 +0200 (CEST)
+In-Reply-To: <9b2386ef-3002-1e44-8b39-8ec50fb9623a@linux.intel.com>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "tiwai@suse.de" <tiwai@suse.de>, =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The set_sysclk() now is used to override the output bit clock rate.
-But this is not a common way to implement a set_dai_sysclk(). And
-this creates a problem when a general machine driver (simple-card
-for example) tries to do set_dai_sysclk() by passing an input clock
-rate for the baud clock instead of setting the bit clock rate as
-fsl_ssi driver expected.
-
-So this patch solves this problem by firstly removing set_sysclk()
-since the hw_params() can calculate the bit clock rate. Secondly,
-in order not to break those TDM use cases which previously might
-have been using set_sysclk() to override the bit clock rate, this
-patch changes the driver to calculate the bit clock rate using the
-slot number and the slot width from the via set_tdm_slot().
-
-The patch also removes an obsolete comment of the dir parameter.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_ssi.c | 46 ++++++++++++++++++++++++++--------------------
- 1 file changed, 26 insertions(+), 20 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 64598d1..f2f51e06 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -197,12 +197,13 @@ struct fsl_ssi_soc_data {
-  * @use_dma: DMA is used or FIQ with stream filter
-  * @use_dual_fifo: DMA with support for both FIFOs used
-  * @fifo_deph: Depth of the SSI FIFOs
-+ * @slot_width: width of each DAI slot
-+ * @slots: number of slots
-  * @rxtx_reg_val: Specific register settings for receive/transmit configuration
-  *
-  * @clk: SSI clock
-  * @baudclk: SSI baud clock for master mode
-  * @baudclk_streams: Active streams that are using baudclk
-- * @bitclk_freq: bitclock frequency set by .set_dai_sysclk
-  *
-  * @dma_params_tx: DMA transmit parameters
-  * @dma_params_rx: DMA receive parameters
-@@ -233,12 +234,13 @@ struct fsl_ssi_private {
- 	bool use_dual_fifo;
- 	bool has_ipg_clk_name;
- 	unsigned int fifo_depth;
-+	unsigned int slot_width;
-+	unsigned int slots;
- 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
- 
- 	struct clk *clk;
- 	struct clk *baudclk;
- 	unsigned int baudclk_streams;
--	unsigned int bitclk_freq;
- 
- 	/* regcache for volatile regs */
- 	u32 regcache_sfcsr;
-@@ -700,8 +702,8 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
-  * Note: This function can be only called when using SSI as DAI master
-  *
-  * Quick instruction for parameters:
-- * freq: Output BCLK frequency = samplerate * 32 (fixed) * channels
-- * dir: SND_SOC_CLOCK_OUT -> TxBCLK, SND_SOC_CLOCK_IN -> RxBCLK.
-+ * freq: Output BCLK frequency = samplerate * slots * slot_width
-+ *       (In 2-channel I2S Master mode, slot_width is fixed 32)
-  */
- static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *cpu_dai,
-@@ -712,15 +714,21 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates, ret;
- 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
- 	unsigned long clkrate, baudrate, tmprate;
-+	unsigned int slots = params_channels(hw_params);
-+	unsigned int slot_width = 32;
- 	u64 sub, savesub = 100000;
- 	unsigned int freq;
- 	bool baudclk_is_used;
- 
--	/* Prefer the explicitly set bitclock frequency */
--	if (ssi_private->bitclk_freq)
--		freq = ssi_private->bitclk_freq;
--	else
--		freq = params_channels(hw_params) * 32 * params_rate(hw_params);
-+	/* Override slots and slot_width if being specifically set... */
-+	if (ssi_private->slots)
-+		slots = ssi_private->slots;
-+	/* ...but keep 32 bits if slots is 2 -- I2S Master mode */
-+	if (ssi_private->slot_width && slots != 2)
-+		slot_width = ssi_private->slot_width;
-+
-+	/* Generate bit clock based on the slot number and slot width */
-+	freq = slots * slot_width * params_rate(hw_params);
- 
- 	/* Don't apply it to any non-baudclk circumstance */
- 	if (IS_ERR(ssi_private->baudclk))
-@@ -805,16 +813,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
--		int clk_id, unsigned int freq, int dir)
--{
--	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
--
--	ssi_private->bitclk_freq = freq;
--
--	return 0;
--}
--
- /**
-  * fsl_ssi_hw_params - program the sample size
-  *
-@@ -1095,6 +1093,12 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
- 	struct regmap *regs = ssi_private->regs;
- 	u32 val;
- 
-+	/* The word length should be 8, 10, 12, 16, 18, 20, 22 or 24 */
-+	if (slot_width & 1 || slot_width < 8 || slot_width > 24) {
-+		dev_err(cpu_dai->dev, "invalid slot width: %d\n", slot_width);
-+		return -EINVAL;
-+	}
-+
- 	/* The slot number should be >= 2 if using Network mode or I2S mode */
- 	regmap_read(regs, CCSR_SSI_SCR, &val);
- 	val &= CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_NET;
-@@ -1121,6 +1125,9 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
- 
- 	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN, val);
- 
-+	ssi_private->slot_width = slot_width;
-+	ssi_private->slots = slots;
-+
- 	return 0;
- }
- 
-@@ -1191,7 +1198,6 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- 	.hw_params	= fsl_ssi_hw_params,
- 	.hw_free	= fsl_ssi_hw_free,
- 	.set_fmt	= fsl_ssi_set_dai_fmt,
--	.set_sysclk	= fsl_ssi_set_dai_sysclk,
- 	.set_tdm_slot	= fsl_ssi_set_dai_tdm_slot,
- 	.trigger	= fsl_ssi_trigger,
- };
--- 
-2.7.4
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQaWVycmUtTG91aXMgQm9zc2Fy
+dCBbbWFpbHRvOnBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDog
+VGh1cnNkYXksIFNlcHRlbWJlciAxNCwgMjAxNyAxOjQ1IEFNDQo+IFRvOiBCYXJkIExpYW87IGJy
+b29uaWVAa2VybmVsLm9yZzsgbGdpcmR3b29kQGdtYWlsLmNvbQ0KPiBDYzogT2RlciBDaGlvdTsg
+SmFjayBZdTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsYXJzQG1ldGFmb28uZGU7DQo+
+IHRpd2FpQHN1c2UuZGU7IFNodW1pbmcgW+iMg+abuOmKmF07IEZsb3ZlKEhzaW5GdSkNCj4gU3Vi
+amVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0ggdjJdIEFTb0M6IHJ0NTY3MDogYWRkIHNldF9i
+Y2xrX3JhdGlvIGluIGRhaSBvcHMNCj4gDQo+IE9uIDkvMTIvMTcgMTE6MzUgUE0sIEJhcmQgTGlh
+byB3cm90ZToNCj4gPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPj4gRnJvbTogUGll
+cnJlLUxvdWlzIEJvc3NhcnQgW21haWx0bzpwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRl
+bC5jb21dDQo+ID4+IFNlbnQ6IFR1ZXNkYXksIFNlcHRlbWJlciAxMiwgMjAxNyAxMDo1NCBQTQ0K
+PiA+PiBUbzogQmFyZCBMaWFvOyBicm9vbmllQGtlcm5lbC5vcmc7IGxnaXJkd29vZEBnbWFpbC5j
+b20NCj4gPj4gQ2M6IE9kZXIgQ2hpb3U7IEphY2sgWXU7IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZzsgbGFyc0BtZXRhZm9vLmRlOw0KPiA+PiB0aXdhaUBzdXNlLmRlOyBTaHVtaW5nIFvojIPm
+m7jpiphdOyBGbG92ZShIc2luRnUpDQo+ID4+IFN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BB
+VENIIHYyXSBBU29DOiBydDU2NzA6IGFkZCBzZXRfYmNsa19yYXRpbyBpbiBkYWkNCj4gb3BzDQo+
+ID4+DQo+ID4+IE9uIDkvMTIvMTcgMzoxMiBBTSwgQmFyZCBMaWFvIHdyb3RlOg0KPiA+Pj4gV2Ug
+bmVlZCB0byBzZXQgYSBzcGVjaWZpYyBiaXQgZm9yIDUwIGJjbGsgcmF0ZS4gU28gYWRkIHNldF9i
+Y2xrX3JhdGlvDQo+ID4+PiBmdW5jdGlvbiB0byBzZXQgdGhlIGJpdC4NCj4gPj4NCj4gPj4gV2hl
+biBpcyB0aGlzIHN1cHBvc2VkIHRvIGJlIHVzZWQ/IHRoZSBjaHRfYnN3X3J0NTY3MiBtYWNoaW5l
+IGRyaXZlciB1c2VzDQo+ID4+IGEgMTkuMk1IeiBNQ0xLLzIuNCBNSHogYmNsaywgc28gdGhlcmUn
+cyBhIHR5cGljYWwgNTB4IHJhdGlvLg0KPiA+DQo+ID4gSSB0aGluayBpdCBzaG91bGQgYmUgdXNl
+ZCBmb3IgYWxsIEludGVsIHBsYXRmb3JtLiBUaGUgYml0IHdpbGwgb25seSBiZQ0KPiA+IGVmZmVj
+dGl2ZSBpbiBQQ00gbW9kZSB3aXRoIFRETSBlbmFibGVkLiBJdCB3aWxsIGluZmx1ZW5jZSB0aGUg
+ZGF0YQ0KPiA+IGFsbG9jYXRpb24gZm9ybWF0Lg0KPiA+IDA6IHRoZSBkdW1teSBiaXRzIHdpbGwg
+YmUgYWxsb2NhdGUgYXQgdGhlIGVuZCBvZiBlYWNoIHNsb3QuDQo+ID4gMTogdGhlIGR1bW15IGJp
+dHMgd2lsbCBiZSBhbGxvY2F0ZSBhdCB0aGUgZW5kIG9mIGFsbCBzbG90cy4NCj4gPiBGb3IgZXhh
+bXBsZSwgNTBmcyB3aXRoIDI0IGJpdHMgZGF0YSBsZW5ndGguDQo+ID4gMDogMjQgYml0cyBzbG90
+MCBkYXRhICsgMSBkdW1teSBiaXQgKyAyNCBiaXRzIHNsb3QxIGRhdGEgKyAxIGR1bW15IGJpdA0K
+PiA+IDE6IDI0IGJpdHMgc2xvdDAgZGF0YSArIDI0IGJpdHMgc2xvdDEgZGF0YSArIDIgZHVtbXkg
+Yml0cw0KPiA+DQo+ID4gSSB3aWxsIGRvIHNsaWdodCBtb2RpZmljYXRpb24gb24gdGhlIHBhdGNo
+IHNpbmNlIHRoZSBiaXQgc2hvdWxkIGJlIHNldCBmb3INCj4gPiBhbGwgYmNsayByYXRlIHdoaWNo
+IGlzIGRpdmlzaWJsZSBieSA1MC4NCj4gDQo+IEkgYW0gbm90IHN1cmUgSSB1bmRlcnN0YW5kIHRo
+ZSAwOiBhbmQgMTogY2FzZXMsIGFuZCBzaW5jZSB3ZSBnZXQgYXVkaW8NCj4gdG9kYXkgd2l0aCB0
+aGlzIGNvZGVjIGFuZCBhIHJhdGlvIG9mIDIwMCAoNCAyNC1iaXQgc2xvdHMgaW4gRFNQX0IpIEkN
+Cj4gZG9uJ3QgZ2V0IHdoYXQgaGFwcGVucyB3aXRoIHRoaXMgZml4Lg0KDQpGcm9tIG15IGV4cGVy
+aWVuY2UsIG1vc3QgSW50ZWwgcGxhdGZvcm1zIHVzZSBjYXNlIDEgZm9ybWF0LiBUaGUNCmlzc3Vl
+IHdpbGwgYmUgaW5jb3JyZWN0IHJlY29yZGluZyB2b2x1bWUgZHVlIHRvIGJpdCBhbGxvY2F0aW9u
+IGlzDQpzaGlmdGVkLg0KSWYgSW50ZWwgZXhwZWN0ZWQgY2FzZSAxIGZvcm1hdCBidXQgUmVhbHRl
+ayBzZW5kIGNhc2UgMCBmb3JtYXQuDQpJdCB3b3VsZCBiZSBubyBwcm9ibGVtIHdpdGggc2xvdCAw
+LiBCdXQgZm9yIHNsb3QgMSwgaXQgd2lsbCBiZToNCkludGVsIGV4cGVjdGVkOiAyNCBiaXRzIHZh
+bGlkIGRhdGEgZm9yIHNsb3QgMQ0KUmVhbHRlayBzZW50OiAgMSBkdW1teSBiaXQgZm9yIHNsb3Qg
+MCArIDI0IGJpdHMgZGF0YSBmb3Igc2xvdCAxDQpTbyB3aGF0IEludGVsIGFjdHVhbGx5IHJlY2Vp
+dmVkIHdpbGwgYmUgMSBkdW1teSBiaXQgKyAyMyBiaXRzIGRhdGENCkFuZCBpdCBpcyBzaW1pbGFy
+IHRvIG90aGVyIHNsb3RzLg0KQlRXLCBpZiB5b3UgZG9uJ3QgbWVldCB0aGUgaXNzdWUsIHlvdSBk
+b24ndCBuZWVkIHRvIGNhbGwNCnNuZF9zb2NfZGFpX3NldF9iY2xrX3JhdGlvIG9uIHlvdXIgbWFj
+aGluZSBkcml2ZXIuDQoNCj4gDQo+ID4NCj4gPj4NCj4gPj4+DQo+ID4+PiBTaWduZWQtb2ZmLWJ5
+OiBCYXJkIExpYW8gPGJhcmRsaWFvQHJlYWx0ZWsuY29tPg0KPiA+Pj4gLS0tDQo+ID4+PiB2MjoN
+Cj4gPj4+ICogYWRkIGRlZmluZSBmb3IgdGRtIGRhdGEgZm9ybWF0IHNlbGVjdCBiaXQuDQo+ID4+
+PiAtLS0NCj4gPj4+ICAgIHNvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMgfCAxOSArKysrKysrKysr
+KysrKysrKysrDQo+ID4+PiAgICBzb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5oIHwgIDQgKysrKw0K
+PiA+Pj4gICAgMiBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspDQo+ID4+Pg0KPiA+Pj4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmMgYi9zb3VuZC9zb2MvY29kZWNz
+L3J0NTY3MC5jDQo+ID4+PiBpbmRleCA5NTQ1NzY0Li5kYTc2MTRjIDEwMDY0NA0KPiA+Pj4gLS0t
+IGEvc291bmQvc29jL2NvZGVjcy9ydDU2NzAuYw0KPiA+Pj4gKysrIGIvc291bmQvc29jL2NvZGVj
+cy9ydDU2NzAuYw0KPiA+Pj4gQEAgLTI1ODIsNiArMjU4MiwyNCBAQCBzdGF0aWMgaW50IHJ0NTY3
+MF9zZXRfdGRtX3Nsb3Qoc3RydWN0DQo+IHNuZF9zb2NfZGFpDQo+ID4+ICpkYWksIHVuc2lnbmVk
+IGludCB0eF9tYXNrLA0KPiA+Pj4gICAgCXJldHVybiAwOw0KPiA+Pj4gICAgfQ0KPiA+Pj4NCj4g
+Pj4+ICtzdGF0aWMgaW50IHJ0NTY3MF9zZXRfYmNsa19yYXRpbyhzdHJ1Y3Qgc25kX3NvY19kYWkg
+KmRhaSwgdW5zaWduZWQgaW50DQo+IHJhdGlvKQ0KPiA+Pj4gK3sNCj4gPj4+ICsJc3RydWN0IHNu
+ZF9zb2NfY29kZWMgKmNvZGVjID0gZGFpLT5jb2RlYzsNCj4gPj4+ICsNCj4gPj4+ICsJZGV2X2Ri
+Zyhjb2RlYy0+ZGV2LCAiJXMgcmF0aW89JWRcbiIsIF9fZnVuY19fLCByYXRpbyk7DQo+ID4+PiAr
+CWlmIChkYWktPmlkICE9IFJUNTY3MF9BSUYxKQ0KPiA+Pj4gKwkJcmV0dXJuIDA7DQo+ID4+PiAr
+DQo+ID4+PiArCWlmIChyYXRpbyA9PSA1MCkNCj4gPj4+ICsJCXNuZF9zb2NfdXBkYXRlX2JpdHMo
+Y29kZWMsIFJUNTY3MF9HRU5fQ1RSTDMsDQo+ID4+PiArCQkJUlQ1NjcwX1RETV9EQVRBX01PREVf
+U0VMLA0KPiA+PiBSVDU2NzBfVERNX0RBVEFfTU9ERV81MEZTKTsNCj4gPj4+ICsJZWxzZQ0KPiA+
+Pj4gKwkJc25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgUlQ1NjcwX0dFTl9DVFJMMywNCj4gPj4+
+ICsJCQlSVDU2NzBfVERNX0RBVEFfTU9ERV9TRUwsDQo+ID4+IFJUNTY3MF9URE1fREFUQV9NT0RF
+X05PUik7DQo+ID4+PiArDQo+ID4+PiArCXJldHVybiAwOw0KPiA+Pj4gK30NCj4gPj4+ICsNCj4g
+Pj4+ICAgIHN0YXRpYyBpbnQgcnQ1NjcwX3NldF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2Nv
+ZGVjICpjb2RlYywNCj4gPj4+ICAgIAkJCWVudW0gc25kX3NvY19iaWFzX2xldmVsIGxldmVsKQ0K
+PiA+Pj4gICAgew0KPiA+Pj4gQEAgLTI3MTIsNiArMjczMCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc25kX3NvY19kYWlfb3BzDQo+ID4+IHJ0NTY3MF9haWZfZGFpX29wcyA9IHsNCj4gPj4+ICAg
+IAkuc2V0X2ZtdCA9IHJ0NTY3MF9zZXRfZGFpX2ZtdCwNCj4gPj4+ICAgIAkuc2V0X3RkbV9zbG90
+ID0gcnQ1NjcwX3NldF90ZG1fc2xvdCwNCj4gPj4+ICAgIAkuc2V0X3BsbCA9IHJ0NTY3MF9zZXRf
+ZGFpX3BsbCwNCj4gPj4+ICsJLnNldF9iY2xrX3JhdGlvID0gcnQ1NjcwX3NldF9iY2xrX3JhdGlv
+LA0KPiA+Pj4gICAgfTsNCj4gPj4+DQo+ID4+PiAgICBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFp
+X2RyaXZlciBydDU2NzBfZGFpW10gPSB7DQo+ID4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2Nv
+ZGVjcy9ydDU2NzAuaCBiL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjcwLmgNCj4gPj4+IGluZGV4IDVi
+YTQ4NWMuLjI2NWRmODAgMTAwNjQ0DQo+ID4+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY3
+MC5oDQo+ID4+PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY3MC5oDQo+ID4+PiBAQCAtMTgx
+Niw2ICsxODE2LDEwIEBADQo+ID4+PiAgICAjZGVmaW5lIFJUNTY3MF9aQ0RfSFBfRElTCQkJKDB4
+MCA8PCAxNSkNCj4gPj4+ICAgICNkZWZpbmUgUlQ1NjcwX1pDRF9IUF9FTgkJCSgweDEgPDwgMTUp
+DQo+ID4+Pg0KPiA+Pj4gKy8qIEdlbmVyYWwgQ29udHJvbCAzICgweGZjKSAqLw0KPiA+Pj4gKyNk
+ZWZpbmUgUlQ1NjcwX1RETV9EQVRBX01PREVfU0VMCQkoMHgxIDw8IDExKQ0KPiA+Pj4gKyNkZWZp
+bmUgUlQ1NjcwX1RETV9EQVRBX01PREVfTk9SCQkoMHgwIDw8IDExKQ0KPiA+Pj4gKyNkZWZpbmUg
+UlQ1NjcwX1RETV9EQVRBX01PREVfNTBGUwkJKDB4MSA8PCAxMSkNCj4gPj4+DQo+ID4+PiAgICAv
+KiBDb2RlYyBQcml2YXRlIFJlZ2lzdGVyIGRlZmluaXRpb24gKi8NCj4gPj4+ICAgIC8qIDNEIFNw
+ZWFrZXIgQ29udHJvbCAoMHg2MykgKi8NCj4gPj4+DQo+ID4+DQo+ID4+DQo+ID4+IC0tLS0tLVBs
+ZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWls
+Lg0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QNCj4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcNCj4gPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbA0KPiA+DQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
