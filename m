@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for
-	wm97xx Codec
-Date: Thu, 14 Sep 2017 09:04:53 -0700
-Message-ID: <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
-References: <20170913193723.16234-1-robert.jarzmik@free.fr>
- <20170913193723.16234-3-robert.jarzmik@free.fr>
- <20170914074146.dnibkvom4yuzejf3@dell>
- <20170914074300.iobuwn2hrmnf6sen@dell>
+Subject: Re: Applied "ASoC: rt5514: expose Hotword Model
+ control" to the asoc tree
+Date: Thu, 14 Sep 2017 09:05:52 -0700
+Message-ID: <20170914160552.kudvxhbofgjwpxhz@sirena.org.uk>
+References: <E1dkpi0-0000rj-Vu@debutante>
+ <d9e62043-fa21-7159-c310-86c962ffb8e0@sakamocchi.jp>
+ <4cb3fcb2-1182-956d-3594-92a654274cc5@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1348200533078435386=="
+Content-Type: multipart/mixed; boundary="===============1336746330440869465=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A0307266986
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 18:05:06 +0200 (CEST)
-In-Reply-To: <20170914074300.iobuwn2hrmnf6sen@dell>
+ by alsa0.perex.cz (Postfix) with ESMTP id 075CE267202
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 18:05:57 +0200 (CEST)
+In-Reply-To: <4cb3fcb2-1182-956d-3594-92a654274cc5@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,52 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: oder_chiou@realtek.com, dgreid@chromium.org, Hsin-Yu Chao <hychao@chromium.org>, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1348200533078435386==
+--===============1336746330440869465==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hcyrazu37h5cvdwg"
+	protocol="application/pgp-signature"; boundary="qr5ox5ldccwyyvrs"
 Content-Disposition: inline
 
 
---hcyrazu37h5cvdwg
+--qr5ox5ldccwyyvrs
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 14, 2017 at 08:43:00AM +0100, Lee Jones wrote:
+On Thu, Sep 14, 2017 at 02:03:29PM +0900, Takashi Sakamoto wrote:
+> On Sep 14 2017 12:54, Takashi Sakamoto wrote:
+> > As the subject notes, please revert the commit including the below lines.
 
-> Change of plan.  It looks like there are deps.
+> Ah... I forgot to modify the subject line as 'Please revert d18420b0a0b8
+> ("ASoC: rt5514: expose Hotword Model control")'.
 
-> Unapplied.
+Please send a patch for this with a changelog explaining why.
 
-The core stuff went in during the merge window, you should be able to
-wait for -rc1 or pick up the asoc-v4.14 tag.
-
---hcyrazu37h5cvdwg
+--qr5ox5ldccwyyvrs
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm6qKQACgkQJNaLcl1U
-h9BCgQf+Pc8ihLyv/PMl8ppLAZT5JlAUoBvUJzeQK0cv6/BzVAtq0Iz/pFnUijAd
-ovegDXnKilCF18d4TFaQuFxZoT4/VHa4lE/yRvG2qSkccefondfYAIglCRAVfVNZ
-i5DBSFyBk3DX7DzE6oMZt3ldbvAtSrctK4sEQ4fFHOaT2mTV7/OD7YSwb4Zoq52Y
-jVTZGxjtxi6c9swTZh0WactE3jOwWWv/1iSvDSYUZfo2ih56xczZEumPyDWGlhsU
-DI/2BeJ9Dzt1Ql+7xf+Fc9Xn7gt1kwezcGo0JRdJqlZdWwlX8aRDp32whHtaxRCP
-qdijErcbWQigF6EVonPPC/P92rsTUw==
-=zZQI
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm6qN8ACgkQJNaLcl1U
+h9DZBwf9HenRv5wQP91jU4c/xHwweTGS59BrGViOSSQDS7WK84o1OmuZbU1V7aBl
+sV9D/1VZDpkpOWwHVqZbfSqsAyWei8w4OSSR1lswwqZOM/8QFqareJPKuH47QuUb
+Mz7it7oemvwB47oGo5AaCK2cGBltzNc09t49jG1AQ/HuZxoKbjy/Ng0ppsz5hGE+
+HFG1nXF7lJLL4NogjXCvRWJ+U6RMru2dUREdDn4KdpLlTzkncA9G/bDECPxc8nEj
+yBEHadBHaR+OJV30F8rKJb5GW0NQaF7TBLigcudUK+SbRmEiyFuyvMHuGKp39zce
+kqgZdiJ05e7xK9fDP6R7EuIwAxntoQ==
+=Yrzj
 -----END PGP SIGNATURE-----
 
---hcyrazu37h5cvdwg--
+--qr5ox5ldccwyyvrs--
 
---===============1348200533078435386==
+--===============1336746330440869465==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1348200533078435386==--
+--===============1336746330440869465==--
