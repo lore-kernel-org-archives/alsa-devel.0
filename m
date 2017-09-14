@@ -1,18 +1,14 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ALSA: oxygen: Xonar DG(X): make model_xonar_dg
-	const
-Date: Thu, 14 Sep 2017 19:34:15 +0530
-Message-ID: <1505397855-10618-1-git-send-email-bhumirks@gmail.com>
+From: John Keeping <john@metanate.com>
+Subject: [PATCH] ASoC: rockchip: i2s: fix unbalanced clk_disable
+Date: Thu, 14 Sep 2017 16:58:55 +0100
+Message-ID: <20170914155855.28768-1-john@metanate.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
- [209.85.192.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FEFF266986
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 16:04:39 +0200 (CEST)
-Received: by mail-pf0-f195.google.com with SMTP id g65so1552243pfe.1
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 07:04:39 -0700 (PDT)
+Received: from metanate.com (dougal.metanate.com [90.155.101.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1124266986
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 17:59:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: julia.lawall@lip6.fr, clemens@ladisch.de, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Make this const as it not modified anywhere. It is only used during a
-copy operation. Also, add const to the declaration in header.
+mclk is enabled and disabled only in i2s_runtime_{resume,suspend}() and
+we ensure that the device is runtime suspended before reaching this
+clk_disable_unprepare() call, so it is wrong to call it again here.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: John Keeping <john@metanate.com>
 ---
- sound/pci/oxygen/xonar_dg.h       | 2 +-
- sound/pci/oxygen/xonar_dg_mixer.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/pci/oxygen/xonar_dg.h b/sound/pci/oxygen/xonar_dg.h
-index d461df3..5a07cda 100644
---- a/sound/pci/oxygen/xonar_dg.h
-+++ b/sound/pci/oxygen/xonar_dg.h
-@@ -51,6 +51,6 @@ void dump_cs4245_registers(struct oxygen *chip,
- void dg_resume(struct oxygen *chip);
- void dg_cleanup(struct oxygen *chip);
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index b6590467fd14..908211e1d6fc 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -692,7 +692,6 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		i2s_runtime_suspend(&pdev->dev);
  
--extern struct oxygen_model model_xonar_dg;
-+extern const struct oxygen_model model_xonar_dg;
+-	clk_disable_unprepare(i2s->mclk);
+ 	clk_disable_unprepare(i2s->hclk);
  
- #endif
-diff --git a/sound/pci/oxygen/xonar_dg_mixer.c b/sound/pci/oxygen/xonar_dg_mixer.c
-index b885dac..d22fbe8 100644
---- a/sound/pci/oxygen/xonar_dg_mixer.c
-+++ b/sound/pci/oxygen/xonar_dg_mixer.c
-@@ -449,7 +449,7 @@ static int dg_mixer_init(struct oxygen *chip)
  	return 0;
- }
- 
--struct oxygen_model model_xonar_dg = {
-+const struct oxygen_model model_xonar_dg = {
- 	.longname = "C-Media Oxygen HD Audio",
- 	.chip = "CMI8786",
- 	.init = dg_init,
 -- 
-1.9.1
+2.14.1
