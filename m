@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: fix unbalanced
-	clk_disable" to the asoc tree
-Date: Thu, 14 Sep 2017 10:27:17 -0700 (PDT)
-Message-ID: <20170914172717.1B3CE4400D2@finisterre.ee.mobilebroadband>
-References: <20170914155855.28768-1-john@metanate.com>
+Subject: Re: [PATCH v2] ASoC: rt5663: Add the function of
+	impedance sensing
+Date: Thu, 14 Sep 2017 10:28:00 -0700
+Message-ID: <20170914172800.dst524eo6emmjl3d@sirena.org.uk>
+References: <1505368256-27250-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2951438092392610057=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C844266986
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 19:27:22 +0200 (CEST)
-In-Reply-To: <20170914155855.28768-1-john@metanate.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EE18266986
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 19:28:04 +0200 (CEST)
+In-Reply-To: <1505368256-27250-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Keeping <john@metanate.com>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rockchip: i2s: fix unbalanced clk_disable
+--===============2951438092392610057==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="a3u2svjlzjbwlkks"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--a3u2svjlzjbwlkks
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Sep 14, 2017 at 01:50:56PM +0800, Oder Chiou wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +- "realtek,impedance_sensing_num"
+> +  The matrix row number of the impedance sensing table.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Which table - one in the datasheet?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +- "realtek,impedance_sensing_table"
+> +  The matrix rows of the impedance sensing table are consisted by impedance
+> +  minimum, impedance maximun, volume, DC offset w/o and w/ mic of each L and
+> +  R channel accordingly.
 
-Thanks,
-Mark
+I can't understand what this property is supposed to look like based on
+this, sorry.  What does the property actually look like, what are the
+values in it and what units are they specified in?
 
->From 32debfcd3ff0939c93238ddde03ffcc96cca5c60 Mon Sep 17 00:00:00 2001
-From: John Keeping <john@metanate.com>
-Date: Thu, 14 Sep 2017 16:58:55 +0100
-Subject: [PATCH] ASoC: rockchip: i2s: fix unbalanced clk_disable
+--a3u2svjlzjbwlkks
+Content-Type: application/pgp-signature; name="signature.asc"
 
-mclk is enabled and disabled only in i2s_runtime_{resume,suspend}() and
-we ensure that the device is runtime suspended before reaching this
-clk_disable_unprepare() call, so it is wrong to call it again here.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: John Keeping <john@metanate.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/rockchip/rockchip_i2s.c | 1 -
- 1 file changed, 1 deletion(-)
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlm6vB8ACgkQJNaLcl1U
+h9Dg2Qf8CgkAFHDZZWVf1KoLDy2UNuvyfu0d6cONbqEJGWxTwyMlZXeB00iRGTGH
+06vIIytj66BwyopitHBsUsC9MNv40ajFxjPNFqFfUBfe5YyKh+aBdt4qE3wCHZNE
+4MGWYfNxy+8f/otOHwMT/CwGtrDHvnt11peTOYTumlNs8wc+g/ek5PCug7Fp4GUY
+wf1DR4i2dsAY3Qv78GVUM60XgoMTBauBGokiQXiKpewd2jjkRY43CtuK6a9Ai/p7
+BprniW9j8/PIlVIBHhEt+w0hA720EmTnPshIuK34QWPXX+LjkDSf9i/PDQpciIvJ
+yhiSSiQ3iEt2qAqwmRwzdsEWArKu2Q==
+=UMw9
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 199338fdeda0..a7972c2d4e7b 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -694,7 +694,6 @@ static int rockchip_i2s_remove(struct platform_device *pdev)
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		i2s_runtime_suspend(&pdev->dev);
- 
--	clk_disable_unprepare(i2s->mclk);
- 	clk_disable_unprepare(i2s->hclk);
- 
- 	return 0;
--- 
-2.13.2
+--a3u2svjlzjbwlkks--
+
+--===============2951438092392610057==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2951438092392610057==--
