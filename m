@@ -1,63 +1,55 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for wm97xx Codec
-Date: Thu, 14 Sep 2017 08:43:00 +0100
-Message-ID: <20170914074300.iobuwn2hrmnf6sen@dell>
-References: <20170913193723.16234-1-robert.jarzmik@free.fr>
- <20170913193723.16234-3-robert.jarzmik@free.fr>
- <20170914074146.dnibkvom4yuzejf3@dell>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH] ALSA: compress: Remove unused variable
+Date: Thu, 14 Sep 2017 17:49:40 +0530
+Message-ID: <20170914121940.30171-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170914074146.dnibkvom4yuzejf3@dell>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45592266BCA
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 14:19:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 14 Sep 2017, Lee Jones wrote:
+Commit 04c5d5a430fc ("ALSA: compress: Embed struct device") removed
+the statement that used 'str' but didn't remove the variable itself.
+So remove it.
 
-> On Wed, 13 Sep 2017, Robert Jarzmik wrote:
-> 
-> > The WM9705, WM9712 and WM9713 are highly integrated codecs, with an
-> > audio codec, DAC and ADC, GPIO unit and a touchscreen interface.
-> > 
-> > Historically the support was spread across drivers/input/touchscreen and
-> > sound/soc/codecs. The sharing was done through ac97 bus sharing. This
-> > model will not withstand the new AC97 bus model, where codecs are
-> > discovered on runtime.
-> > 
-> > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> > Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> > Acked-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> > Since v3:
-> >  - added a "depends on AC97_BUS_NEW" Kconfig statement
-> >  - added default values for wm9705, wm9712 per Charles's comment
-> > Since v4:
-> >  - added Charles's ack
-> > Since v5:
-> >  - took into account Lee's comments
-> > Since v6:
-> >  - took into account Lee's comments
-> > ---
-> >  drivers/mfd/Kconfig        |  14 ++
-> >  drivers/mfd/Makefile       |   1 +
-> >  drivers/mfd/wm97xx-core.c  | 366 +++++++++++++++++++++++++++++++++++++++++++++
-> >  include/linux/mfd/wm97xx.h |  25 ++++
-> >  4 files changed, 406 insertions(+)
-> >  create mode 100644 drivers/mfd/wm97xx-core.c
-> >  create mode 100644 include/linux/mfd/wm97xx.h
-> 
-> Applied, thanks.
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ sound/core/compress_offload.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Change of plan.  It looks like there are deps.
-
-Unapplied.
-
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index fec1dfdb14ad..4490a699030b 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -948,14 +948,13 @@ static const struct file_operations snd_compr_file_ops = {
+ static int snd_compress_dev_register(struct snd_device *device)
+ {
+ 	int ret = -EINVAL;
+-	char str[16];
+ 	struct snd_compr *compr;
+ 
+ 	if (snd_BUG_ON(!device || !device->device_data))
+ 		return -EBADFD;
+ 	compr = device->device_data;
+ 
+-	pr_debug("reg %s for device %s, direction %d\n", str, compr->name,
++	pr_debug("reg device %s, direction %d\n", compr->name,
+ 			compr->direction);
+ 	/* register compressed device */
+ 	ret = snd_register_device(SNDRV_DEVICE_TYPE_COMPRESS,
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.14.1
