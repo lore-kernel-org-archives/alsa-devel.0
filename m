@@ -1,10 +1,12 @@
 From: Ryan Lee <ryans.lee@maximintegrated.com>
 Subject: [PATCH 1/2] ASoC: max98927: Added support for DSP_A and DSP_B format
-Date: Thu, 14 Sep 2017 17:30:36 -0700
-Message-ID: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
+Date: Thu, 14 Sep 2017 17:30:38 -0700
+Message-ID: <1505435439-18012-3-git-send-email-ryans.lee@maximintegrated.com>
+References: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: ryan.lee.maxim@gmail.com
@@ -12,6 +14,13 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
+Changelog:
+Modified copyright date
+Added support for DSP_A and DSP_B format.
+Added 'use_pdm' variable to distinguish configuration for pcm and pdm.
+Maxim's TDM_MODE1 is matched with DSP_A
+Maxim's TDM_MODE0 is matched with DSP_B
+
  sound/soc/codecs/max98927.c | 35 ++++++++++++++++++++---------------
  sound/soc/codecs/max98927.h |  6 ++++--
  2 files changed, 24 insertions(+), 17 deletions(-)
