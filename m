@@ -1,17 +1,22 @@
-From: anish kumar <yesanishhere@gmail.com>
-Subject: [PATCH 4/4] ASoC: dapm: Remove the redundant check
-Date: Thu, 14 Sep 2017 22:03:22 -0700
-Message-ID: <CABCoZhAjqV=B7ouWuD8J_5ZKinisCy-w4WYA2+qNK57SThMrRw@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: "alsactl store" fails to save Echo Gina3G mixer
+Date: Fri, 15 Sep 2017 14:21:57 +0900
+Message-ID: <4464e5e9-9ce2-3d94-d9ab-3aae6e0b94bd@sakamocchi.jp>
+References: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
+ <1fa01cef-7159-b1b2-8ec6-5eab7f2a7e29@sakamocchi.jp>
+ <7ef92b65-ef37-1a68-b1d8-e3a747859200@gmail.com>
+ <e59f34a8-0999-c552-00e0-3d20a0721d3f@sakamocchi.jp>
+ <1709042113040.5915@beth.localdomain>
+ <d4b1b2e2-687a-a9fc-4244-9ca54d709f60@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f68.google.com (mail-vk0-f68.google.com
- [209.85.213.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B334267276
- for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2017 07:03:23 +0200 (CEST)
-Received: by mail-vk0-f68.google.com with SMTP id w23so327883vkw.3
- for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 22:03:23 -0700 (PDT)
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 98552266B20
+ for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2017 07:22:00 +0200 (CEST)
+In-Reply-To: <d4b1b2e2-687a-a9fc-4244-9ca54d709f60@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "broonie@kernel.org" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, perex@perex.cz, tiwai@suse.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: "S. Christian Collins" <s.chriscollins@gmail.com>, Mark Hills <mark@xwax.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: anish kumar <yesanishhere@gmail.com>
+Hi,
 
-Remove this redundant check, the check for
-creating the control in the case of codec to codec
-dai link is moved to snd_soc_dapm_new_pcm function.
+On Sep 14 2017 22:40, S. Christian Collins wrote:
+> Takashi, is there anything else you would like me to do to help with 
+> this issue? Should it perhaps be filed on the bug tracker so it doesn't 
+> get lost in this list?
 
-Signed-off-by: anish kumar <yesanishhere@gmail.com>
----
- sound/soc/soc-dapm.c | 4 ----
- 1 file changed, 4 deletions(-)
+Sorry to be late for reaction, but we're on merge window for v4.14 and I 
+keep my time for unexpected accidents such as this[1]. I'd like to 
+postpone this discussion after closing the window, a few days later.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 3c493b3..fcad345 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1032,10 +1032,6 @@ static int dapm_new_dai_link(struct
-snd_soc_dapm_widget *w)
-        struct snd_soc_dapm_context *dapm = w->dapm;
-        struct snd_card *card = dapm->card->snd_card;
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125474.html
 
--       /* create control for links with > 1 config */
--       if (w->num_params <= 1)
--               return 0;
--
-        /* add kcontrol */
-        for (i = 0; i < w->num_kcontrols; i++) {
-                kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
---
-2.5.4 (Apple Git-61)
+Thanks for your patience.
+
+Takashi Sakamoto
