@@ -1,199 +1,151 @@
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Subject: [PATCH 2/2] ASoC: max98927: Added max98927_dai_tdm_slot function
-Date: Thu, 14 Sep 2017 17:30:37 -0700
-Message-ID: <1505435439-18012-2-git-send-email-ryans.lee@maximintegrated.com>
-References: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
+From: Hsin-Yu Chao <hychao@chromium.org>
+Subject: [PATCH] ASoC: rt5514: Revert Hotword Model control
+Date: Fri, 15 Sep 2017 12:32:00 +0800
+Message-ID: <20170915043200.9373-1-hychao@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: ryan.lee.maxim@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f47.google.com (mail-pg0-f47.google.com [74.125.83.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D3C4267239
+ for <alsa-devel@alsa-project.org>; Fri, 15 Sep 2017 06:32:09 +0200 (CEST)
+Received: by mail-pg0-f47.google.com with SMTP id j70so858961pgc.10
+ for <alsa-devel@alsa-project.org>; Thu, 14 Sep 2017 21:32:08 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Hsin-Yu Chao <hychao@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+This reverts commit eb33869c7206 ("ASoC: rt5514: Guard Hotword Model bytes
+loading") and commit d18420b0a0b8 ("ASoC: rt5514: expose Hotword Model
+control")
+
+It is discouraged to use SND_SOC_BYTES_TLV to load arbitrary bytes from
+userspace to driver. Removing the 'Hotword Model' control until we have
+a good way to verify the content of hotword model blobs.
+
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
 ---
-Changelog:
-Added 'max98927_dai_tdm_slot' function to set proper slot configuration.
-Added variable 'tdm_mode' to avoid BCLK overwrite after 'max98927_dai_tdm_slot' configure BCLK value.
- :BCLK value is being set inside 'max98927_dai_tdm_slot' function when it is tdm mode because number of slots and slot width information is available here.
- :'max98927_set_clock' is called from hw_params and slot information is not available in this function so it can overwrite BCLK value.
- :Variable 'tdm_mode' will be cleared after SND_SOC_DAPM_POST_PMD event is recieved.
-Added 'max98927_get_bclk_sel' to avoid code duplication and support BCLK up to 512.	
+ sound/soc/codecs/rt5514.c | 63 -----------------------------------------------
+ sound/soc/codecs/rt5514.h |  3 ---
+ 2 files changed, 66 deletions(-)
 
- sound/soc/codecs/max98927.c | 118 ++++++++++++++++++++++++++++++++++++++------
- sound/soc/codecs/max98927.h |   1 +
- 2 files changed, 103 insertions(+), 16 deletions(-)
-
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 6f7b3ef..116cb9b 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -250,6 +250,21 @@ static const int rate_table[] = {
- 	13000000, 19200000,
- };
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 250581082e9d..a2722177470e 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -335,39 +335,6 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
+ 				fw = NULL;
+ 			}
  
-+/* BCLKs per LRCLK */
-+static const int bclk_sel_table[] = {
-+	32, 48, 64, 96, 128, 192, 256, 384, 512,
-+};
-+
-+static int max98927_get_bclk_sel(int bclk)
-+{
-+	int i;
-+	/* match BCLKs per LRCLK */
-+	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
-+		if (bclk_sel_table[i] == bclk)
-+			return i + 2;
-+	}
-+	return 0;
-+}
- static int max98927_set_clock(struct max98927_priv *max98927,
- 	struct snd_pcm_hw_params *params)
- {
-@@ -275,23 +290,20 @@ static int max98927_set_clock(struct max98927_priv *max98927,
- 			i << MAX98927_PCM_MASTER_MODE_MCLK_RATE_SHIFT);
- 	}
- 
--	switch (blr_clk_ratio) {
--	case 32:
--		value = 2;
--		break;
--	case 48:
--		value = 3;
--		break;
--	case 64:
--		value = 4;
--		break;
--	default:
--		return -EINVAL;
-+	if (!max98927->tdm_mode) {
-+		/* BCLK configuration */
-+		value = max98927_get_bclk_sel(blr_clk_ratio);
-+		if (!value) {
-+			dev_err(codec->dev, "format unsupported %d\n",
-+				params_format(params));
-+			return -EINVAL;
-+		}
-+
-+		regmap_update_bits(max98927->regmap,
-+			MAX98927_R0022_PCM_CLK_SETUP,
-+			MAX98927_PCM_CLK_SETUP_BSEL_MASK,
-+			value);
- 	}
--	regmap_update_bits(max98927->regmap,
--		MAX98927_R0022_PCM_CLK_SETUP,
--		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
--		value);
+-			if (rt5514->model_buf && rt5514->model_len) {
+-#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
+-				int ret;
+-
+-				ret = rt5514_spi_burst_write(0x4ff80000,
+-					rt5514->model_buf,
+-					((rt5514->model_len / 8) + 1) * 8);
+-				if (ret) {
+-					dev_err(codec->dev,
+-						"Model load failed %d\n", ret);
+-					return ret;
+-				}
+-#else
+-				dev_err(codec->dev,
+-					"No SPI driver for loading firmware\n");
+-#endif
+-			} else {
+-				request_firmware(&fw, RT5514_FIRMWARE3,
+-						 codec->dev);
+-				if (fw) {
+-#if IS_ENABLED(CONFIG_SND_SOC_RT5514_SPI)
+-					rt5514_spi_burst_write(0x4ff80000,
+-						fw->data,
+-						((fw->size/8)+1)*8);
+-#else
+-					dev_err(codec->dev,
+-						"No SPI driver to load fw\n");
+-#endif
+-					release_firmware(fw);
+-					fw = NULL;
+-				}
+-			}
+-
+ 			/* DSP run */
+ 			regmap_write(rt5514->i2c_regmap, 0x18002f00,
+ 				0x00055148);
+@@ -382,34 +349,6 @@ static int rt5514_dsp_voice_wake_up_put(struct snd_kcontrol *kcontrol,
  	return 0;
  }
  
-@@ -391,6 +403,78 @@ static int max98927_dai_hw_params(struct snd_pcm_substream *substream,
- 	return -EINVAL;
- }
- 
-+static int max98927_dai_tdm_slot(struct snd_soc_dai *dai,
-+	unsigned int tx_mask, unsigned int rx_mask,
-+	int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
-+	int bsel = 0;
-+	unsigned int chan_sz = 0;
-+
-+	max98927->tdm_mode = true;
-+
-+	/* BCLK configuration */
-+	bsel = max98927_get_bclk_sel(slots * slot_width);
-+	if (bsel == 0) {
-+		dev_err(codec->dev, "BCLK %d not supported\n",
-+			slots * slot_width);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98927->regmap,
-+		MAX98927_R0022_PCM_CLK_SETUP,
-+		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
-+		bsel);
-+
-+	/* Channel size configuration */
-+	switch (slot_width) {
-+	case 16:
-+		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(codec->dev, "format unsupported %d\n",
-+			slot_width);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(max98927->regmap,
-+		MAX98927_R0020_PCM_MODE_CFG,
-+		MAX98927_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	/* Rx slot configuration */
-+	regmap_write(max98927->regmap,
-+		MAX98927_R0018_PCM_RX_EN_A,
-+		rx_mask & 0xFF);
-+	regmap_write(max98927->regmap,
-+		MAX98927_R0019_PCM_RX_EN_B,
-+		(rx_mask & 0xFF00) >> 8);
-+
-+	/* Tx slot configuration */
-+	regmap_write(max98927->regmap,
-+		MAX98927_R001A_PCM_TX_EN_A,
-+		tx_mask & 0xFF);
-+	regmap_write(max98927->regmap,
-+		MAX98927_R001B_PCM_TX_EN_B,
-+		(tx_mask & 0xFF00) >> 8);
-+
-+	/* Tx slot Hi-Z configuration */
-+	regmap_write(max98927->regmap,
-+		MAX98927_R001C_PCM_TX_HIZ_CTRL_A,
-+		~tx_mask & 0xFF);
-+	regmap_write(max98927->regmap,
-+		MAX98927_R001D_PCM_TX_HIZ_CTRL_B,
-+		(~tx_mask & 0xFF00) >> 8);
-+
-+	return 0;
-+}
-+
- #define MAX98927_RATES SNDRV_PCM_RATE_8000_48000
- 
- #define MAX98927_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-@@ -410,6 +494,7 @@ static const struct snd_soc_dai_ops max98927_dai_ops = {
- 	.set_sysclk = max98927_dai_set_sysclk,
- 	.set_fmt = max98927_dai_set_fmt,
- 	.hw_params = max98927_dai_hw_params,
-+	.set_tdm_slot = max98927_dai_tdm_slot,
+-static int rt5514_hotword_model_put(struct snd_kcontrol *kcontrol,
+-		const unsigned int __user *bytes, unsigned int size)
+-{
+-	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+-	struct rt5514_priv *rt5514 = snd_soc_component_get_drvdata(component);
+-	struct snd_soc_codec *codec = rt5514->codec;
+-	int ret = 0;
+-
+-	if (rt5514->model_buf || rt5514->model_len < size) {
+-		if (rt5514->model_buf)
+-			devm_kfree(codec->dev, rt5514->model_buf);
+-		rt5514->model_buf = devm_kmalloc(codec->dev, size, GFP_KERNEL);
+-		if (!rt5514->model_buf) {
+-			ret = -ENOMEM;
+-			goto done;
+-		}
+-	}
+-
+-	/* Skips the TLV header. */
+-	bytes += 2;
+-
+-	if (copy_from_user(rt5514->model_buf, bytes, size))
+-		ret = -EFAULT;
+-done:
+-	rt5514->model_len = (ret ? 0 : size);
+-	return ret;
+-}
+-
+ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("MIC Boost Volume", RT5514_ANA_CTRL_MICBST,
+ 		RT5514_SEL_BSTL_SFT, RT5514_SEL_BSTR_SFT, 8, 0, bst_tlv),
+@@ -421,8 +360,6 @@ static const struct snd_kcontrol_new rt5514_snd_controls[] = {
+ 		adc_vol_tlv),
+ 	SOC_SINGLE_EXT("DSP Voice Wake Up", SND_SOC_NOPM, 0, 1, 0,
+ 		rt5514_dsp_voice_wake_up_get, rt5514_dsp_voice_wake_up_put),
+-	SND_SOC_BYTES_TLV("Hotword Model", 0x8504,
+-		NULL, rt5514_hotword_model_put),
  };
  
- static int max98927_dac_event(struct snd_soc_dapm_widget *w,
-@@ -434,6 +519,7 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R003A_AMP_EN,
- 			MAX98927_AMP_EN_MASK, 0);
-+		max98927->tdm_mode = 0;
- 		break;
- 	default:
- 		return 0;
-diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
-index bf7a6f92..9ea8397 100644
---- a/sound/soc/codecs/max98927.h
-+++ b/sound/soc/codecs/max98927.h
-@@ -270,5 +270,6 @@ struct max98927_priv {
- 	unsigned int iface;
- 	unsigned int master;
- 	unsigned int digital_gain;
-+	bool tdm_mode;
+ /* ADC Mixer*/
+diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
+index 07475a9918d2..02bc212a86d9 100644
+--- a/sound/soc/codecs/rt5514.h
++++ b/sound/soc/codecs/rt5514.h
+@@ -236,7 +236,6 @@
+ 
+ #define RT5514_FIRMWARE1	"rt5514_dsp_fw1.bin"
+ #define RT5514_FIRMWARE2	"rt5514_dsp_fw2.bin"
+-#define RT5514_FIRMWARE3	"rt5514_dsp_fw3.bin"
+ 
+ /* System Clock Source */
+ enum {
+@@ -263,8 +262,6 @@ struct rt5514_priv {
+ 	int pll_in;
+ 	int pll_out;
+ 	int dsp_enabled;
+-	u8 *model_buf;
+-	unsigned int model_len;
  };
- #endif
+ 
+ #endif /* __RT5514_H__ */
 -- 
-2.7.4
+2.12.2
