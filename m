@@ -1,72 +1,131 @@
-From: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Subject: RE: [PATCH 1/3] ASoC: max98927: Added support for DSP_A and DSP_B
- format
-Date: Fri, 15 Sep 2017 00:30:13 +0000
-Message-ID: <SN1PR11MB08476B6890CBC614DE9FB886E76C0@SN1PR11MB0847.namprd11.prod.outlook.com>
-References: <1505146339-19380-1-git-send-email-ryans.lee@maximintegrated.com>
- <20170914184949.enuziddz27polfyf@sirena.org.uk>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Subject: [PATCH 1/2] ASoC: max98927: Added support for DSP_A and DSP_B format
+Date: Thu, 14 Sep 2017 17:30:36 -0700
+Message-ID: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170914184949.enuziddz27polfyf@sirena.org.uk>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
->-----Original Message-----
->From: Mark Brown [mailto:broonie@kernel.org]
->Sent: Thursday, September 14, 2017 11:50 AM
->To: Ryan Lee <RyanS.Lee@maximintegrated.com>
->Cc: lgirdwood@gmail.com; perex@perex.cz; tiwai@suse.com;
->kuninori.morimoto.gx@renesas.com; alsa-devel@alsa-project.org; linux-
->kernel@vger.kernel.org; ryan.lee.maxim@gmail.com
->Subject: Re: [PATCH 1/3] ASoC: max98927: Added support for DSP_A and
->DSP_B format
->
->On Mon, Sep 11, 2017 at 09:12:18AM -0700, Ryan Lee wrote:
->> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
->> ---
->
->Please make an effort to write changelogs that clearly describe the change
->you're making.  This is doing way more than just implementing DSP mode, it=
-'s
->also adding a fairly complicated set_tdm_slot() implementation which isn't
->mentioned at all.  It probably needs splitting into multiple patches as we=
-ll.
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+---
+ sound/soc/codecs/max98927.c | 35 ++++++++++++++++++++---------------
+ sound/soc/codecs/max98927.h |  6 ++++--
+ 2 files changed, 24 insertions(+), 17 deletions(-)
 
-I split this patch as two separated patches and sent again.
-One is about adding DSP_A, DSP_B support.
-Another is about TDM slot configuration.
-I added more changelog inside.
-
->
->> @@ -414,6 +504,9 @@ static int max98927_dac_event(struct
->snd_soc_dapm_widget *w,
->>  	struct max98927_priv *max98927 =3D
->snd_soc_codec_get_drvdata(codec);
->>
->>  	switch (event) {
->> +	case SND_SOC_DAPM_PRE_PMU:
->> +		max98927->tdm_mode =3D 0;
->> +		break;
->>  	case SND_SOC_DAPM_POST_PMU:
->>  		regmap_update_bits(max98927->regmap,
->>  			MAX98927_R003A_AMP_EN,
->
->Why is an event associated with the DAC changing something related to the =
-DAI
->format?  These things should be unrelated.
-
-In TDM mode, BCLK is being configured inside 'max98927_dai_tdm_slot' becaus=
-e TDM slot information(number of slots, slot width) is available in there.
-In normal case, BCLK is being configured when 'hw_params' is called and TDM=
- slot information is not available in this function.
-So I added 'tdm_mode' variable to avoid overwrite BCLK configuration when '=
-hw_params' function is called after TDM slot configuration is done.
-I wanted to clear this variable once playback is over so I added clear func=
-tion when DAPM event is received.
-I referred some codec driver change TDM related things when DAC event is re=
-ceived after TDM slot configuration is done.
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index d9dbbe7..6f7b3ef 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -1,7 +1,7 @@
+ /*
+  * max98927.c  --  MAX98927 ALSA Soc Audio driver
+  *
+- * Copyright (C) 2016 Maxim Integrated Products
++ * Copyright (C) 2016-2017 Maxim Integrated Products
+  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+@@ -146,6 +146,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int mode = 0;
+ 	unsigned int format = 0;
++	bool use_pdm = false;
+ 	unsigned int invert = 0;
+ 
+ 	dev_dbg(codec->dev, "%s: fmt 0x%08X\n", __func__, fmt);
+@@ -187,22 +188,27 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		max98927->iface |= SND_SOC_DAIFMT_I2S;
+ 		format = MAX98927_PCM_FORMAT_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		max98927->iface |= SND_SOC_DAIFMT_LEFT_J;
+ 		format = MAX98927_PCM_FORMAT_LJ;
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		format = MAX98927_PCM_FORMAT_TDM_MODE1;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		format = MAX98927_PCM_FORMAT_TDM_MODE0;
++		break;
+ 	case SND_SOC_DAIFMT_PDM:
+-		max98927->iface |= SND_SOC_DAIFMT_PDM;
++		use_pdm = true;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
++	max98927->iface = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
+-	/* pcm channel configuration */
+-	if (max98927->iface & (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J)) {
++	if (!use_pdm) {
++		/* pcm channel configuration */
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R0018_PCM_RX_EN_A,
+ 			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN,
+@@ -217,13 +223,11 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 			MAX98927_R003B_SPK_SRC_SEL,
+ 			MAX98927_SPK_SRC_MASK, 0);
+ 
+-	} else
+ 		regmap_update_bits(max98927->regmap,
+-			MAX98927_R0018_PCM_RX_EN_A,
+-			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
+-
+-	/* pdm channel configuration */
+-	if (max98927->iface & SND_SOC_DAIFMT_PDM) {
++			MAX98927_R0035_PDM_RX_CTRL,
++			MAX98927_PDM_RX_EN_MASK, 0);
++	} else {
++		/* pdm channel configuration */
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R0035_PDM_RX_CTRL,
+ 			MAX98927_PDM_RX_EN_MASK, 1);
+@@ -231,10 +235,11 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R003B_SPK_SRC_SEL,
+ 			MAX98927_SPK_SRC_MASK, 3);
+-	} else
++
+ 		regmap_update_bits(max98927->regmap,
+-			MAX98927_R0035_PDM_RX_CTRL,
+-			MAX98927_PDM_RX_EN_MASK, 0);
++			MAX98927_R0018_PCM_RX_EN_A,
++			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+index ece6a60..bf7a6f92 100644
+--- a/sound/soc/codecs/max98927.h
++++ b/sound/soc/codecs/max98927.h
+@@ -1,7 +1,7 @@
+ /*
+  * max98927.h  --  MAX98927 ALSA Soc Audio driver
+  *
+- * Copyright 2013-15 Maxim Integrated Products
++ * Copyright (C) 2016-2017 Maxim Integrated Products
+  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+@@ -161,7 +161,9 @@
+ #define MAX98927_PCM_MODE_CFG_FORMAT_SHIFT (3)
+ #define MAX98927_PCM_FORMAT_I2S (0x0 << 0)
+ #define MAX98927_PCM_FORMAT_LJ (0x1 << 0)
+-
++#define MAX98927_PCM_FORMAT_TDM_MODE0 (0x3 << 0)
++#define MAX98927_PCM_FORMAT_TDM_MODE1 (0x4 << 0)
++#define MAX98927_PCM_FORMAT_TDM_MODE2 (0x5 << 0)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_MASK (0x3 << 6)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_16 (0x1 << 6)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_24 (0x2 << 6)
+-- 
+2.7.4
