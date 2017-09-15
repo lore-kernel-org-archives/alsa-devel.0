@@ -1,7 +1,7 @@
 From: Ryan Lee <ryans.lee@maximintegrated.com>
 Subject: [PATCH 2/2] ASoC: max98927: Added max98927_dai_tdm_slot function
-Date: Thu, 14 Sep 2017 17:30:39 -0700
-Message-ID: <1505435439-18012-4-git-send-email-ryans.lee@maximintegrated.com>
+Date: Thu, 14 Sep 2017 17:30:37 -0700
+Message-ID: <1505435439-18012-2-git-send-email-ryans.lee@maximintegrated.com>
 References: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -14,12 +14,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
- sound/soc/codecs/max98927.c | 120 ++++++++++++++++++++++++++++++++++++++------
+Changelog:
+Added 'max98927_dai_tdm_slot' function to set proper slot configuration.
+Added variable 'tdm_mode' to avoid BCLK overwrite after 'max98927_dai_tdm_slot' configure BCLK value.
+ :BCLK value is being set inside 'max98927_dai_tdm_slot' function when it is tdm mode because number of slots and slot width information is available here.
+ :'max98927_set_clock' is called from hw_params and slot information is not available in this function so it can overwrite BCLK value.
+ :Variable 'tdm_mode' will be cleared after SND_SOC_DAPM_POST_PMD event is recieved.
+Added 'max98927_get_bclk_sel' to avoid code duplication and support BCLK up to 512.	
+
+ sound/soc/codecs/max98927.c | 118 ++++++++++++++++++++++++++++++++++++++------
  sound/soc/codecs/max98927.h |   1 +
- 2 files changed, 105 insertions(+), 16 deletions(-)
+ 2 files changed, 103 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 6f7b3ef..a1d3935 100644
+index 6f7b3ef..116cb9b 100644
 --- a/sound/soc/codecs/max98927.c
 +++ b/sound/soc/codecs/max98927.c
 @@ -250,6 +250,21 @@ static const int rate_table[] = {
@@ -168,16 +176,14 @@ index 6f7b3ef..a1d3935 100644
  };
  
  static int max98927_dac_event(struct snd_soc_dapm_widget *w,
-@@ -419,6 +504,9 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
- 	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
- 
- 	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		max98927->tdm_mode = 0;
-+		break;
- 	case SND_SOC_DAPM_POST_PMU:
+@@ -434,6 +519,7 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
  		regmap_update_bits(max98927->regmap,
  			MAX98927_R003A_AMP_EN,
+ 			MAX98927_AMP_EN_MASK, 0);
++		max98927->tdm_mode = 0;
+ 		break;
+ 	default:
+ 		return 0;
 diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
 index bf7a6f92..9ea8397 100644
 --- a/sound/soc/codecs/max98927.h
