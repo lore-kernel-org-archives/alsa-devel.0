@@ -1,35 +1,41 @@
-From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux-CoA6ZxLDdyEEUmgCuDUIdw@public.gmane.org>
-Subject: [PATCH] sound: tegra20-spdif: remove "default m"
-Date: Sun, 17 Sep 2017 17:15:04 +0200
-Message-ID: <c765842d4cc6af91ae0d6977922e6ae6f6e1dfa8.1505661134.git.mirq-linux@rere.qmqm.pl>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [RESENT PATCH v9 1/2] ASoC: rt5514: Add devicetree bindings for
+ rt5514-spi
+Date: Mon, 18 Sep 2017 09:22:21 +0800
+Message-ID: <59BF1FCD.3060501@rock-chips.com>
+References: <20170906025010.10750-1-jeffy.chen@rock-chips.com> <20170913172452.rqy2umufkuh26fzj@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170913172452.rqy2umufkuh26fzj@rob-hp-laptop>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Default != n for drivers is frowned upon. This is the only one among
-tegra sound drivers that was different.
+Hi Rob,
 
-Signed-off-by: Michał Mirosław <mirq-linux-CoA6ZxLDdyEEUmgCuDUIdw@public.gmane.org>
----
- sound/soc/tegra/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+Thanks for your reply.
 
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index 6875fc39a575..6c893c677110 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -38,7 +38,6 @@ config SND_SOC_TEGRA20_I2S
- config SND_SOC_TEGRA20_SPDIF
- 	tristate "Tegra20 SPDIF interface"
- 	depends on SND_SOC_TEGRA
--	default m
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
- 	  You will also need to select the individual machine drivers to support
--- 
-2.11.0
+On 09/14/2017 01:24 AM, Rob Herring wrote:
+> On Wed, Sep 06, 2017 at 10:50:09AM +0800, Jeffy Chen wrote:
+>> diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+>> index 929ca6756b02..841a1159e234 100644
+>> --- a/Documentation/devicetree/bindings/sound/rt5514.txt
+>> +++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+>> @@ -4,7 +4,7 @@ This device supports I2C only.
+>
+> SPI support should be added to this document.
+ok, will do.
+>
+>>
+>>   Required properties:
+>>
+>> -- compatible : "realtek,rt5514".
+>> +- compatible : "realtek,rt5514" or "realtek,rt5514", "realtek,rt5514-i2c".
+>
+> There's no need for the -spi or -i2c compatibles. This is implied by
+> being a child of those controllers.
+heiko mentioned i should add it in the binding in:
+https://patchwork.kernel.org/patch/9918987/
