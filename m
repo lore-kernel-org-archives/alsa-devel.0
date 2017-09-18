@@ -1,38 +1,77 @@
-From: Chintan Patel <chintan.m.patel@intel.com>
-Subject: [PATCH] ASoC: Intel: Skylake: Fix jack name format substitution
-Date: Mon, 18 Sep 2017 08:43:18 -0700
-Message-ID: <1505749403-31346-1-git-send-email-chintan.m.patel@intel.com>
-References: <y>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <y>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: harshapriya.n@intel.com, naveen.m@intel.com, Chintan Patel <chintan.m.patel@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, Hsin-yu Chao <hychao@google.com>, Jeeja KP <jeeja.kp@intel.com>, Julia Lawall <Julia.Lawall@lip6.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 3/7] ASoC: Intel: cht_bsw_max98090: add
+ support for Baytrail
+Date: Mon, 18 Sep 2017 12:14:17 -0500
+Message-ID: <37e5b151-f556-aaa3-ff34-877de72d6347@linux.intel.com>
+References: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
+ <20170908051309.19028-4-pierre-louis.bossart@linux.intel.com>
+ <1505719053.25945.269.camel@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7733E266DBB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2017 19:14:24 +0200 (CEST)
+In-Reply-To: <1505719053.25945.269.camel@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Jack name is not getting formatted correctly hence resulting
-in invalid name for HDMI/DP input devices.
+On 9/18/17 2:17 AM, Andy Shevchenko wrote:
+> On Fri, 2017-09-08 at 00:13 -0500, Pierre-Louis Bossart wrote:
+>> Distributions such as Fedora, Ubuntu and Gallium don't currently
+>> have a means to support Baytrail Chromebooks and other platforms
+>> with the same build [1][2] due to incompatible platform drivers.
+>>
+>> Add MCLK management to reuse this machine driver for Baytrail
+>> platforms and solve this coexistence problem at last. UCM files are
+>> provided at [3] and will eventually be submitted to the new repo.
+>>
+>> The legacy byt-max98090 machine driver is still maintained but can
+>> only be used when the other Atom/DPCM driver is not compiled in, or
+>> when users don't want to configure extra mixers required by the
+>> Atom/sst driver.
+>>
+>> Tested on Lenovo 100s Baytrail Chromebook w/ Mr. Chromebox BOOT_STUB
+>> firmware and Acer R11 Cherrytrail Chromebook
+>>
+>> [1] https://bugzilla.redhat.com/show_bug.cgi?id=1335196
+>> [2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/
+>> 111641.html
+>> [3] https://github.com/plbossart/UCM/tree/master/byt-max98090
+>>
+>>
+> 
+>>   
+>> +static inline struct snd_soc_dai *cht_get_codec_dai(struct
+>> snd_soc_card *card)
+>> +{
+>> +	struct snd_soc_pcm_runtime *rtd;
+>> +
+>> +	list_for_each_entry(rtd, &card->rtd_list, list) {
+>> +		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
+>> +			     strlen(CHT_CODEC_DAI)))
+> 
+> Same comments as per another patch series wrt str_n_cmp() use.
 
-This was recently exposed due changes brought by MST:
-commit 3a13347f05fd ("ASoC: Intel: kbl: Add jack port initialize
-in kbl machine drivers")
+Yes, if that's alright with you I'll clean this up in all Intel machine 
+drivers in one patch since this is all copy-paste. I just need a clear 
+indication on what the preferred means of string comparisons is...
 
-Signed-off-by: Chintan Patel <chintan.m.patel@intel.com>
----
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 4689991bcc86..c127b7b0ee3f 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -611,6 +611,8 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
- 		codec = pcm->codec_dai->codec;
-+		snprintf(jack_name, sizeof(jack_name),
-+			"HDMI/DP, pcm=%d Jack", pcm->device);
- 		err = snd_soc_card_jack_new(card, jack_name,
- 				SND_JACK_AVOUT, &ctx->kabylake_hdmi[i],
- 				NULL, 0);
--- 
-1.9.1
+> 
+>> +			return rtd->codec_dai;
+>> +	}
+>> +	return NULL;
+> 
+> 
