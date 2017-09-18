@@ -1,66 +1,47 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: qcom: remove duplicate initializations
-	of dma_ch and v
-Date: Mon, 18 Sep 2017 10:26:03 +0100
-Message-ID: <20170918092603.27613-1-colin.king@canonical.com>
+From: Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [RESENT PATCH v9 1/2] ASoC: rt5514: Add devicetree bindings for rt5514-spi
+Date: Mon, 18 Sep 2017 11:30:17 +0200
+Message-ID: <1972340.u0BEiYTrvM@phil>
+References: <20170906025010.10750-1-jeffy.chen@rock-chips.com> <20170913172452.rqy2umufkuh26fzj@rob-hp-laptop> <59BF1FCD.3060501@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EF692668F0
- for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2017 11:26:10 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <59BF1FCD.3060501@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: jeffy <jeffy.chen@rock-chips.com>
+Cc: Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, dgreid@chromium.org, briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi Jeffy,
 
-dma_ch is being initialized to zero and then immediately afterwards
-being updated again, so the first initialization is redundant and
-can be remove.
+Am Montag, 18. September 2017, 09:22:21 CEST schrieb jeffy:
+> On 09/14/2017 01:24 AM, Rob Herring wrote:
+> > On Wed, Sep 06, 2017 at 10:50:09AM +0800, Jeffy Chen wrote:
+> >> diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+> >> index 929ca6756b02..841a1159e234 100644
+> >> --- a/Documentation/devicetree/bindings/sound/rt5514.txt
+> >> +++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+> >> @@ -4,7 +4,7 @@ This device supports I2C only.
+> >
+> > SPI support should be added to this document.
+> ok, will do.
+> >
+> >>
+> >>   Required properties:
+> >>
+> >> -- compatible : "realtek,rt5514".
+> >> +- compatible : "realtek,rt5514" or "realtek,rt5514", "realtek,rt5514-i2c".
+> >
+> > There's no need for the -spi or -i2c compatibles. This is implied by
+> > being a child of those controllers.
+> heiko mentioned i should add it in the binding in:
+> https://patchwork.kernel.org/patch/9918987/
 
-Likewise, the pointer v is being initialized twice, so remove the second
-duplicate initialization.
+If you add a new compatible you need to add it to the binding. I think what
+Rob means is, that both the i2c and spi side can have the _same_
+compatible without the -i2c or -spi, as you can check wether they are
+children of either a spi or i2c controller in the code itself.
 
-Cleans up two clang build warnings:
-warning: Value stored to 'dma_ch' is never read
-warning: Value stored to 'v' during its initialization is never read
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/qcom/lpass-platform.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index e1945e1772cd..caf71aab8196 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -74,7 +74,6 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
- 	data->i2s_port = cpu_dai->driver->id;
- 	runtime->private_data = data;
- 
--	dma_ch = 0;
- 	if (v->alloc_dma_channel)
- 		dma_ch = v->alloc_dma_channel(drvdata, dir);
- 	else
-@@ -122,7 +121,6 @@ static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
- 	struct lpass_pcm_data *data;
- 
- 	data = runtime->private_data;
--	v = drvdata->variant;
- 	drvdata->substream[data->dma_ch] = NULL;
- 	if (v->free_dma_channel)
- 		v->free_dma_channel(drvdata, data->dma_ch);
--- 
-2.14.1
+Heiko
