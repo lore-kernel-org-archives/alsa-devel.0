@@ -1,45 +1,47 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 6/7] ASoC: Intel: kbl: Enable mclk and ssp sclk early
-Date: Mon, 18 Sep 2017 10:26:49 +0530
-Message-ID: <1505710610-17952-7-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 7/7] ASoC: Intel: eve: Enable mclk and ssp sclk early
+Date: Mon, 18 Sep 2017 10:26:50 +0530
+Message-ID: <1505710610-17952-8-git-send-email-subhransu.s.prusty@intel.com>
 References: <1505710610-17952-1-git-send-email-subhransu.s.prusty@intel.com>
 Return-path: <linux-clk-owner@vger.kernel.org>
 In-Reply-To: <1505710610-17952-1-git-send-email-subhransu.s.prusty@intel.com>
 Sender: linux-clk-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com, patches.audio@intel.com, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, harshapriya.n@intel.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com, patches.audio@intel.com, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, harshapriya.n@intel.com, Naveen M <naveen.m@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Harsha Priya <harshapriya.n@intel.com>
+From: Naveen M <naveen.m@intel.com>
 
-rt5663 needs mclk/sclk early to synchronize its internal clocks. Enable
-these clocks early.
+rt5663 needs mclk/sclk early to synchronize its internal clocks. Clocks
+are enabled in hw_params and disabled in platform_clk_control as the codec
+requires mclk/bclk need to turned ON before set_sysclk call for a
+successful clock synchronization.
 
+Signed-off-by: Naveen M <naveen.m@intel.com>
 Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/Kconfig                      |  1 +
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 98 +++++++++++++++++++++++++++-
- 2 files changed, 98 insertions(+), 1 deletion(-)
+ sound/soc/intel/Kconfig                            |  1 +
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 97 ++++++++++++++++++++++
+ 2 files changed, 98 insertions(+)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index b9d9d692b4e3..6f05119e9df2 100644
+index 6f05119e9df2..8a29c10d4f6b 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -247,6 +247,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
- 	select SND_SOC_MAX98927
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
+@@ -259,6 +259,7 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+         depends on X86_INTEL_LPSS && I2C && SPI
+         select SND_SOC_INTEL_SST
+         select SND_SOC_INTEL_SKYLAKE
 +	select SND_SOC_INTEL_SKYLAKE_SSP_CLK
- 	help
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for RT5663 + MAX98927.
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 7f7607420706..8d15d7b25d26 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -27,6 +27,9 @@
+         select SND_SOC_RT5663
+         select SND_SOC_RT5514
+         select SND_SOC_RT5514_SPI
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 88ff54220007..ab7ae12da960 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -30,6 +30,9 @@
  #include "../../codecs/rt5663.h"
  #include "../../codecs/hdac_hdmi.h"
  #include "../skylake/skl.h"
@@ -48,18 +50,18 @@ index 7f7607420706..8d15d7b25d26 100644
 +#include <linux/clkdev.h>
  
  #define KBL_REALTEK_CODEC_DAI "rt5663-aif"
- #define KBL_MAXIM_CODEC_DAI "max98927-aif1"
-@@ -47,6 +50,8 @@ struct kbl_hdmi_pcm {
- struct kbl_rt5663_private {
+ #define KBL_REALTEK_DMIC_CODEC_DAI "rt5514-aif1"
+@@ -58,6 +61,8 @@ struct kbl_codec_private {
  	struct snd_soc_jack kabylake_headset;
  	struct list_head hdmi_pcm_list;
+ 	struct snd_soc_jack kabylake_hdmi[2];
 +	struct clk *mclk;
 +	struct clk *sclk;
  };
  
  enum {
-@@ -68,6 +73,19 @@ enum {
- 	SOC_DAPM_PIN_SWITCH("Right Spk"),
+@@ -79,6 +84,19 @@ enum {
+ 	SOC_DAPM_PIN_SWITCH("DMIC"),
  };
  
 +static int platform_clock_control(struct snd_soc_dapm_widget *w,
@@ -67,7 +69,7 @@ index 7f7607420706..8d15d7b25d26 100644
 +{
 +	struct snd_soc_dapm_context *dapm = w->dapm;
 +	struct snd_soc_card *card = dapm->card;
-+	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
++	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(card);
 +
 +	clk_disable_unprepare(priv->mclk);
 +	clk_disable_unprepare(priv->sclk);
@@ -78,37 +80,37 @@ index 7f7607420706..8d15d7b25d26 100644
  static const struct snd_soc_dapm_widget kabylake_widgets[] = {
  	SND_SOC_DAPM_HP("Headphone Jack", NULL),
  	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-@@ -77,11 +95,13 @@ enum {
+@@ -87,11 +105,14 @@ enum {
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
  	SND_SOC_DAPM_SPK("HDMI1", NULL),
  	SND_SOC_DAPM_SPK("HDMI2", NULL),
- 	SND_SOC_DAPM_SPK("HDMI3", NULL),
--
 +	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
 +			platform_clock_control, SND_SOC_DAPM_POST_PMD),
+ 
  };
  
  static const struct snd_soc_dapm_route kabylake_map[] = {
- 	/* HP jack connectors - unknown if we have jack detection */
+ 	/* Headphones */
 +	{ "Headphone Jack", NULL, "Platform Clock" },
  	{ "Headphone Jack", NULL, "HPOL" },
  	{ "Headphone Jack", NULL, "HPOR" },
  
-@@ -90,6 +110,7 @@ enum {
+@@ -100,6 +121,7 @@ enum {
  	{ "Right Spk", NULL, "Right BE_OUT" },
  
  	/* other jacks */
 +	{ "Headset Mic", NULL, "Platform Clock" },
  	{ "IN1P", NULL, "Headset Mic" },
  	{ "IN1N", NULL, "Headset Mic" },
- 	{ "DMic", NULL, "SoC DMIC" },
-@@ -352,13 +373,59 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+@@ -324,13 +346,59 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
 +static int kabylake_enable_ssp_clks(struct snd_soc_card *card)
 +{
 +
-+	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
++	struct kbl_codec_private *priv = snd_soc_card_get_drvdata(card);
 +	int ret;
 +
 +	/* Enable MCLK */
@@ -138,7 +140,7 @@ index 7f7607420706..8d15d7b25d26 100644
 +		clk_disable_unprepare(priv->mclk);
 +	}
 +
-+	return ret;
++	return 0;
 +}
 +
  static int kabylake_rt5663_hw_params(struct snd_pcm_substream *substream,
@@ -161,15 +163,15 @@ index 7f7607420706..8d15d7b25d26 100644
  	/* use ASRC for internal clocks, as PLL rate isn't multiple of BCLK */
  	rt5663_sel_asrc_clk_src(codec_dai->codec,
  			RT5663_DA_STEREO_FILTER | RT5663_AD_STEREO_FILTER,
-@@ -839,6 +906,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+@@ -647,6 +715,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
  {
- 	struct kbl_rt5663_private *ctx;
+ 	struct kbl_codec_private *ctx;
  	struct skl_machine_pdata *pdata;
-+	int ret;
++	int ret = 0;
  
  	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
  	if (!ctx)
-@@ -857,6 +925,34 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+@@ -662,6 +731,34 @@ static int kabylake_audio_probe(struct platform_device *pdev)
  		dmic_constraints = pdata->dmic_num == 2 ?
  			&constraints_dmic_2ch : &constraints_dmic_channels;
  
@@ -178,7 +180,7 @@ index 7f7607420706..8d15d7b25d26 100644
 +		ret = PTR_ERR(ctx->mclk);
 +		if (ret == -ENOENT) {
 +			dev_info(&pdev->dev,
-+				"Failed to get ssp1_sclk, defer probe\n");
++				"Failed to get ssp1_mclk, defer probe\n");
 +			return -EPROBE_DEFER;
 +		}
 +
@@ -201,7 +203,7 @@ index 7f7607420706..8d15d7b25d26 100644
 +		return ret;
 +	}
 +
- 	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
+ 	return devm_snd_soc_register_card(&pdev->dev, &kabylake_audio_card);
  }
  
 -- 
