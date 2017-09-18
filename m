@@ -1,84 +1,57 @@
-From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [PATCH] Asoc: rockchip: Init dapm routes dynamically
-Date: Mon, 18 Sep 2017 09:46:03 +0800
-Message-ID: <59BF255B.2040203@rock-chips.com>
-References: <20170905041401.23866-1-jeffy.chen@rock-chips.com> <20170916005407.GH173745@google.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 0/5] BYT/CHT-Realtek remaining fixes
+Date: Mon, 18 Sep 2017 09:04:29 +0530
+Message-ID: <20170918033429.GD30097@localhost>
+References: <20170908174356.23788-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170916005407.GH173745@google.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: linux-kernel@vger.kernel.org, briannorris@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06188266819
+ for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2017 05:30:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170908174356.23788-1-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, andriy.shevchenko@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matthias,
+On Fri, Sep 08, 2017 at 12:43:51PM -0500, Pierre-Louis Bossart wrote:
+> This last batch for the week is about simplification of the
+> MCLK-related code for byt/cht-realtek machine drivers and fixes for
+> rt5651. This is mostly a v2 of patches I submitted earlier, with
+> improvements suggested by Andy Shevchenko, a fixed mistake on quirk
+> management flagged by Vinod Koul and better commit messages. No new
+> functionality otherwise.
 
-Thanks for your test and review.
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 
-On 09/16/2017 08:54 AM, Matthias Kaehlcke wrote:
->> -static const struct snd_soc_dapm_route rockchip_dapm_routes[] = {
->> >-	/* Input Lines */
->> >-	{"MIC", NULL, "Headset Mic"},
->> >-	{"DMIC1L", NULL, "Int Mic"},
->> >-	{"DMIC1R", NULL, "Int Mic"},
->> >-
->> >-	/* Output Lines */
->> >-	{"Headphones", NULL, "HPL"},
->> >-	{"Headphones", NULL, "HPR"},
->> >-	{"Speakers", NULL, "Speaker"},
->> >+	SND_SOC_DAPM_LINE("HDMI", NULL),
-> The HDMI items are newly added, I think a separate patch would be
-> preferable.
-ok, will do
+> 
+> Pierre-Louis Bossart (5):
+>   ASoC: Intel: boards: use devm_clk_get() unconditionally
+>   ASoC: Intel: bytcr-rt5651: fix capture routes
+>   ASoC: Intel: bytcr_rt5651: add MCLK support and fix quirks
+>   ASoC: Intel: bytcr_rt5651: filter codec name
+>   ASoC: Intel: bytcr_rt5640: simplify MCLK quirk tests
+> 
+>  sound/soc/intel/boards/bytcr_rt5640.c   |   8 +-
+>  sound/soc/intel/boards/bytcr_rt5651.c   | 277 ++++++++++++++++++++++++++++----
+>  sound/soc/intel/boards/cht_bsw_rt5645.c |  14 +-
+>  sound/soc/intel/boards/cht_bsw_rt5672.c |  27 +---
+>  4 files changed, 265 insertions(+), 61 deletions(-)
+> 
+> -- 
+> 2.9.3
+> 
 
->
->> >  };
->> >
->> >  static const struct snd_kcontrol_new rockchip_controls[] = {
->> >@@ -66,6 +55,7 @@ static const struct snd_kcontrol_new rockchip_controls[] = {
->> >  	SOC_DAPM_PIN_SWITCH("Speakers"),
->> >  	SOC_DAPM_PIN_SWITCH("Headset Mic"),
->> >  	SOC_DAPM_PIN_SWITCH("Int Mic"),
->> >+	SOC_DAPM_PIN_SWITCH("HDMI"),
->> >  };
->> >
->> >  static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
->> >@@ -314,8 +304,6 @@ static struct snd_soc_card rockchip_sound_card = {
->> >  	.owner = THIS_MODULE,
->> >  	.dapm_widgets = rockchip_dapm_widgets,
->> >  	.num_dapm_widgets = ARRAY_SIZE(rockchip_dapm_widgets),
->> >-	.dapm_routes = rockchip_dapm_routes,
->> >-	.num_dapm_routes = ARRAY_SIZE(rockchip_dapm_routes),
->> >  	.controls = rockchip_controls,
->> >  	.num_controls = ARRAY_SIZE(rockchip_controls),
->> >  };
->> >@@ -391,6 +379,65 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
->> >  	},
->> >  };
->> >
->> >+static const struct snd_soc_dapm_route rockchip_sound_cdndp_routes[] = {
->> >+	/* Output */
->> >+	{"HDMI", NULL, "TX"},
->> >+};
->> >+
->> >+static const struct snd_soc_dapm_route rockchip_sound_da7219_routes[] = {
->> >+	/* Output */
->> >+	{"Headphones", NULL, "HPL"},
->> >+	{"Headphones", NULL, "HPR"},
->> >+
->> >+	/* Input */
->> >+	{"MIC", NULL, "Headset Mic"},
->> >+};
->> >+
->> >+static const struct snd_soc_dapm_route rockchip_sound_dmic_routes[] = {
->> >+	/* Input */
->> >+	{"Dmic", NULL, "Int Mic"},
-> Should be "DMic" as in dmic_dapm_widgets of the dmic codec driver.
->
-> This route is also new and would probably be better added in a
-> separate patch.
-
-ok, will do
->
+-- 
+~Vinod
