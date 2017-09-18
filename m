@@ -1,24 +1,16 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for
-	wm97xx Codec
-Date: Mon, 18 Sep 2017 09:52:36 +0100
-Message-ID: <20170918085236.z6gmgrwvsjvvc4cd@dell>
-References: <20170913193723.16234-1-robert.jarzmik@free.fr>
- <20170913193723.16234-3-robert.jarzmik@free.fr>
- <20170914074146.dnibkvom4yuzejf3@dell>
- <20170914074300.iobuwn2hrmnf6sen@dell>
- <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: zte: spdif: remove duplicate
+	initialization of dma_data
+Date: Mon, 18 Sep 2017 09:56:38 +0100
+Message-ID: <20170918085638.27110-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id A8D942668F0
- for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2017 10:52:39 +0200 (CEST)
-Received: by mail-wm0-f41.google.com with SMTP id 13so573940wmq.2
- for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2017 01:52:39 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83CD02668F0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Sep 2017 10:57:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,19 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+To: Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAxNCBTZXAgMjAxNywgTWFyayBCcm93biB3cm90ZToKCj4gT24gVGh1LCBTZXAgMTQs
-IDIwMTcgYXQgMDg6NDM6MDBBTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+IAo+ID4gQ2hhbmdl
-IG9mIHBsYW4uICBJdCBsb29rcyBsaWtlIHRoZXJlIGFyZSBkZXBzLgo+IAo+ID4gVW5hcHBsaWVk
-Lgo+IAo+IFRoZSBjb3JlIHN0dWZmIHdlbnQgaW4gZHVyaW5nIHRoZSBtZXJnZSB3aW5kb3csIHlv
-dSBzaG91bGQgYmUgYWJsZSB0bwo+IHdhaXQgZm9yIC1yYzEgb3IgcGljayB1cCB0aGUgYXNvYy12
-NC4xNCB0YWcuCgpObywgSSBtZWFuIHBhdGNoZXM7IDMsIDQsIDUgYW5kIDcgZGVwZW5kIG9uIHRo
-aXMgZmlsZS4KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5kaW5n
-IFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNv
-Q3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Colin Ian King <colin.king@canonical.com>
+
+dma_data is being initialized twice, remove the unused first
+initialization and use the latter one instead.  Fixed clang warning:
+
+"warning: Value stored to 'dma_data' during its initialization is
+never read"
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/zte/zx-spdif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/zte/zx-spdif.c b/sound/soc/zte/zx-spdif.c
+index b143f9f682d2..17b6ce35037a 100644
+--- a/sound/soc/zte/zx-spdif.c
++++ b/sound/soc/zte/zx-spdif.c
+@@ -139,11 +139,11 @@ static int zx_spdif_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct zx_spdif_info *zx_spdif = dev_get_drvdata(socdai->dev);
+ 	struct zx_spdif_info *spdif = snd_soc_dai_get_drvdata(socdai);
+-	struct snd_dmaengine_dai_dma_data *dma_data = &zx_spdif->dma_data;
++	struct snd_dmaengine_dai_dma_data *dma_data =
++		snd_soc_dai_get_dma_data(socdai, substream);
+ 	u32 val, ch_num, rate;
+ 	int ret;
+ 
+-	dma_data = snd_soc_dai_get_dma_data(socdai, substream);
+ 	dma_data->addr_width = params_width(params) >> 3;
+ 
+ 	val = readl_relaxed(zx_spdif->reg_base + ZX_CTRL);
+-- 
+2.14.1
