@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl-asoc-card: Don't error out if ENOTSUPP" to the asoc tree
-Date: Tue, 19 Sep 2017 14:45:53 +0100
-Message-ID: <E1duIqX-00088H-QQ@debutante>
-References: <1504848453-9524-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1504848453-9524-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: cht_bsw_max98090_ti: Fix jack
+	initialization" to the asoc tree
+Date: Tue, 19 Sep 2017 14:45:21 +0100
+Message-ID: <E1duIq1-00081K-L2@debutante>
+References: <20170908051309.19028-7-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63D3C2671CF
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 15:45:33 +0200 (CEST)
+In-Reply-To: <20170908051309.19028-7-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Thierry Escande <thierry.escande@collabora.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl-asoc-card: Don't error out if ENOTSUPP
+   ASoC: Intel: cht_bsw_max98090_ti: Fix jack initialization
 
 has been applied to the asoc tree at
 
@@ -37,71 +53,95 @@ to this mail.
 Thanks,
 Mark
 
->From 758a3b0183a83a4827afc892c417cd6f8d12e189 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Thu, 7 Sep 2017 22:27:33 -0700
-Subject: [PATCH] ASoC: fsl-asoc-card: Don't error out if ENOTSUPP
+>From 3bbda5a38601f7675a214be2044e41d7749e6c7b Mon Sep 17 00:00:00 2001
+From: Thierry Escande <thierry.escande@collabora.com>
+Date: Fri, 8 Sep 2017 00:13:08 -0500
+Subject: [PATCH] ASoC: Intel: cht_bsw_max98090_ti: Fix jack initialization
 
-The snd_soc_component_set_sysclk() and snd_soc_dai_set_tdm_slot()
-in the soc-core.c will return -ENOTSUPP if there is no function
-implementation for them in the dai and component drivers.
+If the ts3a227e audio accessory detection hardware is present and its
+driver probed, the jack needs to be created before enabling jack
+detection in the ts3a227e driver. With this patch, the jack is
+instantiated in the max98090 headset init function if the ts3a227e is
+present. This fixes a null pointer dereference as the jack detection
+enabling function in the ts3a driver was called before the jack is
+created.
 
-So this patch tries to ignore this errno.
+[minor correction to keep error handling on jack creation the same
+as before by Pierre Bossart]
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Thierry Escande <thierry.escande@collabora.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 45 +++++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 2db4d0c80d33..3772abbdd7b7 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -166,7 +166,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
- 	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, cpu_priv->sysclk_id[tx],
- 				     cpu_priv->sysclk_freq[tx],
- 				     cpu_priv->sysclk_dir[tx]);
--	if (ret) {
-+	if (ret && ret != -ENOTSUPP) {
- 		dev_err(dev, "failed to set sysclk for cpu dai\n");
- 		return ret;
- 	}
-@@ -174,7 +174,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
- 	if (cpu_priv->slot_width) {
- 		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2,
- 					       cpu_priv->slot_width);
--		if (ret) {
-+		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dev, "failed to set TDM slot for cpu dai\n");
- 			return ret;
- 		}
-@@ -270,7 +270,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 442a81bf17b4..e5da091abe48 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -166,23 +166,19 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+ 	struct snd_soc_jack *jack = &ctx->jack;
  
- 		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->fll_id,
- 					     pll_out, SND_SOC_CLOCK_IN);
--		if (ret) {
-+		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dev, "failed to set SYSCLK: %d\n", ret);
- 			return ret;
- 		}
-@@ -283,7 +283,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
- 		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
- 					     codec_priv->mclk_freq,
- 					     SND_SOC_CLOCK_IN);
--		if (ret) {
-+		if (ret && ret != -ENOTSUPP) {
- 			dev_err(dev, "failed to switch away from FLL: %d\n", ret);
- 			return ret;
- 		}
-@@ -459,7 +459,7 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
+-	/**
+-	* TI supports 4 butons headset detection
+-	* KEY_MEDIA
+-	* KEY_VOICECOMMAND
+-	* KEY_VOLUMEUP
+-	* KEY_VOLUMEDOWN
+-	*/
+-	if (ctx->ts3a227e_present)
+-		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+-					SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-					SND_JACK_BTN_2 | SND_JACK_BTN_3;
+-	else
+-		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
++	if (ctx->ts3a227e_present) {
++		/*
++		 * The jack has already been created in the
++		 * cht_max98090_headset_init() function.
++		 */
++		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
++		return 0;
++	}
++
++	jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
  
- 	ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
- 				     codec_priv->mclk_freq, SND_SOC_CLOCK_IN);
--	if (ret) {
-+	if (ret && ret != -ENOTSUPP) {
- 		dev_err(dev, "failed to set sysclk in %s\n", __func__);
+ 	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
+ 					jack_type, jack, NULL, 0);
+-
+ 	if (ret) {
+ 		dev_err(runtime->dev, "Headset Jack creation failed %d\n", ret);
  		return ret;
- 	}
+@@ -257,6 +253,27 @@ static int cht_max98090_headset_init(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_card *card = component->card;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
++	struct snd_soc_jack *jack = &ctx->jack;
++	int jack_type;
++	int ret;
++
++	/*
++	 * TI supports 4 butons headset detection
++	 * KEY_MEDIA
++	 * KEY_VOICECOMMAND
++	 * KEY_VOLUMEUP
++	 * KEY_VOLUMEDOWN
++	 */
++	jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
++		    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++		    SND_JACK_BTN_2 | SND_JACK_BTN_3;
++
++	ret = snd_soc_card_jack_new(card, "Headset Jack", jack_type,
++				    jack, NULL, 0);
++	if (ret) {
++		dev_err(card->dev, "Headset Jack creation failed %d\n", ret);
++		return ret;
++	}
+ 
+ 	return ts3a227e_enable_jack_detect(component, &ctx->jack);
+ }
 -- 
 2.14.1
