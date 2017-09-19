@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: use sizeof_field rather than declaring hcp" to the asoc tree
-Date: Tue, 19 Sep 2017 14:47:02 +0100
-Message-ID: <E1duIre-0008My-DY@debutante>
-References: <20170918094843.28121-1-colin.king@canonical.com>
+Subject: Applied "ASoC: zte: spdif: remove duplicate initialization of dma_data" to the asoc tree
+Date: Tue, 19 Sep 2017 14:47:18 +0100
+Message-ID: <E1duIru-0008PT-QD@debutante>
+References: <20170918085638.27110-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170918094843.28121-1-colin.king@canonical.com>
+In-Reply-To: <20170918085638.27110-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: use sizeof_field rather than declaring hcp
+   ASoC: zte: spdif: remove duplicate initialization of dma_data
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 0607aa3cd824bddf85fa5174fe4be34af5a429fb Mon Sep 17 00:00:00 2001
+>From b6145837218cb984245aea5ccd9201aeb5eb0501 Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
-Date: Mon, 18 Sep 2017 10:48:43 +0100
-Subject: [PATCH] ASoC: hdmi-codec: use sizeof_field rather than declaring hcp
+Date: Mon, 18 Sep 2017 09:56:38 +0100
+Subject: [PATCH] ASoC: zte: spdif: remove duplicate initialization of dma_data
 
-Use FIELD_SIZEOF rather than declaring and initializing hcp. Remove
-unused variables. Cleans up clang warning:
+dma_data is being initialized twice, remove the unused first
+initialization and use the latter one instead.  Fixed clang warning:
 
-warning: Value stored to 'hcp' during its initialization is never read
+"warning: Value stored to 'dma_data' during its initialization is
+never read"
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/zte/zx-spdif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 3abf82563408..5672e516bec3 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -303,11 +303,8 @@ enum {
- static int hdmi_eld_ctl_info(struct snd_kcontrol *kcontrol,
- 			     struct snd_ctl_elem_info *uinfo)
+diff --git a/sound/soc/zte/zx-spdif.c b/sound/soc/zte/zx-spdif.c
+index b143f9f682d2..17b6ce35037a 100644
+--- a/sound/soc/zte/zx-spdif.c
++++ b/sound/soc/zte/zx-spdif.c
+@@ -139,11 +139,11 @@ static int zx_spdif_hw_params(struct snd_pcm_substream *substream,
  {
--	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
--	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
--
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
--	uinfo->count = sizeof(hcp->eld);
-+	uinfo->count = FIELD_SIZEOF(struct hdmi_codec_priv, eld);
+ 	struct zx_spdif_info *zx_spdif = dev_get_drvdata(socdai->dev);
+ 	struct zx_spdif_info *spdif = snd_soc_dai_get_drvdata(socdai);
+-	struct snd_dmaengine_dai_dma_data *dma_data = &zx_spdif->dma_data;
++	struct snd_dmaengine_dai_dma_data *dma_data =
++		snd_soc_dai_get_dma_data(socdai, substream);
+ 	u32 val, ch_num, rate;
+ 	int ret;
  
- 	return 0;
- }
+-	dma_data = snd_soc_dai_get_dma_data(socdai, substream);
+ 	dma_data->addr_width = params_width(params) >> 3;
+ 
+ 	val = readl_relaxed(zx_spdif->reg_base + ZX_CTRL);
 -- 
 2.14.1
