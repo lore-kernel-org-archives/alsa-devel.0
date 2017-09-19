@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Add dapm route for HDMI" to the asoc tree
-Date: Tue, 19 Sep 2017 14:46:36 +0100
-Message-ID: <E1duIrE-0008H7-7j@debutante>
-References: <20170918014441.17572-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170918014441.17572-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: cht_bsw_max98090: Fix I2S config
+	+ unused code" to the asoc tree
+Date: Tue, 19 Sep 2017 14:45:47 +0100
+Message-ID: <E1duIqR-000862-Ls@debutante>
+References: <20170822203239.19891-4-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A999E26735F
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 15:45:49 +0200 (CEST)
+In-Reply-To: <20170822203239.19891-4-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Add dapm route for HDMI
+   ASoC: Intel: cht_bsw_max98090: Fix I2S config + unused code
 
 has been applied to the asoc tree at
 
@@ -37,46 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From e7251484f3bc3bd9203a2c39555ca7d53e988cf6 Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Mon, 18 Sep 2017 19:17:59 +0800
-Subject: [PATCH] ASoC: rockchip: Add dapm route for HDMI
+>From 948c5e192eaeef5bd8b479135ea83d1f97d78bb8 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 8 Sep 2017 00:13:04 -0500
+Subject: [PATCH] ASoC: Intel: cht_bsw_max98090: Fix I2S config + unused code
 
-Add dapm route for DP codec.
+This driver probably never worked, the slots are configured
+for 2ch 16 bit and the SSP2 as 24 bits, the cpu_dai configured as
+LEFT_J and the codec_dai as I2S.
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 1ca269ee0b7e..6463ea86a33a 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -47,6 +47,7 @@ static const struct snd_soc_dapm_widget rockchip_dapm_widgets[] = {
- 	SND_SOC_DAPM_SPK("Speakers", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_LINE("HDMI", NULL),
- };
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 20755ecc7f9e..455a55af7ad2 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -160,7 +160,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		return ret;
+ 	}
  
- static const struct snd_soc_dapm_route rockchip_dapm_routes[] = {
-@@ -60,6 +61,7 @@ static const struct snd_soc_dapm_route rockchip_dapm_routes[] = {
- 	{"Headphones", NULL, "HPL"},
- 	{"Headphones", NULL, "HPR"},
- 	{"Speakers", NULL, "Speaker"},
-+	{"HDMI", NULL, "TX"},
- };
+-	fmt = SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF
++	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+ 				| SND_SOC_DAIFMT_CBS_CFS;
  
- static const struct snd_kcontrol_new rockchip_controls[] = {
-@@ -67,6 +69,7 @@ static const struct snd_kcontrol_new rockchip_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Speakers"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
- 	SOC_DAPM_PIN_SWITCH("Int Mic"),
-+	SOC_DAPM_PIN_SWITCH("HDMI"),
- };
+ 	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, fmt);
+@@ -173,8 +173,8 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
  
- static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substream,
+-	/* set SSP2 to 24-bit */
+-	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++	/* set SSP2 to 16-bit */
++	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+ 	return 0;
+ }
+ 
 -- 
 2.14.1
