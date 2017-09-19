@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Add devicetree binding support for rt5514-spi" to the asoc tree
-Date: Tue, 19 Sep 2017 14:46:55 +0100
-Message-ID: <E1duIrX-0008Kw-BX@debutante>
-References: <20170918111435.11411-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170918111435.11411-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>broonie@kernel.org, mka@chromium.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: max98090: reduce verbosity on PLL
+	unlock" to the asoc tree
+Date: Tue, 19 Sep 2017 14:45:50 +0100
+Message-ID: <E1duIqU-00087E-OU@debutante>
+References: <20170908051309.19028-2-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9EDB26739D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 15:45:54 +0200 (CEST)
+In-Reply-To: <20170908051309.19028-2-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Add devicetree binding support for rt5514-spi
+   ASoC: max98090: reduce verbosity on PLL unlock
 
 has been applied to the asoc tree at
 
@@ -37,54 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From d6604145dfccc3dd9e882dd3d6bd2545c9ff64e9 Mon Sep 17 00:00:00 2001
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Date: Mon, 18 Sep 2017 19:14:34 +0800
-Subject: [PATCH] ASoC: rt5514: Add devicetree binding support for rt5514-spi
+>From d10a7d3e2af98e639e74c64185f910915a560f07 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 8 Sep 2017 00:13:03 -0500
+Subject: [PATCH] ASoC: max98090: reduce verbosity on PLL unlock
 
-Add devicetree binding support for rt5514 spi dsp codec.
+'commit b8a3ee820f7b ("ASoC: max98090: Add recovery for PLL lock failure")'
+enabled a workaround PLL unlocked issues, but generates annoying
+dev_info "PLL unlocked" messages at a 10ms rate, usually on startup.
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Move to dev_info_ratelimited. This issue doesn't seem to impact audio
+functionality.  This trace is commented out in the GalliumOS patches,
+it's better to keep it to check on potential quality issues
+
+Tested on Lenovo 100s (Baytrail Chromebook)
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rt5514.txt | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index 929ca6756b02..4f33b0d96afe 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -1,22 +1,27 @@
- RT5514 audio CODEC
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 13bcfb1ef9b4..f5075d1f79e6 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2115,7 +2115,7 @@ static void max98090_pll_work(struct work_struct *work)
+ 	if (!snd_soc_codec_is_active(codec))
+ 		return;
  
--This device supports I2C only.
-+This device supports both I2C and SPI.
+-	dev_info(codec->dev, "PLL unlocked\n");
++	dev_info_ratelimited(codec->dev, "PLL unlocked\n");
  
- Required properties:
- 
- - compatible : "realtek,rt5514".
- 
--- reg : The I2C address of the device.
-+- reg : the I2C address of the device for I2C, the chip select
-+        number for SPI.
- 
- Optional properties:
- 
- - clocks: The phandle of the master clock to the CODEC
- - clock-names: Should be "mclk"
- 
-+- interrupt-parent: The phandle for the interrupt controller.
-+- interrupts: The interrupt number to the cpu. The interrupt specifier format
-+	      depends on the interrupt controller.
-+
- - realtek,dmic-init-delay-ms
--  Set the DMIC initial delay (ms) to wait it ready.
-+  Set the DMIC initial delay (ms) to wait it ready for I2C.
- 
--Pins on the device (for linking into audio routes) for RT5514:
-+Pins on the device (for linking into audio routes) for I2C:
- 
-   * DMIC1L
-   * DMIC1R
+ 	/* Toggle shutdown OFF then ON */
+ 	snd_soc_update_bits(codec, M98090_REG_DEVICE_SHUTDOWN,
 -- 
 2.14.1
