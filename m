@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ts3a227e: add acpi table" to the asoc tree
-Date: Tue, 19 Sep 2017 14:45:44 +0100
-Message-ID: <E1duIqO-00085B-Is@debutante>
-References: <1493719869-16100-3-git-send-email-thierry.escande@collabora.com>
+Subject: Applied "ASoC: fsl-asoc-card: Don't error out if ENOTSUPP" to the asoc tree
+Date: Tue, 19 Sep 2017 14:45:53 +0100
+Message-ID: <E1duIqX-00088H-QQ@debutante>
+References: <1504848453-9524-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1493719869-16100-3-git-send-email-thierry.escande@collabora.com>
+In-Reply-To: <1504848453-9524-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Fang@sirena.co.uk
-Cc: Fang Yang A <yang.a.fang@intel.com>, Thierry Escande <thierry.escande@collabora.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ts3a227e: add acpi table
+   ASoC: fsl-asoc-card: Don't error out if ENOTSUPP
 
 has been applied to the asoc tree at
 
@@ -37,56 +37,71 @@ to this mail.
 Thanks,
 Mark
 
->From a10953f5d33b2334c8fb1799084ab49347a59821 Mon Sep 17 00:00:00 2001
-From: "Fang, Yang A" <yang.a.fang@intel.com>
-Date: Fri, 8 Sep 2017 00:13:07 -0500
-Subject: [PATCH] ASoC: ts3a227e: add acpi table
+>From 758a3b0183a83a4827afc892c417cd6f8d12e189 Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Thu, 7 Sep 2017 22:27:33 -0700
+Subject: [PATCH] ASoC: fsl-asoc-card: Don't error out if ENOTSUPP
 
-This patch adds the acpi match table for the ts3a227e audio accessory
-detection device. This enables headset features like jack plug/unplug
-notifications, mic presence, and button pressed events.
+The snd_soc_component_set_sysclk() and snd_soc_dai_set_tdm_slot()
+in the soc-core.c will return -ENOTSUPP if there is no function
+implementation for them in the dai and component drivers.
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: Thierry Escande <thierry.escande@collabora.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+So this patch tries to ignore this errno.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ts3a227e.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/fsl/fsl-asoc-card.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 43568435c208..738e04b09116 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -15,6 +15,7 @@
- #include <linux/module.h>
- #include <linux/of_gpio.h>
- #include <linux/regmap.h>
-+#include <linux/acpi.h>
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 2db4d0c80d33..3772abbdd7b7 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -166,7 +166,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, cpu_priv->sysclk_id[tx],
+ 				     cpu_priv->sysclk_freq[tx],
+ 				     cpu_priv->sysclk_dir[tx]);
+-	if (ret) {
++	if (ret && ret != -ENOTSUPP) {
+ 		dev_err(dev, "failed to set sysclk for cpu dai\n");
+ 		return ret;
+ 	}
+@@ -174,7 +174,7 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
+ 	if (cpu_priv->slot_width) {
+ 		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2,
+ 					       cpu_priv->slot_width);
+-		if (ret) {
++		if (ret && ret != -ENOTSUPP) {
+ 			dev_err(dev, "failed to set TDM slot for cpu dai\n");
+ 			return ret;
+ 		}
+@@ -270,7 +270,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
  
- #include <sound/core.h>
- #include <sound/jack.h>
-@@ -374,11 +375,20 @@ static const struct of_device_id ts3a227e_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, ts3a227e_of_match);
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->fll_id,
+ 					     pll_out, SND_SOC_CLOCK_IN);
+-		if (ret) {
++		if (ret && ret != -ENOTSUPP) {
+ 			dev_err(dev, "failed to set SYSCLK: %d\n", ret);
+ 			return ret;
+ 		}
+@@ -283,7 +283,7 @@ static int fsl_asoc_card_set_bias_level(struct snd_soc_card *card,
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
+ 					     codec_priv->mclk_freq,
+ 					     SND_SOC_CLOCK_IN);
+-		if (ret) {
++		if (ret && ret != -ENOTSUPP) {
+ 			dev_err(dev, "failed to switch away from FLL: %d\n", ret);
+ 			return ret;
+ 		}
+@@ -459,7 +459,7 @@ static int fsl_asoc_card_late_probe(struct snd_soc_card *card)
  
-+#ifdef CONFIG_ACPI
-+static struct acpi_device_id ts3a227e_acpi_match[] = {
-+	{ "104C227E", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, ts3a227e_acpi_match);
-+#endif
-+
- static struct i2c_driver ts3a227e_driver = {
- 	.driver = {
- 		.name = "ts3a227e",
- 		.pm = &ts3a227e_pm,
- 		.of_match_table = of_match_ptr(ts3a227e_of_match),
-+		.acpi_match_table = ACPI_PTR(ts3a227e_acpi_match),
- 	},
- 	.probe = ts3a227e_i2c_probe,
- 	.id_table = ts3a227e_i2c_ids,
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, codec_priv->mclk_id,
+ 				     codec_priv->mclk_freq, SND_SOC_CLOCK_IN);
+-	if (ret) {
++	if (ret && ret != -ENOTSUPP) {
+ 		dev_err(dev, "failed to set sysclk in %s\n", __func__);
+ 		return ret;
+ 	}
 -- 
 2.14.1
