@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 27/38] axfer: add options for buffer
-	arrangement
-Date: Tue, 19 Sep 2017 09:44:07 +0900
-Message-ID: <20170919004418.24668-28-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 16/38] axfer: add support for blocking
+	data transmission operation of alsa-lib PCM API
+Date: Tue, 19 Sep 2017 09:43:56 +0900
+Message-ID: <20170919004418.24668-17-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 660BE266EDD
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 65254266ED0
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:30 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,323 +25,491 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In ALSA PCM interface, two parameters are used for size of intermediate
-buffer for data frames; period size and buffer size. Actual effects of
-these sizes differs depending on hardware, but basically the size of
-period is used for intervals of hardware interrupts and the size of buffer
-is used to maintain the intermediate buffer as ring buffer. These
-parameters can be configured as a part of hardware parameters by
-data frame unit or micro second. PCM API in alsa-lib also includes
-helper functions to configure them by the two units.
+In alsa-lib PCM API, snd_pcm_read[i|n]() and snd_pcm_write[i|n] are used
+to transfer data frames from/to hardware. When a handler is not opened with
+specific flags, these functions perform blocking operation; i.e. the
+function call doesn't return till all of request number of data frames are
+actually handled, or call is interrupted by Unix signals, or PCM substeam
+corrupts due to hardware reasons.
 
-This commit adds support for options to the parameters by both units. When
-no options are given, default values are applied according to current
-aplay; available maximum size of buffer up to 500msec, a quarter of the
-size of buffer for period size. These calculation should be reconsidered
-perhaps.
+This commit adds support for this type of data transmission. For cases that
+handled data frames are not processed by container interface, this commit
+adds internal cache mechanism to handle rest of data frames in next timing.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c         | 30 +++++++++++++++-
- axfer/options.h         |  5 +++
- axfer/subcmd-transfer.c |  6 ++--
- axfer/xfer-libasound.c  | 92 +++++++++++++++++++++++++++++++++++++++++++++++--
- axfer/xfer-libasound.h  |  1 -
- axfer/xfer.c            |  5 +--
- axfer/xfer.h            |  6 ++--
- 7 files changed, 134 insertions(+), 11 deletions(-)
+ axfer/Makefile.am             |   3 +-
+ axfer/xfer-libasound-irq-rw.c | 406 ++++++++++++++++++++++++++++++++++++++++++
+ axfer/xfer-libasound.c        |  12 +-
+ axfer/xfer-libasound.h        |   3 +
+ 4 files changed, 422 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/xfer-libasound-irq-rw.c
 
-diff --git a/axfer/options.c b/axfer/options.c
-index 5dfbffac..5d5dda89 100644
---- a/axfer/options.c
-+++ b/axfer/options.c
-@@ -17,6 +17,8 @@ enum no_short_opts {
- 	OPT_DUMP_HW_PARAMS = 128,
- 	OPT_FATAL_ERRORS,
- 	OPT_TEST_NOWAIT,
-+	OPT_PERIOD_SIZE,
-+	OPT_BUFFER_SIZE,
- 	/* Obsoleted. */
- 	OPT_MAX_FILE_TIME,
- };
-@@ -266,6 +268,20 @@ static int apply_policies(struct context_options *opts,
- 			return err;
- 	}
- 
-+	if (opts->msec_per_period > 0 && opts->msec_per_buffer > 0) {
-+		if (opts->msec_per_period > opts->msec_per_buffer) {
-+			opts->msec_per_period = opts->msec_per_buffer;
-+			opts->msec_per_buffer = 0;
-+		}
-+	}
+diff --git a/axfer/Makefile.am b/axfer/Makefile.am
+index ab4e3ae1..e928f796 100644
+--- a/axfer/Makefile.am
++++ b/axfer/Makefile.am
+@@ -43,4 +43,5 @@ axfer_SOURCES = \
+ 	xfer.h \
+ 	xfer.c \
+ 	xfer-libasound.h \
+-	xfer-libasound.c
++	xfer-libasound.c \
++	xfer-libasound-irq-rw.c
+diff --git a/axfer/xfer-libasound-irq-rw.c b/axfer/xfer-libasound-irq-rw.c
+new file mode 100644
+index 00000000..7fe4f934
+--- /dev/null
++++ b/axfer/xfer-libasound-irq-rw.c
+@@ -0,0 +1,406 @@
++/*
++ * xfer-libasound-io-rw.c - I/O helper for SND_PCM_ACCESS_RW_XXX.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+	if (opts->frames_per_period > 0 && opts->frames_per_buffer > 0) {
-+		if (opts->frames_per_period > opts->frames_per_buffer) {
-+			opts->frames_per_period = opts->frames_per_buffer;
-+			opts->frames_per_buffer = 0;
-+		}
-+	}
++#include "xfer-libasound.h"
++#include "misc.h"
 +
- 	if (opts->mmap && opts->nonblock) {
- 		fprintf(stderr,
- 			"An option for mmap operation should not be used with "
-@@ -306,7 +322,7 @@ void context_options_calculate_duration(struct context_options *opts,
- int context_options_init(struct context_options *opts, int argc,
- 			 char *const *argv, snd_pcm_stream_t direction)
- {
--	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NM";
-+	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:";
- 	static const struct option l_opts[] = {
- 		/* For generic purposes. */
- 		{"help",		0, 0, 'h'},
-@@ -325,6 +341,10 @@ int context_options_init(struct context_options *opts, int argc,
- 		{"rate",		1, 0, 'r'},
- 		{"nonblock",            0, 0, 'N'},
- 		{"mmap",                0, 0, 'M'},
-+		{"period-time",		1, 0, 'F'},
-+		{"buffer-time",		1, 0, 'B'},
-+		{"period-size",		1, 0, OPT_PERIOD_SIZE},
-+		{"buffer-size",		1, 0, OPT_BUFFER_SIZE},
- 		/* For debugging. */
- 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
- 		{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
-@@ -372,6 +392,14 @@ int context_options_init(struct context_options *opts, int argc,
- 			opts->nonblock = true;
- 		else if (c == 'M')
- 			opts->mmap = true;
-+		else if (c == 'F')
-+			opts->msec_per_period = parse_l(optarg, &err);
-+		else if (c == 'B')
-+			opts->msec_per_buffer = parse_l(optarg, &err);
-+		else if (c == OPT_PERIOD_SIZE)
-+			opts->frames_per_period = parse_l(optarg, &err);
-+		else if (c == OPT_BUFFER_SIZE)
-+			opts->frames_per_buffer = parse_l(optarg, &err);
- 		else if (c == OPT_DUMP_HW_PARAMS)
- 			opts->dump_hw_params = true;
- 		else if (c == OPT_FATAL_ERRORS)
-diff --git a/axfer/options.h b/axfer/options.h
-index 3052d01a..f4ac6c64 100644
---- a/axfer/options.h
-+++ b/axfer/options.h
-@@ -36,6 +36,11 @@ struct context_options {
- 	bool nonblock;
- 	bool mmap;
- 
-+	unsigned int msec_per_period;
-+	unsigned int msec_per_buffer;
-+	unsigned int frames_per_period;
++struct frame_cache {
++	void *buf;
++	void *buf_ptr;
++
++	unsigned int bytes_per_sample;
++	unsigned int samples_per_frame;
 +	unsigned int frames_per_buffer;
++	snd_pcm_access_t access;
 +
- 	/* For debugging. */
- 	bool dump_hw_params;
- 	bool finish_at_xrun;
-diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
-index e5aedbe6..df477f61 100644
---- a/axfer/subcmd-transfer.c
-+++ b/axfer/subcmd-transfer.c
-@@ -157,7 +157,8 @@ static int capture_pre_process(struct context *ctx, snd_pcm_access_t *access,
- 
- 	err = xfer_context_pre_process(&ctx->xfer, sample_format,
- 				       samples_per_frame, frames_per_second,
--				       access, frames_per_buffer);
-+				       access, frames_per_buffer,
-+				       &ctx->opts);
- 	if (err < 0)
- 		return err;
- 
-@@ -294,7 +295,8 @@ static int playback_pre_process(struct context *ctx, snd_pcm_access_t *access,
- 	/* Configure hardware with these parameters. */
- 	err = xfer_context_pre_process(&ctx->xfer, sample_format,
- 				       samples_per_frame, frames_per_second,
--				       access, frames_per_buffer);
-+				       access, frames_per_buffer,
-+				       &ctx->opts);
- 	if (err < 0)
- 		return err;
- 
++	int (*handle)(struct libasound_state *state, snd_pcm_state_t status,
++		      unsigned int *frame_count, struct mapper_context *mapper,
++		      struct container_context *cntrs);
++	void (*align_frames)(struct frame_cache *cache,
++			     unsigned int consumed_count,
++			     unsigned int bytes_per_sample,
++			     unsigned int samples_per_frame);
++
++	unsigned int remained_count;
++};
++
++static void align_frames_in_i(struct frame_cache *cache,
++			      unsigned int consumed_count,
++			      unsigned int bytes_per_sample,
++			      unsigned int samples_per_frame)
++{
++	char *buf = cache->buf;
++	unsigned int offset;
++	unsigned int size;
++
++	cache->remained_count -= consumed_count;
++
++	offset = bytes_per_sample * samples_per_frame * consumed_count;
++	size = bytes_per_sample * samples_per_frame * cache->remained_count;
++	memcpy(buf, buf + offset, size);
++
++	cache->buf_ptr = buf + size;
++}
++
++static void align_frames_in_n(struct frame_cache *cache,
++			      unsigned int consumed_count,
++			      unsigned int bytes_per_sample,
++			      unsigned int samples_per_frame)
++{
++	char **bufs = cache->buf;
++	char **buf_ptrs = cache->buf_ptr;
++	char *buf;
++	unsigned int offset;
++	unsigned int size;
++	int i;
++
++	cache->remained_count -= consumed_count;
++
++	for (i = 0; i < samples_per_frame; ++i) {
++		buf = bufs[i];
++		offset = bytes_per_sample * consumed_count;
++		size = bytes_per_sample * cache->remained_count;
++		memcpy(buf, buf + offset, size);
++
++		buf_ptrs[i] = buf + size;
++	}
++}
++
++static int read_frames(struct libasound_state *state, unsigned int *frame_count,
++		       unsigned int avail_count, struct mapper_context *mapper,
++		       struct container_context *cntrs)
++{
++	struct frame_cache *cache = state->private_data;
++	unsigned int consumed_count;
++	int err;
++
++	/* Trim according up to expected frame count. */
++	if (*frame_count < avail_count)
++		avail_count = *frame_count;
++
++	/* Cache required amount of frames. */
++	if (avail_count > cache->remained_count) {
++		avail_count -= cache->remained_count;
++
++		/*
++		 * Execute write operation according to the shape of buffer.
++		 * These operations automatically start the substream.
++		 */
++		if (cache->access == SND_PCM_ACCESS_RW_INTERLEAVED) {
++			err = snd_pcm_readi(state->handle, cache->buf_ptr,
++					    avail_count);
++		} else {
++			err = snd_pcm_readn(state->handle, cache->buf_ptr,
++					    avail_count);
++		}
++		if (err < 0)
++			return err;
++		cache->remained_count += err;
++		avail_count = cache->remained_count;
++	}
++
++	/* Write out to file descriptors. */
++	consumed_count = avail_count;
++	err = mapper_context_process_frames(mapper, cache->buf,
++					     &consumed_count, cntrs);
++	if (err < 0)
++		return err;
++
++	cache->align_frames(cache, consumed_count, cache->bytes_per_sample,
++			    cache->samples_per_frame);
++
++	*frame_count = consumed_count;
++
++	return 0;
++}
++
++static int r_process_frames_blocking(struct libasound_state *state,
++				     snd_pcm_state_t status,
++				     unsigned int *frame_count,
++				     struct mapper_context *mapper,
++				     struct container_context *cntrs)
++{
++	snd_pcm_sframes_t avail;
++	snd_pcm_uframes_t avail_count;
++	int err = 0;
++
++	if (status == SND_PCM_STATE_RUNNING) {
++		/* Check available space on the buffer. */
++		avail = snd_pcm_avail(state->handle);
++		if (avail < 0) {
++			err = avail;
++			goto error;
++		}
++		avail_count = (snd_pcm_uframes_t)avail;
++
++		if (avail_count == 0) {
++			/*
++			 * Request data frames so that blocking is just
++			 * released.
++			 */
++			err = snd_pcm_sw_params_get_avail_min(state->sw_params,
++							      &avail_count);
++			if (err < 0)
++				goto error;
++		}
++	} else {
++		/* Request data frames so that the PCM substream starts. */
++		snd_pcm_uframes_t frame_count;
++		err = snd_pcm_sw_params_get_start_threshold(state->sw_params,
++							    &frame_count);
++		if (err < 0)
++			goto error;
++
++		avail_count = (unsigned int)frame_count;
++	}
++
++	err = read_frames(state, frame_count, avail_count, mapper, cntrs);
++	if (err < 0)
++		goto error;
++
++	return 0;
++error:
++	*frame_count = 0;
++	return err;
++}
++
++static int write_frames(struct libasound_state *state,
++			unsigned int *frame_count, unsigned int avail_count,
++			struct mapper_context *mapper,
++			struct container_context *cntrs)
++{
++	struct frame_cache *cache = state->private_data;
++	snd_pcm_uframes_t consumed_count;
++	int err;
++
++	/* Trim according up to expected frame count. */
++	if (*frame_count < avail_count)
++		avail_count = *frame_count;
++
++	/* Cache required amount of frames. */
++	if (avail_count > cache->remained_count) {
++		avail_count -= cache->remained_count;
++
++		/* Read frames to transfer. */
++		err = mapper_context_process_frames(mapper, cache->buf_ptr,
++						     &avail_count, cntrs);
++		if (err < 0)
++			return err;
++		cache->remained_count += avail_count;
++		avail_count = cache->remained_count;
++	}
++
++	/*
++	 * Execute write operation according to the shape of buffer. These
++	 * operations automatically start the stream.
++	 */
++	consumed_count = avail_count;
++	if (cache->access == SND_PCM_ACCESS_RW_INTERLEAVED)
++		err = snd_pcm_writei(state->handle, cache->buf, consumed_count);
++	else
++		err = snd_pcm_writen(state->handle, cache->buf, consumed_count);
++	if (err < 0)
++		return err;
++
++	consumed_count = (unsigned int)err;
++	cache->align_frames(cache, consumed_count, cache->bytes_per_sample,
++			    cache->samples_per_frame);
++
++	*frame_count = consumed_count;
++
++	return 0;
++}
++
++static int w_process_frames_blocking(struct libasound_state *state,
++				     snd_pcm_state_t status,
++				     unsigned int *frame_count,
++				     struct mapper_context *mapper,
++				     struct container_context *cntrs)
++{
++	snd_pcm_sframes_t avail;
++	unsigned int avail_count;
++	int err;
++
++	if (status == SND_PCM_STATE_RUNNING) {
++		/* Check available space on the buffer. */
++		avail = snd_pcm_avail(state->handle);
++		if (avail < 0) {
++			err = avail;
++			goto error;
++		}
++		avail_count = (unsigned int)avail;
++
++		if (avail_count == 0) {
++			/*
++			 * Fill with data frames so that blocking is just
++			 * released.
++			 */
++			snd_pcm_uframes_t avail_min;
++			err = snd_pcm_sw_params_get_avail_min(state->sw_params,
++							      &avail_min);
++			if (err < 0)
++				goto error;
++			avail_count = (unsigned int)avail_min;
++		}
++	} else {
++		snd_pcm_uframes_t frames_for_start_threshold;
++		snd_pcm_uframes_t frames_per_period;
++
++		/* Fill with data frames so that the PCM substream starts. */
++		err = snd_pcm_sw_params_get_start_threshold(state->sw_params,
++						&frames_for_start_threshold);
++		if (err < 0)
++			goto error;
++
++		/*
++		 * But the above number can be too small and cause XRUN because
++		 * I/O operation is done per period.
++		 */
++		err = snd_pcm_hw_params_get_period_size(state->hw_params,
++						&frames_per_period, NULL);
++		if (err < 0)
++			goto error;
++
++		/*
++		 * Use larger one to prevent from both of XRUN and successive
++		 * blocking.
++		 */
++		if (frames_for_start_threshold > frames_per_period)
++			avail_count = (unsigned int)frames_for_start_threshold;
++		else
++			avail_count = (unsigned int)frames_per_period;
++	}
++
++	err = write_frames(state, frame_count, avail_count, mapper, cntrs);
++	if (err < 0)
++		goto error;
++
++	return 0;
++error:
++	*frame_count = 0;
++	return err;
++}
++
++static int irq_rw_pre_process(struct libasound_state *state)
++{
++	struct frame_cache *cache = state->private_data;
++	snd_pcm_format_t format;
++	snd_pcm_uframes_t frames_per_buffer;
++	int bytes_per_sample;
++	uint64_t bytes_per_buffer;
++	int err;
++
++	err = snd_pcm_hw_params_get_format(state->hw_params, &format);
++	if (err < 0)
++		return err;
++	bytes_per_sample = snd_pcm_format_physical_width(format);
++	if (bytes_per_sample <= 0)
++		return -ENXIO;
++	cache->bytes_per_sample = bytes_per_sample;
++
++	err = snd_pcm_hw_params_get_channels(state->hw_params,
++					     &cache->samples_per_frame);
++	if (err < 0)
++		return err;
++
++	err = snd_pcm_hw_params_get_buffer_size(state->hw_params,
++						&frames_per_buffer);
++	if (err < 0)
++		return err;
++	cache->frames_per_buffer = (unsigned int)frames_per_buffer;
++
++	/* Allocate buffer and assign callback for alignment. */
++	err = snd_pcm_hw_params_get_access(state->hw_params, &cache->access);
++	if (err < 0)
++		return err;
++	if (cache->access == SND_PCM_ACCESS_RW_INTERLEAVED) {
++		bytes_per_buffer = cache->bytes_per_sample *
++				   cache->samples_per_frame *
++				   cache->frames_per_buffer;
++		cache->buf = malloc(bytes_per_buffer);
++		if (cache->buf == NULL)
++			return -ENOMEM;
++		cache->buf_ptr = cache->buf;
++		cache->align_frames = align_frames_in_i;
++	} else if (cache->access == SND_PCM_ACCESS_RW_NONINTERLEAVED) {
++		char **bufs;
++		char **buf_ptrs;
++		int i;
++		bufs = calloc(cache->samples_per_frame * 2, sizeof(*bufs));
++		if (bufs == NULL)
++			return -ENOMEM;
++		buf_ptrs = bufs + cache->samples_per_frame * sizeof(*bufs);
++		for (i = 0; i < cache->samples_per_frame; ++i) {
++			bytes_per_buffer = cache->bytes_per_sample *
++					   cache->frames_per_buffer;
++			bufs[i] = malloc(bytes_per_buffer);
++			if (bufs[i] == NULL)
++				return -ENOMEM;
++			buf_ptrs[i] = bufs[i];
++		}
++		cache->buf = bufs;
++		cache->buf_ptr = buf_ptrs;
++		cache->align_frames = align_frames_in_n;
++	} else {
++		return -ENXIO;
++	}
++
++	if (snd_pcm_stream(state->handle) == SND_PCM_STREAM_CAPTURE)
++		cache->handle = r_process_frames_blocking;
++	else
++		cache->handle = w_process_frames_blocking;
++
++	return 0;
++}
++
++static int irq_rw_process_frames(struct libasound_state *state,
++				unsigned int *frame_count,
++				struct mapper_context *mapper,
++				struct container_context *cntrs)
++{
++	struct frame_cache *cache = state->private_data;
++	snd_pcm_state_t status;
++
++	/* Need to recover the stream. */
++	status = snd_pcm_state(state->handle);
++	if (status != SND_PCM_STATE_RUNNING && status != SND_PCM_STATE_PREPARED)
++		return -EPIPE;
++
++	/* NOTE: Actually, status can be shift always. */
++	return cache->handle(state, status, frame_count, mapper, cntrs);
++}
++
++static void irq_rw_post_process(struct libasound_state *state)
++{
++	struct frame_cache *cache = state->private_data;
++
++	if (cache->buf == NULL) {
++		if (cache->access == SND_PCM_ACCESS_RW_NONINTERLEAVED) {
++			char **bufs = cache->buf;
++			char **buf_ptrs = cache->buf_ptr;
++			int i;
++			for (i = 0; i < cache->samples_per_frame; ++i) {
++				if (bufs[i])
++					free(bufs[i]);
++				bufs[i] = NULL;
++				buf_ptrs[i] = NULL;
++			}
++			free(cache->buf_ptr);
++		}
++		free(cache->buf);
++	}
++	cache->buf = NULL;
++	cache->buf_ptr = NULL;
++}
++
++const struct xfer_libasound_ops xfer_libasound_irq_rw_ops = {
++	.pre_process	= irq_rw_pre_process,
++	.process_frames	= irq_rw_process_frames,
++	.post_process	= irq_rw_post_process,
++	.private_size	= sizeof(struct frame_cache),
++};
 diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
-index 4bf5b58b..54c58b04 100644
+index 0683090c..f4a1f51a 100644
 --- a/axfer/xfer-libasound.c
 +++ b/axfer/xfer-libasound.c
-@@ -150,7 +150,11 @@ end:
- static int configure_hw_params(struct libasound_state *state,
- 			       snd_pcm_format_t format,
- 			       unsigned int samples_per_frame,
--			       unsigned int frames_per_second)
-+			       unsigned int frames_per_second,
-+			       unsigned int msec_per_period,
-+			       unsigned int msec_per_buffer,
-+			       snd_pcm_uframes_t frames_per_period,
-+			       snd_pcm_uframes_t frames_per_buffer)
- {
- 	int err;
+@@ -48,8 +48,12 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 		node = opts->node;
  
-@@ -221,6 +225,84 @@ static int configure_hw_params(struct libasound_state *state,
+ 	err = snd_pcm_open(&state->handle, node, direction, 0);
+-	if (err < 0)
++	if (err < 0) {
++		fprintf(stderr,
++			"Fail to open libasound PCM node for %s: %s\n",
++			snd_pcm_stream_name(direction), node);
  		return err;
- 	}
++	}
  
-+	/* Keep one of 'frames_per_buffer' and 'msec_per_buffer'. */
-+	if (frames_per_buffer == 0) {
-+		if (msec_per_buffer == 0) {
-+			err = snd_pcm_hw_params_get_buffer_time_max(
-+				state->hw_params, &msec_per_buffer, NULL);
-+			if (err < 0) {
-+				logging(state,
-+					_("The maximum msec per buffer is not "
-+					  "available.\n"));
-+				return err;
-+			}
-+			if (msec_per_buffer > 500000)
-+				msec_per_buffer = 500000;
-+		}
-+	} else if (msec_per_buffer > 0) {
-+		uint64_t msec;
-+
-+		msec = 1000000 * frames_per_buffer / frames_per_second;
-+		if (msec < msec_per_buffer)
-+			msec_per_buffer = 0;
-+	}
-+
-+	/* Keep one of 'frames_per_period' and 'msec_per_period'. */
-+	if (frames_per_period == 0) {
-+		if (msec_per_period == 0) {
-+			if (msec_per_buffer > 0)
-+				msec_per_period = msec_per_buffer / 4;
-+			else
-+				frames_per_period = frames_per_buffer / 4;
-+		}
-+	} else if (msec_per_period > 0) {
-+		uint64_t msec;
-+
-+		msec = 1000000 * frames_per_period / frames_per_second;
-+		if (msec < msec_per_period)
-+			msec_per_period = 0;
-+	}
-+
-+	if (msec_per_period) {
-+		err = snd_pcm_hw_params_set_period_time_near(state->handle,
-+				state->hw_params, &msec_per_period, NULL);
-+		if (err < 0) {
-+			logging(state,
-+				_("Fail to configure period time: %u msec\n"),
-+				msec_per_period);
-+			return err;
-+		}
+ 	err = snd_pcm_hw_params_malloc(&state->hw_params);
+ 	if (err < 0)
+@@ -215,6 +219,12 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
+ 		return err;
+ 
+ 	/* Assign I/O operation. */
++	if (*access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++	    *access == SND_PCM_ACCESS_RW_NONINTERLEAVED) {
++		state->ops = &xfer_libasound_irq_rw_ops;
 +	} else {
-+		err = snd_pcm_hw_params_set_period_size_near(state->handle,
-+				state->hw_params, &frames_per_period, NULL);
-+		if (err < 0) {
-+			logging(state,
-+				_("Fail to configure period size: %lu frames\n"),
-+				frames_per_period);
-+			return err;
-+		}
++		return -ENXIO;
 +	}
-+
-+	if (msec_per_buffer) {
-+		err = snd_pcm_hw_params_set_buffer_time_near(state->handle,
-+				state->hw_params, &msec_per_buffer, NULL);
-+		if (err < 0) {
-+			logging(state,
-+				_("Fail to configure buffer time: %u msec\n"),
-+				msec_per_buffer);
-+			return err;
-+		}
-+	} else {
-+		err = snd_pcm_hw_params_set_buffer_size_near(state->handle,
-+					state->hw_params, &frames_per_buffer);
-+		if (err < 0) {
-+			logging(state,
-+				_("Fail to configure buffer size: %lu frames\n"),
-+				frames_per_buffer);
-+			return err;
-+		}
-+	}
-+
- 	return snd_pcm_hw_params(state->handle, state->hw_params);
- }
- 
-@@ -266,7 +348,8 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
- 				      unsigned int *samples_per_frame,
- 				      unsigned int *frames_per_second,
- 				      snd_pcm_access_t *access,
--				      snd_pcm_uframes_t *frames_per_buffer)
-+				      snd_pcm_uframes_t *frames_per_buffer,
-+				      struct context_options *opts)
- {
- 	struct libasound_state *state = xfer->private_data;
- 	int err;
-@@ -275,7 +358,10 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
- 		return -ENXIO;
- 
- 	err = configure_hw_params(state, *format, *samples_per_frame,
--				  *frames_per_second);
-+				  *frames_per_second, opts->msec_per_period,
-+				  opts->msec_per_buffer,
-+				  opts->frames_per_period,
-+				  opts->frames_per_buffer);
- 	if (err < 0) {
- 		logging(state, _("Current hardware parameters:\n"));
- 		snd_pcm_hw_params_dump(state->hw_params, state->log);
+ 	if (state->ops->private_size > 0) {
+ 		state->private_data = malloc(state->ops->private_size);
+ 		if (state->private_data == NULL)
 diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
-index d0771f8a..db85e604 100644
+index 72807cdd..97b26634 100644
 --- a/axfer/xfer-libasound.h
 +++ b/axfer/xfer-libasound.h
-@@ -22,7 +22,6 @@ struct libasound_state {
- 	snd_output_t *log;
+@@ -42,4 +42,7 @@ struct xfer_libasound_ops {
+ 	unsigned int private_size;
+ };
  
- 	snd_pcm_hw_params_t *hw_params;
--
- 	snd_pcm_sw_params_t *sw_params;
- 
- 	bool running;
-diff --git a/axfer/xfer.c b/axfer/xfer.c
-index 81825bcc..d004abf9 100644
---- a/axfer/xfer.c
-+++ b/axfer/xfer.c
-@@ -68,7 +68,8 @@ int xfer_context_pre_process(struct xfer_context *xfer,
- 			     unsigned int *samples_per_frame,
- 			     unsigned int *frames_per_second,
- 			     snd_pcm_access_t *access,
--			     snd_pcm_uframes_t *frames_per_buffer)
-+			     snd_pcm_uframes_t *frames_per_buffer,
-+			     struct context_options *opts)
- {
- 	int err;
- 
-@@ -84,7 +85,7 @@ int xfer_context_pre_process(struct xfer_context *xfer,
- 
- 	err = xfer->ops->pre_process(xfer, format, samples_per_frame,
- 				     frames_per_second, access,
--				     frames_per_buffer);
-+				     frames_per_buffer, opts);
- 	if (err < 0)
- 		return err;
- 
-diff --git a/axfer/xfer.h b/axfer/xfer.h
-index b90c005b..167c9903 100644
---- a/axfer/xfer.h
-+++ b/axfer/xfer.h
-@@ -34,7 +34,8 @@ int xfer_context_pre_process(struct xfer_context *xfer,
- 			     unsigned int *samples_per_frame,
- 			     unsigned int *frames_per_second,
- 			     snd_pcm_access_t *access,
--			     snd_pcm_uframes_t *frames_per_buffer);
-+			     snd_pcm_uframes_t *frames_per_buffer,
-+			     struct context_options *opts);
- int xfer_context_process_frames(struct xfer_context *xfer,
- 				struct mapper_context *mapper,
- 				struct container_context *cntrs,
-@@ -51,7 +52,8 @@ struct xfer_ops {
- 			   unsigned int *samples_per_frame,
- 			   unsigned int *frames_per_second,
- 			   snd_pcm_access_t *access,
--			   snd_pcm_uframes_t *frames_per_buffer);
-+			   snd_pcm_uframes_t *frames_per_buffer,
-+			   struct context_options *opts);
- 	int (*process_frames)(struct xfer_context *xfer,
- 			      unsigned int *frame_count,
- 			      struct mapper_context *mapper,
++extern const struct xfer_libasound_ops xfer_libasound_irq_mmap_ops;
++extern const struct xfer_libasound_ops xfer_libasound_irq_rw_ops;
++
+ #endif
 -- 
 2.11.0
