@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 14/38] axfer: add a common interface to
-	transfer data frames
-Date: Tue, 19 Sep 2017 09:43:54 +0900
-Message-ID: <20170919004418.24668-15-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 18/38] axfer: add informative output and
+	an option to suppress it
+Date: Tue, 19 Sep 2017 09:43:58 +0900
+Message-ID: <20170919004418.24668-19-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 01DDF266E93
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:27 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id AFE96266E13
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:29 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,284 +25,102 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA has PCM interface to transfer data frames. In userspace, there're
-some implementation to utilize this interface to produce application
-programming interface; alsa-lib (libasound) and tinyalsa. However, it's
-possible to use the interface with raw I/O operations.
+In current aplay, some informative output is available as a default. This
+can be suppressed by a quiet option. This commit adds support for it.
 
-This commit adds an common interface to transfer data frames for this
-program, named as 'xfer'. This internal interface is designed for users
-to select several backend for data transmission. This includes some
-functions expected to be called by main program just for data
-transmission. In an aspect to maintain PCM substream, suspend feature is
-required to handle a pair of SIGTSTP/SIGCONT UNIX signals.
+Unfortunately, original implementation includes contradiction in a case
+to handle multiple files, thus this commit cannot keep fully compatibility.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am |   7 ++-
- axfer/xfer.c      | 153 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/xfer.h      |  71 +++++++++++++++++++++++++
- 3 files changed, 229 insertions(+), 2 deletions(-)
- create mode 100644 axfer/xfer.c
- create mode 100644 axfer/xfer.h
+ axfer/options.c         |  5 ++++-
+ axfer/options.h         |  1 +
+ axfer/subcmd-transfer.c | 27 +++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 3b1a87c8..c1534411 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -19,7 +19,8 @@ noinst_HEADERS = \
- 	subcmd.h \
- 	container.h \
- 	mapper.h
--	options.h
-+	options.h \
-+	xfer.h
+diff --git a/axfer/options.c b/axfer/options.c
+index f3b0414b..a094ccb5 100644
+--- a/axfer/options.c
++++ b/axfer/options.c
+@@ -263,11 +263,12 @@ static int apply_policies(struct context_options *opts,
+ int context_options_init(struct context_options *opts, int argc,
+ 			 char *const *argv, snd_pcm_stream_t direction)
+ {
+-	static const char *s_opts = "hvt:ID:f:c:r:";
++	static const char *s_opts = "hvqt:ID:f:c:r:";
+ 	static const struct option l_opts[] = {
+ 		/* For generic purposes. */
+ 		{"help",		0, 0, 'h'},
+ 		{"verbose",		0, 0, 'v'},
++		{"quiet",		0, 0, 'q'},
+ 		/* For containers. */
+ 		{"file-type",		1, 0, 't'},
+ 		/* For mapper. */
+@@ -295,6 +296,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->help = true;
+ 		else if (c == 'v')
+ 			++opts->verbose;
++		else if (c == 'q')
++			opts->quiet = true;
+ 		else if (c == 't')
+ 			cntr_format_literal = optarg;
+ 		else if (c == 'I')
+diff --git a/axfer/options.h b/axfer/options.h
+index 38bdbb74..9c9b46d7 100644
+--- a/axfer/options.h
++++ b/axfer/options.h
+@@ -16,6 +16,7 @@ struct context_options {
  
- axfer_SOURCES = \
- 	misc.h \
-@@ -37,4 +38,6 @@ axfer_SOURCES = \
- 	mapper-single.c \
- 	mapper-multiple.c \
- 	options.h \
--	options.c
-+	options.c \
-+	xfer.h \
-+	xfer.c
-diff --git a/axfer/xfer.c b/axfer/xfer.c
-new file mode 100644
-index 00000000..3cbb0f14
---- /dev/null
-+++ b/axfer/xfer.c
-@@ -0,0 +1,153 @@
-+/*
-+ * xfer.c - receiver/transmiter of data frames.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "xfer.h"
-+#include "misc.h"
-+
-+#include <stdio.h>
-+
-+static const char *const xfer_type_labels[] = {
-+	[XFER_TYPE_COUNT] = "",
-+};
-+
-+int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
-+		      snd_pcm_stream_t direction, struct context_options *opts)
-+{
-+	struct {
-+		enum xfer_type type;
-+		const struct xfer_data *data;
-+	} entries[] = {
-+		{XFER_TYPE_COUNT, NULL},
-+	};
-+	int i;
-+
-+	assert(xfer);
-+	assert(direction >= SND_PCM_STREAM_PLAYBACK);
-+	assert(direction <= SND_PCM_STREAM_CAPTURE);
-+	assert(opts);
-+
-+	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
-+		if (entries[i].type == type)
-+			break;
-+	}
-+	if (i == ARRAY_SIZE(entries))
-+		return -EINVAL;
-+
-+	xfer->type = type;
-+	xfer->ops = &entries[i].data->ops;
-+	xfer->verbose = opts->verbose;
-+
-+	xfer->private_data = malloc(entries[i].data->private_size);
-+	if (xfer->private_data == NULL)
-+		return -ENOMEM;
-+	memset(xfer->private_data, 0, entries[i].data->private_size);
-+
-+	return xfer->ops->init(xfer, direction, opts);
-+}
-+
-+void xfer_context_destroy(struct xfer_context *xfer)
-+{
-+	assert(xfer);
-+
-+	if (!xfer->ops)
-+		return;
-+
-+	if (xfer->ops->destroy)
-+		xfer->ops->destroy(xfer);
-+	if (xfer->private_data)
-+		free(xfer->private_data);
-+}
-+
-+int xfer_context_pre_process(struct xfer_context *xfer,
-+			     snd_pcm_format_t *format,
-+			     unsigned int *samples_per_frame,
-+			     unsigned int *frames_per_second,
-+			     snd_pcm_access_t *access,
-+			     snd_pcm_uframes_t *frames_per_buffer)
-+{
-+	int err;
-+
-+	assert(xfer);
-+	assert(format);
-+	assert(samples_per_frame);
-+	assert(frames_per_second);
-+	assert(access);
-+	assert(frames_per_buffer);
-+
-+	if (!xfer->ops)
-+		return -ENXIO;
-+
-+	err = xfer->ops->pre_process(xfer, format, samples_per_frame,
-+				     frames_per_second, access,
-+				     frames_per_buffer);
-+	if (err < 0)
-+		return err;
-+
-+	assert(*format >= SND_PCM_FORMAT_S8);
-+	assert(*format <= SND_PCM_FORMAT_LAST);
-+	assert(*samples_per_frame > 0);
-+	assert(*frames_per_second > 0);
-+	assert(*access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
-+	assert(*access <= SND_PCM_ACCESS_LAST);
-+	assert(*frames_per_buffer > 0);
-+
-+	if (xfer->verbose > 0) {
-+		fprintf(stderr, "Transfer: %s\n",
-+			xfer_type_labels[xfer->type]);
-+		fprintf(stderr, "  access: %s\n",
-+			snd_pcm_access_name(*access));
-+		fprintf(stderr, "  sample format: %s\n",
-+			snd_pcm_format_name(*format));
-+		fprintf(stderr, "  bytes/sample: %u\n",
-+		       snd_pcm_format_physical_width(*format) / 8);
-+		fprintf(stderr, "  samples/frame: %u\n",
-+			*samples_per_frame);
-+		fprintf(stderr, "  frames/second: %u\n",
-+			*frames_per_second);
-+		fprintf(stderr, "  frames/buffer: %lu\n",
-+			*frames_per_buffer);
+ 	/* For generic purposes. */
+ 	unsigned int verbose;
++	bool quiet;
+ 
+ 	/* For containers. */
+ 	char **paths;
+diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
+index 9e39ff85..da11f43f 100644
+--- a/axfer/subcmd-transfer.c
++++ b/axfer/subcmd-transfer.c
+@@ -362,6 +362,21 @@ static int context_process_frames(struct context *ctx,
+ 	int i;
+ 	int err = 0;
+ 
++	if (!ctx->opts.quiet) {
++		fprintf(stderr,
++			_("%s: Format '%s', Rate %u Hz, Channels "),
++			snd_pcm_stream_name(direction),
++			snd_pcm_format_description(ctx->opts.sample_format),
++			ctx->opts.frames_per_second);
++		if (ctx->opts.samples_per_frame == 1)
++			fprintf(stderr, _("'monaural'"));
++		else if (ctx->opts.samples_per_frame == 2)
++			fprintf(stderr, "'Stereo'");
++		else
++			fprintf(stderr, "%u", ctx->opts.samples_per_frame);
++		fprintf(stderr, "\n");
 +	}
 +
-+	return 0;
-+}
+ 	*actual_frame_count = 0;
+ 	while (!ctx->interrupted) {
+ 		struct container_context *cntr;
+@@ -388,6 +403,18 @@ static int context_process_frames(struct context *ctx,
+ 			break;
+ 	}
+ 
++	if (!ctx->opts.quiet) {
++		fprintf(stderr,
++			_("%s: Expected %lu frames, Actual %lu frames\n"),
++			snd_pcm_stream_name(direction), expected_frame_count,
++			*actual_frame_count);
++		if (ctx->interrupted) {
++			fprintf(stderr, _("Aborted by signal: %s\n"),
++			       strsignal(ctx->signal));
++			return 0;
++		}
++	}
 +
-+int xfer_context_process_frames(struct xfer_context *xfer,
-+				struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int *frame_count)
-+{
-+	assert(xfer);
-+	assert(mapper);
-+	assert(cntrs);
-+	assert(frame_count);
-+
-+	if (!xfer->ops)
-+		return -ENXIO;
-+
-+	return xfer->ops->process_frames(xfer, frame_count, mapper, cntrs);
-+}
-+
-+void xfer_context_pause(struct xfer_context *xfer, bool enable)
-+{
-+	assert(xfer);
-+
-+	if (!xfer->ops)
-+		return;
-+
-+	xfer->ops->pause(xfer, enable);
-+}
-+
-+void xfer_context_post_process(struct xfer_context *xfer)
-+{
-+	assert(xfer);
-+
-+	if (!xfer->ops)
-+		return;
-+
-+	xfer->ops->post_process(xfer);
-+}
-diff --git a/axfer/xfer.h b/axfer/xfer.h
-new file mode 100644
-index 00000000..4e3f1f37
---- /dev/null
-+++ b/axfer/xfer.h
-@@ -0,0 +1,71 @@
-+/*
-+ * xfer.h - a header for receiver/transmiter of data frames.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#ifndef __ALSA_UTILS_AXFER_XFER__H_
-+#define __ALSA_UTILS_AXFER_XFER__H_
-+
-+#include "mapper.h"
-+#include "options.h"
-+
-+enum xfer_type {
-+	XFER_TYPE_COUNT,
-+};
-+
-+struct xfer_ops;
-+
-+struct xfer_context  {
-+	enum xfer_type type;
-+	const struct xfer_ops *ops;
-+	void *private_data;
-+
-+	unsigned int verbose;
-+};
-+
-+int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
-+		      snd_pcm_stream_t direction, struct context_options *opts);
-+void xfer_context_destroy(struct xfer_context *xfer);
-+int xfer_context_pre_process(struct xfer_context *xfer,
-+			     snd_pcm_format_t *format,
-+			     unsigned int *samples_per_frame,
-+			     unsigned int *frames_per_second,
-+			     snd_pcm_access_t *access,
-+			     snd_pcm_uframes_t *frames_per_buffer);
-+int xfer_context_process_frames(struct xfer_context *xfer,
-+				struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int *frame_count);
-+void xfer_context_pause(struct xfer_context *xfer, bool enable);
-+void xfer_context_post_process(struct xfer_context *xfer);
-+
-+/* For internal use in 'xfer' module. */
-+
-+struct xfer_ops {
-+	int (*init)(struct xfer_context *xfer, snd_pcm_stream_t direction,
-+		    struct context_options *opts);
-+	int (*pre_process)(struct xfer_context *xfer, snd_pcm_format_t *format,
-+			   unsigned int *samples_per_frame,
-+			   unsigned int *frames_per_second,
-+			   snd_pcm_access_t *access,
-+			   snd_pcm_uframes_t *frames_per_buffer);
-+	int (*process_frames)(struct xfer_context *xfer,
-+			      unsigned int *frame_count,
-+			      struct mapper_context *mapper,
-+			      struct container_context *cntrs);
-+	void (*post_process)(struct xfer_context *xfer);
-+	void (*destroy)(struct xfer_context *xfer);
-+	void (*pause)(struct xfer_context *xfer, bool enable);
-+};
-+
-+struct xfer_data {
-+	struct xfer_ops ops;
-+	unsigned int private_size;
-+};
-+
-+extern const struct xfer_data xfer_alsa;
-+
-+#endif
+ 	return err;
+ }
+ 
 -- 
 2.11.0
