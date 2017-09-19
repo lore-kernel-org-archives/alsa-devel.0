@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Add new common Arizona init function" to the asoc tree
-Date: Tue, 19 Sep 2017 16:00:05 +0100
-Message-ID: <E1duK0L-0002JN-D1@debutante>
-References: <20170904154154.4395-2-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: arizona: Add handling for audio related device tree entries" to the asoc tree
+Date: Tue, 19 Sep 2017 16:00:02 +0100
+Message-ID: <E1duK0I-0002I9-1j@debutante>
+References: <20170904154154.4395-3-ckeepax@opensource.cirrus.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170904154154.4395-2-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20170904154154.4395-3-ckeepax@opensource.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
 Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lee.jones@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Add new common Arizona init function
+   ASoC: arizona: Add handling for audio related device tree entries
 
 has been applied to the asoc tree at
 
@@ -37,171 +37,301 @@ to this mail.
 Thanks,
 Mark
 
->From 9e3f9f36a6f40bb6ba9b3844d709314121e4c106 Mon Sep 17 00:00:00 2001
+>From 0a229b15d99e0a9761f9672f4ff7efeb18ce0ea1 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Mon, 4 Sep 2017 16:41:48 +0100
-Subject: [PATCH] ASoC: arizona: Add new common Arizona init function
+Date: Mon, 4 Sep 2017 16:41:49 +0100
+Subject: [PATCH] ASoC: arizona: Add handling for audio related device tree
+ entries
 
-Currently the driver has quite a few small initialisation functions, in
-preparation for some refactoring add a new function arizona_init_common.
-This will be used bus probe level initialisation that is common across
-Arizona devices. For now just move the notifier chain initialisation in
-there.
+Currently all the audio related device tree entries are handled by the
+MFD code, for most parts of the Arizona driver we group the device
+tree handling with the component that uses it and should do so here as
+well.
+
+Add handling in the ASoC code for the audio device tree entries, a
+later patch removes the MFD side handling but there is no harm in it
+being duplicated temporarily.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 7 ++-----
- sound/soc/codecs/arizona.h | 3 ++-
- sound/soc/codecs/cs47l24.c | 3 ++-
- sound/soc/codecs/wm5102.c  | 3 ++-
- sound/soc/codecs/wm5110.c  | 3 ++-
- sound/soc/codecs/wm8997.c  | 4 ++--
- sound/soc/codecs/wm8998.c  | 3 ++-
- 7 files changed, 14 insertions(+), 12 deletions(-)
+ sound/soc/codecs/arizona.c | 136 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h |   2 +
+ sound/soc/codecs/cs47l24.c |   8 +++
+ sound/soc/codecs/wm5102.c  |   8 +++
+ sound/soc/codecs/wm5110.c  |   8 +++
+ sound/soc/codecs/wm8997.c  |   8 +++
+ sound/soc/codecs/wm8998.c  |   8 +++
+ 7 files changed, 178 insertions(+)
 
 diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index a1149f6a8450..ba5f57a58219 100644
+index ba5f57a58219..e6967385dccb 100644
 --- a/sound/soc/codecs/arizona.c
 +++ b/sound/soc/codecs/arizona.c
-@@ -293,16 +293,13 @@ int arizona_init_gpio(struct snd_soc_codec *codec)
- }
- EXPORT_SYMBOL_GPL(arizona_init_gpio);
+@@ -13,6 +13,7 @@
+ #include <linux/delay.h>
+ #include <linux/gcd.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -295,8 +296,78 @@ EXPORT_SYMBOL_GPL(arizona_init_gpio);
  
--int arizona_init_notifiers(struct snd_soc_codec *codec)
-+int arizona_init_common(struct arizona *arizona)
+ int arizona_init_common(struct arizona *arizona)
  {
--	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
--	struct arizona *arizona = priv->arizona;
--
++	struct arizona_pdata *pdata = &arizona->pdata;
++	unsigned int val, mask;
++	int i;
++
  	BLOCKING_INIT_NOTIFIER_HEAD(&arizona->notifier);
  
++	for (i = 0; i < ARIZONA_MAX_OUTPUT; ++i) {
++		/* Default is 0 so noop with defaults */
++		if (pdata->out_mono[i])
++			val = ARIZONA_OUT1_MONO;
++		else
++			val = 0;
++
++		regmap_update_bits(arizona->regmap,
++				   ARIZONA_OUTPUT_PATH_CONFIG_1L + (i * 8),
++				   ARIZONA_OUT1_MONO, val);
++	}
++
++	for (i = 0; i < ARIZONA_MAX_PDM_SPK; i++) {
++		if (pdata->spk_mute[i])
++			regmap_update_bits(arizona->regmap,
++					   ARIZONA_PDM_SPK1_CTRL_1 + (i * 2),
++					   ARIZONA_SPK1_MUTE_ENDIAN_MASK |
++					   ARIZONA_SPK1_MUTE_SEQ1_MASK,
++					   pdata->spk_mute[i]);
++
++		if (pdata->spk_fmt[i])
++			regmap_update_bits(arizona->regmap,
++					   ARIZONA_PDM_SPK1_CTRL_2 + (i * 2),
++					   ARIZONA_SPK1_FMT_MASK,
++					   pdata->spk_fmt[i]);
++	}
++
++	for (i = 0; i < ARIZONA_MAX_INPUT; i++) {
++		/* Default for both is 0 so noop with defaults */
++		val = pdata->dmic_ref[i] << ARIZONA_IN1_DMIC_SUP_SHIFT;
++		if (pdata->inmode[i] & ARIZONA_INMODE_DMIC)
++			val |= 1 << ARIZONA_IN1_MODE_SHIFT;
++
++		switch (arizona->type) {
++		case WM8998:
++		case WM1814:
++			regmap_update_bits(arizona->regmap,
++				ARIZONA_ADC_DIGITAL_VOLUME_1L + (i * 8),
++				ARIZONA_IN1L_SRC_SE_MASK,
++				(pdata->inmode[i] & ARIZONA_INMODE_SE)
++					<< ARIZONA_IN1L_SRC_SE_SHIFT);
++
++			regmap_update_bits(arizona->regmap,
++				ARIZONA_ADC_DIGITAL_VOLUME_1R + (i * 8),
++				ARIZONA_IN1R_SRC_SE_MASK,
++				(pdata->inmode[i] & ARIZONA_INMODE_SE)
++					<< ARIZONA_IN1R_SRC_SE_SHIFT);
++
++			mask = ARIZONA_IN1_DMIC_SUP_MASK |
++			       ARIZONA_IN1_MODE_MASK;
++			break;
++		default:
++			if (pdata->inmode[i] & ARIZONA_INMODE_SE)
++				val |= 1 << ARIZONA_IN1_SINGLE_ENDED_SHIFT;
++
++			mask = ARIZONA_IN1_DMIC_SUP_MASK |
++			       ARIZONA_IN1_MODE_MASK |
++			       ARIZONA_IN1_SINGLE_ENDED_MASK;
++			break;
++		}
++
++		regmap_update_bits(arizona->regmap,
++				   ARIZONA_IN1L_CONTROL + (i * 8),
++				   mask, val);
++	}
++
  	return 0;
  }
--EXPORT_SYMBOL_GPL(arizona_init_notifiers);
-+EXPORT_SYMBOL_GPL(arizona_init_common);
+ EXPORT_SYMBOL_GPL(arizona_init_common);
+@@ -2692,6 +2763,71 @@ int arizona_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
+ }
+ EXPORT_SYMBOL_GPL(arizona_lhpf_coeff_put);
  
- const char * const arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
- 	"None",
++int arizona_of_get_audio_pdata(struct arizona *arizona)
++{
++	struct arizona_pdata *pdata = &arizona->pdata;
++	struct device_node *np = arizona->dev->of_node;
++	struct property *prop;
++	const __be32 *cur;
++	u32 val;
++	u32 pdm_val[ARIZONA_MAX_PDM_SPK];
++	int ret;
++	int count = 0;
++
++	count = 0;
++	of_property_for_each_u32(np, "wlf,inmode", prop, cur, val) {
++		if (count == ARRAY_SIZE(pdata->inmode))
++			break;
++
++		pdata->inmode[count] = val;
++		count++;
++	}
++
++	count = 0;
++	of_property_for_each_u32(np, "wlf,dmic-ref", prop, cur, val) {
++		if (count == ARRAY_SIZE(pdata->dmic_ref))
++			break;
++
++		pdata->dmic_ref[count] = val;
++		count++;
++	}
++
++	count = 0;
++	of_property_for_each_u32(np, "wlf,out-mono", prop, cur, val) {
++		if (count == ARRAY_SIZE(pdata->out_mono))
++			break;
++
++		pdata->out_mono[count] = !!val;
++		count++;
++	}
++
++	count = 0;
++	of_property_for_each_u32(np, "wlf,max-channels-clocked", prop, cur, val) {
++		if (count == ARRAY_SIZE(pdata->max_channels_clocked))
++			break;
++
++		pdata->max_channels_clocked[count] = val;
++		count++;
++	}
++
++	ret = of_property_read_u32_array(np, "wlf,spk-fmt",
++					 pdm_val, ARRAY_SIZE(pdm_val));
++
++	if (ret >= 0)
++		for (count = 0; count < ARRAY_SIZE(pdata->spk_fmt); ++count)
++			pdata->spk_fmt[count] = pdm_val[count];
++
++	ret = of_property_read_u32_array(np, "wlf,spk-mute",
++					 pdm_val, ARRAY_SIZE(pdm_val));
++
++	if (ret >= 0)
++		for (count = 0; count < ARRAY_SIZE(pdata->spk_mute); ++count)
++			pdata->spk_mute[count] = pdm_val[count];
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(arizona_of_get_audio_pdata);
++
+ MODULE_DESCRIPTION("ASoC Wolfson Arizona class device support");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
 diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 1822e3b3de80..292073ca3bd9 100644
+index 292073ca3bd9..2d198fb2ce97 100644
 --- a/sound/soc/codecs/arizona.h
 +++ b/sound/soc/codecs/arizona.h
-@@ -313,7 +313,8 @@ int arizona_set_fll(struct arizona_fll *fll, int source,
- int arizona_init_spk(struct snd_soc_codec *codec);
- int arizona_init_gpio(struct snd_soc_codec *codec);
- int arizona_init_mono(struct snd_soc_codec *codec);
--int arizona_init_notifiers(struct snd_soc_codec *codec);
-+
-+int arizona_init_common(struct arizona *arizona);
+@@ -351,4 +351,6 @@ static inline int arizona_unregister_notifier(struct snd_soc_codec *codec,
+ 	return blocking_notifier_chain_unregister(&arizona->notifier, nb);
+ }
  
- int arizona_init_spk_irqs(struct arizona *arizona);
- int arizona_free_spk_irqs(struct arizona *arizona);
++int arizona_of_get_audio_pdata(struct arizona *arizona);
++
+ #endif
 diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index e09fc8f037f1..fdcc7318993b 100644
+index fdcc7318993b..0fe7d7a87ff3 100644
 --- a/sound/soc/codecs/cs47l24.c
 +++ b/sound/soc/codecs/cs47l24.c
-@@ -1130,7 +1130,6 @@ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
+@@ -1229,6 +1229,14 @@ static int cs47l24_probe(struct platform_device *pdev)
+ 	if (!cs47l24)
+ 		return -ENOMEM;
  
- 	arizona_init_gpio(codec);
- 	arizona_init_mono(codec);
--	arizona_init_notifiers(codec);
- 
- 	ret = wm_adsp2_codec_probe(&priv->core.adsp[1], codec);
- 	if (ret)
-@@ -1288,6 +1287,8 @@ static int cs47l24_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	arizona_init_common(arizona);
++	if (IS_ENABLED(CONFIG_OF)) {
++		if (!dev_get_platdata(arizona->dev)) {
++			ret = arizona_of_get_audio_pdata(arizona);
++			if (ret < 0)
++				return ret;
++		}
++	}
 +
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		goto err_dsp_irq;
+ 	platform_set_drvdata(pdev, cs47l24);
+ 
+ 	cs47l24->core.arizona = arizona;
 diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 72486bf072f2..8354bdf7fc15 100644
+index 8354bdf7fc15..5a917dd73f32 100644
 --- a/sound/soc/codecs/wm5102.c
 +++ b/sound/soc/codecs/wm5102.c
-@@ -1951,7 +1951,6 @@ static int wm5102_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
+@@ -2042,6 +2042,14 @@ static int wm5102_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	platform_set_drvdata(pdev, wm5102);
  
- 	arizona_init_gpio(codec);
--	arizona_init_notifiers(codec);
- 
- 	snd_soc_component_disable_pin(component, "HAPTICS");
- 
-@@ -2098,6 +2097,8 @@ static int wm5102_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	arizona_init_common(arizona);
++	if (IS_ENABLED(CONFIG_OF)) {
++		if (!dev_get_platdata(arizona->dev)) {
++			ret = arizona_of_get_audio_pdata(arizona);
++			if (ret < 0)
++				return ret;
++		}
++	}
 +
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		goto err_dsp_irq;
+ 	mutex_init(&arizona->dac_comp_lock);
+ 
+ 	wm5102->core.arizona = arizona;
 diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 858a24fc28e8..0437df60be77 100644
+index 0437df60be77..ba1e90ca8be4 100644
 --- a/sound/soc/codecs/wm5110.c
 +++ b/sound/soc/codecs/wm5110.c
-@@ -2290,7 +2290,6 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+@@ -2397,6 +2397,14 @@ static int wm5110_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	platform_set_drvdata(pdev, wm5110);
  
- 	arizona_init_gpio(codec);
- 	arizona_init_mono(codec);
--	arizona_init_notifiers(codec);
- 
- 	for (i = 0; i < WM5110_NUM_ADSP; ++i) {
- 		ret = wm_adsp2_codec_probe(&priv->core.adsp[i], codec);
-@@ -2454,6 +2453,8 @@ static int wm5110_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	arizona_init_common(arizona);
++	if (IS_ENABLED(CONFIG_OF)) {
++		if (!dev_get_platdata(arizona->dev)) {
++			ret = arizona_of_get_audio_pdata(arizona);
++			if (ret < 0)
++				return ret;
++		}
++	}
 +
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		goto err_dsp_irq;
+ 	wm5110->core.arizona = arizona;
+ 	wm5110->core.num_inputs = 8;
+ 
 diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 49401a8aae64..91c3c3e052d1 100644
+index 91c3c3e052d1..c5aef9ecdecc 100644
 --- a/sound/soc/codecs/wm8997.c
 +++ b/sound/soc/codecs/wm8997.c
-@@ -1068,8 +1068,6 @@ static int wm8997_codec_probe(struct snd_soc_codec *codec)
- 	if (ret < 0)
- 		return ret;
+@@ -1134,6 +1134,14 @@ static int wm8997_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	platform_set_drvdata(pdev, wm8997);
  
--	arizona_init_notifiers(codec);
--
- 	snd_soc_component_disable_pin(component, "HAPTICS");
- 
- 	priv->core.arizona->dapm = dapm;
-@@ -1168,6 +1166,8 @@ static int wm8997_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_idle(&pdev->dev);
- 
-+	arizona_init_common(arizona);
++	if (IS_ENABLED(CONFIG_OF)) {
++		if (!dev_get_platdata(arizona->dev)) {
++			ret = arizona_of_get_audio_pdata(arizona);
++			if (ret < 0)
++				return ret;
++		}
++	}
 +
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		return ret;
+ 	wm8997->core.arizona = arizona;
+ 	wm8997->core.num_inputs = 4;
+ 
 diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 44f447136e22..27a8e1e75f28 100644
+index 27a8e1e75f28..c59caaa75ba0 100644
 --- a/sound/soc/codecs/wm8998.c
 +++ b/sound/soc/codecs/wm8998.c
-@@ -1330,7 +1330,6 @@ static int wm8998_codec_probe(struct snd_soc_codec *codec)
- 		return ret;
+@@ -1398,6 +1398,14 @@ static int wm8998_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	platform_set_drvdata(pdev, wm8998);
  
- 	arizona_init_gpio(codec);
--	arizona_init_notifiers(codec);
- 
- 	snd_soc_component_disable_pin(component, "HAPTICS");
- 
-@@ -1423,6 +1422,8 @@ static int wm8998_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_idle(&pdev->dev);
- 
-+	arizona_init_common(arizona);
++	if (IS_ENABLED(CONFIG_OF)) {
++		if (!dev_get_platdata(arizona->dev)) {
++			ret = arizona_of_get_audio_pdata(arizona);
++			if (ret < 0)
++				return ret;
++		}
++	}
 +
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		return ret;
+ 	wm8998->core.arizona = arizona;
+ 	wm8998->core.num_inputs = 3;	/* IN1L, IN1R, IN2 */
+ 
 -- 
 2.14.1
