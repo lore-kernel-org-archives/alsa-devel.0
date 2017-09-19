@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: atom: make sst_platform_compr_ops const" to the asoc tree
-Date: Tue, 19 Sep 2017 14:46:23 +0100
-Message-ID: <E1duIr1-0008EE-PF@debutante>
-References: <1505327916-24603-1-git-send-email-bhumirks@gmail.com>
+Subject: Applied "ASoC: rockchip: Add dapm route for DMic" to the asoc tree
+Date: Tue, 19 Sep 2017 14:46:47 +0100
+Message-ID: <E1duIrP-0008Ib-8y@debutante>
+References: <20170918014441.17572-2-jeffy.chen@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1505327916-24603-1-git-send-email-bhumirks@gmail.com>
+In-Reply-To: <20170918014441.17572-2-jeffy.chen@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: atom: make sst_platform_compr_ops const
+   ASoC: rockchip: Add dapm route for DMic
 
 has been applied to the asoc tree at
 
@@ -37,47 +37,30 @@ to this mail.
 Thanks,
 Mark
 
->From 86cb5dee237be6cf6c432299b829a5e85ed35029 Mon Sep 17 00:00:00 2001
-From: Bhumika Goyal <bhumirks@gmail.com>
-Date: Thu, 14 Sep 2017 00:08:36 +0530
-Subject: [PATCH] ASoC: Intel: atom: make sst_platform_compr_ops const
+>From cc9fee8e1a2088e1853a1ba7b9f91d0629da0807 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 18 Sep 2017 19:18:00 +0800
+Subject: [PATCH] ASoC: rockchip: Add dapm route for DMic
 
-Make this const as it not modified in the file referencing it.
-It only stored in the const field 'compr_ops' of a snd_soc_platform_driver
-structure. Also, add const to the declaration in the header file.
+Add dapm route for DMIC codec.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-compress.c | 2 +-
- sound/soc/intel/atom/sst-mfld-platform.h          | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rk3399_gru_sound.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-index 1bead81bb510..1dbcab5a6ff0 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
-@@ -259,7 +259,7 @@ static int sst_platform_compr_set_metadata(struct snd_compr_stream *cstream,
- 	return stream->compr_ops->set_metadata(sst->dev, stream->id, metadata);
- }
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 3475c61a5fa0..1ca269ee0b7e 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -54,6 +54,7 @@ static const struct snd_soc_dapm_route rockchip_dapm_routes[] = {
+ 	{"MIC", NULL, "Headset Mic"},
+ 	{"DMIC1L", NULL, "Int Mic"},
+ 	{"DMIC1R", NULL, "Int Mic"},
++	{"DMic", NULL, "Int Mic"},
  
--struct snd_compr_ops sst_platform_compr_ops = {
-+const struct snd_compr_ops sst_platform_compr_ops = {
- 
- 	.open = sst_platform_compr_open,
- 	.free = sst_platform_compr_free,
-diff --git a/sound/soc/intel/atom/sst-mfld-platform.h b/sound/soc/intel/atom/sst-mfld-platform.h
-index cb32cc7e5ec1..31a58c25472c 100644
---- a/sound/soc/intel/atom/sst-mfld-platform.h
-+++ b/sound/soc/intel/atom/sst-mfld-platform.h
-@@ -25,7 +25,7 @@
- #include "sst-atom-controls.h"
- 
- extern struct sst_device *sst;
--extern struct snd_compr_ops sst_platform_compr_ops;
-+extern const struct snd_compr_ops sst_platform_compr_ops;
- 
- #define SST_MONO		1
- #define SST_STEREO		2
+ 	/* Output Lines */
+ 	{"Headphones", NULL, "HPL"},
 -- 
 2.14.1
