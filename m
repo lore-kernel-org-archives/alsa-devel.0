@@ -1,18 +1,19 @@
 From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [RESEND PATCH v2 1/3] ASoC: rockchip: Add dapm
-	route for HDMI
-Date: Tue, 19 Sep 2017 20:37:34 +0800
-Message-ID: <59C10F8E.3000404@rock-chips.com>
+Subject: Re: [RESEND PATCH v2 3/3] ASoC: rockchip: Init dapm
+	routes dynamically
+Date: Tue, 19 Sep 2017 20:44:35 +0800
+Message-ID: <59C11133.5090400@rock-chips.com>
 References: <20170918111801.12881-1-jeffy.chen@rock-chips.com>
- <20170919121907.bsikxtaih2ca3z3o@sirena.co.uk>
+ <20170918111801.12881-3-jeffy.chen@rock-chips.com>
+ <20170919122803.kybaln43yho3deih@sirena.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 59237266F0D
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:37:42 +0200 (CEST)
-In-Reply-To: <20170919121907.bsikxtaih2ca3z3o@sirena.co.uk>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18609266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:44:57 +0200 (CEST)
+In-Reply-To: <20170919122803.kybaln43yho3deih@sirena.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,11 +29,22 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Mark,
 
-On 09/19/2017 08:19 PM, Mark Brown wrote:
-> On Mon, Sep 18, 2017 at 07:17:59PM +0800, Jeffy Chen wrote:
->> Add dapm route for DP codec.
+On 09/19/2017 08:28 PM, Mark Brown wrote:
+> On Mon, Sep 18, 2017 at 07:18:01PM +0800, Jeffy Chen wrote:
+>> Currently we are using a fixed list of dapm routes.
+>>
+>> Init dapm routes dynamically when parsing dailinks, since we are
+>> supporting optional codecs.
 >
-> This is a resend of a patch you posted earlier in the same day?
+> This doesn't apply against current code, please check and resend.
 >
-sorry, this is a resend of yesterday patches, to correct the wrong the 
-wrong patch tag("Asoc") to "ASoC"
+
+i rebased these patches to for-next 20170919, but nothing changed...
+
+
+but i found my other pending patch 
+(https://patchwork.kernel.org/patch/9958055) might conflict to this, 
+i'll send a new series to put all my patches together and solve the 
+conflict...
+
+sorry for the trouble..
