@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v12 2/2] ASoC: rockchip: Use bus_type to
- distinguish rt5514 dsp from rt5514 codec
-Date: Tue, 19 Sep 2017 13:46:13 +0100
-Message-ID: <20170919124613.egvojfhq74vhyvuh@sirena.co.uk>
-References: <20170919025439.7107-1-jeffy.chen@rock-chips.com>
- <20170919025439.7107-2-jeffy.chen@rock-chips.com>
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Subject: [PATCH v3 0/5] This series of patches fix the boot
+	time dapm route warnings(without rt5514):
+Date: Tue, 19 Sep 2017 20:57:55 +0800
+Message-ID: <20170919125800.336-1-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4684761327279581854=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C152266F0D
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:46:21 +0200 (CEST)
-In-Reply-To: <20170919025439.7107-2-jeffy.chen@rock-chips.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB9F6266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:58:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeffy Chen <jeffy.chen@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jeffy Chen <jeffy.chen@rock-chips.com>, dianders@chromium.org, Rob Herring <robh+dt@kernel.org>, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+[ 2.475501] rk3399-gru-sound sound: ASoC: no sink widget found for DMIC1L
+[ 2.475503] rk3399-gru-sound sound: ASoC: Failed to add route Int Mic -> direct -> DMIC1L
+[ 2.475505] rk3399-gru-sound sound: ASoC: no sink widget found for DMIC1R
+[ 2.475507] rk3399-gru-sound sound: ASoC: Failed to add route Int Mic -> direct -> DMIC1R
 
---===============4684761327279581854==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="k5xry7gwnpen5pqo"
-Content-Disposition: inline
+And support detect rt5514-dsp codec and rt5514 codec by checking bus_type.
 
+Changes in v3:
+Rebase onto for-next 20170919
 
---k5xry7gwnpen5pqo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Changes in v2:
+Separate HDMI/DMIC patches.
+Fix DMic typo.
 
-On Tue, Sep 19, 2017 at 10:54:39AM +0800, Jeffy Chen wrote:
-> Currently rt5514 dsp and rt5514 codec are sharing the same compatible.
-> Use bus_type to distinguish rt5514 dsp from rt5514 codec.
+Jeffy Chen (5):
+  ASoC: rockchip: Add dapm route for HDMI
+  ASoC: rockchip: Add dapm route for DMic
+  ASoC: rockchip: Init dapm routes dynamically
+  ASoC: rockchip: Use bus_type to distinguish rt5514 dsp from rt5514
+    codec
+  ASoC: rt5514: Add devicetree binding support for rt5514-spi
 
-This doens't apply against current code, please check and resend.
+ Documentation/devicetree/bindings/sound/rt5514.txt |  13 +-
+ sound/soc/rockchip/rk3399_gru_sound.c              | 149 +++++++++++++++++----
+ 2 files changed, 132 insertions(+), 30 deletions(-)
 
---k5xry7gwnpen5pqo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBEZQACgkQJNaLcl1U
-h9BBwwf/cEUFYKeCMaCWIoQEo2IprqsR6YKOmNtig4au9FPjVg+sxXRoAdrqy/Kx
-d7oCC7VOC+Vl3MblO1R7xhRWQFNugtVMZ1+Nf0JxQ3D/GVM12p2BIfIN+iR5N82g
-5OjGo6sVsmqa36iX2VHqpzGeJYw9GVKbrNrC0x0SeP8qGSyXx4YsMlqqmIirsjpc
-q2nM1wWHOVZs07x21CZsTacHMSQsazMqKtgaRlFQlIWkkO9QBMGQyWjIL/NKRnpD
-ePxk4Epe/fxUiZoWtbqkeuIiXmyF8BIseeRIgptb1jhe5coi8hpEHbbxIWXyki0W
-S95eBI5FkTxLUq/bHqhWSnbn2y2dGA==
-=4g+E
------END PGP SIGNATURE-----
-
---k5xry7gwnpen5pqo--
-
---===============4684761327279581854==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4684761327279581854==--
+-- 
+2.11.0
