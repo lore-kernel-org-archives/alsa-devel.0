@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_max98090: Fix I2S config
-	+ unused code" to the asoc tree
-Date: Tue, 19 Sep 2017 14:45:47 +0100
-Message-ID: <E1duIqR-000862-Ls@debutante>
-References: <20170822203239.19891-4-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A999E26735F
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 15:45:49 +0200 (CEST)
-In-Reply-To: <20170822203239.19891-4-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Applied "ASoC: Intel: atom: make sst_platform_compr_ops const" to the asoc tree
+Date: Tue, 19 Sep 2017 14:46:23 +0100
+Message-ID: <E1duIr1-0008EE-PF@debutante>
+References: <1505327916-24603-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1505327916-24603-1-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_max98090: Fix I2S config + unused code
+   ASoC: Intel: atom: make sst_platform_compr_ops const
 
 has been applied to the asoc tree at
 
@@ -53,45 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From 948c5e192eaeef5bd8b479135ea83d1f97d78bb8 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Sep 2017 00:13:04 -0500
-Subject: [PATCH] ASoC: Intel: cht_bsw_max98090: Fix I2S config + unused code
+>From 86cb5dee237be6cf6c432299b829a5e85ed35029 Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Thu, 14 Sep 2017 00:08:36 +0530
+Subject: [PATCH] ASoC: Intel: atom: make sst_platform_compr_ops const
 
-This driver probably never worked, the slots are configured
-for 2ch 16 bit and the SSP2 as 24 bits, the cpu_dai configured as
-LEFT_J and the codec_dai as I2S.
+Make this const as it not modified in the file referencing it.
+It only stored in the const field 'compr_ops' of a snd_soc_platform_driver
+structure. Also, add const to the declaration in the header file.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-compress.c | 2 +-
+ sound/soc/intel/atom/sst-mfld-platform.h          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 20755ecc7f9e..455a55af7ad2 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -160,7 +160,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 		return ret;
- 	}
- 
--	fmt = SND_SOC_DAIFMT_LEFT_J | SND_SOC_DAIFMT_NB_NF
-+	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBS_CFS;
- 
- 	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, fmt);
-@@ -173,8 +173,8 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	rate->min = rate->max = 48000;
- 	channels->min = channels->max = 2;
- 
--	/* set SSP2 to 24-bit */
--	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
-+	/* set SSP2 to 16-bit */
-+	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-compress.c b/sound/soc/intel/atom/sst-mfld-platform-compress.c
+index 1bead81bb510..1dbcab5a6ff0 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-compress.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-compress.c
+@@ -259,7 +259,7 @@ static int sst_platform_compr_set_metadata(struct snd_compr_stream *cstream,
+ 	return stream->compr_ops->set_metadata(sst->dev, stream->id, metadata);
  }
  
+-struct snd_compr_ops sst_platform_compr_ops = {
++const struct snd_compr_ops sst_platform_compr_ops = {
+ 
+ 	.open = sst_platform_compr_open,
+ 	.free = sst_platform_compr_free,
+diff --git a/sound/soc/intel/atom/sst-mfld-platform.h b/sound/soc/intel/atom/sst-mfld-platform.h
+index cb32cc7e5ec1..31a58c25472c 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform.h
++++ b/sound/soc/intel/atom/sst-mfld-platform.h
+@@ -25,7 +25,7 @@
+ #include "sst-atom-controls.h"
+ 
+ extern struct sst_device *sst;
+-extern struct snd_compr_ops sst_platform_compr_ops;
++extern const struct snd_compr_ops sst_platform_compr_ops;
+ 
+ #define SST_MONO		1
+ #define SST_STEREO		2
 -- 
 2.14.1
