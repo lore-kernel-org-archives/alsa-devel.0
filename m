@@ -1,129 +1,77 @@
-From: Meng Xu <meng.xu@gatech.edu>
-Subject: Re: [PATCH] ALSA: asihpi: fix a potential double-fetch bug when
- copying puhm
-Date: Tue, 19 Sep 2017 09:54:22 -0400
-Message-ID: <8b2e7d4a-6b77-ffed-176f-257219b9ecb5@gatech.edu>
-References: <1505798516-22482-1-git-send-email-mengxu.gatech@gmail.com>
- <s5h377jgncb.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h377jgncb.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Meng Xu <mengxu.gatech@gmail.com>
-Cc: alsa-devel@alsa-project.org, perex@perex.cz, vlad@tsyrklevich.net, linux-kernel@vger.kernel.org, sanidhya@gatech.edu, taesoo@gatech.edu
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: samsung: Fix invalid argument when devm_gpiod_get is called" to the asoc tree
+Date: Tue, 19 Sep 2017 15:59:28 +0100
+Message-ID: <E1duJzk-0002CY-3Y@debutante>
+References: <20170828100102.17591-4-jcsing.lee@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20170828100102.17591-4-jcsing.lee@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Jaechul Lee <jcsing.lee@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Chanwoo Choi <cw00.choi@samsung.com>, galaxyra@gmail.com, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+The patch
 
-Thanks for the reply. In my opinion, many security issues
-are in fact unhandled corner cases and this could be one.
+   ASoC: samsung: Fix invalid argument when devm_gpiod_get is called
 
-In the first fetch, get_user(hm->h.size, (u16 __user *)puhm),
-only 2 bytes from puhm are copied in and later it is ensured
-that hm->h.size (which is also hm->m0.size given hm is a union)
-is no larger than sizeof(*hm). However, this relation is broken
-after the second fetch, copy_from_user(hm, puhm, hm->h.size).
+has been applied to the asoc tree at
 
-As a concrete example, a user could put 0x000A when the first
-fetch happens which make hm->h.size <= sizeof(*hm) and later
-races to change it to 0xFFFF in the second fetch. What makes it
-even worse is this call: hpi_send_recv_f(&hm->m0, &hr->r0, file),
-which sends &hm->m0 to a lot of destinations. If any of the
-downstream functions assumes that hm->m0.size <= sizeof(*hm)
-which is actually not, an exploit can be constructed.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-In fact, similar issues have caused vulnerabilities before as in
-https://bugzilla.kernel.org/show_bug.cgi?id=116651
-https://bugzilla.kernel.org/show_bug.cgi?id=120131,
-and more recently the fix in sched/perf
-https://marc.info/?l=linux-kernel&m=150401225812533&w=2
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Feel free to let us know your opinion.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Best Regards,
-Meng
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-On 09/19/2017 03:27 AM, Takashi Iwai wrote:
-> On Tue, 19 Sep 2017 07:21:56 +0200,
-> Meng Xu wrote:
->> The hm->h.size is intended to hold the actual size of the hm struct
->> that is copied from userspace and should always be <= sizeof(*hm).
->>
->> However, after copy_from_user(hm, puhm, hm->h.size), since userspace
->> process has full control over the memory region pointed by puhm, it is
->> possible that the value of hm->h.size is different from what is fetched-in
->> previously (get_user(hm->h.size, (u16 __user *)puhm)). In other words,
->> hm->h.size is overriden and the relation between hm->h.size and the hm
->> struct is broken.
->>
->> This patch proposes to use a seperate variable, msg_size, to hold
->> the value of the first fetch and override hm->h.size to msg_size
->> after the second fetch to maintain the relation.
->>
->> Signed-off-by: Meng Xu <mengxu.gatech@gmail.com>
-> But when user-space already changes the data, the data being read is
-> more or less broken in anyway no matter whether we keep the original
-> h.size or not, because it doesn't match with h.size, no?
->
-> I'd take a fix patch if it would fix some out-of-bounds access or such
-> severe issues.  But this sounds like covering a corner-case that is
-> broken in anyway.  Or am I missing something else?
->
->
-> thanks,
->
-> Takashi
->
->> ---
->>   sound/pci/asihpi/hpioctl.c | 12 ++++++++----
->>   1 file changed, 8 insertions(+), 4 deletions(-)
->>
->> diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
->> index 7e3aa50..5badd08 100644
->> --- a/sound/pci/asihpi/hpioctl.c
->> +++ b/sound/pci/asihpi/hpioctl.c
->> @@ -103,6 +103,7 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>   	void __user *puhr;
->>   	union hpi_message_buffer_v1 *hm;
->>   	union hpi_response_buffer_v1 *hr;
->> +	u16 msg_size;
->>   	u16 res_max_size;
->>   	u32 uncopied_bytes;
->>   	int err = 0;
->> @@ -127,22 +128,25 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->>   	}
->>   
->>   	/* Now read the message size and data from user space.  */
->> -	if (get_user(hm->h.size, (u16 __user *)puhm)) {
->> +	if (get_user(msg_size, (u16 __user *)puhm)) {
->>   		err = -EFAULT;
->>   		goto out;
->>   	}
->> -	if (hm->h.size > sizeof(*hm))
->> -		hm->h.size = sizeof(*hm);
->> +	if (msg_size > sizeof(*hm))
->> +		msg_size = sizeof(*hm);
->>   
->>   	/* printk(KERN_INFO "message size %d\n", hm->h.wSize); */
->>   
->> -	uncopied_bytes = copy_from_user(hm, puhm, hm->h.size);
->> +	uncopied_bytes = copy_from_user(hm, puhm, msg_size);
->>   	if (uncopied_bytes) {
->>   		HPI_DEBUG_LOG(ERROR, "uncopied bytes %d\n", uncopied_bytes);
->>   		err = -EFAULT;
->>   		goto out;
->>   	}
->>   
->> +	/* Override h.size in case it is changed between two userspace fetches */
->> +	hm->h.size = msg_size;
->> +
->>   	if (get_user(res_max_size, (u16 __user *)puhr)) {
->>   		err = -EFAULT;
->>   		goto out;
->> -- 
->> 2.7.4
->>
->>
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 975b6a93088e83a41ba2f0dec2f086678fdb2a7a Mon Sep 17 00:00:00 2001
+From: Jaechul Lee <jcsing.lee@samsung.com>
+Date: Wed, 6 Sep 2017 10:04:15 +0900
+Subject: [PATCH] ASoC: samsung: Fix invalid argument when devm_gpiod_get is
+ called
+
+devm_gpiod_get is called with GPIOF_OUT_INIT_LOW but the function doesn't
+allow the parameters. Unluckily, GPIOF_OUT_INIT_LOW is same value as
+GPIOD_ASIS and gpio direction isn't set properly.
+
+Muted stream comes up when I try recording some sounds on TM2. mic-bias
+gpiod state can't be changed because the gpiod is created with the invalid
+parameter. The gpio should be set GPIOD_OUT_HIGH.
+
+Fixes: 1bfbc260a5b4 ("ASoC: samsung: Add machine driver for Exynos5433 based TM2 board")
+Signed-off-by: Jaechul Lee <jcsing.lee@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/samsung/tm2_wm5110.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index 710e2151141f..a55d18703fe7 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -439,8 +439,7 @@ static int tm2_probe(struct platform_device *pdev)
+ 	snd_soc_card_set_drvdata(card, priv);
+ 	card->dev = dev;
+ 
+-	priv->gpio_mic_bias = devm_gpiod_get(dev, "mic-bias",
+-						GPIOF_OUT_INIT_LOW);
++	priv->gpio_mic_bias = devm_gpiod_get(dev, "mic-bias", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(priv->gpio_mic_bias)) {
+ 		dev_err(dev, "Failed to get mic bias gpio\n");
+ 		return PTR_ERR(priv->gpio_mic_bias);
+-- 
+2.14.1
