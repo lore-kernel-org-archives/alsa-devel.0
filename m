@@ -1,49 +1,73 @@
-From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [PATCH v11 2/2] ASoC: rockchip: Use bus_type to distinguish rt5514
- dsp from rt5514 codec
-Date: Tue, 19 Sep 2017 11:16:32 +0800
-Message-ID: <59C08C10.7030806@rock-chips.com>
-References: <20170918111435.11411-1-jeffy.chen@rock-chips.com> <20170918111435.11411-2-jeffy.chen@rock-chips.com> <20170918191524.GI173745@google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Meng Xu <mengxu.gatech@gmail.com>
+Subject: [PATCH] ALSA: asihpi: fix a potential double-fetch bug when copying puhm
+Date: Tue, 19 Sep 2017 01:21:56 -0400
+Message-ID: <1505798516-22482-1-git-send-email-mengxu.gatech@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170918191524.GI173745@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, broonie@kernel.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: perex@perex.cz, tiwai@suse.com, vlad@tsyrklevich.net, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: meng.xu@gatech.edu, sanidhya@gatech.edu, taesoo@gatech.edu, Meng Xu <mengxu.gatech@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Matthias,
+The hm->h.size is intended to hold the actual size of the hm struct
+that is copied from userspace and should always be <= sizeof(*hm).
 
-On 09/19/2017 03:15 AM, Matthias Kaehlcke wrote:
->> >+static int of_dev_node_match(struct device *dev, void *data)
->> >+{
->> >+	return dev->of_node == data;
->> >+}
-> The same is done in different places, even with the same function name
-> (drivers/i2c/i2c-core-of.c, drivers/mux/mux-core.c, ...), which
-> suggests that we might want to have this function in <linux/of.h>
->
+However, after copy_from_user(hm, puhm, hm->h.size), since userspace
+process has full control over the memory region pointed by puhm, it is
+possible that the value of hm->h.size is different from what is fetched-in
+previously (get_user(hm->h.size, (u16 __user *)puhm)). In other words,
+hm->h.size is overriden and the relation between hm->h.size and the hm
+struct is broken.
 
-right, we are dupping this for bus_find_device in:
-./arch/powerpc/platforms/pseries/ibmebus.c
-./drivers/gpu/drm/drm_mipi_dsi.c
-./drivers/hwtracing/coresight/of_coresight.c
-./drivers/of/of_mdio.c
-./drivers/of/platform.c
-./drivers/i2c/i2c-core-of.c
-./drivers/nvmem/core.c
+This patch proposes to use a seperate variable, msg_size, to hold
+the value of the first fetch and override hm->h.size to msg_size
+after the second fetch to maintain the relation.
 
-and for class_find_device in:
-./drivers/spi/spi.c
-./drivers/fpga/fpga-mgr.c
-./drivers/fpga/fpga-region.c
-./drivers/fpga/fpga-bridge.c
-./drivers/regulator/core.c
-./drivers/mux/core.c
-./drivers/net/phy/mdio_bus.c
+Signed-off-by: Meng Xu <mengxu.gatech@gmail.com>
+---
+ sound/pci/asihpi/hpioctl.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-and for component_match_add in:
-./drivers/iommu/mtk_iommu.c
-  (and a lot of drm drivers)
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 7e3aa50..5badd08 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -103,6 +103,7 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	void __user *puhr;
+ 	union hpi_message_buffer_v1 *hm;
+ 	union hpi_response_buffer_v1 *hr;
++	u16 msg_size;
+ 	u16 res_max_size;
+ 	u32 uncopied_bytes;
+ 	int err = 0;
+@@ -127,22 +128,25 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	}
+ 
+ 	/* Now read the message size and data from user space.  */
+-	if (get_user(hm->h.size, (u16 __user *)puhm)) {
++	if (get_user(msg_size, (u16 __user *)puhm)) {
+ 		err = -EFAULT;
+ 		goto out;
+ 	}
+-	if (hm->h.size > sizeof(*hm))
+-		hm->h.size = sizeof(*hm);
++	if (msg_size > sizeof(*hm))
++		msg_size = sizeof(*hm);
+ 
+ 	/* printk(KERN_INFO "message size %d\n", hm->h.wSize); */
+ 
+-	uncopied_bytes = copy_from_user(hm, puhm, hm->h.size);
++	uncopied_bytes = copy_from_user(hm, puhm, msg_size);
+ 	if (uncopied_bytes) {
+ 		HPI_DEBUG_LOG(ERROR, "uncopied bytes %d\n", uncopied_bytes);
+ 		err = -EFAULT;
+ 		goto out;
+ 	}
+ 
++	/* Override h.size in case it is changed between two userspace fetches */
++	hm->h.size = msg_size;
++
+ 	if (get_user(res_max_size, (u16 __user *)puhr)) {
+ 		err = -EFAULT;
+ 		goto out;
+-- 
+2.7.4
