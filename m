@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 05/38] axfer: add support for a
-	container of Sparc AU format
-Date: Tue, 19 Sep 2017 09:43:45 +0900
-Message-ID: <20170919004418.24668-6-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 11/38] axfer: add support for a mapper
+	for multiple target
+Date: Tue, 19 Sep 2017 09:43:51 +0900
+Message-ID: <20170919004418.24668-12-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B6A81266E8C
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E8572266E8D
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:27 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,295 +25,374 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for data of Sparc AU format. In this data format,
-values in each of field are encoded in big-endian byte order and available
-formats of data sample are restricted in big-endian byte order.
+This commit adds support of mapper for 'multiple' target. This handles
+several files via 'container' functions, and constructs data frame buffer
+for playback, or splits data frames from data frame buffer. When playback
+source files includes data frames with several channels, the first channel
+is used to construct buffer. For capture direction, each of channel of data
+frame is stored in one file, thus the file includes one channel of data
+frame.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am    |   3 +-
- axfer/container-au.c | 207 +++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/container.c    |   6 +-
- axfer/container.h    |   4 +
- 4 files changed, 218 insertions(+), 2 deletions(-)
- create mode 100644 axfer/container-au.c
+ axfer/Makefile.am       |   3 +-
+ axfer/mapper-multiple.c | 271 ++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/mapper.c          |  15 +++
+ axfer/mapper.h          |   4 +
+ 4 files changed, 292 insertions(+), 1 deletion(-)
+ create mode 100644 axfer/mapper-multiple.c
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 092c9662..35aa2261 100644
+index baf9b898..f17e59b0 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -25,4 +25,5 @@ axfer_SOURCES = \
- 	subcmd-list.c \
- 	container.h \
- 	container.c \
--	container-riff-wave.c
-+	container-riff-wave.c \
-+	container-au.c
-diff --git a/axfer/container-au.c b/axfer/container-au.c
+@@ -33,4 +33,5 @@ axfer_SOURCES = \
+ 	container-raw.c \
+ 	mapper.h \
+ 	mapper.c \
+-	mapper-single.c
++	mapper-single.c \
++	mapper-multiple.c
+diff --git a/axfer/mapper-multiple.c b/axfer/mapper-multiple.c
 new file mode 100644
-index 00000000..b0ac13c6
+index 00000000..c40d0bd6
 --- /dev/null
-+++ b/axfer/container-au.c
-@@ -0,0 +1,207 @@
++++ b/axfer/mapper-multiple.c
+@@ -0,0 +1,271 @@
 +/*
-+ * container-au.c - a parser/builder for a container of Sun Audio File.
++ * mapper-multiple.c - a muxer/demuxer for multiple containers.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "container.h"
++#include "mapper.h"
 +#include "misc.h"
 +
-+/* Not portable to all of UNIX platforms. */
-+#include <endian.h>
-+
-+/*
-+ * Reference:
-+ *  * http://pubs.opengroup.org/external/auformat.html
-+ */
-+
-+#define AU_MAGIC	".snd"
-+#define UNKNOWN_SIZE	UINT32_MAX
-+
-+enum code_id {
-+	CODE_ID_CCIT_MU_LAW_BE		= 0x01,
-+	CODE_ID_GENERIC_MBLA_S8		= 0x02,
-+	CODE_ID_GENERIC_MBLA_S16_BE	= 0x03,
-+	CODE_ID_GENERIC_MBLA_S32_BE	= 0x05,
-+	CODE_ID_IEEE754_FLOAT_S32_BE	= 0x06,
-+	CODE_ID_IEEE754_DOUBLE_S64_BE	= 0x07,
-+	CODE_ID_CCIT_ADPCM_G721_4BIT_BE	= 0x17,
-+	CODE_ID_CCIT_ADPCM_G723_3BIT_BE	= 0x19,
-+	CODE_ID_CCIT_A_LAW_BE		= 0x1b,
++struct multiple_state {
++	void (*align_frames)(void *frame_buf, unsigned int frame_count,
++			     char **buf, unsigned int bytes_per_sample,
++			     struct container_context *cntrs,
++			     unsigned int cntr_count);
++	char **bufs;
++	unsigned int cntr_count;
 +};
 +
-+struct format_map {
-+	enum code_id code_id;
-+	snd_pcm_format_t format;
-+};
-+
-+static const struct format_map format_maps[] = {
-+	{CODE_ID_GENERIC_MBLA_S8,		SND_PCM_FORMAT_S8},
-+	{CODE_ID_GENERIC_MBLA_S16_BE,		SND_PCM_FORMAT_S16_BE},
-+	{CODE_ID_GENERIC_MBLA_S32_BE,		SND_PCM_FORMAT_S32_BE},
-+	{CODE_ID_IEEE754_FLOAT_S32_BE,		SND_PCM_FORMAT_FLOAT_BE},
-+	{CODE_ID_IEEE754_DOUBLE_S64_BE,		SND_PCM_FORMAT_FLOAT64_BE},
-+	/*
-+	 * CODE_ID_CCIT_ADPCM_G721_4BIT_BE is not supported by ALSA.
-+	 * CODE_ID_CCIT_ADPCM_G723_3BIT_BE is not supported due to width of
-+	 * its sample.
-+	 */
-+	{CODE_ID_CCIT_A_LAW_BE,			SND_PCM_FORMAT_A_LAW},
-+	{CODE_ID_CCIT_MU_LAW_BE,		SND_PCM_FORMAT_MU_LAW},
-+};
-+
-+struct container_header {
-+	uint8_t magic[4];
-+	uint32_t hdr_size;
-+	uint32_t data_size;
-+	uint32_t code_id;
-+	uint32_t frames_per_second;
-+	uint32_t samples_per_frame;
-+};
-+
-+struct container_annotation {
-+	uint32_t chunks[0];
-+};
-+
-+struct parser_state {
-+	enum code_id code_id;
-+	unsigned int samples_per_frame;
-+	unsigned int bytes_per_sample;
-+};
-+
-+static int au_parser_pre_process(struct container_context *cntr,
-+				 snd_pcm_format_t *format,
-+				 unsigned int *samples_per_frame,
-+				 unsigned int *frames_per_second,
-+				 uint64_t *byte_count)
++static void align_to_i(void *frame_buf, unsigned int frame_count,
++		       char **src_bufs, unsigned int bytes_per_sample,
++		       struct container_context *cntrs, unsigned int cntr_count)
 +{
-+	struct parser_state *state = cntr->private_data;
-+	struct container_header header;
-+	enum code_id code_id;
-+	int i;
-+	int err;
++	char *dst = frame_buf;
++	char *src;
++	unsigned int dst_pos;
++	unsigned int src_pos;
++	struct container_context *cntr;
++	int i, j;
 +
-+	/* Parse header. 4 bytes are enough to detect supported containers. */
-+	memcpy(&header.magic, cntr->magic, sizeof(cntr->magic));
-+	err = container_recursive_read(cntr,
-+				       (char *)&header + sizeof(cntr->magic),
-+				       sizeof(header) - sizeof(cntr->magic));
-+	if (err < 0)
-+		return err;
-+	if (cntr->eof)
-+		return 0;
++	/*
++	 * src: first channel in each of interleaved buffers in containers =>
++	 * dst:interleaved.
++	 */
++	for (i = 0; i < cntr_count; ++i) {
++		src = src_bufs[i];
++		cntr = cntrs + i;
 +
-+	if (memcmp(header.magic, AU_MAGIC, sizeof(header.magic)) != 0)
-+		return -EINVAL;
-+	if (be32toh(header.hdr_size) != sizeof(struct container_header))
-+		return -EINVAL;
++		for (j = 0; j < frame_count; ++j) {
++			/* Use first src channel for each of dst channel. */
++			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
++			dst_pos = bytes_per_sample * (cntr_count * j + i);
 +
-+	code_id = be32toh(header.code_id);
-+	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
-+		if (format_maps[i].code_id == code_id)
-+			break;
++			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
++		}
 +	}
-+	if (i == ARRAY_SIZE(format_maps))
-+		return -EINVAL;
-+	*format = format_maps[i].format;
-+	*frames_per_second = be32toh(header.frames_per_second);
-+	*samples_per_frame = be32toh(header.samples_per_frame);
++}
 +
-+	state->code_id = code_id;
-+	state->samples_per_frame = *samples_per_frame;
-+	state->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++static void align_from_i(void *frame_buf, unsigned int frame_count,
++			 char **dst_bufs, unsigned int bytes_per_sample,
++			 struct container_context *cntrs,
++			 unsigned int cntr_count)
++{
++	char *src = frame_buf;
++	char *dst;
++	unsigned int src_pos;
++	unsigned int dst_pos;
++	struct container_context *cntr;
++	int i, j;
 +
-+	*byte_count = be32toh(header.data_size);
++	for (i = 0; i < cntr_count; ++i) {
++		dst = dst_bufs[i];
++		cntr = cntrs + i;
++
++		for (j = 0; j < frame_count; ++j) {
++			/* Use first src channel for each of dst channel. */
++			src_pos = bytes_per_sample * (cntr_count * j + i);
++			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
++
++			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
++		}
++	}
++}
++
++static int multiple_pre_process(struct mapper_context *mapper,
++				struct container_context *cntrs,
++				unsigned int cntr_count)
++{
++	struct multiple_state *state = mapper->private_data;
++	struct container_context *cntr;
++	int i;
++
++	/*
++	 * Additionally, format of samples in the containers should be the same
++	 * as the format in PCM substream.
++	 */
++	for (i = 0; i < cntr_count; ++i) {
++		cntr = cntrs + i;
++		if (mapper->bytes_per_sample != cntr->bytes_per_sample)
++			return -EINVAL;
++	}
++	state->cntr_count = cntr_count;
++
++	/* Decide method to align frames. */
++	if (mapper->type == MAPPER_TYPE_DEMUXER) {
++		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
++			state->align_frames = align_from_i;
++		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
++			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			state->align_frames = NULL;
++		else
++			return -EINVAL;
++	} else {
++		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
++			state->align_frames = align_to_i;
++		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
++			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			state->align_frames = NULL;
++		else
++			return -EINVAL;
++	}
++
++	if (state->align_frames) {
++		/*
++		 * Furthermore, in demuxer case, each container should be
++		 * configured to store one sample per frame.
++		 */
++		if (mapper->type == MAPPER_TYPE_DEMUXER) {
++			for (i = 0; i < cntr_count; ++i) {
++				cntr = cntrs + i;
++				if (cntrs->samples_per_frame != 1)
++					return -EINVAL;
++			}
++		}
++
++		state->bufs = calloc(cntr_count, sizeof(char *));
++		if (state->bufs == NULL)
++			return -ENOMEM;
++
++		for (i = 0; i < cntr_count; ++i) {
++			unsigned int bytes_per_buffer;
++
++			/*
++			 * Allocate intermediate buffer as the same size as a
++			 * period for each of containers.
++			 */
++			cntr = cntrs + i;
++
++			bytes_per_buffer = mapper->bytes_per_sample *
++					   cntr->samples_per_frame *
++					   mapper->frames_per_buffer;
++
++			state->bufs[i] = malloc(bytes_per_buffer);
++			if (state->bufs[i] == NULL)
++				return -ENOMEM;
++			memset(state->bufs[i], 0, bytes_per_buffer);
++		}
++	}
 +
 +	return 0;
 +}
 +
-+struct builder_state {
-+	unsigned int bytes_per_sample;
-+	unsigned int samples_per_frame;
-+	unsigned int frames_per_second;
-+	enum code_id code_id;
-+};
-+
-+static void build_container_header(struct builder_state *state,
-+				   struct container_header *header,
-+				   unsigned int frames_per_second,
-+				   uint64_t byte_count)
++static int process_containers(char **src_bufs, unsigned int *frame_count,
++			      struct container_context *cntrs,
++			      unsigned int cntr_count)
 +{
-+	memcpy(header->magic, AU_MAGIC, sizeof(header->magic));
-+	header->hdr_size = htobe32(sizeof(struct container_header));
-+	header->data_size = htobe32(byte_count);
-+	header->code_id = htobe32(state->code_id);
-+	header->frames_per_second = htobe32(frames_per_second);
-+	header->samples_per_frame = htobe32(state->samples_per_frame);
-+}
-+
-+static int write_container_header(struct container_context *cntr,
-+				  uint64_t byte_count)
-+{
-+	struct builder_state *state = cntr->private_data;
-+	struct container_header header;
-+
-+	build_container_header(state, &header, state->frames_per_second,
-+			       byte_count);
-+
-+	return container_recursive_write(cntr, &header, sizeof(header));
-+}
-+
-+static int au_builder_pre_process(struct container_context *cntr,
-+				  snd_pcm_format_t *format,
-+				  unsigned int *samples_per_frame,
-+				  unsigned int *frames_per_second,
-+				  uint64_t *byte_count)
-+{
-+	struct builder_state *status = cntr->private_data;
++	struct container_context *cntr;
++	char *src;
 +	int i;
++	int err = 0;
 +
-+	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
-+		if (format_maps[i].format == *format)
++	/* TODO: arrangement for *frame_count. */
++	for (i = 0; i < cntr_count; ++i) {
++		cntr = &cntrs[i];
++		src = src_bufs[i];
++
++		err = container_context_process_frames(cntr, src, frame_count);
++		if (err < 0)
 +			break;
 +	}
-+	if (i == ARRAY_SIZE(format_maps))
-+		return -EINVAL;
 +
-+	status->code_id = format_maps[i].code_id;
-+	status->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
-+	status->frames_per_second = *frames_per_second;
-+	status->samples_per_frame = *samples_per_frame;
-+
-+	return write_container_header(cntr, *byte_count);
++	return err;
 +}
 +
-+static int au_builder_post_process(struct container_context *cntr,
-+				   uint64_t handled_byte_count)
++static int multiple_muxer_process_frames(struct mapper_context *mapper,
++					 void *frame_buf,
++					 unsigned int *frame_count,
++					 struct container_context *cntrs,
++					 unsigned int cntr_count)
 +{
++	struct multiple_state *state = mapper->private_data;
++	char **src_bufs;
 +	int err;
 +
-+	err = container_seek_offset(cntr, 0);
++	/*
++	 * If need to align PCM frames, process PCM frames to the intermediate
++	 * buffer once.
++	 */
++	if (!state->align_frames) {
++		/* The most likely. */
++		src_bufs = frame_buf;
++	} else {
++		src_bufs = state->bufs;
++	}
++	err = process_containers(src_bufs, frame_count, cntrs, cntr_count);
 +	if (err < 0)
 +		return err;
 +
-+	return write_container_header(cntr, handled_byte_count);
++	/* Unlikely. */
++	if (src_bufs != frame_buf && *frame_count > 0) {
++		state->align_frames(frame_buf, *frame_count, src_bufs,
++				    mapper->bytes_per_sample, cntrs,
++				    cntr_count);
++	}
++
++	return 0;
 +}
 +
-+const struct container_parser container_parser_au = {
-+	.format = CONTAINER_FORMAT_AU,
-+	.magic = AU_MAGIC,
-+	.max_size = UINT32_MAX,
++static int multiple_demuxer_process_frames(struct mapper_context *mapper,
++					   void *frame_buf,
++					   unsigned int *frame_count,
++					   struct container_context *cntrs,
++					   unsigned int cntr_count)
++{
++	struct multiple_state *state = mapper->private_data;
++	char **dst_bufs;
++
++	/*
++	 * If need to align PCM frames, process PCM frames to the intermediate
++	 * buffer once.
++	 */
++	if (!state->align_frames) {
++		/* The most likely. */
++		dst_bufs = frame_buf;
++	} else {
++		dst_bufs = state->bufs;
++		state->align_frames(frame_buf, *frame_count, dst_bufs,
++				    mapper->bytes_per_sample, cntrs,
++				    cntr_count);
++	}
++
++	return process_containers(dst_bufs, frame_count, cntrs, cntr_count);
++}
++
++static void multiple_post_process(struct mapper_context *mapper)
++{
++	struct multiple_state *state = mapper->private_data;
++	int i;
++
++	if (state->bufs) {
++		for (i = 0; i < state->cntr_count; ++i) {
++			if (state->bufs[i])
++				free(state->bufs[i]);
++		}
++		free(state->bufs);
++	}
++
++	state->bufs = NULL;
++	state->align_frames = NULL;
++}
++
++const struct mapper_data mapper_muxer_multiple = {
 +	.ops = {
-+		.pre_process = au_parser_pre_process,
++		.pre_process = multiple_pre_process,
++		.process_frames = multiple_muxer_process_frames,
++		.post_process = multiple_post_process,
 +	},
-+	.private_size = sizeof(struct parser_state),
++	.private_size = sizeof(struct multiple_state),
 +};
 +
-+const struct container_builder container_builder_au = {
-+	.format = CONTAINER_FORMAT_AU,
-+	.max_size = UINT32_MAX,
++const struct mapper_data mapper_demuxer_multiple = {
 +	.ops = {
-+		.pre_process	= au_builder_pre_process,
-+		.post_process	= au_builder_post_process,
++		.pre_process = multiple_pre_process,
++		.process_frames = multiple_demuxer_process_frames,
++		.post_process = multiple_post_process,
 +	},
-+	.private_size = sizeof(struct builder_state),
++	.private_size = sizeof(struct multiple_state),
 +};
-diff --git a/axfer/container.c b/axfer/container.c
-index c20af463..0e208aba 100644
---- a/axfer/container.c
-+++ b/axfer/container.c
-@@ -21,10 +21,12 @@ static const char *const cntr_type_labels[] = {
+diff --git a/axfer/mapper.c b/axfer/mapper.c
+index 3ba2d5e1..20baef85 100644
+--- a/axfer/mapper.c
++++ b/axfer/mapper.c
+@@ -19,6 +19,7 @@ static const char *const mapper_type_labels[] = {
  
- static const char *const cntr_format_labels[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
-+	[CONTAINER_FORMAT_AU] = "au",
+ static const char *const mapper_target_labels[] = {
+ 	[MAPPER_TARGET_SINGLE] = "single",
++	[MAPPER_TARGET_MULTIPLE] = "multiple",
  };
  
- static const char *const suffixes[] = {
--	[CONTAINER_FORMAT_RIFF_WAVE] = ".wav",
-+	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
-+	[CONTAINER_FORMAT_AU]		= ".au",
+ int mapper_context_init(struct mapper_context *mapper,
+@@ -39,11 +40,17 @@ int mapper_context_init(struct mapper_context *mapper,
+ 		if (cntr_count == 1) {
+ 			data = &mapper_muxer_single;
+ 			mapper->target = MAPPER_TARGET_SINGLE;
++		} else {
++			data = &mapper_muxer_multiple;
++			mapper->target = MAPPER_TARGET_MULTIPLE;
+ 		}
+ 	} else {
+ 		if (cntr_count == 1) {
+ 			data = &mapper_demuxer_single;
+ 			mapper->target = MAPPER_TARGET_SINGLE;
++		} else {
++			data = &mapper_demuxer_multiple;
++			mapper->target = MAPPER_TARGET_MULTIPLE;
+ 		}
+ 	}
+ 
+@@ -77,6 +84,14 @@ int mapper_context_pre_process(struct mapper_context *mapper,
+ 	assert(samples_per_frame > 0);
+ 	assert(cntrs);
+ 
++	/*
++	 * The purpose of multiple target is to mux/demux each channels to/from
++	 * containers.
++	 */
++	if (mapper->target == MAPPER_TARGET_MULTIPLE &&
++	    samples_per_frame != mapper->cntr_count)
++		return -EINVAL;
++
+ 	mapper->access = access;
+ 	mapper->bytes_per_sample = bytes_per_sample;
+ 	mapper->samples_per_frame = samples_per_frame;
+diff --git a/axfer/mapper.h b/axfer/mapper.h
+index 2e553666..3b32e93c 100644
+--- a/axfer/mapper.h
++++ b/axfer/mapper.h
+@@ -20,6 +20,7 @@ enum mapper_type {
+ 
+ enum mapper_target {
+ 	MAPPER_TARGET_SINGLE = 0,
++	MAPPER_TARGET_MULTIPLE,
+ 	MAPPER_TARGET_COUNT,
  };
  
+@@ -80,4 +81,7 @@ struct mapper_data {
+ extern const struct mapper_data mapper_muxer_single;
+ extern const struct mapper_data mapper_demuxer_single;
  
-@@ -148,6 +150,7 @@ int container_parser_init(struct container_context *cntr,
- {
- 	const struct container_parser *parsers[] = {
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
-+		[CONTAINER_FORMAT_AU] = &container_parser_au,
- 	};
- 	const struct container_parser *parser;
- 	unsigned int size;
-@@ -225,6 +228,7 @@ int container_builder_init(struct container_context *cntr,
- {
- 	const struct container_builder *builders[] = {
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
-+		[CONTAINER_FORMAT_AU] = &container_builder_au,
- 	};
- 	const struct container_builder *builder;
- 	int err;
-diff --git a/axfer/container.h b/axfer/container.h
-index 3c27c26f..3042e1e9 100644
---- a/axfer/container.h
-+++ b/axfer/container.h
-@@ -26,6 +26,7 @@ enum container_type {
- 
- enum container_format {
- 	CONTAINER_FORMAT_RIFF_WAVE = 0,
-+	CONTAINER_FORMAT_AU,
- 	CONTAINER_FORMAT_COUNT,
- };
- 
-@@ -111,4 +112,7 @@ int container_seek_offset(struct container_context *cntr, off64_t offset);
- extern const struct container_parser container_parser_riff_wave;
- extern const struct container_builder container_builder_riff_wave;
- 
-+extern const struct container_parser container_parser_au;
-+extern const struct container_builder container_builder_au;
++extern const struct mapper_data mapper_muxer_multiple;
++extern const struct mapper_data mapper_demuxer_multiple;
 +
  #endif
 -- 
