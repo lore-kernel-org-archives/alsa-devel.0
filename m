@@ -1,94 +1,56 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH] ALSA: hda - program ICT bits to support HBR
-	audio
-Date: Tue, 19 Sep 2017 20:30:01 +0530
-Message-ID: <1505833201-22363-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for wm97xx Codec
+Date: Tue, 19 Sep 2017 16:22:53 +0100
+Message-ID: <20170919152253.tvj3hheggrx4lgig@dell>
+References: <20170913193723.16234-1-robert.jarzmik@free.fr>
+ <20170913193723.16234-3-robert.jarzmik@free.fr>
+ <20170914074146.dnibkvom4yuzejf3@dell>
+ <20170914074300.iobuwn2hrmnf6sen@dell>
+ <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
+ <20170918085236.z6gmgrwvsjvvc4cd@dell>
+ <20170919121539.mz2mettkefxf3oer@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BCC6266819
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 17:17:59 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170919121539.mz2mettkefxf3oer@sirena.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+On Tue, 19 Sep 2017, Mark Brown wrote:
 
-On recent Intel platforms (Haswell, Broadwell, Skylake, ApolloLake,
-KabyLake, ...), the IEC Coding Type (ICT) bitfield in the Digital
-Converter Control #3 needs to be set explicitly for HDMI/DisplayPort
-High Bit Rate (HBR) audio playback to work. This was not required in
-earlier platforms when HBR was first introduced. The ICT bits are
-defined in Section 7.3.3.9 of the HDaudio 1.0a specification.
+> On Mon, Sep 18, 2017 at 09:52:36AM +0100, Lee Jones wrote:
+> > On Thu, 14 Sep 2017, Mark Brown wrote:
+> 
+> > > On Thu, Sep 14, 2017 at 08:43:00AM +0100, Lee Jones wrote:
+> 
+> > > > Change of plan.  It looks like there are deps.
+> 
+> > > > Unapplied.
+> 
+> > > The core stuff went in during the merge window, you should be able to
+> > > wait for -rc1 or pick up the asoc-v4.14 tag.
+> 
+> > No, I mean patches; 3, 4, 5 and 7 depend on this file.
+> 
+> Right, but I'd have expected a pull request more than the patch being
+> unapplied?
 
-Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=98797
+Normally I wait until all patches patches in the set have been
+reviewed (the ASOC ones still have not), then ask the OP and the
+other affected Maintainers how they want to deal with the patch.
+Far more often than not, the the solution is just to take the set
+through the MFD tree.
 
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- include/sound/hda_verbs.h  |  1 +
- sound/pci/hda/patch_hdmi.c | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
+However, since this is a new driver, you can just take it with my:
 
-diff --git a/include/sound/hda_verbs.h b/include/sound/hda_verbs.h
-index d0509db6d0ec..d2004d7feb2b 100644
---- a/include/sound/hda_verbs.h
-+++ b/include/sound/hda_verbs.h
-@@ -54,6 +54,7 @@ enum {
- #define AC_VERB_GET_EAPD_BTLENABLE		0x0f0c
- #define AC_VERB_GET_DIGI_CONVERT_1		0x0f0d
- #define AC_VERB_GET_DIGI_CONVERT_2		0x0f0e /* unused */
-+#define AC_VERB_SET_DIGI_CONVERT_3		0x73e
- #define AC_VERB_GET_VOLUME_KNOB_CONTROL		0x0f0f
- /* f10-f1a: GPIO */
- #define AC_VERB_GET_GPIO_DATA			0x0f15
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 53f9311370de..2dcd99d2a757 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -906,6 +906,7 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
- 			      hda_nid_t pin_nid, u32 stream_tag, int format)
- {
- 	struct hdmi_spec *spec = codec->spec;
-+	unsigned int param;
- 	int err;
- 
- 	err = spec->ops.pin_hbr_setup(codec, pin_nid, is_hbr_format(format));
-@@ -915,6 +916,23 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
- 		return err;
- 	}
- 
-+	/*
-+	 * on recent platforms IEC Coding Type is required for HBR support,
-+	 * read current Digital Converter settings and set ICT bitfield if
-+	 * needed.
-+	 */
-+	param = snd_hda_codec_read(codec, cvt_nid, 0,
-+				AC_VERB_GET_DIGI_CONVERT_1, 0);
-+
-+	param = (param >> 16) & ~(AC_DIG3_ICT);
-+
-+	/* on recent platforms ICT mode is required for HBR support */
-+	if (is_hbr_format(format))
-+		param |= 0x1;
-+
-+	snd_hda_codec_write(codec, cvt_nid, 0,
-+				AC_VERB_SET_DIGI_CONVERT_3, param);
-+
- 	snd_hda_codec_setup_stream(codec, cvt_nid, stream_tag, 0, format);
- 	return 0;
- }
+Acked-by: Lee Jones <lee.jones@linaro.org>
+
 -- 
-1.9.1
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
