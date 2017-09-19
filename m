@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 23/38] axfer: add support of waiter for
-	poll(2)
-Date: Tue, 19 Sep 2017 09:44:03 +0900
-Message-ID: <20170919004418.24668-24-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 20/38] axfer: add options related to
+	duration and obsolete '--max-file-size' option
+Date: Tue, 19 Sep 2017 09:44:00 +0900
+Message-ID: <20170919004418.24668-21-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 091F9266EB0
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:30 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id CA0B1266EA0
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:29 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,133 +25,180 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for poll(2) system call.
+In aplay, some options are available to stop data transmission by frame
+unit. This commit adds support for them.
+
+There's a similar option; '--max-file-time'. This option is used for
+capture data transmission to switch file to write data frame. However,
+this may brings complicated file handling to this program. To reduce
+maintaining cost, this option is obsoleted. Additionally, a handler for
+SIGUSR1 Unix signal has similar feature to switch the file. For the same
+reason, the handler is also obsoleted.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am   |  3 ++-
- axfer/waiter-poll.c | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/waiter.c      |  2 +-
- axfer/waiter.h      |  3 +++
- 4 files changed, 74 insertions(+), 2 deletions(-)
- create mode 100644 axfer/waiter-poll.c
+ axfer/options.c         | 63 ++++++++++++++++++++++++++++++++++++++-----------
+ axfer/options.h         |  2 ++
+ axfer/subcmd-transfer.c |  3 +++
+ 3 files changed, 54 insertions(+), 14 deletions(-)
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index f290cca8..a4e9f1bc 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -48,4 +48,5 @@ axfer_SOURCES = \
- 	xfer-libasound-irq-rw.c \
- 	subcmd-transfer.c \
- 	waiter.h \
--	waiter.c
-+	waiter.c \
-+	waiter-poll.c
-diff --git a/axfer/waiter-poll.c b/axfer/waiter-poll.c
-new file mode 100644
-index 00000000..70813ee0
---- /dev/null
-+++ b/axfer/waiter-poll.c
-@@ -0,0 +1,68 @@
-+/*
-+ * waiter-waiter-poll.c - Waiter for event notification by poll(2).
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "waiter.h"
-+#include "misc.h"
-+
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <poll.h>
-+
-+struct poll_state {
-+	struct pollfd *pfds;
-+	unsigned int count;
-+};
-+
-+static int poll_prepare(struct waiter_context *waiter, int *fds,
-+			unsigned int fd_count)
+diff --git a/axfer/options.c b/axfer/options.c
+index 00b088bf..eb049f96 100644
+--- a/axfer/options.c
++++ b/axfer/options.c
+@@ -15,6 +15,8 @@
+ enum no_short_opts {
+ 	/* 128 belongs to non us-ascii character set. */
+ 	OPT_DUMP_HW_PARAMS = 128,
++	/* Obsoleted. */
++	OPT_MAX_FILE_TIME,
+ };
+ 
+ static const char *const allowed_duplication[] = {
+@@ -265,15 +267,35 @@ static int apply_policies(struct context_options *opts,
+ 	return 0;
+ }
+ 
++void context_options_calculate_duration(struct context_options *opts,
++		unsigned int frames_per_second, uint64_t *total_frame_count)
 +{
-+	struct poll_state *state = waiter->private_data;
-+	int i;
++	uint64_t frame_count;
 +
-+	state->pfds = calloc(fd_count, sizeof(struct pollfd));
-+	if (state->pfds == NULL)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < fd_count; ++i) {
-+		state->pfds[i].fd = fds[i];
-+		state->pfds[i].events = POLLIN | POLLOUT;
++	if (opts->duration_seconds > 0) {
++		frame_count = opts->duration_seconds * frames_per_second;
++		if (frame_count < *total_frame_count)
++			*total_frame_count = frame_count;
 +	}
 +
-+	state->count = fd_count;
-+
-+	return 0;
++	if (opts->duration_frames > 0) {
++		frame_count = opts->duration_frames;
++		if (frame_count < *total_frame_count)
++			*total_frame_count = frame_count;
++	}
 +}
 +
-+static int poll_wait_event(struct waiter_context *waiter, int timeout_msec)
-+{
-+	struct poll_state *state = waiter->private_data;
-+	int err;
-+
-+	err = poll(state->pfds, state->count, timeout_msec);
-+	if (err < 0)
-+		return -errno;
-+
-+	return 0;
-+}
-+
-+static void poll_release(struct waiter_context *waiter)
-+{
-+	struct poll_state *state = waiter->private_data;
-+
-+	free(state->pfds);
-+	state->pfds = 0;
-+}
-+
-+const struct waiter_data waiter_poll = {
-+	.ops = {
-+		.prepare	= poll_prepare,
-+		.wait_event	= poll_wait_event,
-+		.release	= poll_release,
-+	},
-+	.private_size = sizeof(struct poll_state),
-+};
-diff --git a/axfer/waiter.c b/axfer/waiter.c
-index dfe42f84..045b7f31 100644
---- a/axfer/waiter.c
-+++ b/axfer/waiter.c
-@@ -20,7 +20,7 @@ int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
- 		enum waiter_type type;
- 		const struct waiter_data *waiter;
- 	} entries[] = {
--		{WAITER_TYPE_COUNT,	NULL},
-+		{WAITER_TYPE_POLL, &waiter_poll},
+ int context_options_init(struct context_options *opts, int argc,
+ 			 char *const *argv, snd_pcm_stream_t direction)
+ {
+-	static const char *s_opts = "hvqt:ID:f:c:r:";
++	static const char *s_opts = "hvqd:s:t:ID:f:c:r:";
+ 	static const struct option l_opts[] = {
+ 		/* For generic purposes. */
+ 		{"help",		0, 0, 'h'},
+ 		{"verbose",		0, 0, 'v'},
+ 		{"quiet",		0, 0, 'q'},
++		{"duration",		1, 0, 'd'},
++		{"samples",		1, 0, 's'},
+ 		/* For containers. */
+ 		{"file-type",		1, 0, 't'},
+ 		/* For mapper. */
+@@ -285,18 +307,21 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"rate",		1, 0, 'r'},
+ 		/* For debugging. */
+ 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
++		/* Obsoleted. */
++		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
+ 		{NULL,			0, 0, 0},
  	};
- 	int i;
+ 	const char *cntr_format_literal = NULL;
+ 	const char *node_literal = NULL;
+ 	const char *sample_format_literal = NULL;
++	int l_index = 0;
+ 	int c;
+ 	int err = 0;
  
-diff --git a/axfer/waiter.h b/axfer/waiter.h
-index dbd7ca70..00147f45 100644
---- a/axfer/waiter.h
-+++ b/axfer/waiter.h
-@@ -10,6 +10,7 @@
- #define __ALSA_UTILS_AXFER_WAITER__H_
+ 	optind = 0;
+ 	opterr = 0;
+ 	while (1) {
+-		c = getopt_long(argc, argv, s_opts, l_opts, NULL);
++		c = getopt_long(argc, argv, s_opts, l_opts, &l_index);
+ 		if (c < 0)
+ 			break;
+ 		else if (c == 'h')
+@@ -305,6 +330,10 @@ int context_options_init(struct context_options *opts, int argc,
+ 			++opts->verbose;
+ 		else if (c == 'q')
+ 			opts->quiet = true;
++		else if (c == 'd')
++			opts->duration_seconds = parse_l(optarg, &err);
++		else if (c == 's')
++			opts->duration_frames = parse_l(optarg, &err);
+ 		else if (c == 't')
+ 			cntr_format_literal = optarg;
+ 		else if (c == 'I')
+@@ -319,7 +348,13 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->frames_per_second = parse_l(optarg, &err);
+ 		else if (c == OPT_DUMP_HW_PARAMS)
+ 			opts->dump_hw_params = true;
+-		else
++		else if (c == OPT_MAX_FILE_TIME) {
++			fprintf(stderr,
++				"An option '--%s' is obsoleted and has no "
++				"effect.\n",
++				l_opts[l_index].name);
++			err = -EINVAL;
++		} else
+ 			continue;
  
- enum waiter_type {
-+	WAITER_TYPE_POLL = 0,
- 	WAITER_TYPE_COUNT,
- };
+ 		if (err < 0)
+@@ -492,20 +527,20 @@ int context_options_fixup_for_capture(struct context_options *opts,
+ 	int i, j;
+ 	int err;
  
-@@ -42,4 +43,6 @@ struct waiter_data {
- 	unsigned int private_size;
- };
+-	if (!opts->multiple_cntrs) {
+-		if (opts->path_count == 1)
++	if (opts->path_count == 1) {
++		if (!strcmp(opts->paths[0], "-"))
++			return 0;
++		if (!opts->multiple_cntrs)
+ 			err = fixup_paths(opts);
+ 		else
+-			return -EINVAL;
+-	} else {
+-		if (opts->path_count == 1) {
+ 			err = create_paths(opts, samples_per_frame);
+-		} else {
+-			if (opts->path_count == samples_per_frame)
+-				err = fixup_paths(opts);
+-			else
+-				return -EINVAL;
+-		}
++	} else {
++		if (!opts->multiple_cntrs)
++			return -EINVAL;
++		if (opts->path_count != samples_per_frame)
++			return -EINVAL;
++		else
++			err = fixup_paths(opts);
+ 	}
+ 	if (err < 0)
+ 		return err;
+diff --git a/axfer/options.h b/axfer/options.h
+index 743279af..ddbdbfa9 100644
+--- a/axfer/options.h
++++ b/axfer/options.h
+@@ -17,6 +17,8 @@ struct context_options {
+ 	/* For generic purposes. */
+ 	unsigned int verbose;
+ 	bool quiet;
++	uint64_t duration_seconds;
++	uint64_t duration_frames;
  
-+extern const struct waiter_data waiter_poll;
+ 	/* For containers. */
+ 	char **paths;
+diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
+index 3410fa30..e5aedbe6 100644
+--- a/axfer/subcmd-transfer.c
++++ b/axfer/subcmd-transfer.c
+@@ -346,6 +346,9 @@ static int context_pre_process(struct context *ctx, snd_pcm_stream_t direction,
+ 	if (err < 0)
+ 		return err;
+ 
++	context_options_calculate_duration(&ctx->opts, frames_per_second,
++					   total_frame_count);
 +
- #endif
+ 	ctx->opts.sample_format = sample_format;
+ 	ctx->opts.samples_per_frame = samples_per_frame;
+ 	ctx->opts.frames_per_second = frames_per_second;
 -- 
 2.11.0
