@@ -1,61 +1,47 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [PATCH v3 5/5] ASoC: rt5514: Add devicetree binding support for rt5514-spi
-Date: Tue, 19 Sep 2017 20:58:00 +0800
-Message-ID: <20170919125800.336-6-jeffy.chen@rock-chips.com>
-References: <20170919125800.336-1-jeffy.chen@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170919125800.336-1-jeffy.chen@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH v12 2/2] ASoC: rockchip: Use bus_type to
+ distinguish rt5514 dsp from rt5514 codec
+Date: Tue, 19 Sep 2017 21:04:26 +0800
+Message-ID: <59C115DA.4000907@rock-chips.com>
+References: <20170919025439.7107-1-jeffy.chen@rock-chips.com>
+ <20170919025439.7107-2-jeffy.chen@rock-chips.com>
+ <20170919124613.egvojfhq74vhyvuh@sirena.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id BED3F266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 15:04:34 +0200 (CEST)
+In-Reply-To: <20170919124613.egvojfhq74vhyvuh@sirena.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree binding support for rt5514 spi dsp codec.
+Hi Mark,
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
----
+On 09/19/2017 08:46 PM, Mark Brown wrote:
+> On Tue, Sep 19, 2017 at 10:54:39AM +0800, Jeffy Chen wrote:
+>> Currently rt5514 dsp and rt5514 codec are sharing the same compatible.
+>> Use bus_type to distinguish rt5514 dsp from rt5514 codec.
+>
+> This doens't apply against current code, please check and resend.
+>
 
-Changes in v3: None
-Changes in v2: None
+i sent a new series which contains all my patches and base on 
+840cc455c5f5 Add linux-next specific files for 20170919
 
- Documentation/devicetree/bindings/sound/rt5514.txt | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+please help to check, thanks :)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index 929ca6756b02..4f33b0d96afe 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -1,22 +1,27 @@
- RT5514 audio CODEC
- 
--This device supports I2C only.
-+This device supports both I2C and SPI.
- 
- Required properties:
- 
- - compatible : "realtek,rt5514".
- 
--- reg : The I2C address of the device.
-+- reg : the I2C address of the device for I2C, the chip select
-+        number for SPI.
- 
- Optional properties:
- 
- - clocks: The phandle of the master clock to the CODEC
- - clock-names: Should be "mclk"
- 
-+- interrupt-parent: The phandle for the interrupt controller.
-+- interrupts: The interrupt number to the cpu. The interrupt specifier format
-+	      depends on the interrupt controller.
-+
- - realtek,dmic-init-delay-ms
--  Set the DMIC initial delay (ms) to wait it ready.
-+  Set the DMIC initial delay (ms) to wait it ready for I2C.
- 
--Pins on the device (for linking into audio routes) for RT5514:
-+Pins on the device (for linking into audio routes) for I2C:
- 
-   * DMIC1L
-   * DMIC1R
--- 
-2.11.0
+https://py3.patchwork.dja.id.au/patch/66384/
+...
+https://py3.patchwork.dja.id.au/patch/66389/
