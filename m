@@ -1,63 +1,52 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: Resend: [PATCH 1/4] ASoC: dapm: fix error path in
- snd_soc_dapm_new_pcm
-Date: Tue, 19 Sep 2017 13:03:59 +0100
-Message-ID: <20170919120359.lo455b2r7s377dyp@localhost.localdomain>
-References: <CABCoZhCST2kbTNT4BpwniipkaD=dGB5Jb0WFw6QckUaJYxMKxA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC] ASoC: codecs: msm8916-wcd-analog: use btn0 released
+ detection
+Date: Tue, 19 Sep 2017 13:11:47 +0100
+Message-ID: <20170919121147.wtpebx6p377cctvc@sirena.co.uk>
+References: <20170913204355.26186-1-damien.riegel@savoirfairelinux.com>
+ <3485d646-12fd-4435-1bae-87af9a1a857e@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 808B6266F0D
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:04:02 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hdo4m2v6a2l4xgea"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CABCoZhCST2kbTNT4BpwniipkaD=dGB5Jb0WFw6QckUaJYxMKxA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: anish kumar <yesanishhere@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+In-Reply-To: <3485d646-12fd-4435-1bae-87af9a1a857e@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Damien Riegel <damien.riegel@savoirfairelinux.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 14, 2017 at 10:02:17PM -0700, anish kumar wrote:
-> From: anish kumar <yesanishhere@gmail.com>
-> 
-> Before freeing the memory, check if it was allcoated.
-> 
-> Signed-off-by: anish kumar <yesanishhere@gmail.com>
-> ---
->  sound/soc/soc-dapm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index dcef67a..f51f613 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -3907,9 +3907,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
->         devm_kfree(card->dev, (void *)private_value);
->  outfree_link_name:
->         devm_kfree(card->dev, link_name);
-> -outfree_w_param:
->         for (count = 0 ; count < num_params; count++)
->                 devm_kfree(card->dev, (void *)w_param_text[count]);
-> +outfree_w_param:
->         devm_kfree(card->dev, w_param_text);
-> 
->         return ret;
-> --
-> 2.5.4 (Apple Git-61)
 
-Your email client appears to be mangling the whitespace in your
-patches which makes them exceptionally hard to apply. Have a look
-in Documentation/process/email-clients.rst and resend please.
+--hdo4m2v6a2l4xgea
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+On Mon, Sep 18, 2017 at 10:08:04AM +0100, Srinivas Kandagatla wrote:
+> On 13/09/17 21:43, Damien Riegel wrote:
+> > msm8916-wcd-analog uses button0 to differentiate between headphone and
+> > headset. Under some circumstances, button pressed and released
+> > interrupts are not fired as the driver expects it.
+
+> This is what we need to understand to find a right solution,
+> I would like to understand on what is the difference in the hw layout.
+
+These sorts of problems can also occur because of differences in test
+process - pressure at different angles, different speeds of insertion
+and a million other things.
+
+--hdo4m2v6a2l4xgea
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBCYMACgkQJNaLcl1U
+h9CplQf7BPr5ikD5I3WhxBW0uTUWE1B4A6xNjwZDtTDxg0pKVM/DH7b1+EU5RhlR
+Pk4zaA4VFK67sGheSvSb+W/uBBuvx3fhUoWMhzbfaGXEBXyULY2sQS2ftZ5C6u+d
+tqsg1v4WYWW+Hku76hNQfh/9Ncexa2cXYis6OETDEtayPxclK3yzlFx952g6+UAF
+lkRTp9Z9wGQQQddXO2iM1ohD+xSUU218p7MQX2YalAedC/RfJDCPeOr4vAHT+MqS
+0HPKConxK9nbQGm1PjfqrmLztLZPVVVwLZPatZrpYUrPAdz5p2TB5LxZfV7RJGO/
+EprcRzCUYwwlmEAI8GcJbclw/c77wg==
+=VXj9
+-----END PGP SIGNATURE-----
+
+--hdo4m2v6a2l4xgea--
