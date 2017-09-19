@@ -1,106 +1,85 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2] ALSA: hda - program ICT bits to support HBR
-	audio
-Date: Tue, 19 Sep 2017 17:25:05 -0500
-Message-ID: <20170919222505.28654-1-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 81B8A2671F3
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 00:25:20 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Sriram Periyasamy <sriramx.periyasamy@intel.com>, broonie@kernel.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] ASoC: tfa9879: Add device tree bindings
+Date: Tue, 19 Sep 2017 19:59:04 -0300
+Message-ID: <1505861944-32447-1-git-send-email-festevam@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lukma-ynQEQJNshbs@public.gmane.org, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+From: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
 
-On recent Intel platforms (Haswell, Broadwell, Skylake, ApolloLake,
-KabyLake, ...), the IEC Coding Type (ICT) bitfield in the Digital
-Converter Control #3 needs to be set explicitly for HDMI/DisplayPort
-High Bit Rate (HBR) audio playback to work. This was not required in
-earlier platforms when HBR was first introduced. The ICT bits are
-defined in Section 7.3.3.9 of the HDaudio 1.0a specification.
+Even though the tfa9879 driver can probe via device tree trough the
+I2C core code, it is preferable to have explicit device tree
+bindings instead [1], so add this support.
 
-Since the ICT bitfield was not specified for HDAudio 1.0 devices
-(before 2009), we only program it on machines more recent than
-Haswell.
+[1] https://www.spinics.net/lists/devicetree/msg195176.html
 
-We tested that this fix is not needed on Baytrail-I (MinnowBoard
-Turbot) and believe by extension it also does not apply to Braswell.
-
-Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=98797
-
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
 ---
-v2: move digi3 verb in Set section, only set ICT for haswell and newer
+Hi Lukasz,
 
- include/sound/hda_verbs.h  |  1 +
- sound/pci/hda/patch_hdmi.c | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+Could you please test this on your hardware?
 
-diff --git a/include/sound/hda_verbs.h b/include/sound/hda_verbs.h
-index d0509db6d0ec..d2004d7feb2b 100644
---- a/include/sound/hda_verbs.h
-+++ b/include/sound/hda_verbs.h
-@@ -54,6 +54,7 @@ enum {
- #define AC_VERB_GET_EAPD_BTLENABLE		0x0f0c
- #define AC_VERB_GET_DIGI_CONVERT_1		0x0f0d
- #define AC_VERB_GET_DIGI_CONVERT_2		0x0f0e /* unused */
-+#define AC_VERB_SET_DIGI_CONVERT_3		0x73e
- #define AC_VERB_GET_VOLUME_KNOB_CONTROL		0x0f0f
- /* f10-f1a: GPIO */
- #define AC_VERB_GET_GPIO_DATA			0x0f15
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 53f9311370de..8566de298ea3 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -906,6 +906,7 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
- 			      hda_nid_t pin_nid, u32 stream_tag, int format)
- {
- 	struct hdmi_spec *spec = codec->spec;
-+	unsigned int param;
- 	int err;
+ .../devicetree/bindings/sound/tfa9879.txt          | 23 ++++++++++++++++++++++
+ sound/soc/codecs/tfa9879.c                         |  6 ++++++
+ 2 files changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
+new file mode 100644
+index 0000000..731ffe8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tfa9879.txt
+@@ -0,0 +1,23 @@
++NXP TFA9879 class-D audio amplifier
++
++Required properties:
++
++- compatible : "nxp,tfa9879"
++
++- reg : the I2C address of the device
++
++Example:
++
++&i2c1 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_i2c1>;
++	status = "okay";
++
++	codec: tfa9879@6c {
++		#sound-dai-cells = <0>;
++		compatible = "nxp,tfa9879";
++		reg = <0x6c>;
++        };
++};
++
+diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
+index 95e0a7a..f8dd67c 100644
+--- a/sound/soc/codecs/tfa9879.c
++++ b/sound/soc/codecs/tfa9879.c
+@@ -312,9 +312,15 @@ static const struct i2c_device_id tfa9879_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, tfa9879_i2c_id);
  
- 	err = spec->ops.pin_hbr_setup(codec, pin_nid, is_hbr_format(format));
-@@ -915,6 +916,26 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
- 		return err;
- 	}
- 
-+	if (is_haswell_plus(codec)) {
++static const struct of_device_id tfa9879_of_match[] = {
++	{ .compatible = "nxp,tfa9879", },
++	{ }
++};
 +
-+		/*
-+		 * on recent platforms IEC Coding Type is required for HBR
-+		 * support, read current Digital Converter settings and set
-+		 * ICT bitfield if needed.
-+		 */
-+		param = snd_hda_codec_read(codec, cvt_nid, 0,
-+					   AC_VERB_GET_DIGI_CONVERT_1, 0);
-+
-+		param = (param >> 16) & ~(AC_DIG3_ICT);
-+
-+		/* on recent platforms ICT mode is required for HBR support */
-+		if (is_hbr_format(format))
-+			param |= 0x1;
-+
-+		snd_hda_codec_write(codec, cvt_nid, 0,
-+				    AC_VERB_SET_DIGI_CONVERT_3, param);
-+	}
-+
- 	snd_hda_codec_setup_stream(codec, cvt_nid, stream_tag, 0, format);
- 	return 0;
- }
+ static struct i2c_driver tfa9879_i2c_driver = {
+ 	.driver = {
+ 		.name = "tfa9879",
++		.of_match_table = tfa9879_of_match,
+ 	},
+ 	.probe = tfa9879_i2c_probe,
+ 	.remove = tfa9879_i2c_remove,
 -- 
-2.11.0
+2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
