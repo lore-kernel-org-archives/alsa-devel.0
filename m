@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Caculate bit clock rate using slot number and width" to the asoc tree
-Date: Tue, 19 Sep 2017 14:46:51 +0100
-Message-ID: <E1duIrT-0008Jm-7r@debutante>
-References: <1505358429-18314-1-git-send-email-nicoleotsuka@gmail.com>
+Subject: Applied "ASoC: qcom: remove duplicate initializations of dma_ch and v" to the asoc tree
+Date: Tue, 19 Sep 2017 14:47:06 +0100
+Message-ID: <E1duIri-0008Nz-2p@debutante>
+References: <20170918092603.27613-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1505358429-18314-1-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <20170918092603.27613-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, timur@tabi.org, arnaud.mouiche@invoxia.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, caleb@crome.org, max.krummenacher@toradex.com, lukma@denx.de, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Caculate bit clock rate using slot number and width
+   ASoC: qcom: remove duplicate initializations of dma_ch and v
 
 has been applied to the asoc tree at
 
@@ -37,153 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From b0a7043d5c2ccdd306959f295bf1a62be025cbf5 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Wed, 13 Sep 2017 20:07:09 -0700
-Subject: [PATCH] ASoC: fsl_ssi: Caculate bit clock rate using slot number and
- width
+>From 20cf7e3ce3083593e163849ae6ba95525f2366ca Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Mon, 18 Sep 2017 10:26:03 +0100
+Subject: [PATCH] ASoC: qcom: remove duplicate initializations of dma_ch and v
 
-The set_sysclk() now is used to override the output bit clock rate.
-But this is not a common way to implement a set_dai_sysclk(). And
-this creates a problem when a general machine driver (simple-card
-for example) tries to do set_dai_sysclk() by passing an input clock
-rate for the baud clock instead of setting the bit clock rate as
-fsl_ssi driver expected.
+dma_ch is being initialized to zero and then immediately afterwards
+being updated again, so the first initialization is redundant and
+can be remove.
 
-So this patch solves this problem by firstly removing set_sysclk()
-since the hw_params() can calculate the bit clock rate. Secondly,
-in order not to break those TDM use cases which previously might
-have been using set_sysclk() to override the bit clock rate, this
-patch changes the driver to calculate the bit clock rate using the
-slot number and the slot width from the via set_tdm_slot().
+Likewise, the pointer v is being initialized twice, so remove the second
+duplicate initialization.
 
-The patch also removes an obsolete comment of the dir parameter.
+Cleans up two clang build warnings:
+warning: Value stored to 'dma_ch' is never read
+warning: Value stored to 'v' during its initialization is never read
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 46 ++++++++++++++++++++++++++--------------------
- 1 file changed, 26 insertions(+), 20 deletions(-)
+ sound/soc/qcom/lpass-platform.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 64598d1183f8..f2f51e06e22c 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -197,12 +197,13 @@ struct fsl_ssi_soc_data {
-  * @use_dma: DMA is used or FIQ with stream filter
-  * @use_dual_fifo: DMA with support for both FIFOs used
-  * @fifo_deph: Depth of the SSI FIFOs
-+ * @slot_width: width of each DAI slot
-+ * @slots: number of slots
-  * @rxtx_reg_val: Specific register settings for receive/transmit configuration
-  *
-  * @clk: SSI clock
-  * @baudclk: SSI baud clock for master mode
-  * @baudclk_streams: Active streams that are using baudclk
-- * @bitclk_freq: bitclock frequency set by .set_dai_sysclk
-  *
-  * @dma_params_tx: DMA transmit parameters
-  * @dma_params_rx: DMA receive parameters
-@@ -233,12 +234,13 @@ struct fsl_ssi_private {
- 	bool use_dual_fifo;
- 	bool has_ipg_clk_name;
- 	unsigned int fifo_depth;
-+	unsigned int slot_width;
-+	unsigned int slots;
- 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index e1945e1772cd..caf71aab8196 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -74,7 +74,6 @@ static int lpass_platform_pcmops_open(struct snd_pcm_substream *substream)
+ 	data->i2s_port = cpu_dai->driver->id;
+ 	runtime->private_data = data;
  
- 	struct clk *clk;
- 	struct clk *baudclk;
- 	unsigned int baudclk_streams;
--	unsigned int bitclk_freq;
+-	dma_ch = 0;
+ 	if (v->alloc_dma_channel)
+ 		dma_ch = v->alloc_dma_channel(drvdata, dir);
+ 	else
+@@ -122,7 +121,6 @@ static int lpass_platform_pcmops_close(struct snd_pcm_substream *substream)
+ 	struct lpass_pcm_data *data;
  
- 	/* regcache for volatile regs */
- 	u32 regcache_sfcsr;
-@@ -700,8 +702,8 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
-  * Note: This function can be only called when using SSI as DAI master
-  *
-  * Quick instruction for parameters:
-- * freq: Output BCLK frequency = samplerate * 32 (fixed) * channels
-- * dir: SND_SOC_CLOCK_OUT -> TxBCLK, SND_SOC_CLOCK_IN -> RxBCLK.
-+ * freq: Output BCLK frequency = samplerate * slots * slot_width
-+ *       (In 2-channel I2S Master mode, slot_width is fixed 32)
-  */
- static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *cpu_dai,
-@@ -712,15 +714,21 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	int synchronous = ssi_private->cpu_dai_drv.symmetric_rates, ret;
- 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
- 	unsigned long clkrate, baudrate, tmprate;
-+	unsigned int slots = params_channels(hw_params);
-+	unsigned int slot_width = 32;
- 	u64 sub, savesub = 100000;
- 	unsigned int freq;
- 	bool baudclk_is_used;
- 
--	/* Prefer the explicitly set bitclock frequency */
--	if (ssi_private->bitclk_freq)
--		freq = ssi_private->bitclk_freq;
--	else
--		freq = params_channels(hw_params) * 32 * params_rate(hw_params);
-+	/* Override slots and slot_width if being specifically set... */
-+	if (ssi_private->slots)
-+		slots = ssi_private->slots;
-+	/* ...but keep 32 bits if slots is 2 -- I2S Master mode */
-+	if (ssi_private->slot_width && slots != 2)
-+		slot_width = ssi_private->slot_width;
-+
-+	/* Generate bit clock based on the slot number and slot width */
-+	freq = slots * slot_width * params_rate(hw_params);
- 
- 	/* Don't apply it to any non-baudclk circumstance */
- 	if (IS_ERR(ssi_private->baudclk))
-@@ -805,16 +813,6 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
--		int clk_id, unsigned int freq, int dir)
--{
--	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
--
--	ssi_private->bitclk_freq = freq;
--
--	return 0;
--}
--
- /**
-  * fsl_ssi_hw_params - program the sample size
-  *
-@@ -1095,6 +1093,12 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
- 	struct regmap *regs = ssi_private->regs;
- 	u32 val;
- 
-+	/* The word length should be 8, 10, 12, 16, 18, 20, 22 or 24 */
-+	if (slot_width & 1 || slot_width < 8 || slot_width > 24) {
-+		dev_err(cpu_dai->dev, "invalid slot width: %d\n", slot_width);
-+		return -EINVAL;
-+	}
-+
- 	/* The slot number should be >= 2 if using Network mode or I2S mode */
- 	regmap_read(regs, CCSR_SSI_SCR, &val);
- 	val &= CCSR_SSI_SCR_I2S_MODE_MASK | CCSR_SSI_SCR_NET;
-@@ -1121,6 +1125,9 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
- 
- 	regmap_update_bits(regs, CCSR_SSI_SCR, CCSR_SSI_SCR_SSIEN, val);
- 
-+	ssi_private->slot_width = slot_width;
-+	ssi_private->slots = slots;
-+
- 	return 0;
- }
- 
-@@ -1191,7 +1198,6 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- 	.hw_params	= fsl_ssi_hw_params,
- 	.hw_free	= fsl_ssi_hw_free,
- 	.set_fmt	= fsl_ssi_set_dai_fmt,
--	.set_sysclk	= fsl_ssi_set_dai_sysclk,
- 	.set_tdm_slot	= fsl_ssi_set_dai_tdm_slot,
- 	.trigger	= fsl_ssi_trigger,
- };
+ 	data = runtime->private_data;
+-	v = drvdata->variant;
+ 	drvdata->substream[data->dma_ch] = NULL;
+ 	if (v->free_dma_channel)
+ 		v->free_dma_channel(drvdata, data->dma_ch);
 -- 
 2.14.1
