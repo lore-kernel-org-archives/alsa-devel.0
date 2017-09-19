@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 34/38] axfer: add a parser for channel
-	map API
-Date: Tue, 19 Sep 2017 09:44:14 +0900
-Message-ID: <20170919004418.24668-35-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 33/38] axfer: add an option to handle
+	key events
+Date: Tue, 19 Sep 2017 09:44:13 +0900
+Message-ID: <20170919004418.24668-34-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 0CE7C266E29
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:33 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9CFCC266D90
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:32 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,200 +25,316 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Current aplay has an option to use channel map API of alsa-lib. This API
-allows applications to get/set channel position by a position array; e.g.
-'FR,FL' and 'LFE,FL,FR'.
+In current implementation of aplay, when an option '--interactive' (-i)
+is given, users can pause data transmission by pushing 'space' or 'enter'
+key. The key event is handled via control terminal.
 
-This commit adds support for the feature. However, neither alsa-lib
-implementation nor ALSA PCM interface, configuring the channel map is not
-supported. Therefore, this feature makes no sense except for displaying
-current channel map.
+This commit adds support for this feature. This feature includes an issue
+of race condition between SIGTSTOP/SIGCONT. When transmission of data
+frame is paused by key event, then this application goes to backend by the
+signal, a handler for SIGTSTOP restart the PCM substream after catching
+SIGCONT but this brings state contradiction for a handler of key event.
+Currently, this scenario is not cared in this commit.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c        | 29 ++++++++++++++++++++++++++---
- axfer/options.h        |  1 +
- axfer/xfer-libasound.c | 32 ++++++++++++++++++++++++++++++++
- axfer/xfer-libasound.h |  2 ++
- 4 files changed, 61 insertions(+), 3 deletions(-)
+ axfer/Makefile.am       |   7 ++-
+ axfer/key-event.c       | 121 ++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/key-event.h       |  19 ++++++++
+ axfer/options.c         |  20 +++++++-
+ axfer/options.h         |   1 +
+ axfer/subcmd-transfer.c |  22 +++++++++
+ 6 files changed, 187 insertions(+), 3 deletions(-)
+ create mode 100644 axfer/key-event.c
+ create mode 100644 axfer/key-event.h
 
-diff --git a/axfer/options.c b/axfer/options.c
-index a0c2a794..335d8af3 100644
---- a/axfer/options.c
-+++ b/axfer/options.c
-@@ -202,7 +202,8 @@ static int apply_policies(struct context_options *opts,
- 			  const char *cntr_format_literal,
- 			  const char *node_literal,
- 			  const char *sample_format_literal,
--			  const char *vu_mode_literal)
-+			  const char *vu_mode_literal,
-+			  const char *chmap_literal)
- {
- 	int err;
+diff --git a/axfer/Makefile.am b/axfer/Makefile.am
+index 8c22bb18..cf14a0f7 100644
+--- a/axfer/Makefile.am
++++ b/axfer/Makefile.am
+@@ -23,7 +23,8 @@ noinst_HEADERS = \
+ 	xfer.h \
+ 	xfer-alsa.h \
+ 	waiter.h \
+-	vumeter.h
++	vumeter.h \
++	key-event.h
  
-@@ -235,6 +236,21 @@ static int apply_policies(struct context_options *opts,
- 			return err;
- 	}
- 
-+	if (chmap_literal) {
-+		snd_pcm_chmap_t *chmap;
-+		chmap = snd_pcm_chmap_parse_string(chmap_literal);
-+		if (chmap == NULL) {
-+			fprintf(stderr,
-+				"Unable to parse channel map string: '%s'\n",
-+				chmap_literal);
-+			return -EINVAL;
-+		}
-+		free(chmap);
-+		opts->chmap_literal = strdup(chmap_literal);
-+		if (opts->chmap_literal == NULL)
-+			return -ENOMEM;
+ axfer_SOURCES = \
+ 	misc.h \
+@@ -53,4 +54,6 @@ axfer_SOURCES = \
+ 	waiter-poll.c \
+ 	xfer-libasound-irq-mmap.c \
+ 	vumeter.h \
+-	vumeter.c
++	vumeter.c \
++	key-event.h \
++	key-event.c
+diff --git a/axfer/key-event.c b/axfer/key-event.c
+new file mode 100644
+index 00000000..61680f0c
+--- /dev/null
++++ b/axfer/key-event.c
+@@ -0,0 +1,121 @@
++/*
++ * key-event.c - a handler for key events via stdin.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "key-event.h"
++#include "misc.h"
++
++#include <stdio.h>
++#include <termios.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <errno.h>
++
++int keyevent_context_init(struct keyevent_context *key)
++{
++	struct termios term;
++	int err;
++
++	key->fd = fileno(stdin);
++	if (!isatty(key->fd)) {
++		printf(_("isatty(3): %s\n"),
++		       strerror(errno));
++		return -EINVAL;
 +	}
 +
- 	if (opts->samples_per_frame > 0) {
- 		if (opts->samples_per_frame < 1 ||
- 		    opts->samples_per_frame > 256) {
-@@ -373,7 +389,7 @@ void context_options_calculate_duration(struct context_options *opts,
++	err = tcgetattr(key->fd, &term);
++	if (err < 0) {
++		printf(_("tcgetattr(3): %s\n"),
++		       strerror(errno));
++		return -errno;
++	}
++	key->c_lflag = term.c_lflag;
++
++	term.c_lflag &= ~ICANON;
++	err = tcsetattr(key->fd, TCSANOW, &term);
++	if (err < 0) {
++		printf(_("tcsetattr(3): %s\n"),
++			 strerror(errno));
++		return -errno;
++	}
++
++	return 0;
++}
++
++static int set_nonblock_flag(int fd, bool nonblock)
++{
++	int err;
++
++	err = fcntl(fd, F_GETFL);
++	if (err < 0) {
++		printf(_("fcntl(2) with F_GETFL: %s\n"),
++			 strerror(errno));
++		return -errno;
++	}
++
++	if (nonblock)
++		err |= O_NONBLOCK;
++	else
++		err &= ~O_NONBLOCK;
++	err = fcntl(fd, F_SETFL, err);
++	if (err < 0) {
++		printf(_("fcntl(2) with F_SETFL: %s\n"),
++			 strerror(errno));
++		return -errno;
++	}
++
++	return 0;
++}
++
++int keyevent_context_check(struct keyevent_context *key,
++			   struct xfer_context *xfer)
++{
++	char b;
++	ssize_t len;
++	bool paused = false;
++	int err;
++
++	while (1) {
++		err = set_nonblock_flag(key->fd, !paused);
++		if (err < 0)
++			return err;
++
++		len = read(key->fd, &b, sizeof(b));
++		if (len < 0) {
++			if (errno == EINTR)
++				continue;
++			if (errno == EAGAIN)
++				break;
++			return -errno;
++		}
++		if (len == 0)
++			break;
++		if (b == ' ' || b == '\n') {
++			xfer_context_pause(xfer, !paused);
++			if (paused)
++				break;
++			paused = !paused;
++		}
++	}
++
++	return 0;
++}
++
++void keyevent_context_destroy(struct keyevent_context *key)
++{
++	struct termios term;
++	int err;
++
++	tcgetattr(key->fd, &term);
++	term.c_lflag = key->c_lflag;
++	err = tcsetattr(key->fd, TCSANOW, &term);
++	if (err < 0) {
++		printf(_("tcsetattr(3): %s\n"),
++		       strerror(errno));
++	}
++}
+diff --git a/axfer/key-event.h b/axfer/key-event.h
+new file mode 100644
+index 00000000..2e11ebf0
+--- /dev/null
++++ b/axfer/key-event.h
+@@ -0,0 +1,19 @@
++/*
++ * key-event.h - a header to a handler for key events via stdin.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "xfer.h"
++
++struct keyevent_context {
++	int fd;
++	long c_lflag;
++};
++
++int keyevent_context_init(struct keyevent_context *key);
++int keyevent_context_check(struct keyevent_context *key,
++			   struct xfer_context *xfer);
++void keyevent_context_destroy(struct keyevent_context *key);
+diff --git a/axfer/options.c b/axfer/options.c
+index d292fead..a0c2a794 100644
+--- a/axfer/options.c
++++ b/axfer/options.c
+@@ -297,6 +297,21 @@ static int apply_policies(struct context_options *opts,
+ 		}
+ 	}
+ 
++	if (opts->interactive) {
++		/*
++		 * In interactive mode, users can suspend/resume PCM substream
++		 * by keyboard input, thus stdin cannot used for source of
++		 * PCM frames.
++		 */
++		if (direction == SND_PCM_STREAM_PLAYBACK &&
++		    !strcmp(opts->paths[0], "-")) {
++			fprintf(stderr,
++				"An option for interactive mode is not "
++				"available with stdin.\n");
++			return -EINVAL;
++		}
++	}
++
+ 	opts->sample_format = SND_PCM_FORMAT_UNKNOWN;
+ 	if (sample_format_literal) {
+ 		err = verify_sample_format(opts, sample_format_literal);
+@@ -358,7 +373,7 @@ void context_options_calculate_duration(struct context_options *opts,
  int context_options_init(struct context_options *opts, int argc,
  			 char *const *argv, snd_pcm_stream_t direction)
  {
--	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:A:R:T:V:i";
-+	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:A:R:T:V:im:";
+-	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:A:R:T:V:";
++	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:A:R:T:V:i";
  	static const struct option l_opts[] = {
  		/* For generic purposes. */
  		{"help",		0, 0, 'h'},
-@@ -412,6 +428,7 @@ int context_options_init(struct context_options *opts, int argc,
+@@ -396,6 +411,7 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"test-nowait",		0, 0, OPT_TEST_NOWAIT},
  		/* Misc features. */
  		{"vumeter",		1, 0, 'V'},
- 		{"interactive",		0, 0, 'i'},
-+		{"chmap",		1, 0, 'm'},
++		{"interactive",		0, 0, 'i'},
  		/* Obsoleted. */
  		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
  		{NULL,			0, 0, 0},
-@@ -420,6 +437,7 @@ int context_options_init(struct context_options *opts, int argc,
- 	const char *node_literal = NULL;
- 	const char *sample_format_literal = NULL;
- 	const char *vu_mode_literal = NULL;
-+	const char *chmap_literal = NULL;
- 	int l_index = 0;
- 	int c;
- 	int err = 0;
-@@ -490,6 +508,8 @@ int context_options_init(struct context_options *opts, int argc,
+@@ -472,6 +488,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->test_nowait = true;
+ 		else if (c == 'V')
  			vu_mode_literal = optarg;
- 		else if (c == 'i')
- 			opts->interactive = true;
-+		else if (c == 'm')
-+			chmap_literal = optarg;
++		else if (c == 'i')
++			opts->interactive = true;
  		else if (c == OPT_MAX_FILE_TIME) {
  			fprintf(stderr,
  				"An option '--%s' is obsoleted and has no "
-@@ -509,7 +529,7 @@ int context_options_init(struct context_options *opts, int argc,
- 
- 	return apply_policies(opts, direction, cntr_format_literal,
- 			      node_literal, sample_format_literal,
--			      vu_mode_literal);
-+			      vu_mode_literal, chmap_literal);
- }
- 
- /*
-@@ -863,6 +883,9 @@ void context_options_destroy(struct context_options *opts)
- 	}
- 	if (opts->node)
- 		free(opts->node);
-+	if (opts->chmap_literal)
-+		free(opts->chmap_literal);
- 	opts->paths = NULL;
- 	opts->node = NULL;
-+	opts->chmap_literal = NULL;
- }
 diff --git a/axfer/options.h b/axfer/options.h
-index 69a98df1..e90dc6b7 100644
+index 0e3c5109..69a98df1 100644
 --- a/axfer/options.h
 +++ b/axfer/options.h
-@@ -61,6 +61,7 @@ struct context_options {
+@@ -60,6 +60,7 @@ struct context_options {
+ 
  	/* Misc features. */
  	enum vumeter_mode vu_mode;
- 	bool interactive;
-+	char *chmap_literal;
++	bool interactive;
  };
  
  int context_options_init(struct context_options *opts, int argc,
-diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
-index 77131a7e..e00cfaa9 100644
---- a/axfer/xfer-libasound.c
-+++ b/axfer/xfer-libasound.c
-@@ -53,6 +53,17 @@ static int set_access_hw_param(snd_pcm_t *handle,
- 	return err;
- }
+diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
+index 1527fae8..5c61e210 100644
+--- a/axfer/subcmd-transfer.c
++++ b/axfer/subcmd-transfer.c
+@@ -9,6 +9,7 @@
+ #include "xfer.h"
+ #include "subcmd.h"
+ #include "misc.h"
++#include "key-event.h"
  
-+static void dump_chmap(struct libasound_state *state,
-+		       const snd_pcm_chmap_t *chmap)
-+{
-+	int i;
-+
-+	logging(state, "    channels: %u\n", chmap->channels);
-+	for (i = 0; i < chmap->channels; ++i)
-+		logging(state, "      ch%u: %s\n",
-+			i, snd_pcm_chmap_name(chmap->pos[i]));
-+}
-+
- static int xfer_libasound_init(struct xfer_context *xfer,
- 			       snd_pcm_stream_t direction,
- 			       struct context_options *opts)
-@@ -118,6 +129,17 @@ static int xfer_libasound_init(struct xfer_context *xfer,
- 		return 0;
- 	}
+ #include <signal.h>
  
-+	if (opts->chmap_literal != NULL) {
-+		state->chmap = snd_pcm_chmap_parse_string(opts->chmap_literal);
-+		if (state->chmap == NULL)
+@@ -363,9 +364,19 @@ static int context_process_frames(struct context *ctx,
+ 				  uint64_t *actual_frame_count)
+ {
+ 	unsigned int frame_count;
++	struct keyevent_context *key = NULL;
+ 	int i;
+ 	int err = 0;
+ 
++	if (ctx->opts.interactive) {
++		key = malloc(sizeof(*key));
++		if (key == NULL)
 +			return -ENOMEM;
++		err = keyevent_context_init(key);
++		if (err < 0)
++			return err;
++	}
 +
-+		if (xfer->verbose) {
-+			logging(state, "Chmap argument:\n");
-+			dump_chmap(state, state->chmap);
+ 	if (!ctx->opts.quiet) {
+ 		fprintf(stderr,
+ 			_("%s: Format '%s', Rate %u Hz, Channels "),
+@@ -405,6 +416,17 @@ static int context_process_frames(struct context *ctx,
+ 		*actual_frame_count += frame_count;
+ 		if (*actual_frame_count >= expected_frame_count)
+ 			break;
++
++		if (key) {
++			err = keyevent_context_check(key, &ctx->xfer);
++			if (err < 0)
++				break;
 +		}
 +	}
 +
- 	return set_access_hw_param(state->handle, state->hw_params, opts);
- }
- 
-@@ -204,6 +226,12 @@ static int configure_hw_params(struct libasound_state *state,
- 			return err;
- 		}
++	if (key) {
++		keyevent_context_destroy(key);
++		free(key);
  	}
-+	if (state->chmap && samples_per_frame != state->chmap->channels) {
-+		logging(state,
-+			_("Mismatch between channel number and given map: %u "
-+			  "%u\n"),
-+			samples_per_frame, state->chmap->channels);
-+	}
- 	err = snd_pcm_hw_params_set_channels(state->handle, state->hw_params,
- 					     samples_per_frame);
- 	if (err < 0) {
-@@ -635,6 +663,10 @@ static void xfer_libasound_destroy(struct xfer_context *xfer)
- 	if (state->log)
- 		snd_output_close(state->log);
- 	state->log = NULL;
-+
-+	if (state->chmap)
-+		free(state->chmap);
-+	state->chmap = NULL;
- }
  
- const struct xfer_data xfer_libasound = {
-diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
-index 7214ebbf..dac49774 100644
---- a/axfer/xfer-libasound.h
-+++ b/axfer/xfer-libasound.h
-@@ -34,6 +34,8 @@ struct libasound_state {
- 
- 	bool verbose;
- 	bool finish_at_xrun;
-+
-+	snd_pcm_chmap_t *chmap;
- };
- 
- struct xfer_libasound_ops {
+ 	if (!ctx->opts.quiet) {
 -- 
 2.11.0
