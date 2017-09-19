@@ -1,34 +1,63 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ALSA: hrtimer: make hrtimer_hw const and __initconst
-Date: Tue, 19 Sep 2017 16:44:38 +0530
-Message-ID: <1505819678-1512-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: Resend: [PATCH 1/4] ASoC: dapm: fix error path in
+ snd_soc_dapm_new_pcm
+Date: Tue, 19 Sep 2017 13:03:59 +0100
+Message-ID: <20170919120359.lo455b2r7s377dyp@localhost.localdomain>
+References: <CABCoZhCST2kbTNT4BpwniipkaD=dGB5Jb0WFw6QckUaJYxMKxA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 808B6266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:04:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CABCoZhCST2kbTNT4BpwniipkaD=dGB5Jb0WFw6QckUaJYxMKxA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: anish kumar <yesanishhere@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make this const as it is only used during a copy operation. Also, make
-it __initconst as it is only used during the init phase and after this
-it is not referenced anywhere.
+On Thu, Sep 14, 2017 at 10:02:17PM -0700, anish kumar wrote:
+> From: anish kumar <yesanishhere@gmail.com>
+> 
+> Before freeing the memory, check if it was allcoated.
+> 
+> Signed-off-by: anish kumar <yesanishhere@gmail.com>
+> ---
+>  sound/soc/soc-dapm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index dcef67a..f51f613 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -3907,9 +3907,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>         devm_kfree(card->dev, (void *)private_value);
+>  outfree_link_name:
+>         devm_kfree(card->dev, link_name);
+> -outfree_w_param:
+>         for (count = 0 ; count < num_params; count++)
+>                 devm_kfree(card->dev, (void *)w_param_text[count]);
+> +outfree_w_param:
+>         devm_kfree(card->dev, w_param_text);
+> 
+>         return ret;
+> --
+> 2.5.4 (Apple Git-61)
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/core/hrtimer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Your email client appears to be mangling the whitespace in your
+patches which makes them exceptionally hard to apply. Have a look
+in Documentation/process/email-clients.rst and resend please.
 
-diff --git a/sound/core/hrtimer.c b/sound/core/hrtimer.c
-index 1ac0c42..5603e49 100644
---- a/sound/core/hrtimer.c
-+++ b/sound/core/hrtimer.c
-@@ -127,7 +127,7 @@ static int snd_hrtimer_stop(struct snd_timer *t)
- 	return 0;
- }
- 
--static struct snd_timer_hardware hrtimer_hw = {
-+static const struct snd_timer_hardware hrtimer_hw __initconst = {
- 	.flags =	SNDRV_TIMER_HW_AUTO | SNDRV_TIMER_HW_TASKLET,
- 	.open =		snd_hrtimer_open,
- 	.close =	snd_hrtimer_close,
--- 
-1.9.1
+Thanks,
+Charles
