@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 00/38] alsa-utils: axfer: rewrite aplay
-Date: Tue, 19 Sep 2017 09:43:40 +0900
-Message-ID: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 07/38] axfer: add support for a
+	container of raw data
+Date: Tue, 19 Sep 2017 09:43:47 +0900
+Message-ID: <20170919004418.24668-8-o-takashi@sakamocchi.jp>
+References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E4B32266DBB
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:23 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 99223266E4C
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:27 +0200 (CEST)
+In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,177 +25,235 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This commit adds support for raw data without any headers/chunks/blocks.
+A parser of container cannot recognize format of sample without
+supplemental information.
 
-This large patchset is to introduce a new command, named as 'axfer' (ALSA
-transfer). This comes from my work to rewrite aplay. Initial patchset was
-already posted as RFCv1.
+Additionally, it includes no magic bytes. A parser of container should
+process first several bytes as a part of PCM frames, instead of magic
+bytes.
 
-[alsa-devel][PATCH 00/23] alsa-utils: rewrite aplay
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-August/124132.html
-
-Unlike the initial patchset, this patchset includes support for the most of
-options in aplay, and simple unit tests for functionalities to handle data
-frames for files.
-
-At patch 17, transmission of data frame with blocking mode is supported.
-You can actually test playback/capture.
- * axfer: add a sub-command to transfer data frames
-
-At patch 24, transmission with non-blocking mode is supported.
- * axfer: add support for non-blocking operation
-
-At patch 25, transmission by MMAP operation is supported.
- * axfer: add support for MMAP PCM operation
-
-Between patch 30-36, some minor features are supported, but they includes
-own issues. I'd like to abandon them in future patchset.
- * axfer: add an option to support volume unit meter
- * axfer: add a unit test for vumeter calculation
- * axfer: add an option for formatted filename
- * axfer: add an option to handle key events
- * axfer: add a parser for channel map API
- * axfer: add a feature to generate a file for process id
- * axfer: obsolete some test options
-
-At patch 37/38, an integration to select waiter type is added. You can
-select one of poll(2) and epoll(2) to wait for I/O event notification.
-
-At present, I found some problems of this program:
- * When MMAP operation is used for PCM nodes with 'plug' plugin, XRUN occurs
-   for capture and noisy sound for playback. I don't found this in the other
-   operations such as blocking.
- * When using two axfer processes for capture/playback with pipe, some frames
-   are truncated in the end of playback.
-
-I leave some tasks such as documentation and localization, but this patchset
-covers major use cases, I think.
-
-
-Regards
-
-Takashi Sakamoto (38):
-  axfer: add an entry point for this command
-  axfer: add a sub-command to print list of PCMs/devices
-  axfer: add a common interface to handle a file with audio-specific
-    data format
-  axfer: add support for a container of Microsoft/IBM RIFF/Wave format
-  axfer: add support for a container of Sparc AU format
-  axfer: add support for a container of Creative Tech. voice format
-  axfer: add support for a container of raw data
-  axfer: add unit test for container interface
-  axfer: add a common interface to align data frames on different layout
-  axfer: add support for a mapper for single target
-  axfer: add support for a mapper for multiple target
-  axfer: add a unit test for mapper interface
-  axfer: add a parser for command-line options
-  axfer: add a common interface to transfer data frames
-  axfer: add support to transfer data frames by alsa-lib PCM APIs
-  axfer: add support for blocking data transmission operation of
-    alsa-lib PCM API
-  axfer: add a sub-command to transfer data frames
-  axfer: add informative output and an option to suppress it
-  axfer: add an option to dump available hardware parameters
-  axfer: add options related to duration and obsolete '--max-file-size'
-    option
-  axfer: add an option to finish transmission at XRUN
-  axfer: add a common interface of waiter for I/O event notification
-  axfer: add support of waiter for poll(2)
-  axfer: add support for non-blocking operation
-  axfer: add support for MMAP PCM operation
-  axfer: add an option to suppress event waiting
-  axfer: add options for buffer arrangement
-  axfer: add options for software parameters of PCM substream
-  axfer: add options for plugins in alsa-lib
-  axfer: add an option to support volume unit meter
-  axfer: add a unit test for vumeter calculation
-  axfer: add an option for formatted filename
-  axfer: add an option to handle key events
-  axfer: add a parser for channel map API
-  axfer: add a feature to generate a file for process id
-  axfer: obsolete some test options
-  axfer: add an implementation of waiter for epoll(7)
-  axfer: add an option for waiter type
-
- Makefile.am                     |   2 +-
- axfer/Makefile.am               |  60 +++
- axfer/container-au.c            | 207 +++++++++
- axfer/container-raw.c           |  66 +++
- axfer/container-riff-wave.c     | 581 ++++++++++++++++++++++++
- axfer/container-voc.c           | 843 +++++++++++++++++++++++++++++++++++
- axfer/container.c               | 470 ++++++++++++++++++++
- axfer/container.h               | 126 ++++++
- axfer/key-event.c               | 121 +++++
- axfer/key-event.h               |  19 +
- axfer/main.c                    | 194 ++++++++
- axfer/mapper-multiple.c         | 271 +++++++++++
- axfer/mapper-single.c           | 195 ++++++++
- axfer/mapper.c                  | 152 +++++++
- axfer/mapper.h                  |  87 ++++
- axfer/misc.h                    |  16 +
- axfer/options.c                 | 963 ++++++++++++++++++++++++++++++++++++++++
- axfer/options.h                 |  83 ++++
- axfer/subcmd-list.c             | 234 ++++++++++
- axfer/subcmd-transfer.c         | 520 ++++++++++++++++++++++
- axfer/subcmd.h                  |  18 +
- axfer/test/Makefile.am          |  39 ++
- axfer/test/container-test.c     | 299 +++++++++++++
- axfer/test/generator.c          | 260 +++++++++++
- axfer/test/generator.h          |  47 ++
- axfer/test/mapper-test.c        | 491 ++++++++++++++++++++
- axfer/test/vumeter-test.c       | 128 ++++++
- axfer/vumeter.c                 | 565 +++++++++++++++++++++++
- axfer/vumeter.h                 |  56 +++
- axfer/waiter-epoll.c            |  81 ++++
- axfer/waiter-poll.c             |  68 +++
- axfer/waiter.c                  |  84 ++++
- axfer/waiter.h                  |  52 +++
- axfer/xfer-libasound-irq-mmap.c | 224 ++++++++++
- axfer/xfer-libasound-irq-rw.c   | 518 +++++++++++++++++++++
- axfer/xfer-libasound.c          | 682 ++++++++++++++++++++++++++++
- axfer/xfer-libasound.h          |  57 +++
- axfer/xfer.c                    | 191 ++++++++
- axfer/xfer.h                    |  76 ++++
- configure.ac                    |   3 +-
- 40 files changed, 9147 insertions(+), 2 deletions(-)
- create mode 100644 axfer/Makefile.am
- create mode 100644 axfer/container-au.c
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ axfer/Makefile.am     |  3 ++-
+ axfer/container-raw.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/container.c     | 39 +++++++++++++++++++++++++-----
+ axfer/container.h     |  4 ++++
+ 4 files changed, 105 insertions(+), 7 deletions(-)
  create mode 100644 axfer/container-raw.c
- create mode 100644 axfer/container-riff-wave.c
- create mode 100644 axfer/container-voc.c
- create mode 100644 axfer/container.c
- create mode 100644 axfer/container.h
- create mode 100644 axfer/key-event.c
- create mode 100644 axfer/key-event.h
- create mode 100644 axfer/main.c
- create mode 100644 axfer/mapper-multiple.c
- create mode 100644 axfer/mapper-single.c
- create mode 100644 axfer/mapper.c
- create mode 100644 axfer/mapper.h
- create mode 100644 axfer/misc.h
- create mode 100644 axfer/options.c
- create mode 100644 axfer/options.h
- create mode 100644 axfer/subcmd-list.c
- create mode 100644 axfer/subcmd-transfer.c
- create mode 100644 axfer/subcmd.h
- create mode 100644 axfer/test/Makefile.am
- create mode 100644 axfer/test/container-test.c
- create mode 100644 axfer/test/generator.c
- create mode 100644 axfer/test/generator.h
- create mode 100644 axfer/test/mapper-test.c
- create mode 100644 axfer/test/vumeter-test.c
- create mode 100644 axfer/vumeter.c
- create mode 100644 axfer/vumeter.h
- create mode 100644 axfer/waiter-epoll.c
- create mode 100644 axfer/waiter-poll.c
- create mode 100644 axfer/waiter.c
- create mode 100644 axfer/waiter.h
- create mode 100644 axfer/xfer-libasound-irq-mmap.c
- create mode 100644 axfer/xfer-libasound-irq-rw.c
- create mode 100644 axfer/xfer-libasound.c
- create mode 100644 axfer/xfer-libasound.h
- create mode 100644 axfer/xfer.c
- create mode 100644 axfer/xfer.h
 
+diff --git a/axfer/Makefile.am b/axfer/Makefile.am
+index 48d046e1..f1ec1d1d 100644
+--- a/axfer/Makefile.am
++++ b/axfer/Makefile.am
+@@ -27,4 +27,5 @@ axfer_SOURCES = \
+ 	container.c \
+ 	container-riff-wave.c \
+ 	container-au.c \
+-	container-voc.c
++	container-voc.c \
++	container-raw.c
+diff --git a/axfer/container-raw.c b/axfer/container-raw.c
+new file mode 100644
+index 00000000..b5e11e44
+--- /dev/null
++++ b/axfer/container-raw.c
+@@ -0,0 +1,66 @@
++/*
++ * container-raw.c - a parser/builder for a container with raw data frame.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "container.h"
++#include "misc.h"
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++static int raw_builder_pre_process(struct container_context *cntr,
++				   snd_pcm_format_t *sample_format,
++				   unsigned int *samples_per_frame,
++				   unsigned int *frames_per_second,
++				   uint64_t *byte_count)
++{
++	*byte_count = UINT64_MAX;
++
++	return 0;
++}
++
++static int raw_parser_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *sample_format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *byte_count)
++{
++	struct stat buf = {0};
++	int err;
++
++	if (cntr->stdio) {
++		*byte_count = UINT64_MAX;
++		return 0;
++	}
++
++	err = fstat(cntr->fd, &buf);
++	if (err < 0)
++		return err;
++
++	*byte_count = buf.st_size;
++	if (*byte_count == 0)
++		*byte_count = UINT64_MAX;
++
++	return 0;
++}
++
++const struct container_parser container_parser_raw = {
++	.format = CONTAINER_FORMAT_RAW,
++	.max_size = UINT64_MAX,
++	.ops = {
++		.pre_process = raw_parser_pre_process,
++	},
++};
++
++const struct container_builder container_builder_raw = {
++	.format = CONTAINER_FORMAT_RAW,
++	.max_size = UINT64_MAX,
++	.ops = {
++		.pre_process = raw_builder_pre_process,
++	},
++};
+diff --git a/axfer/container.c b/axfer/container.c
+index 99652e65..bdaf99ab 100644
+--- a/axfer/container.c
++++ b/axfer/container.c
+@@ -23,15 +23,16 @@ static const char *const cntr_format_labels[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
+ 	[CONTAINER_FORMAT_AU] = "au",
+ 	[CONTAINER_FORMAT_VOC] = "voc",
++	[CONTAINER_FORMAT_RAW] = "raw",
+ };
+ 
+ static const char *const suffixes[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
+ 	[CONTAINER_FORMAT_AU]		= ".au",
+ 	[CONTAINER_FORMAT_VOC]		= ".voc",
++	[CONTAINER_FORMAT_RAW]		= "",
+ };
+ 
+-
+ const char *const container_suffix_from_format(enum container_format format)
+ {
+ 	return suffixes[format];
+@@ -112,7 +113,7 @@ enum container_format container_format_from_path(const char *path)
+ 	}
+ 
+ 	/* Unsupported. */
+-	return CONTAINER_FORMAT_COUNT;
++	return CONTAINER_FORMAT_RAW;
+ }
+ 
+ int container_seek_offset(struct container_context *cntr, off64_t offset)
+@@ -205,7 +206,7 @@ int container_parser_init(struct container_context *cntr,
+ 	 * Unless detected, use raw container.
+ 	 */
+ 	if (i == ARRAY_SIZE(parsers))
+-		return -EINVAL;
++		parser = &container_parser_raw;
+ 
+ 	/* Allocate private data for the parser. */
+ 	if (parser->private_size > 0) {
+@@ -233,6 +234,7 @@ int container_builder_init(struct container_context *cntr,
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
+ 		[CONTAINER_FORMAT_AU] = &container_builder_au,
+ 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
++		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
+ 	};
+ 	const struct container_builder *builder;
+ 	int err;
+@@ -311,6 +313,16 @@ int container_context_pre_process(struct container_context *cntr,
+ 			return 0;
+ 	}
+ 
++	if (cntr->format == CONTAINER_FORMAT_RAW) {
++		if (*format == SND_PCM_FORMAT_UNKNOWN ||
++		    *samples_per_frame == 0 || *frames_per_second == 0) {
++			fprintf(stderr,
++				"Any file format is not detected. Need to "
++				"indicate all of sample format, channels and "
++				"rate explicitly.\n");
++			return -EINVAL;
++		}
++	}
+ 	assert(*format >= SND_PCM_FORMAT_S8);
+ 	assert(*format <= SND_PCM_FORMAT_LAST);
+ 	assert(*samples_per_frame > 0);
+@@ -357,6 +369,7 @@ int container_context_process_frames(struct container_context *cntr,
+ 	char *buf = frame_buffer;
+ 	unsigned int bytes_per_frame;
+ 	unsigned int byte_count;
++	unsigned int target_byte_count;
+ 	int err;
+ 
+ 	assert(cntr);
+@@ -365,7 +378,21 @@ int container_context_process_frames(struct container_context *cntr,
+ 	assert(frame_count);
+ 
+ 	bytes_per_frame = cntr->bytes_per_sample * cntr->samples_per_frame;
+-	byte_count = *frame_count * bytes_per_frame;
++	target_byte_count = *frame_count * bytes_per_frame;
++
++	/*
++	 * A parser of cotainers already read first 4 bytes to detect format
++	 * of container, however they includes PCM frames when any format was
++	 * undetected. Surely to write out them.
++	 */
++	byte_count = target_byte_count;
++	if (cntr->format == CONTAINER_FORMAT_RAW &&
++	    cntr->type == CONTAINER_TYPE_PARSER && !cntr->magic_handled) {
++		memcpy(buf, cntr->magic, sizeof(cntr->magic));
++		buf += sizeof(cntr->magic);
++		byte_count -= sizeof(cntr->magic);
++		cntr->magic_handled = true;
++	}
+ 
+ 	/* Each container has limitation for its volume for sample data. */
+ 	if (cntr->handled_byte_count > cntr->max_size - byte_count)
+@@ -379,11 +406,11 @@ int container_context_process_frames(struct container_context *cntr,
+ 		return err;
+ 	}
+ 
+-	cntr->handled_byte_count += byte_count;
++	cntr->handled_byte_count += target_byte_count;
+ 	if (cntr->handled_byte_count == cntr->max_size)
+ 		cntr->eof = true;
+ 
+-	*frame_count = byte_count / bytes_per_frame;
++	*frame_count = target_byte_count / bytes_per_frame;
+ 
+ 	return 0;
+ }
+diff --git a/axfer/container.h b/axfer/container.h
+index caba7398..9825f48d 100644
+--- a/axfer/container.h
++++ b/axfer/container.h
+@@ -28,6 +28,7 @@ enum container_format {
+ 	CONTAINER_FORMAT_RIFF_WAVE = 0,
+ 	CONTAINER_FORMAT_AU,
+ 	CONTAINER_FORMAT_VOC,
++	CONTAINER_FORMAT_RAW,
+ 	CONTAINER_FORMAT_COUNT,
+ };
+ 
+@@ -119,4 +120,7 @@ extern const struct container_builder container_builder_au;
+ extern const struct container_parser container_parser_voc;
+ extern const struct container_builder container_builder_voc;
+ 
++const struct container_parser container_parser_raw;
++const struct container_builder container_builder_raw;
++
+ #endif
 -- 
 2.11.0
