@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 20/38] axfer: add options related to
-	duration and obsolete '--max-file-size' option
-Date: Tue, 19 Sep 2017 09:44:00 +0900
-Message-ID: <20170919004418.24668-21-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 19/38] axfer: add an option to dump
+	available hardware parameters
+Date: Tue, 19 Sep 2017 09:43:59 +0900
+Message-ID: <20170919004418.24668-20-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id CA0B1266EA0
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D2B35266EA7
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:29 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,180 +25,116 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In aplay, some options are available to stop data transmission by frame
-unit. This commit adds support for them.
+In ALSA PCM interface, before configuring hardware actually, applications
+can request available set of hardware parameters for runtime of PCM
+substream. The set of parameters are represented and delivered by a
+structure.
 
-There's a similar option; '--max-file-time'. This option is used for
-capture data transmission to switch file to write data frame. However,
-this may brings complicated file handling to this program. To reduce
-maintaining cost, this option is obsoleted. Additionally, a handler for
-SIGUSR1 Unix signal has similar feature to switch the file. For the same
-reason, the handler is also obsoleted.
+In alsa-lib PCM API, the above design is abstracted by a series of
+snd_pcm_hw_params_xxx() functions. The structure is hidden from
+applications.
+
+In aplay, '--dump-hw-params' option is for this purpose. With this option,
+the command output available set of the hardware parameters.
+
+This commit adds support for the option. Unlike aplay, this commit takes
+this program to finish after dumping the parameters for simplicity of
+usage.
+
+I note that all of combinations in the set are not necessarily available
+when the PCM substream includes dependencies of parameters described by
+constraints and rules.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c         | 63 ++++++++++++++++++++++++++++++++++++++-----------
- axfer/options.h         |  2 ++
- axfer/subcmd-transfer.c |  3 +++
- 3 files changed, 54 insertions(+), 14 deletions(-)
+ axfer/options.c         |  9 +++++++++
+ axfer/options.h         |  3 +++
+ axfer/subcmd-transfer.c |  2 ++
+ axfer/xfer-libasound.c  | 11 +++++++++++
+ 4 files changed, 25 insertions(+)
 
 diff --git a/axfer/options.c b/axfer/options.c
-index 00b088bf..eb049f96 100644
+index a094ccb5..00b088bf 100644
 --- a/axfer/options.c
 +++ b/axfer/options.c
-@@ -15,6 +15,8 @@
- enum no_short_opts {
- 	/* 128 belongs to non us-ascii character set. */
- 	OPT_DUMP_HW_PARAMS = 128,
-+	/* Obsoleted. */
-+	OPT_MAX_FILE_TIME,
- };
+@@ -12,6 +12,11 @@
+ #include <getopt.h>
+ #include <math.h>
  
++enum no_short_opts {
++	/* 128 belongs to non us-ascii character set. */
++	OPT_DUMP_HW_PARAMS = 128,
++};
++
  static const char *const allowed_duplication[] = {
-@@ -265,15 +267,35 @@ static int apply_policies(struct context_options *opts,
- 	return 0;
- }
- 
-+void context_options_calculate_duration(struct context_options *opts,
-+		unsigned int frames_per_second, uint64_t *total_frame_count)
-+{
-+	uint64_t frame_count;
-+
-+	if (opts->duration_seconds > 0) {
-+		frame_count = opts->duration_seconds * frames_per_second;
-+		if (frame_count < *total_frame_count)
-+			*total_frame_count = frame_count;
-+	}
-+
-+	if (opts->duration_frames > 0) {
-+		frame_count = opts->duration_frames;
-+		if (frame_count < *total_frame_count)
-+			*total_frame_count = frame_count;
-+	}
-+}
-+
- int context_options_init(struct context_options *opts, int argc,
- 			 char *const *argv, snd_pcm_stream_t direction)
- {
--	static const char *s_opts = "hvqt:ID:f:c:r:";
-+	static const char *s_opts = "hvqd:s:t:ID:f:c:r:";
- 	static const struct option l_opts[] = {
- 		/* For generic purposes. */
- 		{"help",		0, 0, 'h'},
- 		{"verbose",		0, 0, 'v'},
- 		{"quiet",		0, 0, 'q'},
-+		{"duration",		1, 0, 'd'},
-+		{"samples",		1, 0, 's'},
- 		/* For containers. */
- 		{"file-type",		1, 0, 't'},
- 		/* For mapper. */
-@@ -285,18 +307,21 @@ int context_options_init(struct context_options *opts, int argc,
+ 	"/dev/null",
+ 	"/dev/zero",
+@@ -278,6 +283,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"format",		1, 0, 'f'},
+ 		{"channels",		1, 0, 'c'},
  		{"rate",		1, 0, 'r'},
- 		/* For debugging. */
- 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
-+		/* Obsoleted. */
-+		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
++		/* For debugging. */
++		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
  		{NULL,			0, 0, 0},
  	};
  	const char *cntr_format_literal = NULL;
- 	const char *node_literal = NULL;
- 	const char *sample_format_literal = NULL;
-+	int l_index = 0;
- 	int c;
- 	int err = 0;
- 
- 	optind = 0;
- 	opterr = 0;
- 	while (1) {
--		c = getopt_long(argc, argv, s_opts, l_opts, NULL);
-+		c = getopt_long(argc, argv, s_opts, l_opts, &l_index);
- 		if (c < 0)
- 			break;
- 		else if (c == 'h')
-@@ -305,6 +330,10 @@ int context_options_init(struct context_options *opts, int argc,
- 			++opts->verbose;
- 		else if (c == 'q')
- 			opts->quiet = true;
-+		else if (c == 'd')
-+			opts->duration_seconds = parse_l(optarg, &err);
-+		else if (c == 's')
-+			opts->duration_frames = parse_l(optarg, &err);
- 		else if (c == 't')
- 			cntr_format_literal = optarg;
- 		else if (c == 'I')
-@@ -319,7 +348,13 @@ int context_options_init(struct context_options *opts, int argc,
+@@ -310,6 +317,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->samples_per_frame = parse_l(optarg, &err);
+ 		else if (c == 'r')
  			opts->frames_per_second = parse_l(optarg, &err);
- 		else if (c == OPT_DUMP_HW_PARAMS)
- 			opts->dump_hw_params = true;
--		else
-+		else if (c == OPT_MAX_FILE_TIME) {
-+			fprintf(stderr,
-+				"An option '--%s' is obsoleted and has no "
-+				"effect.\n",
-+				l_opts[l_index].name);
-+			err = -EINVAL;
-+		} else
++		else if (c == OPT_DUMP_HW_PARAMS)
++			opts->dump_hw_params = true;
+ 		else
  			continue;
  
- 		if (err < 0)
-@@ -492,20 +527,20 @@ int context_options_fixup_for_capture(struct context_options *opts,
- 	int i, j;
- 	int err;
- 
--	if (!opts->multiple_cntrs) {
--		if (opts->path_count == 1)
-+	if (opts->path_count == 1) {
-+		if (!strcmp(opts->paths[0], "-"))
-+			return 0;
-+		if (!opts->multiple_cntrs)
- 			err = fixup_paths(opts);
- 		else
--			return -EINVAL;
--	} else {
--		if (opts->path_count == 1) {
- 			err = create_paths(opts, samples_per_frame);
--		} else {
--			if (opts->path_count == samples_per_frame)
--				err = fixup_paths(opts);
--			else
--				return -EINVAL;
--		}
-+	} else {
-+		if (!opts->multiple_cntrs)
-+			return -EINVAL;
-+		if (opts->path_count != samples_per_frame)
-+			return -EINVAL;
-+		else
-+			err = fixup_paths(opts);
- 	}
- 	if (err < 0)
- 		return err;
 diff --git a/axfer/options.h b/axfer/options.h
-index 743279af..ddbdbfa9 100644
+index 9c9b46d7..743279af 100644
 --- a/axfer/options.h
 +++ b/axfer/options.h
-@@ -17,6 +17,8 @@ struct context_options {
- 	/* For generic purposes. */
- 	unsigned int verbose;
- 	bool quiet;
-+	uint64_t duration_seconds;
-+	uint64_t duration_frames;
+@@ -31,6 +31,9 @@ struct context_options {
+ 	snd_pcm_format_t sample_format;
+ 	unsigned int samples_per_frame;
+ 	unsigned int frames_per_second;
++
++	/* For debugging. */
++	bool dump_hw_params;
+ };
  
- 	/* For containers. */
- 	char **paths;
+ int context_options_init(struct context_options *opts, int argc,
 diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
-index 3410fa30..e5aedbe6 100644
+index da11f43f..3410fa30 100644
 --- a/axfer/subcmd-transfer.c
 +++ b/axfer/subcmd-transfer.c
-@@ -346,6 +346,9 @@ static int context_pre_process(struct context *ctx, snd_pcm_stream_t direction,
+@@ -476,6 +476,8 @@ int subcmd_transfer(int argc, char *const *argv, snd_pcm_stream_t direction)
+ 	err = context_init(&ctx, direction);
  	if (err < 0)
- 		return err;
+ 		goto end;
++	if (ctx.opts.dump_hw_params)
++		goto end;
  
-+	context_options_calculate_duration(&ctx->opts, frames_per_second,
-+					   total_frame_count);
+ 	err = context_pre_process(&ctx, direction, &expected_frame_count);
+ 	if (err < 0)
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index f4a1f51a..4ad01bbb 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -68,6 +68,17 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 
+ 	/* TODO: Applying NO_PERIOD_WAKEUP should be done here. */
+ 
++	if (opts->dump_hw_params) {
++		logging(state, _("Available HW Params of node: %s\n"),
++			snd_pcm_name(state->handle));
++		snd_pcm_hw_params_dump(state->hw_params, state->log);
++		/*
++		 * TODO: there're more parameters which are not dumped by
++		 * alsa-lib.
++		 */
++		return 0;
++	}
 +
- 	ctx->opts.sample_format = sample_format;
- 	ctx->opts.samples_per_frame = samples_per_frame;
- 	ctx->opts.frames_per_second = frames_per_second;
+ 	return set_access_hw_param(state->handle, state->hw_params, opts);
+ }
+ 
 -- 
 2.11.0
