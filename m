@@ -1,52 +1,59 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] ASoC: codecs: msm8916-wcd-analog: use btn0 released
- detection
-Date: Tue, 19 Sep 2017 13:11:47 +0100
-Message-ID: <20170919121147.wtpebx6p377cctvc@sirena.co.uk>
-References: <20170913204355.26186-1-damien.riegel@savoirfairelinux.com>
- <3485d646-12fd-4435-1bae-87af9a1a857e@linaro.org>
+Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for wm97xx Codec
+Date: Tue, 19 Sep 2017 13:15:39 +0100
+Message-ID: <20170919121539.mz2mettkefxf3oer@sirena.co.uk>
+References: <20170913193723.16234-1-robert.jarzmik@free.fr>
+ <20170913193723.16234-3-robert.jarzmik@free.fr>
+ <20170914074146.dnibkvom4yuzejf3@dell>
+ <20170914074300.iobuwn2hrmnf6sen@dell>
+ <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
+ <20170918085236.z6gmgrwvsjvvc4cd@dell>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hdo4m2v6a2l4xgea"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="ykdp4fmwxqckai3n"
+Return-path: <linux-input-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <3485d646-12fd-4435-1bae-87af9a1a857e@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Damien Riegel <damien.riegel@savoirfairelinux.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20170918085236.z6gmgrwvsjvvc4cd@dell>
+Sender: linux-input-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---hdo4m2v6a2l4xgea
+--ykdp4fmwxqckai3n
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 18, 2017 at 10:08:04AM +0100, Srinivas Kandagatla wrote:
-> On 13/09/17 21:43, Damien Riegel wrote:
-> > msm8916-wcd-analog uses button0 to differentiate between headphone and
-> > headset. Under some circumstances, button pressed and released
-> > interrupts are not fired as the driver expects it.
+On Mon, Sep 18, 2017 at 09:52:36AM +0100, Lee Jones wrote:
+> On Thu, 14 Sep 2017, Mark Brown wrote:
 
-> This is what we need to understand to find a right solution,
-> I would like to understand on what is the difference in the hw layout.
+> > On Thu, Sep 14, 2017 at 08:43:00AM +0100, Lee Jones wrote:
 
-These sorts of problems can also occur because of differences in test
-process - pressure at different angles, different speeds of insertion
-and a million other things.
+> > > Change of plan.  It looks like there are deps.
 
---hdo4m2v6a2l4xgea
+> > > Unapplied.
+
+> > The core stuff went in during the merge window, you should be able to
+> > wait for -rc1 or pick up the asoc-v4.14 tag.
+
+> No, I mean patches; 3, 4, 5 and 7 depend on this file.
+
+Right, but I'd have expected a pull request more than the patch being
+unapplied?
+
+--ykdp4fmwxqckai3n
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBCYMACgkQJNaLcl1U
-h9CplQf7BPr5ikD5I3WhxBW0uTUWE1B4A6xNjwZDtTDxg0pKVM/DH7b1+EU5RhlR
-Pk4zaA4VFK67sGheSvSb+W/uBBuvx3fhUoWMhzbfaGXEBXyULY2sQS2ftZ5C6u+d
-tqsg1v4WYWW+Hku76hNQfh/9Ncexa2cXYis6OETDEtayPxclK3yzlFx952g6+UAF
-lkRTp9Z9wGQQQddXO2iM1ohD+xSUU218p7MQX2YalAedC/RfJDCPeOr4vAHT+MqS
-0HPKConxK9nbQGm1PjfqrmLztLZPVVVwLZPatZrpYUrPAdz5p2TB5LxZfV7RJGO/
-EprcRzCUYwwlmEAI8GcJbclw/c77wg==
-=VXj9
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBCmoACgkQJNaLcl1U
+h9C1YAf/UybwXnI2Dxl5dzHNIwJo65OrgYDeL1+YhUhvyuy7v4hrAvgmmdRUQZ/l
+HXIQhN2p+wSJI45Rw2GE2tpHcbJvv1eDsffM5E24WBwFd0Qwv9sriwCyMEdT13iM
+QbTW0aAUlvuVHaERGJPRGCgwfrIosD2ziQqaDMRPjQTcr/gfJIC2OB7Lq8xv0tF9
+5ys7BE0StzFbEqgVjbpnZR+nz9/4k/3Aw8enB44OFNXm+T2TAWnNzPX6zEKrn2H0
+Oa4HF/MOJGkb6RTqK0R9y+gxz7xPkSliYgx2hCbdmJpZV7YmY9xMosUmYjfiY8el
+GYAkGm5dWfSQCOG++oUFzMkn7nF0Ew==
+=yP6q
 -----END PGP SIGNATURE-----
 
---hdo4m2v6a2l4xgea--
+--ykdp4fmwxqckai3n--
