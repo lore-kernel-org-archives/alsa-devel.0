@@ -1,59 +1,42 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for wm97xx Codec
-Date: Tue, 19 Sep 2017 13:15:39 +0100
-Message-ID: <20170919121539.mz2mettkefxf3oer@sirena.co.uk>
-References: <20170913193723.16234-1-robert.jarzmik@free.fr>
- <20170913193723.16234-3-robert.jarzmik@free.fr>
- <20170914074146.dnibkvom4yuzejf3@dell>
- <20170914074300.iobuwn2hrmnf6sen@dell>
- <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
- <20170918085236.z6gmgrwvsjvvc4cd@dell>
+Subject: Re: [RESEND PATCH v2 1/3] ASoC: rockchip: Add dapm route for HDMI
+Date: Tue, 19 Sep 2017 13:19:07 +0100
+Message-ID: <20170919121907.bsikxtaih2ca3z3o@sirena.co.uk>
+References: <20170918111801.12881-1-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ykdp4fmwxqckai3n"
-Return-path: <linux-input-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="tnzwjcrxywveaoux"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170918085236.z6gmgrwvsjvvc4cd@dell>
-Sender: linux-input-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20170918111801.12881-1-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: linux-kernel@vger.kernel.org, briannorris@chromium.org, mka@chromium.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ykdp4fmwxqckai3n
+--tnzwjcrxywveaoux
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 18, 2017 at 09:52:36AM +0100, Lee Jones wrote:
-> On Thu, 14 Sep 2017, Mark Brown wrote:
+On Mon, Sep 18, 2017 at 07:17:59PM +0800, Jeffy Chen wrote:
+> Add dapm route for DP codec.
 
-> > On Thu, Sep 14, 2017 at 08:43:00AM +0100, Lee Jones wrote:
+This is a resend of a patch you posted earlier in the same day?
 
-> > > Change of plan.  It looks like there are deps.
-
-> > > Unapplied.
-
-> > The core stuff went in during the merge window, you should be able to
-> > wait for -rc1 or pick up the asoc-v4.14 tag.
-
-> No, I mean patches; 3, 4, 5 and 7 depend on this file.
-
-Right, but I'd have expected a pull request more than the patch being
-unapplied?
-
---ykdp4fmwxqckai3n
+--tnzwjcrxywveaoux
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBCmoACgkQJNaLcl1U
-h9C1YAf/UybwXnI2Dxl5dzHNIwJo65OrgYDeL1+YhUhvyuy7v4hrAvgmmdRUQZ/l
-HXIQhN2p+wSJI45Rw2GE2tpHcbJvv1eDsffM5E24WBwFd0Qwv9sriwCyMEdT13iM
-QbTW0aAUlvuVHaERGJPRGCgwfrIosD2ziQqaDMRPjQTcr/gfJIC2OB7Lq8xv0tF9
-5ys7BE0StzFbEqgVjbpnZR+nz9/4k/3Aw8enB44OFNXm+T2TAWnNzPX6zEKrn2H0
-Oa4HF/MOJGkb6RTqK0R9y+gxz7xPkSliYgx2hCbdmJpZV7YmY9xMosUmYjfiY8el
-GYAkGm5dWfSQCOG++oUFzMkn7nF0Ew==
-=yP6q
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBCzsACgkQJNaLcl1U
+h9AL6Qf/fA8OG49OH4cyO5aUJerc8M0HaWOfuWMYkaWTO2Zzb46GcvzkM6yspY1Q
+IBsH81Rp3MQq5Aj3IpQOUokilFKgRYcbE6uj0y1biYpjgMUtkFp87UxtYO5sY7VS
+lHb6bQNUY46+qBsWIw8JvLfyj1ncXVbZMqOA2B21TTHFa9xfg+YPAnlXvW6xHqYh
+U6mmmdL6dcHfmRqwm/VrjAdsz7ME5WZXndBr9OjPHGzeLVV/P1hiMlpbZYDIYd/E
+05USJSIGZW2YwUWaTlbgkS5QkH9WDpcx8Xa0RvAs/iIcOgXZliPcJLdTdw5CH0zd
+7D7blFyruE3bLYJBS2qNeR1oVuYbsQ==
+=MsND
 -----END PGP SIGNATURE-----
 
---ykdp4fmwxqckai3n--
+--tnzwjcrxywveaoux--
