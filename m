@@ -1,24 +1,20 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 2/3] ASoC: wm8741: Set OSR mode in
- hw_params()
-Date: Tue, 19 Sep 2017 10:47:56 +0100
-Message-ID: <20170919094756.kxq7h6k3knykzylu@localhost.localdomain>
-References: <1504553653-8144-1-git-send-email-sergej@taudac.com>
- <1504553653-8144-3-git-send-email-sergej@taudac.com>
- <20170905161221.qopgxgaw4zhfzfvs@localhost.localdomain>
- <575ad555-0cab-66de-95b7-4dc1b379ca9c@taudac.com>
- <20170906082037.tgseyekunu2cf4qx@localhost.localdomain>
- <61568e45-844d-34eb-a9df-518d18843b01@taudac.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 3/7] ASoC: Intel: cht_bsw_max98090: add
+ support for Baytrail
+Date: Tue, 19 Sep 2017 12:51:31 +0300
+Message-ID: <1505814691.24689.12.camel@linux.intel.com>
+References: <20170908051309.19028-1-pierre-louis.bossart@linux.intel.com>
+ <20170908051309.19028-4-pierre-louis.bossart@linux.intel.com>
+ <1505719053.25945.269.camel@linux.intel.com>
+ <37e5b151-f556-aaa3-ff34-877de72d6347@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id A3304266819
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 11:47:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <61568e45-844d-34eb-a9df-518d18843b01@taudac.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41335266819
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 11:51:35 +0200 (CEST)
+In-Reply-To: <37e5b151-f556-aaa3-ff34-877de72d6347@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,50 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <sergej@taudac.com>
-Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 18, 2017 at 09:30:36PM +0200, Sergej Sawazki wrote:
-> Am 06.09.2017 um 10:20 schrieb Charles Keepax:
-> > On Tue, Sep 05, 2017 at 08:36:24PM +0200, Sergej Sawazki wrote:
-> > > Am 05.09.2017 um 18:12 schrieb Charles Keepax:
-> > > > On Mon, Sep 04, 2017 at 09:34:12PM +0200, Sergej Sawazki wrote:
-> 
-> [...]
-> 
-> > > > > @@ -243,6 +250,7 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
-> > > > >    		params_width(params), params_rate(params));
-> > > > >    	snd_soc_write(codec, WM8741_FORMAT_CONTROL, iface);
-> > > > > +	snd_soc_write(codec, WM8741_MODE_CONTROL_1, mode);
-> > > > 
-> > > > Better to use an update_bits rather than basically open-code it
-> > > > with read and then this write.
-> > > > 
-> > > 
-> > > I have used write() and not update_bits() here to be consistent with the way
-> > > the WM8741_FORMAT_CONTROL register is written. If we change it to
-> > > update_bits(), we should refactor the WM8741_FORMAT_CONTROL write to use
-> > > update_bits() too, right?
-> > > 
+On Mon, 2017-09-18 at 12:14 -0500, Pierre-Louis Bossart wrote:
+> On 9/18/17 2:17 AM, Andy Shevchenko wrote:
+> > On Fri, 2017-09-08 at 00:13 -0500, Pierre-Louis Bossart wrote:
+> > >   
+> > > +static inline struct snd_soc_dai *cht_get_codec_dai(struct
+> > > snd_soc_card *card)
+> > > +{
+> > > +	struct snd_soc_pcm_runtime *rtd;
+> > > +
+> > > +	list_for_each_entry(rtd, &card->rtd_list, list) {
+> > > +		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
+> > > +			     strlen(CHT_CODEC_DAI)))
 > > 
-> > Yeah that should probably be an update bits too by the looks of
-> > it.
+> > Same comments as per another patch series wrt str_n_cmp() use.
 > 
-> Charles,
-> 
-> I think we should split "adding the OSR mode configuration" and
-> "refactoring the code to use update_bits()" in at least two commits.
-> 
-> For consistency, I would keep the write() in this patch, and provide
-> the update_bits() refactoring later. What do you think?
-> 
+> Yes, if that's alright with you I'll clean this up in all Intel
+> machine 
+> drivers in one patch since this is all copy-paste.
 
-Two commits seems sensible although its only a very small
-refactoring so feels like we might as well get it done whilst
-changing the code. I am happy to do the initial refactoring
-patch, if that helps but I don't presently have hardware to test
-this CODEC.
+Yep, I agree on your other comment to clean up all Intel ASoC drivers at
+once.
 
-Thanks,
-Charles
+>  I just need a clear 
+> indication on what the preferred means of string comparisons is...
+
+Here just a rule of common sense. No need to use str_n_* variants on top
+of constant literals especially followed by strlen().
+
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
