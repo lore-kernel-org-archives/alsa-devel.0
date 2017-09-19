@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_max98090: add support
-	for Baytrail" to the asoc tree
-Date: Tue, 19 Sep 2017 14:45:39 +0100
-Message-ID: <E1duIqJ-00084A-BY@debutante>
-References: <20170908051309.19028-4-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F1D3B266D18
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 15:45:43 +0200 (CEST)
-In-Reply-To: <20170908051309.19028-4-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com
+Subject: Applied "ASoC: rockchip: Use bus_type to distinguish rt5514 dsp from rt5514 codec" to the asoc tree
+Date: Tue, 19 Sep 2017 14:46:17 +0100
+Message-ID: <E1duIqv-0008CA-M5@debutante>
+References: <20170919125800.336-5-jeffy.chen@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170919125800.336-5-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: Matthias Kaehlcke <mka@chromium.org>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, briannorris@chromium.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, dianders@chromium.org, linux-rockchip@lists.infradead.orgmka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_max98090: add support for Baytrail
+   ASoC: rockchip: Use bus_type to distinguish rt5514 dsp from rt5514 codec
 
 has been applied to the asoc tree at
 
@@ -53,164 +37,112 @@ to this mail.
 Thanks,
 Mark
 
->From 299bad365b900223cded22a6f66dbb3763da4235 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 8 Sep 2017 00:13:05 -0500
-Subject: [PATCH] ASoC: Intel: cht_bsw_max98090: add support for Baytrail
+>From 7e0dc9aeaea3ed130e090e20e9be0fc4877ddc37 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 19 Sep 2017 20:57:59 +0800
+Subject: [PATCH] ASoC: rockchip: Use bus_type to distinguish rt5514 dsp from
+ rt5514 codec
 
-Distributions such as Fedora, Ubuntu and Gallium don't currently
-have a means to support Baytrail Chromebooks and other platforms
-with the same build [1][2] due to incompatible platform drivers.
+Currently rt5514 dsp and rt5514 codec are sharing the same compatible.
+Use bus_type to distinguish rt5514 dsp from rt5514 codec.
 
-Add MCLK management to reuse this machine driver for Baytrail
-platforms and solve this coexistence problem at last. UCM files are
-provided at [3] and will eventually be submitted to the new repo.
-
-The legacy byt-max98090 machine driver is still maintained but can
-only be used when the other Atom/DPCM driver is not compiled in, or
-when users don't want to configure extra mixers required by the
-Atom/sst driver.
-
-Tested on Lenovo 100s Baytrail Chromebook w/ Mr. Chromebox BOOT_STUB
-firmware and Acer R11 Cherrytrail Chromebook
-
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=1335196
-[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/
-111641.html
-[3] https://github.com/plbossart/UCM/tree/master/byt-max98090
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 78 ++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+ sound/soc/rockchip/rk3399_gru_sound.c | 61 ++++++++++++++++++++++++++++-------
+ 1 file changed, 49 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 20755ecc7f9e..442a81bf17b4 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index fab868850d3a..30eed83e8a13 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
 @@ -23,6 +23,7 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/acpi.h>
-+#include <linux/clk.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -35,15 +36,60 @@
- #define CHT_CODEC_DAI	"HiFi"
- 
- struct cht_mc_private {
-+	struct clk *mclk;
- 	struct snd_soc_jack jack;
- 	bool ts3a227e_present;
+ #include <linux/of_gpio.h>
+ #include <linux/delay.h>
+ #include <linux/spi/spi.h>
++#include <linux/i2c.h>
+ #include <linux/input.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+@@ -317,15 +318,6 @@ enum {
+ 	DAILINK_RT5514_DSP,
  };
  
-+static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
+-static const char * const dailink_compat[] = {
+-	[DAILINK_CDNDP] = "rockchip,rk3399-cdn-dp",
+-	[DAILINK_DA7219] = "dlg,da7219",
+-	[DAILINK_DMIC] = "dmic-codec",
+-	[DAILINK_MAX98357A] = "maxim,max98357a",
+-	[DAILINK_RT5514] = "realtek,rt5514-i2c",
+-	[DAILINK_RT5514_DSP] = "realtek,rt5514-spi",
+-};
+-
+ static const struct snd_soc_dai_link rockchip_dais[] = {
+ 	[DAILINK_CDNDP] = {
+ 		.name = "DP",
+@@ -438,13 +430,58 @@ static const struct rockchip_sound_route rockchip_routes[] = {
+ 	[DAILINK_RT5514_DSP] = {},
+ };
+ 
++struct dailink_match_data {
++	const char *compatible;
++	struct bus_type *bus_type;
++};
 +
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
-+			     strlen(CHT_CODEC_DAI)))
-+			return rtd->codec_dai;
-+	}
-+	return NULL;
++static const struct dailink_match_data dailink_match[] = {
++	[DAILINK_CDNDP] = {
++		.compatible = "rockchip,rk3399-cdn-dp",
++	},
++	[DAILINK_DA7219] = {
++		.compatible = "dlg,da7219",
++	},
++	[DAILINK_DMIC] = {
++		.compatible = "dmic-codec",
++	},
++	[DAILINK_MAX98357A] = {
++		.compatible = "maxim,max98357a",
++	},
++	[DAILINK_RT5514] = {
++		.compatible = "realtek,rt5514",
++		.bus_type = &i2c_bus_type,
++	},
++	[DAILINK_RT5514_DSP] = {
++		.compatible = "realtek,rt5514",
++		.bus_type = &spi_bus_type,
++	},
++};
++
++static int of_dev_node_match(struct device *dev, void *data)
++{
++	return dev->of_node == data;
 +}
 +
-+static int platform_clock_control(struct snd_soc_dapm_widget *w,
-+					  struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct snd_soc_dai *codec_dai;
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	int ret;
+ static int rockchip_sound_codec_node_match(struct device_node *np_codec)
+ {
++	struct device *dev;
+ 	int i;
+ 
+-	for (i = 0; i < ARRAY_SIZE(dailink_compat); i++) {
+-		if (of_device_is_compatible(np_codec, dailink_compat[i]))
+-			return i;
++	for (i = 0; i < ARRAY_SIZE(dailink_match); i++) {
++		if (!of_device_is_compatible(np_codec,
++					     dailink_match[i].compatible))
++			continue;
 +
-+	codec_dai = cht_get_codec_dai(card);
-+	if (!codec_dai) {
-+		dev_err(card->dev, "Codec dai not found; Unable to set platform clock\n");
-+		return -EIO;
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		ret = clk_prepare_enable(ctx->mclk);
-+		if (ret < 0) {
-+			dev_err(card->dev,
-+				"could not configure MCLK state");
-+			return ret;
++		if (dailink_match[i].bus_type) {
++			dev = bus_find_device(dailink_match[i].bus_type, NULL,
++					      np_codec, of_dev_node_match);
++			if (!dev)
++				continue;
++			put_device(dev);
 +		}
-+	} else {
-+		clk_disable_unprepare(ctx->mclk);
-+	}
 +
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
- 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
-+			    SND_SOC_DAPM_POST_PMD),
- };
- 
- static const struct snd_soc_dapm_route cht_audio_map[] = {
-@@ -60,6 +106,10 @@ static const struct snd_soc_dapm_route cht_audio_map[] = {
- 	{"codec_in0", NULL, "ssp2 Rx" },
- 	{"codec_in1", NULL, "ssp2 Rx" },
- 	{"ssp2 Rx", NULL, "HiFi Capture"},
-+	{"Headphone", NULL, "Platform Clock"},
-+	{"Headset Mic", NULL, "Platform Clock"},
-+	{"Int Mic", NULL, "Platform Clock"},
-+	{"Ext Spk", NULL, "Platform Clock"},
- };
- 
- static const struct snd_kcontrol_new cht_mc_controls[] = {
-@@ -141,6 +191,25 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	if (ctx->ts3a227e_present)
- 		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
- 
-+	/*
-+	 * The firmware might enable the clock at
-+	 * boot (this information may or may not
-+	 * be reflected in the enable clock register).
-+	 * To change the rate we must disable the clock
-+	 * first to cover these cases. Due to common
-+	 * clock framework restrictions that do not allow
-+	 * to disable a clock that has not been enabled,
-+	 * we need to enable the clock first.
-+	 */
-+	ret = clk_prepare_enable(ctx->mclk);
-+	if (!ret)
-+		clk_disable_unprepare(ctx->mclk);
-+
-+	ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
-+
-+	if (ret)
-+		dev_err(runtime->dev, "unable to set MCLK rate\n");
-+
- 	return ret;
++		return i;
+ 	}
+ 	return -1;
  }
- 
-@@ -294,6 +363,15 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	/* register the soc card */
- 	snd_soc_card_cht.dev = &pdev->dev;
- 	snd_soc_card_set_drvdata(&snd_soc_card_cht, drv);
-+
-+	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+	if (IS_ERR(drv->mclk)) {
-+		dev_err(&pdev->dev,
-+			"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
-+			PTR_ERR(drv->mclk));
-+		return PTR_ERR(drv->mclk);
-+	}
-+
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cht);
- 	if (ret_val) {
- 		dev_err(&pdev->dev,
 -- 
 2.14.1
