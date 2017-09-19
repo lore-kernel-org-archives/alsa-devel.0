@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 29/38] axfer: add options for plugins in
-	alsa-lib
-Date: Tue, 19 Sep 2017 09:44:09 +0900
-Message-ID: <20170919004418.24668-30-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 24/38] axfer: add support for
+	non-blocking operation
+Date: Tue, 19 Sep 2017 09:44:04 +0900
+Message-ID: <20170919004418.24668-25-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E1182266EFE
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 94D70266EEB
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:30 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,101 +25,352 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As of 2017, two userspace library implementations are known; alsa-lib and
-tinyalsa. The latter is simple I/O library to use ALSA PCM interface. On
-the other hand, alsa-lib is more complicated than it. This is because it's
-designed to add features to transmission of data frames; e.g. sample
-resampling. To achieve this, alsa-lib has its configuration space and
-plugin system.
+In alsa-lib PCM API, snd_pcm_read[i|n]() and snd_pcm_write[i|n] can be
+used with non-blocking mode. This is available when SND_PCM_NONBLOCK is
+used as 'mode' argument for a call of snd_pcm_open().
 
-In aplay, some options are implemented as a flag for the plugins in
-alsa-lib. The flag is given to snd_pcm_open(). This commit adds support
-for the flags.
+This commit adds support this type of operation. To reduce CPU usage, this
+commit uses added waiter interface for event notification.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c        | 17 +++++++++++++++++
- axfer/options.h        |  6 ++++++
- axfer/xfer-libasound.c |  8 ++++++++
- 3 files changed, 31 insertions(+)
+ axfer/options.c               |   5 ++-
+ axfer/options.h               |   1 +
+ axfer/xfer-libasound-irq-rw.c | 102 ++++++++++++++++++++++++++++++++++++++++--
+ axfer/xfer-libasound.c        |  79 +++++++++++++++++++++++++++++++-
+ axfer/xfer-libasound.h        |   4 ++
+ 5 files changed, 185 insertions(+), 6 deletions(-)
 
 diff --git a/axfer/options.c b/axfer/options.c
-index aaeba5f2..2770b719 100644
+index 5f16cd43..5863824c 100644
 --- a/axfer/options.c
 +++ b/axfer/options.c
-@@ -19,6 +19,10 @@ enum no_short_opts {
- 	OPT_TEST_NOWAIT,
- 	OPT_PERIOD_SIZE,
- 	OPT_BUFFER_SIZE,
-+	OPT_DISABLE_RESAMPLE,
-+	OPT_DISABLE_CHANNELS,
-+	OPT_DISABLE_FORMAT,
-+	OPT_DISABLE_SOFTVOL,
- 	/* Obsoleted. */
- 	OPT_MAX_FILE_TIME,
- };
-@@ -348,6 +352,11 @@ int context_options_init(struct context_options *opts, int argc,
- 		{"avail-min",		1, 0, 'A'},
- 		{"start-delay",		1, 0, 'R'},
- 		{"stop-delay",		1, 0, 'T'},
-+		/* For plugins in alsa-lib. */
-+		{"disable-resample",	0, 0, OPT_DISABLE_RESAMPLE},
-+		{"disable-channels",	0, 0, OPT_DISABLE_CHANNELS},
-+		{"disable-format",	0, 0, OPT_DISABLE_FORMAT},
-+		{"disable-softvol",	0, 0, OPT_DISABLE_SOFTVOL},
+@@ -289,7 +289,7 @@ void context_options_calculate_duration(struct context_options *opts,
+ int context_options_init(struct context_options *opts, int argc,
+ 			 char *const *argv, snd_pcm_stream_t direction)
+ {
+-	static const char *s_opts = "hvqd:s:t:ID:f:c:r:";
++	static const char *s_opts = "hvqd:s:t:ID:f:c:r:N";
+ 	static const struct option l_opts[] = {
+ 		/* For generic purposes. */
+ 		{"help",		0, 0, 'h'},
+@@ -306,6 +306,7 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"format",		1, 0, 'f'},
+ 		{"channels",		1, 0, 'c'},
+ 		{"rate",		1, 0, 'r'},
++		{"nonblock",            0, 0, 'N'},
  		/* For debugging. */
  		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
  		{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
-@@ -409,6 +418,14 @@ int context_options_init(struct context_options *opts, int argc,
- 			opts->msec_for_start_threshold = parse_l(optarg, &err);
- 		else if (c == 'T')
- 			opts->msec_for_stop_threshold = parse_l(optarg, &err);
-+		else if (c == OPT_DISABLE_RESAMPLE)
-+			opts->no_auto_resample = true;
-+		else if (c == OPT_DISABLE_CHANNELS)
-+			opts->no_auto_channels = true;
-+		else if (c == OPT_DISABLE_FORMAT)
-+			opts->no_auto_format = true;
-+		else if (c == OPT_DISABLE_SOFTVOL)
-+			opts->no_softvol = true;
+@@ -348,6 +349,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->samples_per_frame = parse_l(optarg, &err);
+ 		else if (c == 'r')
+ 			opts->frames_per_second = parse_l(optarg, &err);
++		else if (c == 'N')
++			opts->nonblock = true;
  		else if (c == OPT_DUMP_HW_PARAMS)
  			opts->dump_hw_params = true;
  		else if (c == OPT_FATAL_ERRORS)
 diff --git a/axfer/options.h b/axfer/options.h
-index 63b36364..95012ad3 100644
+index de9ac998..fc4f03c1 100644
 --- a/axfer/options.h
 +++ b/axfer/options.h
-@@ -45,6 +45,12 @@ struct context_options {
- 	unsigned int msec_for_start_threshold;
- 	unsigned int msec_for_stop_threshold;
+@@ -33,6 +33,7 @@ struct context_options {
+ 	snd_pcm_format_t sample_format;
+ 	unsigned int samples_per_frame;
+ 	unsigned int frames_per_second;
++	bool nonblock;
  
-+	/* For plugins in alsa-lib. */
-+	bool no_auto_resample;
-+	bool no_auto_channels;
-+	bool no_auto_format;
-+	bool no_softvol;
-+
  	/* For debugging. */
  	bool dump_hw_params;
- 	bool finish_at_xrun;
+diff --git a/axfer/xfer-libasound-irq-rw.c b/axfer/xfer-libasound-irq-rw.c
+index 7fe4f934..592bc0c4 100644
+--- a/axfer/xfer-libasound-irq-rw.c
++++ b/axfer/xfer-libasound-irq-rw.c
+@@ -169,6 +169,50 @@ error:
+ 	return err;
+ }
+ 
++static int r_process_frames_nonblocking(struct libasound_state *state,
++					snd_pcm_state_t status,
++					unsigned int *frame_count,
++					struct mapper_context *mapper,
++					struct container_context *cntrs)
++{
++	snd_pcm_sframes_t avail;
++	snd_pcm_uframes_t avail_count;
++	int err = 0;
++
++	if (status != SND_PCM_STATE_RUNNING) {
++		err = snd_pcm_start(state->handle);
++		if (err < 0)
++			goto error;
++	}
++
++	err = waiter_context_wait_event(state->waiter, -1);
++	if (err < 0)
++		goto error;
++
++	/* Check available space on the buffer. */
++	avail = snd_pcm_avail(state->handle);
++	if (avail < 0) {
++		err = avail;
++		goto error;
++	}
++	avail_count = (snd_pcm_uframes_t)avail;
++
++	if (avail_count == 0) {
++		/* Let's go to a next iteration. */
++		err = 0;
++		goto error;
++	}
++
++	err = read_frames(state, frame_count, avail_count, mapper, cntrs);
++	if (err < 0)
++		goto error;
++
++	return 0;
++error:
++	*frame_count = 0;
++	return err;
++}
++
+ static int write_frames(struct libasound_state *state,
+ 			unsigned int *frame_count, unsigned int avail_count,
+ 			struct mapper_context *mapper,
+@@ -286,6 +330,49 @@ error:
+ 	return err;
+ }
+ 
++static int w_process_frames_nonblocking(struct libasound_state *state,
++					snd_pcm_state_t status,
++					unsigned int *frame_count,
++					struct mapper_context *mapper,
++					struct container_context *cntrs)
++{
++	snd_pcm_sframes_t avail;
++	unsigned int avail_count;
++	int err;
++
++	err = waiter_context_wait_event(state->waiter, -1);
++	if (err < 0)
++		goto error;
++
++	/* Check available space on the buffer. */
++	avail = snd_pcm_avail(state->handle);
++	if (avail < 0) {
++		err = avail;
++		goto error;
++	}
++	avail_count = (unsigned int)avail;
++
++	if (avail_count == 0) {
++		/* Let's go to a next iteration. */
++		err = 0;
++		goto error;
++	}
++
++	err = write_frames(state, frame_count, avail_count, mapper, cntrs);
++	if (err < 0)
++		goto error;
++
++	/*
++	 * NOTE: The substream starts automatically when the accumulated number
++	 * of queued data frame exceeds start_threshold.
++	 */
++
++	return 0;
++error:
++	*frame_count = 0;
++	return err;
++}
++
+ static int irq_rw_pre_process(struct libasound_state *state)
+ {
+ 	struct frame_cache *cache = state->private_data;
+@@ -350,10 +437,17 @@ static int irq_rw_pre_process(struct libasound_state *state)
+ 		return -ENXIO;
+ 	}
+ 
+-	if (snd_pcm_stream(state->handle) == SND_PCM_STREAM_CAPTURE)
+-		cache->handle = r_process_frames_blocking;
+-	else
+-		cache->handle = w_process_frames_blocking;
++	if (snd_pcm_stream(state->handle) == SND_PCM_STREAM_CAPTURE) {
++		if (state->nonblock)
++			cache->handle = r_process_frames_nonblocking;
++		else
++			cache->handle = r_process_frames_blocking;
++	} else {
++		if (state->nonblock)
++			cache->handle = w_process_frames_nonblocking;
++		else
++			cache->handle = w_process_frames_blocking;
++	}
+ 
+ 	return 0;
+ }
 diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
-index 40222e91..488d5a60 100644
+index 9016644b..9d6c0bd6 100644
 --- a/axfer/xfer-libasound.c
 +++ b/axfer/xfer-libasound.c
-@@ -15,6 +15,14 @@ static int get_mode(struct context_options *options)
+@@ -9,6 +9,16 @@
+ #include "xfer-libasound.h"
+ #include "misc.h"
  
- 	if (options->nonblock)
- 		mode |= SND_PCM_NONBLOCK;
-+	if (options->no_auto_resample)
-+		mode |= SND_PCM_NO_AUTO_RESAMPLE;
-+	if (options->no_auto_channels)
-+		mode |= SND_PCM_NO_AUTO_CHANNELS;
-+	if (options->no_auto_format)
-+		mode |= SND_PCM_NO_AUTO_FORMAT;
-+	if (options->no_softvol)
-+		mode |= SND_PCM_NO_SOFTVOL;
++static int get_mode(struct context_options *options)
++{
++	int mode = 0;
++
++	if (options->nonblock)
++		mode |= SND_PCM_NONBLOCK;
++
++	return mode;
++}
++
+ static int set_access_hw_param(snd_pcm_t *handle,
+ 			       snd_pcm_hw_params_t *hw_params,
+ 			       struct context_options *opts)
+@@ -34,6 +44,7 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ {
+ 	struct libasound_state *state = xfer->private_data;
+ 	char *node;
++	int mode;
+ 	int err;
  
- 	return mode;
+ 	err = snd_output_stdio_attach(&state->log, stderr, 0);
+@@ -48,7 +59,8 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 	else
+ 		node = opts->node;
+ 
+-	err = snd_pcm_open(&state->handle, node, direction, 0);
++	mode = get_mode(opts);
++	err = snd_pcm_open(&state->handle, node, direction, mode);
+ 	if (err < 0) {
+ 		fprintf(stderr,
+ 			"Fail to open libasound PCM node for %s: %s\n",
+@@ -56,6 +68,17 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 		return err;
+ 	}
+ 
++	state->nonblock = !!(mode & SND_PCM_NONBLOCK);
++	if (opts->nonblock) {
++		state->waiter = malloc(sizeof(*state->waiter));
++		if (state->waiter == NULL)
++			return -ENOMEM;
++
++		err = waiter_context_init(state->waiter, WAITER_TYPE_POLL);
++		if (err < 0)
++			return err;
++	}
++
+ 	err = snd_pcm_hw_params_malloc(&state->hw_params);
+ 	if (err < 0)
+ 		return err;
+@@ -83,6 +106,40 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 	return set_access_hw_param(state->handle, state->hw_params, opts);
  }
+ 
++static int prepare_waiter(struct libasound_state *state)
++{
++	int fd_count;
++	int *fds;
++	struct pollfd *pfds;
++	int i;
++	int err;
++
++	fd_count = snd_pcm_poll_descriptors_count(state->handle);
++
++	fds = calloc(fd_count, sizeof(int));
++	if (fds == NULL)
++		return -ENOMEM;
++
++	pfds = calloc(fd_count, sizeof(struct pollfd));
++	if (pfds == NULL) {
++		free(fds);
++		return -ENOMEM;
++	}
++
++	err = snd_pcm_poll_descriptors(state->handle, pfds, fd_count);
++	if (err < 0)
++		goto end;
++
++	for (i = 0; i < fd_count; ++i)
++		fds[i] = pfds[i].fd;
++
++	err = waiter_context_prepare(state->waiter, fds, fd_count);
++end:
++	free(pfds);
++	free(fds);
++	return err;
++}
++
+ static int configure_hw_params(struct libasound_state *state,
+ 			       snd_pcm_format_t format,
+ 			       unsigned int samples_per_frame,
+@@ -255,6 +312,16 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
+ 		return err;
+ 	}
+ 
++	if (state->waiter) {
++		/*
++		 * NOTE: This should be after configuring sw_params due to
++		 * timer descriptor.
++		 */
++		err = prepare_waiter(state);
++		if (err < 0)
++			return err;
++	}
++
+ 	if (state->verbose)
+ 		snd_pcm_dump(state->handle, state->log);
+ 
+@@ -342,7 +409,12 @@ static void xfer_libasound_post_process(struct xfer_context *xfer)
+ 				logging(state, "snd_pcm_drop(): %s\n",
+ 				       snd_strerror(err));
+ 		} else {
++			/* TODO: this is a bug in kernel land. */
++			if (state->nonblock)
++				snd_pcm_nonblock(state->handle, 0);
+ 			err = snd_pcm_drain(state->handle);
++			if (state->nonblock)
++				snd_pcm_nonblock(state->handle, 1);
+ 			if (err < 0)
+ 				logging(state, "snd_pcm_drain(): %s\n",
+ 				       snd_strerror(err));
+@@ -367,6 +439,11 @@ static void xfer_libasound_destroy(struct xfer_context *xfer)
+ {
+ 	struct libasound_state *state = xfer->private_data;
+ 
++	if (state->waiter)
++		waiter_context_destroy(state->waiter);
++	free(state->waiter);
++	state->waiter = NULL;
++
+ 	if (state->hw_params)
+ 		snd_pcm_hw_params_free(state->hw_params);
+ 	if (state->sw_params)
+diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
+index 25768c41..342651d1 100644
+--- a/axfer/xfer-libasound.h
++++ b/axfer/xfer-libasound.h
+@@ -10,6 +10,7 @@
+ #define __ALSA_UTILS_AXFER_XFER_LIBASOUND__H_
+ 
+ #include "xfer.h"
++#include "waiter.h"
+ 
+ #define logging(state, ...) \
+ 	snd_output_printf(state->log, __VA_ARGS__)
+@@ -25,6 +26,9 @@ struct libasound_state {
+ 	snd_pcm_sw_params_t *sw_params;
+ 
+ 	bool running;
++	bool nonblock;
++
++	struct waiter_context *waiter;
+ 
+ 	const struct xfer_libasound_ops *ops;
+ 	void *private_data;
 -- 
 2.11.0
