@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 35/38] axfer: add a feature to generate
-	a file for process id
-Date: Tue, 19 Sep 2017 09:44:15 +0900
-Message-ID: <20170919004418.24668-36-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 37/38] axfer: add an implementation of
+	waiter for epoll(7)
+Date: Tue, 19 Sep 2017 09:44:17 +0900
+Message-ID: <20170919004418.24668-38-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 7DA2026701F
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E8F3E266E30
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:33 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,144 +25,148 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation of aplay, during transferring data frames, the
-program generates a file with PID in given path for an option
-'--process-id-file'.
-
-This commit adds support for this feature. However, usually, an idea of
-process ID file is used for programs such that they run several
-sub-processes and one of them have significant role to maintain the other
-sub-processes. Content of the process ID file includes PID for the
-significant sub-process to avoid sending Unix signals to the other
-processes. Apparently, aplay and this program are not this kind of program.
-This feature makes less sense because process ID for this program can be
-found by usual tools such as ps(1) or pgrep(1) which seek nodes on procfs.
+This commit adds support of waiter for Linux specific epoll(7) system call.
+For portability to the other Unix-like systems such as xBSD, modification
+of Makefile.am may be required for conditional build, but this commit
+includes no changes for it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c | 41 +++++++++++++++++++++++++++++++++++++++--
- axfer/options.h |  1 +
- 2 files changed, 40 insertions(+), 2 deletions(-)
+ axfer/Makefile.am    |  3 +-
+ axfer/waiter-epoll.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/waiter.c       |  1 +
+ axfer/waiter.h       |  2 ++
+ 4 files changed, 86 insertions(+), 1 deletion(-)
+ create mode 100644 axfer/waiter-epoll.c
 
-diff --git a/axfer/options.c b/axfer/options.c
-index 335d8af3..9bde51bf 100644
---- a/axfer/options.c
-+++ b/axfer/options.c
-@@ -11,6 +11,8 @@
- 
- #include <getopt.h>
- #include <math.h>
-+#include <sys/types.h>
+diff --git a/axfer/Makefile.am b/axfer/Makefile.am
+index cf14a0f7..ac61853d 100644
+--- a/axfer/Makefile.am
++++ b/axfer/Makefile.am
+@@ -56,4 +56,5 @@ axfer_SOURCES = \
+ 	vumeter.h \
+ 	vumeter.c \
+ 	key-event.h \
+-	key-event.c
++	key-event.c \
++	waiter-epoll.c
+diff --git a/axfer/waiter-epoll.c b/axfer/waiter-epoll.c
+new file mode 100644
+index 00000000..33bf8d89
+--- /dev/null
++++ b/axfer/waiter-epoll.c
+@@ -0,0 +1,81 @@
++/*
++ * waiter-epoll.c - Waiter for event notification by epoll(7).
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "waiter.h"
++#include "misc.h"
++
++#include <stdlib.h>
 +#include <unistd.h>
- 
- enum no_short_opts {
- 	/* 128 belongs to non us-ascii character set. */
-@@ -24,6 +26,7 @@ enum no_short_opts {
- 	OPT_DISABLE_FORMAT,
- 	OPT_DISABLE_SOFTVOL,
- 	OPT_USE_STRFTIME,
-+	OPT_PROCESS_ID_FILE,
- 	/* Obsoleted. */
- 	OPT_MAX_FILE_TIME,
- };
-@@ -203,7 +206,8 @@ static int apply_policies(struct context_options *opts,
- 			  const char *node_literal,
- 			  const char *sample_format_literal,
- 			  const char *vu_mode_literal,
--			  const char *chmap_literal)
-+			  const char *chmap_literal,
-+			  const char *pidfile_name_literal)
- {
- 	int err;
- 
-@@ -251,6 +255,30 @@ static int apply_policies(struct context_options *opts,
- 			return -ENOMEM;
- 	}
- 
-+	if (pidfile_name_literal) {
-+		FILE *fstream;
++#include <errno.h>
++#include <sys/types.h>
++#include <sys/epoll.h>
 +
-+		opts->pidfile_name = strdup(pidfile_name_literal);
-+		if (opts->pidfile_name == NULL) {
-+			fprintf(stderr,
-+				"Fail to allocate for a name of file with "
-+				"process id: %s\n",
-+				pidfile_name_literal);
-+			return -ENOMEM;
-+		}
++struct epoll_state {
++	int epfd;
++	struct epoll_event *events;
++	unsigned int count;
++};
 +
-+		unlink(pidfile_name_literal);
-+		fstream = fopen(pidfile_name_literal, "w");
-+		if (fstream == NULL) {
-+			fprintf(stderr,
-+				"Fail to generate a file with process id: %s\n",
-+				pidfile_name_literal);
++static int epoll_prepare(struct waiter_context *waiter, int *fds,
++			 unsigned int fd_count)
++{
++	struct epoll_state *state = waiter->private_data;
++	int i;
++
++	state->events = calloc(fd_count, sizeof(struct epoll_event));
++	if (state->events == NULL)
++		return -ENOMEM;
++	state->count = fd_count;
++
++	state->epfd = epoll_create(1);
++	if (state->epfd < 0)
++		return -errno;
++
++	for (i = 0; i < fd_count; ++i) {
++		struct epoll_event *ev = &state->events[i];
++		ev->events = EPOLLIN | EPOLLOUT;
++		if (epoll_ctl(state->epfd, EPOLL_CTL_ADD, fds[i], ev) < 0)
 +			return -errno;
-+		}
-+		fprintf(fstream, "%d\n", getpid());
-+		fclose(fstream);
 +	}
 +
- 	if (opts->samples_per_frame > 0) {
- 		if (opts->samples_per_frame < 1 ||
- 		    opts->samples_per_frame > 256) {
-@@ -429,6 +457,7 @@ int context_options_init(struct context_options *opts, int argc,
- 		{"vumeter",		1, 0, 'V'},
- 		{"interactive",		0, 0, 'i'},
- 		{"chmap",		1, 0, 'm'},
-+		{"process-id-file",	1, 0, OPT_PROCESS_ID_FILE},
- 		/* Obsoleted. */
- 		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
- 		{NULL,			0, 0, 0},
-@@ -438,6 +467,7 @@ int context_options_init(struct context_options *opts, int argc,
- 	const char *sample_format_literal = NULL;
- 	const char *vu_mode_literal = NULL;
- 	const char *chmap_literal = NULL;
-+	const char *pidfile_name_literal = NULL;
- 	int l_index = 0;
- 	int c;
- 	int err = 0;
-@@ -510,6 +540,8 @@ int context_options_init(struct context_options *opts, int argc,
- 			opts->interactive = true;
- 		else if (c == 'm')
- 			chmap_literal = optarg;
-+		else if (c == OPT_PROCESS_ID_FILE)
-+			pidfile_name_literal = optarg;
- 		else if (c == OPT_MAX_FILE_TIME) {
- 			fprintf(stderr,
- 				"An option '--%s' is obsoleted and has no "
-@@ -529,7 +561,8 @@ int context_options_init(struct context_options *opts, int argc,
- 
- 	return apply_policies(opts, direction, cntr_format_literal,
- 			      node_literal, sample_format_literal,
--			      vu_mode_literal, chmap_literal);
-+			      vu_mode_literal, chmap_literal,
-+			      pidfile_name_literal);
- }
- 
- /*
-@@ -876,6 +909,10 @@ void context_options_destroy(struct context_options *opts)
- {
++	return 0;
++}
++
++static int epoll_wait_event(struct waiter_context *waiter, int timeout_msec)
++{
++	struct epoll_state *state = waiter->private_data;
++	int err;
++
++	err = epoll_wait(state->epfd, state->events, state->count, timeout_msec);
++	if (err < 0)
++		return -errno;
++
++	return 0;
++}
++
++static void epoll_release(struct waiter_context *waiter)
++{
++	struct epoll_state *state = waiter->private_data;
++
++	if (state->events)
++		free(state->events);
++
++	close(state->epfd);
++
++	state->events = NULL;
++	state->epfd = 0;
++}
++
++const struct waiter_data waiter_epoll = {
++	.ops = {
++		.prepare	= epoll_prepare,
++		.wait_event	= epoll_wait_event,
++		.release	= epoll_release,
++	},
++	.private_size = sizeof(struct epoll_state),
++};
+diff --git a/axfer/waiter.c b/axfer/waiter.c
+index 045b7f31..f4e21a16 100644
+--- a/axfer/waiter.c
++++ b/axfer/waiter.c
+@@ -21,6 +21,7 @@ int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
+ 		const struct waiter_data *waiter;
+ 	} entries[] = {
+ 		{WAITER_TYPE_POLL, &waiter_poll},
++		{WAITER_TYPE_EPOLL, &waiter_epoll},
+ 	};
  	int i;
  
-+	if (opts->pidfile_name)
-+		unlink(opts->pidfile_name);
-+	opts->pidfile_name = NULL;
-+
- 	if (opts->paths) {
- 		for (i = 0; i < opts->path_count; ++i)
- 			free(opts->paths[i]);
-diff --git a/axfer/options.h b/axfer/options.h
-index e90dc6b7..f1989ae6 100644
---- a/axfer/options.h
-+++ b/axfer/options.h
-@@ -62,6 +62,7 @@ struct context_options {
- 	enum vumeter_mode vu_mode;
- 	bool interactive;
- 	char *chmap_literal;
-+	char *pidfile_name;
+diff --git a/axfer/waiter.h b/axfer/waiter.h
+index 00147f45..3f0dd744 100644
+--- a/axfer/waiter.h
++++ b/axfer/waiter.h
+@@ -11,6 +11,7 @@
+ 
+ enum waiter_type {
+ 	WAITER_TYPE_POLL = 0,
++	WAITER_TYPE_EPOLL,
+ 	WAITER_TYPE_COUNT,
  };
  
- int context_options_init(struct context_options *opts, int argc,
+@@ -44,5 +45,6 @@ struct waiter_data {
+ };
+ 
+ extern const struct waiter_data waiter_poll;
++extern const struct waiter_data waiter_epoll;
+ 
+ #endif
 -- 
 2.11.0
