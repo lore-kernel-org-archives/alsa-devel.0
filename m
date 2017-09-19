@@ -1,19 +1,18 @@
-From: jeffy <jeffy.chen@rock-chips.com>
-Subject: Re: [RESEND PATCH v2 3/3] ASoC: rockchip: Init dapm
-	routes dynamically
-Date: Tue, 19 Sep 2017 20:44:35 +0800
-Message-ID: <59C11133.5090400@rock-chips.com>
-References: <20170918111801.12881-1-jeffy.chen@rock-chips.com>
- <20170918111801.12881-3-jeffy.chen@rock-chips.com>
- <20170919122803.kybaln43yho3deih@sirena.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v12 2/2] ASoC: rockchip: Use bus_type to
+ distinguish rt5514 dsp from rt5514 codec
+Date: Tue, 19 Sep 2017 13:46:13 +0100
+Message-ID: <20170919124613.egvojfhq74vhyvuh@sirena.co.uk>
+References: <20170919025439.7107-1-jeffy.chen@rock-chips.com>
+ <20170919025439.7107-2-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4684761327279581854=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 18609266F0D
- for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:44:57 +0200 (CEST)
-In-Reply-To: <20170919122803.kybaln43yho3deih@sirena.co.uk>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C152266F0D
+ for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 14:46:21 +0200 (CEST)
+In-Reply-To: <20170919025439.7107-2-jeffy.chen@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, dianders@chromium.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, briannorris@chromium.org, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, mka@chromium.org, Takashi Iwai <tiwai@suse.com>, dgreid@chromium.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
 
-On 09/19/2017 08:28 PM, Mark Brown wrote:
-> On Mon, Sep 18, 2017 at 07:18:01PM +0800, Jeffy Chen wrote:
->> Currently we are using a fixed list of dapm routes.
->>
->> Init dapm routes dynamically when parsing dailinks, since we are
->> supporting optional codecs.
->
-> This doesn't apply against current code, please check and resend.
->
-
-i rebased these patches to for-next 20170919, but nothing changed...
+--===============4684761327279581854==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="k5xry7gwnpen5pqo"
+Content-Disposition: inline
 
 
-but i found my other pending patch 
-(https://patchwork.kernel.org/patch/9958055) might conflict to this, 
-i'll send a new series to put all my patches together and solve the 
-conflict...
+--k5xry7gwnpen5pqo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-sorry for the trouble..
+On Tue, Sep 19, 2017 at 10:54:39AM +0800, Jeffy Chen wrote:
+> Currently rt5514 dsp and rt5514 codec are sharing the same compatible.
+> Use bus_type to distinguish rt5514 dsp from rt5514 codec.
+
+This doens't apply against current code, please check and resend.
+
+--k5xry7gwnpen5pqo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnBEZQACgkQJNaLcl1U
+h9BBwwf/cEUFYKeCMaCWIoQEo2IprqsR6YKOmNtig4au9FPjVg+sxXRoAdrqy/Kx
+d7oCC7VOC+Vl3MblO1R7xhRWQFNugtVMZ1+Nf0JxQ3D/GVM12p2BIfIN+iR5N82g
+5OjGo6sVsmqa36iX2VHqpzGeJYw9GVKbrNrC0x0SeP8qGSyXx4YsMlqqmIirsjpc
+q2nM1wWHOVZs07x21CZsTacHMSQsazMqKtgaRlFQlIWkkO9QBMGQyWjIL/NKRnpD
+ePxk4Epe/fxUiZoWtbqkeuIiXmyF8BIseeRIgptb1jhe5coi8hpEHbbxIWXyki0W
+S95eBI5FkTxLUq/bHqhWSnbn2y2dGA==
+=4g+E
+-----END PGP SIGNATURE-----
+
+--k5xry7gwnpen5pqo--
+
+--===============4684761327279581854==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4684761327279581854==--
