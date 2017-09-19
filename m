@@ -1,122 +1,49 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [PATCH v12 2/2] ASoC: rockchip: Use bus_type to distinguish rt5514 dsp from rt5514 codec
-Date: Tue, 19 Sep 2017 10:54:39 +0800
-Message-ID: <20170919025439.7107-2-jeffy.chen@rock-chips.com>
-References: <20170919025439.7107-1-jeffy.chen@rock-chips.com>
+From: jeffy <jeffy.chen@rock-chips.com>
+Subject: Re: [PATCH v11 2/2] ASoC: rockchip: Use bus_type to distinguish rt5514
+ dsp from rt5514 codec
+Date: Tue, 19 Sep 2017 11:16:32 +0800
+Message-ID: <59C08C10.7030806@rock-chips.com>
+References: <20170918111435.11411-1-jeffy.chen@rock-chips.com> <20170918111435.11411-2-jeffy.chen@rock-chips.com> <20170918191524.GI173745@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170919025439.7107-1-jeffy.chen@rock-chips.com>
+In-Reply-To: <20170918191524.GI173745@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de
-Cc: briannorris@chromium.org, broonie@kernel.org, mka@chromium.org, dianders@chromium.org, Jeffy Chen <jeffy.chen@rock-chips.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: linux-kernel@vger.kernel.org, dgreid@chromium.org, heiko@sntech.de, briannorris@chromium.org, broonie@kernel.org, dianders@chromium.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently rt5514 dsp and rt5514 codec are sharing the same compatible.
-Use bus_type to distinguish rt5514 dsp from rt5514 codec.
+Hi Matthias,
 
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
----
+On 09/19/2017 03:15 AM, Matthias Kaehlcke wrote:
+>> >+static int of_dev_node_match(struct device *dev, void *data)
+>> >+{
+>> >+	return dev->of_node == data;
+>> >+}
+> The same is done in different places, even with the same function name
+> (drivers/i2c/i2c-core-of.c, drivers/mux/mux-core.c, ...), which
+> suggests that we might want to have this function in <linux/of.h>
+>
 
-Changes in v12:
-Fix device leak.
+right, we are dupping this for bus_find_device in:
+./arch/powerpc/platforms/pseries/ibmebus.c
+./drivers/gpu/drm/drm_mipi_dsi.c
+./drivers/hwtracing/coresight/of_coresight.c
+./drivers/of/of_mdio.c
+./drivers/of/platform.c
+./drivers/i2c/i2c-core-of.c
+./drivers/nvmem/core.c
 
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
+and for class_find_device in:
+./drivers/spi/spi.c
+./drivers/fpga/fpga-mgr.c
+./drivers/fpga/fpga-region.c
+./drivers/fpga/fpga-bridge.c
+./drivers/regulator/core.c
+./drivers/mux/core.c
+./drivers/net/phy/mdio_bus.c
 
- sound/soc/rockchip/rk3399_gru_sound.c | 61 ++++++++++++++++++++++++++++-------
- 1 file changed, 49 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 0513fe480353..b7759f3d2aac 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -23,6 +23,7 @@
- #include <linux/of_gpio.h>
- #include <linux/delay.h>
- #include <linux/spi/spi.h>
-+#include <linux/i2c.h>
- #include <linux/input.h>
- #include <sound/core.h>
- #include <sound/jack.h>
-@@ -329,15 +330,6 @@ enum {
- 	DAILINK_RT5514_DSP,
- };
- 
--static const char * const dailink_compat[] = {
--	[DAILINK_CDNDP] = "rockchip,rk3399-cdn-dp",
--	[DAILINK_DA7219] = "dlg,da7219",
--	[DAILINK_DMIC] = "dmic-codec",
--	[DAILINK_MAX98357A] = "maxim,max98357a",
--	[DAILINK_RT5514] = "realtek,rt5514-i2c",
--	[DAILINK_RT5514_DSP] = "realtek,rt5514-spi",
--};
--
- static const struct snd_soc_dai_link rockchip_dais[] = {
- 	[DAILINK_CDNDP] = {
- 		.name = "DP",
-@@ -391,13 +383,58 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
- 	},
- };
- 
-+struct dailink_match_data {
-+	const char *compatible;
-+	struct bus_type *bus_type;
-+};
-+
-+static const struct dailink_match_data dailink_match[] = {
-+	[DAILINK_CDNDP] = {
-+		.compatible = "rockchip,rk3399-cdn-dp",
-+	},
-+	[DAILINK_DA7219] = {
-+		.compatible = "dlg,da7219",
-+	},
-+	[DAILINK_DMIC] = {
-+		.compatible = "dmic-codec",
-+	},
-+	[DAILINK_MAX98357A] = {
-+		.compatible = "maxim,max98357a",
-+	},
-+	[DAILINK_RT5514] = {
-+		.compatible = "realtek,rt5514",
-+		.bus_type = &i2c_bus_type,
-+	},
-+	[DAILINK_RT5514_DSP] = {
-+		.compatible = "realtek,rt5514",
-+		.bus_type = &spi_bus_type,
-+	},
-+};
-+
-+static int of_dev_node_match(struct device *dev, void *data)
-+{
-+	return dev->of_node == data;
-+}
-+
- static int rockchip_sound_codec_node_match(struct device_node *np_codec)
- {
-+	struct device *dev;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(dailink_compat); i++) {
--		if (of_device_is_compatible(np_codec, dailink_compat[i]))
--			return i;
-+	for (i = 0; i < ARRAY_SIZE(dailink_match); i++) {
-+		if (!of_device_is_compatible(np_codec,
-+					     dailink_match[i].compatible))
-+			continue;
-+
-+		if (dailink_match[i].bus_type) {
-+			dev = bus_find_device(dailink_match[i].bus_type, NULL,
-+					      np_codec, of_dev_node_match);
-+			if (!dev)
-+				continue;
-+			put_device(dev);
-+		}
-+
-+		return i;
- 	}
- 	return -1;
- }
--- 
-2.11.0
+and for component_match_add in:
+./drivers/iommu/mtk_iommu.c
+  (and a lot of drm drivers)
