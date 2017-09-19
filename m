@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 11/38] axfer: add support for a mapper
-	for multiple target
-Date: Tue, 19 Sep 2017 09:43:51 +0900
-Message-ID: <20170919004418.24668-12-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 13/38] axfer: add a parser for
+	command-line options
+Date: Tue, 19 Sep 2017 09:43:53 +0900
+Message-ID: <20170919004418.24668-14-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E8572266E8D
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id EBFA5266E90
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:27 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,210 +25,517 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support of mapper for 'multiple' target. This handles
-several files via 'container' functions, and constructs data frame buffer
-for playback, or splits data frames from data frame buffer. When playback
-source files includes data frames with several channels, the first channel
-is used to construct buffer. For capture direction, each of channel of data
-frame is stored in one file, thus the file includes one channel of data
-frame.
+In aplay, many command-line options are supported. Some of them have
+dependency or conflicts.
+
+This commit adds a structure and a parser for the options. In this patch,
+minimal set of options is supported. Additional options will be supported
+later.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am       |   3 +-
- axfer/mapper-multiple.c | 271 ++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/mapper.c          |  15 +++
- axfer/mapper.h          |   4 +
- 4 files changed, 292 insertions(+), 1 deletion(-)
- create mode 100644 axfer/mapper-multiple.c
+ axfer/Makefile.am |   5 +-
+ axfer/options.c   | 594 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/options.h   |  47 +++++
+ 3 files changed, 645 insertions(+), 1 deletion(-)
+ create mode 100644 axfer/options.c
+ create mode 100644 axfer/options.h
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index baf9b898..f17e59b0 100644
+index f17e59b0..3b1a87c8 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -33,4 +33,5 @@ axfer_SOURCES = \
- 	container-raw.c \
+@@ -19,6 +19,7 @@ noinst_HEADERS = \
+ 	subcmd.h \
+ 	container.h \
+ 	mapper.h
++	options.h
+ 
+ axfer_SOURCES = \
+ 	misc.h \
+@@ -34,4 +35,6 @@ axfer_SOURCES = \
  	mapper.h \
  	mapper.c \
--	mapper-single.c
-+	mapper-single.c \
-+	mapper-multiple.c
-diff --git a/axfer/mapper-multiple.c b/axfer/mapper-multiple.c
+ 	mapper-single.c \
+-	mapper-multiple.c
++	mapper-multiple.c \
++	options.h \
++	options.c
+diff --git a/axfer/options.c b/axfer/options.c
 new file mode 100644
-index 00000000..c40d0bd6
+index 00000000..f3b0414b
 --- /dev/null
-+++ b/axfer/mapper-multiple.c
-@@ -0,0 +1,271 @@
++++ b/axfer/options.c
+@@ -0,0 +1,594 @@
 +/*
-+ * mapper-multiple.c - a muxer/demuxer for multiple containers.
++ * options.c - a parser of commandline options.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "mapper.h"
++#include "options.h"
 +#include "misc.h"
 +
-+struct multiple_state {
-+	void (*align_frames)(void *frame_buf, unsigned int frame_count,
-+			     char **buf, unsigned int bytes_per_sample,
-+			     struct container_context *cntrs,
-+			     unsigned int cntr_count);
-+	char **bufs;
-+	unsigned int cntr_count;
++#include <getopt.h>
++#include <math.h>
++
++static const char *const allowed_duplication[] = {
++	"/dev/null",
++	"/dev/zero",
++	"/dev/full",
++	"/dev/random",
++	"/dev/urandom",
 +};
 +
-+static void align_to_i(void *frame_buf, unsigned int frame_count,
-+		       char **src_bufs, unsigned int bytes_per_sample,
-+		       struct container_context *cntrs, unsigned int cntr_count)
++static long parse_l(const char *str, int *err)
 +{
-+	char *dst = frame_buf;
-+	char *src;
-+	unsigned int dst_pos;
-+	unsigned int src_pos;
-+	struct container_context *cntr;
-+	int i, j;
++	long val;
++	char *endptr;
 +
-+	/*
-+	 * src: first channel in each of interleaved buffers in containers =>
-+	 * dst:interleaved.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		src = src_bufs[i];
-+		cntr = cntrs + i;
++	val = strtol(str, &endptr, 10);
++	if (errno)
++		return -errno;
++	if (*endptr != '\0')
++		return -EINVAL;
 +
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+			dst_pos = bytes_per_sample * (cntr_count * j + i);
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
++	return val;
 +}
 +
-+static void align_from_i(void *frame_buf, unsigned int frame_count,
-+			 char **dst_bufs, unsigned int bytes_per_sample,
-+			 struct container_context *cntrs,
-+			 unsigned int cntr_count)
++static int allocate_paths(struct context_options *opts, char *const *paths,
++			  unsigned int count)
 +{
-+	char *src = frame_buf;
-+	char *dst;
-+	unsigned int src_pos;
-+	unsigned int dst_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		dst = dst_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * (cntr_count * j + i);
-+			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
-+}
-+
-+static int multiple_pre_process(struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int cntr_count)
-+{
-+	struct multiple_state *state = mapper->private_data;
-+	struct container_context *cntr;
++	bool stdio = false;
++	char *path;
 +	int i;
 +
-+	/*
-+	 * Additionally, format of samples in the containers should be the same
-+	 * as the format in PCM substream.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = cntrs + i;
-+		if (mapper->bytes_per_sample != cntr->bytes_per_sample)
-+			return -EINVAL;
-+	}
-+	state->cntr_count = cntr_count;
-+
-+	/* Decide method to align frames. */
-+	if (mapper->type == MAPPER_TYPE_DEMUXER) {
-+		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
-+			state->align_frames = align_from_i;
-+		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
-+			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+			state->align_frames = NULL;
-+		else
-+			return -EINVAL;
-+	} else {
-+		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
-+			state->align_frames = align_to_i;
-+		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
-+			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+			state->align_frames = NULL;
-+		else
-+			return -EINVAL;
++	if (count == 0) {
++		stdio = true;
++		count = 1;
 +	}
 +
-+	if (state->align_frames) {
-+		/*
-+		 * Furthermore, in demuxer case, each container should be
-+		 * configured to store one sample per frame.
-+		 */
-+		if (mapper->type == MAPPER_TYPE_DEMUXER) {
-+			for (i = 0; i < cntr_count; ++i) {
-+				cntr = cntrs + i;
-+				if (cntrs->samples_per_frame != 1)
-+					return -EINVAL;
-+			}
-+		}
++	opts->paths = calloc(count, sizeof(opts->paths[0]));
++	if (opts->paths == NULL)
++		return -ENOMEM;
++	opts->path_count = count;
 +
-+		state->bufs = calloc(cntr_count, sizeof(char *));
-+		if (state->bufs == NULL)
++	if (stdio) {
++		opts->paths[0] = malloc(2);
++		if (opts->paths[0] == NULL)
 +			return -ENOMEM;
++		strcpy(opts->paths[0], "-");
++		return 0;
++	}
 +
-+		for (i = 0; i < cntr_count; ++i) {
-+			unsigned int bytes_per_buffer;
-+
-+			/*
-+			 * Allocate intermediate buffer as the same size as a
-+			 * period for each of containers.
-+			 */
-+			cntr = cntrs + i;
-+
-+			bytes_per_buffer = mapper->bytes_per_sample *
-+					   cntr->samples_per_frame *
-+					   mapper->frames_per_buffer;
-+
-+			state->bufs[i] = malloc(bytes_per_buffer);
-+			if (state->bufs[i] == NULL)
-+				return -ENOMEM;
-+			memset(state->bufs[i], 0, bytes_per_buffer);
-+		}
++	for (i = 0; i < count; ++i) {
++		path = malloc(strlen(paths[i]) + 1);
++		if (path == NULL)
++			return -ENOMEM;
++		strcpy(path, paths[i]);
++		opts->paths[i] = path;
 +	}
 +
 +	return 0;
 +}
 +
-+static int process_containers(char **src_bufs, unsigned int *frame_count,
-+			      struct container_context *cntrs,
-+			      unsigned int cntr_count)
++static int verify_cntr_format(struct context_options *opts, const char *literal)
 +{
-+	struct container_context *cntr;
-+	char *src;
++	static const struct {
++		const char *const literal;
++		enum container_format cntr_format;
++	} *entry, entries[] = {
++		{"raw",		CONTAINER_FORMAT_RAW},
++		{"voc",		CONTAINER_FORMAT_VOC},
++		{"wav",		CONTAINER_FORMAT_RIFF_WAVE},
++		{"au",		CONTAINER_FORMAT_AU},
++		{"sparc",	CONTAINER_FORMAT_AU},
++	};
 +	int i;
++
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		entry = &entries[i];
++		if (strcasecmp(literal, entry->literal))
++			continue;
++
++		opts->cntr_format = entry->cntr_format;
++		return 0;
++	}
++
++	fprintf(stderr, "unrecognized file format '%s'\n", literal);
++
++	return -EINVAL;
++}
++
++/* This should be called after 'verify_cntr_format()'. */
++static int verify_sample_format(struct context_options *opts,
++				const char *literal)
++{
++	static const struct {
++		const char *const literal;
++		unsigned int frames_per_second;
++		unsigned int samples_per_frame;
++		snd_pcm_format_t le_format;
++		snd_pcm_format_t be_format;
++	} *entry, entries[] = {
++		{"cd",	44100, 2, SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
++		{"cdr",	44100, 2, SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
++		{"dat",	48000, 2, SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
++	};
++	int i;
++
++	opts->sample_format = snd_pcm_format_value(literal);
++	if (opts->sample_format != SND_PCM_FORMAT_UNKNOWN)
++		return 0;
++
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		entry = &entries[i];
++		if (strcmp(entry->literal, literal))
++			continue;
++
++		if (opts->frames_per_second > 0 &&
++		    opts->frames_per_second != entry->frames_per_second) {
++			fprintf(stderr,
++				"'%s' format can't be used with rate except "
++				"for %u.\n",
++				entry->literal, entry->frames_per_second);
++			return -EINVAL;
++		}
++
++		if (opts->samples_per_frame > 0 &&
++		    opts->samples_per_frame != entry->samples_per_frame) {
++			fprintf(stderr,
++				"'%s' format can't be used with channel except "
++				"for %u.\n",
++				entry->literal, entry->samples_per_frame);
++			return -EINVAL;
++		}
++
++		opts->frames_per_second = entry->frames_per_second;
++		opts->samples_per_frame = entry->samples_per_frame;
++		if (opts->cntr_format == CONTAINER_FORMAT_AU)
++			opts->sample_format = entry->be_format;
++		else
++			opts->sample_format = entry->le_format;
++
++		return 0;
++	}
++
++	fprintf(stderr, "wrong extended format '%s'\n", literal);
++
++	return -EINVAL;
++}
++
++static int apply_policies(struct context_options *opts,
++			  snd_pcm_stream_t direction,
++			  const char *cntr_format_literal,
++			  const char *node_literal,
++			  const char *sample_format_literal)
++{
++	int err;
++
++	if (node_literal != NULL) {
++		opts->node = malloc(strlen(node_literal) + 1);
++		if (opts->node == NULL) {
++			fprintf(stderr, "Fail to allocate for node: %s\n",
++			       node_literal);
++			return -ENOMEM;
++		}
++		strcpy(opts->node, node_literal);
++	}
++
++	if (!cntr_format_literal) {
++		if (direction == SND_PCM_STREAM_CAPTURE) {
++			/* To stdout. */
++			if (opts->path_count == 1 &&
++			    !strcmp(opts->paths[0], "-")) {
++				opts->cntr_format = CONTAINER_FORMAT_RAW;
++			} else {
++				/* Use first path as a representative. */
++				opts->cntr_format = container_format_from_path(
++								opts->paths[0]);
++			}
++		}
++		/* For playback, perform auto-detection. */
++	} else {
++		err = verify_cntr_format(opts, cntr_format_literal);
++		if (err < 0)
++			return err;
++	}
++
++	if (opts->samples_per_frame > 0) {
++		if (opts->samples_per_frame < 1 ||
++		    opts->samples_per_frame > 256) {
++			fprintf(stderr, "invalid channels argument '%u'\n",
++				opts->samples_per_frame);
++			return -EINVAL;
++		}
++	}
++
++	if (opts->multiple_cntrs) {
++		if (!strcmp(opts->paths[0], "-")) {
++			fprintf(stderr,
++				"An option for separated channels is not "
++				"available with stdin/stdout.\n");
++			return -EINVAL;
++		}
++
++		/*
++		 * For captured PCM frames, even if one path is given for
++		 * container files, it can be used to generate several paths.
++		 * For this purpose, please see
++		 * 'context_options_fixup_for_capture()'.
++		 */
++		if (direction == SND_PCM_STREAM_PLAYBACK) {
++			/* Require several paths for containers. */
++			if (opts->path_count == 1) {
++				fprintf(stderr,
++					"An option for separated channels "
++					"requires several files to playback "
++					"PCM frames.\n");
++				return -EINVAL;
++			}
++		}
++	} else {
++		/* A single path is available only. */
++		if (opts->path_count > 1) {
++			fprintf(stderr,
++				"When using several files, an option for "
++				"sepatated channels is used with.\n");
++			return -EINVAL;
++		}
++	}
++
++	if (opts->frames_per_second > 0) {
++		unsigned int orig = opts->frames_per_second;
++
++		/* For backward compatibility. */
++		if (opts->frames_per_second < 300)
++			opts->frames_per_second *= 300;
++		if (opts->frames_per_second < 2000 ||
++		    opts->frames_per_second > 192000) {
++			fprintf(stderr, "bad speed value '%i'\n", orig);
++			return -EINVAL;
++		}
++	}
++
++	opts->sample_format = SND_PCM_FORMAT_UNKNOWN;
++	if (sample_format_literal) {
++		err = verify_sample_format(opts, sample_format_literal);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
++int context_options_init(struct context_options *opts, int argc,
++			 char *const *argv, snd_pcm_stream_t direction)
++{
++	static const char *s_opts = "hvt:ID:f:c:r:";
++	static const struct option l_opts[] = {
++		/* For generic purposes. */
++		{"help",		0, 0, 'h'},
++		{"verbose",		0, 0, 'v'},
++		/* For containers. */
++		{"file-type",		1, 0, 't'},
++		/* For mapper. */
++		{"separate-channels",	0, 0, 'I'},
++		/* For transfer backend. */
++		{"device",		1, 0, 'D'},
++		{"format",		1, 0, 'f'},
++		{"channels",		1, 0, 'c'},
++		{"rate",		1, 0, 'r'},
++		{NULL,			0, 0, 0},
++	};
++	const char *cntr_format_literal = NULL;
++	const char *node_literal = NULL;
++	const char *sample_format_literal = NULL;
++	int c;
 +	int err = 0;
 +
-+	/* TODO: arrangement for *frame_count. */
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = &cntrs[i];
-+		src = src_bufs[i];
++	optind = 0;
++	opterr = 0;
++	while (1) {
++		c = getopt_long(argc, argv, s_opts, l_opts, NULL);
++		if (c < 0)
++			break;
++		else if (c == 'h')
++			opts->help = true;
++		else if (c == 'v')
++			++opts->verbose;
++		else if (c == 't')
++			cntr_format_literal = optarg;
++		else if (c == 'I')
++			opts->multiple_cntrs = true;
++		else if (c == 'D')
++			node_literal = optarg;
++		else if (c == 'f')
++			sample_format_literal = optarg;
++		else if (c == 'c')
++			opts->samples_per_frame = parse_l(optarg, &err);
++		else if (c == 'r')
++			opts->frames_per_second = parse_l(optarg, &err);
++		else
++			continue;
 +
-+		err = container_context_process_frames(cntr, src, frame_count);
++		if (err < 0)
++			return err;
++	}
++
++	err = allocate_paths(opts, argv + optind, argc - optind);
++	if (err < 0)
++		return err;
++
++	return apply_policies(opts, direction, cntr_format_literal,
++			      node_literal, sample_format_literal);
++}
++
++static int generate_path_with_suffix(struct context_options *opts,
++				     const char *template, unsigned int index,
++				     const char *suffix)
++{
++	static const char *const single_format = "%s%s";
++	static const char *const multiple_format = "%s-%i%s";
++	unsigned int len;
++
++	len = strlen(template) + strlen(suffix) + 1;
++	if (opts->path_count > 1)
++		len += (unsigned int)log10(opts->path_count) + 2;
++
++	opts->paths[index] = malloc(len);
++	if (opts->paths[index] == NULL)
++		return -ENOMEM;
++
++	if (opts->path_count == 1) {
++		snprintf(opts->paths[index], len, single_format, template,
++			 suffix);
++	} else {
++		snprintf(opts->paths[index], len, multiple_format, template,
++			 index, suffix);
++	}
++
++	return 0;
++}
++
++static int generate_path_without_suffix(struct context_options *opts,
++				        const char *template,
++					unsigned int index, const char *suffix)
++{
++	static const char *const single_format = "%s";
++	static const char *const multiple_format = "%s-%i";
++	unsigned int len;
++
++	len = strlen(template) + 1;
++	if (opts->path_count > 1)
++		len += (unsigned int)log10(opts->path_count) + 2;
++
++	opts->paths[index] = malloc(len);
++	if (opts->paths[index] == NULL)
++		return -ENOMEM;
++
++	if (opts->path_count == 1) {
++		snprintf(opts->paths[index], len, single_format, template);
++	} else {
++		snprintf(opts->paths[index], len, multiple_format, template,
++			index);
++	}
++
++	return 0;
++}
++
++static int generate_path(struct context_options *opts, char *template,
++			 unsigned int index, const char *suffix)
++{
++	int (*generator)(struct context_options *opts, const char *template,
++			 unsigned int index, const char *suffix);
++	char *pos;
++
++	if (strlen(suffix) > 0) {
++		pos = template + strlen(template) - strlen(suffix);
++		/* Separate filename and suffix. */
++		if (!strcmp(pos, suffix))
++			*pos = '\0';
++	}
++
++	/* Select handlers. */
++	if (strlen(suffix) > 0)
++		generator = generate_path_with_suffix;
++	else
++		generator = generate_path_without_suffix;
++
++	return generator(opts, template, index, suffix);
++}
++
++static int create_paths(struct context_options *opts, unsigned int path_count)
++{
++	char *template;
++	const char *suffix;
++	int i, j;
++	int err = 0;
++
++	/* Can cause memory leak. */
++	assert(opts->path_count == 1);
++	assert(opts->paths);
++	assert(opts->paths[0]);
++	assert(opts->paths[0][0] != '\0');
++
++	/* Release at first. */
++	template = opts->paths[0];
++	free(opts->paths);
++	opts->paths = NULL;
++
++	/* Allocate again. */
++	opts->paths = calloc(path_count, sizeof(*opts->paths));
++	if (opts->paths == NULL) {
++		err = -ENOMEM;
++		goto end;
++	}
++	opts->path_count = path_count;
++
++	suffix = container_suffix_from_format(opts->cntr_format);
++
++	for (i = 0; i < opts->path_count; ++i) {
++		/* Some file names are allowed to be duplicated. */
++		for (j = 0; j < ARRAY_SIZE(allowed_duplication); ++j) {
++			if (!strcmp(opts->paths[i], allowed_duplication[j]))
++				break;
++		}
++		if (j < ARRAY_SIZE(allowed_duplication))
++			continue;
++
++		err = generate_path(opts, template, i, suffix);
++		if (err < 0)
++			break;
++	}
++end:
++	free(template);
++
++	return err;
++}
++
++static int fixup_paths(struct context_options *opts)
++{
++	const char *suffix;
++	char *template;
++	int i, j;
++	int err = 0;
++
++	suffix = container_suffix_from_format(opts->cntr_format);
++
++	for (i = 0; i < opts->path_count; ++i) {
++		/* Some file names are allowed to be duplicated. */
++		for (j = 0; j < ARRAY_SIZE(allowed_duplication); ++j) {
++			if (!strcmp(opts->paths[i], allowed_duplication[j]))
++				break;
++		}
++		if (j < ARRAY_SIZE(allowed_duplication))
++			continue;
++
++		template = opts->paths[i];
++		opts->paths[i] = NULL;
++		err = generate_path(opts, template, i, suffix);
++		free(template);
 +		if (err < 0)
 +			break;
 +	}
@@ -236,164 +543,176 @@ index 00000000..c40d0bd6
 +	return err;
 +}
 +
-+static int multiple_muxer_process_frames(struct mapper_context *mapper,
-+					 void *frame_buf,
-+					 unsigned int *frame_count,
-+					 struct container_context *cntrs,
-+					 unsigned int cntr_count)
++int context_options_fixup_for_capture(struct context_options *opts,
++				      unsigned int samples_per_frame)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	char **src_bufs;
++	int i, j;
 +	int err;
 +
-+	/*
-+	 * If need to align PCM frames, process PCM frames to the intermediate
-+	 * buffer once.
-+	 */
-+	if (!state->align_frames) {
-+		/* The most likely. */
-+		src_bufs = frame_buf;
++	if (!opts->multiple_cntrs) {
++		if (opts->path_count == 1)
++			err = fixup_paths(opts);
++		else
++			return -EINVAL;
 +	} else {
-+		src_bufs = state->bufs;
++		if (opts->path_count == 1) {
++			err = create_paths(opts, samples_per_frame);
++		} else {
++			if (opts->path_count == samples_per_frame)
++				err = fixup_paths(opts);
++			else
++				return -EINVAL;
++		}
 +	}
-+	err = process_containers(src_bufs, frame_count, cntrs, cntr_count);
 +	if (err < 0)
 +		return err;
 +
-+	/* Unlikely. */
-+	if (src_bufs != frame_buf && *frame_count > 0) {
-+		state->align_frames(frame_buf, *frame_count, src_bufs,
-+				    mapper->bytes_per_sample, cntrs,
-+				    cntr_count);
++	/* Check duplication of the paths. */
++	for (i = 0; i < opts->path_count - 1; ++i) {
++		/* Some file names are allowed to be duplicated. */
++		for (j = 0; j < ARRAY_SIZE(allowed_duplication); ++j) {
++			if (!strcmp(opts->paths[i], allowed_duplication[j]))
++				break;
++		}
++		if (j < ARRAY_SIZE(allowed_duplication))
++			continue;
++
++		for (j = i + 1; j < opts->path_count; ++j) {
++			if (!strcmp(opts->paths[i], opts->paths[j])) {
++				fprintf(stderr,
++					"Detect duplicated file names:\n");
++				err = -EINVAL;
++				break;
++			}
++		}
++		if (j < opts->path_count)
++			break;
++	}
++
++	if (opts->verbose)
++		fprintf(stderr, "Handled file names:\n");
++	if (err < 0 || opts->verbose) {
++		for (i = 0; i < opts->path_count; ++i)
++			fprintf(stderr, "    %d: %s\n", i, opts->paths[i]);
++	}
++
++	return err;
++}
++
++int context_options_fixup_for_playback(struct context_options *opts,
++				       snd_pcm_format_t sample_format,
++				       unsigned int samples_per_frame,
++				       unsigned int frames_per_second)
++{
++	if (opts->sample_format != SND_PCM_FORMAT_UNKNOWN) {
++		if (sample_format != opts->sample_format) {
++			fprintf(stderr,
++				"Sample format mismatch: %s is given but %s by "
++				"files\n",
++				snd_pcm_format_name(opts->sample_format),
++				snd_pcm_format_name(sample_format));
++			return -EINVAL;
++		}
++	}
++
++	if (opts->samples_per_frame > 0) {
++		if (samples_per_frame != opts->samples_per_frame) {
++			fprintf(stderr,
++				"The number of channels mismatch: %u is given "
++				"but %u by files\n",
++				opts->samples_per_frame, samples_per_frame);
++			return -EINVAL;
++		}
++	}
++
++	if (opts->frames_per_second > 0) {
++		if (frames_per_second != opts->frames_per_second) {
++			fprintf(stderr,
++				"Sampling rate mismatch: %u is given but %u by "
++				"files\n",
++				opts->frames_per_second, frames_per_second);
++			return -EINVAL;
++		}
++	}
++
++	if (opts->verbose) {
++		int i;
++
++		fprintf(stderr, "Handled file names:\n");
++		for (i = 0; i < opts->path_count; ++i) {
++			fprintf(stderr, "    %d: %s\n", i, opts->paths[i]);
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static int multiple_demuxer_process_frames(struct mapper_context *mapper,
-+					   void *frame_buf,
-+					   unsigned int *frame_count,
-+					   struct container_context *cntrs,
-+					   unsigned int cntr_count)
++void context_options_destroy(struct context_options *opts)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	char **dst_bufs;
-+
-+	/*
-+	 * If need to align PCM frames, process PCM frames to the intermediate
-+	 * buffer once.
-+	 */
-+	if (!state->align_frames) {
-+		/* The most likely. */
-+		dst_bufs = frame_buf;
-+	} else {
-+		dst_bufs = state->bufs;
-+		state->align_frames(frame_buf, *frame_count, dst_bufs,
-+				    mapper->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
-+
-+	return process_containers(dst_bufs, frame_count, cntrs, cntr_count);
-+}
-+
-+static void multiple_post_process(struct mapper_context *mapper)
-+{
-+	struct multiple_state *state = mapper->private_data;
 +	int i;
 +
-+	if (state->bufs) {
-+		for (i = 0; i < state->cntr_count; ++i) {
-+			if (state->bufs[i])
-+				free(state->bufs[i]);
-+		}
-+		free(state->bufs);
++	if (opts->paths) {
++		for (i = 0; i < opts->path_count; ++i)
++			free(opts->paths[i]);
++		free(opts->paths);
 +	}
-+
-+	state->bufs = NULL;
-+	state->align_frames = NULL;
++	if (opts->node)
++		free(opts->node);
++	opts->paths = NULL;
++	opts->node = NULL;
 +}
+diff --git a/axfer/options.h b/axfer/options.h
+new file mode 100644
+index 00000000..38bdbb74
+--- /dev/null
++++ b/axfer/options.h
+@@ -0,0 +1,47 @@
++/*
++ * options.h - a header for a parser of commandline options.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+const struct mapper_data mapper_muxer_multiple = {
-+	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_muxer_process_frames,
-+		.post_process = multiple_post_process,
-+	},
-+	.private_size = sizeof(struct multiple_state),
++#ifndef __ALSA_UTILS_AXFER_OPTIONS__H_
++#define __ALSA_UTILS_AXFER_OPTIONS__H_
++
++#include "container.h"
++
++struct context_options {
++	bool help;
++
++	/* For generic purposes. */
++	unsigned int verbose;
++
++	/* For containers. */
++	char **paths;
++	unsigned int path_count;
++	enum container_format cntr_format;
++
++	/* For mapper. */
++	bool multiple_cntrs;
++
++	/* For transfer backend. */
++	char *node;
++	snd_pcm_format_t sample_format;
++	unsigned int samples_per_frame;
++	unsigned int frames_per_second;
 +};
 +
-+const struct mapper_data mapper_demuxer_multiple = {
-+	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_demuxer_process_frames,
-+		.post_process = multiple_post_process,
-+	},
-+	.private_size = sizeof(struct multiple_state),
-+};
-diff --git a/axfer/mapper.c b/axfer/mapper.c
-index 3ba2d5e1..20baef85 100644
---- a/axfer/mapper.c
-+++ b/axfer/mapper.c
-@@ -19,6 +19,7 @@ static const char *const mapper_type_labels[] = {
- 
- static const char *const mapper_target_labels[] = {
- 	[MAPPER_TARGET_SINGLE] = "single",
-+	[MAPPER_TARGET_MULTIPLE] = "multiple",
- };
- 
- int mapper_context_init(struct mapper_context *mapper,
-@@ -39,11 +40,17 @@ int mapper_context_init(struct mapper_context *mapper,
- 		if (cntr_count == 1) {
- 			data = &mapper_muxer_single;
- 			mapper->target = MAPPER_TARGET_SINGLE;
-+		} else {
-+			data = &mapper_muxer_multiple;
-+			mapper->target = MAPPER_TARGET_MULTIPLE;
- 		}
- 	} else {
- 		if (cntr_count == 1) {
- 			data = &mapper_demuxer_single;
- 			mapper->target = MAPPER_TARGET_SINGLE;
-+		} else {
-+			data = &mapper_demuxer_multiple;
-+			mapper->target = MAPPER_TARGET_MULTIPLE;
- 		}
- 	}
- 
-@@ -77,6 +84,14 @@ int mapper_context_pre_process(struct mapper_context *mapper,
- 	assert(samples_per_frame > 0);
- 	assert(cntrs);
- 
-+	/*
-+	 * The purpose of multiple target is to mux/demux each channels to/from
-+	 * containers.
-+	 */
-+	if (mapper->target == MAPPER_TARGET_MULTIPLE &&
-+	    samples_per_frame != mapper->cntr_count)
-+		return -EINVAL;
++int context_options_init(struct context_options *opts, int argc,
++			 char *const *argv, snd_pcm_stream_t direction);
++int context_options_fixup_for_playback(struct context_options *opts,
++				       snd_pcm_format_t sample_format,
++				       unsigned int samples_per_frame,
++				       unsigned int frames_per_second);
++int context_options_fixup_for_capture(struct context_options *opts,
++				      unsigned int samples_per_frame);
++void context_options_calculate_duration(struct context_options *opts,
++		unsigned int frames_per_second, uint64_t *total_frame_count);
++void context_options_destroy(struct context_options *opts);
 +
- 	mapper->access = access;
- 	mapper->bytes_per_sample = bytes_per_sample;
- 	mapper->samples_per_frame = samples_per_frame;
-diff --git a/axfer/mapper.h b/axfer/mapper.h
-index 2e553666..3b32e93c 100644
---- a/axfer/mapper.h
-+++ b/axfer/mapper.h
-@@ -20,6 +20,7 @@ enum mapper_type {
- 
- enum mapper_target {
- 	MAPPER_TARGET_SINGLE = 0,
-+	MAPPER_TARGET_MULTIPLE,
- 	MAPPER_TARGET_COUNT,
- };
- 
-@@ -80,4 +81,7 @@ struct mapper_data {
- extern const struct mapper_data mapper_muxer_single;
- extern const struct mapper_data mapper_demuxer_single;
- 
-+extern const struct mapper_data mapper_muxer_multiple;
-+extern const struct mapper_data mapper_demuxer_multiple;
-+
- #endif
++#endif
 -- 
 2.11.0
