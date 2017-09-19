@@ -1,17 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 02/38] axfer: add a sub-command to print
-	list of PCMs/devices
-Date: Tue, 19 Sep 2017 09:43:42 +0900
-Message-ID: <20170919004418.24668-3-o-takashi@sakamocchi.jp>
-References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 00/38] alsa-utils: axfer: rewrite aplay
+Date: Tue, 19 Sep 2017 09:43:40 +0900
+Message-ID: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E5E7D266E13
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E4B32266DBB
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:23 +0200 (CEST)
-In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,307 +22,177 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Original aplay implementation has a feature to output two types of list;
-devices and PCMs. The list of devices is a result to query sound card and
-pcm component structured maintained in kernel land. The list of PCMs is a
-result to parse runtime configuration files in alsa-lib. Entries in the
-former list is corresponding to ALSA PCM character device
-('/dev/snd/pcm%uC%uD[p|c]'), while entries in the latter list includes
-some 'virtual' instances in application runtime.
+Hi,
 
-This commit adds an implementation for the above functionality. This is
-executed by taking 'list' sub-command. A 'device' option has the same
-effect as '--list-devices' and '-L' of aplay. A 'pcm' option has the same
-effect as '--list-pcms' and '-l' of aplay. In both cases, an additional
-option is required for stream direction. Below is examples of new command
-system for this sub-command.
+This large patchset is to introduce a new command, named as 'axfer' (ALSA
+transfer). This comes from my work to rewrite aplay. Initial patchset was
+already posted as RFCv1.
 
-$ axfer list device -C (= arecord --list-devices)
-$ axfer list pcm -P    (= aplay -l)
+[alsa-devel][PATCH 00/23] alsa-utils: rewrite aplay
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-August/124132.html
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- axfer/Makefile.am   |   3 +-
- axfer/main.c        |   2 +-
- axfer/subcmd-list.c | 234 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/subcmd.h      |   2 +
- 4 files changed, 239 insertions(+), 2 deletions(-)
+Unlike the initial patchset, this patchset includes support for the most of
+options in aplay, and simple unit tests for functionalities to handle data
+frames for files.
+
+At patch 17, transmission of data frame with blocking mode is supported.
+You can actually test playback/capture.
+ * axfer: add a sub-command to transfer data frames
+
+At patch 24, transmission with non-blocking mode is supported.
+ * axfer: add support for non-blocking operation
+
+At patch 25, transmission by MMAP operation is supported.
+ * axfer: add support for MMAP PCM operation
+
+Between patch 30-36, some minor features are supported, but they includes
+own issues. I'd like to abandon them in future patchset.
+ * axfer: add an option to support volume unit meter
+ * axfer: add a unit test for vumeter calculation
+ * axfer: add an option for formatted filename
+ * axfer: add an option to handle key events
+ * axfer: add a parser for channel map API
+ * axfer: add a feature to generate a file for process id
+ * axfer: obsolete some test options
+
+At patch 37/38, an integration to select waiter type is added. You can
+select one of poll(2) and epoll(2) to wait for I/O event notification.
+
+At present, I found some problems of this program:
+ * When MMAP operation is used for PCM nodes with 'plug' plugin, XRUN occurs
+   for capture and noisy sound for playback. I don't found this in the other
+   operations such as blocking.
+ * When using two axfer processes for capture/playback with pipe, some frames
+   are truncated in the end of playback.
+
+I leave some tasks such as documentation and localization, but this patchset
+covers major use cases, I think.
+
+
+Regards
+
+Takashi Sakamoto (38):
+  axfer: add an entry point for this command
+  axfer: add a sub-command to print list of PCMs/devices
+  axfer: add a common interface to handle a file with audio-specific
+    data format
+  axfer: add support for a container of Microsoft/IBM RIFF/Wave format
+  axfer: add support for a container of Sparc AU format
+  axfer: add support for a container of Creative Tech. voice format
+  axfer: add support for a container of raw data
+  axfer: add unit test for container interface
+  axfer: add a common interface to align data frames on different layout
+  axfer: add support for a mapper for single target
+  axfer: add support for a mapper for multiple target
+  axfer: add a unit test for mapper interface
+  axfer: add a parser for command-line options
+  axfer: add a common interface to transfer data frames
+  axfer: add support to transfer data frames by alsa-lib PCM APIs
+  axfer: add support for blocking data transmission operation of
+    alsa-lib PCM API
+  axfer: add a sub-command to transfer data frames
+  axfer: add informative output and an option to suppress it
+  axfer: add an option to dump available hardware parameters
+  axfer: add options related to duration and obsolete '--max-file-size'
+    option
+  axfer: add an option to finish transmission at XRUN
+  axfer: add a common interface of waiter for I/O event notification
+  axfer: add support of waiter for poll(2)
+  axfer: add support for non-blocking operation
+  axfer: add support for MMAP PCM operation
+  axfer: add an option to suppress event waiting
+  axfer: add options for buffer arrangement
+  axfer: add options for software parameters of PCM substream
+  axfer: add options for plugins in alsa-lib
+  axfer: add an option to support volume unit meter
+  axfer: add a unit test for vumeter calculation
+  axfer: add an option for formatted filename
+  axfer: add an option to handle key events
+  axfer: add a parser for channel map API
+  axfer: add a feature to generate a file for process id
+  axfer: obsolete some test options
+  axfer: add an implementation of waiter for epoll(7)
+  axfer: add an option for waiter type
+
+ Makefile.am                     |   2 +-
+ axfer/Makefile.am               |  60 +++
+ axfer/container-au.c            | 207 +++++++++
+ axfer/container-raw.c           |  66 +++
+ axfer/container-riff-wave.c     | 581 ++++++++++++++++++++++++
+ axfer/container-voc.c           | 843 +++++++++++++++++++++++++++++++++++
+ axfer/container.c               | 470 ++++++++++++++++++++
+ axfer/container.h               | 126 ++++++
+ axfer/key-event.c               | 121 +++++
+ axfer/key-event.h               |  19 +
+ axfer/main.c                    | 194 ++++++++
+ axfer/mapper-multiple.c         | 271 +++++++++++
+ axfer/mapper-single.c           | 195 ++++++++
+ axfer/mapper.c                  | 152 +++++++
+ axfer/mapper.h                  |  87 ++++
+ axfer/misc.h                    |  16 +
+ axfer/options.c                 | 963 ++++++++++++++++++++++++++++++++++++++++
+ axfer/options.h                 |  83 ++++
+ axfer/subcmd-list.c             | 234 ++++++++++
+ axfer/subcmd-transfer.c         | 520 ++++++++++++++++++++++
+ axfer/subcmd.h                  |  18 +
+ axfer/test/Makefile.am          |  39 ++
+ axfer/test/container-test.c     | 299 +++++++++++++
+ axfer/test/generator.c          | 260 +++++++++++
+ axfer/test/generator.h          |  47 ++
+ axfer/test/mapper-test.c        | 491 ++++++++++++++++++++
+ axfer/test/vumeter-test.c       | 128 ++++++
+ axfer/vumeter.c                 | 565 +++++++++++++++++++++++
+ axfer/vumeter.h                 |  56 +++
+ axfer/waiter-epoll.c            |  81 ++++
+ axfer/waiter-poll.c             |  68 +++
+ axfer/waiter.c                  |  84 ++++
+ axfer/waiter.h                  |  52 +++
+ axfer/xfer-libasound-irq-mmap.c | 224 ++++++++++
+ axfer/xfer-libasound-irq-rw.c   | 518 +++++++++++++++++++++
+ axfer/xfer-libasound.c          | 682 ++++++++++++++++++++++++++++
+ axfer/xfer-libasound.h          |  57 +++
+ axfer/xfer.c                    | 191 ++++++++
+ axfer/xfer.h                    |  76 ++++
+ configure.ac                    |   3 +-
+ 40 files changed, 9147 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/Makefile.am
+ create mode 100644 axfer/container-au.c
+ create mode 100644 axfer/container-raw.c
+ create mode 100644 axfer/container-riff-wave.c
+ create mode 100644 axfer/container-voc.c
+ create mode 100644 axfer/container.c
+ create mode 100644 axfer/container.h
+ create mode 100644 axfer/key-event.c
+ create mode 100644 axfer/key-event.h
+ create mode 100644 axfer/main.c
+ create mode 100644 axfer/mapper-multiple.c
+ create mode 100644 axfer/mapper-single.c
+ create mode 100644 axfer/mapper.c
+ create mode 100644 axfer/mapper.h
+ create mode 100644 axfer/misc.h
+ create mode 100644 axfer/options.c
+ create mode 100644 axfer/options.h
  create mode 100644 axfer/subcmd-list.c
+ create mode 100644 axfer/subcmd-transfer.c
+ create mode 100644 axfer/subcmd.h
+ create mode 100644 axfer/test/Makefile.am
+ create mode 100644 axfer/test/container-test.c
+ create mode 100644 axfer/test/generator.c
+ create mode 100644 axfer/test/generator.h
+ create mode 100644 axfer/test/mapper-test.c
+ create mode 100644 axfer/test/vumeter-test.c
+ create mode 100644 axfer/vumeter.c
+ create mode 100644 axfer/vumeter.h
+ create mode 100644 axfer/waiter-epoll.c
+ create mode 100644 axfer/waiter-poll.c
+ create mode 100644 axfer/waiter.c
+ create mode 100644 axfer/waiter.h
+ create mode 100644 axfer/xfer-libasound-irq-mmap.c
+ create mode 100644 axfer/xfer-libasound-irq-rw.c
+ create mode 100644 axfer/xfer-libasound.c
+ create mode 100644 axfer/xfer-libasound.h
+ create mode 100644 axfer/xfer.c
+ create mode 100644 axfer/xfer.h
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index b48b9c57..4e37b92f 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -20,4 +20,5 @@ noinst_HEADERS = \
- axfer_SOURCES = \
- 	misc.h \
- 	subcmd.h \
--	main.c
-+	main.c \
-+	subcmd-list.c
-diff --git a/axfer/main.c b/axfer/main.c
-index 6ea10842..9bf02fd9 100644
---- a/axfer/main.c
-+++ b/axfer/main.c
-@@ -182,7 +182,7 @@ int main(int argc, char *const *argv)
- 	if (subcmd == SUBCMD_TRANSFER)
- 		printf("execute 'transfer' subcmd.\n");
- 	else if (subcmd == SUBCMD_LIST)
--		printf("execute 'list' subcmd.\n");
-+		err = subcmd_list(argc, argv, direction);
- 	else if (subcmd == SUBCMD_VERSION)
- 		print_version(argv[0]);
- 	else
-diff --git a/axfer/subcmd-list.c b/axfer/subcmd-list.c
-new file mode 100644
-index 00000000..de4bbd76
---- /dev/null
-+++ b/axfer/subcmd-list.c
-@@ -0,0 +1,234 @@
-+/*
-+ * subcmd-list.c - operations for list sub command.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "subcmd.h"
-+#include "misc.h"
-+
-+#include <getopt.h>
-+
-+static int dump_device(snd_ctl_t *handle, const char *id, const char *name,
-+		       snd_pcm_stream_t direction, snd_pcm_info_t *info)
-+{
-+	unsigned int count;
-+	int i;
-+	int err;
-+
-+	printf(_("card %i: %s [%s], device %i: %s [%s]\n"),
-+	       snd_pcm_info_get_card(info), id, name,
-+	       snd_pcm_info_get_device(info), snd_pcm_info_get_id(info),
-+	       snd_pcm_info_get_name(info));
-+
-+	count = snd_pcm_info_get_subdevices_count(info);
-+	printf(_("  Subdevices: %i/%i\n"),
-+	       snd_pcm_info_get_subdevices_avail(info), count);
-+
-+	for (i = 0; i < count; ++i) {
-+		snd_pcm_info_set_subdevice(info, i);
-+
-+		err = snd_ctl_pcm_info(handle, info);
-+		if (err < 0) {
-+			printf("control digital audio playback info (%i): %s",
-+			       snd_pcm_info_get_card(info), snd_strerror(err));
-+			continue;
-+		}
-+
-+		printf(_("  Subdevice #%i: %s\n"),
-+		       i, snd_pcm_info_get_subdevice_name(info));
-+	}
-+
-+	return 0;
-+}
-+
-+static int dump_devices(snd_ctl_t *handle, const char *id, const char *name,
-+			snd_pcm_stream_t direction)
-+{
-+	snd_pcm_info_t *info;
-+	int device = -1;
-+	int err;
-+
-+	err = snd_pcm_info_malloc(&info);
-+	if (err < 0)
-+		return err;
-+
-+	while (1) {
-+		err = snd_ctl_pcm_next_device(handle, &device);
-+		if (err < 0)
-+			break;
-+		if (device < 0)
-+			break;
-+
-+		snd_pcm_info_set_device(info, device);
-+		snd_pcm_info_set_subdevice(info, 0);
-+		snd_pcm_info_set_stream(info, direction);
-+		err = snd_ctl_pcm_info(handle, info);
-+		if (err < 0)
-+			continue;
-+
-+		err = dump_device(handle, id, name, direction, info);
-+		if (err < 0)
-+			break;
-+	}
-+
-+	free(info);
-+	return err;
-+}
-+
-+static int list_devices(snd_pcm_stream_t direction)
-+{
-+	int card = -1;
-+	char name[32];
-+	snd_ctl_t *handle;
-+	snd_ctl_card_info_t *info;
-+	int err;
-+
-+	err = snd_ctl_card_info_malloc(&info);
-+	if (err < 0)
-+		return err;
-+
-+	/* Not found. */
-+	if (snd_card_next(&card) < 0 || card < 0)
-+		goto end;
-+
-+	printf(_("**** List of %s Hardware Devices ****\n"),
-+	       snd_pcm_stream_name(direction));
-+
-+	while (card >= 0) {
-+		sprintf(name, "hw:%d", card);
-+		err = snd_ctl_open(&handle, name, 0);
-+		if (err < 0) {
-+			printf("control open (%i): %s",
-+			       card, snd_strerror(err));
-+		} else {
-+			err = snd_ctl_card_info(handle, info);
-+			if (err < 0) {
-+				printf("control hardware info (%i): %s",
-+				       card, snd_strerror(err));
-+			} else {
-+				err = dump_devices(handle,
-+					snd_ctl_card_info_get_id(info),
-+					snd_ctl_card_info_get_name(info),
-+					direction);
-+			}
-+			snd_ctl_close(handle);
-+		}
-+
-+		if (err < 0)
-+			break;
-+
-+		/* Go to next. */
-+		if (snd_card_next(&card) < 0) {
-+			printf("snd_card_next");
-+			break;
-+		}
-+	}
-+end:
-+	free(info);
-+	return err;
-+}
-+
-+static int list_pcms(snd_pcm_stream_t direction)
-+{
-+	static const char *const filters[] = {
-+		[SND_PCM_STREAM_CAPTURE]	= "Input",
-+		[SND_PCM_STREAM_PLAYBACK]	= "Output",
-+	};
-+	const char *filter;
-+	void **hints;
-+	void **n;
-+	char *io;
-+	char *name;
-+	char *desc;
-+
-+	if (snd_device_name_hint(-1, "pcm", &hints) < 0)
-+		return -EINVAL;
-+
-+	filter = filters[direction];
-+
-+	n = hints;
-+	for (n = hints; *n != NULL; ++n) {
-+		io = snd_device_name_get_hint(*n, "IOID");
-+		if (io != NULL && strcmp(io, filter) != 0) {
-+			free(io);
-+			continue;
-+		}
-+
-+		name = snd_device_name_get_hint(*n, "NAME");
-+		desc = snd_device_name_get_hint(*n, "DESC");
-+
-+		printf("%s\n", name);
-+		if (desc == NULL) {
-+			free(name);
-+			free(desc);
-+			continue;
-+		}
-+
-+
-+		printf("    ");
-+		while (*desc) {
-+			if (*desc == '\n')
-+				printf("\n    ");
-+			else
-+				putchar(*desc);
-+			desc++;
-+		}
-+		putchar('\n');
-+	}
-+
-+	snd_device_name_free_hint(hints);
-+
-+	return 0;
-+}
-+
-+static void print_help(void)
-+{
-+	printf("help for list sub-command.\n");
-+}
-+
-+int subcmd_list(int argc, char *const *argv, snd_pcm_stream_t direction)
-+{
-+	static const struct {
-+		const char *const category;
-+		int (*func)(snd_pcm_stream_t direction);
-+	} ops[] = {
-+		{"device",	list_devices},
-+		{"pcm",		list_pcms},
-+	};
-+	int i;
-+	static const char *s_opts = "hlL";
-+	static const struct option l_opts[] = {
-+		{"list-devices",	0, NULL, 'l'},
-+		{"list-pcms",		0, NULL, 'L'},
-+		{NULL,			0, NULL, 0}
-+	};
-+	int c;
-+
-+	/* Renewed command system. */
-+	if (argc > 2 && !strcmp(argv[1], "list")) {
-+		for (i = 0; i < ARRAY_SIZE(ops); ++i) {
-+			if (!strcmp(ops[i].category, argv[2]))
-+				return ops[i].func(direction);
-+		}
-+	}
-+
-+	/* Original command system. */
-+	optind = 0;
-+	opterr = 0;
-+	while (1) {
-+		c = getopt_long(argc, argv, s_opts, l_opts, NULL);
-+		if (c < 0)
-+			break;
-+		if (c == 'l')
-+			return list_devices(direction);
-+		if (c == 'L')
-+			return list_pcms(direction);
-+	}
-+
-+	print_help();
-+
-+	return 1;
-+}
-diff --git a/axfer/subcmd.h b/axfer/subcmd.h
-index 7b52ddc7..940d6814 100644
---- a/axfer/subcmd.h
-+++ b/axfer/subcmd.h
-@@ -11,4 +11,6 @@
- 
- #include <alsa/asoundlib.h>
- 
-+int subcmd_list(int argc, char *const *argv, snd_pcm_stream_t direction);
-+
- #endif
 -- 
 2.11.0
