@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv2][PATCH 13/38] axfer: add a parser for
-	command-line options
-Date: Tue, 19 Sep 2017 09:43:53 +0900
-Message-ID: <20170919004418.24668-14-o-takashi@sakamocchi.jp>
+Subject: [RFCv2][PATCH 14/38] axfer: add a common interface to
+	transfer data frames
+Date: Tue, 19 Sep 2017 09:43:54 +0900
+Message-ID: <20170919004418.24668-15-o-takashi@sakamocchi.jp>
 References: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id EBFA5266E90
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 01DDF266E93
  for <alsa-devel@alsa-project.org>; Tue, 19 Sep 2017 02:44:27 +0200 (CEST)
 In-Reply-To: <20170919004418.24668-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,693 +25,283 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In aplay, many command-line options are supported. Some of them have
-dependency or conflicts.
+ALSA has PCM interface to transfer data frames. In userspace, there're
+some implementation to utilize this interface to produce application
+programming interface; alsa-lib (libasound) and tinyalsa. However, it's
+possible to use the interface with raw I/O operations.
 
-This commit adds a structure and a parser for the options. In this patch,
-minimal set of options is supported. Additional options will be supported
-later.
+This commit adds an common interface to transfer data frames for this
+program, named as 'xfer'. This internal interface is designed for users
+to select several backend for data transmission. This includes some
+functions expected to be called by main program just for data
+transmission. In an aspect to maintain PCM substream, suspend feature is
+required to handle a pair of SIGTSTP/SIGCONT UNIX signals.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am |   5 +-
- axfer/options.c   | 594 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/options.h   |  47 +++++
- 3 files changed, 645 insertions(+), 1 deletion(-)
- create mode 100644 axfer/options.c
- create mode 100644 axfer/options.h
+ axfer/Makefile.am |   7 ++-
+ axfer/xfer.c      | 153 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/xfer.h      |  71 +++++++++++++++++++++++++
+ 3 files changed, 229 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/xfer.c
+ create mode 100644 axfer/xfer.h
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index f17e59b0..3b1a87c8 100644
+index 3b1a87c8..c1534411 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -19,6 +19,7 @@ noinst_HEADERS = \
+@@ -19,7 +19,8 @@ noinst_HEADERS = \
  	subcmd.h \
  	container.h \
  	mapper.h
-+	options.h
+-	options.h
++	options.h \
++	xfer.h
  
  axfer_SOURCES = \
  	misc.h \
-@@ -34,4 +35,6 @@ axfer_SOURCES = \
- 	mapper.h \
- 	mapper.c \
+@@ -37,4 +38,6 @@ axfer_SOURCES = \
  	mapper-single.c \
--	mapper-multiple.c
-+	mapper-multiple.c \
-+	options.h \
-+	options.c
-diff --git a/axfer/options.c b/axfer/options.c
+ 	mapper-multiple.c \
+ 	options.h \
+-	options.c
++	options.c \
++	xfer.h \
++	xfer.c
+diff --git a/axfer/xfer.c b/axfer/xfer.c
 new file mode 100644
-index 00000000..f3b0414b
+index 00000000..3cbb0f14
 --- /dev/null
-+++ b/axfer/options.c
-@@ -0,0 +1,594 @@
++++ b/axfer/xfer.c
+@@ -0,0 +1,153 @@
 +/*
-+ * options.c - a parser of commandline options.
++ * xfer.c - receiver/transmiter of data frames.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "options.h"
++#include "xfer.h"
 +#include "misc.h"
 +
-+#include <getopt.h>
-+#include <math.h>
++#include <stdio.h>
 +
-+static const char *const allowed_duplication[] = {
-+	"/dev/null",
-+	"/dev/zero",
-+	"/dev/full",
-+	"/dev/random",
-+	"/dev/urandom",
++static const char *const xfer_type_labels[] = {
++	[XFER_TYPE_COUNT] = "",
 +};
 +
-+static long parse_l(const char *str, int *err)
++int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
++		      snd_pcm_stream_t direction, struct context_options *opts)
 +{
-+	long val;
-+	char *endptr;
++	struct {
++		enum xfer_type type;
++		const struct xfer_data *data;
++	} entries[] = {
++		{XFER_TYPE_COUNT, NULL},
++	};
++	int i;
 +
-+	val = strtol(str, &endptr, 10);
-+	if (errno)
-+		return -errno;
-+	if (*endptr != '\0')
++	assert(xfer);
++	assert(direction >= SND_PCM_STREAM_PLAYBACK);
++	assert(direction <= SND_PCM_STREAM_CAPTURE);
++	assert(opts);
++
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		if (entries[i].type == type)
++			break;
++	}
++	if (i == ARRAY_SIZE(entries))
 +		return -EINVAL;
 +
-+	return val;
-+}
++	xfer->type = type;
++	xfer->ops = &entries[i].data->ops;
++	xfer->verbose = opts->verbose;
 +
-+static int allocate_paths(struct context_options *opts, char *const *paths,
-+			  unsigned int count)
-+{
-+	bool stdio = false;
-+	char *path;
-+	int i;
-+
-+	if (count == 0) {
-+		stdio = true;
-+		count = 1;
-+	}
-+
-+	opts->paths = calloc(count, sizeof(opts->paths[0]));
-+	if (opts->paths == NULL)
++	xfer->private_data = malloc(entries[i].data->private_size);
++	if (xfer->private_data == NULL)
 +		return -ENOMEM;
-+	opts->path_count = count;
++	memset(xfer->private_data, 0, entries[i].data->private_size);
 +
-+	if (stdio) {
-+		opts->paths[0] = malloc(2);
-+		if (opts->paths[0] == NULL)
-+			return -ENOMEM;
-+		strcpy(opts->paths[0], "-");
-+		return 0;
-+	}
-+
-+	for (i = 0; i < count; ++i) {
-+		path = malloc(strlen(paths[i]) + 1);
-+		if (path == NULL)
-+			return -ENOMEM;
-+		strcpy(path, paths[i]);
-+		opts->paths[i] = path;
-+	}
-+
-+	return 0;
++	return xfer->ops->init(xfer, direction, opts);
 +}
 +
-+static int verify_cntr_format(struct context_options *opts, const char *literal)
++void xfer_context_destroy(struct xfer_context *xfer)
 +{
-+	static const struct {
-+		const char *const literal;
-+		enum container_format cntr_format;
-+	} *entry, entries[] = {
-+		{"raw",		CONTAINER_FORMAT_RAW},
-+		{"voc",		CONTAINER_FORMAT_VOC},
-+		{"wav",		CONTAINER_FORMAT_RIFF_WAVE},
-+		{"au",		CONTAINER_FORMAT_AU},
-+		{"sparc",	CONTAINER_FORMAT_AU},
-+	};
-+	int i;
++	assert(xfer);
 +
-+	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
-+		entry = &entries[i];
-+		if (strcasecmp(literal, entry->literal))
-+			continue;
++	if (!xfer->ops)
++		return;
 +
-+		opts->cntr_format = entry->cntr_format;
-+		return 0;
-+	}
-+
-+	fprintf(stderr, "unrecognized file format '%s'\n", literal);
-+
-+	return -EINVAL;
++	if (xfer->ops->destroy)
++		xfer->ops->destroy(xfer);
++	if (xfer->private_data)
++		free(xfer->private_data);
 +}
 +
-+/* This should be called after 'verify_cntr_format()'. */
-+static int verify_sample_format(struct context_options *opts,
-+				const char *literal)
-+{
-+	static const struct {
-+		const char *const literal;
-+		unsigned int frames_per_second;
-+		unsigned int samples_per_frame;
-+		snd_pcm_format_t le_format;
-+		snd_pcm_format_t be_format;
-+	} *entry, entries[] = {
-+		{"cd",	44100, 2, SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
-+		{"cdr",	44100, 2, SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
-+		{"dat",	48000, 2, SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
-+	};
-+	int i;
-+
-+	opts->sample_format = snd_pcm_format_value(literal);
-+	if (opts->sample_format != SND_PCM_FORMAT_UNKNOWN)
-+		return 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
-+		entry = &entries[i];
-+		if (strcmp(entry->literal, literal))
-+			continue;
-+
-+		if (opts->frames_per_second > 0 &&
-+		    opts->frames_per_second != entry->frames_per_second) {
-+			fprintf(stderr,
-+				"'%s' format can't be used with rate except "
-+				"for %u.\n",
-+				entry->literal, entry->frames_per_second);
-+			return -EINVAL;
-+		}
-+
-+		if (opts->samples_per_frame > 0 &&
-+		    opts->samples_per_frame != entry->samples_per_frame) {
-+			fprintf(stderr,
-+				"'%s' format can't be used with channel except "
-+				"for %u.\n",
-+				entry->literal, entry->samples_per_frame);
-+			return -EINVAL;
-+		}
-+
-+		opts->frames_per_second = entry->frames_per_second;
-+		opts->samples_per_frame = entry->samples_per_frame;
-+		if (opts->cntr_format == CONTAINER_FORMAT_AU)
-+			opts->sample_format = entry->be_format;
-+		else
-+			opts->sample_format = entry->le_format;
-+
-+		return 0;
-+	}
-+
-+	fprintf(stderr, "wrong extended format '%s'\n", literal);
-+
-+	return -EINVAL;
-+}
-+
-+static int apply_policies(struct context_options *opts,
-+			  snd_pcm_stream_t direction,
-+			  const char *cntr_format_literal,
-+			  const char *node_literal,
-+			  const char *sample_format_literal)
++int xfer_context_pre_process(struct xfer_context *xfer,
++			     snd_pcm_format_t *format,
++			     unsigned int *samples_per_frame,
++			     unsigned int *frames_per_second,
++			     snd_pcm_access_t *access,
++			     snd_pcm_uframes_t *frames_per_buffer)
 +{
 +	int err;
 +
-+	if (node_literal != NULL) {
-+		opts->node = malloc(strlen(node_literal) + 1);
-+		if (opts->node == NULL) {
-+			fprintf(stderr, "Fail to allocate for node: %s\n",
-+			       node_literal);
-+			return -ENOMEM;
-+		}
-+		strcpy(opts->node, node_literal);
-+	}
++	assert(xfer);
++	assert(format);
++	assert(samples_per_frame);
++	assert(frames_per_second);
++	assert(access);
++	assert(frames_per_buffer);
 +
-+	if (!cntr_format_literal) {
-+		if (direction == SND_PCM_STREAM_CAPTURE) {
-+			/* To stdout. */
-+			if (opts->path_count == 1 &&
-+			    !strcmp(opts->paths[0], "-")) {
-+				opts->cntr_format = CONTAINER_FORMAT_RAW;
-+			} else {
-+				/* Use first path as a representative. */
-+				opts->cntr_format = container_format_from_path(
-+								opts->paths[0]);
-+			}
-+		}
-+		/* For playback, perform auto-detection. */
-+	} else {
-+		err = verify_cntr_format(opts, cntr_format_literal);
-+		if (err < 0)
-+			return err;
-+	}
++	if (!xfer->ops)
++		return -ENXIO;
 +
-+	if (opts->samples_per_frame > 0) {
-+		if (opts->samples_per_frame < 1 ||
-+		    opts->samples_per_frame > 256) {
-+			fprintf(stderr, "invalid channels argument '%u'\n",
-+				opts->samples_per_frame);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (opts->multiple_cntrs) {
-+		if (!strcmp(opts->paths[0], "-")) {
-+			fprintf(stderr,
-+				"An option for separated channels is not "
-+				"available with stdin/stdout.\n");
-+			return -EINVAL;
-+		}
-+
-+		/*
-+		 * For captured PCM frames, even if one path is given for
-+		 * container files, it can be used to generate several paths.
-+		 * For this purpose, please see
-+		 * 'context_options_fixup_for_capture()'.
-+		 */
-+		if (direction == SND_PCM_STREAM_PLAYBACK) {
-+			/* Require several paths for containers. */
-+			if (opts->path_count == 1) {
-+				fprintf(stderr,
-+					"An option for separated channels "
-+					"requires several files to playback "
-+					"PCM frames.\n");
-+				return -EINVAL;
-+			}
-+		}
-+	} else {
-+		/* A single path is available only. */
-+		if (opts->path_count > 1) {
-+			fprintf(stderr,
-+				"When using several files, an option for "
-+				"sepatated channels is used with.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (opts->frames_per_second > 0) {
-+		unsigned int orig = opts->frames_per_second;
-+
-+		/* For backward compatibility. */
-+		if (opts->frames_per_second < 300)
-+			opts->frames_per_second *= 300;
-+		if (opts->frames_per_second < 2000 ||
-+		    opts->frames_per_second > 192000) {
-+			fprintf(stderr, "bad speed value '%i'\n", orig);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	opts->sample_format = SND_PCM_FORMAT_UNKNOWN;
-+	if (sample_format_literal) {
-+		err = verify_sample_format(opts, sample_format_literal);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+int context_options_init(struct context_options *opts, int argc,
-+			 char *const *argv, snd_pcm_stream_t direction)
-+{
-+	static const char *s_opts = "hvt:ID:f:c:r:";
-+	static const struct option l_opts[] = {
-+		/* For generic purposes. */
-+		{"help",		0, 0, 'h'},
-+		{"verbose",		0, 0, 'v'},
-+		/* For containers. */
-+		{"file-type",		1, 0, 't'},
-+		/* For mapper. */
-+		{"separate-channels",	0, 0, 'I'},
-+		/* For transfer backend. */
-+		{"device",		1, 0, 'D'},
-+		{"format",		1, 0, 'f'},
-+		{"channels",		1, 0, 'c'},
-+		{"rate",		1, 0, 'r'},
-+		{NULL,			0, 0, 0},
-+	};
-+	const char *cntr_format_literal = NULL;
-+	const char *node_literal = NULL;
-+	const char *sample_format_literal = NULL;
-+	int c;
-+	int err = 0;
-+
-+	optind = 0;
-+	opterr = 0;
-+	while (1) {
-+		c = getopt_long(argc, argv, s_opts, l_opts, NULL);
-+		if (c < 0)
-+			break;
-+		else if (c == 'h')
-+			opts->help = true;
-+		else if (c == 'v')
-+			++opts->verbose;
-+		else if (c == 't')
-+			cntr_format_literal = optarg;
-+		else if (c == 'I')
-+			opts->multiple_cntrs = true;
-+		else if (c == 'D')
-+			node_literal = optarg;
-+		else if (c == 'f')
-+			sample_format_literal = optarg;
-+		else if (c == 'c')
-+			opts->samples_per_frame = parse_l(optarg, &err);
-+		else if (c == 'r')
-+			opts->frames_per_second = parse_l(optarg, &err);
-+		else
-+			continue;
-+
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	err = allocate_paths(opts, argv + optind, argc - optind);
++	err = xfer->ops->pre_process(xfer, format, samples_per_frame,
++				     frames_per_second, access,
++				     frames_per_buffer);
 +	if (err < 0)
 +		return err;
 +
-+	return apply_policies(opts, direction, cntr_format_literal,
-+			      node_literal, sample_format_literal);
-+}
++	assert(*format >= SND_PCM_FORMAT_S8);
++	assert(*format <= SND_PCM_FORMAT_LAST);
++	assert(*samples_per_frame > 0);
++	assert(*frames_per_second > 0);
++	assert(*access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
++	assert(*access <= SND_PCM_ACCESS_LAST);
++	assert(*frames_per_buffer > 0);
 +
-+static int generate_path_with_suffix(struct context_options *opts,
-+				     const char *template, unsigned int index,
-+				     const char *suffix)
-+{
-+	static const char *const single_format = "%s%s";
-+	static const char *const multiple_format = "%s-%i%s";
-+	unsigned int len;
-+
-+	len = strlen(template) + strlen(suffix) + 1;
-+	if (opts->path_count > 1)
-+		len += (unsigned int)log10(opts->path_count) + 2;
-+
-+	opts->paths[index] = malloc(len);
-+	if (opts->paths[index] == NULL)
-+		return -ENOMEM;
-+
-+	if (opts->path_count == 1) {
-+		snprintf(opts->paths[index], len, single_format, template,
-+			 suffix);
-+	} else {
-+		snprintf(opts->paths[index], len, multiple_format, template,
-+			 index, suffix);
++	if (xfer->verbose > 0) {
++		fprintf(stderr, "Transfer: %s\n",
++			xfer_type_labels[xfer->type]);
++		fprintf(stderr, "  access: %s\n",
++			snd_pcm_access_name(*access));
++		fprintf(stderr, "  sample format: %s\n",
++			snd_pcm_format_name(*format));
++		fprintf(stderr, "  bytes/sample: %u\n",
++		       snd_pcm_format_physical_width(*format) / 8);
++		fprintf(stderr, "  samples/frame: %u\n",
++			*samples_per_frame);
++		fprintf(stderr, "  frames/second: %u\n",
++			*frames_per_second);
++		fprintf(stderr, "  frames/buffer: %lu\n",
++			*frames_per_buffer);
 +	}
 +
 +	return 0;
 +}
 +
-+static int generate_path_without_suffix(struct context_options *opts,
-+				        const char *template,
-+					unsigned int index, const char *suffix)
++int xfer_context_process_frames(struct xfer_context *xfer,
++				struct mapper_context *mapper,
++				struct container_context *cntrs,
++				unsigned int *frame_count)
 +{
-+	static const char *const single_format = "%s";
-+	static const char *const multiple_format = "%s-%i";
-+	unsigned int len;
++	assert(xfer);
++	assert(mapper);
++	assert(cntrs);
++	assert(frame_count);
 +
-+	len = strlen(template) + 1;
-+	if (opts->path_count > 1)
-+		len += (unsigned int)log10(opts->path_count) + 2;
++	if (!xfer->ops)
++		return -ENXIO;
 +
-+	opts->paths[index] = malloc(len);
-+	if (opts->paths[index] == NULL)
-+		return -ENOMEM;
-+
-+	if (opts->path_count == 1) {
-+		snprintf(opts->paths[index], len, single_format, template);
-+	} else {
-+		snprintf(opts->paths[index], len, multiple_format, template,
-+			index);
-+	}
-+
-+	return 0;
++	return xfer->ops->process_frames(xfer, frame_count, mapper, cntrs);
 +}
 +
-+static int generate_path(struct context_options *opts, char *template,
-+			 unsigned int index, const char *suffix)
++void xfer_context_pause(struct xfer_context *xfer, bool enable)
 +{
-+	int (*generator)(struct context_options *opts, const char *template,
-+			 unsigned int index, const char *suffix);
-+	char *pos;
++	assert(xfer);
 +
-+	if (strlen(suffix) > 0) {
-+		pos = template + strlen(template) - strlen(suffix);
-+		/* Separate filename and suffix. */
-+		if (!strcmp(pos, suffix))
-+			*pos = '\0';
-+	}
++	if (!xfer->ops)
++		return;
 +
-+	/* Select handlers. */
-+	if (strlen(suffix) > 0)
-+		generator = generate_path_with_suffix;
-+	else
-+		generator = generate_path_without_suffix;
-+
-+	return generator(opts, template, index, suffix);
++	xfer->ops->pause(xfer, enable);
 +}
 +
-+static int create_paths(struct context_options *opts, unsigned int path_count)
++void xfer_context_post_process(struct xfer_context *xfer)
 +{
-+	char *template;
-+	const char *suffix;
-+	int i, j;
-+	int err = 0;
++	assert(xfer);
 +
-+	/* Can cause memory leak. */
-+	assert(opts->path_count == 1);
-+	assert(opts->paths);
-+	assert(opts->paths[0]);
-+	assert(opts->paths[0][0] != '\0');
++	if (!xfer->ops)
++		return;
 +
-+	/* Release at first. */
-+	template = opts->paths[0];
-+	free(opts->paths);
-+	opts->paths = NULL;
-+
-+	/* Allocate again. */
-+	opts->paths = calloc(path_count, sizeof(*opts->paths));
-+	if (opts->paths == NULL) {
-+		err = -ENOMEM;
-+		goto end;
-+	}
-+	opts->path_count = path_count;
-+
-+	suffix = container_suffix_from_format(opts->cntr_format);
-+
-+	for (i = 0; i < opts->path_count; ++i) {
-+		/* Some file names are allowed to be duplicated. */
-+		for (j = 0; j < ARRAY_SIZE(allowed_duplication); ++j) {
-+			if (!strcmp(opts->paths[i], allowed_duplication[j]))
-+				break;
-+		}
-+		if (j < ARRAY_SIZE(allowed_duplication))
-+			continue;
-+
-+		err = generate_path(opts, template, i, suffix);
-+		if (err < 0)
-+			break;
-+	}
-+end:
-+	free(template);
-+
-+	return err;
++	xfer->ops->post_process(xfer);
 +}
-+
-+static int fixup_paths(struct context_options *opts)
-+{
-+	const char *suffix;
-+	char *template;
-+	int i, j;
-+	int err = 0;
-+
-+	suffix = container_suffix_from_format(opts->cntr_format);
-+
-+	for (i = 0; i < opts->path_count; ++i) {
-+		/* Some file names are allowed to be duplicated. */
-+		for (j = 0; j < ARRAY_SIZE(allowed_duplication); ++j) {
-+			if (!strcmp(opts->paths[i], allowed_duplication[j]))
-+				break;
-+		}
-+		if (j < ARRAY_SIZE(allowed_duplication))
-+			continue;
-+
-+		template = opts->paths[i];
-+		opts->paths[i] = NULL;
-+		err = generate_path(opts, template, i, suffix);
-+		free(template);
-+		if (err < 0)
-+			break;
-+	}
-+
-+	return err;
-+}
-+
-+int context_options_fixup_for_capture(struct context_options *opts,
-+				      unsigned int samples_per_frame)
-+{
-+	int i, j;
-+	int err;
-+
-+	if (!opts->multiple_cntrs) {
-+		if (opts->path_count == 1)
-+			err = fixup_paths(opts);
-+		else
-+			return -EINVAL;
-+	} else {
-+		if (opts->path_count == 1) {
-+			err = create_paths(opts, samples_per_frame);
-+		} else {
-+			if (opts->path_count == samples_per_frame)
-+				err = fixup_paths(opts);
-+			else
-+				return -EINVAL;
-+		}
-+	}
-+	if (err < 0)
-+		return err;
-+
-+	/* Check duplication of the paths. */
-+	for (i = 0; i < opts->path_count - 1; ++i) {
-+		/* Some file names are allowed to be duplicated. */
-+		for (j = 0; j < ARRAY_SIZE(allowed_duplication); ++j) {
-+			if (!strcmp(opts->paths[i], allowed_duplication[j]))
-+				break;
-+		}
-+		if (j < ARRAY_SIZE(allowed_duplication))
-+			continue;
-+
-+		for (j = i + 1; j < opts->path_count; ++j) {
-+			if (!strcmp(opts->paths[i], opts->paths[j])) {
-+				fprintf(stderr,
-+					"Detect duplicated file names:\n");
-+				err = -EINVAL;
-+				break;
-+			}
-+		}
-+		if (j < opts->path_count)
-+			break;
-+	}
-+
-+	if (opts->verbose)
-+		fprintf(stderr, "Handled file names:\n");
-+	if (err < 0 || opts->verbose) {
-+		for (i = 0; i < opts->path_count; ++i)
-+			fprintf(stderr, "    %d: %s\n", i, opts->paths[i]);
-+	}
-+
-+	return err;
-+}
-+
-+int context_options_fixup_for_playback(struct context_options *opts,
-+				       snd_pcm_format_t sample_format,
-+				       unsigned int samples_per_frame,
-+				       unsigned int frames_per_second)
-+{
-+	if (opts->sample_format != SND_PCM_FORMAT_UNKNOWN) {
-+		if (sample_format != opts->sample_format) {
-+			fprintf(stderr,
-+				"Sample format mismatch: %s is given but %s by "
-+				"files\n",
-+				snd_pcm_format_name(opts->sample_format),
-+				snd_pcm_format_name(sample_format));
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (opts->samples_per_frame > 0) {
-+		if (samples_per_frame != opts->samples_per_frame) {
-+			fprintf(stderr,
-+				"The number of channels mismatch: %u is given "
-+				"but %u by files\n",
-+				opts->samples_per_frame, samples_per_frame);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (opts->frames_per_second > 0) {
-+		if (frames_per_second != opts->frames_per_second) {
-+			fprintf(stderr,
-+				"Sampling rate mismatch: %u is given but %u by "
-+				"files\n",
-+				opts->frames_per_second, frames_per_second);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (opts->verbose) {
-+		int i;
-+
-+		fprintf(stderr, "Handled file names:\n");
-+		for (i = 0; i < opts->path_count; ++i) {
-+			fprintf(stderr, "    %d: %s\n", i, opts->paths[i]);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+void context_options_destroy(struct context_options *opts)
-+{
-+	int i;
-+
-+	if (opts->paths) {
-+		for (i = 0; i < opts->path_count; ++i)
-+			free(opts->paths[i]);
-+		free(opts->paths);
-+	}
-+	if (opts->node)
-+		free(opts->node);
-+	opts->paths = NULL;
-+	opts->node = NULL;
-+}
-diff --git a/axfer/options.h b/axfer/options.h
+diff --git a/axfer/xfer.h b/axfer/xfer.h
 new file mode 100644
-index 00000000..38bdbb74
+index 00000000..4e3f1f37
 --- /dev/null
-+++ b/axfer/options.h
-@@ -0,0 +1,47 @@
++++ b/axfer/xfer.h
+@@ -0,0 +1,71 @@
 +/*
-+ * options.h - a header for a parser of commandline options.
++ * xfer.h - a header for receiver/transmiter of data frames.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#ifndef __ALSA_UTILS_AXFER_OPTIONS__H_
-+#define __ALSA_UTILS_AXFER_OPTIONS__H_
++#ifndef __ALSA_UTILS_AXFER_XFER__H_
++#define __ALSA_UTILS_AXFER_XFER__H_
 +
-+#include "container.h"
++#include "mapper.h"
++#include "options.h"
 +
-+struct context_options {
-+	bool help;
-+
-+	/* For generic purposes. */
-+	unsigned int verbose;
-+
-+	/* For containers. */
-+	char **paths;
-+	unsigned int path_count;
-+	enum container_format cntr_format;
-+
-+	/* For mapper. */
-+	bool multiple_cntrs;
-+
-+	/* For transfer backend. */
-+	char *node;
-+	snd_pcm_format_t sample_format;
-+	unsigned int samples_per_frame;
-+	unsigned int frames_per_second;
++enum xfer_type {
++	XFER_TYPE_COUNT,
 +};
 +
-+int context_options_init(struct context_options *opts, int argc,
-+			 char *const *argv, snd_pcm_stream_t direction);
-+int context_options_fixup_for_playback(struct context_options *opts,
-+				       snd_pcm_format_t sample_format,
-+				       unsigned int samples_per_frame,
-+				       unsigned int frames_per_second);
-+int context_options_fixup_for_capture(struct context_options *opts,
-+				      unsigned int samples_per_frame);
-+void context_options_calculate_duration(struct context_options *opts,
-+		unsigned int frames_per_second, uint64_t *total_frame_count);
-+void context_options_destroy(struct context_options *opts);
++struct xfer_ops;
++
++struct xfer_context  {
++	enum xfer_type type;
++	const struct xfer_ops *ops;
++	void *private_data;
++
++	unsigned int verbose;
++};
++
++int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
++		      snd_pcm_stream_t direction, struct context_options *opts);
++void xfer_context_destroy(struct xfer_context *xfer);
++int xfer_context_pre_process(struct xfer_context *xfer,
++			     snd_pcm_format_t *format,
++			     unsigned int *samples_per_frame,
++			     unsigned int *frames_per_second,
++			     snd_pcm_access_t *access,
++			     snd_pcm_uframes_t *frames_per_buffer);
++int xfer_context_process_frames(struct xfer_context *xfer,
++				struct mapper_context *mapper,
++				struct container_context *cntrs,
++				unsigned int *frame_count);
++void xfer_context_pause(struct xfer_context *xfer, bool enable);
++void xfer_context_post_process(struct xfer_context *xfer);
++
++/* For internal use in 'xfer' module. */
++
++struct xfer_ops {
++	int (*init)(struct xfer_context *xfer, snd_pcm_stream_t direction,
++		    struct context_options *opts);
++	int (*pre_process)(struct xfer_context *xfer, snd_pcm_format_t *format,
++			   unsigned int *samples_per_frame,
++			   unsigned int *frames_per_second,
++			   snd_pcm_access_t *access,
++			   snd_pcm_uframes_t *frames_per_buffer);
++	int (*process_frames)(struct xfer_context *xfer,
++			      unsigned int *frame_count,
++			      struct mapper_context *mapper,
++			      struct container_context *cntrs);
++	void (*post_process)(struct xfer_context *xfer);
++	void (*destroy)(struct xfer_context *xfer);
++	void (*pause)(struct xfer_context *xfer, bool enable);
++};
++
++struct xfer_data {
++	struct xfer_ops ops;
++	unsigned int private_size;
++};
++
++extern const struct xfer_data xfer_alsa;
 +
 +#endif
 -- 
