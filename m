@@ -1,78 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 0/3] Intel-rt5670 updates
-Date: Wed, 20 Sep 2017 16:08:33 +0100
-Message-ID: <20170920150833.u72i3rqrjq3xwseu@sirena.co.uk>
-References: <20170920003453.16209-1-pierre-louis.bossart@linux.intel.com>
- <20170920104104.fp5ol3n56q2biea4@sirena.org.uk>
- <1d9e0181-edeb-e3e3-0094-9f66083a223c@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4796270980411202386=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A86C426754D
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 17:08:54 +0200 (CEST)
-In-Reply-To: <1d9e0181-edeb-e3e3-0094-9f66083a223c@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rl6231: make arrays div and pd static const, reduces object code size" to the asoc tree
+Date: Wed, 20 Sep 2017 16:36:38 +0100
+Message-ID: <E1duh3G-0000eN-3i@debutante>
+References: <20170919215000.32040-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170919215000.32040-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4796270980411202386==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vk6j3l6ysoh7jsrc"
-Content-Disposition: inline
+   ASoC: rl6231: make arrays div and pd static const, reduces object code size
 
+has been applied to the asoc tree at
 
---vk6j3l6ysoh7jsrc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Sep 20, 2017 at 08:17:09AM -0500, Pierre-Louis Bossart wrote:
-> On 9/20/17 5:41 AM, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Please allow a reasonable time for review.  People get busy, go on
-> > holiday, attend conferences and so on so unless there is some reason for
-> > urgency (like critical bug fixes) please allow at least a couple of
-> > weeks for review.  It's been less than two weeks, including both the
-> > merge window and LPC...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Sure. it's just that you already merged a number of patches sent *after*
-> this batch and they aren't queued in your topic/intel branch either.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-You really shouldn't expect things to be handled FIFO.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---vk6j3l6ysoh7jsrc
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 57f7feff2912d6996b5f3fcac084308ce195127c Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Tue, 19 Sep 2017 22:50:00 +0100
+Subject: [PATCH] ASoC: rl6231: make arrays div and pd static const, reduces
+ object code size
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnChG4ACgkQJNaLcl1U
-h9ARogf+IeQ1zeAWBDZRersDJbnqb0zKhBBdKAsXo0jO3HkAEkgMD/pFC1gjtRHz
-Ifs5fkUD8IR0Tj08WolKL6cEVEekicEzef2KWGokEIcYNqcl/S/5yPf4sKP7lzrE
-NtN3lP080ZsE4HzPloWweiGPYl5uFH+bkQCypWEoPaUA1Le7qt3TwY4+Az/coDTk
-hpCgTaDeMMjpw7hNE5uMwZ2i9wejWpCYZwIIqiv9XvEggZknE/tqaiKMr0Uphp9F
-kefy44W0h17/NCeoEleCGBrGQw3qAwY7wmIYvulJSk92KT0HYGeP0ikMxLAE22jq
-mL1oZRdoh6iGQ39valnc/zgM3OoBdw==
-=TfE6
------END PGP SIGNATURE-----
+Don't populate the read-only arrays div and pd on the stack,
+instead make them static const. Makes the object code smaller by 210 bytes:
 
---vk6j3l6ysoh7jsrc--
+Before:
+   text	   data	    bss	    dec	    hex	filename
+   2869	    720	      0	   3589	    e05	sound/soc/codecs/rl6231.o
 
---===============4796270980411202386==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+After:
+   text	   data	    bss	    dec	    hex	filename
+   2495	    880	      0	   3375	    d2f	sound/soc/codecs/rl6231.o
 
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rl6231.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---===============4796270980411202386==--
+diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
+index 7b447d0b173a..974a9040651d 100644
+--- a/sound/soc/codecs/rl6231.c
++++ b/sound/soc/codecs/rl6231.c
+@@ -71,7 +71,7 @@ EXPORT_SYMBOL_GPL(rl6231_get_pre_div);
+  */
+ int rl6231_calc_dmic_clk(int rate)
+ {
+-	int div[] = {2, 3, 4, 6, 8, 12};
++	static const int div[] = {2, 3, 4, 6, 8, 12};
+ 	int i;
+ 
+ 	if (rate < 1000000 * div[0]) {
+@@ -189,7 +189,8 @@ EXPORT_SYMBOL_GPL(rl6231_pll_calc);
+ 
+ int rl6231_get_clk_info(int sclk, int rate)
+ {
+-	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
++	int i;
++	static const int pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
+ 
+ 	if (sclk <= 0 || rate <= 0)
+ 		return -EINVAL;
+-- 
+2.14.1
