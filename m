@@ -1,18 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hda - program ICT bits to support
-	HBR audio
-Date: Wed, 20 Sep 2017 08:12:36 -0500
-Message-ID: <8af5af38-f220-f58a-e7be-4e25dfff452a@linux.intel.com>
-References: <20170919222505.28654-1-pierre-louis.bossart@linux.intel.com>
- <s5h60cdelkx.wl-tiwai@suse.de>
+Subject: Re: [PATCH RESEND 0/3] Intel-rt5670 updates
+Date: Wed, 20 Sep 2017 08:17:09 -0500
+Message-ID: <1d9e0181-edeb-e3e3-0094-9f66083a223c@linux.intel.com>
+References: <20170920003453.16209-1-pierre-louis.bossart@linux.intel.com>
+ <20170920104104.fp5ol3n56q2biea4@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 290F02668BF
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 15:12:54 +0200 (CEST)
-In-Reply-To: <s5h60cdelkx.wl-tiwai@suse.de>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1197D2668BF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 15:17:11 +0200 (CEST)
+In-Reply-To: <20170920104104.fp5ol3n56q2biea4@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,40 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sriram Periyasamy <sriramx.periyasamy@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 9/20/17 5:00 AM, Takashi Iwai wrote:
-> On Wed, 20 Sep 2017 00:25:05 +0200,
-> Pierre-Louis Bossart wrote:
->>
->> From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
->>
->> On recent Intel platforms (Haswell, Broadwell, Skylake, ApolloLake,
->> KabyLake, ...), the IEC Coding Type (ICT) bitfield in the Digital
->> Converter Control #3 needs to be set explicitly for HDMI/DisplayPort
->> High Bit Rate (HBR) audio playback to work. This was not required in
->> earlier platforms when HBR was first introduced. The ICT bits are
->> defined in Section 7.3.3.9 of the HDaudio 1.0a specification.
->>
->> Since the ICT bitfield was not specified for HDAudio 1.0 devices
->> (before 2009), we only program it on machines more recent than
->> Haswell.
->>
->> We tested that this fix is not needed on Baytrail-I (MinnowBoard
->> Turbot) and believe by extension it also does not apply to Braswell.
->>
->> Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=98797
->>
->> Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->> ---
->> v2: move digi3 verb in Set section, only set ICT for haswell and newer
+On 9/20/17 5:41 AM, Mark Brown wrote:
+> On Tue, Sep 19, 2017 at 07:34:50PM -0500, Pierre-Louis Bossart wrote:
+>> [when I started cleaning-up some patches reviewed by Andy Shevchenko,
+>> I realized this initial batch has not been merged, although both
+>> Takashi and Vinod reviewed them, see
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125331.html
 > 
-> Applied now with a slight fix (moving *_SET_* definition to the right
-> place).
+> Please allow a reasonable time for review.  People get busy, go on
+> holiday, attend conferences and so on so unless there is some reason for
+> urgency (like critical bug fixes) please allow at least a couple of
+> weeks for review.  It's been less than two weeks, including both the
+> merge window and LPC...
 
-Thanks Takashi. Not sure what happened since I have a clear memory of 
-doing that change and making a note of it...
+Sure. it's just that you already merged a number of patches sent *after* 
+this batch and they aren't queued in your topic/intel branch either.
