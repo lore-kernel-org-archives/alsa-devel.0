@@ -1,26 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for
-	wm97xx Codec
-Date: Wed, 20 Sep 2017 12:34:46 +0100
-Message-ID: <20170920113446.ttwv23riutpp7e5i@sirena.org.uk>
-References: <20170913193723.16234-1-robert.jarzmik@free.fr>
- <20170913193723.16234-3-robert.jarzmik@free.fr>
- <20170914074146.dnibkvom4yuzejf3@dell>
- <20170914074300.iobuwn2hrmnf6sen@dell>
- <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
- <20170918085236.z6gmgrwvsjvvc4cd@dell>
- <20170919121539.mz2mettkefxf3oer@sirena.co.uk>
- <20170919152253.tvj3hheggrx4lgig@dell>
- <20170919160422.l7lxmfl6yrjnpalb@sirena.co.uk>
- <20170920082443.cqimrbhddum23lof@dell>
+Subject: Re: [PATCH 1/1] soc-pcm: check symmetry after hw_params
+Date: Wed, 20 Sep 2017 12:41:02 +0100
+Message-ID: <20170920114102.oszwyegotv43js4v@sirena.org.uk>
+References: <20170920062530.12252-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4431593092095672079=="
+Content-Type: multipart/mixed; boundary="===============1098879054244868412=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EA0B266B21
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:34:55 +0200 (CEST)
-In-Reply-To: <20170920082443.cqimrbhddum23lof@dell>
+ by alsa0.perex.cz (Postfix) with ESMTP id 21055266B21
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:41:05 +0200 (CEST)
+In-Reply-To: <20170920062530.12252-1-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,68 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4431593092095672079==
+--===============1098879054244868412==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iqfv6xyjujg3qskx"
+	protocol="application/pgp-signature"; boundary="zf7qfhv5pasm2dpj"
 Content-Disposition: inline
 
 
---iqfv6xyjujg3qskx
+--zf7qfhv5pasm2dpj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 20, 2017 at 09:24:43AM +0100, Lee Jones wrote:
-> On Tue, 19 Sep 2017, Mark Brown wrote:
+On Wed, Sep 20, 2017 at 03:25:30PM +0900, Jiada Wang wrote:
+> hw_params may be fixup by be_hw_params_fixup, calling
+> soc_pcm_params_symmetry() before hw_params will have issue
+> if there is hw_params changes in be_hw_params_fixup.
 
-> > It really helps if we can get the earlier parts of the series moving
-> > even if the rest of it's in review still - I know I back off on
-> > reviewing things if it looks like their dependencies aren't making
-> > progress.
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
-> Just for your FYI, I tend to review my parts then wait for the
-> rest of the series to be reviewed, then discuss how the set should be
-> handled.
-
-> Holding back on reviewing your parts is not a good idea.  If everyone
-> did that we'd end up in a circular Maintainer dependency and nothing
-> would ever get reviewed.
-
-I get fed up with having to re-review the same patches over and over and
-over again while people work out what's going on with the earlier parts
-of the series, that gets very time consuming and is error prone.  If
-we're getting churn early on in the series that's causing things to
-change then it's better to let that settle down and look properly at the
-results than glaze over looking at each minor change as it comes in and
-miss other things that get tweaked.  Once the dependencies are stable
-then it becomes worthwhile again.
-
---iqfv6xyjujg3qskx
+--zf7qfhv5pasm2dpj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnCUlUACgkQJNaLcl1U
-h9DHfQf/dWq5QHmNfZ+y1dChZdcIAYCOnbpQunZ9WwLy6W4fxqQZZEqVO8egdj6m
-Cs5mpm6KN6UYBTY5ud61Q0Ov/v2KEpN+UhGQ40XmwENvBdEyPBGRiwCHZCsbOEhD
-D/gugg6yRHivFyikqe+40xsvqVFrIwJr88Nw3JNvCafNSaS9fGhy7XO4oXaqPxDI
-STfDjw7PJuHGXC5/7dBFE4n/du95zZL19IioUetH+70YIuH0TwWS+jA5QnVVkIC2
-4zoCw0WrfsNgcj2UnwRyyhYZhKGCc04unXvMUpAYbvO7JILuDlNrwnTh28eYJRXO
-84VOD9YOvyJuOxy7Q53s1j0+wbUoZA==
-=SORc
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnCU84ACgkQJNaLcl1U
+h9CJkgf/cfDd+RbKJ8hvJHi/jBva5/bWjZuinGaNtjGWtRXtFph+h93W47Ue+90E
+z/6iedjkPKMmo37txsAa/robE1A9agELR1/ByUcbUxlAT4Qe8FScY2SKqkyIIpco
+ea8f15LqmmoYYT3w8iZTVSoZQazhHiI8AGBQLEvnnkkJju0yRONLfaMpXZtdkY5p
+5ZKqppthdU9AWiiaegqOrBWg5DylmgTeUvyi0KSCld7YYoMPhxP1V+ujka7t8cfb
+nwi38BKbtishlFWM7qvkgfYZeglMBVvOTiUXK1LupA+e9lNtjYh2eOYMdu1MiGmV
+1vQQHjd6xg3TmVC3xdc6921TI+kGOA==
+=gNtD
 -----END PGP SIGNATURE-----
 
---iqfv6xyjujg3qskx--
+--zf7qfhv5pasm2dpj--
 
---===============4431593092095672079==
+--===============1098879054244868412==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4431593092095672079==--
+--===============1098879054244868412==--
