@@ -1,17 +1,18 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: alsa-lib and floating point support
-Date: Wed, 20 Sep 2017 16:45:46 +0200
-Message-ID: <alpine.DEB.2.11.1709201642470.14549@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1709201244490.14549@lnxricardw1.se.axis.com>
- <s5hzi9pd31m.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND 0/3] Intel-rt5670 updates
+Date: Wed, 20 Sep 2017 16:08:33 +0100
+Message-ID: <20170920150833.u72i3rqrjq3xwseu@sirena.co.uk>
+References: <20170920003453.16209-1-pierre-louis.bossart@linux.intel.com>
+ <20170920104104.fp5ol3n56q2biea4@sirena.org.uk>
+ <1d9e0181-edeb-e3e3-0094-9f66083a223c@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4796270980411202386=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A0D92668BF
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 16:45:53 +0200 (CEST)
-In-Reply-To: <s5hzi9pd31m.wl-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A86C426754D
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 17:08:54 +0200 (CEST)
+In-Reply-To: <1d9e0181-edeb-e3e3-0094-9f66083a223c@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,45 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mersad Jelacic <mersad@axis.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On Wed, 20 Sep 2017, Takashi Iwai wrote:
+--===============4796270980411202386==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vk6j3l6ysoh7jsrc"
+Content-Disposition: inline
 
-> > I'm trying to understand why it is critical to have hardware floating =
 
-> > point support in this case. The pow() function is very resource hungry, =
+--vk6j3l6ysoh7jsrc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > true, but the function is only called when the plugin is loaded, and no=
-t =
+On Wed, Sep 20, 2017 at 08:17:09AM -0500, Pierre-Louis Bossart wrote:
+> On 9/20/17 5:41 AM, Mark Brown wrote:
 
-> > for instance on every sample while the stream is running, so on the who=
-le =
+> > Please allow a reasonable time for review.  People get busy, go on
+> > holiday, attend conferences and so on so unless there is some reason for
+> > urgency (like critical bug fixes) please allow at least a couple of
+> > weeks for review.  It's been less than two weeks, including both the
+> > merge window and LPC...
 
-> > I would expect the impact to be minimal. Is there some other rationale =
+> Sure. it's just that you already merged a number of patches sent *after*
+> this batch and they aren't queued in your topic/intel branch either.
 
-> > that I'm missing?
-> =
+You really shouldn't expect things to be handled FIFO.
 
-> The softfloat option is to avoid calculation in float as much as
-> possible, i.e. alsa-lib will be built without any usage of math
-> library.
+--vk6j3l6ysoh7jsrc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-"as much as possible" sounds like the softvol case would be a reasonable =
+-----BEGIN PGP SIGNATURE-----
 
-exception, on the other hand, if the goal is to completely avoid using the =
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnChG4ACgkQJNaLcl1U
+h9ARogf+IeQ1zeAWBDZRersDJbnqb0zKhBBdKAsXo0jO3HkAEkgMD/pFC1gjtRHz
+Ifs5fkUD8IR0Tj08WolKL6cEVEekicEzef2KWGokEIcYNqcl/S/5yPf4sKP7lzrE
+NtN3lP080ZsE4HzPloWweiGPYl5uFH+bkQCypWEoPaUA1Le7qt3TwY4+Az/coDTk
+hpCgTaDeMMjpw7hNE5uMwZ2i9wejWpCYZwIIqiv9XvEggZknE/tqaiKMr0Uphp9F
+kefy44W0h17/NCeoEleCGBrGQw3qAwY7wmIYvulJSk92KT0HYGeP0ikMxLAE22jq
+mL1oZRdoh6iGQ39valnc/zgM3OoBdw==
+=TfE6
+-----END PGP SIGNATURE-----
 
-softfloat library I can see the point. Is the reason to avoid dependency =
+--vk6j3l6ysoh7jsrc--
 
-issues, or to minimize the total resulting code size, especially on =
+--===============4796270980411202386==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-systems with limited memory?
 
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--===============4796270980411202386==--
