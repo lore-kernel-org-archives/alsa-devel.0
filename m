@@ -1,18 +1,19 @@
 From: yesanishhere@gmail.com
-Subject: [Resend] [PATCH 0/4] ASoC: dapm: Avoid creating
-	kcontrol for params
-Date: Wed, 20 Sep 2017 01:28:32 -0700
-Message-ID: <1505896116-43310-1-git-send-email-yesanishhere@gmail.com>
+Subject: [Resend] [PATCH 1/4] ASoC: dapm: fix error path in
+	snd_soc_dapm_new_pcm
+Date: Wed, 20 Sep 2017 01:28:33 -0700
+Message-ID: <1505896116-43310-2-git-send-email-yesanishhere@gmail.com>
+References: <1505896116-43310-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id CCD27267227
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 10:28:46 +0200 (CEST)
-Received: by mail-pf0-f194.google.com with SMTP id i23so933110pfi.2
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 01:28:46 -0700 (PDT)
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA847267276
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 10:28:49 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id u18so1275487pgo.1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 01:28:49 -0700 (PDT)
+In-Reply-To: <1505896116-43310-1-git-send-email-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,33 +29,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: anish kumar <yesanishhere@gmail.com>
 
-Currently in codec to codec dai link if there are multiple
-params defined then dapm can use created kcontrol to
-decide which param to apply at runtime.
+w_param_text[count] is freed in the wrong error path.
+Fix it by shifting the outfree_w_param label.
 
-However, in case there is only single param configuration
-then there is no point in creating the kcontrol and also there
-is no point in allocating memory for kcontrol.
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In the snd_soc_dapm_new_pcm function, there is memory
-allocation happening for kcontrol which is later used
-or not used based on num_param. It is better to not
-allocate memory when there is only a single configuration.
-This change is to remedy that anomaly.
-
-This code change doesn't do much except just refactor
-snd_soc_dapm_new_pcm function. Now the part of allocating
-memory for kcontrol is allocated to a new function and it
-is called only in the case it is needed.
-
-anish kumar (4):
-  ASoC: dapm: fix error path in snd_soc_dapm_new_pcm
-  ASoC: dapm: Refactor the code in snd_soc_dapm_new_pcm
-  ASoC: dapm: Avoid creating kcontrol for params
-  ASoC: dapm: Remove the redundant check
-
- sound/soc/soc-dapm.c | 122 ++++++++++++++++++++++++++++-----------------------
- 1 file changed, 66 insertions(+), 56 deletions(-)
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index dcef67a..f51f613 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3907,9 +3907,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	devm_kfree(card->dev, (void *)private_value);
+ outfree_link_name:
+ 	devm_kfree(card->dev, link_name);
+-outfree_w_param:
+ 	for (count = 0 ; count < num_params; count++)
+ 		devm_kfree(card->dev, (void *)w_param_text[count]);
++outfree_w_param:
+ 	devm_kfree(card->dev, w_param_text);
+ 
+ 	return ret;
 -- 
 2.5.4 (Apple Git-61)
