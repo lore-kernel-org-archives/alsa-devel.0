@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Refactor the code in
+Subject: Applied "ASoC: dapm: fix error path in
 	snd_soc_dapm_new_pcm" to the asoc tree
-Date: Wed, 20 Sep 2017 04:42:09 -0700 (PDT)
-Message-ID: <20170920114209.E71AF4400D3@finisterre.ee.mobilebroadband>
-References: <20170826082938.35516-1-yesanishhere@gmail.com>
+Date: Wed, 20 Sep 2017 04:42:25 -0700 (PDT)
+Message-ID: <20170920114225.C9C3B4400D3@finisterre.ee.mobilebroadband>
+References: <1505896116-43310-2-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CAE3267506
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:42:10 +0200 (CEST)
-In-Reply-To: <20170826082938.35516-1-yesanishhere@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A17C92674FC
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:42:28 +0200 (CEST)
+In-Reply-To: <1505896116-43310-2-git-send-email-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: anish kumar <yesanishhere@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Refactor the code in snd_soc_dapm_new_pcm
+   ASoC: dapm: fix error path in snd_soc_dapm_new_pcm
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 38b8e6f092fd71eee56a064487be335226b0a54d Mon Sep 17 00:00:00 2001
+>From e5af4f9fb3d405e6145f0d019ce11a97a8930915 Mon Sep 17 00:00:00 2001
 From: anish kumar <yesanishhere@gmail.com>
-Date: Wed, 20 Sep 2017 01:28:34 -0700
-Subject: [PATCH] ASoC: dapm: Refactor the code in snd_soc_dapm_new_pcm
+Date: Wed, 20 Sep 2017 01:28:33 -0700
+Subject: [PATCH] ASoC: dapm: fix error path in snd_soc_dapm_new_pcm
 
-refactor snd_soc_dapm_new_pcm to reduce the size of
-this function to facilitate further refactoring.
+w_param_text[count] is freed in the wrong error path.
+Fix it by shifting the outfree_w_param label.
 
 Signed-off-by: anish kumar <yesanishhere@gmail.com>
 Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index f51f61340f9c..d55cac655195 100644
+index dcef67a9bd48..f51f61340f9c 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3821,19 +3821,15 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 				devm_kasprintf(card->dev, GFP_KERNEL,
- 					       "Anonymous Configuration %d",
- 					       count);
--			if (!w_param_text[count]) {
--				ret = -ENOMEM;
--				goto outfree_link_name;
--			}
- 		} else {
- 			w_param_text[count] = devm_kmemdup(card->dev,
- 						config->stream_name,
- 						strlen(config->stream_name) + 1,
- 						GFP_KERNEL);
--			if (!w_param_text[count]) {
--				ret = -ENOMEM;
--				goto outfree_link_name;
--			}
-+		}
-+		if (!w_param_text[count]) {
-+			ret = -ENOMEM;
-+			goto outfree_link_name;
- 		}
- 		config++;
- 	}
+@@ -3907,9 +3907,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	devm_kfree(card->dev, (void *)private_value);
+ outfree_link_name:
+ 	devm_kfree(card->dev, link_name);
+-outfree_w_param:
+ 	for (count = 0 ; count < num_params; count++)
+ 		devm_kfree(card->dev, (void *)w_param_text[count]);
++outfree_w_param:
+ 	devm_kfree(card->dev, w_param_text);
+ 
+ 	return ret;
 -- 
 2.13.2
