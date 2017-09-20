@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "mfd: arizona: Remove audio bindings from MFD binding document" to the asoc tree
-Date: Wed, 20 Sep 2017 18:14:04 +0100
-Message-ID: <E1duiZY-00036J-KR@debutante>
-References: <20170904154154.4395-6-ckeepax@opensource.cirrus.com>
+Subject: Applied "mfd: arizona: Remove audio related device tree code" to the asoc tree
+Date: Wed, 20 Sep 2017 18:14:07 +0100
+Message-ID: <E1duiZb-0003Ac-LF@debutante>
+References: <20170904154154.4395-5-ckeepax@opensource.cirrus.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170904154154.4395-6-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20170904154154.4395-5-ckeepax@opensource.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lee.jones@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.orgalsa-devel@alsa-project.org
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>broonie@kernel.orglee.jones@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   mfd: arizona: Remove audio bindings from MFD binding document
+   mfd: arizona: Remove audio related device tree code
 
 has been applied to the asoc tree at
 
@@ -37,79 +37,185 @@ to this mail.
 Thanks,
 Mark
 
->From 601516a6f8cf9118a7c65ec38aa53896efc446bb Mon Sep 17 00:00:00 2001
+>From 6000c99ee6e9876cb33275c752937d99f77cdb95 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Mon, 4 Sep 2017 16:41:52 +0100
-Subject: [PATCH] mfd: arizona: Remove audio bindings from MFD binding document
+Date: Mon, 4 Sep 2017 16:41:51 +0100
+Subject: [PATCH] mfd: arizona: Remove audio related device tree code
 
-Now the audio bindings have their own binding document update the main
-MFD document to point to that file and remove the audio binding
-documentation.
+This code has now been moved to the audio subsystem so is no longer
+required in the MFD code.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/mfd/arizona.txt | 40 +----------------------
- 1 file changed, 1 insertion(+), 39 deletions(-)
+ drivers/mfd/arizona-core.c | 132 +--------------------------------------------
+ 1 file changed, 1 insertion(+), 131 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-index b37bdde5cfda..bdd017686ea5 100644
---- a/Documentation/devicetree/bindings/mfd/arizona.txt
-+++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-@@ -65,45 +65,6 @@ Optional properties:
-     a value that is out of range for a 16 bit register then the chip default
-     will be used. If present exactly five values must be specified.
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 8d46e3ad9529..77875250abe5 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -797,12 +797,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_type);
+ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ {
+ 	struct arizona_pdata *pdata = &arizona->pdata;
+-	struct property *prop;
+-	const __be32 *cur;
+-	u32 val;
+-	u32 pdm_val[ARIZONA_MAX_PDM_SPK];
+ 	int ret, i;
+-	int count = 0;
  
--  - wlf,inmode : A list of INn_MODE register values, where n is the number
--    of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
--    2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
--    If present, values must be specified less than or equal to the number of
--    input signals. If values less than the number of input signals, elements
--    that have not been specified are set to 0 by default. Entries are:
--    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
--    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
--  - wlf,out-mono : A list of boolean values indicating whether each output is
--    mono or stereo. Position within the list indicates the output affected
--    (eg. First entry in the list corresponds to output 1). A non-zero value
--    indicates a mono output. If present, the number of values should be less
--    than or equal to the number of outputs, if less values are supplied the
--    additional outputs will be treated as stereo.
--
--  - wlf,dmic-ref : DMIC reference voltage source for each input, can be
--    selected from either MICVDD or one of the MICBIAS's, defines
--    (ARIZONA_DMIC_xxxx) are provided in <dt-bindings/mfd/arizona.txt>. If
--    present, the number of values should be less than or equal to the
--    number of inputs, unspecified inputs will use the chip default.
--
--  - wlf,max-channels-clocked : The maximum number of channels to be clocked on
--    each AIF, useful for I2S systems with multiple data lines being mastered.
--    Specify one cell for each AIF to be configured, specify zero for AIFs that
--    should be handled normally.
--    If present, number of cells must be less than or equal to the number of
--    AIFs. If less than the number of AIFs, for cells that have not been
--    specified the corresponding AIFs will be treated as default setting.
--
--  - wlf,spk-fmt : PDM speaker data format, must contain 2 cells (OUT5 and OUT6).
--    See the datasheet for values.
--    The second cell is ignored for codecs that do not have OUT6 (wm5102, wm8997,
--      wm8998, wm1814)
--
--  - wlf,spk-mute : PDM speaker mute setting, must contain 2 cells (OUT5 and OUT6).
--    See the datasheet for values.
--    The second cell is ignored for codecs that do not have OUT6 (wm5102, wm8997,
--    wm8998, wm1814)
--
-   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
-     they are being externally supplied. As covered in
-     Documentation/devicetree/bindings/regulator/regulator.txt
-@@ -112,6 +73,7 @@ Optional properties:
- Also see child specific device properties:
-   Regulator - ../regulator/arizona-regulator.txt
-   Extcon    - ../extcon/extcon-arizona.txt
-+  Sound     - ../sound/arizona.txt
+ 	pdata->reset = of_get_named_gpio(arizona->dev->of_node, "wlf,reset", 0);
+ 	if (pdata->reset == -EPROBE_DEFER) {
+@@ -836,64 +831,6 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ 			ret);
+ 	}
  
- Example:
+-	of_property_for_each_u32(arizona->dev->of_node, "wlf,inmode", prop,
+-				 cur, val) {
+-		if (count == ARRAY_SIZE(pdata->inmode))
+-			break;
+-
+-		pdata->inmode[count] = val;
+-		count++;
+-	}
+-
+-	count = 0;
+-	of_property_for_each_u32(arizona->dev->of_node, "wlf,dmic-ref", prop,
+-				 cur, val) {
+-		if (count == ARRAY_SIZE(pdata->dmic_ref))
+-			break;
+-
+-		pdata->dmic_ref[count] = val;
+-		count++;
+-	}
+-
+-	count = 0;
+-	of_property_for_each_u32(arizona->dev->of_node, "wlf,out-mono", prop,
+-				 cur, val) {
+-		if (count == ARRAY_SIZE(pdata->out_mono))
+-			break;
+-
+-		pdata->out_mono[count] = !!val;
+-		count++;
+-	}
+-
+-	count = 0;
+-	of_property_for_each_u32(arizona->dev->of_node,
+-				 "wlf,max-channels-clocked",
+-				 prop, cur, val) {
+-		if (count == ARRAY_SIZE(pdata->max_channels_clocked))
+-			break;
+-
+-		pdata->max_channels_clocked[count] = val;
+-		count++;
+-	}
+-
+-	ret = of_property_read_u32_array(arizona->dev->of_node,
+-					 "wlf,spk-fmt",
+-					 pdm_val,
+-					 ARRAY_SIZE(pdm_val));
+-
+-	if (ret >= 0)
+-		for (count = 0; count < ARRAY_SIZE(pdata->spk_fmt); ++count)
+-			pdata->spk_fmt[count] = pdm_val[count];
+-
+-	ret = of_property_read_u32_array(arizona->dev->of_node,
+-					 "wlf,spk-mute",
+-					 pdm_val,
+-					 ARRAY_SIZE(pdm_val));
+-
+-	if (ret >= 0)
+-		for (count = 0; count < ARRAY_SIZE(pdata->spk_mute); ++count)
+-			pdata->spk_mute[count] = pdm_val[count];
+-
+ 	return 0;
+ }
+ 
+@@ -1026,7 +963,7 @@ int arizona_dev_init(struct arizona *arizona)
+ 	const char * const mclk_name[] = { "mclk1", "mclk2" };
+ 	struct device *dev = arizona->dev;
+ 	const char *type_name = NULL;
+-	unsigned int reg, val, mask;
++	unsigned int reg, val;
+ 	int (*apply_patch)(struct arizona *) = NULL;
+ 	const struct mfd_cell *subdevs = NULL;
+ 	int n_subdevs, ret, i;
+@@ -1429,73 +1366,6 @@ int arizona_dev_init(struct arizona *arizona)
+ 				   ARIZONA_MICB1_RATE, val);
+ 	}
+ 
+-	for (i = 0; i < ARIZONA_MAX_INPUT; i++) {
+-		/* Default for both is 0 so noop with defaults */
+-		val = arizona->pdata.dmic_ref[i]
+-			<< ARIZONA_IN1_DMIC_SUP_SHIFT;
+-		if (arizona->pdata.inmode[i] & ARIZONA_INMODE_DMIC)
+-			val |= 1 << ARIZONA_IN1_MODE_SHIFT;
+-
+-		switch (arizona->type) {
+-		case WM8998:
+-		case WM1814:
+-			regmap_update_bits(arizona->regmap,
+-				ARIZONA_ADC_DIGITAL_VOLUME_1L + (i * 8),
+-				ARIZONA_IN1L_SRC_SE_MASK,
+-				(arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
+-					<< ARIZONA_IN1L_SRC_SE_SHIFT);
+-
+-			regmap_update_bits(arizona->regmap,
+-				ARIZONA_ADC_DIGITAL_VOLUME_1R + (i * 8),
+-				ARIZONA_IN1R_SRC_SE_MASK,
+-				(arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
+-					<< ARIZONA_IN1R_SRC_SE_SHIFT);
+-
+-			mask = ARIZONA_IN1_DMIC_SUP_MASK |
+-				ARIZONA_IN1_MODE_MASK;
+-			break;
+-		default:
+-			if (arizona->pdata.inmode[i] & ARIZONA_INMODE_SE)
+-				val |= 1 << ARIZONA_IN1_SINGLE_ENDED_SHIFT;
+-
+-			mask = ARIZONA_IN1_DMIC_SUP_MASK |
+-				ARIZONA_IN1_MODE_MASK |
+-				ARIZONA_IN1_SINGLE_ENDED_MASK;
+-			break;
+-		}
+-
+-		regmap_update_bits(arizona->regmap,
+-				   ARIZONA_IN1L_CONTROL + (i * 8),
+-				   mask, val);
+-	}
+-
+-	for (i = 0; i < ARIZONA_MAX_OUTPUT; i++) {
+-		/* Default is 0 so noop with defaults */
+-		if (arizona->pdata.out_mono[i])
+-			val = ARIZONA_OUT1_MONO;
+-		else
+-			val = 0;
+-
+-		regmap_update_bits(arizona->regmap,
+-				   ARIZONA_OUTPUT_PATH_CONFIG_1L + (i * 8),
+-				   ARIZONA_OUT1_MONO, val);
+-	}
+-
+-	for (i = 0; i < ARIZONA_MAX_PDM_SPK; i++) {
+-		if (arizona->pdata.spk_mute[i])
+-			regmap_update_bits(arizona->regmap,
+-					   ARIZONA_PDM_SPK1_CTRL_1 + (i * 2),
+-					   ARIZONA_SPK1_MUTE_ENDIAN_MASK |
+-					   ARIZONA_SPK1_MUTE_SEQ1_MASK,
+-					   arizona->pdata.spk_mute[i]);
+-
+-		if (arizona->pdata.spk_fmt[i])
+-			regmap_update_bits(arizona->regmap,
+-					   ARIZONA_PDM_SPK1_CTRL_2 + (i * 2),
+-					   ARIZONA_SPK1_FMT_MASK,
+-					   arizona->pdata.spk_fmt[i]);
+-	}
+-
+ 	pm_runtime_set_active(arizona->dev);
+ 	pm_runtime_enable(arizona->dev);
  
 -- 
 2.14.1
