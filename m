@@ -1,16 +1,36 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 0/3] Intel-rt5670 updates
-Date: Wed, 20 Sep 2017 11:41:04 +0100
-Message-ID: <20170920104104.fp5ol3n56q2biea4@sirena.org.uk>
-References: <20170920003453.16209-1-pierre-louis.bossart@linux.intel.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: alsa-lib and floating point support
+Date: Wed, 20 Sep 2017 12:55:30 +0200
+Message-ID: <alpine.DEB.2.11.1709201244490.14549@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5681807179957864991=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AFCA266B21
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:41:09 +0200 (CEST)
-In-Reply-To: <20170920003453.16209-1-pierre-louis.bossart@linux.intel.com>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F16D266B21
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id 0A3A5181C4
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:38 +0200 (CEST)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id K08wwBAkTUzj for <alsa-devel@alsa-project.org>;
+ Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
+Received: from boulder02.se.axis.com (boulder02.se.axis.com [10.0.8.16])
+ by bastet.se.axis.com (Postfix) with ESMTPS id 518A3189FF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
+Received: from boulder02.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 415A91A09B
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
+Received: from boulder02.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 36AEB1A09A
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
+Received: from seth.se.axis.com (unknown [10.0.2.172])
+ by boulder02.se.axis.com (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
+Received: from XBOX03.axis.com (xbox03.axis.com [10.0.5.17])
+ by seth.se.axis.com (Postfix) with ESMTP id 2A6F9183F
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +40,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Mersad Jelacic <mersad@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5681807179957864991==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="xiphnghy6urhrrwy"
-Content-Disposition: inline
+We recently came across an issue with the alsa-lib softvol plugin, which =
 
+requires hardware floating-point (i.e. --with-softfloat not enabled during =
 
---xiphnghy6urhrrwy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+build) support in order to use anything but a set of default values (min =
 
-On Tue, Sep 19, 2017 at 07:34:50PM -0500, Pierre-Louis Bossart wrote:
-> [when I started cleaning-up some patches reviewed by Andy Shevchenko,
-> I realized this initial batch has not been merged, although both
-> Takashi and Vinod reviewed them, see
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125331.html
+gain -51 dB, max 0 dB, and 256 gain steps). With no hardware floating =
 
-Please allow a reasonable time for review.  People get busy, go on
-holiday, attend conferences and so on so unless there is some reason for
-urgency (like critical bug fixes) please allow at least a couple of
-weeks for review.  It's been less than two weeks, including both the
-merge window and LPC...
+point support, the plugin just prints an error message when loaded.
 
---xiphnghy6urhrrwy
-Content-Type: application/pgp-signature; name="signature.asc"
+static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
+ ...
+#ifndef HAVE_SOFT_FLOAT
+ ...
+                        double v =3D (pow(10.0, db / 20.0) * (double)(1 << =
 
------BEGIN PGP SIGNATURE-----
+VOL_SCALE_SHIFT));
+ ...
+#else
+                SNDERR("Cannot handle the given dB range and resolution");
+                return -EINVAL;
+#endif
+        }
+ ...
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnCRb0ACgkQJNaLcl1U
-h9B5wwf/TDf1YWqG0ONpK96H4V3XqLdbhCfzMPzZISPUgckreKHKYzrDqjqVVn/F
-0t+Av5nXeNc3oyOJVnJmiwfTucIinM4fy8BQgT74/UYvw8Bdzi8s5g4S+tXoLoxk
-i743SUWru0FbzX65+wmJiveP4ilW/KGC4fOrRXpCadBn+24NRpJxWfs7YmLqQ5By
-d87mIL57YVAQ/L/OBYhgqNCSISxh/PatlH3+vm2eeyryHdAuQYQ+s0MPTuFMttQI
-GIED9goAUNu4oURfyDTYpOhQk3ul9S6E4ou6fEfCzfqvOcYGFYG2yctmlq+OP9bM
-GB3Jua/WM4UoV2YVocIz1qnDZUyHEw==
-=ECqH
------END PGP SIGNATURE-----
+I'm trying to understand why it is critical to have hardware floating =
 
---xiphnghy6urhrrwy--
+point support in this case. The pow() function is very resource hungry, =
 
---===============5681807179957864991==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+true, but the function is only called when the plugin is loaded, and not =
 
+for instance on every sample while the stream is running, so on the whole =
 
---===============5681807179957864991==--
+I would expect the impact to be minimal. Is there some other rationale =
+
+that I'm missing?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
