@@ -1,85 +1,54 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH] ASoC: tfa9879: Add device tree bindings
-Date: Tue, 19 Sep 2017 19:59:04 -0300
-Message-ID: <1505861944-32447-1-git-send-email-festevam@gmail.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lukma-ynQEQJNshbs@public.gmane.org, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RESEND 0/3] Intel-rt5670 updates
+Date: Tue, 19 Sep 2017 19:34:50 -0500
+Message-ID: <20170920003453.16209-1-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8D8E266D08
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 02:35:01 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
+[when I started cleaning-up some patches reviewed by Andy Shevchenko,
+I realized this initial batch has not been merged, although both
+Takashi and Vinod reviewed them, see
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125331.html
+no change except for the addition of Takashi's Reviewed-by and Vinod's
+Acked-by.  I don't mean to be pushy or anything, just checking if
+something is missing ]
 
-Even though the tfa9879 driver can probe via device tree trough the
-I2C core code, it is preferable to have explicit device tree
-bindings instead [1], so add this support.
+Instead of submitting all my patches at ones, I broke them by
+platforms/codecs. This series is only for Intel-rt5670 platforms. It
+fixes a mistake on the Dell Venue 5585 - corrected with the help from
+Realtek and Dell who kindly provided schematics and data sheet
+information needed to fix non-working DMIC capture. Since there are
+still some reports of non-functional audio on some platforms, I added
+quirks that can be changed from the kernel command line (and later
+added as DMI-based quirks). The last two patches are minor corrections
+to fix ACPI HID naming issues and use a more meaningful card name.
 
-[1] https://www.spinics.net/lists/devicetree/msg195176.html
 
-Signed-off-by: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
----
-Hi Lukasz,
+Pierre-Louis Bossart (3):
+  ASoC: rt5670: refactor DMI quirks and fix Dell Venue settings
+  ASoC: Intel: cht_bsw_rt5672: use actual HID in suspend/resume
+  ASoC: Intel: cht_bsw_rt5672: fix card name
 
-Could you please test this on your hardware?
+ sound/soc/codecs/rt5670.c               | 124 +++++++++++++++++++++++++++-----
+ sound/soc/intel/boards/cht_bsw_rt5672.c |  10 ++-
+ 2 files changed, 112 insertions(+), 22 deletions(-)
 
- .../devicetree/bindings/sound/tfa9879.txt          | 23 ++++++++++++++++++++++
- sound/soc/codecs/tfa9879.c                         |  6 ++++++
- 2 files changed, 29 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
-new file mode 100644
-index 0000000..731ffe8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/tfa9879.txt
-@@ -0,0 +1,23 @@
-+NXP TFA9879 class-D audio amplifier
-+
-+Required properties:
-+
-+- compatible : "nxp,tfa9879"
-+
-+- reg : the I2C address of the device
-+
-+Example:
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	codec: tfa9879@6c {
-+		#sound-dai-cells = <0>;
-+		compatible = "nxp,tfa9879";
-+		reg = <0x6c>;
-+        };
-+};
-+
-diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
-index 95e0a7a..f8dd67c 100644
---- a/sound/soc/codecs/tfa9879.c
-+++ b/sound/soc/codecs/tfa9879.c
-@@ -312,9 +312,15 @@ static const struct i2c_device_id tfa9879_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, tfa9879_i2c_id);
- 
-+static const struct of_device_id tfa9879_of_match[] = {
-+	{ .compatible = "nxp,tfa9879", },
-+	{ }
-+};
-+
- static struct i2c_driver tfa9879_i2c_driver = {
- 	.driver = {
- 		.name = "tfa9879",
-+		.of_match_table = tfa9879_of_match,
- 	},
- 	.probe = tfa9879_i2c_probe,
- 	.remove = tfa9879_i2c_remove,
 -- 
-2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.11.0
