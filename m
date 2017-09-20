@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add missing snd_soc_component_set_jack"
-	to the asoc tree
-Date: Wed, 20 Sep 2017 04:42:01 -0700 (PDT)
-Message-ID: <20170920114201.5A21F4400D3@finisterre.ee.mobilebroadband>
-References: <87bmmvnizb.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: dapm: Refactor the code in
+	snd_soc_dapm_new_pcm" to the asoc tree
+Date: Wed, 20 Sep 2017 04:42:09 -0700 (PDT)
+Message-ID: <20170920114209.E71AF4400D3@finisterre.ee.mobilebroadband>
+References: <20170826082938.35516-1-yesanishhere@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D9B73267505
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:42:03 +0200 (CEST)
-In-Reply-To: <87bmmvnizb.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CAE3267506
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:42:10 +0200 (CEST)
+In-Reply-To: <20170826082938.35516-1-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: anish kumar <yesanishhere@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add missing snd_soc_component_set_jack
+   ASoC: dapm: Refactor the code in snd_soc_dapm_new_pcm
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 840bc44849b9d7f8eaae34ac7b434e17c4cf7368 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 20 Sep 2017 06:08:42 +0000
-Subject: [PATCH] ASoC: add missing snd_soc_component_set_jack
+>From 38b8e6f092fd71eee56a064487be335226b0a54d Mon Sep 17 00:00:00 2001
+From: anish kumar <yesanishhere@gmail.com>
+Date: Wed, 20 Sep 2017 01:28:34 -0700
+Subject: [PATCH] ASoC: dapm: Refactor the code in snd_soc_dapm_new_pcm
 
-commit 44c07365e9e2 ("ASoC: add Component level set_jack") added new
-snd_soc_component_set_jack(), but it didn't add definition on soc.h.
-This patch adds it.
+refactor snd_soc_dapm_new_pcm to reduce the size of
+this function to facilitate further refactoring.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-dapm.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d22de9712c45..996bdbc125a5 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1487,6 +1487,8 @@ int snd_soc_component_set_sysclk(struct snd_soc_component *component,
- int snd_soc_component_set_pll(struct snd_soc_component *component, int pll_id,
- 			      int source, unsigned int freq_in,
- 			      unsigned int freq_out);
-+int snd_soc_component_set_jack(struct snd_soc_component *component,
-+			       struct snd_soc_jack *jack, void *data);
- 
- #ifdef CONFIG_REGMAP
- 
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index f51f61340f9c..d55cac655195 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3821,19 +3821,15 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 				devm_kasprintf(card->dev, GFP_KERNEL,
+ 					       "Anonymous Configuration %d",
+ 					       count);
+-			if (!w_param_text[count]) {
+-				ret = -ENOMEM;
+-				goto outfree_link_name;
+-			}
+ 		} else {
+ 			w_param_text[count] = devm_kmemdup(card->dev,
+ 						config->stream_name,
+ 						strlen(config->stream_name) + 1,
+ 						GFP_KERNEL);
+-			if (!w_param_text[count]) {
+-				ret = -ENOMEM;
+-				goto outfree_link_name;
+-			}
++		}
++		if (!w_param_text[count]) {
++			ret = -ENOMEM;
++			goto outfree_link_name;
+ 		}
+ 		config++;
+ 	}
 -- 
 2.13.2
