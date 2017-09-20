@@ -1,36 +1,20 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: alsa-lib and floating point support
-Date: Wed, 20 Sep 2017 12:55:30 +0200
-Message-ID: <alpine.DEB.2.11.1709201244490.14549@lnxricardw1.se.axis.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [Resend] [PATCH 1/4] ASoC: dapm: fix error path in
+ snd_soc_dapm_new_pcm
+Date: Wed, 20 Sep 2017 12:02:05 +0100
+Message-ID: <20170920110205.erts27ibxhfe4lhs@localhost.localdomain>
+References: <1505896116-43310-1-git-send-email-yesanishhere@gmail.com>
+ <1505896116-43310-2-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F16D266B21
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:38 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by bastet.se.axis.com (Postfix) with ESMTP id 0A3A5181C4
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:38 +0200 (CEST)
-Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
- by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id K08wwBAkTUzj for <alsa-devel@alsa-project.org>;
- Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
-Received: from boulder02.se.axis.com (boulder02.se.axis.com [10.0.8.16])
- by bastet.se.axis.com (Postfix) with ESMTPS id 518A3189FF
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
-Received: from boulder02.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 415A91A09B
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
-Received: from boulder02.se.axis.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 36AEB1A09A
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
-Received: from seth.se.axis.com (unknown [10.0.2.172])
- by boulder02.se.axis.com (Postfix) with ESMTP
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
-Received: from XBOX03.axis.com (xbox03.axis.com [10.0.5.17])
- by seth.se.axis.com (Postfix) with ESMTP id 2A6F9183F
- for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 12:55:37 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73CBF266B21
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 13:02:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1505896116-43310-2-git-send-email-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -40,51 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Mersad Jelacic <mersad@axis.com>
+To: yesanishhere@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Sep 20, 2017 at 01:28:33AM -0700, yesanishhere@gmail.com wrote:
+> From: anish kumar <yesanishhere@gmail.com>
+> 
+> w_param_text[count] is freed in the wrong error path.
+> Fix it by shifting the outfree_w_param label.
+> 
+> Signed-off-by: anish kumar <yesanishhere@gmail.com>
+> ---
 
-We recently came across an issue with the alsa-lib softvol plugin, which =
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-requires hardware floating-point (i.e. --with-softfloat not enabled during =
-
-build) support in order to use anything but a set of default values (min =
-
-gain -51 dB, max 0 dB, and 256 gain steps). With no hardware floating =
-
-point support, the plugin just prints an error message when loaded.
-
-static int softvol_load_control(snd_pcm_t *pcm, snd_pcm_softvol_t *svol,
- ...
-#ifndef HAVE_SOFT_FLOAT
- ...
-                        double v =3D (pow(10.0, db / 20.0) * (double)(1 << =
-
-VOL_SCALE_SHIFT));
- ...
-#else
-                SNDERR("Cannot handle the given dB range and resolution");
-                return -EINVAL;
-#endif
-        }
- ...
-
-I'm trying to understand why it is critical to have hardware floating =
-
-point support in this case. The pow() function is very resource hungry, =
-
-true, but the function is only called when the plugin is loaded, and not =
-
-for instance on every sample while the stream is running, so on the whole =
-
-I would expect the impact to be minimal. Is there some other rationale =
-
-that I'm missing?
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+Charles
