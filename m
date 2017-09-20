@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: arizona: Add support for setting the output volume limits" to the asoc tree
-Date: Wed, 20 Sep 2017 18:14:01 +0100
-Message-ID: <E1duiZV-00034c-JQ@debutante>
-References: <20170904154154.4395-7-ckeepax@opensource.cirrus.com>
+Subject: Applied "mfd: arizona: Remove audio bindings from MFD binding document" to the asoc tree
+Date: Wed, 20 Sep 2017 18:14:04 +0100
+Message-ID: <E1duiZY-00036J-KR@debutante>
+References: <20170904154154.4395-6-ckeepax@opensource.cirrus.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170904154154.4395-7-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20170904154154.4395-6-ckeepax@opensource.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>broonie@kernel.orglee.jones@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.orgalsa-devel@alsa-project.org
+Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lee.jones@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: arizona: Add support for setting the output volume limits
+   mfd: arizona: Remove audio bindings from MFD binding document
 
 has been applied to the asoc tree at
 
@@ -37,153 +37,79 @@ to this mail.
 Thanks,
 Mark
 
->From 85e7dd3f871b988702973c80d9ef128e10dd3dad Mon Sep 17 00:00:00 2001
+>From 601516a6f8cf9118a7c65ec38aa53896efc446bb Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Mon, 4 Sep 2017 16:41:53 +0100
-Subject: [PATCH] ASoC: arizona: Add support for setting the output volume
- limits
+Date: Mon, 4 Sep 2017 16:41:52 +0100
+Subject: [PATCH] mfd: arizona: Remove audio bindings from MFD binding document
 
-The output volume limits allow signals to be limited to specific levels
-appropriate for the hardware attached. As this is a property of the
-hardware itself these will be configured through device tree.
+Now the audio bindings have their own binding document update the main
+MFD document to point to that file and remove the audio binding
+documentation.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/linux/mfd/arizona/pdata.h |  3 +++
- sound/soc/codecs/arizona.c        | 25 +++++++++++++++++++++++++
- sound/soc/codecs/arizona.h        |  1 +
- sound/soc/codecs/cs47l24.c        |  3 +++
- sound/soc/codecs/wm5102.c         |  3 +++
- sound/soc/codecs/wm5110.c         |  3 +++
- sound/soc/codecs/wm8997.c         |  3 +++
- 7 files changed, 41 insertions(+)
+ Documentation/devicetree/bindings/mfd/arizona.txt | 40 +----------------------
+ 1 file changed, 1 insertion(+), 39 deletions(-)
 
-diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/arizona/pdata.h
-index bfeecf179895..f72dc53848d7 100644
---- a/include/linux/mfd/arizona/pdata.h
-+++ b/include/linux/mfd/arizona/pdata.h
-@@ -174,6 +174,9 @@ struct arizona_pdata {
- 	/** Mode for outputs */
- 	int out_mono[ARIZONA_MAX_OUTPUT];
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index b37bdde5cfda..bdd017686ea5 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -65,45 +65,6 @@ Optional properties:
+     a value that is out of range for a 16 bit register then the chip default
+     will be used. If present exactly five values must be specified.
  
-+	/** Limit output volumes */
-+	unsigned int out_vol_limit[2 * ARIZONA_MAX_OUTPUT];
-+
- 	/** PDM speaker mute setting */
- 	unsigned int spk_mute[ARIZONA_MAX_PDM_SPK];
+-  - wlf,inmode : A list of INn_MODE register values, where n is the number
+-    of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
+-    2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
+-    If present, values must be specified less than or equal to the number of
+-    input signals. If values less than the number of input signals, elements
+-    that have not been specified are set to 0 by default. Entries are:
+-    <IN1, IN2, IN3, IN4> (wm5102, wm5110, wm8280, wm8997)
+-    <IN1A, IN2A, IN1B, IN2B> (wm8998, wm1814)
+-  - wlf,out-mono : A list of boolean values indicating whether each output is
+-    mono or stereo. Position within the list indicates the output affected
+-    (eg. First entry in the list corresponds to output 1). A non-zero value
+-    indicates a mono output. If present, the number of values should be less
+-    than or equal to the number of outputs, if less values are supplied the
+-    additional outputs will be treated as stereo.
+-
+-  - wlf,dmic-ref : DMIC reference voltage source for each input, can be
+-    selected from either MICVDD or one of the MICBIAS's, defines
+-    (ARIZONA_DMIC_xxxx) are provided in <dt-bindings/mfd/arizona.txt>. If
+-    present, the number of values should be less than or equal to the
+-    number of inputs, unspecified inputs will use the chip default.
+-
+-  - wlf,max-channels-clocked : The maximum number of channels to be clocked on
+-    each AIF, useful for I2S systems with multiple data lines being mastered.
+-    Specify one cell for each AIF to be configured, specify zero for AIFs that
+-    should be handled normally.
+-    If present, number of cells must be less than or equal to the number of
+-    AIFs. If less than the number of AIFs, for cells that have not been
+-    specified the corresponding AIFs will be treated as default setting.
+-
+-  - wlf,spk-fmt : PDM speaker data format, must contain 2 cells (OUT5 and OUT6).
+-    See the datasheet for values.
+-    The second cell is ignored for codecs that do not have OUT6 (wm5102, wm8997,
+-      wm8998, wm1814)
+-
+-  - wlf,spk-mute : PDM speaker mute setting, must contain 2 cells (OUT5 and OUT6).
+-    See the datasheet for values.
+-    The second cell is ignored for codecs that do not have OUT6 (wm5102, wm8997,
+-    wm8998, wm1814)
+-
+   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
+     they are being externally supplied. As covered in
+     Documentation/devicetree/bindings/regulator/regulator.txt
+@@ -112,6 +73,7 @@ Optional properties:
+ Also see child specific device properties:
+   Regulator - ../regulator/arizona-regulator.txt
+   Extcon    - ../extcon/extcon-arizona.txt
++  Sound     - ../sound/arizona.txt
  
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e6967385dccb..b3375e19598a 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -372,6 +372,22 @@ int arizona_init_common(struct arizona *arizona)
- }
- EXPORT_SYMBOL_GPL(arizona_init_common);
+ Example:
  
-+int arizona_init_vol_limit(struct arizona *arizona)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(arizona->pdata.out_vol_limit); ++i) {
-+		if (arizona->pdata.out_vol_limit[i])
-+			regmap_update_bits(arizona->regmap,
-+					   ARIZONA_DAC_VOLUME_LIMIT_1L + i * 4,
-+					   ARIZONA_OUT1L_VOL_LIM_MASK,
-+					   arizona->pdata.out_vol_limit[i]);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(arizona_init_vol_limit);
-+
- const char * const arizona_mixer_texts[ARIZONA_NUM_MIXER_INPUTS] = {
- 	"None",
- 	"Tone Generator 1",
-@@ -2810,6 +2826,15 @@ int arizona_of_get_audio_pdata(struct arizona *arizona)
- 		count++;
- 	}
- 
-+	count = 0;
-+	of_property_for_each_u32(np, "wlf,out-volume-limit", prop, cur, val) {
-+		if (count == ARRAY_SIZE(pdata->out_vol_limit))
-+			break;
-+
-+		pdata->out_vol_limit[count] = val;
-+		count++;
-+	}
-+
- 	ret = of_property_read_u32_array(np, "wlf,spk-fmt",
- 					 pdm_val, ARRAY_SIZE(pdm_val));
- 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 2d198fb2ce97..dfdf6d8c9687 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -315,6 +315,7 @@ int arizona_init_gpio(struct snd_soc_codec *codec);
- int arizona_init_mono(struct snd_soc_codec *codec);
- 
- int arizona_init_common(struct arizona *arizona);
-+int arizona_init_vol_limit(struct arizona *arizona);
- 
- int arizona_init_spk_irqs(struct arizona *arizona);
- int arizona_free_spk_irqs(struct arizona *arizona);
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 0fe7d7a87ff3..94c0209977d0 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1297,6 +1297,9 @@ static int cs47l24_probe(struct platform_device *pdev)
- 
- 	arizona_init_common(arizona);
- 
-+	ret = arizona_init_vol_limit(arizona);
-+	if (ret < 0)
-+		goto err_dsp_irq;
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		goto err_dsp_irq;
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 5a917dd73f32..4f0481d3c7a7 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -2107,6 +2107,9 @@ static int wm5102_probe(struct platform_device *pdev)
- 
- 	arizona_init_common(arizona);
- 
-+	ret = arizona_init_vol_limit(arizona);
-+	if (ret < 0)
-+		goto err_dsp_irq;
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		goto err_dsp_irq;
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index ba1e90ca8be4..6ed1e1f9ce51 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2463,6 +2463,9 @@ static int wm5110_probe(struct platform_device *pdev)
- 
- 	arizona_init_common(arizona);
- 
-+	ret = arizona_init_vol_limit(arizona);
-+	if (ret < 0)
-+		goto err_dsp_irq;
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		goto err_dsp_irq;
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index c5aef9ecdecc..77f512767273 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1176,6 +1176,9 @@ static int wm8997_probe(struct platform_device *pdev)
- 
- 	arizona_init_common(arizona);
- 
-+	ret = arizona_init_vol_limit(arizona);
-+	if (ret < 0)
-+		return ret;
- 	ret = arizona_init_spk_irqs(arizona);
- 	if (ret < 0)
- 		return ret;
 -- 
 2.14.1
