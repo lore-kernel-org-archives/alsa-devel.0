@@ -1,103 +1,62 @@
-From: =?UTF-8?Q?=c5=81ukasz_Majewski?= <lukma-ynQEQJNshbs@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tfa9879: Add device tree bindings
-Date: Wed, 20 Sep 2017 09:56:17 +0200
-Message-ID: <b515ac7b-11b8-324a-a015-666b5b5f2fec@denx.de>
-References: <1505861944-32447-1-git-send-email-festevam@gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v7 2/8] mfd: wm97xx-core: core support for
+	wm97xx Codec
+Date: Wed, 20 Sep 2017 09:24:43 +0100
+Message-ID: <20170920082443.cqimrbhddum23lof@dell>
+References: <20170913193723.16234-1-robert.jarzmik@free.fr>
+ <20170913193723.16234-3-robert.jarzmik@free.fr>
+ <20170914074146.dnibkvom4yuzejf3@dell>
+ <20170914074300.iobuwn2hrmnf6sen@dell>
+ <20170914160453.gys3imt4eobckcrq@sirena.org.uk>
+ <20170918085236.z6gmgrwvsjvvc4cd@dell>
+ <20170919121539.mz2mettkefxf3oer@sirena.co.uk>
+ <20170919152253.tvj3hheggrx4lgig@dell>
+ <20170919160422.l7lxmfl6yrjnpalb@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1505861944-32447-1-git-send-email-festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f169.google.com (mail-wr0-f169.google.com
+ [209.85.128.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73D92267227
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 10:24:47 +0200 (CEST)
+Received: by mail-wr0-f169.google.com with SMTP id m18so1469924wrm.2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Sep 2017 01:24:47 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20170919160422.l7lxmfl6yrjnpalb@sirena.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, patches@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/20/2017 12:59 AM, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
-> 
-> Even though the tfa9879 driver can probe via device tree trough the
-> I2C core code, it is preferable to have explicit device tree
-> bindings instead [1], so add this support.
-> 
-> [1] https://www.spinics.net/lists/devicetree/msg195176.html
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>
-> ---
-> Hi Lukasz,
-> 
-> Could you please test this on your hardware?
-> 
->   .../devicetree/bindings/sound/tfa9879.txt          | 23 ++++++++++++++++++++++
->   sound/soc/codecs/tfa9879.c                         |  6 ++++++
->   2 files changed, 29 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/sound/tfa9879.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/tfa9879.txt b/Documentation/devicetree/bindings/sound/tfa9879.txt
-> new file mode 100644
-> index 0000000..731ffe8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/tfa9879.txt
-> @@ -0,0 +1,23 @@
-> +NXP TFA9879 class-D audio amplifier
-> +
-> +Required properties:
-> +
-> +- compatible : "nxp,tfa9879"
-> +
-> +- reg : the I2C address of the device
-> +
-> +Example:
-> +
-> +&i2c1 {
-> +	clock-frequency = <100000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c1>;
-> +	status = "okay";
-> +
-> +	codec: tfa9879@6c {
-> +		#sound-dai-cells = <0>;
-> +		compatible = "nxp,tfa9879";
-> +		reg = <0x6c>;
-> +        };
-> +};
-> +
-> diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
-> index 95e0a7a..f8dd67c 100644
-> --- a/sound/soc/codecs/tfa9879.c
-> +++ b/sound/soc/codecs/tfa9879.c
-> @@ -312,9 +312,15 @@ static const struct i2c_device_id tfa9879_i2c_id[] = {
->   };
->   MODULE_DEVICE_TABLE(i2c, tfa9879_i2c_id);
->   
-> +static const struct of_device_id tfa9879_of_match[] = {
-> +	{ .compatible = "nxp,tfa9879", },
-> +	{ }
-> +};
-> +
->   static struct i2c_driver tfa9879_i2c_driver = {
->   	.driver = {
->   		.name = "tfa9879",
-> +		.of_match_table = tfa9879_of_match,
->   	},
->   	.probe = tfa9879_i2c_probe,
->   	.remove = tfa9879_i2c_remove,
-> 
-
-Reviewed-by: Łukasz Majewski <lukma-ynQEQJNshbs@public.gmane.org>
-
--- 
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd-ynQEQJNshbs@public.gmane.org
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gVHVlLCAxOSBTZXAgMjAxNywgTWFyayBCcm93biB3cm90ZToKCj4gT24gVHVlLCBTZXAgMTks
+IDIwMTcgYXQgMDQ6MjI6NTNQTSArMDEwMCwgTGVlIEpvbmVzIHdyb3RlOgo+IAo+ID4gTm9ybWFs
+bHkgSSB3YWl0IHVudGlsIGFsbCBwYXRjaGVzIHBhdGNoZXMgaW4gdGhlIHNldCBoYXZlIGJlZW4K
+PiA+IHJldmlld2VkICh0aGUgQVNPQyBvbmVzIHN0aWxsIGhhdmUgbm90KSwgdGhlbiBhc2sgdGhl
+IE9QIGFuZCB0aGUKPiAKPiBJJ3ZlIGJlZW4gZmluZSB3aXRoIHRoZW0gZm9yIGFnZXMuCj4gCj4g
+PiBvdGhlciBhZmZlY3RlZCBNYWludGFpbmVycyBob3cgdGhleSB3YW50IHRvIGRlYWwgd2l0aCB0
+aGUgcGF0Y2guCj4gPiBGYXIgbW9yZSBvZnRlbiB0aGFuIG5vdCwgdGhlIHRoZSBzb2x1dGlvbiBp
+cyBqdXN0IHRvIHRha2UgdGhlIHNldAo+ID4gdGhyb3VnaCB0aGUgTUZEIHRyZWUuCj4gCj4gSXQg
+cmVhbGx5IGhlbHBzIGlmIHdlIGNhbiBnZXQgdGhlIGVhcmxpZXIgcGFydHMgb2YgdGhlIHNlcmll
+cyBtb3ZpbmcKPiBldmVuIGlmIHRoZSByZXN0IG9mIGl0J3MgaW4gcmV2aWV3IHN0aWxsIC0gSSBr
+bm93IEkgYmFjayBvZmYgb24KPiByZXZpZXdpbmcgdGhpbmdzIGlmIGl0IGxvb2tzIGxpa2UgdGhl
+aXIgZGVwZW5kZW5jaWVzIGFyZW4ndCBtYWtpbmcKPiBwcm9ncmVzcy4KCkp1c3QgZm9yIHlvdXIg
+RllJLCBJIHRlbmQgdG8gcmV2aWV3IG15IHBhcnRzIHRoZW4gd2FpdCBmb3IgdGhlCnJlc3Qgb2Yg
+dGhlIHNlcmllcyB0byBiZSByZXZpZXdlZCwgdGhlbiBkaXNjdXNzIGhvdyB0aGUgc2V0IHNob3Vs
+ZCBiZQpoYW5kbGVkLgoKSG9sZGluZyBiYWNrIG9uIHJldmlld2luZyB5b3VyIHBhcnRzIGlzIG5v
+dCBhIGdvb2QgaWRlYS4gIElmIGV2ZXJ5b25lCmRpZCB0aGF0IHdlJ2QgZW5kIHVwIGluIGEgY2ly
+Y3VsYXIgTWFpbnRhaW5lciBkZXBlbmRlbmN5IGFuZCBub3RoaW5nCndvdWxkIGV2ZXIgZ2V0IHJl
+dmlld2VkLgoKLS0gCkxlZSBKb25lcwpMaW5hcm8gU1RNaWNyb2VsZWN0cm9uaWNzIExhbmRpbmcg
+VGVhbSBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBUk0gU29D
+cwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
