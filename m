@@ -1,48 +1,50 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC PATCH 6/7] uapi: sound: Avoid using timespec for struct snd_ctl_elem_value
-Date: Thu, 21 Sep 2017 14:58:06 +0200
-Message-ID: <CAK8P3a3a0gDiC+3Rc5VONHap67d-L8QTYmvzS16XtKKVj24b5A@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org> <f47f86aa2bc1b96fbe47737f795ea1aee642caa0.1505973912.git.baolin.wang@linaro.org>
+Subject: Re: [RFC PATCH 7/7] sound: core: Avoid using timespec for struct snd_timer_tread
+Date: Thu, 21 Sep 2017 15:09:14 +0200
+Message-ID: <CAK8P3a1uPWYMCUnsYfTo3MjcqopYEd1TnrPVqEts=ZiEAFdr8g@mail.gmail.com>
+References: <cover.1505973912.git.baolin.wang@linaro.org> <1091b589bec6317ea686937060c0f9f9db10651a.1505973912.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f47f86aa2bc1b96fbe47737f795ea1aee642caa0.1505973912.git.baolin.wang@linaro.org>
+In-Reply-To: <1091b589bec6317ea686937060c0f9f9db10651a.1505973912.git.baolin.wang@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Baolin Wang <baolin.wang@linaro.org>
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, fabf@skynet.be, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wrote:
-> The struct snd_ctl_elem_value will use 'timespec' type variables to record
-> timestamp, which is not year 2038 safe on 32bits system.
->
-> Since there are no drivers will implemented the tstamp member of the
-> struct snd_ctl_elem_value, and also the stucture size will not be changed
-> if we change timespec to s64 for tstamp member of struct snd_ctl_elem_value.
->
-> Thus we can simply change timespec to s64 for tstamp member to avoid
-> using the type which is not year 2038 safe on 32bits system.
->
-> Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
-> ---
->  include/uapi/sound/asound.h |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index 1949923..71bce52 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -943,8 +943,8 @@ struct snd_ctl_elem_value {
->                 } bytes;
->                 struct snd_aes_iec958 iec958;
->         } value;                /* RO */
-> -       struct timespec tstamp;
-> -       unsigned char reserved[128-sizeof(struct timespec)];
-> +       struct { s64 tv_sec; s64 tv_nsec; } tstamp;
-> +       unsigned char reserved[128-sizeof(struct { s64 tv_sec; s64 tv_nsec; })];
->  };
 
-Maybe we should enforce that nobody uses the timespec field, by
-enclosing it in #ifdef __KERNEL__ (with a matching length below it);
+> +static int snd_timer_user_tread(void __user *argp, struct snd_timer_user *tu,
+> +                               unsigned int cmd)
+> +{
+> +       int __user *p = argp;
+> +       int xarg, old_tread;
+> +
+> +       if (tu->timeri) /* too late */
+> +               return -EBUSY;
+> +       if (get_user(xarg, p))
+> +               return -EFAULT;
+> +
+> +       old_tread = tu->tread;
+> +#if __BITS_PER_LONG == 64
+> +       tu->tread = xarg ? 2 : 0;
+> +#ifdef IA32_EMULATION
+> +       tu->tread = xarg ? 3 : 0;
+> +#endif
+> +#else
+> +       if (cmd == SNDRV_TIMER_IOCTL_TREAD64)
+> +               tu->tread = xarg ? 2 : 0;
+> +       else
+> +               tu->tread = xarg ? 1 : 0;
+> +#endif
+
+The 64-bit case looks broken here:
+
+- The tread flag is different for compat and native mode, so you
+   must pass a flag to identify whether you are called from
+   __snd_timer_user_ioctl or from snd_timer_user_ioctl_compat().
+
+- On x86, you have to check whether calling user space process uses
+   the i386 or the x32 ABI by checking in_x32_syscall()
 
        Arnd
