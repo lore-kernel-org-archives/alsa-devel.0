@@ -1,37 +1,34 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH v2 2/3] ASoC: fsl-asoc-card: Handle return value of devm_kasprintf
-Date: Thu, 21 Sep 2017 10:50:03 +0530
-Message-ID: <d973fbc962f750ef87c0bccf7b2df6536c8e987f.1505971045.git.arvind.yadav.cs@gmail.com>
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [PATCH] sound: core: Fix structure definition for X32 ABI
+Date: Thu, 21 Sep 2017 14:03:29 +0800
+Message-ID: <a7fc2a6c658b7a3561a635e2286861bf2ba00db4.1505717100.git.baolin.wang@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org, linux-omap@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: o-takashi@sakamocchi.jp, arnd@arndb.de, broonie@kernel.org, deepa.kernel@gmail.com, baolin.wang@linaro.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-devm_kasprintf() can fail here and we must check its return value.
+X32 ABI uses the 64bit timespec in addition to 64bit alignment of 64bit
+values. We have added compat ABI for these ioctls, but this patch adds
+one missing padding into 'struct snd_pcm_mmap_status_x32' to fix
+incompatibilities.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
 ---
-changes in v2:
-               Set return 'ret' to -ENOMEM.
+ sound/core/pcm_compat.c |    1 +
+ 1 file changed, 1 insertion(+)
 
- sound/soc/fsl/fsl-asoc-card.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 2db4d0c..a389885 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -639,6 +639,10 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 				devm_kasprintf(&pdev->dev, GFP_KERNEL,
- 					       "ac97-codec.%u",
- 					       (unsigned int)idx);
-+		if (!priv->dai_link[0].codec_name) {
-+			ret = -ENOMEM;
-+			goto asrc_fail;
-+		}
- 	}
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 10f537f..29ab480 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -547,6 +547,7 @@ struct snd_pcm_mmap_status_x32 {
+ 	u32 pad2; /* alignment */
+ 	struct timespec tstamp;
+ 	s32 suspended_state;
++	s32 pad3;
+ 	struct timespec audio_tstamp;
+ } __packed;
  
- 	priv->dai_link[0].platform_of_node = cpu_np;
 -- 
-1.9.1
+1.7.9.5
