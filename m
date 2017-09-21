@@ -1,18 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 1/3] ASoC: davinci-mcasp: Handle return
- value of devm_kasprintf
-Date: Thu, 21 Sep 2017 14:11:54 +0300
-Message-ID: <2fcb7f93-0449-118a-aa8d-4de51ee39895@ti.com>
-References: <1505901971-12004-1-git-send-email-arvind.yadav.cs@gmail.com>
- <1505901971-12004-2-git-send-email-arvind.yadav.cs@gmail.com>
+From: <jukka.hynninen@vaisala.com>
+Subject: ASoC: pll/clkdiv issue with simple-card driver &
+	WM8510/Atmel SSC
+Date: Thu, 21 Sep 2017 12:20:35 +0000
+Message-ID: <fb010881d59b49349649e06191c1cca5@HEL-EXCH-02.corp.vaisala.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 86CF5266F16
- for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2017 13:11:53 +0200 (CEST)
-In-Reply-To: <1505901971-12004-2-git-send-email-arvind.yadav.cs@gmail.com>
+Received: from hel-mailgw-01.vaisala.com (hel-mailgw-01.vaisala.com
+ [193.143.230.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B3A2266819
+ for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2017 14:22:26 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-77u/ClRleGFzIEluc3RydW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgw
-IEhlbHNpbmtpLiBZLXR1bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0Rv
-bWljaWxlOiBIZWxzaW5raQoKT24gMjAxNy0wOS0yMCAxMzowNiwgQXJ2aW5kIFlhZGF2IHdyb3Rl
-Ogo+IGRldm1fa2FzcHJpbnRmKCkgY2FuIGZhaWwgaGVyZSBhbmQgd2UgbXVzdCBjaGVjayBpdHMg
-cmV0dXJuIHZhbHVlLgoKQWNrZWQtYnk6IFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0
-aS5jb20+Cgo+IFNpZ25lZC1vZmYtYnk6IEFydmluZCBZYWRhdiA8YXJ2aW5kLnlhZGF2LmNzQGdt
-YWlsLmNvbT4KPiAtLS0KPiAgc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jIHwgMTIg
-KysrKysrKysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspCj4gCj4gZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9kYXZpbmNpL2RhdmluY2ktbWNhc3AuYyBiL3NvdW5kL3NvYy9k
-YXZpbmNpL2RhdmluY2ktbWNhc3AuYwo+IGluZGV4IGYzOTViYmMuLmQxYTRhYTIgMTAwNjQ0Cj4g
-LS0tIGEvc291bmQvc29jL2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jCj4gKysrIGIvc291bmQvc29j
-L2RhdmluY2kvZGF2aW5jaS1tY2FzcC5jCj4gQEAgLTE4NjcsNiArMTg2NywxMCBAQCBzdGF0aWMg
-aW50IGRhdmluY2lfbWNhc3BfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAg
-CWlmIChpcnEgPj0gMCkgewo+ICAJCWlycV9uYW1lID0gZGV2bV9rYXNwcmludGYoJnBkZXYtPmRl
-diwgR0ZQX0tFUk5FTCwgIiVzX2NvbW1vbiIsCj4gIAkJCQkJICBkZXZfbmFtZSgmcGRldi0+ZGV2
-KSk7Cj4gKwkJaWYgKCFpcnFfbmFtZSkgewo+ICsJCQlyZXQgPSAtRU5PTUVNOwo+ICsJCQlnb3Rv
-IGVycjsKPiArCQl9Cj4gIAkJcmV0ID0gZGV2bV9yZXF1ZXN0X3RocmVhZGVkX2lycSgmcGRldi0+
-ZGV2LCBpcnEsIE5VTEwsCj4gIAkJCQkJCWRhdmluY2lfbWNhc3BfY29tbW9uX2lycV9oYW5kbGVy
-LAo+ICAJCQkJCQlJUlFGX09ORVNIT1QgfCBJUlFGX1NIQVJFRCwKPiBAQCAtMTg4NCw2ICsxODg4
-LDEwIEBAIHN0YXRpYyBpbnQgZGF2aW5jaV9tY2FzcF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2
-aWNlICpwZGV2KQo+ICAJaWYgKGlycSA+PSAwKSB7Cj4gIAkJaXJxX25hbWUgPSBkZXZtX2thc3By
-aW50ZigmcGRldi0+ZGV2LCBHRlBfS0VSTkVMLCAiJXNfcngiLAo+ICAJCQkJCSAgZGV2X25hbWUo
-JnBkZXYtPmRldikpOwo+ICsJCWlmICghaXJxX25hbWUpIHsKPiArCQkJcmV0ID0gLUVOT01FTTsK
-PiArCQkJZ290byBlcnI7Cj4gKwkJfQo+ICAJCXJldCA9IGRldm1fcmVxdWVzdF90aHJlYWRlZF9p
-cnEoJnBkZXYtPmRldiwgaXJxLCBOVUxMLAo+ICAJCQkJCQlkYXZpbmNpX21jYXNwX3J4X2lycV9o
-YW5kbGVyLAo+ICAJCQkJCQlJUlFGX09ORVNIT1QsIGlycV9uYW1lLCBtY2FzcCk7Cj4gQEAgLTE4
-OTksNiArMTkwNywxMCBAQCBzdGF0aWMgaW50IGRhdmluY2lfbWNhc3BfcHJvYmUoc3RydWN0IHBs
-YXRmb3JtX2RldmljZSAqcGRldikKPiAgCWlmIChpcnEgPj0gMCkgewo+ICAJCWlycV9uYW1lID0g
-ZGV2bV9rYXNwcmludGYoJnBkZXYtPmRldiwgR0ZQX0tFUk5FTCwgIiVzX3R4IiwKPiAgCQkJCQkg
-IGRldl9uYW1lKCZwZGV2LT5kZXYpKTsKPiArCQlpZiAoIWlycV9uYW1lKSB7Cj4gKwkJCXJldCA9
-IC1FTk9NRU07Cj4gKwkJCWdvdG8gZXJyOwo+ICsJCX0KPiAgCQlyZXQgPSBkZXZtX3JlcXVlc3Rf
-dGhyZWFkZWRfaXJxKCZwZGV2LT5kZXYsIGlycSwgTlVMTCwKPiAgCQkJCQkJZGF2aW5jaV9tY2Fz
-cF90eF9pcnFfaGFuZGxlciwKPiAgCQkJCQkJSVJRRl9PTkVTSE9ULCBpcnFfbmFtZSwgbWNhc3Ap
-Owo+IAoKLSBQw6l0ZXIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+Hi all,
+
+We're looking into using the generic simple-card.c driver to glue together WM8510 codec driver and Atmel SSC platform driver without a specific machine code.
+
+It turned out that the DTS configuration below fails to set the codec PLL and clkdiv values. In fact, wm8510_set_dai_pll() and wm8510_set_dai_clkdiv() get never called.
+
+After adding following lines (omitting determination of myboard_* values) into wm8510_pcm_hw_params(), the audio starts working properly:
+
+                           wm8510_set_dai_clkdiv(dai, WM8510_BCLKDIV, myboard_bclk_div);
+                           wm8510_set_dai_pll(dai, 0, 0, 12000000, myboard_pll_out);
+                           wm8510_set_dai_clkdiv(dai, WM8510_MCLKDIV, myboard_mclk_div);
+
+What is actually the missing part? Did we forget to configure something in DTS?
+
+Or is this a limitation of simple-card driver? If so, what would be the proper way to implement the missing features?
+
+We're using Linux v4.14-rc1. The codec clock comes from a constantly running 12 MHz oscillator, and the codec is the clock and frame master.
+
+DTS configuration is as follows:
+
+	ahb {
+		apb {
+			ssc0: ssc@fff9c000 {
+				#sound-dai-cells = <0>;
+				status = "okay";
+				dmas =	<&dma 1 AT91_DMA_CFG_PER_ID(5)>,
+					<&dma 1 AT91_DMA_CFG_PER_ID(6)>;
+				dma-names = "tx", "rx";
+				pinctrl-0 = <&pinctrl_ssc0_tx &pinctrl_ssc0_rx>;
+			};
+
+			spi0: spi@fffa4000{
+				status = "okay";
+				cs-gpios = <&pioB 3 0>, <&pioA 28 0>, <0>, <0>;
+
+				audio_codec: wm8510@1 {
+					#sound-dai-cells = <0>;
+					compatible = "wlf,wm8510";
+					spi-max-frequency = <2000000>;
+					reg = <1>;
+				};
+		};
+	};
+
+                           sound {
+                                                      compatible = "simple-audio-card";
+                                                      simple-audio-card,name = "wm8510_WID";
+                                                      simple-audio-card,format = "i2s";
+                                                      simple-audio-card,routing = "Mono Out", "MONOOUT";
+
+                                                      simple-audio-card,codec {
+                                                                                  sound-dai = <&audio_codec>;
+                                                                                  system-clock-frequency = <12000000>;
+                                                                                  bitclock-master;
+                                                                                  frame-master;
+                                                      };
+
+                                                      simple-audio-card,cpu {
+                                                                                  sound-dai = <&ssc0>;
+                                                      };
+                           };
+
+-Jukka
