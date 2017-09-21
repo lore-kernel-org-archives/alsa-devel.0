@@ -1,59 +1,28 @@
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
-Subject: [PATCH] ASoC: dapm: Make snd_soc_dapm_add/del_routes
-	use runtime mutex subclass
-Date: Thu, 21 Sep 2017 11:02:12 +0100
-Message-ID: <1505988132-9511-1-git-send-email-stuarth@opensource.cirrus.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC PATCH 1/7] sound: Replace timespec with timespec64
+Date: Thu, 21 Sep 2017 12:02:20 +0200
+Message-ID: <CAK8P3a0FJ3HV7-HJqG+kO_pVs5CQTj7o=U9spoGeDW0HK2+FfQ@mail.gmail.com>
+References: <cover.1505973912.git.baolin.wang@linaro.org> <5ebd5e37e8f1bf2675996cf56538179b743bc95b.1505973912.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 631602675AC
- for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2017 12:02:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
-Cc: Stuart Henderson <stuarth@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5ebd5e37e8f1bf2675996cf56538179b743bc95b.1505973912.git.baolin.wang@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Baolin Wang <baolin.wang@linaro.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, fabf@skynet.be, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make snd_soc_dapm_add_routes and snd_soc_dapm_del_routes use the
-SND_SOC_DAPM_CLASS_RUNTIME dapm subclass to allow dynamic dapm route
-updates.
+On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wrote:
+> Since timespec is not year 2038 safe on 32bit system, and we need to
+> convert all timespec variables to timespec64 type for sound subsystem.
+>
+> This patch is used to do preparation for following patches, that will
+> convert all structures defined in uapi/sound/asound.h to use 64-bit
+> time_t.
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
----
- sound/soc/soc-dapm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Looks good to me. This could perhaps be split up further, but it
+seems small enough to get merged as a single patch.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dcef67a..e6b6011 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2884,7 +2884,7 @@ int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
- {
- 	int i, r, ret = 0;
- 
--	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
-+	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	for (i = 0; i < num; i++) {
- 		r = snd_soc_dapm_add_route(dapm, route);
- 		if (r < 0) {
-@@ -2915,7 +2915,7 @@ int snd_soc_dapm_del_routes(struct snd_soc_dapm_context *dapm,
- {
- 	int i;
- 
--	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
-+	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	for (i = 0; i < num; i++) {
- 		snd_soc_dapm_del_route(dapm, route);
- 		route++;
--- 
-2.1.4
+     Arnd
