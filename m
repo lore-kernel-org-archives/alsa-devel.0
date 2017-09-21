@@ -1,22 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How to play music through 3 sound cards
- simultaneously by aplay
-Date: Thu, 21 Sep 2017 10:55:54 +0200
-Message-ID: <c4a7dc5a-8b47-29e4-9f6a-3781b384a97f@ladisch.de>
-References: <509a1e37.2f81.15e9cfc830a.Coremail.hanyuejuan@163.com>
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+Subject: [PATCH] ASoC: dapm: Make snd_soc_dapm_add/del_routes
+	use runtime mutex subclass
+Date: Thu, 21 Sep 2017 11:02:12 +0100
+Message-ID: <1505988132-9511-1-git-send-email-stuarth@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id E1D462671F2
- for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2017 10:55:55 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id B1B8F55829E3
- for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2017 10:55:54 +0200 (CEST)
-In-Reply-To: <509a1e37.2f81.15e9cfc830a.Coremail.hanyuejuan@163.com>
-Content-Language: en-US
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 631602675AC
+ for <alsa-devel@alsa-project.org>; Thu, 21 Sep 2017 12:02:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,13 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: Stuart Henderson <stuarth@opensource.cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-6Z+pIHdyb3RlOgo+IFRoZXJlIGFyZSB0aHJlZSB3bTg5NjAgY29kZWNzIGluIG15IHBhbHRmb3Jt
-LiBJIHdhbnQgdG8gdGVzdCBwbGF5aW5nIG11c2ljIG9mIHRoZXNlIHRocmVlIGNhcmRzIGF0IHRo
-ZSBzYW1lIHRpbWUuCgpIb3cgbWFueSBETUEgY29udHJvbGxlcnMgKFBDTSBkZXZpY2VzKSBhcmUg
-dGhlcmU/ICBTaG93IHRoZSBvdXRwdXQgb2YgImFwbGF5IC1sIi4KCgpSZWdhcmRzLApDbGVtZW5z
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Make snd_soc_dapm_add_routes and snd_soc_dapm_del_routes use the
+SND_SOC_DAPM_CLASS_RUNTIME dapm subclass to allow dynamic dapm route
+updates.
+
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
+---
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index dcef67a..e6b6011 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2884,7 +2884,7 @@ int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
+ {
+ 	int i, r, ret = 0;
+ 
+-	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
++	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+ 	for (i = 0; i < num; i++) {
+ 		r = snd_soc_dapm_add_route(dapm, route);
+ 		if (r < 0) {
+@@ -2915,7 +2915,7 @@ int snd_soc_dapm_del_routes(struct snd_soc_dapm_context *dapm,
+ {
+ 	int i;
+ 
+-	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
++	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
+ 	for (i = 0; i < num; i++) {
+ 		snd_soc_dapm_del_route(dapm, route);
+ 		route++;
+-- 
+2.1.4
