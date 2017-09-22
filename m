@@ -1,79 +1,75 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC PATCH 3/7] sound: core: Avoid using timespec for struct snd_pcm_sync_ptr
-Date: Fri, 22 Sep 2017 10:48:50 +0200
-Message-ID: <CAK8P3a1Rw3H5TA6VDB0_vH+vVk57bCGemT1Xw=z03Tbv4Hfm6Q@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org> <6781c7b4e5934ad65e3c5b401c0a1bbd7cb44db6.1505973912.git.baolin.wang@linaro.org>
- <CAK8P3a2+A4d7P27v7hn7777zyH1m65_1+DYNA4mUfqTxct9R_A@mail.gmail.com> <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH 0/7] Fix year 2038 issue for sound
+	subsystem
+Date: Fri, 22 Sep 2017 10:15:05 +0100
+Message-ID: <20170922091505.pkpe73cphjfm55mf@sirena.org.uk>
+References: <cover.1505973912.git.baolin.wang@linaro.org>
+ <b0390c03-ed0e-b9c1-ba34-5b55df5fabbb@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Baolin Wang <baolin.wang@linaro.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============7182954030950876502=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7CB526764C
+ for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 11:15:12 +0200 (CEST)
+In-Reply-To: <b0390c03-ed0e-b9c1-ba34-5b55df5fabbb@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, fabf@skynet.be, arvind.yadav.cs@gmail.com, dharageswari.r@intel.com, linux-kernel@vger.kernel.org, arnd@arndb.de, Baolin Wang <baolin.wang@linaro.org>, vinod.koul@intel.com, hardik.t.shah@intel.com, tiwai@suse.com, guneshwor.o.singh@intel.com, lgirdwood@gmail.com, elfring@users.sourceforge.net, gudishax.kranthikumar@intel.com, bhumirks@gmail.com, naveen.m@intel.com, jeeja.kp@intel.com, mingo@kernel.org, dan.carpenter@oracle.com, deepa.kernel@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 22, 2017 at 8:47 AM, Baolin Wang <baolin.wang@linaro.org> wrote=
-:
-> On 21 September 2017 at 20:50, Arnd Bergmann <arnd@arndb.de> wrote:
->> On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wr=
-ote:
->>> The struct snd_pcm_sync_ptr will use 'timespec' type variables to recor=
-d
->>
->> This looks correct, but there is a subtlety here to note about x86-32
->> that we discussed in a previous (private) review. To recall my earlier
->> thoughts:
->>
->> Normal architectures insert 32 bit padding after 'suspended_state',
->> and 32-bit architectures (including x32) also after hw_ptr,
->> but x86-32 does not. You make that explicit in the compat code,
->> this version just relies on the compiler using identical padding
->> in user and kernel space. We could make that explicit using
->>
->> struct snd_pcm_mmap_status64 {
->>        snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XX=
-XX */
->>        int pad1;                       /* Needed for 64 bit alignment */
->>        snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
->> #if !defined(CONFIG_64BIT) && !defined(CONFIG_X86_32)
->>        int pad2;
->> #endif
->>       struct { s64 tv_sec; s64 tv_nsec; } tstamp;             /* Timesta=
-mp */
->>        snd_pcm_state_t suspended_state; /* RO: suspended stream state */
->> #if !defined(CONFIG_X86_32)
->>        int pad3;
->> #endif
->>       struct { s64 tv_sec; s64 tv_nsec; } audio_tstamp;       /* from
->> sample counter or wall clock */
->> };
->
-> I am sorry I did not get you here, why we do not need pad2 and pad3
-> for x86_32?
 
-This is again the x86-32 alignment quirk: the structure as defined
-in the uapi header does not have padding, and the new s64 fields
-have 32-bit alignment on x86, so the compiler does not add implicit
-padding in user space.
+--===============7182954030950876502==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="a6yc2ov6s73s4vmq"
+Content-Disposition: inline
 
-On all other architectures, the fields do get padded implicitly
-in user space, I'm just listing the padding explicitly.
 
-> You missed =E2=80=98#if !defined(CONFIG_64BIT)=E2=80=9C at the second #if
-> condition?
+--a6yc2ov6s73s4vmq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-No, that was intentional:
+On Fri, Sep 22, 2017 at 01:07:37PM +0900, Takashi Sakamoto wrote:
 
-snd_pcm_uframes_t is 'unsigned long', so on 64-bit architectures
-we have no padding between two 64-bit values (hw_ptr and tstamp),
-and on x86-32 we have no padding because both have 32-bit
-alignment.
+> I note that at a development period for v4.5 kernel, ALSA developers
+> (mainly Iwai-san) fixed x32 ABI compatibility bugs. Then I prepared for
+> a rough set of test for ioctl command[3] to check his work. The set will
+> partly help your work, I think (but it's really rough).
 
-However, snd_pcm_state_t is 'int', which is always 32-bit wide,
-so we do have padding on both 32-bit and 64-bit architectures
-between syspended_state and audio_tstamp, with the exception
-of x86-32.
+Might it be worth trying to get these added to kselftest?  Seems like
+the sort of thing that fits well there and it'd make it more
+discoverable.
 
-      Arnd
+--a6yc2ov6s73s4vmq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnE1JUACgkQJNaLcl1U
+h9Dh1Qf/c9lrJ6jKhqmOsRcf6ZKo8gXUaYI8LU1h8JiSPF2jWEQSmuL9sCbcHsJi
+DhzYbqQzn6haLeHY7/5PsAJShXcgNc99Lf/C8yR+W5hLpZ31+ACGVTXfe+PdkoZn
+3w09KmMJm1wptDKPfbAwJafMD03kBxH0J92Nvf/6ygH8yj3rUObEI0Qa7mDXjyNO
+NXvR0JgcAInacDf94d/UL7X6OjYZax5J+skSQJ3as8OrEOIwx7ekFA5vEoJ4m9EW
+genY1JDvB8qMZW0T98thQkEPPL3R//qpkH8omtCdvAZ7R8LzVsqfd9es9ga+PvQN
+EGLBzsezM7OQtHOPfp7VYF26oIGsiA==
+=EqKT
+-----END PGP SIGNATURE-----
+
+--a6yc2ov6s73s4vmq--
+
+--===============7182954030950876502==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7182954030950876502==--
