@@ -1,53 +1,53 @@
-From: anish kumar <yesanishhere@gmail.com>
-Subject: Re: [Resend] [PATCH v1 3/4] ASoC: dapm: Avoid creating
-	kcontrol for params
-Date: Fri, 22 Sep 2017 09:16:32 -0700
-Message-ID: <4EAA9E0A-ED25-4BDC-AB53-E33C844FAB43@gmail.com>
-References: <1506066940-56758-1-git-send-email-yesanishhere@gmail.com>
- <20170922091921.kpl4r3fuutgaoizw@sirena.org.uk>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 74842266B7E
- for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 18:16:37 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id i130so886650pgc.0
- for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 09:16:36 -0700 (PDT)
-In-Reply-To: <20170922091921.kpl4r3fuutgaoizw@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, ckeepax@opensource.cirrus.com, lgirdwood@gmail.com
+From: =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?=
+        <jean-francois.tetu@savoirfairelinux.com>
+Subject: [PATCH RESEND] ASoC: codecs: msm8916-wcd-digital: fix RX2 MIX1 and RX3 MIX1
+Date: Fri, 22 Sep 2017 18:18:02 -0400
+Message-ID: <1506118682-6746-1-git-send-email-jean-francois.tetu@savoirfairelinux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?= <jean-francois.tetu@savoirfairelinux.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Sep 22, 2017 at 17:45:25 -0400, Jean-François Têtu wrote:
+>The kcontrol for the third input (rxN_mix1_inp3) of both RX2
+>and RX3 mixers are not using the correct control register. This simple
+>patch fixes this.
+>
+>Signed-off-by: Jean-François Têtu <jean-francois.tetu@savoirfairelinux.com>
 
+I'm sorry, I did not send this to the actual alsa-devel ML. This
+time I did.
 
-> On Sep 22, 2017, at 2:19 AM, Mark Brown <broonie@kernel.org> wrote:
-> 
->> On Fri, Sep 22, 2017 at 12:55:40AM -0700, yesanishhere@gmail.com wrote:
->> From: anish kumar <yesanishhere@gmail.com>
->> 
->> Currently in codec to codec dai link if there are multiple
->> params defined then dapm can use created kcontrol to
->> decide which param to apply at runtime.
-> 
-> You've sent me patch 3/4 and only patch 3/4.
+Jean-François Têtu
+---
+ sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Other patches are already reviewed by Charles and he had comment for 3/4 patch so I sent only that.
->  What's going on with the
-> other three patches?  Please remember that the entire purpose of
-> numbering patches is to order them in a series, if you're not sending a
-> series there's no need to number things and if
-
-Got it. Will keep that in mind for future.
-> you're sending a series
-> the numbering should reflect what you're sending now, not any previous
-> versions of the patches.
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index 66df8f8..a10a724 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -238,7 +238,7 @@ static const struct soc_enum rx_mix2_inp1_chain_enum = SOC_ENUM_SINGLE(
+ static const struct soc_enum rx2_mix1_inp_enum[] = {
+ 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX2_B1_CTL, 0, 6, rx_mix1_text),
+ 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX2_B1_CTL, 3, 6, rx_mix1_text),
+-	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX2_B1_CTL, 0, 6, rx_mix1_text),
++	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX2_B2_CTL, 0, 6, rx_mix1_text),
+ };
+ 
+ /* RX2 MIX2 */
+@@ -249,7 +249,7 @@ static const struct soc_enum rx2_mix2_inp1_chain_enum = SOC_ENUM_SINGLE(
+ static const struct soc_enum rx3_mix1_inp_enum[] = {
+ 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX3_B1_CTL, 0, 6, rx_mix1_text),
+ 	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX3_B1_CTL, 3, 6, rx_mix1_text),
+-	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX3_B1_CTL, 0, 6, rx_mix1_text),
++	SOC_ENUM_SINGLE(LPASS_CDC_CONN_RX3_B2_CTL, 0, 6, rx_mix1_text),
+ };
+ 
+ /* DEC */
+-- 
+2.7.4
