@@ -1,63 +1,143 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [RFC PATCH 7/7] sound: core: Avoid using timespec for struct snd_timer_tread
-Date: Fri, 22 Sep 2017 11:00:58 +0800
-Message-ID: <CAMz4kuKbo5NauhRW_UdSfL4m4q28B4=pcve=EvW5xDpZ_nyjeg@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org> <1091b589bec6317ea686937060c0f9f9db10651a.1505973912.git.baolin.wang@linaro.org>
- <CAK8P3a1uPWYMCUnsYfTo3MjcqopYEd1TnrPVqEts=ZiEAFdr8g@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC PATCH 0/7] Fix year 2038 issue for sound subsystem
+Date: Fri, 22 Sep 2017 13:07:37 +0900
+Message-ID: <b0390c03-ed0e-b9c1-ba34-5b55df5fabbb@sakamocchi.jp>
+References: <cover.1505973912.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a1uPWYMCUnsYfTo3MjcqopYEd1TnrPVqEts=ZiEAFdr8g@mail.gmail.com>
+In-Reply-To: <cover.1505973912.git.baolin.wang@linaro.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Baolin Wang <baolin.wang@linaro.org>, perex@perex.cz, tiwai@suse.com
+Cc: lgirdwood@gmail.com, mingo@kernel.org, elfring@users.sourceforge.net, dan.carpenter@oracle.com, jeeja.kp@intel.com, vinod.koul@intel.com, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, bhumirks@gmail.com, gudishax.kranthikumar@intel.com, naveen.m@intel.com, hardik.t.shah@intel.com, arvind.yadav.cs@gmail.com, fabf@skynet.be, arnd@arndb.de, broonie@kernel.org, deepa.kernel@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21 September 2017 at 21:09, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wrote:
->
->> +static int snd_timer_user_tread(void __user *argp, struct snd_timer_user *tu,
->> +                               unsigned int cmd)
->> +{
->> +       int __user *p = argp;
->> +       int xarg, old_tread;
->> +
->> +       if (tu->timeri) /* too late */
->> +               return -EBUSY;
->> +       if (get_user(xarg, p))
->> +               return -EFAULT;
->> +
->> +       old_tread = tu->tread;
->> +#if __BITS_PER_LONG == 64
->> +       tu->tread = xarg ? 2 : 0;
->> +#ifdef IA32_EMULATION
->> +       tu->tread = xarg ? 3 : 0;
->> +#endif
->> +#else
->> +       if (cmd == SNDRV_TIMER_IOCTL_TREAD64)
->> +               tu->tread = xarg ? 2 : 0;
->> +       else
->> +               tu->tread = xarg ? 1 : 0;
->> +#endif
->
-> The 64-bit case looks broken here:
->
-> - The tread flag is different for compat and native mode, so you
->    must pass a flag to identify whether you are called from
->    __snd_timer_user_ioctl or from snd_timer_user_ioctl_compat().
+Hi,
 
-I have some confusion here. For 64-bit, we will set tu->tread = 2 no
-matter it is native mode or compat mode, only we will set tu->tread =
-3 for x86_32 in compat mode, right?
-So I think we do not need to identify whether called from native mode
-or compat mode.
+On Sep 21 2017 15:18, Baolin Wang wrote:
+> Since many structures will use timespec type variables to record time stamp
+> in uapi/asound.h, which are not year 2038 safe on 32bit system. This patchset
+> tries to introduce new structures removing timespec type to compatible native
+> mode and compat mode.
+> 
+> Moreover this patchset also converts the internal structrures to use timespec64
+> type and related APIs.
+> 
+> Baolin Wang (7):
+>    sound: Replace timespec with timespec64
+>    sound: core: Avoid using timespec for struct snd_pcm_status
+>    sound: core: Avoid using timespec for struct snd_pcm_sync_ptr
+>    sound: core: Avoid using timespec for struct snd_rawmidi_status
+>    sound: core: Avoid using timespec for struct snd_timer_status
+>    uapi: sound: Avoid using timespec for struct snd_ctl_elem_value
+>    sound: core: Avoid using timespec for struct snd_timer_tread
+> 
+>   include/sound/pcm.h               |  113 ++++++++-
+>   include/sound/timer.h             |    4 +-
+>   include/uapi/sound/asound.h       |   15 +-
+>   sound/core/pcm.c                  |   14 +-
+>   sound/core/pcm_compat.c           |  466 +++++++++++++++++++++++++++++--------
+>   sound/core/pcm_lib.c              |   33 +--
+>   sound/core/pcm_native.c           |  227 ++++++++++++++----
+>   sound/core/rawmidi.c              |   74 +++++-
+>   sound/core/rawmidi_compat.c       |   90 +++++--
+>   sound/core/timer.c                |  247 ++++++++++++++++----
+>   sound/core/timer_compat.c         |   25 +-
+>   sound/pci/hda/hda_controller.c    |   10 +-
+>   sound/soc/intel/skylake/skl-pcm.c |    4 +-
+>   13 files changed, 1046 insertions(+), 276 deletions(-)
 
->
-> - On x86, you have to check whether calling user space process uses
->    the i386 or the x32 ABI by checking in_x32_syscall()
+I'm a minor Takashi in this subsystem and not those who you'd like to
+talk about this issue. But I have interests in it and would like to
+assist you, as long as I can do for it.
 
-Make sense.
+As a nitpicking, your patchset brings compilation error at
+configurations for x86, and x86-64 with x32 ABI support.
 
--- 
-Baolin.wang
-Best Regards
+
+## x86-64 architecture and amd64 ABI support
+CONFIG_64BIT=y
+CONFIG_X86_64=y
+
+Success.
+
+
+## x86-64 architecture and amd64/x32 ABI support
+CONFIG_64BIT=y
+CONFIG_X86_64=y
+CONFIG_X86_X32=y
+
+```
+sound/core/timer_compat.c:124:54: error: array type has incomplete 
+element type 'struct snd_timer_status32'
+   SNDRV_TIMER_IOCTL_STATUS32 = _IOW('T', 0x14, struct snd_timer_status32),
+```
+
+This error comes from a commit 1229cccbefe7 ('sound: core: Avoid using 
+timespec for struct snd_timer_status').
+
+```
+sound/core/pcm_compat.c: In function 'snd_pcm_ioctl_sync_ptr_compat':
+sound/core/pcm_compat.c:623:9: error: assignment from incompatible 
+pointer type [-Werror=incompatible-pointer-types]
+   status = runtime->status;
+          ^
+sound/core/pcm_compat.c: In function 'snd_pcm_ioctl_sync_ptr_x32':
+sound/core/pcm_compat.c:711:9: error: assignment from incompatible 
+pointer type [-Werror=incompatible-pointer-types]
+   status = runtime->status;
+```
+
+This error comes from a commit 947c463adc00('sound: core: Avoid using 
+timespec
+for struct snd_pcm_status').
+
+
+## x86 architecture and i386 ABI support
+CONFIG_X86_32=y
+
+```
+sound/core/pcm_native.c: In function 'snd_pcm_common_ioctl':
+sound/core/pcm_native.c:3065:2: error: duplicate case value
+   case SNDRV_PCM_IOCTL_SYNC_PTR64:
+   ^~~~
+sound/core/pcm_native.c:3062:2: error: previously used here
+   case SNDRV_PCM_IOCTL_SYNC_PTR32:
+
+```
+
+This error comes from a commit c0513348a7b39 ('sound: core: Avoid using
+timespec for struct snd_pcm_sync_ptr').
+
+
+Your patchset brought conflicts to 'for-next' branch in a repository
+which Iwai-san maintains[1]. I rebased your patchset on a commit 
+729fbfc92a45 ('ALSA: line6: add support for POD HD DESKTOP') which is a 
+HEAD of 'for-next' branch and pushed into my repository on github[2].
+
+
+I respect your work for this issue, however it's better to check whether
+your patchset is buildable or not on major configurations before
+posting.
+
+
+I note that at a development period for v4.5 kernel, ALSA developers
+(mainly Iwai-san) fixed x32 ABI compatibility bugs. Then I prepared for
+a rough set of test for ioctl command[3] to check his work. The set will
+partly help your work, I think (but it's really rough).
+
+I need more time for reviewing. At least, this week is for recovery from
+my tough work to rewrite aplay[4].
+
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+[2] https://github.com/takaswie/sound/tree/topic/year2038-rfc1
+[3] https://github.com/takaswie/alsa-ioctl-test/
+[4] [alsa-devel] [RFCv2][PATCH 00/38] alsa-utils: axfer: rewrite aplay
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125574.html
+
+Thanks
+
+Takashi Sakamoto
