@@ -1,94 +1,79 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [RFC PATCH 7/7] sound: core: Avoid using timespec
-	for struct snd_timer_tread
-Date: Fri, 22 Sep 2017 16:38:54 +0800
-Message-ID: <CAMz4kuKJH5U6gZgfqmpEax385fanCpoDyU5JGq5YD4bPJcz6AA@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org>
- <1091b589bec6317ea686937060c0f9f9db10651a.1505973912.git.baolin.wang@linaro.org>
- <CAK8P3a1uPWYMCUnsYfTo3MjcqopYEd1TnrPVqEts=ZiEAFdr8g@mail.gmail.com>
- <CAMz4kuKbo5NauhRW_UdSfL4m4q28B4=pcve=EvW5xDpZ_nyjeg@mail.gmail.com>
- <CAK8P3a1oyUinL5vxuysRQHh7dq2kHyNzsOHb6Mk8MJobXyNgaw@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC PATCH 3/7] sound: core: Avoid using timespec for struct snd_pcm_sync_ptr
+Date: Fri, 22 Sep 2017 10:48:50 +0200
+Message-ID: <CAK8P3a1Rw3H5TA6VDB0_vH+vVk57bCGemT1Xw=z03Tbv4Hfm6Q@mail.gmail.com>
+References: <cover.1505973912.git.baolin.wang@linaro.org> <6781c7b4e5934ad65e3c5b401c0a1bbd7cb44db6.1505973912.git.baolin.wang@linaro.org>
+ <CAK8P3a2+A4d7P27v7hn7777zyH1m65_1+DYNA4mUfqTxct9R_A@mail.gmail.com> <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f174.google.com (mail-io0-f174.google.com
- [209.85.223.174])
- by alsa0.perex.cz (Postfix) with ESMTP id F2C8B26764C
- for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 10:38:56 +0200 (CEST)
-Received: by mail-io0-f174.google.com with SMTP id m103so1467836iod.13
- for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 01:38:56 -0700 (PDT)
-In-Reply-To: <CAK8P3a1oyUinL5vxuysRQHh7dq2kHyNzsOHb6Mk8MJobXyNgaw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Fabian Frederick <fabf@skynet.be>, Arvind Yadav <arvind.yadav.cs@gmail.com>, dharageswari.r@intel.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, Takashi Iwai <tiwai@suse.com>, guneshwor.o.singh@intel.com, Liam Girdwood <lgirdwood@gmail.com>, SF Markus Elfring <elfring@users.sourceforge.net>, gudishax.kranthikumar@intel.com, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, Naveen M <naveen.m@intel.com>, jeeja.kp@intel.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, Deepa Dinamani <deepa.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Baolin Wang <baolin.wang@linaro.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 22 September 2017 at 15:57, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Fri, Sep 22, 2017 at 5:00 AM, Baolin Wang <baolin.wang@linaro.org> wrote:
->> On 21 September 2017 at 21:09, Arnd Bergmann <arnd@arndb.de> wrote:
->>> On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wrote:
->>>
->>>> +static int snd_timer_user_tread(void __user *argp, struct snd_timer_user *tu,
->>>> +                               unsigned int cmd)
->>>> +{
->>>> +       int __user *p = argp;
->>>> +       int xarg, old_tread;
->>>> +
->>>> +       if (tu->timeri) /* too late */
->>>> +               return -EBUSY;
->>>> +       if (get_user(xarg, p))
->>>> +               return -EFAULT;
->>>> +
->>>> +       old_tread = tu->tread;
->>>> +#if __BITS_PER_LONG == 64
->>>> +       tu->tread = xarg ? 2 : 0;
->>>> +#ifdef IA32_EMULATION
->>>> +       tu->tread = xarg ? 3 : 0;
->>>> +#endif
->>>> +#else
->>>> +       if (cmd == SNDRV_TIMER_IOCTL_TREAD64)
->>>> +               tu->tread = xarg ? 2 : 0;
->>>> +       else
->>>> +               tu->tread = xarg ? 1 : 0;
->>>> +#endif
->>>
->>> The 64-bit case looks broken here:
->>>
->>> - The tread flag is different for compat and native mode, so you
->>>    must pass a flag to identify whether you are called from
->>>    __snd_timer_user_ioctl or from snd_timer_user_ioctl_compat().
+On Fri, Sep 22, 2017 at 8:47 AM, Baolin Wang <baolin.wang@linaro.org> wrote=
+:
+> On 21 September 2017 at 20:50, Arnd Bergmann <arnd@arndb.de> wrote:
+>> On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wr=
+ote:
+>>> The struct snd_pcm_sync_ptr will use 'timespec' type variables to recor=
+d
 >>
->> I have some confusion here. For 64-bit, we will set tu->tread = 2 no
->> matter it is native mode or compat mode, only we will set tu->tread =
->> 3 for x86_32 in compat mode, right?
->> So I think we do not need to identify whether called from native mode
->> or compat mode.
+>> This looks correct, but there is a subtlety here to note about x86-32
+>> that we discussed in a previous (private) review. To recall my earlier
+>> thoughts:
+>>
+>> Normal architectures insert 32 bit padding after 'suspended_state',
+>> and 32-bit architectures (including x32) also after hw_ptr,
+>> but x86-32 does not. You make that explicit in the compat code,
+>> this version just relies on the compiler using identical padding
+>> in user and kernel space. We could make that explicit using
+>>
+>> struct snd_pcm_mmap_status64 {
+>>        snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XX=
+XX */
+>>        int pad1;                       /* Needed for 64 bit alignment */
+>>        snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
+>> #if !defined(CONFIG_64BIT) && !defined(CONFIG_X86_32)
+>>        int pad2;
+>> #endif
+>>       struct { s64 tv_sec; s64 tv_nsec; } tstamp;             /* Timesta=
+mp */
+>>        snd_pcm_state_t suspended_state; /* RO: suspended stream state */
+>> #if !defined(CONFIG_X86_32)
+>>        int pad3;
+>> #endif
+>>       struct { s64 tv_sec; s64 tv_nsec; } audio_tstamp;       /* from
+>> sample counter or wall clock */
+>> };
 >
-> When we have a user space program with 32-bit time_t in compat mode
-> (i.e. cmd==SNDRV_TIMER_IOCTL_TREAD) on a 64-bit kernel, we want
-> to set tread=1, and that is different from the native mode that wants to
-> set tread=2.
+> I am sorry I did not get you here, why we do not need pad2 and pad3
+> for x86_32?
 
-I understand your meaning now, thanks for explanation.
+This is again the x86-32 alignment quirk: the structure as defined
+in the uapi header does not have padding, and the new s64 fields
+have 32-bit alignment on x86, so the compiler does not add implicit
+padding in user space.
 
->
-> For determining whether to use tread=2 or tread=3, we have to check
-> both compat mode and x32 mode. This could be done by checking for
-> "if (IS_ENABLED(CONFIG_IA32_EMULATION) && in_compat_syscall() &&
-> is_x32_task())", but the in_compat_syscall() check can be skipped when
-> you know that you were called from .compat_ioct().
+On all other architectures, the fields do get padded implicitly
+in user space, I'm just listing the padding explicitly.
 
-OK.
+> You missed =E2=80=98#if !defined(CONFIG_64BIT)=E2=80=9C at the second #if
+> condition?
 
--- 
-Baolin.wang
-Best Regards
+No, that was intentional:
+
+snd_pcm_uframes_t is 'unsigned long', so on 64-bit architectures
+we have no padding between two 64-bit values (hw_ptr and tstamp),
+and on x86-32 we have no padding because both have 32-bit
+alignment.
+
+However, snd_pcm_state_t is 'int', which is always 32-bit wide,
+so we do have padding on both 32-bit and 64-bit architectures
+between syspended_state and audio_tstamp, with the exception
+of x86-32.
+
+      Arnd
