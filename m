@@ -1,336 +1,239 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [RFC PATCH 3/7] sound: core: Avoid using timespec for struct snd_pcm_sync_ptr
-Date: Fri, 22 Sep 2017 14:47:34 +0800
-Message-ID: <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org> <6781c7b4e5934ad65e3c5b401c0a1bbd7cb44db6.1505973912.git.baolin.wang@linaro.org>
- <CAK8P3a2+A4d7P27v7hn7777zyH1m65_1+DYNA4mUfqTxct9R_A@mail.gmail.com>
+From: yesanishhere@gmail.com
+Subject: [Resend] [PATCH v1 3/4] ASoC: dapm: Avoid creating
+	kcontrol for params
+Date: Fri, 22 Sep 2017 00:55:40 -0700
+Message-ID: <1506066940-56758-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a2+A4d7P27v7hn7777zyH1m65_1+DYNA4mUfqTxct9R_A@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B7C326764C
+ for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 09:55:51 +0200 (CEST)
+Received: by mail-pg0-f66.google.com with SMTP id i130so238260pgc.0
+ for <alsa-devel@alsa-project.org>; Fri, 22 Sep 2017 00:55:51 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ckeepax@opensource.cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21 September 2017 at 20:50, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wro=
-te:
->> The struct snd_pcm_sync_ptr will use 'timespec' type variables to record
->> timestamp, which is not year 2038 safe on 32bits system.
->>
->> Thus we introduced 'struct snd_pcm_sync_ptr32' and 'struct snd_pcm_sync_=
-ptr64'
->> to handle 32bit time_t and 64bit time_t in native mode, which replace
->> timespec with s64 type.
->>
->> In compat mode, we renamed or introduced new structures to handle 32bit/=
-64bit
->> time_t in compatible mode. The 'struct compat_snd_pcm_sync_ptr32' and
->> snd_pcm_ioctl_sync_ptr_compat() are used to handle 32bit time_t in compa=
-t mode.
->> 'struct compat_snd_pcm_sync_ptr64' and snd_pcm_ioctl_sync_ptr_compat64()=
- are used
->> to handle 64bit time_t with 64bit alignment. 'struct compat_snd_pcm_sync=
-_ptr64_x86_32'
->> and snd_pcm_ioctl_sync_ptr_compat64_x86_32() are used to handle 64bit ti=
-me_t with
->> 32bit alignment.
->>
->> When glibc changes time_t to 64bit, any recompiled program will issue io=
-ctl
->> commands that the kernel does not understand without this patch.
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
->> ---
->>  include/sound/pcm.h     |   46 +++++++++-
->>  sound/core/pcm.c        |    6 +-
->>  sound/core/pcm_compat.c |  228 ++++++++++++++++++++++++++++++++++++++--=
--------
->>  sound/core/pcm_lib.c    |    9 +-
->>  sound/core/pcm_native.c |  113 ++++++++++++++++++-----
->>  5 files changed, 329 insertions(+), 73 deletions(-)
->>
->> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
->> index 114cc29..c253cbf 100644
->> --- a/include/sound/pcm.h
->> +++ b/include/sound/pcm.h
->> @@ -64,6 +64,15 @@ struct snd_pcm_hardware {
->>  struct snd_pcm_audio_tstamp_config; /* definitions further down */
->>  struct snd_pcm_audio_tstamp_report;
->>
->> +struct snd_pcm_mmap_status64 {
->> +       snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_X=
-XXX */
->> +       int pad1;                       /* Needed for 64 bit alignment *=
-/
->> +       snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) *=
-/
->> +       struct { s64 tv_sec; s64 tv_nsec; } tstamp;             /* Times=
-tamp */
->> +       snd_pcm_state_t suspended_state; /* RO: suspended stream state *=
-/
->> +       struct { s64 tv_sec; s64 tv_nsec; } audio_tstamp;       /* from =
-sample counter or wall clock */
->> +};
->
-> This looks correct, but there is a subtlety here to note about x86-32
-> that we discussed in a previous (private) review. To recall my earlier
-> thoughts:
->
-> Normal architectures insert 32 bit padding after 'suspended_state',
-> and 32-bit architectures (including x32) also after hw_ptr,
-> but x86-32 does not. You make that explicit in the compat code,
-> this version just relies on the compiler using identical padding
-> in user and kernel space. We could make that explicit using
->
-> struct snd_pcm_mmap_status64 {
->        snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XXX=
-X */
->        int pad1;                       /* Needed for 64 bit alignment */
->        snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
-> #if !defined(CONFIG_64BIT) && !defined(CONFIG_X86_32)
->        int pad2;
-> #endif
->       struct { s64 tv_sec; s64 tv_nsec; } tstamp;             /* Timestam=
-p */
->        snd_pcm_state_t suspended_state; /* RO: suspended stream state */
-> #if !defined(CONFIG_X86_32)
->        int pad3;
-> #endif
->       struct { s64 tv_sec; s64 tv_nsec; } audio_tstamp;       /* from
-> sample counter or wall clock */
-> };
+From: anish kumar <yesanishhere@gmail.com>
 
-I am sorry I did not get you here, why we do not need pad2 and pad3
-for x86_32? You missed =E2=80=98#if !defined(CONFIG_64BIT)=E2=80=9C at the =
-second #if
-condition?
+Currently in codec to codec dai link if there are multiple
+params defined then dapm can use created kcontrol to
+decide which param to apply at runtime.
 
->
-> To make it clear that the layout is architecture specific. As a third
-> alternative, we could define binary version of the structure explicitly,
-> and have handlers for each layout, then call the correct handlers for
-> both native and compat mode. This could use e.g.
->
-> struct snd_pcm_mmap_status_time32 {
->        u32 state;
->        u32 pad1;
->        u32 hw_ptr;
->        s32 tstamp_sec;
->        s32 tstamp_usec;
->        u32 suspended_state;
->        s32 audio_tstamp_sec;
->        s32 audio_tstamp_usec;
-> };
->
-> struct snd_pcm_mmap_status_time64 {
->        u32 state;
->        u32 pad1;
->        u32 hw_ptr;
->        u32 pad2;
->        s64 tstamp_sec;
->        s64 tstamp_usec;
->        u32 suspended_state;
->        u32 pad3;
->        s64 audio_tstamp_sec;
->        s64 audio_tstamp_usec;
-> };
->
-> struct snd_pcm_mmap_status_time64_i386 {
->        u32 state;
->        u32 pad1;
->        u32 hw_ptr;
->        s64 tstamp_sec;
->        s64 tstamp_usec;
->        u32 suspended_state;
->        s64 audio_tstamp_sec;
->        s64 audio_tstamp_usec;
-> } __packed __aligned(4);
->
-> struct snd_pcm_mmap_status_64bit {
->        u32 state;
->        u32 pad1;
->        u64 hw_ptr;
->        s64 tstamp_sec;
->        s64 tstamp_usec;
->        u32 suspended_state;
->        u32 pad3;
->        s64 audio_tstamp_sec;
->        s64 audio_tstamp_usec;
-> };
->
-> My personal preference would be the third approach, but I'd like
-> to hear from Takashi if he has a preference. The downside of that
-> is that it requires the most changes to the existing code.
+However, in case there is only single param configuration
+then there is no point in creating the kcontrol and also there
+is no point in allocating memory for kcontrol.
 
-OK.
+In the snd_soc_dapm_new_pcm function, there is memory
+allocation happening for kcontrol which is later used
+or not used based on num_param. It is better to not
+allocate memory when there is only a single configuration.
+This change is to remedy that anomaly.
 
->
->> @@ -1459,8 +1468,21 @@ struct snd_pcm_status64 {
->>         unsigned char reserved[52-2*sizeof(struct { s64 tv_sec; s64 tv_n=
-sec; })]; /* must be filled with zero */
->>  };
->>
->> +struct snd_pcm_sync_ptr64 {
->> +       unsigned int flags;
->> +       union {
->> +               struct snd_pcm_mmap_status64 status;
->> +               unsigned char reserved[64];
->> +       } s;
->> +       union {
->> +               struct snd_pcm_mmap_control control;
->> +               unsigned char reserved[64];
->> +       } c;
->> +};
->> +
->>  #define SNDRV_PCM_IOCTL_STATUS64       _IOR('A', 0x20, struct snd_pcm_s=
-tatus64)
->>  #define SNDRV_PCM_IOCTL_STATUS_EXT64   _IOWR('A', 0x24, struct snd_pcm_=
-status64)
->> +#define SNDRV_PCM_IOCTL_SYNC_PTR64     _IOWR('A', 0x23, struct snd_pcm_=
-sync_ptr64)
->>
->>  #if __BITS_PER_LONG =3D=3D 32
->>  struct snd_pcm_status32 {
->> @@ -1481,8 +1503,30 @@ struct snd_pcm_status32 {
->>         unsigned char reserved[52-2*sizeof(struct { s32 tv_sec; s32 tv_n=
-sec; })]; /* must be filled with zero */
->>  };
->>
->> +struct snd_pcm_mmap_status32 {
->> +       snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_X=
-XXX */
->> +       int pad1;                       /* Needed for 64 bit alignment *=
-/
->> +       snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) *=
-/
->> +       struct { s32 tv_sec; s32 tv_nsec; } tstamp;             /* Times=
-tamp */
->> +       snd_pcm_state_t suspended_state; /* RO: suspended stream state *=
-/
->> +       struct { s32 tv_sec; s32 tv_nsec; } audio_tstamp;       /* from =
-sample counter or wall clock */
->> +};
->> +
->> +struct snd_pcm_sync_ptr32 {
->> +       unsigned int flags;
->> +       union {
->> +               struct snd_pcm_mmap_status32 status;
->> +               unsigned char reserved[64];
->> +       } s;
->> +       union {
->> +               struct snd_pcm_mmap_control control;
->> +               unsigned char reserved[64];
->> +       } c;
->> +};
->> +
->>  #define SNDRV_PCM_IOCTL_STATUS32       _IOR('A', 0x20, struct snd_pcm_s=
-tatus32)
->>  #define SNDRV_PCM_IOCTL_STATUS_EXT32   _IOWR('A', 0x24, struct snd_pcm_=
-status32)
->> +#define SNDRV_PCM_IOCTL_SYNC_PTR32     _IOWR('A', 0x23, struct snd_pcm_=
-sync_ptr32)
->>  #endif
->
-> Unfortunately, this approach doesn't quite work in this particular
-> case: it depends on snd_pcm_sync_ptr32 and snd_pcm_sync_ptr64
-> having different sizes in order to result in distinct command codes
-> for SNDRV_PCM_IOCTL_SYNC_PTR64 and
-> SNDRV_PCM_IOCTL_SYNC_PTR32.
->
-> However, the 64-byte 'reserved' fields mean that the unions are always
-> the same size, and only the padding between 'flags' and 's' is different.
+Signed-off-by: anish kumar <yesanishhere@gmail.com>
+---
+Changes in v1:
+  - Included the review comments from charles regarding
+    releasing memory in error path.
 
-Ah, make sense.
+ sound/soc/soc-dapm.c | 130 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 78 insertions(+), 52 deletions(-)
 
->
-> Again, I suppose this almost works: 64-bit architectures use only
-> one possible layout in the .unlocked_ioctl handler, and on most
-> 32-bit architectures the added padding will make the structure 4 bytes
-> longer, but not on i386, which now doesn't know whether user
-> space passed a snd_pcm_sync_ptr32  or a snd_pcm_sync_ptr64
-> structure.
->
-> Fixing this will require changing the uapi header file, in one of two
-> ways:
->
-> a) make the command number conditional:
->
-> #if __BITS_PER_LONG =3D=3D 64 || !defined(__i386__)
-> #define SNDRV_PCM_IOCTL_SYNC_PTR SNDRV_PCM_IOCTL_SYNC_PTR_OLD
-> #else
-> #define SNDRV_PCM_IOCTL_SYNC_PTR (sizeof(__kernel_long_t) =3D=3D sizeof(t=
-ime_t) \
->      ? SNDRV_PCM_IOCTL_SYNC_PTR_OLD
->      :  SNDRV_PCM_IOCTL_SYNC_PTR_64)
-> #endif
->
-> b) change the user-visible structure definition to contain the
->     correct explicit padding on all architectures including i386
->
->  struct snd_pcm_mmap_status {
->         snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XX=
-XX */
->         int pad1;                       /* Needed for 64 bit alignment */
->         snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
-> +      char pad2[sizeof(time_t) - sizeof(snd_pcm_uframes_t)];
->         struct timespec tstamp;         /* Timestamp */
->         snd_pcm_state_t suspended_state; /* RO: suspended stream state */
-> +      char pad2[sizeof(time_t) - sizeof(snd_pcm_state_t)];
->         struct timespec audio_tstamp;   /* from sample counter or wall cl=
-ock */
->  };
->
->  struct snd_pcm_mmap_control {
->         snd_pcm_uframes_t appl_ptr;     /* RW: appl ptr (0...boundary-1) =
-*/
->         snd_pcm_uframes_t avail_min;    /* RW: min available frames
-> for wakeup */
->  };
->
->  struct snd_pcm_sync_ptr32 {
->        unsigned int flags;
-> +     char __pad[sizeof(time_t) - sizeof(unsigned int)];
->        union {
->                struct snd_pcm_mmap_status status;
->                unsigned char reserved[64];
->        } s;
->        union {
->                struct snd_pcm_mmap_control control;
->                unsigned char reserved[64];
->        } c;
->  };
-
-OK. I will check here again.
-
->
->> @@ -2995,8 +3058,12 @@ static int snd_pcm_common_ioctl(struct file *file=
-,
->>                         return -EFAULT;
->>                 return 0;
->>         }
->> -       case SNDRV_PCM_IOCTL_SYNC_PTR:
->> -               return snd_pcm_sync_ptr(substream, arg);
->> +#if __BITS_PER_LONG =3D=3D 32
->> +       case SNDRV_PCM_IOCTL_SYNC_PTR32:
->> +               return snd_pcm_sync_ptr32(substream, arg);
->> +#endif
->> +       case SNDRV_PCM_IOCTL_SYNC_PTR64:
->> +               return snd_pcm_sync_ptr64(substream, arg);
->>  #ifdef CONFIG_SND_SUPPORT_OLD_API
->>         case SNDRV_PCM_IOCTL_HW_REFINE_OLD:
->>                 return snd_pcm_hw_refine_old_user(substream, arg);
->
-> Without either of the two changes, this function should cause
-> a build error on i386 since SNDRV_PCM_IOCTL_SYNC_PTR32
-> has the same value as SNDRV_PCM_IOCTL_SYNC_PTR64.
->
-
-Yes. Thanks for your useful comments.
-
-
---=20
-Baolin.wang
-Best Regards
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index d55cac6..e659c74 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3778,18 +3778,13 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+-			 const struct snd_soc_pcm_stream *params,
+-			 unsigned int num_params,
+-			 struct snd_soc_dapm_widget *source,
+-			 struct snd_soc_dapm_widget *sink)
++static struct snd_kcontrol_new *
++snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
++			char *link_name,
++			const struct snd_soc_pcm_stream *params,
++			int num_params, const char **w_param_text,
++			unsigned long *private_value)
+ {
+-	struct snd_soc_dapm_widget template;
+-	struct snd_soc_dapm_widget *w;
+-	char *link_name;
+-	int ret, count;
+-	unsigned long private_value;
+-	const char **w_param_text;
+ 	struct soc_enum w_param_enum[] = {
+ 		SOC_ENUM_SINGLE(0, 0, 0, NULL),
+ 	};
+@@ -3798,19 +3793,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 			     snd_soc_dapm_dai_link_get,
+ 			     snd_soc_dapm_dai_link_put),
+ 	};
++	struct snd_kcontrol_new *kcontrol_news;
+ 	const struct snd_soc_pcm_stream *config = params;
+-
+-	w_param_text = devm_kcalloc(card->dev, num_params,
+-					sizeof(char *), GFP_KERNEL);
+-	if (!w_param_text)
+-		return -ENOMEM;
+-
+-	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
+-				   source->name, sink->name);
+-	if (!link_name) {
+-		ret = -ENOMEM;
+-		goto outfree_w_param;
+-	}
++	int count;
+ 
+ 	for (count = 0 ; count < num_params; count++) {
+ 		if (!config->stream_name) {
+@@ -3827,47 +3812,90 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 						strlen(config->stream_name) + 1,
+ 						GFP_KERNEL);
+ 		}
+-		if (!w_param_text[count]) {
+-			ret = -ENOMEM;
+-			goto outfree_link_name;
+-		}
++		if (!w_param_text[count])
++			goto outfree_w_param;
+ 		config++;
+ 	}
++
+ 	w_param_enum[0].items = num_params;
+ 	w_param_enum[0].texts = w_param_text;
+ 
+-	memset(&template, 0, sizeof(template));
+-	template.reg = SND_SOC_NOPM;
+-	template.id = snd_soc_dapm_dai_link;
+-	template.name = link_name;
+-	template.event = snd_soc_dai_link_event;
+-	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+-		SND_SOC_DAPM_PRE_PMD;
+-	template.num_kcontrols = 1;
+-	/* duplicate w_param_enum on heap so that memory persists */
+-	private_value =
++	*private_value =
+ 		(unsigned long) devm_kmemdup(card->dev,
+ 			(void *)(kcontrol_dai_link[0].private_value),
+ 			sizeof(struct soc_enum), GFP_KERNEL);
+-	if (!private_value) {
++	if (!*private_value) {
+ 		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+ 			link_name);
+-		ret = -ENOMEM;
+-		goto outfree_link_name;
++		goto outfree_w_param;
+ 	}
+-	kcontrol_dai_link[0].private_value = private_value;
++	kcontrol_dai_link[0].private_value = *private_value;
+ 	/* duplicate kcontrol_dai_link on heap so that memory persists */
+-	template.kcontrol_news =
+-				devm_kmemdup(card->dev, &kcontrol_dai_link[0],
+-					sizeof(struct snd_kcontrol_new),
+-					GFP_KERNEL);
+-	if (!template.kcontrol_news) {
++	kcontrol_news =
++			devm_kmemdup(card->dev, &kcontrol_dai_link[0],
++				sizeof(struct snd_kcontrol_new),
++				GFP_KERNEL);
++	if (!kcontrol_news) {
+ 		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+ 			link_name);
+-		ret = -ENOMEM;
+ 		goto outfree_private_value;
+ 	}
++	return kcontrol_news;
++
++outfree_private_value:
++	devm_kfree(card->dev, (void *)*private_value);
++outfree_w_param:
++	for (count = 0 ; count < num_params; count++)
++		devm_kfree(card->dev, (void *)w_param_text[count]);
++	return NULL;
++}
+ 
++int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
++			 const struct snd_soc_pcm_stream *params,
++			 unsigned int num_params,
++			 struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_dapm_widget template;
++	struct snd_soc_dapm_widget *w;
++	const char **w_param_text;
++	unsigned long private_value;
++	char *link_name;
++	int ret, count;
++
++	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
++				   source->name, sink->name);
++	if (!link_name)
++		return -ENOMEM;
++
++	memset(&template, 0, sizeof(template));
++	template.reg = SND_SOC_NOPM;
++	template.id = snd_soc_dapm_dai_link;
++	template.name = link_name;
++	template.event = snd_soc_dai_link_event;
++	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
++		SND_SOC_DAPM_PRE_PMD;
++	template.kcontrol_news = NULL;
++
++	w_param_text = devm_kcalloc(card->dev, num_params,
++				sizeof(char *), GFP_KERNEL);
++	if (!w_param_text) {
++		ret = -ENOMEM;
++		goto param_fail;
++	}
++
++	/* allocate memory for control, only in case of multiple configs */
++	if (num_params > 1) {
++		template.num_kcontrols = 1;
++		template.kcontrol_news =
++					snd_soc_dapm_alloc_kcontrol(card,
++						link_name, params, num_params,
++						w_param_text, &private_value);
++		if (!template.kcontrol_news) {
++			ret = -ENOMEM;
++			goto outfree_link_name;
++		}
++	}
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+ 
+ 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+@@ -3899,15 +3927,13 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	devm_kfree(card->dev, w);
+ outfree_kcontrol_news:
+ 	devm_kfree(card->dev, (void *)template.kcontrol_news);
+-outfree_private_value:
+ 	devm_kfree(card->dev, (void *)private_value);
+-outfree_link_name:
+-	devm_kfree(card->dev, link_name);
+ 	for (count = 0 ; count < num_params; count++)
+ 		devm_kfree(card->dev, (void *)w_param_text[count]);
+-outfree_w_param:
++outfree_link_name:
+ 	devm_kfree(card->dev, w_param_text);
+-
++param_fail:
++	devm_kfree(card->dev, link_name);
+ 	return ret;
+ }
+ 
+-- 
+2.5.4 (Apple Git-61)
