@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Make snd_soc_dapm_add/del_routes
-	use runtime mutex subclass" to the asoc tree
-Date: Mon, 25 Sep 2017 17:35:20 +0100 (BST)
-Message-ID: <20170925163521.039AA440052@finisterre.ee.mobilebroadband>
-References: <1505988132-9511-1-git-send-email-stuarth@opensource.cirrus.com>
+Subject: Re: [RFC PATCH 0/8] Prepare Sound Open Firmware (SOF)
+ driver integration
+Date: Mon, 25 Sep 2017 12:09:32 -0700
+Message-ID: <20170925190932.oxooh6cn7xrhr5zp@sirena.org.uk>
+References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8201169419176356398=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 76399266FD8
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:56 +0200 (CEST)
-In-Reply-To: <1505988132-9511-1-git-send-email-stuarth@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C7CA266EFE
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 21:10:14 +0200 (CEST)
+In-Reply-To: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stuart Henderson <stuarth@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: dapm: Make snd_soc_dapm_add/del_routes use runtime mutex subclass
+--===============8201169419176356398==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mcyiljlha3f7n6ac"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--mcyiljlha3f7n6ac
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Sep 08, 2017 at 03:56:54PM -0500, Pierre-Louis Bossart wrote:
+> The Sound Open Firmware work [1] is progressing quickly and drivers
+> for the 1.0 release will soon be submitted upstream. Before we do so,
+> there is a new to reshuffle the ACPI integration and Intel
+> Kconfig/Makefiles. This RFC is a preview of what's coming, feedback
+> would be greatly appreciated.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+No comments from any other Intel people?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--mcyiljlha3f7n6ac
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnJVGsACgkQJNaLcl1U
+h9C+6gf+LLIdtED8Xqzrm+1LprjkrkI9N3Ezs5HXVQFA6I8yS0SxSIyT+b1Nni7w
+cOL8lq4rv6yh7FvWfUGkcNS0MP1LXHWCOr/7s6Py0wfwkT7EVK0RcjfavSqojpKW
+ijpZ3WktjXZJsG/KS2onLMpLkHhhtzXPKPj+oZBlW6W6GNP66v6R1DZSc0w/R/nI
+HLLbdLrxZHv5R+YB28VxKySd3L0RSJnJiCxoByr984OcYM4Awr8sYrEt1f0PQst2
+JViN6YX7Ej31fc1+BlTaoL8FWCuU2G3ITJGa5sbcXjNlEJFpLD7m0Em0sgri6ogQ
+34JrYY+yk5JNUMPnYz7+o4H8TU/rqA==
+=K9Du
+-----END PGP SIGNATURE-----
 
->From f19c181f20cdfb2aa5f4a1bba095a008e34ed61b Mon Sep 17 00:00:00 2001
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
-Date: Thu, 21 Sep 2017 11:02:12 +0100
-Subject: [PATCH] ASoC: dapm: Make snd_soc_dapm_add/del_routes use runtime
- mutex subclass
+--mcyiljlha3f7n6ac--
 
-Make snd_soc_dapm_add_routes and snd_soc_dapm_del_routes use the
-SND_SOC_DAPM_CLASS_RUNTIME dapm subclass to allow dynamic dapm route
-updates.
+--===============8201169419176356398==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-dapm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d55cac655195..ba78a88d2af0 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2884,7 +2884,7 @@ int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
- {
- 	int i, r, ret = 0;
- 
--	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
-+	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	for (i = 0; i < num; i++) {
- 		r = snd_soc_dapm_add_route(dapm, route);
- 		if (r < 0) {
-@@ -2915,7 +2915,7 @@ int snd_soc_dapm_del_routes(struct snd_soc_dapm_context *dapm,
- {
- 	int i;
- 
--	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
-+	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
- 	for (i = 0; i < num; i++) {
- 		snd_soc_dapm_del_route(dapm, route);
- 		route++;
--- 
-2.14.1
+--===============8201169419176356398==--
