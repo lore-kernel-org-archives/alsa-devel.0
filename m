@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove unneeded dai->driver->ops check"
-	to the asoc tree
-Date: Mon, 25 Sep 2017 17:31:19 +0100 (BST)
-Message-ID: <20170925163119.97317440052@finisterre.ee.mobilebroadband>
-References: <87fubbpnry.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: remove unneeded dai->driver check" to
+	the asoc tree
+Date: Mon, 25 Sep 2017 17:31:20 +0100 (BST)
+Message-ID: <20170925163120.93528440053@finisterre.ee.mobilebroadband>
+References: <87h8vrpnsg.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A11C3266EEB
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:04 +0200 (CEST)
-In-Reply-To: <87fubbpnry.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 050C4266EEB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:09 +0200 (CEST)
+In-Reply-To: <87h8vrpnsg.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove unneeded dai->driver->ops check
+   ASoC: remove unneeded dai->driver check
 
 has been applied to the asoc tree at
 
@@ -53,193 +53,97 @@ to this mail.
 Thanks,
 Mark
 
->From 9900a4226c785dbb32c08af5ae8fbbf1fc4c31d0 Mon Sep 17 00:00:00 2001
+>From 464719255e095b0cc05a30b124f2cdc67a930d7f Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 25 Sep 2017 01:38:54 +0000
-Subject: [PATCH] ASoC: remove unneeded dai->driver->ops check
+Date: Mon, 25 Sep 2017 01:38:34 +0000
+Subject: [PATCH] ASoC: remove unneeded dai->driver check
 
-On soc_add_dai(), it uses null_dai_ops if driver doesn't have
-its own ops. This means, dai->driver->ops never been NULL.
-dai->driver->ops check is not needed.
+On soc_add_dai(), it is checking dai->driver->xxx,
+This means, dai->driver is mandatory, never been NULL.
+dai->driver check is not needed.
 This patch removes it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c |  8 ++++----
- sound/soc/soc-pcm.c  | 31 +++++++++++++++----------------
- 2 files changed, 19 insertions(+), 20 deletions(-)
+ sound/soc/soc-core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index dcef67a9bd48..9d4748e2b67a 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3681,7 +3681,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
--		if (source->driver->ops && source->driver->ops->startup) {
-+		if (source->driver->ops->startup) {
- 			ret = source->driver->ops->startup(&substream, source);
- 			if (ret < 0) {
- 				dev_err(source->dev,
-@@ -3695,7 +3695,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 			goto out;
- 
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
--		if (sink->driver->ops && sink->driver->ops->startup) {
-+		if (sink->driver->ops->startup) {
- 			ret = sink->driver->ops->startup(&substream, sink);
- 			if (ret < 0) {
- 				dev_err(sink->dev,
-@@ -3725,13 +3725,13 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		ret = 0;
- 
- 		source->active--;
--		if (source->driver->ops && source->driver->ops->shutdown) {
-+		if (source->driver->ops->shutdown) {
- 			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
- 			source->driver->ops->shutdown(&substream, source);
- 		}
- 
- 		sink->active--;
--		if (sink->driver->ops && sink->driver->ops->shutdown) {
-+		if (sink->driver->ops->shutdown) {
- 			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
- 			sink->driver->ops->shutdown(&substream, sink);
- 		}
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index f11421f08065..983edd0e6e8f 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -474,7 +474,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
- 	/* startup the audio subsystem */
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->startup) {
-+	if (cpu_dai->driver->ops->startup) {
- 		ret = cpu_dai->driver->ops->startup(substream, cpu_dai);
- 		if (ret < 0) {
- 			dev_err(cpu_dai->dev, "ASoC: can't open interface"
-@@ -494,7 +494,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops && codec_dai->driver->ops->startup) {
-+		if (codec_dai->driver->ops->startup) {
- 			ret = codec_dai->driver->ops->startup(substream,
- 							      codec_dai);
- 			if (ret < 0) {
-@@ -771,7 +771,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops && codec_dai->driver->ops->prepare) {
-+		if (codec_dai->driver->ops->prepare) {
- 			ret = codec_dai->driver->ops->prepare(substream,
- 							      codec_dai);
- 			if (ret < 0) {
-@@ -783,7 +783,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 		}
- 	}
- 
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->prepare) {
-+	if (cpu_dai->driver->ops->prepare) {
- 		ret = cpu_dai->driver->ops->prepare(substream, cpu_dai);
- 		if (ret < 0) {
- 			dev_err(cpu_dai->dev,
-@@ -829,7 +829,7 @@ int soc_dai_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 091ebe198194..e16220600e51 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2631,7 +2631,7 @@ EXPORT_SYMBOL_GPL(snd_soc_add_dai_controls);
+ int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	unsigned int freq, int dir)
  {
- 	int ret;
+-	if (dai->driver && dai->driver->ops->set_sysclk)
++	if (dai->driver->ops->set_sysclk)
+ 		return dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
  
--	if (dai->driver->ops && dai->driver->ops->hw_params) {
-+	if (dai->driver->ops->hw_params) {
- 		ret = dai->driver->ops->hw_params(substream, params, dai);
- 		if (ret < 0) {
- 			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
-@@ -934,7 +934,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
+ 	return snd_soc_component_set_sysclk(dai->component, clk_id, 0,
+@@ -2699,7 +2699,7 @@ EXPORT_SYMBOL_GPL(snd_soc_component_set_sysclk);
+ int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
+ 	int div_id, int div)
+ {
+-	if (dai->driver && dai->driver->ops->set_clkdiv)
++	if (dai->driver->ops->set_clkdiv)
+ 		return dai->driver->ops->set_clkdiv(dai, div_id, div);
+ 	else
+ 		return -EINVAL;
+@@ -2719,7 +2719,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
+ int snd_soc_dai_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 	unsigned int freq_in, unsigned int freq_out)
+ {
+-	if (dai->driver && dai->driver->ops->set_pll)
++	if (dai->driver->ops->set_pll)
+ 		return dai->driver->ops->set_pll(dai, pll_id, source,
+ 					 freq_in, freq_out);
  
- platform_err:
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->hw_free)
-+	if (cpu_dai->driver->ops->hw_free)
- 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+@@ -2785,7 +2785,7 @@ EXPORT_SYMBOL_GPL(snd_soc_component_set_pll);
+  */
+ int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
+ {
+-	if (dai->driver && dai->driver->ops->set_bclk_ratio)
++	if (dai->driver->ops->set_bclk_ratio)
+ 		return dai->driver->ops->set_bclk_ratio(dai, ratio);
+ 	else
+ 		return -EINVAL;
+@@ -2859,7 +2859,7 @@ static int snd_soc_xlate_tdm_slot_mask(unsigned int slots,
+ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
+ {
+-	if (dai->driver && dai->driver->ops->xlate_tdm_slot_mask)
++	if (dai->driver->ops->xlate_tdm_slot_mask)
+ 		dai->driver->ops->xlate_tdm_slot_mask(slots,
+ 						&tx_mask, &rx_mask);
+ 	else
+@@ -2868,7 +2868,7 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	dai->tx_mask = tx_mask;
+ 	dai->rx_mask = rx_mask;
  
- interface_err:
-@@ -943,7 +943,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- codec_err:
- 	while (--i >= 0) {
- 		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops && codec_dai->driver->ops->hw_free)
-+		if (codec_dai->driver->ops->hw_free)
- 			codec_dai->driver->ops->hw_free(substream, codec_dai);
- 		codec_dai->rate = 0;
- 	}
-@@ -1004,11 +1004,11 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 	/* now free hw params for the DAIs  */
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops && codec_dai->driver->ops->hw_free)
-+		if (codec_dai->driver->ops->hw_free)
- 			codec_dai->driver->ops->hw_free(substream, codec_dai);
- 	}
- 
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->hw_free)
-+	if (cpu_dai->driver->ops->hw_free)
- 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
- 
- 	mutex_unlock(&rtd->pcm_mutex);
-@@ -1025,7 +1025,7 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops && codec_dai->driver->ops->trigger) {
-+		if (codec_dai->driver->ops->trigger) {
- 			ret = codec_dai->driver->ops->trigger(substream,
- 							      cmd, codec_dai);
- 			if (ret < 0)
-@@ -1039,7 +1039,7 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 			return ret;
- 	}
- 
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->trigger) {
-+	if (cpu_dai->driver->ops->trigger) {
- 		ret = cpu_dai->driver->ops->trigger(substream, cmd, cpu_dai);
- 		if (ret < 0)
- 			return ret;
-@@ -1064,8 +1064,7 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops &&
--		    codec_dai->driver->ops->bespoke_trigger) {
-+		if (codec_dai->driver->ops->bespoke_trigger) {
- 			ret = codec_dai->driver->ops->bespoke_trigger(substream,
- 								cmd, codec_dai);
- 			if (ret < 0)
-@@ -1073,7 +1072,7 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
- 		}
- 	}
- 
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->bespoke_trigger) {
-+	if (cpu_dai->driver->ops->bespoke_trigger) {
- 		ret = cpu_dai->driver->ops->bespoke_trigger(substream, cmd, cpu_dai);
- 		if (ret < 0)
- 			return ret;
-@@ -1100,12 +1099,12 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 	if (platform->driver->ops && platform->driver->ops->pointer)
- 		offset = platform->driver->ops->pointer(substream);
- 
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->delay)
-+	if (cpu_dai->driver->ops->delay)
- 		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
--		if (codec_dai->driver->ops && codec_dai->driver->ops->delay)
-+		if (codec_dai->driver->ops->delay)
- 			codec_delay = max(codec_delay,
- 					codec_dai->driver->ops->delay(substream,
- 								    codec_dai));
+-	if (dai->driver && dai->driver->ops->set_tdm_slot)
++	if (dai->driver->ops->set_tdm_slot)
+ 		return dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
+ 				slots, slot_width);
+ 	else
+@@ -2892,7 +2892,7 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
+ 	unsigned int tx_num, unsigned int *tx_slot,
+ 	unsigned int rx_num, unsigned int *rx_slot)
+ {
+-	if (dai->driver && dai->driver->ops->set_channel_map)
++	if (dai->driver->ops->set_channel_map)
+ 		return dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
+ 			rx_num, rx_slot);
+ 	else
+@@ -2909,7 +2909,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
+  */
+ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
+ {
+-	if (dai->driver && dai->driver->ops->set_tristate)
++	if (dai->driver->ops->set_tristate)
+ 		return dai->driver->ops->set_tristate(dai, tristate);
+ 	else
+ 		return -EINVAL;
 -- 
 2.14.1
