@@ -1,44 +1,43 @@
-From: Dmitry Osipenko <digetx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] sound: tegra20-spdif: remove "default m"
-Date: Mon, 25 Sep 2017 23:37:03 +0300
-Message-ID: <7d0c10d2-f6a9-eec1-131c-eb60a0f428b4@gmail.com>
-References: <c765842d4cc6af91ae0d6977922e6ae6f6e1dfa8.1505661134.git.mirq-linux@rere.qmqm.pl>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [RFC PATCH 0/8] Prepare Sound Open Firmware (SOF)
+ driver integration
+Date: Mon, 25 Sep 2017 22:49:47 +0100
+Message-ID: <1506376187.22028.210.camel@loki>
+References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
+ <20170925190932.oxooh6cn7xrhr5zp@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <c765842d4cc6af91ae0d6977922e6ae6f6e1dfa8.1505661134.git.mirq-linux-CoA6ZxLDdyEEUmgCuDUIdw@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux-CoA6ZxLDdyEEUmgCuDUIdw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Hunter <jonathanh-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C689267045
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 23:49:58 +0200 (CEST)
+In-Reply-To: <20170925190932.oxooh6cn7xrhr5zp@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 17.09.2017 18:15, Michał Mirosław wrote:
-> Default != n for drivers is frowned upon. This is the only one among
-> tegra sound drivers that was different.
+On Mon, 2017-09-25 at 12:09 -0700, Mark Brown wrote:
+> On Fri, Sep 08, 2017 at 03:56:54PM -0500, Pierre-Louis Bossart wrote:
+> > The Sound Open Firmware work [1] is progressing quickly and drivers
+> > for the 1.0 release will soon be submitted upstream. Before we do so,
+> > there is a new to reshuffle the ACPI integration and Intel
+> > Kconfig/Makefiles. This RFC is a preview of what's coming, feedback
+> > would be greatly appreciated.
 > 
-> Signed-off-by: Michał Mirosław <mirq-linux-CoA6ZxLDdyEEUmgCuDUIdw@public.gmane.org>
-> ---
->  sound/soc/tegra/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-> index 6875fc39a575..6c893c677110 100644
-> --- a/sound/soc/tegra/Kconfig
-> +++ b/sound/soc/tegra/Kconfig
-> @@ -38,7 +38,6 @@ config SND_SOC_TEGRA20_I2S
->  config SND_SOC_TEGRA20_SPDIF
->  	tristate "Tegra20 SPDIF interface"
->  	depends on SND_SOC_TEGRA
-> -	default m
->  	help
->  	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
->  	  You will also need to select the individual machine drivers to support
-> 
+> No comments from any other Intel people?
 
-IIUC this driver should be integrated with the Tegra DRM to be useful. Making it
-built-in by default would just increase kernels size.
+Its all good for me. 
 
--- 
-Dmitry
+All,
+
+Ack-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
