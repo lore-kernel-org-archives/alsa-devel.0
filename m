@@ -1,13 +1,29 @@
 From: Andrey Konovalov <andreyknvl@google.com>
-Subject: usb/sound/line6: warning in line6_start_listen/usb_submit_urb
-Date: Mon, 25 Sep 2017 14:40:03 +0200
-Message-ID: <CAAeHK+w9Ntxc0nMAQVcYci=o6y3OrB_MAFNPdHsjoTxMoT8pkw@mail.gmail.com>
+Subject: usb/sound/line6: trying to register non-static key in
+	podhd_disconnect
+Date: Mon, 25 Sep 2017 14:40:08 +0200
+Message-ID: <CAAeHK+xtqQRSmDa8ycdYGQrQ0zXBrTrwGVanWgQw7Z+Utc7csQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Dan Carpenter <dan.carpenter@oracle.com>, Andrej Krutak <dev@andree.sk>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3886266E4C
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 14:40:10 +0200 (CEST)
+Received: by mail-oi0-f42.google.com with SMTP id a74so6621600oib.3
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 05:40:10 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?Q?Hans_P=2E_M=C3=B6ller_Ebner?= <hmoller@uc.cl>, Andrej Krutak <dev@andree.sk>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Dmitry Vyukov <dvyukov@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi!
@@ -16,31 +32,22 @@ I've got the following report while fuzzing the kernel with syzkaller.
 
 On commit e19b205be43d11bff638cad4487008c48d21c103 (4.14-rc2).
 
-It seems there's no check on the actual endpoint type.
-
-usb 1-1: BOGUS urb xfer, pipe 3 != type 1
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:449
-usb_submit_urb+0xf8a/0x11d0
-Modules linked in:
-CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 4.14.0-rc2-42613-g1488251d1a98 #238
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 1 PID: 1845 Comm: kworker/1:2 Not tainted
+4.14.0-rc2-42613-g1488251d1a98 #238
 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
 Workqueue: usb_hub_wq hub_event
-task: ffff88006befe300 task.stack: ffff88006bf78000
-RIP: 0010:usb_submit_urb+0xf8a/0x11d0 drivers/usb/core/urb.c:448
-RSP: 0018:ffff88006bf7e218 EFLAGS: 00010286
-RAX: 0000000000000029 RBX: ffff88006a878200 RCX: 0000000000000000
-RDX: 0000000000000029 RSI: ffffffff85876dc0 RDI: ffffed000d7efc35
-RBP: ffff88006bf7e318 R08: 1ffff1000d7efadb R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000000 R12: 1ffff1000d7efc4a
-R13: 0000000000000001 R14: 0000000000000003 R15: ffff88006902d7f8
-FS:  0000000000000000(0000) GS:ffff88006c800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000001904fa0 CR3: 0000000062019000 CR4: 00000000000006f0
 Call Trace:
- line6_start_listen+0x55f/0x9e0 sound/usb/line6/driver.c:82
- line6_init_cap_control sound/usb/line6/driver.c:690
- line6_probe+0x7c9/0x1310 sound/usb/line6/driver.c:764
+ __dump_stack lib/dump_stack.c:16
+ dump_stack+0x292/0x395 lib/dump_stack.c:52
+ register_lock_class+0x6c4/0x1a00 kernel/locking/lockdep.c:769
+ __lock_acquire+0x27e/0x4550 kernel/locking/lockdep.c:3385
+ lock_acquire+0x259/0x620 kernel/locking/lockdep.c:4002
+ del_timer_sync+0x12c/0x280 kernel/time/timer.c:1237
+ podhd_disconnect+0x8c/0x160 sound/usb/line6/podhd.c:299
+ line6_probe+0x844/0x1310 sound/usb/line6/driver.c:783
  podhd_probe+0x64/0x70 sound/usb/line6/podhd.c:474
  usb_probe_interface+0x35d/0x8e0 drivers/usb/core/driver.c:361
  really_probe drivers/base/dd.c:413
@@ -71,7 +78,3 @@ Call Trace:
  worker_thread+0x221/0x1850 kernel/workqueue.c:2253
  kthread+0x3a1/0x470 kernel/kthread.c:231
  ret_from_fork+0x2a/0x40 arch/x86/entry/entry_64.S:431
-Code: 48 8b 85 30 ff ff ff 48 8d b8 98 00 00 00 e8 6e 91 8b ff 45 89
-e8 44 89 f1 4c 89 fa 48 89 c6 48 c7 c7 c0 5a c8 85 e8 10 50 dd fd <0f>
-ff e9 9b f7 ff ff e8 ba cf 26 fe e9 80 f7 ff ff e8 a0 a5 f4
----[ end trace 29c2f0b769cf6f62 ]---
