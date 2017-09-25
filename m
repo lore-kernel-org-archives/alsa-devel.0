@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH 0/8] Prepare Sound Open Firmware (SOF)
- driver integration
-Date: Mon, 25 Sep 2017 12:09:32 -0700
-Message-ID: <20170925190932.oxooh6cn7xrhr5zp@sirena.org.uk>
-References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: max98927: Added support for
+ DSP_A and DSP_B format
+Date: Mon, 25 Sep 2017 12:47:35 -0700
+Message-ID: <20170925194735.mzfiisvynwh32y2y@sirena.org.uk>
+References: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8201169419176356398=="
+Content-Type: multipart/mixed; boundary="===============5217563771640247235=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C7CA266EFE
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 21:10:14 +0200 (CEST)
-In-Reply-To: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 540DB266EFE
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 21:48:10 +0200 (CEST)
+In-Reply-To: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vinod.koul@intel.com
+To: Ryan Lee <ryans.lee@maximintegrated.com>
+Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8201169419176356398==
+--===============5217563771640247235==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mcyiljlha3f7n6ac"
+	protocol="application/pgp-signature"; boundary="ponmiwaxlgyibwis"
 Content-Disposition: inline
 
 
---mcyiljlha3f7n6ac
+--ponmiwaxlgyibwis
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 08, 2017 at 03:56:54PM -0500, Pierre-Louis Bossart wrote:
-> The Sound Open Firmware work [1] is progressing quickly and drivers
-> for the 1.0 release will soon be submitted upstream. Before we do so,
-> there is a new to reshuffle the ACPI integration and Intel
-> Kconfig/Makefiles. This RFC is a preview of what's coming, feedback
-> would be greatly appreciated.
+On Thu, Sep 14, 2017 at 05:30:36PM -0700, Ryan Lee wrote:
+> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 
-No comments from any other Intel people?
+This thread consists of four patches, two numbered 1/2 and two numbered
+2/2.  Obviously this is quite confusing to read.  Please spend some time
+working through the patch submission process, perhaps try sending some
+of these things to yourself off-list to verify things are working and
+look like other people's submissions - there are consistently big
+problems with what you're sending.
 
---mcyiljlha3f7n6ac
+--ponmiwaxlgyibwis
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnJVGsACgkQJNaLcl1U
-h9C+6gf+LLIdtED8Xqzrm+1LprjkrkI9N3Ezs5HXVQFA6I8yS0SxSIyT+b1Nni7w
-cOL8lq4rv6yh7FvWfUGkcNS0MP1LXHWCOr/7s6Py0wfwkT7EVK0RcjfavSqojpKW
-ijpZ3WktjXZJsG/KS2onLMpLkHhhtzXPKPj+oZBlW6W6GNP66v6R1DZSc0w/R/nI
-HLLbdLrxZHv5R+YB28VxKySd3L0RSJnJiCxoByr984OcYM4Awr8sYrEt1f0PQst2
-JViN6YX7Ej31fc1+BlTaoL8FWCuU2G3ITJGa5sbcXjNlEJFpLD7m0Em0sgri6ogQ
-34JrYY+yk5JNUMPnYz7+o4H8TU/rqA==
-=K9Du
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnJXVYACgkQJNaLcl1U
+h9BmRAf/YiB5HhORg7o2PgG9QKpMPR1xs20ycIaZM7nDR5UWR1kB1V6B3psn3dhY
+Igl7UXLXyrXdXqgknV11OIoV4YTvggV+0DX7ECAxNqXwtLI3z3Iw5MVS4xKWCBIa
+P8ZPPBOAOoCNUU3mg3JZPzLNmghJM2TYURolRlIOWmuzGv/guhH7ezYJVOUVQsq4
+5Jsn+lp3Z9sgyxQULeZVYJS/720v8icR/hndNq6C3LDPmcb2NiFPeJcLo4HLSqrW
+UVQxeErF0NZSjQBcWUkLSj5LVIATFgmeh5Uxn0voLTYUc4lW5Bs8mmY+VTUVLxr2
+BE+ZhH8YThf+fyBh35xNtBR1pGkxZA==
+=Hjww
 -----END PGP SIGNATURE-----
 
---mcyiljlha3f7n6ac--
+--ponmiwaxlgyibwis--
 
---===============8201169419176356398==
+--===============5217563771640247235==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8201169419176356398==--
+--===============5217563771640247235==--
