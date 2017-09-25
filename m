@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: max98927: Added support for
- DSP_A and DSP_B format
-Date: Mon, 25 Sep 2017 12:47:35 -0700
-Message-ID: <20170925194735.mzfiisvynwh32y2y@sirena.org.uk>
-References: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
+Subject: Applied "ASoC: max98927: Added max98927_dai_tdm_slot
+	function" to the asoc tree
+Date: Mon, 25 Sep 2017 20:48:47 +0100 (BST)
+Message-ID: <20170925194847.6F1D3440053@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5217563771640247235=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 540DB266EFE
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 21:48:10 +0200 (CEST)
-In-Reply-To: <1505435439-18012-1-git-send-email-ryans.lee@maximintegrated.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 43E3D26705E
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 21:49:21 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,218 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Ryan Lee <ryans.lee@maximintegrated.com>
-Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5217563771640247235==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ponmiwaxlgyibwis"
-Content-Disposition: inline
+   ASoC: max98927: Added max98927_dai_tdm_slot function
 
+has been applied to the asoc tree at
 
---ponmiwaxlgyibwis
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Sep 14, 2017 at 05:30:36PM -0700, Ryan Lee wrote:
-> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This thread consists of four patches, two numbered 1/2 and two numbered
-2/2.  Obviously this is quite confusing to read.  Please spend some time
-working through the patch submission process, perhaps try sending some
-of these things to yourself off-list to verify things are working and
-look like other people's submissions - there are consistently big
-problems with what you're sending.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---ponmiwaxlgyibwis
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnJXVYACgkQJNaLcl1U
-h9BmRAf/YiB5HhORg7o2PgG9QKpMPR1xs20ycIaZM7nDR5UWR1kB1V6B3psn3dhY
-Igl7UXLXyrXdXqgknV11OIoV4YTvggV+0DX7ECAxNqXwtLI3z3Iw5MVS4xKWCBIa
-P8ZPPBOAOoCNUU3mg3JZPzLNmghJM2TYURolRlIOWmuzGv/guhH7ezYJVOUVQsq4
-5Jsn+lp3Z9sgyxQULeZVYJS/720v8icR/hndNq6C3LDPmcb2NiFPeJcLo4HLSqrW
-UVQxeErF0NZSjQBcWUkLSj5LVIATFgmeh5Uxn0voLTYUc4lW5Bs8mmY+VTUVLxr2
-BE+ZhH8YThf+fyBh35xNtBR1pGkxZA==
-=Hjww
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---ponmiwaxlgyibwis--
+>From d4a8bce81cbd53420988f5db0d096ad04960f189 Mon Sep 17 00:00:00 2001
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Date: Thu, 14 Sep 2017 17:30:39 -0700
+Subject: [PATCH] ASoC: max98927: Added max98927_dai_tdm_slot function
 
---===============5217563771640247235==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98927.c | 120 ++++++++++++++++++++++++++++++++++++++------
+ sound/soc/codecs/max98927.h |   1 +
+ 2 files changed, 105 insertions(+), 16 deletions(-)
 
-
---===============5217563771640247235==--
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index 6f7b3ef48e25..a1d39353719d 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -250,6 +250,21 @@ static const int rate_table[] = {
+ 	13000000, 19200000,
+ };
+ 
++/* BCLKs per LRCLK */
++static const int bclk_sel_table[] = {
++	32, 48, 64, 96, 128, 192, 256, 384, 512,
++};
++
++static int max98927_get_bclk_sel(int bclk)
++{
++	int i;
++	/* match BCLKs per LRCLK */
++	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
++		if (bclk_sel_table[i] == bclk)
++			return i + 2;
++	}
++	return 0;
++}
+ static int max98927_set_clock(struct max98927_priv *max98927,
+ 	struct snd_pcm_hw_params *params)
+ {
+@@ -275,23 +290,20 @@ static int max98927_set_clock(struct max98927_priv *max98927,
+ 			i << MAX98927_PCM_MASTER_MODE_MCLK_RATE_SHIFT);
+ 	}
+ 
+-	switch (blr_clk_ratio) {
+-	case 32:
+-		value = 2;
+-		break;
+-	case 48:
+-		value = 3;
+-		break;
+-	case 64:
+-		value = 4;
+-		break;
+-	default:
+-		return -EINVAL;
++	if (!max98927->tdm_mode) {
++		/* BCLK configuration */
++		value = max98927_get_bclk_sel(blr_clk_ratio);
++		if (!value) {
++			dev_err(codec->dev, "format unsupported %d\n",
++				params_format(params));
++			return -EINVAL;
++		}
++
++		regmap_update_bits(max98927->regmap,
++			MAX98927_R0022_PCM_CLK_SETUP,
++			MAX98927_PCM_CLK_SETUP_BSEL_MASK,
++			value);
+ 	}
+-	regmap_update_bits(max98927->regmap,
+-		MAX98927_R0022_PCM_CLK_SETUP,
+-		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
+-		value);
+ 	return 0;
+ }
+ 
+@@ -391,6 +403,78 @@ static int max98927_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return -EINVAL;
+ }
+ 
++static int max98927_dai_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask,
++	int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
++	int bsel = 0;
++	unsigned int chan_sz = 0;
++
++	max98927->tdm_mode = true;
++
++	/* BCLK configuration */
++	bsel = max98927_get_bclk_sel(slots * slot_width);
++	if (bsel == 0) {
++		dev_err(codec->dev, "BCLK %d not supported\n",
++			slots * slot_width);
++		return -EINVAL;
++	}
++
++	regmap_update_bits(max98927->regmap,
++		MAX98927_R0022_PCM_CLK_SETUP,
++		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
++		bsel);
++
++	/* Channel size configuration */
++	switch (slot_width) {
++	case 16:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_16;
++		break;
++	case 24:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_24;
++		break;
++	case 32:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_32;
++		break;
++	default:
++		dev_err(codec->dev, "format unsupported %d\n",
++			slot_width);
++		return -EINVAL;
++	}
++
++	regmap_update_bits(max98927->regmap,
++		MAX98927_R0020_PCM_MODE_CFG,
++		MAX98927_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
++
++	/* Rx slot configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R0018_PCM_RX_EN_A,
++		rx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R0019_PCM_RX_EN_B,
++		(rx_mask & 0xFF00) >> 8);
++
++	/* Tx slot configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R001A_PCM_TX_EN_A,
++		tx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R001B_PCM_TX_EN_B,
++		(tx_mask & 0xFF00) >> 8);
++
++	/* Tx slot Hi-Z configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R001C_PCM_TX_HIZ_CTRL_A,
++		~tx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R001D_PCM_TX_HIZ_CTRL_B,
++		(~tx_mask & 0xFF00) >> 8);
++
++	return 0;
++}
++
+ #define MAX98927_RATES SNDRV_PCM_RATE_8000_48000
+ 
+ #define MAX98927_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -410,6 +494,7 @@ static const struct snd_soc_dai_ops max98927_dai_ops = {
+ 	.set_sysclk = max98927_dai_set_sysclk,
+ 	.set_fmt = max98927_dai_set_fmt,
+ 	.hw_params = max98927_dai_hw_params,
++	.set_tdm_slot = max98927_dai_tdm_slot,
+ };
+ 
+ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
+@@ -419,6 +504,9 @@ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
+ 	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		max98927->tdm_mode = 0;
++		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R003A_AMP_EN,
+diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+index bf7a6f92562a..9ea839735433 100644
+--- a/sound/soc/codecs/max98927.h
++++ b/sound/soc/codecs/max98927.h
+@@ -270,5 +270,6 @@ struct max98927_priv {
+ 	unsigned int iface;
+ 	unsigned int master;
+ 	unsigned int digital_gain;
++	bool tdm_mode;
+ };
+ #endif
+-- 
+2.14.1
