@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98927: Added support for DSP_A and
-	DSP_B format" to the asoc tree
-Date: Mon, 25 Sep 2017 20:48:48 +0100 (BST)
-Message-ID: <20170925194848.39C3F440055@finisterre.ee.mobilebroadband>
+From: anish kumar <yesanishhere@gmail.com>
+Subject: Re: [Resend] [PATCH v1 3/4] ASoC: dapm: Avoid creating
+	kcontrol for params
+Date: Mon, 25 Sep 2017 13:22:07 -0700
+Message-ID: <CABCoZhB-jxC_AF69d7dK-bbQZ2i24=CgE6ti2r=9L1q9xvYqDA@mail.gmail.com>
+References: <1506066940-56758-1-git-send-email-yesanishhere@gmail.com>
+ <20170925130955.utj7e4vgg5ze2zs7@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 443D926705F
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 21:49:21 +0200 (CEST)
-In-Reply-To: 
+Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
+ [209.85.213.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 574BF266991
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 22:22:09 +0200 (CEST)
+Received: by mail-vk0-f66.google.com with SMTP id j189so2207595vka.0
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 13:22:08 -0700 (PDT)
+In-Reply-To: <20170925130955.utj7e4vgg5ze2zs7@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,159 +25,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ryan Lee <ryans.lee@maximintegrated.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Sep 25, 2017 at 6:09 AM, Charles Keepax
+<ckeepax@opensource.cirrus.com> wrote:
+> On Fri, Sep 22, 2017 at 12:55:40AM -0700, yesanishhere@gmail.com wrote:
+>> From: anish kumar <yesanishhere@gmail.com>
+>>
+>> Currently in codec to codec dai link if there are multiple
+>> params defined then dapm can use created kcontrol to
+>> decide which param to apply at runtime.
+>>
+>> However, in case there is only single param configuration
+>> then there is no point in creating the kcontrol and also there
+>> is no point in allocating memory for kcontrol.
+>>
+>> In the snd_soc_dapm_new_pcm function, there is memory
+>> allocation happening for kcontrol which is later used
+>> or not used based on num_param. It is better to not
+>> allocate memory when there is only a single configuration.
+>> This change is to remedy that anomaly.
+>>
+>> Signed-off-by: anish kumar <yesanishhere@gmail.com>
+>> ---
+> <snip>
+>> +int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>> +                      const struct snd_soc_pcm_stream *params,
+>> +                      unsigned int num_params,
+>> +                      struct snd_soc_dapm_widget *source,
+>> +                      struct snd_soc_dapm_widget *sink)
+>> +{
+>> +     struct snd_soc_dapm_widget template;
+>> +     struct snd_soc_dapm_widget *w;
+>> +     const char **w_param_text;
+>> +     unsigned long private_value;
+>> +     char *link_name;
+>> +     int ret, count;
+>> +
+>> +     link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
+>> +                                source->name, sink->name);
+>> +     if (!link_name)
+>> +             return -ENOMEM;
+>> +
+>> +     memset(&template, 0, sizeof(template));
+>> +     template.reg = SND_SOC_NOPM;
+>> +     template.id = snd_soc_dapm_dai_link;
+>> +     template.name = link_name;
+>> +     template.event = snd_soc_dai_link_event;
+>> +     template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+>> +             SND_SOC_DAPM_PRE_PMD;
+>> +     template.kcontrol_news = NULL;
+>> +
+>> +     w_param_text = devm_kcalloc(card->dev, num_params,
+>> +                             sizeof(char *), GFP_KERNEL);
+>> +     if (!w_param_text) {
+>> +             ret = -ENOMEM;
+>> +             goto param_fail;
+>> +     }
+>
+> Should this not also be done conditionally based on num_params?
+> Seems odd to do all this to avoid allocations but then alloc this
+> regardless of if it is used.
 
-   ASoC: max98927: Added support for DSP_A and DSP_B format
+Nice catch.
+>
+>> +
+>> +     /* allocate memory for control, only in case of multiple configs */
+>> +     if (num_params > 1) {
+>> +             template.num_kcontrols = 1;
+>> +             template.kcontrol_news =
+>> +                                     snd_soc_dapm_alloc_kcontrol(card,
+>> +                                             link_name, params, num_params,
+>> +                                             w_param_text, &private_value);
+>> +             if (!template.kcontrol_news) {
+>> +                     ret = -ENOMEM;
+>> +                     goto outfree_link_name;
+>> +             }
+>> +     }
+>>       dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+>>
+>>       w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+>> @@ -3899,15 +3927,13 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>>       devm_kfree(card->dev, w);
+>>  outfree_kcontrol_news:
+>>       devm_kfree(card->dev, (void *)template.kcontrol_news);
+>> -outfree_private_value:
+>>       devm_kfree(card->dev, (void *)private_value);
+>> -outfree_link_name:
+>> -     devm_kfree(card->dev, link_name);
+>>       for (count = 0 ; count < num_params; count++)
+>>               devm_kfree(card->dev, (void *)w_param_text[count]);
+>
+> Do we maybe just want to add a snd_soc_dapm_free_kcontrol or some
+> such and call that from both places rather than having basically
+> the same error path in snd_soc_dapm_alloc_kcontrol and here.
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4eee20246c0fa77a7a7b189ac806d5f78d675546 Mon Sep 17 00:00:00 2001
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Date: Thu, 14 Sep 2017 17:30:38 -0700
-Subject: [PATCH] ASoC: max98927: Added support for DSP_A and DSP_B format
-
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/max98927.c | 35 ++++++++++++++++++++---------------
- sound/soc/codecs/max98927.h |  6 ++++--
- 2 files changed, 24 insertions(+), 17 deletions(-)
-
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index d9dbbe72f8ad..6f7b3ef48e25 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -1,7 +1,7 @@
- /*
-  * max98927.c  --  MAX98927 ALSA Soc Audio driver
-  *
-- * Copyright (C) 2016 Maxim Integrated Products
-+ * Copyright (C) 2016-2017 Maxim Integrated Products
-  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-@@ -146,6 +146,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int mode = 0;
- 	unsigned int format = 0;
-+	bool use_pdm = false;
- 	unsigned int invert = 0;
- 
- 	dev_dbg(codec->dev, "%s: fmt 0x%08X\n", __func__, fmt);
-@@ -187,22 +188,27 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
--		max98927->iface |= SND_SOC_DAIFMT_I2S;
- 		format = MAX98927_PCM_FORMAT_I2S;
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
--		max98927->iface |= SND_SOC_DAIFMT_LEFT_J;
- 		format = MAX98927_PCM_FORMAT_LJ;
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format = MAX98927_PCM_FORMAT_TDM_MODE1;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		format = MAX98927_PCM_FORMAT_TDM_MODE0;
-+		break;
- 	case SND_SOC_DAIFMT_PDM:
--		max98927->iface |= SND_SOC_DAIFMT_PDM;
-+		use_pdm = true;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
-+	max98927->iface = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 
--	/* pcm channel configuration */
--	if (max98927->iface & (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J)) {
-+	if (!use_pdm) {
-+		/* pcm channel configuration */
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R0018_PCM_RX_EN_A,
- 			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN,
-@@ -217,13 +223,11 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 			MAX98927_R003B_SPK_SRC_SEL,
- 			MAX98927_SPK_SRC_MASK, 0);
- 
--	} else
- 		regmap_update_bits(max98927->regmap,
--			MAX98927_R0018_PCM_RX_EN_A,
--			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
--
--	/* pdm channel configuration */
--	if (max98927->iface & SND_SOC_DAIFMT_PDM) {
-+			MAX98927_R0035_PDM_RX_CTRL,
-+			MAX98927_PDM_RX_EN_MASK, 0);
-+	} else {
-+		/* pdm channel configuration */
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R0035_PDM_RX_CTRL,
- 			MAX98927_PDM_RX_EN_MASK, 1);
-@@ -231,10 +235,11 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 		regmap_update_bits(max98927->regmap,
- 			MAX98927_R003B_SPK_SRC_SEL,
- 			MAX98927_SPK_SRC_MASK, 3);
--	} else
-+
- 		regmap_update_bits(max98927->regmap,
--			MAX98927_R0035_PDM_RX_CTRL,
--			MAX98927_PDM_RX_EN_MASK, 0);
-+			MAX98927_R0018_PCM_RX_EN_A,
-+			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
-+	}
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
-index ece6a608cbe1..bf7a6f92562a 100644
---- a/sound/soc/codecs/max98927.h
-+++ b/sound/soc/codecs/max98927.h
-@@ -1,7 +1,7 @@
- /*
-  * max98927.h  --  MAX98927 ALSA Soc Audio driver
-  *
-- * Copyright 2013-15 Maxim Integrated Products
-+ * Copyright (C) 2016-2017 Maxim Integrated Products
-  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-@@ -161,7 +161,9 @@
- #define MAX98927_PCM_MODE_CFG_FORMAT_SHIFT (3)
- #define MAX98927_PCM_FORMAT_I2S (0x0 << 0)
- #define MAX98927_PCM_FORMAT_LJ (0x1 << 0)
--
-+#define MAX98927_PCM_FORMAT_TDM_MODE0 (0x3 << 0)
-+#define MAX98927_PCM_FORMAT_TDM_MODE1 (0x4 << 0)
-+#define MAX98927_PCM_FORMAT_TDM_MODE2 (0x5 << 0)
- #define MAX98927_PCM_MODE_CFG_CHANSZ_MASK (0x3 << 6)
- #define MAX98927_PCM_MODE_CFG_CHANSZ_16 (0x1 << 6)
- #define MAX98927_PCM_MODE_CFG_CHANSZ_24 (0x2 << 6)
--- 
-2.14.1
+Sure. Let me re-spin it.
+>
+>> -outfree_w_param:
+>> +outfree_link_name:
+>>       devm_kfree(card->dev, w_param_text);
+>> -
+>> +param_fail:
+>> +     devm_kfree(card->dev, link_name);
+>>       return ret;
+>>  }
+>>
+>> --
+>> 2.5.4 (Apple Git-61)
+>
+> Thanks,
+> Charles
