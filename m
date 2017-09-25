@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: Change the dev getting function
-	in rt5663_irq" to the asoc tree
-Date: Mon, 25 Sep 2017 17:16:28 +0100 (BST)
-Message-ID: <20170925161628.69522440056@finisterre.ee.mobilebroadband>
-References: <1506309065-25802-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rt5670: refactor DMI quirks and fix
+	Dell Venue settings" to the asoc tree
+Date: Mon, 25 Sep 2017 17:16:27 +0100 (BST)
+Message-ID: <20170925161627.449CE440055@finisterre.ee.mobilebroadband>
+References: <20170908011256.7706-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E1BFC266ECE
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:16 +0200 (CEST)
-In-Reply-To: <1506309065-25802-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 341D3266ECE
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:20 +0200 (CEST)
+In-Reply-To: <20170908011256.7706-2-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, alexlee@realtek.com, bardliao@realtek.com, shumingf@realtek.com, naveen.m@intel.com, flove@realtek.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, bardliao@realtek.com, alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: Change the dev getting function in rt5663_irq
+   ASoC: rt5670: refactor DMI quirks and fix Dell Venue settings
 
 has been applied to the asoc tree at
 
@@ -52,34 +53,218 @@ to this mail.
 Thanks,
 Mark
 
->From a16cc6326d58b32f12f2e60d0b0ec2c8771469a5 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Mon, 25 Sep 2017 11:11:05 +0800
-Subject: [PATCH] ASoC: rt5663: Change the dev getting function in rt5663_irq
+>From 8e1b1785489b8b53b4ff934e0ad9259952817f5b Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 7 Sep 2017 20:12:54 -0500
+Subject: [PATCH] ASoC: rt5670: refactor DMI quirks and fix Dell Venue settings
 
-In the irq handler "rt5663_irq", while the codec is not initialized,
-rt5663->codec will be null, and it will cause the kernel panic in the debug
-print enabled.
+Additional checks exposed a mistake in the quirk for the Dell Venue
+Pro 5855 (Dmic2 instead of Dmic1). Rather than adding quirk tables,
+merge all quirks in a single table and use flags to differentiate
+platforms.  Also add a parameter override to help support additional
+platforms using this codec
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+CC: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5670.c | 124 +++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 105 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index ab9e0ebff5a7..e45b895d8279 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -1639,7 +1639,8 @@ static irqreturn_t rt5663_irq(int irq, void *data)
- {
- 	struct rt5663_priv *rt5663 = data;
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 9545764ef3eb..be945b345b43 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -34,6 +34,24 @@
+ #include "rt5670.h"
+ #include "rt5670-dsp.h"
  
--	dev_dbg(rt5663->codec->dev, "%s IRQ queue work\n", __func__);
-+	dev_dbg(regmap_get_device(rt5663->regmap), "%s IRQ queue work\n",
-+		__func__);
++#define RT5670_DEV_GPIO     BIT(0)
++#define RT5670_IN2_DIFF     BIT(1)
++#define RT5670_DMIC_EN      BIT(2)
++#define RT5670_DMIC1_IN2P   BIT(3)
++#define RT5670_DMIC1_GPIO6  BIT(4)
++#define RT5670_DMIC1_GPIO7  BIT(5)
++#define RT5670_DMIC2_INR    BIT(6)
++#define RT5670_DMIC2_GPIO8  BIT(7)
++#define RT5670_DMIC3_GPIO5  BIT(8)
++#define RT5670_JD_MODE1     BIT(9)
++#define RT5670_JD_MODE2     BIT(10)
++#define RT5670_JD_MODE3     BIT(11)
++
++static unsigned long rt5670_quirk;
++static unsigned int quirk_override;
++module_param_named(quirk, quirk_override, uint, 0444);
++MODULE_PARM_DESC(quirk, "Board-specific quirk override");
++
+ #define RT5670_DEVICE_ID 0x6271
  
- 	queue_delayed_work(system_wq, &rt5663->jack_detect_work,
- 		msecs_to_jiffies(250));
+ #define RT5670_PR_RANGE_BASE (0xff + 1)
+@@ -2808,56 +2826,84 @@ static const struct acpi_device_id rt5670_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
+ #endif
+ 
+-static const struct dmi_system_id dmi_platform_intel_braswell[] = {
++static int rt5670_quirk_cb(const struct dmi_system_id *id)
++{
++	rt5670_quirk = (unsigned long)id->driver_data;
++	return 1;
++}
++
++static const struct dmi_system_id dmi_platform_intel_quirks[] = {
+ 	{
++		.callback = rt5670_quirk_cb,
+ 		.ident = "Intel Braswell",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
+ 			DMI_MATCH(DMI_BOARD_NAME, "Braswell CRB"),
+ 		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC1_IN2P |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE1),
+ 	},
+ 	{
++		.callback = rt5670_quirk_cb,
+ 		.ident = "Dell Wyse 3040",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Wyse 3040"),
+ 		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC1_IN2P |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE1),
+ 	},
+ 	{
++		.callback = rt5670_quirk_cb,
+ 		.ident = "Lenovo Thinkpad Tablet 10",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 10"),
+ 		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC1_IN2P |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE1),
+ 	},
+ 	{
++		.callback = rt5670_quirk_cb,
+ 		.ident = "Lenovo Thinkpad Tablet 10",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Tablet B"),
+ 		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC1_IN2P |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE1),
+ 	},
+-	{}
+-};
+-
+-static const struct dmi_system_id dmi_platform_intel_bytcht_jdmode2[] = {
+ 	{
++		.callback = rt5670_quirk_cb,
+ 		.ident = "Lenovo Thinkpad Tablet 10",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Miix 2 10"),
+ 		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC1_IN2P |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE2),
+ 	},
+-	{}
+-};
+-
+-static const struct dmi_system_id dmi_platform_intel_bytcht_jdmode3[] = {
+ 	{
++		.callback = rt5670_quirk_cb,
+ 		.ident = "Dell Venue 8 Pro 5855",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 8 Pro 5855"),
+ 		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC2_INR |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE3),
+ 	},
+ 	{}
+ };
+@@ -2881,21 +2927,61 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt5670->pdata = *pdata;
+ 
+-	if (dmi_check_system(dmi_platform_intel_braswell)) {
+-		rt5670->pdata.dmic_en = true;
+-		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
++	dmi_check_system(dmi_platform_intel_quirks);
++	if (quirk_override) {
++		dev_info(&i2c->dev, "Overriding quirk 0x%x => 0x%x\n",
++			 (unsigned int)rt5670_quirk, quirk_override);
++		rt5670_quirk = quirk_override;
++	}
++
++	if (rt5670_quirk & RT5670_DEV_GPIO) {
+ 		rt5670->pdata.dev_gpio = true;
+-		rt5670->pdata.jd_mode = 1;
+-	} else if (dmi_check_system(dmi_platform_intel_bytcht_jdmode2)) {
++		dev_info(&i2c->dev, "quirk dev_gpio\n");
++	}
++	if (rt5670_quirk & RT5670_IN2_DIFF) {
++		rt5670->pdata.in2_diff = true;
++		dev_info(&i2c->dev, "quirk IN2_DIFF\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC_EN) {
+ 		rt5670->pdata.dmic_en = true;
++		dev_info(&i2c->dev, "quirk DMIC enabled\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC1_IN2P) {
+ 		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
+-		rt5670->pdata.dev_gpio = true;
++		dev_info(&i2c->dev, "quirk DMIC1 on IN2P pin\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC1_GPIO6) {
++		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_GPIO6;
++		dev_info(&i2c->dev, "quirk DMIC1 on GPIO6 pin\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC1_GPIO7) {
++		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_GPIO7;
++		dev_info(&i2c->dev, "quirk DMIC1 on GPIO7 pin\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC2_INR) {
++		rt5670->pdata.dmic2_data_pin = RT5670_DMIC_DATA_IN3N;
++		dev_info(&i2c->dev, "quirk DMIC2 on INR pin\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC2_GPIO8) {
++		rt5670->pdata.dmic2_data_pin = RT5670_DMIC_DATA_GPIO8;
++		dev_info(&i2c->dev, "quirk DMIC2 on GPIO8 pin\n");
++	}
++	if (rt5670_quirk & RT5670_DMIC3_GPIO5) {
++		rt5670->pdata.dmic3_data_pin = RT5670_DMIC_DATA_GPIO5;
++		dev_info(&i2c->dev, "quirk DMIC3 on GPIO5 pin\n");
++	}
++
++	if (rt5670_quirk & RT5670_JD_MODE1) {
++		rt5670->pdata.jd_mode = 1;
++		dev_info(&i2c->dev, "quirk JD mode 1\n");
++	}
++	if (rt5670_quirk & RT5670_JD_MODE2) {
+ 		rt5670->pdata.jd_mode = 2;
+-	} else if (dmi_check_system(dmi_platform_intel_bytcht_jdmode3)) {
+-		rt5670->pdata.dmic_en = true;
+-		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
+-		rt5670->pdata.dev_gpio = true;
++		dev_info(&i2c->dev, "quirk JD mode 2\n");
++	}
++	if (rt5670_quirk & RT5670_JD_MODE3) {
+ 		rt5670->pdata.jd_mode = 3;
++		dev_info(&i2c->dev, "quirk JD mode 3\n");
+ 	}
+ 
+ 	rt5670->regmap = devm_regmap_init_i2c(i2c, &rt5670_regmap);
 -- 
 2.14.1
