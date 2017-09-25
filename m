@@ -1,12 +1,12 @@
 From: Andrey Konovalov <andreyknvl@google.com>
-Subject: usb/sound/bcd2000: warning in bcd2000_init_device
-Date: Mon, 25 Sep 2017 14:39:51 +0200
-Message-ID: <CAAeHK+x7k2kXNvb-GrdW8+=6VHg3sSTERE5weYonTL+UesGpfQ@mail.gmail.com>
+Subject: usb/sound/line6: warning in line6_start_listen/usb_submit_urb
+Date: Mon, 25 Sep 2017 14:40:03 +0200
+Message-ID: <CAAeHK+w9Ntxc0nMAQVcYci=o6y3OrB_MAFNPdHsjoTxMoT8pkw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Dan Carpenter <dan.carpenter@oracle.com>, Andrej Krutak <dev@andree.sk>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
@@ -16,32 +16,32 @@ I've got the following report while fuzzing the kernel with syzkaller.
 
 On commit e19b205be43d11bff638cad4487008c48d21c103 (4.14-rc2).
 
-It seems that there's no check of the endpoint type.
+It seems there's no check on the actual endpoint type.
 
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+usb 1-1: BOGUS urb xfer, pipe 3 != type 1
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1846 at drivers/usb/core/urb.c:449
+WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:449
 usb_submit_urb+0xf8a/0x11d0
 Modules linked in:
-CPU: 0 PID: 1846 Comm: kworker/0:2 Not tainted
-4.14.0-rc2-42613-g1488251d1a98 #238
+CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 4.14.0-rc2-42613-g1488251d1a98 #238
 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
 Workqueue: usb_hub_wq hub_event
-task: ffff880064296300 task.stack: ffff8800643b0000
+task: ffff88006befe300 task.stack: ffff88006bf78000
 RIP: 0010:usb_submit_urb+0xf8a/0x11d0 drivers/usb/core/urb.c:448
-RSP: 0018:ffff8800643b6140 EFLAGS: 00010286
-RAX: 0000000000000029 RBX: ffff880063842400 RCX: 0000000000000000
-RDX: 0000000000000029 RSI: ffffffff85a58800 RDI: ffffed000c876c1a
-RBP: ffff8800643b6240 R08: 1ffff1000c876ac0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 1ffff1000c876c2f
-R13: 0000000000000003 R14: 0000000000000001 R15: ffff88006325c768
+RSP: 0018:ffff88006bf7e218 EFLAGS: 00010286
+RAX: 0000000000000029 RBX: ffff88006a878200 RCX: 0000000000000000
+RDX: 0000000000000029 RSI: ffffffff85876dc0 RDI: ffffed000d7efc35
+RBP: ffff88006bf7e318 R08: 1ffff1000d7efadb R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: 1ffff1000d7efc4a
+R13: 0000000000000001 R14: 0000000000000003 R15: ffff88006902d7f8
 FS:  0000000000000000(0000) GS:ffff88006c800000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa2a51c0000 CR3: 000000006acc8000 CR4: 00000000000006f0
+CR2: 0000000001904fa0 CR3: 0000000062019000 CR4: 00000000000006f0
 Call Trace:
- bcd2000_init_device sound/usb/bcd2000/bcd2000.c:289
- bcd2000_init_midi sound/usb/bcd2000/bcd2000.c:345
- bcd2000_probe+0xe64/0x19e0 sound/usb/bcd2000/bcd2000.c:406
+ line6_start_listen+0x55f/0x9e0 sound/usb/line6/driver.c:82
+ line6_init_cap_control sound/usb/line6/driver.c:690
+ line6_probe+0x7c9/0x1310 sound/usb/line6/driver.c:764
+ podhd_probe+0x64/0x70 sound/usb/line6/podhd.c:474
  usb_probe_interface+0x35d/0x8e0 drivers/usb/core/driver.c:361
  really_probe drivers/base/dd.c:413
  driver_probe_device+0x610/0xa00 drivers/base/dd.c:557
@@ -74,4 +74,4 @@ Call Trace:
 Code: 48 8b 85 30 ff ff ff 48 8d b8 98 00 00 00 e8 6e 91 8b ff 45 89
 e8 44 89 f1 4c 89 fa 48 89 c6 48 c7 c7 c0 5a c8 85 e8 10 50 dd fd <0f>
 ff e9 9b f7 ff ff e8 ba cf 26 fe e9 80 f7 ff ff e8 a0 a5 f4
----[ end trace bad127706d5fe2d6 ]---
+---[ end trace 29c2f0b769cf6f62 ]---
