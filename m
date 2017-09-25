@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove unneeded dai->driver check" to
-	the asoc tree
-Date: Mon, 25 Sep 2017 17:31:20 +0100 (BST)
-Message-ID: <20170925163120.93528440053@finisterre.ee.mobilebroadband>
-References: <87h8vrpnsg.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5663: Change the dev getting function
+	in rt5663_irq" to the asoc tree
+Date: Mon, 25 Sep 2017 17:16:28 +0100 (BST)
+Message-ID: <20170925161628.69522440056@finisterre.ee.mobilebroadband>
+References: <1506309065-25802-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 050C4266EEB
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:09 +0200 (CEST)
-In-Reply-To: <87h8vrpnsg.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E1BFC266ECE
+ for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:35:16 +0200 (CEST)
+In-Reply-To: <1506309065-25802-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, alexlee@realtek.com, bardliao@realtek.com, shumingf@realtek.com, naveen.m@intel.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove unneeded dai->driver check
+   ASoC: rt5663: Change the dev getting function in rt5663_irq
 
 has been applied to the asoc tree at
 
@@ -53,97 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From 464719255e095b0cc05a30b124f2cdc67a930d7f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 25 Sep 2017 01:38:34 +0000
-Subject: [PATCH] ASoC: remove unneeded dai->driver check
+>From a16cc6326d58b32f12f2e60d0b0ec2c8771469a5 Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Mon, 25 Sep 2017 11:11:05 +0800
+Subject: [PATCH] ASoC: rt5663: Change the dev getting function in rt5663_irq
 
-On soc_add_dai(), it is checking dai->driver->xxx,
-This means, dai->driver is mandatory, never been NULL.
-dai->driver check is not needed.
-This patch removes it.
+In the irq handler "rt5663_irq", while the codec is not initialized,
+rt5663->codec will be null, and it will cause the kernel panic in the debug
+print enabled.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5663.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 091ebe198194..e16220600e51 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2631,7 +2631,7 @@ EXPORT_SYMBOL_GPL(snd_soc_add_dai_controls);
- int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	unsigned int freq, int dir)
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index ab9e0ebff5a7..e45b895d8279 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -1639,7 +1639,8 @@ static irqreturn_t rt5663_irq(int irq, void *data)
  {
--	if (dai->driver && dai->driver->ops->set_sysclk)
-+	if (dai->driver->ops->set_sysclk)
- 		return dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
+ 	struct rt5663_priv *rt5663 = data;
  
- 	return snd_soc_component_set_sysclk(dai->component, clk_id, 0,
-@@ -2699,7 +2699,7 @@ EXPORT_SYMBOL_GPL(snd_soc_component_set_sysclk);
- int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
- 	int div_id, int div)
- {
--	if (dai->driver && dai->driver->ops->set_clkdiv)
-+	if (dai->driver->ops->set_clkdiv)
- 		return dai->driver->ops->set_clkdiv(dai, div_id, div);
- 	else
- 		return -EINVAL;
-@@ -2719,7 +2719,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_clkdiv);
- int snd_soc_dai_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 	unsigned int freq_in, unsigned int freq_out)
- {
--	if (dai->driver && dai->driver->ops->set_pll)
-+	if (dai->driver->ops->set_pll)
- 		return dai->driver->ops->set_pll(dai, pll_id, source,
- 					 freq_in, freq_out);
+-	dev_dbg(rt5663->codec->dev, "%s IRQ queue work\n", __func__);
++	dev_dbg(regmap_get_device(rt5663->regmap), "%s IRQ queue work\n",
++		__func__);
  
-@@ -2785,7 +2785,7 @@ EXPORT_SYMBOL_GPL(snd_soc_component_set_pll);
-  */
- int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
- {
--	if (dai->driver && dai->driver->ops->set_bclk_ratio)
-+	if (dai->driver->ops->set_bclk_ratio)
- 		return dai->driver->ops->set_bclk_ratio(dai, ratio);
- 	else
- 		return -EINVAL;
-@@ -2859,7 +2859,7 @@ static int snd_soc_xlate_tdm_slot_mask(unsigned int slots,
- int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
- {
--	if (dai->driver && dai->driver->ops->xlate_tdm_slot_mask)
-+	if (dai->driver->ops->xlate_tdm_slot_mask)
- 		dai->driver->ops->xlate_tdm_slot_mask(slots,
- 						&tx_mask, &rx_mask);
- 	else
-@@ -2868,7 +2868,7 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	dai->tx_mask = tx_mask;
- 	dai->rx_mask = rx_mask;
- 
--	if (dai->driver && dai->driver->ops->set_tdm_slot)
-+	if (dai->driver->ops->set_tdm_slot)
- 		return dai->driver->ops->set_tdm_slot(dai, tx_mask, rx_mask,
- 				slots, slot_width);
- 	else
-@@ -2892,7 +2892,7 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
- 	unsigned int tx_num, unsigned int *tx_slot,
- 	unsigned int rx_num, unsigned int *rx_slot)
- {
--	if (dai->driver && dai->driver->ops->set_channel_map)
-+	if (dai->driver->ops->set_channel_map)
- 		return dai->driver->ops->set_channel_map(dai, tx_num, tx_slot,
- 			rx_num, rx_slot);
- 	else
-@@ -2909,7 +2909,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
-  */
- int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate)
- {
--	if (dai->driver && dai->driver->ops->set_tristate)
-+	if (dai->driver->ops->set_tristate)
- 		return dai->driver->ops->set_tristate(dai, tristate);
- 	else
- 		return -EINVAL;
+ 	queue_delayed_work(system_wq, &rt5663->jack_detect_work,
+ 		msecs_to_jiffies(250));
 -- 
 2.14.1
