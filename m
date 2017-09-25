@@ -1,79 +1,80 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v2] ALSA: hda - program ICT bits to support
- HBR audio
-Date: Mon, 25 Sep 2017 20:26:53 +0530
-Message-ID: <20170925145649.GA5063@subhransu-desktop>
-References: <20170919222505.28654-1-pierre-louis.bossart@linux.intel.com>
- <s5h60cdelkx.wl-tiwai@suse.de>
- <8af5af38-f220-f58a-e7be-4e25dfff452a@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/9] ASoC: cygnus: Update bindings for audio clock changes
+Date: Mon, 25 Sep 2017 17:28:39 +0100
+Message-ID: <20170925162839.wvnxm5kbzsqpwwj6@sirena.org.uk>
+References: <1502748417-26417-1-git-send-email-lori.hikichi@broadcom.com>
+ <1502748417-26417-3-git-send-email-lori.hikichi@broadcom.com>
+ <20170815171424.whcy4mftex6sgzgj@sirena.org.uk>
+ <d7e7144b-26c7-b96a-663d-03744bb60c36@broadcom.com>
+ <20170816105954.ve434zeeqinweo5a@sirena.org.uk>
+ <8c2fc92d-5ea8-8163-a588-0a4cba55e0f8@broadcom.com>
+ <20170822160703.nusf7sv6k4gj3pti@sirena.org.uk>
+ <492cb202-f4cb-4f5d-5d32-3dee4f1226b5@broadcom.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 145B6266ECE
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 18:22:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <8af5af38-f220-f58a-e7be-4e25dfff452a@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Type: multipart/mixed; boundary="===============6387233675705899550=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <492cb202-f4cb-4f5d-5d32-3dee4f1226b5@broadcom.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lori Hikichi <lori.hikichi@broadcom.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, Ray Jui <rjui@broadcom.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list@broadcom.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 20, 2017 at 08:12:36AM -0500, Pierre-Louis Bossart wrote:
-> On 9/20/17 5:00 AM, Takashi Iwai wrote:
-> >On Wed, 20 Sep 2017 00:25:05 +0200,
-> >Pierre-Louis Bossart wrote:
-> >>
-> >>From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-> >>
-> >>On recent Intel platforms (Haswell, Broadwell, Skylake, ApolloLake,
-> >>KabyLake, ...), the IEC Coding Type (ICT) bitfield in the Digital
-> >>Converter Control #3 needs to be set explicitly for HDMI/DisplayPort
-> >>High Bit Rate (HBR) audio playback to work. This was not required in
-> >>earlier platforms when HBR was first introduced. The ICT bits are
-> >>defined in Section 7.3.3.9 of the HDaudio 1.0a specification.
-> >>
-> >>Since the ICT bitfield was not specified for HDAudio 1.0 devices
-> >>(before 2009), we only program it on machines more recent than
-> >>Haswell.
-> >>
-> >>We tested that this fix is not needed on Baytrail-I (MinnowBoard
-> >>Turbot) and believe by extension it also does not apply to Braswell.
-> >>
-> >>Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=98797
-> >>
-> >>Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-> >>Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> >>Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> >>---
-> >>v2: move digi3 verb in Set section, only set ICT for haswell and newer
-> >
-> >Applied now with a slight fix (moving *_SET_* definition to the right
-> >place).
-> 
-> Thanks Takashi. Not sure what happened since I have a clear memory
-> of doing that change and making a note of it...
 
-Hi Takashi,
+--===============6387233675705899550==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cfkq5nj4dwnxwnsw"
+Content-Disposition: inline
 
-I think this patch should have also gone to stable. We didn't cc. Please
-suggest whether we should submit it separately for stable.
 
-Regards,
-Subhransu
+--cfkq5nj4dwnxwnsw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+On Wed, Sep 06, 2017 at 06:45:22PM -0700, Lori Hikichi wrote:
 
--- 
+> This will likely impact a couple of the other patches in the series, but
+> most should be applicable. What would be the best way to have some of the
+> other patches in this series reviewed?  Should I just drop this series and
+> resubmit new individual patches for review.
+
+Resubmit the ones that can be applied as is please, that'll avoid me
+making a mistake about which ones have the dependency.
+
+--cfkq5nj4dwnxwnsw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnJLrYACgkQJNaLcl1U
+h9BU8Af+JvLz6Fku2pK0Ya2GrFTXbyc3N83SwYhAmHWm2XcSYRtk9XgKeA+ZviOP
+pb6x03vyjoyDl8s126mZ/fs5lXzRyMW41rAMdXnBpj6vP5NhW4yvpazcRRxo+Lrw
+xxhfENIVIw6pi56JJZtw10QFFkdVQSHkGBMsIqow1RdbHfr+6tPy37TKbBYzdUH1
+cVKEe7PhUmZ78Ingj8BcSK/iIcpocOxa8/W9vwTBbH9LQ0JVGmaGb1lzun6L9l/a
+drBeDHffP1VdO/Gn31EEAZwR0222d+Gy4UOz98lCyMD6JHhYY1M8p90L4sAcZEnv
+VQfrBtjn1lCyomwxxDCiedkTCjFkxA==
+=T7Tw
+-----END PGP SIGNATURE-----
+
+--cfkq5nj4dwnxwnsw--
+
+
+--===============6387233675705899550==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============6387233675705899550==--
