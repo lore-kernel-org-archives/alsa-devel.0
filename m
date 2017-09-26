@@ -1,18 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [RFC PATCH 0/8] Prepare Sound Open Firmware (SOF)
- driver integration
-Date: Mon, 25 Sep 2017 22:49:47 +0100
-Message-ID: <1506376187.22028.210.camel@loki>
-References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
- <20170925190932.oxooh6cn7xrhr5zp@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] Revert "ALSA: echoaudio: purge contradictions
+	between dimension matrix members and total number of members"
+Date: Tue, 26 Sep 2017 09:08:12 +0900
+Message-ID: <20170926000812.15513-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C689267045
- for <alsa-devel@alsa-project.org>; Mon, 25 Sep 2017 23:49:58 +0200 (CEST)
-In-Reply-To: <20170925190932.oxooh6cn7xrhr5zp@sirena.org.uk>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B530D267056
+ for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2017 02:08:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +19,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, vinod.koul@intel.com, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: tiwai@suse.de
+Cc: s.chriscollins@gmail.com, alsa-devel@alsa-project.org, mark@xwax.org, "# v4 . 8+" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2017-09-25 at 12:09 -0700, Mark Brown wrote:
-> On Fri, Sep 08, 2017 at 03:56:54PM -0500, Pierre-Louis Bossart wrote:
-> > The Sound Open Firmware work [1] is progressing quickly and drivers
-> > for the 1.0 release will soon be submitted upstream. Before we do so,
-> > there is a new to reshuffle the ACPI integration and Intel
-> > Kconfig/Makefiles. This RFC is a preview of what's coming, feedback
-> > would be greatly appreciated.
-> 
-> No comments from any other Intel people?
+This reverts commit 275353bb684e to fix a regression which can abort
+'alsactl' program in alsa-utils due to assertion in alsa-lib.
 
-Its all good for me. 
+alsactl: control.c:2513: snd_ctl_elem_value_get_integer: Assertion `idx < sizeof(obj->value.integer.value) / sizeof(obj->value.integer.value[0])' failed.
 
-All,
+alsactl: control.c:2976: snd_ctl_elem_value_get_integer: Assertion `idx < ARRAY_SIZE(obj->value.integer.value)' failed.
 
-Ack-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+This commit is a band-aid. In a point of usage of ALSA control interface,
+the drivers still bring an issue that they prevent userspace applications
+to have a consistent way to parse each levels of the dimension information
+via ALSA control interface.
+
+Let me investigate this issue. Current implementation of the drivers
+have three control element sets with dimension information:
+ * 'Monitor Mixer Volume' (type: integer)
+ * 'VMixer Volume' (type: integer)
+ * 'VU-meters' (type: boolean)
+
+Although the number of elements named as 'Monitor Mixer Volume' differs
+depending on drivers in this group, it can be calculated by macros
+defined by each driver (= (BX_NUM - BX_ANALOG_IN) * BX_ANALOG_IN). Each
+of the elements has one member for value and has dimension information
+with 2 levels (= BX_ANALOG_IN * (BX_NUM - BX_ANALOG_IN)). For these
+elements, userspace applications are expected to handle the dimension
+information so that all of the elements construct a matrix where the
+number of rows and columns are represented by the dimension information.
+
+The same way is applied to elements named as 'VMixer Volume'. The number
+of these elements can also be calculated by macros defined by each
+drivers (= PX_ANALOG_IN * BX_ANALOG_IN). Each of the element has one
+member for value and has dimension information with 2 levels
+(= BX_ANALOG_IN * PX_ANALOG_IN). All of the elements construct a matrix
+with the dimension information.
+
+An element named as 'VU-meters' gets a different way in a point of
+dimension information. The element includes 96 members for value. The
+element has dimension information with 3 levels (= 3 or 2 * 16 * 2). For
+this element, userspace applications are expected to handle the dimension
+information so that all of the members for value construct a matrix
+where the number of rows and columns are represented by the dimension
+information. This is different from the way for the former.
+
+As a summary, the drivers were not designed to produce a consistent way to
+parse the dimension information. This makes it hard for general userspace
+applications such as amixer to parse the information by a consistent way,
+and actually no userspace applications except for 'echomixer' utilize the
+dimension information. Additionally, no drivers excluding this group use
+the information.
+
+The reverted commit was written based on the latter way. A commit
+860c1994a70a ('ALSA: control: add dimension validator for userspace
+elements') is written based on the latter way, too. The patch should be
+reconsider too in the same time to re-define a consistent way to parse the
+dimension information.
+
+Reported-by: Mark Hills <mark@xwax.org>
+Reported-by: S. Christian Collins <s.chriscollins@gmail.com>
+Fixes: 275353bb684e ('ALSA: echoaudio: purge contradictions between dimension matrix members and total number of members')
+Cc: <stable@vger.kernel.org> # v4.8+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/pci/echoaudio/echoaudio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 7326695bca33..d68f99e076a8 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -1272,11 +1272,11 @@ static int snd_echo_mixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_busses_in(chip);
+-	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1344,11 +1344,11 @@ static int snd_echo_vmixer_info(struct snd_kcontrol *kcontrol,
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = ECHOGAIN_MAXOUT;
+ 	uinfo->dimen.d[0] = num_busses_out(chip);
+ 	uinfo->dimen.d[1] = num_pipes_out(chip);
+-	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];
+ 	return 0;
+ }
+ 
+@@ -1728,6 +1728,7 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_info *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 96;
+ 	uinfo->value.integer.min = ECHOGAIN_MINOUT;
+ 	uinfo->value.integer.max = 0;
+ #ifdef ECHOCARD_HAS_VMIXER
+@@ -1737,7 +1738,6 @@ static int snd_echo_vumeters_info(struct snd_kcontrol *kcontrol,
+ #endif
+ 	uinfo->dimen.d[1] = 16;	/* 16 channels */
+ 	uinfo->dimen.d[2] = 2;	/* 0=level, 1=peak */
+-	uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1] * uinfo->dimen.d[2];
+ 	return 0;
+ }
+ 
+-- 
+2.11.0
