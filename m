@@ -1,84 +1,97 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [RFC PATCH 3/7] sound: core: Avoid using timespec
-	for struct snd_pcm_sync_ptr
-Date: Wed, 27 Sep 2017 06:24:21 +0800
-Message-ID: <CAMz4kuKNrnWSh8TnPbpCv_KWbWTqoXd=2tWUfJ9bQ=4cK_y2zw@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org>
- <6781c7b4e5934ad65e3c5b401c0a1bbd7cb44db6.1505973912.git.baolin.wang@linaro.org>
- <CAK8P3a2+A4d7P27v7hn7777zyH1m65_1+DYNA4mUfqTxct9R_A@mail.gmail.com>
- <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
- <CAK8P3a1Rw3H5TA6VDB0_vH+vVk57bCGemT1Xw=z03Tbv4Hfm6Q@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: ALSA: bebob: Use common error handling code in
+ snd_bebob_stream_start_duplex()
+Date: Wed, 27 Sep 2017 08:30:36 +0900
+Message-ID: <09bb0e83-01fe-cd12-a084-31db3f12d663@sakamocchi.jp>
+References: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
+ <541f0f9f-fc87-f65b-bbd8-fec5d45d5d2e@users.sourceforge.net>
+ <a1dee732-f5c4-5b35-9f82-553fc8ce430d@sakamocchi.jp>
+ <3afecbef-b7ac-a4e8-f439-a351916f05e5@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
- [209.85.218.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 650EC267140
- for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 00:24:23 +0200 (CEST)
-Received: by mail-oi0-f49.google.com with SMTP id r20so14162486oie.0
- for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2017 15:24:23 -0700 (PDT)
-In-Reply-To: <CAK8P3a1Rw3H5TA6VDB0_vH+vVk57bCGemT1Xw=z03Tbv4Hfm6Q@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Fabian Frederick <fabf@skynet.be>, Arvind Yadav <arvind.yadav.cs@gmail.com>, dharageswari.r@intel.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, Takashi Iwai <tiwai@suse.com>, guneshwor.o.singh@intel.com, Liam Girdwood <lgirdwood@gmail.com>, SF Markus Elfring <elfring@users.sourceforge.net>, gudishax.kranthikumar@intel.com, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, Naveen M <naveen.m@intel.com>, jeeja.kp@intel.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, Deepa Dinamani <deepa.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <3afecbef-b7ac-a4e8-f439-a351916f05e5@users.sourceforge.net>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>, alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjIgU2VwdGVtYmVyIDIwMTcgYXQgMTY6NDgsIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
-ZGU+IHdyb3RlOgo+IE9uIEZyaSwgU2VwIDIyLCAyMDE3IGF0IDg6NDcgQU0sIEJhb2xpbiBXYW5n
-IDxiYW9saW4ud2FuZ0BsaW5hcm8ub3JnPiB3cm90ZToKPj4gT24gMjEgU2VwdGVtYmVyIDIwMTcg
-YXQgMjA6NTAsIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+IHdyb3RlOgo+Pj4gT24gVGh1
-LCBTZXAgMjEsIDIwMTcgYXQgODoxOCBBTSwgQmFvbGluIFdhbmcgPGJhb2xpbi53YW5nQGxpbmFy
-by5vcmc+IHdyb3RlOgo+Pj4+IFRoZSBzdHJ1Y3Qgc25kX3BjbV9zeW5jX3B0ciB3aWxsIHVzZSAn
-dGltZXNwZWMnIHR5cGUgdmFyaWFibGVzIHRvIHJlY29yZAo+Pj4KPj4+IFRoaXMgbG9va3MgY29y
-cmVjdCwgYnV0IHRoZXJlIGlzIGEgc3VidGxldHkgaGVyZSB0byBub3RlIGFib3V0IHg4Ni0zMgo+
-Pj4gdGhhdCB3ZSBkaXNjdXNzZWQgaW4gYSBwcmV2aW91cyAocHJpdmF0ZSkgcmV2aWV3LiBUbyBy
-ZWNhbGwgbXkgZWFybGllcgo+Pj4gdGhvdWdodHM6Cj4+Pgo+Pj4gTm9ybWFsIGFyY2hpdGVjdHVy
-ZXMgaW5zZXJ0IDMyIGJpdCBwYWRkaW5nIGFmdGVyICdzdXNwZW5kZWRfc3RhdGUnLAo+Pj4gYW5k
-IDMyLWJpdCBhcmNoaXRlY3R1cmVzIChpbmNsdWRpbmcgeDMyKSBhbHNvIGFmdGVyIGh3X3B0ciwK
-Pj4+IGJ1dCB4ODYtMzIgZG9lcyBub3QuIFlvdSBtYWtlIHRoYXQgZXhwbGljaXQgaW4gdGhlIGNv
-bXBhdCBjb2RlLAo+Pj4gdGhpcyB2ZXJzaW9uIGp1c3QgcmVsaWVzIG9uIHRoZSBjb21waWxlciB1
-c2luZyBpZGVudGljYWwgcGFkZGluZwo+Pj4gaW4gdXNlciBhbmQga2VybmVsIHNwYWNlLiBXZSBj
-b3VsZCBtYWtlIHRoYXQgZXhwbGljaXQgdXNpbmcKPj4+Cj4+PiBzdHJ1Y3Qgc25kX3BjbV9tbWFw
-X3N0YXR1czY0IHsKPj4+ICAgICAgICBzbmRfcGNtX3N0YXRlX3Qgc3RhdGU7ICAgICAgICAgIC8q
-IFJPOiBzdGF0ZSAtIFNORFJWX1BDTV9TVEFURV9YWFhYICovCj4+PiAgICAgICAgaW50IHBhZDE7
-ICAgICAgICAgICAgICAgICAgICAgICAvKiBOZWVkZWQgZm9yIDY0IGJpdCBhbGlnbm1lbnQgKi8K
-Pj4+ICAgICAgICBzbmRfcGNtX3VmcmFtZXNfdCBod19wdHI7ICAgICAgIC8qIFJPOiBodyBwdHIg
-KDAuLi5ib3VuZGFyeS0xKSAqLwo+Pj4gI2lmICFkZWZpbmVkKENPTkZJR182NEJJVCkgJiYgIWRl
-ZmluZWQoQ09ORklHX1g4Nl8zMikKPj4+ICAgICAgICBpbnQgcGFkMjsKPj4+ICNlbmRpZgo+Pj4g
-ICAgICAgc3RydWN0IHsgczY0IHR2X3NlYzsgczY0IHR2X25zZWM7IH0gdHN0YW1wOyAgICAgICAg
-ICAgICAvKiBUaW1lc3RhbXAgKi8KPj4+ICAgICAgICBzbmRfcGNtX3N0YXRlX3Qgc3VzcGVuZGVk
-X3N0YXRlOyAvKiBSTzogc3VzcGVuZGVkIHN0cmVhbSBzdGF0ZSAqLwo+Pj4gI2lmICFkZWZpbmVk
-KENPTkZJR19YODZfMzIpCj4+PiAgICAgICAgaW50IHBhZDM7Cj4+PiAjZW5kaWYKPj4+ICAgICAg
-IHN0cnVjdCB7IHM2NCB0dl9zZWM7IHM2NCB0dl9uc2VjOyB9IGF1ZGlvX3RzdGFtcDsgICAgICAg
-LyogZnJvbQo+Pj4gc2FtcGxlIGNvdW50ZXIgb3Igd2FsbCBjbG9jayAqLwo+Pj4gfTsKPj4KPj4g
-SSBhbSBzb3JyeSBJIGRpZCBub3QgZ2V0IHlvdSBoZXJlLCB3aHkgd2UgZG8gbm90IG5lZWQgcGFk
-MiBhbmQgcGFkMwo+PiBmb3IgeDg2XzMyPwo+Cj4gVGhpcyBpcyBhZ2FpbiB0aGUgeDg2LTMyIGFs
-aWdubWVudCBxdWlyazogdGhlIHN0cnVjdHVyZSBhcyBkZWZpbmVkCj4gaW4gdGhlIHVhcGkgaGVh
-ZGVyIGRvZXMgbm90IGhhdmUgcGFkZGluZywgYW5kIHRoZSBuZXcgczY0IGZpZWxkcwo+IGhhdmUg
-MzItYml0IGFsaWdubWVudCBvbiB4ODYsIHNvIHRoZSBjb21waWxlciBkb2VzIG5vdCBhZGQgaW1w
-bGljaXQKPiBwYWRkaW5nIGluIHVzZXIgc3BhY2UuCj4KPiBPbiBhbGwgb3RoZXIgYXJjaGl0ZWN0
-dXJlcywgdGhlIGZpZWxkcyBkbyBnZXQgcGFkZGVkIGltcGxpY2l0bHkKPiBpbiB1c2VyIHNwYWNl
-LCBJJ20ganVzdCBsaXN0aW5nIHRoZSBwYWRkaW5nIGV4cGxpY2l0bHkuCgpNYWtlIHNlbnNlLgoK
-Pgo+PiBZb3UgbWlzc2VkIOKAmCNpZiAhZGVmaW5lZChDT05GSUdfNjRCSVQp4oCcIGF0IHRoZSBz
-ZWNvbmQgI2lmCj4+IGNvbmRpdGlvbj8KPgo+IE5vLCB0aGF0IHdhcyBpbnRlbnRpb25hbDoKPgo+
-IHNuZF9wY21fdWZyYW1lc190IGlzICd1bnNpZ25lZCBsb25nJywgc28gb24gNjQtYml0IGFyY2hp
-dGVjdHVyZXMKPiB3ZSBoYXZlIG5vIHBhZGRpbmcgYmV0d2VlbiB0d28gNjQtYml0IHZhbHVlcyAo
-aHdfcHRyIGFuZCB0c3RhbXApLAo+IGFuZCBvbiB4ODYtMzIgd2UgaGF2ZSBubyBwYWRkaW5nIGJl
-Y2F1c2UgYm90aCBoYXZlIDMyLWJpdAo+IGFsaWdubWVudC4KPgo+IEhvd2V2ZXIsIHNuZF9wY21f
-c3RhdGVfdCBpcyAnaW50Jywgd2hpY2ggaXMgYWx3YXlzIDMyLWJpdCB3aWRlLAo+IHNvIHdlIGRv
-IGhhdmUgcGFkZGluZyBvbiBib3RoIDMyLWJpdCBhbmQgNjQtYml0IGFyY2hpdGVjdHVyZXMKPiBi
-ZXR3ZWVuIHN5c3BlbmRlZF9zdGF0ZSBhbmQgYXVkaW9fdHN0YW1wLCB3aXRoIHRoZSBleGNlcHRp
-b24KPiBvZiB4ODYtMzIuCgpUaGFua3MsIEkgY2FuIHVuZGVyc3RhbmQgbm93LgoKLS0gCkJhb2xp
-bi53YW5nCkJlc3QgUmVnYXJkcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+Hi,
+
+On Sep 24 2017 16:06, SF Markus Elfring wrote:
+>> 668     if (!amdtp_stream_wait_callback(&bebob->tx_stream,
+>> 669                                     CALLBACK_TIMEOUT)) {
+>> 670         amdtp_stream_stop(&bebob->tx_stream);
+>> 671         amdtp_stream_stop(&bebob->rx_stream);
+>> 672         break_both_connections(bebob);
+>> 673         err = -ETIMEDOUT;
+>> 674     }
+>> 675 }
+>>
+>> I think it better to apply your solution too in the above to keep code consistency.
+> 
+> How do you think about to adjust this function implementation after the other two
+> update steps from the patch series would be integrated?
+> 
+> 
+>> For the other patches, I can find no merit to apply except for reduction
+>> of the number of characters included in the file.
+> 
+> Would you like to refer to any specific update suggestions for further clarification?
+
+I had already read your patch comments and understand your intention
+somehow, because it's a part of task for daily reviewing. Then, I did
+comment.
+
+At development for Linux kernel, there're some important points for
+developers to notice. In our case, we should care of _practicality_.
+Roughly speaking, our work for kernel should add advantages for
+kernel/application runtime or assists the other developers' work. In
+this point, some patches are welcome and the others are not. I'll show
+you two examples.
+
+In this subsystem, I have reviewed patches from Julia Lawall. The most
+of her or his patches attempt to add 'const' qualifier for read-only
+symbols. As a result, the symbols place to '.rodata' section of ELF
+binary. This section has a hint for loaders to put these symbols to
+segments with read-only attributes. This has an advantage for
+compilation time and runtime. Recent compilers can detect codes to
+change content of the symbols with 'const' qualifier. Even if the codes
+were exposed from developers understanding or compilers' check,
+segmentation would occur in runtime at early stage of development or
+early days after releasing kernel. This is very helpful for developers
+to find unexpected changes for contents of the symbol.
+
+I also subscribe a mailing list of Linux Driver Project[1], which is for
+various drivers. Sometimes posted patches are rejected by maintainers.
+Such patches typically include minor code change without actual
+advantages for runtime or developers. For instance, patches for '80
+characters per line' are often posted and rejected. If this kind of
+patchset were added to change history of kernel, tons of unpractical
+logs are accumulated for development.  This make it worse for developers
+to maintain the kernel.
+
+By the way, ALSA BeBoB driver is just for ASIC and firmwares which
+ArchWave AG (formerly BridgeCo. AG.) had produced for devices with
+IEC 61883-1/6 packet streaming on IEEE 1394 bus and Time Sensitive
+Network (TSN). As long as I know, the last product with this solution
+was shipped at 2010. Thus the driver is under maintenance. I have some
+tasks for this driver as well as drivers in ALSA firewire stack,
+however basically this driver is under maintenance and might not get
+further integration. I think that code cleanup for the driver don't help
+the other developers. It's better to apply such cleanup to more
+long-live codes such as core functionality of ALSA. (But pay enough
+attention to practicality of the changes when you start this kind of
+work.)
+
+In this point of view, whether your patchset is worth to be applied
+or not, Please keep enough time to think about.
+
+
+[1] http://driverdev.linuxdriverproject.org/mailman/listinfo
+
+Thanks
+
+Takashi Sakamoto
