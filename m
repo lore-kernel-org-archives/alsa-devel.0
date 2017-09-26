@@ -1,54 +1,84 @@
 From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [RFC PATCH 6/7] uapi: sound: Avoid using timespec for struct snd_ctl_elem_value
-Date: Wed, 27 Sep 2017 05:54:54 +0800
-Message-ID: <CAMz4ku+JGvxD5UsEUc6js0QPHFSw3bd1qsWS_wg-P5oAMqsigQ@mail.gmail.com>
-References: <cover.1505973912.git.baolin.wang@linaro.org> <f47f86aa2bc1b96fbe47737f795ea1aee642caa0.1505973912.git.baolin.wang@linaro.org>
- <CAK8P3a3a0gDiC+3Rc5VONHap67d-L8QTYmvzS16XtKKVj24b5A@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] sound: core: Avoid using timespec
+	for struct snd_pcm_sync_ptr
+Date: Wed, 27 Sep 2017 06:24:21 +0800
+Message-ID: <CAMz4kuKNrnWSh8TnPbpCv_KWbWTqoXd=2tWUfJ9bQ=4cK_y2zw@mail.gmail.com>
+References: <cover.1505973912.git.baolin.wang@linaro.org>
+ <6781c7b4e5934ad65e3c5b401c0a1bbd7cb44db6.1505973912.git.baolin.wang@linaro.org>
+ <CAK8P3a2+A4d7P27v7hn7777zyH1m65_1+DYNA4mUfqTxct9R_A@mail.gmail.com>
+ <CAMz4kuK7=+fx+8qJKVxCDOL01UmZeoP8R7iRJg04B0zVmdXp0g@mail.gmail.com>
+ <CAK8P3a1Rw3H5TA6VDB0_vH+vVk57bCGemT1Xw=z03Tbv4Hfm6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a3a0gDiC+3Rc5VONHap67d-L8QTYmvzS16XtKKVj24b5A@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
+ [209.85.218.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 650EC267140
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 00:24:23 +0200 (CEST)
+Received: by mail-oi0-f49.google.com with SMTP id r20so14162486oie.0
+ for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2017 15:24:23 -0700 (PDT)
+In-Reply-To: <CAK8P3a1Rw3H5TA6VDB0_vH+vVk57bCGemT1Xw=z03Tbv4Hfm6Q@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ingo Molnar <mingo@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, dharageswari.r@intel.com, guneshwor.o.singh@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Deepa Dinamani <deepa.kernel@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Fabian Frederick <fabf@skynet.be>, Arvind Yadav <arvind.yadav.cs@gmail.com>, dharageswari.r@intel.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, Takashi Iwai <tiwai@suse.com>, guneshwor.o.singh@intel.com, Liam Girdwood <lgirdwood@gmail.com>, SF Markus Elfring <elfring@users.sourceforge.net>, gudishax.kranthikumar@intel.com, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, Naveen M <naveen.m@intel.com>, jeeja.kp@intel.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, Deepa Dinamani <deepa.kernel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21 September 2017 at 20:58, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Sep 21, 2017 at 8:18 AM, Baolin Wang <baolin.wang@linaro.org> wrote:
->> The struct snd_ctl_elem_value will use 'timespec' type variables to record
->> timestamp, which is not year 2038 safe on 32bits system.
->>
->> Since there are no drivers will implemented the tstamp member of the
->> struct snd_ctl_elem_value, and also the stucture size will not be changed
->> if we change timespec to s64 for tstamp member of struct snd_ctl_elem_value.
->>
->> Thus we can simply change timespec to s64 for tstamp member to avoid
->> using the type which is not year 2038 safe on 32bits system.
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
->> ---
->>  include/uapi/sound/asound.h |    4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
->> index 1949923..71bce52 100644
->> --- a/include/uapi/sound/asound.h
->> +++ b/include/uapi/sound/asound.h
->> @@ -943,8 +943,8 @@ struct snd_ctl_elem_value {
->>                 } bytes;
->>                 struct snd_aes_iec958 iec958;
->>         } value;                /* RO */
->> -       struct timespec tstamp;
->> -       unsigned char reserved[128-sizeof(struct timespec)];
->> +       struct { s64 tv_sec; s64 tv_nsec; } tstamp;
->> +       unsigned char reserved[128-sizeof(struct { s64 tv_sec; s64 tv_nsec; })];
->>  };
->
-> Maybe we should enforce that nobody uses the timespec field, by
-> enclosing it in #ifdef __KERNEL__ (with a matching length below it);
-
-OK.
-
--- 
-Baolin.wang
-Best Regards
+T24gMjIgU2VwdGVtYmVyIDIwMTcgYXQgMTY6NDgsIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIu
+ZGU+IHdyb3RlOgo+IE9uIEZyaSwgU2VwIDIyLCAyMDE3IGF0IDg6NDcgQU0sIEJhb2xpbiBXYW5n
+IDxiYW9saW4ud2FuZ0BsaW5hcm8ub3JnPiB3cm90ZToKPj4gT24gMjEgU2VwdGVtYmVyIDIwMTcg
+YXQgMjA6NTAsIEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+IHdyb3RlOgo+Pj4gT24gVGh1
+LCBTZXAgMjEsIDIwMTcgYXQgODoxOCBBTSwgQmFvbGluIFdhbmcgPGJhb2xpbi53YW5nQGxpbmFy
+by5vcmc+IHdyb3RlOgo+Pj4+IFRoZSBzdHJ1Y3Qgc25kX3BjbV9zeW5jX3B0ciB3aWxsIHVzZSAn
+dGltZXNwZWMnIHR5cGUgdmFyaWFibGVzIHRvIHJlY29yZAo+Pj4KPj4+IFRoaXMgbG9va3MgY29y
+cmVjdCwgYnV0IHRoZXJlIGlzIGEgc3VidGxldHkgaGVyZSB0byBub3RlIGFib3V0IHg4Ni0zMgo+
+Pj4gdGhhdCB3ZSBkaXNjdXNzZWQgaW4gYSBwcmV2aW91cyAocHJpdmF0ZSkgcmV2aWV3LiBUbyBy
+ZWNhbGwgbXkgZWFybGllcgo+Pj4gdGhvdWdodHM6Cj4+Pgo+Pj4gTm9ybWFsIGFyY2hpdGVjdHVy
+ZXMgaW5zZXJ0IDMyIGJpdCBwYWRkaW5nIGFmdGVyICdzdXNwZW5kZWRfc3RhdGUnLAo+Pj4gYW5k
+IDMyLWJpdCBhcmNoaXRlY3R1cmVzIChpbmNsdWRpbmcgeDMyKSBhbHNvIGFmdGVyIGh3X3B0ciwK
+Pj4+IGJ1dCB4ODYtMzIgZG9lcyBub3QuIFlvdSBtYWtlIHRoYXQgZXhwbGljaXQgaW4gdGhlIGNv
+bXBhdCBjb2RlLAo+Pj4gdGhpcyB2ZXJzaW9uIGp1c3QgcmVsaWVzIG9uIHRoZSBjb21waWxlciB1
+c2luZyBpZGVudGljYWwgcGFkZGluZwo+Pj4gaW4gdXNlciBhbmQga2VybmVsIHNwYWNlLiBXZSBj
+b3VsZCBtYWtlIHRoYXQgZXhwbGljaXQgdXNpbmcKPj4+Cj4+PiBzdHJ1Y3Qgc25kX3BjbV9tbWFw
+X3N0YXR1czY0IHsKPj4+ICAgICAgICBzbmRfcGNtX3N0YXRlX3Qgc3RhdGU7ICAgICAgICAgIC8q
+IFJPOiBzdGF0ZSAtIFNORFJWX1BDTV9TVEFURV9YWFhYICovCj4+PiAgICAgICAgaW50IHBhZDE7
+ICAgICAgICAgICAgICAgICAgICAgICAvKiBOZWVkZWQgZm9yIDY0IGJpdCBhbGlnbm1lbnQgKi8K
+Pj4+ICAgICAgICBzbmRfcGNtX3VmcmFtZXNfdCBod19wdHI7ICAgICAgIC8qIFJPOiBodyBwdHIg
+KDAuLi5ib3VuZGFyeS0xKSAqLwo+Pj4gI2lmICFkZWZpbmVkKENPTkZJR182NEJJVCkgJiYgIWRl
+ZmluZWQoQ09ORklHX1g4Nl8zMikKPj4+ICAgICAgICBpbnQgcGFkMjsKPj4+ICNlbmRpZgo+Pj4g
+ICAgICAgc3RydWN0IHsgczY0IHR2X3NlYzsgczY0IHR2X25zZWM7IH0gdHN0YW1wOyAgICAgICAg
+ICAgICAvKiBUaW1lc3RhbXAgKi8KPj4+ICAgICAgICBzbmRfcGNtX3N0YXRlX3Qgc3VzcGVuZGVk
+X3N0YXRlOyAvKiBSTzogc3VzcGVuZGVkIHN0cmVhbSBzdGF0ZSAqLwo+Pj4gI2lmICFkZWZpbmVk
+KENPTkZJR19YODZfMzIpCj4+PiAgICAgICAgaW50IHBhZDM7Cj4+PiAjZW5kaWYKPj4+ICAgICAg
+IHN0cnVjdCB7IHM2NCB0dl9zZWM7IHM2NCB0dl9uc2VjOyB9IGF1ZGlvX3RzdGFtcDsgICAgICAg
+LyogZnJvbQo+Pj4gc2FtcGxlIGNvdW50ZXIgb3Igd2FsbCBjbG9jayAqLwo+Pj4gfTsKPj4KPj4g
+SSBhbSBzb3JyeSBJIGRpZCBub3QgZ2V0IHlvdSBoZXJlLCB3aHkgd2UgZG8gbm90IG5lZWQgcGFk
+MiBhbmQgcGFkMwo+PiBmb3IgeDg2XzMyPwo+Cj4gVGhpcyBpcyBhZ2FpbiB0aGUgeDg2LTMyIGFs
+aWdubWVudCBxdWlyazogdGhlIHN0cnVjdHVyZSBhcyBkZWZpbmVkCj4gaW4gdGhlIHVhcGkgaGVh
+ZGVyIGRvZXMgbm90IGhhdmUgcGFkZGluZywgYW5kIHRoZSBuZXcgczY0IGZpZWxkcwo+IGhhdmUg
+MzItYml0IGFsaWdubWVudCBvbiB4ODYsIHNvIHRoZSBjb21waWxlciBkb2VzIG5vdCBhZGQgaW1w
+bGljaXQKPiBwYWRkaW5nIGluIHVzZXIgc3BhY2UuCj4KPiBPbiBhbGwgb3RoZXIgYXJjaGl0ZWN0
+dXJlcywgdGhlIGZpZWxkcyBkbyBnZXQgcGFkZGVkIGltcGxpY2l0bHkKPiBpbiB1c2VyIHNwYWNl
+LCBJJ20ganVzdCBsaXN0aW5nIHRoZSBwYWRkaW5nIGV4cGxpY2l0bHkuCgpNYWtlIHNlbnNlLgoK
+Pgo+PiBZb3UgbWlzc2VkIOKAmCNpZiAhZGVmaW5lZChDT05GSUdfNjRCSVQp4oCcIGF0IHRoZSBz
+ZWNvbmQgI2lmCj4+IGNvbmRpdGlvbj8KPgo+IE5vLCB0aGF0IHdhcyBpbnRlbnRpb25hbDoKPgo+
+IHNuZF9wY21fdWZyYW1lc190IGlzICd1bnNpZ25lZCBsb25nJywgc28gb24gNjQtYml0IGFyY2hp
+dGVjdHVyZXMKPiB3ZSBoYXZlIG5vIHBhZGRpbmcgYmV0d2VlbiB0d28gNjQtYml0IHZhbHVlcyAo
+aHdfcHRyIGFuZCB0c3RhbXApLAo+IGFuZCBvbiB4ODYtMzIgd2UgaGF2ZSBubyBwYWRkaW5nIGJl
+Y2F1c2UgYm90aCBoYXZlIDMyLWJpdAo+IGFsaWdubWVudC4KPgo+IEhvd2V2ZXIsIHNuZF9wY21f
+c3RhdGVfdCBpcyAnaW50Jywgd2hpY2ggaXMgYWx3YXlzIDMyLWJpdCB3aWRlLAo+IHNvIHdlIGRv
+IGhhdmUgcGFkZGluZyBvbiBib3RoIDMyLWJpdCBhbmQgNjQtYml0IGFyY2hpdGVjdHVyZXMKPiBi
+ZXR3ZWVuIHN5c3BlbmRlZF9zdGF0ZSBhbmQgYXVkaW9fdHN0YW1wLCB3aXRoIHRoZSBleGNlcHRp
+b24KPiBvZiB4ODYtMzIuCgpUaGFua3MsIEkgY2FuIHVuZGVyc3RhbmQgbm93LgoKLS0gCkJhb2xp
+bi53YW5nCkJlc3QgUmVnYXJkcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
