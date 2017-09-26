@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: [PATCH] Revert "ALSA: echoaudio: purge contradictions
 	between dimension matrix members and total number of members"
-Date: Tue, 26 Sep 2017 09:08:12 +0900
-Message-ID: <20170926000812.15513-1-o-takashi@sakamocchi.jp>
+Date: Tue, 26 Sep 2017 09:11:49 +0900
+Message-ID: <20170926001149.27234-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B530D267056
- for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2017 02:08:18 +0200 (CEST)
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id D8EDA267056
+ for <alsa-devel@alsa-project.org>; Tue, 26 Sep 2017 02:11:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
