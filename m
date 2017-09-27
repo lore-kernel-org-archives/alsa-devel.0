@@ -1,21 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH 4/8] ASoC: Intel: move all ACPI match
- tables to common module
-Date: Wed, 27 Sep 2017 15:15:45 +0530
-Message-ID: <20170927094545.GK30097@localhost>
-References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
- <20170908205702.1985-5-pierre-louis.bossart@linux.intel.com>
- <20170926042300.GL30097@localhost>
- <6c836c0f-5403-f7d2-5433-8197f8501e9e@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASoC: dapm: Avoid creating kcontrol for
+	params
+Date: Wed, 27 Sep 2017 11:11:48 +0100
+Message-ID: <20170927101148.o24d5bncuddh6ykh@localhost.localdomain>
+References: <1506485471-59951-1-git-send-email-yesanishhere@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 64292267056
- for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 11:41:49 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A7A7267224
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 12:11:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <6c836c0f-5403-f7d2-5433-8197f8501e9e@linux.intel.com>
+In-Reply-To: <1506485471-59951-1-git-send-email-yesanishhere@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,126 +23,168 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: yesanishhere@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 26, 2017 at 02:13:23PM -0500, Pierre-Louis Bossart wrote:
-> On 9/25/17 11:23 PM, Vinod Koul wrote:
-> >On Fri, Sep 08, 2017 at 03:56:58PM -0500, Pierre-Louis Bossart wrote:
-> >>First step of cleaning, move all tables to soc-acpi-intel-match module
-> >>
-> >>Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> >>---
-> >>  include/sound/soc-acpi-intel-match.h          |  32 +++
-> >>  sound/soc/intel/Kconfig                       |  24 +-
-> >>  sound/soc/intel/Makefile                      |   2 +-
-> >>  sound/soc/intel/atom/sst/sst_acpi.c           | 311 ++-----------------------
-> >>  sound/soc/intel/common/Makefile               |   2 +
-> >>  sound/soc/intel/common/soc-acpi-intel-match.c | 323 ++++++++++++++++++++++++++
-> >>  sound/soc/intel/common/sst-acpi.c             |  44 +---
-> >>  7 files changed, 395 insertions(+), 343 deletions(-)
-> >>  create mode 100644 include/sound/soc-acpi-intel-match.h
-> >>  create mode 100644 sound/soc/intel/common/soc-acpi-intel-match.c
-> >>
-> >>diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-> >>new file mode 100644
-> >>index 0000000..1a9191c
-> >>--- /dev/null
-> >>+++ b/include/sound/soc-acpi-intel-match.h
-> >>@@ -0,0 +1,32 @@
-> >>+
-> >>+/*
-> >>+ * Copyright (C) 2017, Intel Corporation. All rights reserved.
-> >>+ *
-> >>+ * This program is free software; you can redistribute it and/or
-> >>+ * modify it under the terms of the GNU General Public License version
-> >>+ * 2 as published by the Free Software Foundation.
-> >>+ *
-> >>+ * This program is distributed in the hope that it will be useful,
-> >>+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >>+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> >>+ * GNU General Public License for more details.
-> >>+ *
-> >>+ */
-> >>+
-> >>+#ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
-> >>+#define __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
-> >
-> >do we need LINUX on this one, it already too long :)
+On Tue, Sep 26, 2017 at 09:11:11PM -0700, yesanishhere@gmail.com wrote:
+> From: anish kumar <yesanishhere@gmail.com>
 > 
-> I checked and all include/sound/soc* files have this LINUX_SND_SOC prefix. I
-> don't mind removing it but then someone will object it's not consistent.
-
-I didnt realize we had that in soc files :)
-
-$ grep __LINUX include/sound/* |wc -l
-56
-$ grep -L __LINUX include/sound/* |wc -l
-118
-
-Take your pick :D
-
+> Currently in codec to codec dai link if there are multiple
+> params defined then dapm can use created kcontrol to
+> decide which param to apply at runtime.
 > 
-> >
-> >>+
-> >>+#include <linux/stddef.h>
-> >>+#include <linux/acpi.h>
-> >>+
-> >>+/*
-> >>+ * these tables are not constants, some fields can be used for
-> >>+ * pdata or machine ops
-> >>+ */
-> >>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_haswell_machines[];
-> >>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[];
-> >>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[];
-> >>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_machines[];
-> >>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cherrytrail_machines[];
-> >
-> >so the header is just for externs, not a pretty thing, can we avoid these
-> >somehow. Do they need to be in common file, why not keep then in respective
-> >byt/hsw file.
+> However, in case there is only single param configuration
+> then there is no point in creating the kcontrol and also there
+> is no point in allocating memory for kcontrol.
 > 
-> Because they will be shared between drivers, that's the whole point.
-> I can't put a common table in either of sound/soc/sof or
-> sound/soc/intel/atom. I didn't find a better solution than a module with
-> just tables + matching functions in it.
-
-yes but shared between byt family or hsw family, maybe a common byt-tables.c
-hsw-tables.c and we can move skl ones out to skl-tables.c
-
+> In the snd_soc_dapm_new_pcm function, there is memory
+> allocation happening for kcontrol which is later used
+> or not used based on num_param. It is better to not
+> allocate memory when there is only a single configuration.
+> This change is to remedy that anomaly.
 > 
-> >
-> >
-> >>+config SND_SOC_INTEL_COMMON
-> >>+	tristate
-> >>+
-> >>  config SND_SOC_INTEL_SST
-> >>  	tristate
-> >>+	select SND_SOC_INTEL_COMMON
-> >>  	select SND_SOC_INTEL_SST_ACPI if ACPI
-> >>-	select SND_SOC_INTEL_SST_MATCH if ACPI
-> >>+	select SND_SOC_ACPI_INTEL_MATCH if ACPI
-> >>-config SND_SOC_INTEL_SST_MATCH
-> >>+config SND_SOC_ACPI_INTEL_MATCH
-> >>  	tristate
-> >>  	select SND_SOC_ACPI if ACPI
-> >>@@ -145,7 +149,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
-> >>  	select SND_SOC_RT5640
-> >>  	select SND_SST_ATOM_HIFI2_PLATFORM
-> >>  	select SND_SST_IPC_ACPI
-> >>-	select SND_SOC_INTEL_SST_MATCH if ACPI
-> >>+	select SND_SOC_ACPI_INTEL_MATCH if ACPI
-> >
-> >why do you need this change, SND_SOC_INTEL_SST selects
-> >SND_SOC_ACPI_INTEL_MATCH, so we should select top symbol which is
-> >SND_SOC_INTEL_SST
+> Signed-off-by: anish kumar <yesanishhere@gmail.com>
+> ---
+> Changes in this version:
+>  - Review comments from charles to move common function of error
+>    handling in seperate function.
+> Changes in v1:
+>  - Included the review comments from charles regarding releasing
+>    memory in error path.
 > 
-> The idea is also to share machine drivers between SOF and closed-source
-> based platform drivers, so if we keep the semantic of INTEL_SST as is then
-> it needs to go away from the machine parts.
+>  sound/soc/soc-dapm.c | 145 +++++++++++++++++++++++++++++++--------------------
+>  1 file changed, 89 insertions(+), 56 deletions(-)
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index d55cac6..5dae9d8 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> -	memset(&template, 0, sizeof(template));
+> -	template.reg = SND_SOC_NOPM;
+> -	template.id = snd_soc_dapm_dai_link;
+> -	template.name = link_name;
+> -	template.event = snd_soc_dai_link_event;
+> -	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+> -		SND_SOC_DAPM_PRE_PMD;
+> -	template.num_kcontrols = 1;
+> -	/* duplicate w_param_enum on heap so that memory persists */
+> -	private_value =
+> +	*private_value =
+>  		(unsigned long) devm_kmemdup(card->dev,
+>  			(void *)(kcontrol_dai_link[0].private_value),
+>  			sizeof(struct soc_enum), GFP_KERNEL);
+> -	if (!private_value) {
+> +	if (!*private_value) {
+>  		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+>  			link_name);
+> -		ret = -ENOMEM;
+> -		goto outfree_link_name;
+> +		goto outfree_w_param;
+>  	}
+> -	kcontrol_dai_link[0].private_value = private_value;
+> +	kcontrol_dai_link[0].private_value = *private_value;
+>  	/* duplicate kcontrol_dai_link on heap so that memory persists */
+> -	template.kcontrol_news =
+> -				devm_kmemdup(card->dev, &kcontrol_dai_link[0],
+> -					sizeof(struct snd_kcontrol_new),
+> -					GFP_KERNEL);
+> -	if (!template.kcontrol_news) {
+> +	kcontrol_news =
+> +			devm_kmemdup(card->dev, &kcontrol_dai_link[0],
 
-ok
+Not sure I really like this new line style especially here the
+devm_kmemdup would be in the same place on the previous line why
+have the break?
 
--- 
-~Vinod
+> +				sizeof(struct snd_kcontrol_new),
+> +				GFP_KERNEL);
+> +	if (!kcontrol_news) {
+>  		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+>  			link_name);
+> -		ret = -ENOMEM;
+> -		goto outfree_private_value;
+> +		goto outfree_w_param;
+>  	}
+> +	return kcontrol_news;
+>  
+> +outfree_w_param:
+> +	snd_soc_dapm_free_kcontrol(card, private_value, num_params, w_param_text);
+> +	return NULL;
+> +}
+> +
+> +int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+> +			 const struct snd_soc_pcm_stream *params,
+> +			 unsigned int num_params,
+> +			 struct snd_soc_dapm_widget *source,
+> +			 struct snd_soc_dapm_widget *sink)
+> +{
+> +	struct snd_soc_dapm_widget template;
+> +	struct snd_soc_dapm_widget *w;
+> +	const char **w_param_text;
+> +	unsigned long private_value;
+> +	char *link_name;
+> +	int ret;
+> +
+> +	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
+> +				   source->name, sink->name);
+> +	if (!link_name)
+> +		return -ENOMEM;
+> +
+> +	memset(&template, 0, sizeof(template));
+> +	template.reg = SND_SOC_NOPM;
+> +	template.id = snd_soc_dapm_dai_link;
+> +	template.name = link_name;
+> +	template.event = snd_soc_dai_link_event;
+> +	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+> +		SND_SOC_DAPM_PRE_PMD;
+> +	template.kcontrol_news = NULL;
+> +
+> +	/* allocate memory for control, only in case of multiple configs */
+> +	if (num_params > 1) {
+> +		w_param_text = devm_kcalloc(card->dev, num_params,
+> +					sizeof(char *), GFP_KERNEL);
+> +		if (!w_param_text) {
+> +			ret = -ENOMEM;
+> +			goto param_fail;
+> +		}
+> +
+> +		template.num_kcontrols = 1;
+> +		template.kcontrol_news =
+> +					snd_soc_dapm_alloc_kcontrol(card,
+> +						link_name, params, num_params,
+> +						w_param_text, &private_value);
+> +		if (!template.kcontrol_news) {
+> +			ret = -ENOMEM;
+> +			goto param_fail;
+
+Will you not leak w_param_text on this path?
+
+> +		}
+> +	}
+>  	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+>  
+>  	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+> @@ -3899,15 +3938,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>  	devm_kfree(card->dev, w);
+>  outfree_kcontrol_news:
+>  	devm_kfree(card->dev, (void *)template.kcontrol_news);
+> -outfree_private_value:
+> -	devm_kfree(card->dev, (void *)private_value);
+> -outfree_link_name:
+> +	snd_soc_dapm_free_kcontrol(card, &private_value, num_params, w_param_text);
+> +param_fail:
+>  	devm_kfree(card->dev, link_name);
+> -	for (count = 0 ; count < num_params; count++)
+> -		devm_kfree(card->dev, (void *)w_param_text[count]);
+> -outfree_w_param:
+> -	devm_kfree(card->dev, w_param_text);
+> -
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.5.4 (Apple Git-61)
+
+Thanks,
+Charles
