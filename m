@@ -1,90 +1,55 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: line6: make snd_pcm_ops const
-Date: Wed, 27 Sep 2017 15:25:48 +0900
-Message-ID: <19468cba-08dd-59be-8254-ba3d34560f31@sakamocchi.jp>
-References: <1506493167-7694-1-git-send-email-bhumirks@gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: Re: ALSA: bebob: Use common error handling code in
+ snd_bebob_stream_start_duplex()
+Date: Wed, 27 Sep 2017 08:38:48 +0200
+Message-ID: <06a8e3ee-c3c3-b4c7-0cf9-69a2efdaf0ba@users.sourceforge.net>
+References: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
+ <541f0f9f-fc87-f65b-bbd8-fec5d45d5d2e@users.sourceforge.net>
+ <a1dee732-f5c4-5b35-9f82-553fc8ce430d@sakamocchi.jp>
+ <3afecbef-b7ac-a4e8-f439-a351916f05e5@users.sourceforge.net>
+ <09bb0e83-01fe-cd12-a084-31db3f12d663@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1506493167-7694-1-git-send-email-bhumirks@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>, julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1270F2671E3
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 08:39:11 +0200 (CEST)
+In-Reply-To: <09bb0e83-01fe-cd12-a084-31db3f12d663@sakamocchi.jp>
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sep 27 2017 15:19, Bhumika Goyal wrote:
-> Make these const as they are only passed to a const argument of the
-> function snd_pcm_set_ops in the file referencing them. Also, add const
-> to the declaration in the headers.
-> 
-> Structures found using Coccinelle and changes done by hand.
-> 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-> ---
->   sound/usb/line6/capture.c  | 2 +-
->   sound/usb/line6/capture.h  | 2 +-
->   sound/usb/line6/playback.c | 2 +-
->   sound/usb/line6/playback.h | 2 +-
->   4 files changed, 4 insertions(+), 4 deletions(-)
-
-This looks good to me.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-> diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-> index 7c81256..947d616 100644
-> --- a/sound/usb/line6/capture.c
-> +++ b/sound/usb/line6/capture.c
-> @@ -248,7 +248,7 @@ static int snd_line6_capture_close(struct snd_pcm_substream *substream)
->   }
->   
->   /* capture operators */
-> -struct snd_pcm_ops snd_line6_capture_ops = {
-> +const struct snd_pcm_ops snd_line6_capture_ops = {
->   	.open = snd_line6_capture_open,
->   	.close = snd_line6_capture_close,
->   	.ioctl = snd_pcm_lib_ioctl,
-> diff --git a/sound/usb/line6/capture.h b/sound/usb/line6/capture.h
-> index 890b21b..b67ccc3 100644
-> --- a/sound/usb/line6/capture.h
-> +++ b/sound/usb/line6/capture.h
-> @@ -17,7 +17,7 @@
->   #include "driver.h"
->   #include "pcm.h"
->   
-> -extern struct snd_pcm_ops snd_line6_capture_ops;
-> +extern const struct snd_pcm_ops snd_line6_capture_ops;
->   
->   extern void line6_capture_copy(struct snd_line6_pcm *line6pcm, char *fbuf,
->   			       int fsize);
-> diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-> index 812d181..819e9b2 100644
-> --- a/sound/usb/line6/playback.c
-> +++ b/sound/usb/line6/playback.c
-> @@ -393,7 +393,7 @@ static int snd_line6_playback_close(struct snd_pcm_substream *substream)
->   }
->   
->   /* playback operators */
-> -struct snd_pcm_ops snd_line6_playback_ops = {
-> +const struct snd_pcm_ops snd_line6_playback_ops = {
->   	.open = snd_line6_playback_open,
->   	.close = snd_line6_playback_close,
->   	.ioctl = snd_pcm_lib_ioctl,
-> diff --git a/sound/usb/line6/playback.h b/sound/usb/line6/playback.h
-> index 51fce29..d8d3b8a 100644
-> --- a/sound/usb/line6/playback.h
-> +++ b/sound/usb/line6/playback.h
-> @@ -27,7 +27,7 @@
->    */
->   #define USE_CLEAR_BUFFER_WORKAROUND 1
->   
-> -extern struct snd_pcm_ops snd_line6_playback_ops;
-> +extern const struct snd_pcm_ops snd_line6_playback_ops;
->   
->   extern int line6_create_audio_out_urbs(struct snd_line6_pcm *line6pcm);
->   extern int line6_submit_audio_out_all_urbs(struct snd_line6_pcm *line6pcm);
-
-Thanks
-
-Takashi Sakamoto
+PiBBcyBsb25nIGFzIEkga25vdywgdGhlIGxhc3QgcHJvZHVjdCB3aXRoIHRoaXMgc29sdXRpb24g
+d2FzIHNoaXBwZWQKPiBhdCAyMDEwLiBUaHVzIHRoZSBkcml2ZXIgaXMgdW5kZXIgbWFpbnRlbmFu
+Y2UuCgpUaGFua3MgZm9yIHlvdXIgaW5mb3JtYXRpb24uCgoKPiBJIGhhdmUgc29tZSB0YXNrcyBm
+b3IgdGhpcyBkcml2ZXIgYXMgd2VsbCBhcyBkcml2ZXJzIGluIEFMU0EgZmlyZXdpcmUgc3RhY2ss
+Cj4gaG93ZXZlciBiYXNpY2FsbHkgdGhpcyBkcml2ZXIgaXMgdW5kZXIgbWFpbnRlbmFuY2UgYW5k
+IG1pZ2h0IG5vdCBnZXQKPiBmdXJ0aGVyIGludGVncmF0aW9uLgoKR29vZCB0byBrbm93IGluIHBy
+aW5jaXBsZSDigKYKCgo+IEkgdGhpbmsgdGhhdCBjb2RlIGNsZWFudXAgZm9yIHRoZSBkcml2ZXIg
+ZG9uJ3QgaGVscCB0aGUgb3RoZXIgZGV2ZWxvcGVycy4KCkkgdGhvdWdodCBpbiBhbiBvdGhlciBk
+aXJlY3Rpb24gaWYgb3RoZXIgY29udHJpYnV0b3JzIHdvdWxkIGxpa2UgdG8gY2FyZQpmb3IgbG9u
+Z2VyIHRlcm0gc3VwcG9ydC4KCgo+IEl0J3MgYmV0dGVyIHRvIGFwcGx5IHN1Y2ggY2xlYW51cCB0
+byBtb3JlIGxvbmctbGl2ZSBjb2RlcyBzdWNoIGFzCj4gY29yZSBmdW5jdGlvbmFsaXR5IG9mIEFM
+U0EuCgpJIGFtIHRyeWluZyBhbm90aGVyIGdlbmVyYWwgdHJhbnNmb3JtYXRpb24gcGF0dGVybiBv
+dXQuCgoKPiBJbiB0aGlzIHBvaW50IG9mIHZpZXcsIHdoZXRoZXIgeW91ciBwYXRjaHNldCBpcyB3
+b3J0aCB0byBiZSBhcHBsaWVkCj4gb3Igbm90LCBQbGVhc2Uga2VlcCBlbm91Z2ggdGltZSB0byB0
+aGluayBhYm91dC4KCkF1dG9tYXRpYyBzb3VyY2UgY29kZSBhbmFseXNpcyBjYW4gZmluZCB2YXJp
+b3VzIHVwZGF0ZSBjYW5kaWRhdGVzLgpJIGFtIGp1c3QgdW5zdXJlIGlmIGEgYml0IG1vcmUgc29m
+dHdhcmUgZGV2ZWxvcG1lbnQgYXR0ZW50aW9uIGlzIHN0aWxsCmFwcHJvcHJpYXRlIGF0IHNvbWUg
+cGxhY2VzLgoKRG8geW91IGZpbmQgYW55IG9mIHRoZSBhZmZlY3RlZCBzb2Z0d2FyZSBtb2R1bGVz
+IHNvIG91dGRhdGVkCnNvIHRoYXQgdGhleSBzaG91bGQgbm90IGJlIHRvdWNoZWQgYW55IG1vcmU/
+CgpSZWdhcmRzLApNYXJrdXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
