@@ -1,49 +1,155 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ASoC: kirkwood: make kirkwood_soc_platform const
-Date: Wed, 27 Sep 2017 21:35:47 +0530
-Message-ID: <1506528347-4370-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 4/8] ASoC: Intel: move all ACPI match
+ tables to common module
+Date: Wed, 27 Sep 2017 12:06:35 -0500
+Message-ID: <8b620335-189a-8287-c385-035fa176b92d@linux.intel.com>
+References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
+ <20170908205702.1985-5-pierre-louis.bossart@linux.intel.com>
+ <20170926042300.GL30097@localhost>
+ <6c836c0f-5403-f7d2-5433-8197f8501e9e@linux.intel.com>
+ <20170927094545.GK30097@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FFCD266DE1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 19:07:19 +0200 (CEST)
+In-Reply-To: <20170927094545.GK30097@localhost>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Make kirkwood_soc_platform const as it only passed to a const argument
-of the function snd_soc_register_platform in the file referencing it.
-Make the declaration const too.
+On 9/27/17 4:45 AM, Vinod Koul wrote:
+> On Tue, Sep 26, 2017 at 02:13:23PM -0500, Pierre-Louis Bossart wrote:
+>> On 9/25/17 11:23 PM, Vinod Koul wrote:
+>>> On Fri, Sep 08, 2017 at 03:56:58PM -0500, Pierre-Louis Bossart wrote:
+>>>> First step of cleaning, move all tables to soc-acpi-intel-match module
+>>>>
+>>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>> ---
+>>>>   include/sound/soc-acpi-intel-match.h          |  32 +++
+>>>>   sound/soc/intel/Kconfig                       |  24 +-
+>>>>   sound/soc/intel/Makefile                      |   2 +-
+>>>>   sound/soc/intel/atom/sst/sst_acpi.c           | 311 ++-----------------------
+>>>>   sound/soc/intel/common/Makefile               |   2 +
+>>>>   sound/soc/intel/common/soc-acpi-intel-match.c | 323 ++++++++++++++++++++++++++
+>>>>   sound/soc/intel/common/sst-acpi.c             |  44 +---
+>>>>   7 files changed, 395 insertions(+), 343 deletions(-)
+>>>>   create mode 100644 include/sound/soc-acpi-intel-match.h
+>>>>   create mode 100644 sound/soc/intel/common/soc-acpi-intel-match.c
+>>>>
+>>>> diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+>>>> new file mode 100644
+>>>> index 0000000..1a9191c
+>>>> --- /dev/null
+>>>> +++ b/include/sound/soc-acpi-intel-match.h
+>>>> @@ -0,0 +1,32 @@
+>>>> +
+>>>> +/*
+>>>> + * Copyright (C) 2017, Intel Corporation. All rights reserved.
+>>>> + *
+>>>> + * This program is free software; you can redistribute it and/or
+>>>> + * modify it under the terms of the GNU General Public License version
+>>>> + * 2 as published by the Free Software Foundation.
+>>>> + *
+>>>> + * This program is distributed in the hope that it will be useful,
+>>>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>>>> + * GNU General Public License for more details.
+>>>> + *
+>>>> + */
+>>>> +
+>>>> +#ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
+>>>> +#define __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
+>>>
+>>> do we need LINUX on this one, it already too long :)
+>>
+>> I checked and all include/sound/soc* files have this LINUX_SND_SOC prefix. I
+>> don't mind removing it but then someone will object it's not consistent.
+> 
+> I didnt realize we had that in soc files :)
+> 
+> $ grep __LINUX include/sound/* |wc -l
+> 56
+> $ grep -L __LINUX include/sound/* |wc -l
+> 118
+> 
+> Take your pick :D
+> 
+>>
+>>>
+>>>> +
+>>>> +#include <linux/stddef.h>
+>>>> +#include <linux/acpi.h>
+>>>> +
+>>>> +/*
+>>>> + * these tables are not constants, some fields can be used for
+>>>> + * pdata or machine ops
+>>>> + */
+>>>> +extern struct snd_soc_acpi_mach snd_soc_acpi_intel_haswell_machines[];
+>>>> +extern struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[];
+>>>> +extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[];
+>>>> +extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_machines[];
+>>>> +extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cherrytrail_machines[];
+>>>
+>>> so the header is just for externs, not a pretty thing, can we avoid these
+>>> somehow. Do they need to be in common file, why not keep then in respective
+>>> byt/hsw file.
+>>
+>> Because they will be shared between drivers, that's the whole point.
+>> I can't put a common table in either of sound/soc/sof or
+>> sound/soc/intel/atom. I didn't find a better solution than a module with
+>> just tables + matching functions in it.
+> 
+> yes but shared between byt family or hsw family, maybe a common byt-tables.c
+> hsw-tables.c and we can move skl ones out to skl-tables.c
 
-Done using Coccinelle.
+oh, if you are talking about splitting the tables in different files yes 
+this is no issue. I thought you objected to the declaration of the 
+tables themselves.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- sound/soc/kirkwood/kirkwood.h     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index cf23af1..505b0ff 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -318,7 +318,7 @@ static void kirkwood_dma_free_dma_buffers(struct snd_pcm *pcm)
- 	}
- }
- 
--struct snd_soc_platform_driver kirkwood_soc_platform = {
-+const struct snd_soc_platform_driver kirkwood_soc_platform = {
- 	.ops		= &kirkwood_dma_ops,
- 	.pcm_new	= kirkwood_dma_new,
- 	.pcm_free	= kirkwood_dma_free_dma_buffers,
-diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
-index 90e32a7..783cb1a4 100644
---- a/sound/soc/kirkwood/kirkwood.h
-+++ b/sound/soc/kirkwood/kirkwood.h
-@@ -143,6 +143,6 @@ struct kirkwood_dma_data {
- 	int burst;
- };
- 
--extern struct snd_soc_platform_driver kirkwood_soc_platform;
-+extern const struct snd_soc_platform_driver kirkwood_soc_platform;
- 
- #endif
--- 
-1.9.1
+> 
+>>
+>>>
+>>>
+>>>> +config SND_SOC_INTEL_COMMON
+>>>> +	tristate
+>>>> +
+>>>>   config SND_SOC_INTEL_SST
+>>>>   	tristate
+>>>> +	select SND_SOC_INTEL_COMMON
+>>>>   	select SND_SOC_INTEL_SST_ACPI if ACPI
+>>>> -	select SND_SOC_INTEL_SST_MATCH if ACPI
+>>>> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+>>>> -config SND_SOC_INTEL_SST_MATCH
+>>>> +config SND_SOC_ACPI_INTEL_MATCH
+>>>>   	tristate
+>>>>   	select SND_SOC_ACPI if ACPI
+>>>> @@ -145,7 +149,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+>>>>   	select SND_SOC_RT5640
+>>>>   	select SND_SST_ATOM_HIFI2_PLATFORM
+>>>>   	select SND_SST_IPC_ACPI
+>>>> -	select SND_SOC_INTEL_SST_MATCH if ACPI
+>>>> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+>>>
+>>> why do you need this change, SND_SOC_INTEL_SST selects
+>>> SND_SOC_ACPI_INTEL_MATCH, so we should select top symbol which is
+>>> SND_SOC_INTEL_SST
+>>
+>> The idea is also to share machine drivers between SOF and closed-source
+>> based platform drivers, so if we keep the semantic of INTEL_SST as is then
+>> it needs to go away from the machine parts.
+> 
+> ok
+> 
