@@ -1,22 +1,18 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: ALSA: bebob: Use common error handling code in
- snd_bebob_stream_start_duplex()
-Date: Wed, 27 Sep 2017 08:38:48 +0200
-Message-ID: <06a8e3ee-c3c3-b4c7-0cf9-69a2efdaf0ba@users.sourceforge.net>
-References: <85f95150-9cec-7a53-7692-837ba543e1ec@users.sourceforge.net>
- <541f0f9f-fc87-f65b-bbd8-fec5d45d5d2e@users.sourceforge.net>
- <a1dee732-f5c4-5b35-9f82-553fc8ce430d@sakamocchi.jp>
- <3afecbef-b7ac-a4e8-f439-a351916f05e5@users.sourceforge.net>
- <09bb0e83-01fe-cd12-a084-31db3f12d663@sakamocchi.jp>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: Kbl: Add Playback DAI for
+	fixup
+Date: Wed, 27 Sep 2017 12:21:43 +0530
+Message-ID: <20170927065142.GI30097@localhost>
+References: <1506490513-20672-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 1270F2671E3
- for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 08:39:11 +0200 (CEST)
-In-Reply-To: <09bb0e83-01fe-cd12-a084-31db3f12d663@sakamocchi.jp>
-Content-Language: en-GB
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 228AA2671E3
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 08:47:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1506490513-20672-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>
+To: Harsha Priya <harshapriya.n@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBBcyBsb25nIGFzIEkga25vdywgdGhlIGxhc3QgcHJvZHVjdCB3aXRoIHRoaXMgc29sdXRpb24g
-d2FzIHNoaXBwZWQKPiBhdCAyMDEwLiBUaHVzIHRoZSBkcml2ZXIgaXMgdW5kZXIgbWFpbnRlbmFu
-Y2UuCgpUaGFua3MgZm9yIHlvdXIgaW5mb3JtYXRpb24uCgoKPiBJIGhhdmUgc29tZSB0YXNrcyBm
-b3IgdGhpcyBkcml2ZXIgYXMgd2VsbCBhcyBkcml2ZXJzIGluIEFMU0EgZmlyZXdpcmUgc3RhY2ss
-Cj4gaG93ZXZlciBiYXNpY2FsbHkgdGhpcyBkcml2ZXIgaXMgdW5kZXIgbWFpbnRlbmFuY2UgYW5k
-IG1pZ2h0IG5vdCBnZXQKPiBmdXJ0aGVyIGludGVncmF0aW9uLgoKR29vZCB0byBrbm93IGluIHBy
-aW5jaXBsZSDigKYKCgo+IEkgdGhpbmsgdGhhdCBjb2RlIGNsZWFudXAgZm9yIHRoZSBkcml2ZXIg
-ZG9uJ3QgaGVscCB0aGUgb3RoZXIgZGV2ZWxvcGVycy4KCkkgdGhvdWdodCBpbiBhbiBvdGhlciBk
-aXJlY3Rpb24gaWYgb3RoZXIgY29udHJpYnV0b3JzIHdvdWxkIGxpa2UgdG8gY2FyZQpmb3IgbG9u
-Z2VyIHRlcm0gc3VwcG9ydC4KCgo+IEl0J3MgYmV0dGVyIHRvIGFwcGx5IHN1Y2ggY2xlYW51cCB0
-byBtb3JlIGxvbmctbGl2ZSBjb2RlcyBzdWNoIGFzCj4gY29yZSBmdW5jdGlvbmFsaXR5IG9mIEFM
-U0EuCgpJIGFtIHRyeWluZyBhbm90aGVyIGdlbmVyYWwgdHJhbnNmb3JtYXRpb24gcGF0dGVybiBv
-dXQuCgoKPiBJbiB0aGlzIHBvaW50IG9mIHZpZXcsIHdoZXRoZXIgeW91ciBwYXRjaHNldCBpcyB3
-b3J0aCB0byBiZSBhcHBsaWVkCj4gb3Igbm90LCBQbGVhc2Uga2VlcCBlbm91Z2ggdGltZSB0byB0
-aGluayBhYm91dC4KCkF1dG9tYXRpYyBzb3VyY2UgY29kZSBhbmFseXNpcyBjYW4gZmluZCB2YXJp
-b3VzIHVwZGF0ZSBjYW5kaWRhdGVzLgpJIGFtIGp1c3QgdW5zdXJlIGlmIGEgYml0IG1vcmUgc29m
-dHdhcmUgZGV2ZWxvcG1lbnQgYXR0ZW50aW9uIGlzIHN0aWxsCmFwcHJvcHJpYXRlIGF0IHNvbWUg
-cGxhY2VzLgoKRG8geW91IGZpbmQgYW55IG9mIHRoZSBhZmZlY3RlZCBzb2Z0d2FyZSBtb2R1bGVz
-IHNvIG91dGRhdGVkCnNvIHRoYXQgdGhleSBzaG91bGQgbm90IGJlIHRvdWNoZWQgYW55IG1vcmU/
-CgpSZWdhcmRzLApNYXJrdXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Tue, Sep 26, 2017 at 10:35:13PM -0700, Harsha Priya wrote:
+> 'Kbl Audio Headset Playback' FE DAI also needs SSP hw param fix.
+> Add this dai also to be handled in kabylake_ssp_fixup() call.
+
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+> ---
+> v2: change patch title and log 
+> 
+>  sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> index 88ff542..e767283 100644
+> --- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> +++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+> @@ -302,6 +302,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+>  	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
+>  	 */
+>  	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
+> +	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+>  	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
+>  		rate->min = rate->max = 48000;
+>  		channels->min = channels->max = 2;
+> -- 
+> 1.9.1
+> 
+
+-- 
+~Vinod
