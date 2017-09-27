@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add Component level set_bias_level" to
-	the asoc tree
-Date: Wed, 27 Sep 2017 18:13:50 +0100 (BST)
-Message-ID: <20170927171350.5E600440053@finisterre.ee.mobilebroadband>
-References: <87y3pzm1nl.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: add Component level pcm_new/pcm_free
+	v2" to the asoc tree
+Date: Wed, 27 Sep 2017 18:13:55 +0100 (BST)
+Message-ID: <20170927171355.26189440055@finisterre.ee.mobilebroadband>
+References: <87ziafm1of.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 57534266DE1
- for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 19:14:24 +0200 (CEST)
-In-Reply-To: <87y3pzm1nl.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C85F267291
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 19:14:28 +0200 (CEST)
+In-Reply-To: <87ziafm1of.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add Component level set_bias_level
+   ASoC: add Component level pcm_new/pcm_free v2
 
 has been applied to the asoc tree at
 
@@ -53,98 +53,180 @@ to this mail.
 Thanks,
 Mark
 
->From 7ba236ce58bd7ac8e360de81f834d9c446f7b063 Mon Sep 17 00:00:00 2001
+>From f523acebbb74f3cf5840d801f2e4856c688bf14a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 26 Sep 2017 01:01:10 +0000
-Subject: [PATCH] ASoC: add Component level set_bias_level
+Date: Tue, 26 Sep 2017 01:00:53 +0000
+Subject: [PATCH] ASoC: add Component level pcm_new/pcm_free v2
 
-In current ALSA SoC, Codec only has set_bias_level feature.
-Codec will be merged into Component in next generation ALSA SoC,
-thus current Codec specific feature need to be merged into it.
-This is glue patch for it.
+In current ALSA SoC, Platform only has pcm_new/pcm_free feature,
+but it should be supported on Component level. This patch adds it.
 
-Codec driver has .idle_bias_off for dapm bias. But Component
-driver doesn't have it, and dapm->idle_bias_off is set as "true".
-To keep compatibility, this patch adds "idle_bias_on" instead of
-".idle_bias_off" on Component driver.
-dapm->idle_bias_off will be set by inverted idle_bias_on.
-
-When we replace Codec to Component, the driver which has
-".idle_bias_off = true" is just remove it,
-and the driver which doesn't have it will have new
-".idle_bias_on = true".
+The v1 was added commit 99b04f4c4051f7 ("ASoC: add Component level
+pcm_new/pcm_free") but it called all "card" connected component's
+pcm_new/free, it was wrong.
+This patch calls "rtd" connected component.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  8 ++++++++
- sound/soc/soc-core.c | 13 ++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ include/sound/soc.h  |  6 ++++++
+ sound/soc/soc-core.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-pcm.c  | 29 +++++++++++++++++++++--------
+ 3 files changed, 69 insertions(+), 8 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index c2278614e5bf..d776cdee30d7 100644
+index 996bdbc125a5..c2278614e5bf 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -816,10 +816,16 @@ struct snd_soc_component_driver {
- 	void (*seq_notifier)(struct snd_soc_component *, enum snd_soc_dapm_type,
- 		int subseq);
- 	int (*stream_event)(struct snd_soc_component *, int event);
-+	int (*set_bias_level)(struct snd_soc_component *component,
-+			      enum snd_soc_bias_level level);
+@@ -795,6 +795,10 @@ struct snd_soc_component_driver {
+ 	int (*suspend)(struct snd_soc_component *);
+ 	int (*resume)(struct snd_soc_component *);
  
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
- 	int remove_order;
++	/* pcm creation and destruction */
++	int (*pcm_new)(struct snd_soc_pcm_runtime *);
++	void (*pcm_free)(struct snd_pcm *);
 +
-+	/* bits */
-+	unsigned int idle_bias_on:1;
-+	unsigned int suspend_bias_off:1;
- };
+ 	/* component wide operations */
+ 	int (*set_sysclk)(struct snd_soc_component *component,
+ 			  int clk_id, int source, unsigned int freq, int dir);
+@@ -872,6 +876,8 @@ struct snd_soc_component {
+ 	void (*remove)(struct snd_soc_component *);
+ 	int (*suspend)(struct snd_soc_component *);
+ 	int (*resume)(struct snd_soc_component *);
++	int (*pcm_new)(struct snd_soc_component *, struct snd_soc_pcm_runtime *);
++	void (*pcm_free)(struct snd_soc_component *, struct snd_pcm *);
  
- struct snd_soc_component {
-@@ -885,6 +891,8 @@ struct snd_soc_component {
- 		       int source, unsigned int freq_in, unsigned int freq_out);
- 	int (*set_jack)(struct snd_soc_component *component,
- 			struct snd_soc_jack *jack,  void *data);
-+	int (*set_bias_level)(struct snd_soc_component *component,
-+			      enum snd_soc_bias_level level);
- 
- 	/* machine specific init */
- 	int (*init)(struct snd_soc_component *component);
+ 	int (*set_sysclk)(struct snd_soc_component *component,
+ 			  int clk_id, int source, unsigned int freq, int dir);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index faed564670cd..fb3435121172 100644
+index 1b5b51952718..faed564670cd 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3270,6 +3270,14 @@ static void snd_soc_component_drv_pcm_free(struct snd_soc_component *component,
- 		component->driver->pcm_free(pcm);
+@@ -3254,6 +3254,22 @@ static int snd_soc_component_stream_event(struct snd_soc_dapm_context *dapm,
+ 	return component->driver->stream_event(component, event);
  }
  
-+static int snd_soc_component_set_bias_level(struct snd_soc_dapm_context *dapm,
-+					enum snd_soc_bias_level level)
++static int snd_soc_component_drv_pcm_new(struct snd_soc_component *component,
++					struct snd_soc_pcm_runtime *rtd)
 +{
-+	struct snd_soc_component *component = dapm->component;
++	if (component->driver->pcm_new)
++		return component->driver->pcm_new(rtd);
 +
-+	return component->driver->set_bias_level(component, level);
++	return 0;
++}
++
++static void snd_soc_component_drv_pcm_free(struct snd_soc_component *component,
++					  struct snd_pcm *pcm)
++{
++	if (component->driver->pcm_free)
++		component->driver->pcm_free(pcm);
 +}
 +
  static int snd_soc_component_initialize(struct snd_soc_component *component,
  	const struct snd_soc_component_driver *driver, struct device *dev)
  {
-@@ -3297,11 +3305,14 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	dapm->dev = dev;
- 	dapm->component = component;
- 	dapm->bias_level = SND_SOC_BIAS_OFF;
--	dapm->idle_bias_off = true;
-+	dapm->idle_bias_off = !driver->idle_bias_on;
-+	dapm->suspend_bias_off = driver->suspend_bias_off;
- 	if (driver->seq_notifier)
- 		dapm->seq_notifier = snd_soc_component_seq_notifier;
- 	if (driver->stream_event)
- 		dapm->stream_event = snd_soc_component_stream_event;
-+	if (driver->set_bias_level)
-+		dapm->set_bias_level = snd_soc_component_set_bias_level;
+@@ -3274,6 +3290,8 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	component->set_sysclk = component->driver->set_sysclk;
+ 	component->set_pll = component->driver->set_pll;
+ 	component->set_jack = component->driver->set_jack;
++	component->pcm_new = snd_soc_component_drv_pcm_new;
++	component->pcm_free = snd_soc_component_drv_pcm_free;
  
- 	INIT_LIST_HEAD(&component->dai_list);
- 	mutex_init(&component->io_mutex);
+ 	dapm = snd_soc_component_get_dapm(component);
+ 	dapm->dev = dev;
+@@ -3466,6 +3484,26 @@ static void snd_soc_platform_drv_remove(struct snd_soc_component *component)
+ 	platform->driver->remove(platform);
+ }
+ 
++static int snd_soc_platform_drv_pcm_new(struct snd_soc_component *component,
++					struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
++
++	if (platform->driver->pcm_new)
++		return platform->driver->pcm_new(rtd);
++
++	return 0;
++}
++
++static void snd_soc_platform_drv_pcm_free(struct snd_soc_component *component,
++					  struct snd_pcm *pcm)
++{
++	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
++
++	if (platform->driver->pcm_free)
++		platform->driver->pcm_free(pcm);
++}
++
+ /**
+  * snd_soc_add_platform - Add a platform to the ASoC core
+  * @dev: The parent device for the platform
+@@ -3489,6 +3527,10 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
+ 		platform->component.probe = snd_soc_platform_drv_probe;
+ 	if (platform_drv->remove)
+ 		platform->component.remove = snd_soc_platform_drv_remove;
++	if (platform_drv->pcm_new)
++		platform->component.pcm_new = snd_soc_platform_drv_pcm_new;
++	if (platform_drv->pcm_free)
++		platform->component.pcm_free = snd_soc_platform_drv_pcm_free;
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 	platform->component.debugfs_prefix = "platform";
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 09fed7014ed8..e5eb0cff790b 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2633,12 +2633,18 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
+ static void soc_pcm_private_free(struct snd_pcm *pcm)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
++	struct snd_soc_rtdcom_list *rtdcom;
++	struct snd_soc_component *component;
++
++	for_each_rtdcom(rtd, rtdcom) {
++		/* need to sync the delayed work before releasing resources */
++
++		flush_delayed_work(&rtd->delayed_work);
++		component = rtdcom->component;
+ 
+-	/* need to sync the delayed work before releasing resources */
+-	flush_delayed_work(&rtd->delayed_work);
+-	if (platform->driver->pcm_free)
+-		platform->driver->pcm_free(pcm);
++		if (component->pcm_free)
++			component->pcm_free(component, pcm);
++	}
+ }
+ 
+ /* create a new pcm */
+@@ -2647,6 +2653,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct snd_soc_component *component;
++	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_pcm *pcm;
+ 	char new_name[64];
+ 	int ret = 0, playback = 0, capture = 0;
+@@ -2756,10 +2764,15 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	if (capture)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
+ 
+-	if (platform->driver->pcm_new) {
+-		ret = platform->driver->pcm_new(rtd);
++	for_each_rtdcom(rtd, rtdcom) {
++		component = rtdcom->component;
++
++		if (!component->pcm_new)
++			continue;
++
++		ret = component->pcm_new(component, rtd);
+ 		if (ret < 0) {
+-			dev_err(platform->dev,
++			dev_err(component->dev,
+ 				"ASoC: pcm constructor failed: %d\n",
+ 				ret);
+ 			return ret;
 -- 
 2.14.1
