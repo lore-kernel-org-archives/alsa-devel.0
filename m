@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add Component level pcm_new/pcm_free
-	v2" to the asoc tree
-Date: Wed, 27 Sep 2017 18:13:55 +0100 (BST)
-Message-ID: <20170927171355.26189440055@finisterre.ee.mobilebroadband>
-References: <87ziafm1of.wl%kuninori.morimoto.gx@renesas.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC PATCH 4/8] ASoC: Intel: move all ACPI match
+ tables to common module
+Date: Wed, 27 Sep 2017 23:01:32 +0530
+Message-ID: <20170927173132.GP30097@localhost>
+References: <20170908205702.1985-1-pierre-louis.bossart@linux.intel.com>
+ <20170908205702.1985-5-pierre-louis.bossart@linux.intel.com>
+ <20170926042300.GL30097@localhost>
+ <6c836c0f-5403-f7d2-5433-8197f8501e9e@linux.intel.com>
+ <20170927094545.GK30097@localhost>
+ <8b620335-189a-8287-c385-035fa176b92d@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C85F267291
- for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 19:14:28 +0200 (CEST)
-In-Reply-To: <87ziafm1of.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34F22266DE1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Sep 2017 19:27:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <8b620335-189a-8287-c385-035fa176b92d@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,211 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Sep 27, 2017 at 12:06:35PM -0500, Pierre-Louis Bossart wrote:
+> On 9/27/17 4:45 AM, Vinod Koul wrote:
+> >On Tue, Sep 26, 2017 at 02:13:23PM -0500, Pierre-Louis Bossart wrote:
+> >>On 9/25/17 11:23 PM, Vinod Koul wrote:
+> >>>On Fri, Sep 08, 2017 at 03:56:58PM -0500, Pierre-Louis Bossart wrote:
 
-   ASoC: add Component level pcm_new/pcm_free v2
+> >>>>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_haswell_machines[];
+> >>>>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[];
+> >>>>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[];
+> >>>>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_machines[];
+> >>>>+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cherrytrail_machines[];
+> >>>
+> >>>so the header is just for externs, not a pretty thing, can we avoid these
+> >>>somehow. Do they need to be in common file, why not keep then in respective
+> >>>byt/hsw file.
+> >>
+> >>Because they will be shared between drivers, that's the whole point.
+> >>I can't put a common table in either of sound/soc/sof or
+> >>sound/soc/intel/atom. I didn't find a better solution than a module with
+> >>just tables + matching functions in it.
+> >
+> >yes but shared between byt family or hsw family, maybe a common byt-tables.c
+> >hsw-tables.c and we can move skl ones out to skl-tables.c
+> 
+> oh, if you are talking about splitting the tables in different files yes
+> this is no issue. I thought you objected to the declaration of the tables
+> themselves.
 
-has been applied to the asoc tree at
+Yes. I would like to avoid an endless file for externs. Let the respective
+platform build those into that driver
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f523acebbb74f3cf5840d801f2e4856c688bf14a Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 26 Sep 2017 01:00:53 +0000
-Subject: [PATCH] ASoC: add Component level pcm_new/pcm_free v2
-
-In current ALSA SoC, Platform only has pcm_new/pcm_free feature,
-but it should be supported on Component level. This patch adds it.
-
-The v1 was added commit 99b04f4c4051f7 ("ASoC: add Component level
-pcm_new/pcm_free") but it called all "card" connected component's
-pcm_new/free, it was wrong.
-This patch calls "rtd" connected component.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h  |  6 ++++++
- sound/soc/soc-core.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-pcm.c  | 29 +++++++++++++++++++++--------
- 3 files changed, 69 insertions(+), 8 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 996bdbc125a5..c2278614e5bf 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -795,6 +795,10 @@ struct snd_soc_component_driver {
- 	int (*suspend)(struct snd_soc_component *);
- 	int (*resume)(struct snd_soc_component *);
- 
-+	/* pcm creation and destruction */
-+	int (*pcm_new)(struct snd_soc_pcm_runtime *);
-+	void (*pcm_free)(struct snd_pcm *);
-+
- 	/* component wide operations */
- 	int (*set_sysclk)(struct snd_soc_component *component,
- 			  int clk_id, int source, unsigned int freq, int dir);
-@@ -872,6 +876,8 @@ struct snd_soc_component {
- 	void (*remove)(struct snd_soc_component *);
- 	int (*suspend)(struct snd_soc_component *);
- 	int (*resume)(struct snd_soc_component *);
-+	int (*pcm_new)(struct snd_soc_component *, struct snd_soc_pcm_runtime *);
-+	void (*pcm_free)(struct snd_soc_component *, struct snd_pcm *);
- 
- 	int (*set_sysclk)(struct snd_soc_component *component,
- 			  int clk_id, int source, unsigned int freq, int dir);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1b5b51952718..faed564670cd 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3254,6 +3254,22 @@ static int snd_soc_component_stream_event(struct snd_soc_dapm_context *dapm,
- 	return component->driver->stream_event(component, event);
- }
- 
-+static int snd_soc_component_drv_pcm_new(struct snd_soc_component *component,
-+					struct snd_soc_pcm_runtime *rtd)
-+{
-+	if (component->driver->pcm_new)
-+		return component->driver->pcm_new(rtd);
-+
-+	return 0;
-+}
-+
-+static void snd_soc_component_drv_pcm_free(struct snd_soc_component *component,
-+					  struct snd_pcm *pcm)
-+{
-+	if (component->driver->pcm_free)
-+		component->driver->pcm_free(pcm);
-+}
-+
- static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	const struct snd_soc_component_driver *driver, struct device *dev)
- {
-@@ -3274,6 +3290,8 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	component->set_sysclk = component->driver->set_sysclk;
- 	component->set_pll = component->driver->set_pll;
- 	component->set_jack = component->driver->set_jack;
-+	component->pcm_new = snd_soc_component_drv_pcm_new;
-+	component->pcm_free = snd_soc_component_drv_pcm_free;
- 
- 	dapm = snd_soc_component_get_dapm(component);
- 	dapm->dev = dev;
-@@ -3466,6 +3484,26 @@ static void snd_soc_platform_drv_remove(struct snd_soc_component *component)
- 	platform->driver->remove(platform);
- }
- 
-+static int snd_soc_platform_drv_pcm_new(struct snd_soc_component *component,
-+					struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
-+
-+	if (platform->driver->pcm_new)
-+		return platform->driver->pcm_new(rtd);
-+
-+	return 0;
-+}
-+
-+static void snd_soc_platform_drv_pcm_free(struct snd_soc_component *component,
-+					  struct snd_pcm *pcm)
-+{
-+	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
-+
-+	if (platform->driver->pcm_free)
-+		platform->driver->pcm_free(pcm);
-+}
-+
- /**
-  * snd_soc_add_platform - Add a platform to the ASoC core
-  * @dev: The parent device for the platform
-@@ -3489,6 +3527,10 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
- 		platform->component.probe = snd_soc_platform_drv_probe;
- 	if (platform_drv->remove)
- 		platform->component.remove = snd_soc_platform_drv_remove;
-+	if (platform_drv->pcm_new)
-+		platform->component.pcm_new = snd_soc_platform_drv_pcm_new;
-+	if (platform_drv->pcm_free)
-+		platform->component.pcm_free = snd_soc_platform_drv_pcm_free;
- 
- #ifdef CONFIG_DEBUG_FS
- 	platform->component.debugfs_prefix = "platform";
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 09fed7014ed8..e5eb0cff790b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2633,12 +2633,18 @@ static int dpcm_fe_dai_close(struct snd_pcm_substream *fe_substream)
- static void soc_pcm_private_free(struct snd_pcm *pcm)
- {
- 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
--	struct snd_soc_platform *platform = rtd->platform;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		/* need to sync the delayed work before releasing resources */
-+
-+		flush_delayed_work(&rtd->delayed_work);
-+		component = rtdcom->component;
- 
--	/* need to sync the delayed work before releasing resources */
--	flush_delayed_work(&rtd->delayed_work);
--	if (platform->driver->pcm_free)
--		platform->driver->pcm_free(pcm);
-+		if (component->pcm_free)
-+			component->pcm_free(component, pcm);
-+	}
- }
- 
- /* create a new pcm */
-@@ -2647,6 +2653,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_component *component;
-+	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_pcm *pcm;
- 	char new_name[64];
- 	int ret = 0, playback = 0, capture = 0;
-@@ -2756,10 +2764,15 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	if (capture)
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
- 
--	if (platform->driver->pcm_new) {
--		ret = platform->driver->pcm_new(rtd);
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (!component->pcm_new)
-+			continue;
-+
-+		ret = component->pcm_new(component, rtd);
- 		if (ret < 0) {
--			dev_err(platform->dev,
-+			dev_err(component->dev,
- 				"ASoC: pcm constructor failed: %d\n",
- 				ret);
- 			return ret;
 -- 
-2.14.1
+~Vinod
