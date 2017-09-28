@@ -1,76 +1,60 @@
 From: Lori Hikichi <lori.hikichi@broadcom.com>
-Subject: [PATCH v1 3/3] ASoC: cygnus: Remove support for 8 bit audio and for mono
-Date: Thu, 28 Sep 2017 15:29:35 -0700
-Message-ID: <1506637775-18293-5-git-send-email-lori.hikichi@broadcom.com>
+Subject: Re: [PATCH INTERNAL 1/1] ASoC: cygnus: Remove set_fmt from SPDIF dai
+ ops
+Date: Thu, 28 Sep 2017 16:50:10 -0700
+Message-ID: <18d0bb50-7a5d-8099-7d98-57f9e40bd6cd@broadcom.com>
 References: <1506637775-18293-1-git-send-email-lori.hikichi@broadcom.com>
+ <1506637775-18293-3-git-send-email-lori.hikichi@broadcom.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1506637775-18293-1-git-send-email-lori.hikichi@broadcom.com>
+In-Reply-To: <1506637775-18293-3-git-send-email-lori.hikichi@broadcom.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, bcm-kernel-feedback-list@broadcom.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Lori Hikichi <lori.hikichi@broadcom.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These modes of operation were not working properly and it is
-unclear if the hardware could fully support these modes properly.
-There is little to be gained by enabling these modes, therefore,
-we will just remove support.
 
-Signed-off-by: Lori Hikichi <lori.hikichi@broadcom.com>
----
- sound/soc/bcm/cygnus-ssp.c | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index da14fac..cd8aef8 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -655,23 +655,10 @@ static int cygnus_ssp_hw_params(struct snd_pcm_substream *substream,
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		value = readl(aio->cygaud->audio + aio->regs.bf_sourcech_cfg);
- 		value &= ~BIT(BF_SRC_CFGX_BUFFER_PAIR_ENABLE);
--		/* Configure channels as mono or stereo/TDM */
--		if (params_channels(params) == 1)
--			value |= BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
--		else
--			value &= ~BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
-+		value &= ~BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
- 		writel(value, aio->cygaud->audio + aio->regs.bf_sourcech_cfg);
- 
- 		switch (params_format(params)) {
--		case SNDRV_PCM_FORMAT_S8:
--			if (aio->port_type == PORT_SPDIF) {
--				dev_err(aio->cygaud->dev,
--				"SPDIF does not support 8bit format\n");
--				return -EINVAL;
--			}
--			bitres = 8;
--			break;
--
- 		case SNDRV_PCM_FORMAT_S16_LE:
- 			bitres = 16;
- 			break;
-@@ -1148,11 +1135,10 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
- #define INIT_CPU_DAI(num) { \
- 	.name = "cygnus-ssp" #num, \
- 	.playback = { \
--		.channels_min = 1, \
-+		.channels_min = 2, \
- 		.channels_max = 16, \
- 		.rates = SNDRV_PCM_RATE_KNOT, \
--		.formats = SNDRV_PCM_FMTBIT_S8 | \
--				SNDRV_PCM_FMTBIT_S16_LE | \
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | \
- 				SNDRV_PCM_FMTBIT_S32_LE, \
- 	}, \
- 	.capture = { \
-@@ -1160,7 +1146,7 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
- 		.channels_max = 16, \
- 		.rates = SNDRV_PCM_RATE_KNOT, \
- 		.formats =  SNDRV_PCM_FMTBIT_S16_LE | \
--					SNDRV_PCM_FMTBIT_S32_LE, \
-+				SNDRV_PCM_FMTBIT_S32_LE, \
- 	}, \
- 	.ops = &cygnus_ssp_dai_ops, \
- 	.suspend = cygnus_ssp_suspend, \
--- 
-1.9.1
+On 9/28/2017 3:29 PM, Lori Hikichi wrote:
+> The SPDIF port cannot modify its format so a set_fmt function is not
+> needed. Previously, we used a generic set_fmt for all ports and returned
+> an error code for the SPDIF port. It is cleaner to not populate the
+> set_fmt field.
+>
+> Signed-off-by: Lori Hikichi <lori.hikichi@broadcom.com>
+> ---
+>  sound/soc/bcm/cygnus-ssp.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+> index 15c438f..b9a3bb8d 100644
+> --- a/sound/soc/bcm/cygnus-ssp.c
+> +++ b/sound/soc/bcm/cygnus-ssp.c
+> @@ -1136,6 +1136,13 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+>  	.set_tdm_slot	= cygnus_set_dai_tdm_slot,
+>  };
+>  
+> +static const struct snd_soc_dai_ops cygnus_spdif_dai_ops = {
+> +	.startup	= cygnus_ssp_startup,
+> +	.shutdown	= cygnus_ssp_shutdown,
+> +	.trigger	= cygnus_ssp_trigger,
+> +	.hw_params	= cygnus_ssp_hw_params,
+> +	.set_sysclk	= cygnus_ssp_set_sysclk,
+> +};
+>  
+>  #define INIT_CPU_DAI(num) { \
+>  	.name = "cygnus-ssp" #num, \
+> @@ -1174,7 +1181,7 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+>  		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+>  			SNDRV_PCM_FMTBIT_S32_LE,
+>  	},
+> -	.ops = &cygnus_ssp_dai_ops,
+> +	.ops = &cygnus_spdif_dai_ops,
+>  	.suspend = cygnus_ssp_suspend,
+>  	.resume = cygnus_ssp_resume,
+>  };
+Please ignore this patch. It was accidentally included in the patch set and is a
+duplicate of another patch already in the patch set.
