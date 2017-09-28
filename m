@@ -1,21 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] ASoC: dapm: Avoid creating kcontrol for
-	params
-Date: Thu, 28 Sep 2017 09:41:24 +0100
-Message-ID: <20170928084124.mcp4m2jfgtg3jm6n@localhost.localdomain>
-References: <1506485471-59951-1-git-send-email-yesanishhere@gmail.com>
- <20170927101148.o24d5bncuddh6ykh@localhost.localdomain>
- <CABCoZhDUmT9yYh1GVpoxUhjg9U+DjnXD2_xBEYQKb-=25G93Xw@mail.gmail.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: [alsa-lib][PATCH] seq: fix snd_seq_set_queue_tempo()
+	usage example in the documentation
+Date: Thu, 28 Sep 2017 15:46:15 +0200
+Message-ID: <20170928134615.20712-1-ao2@ao2.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id C8F0926734C
- for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2017 10:41:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CABCoZhDUmT9yYh1GVpoxUhjg9U+DjnXD2_xBEYQKb-=25G93Xw@mail.gmail.com>
+Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3F84267373
+ for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2017 15:46:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: anish kumar <yesanishhere@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@ao2.it>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 27, 2017 at 02:08:25PM -0700, anish kumar wrote:
-> On Wed, Sep 27, 2017 at 3:11 AM, Charles Keepax
-> <ckeepax@opensource.cirrus.com> wrote:
-> > On Tue, Sep 26, 2017 at 09:11:11PM -0700, yesanishhere@gmail.com wrote:
-> >> From: anish kumar <yesanishhere@gmail.com>
-> >>
-> >> Currently in codec to codec dai link if there are multiple
-> >> params defined then dapm can use created kcontrol to
-> >> decide which param to apply at runtime.
-> >>
-> >> However, in case there is only single param configuration
-> >> then there is no point in creating the kcontrol and also there
-> >> is no point in allocating memory for kcontrol.
-> >>
-> >> In the snd_soc_dapm_new_pcm function, there is memory
-> >> allocation happening for kcontrol which is later used
-> >> or not used based on num_param. It is better to not
-> >> allocate memory when there is only a single configuration.
-> >> This change is to remedy that anomaly.
-> >>
-> >> Signed-off-by: anish kumar <yesanishhere@gmail.com>
-> >> ---
-> 
-> No, as this is getting freed in the common function.
-> >
+snd_seq_set_queue_tempo() requires a queue id as the second argument,
+fix the example in documentation to reflect that.
 
-Apologies so it.
+Also add the queue id as an argument of the set_tempo() function, just
+to keep the whole example compilable.
 
-Thanks,
-Charles
+Signed-off-by: Antonio Ospite <ao2@ao2.it>
+---
+ src/seq/seq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/seq/seq.c b/src/seq/seq.c
+index d5ed1c6a..808c7915 100644
+--- a/src/seq/seq.c
++++ b/src/seq/seq.c
+@@ -452,13 +452,13 @@ For setting these tempo parameters, use #snd_seq_queue_tempo_t record.
+ For example, to set the tempo of the queue <code>q</code> to
+ 48 PPQ, 60 BPM,
+ \code
+-void set_tempo(snd_seq_t *handle)
++void set_tempo(snd_seq_t *handle, int queue)
+ {
+         snd_seq_queue_tempo_t *tempo;
+         snd_seq_queue_tempo_alloca(&tempo);
+         snd_seq_queue_tempo_set_tempo(tempo, 1000000); // 60 BPM
+         snd_seq_queue_tempo_set_ppq(tempo, 48); // 48 PPQ
+-        snd_seq_set_queue_tempo(handle, tempo);
++        snd_seq_set_queue_tempo(handle, queue, tempo);
+ }
+ \endcode
+ 
+-- 
+2.14.2
