@@ -1,60 +1,124 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [RFC] ASoC: codecs: msm8916-wcd-analog: use btn0 released
- detection
-Date: Thu, 28 Sep 2017 11:18:26 -0700
-Message-ID: <8bc3ca17-ea40-bedf-0d2f-8f08b66b6f6e@linaro.org>
-References: <20170913204355.26186-1-damien.riegel@savoirfairelinux.com>
- <3485d646-12fd-4435-1bae-87af9a1a857e@linaro.org>
- <20170919121147.wtpebx6p377cctvc@sirena.co.uk>
- <20170919132237.ctjcpe27pmwu36mm@workotop.localdomain>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rt5670: add set_bclk_ratio in dai ops"
+	to the asoc tree
+Date: Thu, 28 Sep 2017 19:58:42 +0100 (BST)
+Message-ID: <20170928185842.CFC0A440055@finisterre.ee.mobilebroadband>
+References: <1505285417-15211-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170919132237.ctjcpe27pmwu36mm@workotop.localdomain>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E23442672B1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2017 20:59:20 +0200 (CEST)
+In-Reply-To: <1505285417-15211-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: rt5670: add set_bclk_ratio in dai ops
 
-On 19/09/17 06:22, Damien Riegel wrote:
-> Definitely. I also noticed an issue with the first very detection
-> because the micbias will only be set the first time the driver gets a
-> mechanical insertion interrupt. Following snippet seems to solve the
-> problem:
-Does that mean that you do not need the "ASoC: codecs: 
-msm8916-wcd-analog: use btn0 released detection" patch anymore?
+has been applied to the asoc tree at
 
-Below changes seems to fine as it is.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-> index f562f2d86907..5045dabd9ea9 100644
-> --- a/sound/soc/codecs/msm8916-wcd-analog.c
-> +++ b/sound/soc/codecs/msm8916-wcd-analog.c
-> @@ -446,6 +446,7 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
->   static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
->   {
->          struct snd_soc_codec *codec = wcd->codec;
-> +       bool micbias_enabled = false;
->          u32 plug_type = 0;
->          u32 int_en_mask;
-> 
-> @@ -477,6 +478,11 @@ static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
->                              DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
->                              DIG_CLK_CTL_D_MBHC_CLK_EN);
-> 
-> +       if (snd_soc_read(codec, CDC_A_MICB_2_EN) & CDC_A_MICB_2_EN_ENABLE)
-> +               micbias_enabled = true;
-> +
-> +       pm8916_mbhc_configure_bias(priv, micbias_enabled);
-> +
->          int_en_mask = MBHC_SWITCH_INT;
->          if (wcd->mbhc_btn_enabled)
->                  int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
-> 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d0817657f615ecdf1c7beceade20c7d368003875 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 13 Sep 2017 14:50:17 +0800
+Subject: [PATCH] ASoC: rt5670: add set_bclk_ratio in dai ops
+
+We need to set a specific bit for 50 bclk rate. So add set_bclk_ratio
+function to set the bit.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5670.c | 19 +++++++++++++++++++
+ sound/soc/codecs/rt5670.h |  4 ++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index be945b345b43..c5094b4399e2 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2600,6 +2600,24 @@ static int rt5670_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+ 	return 0;
+ }
+ 
++static int rt5670_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
++	if (dai->id != RT5670_AIF1)
++		return 0;
++
++	if ((ratio % 50) == 0)
++		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
++			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_50FS);
++	else
++		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
++			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_NOR);
++
++	return 0;
++}
++
+ static int rt5670_set_bias_level(struct snd_soc_codec *codec,
+ 			enum snd_soc_bias_level level)
+ {
+@@ -2730,6 +2748,7 @@ static const struct snd_soc_dai_ops rt5670_aif_dai_ops = {
+ 	.set_fmt = rt5670_set_dai_fmt,
+ 	.set_tdm_slot = rt5670_set_tdm_slot,
+ 	.set_pll = rt5670_set_dai_pll,
++	.set_bclk_ratio = rt5670_set_bclk_ratio,
+ };
+ 
+ static struct snd_soc_dai_driver rt5670_dai[] = {
+diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
+index 5ba485cae4e6..265df80d504e 100644
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -1816,6 +1816,10 @@
+ #define RT5670_ZCD_HP_DIS			(0x0 << 15)
+ #define RT5670_ZCD_HP_EN			(0x1 << 15)
+ 
++/* General Control 3 (0xfc) */
++#define RT5670_TDM_DATA_MODE_SEL		(0x1 << 11)
++#define RT5670_TDM_DATA_MODE_NOR		(0x0 << 11)
++#define RT5670_TDM_DATA_MODE_50FS		(0x1 << 11)
+ 
+ /* Codec Private Register definition */
+ /* 3D Speaker Control (0x63) */
+-- 
+2.14.1
