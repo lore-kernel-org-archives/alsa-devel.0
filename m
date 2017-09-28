@@ -1,22 +1,51 @@
 From: Lori Hikichi <lori.hikichi@broadcom.com>
-Subject: [PATCH v1 0/3] Minor updates to driver
-Date: Thu, 28 Sep 2017 15:29:31 -0700
-Message-ID: <1506637775-18293-1-git-send-email-lori.hikichi@broadcom.com>
+Subject: [PATCH INTERNAL 1/1] ASoC: cygnus: Remove set_fmt from SPDIF dai ops
+Date: Thu, 28 Sep 2017 15:29:33 -0700
+Message-ID: <1506637775-18293-3-git-send-email-lori.hikichi@broadcom.com>
+References: <1506637775-18293-1-git-send-email-lori.hikichi@broadcom.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1506637775-18293-1-git-send-email-lori.hikichi@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, bcm-kernel-feedback-list@broadcom.com
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Lori Hikichi <lori.hikichi@broadcom.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset contains a few small updates to the DAI driver. 
+The SPDIF port cannot modify its format so a set_fmt function is not
+needed. Previously, we used a generic set_fmt for all ports and returned
+an error code for the SPDIF port. It is cleaner to not populate the
+set_fmt field.
 
-Lori Hikichi (3):
-  ASoC: cygnus: Add EXPORT_SYMBOL for helper function
-  ASoC: cygnus: Remove set_fmt from SPDIF dai ops
-  ASoC: cygnus: Remove support for 8 bit audio and for mono
+Signed-off-by: Lori Hikichi <lori.hikichi@broadcom.com>
+---
+ sound/soc/bcm/cygnus-ssp.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
- sound/soc/bcm/cygnus-ssp.c | 32 +++++++++++++-------------------
- 1 file changed, 13 insertions(+), 19 deletions(-)
-
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index 15c438f..b9a3bb8d 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -1136,6 +1136,13 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+ 	.set_tdm_slot	= cygnus_set_dai_tdm_slot,
+ };
+ 
++static const struct snd_soc_dai_ops cygnus_spdif_dai_ops = {
++	.startup	= cygnus_ssp_startup,
++	.shutdown	= cygnus_ssp_shutdown,
++	.trigger	= cygnus_ssp_trigger,
++	.hw_params	= cygnus_ssp_hw_params,
++	.set_sysclk	= cygnus_ssp_set_sysclk,
++};
+ 
+ #define INIT_CPU_DAI(num) { \
+ 	.name = "cygnus-ssp" #num, \
+@@ -1174,7 +1181,7 @@ static int cygnus_ssp_resume(struct snd_soc_dai *cpu_dai)
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 			SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+-	.ops = &cygnus_ssp_dai_ops,
++	.ops = &cygnus_spdif_dai_ops,
+ 	.suspend = cygnus_ssp_suspend,
+ 	.resume = cygnus_ssp_resume,
+ };
 -- 
 1.9.1
