@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: add set_bclk_ratio in dai ops"
-	to the asoc tree
-Date: Thu, 28 Sep 2017 19:58:42 +0100 (BST)
-Message-ID: <20170928185842.CFC0A440055@finisterre.ee.mobilebroadband>
-References: <1505285417-15211-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E23442672B1
- for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2017 20:59:20 +0200 (CEST)
-In-Reply-To: <1505285417-15211-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Subject: Applied "ASoC: Intel: Skylake: Fix jack name format substitution" to the asoc tree
+Date: Thu, 28 Sep 2017 19:58:43 +0100 (BST)
+Message-ID: <20170928185843.E4297440056@finisterre.ee.mobilebroadband>
+References: <1505749403-31346-1-git-send-email-chintan.m.patel@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1505749403-31346-1-git-send-email-chintan.m.patel@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chintan Patel <chintan.m.patel@intel.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Hsin-yu Chao <hychao@google.com>, harshapriya.n@intel.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Julia Lawall <Julia.Lawall@lip6.fr>Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: add set_bclk_ratio in dai ops
+   ASoC: Intel: Skylake: Fix jack name format substitution
 
 has been applied to the asoc tree at
 
@@ -53,72 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From d0817657f615ecdf1c7beceade20c7d368003875 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 13 Sep 2017 14:50:17 +0800
-Subject: [PATCH] ASoC: rt5670: add set_bclk_ratio in dai ops
+>From d1c4cb447a7efcb5608a33cdfed8ab4234378b0a Mon Sep 17 00:00:00 2001
+From: Chintan Patel <chintan.m.patel@intel.com>
+Date: Mon, 18 Sep 2017 08:43:18 -0700
+Subject: [PATCH] ASoC: Intel: Skylake: Fix jack name format substitution
 
-We need to set a specific bit for 50 bclk rate. So add set_bclk_ratio
-function to set the bit.
+Jack name is not getting formatted correctly hence resulting
+in invalid name for HDMI/DP input devices.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+This was recently exposed due changes brought by MST:
+commit 3a13347f05fd ("ASoC: Intel: kbl: Add jack port initialize
+in kbl machine drivers")
+
+Signed-off-by: Chintan Patel <chintan.m.patel@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 19 +++++++++++++++++++
- sound/soc/codecs/rt5670.h |  4 ++++
- 2 files changed, 23 insertions(+)
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index be945b345b43..c5094b4399e2 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2600,6 +2600,24 @@ static int rt5670_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	return 0;
- }
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 88ff54220007..9cd0769ccd34 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -604,6 +604,8 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
  
-+static int rt5670_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+
-+	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
-+	if (dai->id != RT5670_AIF1)
-+		return 0;
-+
-+	if ((ratio % 50) == 0)
-+		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
-+			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_50FS);
-+	else
-+		snd_soc_update_bits(codec, RT5670_GEN_CTRL3,
-+			RT5670_TDM_DATA_MODE_SEL, RT5670_TDM_DATA_MODE_NOR);
-+
-+	return 0;
-+}
-+
- static int rt5670_set_bias_level(struct snd_soc_codec *codec,
- 			enum snd_soc_bias_level level)
- {
-@@ -2730,6 +2748,7 @@ static const struct snd_soc_dai_ops rt5670_aif_dai_ops = {
- 	.set_fmt = rt5670_set_dai_fmt,
- 	.set_tdm_slot = rt5670_set_tdm_slot,
- 	.set_pll = rt5670_set_dai_pll,
-+	.set_bclk_ratio = rt5670_set_bclk_ratio,
- };
- 
- static struct snd_soc_dai_driver rt5670_dai[] = {
-diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-index 5ba485cae4e6..265df80d504e 100644
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -1816,6 +1816,10 @@
- #define RT5670_ZCD_HP_DIS			(0x0 << 15)
- #define RT5670_ZCD_HP_EN			(0x1 << 15)
- 
-+/* General Control 3 (0xfc) */
-+#define RT5670_TDM_DATA_MODE_SEL		(0x1 << 11)
-+#define RT5670_TDM_DATA_MODE_NOR		(0x0 << 11)
-+#define RT5670_TDM_DATA_MODE_50FS		(0x1 << 11)
- 
- /* Codec Private Register definition */
- /* 3D Speaker Control (0x63) */
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		codec = pcm->codec_dai->codec;
++		snprintf(jack_name, sizeof(jack_name),
++			"HDMI/DP, pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 				SND_JACK_AVOUT, &ctx->kabylake_hdmi[i],
+ 				NULL, 0);
 -- 
 2.14.1
