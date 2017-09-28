@@ -1,58 +1,60 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: [alsa-lib][PATCH] seq: fix snd_seq_set_queue_tempo()
-	usage example in the documentation
-Date: Thu, 28 Sep 2017 15:46:15 +0200
-Message-ID: <20170928134615.20712-1-ao2@ao2.it>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [RFC] ASoC: codecs: msm8916-wcd-analog: use btn0 released
+ detection
+Date: Thu, 28 Sep 2017 11:18:26 -0700
+Message-ID: <8bc3ca17-ea40-bedf-0d2f-8f08b66b6f6e@linaro.org>
+References: <20170913204355.26186-1-damien.riegel@savoirfairelinux.com>
+ <3485d646-12fd-4435-1bae-87af9a1a857e@linaro.org>
+ <20170919121147.wtpebx6p377cctvc@sirena.co.uk>
+ <20170919132237.ctjcpe27pmwu36mm@workotop.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
- by alsa0.perex.cz (Postfix) with ESMTP id C3F84267373
- for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2017 15:46:50 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Antonio Ospite <ao2@ao2.it>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170919132237.ctjcpe27pmwu36mm@workotop.localdomain>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Damien Riegel <damien.riegel@savoirfairelinux.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_seq_set_queue_tempo() requires a queue id as the second argument,
-fix the example in documentation to reflect that.
 
-Also add the queue id as an argument of the set_tempo() function, just
-to keep the whole example compilable.
 
-Signed-off-by: Antonio Ospite <ao2@ao2.it>
----
- src/seq/seq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 19/09/17 06:22, Damien Riegel wrote:
+> Definitely. I also noticed an issue with the first very detection
+> because the micbias will only be set the first time the driver gets a
+> mechanical insertion interrupt. Following snippet seems to solve the
+> problem:
+Does that mean that you do not need the "ASoC: codecs: 
+msm8916-wcd-analog: use btn0 released detection" patch anymore?
 
-diff --git a/src/seq/seq.c b/src/seq/seq.c
-index d5ed1c6a..808c7915 100644
---- a/src/seq/seq.c
-+++ b/src/seq/seq.c
-@@ -452,13 +452,13 @@ For setting these tempo parameters, use #snd_seq_queue_tempo_t record.
- For example, to set the tempo of the queue <code>q</code> to
- 48 PPQ, 60 BPM,
- \code
--void set_tempo(snd_seq_t *handle)
-+void set_tempo(snd_seq_t *handle, int queue)
- {
-         snd_seq_queue_tempo_t *tempo;
-         snd_seq_queue_tempo_alloca(&tempo);
-         snd_seq_queue_tempo_set_tempo(tempo, 1000000); // 60 BPM
-         snd_seq_queue_tempo_set_ppq(tempo, 48); // 48 PPQ
--        snd_seq_set_queue_tempo(handle, tempo);
-+        snd_seq_set_queue_tempo(handle, queue, tempo);
- }
- \endcode
- 
--- 
-2.14.2
+Below changes seems to fine as it is.
+
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+
+> diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+> index f562f2d86907..5045dabd9ea9 100644
+> --- a/sound/soc/codecs/msm8916-wcd-analog.c
+> +++ b/sound/soc/codecs/msm8916-wcd-analog.c
+> @@ -446,6 +446,7 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
+>   static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
+>   {
+>          struct snd_soc_codec *codec = wcd->codec;
+> +       bool micbias_enabled = false;
+>          u32 plug_type = 0;
+>          u32 int_en_mask;
+> 
+> @@ -477,6 +478,11 @@ static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
+>                              DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
+>                              DIG_CLK_CTL_D_MBHC_CLK_EN);
+> 
+> +       if (snd_soc_read(codec, CDC_A_MICB_2_EN) & CDC_A_MICB_2_EN_ENABLE)
+> +               micbias_enabled = true;
+> +
+> +       pm8916_mbhc_configure_bias(priv, micbias_enabled);
+> +
+>          int_en_mask = MBHC_SWITCH_INT;
+>          if (wcd->mbhc_btn_enabled)
+>                  int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
+> 
