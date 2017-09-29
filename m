@@ -1,20 +1,18 @@
-From: Eric Laurent <elaurent@google.com>
-Subject: Re: Prague Audio miniconference - topics for
-	discussion?
-Date: Thu, 28 Sep 2017 17:45:55 -0700
-Message-ID: <CAL-7xP90Q3kJGc3vmmkP7tqNqtxz0pbiKauZpt+OyDfX2vzKfA@mail.gmail.com>
-References: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] seq: fix snd_seq_set_queue_tempo() usage
+ example in the documentation
+Date: Fri, 29 Sep 2017 11:04:25 +0900
+Message-ID: <9dce17bf-11f0-d2c9-8285-f5d4cd13d86d@sakamocchi.jp>
+References: <20170928134615.20712-1-ao2@ao2.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com
- [209.85.161.180])
- by alsa0.perex.cz (Postfix) with ESMTP id CED442673E2
- for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2017 02:45:57 +0200 (CEST)
-Received: by mail-yw0-f180.google.com with SMTP id w22so2207678ywa.13
- for <alsa-devel@alsa-project.org>; Thu, 28 Sep 2017 17:45:57 -0700 (PDT)
-In-Reply-To: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E544F26737C
+ for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2017 04:04:28 +0200 (CEST)
+In-Reply-To: <20170928134615.20712-1-ao2@ao2.it>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I was thinking about two topics:
+Hi,
 
-1) present the Treble model introduced in O for vendor/ system image
-separation and the new audio HAL and constraints.
-2) discuss support for MMAP no IRQ by the audio framework and new AAudio
-native API with requirement for driver implementations.
+On Sep 28 2017 22:46, Antonio Ospite wrote:
+> snd_seq_set_queue_tempo() requires a queue id as the second argument,
+> fix the example in documentation to reflect that.
+> 
+> Also add the queue id as an argument of the set_tempo() function, just
+> to keep the whole example compilable.
+> 
+> Signed-off-by: Antonio Ospite <ao2@ao2.it>
+> ---
+>   src/seq/seq.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/src/seq/seq.c b/src/seq/seq.c
+> index d5ed1c6a..808c7915 100644
+> --- a/src/seq/seq.c
+> +++ b/src/seq/seq.c
+> @@ -452,13 +452,13 @@ For setting these tempo parameters, use #snd_seq_queue_tempo_t record.
+>   For example, to set the tempo of the queue <code>q</code> to
+>   48 PPQ, 60 BPM,
+>   \code
+> -void set_tempo(snd_seq_t *handle)
+> +void set_tempo(snd_seq_t *handle, int queue)
+>   {
+>           snd_seq_queue_tempo_t *tempo;
+>           snd_seq_queue_tempo_alloca(&tempo);
+>           snd_seq_queue_tempo_set_tempo(tempo, 1000000); // 60 BPM
+>           snd_seq_queue_tempo_set_ppq(tempo, 48); // 48 PPQ
+> -        snd_seq_set_queue_tempo(handle, tempo);
+> +        snd_seq_set_queue_tempo(handle, queue, tempo);
+>   }
+>   \endcode
+
+This looks good catch for documentation.
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+Unfortunately, a maintainer of this subsystem is absent this week. Your 
+patch is going to put into merge queue after he's back. It may takes a 
+bit longer.
 
 
+Thanks
 
-On Wed, Sep 20, 2017 at 10:45 AM, Mark Brown <broonie@kernel.org> wrote:
-
-> As previously announced[1] by Takashi our annual Linux audio
-> miniconference will be held this year at the SuSE offices in Prague on
-> 27th October (the week of ELC-E).  Thanks again to SuSe for sponsoring
-> this.  As with previous years let's pull together an agenda through a
-> mailing list discussion - if people could reply to this mail with any
-> topics they'd like to discuss we can take it from there.  Of course if
-> we can sort things out more quickly via the mailing list that's even
-> better!
->
-> I'll start things off by mentining the TLV issues that Sakamoto-san was
-> raising - do we have any better ideas to handle larger binary controls
-> than what's currently being done?
->
-> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2017-
-> August/124623.html
->
+Takashi Sakamoto
