@@ -1,52 +1,63 @@
-From: =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?=
-        <jean-francois.tetu@savoirfairelinux.com>
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: fix micbias level
-Date: Fri, 29 Sep 2017 16:19:44 -0400
-Message-ID: <1506716384-4700-1-git-send-email-jean-francois.tetu@savoirfairelinux.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+From: Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] ASoC: rockchip: Allocate enough memory so we don't overflow routes
+Date: Fri, 29 Sep 2017 15:03:24 -0700
+Message-ID: <20170929220324.16413-1-dianders@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?= <jean-francois.tetu@savoirfairelinux.com>
+To: broonie@kernel.org, jeffy.chen@rock-chips.com, mka@chromium.org
+Cc: briannorris@chromium.org, Douglas Anderson <dianders@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The macro used to set the microphone bias level causes the
-snd_soc_write() call to overwrite other fields in the CDC_A_MICB_1_VAL
-register. The macro also does not return the proper level value
-to use. This fixes this by preserving all bits from the register
-that are not the level while setting the level.
+In the recent commit d9f9c167edae ("ASoC: rockchip: Init dapm routes
+dynamically") we improperly allocated memory for the card->dapm_routes
+causing us to overflow the allocation on every boot.  Oops.
 
-Signed-off-by: Jean-François Têtu <jean-francois.tetu@savoirfairelinux.com>
+Let's allocate the correct amount of memory.  We'll also add a check
+to make sure that we don't overrun memory even if we encounter some
+sort of weird device tree.
+
+Fixes: d9f9c167edae ("ASoC: rockchip: Init dapm routes dynamically")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index f562f2d..e1534fe 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -104,7 +104,7 @@
- #define CDC_A_MICB_1_VAL		(0xf141)
- #define MICB_MIN_VAL 1600
- #define MICB_STEP_SIZE 50
--#define MICB_VOLTAGE_REGVAL(v)		((v - MICB_MIN_VAL)/MICB_STEP_SIZE)
-+#define MICB_VOLTAGE_REGVAL(v)		(((v - MICB_MIN_VAL)/MICB_STEP_SIZE) << 3)
- #define MICB_1_VAL_MICB_OUT_VAL_MASK	GENMASK(7, 3)
- #define MICB_1_VAL_MICB_OUT_VAL_V2P70V	((0x16)  << 3)
- #define MICB_1_VAL_MICB_OUT_VAL_V1P80V	((0x4)  << 3)
-@@ -349,8 +349,9 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
- 			    | MICB_1_CTL_EXT_PRECHARG_EN_ENABLE);
+ sound/soc/rockchip/rk3399_gru_sound.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 30eed83e8a13..d64fbbd50544 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -494,13 +494,17 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 	struct snd_soc_dai_link *dai;
+ 	struct snd_soc_dapm_route *routes;
+ 	int i, index;
++	int num_routes;
  
- 	if (wcd->micbias_mv) {
--		snd_soc_write(codec, CDC_A_MICB_1_VAL,
--			      MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
-+		snd_soc_update_bits(codec, CDC_A_MICB_1_VAL,
-+				    MICB_1_VAL_MICB_OUT_VAL_MASK,
-+				    MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
- 		/*
- 		 * Special headset needs MICBIAS as 2.7V so wait for
- 		 * 50 msec for the MICBIAS to reach 2.7 volts.
+ 	card->dai_link = devm_kzalloc(dev, sizeof(rockchip_dais),
+ 				      GFP_KERNEL);
+ 	if (!card->dai_link)
+ 		return -ENOMEM;
+ 
+-	routes = devm_kzalloc(dev, sizeof(rockchip_routes),
++	num_routes = 0;
++	for (i = 0; i < ARRAY_SIZE(rockchip_routes); i++)
++		num_routes += rockchip_routes[i].num_routes;
++	routes = devm_kzalloc(dev, num_routes * sizeof(*routes),
+ 			      GFP_KERNEL);
+ 	if (!routes)
+ 		return -ENOMEM;
+@@ -538,6 +542,12 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 		dai->platform_of_node = np_cpu;
+ 		dai->cpu_of_node = np_cpu;
+ 
++		if (card->num_dapm_routes + rockchip_routes[index].num_routes >
++		    num_routes) {
++			dev_err(dev, "Too many routes\n");
++			return -EINVAL;
++		}
++
+ 		memcpy(routes + card->num_dapm_routes,
+ 		       rockchip_routes[index].routes,
+ 		       rockchip_routes[index].num_routes * sizeof(*routes));
 -- 
-2.7.4
+2.14.2.822.g60be5d43e6-goog
