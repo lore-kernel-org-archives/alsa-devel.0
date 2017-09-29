@@ -1,73 +1,52 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: 4.14-rc2: audio stopped working?
-Date: Fri, 29 Sep 2017 13:25:18 +0200
-Message-ID: <20170929112518.GA15736@amd>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7878252393950088871=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
- [195.113.26.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AB9AF266CE8
- for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2017 13:25:19 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: [PATCH v1 2/2] ASoC: codecs: msm8916-wcd-analog: configure micbias in mbhc setup
+Date: Fri, 29 Sep 2017 13:42:46 -0400
+Message-ID: <20170929174246.12144-3-damien.riegel@savoirfairelinux.com>
+References: <20170929174246.12144-1-damien.riegel@savoirfairelinux.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170929174246.12144-1-damien.riegel@savoirfairelinux.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com, Damien Riegel <damien.riegel@savoirfairelinux.com>
 List-Id: alsa-devel@alsa-project.org
 
+The very first time a headset is plugged in, detection is unreliable
+because bias hasn't been configured yet, it's done once a mechanical
+insertion interrupt has been triggered, so following insertions (and
+thus detections) are not affected.
 
---===============7878252393950088871==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Content-Disposition: inline
+To fix the very first detection, the bias must also be configured in the 
+function that setup the MBHC.
 
+Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/msm8916-wcd-analog.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-I've had sound problems in chromium for long long time. It produces
-choppy auduo just after boot and then it works, probably after
-chromium restart. May have something to do with pulseaudio. Not sure.
-
-Anyway... sound in flightgear usually worked, and now it does
-not. mplayer works, chromium works (sometimes choppy, as usual).
-
-Any ideas?
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlnOLZ4ACgkQMOfwapXb+vK6lgCgoEdAxoQe5XMNVXcOGFxy0toG
-pKoAnj4YJgxx6Z8e4DQhDKkMPxAvSOvl
-=2aua
------END PGP SIGNATURE-----
-
---AqsLC8rIMeq19msA--
-
---===============7878252393950088871==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7878252393950088871==--
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 9f08d998a79b..71494e9dbdcb 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -493,6 +493,7 @@ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
+ static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
+ {
+ 	struct snd_soc_codec *codec = wcd->codec;
++	bool micbias_enabled = false;
+ 	u32 plug_type = 0;
+ 	u32 int_en_mask;
+ 
+@@ -524,6 +525,11 @@ static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
+ 			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
+ 			    DIG_CLK_CTL_D_MBHC_CLK_EN);
+ 
++	if (snd_soc_read(codec, CDC_A_MICB_2_EN) & CDC_A_MICB_2_EN_ENABLE)
++		micbias_enabled = true;
++
++	pm8916_mbhc_configure_bias(wcd, micbias_enabled);
++
+ 	int_en_mask = MBHC_SWITCH_INT;
+ 	if (wcd->mbhc_btn_enabled)
+ 		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
+-- 
+2.14.1
