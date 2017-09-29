@@ -1,19 +1,14 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v3] ASoC: dapm: Avoid creating kcontrol for
-	params
-Date: Fri, 29 Sep 2017 10:09:38 +0100
-Message-ID: <20170929090938.7hiem3daebiaodqh@localhost.localdomain>
-References: <1506660759-61727-1-git-send-email-yesanishhere@gmail.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: 4.14-rc2: audio stopped working?
+Date: Fri, 29 Sep 2017 13:25:18 +0200
+Message-ID: <20170929112518.GA15736@amd>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7878252393950088871=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 26ED12668F0
- for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2017 11:09:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1506660759-61727-1-git-send-email-yesanishhere@gmail.com>
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB9AF266CE8
+ for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2017 13:25:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +18,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: yesanishhere@gmail.com
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com
+To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 28, 2017 at 09:52:39PM -0700, yesanishhere@gmail.com wrote:
-> From: anish kumar <yesanishhere@gmail.com>
-> 
-> Currently in codec to codec dai link if there are multiple
-> params defined then dapm can use created kcontrol to
-> decide which param to apply at runtime.
-> 
-> However, in case there is only single param configuration
-> then there is no point in creating the kcontrol and also there
-> is no point in allocating memory for kcontrol.
-> 
-> In the snd_soc_dapm_new_pcm function, there is memory
-> allocation happening for kcontrol which is later used
-> or not used based on num_param. It is better to not
-> allocate memory when there is only a single configuration.
-> This change is to remedy that anomaly.
-> 
-> Signed-off-by: anish kumar <yesanishhere@gmail.com>
-> ---
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+--===============7878252393950088871==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
+Content-Disposition: inline
 
-Thanks,
-Charles
+
+--AqsLC8rIMeq19msA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+I've had sound problems in chromium for long long time. It produces
+choppy auduo just after boot and then it works, probably after
+chromium restart. May have something to do with pulseaudio. Not sure.
+
+Anyway... sound in flightgear usually worked, and now it does
+not. mplayer works, chromium works (sometimes choppy, as usual).
+
+Any ideas?
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--AqsLC8rIMeq19msA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlnOLZ4ACgkQMOfwapXb+vK6lgCgoEdAxoQe5XMNVXcOGFxy0toG
+pKoAnj4YJgxx6Z8e4DQhDKkMPxAvSOvl
+=2aua
+-----END PGP SIGNATURE-----
+
+--AqsLC8rIMeq19msA--
+
+--===============7878252393950088871==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7878252393950088871==--
