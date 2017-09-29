@@ -1,129 +1,79 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: [PATCH v1 1/2] ASoC: codecs: msm8916-wcd-analog: move pm8916_wcd_setup_mbhc
-Date: Fri, 29 Sep 2017 13:42:45 -0400
-Message-ID: <20170929174246.12144-2-damien.riegel@savoirfairelinux.com>
-References: <20170929174246.12144-1-damien.riegel@savoirfairelinux.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170929174246.12144-1-damien.riegel@savoirfairelinux.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com, Damien Riegel <damien.riegel@savoirfairelinux.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: 4.14-rc2: audio stopped working?
+Date: Fri, 29 Sep 2017 20:15:43 +0200
+Message-ID: <20170929181543.GA23070@amd>
+References: <20170929112518.GA15736@amd>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============5192581751400305443=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+ [195.113.26.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3148A266CE8
+ for <alsa-devel@alsa-project.org>; Fri, 29 Sep 2017 20:15:43 +0200 (CEST)
+In-Reply-To: <20170929112518.GA15736@amd>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In preparation of a fix for the initial detection of headset,
-pm8916_wcd_setup_mbhc is moved to be defined after
-pm8916_mbhc_configure_bias instead of before.
 
-Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 88 +++++++++++++++++------------------
- 1 file changed, 44 insertions(+), 44 deletions(-)
+--===============5192581751400305443==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index f562f2d86907..9f08d998a79b 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -443,50 +443,6 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
- 						     wcd->micbias1_cap_mode);
- }
- 
--static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
--{
--	struct snd_soc_codec *codec = wcd->codec;
--	u32 plug_type = 0;
--	u32 int_en_mask;
--
--	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
--		      CDC_A_MBHC_DET_CTL_L_DET_EN |
--		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
--		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
--		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
--
--	if (wcd->hphl_jack_type_normally_open)
--		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
--
--	if (wcd->gnd_jack_type_normally_open)
--		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
--
--	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
--		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
--		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
--		      plug_type |
--		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
--
--
--	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
--		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
--		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
--
--	/* enable MBHC clock */
--	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
--			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
--			    DIG_CLK_CTL_D_MBHC_CLK_EN);
--
--	int_en_mask = MBHC_SWITCH_INT;
--	if (wcd->mbhc_btn_enabled)
--		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
--
--	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
--	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
--	wcd->mbhc_btn0_released = false;
--	wcd->detect_accessory_type = true;
--}
--
- static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
- 				      bool micbias2_enabled)
- {
-@@ -534,6 +490,50 @@ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
- 	return 0;
- }
- 
-+static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
-+{
-+	struct snd_soc_codec *codec = wcd->codec;
-+	u32 plug_type = 0;
-+	u32 int_en_mask;
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
-+		      CDC_A_MBHC_DET_CTL_L_DET_EN |
-+		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
-+		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
-+		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
-+
-+	if (wcd->hphl_jack_type_normally_open)
-+		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
-+
-+	if (wcd->gnd_jack_type_normally_open)
-+		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
-+		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
-+		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
-+		      plug_type |
-+		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
-+
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
-+		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
-+		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
-+
-+	/* enable MBHC clock */
-+	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
-+			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
-+			    DIG_CLK_CTL_D_MBHC_CLK_EN);
-+
-+	int_en_mask = MBHC_SWITCH_INT;
-+	if (wcd->mbhc_btn_enabled)
-+		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
-+
-+	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
-+	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
-+	wcd->mbhc_btn0_released = false;
-+	wcd->detect_accessory_type = true;
-+}
-+
- static int pm8916_wcd_analog_enable_micbias_int2(struct
- 						  snd_soc_dapm_widget
- 						  *w, struct snd_kcontrol
--- 
-2.14.1
+
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> I've had sound problems in chromium for long long time. It produces
+> choppy auduo just after boot and then it works, probably after
+> chromium restart. May have something to do with pulseaudio. Not sure.
+>=20
+> Anyway... sound in flightgear usually worked, and now it does
+> not. mplayer works, chromium works (sometimes choppy, as usual).
+
+Went back to kernel that should be working, at ... audio is still
+broken. Let me debug it some more.
+									Pavel
+
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--C7zPtVaVf+AK4Oqc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlnOjc8ACgkQMOfwapXb+vLfmwCff++shF/jTkFaE755DMAO4E7b
+TMIAoIwwhzlH5luCySzJiFaUaF/qMJ3M
+=w6Vh
+-----END PGP SIGNATURE-----
+
+--C7zPtVaVf+AK4Oqc--
+
+--===============5192581751400305443==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5192581751400305443==--
