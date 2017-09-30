@@ -1,63 +1,60 @@
-From: Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] ASoC: rockchip: Allocate enough memory so we don't overflow routes
-Date: Fri, 29 Sep 2017 15:03:24 -0700
-Message-ID: <20170929220324.16413-1-dianders@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, jeffy.chen@rock-chips.com, mka@chromium.org
-Cc: briannorris@chromium.org, Douglas Anderson <dianders@chromium.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH 3/6] ASoC: rsnd: DVC kctrl sets once
+Date: Sat, 30 Sep 2017 13:02:09 +0300
+Message-ID: <dcf8fa7d-a23e-6dbd-3234-73e1aea69363@cogentembedded.com>
+References: <87tvzmgyqv.wl%kuninori.morimoto.gx@renesas.com>
+ <87poaagynr.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87poaagynr.wl%kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-In the recent commit d9f9c167edae ("ASoC: rockchip: Init dapm routes
-dynamically") we improperly allocated memory for the card->dapm_routes
-causing us to overflow the allocation on every boot.  Oops.
+Hello!
 
-Let's allocate the correct amount of memory.  We'll also add a check
-to make sure that we don't overrun memory even if we encounter some
-sort of weird device tree.
+On 9/29/2017 3:09 AM, Kuninori Morimoto wrote:
 
-Fixes: d9f9c167edae ("ASoC: rockchip: Init dapm routes dynamically")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> Same DVC might be used few times if system/platform is using MIX.
+> For example below case.
+> 
+> 	DAI0 playback = <&src0 &ctu02 &mix0 &dvc0 &ssi0>;
+> 	DAI1 playback = <&src2 &ctu03 &mix0 &dvc0 &ssi0>;
+> 
+> This case, ALSA will have DVC,0 and DVC,1 kcontrol interfaces,
+> but these are same DVC. This is confusable.
 
- sound/soc/rockchip/rk3399_gru_sound.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+    Confusing.
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 30eed83e8a13..d64fbbd50544 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -494,13 +494,17 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 	struct snd_soc_dai_link *dai;
- 	struct snd_soc_dapm_route *routes;
- 	int i, index;
-+	int num_routes;
- 
- 	card->dai_link = devm_kzalloc(dev, sizeof(rockchip_dais),
- 				      GFP_KERNEL);
- 	if (!card->dai_link)
- 		return -ENOMEM;
- 
--	routes = devm_kzalloc(dev, sizeof(rockchip_routes),
-+	num_routes = 0;
-+	for (i = 0; i < ARRAY_SIZE(rockchip_routes); i++)
-+		num_routes += rockchip_routes[i].num_routes;
-+	routes = devm_kzalloc(dev, num_routes * sizeof(*routes),
- 			      GFP_KERNEL);
- 	if (!routes)
- 		return -ENOMEM;
-@@ -538,6 +542,12 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 		dai->platform_of_node = np_cpu;
- 		dai->cpu_of_node = np_cpu;
- 
-+		if (card->num_dapm_routes + rockchip_routes[index].num_routes >
-+		    num_routes) {
-+			dev_err(dev, "Too many routes\n");
-+			return -EINVAL;
-+		}
-+
- 		memcpy(routes + card->num_dapm_routes,
- 		       rockchip_routes[index].routes,
- 		       rockchip_routes[index].num_routes * sizeof(*routes));
--- 
-2.14.2.822.g60be5d43e6-goog
+> This patch adds new flags and avoid such case.
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+> ---
+>   sound/soc/sh/rcar/dvc.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+> index 1743ade..b4c4ff2 100644
+> --- a/sound/soc/sh/rcar/dvc.c
+> +++ b/sound/soc/sh/rcar/dvc.c
+> @@ -44,8 +44,11 @@ struct rsnd_dvc {
+>   	struct rsnd_kctrl_cfg_s ren;	/* Ramp Enable */
+>   	struct rsnd_kctrl_cfg_s rup;	/* Ramp Rate Up */
+>   	struct rsnd_kctrl_cfg_s rdown;	/* Ramp Rate Down */
+> +	u32 flags;
+>   };
+>   
+> +#define KCTRL_INITIALIZEED	(1 << 0)
+
+    One E is enough. :-)
+
+[...]
+
+MBR, Sergei
