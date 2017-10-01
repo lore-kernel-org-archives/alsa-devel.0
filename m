@@ -1,51 +1,68 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 1/6] ASoC: rsnd: add generic rsnd_flags_xxx() macro
-Date: Sat, 30 Sep 2017 13:07:54 +0300
-Message-ID: <3459237c-bbf2-99b7-27d6-a922a2d1c5b5@cogentembedded.com>
-References: <87tvzmgyqv.wl%kuninori.morimoto.gx@renesas.com>
- <87shf6gypt.wl%kuninori.morimoto.gx@renesas.com>
+From: Antonio Ospite <ao2@ao2.it>
+Subject: Re: [PATCH] seq: fix snd_seq_set_queue_tempo() usage
+ example in the documentation
+Date: Sun, 1 Oct 2017 11:23:05 +0200
+Message-ID: <20171001112305.8c6d2d0a7fea2cde79ca1675@ao2.it>
+References: <20170928134615.20712-1-ao2@ao2.it>
+ <9dce17bf-11f0-d2c9-8285-f5d4cd13d86d@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87shf6gypt.wl%kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ao2.it (ao2.it [92.243.12.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1155E266D00
+ for <alsa-devel@alsa-project.org>; Sun,  1 Oct 2017 11:23:07 +0200 (CEST)
+In-Reply-To: <9dce17bf-11f0-d2c9-8285-f5d4cd13d86d@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+On Fri, 29 Sep 2017 11:04:25 +0900
+Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
 
-On 9/29/2017 3:08 AM, Kuninori Morimoto wrote:
-
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Hi,
 > 
-> SSI is using rsnd_ssi_flags_xxx() macro to control flags.
-> But it is useful macro not only for SSI. This patch replace it
-> to more generic rsnd_flags_xxx().
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-> ---
->   sound/soc/sh/rcar/rsnd.h |  4 ++++
->   sound/soc/sh/rcar/ssi.c  | 27 ++++++++++++---------------
->   2 files changed, 16 insertions(+), 15 deletions(-)
-> 
-> diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-> index c5de71f..558200f 100644
-> --- a/sound/soc/sh/rcar/rsnd.h
-> +++ b/sound/soc/sh/rcar/rsnd.h
-> @@ -601,6 +601,10 @@ struct rsnd_priv {
->   #define rsnd_is_gen1(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN1)
->   #define rsnd_is_gen2(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN2)
->   
-> +#define rsnd_flags_has(p, f) ((p)->flags & f)
-> +#define rsnd_flags_set(p, f) ((p)->flags |= f)
-> +#define rsnd_flags_del(p, f) ((p)->flags = ((p)->flags & ~f))
-
-#define rsnd_flags_del(p, f) ((p)->flags &= ~f)
+> On Sep 28 2017 22:46, Antonio Ospite wrote:
+> > snd_seq_set_queue_tempo() requires a queue id as the second argument,
+> > fix the example in documentation to reflect that.
+> > 
+> > Also add the queue id as an argument of the set_tempo() function, just
+> > to keep the whole example compilable.
+> > 
+> > Signed-off-by: Antonio Ospite <ao2@ao2.it>
 
 [...]
+> This looks good catch for documentation.
+> 
+> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>
 
-MBR, Sergei
+Thanks Takashi.
+
+> Unfortunately, a maintainer of this subsystem is absent this week. Your 
+> patch is going to put into merge queue after he's back. It may takes a 
+> bit longer.
+> 
+
+No problem about the delay, it's surely not a critical fix. :)
+
+Ciao ciao,
+   Antonio
+
+-- 
+Antonio Ospite
+https://ao2.it
+https://twitter.com/ao2it
+
+A: Because it messes up the order in which people normally read text.
+   See http://en.wikipedia.org/wiki/Posting_style
+Q: Why is top-posting such a bad thing?
