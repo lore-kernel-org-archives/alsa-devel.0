@@ -1,68 +1,52 @@
-From: Antonio Ospite <ao2@ao2.it>
-Subject: Re: [PATCH] seq: fix snd_seq_set_queue_tempo() usage
- example in the documentation
-Date: Sun, 1 Oct 2017 11:23:05 +0200
-Message-ID: <20171001112305.8c6d2d0a7fea2cde79ca1675@ao2.it>
-References: <20170928134615.20712-1-ao2@ao2.it>
- <9dce17bf-11f0-d2c9-8285-f5d4cd13d86d@sakamocchi.jp>
+From: =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?=
+        <jeremy.lefaure@lse.epita.fr>
+Subject: [PATCH 00/18] use ARRAY_SIZE macro
+Date: Sun,  1 Oct 2017 15:30:38 -0400
+Message-ID: <20171001193101.8898-1-jeremy.lefaure@lse.epita.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ao2.it (ao2.it [92.243.12.208])
- by alsa0.perex.cz (Postfix) with ESMTP id 1155E266D00
- for <alsa-devel@alsa-project.org>; Sun,  1 Oct 2017 11:23:07 +0200 (CEST)
-In-Reply-To: <9dce17bf-11f0-d2c9-8285-f5d4cd13d86d@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org, brcm80211-dev-list@cypress.com, brcm80211-dev-list.pdl@broadcom.com, devel@acpica.org, devel@driverdev.osuosl.org, dm-devel@redhat.com, dri-devel@lists.freedesktop.org, ecryptfs@vger.kernel.org, intel-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org, intel-wired-lan@lists.osuosl.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, linux-acpi@vger.kernel.org, linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org, linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org, linux-video@atrey.karlin.mff.cuni.cz, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, nouveau@lists.
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 29 Sep 2017 11:04:25 +0900
-Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
+Hi everyone,
+Using ARRAY_SIZE improves the code readability. I used coccinelle (I
+made a change to the array_size.cocci file [1]) to find several places
+where ARRAY_SIZE could be used instead of other macros or sizeof
+division.
 
-> Hi,
-> 
-> On Sep 28 2017 22:46, Antonio Ospite wrote:
-> > snd_seq_set_queue_tempo() requires a queue id as the second argument,
-> > fix the example in documentation to reflect that.
-> > 
-> > Also add the queue id as an argument of the set_tempo() function, just
-> > to keep the whole example compilable.
-> > 
-> > Signed-off-by: Antonio Ospite <ao2@ao2.it>
+I tried to divide the changes into a patch per subsystem (excepted for
+staging). If one of the patch should be split into several patches, let
+me know.
 
-[...]
-> This looks good catch for documentation.
-> 
-> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->
+In order to reduce the size of the To: and Cc: lines, each patch of the
+series is sent only to the maintainers and lists concerned by the patch.
+This cover letter is sent to every list concerned by this series.
 
-Thanks Takashi.
+This series is based on linux-next next-20170929. Each patch has been
+tested by building the relevant files with W=1.
 
-> Unfortunately, a maintainer of this subsystem is absent this week. Your 
-> patch is going to put into merge queue after he's back. It may takes a 
-> bit longer.
-> 
+This series contains the following patches:
+[PATCH 01/18] sound: use ARRAY_SIZE
+[PATCH 02/18] tracing/filter: use ARRAY_SIZE
+[PATCH 03/18] media: use ARRAY_SIZE
+[PATCH 04/18] IB/mlx5: Use ARRAY_SIZE
+[PATCH 05/18] net: use ARRAY_SIZE
+[PATCH 06/18] drm: use ARRAY_SIZE
+[PATCH 07/18] scsi: bfa: use ARRAY_SIZE
+[PATCH 08/18] ecryptfs: use ARRAY_SIZE
+[PATCH 09/18] nfsd: use ARRAY_SIZE
+[PATCH 10/18] orangefs: use ARRAY_SIZE
+[PATCH 11/18] dm space map metadata: use ARRAY_SIZE
+[PATCH 12/18] x86: use ARRAY_SIZE
+[PATCH 13/18] tpm: use ARRAY_SIZE
+[PATCH 14/18] ipmi: use ARRAY_SIZE
+[PATCH 15/18] acpi: use ARRAY_SIZE
+[PATCH 16/18] media: staging: atomisp: use ARRAY_SIZE
+[PATCH 17/18] staging: rtl8723bs: use ARRAY_SIZE
+[PATCH 18/18] staging: rtlwifi: use ARRAY_SIZE
 
-No problem about the delay, it's surely not a critical fix. :)
 
-Ciao ciao,
-   Antonio
-
--- 
-Antonio Ospite
-https://ao2.it
-https://twitter.com/ao2it
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
+[1]: https://lkml.org/lkml/2017/9/13/689
