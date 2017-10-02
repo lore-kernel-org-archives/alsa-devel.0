@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 35/39] axfer: add an option for
-	formatted filename
-Date: Mon,  2 Oct 2017 09:19:36 +0900
-Message-ID: <20171002001940.17218-36-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 34/39] axfer: add a unit test for
+	vumeter calculation
+Date: Mon,  2 Oct 2017 09:19:35 +0900
+Message-ID: <20171002001940.17218-35-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 29CEE26702B
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:56 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id F371A266ECE
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:58 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,194 +25,253 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-In aplay, an option for formatted file name is supported. The format text
-is mainly processed by strftime(3) function, however '%v' is available as
-an additional format for file number.
-
-This commit adds support for the option. However, this feature has issue
-that strftime(3) generates string with characters out of portable filename
-characters such as '/' (). This feature is unsafe for users, for instance:
-
-$ strace ./axfer transfer -C -D hw:0,0 --use-strftime /tmp/test-%D.wav
-...
-open("/tmp/test-09/18/17.wav", O_RDWR|O_CREAT|O_TRUNC|O_NONBLOCK, 0644) = -1 ENOENT (No such file or directory)
-...
+In a previous commit, vumeter is implemented. This commit adds a simple
+unit test for the feature. This tests positive cases only.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++---
- axfer/options.h |  1 +
- 2 files changed, 94 insertions(+), 5 deletions(-)
+ axfer/test/Makefile.am        |  14 +++-
+ axfer/test/vumeter-test.c     | 184 ++++++++++++++++++++++++++++++++++++++++++
+ axfer/xfer-libasound-irq-rw.c |   2 +-
+ 3 files changed, 196 insertions(+), 4 deletions(-)
+ create mode 100644 axfer/test/vumeter-test.c
 
-diff --git a/axfer/options.c b/axfer/options.c
-index d595d857..6665f893 100644
---- a/axfer/options.c
-+++ b/axfer/options.c
-@@ -24,6 +24,7 @@ enum no_short_opts {
- 	OPT_DISABLE_FORMAT,
- 	OPT_DISABLE_SOFTVOL,
- 	OPT_SCHED_TYPE,
-+	OPT_USE_STRFTIME,
- 	/* Obsoleted. */
- 	OPT_MAX_FILE_TIME,
- };
-@@ -403,6 +404,7 @@ int context_options_init(struct context_options *opts, int argc,
- 		{"samples",		1, 0, 's'},
- 		/* For containers. */
- 		{"file-type",		1, 0, 't'},
-+		{"use-strftime",	0, 0, OPT_USE_STRFTIME},
- 		/* For mapper. */
- 		{"separate-channels",	0, 0, 'I'},
- 		/* For transfer backend. */
-@@ -465,6 +467,8 @@ int context_options_init(struct context_options *opts, int argc,
- 			opts->duration_frames = parse_l(optarg, &err);
- 		else if (c == 't')
- 			cntr_format_literal = optarg;
-+		else if (c == OPT_USE_STRFTIME)
-+			opts->use_strftime = true;
- 		else if (c == 'I')
- 			opts->multiple_cntrs = true;
- 		else if (c == 'D')
-@@ -536,9 +540,81 @@ int context_options_init(struct context_options *opts, int argc,
- 			      vu_mode_literal);
- }
+diff --git a/axfer/test/Makefile.am b/axfer/test/Makefile.am
+index 76a93bfc..0e48b9f2 100644
+--- a/axfer/test/Makefile.am
++++ b/axfer/test/Makefile.am
+@@ -1,10 +1,12 @@
+ TESTS = \
+-	container-test  \
+-	mapper-test
++	container-test \
++	mapper-test \
++	vumeter-test
  
+ check_PROGRAMS = \
+ 	container-test \
+-	mapper-test
++	mapper-test \
++	vumeter-test
+ 
+ container_test_SOURCES = \
+ 	../container.h \
+@@ -29,3 +31,9 @@ mapper_test_SOURCES = \
+ 	../mapper-multiple.c \
+ 	generator.c \
+ 	mapper-test.c
++
++vumeter_test_SOURCES = \
++	../vumeter.h \
++	../vumeter.c \
++	generator.c \
++	vumeter-test.c
+diff --git a/axfer/test/vumeter-test.c b/axfer/test/vumeter-test.c
+new file mode 100644
+index 00000000..6df7c067
+--- /dev/null
++++ b/axfer/test/vumeter-test.c
+@@ -0,0 +1,184 @@
 +/*
-+ * A variant of strftime(3) that supports additional format specifiers in the
-+ * format string:
-+ *  '%v': file number.
++ * test-vumeter.c - A unit test for Volume Unit meter.
 + *
-+ *  TODO: some format string gets unportable characters such as '/'.
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
 + */
-+static int generate_path_with_strftime(struct context_options *opts,
-+				       const char *template,
-+				       unsigned int index, const char *suffix,
-+				       const struct tm *now)
++
++#include "../vumeter.h"
++#include "../misc.h"
++
++#include "generator.h"
++
++#include <stdlib.h>
++
++static bool verbose;
++
++static int callback(struct test_generator *gen, snd_pcm_access_t access,
++		    snd_pcm_format_t sample_format,
++		    unsigned int samples_per_frame, void *frame_buffer,
++		    unsigned int frame_count)
 +{
-+	char *format;
-+	unsigned int len;
-+	char *pos;
-+	char *name;
-+	unsigned int width;
-+	unsigned int i;
-+	int err = 0;
++	static const enum vumeter_mode modes[] = {
++		[0] = VUMETER_MODE_MONO,
++		[1] = VUMETER_MODE_STEREO,
++	};
++	struct vumeter_context *vu = gen->private_data;
++	int i;
++	int err;
 +
-+	/* This might be enough to process formatted strings. */
-+	format = malloc(4096);
-+	if (format == NULL)
-+		return -ENOMEM;
++	char **vector = NULL;
 +
-+	len = strftime(format, 4096, template, now);
-+	if (len == 0) {
-+		fprintf(stderr, "Invalid format string for strftime(3): %s\n",
-+			template);
-+		err = -EINVAL;
-+		goto end;
-+	}
-+	format[len] = '\0';
++	if (access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED) {
++		char *buf;
++		unsigned int size;
 +
-+	width = (unsigned int)log10(index) + 1;
++		vector = calloc(samples_per_frame, sizeof(*vector));
++		if (vector == NULL)
++			return -ENOMEM;
 +
-+	/* Estimate required length for formatted result. */
-+	len = 0;
-+	for (pos = format; *pos != '\0'; ++pos) {
-+		++len;
-+		/* '%v' is unique format for numbering. */
-+		if (*pos == '%' && *(pos + 1) == 'v')
-+			len += width;
-+	}
-+	len += strlen(suffix);
++		buf = frame_buffer;
++		size = snd_pcm_format_physical_width(sample_format) *
++		       frame_count / 8;
 +
-+	name = malloc(len + 1);
-+	if (name == NULL) {
-+		err = -ENOMEM;
-+		goto end;
++		for (i = 0; i < samples_per_frame; ++i)
++			vector[i] = buf + size * i;
++
++		frame_buffer = vector;
 +	}
 +
-+	i = 0;
-+	for (pos = format; *pos != '\0' && i < len; ++pos) {
-+		if (*pos == '%' && *(pos + 1) == 'v') {
-+			i += snprintf(name + i, len - i, "%u", index);
-+			/* Consume 2 characters in the format string. */
-+			++pos;
-+		} else {
-+			name[i] = *pos;
-+			++i;
++	for (i = 0; i < ARRAY_SIZE(modes); ++i) {
++		int j;
++
++		if (verbose) {
++			printf("%d %s %s %d %d\n",
++			       modes[i], snd_pcm_access_name(access),
++			       snd_pcm_format_name(sample_format),
++			       samples_per_frame, frame_count);
 +		}
-+	}
-+	strcpy(name + i, suffix);
-+	name[len] = '\0';
 +
-+	opts->paths[index] = name;
-+end:
-+	free(format);
++		memset(vu, 0, sizeof(*vu));
++		err = vumeter_context_init(vu, modes[i], access, sample_format,
++					   samples_per_frame, 4000);
++		if (err < 0)
++			break;
++		assert(vu->significant_bits_per_sample >= 0);
++		assert(vu->bytes_per_sample >= 0);
++		assert(vu->samples_per_frame >= 0);
++		assert(vu->frames_per_second >= 0);
++		assert(vu->max > 0);
++		assert(vu->peaks != NULL);
++		assert(vu->ratios != NULL);
++		assert(vu->max_ratios_in_second != NULL);
++		assert(vu->printer != NULL);
++		assert(vu->calculator != NULL);
++
++		vumeter_context_prepare(vu);
++		for (j = 0; j < samples_per_frame; ++j) {
++			assert(vu->ratios[j] == 0);
++			assert(vu->max_ratios_in_second[j] == 0);
++		}
++
++		vumeter_context_calculate(vu, frame_buffer, frame_count);
++		for (j = 0; j < samples_per_frame; ++j) {
++			assert(vu->peaks[j] <= vu->max);
++			assert(vu->max_ratios_in_second[j] <= vu->max);
++			assert(vu->max_ratios_in_second[j] <= 100);
++		}
++
++		vumeter_context_destroy(vu);
++		assert(vu->ratios == NULL);
++		assert(vu->max_ratios_in_second == NULL);
++		assert(vu->peaks == NULL);
++	}
++
++	if (vector != NULL)
++		free(vector);
++
 +	return err;
 +}
 +
- static int generate_path_with_suffix(struct context_options *opts,
- 				     const char *template, unsigned int index,
--				     const char *suffix)
-+				     const char *suffix, const struct tm *now)
- {
- 	static const char *const single_format = "%s%s";
- 	static const char *const multiple_format = "%s-%i%s";
-@@ -565,7 +641,8 @@ static int generate_path_with_suffix(struct context_options *opts,
- 
- static int generate_path_without_suffix(struct context_options *opts,
- 				        const char *template,
--					unsigned int index, const char *suffix)
-+					unsigned int index, const char *suffix,
-+					const struct tm *now)
- {
- 	static const char *const single_format = "%s";
- 	static const char *const multiple_format = "%s-%i";
-@@ -593,8 +670,17 @@ static int generate_path(struct context_options *opts, char *template,
- 			 unsigned int index, const char *suffix)
- {
- 	int (*generator)(struct context_options *opts, const char *template,
--			 unsigned int index, const char *suffix);
-+			 unsigned int index, const char *suffix,
-+			 const struct tm *now);
- 	char *pos;
-+	time_t now_time;
-+	struct tm now_tm;
++int main(int argc, const char *argv[])
++{
++	const uint64_t sample_format_mask =
++		(1ul << SND_PCM_FORMAT_S8) |
++		(1ul << SND_PCM_FORMAT_U8) |
++		(1ul << SND_PCM_FORMAT_S16_LE) |
++		(1ul << SND_PCM_FORMAT_S16_BE) |
++		(1ul << SND_PCM_FORMAT_U16_LE) |
++		(1ul << SND_PCM_FORMAT_U16_BE) |
++		(1ul << SND_PCM_FORMAT_S24_LE) |
++		(1ul << SND_PCM_FORMAT_S24_BE) |
++		(1ul << SND_PCM_FORMAT_U24_LE) |
++		(1ul << SND_PCM_FORMAT_U24_BE) |
++		(1ul << SND_PCM_FORMAT_S32_LE) |
++		(1ul << SND_PCM_FORMAT_S32_BE) |
++		(1ul << SND_PCM_FORMAT_U32_LE) |
++		(1ul << SND_PCM_FORMAT_U32_BE) |
++		(1ul << SND_PCM_FORMAT_S24_3LE) |
++		(1ul << SND_PCM_FORMAT_S24_3BE) |
++		(1ul << SND_PCM_FORMAT_U24_3LE) |
++		(1ul << SND_PCM_FORMAT_U24_3BE) |
++		(1ul << SND_PCM_FORMAT_S24_3LE) |
++		(1ul << SND_PCM_FORMAT_S24_3BE) |
++		(1ul << SND_PCM_FORMAT_U24_3LE) |
++		(1ul << SND_PCM_FORMAT_U24_3BE) |
++		(1ul << SND_PCM_FORMAT_S20_3LE) |
++		(1ul << SND_PCM_FORMAT_S20_3BE) |
++		(1ul << SND_PCM_FORMAT_U20_3LE) |
++		(1ul << SND_PCM_FORMAT_U20_3BE) |
++		(1ul << SND_PCM_FORMAT_S18_3LE) |
++		(1ul << SND_PCM_FORMAT_S18_3BE) |
++		(1ul << SND_PCM_FORMAT_U18_3LE) |
++		(1ul << SND_PCM_FORMAT_U18_3BE);
++	uint64_t access_mask;
++	struct test_generator gen = {0};
++	snd_pcm_access_t access;
++	int err;
 +
-+	now_time = time(NULL);
-+	if ((int)now_time < 0)
-+		return -errno;
-+	if (localtime_r(&now_time, &now_tm) == NULL)
-+		return -errno;
++	if (argc > 1) {
++		char *term;
++
++		access = strtol(argv[1], &term, 10);
++		if (errno != 0 || *term != '\0') {
++			err = -EINVAL;
++			goto end;
++		}
++		if (access < SND_PCM_ACCESS_MMAP_INTERLEAVED &&
++		    access > SND_PCM_ACCESS_RW_NONINTERLEAVED) {
++			err = -EINVAL;
++			goto end;
++		}
++		if (access == SND_PCM_ACCESS_MMAP_COMPLEX) {
++			err = -EINVAL;
++			goto end;
++		}
++		access_mask = 1ul << access;
++		verbose = true;
++	} else {
++		access_mask = (1ul << SND_PCM_ACCESS_MMAP_INTERLEAVED) |
++			      (1ul << SND_PCM_ACCESS_MMAP_NONINTERLEAVED) |
++			      (1ul << SND_PCM_ACCESS_RW_INTERLEAVED) |
++			      (1ul << SND_PCM_ACCESS_RW_NONINTERLEAVED);
++		verbose = false;
++	}
++
++
++	err = generator_context_init(&gen, access_mask, sample_format_mask,
++				     1, 128, 23, 4500, 1024,
++				     sizeof(struct vumeter_context));
++	if (err < 0)
++		return EXIT_FAILURE;
++
++	err = generator_context_run(&gen, callback);
++
++	generator_context_destroy(&gen);
++end:
++	if (err < 0) {
++		printf("%s\n", strerror(-err));
++		return EXIT_FAILURE;
++	}
++
++	return EXIT_SUCCESS;
++}
+diff --git a/axfer/xfer-libasound-irq-rw.c b/axfer/xfer-libasound-irq-rw.c
+index ee5ce801..a2152d92 100644
+--- a/axfer/xfer-libasound-irq-rw.c
++++ b/axfer/xfer-libasound-irq-rw.c
+@@ -261,11 +261,11 @@ static int write_frames(struct libasound_state *state,
+ 		err = snd_pcm_writen(state->handle, cache->buf, consumed_count);
+ 	if (err < 0)
+ 		return err;
++	consumed_count = (unsigned int)err;
  
- 	if (strlen(suffix) > 0) {
- 		pos = template + strlen(template) - strlen(suffix);
-@@ -604,12 +690,14 @@ static int generate_path(struct context_options *opts, char *template,
- 	}
+ 	if (vu)
+ 		vumeter_context_calculate(vu, cache->buf, consumed_count);
  
- 	/* Select handlers. */
--	if (strlen(suffix) > 0)
-+	if (opts->use_strftime)
-+		generator = generate_path_with_strftime;
-+	else if (strlen(suffix) > 0)
- 		generator = generate_path_with_suffix;
- 	else
- 		generator = generate_path_without_suffix;
+-	consumed_count = (unsigned int)err;
+ 	cache->align_frames(cache, consumed_count, cache->bytes_per_sample,
+ 			    cache->samples_per_frame);
  
--	return generator(opts, template, index, suffix);
-+	return generator(opts, template, index, suffix, &now_tm);
- }
- 
- static int create_paths(struct context_options *opts, unsigned int path_count)
-diff --git a/axfer/options.h b/axfer/options.h
-index 188668b0..2092796e 100644
---- a/axfer/options.h
-+++ b/axfer/options.h
-@@ -32,6 +32,7 @@ struct context_options {
- 	char **paths;
- 	unsigned int path_count;
- 	enum container_format cntr_format;
-+	bool use_strftime;
- 
- 	/* For mapper. */
- 	bool multiple_cntrs;
 -- 
 2.11.0
