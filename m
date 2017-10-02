@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 38/39] axfer: add a feature to generate
-	a file for process id
-Date: Mon,  2 Oct 2017 09:19:39 +0900
-Message-ID: <20171002001940.17218-39-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 28/39] axfer: add options for software
+	parameters of PCM substream
+Date: Mon,  2 Oct 2017 09:19:29 +0900
+Message-ID: <20171002001940.17218-29-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 23766267026
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:56 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id A1840266FFD
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:54 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,144 +25,168 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation of aplay, during transferring data frames, the
-program generates a file with PID in given path for an option
-'--process-id-file'.
+In ALSA PCM interface, some parameters are used to configure runtime of
+PCM substream independently of actual hardware. These parameters are
+mainly used to decide the detailed timing to start/stop PCM substream and
+release I/O blocking state of application. These parameters are
+represented and delivered by a structure.
 
-This commit adds support for this feature. However, usually, an idea of
-process ID file is used for programs such that they run several
-sub-processes and one of them have significant role to maintain the other
-sub-processes. Content of the process ID file includes PID for the
-significant sub-process to avoid sending Unix signals to the other
-processes. Apparently, aplay and this program are not this kind of program.
-This feature makes less sense because process ID for this program can be
-found by usual tools such as ps(1) or pgrep(1) which seek nodes on procfs.
+In alsa-lib PCM API, the structure is hidden from userspace applications.
+The applications can set/get actual parameters by helper functions.
+
+In aplay, three of the parameters are configurable. This commit adds
+support for them. When no options are given, default values are used.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/options.c | 41 +++++++++++++++++++++++++++++++++++++++--
- axfer/options.h |  1 +
- 2 files changed, 40 insertions(+), 2 deletions(-)
+ axfer/options.c        | 11 +++++++-
+ axfer/options.h        |  4 +++
+ axfer/xfer-libasound.c | 74 ++++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 86 insertions(+), 3 deletions(-)
 
 diff --git a/axfer/options.c b/axfer/options.c
-index 7e112c42..6e935cd1 100644
+index 325bc16b..a22223a0 100644
 --- a/axfer/options.c
 +++ b/axfer/options.c
-@@ -11,6 +11,8 @@
- 
- #include <getopt.h>
- #include <math.h>
-+#include <sys/types.h>
-+#include <unistd.h>
- 
- enum no_short_opts {
- 	/* 128 belongs to non us-ascii character set. */
-@@ -25,6 +27,7 @@ enum no_short_opts {
- 	OPT_DISABLE_SOFTVOL,
- 	OPT_SCHED_TYPE,
- 	OPT_USE_STRFTIME,
-+	OPT_PROCESS_ID_FILE,
- 	/* Obsoleted. */
- 	OPT_MAX_FILE_TIME,
- };
-@@ -206,7 +209,8 @@ static int apply_policies(struct context_options *opts,
- 			  const char *waiter_type_literal,
- 			  const char *sched_type_literal,
- 			  const char *vu_mode_literal,
--			  const char *chmap_literal)
-+			  const char *chmap_literal,
-+			  const char *pidfile_name_literal)
+@@ -322,7 +322,7 @@ void context_options_calculate_duration(struct context_options *opts,
+ int context_options_init(struct context_options *opts, int argc,
+ 			 char *const *argv, snd_pcm_stream_t direction)
  {
- 	int err;
- 
-@@ -254,6 +258,30 @@ static int apply_policies(struct context_options *opts,
- 			return -ENOMEM;
- 	}
- 
-+	if (pidfile_name_literal) {
-+		FILE *fstream;
-+
-+		opts->pidfile_name = strdup(pidfile_name_literal);
-+		if (opts->pidfile_name == NULL) {
-+			fprintf(stderr,
-+				"Fail to allocate for a name of file with "
-+				"process id: %s\n",
-+				pidfile_name_literal);
-+			return -ENOMEM;
-+		}
-+
-+		unlink(pidfile_name_literal);
-+		fstream = fopen(pidfile_name_literal, "w");
-+		if (fstream == NULL) {
-+			fprintf(stderr,
-+				"Fail to generate a file with process id: %s\n",
-+				pidfile_name_literal);
-+			return -errno;
-+		}
-+		fprintf(fstream, "%d\n", getpid());
-+		fclose(fstream);
-+	}
-+
- 	if (opts->samples_per_frame > 0) {
- 		if (opts->samples_per_frame < 1 ||
- 		    opts->samples_per_frame > 256) {
-@@ -468,6 +496,7 @@ int context_options_init(struct context_options *opts, int argc,
- 		{"vumeter",		1, 0, 'V'},
- 		{"interactive",		0, 0, 'i'},
- 		{"chmap",		1, 0, 'm'},
-+		{"process-id-file",	1, 0, OPT_PROCESS_ID_FILE},
- 		/* Obsoleted. */
- 		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
- 		{NULL,			0, 0, 0},
-@@ -479,6 +508,7 @@ int context_options_init(struct context_options *opts, int argc,
- 	const char *sched_type_literal = NULL;
- 	const char *vu_mode_literal = NULL;
- 	const char *chmap_literal = NULL;
-+	const char *pidfile_name_literal = NULL;
- 	int l_index = 0;
- 	int c;
- 	int err = 0;
-@@ -555,6 +585,8 @@ int context_options_init(struct context_options *opts, int argc,
- 			opts->interactive = true;
- 		else if (c == 'm')
- 			chmap_literal = optarg;
-+		else if (c == OPT_PROCESS_ID_FILE)
-+			pidfile_name_literal = optarg;
- 		else if (c == OPT_MAX_FILE_TIME) {
- 			fprintf(stderr,
- 				"An option '--%s' is obsoleted and has no "
-@@ -575,7 +607,8 @@ int context_options_init(struct context_options *opts, int argc,
- 	return apply_policies(opts, direction, cntr_format_literal,
- 			      node_literal, sample_format_literal,
- 			      waiter_type_literal, sched_type_literal,
--			      vu_mode_literal, chmap_literal);
-+			      vu_mode_literal, chmap_literal,
-+			      pidfile_name_literal);
- }
- 
- /*
-@@ -922,6 +955,10 @@ void context_options_destroy(struct context_options *opts)
- {
- 	int i;
- 
-+	if (opts->pidfile_name)
-+		unlink(opts->pidfile_name);
-+	opts->pidfile_name = NULL;
-+
- 	if (opts->paths) {
- 		for (i = 0; i < opts->path_count; ++i)
- 			free(opts->paths[i]);
+-	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:";
++	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMF:B:A:R:T:";
+ 	static const struct option l_opts[] = {
+ 		/* For generic purposes. */
+ 		{"help",		0, 0, 'h'},
+@@ -345,6 +345,9 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"buffer-time",		1, 0, 'B'},
+ 		{"period-size",		1, 0, OPT_PERIOD_SIZE},
+ 		{"buffer-size",		1, 0, OPT_BUFFER_SIZE},
++		{"avail-min",		1, 0, 'A'},
++		{"start-delay",		1, 0, 'R'},
++		{"stop-delay",		1, 0, 'T'},
+ 		/* For debugging. */
+ 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
+ 		{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
+@@ -400,6 +403,12 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->frames_per_period = parse_l(optarg, &err);
+ 		else if (c == OPT_BUFFER_SIZE)
+ 			opts->frames_per_buffer = parse_l(optarg, &err);
++		else if (c == 'A')
++			opts->msec_for_avail_min = parse_l(optarg, &err);
++		else if (c == 'R')
++			opts->msec_for_start_threshold = parse_l(optarg, &err);
++		else if (c == 'T')
++			opts->msec_for_stop_threshold = parse_l(optarg, &err);
+ 		else if (c == OPT_DUMP_HW_PARAMS)
+ 			opts->dump_hw_params = true;
+ 		else if (c == OPT_FATAL_ERRORS)
 diff --git a/axfer/options.h b/axfer/options.h
-index b8aba167..e8e4524b 100644
+index f4ac6c64..63b36364 100644
 --- a/axfer/options.h
 +++ b/axfer/options.h
-@@ -74,6 +74,7 @@ struct context_options {
- 	enum vumeter_mode vu_mode;
- 	bool interactive;
- 	char *chmap_literal;
-+	char *pidfile_name;
- };
+@@ -41,6 +41,10 @@ struct context_options {
+ 	unsigned int frames_per_period;
+ 	unsigned int frames_per_buffer;
  
- int context_options_init(struct context_options *opts, int argc,
++	unsigned int msec_for_avail_min;
++	unsigned int msec_for_start_threshold;
++	unsigned int msec_for_stop_threshold;
++
+ 	/* For debugging. */
+ 	bool dump_hw_params;
+ 	bool finish_at_xrun;
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index 1911c160..533c9492 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -337,8 +337,76 @@ static int retrieve_actual_hw_params(snd_pcm_hw_params_t *hw_params,
+ 
+ static int configure_sw_params(struct libasound_state *state,
+ 			       unsigned int frames_per_second,
+-			       unsigned int frames_per_buffer)
++			       unsigned int frames_per_buffer,
++			       unsigned int msec_for_avail_min,
++			       unsigned int msec_for_start_threshold,
++			       unsigned int msec_for_stop_threshold)
+ {
++	snd_pcm_uframes_t frame_count;
++	int err;
++
++	if (msec_for_avail_min > 0) {
++		frame_count = msec_for_avail_min * frames_per_second / 1000000;
++		if (frame_count == 0 || frame_count > frames_per_buffer) {
++			logging(state,
++				_("The msec for 'avail_min' is too %s: %u "
++				  "msec (%lu frames at %u).\n"),
++				frame_count == 0 ? "small" : "large",
++				msec_for_avail_min, frame_count,
++				frames_per_second);
++			return -EINVAL;
++		}
++		err = snd_pcm_sw_params_set_avail_min(state->handle,
++						state->sw_params, frame_count);
++		if (err < 0) {
++			logging(state,
++				_("Fail to configure 'avail-min'.\n"));
++			return -EINVAL;
++		}
++	}
++
++	if (msec_for_start_threshold > 0) {
++		frame_count = msec_for_start_threshold * frames_per_second /
++			      1000000;
++		if (frame_count == 0 || frame_count > frames_per_buffer) {
++			logging(state,
++				_("The msec for 'start-delay' is too %s: %u "
++				  "msec (%lu frames at %u).\n"),
++				frame_count == 0 ? "small" : "large",
++				msec_for_start_threshold, frame_count,
++				frames_per_second);
++			return -EINVAL;
++		}
++		err = snd_pcm_sw_params_set_start_threshold(state->handle,
++						state->sw_params, frame_count);
++		if (err < 0) {
++			logging(state,
++				_("Fail to configure 'start-delay'.\n"));
++			return -EINVAL;
++		}
++	}
++
++	if (msec_for_stop_threshold > 0) {
++		frame_count = msec_for_stop_threshold * frames_per_second /
++			      1000000;
++		if (frame_count == 0 || frame_count > frames_per_buffer) {
++			logging(state,
++				_("The msec for 'stop-delay' is too %s: %u "
++				  "msec (%lu frames at %u).\n"),
++				frame_count == 0 ? "small" : "large",
++				msec_for_stop_threshold, frame_count,
++				frames_per_second);
++			return -EINVAL;
++		}
++		err = snd_pcm_sw_params_set_stop_threshold(state->handle,
++						state->sw_params, frame_count);
++		if (err < 0) {
++			logging(state,
++				_("Fail to configure 'stop-delay'.\n"));
++			return -EINVAL;
++		}
++	}
++
+ 	return snd_pcm_sw_params(state->handle, state->sw_params);
+ }
+ 
+@@ -403,7 +471,9 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
+ 		return err;
+ 
+ 	err = configure_sw_params(state, *frames_per_second,
+-				  *frames_per_buffer);
++				  *frames_per_buffer, opts->msec_for_avail_min,
++				  opts->msec_for_start_threshold,
++				  opts->msec_for_stop_threshold);
+ 	if (err < 0) {
+ 		logging(state, _("Current software parameters:\n"));
+ 		snd_pcm_sw_params_dump(state->sw_params, state->log);
 -- 
 2.11.0
