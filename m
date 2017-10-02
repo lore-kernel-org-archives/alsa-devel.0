@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 15/39] axfer: add support to transfer
-	data frames by alsa-lib PCM APIs
-Date: Mon,  2 Oct 2017 09:19:16 +0900
-Message-ID: <20171002001940.17218-16-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 37/39] axfer: add a parser for channel
+	map API
+Date: Mon,  2 Oct 2017 09:19:38 +0900
+Message-ID: <20171002001940.17218-38-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 52524266FE1
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:54 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 2B58D26702F
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:56 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,518 +25,200 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support fo alsa-lib PCM API as a backend of 'xfer'
-module. In a set of alsa-lib PCM API, there're two ways to handle data
-frames; by calling ioctl(2) with some specific commands and buffer in
-user space, or copying data frames on mapped page frames. To support
-these two ways, this commit adds operation structure.
+Current aplay has an option to use channel map API of alsa-lib. This API
+allows applications to get/set channel position by a position array; e.g.
+'FR,FL' and 'LFE,FL,FR'.
+
+This commit adds support for the feature. However, neither alsa-lib
+implementation nor ALSA PCM interface, configuring the channel map is not
+supported. Therefore, this feature makes no sense except for displaying
+current channel map.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am      |   7 +-
- axfer/xfer-libasound.c | 374 +++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/xfer-libasound.h |  45 ++++++
- axfer/xfer.c           |   4 +-
- axfer/xfer.h           |   4 +-
- 5 files changed, 428 insertions(+), 6 deletions(-)
- create mode 100644 axfer/xfer-libasound.c
- create mode 100644 axfer/xfer-libasound.h
+ axfer/options.c        | 29 ++++++++++++++++++++++++++---
+ axfer/options.h        |  1 +
+ axfer/xfer-libasound.c | 32 ++++++++++++++++++++++++++++++++
+ axfer/xfer-libasound.h |  2 ++
+ 4 files changed, 61 insertions(+), 3 deletions(-)
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index c1534411..ab4e3ae1 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -20,7 +20,8 @@ noinst_HEADERS = \
- 	container.h \
- 	mapper.h
- 	options.h \
--	xfer.h
-+	xfer.h \
-+	xfer-alsa.h
+diff --git a/axfer/options.c b/axfer/options.c
+index d4e7876b..7e112c42 100644
+--- a/axfer/options.c
++++ b/axfer/options.c
+@@ -205,7 +205,8 @@ static int apply_policies(struct context_options *opts,
+ 			  const char *sample_format_literal,
+ 			  const char *waiter_type_literal,
+ 			  const char *sched_type_literal,
+-			  const char *vu_mode_literal)
++			  const char *vu_mode_literal,
++			  const char *chmap_literal)
+ {
+ 	int err;
  
- axfer_SOURCES = \
- 	misc.h \
-@@ -40,4 +41,6 @@ axfer_SOURCES = \
- 	options.h \
- 	options.c \
- 	xfer.h \
--	xfer.c
-+	xfer.c \
-+	xfer-libasound.h \
-+	xfer-libasound.c
-diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
-new file mode 100644
-index 00000000..66e8e1de
---- /dev/null
-+++ b/axfer/xfer-libasound.c
-@@ -0,0 +1,374 @@
-+/*
-+ * xfer-libasound.c - receive/transmit frames by alsa-lib.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "xfer-libasound.h"
-+#include "misc.h"
-+
-+static int set_access_hw_param(snd_pcm_t *handle,
-+			       snd_pcm_hw_params_t *hw_params,
-+			       struct context_options *opts)
-+{
-+	snd_pcm_access_mask_t *mask;
-+	int err;
-+
-+	err = snd_pcm_access_mask_malloc(&mask);
-+	if (err < 0)
-+		return err;
-+	snd_pcm_access_mask_none(mask);
-+	snd_pcm_access_mask_set(mask, SND_PCM_ACCESS_RW_INTERLEAVED);
-+	snd_pcm_access_mask_set(mask, SND_PCM_ACCESS_RW_NONINTERLEAVED);
-+	err = snd_pcm_hw_params_set_access_mask(handle, hw_params, mask);
-+	snd_pcm_access_mask_free(mask);
-+
-+	return err;
-+}
-+
-+static int xfer_libasound_init(struct xfer_context *xfer,
-+			       snd_pcm_stream_t direction,
-+			       struct context_options *opts)
-+{
-+	struct libasound_state *state = xfer->private_data;
-+	char *node;
-+	int err;
-+
-+	err = snd_output_stdio_attach(&state->log, stderr, 0);
-+	if (err < 0)
-+		return err;
-+
-+	state->verbose = xfer->verbose > 1;
-+
-+	if (opts->node == NULL)
-+		node = "default";
-+	else
-+		node = opts->node;
-+
-+	err = snd_pcm_open(&state->handle, node, direction, 0);
-+	if (err < 0) {
-+		logging(state, "Fail to open libasound PCM node for %s: %s\n",
-+			snd_pcm_stream_name(direction), node);
-+		return err;
-+	}
-+
-+	err = snd_pcm_hw_params_malloc(&state->hw_params);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_sw_params_malloc(&state->sw_params);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_params_any(state->handle, state->hw_params);
-+	if (err < 0)
-+		return err;
-+
-+	/* TODO: Applying NO_PERIOD_WAKEUP should be done here. */
-+
-+	return set_access_hw_param(state->handle, state->hw_params, opts);
-+}
-+
-+static int configure_hw_params(struct libasound_state *state,
-+			       snd_pcm_format_t format,
-+			       unsigned int samples_per_frame,
-+			       unsigned int frames_per_second)
-+{
-+	int err;
-+
-+	/* Configure sample format. */
-+	if (format == SND_PCM_FORMAT_UNKNOWN) {
-+		snd_pcm_format_mask_t *mask;
-+
-+		err = snd_pcm_format_mask_malloc(&mask);
-+		if (err < 0)
-+			return err;
-+		snd_pcm_hw_params_get_format_mask(state->hw_params, mask);
-+		for (format = 0; format <= SND_PCM_FORMAT_LAST; ++format) {
-+			if (snd_pcm_format_mask_test(mask, format))
-+				break;
-+		}
-+		snd_pcm_format_mask_free(mask);
-+		if (format > SND_PCM_FORMAT_LAST) {
-+			logging(state,
-+				"Any sample format is not available.\n");
+@@ -238,6 +239,21 @@ static int apply_policies(struct context_options *opts,
+ 			return err;
+ 	}
+ 
++	if (chmap_literal) {
++		snd_pcm_chmap_t *chmap;
++		chmap = snd_pcm_chmap_parse_string(chmap_literal);
++		if (chmap == NULL) {
++			fprintf(stderr,
++				"Unable to parse channel map string: '%s'\n",
++				chmap_literal);
 +			return -EINVAL;
 +		}
-+	}
-+	err = snd_pcm_hw_params_set_format(state->handle, state->hw_params,
-+					   format);
-+	if (err < 0) {
-+		logging(state,
-+			_("Sample format '%s' is not available: %s\n"),
-+			snd_pcm_format_name(format), snd_strerror(err));
-+		return err;
-+	}
-+
-+	/* Configure channels. */
-+	if (samples_per_frame == 0) {
-+		err = snd_pcm_hw_params_get_channels_min(state->hw_params,
-+							 &samples_per_frame);
-+		if (err < 0) {
-+			logging(state,
-+				_("Any channel number is not available.\n"));
-+			return err;
-+		}
-+	}
-+	err = snd_pcm_hw_params_set_channels(state->handle, state->hw_params,
-+					     samples_per_frame);
-+	if (err < 0) {
-+		logging(state,
-+			_("Channels count '%u' is not available: %s\n"),
-+			samples_per_frame, snd_strerror(err));
-+		return err;
-+	}
-+
-+	/* Configure rate. */
-+	if (frames_per_second == 0) {
-+		err = snd_pcm_hw_params_get_rate_min(state->hw_params,
-+						     &frames_per_second, NULL);
-+		if (err < 0) {
-+			logging(state,
-+				_("Any rate is not available.\n"));
-+			return err;
-+		}
-+
-+	}
-+	err = snd_pcm_hw_params_set_rate(state->handle, state->hw_params,
-+					 frames_per_second, 0);
-+	if (err < 0) {
-+		logging(state,
-+			_("Sampling rate '%u' is not available: %s\n"),
-+			frames_per_second, snd_strerror(err));
-+		return err;
-+	}
-+
-+	return snd_pcm_hw_params(state->handle, state->hw_params);
-+}
-+
-+static int retrieve_actual_hw_params(snd_pcm_hw_params_t *hw_params,
-+				     snd_pcm_format_t *format,
-+				     unsigned int *samples_per_frame,
-+				     unsigned int *frames_per_second,
-+				     snd_pcm_access_t *access,
-+				     snd_pcm_uframes_t *frames_per_buffer)
-+{
-+	int err;
-+
-+	err = snd_pcm_hw_params_get_format(hw_params, format);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_params_get_channels(hw_params,
-+					     samples_per_frame);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_params_get_rate(hw_params, frames_per_second,
-+					 NULL);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_params_get_access(hw_params, access);
-+	if (err < 0)
-+		return err;
-+
-+	return snd_pcm_hw_params_get_buffer_size(hw_params, frames_per_buffer);
-+}
-+
-+static int configure_sw_params(struct libasound_state *state,
-+			       unsigned int frames_per_second,
-+			       unsigned int frames_per_buffer)
-+{
-+	return snd_pcm_sw_params(state->handle, state->sw_params);
-+}
-+
-+static int xfer_libasound_pre_process(struct xfer_context *xfer,
-+				      snd_pcm_format_t *format,
-+				      unsigned int *samples_per_frame,
-+				      unsigned int *frames_per_second,
-+				      snd_pcm_access_t *access,
-+				      snd_pcm_uframes_t *frames_per_buffer)
-+{
-+	struct libasound_state *state = xfer->private_data;
-+	int err;
-+
-+	if (state->handle == NULL)
-+		return -ENXIO;
-+
-+	err = configure_hw_params(state, *format, *samples_per_frame,
-+				  *frames_per_second);
-+	if (err < 0) {
-+		logging(state, _("Current hardware parameters:\n"));
-+		snd_pcm_hw_params_dump(state->hw_params, state->log);
-+		return err;
-+	}
-+
-+	/* Retrieve actual parameters. */
-+	err = retrieve_actual_hw_params(state->hw_params, format,
-+					samples_per_frame, frames_per_second,
-+					access, frames_per_buffer);
-+	if (err < 0)
-+		return err;
-+
-+	/* Query software parameters. */
-+	err = snd_pcm_sw_params_current(state->handle, state->sw_params);
-+	if (err < 0)
-+		return err;
-+
-+	/* Assign I/O operation. */
-+	if (state->ops->private_size > 0) {
-+		state->private_data = malloc(state->ops->private_size);
-+		if (state->private_data == NULL)
++		free(chmap);
++		opts->chmap_literal = strdup(chmap_literal);
++		if (opts->chmap_literal == NULL)
 +			return -ENOMEM;
-+		memset(state->private_data, 0, state->ops->private_size);
-+	}
-+	err = state->ops->pre_process(state);
-+	if (err < 0)
-+		return err;
-+
-+	err = configure_sw_params(state, *frames_per_second,
-+				  *frames_per_buffer);
-+	if (err < 0) {
-+		logging(state, _("Current software parameters:\n"));
-+		snd_pcm_sw_params_dump(state->sw_params, state->log);
-+		return err;
 +	}
 +
-+	if (xfer->verbose > 0)
-+		snd_pcm_dump(state->handle, state->log);
+ 	if (opts->samples_per_frame > 0) {
+ 		if (opts->samples_per_frame < 1 ||
+ 		    opts->samples_per_frame > 256) {
+@@ -409,7 +425,7 @@ void context_options_calculate_duration(struct context_options *opts,
+ int context_options_init(struct context_options *opts, int argc,
+ 			 char *const *argv, snd_pcm_stream_t direction)
+ {
+-	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMw:F:B:A:R:T:V:i";
++	static const char *s_opts = "hvqd:s:t:ID:f:c:r:NMw:F:B:A:R:T:V:im:";
+ 	static const struct option l_opts[] = {
+ 		/* For generic purposes. */
+ 		{"help",		0, 0, 'h'},
+@@ -451,6 +467,7 @@ int context_options_init(struct context_options *opts, int argc,
+ 		/* Misc features. */
+ 		{"vumeter",		1, 0, 'V'},
+ 		{"interactive",		0, 0, 'i'},
++		{"chmap",		1, 0, 'm'},
+ 		/* Obsoleted. */
+ 		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
+ 		{NULL,			0, 0, 0},
+@@ -461,6 +478,7 @@ int context_options_init(struct context_options *opts, int argc,
+ 	const char *waiter_type_literal = NULL;
+ 	const char *sched_type_literal = NULL;
+ 	const char *vu_mode_literal = NULL;
++	const char *chmap_literal = NULL;
+ 	int l_index = 0;
+ 	int c;
+ 	int err = 0;
+@@ -535,6 +553,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 			vu_mode_literal = optarg;
+ 		else if (c == 'i')
+ 			opts->interactive = true;
++		else if (c == 'm')
++			chmap_literal = optarg;
+ 		else if (c == OPT_MAX_FILE_TIME) {
+ 			fprintf(stderr,
+ 				"An option '--%s' is obsoleted and has no "
+@@ -555,7 +575,7 @@ int context_options_init(struct context_options *opts, int argc,
+ 	return apply_policies(opts, direction, cntr_format_literal,
+ 			      node_literal, sample_format_literal,
+ 			      waiter_type_literal, sched_type_literal,
+-			      vu_mode_literal);
++			      vu_mode_literal, chmap_literal);
+ }
+ 
+ /*
+@@ -909,6 +929,9 @@ void context_options_destroy(struct context_options *opts)
+ 	}
+ 	if (opts->node)
+ 		free(opts->node);
++	if (opts->chmap_literal)
++		free(opts->chmap_literal);
+ 	opts->paths = NULL;
+ 	opts->node = NULL;
++	opts->chmap_literal = NULL;
+ }
+diff --git a/axfer/options.h b/axfer/options.h
+index fed9a40e..b8aba167 100644
+--- a/axfer/options.h
++++ b/axfer/options.h
+@@ -73,6 +73,7 @@ struct context_options {
+ 	/* Misc features. */
+ 	enum vumeter_mode vu_mode;
+ 	bool interactive;
++	char *chmap_literal;
+ };
+ 
+ int context_options_init(struct context_options *opts, int argc,
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index 92aba3c4..4e8c6e2e 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -84,6 +84,17 @@ static int disable_period_wakeup(struct libasound_state *state)
+ 	return err;
+ }
+ 
++static void dump_chmap(struct libasound_state *state,
++		       const snd_pcm_chmap_t *chmap)
++{
++	int i;
 +
-+	return 0;
++	logging(state, "    channels: %u\n", chmap->channels);
++	for (i = 0; i < chmap->channels; ++i)
++		logging(state, "      ch%u: %s\n",
++			i, snd_pcm_chmap_name(chmap->pos[i]));
 +}
 +
-+static int xfer_libasound_process_frames(struct xfer_context *xfer,
-+					 unsigned int *frame_count,
-+					 struct mapper_context *mapper,
-+					 struct container_context *cntrs)
-+{
-+	struct libasound_state *state = xfer->private_data;
-+	int err;
+ static int xfer_libasound_init(struct xfer_context *xfer,
+ 			       snd_pcm_stream_t direction,
+ 			       struct context_options *opts)
+@@ -152,6 +163,17 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 		return 0;
+ 	}
+ 
++	if (opts->chmap_literal != NULL) {
++		state->chmap = snd_pcm_chmap_parse_string(opts->chmap_literal);
++		if (state->chmap == NULL)
++			return -ENOMEM;
 +
-+	if (state->handle == NULL)
-+		return -ENXIO;
-+
-+	err = state->ops->process_frames(state, frame_count, mapper, cntrs);
-+	if (err < 0) {
-+		if (err == -EPIPE) {
-+			/*
-+			 * Recover the stream and continue processing
-+			 * immediately. In this program -EPIPE comes from
-+			 * libasound implementation instead of file I/O.
-+			 */
-+
-+			err = snd_pcm_prepare(state->handle);
-+		}
-+
-+		if (err < 0) {
-+			/*
-+			 * TODO: -EIO from libasound for hw PCM node means
-+			 * that IRQ disorder. This should be reported to help
-+			 * developers for drivers.
-+			 */
-+			logging(state, "Fail to process frames: %s\n",
-+				snd_strerror(err));
-+		}
-+	}
-+
-+	return err;
-+}
-+
-+static void xfer_libasound_pause(struct xfer_context *xfer, bool enable)
-+{
-+	struct libasound_state *state = xfer->private_data;
-+	snd_pcm_state_t s = snd_pcm_state(state->handle);
-+	int err;
-+
-+	if (state->handle == NULL)
-+		return;
-+
-+	if (enable) {
-+		if (s != SND_PCM_STATE_RUNNING)
-+			return;
-+	} else {
-+		if (s != SND_PCM_STATE_PAUSED)
-+			return;
-+	}
-+
-+	/* Not supported. Leave the substream to enter XRUN state. */
-+	if (!snd_pcm_hw_params_can_pause(state->hw_params))
-+		return;
-+
-+	err = snd_pcm_pause(state->handle, enable);
-+	if (err < 0 && state->verbose) {
-+		logging(state, "snd_pcm_pause(): %s\n", snd_strerror(err));
-+	}
-+}
-+
-+static void xfer_libasound_post_process(struct xfer_context *xfer)
-+{
-+	struct libasound_state *state = xfer->private_data;
-+	snd_pcm_state_t pcm_state;
-+	int err;
-+
-+	if (state->handle == NULL)
-+		return;
-+
-+	pcm_state = snd_pcm_state(state->handle);
-+	if (pcm_state != SND_PCM_STATE_OPEN &&
-+	    pcm_state != SND_PCM_STATE_DISCONNECTED) {
-+		if (snd_pcm_stream(state->handle) == SND_PCM_STREAM_CAPTURE) {
-+			err = snd_pcm_drop(state->handle);
-+			if (err < 0)
-+				logging(state, "snd_pcm_drop(): %s\n",
-+				       snd_strerror(err));
-+		} else {
-+			err = snd_pcm_drain(state->handle);
-+			if (err < 0)
-+				logging(state, "snd_pcm_drain(): %s\n",
-+				       snd_strerror(err));
++		if (xfer->verbose) {
++			logging(state, "Chmap argument:\n");
++			dump_chmap(state, state->chmap);
 +		}
 +	}
 +
-+	err = snd_pcm_hw_free(state->handle);
-+	if (err < 0)
-+		logging(state, "snd_pcm_hw_free(): %s\n", snd_strerror(err));
+ 	return set_access_hw_param(state->handle, state->hw_params, opts);
+ }
+ 
+@@ -238,6 +260,12 @@ static int configure_hw_params(struct libasound_state *state,
+ 			return err;
+ 		}
+ 	}
++	if (state->chmap && samples_per_frame != state->chmap->channels) {
++		logging(state,
++			_("Mismatch between channel number and given map: %u "
++			  "%u\n"),
++			samples_per_frame, state->chmap->channels);
++	}
+ 	err = snd_pcm_hw_params_set_channels(state->handle, state->hw_params,
+ 					     samples_per_frame);
+ 	if (err < 0) {
+@@ -690,6 +718,10 @@ static void xfer_libasound_destroy(struct xfer_context *xfer)
+ 	if (state->log)
+ 		snd_output_close(state->log);
+ 	state->log = NULL;
 +
-+	snd_pcm_close(state->handle);
-+	state->handle = NULL;
-+
-+	if (state->ops && state->ops->post_process)
-+		state->ops->post_process(state);
-+	if (state->private_data)
-+		free(state->private_data);
-+	state->private_data = NULL;
-+}
-+
-+static void xfer_libasound_destroy(struct xfer_context *xfer)
-+{
-+	struct libasound_state *state = xfer->private_data;
-+
-+	if (state->hw_params)
-+		snd_pcm_hw_params_free(state->hw_params);
-+	if (state->sw_params)
-+		snd_pcm_sw_params_free(state->sw_params);
-+	state->hw_params = NULL;
-+	state->sw_params = NULL;
-+
-+	if (state->log)
-+		snd_output_close(state->log);
-+	state->log = NULL;
-+}
-+
-+const struct xfer_data xfer_libasound = {
-+	.ops = {
-+		.init		= xfer_libasound_init,
-+		.pre_process	= xfer_libasound_pre_process,
-+		.process_frames	= xfer_libasound_process_frames,
-+		.pause		= xfer_libasound_pause,
-+		.post_process	= xfer_libasound_post_process,
-+		.destroy	= xfer_libasound_destroy,
-+	},
-+	.private_size = sizeof(struct libasound_state),
-+};
++	if (state->chmap)
++		free(state->chmap);
++	state->chmap = NULL;
+ }
+ 
+ const struct xfer_data xfer_libasound = {
 diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
-new file mode 100644
-index 00000000..72807cdd
---- /dev/null
+index 004613fa..11e610d8 100644
+--- a/axfer/xfer-libasound.h
 +++ b/axfer/xfer-libasound.h
-@@ -0,0 +1,45 @@
-+/*
-+ * xfer-libasound.h - a header for receiver/transmitter of frames by alsa-lib.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#ifndef __ALSA_UTILS_AXFER_XFER_LIBASOUND__H_
-+#define __ALSA_UTILS_AXFER_XFER_LIBASOUND__H_
-+
-+#include "xfer.h"
-+
-+#define logging(state, ...) \
-+	snd_output_printf(state->log, __VA_ARGS__)
-+
-+struct xfer_libasound_ops;
-+
-+struct libasound_state {
-+	snd_pcm_t *handle;
-+	snd_output_t *log;
-+
-+	snd_pcm_hw_params_t *hw_params;
-+
-+	snd_pcm_sw_params_t *sw_params;
-+
-+	bool running;
-+
-+	const struct xfer_libasound_ops *ops;
-+	void *private_data;
-+
-+	bool verbose;
-+};
-+
-+struct xfer_libasound_ops {
-+	int (*pre_process)(struct libasound_state *state);
-+	int (*process_frames)(struct libasound_state *state,
-+			      unsigned int *frame_count,
-+			      struct mapper_context *mapper,
-+			      struct container_context *cntrs);
-+	void (*post_process)(struct libasound_state *state);
-+	unsigned int private_size;
-+};
-+
-+#endif
-diff --git a/axfer/xfer.c b/axfer/xfer.c
-index 46b36d42..4677bd5b 100644
---- a/axfer/xfer.c
-+++ b/axfer/xfer.c
-@@ -12,7 +12,7 @@
- #include <stdio.h>
+@@ -34,6 +34,8 @@ struct libasound_state {
  
- static const char *const xfer_type_labels[] = {
--	[XFER_TYPE_COUNT] = "",
-+	[XFER_TYPE_LIBASOUND] = "libasound",
+ 	bool verbose;
+ 	bool finish_at_xrun;
++
++	snd_pcm_chmap_t *chmap;
  };
  
- int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
-@@ -22,7 +22,7 @@ int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
- 		enum xfer_type type;
- 		const struct xfer_data *data;
- 	} entries[] = {
--		{XFER_TYPE_COUNT, NULL},
-+		{XFER_TYPE_LIBASOUND, &xfer_libasound},
- 	};
- 	int i;
- 
-diff --git a/axfer/xfer.h b/axfer/xfer.h
-index 4e3f1f37..b90c005b 100644
---- a/axfer/xfer.h
-+++ b/axfer/xfer.h
-@@ -13,7 +13,7 @@
- #include "options.h"
- 
- enum xfer_type {
--	XFER_TYPE_COUNT,
-+	XFER_TYPE_LIBASOUND = 0,
- };
- 
- struct xfer_ops;
-@@ -66,6 +66,6 @@ struct xfer_data {
- 	unsigned int private_size;
- };
- 
--extern const struct xfer_data xfer_alsa;
-+extern const struct xfer_data xfer_libasound;
- 
- #endif
+ struct xfer_libasound_ops {
 -- 
 2.11.0
