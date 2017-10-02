@@ -1,16 +1,15 @@
 From: Ed Blake <ed.blake@sondrel.com>
-Subject: [PATCH] ASoC: img-parallel-out: Add pm_runtime_get/put
-	to set_fmt callback
-Date: Mon,  2 Oct 2017 11:00:33 +0100
-Message-ID: <1506938433-681-1-git-send-email-ed.blake@sondrel.com>
+Subject: [PATCH 0/2] ASoC: img-spdif-in: Add power management
+Date: Mon,  2 Oct 2017 11:01:16 +0100
+Message-ID: <1506938478-747-1-git-send-email-ed.blake@sondrel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01on0043.outbound.protection.outlook.com [104.47.2.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B90326719A
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 12:00:54 +0200 (CEST)
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01on0060.outbound.protection.outlook.com [104.47.0.60])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC6DE2671A6
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 12:01:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +23,16 @@ To: lgirdwood@gmail.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Ed Blake <ed.blake@sondrel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add pm_runtime_get_sync and pm_runtime_put calls to set_fmt callback
-function. This fixes a bus error during boot when CONFIG_SUSPEND is
-defined when this function gets called while the device is runtime
-disabled and device registers are accessed while the clock is disabled.
+This patch set adds power managment to the img-spdif-in driver.  The
+first patch adds system PM suspend / resume handling and the second
+patch adds runtime PM.
 
-Signed-off-by: Ed Blake <ed.blake@sondrel.com>
----
- sound/soc/img/img-parallel-out.c | 2 ++
- 1 file changed, 2 insertions(+)
+Ed Blake (2):
+  ASoC: img-spdif-in: Add suspend / resume handling
+  ASoC: img-spdif-in: Add runtime PM
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 23b0f0f..2fc8a63 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -164,9 +164,11 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
-+	pm_runtime_get_sync(prl->dev);
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
- 	img_prl_out_writel(prl, reg, IMG_PRL_OUT_CTL);
-+	pm_runtime_put(prl->dev);
- 
- 	return 0;
- }
+ sound/soc/img/img-spdif-in.c | 111 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 99 insertions(+), 12 deletions(-)
+
 -- 
 1.9.1
