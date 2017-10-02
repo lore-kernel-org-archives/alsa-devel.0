@@ -1,54 +1,34 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Prague Audio miniconference - topics for
-	discussion?
-Date: Mon, 2 Oct 2017 23:57:39 +0900
-Message-ID: <753bfdd6-a94c-060e-abd6-44a7737a988c@sakamocchi.jp>
-References: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
+From: Doug Anderson <dianders@chromium.org>
+Subject: Re: [PATCH] ASoC: rockchip: Fix wrong allocation size of dapm routes
+Date: Mon, 2 Oct 2017 08:14:50 -0700
+Message-ID: <CAD=FV=V+sVf8E_ka1u5kDBKWS6MY3vMpaVgmjDV1CnVSOkQ3AA@mail.gmail.com>
+References: <20170929035252.19808-1-jeffy.chen@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 755F5266DE1
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 16:59:31 +0200 (CEST)
-In-Reply-To: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170929035252.19808-1-jeffy.chen@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeffy Chen <jeffy.chen@rock-chips.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Heiko Stuebner <heiko@sntech.de>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Sep 21 2017 02:45, Mark Brown wrote:
-> As previously announced[1] by Takashi our annual Linux audio
-> miniconference will be held this year at the SuSE offices in Prague on
-> 27th October (the week of ELC-E).  Thanks again to SuSe for sponsoring
-> this.  As with previous years let's pull together an agenda through a
-> mailing list discussion - if people could reply to this mail with any
-> topics they'd like to discuss we can take it from there.  Of course if
-> we can sort things out more quickly via the mailing list that's even
-> better!
+On Thu, Sep 28, 2017 at 8:52 PM, Jeffy Chen <jeffy.chen@rock-chips.com> wrote:
+> The allocation size of dapm routes is wrong, correct it.
+>
+> Fixes: d9f9c167edae ("ASoC: rockchip: Init dapm routes dynamically")
+> Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+> ---
+>
+>  sound/soc/rockchip/rk3399_gru_sound.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 
-I'll bring two topics to discuss.
+I guess Jeffy and I found this independently.  In
+http://crosreview.com/693319 Jeffy indicated that he thought my patch
+could land, so I guess drop his and take mine from
+<https://patchwork.kernel.org/patch/9978763/>?
 
-1. A plan to obsolete 'dimen' member in 'struct snd_ctl_elem_info'.
-2. Rewrite 'aplay' and support timer-based scheduling
+Thanks!
 
-In detail, please refer to my presentation (partly WIP):
-https://github.com/takaswie/presentations/blob/topic/20171027/20171027/contents.md
-
-# Cross fingers not to get heavy jet-lag.
-
-
-Regards
-
-Takashi Sakamoto
+-Doug
