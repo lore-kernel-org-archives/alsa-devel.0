@@ -1,143 +1,54 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [alsa-devel] usb/sound/usx2y: warning in usb_stream_new/__alloc_pages_slowpath
-Date: Mon, 2 Oct 2017 16:34:57 +0200
-Message-ID: <CAAeHK+xu5qypnn7+yqvCRiFn9EZqig3SH0dKYEeOg2EDE4e82A@mail.gmail.com>
-References: <CAAeHK+x4EKXVmeiRK1ih+DfWKG9Q1Ver8z=r26sTWQAepESvFA@mail.gmail.com>
- <s5hk20rdqiy.wl-tiwai@suse.de> <s5hk20d692l.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Prague Audio miniconference - topics for
+	discussion?
+Date: Mon, 2 Oct 2017 23:57:39 +0900
+Message-ID: <753bfdd6-a94c-060e-abd6-44a7737a988c@sakamocchi.jp>
+References: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hk20d692l.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Jaroslav Kysela <perex@perex.cz>, Markus Elfring <elfring@users.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 755F5266DE1
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 16:59:31 +0200 (CEST)
+In-Reply-To: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 2, 2017 at 2:14 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 22 Sep 2017 11:35:49 +0200,
-> Takashi Iwai wrote:
->>
->> On Thu, 21 Sep 2017 17:38:53 +0200,
->> Andrey Konovalov wrote:
->> >
->> > Hi!
->> >
->> > I've got the following report while fuzzing the kernel with syzkaller.
->> >
->> > On commit ebb2c2437d8008d46796902ff390653822af6cc4 (Sep 18).
->> >
->> > ------------[ cut here ]------------
->> > WARNING: CPU: 1 PID: 1846 at mm/page_alloc.c:3883
->> > __alloc_pages_slowpath+0x1ef2/0x2d70
->> > Modules linked in:
->> > CPU: 1 PID: 1846 Comm: kworker/1:2 Not tainted
->> > 4.14.0-rc1-42251-gebb2c2437d80 #215
->> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
->> > Workqueue: usb_hub_wq hub_event
->> > task: ffff8800643c18c0 task.stack: ffff88006b658000
->> > RIP: 0010:trace_reclaim_retry_zone ./include/trace/events/oom.h:31
->> > RIP: 0010:should_reclaim_retry mm/page_alloc.c:3783
->> > RIP: 0010:__alloc_pages_slowpath+0x1ef2/0x2d70 mm/page_alloc.c:4039
->> > RSP: 0018:ffff88006b65d938 EFLAGS: 00010246
->> > RAX: 00000000ffffa666 RBX: 00000000014000c0 RCX: 0000000000000000
->> > RDX: 0000000000000000 RSI: 0000000000000034 RDI: 000000000140c0c0
->> > RBP: ffff88006b65e088 R08: 0000000000000000 R09: fffffffffff00f88
->> > R10: 0000000000000000 R11: 0000000000000085 R12: ffff88006b65e130
->> > R13: ffff88006b65e270 R14: ffff88006b65e0f0 R15: 000000000140c0c0
->> > FS:  0000000000000000(0000) GS:ffff88006c900000(0000) knlGS:0000000000000000
->> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> > CR2: 0000000020829000 CR3: 0000000063cce000 CR4: 00000000000006e0
->> > Call Trace:
->> >  __alloc_pages_nodemask+0x921/0xf70 mm/page_alloc.c:4217
->> >  alloc_pages_current+0xbb/0x1f0 mm/mempolicy.c:2035
->> >  alloc_pages ./include/linux/gfp.h:505
->> >  __get_free_pages+0x14/0x50 mm/page_alloc.c:4248
->> >  usb_stream_new+0x50f/0x9f0 sound/usb/usx2y/usb_stream.c:214
->>
->> The warning itself should be harmless, indicating only that the driver
->> tries to allocate too high-order memory pages.  The error path handles
->> the allocation error gracefully, so basically we can suppress the
->> warning by adding __GFP_NOWARN, in addition to a sanity check in the
->> caller side.
->>
->> I've been traveling and will be traveling again in the next week, so
->> I'll cook up once after back to work again.
->
-> Andrey, could you check the patch below?  It should suppress the
-> spurious warnings.
+Hi,
 
-Hi Takashi,
+On Sep 21 2017 02:45, Mark Brown wrote:
+> As previously announced[1] by Takashi our annual Linux audio
+> miniconference will be held this year at the SuSE offices in Prague on
+> 27th October (the week of ELC-E).  Thanks again to SuSe for sponsoring
+> this.  As with previous years let's pull together an agenda through a
+> mailing list discussion - if people could reply to this mail with any
+> topics they'd like to discuss we can take it from there.  Of course if
+> we can sort things out more quickly via the mailing list that's even
+> better!
 
-Your patch fixes the report triggered by my reproducer.
+I'll bring two topics to discuss.
 
-Thanks!
+1. A plan to obsolete 'dimen' member in 'struct snd_ctl_elem_info'.
+2. Rewrite 'aplay' and support timer-based scheduling
 
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
+In detail, please refer to my presentation (partly WIP):
+https://github.com/takaswie/presentations/blob/topic/20171027/20171027/contents.md
 
->
->
-> thanks,
->
-> Takashi
->
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: usx2y: Suppress kernel warning at page allocation
->  failures
->
-> The usx2y driver allocates the stream read/write buffers in continuous
-> pages depending on the stream setup, and this may spew the kernel
-> warning messages with a stack trace like:
->   WARNING: CPU: 1 PID: 1846 at mm/page_alloc.c:3883
->   __alloc_pages_slowpath+0x1ef2/0x2d70
->   Modules linked in:
->   CPU: 1 PID: 1846 Comm: kworker/1:2 Not tainted
->   ....
->
-> It may confuse user as if it were any serious error, although this is
-> no fatal error and the driver handles the error case gracefully.
-> Since the driver has already some sanity check of the given size (128
-> and 256 pages), it can't pass any crazy value.  So it's merely page
-> fragmentation.
->
-> This patch adds __GFP_NOWARN to each caller for suppressing such
-> kernel warnings.  The original issue was spotted by syzkaller.
->
-> Reported-by: Andrey Konovalov <andreyknvl@google.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/usb/usx2y/usb_stream.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
-> index 4dab49080700..e229abd21652 100644
-> --- a/sound/usb/usx2y/usb_stream.c
-> +++ b/sound/usb/usx2y/usb_stream.c
-> @@ -191,7 +191,8 @@ struct usb_stream *usb_stream_new(struct usb_stream_kernel *sk,
->         }
->
->         pg = get_order(read_size);
-> -       sk->s = (void *) __get_free_pages(GFP_KERNEL|__GFP_COMP|__GFP_ZERO, pg);
-> +       sk->s = (void *) __get_free_pages(GFP_KERNEL|__GFP_COMP|__GFP_ZERO|
-> +                                         __GFP_NOWARN, pg);
->         if (!sk->s) {
->                 snd_printk(KERN_WARNING "couldn't __get_free_pages()\n");
->                 goto out;
-> @@ -211,7 +212,8 @@ struct usb_stream *usb_stream_new(struct usb_stream_kernel *sk,
->         pg = get_order(write_size);
->
->         sk->write_page =
-> -               (void *)__get_free_pages(GFP_KERNEL|__GFP_COMP|__GFP_ZERO, pg);
-> +               (void *)__get_free_pages(GFP_KERNEL|__GFP_COMP|__GFP_ZERO|
-> +                                        __GFP_NOWARN, pg);
->         if (!sk->write_page) {
->                 snd_printk(KERN_WARNING "couldn't __get_free_pages()\n");
->                 usb_stream_free(sk);
-> --
-> 2.14.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
-> For more options, visit https://groups.google.com/d/optout.
+# Cross fingers not to get heavy jet-lag.
+
+
+Regards
+
+Takashi Sakamoto
