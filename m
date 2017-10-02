@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 05/39] axfer: add support for a
-	container of Sparc AU format
-Date: Mon,  2 Oct 2017 09:19:06 +0900
-Message-ID: <20171002001940.17218-6-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 03/39] axfer: add a common interface to
+	handle a file with audio-specific data format
+Date: Mon,  2 Oct 2017 09:19:04 +0900
+Message-ID: <20171002001940.17218-4-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9C49A266EE0
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BC806266E55
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:47 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,53 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for data of Sparc AU format. In this data format,
-values in each of field are encoded in big-endian byte order and available
-formats of data sample are restricted in big-endian byte order.
+Current aplay supports several types of data format for file; Microsoft/IBM
+RIFF/Wave (.wav), Sparc AU (.au) and Creative Tech. voice (.voc). These
+formats were designed to handle audio-related data with interleaved frame
+alignment.
+
+This commit adds a common interface to handle the file format, named as
+'container' module. This includes several functions to build/parse
+the format data from any file descriptors. Furthermore, this includes
+several helper functions for implementations of each builder/parser.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am    |   3 +-
- axfer/container-au.c | 207 +++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/container.c    |   6 +-
- axfer/container.h    |   4 +
- 4 files changed, 218 insertions(+), 2 deletions(-)
- create mode 100644 axfer/container-au.c
+ axfer/Makefile.am |   7 +-
+ axfer/container.c | 434 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/container.h | 110 ++++++++++++++
+ 3 files changed, 549 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/container.c
+ create mode 100644 axfer/container.h
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 092c9662..35aa2261 100644
+index 4e37b92f..3913d0c6 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -25,4 +25,5 @@ axfer_SOURCES = \
- 	subcmd-list.c \
- 	container.h \
- 	container.c \
--	container-riff-wave.c
-+	container-riff-wave.c \
-+	container-au.c
-diff --git a/axfer/container-au.c b/axfer/container-au.c
+@@ -15,10 +15,13 @@ LDADD = \
+ 
+ noinst_HEADERS = \
+ 	misc.h \
+-	subcmd.h
++	subcmd.h \
++	container.h
+ 
+ axfer_SOURCES = \
+ 	misc.h \
+ 	subcmd.h \
+ 	main.c \
+-	subcmd-list.c
++	subcmd-list.c \
++	container.h \
++	container.c
+diff --git a/axfer/container.c b/axfer/container.c
 new file mode 100644
-index 00000000..b0ac13c6
+index 00000000..5cb879e1
 --- /dev/null
-+++ b/axfer/container-au.c
-@@ -0,0 +1,207 @@
++++ b/axfer/container.c
+@@ -0,0 +1,434 @@
 +/*
-+ * container-au.c - a parser/builder for a container of Sun Audio File.
++ * container.c - an interface of parser/builder for formatted files.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
@@ -66,255 +81,544 @@ index 00000000..b0ac13c6
 +#include "container.h"
 +#include "misc.h"
 +
-+/* Not portable to all of UNIX platforms. */
-+#include <endian.h>
++#include <stdio.h>
++#include <errno.h>
++#include <string.h>
++#include <fcntl.h>
 +
-+/*
-+ * Reference:
-+ *  * http://pubs.opengroup.org/external/auformat.html
-+ */
-+
-+#define AU_MAGIC	".snd"
-+#define UNKNOWN_SIZE	UINT32_MAX
-+
-+enum code_id {
-+	CODE_ID_CCIT_MU_LAW_BE		= 0x01,
-+	CODE_ID_GENERIC_MBLA_S8		= 0x02,
-+	CODE_ID_GENERIC_MBLA_S16_BE	= 0x03,
-+	CODE_ID_GENERIC_MBLA_S32_BE	= 0x05,
-+	CODE_ID_IEEE754_FLOAT_S32_BE	= 0x06,
-+	CODE_ID_IEEE754_DOUBLE_S64_BE	= 0x07,
-+	CODE_ID_CCIT_ADPCM_G721_4BIT_BE	= 0x17,
-+	CODE_ID_CCIT_ADPCM_G723_3BIT_BE	= 0x19,
-+	CODE_ID_CCIT_A_LAW_BE		= 0x1b,
++static const char *const cntr_type_labels[] = {
++	[CONTAINER_TYPE_PARSER] = "parser",
++	[CONTAINER_TYPE_BUILDER] = "builder",
 +};
 +
-+struct format_map {
-+	enum code_id code_id;
-+	snd_pcm_format_t format;
++static const char *const cntr_format_labels[] = {
++	[CONTAINER_FORMAT_COUNT] = "",
 +};
 +
-+static const struct format_map format_maps[] = {
-+	{CODE_ID_GENERIC_MBLA_S8,		SND_PCM_FORMAT_S8},
-+	{CODE_ID_GENERIC_MBLA_S16_BE,		SND_PCM_FORMAT_S16_BE},
-+	{CODE_ID_GENERIC_MBLA_S32_BE,		SND_PCM_FORMAT_S32_BE},
-+	{CODE_ID_IEEE754_FLOAT_S32_BE,		SND_PCM_FORMAT_FLOAT_BE},
-+	{CODE_ID_IEEE754_DOUBLE_S64_BE,		SND_PCM_FORMAT_FLOAT64_BE},
-+	/*
-+	 * CODE_ID_CCIT_ADPCM_G721_4BIT_BE is not supported by ALSA.
-+	 * CODE_ID_CCIT_ADPCM_G723_3BIT_BE is not supported due to width of
-+	 * its sample.
-+	 */
-+	{CODE_ID_CCIT_A_LAW_BE,			SND_PCM_FORMAT_A_LAW},
-+	{CODE_ID_CCIT_MU_LAW_BE,		SND_PCM_FORMAT_MU_LAW},
++static const char *const suffixes[] = {
++	[CONTAINER_FORMAT_COUNT] = "",
 +};
 +
-+struct container_header {
-+	uint8_t magic[4];
-+	uint32_t hdr_size;
-+	uint32_t data_size;
-+	uint32_t code_id;
-+	uint32_t frames_per_second;
-+	uint32_t samples_per_frame;
-+};
-+
-+struct container_annotation {
-+	uint32_t chunks[0];
-+};
-+
-+struct parser_state {
-+	enum code_id code_id;
-+	unsigned int samples_per_frame;
-+	unsigned int bytes_per_sample;
-+};
-+
-+static int au_parser_pre_process(struct container_context *cntr,
-+				 snd_pcm_format_t *format,
-+				 unsigned int *samples_per_frame,
-+				 unsigned int *frames_per_second,
-+				 uint64_t *byte_count)
++const char *const container_suffix_from_format(enum container_format format)
 +{
-+	struct parser_state *state = cntr->private_data;
-+	struct container_header header;
-+	enum code_id code_id;
-+	int i;
-+	int err;
++	return suffixes[format];
++}
 +
-+	/* Parse header. 4 bytes are enough to detect supported containers. */
-+	memcpy(&header.magic, cntr->magic, sizeof(cntr->magic));
-+	err = container_recursive_read(cntr,
-+				       (char *)&header + sizeof(cntr->magic),
-+				       sizeof(header) - sizeof(cntr->magic));
-+	if (err < 0)
-+		return err;
-+	if (cntr->eof)
-+		return 0;
++int container_recursive_read(struct container_context *cntr, void *buf,
++			     unsigned int byte_count)
++{
++	char *dst = buf;
++	ssize_t result;
++	size_t consumed = 0;
 +
-+	if (memcmp(header.magic, AU_MAGIC, sizeof(header.magic)) != 0)
-+		return -EINVAL;
-+	if (be32toh(header.hdr_size) != sizeof(struct container_header))
-+		return -EINVAL;
++	while (consumed < byte_count && !cntr->interrupted) {
++		result = read(cntr->fd, dst + consumed, byte_count - consumed);
++		if (result < 0) {
++			/*
++			 * This descriptor was configured with non-blocking
++			 * mode. EINTR is not cought when get any interrupts.
++			 */
++			if (cntr->interrupted)
++				return -EINTR;
++			if (errno == EAGAIN)
++				continue;
++			return -errno;
++		}
++		/* Reach EOF. */
++		if (result == 0) {
++			cntr->eof = true;
++			return 0;
++		}
 +
-+	code_id = be32toh(header.code_id);
-+	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
-+		if (format_maps[i].code_id == code_id)
-+			break;
++		consumed += result;
 +	}
-+	if (i == ARRAY_SIZE(format_maps))
-+		return -EINVAL;
-+	*format = format_maps[i].format;
-+	*frames_per_second = be32toh(header.frames_per_second);
-+	*samples_per_frame = be32toh(header.samples_per_frame);
-+
-+	state->code_id = code_id;
-+	state->samples_per_frame = *samples_per_frame;
-+	state->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
-+
-+	*byte_count = be32toh(header.data_size);
 +
 +	return 0;
 +}
 +
-+struct builder_state {
-+	unsigned int bytes_per_sample;
-+	unsigned int samples_per_frame;
-+	unsigned int frames_per_second;
-+	enum code_id code_id;
-+};
-+
-+static void build_container_header(struct builder_state *state,
-+				   struct container_header *header,
-+				   unsigned int frames_per_second,
-+				   uint64_t byte_count)
++int container_recursive_write(struct container_context *cntr, void *buf,
++			      unsigned int byte_count)
 +{
-+	memcpy(header->magic, AU_MAGIC, sizeof(header->magic));
-+	header->hdr_size = htobe32(sizeof(struct container_header));
-+	header->data_size = htobe32(byte_count);
-+	header->code_id = htobe32(state->code_id);
-+	header->frames_per_second = htobe32(frames_per_second);
-+	header->samples_per_frame = htobe32(state->samples_per_frame);
++	char *src = buf;
++	ssize_t result;
++	size_t consumed = 0;
++
++	while (consumed < byte_count && !cntr->interrupted) {
++		result = write(cntr->fd, src + consumed, byte_count - consumed);
++		if (result < 0) {
++			/*
++			 * This descriptor was configured with non-blocking
++			 * mode. EINTR is not cought when get any interrupts.
++			 */
++			if (cntr->interrupted)
++				return -EINTR;
++			if (errno == EAGAIN)
++				continue;
++			return -errno;
++		}
++
++		consumed += result;
++	}
++
++	return 0;
 +}
 +
-+static int write_container_header(struct container_context *cntr,
-+				  uint64_t byte_count)
++enum container_format container_format_from_path(const char *path)
 +{
-+	struct builder_state *state = cntr->private_data;
-+	struct container_header header;
++	const char *suffix;
++	const char *pos;
++	int i;
 +
-+	build_container_header(state, &header, state->frames_per_second,
-+			       byte_count);
++	for (i = 0; i < ARRAY_SIZE(suffixes); ++i) {
++		suffix = suffixes[i];
 +
-+	return container_recursive_write(cntr, &header, sizeof(header));
++		/* Check last part of the string. */
++		pos = path + strlen(path) - strlen(suffix);
++		if (!strcmp(pos, suffix))
++			return i;
++	}
++
++	/* Unsupported. */
++	return CONTAINER_FORMAT_COUNT;
 +}
 +
-+static int au_builder_pre_process(struct container_context *cntr,
++int container_seek_offset(struct container_context *cntr, off64_t offset)
++{
++	off64_t pos;
++
++	pos = lseek64(cntr->fd, offset, SEEK_SET);
++	if (pos < 0)
++		return -errno;
++	if (pos != offset)
++		return -EIO;
++
++	return 0;
++}
++
++/*
++ * To avoid blocking execution at system call iteration after receiving UNIX
++ * signals.
++ */
++static int set_nonblock_flag(int fd)
++{
++	int flags;
++
++	flags = fcntl(fd, F_GETFL);
++	if (flags < 0)
++		return -errno;
++
++	flags |= O_NONBLOCK;
++	if (fcntl(fd, F_SETFL, flags) < 0)
++		return -errno;
++
++	return 0;
++}
++
++int container_parser_init(struct container_context *cntr,
++			  const char *const path, unsigned int verbose)
++{
++	const struct container_parser *parsers[] = {
++		NULL,
++	};
++	const struct container_parser *parser;
++	unsigned int size;
++	int i;
++	int err;
++
++	assert(cntr);
++	assert(path);
++	assert(path[0] != '\0');
++
++	/* Detect forgotten to destruct. */
++	assert(cntr->fd == 0);
++	assert(cntr->private_data == NULL);
++
++	memset(cntr, 0, sizeof(*cntr));
++
++	/* Open a target descriptor. */
++	if (!strcmp(path, "-")) {
++		cntr->fd = fileno(stdin);
++		err = set_nonblock_flag(cntr->fd);
++		if (err < 0)
++			return err;
++		cntr->stdio = true;
++	} else {
++		cntr->fd = open(path, O_RDONLY | O_NONBLOCK);
++		if (cntr->fd < 0)
++			return -errno;
++	}
++
++	/* 4 bytes are enough to detect supported containers. */
++	err = container_recursive_read(cntr, cntr->magic, sizeof(cntr->magic));
++	if (err < 0)
++		return err;
++	for (i = 0; i < ARRAY_SIZE(parsers); ++i) {
++		parser = parsers[i];
++		size = strlen(parser->magic);
++		if (size > 4)
++			size = 4;
++		if (!strncmp(cntr->magic, parser->magic, size))
++			break;
++	}
++	/*
++	 * Don't forget that the first 4 bytes were already read for magic
++	 * bytes.
++	 */
++	cntr->magic_handled = false;
++
++	/*
++	 * Unless detected, use raw container.
++	 */
++	if (i == ARRAY_SIZE(parsers))
++		return -EINVAL;
++
++	/* Allocate private data for the parser. */
++	if (parser->private_size > 0) {
++		cntr->private_data = malloc(parser->private_size);
++		if (cntr->private_data == NULL)
++			return -ENOMEM;
++		memset(cntr->private_data, 0, parser->private_size);
++	}
++
++	cntr->type = CONTAINER_TYPE_PARSER;
++	cntr->process_bytes = container_recursive_read;
++	cntr->format = parser->format;
++	cntr->ops = &parser->ops;
++	cntr->max_size = parser->max_size;
++	cntr->verbose = verbose;
++
++	return 0;
++}
++
++int container_builder_init(struct container_context *cntr,
++			   const char *const path, enum container_format format,
++			   unsigned int verbose)
++{
++	const struct container_builder *builders[] = {
++		NULL,
++	};
++	const struct container_builder *builder;
++	int err;
++
++	assert(cntr);
++	assert(path);
++	assert(path[0] != '\0');
++
++	/* Detect forgotten to destruct. */
++	assert(cntr->fd == 0);
++	assert(cntr->private_data == NULL);
++
++	memset(cntr, 0, sizeof(*cntr));
++
++	/* Open a target descriptor. */
++	if (path == NULL || path == '\0')
++		return -EINVAL;
++	if (!strcmp(path, "-")) {
++		cntr->fd = fileno(stdout);
++		err = set_nonblock_flag(cntr->fd);
++		if (err < 0)
++			return err;
++		cntr->stdio = true;
++	} else {
++		cntr->fd = open(path, O_RDWR | O_NONBLOCK | O_CREAT | O_TRUNC,
++				0644);
++		if (cntr->fd < 0)
++			return -errno;
++	}
++
++	builder = builders[format];
++
++	/* Allocate private data for the builder. */
++	if (builder->private_size > 0) {
++		cntr->private_data = malloc(builder->private_size);
++		if (cntr->private_data == NULL)
++			return -ENOMEM;
++		memset(cntr->private_data, 0, builder->private_size);
++	}
++
++	cntr->type = CONTAINER_TYPE_BUILDER;
++	cntr->process_bytes = container_recursive_write;
++	cntr->format = builder->format;
++	cntr->ops = &builder->ops;
++	cntr->max_size = builder->max_size;
++	cntr->verbose = verbose;
++
++	return 0;
++}
++
++int container_context_pre_process(struct container_context *cntr,
 +				  snd_pcm_format_t *format,
 +				  unsigned int *samples_per_frame,
 +				  unsigned int *frames_per_second,
-+				  uint64_t *byte_count)
++				  uint64_t *frame_count)
 +{
-+	struct builder_state *status = cntr->private_data;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
-+		if (format_maps[i].format == *format)
-+			break;
-+	}
-+	if (i == ARRAY_SIZE(format_maps))
-+		return -EINVAL;
-+
-+	status->code_id = format_maps[i].code_id;
-+	status->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
-+	status->frames_per_second = *frames_per_second;
-+	status->samples_per_frame = *samples_per_frame;
-+
-+	return write_container_header(cntr, *byte_count);
-+}
-+
-+static int au_builder_post_process(struct container_context *cntr,
-+				   uint64_t handled_byte_count)
-+{
++	uint64_t byte_count;
++	unsigned int bytes_per_frame;
 +	int err;
 +
-+	err = container_seek_offset(cntr, 0);
++	assert(cntr);
++	assert(format);
++	assert(samples_per_frame);
++	assert(frames_per_second);
++	assert(frame_count);
++
++	if (cntr->type == CONTAINER_TYPE_BUILDER)
++		byte_count = cntr->max_size;
++
++	if (cntr->ops->pre_process) {
++		err = cntr->ops->pre_process(cntr, format, samples_per_frame,
++					     frames_per_second, &byte_count);
++		if (err < 0)
++			return err;
++		if (cntr->eof)
++			return 0;
++	}
++
++	assert(*format >= SND_PCM_FORMAT_S8);
++	assert(*format <= SND_PCM_FORMAT_LAST);
++	assert(*samples_per_frame > 0);
++	assert(*frames_per_second > 0);
++	assert(byte_count > 0);
++
++	cntr->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++	cntr->samples_per_frame = *samples_per_frame;
++	cntr->frames_per_second = *frames_per_second;
++
++	bytes_per_frame = cntr->bytes_per_sample * *samples_per_frame;
++	*frame_count = byte_count / bytes_per_frame;
++	cntr->max_size -= cntr->max_size / bytes_per_frame;
++
++	if (cntr->verbose > 0) {
++		fprintf(stderr, "Container: %s\n",
++			cntr_type_labels[cntr->type]);
++		fprintf(stderr, "  format: %s\n",
++			cntr_format_labels[cntr->format]);
++		fprintf(stderr, "  sample format: %s\n",
++			snd_pcm_format_name(*format));
++		fprintf(stderr, "  bytes/sample: %u\n",
++			cntr->bytes_per_sample);
++		fprintf(stderr, "  samples/frame: %u\n",
++			cntr->samples_per_frame);
++		fprintf(stderr, "  frames/second: %u\n",
++			cntr->frames_per_second);
++		if (cntr->type == CONTAINER_TYPE_PARSER) {
++			fprintf(stderr, "  frames: %lu\n",
++				*frame_count);
++		} else {
++			fprintf(stderr, "  max frames: %lu\n",
++				*frame_count);
++		}
++	}
++
++	return 0;
++}
++
++int container_context_process_frames(struct container_context *cntr,
++				     void *frame_buffer,
++				     unsigned int *frame_count)
++{
++	char *buf = frame_buffer;
++	unsigned int bytes_per_frame;
++	unsigned int byte_count;
++	int err;
++
++	assert(cntr);
++	assert(!cntr->eof);
++	assert(frame_buffer);
++	assert(frame_count);
++
++	bytes_per_frame = cntr->bytes_per_sample * cntr->samples_per_frame;
++	byte_count = *frame_count * bytes_per_frame;
++
++	/* Each container has limitation for its volume for sample data. */
++	if (cntr->handled_byte_count > cntr->max_size - byte_count)
++		byte_count = cntr->max_size - cntr->handled_byte_count;
++
++	/* All of supported containers include interleaved PCM frames. */
++	/* TODO: process frames for truncate case. */
++	err = cntr->process_bytes(cntr, buf, byte_count);
++	if (err < 0) {
++		*frame_count = 0;
++		return err;
++	}
++
++	cntr->handled_byte_count += byte_count;
++	if (cntr->handled_byte_count == cntr->max_size)
++		cntr->eof = true;
++
++	*frame_count = byte_count / bytes_per_frame;
++
++	return 0;
++}
++
++int container_context_post_process(struct container_context *cntr,
++				   uint64_t *frame_count)
++{
++	int err = 0;
++
++	assert(cntr);
++	assert(frame_count);
++
++	if (cntr->verbose && cntr->handled_byte_count > 0) {
++		fprintf(stderr, "  Handled bytes: %lu\n",
++			cntr->handled_byte_count);
++	}
++
++	/* NOTE* we cannot seek when using standard input/output. */
++	if (!cntr->stdio && cntr->ops && cntr->ops->post_process) {
++		/*
++		 * Usually, need to write out processed bytes in container
++		 * header even it this program is interrupted.
++		 */
++		cntr->interrupted = false;
++
++		err = cntr->ops->post_process(cntr, cntr->handled_byte_count);
++	}
++
++	/* Ensure to perform write-back from disk cache. */
++	if (cntr->type == CONTAINER_TYPE_BUILDER)
++		fsync(cntr->fd);
++
 +	if (err < 0)
 +		return err;
 +
-+	return write_container_header(cntr, handled_byte_count);
++	if (cntr->bytes_per_sample == 0 || cntr->samples_per_frame == 0) {
++		*frame_count = 0;
++	} else {
++		*frame_count = cntr->handled_byte_count /
++			       cntr->bytes_per_sample /
++			       cntr->samples_per_frame;
++	}
++
++	return 0;
 +}
 +
-+const struct container_parser container_parser_au = {
-+	.format = CONTAINER_FORMAT_AU,
-+	.magic = AU_MAGIC,
-+	.max_size = UINT32_MAX,
-+	.ops = {
-+		.pre_process = au_parser_pre_process,
-+	},
-+	.private_size = sizeof(struct parser_state),
-+};
++void container_context_destroy(struct container_context *cntr)
++{
++	assert(cntr);
 +
-+const struct container_builder container_builder_au = {
-+	.format = CONTAINER_FORMAT_AU,
-+	.max_size = UINT32_MAX,
-+	.ops = {
-+		.pre_process	= au_builder_pre_process,
-+		.post_process	= au_builder_post_process,
-+	},
-+	.private_size = sizeof(struct builder_state),
-+};
-diff --git a/axfer/container.c b/axfer/container.c
-index c20af463..0e208aba 100644
---- a/axfer/container.c
-+++ b/axfer/container.c
-@@ -21,10 +21,12 @@ static const char *const cntr_type_labels[] = {
- 
- static const char *const cntr_format_labels[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
-+	[CONTAINER_FORMAT_AU] = "au",
- };
- 
- static const char *const suffixes[] = {
--	[CONTAINER_FORMAT_RIFF_WAVE] = ".wav",
-+	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
-+	[CONTAINER_FORMAT_AU]		= ".au",
- };
- 
- 
-@@ -148,6 +150,7 @@ int container_parser_init(struct container_context *cntr,
- {
- 	const struct container_parser *parsers[] = {
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
-+		[CONTAINER_FORMAT_AU] = &container_parser_au,
- 	};
- 	const struct container_parser *parser;
- 	unsigned int size;
-@@ -225,6 +228,7 @@ int container_builder_init(struct container_context *cntr,
- {
- 	const struct container_builder *builders[] = {
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
-+		[CONTAINER_FORMAT_AU] = &container_builder_au,
- 	};
- 	const struct container_builder *builder;
- 	int err;
++	close(cntr->fd);
++	if (cntr->private_data)
++		free(cntr->private_data);
++
++	cntr->fd = 0;
++	cntr->private_data = NULL;
++}
 diff --git a/axfer/container.h b/axfer/container.h
-index 3c27c26f..3042e1e9 100644
---- a/axfer/container.h
+new file mode 100644
+index 00000000..7b1f80c6
+--- /dev/null
 +++ b/axfer/container.h
-@@ -26,6 +26,7 @@ enum container_type {
- 
- enum container_format {
- 	CONTAINER_FORMAT_RIFF_WAVE = 0,
-+	CONTAINER_FORMAT_AU,
- 	CONTAINER_FORMAT_COUNT,
- };
- 
-@@ -111,4 +112,7 @@ int container_seek_offset(struct container_context *cntr, off64_t offset);
- extern const struct container_parser container_parser_riff_wave;
- extern const struct container_builder container_builder_riff_wave;
- 
-+extern const struct container_parser container_parser_au;
-+extern const struct container_builder container_builder_au;
+@@ -0,0 +1,110 @@
++/*
++ * container.h - an interface of parser/builder for formatted files.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
- #endif
++#ifndef __ALSA_UTILS_AXFER_CONTAINER__H_
++#define __ALSA_UTILS_AXFER_CONTAINER__H_
++
++#define _LARGEFILE64_SOURCE
++#include <sys/types.h>
++#include <unistd.h>
++
++#include <stdbool.h>
++#include <stdint.h>
++
++#include <alsa/asoundlib.h>
++
++enum container_type {
++	CONTAINER_TYPE_PARSER = 0,
++	CONTAINER_TYPE_BUILDER,
++	CONTAINER_TYPE_COUNT,
++};
++
++enum container_format {
++	CONTAINER_FORMAT_COUNT,
++};
++
++struct container_ops;
++
++struct container_context {
++	enum container_type type;
++	int fd;
++	int (*process_bytes)(struct container_context *cntr,
++			     void *buffer, unsigned int byte_count);
++	bool magic_handled;
++	bool eof;
++	bool interrupted;
++	bool stdio;
++
++	enum container_format format;
++	uint64_t max_size;
++	char magic[4];
++	const struct container_ops *ops;
++	void *private_data;
++
++	/* Available after pre-process. */
++	unsigned int bytes_per_sample;
++	unsigned int samples_per_frame;
++	unsigned int frames_per_second;
++
++	unsigned int verbose;
++	uint64_t handled_byte_count;
++};
++
++const char *const container_suffix_from_format(enum container_format format);
++enum container_format container_format_from_path(const char *path);
++int container_parser_init(struct container_context *cntr,
++			  const char *const path, unsigned int verbose);
++int container_builder_init(struct container_context *cntr,
++			   const char *const path, enum container_format format,
++			   unsigned int verbose);
++void container_context_destroy(struct container_context *cntr);
++int container_context_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *frame_count);
++int container_context_process_frames(struct container_context *cntr,
++				     void *frame_buffer,
++				     unsigned int *frame_count);
++int container_context_post_process(struct container_context *cntr,
++				   uint64_t *frame_count);
++
++/* For internal use in 'container' module. */
++
++struct container_ops {
++	int (*pre_process)(struct container_context *cntr,
++			   snd_pcm_format_t *format,
++			   unsigned int *samples_per_frame,
++			   unsigned int *frames_per_second,
++			   uint64_t *byte_count);
++	int (*post_process)(struct container_context *cntr,
++			    uint64_t handled_byte_count);
++};
++struct container_parser {
++	enum container_format format;
++	const char const *magic;
++	uint64_t max_size;
++	struct container_ops ops;
++	unsigned int private_size;
++};
++
++struct container_builder {
++	enum container_format format;
++	const char const *suffix;
++	uint64_t max_size;
++	struct container_ops ops;
++	unsigned int private_size;
++};
++
++int container_recursive_read(struct container_context *cntr, void *buf,
++			     unsigned int byte_count);
++int container_recursive_write(struct container_context *cntr, void *buf,
++			      unsigned int byte_count);
++int container_seek_offset(struct container_context *cntr, off64_t offset);
++
++#endif
 -- 
 2.11.0
