@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 09/39] axfer: add a common interface to
-	align data frames on different layout
-Date: Mon,  2 Oct 2017 09:19:10 +0900
-Message-ID: <20171002001940.17218-10-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 11/39] axfer: add support for a mapper
+	for multiple target
+Date: Mon,  2 Oct 2017 09:19:12 +0900
+Message-ID: <20171002001940.17218-12-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9CA8F266EFA
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BBC7C266F93
  for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,67 +25,44 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-In current aplay, several files can be handled as source of data frames for
-playback, or destination of captured data frames by an option
-'--separate-channels' (-I).
-
-On the other hand, in ALSA PCM kernel/user interface, several types of
-buffer are used to communicate between application/hardware;
- - mapped page frame for data frames with interleaved alignment
- - mapped page frame for data frames with non-interleaved alignment
- - buffer in user space for data frames with interleaved alignment
- - a list of buffer in user space for data frames with non-interleaved
-   alignment
-
-This commit adds a common interface, named as 'mapper' to convert frame
-alignment between these two sides. This interface includes two types;
-'muxer' and 'demuxer'. The 'muxer' is for playback direction, to
-construct playback buffer with PCM frames from several files. The 'demuxer'
-is for capture direction, to split PCM frames from capture buffer to
-each of file. Unlike multimedia containers such as MPEG 2/4 Systems,
-the 'muxer' and 'demuxer' are for playback/capture buffer, not for file
-contents.
+This commit adds support of mapper for 'multiple' target. This handles
+several files via 'container' functions, and constructs data frame buffer
+for playback, or splits data frames from data frame buffer for capture.
+When playback source files includes data frames with several channels, the
+first channel is used to construct buffer. For capture direction, each of
+channel of data frame is stored in one file, thus the file includes one
+channel of data frame. When handling non-interleaved buffer, a caller
+should use an array of buffer for each of channels with non-interleaved
+data frames.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am |   7 ++-
- axfer/mapper.c    | 125 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/mapper.h    |  79 ++++++++++++++++++++++++++++++++++
- 3 files changed, 209 insertions(+), 2 deletions(-)
- create mode 100644 axfer/mapper.c
- create mode 100644 axfer/mapper.h
+ axfer/Makefile.am       |   3 +-
+ axfer/mapper-multiple.c | 271 ++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/mapper.c          |  15 +++
+ axfer/mapper.h          |   4 +
+ 4 files changed, 292 insertions(+), 1 deletion(-)
+ create mode 100644 axfer/mapper-multiple.c
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 55fcf716..cb4b188d 100644
+index baf9b898..f17e59b0 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -17,7 +17,8 @@ LDADD = \
- noinst_HEADERS = \
- 	misc.h \
- 	subcmd.h \
--	container.h
-+	container.h \
-+	mapper.h
- 
- axfer_SOURCES = \
- 	misc.h \
-@@ -29,4 +30,6 @@ axfer_SOURCES = \
- 	container-riff-wave.c \
- 	container-au.c \
- 	container-voc.c \
--	container-raw.c
-+	container-raw.c \
-+	mapper.h \
-+	mapper.c
-diff --git a/axfer/mapper.c b/axfer/mapper.c
+@@ -33,4 +33,5 @@ axfer_SOURCES = \
+ 	container-raw.c \
+ 	mapper.h \
+ 	mapper.c \
+-	mapper-single.c
++	mapper-single.c \
++	mapper-multiple.c
+diff --git a/axfer/mapper-multiple.c b/axfer/mapper-multiple.c
 new file mode 100644
-index 00000000..3073c713
+index 00000000..c40d0bd6
 --- /dev/null
-+++ b/axfer/mapper.c
-@@ -0,0 +1,125 @@
++++ b/axfer/mapper-multiple.c
+@@ -0,0 +1,271 @@
 +/*
-+ * mapper.c - an interface of muxer/demuxer between buffer with data frames and
-+ * 	      formatted files.
++ * mapper-multiple.c - a muxer/demuxer for multiple containers.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
@@ -95,203 +72,330 @@ index 00000000..3073c713
 +#include "mapper.h"
 +#include "misc.h"
 +
-+#include <stdio.h>
-+
-+static const char *const mapper_type_labels[] = {
-+	[MAPPER_TYPE_MUXER] = "muxer",
-+	[MAPPER_TYPE_DEMUXER] = "demuxer",
++struct multiple_state {
++	void (*align_frames)(void *frame_buf, unsigned int frame_count,
++			     char **buf, unsigned int bytes_per_sample,
++			     struct container_context *cntrs,
++			     unsigned int cntr_count);
++	char **bufs;
++	unsigned int cntr_count;
 +};
 +
-+static const char *const mapper_target_labels[] = {
-+	[MAPPER_TARGET_COUNT] = "",
-+};
-+
-+int mapper_context_init(struct mapper_context *mapper,
-+			enum mapper_type type, unsigned int cntr_count,
-+			unsigned int verbose)
++static void align_to_i(void *frame_buf, unsigned int frame_count,
++		       char **src_bufs, unsigned int bytes_per_sample,
++		       struct container_context *cntrs, unsigned int cntr_count)
 +{
-+	const struct mapper_data *data = NULL;
++	char *dst = frame_buf;
++	char *src;
++	unsigned int dst_pos;
++	unsigned int src_pos;
++	struct container_context *cntr;
++	int i, j;
 +
-+	assert(mapper);
-+	assert(cntr_count > 0);
++	/*
++	 * src: first channel in each of interleaved buffers in containers =>
++	 * dst:interleaved.
++	 */
++	for (i = 0; i < cntr_count; ++i) {
++		src = src_bufs[i];
++		cntr = cntrs + i;
 +
-+	/* Detect forgotten to destruct. */
-+	assert(mapper->private_data == NULL);
++		for (j = 0; j < frame_count; ++j) {
++			/* Use first src channel for each of dst channel. */
++			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
++			dst_pos = bytes_per_sample * (cntr_count * j + i);
 +
-+	memset(mapper, 0, sizeof(*mapper));
-+
-+	mapper->ops = &data->ops;
-+	mapper->type = type;
-+
-+	mapper->private_data = malloc(data->private_size);
-+	if (mapper->private_data == NULL)
-+		return -ENOMEM;
-+	memset(mapper->private_data, 0, data->private_size);
-+
-+	mapper->cntr_count = cntr_count;
-+	mapper->verbose = verbose;
-+
-+	return 0;
++			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
++		}
++	}
 +}
 +
-+int mapper_context_pre_process(struct mapper_context *mapper,
-+			       snd_pcm_access_t access,
-+			       unsigned int bytes_per_sample,
-+			       unsigned int samples_per_frame,
-+			       unsigned int frames_per_buffer,
-+			       struct container_context *cntrs)
++static void align_from_i(void *frame_buf, unsigned int frame_count,
++			 char **dst_bufs, unsigned int bytes_per_sample,
++			 struct container_context *cntrs,
++			 unsigned int cntr_count)
 +{
-+	int err;
++	char *src = frame_buf;
++	char *dst;
++	unsigned int src_pos;
++	unsigned int dst_pos;
++	struct container_context *cntr;
++	int i, j;
 +
-+	assert(mapper);
-+	assert(access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
-+	assert(access <= SND_PCM_ACCESS_RW_NONINTERLEAVED);
-+	assert(bytes_per_sample > 0);
-+	assert(samples_per_frame > 0);
-+	assert(cntrs);
++	for (i = 0; i < cntr_count; ++i) {
++		dst = dst_bufs[i];
++		cntr = cntrs + i;
 +
-+	mapper->access = access;
-+	mapper->bytes_per_sample = bytes_per_sample;
-+	mapper->samples_per_frame = samples_per_frame;
-+	mapper->frames_per_buffer = frames_per_buffer;
++		for (j = 0; j < frame_count; ++j) {
++			/* Use first src channel for each of dst channel. */
++			src_pos = bytes_per_sample * (cntr_count * j + i);
++			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
 +
-+	err = mapper->ops->pre_process(mapper, cntrs, mapper->cntr_count);
-+	if (err < 0)
-+		return err;
++			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
++		}
++	}
++}
 +
-+	if (mapper->verbose > 0) {
-+		fprintf(stderr, "Mapper: %s\n",
-+		       mapper_type_labels[mapper->type]);
-+		fprintf(stderr, "  target: %s\n",
-+		       mapper_target_labels[mapper->target]);
-+		fprintf(stderr, "  access: %s\n",
-+		       snd_pcm_access_name(mapper->access));
-+		fprintf(stderr, "  bytes/sample: %u\n",
-+			mapper->bytes_per_sample);
-+		fprintf(stderr, "  samples/frame: %u\n",
-+			mapper->samples_per_frame);
-+		fprintf(stderr, "  frames/buffer: %lu\n",
-+			mapper->frames_per_buffer);
++static int multiple_pre_process(struct mapper_context *mapper,
++				struct container_context *cntrs,
++				unsigned int cntr_count)
++{
++	struct multiple_state *state = mapper->private_data;
++	struct container_context *cntr;
++	int i;
++
++	/*
++	 * Additionally, format of samples in the containers should be the same
++	 * as the format in PCM substream.
++	 */
++	for (i = 0; i < cntr_count; ++i) {
++		cntr = cntrs + i;
++		if (mapper->bytes_per_sample != cntr->bytes_per_sample)
++			return -EINVAL;
++	}
++	state->cntr_count = cntr_count;
++
++	/* Decide method to align frames. */
++	if (mapper->type == MAPPER_TYPE_DEMUXER) {
++		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
++			state->align_frames = align_from_i;
++		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
++			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			state->align_frames = NULL;
++		else
++			return -EINVAL;
++	} else {
++		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
++			state->align_frames = align_to_i;
++		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
++			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			state->align_frames = NULL;
++		else
++			return -EINVAL;
++	}
++
++	if (state->align_frames) {
++		/*
++		 * Furthermore, in demuxer case, each container should be
++		 * configured to store one sample per frame.
++		 */
++		if (mapper->type == MAPPER_TYPE_DEMUXER) {
++			for (i = 0; i < cntr_count; ++i) {
++				cntr = cntrs + i;
++				if (cntrs->samples_per_frame != 1)
++					return -EINVAL;
++			}
++		}
++
++		state->bufs = calloc(cntr_count, sizeof(char *));
++		if (state->bufs == NULL)
++			return -ENOMEM;
++
++		for (i = 0; i < cntr_count; ++i) {
++			unsigned int bytes_per_buffer;
++
++			/*
++			 * Allocate intermediate buffer as the same size as a
++			 * period for each of containers.
++			 */
++			cntr = cntrs + i;
++
++			bytes_per_buffer = mapper->bytes_per_sample *
++					   cntr->samples_per_frame *
++					   mapper->frames_per_buffer;
++
++			state->bufs[i] = malloc(bytes_per_buffer);
++			if (state->bufs[i] == NULL)
++				return -ENOMEM;
++			memset(state->bufs[i], 0, bytes_per_buffer);
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+int mapper_context_process_frames(struct mapper_context *mapper,
-+				  void *frame_buffer,
-+				  unsigned int *frame_count,
-+				  struct container_context *cntrs)
-+{
-+	assert(mapper);
-+	assert(frame_buffer);
-+	assert(frame_count);
-+	assert(*frame_count <= mapper->frames_per_buffer);
-+	assert(cntrs);
-+
-+	return mapper->ops->process_frames(mapper, frame_buffer, frame_count,
-+					    cntrs, mapper->cntr_count);
-+}
-+
-+void mapper_context_post_process(struct mapper_context *mapper)
-+{
-+	assert(mapper);
-+
-+	if (mapper->ops && mapper->ops->post_process)
-+		mapper->ops->post_process(mapper);
-+}
-+
-+void mapper_context_destroy(struct mapper_context *mapper)
-+{
-+	assert(mapper);
-+
-+	if (mapper->private_data)
-+		free(mapper->private_data);
-+	mapper->private_data = NULL;
-+}
-diff --git a/axfer/mapper.h b/axfer/mapper.h
-new file mode 100644
-index 00000000..0a6c7f1c
---- /dev/null
-+++ b/axfer/mapper.h
-@@ -0,0 +1,79 @@
-+/*
-+ * mapper.h - an interface of muxer/demuxer between buffer with data frames and
-+ *	      formatted files.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#ifndef __ALSA_UTILS_AXFER_MAPPER__H_
-+#define __ALSA_UTILS_AXFER_MAPPER__H_
-+
-+#include "container.h"
-+
-+enum mapper_type {
-+	MAPPER_TYPE_MUXER = 0,
-+	MAPPER_TYPE_DEMUXER,
-+	MAPPER_TYPE_COUNT,
-+};
-+
-+enum mapper_target {
-+	MAPPER_TARGET_COUNT,
-+};
-+
-+struct mapper_ops;
-+
-+struct mapper_context {
-+	enum mapper_type type;
-+	enum mapper_target target;
-+	const struct mapper_ops *ops;
-+	unsigned int private_size;
-+
-+	void *private_data;
-+	unsigned int cntr_count;
-+
-+	/* A part of parameters of PCM substream. */
-+	snd_pcm_access_t access;
-+	unsigned int bytes_per_sample;
-+	unsigned int samples_per_frame;
-+	snd_pcm_uframes_t frames_per_buffer;
-+
-+	unsigned int verbose;
-+};
-+
-+int mapper_context_init(struct mapper_context *mapper,
-+			enum mapper_type type, unsigned int cntr_count,
-+			unsigned int verbose);
-+int mapper_context_pre_process(struct mapper_context *mapper,
-+			       snd_pcm_access_t access,
-+			       unsigned int bytes_per_sample,
-+			       unsigned int samples_per_frame,
-+			       unsigned int frames_per_buffer,
-+			       struct container_context *cntrs);
-+int mapper_context_process_frames(struct mapper_context *mapper,
-+				  void *frame_buffer,
-+				  unsigned int *frame_count,
-+				  struct container_context *cntrs);
-+void mapper_context_post_process(struct mapper_context *mapper);
-+void mapper_context_destroy(struct mapper_context *mapper);
-+
-+/* For internal use in 'mapper' module. */
-+
-+struct mapper_ops {
-+	int (*pre_process)(struct mapper_context *mapper,
-+			   struct container_context *cntrs,
-+			   unsigned int cntr_count);
-+	int (*process_frames)(struct mapper_context *mapper,
-+			      void *frame_buffer, unsigned int *frame_count,
++static int process_containers(char **src_bufs, unsigned int *frame_count,
 +			      struct container_context *cntrs,
-+			      unsigned int cntr_count);
-+	void (*post_process)(struct mapper_context *mapper);
++			      unsigned int cntr_count)
++{
++	struct container_context *cntr;
++	char *src;
++	int i;
++	int err = 0;
++
++	/* TODO: arrangement for *frame_count. */
++	for (i = 0; i < cntr_count; ++i) {
++		cntr = &cntrs[i];
++		src = src_bufs[i];
++
++		err = container_context_process_frames(cntr, src, frame_count);
++		if (err < 0)
++			break;
++	}
++
++	return err;
++}
++
++static int multiple_muxer_process_frames(struct mapper_context *mapper,
++					 void *frame_buf,
++					 unsigned int *frame_count,
++					 struct container_context *cntrs,
++					 unsigned int cntr_count)
++{
++	struct multiple_state *state = mapper->private_data;
++	char **src_bufs;
++	int err;
++
++	/*
++	 * If need to align PCM frames, process PCM frames to the intermediate
++	 * buffer once.
++	 */
++	if (!state->align_frames) {
++		/* The most likely. */
++		src_bufs = frame_buf;
++	} else {
++		src_bufs = state->bufs;
++	}
++	err = process_containers(src_bufs, frame_count, cntrs, cntr_count);
++	if (err < 0)
++		return err;
++
++	/* Unlikely. */
++	if (src_bufs != frame_buf && *frame_count > 0) {
++		state->align_frames(frame_buf, *frame_count, src_bufs,
++				    mapper->bytes_per_sample, cntrs,
++				    cntr_count);
++	}
++
++	return 0;
++}
++
++static int multiple_demuxer_process_frames(struct mapper_context *mapper,
++					   void *frame_buf,
++					   unsigned int *frame_count,
++					   struct container_context *cntrs,
++					   unsigned int cntr_count)
++{
++	struct multiple_state *state = mapper->private_data;
++	char **dst_bufs;
++
++	/*
++	 * If need to align PCM frames, process PCM frames to the intermediate
++	 * buffer once.
++	 */
++	if (!state->align_frames) {
++		/* The most likely. */
++		dst_bufs = frame_buf;
++	} else {
++		dst_bufs = state->bufs;
++		state->align_frames(frame_buf, *frame_count, dst_bufs,
++				    mapper->bytes_per_sample, cntrs,
++				    cntr_count);
++	}
++
++	return process_containers(dst_bufs, frame_count, cntrs, cntr_count);
++}
++
++static void multiple_post_process(struct mapper_context *mapper)
++{
++	struct multiple_state *state = mapper->private_data;
++	int i;
++
++	if (state->bufs) {
++		for (i = 0; i < state->cntr_count; ++i) {
++			if (state->bufs[i])
++				free(state->bufs[i]);
++		}
++		free(state->bufs);
++	}
++
++	state->bufs = NULL;
++	state->align_frames = NULL;
++}
++
++const struct mapper_data mapper_muxer_multiple = {
++	.ops = {
++		.pre_process = multiple_pre_process,
++		.process_frames = multiple_muxer_process_frames,
++		.post_process = multiple_post_process,
++	},
++	.private_size = sizeof(struct multiple_state),
 +};
 +
-+struct mapper_data {
-+	struct mapper_ops ops;
-+	unsigned int private_size;
++const struct mapper_data mapper_demuxer_multiple = {
++	.ops = {
++		.pre_process = multiple_pre_process,
++		.process_frames = multiple_demuxer_process_frames,
++		.post_process = multiple_post_process,
++	},
++	.private_size = sizeof(struct multiple_state),
 +};
+diff --git a/axfer/mapper.c b/axfer/mapper.c
+index 3ba2d5e1..20baef85 100644
+--- a/axfer/mapper.c
++++ b/axfer/mapper.c
+@@ -19,6 +19,7 @@ static const char *const mapper_type_labels[] = {
+ 
+ static const char *const mapper_target_labels[] = {
+ 	[MAPPER_TARGET_SINGLE] = "single",
++	[MAPPER_TARGET_MULTIPLE] = "multiple",
+ };
+ 
+ int mapper_context_init(struct mapper_context *mapper,
+@@ -39,11 +40,17 @@ int mapper_context_init(struct mapper_context *mapper,
+ 		if (cntr_count == 1) {
+ 			data = &mapper_muxer_single;
+ 			mapper->target = MAPPER_TARGET_SINGLE;
++		} else {
++			data = &mapper_muxer_multiple;
++			mapper->target = MAPPER_TARGET_MULTIPLE;
+ 		}
+ 	} else {
+ 		if (cntr_count == 1) {
+ 			data = &mapper_demuxer_single;
+ 			mapper->target = MAPPER_TARGET_SINGLE;
++		} else {
++			data = &mapper_demuxer_multiple;
++			mapper->target = MAPPER_TARGET_MULTIPLE;
+ 		}
+ 	}
+ 
+@@ -77,6 +84,14 @@ int mapper_context_pre_process(struct mapper_context *mapper,
+ 	assert(samples_per_frame > 0);
+ 	assert(cntrs);
+ 
++	/*
++	 * The purpose of multiple target is to mux/demux each channels to/from
++	 * containers.
++	 */
++	if (mapper->target == MAPPER_TARGET_MULTIPLE &&
++	    samples_per_frame != mapper->cntr_count)
++		return -EINVAL;
 +
-+#endif
+ 	mapper->access = access;
+ 	mapper->bytes_per_sample = bytes_per_sample;
+ 	mapper->samples_per_frame = samples_per_frame;
+diff --git a/axfer/mapper.h b/axfer/mapper.h
+index 2e553666..3b32e93c 100644
+--- a/axfer/mapper.h
++++ b/axfer/mapper.h
+@@ -20,6 +20,7 @@ enum mapper_type {
+ 
+ enum mapper_target {
+ 	MAPPER_TARGET_SINGLE = 0,
++	MAPPER_TARGET_MULTIPLE,
+ 	MAPPER_TARGET_COUNT,
+ };
+ 
+@@ -80,4 +81,7 @@ struct mapper_data {
+ extern const struct mapper_data mapper_muxer_single;
+ extern const struct mapper_data mapper_demuxer_single;
+ 
++extern const struct mapper_data mapper_muxer_multiple;
++extern const struct mapper_data mapper_demuxer_multiple;
++
+ #endif
 -- 
 2.11.0
