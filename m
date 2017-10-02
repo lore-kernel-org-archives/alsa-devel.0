@@ -1,8 +1,8 @@
 From: Ed Blake <ed.blake@sondrel.com>
-Subject: [PATCH 3/3] ASoC: img-i2s-out: Add control of sys
-	clock to runtime PM
-Date: Mon,  2 Oct 2017 10:59:47 +0100
-Message-ID: <1506938387-627-4-git-send-email-ed.blake@sondrel.com>
+Subject: [PATCH 1/3] ASoC: img-i2s-out: Rename suspend / resume
+	funcs
+Date: Mon,  2 Oct 2017 10:59:45 +0100
+Message-ID: <1506938387-627-2-git-send-email-ed.blake@sondrel.com>
 References: <1506938387-627-1-git-send-email-ed.blake@sondrel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from EUR02-HE1-obe.outbound.protection.outlook.com
  (mail-eopbgr10079.outbound.protection.outlook.com [40.107.1.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 997932671C7
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 12:00:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B78266DF4
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 12:00:00 +0200 (CEST)
 In-Reply-To: <1506938387-627-1-git-send-email-ed.blake@sondrel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,133 +26,75 @@ To: lgirdwood@gmail.com, broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, Ed Blake <ed.blake@sondrel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Disable sys clock as well as ref clock when runtime suspended.
+Rename suspend and resume functions to runtime_suspend and
+runtime_resume, which is what they actually are. This will avoid
+confusion when adding suspend and resume functions in a subsequent
+patch.
 
 Signed-off-by: Ed Blake <ed.blake@sondrel.com>
 ---
- sound/soc/img/img-i2s-out.c | 55 ++++++++++++++++++++++-----------------------
- 1 file changed, 27 insertions(+), 28 deletions(-)
+ sound/soc/img/img-i2s-out.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
-index f1c3b48..7db58d2 100644
+index 78b7f6c..adc6902 100644
 --- a/sound/soc/img/img-i2s-out.c
 +++ b/sound/soc/img/img-i2s-out.c
-@@ -71,8 +71,8 @@ static int img_i2s_out_runtime_suspend(struct device *dev)
+@@ -65,7 +65,7 @@ struct img_i2s_out {
+ 	struct snd_soc_dai_driver dai_driver;
+ };
+ 
+-static int img_i2s_out_suspend(struct device *dev)
++static int img_i2s_out_runtime_suspend(struct device *dev)
  {
  	struct img_i2s_out *i2s = dev_get_drvdata(dev);
  
--	if (!i2s->force_clk_active)
--		clk_disable_unprepare(i2s->clk_ref);
-+	clk_disable_unprepare(i2s->clk_ref);
-+	clk_disable_unprepare(i2s->clk_sys);
- 
+@@ -75,7 +75,7 @@ static int img_i2s_out_suspend(struct device *dev)
  	return 0;
  }
-@@ -82,12 +82,17 @@ static int img_i2s_out_runtime_resume(struct device *dev)
+ 
+-static int img_i2s_out_resume(struct device *dev)
++static int img_i2s_out_runtime_resume(struct device *dev)
+ {
  	struct img_i2s_out *i2s = dev_get_drvdata(dev);
  	int ret;
+@@ -486,7 +486,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
  
--	if (!i2s->force_clk_active) {
--		ret = clk_prepare_enable(i2s->clk_ref);
--		if (ret) {
--			dev_err(dev, "clk_enable failed: %d\n", ret);
--			return ret;
--		}
-+	ret = clk_prepare_enable(i2s->clk_sys);
-+	if (ret) {
-+		dev_err(dev, "clk_enable failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(i2s->clk_ref);
-+	if (ret) {
-+		dev_err(dev, "clk_enable failed: %d\n", ret);
-+		clk_disable_unprepare(i2s->clk_sys);
-+		return ret;
- 	}
- 
- 	return 0;
-@@ -344,6 +349,7 @@ static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 
- 	chan_control_mask = IMG_I2S_OUT_CHAN_CTL_CLKT_MASK;
- 
-+	pm_runtime_get_sync(i2s->dev);
- 	img_i2s_out_disable(i2s);
- 
- 	reg = img_i2s_out_readl(i2s, IMG_I2S_OUT_CTL);
-@@ -363,6 +369,7 @@ static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		img_i2s_out_ch_enable(i2s, i);
- 
- 	img_i2s_out_enable(i2s);
-+	pm_runtime_put(i2s->dev);
- 
- 	i2s->force_clk_active = force_clk_active;
- 
-@@ -516,16 +523,20 @@ static int img_i2s_out_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2s->clk_ref);
- 	}
- 
--	ret = clk_prepare_enable(i2s->clk_sys);
--	if (ret)
--		return ret;
--
- 	i2s->suspend_ch_ctl = devm_kzalloc(dev,
- 		sizeof(*i2s->suspend_ch_ctl) * i2s->max_i2s_chan, GFP_KERNEL);
--	if (!i2s->suspend_ch_ctl) {
--		ret = -ENOMEM;
--		goto err_clk_disable;
-+	if (!i2s->suspend_ch_ctl)
-+		return -ENOMEM;
-+
-+	pm_runtime_enable(&pdev->dev);
-+	if (!pm_runtime_enabled(&pdev->dev)) {
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = img_i2s_out_resume(&pdev->dev);
 +		ret = img_i2s_out_runtime_resume(&pdev->dev);
-+		if (ret)
-+			goto err_pm_disable;
+ 		if (ret)
+ 			goto err_pm_disable;
  	}
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0)
-+		goto err_suspend;
+@@ -517,7 +517,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
  
- 	reg = IMG_I2S_OUT_CTL_FRM_SIZE_MASK;
- 	img_i2s_out_writel(i2s, reg, IMG_I2S_OUT_CTL);
-@@ -539,13 +550,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
- 		img_i2s_out_ch_writel(i2s, i, reg, IMG_I2S_OUT_CH_CTL);
- 
- 	img_i2s_out_reset(i2s);
--
--	pm_runtime_enable(&pdev->dev);
--	if (!pm_runtime_enabled(&pdev->dev)) {
--		ret = img_i2s_out_runtime_resume(&pdev->dev);
--		if (ret)
--			goto err_pm_disable;
--	}
-+	pm_runtime_put(&pdev->dev);
- 
- 	i2s->active_channels = 1;
- 	i2s->dma_data.addr = res->start + IMG_I2S_OUT_TX_FIFO;
-@@ -578,22 +583,16 @@ static int img_i2s_out_probe(struct platform_device *pdev)
- 		img_i2s_out_runtime_suspend(&pdev->dev);
+ err_suspend:
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+-		img_i2s_out_suspend(&pdev->dev);
++		img_i2s_out_runtime_suspend(&pdev->dev);
  err_pm_disable:
  	pm_runtime_disable(&pdev->dev);
--err_clk_disable:
--	clk_disable_unprepare(i2s->clk_sys);
+ 	clk_disable_unprepare(i2s->clk_sys);
+@@ -531,7 +531,7 @@ static int img_i2s_out_dev_remove(struct platform_device *pdev)
  
- 	return ret;
- }
- 
- static int img_i2s_out_dev_remove(struct platform_device *pdev)
- {
--	struct img_i2s_out *i2s = platform_get_drvdata(pdev);
--
  	pm_runtime_disable(&pdev->dev);
  	if (!pm_runtime_status_suspended(&pdev->dev))
- 		img_i2s_out_runtime_suspend(&pdev->dev);
+-		img_i2s_out_suspend(&pdev->dev);
++		img_i2s_out_runtime_suspend(&pdev->dev);
  
--	clk_disable_unprepare(i2s->clk_sys);
--
- 	return 0;
- }
+ 	clk_disable_unprepare(i2s->clk_sys);
  
+@@ -545,8 +545,8 @@ static int img_i2s_out_dev_remove(struct platform_device *pdev)
+ MODULE_DEVICE_TABLE(of, img_i2s_out_of_match);
+ 
+ static const struct dev_pm_ops img_i2s_out_pm_ops = {
+-	SET_RUNTIME_PM_OPS(img_i2s_out_suspend,
+-			   img_i2s_out_resume, NULL)
++	SET_RUNTIME_PM_OPS(img_i2s_out_runtime_suspend,
++			   img_i2s_out_runtime_resume, NULL)
+ };
+ 
+ static struct platform_driver img_i2s_out_driver = {
 -- 
 1.9.1
