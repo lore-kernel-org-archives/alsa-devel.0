@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 23/39] axfer: add support of waiter for
-	poll(2)
-Date: Mon,  2 Oct 2017 09:19:24 +0900
-Message-ID: <20171002001940.17218-24-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 29/39] axfer: add options for plugins in
+	alsa-lib
+Date: Mon,  2 Oct 2017 09:19:30 +0900
+Message-ID: <20171002001940.17218-30-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 7AF6A266FEC
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 1FAFE266FD0
  for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:54 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,133 +25,101 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support of waiter for poll(2) system call.
+As of 2017, two userspace library implementations are known; alsa-lib and
+tinyalsa. The latter is simple I/O library to use ALSA PCM interface. On
+the other hand, alsa-lib is more complicated than it. This is because it's
+designed to add features to transmission of data frames; e.g. sample
+resampling. To achieve this, alsa-lib has its configuration space and
+plugin system.
+
+In aplay, some options are implemented as a flag for the plugins in
+alsa-lib. The flag is given to snd_pcm_open(). This commit adds support
+for the flags.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am   |  3 ++-
- axfer/waiter-poll.c | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/waiter.c      |  2 +-
- axfer/waiter.h      |  3 +++
- 4 files changed, 74 insertions(+), 2 deletions(-)
- create mode 100644 axfer/waiter-poll.c
+ axfer/options.c        | 17 +++++++++++++++++
+ axfer/options.h        |  6 ++++++
+ axfer/xfer-libasound.c |  8 ++++++++
+ 3 files changed, 31 insertions(+)
 
-diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index f290cca8..a4e9f1bc 100644
---- a/axfer/Makefile.am
-+++ b/axfer/Makefile.am
-@@ -48,4 +48,5 @@ axfer_SOURCES = \
- 	xfer-libasound-irq-rw.c \
- 	subcmd-transfer.c \
- 	waiter.h \
--	waiter.c
-+	waiter.c \
-+	waiter-poll.c
-diff --git a/axfer/waiter-poll.c b/axfer/waiter-poll.c
-new file mode 100644
-index 00000000..70813ee0
---- /dev/null
-+++ b/axfer/waiter-poll.c
-@@ -0,0 +1,68 @@
-+/*
-+ * waiter-waiter-poll.c - Waiter for event notification by poll(2).
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "waiter.h"
-+#include "misc.h"
-+
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <poll.h>
-+
-+struct poll_state {
-+	struct pollfd *pfds;
-+	unsigned int count;
-+};
-+
-+static int poll_prepare(struct waiter_context *waiter, int *fds,
-+			unsigned int fd_count)
-+{
-+	struct poll_state *state = waiter->private_data;
-+	int i;
-+
-+	state->pfds = calloc(fd_count, sizeof(struct pollfd));
-+	if (state->pfds == NULL)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < fd_count; ++i) {
-+		state->pfds[i].fd = fds[i];
-+		state->pfds[i].events = POLLIN | POLLOUT;
-+	}
-+
-+	state->count = fd_count;
-+
-+	return 0;
-+}
-+
-+static int poll_wait_event(struct waiter_context *waiter, int timeout_msec)
-+{
-+	struct poll_state *state = waiter->private_data;
-+	int err;
-+
-+	err = poll(state->pfds, state->count, timeout_msec);
-+	if (err < 0)
-+		return -errno;
-+
-+	return 0;
-+}
-+
-+static void poll_release(struct waiter_context *waiter)
-+{
-+	struct poll_state *state = waiter->private_data;
-+
-+	free(state->pfds);
-+	state->pfds = 0;
-+}
-+
-+const struct waiter_data waiter_poll = {
-+	.ops = {
-+		.prepare	= poll_prepare,
-+		.wait_event	= poll_wait_event,
-+		.release	= poll_release,
-+	},
-+	.private_size = sizeof(struct poll_state),
-+};
-diff --git a/axfer/waiter.c b/axfer/waiter.c
-index dfe42f84..045b7f31 100644
---- a/axfer/waiter.c
-+++ b/axfer/waiter.c
-@@ -20,7 +20,7 @@ int waiter_context_init(struct waiter_context *waiter, enum waiter_type type)
- 		enum waiter_type type;
- 		const struct waiter_data *waiter;
- 	} entries[] = {
--		{WAITER_TYPE_COUNT,	NULL},
-+		{WAITER_TYPE_POLL, &waiter_poll},
- 	};
- 	int i;
- 
-diff --git a/axfer/waiter.h b/axfer/waiter.h
-index dbd7ca70..00147f45 100644
---- a/axfer/waiter.h
-+++ b/axfer/waiter.h
-@@ -10,6 +10,7 @@
- #define __ALSA_UTILS_AXFER_WAITER__H_
- 
- enum waiter_type {
-+	WAITER_TYPE_POLL = 0,
- 	WAITER_TYPE_COUNT,
+diff --git a/axfer/options.c b/axfer/options.c
+index a22223a0..bca87d14 100644
+--- a/axfer/options.c
++++ b/axfer/options.c
+@@ -19,6 +19,10 @@ enum no_short_opts {
+ 	OPT_TEST_NOWAIT,
+ 	OPT_PERIOD_SIZE,
+ 	OPT_BUFFER_SIZE,
++	OPT_DISABLE_RESAMPLE,
++	OPT_DISABLE_CHANNELS,
++	OPT_DISABLE_FORMAT,
++	OPT_DISABLE_SOFTVOL,
+ 	/* Obsoleted. */
+ 	OPT_MAX_FILE_TIME,
  };
+@@ -348,6 +352,11 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"avail-min",		1, 0, 'A'},
+ 		{"start-delay",		1, 0, 'R'},
+ 		{"stop-delay",		1, 0, 'T'},
++		/* For plugins in alsa-lib. */
++		{"disable-resample",	0, 0, OPT_DISABLE_RESAMPLE},
++		{"disable-channels",	0, 0, OPT_DISABLE_CHANNELS},
++		{"disable-format",	0, 0, OPT_DISABLE_FORMAT},
++		{"disable-softvol",	0, 0, OPT_DISABLE_SOFTVOL},
+ 		/* For debugging. */
+ 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
+ 		{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
+@@ -409,6 +418,14 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->msec_for_start_threshold = parse_l(optarg, &err);
+ 		else if (c == 'T')
+ 			opts->msec_for_stop_threshold = parse_l(optarg, &err);
++		else if (c == OPT_DISABLE_RESAMPLE)
++			opts->no_auto_resample = true;
++		else if (c == OPT_DISABLE_CHANNELS)
++			opts->no_auto_channels = true;
++		else if (c == OPT_DISABLE_FORMAT)
++			opts->no_auto_format = true;
++		else if (c == OPT_DISABLE_SOFTVOL)
++			opts->no_softvol = true;
+ 		else if (c == OPT_DUMP_HW_PARAMS)
+ 			opts->dump_hw_params = true;
+ 		else if (c == OPT_FATAL_ERRORS)
+diff --git a/axfer/options.h b/axfer/options.h
+index 63b36364..95012ad3 100644
+--- a/axfer/options.h
++++ b/axfer/options.h
+@@ -45,6 +45,12 @@ struct context_options {
+ 	unsigned int msec_for_start_threshold;
+ 	unsigned int msec_for_stop_threshold;
  
-@@ -42,4 +43,6 @@ struct waiter_data {
- 	unsigned int private_size;
- };
- 
-+extern const struct waiter_data waiter_poll;
++	/* For plugins in alsa-lib. */
++	bool no_auto_resample;
++	bool no_auto_channels;
++	bool no_auto_format;
++	bool no_softvol;
 +
- #endif
+ 	/* For debugging. */
+ 	bool dump_hw_params;
+ 	bool finish_at_xrun;
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index 533c9492..e01327e2 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -15,6 +15,14 @@ static int get_mode(struct context_options *options)
+ 
+ 	if (options->nonblock)
+ 		mode |= SND_PCM_NONBLOCK;
++	if (options->no_auto_resample)
++		mode |= SND_PCM_NO_AUTO_RESAMPLE;
++	if (options->no_auto_channels)
++		mode |= SND_PCM_NO_AUTO_CHANNELS;
++	if (options->no_auto_format)
++		mode |= SND_PCM_NO_AUTO_FORMAT;
++	if (options->no_softvol)
++		mode |= SND_PCM_NO_SOFTVOL;
+ 
+ 	return mode;
+ }
 -- 
 2.11.0
