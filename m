@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 14/39] axfer: add a common interface to
-	transfer data frames
-Date: Mon,  2 Oct 2017 09:19:15 +0900
-Message-ID: <20171002001940.17218-15-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 09/39] axfer: add a common interface to
+	align data frames on different layout
+Date: Mon,  2 Oct 2017 09:19:10 +0900
+Message-ID: <20171002001940.17218-10-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C77A2266FA0
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9CA8F266EFA
  for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,283 +25,272 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-ALSA has PCM interface to transfer data frames. In userspace, there're
-some implementation to utilize this interface to produce application
-programming interface; alsa-lib (libasound) and tinyalsa. However, it's
-possible to use the interface with raw I/O operations.
+In current aplay, several files can be handled as source of data frames for
+playback, or destination of captured data frames by an option
+'--separate-channels' (-I).
 
-This commit adds an common interface to transfer data frames for this
-program, named as 'xfer'. This internal interface is designed for users
-to select several backend for data transmission. This includes some
-functions expected to be called by main program just for data
-transmission. In an aspect to maintain PCM substream, suspend feature is
-required to handle a pair of SIGTSTP/SIGCONT UNIX signals.
+On the other hand, in ALSA PCM kernel/user interface, several types of
+buffer are used to communicate between application/hardware;
+ - mapped page frame for data frames with interleaved alignment
+ - mapped page frame for data frames with non-interleaved alignment
+ - buffer in user space for data frames with interleaved alignment
+ - a list of buffer in user space for data frames with non-interleaved
+   alignment
+
+This commit adds a common interface, named as 'mapper' to convert frame
+alignment between these two sides. This interface includes two types;
+'muxer' and 'demuxer'. The 'muxer' is for playback direction, to
+construct playback buffer with PCM frames from several files. The 'demuxer'
+is for capture direction, to split PCM frames from capture buffer to
+each of file. Unlike multimedia containers such as MPEG 2/4 Systems,
+the 'muxer' and 'demuxer' are for playback/capture buffer, not for file
+contents.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
  axfer/Makefile.am |   7 ++-
- axfer/xfer.c      | 153 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/xfer.h      |  71 +++++++++++++++++++++++++
- 3 files changed, 229 insertions(+), 2 deletions(-)
- create mode 100644 axfer/xfer.c
- create mode 100644 axfer/xfer.h
+ axfer/mapper.c    | 125 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/mapper.h    |  79 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 209 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/mapper.c
+ create mode 100644 axfer/mapper.h
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 3b1a87c8..c1534411 100644
+index 55fcf716..cb4b188d 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -19,7 +19,8 @@ noinst_HEADERS = \
+@@ -17,7 +17,8 @@ LDADD = \
+ noinst_HEADERS = \
+ 	misc.h \
  	subcmd.h \
- 	container.h \
- 	mapper.h
--	options.h
-+	options.h \
-+	xfer.h
+-	container.h
++	container.h \
++	mapper.h
  
  axfer_SOURCES = \
  	misc.h \
-@@ -37,4 +38,6 @@ axfer_SOURCES = \
- 	mapper-single.c \
- 	mapper-multiple.c \
- 	options.h \
--	options.c
-+	options.c \
-+	xfer.h \
-+	xfer.c
-diff --git a/axfer/xfer.c b/axfer/xfer.c
+@@ -29,4 +30,6 @@ axfer_SOURCES = \
+ 	container-riff-wave.c \
+ 	container-au.c \
+ 	container-voc.c \
+-	container-raw.c
++	container-raw.c \
++	mapper.h \
++	mapper.c
+diff --git a/axfer/mapper.c b/axfer/mapper.c
 new file mode 100644
-index 00000000..46b36d42
+index 00000000..3073c713
 --- /dev/null
-+++ b/axfer/xfer.c
-@@ -0,0 +1,153 @@
++++ b/axfer/mapper.c
+@@ -0,0 +1,125 @@
 +/*
-+ * xfer.c - receiver/transmiter of data frames.
++ * mapper.c - an interface of muxer/demuxer between buffer with data frames and
++ * 	      formatted files.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "xfer.h"
++#include "mapper.h"
 +#include "misc.h"
 +
 +#include <stdio.h>
 +
-+static const char *const xfer_type_labels[] = {
-+	[XFER_TYPE_COUNT] = "",
++static const char *const mapper_type_labels[] = {
++	[MAPPER_TYPE_MUXER] = "muxer",
++	[MAPPER_TYPE_DEMUXER] = "demuxer",
 +};
 +
-+int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
-+		      snd_pcm_stream_t direction, struct context_options *opts)
++static const char *const mapper_target_labels[] = {
++	[MAPPER_TARGET_COUNT] = "",
++};
++
++int mapper_context_init(struct mapper_context *mapper,
++			enum mapper_type type, unsigned int cntr_count,
++			unsigned int verbose)
 +{
-+	struct {
-+		enum xfer_type type;
-+		const struct xfer_data *data;
-+	} entries[] = {
-+		{XFER_TYPE_COUNT, NULL},
-+	};
-+	int i;
++	const struct mapper_data *data = NULL;
 +
-+	assert(xfer);
-+	assert(direction >= SND_PCM_STREAM_PLAYBACK);
-+	assert(direction <= SND_PCM_STREAM_CAPTURE);
-+	assert(opts);
++	assert(mapper);
++	assert(cntr_count > 0);
 +
-+	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
-+		if (entries[i].type == type)
-+			break;
-+	}
-+	if (i == ARRAY_SIZE(entries))
-+		return -EINVAL;
++	/* Detect forgotten to destruct. */
++	assert(mapper->private_data == NULL);
 +
-+	xfer->type = type;
-+	xfer->ops = &entries[i].data->ops;
-+	xfer->verbose = opts->verbose;
++	memset(mapper, 0, sizeof(*mapper));
 +
-+	xfer->private_data = malloc(entries[i].data->private_size);
-+	if (xfer->private_data == NULL)
++	mapper->ops = &data->ops;
++	mapper->type = type;
++
++	mapper->private_data = malloc(data->private_size);
++	if (mapper->private_data == NULL)
 +		return -ENOMEM;
-+	memset(xfer->private_data, 0, entries[i].data->private_size);
++	memset(mapper->private_data, 0, data->private_size);
 +
-+	return xfer->ops->init(xfer, direction, opts);
++	mapper->cntr_count = cntr_count;
++	mapper->verbose = verbose;
++
++	return 0;
 +}
 +
-+void xfer_context_destroy(struct xfer_context *xfer)
-+{
-+	assert(xfer);
-+
-+	if (!xfer->ops)
-+		return;
-+
-+	if (xfer->ops->destroy)
-+		xfer->ops->destroy(xfer);
-+	if (xfer->private_data)
-+		free(xfer->private_data);
-+}
-+
-+int xfer_context_pre_process(struct xfer_context *xfer,
-+			     snd_pcm_format_t *format,
-+			     unsigned int *samples_per_frame,
-+			     unsigned int *frames_per_second,
-+			     snd_pcm_access_t *access,
-+			     snd_pcm_uframes_t *frames_per_buffer)
++int mapper_context_pre_process(struct mapper_context *mapper,
++			       snd_pcm_access_t access,
++			       unsigned int bytes_per_sample,
++			       unsigned int samples_per_frame,
++			       unsigned int frames_per_buffer,
++			       struct container_context *cntrs)
 +{
 +	int err;
 +
-+	assert(xfer);
-+	assert(format);
-+	assert(samples_per_frame);
-+	assert(frames_per_second);
-+	assert(access);
-+	assert(frames_per_buffer);
++	assert(mapper);
++	assert(access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
++	assert(access <= SND_PCM_ACCESS_RW_NONINTERLEAVED);
++	assert(bytes_per_sample > 0);
++	assert(samples_per_frame > 0);
++	assert(cntrs);
 +
-+	if (!xfer->ops)
-+		return -ENXIO;
++	mapper->access = access;
++	mapper->bytes_per_sample = bytes_per_sample;
++	mapper->samples_per_frame = samples_per_frame;
++	mapper->frames_per_buffer = frames_per_buffer;
 +
-+	err = xfer->ops->pre_process(xfer, format, samples_per_frame,
-+				     frames_per_second, access,
-+				     frames_per_buffer);
++	err = mapper->ops->pre_process(mapper, cntrs, mapper->cntr_count);
 +	if (err < 0)
 +		return err;
 +
-+	assert(*format >= SND_PCM_FORMAT_S8);
-+	assert(*format <= SND_PCM_FORMAT_LAST);
-+	assert(*samples_per_frame > 0);
-+	assert(*frames_per_second > 0);
-+	assert(*access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
-+	assert(*access <= SND_PCM_ACCESS_LAST);
-+	assert(*frames_per_buffer > 0);
-+
-+	if (xfer->verbose > 1) {
-+		fprintf(stderr, "Transfer: %s\n",
-+			xfer_type_labels[xfer->type]);
++	if (mapper->verbose > 0) {
++		fprintf(stderr, "Mapper: %s\n",
++		       mapper_type_labels[mapper->type]);
++		fprintf(stderr, "  target: %s\n",
++		       mapper_target_labels[mapper->target]);
 +		fprintf(stderr, "  access: %s\n",
-+			snd_pcm_access_name(*access));
-+		fprintf(stderr, "  sample format: %s\n",
-+			snd_pcm_format_name(*format));
++		       snd_pcm_access_name(mapper->access));
 +		fprintf(stderr, "  bytes/sample: %u\n",
-+		       snd_pcm_format_physical_width(*format) / 8);
++			mapper->bytes_per_sample);
 +		fprintf(stderr, "  samples/frame: %u\n",
-+			*samples_per_frame);
-+		fprintf(stderr, "  frames/second: %u\n",
-+			*frames_per_second);
++			mapper->samples_per_frame);
 +		fprintf(stderr, "  frames/buffer: %lu\n",
-+			*frames_per_buffer);
++			mapper->frames_per_buffer);
 +	}
 +
 +	return 0;
 +}
 +
-+int xfer_context_process_frames(struct xfer_context *xfer,
-+				struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int *frame_count)
++int mapper_context_process_frames(struct mapper_context *mapper,
++				  void *frame_buffer,
++				  unsigned int *frame_count,
++				  struct container_context *cntrs)
 +{
-+	assert(xfer);
 +	assert(mapper);
-+	assert(cntrs);
++	assert(frame_buffer);
 +	assert(frame_count);
++	assert(*frame_count <= mapper->frames_per_buffer);
++	assert(cntrs);
 +
-+	if (!xfer->ops)
-+		return -ENXIO;
-+
-+	return xfer->ops->process_frames(xfer, frame_count, mapper, cntrs);
++	return mapper->ops->process_frames(mapper, frame_buffer, frame_count,
++					    cntrs, mapper->cntr_count);
 +}
 +
-+void xfer_context_pause(struct xfer_context *xfer, bool enable)
++void mapper_context_post_process(struct mapper_context *mapper)
 +{
-+	assert(xfer);
++	assert(mapper);
 +
-+	if (!xfer->ops)
-+		return;
-+
-+	xfer->ops->pause(xfer, enable);
++	if (mapper->ops && mapper->ops->post_process)
++		mapper->ops->post_process(mapper);
 +}
 +
-+void xfer_context_post_process(struct xfer_context *xfer)
++void mapper_context_destroy(struct mapper_context *mapper)
 +{
-+	assert(xfer);
++	assert(mapper);
 +
-+	if (!xfer->ops)
-+		return;
-+
-+	xfer->ops->post_process(xfer);
++	if (mapper->private_data)
++		free(mapper->private_data);
++	mapper->private_data = NULL;
 +}
-diff --git a/axfer/xfer.h b/axfer/xfer.h
+diff --git a/axfer/mapper.h b/axfer/mapper.h
 new file mode 100644
-index 00000000..4e3f1f37
+index 00000000..0a6c7f1c
 --- /dev/null
-+++ b/axfer/xfer.h
-@@ -0,0 +1,71 @@
++++ b/axfer/mapper.h
+@@ -0,0 +1,79 @@
 +/*
-+ * xfer.h - a header for receiver/transmiter of data frames.
++ * mapper.h - an interface of muxer/demuxer between buffer with data frames and
++ *	      formatted files.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#ifndef __ALSA_UTILS_AXFER_XFER__H_
-+#define __ALSA_UTILS_AXFER_XFER__H_
++#ifndef __ALSA_UTILS_AXFER_MAPPER__H_
++#define __ALSA_UTILS_AXFER_MAPPER__H_
 +
-+#include "mapper.h"
-+#include "options.h"
++#include "container.h"
 +
-+enum xfer_type {
-+	XFER_TYPE_COUNT,
++enum mapper_type {
++	MAPPER_TYPE_MUXER = 0,
++	MAPPER_TYPE_DEMUXER,
++	MAPPER_TYPE_COUNT,
 +};
 +
-+struct xfer_ops;
++enum mapper_target {
++	MAPPER_TARGET_COUNT,
++};
 +
-+struct xfer_context  {
-+	enum xfer_type type;
-+	const struct xfer_ops *ops;
++struct mapper_ops;
++
++struct mapper_context {
++	enum mapper_type type;
++	enum mapper_target target;
++	const struct mapper_ops *ops;
++	unsigned int private_size;
++
 +	void *private_data;
++	unsigned int cntr_count;
++
++	/* A part of parameters of PCM substream. */
++	snd_pcm_access_t access;
++	unsigned int bytes_per_sample;
++	unsigned int samples_per_frame;
++	snd_pcm_uframes_t frames_per_buffer;
 +
 +	unsigned int verbose;
 +};
 +
-+int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
-+		      snd_pcm_stream_t direction, struct context_options *opts);
-+void xfer_context_destroy(struct xfer_context *xfer);
-+int xfer_context_pre_process(struct xfer_context *xfer,
-+			     snd_pcm_format_t *format,
-+			     unsigned int *samples_per_frame,
-+			     unsigned int *frames_per_second,
-+			     snd_pcm_access_t *access,
-+			     snd_pcm_uframes_t *frames_per_buffer);
-+int xfer_context_process_frames(struct xfer_context *xfer,
-+				struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int *frame_count);
-+void xfer_context_pause(struct xfer_context *xfer, bool enable);
-+void xfer_context_post_process(struct xfer_context *xfer);
++int mapper_context_init(struct mapper_context *mapper,
++			enum mapper_type type, unsigned int cntr_count,
++			unsigned int verbose);
++int mapper_context_pre_process(struct mapper_context *mapper,
++			       snd_pcm_access_t access,
++			       unsigned int bytes_per_sample,
++			       unsigned int samples_per_frame,
++			       unsigned int frames_per_buffer,
++			       struct container_context *cntrs);
++int mapper_context_process_frames(struct mapper_context *mapper,
++				  void *frame_buffer,
++				  unsigned int *frame_count,
++				  struct container_context *cntrs);
++void mapper_context_post_process(struct mapper_context *mapper);
++void mapper_context_destroy(struct mapper_context *mapper);
 +
-+/* For internal use in 'xfer' module. */
++/* For internal use in 'mapper' module. */
 +
-+struct xfer_ops {
-+	int (*init)(struct xfer_context *xfer, snd_pcm_stream_t direction,
-+		    struct context_options *opts);
-+	int (*pre_process)(struct xfer_context *xfer, snd_pcm_format_t *format,
-+			   unsigned int *samples_per_frame,
-+			   unsigned int *frames_per_second,
-+			   snd_pcm_access_t *access,
-+			   snd_pcm_uframes_t *frames_per_buffer);
-+	int (*process_frames)(struct xfer_context *xfer,
-+			      unsigned int *frame_count,
-+			      struct mapper_context *mapper,
-+			      struct container_context *cntrs);
-+	void (*post_process)(struct xfer_context *xfer);
-+	void (*destroy)(struct xfer_context *xfer);
-+	void (*pause)(struct xfer_context *xfer, bool enable);
++struct mapper_ops {
++	int (*pre_process)(struct mapper_context *mapper,
++			   struct container_context *cntrs,
++			   unsigned int cntr_count);
++	int (*process_frames)(struct mapper_context *mapper,
++			      void *frame_buffer, unsigned int *frame_count,
++			      struct container_context *cntrs,
++			      unsigned int cntr_count);
++	void (*post_process)(struct mapper_context *mapper);
 +};
 +
-+struct xfer_data {
-+	struct xfer_ops ops;
++struct mapper_data {
++	struct mapper_ops ops;
 +	unsigned int private_size;
 +};
-+
-+extern const struct xfer_data xfer_alsa;
 +
 +#endif
 -- 
