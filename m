@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 12/39] axfer: add a unit test for mapper
-	interface
-Date: Mon,  2 Oct 2017 09:19:13 +0900
-Message-ID: <20171002001940.17218-13-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 21/39] axfer: add an option to finish
+	transmission at XRUN
+Date: Mon,  2 Oct 2017 09:19:22 +0900
+Message-ID: <20171002001940.17218-22-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D1F16266FA2
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D2351266FBF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:53 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,550 +25,102 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, mapper module gets supports of muxer/demuxer for
-single/multiple targets for playback source or capture destination. This
-commit adds a unit test for them. This includes positive test cases only.
-The test cases actually generate I/O to file systems for many test cases.
-It takes a bit long time to finish.
+In aplay, '--fatal-errors' option has an effect to give up recovery of PCM
+substream from XRUN state. This commit adds support for this option.
+
+In original implementation, this option brings program abort. This seems
+to generate core dump of process VMA. However, typically, XRUN comes from
+timing mismatch between hardware and application, therefore core dump has
+less helpful. This commit finishes this program in usual way with this
+option at XRUN.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/test/Makefile.am   |  20 +-
- axfer/test/mapper-test.c | 491 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 509 insertions(+), 2 deletions(-)
- create mode 100644 axfer/test/mapper-test.c
+ axfer/options.c        | 4 ++++
+ axfer/options.h        | 1 +
+ axfer/xfer-libasound.c | 4 ++--
+ axfer/xfer-libasound.h | 1 +
+ 4 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/axfer/test/Makefile.am b/axfer/test/Makefile.am
-index 66b30ef8..76a93bfc 100644
---- a/axfer/test/Makefile.am
-+++ b/axfer/test/Makefile.am
-@@ -1,8 +1,10 @@
- TESTS = \
--	container-test
-+	container-test  \
-+	mapper-test
+diff --git a/axfer/options.c b/axfer/options.c
+index f3d2dfcf..91708bb4 100644
+--- a/axfer/options.c
++++ b/axfer/options.c
+@@ -15,6 +15,7 @@
+ enum no_short_opts {
+ 	/* 128 belongs to non us-ascii character set. */
+ 	OPT_DUMP_HW_PARAMS = 128,
++	OPT_FATAL_ERRORS,
+ 	/* Obsoleted. */
+ 	OPT_MAX_FILE_TIME,
+ };
+@@ -307,6 +308,7 @@ int context_options_init(struct context_options *opts, int argc,
+ 		{"rate",		1, 0, 'r'},
+ 		/* For debugging. */
+ 		{"dump-hw-params",	0, 0, OPT_DUMP_HW_PARAMS},
++		{"fatal-errors",	0, 0, OPT_FATAL_ERRORS},
+ 		/* Obsoleted. */
+ 		{"max-file-time",       1, 0, OPT_MAX_FILE_TIME},
+ 		{NULL,			0, 0, 0},
+@@ -348,6 +350,8 @@ int context_options_init(struct context_options *opts, int argc,
+ 			opts->frames_per_second = parse_l(optarg, &err);
+ 		else if (c == OPT_DUMP_HW_PARAMS)
+ 			opts->dump_hw_params = true;
++		else if (c == OPT_FATAL_ERRORS)
++			opts->finish_at_xrun = true;
+ 		else if (c == OPT_MAX_FILE_TIME) {
+ 			fprintf(stderr,
+ 				"An option '--%s' is obsoleted and has no "
+diff --git a/axfer/options.h b/axfer/options.h
+index ddbdbfa9..de9ac998 100644
+--- a/axfer/options.h
++++ b/axfer/options.h
+@@ -36,6 +36,7 @@ struct context_options {
  
- check_PROGRAMS = \
--	container-test
-+	container-test \
-+	mapper-test
+ 	/* For debugging. */
+ 	bool dump_hw_params;
++	bool finish_at_xrun;
+ };
  
- container_test_SOURCES = \
- 	../container.h \
-@@ -13,3 +15,17 @@ container_test_SOURCES = \
- 	../container-raw.c \
- 	generator.c \
- 	container-test.c
-+
-+mapper_test_SOURCES = \
-+	../container.h \
-+	../container.c \
-+	../container-riff-wave.c \
-+	../container-au.c \
-+	../container-voc.c \
-+	../container-raw.c \
-+	../mapper.h \
-+	../mapper.c \
-+	../mapper-single.c \
-+	../mapper-multiple.c \
-+	generator.c \
-+	mapper-test.c
-diff --git a/axfer/test/mapper-test.c b/axfer/test/mapper-test.c
-new file mode 100644
-index 00000000..554e638e
---- /dev/null
-+++ b/axfer/test/mapper-test.c
-@@ -0,0 +1,491 @@
-+/*
-+ * mapper-io.c - a unit test for muxer/demuxer for PCM frames on buffer.
-+ *
-+ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "../mapper.h"
-+#include "../misc.h"
-+
-+#include "generator.h"
-+
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdbool.h>
-+
-+#include <assert.h>
-+
-+struct mapper_trial {
-+	enum container_format cntr_format;
-+	struct container_context *cntrs;
-+
-+	char **paths;
-+
-+	struct mapper_context mapper;
-+	bool verbose;
-+};
-+
-+static void test_demuxer(struct mapper_context *mapper, snd_pcm_access_t access,
-+			 unsigned int bytes_per_sample,
-+			 unsigned int samples_per_frame,
-+			 unsigned int frames_per_buffer,
-+			 void *frame_buffer, unsigned int frame_count,
-+			 struct container_context *cntrs,
-+			 unsigned int cntr_count, bool verbose)
-+{
-+	unsigned int total_frame_count;
-+	int err;
-+
-+	err = mapper_context_init(mapper, MAPPER_TYPE_DEMUXER, cntr_count,
-+				  verbose);
-+	assert(err == 0);
-+
-+	err = mapper_context_pre_process(mapper, access, bytes_per_sample,
-+					 samples_per_frame, frames_per_buffer,
-+					 cntrs);
-+	assert(err == 0);
-+
-+	total_frame_count = frame_count;
-+	err = mapper_context_process_frames(mapper, frame_buffer,
-+					    &total_frame_count, cntrs);
-+	assert(err == 0);
-+	assert(total_frame_count == frame_count);
-+
-+	mapper_context_post_process(mapper);
-+	mapper_context_destroy(mapper);
-+}
-+
-+static int test_demux(struct mapper_trial *trial, snd_pcm_access_t access,
-+		      snd_pcm_format_t sample_format,
-+		      unsigned int samples_per_frame,
-+		      unsigned int frames_per_second,
-+		      unsigned int frames_per_buffer,
-+		      void *frame_buffer, unsigned int frame_count,
-+		      unsigned int cntr_count)
-+{
-+	struct container_context *cntrs = trial->cntrs;
-+	char **paths = trial->paths;
-+	enum container_format cntr_format = trial->cntr_format;
-+	unsigned int bytes_per_sample;
-+	uint64_t total_frame_count;
-+	int i;
-+	int err;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		snd_pcm_format_t format;
-+		unsigned int channels;
-+		unsigned int rate;
-+
-+		err = container_builder_init(cntrs + i, paths[i], cntr_format,
-+					     0);
-+		if (err < 0)
-+			goto end;
-+
-+		format = sample_format;
-+		rate = frames_per_second;
-+		total_frame_count = frame_count;
-+		if (cntr_count > 1)
-+			channels = 1;
-+		else
-+			channels = samples_per_frame;
-+		err = container_context_pre_process(cntrs + i, &format,
-+						    &channels, &rate,
-+						    &total_frame_count);
-+		if (err < 0)
-+			goto end;
-+		assert(format == sample_format);
-+		assert(rate == frames_per_second);
-+		assert(total_frame_count >= 0);
-+		if (cntr_count > 1)
-+			assert(channels == 1);
-+		else
-+			assert(channels == samples_per_frame);
-+	}
-+
-+	bytes_per_sample = snd_pcm_format_physical_width(sample_format) / 8;
-+	test_demuxer(&trial->mapper, access, bytes_per_sample,
-+		     samples_per_frame, frames_per_buffer, frame_buffer,
-+		     frame_count, cntrs, cntr_count, trial->verbose);
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		container_context_post_process(cntrs + i, &total_frame_count);
-+		assert(total_frame_count == frame_count);
-+	}
-+end:
-+	for (i = 0; i < cntr_count; ++i)
-+		container_context_destroy(cntrs + i);
-+
-+	return err;
-+}
-+
-+static void test_muxer(struct mapper_context *mapper, snd_pcm_access_t access,
-+		       unsigned int bytes_per_sample,
-+		       unsigned int samples_per_frame,
-+		       unsigned int frames_per_buffer,
-+		       void *frame_buffer, unsigned int frame_count,
-+		       struct container_context *cntrs,
-+		       unsigned int cntr_count, bool verbose)
-+{
-+	unsigned int total_frame_count;
-+	int err;
-+
-+	err = mapper_context_init(mapper, MAPPER_TYPE_MUXER, cntr_count,
-+				  verbose);
-+	assert(err == 0);
-+
-+	err = mapper_context_pre_process(mapper, access, bytes_per_sample,
-+					 samples_per_frame, frames_per_buffer,
-+					 cntrs);
-+	assert(err == 0);
-+
-+	total_frame_count = frame_count;
-+	err = mapper_context_process_frames(mapper, frame_buffer,
-+					    &total_frame_count, cntrs);
-+	assert(err == 0);
-+	assert(total_frame_count == frame_count);
-+
-+	mapper_context_post_process(mapper);
-+	mapper_context_destroy(mapper);
-+}
-+
-+static int test_mux(struct mapper_trial *trial, snd_pcm_access_t access,
-+		    snd_pcm_format_t sample_format,
-+		    unsigned int samples_per_frame,
-+		    unsigned int frames_per_second,
-+		    unsigned int frames_per_buffer,
-+		    void *frame_buffer, unsigned int frame_count,
-+		    unsigned int cntr_count)
-+{
-+	struct container_context *cntrs = trial->cntrs;
-+	char **paths = trial->paths;
-+	unsigned int bytes_per_sample;
-+	uint64_t total_frame_count;
-+	int i;
-+	int err;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		snd_pcm_format_t format;
-+		unsigned int channels;
-+		unsigned int rate;
-+
-+		err = container_parser_init(cntrs + i, paths[i], 0);
-+		if (err < 0)
-+			goto end;
-+
-+		format = sample_format;
-+		rate = frames_per_second;
-+		if (cntr_count > 1)
-+			channels = 1;
-+		else
-+			channels = samples_per_frame;
-+		err = container_context_pre_process(cntrs + i, &format,
-+						    &channels, &rate,
-+						    &total_frame_count);
-+		if (err < 0)
-+			goto end;
-+
-+		assert(format == sample_format);
-+		assert(rate == frames_per_second);
-+		assert(total_frame_count == frame_count);
-+		if (cntr_count > 1)
-+			assert(channels == 1);
-+		else
-+			assert(channels == samples_per_frame);
-+	}
-+
-+	bytes_per_sample = snd_pcm_format_physical_width(sample_format) / 8;
-+	test_muxer(&trial->mapper, access, bytes_per_sample, samples_per_frame,
-+		   frames_per_buffer, frame_buffer, frame_count, cntrs,
-+		   cntr_count, trial->verbose);
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		container_context_post_process(cntrs + i, &total_frame_count);
-+		assert(total_frame_count == frame_count);
-+	}
-+end:
-+	for (i = 0; i < cntr_count; ++i)
-+		container_context_destroy(cntrs + i);
-+
-+	return err;
-+}
-+
-+static int test_mapper(struct mapper_trial *trial, snd_pcm_access_t access,
-+		    snd_pcm_format_t sample_format,
-+		    unsigned int samples_per_frame,
-+		    unsigned int frames_per_second, void *frame_buffer,
-+		    void *check_buffer, unsigned int frame_count,
-+		    unsigned int cntr_count)
-+{
-+	unsigned int frames_per_buffer;
-+	int i;
-+	int err;
-+
-+	/* Use a buffer aligned by typical size of page frame. */
-+	frames_per_buffer = ((frame_count + 4096) / 4096) * 4096;
-+
-+	err = test_demux(trial, access, sample_format, samples_per_frame,
-+			 frames_per_second, frames_per_buffer, frame_buffer,
-+			 frame_count, cntr_count);
-+	if (err < 0)
-+		goto end;
-+
-+	err = test_mux(trial, access, sample_format, samples_per_frame,
-+		       frames_per_second, frames_per_buffer, check_buffer,
-+		       frame_count, cntr_count);
-+end:
-+	for (i = 0; i < cntr_count; ++i)
-+		unlink(trial->paths[i]);
-+
-+	return err;
-+}
-+
-+static int test_i_buf(struct mapper_trial *trial, snd_pcm_access_t access,
-+		      snd_pcm_format_t sample_format,
-+		      unsigned int samples_per_frame,
-+		      unsigned int frames_per_second, void *frame_buffer,
-+		      unsigned int frame_count, unsigned int cntr_count)
-+{
-+	unsigned int size;
-+	char *buf;
-+	int err;
-+
-+	size = frame_count * samples_per_frame *
-+			snd_pcm_format_physical_width(sample_format) / 8;
-+	buf = malloc(size);
-+	if (buf == 0)
-+		return -ENOMEM;
-+	memset(buf, 0, size);
-+
-+	/* Test multiple target. */
-+	err = test_mapper(trial, access, sample_format, samples_per_frame,
-+			  frames_per_second, frame_buffer, buf,
-+			  frame_count, cntr_count);
-+	if (err < 0)
-+		goto end;
-+	err = memcmp(frame_buffer, buf, size);
-+	assert(err == 0);
-+
-+	/* Test single target. */
-+	err = test_mapper(trial, access, sample_format, samples_per_frame,
-+			  frames_per_second, frame_buffer, buf,
-+			  frame_count, 1);
-+	if (err < 0)
-+		goto end;
-+	err = memcmp(frame_buffer, buf, size);
-+	assert(err == 0);
-+end:
-+	free(buf);
-+
-+	return err;
-+}
-+
-+static int test_vector(struct mapper_trial *trial, snd_pcm_access_t access,
-+		       snd_pcm_format_t sample_format,
-+		       unsigned int samples_per_frame,
-+		       unsigned int frames_per_second, void *frame_buffer,
-+		       unsigned int frame_count, unsigned int cntr_count)
-+{
-+	unsigned int size;
-+	char **bufs;
-+	int i;
-+	int err;
-+
-+	bufs = calloc(cntr_count, sizeof(*bufs));
-+	if (bufs == NULL)
-+		return -ENOMEM;
-+
-+	size = frame_count * snd_pcm_format_physical_width(sample_format) / 8;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		bufs[i] = malloc(size);
-+		if (bufs[i] == NULL)
-+			goto end;
-+		memset(bufs[i], 0, size);
-+	}
-+
-+	/* Test multiple target. */
-+	err = test_mapper(trial, access, sample_format, samples_per_frame,
-+			  frames_per_second, frame_buffer, bufs,
-+			  frame_count, cntr_count);
-+	if (err < 0)
-+		goto end;
-+	for (i = 0; i < cntr_count; ++i) {
-+		char **target = frame_buffer;
-+		err = memcmp(target[i], bufs[i], size);
-+		assert(err == 0);
-+	}
-+
-+	/* Test single target. */
-+	err = test_mapper(trial, access, sample_format, samples_per_frame,
-+			  frames_per_second, frame_buffer, bufs,
-+			  frame_count, 1);
-+	if (err < 0)
-+		goto end;
-+	for (i = 0; i < cntr_count; ++i) {
-+		char **target = frame_buffer;
-+		err = memcmp(target[i], bufs[i], size);
-+		assert(err == 0);
-+	}
-+end:
-+	for (i = 0; i < cntr_count; ++i) {
-+		if (bufs[i])
-+			free(bufs[i]);
-+	}
-+	free(bufs);
-+
-+	return err;
-+}
-+
-+static int test_n_buf(struct mapper_trial *trial, snd_pcm_access_t access,
-+		      snd_pcm_format_t sample_format,
-+		      unsigned int samples_per_frame,
-+		      unsigned int frames_per_second, void *frame_buffer,
-+		      unsigned int frame_count, unsigned int cntr_count)
-+{
-+	char *test_buf = frame_buffer;
-+	unsigned int size;
-+	char **test_vec;
-+	int i;
-+	int err;
-+
-+	size = frame_count * snd_pcm_format_physical_width(sample_format) / 8;
-+
-+	test_vec = calloc(cntr_count * 2, sizeof(*test_vec));
-+	if (test_vec == NULL)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < cntr_count; ++i)
-+		test_vec[i] = test_buf + size * i;
-+
-+	err = test_vector(trial, access, sample_format, samples_per_frame,
-+			  frames_per_second, test_vec, frame_count, cntr_count);
-+	free(test_vec);
-+
-+	return err;
-+}
-+
-+static int callback(struct test_generator *gen, snd_pcm_access_t access,
-+		    snd_pcm_format_t sample_format,
-+		    unsigned int samples_per_frame, void *frame_buffer,
-+		    unsigned int frame_count)
-+{
-+
-+	int (*handler)(struct mapper_trial *trial, snd_pcm_access_t access,
-+		       snd_pcm_format_t sample_format,
-+		       unsigned int samples_per_frame,
-+		       unsigned int frames_per_second, void *frame_buffer,
-+		       unsigned int frame_count, unsigned int cntr_count);
-+	struct mapper_trial *trial = gen->private_data;
-+
-+	if (access == SND_PCM_ACCESS_RW_NONINTERLEAVED)
-+		handler = test_vector;
-+	else if (access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+		handler = test_n_buf;
-+	else
-+		handler = test_i_buf;
-+
-+	return handler(trial, access, sample_format, samples_per_frame, 48000,
-+		       frame_buffer, frame_count, samples_per_frame);
-+};
-+
-+int main(int argc, const char *argv[])
-+{
-+	/* Test 8/16/18/20/24/32/64 bytes per sample. */
-+	static const uint64_t sample_format_mask =
-+			(1ul << SND_PCM_FORMAT_U8) |
-+			(1ul << SND_PCM_FORMAT_S16_LE) |
-+			(1ul << SND_PCM_FORMAT_S18_3LE) |
-+			(1ul << SND_PCM_FORMAT_S20_3LE) |
-+			(1ul << SND_PCM_FORMAT_S24_LE) |
-+			(1ul << SND_PCM_FORMAT_S32_LE) |
-+			(1ul << SND_PCM_FORMAT_FLOAT64_LE);
-+	uint64_t access_mask;
-+	struct test_generator gen = {0};
-+	struct mapper_trial *trial;
-+	struct container_context *cntrs;
-+	unsigned int samples_per_frame;
-+	char **paths = NULL;
-+	snd_pcm_access_t access;
-+	bool verbose;
-+	int i;
-+	int err;
-+
-+	/* Test up to 32 channels. */
-+	samples_per_frame = 32;
-+	cntrs = calloc(samples_per_frame, sizeof(*cntrs));
-+	if (cntrs == NULL)
-+		return -ENOMEM;
-+
-+	paths = calloc(samples_per_frame, sizeof(*paths));
-+	if (paths == NULL) {
-+		err = -ENOMEM;
-+		goto end;
-+	}
-+	for (i = 0; i < samples_per_frame; ++i) {
-+		paths[i] = malloc(8);
-+		if (paths[i] == NULL) {
-+			err = -ENOMEM;
-+			goto end;
-+		}
-+		snprintf(paths[i], 8, "hoge%d", i);
-+	}
-+
-+	if (argc > 1) {
-+		char *term;
-+		access = strtol(argv[1], &term, 10);
-+		if (errno != 0 || *term != '\0') {
-+			err = -EINVAL;;
-+			goto end;
-+		}
-+		if (access < SND_PCM_ACCESS_MMAP_INTERLEAVED &&
-+		    access > SND_PCM_ACCESS_RW_NONINTERLEAVED) {
-+			err = -EINVAL;
-+			goto end;
-+		}
-+		if (access == SND_PCM_ACCESS_MMAP_COMPLEX) {
-+			err = -EINVAL;
-+			goto end;
-+		}
-+
-+		access_mask = 1ul << access;
-+		verbose = true;
-+	} else {
-+		access_mask = (1ul << SND_PCM_ACCESS_MMAP_INTERLEAVED) |
-+			      (1ul << SND_PCM_ACCESS_MMAP_NONINTERLEAVED) |
-+			      (1ul << SND_PCM_ACCESS_RW_INTERLEAVED) |
-+			      (1ul << SND_PCM_ACCESS_RW_NONINTERLEAVED);
-+		verbose = false;
-+	}
-+
-+	err = generator_context_init(&gen, access_mask, sample_format_mask,
-+				     1, samples_per_frame,
-+				     23, 4500, 1024,
-+				     sizeof(struct mapper_trial));
-+	if (err < 0)
-+		goto end;
-+
-+	trial = gen.private_data;
-+	trial->cntrs = cntrs;
-+	trial->cntr_format = CONTAINER_FORMAT_RIFF_WAVE;
-+	trial->paths = paths;
-+	trial->verbose = verbose;
-+	err = generator_context_run(&gen, callback);
-+
-+	generator_context_destroy(&gen);
-+end:
-+	if (paths) {
-+		for (i = 0; i < samples_per_frame; ++i)
-+			free(paths[i]);
-+		free(paths);
-+	}
-+	free(cntrs);
-+
-+	if (err < 0) {
-+		printf("%s\n", strerror(-err));
-+		return EXIT_FAILURE;
-+	}
-+
-+	return EXIT_SUCCESS;
-+}
+ int context_options_init(struct context_options *opts, int argc,
+diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
+index f75dc176..7ffbc287 100644
+--- a/axfer/xfer-libasound.c
++++ b/axfer/xfer-libasound.c
+@@ -41,6 +41,7 @@ static int xfer_libasound_init(struct xfer_context *xfer,
+ 		return err;
+ 
+ 	state->verbose = xfer->verbose > 1;
++	state->finish_at_xrun = opts->finish_at_xrun;
+ 
+ 	if (opts->node == NULL)
+ 		node = "default";
+@@ -272,13 +273,12 @@ static int xfer_libasound_process_frames(struct xfer_context *xfer,
+ 
+ 	err = state->ops->process_frames(state, frame_count, mapper, cntrs);
+ 	if (err < 0) {
+-		if (err == -EPIPE) {
++		if (err == -EPIPE && !state->finish_at_xrun) {
+ 			/*
+ 			 * Recover the stream and continue processing
+ 			 * immediately. In this program -EPIPE comes from
+ 			 * libasound implementation instead of file I/O.
+ 			 */
+-
+ 			err = snd_pcm_prepare(state->handle);
+ 		}
+ 
+diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
+index 97b26634..25768c41 100644
+--- a/axfer/xfer-libasound.h
++++ b/axfer/xfer-libasound.h
+@@ -30,6 +30,7 @@ struct libasound_state {
+ 	void *private_data;
+ 
+ 	bool verbose;
++	bool finish_at_xrun;
+ };
+ 
+ struct xfer_libasound_ops {
 -- 
 2.11.0
