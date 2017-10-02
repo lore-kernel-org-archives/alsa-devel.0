@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 00/39] axfer: rewrite aplay,
-	adding 'timer-based scheduling' option
-Date: Mon,  2 Oct 2017 09:19:01 +0900
-Message-ID: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 10/39] axfer: add support for a mapper
+	for single target
+Date: Mon,  2 Oct 2017 09:19:11 +0900
+Message-ID: <20171002001940.17218-11-o-takashi@sakamocchi.jp>
+References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C4BEF266ECE
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:48 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 984E5266ED5
+ for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
+In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,165 +25,288 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In usual use case of aplay, single file is used to playback or capture data
+frames.
 
-This 3rd RFC patchset updates my previous one:
-[alsa-devel] [RFCv2][PATCH 00/38] alsa-utils: axfer: rewrite aplay
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125574.html
+This commit adds support of single type mapper for this use case. All of
+supported file format can include data frame with interleaved alignment,
+thus this mapper have a functionality to convert from several types of
+data frame alignment to interleaved alignment or vise versa. When
+handling non-interleaved buffer, a caller should use an array of buffer
+for each of channels with non-interleaved data frames.
 
-For aim of this rewrite and its intension, please refer to my former posts.
-
-In this version, I add an option to support 'timer-based scheduling' scenario,
-which PulseAudio developers introduced. Please refer to patch 32:
- * axfer: add support for timer-based MMAP operation
-
-You can use this mode by adding '-sched-type=timer' option into command
-line.
-
-The other difference from my previous one:
- - fix some bugs to handle non-interleaved buffer on mapped page frame.
- - use snd_pcm_status() instead of snd_pcm_state() to execute hwsync.
- - minor fixes.
-
-In my plan, this is the last version including below patches. In next post,
-options added by below patches are categorized as obsoleted:
- * axfer: add an option to support volume unit meter
- * axfer: add a unit test for vumeter calculation
- * axfer: add an option for formatted filename
- * axfer: add an option to handle key events
- * axfer: add a parser for channel map API
- * axfer: add a feature to generate a file for process id
-
-Additionally, for next post, I'll prepare for help messages and man for this
-program.
-
-Regards
-
-Takashi Sakamoto (39):
-  axfer: add an entry point for this command
-  axfer: add a sub-command to print list of PCMs/devices
-  axfer: add a common interface to handle a file with audio-specific
-    data format
-  axfer: add support for a container of Microsoft/IBM RIFF/Wave format
-  axfer: add support for a container of Sparc AU format
-  axfer: add support for a container of Creative Tech. voice format
-  axfer: add support for a container of raw data
-  axfer: add unit test for container interface
-  axfer: add a common interface to align data frames on different layout
-  axfer: add support for a mapper for single target
-  axfer: add support for a mapper for multiple target
-  axfer: add a unit test for mapper interface
-  axfer: add a parser for command-line options
-  axfer: add a common interface to transfer data frames
-  axfer: add support to transfer data frames by alsa-lib PCM APIs
-  axfer: add support for blocking data transmission operation of
-    alsa-lib PCM API
-  axfer: add a sub-command to transfer data frames
-  axfer: add informative output and an option to suppress it
-  axfer: add an option to dump available hardware parameters
-  axfer: add options related to duration and obsolete '--max-file-size'
-    option
-  axfer: add an option to finish transmission at XRUN
-  axfer: add a common interface of waiter for I/O event notification
-  axfer: add support of waiter for poll(2)
-  axfer: add support for non-blocking operation
-  axfer: add support for MMAP PCM operation
-  axfer: add an option to suppress event waiting
-  axfer: add options for buffer arrangement
-  axfer: add options for software parameters of PCM substream
-  axfer: add options for plugins in alsa-lib
-  axfer: add an implementation of waiter for epoll(7)
-  axfer: add an option for waiter type
-  axfer: add support for timer-based MMAP operation
-  axfer: add an option to support volume unit meter
-  axfer: add a unit test for vumeter calculation
-  axfer: add an option for formatted filename
-  axfer: add an option to handle key events
-  axfer: add a parser for channel map API
-  axfer: add a feature to generate a file for process id
-  axfer: obsolete some test options
-
- Makefile.am                       |   2 +-
- axfer/Makefile.am                 |  61 +++
- axfer/container-au.c              | 207 ++++++++
- axfer/container-raw.c             |  66 +++
- axfer/container-riff-wave.c       | 581 ++++++++++++++++++++++
- axfer/container-voc.c             | 843 ++++++++++++++++++++++++++++++++
- axfer/container.c                 | 470 ++++++++++++++++++
- axfer/container.h                 | 126 +++++
- axfer/key-event.c                 | 121 +++++
- axfer/key-event.h                 |  19 +
- axfer/main.c                      | 194 ++++++++
- axfer/mapper-multiple.c           | 271 +++++++++++
- axfer/mapper-single.c             | 195 ++++++++
- axfer/mapper.c                    | 152 ++++++
- axfer/mapper.h                    |  87 ++++
- axfer/misc.h                      |  16 +
- axfer/options.c                   | 980 ++++++++++++++++++++++++++++++++++++++
- axfer/options.h                   |  92 ++++
- axfer/subcmd-list.c               | 234 +++++++++
- axfer/subcmd-transfer.c           | 525 ++++++++++++++++++++
- axfer/subcmd.h                    |  18 +
- axfer/test/Makefile.am            |  39 ++
- axfer/test/container-test.c       | 299 ++++++++++++
- axfer/test/generator.c            | 260 ++++++++++
- axfer/test/generator.h            |  47 ++
- axfer/test/mapper-test.c          | 491 +++++++++++++++++++
- axfer/test/vumeter-test.c         | 184 +++++++
- axfer/vumeter.c                   | 546 +++++++++++++++++++++
- axfer/vumeter.h                   |  55 +++
- axfer/waiter-epoll.c              |  81 ++++
- axfer/waiter-poll.c               |  68 +++
- axfer/waiter.c                    |  84 ++++
- axfer/waiter.h                    |  52 ++
- axfer/xfer-libasound-irq-mmap.c   | 271 +++++++++++
- axfer/xfer-libasound-irq-rw.c     | 520 ++++++++++++++++++++
- axfer/xfer-libasound-timer-mmap.c | 474 ++++++++++++++++++
- axfer/xfer-libasound.c            | 737 ++++++++++++++++++++++++++++
- axfer/xfer-libasound.h            |  60 +++
- axfer/xfer.c                      | 191 ++++++++
- axfer/xfer.h                      |  76 +++
- configure.ac                      |   3 +-
- 41 files changed, 9796 insertions(+), 2 deletions(-)
- create mode 100644 axfer/Makefile.am
- create mode 100644 axfer/container-au.c
- create mode 100644 axfer/container-raw.c
- create mode 100644 axfer/container-riff-wave.c
- create mode 100644 axfer/container-voc.c
- create mode 100644 axfer/container.c
- create mode 100644 axfer/container.h
- create mode 100644 axfer/key-event.c
- create mode 100644 axfer/key-event.h
- create mode 100644 axfer/main.c
- create mode 100644 axfer/mapper-multiple.c
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ axfer/Makefile.am     |   3 +-
+ axfer/mapper-single.c | 195 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/mapper.c        |  14 +++-
+ axfer/mapper.h        |   4 ++
+ 4 files changed, 214 insertions(+), 2 deletions(-)
  create mode 100644 axfer/mapper-single.c
- create mode 100644 axfer/mapper.c
- create mode 100644 axfer/mapper.h
- create mode 100644 axfer/misc.h
- create mode 100644 axfer/options.c
- create mode 100644 axfer/options.h
- create mode 100644 axfer/subcmd-list.c
- create mode 100644 axfer/subcmd-transfer.c
- create mode 100644 axfer/subcmd.h
- create mode 100644 axfer/test/Makefile.am
- create mode 100644 axfer/test/container-test.c
- create mode 100644 axfer/test/generator.c
- create mode 100644 axfer/test/generator.h
- create mode 100644 axfer/test/mapper-test.c
- create mode 100644 axfer/test/vumeter-test.c
- create mode 100644 axfer/vumeter.c
- create mode 100644 axfer/vumeter.h
- create mode 100644 axfer/waiter-epoll.c
- create mode 100644 axfer/waiter-poll.c
- create mode 100644 axfer/waiter.c
- create mode 100644 axfer/waiter.h
- create mode 100644 axfer/xfer-libasound-irq-mmap.c
- create mode 100644 axfer/xfer-libasound-irq-rw.c
- create mode 100644 axfer/xfer-libasound-timer-mmap.c
- create mode 100644 axfer/xfer-libasound.c
- create mode 100644 axfer/xfer-libasound.h
- create mode 100644 axfer/xfer.c
- create mode 100644 axfer/xfer.h
 
+diff --git a/axfer/Makefile.am b/axfer/Makefile.am
+index cb4b188d..baf9b898 100644
+--- a/axfer/Makefile.am
++++ b/axfer/Makefile.am
+@@ -32,4 +32,5 @@ axfer_SOURCES = \
+ 	container-voc.c \
+ 	container-raw.c \
+ 	mapper.h \
+-	mapper.c
++	mapper.c \
++	mapper-single.c
+diff --git a/axfer/mapper-single.c b/axfer/mapper-single.c
+new file mode 100644
+index 00000000..f0b5c735
+--- /dev/null
++++ b/axfer/mapper-single.c
+@@ -0,0 +1,195 @@
++/*
++ * mapper-single.c - a muxer/demuxer for single containers.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "mapper.h"
++#include "misc.h"
++
++struct single_state {
++	void (*align_frames)(void *frame_buf, unsigned int frame_count,
++			     char *buf, unsigned int bytes_per_sample,
++			     unsigned int samples_per_frame);
++	char *buf;
++};
++
++static void align_to_vector(void *frame_buf, unsigned int frame_count,
++			    char *src, unsigned int bytes_per_sample,
++			    unsigned samples_per_frame)
++{
++	char **dst_bufs = frame_buf;
++	char *dst;
++	unsigned int src_pos;
++	unsigned int dst_pos;
++	int i, j;
++
++	/* src: interleaved => dst: a set of interleaved buffers.  */
++	for (i = 0; i < samples_per_frame; ++i) {
++		dst = dst_bufs[i];
++		for (j = 0; j < frame_count; ++j) {
++			src_pos = bytes_per_sample * (samples_per_frame * j + i);
++			dst_pos = bytes_per_sample * j;
++
++			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
++		}
++	}
++}
++
++static void align_from_vector(void *frame_buf, unsigned int frame_count,
++			      char *dst, unsigned int bytes_per_sample,
++			      unsigned int samples_per_frame)
++{
++	char **src_bufs = frame_buf;
++	char *src;
++	unsigned int dst_pos;
++	unsigned int src_pos;
++	int i, j;
++
++	/* src: a set of interleaved buffers => dst:interleaved.  */
++	for (i = 0; i < samples_per_frame; ++i) {
++		src = src_bufs[i];
++		for (j = 0; j < frame_count; ++j) {
++			src_pos = bytes_per_sample * j;
++			dst_pos = bytes_per_sample * (samples_per_frame * j + i);
++
++			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
++		}
++	}
++}
++
++static int single_pre_process(struct mapper_context *mapper,
++			      struct container_context *cntrs,
++			      unsigned int cntr_count)
++{
++	struct single_state *state = mapper->private_data;
++	unsigned int bytes_per_buffer;
++
++	if (cntrs->bytes_per_sample != mapper->bytes_per_sample ||
++	    cntrs->samples_per_frame != mapper->samples_per_frame)
++		return -EINVAL;
++
++	/* Decide method to align frames. */
++	if (mapper->type == MAPPER_TYPE_DEMUXER) {
++		if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
++		    mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			state->align_frames = align_from_vector;
++		else if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++			 mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
++			state->align_frames = NULL;
++		else
++			return -EINVAL;
++	} else {
++		if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
++		    mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
++			state->align_frames = align_to_vector;
++		else if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
++			 mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
++			state->align_frames = NULL;
++		else
++			return -EINVAL;
++	}
++
++	if (state->align_frames) {
++		/* Allocate intermediate buffer as the same size as a period. */
++		bytes_per_buffer = mapper->bytes_per_sample *
++				   mapper->samples_per_frame *
++				   mapper->frames_per_buffer;
++		state->buf = malloc(bytes_per_buffer);
++		if (state->buf == NULL)
++			return -ENOMEM;
++		memset(state->buf, 0, bytes_per_buffer);
++	}
++
++	return 0;
++}
++
++static int single_muxer_process_frames(struct mapper_context *mapper,
++				       void *frame_buf,
++				       unsigned int *frame_count,
++				       struct container_context *cntrs,
++				       unsigned int cntr_count)
++{
++	struct single_state *state = mapper->private_data;
++	void *src;
++	int err;
++
++	/*
++	 * If need to align PCM frames, process PCM frames to the intermediate
++	 * buffer once.
++	 */
++	if (!state->align_frames) {
++		/* The most likely. */
++		src = frame_buf;
++	} else {
++		src = state->buf;
++	}
++	err = container_context_process_frames(cntrs, src, frame_count);
++	if (err < 0)
++		return err;
++
++	/* Unlikely. */
++	if (src != frame_buf && *frame_count > 0)
++		state->align_frames(frame_buf, *frame_count, src,
++				    mapper->bytes_per_sample,
++				    mapper->samples_per_frame);
++
++	return 0;
++}
++
++static int single_demuxer_process_frames(struct mapper_context *mapper,
++					 void *frame_buf,
++					 unsigned int *frame_count,
++					 struct container_context *cntrs,
++					 unsigned int cntr_count)
++{
++	struct single_state *state = mapper->private_data;
++	void *dst;
++
++	/*
++	 * If need to align PCM frames, process PCM frames to the intermediate
++	 * buffer once.
++	 */
++	if (!state->align_frames) {
++		/* The most likely. */
++		dst = frame_buf;
++	} else {
++		state->align_frames(frame_buf, *frame_count, state->buf,
++				    mapper->bytes_per_sample,
++				    mapper->samples_per_frame);
++		dst = state->buf;
++	}
++
++	return container_context_process_frames(cntrs, dst, frame_count);
++}
++
++static void single_post_process(struct mapper_context *mapper)
++{
++	struct single_state *state = mapper->private_data;
++
++	if (state->buf)
++		free(state->buf);
++
++	state->buf = NULL;
++	state->align_frames = NULL;
++}
++
++const struct mapper_data mapper_muxer_single = {
++	.ops = {
++		.pre_process = single_pre_process,
++		.process_frames = single_muxer_process_frames,
++		.post_process = single_post_process,
++	},
++	.private_size = sizeof(struct single_state),
++};
++
++const struct mapper_data mapper_demuxer_single = {
++	.ops = {
++		.pre_process = single_pre_process,
++		.process_frames = single_demuxer_process_frames,
++		.post_process = single_post_process,
++	},
++	.private_size = sizeof(struct single_state),
++};
+diff --git a/axfer/mapper.c b/axfer/mapper.c
+index 3073c713..3ba2d5e1 100644
+--- a/axfer/mapper.c
++++ b/axfer/mapper.c
+@@ -18,7 +18,7 @@ static const char *const mapper_type_labels[] = {
+ };
+ 
+ static const char *const mapper_target_labels[] = {
+-	[MAPPER_TARGET_COUNT] = "",
++	[MAPPER_TARGET_SINGLE] = "single",
+ };
+ 
+ int mapper_context_init(struct mapper_context *mapper,
+@@ -35,6 +35,18 @@ int mapper_context_init(struct mapper_context *mapper,
+ 
+ 	memset(mapper, 0, sizeof(*mapper));
+ 
++	if (type == MAPPER_TYPE_MUXER) {
++		if (cntr_count == 1) {
++			data = &mapper_muxer_single;
++			mapper->target = MAPPER_TARGET_SINGLE;
++		}
++	} else {
++		if (cntr_count == 1) {
++			data = &mapper_demuxer_single;
++			mapper->target = MAPPER_TARGET_SINGLE;
++		}
++	}
++
+ 	mapper->ops = &data->ops;
+ 	mapper->type = type;
+ 
+diff --git a/axfer/mapper.h b/axfer/mapper.h
+index 0a6c7f1c..2e553666 100644
+--- a/axfer/mapper.h
++++ b/axfer/mapper.h
+@@ -19,6 +19,7 @@ enum mapper_type {
+ };
+ 
+ enum mapper_target {
++	MAPPER_TARGET_SINGLE = 0,
+ 	MAPPER_TARGET_COUNT,
+ };
+ 
+@@ -76,4 +77,7 @@ struct mapper_data {
+ 	unsigned int private_size;
+ };
+ 
++extern const struct mapper_data mapper_muxer_single;
++extern const struct mapper_data mapper_demuxer_single;
++
+ #endif
 -- 
 2.11.0
