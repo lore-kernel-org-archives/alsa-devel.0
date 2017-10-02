@@ -1,49 +1,27 @@
-From: Nicola Lunghi <nicola.lunghi@emutex.com>
-Subject: Re: ASoC Sound Driver I2S over LPE,
- Intel Baytrail SoC. MinnowBoard Max
-Date: Mon, 2 Oct 2017 17:14:55 +0100
-Message-ID: <fff69ce9-69f5-9e44-820a-c6c29ca2898f@emutex.com>
-References: <56423D44.60505@linux.intel.com>
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Subject: Re: [PATCH 00/18] use ARRAY_SIZE macro
+Date: Mon, 2 Oct 2017 13:37:34 -0300
+Message-ID: <20171002133734.6ac10ded@recife.lan>
+References: <20171001193101.8898-1-jeremy.lefaure@lse.epita.fr>
+        <20171001220131.GA11812@eros>
+        <20171001205220.10b78086@blatinox-laptop.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bert.emutex.com (bert.emutex.com [91.103.1.109])
- by alsa0.perex.cz (Postfix) with ESMTP id 6703F266DE1
- for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 18:14:57 +0200 (CEST)
-In-Reply-To: <56423D44.60505@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20171001205220.10b78086@blatinox-laptop.localdomain>
+Sender: linux-media-owner@vger.kernel.org
+To: =?UTF-8?B?SsOpcsOpbXk=?= Lefaure <jeremy.lefaure@lse.epita.fr>
+Cc: "Tobin C. Harding" <me@tobin.cc>, alsa-devel@alsa-project.org, nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org, dm-devel@redhat.com, brcm80211-dev-list@cypress.com, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, linux-acpi@vger.kernel.org, linux-video@atrey.karlin.mff.cuni.cz, intel-wired-lan@lists.osuosl.org, linux-media@vger.kernel.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org, openipmi-developer@lists.sourceforge.net, intel-gvt-dev@lists.freedesktop.org, devel@acpica.org, brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vge
 List-Id: alsa-devel@alsa-project.org
 
-Dear Pierre Louis
+Em Sun, 1 Oct 2017 20:52:20 -0400
+Jérémy Lefaure <jeremy.lefaure@lse.epita.fr> escreveu:
 
-We are having problems enabling I2S output with the UP board.
+> Anyway, I can tell to each maintainer that they can apply the patches
+> they're concerned about and next time I may send individual patches.
 
-We have currently two boards one based on Cherry Trail Platform and one 
-on the Apollo Lake.
+In the case of media, we'll handle it as if they were individual ones.
 
-We want for now enable only I2S output without codec on kernel 4.9/4.10.
-
-Can you give us some hint about the required ACPI asl code to add in the 
-ACPI and if there's something else required in the Linux kernel?
-
-Best Regards
-
-Nicola Lunghi
-
--- 
-Nicola Lunghi
-*Emutex Limited*
-International Science Centre, National Technology Park, Limerick, Ireland.
-Email: nicola.lunghi@emutex.com
-Web: http://www.emutex.com
+Thanks,
+Mauro
