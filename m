@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 16/39] axfer: add support for blocking
-	data transmission operation of alsa-lib PCM API
-Date: Mon,  2 Oct 2017 09:19:17 +0900
-Message-ID: <20171002001940.17218-17-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 17/39] axfer: add a sub-command to
+	transfer data frames
+Date: Mon,  2 Oct 2017 09:19:18 +0900
+Message-ID: <20171002001940.17218-18-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C7C62266EBC
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C9956266EBF
  for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:53 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,476 +25,572 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-In alsa-lib PCM API, snd_pcm_read[i|n]() and snd_pcm_write[i|n]() are used
-to transfer data frames from/to hardware. When a handler is not opened with
-specific flags, these functions perform blocking operation; i.e. the
-function call doesn't return till all of request number of data frames are
-actually handled, or call is interrupted by Unix signals, or PCM substeam
-corrupts due to hardware reasons.
+In current aplay, default action is to transfer data frames from/to
+devices. This commit adds support for this functionality.
 
-This commit adds support for this type of data transmission. For cases that
-requested data frames are not processed by container interface, this commit
-adds internal cache mechanism to handle rest of data frames in next timing.
+Event loop is included in an added file. In the loop, the number of
+handled data frames is manipulated by an appropriate way. As a result, users
+can stop data transmission frames by frame.
+
+At present, below command line options are supported as a minimal set:
+ * --help (-h)
+  * Just output 'help' string (not written yet).
+ * --verbose (-v)
+  * For verbose output, including information about xfer, mapper and
+    container.
+ * --file-type (-f): string. one of ['wav'|'au'|'voc'|'raw']
+  * For format of files of given paths. For playback, this is optional
+    because the format is auto-detected. For capture, this is optional too
+    because the format is decided according to suffix of given path.
+    Anyway, this option is used for cases to fail to detect or decide.
+ * --separate-channels (-I)
+  * When using several files as source or destination for data
+    transmission, this option can be used with several file paths.
+ * --device (-D): string
+  * For PCM node in alsa-lib configuration. When this option is not used,
+    'default' node is used for data transmission.
+ * --format (-f): string. format literals or one of ['cd'|'cdr'|'dat']
+  * For sample format supported by ALSA PCM interface. Special format
+    can be used. For playback, this is auto-detected according to actual
+    file format.
+ * --channels (-c)
+  * For the number of samples included in one data frame. For playback,
+    this is auto-detected according to actual file format, except for
+    'raw' format.
+ * --rate (-r)
+  * For the number of data frames transferred in one second. For playback,
+    this is auto-detected according to actual file format, except for
+    'raw' format.
+
+When '--separate-channels' option is used, users can give several file
+paths to source/destination of data transmission, else they can give single
+file path for the purpose. When multiple files are handled by this option,
+for playback, data frames in first channel is used to construct buffer for
+data transmission with multi channel. For capture, data frames in each
+channel of buffer is written to each of given path. Furthermore, when a
+single path is given for capture, file paths are auto-generated according
+to available number of channels. For example, 'name.wav' is given for
+2 channels capture, 'name-0.wav' and 'name-1.wav' are generated. Without
+suffix, 'name-0' and 'name-1' are generated.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am             |   3 +-
- axfer/xfer-libasound-irq-rw.c | 406 ++++++++++++++++++++++++++++++++++++++++++
- axfer/xfer-libasound.c        |   6 +
- axfer/xfer-libasound.h        |   3 +
- 4 files changed, 417 insertions(+), 1 deletion(-)
- create mode 100644 axfer/xfer-libasound-irq-rw.c
+ axfer/Makefile.am       |   3 +-
+ axfer/main.c            |   2 +-
+ axfer/subcmd-transfer.c | 470 ++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/subcmd.h          |   2 +
+ 4 files changed, 475 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/subcmd-transfer.c
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index ab4e3ae1..e928f796 100644
+index e928f796..b378442b 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -43,4 +43,5 @@ axfer_SOURCES = \
- 	xfer.h \
+@@ -44,4 +44,5 @@ axfer_SOURCES = \
  	xfer.c \
  	xfer-libasound.h \
--	xfer-libasound.c
-+	xfer-libasound.c \
-+	xfer-libasound-irq-rw.c
-diff --git a/axfer/xfer-libasound-irq-rw.c b/axfer/xfer-libasound-irq-rw.c
+ 	xfer-libasound.c \
+-	xfer-libasound-irq-rw.c
++	xfer-libasound-irq-rw.c \
++	subcmd-transfer.c
+diff --git a/axfer/main.c b/axfer/main.c
+index 9bf02fd9..fecf397a 100644
+--- a/axfer/main.c
++++ b/axfer/main.c
+@@ -180,7 +180,7 @@ int main(int argc, char *const *argv)
+ 		decide_subcmd(argc, argv, &subcmd);
+ 
+ 	if (subcmd == SUBCMD_TRANSFER)
+-		printf("execute 'transfer' subcmd.\n");
++		err = subcmd_transfer(argc, argv, direction);
+ 	else if (subcmd == SUBCMD_LIST)
+ 		err = subcmd_list(argc, argv, direction);
+ 	else if (subcmd == SUBCMD_VERSION)
+diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
 new file mode 100644
-index 00000000..acbeaee9
+index 00000000..5ce312e0
 --- /dev/null
-+++ b/axfer/xfer-libasound-irq-rw.c
-@@ -0,0 +1,406 @@
++++ b/axfer/subcmd-transfer.c
+@@ -0,0 +1,470 @@
 +/*
-+ * xfer-libasound-irq-rw.c - IRQ-based I/O helper for read/write operation.
++ * subcmd-transfer.c - operations for transfer sub command.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "xfer-libasound.h"
++#include "xfer.h"
++#include "subcmd.h"
 +#include "misc.h"
 +
-+struct frame_cache {
-+	void *buf;
-+	void *buf_ptr;
++#include <signal.h>
 +
-+	unsigned int bytes_per_sample;
-+	unsigned int samples_per_frame;
-+	unsigned int frames_per_buffer;
-+	snd_pcm_access_t access;
++struct context {
++	struct xfer_context xfer;
++	struct mapper_context mapper;
++	struct container_context *cntrs;
++	unsigned int cntr_count;
 +
-+	int (*handle)(struct libasound_state *state, snd_pcm_state_t status,
-+		      unsigned int *frame_count, struct mapper_context *mapper,
-+		      struct container_context *cntrs);
-+	void (*align_frames)(struct frame_cache *cache,
-+			     unsigned int consumed_count,
-+			     unsigned int bytes_per_sample,
-+			     unsigned int samples_per_frame);
++	struct context_options opts;
 +
-+	unsigned int remained_count;
++	/* NOTE: To handling Unix signal. */
++	bool interrupted;
++	int signal;
 +};
 +
-+static void align_frames_in_i(struct frame_cache *cache,
-+			      unsigned int consumed_count,
-+			      unsigned int bytes_per_sample,
-+			      unsigned int samples_per_frame)
++/* NOTE: To handling Unix signal. */
++static struct context *ctx_ptr;
++
++static void handle_unix_signal_for_finish(int sig)
 +{
-+	char *buf = cache->buf;
-+	unsigned int offset;
-+	unsigned int size;
-+
-+	cache->remained_count -= consumed_count;
-+
-+	offset = bytes_per_sample * samples_per_frame * consumed_count;
-+	size = bytes_per_sample * samples_per_frame * cache->remained_count;
-+	memcpy(buf, buf + offset, size);
-+
-+	cache->buf_ptr = buf + size;
-+}
-+
-+static void align_frames_in_n(struct frame_cache *cache,
-+			      unsigned int consumed_count,
-+			      unsigned int bytes_per_sample,
-+			      unsigned int samples_per_frame)
-+{
-+	char **bufs = cache->buf;
-+	char **buf_ptrs = cache->buf_ptr;
-+	char *buf;
-+	unsigned int offset;
-+	unsigned int size;
 +	int i;
 +
-+	cache->remained_count -= consumed_count;
++	for (i = 0; i < ctx_ptr->cntr_count; ++i)
++		ctx_ptr->cntrs[i].interrupted = true;
 +
-+	for (i = 0; i < samples_per_frame; ++i) {
-+		buf = bufs[i];
-+		offset = bytes_per_sample * consumed_count;
-+		size = bytes_per_sample * cache->remained_count;
-+		memcpy(buf, buf + offset, size);
-+
-+		buf_ptrs[i] = buf + size;
-+	}
++	ctx_ptr->signal = sig;
++	ctx_ptr->interrupted = true;
 +}
 +
-+static int read_frames(struct libasound_state *state, unsigned int *frame_count,
-+		       unsigned int avail_count, struct mapper_context *mapper,
-+		       struct container_context *cntrs)
++static void handle_unix_signal_for_suspend(int sig)
 +{
-+	struct frame_cache *cache = state->private_data;
-+	unsigned int consumed_count;
-+	int err;
++	sigset_t curr, prev;
++	struct sigaction sa = {0};
 +
-+	/* Trim according up to expected frame count. */
-+	if (*frame_count < avail_count)
-+		avail_count = *frame_count;
++	/*
++	 * 1. suspend substream.
++	 */
++	xfer_context_pause(&ctx_ptr->xfer, true);
 +
-+	/* Cache required amount of frames. */
-+	if (avail_count > cache->remained_count) {
-+		avail_count -= cache->remained_count;
-+
-+		/*
-+		 * Execute write operation according to the shape of buffer.
-+		 * These operations automatically start the substream.
-+		 */
-+		if (cache->access == SND_PCM_ACCESS_RW_INTERLEAVED) {
-+			err = snd_pcm_readi(state->handle, cache->buf_ptr,
-+					    avail_count);
-+		} else {
-+			err = snd_pcm_readn(state->handle, cache->buf_ptr,
-+					    avail_count);
-+		}
-+		if (err < 0)
-+			return err;
-+		cache->remained_count += err;
-+		avail_count = cache->remained_count;
++	/*
++	 * 2. Prepare for default handler(SIG_DFL) of SIGTSTP to stop this
++	 * process.
++	 */
++	if (sigaction(SIGTSTP, NULL, &sa) < 0) {
++		fprintf(stderr, "sigaction(2)\n");
++		exit(EXIT_FAILURE);
++	}
++	if (sa.sa_handler == SIG_ERR)
++		exit(EXIT_FAILURE);
++	if (sa.sa_handler == handle_unix_signal_for_suspend)
++		sa.sa_handler = SIG_DFL;
++	if (sigaction(SIGTSTP, &sa, NULL) < 0) {
++		fprintf(stderr, "sigaction(2)\n");
++		exit(EXIT_FAILURE);
 +	}
 +
-+	/* Write out to file descriptors. */
-+	consumed_count = avail_count;
-+	err = mapper_context_process_frames(mapper, cache->buf,
-+					     &consumed_count, cntrs);
-+	if (err < 0)
-+		return err;
++	/* Queue SIGTSTP. */
++	raise(SIGTSTP);
 +
-+	cache->align_frames(cache, consumed_count, cache->bytes_per_sample,
-+			    cache->samples_per_frame);
-+
-+	*frame_count = consumed_count;
-+
-+	return 0;
-+}
-+
-+static int r_process_frames_blocking(struct libasound_state *state,
-+				     snd_pcm_state_t status,
-+				     unsigned int *frame_count,
-+				     struct mapper_context *mapper,
-+				     struct container_context *cntrs)
-+{
-+	snd_pcm_sframes_t avail;
-+	snd_pcm_uframes_t avail_count;
-+	int err = 0;
-+
-+	if (status == SND_PCM_STATE_RUNNING) {
-+		/* Check available space on the buffer. */
-+		avail = snd_pcm_avail(state->handle);
-+		if (avail < 0) {
-+			err = avail;
-+			goto error;
-+		}
-+		avail_count = (snd_pcm_uframes_t)avail;
-+
-+		if (avail_count == 0) {
-+			/*
-+			 * Request data frames so that blocking is just
-+			 * released.
-+			 */
-+			err = snd_pcm_sw_params_get_avail_min(state->sw_params,
-+							      &avail_count);
-+			if (err < 0)
-+				goto error;
-+		}
-+	} else {
-+		/* Request data frames so that the PCM substream starts. */
-+		snd_pcm_uframes_t frame_count;
-+		err = snd_pcm_sw_params_get_start_threshold(state->sw_params,
-+							    &frame_count);
-+		if (err < 0)
-+			goto error;
-+
-+		avail_count = (unsigned int)frame_count;
-+	}
-+
-+	err = read_frames(state, frame_count, avail_count, mapper, cntrs);
-+	if (err < 0)
-+		goto error;
-+
-+	return 0;
-+error:
-+	*frame_count = 0;
-+	return err;
-+}
-+
-+static int write_frames(struct libasound_state *state,
-+			unsigned int *frame_count, unsigned int avail_count,
-+			struct mapper_context *mapper,
-+			struct container_context *cntrs)
-+{
-+	struct frame_cache *cache = state->private_data;
-+	snd_pcm_uframes_t consumed_count;
-+	int err;
-+
-+	/* Trim according up to expected frame count. */
-+	if (*frame_count < avail_count)
-+		avail_count = *frame_count;
-+
-+	/* Cache required amount of frames. */
-+	if (avail_count > cache->remained_count) {
-+		avail_count -= cache->remained_count;
-+
-+		/* Read frames to transfer. */
-+		err = mapper_context_process_frames(mapper, cache->buf_ptr,
-+						     &avail_count, cntrs);
-+		if (err < 0)
-+			return err;
-+		cache->remained_count += avail_count;
-+		avail_count = cache->remained_count;
++	/*
++	 * Release the queued signal from being blocked. This causes an
++	 * additional interrupt for the default handler.
++	 */
++	sigemptyset(&curr);
++	sigaddset(&curr, SIGTSTP);
++	if (sigprocmask(SIG_UNBLOCK, &curr, &prev) < 0) {
++		fprintf(stderr, "sigprocmask(2)\n");
++		exit(EXIT_FAILURE);
 +	}
 +
 +	/*
-+	 * Execute write operation according to the shape of buffer. These
-+	 * operations automatically start the stream.
++	 * 3. SIGCONT is cought and rescheduled. Recover blocking status of
++	 * UNIX signals.
 +	 */
-+	consumed_count = avail_count;
-+	if (cache->access == SND_PCM_ACCESS_RW_INTERLEAVED)
-+		err = snd_pcm_writei(state->handle, cache->buf, consumed_count);
-+	else
-+		err = snd_pcm_writen(state->handle, cache->buf, consumed_count);
-+	if (err < 0)
-+		return err;
++	if (sigprocmask(SIG_SETMASK, &prev, NULL) < 0) {
++		fprintf(stderr, "sigprocmask(2)\n");
++		exit(EXIT_FAILURE);
++	}
 +
-+	consumed_count = (unsigned int)err;
-+	cache->align_frames(cache, consumed_count, cache->bytes_per_sample,
-+			    cache->samples_per_frame);
++	/* Reconfigure this handler for SIGTSTP, instead of default one. */
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = SA_RESTART;
++	sa.sa_handler = handle_unix_signal_for_suspend;
++	if (sigaction(SIGTSTP, &sa, NULL) < 0) {
++		fprintf(stderr, "sigaction(2)\n");
++		exit(EXIT_FAILURE);
++	}
 +
-+	*frame_count = consumed_count;
++	/* 4. Continue the PCM substream. */
++	xfer_context_pause(&ctx_ptr->xfer, false);
++}
++
++static int prepare_signal_handler(struct context *ctx)
++{
++	struct sigaction sa = {0};
++
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = 0;
++	sa.sa_handler = handle_unix_signal_for_finish;
++
++	if (sigaction(SIGINT, &sa, NULL) < 0)
++		return -errno;
++	if (sigaction(SIGTERM, &sa, NULL) < 0)
++		return -errno;
++
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = 0;
++	sa.sa_handler = handle_unix_signal_for_suspend;
++	if (sigaction(SIGTSTP, &sa, NULL) < 0)
++		return -errno;
++
++	ctx_ptr = ctx;
 +
 +	return 0;
 +}
 +
-+static int w_process_frames_blocking(struct libasound_state *state,
-+				     snd_pcm_state_t status,
-+				     unsigned int *frame_count,
-+				     struct mapper_context *mapper,
-+				     struct container_context *cntrs)
++static int context_init(struct context *ctx, snd_pcm_stream_t direction)
 +{
-+	snd_pcm_sframes_t avail;
-+	unsigned int avail_count;
++	/* Initialize transfer. */
++	return xfer_context_init(&ctx->xfer, XFER_TYPE_LIBASOUND, direction,
++				 &ctx->opts);
++}
++
++static int capture_pre_process(struct context *ctx, snd_pcm_access_t *access,
++			       snd_pcm_format_t *sample_format,
++			       unsigned int *samples_per_frame,
++			       unsigned int *frames_per_second,
++			       snd_pcm_uframes_t *frames_per_buffer,
++			       uint64_t *total_frame_count)
++{
++	unsigned int channels;
++	int i;
 +	int err;
 +
-+	if (status == SND_PCM_STATE_RUNNING) {
-+		/* Check available space on the buffer. */
-+		avail = snd_pcm_avail(state->handle);
-+		if (avail < 0) {
-+			err = avail;
-+			goto error;
-+		}
-+		avail_count = (unsigned int)avail;
++	/*
++	 * Use given options for common parameters. Else, leave the decition to
++	 * each backend.
++	 */
++	if (ctx->opts.sample_format != SND_PCM_FORMAT_UNKNOWN)
++		*sample_format = ctx->opts.sample_format;
++	if (ctx->opts.samples_per_frame > 0)
++		*samples_per_frame = ctx->opts.samples_per_frame;
++	if (ctx->opts.frames_per_second > 0)
++		*frames_per_second = ctx->opts.frames_per_second;
 +
-+		if (avail_count == 0) {
-+			/*
-+			 * Fill with data frames so that blocking is just
-+			 * released.
-+			 */
-+			snd_pcm_uframes_t avail_min;
-+			err = snd_pcm_sw_params_get_avail_min(state->sw_params,
-+							      &avail_min);
-+			if (err < 0)
-+				goto error;
-+			avail_count = (unsigned int)avail_min;
-+		}
-+	} else {
-+		snd_pcm_uframes_t frames_for_start_threshold;
-+		snd_pcm_uframes_t frames_per_period;
++	err = xfer_context_pre_process(&ctx->xfer, sample_format,
++				       samples_per_frame, frames_per_second,
++				       access, frames_per_buffer);
++	if (err < 0)
++		return err;
 +
-+		/* Fill with data frames so that the PCM substream starts. */
-+		err = snd_pcm_sw_params_get_start_threshold(state->sw_params,
-+						&frames_for_start_threshold);
++	err = context_options_fixup_for_capture(&ctx->opts, *samples_per_frame);
++	if (err < 0)
++		return err;
++
++	ctx->cntr_count = ctx->opts.path_count;
++	if (ctx->cntr_count > 1)
++		channels = 1;
++	else
++		channels = *samples_per_frame;
++
++	/* Prepare for containers. */
++	ctx->cntrs = calloc(ctx->cntr_count, sizeof(*ctx->cntrs));
++	if (ctx->cntrs == NULL)
++		return -ENOMEM;
++
++	*total_frame_count = 0;
++	for (i = 0; i < ctx->cntr_count; ++i) {
++		uint64_t frame_count;
++
++		err = container_builder_init(ctx->cntrs + i, ctx->opts.paths[i],
++					     ctx->opts.cntr_format,
++					     ctx->opts.verbose > 1);
 +		if (err < 0)
-+			goto error;
++			return err;
 +
-+		/*
-+		 * But the above number can be too small and cause XRUN because
-+		 * I/O operation is done per period.
-+		 */
-+		err = snd_pcm_hw_params_get_period_size(state->hw_params,
-+						&frames_per_period, NULL);
++		err = container_context_pre_process(ctx->cntrs + i,
++						    sample_format, &channels,
++						    frames_per_second,
++						    &frame_count);
 +		if (err < 0)
-+			goto error;
++			return err;
 +
-+		/*
-+		 * Use larger one to prevent from both of XRUN and successive
-+		 * blocking.
-+		 */
-+		if (frames_for_start_threshold > frames_per_period)
-+			avail_count = (unsigned int)frames_for_start_threshold;
-+		else
-+			avail_count = (unsigned int)frames_per_period;
++		if (*total_frame_count == 0)
++			*total_frame_count = frame_count;
++		if (frame_count < *total_frame_count)
++			*total_frame_count = frame_count;
 +	}
 +
-+	err = write_frames(state, frame_count, avail_count, mapper, cntrs);
++	return 0;
++}
++
++static int playback_pre_process(struct context *ctx, snd_pcm_access_t *access,
++				snd_pcm_format_t *sample_format,
++				unsigned int *samples_per_frame,
++				unsigned int *frames_per_second,
++				snd_pcm_uframes_t *frames_per_buffer,
++				uint64_t *total_frame_count)
++{
++	int i;
++	int err;
++
++	/* Prepare for containers. */
++	ctx->cntrs = calloc(ctx->opts.path_count, sizeof(*ctx->cntrs));
++	if (ctx->cntrs == NULL)
++		return -ENOMEM;
++	ctx->cntr_count = ctx->opts.path_count;
++
++	for (i = 0; i < ctx->cntr_count; ++i) {
++		snd_pcm_format_t format;
++		unsigned int channels;
++		unsigned int rate;
++		uint64_t frame_count;
++
++		err = container_parser_init(ctx->cntrs + i, ctx->opts.paths[i],
++					    ctx->opts.verbose > 1);
++		if (err < 0)
++			return err;
++
++		if (i == 0) {
++			/* For a raw container. */
++			format = ctx->opts.sample_format;
++			channels = ctx->opts.samples_per_frame;
++			rate = ctx->opts.frames_per_second;
++		} else {
++			format = *sample_format;
++			channels = *samples_per_frame;
++			rate = *frames_per_second;
++		}
++
++		err = container_context_pre_process(ctx->cntrs + i, &format,
++						    &channels, &rate,
++						    &frame_count);
++		if (err < 0)
++			return err;
++
++		if (format == SND_PCM_FORMAT_UNKNOWN || channels == 0 ||
++		    rate == 0) {
++			fprintf(stderr,
++				_("Sample format, channels and rate should be "
++				"indicated for given files.\n"));
++			return -EINVAL;
++		}
++
++		if (i == 0) {
++			*sample_format = format;
++			*samples_per_frame = channels;
++			*frames_per_second = rate;
++			*total_frame_count = frame_count;
++		} else {
++			if (format != *sample_format) {
++				fprintf(stderr,
++					_("When using several files, they "
++					  "should include the same sample "
++					  "format.\n"));
++				return -EINVAL;
++			}
++			/*
++			 * No need to check channels to handle multiple
++			 * containers.
++			 */
++			if (rate != *frames_per_second) {
++				fprintf(stderr,
++					_("When using several files, they "
++					  "should include samples at the same "
++					  "sampling rate.\n"));
++				return -EINVAL;
++			}
++			if (frame_count < *total_frame_count)
++				*total_frame_count = frame_count;
++		}
++	}
++
++	if (ctx->cntr_count > 1)
++		*samples_per_frame = ctx->cntr_count;
++	err = context_options_fixup_for_playback(&ctx->opts, *sample_format,
++						 *samples_per_frame,
++						 *frames_per_second);
 +	if (err < 0)
-+		goto error;
++		return err;
++
++	/* Configure hardware with these parameters. */
++	err = xfer_context_pre_process(&ctx->xfer, sample_format,
++				       samples_per_frame, frames_per_second,
++				       access, frames_per_buffer);
++	if (err < 0)
++		return err;
 +
 +	return 0;
-+error:
-+	*frame_count = 0;
++}
++
++static int context_pre_process(struct context *ctx, snd_pcm_stream_t direction,
++			       uint64_t *total_frame_count)
++{
++	snd_pcm_access_t access;
++	snd_pcm_format_t sample_format = SND_PCM_FORMAT_UNKNOWN;
++	unsigned int samples_per_frame = 0;
++	unsigned int frames_per_second = 0;
++	snd_pcm_uframes_t frames_per_buffer = 0;
++	unsigned int bytes_per_sample = 0;
++	enum mapper_type mapper_type;
++	int err;
++
++	if (direction == SND_PCM_STREAM_CAPTURE) {
++		mapper_type = MAPPER_TYPE_DEMUXER;
++		err = capture_pre_process(ctx, &access, &sample_format,
++					  &samples_per_frame,
++					  &frames_per_second,
++					  &frames_per_buffer,
++					  total_frame_count);
++	} else {
++		mapper_type = MAPPER_TYPE_MUXER;
++		err = playback_pre_process(ctx, &access, &sample_format,
++					   &samples_per_frame,
++					   &frames_per_second,
++					   &frames_per_buffer,
++					   total_frame_count);
++	}
++	if (err < 0)
++		return err;
++
++	/* Prepare for mapper. */
++	err = mapper_context_init(&ctx->mapper, mapper_type, ctx->cntr_count,
++				  ctx->opts.verbose > 1);
++	if (err < 0)
++		return err;
++
++	bytes_per_sample = snd_pcm_format_physical_width(sample_format) / 8;
++	if (bytes_per_sample <= 0)
++		return -ENXIO;
++	err = mapper_context_pre_process(&ctx->mapper, access, bytes_per_sample,
++					  samples_per_frame, frames_per_buffer,
++					  ctx->cntrs);
++	if (err < 0)
++		return err;
++
++	ctx->opts.sample_format = sample_format;
++	ctx->opts.samples_per_frame = samples_per_frame;
++	ctx->opts.frames_per_second = frames_per_second;
++
++	return 0;
++}
++
++static int context_process_frames(struct context *ctx,
++				  snd_pcm_stream_t direction,
++				  uint64_t expected_frame_count,
++				  uint64_t *actual_frame_count)
++{
++	bool verbose = ctx->opts.verbose > 2;
++	unsigned int frame_count;
++	int i;
++	int err = 0;
++
++	*actual_frame_count = 0;
++	while (!ctx->interrupted) {
++		struct container_context *cntr;
++
++		/* Tell remains to expected frame count. */
++		frame_count = expected_frame_count - *actual_frame_count;
++		err = xfer_context_process_frames(&ctx->xfer, &ctx->mapper,
++						  ctx->cntrs, &frame_count);
++		if (err < 0) {
++			if (err == -EAGAIN || err == -EINTR)
++				continue;
++			break;
++		}
++		if (verbose) {
++			fprintf(stderr,
++				"  handled: %u\n", frame_count);
++		}
++		for (i = 0; i < ctx->cntr_count; ++i) {
++			cntr = &ctx->cntrs[i];
++			if (cntr->eof)
++				break;
++		}
++		if (i < ctx->cntr_count)
++			break;
++
++		*actual_frame_count += frame_count;
++		if (*actual_frame_count >= expected_frame_count)
++			break;
++	}
++
 +	return err;
 +}
 +
-+static int irq_rw_pre_process(struct libasound_state *state)
++static void context_post_process(struct context *ctx,
++				 uint64_t accumulated_frame_count)
 +{
-+	struct frame_cache *cache = state->private_data;
-+	snd_pcm_format_t format;
-+	snd_pcm_uframes_t frames_per_buffer;
-+	int bytes_per_sample;
-+	uint64_t bytes_per_buffer;
-+	int err;
++	uint64_t total_frame_count;
++	int i;
 +
-+	err = snd_pcm_hw_params_get_format(state->hw_params, &format);
-+	if (err < 0)
-+		return err;
-+	bytes_per_sample = snd_pcm_format_physical_width(format) / 8;
-+	if (bytes_per_sample <= 0)
-+		return -ENXIO;
-+	cache->bytes_per_sample = bytes_per_sample;
++	xfer_context_post_process(&ctx->xfer);
 +
-+	err = snd_pcm_hw_params_get_channels(state->hw_params,
-+					     &cache->samples_per_frame);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_pcm_hw_params_get_buffer_size(state->hw_params,
-+						&frames_per_buffer);
-+	if (err < 0)
-+		return err;
-+	cache->frames_per_buffer = (unsigned int)frames_per_buffer;
-+
-+	/* Allocate buffer and assign callback for alignment. */
-+	err = snd_pcm_hw_params_get_access(state->hw_params, &cache->access);
-+	if (err < 0)
-+		return err;
-+	if (cache->access == SND_PCM_ACCESS_RW_INTERLEAVED) {
-+		bytes_per_buffer = cache->bytes_per_sample *
-+				   cache->samples_per_frame *
-+				   cache->frames_per_buffer;
-+		cache->buf = malloc(bytes_per_buffer);
-+		if (cache->buf == NULL)
-+			return -ENOMEM;
-+		cache->buf_ptr = cache->buf;
-+		cache->align_frames = align_frames_in_i;
-+	} else if (cache->access == SND_PCM_ACCESS_RW_NONINTERLEAVED) {
-+		char **bufs;
-+		char **buf_ptrs;
-+		int i;
-+		bufs = calloc(cache->samples_per_frame * 2, sizeof(*bufs));
-+		if (bufs == NULL)
-+			return -ENOMEM;
-+		buf_ptrs = bufs + cache->samples_per_frame * sizeof(*bufs);
-+		for (i = 0; i < cache->samples_per_frame; ++i) {
-+			bytes_per_buffer = cache->bytes_per_sample *
-+					   cache->frames_per_buffer;
-+			bufs[i] = malloc(bytes_per_buffer);
-+			if (bufs[i] == NULL)
-+				return -ENOMEM;
-+			buf_ptrs[i] = bufs[i];
++	if (ctx->cntrs) {
++		for (i = 0; i < ctx->cntr_count; ++i) {
++			container_context_post_process(ctx->cntrs + i,
++						       &total_frame_count);
++			container_context_destroy(ctx->cntrs + i);
 +		}
-+		cache->buf = bufs;
-+		cache->buf_ptr = buf_ptrs;
-+		cache->align_frames = align_frames_in_n;
-+	} else {
-+		return -ENXIO;
++		free(ctx->cntrs);
 +	}
 +
-+	if (snd_pcm_stream(state->handle) == SND_PCM_STREAM_CAPTURE)
-+		cache->handle = r_process_frames_blocking;
-+	else
-+		cache->handle = w_process_frames_blocking;
-+
-+	return 0;
++	mapper_context_post_process(&ctx->mapper);
++	mapper_context_destroy(&ctx->mapper);
 +}
 +
-+static int irq_rw_process_frames(struct libasound_state *state,
-+				unsigned int *frame_count,
-+				struct mapper_context *mapper,
-+				struct container_context *cntrs)
++static void context_destroy(struct context *ctx)
 +{
-+	struct frame_cache *cache = state->private_data;
-+	snd_pcm_state_t status;
-+
-+	/* Need to recover the stream. */
-+	status = snd_pcm_state(state->handle);
-+	if (status != SND_PCM_STATE_RUNNING && status != SND_PCM_STATE_PREPARED)
-+		return -EPIPE;
-+
-+	/* NOTE: Actually, status can be shift always. */
-+	return cache->handle(state, status, frame_count, mapper, cntrs);
++	xfer_context_destroy(&ctx->xfer);
++	context_options_destroy(&ctx->opts);
 +}
 +
-+static void irq_rw_post_process(struct libasound_state *state)
++int subcmd_transfer(int argc, char *const *argv, snd_pcm_stream_t direction)
 +{
-+	struct frame_cache *cache = state->private_data;
++	struct context ctx = {0};
 +
-+	if (cache->buf == NULL) {
-+		if (cache->access == SND_PCM_ACCESS_RW_NONINTERLEAVED) {
-+			char **bufs = cache->buf;
-+			char **buf_ptrs = cache->buf_ptr;
-+			int i;
-+			for (i = 0; i < cache->samples_per_frame; ++i) {
-+				if (bufs[i])
-+					free(bufs[i]);
-+				bufs[i] = NULL;
-+				buf_ptrs[i] = NULL;
-+			}
-+			free(cache->buf_ptr);
-+		}
-+		free(cache->buf);
++	uint64_t expected_frame_count = 0;
++	uint64_t actual_frame_count = 0;
++
++	int err = 0;
++
++	/* Renewed command system. */
++	if (argc > 2 && !strcmp(argv[1], "transfer")) {
++		/* Go ahead to parse file paths properly. */
++		--argc;
++		++argv;
 +	}
-+	cache->buf = NULL;
-+	cache->buf_ptr = NULL;
++
++	err = context_options_init(&ctx.opts, argc, argv, direction);
++	if (err < 0)
++		return err;
++	if (ctx.opts.help) {
++		printf("xfer help.\n");
++		return 0;
++	}
++
++	err = prepare_signal_handler(&ctx);
++	if (err < 0)
++		return err;
++
++	err = context_init(&ctx, direction);
++	if (err < 0)
++		goto end;
++
++	err = context_pre_process(&ctx, direction, &expected_frame_count);
++	if (err < 0)
++		goto end;
++
++	err = context_process_frames(&ctx, direction, expected_frame_count,
++				     &actual_frame_count);
++end:
++	context_post_process(&ctx, actual_frame_count);
++
++	context_destroy(&ctx);
++
++	return err;
 +}
-+
-+const struct xfer_libasound_ops xfer_libasound_irq_rw_ops = {
-+	.pre_process	= irq_rw_pre_process,
-+	.process_frames	= irq_rw_process_frames,
-+	.post_process	= irq_rw_post_process,
-+	.private_size	= sizeof(struct frame_cache),
-+};
-diff --git a/axfer/xfer-libasound.c b/axfer/xfer-libasound.c
-index 66e8e1de..52451fff 100644
---- a/axfer/xfer-libasound.c
-+++ b/axfer/xfer-libasound.c
-@@ -218,6 +218,12 @@ static int xfer_libasound_pre_process(struct xfer_context *xfer,
- 		return err;
+diff --git a/axfer/subcmd.h b/axfer/subcmd.h
+index 940d6814..25bfa4f8 100644
+--- a/axfer/subcmd.h
++++ b/axfer/subcmd.h
+@@ -13,4 +13,6 @@
  
- 	/* Assign I/O operation. */
-+	if (*access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+	    *access == SND_PCM_ACCESS_RW_NONINTERLEAVED) {
-+		state->ops = &xfer_libasound_irq_rw_ops;
-+	} else {
-+		return -ENXIO;
-+	}
- 	if (state->ops->private_size > 0) {
- 		state->private_data = malloc(state->ops->private_size);
- 		if (state->private_data == NULL)
-diff --git a/axfer/xfer-libasound.h b/axfer/xfer-libasound.h
-index 72807cdd..97b26634 100644
---- a/axfer/xfer-libasound.h
-+++ b/axfer/xfer-libasound.h
-@@ -42,4 +42,7 @@ struct xfer_libasound_ops {
- 	unsigned int private_size;
- };
+ int subcmd_list(int argc, char *const *argv, snd_pcm_stream_t direction);
  
-+extern const struct xfer_libasound_ops xfer_libasound_irq_mmap_ops;
-+extern const struct xfer_libasound_ops xfer_libasound_irq_rw_ops;
++int subcmd_transfer(int argc, char *const *argv, snd_pcm_stream_t direction);
 +
  #endif
 -- 
