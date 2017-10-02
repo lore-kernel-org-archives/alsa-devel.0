@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 11/39] axfer: add support for a mapper
-	for multiple target
-Date: Mon,  2 Oct 2017 09:19:12 +0900
-Message-ID: <20171002001940.17218-12-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 06/39] axfer: add support for a
+	container of Creative Tech. voice format
+Date: Mon,  2 Oct 2017 09:19:07 +0900
+Message-ID: <20171002001940.17218-7-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BBC7C266F93
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9E31F266F16
  for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,376 +25,945 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support of mapper for 'multiple' target. This handles
-several files via 'container' functions, and constructs data frame buffer
-for playback, or splits data frames from data frame buffer for capture.
-When playback source files includes data frames with several channels, the
-first channel is used to construct buffer. For capture direction, each of
-channel of data frame is stored in one file, thus the file includes one
-channel of data frame. When handling non-interleaved buffer, a caller
-should use an array of buffer for each of channels with non-interleaved
-data frames.
+This commit adds support for data of Creative Tech. voice format. In this
+data format, values in each of field are represented in little-endian byte
+order and available formats of data sample are restricted in little-endian
+byte order.
+
+In version 1.10 of this format, sampling rate is represented with
+reciprocal number of the rate, thus we cannot calculate original sampling
+rate precisely just from its header. For example at 44.1kHz, file header
+includes 233 (=256-1,000,000/44,100), but we cannot recover the value just
+from the code (43478.2...). For my convenience, this commit adds a
+pre-computed table and lookup major rates from the table.
+
+Additionally, this format can includes several blocks with different
+sample format. When handling this type of file, we need to start/stop
+substream for each of the block, while this brings complicated code.
+This type of format is enough ancient and presently quite minor. This
+commit takes a compromise and handles a first sample block only.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am       |   3 +-
- axfer/mapper-multiple.c | 271 ++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/mapper.c          |  15 +++
- axfer/mapper.h          |   4 +
- 4 files changed, 292 insertions(+), 1 deletion(-)
- create mode 100644 axfer/mapper-multiple.c
+ axfer/Makefile.am     |   3 +-
+ axfer/container-voc.c | 843 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/container.c     |   4 +
+ axfer/container.h     |   4 +
+ 4 files changed, 853 insertions(+), 1 deletion(-)
+ create mode 100644 axfer/container-voc.c
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index baf9b898..f17e59b0 100644
+index 35aa2261..48d046e1 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -33,4 +33,5 @@ axfer_SOURCES = \
- 	container-raw.c \
- 	mapper.h \
- 	mapper.c \
--	mapper-single.c
-+	mapper-single.c \
-+	mapper-multiple.c
-diff --git a/axfer/mapper-multiple.c b/axfer/mapper-multiple.c
+@@ -26,4 +26,5 @@ axfer_SOURCES = \
+ 	container.h \
+ 	container.c \
+ 	container-riff-wave.c \
+-	container-au.c
++	container-au.c \
++	container-voc.c
+diff --git a/axfer/container-voc.c b/axfer/container-voc.c
 new file mode 100644
-index 00000000..c40d0bd6
+index 00000000..22966501
 --- /dev/null
-+++ b/axfer/mapper-multiple.c
-@@ -0,0 +1,271 @@
++++ b/axfer/container-voc.c
+@@ -0,0 +1,843 @@
 +/*
-+ * mapper-multiple.c - a muxer/demuxer for multiple containers.
++ * container-voc.c - a parser/builder for a container of Creative Voice File.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "mapper.h"
++#include "container.h"
 +#include "misc.h"
 +
-+struct multiple_state {
-+	void (*align_frames)(void *frame_buf, unsigned int frame_count,
-+			     char **buf, unsigned int bytes_per_sample,
-+			     struct container_context *cntrs,
-+			     unsigned int cntr_count);
-+	char **bufs;
-+	unsigned int cntr_count;
++/* Not portable to all of UNIX platforms. */
++#include <endian.h>
++
++/*
++ * References:
++ *  - http://sox.sourceforge.net/
++ */
++
++#define VOC_MAGIC		"Creative Voice File\x1a"
++#define VOC_VERSION_1_10	0x010a
++#define VOC_VERSION_1_20	0x0114
++
++enum block_type {
++	BLOCK_TYPE_TERMINATOR		= 0x00,
++	BLOCK_TYPE_V110_DATA		= 0x01,
++	BLOCK_TYPE_CONTINUOUS_DATA	= 0x02,
++	BLOCK_TYPE_SILENCE		= 0x03,
++	BLOCK_TYPE_MARKER		= 0x04,
++	BLOCK_TYPE_STRING		= 0x05,
++	BLOCK_TYPE_REPEAT_START		= 0x06,
++	BLOCK_TYPE_REPEAT_END		= 0x07,
++	BLOCK_TYPE_EXTENDED_V110_FORMAT	= 0x08,
++	BLOCK_TYPE_V120_DATA		= 0x09,
 +};
 +
-+static void align_to_i(void *frame_buf, unsigned int frame_count,
-+		       char **src_bufs, unsigned int bytes_per_sample,
-+		       struct container_context *cntrs, unsigned int cntr_count)
++enum code_id {
++	/* Version 1.10. */
++	CODE_ID_GENERIC_MBLA_U8			= 0x00,
++	CODE_ID_CREATIVE_ADPCM_8BIT_TO_4BIT_LE	= 0x01,
++	CODE_ID_CREATIVE_ADPCM_8BIT_TO_3BIT_LE	= 0x02,
++	CODE_ID_CREATIVE_ADPCM_8BIT_TO_2BIT_LE	= 0x03,
++	/* Version 1.20. */
++	CODE_ID_GENERIC_MBLA_S16_LE		= 0x04,
++	CODE_ID_CCIT_A_LAW_LE			= 0x06,
++	CODE_ID_CCIT_MU_LAW_LE			= 0x07,
++	CODE_ID_CREATIVE_ADPCM_16BIT_TO_4BIT_LE	= 0x2000,
++};
++
++struct format_map {
++	unsigned int minimal_version;
++	enum code_id code_id;
++	snd_pcm_format_t format;
++};
++
++static const struct format_map format_maps[] = {
++	{VOC_VERSION_1_10, CODE_ID_GENERIC_MBLA_U8,	SND_PCM_FORMAT_U8},
++	{VOC_VERSION_1_20, CODE_ID_GENERIC_MBLA_S16_LE,	SND_PCM_FORMAT_S16_LE},
++	{VOC_VERSION_1_20, CODE_ID_CCIT_A_LAW_LE,	SND_PCM_FORMAT_A_LAW},
++	{VOC_VERSION_1_20, CODE_ID_CCIT_MU_LAW_LE,	SND_PCM_FORMAT_MU_LAW},
++	/* The other formats are not supported by ALSA. */
++};
++
++struct container_header {
++	uint8_t magic[20];
++	uint16_t hdr_size;
++	uint16_t version;
++	uint16_t version_compr;
++};
++
++/* A format for data blocks except for terminator type. */
++struct block_header {
++	uint8_t type;
++	uint8_t size[3];
++
++	uint8_t data[0];
++};
++
++/* Data block for terminator type has an exceptional format. */
++struct block_terminator {
++	uint8_t type;
++};
++
++struct time_const {
++	unsigned int frames_per_second;
++	uint16_t code;
++};
++
++static const struct time_const v110_time_consts[] = {
++	{5512, 74},
++	{8000, 130},
++	{11025, 165},
++	{16000, 193},
++	{22050, 210},
++	{32000, 224},
++	{44100, 233},
++	{48000, 235},
++	{64000, 240},
++	/* Time constant for the upper sampling rate is not identical. */
++};
++
++static const struct time_const ex_v110_time_consts[] = {
++	{5512, 19092},
++	{8000, 33536},
++	{11025, 42317},
++	{16000, 49536},
++	{22050, 53927},
++	{32000, 57536},
++	{44100, 59732},
++	{48000, 60203},
++	{64000, 61536},
++	{88200, 62634},
++	{96000, 62870},
++	{176400, 64085},
++	{192000, 64203},
++	/* This support up to 192.0 kHz. The rest is for cases with 2ch. */
++	{352800, 64811},
++	{384000, 64870},
++};
++
++/*
++ * v1.10 format:
++ * - monaural.
++ * - frames_per_second = 1,000,000 / (256 - time_const)
++ */
++struct block_v110_data {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to (2 + the size of frames). */
++
++	uint8_t time_const;
++	uint8_t code_id;
++	uint8_t frames[0];	/* Aligned to little-endian. */
++};
++
++struct block_continuous_data {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to the size of frames. */
++
++	uint8_t frames[0];	/* Aligned to little-endian. */
++};
++
++/*
++ * v1.10 format:
++ * - monaural.
++ * - frames_per_second = 1,000,000 / (256 - time_const).
++ */
++struct block_silence {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to 3. */
++
++	uint16_t frame_count;
++	uint8_t time_const;
++};
++
++struct block_marker {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to 2. */
++
++	uint16_t mark;
++};
++
++struct block_string {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to the length of string with 0x00. */
++
++	uint8_t chars[0];
++};
++
++struct block_repeat_start {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to 2. */
++
++	uint16_t count;
++};
++
++struct block_repeat_end {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to 0. */
++};
++
++/*
++ * Extended v1.10 format:
++ * - manaural/stereo.
++ * - frames_per_second =
++ *		256,000,000 / (samples_per_frame * (65536 - time_const)).
++ * - Appear just before v110_data block.
++ */
++struct block_extended_v110_format {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to 4. */
++
++	uint16_t time_const;
++	uint8_t code_id;
++	uint8_t ch_mode;	/* 0 is monaural, 1 is stereo. */
++};
++
++/*
++ * v1.20 format:
++ * - monaural/stereo.
++ * - 8/16 bits_per_sample.
++ * - time_const is not used.
++ * - code_id is extended.
++ */
++struct block_v120_format {
++	uint8_t type;
++	uint8_t size[3];	/* Equals to (12 + ). */
++
++	uint32_t frames_per_second;
++	uint8_t bits_per_sample;
++	uint8_t samples_per_frame;
++	uint16_t code_id;
++	uint8_t reserved[4];
++
++	uint8_t frames[0];	/* Aligned to little-endian. */
++};
++
++/* Aligned to little endian order but 24 bits field. */
++static uint32_t parse_block_data_size(uint8_t fields[3])
 +{
-+	char *dst = frame_buf;
-+	char *src;
-+	unsigned int dst_pos;
-+	unsigned int src_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	/*
-+	 * src: first channel in each of interleaved buffers in containers =>
-+	 * dst:interleaved.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		src = src_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+			dst_pos = bytes_per_sample * (cntr_count * j + i);
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
++	return (fields[2] << 16) | (fields[1] << 8) | fields[0];
 +}
 +
-+static void align_from_i(void *frame_buf, unsigned int frame_count,
-+			 char **dst_bufs, unsigned int bytes_per_sample,
-+			 struct container_context *cntrs,
-+			 unsigned int cntr_count)
++static void build_block_data_size(uint8_t fields[3], unsigned int size)
 +{
-+	char *src = frame_buf;
-+	char *dst;
-+	unsigned int src_pos;
-+	unsigned int dst_pos;
-+	struct container_context *cntr;
-+	int i, j;
-+
-+	for (i = 0; i < cntr_count; ++i) {
-+		dst = dst_bufs[i];
-+		cntr = cntrs + i;
-+
-+		for (j = 0; j < frame_count; ++j) {
-+			/* Use first src channel for each of dst channel. */
-+			src_pos = bytes_per_sample * (cntr_count * j + i);
-+			dst_pos = bytes_per_sample * cntr->samples_per_frame * j;
-+
-+			memcpy(dst + dst_pos, src + src_pos, bytes_per_sample);
-+		}
-+	}
++	fields[0] = (size & 0x0000ff);
++	fields[1] = (size & 0x00ff00) >> 8;
++	fields[2] = (size & 0xff0000) >> 16;
 +}
 +
-+static int multiple_pre_process(struct mapper_context *mapper,
-+				struct container_context *cntrs,
-+				unsigned int cntr_count)
++static int build_time_constant(unsigned int frames_per_second,
++			       unsigned int samples_per_frame, uint16_t *code,
++			       bool extended)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	struct container_context *cntr;
 +	int i;
 +
-+	/*
-+	 * Additionally, format of samples in the containers should be the same
-+	 * as the format in PCM substream.
-+	 */
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = cntrs + i;
-+		if (mapper->bytes_per_sample != cntr->bytes_per_sample)
++	/* 16 bits are available for this purpose. */
++	if (extended) {
++		if (samples_per_frame > 2)
 +			return -EINVAL;
-+	}
-+	state->cntr_count = cntr_count;
++		frames_per_second *= samples_per_frame;
 +
-+	/* Decide method to align frames. */
-+	if (mapper->type == MAPPER_TYPE_DEMUXER) {
-+		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
-+			state->align_frames = align_from_i;
-+		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
-+			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+			state->align_frames = NULL;
-+		else
-+			return -EINVAL;
-+	} else {
-+		if (mapper->access == SND_PCM_ACCESS_RW_INTERLEAVED ||
-+		    mapper->access == SND_PCM_ACCESS_MMAP_INTERLEAVED)
-+			state->align_frames = align_to_i;
-+		else if (mapper->access == SND_PCM_ACCESS_RW_NONINTERLEAVED ||
-+			 mapper->access == SND_PCM_ACCESS_MMAP_NONINTERLEAVED)
-+			state->align_frames = NULL;
-+		else
-+			return -EINVAL;
-+	}
-+
-+	if (state->align_frames) {
-+		/*
-+		 * Furthermore, in demuxer case, each container should be
-+		 * configured to store one sample per frame.
-+		 */
-+		if (mapper->type == MAPPER_TYPE_DEMUXER) {
-+			for (i = 0; i < cntr_count; ++i) {
-+				cntr = cntrs + i;
-+				if (cntrs->samples_per_frame != 1)
-+					return -EINVAL;
-+			}
++		for (i = 0; i < ARRAY_SIZE(ex_v110_time_consts); ++i) {
++			if (ex_v110_time_consts[i].frames_per_second ==
++					frames_per_second)
++				break;
 +		}
++		if (i < ARRAY_SIZE(ex_v110_time_consts) ||
++		    frames_per_second <= 192000) {
++			*code = ex_v110_time_consts[i].code;
++		} else {
++			*code = 65536 - 256000000 / frames_per_second;
++		}
++	} else {
++		if (samples_per_frame != 1)
++			return -EINVAL;
 +
-+		state->bufs = calloc(cntr_count, sizeof(char *));
-+		if (state->bufs == NULL)
-+			return -ENOMEM;
++		for (i = 0; i < ARRAY_SIZE(v110_time_consts); ++i) {
++			if (v110_time_consts[i].frames_per_second ==
++					frames_per_second)
++			break;
++		}
++		/* Should be within 8 bit. */
++		if (i < ARRAY_SIZE(v110_time_consts))
++			*code = (uint8_t)v110_time_consts[i].code;
++		else
++			*code = 256 - 1000000 / frames_per_second;
++	}
 +
-+		for (i = 0; i < cntr_count; ++i) {
-+			unsigned int bytes_per_buffer;
++	return 0;
++}
 +
-+			/*
-+			 * Allocate intermediate buffer as the same size as a
-+			 * period for each of containers.
-+			 */
-+			cntr = cntrs + i;
++static unsigned int parse_time_constant(uint16_t code,
++					unsigned int samples_per_frame,
++					unsigned int *frames_per_second,
++					bool extended)
++{
++	int i;
 +
-+			bytes_per_buffer = mapper->bytes_per_sample *
-+					   cntr->samples_per_frame *
-+					   mapper->frames_per_buffer;
++	if (extended) {
++		if (samples_per_frame > 2)
++			return -EINVAL;
 +
-+			state->bufs[i] = malloc(bytes_per_buffer);
-+			if (state->bufs[i] == NULL)
-+				return -ENOMEM;
-+			memset(state->bufs[i], 0, bytes_per_buffer);
++		for (i = 0; i < ARRAY_SIZE(ex_v110_time_consts); ++i) {
++			if (ex_v110_time_consts[i].code == code ||
++			    ex_v110_time_consts[i].code - 1 == code)
++				break;
++		}
++		if (i < ARRAY_SIZE(ex_v110_time_consts)) {
++			*frames_per_second =
++				ex_v110_time_consts[i].frames_per_second /
++				samples_per_frame;
++		} else {
++			*frames_per_second = 256000000 / samples_per_frame /
++					     (65536 - code);
++		}
++	} else {
++		if (samples_per_frame != 1)
++			return -EINVAL;
++
++		for (i = 0; i < ARRAY_SIZE(v110_time_consts); ++i) {
++			if (v110_time_consts[i].code == code ||
++			    v110_time_consts[i].code - 1 == code)
++				break;
++		}
++		if (i < ARRAY_SIZE(v110_time_consts)) {
++			*frames_per_second =
++					v110_time_consts[i].frames_per_second;
++		} else {
++			*frames_per_second = 1000000 / (256 - code);
 +		}
 +	}
 +
 +	return 0;
 +}
 +
-+static int process_containers(char **src_bufs, unsigned int *frame_count,
-+			      struct container_context *cntrs,
-+			      unsigned int cntr_count)
++struct parser_state {
++	unsigned int version;
++	bool extended;
++
++	unsigned int frames_per_second;
++	unsigned int samples_per_frame;
++	unsigned int bytes_per_sample;
++	enum code_id code_id;
++	uint32_t byte_count;
++};
++
++static int parse_container_header(struct parser_state *state,
++				  struct container_header *header)
 +{
-+	struct container_context *cntr;
-+	char *src;
++	uint16_t hdr_size;
++	uint16_t version;
++	uint16_t version_compr;
++
++	hdr_size = le16toh(header->hdr_size);
++	version = le16toh(header->version);
++	version_compr = le16toh(header->version_compr);
++
++	if (memcmp(header->magic, VOC_MAGIC, sizeof(header->magic)))
++		return -EIO;
++
++	if (hdr_size != sizeof(*header))
++		return -EIO;
++
++	if (version_compr != 0x1234 + ~version)
++		return -EIO;
++
++	if (version != VOC_VERSION_1_10 && version != VOC_VERSION_1_20)
++		return -EIO;
++
++	state->version = version;
++
++	return 0;
++}
++
++static bool check_code_id(uint8_t code_id, unsigned int version)
++{
 +	int i;
-+	int err = 0;
 +
-+	/* TODO: arrangement for *frame_count. */
-+	for (i = 0; i < cntr_count; ++i) {
-+		cntr = &cntrs[i];
-+		src = src_bufs[i];
++	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
++		if (code_id != format_maps[i].code_id)
++			continue;
++		if (version >= format_maps[i].minimal_version)
++			return true;
++	}
 +
-+		err = container_context_process_frames(cntr, src, frame_count);
++	return false;
++}
++
++static int parse_v120_format_block(struct parser_state *state,
++				   struct block_v120_format *block)
++{
++	state->frames_per_second = le32toh(block->frames_per_second);
++	state->bytes_per_sample = block->bits_per_sample / 8;
++	state->samples_per_frame = block->samples_per_frame;
++	state->code_id = le16toh(block->code_id);
++	state->byte_count = parse_block_data_size(block->size) - 12;
++
++	if (!check_code_id(state->code_id, VOC_VERSION_1_20))
++		return -EIO;
++
++	return 0;
++}
++
++static int parse_extended_v110_format(struct parser_state *state,
++				      struct block_extended_v110_format *block)
++{
++	unsigned int time_const;
++	unsigned int frames_per_second;
++	int err;
++
++	state->code_id = block->code_id;
++	if (!check_code_id(state->code_id, VOC_VERSION_1_10))
++		return -EIO;
++
++	if (block->ch_mode == 0)
++		state->samples_per_frame = 1;
++	else if (block->ch_mode == 1)
++		state->samples_per_frame = 2;
++	else
++		return -EIO;
++
++	time_const = le16toh(block->time_const);
++	err = parse_time_constant(time_const, state->samples_per_frame,
++				  &frames_per_second, true);
++	if (err < 0)
++		return err;
++	state->frames_per_second = frames_per_second;
++
++	state->extended = true;
++
++	return 0;
++}
++
++static int parse_v110_data(struct parser_state *state,
++			   struct block_v110_data *block)
++{
++	unsigned int time_const;
++	unsigned int frames_per_second;
++	int err;
++
++	if (!state->extended) {
++		state->code_id = block->code_id;
++		if (!check_code_id(state->code_id, VOC_VERSION_1_10))
++			return -EIO;
++
++		time_const = block->time_const;
++		err = parse_time_constant(time_const, 1, &frames_per_second,
++					  false);
 +		if (err < 0)
++			return err;
++		state->frames_per_second = frames_per_second;
++		state->samples_per_frame = 1;
++	}
++
++	state->bytes_per_sample = 1;
++	state->byte_count = parse_block_data_size(block->size) - 2;
++
++	return 0;
++}
++
++static int detect_container_version(struct container_context *cntr)
++{
++	struct parser_state *state = cntr->private_data;
++	struct container_header header = {0};
++	int err;
++
++	/* 4 bytes were alread read to detect container type. */
++	memcpy(&header.magic, cntr->magic, sizeof(cntr->magic));
++	err = container_recursive_read(cntr,
++				       (char *)&header + sizeof(cntr->magic),
++				       sizeof(header) - sizeof(cntr->magic));
++	if (err < 0)
++		return err;
++	if (cntr->eof)
++		return 0;
++
++	return parse_container_header(state, &header);
++}
++
++static int allocate_for_block_cache(struct container_context *cntr,
++				    struct block_header *header, void **buf)
++{
++	uint32_t block_size;
++	char *cache;
++	int err;
++
++	if (header->type == BLOCK_TYPE_V110_DATA)
++		block_size = sizeof(struct block_v110_data);
++	else if (header->type == BLOCK_TYPE_CONTINUOUS_DATA)
++		block_size = sizeof(struct block_continuous_data);
++	else if (header->type == BLOCK_TYPE_EXTENDED_V110_FORMAT)
++		block_size = sizeof(struct block_extended_v110_format);
++	else if (header->type == BLOCK_TYPE_V120_DATA)
++		block_size = sizeof(struct block_v120_format);
++	else
++		block_size = parse_block_data_size(header->size);
++
++	cache = malloc(block_size);
++	if (cache == NULL)
++		return -ENOMEM;
++	memset(cache, 0, block_size);
++
++	memcpy(cache, header, sizeof(*header));
++	err = container_recursive_read(cntr, cache + sizeof(*header),
++				       block_size - sizeof(*header));
++	if (err < 0) {
++		free(cache);
++		return err;
++	}
++	if (cntr->eof) {
++		free(cache);
++		return 0;
++	}
++
++	*buf = cache;
++
++	return 0;
++}
++
++static int cache_data_block(struct container_context *cntr,
++			    struct block_header *header, void **buf)
++{
++	int err;
++
++	/* Check type of this block. */
++	err = container_recursive_read(cntr, &header->type,
++				       sizeof(header->type));
++	if (err < 0)
++		return err;
++	if (cntr->eof)
++		return 0;
++
++	if (header->type > BLOCK_TYPE_V120_DATA)
++		return -EIO;
++	if (header->type == BLOCK_TYPE_TERMINATOR)
++		return 0;
++
++	/* Check size of this block. If the block includes a batch of data, */
++	err = container_recursive_read(cntr, &header->size,
++				       sizeof(header->size));
++	if (err < 0)
++		return err;
++	if (cntr->eof)
++		return 0;
++
++	return allocate_for_block_cache(cntr, header, buf);
++}
++
++static int detect_format_block(struct container_context *cntr)
++{
++	struct parser_state *state = cntr->private_data;
++	struct block_header header;
++	void *buf = NULL;
++	int err;
++
++again:
++	err = cache_data_block(cntr, &header, &buf);
++	if (err < 0)
++		return err;
++
++	if (header.type == BLOCK_TYPE_EXTENDED_V110_FORMAT) {
++		err = parse_extended_v110_format(state, buf);
++	} else if (header.type == BLOCK_TYPE_V120_DATA) {
++		err = parse_v120_format_block(state, buf);
++	} else if (header.type == BLOCK_TYPE_V110_DATA) {
++		err = parse_v110_data(state, buf);
++	} else {
++		free(buf);
++		goto again;
++	}
++
++	free(buf);
++
++	if (err < 0)
++		return err;
++
++	/* Expect to detect block_v110_data. */
++	if (header.type == BLOCK_TYPE_EXTENDED_V110_FORMAT)
++		goto again;
++
++	return 0;
++}
++
++static int voc_parser_pre_process(struct container_context *cntr,
++				  snd_pcm_format_t *format,
++				  unsigned int *samples_per_frame,
++				  unsigned int *frames_per_second,
++				  uint64_t *byte_count)
++{
++	struct parser_state *state = cntr->private_data;
++	int i;
++	int err;
++
++	err = detect_container_version(cntr);
++	if (err < 0)
++		return err;
++
++	err = detect_format_block(cntr);
++	if (err < 0)
++		return err;
++
++	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
++		if (format_maps[i].code_id == state->code_id)
 +			break;
++	}
++	if (i == ARRAY_SIZE(format_maps))
++		return -EINVAL;
++
++	*format = format_maps[i].format;
++	*samples_per_frame = state->samples_per_frame;
++	*frames_per_second = state->frames_per_second;
++
++	/* This program handles PCM frames in this data block only. */
++	*byte_count = state->byte_count;
++
++	return 0;
++}
++
++struct builder_state {
++	unsigned int version;
++	bool extended;
++	enum code_id code_id;
++
++	unsigned int samples_per_frame;
++	unsigned int bytes_per_sample;
++};
++
++static int write_container_header(struct container_context *cntr,
++				  struct container_header *header)
++{
++	struct builder_state *state = cntr->private_data;
++
++	/* Process container header. */
++	memcpy(header->magic, VOC_MAGIC, sizeof(header->magic));
++	header->hdr_size = htole16(sizeof(*header));
++	header->version = htole16(state->version);
++	header->version_compr = htole16(0x1234 + ~state->version);
++
++	return container_recursive_write(cntr, header, sizeof(*header));
++}
++
++static int write_v120_format_block(struct container_context *cntr,
++				   struct block_v120_format *block,
++				   unsigned int frames_per_second,
++				   uint64_t byte_count)
++{
++	struct builder_state *state = cntr->private_data;
++
++	block->type = BLOCK_TYPE_V120_DATA;
++	build_block_data_size(block->size, 12 + byte_count);
++
++	block->frames_per_second = htole32(frames_per_second);
++	block->bits_per_sample = htole16(state->bytes_per_sample * 8);
++	block->samples_per_frame = htole16(state->samples_per_frame);
++	block->code_id = htole16(state->code_id);
++
++	return container_recursive_write(cntr, block, sizeof(*block));
++}
++
++static int write_extended_v110_format_block(struct container_context *cntr,
++				unsigned int frames_per_second,
++				struct block_extended_v110_format *block)
++{
++	struct builder_state *state = cntr->private_data;
++	uint16_t time_const;
++	int err;
++
++	block->type = BLOCK_TYPE_EXTENDED_V110_FORMAT;
++	build_block_data_size(block->size, 4);
++
++	/* 16 bits are available for this purpose. */
++	err = build_time_constant(frames_per_second, state->samples_per_frame,
++				  &time_const, true);
++	if (err < 0)
++		return err;
++	block->time_const = htole16(time_const);
++	block->code_id = htole16(state->code_id);
++
++	if (state->samples_per_frame == 1)
++		block->ch_mode = 0;
++	else
++		block->ch_mode = 1;
++
++	return container_recursive_write(cntr, block, sizeof(*block));
++}
++
++static int write_v110_format_block(struct container_context *cntr,
++				   struct block_v110_data *block,
++				   unsigned int frames_per_second,
++				   uint64_t byte_count)
++{
++	struct builder_state *state = cntr->private_data;
++	uint16_t time_const;
++	int err;
++
++	block->type = BLOCK_TYPE_V110_DATA;
++	build_block_data_size(block->size, 2 + byte_count);
++
++	/* These fields were obsoleted by extension. */
++	err = build_time_constant(frames_per_second, 1, &time_const, false);
++	if (err < 0)
++		return err;
++	block->time_const = (uint8_t)time_const;
++	block->code_id = state->code_id;
++	return container_recursive_write(cntr, block, sizeof(*block));
++}
++
++static int write_data_blocks(struct container_context *cntr,
++			     unsigned int frames_per_second,
++			     uint64_t byte_count)
++{
++	union {
++		struct container_header header;
++		struct block_v110_data v110_data;
++		struct block_extended_v110_format extended_v110_format;
++		struct block_v120_format v120_format;
++	} buf = {0};
++	struct builder_state *state = cntr->private_data;
++	int err;
++
++	err = write_container_header(cntr, &buf.header);
++	if (err < 0)
++		return err;
++
++	if (state->version == VOC_VERSION_1_20) {
++		err = write_v120_format_block(cntr, &buf.v120_format,
++					      frames_per_second, byte_count);
++	} else {
++		if (state->extended) {
++			err = write_extended_v110_format_block(cntr,
++					frames_per_second,
++					&buf.extended_v110_format);
++			if (err < 0)
++				return err;
++		}
++		err = write_v110_format_block(cntr, &buf.v110_data,
++					      frames_per_second, byte_count);
 +	}
 +
 +	return err;
 +}
 +
-+static int multiple_muxer_process_frames(struct mapper_context *mapper,
-+					 void *frame_buf,
-+					 unsigned int *frame_count,
-+					 struct container_context *cntrs,
-+					 unsigned int cntr_count)
++static int voc_builder_pre_process(struct container_context *cntr,
++				   snd_pcm_format_t *format,
++				   unsigned int *samples_per_frame,
++				   unsigned int *frames_per_second,
++				   uint64_t *byte_count)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	char **src_bufs;
++	struct builder_state *state = cntr->private_data;
++	int i;
++
++	/* Validate parameters. */
++	for (i = 0; i < ARRAY_SIZE(format_maps); ++i) {
++		if (format_maps[i].format == *format)
++			break;
++	}
++	if (i == ARRAY_SIZE(format_maps))
++		return -EINVAL;
++	state->code_id = format_maps[i].code_id;
++
++	/* Decide container version. */
++	if (*samples_per_frame > 2)
++		state->version = VOC_VERSION_1_20;
++	else
++		state->version = format_maps[i].minimal_version;
++	if (state->version == VOC_VERSION_1_10) {
++		if (*samples_per_frame == 2) {
++			for (i = 0;
++			     i < ARRAY_SIZE(ex_v110_time_consts); ++i) {
++				if (ex_v110_time_consts[i].frames_per_second ==
++						*frames_per_second)
++					break;
++			}
++			if (i == ARRAY_SIZE(ex_v110_time_consts))
++				state->version = VOC_VERSION_1_20;
++			else
++				state->extended = true;
++		} else {
++			for (i = 0; i < ARRAY_SIZE(v110_time_consts); ++i) {
++				if (v110_time_consts[i].frames_per_second ==
++							*frames_per_second)
++					break;
++			}
++			if (i == ARRAY_SIZE(v110_time_consts))
++				state->version = VOC_VERSION_1_20;
++		}
++	}
++
++	state->bytes_per_sample = snd_pcm_format_physical_width(*format) / 8;
++	state->samples_per_frame = *samples_per_frame;
++
++	return write_data_blocks(cntr, *frames_per_second, *byte_count);
++}
++
++static int write_block_terminator(struct container_context *cntr)
++{
++	struct block_terminator block = {0};
++
++	block.type = BLOCK_TYPE_TERMINATOR;
++	return container_recursive_write(cntr, &block, sizeof(block));
++}
++
++static int write_data_size(struct container_context *cntr, uint64_t byte_count)
++{
++	struct builder_state *state = cntr->private_data;
++	off64_t offset;
++	uint8_t size_field[3];
 +	int err;
 +
-+	/*
-+	 * If need to align PCM frames, process PCM frames to the intermediate
-+	 * buffer once.
-+	 */
-+	if (!state->align_frames) {
-+		/* The most likely. */
-+		src_bufs = frame_buf;
-+	} else {
-+		src_bufs = state->bufs;
-+	}
-+	err = process_containers(src_bufs, frame_count, cntrs, cntr_count);
++	offset = sizeof(struct container_header) + sizeof(uint8_t);
++	if (state->version == VOC_VERSION_1_10 && state->extended)
++		offset += sizeof(struct block_extended_v110_format);
++	err = container_seek_offset(cntr, offset);
 +	if (err < 0)
 +		return err;
 +
-+	/* Unlikely. */
-+	if (src_bufs != frame_buf && *frame_count > 0) {
-+		state->align_frames(frame_buf, *frame_count, src_bufs,
-+				    mapper->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
++	if (state->version == VOC_VERSION_1_10)
++		offset = 2;
++	else
++		offset = 12;
 +
-+	return 0;
++	if (byte_count > cntr->max_size - offset)
++		byte_count = cntr->max_size;
++	else
++		byte_count += offset;
++	build_block_data_size(size_field, byte_count);
++
++	return container_recursive_write(cntr, &size_field, sizeof(size_field));
 +}
 +
-+static int multiple_demuxer_process_frames(struct mapper_context *mapper,
-+					   void *frame_buf,
-+					   unsigned int *frame_count,
-+					   struct container_context *cntrs,
-+					   unsigned int cntr_count)
++static int voc_builder_post_process(struct container_context *cntr,
++				    uint64_t handled_byte_count)
 +{
-+	struct multiple_state *state = mapper->private_data;
-+	char **dst_bufs;
++	int err;
 +
-+	/*
-+	 * If need to align PCM frames, process PCM frames to the intermediate
-+	 * buffer once.
-+	 */
-+	if (!state->align_frames) {
-+		/* The most likely. */
-+		dst_bufs = frame_buf;
-+	} else {
-+		dst_bufs = state->bufs;
-+		state->align_frames(frame_buf, *frame_count, dst_bufs,
-+				    mapper->bytes_per_sample, cntrs,
-+				    cntr_count);
-+	}
++	err = write_block_terminator(cntr);
++	if (err < 0)
++		return err;
 +
-+	return process_containers(dst_bufs, frame_count, cntrs, cntr_count);
++	return write_data_size(cntr, handled_byte_count);
 +}
 +
-+static void multiple_post_process(struct mapper_context *mapper)
-+{
-+	struct multiple_state *state = mapper->private_data;
-+	int i;
-+
-+	if (state->bufs) {
-+		for (i = 0; i < state->cntr_count; ++i) {
-+			if (state->bufs[i])
-+				free(state->bufs[i]);
-+		}
-+		free(state->bufs);
-+	}
-+
-+	state->bufs = NULL;
-+	state->align_frames = NULL;
-+}
-+
-+const struct mapper_data mapper_muxer_multiple = {
++const struct container_parser container_parser_voc = {
++	.format = CONTAINER_FORMAT_VOC,
++	.magic = VOC_MAGIC,
++	.max_size = 0xffffff -	/* = UINT24_MAX. */
++		    sizeof(struct block_terminator),
 +	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_muxer_process_frames,
-+		.post_process = multiple_post_process,
++		.pre_process	= voc_parser_pre_process,
 +	},
-+	.private_size = sizeof(struct multiple_state),
++	.private_size = sizeof(struct parser_state),
 +};
 +
-+const struct mapper_data mapper_demuxer_multiple = {
++const struct container_builder container_builder_voc = {
++	.format = CONTAINER_FORMAT_VOC,
++	.max_size = 0xffffff -	/* = UINT24_MAX. */
++		    sizeof(struct block_terminator),
 +	.ops = {
-+		.pre_process = multiple_pre_process,
-+		.process_frames = multiple_demuxer_process_frames,
-+		.post_process = multiple_post_process,
++		.pre_process	= voc_builder_pre_process,
++		.post_process	= voc_builder_post_process,
 +	},
-+	.private_size = sizeof(struct multiple_state),
++	.private_size = sizeof(struct builder_state),
 +};
-diff --git a/axfer/mapper.c b/axfer/mapper.c
-index 3ba2d5e1..20baef85 100644
---- a/axfer/mapper.c
-+++ b/axfer/mapper.c
-@@ -19,6 +19,7 @@ static const char *const mapper_type_labels[] = {
- 
- static const char *const mapper_target_labels[] = {
- 	[MAPPER_TARGET_SINGLE] = "single",
-+	[MAPPER_TARGET_MULTIPLE] = "multiple",
+diff --git a/axfer/container.c b/axfer/container.c
+index 0e208aba..99652e65 100644
+--- a/axfer/container.c
++++ b/axfer/container.c
+@@ -22,11 +22,13 @@ static const char *const cntr_type_labels[] = {
+ static const char *const cntr_format_labels[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
+ 	[CONTAINER_FORMAT_AU] = "au",
++	[CONTAINER_FORMAT_VOC] = "voc",
  };
  
- int mapper_context_init(struct mapper_context *mapper,
-@@ -39,11 +40,17 @@ int mapper_context_init(struct mapper_context *mapper,
- 		if (cntr_count == 1) {
- 			data = &mapper_muxer_single;
- 			mapper->target = MAPPER_TARGET_SINGLE;
-+		} else {
-+			data = &mapper_muxer_multiple;
-+			mapper->target = MAPPER_TARGET_MULTIPLE;
- 		}
- 	} else {
- 		if (cntr_count == 1) {
- 			data = &mapper_demuxer_single;
- 			mapper->target = MAPPER_TARGET_SINGLE;
-+		} else {
-+			data = &mapper_demuxer_multiple;
-+			mapper->target = MAPPER_TARGET_MULTIPLE;
- 		}
- 	}
- 
-@@ -77,6 +84,14 @@ int mapper_context_pre_process(struct mapper_context *mapper,
- 	assert(samples_per_frame > 0);
- 	assert(cntrs);
- 
-+	/*
-+	 * The purpose of multiple target is to mux/demux each channels to/from
-+	 * containers.
-+	 */
-+	if (mapper->target == MAPPER_TARGET_MULTIPLE &&
-+	    samples_per_frame != mapper->cntr_count)
-+		return -EINVAL;
-+
- 	mapper->access = access;
- 	mapper->bytes_per_sample = bytes_per_sample;
- 	mapper->samples_per_frame = samples_per_frame;
-diff --git a/axfer/mapper.h b/axfer/mapper.h
-index 2e553666..3b32e93c 100644
---- a/axfer/mapper.h
-+++ b/axfer/mapper.h
-@@ -20,6 +20,7 @@ enum mapper_type {
- 
- enum mapper_target {
- 	MAPPER_TARGET_SINGLE = 0,
-+	MAPPER_TARGET_MULTIPLE,
- 	MAPPER_TARGET_COUNT,
+ static const char *const suffixes[] = {
+ 	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
+ 	[CONTAINER_FORMAT_AU]		= ".au",
++	[CONTAINER_FORMAT_VOC]		= ".voc",
  };
  
-@@ -80,4 +81,7 @@ struct mapper_data {
- extern const struct mapper_data mapper_muxer_single;
- extern const struct mapper_data mapper_demuxer_single;
  
-+extern const struct mapper_data mapper_muxer_multiple;
-+extern const struct mapper_data mapper_demuxer_multiple;
+@@ -151,6 +153,7 @@ int container_parser_init(struct container_context *cntr,
+ 	const struct container_parser *parsers[] = {
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
+ 		[CONTAINER_FORMAT_AU] = &container_parser_au,
++		[CONTAINER_FORMAT_VOC] = &container_parser_voc,
+ 	};
+ 	const struct container_parser *parser;
+ 	unsigned int size;
+@@ -229,6 +232,7 @@ int container_builder_init(struct container_context *cntr,
+ 	const struct container_builder *builders[] = {
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
+ 		[CONTAINER_FORMAT_AU] = &container_builder_au,
++		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
+ 	};
+ 	const struct container_builder *builder;
+ 	int err;
+diff --git a/axfer/container.h b/axfer/container.h
+index 3042e1e9..caba7398 100644
+--- a/axfer/container.h
++++ b/axfer/container.h
+@@ -27,6 +27,7 @@ enum container_type {
+ enum container_format {
+ 	CONTAINER_FORMAT_RIFF_WAVE = 0,
+ 	CONTAINER_FORMAT_AU,
++	CONTAINER_FORMAT_VOC,
+ 	CONTAINER_FORMAT_COUNT,
+ };
+ 
+@@ -115,4 +116,7 @@ extern const struct container_builder container_builder_riff_wave;
+ extern const struct container_parser container_parser_au;
+ extern const struct container_builder container_builder_au;
+ 
++extern const struct container_parser container_parser_voc;
++extern const struct container_builder container_builder_voc;
 +
  #endif
 -- 
