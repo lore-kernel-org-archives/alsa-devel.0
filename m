@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFCv3][PATCH 07/39] axfer: add support for a
-	container of raw data
-Date: Mon,  2 Oct 2017 09:19:08 +0900
-Message-ID: <20171002001940.17218-8-o-takashi@sakamocchi.jp>
+Subject: [RFCv3][PATCH 14/39] axfer: add a common interface to
+	transfer data frames
+Date: Mon,  2 Oct 2017 09:19:15 +0900
+Message-ID: <20171002001940.17218-15-o-takashi@sakamocchi.jp>
 References: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id B7B01266F7A
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C77A2266FA0
  for <alsa-devel@alsa-project.org>; Mon,  2 Oct 2017 02:19:51 +0200 (CEST)
 In-Reply-To: <20171002001940.17218-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,235 +25,284 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for raw data without any headers/chunks/blocks.
-A parser of container cannot recognize format of sample without
-supplemental information.
+ALSA has PCM interface to transfer data frames. In userspace, there're
+some implementation to utilize this interface to produce application
+programming interface; alsa-lib (libasound) and tinyalsa. However, it's
+possible to use the interface with raw I/O operations.
 
-Additionally, it includes no magic bytes. A parser of container should
-process first several bytes as a part of PCM frames, instead of magic
-bytes.
+This commit adds an common interface to transfer data frames for this
+program, named as 'xfer'. This internal interface is designed for users
+to select several backend for data transmission. This includes some
+functions expected to be called by main program just for data
+transmission. In an aspect to maintain PCM substream, suspend feature is
+required to handle a pair of SIGTSTP/SIGCONT UNIX signals.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/Makefile.am     |  3 ++-
- axfer/container-raw.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
- axfer/container.c     | 39 +++++++++++++++++++++++++-----
- axfer/container.h     |  4 ++++
- 4 files changed, 105 insertions(+), 7 deletions(-)
- create mode 100644 axfer/container-raw.c
+ axfer/Makefile.am |   7 ++-
+ axfer/xfer.c      | 153 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ axfer/xfer.h      |  71 +++++++++++++++++++++++++
+ 3 files changed, 229 insertions(+), 2 deletions(-)
+ create mode 100644 axfer/xfer.c
+ create mode 100644 axfer/xfer.h
 
 diff --git a/axfer/Makefile.am b/axfer/Makefile.am
-index 48d046e1..f1ec1d1d 100644
+index 3b1a87c8..c1534411 100644
 --- a/axfer/Makefile.am
 +++ b/axfer/Makefile.am
-@@ -27,4 +27,5 @@ axfer_SOURCES = \
- 	container.c \
- 	container-riff-wave.c \
- 	container-au.c \
--	container-voc.c
-+	container-voc.c \
-+	container-raw.c
-diff --git a/axfer/container-raw.c b/axfer/container-raw.c
+@@ -19,7 +19,8 @@ noinst_HEADERS = \
+ 	subcmd.h \
+ 	container.h \
+ 	mapper.h
+-	options.h
++	options.h \
++	xfer.h
+ 
+ axfer_SOURCES = \
+ 	misc.h \
+@@ -37,4 +38,6 @@ axfer_SOURCES = \
+ 	mapper-single.c \
+ 	mapper-multiple.c \
+ 	options.h \
+-	options.c
++	options.c \
++	xfer.h \
++	xfer.c
+diff --git a/axfer/xfer.c b/axfer/xfer.c
 new file mode 100644
-index 00000000..b5e11e44
+index 00000000..46b36d42
 --- /dev/null
-+++ b/axfer/container-raw.c
-@@ -0,0 +1,66 @@
++++ b/axfer/xfer.c
+@@ -0,0 +1,153 @@
 +/*
-+ * container-raw.c - a parser/builder for a container with raw data frame.
++ * xfer.c - receiver/transmiter of data frames.
 + *
 + * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "container.h"
++#include "xfer.h"
 +#include "misc.h"
 +
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
++#include <stdio.h>
 +
-+static int raw_builder_pre_process(struct container_context *cntr,
-+				   snd_pcm_format_t *sample_format,
-+				   unsigned int *samples_per_frame,
-+				   unsigned int *frames_per_second,
-+				   uint64_t *byte_count)
++static const char *const xfer_type_labels[] = {
++	[XFER_TYPE_COUNT] = "",
++};
++
++int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
++		      snd_pcm_stream_t direction, struct context_options *opts)
 +{
-+	*byte_count = UINT64_MAX;
++	struct {
++		enum xfer_type type;
++		const struct xfer_data *data;
++	} entries[] = {
++		{XFER_TYPE_COUNT, NULL},
++	};
++	int i;
 +
-+	return 0;
++	assert(xfer);
++	assert(direction >= SND_PCM_STREAM_PLAYBACK);
++	assert(direction <= SND_PCM_STREAM_CAPTURE);
++	assert(opts);
++
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		if (entries[i].type == type)
++			break;
++	}
++	if (i == ARRAY_SIZE(entries))
++		return -EINVAL;
++
++	xfer->type = type;
++	xfer->ops = &entries[i].data->ops;
++	xfer->verbose = opts->verbose;
++
++	xfer->private_data = malloc(entries[i].data->private_size);
++	if (xfer->private_data == NULL)
++		return -ENOMEM;
++	memset(xfer->private_data, 0, entries[i].data->private_size);
++
++	return xfer->ops->init(xfer, direction, opts);
 +}
 +
-+static int raw_parser_pre_process(struct container_context *cntr,
-+				  snd_pcm_format_t *sample_format,
-+				  unsigned int *samples_per_frame,
-+				  unsigned int *frames_per_second,
-+				  uint64_t *byte_count)
++void xfer_context_destroy(struct xfer_context *xfer)
 +{
-+	struct stat buf = {0};
++	assert(xfer);
++
++	if (!xfer->ops)
++		return;
++
++	if (xfer->ops->destroy)
++		xfer->ops->destroy(xfer);
++	if (xfer->private_data)
++		free(xfer->private_data);
++}
++
++int xfer_context_pre_process(struct xfer_context *xfer,
++			     snd_pcm_format_t *format,
++			     unsigned int *samples_per_frame,
++			     unsigned int *frames_per_second,
++			     snd_pcm_access_t *access,
++			     snd_pcm_uframes_t *frames_per_buffer)
++{
 +	int err;
 +
-+	if (cntr->stdio) {
-+		*byte_count = UINT64_MAX;
-+		return 0;
-+	}
++	assert(xfer);
++	assert(format);
++	assert(samples_per_frame);
++	assert(frames_per_second);
++	assert(access);
++	assert(frames_per_buffer);
 +
-+	err = fstat(cntr->fd, &buf);
++	if (!xfer->ops)
++		return -ENXIO;
++
++	err = xfer->ops->pre_process(xfer, format, samples_per_frame,
++				     frames_per_second, access,
++				     frames_per_buffer);
 +	if (err < 0)
 +		return err;
 +
-+	*byte_count = buf.st_size;
-+	if (*byte_count == 0)
-+		*byte_count = UINT64_MAX;
++	assert(*format >= SND_PCM_FORMAT_S8);
++	assert(*format <= SND_PCM_FORMAT_LAST);
++	assert(*samples_per_frame > 0);
++	assert(*frames_per_second > 0);
++	assert(*access >= SND_PCM_ACCESS_MMAP_INTERLEAVED);
++	assert(*access <= SND_PCM_ACCESS_LAST);
++	assert(*frames_per_buffer > 0);
++
++	if (xfer->verbose > 1) {
++		fprintf(stderr, "Transfer: %s\n",
++			xfer_type_labels[xfer->type]);
++		fprintf(stderr, "  access: %s\n",
++			snd_pcm_access_name(*access));
++		fprintf(stderr, "  sample format: %s\n",
++			snd_pcm_format_name(*format));
++		fprintf(stderr, "  bytes/sample: %u\n",
++		       snd_pcm_format_physical_width(*format) / 8);
++		fprintf(stderr, "  samples/frame: %u\n",
++			*samples_per_frame);
++		fprintf(stderr, "  frames/second: %u\n",
++			*frames_per_second);
++		fprintf(stderr, "  frames/buffer: %lu\n",
++			*frames_per_buffer);
++	}
 +
 +	return 0;
 +}
 +
-+const struct container_parser container_parser_raw = {
-+	.format = CONTAINER_FORMAT_RAW,
-+	.max_size = UINT64_MAX,
-+	.ops = {
-+		.pre_process = raw_parser_pre_process,
-+	},
++int xfer_context_process_frames(struct xfer_context *xfer,
++				struct mapper_context *mapper,
++				struct container_context *cntrs,
++				unsigned int *frame_count)
++{
++	assert(xfer);
++	assert(mapper);
++	assert(cntrs);
++	assert(frame_count);
++
++	if (!xfer->ops)
++		return -ENXIO;
++
++	return xfer->ops->process_frames(xfer, frame_count, mapper, cntrs);
++}
++
++void xfer_context_pause(struct xfer_context *xfer, bool enable)
++{
++	assert(xfer);
++
++	if (!xfer->ops)
++		return;
++
++	xfer->ops->pause(xfer, enable);
++}
++
++void xfer_context_post_process(struct xfer_context *xfer)
++{
++	assert(xfer);
++
++	if (!xfer->ops)
++		return;
++
++	xfer->ops->post_process(xfer);
++}
+diff --git a/axfer/xfer.h b/axfer/xfer.h
+new file mode 100644
+index 00000000..4e3f1f37
+--- /dev/null
++++ b/axfer/xfer.h
+@@ -0,0 +1,71 @@
++/*
++ * xfer.h - a header for receiver/transmiter of data frames.
++ *
++ * Copyright (c) 2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#ifndef __ALSA_UTILS_AXFER_XFER__H_
++#define __ALSA_UTILS_AXFER_XFER__H_
++
++#include "mapper.h"
++#include "options.h"
++
++enum xfer_type {
++	XFER_TYPE_COUNT,
 +};
 +
-+const struct container_builder container_builder_raw = {
-+	.format = CONTAINER_FORMAT_RAW,
-+	.max_size = UINT64_MAX,
-+	.ops = {
-+		.pre_process = raw_builder_pre_process,
-+	},
++struct xfer_ops;
++
++struct xfer_context  {
++	enum xfer_type type;
++	const struct xfer_ops *ops;
++	void *private_data;
++
++	unsigned int verbose;
 +};
-diff --git a/axfer/container.c b/axfer/container.c
-index 99652e65..bdaf99ab 100644
---- a/axfer/container.c
-+++ b/axfer/container.c
-@@ -23,15 +23,16 @@ static const char *const cntr_format_labels[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE] = "riff/wave",
- 	[CONTAINER_FORMAT_AU] = "au",
- 	[CONTAINER_FORMAT_VOC] = "voc",
-+	[CONTAINER_FORMAT_RAW] = "raw",
- };
- 
- static const char *const suffixes[] = {
- 	[CONTAINER_FORMAT_RIFF_WAVE]	= ".wav",
- 	[CONTAINER_FORMAT_AU]		= ".au",
- 	[CONTAINER_FORMAT_VOC]		= ".voc",
-+	[CONTAINER_FORMAT_RAW]		= "",
- };
- 
--
- const char *const container_suffix_from_format(enum container_format format)
- {
- 	return suffixes[format];
-@@ -112,7 +113,7 @@ enum container_format container_format_from_path(const char *path)
- 	}
- 
- 	/* Unsupported. */
--	return CONTAINER_FORMAT_COUNT;
-+	return CONTAINER_FORMAT_RAW;
- }
- 
- int container_seek_offset(struct container_context *cntr, off64_t offset)
-@@ -205,7 +206,7 @@ int container_parser_init(struct container_context *cntr,
- 	 * Unless detected, use raw container.
- 	 */
- 	if (i == ARRAY_SIZE(parsers))
--		return -EINVAL;
-+		parser = &container_parser_raw;
- 
- 	/* Allocate private data for the parser. */
- 	if (parser->private_size > 0) {
-@@ -233,6 +234,7 @@ int container_builder_init(struct container_context *cntr,
- 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
- 		[CONTAINER_FORMAT_AU] = &container_builder_au,
- 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
-+		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
- 	};
- 	const struct container_builder *builder;
- 	int err;
-@@ -311,6 +313,16 @@ int container_context_pre_process(struct container_context *cntr,
- 			return 0;
- 	}
- 
-+	if (cntr->format == CONTAINER_FORMAT_RAW) {
-+		if (*format == SND_PCM_FORMAT_UNKNOWN ||
-+		    *samples_per_frame == 0 || *frames_per_second == 0) {
-+			fprintf(stderr,
-+				"Any file format is not detected. Need to "
-+				"indicate all of sample format, channels and "
-+				"rate explicitly.\n");
-+			return -EINVAL;
-+		}
-+	}
- 	assert(*format >= SND_PCM_FORMAT_S8);
- 	assert(*format <= SND_PCM_FORMAT_LAST);
- 	assert(*samples_per_frame > 0);
-@@ -357,6 +369,7 @@ int container_context_process_frames(struct container_context *cntr,
- 	char *buf = frame_buffer;
- 	unsigned int bytes_per_frame;
- 	unsigned int byte_count;
-+	unsigned int target_byte_count;
- 	int err;
- 
- 	assert(cntr);
-@@ -365,7 +378,21 @@ int container_context_process_frames(struct container_context *cntr,
- 	assert(frame_count);
- 
- 	bytes_per_frame = cntr->bytes_per_sample * cntr->samples_per_frame;
--	byte_count = *frame_count * bytes_per_frame;
-+	target_byte_count = *frame_count * bytes_per_frame;
 +
-+	/*
-+	 * A parser of cotainers already read first 4 bytes to detect format
-+	 * of container, however they includes PCM frames when any format was
-+	 * undetected. Surely to write out them.
-+	 */
-+	byte_count = target_byte_count;
-+	if (cntr->format == CONTAINER_FORMAT_RAW &&
-+	    cntr->type == CONTAINER_TYPE_PARSER && !cntr->magic_handled) {
-+		memcpy(buf, cntr->magic, sizeof(cntr->magic));
-+		buf += sizeof(cntr->magic);
-+		byte_count -= sizeof(cntr->magic);
-+		cntr->magic_handled = true;
-+	}
- 
- 	/* Each container has limitation for its volume for sample data. */
- 	if (cntr->handled_byte_count > cntr->max_size - byte_count)
-@@ -379,11 +406,11 @@ int container_context_process_frames(struct container_context *cntr,
- 		return err;
- 	}
- 
--	cntr->handled_byte_count += byte_count;
-+	cntr->handled_byte_count += target_byte_count;
- 	if (cntr->handled_byte_count == cntr->max_size)
- 		cntr->eof = true;
- 
--	*frame_count = byte_count / bytes_per_frame;
-+	*frame_count = target_byte_count / bytes_per_frame;
- 
- 	return 0;
- }
-diff --git a/axfer/container.h b/axfer/container.h
-index caba7398..9825f48d 100644
---- a/axfer/container.h
-+++ b/axfer/container.h
-@@ -28,6 +28,7 @@ enum container_format {
- 	CONTAINER_FORMAT_RIFF_WAVE = 0,
- 	CONTAINER_FORMAT_AU,
- 	CONTAINER_FORMAT_VOC,
-+	CONTAINER_FORMAT_RAW,
- 	CONTAINER_FORMAT_COUNT,
- };
- 
-@@ -119,4 +120,7 @@ extern const struct container_builder container_builder_au;
- extern const struct container_parser container_parser_voc;
- extern const struct container_builder container_builder_voc;
- 
-+const struct container_parser container_parser_raw;
-+const struct container_builder container_builder_raw;
++int xfer_context_init(struct xfer_context *xfer, enum xfer_type type,
++		      snd_pcm_stream_t direction, struct context_options *opts);
++void xfer_context_destroy(struct xfer_context *xfer);
++int xfer_context_pre_process(struct xfer_context *xfer,
++			     snd_pcm_format_t *format,
++			     unsigned int *samples_per_frame,
++			     unsigned int *frames_per_second,
++			     snd_pcm_access_t *access,
++			     snd_pcm_uframes_t *frames_per_buffer);
++int xfer_context_process_frames(struct xfer_context *xfer,
++				struct mapper_context *mapper,
++				struct container_context *cntrs,
++				unsigned int *frame_count);
++void xfer_context_pause(struct xfer_context *xfer, bool enable);
++void xfer_context_post_process(struct xfer_context *xfer);
 +
- #endif
++/* For internal use in 'xfer' module. */
++
++struct xfer_ops {
++	int (*init)(struct xfer_context *xfer, snd_pcm_stream_t direction,
++		    struct context_options *opts);
++	int (*pre_process)(struct xfer_context *xfer, snd_pcm_format_t *format,
++			   unsigned int *samples_per_frame,
++			   unsigned int *frames_per_second,
++			   snd_pcm_access_t *access,
++			   snd_pcm_uframes_t *frames_per_buffer);
++	int (*process_frames)(struct xfer_context *xfer,
++			      unsigned int *frame_count,
++			      struct mapper_context *mapper,
++			      struct container_context *cntrs);
++	void (*post_process)(struct xfer_context *xfer);
++	void (*destroy)(struct xfer_context *xfer);
++	void (*pause)(struct xfer_context *xfer, bool enable);
++};
++
++struct xfer_data {
++	struct xfer_ops ops;
++	unsigned int private_size;
++};
++
++extern const struct xfer_data xfer_alsa;
++
++#endif
 -- 
 2.11.0
