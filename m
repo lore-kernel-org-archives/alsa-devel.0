@@ -1,97 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd-analog: fix module
-	autoload" to the asoc tree
-Date: Tue,  3 Oct 2017 17:53:49 +0100 (BST)
-Message-ID: <20171003165349.C00F4440053@finisterre.ee.mobilebroadband>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: usb/sound/bcd2000: warning in bcd2000_init_device
+Date: Tue, 3 Oct 2017 19:42:21 +0200
+Message-ID: <20171003174221.GA13006@kroah.com>
+References: <s5hh8vgut9l.wl-tiwai@suse.de>
+ <Pine.LNX.4.44L0.1710031248320.1500-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9801A266E55
- for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 18:53:50 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Dechesne <nicolas.dechesne@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44L0.1710031248320.1500-100000@iolanthe.rowland.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Takashi Iwai <tiwai@suse.de>, Andrey Konovalov <andreyknvl@google.com>, alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, Oct 03, 2017 at 12:50:08PM -0400, Alan Stern wrote:
+> On Tue, 3 Oct 2017, Takashi Iwai wrote:
+> 
+> > > It's a dev_WARN because it indicates a potentially serious error in the 
+> > > driver: The driver has submitted an interrupt URB to a bulk endpoint.  
+> > > That may not sound bad, but the same check gets triggered if a driver 
+> > > submits a bulk URB to an isochronous endpoint, or any other invalid 
+> > > combination.
+> > > 
+> > > Most likely the explanation here is that the driver doesn't bother to
+> > > check the endpoint type because it expects the endpoint will always be
+> > > interrupt.  But that is not a safe strategy.  USB devices and their
+> > > firmware should not be trusted unnecessarily.
+> > > 
+> > > The best fix is, like you said, to add a sanity check in the caller.
+> > 
+> > OK, but then do we have some handy helper for the check?
+> > As other bug reports by syzkaller suggest, there are a few other
+> > drivers that do the same, submitting a urb with naive assumption of
+> > the fixed EP for specific devices.  In the end we'll need to put the
+> > very same checks there in multiple places.
+> 
+> Perhaps we could add a helper routine that would take a list of 
+> expected endpoint types and check that the actual endpoints match the 
+> types.  But of course, all the drivers you're talking about would have 
+> to add a call to this helper routine.
 
-   ASoC: codecs: msm8916-wcd-analog: fix module autoload
+We have almost this type of function, usb_find_common_endpoints(),
+what's wrong with using that?  Johan has already swept the tree and
+added a lot of these checks, odds are no one looked at the sound/
+subdir...
 
-has been applied to the asoc tree at
+thanks,
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 46d69e141d479585c105a4d5b2337cd2ce6967e5 Mon Sep 17 00:00:00 2001
-From: Nicolas Dechesne <nicolas.dechesne@linaro.org>
-Date: Tue, 3 Oct 2017 11:49:51 +0200
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: fix module autoload
-
-If the driver is built as a module, autoload won't work because the module
-alias information is not filled. So user-space can't match the registered
-device with the corresponding module.
-
-Export the module alias information using the MODULE_DEVICE_TABLE() macro.
-
-Before this patch:
-
-$ modinfo snd_soc_msm8916_analog | grep alias
-$
-
-After this patch:
-
-$ modinfo snd_soc_msm8916_analog | grep alias
-alias:          of:N*T*Cqcom,pm8916-wcd-analog-codecC*
-alias:          of:N*T*Cqcom,pm8916-wcd-analog-codec
-
-Signed-off-by: Nicolas Dechesne <nicolas.dechesne@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/msm8916-wcd-analog.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index f562f2d86907..3593c578e3e7 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -1239,6 +1239,8 @@ static const struct of_device_id pm8916_wcd_analog_spmi_match_table[] = {
- 	{ }
- };
- 
-+MODULE_DEVICE_TABLE(of, pm8916_wcd_analog_spmi_match_table);
-+
- static struct platform_driver pm8916_wcd_analog_spmi_driver = {
- 	.driver = {
- 		   .name = "qcom,pm8916-wcd-spmi-codec",
--- 
-2.14.1
+greg k-h
