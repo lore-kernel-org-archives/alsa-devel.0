@@ -1,44 +1,70 @@
-From: =?UTF-8?B?SsOpcsOpbXk=?= Lefaure <jeremy.lefaure@lse.epita.fr>
-Subject: Re: [PATCH 00/18] use ARRAY_SIZE macro
-Date: Mon, 2 Oct 2017 21:33:12 -0400
-Message-ID: <20171002213312.3f904290@blatinox-laptop.localdomain>
-References: <20171001193101.8898-1-jeremy.lefaure@lse.epita.fr>
- <20171001220131.GA11812@eros>
- <20171001205220.10b78086@blatinox-laptop.localdomain>
- <20171002053554.GA28743@kroah.com>
- <20171002192224.GD1903@fieldses.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: "alsactl store" fails to save Echo Gina3G mixer
+Date: Tue, 3 Oct 2017 10:53:30 +0900
+Message-ID: <5a3cbe62-f0c6-17eb-7e5b-5ece7964546c@sakamocchi.jp>
+References: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
+ <1fa01cef-7159-b1b2-8ec6-5eab7f2a7e29@sakamocchi.jp>
+ <7ef92b65-ef37-1a68-b1d8-e3a747859200@gmail.com>
+ <e59f34a8-0999-c552-00e0-3d20a0721d3f@sakamocchi.jp>
+ <1709042113040.5915@beth.localdomain>
+ <d4b1b2e2-687a-a9fc-4244-9ca54d709f60@gmail.com>
+ <4464e5e9-9ce2-3d94-d9ab-3aae6e0b94bd@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <openipmi-developer-bounces@lists.sourceforge.net>
-In-Reply-To: <20171002192224.GD1903@fieldses.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/options/openipmi-developer>,
- <mailto:openipmi-developer-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=openipmi-developer>
-List-Post: <mailto:openipmi-developer@lists.sourceforge.net>
-List-Help: <mailto:openipmi-developer-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/openipmi-developer>,
- <mailto:openipmi-developer-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: openipmi-developer-bounces@lists.sourceforge.net
-To: "J. Bruce Fields" <bfields@fieldses.org>
-Cc: alsa-devel@alsa-project.org, nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org, dm-devel@redhat.com, brcm80211-dev-list@cypress.com, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, linux-acpi@vger.kernel.org, linux-video@atrey.karlin.mff.cuni.cz, intel-wired-lan@lists.osuosl.org, Greg KH <greg@kroah.com>, linux-media@vger.kernel.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com, linux-raid@vger.kernel.org, openipmi-developer@lists.sourceforge.net, intel-gvt-dev@lists.freedesktop.org, devel@acpica.org, linux-nfs@vger.kernel.org, jlayton@redhat.com, netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id F115F267277
+ for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 03:53:33 +0200 (CEST)
+In-Reply-To: <4464e5e9-9ce2-3d94-d9ab-3aae6e0b94bd@sakamocchi.jp>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "S. Christian Collins" <s.chriscollins@gmail.com>, Mark Hills <mark@xwax.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyIE9jdCAyMDE3IDE1OjIyOjI0IC0wNDAwCmJmaWVsZHNAZmllbGRzZXMub3JnIChK
-LiBCcnVjZSBGaWVsZHMpIHdyb3RlOgoKPiBNYWlubHkgSSdkIGp1c3QgbGlrZSB0byBrbm93IHdo
-aWNoIHlvdSdyZSBhc2tpbmcgZm9yLiAgRG8geW91IHdhbnQgbWUgdG8KPiBhcHBseSB0aGlzLCBv
-ciB0byBBQ0sgaXQgc28gc29tZW9uZSBlbHNlIGNhbj8gIElmIGl0J3Mgc2VudCBhcyBhIHNlcmll
-cwo+IEkgdGVuZCB0byBhc3N1bWUgdGhlIGxhdHRlci4KPiAKPiBCdXQgaW4gdGhpcyBjYXNlIEkn
-bSBhc3N1bWluZyBpdCdzIHRoZSBmb3JtZXIsIHNvIEknbGwgcGljayB1cCB0aGUgbmZzZAo+IG9u
-ZS4uLi4KQ291bGQgeW91IHRvIGFwcGx5IHRoZSBORlNEIHBhdGNoICgibmZzZDogdXNlIEFSUkFZ
-X1NJWkUiKSB3aXRoIHRoZQpSZXZpZXdlZC1ieTogSmVmZiBMYXl0b24gPGpsYXl0b25AcmVkaGF0
-LmNvbT4pIHRhZyBwbGVhc2UgPwoKVGhpcyBwYXRjaCBpcyBhbiBpbmRpdmlkdWFsIHBhdGNoIGFu
-ZCBpdCBzaG91bGQgbm90IGhhdmUgYmVlbiBzZW50IGluIGEKc2VyaWVzIChzb3JyeSBhYm91dCB0
-aGF0KS4KClRoYW5rIHlvdSwKSsOpcsOpbXkKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDaGVjayBv
-dXQgdGhlIHZpYnJhbnQgdGVjaCBjb21tdW5pdHkgb24gb25lIG9mIHRoZSB3b3JsZCdzIG1vc3QK
-ZW5nYWdpbmcgdGVjaCBzaXRlcywgU2xhc2hkb3Qub3JnISBodHRwOi8vc2RtLmxpbmsvc2xhc2hk
-b3QKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KT3Blbmlw
-bWktZGV2ZWxvcGVyIG1haWxpbmcgbGlzdApPcGVuaXBtaS1kZXZlbG9wZXJAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL29w
-ZW5pcG1pLWRldmVsb3Blcgo=
+Hi S. Christian and Mark,
+
+On Sep 15 2017 14:21, Takashi Sakamoto wrote:
+> On Sep 14 2017 22:40, S. Christian Collins wrote:
+>> Takashi, is there anything else you would like me to do to help with 
+>> this issue? Should it perhaps be filed on the bug tracker so it 
+>> doesn't get lost in this list?
+> 
+> Sorry to be late for reaction, but we're on merge window for v4.14 and I 
+> keep my time for unexpected accidents such as this[1]. I'd like to 
+> postpone this discussion after closing the window, a few days later.
+> 
+> [1] 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125474.html 
+
+First of all, I apologize for the inconvenience. It's my fault. 
+Yesterday a maintainer of this subsystem applies my patch[1] to revert 
+the issued commit. It will also be applied to stable/longterm kernels. 
+If you use one of the maintained kernels in any distribution such as 
+Fedora, you may get solved driver enough later.
+
+However, current echoaudio drivers have an issue in a point of ALSA 
+control interface, as I noted to the patch. For this issue, I'm 
+preparing for my proposal in Audio miniconference 2017[2]. If the 
+'echomixer' program is going to be modified according to our decision, 
+I'll request you to test my patches, perhaps. I'm happy to get your 
+helps for the testing in future.
+
+Thanks for your report for this issue, and patience.
+
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-October/126030.html
+[2] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-October/126033.html
+
+
+Takashi Sakamoto
