@@ -1,51 +1,83 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: usb/sound/bcd2000: warning in bcd2000_init_device
-Date: Tue, 3 Oct 2017 19:42:21 +0200
-Message-ID: <20171003174221.GA13006@kroah.com>
-References: <s5hh8vgut9l.wl-tiwai@suse.de>
- <Pine.LNX.4.44L0.1710031248320.1500-100000@iolanthe.rowland.org>
+From: "S. Christian Collins" <s.chriscollins@gmail.com>
+Subject: Re: "alsactl store" fails to save Echo Gina3G mixer
+Date: Tue, 3 Oct 2017 13:05:48 -0500
+Message-ID: <30aadbb2-7e27-06f5-2bf6-6e0eb1527423@gmail.com>
+References: <d8d6d07c-ade6-1ccc-7111-ed367fccf0f9@gmail.com>
+ <1fa01cef-7159-b1b2-8ec6-5eab7f2a7e29@sakamocchi.jp>
+ <7ef92b65-ef37-1a68-b1d8-e3a747859200@gmail.com>
+ <e59f34a8-0999-c552-00e0-3d20a0721d3f@sakamocchi.jp>
+ <1709042113040.5915@beth.localdomain>
+ <d4b1b2e2-687a-a9fc-4244-9ca54d709f60@gmail.com>
+ <4464e5e9-9ce2-3d94-d9ab-3aae6e0b94bd@sakamocchi.jp>
+ <5a3cbe62-f0c6-17eb-7e5b-5ece7964546c@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44L0.1710031248320.1500-100000@iolanthe.rowland.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Takashi Iwai <tiwai@suse.de>, Andrey Konovalov <andreyknvl@google.com>, alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24D822668F0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 20:05:53 +0200 (CEST)
+Received: by mail-oi0-f66.google.com with SMTP id v9so3511211oif.13
+ for <alsa-devel@alsa-project.org>; Tue, 03 Oct 2017 11:05:53 -0700 (PDT)
+In-Reply-To: <5a3cbe62-f0c6-17eb-7e5b-5ece7964546c@sakamocchi.jp>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Hills <mark@xwax.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 03, 2017 at 12:50:08PM -0400, Alan Stern wrote:
-> On Tue, 3 Oct 2017, Takashi Iwai wrote:
-> 
-> > > It's a dev_WARN because it indicates a potentially serious error in the 
-> > > driver: The driver has submitted an interrupt URB to a bulk endpoint.  
-> > > That may not sound bad, but the same check gets triggered if a driver 
-> > > submits a bulk URB to an isochronous endpoint, or any other invalid 
-> > > combination.
-> > > 
-> > > Most likely the explanation here is that the driver doesn't bother to
-> > > check the endpoint type because it expects the endpoint will always be
-> > > interrupt.  But that is not a safe strategy.  USB devices and their
-> > > firmware should not be trusted unnecessarily.
-> > > 
-> > > The best fix is, like you said, to add a sanity check in the caller.
-> > 
-> > OK, but then do we have some handy helper for the check?
-> > As other bug reports by syzkaller suggest, there are a few other
-> > drivers that do the same, submitting a urb with naive assumption of
-> > the fixed EP for specific devices.  In the end we'll need to put the
-> > very same checks there in multiple places.
-> 
-> Perhaps we could add a helper routine that would take a list of 
-> expected endpoint types and check that the actual endpoints match the 
-> types.  But of course, all the drivers you're talking about would have 
-> to add a call to this helper routine.
+I will be happy to help you test, when that time comes.
 
-We have almost this type of function, usb_find_common_endpoints(),
-what's wrong with using that?  Johan has already swept the tree and
-added a lot of these checks, odds are no one looked at the sound/
-subdir...
+Best Regards,
 
-thanks,
+-~Chris
 
-greg k-h
+
+On 10/02/2017 08:53 PM, Takashi Sakamoto wrote:
+> Hi S. Christian and Mark,
+>
+> On Sep 15 2017 14:21, Takashi Sakamoto wrote:
+>> On Sep 14 2017 22:40, S. Christian Collins wrote:
+>>> Takashi, is there anything else you would like me to do to help with 
+>>> this issue? Should it perhaps be filed on the bug tracker so it 
+>>> doesn't get lost in this list?
+>>
+>> Sorry to be late for reaction, but we're on merge window for v4.14 
+>> and I keep my time for unexpected accidents such as this[1]. I'd like 
+>> to postpone this discussion after closing the window, a few days later.
+>>
+>> [1] 
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/125474.html 
+>
+>
+> First of all, I apologize for the inconvenience. It's my fault. 
+> Yesterday a maintainer of this subsystem applies my patch[1] to revert 
+> the issued commit. It will also be applied to stable/longterm kernels. 
+> If you use one of the maintained kernels in any distribution such as 
+> Fedora, you may get solved driver enough later.
+>
+> However, current echoaudio drivers have an issue in a point of ALSA 
+> control interface, as I noted to the patch. For this issue, I'm 
+> preparing for my proposal in Audio miniconference 2017[2]. If the 
+> 'echomixer' program is going to be modified according to our decision, 
+> I'll request you to test my patches, perhaps. I'm happy to get your 
+> helps for the testing in future.
+>
+> Thanks for your report for this issue, and patience.
+>
+> [1] 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-October/126030.html
+> [2] 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-October/126033.html
+>
+>
+> Takashi Sakamoto
