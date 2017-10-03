@@ -1,51 +1,141 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Prague Audio miniconference - topics for
-	discussion?
-Date: Tue, 3 Oct 2017 12:51:24 +0300
-Message-ID: <4bd48871-5894-d585-ed8b-4a9135aa6cc6@ti.com>
-References: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F33A2672C2
- for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 11:51:15 +0200 (CEST)
-In-Reply-To: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Damien Riegel <damien.riegel@savoirfairelinux.com>
+Subject: [PATCH v2] ASoC: codecs: msm8916-wcd-analog: configure micbias in mbhc setup
+Date: Tue,  3 Oct 2017 09:27:35 -0400
+Message-ID: <20171003132735.29401-1-damien.riegel@savoirfairelinux.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com, Damien Riegel <damien.riegel@savoirfairelinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-77u/SGksCgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwg
-MDAxODAgSGVsc2lua2kuIFktdHVubnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlr
-a2EvRG9taWNpbGU6IEhlbHNpbmtpCgpPbiAyMDE3LTA5LTIwIDIwOjQ1LCBNYXJrIEJyb3duIHdy
-b3RlOgo+IEFzIHByZXZpb3VzbHkgYW5ub3VuY2VkWzFdIGJ5IFRha2FzaGkgb3VyIGFubnVhbCBM
-aW51eCBhdWRpbwo+IG1pbmljb25mZXJlbmNlIHdpbGwgYmUgaGVsZCB0aGlzIHllYXIgYXQgdGhl
-IFN1U0Ugb2ZmaWNlcyBpbiBQcmFndWUgb24KPiAyN3RoIE9jdG9iZXIgKHRoZSB3ZWVrIG9mIEVM
-Qy1FKS4gIFRoYW5rcyBhZ2FpbiB0byBTdVNlIGZvciBzcG9uc29yaW5nCj4gdGhpcy4gIEFzIHdp
-dGggcHJldmlvdXMgeWVhcnMgbGV0J3MgcHVsbCB0b2dldGhlciBhbiBhZ2VuZGEgdGhyb3VnaCBh
-Cj4gbWFpbGluZyBsaXN0IGRpc2N1c3Npb24gLSBpZiBwZW9wbGUgY291bGQgcmVwbHkgdG8gdGhp
-cyBtYWlsIHdpdGggYW55Cj4gdG9waWNzIHRoZXknZCBsaWtlIHRvIGRpc2N1c3Mgd2UgY2FuIHRh
-a2UgaXQgZnJvbSB0aGVyZS4gIE9mIGNvdXJzZSBpZgo+IHdlIGNhbiBzb3J0IHRoaW5ncyBvdXQg
-bW9yZSBxdWlja2x5IHZpYSB0aGUgbWFpbGluZyBsaXN0IHRoYXQncyBldmVuCj4gYmV0dGVyIQoK
-Q29tbW9uIGNsb2NrIGZyYW1ld29yayB3aXRoaW4gQVNvQyBmcmFtZXdvcmsuCiAtIFVzZSBDQ0Yg
-Zm9yIGNsb2NrIGNvbmZpZ3VyYXRpb24gaW4gQVNvQyBmb3IgREFJcy9jb2RlY3MKIC0gYXQgbGVh
-c3QgZm9yIE1jQVNQIHdlIG5lZWQgYSB3YXkgdG8gc2VsZWN0IGRpZmZlcmVudCByZWZlcmVuY2Ug
-Y2xvY2tzCmFuZCBjbG9jayBkaXJlY3Rpb25zIGZyb20gc2V2ZXJhbCBzb3VyY2VzIGFuZCB0aGVu
-IHJvdXRlIGNsb2NrcyB0bwpvdXRzaWRlIG9mIHRoZSBTb0MuCgpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTYtRmVicnVhcnkvMTA0MzE2Lmh0
-bWwKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8y
-MDE2LUZlYnJ1YXJ5LzEwNDMyMC5odG1sCgphZmFpayBpdCBpcyBzdGlsbCBub3QgcmVzb2x2ZWQg
-YW5kIEknbSBjYXJyeWluZyB0aGUgcGF0Y2hlcyBldmVyIHNpbmNlLgoKLSBQw6l0ZXIKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The very first time a headset is plugged in, detection is unreliable
+because bias hasn't been configured yet, it's done once a mechanical
+insertion interrupt has been triggered, so following insertions (and
+thus detections) are not affected.
+
+To fix the very first detection, the bias must also be configured in the
+function that setup the MBHC. Move pm8916_wcd_setup_mbhc after
+pm8916_mbhc_configure_bias to avoid a forward declaration.
+
+Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
+---
+Changes in v2:
+ - squash the two patches in one patch only
+
+ sound/soc/codecs/msm8916-wcd-analog.c | 94 +++++++++++++++++++----------------
+ 1 file changed, 50 insertions(+), 44 deletions(-)
+
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index f562f2d86907..71494e9dbdcb 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -443,50 +443,6 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
+ 						     wcd->micbias1_cap_mode);
+ }
+ 
+-static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
+-{
+-	struct snd_soc_codec *codec = wcd->codec;
+-	u32 plug_type = 0;
+-	u32 int_en_mask;
+-
+-	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
+-		      CDC_A_MBHC_DET_CTL_L_DET_EN |
+-		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
+-		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
+-		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
+-
+-	if (wcd->hphl_jack_type_normally_open)
+-		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
+-
+-	if (wcd->gnd_jack_type_normally_open)
+-		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
+-
+-	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
+-		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
+-		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
+-		      plug_type |
+-		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
+-
+-
+-	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
+-		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
+-		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
+-
+-	/* enable MBHC clock */
+-	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
+-			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
+-			    DIG_CLK_CTL_D_MBHC_CLK_EN);
+-
+-	int_en_mask = MBHC_SWITCH_INT;
+-	if (wcd->mbhc_btn_enabled)
+-		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
+-
+-	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
+-	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
+-	wcd->mbhc_btn0_released = false;
+-	wcd->detect_accessory_type = true;
+-}
+-
+ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
+ 				      bool micbias2_enabled)
+ {
+@@ -534,6 +490,56 @@ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
+ 	return 0;
+ }
+ 
++static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
++{
++	struct snd_soc_codec *codec = wcd->codec;
++	bool micbias_enabled = false;
++	u32 plug_type = 0;
++	u32 int_en_mask;
++
++	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
++		      CDC_A_MBHC_DET_CTL_L_DET_EN |
++		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
++		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
++		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
++
++	if (wcd->hphl_jack_type_normally_open)
++		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
++
++	if (wcd->gnd_jack_type_normally_open)
++		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
++
++	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
++		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
++		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
++		      plug_type |
++		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
++
++
++	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
++		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
++		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
++
++	/* enable MBHC clock */
++	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
++			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
++			    DIG_CLK_CTL_D_MBHC_CLK_EN);
++
++	if (snd_soc_read(codec, CDC_A_MICB_2_EN) & CDC_A_MICB_2_EN_ENABLE)
++		micbias_enabled = true;
++
++	pm8916_mbhc_configure_bias(wcd, micbias_enabled);
++
++	int_en_mask = MBHC_SWITCH_INT;
++	if (wcd->mbhc_btn_enabled)
++		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
++
++	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
++	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
++	wcd->mbhc_btn0_released = false;
++	wcd->detect_accessory_type = true;
++}
++
+ static int pm8916_wcd_analog_enable_micbias_int2(struct
+ 						  snd_soc_dapm_widget
+ 						  *w, struct snd_kcontrol
+-- 
+2.14.1
