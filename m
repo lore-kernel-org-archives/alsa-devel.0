@@ -1,46 +1,41 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: notifying userspace of hwparams change
-Date: Tue, 3 Oct 2017 09:11:50 -0700
-Message-ID: <CAJ+vNU1eN2LWJ3Qy35EnUJOyH6gVVQma7caibE40boqT3bfbMg@mail.gmail.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: usb/sound/bcd2000: warning in bcd2000_init_device
+Date: Tue, 3 Oct 2017 12:50:08 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1710031248320.1500-100000@iolanthe.rowland.org>
+References: <s5hh8vgut9l.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 79F4C2668F0
- for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 18:11:52 +0200 (CEST)
-Received: by mail-wm0-f47.google.com with SMTP id k4so15889346wmc.1
- for <alsa-devel@alsa-project.org>; Tue, 03 Oct 2017 09:11:52 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hh8vgut9l.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrey Konovalov <andreyknvl@google.com>, alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+On Tue, 3 Oct 2017, Takashi Iwai wrote:
 
-I've got an HDMI receiver chip I'm working on a driver for which
-provides the audio signal from the HDMI source. An HDMI source can be
-a variety of sample-rates, channels, widths, and formats. If I
-understand correctly I need to register the device as supporting all
-the possible rates/channels/formats then constrain these to what is
-actually available at the time in the startup callback with
-snd_pcm_hw_contstraint_minmax and snd_pcm_hw_constraint_mask.
+> > It's a dev_WARN because it indicates a potentially serious error in the 
+> > driver: The driver has submitted an interrupt URB to a bulk endpoint.  
+> > That may not sound bad, but the same check gets triggered if a driver 
+> > submits a bulk URB to an isochronous endpoint, or any other invalid 
+> > combination.
+> > 
+> > Most likely the explanation here is that the driver doesn't bother to
+> > check the endpoint type because it expects the endpoint will always be
+> > interrupt.  But that is not a safe strategy.  USB devices and their
+> > firmware should not be trusted unnecessarily.
+> > 
+> > The best fix is, like you said, to add a sanity check in the caller.
+> 
+> OK, but then do we have some handy helper for the check?
+> As other bug reports by syzkaller suggest, there are a few other
+> drivers that do the same, submitting a urb with naive assumption of
+> the fixed EP for specific devices.  In the end we'll need to put the
+> very same checks there in multiple places.
 
-How do I notify userspace when the chip tells me that the HDMI audio
-source rate/channels/format has changed?
+Perhaps we could add a helper routine that would take a list of 
+expected endpoint types and check that the actual endpoints match the 
+types.  But of course, all the drivers you're talking about would have 
+to add a call to this helper routine.
 
-I know on the Video side the driver sends a V4L2_EVENT_SOURCE_CHANGE
-event to userspace when input format/resolution has changed so that
-userspace can stop streaming, call VIDIOC_QUERY_DV_TIMINGS and then
-VIDIOC_S_DV_TIMINGS with new timings.
-
-Regards,
-
-Tim
+Alan Stern
