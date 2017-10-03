@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: skip disabled-SSI nodes" to the
-	asoc tree
-Date: Tue,  3 Oct 2017 17:53:46 +0100 (BST)
-Message-ID: <20171003165346.7C890440053@finisterre.ee.mobilebroadband>
-References: <87efqmm2hh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: codecs: msm8916-wcd-analog: fix module
+	autoload" to the asoc tree
+Date: Tue,  3 Oct 2017 17:53:49 +0100 (BST)
+Message-ID: <20171003165349.C00F4440053@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 488C52668F0
- for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 18:53:49 +0200 (CEST)
-In-Reply-To: <87efqmm2hh.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9801A266E55
+ for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 18:53:50 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+To: Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rcar: skip disabled-SSI nodes
+   ASoC: codecs: msm8916-wcd-analog: fix module autoload
 
 has been applied to the asoc tree at
 
@@ -53,46 +52,46 @@ to this mail.
 Thanks,
 Mark
 
->From 9e9e95df06433b4f89cfeef0003af091ee0ebc86 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Oct 2017 07:37:32 +0000
-Subject: [PATCH] ASoC: rcar: skip disabled-SSI nodes
+>From 46d69e141d479585c105a4d5b2337cd2ce6967e5 Mon Sep 17 00:00:00 2001
+From: Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Date: Tue, 3 Oct 2017 11:49:51 +0200
+Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: fix module autoload
 
-The current device tree representation of the R-Car SSI assumes that they
-are numbered consecutively, starting from 0. Alas, this is not the case
-with the R8A77995 (D3) SoC which SSI1/SSI2 aren't present. In order to
-keep the existing device trees working, I'm suggesting to use a disabled
-node for SSI0/SSI1. Teach the SSI probe to just skip disabled nodes.
+If the driver is built as a module, autoload won't work because the module
+alias information is not filled. So user-space can't match the registered
+device with the corresponding module.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Export the module alias information using the MODULE_DEVICE_TABLE() macro.
+
+Before this patch:
+
+$ modinfo snd_soc_msm8916_analog | grep alias
+$
+
+After this patch:
+
+$ modinfo snd_soc_msm8916_analog | grep alias
+alias:          of:N*T*Cqcom,pm8916-wcd-analog-codecC*
+alias:          of:N*T*Cqcom,pm8916-wcd-analog-codec
+
+Signed-off-by: Nicolas Dechesne <nicolas.dechesne@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index fffc07e72627..03c2a1f02643 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -1112,6 +1112,9 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index f562f2d86907..3593c578e3e7 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1239,6 +1239,8 @@ static const struct of_device_id pm8916_wcd_analog_spmi_match_table[] = {
+ 	{ }
+ };
  
- 	i = 0;
- 	for_each_child_of_node(node, np) {
-+		if (!of_device_is_available(np))
-+			goto skip;
++MODULE_DEVICE_TABLE(of, pm8916_wcd_analog_spmi_match_table);
 +
- 		ssi = rsnd_ssi_get(priv, i);
- 
- 		snprintf(name, RSND_SSI_NAME_SIZE, "%s.%d",
-@@ -1148,7 +1151,7 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
- 			of_node_put(np);
- 			goto rsnd_ssi_probe_done;
- 		}
--
-+skip:
- 		i++;
- 	}
- 
+ static struct platform_driver pm8916_wcd_analog_spmi_driver = {
+ 	.driver = {
+ 		   .name = "qcom,pm8916-wcd-spmi-codec",
 -- 
 2.14.1
