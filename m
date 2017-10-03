@@ -1,141 +1,69 @@
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Subject: [PATCH v2] ASoC: codecs: msm8916-wcd-analog: configure micbias in mbhc setup
-Date: Tue,  3 Oct 2017 09:27:35 -0400
-Message-ID: <20171003132735.29401-1-damien.riegel@savoirfairelinux.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, kernel@savoirfairelinux.com, Damien Riegel <damien.riegel@savoirfairelinux.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: usb/sound/bcd2000: warning in bcd2000_init_device
+Date: Tue, 3 Oct 2017 10:21:57 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1710031004160.1500-100000@iolanthe.rowland.org>
+References: <s5ho9povfai.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id 31F422668F0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Oct 2017 16:21:58 +0200 (CEST)
+In-Reply-To: <s5ho9povfai.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Andrey Konovalov <andreyknvl@google.com>, linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Dmitry Vyukov <dvyukov@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-The very first time a headset is plugged in, detection is unreliable
-because bias hasn't been configured yet, it's done once a mechanical
-insertion interrupt has been triggered, so following insertions (and
-thus detections) are not affected.
+On Tue, 3 Oct 2017, Takashi Iwai wrote:
 
-To fix the very first detection, the bias must also be configured in the
-function that setup the MBHC. Move pm8916_wcd_setup_mbhc after
-pm8916_mbhc_configure_bias to avoid a forward declaration.
+> On Mon, 25 Sep 2017 14:39:51 +0200,
+> Andrey Konovalov wrote:
+> > 
+> > Hi!
+> > 
+> > I've got the following report while fuzzing the kernel with syzkaller.
+> > 
+> > On commit e19b205be43d11bff638cad4487008c48d21c103 (4.14-rc2).
+> > 
+> > It seems that there's no check of the endpoint type.
+> > 
+> > usb 1-1: BOGUS urb xfer, pipe 1 != type 3
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 0 PID: 1846 at drivers/usb/core/urb.c:449
+> 
+> How is this bug triggered?  As it's syzkaller with QEMU, it looks
+> hitting an inconsistent state the driver didn't expect (it sets the
+> fixed endpoint), then USB-core detects the inconsistency and spews the
+> kernel warning with stack trace.  If so, it's no serious problem as it
+> appears.
+> 
+> Suppose my guess is right, I'm not sure what's the best way to fix
+> this.  Certainly we can add more sanity check in the caller side.
+> OTOH, I find the reaction of USB core too aggressive, it's not
+> necessary to be dev_WARN() but a normal dev_err().
+> Or I might be looking at a wrong place?
 
-Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
----
-Changes in v2:
- - squash the two patches in one patch only
+It's a dev_WARN because it indicates a potentially serious error in the 
+driver: The driver has submitted an interrupt URB to a bulk endpoint.  
+That may not sound bad, but the same check gets triggered if a driver 
+submits a bulk URB to an isochronous endpoint, or any other invalid 
+combination.
 
- sound/soc/codecs/msm8916-wcd-analog.c | 94 +++++++++++++++++++----------------
- 1 file changed, 50 insertions(+), 44 deletions(-)
+Most likely the explanation here is that the driver doesn't bother to
+check the endpoint type because it expects the endpoint will always be
+interrupt.  But that is not a safe strategy.  USB devices and their
+firmware should not be trusted unnecessarily.
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index f562f2d86907..71494e9dbdcb 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -443,50 +443,6 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
- 						     wcd->micbias1_cap_mode);
- }
- 
--static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
--{
--	struct snd_soc_codec *codec = wcd->codec;
--	u32 plug_type = 0;
--	u32 int_en_mask;
--
--	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
--		      CDC_A_MBHC_DET_CTL_L_DET_EN |
--		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
--		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
--		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
--
--	if (wcd->hphl_jack_type_normally_open)
--		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
--
--	if (wcd->gnd_jack_type_normally_open)
--		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
--
--	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
--		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
--		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
--		      plug_type |
--		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
--
--
--	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
--		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
--		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
--
--	/* enable MBHC clock */
--	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
--			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
--			    DIG_CLK_CTL_D_MBHC_CLK_EN);
--
--	int_en_mask = MBHC_SWITCH_INT;
--	if (wcd->mbhc_btn_enabled)
--		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
--
--	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
--	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
--	wcd->mbhc_btn0_released = false;
--	wcd->detect_accessory_type = true;
--}
--
- static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
- 				      bool micbias2_enabled)
- {
-@@ -534,6 +490,56 @@ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
- 	return 0;
- }
- 
-+static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
-+{
-+	struct snd_soc_codec *codec = wcd->codec;
-+	bool micbias_enabled = false;
-+	u32 plug_type = 0;
-+	u32 int_en_mask;
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
-+		      CDC_A_MBHC_DET_CTL_L_DET_EN |
-+		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
-+		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
-+		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
-+
-+	if (wcd->hphl_jack_type_normally_open)
-+		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
-+
-+	if (wcd->gnd_jack_type_normally_open)
-+		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
-+		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
-+		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
-+		      plug_type |
-+		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
-+
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
-+		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
-+		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
-+
-+	/* enable MBHC clock */
-+	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
-+			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
-+			    DIG_CLK_CTL_D_MBHC_CLK_EN);
-+
-+	if (snd_soc_read(codec, CDC_A_MICB_2_EN) & CDC_A_MICB_2_EN_ENABLE)
-+		micbias_enabled = true;
-+
-+	pm8916_mbhc_configure_bias(wcd, micbias_enabled);
-+
-+	int_en_mask = MBHC_SWITCH_INT;
-+	if (wcd->mbhc_btn_enabled)
-+		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
-+
-+	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
-+	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
-+	wcd->mbhc_btn0_released = false;
-+	wcd->detect_accessory_type = true;
-+}
-+
- static int pm8916_wcd_analog_enable_micbias_int2(struct
- 						  snd_soc_dapm_widget
- 						  *w, struct snd_kcontrol
--- 
-2.14.1
+The best fix is, like you said, to add a sanity check in the caller.
+
+Alan Stern
