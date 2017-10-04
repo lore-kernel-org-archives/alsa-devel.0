@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img-spdif-out: Rename suspend / resume
-	funcs" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:36 +0100
-Message-ID: <E1dzhqu-0004Nw-4P@debutante>
-References: <1506938517-810-2-git-send-email-ed.blake@sondrel.com>
+Subject: Applied "ASoC: codecs: msm8916-wcd-analog: fix micbias
+	level" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:33 +0100
+Message-ID: <E1dzhqr-0004Mu-2x@debutante>
+References: <1506716384-4700-1-git-send-email-jean-francois.tetu@savoirfairelinux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1816659375683049053=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 42D2E267441
- for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:38 +0200 (CEST)
-In-Reply-To: <1506938517-810-2-git-send-email-ed.blake@sondrel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D89732673E8
+ for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:40 +0200 (CEST)
+In-Reply-To: <1506716384-4700-1-git-send-email-jean-francois.tetu@savoirfairelinux.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ed Blake <ed.blake@sondrel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?= <jean-francois.tetu@savoirfairelinux.com>
 List-Id: alsa-devel@alsa-project.org
+
+--===============1816659375683049053==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: img-spdif-out: Rename suspend / resume funcs
+   ASoC: codecs: msm8916-wcd-analog: fix micbias level
 
 has been applied to the asoc tree at
 
@@ -53,81 +54,62 @@ to this mail.
 Thanks,
 Mark
 
->From 2ab18dfe87596e207f17ff0567660cd7356c715a Mon Sep 17 00:00:00 2001
-From: Ed Blake <ed.blake@sondrel.com>
-Date: Mon, 2 Oct 2017 11:01:55 +0100
-Subject: [PATCH] ASoC: img-spdif-out: Rename suspend / resume funcs
+>From 664611e7e02f76fbc5470ef545b2657ed25c292b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?=
+ <jean-francois.tetu@savoirfairelinux.com>
+Date: Fri, 29 Sep 2017 16:19:44 -0400
+Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: fix micbias level
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Rename suspend and resume functions to runtime_suspend and
-runtime_resume, which is what they actually are. This will avoid
-confusion when adding suspend and resume functions in a subsequent
-patch.
+The macro used to set the microphone bias level causes the
+snd_soc_write() call to overwrite other fields in the CDC_A_MICB_1_VAL
+register. The macro also does not return the proper level value
+to use. This fixes this by preserving all bits from the register
+that are not the level while setting the level.
 
-Signed-off-by: Ed Blake <ed.blake@sondrel.com>
+Signed-off-by: Jean-François Têtu <jean-francois.tetu@savoirfairelinux.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/img/img-spdif-out.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
-index 383655da2e60..416aa5786b93 100644
---- a/sound/soc/img/img-spdif-out.c
-+++ b/sound/soc/img/img-spdif-out.c
-@@ -49,7 +49,7 @@ struct img_spdif_out {
- 	struct reset_control *rst;
- };
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 549c269acc7d..a42f8ebb9670 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -104,7 +104,7 @@
+ #define CDC_A_MICB_1_VAL		(0xf141)
+ #define MICB_MIN_VAL 1600
+ #define MICB_STEP_SIZE 50
+-#define MICB_VOLTAGE_REGVAL(v)		((v - MICB_MIN_VAL)/MICB_STEP_SIZE)
++#define MICB_VOLTAGE_REGVAL(v)		(((v - MICB_MIN_VAL)/MICB_STEP_SIZE) << 3)
+ #define MICB_1_VAL_MICB_OUT_VAL_MASK	GENMASK(7, 3)
+ #define MICB_1_VAL_MICB_OUT_VAL_V2P70V	((0x16)  << 3)
+ #define MICB_1_VAL_MICB_OUT_VAL_V1P80V	((0x4)  << 3)
+@@ -349,8 +349,9 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
+ 			    | MICB_1_CTL_EXT_PRECHARG_EN_ENABLE);
  
--static int img_spdif_out_suspend(struct device *dev)
-+static int img_spdif_out_runtime_suspend(struct device *dev)
- {
- 	struct img_spdif_out *spdif = dev_get_drvdata(dev);
- 
-@@ -58,7 +58,7 @@ static int img_spdif_out_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int img_spdif_out_resume(struct device *dev)
-+static int img_spdif_out_runtime_resume(struct device *dev)
- {
- 	struct img_spdif_out *spdif = dev_get_drvdata(dev);
- 	int ret;
-@@ -366,7 +366,7 @@ static int img_spdif_out_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
--		ret = img_spdif_out_resume(&pdev->dev);
-+		ret = img_spdif_out_runtime_resume(&pdev->dev);
- 		if (ret)
- 			goto err_pm_disable;
- 	}
-@@ -393,7 +393,7 @@ static int img_spdif_out_probe(struct platform_device *pdev)
- 
- err_suspend:
- 	if (!pm_runtime_status_suspended(&pdev->dev))
--		img_spdif_out_suspend(&pdev->dev);
-+		img_spdif_out_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
- 	clk_disable_unprepare(spdif->clk_sys);
-@@ -407,7 +407,7 @@ static int img_spdif_out_dev_remove(struct platform_device *pdev)
- 
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
--		img_spdif_out_suspend(&pdev->dev);
-+		img_spdif_out_runtime_suspend(&pdev->dev);
- 
- 	clk_disable_unprepare(spdif->clk_sys);
- 
-@@ -421,8 +421,8 @@ static const struct of_device_id img_spdif_out_of_match[] = {
- MODULE_DEVICE_TABLE(of, img_spdif_out_of_match);
- 
- static const struct dev_pm_ops img_spdif_out_pm_ops = {
--	SET_RUNTIME_PM_OPS(img_spdif_out_suspend,
--			   img_spdif_out_resume, NULL)
-+	SET_RUNTIME_PM_OPS(img_spdif_out_runtime_suspend,
-+			   img_spdif_out_runtime_resume, NULL)
- };
- 
- static struct platform_driver img_spdif_out_driver = {
+ 	if (wcd->micbias_mv) {
+-		snd_soc_write(codec, CDC_A_MICB_1_VAL,
+-			      MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
++		snd_soc_update_bits(codec, CDC_A_MICB_1_VAL,
++				    MICB_1_VAL_MICB_OUT_VAL_MASK,
++				    MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
+ 		/*
+ 		 * Special headset needs MICBIAS as 2.7V so wait for
+ 		 * 50 msec for the MICBIAS to reach 2.7 volts.
 -- 
 2.14.1
+
+
+--===============1816659375683049053==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1816659375683049053==--
