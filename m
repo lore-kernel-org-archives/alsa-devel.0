@@ -1,77 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/6 v4] Add ASoC support for AMD Stoney APUs
-Date: Wed, 4 Oct 2017 15:49:28 +0100
-Message-ID: <20171004144928.hyvkgym45le32mm3@sirena.co.uk>
-References: <1505325475-22602-1-git-send-email-alexander.deucher@amd.com>
- <20170913181218.bb2br4zehzjoatyq@sirena.org.uk>
- <CADnq5_PdpjS448n6u6tPBqgKfEw278BENMTjVPiEQ4zQx313AA@mail.gmail.com>
- <20170914174228.esh6lvih3yjs46ur@sirena.org.uk>
- <20170928185936.zajc466sp6ttuh7v@sirena.org.uk>
- <BN6PR12MB165217002EC43137E3F87F83F7790@BN6PR12MB1652.namprd12.prod.outlook.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0278116365567395132=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 758362673ED
- for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 16:49:31 +0200 (CEST)
-In-Reply-To: <BN6PR12MB165217002EC43137E3F87F83F7790@BN6PR12MB1652.namprd12.prod.outlook.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexdeucher@gmail.com>, Dave Airlie <airlied@gmail.com>
+Subject: Applied "ASoC: fsi: Use of_device_get_match_data() helper" to the asoc tree
+Date: Wed, 04 Oct 2017 15:51:30 +0100
+Message-ID: <E1dzl1G-0008Qy-DO@debutante>
+References: <1507120110-13336-1-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1507120110-13336-1-git-send-email-geert+renesas@glider.be>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0278116365567395132==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6nswwxtvczrecfv6"
-Content-Disposition: inline
+   ASoC: fsi: Use of_device_get_match_data() helper
 
+has been applied to the asoc tree at
 
---6nswwxtvczrecfv6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Sep 28, 2017 at 07:21:07PM +0000, Deucher, Alexander wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Any updates with the pull requests?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Sorry travelling last week and swamped this week.  I'm going to try
-> and get it done tomorrow, otherwise, probably the week after.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-No worries, it's only -rc3 so we've got 3-4 weeks.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---6nswwxtvczrecfv6
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From b48cc1d9c3a93b239700198f69b1a49b23d95b83 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Wed, 4 Oct 2017 14:28:30 +0200
+Subject: [PATCH] ASoC: fsi: Use of_device_get_match_data() helper
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnU9PgACgkQJNaLcl1U
-h9Dy0wf/emD+KgYrXwCACEP9KsjWPfzo0q/nO9nwpKV2VJdFHztFIX0PjbcFiJUH
-iQGbXigEVfWLCs5Xeialex7/SMTx5ONChKnAO9k2EaAC034d6inAFACRlKAo0tS/
-rs5Ez7fkxwZkJrUuK0dHBfVL1EMjMEqzNQNIOuKb6D2KwSjoezrUAxfiELPMwF4w
-jrUpbBdDlIL5m21QNXinhwWgan45ib0f8nAct/c5Rk2fEG5M/MvuJwEXEWuT5tG2
-cizXO0kWJ3T+Yan3Gz6XeXXao+gTjiwCVY8hCgjBE1klsuaLQQXJ7Tjsih/+NJWA
-WMe7MpEIEtfjZViM2ZP8TMzr2kvRKg==
-=N2Bg
------END PGP SIGNATURE-----
+Use the of_device_get_match_data() helper instead of open coding.
+Note that when used with DT, there's always a valid match.
 
---6nswwxtvczrecfv6--
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/fsi.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
---===============0278116365567395132==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0278116365567395132==--
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 6d3c7706d93f..c3aaf4788557 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1932,14 +1932,9 @@ static int fsi_probe(struct platform_device *pdev)
+ 
+ 	core = NULL;
+ 	if (np) {
+-		const struct of_device_id *of_id;
+-
+-		of_id = of_match_device(fsi_of_match, &pdev->dev);
+-		if (of_id) {
+-			core = of_id->data;
+-			fsi_of_parse("fsia", np, &info.port_a, &pdev->dev);
+-			fsi_of_parse("fsib", np, &info.port_b, &pdev->dev);
+-		}
++		core = of_device_get_match_data(&pdev->dev);
++		fsi_of_parse("fsia", np, &info.port_a, &pdev->dev);
++		fsi_of_parse("fsib", np, &info.port_b, &pdev->dev);
+ 	} else {
+ 		const struct platform_device_id	*id_entry = pdev->id_entry;
+ 		if (id_entry)
+-- 
+2.14.1
