@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: DVC kctrl sets once" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:23 +0100
-Message-ID: <E1dzhqh-0004Jz-Sl@debutante>
-References: <87y3oumo79.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: use generic rsnd_flags_xxx() macro on ADG" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:26 +0100
+Message-ID: <E1dzhqk-0004Ku-Ui@debutante>
+References: <87r2uqgyog.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87y3oumo79.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r2uqgyog.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: DVC kctrl sets once
+   ASoC: rsnd: use generic rsnd_flags_xxx() macro on ADG
 
 has been applied to the asoc tree at
 
@@ -37,62 +37,71 @@ to this mail.
 Thanks,
 Mark
 
->From b918f1bc7f1ce463d6fbb6ebf3db36bd302bded8 Mon Sep 17 00:00:00 2001
+>From d0cf7fc948159a3eab9ad2e959cce7f06f2333df Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Sun, 1 Oct 2017 23:48:29 +0000
-Subject: [PATCH] ASoC: rsnd: DVC kctrl sets once
-
-Same DVC might be used few times if system/platform is using MIX.
-For example below case.
-
-	DAI0 playback = <&src0 &ctu02 &mix0 &dvc0 &ssi0>;
-	DAI1 playback = <&src2 &ctu03 &mix0 &dvc0 &ssi0>;
-
-This case, ALSA will have DVC,0 and DVC,1 kcontrol interfaces,
-but these are same DVC. This is confusing.
-This patch adds new flags and avoid such case.
+Date: Sun, 1 Oct 2017 23:48:12 +0000
+Subject: [PATCH] ASoC: rsnd: use generic rsnd_flags_xxx() macro on ADG
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dvc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/sh/rcar/adg.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index 1743ade3cc55..bb22850e8fe6 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -44,8 +44,11 @@ struct rsnd_dvc {
- 	struct rsnd_kctrl_cfg_s ren;	/* Ramp Enable */
- 	struct rsnd_kctrl_cfg_s rup;	/* Ramp Rate Up */
- 	struct rsnd_kctrl_cfg_s rdown;	/* Ramp Rate Down */
-+	u32 flags;
- };
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index e11ce5036bcf..1921307780de 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -44,7 +44,6 @@ struct rsnd_adg {
  
-+#define KCTRL_INITIALIZED	(1 << 0)
-+
- #define rsnd_dvc_get(priv, id) ((struct rsnd_dvc *)(priv->dvc) + id)
- #define rsnd_dvc_nr(priv) ((priv)->dvc_nr)
+ #define LRCLK_ASYNC	(1 << 0)
+ #define AUDIO_OUT_48	(1 << 1)
+-#define adg_mode_flags(adg)	(adg->flags)
  
-@@ -254,6 +257,9 @@ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
- 	int channels = rsnd_rdai_channels_get(rdai);
- 	int ret;
+ #define for_each_rsnd_clk(pos, adg, i)		\
+ 	for (i = 0;				\
+@@ -366,8 +365,8 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
  
-+	if (rsnd_flags_has(dvc, KCTRL_INITIALIZED))
-+		return 0;
-+
- 	/* Volume */
- 	ret = rsnd_kctrl_new_m(mod, io, rtd,
- 			is_play ?
-@@ -307,6 +313,8 @@ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
- 	if (ret < 0)
- 		return ret;
+ 	rsnd_adg_set_ssi_clk(ssi_mod, data);
  
-+	rsnd_flags_set(dvc, KCTRL_INITIALIZED);
-+
- 	return 0;
- }
+-	if (adg_mode_flags(adg) & LRCLK_ASYNC) {
+-		if (adg_mode_flags(adg) & AUDIO_OUT_48)
++	if (rsnd_flags_has(adg, LRCLK_ASYNC)) {
++		if (rsnd_flags_has(adg, AUDIO_OUT_48))
+ 			ckr = 0x80000000;
+ 	} else {
+ 		if (0 == (rate % 8000))
+@@ -479,10 +478,10 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	}
  
+ 	if (req_rate[0] % 48000 == 0)
+-		adg->flags |= AUDIO_OUT_48;
++		rsnd_flags_set(adg, AUDIO_OUT_48);
+ 
+ 	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
+-		adg->flags |= LRCLK_ASYNC;
++		rsnd_flags_set(adg, LRCLK_ASYNC);
+ 
+ 	/*
+ 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
+@@ -512,7 +511,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 				adg->rbga_rate_for_441khz = rate / div;
+ 				ckr |= brg_table[i] << 20;
+ 				if (req_441kHz_rate &&
+-				    !(adg_mode_flags(adg) & AUDIO_OUT_48))
++				    !rsnd_flags_has(adg, AUDIO_OUT_48))
+ 					parent_clk_name = __clk_get_name(clk);
+ 			}
+ 		}
+@@ -528,7 +527,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 				adg->rbgb_rate_for_48khz = rate / div;
+ 				ckr |= brg_table[i] << 16;
+ 				if (req_48kHz_rate &&
+-				    (adg_mode_flags(adg) & AUDIO_OUT_48))
++				    rsnd_flags_has(adg, AUDIO_OUT_48))
+ 					parent_clk_name = __clk_get_name(clk);
+ 			}
+ 		}
 -- 
 2.14.1
