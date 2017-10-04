@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd-analog: configure micbias in mbhc setup" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:48 +0100
-Message-ID: <E1dzhr6-0004Rg-GY@debutante>
-References: <20171003132735.29401-1-damien.riegel@savoirfairelinux.com>
+Subject: Applied "ASoC: rockchip: Allocate enough memory so we don't overflow routes" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:45 +0100
+Message-ID: <E1dzhr3-0004Qh-D0@debutante>
+References: <20170929220324.16413-1-dianders@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171003132735.29401-1-damien.riegel@savoirfairelinux.com>
+In-Reply-To: <20170929220324.16413-1-dianders@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, kernel@savoirfairelinux.comSrinivas Kandagatla <srinivas.kandagatla@linaro.org>alsa-devel@alsa-project.org
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, jeffy.chen@rock-chips.com, mka@chromium.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, briannorris@chromium.org, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: msm8916-wcd-analog: configure micbias in mbhc setup
+   ASoC: rockchip: Allocate enough memory so we don't overflow routes
 
 has been applied to the asoc tree at
 
@@ -37,139 +37,62 @@ to this mail.
 Thanks,
 Mark
 
->From 79f01fe6262b0fbba4c558dfe3dd61b3c511a61a Mon Sep 17 00:00:00 2001
-From: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Date: Tue, 3 Oct 2017 09:27:35 -0400
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: configure micbias in mbhc
- setup
+>From 8eae6c2585b0455f0e7200495d5e513020ca2fa2 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 29 Sep 2017 15:03:24 -0700
+Subject: [PATCH] ASoC: rockchip: Allocate enough memory so we don't overflow
+ routes
 
-The very first time a headset is plugged in, detection is unreliable
-because bias hasn't been configured yet, it's done once a mechanical
-insertion interrupt has been triggered, so following insertions (and
-thus detections) are not affected.
+In the recent commit d9f9c167edae ("ASoC: rockchip: Init dapm routes
+dynamically") we improperly allocated memory for the card->dapm_routes
+causing us to overflow the allocation on every boot.  Oops.
 
-To fix the very first detection, the bias must also be configured in the
-function that setup the MBHC. Move pm8916_wcd_setup_mbhc after
-pm8916_mbhc_configure_bias to avoid a forward declaration.
+Let's allocate the correct amount of memory.  We'll also add a check
+to make sure that we don't overrun memory even if we encounter some
+sort of weird device tree.
 
-Signed-off-by: Damien Riegel <damien.riegel@savoirfairelinux.com>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Fixes: d9f9c167edae ("ASoC: rockchip: Init dapm routes dynamically")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 94 +++++++++++++++++++----------------
- 1 file changed, 50 insertions(+), 44 deletions(-)
+ sound/soc/rockchip/rk3399_gru_sound.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 3593c578e3e7..8db5824429b3 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -443,50 +443,6 @@ static int pm8916_wcd_analog_enable_micbias_int1(struct
- 						     wcd->micbias1_cap_mode);
- }
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index 30eed83e8a13..d64fbbd50544 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -494,13 +494,17 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 	struct snd_soc_dai_link *dai;
+ 	struct snd_soc_dapm_route *routes;
+ 	int i, index;
++	int num_routes;
  
--static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
--{
--	struct snd_soc_codec *codec = wcd->codec;
--	u32 plug_type = 0;
--	u32 int_en_mask;
--
--	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
--		      CDC_A_MBHC_DET_CTL_L_DET_EN |
--		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
--		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
--		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
--
--	if (wcd->hphl_jack_type_normally_open)
--		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
--
--	if (wcd->gnd_jack_type_normally_open)
--		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
--
--	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
--		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
--		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
--		      plug_type |
--		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
--
--
--	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
--		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
--		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
--
--	/* enable MBHC clock */
--	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
--			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
--			    DIG_CLK_CTL_D_MBHC_CLK_EN);
--
--	int_en_mask = MBHC_SWITCH_INT;
--	if (wcd->mbhc_btn_enabled)
--		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
--
--	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
--	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
--	wcd->mbhc_btn0_released = false;
--	wcd->detect_accessory_type = true;
--}
--
- static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
- 				      bool micbias2_enabled)
- {
-@@ -534,6 +490,56 @@ static int pm8916_mbhc_configure_bias(struct pm8916_wcd_analog_priv *priv,
- 	return 0;
- }
+ 	card->dai_link = devm_kzalloc(dev, sizeof(rockchip_dais),
+ 				      GFP_KERNEL);
+ 	if (!card->dai_link)
+ 		return -ENOMEM;
  
-+static void pm8916_wcd_setup_mbhc(struct pm8916_wcd_analog_priv *wcd)
-+{
-+	struct snd_soc_codec *codec = wcd->codec;
-+	bool micbias_enabled = false;
-+	u32 plug_type = 0;
-+	u32 int_en_mask;
+-	routes = devm_kzalloc(dev, sizeof(rockchip_routes),
++	num_routes = 0;
++	for (i = 0; i < ARRAY_SIZE(rockchip_routes); i++)
++		num_routes += rockchip_routes[i].num_routes;
++	routes = devm_kzalloc(dev, num_routes * sizeof(*routes),
+ 			      GFP_KERNEL);
+ 	if (!routes)
+ 		return -ENOMEM;
+@@ -538,6 +542,12 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
+ 		dai->platform_of_node = np_cpu;
+ 		dai->cpu_of_node = np_cpu;
+ 
++		if (card->num_dapm_routes + rockchip_routes[index].num_routes >
++		    num_routes) {
++			dev_err(dev, "Too many routes\n");
++			return -EINVAL;
++		}
 +
-+	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_1,
-+		      CDC_A_MBHC_DET_CTL_L_DET_EN |
-+		      CDC_A_MBHC_DET_CTL_MECH_DET_TYPE_INSERTION |
-+		      CDC_A_MBHC_DET_CTL_MIC_CLAMP_CTL_AUTO |
-+		      CDC_A_MBHC_DET_CTL_MBHC_BIAS_EN);
-+
-+	if (wcd->hphl_jack_type_normally_open)
-+		plug_type |= CDC_A_HPHL_PLUG_TYPE_NO;
-+
-+	if (wcd->gnd_jack_type_normally_open)
-+		plug_type |= CDC_A_GND_PLUG_TYPE_NO;
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DET_CTL_2,
-+		      CDC_A_MBHC_DET_CTL_HS_L_DET_PULL_UP_CTRL_I_3P0 |
-+		      CDC_A_MBHC_DET_CTL_HS_L_DET_COMPA_CTRL_V0P9_VDD |
-+		      plug_type |
-+		      CDC_A_MBHC_DET_CTL_HPHL_100K_TO_GND_EN);
-+
-+
-+	snd_soc_write(codec, CDC_A_MBHC_DBNC_TIMER,
-+		      CDC_A_MBHC_DBNC_TIMER_INSREM_DBNC_T_256_MS |
-+		      CDC_A_MBHC_DBNC_TIMER_BTN_DBNC_T_16MS);
-+
-+	/* enable MBHC clock */
-+	snd_soc_update_bits(codec, CDC_D_CDC_DIG_CLK_CTL,
-+			    DIG_CLK_CTL_D_MBHC_CLK_EN_MASK,
-+			    DIG_CLK_CTL_D_MBHC_CLK_EN);
-+
-+	if (snd_soc_read(codec, CDC_A_MICB_2_EN) & CDC_A_MICB_2_EN_ENABLE)
-+		micbias_enabled = true;
-+
-+	pm8916_mbhc_configure_bias(wcd, micbias_enabled);
-+
-+	int_en_mask = MBHC_SWITCH_INT;
-+	if (wcd->mbhc_btn_enabled)
-+		int_en_mask |= MBHC_BUTTON_PRESS_DET | MBHC_BUTTON_RELEASE_DET;
-+
-+	snd_soc_update_bits(codec, CDC_D_INT_EN_CLR, int_en_mask, 0);
-+	snd_soc_update_bits(codec, CDC_D_INT_EN_SET, int_en_mask, int_en_mask);
-+	wcd->mbhc_btn0_released = false;
-+	wcd->detect_accessory_type = true;
-+}
-+
- static int pm8916_wcd_analog_enable_micbias_int2(struct
- 						  snd_soc_dapm_widget
- 						  *w, struct snd_kcontrol
+ 		memcpy(routes + card->num_dapm_routes,
+ 		       rockchip_routes[index].routes,
+ 		       rockchip_routes[index].num_routes * sizeof(*routes));
 -- 
 2.14.1
