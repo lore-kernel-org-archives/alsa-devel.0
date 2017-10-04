@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: use generic rsnd_flags_xxx() macro on ADG" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:26 +0100
-Message-ID: <E1dzhqk-0004Ku-Ui@debutante>
-References: <87r2uqgyog.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add generic rsnd_flags_xxx() macro" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:30 +0100
+Message-ID: <E1dzhqo-0004Lt-0K@debutante>
+References: <871smmo2st.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87r2uqgyog.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871smmo2st.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: use generic rsnd_flags_xxx() macro on ADG
+   ASoC: rsnd: add generic rsnd_flags_xxx() macro
 
 has been applied to the asoc tree at
 
@@ -37,71 +37,140 @@ to this mail.
 Thanks,
 Mark
 
->From d0cf7fc948159a3eab9ad2e959cce7f06f2333df Mon Sep 17 00:00:00 2001
+>From 429919890e22431bc350ecf47b31866bb27631b2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Sun, 1 Oct 2017 23:48:12 +0000
-Subject: [PATCH] ASoC: rsnd: use generic rsnd_flags_xxx() macro on ADG
+Date: Sun, 1 Oct 2017 23:47:50 +0000
+Subject: [PATCH] ASoC: rsnd: add generic rsnd_flags_xxx() macro
+
+SSI is using rsnd_ssi_flags_xxx() macro to control flags.
+But it is useful macro not only for SSI. This patch replace it
+to more generic rsnd_flags_xxx().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/rsnd.h |  4 ++++
+ sound/soc/sh/rcar/ssi.c  | 27 ++++++++++++---------------
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index e11ce5036bcf..1921307780de 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -44,7 +44,6 @@ struct rsnd_adg {
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index c5de71f2dc8c..beffbec42404 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -601,6 +601,10 @@ struct rsnd_priv {
+ #define rsnd_is_gen1(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN1)
+ #define rsnd_is_gen2(priv)	(((priv)->flags & RSND_GEN_MASK) == RSND_GEN2)
  
- #define LRCLK_ASYNC	(1 << 0)
- #define AUDIO_OUT_48	(1 << 1)
--#define adg_mode_flags(adg)	(adg->flags)
++#define rsnd_flags_has(p, f) ((p)->flags & (f))
++#define rsnd_flags_set(p, f) ((p)->flags |= (f))
++#define rsnd_flags_del(p, f) ((p)->flags &= ~(f))
++
+ /*
+  *	rsnd_kctrl
+  */
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index fffc07e72627..61b4ce20ee2b 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -101,9 +101,6 @@ struct rsnd_ssi {
+ #define rsnd_ssi_get(priv, id) ((struct rsnd_ssi *)(priv->ssi) + id)
+ #define rsnd_ssi_nr(priv) ((priv)->ssi_nr)
+ #define rsnd_mod_to_ssi(_mod) container_of((_mod), struct rsnd_ssi, mod)
+-#define rsnd_ssi_flags_has(p, f) ((p)->flags & f)
+-#define rsnd_ssi_flags_set(p, f) ((p)->flags |= f)
+-#define rsnd_ssi_flags_del(p, f) ((p)->flags = ((p)->flags & ~f))
+ #define rsnd_ssi_is_parent(ssi, io) ((ssi) == rsnd_io_to_mod_ssip(io))
+ #define rsnd_ssi_is_multi_slave(mod, io) \
+ 	(rsnd_ssi_multi_slaves(io) & (1 << rsnd_mod_id(mod)))
+@@ -116,10 +113,10 @@ int rsnd_ssi_hdmi_port(struct rsnd_dai_stream *io)
+ 	struct rsnd_mod *mod = rsnd_io_to_mod_ssi(io);
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
  
- #define for_each_rsnd_clk(pos, adg, i)		\
- 	for (i = 0;				\
-@@ -366,8 +365,8 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
+-	if (rsnd_ssi_flags_has(ssi, RSND_SSI_HDMI0))
++	if (rsnd_flags_has(ssi, RSND_SSI_HDMI0))
+ 		return RSND_SSI_HDMI_PORT0;
  
- 	rsnd_adg_set_ssi_clk(ssi_mod, data);
+-	if (rsnd_ssi_flags_has(ssi, RSND_SSI_HDMI1))
++	if (rsnd_flags_has(ssi, RSND_SSI_HDMI1))
+ 		return RSND_SSI_HDMI_PORT1;
  
--	if (adg_mode_flags(adg) & LRCLK_ASYNC) {
--		if (adg_mode_flags(adg) & AUDIO_OUT_48)
-+	if (rsnd_flags_has(adg, LRCLK_ASYNC)) {
-+		if (rsnd_flags_has(adg, AUDIO_OUT_48))
- 			ckr = 0x80000000;
- 	} else {
- 		if (0 == (rate % 8000))
-@@ -479,10 +478,10 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	return 0;
+@@ -134,7 +131,7 @@ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
+ 	if (!rsnd_ssi_is_dma_mode(mod))
+ 		return 0;
+ 
+-	if (!(rsnd_ssi_flags_has(ssi, RSND_SSI_NO_BUSIF)))
++	if (!(rsnd_flags_has(ssi, RSND_SSI_NO_BUSIF)))
+ 		use_busif = 1;
+ 	if (rsnd_io_to_mod_src(io))
+ 		use_busif = 1;
+@@ -793,13 +790,13 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	 * But it don't need to call request_irq() many times.
+ 	 * Let's control it by RSND_SSI_PROBED flag.
+ 	 */
+-	if (!rsnd_ssi_flags_has(ssi, RSND_SSI_PROBED)) {
++	if (!rsnd_flags_has(ssi, RSND_SSI_PROBED)) {
+ 		ret = request_irq(ssi->irq,
+ 				  rsnd_ssi_interrupt,
+ 				  IRQF_SHARED,
+ 				  dev_name(dev), mod);
+ 
+-		rsnd_ssi_flags_set(ssi, RSND_SSI_PROBED);
++		rsnd_flags_set(ssi, RSND_SSI_PROBED);
  	}
  
- 	if (req_rate[0] % 48000 == 0)
--		adg->flags |= AUDIO_OUT_48;
-+		rsnd_flags_set(adg, AUDIO_OUT_48);
+ 	return ret;
+@@ -817,10 +814,10 @@ static int rsnd_ssi_common_remove(struct rsnd_mod *mod,
+ 		return 0;
  
- 	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
--		adg->flags |= LRCLK_ASYNC;
-+		rsnd_flags_set(adg, LRCLK_ASYNC);
+ 	/* PIO will request IRQ again */
+-	if (rsnd_ssi_flags_has(ssi, RSND_SSI_PROBED)) {
++	if (rsnd_flags_has(ssi, RSND_SSI_PROBED)) {
+ 		free_irq(ssi->irq, mod);
  
- 	/*
- 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
-@@ -512,7 +511,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 				adg->rbga_rate_for_441khz = rate / div;
- 				ckr |= brg_table[i] << 20;
- 				if (req_441kHz_rate &&
--				    !(adg_mode_flags(adg) & AUDIO_OUT_48))
-+				    !rsnd_flags_has(adg, AUDIO_OUT_48))
- 					parent_clk_name = __clk_get_name(clk);
- 			}
+-		rsnd_ssi_flags_del(ssi, RSND_SSI_PROBED);
++		rsnd_flags_del(ssi, RSND_SSI_PROBED);
+ 	}
+ 
+ 	return 0;
+@@ -1003,13 +1000,13 @@ static void __rsnd_ssi_parse_hdmi_connection(struct rsnd_priv *priv,
+ 	ssi  = rsnd_mod_to_ssi(mod);
+ 
+ 	if (strstr(remote_ep->full_name, "hdmi0")) {
+-		rsnd_ssi_flags_set(ssi, RSND_SSI_HDMI0);
++		rsnd_flags_set(ssi, RSND_SSI_HDMI0);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI0\n",
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+ 
+ 	if (strstr(remote_ep->full_name, "hdmi1")) {
+-		rsnd_ssi_flags_set(ssi, RSND_SSI_HDMI1);
++		rsnd_flags_set(ssi, RSND_SSI_HDMI1);
+ 		dev_dbg(dev, "%s[%d] connected to HDMI1\n",
+ 			rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+@@ -1042,7 +1039,7 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 
+-	return !!(rsnd_ssi_flags_has(ssi, RSND_SSI_CLK_PIN_SHARE));
++	return !!(rsnd_flags_has(ssi, RSND_SSI_CLK_PIN_SHARE));
+ }
+ 
+ static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
+@@ -1125,10 +1122,10 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
  		}
-@@ -528,7 +527,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 				adg->rbgb_rate_for_48khz = rate / div;
- 				ckr |= brg_table[i] << 16;
- 				if (req_48kHz_rate &&
--				    (adg_mode_flags(adg) & AUDIO_OUT_48))
-+				    rsnd_flags_has(adg, AUDIO_OUT_48))
- 					parent_clk_name = __clk_get_name(clk);
- 			}
- 		}
+ 
+ 		if (of_get_property(np, "shared-pin", NULL))
+-			rsnd_ssi_flags_set(ssi, RSND_SSI_CLK_PIN_SHARE);
++			rsnd_flags_set(ssi, RSND_SSI_CLK_PIN_SHARE);
+ 
+ 		if (of_get_property(np, "no-busif", NULL))
+-			rsnd_ssi_flags_set(ssi, RSND_SSI_NO_BUSIF);
++			rsnd_flags_set(ssi, RSND_SSI_NO_BUSIF);
+ 
+ 		ssi->irq = irq_of_parse_and_map(np, 0);
+ 		if (!ssi->irq) {
 -- 
 2.14.1
