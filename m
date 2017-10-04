@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Allocate enough memory so we don't overflow routes" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:45 +0100
-Message-ID: <E1dzhr3-0004Qh-D0@debutante>
-References: <20170929220324.16413-1-dianders@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170929220324.16413-1-dianders@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, jeffy.chen@rock-chips.com, mka@chromium.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, briannorris@chromium.org, linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: img-spdif-out: Rename suspend / resume
+	funcs" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:36 +0100
+Message-ID: <E1dzhqu-0004Nw-4P@debutante>
+References: <1506938517-810-2-git-send-email-ed.blake@sondrel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42D2E267441
+ for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:38 +0200 (CEST)
+In-Reply-To: <1506938517-810-2-git-send-email-ed.blake@sondrel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ed Blake <ed.blake@sondrel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Allocate enough memory so we don't overflow routes
+   ASoC: img-spdif-out: Rename suspend / resume funcs
 
 has been applied to the asoc tree at
 
@@ -37,62 +53,81 @@ to this mail.
 Thanks,
 Mark
 
->From 8eae6c2585b0455f0e7200495d5e513020ca2fa2 Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Fri, 29 Sep 2017 15:03:24 -0700
-Subject: [PATCH] ASoC: rockchip: Allocate enough memory so we don't overflow
- routes
+>From 2ab18dfe87596e207f17ff0567660cd7356c715a Mon Sep 17 00:00:00 2001
+From: Ed Blake <ed.blake@sondrel.com>
+Date: Mon, 2 Oct 2017 11:01:55 +0100
+Subject: [PATCH] ASoC: img-spdif-out: Rename suspend / resume funcs
 
-In the recent commit d9f9c167edae ("ASoC: rockchip: Init dapm routes
-dynamically") we improperly allocated memory for the card->dapm_routes
-causing us to overflow the allocation on every boot.  Oops.
+Rename suspend and resume functions to runtime_suspend and
+runtime_resume, which is what they actually are. This will avoid
+confusion when adding suspend and resume functions in a subsequent
+patch.
 
-Let's allocate the correct amount of memory.  We'll also add a check
-to make sure that we don't overrun memory even if we encounter some
-sort of weird device tree.
-
-Fixes: d9f9c167edae ("ASoC: rockchip: Init dapm routes dynamically")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Ed Blake <ed.blake@sondrel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3399_gru_sound.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/img/img-spdif-out.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index 30eed83e8a13..d64fbbd50544 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -494,13 +494,17 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 	struct snd_soc_dai_link *dai;
- 	struct snd_soc_dapm_route *routes;
- 	int i, index;
-+	int num_routes;
+diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
+index 383655da2e60..416aa5786b93 100644
+--- a/sound/soc/img/img-spdif-out.c
++++ b/sound/soc/img/img-spdif-out.c
+@@ -49,7 +49,7 @@ struct img_spdif_out {
+ 	struct reset_control *rst;
+ };
  
- 	card->dai_link = devm_kzalloc(dev, sizeof(rockchip_dais),
- 				      GFP_KERNEL);
- 	if (!card->dai_link)
- 		return -ENOMEM;
+-static int img_spdif_out_suspend(struct device *dev)
++static int img_spdif_out_runtime_suspend(struct device *dev)
+ {
+ 	struct img_spdif_out *spdif = dev_get_drvdata(dev);
  
--	routes = devm_kzalloc(dev, sizeof(rockchip_routes),
-+	num_routes = 0;
-+	for (i = 0; i < ARRAY_SIZE(rockchip_routes); i++)
-+		num_routes += rockchip_routes[i].num_routes;
-+	routes = devm_kzalloc(dev, num_routes * sizeof(*routes),
- 			      GFP_KERNEL);
- 	if (!routes)
- 		return -ENOMEM;
-@@ -538,6 +542,12 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 		dai->platform_of_node = np_cpu;
- 		dai->cpu_of_node = np_cpu;
+@@ -58,7 +58,7 @@ static int img_spdif_out_suspend(struct device *dev)
+ 	return 0;
+ }
  
-+		if (card->num_dapm_routes + rockchip_routes[index].num_routes >
-+		    num_routes) {
-+			dev_err(dev, "Too many routes\n");
-+			return -EINVAL;
-+		}
-+
- 		memcpy(routes + card->num_dapm_routes,
- 		       rockchip_routes[index].routes,
- 		       rockchip_routes[index].num_routes * sizeof(*routes));
+-static int img_spdif_out_resume(struct device *dev)
++static int img_spdif_out_runtime_resume(struct device *dev)
+ {
+ 	struct img_spdif_out *spdif = dev_get_drvdata(dev);
+ 	int ret;
+@@ -366,7 +366,7 @@ static int img_spdif_out_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = img_spdif_out_resume(&pdev->dev);
++		ret = img_spdif_out_runtime_resume(&pdev->dev);
+ 		if (ret)
+ 			goto err_pm_disable;
+ 	}
+@@ -393,7 +393,7 @@ static int img_spdif_out_probe(struct platform_device *pdev)
+ 
+ err_suspend:
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+-		img_spdif_out_suspend(&pdev->dev);
++		img_spdif_out_runtime_suspend(&pdev->dev);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ 	clk_disable_unprepare(spdif->clk_sys);
+@@ -407,7 +407,7 @@ static int img_spdif_out_dev_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+-		img_spdif_out_suspend(&pdev->dev);
++		img_spdif_out_runtime_suspend(&pdev->dev);
+ 
+ 	clk_disable_unprepare(spdif->clk_sys);
+ 
+@@ -421,8 +421,8 @@ static const struct of_device_id img_spdif_out_of_match[] = {
+ MODULE_DEVICE_TABLE(of, img_spdif_out_of_match);
+ 
+ static const struct dev_pm_ops img_spdif_out_pm_ops = {
+-	SET_RUNTIME_PM_OPS(img_spdif_out_suspend,
+-			   img_spdif_out_resume, NULL)
++	SET_RUNTIME_PM_OPS(img_spdif_out_runtime_suspend,
++			   img_spdif_out_runtime_resume, NULL)
+ };
+ 
+ static struct platform_driver img_spdif_out_driver = {
 -- 
 2.14.1
