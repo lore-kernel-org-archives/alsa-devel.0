@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd-analog: fix micbias
-	level" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:33 +0100
-Message-ID: <E1dzhqr-0004Mu-2x@debutante>
-References: <1506716384-4700-1-git-send-email-jean-francois.tetu@savoirfairelinux.com>
+Subject: Applied "ASoC: img-parallel-out: Add
+	pm_runtime_get/put to set_fmt callback" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:39 +0100
+Message-ID: <E1dzhqx-0004Om-7C@debutante>
+References: <1506938433-681-1-git-send-email-ed.blake@sondrel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1816659375683049053=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D89732673E8
- for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:40 +0200 (CEST)
-In-Reply-To: <1506716384-4700-1-git-send-email-jean-francois.tetu@savoirfairelinux.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B61D267447
+ for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:41 +0200 (CEST)
+In-Reply-To: <1506938433-681-1-git-send-email-ed.blake@sondrel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,15 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?= <jean-francois.tetu@savoirfairelinux.com>
+To: Ed Blake <ed.blake@sondrel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
-
---===============1816659375683049053==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: codecs: msm8916-wcd-analog: fix micbias level
+   ASoC: img-parallel-out: Add pm_runtime_get/put to set_fmt callback
 
 has been applied to the asoc tree at
 
@@ -54,62 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 664611e7e02f76fbc5470ef545b2657ed25c292b Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Jean-Fran=C3=A7ois=20T=C3=AAtu?=
- <jean-francois.tetu@savoirfairelinux.com>
-Date: Fri, 29 Sep 2017 16:19:44 -0400
-Subject: [PATCH] ASoC: codecs: msm8916-wcd-analog: fix micbias level
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From c70458890ff15d858bd347fa9f563818bcd6e457 Mon Sep 17 00:00:00 2001
+From: Ed Blake <ed.blake@sondrel.com>
+Date: Mon, 2 Oct 2017 11:00:33 +0100
+Subject: [PATCH] ASoC: img-parallel-out: Add pm_runtime_get/put to set_fmt
+ callback
 
-The macro used to set the microphone bias level causes the
-snd_soc_write() call to overwrite other fields in the CDC_A_MICB_1_VAL
-register. The macro also does not return the proper level value
-to use. This fixes this by preserving all bits from the register
-that are not the level while setting the level.
+Add pm_runtime_get_sync and pm_runtime_put calls to set_fmt callback
+function. This fixes a bus error during boot when CONFIG_SUSPEND is
+defined when this function gets called while the device is runtime
+disabled and device registers are accessed while the clock is disabled.
 
-Signed-off-by: Jean-François Têtu <jean-francois.tetu@savoirfairelinux.com>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Ed Blake <ed.blake@sondrel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/img/img-parallel-out.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 549c269acc7d..a42f8ebb9670 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -104,7 +104,7 @@
- #define CDC_A_MICB_1_VAL		(0xf141)
- #define MICB_MIN_VAL 1600
- #define MICB_STEP_SIZE 50
--#define MICB_VOLTAGE_REGVAL(v)		((v - MICB_MIN_VAL)/MICB_STEP_SIZE)
-+#define MICB_VOLTAGE_REGVAL(v)		(((v - MICB_MIN_VAL)/MICB_STEP_SIZE) << 3)
- #define MICB_1_VAL_MICB_OUT_VAL_MASK	GENMASK(7, 3)
- #define MICB_1_VAL_MICB_OUT_VAL_V2P70V	((0x16)  << 3)
- #define MICB_1_VAL_MICB_OUT_VAL_V1P80V	((0x4)  << 3)
-@@ -349,8 +349,9 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
- 			    | MICB_1_CTL_EXT_PRECHARG_EN_ENABLE);
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index 23b0f0f6ec9c..2fc8a6372206 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -164,9 +164,11 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
  
- 	if (wcd->micbias_mv) {
--		snd_soc_write(codec, CDC_A_MICB_1_VAL,
--			      MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
-+		snd_soc_update_bits(codec, CDC_A_MICB_1_VAL,
-+				    MICB_1_VAL_MICB_OUT_VAL_MASK,
-+				    MICB_VOLTAGE_REGVAL(wcd->micbias_mv));
- 		/*
- 		 * Special headset needs MICBIAS as 2.7V so wait for
- 		 * 50 msec for the MICBIAS to reach 2.7 volts.
++	pm_runtime_get_sync(prl->dev);
+ 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
+ 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
+ 	img_prl_out_writel(prl, reg, IMG_PRL_OUT_CTL);
++	pm_runtime_put(prl->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.14.1
-
-
---===============1816659375683049053==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1816659375683049053==--
