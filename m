@@ -1,89 +1,74 @@
-From: Johan Hovold <johan@kernel.org>
-Subject: Re: usb/sound/bcd2000: warning in bcd2000_init_device
-Date: Wed, 4 Oct 2017 12:23:11 +0200
-Message-ID: <20171004102311.GG3404@localhost>
-References: <s5hh8vgut9l.wl-tiwai@suse.de>
- <Pine.LNX.4.44L0.1710031248320.1500-100000@iolanthe.rowland.org>
- <20171003174221.GA13006@kroah.com>
- <s5h1smjv3ws.wl-tiwai@suse.de>
- <20171004092442.GF3404@localhost>
- <s5ha8171b6x.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: img-i2s-in: Add suspend / resume
+	handling
+Date: Wed, 4 Oct 2017 11:37:22 +0100
+Message-ID: <20171004103722.4bzjimc74cupnuto@sirena.co.uk>
+References: <1506938333-550-1-git-send-email-ed.blake@sondrel.com>
+ <1506938333-550-2-git-send-email-ed.blake@sondrel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5ha8171b6x.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Johan Hovold <johan@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>, Andrey Konovalov <andreyknvl@google.com>, alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>, linux-usb@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6027218295538142945=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40349266B20
+ for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 12:37:24 +0200 (CEST)
+In-Reply-To: <1506938333-550-2-git-send-email-ed.blake@sondrel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ed Blake <ed.blake@sondrel.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 04, 2017 at 12:04:06PM +0200, Takashi Iwai wrote:
-> On Wed, 04 Oct 2017 11:24:42 +0200, Johan Hovold wrote:
-> > On Wed, Oct 04, 2017 at 08:10:59AM +0200, Takashi Iwai wrote:
 
-> > > Well, what I had in my mind is just a snippet from usb_submit_urb(),
-> > > something like:
-> > > 
-> > > bool usb_sanity_check_urb_pipe(struct urb *urb)
-> > > {
-> > > 	struct usb_host_endpoint *ep;
-> > > 	int xfertype;
-> > > 	static const int pipetypes[4] = {
-> > > 		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
-> > > 	};
-> > > 
-> > > 	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-> > > 	xfertype = usb_endpoint_type(&ep->desc);
-> > > 	return usb_pipetype(urb->pipe) != pipetypes[xfertype];
-> > > }
-> > > 
-> > > And calling this before usb_submit_urb() in each place that assigns
-> > > the fixed EP as device-specific quirks.
-> > > Does it make sense?
-> > 
-> > Not really. Your driver should not even bind to an interface which lacks
-> > the expected endpoints (rather than check this at a potentially later
-> > point in time when URBs are submitted).
-> 
-> The endpoint may exist but it may be invalid, as the problem is
-> triggered by a VM.  It doesn't parse but tries a fixed EP as it's no
-> compliant device.
+--===============6027218295538142945==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bxjmfrg4jteit5fo"
+Content-Disposition: inline
 
-Yes, that's why a driver should verify that the endpoints it expects are
-indeed present (and of the right type) already at probe.
 
-In Andrey's fuzzing it's triggered by in a VM using the dummy_hcd
-driver, but this could just as well be a (malicious) physical device
-with unexpected descriptors.
+--bxjmfrg4jteit5fo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > The new helper which Greg mentioned would allow this to implemented with
-> > just a few lines of code. Just add it to bcd2000_init_midi() or similar.  
-> 
-> Could you give an example?  Then I can ask Andrey whether such a call
-> really addresses the issue.
+On Mon, Oct 02, 2017 at 10:58:52AM +0100, Ed Blake wrote:
 
-If you grep for usb_find_common_endpoints you'll find a few examples
-of how that function may be used (e.g. in drivers/usb/misc/usblcd.c).
+>  	i2s->dai_driver.probe = img_i2s_in_dai_probe;
+> +	i2s->dai_driver.suspend = img_i2s_in_dai_suspend;
+> +	i2s->dai_driver.resume = img_i2s_in_dai_resume;
 
-The helper iterates of the endpoint descriptors of an interface
-alt-setting and returns a descriptor for each requested type if found.
-After a vetting of our current drivers I concluded that this would
-cover the needs of the vast majority of drivers.
+Why use the ASoC specific power management callbacks and not the system
+ones?  It does also look a bit like there's a case for converting the
+driver to regmap and using the regmap cache code.
 
-So for the driver in question you'd only need to add something like:
+--bxjmfrg4jteit5fo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	struct usb_endpoint_descriptor *int_in, *int_out;
-	int ret;
+-----BEGIN PGP SIGNATURE-----
 
-	ret = usb_find_common_endpoints(interface->cur_altsetting,
-					NULL, NULL, &int_in, &int_out);
-	if (ret) {
-		dev_err(&interface->dev, "required endpoints not found\n");
-		return -ENODEV;
-	}
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnUueIACgkQJNaLcl1U
+h9ABWAf/d7Yc0jedRAmGLJUq2aPztBg+emLhT8ND0bzxWoek1XDK+PQf2IJhiyKA
+8wxFw8z0B7jOXVitBpB+VDHCxeIuWu+0jFXCxEC14KNsurtBPlFnd+Nz69Im0mJU
+BAZh/9NXTB3L+cYrgmRHDYHVm6dbMaRT0w9ndlP+4bifWi0qlJa4rm33KXVpTnXd
+jBQ5uPKS8yMWjvSTd7wFSSvyoSntL6uKCSsGjt7pj5MpdyB+Amj54KXJYKJi16+y
+i0Wl2JkDZvZEkV6I8ScRpKxi8eusuPtppD+mE8x2N822sedLD4gm+yipVORz0wZ4
+k3p7O4L7Y4PMni1kHIpzYE4s3mTOxA==
+=Z9iU
+-----END PGP SIGNATURE-----
 
-Then you can use int_in->bEndpointAddress etc. when initialising your
-URBs.
+--bxjmfrg4jteit5fo--
 
-Johan
+--===============6027218295538142945==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6027218295538142945==--
