@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img-parallel-out: Add
-	pm_runtime_get/put to set_fmt callback" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:39 +0100
-Message-ID: <E1dzhqx-0004Om-7C@debutante>
-References: <1506938433-681-1-git-send-email-ed.blake@sondrel.com>
+Subject: Applied "ASoC: img-i2s-out: Rename suspend / resume
+	funcs" to the asoc tree
+Date: Wed, 04 Oct 2017 12:28:42 +0100
+Message-ID: <E1dzhr0-0004Pb-9H@debutante>
+References: <1506938387-627-2-git-send-email-ed.blake@sondrel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B61D267447
- for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:41 +0200 (CEST)
-In-Reply-To: <1506938433-681-1-git-send-email-ed.blake@sondrel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 31893267472
+ for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 13:28:44 +0200 (CEST)
+In-Reply-To: <1506938387-627-2-git-send-email-ed.blake@sondrel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: img-parallel-out: Add pm_runtime_get/put to set_fmt callback
+   ASoC: img-i2s-out: Rename suspend / resume funcs
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,81 @@ to this mail.
 Thanks,
 Mark
 
->From c70458890ff15d858bd347fa9f563818bcd6e457 Mon Sep 17 00:00:00 2001
+>From 6f9dfab7fc5fdd51ed67da370fc83f3b7dbf08da Mon Sep 17 00:00:00 2001
 From: Ed Blake <ed.blake@sondrel.com>
-Date: Mon, 2 Oct 2017 11:00:33 +0100
-Subject: [PATCH] ASoC: img-parallel-out: Add pm_runtime_get/put to set_fmt
- callback
+Date: Mon, 2 Oct 2017 10:59:45 +0100
+Subject: [PATCH] ASoC: img-i2s-out: Rename suspend / resume funcs
 
-Add pm_runtime_get_sync and pm_runtime_put calls to set_fmt callback
-function. This fixes a bus error during boot when CONFIG_SUSPEND is
-defined when this function gets called while the device is runtime
-disabled and device registers are accessed while the clock is disabled.
+Rename suspend and resume functions to runtime_suspend and
+runtime_resume, which is what they actually are. This will avoid
+confusion when adding suspend and resume functions in a subsequent
+patch.
 
 Signed-off-by: Ed Blake <ed.blake@sondrel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/img/img-parallel-out.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/img/img-i2s-out.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 23b0f0f6ec9c..2fc8a6372206 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -164,9 +164,11 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
+index 78b7f6cd675b..adc6902fcbd4 100644
+--- a/sound/soc/img/img-i2s-out.c
++++ b/sound/soc/img/img-i2s-out.c
+@@ -65,7 +65,7 @@ struct img_i2s_out {
+ 	struct snd_soc_dai_driver dai_driver;
+ };
  
-+	pm_runtime_get_sync(prl->dev);
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
- 	img_prl_out_writel(prl, reg, IMG_PRL_OUT_CTL);
-+	pm_runtime_put(prl->dev);
+-static int img_i2s_out_suspend(struct device *dev)
++static int img_i2s_out_runtime_suspend(struct device *dev)
+ {
+ 	struct img_i2s_out *i2s = dev_get_drvdata(dev);
  
+@@ -75,7 +75,7 @@ static int img_i2s_out_suspend(struct device *dev)
  	return 0;
  }
+ 
+-static int img_i2s_out_resume(struct device *dev)
++static int img_i2s_out_runtime_resume(struct device *dev)
+ {
+ 	struct img_i2s_out *i2s = dev_get_drvdata(dev);
+ 	int ret;
+@@ -486,7 +486,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = img_i2s_out_resume(&pdev->dev);
++		ret = img_i2s_out_runtime_resume(&pdev->dev);
+ 		if (ret)
+ 			goto err_pm_disable;
+ 	}
+@@ -517,7 +517,7 @@ static int img_i2s_out_probe(struct platform_device *pdev)
+ 
+ err_suspend:
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+-		img_i2s_out_suspend(&pdev->dev);
++		img_i2s_out_runtime_suspend(&pdev->dev);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ 	clk_disable_unprepare(i2s->clk_sys);
+@@ -531,7 +531,7 @@ static int img_i2s_out_dev_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+-		img_i2s_out_suspend(&pdev->dev);
++		img_i2s_out_runtime_suspend(&pdev->dev);
+ 
+ 	clk_disable_unprepare(i2s->clk_sys);
+ 
+@@ -545,8 +545,8 @@ static const struct of_device_id img_i2s_out_of_match[] = {
+ MODULE_DEVICE_TABLE(of, img_i2s_out_of_match);
+ 
+ static const struct dev_pm_ops img_i2s_out_pm_ops = {
+-	SET_RUNTIME_PM_OPS(img_i2s_out_suspend,
+-			   img_i2s_out_resume, NULL)
++	SET_RUNTIME_PM_OPS(img_i2s_out_runtime_suspend,
++			   img_i2s_out_runtime_resume, NULL)
+ };
+ 
+ static struct platform_driver img_i2s_out_driver = {
 -- 
 2.14.1
