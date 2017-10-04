@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: CTU kctrl sets once" to the asoc tree
-Date: Wed, 04 Oct 2017 12:28:19 +0100
-Message-ID: <E1dzhqd-0004Io-De@debutante>
-References: <87wp4emo6t.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87wp4emo6t.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: cygnus: Remove support for 8 bit audio and for mono" to the asoc tree
+Date: Wed, 04 Oct 2017 12:27:49 +0100
+Message-ID: <E1dzhq9-0004DL-4s@debutante>
+References: <1506637775-18293-5-git-send-email-lori.hikichi@broadcom.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1506637775-18293-5-git-send-email-lori.hikichi@broadcom.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lori Hikichi <lori.hikichi@broadcom.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: CTU kctrl sets once
+   ASoC: cygnus: Remove support for 8 bit audio and for mono
 
 has been applied to the asoc tree at
 
@@ -37,62 +37,73 @@ to this mail.
 Thanks,
 Mark
 
->From 99dc79d0600849ff878a38d9884e76f5bebd3228 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Sun, 1 Oct 2017 23:48:46 +0000
-Subject: [PATCH] ASoC: rsnd: CTU kctrl sets once
+>From 934e4885cb958566a34124e5a1dad2f9212a8ec6 Mon Sep 17 00:00:00 2001
+From: Lori Hikichi <lori.hikichi@broadcom.com>
+Date: Thu, 28 Sep 2017 15:29:35 -0700
+Subject: [PATCH] ASoC: cygnus: Remove support for 8 bit audio and for mono
 
-Same CTU might be used few times if system/platform is using MIX.
-For example below case.
+These modes of operation were not working properly and it is
+unclear if the hardware could fully support these modes properly.
+There is little to be gained by enabling these modes, therefore,
+we will just remove support.
 
-	DAI0 playback = <&src0 &ctu02 &mix0 &dvc0 &ssi0>;
-	DAI1 playback = <&src2 &ctu03 &mix0 &dvc0 &ssi0>;
-
-This case, ALSA will have CTU,0 and CTU,1 kcontrol interfaces,
-but these are same CTU. This is confusing.
-This patch adds new flags and avoid such case.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Lori Hikichi <lori.hikichi@broadcom.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ctu.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/bcm/cygnus-ssp.c | 22 ++++------------------
+ 1 file changed, 4 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
-index e7f53f44165d..ad07ba8c3720 100644
---- a/sound/soc/sh/rcar/ctu.c
-+++ b/sound/soc/sh/rcar/ctu.c
-@@ -81,8 +81,11 @@ struct rsnd_ctu {
- 	struct rsnd_kctrl_cfg_m sv3;
- 	struct rsnd_kctrl_cfg_s reset;
- 	int channels;
-+	u32 flags;
- };
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index da14facb8a6f..cd8aef8ed8a5 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -655,23 +655,10 @@ static int cygnus_ssp_hw_params(struct snd_pcm_substream *substream,
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		value = readl(aio->cygaud->audio + aio->regs.bf_sourcech_cfg);
+ 		value &= ~BIT(BF_SRC_CFGX_BUFFER_PAIR_ENABLE);
+-		/* Configure channels as mono or stereo/TDM */
+-		if (params_channels(params) == 1)
+-			value |= BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
+-		else
+-			value &= ~BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
++		value &= ~BIT(BF_SRC_CFGX_SAMPLE_CH_MODE);
+ 		writel(value, aio->cygaud->audio + aio->regs.bf_sourcech_cfg);
  
-+#define KCTRL_INITIALIZED	(1 << 0)
-+
- #define rsnd_ctu_nr(priv) ((priv)->ctu_nr)
- #define for_each_rsnd_ctu(pos, priv, i)					\
- 	for ((i) = 0;							\
-@@ -277,6 +280,9 @@ static int rsnd_ctu_pcm_new(struct rsnd_mod *mod,
- 	struct rsnd_ctu *ctu = rsnd_mod_to_ctu(mod);
- 	int ret;
- 
-+	if (rsnd_flags_has(ctu, KCTRL_INITIALIZED))
-+		return 0;
-+
- 	/* CTU Pass */
- 	ret = rsnd_kctrl_new_m(mod, io, rtd, "CTU Pass",
- 			       rsnd_kctrl_accept_anytime,
-@@ -326,6 +332,8 @@ static int rsnd_ctu_pcm_new(struct rsnd_mod *mod,
- 			       rsnd_ctu_value_reset,
- 			       &ctu->reset, 1);
- 
-+	rsnd_flags_set(ctu, KCTRL_INITIALIZED);
-+
- 	return ret;
- }
- 
+ 		switch (params_format(params)) {
+-		case SNDRV_PCM_FORMAT_S8:
+-			if (aio->port_type == PORT_SPDIF) {
+-				dev_err(aio->cygaud->dev,
+-				"SPDIF does not support 8bit format\n");
+-				return -EINVAL;
+-			}
+-			bitres = 8;
+-			break;
+-
+ 		case SNDRV_PCM_FORMAT_S16_LE:
+ 			bitres = 16;
+ 			break;
+@@ -1148,11 +1135,10 @@ static const struct snd_soc_dai_ops cygnus_spdif_dai_ops = {
+ #define INIT_CPU_DAI(num) { \
+ 	.name = "cygnus-ssp" #num, \
+ 	.playback = { \
+-		.channels_min = 1, \
++		.channels_min = 2, \
+ 		.channels_max = 16, \
+ 		.rates = SNDRV_PCM_RATE_KNOT, \
+-		.formats = SNDRV_PCM_FMTBIT_S8 | \
+-				SNDRV_PCM_FMTBIT_S16_LE | \
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | \
+ 				SNDRV_PCM_FMTBIT_S32_LE, \
+ 	}, \
+ 	.capture = { \
+@@ -1160,7 +1146,7 @@ static const struct snd_soc_dai_ops cygnus_spdif_dai_ops = {
+ 		.channels_max = 16, \
+ 		.rates = SNDRV_PCM_RATE_KNOT, \
+ 		.formats =  SNDRV_PCM_FMTBIT_S16_LE | \
+-					SNDRV_PCM_FMTBIT_S32_LE, \
++				SNDRV_PCM_FMTBIT_S32_LE, \
+ 	}, \
+ 	.ops = &cygnus_ssp_dai_ops, \
+ 	.suspend = cygnus_ssp_suspend, \
 -- 
 2.14.1
