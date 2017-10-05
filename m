@@ -1,38 +1,34 @@
-From: "J. Bruce Fields" <bfields@fieldses.org>
-Subject: Re: [PATCH 00/18] use ARRAY_SIZE macro
-Date: Thu, 5 Oct 2017 13:57:15 -0400
-Message-ID: <20171005175715.GA19093@fieldses.org>
-References: <20171001193101.8898-1-jeremy.lefaure@lse.epita.fr>
- <20171001220131.GA11812@eros>
- <20171001205220.10b78086@blatinox-laptop.localdomain>
- <20171002053554.GA28743@kroah.com>
- <20171002192224.GD1903@fieldses.org>
- <20171002213312.3f904290@blatinox-laptop.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171002213312.3f904290@blatinox-laptop.localdomain>
-Sender: netdev-owner@vger.kernel.org
-To: =?utf-8?B?SsOpcsOpbXk=?= Lefaure <jeremy.lefaure@lse.epita.fr>
-Cc: Greg KH <greg@kroah.com>, "Tobin C. Harding" <me@tobin.cc>, alsa-devel@alsa-project.org, nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org, dm-devel@redhat.com, brcm80211-dev-list@cypress.com, devel@driverdev.osuosl.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, linux-acpi@vger.kernel.org, linux-video@atrey.karlin.mff.cuni.cz, intel-wired-lan@lists.osuosl.org, linux-media@vger.kernel.org, intel-gfx@lists.freedesktop.org, ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org, openipmi-developer@lists.sourceforge.net, intel-gvt-dev@lists.freedesktop.org, devel@acpica.org, brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org, linux-usb@v
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH] ALSA: usb-audio: Add sample rate quirk for Plantronics P610
+Date: Fri,  6 Oct 2017 02:04:06 +0800
+Message-ID: <20171005180406.748-1-kai.heng.feng@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.com, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 02, 2017 at 09:33:12PM -0400, Jérémy Lefaure wrote:
-> On Mon, 2 Oct 2017 15:22:24 -0400
-> bfields@fieldses.org (J. Bruce Fields) wrote:
-> 
-> > Mainly I'd just like to know which you're asking for.  Do you want me to
-> > apply this, or to ACK it so someone else can?  If it's sent as a series
-> > I tend to assume the latter.
-> > 
-> > But in this case I'm assuming it's the former, so I'll pick up the nfsd
-> > one....
-> Could you to apply the NFSD patch ("nfsd: use ARRAY_SIZE") with the
-> Reviewed-by: Jeff Layton <jlayton@redhat.com>) tag please ?
-> 
-> This patch is an individual patch and it should not have been sent in a
-> series (sorry about that).
+Like other Plantronics devices, P610 does not support sample
+rate reading. Apply sample rate quirk to it.
 
-Applying for 4.15, thanks.--b.
+BugLink: https://bugs.launchpad.net/bugs/1719853
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index b8cb57aeec77..9ddaae3784f5 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1138,6 +1138,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ 	case USB_ID(0x047F, 0x0415): /* Plantronics BT-300 */
+ 	case USB_ID(0x047F, 0xAA05): /* Plantronics DA45 */
+ 	case USB_ID(0x047F, 0xC022): /* Plantronics C310 */
++	case USB_ID(0x047F, 0xC02F): /* Plantronics P610 */
+ 	case USB_ID(0x047F, 0xC036): /* Plantronics C520-M */
+ 	case USB_ID(0x04D8, 0xFEEA): /* Benchmark DAC1 Pre */
+ 	case USB_ID(0x0556, 0x0014): /* Phoenix Audio TMX320VC */
+-- 
+2.14.1
