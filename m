@@ -1,15 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 4/6] ASoC: Intel: cht_bsw_rt5645: cosmetic fixes
-Date: Thu,  5 Oct 2017 13:52:41 -0500
-Message-ID: <20171005185243.4174-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/6] ASoC: Intel: boards: use strcmp with
+	constant literals
+Date: Thu,  5 Oct 2017 13:52:43 -0500
+Message-ID: <20171005185243.4174-7-pierre-louis.bossart@linux.intel.com>
 References: <20171005185243.4174-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id A7F302675BC
- for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2017 20:52:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E68A02675D0
+ for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2017 20:52:58 +0200 (CEST)
 In-Reply-To: <20171005185243.4174-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,161 +25,157 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, vinod.koul@intel.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Reorder variable names, change MCLK test, change quirks
-No functional change
+we used strncmp in all audio machine drivers, this is not needed
+when comparing against constant literals.
+General replace of strncmp(a, b, strlen(b)) to strcmp(a,b)
 
 Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 73 ++++++++++++++++-----------------
- 1 file changed, 35 insertions(+), 38 deletions(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c   | 3 +--
+ sound/soc/intel/boards/bytcht_es8316.c          | 3 +--
+ sound/soc/intel/boards/bytcr_rt5640.c           | 6 ++----
+ sound/soc/intel/boards/bytcr_rt5651.c           | 3 +--
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c    | 3 +--
+ sound/soc/intel/boards/cht_bsw_rt5645.c         | 6 ++----
+ sound/soc/intel/boards/cht_bsw_rt5672.c         | 3 +--
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 3 +--
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 3 +--
+ 9 files changed, 11 insertions(+), 22 deletions(-)
 
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index ce35ec7884d1..dc47c3f0b621 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -61,8 +61,7 @@ static inline struct snd_soc_dai *bxt_get_codec_dai(struct snd_soc_card *card)
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+ 
+-		if (!strncmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI,
+-			     strlen(BXT_DIALOG_CODEC_DAI)))
++		if (!strcmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI))
+ 			return rtd->codec_dai;
+ 	}
+ 
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 52635462dac6..9b42dc924cd3 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -44,8 +44,7 @@ static inline struct snd_soc_dai *get_codec_dai(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, CODEC_DAI1,
+-			     strlen(CODEC_DAI1)))
++		if (!strcmp(rtd->codec_dai->name, CODEC_DAI1))
+ 			return rtd->codec_dai;
+ 	}
+ 	return NULL;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index ffb3ca971df4..24c7f861f1e1 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -150,11 +150,9 @@ static inline struct snd_soc_dai *byt_get_codec_dai(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI1,
+-			     strlen(BYT_CODEC_DAI1)))
++		if (!strcmp(rtd->codec_dai->name, BYT_CODEC_DAI1))
+ 			return rtd->codec_dai;
+-		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI2,
+-				strlen(BYT_CODEC_DAI2)))
++		if (!strcmp(rtd->codec_dai->name, BYT_CODEC_DAI2))
+ 			return rtd->codec_dai;
+ 
+ 	}
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 1b97aa735747..0443d2e7e8a1 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -73,8 +73,7 @@ static inline struct snd_soc_dai *byt_get_codec_dai(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI1,
+-			     strlen(BYT_CODEC_DAI1)))
++		if (!strcmp(rtd->codec_dai->name, BYT_CODEC_DAI1))
+ 			return rtd->codec_dai;
+ 	}
+ 	return NULL;
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 74c047a4b05c..98d58d389b04 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -46,8 +46,7 @@ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
+-			     strlen(CHT_CODEC_DAI)))
++		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI))
+ 			return rtd->codec_dai;
+ 	}
+ 	return NULL;
 diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index d553e2b67c92..6ccb599c1082 100644
+index 6ccb599c1082..e9a3121ecad7 100644
 --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
 +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -21,13 +21,13 @@
-  */
+@@ -75,11 +75,9 @@ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
  
- #include <linux/module.h>
--#include <linux/acpi.h>
- #include <linux/platform_device.h>
-+#include <linux/acpi.h>
-+#include <linux/clk.h>
- #include <linux/dmi.h>
- #include <linux/slab.h>
- #include <asm/cpu_device_id.h>
- #include <asm/platform_sst_audio.h>
--#include <linux/clk.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -53,7 +53,7 @@ struct cht_mc_private {
- 	struct clk *mclk;
- };
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI1,
+-			     strlen(CHT_CODEC_DAI1)))
++		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI1))
+ 			return rtd->codec_dai;
+-		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI2,
+-			     strlen(CHT_CODEC_DAI2)))
++		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI2))
+ 			return rtd->codec_dai;
+ 	}
+ 	return NULL;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index f799b76fdedf..78798c600c16 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -55,8 +55,7 @@ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
  
--#define CHT_RT5645_MAP(quirk)	((quirk) & 0xff)
-+#define CHT_RT5645_MAP(quirk)	((quirk) & GENMASK(7, 0))
- #define CHT_RT5645_SSP2_AIF2     BIT(16) /* default is using AIF1  */
- #define CHT_RT5645_SSP0_AIF1     BIT(17)
- #define CHT_RT5645_SSP0_AIF2     BIT(18)
-@@ -101,13 +101,11 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
+-			     strlen(CHT_CODEC_DAI)))
++		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI))
+ 			return rtd->codec_dai;
+ 	}
+ 	return NULL;
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 5ed0aa27b467..95c017f7315e 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -60,8 +60,7 @@ static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+ 
+-		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
+-			     strlen(SKL_NUVOTON_CODEC_DAI)))
++		if (!strcmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI))
+ 			return rtd->codec_dai;
  	}
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		if (ctx->mclk) {
--			ret = clk_prepare_enable(ctx->mclk);
--			if (ret < 0) {
--				dev_err(card->dev,
--					"could not configure MCLK state");
--				return ret;
--			}
-+		ret = clk_prepare_enable(ctx->mclk);
-+		if (ret < 0) {
-+			dev_err(card->dev,
-+				"could not configure MCLK state");
-+			return ret;
- 		}
- 	} else {
- 		/* Set codec sysclk source to its internal clock because codec PLL will
-@@ -122,8 +120,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 			return ret;
- 		}
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 01b8b140bb08..57f1e5b8408f 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -63,8 +63,7 @@ static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
  
--		if (ctx->mclk)
--			clk_disable_unprepare(ctx->mclk);
-+		clk_disable_unprepare(ctx->mclk);
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+ 
+-		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
+-			     strlen(SKL_NUVOTON_CODEC_DAI)))
++		if (!strcmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI))
+ 			return rtd->codec_dai;
  	}
  
- 	return 0;
-@@ -258,11 +255,11 @@ static const struct dmi_system_id cht_rt5645_quirk_table[] = {
- 
- static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- {
--	int ret;
--	int jack_type;
--	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_card *card = runtime->card;
- 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
-+	struct snd_soc_codec *codec = runtime->codec;
-+	int jack_type;
-+	int ret;
- 
- 	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
- 	    (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
-@@ -320,26 +317,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 
- 	rt5645_set_jack_detect(codec, &ctx->jack, &ctx->jack, &ctx->jack);
- 
--	if (ctx->mclk) {
--		/*
--		 * The firmware might enable the clock at
--		 * boot (this information may or may not
--		 * be reflected in the enable clock register).
--		 * To change the rate we must disable the clock
--		 * first to cover these cases. Due to common
--		 * clock framework restrictions that do not allow
--		 * to disable a clock that has not been enabled,
--		 * we need to enable the clock first.
--		 */
--		ret = clk_prepare_enable(ctx->mclk);
--		if (!ret)
--			clk_disable_unprepare(ctx->mclk);
- 
--		ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
-+	/*
-+	 * The firmware might enable the clock at
-+	 * boot (this information may or may not
-+	 * be reflected in the enable clock register).
-+	 * To change the rate we must disable the clock
-+	 * first to cover these cases. Due to common
-+	 * clock framework restrictions that do not allow
-+	 * to disable a clock that has not been enabled,
-+	 * we need to enable the clock first.
-+	 */
-+	ret = clk_prepare_enable(ctx->mclk);
-+	if (!ret)
-+		clk_disable_unprepare(ctx->mclk);
-+
-+	ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
-+
-+	if (ret)
-+		dev_err(runtime->dev, "unable to set MCLK rate\n");
- 
--		if (ret)
--			dev_err(runtime->dev, "unable to set MCLK rate\n");
--	}
- 	return ret;
- }
- 
-@@ -545,15 +542,15 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_cht_mc_probe(struct platform_device *pdev)
- {
--	int ret_val = 0;
--	int i;
--	struct cht_mc_private *drv;
- 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
- 	struct sst_acpi_mach *mach;
-+	struct cht_mc_private *drv;
- 	const char *i2c_name = NULL;
--	int dai_index = 0;
- 	bool found = false;
- 	bool is_bytcr = false;
-+	int dai_index = 0;
-+	int ret_val = 0;
-+	int i;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
- 	if (!drv)
-@@ -590,7 +587,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 
- 	/* fixup codec name based on HID */
- 	i2c_name = sst_acpi_find_name_from_hid(mach->id);
--	if (i2c_name != NULL) {
-+	if (i2c_name) {
- 		snprintf(cht_rt5645_codec_name, sizeof(cht_rt5645_codec_name),
- 			"%s%s", "i2c-", i2c_name);
- 		cht_dailink[dai_index].codec_name = cht_rt5645_codec_name;
 -- 
 2.11.0
