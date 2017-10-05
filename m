@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: img-spdif-out: Rename suspend /
- resume funcs" to the asoc tree
-Date: Thu, 5 Oct 2017 16:48:11 +0100
-Message-ID: <20171005154811.btpu4kbnbmmre2mi@sirena.co.uk>
-References: <E1dzhqu-0004Nw-4P@debutante>
- <b9076c06-a3dc-7ea0-2b3a-4767b7a6e70c@sondrel.com>
+Subject: Re: [PATCH 1/2] ASoC: img-i2s-in: Add suspend / resume
+	handling
+Date: Thu, 5 Oct 2017 17:19:39 +0100
+Message-ID: <20171005161939.gy5fn7elivpr4ypj@sirena.co.uk>
+References: <1506938333-550-1-git-send-email-ed.blake@sondrel.com>
+ <1506938333-550-2-git-send-email-ed.blake@sondrel.com>
+ <20171004103722.4bzjimc74cupnuto@sirena.co.uk>
+ <aadc088c-c3df-6b97-de62-69cba0bc9de8@sondrel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7495857299956572242=="
+Content-Type: multipart/mixed; boundary="===============3063463905072048734=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 89396266A73
- for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2017 17:48:14 +0200 (CEST)
-In-Reply-To: <b9076c06-a3dc-7ea0-2b3a-4767b7a6e70c@sondrel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CA282266A73
+ for <alsa-devel@alsa-project.org>; Thu,  5 Oct 2017 18:19:40 +0200 (CEST)
+In-Reply-To: <aadc088c-c3df-6b97-de62-69cba0bc9de8@sondrel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,49 +29,61 @@ Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7495857299956572242==
+--===============3063463905072048734==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4cah6kxv2fd2mkii"
+	protocol="application/pgp-signature"; boundary="san5dmuzqxj3q3au"
 Content-Disposition: inline
 
 
---4cah6kxv2fd2mkii
-Content-Type: text/plain; charset=us-ascii
+--san5dmuzqxj3q3au
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 05, 2017 at 02:40:49PM +0100, Ed Blake wrote:
+On Thu, Oct 05, 2017 at 02:27:49PM +0100, Ed Blake wrote:
+> On 04/10/17 11:37, Mark Brown wrote:
 
-> As you've taken this first patch of the set and not the subsequent two,
-> I assume I should only include patches 2 and 3 in the v2 patch set?
+> > Why use the ASoC specific power management callbacks and not the system
+> > ones?  It does also look a bit like there's a case for converting the
+> > driver to regmap and using the regmap cache code.
 
-Of course:
+> Looking at other drivers, most seemed to use the ASoC specific
+> callbacks.=A0 Are the system ones preferred?=A0 If so I'll change it for =
+v2.
 
-| If any updates are required or you are submitting further changes they
-| should be sent as incremental updates against current git, existing
-| patches will not be replaced.
+Yes, look at newer drivers more here.  Unless you've a need to do some
+ASoC specific stuff but that's not the case for this.
 
---4cah6kxv2fd2mkii
+> > It does also look a bit like there's a case for converting the
+> > driver to regmap and using the regmap cache code.
+
+> Is it ok to do this in a future patch?
+
+Well, the comment was there because you were open coding the regmap
+cache sync code but it's not the end of the world to do it later.
+
+--san5dmuzqxj3q3au
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnWVDoACgkQJNaLcl1U
-h9ANVQf/b2MQaUtJ5ONPfyaB+WU2nfIfLohCU7nn0S50Wm4WQAu96Qrx3Jg8t5N8
-060RXSobOagOtELydbTPOCX7zFqI0Wegg0Ns/rMEDcSsXTNW8Abs6g1XppdRf8H1
-zZ9J2w0NdAJJThDnSqezkjahU/pLf2m1yLamakYt2nAPoP8EIQLyBITDByaouL5X
-waxnGQW/UjITlnjhPWtd855NbuvL3UaWBRWn+j+j6zVRUoj0uWystujQbWgc27ZX
-vZCAv1oBISBRMBCFy/j+Hw4KaiKL2UpnlSnxOlBoJalevoXCGC1x8TvFt7uAwzRx
-X8oXW16PUnNp2iHg0TYmWXktLKIvFg==
-=NjM6
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnWW5oACgkQJNaLcl1U
+h9DSpgf/bdnpeTPBH3Zr7heVemub6XB74K+cnqkdki7o+10TcWPwbN7YAJP9cIrL
+Wtsb1GzPUy7peL+SHcSzi/Kan9IJrsiMg0TBSDFl1Zjv453fWiO9SEZdJh3JiqnG
+OGDYm+ipStLq1ZQIhNvfm6grA6dCsAwRO61vmOV2WeB8v7FPlq34roaW0kfwMymj
+3r1A0Vdq6Oxe+fgTkFEbHtyvuO20S4SH7nymPX22pN1R1dSOEgeGaauESDtHtUgU
+8pdJUF4DZBseODJLQK0cSa8PAApvKqGp/RNTa0bye0l4pbM/9rSurPXGF3ONiptQ
+EJpSR4HQyPoQpJKjDfY4csoZfi2Ijg==
+=mOEv
 -----END PGP SIGNATURE-----
 
---4cah6kxv2fd2mkii--
+--san5dmuzqxj3q3au--
 
---===============7495857299956572242==
+--===============3063463905072048734==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7495857299956572242==--
+--===============3063463905072048734==--
