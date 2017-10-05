@@ -1,90 +1,75 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: [PATCH] conf: HdmiLpeAudio: remove the "front" pcm
-	definition
-Date: Wed,  4 Oct 2017 22:44:00 +0300
-Message-ID: <20171004194400.14401-1-tanuk@iki.fi>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH] sound/core: Convert timers to use timer_setup()
+Date: Wed, 4 Oct 2017 17:53:33 -0700
+Message-ID: <20171005005333.GA23782@beast>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id EA490267419
- for <alsa-devel@alsa-project.org>; Wed,  4 Oct 2017 21:45:20 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, alsa-devel@alsa-project.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-PulseAudio assumes that the "front" pcm device always refers to an
-analog device, not HDMI. While that assumption is not really valid, the
-reality is that without that assumption PulseAudio can't know whether
-"front" and "hdmi" refer to a different or the same device.
+In preparation for unconditionally passing the struct timer_list pointer to
+all timer callbacks, switch to using the new timer_setup() and from_timer()
+to pass the timer pointer explicitly. This adds a pointer back to struct
+snd_timer.
 
-The HDMI LPE driver doesn't allow audio streaming while the HDMI cable
-is unplugged, so PulseAudio has to know when it's plugged in and when
-it's not. If both "front" and "hdmi" devices exist, PulseAudio will
-notice that HDMI is unplugged, but it doesn't know that "front" refers
-to the same device, and PulseAudio will try to use the "front" device
-with bad consequences. The kernel driver's refusal to stream any audio
-makes PulseAudio enter an infinite loop and then the kernel kills
-PulseAudio, because it consumes too much CPU time in a realtime thread.
-
-While the looping in PulseAudio could probably be fixed, that wouldn't
-change the fact that PulseAudio thinks that there is an analog device. I
-believe it's best to avoid having the same device as both "front" and
-"hdmi" in alsa-lib.
-
-I removed also the surround configuration includes. I don't think they
-had any effect anyway, so I wonder why they were there in the first
-place.
-
-BugLink: https://bugs.freedesktop.org/show_bug.cgi?id=100488
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- src/conf/cards/HdmiLpeAudio.conf | 24 ------------------------
- 1 file changed, 24 deletions(-)
+This requires commit 686fef928bba ("timer: Prepare to change timer
+callback argument type") in v4.14-rc3, but should be otherwise
+stand-alone.
+---
+ sound/core/timer.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/src/conf/cards/HdmiLpeAudio.conf b/src/conf/cards/HdmiLpeAudio.conf
-index 9fa30da0..a1e493da 100644
---- a/src/conf/cards/HdmiLpeAudio.conf
-+++ b/src/conf/cards/HdmiLpeAudio.conf
-@@ -2,30 +2,6 @@
- # Configuration for the Intel HDMI/DP LPE audio
- #
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 6cdd04a45962..09acaf2b2e57 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -1028,15 +1028,17 @@ EXPORT_SYMBOL(snd_timer_global_register);
  
--<confdir:pcm/front.conf>
--
--HdmiLpeAudio.pcm.front.0 {
--	@args [ CARD ]
--	@args.CARD {
--		type string
--	}
--	type softvol
--	slave.pcm {
--		type hw
--		card $CARD
--	}
--	control {
--		name "PCM Playback Volume"
--		card $CARD
--	}
--}
--
--<confdir:pcm/surround40.conf>
--<confdir:pcm/surround21.conf>
--<confdir:pcm/surround41.conf>
--<confdir:pcm/surround50.conf>
--<confdir:pcm/surround51.conf>
--
- <confdir:pcm/hdmi.conf>
+ struct snd_timer_system_private {
+ 	struct timer_list tlist;
++	struct snd_timer *snd_timer;
+ 	unsigned long last_expires;
+ 	unsigned long last_jiffies;
+ 	unsigned long correction;
+ };
  
- HdmiLpeAudio.pcm.hdmi.0 {
+-static void snd_timer_s_function(unsigned long data)
++static void snd_timer_s_function(struct timer_list *t)
+ {
+-	struct snd_timer *timer = (struct snd_timer *)data;
+-	struct snd_timer_system_private *priv = timer->private_data;
++	struct snd_timer_system_private *priv = from_timer(priv, t,
++								tlist);
++	struct snd_timer *timer = priv->snd_timer;
+ 	unsigned long jiff = jiffies;
+ 	if (time_after(jiff, priv->last_expires))
+ 		priv->correction += (long)jiff - (long)priv->last_expires;
+@@ -1118,7 +1120,8 @@ static int snd_timer_register_system(void)
+ 		snd_timer_free(timer);
+ 		return -ENOMEM;
+ 	}
+-	setup_timer(&priv->tlist, snd_timer_s_function, (unsigned long) timer);
++	priv->snd_timer = timer;
++	timer_setup(&priv->tlist, snd_timer_s_function, 0);
+ 	timer->private_data = priv;
+ 	timer->private_free = snd_timer_free_system;
+ 	return snd_timer_global_register(timer);
 -- 
-2.14.2
+2.7.4
+
+
+-- 
+Kees Cook
+Pixel Security
