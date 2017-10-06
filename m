@@ -1,16 +1,21 @@
-From: Ed Blake <ed.blake@sondrel.com>
-Subject: [PATCH] ASoC: img-parallel-out: Check
-	pm_runtime_get_sync return code
-Date: Fri,  6 Oct 2017 15:57:50 +0100
-Message-ID: <20171006145750.13791-1-ed.blake@sondrel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 6/6] ASoC: Intel: boards: use strcmp with
+ constant literals
+Date: Fri, 6 Oct 2017 10:24:22 -0500
+Message-ID: <4f6a813f-7c18-98bd-29f8-82e291152736@linux.intel.com>
+References: <20171005185243.4174-1-pierre-louis.bossart@linux.intel.com>
+ <20171005185243.4174-7-pierre-louis.bossart@linux.intel.com>
+ <s5hfuaw7j0a.wl-tiwai@suse.de> <1507290634.16112.280.camel@linux.intel.com>
+ <ad4cce2f-2af0-64bb-99c8-4b4a9e430143@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01on0054.outbound.protection.outlook.com [104.47.1.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 92D7F266991
- for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2017 16:57:58 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56118266991
+ for <alsa-devel@alsa-project.org>; Fri,  6 Oct 2017 17:24:27 +0200 (CEST)
+In-Reply-To: <ad4cce2f-2af0-64bb-99c8-4b4a9e430143@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,40 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Ed Blake <ed.blake@sondrel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Check the the pm_runtime_get_sync return code and return if an error.
-
-Signed-off-by: Ed Blake <ed.blake@sondrel.com>
----
- sound/soc/img/img-parallel-out.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 2fc8a6372206..acc005217be0 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -153,6 +153,7 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct img_prl_out *prl = snd_soc_dai_get_drvdata(dai);
- 	u32 reg, control_set = 0;
-+	int ret;
- 
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF:
-@@ -164,7 +165,10 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
--	pm_runtime_get_sync(prl->dev);
-+	ret = pm_runtime_get_sync(prl->dev);
-+	if (ret < 0)
-+		return ret;
-+
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
- 	img_prl_out_writel(prl, reg, IMG_PRL_OUT_CTL);
--- 
-2.11.0
+CgpPbiAxMC8wNi8yMDE3IDA5OjI4IEFNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiBP
+biAxMC82LzE3IDY6NTAgQU0sIEFuZHkgU2hldmNoZW5rbyB3cm90ZToKPj4gT24gRnJpLCAyMDE3
+LTEwLTA2IGF0IDEwOjU1ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBPbiBUaHUsIDA1
+IE9jdCAyMDE3IDIwOjUyOjQzICswMjAwLAo+Pj4gUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6
+Cj4+Pj4KPj4+PiB3ZSB1c2VkIHN0cm5jbXAgaW4gYWxsIGF1ZGlvIG1hY2hpbmUgZHJpdmVycywg
+dGhpcyBpcyBub3QgbmVlZGVkCj4+Pj4gd2hlbiBjb21wYXJpbmcgYWdhaW5zdCBjb25zdGFudCBs
+aXRlcmFscy4KPj4+PiBHZW5lcmFsIHJlcGxhY2Ugb2Ygc3RybmNtcChhLCBiLCBzdHJsZW4oYikp
+IHRvIHN0cmNtcChhLGIpCj4+Pj4KPj4+PiBTdWdnZXN0ZWQtYnk6IEFuZHkgU2hldmNoZW5rbyA8
+YW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgo+Pj4+IFNpZ25lZC1vZmYtYnk6IFBp
+ZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlCj4+Pj4g
+bC5jb20+Cj4+Pj4gLS0tCj4+Pj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieHRfZGE3MjE5
+X21heDk4MzU3YS5jwqDCoCB8IDMgKy0tCj4+Pj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9i
+eXRjaHRfZXM4MzE2LmPCoMKgwqDCoMKgwqDCoMKgwqAgfCAzICstLQo+Pj4+IMKgIHNvdW5kL3Nv
+Yy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmPCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IDYgKyst
+LS0tCj4+Pj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NTEuY8KgwqDCoMKg
+wqDCoMKgwqDCoMKgIHwgMyArLS0KPj4+PiDCoCBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2NodF9i
+c3dfbWF4OTgwOTBfdGkuY8KgwqDCoCB8IDMgKy0tCj4+Pj4gwqAgc291bmQvc29jL2ludGVsL2Jv
+YXJkcy9jaHRfYnN3X3J0NTY0NS5jwqDCoMKgwqDCoMKgwqDCoCB8IDYgKystLS0tCj4+Pj4gwqAg
+c291bmQvc29jL2ludGVsL2JvYXJkcy9jaHRfYnN3X3J0NTY3Mi5jwqDCoMKgwqDCoMKgwqDCoCB8
+IDMgKy0tCj4+Pj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9za2xfbmF1ODhsMjVfbWF4OTgz
+NTdhLmMgfCAzICstLQo+Pj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9ib2FyZHMvc2tsX25hdTg4bDI1
+X3NzbTQ1NjcuY8KgwqAgfCAzICstLQo+Pj4+IMKgIDkgZmlsZXMgY2hhbmdlZCwgMTEgaW5zZXJ0
+aW9ucygrKSwgMjIgZGVsZXRpb25zKC0pCj4+Pgo+Pj4gV2hpbGUgd2UncmUgYXQgaXQ6IHNpbmNl
+IGFsbCB0aGVzZSBkbyBtb3N0bHkgc2FtZTogd291bGRuJ3QgaXQgbWFrZQo+Pj4gbW9yZSBzZW5z
+ZSB0byBjcmVhdGUgYSBoZWxwZXIgdG8gc2NhbiBvdmVyIHRoZSBydGRfbGlzdD8KPj4+Cj4+PiBz
+dGF0aWMgaW5saW5lIHNuZF9zb2NfaW50ZWxfZ2V0X2NvZGVjX2RhaShzdHJ1Y3Qgc25kX3NvY19j
+YXJkICpjYXJkLAo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGNvbnN0IGNoYXIgKmRhaV9uYW1lKQo+Pj4gewo+Pj4gwqDCoMKgwqBzdHJ1Y3Qgc25kX3NvY19w
+Y21fcnVudGltZSAqcnRkOwo+Pj4KPj4+IMKgwqDCoMKgbGlzdF9mb3JfZWFjaF9lbnRyeShydGQs
+ICZjYXJkLT5ydGRfbGlzdCwgbGlzdCkgewo+Pj4gwqDCoMKgwqDCoMKgwqAgaWYgKCFzdHJjbXAo
+cnRkLT5jb2RlY19kYWktPm5hbWUsIGRhaV9uYW1lKSkKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgcmV0dXJuIHJ0ZC0+Y29kZWNfZGFpOwo+Pj4gwqDCoMKgwqB9Cj4+Pgo+Pj4gwqDCoMKgwqBy
+ZXR1cm4gTlVMTDsKPj4+IH0KPj4KPj4gSSBsaWtlIHRoaXMhCj4+Cj4+PiBTb21lIGRyaXZlcnMg
+cmVxdWlyZSB0byBjaGVjayB0d28gbmFtZXMsIGJ1dCBpdCBjYW4gY2FsbCB0aGlzIGZ1bmN0aW9u
+Cj4+PiB0d2ljZS4KPj4KPj4gSXQgbG9va3MgbGlrZSBub3QgaG90IHBhdGgsIHNvLCAyIHBhc3Nl
+cyBpbnN0ZWFkIG9mIG9uZSBtaWdodCBiZSBub3QgYQo+PiBiaWcgZGVhbC4KPgo+IFllcywgdGhh
+dCdkIGJlIGEgZ29vZCB3YXkgdG8gc2ltcGxpZnkgZnVydGhlci4gSSdsbCByZXNlbmQgdGhlIHNl
+cmllcywgCj4gdGhhbmtzIGZvciB0aGUgc3VnZ2VzdGlvbiBUYWthc2hpLgpUaGUgY29kZSBpcyBu
+b3QgSW50ZWwtc3BlY2lmaWMgdGhvdWdoLCBzaG91bGQgaXQgYmUgbW92ZWQgdG8gc29jLmggPyBl
+LmcuCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9zb3VuZC9zb2MuaCBiL2luY2x1ZGUvc291bmQvc29j
+LmgKaW5kZXggMTFjYTg2NzAzM2JkLi42OGY4MjlkMzJjNzYgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUv
+c291bmQvc29jLmgKKysrIGIvaW5jbHVkZS9zb3VuZC9zb2MuaApAQCAtMTczNiw2ICsxNzM2LDE5
+IEBAIGludCBzbmRfc29jX3JlZ2lzdGVyX2RhaShzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgCipj
+b21wb25lbnQsCiDCoHN0cnVjdCBzbmRfc29jX2RhaSAqc25kX3NvY19maW5kX2RhaSgKIMKgwqDC
+oMKgwqDCoMKgIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhaV9saW5rX2NvbXBvbmVudCAqZGxjKTsK
+CitzdGF0aWMgaW5saW5lIHNuZF9zb2NfY2FyZF9nZXRfY29kZWNfZGFpKHN0cnVjdCBzbmRfc29j
+X2NhcmQgKmNhcmQsCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgY2hhciAqZGFpX25hbWUp
+Cit7CivCoMKgwqDCoMKgwqAgc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZDsKKworwqDC
+oMKgwqDCoMKgIGxpc3RfZm9yX2VhY2hfZW50cnkocnRkLCAmY2FyZC0+cnRkX2xpc3QsIGxpc3Qp
+IHsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCFzdHJjbXAocnRkLT5jb2RlY19k
+YWktPm5hbWUsIGRhaV9uYW1lKSkKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIHJldHVybiBydGQtPmNvZGVjX2RhaTsKK8KgwqDCoMKgwqDCoCB9CisKK8KgwqDC
+oMKgwqDCoCByZXR1cm4gTlVMTDsKK30KKwogwqAjaW5jbHVkZSA8c291bmQvc29jLWRhaS5oPgoK
+IMKgI2lmZGVmIENPTkZJR19ERUJVR19GUwoKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
