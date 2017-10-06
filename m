@@ -1,7 +1,7 @@
 From: Mark Salyzyn <salyzyn@android.com>
-Subject: [PATCH] ALSA: seq: resize buffer for overflow
-Date: Fri,  6 Oct 2017 09:28:30 -0700
-Message-ID: <20171006162838.82377-1-salyzyn@android.com>
+Subject: [PATCH v2] ALSA: seq: resize buffer for overflow
+Date: Fri,  6 Oct 2017 10:17:27 -0700
+Message-ID: <20171006171731.88889-1-salyzyn@android.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
@@ -93,12 +93,14 @@ RIP  [<ffffffff82e2fc05>] snd_seq_oss_readq_puts+0xd5/0x170 sound/core/seq/oss/s
 CR2: ffffc900008ab000
 
 Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+
+v2: removed nested locks in snd_midi_event_resize_buffer
 ---
- sound/core/seq/seq_midi_event.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/core/seq/seq_midi_event.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
-index 90bbbdbeba03..cbc501fd47c2 100644
+index 90bbbdbeba03..ed3206ef0cd4 100644
 --- a/sound/core/seq/seq_midi_event.c
 +++ b/sound/core/seq/seq_midi_event.c
 @@ -192,8 +192,7 @@ EXPORT_SYMBOL(snd_midi_event_no_status);
@@ -111,7 +113,16 @@ index 90bbbdbeba03..cbc501fd47c2 100644
  {
  	unsigned char *new_buf, *old_buf;
  	unsigned long flags;
-@@ -212,7 +211,6 @@ int snd_midi_event_resize_buffer(struct snd_midi_event *dev, int bufsize)
+@@ -203,16 +202,13 @@ int snd_midi_event_resize_buffer(struct snd_midi_event *dev, int bufsize)
+ 	new_buf = kmalloc(bufsize, GFP_KERNEL);
+ 	if (new_buf == NULL)
+ 		return -ENOMEM;
+-	spin_lock_irqsave(&dev->lock, flags);
+ 	old_buf = dev->buf;
+ 	dev->buf = new_buf;
+ 	dev->bufsize = bufsize;
+ 	reset_encode(dev);
+-	spin_unlock_irqrestore(&dev->lock, flags);
  	kfree(old_buf);
  	return 0;
  }
@@ -119,7 +130,7 @@ index 90bbbdbeba03..cbc501fd47c2 100644
  
  /*
   *  read bytes and encode to sequencer event if finished
-@@ -297,6 +295,8 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
+@@ -297,6 +293,8 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
  	} else 	if (dev->type == ST_SYSEX) {
  		if (c == MIDI_CMD_COMMON_SYSEX_END ||
  		    dev->read >= dev->bufsize) {
