@@ -1,129 +1,100 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [Patch v6 4/7] slimbus: Add support for 'clock-pause' feature
-Date: Sat, 7 Oct 2017 11:24:59 +0100
-Message-ID: <dfda11c1-2f2f-9b79-eb13-dd2115d2a919@linaro.org>
+Subject: Re: [Patch v6 5/7] slimbus: qcom: Add runtime-pm support using
+ clock-pause feature
+Date: Sat, 7 Oct 2017 11:25:12 +0100
+Message-ID: <17495a78-9e81-c0c3-fe17-78732eff8b9e@linaro.org>
 References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-5-srinivas.kandagatla@linaro.org>
- <20171007080625.gotgts2ssgacawpx@latitude>
+ <20171006155136.4682-6-srinivas.kandagatla@linaro.org>
+ <20171007082259.kumlkus5mg5eh5cr@latitude>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171007080625.gotgts2ssgacawpx@latitude>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20171007082259.kumlkus5mg5eh5cr@latitude>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
 Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
 Thanks for the review comments
 
-
-
-On 07/10/17 09:06, Jonathan Neuschäfer wrote:
-> Hi, some trivial comments below.
+On 07/10/17 09:22, Jonathan Neuschäfer wrote:
+> Hi, some more trivial comments below.
 > 
-> On Fri, Oct 06, 2017 at 05:51:33PM +0200, srinivas.kandagatla@linaro.org wrote:
+> On Fri, Oct 06, 2017 at 05:51:34PM +0200, srinivas.kandagatla@linaro.org wrote:
 >> From: Sagar Dharia <sdharia@codeaurora.org>
 >>
->> Per slimbus specification, a reconfiguration sequence known as
->> 'clock pause' needs to be broadcast over the bus while entering low-
->> power mode. Clock-pause is initiated by the controller driver.
->> To exit clock-pause, controller typically wakes up the framer device.
->> Since wakeup precedure is controller-specific, framework calls it via
->> controller's function pointer to invoke it.
+>> Slimbus HW mandates that clock-pause sequence has to be executed
+>> before disabling relevant interface and core clocks.
+>> Runtime-PM's autosuspend feature is used here to enter/exit low
+>> power mode for Qualcomm's Slimbus controller. Autosuspend feature
+>> enables driver to avoid changing power-modes too frequently since
+>> entering clock-pause is an expensive sequence
 >>
 >> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
 >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >> ---
 > [...]
->> @@ -429,6 +444,14 @@ void slim_return_tx(struct slim_controller *ctrl, int err)
->>   		cur.cb(cur.ctx, err);
->>   
->>   	up(&ctrl->tx_sem);
->> +	if (!cur.clk_pause && (!cur.need_tid || err)) {
->> +		/**
+>> +static int msm_clk_pause_wakeup(struct slim_controller *ctrl)
+>> +{
+>> +	struct msm_slim_ctrl *dev = slim_get_ctrldata(ctrl);
+>> +
+>> +	clk_prepare_enable(dev->hclk);
+>> +	clk_prepare_enable(dev->rclk);
+>> +	enable_irq(dev->irq);
+>> +
+>> +	writel_relaxed(1, dev->base + FRM_WAKEUP);
+>> +	/* Make sure framer wakeup write goes through before ISR fires */
+>> +	mb();
+>> +	/**
 > 
 > This isn't really a kerneldoc comment.
-Will fix all such instances in next version.
+Yep I agree will fix all such instances.
+
 > 
->> +		 * remove runtime-pm vote if this was TX only, or
->> +		 * if there was error during this transaction
->> +		 */
->> +		pm_runtime_mark_last_busy(ctrl->dev.parent);
->> +		pm_runtime_put_autosuspend(ctrl->dev.parent);
->> +	}
->>   }
->>   EXPORT_SYMBOL_GPL(slim_return_tx);
->>   
+>> +	 * HW Workaround: Currently, slave is reporting lost-sync messages
+>> +	 * after slimbus comes out of clock pause.
+>> +	 * Transaction with slave fail before slave reports that message
+>> +	 * Give some time for that report to come
+>> +	 * Slimbus wakes up in clock gear 10 at 24.576MHz. With each superframe
+>> +	 * being 250 usecs, we wait for 5-10 superframes here to ensure
+>> +	 * we get the message
+>> +	 */
+>> +	usleep_range(1250, 2500);
+>> +	return 0;
+>> +}
 > [...]
->> +/**
->> + * slim_ctrl_clk_pause: Called by slimbus controller to enter/exit 'clock pause'
->> + * Slimbus specification needs this sequence to turn-off clocks for the bus.
->> + * The sequence involves sending 3 broadcast messages (reconfiguration
->> + * sequence) to inform all devices on the bus.
->> + * To exit clock-pause, controller typically wakes up active framer device.
->> + * @ctrl: controller requesting bus to be paused or woken up
->> + * @wakeup: Wakeup this controller from clock pause.
->> + * @restart: Restart time value per spec used for clock pause. This value
->> + *	isn't used when controller is to be woken up.
->> + * This API executes clock pause reconfiguration sequence if wakeup is false.
->> + * If wakeup is true, controller's wakeup is called.
->> + * For entering clock-pause, -EBUSY is returned if a message txn in pending.
->> + */
->> +int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 restart)
+>> +#ifdef CONFIG_PM_SLEEP
+>> +static int msm_slim_suspend(struct device *dev)
 >> +{
->> +	int i, ret = 0;
->> +	unsigned long flags;
->> +	struct slim_sched *sched = &ctrl->sched;
->> +	struct slim_val_inf msg = {0, 0, NULL, NULL, NULL, NULL};
+>> +	int ret = 0;
 >> +
->> +	DEFINE_SLIM_BCAST_TXN(txn, SLIM_MSG_MC_BEGIN_RECONFIGURATION,
->> +				3, SLIM_LA_MANAGER, &msg);
->> +
->> +	if (wakeup == false && restart > SLIM_CLK_UNSPECIFIED)
->> +		return -EINVAL;
->> +
->> +	mutex_lock(&sched->m_reconf);
->> +	if (wakeup) {
->> +		if (sched->clk_state == SLIM_CLK_ACTIVE) {
->> +			mutex_unlock(&sched->m_reconf);
->> +			return 0;
->> +		}
->> +
->> +		/**
-> 
-> ditto
-> 
->> +		 * Fine-tune calculation based on clock gear,
->> +		 * message-bandwidth after bandwidth management
->> +		 */
->> +		ret = wait_for_completion_timeout(&sched->pause_comp,
->> +				msecs_to_jiffies(100));
->> +		if (!ret) {
->> +			mutex_unlock(&sched->m_reconf);
->> +			pr_err("Previous clock pause did not finish");
->> +			return -ETIMEDOUT;
->> +		}
->> +		ret = 0;
->> +
->> +		/**
-> 
-> ditto
-> 
->> +		 * Slimbus framework will call controller wakeup
->> +		 * Controller should make sure that it sets active framer
->> +		 * out of clock pause
->> +		 */
->> +		if (sched->clk_state == SLIM_CLK_PAUSED && ctrl->wakeup)
->> +			ret = ctrl->wakeup(ctrl);
->> +		if (!ret)
->> +			sched->clk_state = SLIM_CLK_ACTIVE;
->> +		mutex_unlock(&sched->m_reconf);
->> +
->> +		return ret;
+>> +	if (!pm_runtime_enabled(dev) ||
+>> +		(!pm_runtime_suspended(dev))) {
+>> +		dev_dbg(dev, "system suspend");
+>> +		ret = msm_slim_runtime_suspend(dev);
 >> +	}
-> [...]
+>> +	if (ret == -EISCONN) {
+>> +	/**
+> 
+> ditto.
+> Also, it looks misindented.
+Yep. will fix this too.
+
+> 
+>> +	 * If the clock pause failed due to active channels, there is
+>> +	 * a possibility that some audio stream is active during suspend.
+>> +	 * (e.g. modem usecase during suspend)
+>> +	 * We dont want to return suspend failure in that case so that
+>> +	 * display and relevant components can still go to suspend.
+>> +	 * If there is some other error, then it should prevent
+>> +	 * system level suspend
+>> +	 */
+>> +		ret = 0;
+>> +	}
+>> +	return ret;
+>> +}
 > 
 > 
 > Thanks,
