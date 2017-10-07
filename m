@@ -1,159 +1,131 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [Patch v6 3/7] slimbus: qcom: Add Qualcomm Slimbus
- controller driver
-Date: Sat, 7 Oct 2017 11:24:40 +0100
-Message-ID: <91b69203-65a7-175f-53bd-aeb6ee787233@linaro.org>
+Subject: Re: [Patch v6 4/7] slimbus: Add support for 'clock-pause' feature
+Date: Sat, 7 Oct 2017 11:24:59 +0100
+Message-ID: <dfda11c1-2f2f-9b79-eb13-dd2115d2a919@linaro.org>
 References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-4-srinivas.kandagatla@linaro.org>
- <20171007074539.mdvl5nw66it67l3g@latitude>
+ <20171006155136.4682-5-srinivas.kandagatla@linaro.org>
+ <20171007080625.gotgts2ssgacawpx@latitude>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
- by alsa0.perex.cz (Postfix) with ESMTP id 03FB0266EEB
- for <alsa-devel@alsa-project.org>; Sat,  7 Oct 2017 12:24:44 +0200 (CEST)
-Received: by mail-wm0-f46.google.com with SMTP id t69so12030391wmt.2
- for <alsa-devel@alsa-project.org>; Sat, 07 Oct 2017 03:24:44 -0700 (PDT)
-In-Reply-To: <20171007074539.mdvl5nw66it67l3g@latitude>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171007080625.gotgts2ssgacawpx@latitude>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, gong.chen@linux.intel.com, arnd@arndb.de, kheitke@audience.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, daniel@ffwll.ch, jkosina@suse.cz, joe@perches.com, davem@davemloft.net
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-VGhhbmtzIGZvciB0aGUgcmV2aWV3IGNvbW1lbnRzCgpPbiAwNy8xMC8xNyAwODo0NSwgSm9uYXRo
-YW4gTmV1c2Now6RmZXIgd3JvdGU6Cj4gSGksCj4gCj4gT24gRnJpLCBPY3QgMDYsIDIwMTcgYXQg
-MDU6NTE6MzJQTSArMDIwMCwgc3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnIHdyb3RlOgo+
-PiBGcm9tOiBTYWdhciBEaGFyaWEgPHNkaGFyaWFAY29kZWF1cm9yYS5vcmc+Cj4+Cj4+IFRoaXMg
-Y29udHJvbGxlciBkcml2ZXIgcHJvZ3JhbXMgbWFuYWdlciwgaW50ZXJmYWNlLCBhbmQgZnJhbWVy
-Cj4+IGRldmljZXMgZm9yIFF1YWxjb21tJ3Mgc2xpbWJ1cyBIVyBibG9jay4KPj4gTWFuYWdlciBj
-b21wb25lbnQgY3VycmVudGx5IGltcGxlbWVudHMgbG9naWNhbCBhZGRyZXNzIHNldHRpbmcsCj4+
-IGFuZCBtZXNzYWdpbmcgaW50ZXJmYWNlLgo+PiBJbnRlcmZhY2UgZGV2aWNlIHJlcG9ydHMgYnVz
-IHN5bmNocm9uaXphdGlvbiBpbmZvcm1hdGlvbiwgYW5kIGZyYW1lcgo+PiBkZXZpY2UgY2xvY2tz
-IHRoZSBidXMgZnJvbSB0aGUgdGltZSBpdCdzIHdva2VuIHVwLCB1bnRpbCBjbG9jay1wYXVzZQo+
-PiBpcyBleGVjdXRlZCBieSB0aGUgbWFuYWdlciBkZXZpY2UuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
-IFNhZ2FyIERoYXJpYSA8c2RoYXJpYUBjb2RlYXVyb3JhLm9yZz4KPj4gU2lnbmVkLW9mZi1ieTog
-U3Jpbml2YXMgS2FuZGFnYXRsYSA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPgo+PiAt
-LS0KPj4gICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zbGltYnVzL3NsaW0tcWNvbS1jdHJsLnR4
-dCB8ICA0MyArKwo+PiAgIGRyaXZlcnMvc2xpbWJ1cy9LY29uZmlnICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgICA5ICsKPj4gICBkcml2ZXJzL3NsaW1idXMvTWFrZWZpbGUgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8ICAgMyArCj4+ICAgZHJpdmVycy9zbGltYnVzL3NsaW0tcWNvbS1j
-dHJsLmMgICAgICAgICAgICAgICAgICAgfCA1OTQgKysrKysrKysrKysrKysrKysrKysrCj4+ICAg
-ZHJpdmVycy9zbGltYnVzL3NsaW0tcWNvbS5oICAgICAgICAgICAgICAgICAgICAgICAgfCAgNjMg
-KysrCj4+ICAgNSBmaWxlcyBjaGFuZ2VkLCA3MTIgaW5zZXJ0aW9ucygrKQo+PiAgIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2xpbWJ1cy9zbGlt
-LXFjb20tY3RybC50eHQKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zbGltYnVzL3Ns
-aW0tcWNvbS1jdHJsLmMKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zbGltYnVzL3Ns
-aW0tcWNvbS5oCj4+Cj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3Mvc2xpbWJ1cy9zbGltLXFjb20tY3RybC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3Mvc2xpbWJ1cy9zbGltLXFjb20tY3RybC50eHQKPj4gbmV3IGZpbGUgbW9kZSAx
-MDA2NDQKPj4gaW5kZXggMDAwMDAwMC4uMDgxMTEwZAo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zbGltYnVzL3NsaW0tcWNvbS1jdHJs
-LnR4dAo+PiBAQCAtMCwwICsxLDQzIEBACj4+ICtRdWFsY29tbSBTTElNQlVTIGNvbnRyb2xsZXIK
-Pj4gK1RoaXMgY29udHJvbGxlciBpcyB1c2VkIGlmIGFwcGxpY2F0aW9ucyBwcm9jZXNzb3IgZHJp
-dmVyIGNvbnRyb2xzIHNsaW1idXMKPj4gK21hc3RlciBjb21wb25lbnQuCj4+ICsKPj4gK1JlcXVp
-cmVkIHByb3BlcnRpZXM6Cj4+ICsKPj4gKyAtICNhZGRyZXNzLWNlbGxzIC0gcmVmZXIgdG8gRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NsaW1idXMvYnVzLnR4dAo+PiArIC0gI3Np
-emUtY2VsbHMJLSByZWZlciB0byBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2xp
-bWJ1cy9idXMudHh0Cj4+ICsKPj4gKyAtIHJlZyA6IE9mZnNldCBhbmQgbGVuZ3RoIG9mIHRoZSBy
-ZWdpc3RlciByZWdpb24ocykgZm9yIHRoZSBkZXZpY2UKPj4gKyAtIHJlZy1uYW1lcyA6IFJlZ2lz
-dGVyIHJlZ2lvbiBuYW1lKHMpIHJlZmVyZW5jZWQgaW4gcmVnIGFib3ZlCj4+ICsJIFJlcXVpcmVk
-IHJlZ2lzdGVyIHJlc291cmNlIGVudHJpZXMgYXJlOgo+PiArCSAiY3RybCI6IFBoeXNpY2FsIGFk
-ZGVyZXNzIG9mIGNvbnRyb2xsZXIgcmVnaXN0ZXIgYmxvY2tzCj4gCj4gcy9hZGRlcmVzcy9hZGRy
-ZXNzLwpXaWxsIGZpeCB0aGlzIGluIG5leHQgdmVyc2lvbi4KCj4gCj4+ICt9Cj4gWy4uLl0KPj4g
-K3N0YXRpYyB2b2lkIG1zbV9zbGltX3ByZ19zbGV3KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBk
-ZXYsCj4+ICsJCQkJc3RydWN0IG1zbV9zbGltX2N0cmwgKmRldikKPj4gK3sKPj4gKwl2b2lkIF9f
-aW9tZW0gKnNsZXdfcmVnOwo+PiArCj4+ICsJLyogU0xFVyBSQVRFIHJlZ2lzdGVyIGZvciB0aGlz
-IHNsaW1idXMgKi8KPj4gKwlkZXYtPnNsZXdfbWVtID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlX2J5
-bmFtZShwZGV2LCBJT1JFU09VUkNFX01FTSwKPj4gKwkJCQkJCSAgICAgInNsZXciKTsKPj4gKwlp
-ZiAoIWRldi0+c2xld19tZW0pIHsKPj4gKwkJZGV2X3dhcm4oJnBkZXYtPmRldiwgIm5vIHNsaW1i
-dXMgc2xldyByZXNvdXJjZVxuIik7Cj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsKPj4gKwlzbGV3
-X3JlZyA9IGRldm1faW9yZW1hcCgmcGRldi0+ZGV2LCBkZXYtPnNsZXdfbWVtLT5zdGFydCwKPj4g
-KwkJCQlyZXNvdXJjZV9zaXplKGRldi0+c2xld19tZW0pKTsKPiAKPiBIb3cgb2Z0ZW4gd2lsbCB0
-aGUgZHJpdmVyIHByb2dyYW0gYSBzbGV3IHJhdGU/Cj4gClRoaXMgc2hvdWxkIGJlIHByb2dyYW1t
-ZWQgb25seSBvbmNlIGFmdGVyIHBvd2VyIG9uLgoKPiBJZiBpdCdzIG9mdGVuLCB5b3UnbGwgaGF2
-ZSBhICJzb2Z0IiBtZW1vcnkgbGVhayBvdmVyIHRoZSBsaWZlIHRpbWUgb2YgYQo+IFNMSU0gY29u
-dHJvbGxlciBpbnN0YW5jZSwgYmVjYXVzZSB0aGUgbWFwcGluZ3MgZm9yIHNsZXdfcmVnIHdpbGwK
-PiBhY2N1bXVsYXRlIGluIHRoZSBkcml2ZXIgaW5zdGFuY2UncyBkZXZtIGFyZWEgdW50aWwgdGhl
-eSBhcmUgYWxsIGZyZWVkCj4gaW4gdGhlIGVuZCAoSWYgSSdtIHJlYWRpbmcgdGhlIGNvZGUgY29y
-cmVjdGx5KS4gSSB0aGluayB5b3UnbGwgZWl0aGVyCj4gaGF2ZSB0byB1bm1hcCBzbGV3X3JlZyB3
-aGVuIHRoaXMgZnVuY3Rpb24gcmV0dXJucyAoYW5kIG5vdCB1c2UgZGV2bSksIG9yCj4gY2FjaGUg
-c2xld19yZWcgc28gdGhhdCBzdWJzZXF1ZW50IGNhbGxzIHRvIG1zbV9zbGltX3ByZ19zbGV3IHdv
-bid0Cj4gY3JlYXRlIG1vcmUgbWFwcGluZ3MuClllcCAuLiBJIHJldmlzaXQgdGhpcyBwYXJ0IG9u
-Y2UgYWdhaW4gYmVmb3JlIHNlbmRpbmcgbmV4dCB2ZXJzaW9uIHRvIHNlZSAKaWYgd2UgY2FuIGRv
-IGFueSBiZXR0ZXIhCj4gCj4+ICsJaWYgKCFzbGV3X3JlZykgewo+PiArCQlkZXZfZXJyKGRldi0+
-ZGV2LCAic2xldyByZWdpc3RlciBtYXBwaW5nIGZhaWxlZCIpOwo+PiArCQlyZWxlYXNlX21lbV9y
-ZWdpb24oZGV2LT5zbGV3X21lbS0+c3RhcnQsCj4+ICsJCQkJCXJlc291cmNlX3NpemUoZGV2LT5z
-bGV3X21lbSkpOwo+PiArCQlkZXYtPnNsZXdfbWVtID0gTlVMTDsKPj4gKwkJcmV0dXJuOwo+PiAr
-CX0KPj4gKwl3cml0ZWxfcmVsYXhlZCgxLCBzbGV3X3JlZyk7Cj4+ICsJLyogTWFrZSBzdXJlIHNs
-aW1idXMtc2xldyByYXRlIGVuYWJsaW5nIGdvZXMgdGhyb3VnaCAqLwo+PiArCXdtYigpOwo+PiAr
-fQo+PiArCj4+ICtzdGF0aWMgaW50IG1zbV9zbGltX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYpCj4+ICt7Cj4+ICsJc3RydWN0IG1zbV9zbGltX2N0cmwgKmRldjsKPj4gKwlzdHJ1
-Y3Qgc2xpbV9jb250cm9sbGVyICpjdHJsOwo+PiArCXN0cnVjdCByZXNvdXJjZSAqc2xpbV9tZW07
-Cj4+ICsJc3RydWN0IHJlc291cmNlICppcnE7Cj4+ICsJc3RydWN0IGNsayAqaGNsaywgKnJjbGs7
-Cj4+ICsJaW50IHJldDsKPj4gKwo+PiArCWhjbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwg
-ImlmYWNlX2NsayIpOwo+PiArCWlmIChJU19FUlIoaGNsaykpCj4+ICsJCXJldHVybiBQVFJfRVJS
-KGhjbGspOwo+PiArCj4+ICsJcmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiY29yZV9j
-bGsiKTsKPj4gKwlpZiAoSVNfRVJSKHJjbGspKSB7Cj4+ICsJCS8qIHVubGlrZWx5IHRoYXQgdGhp
-cyBpcyBwcm9iZS1kZWZlciAqLwo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJyY2xrIGdldCBm
-YWlsZWQ6JWxkXG4iLCBQVFJfRVJSKHJjbGspKTsKPj4gKwkJcmV0dXJuIFBUUl9FUlIocmNsayk7
-Cj4+ICsJfQo+PiArCj4+ICsJcmV0ID0gY2xrX3NldF9yYXRlKHJjbGssIFNMSU1fUk9PVF9GUkVR
-KTsKPj4gKwlpZiAocmV0KSB7Cj4+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgInJlZi1jbG9jayBz
-ZXQtcmF0ZSBmYWlsZWQ6JWRcbiIsIHJldCk7Cj4+ICsJCXJldHVybiByZXQ7Cj4+ICsJfQo+PiAr
-Cj4+ICsJc2xpbV9tZW0gPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2VfYnluYW1lKHBkZXYsIElPUkVT
-T1VSQ0VfTUVNLCAiY3RybCIpOwo+PiArCWlmICghc2xpbV9tZW0pIHsKPj4gKwkJZGV2X2Vycigm
-cGRldi0+ZGV2LCAibm8gc2xpbWJ1cyBwaHlzaWNhbCBtZW1vcnkgcmVzb3VyY2VcbiIpOwo+PiAr
-CQlyZXR1cm4gLUVOT0RFVjsKPj4gKwl9Cj4+ICsKPj4gKwlpcnEgPSBwbGF0Zm9ybV9nZXRfcmVz
-b3VyY2UocGRldiwgSU9SRVNPVVJDRV9JUlEsIDApOwo+PiArCWlmICghaXJxKSB7Cj4+ICsJCWRl
-dl9lcnIoJnBkZXYtPmRldiwgIm5vIHNsaW1idXMgSVJRIHJlc291cmNlXG4iKTsKPj4gKwkJcmV0
-dXJuIC1FTk9ERVY7Cj4+ICsJfQo+PiArCj4+ICsJZGV2ID0gZGV2bV9remFsbG9jKCZwZGV2LT5k
-ZXYsIHNpemVvZigqZGV2KSwgR0ZQX0tFUk5FTCk7Cj4+ICsJaWYgKCFkZXYpCj4+ICsJCXJldHVy
-biAtRU5PTUVNOwo+PiArCj4+ICsJZGV2LT5oY2xrID0gaGNsazsKPj4gKwlkZXYtPnJjbGsgPSBy
-Y2xrOwo+PiArCWN0cmwgPSAmZGV2LT5jdHJsOwo+PiArCWRldi0+ZGV2ID0gJnBkZXYtPmRldjsK
-Pj4gKwlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBkZXYpOwo+PiArCXNsaW1fc2V0X2N0cmxk
-YXRhKCZkZXYtPmN0cmwsIGRldik7Cj4+ICsJZGV2LT5iYXNlID0gZGV2bV9pb3JlbWFwKGRldi0+
-ZGV2LCBzbGltX21lbS0+c3RhcnQsCj4+ICsJCQkJIHJlc291cmNlX3NpemUoc2xpbV9tZW0pKTsK
-Pj4gKwlpZiAoIWRldi0+YmFzZSkgewo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJJT3JlbWFw
-IGZhaWxlZFxuIik7Cj4+ICsJCXJldHVybiAtRU5PTUVNOwo+PiArCX0KPj4gKwo+PiArCWRldi0+
-Y3RybC5zZXRfbGFkZHIgPSBtc21fc2V0X2xhZGRyOwo+PiArCWRldi0+Y3RybC54ZmVyX21zZyA9
-IG1zbV94ZmVyX21zZzsKPj4gKwlkZXYtPmN0cmwudHgubiA9IE1TTV9UWF9NU0dTOwo+PiArCWRl
-di0+Y3RybC5yeC5uID0gTVNNX1JYX01TR1M7Cj4+ICsJZGV2LT5jdHJsLnR4LnNsX3N6ID0gU0xJ
-TV9NU0dRX0JVRl9MRU47Cj4+ICsJZGV2LT5jdHJsLnJ4LnNsX3N6ID0gU0xJTV9NU0dRX0JVRl9M
-RU47Cj4+ICsKPj4gKwlkZXYtPmlycSA9IGlycS0+c3RhcnQ7Cj4+ICsKPj4gKwlJTklUX1dPUkso
-JmRldi0+d2QsIG1zbV9zbGltX3J4d3EpOwo+PiArCWRldi0+cnh3cSA9IGNyZWF0ZV9zaW5nbGV0
-aHJlYWRfd29ya3F1ZXVlKCJtc21fc2xpbV9yeCIpOwo+PiArCWlmICghZGV2LT5yeHdxKSB7Cj4+
-ICsJCWRldl9lcnIoZGV2LT5kZXYsICJGYWlsZWQgdG8gc3RhcnQgUnggV1FcbiIpOwo+PiArCQly
-ZXR1cm4gLUVOT01FTTsKPj4gKwl9Cj4+ICsKPj4gKwlkZXYtPmZyYW1lci5yb290ZnJlcSA9IFNM
-SU1fUk9PVF9GUkVRID4+IDM7Cj4+ICsJZGV2LT5mcmFtZXIuc3VwZXJmcmVxID0KPj4gKwkJZGV2
-LT5mcmFtZXIucm9vdGZyZXEgLyBTTElNX0NMX1BFUl9TVVBFUkZSQU1FX0RJVjg7Cj4+ICsJZGV2
-LT5jdHJsLmFfZnJhbWVyID0gJmRldi0+ZnJhbWVyOwo+PiArCWRldi0+Y3RybC5jbGtnZWFyID0g
-U0xJTV9NQVhfQ0xLX0dFQVI7Cj4+ICsJZGV2LT5jdHJsLmRldi5wYXJlbnQgPSAmcGRldi0+ZGV2
-Owo+PiArCWRldi0+Y3RybC5kZXYub2Zfbm9kZSA9IHBkZXYtPmRldi5vZl9ub2RlOwo+PiArCj4+
-ICsJbXNtX3NsaW1fcHJnX3NsZXcocGRldiwgZGV2KTsKPj4gKwo+PiArCXJldCA9IGRldm1fcmVx
-dWVzdF9pcnEoJnBkZXYtPmRldiwgZGV2LT5pcnEsIG1zbV9zbGltX2ludGVycnVwdCwKPj4gKwkJ
-CQlJUlFGX1RSSUdHRVJfSElHSCwgIm1zbV9zbGltX2lycSIsIGRldik7Cj4+ICsJaWYgKHJldCkg
-ewo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJyZXF1ZXN0IElSUSBmYWlsZWRcbiIpOwo+PiAr
-CQlnb3RvIGVycl9yZXF1ZXN0X2lycV9mYWlsZWQ7Cj4+ICsJfQo+PiArCj4+ICsJcmV0ID0gY2xr
-X3ByZXBhcmVfZW5hYmxlKGhjbGspOwo+PiArCWlmIChyZXQpCj4+ICsJCWdvdG8gZXJyX2hjbGtf
-ZW5hYmxlX2ZhaWxlZDsKPj4gKwo+PiArCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShyY2xrKTsK
-Pj4gKwlpZiAocmV0KQo+PiArCQlnb3RvIGVycl9yY2xrX2VuYWJsZV9mYWlsZWQ7Cj4+ICsKPj4g
-Kwo+PiArCWN0cmwtPnR4LmJhc2UgPSBkbWFfYWxsb2NfY29oZXJlbnQoJnBkZXYtPmRldiwKPj4g
-KwkJCQkJICAgKGN0cmwtPnR4LnNsX3N6ICogY3RybC0+dHgubiksCj4+ICsJCQkJCSAgICZjdHJs
-LT50eC5waHksIEdGUF9LRVJORUwpOwo+IAo+IFVzZSBkbWFtX2FsbG9jX2NvaGVyZW50Pwo+IApZ
-ZXAsIG1ha2VzIHNlbnNlLi4gV2lsbCB1c2UgaXQgYXMgc3VnZ2VzdGVkLgoKPj4gKwlpZiAoIWN0
-cmwtPnR4LmJhc2UpIHsKPj4gKwkJcmV0ID0gLUVOT01FTTsKPj4gKwkJZ290byB0eF9hbGxvY19m
-YWlsZWQ7Cj4+ICsJfQo+PiArCj4+ICsJY3RybC0+cnguYmFzZSA9IGRtYV9hbGxvY19jb2hlcmVu
-dCgmcGRldi0+ZGV2LAo+PiArCQkJCQkgICAoY3RybC0+cnguc2xfc3ogKiBjdHJsLT5yeC5uKSwK
-Pj4gKwkJCQkJICAgJmN0cmwtPnJ4LnBoeSwgR0ZQX0tFUk5FTCk7Cj4gCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Thanks for the review comments
+
+
+
+On 07/10/17 09:06, Jonathan Neuschäfer wrote:
+> Hi, some trivial comments below.
+> 
+> On Fri, Oct 06, 2017 at 05:51:33PM +0200, srinivas.kandagatla@linaro.org wrote:
+>> From: Sagar Dharia <sdharia@codeaurora.org>
+>>
+>> Per slimbus specification, a reconfiguration sequence known as
+>> 'clock pause' needs to be broadcast over the bus while entering low-
+>> power mode. Clock-pause is initiated by the controller driver.
+>> To exit clock-pause, controller typically wakes up the framer device.
+>> Since wakeup precedure is controller-specific, framework calls it via
+>> controller's function pointer to invoke it.
+>>
+>> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+> [...]
+>> @@ -429,6 +444,14 @@ void slim_return_tx(struct slim_controller *ctrl, int err)
+>>   		cur.cb(cur.ctx, err);
+>>   
+>>   	up(&ctrl->tx_sem);
+>> +	if (!cur.clk_pause && (!cur.need_tid || err)) {
+>> +		/**
+> 
+> This isn't really a kerneldoc comment.
+Will fix all such instances in next version.
+> 
+>> +		 * remove runtime-pm vote if this was TX only, or
+>> +		 * if there was error during this transaction
+>> +		 */
+>> +		pm_runtime_mark_last_busy(ctrl->dev.parent);
+>> +		pm_runtime_put_autosuspend(ctrl->dev.parent);
+>> +	}
+>>   }
+>>   EXPORT_SYMBOL_GPL(slim_return_tx);
+>>   
+> [...]
+>> +/**
+>> + * slim_ctrl_clk_pause: Called by slimbus controller to enter/exit 'clock pause'
+>> + * Slimbus specification needs this sequence to turn-off clocks for the bus.
+>> + * The sequence involves sending 3 broadcast messages (reconfiguration
+>> + * sequence) to inform all devices on the bus.
+>> + * To exit clock-pause, controller typically wakes up active framer device.
+>> + * @ctrl: controller requesting bus to be paused or woken up
+>> + * @wakeup: Wakeup this controller from clock pause.
+>> + * @restart: Restart time value per spec used for clock pause. This value
+>> + *	isn't used when controller is to be woken up.
+>> + * This API executes clock pause reconfiguration sequence if wakeup is false.
+>> + * If wakeup is true, controller's wakeup is called.
+>> + * For entering clock-pause, -EBUSY is returned if a message txn in pending.
+>> + */
+>> +int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 restart)
+>> +{
+>> +	int i, ret = 0;
+>> +	unsigned long flags;
+>> +	struct slim_sched *sched = &ctrl->sched;
+>> +	struct slim_val_inf msg = {0, 0, NULL, NULL, NULL, NULL};
+>> +
+>> +	DEFINE_SLIM_BCAST_TXN(txn, SLIM_MSG_MC_BEGIN_RECONFIGURATION,
+>> +				3, SLIM_LA_MANAGER, &msg);
+>> +
+>> +	if (wakeup == false && restart > SLIM_CLK_UNSPECIFIED)
+>> +		return -EINVAL;
+>> +
+>> +	mutex_lock(&sched->m_reconf);
+>> +	if (wakeup) {
+>> +		if (sched->clk_state == SLIM_CLK_ACTIVE) {
+>> +			mutex_unlock(&sched->m_reconf);
+>> +			return 0;
+>> +		}
+>> +
+>> +		/**
+> 
+> ditto
+> 
+>> +		 * Fine-tune calculation based on clock gear,
+>> +		 * message-bandwidth after bandwidth management
+>> +		 */
+>> +		ret = wait_for_completion_timeout(&sched->pause_comp,
+>> +				msecs_to_jiffies(100));
+>> +		if (!ret) {
+>> +			mutex_unlock(&sched->m_reconf);
+>> +			pr_err("Previous clock pause did not finish");
+>> +			return -ETIMEDOUT;
+>> +		}
+>> +		ret = 0;
+>> +
+>> +		/**
+> 
+> ditto
+> 
+>> +		 * Slimbus framework will call controller wakeup
+>> +		 * Controller should make sure that it sets active framer
+>> +		 * out of clock pause
+>> +		 */
+>> +		if (sched->clk_state == SLIM_CLK_PAUSED && ctrl->wakeup)
+>> +			ret = ctrl->wakeup(ctrl);
+>> +		if (!ret)
+>> +			sched->clk_state = SLIM_CLK_ACTIVE;
+>> +		mutex_unlock(&sched->m_reconf);
+>> +
+>> +		return ret;
+>> +	}
+> [...]
+> 
+> 
+> Thanks,
+> Jonathan Neuschäfer
+> 
