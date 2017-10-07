@@ -1,162 +1,159 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [Patch v6 2/7] slimbus: Add messaging APIs to slimbus framework
-Date: Sat, 7 Oct 2017 11:24:33 +0100
-Message-ID: <42030379-6dba-115b-6150-a614e72cccfc@linaro.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [Patch v6 3/7] slimbus: qcom: Add Qualcomm Slimbus
+ controller driver
+Date: Sat, 7 Oct 2017 11:24:40 +0100
+Message-ID: <91b69203-65a7-175f-53bd-aeb6ee787233@linaro.org>
 References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-3-srinivas.kandagatla@linaro.org>
- <20171007064238.odg7ju6pvqudzf6p@latitude>
+ <20171006155136.4682-4-srinivas.kandagatla@linaro.org>
+ <20171007074539.mdvl5nw66it67l3g@latitude>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171007064238.odg7ju6pvqudzf6p@latitude>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f46.google.com (mail-wm0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03FB0266EEB
+ for <alsa-devel@alsa-project.org>; Sat,  7 Oct 2017 12:24:44 +0200 (CEST)
+Received: by mail-wm0-f46.google.com with SMTP id t69so12030391wmt.2
+ for <alsa-devel@alsa-project.org>; Sat, 07 Oct 2017 03:24:44 -0700 (PDT)
+In-Reply-To: <20171007074539.mdvl5nw66it67l3g@latitude>
 Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer-hi6Y0CQ0nG0@public.gmane.org>
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, gong.chen-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kheitke-hxvC4TZJLZFWk0Htik3J/w@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, gong.chen@linux.intel.com, arnd@arndb.de, kheitke@audience.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, daniel@ffwll.ch, jkosina@suse.cz, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the comments.
-
-On 07/10/17 07:42, Jonathan Neuschäfer wrote:
-> Hi,
-> 
-> On Fri, Oct 06, 2017 at 05:51:31PM +0200, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
->> From: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->>
->> Slimbus devices use value-element, and information elements to
->> control device parameters (e.g. value element is used to represent
->> gain for codec, information element is used to represent interrupt
->> status for codec when codec interrupt fires).
->> Messaging APIs are used to set/get these value and information
->> elements. Slimbus specification uses 8-bit "transaction IDs" for
->> messages where a read-value is anticipated. Framework uses a table
->> of pointers to store those TIDs and responds back to the caller in
->> O(1).
->> Caller can opt to do synchronous, or asynchronous reads/writes. For
->> asynchronous operations, the callback will be called from atomic
->> context.
->> TX and RX circular rings are used to allow queuing of multiple
->> transfers per controller. Controller can choose size of these rings
->> based of controller HW implementation. The buffers are coerently
-> 
-> s/based of/based on/
-> s/coerently/coherently/
-Yep.. will fix this in next version.
-> 
->> mapped so that controller can utilize DMA operations for the
->> transactions without remapping every transaction buffer.
->> Statically allocated rings help to improve performance by avoiding
->> overhead of dynamically allocating transactions on need basis.
->>
->> Signed-off-by: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->> Tested-by: Naveen Kaje <nkaje-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
->> ---
-> [...]
->> +int slim_xfer_msg(struct slim_controller *ctrl,
->> +			struct slim_device *sbdev, struct slim_val_inf *msg,
->> +			u8 mc)
->> +{
->> +	DEFINE_SLIM_LDEST_TXN(txn_stack, mc, 6, sbdev->laddr, msg);
->> +	struct slim_msg_txn *txn = &txn_stack;
->> +	int ret;
->> +	u16 sl, cur;
->> +
->> +	ret = slim_val_inf_sanity(ctrl, msg, mc);
->> +	if (ret)
->> +		return ret;
->> +
->> +	sl = slim_slicesize(msg->num_bytes);
->> +
->> +	dev_dbg(&ctrl->dev, "SB xfer msg:os:%x, len:%d, MC:%x, sl:%x\n",
->> +		msg->start_offset, msg->num_bytes, mc, sl);
->> +
->> +	cur = slim_slicecodefromsize(sl);
->> +	txn->ec = ((sl | (1 << 3)) | ((msg->start_offset & 0xFFF) << 4));
-> 
-> Shouldn't this be (cur | (1 << 3)?
-cur seems to be redundant TBH, the only difference between cur and sl is 
-that the slim_slicesize() can give slice size to program for any lengths 
-between 1-16 bytes. However the slim_slicecodefromsize() can only 
-handle 1,2,3,4, 6,8,12,16 byte sizes.
-
-So we can delete slim_slicecodefromsize() call and function together.
-looks like it was a leftover from downstream.
-
-> (Also, what does cur mean? Cursor? Current?)
-No Idea!! :-) it is supposed to return slice size as per number of bytes.
-
-> 
->> +
->> +	switch (mc) {
->> +	case SLIM_MSG_MC_REQUEST_CHANGE_VALUE:
->> +	case SLIM_MSG_MC_CHANGE_VALUE:
->> +	case SLIM_MSG_MC_REQUEST_CLEAR_INFORMATION:
->> +	case SLIM_MSG_MC_CLEAR_INFORMATION:
->> +		txn->rl += msg->num_bytes;
->> +	default:
->> +		break;
->> +	}
->> +
->> +	if (slim_tid_txn(txn->mt, txn->mc))
->> +		txn->rl++;
->> +
->> +	return slim_processtxn(ctrl, txn);
->> +}
->> +EXPORT_SYMBOL_GPL(slim_xfer_msg);
-> [...]
->> +/*
->> + * slim_request_val_element: change and request a given value element
-
-name should be fixed here..
->> + * @sb: client handle requesting elemental message reads, writes.
->> + * @msg: Input structure for start-offset, number of bytes to write.
->> + * context: can sleep
->> + * Returns:
->> + * -EINVAL: Invalid parameters
->> + * -ETIMEDOUT: If transmission of this message timed out (e.g. due to bus lines
->> + *	not being clocked or driven by controller)
->> + * -ENOTCONN: If the transmitted message was not ACKed by destination device.
-> 
-> Does rbuf contain the old value after this function finishes?
-> 
-Yep, device should send a reply value with the old value with matching tid.
-
->> + */
->> +int slim_request_change_val_element(struct slim_device *sb,
->> +					struct slim_val_inf *msg)
->> +{
->> +	struct slim_controller *ctrl = sb->ctrl;
->> +
->> +	if (!ctrl)
->> +		return -EINVAL;
->> +
->> +	return slim_xfer_msg(ctrl, sb, msg, SLIM_MSG_MC_REQUEST_CHANGE_VALUE);
->> +}
->> +EXPORT_SYMBOL_GPL(slim_request_change_val_element);
-> [...]
->> +/**
->> + * struct slim_pending: context of pending transfers
->> + * @cb: callback for this transfer
->> + * @ctx: contex for the callback function
-> 
-> s/contex/context/
-> 
-Will fix all these instances.
->> + * @need_tid: True if this transfer need Transaction ID
->> + */
->> +struct slim_pending {
->> +	void (*cb)(void *ctx, int err);
->> +	void *ctx;
->> +	bool need_tid;
->> +};
-> 
-> 
-> Thanks,
-> Jonathan Neuschäfer
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+VGhhbmtzIGZvciB0aGUgcmV2aWV3IGNvbW1lbnRzCgpPbiAwNy8xMC8xNyAwODo0NSwgSm9uYXRo
+YW4gTmV1c2Now6RmZXIgd3JvdGU6Cj4gSGksCj4gCj4gT24gRnJpLCBPY3QgMDYsIDIwMTcgYXQg
+MDU6NTE6MzJQTSArMDIwMCwgc3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnIHdyb3RlOgo+
+PiBGcm9tOiBTYWdhciBEaGFyaWEgPHNkaGFyaWFAY29kZWF1cm9yYS5vcmc+Cj4+Cj4+IFRoaXMg
+Y29udHJvbGxlciBkcml2ZXIgcHJvZ3JhbXMgbWFuYWdlciwgaW50ZXJmYWNlLCBhbmQgZnJhbWVy
+Cj4+IGRldmljZXMgZm9yIFF1YWxjb21tJ3Mgc2xpbWJ1cyBIVyBibG9jay4KPj4gTWFuYWdlciBj
+b21wb25lbnQgY3VycmVudGx5IGltcGxlbWVudHMgbG9naWNhbCBhZGRyZXNzIHNldHRpbmcsCj4+
+IGFuZCBtZXNzYWdpbmcgaW50ZXJmYWNlLgo+PiBJbnRlcmZhY2UgZGV2aWNlIHJlcG9ydHMgYnVz
+IHN5bmNocm9uaXphdGlvbiBpbmZvcm1hdGlvbiwgYW5kIGZyYW1lcgo+PiBkZXZpY2UgY2xvY2tz
+IHRoZSBidXMgZnJvbSB0aGUgdGltZSBpdCdzIHdva2VuIHVwLCB1bnRpbCBjbG9jay1wYXVzZQo+
+PiBpcyBleGVjdXRlZCBieSB0aGUgbWFuYWdlciBkZXZpY2UuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
+IFNhZ2FyIERoYXJpYSA8c2RoYXJpYUBjb2RlYXVyb3JhLm9yZz4KPj4gU2lnbmVkLW9mZi1ieTog
+U3Jpbml2YXMgS2FuZGFnYXRsYSA8c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPgo+PiAt
+LS0KPj4gICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zbGltYnVzL3NsaW0tcWNvbS1jdHJsLnR4
+dCB8ICA0MyArKwo+PiAgIGRyaXZlcnMvc2xpbWJ1cy9LY29uZmlnICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHwgICA5ICsKPj4gICBkcml2ZXJzL3NsaW1idXMvTWFrZWZpbGUgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgMyArCj4+ICAgZHJpdmVycy9zbGltYnVzL3NsaW0tcWNvbS1j
+dHJsLmMgICAgICAgICAgICAgICAgICAgfCA1OTQgKysrKysrKysrKysrKysrKysrKysrCj4+ICAg
+ZHJpdmVycy9zbGltYnVzL3NsaW0tcWNvbS5oICAgICAgICAgICAgICAgICAgICAgICAgfCAgNjMg
+KysrCj4+ICAgNSBmaWxlcyBjaGFuZ2VkLCA3MTIgaW5zZXJ0aW9ucygrKQo+PiAgIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2xpbWJ1cy9zbGlt
+LXFjb20tY3RybC50eHQKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zbGltYnVzL3Ns
+aW0tcWNvbS1jdHJsLmMKPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zbGltYnVzL3Ns
+aW0tcWNvbS5oCj4+Cj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc2xpbWJ1cy9zbGltLXFjb20tY3RybC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3Mvc2xpbWJ1cy9zbGltLXFjb20tY3RybC50eHQKPj4gbmV3IGZpbGUgbW9kZSAx
+MDA2NDQKPj4gaW5kZXggMDAwMDAwMC4uMDgxMTEwZAo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zbGltYnVzL3NsaW0tcWNvbS1jdHJs
+LnR4dAo+PiBAQCAtMCwwICsxLDQzIEBACj4+ICtRdWFsY29tbSBTTElNQlVTIGNvbnRyb2xsZXIK
+Pj4gK1RoaXMgY29udHJvbGxlciBpcyB1c2VkIGlmIGFwcGxpY2F0aW9ucyBwcm9jZXNzb3IgZHJp
+dmVyIGNvbnRyb2xzIHNsaW1idXMKPj4gK21hc3RlciBjb21wb25lbnQuCj4+ICsKPj4gK1JlcXVp
+cmVkIHByb3BlcnRpZXM6Cj4+ICsKPj4gKyAtICNhZGRyZXNzLWNlbGxzIC0gcmVmZXIgdG8gRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NsaW1idXMvYnVzLnR4dAo+PiArIC0gI3Np
+emUtY2VsbHMJLSByZWZlciB0byBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2xp
+bWJ1cy9idXMudHh0Cj4+ICsKPj4gKyAtIHJlZyA6IE9mZnNldCBhbmQgbGVuZ3RoIG9mIHRoZSBy
+ZWdpc3RlciByZWdpb24ocykgZm9yIHRoZSBkZXZpY2UKPj4gKyAtIHJlZy1uYW1lcyA6IFJlZ2lz
+dGVyIHJlZ2lvbiBuYW1lKHMpIHJlZmVyZW5jZWQgaW4gcmVnIGFib3ZlCj4+ICsJIFJlcXVpcmVk
+IHJlZ2lzdGVyIHJlc291cmNlIGVudHJpZXMgYXJlOgo+PiArCSAiY3RybCI6IFBoeXNpY2FsIGFk
+ZGVyZXNzIG9mIGNvbnRyb2xsZXIgcmVnaXN0ZXIgYmxvY2tzCj4gCj4gcy9hZGRlcmVzcy9hZGRy
+ZXNzLwpXaWxsIGZpeCB0aGlzIGluIG5leHQgdmVyc2lvbi4KCj4gCj4+ICt9Cj4gWy4uLl0KPj4g
+K3N0YXRpYyB2b2lkIG1zbV9zbGltX3ByZ19zbGV3KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBk
+ZXYsCj4+ICsJCQkJc3RydWN0IG1zbV9zbGltX2N0cmwgKmRldikKPj4gK3sKPj4gKwl2b2lkIF9f
+aW9tZW0gKnNsZXdfcmVnOwo+PiArCj4+ICsJLyogU0xFVyBSQVRFIHJlZ2lzdGVyIGZvciB0aGlz
+IHNsaW1idXMgKi8KPj4gKwlkZXYtPnNsZXdfbWVtID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlX2J5
+bmFtZShwZGV2LCBJT1JFU09VUkNFX01FTSwKPj4gKwkJCQkJCSAgICAgInNsZXciKTsKPj4gKwlp
+ZiAoIWRldi0+c2xld19tZW0pIHsKPj4gKwkJZGV2X3dhcm4oJnBkZXYtPmRldiwgIm5vIHNsaW1i
+dXMgc2xldyByZXNvdXJjZVxuIik7Cj4+ICsJCXJldHVybjsKPj4gKwl9Cj4+ICsKPj4gKwlzbGV3
+X3JlZyA9IGRldm1faW9yZW1hcCgmcGRldi0+ZGV2LCBkZXYtPnNsZXdfbWVtLT5zdGFydCwKPj4g
+KwkJCQlyZXNvdXJjZV9zaXplKGRldi0+c2xld19tZW0pKTsKPiAKPiBIb3cgb2Z0ZW4gd2lsbCB0
+aGUgZHJpdmVyIHByb2dyYW0gYSBzbGV3IHJhdGU/Cj4gClRoaXMgc2hvdWxkIGJlIHByb2dyYW1t
+ZWQgb25seSBvbmNlIGFmdGVyIHBvd2VyIG9uLgoKPiBJZiBpdCdzIG9mdGVuLCB5b3UnbGwgaGF2
+ZSBhICJzb2Z0IiBtZW1vcnkgbGVhayBvdmVyIHRoZSBsaWZlIHRpbWUgb2YgYQo+IFNMSU0gY29u
+dHJvbGxlciBpbnN0YW5jZSwgYmVjYXVzZSB0aGUgbWFwcGluZ3MgZm9yIHNsZXdfcmVnIHdpbGwK
+PiBhY2N1bXVsYXRlIGluIHRoZSBkcml2ZXIgaW5zdGFuY2UncyBkZXZtIGFyZWEgdW50aWwgdGhl
+eSBhcmUgYWxsIGZyZWVkCj4gaW4gdGhlIGVuZCAoSWYgSSdtIHJlYWRpbmcgdGhlIGNvZGUgY29y
+cmVjdGx5KS4gSSB0aGluayB5b3UnbGwgZWl0aGVyCj4gaGF2ZSB0byB1bm1hcCBzbGV3X3JlZyB3
+aGVuIHRoaXMgZnVuY3Rpb24gcmV0dXJucyAoYW5kIG5vdCB1c2UgZGV2bSksIG9yCj4gY2FjaGUg
+c2xld19yZWcgc28gdGhhdCBzdWJzZXF1ZW50IGNhbGxzIHRvIG1zbV9zbGltX3ByZ19zbGV3IHdv
+bid0Cj4gY3JlYXRlIG1vcmUgbWFwcGluZ3MuClllcCAuLiBJIHJldmlzaXQgdGhpcyBwYXJ0IG9u
+Y2UgYWdhaW4gYmVmb3JlIHNlbmRpbmcgbmV4dCB2ZXJzaW9uIHRvIHNlZSAKaWYgd2UgY2FuIGRv
+IGFueSBiZXR0ZXIhCj4gCj4+ICsJaWYgKCFzbGV3X3JlZykgewo+PiArCQlkZXZfZXJyKGRldi0+
+ZGV2LCAic2xldyByZWdpc3RlciBtYXBwaW5nIGZhaWxlZCIpOwo+PiArCQlyZWxlYXNlX21lbV9y
+ZWdpb24oZGV2LT5zbGV3X21lbS0+c3RhcnQsCj4+ICsJCQkJCXJlc291cmNlX3NpemUoZGV2LT5z
+bGV3X21lbSkpOwo+PiArCQlkZXYtPnNsZXdfbWVtID0gTlVMTDsKPj4gKwkJcmV0dXJuOwo+PiAr
+CX0KPj4gKwl3cml0ZWxfcmVsYXhlZCgxLCBzbGV3X3JlZyk7Cj4+ICsJLyogTWFrZSBzdXJlIHNs
+aW1idXMtc2xldyByYXRlIGVuYWJsaW5nIGdvZXMgdGhyb3VnaCAqLwo+PiArCXdtYigpOwo+PiAr
+fQo+PiArCj4+ICtzdGF0aWMgaW50IG1zbV9zbGltX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
+Y2UgKnBkZXYpCj4+ICt7Cj4+ICsJc3RydWN0IG1zbV9zbGltX2N0cmwgKmRldjsKPj4gKwlzdHJ1
+Y3Qgc2xpbV9jb250cm9sbGVyICpjdHJsOwo+PiArCXN0cnVjdCByZXNvdXJjZSAqc2xpbV9tZW07
+Cj4+ICsJc3RydWN0IHJlc291cmNlICppcnE7Cj4+ICsJc3RydWN0IGNsayAqaGNsaywgKnJjbGs7
+Cj4+ICsJaW50IHJldDsKPj4gKwo+PiArCWhjbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwg
+ImlmYWNlX2NsayIpOwo+PiArCWlmIChJU19FUlIoaGNsaykpCj4+ICsJCXJldHVybiBQVFJfRVJS
+KGhjbGspOwo+PiArCj4+ICsJcmNsayA9IGRldm1fY2xrX2dldCgmcGRldi0+ZGV2LCAiY29yZV9j
+bGsiKTsKPj4gKwlpZiAoSVNfRVJSKHJjbGspKSB7Cj4+ICsJCS8qIHVubGlrZWx5IHRoYXQgdGhp
+cyBpcyBwcm9iZS1kZWZlciAqLwo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJyY2xrIGdldCBm
+YWlsZWQ6JWxkXG4iLCBQVFJfRVJSKHJjbGspKTsKPj4gKwkJcmV0dXJuIFBUUl9FUlIocmNsayk7
+Cj4+ICsJfQo+PiArCj4+ICsJcmV0ID0gY2xrX3NldF9yYXRlKHJjbGssIFNMSU1fUk9PVF9GUkVR
+KTsKPj4gKwlpZiAocmV0KSB7Cj4+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgInJlZi1jbG9jayBz
+ZXQtcmF0ZSBmYWlsZWQ6JWRcbiIsIHJldCk7Cj4+ICsJCXJldHVybiByZXQ7Cj4+ICsJfQo+PiAr
+Cj4+ICsJc2xpbV9tZW0gPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2VfYnluYW1lKHBkZXYsIElPUkVT
+T1VSQ0VfTUVNLCAiY3RybCIpOwo+PiArCWlmICghc2xpbV9tZW0pIHsKPj4gKwkJZGV2X2Vycigm
+cGRldi0+ZGV2LCAibm8gc2xpbWJ1cyBwaHlzaWNhbCBtZW1vcnkgcmVzb3VyY2VcbiIpOwo+PiAr
+CQlyZXR1cm4gLUVOT0RFVjsKPj4gKwl9Cj4+ICsKPj4gKwlpcnEgPSBwbGF0Zm9ybV9nZXRfcmVz
+b3VyY2UocGRldiwgSU9SRVNPVVJDRV9JUlEsIDApOwo+PiArCWlmICghaXJxKSB7Cj4+ICsJCWRl
+dl9lcnIoJnBkZXYtPmRldiwgIm5vIHNsaW1idXMgSVJRIHJlc291cmNlXG4iKTsKPj4gKwkJcmV0
+dXJuIC1FTk9ERVY7Cj4+ICsJfQo+PiArCj4+ICsJZGV2ID0gZGV2bV9remFsbG9jKCZwZGV2LT5k
+ZXYsIHNpemVvZigqZGV2KSwgR0ZQX0tFUk5FTCk7Cj4+ICsJaWYgKCFkZXYpCj4+ICsJCXJldHVy
+biAtRU5PTUVNOwo+PiArCj4+ICsJZGV2LT5oY2xrID0gaGNsazsKPj4gKwlkZXYtPnJjbGsgPSBy
+Y2xrOwo+PiArCWN0cmwgPSAmZGV2LT5jdHJsOwo+PiArCWRldi0+ZGV2ID0gJnBkZXYtPmRldjsK
+Pj4gKwlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBkZXYpOwo+PiArCXNsaW1fc2V0X2N0cmxk
+YXRhKCZkZXYtPmN0cmwsIGRldik7Cj4+ICsJZGV2LT5iYXNlID0gZGV2bV9pb3JlbWFwKGRldi0+
+ZGV2LCBzbGltX21lbS0+c3RhcnQsCj4+ICsJCQkJIHJlc291cmNlX3NpemUoc2xpbV9tZW0pKTsK
+Pj4gKwlpZiAoIWRldi0+YmFzZSkgewo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJJT3JlbWFw
+IGZhaWxlZFxuIik7Cj4+ICsJCXJldHVybiAtRU5PTUVNOwo+PiArCX0KPj4gKwo+PiArCWRldi0+
+Y3RybC5zZXRfbGFkZHIgPSBtc21fc2V0X2xhZGRyOwo+PiArCWRldi0+Y3RybC54ZmVyX21zZyA9
+IG1zbV94ZmVyX21zZzsKPj4gKwlkZXYtPmN0cmwudHgubiA9IE1TTV9UWF9NU0dTOwo+PiArCWRl
+di0+Y3RybC5yeC5uID0gTVNNX1JYX01TR1M7Cj4+ICsJZGV2LT5jdHJsLnR4LnNsX3N6ID0gU0xJ
+TV9NU0dRX0JVRl9MRU47Cj4+ICsJZGV2LT5jdHJsLnJ4LnNsX3N6ID0gU0xJTV9NU0dRX0JVRl9M
+RU47Cj4+ICsKPj4gKwlkZXYtPmlycSA9IGlycS0+c3RhcnQ7Cj4+ICsKPj4gKwlJTklUX1dPUkso
+JmRldi0+d2QsIG1zbV9zbGltX3J4d3EpOwo+PiArCWRldi0+cnh3cSA9IGNyZWF0ZV9zaW5nbGV0
+aHJlYWRfd29ya3F1ZXVlKCJtc21fc2xpbV9yeCIpOwo+PiArCWlmICghZGV2LT5yeHdxKSB7Cj4+
+ICsJCWRldl9lcnIoZGV2LT5kZXYsICJGYWlsZWQgdG8gc3RhcnQgUnggV1FcbiIpOwo+PiArCQly
+ZXR1cm4gLUVOT01FTTsKPj4gKwl9Cj4+ICsKPj4gKwlkZXYtPmZyYW1lci5yb290ZnJlcSA9IFNM
+SU1fUk9PVF9GUkVRID4+IDM7Cj4+ICsJZGV2LT5mcmFtZXIuc3VwZXJmcmVxID0KPj4gKwkJZGV2
+LT5mcmFtZXIucm9vdGZyZXEgLyBTTElNX0NMX1BFUl9TVVBFUkZSQU1FX0RJVjg7Cj4+ICsJZGV2
+LT5jdHJsLmFfZnJhbWVyID0gJmRldi0+ZnJhbWVyOwo+PiArCWRldi0+Y3RybC5jbGtnZWFyID0g
+U0xJTV9NQVhfQ0xLX0dFQVI7Cj4+ICsJZGV2LT5jdHJsLmRldi5wYXJlbnQgPSAmcGRldi0+ZGV2
+Owo+PiArCWRldi0+Y3RybC5kZXYub2Zfbm9kZSA9IHBkZXYtPmRldi5vZl9ub2RlOwo+PiArCj4+
+ICsJbXNtX3NsaW1fcHJnX3NsZXcocGRldiwgZGV2KTsKPj4gKwo+PiArCXJldCA9IGRldm1fcmVx
+dWVzdF9pcnEoJnBkZXYtPmRldiwgZGV2LT5pcnEsIG1zbV9zbGltX2ludGVycnVwdCwKPj4gKwkJ
+CQlJUlFGX1RSSUdHRVJfSElHSCwgIm1zbV9zbGltX2lycSIsIGRldik7Cj4+ICsJaWYgKHJldCkg
+ewo+PiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJyZXF1ZXN0IElSUSBmYWlsZWRcbiIpOwo+PiAr
+CQlnb3RvIGVycl9yZXF1ZXN0X2lycV9mYWlsZWQ7Cj4+ICsJfQo+PiArCj4+ICsJcmV0ID0gY2xr
+X3ByZXBhcmVfZW5hYmxlKGhjbGspOwo+PiArCWlmIChyZXQpCj4+ICsJCWdvdG8gZXJyX2hjbGtf
+ZW5hYmxlX2ZhaWxlZDsKPj4gKwo+PiArCXJldCA9IGNsa19wcmVwYXJlX2VuYWJsZShyY2xrKTsK
+Pj4gKwlpZiAocmV0KQo+PiArCQlnb3RvIGVycl9yY2xrX2VuYWJsZV9mYWlsZWQ7Cj4+ICsKPj4g
+Kwo+PiArCWN0cmwtPnR4LmJhc2UgPSBkbWFfYWxsb2NfY29oZXJlbnQoJnBkZXYtPmRldiwKPj4g
+KwkJCQkJICAgKGN0cmwtPnR4LnNsX3N6ICogY3RybC0+dHgubiksCj4+ICsJCQkJCSAgICZjdHJs
+LT50eC5waHksIEdGUF9LRVJORUwpOwo+IAo+IFVzZSBkbWFtX2FsbG9jX2NvaGVyZW50Pwo+IApZ
+ZXAsIG1ha2VzIHNlbnNlLi4gV2lsbCB1c2UgaXQgYXMgc3VnZ2VzdGVkLgoKPj4gKwlpZiAoIWN0
+cmwtPnR4LmJhc2UpIHsKPj4gKwkJcmV0ID0gLUVOT01FTTsKPj4gKwkJZ290byB0eF9hbGxvY19m
+YWlsZWQ7Cj4+ICsJfQo+PiArCj4+ICsJY3RybC0+cnguYmFzZSA9IGRtYV9hbGxvY19jb2hlcmVu
+dCgmcGRldi0+ZGV2LAo+PiArCQkJCQkgICAoY3RybC0+cnguc2xfc3ogKiBjdHJsLT5yeC5uKSwK
+Pj4gKwkJCQkJICAgJmN0cmwtPnJ4LnBoeSwgR0ZQX0tFUk5FTCk7Cj4gCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
