@@ -1,160 +1,123 @@
 From: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Subject: Re: [Patch v6 4/7] slimbus: Add support for 'clock-pause' feature
-Date: Sat, 7 Oct 2017 10:06:25 +0200
-Message-ID: <20171007080625.gotgts2ssgacawpx@latitude>
+Subject: Re: [Patch v6 5/7] slimbus: qcom: Add runtime-pm support using
+ clock-pause feature
+Date: Sat, 7 Oct 2017 10:22:59 +0200
+Message-ID: <20171007082259.kumlkus5mg5eh5cr@latitude>
 References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-5-srinivas.kandagatla@linaro.org>
+ <20171006155136.4682-6-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="gjykqnoluazweuwr"
+        protocol="application/pgp-signature"; boundary="ezdii7jlobx6xej4"
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20171006155136.4682-5-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20171006155136.4682-6-srinivas.kandagatla@linaro.org>
 Sender: linux-arm-msm-owner@vger.kernel.org
 To: srinivas.kandagatla@linaro.org
 Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
 
---gjykqnoluazweuwr
+--ezdii7jlobx6xej4
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi, some trivial comments below.
+Hi, some more trivial comments below.
 
-On Fri, Oct 06, 2017 at 05:51:33PM +0200, srinivas.kandagatla@linaro.org wr=
+On Fri, Oct 06, 2017 at 05:51:34PM +0200, srinivas.kandagatla@linaro.org wr=
 ote:
 > From: Sagar Dharia <sdharia@codeaurora.org>
 >=20
-> Per slimbus specification, a reconfiguration sequence known as
-> 'clock pause' needs to be broadcast over the bus while entering low-
-> power mode. Clock-pause is initiated by the controller driver.
-> To exit clock-pause, controller typically wakes up the framer device.
-> Since wakeup precedure is controller-specific, framework calls it via
-> controller's function pointer to invoke it.
+> Slimbus HW mandates that clock-pause sequence has to be executed
+> before disabling relevant interface and core clocks.
+> Runtime-PM's autosuspend feature is used here to enter/exit low
+> power mode for Qualcomm's Slimbus controller. Autosuspend feature
+> enables driver to avoid changing power-modes too frequently since
+> entering clock-pause is an expensive sequence
 >=20
 > Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
 [...]
-> @@ -429,6 +444,14 @@ void slim_return_tx(struct slim_controller *ctrl, in=
-t err)
->  		cur.cb(cur.ctx, err);
-> =20
->  	up(&ctrl->tx_sem);
-> +	if (!cur.clk_pause && (!cur.need_tid || err)) {
-> +		/**
+> +static int msm_clk_pause_wakeup(struct slim_controller *ctrl)
+> +{
+> +	struct msm_slim_ctrl *dev =3D slim_get_ctrldata(ctrl);
+> +
+> +	clk_prepare_enable(dev->hclk);
+> +	clk_prepare_enable(dev->rclk);
+> +	enable_irq(dev->irq);
+> +
+> +	writel_relaxed(1, dev->base + FRM_WAKEUP);
+> +	/* Make sure framer wakeup write goes through before ISR fires */
+> +	mb();
+> +	/**
 
 This isn't really a kerneldoc comment.
 
-> +		 * remove runtime-pm vote if this was TX only, or
-> +		 * if there was error during this transaction
-> +		 */
-> +		pm_runtime_mark_last_busy(ctrl->dev.parent);
-> +		pm_runtime_put_autosuspend(ctrl->dev.parent);
-> +	}
->  }
->  EXPORT_SYMBOL_GPL(slim_return_tx);
-> =20
+> +	 * HW Workaround: Currently, slave is reporting lost-sync messages
+> +	 * after slimbus comes out of clock pause.
+> +	 * Transaction with slave fail before slave reports that message
+> +	 * Give some time for that report to come
+> +	 * Slimbus wakes up in clock gear 10 at 24.576MHz. With each superframe
+> +	 * being 250 usecs, we wait for 5-10 superframes here to ensure
+> +	 * we get the message
+> +	 */
+> +	usleep_range(1250, 2500);
+> +	return 0;
+> +}
 [...]
-> +/**
-> + * slim_ctrl_clk_pause: Called by slimbus controller to enter/exit 'cloc=
-k pause'
-> + * Slimbus specification needs this sequence to turn-off clocks for the =
-bus.
-> + * The sequence involves sending 3 broadcast messages (reconfiguration
-> + * sequence) to inform all devices on the bus.
-> + * To exit clock-pause, controller typically wakes up active framer devi=
-ce.
-> + * @ctrl: controller requesting bus to be paused or woken up
-> + * @wakeup: Wakeup this controller from clock pause.
-> + * @restart: Restart time value per spec used for clock pause. This value
-> + *	isn't used when controller is to be woken up.
-> + * This API executes clock pause reconfiguration sequence if wakeup is f=
-alse.
-> + * If wakeup is true, controller's wakeup is called.
-> + * For entering clock-pause, -EBUSY is returned if a message txn in pend=
-ing.
-> + */
-> +int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 re=
-start)
+> +#ifdef CONFIG_PM_SLEEP
+> +static int msm_slim_suspend(struct device *dev)
 > +{
-> +	int i, ret =3D 0;
-> +	unsigned long flags;
-> +	struct slim_sched *sched =3D &ctrl->sched;
-> +	struct slim_val_inf msg =3D {0, 0, NULL, NULL, NULL, NULL};
+> +	int ret =3D 0;
 > +
-> +	DEFINE_SLIM_BCAST_TXN(txn, SLIM_MSG_MC_BEGIN_RECONFIGURATION,
-> +				3, SLIM_LA_MANAGER, &msg);
-> +
-> +	if (wakeup =3D=3D false && restart > SLIM_CLK_UNSPECIFIED)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&sched->m_reconf);
-> +	if (wakeup) {
-> +		if (sched->clk_state =3D=3D SLIM_CLK_ACTIVE) {
-> +			mutex_unlock(&sched->m_reconf);
-> +			return 0;
-> +		}
-> +
-> +		/**
-
-ditto
-
-> +		 * Fine-tune calculation based on clock gear,
-> +		 * message-bandwidth after bandwidth management
-> +		 */
-> +		ret =3D wait_for_completion_timeout(&sched->pause_comp,
-> +				msecs_to_jiffies(100));
-> +		if (!ret) {
-> +			mutex_unlock(&sched->m_reconf);
-> +			pr_err("Previous clock pause did not finish");
-> +			return -ETIMEDOUT;
-> +		}
-> +		ret =3D 0;
-> +
-> +		/**
-
-ditto
-
-> +		 * Slimbus framework will call controller wakeup
-> +		 * Controller should make sure that it sets active framer
-> +		 * out of clock pause
-> +		 */
-> +		if (sched->clk_state =3D=3D SLIM_CLK_PAUSED && ctrl->wakeup)
-> +			ret =3D ctrl->wakeup(ctrl);
-> +		if (!ret)
-> +			sched->clk_state =3D SLIM_CLK_ACTIVE;
-> +		mutex_unlock(&sched->m_reconf);
-> +
-> +		return ret;
+> +	if (!pm_runtime_enabled(dev) ||
+> +		(!pm_runtime_suspended(dev))) {
+> +		dev_dbg(dev, "system suspend");
+> +		ret =3D msm_slim_runtime_suspend(dev);
 > +	}
-[...]
+> +	if (ret =3D=3D -EISCONN) {
+> +	/**
+
+ditto.
+Also, it looks misindented.
+
+> +	 * If the clock pause failed due to active channels, there is
+> +	 * a possibility that some audio stream is active during suspend.
+> +	 * (e.g. modem usecase during suspend)
+> +	 * We dont want to return suspend failure in that case so that
+> +	 * display and relevant components can still go to suspend.
+> +	 * If there is some other error, then it should prevent
+> +	 * system level suspend
+> +	 */
+> +		ret =3D 0;
+> +	}
+> +	return ret;
+> +}
 
 
 Thanks,
 Jonathan Neusch=C3=A4fer
 
---gjykqnoluazweuwr
+--ezdii7jlobx6xej4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAABAgAGBQJZ2Ir5AAoJEAgwRJqO81/b2dUQAJsTacXWwUV9IHUmB5UaTYO1
-+pflBXtB6t72cX6M+eGKPlOHaPTEZZNwgZW3hKVU55Cy195xCRiuBiIIemn34OEp
-kMSRFYIq2XsKkq9PevPlqL242hGZ6iAT1Iu0ZndCQakbQt+J/nF9RFCGHsYo3Xe5
-1x7q0oAU1cEIguXS4pq9LibxaKZGjm1BLl8xierqJqVVv8AyMcPWCsFFSw6jE0ho
-8ivPQtF5DC6tlL5wnrere6vJOR/WvMGukDnn7cu9LeGm9IThCFTyVAK9uETw3EY7
-icEvU3L5yN0nS96ElAG1Sv3/M95+Cln48/VIVmYoXPBpqjWhW40uv4AK6sc3djiw
-lchon8j+c7MKt0Kuk/FlLRNFWZqZ17MbVNTfwHf61UMZnzgM7iRP/tFurlPbweRN
-dZko1m3uVYxNlkVWzjvwaqiM2C9Wu2+rGIE/QnCHFsB1rYaGji6VWek02H5XMO0C
-Jr7FxjK8Kyfy/MM0tdfqV2RSQCPri8EVTbwgz57JqAuEZbT2hboJU42zZRCHZ+j3
-QYq2YqAfODuSrwT/GmmnoQmIyUKORcqNyzpJOB85H2lBqYXK3W7by4Q0h/ECvBrY
-e6xUb+NKDpVcu+arwrD06rsgOhi1/GcgMulAHMqBBQGiCyScSkjptH/Qk97/ACr4
-qarrMMVZz2lDq9ZP/5WP
-=Qh9z
+iQIcBAABAgAGBQJZ2I7aAAoJEAgwRJqO81/bglEP/24cg2BZPl93DsIhXUXqoRO7
+Ah5ObC/VnIswHMI8aywhAbovMBq/CR0PGLHlIAEcr23lQevwYdjlxiZ64Dh0PGCP
+/C9cnsfg5VnGAh3lZe60sD+euLwYAJux+bVjouRB+P9Q6Ppin8BKbykjh+mkPhQm
+tgvagfqkdpt3bCz86l6hECGUpbZkU6HJuMcV8B28buZjoszPA0rVfFzfTo/n6Y/I
+yxvUMNfUg/7xc76iQ1R3lecsBQ3gdin4otO1crzvmZGA0A302S8qq6ulXtutFWFH
+NPoqW//pZQVpnSdO1RxBVLqWCbtLNVLBpscUjEfNliFIC65Na43NCgFoPbRj0lfd
+Kl6iLlwJcCefu2I2NBJOX6ZvJgUxSE1D6NTe38CxJoBkg5QamHVcH20NIwrql73j
+WaHZYeKQujrH2u0B0Z/dvWKaV4mOZ4qECyrXhIB4qeefE5traaXDyJfhcTr2Z7M0
+mX1F86pNK8b5ejLASCc8k2uJW8e7fHIkjs9a51a13c5vfuizOlucdVcRzdKK3etH
+AQ7XTYdB/4dmNaOPl2RSNlntL2aukeL7WNviul9H866FD3nvwl2xlsRMyEjeoxUj
+/CuwezwAR5dQGOR4cmsh1gmQuoi2B4olA03a1fmjlTscJhFjoof8mAzyyz9GnwGs
+eJFV24oeOEjm9UPXS4mz
+=OdJY
 -----END PGP SIGNATURE-----
 
---gjykqnoluazweuwr--
+--ezdii7jlobx6xej4--
