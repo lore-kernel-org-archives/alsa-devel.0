@@ -1,38 +1,33 @@
-From: Jia-Ju Bai <baijiaju1990@163.com>
-Subject: [BUG] haswell: A possible sleep-in-atomic bug in
-	hsw_irq_thread
-Date: Sun, 8 Oct 2017 23:06:38 +0800
-Message-ID: <0ba5fa3a-1202-752f-e7f2-5d689b6a9e7c@163.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-13.163.com (m12-13.163.com [220.181.12.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D228266C2E
- for <alsa-devel@alsa-project.org>; Sun,  8 Oct 2017 17:06:45 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: yang.jie@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From: Christos Gkekas <chris.gekas@gmail.com>
+Subject: [PATCH] ASoC: cygnus: Remove unnecessary active_slots check
+Date: Sun,  8 Oct 2017 19:20:30 +0100
+Message-ID: <1507486830-21507-1-git-send-email-chris.gekas@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Christos Gkekas <chris.gekas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to sst-haswell-ipc.c, the driver may sleep under a spinlock,
-and the function call path is:
-hsw_irq_thread (acquire the spinlock)
-   hsw_process_notification
-     hsw_log_message
-       mutex_lock --> may sleep
+Variable active_slots is unsigned so checking whether it is less than
+zero is not necessary.
 
-This bug is found by my static analysis tool and my code review.
+Signed-off-by: Christos Gkekas <chris.gekas@gmail.com>
+---
+ sound/soc/bcm/cygnus-ssp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Thanks,
-Jia-Ju Bai
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index 15c438f..cb46128 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -998,7 +998,7 @@ static int cygnus_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
+ 
+ 	active_slots = hweight32(tx_mask);
+ 
+-	if ((active_slots < 0) || (active_slots > 16))
++	if (active_slots > 16)
+ 		return -EINVAL;
+ 
+ 	/* Slot value must be even */
+-- 
+2.7.4
