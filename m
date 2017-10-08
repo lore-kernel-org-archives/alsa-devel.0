@@ -1,17 +1,16 @@
-From: Nik Nyby <nikolas@gnu.org>
-Subject: [PATCH] sound/soc: fix typos in Kconfig (trivial)
-Date: Sat,  7 Oct 2017 18:26:10 -0400
-Message-ID: <20171007222610.17743-1-nikolas@gnu.org>
+From: Jia-Ju Bai <baijiaju1990@163.com>
+Subject: [BUG] haswell: A possible sleep-in-atomic bug in
+	hsw_irq_thread
+Date: Sun, 8 Oct 2017 23:06:38 +0800
+Message-ID: <0ba5fa3a-1202-752f-e7f2-5d689b6a9e7c@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eggs.gnu.org (eggs.gnu.org [208.118.235.92])
- by alsa0.perex.cz (Postfix) with ESMTP id 67EB92668F0
- for <alsa-devel@alsa-project.org>; Sun,  8 Oct 2017 00:26:31 +0200 (CEST)
-Received: from Debian-exim by eggs.gnu.org with spam-scanned (Exim 4.71)
- (envelope-from <nikolas@gnu.org>) id 1e0xYC-0000eH-2z
- for alsa-devel@alsa-project.org; Sat, 07 Oct 2017 18:26:28 -0400
+Received: from m12-13.163.com (m12-13.163.com [220.181.12.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D228266C2E
+ for <alsa-devel@alsa-project.org>; Sun,  8 Oct 2017 17:06:45 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,31 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, trivial@kernel.org
-Cc: Nik Nyby <nikolas@gnu.org>
+To: yang.jie@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This fixes a few typos in the snd_designware description.
+According to sst-haswell-ipc.c, the driver may sleep under a spinlock,
+and the function call path is:
+hsw_irq_thread (acquire the spinlock)
+   hsw_process_notification
+     hsw_log_message
+       mutex_lock --> may sleep
 
-Signed-off-by: Nik Nyby <nikolas@gnu.org>
----
- sound/soc/dwc/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This bug is found by my static analysis tool and my code review.
 
-diff --git a/sound/soc/dwc/Kconfig b/sound/soc/dwc/Kconfig
-index c6fd95fa5ca6..aa0c6ec4d93c 100644
---- a/sound/soc/dwc/Kconfig
-+++ b/sound/soc/dwc/Kconfig
-@@ -4,8 +4,8 @@ config SND_DESIGNWARE_I2S
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	 Say Y or M if you want to add support for I2S driver for
--	 Synopsys desigwnware I2S device. The device supports upto
--	 maximum of 8 channels each for play and record.
-+	 Synopsys designware I2S device. The device supports up to
-+	 a maximum of 8 channels each for play and record.
- 
- config SND_DESIGNWARE_PCM
- 	bool "PCM PIO extension for I2S driver"
--- 
-2.14.2
+
+Thanks,
+Jia-Ju Bai
