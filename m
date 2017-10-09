@@ -1,33 +1,59 @@
-From: Christos Gkekas <chris.gekas@gmail.com>
-Subject: [PATCH] ASoC: cygnus: Remove unnecessary active_slots check
-Date: Sun,  8 Oct 2017 19:20:30 +0100
-Message-ID: <1507486830-21507-1-git-send-email-chris.gekas@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Jon Mason <jonmason@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Christos Gkekas <chris.gekas@gmail.com>
+From: Jia-Ju Bai <baijiaju1990@163.com>
+Subject: [PATCH] sound/pci/riptide or drivers/base/firmware:
+	Fix a possible sleep-in-atomic bug
+Date: Mon,  9 Oct 2017 10:13:16 +0800
+Message-ID: <1507515196-3241-1-git-send-email-baijiaju1990@163.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m12-12.163.com (m12-12.163.com [220.181.12.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E313266CE2
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 04:10:40 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: mcgrof@kernel.org, gregkh@linuxfoundation.org, perex@perex.cz, tiwai@suse.com, dhowells@redhat.com, bhumirks@gmail.com, fabf@skynet.be
+Cc: alsa-devel@alsa-project.org, Jia-Ju Bai <baijiaju1990@163.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Variable active_slots is unsigned so checking whether it is less than
-zero is not necessary.
+The riptide driver may sleep under a spinlock, and the function call path is:
+snd_riptide_prepare (acquire the spinlock)
+  setsampleformat
+    sendcmd
+      riptide_reset
+        try_to_load_firmware
+          request_firmware
+            _request_firmware (drivers/base/firmware_class.c)
+              _request_firmware_prepare
+                kzalloc(GFP_KERNEL) --> may sleep
 
-Signed-off-by: Christos Gkekas <chris.gekas@gmail.com>
+To fix it, GFP_KERNEL is replaced with GFP_ATOMIC in _request_firmware_prepare.
+This bug is found by my static analysis tool and my code review.
+
+Signed-off-by: Jia-Ju Bai <baijiaju1990@163.com>
 ---
- sound/soc/bcm/cygnus-ssp.c | 2 +-
+ drivers/base/firmware_class.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index 15c438f..cb46128 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -998,7 +998,7 @@ static int cygnus_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
+diff --git a/drivers/base/firmware_class.c b/drivers/base/firmware_class.c
+index 4b57cf5..d89f676 100644
+--- a/drivers/base/firmware_class.c
++++ b/drivers/base/firmware_class.c
+@@ -1138,7 +1138,7 @@ static inline void kill_pending_fw_fallback_reqs(bool only_kill_custom) { }
+ 	struct firmware_buf *buf;
+ 	int ret;
  
- 	active_slots = hweight32(tx_mask);
- 
--	if ((active_slots < 0) || (active_slots > 16))
-+	if (active_slots > 16)
- 		return -EINVAL;
- 
- 	/* Slot value must be even */
+-	*firmware_p = firmware = kzalloc(sizeof(*firmware), GFP_KERNEL);
++	*firmware_p = firmware = kzalloc(sizeof(*firmware), GFP_ATOMIC);
+ 	if (!firmware) {
+ 		dev_err(device, "%s: kmalloc(struct firmware) failed\n",
+ 			__func__);
 -- 
-2.7.4
+1.7.9.5
