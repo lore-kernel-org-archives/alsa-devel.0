@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img-spdif-out: Add control of sys clock
-	to runtime PM" to the asoc tree
-Date: Mon, 09 Oct 2017 09:49:40 +0100
-Message-ID: <E1e1Tkq-0006KY-7W@debutante>
-References: <1506938517-810-4-git-send-email-ed.blake@sondrel.com>
+Subject: Applied "ASoC: img-spdif-out: Add suspend / resume
+	handling" to the asoc tree
+Date: Mon, 09 Oct 2017 09:49:45 +0100
+Message-ID: <E1e1Tkv-0006LN-Pi@debutante>
+References: <20171006145607.13709-2-ed.blake@sondrel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A02C267141
- for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:49:42 +0200 (CEST)
-In-Reply-To: <1506938517-810-4-git-send-email-ed.blake@sondrel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D1C7D26717C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:49:47 +0200 (CEST)
+In-Reply-To: <20171006145607.13709-2-ed.blake@sondrel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: img-spdif-out: Add control of sys clock to runtime PM
+   ASoC: img-spdif-out: Add suspend / resume handling
 
 has been applied to the asoc tree at
 
@@ -53,100 +53,91 @@ to this mail.
 Thanks,
 Mark
 
->From e8639d0c65ba4036b51d63e222080e56384b0573 Mon Sep 17 00:00:00 2001
+>From 634a09d03753844e9fe1af8298266d0126d73549 Mon Sep 17 00:00:00 2001
 From: Ed Blake <ed.blake@sondrel.com>
-Date: Fri, 6 Oct 2017 15:56:07 +0100
-Subject: [PATCH] ASoC: img-spdif-out: Add control of sys clock to runtime PM
+Date: Fri, 6 Oct 2017 15:56:06 +0100
+Subject: [PATCH] ASoC: img-spdif-out: Add suspend / resume handling
 
-Disable sys clock as well as ref clock when runtime suspended.
+Implement suspend and resume callbacks to save and restore register
+state, to support platforms where the power is disabled during suspend.
+
+In future the driver could be converted to use regmap which would
+simplify the suspend and resume code.
 
 Signed-off-by: Ed Blake <ed.blake@sondrel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/img/img-spdif-out.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+ sound/soc/img/img-spdif-out.c | 44 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
 diff --git a/sound/soc/img/img-spdif-out.c b/sound/soc/img/img-spdif-out.c
-index 1808a5542fd1..934ed3df2ebf 100644
+index 416aa5786b93..1808a5542fd1 100644
 --- a/sound/soc/img/img-spdif-out.c
 +++ b/sound/soc/img/img-spdif-out.c
-@@ -57,6 +57,7 @@ static int img_spdif_out_runtime_suspend(struct device *dev)
- 	struct img_spdif_out *spdif = dev_get_drvdata(dev);
+@@ -47,6 +47,9 @@ struct img_spdif_out {
+ 	struct snd_dmaengine_dai_dma_data dma_data;
+ 	struct device *dev;
+ 	struct reset_control *rst;
++	u32 suspend_ctl;
++	u32 suspend_csl;
++	u32 suspend_csh;
+ };
  
- 	clk_disable_unprepare(spdif->clk_ref);
-+	clk_disable_unprepare(spdif->clk_sys);
- 
+ static int img_spdif_out_runtime_suspend(struct device *dev)
+@@ -414,6 +417,46 @@ static int img_spdif_out_dev_remove(struct platform_device *pdev)
  	return 0;
  }
-@@ -66,9 +67,16 @@ static int img_spdif_out_runtime_resume(struct device *dev)
- 	struct img_spdif_out *spdif = dev_get_drvdata(dev);
- 	int ret;
  
-+	ret = clk_prepare_enable(spdif->clk_sys);
-+	if (ret) {
-+		dev_err(dev, "clk_enable failed: %d\n", ret);
-+		return ret;
++#ifdef CONFIG_PM_SLEEP
++static int img_spdif_out_suspend(struct device *dev)
++{
++	struct img_spdif_out *spdif = dev_get_drvdata(dev);
++	int ret;
++
++	if (pm_runtime_status_suspended(dev)) {
++		ret = img_spdif_out_runtime_resume(dev);
++		if (ret)
++			return ret;
 +	}
 +
- 	ret = clk_prepare_enable(spdif->clk_ref);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
-+		clk_disable_unprepare(spdif->clk_sys);
- 		return ret;
- 	}
- 
-@@ -358,21 +366,21 @@ static int img_spdif_out_probe(struct platform_device *pdev)
- 		return PTR_ERR(spdif->clk_ref);
- 	}
- 
--	ret = clk_prepare_enable(spdif->clk_sys);
--	if (ret)
--		return ret;
--
--	img_spdif_out_writel(spdif, IMG_SPDIF_OUT_CTL_FS_MASK,
--				IMG_SPDIF_OUT_CTL);
--
--	img_spdif_out_reset(spdif);
--
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
- 		ret = img_spdif_out_runtime_resume(&pdev->dev);
- 		if (ret)
- 			goto err_pm_disable;
- 	}
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0)
-+		goto err_suspend;
++	spdif->suspend_ctl = img_spdif_out_readl(spdif, IMG_SPDIF_OUT_CTL);
++	spdif->suspend_csl = img_spdif_out_readl(spdif, IMG_SPDIF_OUT_CSL);
++	spdif->suspend_csh = img_spdif_out_readl(spdif, IMG_SPDIF_OUT_CSH_UV);
 +
-+	img_spdif_out_writel(spdif, IMG_SPDIF_OUT_CTL_FS_MASK,
-+			     IMG_SPDIF_OUT_CTL);
++	img_spdif_out_runtime_suspend(dev);
 +
-+	img_spdif_out_reset(spdif);
-+	pm_runtime_put(&pdev->dev);
++	return 0;
++}
++
++static int img_spdif_out_resume(struct device *dev)
++{
++	struct img_spdif_out *spdif = dev_get_drvdata(dev);
++	int ret;
++
++	ret = img_spdif_out_runtime_resume(dev);
++	if (ret)
++		return ret;
++
++	img_spdif_out_writel(spdif, spdif->suspend_ctl, IMG_SPDIF_OUT_CTL);
++	img_spdif_out_writel(spdif, spdif->suspend_csl, IMG_SPDIF_OUT_CSL);
++	img_spdif_out_writel(spdif, spdif->suspend_csh, IMG_SPDIF_OUT_CSH_UV);
++
++	if (pm_runtime_status_suspended(dev))
++		img_spdif_out_runtime_suspend(dev);
++
++	return 0;
++}
++#endif
+ static const struct of_device_id img_spdif_out_of_match[] = {
+ 	{ .compatible = "img,spdif-out" },
+ 	{}
+@@ -423,6 +466,7 @@ MODULE_DEVICE_TABLE(of, img_spdif_out_of_match);
+ static const struct dev_pm_ops img_spdif_out_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(img_spdif_out_runtime_suspend,
+ 			   img_spdif_out_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(img_spdif_out_suspend, img_spdif_out_resume)
+ };
  
- 	spin_lock_init(&spdif->lock);
- 
-@@ -399,21 +407,16 @@ static int img_spdif_out_probe(struct platform_device *pdev)
- 		img_spdif_out_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
--	clk_disable_unprepare(spdif->clk_sys);
- 
- 	return ret;
- }
- 
- static int img_spdif_out_dev_remove(struct platform_device *pdev)
- {
--	struct img_spdif_out *spdif = platform_get_drvdata(pdev);
--
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		img_spdif_out_runtime_suspend(&pdev->dev);
- 
--	clk_disable_unprepare(spdif->clk_sys);
--
- 	return 0;
- }
- 
+ static struct platform_driver img_spdif_out_driver = {
 -- 
 2.14.1
