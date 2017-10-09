@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img-i2s-in: Add suspend / resume
-	handling" to the asoc tree
-Date: Mon, 09 Oct 2017 09:50:04 +0100
-Message-ID: <E1e1TlE-0006R0-6P@debutante>
-References: <20171006145040.13436-2-ed.blake@sondrel.com>
+Subject: Applied "ASoC: img-parallel-out: Check
+	pm_runtime_get_sync return code" to the asoc tree
+Date: Mon, 09 Oct 2017 09:50:07 +0100
+Message-ID: <E1e1TlH-0006SE-6z@debutante>
+References: <20171006145750.13791-1-ed.blake@sondrel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 41B032671A9
- for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:50:06 +0200 (CEST)
-In-Reply-To: <20171006145040.13436-2-ed.blake@sondrel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B4A52671E0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:50:08 +0200 (CEST)
+In-Reply-To: <20171006145750.13791-1-ed.blake@sondrel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: img-i2s-in: Add suspend / resume handling
+   ASoC: img-parallel-out: Check pm_runtime_get_sync return code
 
 has been applied to the asoc tree at
 
@@ -53,110 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 8ab7f885da23719aef1ba03f563589e44ca6ab66 Mon Sep 17 00:00:00 2001
+>From 596ec4bd958bc7c233d4129072d80272f21e2be1 Mon Sep 17 00:00:00 2001
 From: Ed Blake <ed.blake@sondrel.com>
-Date: Fri, 6 Oct 2017 15:50:39 +0100
-Subject: [PATCH] ASoC: img-i2s-in: Add suspend / resume handling
+Date: Fri, 6 Oct 2017 15:57:50 +0100
+Subject: [PATCH] ASoC: img-parallel-out: Check pm_runtime_get_sync return code
 
-Implement suspend and resume callbacks to save and restore register
-state, to support platforms where the power is disabled during suspend.
-
-In future the driver could be converted to use regmap which would
-simplify the suspend and resume code.
+Check the the pm_runtime_get_sync return code and return if an error.
 
 Signed-off-by: Ed Blake <ed.blake@sondrel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/img/img-i2s-in.c | 54 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 53 insertions(+), 1 deletion(-)
+ sound/soc/img/img-parallel-out.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
-index 567f9767fb73..3d151ddda937 100644
---- a/sound/soc/img/img-i2s-in.c
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -60,6 +60,8 @@ struct img_i2s_in {
- 	void __iomem *channel_base;
- 	unsigned int active_channels;
- 	struct snd_soc_dai_driver dai_driver;
-+	u32 suspend_ctl;
-+	u32 *suspend_ch_ctl;
- };
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index 2fc8a6372206..acc005217be0 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -153,6 +153,7 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct img_prl_out *prl = snd_soc_dai_get_drvdata(dai);
+ 	u32 reg, control_set = 0;
++	int ret;
  
- static inline void img_i2s_in_writel(struct img_i2s_in *i2s, u32 val, u32 reg)
-@@ -469,6 +471,13 @@ static int img_i2s_in_probe(struct platform_device *pdev)
- 			IMG_I2S_IN_CH_CTL_JUST_MASK |
- 			IMG_I2S_IN_CH_CTL_FW_MASK, IMG_I2S_IN_CH_CTL);
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+@@ -164,7 +165,10 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
  
-+	i2s->suspend_ch_ctl = devm_kzalloc(dev,
-+		sizeof(*i2s->suspend_ch_ctl) * i2s->max_i2s_chan, GFP_KERNEL);
-+	if (!i2s->suspend_ch_ctl) {
-+		ret = -ENOMEM;
-+		goto err_clk_disable;
-+	}
+-	pm_runtime_get_sync(prl->dev);
++	ret = pm_runtime_get_sync(prl->dev);
++	if (ret < 0)
++		return ret;
 +
- 	ret = devm_snd_soc_register_component(dev, &img_i2s_in_component,
- 						&i2s->dai_driver, 1);
- 	if (ret)
-@@ -495,16 +504,59 @@ static int img_i2s_in_dev_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int img_i2s_in_suspend(struct device *dev)
-+{
-+	struct img_i2s_in *i2s = dev_get_drvdata(dev);
-+	int i;
-+	u32 reg;
-+
-+	for (i = 0; i < i2s->max_i2s_chan; i++) {
-+		reg = img_i2s_in_ch_readl(i2s, i, IMG_I2S_IN_CH_CTL);
-+		i2s->suspend_ch_ctl[i] = reg;
-+	}
-+
-+	i2s->suspend_ctl = img_i2s_in_readl(i2s, IMG_I2S_IN_CTL);
-+
-+	clk_disable_unprepare(i2s->clk_sys);
-+
-+	return 0;
-+}
-+
-+static int img_i2s_in_resume(struct device *dev)
-+{
-+	struct img_i2s_in *i2s = dev_get_drvdata(dev);
-+	int i;
-+	u32 reg;
-+
-+	clk_prepare_enable(i2s->clk_sys);
-+
-+	for (i = 0; i < i2s->max_i2s_chan; i++) {
-+		reg = i2s->suspend_ch_ctl[i];
-+		img_i2s_in_ch_writel(i2s, i, reg, IMG_I2S_IN_CH_CTL);
-+	}
-+
-+	img_i2s_in_writel(i2s, i2s->suspend_ctl, IMG_I2S_IN_CTL);
-+
-+	return 0;
-+}
-+#endif
-+
- static const struct of_device_id img_i2s_in_of_match[] = {
- 	{ .compatible = "img,i2s-in" },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, img_i2s_in_of_match);
- 
-+static const struct dev_pm_ops img_i2s_in_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(img_i2s_in_suspend, img_i2s_in_resume)
-+};
-+
- static struct platform_driver img_i2s_in_driver = {
- 	.driver = {
- 		.name = "img-i2s-in",
--		.of_match_table = img_i2s_in_of_match
-+		.of_match_table = img_i2s_in_of_match,
-+		.pm = &img_i2s_in_pm_ops
- 	},
- 	.probe = img_i2s_in_probe,
- 	.remove = img_i2s_in_dev_remove
+ 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
+ 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
+ 	img_prl_out_writel(prl, reg, IMG_PRL_OUT_CTL);
 -- 
 2.14.1
