@@ -1,16 +1,15 @@
-From: Jia-Ju Bai <baijiaju1990@163.com>
-Subject: [BUG] sound/core/seq: A possible sleep-in-atomic bug
- in snd_virmidi_dev_receive_event
-Date: Mon, 9 Oct 2017 10:42:15 +0800
-Message-ID: <a3e0863a-c47e-de76-828d-2dcd4b2b18a0@163.com>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH 0/3] ASoC: Intel: Skylake: Add support for
+	loading FE dais from topology
+Date: Mon,  9 Oct 2017 11:20:29 +0530
+Message-ID: <20171009055032.12158-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-13.163.com (m12-13.163.com [220.181.12.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F1DA266CE2
- for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 04:42:20 +0200 (CEST)
-Content-Language: en-US
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EA12266CE2
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 07:50:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,18 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, o-takashi@sakamocchi.jp, mingo@kernel.org, danielmentz@google.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to seq_virmidi.c, the driver may sleep under a read spinlock.
-The function call path is:
-snd_virmidi_dev_receive_event (acquire the spinlock)
-   snd_seq_dump_var_event
-     copy_from_user --> may sleep
+This series adds support for loading FE dais using topology. A flag is
+introduced to decide whether to register FE dais defined in the platform
+driver or use from topology. By default, it is set to register the FE
+dais defined in the platform driver. While at it, fix a missing sentinel
+too.
 
-This bug is found by my static analysis tool and my code review.
+Guneshwor Singh (3):
+  ASoC: Intel: Skylake: Add flag to check to register FE dais from
+    topology
+  ASoC: Intel: Skylake: Add dai load ops for dais from topology
+  ASoC: Intel: Skylake: Fix missing sentinel in sst_acpi_mach
 
+ sound/soc/intel/skylake/skl-pcm.c      | 46 +++++++++++++++++++++++++++++++---
+ sound/soc/intel/skylake/skl-topology.c |  1 +
+ sound/soc/intel/skylake/skl-topology.h |  3 +++
+ sound/soc/intel/skylake/skl.c          | 10 +++++++-
+ sound/soc/intel/skylake/skl.h          |  4 ++-
+ 5 files changed, 58 insertions(+), 6 deletions(-)
 
-Thanks,
-Jia-Ju Bai
+-- 
+2.14.2
