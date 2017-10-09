@@ -1,20 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 6/6] ASoC: Intel: boards: use strcmp with
- constant literals
-Date: Mon, 9 Oct 2017 15:04:37 +0530
-Message-ID: <20171009093437.GW30097@localhost>
-References: <20171005185243.4174-1-pierre-louis.bossart@linux.intel.com>
- <20171005185243.4174-7-pierre-louis.bossart@linux.intel.com>
- <s5hfuaw7j0a.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: cht_bsw_max98090: remove useless
+	code, align with ChromeOS driver" to the asoc tree
+Date: Mon, 09 Oct 2017 11:44:29 +0100
+Message-ID: <E1e1VXx-0001hE-LN@debutante>
+References: <20171005040427.26612-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A6EC2671A9
- for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 11:30:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hfuaw7j0a.wl-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E87DA266B38
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 12:44:39 +0200 (CEST)
+In-Reply-To: <20171005040427.26612-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,190 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: vinod.koul@intel.com, broonie@kernel.org, Thierry Escande <thierry.escande@collabora.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 06, 2017 at 10:55:33AM +0200, Takashi Iwai wrote:
-> On Thu, 05 Oct 2017 20:52:43 +0200,
-> Pierre-Louis Bossart wrote:
-> > 
-> > we used strncmp in all audio machine drivers, this is not needed
-> > when comparing against constant literals.
-> > General replace of strncmp(a, b, strlen(b)) to strcmp(a,b)
-> > 
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > ---
-> >  sound/soc/intel/boards/bxt_da7219_max98357a.c   | 3 +--
-> >  sound/soc/intel/boards/bytcht_es8316.c          | 3 +--
-> >  sound/soc/intel/boards/bytcr_rt5640.c           | 6 ++----
-> >  sound/soc/intel/boards/bytcr_rt5651.c           | 3 +--
-> >  sound/soc/intel/boards/cht_bsw_max98090_ti.c    | 3 +--
-> >  sound/soc/intel/boards/cht_bsw_rt5645.c         | 6 ++----
-> >  sound/soc/intel/boards/cht_bsw_rt5672.c         | 3 +--
-> >  sound/soc/intel/boards/skl_nau88l25_max98357a.c | 3 +--
-> >  sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 3 +--
-> >  9 files changed, 11 insertions(+), 22 deletions(-)
-> 
-> While we're at it: since all these do mostly same: wouldn't it make
-> more sense to create a helper to scan over the rtd_list?
-> 
-> static inline snd_soc_intel_get_codec_dai(struct snd_soc_card *card,
-> 					  const char *dai_name)
-> {
-> 	struct snd_soc_pcm_runtime *rtd;
-> 
-> 	list_for_each_entry(rtd, &card->rtd_list, list) {
-> 		if (!strcmp(rtd->codec_dai->name, dai_name))
-> 			return rtd->codec_dai;
-> 	}
-> 	
-> 	return NULL;
-> }
-> 
-> Some drivers require to check two names, but it can call this function
-> twice.
+The patch
 
-yeah this was in my todo :( would be gald if its done now :)
+   ASoC: Intel: cht_bsw_max98090: remove useless code, align with ChromeOS driver
 
-> > diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> > index ce35ec7884d1..dc47c3f0b621 100644
-> > --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> > +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> > @@ -61,8 +61,7 @@ static inline struct snd_soc_dai *bxt_get_codec_dai(struct snd_soc_card *card)
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> >  
-> > -		if (!strncmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI,
-> > -			     strlen(BXT_DIALOG_CODEC_DAI)))
-> > +		if (!strcmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  
-> > diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-> > index 52635462dac6..9b42dc924cd3 100644
-> > --- a/sound/soc/intel/boards/bytcht_es8316.c
-> > +++ b/sound/soc/intel/boards/bytcht_es8316.c
-> > @@ -44,8 +44,7 @@ static inline struct snd_soc_dai *get_codec_dai(struct snd_soc_card *card)
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > -		if (!strncmp(rtd->codec_dai->name, CODEC_DAI1,
-> > -			     strlen(CODEC_DAI1)))
-> > +		if (!strcmp(rtd->codec_dai->name, CODEC_DAI1))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  	return NULL;
-> > diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> > index ffb3ca971df4..24c7f861f1e1 100644
-> > --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> > +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> > @@ -150,11 +150,9 @@ static inline struct snd_soc_dai *byt_get_codec_dai(struct snd_soc_card *card)
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > -		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI1,
-> > -			     strlen(BYT_CODEC_DAI1)))
-> > +		if (!strcmp(rtd->codec_dai->name, BYT_CODEC_DAI1))
-> >  			return rtd->codec_dai;
-> > -		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI2,
-> > -				strlen(BYT_CODEC_DAI2)))
-> > +		if (!strcmp(rtd->codec_dai->name, BYT_CODEC_DAI2))
-> >  			return rtd->codec_dai;
-> >  
-> >  	}
-> > diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-> > index 1b97aa735747..0443d2e7e8a1 100644
-> > --- a/sound/soc/intel/boards/bytcr_rt5651.c
-> > +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-> > @@ -73,8 +73,7 @@ static inline struct snd_soc_dai *byt_get_codec_dai(struct snd_soc_card *card)
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > -		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI1,
-> > -			     strlen(BYT_CODEC_DAI1)))
-> > +		if (!strcmp(rtd->codec_dai->name, BYT_CODEC_DAI1))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  	return NULL;
-> > diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-> > index 74c047a4b05c..98d58d389b04 100644
-> > --- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-> > +++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-> > @@ -46,8 +46,7 @@ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > -		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
-> > -			     strlen(CHT_CODEC_DAI)))
-> > +		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  	return NULL;
-> > diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-> > index 6ccb599c1082..e9a3121ecad7 100644
-> > --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-> > +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-> > @@ -75,11 +75,9 @@ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > -		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI1,
-> > -			     strlen(CHT_CODEC_DAI1)))
-> > +		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI1))
-> >  			return rtd->codec_dai;
-> > -		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI2,
-> > -			     strlen(CHT_CODEC_DAI2)))
-> > +		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI2))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  	return NULL;
-> > diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-> > index f799b76fdedf..78798c600c16 100644
-> > --- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-> > +++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-> > @@ -55,8 +55,7 @@ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-> >  	struct snd_soc_pcm_runtime *rtd;
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> > -		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
-> > -			     strlen(CHT_CODEC_DAI)))
-> > +		if (!strcmp(rtd->codec_dai->name, CHT_CODEC_DAI))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  	return NULL;
-> > diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> > index 5ed0aa27b467..95c017f7315e 100644
-> > --- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> > +++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-> > @@ -60,8 +60,7 @@ static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> >  
-> > -		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
-> > -			     strlen(SKL_NUVOTON_CODEC_DAI)))
-> > +		if (!strcmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  
-> > diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-> > index 01b8b140bb08..57f1e5b8408f 100644
-> > --- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-> > +++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-> > @@ -63,8 +63,7 @@ static inline struct snd_soc_dai *skl_get_codec_dai(struct snd_soc_card *card)
-> >  
-> >  	list_for_each_entry(rtd, &card->rtd_list, list) {
-> >  
-> > -		if (!strncmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI,
-> > -			     strlen(SKL_NUVOTON_CODEC_DAI)))
-> > +		if (!strcmp(rtd->codec_dai->name, SKL_NUVOTON_CODEC_DAI))
-> >  			return rtd->codec_dai;
-> >  	}
-> >  
-> > -- 
-> > 2.11.0
-> > 
+has been applied to the asoc tree at
 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0087f2013188d8b332cee2f74fd3c6754a49f620 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 4 Oct 2017 23:04:27 -0500
+Subject: [PATCH] ASoC: Intel: cht_bsw_max98090: remove useless code, align
+ with ChromeOS driver
+
+Remove dead code which was missed in previous changes. This is not
+visible with git diff but there is a test+return on the same condition
+just above.
+
+Also reuse local variable instead of fetching the jack information twice.
+
+Tested on Acer R11 (cyan)
+
+Fixes: 3bbda5a38601 ('ASoC: Intel: cht_bsw_max98090_ti: Fix jack initialization')
+Cc: Thierry Escande <thierry.escande@collabora.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 6519604b9577..a23eba7bb056 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -219,10 +219,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
+ 
+-
+-	if (ctx->ts3a227e_present)
+-		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
+-
+ 	ret = snd_soc_jack_add_gpiods(runtime->card->dev->parent, jack,
+ 				      ARRAY_SIZE(hs_jack_gpios),
+ 				      hs_jack_gpios);
+@@ -323,7 +319,7 @@ static int cht_max98090_headset_init(struct snd_soc_component *component)
+ 		return ret;
+ 	}
+ 
+-	return ts3a227e_enable_jack_detect(component, &ctx->jack);
++	return ts3a227e_enable_jack_detect(component, jack);
+ }
+ 
+ static const struct snd_soc_ops cht_aif1_ops = {
 -- 
-~Vinod
+2.14.1
