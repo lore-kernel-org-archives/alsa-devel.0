@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: img-parallel-out: Check
-	pm_runtime_get_sync return code" to the asoc tree
-Date: Mon, 09 Oct 2017 09:50:07 +0100
-Message-ID: <E1e1TlH-0006SE-6z@debutante>
-References: <20171006145750.13791-1-ed.blake@sondrel.com>
+Subject: Applied "ASoC: cygnus: Remove unnecessary active_slots
+	check" to the asoc tree
+Date: Mon, 09 Oct 2017 09:50:09 +0100
+Message-ID: <E1e1TlJ-0006TB-QE@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B4A52671E0
- for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:50:08 +0200 (CEST)
-In-Reply-To: <20171006145750.13791-1-ed.blake@sondrel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E505426716A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:50:10 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ed Blake <ed.blake@sondrel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Christos Gkekas <chris.gekas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: img-parallel-out: Check pm_runtime_get_sync return code
+   ASoC: cygnus: Remove unnecessary active_slots check
 
 has been applied to the asoc tree at
 
@@ -53,42 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 596ec4bd958bc7c233d4129072d80272f21e2be1 Mon Sep 17 00:00:00 2001
-From: Ed Blake <ed.blake@sondrel.com>
-Date: Fri, 6 Oct 2017 15:57:50 +0100
-Subject: [PATCH] ASoC: img-parallel-out: Check pm_runtime_get_sync return code
+>From 4c75968a1bbfb3f190e2e624c83929451e4730ac Mon Sep 17 00:00:00 2001
+From: Christos Gkekas <chris.gekas@gmail.com>
+Date: Sun, 8 Oct 2017 19:20:30 +0100
+Subject: [PATCH] ASoC: cygnus: Remove unnecessary active_slots check
 
-Check the the pm_runtime_get_sync return code and return if an error.
+Variable active_slots is unsigned so checking whether it is less than
+zero is not necessary.
 
-Signed-off-by: Ed Blake <ed.blake@sondrel.com>
+Signed-off-by: Christos Gkekas <chris.gekas@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/img/img-parallel-out.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/bcm/cygnus-ssp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 2fc8a6372206..acc005217be0 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -153,6 +153,7 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct img_prl_out *prl = snd_soc_dai_get_drvdata(dai);
- 	u32 reg, control_set = 0;
-+	int ret;
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index cd8aef8ed8a5..abafadc0b534 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -986,7 +986,7 @@ static int cygnus_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
  
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF:
-@@ -164,7 +165,10 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	active_slots = hweight32(tx_mask);
+ 
+-	if ((active_slots < 0) || (active_slots > 16))
++	if (active_slots > 16)
  		return -EINVAL;
- 	}
  
--	pm_runtime_get_sync(prl->dev);
-+	ret = pm_runtime_get_sync(prl->dev);
-+	if (ret < 0)
-+		return ret;
-+
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
- 	img_prl_out_writel(prl, reg, IMG_PRL_OUT_CTL);
+ 	/* Slot value must be even */
 -- 
 2.14.1
