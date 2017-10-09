@@ -1,19 +1,17 @@
-From: Jia-Ju Bai <baijiaju1990@163.com>
-Subject: Re: [PATCH] sound/pci/riptide or
- drivers/base/firmware: Fix a possible sleep-in-atomic bug
-Date: Mon, 9 Oct 2017 15:55:53 +0800
-Message-ID: <517bc0db-4cc9-ab45-c53a-dcfe753fb896@163.com>
-References: <1507515196-3241-1-git-send-email-baijiaju1990@163.com>
- <s5h4lr8om6p.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND PATCH] ASoC: codecs: msm8916-wcd-digital:
+ fix RX2 MIX1 and RX3 MIX1
+Date: Mon, 9 Oct 2017 09:31:47 +0100
+Message-ID: <20171009083147.iwugpdgx2zcw6fyu@sirena.co.uk>
+References: <20171006180951.10930-1-jean-francois.tetu@savoirfairelinux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6341850272212641587=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-13.163.com (m12-13.163.com [220.181.12.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 89924266BFD
- for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 09:55:59 +0200 (CEST)
-In-Reply-To: <s5h4lr8om6p.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 057B8266BFD
+ for <alsa-devel@alsa-project.org>; Mon,  9 Oct 2017 10:31:50 +0200 (CEST)
+In-Reply-To: <20171006180951.10930-1-jean-francois.tetu@savoirfairelinux.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: fabf@skynet.be, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org, tiwai@suse.com, dhowells@redhat.com, mcgrof@kernel.org, bhumirks@gmail.com
+To: =?iso-8859-1?Q?Jean-Fran=E7ois_T=EAtu?= <jean-francois.tetu@savoirfairelinux.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your reply :)
-Yes, you are right. Sorry for this false positive.
+
+--===============6341850272212641587==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ehfcq6c3tkzpaq2n"
+Content-Disposition: inline
 
 
-Thanks,
-Jia-Ju Bai
+--ehfcq6c3tkzpaq2n
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2017/10/9 14:43, Takashi Iwai wrote:
-> On Mon, 09 Oct 2017 04:13:16 +0200,
-> Jia-Ju Bai wrote:
->> The riptide driver may sleep under a spinlock, and the function call path is:
->> snd_riptide_prepare (acquire the spinlock)
->>    setsampleformat
->>      sendcmd
->>        riptide_reset
->>          try_to_load_firmware
->>            request_firmware
->>              _request_firmware (drivers/base/firmware_class.c)
->>                _request_firmware_prepare
->>                  kzalloc(GFP_KERNEL) --> may sleep
->>
->> To fix it, GFP_KERNEL is replaced with GFP_ATOMIC in _request_firmware_prepare.
->> This bug is found by my static analysis tool and my code review.
->>
->> Signed-off-by: Jia-Ju Bai<baijiaju1990@163.com>
-> This doesn't happen.  try_to_load_firmware() aborts before the
-> request_firmware() call when chip == NULL, which is the case from
-> sendcmd().
+On Fri, Oct 06, 2017 at 02:09:51PM -0400, Jean-Fran=E7ois T=EAtu wrote:
+> The kcontrol for the third input (rxN_mix1_inp3) of both RX2
+> and RX3 mixers are not using the correct control register. This simple
+> patch fixes this.
+
+Please don't resubmit patches that have already been applied, you should
+submit patches against current code in the tree you're expecting things
+to be applied to.  If any updates are needed to a patch that's already
+been applied you should submit incremental patches which make those
+updates.  This avoids having to change published git commits which could
+cause problems for people working against git.
+
+--ehfcq6c3tkzpaq2n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnbM/IACgkQJNaLcl1U
+h9Bk0gf45+DiGrEC341snu2y0LwL609OjIITvbzqJLELvtgicKweAoBQK2FgNNRE
+axtf+WbbdZYJvSBSh672ehTIICRopSQrh1OrrXcYEWjoeY4XptOYGE9K911mCKJk
+L8ZyYv065GTE0EUg/vlM1E/G7A9lqKqeGR9OtlB/e+InmA8wmjRJ0B6cFyTOSFlt
+pZrShVQWU4P2oCmEZOFJiJ9cn+s3cJac9+b4kq0k1oIcdUoykt3AAxLxwCd4DLAa
+Srq5P9raGd4a/nhwmwRFY80+2v3dA2VGfbq24K41/18N5wEr7FrwSF7rxMlkWISG
+9+rDvR+cggBwsfnoQGEGNC22lvYn
+=BXgY
+-----END PGP SIGNATURE-----
+
+--ehfcq6c3tkzpaq2n--
+
+--===============6341850272212641587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6341850272212641587==--
