@@ -1,113 +1,59 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: usb/sound: use-after-free in snd_usb_mixer_interrupt
-Date: Tue, 10 Oct 2017 13:20:14 +0200
-Message-ID: <CAAeHK+yG50hAa=MA6st516GGj=cM+SD6PtFrnz4m8Fba5ARu+g@mail.gmail.com>
-References: <CAAeHK+zfyd8wkBfkg2huCp49BkSdFgO6v1Zd_eS_YOMoZ1X3_Q@mail.gmail.com>
- <s5ho9pgj7lk.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Add sanity check for user-space
+	pointer delivery
+Date: Tue, 10 Oct 2017 13:44:39 +0200
+Message-ID: <20171010114439.10480-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5ho9pgj7lk.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Stephen Barber <smbarber@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>, Con Kolivas <con@kolivas.org>, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85FB126723C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 13:44:45 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 597F6ACC1
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 11:44:44 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 10, 2017 at 12:10 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 09 Oct 2017 19:50:39 +0200,
-> Andrey Konovalov wrote:
->>
->> Hi!
->>
->> I've got the following report while fuzzing the kernel with syzkaller.
->>
->> On commit 8a5776a5f49812d29fe4b2d0a2d71675c3facf3f (4.14-rc4).
->>
->> gadgetfs: bound to dummy_udc driver
->> usb 1-1: new full-speed USB device number 2 using dummy_hcd
->> gadgetfs: connected
->> gadgetfs: disconnected
->> gadgetfs: connected
->> usb 1-1: config 1 has an invalid interface number: 1 but max is 0
->> usb 1-1: config 1 has 2 interfaces, different from the descriptor's value: 1
->> usb 1-1: config 1 interface 0 altsetting 0 endpoint 0x81 has an
->> invalid bInterval 0, changing to 10
->> usb 1-1: too many endpoints for config 1 interface 1 altsetting 174:
->> 131, using maximum allowed: 30
->> usb 1-1: config 1 interface 1 altsetting 174 has 0 endpoint
->> descriptors, different from the interface de
->> scriptor's value: 131
->> usb 1-1: config 1 interface 1 has no altsetting 0
->> usb 1-1: New USB device found, idVendor=0dba, idProduct=1000
->> usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=252
->> usb 1-1: SerialNumber: a
->> gadgetfs: configuration #1
->> hub 1-1:1.0: USB hub found
->> hub 1-1:1.0: config failed, can't read hub descriptor (err -22)
->> snd-usb-audio: probe of 1-1:1.0 failed with error -22
->> ==================================================================
->> BUG: KASAN: use-after-free in snd_usb_mixer_interrupt+0x604/0x6f0
->> Read of size 8 at addr ffff8800636f8900 by task swapper/1/0
->
-> A bad news for a sleepless night...
->
-> It's a stray URB that isn't properly killed when the usb-audio mixer
-> interface gets the error at probe.  The patch below should fix it.
-> I'm going to wrap up with a proper description later.
+The sequencer event may contain a user-space pointer with its
+SNDRV_SEQ_EXT_USRPTR bit, and we assure that its delivery is limited
+with non-atomic mode.  Otherwise the copy_from_user() may hit the
+fault and cause a problem.  Although the core code doesn't set such a
+flag (only set at snd_seq_write()), any wild driver may set it
+mistakenly and lead to an unexpected crash.
 
-This fixes the crash.
+This patch adds a sanity check of such events at the delivery core
+code to filter out the invalid invocation in the atomic mode.
 
-Thanks!
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/seq_clientmgr.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Tested-by: Andrey Konovalov <andreyknvl@google.com>
-
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 9732edf77f86..91bc8f18791e 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -2234,6 +2234,9 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
->
->  static void snd_usb_mixer_free(struct usb_mixer_interface *mixer)
->  {
-> +       /* kill pending URBs */
-> +       snd_usb_mixer_disconnect(mixer);
-> +
->         kfree(mixer->id_elems);
->         if (mixer->urb) {
->                 kfree(mixer->urb->transfer_buffer);
-> @@ -2584,8 +2587,13 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
->
->  void snd_usb_mixer_disconnect(struct usb_mixer_interface *mixer)
->  {
-> -       usb_kill_urb(mixer->urb);
-> -       usb_kill_urb(mixer->rc_urb);
-> +       if (mixer->disconnected)
-> +               return;
-> +       if (mixer->urb)
-> +               usb_kill_urb(mixer->urb);
-> +       if (mixer->rc_urb)
-> +               usb_kill_urb(mixer->rc_urb);
-> +       mixer->disconnected = true;
->  }
->
->  #ifdef CONFIG_PM
-> diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-> index 2b4b067646ab..545d99b09706 100644
-> --- a/sound/usb/mixer.h
-> +++ b/sound/usb/mixer.h
-> @@ -22,6 +22,8 @@ struct usb_mixer_interface {
->         struct urb *rc_urb;
->         struct usb_ctrlrequest *rc_setup_packet;
->         u8 rc_buffer[6];
-> +
-> +       bool disconnected;
->  };
->
->  #define MAX_CHANNELS   16      /* max logical channels */
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 6c9cba2166d9..84759d9c54bf 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -802,6 +802,10 @@ static int snd_seq_deliver_event(struct snd_seq_client *client, struct snd_seq_e
+ 		return -EMLINK;
+ 	}
+ 
++	if (snd_seq_ev_is_variable(event) &&
++	    snd_BUG_ON(atomic && (event->data.ext.len & SNDRV_SEQ_EXT_USRPTR)))
++		return -EINVAL;
++
+ 	if (event->queue == SNDRV_SEQ_ADDRESS_SUBSCRIBERS ||
+ 	    event->dest.client == SNDRV_SEQ_ADDRESS_SUBSCRIBERS)
+ 		result = deliver_to_subscribers(client, event, atomic, hop);
+-- 
+2.14.2
