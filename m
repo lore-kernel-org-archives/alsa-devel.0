@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: mark 'snd_soc_dapm_free_kcontrol'
-	as static" to the asoc tree
-Date: Tue, 10 Oct 2017 10:30:54 +0100
-Message-ID: <E1e1qsI-0004pK-DJ@debutante>
-References: <20171010092052.2551973-2-arnd@arndb.de>
+Subject: Applied "ASoC: dapm: add initialization for
+	w_param_text pointer" to the asoc tree
+Date: Tue, 10 Oct 2017 10:30:57 +0100
+Message-ID: <E1e1qsL-0004qV-F0@debutante>
+References: <20171010092052.2551973-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 508F826727C
+ by alsa0.perex.cz (Postfix) with ESMTP id 54AC52672B4
  for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 11:31:03 +0200 (CEST)
-In-Reply-To: <20171010092052.2551973-2-arnd@arndb.de>
+In-Reply-To: <20171010092052.2551973-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: mark 'snd_soc_dapm_free_kcontrol' as static
+   ASoC: dapm: add initialization for w_param_text pointer
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From c42c5ac4269bf8c0aa7ef2f4bdf328a12b03f65f Mon Sep 17 00:00:00 2001
+>From 667ebc97c99a2ea9279bf3fdd791d97adfafbbc2 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 10 Oct 2017 11:20:11 +0200
-Subject: [PATCH] ASoC: dapm: mark 'snd_soc_dapm_free_kcontrol' as static
+Date: Tue, 10 Oct 2017 11:20:10 +0200
+Subject: [PATCH] ASoC: dapm: add initialization for w_param_text pointer
 
-The newly introduced function is declared as globally visible,
-but is not declared in a header, causing a warning 'make W=1'
-or 'make C=1':
+We now allocate the array conditionally, but we always pass
+the pointer to the new snd_soc_dapm_free_kcontrol() function,
+which introduces a warning for the case that it is not
+initialized:
 
-sound/soc/soc-dapm.c:3782:1: warning: symbol 'snd_soc_dapm_free_kcontrol' was not declared. Should it be static?
+sound/soc/soc-dapm.c: In function 'snd_soc_dapm_new_pcm':
+sound/soc/soc-dapm.c:3940:2: error: 'w_param_text' may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
-The suggestion to make it static seems appropriate here, so let's
-do that.
+As snd_soc_dapm_free_kcontrol() is global, it doesn't get inlined
+and gcc fails to notice that we don't actually access the array
+in that case, so the code is actually safe. Adding an initialization
+for the array pointer shuts up the warning.
 
 Fixes: 19ad683abc85 ("ASoC: dapm: Avoid creating kcontrol for params")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 12eb74d5f5c1..d674589e82e5 100644
+index 44aed3383c62..12eb74d5f5c1 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3778,7 +3778,7 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
+@@ -3905,6 +3905,8 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 			ret = -ENOMEM;
+ 			goto param_fail;
+ 		}
++	} else {
++		w_param_text = NULL;
+ 	}
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
  
--void
-+static void
- snd_soc_dapm_free_kcontrol(struct snd_soc_card *card,
- 			unsigned long *private_value,
- 			int num_params,
 -- 
 2.14.1
