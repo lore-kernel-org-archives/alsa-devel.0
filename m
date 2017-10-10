@@ -1,115 +1,53 @@
 From: Tom Saeger <tom.saeger@oracle.com>
-Subject: [PATCH 3/8] Documentation: fix input related doc refs
-Date: Tue, 10 Oct 2017 12:36:23 -0500
-Message-ID: <5d53777387ca2727e74d0a3825891a365cebf124.1507653970.git.tom.saeger@oracle.com>
+Subject: [PATCH 6/8] Documentation: fix sound related doc refs
+Date: Tue, 10 Oct 2017 12:36:45 -0500
+Message-ID: <3b7a9ef297e421ba8474cbe41abfd1ce4e72f6b4.1507653970.git.tom.saeger@oracle.com>
 References: <cover.1507653969.git.tom.saeger@oracle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-doc-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <cover.1507653969.git.tom.saeger@oracle.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jonathan Corbet <corbet@lwn.net>, Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Tom Saeger <tom.saeger@oracle.com>, linux-doc@vger.kernel.org, linux-usb@vger.kernel.org, linux-input@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Sender: linux-doc-owner@vger.kernel.org
+To: Jonathan Corbet <corbet@lwn.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Tom Saeger <tom.saeger@oracle.com>, linux-doc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Make `input` document refs valid including:
-  - joystick
-  - joystick-parport
+Make sound doc refs valid.
 
 Signed-off-by: Tom Saeger <tom.saeger@oracle.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 10 +++++-----
- Documentation/hid/hiddev.txt                    |  2 +-
- Documentation/input/devices/xpad.rst            |  3 ++-
- Documentation/sound/cards/joystick.rst          |  2 +-
- 4 files changed, 9 insertions(+), 8 deletions(-)
+ Documentation/sound/hd-audio/notes.rst                    | 2 +-
+ Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index e857bbbc8575..411b41127eee 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -314,7 +314,7 @@
- 	amijoy.map=	[HW,JOY] Amiga joystick support
- 			Map of devices attached to JOY0DAT and JOY1DAT
- 			Format: <a>,<b>
--			See also Documentation/input/joystick.txt
-+			See also Documentation/input/joydev/joystick.rst
+diff --git a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
+index f59c3cdbfaf4..9f7347830ba4 100644
+--- a/Documentation/sound/hd-audio/notes.rst
++++ b/Documentation/sound/hd-audio/notes.rst
+@@ -192,7 +192,7 @@ preset model instead of PCI (and codec-) SSID look-up.
+ What ``model`` option values are available depends on the codec chip.
+ Check your codec chip from the codec proc file (see "Codec Proc-File"
+ section below).  It will show the vendor/product name of your codec
+-chip.  Then, see Documentation/sound/HD-Audio-Models.rst file,
++chip.  Then, see Documentation/sound/hd-audio/models.rst file,
+ the section of HD-audio driver.  You can find a list of codecs
+ and ``model`` options belonging to each codec.  For example, for Realtek
+ ALC262 codec chip, pass ``model=ultra`` for devices that are compatible
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 58ffa3f5bda7..a0b268466cb1 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -2498,7 +2498,7 @@ Mic boost
+ Mic-boost switch is set as “Mic Boost” or “Mic Boost (6dB)”.
  
- 	analog.map=	[HW,JOY] Analog joystick and gamepad support
- 			Specifies type or capabilities of an analog joystick
-@@ -724,7 +724,7 @@
- 	db9.dev[2|3]=	[HW,JOY] Multisystem joystick support via parallel port
- 			(one device per port)
- 			Format: <port#>,<type>
--			See also Documentation/input/joystick-parport.txt
-+			See also Documentation/input/devices/joystick-parport.rst
+ More precise information can be found in
+-``Documentation/sound/alsa/ControlNames.txt``.
++``Documentation/sound/designs/control-names.rst``.
  
- 	ddebug_query=   [KNL,DYNAMIC_DEBUG] Enable debug messages at early boot
- 			time. See
-@@ -1220,7 +1220,7 @@
- 			[HW,JOY] Multisystem joystick and NES/SNES/PSX pad
- 			support via parallel port (up to 5 devices per port)
- 			Format: <port#>,<pad1>,<pad2>,<pad3>,<pad4>,<pad5>
--			See also Documentation/input/joystick-parport.txt
-+			See also Documentation/input/devices/joystick-parport.rst
- 
- 	gamma=		[HW,DRM]
- 
-@@ -1766,7 +1766,7 @@
- 				ivrs_acpihid[00:14.5]=AMD0020:0
- 
- 	js=		[HW,JOY] Analog joystick
--			See Documentation/input/joystick.txt.
-+			See Documentation/input/joydev/joystick.rst.
- 
- 	nokaslr		[KNL]
- 			When CONFIG_RANDOMIZE_BASE is set, this disables
-@@ -4199,7 +4199,7 @@
- 			TurboGraFX parallel port interface
- 			Format:
- 			<port#>,<js1>,<js2>,<js3>,<js4>,<js5>,<js6>,<js7>
--			See also Documentation/input/joystick-parport.txt
-+			See also Documentation/input/devices/joystick-parport.rst
- 
- 	udbg-immortal	[PPC] When debugging early kernel crashes that
- 			happen after console_init() and before a proper
-diff --git a/Documentation/hid/hiddev.txt b/Documentation/hid/hiddev.txt
-index 6e8c9f1d2f22..638448707aa2 100644
---- a/Documentation/hid/hiddev.txt
-+++ b/Documentation/hid/hiddev.txt
-@@ -12,7 +12,7 @@ To support these disparate requirements, the Linux USB system provides
- HID events to two separate interfaces:
- * the input subsystem, which converts HID events into normal input
- device interfaces (such as keyboard, mouse and joystick) and a
--normalised event interface - see Documentation/input/input.txt
-+normalised event interface - see Documentation/input/input.rst
- * the hiddev interface, which provides fairly raw HID events
- 
- The data flow for a HID event produced by a device is something like
-diff --git a/Documentation/input/devices/xpad.rst b/Documentation/input/devices/xpad.rst
-index 5a709ab77c8d..b8bd65962dd8 100644
---- a/Documentation/input/devices/xpad.rst
-+++ b/Documentation/input/devices/xpad.rst
-@@ -230,4 +230,5 @@ Historic Edits
- 2005-03-19 - Dominic Cerquetti <binary1230@yahoo.com>
-  - added stuff for dance pads, new d-pad->axes mappings
- 
--Later changes may be viewed with 'git log Documentation/input/xpad.txt'
-+Later changes may be viewed with
-+'git log --follow Documentation/input/devices/xpad.rst'
-diff --git a/Documentation/sound/cards/joystick.rst b/Documentation/sound/cards/joystick.rst
-index a6e468c81d02..488946fc1079 100644
---- a/Documentation/sound/cards/joystick.rst
-+++ b/Documentation/sound/cards/joystick.rst
-@@ -11,7 +11,7 @@ General
- 
- First of all, you need to enable GAMEPORT support on Linux kernel for
- using a joystick with the ALSA driver.  For the details of gameport
--support, refer to Documentation/input/joystick.txt.
-+support, refer to Documentation/input/joydev/joystick.rst.
- 
- The joystick support of ALSA drivers is different between ISA and PCI
- cards.  In the case of ISA (PnP) cards, it's usually handled by the
+ Access Flags
+ ------------
 -- 
 2.14.2
+
