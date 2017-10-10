@@ -1,151 +1,94 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/9] ALSA: usb-audio: Add sanity checks for
-	invalid EPs
-Date: Tue, 10 Oct 2017 15:38:15 +0200
-Message-ID: <20171010133819.10567-6-tiwai@suse.de>
+From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Subject: [PATCH 1/9] usb: core: Add a helper function to check the validity of EP type in URB
+Date: Tue, 10 Oct 2017 15:38:11 +0200
+Message-ID: <20171010133819.10567-2-tiwai@suse.de>
 References: <20171010133819.10567-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E02626737B
- for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 15:38:22 +0200 (CEST)
-In-Reply-To: <20171010133819.10567-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Andrey Konovalov <andreyknvl@google.com>, linux-usb@vger.kernel.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171010133819.10567-1-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-USB-audio driver may set up a URB containing the fixed EP without
-validating its presence for some non-class-compliant devices.  This
-may end up with an oops-like kernel warning when submitted.
+This patch adds a new helper function to perform a sanity check of the
+given URB to see whether it contains a valid endpoint.  It's a light-
+weight version of what usb_submit_urb() does, but without the kernel
+warning followed by the stack trace, just returns an error code.
 
-For avoiding it, this patch adds the call of the new sanity-check
-helper for URBs.  The checks are needed only for MIDI I/O as the other
-places have already some other checks.
+Especially for a driver that doesn't parse the descriptor but fills
+the URB with the fixed endpoint (e.g. some quirks for non-compliant
+devices), this kind of check is preferable at the probe phase before
+actually submitting the urb.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/usb/midi.c | 38 ++++++++++++++++++++++++++++++--------
- 1 file changed, 30 insertions(+), 8 deletions(-)
+ drivers/usb/core/urb.c | 28 +++++++++++++++++++++++++---
+ include/linux/usb.h    |  2 ++
+ 2 files changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index a92e2b2a91ec..7ab25de5ca0a 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1282,6 +1282,7 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 	unsigned int pipe;
- 	int length;
- 	unsigned int i;
-+	int err;
+diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
+index 47903d510955..580dfaec8af7 100644
+--- a/drivers/usb/core/urb.c
++++ b/drivers/usb/core/urb.c
+@@ -187,6 +187,31 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
  
- 	rep->in = NULL;
- 	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
-@@ -1292,8 +1293,8 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 	for (i = 0; i < INPUT_URBS; ++i) {
- 		ep->urbs[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!ep->urbs[i]) {
--			snd_usbmidi_in_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 	}
- 	if (ep_info->in_interval)
-@@ -1305,8 +1306,8 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 		buffer = usb_alloc_coherent(umidi->dev, length, GFP_KERNEL,
- 					    &ep->urbs[i]->transfer_dma);
- 		if (!buffer) {
--			snd_usbmidi_in_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 		if (ep_info->in_interval)
- 			usb_fill_int_urb(ep->urbs[i], umidi->dev,
-@@ -1318,10 +1319,20 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 					  pipe, buffer, length,
- 					  snd_usbmidi_in_urb_complete, ep);
- 		ep->urbs[i]->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
-+		err = usb_urb_ep_type_check(ep->urbs[i]);
-+		if (err < 0) {
-+			dev_err(&umidi->dev->dev, "invalid MIDI in EP %x\n",
-+				ep_info->in_ep);
-+			goto error;
-+		}
- 	}
+ /*-------------------------------------------------------------------*/
  
- 	rep->in = ep;
- 	return 0;
++static const int pipetypes[4] = {
++	PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
++};
 +
-+ error:
-+	snd_usbmidi_in_endpoint_delete(ep);
-+	return -ENOMEM;
++/**
++ * usb_urb_ep_check_type - sanity check of endpoint in the given urb
++ * @urb: urb to be checked
++ *
++ * This performs a light-weight sanity check for the endpoint in the
++ * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
++ * a negative error code.
++ */
++int usb_urb_ep_check_type(const struct urb *urb)
++{
++	const struct usb_host_endpoint *ep;
++
++	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
++	if (!ep)
++		return -EINVAL;
++	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
++		return -EINVAL;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(usb_urb_ep_check_type);
++
+ /**
+  * usb_submit_urb - issue an asynchronous transfer request for an endpoint
+  * @urb: pointer to the urb describing the request
+@@ -326,9 +351,6 @@ EXPORT_SYMBOL_GPL(usb_unanchor_urb);
+  */
+ int usb_submit_urb(struct urb *urb, gfp_t mem_flags)
+ {
+-	static int			pipetypes[4] = {
+-		PIPE_CONTROL, PIPE_ISOCHRONOUS, PIPE_BULK, PIPE_INTERRUPT
+-	};
+ 	int				xfertype, max;
+ 	struct usb_device		*dev;
+ 	struct usb_host_endpoint	*ep;
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index cb9fbd54386e..2b861804fffa 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1728,6 +1728,8 @@ static inline int usb_urb_dir_out(struct urb *urb)
+ 	return (urb->transfer_flags & URB_DIR_MASK) == URB_DIR_OUT;
  }
  
- /*
-@@ -1357,6 +1368,7 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 	unsigned int i;
- 	unsigned int pipe;
- 	void *buffer;
-+	int err;
- 
- 	rep->out = NULL;
- 	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
-@@ -1367,8 +1379,8 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 	for (i = 0; i < OUTPUT_URBS; ++i) {
- 		ep->urbs[i].urb = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!ep->urbs[i].urb) {
--			snd_usbmidi_out_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 		ep->urbs[i].ep = ep;
- 	}
-@@ -1406,8 +1418,8 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 					    ep->max_transfer, GFP_KERNEL,
- 					    &ep->urbs[i].urb->transfer_dma);
- 		if (!buffer) {
--			snd_usbmidi_out_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 		if (ep_info->out_interval)
- 			usb_fill_int_urb(ep->urbs[i].urb, umidi->dev,
-@@ -1419,6 +1431,12 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 					  pipe, buffer, ep->max_transfer,
- 					  snd_usbmidi_out_urb_complete,
- 					  &ep->urbs[i]);
-+		err = usb_urb_ep_type_check(ep->urbs[i].urb);
-+		if (err < 0) {
-+			dev_err(&umidi->dev->dev, "invalid MIDI out EP %x\n",
-+				ep_info->out_ep);
-+			goto error;
-+		}
- 		ep->urbs[i].urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
- 	}
- 
-@@ -1437,6 +1455,10 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 
- 	rep->out = ep;
- 	return 0;
++int usb_urb_ep_type_check(const struct urb *urb);
 +
-+ error:
-+	snd_usbmidi_out_endpoint_delete(ep);
-+	return err;
- }
- 
- /*
+ void *usb_alloc_coherent(struct usb_device *dev, size_t size,
+ 	gfp_t mem_flags, dma_addr_t *dma);
+ void usb_free_coherent(struct usb_device *dev, size_t size,
 -- 
 2.14.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
