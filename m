@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove unnecessary message
-	from snd_soc_register_component()" to the asoc tree
-Date: Tue, 10 Oct 2017 10:23:30 +0100
-Message-ID: <E1e1ql8-0004CF-PO@debutante>
-References: <87h8vim9ai.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: dapm: mark 'snd_soc_dapm_free_kcontrol'
+	as static" to the asoc tree
+Date: Tue, 10 Oct 2017 10:30:54 +0100
+Message-ID: <E1e1qsI-0004pK-DJ@debutante>
+References: <20171010092052.2551973-2-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 14A2226727C
- for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 11:23:35 +0200 (CEST)
-In-Reply-To: <87h8vim9ai.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 508F826727C
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 11:31:03 +0200 (CEST)
+In-Reply-To: <20171010092052.2551973-2-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Daniel Baluta <daniel.baluta@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Simon <horms@verge.net.au>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, anish kumar <yesanishhere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove unnecessary message from snd_soc_register_component()
+   ASoC: dapm: mark 'snd_soc_dapm_free_kcontrol' as static
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 08e61d03b08c99f611227c6e94c70cf0029fdeb6 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Oct 2017 05:10:33 +0000
-Subject: [PATCH] ASoC: soc-core: remove unnecessary message from
- snd_soc_register_component()
+>From c42c5ac4269bf8c0aa7ef2f4bdf328a12b03f65f Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 10 Oct 2017 11:20:11 +0200
+Subject: [PATCH] ASoC: dapm: mark 'snd_soc_dapm_free_kcontrol' as static
 
-No need to print an error message if kzalloc fails.
-The core will print it.
+The newly introduced function is declared as globally visible,
+but is not declared in a header, causing a warning 'make W=1'
+or 'make C=1':
 
-Reported-by: Daniel Baluta <daniel.baluta@gmail.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+sound/soc/soc-dapm.c:3782:1: warning: symbol 'snd_soc_dapm_free_kcontrol' was not declared. Should it be static?
+
+The suggestion to make it static seems appropriate here, so let's
+do that.
+
+Fixes: 19ad683abc85 ("ASoC: dapm: Avoid creating kcontrol for params")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 166b6d218fe5..a3dcf14befd8 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3445,10 +3445,8 @@ int snd_soc_register_component(struct device *dev,
- 	struct snd_soc_component *component;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 12eb74d5f5c1..d674589e82e5 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3778,7 +3778,7 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
- 	component = kzalloc(sizeof(*component), GFP_KERNEL);
--	if (!component) {
--		dev_err(dev, "ASoC: Failed to allocate memory\n");
-+	if (!component)
- 		return -ENOMEM;
--	}
- 
- 	return snd_soc_add_component(dev, component, component_driver,
- 				     dai_drv, num_dai);
+-void
++static void
+ snd_soc_dapm_free_kcontrol(struct snd_soc_card *card,
+ 			unsigned long *private_value,
+ 			int num_params,
 -- 
 2.14.1
