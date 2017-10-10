@@ -1,18 +1,34 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: seq: Add sanity check for user-space
-	pointer delivery
-Date: Tue, 10 Oct 2017 13:44:39 +0200
-Message-ID: <20171010114439.10480-1-tiwai@suse.de>
+From: Henrik Eriksson <henrik.eriksson@axis.com>
+Subject: timestamp update when no hw delta
+Date: Tue, 10 Oct 2017 14:14:59 +0200
+Message-ID: <20171010121459.GF24037@lnxhenriken2.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 85FB126723C
- for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 13:44:45 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 597F6ACC1
- for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 11:44:44 +0000 (UTC)
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6288A266B38
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 14:15:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id B229718808
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 14:15:00 +0200 (CEST)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 5u9JElhtB3UO for <alsa-devel@alsa-project.org>;
+ Tue, 10 Oct 2017 14:15:00 +0200 (CEST)
+Received: from boulder02.se.axis.com (boulder02.se.axis.com [10.0.8.16])
+ by bastet.se.axis.com (Postfix) with ESMTPS id 3369418801
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 14:15:00 +0200 (CEST)
+Received: from boulder02.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B649C1A0F2
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 14:14:59 +0200 (CEST)
+Received: from boulder02.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id AB5491A0F1
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 14:14:59 +0200 (CEST)
+Received: from thoth.se.axis.com (unknown [10.0.2.173])
+ by boulder02.se.axis.com (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Tue, 10 Oct 2017 14:14:59 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +41,18 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The sequencer event may contain a user-space pointer with its
-SNDRV_SEQ_EXT_USRPTR bit, and we assure that its delivery is limited
-with non-atomic mode.  Otherwise the copy_from_user() may hit the
-fault and cause a problem.  Although the core code doesn't set such a
-flag (only set at snd_seq_write()), any wild driver may set it
-mistakenly and lead to an unexpected crash.
+Hi
 
-This patch adds a sanity check of such events at the delivery core
-code to filter out the invalid invocation in the atomic mode.
+I am looking into commit 3179f62001880e588e229db3006a59ad87b7792a
+("ALSA: core: add .get_time_info"), which, if I understand the code
+correctly, changed the behaviour of timestamps.  Before this change,
+snd_pcm_update_hw_ptr0() just returned if the no_delta_check showed that
+the hw_ptr had not changed.  With this change it will update the
+timestamps before returning.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/seq_clientmgr.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Was this intended, and if so does anyone have any insights to why?  The
+original behaviour to not update the timestamps when the hw position has
+not changed seems more correct to me, but I am new to this code.
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 6c9cba2166d9..84759d9c54bf 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -802,6 +802,10 @@ static int snd_seq_deliver_event(struct snd_seq_client *client, struct snd_seq_e
- 		return -EMLINK;
- 	}
- 
-+	if (snd_seq_ev_is_variable(event) &&
-+	    snd_BUG_ON(atomic && (event->data.ext.len & SNDRV_SEQ_EXT_USRPTR)))
-+		return -EINVAL;
-+
- 	if (event->queue == SNDRV_SEQ_ADDRESS_SUBSCRIBERS ||
- 	    event->dest.client == SNDRV_SEQ_ADDRESS_SUBSCRIBERS)
- 		result = deliver_to_subscribers(client, event, atomic, hop);
--- 
-2.14.2
+Regards,
+/henrik
