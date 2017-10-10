@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH 6/9] ALSA: usx2y: Add sanity checks for invalid EPs
-Date: Tue, 10 Oct 2017 15:38:16 +0200
-Message-ID: <20171010133819.10567-7-tiwai@suse.de>
+Subject: [PATCH 8/9] ALSA: caiaq: Add yet more sanity checks for invalid EPs
+Date: Tue, 10 Oct 2017 15:38:18 +0200
+Message-ID: <20171010133819.10567-9-tiwai@suse.de>
 References: <20171010133819.10567-1-tiwai@suse.de>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <20171010133819.10567-1-tiwai-l3A5Bk7waGM@public.gmane.org>
@@ -10,66 +10,50 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-usx2y driver sets up URBs containing the fixed endpoints without
-validation.  This may end up with an oops-like kernel warning when
-submitted.
-
-For avoiding it, this patch adds the calls of the new sanity-check
-helper for URBs.
+A few other places in caiaq driver have the URB handling with the
+fixed endpoints without checking the validity, too.  Add the sanity
+check with the new helper function at each appropriate place for
+avoiding the spurious kernel warnings due to invalid EPs.
 
 Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/usb/usx2y/usbusx2y.c      | 8 ++++++++
- sound/usb/usx2y/usbusx2yaudio.c | 3 +++
- 2 files changed, 11 insertions(+)
+ sound/usb/caiaq/input.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/usb/usx2y/usbusx2y.c b/sound/usb/usx2y/usbusx2y.c
-index 4569c0efac0a..55a631ccfa25 100644
---- a/sound/usb/usx2y/usbusx2y.c
-+++ b/sound/usb/usx2y/usbusx2y.c
-@@ -244,6 +244,9 @@ static void i_usX2Y_In04Int(struct urb *urb)
- 								  usb_sndbulkpipe(usX2Y->dev, 0x04), &p4out->val.vol,
- 								  p4out->type == eLT_Light ? sizeof(struct us428_lights) : 5,
- 								  i_usX2Y_Out04Int, usX2Y);
-+						err = usb_urb_ep_type_check(usX2Y->AS04.urb[j]);
-+						if (err < 0)
-+							break;
- 						err = usb_submit_urb(usX2Y->AS04.urb[j], GFP_ATOMIC);
- 						us428ctls->p4outSent = send;
- 						break;
-@@ -279,6 +282,9 @@ int usX2Y_AsyncSeq04_init(struct usX2Ydev *usX2Y)
- 						usX2Y->AS04.buffer + URB_DataLen_AsyncSeq*i, 0,
- 						i_usX2Y_Out04Int, usX2Y
- 				);
-+			err = usb_urb_ep_type_check(usX2Y->AS04.urb[i]);
-+			if (err < 0)
-+				break;
- 		}
- 	return err;
- }
-@@ -298,6 +304,8 @@ int usX2Y_In04_init(struct usX2Ydev *usX2Y)
- 			 usX2Y->In04Buf, 21,
- 			 i_usX2Y_In04Int, usX2Y,
- 			 10);
-+	if (usb_urb_ep_type_check(usX2Y->In04urb))
-+		return -EINVAL;
- 	return usb_submit_urb(usX2Y->In04urb, GFP_KERNEL);
- }
+diff --git a/sound/usb/caiaq/input.c b/sound/usb/caiaq/input.c
+index 4b3fb91deecd..e883659ea6e7 100644
+--- a/sound/usb/caiaq/input.c
++++ b/sound/usb/caiaq/input.c
+@@ -718,6 +718,9 @@ int snd_usb_caiaq_input_init(struct snd_usb_caiaqdev *cdev)
+ 				  usb_rcvbulkpipe(usb_dev, 0x4),
+ 				  cdev->ep4_in_buf, EP4_BUFSIZE,
+ 				  snd_usb_caiaq_ep4_reply_dispatch, cdev);
++		ret = usb_urb_ep_type_check(cdev->ep4_in_urb);
++		if (ret < 0)
++			goto exit_free_idev;
  
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index f93b355756e6..345e439aa95b 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -677,6 +677,9 @@ static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
- 			usb_fill_bulk_urb(us->urb[i], usX2Y->dev, usb_sndbulkpipe(usX2Y->dev, 4),
- 					  usbdata + i, 2, i_usX2Y_04Int, usX2Y);
- 		}
-+		err = usb_urb_ep_type_check(us->urb[0]);
-+		if (err < 0)
-+			goto cleanup;
- 		us->submitted =	0;
- 		us->len =	NOOF_SETRATE_URBS;
- 		usX2Y->US04 =	us;
+ 		snd_usb_caiaq_set_auto_msg(cdev, 1, 10, 5);
+ 
+@@ -757,6 +760,9 @@ int snd_usb_caiaq_input_init(struct snd_usb_caiaqdev *cdev)
+ 				  usb_rcvbulkpipe(usb_dev, 0x4),
+ 				  cdev->ep4_in_buf, EP4_BUFSIZE,
+ 				  snd_usb_caiaq_ep4_reply_dispatch, cdev);
++		ret = usb_urb_ep_type_check(cdev->ep4_in_urb);
++		if (ret < 0)
++			goto exit_free_idev;
+ 
+ 		snd_usb_caiaq_set_auto_msg(cdev, 1, 10, 5);
+ 
+@@ -802,6 +808,9 @@ int snd_usb_caiaq_input_init(struct snd_usb_caiaqdev *cdev)
+ 				  usb_rcvbulkpipe(usb_dev, 0x4),
+ 				  cdev->ep4_in_buf, EP4_BUFSIZE,
+ 				  snd_usb_caiaq_ep4_reply_dispatch, cdev);
++		ret = usb_urb_ep_type_check(cdev->ep4_in_urb);
++		if (ret < 0)
++			goto exit_free_idev;
+ 
+ 		snd_usb_caiaq_set_auto_msg(cdev, 1, 10, 5);
+ 		break;
 -- 
 2.14.2
 
