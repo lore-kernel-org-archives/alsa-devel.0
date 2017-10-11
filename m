@@ -1,81 +1,86 @@
 From: Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 3/9] ALSA: caiaq: Add a sanity check for invalid EPs
-Date: Wed, 11 Oct 2017 16:49:10 +0200
-Message-ID: <20171011144910.GD4269@localhost>
+Subject: Re: [PATCH v2 4/9] ALSA: line6: Add a sanity check for invalid EPs
+Date: Wed, 11 Oct 2017 16:52:09 +0200
+Message-ID: <20171011145209.GE4269@localhost>
 References: <20171011103646.11879-1-tiwai@suse.de>
- <20171011103646.11879-4-tiwai@suse.de>
- <20171011142031.GY4269@localhost>
- <s5ha80x928r.wl-tiwai@suse.de>
+ <20171011103646.11879-5-tiwai@suse.de>
+ <20171011142837.GZ4269@localhost>
+ <s5h7ew1920z.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <s5ha80x928r.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+In-Reply-To: <s5h7ew1920z.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
 Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 Cc: Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 11, 2017 at 04:40:36PM +0200, Takashi Iwai wrote:
-> On Wed, 11 Oct 2017 16:20:31 +0200,
+On Wed, Oct 11, 2017 at 04:45:16PM +0200, Takashi Iwai wrote:
+> On Wed, 11 Oct 2017 16:28:37 +0200,
 > Johan Hovold wrote:
-
-> > Unrelated to this patch, but this driver fails to kill the ep1_in_urb
-> > (which is submitted in this function) in case of later probe errors.
-> > This can lead to use-after-free or crashes in the completion callback.
+> > 
+> > On Wed, Oct 11, 2017 at 12:36:41PM +0200, Takashi Iwai wrote:
+> > > As syzkaller spotted, currently line6 drivers submit a URB with the
+> > > fixed EP without checking whether it's actually available, which may
+> > > result in a kernel warning like:
+> > >   usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+> > >   ------------[ cut here ]------------
+> > >   WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:449
+> > >   usb_submit_urb+0xf8a/0x11d0
+> > >   Modules linked in:
+> > >   CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 4.14.0-rc2-42613-g1488251d1a98 #238
+> > >   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+> > >   Workqueue: usb_hub_wq hub_event
+> > >   Call Trace:
+> > >    line6_start_listen+0x55f/0x9e0 sound/usb/line6/driver.c:82
+> > >    line6_init_cap_control sound/usb/line6/driver.c:690
+> > >    line6_probe+0x7c9/0x1310 sound/usb/line6/driver.c:764
+> > >    podhd_probe+0x64/0x70 sound/usb/line6/podhd.c:474
+> > >    usb_probe_interface+0x35d/0x8e0 drivers/usb/core/driver.c:361
+> > >    ....
+> > > 
+> > > This patch adds a sanity check of validity of EPs at the device
+> > > initialization phase for avoiding the call with an invalid EP.
+> > > 
+> > > Reported-by: Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+> > > Tested-by: Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+> > > Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+> > > ---
+> > >  sound/usb/line6/driver.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > > 
+> > > diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+> > > index 0ff5a7d2e19f..0da6f68761e3 100644
+> > > --- a/sound/usb/line6/driver.c
+> > > +++ b/sound/usb/line6/driver.c
+> > > @@ -78,6 +78,13 @@ static int line6_start_listen(struct usb_line6 *line6)
+> > >  			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
+> > >  			line6_data_received, line6);
+> > >  	}
+> > > +
+> > > +	/* sanity checks of EP before actually submitting */
+> > > +	if (usb_urb_ep_type_check(line6->urb_listen)) {
+> > > +		dev_err(line6->ifcdev, "invalid control EP\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > 
+> > You're now doing this check twice (here and in usb_submit_urb) every
+> > time this URB is submitted rather just checking it once in probe.
+> > 
+> > Seems like a quick band-aid to me.
 > 
-> Yes, a good catch.  Below is the fix patch.
-
-> -- 8< --
-> From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-> Subject: [PATCH] ALSA: caiaq: Fix stray URB at probe error path
+> Yes, it is :)
 > 
-> caiaq driver doesn't kill the URB properly at its error path during
-> the probe, which may lead to a use-after-free error later.  This patch
-> addresses it.
-> 
-> Reported-by: Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+> We may split line6_start_listen() to two functions, one for
+> initializing URBs and another for submission, but it'll be more codes
+> and the check is fairly cheap.  So again it's a question whether
+> easier to read or to get minor optimization.
 
-Looks good to me:
+I'd say it's also a question about long-term maintainability. Those
+quick band-aids tend to keep piling up over time.
 
-Reviewed-by: Johan Hovold <johan-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-
-> ---
->  sound/usb/caiaq/device.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-> index a29674bf96e5..d55ca48de3ea 100644
-> --- a/sound/usb/caiaq/device.c
-> +++ b/sound/usb/caiaq/device.c
-> @@ -476,10 +476,12 @@ static int init_card(struct snd_usb_caiaqdev *cdev)
->  
->  	err = snd_usb_caiaq_send_command(cdev, EP1_CMD_GET_DEVICE_INFO, NULL, 0);
->  	if (err)
-> -		return err;
-> +		goto err_kill_urb;
->  
-> -	if (!wait_event_timeout(cdev->ep1_wait_queue, cdev->spec_received, HZ))
-> -		return -ENODEV;
-> +	if (!wait_event_timeout(cdev->ep1_wait_queue, cdev->spec_received, HZ)) {
-> +		err = -ENODEV;
-> +		goto err_kill_urb;
-> +	}
->  
->  	usb_string(usb_dev, usb_dev->descriptor.iManufacturer,
->  		   cdev->vendor_name, CAIAQ_USB_STR_LEN);
-> @@ -514,6 +516,10 @@ static int init_card(struct snd_usb_caiaqdev *cdev)
->  
->  	setup_card(cdev);
->  	return 0;
-> +
-> + err_kill_urb:
-> +	usb_kill_urb(&cdev->ep1_in_urb);
-> +	return err;
->  }
->  
->  static int snd_probe(struct usb_interface *intf,
+Johan
 --
 To unsubscribe from this list: send the line "unsubscribe linux-usb" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
