@@ -1,90 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch v6 1/7] slimbus: Device management on
-	SLIMbus
-Date: Wed, 11 Oct 2017 11:23:42 +0100
-Message-ID: <20171011102342.llsau56cjytwmo2f@sirena.co.uk>
-References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
- <20171010100534.zyv3b5m6fmgmceim@localhost.localdomain>
- <6dc24d42-7c40-9ffe-6be5-bf38d712222b@linaro.org>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5127229085217427906=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B64D266B38
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 12:24:03 +0200 (CEST)
-In-Reply-To: <6dc24d42-7c40-9ffe-6be5-bf38d712222b@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, gong.chen@linux.intel.com, arnd@arndb.de, kheitke@audience.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, Charles Keepax <ckeepax@opensource.cirrus.com>, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, jkosina@suse.cz, linux-kernel@vger.kernel.org, daniel@ffwll.ch, gregkh@linuxfoundation.org, joe@perches.com, davem@davemloft.net
+From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Subject: [PATCH v2 7/9] ALSA: hiface: Add sanity checks for invalid EPs
+Date: Wed, 11 Oct 2017 12:36:44 +0200
+Message-ID: <20171011103646.11879-8-tiwai@suse.de>
+References: <20171011103646.11879-1-tiwai@suse.de>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171011103646.11879-1-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+hiface usb-audio driver sets up URBs containing the fixed endpoints
+without validation.  This may end up with an oops-like kernel warning
+when submitted.
 
---===============5127229085217427906==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="z3erd7lyishk7y4k"
-Content-Disposition: inline
+For avoiding it, this patch adds the calls of the new sanity-check
+helper for URBs.
 
+Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+---
+ sound/usb/hiface/pcm.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---z3erd7lyishk7y4k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
+index 175d8d6b7f59..396c317115b1 100644
+--- a/sound/usb/hiface/pcm.c
++++ b/sound/usb/hiface/pcm.c
+@@ -541,6 +541,8 @@ static int hiface_pcm_init_urb(struct pcm_urb *urb,
+ 	usb_fill_bulk_urb(&urb->instance, chip->dev,
+ 			  usb_sndbulkpipe(chip->dev, ep), (void *)urb->buffer,
+ 			  PCM_PACKET_SIZE, handler, urb);
++	if (usb_urb_ep_type_check(&urb->instance))
++		return -EINVAL;
+ 	init_usb_anchor(&urb->submitted);
+ 
+ 	return 0;
+@@ -599,9 +601,12 @@ int hiface_pcm_init(struct hiface_chip *chip, u8 extra_freq)
+ 	mutex_init(&rt->stream_mutex);
+ 	spin_lock_init(&rt->playback.lock);
+ 
+-	for (i = 0; i < PCM_N_URBS; i++)
+-		hiface_pcm_init_urb(&rt->out_urbs[i], chip, OUT_EP,
++	for (i = 0; i < PCM_N_URBS; i++) {
++		ret = hiface_pcm_init_urb(&rt->out_urbs[i], chip, OUT_EP,
+ 				    hiface_pcm_out_urb_handler);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	ret = snd_pcm_new(chip->card, "USB-SPDIF Audio", 0, 1, 0, &pcm);
+ 	if (ret < 0) {
+-- 
+2.14.2
 
-On Tue, Oct 10, 2017 at 01:34:48PM +0100, Srinivas Kandagatla wrote:
-> On 10/10/17 11:05, Charles Keepax wrote:
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
-> > This does sort of make sense but kinda makes the code a bit ugly
-> > parsing the MID and PID. Some parts will support SLIMBus and also
-> > other control interfaces, which means they would need to add an
-> > additional compatible string just for SLIMBus. It also breaks
-> > the normal conventions of vendor,part and finally it makes the
-> > compatible strings really unreadable which will be a bit annoying
-> > when looking at DTs.
-
-> This change was made inline to the comments provided in previous version of
-> the patch https://lkml.org/lkml/2016/5/3/576
-
-I'm not sure I really agree with Rob here - while Slimbus is notionally
-discoverable I don't think I ever saw a practical system which relied on
-that for enumeration.  In real systems the discoverability is more of a
-complexity to be worked around than anything else.
-
---z3erd7lyishk7y4k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnd8S0ACgkQJNaLcl1U
-h9ADzgf+MfPdo5iS8HcAeOk5YJuBcP+SuJdWfQc5aTAF8PnXH9SxrWnErQamfJiX
-HQ3nEbRvMpEjS5gAGWw/N+L8AGIvid1yitTwSSpeqRt1HnzzLHttp2Pk3pzJpbqB
-l5LWpl0ye+uZ0POGOiakl+V3TsmB8c8MEJ/PT3BqzgfA4zEa4BTQAfTQG72ZClFe
-vLHN8/l8YC5ETsAgNpARPwcXx3PcxFklpSA9/t88qNLBx7I2KoGuypkMDMuqyfKu
-reRrOHMmPx9pEE+28K87S0gkeqXa/ViiIBOjfsC4ZG0PomWFugng7Xr9VhOYbD47
-IlfJGXyYL9bJi1+W48xPn8XE0B6VDA==
-=los5
------END PGP SIGNATURE-----
-
---z3erd7lyishk7y4k--
-
---===============5127229085217427906==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5127229085217427906==--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
