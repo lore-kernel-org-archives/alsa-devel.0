@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 9/9] ALSA: line6: Add yet more sanity checks for invalid EPs
-Date: Wed, 11 Oct 2017 12:36:46 +0200
-Message-ID: <20171011103646.11879-10-tiwai@suse.de>
+Subject: [PATCH v2 4/9] ALSA: line6: Add a sanity check for invalid EPs
+Date: Wed, 11 Oct 2017 12:36:41 +0200
+Message-ID: <20171011103646.11879-5-tiwai@suse.de>
 References: <20171011103646.11879-1-tiwai@suse.de>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <20171011103646.11879-1-tiwai-l3A5Bk7waGM@public.gmane.org>
@@ -10,86 +10,53 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-There are a few other places calling usb_submit_urb() with the URB
-composed from the fixed endpoint without validation.  For avoiding the
-spurious kernel warnings, add the sanity checks to appropriate
-places.
+As syzkaller spotted, currently line6 drivers submit a URB with the
+fixed EP without checking whether it's actually available, which may
+result in a kernel warning like:
+  usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+  ------------[ cut here ]------------
+  WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:449
+  usb_submit_urb+0xf8a/0x11d0
+  Modules linked in:
+  CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 4.14.0-rc2-42613-g1488251d1a98 #238
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+  Workqueue: usb_hub_wq hub_event
+  Call Trace:
+   line6_start_listen+0x55f/0x9e0 sound/usb/line6/driver.c:82
+   line6_init_cap_control sound/usb/line6/driver.c:690
+   line6_probe+0x7c9/0x1310 sound/usb/line6/driver.c:764
+   podhd_probe+0x64/0x70 sound/usb/line6/podhd.c:474
+   usb_probe_interface+0x35d/0x8e0 drivers/usb/core/driver.c:361
+   ....
 
+This patch adds a sanity check of validity of EPs at the device
+initialization phase for avoiding the call with an invalid EP.
+
+Reported-by: Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Tested-by: Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
 Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/usb/line6/driver.c | 23 +++++++++++++++--------
- sound/usb/line6/midi.c   | 17 +++++++++++------
- 2 files changed, 26 insertions(+), 14 deletions(-)
+ sound/usb/line6/driver.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 0da6f68761e3..7c682b219584 100644
+index 0ff5a7d2e19f..0da6f68761e3 100644
 --- a/sound/usb/line6/driver.c
 +++ b/sound/usb/line6/driver.c
-@@ -175,17 +175,24 @@ static int line6_send_raw_message_async_part(struct message *msg,
+@@ -78,6 +78,13 @@ static int line6_start_listen(struct usb_line6 *line6)
+ 			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
+ 			line6_data_received, line6);
  	}
- 
- 	msg->done += bytes;
--	retval = usb_submit_urb(urb, GFP_ATOMIC);
- 
--	if (retval < 0) {
--		dev_err(line6->ifcdev, "%s: usb_submit_urb failed (%d)\n",
--			__func__, retval);
--		usb_free_urb(urb);
--		kfree(msg);
--		return retval;
--	}
++
 +	/* sanity checks of EP before actually submitting */
-+	retval = usb_urb_ep_type_check(urb);
-+	if (retval < 0)
-+		goto error;
++	if (usb_urb_ep_type_check(line6->urb_listen)) {
++		dev_err(line6->ifcdev, "invalid control EP\n");
++		return -EINVAL;
++	}
 +
-+	retval = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (retval < 0)
-+		goto error;
- 
- 	return 0;
-+
-+ error:
-+	dev_err(line6->ifcdev, "%s: usb_submit_urb failed (%d)\n",
-+		__func__, retval);
-+	usb_free_urb(urb);
-+	kfree(msg);
-+	return retval;
- }
- 
- /*
-diff --git a/sound/usb/line6/midi.c b/sound/usb/line6/midi.c
-index 1d3a23b02d68..6d7cde56a355 100644
---- a/sound/usb/line6/midi.c
-+++ b/sound/usb/line6/midi.c
-@@ -130,16 +130,21 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
- 			 transfer_buffer, length, midi_sent, line6,
- 			 line6->interval);
- 	urb->actual_length = 0;
--	retval = usb_submit_urb(urb, GFP_ATOMIC);
-+	retval = usb_urb_ep_type_check(urb);
-+	if (retval < 0)
-+		goto error;
- 
--	if (retval < 0) {
--		dev_err(line6->ifcdev, "usb_submit_urb failed\n");
--		usb_free_urb(urb);
--		return retval;
--	}
-+	retval = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (retval < 0)
-+		goto error;
- 
- 	++line6->line6midi->num_active_send_urbs;
- 	return 0;
-+
-+ error:
-+	dev_err(line6->ifcdev, "usb_submit_urb failed\n");
-+	usb_free_urb(urb);
-+	return retval;
- }
- 
- static int line6_midi_output_open(struct snd_rawmidi_substream *substream)
+ 	line6->urb_listen->actual_length = 0;
+ 	err = usb_submit_urb(line6->urb_listen, GFP_ATOMIC);
+ 	return err;
 -- 
 2.14.2
 
