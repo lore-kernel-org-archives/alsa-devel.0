@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 5/9] ALSA: usb-audio: Add sanity checks for invalid EPs
-Date: Wed, 11 Oct 2017 12:36:42 +0200
-Message-ID: <20171011103646.11879-6-tiwai@suse.de>
+Subject: [PATCH v2 9/9] ALSA: line6: Add yet more sanity checks for invalid EPs
+Date: Wed, 11 Oct 2017 12:36:46 +0200
+Message-ID: <20171011103646.11879-10-tiwai@suse.de>
 References: <20171011103646.11879-1-tiwai@suse.de>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <20171011103646.11879-1-tiwai-l3A5Bk7waGM@public.gmane.org>
@@ -10,128 +10,86 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-USB-audio driver may set up a URB containing the fixed EP without
-validating its presence for some non-class-compliant devices.  This
-may end up with an oops-like kernel warning when submitted.
-
-For avoiding it, this patch adds the call of the new sanity-check
-helper for URBs.  The checks are needed only for MIDI I/O as the other
-places have already some other checks.
+There are a few other places calling usb_submit_urb() with the URB
+composed from the fixed endpoint without validation.  For avoiding the
+spurious kernel warnings, add the sanity checks to appropriate
+places.
 
 Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/usb/midi.c | 38 ++++++++++++++++++++++++++++++--------
- 1 file changed, 30 insertions(+), 8 deletions(-)
+ sound/usb/line6/driver.c | 23 +++++++++++++++--------
+ sound/usb/line6/midi.c   | 17 +++++++++++------
+ 2 files changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index a92e2b2a91ec..7ab25de5ca0a 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1282,6 +1282,7 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 	unsigned int pipe;
- 	int length;
- 	unsigned int i;
-+	int err;
- 
- 	rep->in = NULL;
- 	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
-@@ -1292,8 +1293,8 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 	for (i = 0; i < INPUT_URBS; ++i) {
- 		ep->urbs[i] = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!ep->urbs[i]) {
--			snd_usbmidi_in_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 	}
- 	if (ep_info->in_interval)
-@@ -1305,8 +1306,8 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 		buffer = usb_alloc_coherent(umidi->dev, length, GFP_KERNEL,
- 					    &ep->urbs[i]->transfer_dma);
- 		if (!buffer) {
--			snd_usbmidi_in_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 		if (ep_info->in_interval)
- 			usb_fill_int_urb(ep->urbs[i], umidi->dev,
-@@ -1318,10 +1319,20 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi *umidi,
- 					  pipe, buffer, length,
- 					  snd_usbmidi_in_urb_complete, ep);
- 		ep->urbs[i]->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
-+		err = usb_urb_ep_type_check(ep->urbs[i]);
-+		if (err < 0) {
-+			dev_err(&umidi->dev->dev, "invalid MIDI in EP %x\n",
-+				ep_info->in_ep);
-+			goto error;
-+		}
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index 0da6f68761e3..7c682b219584 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -175,17 +175,24 @@ static int line6_send_raw_message_async_part(struct message *msg,
  	}
  
- 	rep->in = ep;
+ 	msg->done += bytes;
+-	retval = usb_submit_urb(urb, GFP_ATOMIC);
+ 
+-	if (retval < 0) {
+-		dev_err(line6->ifcdev, "%s: usb_submit_urb failed (%d)\n",
+-			__func__, retval);
+-		usb_free_urb(urb);
+-		kfree(msg);
+-		return retval;
+-	}
++	/* sanity checks of EP before actually submitting */
++	retval = usb_urb_ep_type_check(urb);
++	if (retval < 0)
++		goto error;
++
++	retval = usb_submit_urb(urb, GFP_ATOMIC);
++	if (retval < 0)
++		goto error;
+ 
  	return 0;
 +
 + error:
-+	snd_usbmidi_in_endpoint_delete(ep);
-+	return -ENOMEM;
++	dev_err(line6->ifcdev, "%s: usb_submit_urb failed (%d)\n",
++		__func__, retval);
++	usb_free_urb(urb);
++	kfree(msg);
++	return retval;
  }
  
  /*
-@@ -1357,6 +1368,7 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 	unsigned int i;
- 	unsigned int pipe;
- 	void *buffer;
-+	int err;
+diff --git a/sound/usb/line6/midi.c b/sound/usb/line6/midi.c
+index 1d3a23b02d68..6d7cde56a355 100644
+--- a/sound/usb/line6/midi.c
++++ b/sound/usb/line6/midi.c
+@@ -130,16 +130,21 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
+ 			 transfer_buffer, length, midi_sent, line6,
+ 			 line6->interval);
+ 	urb->actual_length = 0;
+-	retval = usb_submit_urb(urb, GFP_ATOMIC);
++	retval = usb_urb_ep_type_check(urb);
++	if (retval < 0)
++		goto error;
  
- 	rep->out = NULL;
- 	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
-@@ -1367,8 +1379,8 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 	for (i = 0; i < OUTPUT_URBS; ++i) {
- 		ep->urbs[i].urb = usb_alloc_urb(0, GFP_KERNEL);
- 		if (!ep->urbs[i].urb) {
--			snd_usbmidi_out_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 		ep->urbs[i].ep = ep;
- 	}
-@@ -1406,8 +1418,8 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 					    ep->max_transfer, GFP_KERNEL,
- 					    &ep->urbs[i].urb->transfer_dma);
- 		if (!buffer) {
--			snd_usbmidi_out_endpoint_delete(ep);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto error;
- 		}
- 		if (ep_info->out_interval)
- 			usb_fill_int_urb(ep->urbs[i].urb, umidi->dev,
-@@ -1419,6 +1431,12 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 					  pipe, buffer, ep->max_transfer,
- 					  snd_usbmidi_out_urb_complete,
- 					  &ep->urbs[i]);
-+		err = usb_urb_ep_type_check(ep->urbs[i].urb);
-+		if (err < 0) {
-+			dev_err(&umidi->dev->dev, "invalid MIDI out EP %x\n",
-+				ep_info->out_ep);
-+			goto error;
-+		}
- 		ep->urbs[i].urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
- 	}
+-	if (retval < 0) {
+-		dev_err(line6->ifcdev, "usb_submit_urb failed\n");
+-		usb_free_urb(urb);
+-		return retval;
+-	}
++	retval = usb_submit_urb(urb, GFP_ATOMIC);
++	if (retval < 0)
++		goto error;
  
-@@ -1437,6 +1455,10 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi *umidi,
- 
- 	rep->out = ep;
+ 	++line6->line6midi->num_active_send_urbs;
  	return 0;
 +
 + error:
-+	snd_usbmidi_out_endpoint_delete(ep);
-+	return err;
++	dev_err(line6->ifcdev, "usb_submit_urb failed\n");
++	usb_free_urb(urb);
++	return retval;
  }
  
- /*
+ static int line6_midi_output_open(struct snd_rawmidi_substream *substream)
 -- 
 2.14.2
 
