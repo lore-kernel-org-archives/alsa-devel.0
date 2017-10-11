@@ -1,26 +1,17 @@
-From: Theodor van Nahl <theo_dev@van-nahl.org>
-Subject: PCM2902: click/pop sound when it should be silent.
-Date: Wed, 11 Oct 2017 19:20:43 +0200
-Message-ID: <c9ffd9284ff75627b7c19131e0d287f9@van-nahl.org>
+From: =?UTF-8?B?0JLQu9Cw0LTQuNC80LjRgCDQnNCw0YDRgtGM0Y/QvdC+0LI=?=
+ <vilgeforce@gmail.com>
+Subject: Click sound when playing "silence" buffer
+Date: Wed, 11 Oct 2017 22:16:50 +0300
+Message-ID: <CAL5iTPJNUC7EHUdPNWq4+xfU-8eHm7N1ee34aguxOQ_=PF9CWQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="001a114d7f6e0ab487055b4a440c"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lakrahn.de (mail.van-nahl.org [80.241.223.154])
- by alsa0.perex.cz (Postfix) with ESMTP id 86106266CA1
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 19:20:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lakrahn.de (Postfix) with ESMTP id 87BC288A8BA
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 19:20:46 +0200 (CEST)
-Received: from lakrahn.de ([127.0.0.1])
- by localhost (lakrahn.de [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 65yQwe-gehy6 for <alsa-devel@alsa-project.org>;
- Wed, 11 Oct 2017 19:20:44 +0200 (CEST)
-Received: from webmail.van-nahl.org (shelob.van-nahl.org [5.189.180.53])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by lakrahn.de (Postfix) with ESMTPSA id 3156E8815F7
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 19:20:44 +0200 (CEST)
+Received: from mail-qt0-f171.google.com (mail-qt0-f171.google.com
+ [209.85.216.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB3A02675CB
+ for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 21:16:52 +0200 (CEST)
+Received: by mail-qt0-f171.google.com with SMTP id z28so5981614qtz.13
+ for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 12:16:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,57 +24,62 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpJIGRvIGhhdmUgYSBCZWhyaW5nZXIgVS1QSE9SSUEgVU1DMjIgVVNCIHNvdW5kY2Fy
-ZCB3aGljaCB1c2VzIHRoZSAKUENNMjkwMgpzb3VuZGNoaXAuIEkgYW0gdXNpbmcgdGhhdCBkZXZp
-Y2Ugd2l0aCBwdWxzZWF1ZGlvIG9uIHRvcCBhbmQgdGhlIHRyb3VibGUgCm9jY3Vycwp3aGVuIEkg
-ZG8gbm90IHVzZSB0aGUgZGV2aWNlLgoKClByb2JsZW0KPT09PT09PQoKSW4gdmFyaW91cyBpbnRl
-cnZhbHMsIGJ1dCBvbmx5IHdoZW4gSSBkb24ndCBwbGF5IGF1ZGlvLCBJIGRvIGhlYXIgYSBwb3Ag
-Cm9yCmNsaWNrIHNvdW5kIGNvbXBhcmFibGUgdG8gdGhlIHNvdW5kIGEgcG93ZXIgYW1wIGRvZXMg
-d2hlbiBjb25uZWN0aW5nIG9yCmRpc2Nvbm5lY3RpbmcgdGhlIHBvd2VyLgoKCk15IEFuYWx5c2lz
-Cj09PT09PT09PT09CgpJIGRpZCB3YXRjaCB0aGUgdXNiIHBvcnQgdXNpbmcgd2lyZXNoYXJrIGFu
-ZCB0aGUgZm9sbG93aW5nIGZyYW1lIGhhcyAKYmVlbiB0aGUKbGFzdCBmcmFtZSBiZWZvcmUgdGhh
-dCBzb3VuZDoKCkZyYW1lIDM0NzA6IDY0IGJ5dGVzIG9uIHdpcmUgKDUxMiBiaXRzKSwgNjQgYnl0
-ZXMgY2FwdHVyZWQgKDUxMiBiaXRzKSBvbiAKaW50ZXJmYWNlIDAKVVNCIFVSQgogICAgIFtTb3Vy
-Y2U6IGhvc3RdCiAgICAgW0Rlc3RpbmF0aW9uOiAyLjQuMF0KICAgICBVUkIgaWQ6IDB4ZmZmZjk1
-MjJlZTkzZjljMAogICAgIFVSQiB0eXBlOiBVUkJfU1VCTUlUICgnUycpCiAgICAgVVJCIHRyYW5z
-ZmVyIHR5cGU6IFVSQl9DT05UUk9MICgweDAyKQogICAgIEVuZHBvaW50OiAweDAwLCBEaXJlY3Rp
-b246IE9VVAogICAgIERldmljZTogNAogICAgIFVSQiBidXMgaWQ6IDIKICAgICBEZXZpY2Ugc2V0
-dXAgcmVxdWVzdDogcmVsZXZhbnQgKDApCiAgICAgRGF0YTogcHJlc2VudCAoMCkKICAgICBVUkIg
-c2VjOiAxNTA3NjAyMTMxCiAgICAgVVJCIHVzZWM6IDM0MDU0CiAgICAgVVJCIHN0YXR1czogT3Bl
-cmF0aW9uIG5vdyBpbiBwcm9ncmVzcyAoLUVJTlBST0dSRVNTKSAoLTExNSkKICAgICBVUkIgbGVu
-Z3RoIFtieXRlc106IDAKICAgICBEYXRhIGxlbmd0aCBbYnl0ZXNdOiAwCiAgICAgW1Jlc3BvbnNl
-IGluOiAzNDcxXQogICAgIEludGVydmFsOiAwCiAgICAgU3RhcnQgZnJhbWU6IDAKICAgICBDb3B5
-IG9mIFRyYW5zZmVyIEZsYWdzOiAweDAwMDAwMDAwCiAgICAgTnVtYmVyIG9mIElTTyBkZXNjcmlw
-dG9yczogMApVUkIgc2V0dXAKICAgICBibVJlcXVlc3RUeXBlOiAweDAxCiAgICAgICAgIDAuLi4g
-Li4uLiA9IERpcmVjdGlvbjogSG9zdC10by1kZXZpY2UKICAgICAgICAgLjAwLiAuLi4uID0gVHlw
-ZTogU3RhbmRhcmQgKDB4MCkKICAgICAgICAgLi4uMCAwMDAxID0gUmVjaXBpZW50OiBJbnRlcmZh
-Y2UgKDB4MDEpCiAgICAgYlJlcXVlc3Q6IFNFVCBJTlRFUkZBQ0UgKDExKQogICAgIGJBbHRlcm5h
-dGVTZXR0aW5nOiAwCiAgICAgd0ludGVyZmFjZTogMQogICAgIHdMZW5ndGg6IDAKCiBGcm9tIHdo
-YXQgSSB1bmRlcnN0YW5kIGZyb20gdGhlIFBDTTI5MDIgTWFudWFsIFswXSBvbiBwYWdlIDIyIGlz
-IHRoYXQgCnRoZQpzdHJlYW1pbmcgaW50ZXJmYWNlIGdldHMgZGVhY3RpdmF0ZWQgKHplcm8gYmFu
-ZHdpdGggc2V0dGluZykgYnkgdGhpcyAKZnJhbWUuCklmIEkgcmVhZCB0aGUgZG9jdW1lbnRhdGlv
-biBvZiB0aGUgUENNMjkwMiBjb3JyZWN0bHkgdGhhdCBzdGVwIGlzIG5vdApuZXNlc3NhcnksIHRo
-ZSBjaGlwIHN1c3BlbmRzIGl0c2VsZiB3aGVuIG5vIGRhdGEgY29tZXMgaW4gKHAuIDI2KS4KClJl
-YWRpbmcgKmxpbnV4L3NvdW5kL3VzYi9lbmRwb2ludC5jKiBJIGFtIGNvbnZpbmNlZCB0aGF0IHRo
-ZSBmcmFtZSBhYm92ZSAKYW5kCml0cyBjb3VudGVyIHBhcnQgYXJlIHNlbmQgYnkgdGhpcyBjb2Rl
-IGFuZCBzZW5kIGV2ZXJ5dGltZSBhIGZpcnN0IAplbmRwb2ludAoocHVsc2VhdWRpbywgYXBsYXks
-IOKApikgY29ubmVjdHMgYW5kIHRoZSBsYXN0IGVuZHBvaW50IGRpc2Nvbm5lY3RlZC4gRHVlIAp0
-byB0aGF0CkkgZG8gYmVsaWV2ZSB0aGF0IHRoaXMgaXMgYSBidWcgaW4gdGhlIGRyaXZlciB1c2Vk
-IGZvciB0aGUgcGNtMjkwMiBjaGlwLgoKClJlZmVyZW5jZXMKPT09PT09PT09PQoKVGhhdCBidWcg
-aXMgbm90IHVuaGVhcmQgb2YgYXMgeW91IGNhbiBzZWUgaW4gWzFdIGFuZCBbMl0gYnV0IHRoZSAK
-d29ya2Fyb3VuZHMKcHJvdmlkZWQgaW4gdGhvc2UgbGlua3MgSSBjYW5ub3QgY29uZmlybSB0byB3
-b3JrLgoKCkkgaG9wZSB0aGF0IG15IGFuYWx5c2lzIGlzIGFzIGNvbmNsdXNpdmUgZm9yIHlvdSBh
-cyB0aGV5IHNvdW5kIHRvIG1lLiAKIEZyb20gdGhpcwpwb2ludCBJIGFtIHVuc3VyZSB3aGVyZSB0
-byBoZWFkIG5leHQgYW5kIHdhcyBob3BpbmcgZm9yIGhlbHAgaGVyZS4gU28gbXkKZm9sbG93dXAg
-cXVlc3Rpb25zIGFyZToKCiAgKiBXaGF0IGRvIHlvdSBiZWxpZXZlIHdoZXJlIGFuZCAid2h5IHRo
-ZXJlIiB0aGlzIHNob3VsZCBiZSBmaXhlZD8KCiAgKiBXaHkgaXMgdGhlIGZyYW1lIGFib3ZlIGJl
-ZWluZyBzZW5kIHRvIHRoZSBkZXZpY2U/IFRoZSBzb3VuZGNhcmQgZG9lcyAKc2VlbSB0bwogICAg
-aGF2ZSBwb3dlciBhZnRlciB0aGF0IGZyYW1lLgoKICAqIElzbid0IGl0IHBvc3NpYmxlIHRvIG5l
-dmVyIHNldCB0aGUgcGNtMjkwMiBpbnRvICJ6ZXJvIGJhbmR3aXRoIG1vZGUiPwoKCkdyZWV0aW5n
-cywKVGhlb2RvcgoKClswXTogaHR0cDovL3d3dy50aS5jb20vcHJvZHVjdC9wY20yOTAyClsxXTog
-Cmh0dHBzOi8vdWJ1bnR1Zm9ydW1zLm9yZy9zaG93dGhyZWFkLnBocD90PTIyOTIxNDMmcD0xMzM0
-NTEwMCNwb3N0MTMzNDUxMDAKWzJdOiAKaHR0cHM6Ly93d3cucmVkZGl0LmNvbS9yL2xpbnV4L2Nv
-bW1lbnRzLzNpZGIxaC9jbGlja3lfbm9pc2VfYmVmb3JlX2FuZF9hZnRlcl9ldmVyeV9zb3VuZC8K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+--001a114d7f6e0ab487055b4a440c
+Content-Type: text/plain; charset="UTF-8"
+
+Hello! I'm completely new to ALSA and I tried to do a simply buzzer using it.
+
+During the debug I noticed a strange behaviour: I used
+SND_PCM_FORMAT_S8 format, tried to play the buffer filled with zero
+bytes and I heard click sound when my program starts and end playing
+the buffer. When I filled the buffer with 0x80 bytes I didn't hear any
+clicks. The closer the bytes value to 0x80, the quieter the click is.
+
+I tried snd_pcm_format_set_silence() instead of memset() and got
+clicks too. Why I got them?
+
+Does it mean what when I use some formats, the values in buffer for
+zero output voltage are not 0x00?
+
+My source code is in attachment, my sound card is Intel HDA.
+
+--001a114d7f6e0ab487055b4a440c
+Content-Type: text/x-c++src; charset="US-ASCII"; name="main.cpp"
+Content-Disposition: attachment; filename="main.cpp"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_j8nf2elv0
+
+I2RlZmluZSBBTFNBX1BDTV9ORVdfSFdfUEFSQU1TX0FQSQoKI2luY2x1ZGUgPGFsc2EvYXNvdW5k
+bGliLmg+CgppbnQgbWFpbigpCnsKaW50IGVyckNvZGU7CnVuc2lnbmVkIGludCB2YWw7CmludCBk
+aXI7CnNpemVfdCBzaXplOwp1bnNpZ25lZCBsb25nIGxvb3BzOwpjaGFyKiBidWZmZXI7CgpzbmRf
+cGNtX3QqIGhQQ007CnNuZF9wY21faHdfcGFyYW1zX3QqIHBhcmFtczsKc25kX3BjbV91ZnJhbWVz
+X3QgZnJhbWVzOwoJCgllcnJDb2RlID0gc25kX3BjbV9vcGVuKCZoUENNLCAiZGVmYXVsdCIsIFNO
+RF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKTsKCWlmIChlcnJDb2RlIDwgMCl7CgkJcHJpbnRmICgi
+RXJyb3Igc25kX3BjbV9vcGVuOiAlc1xuIiwgc25kX3N0cmVycm9yKGVyckNvZGUpKTsKCQlyZXR1
+cm4gMTsKCX0KCQoJc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZwYXJhbXMpOwoJc25kX3BjbV9o
+d19wYXJhbXNfYW55KGhQQ00sIHBhcmFtcyk7CglzbmRfcGNtX2h3X3BhcmFtc19zZXRfYWNjZXNz
+KGhQQ00sIHBhcmFtcywgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQpOwoJLy9zbmRfcGNt
+X2h3X3BhcmFtc19zZXRfZm9ybWF0KGhQQ00sIHBhcmFtcywgU05EX1BDTV9GT1JNQVRfUzE2X0xF
+KTsKCXNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQoaFBDTSwgcGFyYW1zLCBTTkRfUENNX0ZP
+Uk1BVF9TOCk7CglzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMoaFBDTSwgcGFyYW1zLCAy
+KTsKCQoJdmFsID0gNDQxMDA7CglzbmRfcGNtX2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyKGhQQ00s
+IHBhcmFtcywgJnZhbCwgJmRpcik7CgkKCWZyYW1lcyA9IDI1NjsKCXNuZF9wY21faHdfcGFyYW1z
+X3NldF9wZXJpb2Rfc2l6ZV9uZWFyKGhQQ00sIHBhcmFtcywgJmZyYW1lcywgJmRpcik7CgkKCWVy
+ckNvZGUgPSBzbmRfcGNtX2h3X3BhcmFtcyhoUENNLCBwYXJhbXMpOwoJaWYgKGVyckNvZGUgPCAw
+KXsKCQlwcmludGYgKCJFcnJvciBzbmRfcGNtX2h3X3BhcmFtczogJXNcbiIsIHNuZF9zdHJlcnJv
+cihlcnJDb2RlKSk7Cgl9CgkKCXNuZF9wY21faHdfcGFyYW1zX2dldF9wZXJpb2Rfc2l6ZShwYXJh
+bXMsICZmcmFtZXMsICZkaXIpOwoJc2l6ZSA9IGZyYW1lcyAqIDIgKiA0OwoJYnVmZmVyID0gKGNo
+YXIqKW1hbGxvYyhzaXplKTsKCQkKCW1lbXNldChidWZmZXIsIDB4MDAsIHNpemUpOwoJCglzbmRf
+cGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3RpbWUocGFyYW1zLCAmdmFsLCAmZGlyKTsKCWxvb3Bz
+ID0gMTAwMDAwMCAvIHZhbDsKCQoJd2hpbGUobG9vcHMgPiAwKXsKCQlsb29wcy0tOwoJCWVyckNv
+ZGUgPSBzbmRfcGNtX3dyaXRlaShoUENNLCBidWZmZXIsIGZyYW1lcyk7Cgl9CgkJCglzbmRfcGNt
+X2RyYWluKGhQQ00pOwoJc25kX3BjbV9jbG9zZShoUENNKTsKCWZyZWUoYnVmZmVyKTsKCXJldHVy
+biAwOwp9
+--001a114d7f6e0ab487055b4a440c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--001a114d7f6e0ab487055b4a440c--
