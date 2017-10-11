@@ -1,65 +1,90 @@
-From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [Patch v6 2/7] slimbus: Add messaging APIs to
- slimbus framework
-Date: Wed, 11 Oct 2017 15:54:36 +0530
-Message-ID: <20171011102436.GH30097@localhost>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [Patch v6 1/7] slimbus: Device management on
+	SLIMbus
+Date: Wed, 11 Oct 2017 11:23:42 +0100
+Message-ID: <20171011102342.llsau56cjytwmo2f@sirena.co.uk>
 References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-3-srinivas.kandagatla@linaro.org>
- <20171011043814.GF30097@localhost>
- <aa117cb8-ba59-894c-5a82-1b38facfa841@linaro.org>
+ <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
+ <20171010100534.zyv3b5m6fmgmceim@localhost.localdomain>
+ <6dc24d42-7c40-9ffe-6be5-bf38d712222b@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <aa117cb8-ba59-894c-5a82-1b38facfa841-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, gong.chen-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, kheitke-hxvC4TZJLZFWk0Htik3J/w@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============5127229085217427906=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B64D266B38
+ for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 12:24:03 +0200 (CEST)
+In-Reply-To: <6dc24d42-7c40-9ffe-6be5-bf38d712222b@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, gong.chen@linux.intel.com, arnd@arndb.de, kheitke@audience.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, Charles Keepax <ckeepax@opensource.cirrus.com>, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, jkosina@suse.cz, linux-kernel@vger.kernel.org, daniel@ffwll.ch, gregkh@linuxfoundation.org, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 11, 2017 at 10:42:28AM +0100, Srinivas Kandagatla wrote:
-> On 11/10/17 05:38, Vinod Koul wrote:
-> >On Fri, Oct 06, 2017 at 05:51:31PM +0200, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
-> >
-> >>  	mutex_init(&ctrl->m_ctrl);
-> >>+	spin_lock_init(&ctrl->tx.lock);
-> >>+	spin_lock_init(&ctrl->rx.lock);
-> >
-> >locks galore :) My assumption is that you want to optimize these? But given
-> >that audio user is going to be serialized do we practically need two locks?
-> >
-> If we remove the locking, It will be issue if we have multiple devices in a
-> component, which is common atleast with the codec which am looking at.
 
-can you explian what you mean by a "device" here?
+--===============5127229085217427906==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="z3erd7lyishk7y4k"
+Content-Disposition: inline
 
-> >>+	switch (mc) {
-> >>+	case SLIM_MSG_MC_REQUEST_VALUE:
-> >>+	case SLIM_MSG_MC_REQUEST_INFORMATION:
-> >
-> >what does MC refer to?
-> 
-> Message Code.
 
-isnt SLIM_MSG enough :D I think we cna get rid of MC here..
+--z3erd7lyishk7y4k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >>+struct slim_val_inf {
-> >>+	u16			start_offset;
-> >>+	u8			num_bytes;
-> >>+	u8			*rbuf;
-> >>+	const u8		*wbuf;
-> >
-> >can we do read and write, if not it can be a buf which maybe rbuf or wbug
-> >based on type
-> With REQUEST_CHANGE_VALUE single command we can read old value at the same
-> time we can write new value.
+On Tue, Oct 10, 2017 at 01:34:48PM +0100, Srinivas Kandagatla wrote:
+> On 10/10/17 11:05, Charles Keepax wrote:
 
-so that is a read modify write, correct? Is that implemented in HW, if so we
-need to provide only write value
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
--- 
-~Vinod
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > This does sort of make sense but kinda makes the code a bit ugly
+> > parsing the MID and PID. Some parts will support SLIMBus and also
+> > other control interfaces, which means they would need to add an
+> > additional compatible string just for SLIMBus. It also breaks
+> > the normal conventions of vendor,part and finally it makes the
+> > compatible strings really unreadable which will be a bit annoying
+> > when looking at DTs.
+
+> This change was made inline to the comments provided in previous version of
+> the patch https://lkml.org/lkml/2016/5/3/576
+
+I'm not sure I really agree with Rob here - while Slimbus is notionally
+discoverable I don't think I ever saw a practical system which relied on
+that for enumeration.  In real systems the discoverability is more of a
+complexity to be worked around than anything else.
+
+--z3erd7lyishk7y4k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnd8S0ACgkQJNaLcl1U
+h9ADzgf+MfPdo5iS8HcAeOk5YJuBcP+SuJdWfQc5aTAF8PnXH9SxrWnErQamfJiX
+HQ3nEbRvMpEjS5gAGWw/N+L8AGIvid1yitTwSSpeqRt1HnzzLHttp2Pk3pzJpbqB
+l5LWpl0ye+uZ0POGOiakl+V3TsmB8c8MEJ/PT3BqzgfA4zEa4BTQAfTQG72ZClFe
+vLHN8/l8YC5ETsAgNpARPwcXx3PcxFklpSA9/t88qNLBx7I2KoGuypkMDMuqyfKu
+reRrOHMmPx9pEE+28K87S0gkeqXa/ViiIBOjfsC4ZG0PomWFugng7Xr9VhOYbD47
+IlfJGXyYL9bJi1+W48xPn8XE0B6VDA==
+=los5
+-----END PGP SIGNATURE-----
+
+--z3erd7lyishk7y4k--
+
+--===============5127229085217427906==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5127229085217427906==--
