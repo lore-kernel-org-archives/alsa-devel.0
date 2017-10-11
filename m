@@ -1,131 +1,56 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 1/2] ALSA: add snd_card_disconnect_sync()
-Date: Wed, 11 Oct 2017 12:16:17 +0200
-Message-ID: <20171011101618.8736-2-tiwai@suse.de>
-References: <20171011101618.8736-1-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [Patch v6 1/7] slimbus: Device management on SLIMbus
+Date: Wed, 11 Oct 2017 15:51:32 +0530
+Message-ID: <20171011102132.GG30097@localhost>
+References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
+ <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
+ <20171010104509.GC30097@localhost>
+ <fd966acd-a86c-5021-8a8b-ddf1508ab63e@linaro.org>
+ <20171010164930.GD30097@localhost>
+ <9e2bb2fa-b391-055e-407e-c93f43428840@linaro.org>
+ <20171011040741.GE30097@localhost>
+ <c777820e-fd60-f8d1-4fc1-5934ff18af1b@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E9820266EA7
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 12:16:26 +0200 (CEST)
-In-Reply-To: <20171011101618.8736-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c777820e-fd60-f8d1-4fc1-5934ff18af1b@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, gong.chen@linux.intel.com, arnd@arndb.de, kheitke@audience.com, bp@suse.de, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, treding@nvidia.com, mathieu.poirier@linaro.org, jkosina@suse.cz, linux-kernel@vger.kernel.org, daniel@ffwll.ch, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-In case of user unbind ALSA driver during playing back / capturing,
-each driver needs to stop and remove it correctly. One note here is
-that we can't cancel from remove function in such case, because
-unbind operation doesn't check return value from remove function.
-So, we *must* stop and remove in this case.
+On Wed, Oct 11, 2017 at 10:42:23AM +0100, Srinivas Kandagatla wrote:
+> On 11/10/17 05:07, Vinod Koul wrote:
+> >On Tue, Oct 10, 2017 at 06:21:34PM +0100, Srinivas Kandagatla wrote:
+> >>On 10/10/17 17:49, Vinod Koul wrote:
 
-For this purpose, we need to sync (= wait) until the all top-level
-operations are canceled at remove function.
-For example, snd_card_free() processes the disconnection procedure at
-first, then waits for the completion. That's how the hot-unplug works
-safely. It's implemented, at least, in the top-level driver removal.
+> >>>>>>+/**
+> >>>>>>+ * slim_register_controller: Controller bring-up and registration.
+> >>...
+> >>>>>>+
+> >>>>>>+	mutex_init(&ctrl->m_ctrl);
+> >>>>>>+	ret = device_register(&ctrl->dev);
+> >>>>>
+> >>>>>one more device_register?? Can you explain why
+> >>>>>
+> >>>>
+> >>>>This is a device for each controller.
+> >>>
+> >>>wont the controller have its own platform_device?
+> >>
+> >>Reason could be that slim_register controller can be called from any code
+> >>not just platform devices..
+> >
+> >ah which cases would those be. I was expecting that you would have a
+> >platform_device as a slimbus controller which would call slim_register?
+> As of now there is only one controller which uses platform driver, but in
+> future there might be more, but this is something which makes the slimbus
+> core more flexible.
 
-Now for the lower level driver, we need a similar strategy. Notify to
-the toplevel for hot-unplug (disconnect in ALSA), and sync with the
-stop operation, then continue the rest of its own remove procedure.
+even if you have more controllers wouldn't we have similar number of platform
+devices. Each instance of the link/controller would have its device node.
 
-This patch adds snd_card_disconnect_sync(), and driver can use it from
-remove function.
-
-Tested-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/core.h |  2 ++
- sound/core/init.c    | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
-
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 4104a9d1001f..5f181b875c2f 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -133,6 +133,7 @@ struct snd_card {
- 	struct device card_dev;		/* cardX object for sysfs */
- 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
- 	bool registered;		/* card_dev is registered? */
-+	wait_queue_head_t remove_sleep;
- 
- #ifdef CONFIG_PM
- 	unsigned int power_state;	/* power state */
-@@ -240,6 +241,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		 struct snd_card **card_ret);
- 
- int snd_card_disconnect(struct snd_card *card);
-+void snd_card_disconnect_sync(struct snd_card *card);
- int snd_card_free(struct snd_card *card);
- int snd_card_free_when_closed(struct snd_card *card);
- void snd_card_set_id(struct snd_card *card, const char *id);
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 32ebe2f6bc59..168ae03d3a1c 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -255,6 +255,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- #ifdef CONFIG_PM
- 	init_waitqueue_head(&card->power_sleep);
- #endif
-+	init_waitqueue_head(&card->remove_sleep);
- 
- 	device_initialize(&card->card_dev);
- 	card->card_dev.parent = parent;
-@@ -452,6 +453,35 @@ int snd_card_disconnect(struct snd_card *card)
- }
- EXPORT_SYMBOL(snd_card_disconnect);
- 
-+/**
-+ * snd_card_disconnect_sync - disconnect card and wait until files get closed
-+ * @card: card object to disconnect
-+ *
-+ * This calls snd_card_disconnect() for disconnecting all belonging components
-+ * and waits until all pending files get closed.
-+ * It assures that all accesses from user-space finished so that the driver
-+ * can release its resources gracefully.
-+ */
-+void snd_card_disconnect_sync(struct snd_card *card)
-+{
-+	int err;
-+
-+	err = snd_card_disconnect(card);
-+	if (err < 0) {
-+		dev_err(card->dev,
-+			"snd_card_disconnect error (%d), skipping sync\n",
-+			err);
-+		return;
-+	}
-+
-+	spin_lock_irq(&card->files_lock);
-+	wait_event_lock_irq(card->remove_sleep,
-+			    list_empty(&card->files_list),
-+			    card->files_lock);
-+	spin_unlock_irq(&card->files_lock);
-+}
-+EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
-+
- static int snd_card_do_free(struct snd_card *card)
- {
- #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
-@@ -957,6 +987,8 @@ int snd_card_file_remove(struct snd_card *card, struct file *file)
- 			break;
- 		}
- 	}
-+	if (list_empty(&card->files_list))
-+		wake_up_all(&card->remove_sleep);
- 	spin_unlock(&card->files_lock);
- 	if (!found) {
- 		dev_err(card->dev, "card file remove problem (%p)\n", file);
+Thanks
 -- 
-2.14.2
+~Vinod
