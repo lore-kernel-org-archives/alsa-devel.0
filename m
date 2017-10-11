@@ -1,66 +1,86 @@
-From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 4/9] ALSA: line6: Add a sanity check for invalid EPs
-Date: Wed, 11 Oct 2017 12:36:41 +0200
-Message-ID: <20171011103646.11879-5-tiwai@suse.de>
-References: <20171011103646.11879-1-tiwai@suse.de>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171011103646.11879-1-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Greg KH <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [alsa-devel] [Patch v6 2/7] slimbus: Add messaging APIs to
+ slimbus framework
+Date: Wed, 11 Oct 2017 12:12:20 +0100
+Message-ID: <8a6e9376-89a6-56d4-055a-29aae7abc311@linaro.org>
+References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
+ <20171006155136.4682-3-srinivas.kandagatla@linaro.org>
+ <20171011043814.GF30097@localhost>
+ <aa117cb8-ba59-894c-5a82-1b38facfa841@linaro.org>
+ <20171011102436.GH30097@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171011102436.GH30097@localhost>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, mark.rutland@arm.com, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, gong.chen@linux.intel.com, arnd@arndb.de, kheitke@audience.com, bp@suse.de, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, treding@nvidia.com, mathieu.poirier@linaro.org, jkosina@suse.cz, linux-kernel@vger.kernel.org, daniel@ffwll.ch, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-As syzkaller spotted, currently line6 drivers submit a URB with the
-fixed EP without checking whether it's actually available, which may
-result in a kernel warning like:
-  usb 1-1: BOGUS urb xfer, pipe 3 != type 1
-  ------------[ cut here ]------------
-  WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:449
-  usb_submit_urb+0xf8a/0x11d0
-  Modules linked in:
-  CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted 4.14.0-rc2-42613-g1488251d1a98 #238
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-  Workqueue: usb_hub_wq hub_event
-  Call Trace:
-   line6_start_listen+0x55f/0x9e0 sound/usb/line6/driver.c:82
-   line6_init_cap_control sound/usb/line6/driver.c:690
-   line6_probe+0x7c9/0x1310 sound/usb/line6/driver.c:764
-   podhd_probe+0x64/0x70 sound/usb/line6/podhd.c:474
-   usb_probe_interface+0x35d/0x8e0 drivers/usb/core/driver.c:361
-   ....
 
-This patch adds a sanity check of validity of EPs at the device
-initialization phase for avoiding the call with an invalid EP.
 
-Reported-by: Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
-Tested-by: Andrey Konovalov <andreyknvl-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
-Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
----
- sound/usb/line6/driver.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On 11/10/17 11:24, Vinod Koul wrote:
+> On Wed, Oct 11, 2017 at 10:42:28AM +0100, Srinivas Kandagatla wrote:
+>> On 11/10/17 05:38, Vinod Koul wrote:
+>>> On Fri, Oct 06, 2017 at 05:51:31PM +0200, srinivas.kandagatla@linaro.org wrote:
+>>>
+>>>>   	mutex_init(&ctrl->m_ctrl);
+>>>> +	spin_lock_init(&ctrl->tx.lock);
+>>>> +	spin_lock_init(&ctrl->rx.lock);
+>>>
+>>> locks galore :) My assumption is that you want to optimize these? But given
+>>> that audio user is going to be serialized do we practically need two locks?
+>>>
+>> If we remove the locking, It will be issue if we have multiple devices in a
+>> component, which is common atleast with the codec which am looking at.
+> 
+> can you explian what you mean by a "device" here?
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 0ff5a7d2e19f..0da6f68761e3 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -78,6 +78,13 @@ static int line6_start_listen(struct usb_line6 *line6)
- 			line6->buffer_listen, LINE6_BUFSIZE_LISTEN,
- 			line6_data_received, line6);
- 	}
-+
-+	/* sanity checks of EP before actually submitting */
-+	if (usb_urb_ep_type_check(line6->urb_listen)) {
-+		dev_err(line6->ifcdev, "invalid control EP\n");
-+		return -EINVAL;
-+	}
-+
- 	line6->urb_listen->actual_length = 0;
- 	err = usb_submit_urb(line6->urb_listen, GFP_ATOMIC);
- 	return err;
--- 
-2.14.2
+SLIMbus component contain two or more SLIMbus devices,
+like function(Generic) device, interface device.
+Interface device provides bus management services, where as generic 
+device provides more of application specific functionality like ADC/DAC..
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+> 
+>>>> +	switch (mc) {
+>>>> +	case SLIM_MSG_MC_REQUEST_VALUE:
+>>>> +	case SLIM_MSG_MC_REQUEST_INFORMATION:
+>>>
+>>> what does MC refer to?
+>>
+>> Message Code.
+> 
+> isnt SLIM_MSG enough :D I think we cna get rid of MC here..
+> 
+>>>> +struct slim_val_inf {
+>>>> +	u16			start_offset;
+>>>> +	u8			num_bytes;
+>>>> +	u8			*rbuf;
+>>>> +	const u8		*wbuf;
+>>>
+>>> can we do read and write, if not it can be a buf which maybe rbuf or wbug
+>>> based on type
+>> With REQUEST_CHANGE_VALUE single command we can read old value at the same
+>> time we can write new value.
+> 
+> so that is a read modify write, correct? Is that implemented in HW, if so we
+> need to provide only write value
+
+Its not really a read-modify-write,
+REQUEST_CHANGE_VALUE/REQUEST_CLEAR_INFORMATION commands are part of 
+SLIMbus Spec.
+We need provide write value + buffer for read value to store.
+
+all REQUEST_CHANGE_VALUE cmd do is this in single operation:
+
+1> save the old value
+2> update new value from wbuf
+3> return the saved value from step 1, into rbuf
+
+Not sure what is the real usecase for this, I have not seen its usage in 
+any Qualcomm downstream code.
+
+May be it can be used to implement some class of atomic ops.
