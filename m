@@ -1,15 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 5/9] ASoC: Intel: bytcht_es8316: remove
-	useless code
-Date: Thu, 12 Oct 2017 18:38:01 -0500
-Message-ID: <20171012233805.30055-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 6/9] ASoC: Add helper to find codec_dai from
+	dai_name
+Date: Thu, 12 Oct 2017 18:38:02 -0500
+Message-ID: <20171012233805.30055-7-pierre-louis.bossart@linux.intel.com>
 References: <20171012233805.30055-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C4A96266F1C
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F262266F35
  for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 01:38:19 +0200 (CEST)
 In-Reply-To: <20171012233805.30055-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,37 +25,38 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-get_codec_dai() is not used, remove it
+Create a helper function to remove duplicate code used in machine drivers
 
+Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ include/sound/soc.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 52635462dac6..9ed4400c13b8 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -37,20 +37,6 @@ struct byt_cht_es8316_private {
- 	struct clk *mclk;
- };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index eea3007a28f1..99d4861ad34f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1743,6 +1743,20 @@ struct snd_soc_dai *snd_soc_find_dai(
  
--#define CODEC_DAI1	"ES8316 HiFi"
--
--static inline struct snd_soc_dai *get_codec_dai(struct snd_soc_card *card)
--{
--	struct snd_soc_pcm_runtime *rtd;
--
--	list_for_each_entry(rtd, &card->rtd_list, list) {
--		if (!strncmp(rtd->codec_dai->name, CODEC_DAI1,
--			     strlen(CODEC_DAI1)))
--			return rtd->codec_dai;
--	}
--	return NULL;
--}
--
- static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
+ #include <sound/soc-dai.h>
  
++static inline
++struct snd_soc_dai *snd_soc_card_get_codec_dai(struct snd_soc_card *card,
++					       const char *dai_name)
++{
++	struct snd_soc_pcm_runtime *rtd;
++
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++		if (!strcmp(rtd->codec_dai->name, dai_name))
++			return rtd->codec_dai;
++	}
++
++	return NULL;
++}
++
+ #ifdef CONFIG_DEBUG_FS
+ extern struct dentry *snd_soc_debugfs_root;
+ #endif
 -- 
 2.11.0
