@@ -1,39 +1,118 @@
-From: Chintan Patel <chintan.m.patel@intel.com>
-Subject: [PATCH v2] ASoC: Intel: Skylake: Decrease loglevel for topology loading
-Date: Thu, 12 Oct 2017 09:44:37 -0700
-Message-ID: <1507826678-25509-1-git-send-email-chintan.m.patel@intel.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] ASoC: cht_bsw_max98090_ti: Fix NULL pointer dereference while accessing jack
+Date: Thu, 12 Oct 2017 12:28:59 -0700
+Message-ID: <1507836539-26587-1-git-send-email-linux@roeck-us.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: vinod.koul@intel.com, Chintan Patel <chintan.m.patel@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jeeja KP <jeeja.kp@intel.com>, "guneshwor.o.singh@intel.com" <guneshwor.o.singh@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>, Ramesh Babu <ramesh.babu@intel.com>, Dharageswari R <dharageswari.r@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Guenter Roeck <groeck@chromium.org>, Mengdong Lin <mengdong.lin@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-In case of failure in loading customize topology firmware, dfw_sst.bin
-gets loaded. However, current log provides this message as error even
-after successfully falling back to default topology "dfw_sst.bin".
+From: Guenter Roeck <groeck@chromium.org>
 
-Hence to convey proper message, changing log level and message.
+Commit f2ed6b07645e ("ASoC: Make aux_dev more like a generic component")
+caused a regression on this driver, since now a kernel oops is seen
+when the driver is loaded, or more specifically when
+ts3a227e_enable_jack_detect() is called.
 
-Signed-off-by: Chintan Patel <chintan.m.patel@intel.com>
+That commit changed the probing of aux_devs before checking new DAI links,
+so cht_max98090_headset_init is now called before cht_codec_init. The
+kernel crashes due a NULL pointer dereference in cht_max98090_headset_init
+since there is a call that tries to access the jack pointer which has not
+been allocated yet.
+
+This patch moves the new jack object creation from cht_codec_init to
+cht_max98090_headset_init, making sure the jack is created before is
+accessed.
+
+Also see upstream commit 5f22449344d9 ("ASoC: rockchip-max98090: Fix NULL
+pointer dereference while accessing to jack.") for a similar fix in the
+rockchip-max98090 driver.
+
+Fixes: f2ed6b07645e ("ASoC: Make aux_dev more like a generic component")
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Guenter Roeck <groeck@chromium.org>
 ---
-Changes in v2:
-Addressing review comments from Takashi Iwai by changing
-loglevel as info
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 55 ++++++++++++++--------------
+ 1 file changed, 27 insertions(+), 28 deletions(-)
 
-sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 22f768ca3c73..12f383fd7c39 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3404,7 +3404,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 20755ecc7f9e..c1518db7bb61 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -111,37 +111,12 @@ static struct notifier_block cht_jack_nb = {
  
- 	ret = request_firmware(&fw, skl->tplg_name, bus->dev);
- 	if (ret < 0) {
--		dev_err(bus->dev, "tplg fw %s load failed with %d\n",
-+		dev_info(bus->dev, "tplg fw %s load failed with %d, falling back to dfw_sst.bin",
- 				skl->tplg_name, ret);
- 		ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
- 		if (ret < 0) {
+ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+-	int ret;
+-	int jack_type;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+-	struct snd_soc_jack *jack = &ctx->jack;
+-
+-	/**
+-	* TI supports 4 butons headset detection
+-	* KEY_MEDIA
+-	* KEY_VOICECOMMAND
+-	* KEY_VOLUMEUP
+-	* KEY_VOLUMEDOWN
+-	*/
+-	if (ctx->ts3a227e_present)
+-		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+-					SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-					SND_JACK_BTN_2 | SND_JACK_BTN_3;
+-	else
+-		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
+-
+-	ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
+-					jack_type, jack, NULL, 0);
+-
+-	if (ret) {
+-		dev_err(runtime->dev, "Headset Jack creation failed %d\n", ret);
+-		return ret;
+-	}
+ 
+ 	if (ctx->ts3a227e_present)
+-		snd_soc_jack_notifier_register(jack, &cht_jack_nb);
++		snd_soc_jack_notifier_register(&ctx->jack, &cht_jack_nb);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -188,8 +163,32 @@ static int cht_max98090_headset_init(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_card *card = component->card;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
++	struct snd_soc_jack *jack = &ctx->jack;
++	int jack_type;
++	int ret;
++
++	/*
++	 * TI supports 4 butons headset detection
++	 * KEY_MEDIA
++	 * KEY_VOICECOMMAND
++	 * KEY_VOLUMEUP
++	 * KEY_VOLUMEDOWN
++	 */
++	if (ctx->ts3a227e_present)
++		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
++					SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					SND_JACK_BTN_2 | SND_JACK_BTN_3;
++	else
++		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
++
++	ret = snd_soc_card_jack_new(card, "Headset Jack", jack_type, jack,
++				    NULL, 0);
++	if (ret) {
++		dev_err(card->dev, "Headset Jack creation failed %d\n", ret);
++		return ret;
++	}
+ 
+-	return ts3a227e_enable_jack_detect(component, &ctx->jack);
++	return ts3a227e_enable_jack_detect(component, jack);
+ }
+ 
+ static const struct snd_soc_ops cht_aif1_ops = {
 -- 
-1.9.1
+2.7.4
