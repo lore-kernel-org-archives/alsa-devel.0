@@ -1,92 +1,75 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [Patch v6 1/7] slimbus: Device management on SLIMbus
-Date: Thu, 12 Oct 2017 14:26:42 +0100
-Message-ID: <d68d2f4f-92d9-76a7-aea7-4c91924819f3@linaro.org>
-References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
- <20171012110145.GA13024@buildpc-HP-Z230>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: regression introduced by commit 70d435ba1cd6
+ ("ASoC: imx-pcm-dma: simplify pcm_config")
+Date: Thu, 12 Oct 2017 16:51:31 +0100
+Message-ID: <20171012155131.zn6r47eaombcqdlk@sirena.co.uk>
+References: <20171004103657.1c6a433d@karo-electronics.de>
+ <1507646944.2398.1.camel@pengutronix.de>
+ <20171010171846.509f399e@karo-electronics.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171012110145.GA13024@buildpc-HP-Z230>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sanyog Kale <sanyog.r.kale-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, gong.chen-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, kheitke-hxvC4TZJLZFWk0Htik3J/w@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============6849446087761397450=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9F1A266D6B
+ for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2017 17:51:34 +0200 (CEST)
+In-Reply-To: <20171010171846.509f399e@karo-electronics.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Lucas Stach <l.stach@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 12/10/17 12:01, Sanyog Kale wrote:
-> On Fri, Oct 06, 2017 at 05:51:30PM +0200, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
->> From: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->>
->> +Per specification, Slimbus uses "clock gears" to do power management based on
->> +current frequency and bandwidth requirements. There are 10 clock gears and each
->> +gear changes the Slimbus frequency to be twice its previous gear.
-> 
-> Does the spec mandate 10 clock gears or its controller property?
-
-Clock Gear Construct is part of SLIMbus Specs to alter clk frequency.
+--===============6849446087761397450==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tj5wtjjcj56xxago"
+Content-Disposition: inline
 
 
->> +Device notifications to the driver:
->> +-----------------------------------
->> +Since SLIMbus devices have mechanisms for reporting their presence, the
->> +framework allows drivers to bind when corresponding devices report their
->> +presence on the bus.
->> +However, it is possible that the driver needs to be probed
->> +first so that it can enable corresponding SLIMbus devie (e.g. power it up and/or
->> +take it out of reset). To support that behavior, the framework allows drivers
->> +to probe first as well  (e.g. using standard DeviceTree compatbility field).
->> +This creates the necessity for the driver to know when the device is functional
->> +(i.e. reported present). device_up callback is used for that reason when the
->> +device reports present and is assigned a logical address by the controller.
->> +
->> +Similarly, SLIMbus devices 'report absent' when they go down. A 'device_down'
->> +callback notifies the driver when the device reports absent and its logical
->> +address assignment is invalidated by the controller.
-> 
-> Is the same logical address assign when it reports present again?
+--tj5wtjjcj56xxago
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Currently, Code as it is will pick the first available logical address. 
-If required we can add logic in future to assign same logical address.
-For now the code is simple.
+On Tue, Oct 10, 2017 at 05:18:46PM +0200, Lothar Wa=DFmann wrote:
 
+> I circumvented the problem by changing my /etc/asound.conf to use the
+> only supported sample format. So, if nobody else has a problem, there
+> is no need to revert the patch or apply additional modifications to the
+> driver.
 
+I've not seen any other reports.
 
->> + *
->> + *	Controller here performs duties of the manager device, and 'interface
->> + *	device'. Interface device is responsible for monitoring the bus and
->> + *	reporting information such as loss-of-synchronization, data
->> + *	slot-collision.
->> + * @dev: Device interface to this driver
->> + * @nr: Board-specific number identifier for this controller/bus
->> + * @list: Link with other slimbus controllers
->> + * @name: Name for this controller
->> + * @min_cg: Minimum clock gear supported by this controller (default value: 1)
->> + * @max_cg: Maximum clock gear supported by this controller (default value: 10)
->> + * @clkgear: Current clock gear in which this bus is running
->> + * @a_framer: Active framer which is clocking the bus managed by this controller
->> + * @m_ctrl: Mutex protecting controller data structures
->> + * @addrt: Logical address table
->> + * @num_dev: Number of active slimbus slaves on this bus
->> + * @wq: Workqueue per controller used to notify devices when they report present
->> + * @xfer_msg: Transfer a message on this controller (this can be a broadcast
->> + *	control/status message like data channel setup, or a unicast message
->> + *	like value element read/write.
-> 
-> xfer_msg element is not present in structure.
-> 
+--tj5wtjjcj56xxago
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks, it will be fixed in next version.
+-----BEGIN PGP SIGNATURE-----
 
-thanks,
-Srini
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnfj4IACgkQJNaLcl1U
+h9DRZwf9F8hughtggJm4y0nroRsBYvkxc1hgm0iYuYl1xHpmSvJVXzl+D/uFZmKk
+AdwLc8REsqsvknwj1J5gjx5E3q4esKb0Gy66GXLMpSpL36jlmRhBBnK6LIByAnlY
+qwL+Muov/BongT+iq91+6rBilkLrLHRXvJ+fFLxuws4F09t9M3UdEP7UDXr3mGrp
+uu00s86CHlhQZYxDxcSS5Wkv5+rAfAU0NLUI6tiFI1p+zFs2xWWZj2EGXgFjke/D
+NFrpzhs0IEVN5E7tLCfs5qeks0r5jcBBcbQa0+1jKeqEpJi/JPPyp2zWc71q7D16
+RZPKrHpy/Ib7NWtp/nvlhptGWZ4dGw==
+=yS1G
+-----END PGP SIGNATURE-----
+
+--tj5wtjjcj56xxago--
+
+--===============6849446087761397450==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--===============6849446087761397450==--
