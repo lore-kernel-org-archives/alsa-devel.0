@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 1/9] ASoC: Intel: bytcr_rt5651: add MCLK,
-	quirks and cleanups
-Date: Thu, 12 Oct 2017 18:37:57 -0500
-Message-ID: <20171012233805.30055-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 3/9] ASoC: Intel: cht_bsw_rt5645: cosmetic
+	fixes
+Date: Thu, 12 Oct 2017 18:37:59 -0500
+Message-ID: <20171012233805.30055-4-pierre-louis.bossart@linux.intel.com>
 References: <20171012233805.30055-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id BDC36266F1C
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 01:38:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D969B266F30
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 01:38:17 +0200 (CEST)
 In-Reply-To: <20171012233805.30055-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,341 +25,161 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Same as for other codecs, enable MCLK by default. When it is not
-present, e.g. on MinnowBoard B3 since it's not routed on the LSE
-connector, we fall back to blck-based clocking.
+Reorder variable names, change MCLK test, change quirks
+No functional change
 
-The DMIC quirks are also fixed, there is a single DMIC input of the
-codec.
-
-reorder variables in reverse x-mas tree as suggested by Andy
-
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 239 +++++++++++++++++++++++++++++++---
- 1 file changed, 222 insertions(+), 17 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 73 ++++++++++++++++-----------------
+ 1 file changed, 35 insertions(+), 38 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 441f735a198f..e094a58d750d 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -21,24 +21,132 @@
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index d553e2b67c92..6ccb599c1082 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -21,13 +21,13 @@
+  */
+ 
  #include <linux/module.h>
+-#include <linux/acpi.h>
  #include <linux/platform_device.h>
- #include <linux/acpi.h>
++#include <linux/acpi.h>
 +#include <linux/clk.h>
- #include <linux/device.h>
  #include <linux/dmi.h>
  #include <linux/slab.h>
-+#include <asm/platform_sst_audio.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/platform_sst_audio.h>
+-#include <linux/clk.h>
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
  #include <sound/soc.h>
- #include <sound/jack.h>
- #include "../../codecs/rt5651.h"
- #include "../atom/sst-atom-controls.h"
-+#include "../common/sst-acpi.h"
-+
-+enum {
-+	BYT_RT5651_DMIC_MAP,
-+	BYT_RT5651_IN1_MAP,
-+};
-+
-+#define BYT_RT5651_MAP(quirk)	((quirk) & GENMASK(7, 0))
-+#define BYT_RT5651_DMIC_EN	BIT(16)
-+#define BYT_RT5651_MCLK_EN	BIT(17)
-+#define BYT_RT5651_MCLK_25MHZ	BIT(18)
-+
-+struct byt_rt5651_private {
-+	struct clk *mclk;
-+};
-+
-+static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
-+					BYT_RT5651_DMIC_EN |
-+					BYT_RT5651_MCLK_EN;
-+
-+static void log_quirks(struct device *dev)
-+{
-+	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_DMIC_MAP)
-+		dev_info(dev, "quirk DMIC_MAP enabled");
-+	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN1_MAP)
-+		dev_info(dev, "quirk IN1_MAP enabled");
-+	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
-+		dev_info(dev, "quirk DMIC enabled");
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-+		dev_info(dev, "quirk MCLK_EN enabled");
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
-+		dev_info(dev, "quirk MCLK_25MHZ enabled");
-+}
-+
-+#define BYT_CODEC_DAI1	"rt5651-aif1"
-+
-+static inline struct snd_soc_dai *byt_get_codec_dai(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+
-+	list_for_each_entry(rtd, &card->rtd_list, list) {
-+		if (!strncmp(rtd->codec_dai->name, BYT_CODEC_DAI1,
-+			     strlen(BYT_CODEC_DAI1)))
-+			return rtd->codec_dai;
-+	}
-+	return NULL;
-+}
-+
-+static int platform_clock_control(struct snd_soc_dapm_widget *w,
-+				  struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct snd_soc_dai *codec_dai;
-+	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	codec_dai = byt_get_codec_dai(card);
-+	if (!codec_dai) {
-+		dev_err(card->dev,
-+			"Codec dai not found; Unable to set platform clock\n");
-+		return -EIO;
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
-+			ret = clk_prepare_enable(priv->mclk);
-+			if (ret < 0) {
-+				dev_err(card->dev,
-+					"could not configure MCLK state");
-+				return ret;
-+			}
-+		}
-+		ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_PLL1,
-+					     48000 * 512,
-+					     SND_SOC_CLOCK_IN);
-+	} else {
-+		/*
-+		 * Set codec clock source to internal clock before
-+		 * turning off the platform clock. Codec needs clock
-+		 * for Jack detection and button press
-+		 */
-+		ret = snd_soc_dai_set_sysclk(codec_dai, RT5651_SCLK_S_RCCLK,
-+					     48000 * 512,
-+					     SND_SOC_CLOCK_IN);
-+		if (!ret)
-+			if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
-+				clk_disable_unprepare(priv->mclk);
-+	}
-+
-+	if (ret < 0) {
-+		dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
- 
- static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_MIC("Internal Mic", NULL),
- 	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-+			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
-+			    SND_SOC_DAPM_POST_PMD),
-+
+@@ -53,7 +53,7 @@ struct cht_mc_private {
+ 	struct clk *mclk;
  };
  
- static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-+	{"Headphone", NULL, "Platform Clock"},
-+	{"Headset Mic", NULL, "Platform Clock"},
-+	{"Internal Mic", NULL, "Platform Clock"},
-+	{"Speaker", NULL, "Platform Clock"},
-+
- 	{"AIF1 Playback", NULL, "ssp2 Tx"},
- 	{"ssp2 Tx", NULL, "codec_out0"},
- 	{"ssp2 Tx", NULL, "codec_out1"},
-@@ -64,18 +172,6 @@ static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
- 	{"IN1P", NULL, "Internal Mic"},
- };
- 
--enum {
--	BYT_RT5651_DMIC1_MAP,
--	BYT_RT5651_DMIC2_MAP,
--	BYT_RT5651_IN1_MAP,
--};
--
--#define BYT_RT5651_MAP(quirk)	((quirk) & 0xff)
--#define BYT_RT5651_DMIC_EN	BIT(16)
--
--static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC1_MAP |
--					BYT_RT5651_DMIC_EN;
--
- static const struct snd_kcontrol_new byt_rt5651_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-@@ -100,9 +196,26 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
+-#define CHT_RT5645_MAP(quirk)	((quirk) & 0xff)
++#define CHT_RT5645_MAP(quirk)	((quirk) & GENMASK(7, 0))
+ #define CHT_RT5645_SSP2_AIF2     BIT(16) /* default is using AIF1  */
+ #define CHT_RT5645_SSP0_AIF1     BIT(17)
+ #define CHT_RT5645_SSP0_AIF2     BIT(18)
+@@ -101,13 +101,11 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
  	}
  
--	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5651_PLL1_S_BCLK1,
--				  params_rate(params) * 50,
--				  params_rate(params) * 512);
-+	if (!(byt_rt5651_quirk & BYT_RT5651_MCLK_EN)) {
-+		/* 2x25 bit slots on SSP2 */
-+		ret = snd_soc_dai_set_pll(codec_dai, 0,
-+					RT5651_PLL1_S_BCLK1,
-+					params_rate(params) * 50,
-+					params_rate(params) * 512);
-+	} else {
-+		if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ) {
-+			ret = snd_soc_dai_set_pll(codec_dai, 0,
-+						RT5651_PLL1_S_MCLK,
-+						25000000,
-+						params_rate(params) * 512);
-+		} else {
-+			ret = snd_soc_dai_set_pll(codec_dai, 0,
-+						RT5651_PLL1_S_MCLK,
-+						19200000,
-+						params_rate(params) * 512);
-+		}
-+	}
-+
- 	if (ret < 0) {
- 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
- 		return ret;
-@@ -111,20 +224,35 @@ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+-		if (ctx->mclk) {
+-			ret = clk_prepare_enable(ctx->mclk);
+-			if (ret < 0) {
+-				dev_err(card->dev,
+-					"could not configure MCLK state");
+-				return ret;
+-			}
++		ret = clk_prepare_enable(ctx->mclk);
++		if (ret < 0) {
++			dev_err(card->dev,
++				"could not configure MCLK state");
++			return ret;
+ 		}
+ 	} else {
+ 		/* Set codec sysclk source to its internal clock because codec PLL will
+@@ -122,8 +120,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 			return ret;
+ 		}
+ 
+-		if (ctx->mclk)
+-			clk_disable_unprepare(ctx->mclk);
++		clk_disable_unprepare(ctx->mclk);
+ 	}
+ 
  	return 0;
- }
+@@ -258,11 +255,11 @@ static const struct dmi_system_id cht_rt5645_quirk_table[] = {
  
-+static int byt_rt5651_quirk_cb(const struct dmi_system_id *id)
-+{
-+	byt_rt5651_quirk = (unsigned long)id->driver_data;
-+	return 1;
-+}
-+
- static const struct dmi_system_id byt_rt5651_quirk_table[] = {
-+	{
-+		.callback = byt_rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
-+		},
-+		.driver_data = (void *)(BYT_RT5651_DMIC_MAP |
-+					BYT_RT5651_DMIC_EN),
-+	},
- 	{}
- };
- 
- static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
  {
 -	int ret;
+-	int jack_type;
+-	struct snd_soc_codec *codec = runtime->codec;
  	struct snd_soc_card *card = runtime->card;
-+	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
- 	const struct snd_soc_dapm_route *custom_map;
- 	int num_routes;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
++	struct snd_soc_codec *codec = runtime->codec;
++	int jack_type;
 +	int ret;
  
- 	card->dapm.idle_bias_off = true;
+ 	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
+ 	    (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
+@@ -320,26 +317,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
  
--	dmi_check_system(byt_rt5651_quirk_table);
- 	switch (BYT_RT5651_MAP(byt_rt5651_quirk)) {
- 	case BYT_RT5651_IN1_MAP:
- 		custom_map = byt_rt5651_intmic_in1_map;
-@@ -147,6 +275,30 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
- 	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
+ 	rt5645_set_jack_detect(codec, &ctx->jack, &ctx->jack, &ctx->jack);
  
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
-+		/*
-+		 * The firmware might enable the clock at
-+		 * boot (this information may or may not
-+		 * be reflected in the enable clock register).
-+		 * To change the rate we must disable the clock
-+		 * first to cover these cases. Due to common
-+		 * clock framework restrictions that do not allow
-+		 * to disable a clock that has not been enabled,
-+		 * we need to enable the clock first.
-+		 */
-+		ret = clk_prepare_enable(priv->mclk);
-+		if (!ret)
-+			clk_disable_unprepare(priv->mclk);
+-	if (ctx->mclk) {
+-		/*
+-		 * The firmware might enable the clock at
+-		 * boot (this information may or may not
+-		 * be reflected in the enable clock register).
+-		 * To change the rate we must disable the clock
+-		 * first to cover these cases. Due to common
+-		 * clock framework restrictions that do not allow
+-		 * to disable a clock that has not been enabled,
+-		 * we need to enable the clock first.
+-		 */
+-		ret = clk_prepare_enable(ctx->mclk);
+-		if (!ret)
+-			clk_disable_unprepare(ctx->mclk);
+ 
+-		ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
++	/*
++	 * The firmware might enable the clock at
++	 * boot (this information may or may not
++	 * be reflected in the enable clock register).
++	 * To change the rate we must disable the clock
++	 * first to cover these cases. Due to common
++	 * clock framework restrictions that do not allow
++	 * to disable a clock that has not been enabled,
++	 * we need to enable the clock first.
++	 */
++	ret = clk_prepare_enable(ctx->mclk);
++	if (!ret)
++		clk_disable_unprepare(ctx->mclk);
 +
-+		if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
-+			ret = clk_set_rate(priv->mclk, 25000000);
-+		else
-+			ret = clk_set_rate(priv->mclk, 19200000);
++	ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
 +
-+		if (ret)
-+			dev_err(card->dev, "unable to set MCLK rate\n");
-+	}
-+
++	if (ret)
++		dev_err(runtime->dev, "unable to set MCLK rate\n");
+ 
+-		if (ret)
+-			dev_err(runtime->dev, "unable to set MCLK rate\n");
+-	}
  	return ret;
  }
  
-@@ -292,13 +444,66 @@ static struct snd_soc_card byt_rt5651_card = {
- 	.fully_routed = true,
- };
+@@ -545,15 +542,15 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
  
-+static char byt_rt5651_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
-+
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ static int snd_cht_mc_probe(struct platform_device *pdev)
  {
-+	struct byt_rt5651_private *priv;
-+	struct sst_acpi_mach *mach;
-+	const char *i2c_name = NULL;
- 	int ret_val = 0;
-+	int dai_index;
+-	int ret_val = 0;
+-	int i;
+-	struct cht_mc_private *drv;
+ 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
+ 	struct sst_acpi_mach *mach;
++	struct cht_mc_private *drv;
+ 	const char *i2c_name = NULL;
+-	int dai_index = 0;
+ 	bool found = false;
+ 	bool is_bytcr = false;
++	int dai_index = 0;
++	int ret_val = 0;
 +	int i;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
-+	if (!priv)
-+		return -ENOMEM;
  
- 	/* register the soc card */
- 	byt_rt5651_card.dev = &pdev->dev;
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
+ 	if (!drv)
+@@ -590,7 +587,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
  
-+	mach = byt_rt5651_card.dev->platform_data;
-+	snd_soc_card_set_drvdata(&byt_rt5651_card, priv);
-+
-+	/* fix index of codec dai */
-+	dai_index = MERR_DPCM_COMPR + 1;
-+	for (i = 0; i < ARRAY_SIZE(byt_rt5651_dais); i++) {
-+		if (!strcmp(byt_rt5651_dais[i].codec_name, "i2c-10EC5651:00")) {
-+			dai_index = i;
-+			break;
-+		}
-+	}
-+
-+	/* fixup codec name based on HID */
-+	i2c_name = sst_acpi_find_name_from_hid(mach->id);
+ 	/* fixup codec name based on HID */
+ 	i2c_name = sst_acpi_find_name_from_hid(mach->id);
+-	if (i2c_name != NULL) {
 +	if (i2c_name) {
-+		snprintf(byt_rt5651_codec_name, sizeof(byt_rt5651_codec_name),
-+			"%s%s", "i2c-", i2c_name);
-+
-+		byt_rt5651_dais[dai_index].codec_name = byt_rt5651_codec_name;
-+	}
-+
-+	/* check quirks before creating card */
-+	dmi_check_system(byt_rt5651_quirk_table);
-+	log_quirks(&pdev->dev);
-+
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
-+		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+		if (IS_ERR(priv->mclk)) {
-+			dev_err(&pdev->dev,
-+				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
-+				PTR_ERR(priv->mclk));
-+			/*
-+			 * Fall back to bit clock usage for -ENOENT (clock not
-+			 * available likely due to missing dependencies), bail
-+			 * for all other errors, including -EPROBE_DEFER
-+			 */
-+			if (ret_val != -ENOENT)
-+				return ret_val;
-+			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
-+		}
-+	}
-+
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
- 
- 	if (ret_val) {
+ 		snprintf(cht_rt5645_codec_name, sizeof(cht_rt5645_codec_name),
+ 			"%s%s", "i2c-", i2c_name);
+ 		cht_dailink[dai_index].codec_name = cht_rt5645_codec_name;
 -- 
 2.11.0
