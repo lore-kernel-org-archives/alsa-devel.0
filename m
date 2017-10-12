@@ -1,17 +1,18 @@
-From: =?UTF-8?B?0JLQu9Cw0LTQuNC80LjRgCDQnNCw0YDRgtGM0Y/QvdC+0LI=?=
- <vilgeforce@gmail.com>
-Subject: Click sound when playing "silence" buffer
-Date: Wed, 11 Oct 2017 22:16:50 +0300
-Message-ID: <CAL5iTPJNUC7EHUdPNWq4+xfU-8eHm7N1ee34aguxOQ_=PF9CWQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: add rsnd_kctrl_xxx() macro" to
+	the asoc tree
+Date: Thu, 12 Oct 2017 11:17:27 +0100
+Message-ID: <E1e2aYR-0007bU-0u@debutante>
+References: <87wp422tgl.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="001a114d7f6e0ab487055b4a440c"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f171.google.com (mail-qt0-f171.google.com
- [209.85.216.171])
- by alsa0.perex.cz (Postfix) with ESMTP id BB3A02675CB
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 21:16:52 +0200 (CEST)
-Received: by mail-qt0-f171.google.com with SMTP id z28so5981614qtz.13
- for <alsa-devel@alsa-project.org>; Wed, 11 Oct 2017 12:16:52 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D993266CA1
+ for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2017 12:17:33 +0200 (CEST)
+In-Reply-To: <87wp422tgl.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +22,276 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
---001a114d7f6e0ab487055b4a440c
-Content-Type: text/plain; charset="UTF-8"
+The patch
 
-Hello! I'm completely new to ALSA and I tried to do a simply buzzer using it.
+   ASoC: rsnd: add rsnd_kctrl_xxx() macro
 
-During the debug I noticed a strange behaviour: I used
-SND_PCM_FORMAT_S8 format, tried to play the buffer filled with zero
-bytes and I heard click sound when my program starts and end playing
-the buffer. When I filled the buffer with 0x80 bytes I didn't hear any
-clicks. The closer the bytes value to 0x80, the quieter the click is.
+has been applied to the asoc tree at
 
-I tried snd_pcm_format_set_silence() instead of memset() and got
-clicks too. Why I got them?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Does it mean what when I use some formats, the values in buffer for
-zero output voltage are not 0x00?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-My source code is in attachment, my sound card is Intel HDA.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---001a114d7f6e0ab487055b4a440c
-Content-Type: text/x-c++src; charset="US-ASCII"; name="main.cpp"
-Content-Disposition: attachment; filename="main.cpp"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_j8nf2elv0
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-I2RlZmluZSBBTFNBX1BDTV9ORVdfSFdfUEFSQU1TX0FQSQoKI2luY2x1ZGUgPGFsc2EvYXNvdW5k
-bGliLmg+CgppbnQgbWFpbigpCnsKaW50IGVyckNvZGU7CnVuc2lnbmVkIGludCB2YWw7CmludCBk
-aXI7CnNpemVfdCBzaXplOwp1bnNpZ25lZCBsb25nIGxvb3BzOwpjaGFyKiBidWZmZXI7CgpzbmRf
-cGNtX3QqIGhQQ007CnNuZF9wY21faHdfcGFyYW1zX3QqIHBhcmFtczsKc25kX3BjbV91ZnJhbWVz
-X3QgZnJhbWVzOwoJCgllcnJDb2RlID0gc25kX3BjbV9vcGVuKCZoUENNLCAiZGVmYXVsdCIsIFNO
-RF9QQ01fU1RSRUFNX1BMQVlCQUNLLCAwKTsKCWlmIChlcnJDb2RlIDwgMCl7CgkJcHJpbnRmICgi
-RXJyb3Igc25kX3BjbV9vcGVuOiAlc1xuIiwgc25kX3N0cmVycm9yKGVyckNvZGUpKTsKCQlyZXR1
-cm4gMTsKCX0KCQoJc25kX3BjbV9od19wYXJhbXNfYWxsb2NhKCZwYXJhbXMpOwoJc25kX3BjbV9o
-d19wYXJhbXNfYW55KGhQQ00sIHBhcmFtcyk7CglzbmRfcGNtX2h3X3BhcmFtc19zZXRfYWNjZXNz
-KGhQQ00sIHBhcmFtcywgU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQpOwoJLy9zbmRfcGNt
-X2h3X3BhcmFtc19zZXRfZm9ybWF0KGhQQ00sIHBhcmFtcywgU05EX1BDTV9GT1JNQVRfUzE2X0xF
-KTsKCXNuZF9wY21faHdfcGFyYW1zX3NldF9mb3JtYXQoaFBDTSwgcGFyYW1zLCBTTkRfUENNX0ZP
-Uk1BVF9TOCk7CglzbmRfcGNtX2h3X3BhcmFtc19zZXRfY2hhbm5lbHMoaFBDTSwgcGFyYW1zLCAy
-KTsKCQoJdmFsID0gNDQxMDA7CglzbmRfcGNtX2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyKGhQQ00s
-IHBhcmFtcywgJnZhbCwgJmRpcik7CgkKCWZyYW1lcyA9IDI1NjsKCXNuZF9wY21faHdfcGFyYW1z
-X3NldF9wZXJpb2Rfc2l6ZV9uZWFyKGhQQ00sIHBhcmFtcywgJmZyYW1lcywgJmRpcik7CgkKCWVy
-ckNvZGUgPSBzbmRfcGNtX2h3X3BhcmFtcyhoUENNLCBwYXJhbXMpOwoJaWYgKGVyckNvZGUgPCAw
-KXsKCQlwcmludGYgKCJFcnJvciBzbmRfcGNtX2h3X3BhcmFtczogJXNcbiIsIHNuZF9zdHJlcnJv
-cihlcnJDb2RlKSk7Cgl9CgkKCXNuZF9wY21faHdfcGFyYW1zX2dldF9wZXJpb2Rfc2l6ZShwYXJh
-bXMsICZmcmFtZXMsICZkaXIpOwoJc2l6ZSA9IGZyYW1lcyAqIDIgKiA0OwoJYnVmZmVyID0gKGNo
-YXIqKW1hbGxvYyhzaXplKTsKCQkKCW1lbXNldChidWZmZXIsIDB4MDAsIHNpemUpOwoJCglzbmRf
-cGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3RpbWUocGFyYW1zLCAmdmFsLCAmZGlyKTsKCWxvb3Bz
-ID0gMTAwMDAwMCAvIHZhbDsKCQoJd2hpbGUobG9vcHMgPiAwKXsKCQlsb29wcy0tOwoJCWVyckNv
-ZGUgPSBzbmRfcGNtX3dyaXRlaShoUENNLCBidWZmZXIsIGZyYW1lcyk7Cgl9CgkJCglzbmRfcGNt
-X2RyYWluKGhQQ00pOwoJc25kX3BjbV9jbG9zZShoUENNKTsKCWZyZWUoYnVmZmVyKTsKCXJldHVy
-biAwOwp9
---001a114d7f6e0ab487055b4a440c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
+Thanks,
+Mark
 
---001a114d7f6e0ab487055b4a440c--
+>From 3a9fa27be507b19107a8b3fe03a67e8145aea88c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 11 Oct 2017 04:42:34 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_kctrl_xxx() macro
+
+Current CTU/MIX/DVC are directly using rsnd_kctrl_cfg_m/s to control
+val etc, but it is difficult to read/understand.
+And there was no uniformity in access method.
+This patch adds new rsnd_kctrl_xxx() and implements uniformed access
+method.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/ctu.c  | 80 ++++++++++++++++++++++++------------------------
+ sound/soc/sh/rcar/dvc.c  | 19 ++++++------
+ sound/soc/sh/rcar/mix.c  | 10 +++---
+ sound/soc/sh/rcar/rsnd.h |  4 +++
+ 4 files changed, 59 insertions(+), 54 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/ctu.c b/sound/soc/sh/rcar/ctu.c
+index ad07ba8c3720..d201d551866d 100644
+--- a/sound/soc/sh/rcar/ctu.c
++++ b/sound/soc/sh/rcar/ctu.c
+@@ -133,7 +133,7 @@ static void rsnd_ctu_value_init(struct rsnd_dai_stream *io,
+ 	int i;
+ 
+ 	for (i = 0; i < RSND_MAX_CHANNELS; i++) {
+-		u32 val = ctu->pass.val[i];
++		u32 val = rsnd_kctrl_valm(ctu->pass, i);
+ 
+ 		cpmdr |= val << (28 - (i * 4));
+ 
+@@ -150,44 +150,44 @@ static void rsnd_ctu_value_init(struct rsnd_dai_stream *io,
+ 	rsnd_mod_write(mod, CTU_SCMDR, scmdr);
+ 
+ 	if (scmdr > 0) {
+-		rsnd_mod_write(mod, CTU_SV00R, ctu->sv0.val[0]);
+-		rsnd_mod_write(mod, CTU_SV01R, ctu->sv0.val[1]);
+-		rsnd_mod_write(mod, CTU_SV02R, ctu->sv0.val[2]);
+-		rsnd_mod_write(mod, CTU_SV03R, ctu->sv0.val[3]);
+-		rsnd_mod_write(mod, CTU_SV04R, ctu->sv0.val[4]);
+-		rsnd_mod_write(mod, CTU_SV05R, ctu->sv0.val[5]);
+-		rsnd_mod_write(mod, CTU_SV06R, ctu->sv0.val[6]);
+-		rsnd_mod_write(mod, CTU_SV07R, ctu->sv0.val[7]);
++		rsnd_mod_write(mod, CTU_SV00R, rsnd_kctrl_valm(ctu->sv0, 0));
++		rsnd_mod_write(mod, CTU_SV01R, rsnd_kctrl_valm(ctu->sv0, 1));
++		rsnd_mod_write(mod, CTU_SV02R, rsnd_kctrl_valm(ctu->sv0, 2));
++		rsnd_mod_write(mod, CTU_SV03R, rsnd_kctrl_valm(ctu->sv0, 3));
++		rsnd_mod_write(mod, CTU_SV04R, rsnd_kctrl_valm(ctu->sv0, 4));
++		rsnd_mod_write(mod, CTU_SV05R, rsnd_kctrl_valm(ctu->sv0, 5));
++		rsnd_mod_write(mod, CTU_SV06R, rsnd_kctrl_valm(ctu->sv0, 6));
++		rsnd_mod_write(mod, CTU_SV07R, rsnd_kctrl_valm(ctu->sv0, 7));
+ 	}
+ 	if (scmdr > 1) {
+-		rsnd_mod_write(mod, CTU_SV10R, ctu->sv1.val[0]);
+-		rsnd_mod_write(mod, CTU_SV11R, ctu->sv1.val[1]);
+-		rsnd_mod_write(mod, CTU_SV12R, ctu->sv1.val[2]);
+-		rsnd_mod_write(mod, CTU_SV13R, ctu->sv1.val[3]);
+-		rsnd_mod_write(mod, CTU_SV14R, ctu->sv1.val[4]);
+-		rsnd_mod_write(mod, CTU_SV15R, ctu->sv1.val[5]);
+-		rsnd_mod_write(mod, CTU_SV16R, ctu->sv1.val[6]);
+-		rsnd_mod_write(mod, CTU_SV17R, ctu->sv1.val[7]);
++		rsnd_mod_write(mod, CTU_SV10R, rsnd_kctrl_valm(ctu->sv1, 0));
++		rsnd_mod_write(mod, CTU_SV11R, rsnd_kctrl_valm(ctu->sv1, 1));
++		rsnd_mod_write(mod, CTU_SV12R, rsnd_kctrl_valm(ctu->sv1, 2));
++		rsnd_mod_write(mod, CTU_SV13R, rsnd_kctrl_valm(ctu->sv1, 3));
++		rsnd_mod_write(mod, CTU_SV14R, rsnd_kctrl_valm(ctu->sv1, 4));
++		rsnd_mod_write(mod, CTU_SV15R, rsnd_kctrl_valm(ctu->sv1, 5));
++		rsnd_mod_write(mod, CTU_SV16R, rsnd_kctrl_valm(ctu->sv1, 6));
++		rsnd_mod_write(mod, CTU_SV17R, rsnd_kctrl_valm(ctu->sv1, 7));
+ 	}
+ 	if (scmdr > 2) {
+-		rsnd_mod_write(mod, CTU_SV20R, ctu->sv2.val[0]);
+-		rsnd_mod_write(mod, CTU_SV21R, ctu->sv2.val[1]);
+-		rsnd_mod_write(mod, CTU_SV22R, ctu->sv2.val[2]);
+-		rsnd_mod_write(mod, CTU_SV23R, ctu->sv2.val[3]);
+-		rsnd_mod_write(mod, CTU_SV24R, ctu->sv2.val[4]);
+-		rsnd_mod_write(mod, CTU_SV25R, ctu->sv2.val[5]);
+-		rsnd_mod_write(mod, CTU_SV26R, ctu->sv2.val[6]);
+-		rsnd_mod_write(mod, CTU_SV27R, ctu->sv2.val[7]);
++		rsnd_mod_write(mod, CTU_SV20R, rsnd_kctrl_valm(ctu->sv2, 0));
++		rsnd_mod_write(mod, CTU_SV21R, rsnd_kctrl_valm(ctu->sv2, 1));
++		rsnd_mod_write(mod, CTU_SV22R, rsnd_kctrl_valm(ctu->sv2, 2));
++		rsnd_mod_write(mod, CTU_SV23R, rsnd_kctrl_valm(ctu->sv2, 3));
++		rsnd_mod_write(mod, CTU_SV24R, rsnd_kctrl_valm(ctu->sv2, 4));
++		rsnd_mod_write(mod, CTU_SV25R, rsnd_kctrl_valm(ctu->sv2, 5));
++		rsnd_mod_write(mod, CTU_SV26R, rsnd_kctrl_valm(ctu->sv2, 6));
++		rsnd_mod_write(mod, CTU_SV27R, rsnd_kctrl_valm(ctu->sv2, 7));
+ 	}
+ 	if (scmdr > 3) {
+-		rsnd_mod_write(mod, CTU_SV30R, ctu->sv3.val[0]);
+-		rsnd_mod_write(mod, CTU_SV31R, ctu->sv3.val[1]);
+-		rsnd_mod_write(mod, CTU_SV32R, ctu->sv3.val[2]);
+-		rsnd_mod_write(mod, CTU_SV33R, ctu->sv3.val[3]);
+-		rsnd_mod_write(mod, CTU_SV34R, ctu->sv3.val[4]);
+-		rsnd_mod_write(mod, CTU_SV35R, ctu->sv3.val[5]);
+-		rsnd_mod_write(mod, CTU_SV36R, ctu->sv3.val[6]);
+-		rsnd_mod_write(mod, CTU_SV37R, ctu->sv3.val[7]);
++		rsnd_mod_write(mod, CTU_SV30R, rsnd_kctrl_valm(ctu->sv3, 0));
++		rsnd_mod_write(mod, CTU_SV31R, rsnd_kctrl_valm(ctu->sv3, 1));
++		rsnd_mod_write(mod, CTU_SV32R, rsnd_kctrl_valm(ctu->sv3, 2));
++		rsnd_mod_write(mod, CTU_SV33R, rsnd_kctrl_valm(ctu->sv3, 3));
++		rsnd_mod_write(mod, CTU_SV34R, rsnd_kctrl_valm(ctu->sv3, 4));
++		rsnd_mod_write(mod, CTU_SV35R, rsnd_kctrl_valm(ctu->sv3, 5));
++		rsnd_mod_write(mod, CTU_SV36R, rsnd_kctrl_valm(ctu->sv3, 6));
++		rsnd_mod_write(mod, CTU_SV37R, rsnd_kctrl_valm(ctu->sv3, 7));
+ 	}
+ 
+ 	rsnd_mod_write(mod, CTU_CTUIR, 0);
+@@ -199,17 +199,17 @@ static void rsnd_ctu_value_reset(struct rsnd_dai_stream *io,
+ 	struct rsnd_ctu *ctu = rsnd_mod_to_ctu(mod);
+ 	int i;
+ 
+-	if (!ctu->reset.val)
++	if (!rsnd_kctrl_vals(ctu->reset))
+ 		return;
+ 
+ 	for (i = 0; i < RSND_MAX_CHANNELS; i++) {
+-		ctu->pass.val[i] = 0;
+-		ctu->sv0.val[i] = 0;
+-		ctu->sv1.val[i] = 0;
+-		ctu->sv2.val[i] = 0;
+-		ctu->sv3.val[i] = 0;
++		rsnd_kctrl_valm(ctu->pass, i) = 0;
++		rsnd_kctrl_valm(ctu->sv0,  i) = 0;
++		rsnd_kctrl_valm(ctu->sv1,  i) = 0;
++		rsnd_kctrl_valm(ctu->sv2,  i) = 0;
++		rsnd_kctrl_valm(ctu->sv3,  i) = 0;
+ 	}
+-	ctu->reset.val = 0;
++	rsnd_kctrl_vals(ctu->reset) = 0;
+ }
+ 
+ static int rsnd_ctu_init(struct rsnd_mod *mod,
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 4ef318ac73d5..dbe54f024d68 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -73,8 +73,9 @@ static void rsnd_dvc_halt(struct rsnd_mod *mod)
+ 	rsnd_mod_write(mod, DVC_SWRSR, 0);
+ }
+ 
+-#define rsnd_dvc_get_vrpdr(dvc) (dvc->rup.val << 8 | dvc->rdown.val)
+-#define rsnd_dvc_get_vrdbr(dvc) (0x3ff - (dvc->volume.val[0] >> 13))
++#define rsnd_dvc_get_vrpdr(dvc) (rsnd_kctrl_vals(dvc->rup) << 8 | \
++				 rsnd_kctrl_vals(dvc->rdown))
++#define rsnd_dvc_get_vrdbr(dvc) (0x3ff - (rsnd_kctrl_valm(dvc->volume, 0) >> 13))
+ 
+ static void rsnd_dvc_volume_parameter(struct rsnd_dai_stream *io,
+ 					      struct rsnd_mod *mod)
+@@ -84,12 +85,12 @@ static void rsnd_dvc_volume_parameter(struct rsnd_dai_stream *io,
+ 	int i;
+ 
+ 	/* Enable Ramp */
+-	if (dvc->ren.val)
++	if (rsnd_kctrl_vals(dvc->ren))
+ 		for (i = 0; i < RSND_MAX_CHANNELS; i++)
+-			val[i] = dvc->volume.cfg.max;
++			val[i] = rsnd_kctrl_max(dvc->volume);
+ 	else
+ 		for (i = 0; i < RSND_MAX_CHANNELS; i++)
+-			val[i] = dvc->volume.val[i];
++			val[i] = rsnd_kctrl_valm(dvc->volume, i);
+ 
+ 	/* Enable Digital Volume */
+ 	rsnd_mod_write(mod, DVC_VOL0R, val[0]);
+@@ -119,7 +120,7 @@ static void rsnd_dvc_volume_init(struct rsnd_dai_stream *io,
+ 	dvucr |= 0x101;
+ 
+ 	/* Enable Ramp */
+-	if (dvc->ren.val) {
++	if (rsnd_kctrl_vals(dvc->ren)) {
+ 		dvucr |= 0x10;
+ 
+ 		/*
+@@ -161,10 +162,10 @@ static void rsnd_dvc_volume_update(struct rsnd_dai_stream *io,
+ 	u32 vrdbr = 0;
+ 	int i;
+ 
+-	for (i = 0; i < dvc->mute.cfg.size; i++)
+-		zcmcr |= (!!dvc->mute.cfg.val[i]) << i;
++	for (i = 0; i < rsnd_kctrl_size(dvc->mute); i++)
++		zcmcr |= (!!rsnd_kctrl_valm(dvc->mute, i)) << i;
+ 
+-	if (dvc->ren.val) {
++	if (rsnd_kctrl_vals(dvc->ren)) {
+ 		vrpdr = rsnd_dvc_get_vrpdr(dvc);
+ 		vrdbr = rsnd_dvc_get_vrdbr(dvc);
+ 	}
+diff --git a/sound/soc/sh/rcar/mix.c b/sound/soc/sh/rcar/mix.c
+index 912cfec49038..7998380766f6 100644
+--- a/sound/soc/sh/rcar/mix.c
++++ b/sound/soc/sh/rcar/mix.c
+@@ -84,7 +84,7 @@ static void rsnd_mix_halt(struct rsnd_mod *mod)
+ 
+ #define rsnd_mix_get_vol(mix, X) \
+ 	rsnd_flags_has(mix, HAS_VOL##X) ? \
+-		(VOL_MAX - mix->volume##X.cfg.val[0]) : 0
++		(VOL_MAX - rsnd_kctrl_vals(mix->volume##X)) : 0
+ static void rsnd_mix_volume_parameter(struct rsnd_dai_stream *io,
+ 				      struct rsnd_mod *mod)
+ {
+@@ -116,9 +116,9 @@ static void rsnd_mix_volume_init(struct rsnd_dai_stream *io,
+ 	rsnd_mod_write(mod, MIX_ADINR, rsnd_runtime_channel_after_ctu(io));
+ 
+ 	/* volume step */
+-	rsnd_mod_write(mod, MIX_MIXMR, mix->ren.cfg.val[0]);
+-	rsnd_mod_write(mod, MIX_MVPDR, mix->rup.cfg.val[0] << 8 |
+-				       mix->rdw.cfg.val[0]);
++	rsnd_mod_write(mod, MIX_MIXMR, rsnd_kctrl_vals(mix->ren));
++	rsnd_mod_write(mod, MIX_MVPDR, rsnd_kctrl_vals(mix->rup) << 8 |
++				       rsnd_kctrl_vals(mix->rdw));
+ 
+ 	/* common volume parameter */
+ 	rsnd_mix_volume_parameter(io, mod);
+@@ -217,7 +217,7 @@ static int rsnd_mix_pcm_new(struct rsnd_mod *mod,
+ 			       volume, VOL_MAX);
+ 	if (ret < 0)
+ 		return ret;
+-	volume->cfg.val[0] = VOL_MAX;
++	rsnd_kctrl_vals(*volume) = VOL_MAX;
+ 
+ 	if (rsnd_flags_has(mix, ONCE_KCTRL_INITIALIZED))
+ 		return ret;
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 0d9f9c3343da..2a224fa639cb 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -631,6 +631,10 @@ struct rsnd_kctrl_cfg_s {
+ 	struct rsnd_kctrl_cfg cfg;
+ 	u32 val;
+ };
++#define rsnd_kctrl_size(x)	((x).cfg.size)
++#define rsnd_kctrl_max(x)	((x).cfg.max)
++#define rsnd_kctrl_valm(x, i)	((x).val[i])	/* = (x).cfg.val[i] */
++#define rsnd_kctrl_vals(x)	((x).val)	/* = (x).cfg.val[0] */
+ 
+ int rsnd_kctrl_accept_anytime(struct rsnd_dai_stream *io);
+ int rsnd_kctrl_accept_runtime(struct rsnd_dai_stream *io);
+-- 
+2.14.1
