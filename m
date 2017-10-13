@@ -1,148 +1,108 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [Patch v6 1/7] slimbus: Device management on SLIMbus
-Date: Fri, 13 Oct 2017 14:26:43 -0500
-Message-ID: <20171013192643.lw6w2qs2bcs66hyx@rob-hp-laptop>
-References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
+From: "PaX Team" <pageexec@freemail.hu>
+Subject: 4.13 regression: get_kctl_0dB_offset doesn't handle all possible callbacks
+Date: Sat, 14 Oct 2017 00:46:25 +0200
+Message-ID: <59E14241.8917.637DC9@pageexec.freemail.hu>
+Reply-To: pageexec@freemail.hu
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20171006155136.4682-2-srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, gong.chen-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kheitke-hxvC4TZJLZFWk0Htik3J/w@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-description: Mail message body
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 06, 2017 at 05:51:30PM +0200, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
-> From: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-> 
-> SLIMbus (Serial Low Power Interchip Media Bus) is a specification
-> developed by MIPI (Mobile Industry Processor Interface) alliance.
-> SLIMbus is a 2-wire implementation, which is used to communicate with
-> peripheral components like audio-codec.
-> SLIMbus uses Time-Division-Multiplexing to accommodate multiple data
-> channels, and control channel. Control channel has messages to do
-> device-enumeration, messages to send/receive control-data to/from
-> slimbus devices, messages for port/channel management, and messages to
-> do bandwidth allocation.
-> The framework supports multiple instances of the bus (1 controller per
-> bus), and multiple slave devices per controller.
-> 
-> This patch does device enumeration, logical address assignment,
-> informing device when the device reports present/absent etc.
-> Reporting present may need the driver to do the needful (e.g. turning
-> on voltage regulators powering the device). Additionally device is
-> probed when it reports present if that device doesn't need any such
-> steps mentioned above.
-> 
-> Signed-off-by: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/slimbus/bus.txt |  57 ++
+hello devs,
 
-Split to separate patch.
+upstream commit 99b5c5bb9a5435a5ae5d46445ac0f2bf6aa5ee52 removed the use
+of set_fs in get_kctl_0dB_offset under the assumption that the only runtime
+value of kctl->tlv.c was snd_hda_mixer_amp_tlv. alas, recently, the KERNEXEC
+and UDEREF features in PaX reported a violation of this assumption as it
+turns out that _snd_ctl_add_slave sets this callback to slave_tlv_cmd instead.
 
->  Documentation/slimbus/summary                     | 109 ++++
->  drivers/Kconfig                                   |   2 +
->  drivers/Makefile                                  |   1 +
->  drivers/slimbus/Kconfig                           |  11 +
->  drivers/slimbus/Makefile                          |   5 +
->  drivers/slimbus/slim-core.c                       | 695 ++++++++++++++++++++++
->  include/linux/mod_devicetable.h                   |  13 +
->  include/linux/slimbus.h                           | 299 ++++++++++
->  9 files changed, 1192 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/slimbus/bus.txt
->  create mode 100644 Documentation/slimbus/summary
->  create mode 100644 drivers/slimbus/Kconfig
->  create mode 100644 drivers/slimbus/Makefile
->  create mode 100644 drivers/slimbus/slim-core.c
->  create mode 100644 include/linux/slimbus.h
-> 
-> diff --git a/Documentation/devicetree/bindings/slimbus/bus.txt b/Documentation/devicetree/bindings/slimbus/bus.txt
-> new file mode 100644
-> index 0000000..cb658bb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/slimbus/bus.txt
-> @@ -0,0 +1,57 @@
-> +SLIM(Serial Low Power Interchip Media Bus) bus
-> +
-> +SLIMbus is a 2-wire bus, and is used to communicate with peripheral
-> +components like audio-codec.
-> +
-> +Controller is a normal device using binding for whatever bus it is
-> +on (e.g. platform bus).
+it seems to me that there're several other possible values for this callback
+so it's not clear why it was assumed that get_kctl_0dB_offset would only be
+called with only one of them in practice, but nevertheless, it happens here
+so clearly something is wrong. the backtrace that shows how things go wrong
+in this case:
 
-I can't have a PCI based slimbus controller? "platform bus" is a 
-Linuxism.
+ PAX: suspicious general protection fault: 0000 [#1] PREEMPT SMP
+ Modules linked in:
+ CPU: 4 PID: 31 Comm: kworker/4:0 Not tainted 4.13.5-i386-pax #17
+ Workqueue: events azx_probe_work
+ task: eb61c880 task.stack: eb62a000
+ EIP: 0060:[<009bbd2d>] init_slave_0dB+0x2d/0xa0
+ EFLAGS: 00210202 CPU: 4
+ EAX: 00991fd0 EBX: e9883a80 ECX: e9883a80 EDX: eb62bd74
+ ESI: eb62bd74 EDI: e9098800 EBP: eb62bd08 ESP: eb62bcec
+  DS: 0068 ES: 0068 FS: 00d8 GS: 0068 SS: 0068
+ CR0: 80050033 CR2: 00000000 CR3: 03b2d100 CR4: 000406f0 shadow CR4: 000406f0
+ Call Trace:
+  [<009bb469>] map_slaves+0xb9/0xe0
+  [<009bce0e>] __snd_hda_add_vmaster+0xde/0x110
+  [<009c82f0>] snd_hda_gen_build_controls+0x1a0/0x1b0
+  [<009d0a4d>] cx_auto_build_controls+0xd/0x70
+  [<009bdf76>] snd_hda_codec_build_controls+0x186/0x1d0
+  [<009b92ad>] hda_codec_driver_probe+0x6d/0xf0
+  [<006a3be9>] driver_probe_device+0x289/0x420
+  [<006a3ed6>] __device_attach_driver+0x76/0x100
+  [<006a1edf>] bus_for_each_drv+0x3f/0x70
+  [<006a3813>] __device_attach+0xa3/0x110
+  [<006a3f9d>] device_initial_probe+0xd/0x10
+  [<006a2d6f>] bus_probe_device+0x6f/0x80
+  [<006a100f>] device_add+0x2cf/0x590
+  [<009d8d8c>] snd_hdac_device_register+0xc/0x40
+  [<009b90b4>] snd_hda_codec_configure+0x34/0x140
+  [<009c2875>] azx_codec_configure+0x25/0x50
+  [<009d8081>] azx_probe_continue+0x621/0x9e0
+  [<009d84bd>] azx_probe_work+0xd/0x10
+  [<0006fff2>] process_one_work+0x122/0x2a0
+  [<000701a9>] worker_thread+0x39/0x390
+  [<00074df2>] kthread+0xe2/0x110
+  [<00cee619>] ret_from_fork+0x19/0x30
+ Code: e5 57 89 c7 56 89 d6 53 89 cb 83 ec 10 8b 41 6c a9 00 00 00 10 74 09 81 79 58 90 bc 9b 00 74 4e a8 10 74 38 8b 43 58 85 c0 74 31 <83> 38 01 75 2c 8b 48 0c 81 e1 ff ff fe ff 74 21 8b 16 39 d1 
+74
+ EIP: [<009bbd2d>] init_slave_0dB+0x2d/0xa0 SS:ESP: 0068:eb62bcec
 
-> +Required property for SLIMbus controller node:
-> +- compatible	- name of SLIMbus controller following generic names
-> +		recommended practice.
+what KERNEXEC on i386 does is that it executes kernel code in its own 0-based
+code segment hence the 'low' code addresses. due to the current logic that
+checks for SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK in get_kctl_0dB_offset, this
+callback address is instead treated as a data pointer (as apparently
+SNDRV_CTL_ELEM_ACCESS_TLV_READ is also set) and since it's not a valid kernel
+address, it causes a GPF under the UDEREF PaX feature (without UDEREF it'd
+have been an oops since such low addresses are not mapped for kernel threads).
 
-generic names aren't recommended. Allowed with some conditons, yes.
+on vanilla kernels all this is a silent read of kernel code bytes that are
+then interpreted as the tlv[] array content, which is probably not what you
+want either.
 
-> +- #address-cells - should be 2
+as for fixing this, first the above mentioned assumption should be re-evaluated.
+if it's considered correct then there is some logic bug in my case (i can help
+debug it if you tell me what to do) otherwise the current pattern of
 
-You used 4 for your controller.
+   if (SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK && callback == snd_hda_mixer_amp_tlv) {
+     call wrapped function underneath snd_hda_mixer_amp_tlv
+   } else if (SNDRV_CTL_ELEM_ACCESS_TLV_READ) {
+     treat unrecognized callback address as data ptr
+   }
 
-> +- #size-cells	- should be 0
-> +
-> +No other properties are required in the SLIMbus controller bus node.
+should be changed to
 
-That's not a useful statement. Almost every controller probably has 
-other required properties.
+   if (SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK( {
+     if (callback == snd_hda_mixer_amp_tlv) {
+       call wrapped function underneath snd_hda_mixer_amp_tlv
+     } else if (callback == others) {
+       handle others, WARN/BUG/etc
+     }
+   } else if (SNDRV_CTL_ELEM_ACCESS_TLV_READ) {
+     no longer treat unrecognized callback address as data ptr
+   }
 
-> +
-> +Child nodes:
-> +Every SLIMbus controller node can contain zero or more child nodes
-> +representing slave devices on the bus. Every SLIMbus slave device is
-> +uniquely determined by the enumeration address containing 4 fields:
-> +Manufacturer ID, Product code, Device index, and Instance value for
-> +the device.
-> +If child node is not present and it is instantiated after device
-> +discovery (slave device reporting itself present).
-> +
-> +In some cases it may be necessary to describe non-probeable device
-> +details such as non-standard ways of powering up a device. In
-> +such cases, child nodes for those devices will be present as
-> +slaves of the slimbus-controller, as detailed below.
-> +
-> +Required property for SLIMbus child node if it is present:
-> +- reg		- Is Duplex (Device index, Instance ID) from Enumeration
-> +		  Address.
-> +		  Device Index Uniquely identifies multiple Devices within
-> +		  a single Component.
-> +		  Instance ID Is for the cases where multiple Devices of the
-> +		  same type or Class are attached to the bus.
-> +
-> +- compatible	-"slimMID,PID". The textual representation of Manufacturer ID,
-> +	 	  Product Code, shall be in lower case hexadecimal with leading
-> +		  zeroes suppressed
-> +
-> +SLIMbus example for Qualcomm's slimbus manager component:
-> +
-> +	slim@28080000 {
-> +		compatible = "qcom,slim-msm";
-> +		reg = <0x28080000 0x2000>,
-> +		interrupts = <0 33 0>;
-> +		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-> +		clock-names = "iface_clk", "core_clk";
-> +		#address-cells = <2>;
-> +		#size-cells = <0>;
-> +
-> +		codec: wcd9310@1{
+and all other callbacks with userland access should be refactored the same
+way as snd_hda_mixer_amp_tlv was. i'd also suggest that you at least do the
+above suggested if/else pattern change in order to prevent the misuse of
+unexpected callbacks in the future.
 
-Is '1' by itself unique enough because you have 2 address cells. The 
-unit-address is typically split up into fields with commas unless it's 
-just a memory address. Anyway, you need to define the unit address 
-format in this doc.
-
-> +			compatible = "slim217,60"";
-> +			reg = <1 0>;
-> +		};
-> +	};
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+cheers,
+  PaX Team
