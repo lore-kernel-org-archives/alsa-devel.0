@@ -1,77 +1,109 @@
-From: Bastien Nocera <hadess@hadess.net>
-Subject: Surface 3 audio broken between 4.11 and 4.13 (rt5645)
-Date: Fri, 13 Oct 2017 20:40:36 +0200
-Message-ID: <1507920036.5910.46.camel@hadess.net>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [Patch v6 3/7] slimbus: qcom: Add Qualcomm Slimbus controller
+ driver
+Date: Fri, 13 Oct 2017 14:17:47 -0500
+Message-ID: <20171013191747.o7bvb5urs5jt2x4l@rob-hp-laptop>
+References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
+ <20171006155136.4682-4-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E14B266E90
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 20:40:38 +0200 (CEST)
-Received: from classic (mon69-7-83-155-44-161.fbx.proxad.net [83.155.44.161])
- (Authenticated sender: hadess@hadess.net)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 531C7C5A56
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 20:40:37 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171006155136.4682-4-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: srinivas.kandagatla@linaro.org
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
+On Fri, Oct 06, 2017 at 05:51:32PM +0200, srinivas.kandagatla@linaro.org wrote:
+> From: Sagar Dharia <sdharia@codeaurora.org>
+> 
+> This controller driver programs manager, interface, and framer
+> devices for Qualcomm's slimbus HW block.
+> Manager component currently implements logical address setting,
+> and messaging interface.
+> Interface device reports bus synchronization information, and framer
+> device clocks the bus from the time it's woken up, until clock-pause
+> is executed by the manager device.
+> 
+> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt |  43 ++
 
-As I was trying to test PulseAudio HDMI LPE audio support fixes, I
-realised that the internal sound card of my Surface 3 wasn't working
-anymore, using the same user-space configuration.
+Version 6 and this is the first I see it? Where's the version history? 
 
-Looks like detection of the device regressed between 2 versions. Does
-this look familiar to anyone, or should I start bisecting? (which will
-take me absolutely ages, as the CPU is anemic on that machine)
+Please split to separate patch.
 
-Working:
-$ dmesg | grep rt5 
-[   13.707825] rt5640 i2c-10EC5640:00: Device with ID register 0x6308 is not rt5640/39
-[   15.010548] cht-bsw-rt5645 cht-bsw-rt5645: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
-[   15.011132] cht-bsw-rt5645 cht-bsw-rt5645: snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
-[   15.012756] cht-bsw-rt5645 cht-bsw-rt5645: rt5645-aif1 <-> ssp2-port mapping ok
-[   15.100152] input: chtrt5645 Headset as /devices/pci0000:00/808622A8:00/cht-bsw-rt5645/sound/card0/input27
+>  drivers/slimbus/Kconfig                            |   9 +
+>  drivers/slimbus/Makefile                           |   3 +
+>  drivers/slimbus/slim-qcom-ctrl.c                   | 594 +++++++++++++++++++++
+>  drivers/slimbus/slim-qcom.h                        |  63 +++
+>  5 files changed, 712 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+>  create mode 100644 drivers/slimbus/slim-qcom-ctrl.c
+>  create mode 100644 drivers/slimbus/slim-qcom.h
+> 
+> diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+> new file mode 100644
+> index 0000000..081110d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+> @@ -0,0 +1,43 @@
+> +Qualcomm SLIMBUS controller
+> +This controller is used if applications processor driver controls slimbus
+> +master component.
+> +
+> +Required properties:
+> +
+> + - #address-cells - refer to Documentation/devicetree/bindings/slimbus/bus.txt
+> + - #size-cells	- refer to Documentation/devicetree/bindings/slimbus/bus.txt
+> +
+> + - reg : Offset and length of the register region(s) for the device
+> + - reg-names : Register region name(s) referenced in reg above
+> +	 Required register resource entries are:
+> +	 "ctrl": Physical adderess of controller register blocks
+> + - compatible : should be "qcom,<SOC-NAME>-slim" for SOC specific compatible or
+> + 		"qcom,slim" if using generic qcom SLIM IP.
 
-$ uname -r
-4.11.0-0.rc0.git4.21.surface3.fc26.x86_64
+No such thing as generic IP.
 
-Not working:
-$ journalctl -b -2 | grep rt5 
-Oct 13 20:10:19 surface kernel: rt5640 i2c-10EC5640:00: Device with ID register 0x6308 is not rt5640/39
-Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
-Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
-Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
-Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
-Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
-Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
-Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
-Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
-Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
-Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
-Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
+Fine as a fallback, but not by itself.
 
-$ journalctl -b -2 | head -n3 | tail -n1 
-Oct 13 22:10:10 surface kernel: Linux version 4.13.0-0.rc2.git0.26.surface3.fc27.x86_64 (hadess@classic) (gcc version 7.1.1 20170526 (Red Hat 7.1.1-2) (GCC)) #1 SMP Tue Jul 25 18:47:03 CEST 2017
+> + - interrupts : Interrupt number used by this controller
+> + - clocks : Interface and core clocks used by this slimbus controller
+> + - clock-names : Required clock-name entries are:
+> +	"iface_clk" : Interface clock for this controller
+> +	"core_clk" : Interrupt for controller core's BAM
 
-Cheers
+_clk is redundant.
+
+> +
+> +
+> +Optional property:
+> + - reg entry for slew rate : If slew rate control register is provided, this
+> +	entry should be used.
+> + - reg-name for slew rate: "slew"
+
+Pointless to have -name when there is only one.
+
+> +
+> +Example:
+> +	slim@28080000 {
+> +		compatible = "qcom,slim";
+> +		#address-cells = <4>;
+> +		#size-cells = <0>;
+> +		reg = <0x28080000 0x2000>, <0x80207C 4>;
+> +		reg-names = "ctrl", "slew";
+> +		interrupts = <0 33 0>;
+> +		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
+> +		clock-names = "iface_clk", "core_clk";
+> +
+> +		codec: wcd9310@1{
+> +			compatible = "slim217,60";
+> +			reg = <1 0>;
+
+This would not compile. You don't have 4 cells here.
+
+> +		};
+> +	};
