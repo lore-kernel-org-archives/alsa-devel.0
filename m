@@ -1,16 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ALSA: hda - silence uninitialized variable
- warning in activate_amp_in()
-Date: Fri, 13 Oct 2017 13:57:10 +0300
-Message-ID: <20171013105710.4cksv562jhk4zwwi@mwanda>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH] dmaengine: imx-sdma: advertise all
+ supported slave bus widths
+Date: Fri, 13 Oct 2017 13:23:13 +0200
+Message-ID: <20171013132313.00fd64f4@karo-electronics.de>
+References: <20171013104346.16818-1-l.stach@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
- by alsa0.perex.cz (Postfix) with ESMTP id 45854266D12
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 12:57:26 +0200 (CEST)
-Content-Disposition: inline
+Received: from smtprelay02.ispgateway.de (smtprelay02.ispgateway.de
+ [80.67.18.14]) by alsa0.perex.cz (Postfix) with ESMTP id 6CA74266D12
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 13:23:28 +0200 (CEST)
+In-Reply-To: <20171013104346.16818-1-l.stach@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,24 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patchwork-lst@pengutronix.de, broonie@kernel.org, kernel@pengutronix.de, peter.seiderer.ext@zeiss.com, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-If snd_hda_get_conn_list() fails then "conn" isn't initialized.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 28e265a88383..5cc65093d941 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -795,6 +795,8 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
- 	hda_nid_t nid = path->path[i];
- 
- 	nums = snd_hda_get_conn_list(codec, nid, &conn);
-+	if (nums < 0)
-+		return;
- 	type = get_wcaps_type(get_wcaps(codec, nid));
- 	if (type == AC_WID_PIN ||
- 	    (type == AC_WID_AUD_IN && codec->single_adc_amp)) {
+SGksCgpPbiBGcmksIDEzIE9jdCAyMDE3IDEyOjQzOjQ2ICswMjAwIEx1Y2FzIFN0YWNoIHdyb3Rl
+Ogo+IFRoZSBjb21taXQgWzFdIHdoaWNoIGNoYW5nZWQgaW14LXBjbS1kbWEgdG8gZGVyaXZlIHRo
+ZSBwY21fY29uZmlnIGZyb20gdGhlCj4gYXR0YWNoZWQgZG1hZW5naW5lIGludHJvZHVjZWQgYSBy
+ZWdyZXNzaW9uIG9uIHRoZSBzdXBwb3J0ZWQgc2FtcGxlIGZvcm1hdHMsCj4gYXMgaW14LXNkbWEg
+ZG9lc24ndCBwcm9wZXJseSBhZHZlcnRpc2UgYWxsIHRoZSBzdXBwb3J0ZWQgc2xhdmUgYnVzIHdp
+ZHRocy4KPiAKPiBGaXggdGhpcyB0byByZXN0b3JlIGZ1bGwgZnVuY3Rpb25hbGl0eSBvZiB0aGUg
+aW14IHNvdW5kIHN1YnN5c3RlbS4KPiAKPiBbMV0gNzBkNDM1YmExY2Q2ICgiQVNvQzogaW14LXBj
+bS1kbWE6IHNpbXBsaWZ5IHBjbV9jb25maWciKQo+IFNpZ25lZC1vZmYtYnk6IEx1Y2FzIFN0YWNo
+IDxsLnN0YWNoQHBlbmd1dHJvbml4LmRlPgo+IC0tLQo+ICBkcml2ZXJzL2RtYS9pbXgtc2RtYS5j
+IHwgOCArKysrKystLQo+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAyIGRlbGV0
+aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2RtYS9pbXgtc2RtYS5jIGIvZHJpdmVy
+cy9kbWEvaW14LXNkbWEuYwo+IGluZGV4IGE2N2VjMWJkYzRlMC4uZTM3NDE4M2YxOWQwIDEwMDY0
+NAo+IC0tLSBhL2RyaXZlcnMvZG1hL2lteC1zZG1hLmMKPiArKysgYi9kcml2ZXJzL2RtYS9pbXgt
+c2RtYS5jCj4gQEAgLTE4NTEsOCArMTg1MSwxMiBAQCBzdGF0aWMgaW50IHNkbWFfcHJvYmUoc3Ry
+dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiAgCXNkbWEtPmRtYV9kZXZpY2UuZGV2aWNlX3By
+ZXBfZG1hX2N5Y2xpYyA9IHNkbWFfcHJlcF9kbWFfY3ljbGljOwo+ICAJc2RtYS0+ZG1hX2Rldmlj
+ZS5kZXZpY2VfY29uZmlnID0gc2RtYV9jb25maWc7Cj4gIAlzZG1hLT5kbWFfZGV2aWNlLmRldmlj
+ZV90ZXJtaW5hdGVfYWxsID0gc2RtYV9kaXNhYmxlX2NoYW5uZWxfd2l0aF9kZWxheTsKPiAtCXNk
+bWEtPmRtYV9kZXZpY2Uuc3JjX2FkZHJfd2lkdGhzID0gQklUKERNQV9TTEFWRV9CVVNXSURUSF80
+X0JZVEVTKTsKPiAtCXNkbWEtPmRtYV9kZXZpY2UuZHN0X2FkZHJfd2lkdGhzID0gQklUKERNQV9T
+TEFWRV9CVVNXSURUSF80X0JZVEVTKTsKPiArCXNkbWEtPmRtYV9kZXZpY2Uuc3JjX2FkZHJfd2lk
+dGhzID0gQklUKERNQV9TTEFWRV9CVVNXSURUSF80X0JZVEVTKSB8Cj4gKwkJCQkJICAgQklUKERN
+QV9TTEFWRV9CVVNXSURUSF8yX0JZVEVTKSB8Cj4gKwkJCQkJICAgQklUKERNQV9TTEFWRV9CVVNX
+SURUSF8xX0JZVEUpOwo+ICsJc2RtYS0+ZG1hX2RldmljZS5kc3RfYWRkcl93aWR0aHMgPSBCSVQo
+RE1BX1NMQVZFX0JVU1dJRFRIXzRfQllURVMpIHwKPiArCQkJCQkgICBCSVQoRE1BX1NMQVZFX0JV
+U1dJRFRIXzJfQllURVMpIHwKPiArCQkJCQkgICBCSVQoRE1BX1NMQVZFX0JVU1dJRFRIXzFfQllU
+RSk7Cj4gIAlzZG1hLT5kbWFfZGV2aWNlLmRpcmVjdGlvbnMgPSBCSVQoRE1BX0RFVl9UT19NRU0p
+IHwgQklUKERNQV9NRU1fVE9fREVWKTsKPiAgCXNkbWEtPmRtYV9kZXZpY2UucmVzaWR1ZV9ncmFu
+dWxhcml0eSA9IERNQV9SRVNJRFVFX0dSQU5VTEFSSVRZX1NFR01FTlQ7Cj4gIAlzZG1hLT5kbWFf
+ZGV2aWNlLmRldmljZV9pc3N1ZV9wZW5kaW5nID0gc2RtYV9pc3N1ZV9wZW5kaW5nOwo+ClRoYW5r
+IHlvdSwgdGhpcyBmaXhlcyB0aGUgcmVncmVzc2lvbiBJIG9ic2VydmVkLgoKVGVzdGVkLWJ5OiBM
+b3RoYXIgV2HDn21hbm4gPExXQEtBUk8tZWxlY3Ryb25pY3MuZGU+CgoKTG90aGFyIFdhw59tYW5u
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
