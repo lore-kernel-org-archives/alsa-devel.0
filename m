@@ -1,15 +1,15 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Subject: Re: [PATCH v2 0/9] Baytrail-Cherrytrail updates
-Date: Fri, 13 Oct 2017 19:23:24 +0300
-Message-ID: <1507911804.16112.455.camel@linux.intel.com>
+Date: Fri, 13 Oct 2017 19:23:36 +0300
+Message-ID: <1507911816.16112.457.camel@linux.intel.com>
 References: <20171012233805.30055-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 079E0266E90
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 18:23:28 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95AFF2676BA
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 18:23:41 +0200 (CEST)
 In-Reply-To: <20171012233805.30055-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -45,6 +45,8 @@ Patch 6 can be folded into 5, but it's up to you. Either choice:
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+
+P.S. Nice clean up!
 
 > Pierre-Louis Bossart (9):
 >   ASoC: Intel: bytcr_rt5651: add MCLK, quirks and cleanups
