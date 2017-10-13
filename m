@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
+From: Lucas Stach <l.stach@pengutronix.de>
 Subject: Re: [PATCH] dmaengine: imx-sdma: advertise all
  supported slave bus widths
-Date: Fri, 13 Oct 2017 15:39:01 +0100
-Message-ID: <20171013143901.t5wtxesho2wip4d7@sirena.co.uk>
+Date: Fri, 13 Oct 2017 16:50:01 +0200
+Message-ID: <1507906201.5860.9.camel@pengutronix.de>
 References: <20171013104346.16818-1-l.stach@pengutronix.de>
  <20171013112503.5h25exymttetowbk@sirena.co.uk>
  <1507894543.5860.7.camel@pengutronix.de>
+ <20171013143901.t5wtxesho2wip4d7@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0441605145389932342=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 91AD72676A3
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 16:39:11 +0200 (CEST)
-In-Reply-To: <1507894543.5860.7.camel@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 3FE182676A3
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 16:50:12 +0200 (CEST)
+In-Reply-To: <20171013143901.t5wtxesho2wip4d7@sirena.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lucas Stach <l.stach@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patchwork-lst@pengutronix.de, kernel@pengutronix.de, peter.seiderer.ext@zeiss.com, dmaengine@vger.kernel.org, LW@KARO-electronics.de
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0441605145389932342==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aygjnj2yniu35hlh"
-Content-Disposition: inline
-
-
---aygjnj2yniu35hlh
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Oct 13, 2017 at 01:35:43PM +0200, Lucas Stach wrote:
-> Am Freitag, den 13.10.2017, 12:25 +0100 schrieb Mark Brown:
-> > On Fri, Oct 13, 2017 at 12:43:46PM +0200, Lucas Stach wrote:
-
-> > > The commit [1] which changed imx-pcm-dma to derive the pcm_config fro=
-m the
-> > > attached dmaengine introduced a regression on the supported sample fo=
-rmats,
-> > > as imx-sdma doesn't properly advertise all the supported slave bus wi=
-dths.
-
-> > How did this work previously - shouldn't we have failed to use the
-> > unadvertised bus widths?=A0=A0I'd expect the framework to be providing =
-error
-> > checking for the clients here.
-
-> No, if the sound PCM implementation explicitly provides a pcm_config
-> with the hw.formats set to 0, the core only looks at the DAI supported
-> formats. Now that we derive the pcm_config from the dmaengine
-
-I'm not talking about the sound side here...
-
-> hw.formats gets filled with formats supported by the dmaengine, which
-> is then used as an additional constraint by the core.
-
-=2E..I'm talking about the constraints supported on the DMA side.  I would
-not expect the DMA side to be accepting things it said it didn't support.
-
---aygjnj2yniu35hlh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlng0AQACgkQJNaLcl1U
-h9AJFAf+Jc2X56Uzzlu5Pn7aRitnuJ90lakZfv0aBBhgI2Ovd/+1bkmtsSfDnVBN
-fnOLh7gLg2SDXg8G4cSQB+VbjK9AB5N8C3lWtbx2fWDQhYpYHFe/HFG+ccuds567
-qYUPnYcmqYtPvJ7jixD20Fpzt6uNEBGIQN+lv79razD5jRKYG8BJ14xlffdsHdsG
-ALxel2yF5yhzdKvwiFO6YuR4acHHC6XZlU9U1Si08NxeR001IZQfPEXZ1+c3NtEr
-XeDYhkUOoaSGnVtXljYQB6hgkpNyU/tLfQFBfwAKynsPtUgw6pGRH1ZVWPE7iSBp
-0mcjP08Nt9rt6GNlFByS/AAHl6ueyw==
-=ZeN4
------END PGP SIGNATURE-----
-
---aygjnj2yniu35hlh--
-
---===============0441605145389932342==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0441605145389932342==--
+QW0gRnJlaXRhZywgZGVuIDEzLjEwLjIwMTcsIDE1OjM5ICswMTAwIHNjaHJpZWIgTWFyayBCcm93
+bjoKPiBPbiBGcmksIE9jdCAxMywgMjAxNyBhdCAwMTozNTo0M1BNICswMjAwLCBMdWNhcyBTdGFj
+aCB3cm90ZToKPiA+IEFtIEZyZWl0YWcsIGRlbiAxMy4xMC4yMDE3LCAxMjoyNSArMDEwMCBzY2hy
+aWViIE1hcmsgQnJvd246Cj4gPiA+IE9uIEZyaSwgT2N0IDEzLCAyMDE3IGF0IDEyOjQzOjQ2UE0g
+KzAyMDAsIEx1Y2FzIFN0YWNoIHdyb3RlOgo+ID4gPiA+IFRoZSBjb21taXQgWzFdIHdoaWNoIGNo
+YW5nZWQgaW14LXBjbS1kbWEgdG8gZGVyaXZlIHRoZSBwY21fY29uZmlnIGZyb20gdGhlCj4gPiA+
+ID4gYXR0YWNoZWQgZG1hZW5naW5lIGludHJvZHVjZWQgYSByZWdyZXNzaW9uIG9uIHRoZSBzdXBw
+b3J0ZWQgc2FtcGxlIGZvcm1hdHMsCj4gPiA+ID4gYXMgaW14LXNkbWEgZG9lc24ndCBwcm9wZXJs
+eSBhZHZlcnRpc2UgYWxsIHRoZSBzdXBwb3J0ZWQgc2xhdmUgYnVzIHdpZHRocy4KPiA+ID4gSG93
+IGRpZCB0aGlzIHdvcmsgcHJldmlvdXNseSAtIHNob3VsZG4ndCB3ZSBoYXZlIGZhaWxlZCB0byB1
+c2UgdGhlCj4gPiA+IHVuYWR2ZXJ0aXNlZCBidXMgd2lkdGhzP8KgwqBJJ2QgZXhwZWN0IHRoZSBm
+cmFtZXdvcmsgdG8gYmUgcHJvdmlkaW5nIGVycm9yCj4gPiA+IGNoZWNraW5nIGZvciB0aGUgY2xp
+ZW50cyBoZXJlLgo+ID4gTm8sIGlmIHRoZSBzb3VuZCBQQ00gaW1wbGVtZW50YXRpb24gZXhwbGlj
+aXRseSBwcm92aWRlcyBhIHBjbV9jb25maWcKPiA+IHdpdGggdGhlIGh3LmZvcm1hdHMgc2V0IHRv
+IDAsIHRoZSBjb3JlIG9ubHkgbG9va3MgYXQgdGhlIERBSSBzdXBwb3J0ZWQKPiA+IGZvcm1hdHMu
+IE5vdyB0aGF0IHdlIGRlcml2ZSB0aGUgcGNtX2NvbmZpZyBmcm9tIHRoZSBkbWFlbmdpbmUKPiAK
+PiBJJ20gbm90IHRhbGtpbmcgYWJvdXQgdGhlIHNvdW5kIHNpZGUgaGVyZS4uLgo+IAo+ID4gaHcu
+Zm9ybWF0cyBnZXRzIGZpbGxlZCB3aXRoIGZvcm1hdHMgc3VwcG9ydGVkIGJ5IHRoZSBkbWFlbmdp
+bmUsIHdoaWNoCj4gPiBpcyB0aGVuIHVzZWQgYXMgYW4gYWRkaXRpb25hbCBjb25zdHJhaW50IGJ5
+IHRoZSBjb3JlLgo+IAo+IC4uLkknbSB0YWxraW5nIGFib3V0IHRoZSBjb25zdHJhaW50cyBzdXBw
+b3J0ZWQgb24gdGhlIERNQSBzaWRlLsKgwqBJIHdvdWxkCj4gbm90IGV4cGVjdCB0aGUgRE1BIHNp
+ZGUgdG8gYmUgYWNjZXB0aW5nIHRoaW5ncyBpdCBzYWlkIGl0IGRpZG4ndCBzdXBwb3J0LgoKQUZB
+SVIgdGhlIGNhcHMgZm9yIHRoZSBzdXBwb3J0ZWQgc2xhdmUgYnVzIHdpZHRoIHdlcmUgaW50cm9k
+dWNlZCBsYXRlcgp0aGFuIG90aGVyIGNhcHMgYW5kIG5vdCBhbGwgZHJpdmVycyBkaWQgaW1wbGVt
+ZW50IHRoZW0gcHJvcGVybHksIHNvCnZhbGlkYXRpb24gYXQgdGhlIGNvcmUgbGV2ZWwgYXQgdGhp
+cyB0aW1lIHdvdWxkIHByb2JhYmx5IGhhdmUgYnJva2VuIGEKbG90IG9mIGV4aXN0aW5nIHVzZXJz
+LgoKVGhhdCBzYWlkIHRoZSBkbWFlbmdpbmUgY29yZSB3YXJucyBzaW5jZSBrZXJuZWwgNC4wIGlm
+IGEgZHJpdmVyIGRvZXNuJ3QKc2V0IHRob3NlIGNhcHMsIHNvIGl0J3MgcHJvYmFibHkgZmluZSBp
+ZiB3ZSBjb29rIHVwIGEgcGF0Y2ggdG8gZG8gdGhlCnZhbGlkYXRpb24gbm93LgoKUmVnYXJkcywK
+THVjYXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
