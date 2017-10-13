@@ -1,21 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/2] Add snd_card_disconnect_sync()
-	helper
-Date: Fri, 13 Oct 2017 18:11:50 +0100
-Message-ID: <20171013171150.fcpwiaj5issdgmym@sirena.co.uk>
-References: <20171011101618.8736-1-tiwai@suse.de>
- <87fuanv70u.wl%kuninori.morimoto.gx@renesas.com>
- <s5hfuano5k0.wl-tiwai@suse.de>
- <87efq7v2qf.wl%kuninori.morimoto.gx@renesas.com>
- <s5hh8v3pelc.wl-tiwai@suse.de>
+Subject: Re: [PATCH] dmaengine: imx-sdma: advertise all
+ supported slave bus widths
+Date: Fri, 13 Oct 2017 18:13:03 +0100
+Message-ID: <20171013171303.ardykpvxg5tm5q3v@sirena.co.uk>
+References: <20171013104346.16818-1-l.stach@pengutronix.de>
+ <20171013112503.5h25exymttetowbk@sirena.co.uk>
+ <1507894543.5860.7.camel@pengutronix.de>
+ <20171013143901.t5wtxesho2wip4d7@sirena.co.uk>
+ <1507906201.5860.9.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5803873725511566859=="
+Content-Type: multipart/mixed; boundary="===============5300495666335783013=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 01EF6266E90
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 19:11:55 +0200 (CEST)
-In-Reply-To: <s5hh8v3pelc.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id AD9F4266E90
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 19:13:17 +0200 (CEST)
+In-Reply-To: <1507906201.5860.9.camel@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,70 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patchwork-lst@pengutronix.de, kernel@pengutronix.de, peter.seiderer.ext@zeiss.com, dmaengine@vger.kernel.org, LW@KARO-electronics.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5803873725511566859==
+--===============5300495666335783013==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jg76ql2oldnyrocj"
+	protocol="application/pgp-signature"; boundary="bthuxty2tscilbwh"
 Content-Disposition: inline
 
 
---jg76ql2oldnyrocj
-Content-Type: text/plain; charset=us-ascii
+--bthuxty2tscilbwh
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 13, 2017 at 11:43:59AM +0200, Takashi Iwai wrote:
-> Kuninori Morimoto wrote:
+On Fri, Oct 13, 2017 at 04:50:01PM +0200, Lucas Stach wrote:
+> Am Freitag, den 13.10.2017, 15:39 +0100 schrieb Mark Brown:
 
-> > My environment now is I'm using DPCM.
-> > 	FE : rsnd
-> > 	FE : rsnd
-> > 	BE : ak4613
+> > ...I'm talking about the constraints supported on the DMA side.=A0=A0I =
+would
+> > not expect the DMA side to be accepting things it said it didn't suppor=
+t.
 
-> > 1st issue is that kernel need below patch.
-> > I guess BE is using dummy driver, and it doesn't have ops(?).
-> > If this is needed, I can post it.
+> AFAIR the caps for the supported slave bus width were introduced later
+> than other caps and not all drivers did implement them properly, so
+> validation at the core level at this time would probably have broken a
+> lot of existing users.
 
-> No, this can't be right.  Every PCM implementation mandates the
-> presence of a trigger callback.  It's a must.  If a fix needed, it has
-> to be fixed in the driver side.
+> That said the dmaengine core warns since kernel 4.0 if a driver doesn't
+> set those caps, so it's probably fine if we cook up a patch to do the
+> validation now.
 
-I suspect this is a DPCM framework thing - when the paths are joined up
-at runtime there's going to be at least one trigger in there but with
-DPCM it's most likely going to be in the front end, the back end DMA is
-often going to be transparent to the system and so not have a trigger.
-However if you just iterate over all the PCMs you'll see the decomposed
-front and back end links with their dummies in there.  Not sure what the
-fix is here, probably we need to be hiding the back end links more from
-the ALSA core.
+That can should be able to be handled cleanly by enforcing any caps that
+are advertised but if the driver doesn't declare anything at all then
+just accepting anything and leaving it up to the driver to cope.
 
-Liam?
-
---jg76ql2oldnyrocj
+--bthuxty2tscilbwh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlng89UACgkQJNaLcl1U
-h9CMoAf/diWi4CCpA53NBz9B4pFmfDPrwANcYmBLlDUEyTsVrrbCKJairhoi/SM5
-yabrmX+Le22vkCnoYiSywZMEDz6+MneJHgEQD3pbpFPj75gpDKQv8O999ejZJij1
-ebHQQooWLMLepIAF/kb4MEJLhRsUZq5R33CJScKh3hZAGHgUhmfFDNqp9BJratKn
-qg8Zl8fGg/uCRPlKVc9eV2eugdjg0pPKWJmtH/mfGJTXx29+gIlR/kB2fOLnYQ8y
-gEli2r4yJYNlkmcWFyvirKflWfAW1j0x312z4ylMLvQt4kK+5FyZPLt6/O+SHHrv
-Mw3V0ztkI/3xHdzlES7kWixbtl/jIQ==
-=3q1/
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlng9B4ACgkQJNaLcl1U
+h9DFPQf+JuobkL7hzVF9TwyuAo3lN30JlEfzvEfmsiXaRK6CTrXfVow7i710rbO3
+BG6UdvOw+b1MEfSQTqqpprfqYc+QI8JZ8/ehiEEAMXvI7IKvFF5eLmQGMfgVikeD
++Paa4PJUsRvFfmX4+mjilWoXAIcpRueiG+AxqxQmyjnOsZgxasIcIs/b82ve1Qar
+D++x8V//xFwpwuGvui2K+ecS9iOfdZxyay6KB3wBujPE0xXczCGw2fCsExh4GZb8
+W0BShieVGC3BmuadHeOgoziQwDWiDxYQ5tXkp5qxPCCfBAb1DtkP0TBHEDmmnTLN
+BCkEpQVaUCqkv77wQPm57A1ssa1Ytg==
+=UjP4
 -----END PGP SIGNATURE-----
 
---jg76ql2oldnyrocj--
+--bthuxty2tscilbwh--
 
---===============5803873725511566859==
+--===============5300495666335783013==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5803873725511566859==--
+--===============5300495666335783013==--
