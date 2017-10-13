@@ -1,120 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98925: Return proper error if
-	revision mismatch" to the asoc tree
-Date: Fri, 13 Oct 2017 02:37:40 +0100
-Message-ID: <E1e2ouy-0005aV-Ey@debutante>
-References: <20171013012101.17715-1-axel.lin@ingics.com>
+From: =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?=
+        <jeremy.lefaure@lse.epita.fr>
+Subject: [PATCH v2] ALSA: hda/ca0132 - use ARRAY_SIZE
+Date: Thu, 12 Oct 2017 22:36:31 -0400
+Message-ID: <20171013023631.13158-1-jeremy.lefaure@lse.epita.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 83C78266FAD
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 03:37:45 +0200 (CEST)
-In-Reply-To: <20171013012101.17715-1-axel.lin@ingics.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Anish Kumar <Anish.Kumar@maximintegrated.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Using the ARRAY_SIZE macro improves the readability of the code.
 
-   ASoC: max98925: Return proper error if revision mismatch
+Found with Coccinelle with the following semantic patch:
+@r depends on (org || report)@
+type T;
+T[] E;
+position p;
+@@
+(
+ (sizeof(E)@p /sizeof(*E))
+|
+ (sizeof(E)@p /sizeof(E[...]))
+|
+ (sizeof(E)@p /sizeof(T))
+)
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From d6e18b8295593d8f59e92f6634577cbacae14629 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 13 Oct 2017 09:21:01 +0800
-Subject: [PATCH] ASoC: max98925: Return proper error if revision mismatch
-
-Return proper error instead of 0 if the revision does not match.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jérémy Lefaure <jeremy.lefaure@lse.epita.fr>
 ---
- sound/soc/codecs/max98925.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+Changes since v1:
+- keep sound/oss untouched
 
-diff --git a/sound/soc/codecs/max98925.c b/sound/soc/codecs/max98925.c
-index 327eaa25c9bd..921f95fc396d 100644
---- a/sound/soc/codecs/max98925.c
-+++ b/sound/soc/codecs/max98925.c
-@@ -579,7 +579,7 @@ static int max98925_i2c_probe(struct i2c_client *i2c,
- 		ret = PTR_ERR(max98925->regmap);
- 		dev_err(&i2c->dev,
- 				"Failed to allocate regmap: %d\n", ret);
--		goto err_out;
-+		return ret;
- 	}
+ sound/pci/hda/patch_ca0132.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 3e73d5c6ccfc..768ea8651993 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -27,6 +27,7 @@
+ #include <linux/mutex.h>
+ #include <linux/module.h>
+ #include <linux/firmware.h>
++#include <linux/kernel.h>
+ #include <sound/core.h>
+ #include "hda_codec.h"
+ #include "hda_local.h"
+@@ -3605,8 +3606,7 @@ static int ca0132_vnode_switch_set(struct snd_kcontrol *kcontrol,
+ static int ca0132_voicefx_info(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_info *uinfo)
+ {
+-	unsigned int items = sizeof(ca0132_voicefx_presets)
+-				/ sizeof(struct ct_voicefx_preset);
++	unsigned int items = ARRAY_SIZE(ca0132_voicefx_presets);
  
- 	if (!of_property_read_u32(i2c->dev.of_node, "vmon-slot-no", &value)) {
-@@ -596,16 +596,20 @@ static int max98925_i2c_probe(struct i2c_client *i2c,
- 		}
- 		max98925->i_slot = value;
- 	}
--	ret = regmap_read(max98925->regmap,
--			MAX98925_REV_VERSION, &reg);
--	if ((ret < 0) ||
--		((reg != MAX98925_VERSION) &&
--		(reg != MAX98925_VERSION1))) {
--		dev_err(&i2c->dev,
--			"device initialization error (%d 0x%02X)\n",
-+
-+	ret = regmap_read(max98925->regmap, MAX98925_REV_VERSION, &reg);
-+	if (ret < 0) {
-+		dev_err(&i2c->dev, "Read revision failed\n");
-+		return ret;
-+	}
-+
-+	if ((reg != MAX98925_VERSION) && (reg != MAX98925_VERSION1)) {
-+		ret = -ENODEV;
-+		dev_err(&i2c->dev, "Invalid revision (%d 0x%02X)\n",
- 			ret, reg);
--		goto err_out;
-+		return ret;
- 	}
-+
- 	dev_info(&i2c->dev, "device version 0x%02X\n", reg);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+@@ -3635,10 +3635,8 @@ static int ca0132_voicefx_put(struct snd_kcontrol *kcontrol,
+ 	struct ca0132_spec *spec = codec->spec;
+ 	int i, err = 0;
+ 	int sel = ucontrol->value.enumerated.item[0];
+-	unsigned int items = sizeof(ca0132_voicefx_presets)
+-				/ sizeof(struct ct_voicefx_preset);
  
- 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_max98925,
-@@ -613,7 +617,6 @@ static int max98925_i2c_probe(struct i2c_client *i2c,
- 	if (ret < 0)
- 		dev_err(&i2c->dev,
- 				"Failed to register codec: %d\n", ret);
--err_out:
- 	return ret;
- }
+-	if (sel >= items)
++	if (sel >= ARRAY_SIZE(ca0132_voicefx_presets))
+ 		return 0;
  
+ 	codec_dbg(codec, "ca0132_voicefx_put: sel=%d, preset=%s\n",
 -- 
-2.14.1
+2.14.2
