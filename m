@@ -1,18 +1,18 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: max98925: Return proper error if
-	revision mismatch
-Date: Fri, 13 Oct 2017 09:21:01 +0800
-Message-ID: <20171013012101.17715-1-axel.lin@ingics.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max98925: Return proper error if
+	revision mismatch" to the asoc tree
+Date: Fri, 13 Oct 2017 02:37:40 +0100
+Message-ID: <E1e2ouy-0005aV-Ey@debutante>
+References: <20171013012101.17715-1-axel.lin@ingics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FE2B266FAD
- for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 03:21:23 +0200 (CEST)
-Received: by mail-pf0-f194.google.com with SMTP id p87so7504791pfj.3
- for <alsa-devel@alsa-project.org>; Thu, 12 Oct 2017 18:21:23 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83C78266FAD
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 03:37:45 +0200 (CEST)
+In-Reply-To: <20171013012101.17715-1-axel.lin@ingics.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Anish Kumar <Anish.Kumar@maximintegrated.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Anish Kumar <Anish.Kumar@maximintegrated.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: max98925: Return proper error if revision mismatch
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d6e18b8295593d8f59e92f6634577cbacae14629 Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Fri, 13 Oct 2017 09:21:01 +0800
+Subject: [PATCH] ASoC: max98925: Return proper error if revision mismatch
 
 Return proper error instead of 0 if the revision does not match.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/codecs/max98925.c | 23 +++++++++++++----------
  1 file changed, 13 insertions(+), 10 deletions(-)
@@ -84,4 +117,4 @@ index 327eaa25c9bd..921f95fc396d 100644
  }
  
 -- 
-2.11.0
+2.14.1
