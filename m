@@ -1,108 +1,96 @@
-From: "PaX Team" <pageexec@freemail.hu>
-Subject: 4.13 regression: get_kctl_0dB_offset doesn't handle all possible callbacks
-Date: Sat, 14 Oct 2017 00:46:25 +0200
-Message-ID: <59E14241.8917.637DC9@pageexec.freemail.hu>
-Reply-To: pageexec@freemail.hu
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Surface 3 audio broken between 4.11 and 4.13
+ (rt5645)
+Date: Fri, 13 Oct 2017 18:49:29 -0500
+Message-ID: <5f93009c-e41a-f339-442a-cf5a757460cc@linux.intel.com>
+References: <1507920036.5910.46.camel@hadess.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-description: Mail message body
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76F74267713
+ for <alsa-devel@alsa-project.org>; Sat, 14 Oct 2017 01:49:32 +0200 (CEST)
+In-Reply-To: <1507920036.5910.46.camel@hadess.net>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bastien Nocera <hadess@hadess.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hello devs,
 
-upstream commit 99b5c5bb9a5435a5ae5d46445ac0f2bf6aa5ee52 removed the use
-of set_fs in get_kctl_0dB_offset under the assumption that the only runtime
-value of kctl->tlv.c was snd_hda_mixer_amp_tlv. alas, recently, the KERNEXEC
-and UDEREF features in PaX reported a violation of this assumption as it
-turns out that _snd_ctl_add_slave sets this callback to slave_tlv_cmd instead.
 
-it seems to me that there're several other possible values for this callback
-so it's not clear why it was assumed that get_kctl_0dB_offset would only be
-called with only one of them in practice, but nevertheless, it happens here
-so clearly something is wrong. the backtrace that shows how things go wrong
-in this case:
+On 10/13/2017 01:40 PM, Bastien Nocera wrote:
+> Hey,
+>
+> As I was trying to test PulseAudio HDMI LPE audio support fixes, I
+> realised that the internal sound card of my Surface 3 wasn't working
+> anymore, using the same user-space configuration.
+>
+> Looks like detection of the device regressed between 2 versions. Does
+> this look familiar to anyone, or should I start bisecting? (which will
+> take me absolutely ages, as the CPU is anemic on that machine)
+Yes this looks familiar unfortunately. Surface has a BIOS quirk iirc, 
+and there are reports of broken audio on other platforms that have a 
+similar quirk, see
+https://bugzilla.kernel.org/show_bug.cgi?id=96691 where the patch 
+7827d66946ad3af734ed46d1d68c23fa6974595c is flagged as being the issue.
 
- PAX: suspicious general protection fault: 0000 [#1] PREEMPT SMP
- Modules linked in:
- CPU: 4 PID: 31 Comm: kworker/4:0 Not tainted 4.13.5-i386-pax #17
- Workqueue: events azx_probe_work
- task: eb61c880 task.stack: eb62a000
- EIP: 0060:[<009bbd2d>] init_slave_0dB+0x2d/0xa0
- EFLAGS: 00210202 CPU: 4
- EAX: 00991fd0 EBX: e9883a80 ECX: e9883a80 EDX: eb62bd74
- ESI: eb62bd74 EDI: e9098800 EBP: eb62bd08 ESP: eb62bcec
-  DS: 0068 ES: 0068 FS: 00d8 GS: 0068 SS: 0068
- CR0: 80050033 CR2: 00000000 CR3: 03b2d100 CR4: 000406f0 shadow CR4: 000406f0
- Call Trace:
-  [<009bb469>] map_slaves+0xb9/0xe0
-  [<009bce0e>] __snd_hda_add_vmaster+0xde/0x110
-  [<009c82f0>] snd_hda_gen_build_controls+0x1a0/0x1b0
-  [<009d0a4d>] cx_auto_build_controls+0xd/0x70
-  [<009bdf76>] snd_hda_codec_build_controls+0x186/0x1d0
-  [<009b92ad>] hda_codec_driver_probe+0x6d/0xf0
-  [<006a3be9>] driver_probe_device+0x289/0x420
-  [<006a3ed6>] __device_attach_driver+0x76/0x100
-  [<006a1edf>] bus_for_each_drv+0x3f/0x70
-  [<006a3813>] __device_attach+0xa3/0x110
-  [<006a3f9d>] device_initial_probe+0xd/0x10
-  [<006a2d6f>] bus_probe_device+0x6f/0x80
-  [<006a100f>] device_add+0x2cf/0x590
-  [<009d8d8c>] snd_hdac_device_register+0xc/0x40
-  [<009b90b4>] snd_hda_codec_configure+0x34/0x140
-  [<009c2875>] azx_codec_configure+0x25/0x50
-  [<009d8081>] azx_probe_continue+0x621/0x9e0
-  [<009d84bd>] azx_probe_work+0xd/0x10
-  [<0006fff2>] process_one_work+0x122/0x2a0
-  [<000701a9>] worker_thread+0x39/0x390
-  [<00074df2>] kthread+0xe2/0x110
-  [<00cee619>] ret_from_fork+0x19/0x30
- Code: e5 57 89 c7 56 89 d6 53 89 cb 83 ec 10 8b 41 6c a9 00 00 00 10 74 09 81 79 58 90 bc 9b 00 74 4e a8 10 74 38 8b 43 58 85 c0 74 31 <83> 38 01 75 2c 8b 48 0c 81 e1 ff ff fe ff 74 21 8b 16 39 d1 
-74
- EIP: [<009bbd2d>] init_slave_0dB+0x2d/0xa0 SS:ESP: 0068:eb62bcec
+I tried providing a patch for what I think is the problem, but the 
+reports from users were inconsistent and I don't have access to the 
+hardware.
 
-what KERNEXEC on i386 does is that it executes kernel code in its own 0-based
-code segment hence the 'low' code addresses. due to the current logic that
-checks for SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK in get_kctl_0dB_offset, this
-callback address is instead treated as a data pointer (as apparently
-SNDRV_CTL_ELEM_ACCESS_TLV_READ is also set) and since it's not a valid kernel
-address, it causes a GPF under the UDEREF PaX feature (without UDEREF it'd
-have been an oops since such low addresses are not mapped for kernel threads).
+If you could try both the revert and the suggested fix (separately) it'd 
+help a great deal
 
-on vanilla kernels all this is a silent read of kernel code bytes that are
-then interpreted as the tlv[] array content, which is probably not what you
-want either.
-
-as for fixing this, first the above mentioned assumption should be re-evaluated.
-if it's considered correct then there is some logic bug in my case (i can help
-debug it if you tell me what to do) otherwise the current pattern of
-
-   if (SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK && callback == snd_hda_mixer_amp_tlv) {
-     call wrapped function underneath snd_hda_mixer_amp_tlv
-   } else if (SNDRV_CTL_ELEM_ACCESS_TLV_READ) {
-     treat unrecognized callback address as data ptr
-   }
-
-should be changed to
-
-   if (SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK( {
-     if (callback == snd_hda_mixer_amp_tlv) {
-       call wrapped function underneath snd_hda_mixer_amp_tlv
-     } else if (callback == others) {
-       handle others, WARN/BUG/etc
-     }
-   } else if (SNDRV_CTL_ELEM_ACCESS_TLV_READ) {
-     no longer treat unrecognized callback address as data ptr
-   }
-
-and all other callbacks with userland access should be refactored the same
-way as snd_hda_mixer_amp_tlv was. i'd also suggest that you at least do the
-above suggested if/else pattern change in order to prevent the misuse of
-unexpected callbacks in the future.
-
-cheers,
-  PaX Team
+>
+> Working:
+> $ dmesg | grep rt5
+> [   13.707825] rt5640 i2c-10EC5640:00: Device with ID register 0x6308 is not rt5640/39
+> [   15.010548] cht-bsw-rt5645 cht-bsw-rt5645: snd-soc-dummy-dai <-> media-cpu-dai mapping ok
+> [   15.011132] cht-bsw-rt5645 cht-bsw-rt5645: snd-soc-dummy-dai <-> deepbuffer-cpu-dai mapping ok
+> [   15.012756] cht-bsw-rt5645 cht-bsw-rt5645: rt5645-aif1 <-> ssp2-port mapping ok
+> [   15.100152] input: chtrt5645 Headset as /devices/pci0000:00/808622A8:00/cht-bsw-rt5645/sound/card0/input27
+>
+> $ uname -r
+> 4.11.0-0.rc0.git4.21.surface3.fc26.x86_64
+>
+> Not working:
+> $ journalctl -b -2 | grep rt5
+> Oct 13 20:10:19 surface kernel: rt5640 i2c-10EC5640:00: Device with ID register 0x6308 is not rt5640/39
+> Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
+> Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
+> Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
+> Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
+> Oct 13 20:10:21 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
+> Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
+> Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
+> Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
+> Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
+> Oct 13 20:10:22 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC1_MAP enabled
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk DMIC enabled
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: quirk MCLK_EN enabled
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: ASoC: CODEC DAI rt5640-aif1 not registered
+> Oct 13 20:10:23 surface kernel: bytcr_rt5640 bytcr_rt5640: devm_snd_soc_register_card failed -517
+>
+> $ journalctl -b -2 | head -n3 | tail -n1
+> Oct 13 22:10:10 surface kernel: Linux version 4.13.0-0.rc2.git0.26.surface3.fc27.x86_64 (hadess@classic) (gcc version 7.1.1 20170526 (Red Hat 7.1.1-2) (GCC)) #1 SMP Tue Jul 25 18:47:03 CEST 2017
+>
+> Cheers
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
