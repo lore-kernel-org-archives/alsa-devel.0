@@ -1,109 +1,83 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [Patch v6 3/7] slimbus: qcom: Add Qualcomm Slimbus controller
- driver
-Date: Fri, 13 Oct 2017 14:17:47 -0500
-Message-ID: <20171013191747.o7bvb5urs5jt2x4l@rob-hp-laptop>
-References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-4-srinivas.kandagatla@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Skylake: Fix missing sentinel in
+	sst_acpi_mach" to the asoc tree
+Date: Fri, 13 Oct 2017 20:25:45 +0100
+Message-ID: <E1e35ab-0006NM-VH@debutante>
+References: <20171009055032.12158-4-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171006155136.4682-4-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12982266E90
+ for <alsa-devel@alsa-project.org>; Fri, 13 Oct 2017 21:25:57 +0200 (CEST)
+In-Reply-To: <20171009055032.12158-4-guneshwor.o.singh@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 06, 2017 at 05:51:32PM +0200, srinivas.kandagatla@linaro.org wrote:
-> From: Sagar Dharia <sdharia@codeaurora.org>
-> 
-> This controller driver programs manager, interface, and framer
-> devices for Qualcomm's slimbus HW block.
-> Manager component currently implements logical address setting,
-> and messaging interface.
-> Interface device reports bus synchronization information, and framer
-> device clocks the bus from the time it's woken up, until clock-pause
-> is executed by the manager device.
-> 
-> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt |  43 ++
+The patch
 
-Version 6 and this is the first I see it? Where's the version history? 
+   ASoC: Intel: Skylake: Fix missing sentinel in sst_acpi_mach
 
-Please split to separate patch.
+has been applied to the asoc tree at
 
->  drivers/slimbus/Kconfig                            |   9 +
->  drivers/slimbus/Makefile                           |   3 +
->  drivers/slimbus/slim-qcom-ctrl.c                   | 594 +++++++++++++++++++++
->  drivers/slimbus/slim-qcom.h                        |  63 +++
->  5 files changed, 712 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
->  create mode 100644 drivers/slimbus/slim-qcom-ctrl.c
->  create mode 100644 drivers/slimbus/slim-qcom.h
-> 
-> diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-> new file mode 100644
-> index 0000000..081110d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-> @@ -0,0 +1,43 @@
-> +Qualcomm SLIMBUS controller
-> +This controller is used if applications processor driver controls slimbus
-> +master component.
-> +
-> +Required properties:
-> +
-> + - #address-cells - refer to Documentation/devicetree/bindings/slimbus/bus.txt
-> + - #size-cells	- refer to Documentation/devicetree/bindings/slimbus/bus.txt
-> +
-> + - reg : Offset and length of the register region(s) for the device
-> + - reg-names : Register region name(s) referenced in reg above
-> +	 Required register resource entries are:
-> +	 "ctrl": Physical adderess of controller register blocks
-> + - compatible : should be "qcom,<SOC-NAME>-slim" for SOC specific compatible or
-> + 		"qcom,slim" if using generic qcom SLIM IP.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-No such thing as generic IP.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Fine as a fallback, but not by itself.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> + - interrupts : Interrupt number used by this controller
-> + - clocks : Interface and core clocks used by this slimbus controller
-> + - clock-names : Required clock-name entries are:
-> +	"iface_clk" : Interface clock for this controller
-> +	"core_clk" : Interrupt for controller core's BAM
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-_clk is redundant.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +
-> +
-> +Optional property:
-> + - reg entry for slew rate : If slew rate control register is provided, this
-> +	entry should be used.
-> + - reg-name for slew rate: "slew"
+Thanks,
+Mark
 
-Pointless to have -name when there is only one.
+>From 364497aca1f5fdf220bd314e0550881b97d2f0fc Mon Sep 17 00:00:00 2001
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Date: Mon, 9 Oct 2017 11:20:32 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix missing sentinel in sst_acpi_mach
 
-> +
-> +Example:
-> +	slim@28080000 {
-> +		compatible = "qcom,slim";
-> +		#address-cells = <4>;
-> +		#size-cells = <0>;
-> +		reg = <0x28080000 0x2000>, <0x80207C 4>;
-> +		reg-names = "ctrl", "slew";
-> +		interrupts = <0 33 0>;
-> +		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-> +		clock-names = "iface_clk", "core_clk";
-> +
-> +		codec: wcd9310@1{
-> +			compatible = "slim217,60";
-> +			reg = <1 0>;
+To make it consistent, add sentinel for sst_cnl_devdata also.
 
-This would not compile. You don't have 4 cells here.
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +		};
-> +	};
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 143ade31562f..4abbd90e394c 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1011,6 +1011,7 @@ static const struct sst_acpi_mach sst_cnl_devdata[] = {
+ 		.fw_filename = "intel/dsp_fw_cnl.bin",
+ 		.pdata = &cnl_pdata,
+ 	},
++	{}
+ };
+ 
+ /* PCI IDs */
+-- 
+2.14.1
