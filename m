@@ -1,82 +1,69 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] ASoC: wm97xx: fix compilation corner case
-Date: Sat, 14 Oct 2017 22:14:02 +0200
-Message-ID: <20171014201409.9008-1-robert.jarzmik@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Lars-Peter Clausen <lars@metafoo.de>, Marek Vasut <marex@denx.de>, Chen-Yu Tsai <wens@csie.org>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Bastien Nocera <hadess@hadess.net>
+Subject: Re: Surface 3 audio broken between 4.11 and 4.13
+ (rt5645)
+Date: Sun, 15 Oct 2017 05:41:48 +0200
+Message-ID: <1508038908.5910.54.camel@hadess.net>
+References: <1507920036.5910.46.camel@hadess.net>
+ <5f93009c-e41a-f339-442a-cf5a757460cc@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
+ [217.70.183.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A9D4266A0C
+ for <alsa-devel@alsa-project.org>; Sun, 15 Oct 2017 05:41:51 +0200 (CEST)
+In-Reply-To: <5f93009c-e41a-f339-442a-cf5a757460cc@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When the old AC97 is not used, CONFIG_SND_SOC_AC97_BUS is not
-defined. As a consequence, in the error path, snd_soc_free_ac97_codec()
-is not defined and triggers a compilation error.
+Hey Pierre-Louis,
 
-Fix it for wm9705 and wm9712, as wm9713 is correctly written.
+On Fri, 2017-10-13 at 18:49 -0500, Pierre-Louis Bossart wrote:
+> 
+> On 10/13/2017 01:40 PM, Bastien Nocera wrote:
+> > Hey,
+> > 
+> > As I was trying to test PulseAudio HDMI LPE audio support fixes, I
+> > realised that the internal sound card of my Surface 3 wasn't
+> > working
+> > anymore, using the same user-space configuration.
+> > 
+> > Looks like detection of the device regressed between 2 versions.
+> > Does
+> > this look familiar to anyone, or should I start bisecting? (which
+> > will
+> > take me absolutely ages, as the CPU is anemic on that machine)
+> 
+> Yes this looks familiar unfortunately. Surface has a BIOS quirk
+> iirc, 
+> and there are reports of broken audio on other platforms that have a 
+> similar quirk, see
+> https://bugzilla.kernel.org/show_bug.cgi?id=96691 where the patch 
+> 7827d66946ad3af734ed46d1d68c23fa6974595c is flagged as being the
+> issue.
+> 
+> I tried providing a patch for what I think is the problem, but the 
+> reports from users were inconsistent and I don't have access to the 
+> hardware.
+> 
+> If you could try both the revert and the suggested fix (separately)
+> it'd 
+> help a great deal
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- sound/soc/codecs/wm9705.c | 8 ++------
- sound/soc/codecs/wm9712.c | 7 ++-----
- 2 files changed, 4 insertions(+), 11 deletions(-)
+I compiled 2 test kernels with each one of those patches, tested them
+both and added the results to the bug.
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 68c204e3599f..2c09f71fe433 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -321,7 +321,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- {
- 	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
- 	struct regmap *regmap;
--	int ret;
- 
- 	if (wm9705->mfd_pdata) {
- 		wm9705->ac97 = wm9705->mfd_pdata->ac97;
-@@ -337,8 +336,8 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- 
- 		regmap = regmap_init_ac97(wm9705->ac97, &wm9705_regmap_config);
- 		if (IS_ERR(regmap)) {
--			ret = PTR_ERR(regmap);
--			goto err_free_ac97_codec;
-+			snd_soc_free_ac97_codec(wm9705->ac97);
-+			return PTR_ERR(regmap);
- 		}
- #endif
- 	}
-@@ -347,9 +346,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- 	snd_soc_codec_init_regmap(codec, regmap);
- 
- 	return 0;
--err_free_ac97_codec:
--	snd_soc_free_ac97_codec(wm9705->ac97);
--	return ret;
- }
- 
- static int wm9705_soc_remove(struct snd_soc_codec *codec)
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 9db5c7783de5..4f6d1a442bc4 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -656,8 +656,8 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 
- 		regmap = regmap_init_ac97(wm9712->ac97, &wm9712_regmap_config);
- 		if (IS_ERR(regmap)) {
--			ret = PTR_ERR(regmap);
--			goto err_free_ac97_codec;
-+			snd_soc_free_ac97_codec(wm9712->ac97);
-+			return PTR_ERR(regmap);
- 		}
- #endif
- 	}
-@@ -668,9 +668,6 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, AC97_VIDEO, 0x3000, 0x3000);
- 
- 	return 0;
--err_free_ac97_codec:
--	snd_soc_free_ac97_codec(wm9712->ac97);
--	return ret;
- }
- 
- static int wm9712_soc_remove(struct snd_soc_codec *codec)
--- 
-2.11.0
+Did you want to continue the discussion here, or should I add that
+information to the (rather long-winded) bug?
+
+Cheers
