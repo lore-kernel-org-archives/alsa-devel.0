@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
+From: Lucas Stach <l.stach@pengutronix.de>
 Subject: Re: [PATCH] dmaengine: imx-sdma: advertise all
  supported slave bus widths
-Date: Mon, 16 Oct 2017 12:21:00 +0530
-Message-ID: <20171016065100.GN30097@localhost>
+Date: Mon, 16 Oct 2017 09:26:33 +0200
+Message-ID: <1508138793.5860.18.camel@pengutronix.de>
 References: <20171013104346.16818-1-l.stach@pengutronix.de>
+ <20171016065100.GN30097@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E641266DCF
- for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 08:48:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20171013104346.16818-1-l.stach@pengutronix.de>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B71B6266DCF
+ for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 09:26:36 +0200 (CEST)
+In-Reply-To: <20171016065100.GN30097@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lucas Stach <l.stach@pengutronix.de>
+To: Vinod Koul <vinod.koul@intel.com>
 Cc: alsa-devel@alsa-project.org, patchwork-lst@pengutronix.de, broonie@kernel.org, kernel@pengutronix.de, peter.seiderer.ext@zeiss.com, dmaengine@vger.kernel.org, LW@KARO-electronics.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 13, 2017 at 12:43:46PM +0200, Lucas Stach wrote:
-> The commit [1] which changed imx-pcm-dma to derive the pcm_config from the
-
-Commit 70d435ba1cd6 (...) changed... please
-
-> attached dmaengine introduced a regression on the supported sample formats,
-> as imx-sdma doesn't properly advertise all the supported slave bus widths.
-> 
-> Fix this to restore full functionality of the imx sound subsystem.
-> 
-> [1] 70d435ba1cd6 ("ASoC: imx-pcm-dma: simplify pcm_config")
-
-Fixes: 70d435ba1cd6 ... please
-
-> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> ---
->  drivers/dma/imx-sdma.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-> index a67ec1bdc4e0..e374183f19d0 100644
-> --- a/drivers/dma/imx-sdma.c
-> +++ b/drivers/dma/imx-sdma.c
-> @@ -1851,8 +1851,12 @@ static int sdma_probe(struct platform_device *pdev)
->  	sdma->dma_device.device_prep_dma_cyclic = sdma_prep_dma_cyclic;
->  	sdma->dma_device.device_config = sdma_config;
->  	sdma->dma_device.device_terminate_all = sdma_disable_channel_with_delay;
-> -	sdma->dma_device.src_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-> -	sdma->dma_device.dst_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
-> +	sdma->dma_device.src_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES) |
-> +					   BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
-> +					   BIT(DMA_SLAVE_BUSWIDTH_1_BYTE);
-> +	sdma->dma_device.dst_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES) |
-> +					   BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
-> +					   BIT(DMA_SLAVE_BUSWIDTH_1_BYTE);
->  	sdma->dma_device.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
->  	sdma->dma_device.residue_granularity = DMA_RESIDUE_GRANULARITY_SEGMENT;
->  	sdma->dma_device.device_issue_pending = sdma_issue_pending;
-> -- 
-> 2.11.0
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe dmaengine" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
--- 
-~Vinod
+QW0gTW9udGFnLCBkZW4gMTYuMTAuMjAxNywgMTI6MjEgKzA1MzAgc2NocmllYiBWaW5vZCBLb3Vs
+Ogo+IE9uIEZyaSwgT2N0IDEzLCAyMDE3IGF0IDEyOjQzOjQ2UE0gKzAyMDAsIEx1Y2FzIFN0YWNo
+IHdyb3RlOgo+ID4gVGhlIGNvbW1pdCBbMV0gd2hpY2ggY2hhbmdlZCBpbXgtcGNtLWRtYSB0byBk
+ZXJpdmUgdGhlIHBjbV9jb25maWcKPiA+IGZyb20gdGhlCj4gCj4gQ29tbWl0IDcwZDQzNWJhMWNk
+NiAoLi4uKSBjaGFuZ2VkLi4uIHBsZWFzZQo+IAo+ID4gYXR0YWNoZWQgZG1hZW5naW5lIGludHJv
+ZHVjZWQgYSByZWdyZXNzaW9uIG9uIHRoZSBzdXBwb3J0ZWQgc2FtcGxlCj4gPiBmb3JtYXRzLAo+
+ID4gYXMgaW14LXNkbWEgZG9lc24ndCBwcm9wZXJseSBhZHZlcnRpc2UgYWxsIHRoZSBzdXBwb3J0
+ZWQgc2xhdmUgYnVzCj4gPiB3aWR0aHMuCj4gPiAKPiA+IEZpeCB0aGlzIHRvIHJlc3RvcmUgZnVs
+bCBmdW5jdGlvbmFsaXR5IG9mIHRoZSBpbXggc291bmQgc3Vic3lzdGVtLgo+ID4gCj4gPiBbMV0g
+NzBkNDM1YmExY2Q2ICgiQVNvQzogaW14LXBjbS1kbWE6IHNpbXBsaWZ5IHBjbV9jb25maWciKQo+
+IAo+IEZpeGVzOiA3MGQ0MzViYTFjZDYgLi4uIHBsZWFzZQoKTm9wZSwgaXQgaXNuJ3Qgc3RyaWN0
+bHkgYSBmaXggZm9yIHRoaXMgY29tbWl0LCB3aGljaCBpcyB3aHkgSSBkaWRuJ3QKbWFyayBpdCBh
+cyBzdWNoLiBJdCdzIGEgc2VwYXJhdGUgZml4LCB3aGljaCBmaXhlcyBhIGJhZCBpbnRlcmFjdGlv
+bgpiZXR3ZWVuIGRtYWVuZ2luZSBhbmQgc291bmQsIGJ1dCBpdCBtYXkgYWxzbyBhZmZlY3Qgb3Ro
+ZXIgdXNlcnMuCgpSZWdhcmRzLApMdWNhcwoKPiAKPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMdWNh
+cyBTdGFjaCA8bC5zdGFjaEBwZW5ndXRyb25peC5kZT4KPiA+IC0tLQo+ID4gwqBkcml2ZXJzL2Rt
+YS9pbXgtc2RtYS5jIHwgOCArKysrKystLQo+ID4gwqAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRp
+b25zKCspLCAyIGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9kbWEv
+aW14LXNkbWEuYyBiL2RyaXZlcnMvZG1hL2lteC1zZG1hLmMKPiA+IGluZGV4IGE2N2VjMWJkYzRl
+MC4uZTM3NDE4M2YxOWQwIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9kbWEvaW14LXNkbWEuYwo+
+ID4gKysrIGIvZHJpdmVycy9kbWEvaW14LXNkbWEuYwo+ID4gQEAgLTE4NTEsOCArMTg1MSwxMiBA
+QCBzdGF0aWMgaW50IHNkbWFfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiA+
+ID4gPiDCoAlzZG1hLT5kbWFfZGV2aWNlLmRldmljZV9wcmVwX2RtYV9jeWNsaWMgPSBzZG1hX3By
+ZXBfZG1hX2N5Y2xpYzsKPiA+ID4gPiDCoAlzZG1hLT5kbWFfZGV2aWNlLmRldmljZV9jb25maWcg
+PSBzZG1hX2NvbmZpZzsKPiA+ID4gPiDCoAlzZG1hLT5kbWFfZGV2aWNlLmRldmljZV90ZXJtaW5h
+dGVfYWxsID0gc2RtYV9kaXNhYmxlX2NoYW5uZWxfd2l0aF9kZWxheTsKPiA+ID4gPiAtCXNkbWEt
+PmRtYV9kZXZpY2Uuc3JjX2FkZHJfd2lkdGhzID0gQklUKERNQV9TTEFWRV9CVVNXSURUSF80X0JZ
+VEVTKTsKPiA+ID4gPiAtCXNkbWEtPmRtYV9kZXZpY2UuZHN0X2FkZHJfd2lkdGhzID0gQklUKERN
+QV9TTEFWRV9CVVNXSURUSF80X0JZVEVTKTsKPiA+ID4gPiArCXNkbWEtPmRtYV9kZXZpY2Uuc3Jj
+X2FkZHJfd2lkdGhzID0gQklUKERNQV9TTEFWRV9CVVNXSURUSF80X0JZVEVTKSB8Cj4gPiA+ID4g
+KwkJCQkJwqDCoMKgQklUKERNQV9TTEFWRV9CVVNXSURUSF8yX0JZVEVTKSB8Cj4gPiA+ID4gKwkJ
+CQkJwqDCoMKgQklUKERNQV9TTEFWRV9CVVNXSURUSF8xX0JZVEUpOwo+ID4gPiA+ICsJc2RtYS0+
+ZG1hX2RldmljZS5kc3RfYWRkcl93aWR0aHMgPSBCSVQoRE1BX1NMQVZFX0JVU1dJRFRIXzRfQllU
+RVMpIHwKPiA+ID4gPiArCQkJCQnCoMKgwqBCSVQoRE1BX1NMQVZFX0JVU1dJRFRIXzJfQllURVMp
+IHwKPiA+ID4gPiArCQkJCQnCoMKgwqBCSVQoRE1BX1NMQVZFX0JVU1dJRFRIXzFfQllURSk7Cj4g
+PiA+ID4gwqAJc2RtYS0+ZG1hX2RldmljZS5kaXJlY3Rpb25zID0gQklUKERNQV9ERVZfVE9fTUVN
+KSB8IEJJVChETUFfTUVNX1RPX0RFVik7Cj4gPiA+ID4gwqAJc2RtYS0+ZG1hX2RldmljZS5yZXNp
+ZHVlX2dyYW51bGFyaXR5ID0gRE1BX1JFU0lEVUVfR1JBTlVMQVJJVFlfU0VHTUVOVDsKPiA+ID4g
+PiDCoAlzZG1hLT5kbWFfZGV2aWNlLmRldmljZV9pc3N1ZV9wZW5kaW5nID0gc2RtYV9pc3N1ZV9w
+ZW5kaW5nOwo+ID4gLS3CoAo+ID4gMi4xMS4wCj4gPiAKPiA+IC0tCj4gPiBUbyB1bnN1YnNjcmli
+ZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgZG1hZW5naW5lIiBp
+bgo+ID4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcK
+PiA+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXTCoMKgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpv
+cmRvbW8taW5mby5odG1sCj4gCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
