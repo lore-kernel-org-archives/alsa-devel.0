@@ -1,103 +1,48 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 4/4] ASoC: rt5659: move set_pll to codec level
-Date: Mon, 16 Oct 2017 19:15:16 +0800
-Message-ID: <1508152516-25767-4-git-send-email-bardliao@realtek.com>
-References: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id E6F94266B38
- for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 13:16:34 +0200 (CEST)
-In-Reply-To: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+From: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: add support for a fixed sysclk frequency
+Date: Mon, 16 Oct 2017 13:17:07 +0200
+Message-ID: <9A3652B7-C0ED-44DE-AC6F-9D883076E9B8@theobroma-systems.com>
+References: <20171006083449.24038-1-jakob.unterwurzacher@theobroma-systems.com>
+ <AM5PR0401MB2627DE7F266788214268424BE34E0@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+ <EA6FEF1C-263E-4529-AC8E-16F50C27030F@theobroma-systems.com>
+ <CAOMZO5D-2iFsAUk2Ldo4RD5Xg71Q5HOBuasYc0t=tV3hZbaO2g@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOMZO5D-2iFsAUk2Ldo4RD5Xg71Q5HOBuasYc0t=tV3hZbaO2g@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Klaus Goger <klaus.goger@theobroma-systems.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Richard Leitner <richard.leitner@skidata.com>, Bhumika Goyal <bhumirks@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Move set_pll function to codec level and people can use it at both
-codec and dai level.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5659.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> On 16. Oct 2017, at 12:51, Fabio Estevam <festevam@gmail.com> wrote:
+> 
+> Hi Jakob,
+> 
+> On Mon, Oct 16, 2017 at 7:46 AM, Jakob Unterwurzacher
+> <jakob.unterwurzacher@theobroma-systems.com> wrote:
+>> Hi Fabio, that’s interesting.
+>> 
+>> Looks like the fsl,imx-audio-sgtl5000 sound card driver that is used on the imx51-babbage
+>> does not try to adjust MCLK in response to the playback sample rate.
+>> 
+>> The simple-audio-card driver does that (it calls snd_soc_dai_set_sysclk whenever playback
+>> starts).
+> 
+> Could you please test this with linux-next tree?
+> 
+> Looks like that the recent b0a7043d5c2c("ASoC: fsl_ssi: Caculate bit
+> clock rate using slot number and width") would avoid the issue.
+> 
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 09cfddb..07e7757 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -3419,15 +3419,15 @@ static int rt5659_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	return 0;
- }
- 
--static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
--			unsigned int freq_in, unsigned int freq_out)
-+static int rt5659_set_codec_pll(struct snd_soc_codec *codec, int pll_id,
-+				int source, unsigned int freq_in,
-+				unsigned int freq_out)
- {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
- 	struct rl6231_pll_code pll_code;
- 	int ret;
- 
--	if (Source == rt5659->pll_src && freq_in == rt5659->pll_in &&
-+	if (source == rt5659->pll_src && freq_in == rt5659->pll_in &&
- 	    freq_out == rt5659->pll_out)
- 		return 0;
- 
-@@ -3441,7 +3441,7 @@ static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 		return 0;
- 	}
- 
--	switch (Source) {
-+	switch (source) {
- 	case RT5659_PLL1_S_MCLK:
- 		snd_soc_update_bits(codec, RT5659_GLB_CLK,
- 			RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_MCLK);
-@@ -3459,7 +3459,7 @@ static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK3);
- 		break;
- 	default:
--		dev_err(codec->dev, "Unknown PLL Source %d\n", Source);
-+		dev_err(codec->dev, "Unknown PLL source %d\n", source);
- 		return -EINVAL;
- 	}
- 
-@@ -3481,7 +3481,7 @@ static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 
- 	rt5659->pll_in = freq_in;
- 	rt5659->pll_out = freq_out;
--	rt5659->pll_src = Source;
-+	rt5659->pll_src = source;
- 
- 	return 0;
- }
-@@ -3667,7 +3667,6 @@ static const struct snd_soc_dai_ops rt5659_aif_dai_ops = {
- 	.hw_params = rt5659_hw_params,
- 	.set_fmt = rt5659_set_dai_fmt,
- 	.set_tdm_slot = rt5659_set_tdm_slot,
--	.set_pll = rt5659_set_dai_pll,
- 	.set_bclk_ratio = rt5659_set_bclk_ratio,
- };
- 
-@@ -3747,6 +3746,7 @@ static const struct snd_soc_codec_driver soc_codec_dev_rt5659 = {
- 		.num_dapm_routes	= ARRAY_SIZE(rt5659_dapm_routes),
- 	},
- 	.set_sysclk = rt5659_set_codec_sysclk,
-+	.set_pll = rt5659_set_codec_pll,
- };
- 
- 
--- 
-2.7.4
+Hi Fabio,
+
+if this ( https://patchwork.kernel.org/patch/9952385/ ) is the patch, then it seems to be
+specific to the Freescale I2S controller. We use the SGTL5000 together with a Rockchip CPU.
+
+I think I see a way to fix this without adding a DTS property, I’ll send out a patch later this afternoon.
+
+Best regards,
+Jakob
