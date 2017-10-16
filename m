@@ -1,80 +1,41 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 3/4] ASoC: rt5659: move set_sysclk to codec
-	level
-Date: Mon, 16 Oct 2017 19:15:15 +0800
-Message-ID: <1508152516-25767-3-git-send-email-bardliao@realtek.com>
-References: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
+From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: add support for a fixed sysclk frequency
+Date: Mon, 16 Oct 2017 09:19:57 -0200
+Message-ID: <CAOMZO5CsRyTsOSU2L8jv0A=Db-o5RcA-ceCvokCWLKNj__htug@mail.gmail.com>
+References: <20171006083449.24038-1-jakob.unterwurzacher@theobroma-systems.com>
+ <AM5PR0401MB2627DE7F266788214268424BE34E0@AM5PR0401MB2627.eurprd04.prod.outlook.com>
+ <EA6FEF1C-263E-4529-AC8E-16F50C27030F@theobroma-systems.com>
+ <CAOMZO5D-2iFsAUk2Ldo4RD5Xg71Q5HOBuasYc0t=tV3hZbaO2g@mail.gmail.com> <9A3652B7-C0ED-44DE-AC6F-9D883076E9B8@theobroma-systems.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id CC04E267193
- for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 13:19:08 +0200 (CEST)
-In-Reply-To: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <9A3652B7-C0ED-44DE-AC6F-9D883076E9B8-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jakob Unterwurzacher <jakob.unterwurzacher-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>
+Cc: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Klaus Goger <klaus.goger-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Richard Leitner <richard.leitner-WcANXNA0UjBBDgjK7y7TUQ@public.gmane.org>, Bhumika Goyal <bhumirks-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Move set_sysclk to codec level and people can use it at both
-codec and dai level.
+Hi Jakob,
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5659.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Mon, Oct 16, 2017 at 9:17 AM, Jakob Unterwurzacher
+<jakob.unterwurzacher-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org> wrote:
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index fa66b11..09cfddb 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -3385,10 +3385,9 @@ static int rt5659_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
--static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
--		int clk_id, unsigned int freq, int dir)
-+static int rt5659_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
-+				   int source, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int reg_val = 0;
- 
-@@ -3414,7 +3413,8 @@ static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
- 	rt5659->sysclk = freq;
- 	rt5659->sysclk_src = clk_id;
- 
--	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
-+	dev_dbg(codec->dev, "Sysclk is %dHz and clock id is %d\n",
-+		freq, clk_id);
- 
- 	return 0;
- }
-@@ -3666,7 +3666,6 @@ static int rt5659_resume(struct snd_soc_codec *codec)
- static const struct snd_soc_dai_ops rt5659_aif_dai_ops = {
- 	.hw_params = rt5659_hw_params,
- 	.set_fmt = rt5659_set_dai_fmt,
--	.set_sysclk = rt5659_set_dai_sysclk,
- 	.set_tdm_slot = rt5659_set_tdm_slot,
- 	.set_pll = rt5659_set_dai_pll,
- 	.set_bclk_ratio = rt5659_set_bclk_ratio,
-@@ -3747,6 +3746,7 @@ static const struct snd_soc_codec_driver soc_codec_dev_rt5659 = {
- 		.dapm_routes		= rt5659_dapm_routes,
- 		.num_dapm_routes	= ARRAY_SIZE(rt5659_dapm_routes),
- 	},
-+	.set_sysclk = rt5659_set_codec_sysclk,
- };
- 
- 
--- 
-2.7.4
+> Hi Fabio,
+>
+> if this ( https://patchwork.kernel.org/patch/9952385/ ) is the patch, the=
+n it seems to be
+> specific to the Freescale I2S controller. We use the SGTL5000 together wi=
+th a Rockchip CPU.
+
+Yes, it is specific to the SSI interface on i.MX. I thought you were
+using i.MX, sorry.
+
+> I think I see a way to fix this without adding a DTS property, I=E2=80=99=
+ll send out a patch later this afternoon.
+
+Ok, great.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
