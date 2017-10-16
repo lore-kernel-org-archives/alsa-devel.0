@@ -1,15 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/4] ASoC: rt5659: register power bit of LOUT
-	Amp
-Date: Mon, 16 Oct 2017 19:15:13 +0800
-Message-ID: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: emux: remove unused redundant variable p2
+Date: Mon, 16 Oct 2017 12:18:39 +0100
+Message-ID: <20171016111839.11365-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id CAE17266B38
- for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 13:17:36 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EB21267193
+ for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 13:18:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,30 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a power bit for LOUT Amp.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+The variable p2 is being assigned but never used, it is redundant
+and can be safely removed.  Cleans up clang warning: Value stored to
+'p2' is never read.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/codecs/rt5659.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/synth/emux/emux_oss.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 71216db..999432e 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -2744,7 +2744,8 @@ static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
- 		SND_SOC_DAPM_PRE_PMU),
- 	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0, rt5659_hp_event,
- 		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
--	SND_SOC_DAPM_PGA("LOUT Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("LOUT Amp", 1,  RT5659_PWR_ANLG_1, RT5659_PWR_LM_BIT,
-+		0,  NULL, 0),
+diff --git a/sound/synth/emux/emux_oss.c b/sound/synth/emux/emux_oss.c
+index de19e108974a..764ff4bc2089 100644
+--- a/sound/synth/emux/emux_oss.c
++++ b/sound/synth/emux/emux_oss.c
+@@ -430,7 +430,6 @@ gusspec_control(struct snd_emux *emu, struct snd_emux_port *port, int cmd,
+ {
+ 	int voice;
+ 	unsigned short p1;
+-	short p2;
+ 	int plong;
+ 	struct snd_midi_channel *chan;
  
- 	SND_SOC_DAPM_SUPPLY("Charge Pump", SND_SOC_NOPM, 0, 0,
- 		rt5659_charge_pump_event, SND_SOC_DAPM_PRE_PMU |
+@@ -445,7 +444,6 @@ gusspec_control(struct snd_emux *emu, struct snd_emux_port *port, int cmd,
+ 	chan = &port->chset.channels[voice];
+ 
+ 	p1 = *(unsigned short *) &event[4];
+-	p2 = *(short *) &event[6];
+ 	plong = *(int*) &event[4];
+ 
+ 	switch (cmd) {
 -- 
-2.7.4
+2.14.1
