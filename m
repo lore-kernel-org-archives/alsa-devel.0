@@ -1,41 +1,92 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: add support for a fixed sysclk frequency
-Date: Mon, 16 Oct 2017 09:19:57 -0200
-Message-ID: <CAOMZO5CsRyTsOSU2L8jv0A=Db-o5RcA-ceCvokCWLKNj__htug@mail.gmail.com>
-References: <20171006083449.24038-1-jakob.unterwurzacher@theobroma-systems.com>
- <AM5PR0401MB2627DE7F266788214268424BE34E0@AM5PR0401MB2627.eurprd04.prod.outlook.com>
- <EA6FEF1C-263E-4529-AC8E-16F50C27030F@theobroma-systems.com>
- <CAOMZO5D-2iFsAUk2Ldo4RD5Xg71Q5HOBuasYc0t=tV3hZbaO2g@mail.gmail.com> <9A3652B7-C0ED-44DE-AC6F-9D883076E9B8@theobroma-systems.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: Cherry Trail + RT5645 devices with a mono speaker ?
+Date: Mon, 16 Oct 2017 11:31:46 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7026E85AB@RTITMBSV02.realtek.com.tw>
+References: <f5ad13fc-2b25-7f64-d5f0-6ad035fd09ab@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <9A3652B7-C0ED-44DE-AC6F-9D883076E9B8-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jakob Unterwurzacher <jakob.unterwurzacher-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>
-Cc: Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Klaus Goger <klaus.goger-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Richard Leitner <richard.leitner-WcANXNA0UjBBDgjK7y7TUQ@public.gmane.org>, Bhumika Goyal <bhumirks-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 236E5266D05
+ for <alsa-devel@alsa-project.org>; Mon, 16 Oct 2017 13:31:52 +0200 (CEST)
+In-Reply-To: <f5ad13fc-2b25-7f64-d5f0-6ad035fd09ab@redhat.com>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jakob,
+> -----Original Message-----
+> From: Hans de Goede [mailto:hdegoede@redhat.com]
+> Sent: Sunday, October 15, 2017 2:12 AM
+> To: Pierre-Louis Bossart; Bard Liao
+> Cc: alsa-devel@alsa-project.org
+> Subject: Cherry Trail + RT5645 devices with a mono speaker ?
+> 
+> Hi Pierre-Louis, Bard,
+> 
+> I've been looking into getting some Cherry Trail + RT5645
+> devices with a mono speaker I have to work properly.
+> 
+> Specifically the goal is to mix the right channel into
+> the left output, so that sounds which are only played
+> over the right channel do not get lost.
+> 
+> I'm using this UCM file:
+> https://github.com/plbossart/UCM/blob/master/byt-rt5640/HiFi
+> 
+> Looking at the rtl5640 UCM file, getting the mono speaker
+> to work (in a first simple attempt) should be as simple
+> as replacing:
+> 
+>                  cset "name='SPOR MIX SPKVOL R Switch' on"
+> 
+> With
+> 
+>                  cset "name='SPOL MIX SPKVOL R Switch' on"
+> 
+> But this does not work, the speaker test sound for the
+> right speaker is still silent (works with headphones).
+> 
+> I've also looked into directly poking the
+> RT5645_SPO_MIXER i2c register for testing, but when
+> checking its value with the original unmodified UCM
+> file:
+> 
+> [root@localhost ~]# i2cget -y -f 1 0x1a 0x48  w
+> 0x06c8
+> 
+> That is: 0xc806 as the output of i2cget "w" mode
+> needs byteswapping. Note that both the
+> RT5645_M_SV_L_SPM_L and RT5645_M_SV_R_SPM_L bits
+> are already cleared, which is weird as this is
+> before I've modified anything. Also the
+> RT5645_M_SV_R_SPM_R bit is cleared, but that is
+> expected.
+> 
+> Even if I manually set reg 0x48 to 0x07c8 which AFAIK
+> should enable output of both left and right channels
+> on the left speaker I still only get sounds played
+> on the left channel.
+> 
+> Any insights / help with this would be very much
+> welcome.
 
-On Mon, Oct 16, 2017 at 9:17 AM, Jakob Unterwurzacher
-<jakob.unterwurzacher-SN7IsUiht6C/RdPyistoZJqQE7yCjDx5@public.gmane.org> wrote:
+Could you dump all registers for us?
 
-> Hi Fabio,
->
-> if this ( https://patchwork.kernel.org/patch/9952385/ ) is the patch, the=
-n it seems to be
-> specific to the Freescale I2S controller. We use the SGTL5000 together wi=
-th a Rockchip CPU.
 
-Yes, it is specific to the SSI interface on i.MX. I thought you were
-using i.MX, sorry.
-
-> I think I see a way to fix this without adding a DTS property, I=E2=80=99=
-ll send out a patch later this afternoon.
-
-Ok, great.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> Regards,
+> 
+> Hans
+> 
+> ------Please consider the environment before printing this e-mail.
