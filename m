@@ -1,36 +1,61 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: add support for a fixed sysclk frequency
-Date: Tue, 17 Oct 2017 07:53:36 -0200
-Message-ID: <CAOMZO5DpAJn7PPtM1=JmQrsAi=M1-ZdUUR1exg=Qvwwn9sWaGA@mail.gmail.com>
-References: <20171006083449.24038-1-jakob.unterwurzacher@theobroma-systems.com>
- <AM5PR0401MB2627DE7F266788214268424BE34E0@AM5PR0401MB2627.eurprd04.prod.outlook.com>
- <EA6FEF1C-263E-4529-AC8E-16F50C27030F@theobroma-systems.com>
- <CAOMZO5D-2iFsAUk2Ldo4RD5Xg71Q5HOBuasYc0t=tV3hZbaO2g@mail.gmail.com>
- <9A3652B7-C0ED-44DE-AC6F-9D883076E9B8@theobroma-systems.com>
- <CAOMZO5CsRyTsOSU2L8jv0A=Db-o5RcA-ceCvokCWLKNj__htug@mail.gmail.com> <28F29E6E-B067-4C06-8D35-3786D4B43AAE@theobroma-systems.com>
+From: Lucas Stach <l.stach@pengutronix.de>
+Subject: [PATCH] ASoC: tpa61xx: add back chip name to the
+	controls
+Date: Tue, 17 Oct 2017 11:57:29 +0200
+Message-ID: <20171017095729.6032-1-l.stach@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <28F29E6E-B067-4C06-8D35-3786D4B43AAE@theobroma-systems.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jakob Unterwurzacher <jakob.unterwurzacher@theobroma-systems.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Klaus Goger <klaus.goger@theobroma-systems.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Richard Leitner <richard.leitner@skidata.com>, Bhumika Goyal <bhumirks@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 90398266E26
+ for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2017 11:57:31 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de, patchwork-lst@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jakob,
+Commit cb7e62256e99( ASoC: tpa6130a2: Register component) removed the chip
+name from the controls, which causes issues as the TPA61xx is not a
+standalone codec, but a headphone amplifier, which may be connected to the
+line out of a codec which already exposes a "Headphone Playback Volume"
+control. In that case we end up with duplicate controls, causing the
+the probe of the soundcard to be aborted.
 
-On Tue, Oct 17, 2017 at 7:01 AM, Jakob Unterwurzacher
-<jakob.unterwurzacher@theobroma-systems.com> wrote:
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+---
+ sound/soc/codecs/tpa6130a2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Hi Fabio, I think I found a way to get our use-case working with just DTS=
- configuration
-> for simple-audio-card.
->
-> When you define the =E2=80=9Cclocks=E2=80=9D property for the "simple-aud=
-io-card,cpu=E2=80=9D sub-node,
-> set_sysclk is called only once, on startup - like the IMX driver does.
->
-> We should get away without changes to the codec driver.
-
-Excellent! This looks better :-)
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 2e014c80d113..abca7eedb6be 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -136,7 +136,7 @@ static const DECLARE_TLV_DB_RANGE(tpa6130_tlv,
+ );
+ 
+ static const struct snd_kcontrol_new tpa6130a2_controls[] = {
+-	SOC_SINGLE_TLV("Headphone Playback Volume",
++	SOC_SINGLE_TLV("TPA6130A2 Headphone Playback Volume",
+ 		       TPA6130A2_REG_VOL_MUTE, 0, 0x3f, 0,
+ 		       tpa6130_tlv),
+ };
+@@ -148,7 +148,7 @@ static const DECLARE_TLV_DB_RANGE(tpa6140_tlv,
+ );
+ 
+ static const struct snd_kcontrol_new tpa6140a2_controls[] = {
+-	SOC_SINGLE_TLV("Headphone Playback Volume",
++	SOC_SINGLE_TLV("TPA6140A2 Headphone Playback Volume",
+ 		       TPA6130A2_REG_VOL_MUTE, 1, 0x1f, 0,
+ 		       tpa6140_tlv),
+ };
+-- 
+2.11.0
