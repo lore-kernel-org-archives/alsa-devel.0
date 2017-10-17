@@ -1,19 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 0/2] Add snd_card_disconnect_sync()
-	helper
-Date: Wed, 18 Oct 2017 00:16:51 +0900
-Message-ID: <384d526d-f193-a237-750c-d0fae69c38cb@sakamocchi.jp>
-References: <87k1zu7g1l.wl%kuninori.morimoto.gx@renesas.com>
- <20171017142510.7959-1-o-takashi@sakamocchi.jp>
- <s5h60bdx2qt.wl-tiwai@suse.de>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [PATCH] ALSA: hda: Abort capability probe at
+ invalid	register read
+Date: Tue, 17 Oct 2017 15:35:18 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB605799E947C@BGSMSX104.gar.corp.intel.com>
+References: <20171017144711.23962-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_85DFEED57DC57344B2483EF7BF8CB605799E947CBGSMSX104garcor_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id E694F266DA4
- for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2017 17:17:31 +0200 (CEST)
-In-Reply-To: <s5h60bdx2qt.wl-tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F194D266DA4
+ for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2017 17:35:23 +0200 (CEST)
+In-Reply-To: <20171017144711.23962-1-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,69 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, kuninori.morimoto.gx@renesas.com
+To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 17 2017 23:34, Takashi Iwai wrote:
-> Well, as I mentioned, a potential breakage would appear in the legacy
-> AC97 codec binding -- if it would do any hot-unplug.  But most of
-> legacy drivers work fine without my patches just because it has only
-> top-level unbind.
+--_002_85DFEED57DC57344B2483EF7BF8CB605799E947CBGSMSX104garcor_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Yep. Recent drivers get no suffers from the issue because AC'97 is
-enough ancient, at least for rsnd.
+>+		if (cur_cap =3D=3D -1) {
+>+			dev_dbg(bus->dev, "Invalid capability reg read\n");
+>+			break;
+>+		}
 
-> So, the top-level hot-unplug as you tested with the dummy driver works
-> as is.  The problem is only about unbinding the middle-layer
-> component, as mentioned in the patch.  It's found mostly in ASoC, but
-> not necessarily tied only with ASoC.
-
-Are there any driver outside of ALSA SoC part to use the feature?
-Actually, not. It's quite natural to assume that the feature is somehow
-specialized for ALSA SoC part even it it's in ALSA PCM core.
-
-And today I have little time to review the patch. Please check
-in-reply-to field of my previous message. This is not a reply to yours.
-
->> But I note that even if unbind works fine to shift state of sound devices
->> into disconnected, poll(2) call to ALSA control character devices does not
->> return (e.g. run 'amixer events'). I don't know exactly the cause yet...
-> 
-> The disconnection doesn't close the device by itself (we can't), but
-> it replaces with the dummy ops so that it never touches the driver
-> except for closing.  That is, the device is in the idle state and just
-> accepts closing.
-
-You did misread. I just said that a call of poll(2) doesn't return.
-
-1599 static unsigned int snd_ctl_poll(struct file *file, poll_table * wait)
-1600 {
-1601         unsigned int mask;
-1602         struct snd_ctl_file *ctl;
-1603
-1604         ctl = file->private_data;
-1605         if (!ctl->subscribed)
-1606                 return 0;
-1607         poll_wait(file, &ctl->change_sleep, wait);
-
-This should be awakened by below lines:
-
-1775 static int snd_ctl_dev_disconnect(struct snd_device *device)
-1776 {
-1777         struct snd_card *card = device->device_data;
-1778         struct snd_ctl_file *ctl;
-1779
-1780         read_lock(&card->ctl_files_rwlock);
-1781         list_for_each_entry(ctl, &card->ctl_files, list) {
-1782                 wake_up(&ctl->change_sleep);
-
-As long as I observed, it doesn't even if the above line is executed.
-(how odd...) I suspect to hit some other bugs such as buffer-overrun
-depending on my environment. But it's out of my current plan and I
-didn't investigate further. That's all of what I experience.
+Since we already have a default case in the current code, can we use it ?
+I am sending you a untested patch, as proposal.
 
 
-Thanks
 
-Takashi Sakamoto
+--_002_85DFEED57DC57344B2483EF7BF8CB605799E947CBGSMSX104garcor_
+Content-Type: application/octet-stream;
+	name="0001-ALSA-hda-Abort-capability-probe-at-invalid-register-.patch"
+Content-Description: 0001-ALSA-hda-Abort-capability-probe-at-invalid-register-.patch
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Abort-capability-probe-at-invalid-register-.patch";
+	size=825; creation-date="Tue, 17 Oct 2017 15:31:17 GMT";
+	modification-date="Tue, 17 Oct 2017 23:18:20 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAxNjkwNjI0MDUxYTc1Yjk1NTkyZmIxYzQ5N2EwYTg4NDRjYmQxYzY0IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYWtlc2ggVWdocmVqYSA8cmFrZXNoLmEudWdocmVqYUBpbnRl
+bC5jb20+CkRhdGU6IFdlZCwgMTggT2N0IDIwMTcgMDQ6NDY6NDYgKzA1MzAKU3ViamVjdDogW1BB
+VENIXSBBTFNBOiBoZGE6IEFib3J0IGNhcGFiaWxpdHkgcHJvYmUgYXQgaW52YWxpZCByZWdpc3Rl
+ciByZWFkCgpJbiB0aGUgY2FzZSBvZiB1bmtub3duIGNhcGFiaWxpdHkgYnJlYWsgdGhlIGxvb3Ag
+Ynkgc2V0dGluZyB0aGUKY3VycmVudCBjYXBhYmlsaXR5IHRvIHplcm8KClNpZ25lZC1vZmYtYnk6
+IFJha2VzaCBVZ2hyZWphIDxyYWtlc2guYS51Z2hyZWphQGludGVsLmNvbT4KLS0tCiBzb3VuZC9o
+ZGEvaGRhY19jb250cm9sbGVyLmMgfCAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
+KQoKZGlmZiAtLWdpdCBhL3NvdW5kL2hkYS9oZGFjX2NvbnRyb2xsZXIuYyBiL3NvdW5kL2hkYS9o
+ZGFjX2NvbnRyb2xsZXIuYwppbmRleCA5NzhkYzE4Li44NmMyYjRjIDEwMDY0NAotLS0gYS9zb3Vu
+ZC9oZGEvaGRhY19jb250cm9sbGVyLmMKKysrIGIvc291bmQvaGRhL2hkYWNfY29udHJvbGxlci5j
+CkBAIC0zMTUsNiArMzE1LDcgQEAgaW50IHNuZF9oZGFjX2J1c19wYXJzZV9jYXBhYmlsaXRpZXMo
+c3RydWN0IGhkYWNfYnVzICpidXMpCiAKIAkJZGVmYXVsdDoKIAkJCWRldl9kYmcoYnVzLT5kZXYs
+ICJVbmtub3duIGNhcGFiaWxpdHkgJWRcbiIsIGN1cl9jYXApOworCQkJY3VyX2NhcCA9IDA7CiAJ
+CQlicmVhazsKIAkJfQogCi0tIAoyLjcuNAoK
+
+--_002_85DFEED57DC57344B2483EF7BF8CB605799E947CBGSMSX104garcor_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_85DFEED57DC57344B2483EF7BF8CB605799E947CBGSMSX104garcor_--
