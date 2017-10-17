@@ -1,52 +1,30 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ALSA: emu10k1: remove redundant assignment to
-	tmp
-Date: Tue, 17 Oct 2017 13:18:36 +0100
-Message-ID: <20171017121836.20436-1-colin.king@canonical.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: stable-rc build: 9 warnings 0 failures (stable-rc/v3.18.75-20-g4ffe554)
+Date: Tue, 17 Oct 2017 14:46:53 +0200
+Message-ID: <CAK8P3a3jKcZhU4Ly0Fd4nLeZm4re0FLKdKK6=Ht4ZPsh6JDm2A@mail.gmail.com>
+References: <59e5d9f0.4465630a.ed9cc.22c2@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id A6673266EB0
- for <alsa-devel@alsa-project.org>; Tue, 17 Oct 2017 14:18:40 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <59e5d9f0.4465630a.ed9cc.22c2@mx.google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: gregkh <gregkh@linuxfoundation.org>
+Cc: Olof Johansson <olof@lixom.net>, Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>, Olof's autobuilder <build@lixom.net>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, Oct 17, 2017 at 12:22 PM, Olof's autobuilder <build@lixom.net> wrote:
+> Warnings:
+>
+>       9 sound/usb/mixer.c:2161:27: warning: passing argument 1 of 'snd_usb_mixer_disconnect' from incompatible pointer type [-Wincompatible-pointer-types]
 
-The assignment to variable tmp is redundant as the value is never
-read and a new value is assigned to tmp in the following for-loop,
-so remove the assignment.
-Cleans up clang warning: Value stored to 'tmp' is never read
+This broke after backporting 124751d5e63c ("ALSA: usb-audio: Kill stray
+URB at exiting") into linux-3.18.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/pci/emu10k1/emuproc.c | 1 -
- 1 file changed, 1 deletion(-)
+The interface was changed in commit a6cece9d8199 ("ALSA: usb-audio:
+Pass direct struct pointer instead of list_head"), which was merged in
+linux-3.19.
 
-diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
-index cf05229b569b..bde0d1954f56 100644
---- a/sound/pci/emu10k1/emuproc.c
-+++ b/sound/pci/emu10k1/emuproc.c
-@@ -280,7 +280,6 @@ static void snd_emu10k1_proc_rates_read(struct snd_info_entry *entry,
- 	struct snd_emu10k1 *emu = entry->private_data;
- 	unsigned int val, tmp, n;
- 	val = snd_emu10k1_ptr20_read(emu, CAPTURE_RATE_STATUS, 0);
--	tmp = (val >> 16) & 0x8;
- 	for (n = 0; n < 4; n++) {
- 		tmp = val >> (16 + (n*4));
- 		if (tmp & 0x8) snd_iprintf(buffer, "Channel %d: Rate=%d\n", n, samplerate[tmp & 0x7]);
--- 
-2.14.1
+I don't immediately see how this can be fixed. Backporting a6cece9d8199
+would probably work.
+
+     Arnd
