@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Added asic_type as ACP DMA driver
-	platform data" to the asoc tree
-Date: Wed, 18 Oct 2017 01:09:26 +0100
-Message-ID: <E1e4bvK-00044M-VU@debutante>
+Subject: Applied "drm/amd/amdgpu: Added asic_type as ACP DMA
+	driver platform data" to the asoc tree
+Date: Wed, 18 Oct 2017 01:09:29 +0100
+Message-ID: <E1e4bvN-00045A-2E@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DE23B266AE1
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 02:11:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B9E8266AE1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 02:11:39 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Added asic_type as ACP DMA driver platform data
+   drm/amd/amdgpu: Added asic_type as ACP DMA driver platform data
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,11 @@ to this mail.
 Thanks,
 Mark
 
->From 01a6b1634d50dba65133a89fe19f182173bb8e8f Mon Sep 17 00:00:00 2001
+>From d4ba4ef2e894c10f2c16497fb0659e5ded502f97 Mon Sep 17 00:00:00 2001
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Date: Mon, 9 Oct 2017 16:36:08 -0400
-Subject: [PATCH] ASoC: AMD: Added asic_type as ACP DMA driver platform data
+Date: Mon, 9 Oct 2017 16:35:12 -0400
+Subject: [PATCH] drm/amd/amdgpu: Added asic_type as ACP DMA driver platform
+ data
 
 asic_type information is passed to ACP DMA Driver as platform data.
 
@@ -63,60 +64,21 @@ Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 8 ++------
- sound/soc/amd/acp.h         | 7 +++++++
- 2 files changed, 9 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 08b1399d1da2..dcbf9973884d 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -73,12 +73,6 @@ static const struct snd_pcm_hardware acp_pcm_hardware_capture = {
- 	.periods_max = CAPTURE_MAX_NUM_PERIODS,
- };
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
+index a52795d9b458..ebca22302ebb 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
+@@ -371,6 +371,8 @@ static int acp_hw_init(void *handle)
+ 	adev->acp.acp_cell[0].name = "acp_audio_dma";
+ 	adev->acp.acp_cell[0].num_resources = 4;
+ 	adev->acp.acp_cell[0].resources = &adev->acp.acp_res[0];
++	adev->acp.acp_cell[0].platform_data = &adev->asic_type;
++	adev->acp.acp_cell[0].pdata_size = sizeof(adev->asic_type);
  
--struct audio_drv_data {
--	struct snd_pcm_substream *play_stream;
--	struct snd_pcm_substream *capture_stream;
--	void __iomem *acp_mmio;
--};
--
- static u32 acp_reg_read(void __iomem *acp_mmio, u32 reg)
- {
- 	return readl(acp_mmio + (reg * 4));
-@@ -916,6 +910,7 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	int status;
- 	struct audio_drv_data *audio_drv_data;
- 	struct resource *res;
-+	const u32 *pdata = pdev->dev.platform_data;
- 
- 	audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
- 					GFP_KERNEL);
-@@ -932,6 +927,7 @@ static int acp_audio_probe(struct platform_device *pdev)
- 
- 	audio_drv_data->play_stream = NULL;
- 	audio_drv_data->capture_stream = NULL;
-+	audio_drv_data->asic_type =  *pdata;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (!res) {
-diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index 330832ef4e5e..28cf9140f49c 100644
---- a/sound/soc/amd/acp.h
-+++ b/sound/soc/amd/acp.h
-@@ -84,6 +84,13 @@ struct audio_substream_data {
- 	void __iomem *acp_mmio;
- };
- 
-+struct audio_drv_data {
-+	struct snd_pcm_substream *play_stream;
-+	struct snd_pcm_substream *capture_stream;
-+	void __iomem *acp_mmio;
-+	u32 asic_type;
-+};
-+
- enum {
- 	ACP_TILE_P1 = 0,
- 	ACP_TILE_P2,
+ 	adev->acp.acp_cell[1].name = "designware-i2s";
+ 	adev->acp.acp_cell[1].num_resources = 1;
 -- 
 2.14.1
