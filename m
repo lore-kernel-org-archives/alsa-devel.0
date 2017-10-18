@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: move set_pll to codec level" to
-	the asoc tree
-Date: Wed, 18 Oct 2017 12:11:53 +0100
-Message-ID: <E1e4mGP-0002DP-DW@debutante>
-References: <1508152516-25767-4-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 01F83266FEA
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:12:10 +0200 (CEST)
-In-Reply-To: <1508152516-25767-4-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+Subject: Applied "ASoC: wm97xx: fix compilation corner case" to the asoc tree
+Date: Wed, 18 Oct 2017 12:12:10 +0100
+Message-ID: <E1e4mGg-0002Ig-FC@debutante>
+References: <20171014201409.9008-1-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171014201409.9008-1-robert.jarzmik@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Marek Vasut <marex@denx.de>, Chen-Yu Tsai <wens@csie.org>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5659: move set_pll to codec level
+   ASoC: wm97xx: fix compilation corner case
 
 has been applied to the asoc tree at
 
@@ -53,86 +37,82 @@ to this mail.
 Thanks,
 Mark
 
->From c8a04b5de4bbdd0c7553aaa315c72722b10f0207 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 16 Oct 2017 19:15:16 +0800
-Subject: [PATCH] ASoC: rt5659: move set_pll to codec level
+>From 6bd25aae3a9bc7ed3d24f2b3d4cd711fadc5d32e Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Sat, 14 Oct 2017 22:14:02 +0200
+Subject: [PATCH] ASoC: wm97xx: fix compilation corner case
 
-Move set_pll function to codec level and people can use it at both
-codec and dai level.
+When the old AC97 is not used, CONFIG_SND_SOC_AC97_BUS is not
+defined. As a consequence, in the error path, snd_soc_free_ac97_codec()
+is not defined and triggers a compilation error.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Fix it for wm9705 and wm9712, as wm9713 is correctly written.
+
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5659.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm9705.c | 8 ++------
+ sound/soc/codecs/wm9712.c | 7 ++-----
+ 2 files changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 09cfddb5e53d..07e7757417bc 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -3419,15 +3419,15 @@ static int rt5659_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	return 0;
- }
- 
--static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
--			unsigned int freq_in, unsigned int freq_out)
-+static int rt5659_set_codec_pll(struct snd_soc_codec *codec, int pll_id,
-+				int source, unsigned int freq_in,
-+				unsigned int freq_out)
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index 68c204e3599f..2c09f71fe433 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -321,7 +321,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
  {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
- 	struct rl6231_pll_code pll_code;
- 	int ret;
+ 	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
+ 	struct regmap *regmap;
+-	int ret;
  
--	if (Source == rt5659->pll_src && freq_in == rt5659->pll_in &&
-+	if (source == rt5659->pll_src && freq_in == rt5659->pll_in &&
- 	    freq_out == rt5659->pll_out)
- 		return 0;
+ 	if (wm9705->mfd_pdata) {
+ 		wm9705->ac97 = wm9705->mfd_pdata->ac97;
+@@ -337,8 +336,8 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
  
-@@ -3441,7 +3441,7 @@ static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 		return 0;
+ 		regmap = regmap_init_ac97(wm9705->ac97, &wm9705_regmap_config);
+ 		if (IS_ERR(regmap)) {
+-			ret = PTR_ERR(regmap);
+-			goto err_free_ac97_codec;
++			snd_soc_free_ac97_codec(wm9705->ac97);
++			return PTR_ERR(regmap);
+ 		}
+ #endif
  	}
- 
--	switch (Source) {
-+	switch (source) {
- 	case RT5659_PLL1_S_MCLK:
- 		snd_soc_update_bits(codec, RT5659_GLB_CLK,
- 			RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_MCLK);
-@@ -3459,7 +3459,7 @@ static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 				RT5659_PLL1_SRC_MASK, RT5659_PLL1_SRC_BCLK3);
- 		break;
- 	default:
--		dev_err(codec->dev, "Unknown PLL Source %d\n", Source);
-+		dev_err(codec->dev, "Unknown PLL source %d\n", source);
- 		return -EINVAL;
- 	}
- 
-@@ -3481,7 +3481,7 @@ static int rt5659_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 
- 	rt5659->pll_in = freq_in;
- 	rt5659->pll_out = freq_out;
--	rt5659->pll_src = Source;
-+	rt5659->pll_src = source;
+@@ -347,9 +346,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ 	snd_soc_codec_init_regmap(codec, regmap);
  
  	return 0;
+-err_free_ac97_codec:
+-	snd_soc_free_ac97_codec(wm9705->ac97);
+-	return ret;
  }
-@@ -3667,7 +3667,6 @@ static const struct snd_soc_dai_ops rt5659_aif_dai_ops = {
- 	.hw_params = rt5659_hw_params,
- 	.set_fmt = rt5659_set_dai_fmt,
- 	.set_tdm_slot = rt5659_set_tdm_slot,
--	.set_pll = rt5659_set_dai_pll,
- 	.set_bclk_ratio = rt5659_set_bclk_ratio,
- };
  
-@@ -3747,6 +3746,7 @@ static const struct snd_soc_codec_driver soc_codec_dev_rt5659 = {
- 		.num_dapm_routes	= ARRAY_SIZE(rt5659_dapm_routes),
- 	},
- 	.set_sysclk = rt5659_set_codec_sysclk,
-+	.set_pll = rt5659_set_codec_pll,
- };
+ static int wm9705_soc_remove(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index 9db5c7783de5..4f6d1a442bc4 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -656,8 +656,8 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
  
+ 		regmap = regmap_init_ac97(wm9712->ac97, &wm9712_regmap_config);
+ 		if (IS_ERR(regmap)) {
+-			ret = PTR_ERR(regmap);
+-			goto err_free_ac97_codec;
++			snd_soc_free_ac97_codec(wm9712->ac97);
++			return PTR_ERR(regmap);
+ 		}
+ #endif
+ 	}
+@@ -668,9 +668,6 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
+ 	snd_soc_update_bits(codec, AC97_VIDEO, 0x3000, 0x3000);
  
+ 	return 0;
+-err_free_ac97_codec:
+-	snd_soc_free_ac97_codec(wm9712->ac97);
+-	return ret;
+ }
+ 
+ static int wm9712_soc_remove(struct snd_soc_codec *codec)
 -- 
 2.14.1
