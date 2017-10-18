@@ -1,19 +1,17 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v2] ALSA: hda: Abort capability probe on
- invalid capability
-Date: Wed, 18 Oct 2017 16:52:54 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB605799EAB3D@BGSMSX104.gar.corp.intel.com>
-References: <1508370325-3118-1-git-send-email-rakesh.a.ughreja@intel.com>
- <20171018162651.GA30097@localhost>
+From: Carlo Caione <carlo@caione.org>
+Subject: [PATCH] ASoC: rt5651: Convert rt5651 micbias1 to a
+	supply widget
+Date: Wed, 18 Oct 2017 18:06:31 +0100
+Message-ID: <20171018170631.9189-1-carlo@caione.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 762AD266EE0
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 18:55:07 +0200 (CEST)
-In-Reply-To: <20171018162651.GA30097@localhost>
-Content-Language: en-US
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id C90A7266EE0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 19:07:19 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id i124so11124523wmf.3
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 10:07:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com
+Cc: Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Carlo Caione <carlo@endlessm.com>
 
+MICBIAS widget type has been deprecated. Convert it to a SUPPLY widget.
 
->-----Original Message-----
->From: Koul, Vinod
->Sent: Wednesday, October 18, 2017 9:57 PM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; tiwai@suse.de
->Subject: Re: [PATCH v2] ALSA: hda: Abort capability probe on invalid capability
->
->On Thu, Oct 19, 2017 at 05:15:25AM +0530, Ughreja, Rakesh A wrote:
->> From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
->>
->> Due to bugs in BIOS it's possible that the HDA capability link
->
->It maybe due to BIOS bug or some other issue, lets not quantify that please.
->
->I would say "On reading wrong capablity pointer values we may crash...
->
->> list is not constructed properly. This may lead to driver going
->> into unknown state.
->
->I dont think we maintain driver states which are going wrong here
->
->> So whenever driver discovers unknown HDA
->> capability, log it as error and stop traversing the link list
->> further.
->
->that sound good
+Signed-off-by: Carlo Caione <carlo@endlessm.com>
+---
+ sound/soc/codecs/rt5651.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi Vinod, Takashi,
-
-Are you both ok with following commit message ?
-
-On reading wrong capability pointer values driver may crash, so 
-whenever driver discovers unknown HDA capability, log it as error 
-and stop traversing the link list further.
-
-Regards,
-Rakesh
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index da60b28ba3df..28f7210cec91 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -883,8 +883,8 @@ static const struct snd_soc_dapm_widget rt5651_dapm_widgets[] = {
+ 	/* micbias */
+ 	SND_SOC_DAPM_SUPPLY("LDO", RT5651_PWR_ANLG1,
+ 			RT5651_PWR_LDO_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_MICBIAS("micbias1", RT5651_PWR_ANLG2,
+-			RT5651_PWR_MB1_BIT, 0),
++	SND_SOC_DAPM_SUPPLY("micbias1", RT5651_PWR_ANLG2,
++			RT5651_PWR_MB1_BIT, 0, NULL, 0),
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("MIC1"),
+ 	SND_SOC_DAPM_INPUT("MIC2"),
+-- 
+2.14.2
