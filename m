@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: register power bit of LOUT Amp"
-	to the asoc tree
-Date: Wed, 18 Oct 2017 12:12:04 +0100
-Message-ID: <E1e4mGa-0002Ga-Ex@debutante>
-References: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: Add helper to find codec_dai from
+	dai_name" to the asoc tree
+Date: Wed, 18 Oct 2017 12:27:14 +0100
+Message-ID: <E1e4mVG-0003PZ-LC@debutante>
+References: <20171012233805.30055-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B436C266A73
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:12:14 +0200 (CEST)
-In-Reply-To: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 85EE8267411
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:27:29 +0200 (CEST)
+In-Reply-To: <20171012233805.30055-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5659: register power bit of LOUT Amp
+   ASoC: Add helper to find codec_dai from dai_name
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From d1e84308ac8ad945a77f4fd7b08725d14181703b Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 16 Oct 2017 19:15:13 +0800
-Subject: [PATCH] ASoC: rt5659: register power bit of LOUT Amp
+>From 7c761b593e2c1dc6bc6c0c15ec338af1f00cabd7 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 12 Oct 2017 18:38:02 -0500
+Subject: [PATCH] ASoC: Add helper to find codec_dai from dai_name
 
-There is a power bit for LOUT Amp.
+Create a helper function to remove duplicate code used in machine drivers
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5659.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index 71216db15eab..999432e98a5a 100644
---- a/sound/soc/codecs/rt5659.c
-+++ b/sound/soc/codecs/rt5659.c
-@@ -2744,7 +2744,8 @@ static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
- 		SND_SOC_DAPM_PRE_PMU),
- 	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0, rt5659_hp_event,
- 		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
--	SND_SOC_DAPM_PGA("LOUT Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA_S("LOUT Amp", 1,  RT5659_PWR_ANLG_1, RT5659_PWR_LM_BIT,
-+		0,  NULL, 0),
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index d22de9712c45..deacbafbae17 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1720,6 +1720,20 @@ struct snd_soc_dai *snd_soc_find_dai(
  
- 	SND_SOC_DAPM_SUPPLY("Charge Pump", SND_SOC_NOPM, 0, 0,
- 		rt5659_charge_pump_event, SND_SOC_DAPM_PRE_PMU |
+ #include <sound/soc-dai.h>
+ 
++static inline
++struct snd_soc_dai *snd_soc_card_get_codec_dai(struct snd_soc_card *card,
++					       const char *dai_name)
++{
++	struct snd_soc_pcm_runtime *rtd;
++
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++		if (!strcmp(rtd->codec_dai->name, dai_name))
++			return rtd->codec_dai;
++	}
++
++	return NULL;
++}
++
+ #ifdef CONFIG_DEBUG_FS
+ extern struct dentry *snd_soc_debugfs_root;
+ #endif
 -- 
 2.14.1
