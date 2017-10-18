@@ -1,40 +1,54 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH 1/2] ASoC: intel: byt: Enable quirk logic for custom maps
-Date: Wed, 18 Oct 2017 17:07:58 +0100
-Message-ID: <20171018160759.18563-2-carlo@caione.org>
-References: <20171018160759.18563-1-carlo@caione.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171018160759.18563-1-carlo@caione.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux@endlessm.com, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Carlo Caione <carlo@endlessm.com>
+From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH 0/4 resend] Add ASoC support for AMD Stoney APUs
+Date: Wed, 18 Oct 2017 12:13:56 -0400
+Message-ID: <1508343240-8242-1-git-send-email-alexander.deucher@amd.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
+Cc: tiwai-l3A5Bk7waGM@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, akshu.agrawal-5C7GfCeVMHo@public.gmane.org, Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Carlo Caione <carlo@endlessm.com>
-
-Enable again the quirk logic for the custom dapm routes.
-
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
----
- sound/soc/intel/boards/bytcr_rt5651.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 4a3516b38c2c..ec84454a232d 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -142,6 +142,12 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_dmic1_map);
- 	}
- 
-+	ret = snd_soc_dapm_add_routes(&card->dapm, custom_map, num_routes);
-+	if (ret) {
-+		dev_err(card->dev, "unable to add custom routes map\n");
-+		return ret;
-+	}
-+
- 	ret = snd_soc_add_card_controls(card, byt_rt5651_controls,
- 					ARRAY_SIZE(byt_rt5651_controls));
- 	if (ret) {
--- 
-2.14.2
+VGhpcyBwYXRjaCBzZXQgdXBkYXRlcyB0aGUgQU1EIEdQVSBhbmQgQXVkaW8gQ29Qcm9jZXNzb3Ig
+KEFDUCkKYXVkaW8gZHJpdmVycyBhbmQgdGhlIGRlc2lnbndhcmUgaTJzIGRyaXZlciBmb3IgU3Rv
+bmV5IChTVCkuClNUIGlzIGFuIEFQVSBzaW1pbGFyIHRvIENhcnJpem8gKENaKSB3aGljaCBhbHJl
+YWR5IGhhcyBBQ1AgYXVkaW8Kc3VwcG9ydC4gIFRoZSBpMnMgY29udHJvbGxlciBhbmQgQUNQIGF1
+ZGlvIERNQSBlbmdpbmUgYXJlIHBhcnQgb2YKdGhlIEdQVSBhbmQgYm90aCBuZWVkIHVwZGF0aW5n
+IHNvIEkgd291bGQgbGlrZSB0byB1cHN0cmVhbSB0aGUKd2hvbGUgcGF0Y2ggc2V0IHZpYSBvbmUg
+dHJlZSBpZiBwb3NzaWJsZS4KCkkganVzdCBzZW50IGEgcHVsbCByZXF1ZXN0IGZvciB0aGUgcHJl
+LXJlcXVpc2l0ZSBwYXRjaGVzIHdoaWNoIGFyZQphdmFpbGFibGUgaGVyZToKaHR0cHM6Ly9jZ2l0
+LmZyZWVkZXNrdG9wLm9yZy9+YWdkNWYvbGludXgvbG9nLz9oPWxpbnVzLTQuMTQtcmM0LWFjcC1w
+cmVyZXEKClRoaXMgaXMgYSByZXNlbmQgb2YganVzdCB0aGUgbm9uIHByZS1yZXF1aXNpdGUgYXVk
+aW8gcGF0Y2hlcyBhdCBNYXJrJ3MgcmVxdWVzdC4KClRoYW5rcyEKCkFsZXgKCnYyOgotIFBhdGNo
+IDEgaXMgYWxyZWFkeSBhcHBsaWVkIHRvIHRoZSBhdWRpbyB0cmVlLCBqdXN0IGluY2x1ZGluZyBp
+dCBmb3IKICBjb21wbGV0ZW5lc3Mgc2luY2UgaXQncyByZXF1aXJlZCBmb3IgdGhpcyBwYXRjaCBz
+ZXQgYW5kIGl0J3Mgbm90IHlldAogIGluIHRoZSBkcm0gdHJlZS4KLSBOZXcgcGF0Y2ggdG8gc2hh
+cmUgYXNpYyB0eXBlcyBiZXR3ZWVuIGdwdSBhbmQgYXVkaW8gZHJpdmVycwotIEFDUEkgSUQgY2hh
+bmdlZCBmb3IgcnQ1NjUwIG1hY2hpbmUgZHJpdmVyCi0gSW50ZWdyYXRlIGZlZWRiYWNrIG9uIG90
+aGVyIHBhdGNoZXMKCnYzOgotIHJlc2VuZCByZW1haW5pbmcgcGF0Y2hlcyB0aGF0IGhhdmUgbm90
+IGJlZW4gYXBwbGllZCB5ZXQKCnY0OgotIEludGVncmF0ZSBmZWVkYmFjayBmcm9tIHYzCi0gQWRk
+IE1hcmsncyBhY2tzIGZyb20gdjMKLSBJbnRlZ3JhdGUgYSBtYWNoaW5lIGRyaXZlciBmaXggZnJv
+bSBEeWxhbiBSZWlkCgpBa3NodSBBZ3Jhd2FsICgxKToKICBBU29DOiBBTUQ6IEFkZCBtYWNoaW5l
+IGRyaXZlciBmb3IgY3ogcnQ1NjUwCgpWaWplbmRhciBNdWt1bmRhICgzKToKICBBU29DOiBBTUQ6
+IGRpc2FibGluZyBtZW1vcnkgZ2F0aW5nIGluIHN0b25leSBwbGF0Zm9ybQogIEFTb0M6IEFNRDog
+RE1BIGRyaXZlciBjaGFuZ2VzIGZvciBTdG9uZXkgUGxhdGZvcm0KICBBU29DOiBBTUQ6IEF1ZGlv
+IGJ1ZmZlciByZWxhdGVkIGNoYW5nZXMgZm9yIFN0b25leQoKIHNvdW5kL3NvYy9hbWQvS2NvbmZp
+ZyAgICAgICB8ICAgNyArKwogc291bmQvc29jL2FtZC9NYWtlZmlsZSAgICAgIHwgICAyICsKIHNv
+dW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyB8IDI0OSArKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKy0tLS0tLS0tLQogc291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1LmMgIHwgMTk5ICsr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiBzb3VuZC9zb2MvYW1kL2FjcC5oICAg
+ICAgICAgfCAgIDIgKwogNSBmaWxlcyBjaGFuZ2VkLCA0MDggaW5zZXJ0aW9ucygrKSwgNTEgZGVs
+ZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2FtZC9hY3AtcnQ1NjQ1LmMK
+Ci0tIAoyLjUuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0
+cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
