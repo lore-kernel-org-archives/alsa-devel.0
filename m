@@ -1,109 +1,54 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 3/4] ASoC: AMD: Audio buffer related changes for Stoney
-Date: Wed, 18 Oct 2017 12:13:59 -0400
-Message-ID: <1508343240-8242-4-git-send-email-alexander.deucher@amd.com>
-References: <1508343240-8242-1-git-send-email-alexander.deucher@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] rt5651: Enable platforms with int mic
+	on IN2
+Date: Wed, 18 Oct 2017 11:19:11 -0500
+Message-ID: <2511be5d-4885-85a8-7bdb-a67421b81538@linux.intel.com>
+References: <20171018160759.18563-1-carlo@caione.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <1508343240-8242-1-git-send-email-alexander.deucher-5C7GfCeVMHo@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org
-Cc: tiwai-l3A5Bk7waGM@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, akshu.agrawal-5C7GfCeVMHo@public.gmane.org, Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4B63266EE0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 18:19:14 +0200 (CEST)
+In-Reply-To: <20171018160759.18563-1-carlo@caione.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Carlo Caione <carlo@caione.org>, linux@endlessm.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogVmlqZW5kYXIgTXVrdW5kYSA8VmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tPgoKU3RvbmV5
-IHVzZXMgMTZrYiBTUkFNIG1lbW9yeSBmb3IgcGxheWJhY2sgYW5kIDE2S2IKZm9yIGNhcHR1cmUu
-TW9kaWZpZWQgTWF4IGJ1ZmZlciBzaXplIHRvIGhhdmUgdGhlCmNvcnJlY3QgbWFwcGluZyBiZXR3
-ZWVuIFN5c3RlbSBNZW1vcnkgYW5kIFNSQU0uCgpBZGRlZCBzbmRfcGNtX2hhcmR3YXJlIHN0cnVj
-dHVyZXMgZm9yIHBsYXliYWNrCmFuZCBjYXB0dXJlIGZvciBTdG9uZXkuCgpSZXZpZXdlZC1ieTog
-QWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBhbWQuY29tPgpTaWduZWQtb2ZmLWJ5OiBW
-aWplbmRhciBNdWt1bmRhIDxWaWplbmRhci5NdWt1bmRhQGFtZC5jb20+ClNpZ25lZC1vZmYtYnk6
-IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KLS0tCgp2MjogQWRkZWQg
-c3dpdGNoIGNhc2VzIGZvciBhc2ljIHR5cGUuCnYzOiBhZGQgUi1iLCByZXNlbmQKdjQ6IHVzZSBz
-d2l0Y2ggY2FzZSBmb3IgYnVmZmVyIGFsbG9jYXRpb24KICAgIE1vZGlmeSBwZXJpb2Qgc2l6ZSBt
-YWNyb3MgZm9yIFN0b25leQogICAgV2hpdGVzcGFjZSBmaXhlcwoKIHNvdW5kL3NvYy9hbWQvYWNw
-LXBjbS1kbWEuYyB8IDgzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-Ky0tLQogMSBmaWxlIGNoYW5nZWQsIDc4IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpk
-aWZmIC0tZ2l0IGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jIGIvc291bmQvc29jL2FtZC9h
-Y3AtcGNtLWRtYS5jCmluZGV4IGYxNmUwYjguLjczYjU4ZWUgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Nv
-Yy9hbWQvYWNwLXBjbS1kbWEuYworKysgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKQEAg
-LTM1LDYgKzM1LDExIEBACiAjZGVmaW5lIE1BWF9CVUZGRVIgKFBMQVlCQUNLX01BWF9QRVJJT0Rf
-U0laRSAqIFBMQVlCQUNLX01BWF9OVU1fUEVSSU9EUykKICNkZWZpbmUgTUlOX0JVRkZFUiBNQVhf
-QlVGRkVSCiAKKyNkZWZpbmUgU1RfUExBWUJBQ0tfTUFYX1BFUklPRF9TSVpFIDgxOTIKKyNkZWZp
-bmUgU1RfQ0FQVFVSRV9NQVhfUEVSSU9EX1NJWkUgIFNUX1BMQVlCQUNLX01BWF9QRVJJT0RfU0la
-RQorI2RlZmluZSBTVF9NQVhfQlVGRkVSIChTVF9QTEFZQkFDS19NQVhfUEVSSU9EX1NJWkUgKiBQ
-TEFZQkFDS19NQVhfTlVNX1BFUklPRFMpCisjZGVmaW5lIFNUX01JTl9CVUZGRVIgU1RfTUFYX0JV
-RkZFUgorCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY21faGFyZHdhcmUgYWNwX3BjbV9oYXJk
-d2FyZV9wbGF5YmFjayA9IHsKIAkuaW5mbyA9IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwK
-IAkJU05EUlZfUENNX0lORk9fQkxPQ0tfVFJBTlNGRVIgfCBTTkRSVl9QQ01fSU5GT19NTUFQIHwK
-QEAgLTczLDYgKzc4LDQ0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjbV9oYXJkd2FyZSBh
-Y3BfcGNtX2hhcmR3YXJlX2NhcHR1cmUgPSB7CiAJLnBlcmlvZHNfbWF4ID0gQ0FQVFVSRV9NQVhf
-TlVNX1BFUklPRFMsCiB9OwogCitzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY21faGFyZHdhcmUg
-YWNwX3N0X3BjbV9oYXJkd2FyZV9wbGF5YmFjayA9IHsKKwkuaW5mbyA9IFNORFJWX1BDTV9JTkZP
-X0lOVEVSTEVBVkVEIHwKKwkJU05EUlZfUENNX0lORk9fQkxPQ0tfVFJBTlNGRVIgfCBTTkRSVl9Q
-Q01fSU5GT19NTUFQIHwKKwkJU05EUlZfUENNX0lORk9fTU1BUF9WQUxJRCB8IFNORFJWX1BDTV9J
-TkZPX0JBVENIIHwKKwkJU05EUlZfUENNX0lORk9fUEFVU0UgfCBTTkRSVl9QQ01fSU5GT19SRVNV
-TUUsCisJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1MxNl9MRSB8CisJCVNORFJWX1BDTV9G
-TVRCSVRfUzI0X0xFIHwgU05EUlZfUENNX0ZNVEJJVF9TMzJfTEUsCisJLmNoYW5uZWxzX21pbiA9
-IDEsCisJLmNoYW5uZWxzX21heCA9IDgsCisJLnJhdGVzID0gU05EUlZfUENNX1JBVEVfODAwMF85
-NjAwMCwKKwkucmF0ZV9taW4gPSA4MDAwLAorCS5yYXRlX21heCA9IDk2MDAwLAorCS5idWZmZXJf
-Ynl0ZXNfbWF4ID0gU1RfTUFYX0JVRkZFUiwKKwkucGVyaW9kX2J5dGVzX21pbiA9IFBMQVlCQUNL
-X01JTl9QRVJJT0RfU0laRSwKKwkucGVyaW9kX2J5dGVzX21heCA9IFNUX1BMQVlCQUNLX01BWF9Q
-RVJJT0RfU0laRSwKKwkucGVyaW9kc19taW4gPSBQTEFZQkFDS19NSU5fTlVNX1BFUklPRFMsCisJ
-LnBlcmlvZHNfbWF4ID0gUExBWUJBQ0tfTUFYX05VTV9QRVJJT0RTLAorfTsKKworc3RhdGljIGNv
-bnN0IHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGFjcF9zdF9wY21faGFyZHdhcmVfY2FwdHVyZSA9
-IHsKKwkuaW5mbyA9IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwKKwkJU05EUlZfUENNX0lO
-Rk9fQkxPQ0tfVFJBTlNGRVIgfCBTTkRSVl9QQ01fSU5GT19NTUFQIHwKKwkJU05EUlZfUENNX0lO
-Rk9fTU1BUF9WQUxJRCB8IFNORFJWX1BDTV9JTkZPX0JBVENIIHwKKwkJU05EUlZfUENNX0lORk9f
-UEFVU0UgfCBTTkRSVl9QQ01fSU5GT19SRVNVTUUsCisJLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1U
-QklUX1MxNl9MRSB8CisJCVNORFJWX1BDTV9GTVRCSVRfUzI0X0xFIHwgU05EUlZfUENNX0ZNVEJJ
-VF9TMzJfTEUsCisJLmNoYW5uZWxzX21pbiA9IDEsCisJLmNoYW5uZWxzX21heCA9IDIsCisJLnJh
-dGVzID0gU05EUlZfUENNX1JBVEVfODAwMF80ODAwMCwKKwkucmF0ZV9taW4gPSA4MDAwLAorCS5y
-YXRlX21heCA9IDQ4MDAwLAorCS5idWZmZXJfYnl0ZXNfbWF4ID0gU1RfTUFYX0JVRkZFUiwKKwku
-cGVyaW9kX2J5dGVzX21pbiA9IENBUFRVUkVfTUlOX1BFUklPRF9TSVpFLAorCS5wZXJpb2RfYnl0
-ZXNfbWF4ID0gU1RfQ0FQVFVSRV9NQVhfUEVSSU9EX1NJWkUsCisJLnBlcmlvZHNfbWluID0gQ0FQ
-VFVSRV9NSU5fTlVNX1BFUklPRFMsCisJLnBlcmlvZHNfbWF4ID0gQ0FQVFVSRV9NQVhfTlVNX1BF
-UklPRFMsCit9OworCiBzdGF0aWMgdTMyIGFjcF9yZWdfcmVhZCh2b2lkIF9faW9tZW0gKmFjcF9t
-bWlvLCB1MzIgcmVnKQogewogCXJldHVybiByZWFkbChhY3BfbW1pbyArIChyZWcgKiA0KSk7CkBA
-IC02NjQsMTAgKzcwNywyMyBAQCBzdGF0aWMgaW50IGFjcF9kbWFfb3BlbihzdHJ1Y3Qgc25kX3Bj
-bV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAlpZiAoYWRhdGEgPT0gTlVMTCkKIAkJcmV0dXJuIC1F
-Tk9NRU07CiAKLQlpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZ
-QkFDSykKLQkJcnVudGltZS0+aHcgPSBhY3BfcGNtX2hhcmR3YXJlX3BsYXliYWNrOwotCWVsc2UK
-LQkJcnVudGltZS0+aHcgPSBhY3BfcGNtX2hhcmR3YXJlX2NhcHR1cmU7CisJaWYgKHN1YnN0cmVh
-bS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKKwkJc3dpdGNoIChpbnRy
-X2RhdGEtPmFzaWNfdHlwZSkgeworCQljYXNlIENISVBfU1RPTkVZOgorCQkJcnVudGltZS0+aHcg
-PSBhY3Bfc3RfcGNtX2hhcmR3YXJlX3BsYXliYWNrOworCQkJYnJlYWs7CisJCWRlZmF1bHQ6CisJ
-CQlydW50aW1lLT5odyA9IGFjcF9wY21faGFyZHdhcmVfcGxheWJhY2s7CisJCX0KKwl9IGVsc2Ug
-eworCQlzd2l0Y2ggKGludHJfZGF0YS0+YXNpY190eXBlKSB7CisJCWNhc2UgQ0hJUF9TVE9ORVk6
-CisJCQlydW50aW1lLT5odyA9IGFjcF9zdF9wY21faGFyZHdhcmVfY2FwdHVyZTsKKwkJCWJyZWFr
-OworCQlkZWZhdWx0OgorCQkJcnVudGltZS0+aHcgPSBhY3BfcGNtX2hhcmR3YXJlX2NhcHR1cmU7
-CisJCX0KKwl9CiAKIAlyZXQgPSBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfaW50ZWdlcihydW50aW1l
-LAogCQkJCQkgICAgU05EUlZfUENNX0hXX1BBUkFNX1BFUklPRFMpOwpAQCAtOTA1LDEwICs5NjEs
-MjcgQEAgc3RhdGljIGludCBhY3BfZG1hX3RyaWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFt
-ICpzdWJzdHJlYW0sIGludCBjbWQpCiAKIHN0YXRpYyBpbnQgYWNwX2RtYV9uZXcoc3RydWN0IHNu
-ZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCkKIHsKLQlyZXR1cm4gc25kX3BjbV9saWJfcHJlYWxsb2Nh
-dGVfcGFnZXNfZm9yX2FsbChydGQtPnBjbSwKKwlpbnQgcmV0OworCXN0cnVjdCBhdWRpb19kcnZf
-ZGF0YSAqYWRhdGEgPSBkZXZfZ2V0X2RydmRhdGEocnRkLT5wbGF0Zm9ybS0+ZGV2KTsKKworCXN3
-aXRjaCAoYWRhdGEtPmFzaWNfdHlwZSkgeworCWNhc2UgQ0hJUF9TVE9ORVk6CisJCXJldCA9IHNu
-ZF9wY21fbGliX3ByZWFsbG9jYXRlX3BhZ2VzX2Zvcl9hbGwocnRkLT5wY20sCisJCQkJCQkJU05E
-UlZfRE1BX1RZUEVfREVWLAorCQkJCQkJCU5VTEwsIFNUX01JTl9CVUZGRVIsCisJCQkJCQkJU1Rf
-TUFYX0JVRkZFUik7CisJCWJyZWFrOworCWRlZmF1bHQ6CisJCXJldCA9IHNuZF9wY21fbGliX3By
-ZWFsbG9jYXRlX3BhZ2VzX2Zvcl9hbGwocnRkLT5wY20sCiAJCQkJCQkJU05EUlZfRE1BX1RZUEVf
-REVWLAogCQkJCQkJCU5VTEwsIE1JTl9CVUZGRVIsCiAJCQkJCQkJTUFYX0JVRkZFUik7CisJCWJy
-ZWFrOworCX0KKwlpZiAocmV0IDwgMCkKKwkJZGV2X2VycihydGQtPnBsYXRmb3JtLT5kZXYsCisJ
-CQkJImJ1ZmZlciBwcmVhbGxvY2F0aW9uIGZhaWxlciBlcnJvcjolZFxuIiwgcmV0KTsKKwlyZXR1
-cm4gcmV0OwogfQogCiBzdGF0aWMgaW50IGFjcF9kbWFfY2xvc2Uoc3RydWN0IHNuZF9wY21fc3Vi
-c3RyZWFtICpzdWJzdHJlYW0pCi0tIAoyLjUuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5m
-cmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbWQtZ2Z4Cg==
+On 10/18/17 11:07 AM, Carlo Caione wrote:
+> From: Carlo Caione <carlo@endlessm.com>
+> 
+> While working on enabling a cherry-trail laptop shipping the rt5651
+> codec I realized that the machine driver needed some fixup.
+> 
+> In particular the laptop I'm working on (KIANO SlimNote 14.2) has the
+> internal mic connected to the IN2 port.
+> 
+> All the laptop-specific work with the related quirks will follow.
+
+Nice, thanks for the work. You'll have to rebase and resubmit to fix 
+conflicts. I provided changes to simplify DMIC quirks (there is a single 
+interface, not 2 on this chip) that aren't reflected in your patches and 
+the addition of MCLK support. Mark's for-next branch already took the 
+changes this morning.
+Also let me know if you want the UCM files to be updated.
+
+> 
+> Carlo Caione (2):
+>    ASoC: intel: byt: Enable quirk logic for custom maps
+>    ASoC: intel: byt: Introduce new custom IN2 map
+> 
+>   sound/soc/intel/boards/bytcr_rt5651.c | 21 ++++++++++++++++++++-
+>   1 file changed, 20 insertions(+), 1 deletion(-)
+> 
