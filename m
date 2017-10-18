@@ -1,55 +1,54 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [pull v2] amdgpu pre-reqs for stoney ACP audio support
-Date: Wed, 18 Oct 2017 11:53:46 -0400
-Message-ID: <1508342026-8104-1-git-send-email-alexander.deucher@amd.com>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: [PATCH v2] ALSA: hda: Abort capability probe on
+	invalid capability
+Date: Thu, 19 Oct 2017 05:15:25 +0530
+Message-ID: <1508370325-3118-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, airlied@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: Alex Deucher <alexander.deucher@amd.com>, Vijendar.Mukunda@amd.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CB75266EE0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 17:59:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, vinod.koul@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgRGF2ZSwgTWFyaywKClRoaXMgYnJhbmNoIGFnYWluc3QgTGludXMnIDQuMTQtcmM0IGNvbnRh
-aW5zIHRoZSAzIHByZS1yZXF1aXNpdGUgcGF0Y2hlcwpmb3IgU3RvbmV5IEFDUCBhdWRpby4gIE1h
-cmsgbmVlZHMgdGhlc2UgcGF0Y2hlcyB0byBhcHBseSB0aGUgcmVzdCBvZiB0aGUKU3RvbmV5IEFD
-UCBwYXRjaCBzZXQgb24gdGhlIGF1ZGlvIHNpZGUuICBJJ2xsIHJlc2VuZCB0aGUgc3RvbnkgYXVk
-aW8gcGF0Y2hlcwpzaG9ydGx5LCBidXQgdGhlcmUgYXJlIG5vIGRpZmZlcmVuY2VzIGZyb20gdGhl
-IGxhc3QgdmVyc2lvbiBJIHNlbmQgb3V0LiAgTm90ZQp0aGF0IGRlcGVuZGluZyBvbiB3aGVuIHRo
-ZXNlIGNoYW5nZXMgZW5kIHVwIGluIGRybS1uZXh0LCB0aGVyZSBtYXkgYmUgYSBjb25mbGljdApk
-dWUgdG8gZjY3NGJkMjgxNDYwNDUgKGRybS9hbWRncHUgTW92aW5nIGFtZGdwdSBhc2ljIHR5cGVz
-IHRvIGEgc2VwYXJhdGUgZmlsZSkuCklmIHlvdSBlbmQgdXAgd2l0aCBhIGNvbmZsaWN0LCBwbGVh
-c2UgdGFrZSB0aGUgY2hhbmdlcyBpbiBmNjc0YmQyODE0NjA0NSwKb3RoZXJ3aXNlLCB5b3UnbGwg
-ZW5kIHVwIHdpdGggdGhlIGVudW0gZGVmaW5lZCB0d2ljZS4KClBsZWFzZSBwdWxsLgoKVGhhbmtz
-IQoKVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA4YTU3NzZhNWY0OTgxMmQyOWZl
-NGIyZDBhMmQ3MTY3NWMzZmFjZjNmOgoKICBMaW51eCA0LjE0LXJjNCAoMjAxNy0xMC0wOCAyMDo1
-MzoyOSAtMDcwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0OgoKICBn
-aXQ6Ly9wZW9wbGUuZnJlZWRlc2t0b3Aub3JnL35hZ2Q1Zi9saW51eCBsaW51cy00LjE0LXJjNC1h
-Y3AtcHJlcmVxCgpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8gZjY3NGJkMjgxNDYwNDUx
-ZTg3ODRmM2JjOTE3YTY1MGU4OTM3YThlZDoKCiAgZHJtL2FtZGdwdSBNb3ZpbmcgYW1kZ3B1IGFz
-aWMgdHlwZXMgdG8gYSBzZXBhcmF0ZSBmaWxlICgyMDE3LTEwLTE4IDEwOjU2OjI3IC0wNDAwKQoK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpBa3NodSBBZ3Jhd2FsICgxKToKICAgICAgZHJtL2FtZGdwdSBNb3ZpbmcgYW1kZ3B1
-IGFzaWMgdHlwZXMgdG8gYSBzZXBhcmF0ZSBmaWxlCgpWaWplbmRhciBNdWt1bmRhICgyKToKICAg
-ICAgZHJtL2FtZC9hbWRncHU6IEFkZGVkIGFzaWNfdHlwZSBhcyBBQ1AgRE1BIGRyaXZlciBwbGF0
-Zm9ybSBkYXRhCiAgICAgIEFTb0M6IEFNRDogQWRkZWQgYXNpY190eXBlIGFzIEFDUCBETUEgZHJp
-dmVyIHBsYXRmb3JtIGRhdGEKCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNw
-LmMgIHwgIDIgKysKIGRyaXZlcnMvZ3B1L2RybS9hbWQvaW5jbHVkZS9hbWRfc2hhcmVkLmggfCAy
-OSArKy0tLS0tLS0tLS0tLS0tLS0KIGluY2x1ZGUvZHJtL2FtZF9hc2ljX3R5cGUuaCAgICAgICAg
-ICAgICAgfCA1MiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogc291bmQvc29jL2Ft
-ZC9hY3AtcGNtLWRtYS5jICAgICAgICAgICAgICB8ICA4ICsrLS0tCiBzb3VuZC9zb2MvYW1kL2Fj
-cC5oICAgICAgICAgICAgICAgICAgICAgIHwgIDcgKysrKysKIDUgZmlsZXMgY2hhbmdlZCwgNjUg
-aW5zZXJ0aW9ucygrKSwgMzMgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVk
-ZS9kcm0vYW1kX2FzaWNfdHlwZS5oCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2RyaS1kZXZlbAo=
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+
+Due to bugs in BIOS it's possible that the HDA capability link
+list is not constructed properly. This may lead to driver going
+into unknown state. So whenever driver discovers unknown HDA
+capability, log it as error and stop traversing the link list
+further.
+
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+---
+ sound/hda/hdac_controller.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 978dc18..8f7d0d9 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -314,7 +314,8 @@ int snd_hdac_bus_parse_capabilities(struct hdac_bus *bus)
+ 			break;
+ 
+ 		default:
+-			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
++			dev_err(bus->dev, "Unknown capability %d\n", cur_cap);
++			cur_cap = 0;
+ 			break;
+ 		}
+ 
+-- 
+2.7.4
