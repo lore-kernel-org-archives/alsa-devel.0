@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: DMA driver changes for Stoney
-	Platform" to the asoc tree
-Date: Wed, 18 Oct 2017 01:09:02 +0100
-Message-ID: <E1e4buw-00040O-5Y@debutante>
-References: <1501270294-31153-7-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: AMD: disabling memory gating in stoney
+	platform" to the asoc tree
+Date: Wed, 18 Oct 2017 01:09:05 +0100
+Message-ID: <E1e4buz-00041q-5b@debutante>
+References: <1501270294-31153-6-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 17D692673C1
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 02:11:52 +0200 (CEST)
-In-Reply-To: <1501270294-31153-7-git-send-email-alexander.deucher@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DC302673C2
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 02:11:54 +0200 (CEST)
+In-Reply-To: <1501270294-31153-6-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: DMA driver changes for Stoney Platform
+   ASoC: AMD: disabling memory gating in stoney platform
 
 has been applied to the asoc tree at
 
@@ -52,19 +52,15 @@ to this mail.
 Thanks,
 Mark
 
->From e89cff5ed047d8108d1f0b093e5313647aecb2db Mon Sep 17 00:00:00 2001
+>From 4fe4d93c8eb8a823f295f80ff28c7d0bd2f4458e Mon Sep 17 00:00:00 2001
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Date: Wed, 13 Sep 2017 13:57:53 -0400
-Subject: [PATCH] ASoC: AMD: DMA driver changes for Stoney Platform
+Date: Wed, 13 Sep 2017 13:57:52 -0400
+Subject: [PATCH] ASoC: AMD: disabling memory gating in stoney platform
 
-Added DMA driver changes for Stoney platform.
-Below are the key differences between Stoney and CZ
-
-In Stoney, Memory Gating is disabled.SRAM Banks won't
-be turned off.No Of SRAM Banks reduced to 6.
-DAGB Garlic Interface used and 16 bit resolution is supported.
-SRAM bank 1 & SRAM bank 2 will be used for playback scenario.
-SRAM Bank 3 & SRAM Bank 4 will be used for Capture scenario.
+For Stoney platform, Memory gating is disabled.i.e SRAM Banks
+won't be turned off. By Default, SRAM Bank state set to ON.
+Added condition checks to skip SRAM Bank state set logic for
+Stoney platform.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
@@ -72,203 +68,166 @@ Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 87 +++++++++++++++++++++++++++++++++------------
- sound/soc/amd/acp.h         |  2 ++
- 2 files changed, 67 insertions(+), 22 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 79 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 55 insertions(+), 24 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index f00b6b92e076..f16e0b8e2ed7 100644
+index dcbf9973884d..f00b6b92e076 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -137,8 +137,8 @@ static void config_dma_descriptor_in_sram(void __iomem *acp_mmio,
-  * system memory <-> ACP SRAM
-  */
- static void set_acp_sysmem_dma_descriptors(void __iomem *acp_mmio,
--					   u32 size, int direction,
--					   u32 pte_offset)
-+					u32 size, int direction,
-+					u32 pte_offset, u32 asic_type)
- {
- 	u16 i;
- 	u16 dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
-@@ -152,20 +152,42 @@ static void set_acp_sysmem_dma_descriptors(void __iomem *acp_mmio,
- 					(size / 2) - (i * (size/2));
- 			dmadscr[i].src = ACP_INTERNAL_APERTURE_WINDOW_0_ADDRESS
- 				+ (pte_offset * SZ_4K) + (i * (size/2));
--			dmadscr[i].xfer_val |=
--			(ACP_DMA_ATTRIBUTES_DAGB_ONION_TO_SHAREDMEM << 16) |
--			(size / 2);
-+			switch (asic_type) {
-+			case CHIP_STONEY:
-+				dmadscr[i].xfer_val |=
-+				(ACP_DMA_ATTRIBUTES_DAGB_GARLIC_TO_SHAREDMEM  << 16) |
-+				(size / 2);
-+				break;
-+			default:
-+				dmadscr[i].xfer_val |=
-+				(ACP_DMA_ATTRIBUTES_DAGB_ONION_TO_SHAREDMEM  << 16) |
-+				(size / 2);
-+			}
- 		} else {
- 			dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14 + i;
--			dmadscr[i].src = ACP_SHARED_RAM_BANK_5_ADDRESS +
--					(i * (size/2));
--			dmadscr[i].dest = ACP_INTERNAL_APERTURE_WINDOW_0_ADDRESS
--						+ (pte_offset * SZ_4K) +
--						(i * (size/2));
--			dmadscr[i].xfer_val |=
--			BIT(22) |
--			(ACP_DMA_ATTRIBUTES_SHAREDMEM_TO_DAGB_ONION << 16) |
--			(size / 2);
-+			switch (asic_type) {
-+			case CHIP_STONEY:
-+				dmadscr[i].src = ACP_SHARED_RAM_BANK_3_ADDRESS +
-+				(i * (size/2));
-+				dmadscr[i].dest =
-+				ACP_INTERNAL_APERTURE_WINDOW_0_ADDRESS +
-+				(pte_offset * SZ_4K) + (i * (size/2));
-+				dmadscr[i].xfer_val |=
-+				BIT(22) |
-+				(ACP_DMA_ATTRIBUTES_SHARED_MEM_TO_DAGB_GARLIC << 16) |
-+				(size / 2);
-+				break;
-+			default:
-+				dmadscr[i].src = ACP_SHARED_RAM_BANK_5_ADDRESS +
-+				(i * (size/2));
-+				dmadscr[i].dest =
-+				ACP_INTERNAL_APERTURE_WINDOW_0_ADDRESS +
-+				(pte_offset * SZ_4K) + (i * (size/2));
-+				dmadscr[i].xfer_val |=
-+				BIT(22) |
-+				(ACP_DMA_ATTRIBUTES_SHAREDMEM_TO_DAGB_ONION << 16) |
-+				(size / 2);
-+			}
- 		}
- 		config_dma_descriptor_in_sram(acp_mmio, dma_dscr_idx,
- 						&dmadscr[i]);
-@@ -186,7 +208,8 @@ static void set_acp_sysmem_dma_descriptors(void __iomem *acp_mmio,
-  * ACP SRAM <-> I2S
-  */
- static void set_acp_to_i2s_dma_descriptors(void __iomem *acp_mmio,
--					   u32 size, int direction)
-+					u32 size, int direction,
-+					u32 asic_type)
- {
+@@ -20,7 +20,7 @@
+ #include <linux/pm_runtime.h>
  
- 	u16 i;
-@@ -207,8 +230,17 @@ static void set_acp_to_i2s_dma_descriptors(void __iomem *acp_mmio,
- 			dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15 + i;
- 			/* dmadscr[i].src is unused by hardware. */
- 			dmadscr[i].src = 0;
--			dmadscr[i].dest = ACP_SHARED_RAM_BANK_5_ADDRESS +
-+			switch (asic_type) {
-+			case CHIP_STONEY:
-+				dmadscr[i].dest =
-+					 ACP_SHARED_RAM_BANK_3_ADDRESS +
- 					(i * (size / 2));
-+				break;
-+			default:
-+				dmadscr[i].dest =
-+					 ACP_SHARED_RAM_BANK_5_ADDRESS +
-+					(i * (size / 2));
-+			}
- 			dmadscr[i].xfer_val |= BIT(22) |
- 					(FROM_ACP_I2S_1 << 16) | (size / 2);
- 		}
-@@ -264,7 +296,8 @@ static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
+ #include <sound/soc.h>
+-
++#include <drm/amd_asic_type.h>
+ #include "acp.h"
+ 
+ #define PLAYBACK_MIN_NUM_PERIODS    2
+@@ -419,7 +419,7 @@ static void acp_set_sram_bank_state(void __iomem *acp_mmio, u16 bank,
  }
  
- static void config_acp_dma(void __iomem *acp_mmio,
--			   struct audio_substream_data *audio_config)
-+			struct audio_substream_data *audio_config,
-+			u32 asic_type)
+ /* Initialize and bring ACP hardware to default state. */
+-static int acp_init(void __iomem *acp_mmio)
++static int acp_init(void __iomem *acp_mmio, u32 asic_type)
  {
- 	u32 pte_offset;
- 
-@@ -278,11 +311,11 @@ static void config_acp_dma(void __iomem *acp_mmio,
- 
- 	/* Configure System memory <-> ACP SRAM DMA descriptors */
- 	set_acp_sysmem_dma_descriptors(acp_mmio, audio_config->size,
--				       audio_config->direction, pte_offset);
-+				audio_config->direction, pte_offset, asic_type);
- 
- 	/* Configure ACP SRAM <-> I2S DMA descriptors */
- 	set_acp_to_i2s_dma_descriptors(acp_mmio, audio_config->size,
--					audio_config->direction);
-+				audio_config->direction, asic_type);
- }
- 
- /* Start a given DMA channel transfer */
-@@ -502,6 +535,12 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
- 			acp_set_sram_bank_state(acp_mmio, bank, false);
- 	}
- 
-+	/* Stoney supports 16bit resolution */
-+	if (asic_type == CHIP_STONEY) {
-+		val = acp_reg_read(acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
-+		val |= 0x03;
-+		acp_reg_write(val, acp_mmio, mmACP_I2S_16BIT_RESOLUTION_EN);
+ 	u16 bank;
+ 	u32 val, count, sram_pte_offset;
+@@ -493,9 +493,14 @@ static int acp_init(void __iomem *acp_mmio)
+        /* When ACP_TILE_P1 is turned on, all SRAM banks get turned on.
+ 	* Now, turn off all of them. This can't be done in 'poweron' of
+ 	* ACP pm domain, as this requires ACP to be initialized.
++	* For Stoney, Memory gating is disabled,i.e SRAM Banks
++	* won't be turned off. The default state for SRAM banks is ON.
++	* Setting SRAM bank state code skipped for STONEY platform.
+ 	*/
+-	for (bank = 1; bank < 48; bank++)
+-		acp_set_sram_bank_state(acp_mmio, bank, false);
++	if (asic_type != CHIP_STONEY) {
++		for (bank = 1; bank < 48; bank++)
++			acp_set_sram_bank_state(acp_mmio, bank, false);
 +	}
+ 
  	return 0;
  }
+@@ -646,14 +651,22 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
  
-@@ -680,6 +719,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 	struct page *pg;
- 	struct snd_pcm_runtime *runtime;
- 	struct audio_substream_data *rtd;
-+	struct snd_soc_pcm_runtime *prtd = substream->private_data;
-+	struct audio_drv_data *adata = dev_get_drvdata(prtd->platform->dev);
- 
- 	runtime = substream->runtime;
- 	rtd = runtime->private_data;
-@@ -707,7 +748,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 		rtd->num_of_pages = PAGE_ALIGN(size) >> PAGE_SHIFT;
- 		rtd->direction = substream->stream;
- 
--		config_acp_dma(rtd->acp_mmio, rtd);
-+		config_acp_dma(rtd->acp_mmio, rtd, adata->asic_type);
- 		status = 0;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		intr_data->play_stream = substream;
+-		for (bank = 1; bank <= 4; bank++)
+-			acp_set_sram_bank_state(intr_data->acp_mmio, bank,
+-						true);
++		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
++		 * won't be turned off. The default state for SRAM banks is ON.
++		 * Setting SRAM bank state code skipped for STONEY platform.
++		 */
++		if (intr_data->asic_type != CHIP_STONEY) {
++			for (bank = 1; bank <= 4; bank++)
++				acp_set_sram_bank_state(intr_data->acp_mmio,
++							bank, true);
++		}
  	} else {
- 		status = -ENOMEM;
-@@ -1011,7 +1052,8 @@ static int acp_pcm_resume(struct device *dev)
+ 		intr_data->capture_stream = substream;
+-		for (bank = 5; bank <= 8; bank++)
+-			acp_set_sram_bank_state(intr_data->acp_mmio, bank,
+-						true);
++		if (intr_data->asic_type != CHIP_STONEY) {
++			for (bank = 5; bank <= 8; bank++)
++				acp_set_sram_bank_state(intr_data->acp_mmio,
++							bank, true);
++		}
+ 	}
+ 
+ 	return 0;
+@@ -869,14 +882,23 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		adata->play_stream = NULL;
+-		for (bank = 1; bank <= 4; bank++)
+-			acp_set_sram_bank_state(adata->acp_mmio, bank,
+-						false);
+-	} else {
++		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
++		 * won't be turned off. The default state for SRAM banks is ON.
++		 * Setting SRAM bank state code skipped for STONEY platform.
++		 * added condition checks for Carrizo platform only
++		 */
++		if (adata->asic_type != CHIP_STONEY) {
++			for (bank = 1; bank <= 4; bank++)
++				acp_set_sram_bank_state(adata->acp_mmio, bank,
++				false);
++		}
++	} else  {
+ 		adata->capture_stream = NULL;
+-		for (bank = 5; bank <= 8; bank++)
+-			acp_set_sram_bank_state(adata->acp_mmio, bank,
+-						false);
++		if (adata->asic_type != CHIP_STONEY) {
++			for (bank = 5; bank <= 8; bank++)
++				acp_set_sram_bank_state(adata->acp_mmio, bank,
++						     false);
++		}
+ 	}
+ 
+ 	/* Disable ACP irq, when the current stream is being closed and
+@@ -945,7 +967,7 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, audio_drv_data);
+ 
+ 	/* Initialize the ACP */
+-	acp_init(audio_drv_data->acp_mmio);
++	acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
+ 
+ 	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
+ 	if (status != 0) {
+@@ -976,19 +998,27 @@ static int acp_pcm_resume(struct device *dev)
+ 	u16 bank;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_init(adata->acp_mmio);
++	acp_init(adata->acp_mmio, adata->asic_type);
+ 
+ 	if (adata->play_stream && adata->play_stream->runtime) {
+-		for (bank = 1; bank <= 4; bank++)
+-			acp_set_sram_bank_state(adata->acp_mmio, bank,
++		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
++		 * won't be turned off. The default state for SRAM banks is ON.
++		 * Setting SRAM bank state code skipped for STONEY platform.
++		 */
++		if (adata->asic_type != CHIP_STONEY) {
++			for (bank = 1; bank <= 4; bank++)
++				acp_set_sram_bank_state(adata->acp_mmio, bank,
  						true);
- 		}
++		}
  		config_acp_dma(adata->acp_mmio,
--				adata->play_stream->runtime->private_data);
-+			adata->play_stream->runtime->private_data,
-+			adata->asic_type);
+ 				adata->play_stream->runtime->private_data);
  	}
  	if (adata->capture_stream && adata->capture_stream->runtime) {
- 		if (adata->asic_type != CHIP_STONEY) {
-@@ -1020,7 +1062,8 @@ static int acp_pcm_resume(struct device *dev)
+-		for (bank = 5; bank <= 8; bank++)
+-			acp_set_sram_bank_state(adata->acp_mmio, bank,
++		if (adata->asic_type != CHIP_STONEY) {
++			for (bank = 5; bank <= 8; bank++)
++				acp_set_sram_bank_state(adata->acp_mmio, bank,
  						true);
- 		}
++		}
  		config_acp_dma(adata->acp_mmio,
--				adata->capture_stream->runtime->private_data);
-+			adata->capture_stream->runtime->private_data,
-+			adata->asic_type);
+ 				adata->capture_stream->runtime->private_data);
  	}
+@@ -1009,7 +1039,7 @@ static int acp_pcm_runtime_resume(struct device *dev)
+ {
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_init(adata->acp_mmio);
++	acp_init(adata->acp_mmio, adata->asic_type);
  	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
  	return 0;
-diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-index 28cf9140f49c..a330a99bfff8 100644
---- a/sound/soc/amd/acp.h
-+++ b/sound/soc/amd/acp.h
-@@ -19,6 +19,7 @@
+ }
+@@ -1031,6 +1061,7 @@ static struct platform_driver acp_dma_driver = {
  
- /* Capture SRAM address (as a source in dma descriptor) */
- #define ACP_SHARED_RAM_BANK_5_ADDRESS		0x400A000
-+#define ACP_SHARED_RAM_BANK_3_ADDRESS		0x4006000
+ module_platform_driver(acp_dma_driver);
  
- #define ACP_DMA_RESET_TIME			10000
- #define ACP_CLOCK_EN_TIME_OUT_VALUE		0x000000FF
-@@ -67,6 +68,7 @@
- #define CAPTURE_START_DMA_DESCR_CH15 6
- #define CAPTURE_END_DMA_DESCR_CH15 7
- 
-+#define mmACP_I2S_16BIT_RESOLUTION_EN       0x5209
- enum acp_dma_priority_level {
- 	/* 0x0 Specifies the DMA channel is given normal priority */
- 	ACP_DMA_PRIORITY_LEVEL_NORMAL = 0x0,
++MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+ MODULE_AUTHOR("Maruthi.Bayyavarapu@amd.com");
+ MODULE_DESCRIPTION("AMD ACP PCM Driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.14.1
