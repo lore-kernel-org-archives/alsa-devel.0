@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_rt5645: cosmetic fixes"
-	to the asoc tree
-Date: Wed, 18 Oct 2017 12:31:21 +0100
-Message-ID: <E1e4mZF-0003yH-0n@debutante>
-References: <20171005185243.4174-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: cosmetic fixes" to
+	the asoc tree
+Date: Wed, 18 Oct 2017 12:31:24 +0100
+Message-ID: <E1e4mZI-0003zC-1r@debutante>
+References: <20171005185243.4174-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DAFAF26746C
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:31:23 +0200 (CEST)
-In-Reply-To: <20171005185243.4174-5-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 672D3267411
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:31:27 +0200 (CEST)
+In-Reply-To: <20171005185243.4174-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_rt5645: cosmetic fixes
+   ASoC: Intel: bytcr_rt5640: cosmetic fixes
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6cdf01a5addfd3a2b2918fccc76535f20eb2cda9 Mon Sep 17 00:00:00 2001
+>From 17b5273d847984fe8a7c3177554640fb7eac23da Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 12 Oct 2017 18:37:59 -0500
-Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: cosmetic fixes
+Date: Thu, 12 Oct 2017 18:37:58 -0500
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: cosmetic fixes
 
 Reorder variable names, change MCLK test, change quirks
 No functional change
@@ -67,21 +67,19 @@ Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 73 ++++++++++++++++-----------------
- 1 file changed, 35 insertions(+), 38 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 73 +++++++++++++++++------------------
+ 1 file changed, 36 insertions(+), 37 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index d553e2b67c92..6ccb599c1082 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -21,13 +21,13 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/acpi.h>
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 7cee09d08ad7..ffb3ca971df4 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -22,12 +22,12 @@
+ #include <linux/moduleparam.h>
  #include <linux/platform_device.h>
-+#include <linux/acpi.h>
+ #include <linux/acpi.h>
 +#include <linux/clk.h>
+ #include <linux/device.h>
  #include <linux/dmi.h>
  #include <linux/slab.h>
  #include <asm/cpu_device_id.h>
@@ -90,132 +88,190 @@ index d553e2b67c92..6ccb599c1082 100644
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
  #include <sound/soc.h>
-@@ -53,7 +53,7 @@ struct cht_mc_private {
- 	struct clk *mclk;
+@@ -44,13 +44,13 @@ enum {
+ 	BYT_RT5640_IN3_MAP,
  };
  
--#define CHT_RT5645_MAP(quirk)	((quirk) & 0xff)
-+#define CHT_RT5645_MAP(quirk)	((quirk) & GENMASK(7, 0))
- #define CHT_RT5645_SSP2_AIF2     BIT(16) /* default is using AIF1  */
- #define CHT_RT5645_SSP0_AIF1     BIT(17)
- #define CHT_RT5645_SSP0_AIF2     BIT(18)
-@@ -101,13 +101,11 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+-#define BYT_RT5640_MAP(quirk)	((quirk) & 0xff)
++#define BYT_RT5640_MAP(quirk)	((quirk) &  GENMASK(7, 0))
+ #define BYT_RT5640_DMIC_EN	BIT(16)
+ #define BYT_RT5640_MONO_SPEAKER BIT(17)
+ #define BYT_RT5640_DIFF_MIC     BIT(18) /* defaut is single-ended */
+-#define BYT_RT5640_SSP2_AIF2     BIT(19) /* default is using AIF1  */
+-#define BYT_RT5640_SSP0_AIF1     BIT(20)
+-#define BYT_RT5640_SSP0_AIF2     BIT(21)
++#define BYT_RT5640_SSP2_AIF2    BIT(19) /* default is using AIF1  */
++#define BYT_RT5640_SSP0_AIF1    BIT(20)
++#define BYT_RT5640_SSP0_AIF2    BIT(21)
+ #define BYT_RT5640_MCLK_EN	BIT(22)
+ #define BYT_RT5640_MCLK_25MHZ	BIT(23)
+ 
+@@ -178,7 +178,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
  	}
  
  	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		if (ctx->mclk) {
--			ret = clk_prepare_enable(ctx->mclk);
--			if (ret < 0) {
--				dev_err(card->dev,
--					"could not configure MCLK state");
--				return ret;
--			}
-+		ret = clk_prepare_enable(ctx->mclk);
-+		if (ret < 0) {
-+			dev_err(card->dev,
-+				"could not configure MCLK state");
-+			return ret;
+-		if (priv->mclk) {
++		if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+ 			ret = clk_prepare_enable(priv->mclk);
+ 			if (ret < 0) {
+ 				dev_err(card->dev,
+@@ -199,7 +199,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 					     48000 * 512,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (!ret) {
+-			if (priv->mclk)
++			if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN)
+ 				clk_disable_unprepare(priv->mclk);
  		}
- 	} else {
- 		/* Set codec sysclk source to its internal clock because codec PLL will
-@@ -122,8 +120,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 			return ret;
- 		}
- 
--		if (ctx->mclk)
--			clk_disable_unprepare(ctx->mclk);
-+		clk_disable_unprepare(ctx->mclk);
  	}
+@@ -376,8 +376,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TA"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
+-						 BYT_RT5640_MCLK_EN),
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+@@ -385,12 +385,11 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
+-						 BYT_RT5640_MONO_SPEAKER |
+-						 BYT_RT5640_DIFF_MIC |
+-						 BYT_RT5640_SSP0_AIF2 |
+-						 BYT_RT5640_MCLK_EN
+-						 ),
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF2 |
++					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+@@ -398,9 +397,9 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "DellInc."),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Venue 8 Pro 5830"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_DMIC2_MAP |
+-						 BYT_RT5640_DMIC_EN |
+-						 BYT_RT5640_MCLK_EN),
++		.driver_data = (void *)(BYT_RT5640_DMIC2_MAP |
++					BYT_RT5640_DMIC_EN |
++					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+@@ -408,8 +407,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
+-						 BYT_RT5640_MCLK_EN),
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_MCLK_EN),
+ 	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+@@ -417,8 +416,8 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_DMIC1_MAP |
+-						 BYT_RT5640_DMIC_EN),
++		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
++					BYT_RT5640_DMIC_EN),
+ 	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+@@ -426,9 +425,9 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
+ 			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_IN3_MAP |
+-						BYT_RT5640_MCLK_EN |
+-						BYT_RT5640_SSP0_AIF1),
++		.driver_data = (void *)(BYT_RT5640_IN3_MAP |
++					BYT_RT5640_MCLK_EN |
++					BYT_RT5640_SSP0_AIF1),
+ 	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+@@ -436,7 +435,7 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_IN1_MAP |
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+ 						 BYT_RT5640_MCLK_EN |
+ 						 BYT_RT5640_SSP0_AIF1),
  
- 	return 0;
-@@ -258,11 +255,11 @@ static const struct dmi_system_id cht_rt5645_quirk_table[] = {
+@@ -446,9 +445,9 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
+ 		},
+-		.driver_data = (unsigned long *)(BYT_RT5640_IN3_MAP |
+-						 BYT_RT5640_MCLK_EN |
+-						 BYT_RT5640_SSP0_AIF1),
++		.driver_data = (void *)(BYT_RT5640_IN3_MAP |
++					BYT_RT5640_MCLK_EN |
++					BYT_RT5640_SSP0_AIF1),
  
- static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	},
+ 	{}
+@@ -456,12 +455,12 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 
+ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
  {
 -	int ret;
--	int jack_type;
 -	struct snd_soc_codec *codec = runtime->codec;
  	struct snd_soc_card *card = runtime->card;
- 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+-	const struct snd_soc_dapm_route *custom_map;
+ 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
 +	struct snd_soc_codec *codec = runtime->codec;
-+	int jack_type;
++	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
 +	int ret;
  
- 	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
- 	    (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
-@@ -320,26 +317,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	card->dapm.idle_bias_off = true;
  
- 	rt5645_set_jack_detect(codec, &ctx->jack, &ctx->jack, &ctx->jack);
+@@ -549,7 +548,7 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ 	snd_soc_dapm_ignore_suspend(&card->dapm, "Headphone");
+ 	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
  
--	if (ctx->mclk) {
--		/*
--		 * The firmware might enable the clock at
--		 * boot (this information may or may not
--		 * be reflected in the enable clock register).
--		 * To change the rate we must disable the clock
--		 * first to cover these cases. Due to common
--		 * clock framework restrictions that do not allow
--		 * to disable a clock that has not been enabled,
--		 * we need to enable the clock first.
--		 */
--		ret = clk_prepare_enable(ctx->mclk);
--		if (!ret)
--			clk_disable_unprepare(ctx->mclk);
+-	if (priv->mclk) {
++	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
+ 		/*
+ 		 * The firmware might enable the clock at
+ 		 * boot (this information may or may not
+@@ -758,12 +757,12 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
  
--		ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
-+	/*
-+	 * The firmware might enable the clock at
-+	 * boot (this information may or may not
-+	 * be reflected in the enable clock register).
-+	 * To change the rate we must disable the clock
-+	 * first to cover these cases. Due to common
-+	 * clock framework restrictions that do not allow
-+	 * to disable a clock that has not been enabled,
-+	 * we need to enable the clock first.
-+	 */
-+	ret = clk_prepare_enable(ctx->mclk);
-+	if (!ret)
-+		clk_disable_unprepare(ctx->mclk);
-+
-+	ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
-+
-+	if (ret)
-+		dev_err(runtime->dev, "unable to set MCLK rate\n");
- 
--		if (ret)
--			dev_err(runtime->dev, "unable to set MCLK rate\n");
--	}
- 	return ret;
- }
- 
-@@ -545,15 +542,15 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_cht_mc_probe(struct platform_device *pdev)
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  {
 -	int ret_val = 0;
--	int i;
--	struct cht_mc_private *drv;
- 	struct snd_soc_card *card = snd_soc_cards[0].soc_card;
++	struct byt_rt5640_private *priv;
  	struct sst_acpi_mach *mach;
-+	struct cht_mc_private *drv;
  	const char *i2c_name = NULL;
--	int dai_index = 0;
- 	bool found = false;
- 	bool is_bytcr = false;
-+	int dai_index = 0;
+-	int i;
 +	int ret_val = 0;
+ 	int dai_index;
+-	struct byt_rt5640_private *priv;
 +	int i;
  
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
- 	if (!drv)
-@@ -590,7 +587,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	is_bytcr = false;
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+@@ -786,7 +785,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  
  	/* fixup codec name based on HID */
  	i2c_name = sst_acpi_find_name_from_hid(mach->id);
 -	if (i2c_name != NULL) {
 +	if (i2c_name) {
- 		snprintf(cht_rt5645_codec_name, sizeof(cht_rt5645_codec_name),
+ 		snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
  			"%s%s", "i2c-", i2c_name);
- 		cht_dailink[dai_index].codec_name = cht_rt5645_codec_name;
+ 
 -- 
 2.14.1
