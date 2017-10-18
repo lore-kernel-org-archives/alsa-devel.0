@@ -1,15 +1,17 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: [PATCH v2] ALSA: hda: Abort capability probe on
-	invalid capability
-Date: Thu, 19 Oct 2017 05:15:25 +0530
-Message-ID: <1508370325-3118-1-git-send-email-rakesh.a.ughreja@intel.com>
+From: Carlo Caione <carlo@caione.org>
+Subject: [PATCH 0/2] rt5651: Enable platforms with int mic on
+	IN2
+Date: Wed, 18 Oct 2017 17:07:57 +0100
+Message-ID: <20171018160759.18563-1-carlo@caione.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CB75266EE0
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 17:59:05 +0200 (CEST)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7292266EE0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 18:08:07 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id l68so11117060wmd.5
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 09:08:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,36 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, vinod.koul@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+To: linux@endlessm.com, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+From: Carlo Caione <carlo@endlessm.com>
 
-Due to bugs in BIOS it's possible that the HDA capability link
-list is not constructed properly. This may lead to driver going
-into unknown state. So whenever driver discovers unknown HDA
-capability, log it as error and stop traversing the link list
-further.
+While working on enabling a cherry-trail laptop shipping the rt5651
+codec I realized that the machine driver needed some fixup.
 
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
----
- sound/hda/hdac_controller.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+In particular the laptop I'm working on (KIANO SlimNote 14.2) has the
+internal mic connected to the IN2 port.
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 978dc18..8f7d0d9 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -314,7 +314,8 @@ int snd_hdac_bus_parse_capabilities(struct hdac_bus *bus)
- 			break;
- 
- 		default:
--			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
-+			dev_err(bus->dev, "Unknown capability %d\n", cur_cap);
-+			cur_cap = 0;
- 			break;
- 		}
- 
+All the laptop-specific work with the related quirks will follow.
+
+Carlo Caione (2):
+  ASoC: intel: byt: Enable quirk logic for custom maps
+  ASoC: intel: byt: Introduce new custom IN2 map
+
+ sound/soc/intel/boards/bytcr_rt5651.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
 -- 
-2.7.4
+2.14.2
