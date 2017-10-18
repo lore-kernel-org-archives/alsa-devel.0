@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Audio buffer related changes for
-	Stoney" to the asoc tree
-Date: Wed, 18 Oct 2017 01:08:59 +0100
-Message-ID: <E1e4but-0003z7-4j@debutante>
-References: <1505325475-22602-6-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: AMD: Add machine driver for cz rt5650"
+	to the asoc tree
+Date: Wed, 18 Oct 2017 01:08:49 +0100
+Message-ID: <E1e4buj-0003xe-He@debutante>
+References: <1505325475-22602-7-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F853266AE1
+ by alsa0.perex.cz (Postfix) with ESMTP id E48242673A7
  for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 02:11:48 +0200 (CEST)
-In-Reply-To: <1505325475-22602-6-git-send-email-alexander.deucher@amd.com>
+In-Reply-To: <1505325475-22602-7-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, broonie@kernel.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, airlied@gmail.com
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, rajeevkumar.linux@gmail.com, broonie@kernel.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>, airlied@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Audio buffer related changes for Stoney
+   ASoC: AMD: Add machine driver for cz rt5650
 
 has been applied to the asoc tree at
 
@@ -52,143 +53,254 @@ to this mail.
 Thanks,
 Mark
 
->From f672fc6de01de8ae3feb3fc59669a40dc8808434 Mon Sep 17 00:00:00 2001
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Date: Wed, 13 Sep 2017 13:57:54 -0400
-Subject: [PATCH] ASoC: AMD: Audio buffer related changes for Stoney
+>From 91d790b83bf44c356e57149d440e7f8e36f03c4f Mon Sep 17 00:00:00 2001
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Date: Wed, 13 Sep 2017 13:57:55 -0400
+Subject: [PATCH] ASoC: AMD: Add machine driver for cz rt5650
 
-Stoney uses 16kb SRAM memory for playback and 16Kb
-for capture.Modified Max buffer size to have the
-correct mapping between System Memory and SRAM.
-
-Added snd_pcm_hardware structures for playback
-and capture for Stoney.
+The driver is used for AMD board using rt5650 codec.
 
 Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 83 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 78 insertions(+), 5 deletions(-)
+ sound/soc/amd/Kconfig      |   7 ++
+ sound/soc/amd/Makefile     |   2 +
+ sound/soc/amd/acp-rt5645.c | 199 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 208 insertions(+)
+ create mode 100644 sound/soc/amd/acp-rt5645.c
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index f16e0b8e2ed7..73b58ee00383 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -35,6 +35,11 @@
- #define MAX_BUFFER (PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
- #define MIN_BUFFER MAX_BUFFER
- 
-+#define ST_PLAYBACK_MAX_PERIOD_SIZE 8192
-+#define ST_CAPTURE_MAX_PERIOD_SIZE  ST_PLAYBACK_MAX_PERIOD_SIZE
-+#define ST_MAX_BUFFER (ST_PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
-+#define ST_MIN_BUFFER ST_MAX_BUFFER
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 78187eb24f56..d5838402f667 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -2,3 +2,10 @@ config SND_SOC_AMD_ACP
+ 	tristate "AMD Audio Coprocessor support"
+ 	help
+ 	 This option enables ACP DMA support on AMD platform.
 +
- static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
- 	.info = SNDRV_PCM_INFO_INTERLEAVED |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_MMAP |
-@@ -73,6 +78,44 @@ static const struct snd_pcm_hardware acp_pcm_hardware_capture = {
- 	.periods_max = CAPTURE_MAX_NUM_PERIODS,
- };
++config SND_SOC_AMD_CZ_RT5645_MACH
++	tristate "AMD CZ support for RT5645"
++	select SND_SOC_RT5645
++	depends on SND_SOC_AMD_ACP && I2C
++	help
++	 This option enables machine driver for rt5645.
+diff --git a/sound/soc/amd/Makefile b/sound/soc/amd/Makefile
+index 1a66ec0366b2..eed64ff6c73e 100644
+--- a/sound/soc/amd/Makefile
++++ b/sound/soc/amd/Makefile
+@@ -1,3 +1,5 @@
+ snd-soc-acp-pcm-objs	:= acp-pcm-dma.o
++snd-soc-acp-rt5645-mach-objs := acp-rt5645.o
  
-+static const struct snd_pcm_hardware acp_st_pcm_hardware_playback = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_BATCH |
-+		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+	.channels_min = 1,
-+	.channels_max = 8,
-+	.rates = SNDRV_PCM_RATE_8000_96000,
-+	.rate_min = 8000,
-+	.rate_max = 96000,
-+	.buffer_bytes_max = ST_MAX_BUFFER,
-+	.period_bytes_min = PLAYBACK_MIN_PERIOD_SIZE,
-+	.period_bytes_max = ST_PLAYBACK_MAX_PERIOD_SIZE,
-+	.periods_min = PLAYBACK_MIN_NUM_PERIODS,
-+	.periods_max = PLAYBACK_MAX_NUM_PERIODS,
-+};
+ obj-$(CONFIG_SND_SOC_AMD_ACP) += snd-soc-acp-pcm.o
++obj-$(CONFIG_SND_SOC_AMD_CZ_RT5645_MACH) += snd-soc-acp-rt5645-mach.o
+diff --git a/sound/soc/amd/acp-rt5645.c b/sound/soc/amd/acp-rt5645.c
+new file mode 100644
+index 000000000000..941aed6bb364
+--- /dev/null
++++ b/sound/soc/amd/acp-rt5645.c
+@@ -0,0 +1,199 @@
++/*
++ * Machine driver for AMD ACP Audio engine using Realtek RT5645 codec
++ *
++ * Copyright 2017 Advanced Micro Devices, Inc.
++ *
++ * This file is modified from rt288 machine driver
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ *
++ *
++ */
 +
-+static const struct snd_pcm_hardware acp_st_pcm_hardware_capture = {
-+	.info = SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_BLOCK_TRANSFER | SNDRV_PCM_INFO_MMAP |
-+		SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_BATCH |
-+		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-+	.formats = SNDRV_PCM_FMTBIT_S16_LE |
-+		SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+	.channels_min = 1,
-+	.channels_max = 2,
-+	.rates = SNDRV_PCM_RATE_8000_48000,
-+	.rate_min = 8000,
-+	.rate_max = 48000,
-+	.buffer_bytes_max = ST_MAX_BUFFER,
-+	.period_bytes_min = CAPTURE_MIN_PERIOD_SIZE,
-+	.period_bytes_max = ST_CAPTURE_MAX_PERIOD_SIZE,
-+	.periods_min = CAPTURE_MIN_NUM_PERIODS,
-+	.periods_max = CAPTURE_MAX_NUM_PERIODS,
-+};
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc-dapm.h>
++#include <sound/jack.h>
++#include <linux/gpio.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/acpi.h>
 +
- static u32 acp_reg_read(void __iomem *acp_mmio, u32 reg)
- {
- 	return readl(acp_mmio + (reg * 4));
-@@ -664,10 +707,23 @@ static int acp_dma_open(struct snd_pcm_substream *substream)
- 	if (adata == NULL)
- 		return -ENOMEM;
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		runtime->hw = acp_pcm_hardware_playback;
--	else
--		runtime->hw = acp_pcm_hardware_capture;
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		switch (intr_data->asic_type) {
-+		case CHIP_STONEY:
-+			runtime->hw = acp_st_pcm_hardware_playback;
-+			break;
-+		default:
-+			runtime->hw = acp_pcm_hardware_playback;
-+		}
-+	} else {
-+		switch (intr_data->asic_type) {
-+		case CHIP_STONEY:
-+			runtime->hw = acp_st_pcm_hardware_capture;
-+			break;
-+		default:
-+			runtime->hw = acp_pcm_hardware_capture;
-+		}
++#include "../codecs/rt5645.h"
++
++#define CZ_PLAT_CLK 24000000
++
++static struct snd_soc_jack cz_jack;
++
++static int cz_aif1_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	int ret = 0;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++
++	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5645_PLL1_S_MCLK,
++				  CZ_PLAT_CLK, params_rate(params) * 512);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
++		return ret;
 +	}
- 
- 	ret = snd_pcm_hw_constraint_integer(runtime,
- 					    SNDRV_PCM_HW_PARAM_PERIODS);
-@@ -905,10 +961,27 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 
- static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- {
--	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+	int ret;
-+	struct audio_drv_data *adata = dev_get_drvdata(rtd->platform->dev);
 +
-+	switch (adata->asic_type) {
-+	case CHIP_STONEY:
-+		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
-+							SNDRV_DMA_TYPE_DEV,
-+							NULL, ST_MIN_BUFFER,
-+							ST_MAX_BUFFER);
-+		break;
-+	default:
-+		ret = snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
- 							SNDRV_DMA_TYPE_DEV,
- 							NULL, MIN_BUFFER,
- 							MAX_BUFFER);
-+		break;
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5645_SCLK_S_PLL1,
++				params_rate(params) * 512, SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
++		return ret;
 +	}
-+	if (ret < 0)
-+		dev_err(rtd->platform->dev,
-+				"buffer preallocation failer error:%d\n", ret);
++
 +	return ret;
- }
- 
- static int acp_dma_close(struct snd_pcm_substream *substream)
++}
++
++static int cz_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret;
++	struct snd_soc_card *card;
++	struct snd_soc_codec *codec;
++
++	codec = rtd->codec;
++	card = rtd->card;
++
++	ret = snd_soc_card_jack_new(card, "Headset Jack",
++				SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
++				SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++				SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				&cz_jack, NULL, 0);
++	if (ret) {
++		dev_err(card->dev, "HP jack creation failed %d\n", ret);
++		return ret;
++	}
++
++	rt5645_set_jack_detect(codec, &cz_jack, &cz_jack, &cz_jack);
++
++	return 0;
++}
++
++static struct snd_soc_ops cz_aif1_ops = {
++	.hw_params = cz_aif1_hw_params,
++};
++
++static struct snd_soc_dai_link cz_dai_rt5650[] = {
++	{
++		.name = "amd-rt5645-play",
++		.stream_name = "RT5645_AIF1",
++		.platform_name = "acp_audio_dma.0.auto",
++		.cpu_dai_name = "designware-i2s.1.auto",
++		.codec_dai_name = "rt5645-aif1",
++		.codec_name = "i2c-10EC5650:00",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++				| SND_SOC_DAIFMT_CBM_CFM,
++		.init = cz_init,
++		.ops = &cz_aif1_ops,
++	},
++	{
++		.name = "amd-rt5645-cap",
++		.stream_name = "RT5645_AIF1",
++		.platform_name = "acp_audio_dma.0.auto",
++		.cpu_dai_name = "designware-i2s.2.auto",
++		.codec_dai_name = "rt5645-aif1",
++		.codec_name = "i2c-10EC5650:00",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++				| SND_SOC_DAIFMT_CBM_CFM,
++		.ops = &cz_aif1_ops,
++	},
++};
++
++static const struct snd_soc_dapm_widget cz_widgets[] = {
++	SND_SOC_DAPM_HP("Headphones", NULL),
++	SND_SOC_DAPM_SPK("Speakers", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Int Mic", NULL),
++};
++
++static const struct snd_soc_dapm_route cz_audio_route[] = {
++	{"Headphones", NULL, "HPOL"},
++	{"Headphones", NULL, "HPOR"},
++	{"RECMIXL", NULL, "Headset Mic"},
++	{"RECMIXR", NULL, "Headset Mic"},
++	{"Speakers", NULL, "SPOL"},
++	{"Speakers", NULL, "SPOR"},
++	{"DMIC L2", NULL, "Int Mic"},
++	{"DMIC R2", NULL, "Int Mic"},
++};
++
++static const struct snd_kcontrol_new cz_mc_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphones"),
++	SOC_DAPM_PIN_SWITCH("Speakers"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++};
++
++static struct snd_soc_card cz_card = {
++	.name = "acprt5650",
++	.owner = THIS_MODULE,
++	.dai_link = cz_dai_rt5650,
++	.num_links = ARRAY_SIZE(cz_dai_rt5650),
++	.dapm_widgets = cz_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(cz_widgets),
++	.dapm_routes = cz_audio_route,
++	.num_dapm_routes = ARRAY_SIZE(cz_audio_route),
++	.controls = cz_mc_controls,
++	.num_controls = ARRAY_SIZE(cz_mc_controls),
++};
++
++static int cz_probe(struct platform_device *pdev)
++{
++	int ret;
++	struct snd_soc_card *card;
++
++	card = &cz_card;
++	cz_card.dev = &pdev->dev;
++	platform_set_drvdata(pdev, card);
++	ret = devm_snd_soc_register_card(&pdev->dev, &cz_card);
++	if (ret) {
++		dev_err(&pdev->dev,
++				"devm_snd_soc_register_card(%s) failed: %d\n",
++				cz_card.name, ret);
++		return ret;
++	}
++	return 0;
++}
++
++static const struct acpi_device_id cz_audio_acpi_match[] = {
++	{ "AMDI1002", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, cz_audio_acpi_match);
++
++static struct platform_driver cz_pcm_driver = {
++	.driver = {
++		.name = "cz-rt5645",
++		.acpi_match_table = ACPI_PTR(cz_audio_acpi_match),
++		.pm = &snd_soc_pm_ops,
++	},
++	.probe = cz_probe,
++};
++
++module_platform_driver(cz_pcm_driver);
++
++MODULE_AUTHOR("akshu.agrawal@amd.com");
++MODULE_DESCRIPTION("cz-rt5645 audio support");
++MODULE_LICENSE("GPL v2");
 -- 
 2.14.1
