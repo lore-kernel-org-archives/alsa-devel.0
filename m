@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm97xx: fix compilation corner case" to the asoc tree
-Date: Wed, 18 Oct 2017 12:12:10 +0100
-Message-ID: <E1e4mGg-0002Ig-FC@debutante>
-References: <20171014201409.9008-1-robert.jarzmik@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171014201409.9008-1-robert.jarzmik@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Marek Vasut <marex@denx.de>, Chen-Yu Tsai <wens@csie.org>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5659: register power bit of LOUT Amp"
+	to the asoc tree
+Date: Wed, 18 Oct 2017 12:12:04 +0100
+Message-ID: <E1e4mGa-0002Ga-Ex@debutante>
+References: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B436C266A73
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:12:14 +0200 (CEST)
+In-Reply-To: <1508152516-25767-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm97xx: fix compilation corner case
+   ASoC: rt5659: register power bit of LOUT Amp
 
 has been applied to the asoc tree at
 
@@ -37,82 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 6bd25aae3a9bc7ed3d24f2b3d4cd711fadc5d32e Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Sat, 14 Oct 2017 22:14:02 +0200
-Subject: [PATCH] ASoC: wm97xx: fix compilation corner case
+>From d1e84308ac8ad945a77f4fd7b08725d14181703b Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 16 Oct 2017 19:15:13 +0800
+Subject: [PATCH] ASoC: rt5659: register power bit of LOUT Amp
 
-When the old AC97 is not used, CONFIG_SND_SOC_AC97_BUS is not
-defined. As a consequence, in the error path, snd_soc_free_ac97_codec()
-is not defined and triggers a compilation error.
+There is a power bit for LOUT Amp.
 
-Fix it for wm9705 and wm9712, as wm9713 is correctly written.
-
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9705.c | 8 ++------
- sound/soc/codecs/wm9712.c | 7 ++-----
- 2 files changed, 4 insertions(+), 11 deletions(-)
+ sound/soc/codecs/rt5659.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
-index 68c204e3599f..2c09f71fe433 100644
---- a/sound/soc/codecs/wm9705.c
-+++ b/sound/soc/codecs/wm9705.c
-@@ -321,7 +321,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- {
- 	struct wm9705_priv *wm9705 = snd_soc_codec_get_drvdata(codec);
- 	struct regmap *regmap;
--	int ret;
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index 71216db15eab..999432e98a5a 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -2744,7 +2744,8 @@ static const struct snd_soc_dapm_widget rt5659_dapm_widgets[] = {
+ 		SND_SOC_DAPM_PRE_PMU),
+ 	SND_SOC_DAPM_PGA_S("HP Amp", 1, SND_SOC_NOPM, 0, 0, rt5659_hp_event,
+ 		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
+-	SND_SOC_DAPM_PGA("LOUT Amp", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA_S("LOUT Amp", 1,  RT5659_PWR_ANLG_1, RT5659_PWR_LM_BIT,
++		0,  NULL, 0),
  
- 	if (wm9705->mfd_pdata) {
- 		wm9705->ac97 = wm9705->mfd_pdata->ac97;
-@@ -337,8 +336,8 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- 
- 		regmap = regmap_init_ac97(wm9705->ac97, &wm9705_regmap_config);
- 		if (IS_ERR(regmap)) {
--			ret = PTR_ERR(regmap);
--			goto err_free_ac97_codec;
-+			snd_soc_free_ac97_codec(wm9705->ac97);
-+			return PTR_ERR(regmap);
- 		}
- #endif
- 	}
-@@ -347,9 +346,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
- 	snd_soc_codec_init_regmap(codec, regmap);
- 
- 	return 0;
--err_free_ac97_codec:
--	snd_soc_free_ac97_codec(wm9705->ac97);
--	return ret;
- }
- 
- static int wm9705_soc_remove(struct snd_soc_codec *codec)
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 9db5c7783de5..4f6d1a442bc4 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -656,8 +656,8 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 
- 		regmap = regmap_init_ac97(wm9712->ac97, &wm9712_regmap_config);
- 		if (IS_ERR(regmap)) {
--			ret = PTR_ERR(regmap);
--			goto err_free_ac97_codec;
-+			snd_soc_free_ac97_codec(wm9712->ac97);
-+			return PTR_ERR(regmap);
- 		}
- #endif
- 	}
-@@ -668,9 +668,6 @@ static int wm9712_soc_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, AC97_VIDEO, 0x3000, 0x3000);
- 
- 	return 0;
--err_free_ac97_codec:
--	snd_soc_free_ac97_codec(wm9712->ac97);
--	return ret;
- }
- 
- static int wm9712_soc_remove(struct snd_soc_codec *codec)
+ 	SND_SOC_DAPM_SUPPLY("Charge Pump", SND_SOC_NOPM, 0, 0,
+ 		rt5659_charge_pump_event, SND_SOC_DAPM_PRE_PMU |
 -- 
 2.14.1
