@@ -1,74 +1,55 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2] ALSA: hda: Abort capability probe on
- invalid capability
-Date: Wed, 18 Oct 2017 21:56:51 +0530
-Message-ID: <20171018162651.GA30097@localhost>
-References: <1508370325-3118-1-git-send-email-rakesh.a.ughreja@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: linux-next: manual merge of the sound-asoc tree with the
+ drm-misc tree
+Date: Wed, 18 Oct 2017 17:26:31 +0100
+Message-ID: <20171018162631.qceuluxqpv3xu2xb@sirena.co.uk>
+References: <20171018095733.2ffvg6ty6kn2lfdf@sirena.co.uk>
+ <20171018100802.4eiin6bhsj6wir75@sirena.co.uk>
+ <BN6PR12MB165283F1E4A670659E6C0C89F74D0@BN6PR12MB1652.namprd12.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B1E5266EE0
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 18:22:35 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2xf3hjck6by2gymk"
+Return-path: <linux-next-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1508370325-3118-1-git-send-email-rakesh.a.ughreja@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+In-Reply-To: <BN6PR12MB165283F1E4A670659E6C0C89F74D0@BN6PR12MB1652.namprd12.prod.outlook.com>
+Sender: linux-next-owner@vger.kernel.org
+To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, "Zhu, Rex" <Rex.Zhu@amd.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, Intel Graphics <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux-Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 19, 2017 at 05:15:25AM +0530, Ughreja, Rakesh A wrote:
-> From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-> 
-> Due to bugs in BIOS it's possible that the HDA capability link
 
-It maybe due to BIOS bug or some other issue, lets not quantify that please.
+--2xf3hjck6by2gymk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I would say "On reading wrong capablity pointer values we may crash...
+On Wed, Oct 18, 2017 at 02:33:37PM +0000, Deucher, Alexander wrote:
 
-> list is not constructed properly. This may lead to driver going
-> into unknown state. 
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
-I dont think we maintain driver states which are going wrong here
+> Your conflict change affectively reverted 1e4448648333a which is what
+> caused the problem.  It looks like Dave did not yet pull the request I
+> made.  I can send another pull request, but you may run into the same
+> issue if you resolve the conflict the same way again. =20
 
-> So whenever driver discovers unknown HDA
-> capability, log it as error and stop traversing the link list
-> further.
+OK...  I really wasn't expecting to see any conflicts at all TBH.  I'll
+have a look tomorrow.
 
-that sound good
+--2xf3hjck6by2gymk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-> ---
->  sound/hda/hdac_controller.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-> index 978dc18..8f7d0d9 100644
-> --- a/sound/hda/hdac_controller.c
-> +++ b/sound/hda/hdac_controller.c
-> @@ -314,7 +314,8 @@ int snd_hdac_bus_parse_capabilities(struct hdac_bus *bus)
->  			break;
->  
->  		default:
-> -			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
-> +			dev_err(bus->dev, "Unknown capability %d\n", cur_cap);
-> +			cur_cap = 0;
->  			break;
->  		}
->  
-> -- 
-> 2.7.4
-> 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-~Vinod
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnngLYACgkQJNaLcl1U
+h9Bbcwf/Qe4ssY96ep1Urm3ao8tYBJosR/MPLvYnU1bDidbuF8guM7CXgVYSuPAI
+Z+I6/HkAlABDMuGXGEL34T7ZL1B8Znpvr9CP3Gqmdvf4nbTvcNLLC53ZQlP01Gcu
+Geuj7AcYHh8+Fq2uBEj46z19oRslTWTzE842U1PZoE7fJGpWojyTS8O66771KLhR
+PxQ3cxhWERHHEQq7LwZgYzJHSwq07Ay1rc46VgNfITV+kRgwGFsbsnBBHZrlxX0b
+WHJ1bmPtyBnxpXMt88O82L49euY/Zst4+6WuMnnNyaSsmeMd3KsHnNIadr6j5QS5
+NC+et1gSU/gMtd+83do1XZ1xwosNWQ==
+=r8/H
+-----END PGP SIGNATURE-----
+
+--2xf3hjck6by2gymk--
