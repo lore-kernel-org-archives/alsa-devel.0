@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5659: move set_sysclk to codec level"
-	to the asoc tree
-Date: Wed, 18 Oct 2017 12:11:57 +0100
-Message-ID: <E1e4mGT-0002ES-0b@debutante>
-References: <1508152516-25767-3-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rt5659: connect LOUT Amp with Charge
+	Pump" to the asoc tree
+Date: Wed, 18 Oct 2017 12:12:00 +0100
+Message-ID: <E1e4mGW-0002FV-2S@debutante>
+References: <1508152516-25767-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 00109266A73
- for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:12:10 +0200 (CEST)
-In-Reply-To: <1508152516-25767-3-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 572BA267412
+ for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:12:13 +0200 (CEST)
+In-Reply-To: <1508152516-25767-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5659: move set_sysclk to codec level
+   ASoC: rt5659: connect LOUT Amp with Charge Pump
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From fe01e5e8fae91b235ecf928f6bf0a90c17d74e36 Mon Sep 17 00:00:00 2001
+>From a6189d371d05863720e4381361f83ce5d376fad7 Mon Sep 17 00:00:00 2001
 From: Bard Liao <bardliao@realtek.com>
-Date: Mon, 16 Oct 2017 19:15:15 +0800
-Subject: [PATCH] ASoC: rt5659: move set_sysclk to codec level
+Date: Mon, 16 Oct 2017 19:15:14 +0800
+Subject: [PATCH] ASoC: rt5659: connect LOUT Amp with Charge Pump
 
-Move set_sysclk to codec level and people can use it at both
-codec and dai level.
+"Charge Pump" is necessary for "LOUT Amp".
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5659.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt5659.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
-index fa66b11df8d4..09cfddb5e53d 100644
+index 999432e98a5a..fa66b11df8d4 100644
 --- a/sound/soc/codecs/rt5659.c
 +++ b/sound/soc/codecs/rt5659.c
-@@ -3385,10 +3385,9 @@ static int rt5659_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
--static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
--		int clk_id, unsigned int freq, int dir)
-+static int rt5659_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
-+				   int source, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int reg_val = 0;
- 
-@@ -3414,7 +3413,8 @@ static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
- 	rt5659->sysclk = freq;
- 	rt5659->sysclk_src = clk_id;
- 
--	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
-+	dev_dbg(codec->dev, "Sysclk is %dHz and clock id is %d\n",
-+		freq, clk_id);
- 
- 	return 0;
- }
-@@ -3666,7 +3666,6 @@ static int rt5659_resume(struct snd_soc_codec *codec)
- static const struct snd_soc_dai_ops rt5659_aif_dai_ops = {
- 	.hw_params = rt5659_hw_params,
- 	.set_fmt = rt5659_set_dai_fmt,
--	.set_sysclk = rt5659_set_dai_sysclk,
- 	.set_tdm_slot = rt5659_set_tdm_slot,
- 	.set_pll = rt5659_set_dai_pll,
- 	.set_bclk_ratio = rt5659_set_bclk_ratio,
-@@ -3747,6 +3746,7 @@ static const struct snd_soc_codec_driver soc_codec_dev_rt5659 = {
- 		.dapm_routes		= rt5659_dapm_routes,
- 		.num_dapm_routes	= ARRAY_SIZE(rt5659_dapm_routes),
- 	},
-+	.set_sysclk = rt5659_set_codec_sysclk,
- };
- 
- 
+@@ -3209,6 +3209,7 @@ static const struct snd_soc_dapm_route rt5659_dapm_routes[] = {
+ 	{ "LOUT R MIX", "OUTVOL R Switch", "OUTVOL R" },
+ 	{ "LOUT Amp", NULL, "LOUT L MIX" },
+ 	{ "LOUT Amp", NULL, "LOUT R MIX" },
++	{ "LOUT Amp", NULL, "Charge Pump" },
+ 	{ "LOUT Amp", NULL, "SYS CLK DET" },
+ 	{ "LOUT L Playback", "Switch", "LOUT Amp" },
+ 	{ "LOUT R Playback", "Switch", "LOUT Amp" },
 -- 
 2.14.1
