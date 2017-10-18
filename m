@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcht_da7213: cosmetic fixes"
-	to the asoc tree
-Date: Wed, 18 Oct 2017 12:31:17 +0100
-Message-ID: <E1e4mZB-0003xM-W5@debutante>
-References: <20171005185243.4174-6-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: fix off-by-one dailink
+	id" to the asoc tree
+Date: Wed, 18 Oct 2017 12:31:08 +0100
+Message-ID: <E1e4mZ2-0003u9-P9@debutante>
+References: <20171012233805.30055-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C622E26745A
+ by alsa0.perex.cz (Postfix) with ESMTP id C25B2267453
  for <alsa-devel@alsa-project.org>; Wed, 18 Oct 2017 13:31:21 +0200 (CEST)
-In-Reply-To: <20171005185243.4174-6-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20171012233805.30055-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Liam Girdwood <liam.r.girdwood@linux.intel.com>, vinod.koul@intel.com, broonie@kernel.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcht_da7213: cosmetic fixes
+   ASoC: Intel: boards: fix off-by-one dailink id
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,135 @@ to this mail.
 Thanks,
 Mark
 
->From 22a317a0505d11db3ab08f4e4b25d3064228af02 Mon Sep 17 00:00:00 2001
+>From 149f77575906d7dca1c62ee5a5539b6b7e851f46 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 12 Oct 2017 18:38:00 -0500
-Subject: [PATCH] ASoC: Intel: bytcht_da7213: cosmetic fixes
+Date: Thu, 12 Oct 2017 18:38:04 -0500
+Subject: [PATCH] ASoC: Intel: boards: fix off-by-one dailink id
 
-Reorder variable names, change tests
-No functional change
+For some reason the Atom/HiFi2 machine drivers use an id=1 instead
+of zero as done on all other platforms. This gets in the way of
+topology-based matching, realign for consistency. This should
+not have any functional impact on existing solutions with don't rely
+on topology.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_da7213.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcht_da7213.c       | 2 +-
+ sound/soc/intel/boards/bytcht_es8316.c       | 2 +-
+ sound/soc/intel/boards/bytcht_nocodec.c      | 2 +-
+ sound/soc/intel/boards/bytcr_rt5640.c        | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c        | 2 +-
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c      | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5672.c      | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
-index 18873e23f404..24070bc06040 100644
+index 24070bc06040..28a493e5318d 100644
 --- a/sound/soc/intel/boards/bytcht_da7213.c
 +++ b/sound/soc/intel/boards/bytcht_da7213.c
-@@ -231,12 +231,12 @@ static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
- 
- static int bytcht_da7213_probe(struct platform_device *pdev)
- {
--	int ret_val = 0;
--	int i;
- 	struct snd_soc_card *card;
- 	struct sst_acpi_mach *mach;
- 	const char *i2c_name = NULL;
- 	int dai_index = 0;
-+	int ret_val = 0;
-+	int i;
- 
- 	mach = (&pdev->dev)->platform_data;
- 	card = &bytcht_da7213_card;
-@@ -253,7 +253,7 @@ static int bytcht_da7213_probe(struct platform_device *pdev)
- 
- 	/* fixup codec name based on HID */
- 	i2c_name = sst_acpi_find_name_from_hid(mach->id);
--	if (i2c_name != NULL) {
-+	if (i2c_name) {
- 		snprintf(codec_name, sizeof(codec_name),
- 			"%s%s", "i2c-", i2c_name);
- 		dailink[dai_index].codec_name = codec_name;
+@@ -197,7 +197,7 @@ static struct snd_soc_dai_link dailink[] = {
+ 	/* back ends */
+ 	{
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 9ed4400c13b8..808e825c3b05 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -209,7 +209,7 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
+ 		 * require SSP0 will not work.
+ 		 */
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/bytcht_nocodec.c b/sound/soc/intel/boards/bytcht_nocodec.c
+index 1dd9441806fa..511e87601104 100644
+--- a/sound/soc/intel/boards/bytcht_nocodec.c
++++ b/sound/soc/intel/boards/bytcht_nocodec.c
+@@ -145,7 +145,7 @@ static struct snd_soc_dai_link dais[] = {
+ 	/* back ends */
+ 	{
+ 		.name = "SSP2-LowSpeed Connector",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 339842adceed..6c7b71d7fed7 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -690,7 +690,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ 		/* back ends */
+ 	{
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port", /* overwritten for ssp0 routing */
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index dc158466bd92..e0caee26fb0a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -401,7 +401,7 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+ 	/* back ends */
+ 	{
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index c2e3b00ec89d..a2194d993615 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -361,7 +361,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 	/* back ends */
+ 	{
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 546f4abf2562..1901b3b8f4d2 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -457,7 +457,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 	/* back ends */
+ 	{
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 1dffe76d5a85..3464cf41c7d1 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -315,7 +315,7 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 	{
+ 		/* SSP2 - Codec */
+ 		.name = "SSP2-Codec",
+-		.id = 1,
++		.id = 0,
+ 		.cpu_dai_name = "ssp2-port",
+ 		.platform_name = "sst-mfld-platform",
+ 		.no_pcm = 1,
 -- 
 2.14.1
