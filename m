@@ -1,230 +1,49 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda: Avoid racy recreation of widget
-	kobjects
-Date: Thu, 19 Oct 2017 14:12:03 +0200
-Message-ID: <20171019121203.14342-1-tiwai@suse.de>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: sst: remove redundant variable dma_dev_name
+Date: Thu, 19 Oct 2017 14:33:52 +0200
+Message-ID: <20171019123352.30294-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 89C67266EE0
- for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 14:12:07 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C4896AD55
- for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 12:12:06 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The refresh of HD-audio widget sysfs kobjects via
-snd_hdac_refresh_widget_sysfs() is slightly racy.
-The driver recreates the whole tree from scratch after deleting the
-whole.  When CONFIG_DEBUG_KOBJECT_RELEASE option is used, kobject
-release doesn't happen immediately but delayed, while the re-creation
-of the same named kobject happens soon after invoking kobject_put().
-This may end up with the conflicts of duplicated kobjects, as found in
-the bug report below.
+From: Colin Ian King <colin.king@canonical.com>
 
-In this patch, we take another approach to refresh the tree: instead
-of recreating the whole tree, just add the new nodes and delete the
-non-existing nodes.  Since the refresh happens only once at
-initialization, no longer race would happen.
+The pointer dma_dev_name is assigned but never read, it is redundant
+and can therefore be removed.
 
-Along with the code change, merge snd_hdac_refresh_widget_sysfs() with
-the existing snd_hdac_refresh_widgets() with an additional bool flag
-for simplifying the code.
+Cleans up clang warning:
+sound/soc/intel/common/sst-firmware.c:288:3: warning: Value stored to
+'dma_dev_name' is never read
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=197307
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/sound/hdaudio.h   |  3 +--
- sound/hda/hdac_device.c   | 43 ++++++++++---------------------------------
- sound/hda/hdac_sysfs.c    | 47 +++++++++++++++++++++++++++++++++++++++++++++++
- sound/hda/local.h         |  2 ++
- sound/pci/hda/hda_codec.c |  2 +-
- 5 files changed, 61 insertions(+), 36 deletions(-)
+ sound/soc/intel/common/sst-firmware.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 96546b30e900..6f1118545bb8 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -111,8 +111,7 @@ void snd_hdac_device_unregister(struct hdac_device *codec);
- int snd_hdac_device_set_chip_name(struct hdac_device *codec, const char *name);
- int snd_hdac_codec_modalias(struct hdac_device *hdac, char *buf, size_t size);
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index a086c35f91bb..79a9fdf94d38 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -274,7 +274,6 @@ int sst_dma_new(struct sst_dsp *sst)
+ 	struct sst_pdata *sst_pdata = sst->pdata;
+ 	struct sst_dma *dma;
+ 	struct resource mem;
+-	const char *dma_dev_name;
+ 	int ret = 0;
  
--int snd_hdac_refresh_widgets(struct hdac_device *codec);
--int snd_hdac_refresh_widget_sysfs(struct hdac_device *codec);
-+int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs);
- 
- unsigned int snd_hdac_make_cmd(struct hdac_device *codec, hda_nid_t nid,
- 			       unsigned int verb, unsigned int parm);
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 19deb306facb..06f845e293cb 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -87,7 +87,7 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
- 
- 	fg = codec->afg ? codec->afg : codec->mfg;
- 
--	err = snd_hdac_refresh_widgets(codec);
-+	err = snd_hdac_refresh_widgets(codec, false);
- 	if (err < 0)
- 		goto error;
- 
-@@ -388,11 +388,12 @@ static void setup_fg_nodes(struct hdac_device *codec)
- /**
-  * snd_hdac_refresh_widgets - Reset the widget start/end nodes
-  * @codec: the codec object
-+ * @sysfs: re-initialize sysfs tree, too
-  */
--int snd_hdac_refresh_widgets(struct hdac_device *codec)
-+int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs)
- {
- 	hda_nid_t start_nid;
--	int nums;
-+	int nums, err;
- 
- 	nums = snd_hdac_get_sub_nodes(codec, codec->afg, &start_nid);
- 	if (!start_nid || nums <= 0 || nums >= 0xff) {
-@@ -401,6 +402,12 @@ int snd_hdac_refresh_widgets(struct hdac_device *codec)
- 		return -EINVAL;
- 	}
- 
-+	if (sysfs) {
-+		err = hda_widget_sysfs_reinit(codec, start_nid, nums);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	codec->num_nodes = nums;
- 	codec->start_nid = start_nid;
- 	codec->end_nid = start_nid + nums;
-@@ -408,36 +415,6 @@ int snd_hdac_refresh_widgets(struct hdac_device *codec)
- }
- EXPORT_SYMBOL_GPL(snd_hdac_refresh_widgets);
- 
--/**
-- * snd_hdac_refresh_widget_sysfs - Reset the codec widgets and reinit the
-- * codec sysfs
-- * @codec: the codec object
-- *
-- * first we need to remove sysfs, then refresh widgets and lastly
-- * recreate it
-- */
--int snd_hdac_refresh_widget_sysfs(struct hdac_device *codec)
--{
--	int ret;
--
--	if (device_is_registered(&codec->dev))
--		hda_widget_sysfs_exit(codec);
--	ret = snd_hdac_refresh_widgets(codec);
--	if (ret) {
--		dev_err(&codec->dev, "failed to refresh widget: %d\n", ret);
--		return ret;
--	}
--	if (device_is_registered(&codec->dev)) {
--		ret = hda_widget_sysfs_init(codec);
--		if (ret) {
--			dev_err(&codec->dev, "failed to init sysfs: %d\n", ret);
--			return ret;
--		}
--	}
--	return ret;
--}
--EXPORT_SYMBOL_GPL(snd_hdac_refresh_widget_sysfs);
--
- /* return CONNLIST_LEN parameter of the given widget */
- static unsigned int get_num_conns(struct hdac_device *codec, hda_nid_t nid)
- {
-diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
-index 42d61bf41969..e123ba6b2e81 100644
---- a/sound/hda/hdac_sysfs.c
-+++ b/sound/hda/hdac_sysfs.c
-@@ -414,3 +414,50 @@ void hda_widget_sysfs_exit(struct hdac_device *codec)
- {
- 	widget_tree_free(codec);
- }
-+
-+int hda_widget_sysfs_reinit(struct hdac_device *codec,
-+			    hda_nid_t start_nid, int num_nodes)
-+{
-+	struct hdac_widget_tree *tree;
-+	hda_nid_t end_nid = start_nid + num_nodes;
-+	hda_nid_t nid;
-+	int i;
-+
-+	if (!codec->widgets)
-+		return hda_widget_sysfs_init(codec);
-+
-+	tree = kmemdup(codec->widgets, sizeof(*tree), GFP_KERNEL);
-+	if (!tree)
-+		return -ENOMEM;
-+
-+	tree->nodes = kcalloc(num_nodes + 1, sizeof(*tree->nodes), GFP_KERNEL);
-+	if (!tree->nodes) {
-+		kfree(tree);
-+		return -ENOMEM;
-+	}
-+
-+	/* prune non-existing nodes */
-+	for (i = 0, nid = codec->start_nid; i < codec->num_nodes; i++, nid++) {
-+		if (nid < start_nid || nid >= end_nid)
-+			free_widget_node(codec->widgets->nodes[i],
-+					 &widget_node_group);
-+	}
-+
-+	/* add new nodes */
-+	for (i = 0, nid = start_nid; i < num_nodes; i++, nid++) {
-+		if (nid < codec->start_nid || nid >= codec->end_nid)
-+			add_widget_node(tree->root, nid, &widget_node_group,
-+					&tree->nodes[i]);
-+		else
-+			tree->nodes[i] =
-+				codec->widgets->nodes[nid - codec->start_nid];
-+	}
-+
-+	/* replace with the new tree */
-+	kfree(codec->widgets->nodes);
-+	kfree(codec->widgets);
-+	codec->widgets = tree;
-+
-+	kobject_uevent(tree->root, KOBJ_CHANGE);
-+	return 0;
-+}
-diff --git a/sound/hda/local.h b/sound/hda/local.h
-index 0d5bb159d538..c586ea62d49e 100644
---- a/sound/hda/local.h
-+++ b/sound/hda/local.h
-@@ -28,6 +28,8 @@ static inline unsigned int get_wcaps_channels(u32 wcaps)
- 
- extern const struct attribute_group *hdac_dev_attr_groups[];
- int hda_widget_sysfs_init(struct hdac_device *codec);
-+int hda_widget_sysfs_reinit(struct hdac_device *codec, hda_nid_t start_nid,
-+			    int num_nodes);
- void hda_widget_sysfs_exit(struct hdac_device *codec);
- 
- #endif /* __HDAC_LOCAL_H */
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 3db26c451837..bb086665c3e0 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -977,7 +977,7 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec)
- 	hda_nid_t fg;
- 	int err;
- 
--	err = snd_hdac_refresh_widget_sysfs(&codec->core);
-+	err = snd_hdac_refresh_widgets(&codec->core, true);
- 	if (err < 0)
- 		return err;
- 
+ 	if (sst->pdata->resindex_dma_base == -1)
+@@ -285,7 +284,6 @@ int sst_dma_new(struct sst_dsp *sst)
+ 	* is attached to the ADSP IP. */
+ 	switch (sst->pdata->dma_engine) {
+ 	case SST_DMA_TYPE_DW:
+-		dma_dev_name = "dw_dmac";
+ 		break;
+ 	default:
+ 		dev_err(sst->dev, "error: invalid DMA engine %d\n",
 -- 
-2.14.2
+2.14.1
