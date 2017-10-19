@@ -1,80 +1,230 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH 2/2] ASoC: intel: byt: Add headset jack
-Date: Thu, 19 Oct 2017 12:03:23 +0100
-Message-ID: <20171019110323.23751-3-carlo@caione.org>
-References: <20171019110323.23751-1-carlo@caione.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171019110323.23751-1-carlo@caione.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, albertchen@realtek.com, edgar_shen@realtek.com
-Cc: Carlo Caione <carlo@endlessm.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda: Avoid racy recreation of widget
+	kobjects
+Date: Thu, 19 Oct 2017 14:12:03 +0200
+Message-ID: <20171019121203.14342-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89C67266EE0
+ for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 14:12:07 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id C4896AD55
+ for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 12:12:06 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Carlo Caione <carlo@endlessm.com>
+The refresh of HD-audio widget sysfs kobjects via
+snd_hdac_refresh_widget_sysfs() is slightly racy.
+The driver recreates the whole tree from scratch after deleting the
+whole.  When CONFIG_DEBUG_KOBJECT_RELEASE option is used, kobject
+release doesn't happen immediately but delayed, while the re-creation
+of the same named kobject happens soon after invoking kobject_put().
+This may end up with the conflicts of duplicated kobjects, as found in
+the bug report below.
 
-Introduce an headset jack in the machine driver and register it to the
-codec driver.
+In this patch, we take another approach to refresh the tree: instead
+of recreating the whole tree, just add the new nodes and delete the
+non-existing nodes.  Since the refresh happens only once at
+initialization, no longer race would happen.
 
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
+Along with the code change, merge snd_hdac_refresh_widget_sysfs() with
+the existing snd_hdac_refresh_widgets() with an additional bool flag
+for simplifying the code.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=197307
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ include/sound/hdaudio.h   |  3 +--
+ sound/hda/hdac_device.c   | 43 ++++++++++---------------------------------
+ sound/hda/hdac_sysfs.c    | 47 +++++++++++++++++++++++++++++++++++++++++++++++
+ sound/hda/local.h         |  2 ++
+ sound/pci/hda/hda_codec.c |  2 +-
+ 5 files changed, 61 insertions(+), 36 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 1dad5c98c9ef..0fc850e20fc0 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -49,6 +49,8 @@ struct byt_rt5651_private {
- 	struct clk *mclk;
- };
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 96546b30e900..6f1118545bb8 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -111,8 +111,7 @@ void snd_hdac_device_unregister(struct hdac_device *codec);
+ int snd_hdac_device_set_chip_name(struct hdac_device *codec, const char *name);
+ int snd_hdac_codec_modalias(struct hdac_device *hdac, char *buf, size_t size);
  
-+static struct snd_soc_jack jack;
-+
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
- 					BYT_RT5651_DMIC_EN |
- 					BYT_RT5651_MCLK_EN;
-@@ -177,6 +179,17 @@ static const struct snd_kcontrol_new byt_rt5651_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Speaker"),
- };
+-int snd_hdac_refresh_widgets(struct hdac_device *codec);
+-int snd_hdac_refresh_widget_sysfs(struct hdac_device *codec);
++int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs);
  
-+static struct snd_soc_jack_pin bytcr_jack_pins[] = {
-+	{
-+		.pin	= "Headphone",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Headset Mic",
-+		.mask	= SND_JACK_MICROPHONE,
-+	},
-+};
-+
- static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
- 					struct snd_pcm_hw_params *params)
+ unsigned int snd_hdac_make_cmd(struct hdac_device *codec, hda_nid_t nid,
+ 			       unsigned int verb, unsigned int parm);
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 19deb306facb..06f845e293cb 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -87,7 +87,7 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
+ 
+ 	fg = codec->afg ? codec->afg : codec->mfg;
+ 
+-	err = snd_hdac_refresh_widgets(codec);
++	err = snd_hdac_refresh_widgets(codec, false);
+ 	if (err < 0)
+ 		goto error;
+ 
+@@ -388,11 +388,12 @@ static void setup_fg_nodes(struct hdac_device *codec)
+ /**
+  * snd_hdac_refresh_widgets - Reset the widget start/end nodes
+  * @codec: the codec object
++ * @sysfs: re-initialize sysfs tree, too
+  */
+-int snd_hdac_refresh_widgets(struct hdac_device *codec)
++int snd_hdac_refresh_widgets(struct hdac_device *codec, bool sysfs)
  {
-@@ -244,6 +257,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
- 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
- 	const struct snd_soc_dapm_route *custom_map;
- 	int num_routes;
-@@ -301,6 +315,16 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 			dev_err(card->dev, "unable to set MCLK rate\n");
+ 	hda_nid_t start_nid;
+-	int nums;
++	int nums, err;
+ 
+ 	nums = snd_hdac_get_sub_nodes(codec, codec->afg, &start_nid);
+ 	if (!start_nid || nums <= 0 || nums >= 0xff) {
+@@ -401,6 +402,12 @@ int snd_hdac_refresh_widgets(struct hdac_device *codec)
+ 		return -EINVAL;
  	}
  
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-+				    SND_JACK_HEADSET, &jack,
-+				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
-+	if (ret) {
-+		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
-+		return ret;
++	if (sysfs) {
++		err = hda_widget_sysfs_reinit(codec, start_nid, nums);
++		if (err < 0)
++			return err;
 +	}
 +
-+	rt5651_set_jack_detect(codec, &jack);
-+
- 	return ret;
+ 	codec->num_nodes = nums;
+ 	codec->start_nid = start_nid;
+ 	codec->end_nid = start_nid + nums;
+@@ -408,36 +415,6 @@ int snd_hdac_refresh_widgets(struct hdac_device *codec)
  }
+ EXPORT_SYMBOL_GPL(snd_hdac_refresh_widgets);
+ 
+-/**
+- * snd_hdac_refresh_widget_sysfs - Reset the codec widgets and reinit the
+- * codec sysfs
+- * @codec: the codec object
+- *
+- * first we need to remove sysfs, then refresh widgets and lastly
+- * recreate it
+- */
+-int snd_hdac_refresh_widget_sysfs(struct hdac_device *codec)
+-{
+-	int ret;
+-
+-	if (device_is_registered(&codec->dev))
+-		hda_widget_sysfs_exit(codec);
+-	ret = snd_hdac_refresh_widgets(codec);
+-	if (ret) {
+-		dev_err(&codec->dev, "failed to refresh widget: %d\n", ret);
+-		return ret;
+-	}
+-	if (device_is_registered(&codec->dev)) {
+-		ret = hda_widget_sysfs_init(codec);
+-		if (ret) {
+-			dev_err(&codec->dev, "failed to init sysfs: %d\n", ret);
+-			return ret;
+-		}
+-	}
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_refresh_widget_sysfs);
+-
+ /* return CONNLIST_LEN parameter of the given widget */
+ static unsigned int get_num_conns(struct hdac_device *codec, hda_nid_t nid)
+ {
+diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
+index 42d61bf41969..e123ba6b2e81 100644
+--- a/sound/hda/hdac_sysfs.c
++++ b/sound/hda/hdac_sysfs.c
+@@ -414,3 +414,50 @@ void hda_widget_sysfs_exit(struct hdac_device *codec)
+ {
+ 	widget_tree_free(codec);
+ }
++
++int hda_widget_sysfs_reinit(struct hdac_device *codec,
++			    hda_nid_t start_nid, int num_nodes)
++{
++	struct hdac_widget_tree *tree;
++	hda_nid_t end_nid = start_nid + num_nodes;
++	hda_nid_t nid;
++	int i;
++
++	if (!codec->widgets)
++		return hda_widget_sysfs_init(codec);
++
++	tree = kmemdup(codec->widgets, sizeof(*tree), GFP_KERNEL);
++	if (!tree)
++		return -ENOMEM;
++
++	tree->nodes = kcalloc(num_nodes + 1, sizeof(*tree->nodes), GFP_KERNEL);
++	if (!tree->nodes) {
++		kfree(tree);
++		return -ENOMEM;
++	}
++
++	/* prune non-existing nodes */
++	for (i = 0, nid = codec->start_nid; i < codec->num_nodes; i++, nid++) {
++		if (nid < start_nid || nid >= end_nid)
++			free_widget_node(codec->widgets->nodes[i],
++					 &widget_node_group);
++	}
++
++	/* add new nodes */
++	for (i = 0, nid = start_nid; i < num_nodes; i++, nid++) {
++		if (nid < codec->start_nid || nid >= codec->end_nid)
++			add_widget_node(tree->root, nid, &widget_node_group,
++					&tree->nodes[i]);
++		else
++			tree->nodes[i] =
++				codec->widgets->nodes[nid - codec->start_nid];
++	}
++
++	/* replace with the new tree */
++	kfree(codec->widgets->nodes);
++	kfree(codec->widgets);
++	codec->widgets = tree;
++
++	kobject_uevent(tree->root, KOBJ_CHANGE);
++	return 0;
++}
+diff --git a/sound/hda/local.h b/sound/hda/local.h
+index 0d5bb159d538..c586ea62d49e 100644
+--- a/sound/hda/local.h
++++ b/sound/hda/local.h
+@@ -28,6 +28,8 @@ static inline unsigned int get_wcaps_channels(u32 wcaps)
+ 
+ extern const struct attribute_group *hdac_dev_attr_groups[];
+ int hda_widget_sysfs_init(struct hdac_device *codec);
++int hda_widget_sysfs_reinit(struct hdac_device *codec, hda_nid_t start_nid,
++			    int num_nodes);
+ void hda_widget_sysfs_exit(struct hdac_device *codec);
+ 
+ #endif /* __HDAC_LOCAL_H */
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 3db26c451837..bb086665c3e0 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -977,7 +977,7 @@ int snd_hda_codec_update_widgets(struct hda_codec *codec)
+ 	hda_nid_t fg;
+ 	int err;
+ 
+-	err = snd_hdac_refresh_widget_sysfs(&codec->core);
++	err = snd_hdac_refresh_widgets(&codec->core, true);
+ 	if (err < 0)
+ 		return err;
  
 -- 
 2.14.2
