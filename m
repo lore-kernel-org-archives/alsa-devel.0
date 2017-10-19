@@ -1,115 +1,227 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 00/14] soundwire: Add a new SoundWire subsystem
-Date: Thu, 19 Oct 2017 08:33:16 +0530
-Message-ID: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 28DE2267503
- for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 04:59:17 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH 01/14] Documentation: Add SoundWire summary
+Date: Thu, 19 Oct 2017 08:33:17 +0530
+Message-ID: <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-So today we celebrate Diwali, the festival of lights in this part of
-the world. On this occasion I would like to add a new Linux subsystem.
+From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-This patch series adds a new SoundWire subsystem which implements a
-new MIPI bus protocol 'SoundWire'.
+SoundWire is a new Linux bus which implements a new MIPI bus protocol
+'SoundWire'. The summary of SoundWire bus and registration APIs is
+documented in the 'summary' file.
 
-The SoundWire protocol is a robust, scalable, low complexity, low
-power, low latency, two-pin (clock and data) multi-drop bus that
-allows for the transfer of multiple audio streams and embedded
-control/commands.  SoundWire provides synchronization capabilities and
-supports both PCM and PDM, multichannel data, isochronous and
-asynchronous modes.
-
-This series adds SoundWire Bus, IO transfers, DisCo (Discovery and
-Configuration) sysfs interface, regmap and Documentation summary
-
-This patch series is also available on
-git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git
-topic/patch_v1
-
-This is first version of the patch which incorporates lots of changes
-based on the RFC series posted last year
-https://lkml.org/lkml/2016/10/21/395
-
-
-Sanyog Kale (4):
-  Documentation: Add SoundWire summary
-  soundwire: Add SoundWire MIPI defined registers
-  soundwire: Add Slave status handling helpers
-  soundwire: cdns: Add sdw_master_ops and IO transfer support
-
-Vinod Koul (10):
-  soundwire: Add SoundWire bus type
-  soundwire: Add Master registration
-  soundwire: Add MIPI DisCo property helpers
-  soundwire: Add IO transfer
-  regmap: Add SoundWire bus support
-  soundwire: Add slave status handling
-  soundwire: Add sysfs for SoundWire DisCo properties
-  soundwire: cdns: Add cadence module
-  soundwire: intel: Add Intel Master driver
-  soundwire: intel: Add Intel init module
-
- Documentation/soundwire/summary.txt     | 192 +++++++
- drivers/Kconfig                         |   2 +
- drivers/Makefile                        |   1 +
- drivers/base/regmap/Kconfig             |   4 +
- drivers/base/regmap/Makefile            |   1 +
- drivers/base/regmap/regmap-sdw.c        | 146 +++++
- drivers/soundwire/Kconfig               |  37 ++
- drivers/soundwire/Makefile              |  18 +
- drivers/soundwire/bus.c                 | 983 ++++++++++++++++++++++++++++++++
- drivers/soundwire/bus.h                 | 119 ++++
- drivers/soundwire/bus_type.c            | 245 ++++++++
- drivers/soundwire/cadence_master.c      | 793 ++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h      |  94 +++
- drivers/soundwire/intel.c               | 395 +++++++++++++
- drivers/soundwire/intel.h               |  70 +++
- drivers/soundwire/intel_init.c          | 230 ++++++++
- drivers/soundwire/mipi_disco.c          | 421 ++++++++++++++
- drivers/soundwire/slave.c               | 173 ++++++
- drivers/soundwire/sysfs.c               | 396 +++++++++++++
- include/linux/mod_devicetable.h         |   7 +
- include/linux/regmap.h                  |  37 ++
- include/linux/soundwire/sdw.h           | 564 ++++++++++++++++++
- include/linux/soundwire/sdw_intel.h     |  72 +++
- include/linux/soundwire/sdw_registers.h | 238 ++++++++
- scripts/mod/devicetable-offsets.c       |   5 +
- scripts/mod/file2alias.c                |  16 +
- 26 files changed, 5259 insertions(+)
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ Documentation/soundwire/summary.txt | 192 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 192 insertions(+)
  create mode 100644 Documentation/soundwire/summary.txt
- create mode 100644 drivers/base/regmap/regmap-sdw.c
- create mode 100644 drivers/soundwire/Kconfig
- create mode 100644 drivers/soundwire/Makefile
- create mode 100644 drivers/soundwire/bus.c
- create mode 100644 drivers/soundwire/bus.h
- create mode 100644 drivers/soundwire/bus_type.c
- create mode 100644 drivers/soundwire/cadence_master.c
- create mode 100644 drivers/soundwire/cadence_master.h
- create mode 100644 drivers/soundwire/intel.c
- create mode 100644 drivers/soundwire/intel.h
- create mode 100644 drivers/soundwire/intel_init.c
- create mode 100644 drivers/soundwire/mipi_disco.c
- create mode 100644 drivers/soundwire/slave.c
- create mode 100644 drivers/soundwire/sysfs.c
- create mode 100644 include/linux/soundwire/sdw.h
- create mode 100644 include/linux/soundwire/sdw_intel.h
- create mode 100644 include/linux/soundwire/sdw_registers.h
 
+diff --git a/Documentation/soundwire/summary.txt b/Documentation/soundwire/summary.txt
+new file mode 100644
+index 000000000000..15b78e6e3347
+--- /dev/null
++++ b/Documentation/soundwire/summary.txt
+@@ -0,0 +1,192 @@
++SoundWire
++===========
++
++SoundWire is a new interface ratified in 2015 by the MIPI Alliance.
++SoundWire is used for transporting data typically related to audio
++functions. SoundWire interface is optimized to integrate audio devices in
++mobile or mobile inspired systems.
++
++SoundWire is a 2-Pin multi-drop interface with data and clock line. It
++facilitates development of low cost, efficient, high performance systems.
++Broad level key features of SoundWire interface include:
++  1. Transporting all of payload data channels, control information, and setup
++  commands over a single two-pin interface.
++  2. Lower clock frequency, and hence lower power consumption, by use of DDR
++  (Dual Data Rate) data transmission.
++  3. Clock scaling and optional multiple data lanes to give wide flexibility
++  in data rate to match system requirements.
++  4. Device status monitoring, including interrupt-style alerts to the Master.
++
++The SoundWire protocol supports up to eleven Slave interfaces. All the
++interfaces share the common Bus containing data and clock line. Each of the
++Slaves can support up to 14 Data Ports. 13 Data Ports are dedicated to audio
++transport. Data Port0 is dedicated to transport of Bulk control information,
++each of the audio Data Ports (1..14) can support up to 8 Channels in
++transmit or receiving mode (typically fixed direction but configurable
++direction is enabled by the specification).  Bandwidth restrictions to
++~19.2..24.576Mbits/s don't however allow for 11*13*8 channels to be
++transmitted simultaneously.
++
++Below figure shows an example of connectivity between a SoundWire Master and
++two Slave devices.
++
+++---------------+                                       +---------------+
++|               |                       Clock Signal    |               |
++|    Master     |-------+-------------------------------|    Slave      |
++|   Interface   |       |               Data Signal     |  Interface 1  |
++|               |-------|-------+-----------------------|               |
+++---------------+       |       |                       +---------------+
++                        |       |
++                        |       |
++                        |       |
++                     +--+-------+--+
++                     |             |
++                     |   Slave     |
++                     | Interface 2 |
++                     |             |
++                     +-------------+
++
++Terminology
++=============
++
++The MIPI SoundWire specification uses the term 'device' to refer to a Master
++or Slave interface, which of course can be confusing. In this summary and
++code we use the term interface only to refer to the hardware. We follow the
++Linux device model by mapping each Slave interface connected on the bus as a
++device managed by a specific driver. The Linux SoundWire subsystem provides
++a framework to implement a SoundWire Slave driver with an API allowing
++3rd-party vendors to enable implementation-defined functionality while
++common setup/configuration tasks are handled by the bus.
++
++Bus:
++Implements SoundWire Linux Bus which handles the SoundWire protocol.
++It programs all the MIPI defined Slave registers. It represents a SoundWire
++Master. There can be multiple instances of Bus maybe present in a system.
++
++Slave:
++Registers as SoundWire Slave device (Linux Device). Multiple Slave devices
++can register to a Bus instance.
++
++Slave driver:
++Driver controlling the Slave device. MIPI-specified registers are controlled
++directly by the Bus (and transmitted through the Master driver/interface).
++Any implementation-defined Slave register is controlled by Slave driver. In
++practice, it is expected that the Slave driver relies on regmap and does not
++request direct register access.
++
++Programming interfaces (SoundWire Master interface Driver)
++==========================================================
++
++SoundWire Bus supports programming interfaces for the SoundWire Master
++implementation and SoundWire Slave devices. All the code uses the "sdw"
++prefix commonly used by SoC designers and 3rd party vendors.
++
++Each of the SoundWire Master interfaces needs to be registered to the Bus.
++Bus implements API to read standard Master MIPI properties and also provides
++callback in Master ops for Master driver to implement own functions that
++provides capabilities information. DT support is not implemented at this
++time but should be trivial to add since capabilities are enabled with the
++device_property_ API.
++
++The Master interface along with the Master interface capabilities are
++registered based on board file, DT or ACPI.
++
++Following is the Bus API to register the SoundWire Bus.
++
++int sdw_add_bus_master(struct sdw_bus *bus)
++{
++        if (!bus->dev)
++                return -ENODEV;
++
++        mutex_init(&bus->lock);
++        INIT_LIST_HEAD(&bus->slaves);
++
++	/* Check ACPI for Slave devices */
++        sdw_acpi_find_slaves(bus);
++
++	/* Check DT for Slave devices */
++	sdw_of_find_slaves(bus);
++
++        return 0;
++}
++
++This will initialize sdw_bus object for Master device. "sdw_master_ops" and
++"sdw_master_port_ops" callback functions are provided to the Bus.
++
++"sdw_master_ops" is used by Bus to control the Bus in the hardware specific
++way. It includes Bus control functions such as sending the SoundWire
++read/write messages on Bus, setting up clock frequency & Stream
++Synchronization Point (SSP). The "sdw_master_ops" structure abstracts the
++hardware details of the Master from the Bus.
++
++"sdw_master_port_ops" is used by Bus to setup the Port parameters of the
++Master interface Port. Master interface Port register map is not defined by
++MIPI specification, so Bus calls the "sdw_master_port_ops" callback
++function to do Port operations like "Port Prepare", "Port Transport params
++set", "Port enable and disable". The implementation of the Master driver can
++then perform hardware-specific configurations.
++
++Programming interfaces (SoundWire Slave Driver)
++===============================================
++
++The MIPI specification requires each Slave interface to expose a unique
++48-bit identifier, stored in 6 read only dev_id registers. This dev_id
++identifier contains vendor and part information, as well as a field enabling
++to differentiate between identical components. An additional class field is
++currently unused. Slave driver is written for the specific 48-bit
++identifier, Bus enumerates the Slave device based on the 48-bit identifier.
++Slave device and driver match is done based on this 48-bit identifier. Probe
++of the Slave driver is called by Bus on successful match between device and
++driver id. A parent/child relationship is enforced between Slave and Master
++devices (the logical representation is aligned with the physical
++connectivity).
++
++The information on Master/Slave dependencies is stored in platform data,
++board-file, ACPI or DT. The MIPI Software specification defines an
++additional link_id parameters for controllers that have multiple Master
++interfaces. The dev_id registers are only unique in the scope of a link, and
++the link_id unique in the scope of a controller. Both dev_id and link_id are
++not necessarily unique at the system level but the parent/child information
++is used to avoid ambiguity.
++
++static const struct sdw_device_id slave_id[] = {
++        SDW_SLAVE_ENTRY(0x025d, 0x700, 0),
++        {},
++};
++MODULE_DEVICE_TABLE(sdw, slave_id);
++
++static struct sdw_driver slave_sdw_driver = {
++        .driver = {
++                   .name = "slave_xxx",
++                   .pm = &slave_runtime_pm,
++                   },
++	.probe = slave_sdw_probe,
++	.remove = slave_sdw_remove,
++	.ops = &slave_slave_ops,
++	.id_table = slave_id,
++};
++
++
++For capabilities, Bus implements API to read standard Slave MIPI properties
++and also provides callback in Slave ops for Slave driver to implement own
++function that provides capabilities information. Bus needs to know a set of
++Slave capabilities to program Slave registers and to control the Bus
++reconfigurations.
++
++Future enhancements to be done:
++===============================
++1. Bulk Register Access (BRA) transfers.
++2. Multiple data lane support.
++
++Links:
++=====
++
++SoundWire MIPI specification 1.1 is available at:
++https://members.mipi.org/wg/All-Members/document/70290
++
++SoundWire MIPI DisCo (Discovery and Configuration) specification is
++available at:
++https://www.mipi.org/specifications/mipi-disco-soundwire
++
++(publicly accessible with registration or directly accessible to MIPI
++members)
 -- 
 2.7.4
