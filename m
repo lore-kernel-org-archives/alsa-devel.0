@@ -1,79 +1,92 @@
-From: Carlo Caione <carlo@endlessm.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: rt5651: Enable jack detection on JD1_1
-Date: Thu, 19 Oct 2017 16:54:33 +0100
-Message-ID: <CAL9uMOGu+enNVkRwC7=MG_Tg8wmOGaJTaNsCxj28JCFkYeRVaw@mail.gmail.com>
-References: <20171019110323.23751-1-carlo@caione.org> <20171019110323.23751-2-carlo@caione.org>
- <d8041bdf-8fd1-1bf3-45e1-cd3fd1b57459@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] ASoC: intel: byt: Add headset jack
+Date: Thu, 19 Oct 2017 10:56:05 -0500
+Message-ID: <a694f9cd-4521-ad4a-6a60-1dcc9e21f8ae@linux.intel.com>
+References: <20171019110323.23751-1-carlo@caione.org>
+ <20171019110323.23751-3-carlo@caione.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d8041bdf-8fd1-1bf3-45e1-cd3fd1b57459@linux.intel.com>
+In-Reply-To: <20171019110323.23751-3-carlo@caione.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Carlo Caione <carlo@caione.org>, Linux Upstreaming Team <linux@endlessm.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, Albert Chen <albertchen@realtek.com>, Edgar Shen <edgar_shen@realtek.com>
+To: Carlo Caione <carlo@caione.org>, linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, albertchen@realtek.com, edgar_shen@realtek.com
+Cc: Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 19, 2017 at 4:47 PM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> On 10/19/17 6:03 AM, Carlo Caione wrote:
->>
->> From: Carlo Caione <carlo@endlessm.com>
->>
->> Enable jack detection or the RT5651 codec on the JD1_1 pin.
->
-> Nice, but the codec supports a second jack detection on JD1 and has a second
-> JD2 pin. I will bet that some devices will have a different routing and I
-> wonder if we could just add support for all options.
+On 10/19/17 6:03 AM, Carlo Caione wrote:
+> From: Carlo Caione <carlo@endlessm.com>
+> 
+> Introduce an headset jack in the machine driver and register it to the
+> codec driver.
+> 
+> Signed-off-by: Carlo Caione <carlo@endlessm.com>
+> ---
+>   sound/soc/intel/boards/bytcr_rt5651.c | 24 ++++++++++++++++++++++++
+>   1 file changed, 24 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+> index 1dad5c98c9ef..0fc850e20fc0 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+> @@ -49,6 +49,8 @@ struct byt_rt5651_private {
+>   	struct clk *mclk;
+>   };
+>   
+> +static struct snd_soc_jack jack;
 
-I can write support for that but I have no hardware to actually test
-it, that's why I left those cases out.
+nit-pick: we usually push the jack into the structure just above.
 
->> The codec has no means to detect the type of the jack connected so we
->> assume that the jack is always an headset jack.
->
-> that's odd, was this confirmed by Realtek?
+> +
+>   static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
+>   					BYT_RT5651_DMIC_EN |
+>   					BYT_RT5651_MCLK_EN;
 
-The Realtek people are in CC :)
-Probably there is way but in the datasheet there is nothing about that
-(or did I miss it?)
+wondering if we need quirks here to manage the IN2P/JD2 exclusion at 
+some point.
 
->> Signed-off-by: Carlo Caione <carlo@endlessm.com>
->> ---
->>   include/sound/rt5651.h    |  7 ++++
->>   sound/soc/codecs/rt5651.c | 91
->> +++++++++++++++++++++++++++++++++++++++++++++--
->>   sound/soc/codecs/rt5651.h |  3 ++
->>   3 files changed, 99 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/sound/rt5651.h b/include/sound/rt5651.h
->> index d35de758dfb5..c563383149c4 100644
->> --- a/include/sound/rt5651.h
->> +++ b/include/sound/rt5651.h
->> @@ -11,11 +11,18 @@
->>   #ifndef __LINUX_SND_RT5651_H
->>   #define __LINUX_SND_RT5651_H
->>   +enum rt5651_jd_src {
->> +       RT5651_JD_NULL,
->> +       RT5651_JD1_1,
->> +};
->> +
->>   struct rt5651_platform_data {
->>         /* IN2 can optionally be differential */
->>         bool in2_diff;
->>         bool dmic_en;
->> +
->> +       enum rt5651_jd_src jd_src;
->
->
-> I don't see code that sets this platform data, is there a quirk or
-> of_property missing in this patchset?
-
-Yes, it is supposed to be enabled by a quirk. In general (personal
-taste) I prefer to post the quirk enabling code after the base code
-has been ACKed. If you feel like it I can post also the quirk code
-together with the next respin of this patchset.
-
-Thank you,
-
--- 
-Carlo Caione  |  +39.340.80.30.096  |  Endless
+> @@ -177,6 +179,17 @@ static const struct snd_kcontrol_new byt_rt5651_controls[] = {
+>   	SOC_DAPM_PIN_SWITCH("Speaker"),
+>   };
+>   
+> +static struct snd_soc_jack_pin bytcr_jack_pins[] = {
+> +	{
+> +		.pin	= "Headphone",
+> +		.mask	= SND_JACK_HEADPHONE,
+> +	},
+> +	{
+> +		.pin	= "Headset Mic",
+> +		.mask	= SND_JACK_MICROPHONE,
+> +	},
+> +};
+> +
+>   static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+>   					struct snd_pcm_hw_params *params)
+>   {
+> @@ -244,6 +257,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+>   static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+>   {
+>   	struct snd_soc_card *card = runtime->card;
+> +	struct snd_soc_codec *codec = runtime->codec;
+>   	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
+>   	const struct snd_soc_dapm_route *custom_map;
+>   	int num_routes;
+> @@ -301,6 +315,16 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+>   			dev_err(card->dev, "unable to set MCLK rate\n");
+>   	}
+>   
+> +	ret = snd_soc_card_jack_new(runtime->card, "Headset",
+> +				    SND_JACK_HEADSET, &jack,
+> +				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
+> +	if (ret) {
+> +		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	rt5651_set_jack_detect(codec, &jack);
+> +
+>   	return ret;
+>   }
+>   
+> 
