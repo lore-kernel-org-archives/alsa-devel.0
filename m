@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 11/14] soundwire: cdns: Add cadence module
-Date: Thu, 19 Oct 2017 08:33:27 +0530
-Message-ID: <1508382211-3154-12-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 14/14] soundwire: intel: Add Intel init module
+Date: Thu, 19 Oct 2017 08:33:30 +0530
+Message-ID: <1508382211-3154-15-git-send-email-vinod.koul@intel.com>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
@@ -10,51 +10,36 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cadence IP implements SoundWire Master. Add base cadence module
-initialization and interrupt handling
+The SoundWire Master is implemented as part of Audio controller in
+Intel platforms. Add a init module which creates SoundWire Master
+platform devices based on the links supported in the hardware.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Kconfig          |   3 +
- drivers/soundwire/Makefile         |   4 +
- drivers/soundwire/cadence_master.c | 470 +++++++++++++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h |  80 +++++++
- 4 files changed, 557 insertions(+)
- create mode 100644 drivers/soundwire/cadence_master.c
- create mode 100644 drivers/soundwire/cadence_master.h
+ drivers/soundwire/Makefile          |   3 +
+ drivers/soundwire/intel_init.c      | 230 ++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw_intel.h |   3 +
+ 3 files changed, 236 insertions(+)
+ create mode 100644 drivers/soundwire/intel_init.c
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index d63295015331..677789cf4745 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -20,4 +20,7 @@ config SOUNDWIRE_BUS
- 	default SOUNDWIRE
- 	select REGMAP_SOUNDWIRE
- 
-+config SOUNDWIRE_CADENCE
-+	tristate
-+
- endif
 diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index 67dc7b546258..f9a1ce3a860e 100644
+index 0813b2c74426..94272c965d6c 100644
 --- a/drivers/soundwire/Makefile
 +++ b/drivers/soundwire/Makefile
-@@ -5,3 +5,7 @@
- #Bus Objs
- soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o sysfs.o
- obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+@@ -13,3 +13,6 @@ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+ #Intel driver
+ soundwire-intel-objs :=	intel.o
+ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
 +
-+#Cadence Objs
-+soundwire-cadence-objs := cadence_master.o
-+obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
++soundwire-intel-init-objs := intel_init.o
++obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel-init.o
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
 new file mode 100644
-index 000000000000..fc287cca9579
+index 000000000000..188cb2052842
 --- /dev/null
-+++ b/drivers/soundwire/cadence_master.c
-@@ -0,0 +1,470 @@
++++ b/drivers/soundwire/intel_init.c
+@@ -0,0 +1,230 @@
 +/*
 + *  This file is provided under a dual BSD/GPLv2 license.  When using or
 + *  redistributing this file, you may do so under either license.
@@ -105,511 +90,197 @@ index 000000000000..fc287cca9579
 + */
 +
 +/*
-+ * Cadence SoundWire Master module
-+ * Used by Master driver
++ * SDW Intel Init Routines
++ *
++ * Initializes and creates SDW devices based on ACPI and Hardware values
 + */
 +
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <linux/soundwire/sdw.h>
-+#include "bus.h"
-+#include "cadence_master.h"
-+
-+#define CDNS_MCP_CONFIG				0x0
-+
-+#define CDNS_MCP_CONFIG_MCMD_RETRY		GENMASK(27, 24)
-+#define CDNS_MCP_CONFIG_MPREQ_DELAY		GENMASK(20, 16)
-+#define CDNS_MCP_CONFIG_MMASTER			BIT(7)
-+#define CDNS_MCP_CONFIG_BUS_REL			BIT(6)
-+#define CDNS_MCP_CONFIG_SNIFFER			BIT(5)
-+#define CDNS_MCP_CONFIG_SSPMOD			BIT(4)
-+#define CDNS_MCP_CONFIG_CMD			BIT(3)
-+#define CDNS_MCP_CONFIG_OP			GENMASK(2, 0)
-+#define CDNS_MCP_CONFIG_OP_NORMAL		0
-+
-+#define CDNS_MCP_CONTROL			0x4
-+
-+#define CDNS_MCP_CONTROL_RST_DELAY		GENMASK(10, 8)
-+#define CDNS_MCP_CONTROL_CMD_RST		BIT(7)
-+#define CDNS_MCP_CONTROL_SOFT_RST		BIT(6)
-+#define CDNS_MCP_CONTROL_SW_RST			BIT(5)
-+#define CDNS_MCP_CONTROL_HW_RST			BIT(4)
-+#define CDNS_MCP_CONTROL_CLK_PAUSE		BIT(3)
-+#define CDNS_MCP_CONTROL_CLK_STOP_CLR		BIT(2)
-+#define CDNS_MCP_CONTROL_CMD_ACCEPT		BIT(1)
-+#define CDNS_MCP_CONTROL_BLOCK_WAKEUP		BIT(0)
-+
-+
-+#define CDNS_MCP_CMDCTRL			0x8
-+#define CDNS_MCP_SSPSTAT			0xC
-+#define CDNS_MCP_FRAME_SHAPE			0x10
-+#define CDNS_MCP_FRAME_SHAPE_INIT		0x14
-+
-+#define CDNS_MCP_CONFIG_UPDATE			0x18
-+#define CDNS_MCP_CONFIG_UPDATE_BIT		BIT(0)
-+
-+#define CDNS_MCP_PHYCTRL			0x1C
-+#define CDNS_MCP_SSP_CTRL0			0x20
-+#define CDNS_MCP_SSP_CTRL1			0x28
-+#define CDNS_MCP_CLK_CTRL0			0x30
-+#define CDNS_MCP_CLK_CTRL1			0x38
-+
-+#define CDNS_MCP_STAT				0x40
-+
-+#define CDNS_MCP_STAT_ACTIVE_BANK		BIT(20)
-+#define CDNS_MCP_STAT_CLK_STOP			BIT(16)
-+
-+#define CDNS_MCP_INTSTAT			0x44
-+#define CDNS_MCP_INTMASK			0x48
-+
-+#define CDNS_MCP_INT_IRQ			BIT(31)
-+#define CDNS_MCP_INT_WAKEUP			BIT(16)
-+#define CDNS_MCP_INT_SLAVE_RSVD			BIT(15)
-+#define CDNS_MCP_INT_SLAVE_ALERT		BIT(14)
-+#define CDNS_MCP_INT_SLAVE_ATTACH		BIT(13)
-+#define CDNS_MCP_INT_SLAVE_NATTACH		BIT(12)
-+#define CDNS_MCP_INT_SLAVE_MASK			GENMASK(15, 12)
-+#define CDNS_MCP_INT_DPINT			BIT(11)
-+#define CDNS_MCP_INT_CTRL_CLASH			BIT(10)
-+#define CDNS_MCP_INT_DATA_CLASH			BIT(9)
-+#define CDNS_MCP_INT_CMD_ERR			BIT(7)
-+#define CDNS_MCP_INT_RX_WL			BIT(2)
-+#define CDNS_MCP_INT_TXE			BIT(1)
-+
-+#define CDNS_MCP_INTSET				0x4C
-+
-+#define CDNS_SDW_SLAVE_STAT			0x50
-+#define CDNS_MCP_SLAVE_STAT_MASK		BIT(1, 0)
-+
-+#define CDNS_MCP_SLAVE_INTSTAT0			0x54
-+#define CDNS_MCP_SLAVE_INTSTAT1			0x58
-+#define CDNS_MCP_SLAVE_INTSTAT_NPRESENT		BIT(0)
-+#define CDNS_MCP_SLAVE_INTSTAT_ATTACHED		BIT(1)
-+#define CDNS_MCP_SLAVE_INTSTAT_ALERT		BIT(2)
-+#define CDNS_MCP_SLAVE_INTSTAT_RESERVED		BIT(3)
-+#define CDNS_MCP_SLAVE_STATUS_BITS		GENMASK(3, 0)
-+#define CDNS_MCP_SLAVE_STATUS_NUM		4
-+
-+#define CDNS_MCP_SLAVE_INTMASK0			0x5C
-+#define CDNS_MCP_SLAVE_INTMASK1			0x60
-+
-+#define CDNS_MCP_SLAVE_INTMASK0_MASK		GENMASK(30, 0)
-+#define CDNS_MCP_SLAVE_INTMASK1_MASK		GENMASK(16, 0)
-+
-+#define CDNS_MCP_PORT_INTSTAT			0x64
-+#define CDNS_MCP_PDI_STAT			0x6C
-+
-+#define CDNS_MCP_FIFOLEVEL			0x78
-+#define CDNS_MCP_FIFOSTAT			0x7C
-+#define CDNS_MCP_RX_FIFO_AVAIL			GENMASK(5, 0)
-+
-+#define CDNS_MCP_CMD_BASE			0x80
-+#define CDNS_MCP_RESP_BASE			0x80
-+#define CDNS_MCP_CMD_LEN			0x20
-+#define CDNS_MCP_CMD_WORD_LEN			0x4
-+
-+#define CDNS_MCP_CMD_SSP_TAG			BIT(31)
-+#define CDNS_MCP_CMD_COMMAND			GENMASK(30, 28)
-+#define CDNS_MCP_CMD_DEV_ADDR			GENMASK(27, 24)
-+#define CDNS_MCP_CMD_REG_ADDR_H			GENMASK(23, 16)
-+#define CDNS_MCP_CMD_REG_ADDR_L			GENMASK(15, 8)
-+#define CDNS_MCP_CMD_REG_DATA			GENMASK(7, 0)
-+
-+#define CDNS_MCP_CMD_READ			2
-+#define CDNS_MCP_CMD_WRITE			3
-+
-+#define CDNS_MCP_RESP_RDATA			GENMASK(15, 8)
-+#define CDNS_MCP_RESP_ACK			BIT(0)
-+#define CDNS_MCP_RESP_NACK			BIT(1)
-+
-+#define CDNS_DP_SIZE				128
-+
-+#define CDNS_DPN_B0_CONFIG(n)			(0x100 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_CH_EN(n)			(0x104 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_SAMPLE_CTRL(n)		(0x108 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_OFFSET_CTRL(n)		(0x10C + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_HCTRL(n)			(0x110 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_ASYNC_CTRL(n)		(0x114 + CDNS_DP_SIZE * (n))
-+
-+#define CDNS_DPN_B1_CONFIG(n)			(0x118 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_CH_EN(n)			(0x11C + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_SAMPLE_CTRL(n)		(0x120 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_OFFSET_CTRL(n)		(0x124 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_HCTRL(n)			(0x128 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_ASYNC_CTRL(n)		(0x12C + CDNS_DP_SIZE * (n))
-+
-+#define CDNS_DPN_CONFIG_BPM			BIT(18)
-+#define CDNS_DPN_CONFIG_BGC			GENMASK(17, 16)
-+#define CDNS_DPN_CONFIG_WL			GENMASK(12, 8)
-+#define CDNS_DPN_CONFIG_PORT_DAT		GENMASK(3, 2)
-+#define CDNS_DPN_CONFIG_PORT_FLOW		GENMASK(1, 0)
-+
-+#define CDNS_DPN_SAMPLE_CTRL_SI			GENMASK(15, 0)
-+
-+#define CDNS_DPN_OFFSET_CTRL_1			GENMASK(7, 0)
-+#define CDNS_DPN_OFFSET_CTRL_2			GENMASK(15, 8)
-+
-+#define CDNS_DPN_HCTRL_HSTOP			GENMASK(3, 0)
-+#define CDNS_DPN_HCTRL_HSTART			GENMASK(7, 4)
-+#define CDNS_DPN_HCTRL_LCTRL			GENMASK(10, 8)
-+
-+#define CDNS_PORTCTRL				0x130
-+#define CDNS_PORTCTRL_DIRN			BIT(7)
-+#define CDNS_PORTCTRL_BANK_INVERT		BIT(8)
-+
-+#define CDNS_PORT_OFFSET			0x80
-+
-+#define CDNS_PDI_CONFIG(n)			(0x1100 + (n) * 16)
-+
-+#define CDNS_PDI_CONFIG_SOFT_RESET		BIT(24)
-+#define CDNS_PDI_CONFIG_CHANNEL			GENMASK(15, 8)
-+#define CDNS_PDI_CONFIG_PORT			GENMASK(4, 0)
-+
-+/* Driver defaults */
-+
-+#define CDNS_DEFAULT_CLK_DIVIDER		0
-+#define CDNS_DEFAULT_FRAME_SHAPE		0x30
-+#define CDNS_DEFAULT_SSP_INTERVAL		0x18
-+#define CDNS_TX_TIMEOUT				2000
-+
-+#define CDNS_PCM_PDI_OFFSET			0x2
-+#define CDNS_PDM_PDI_OFFSET			0x6
-+
-+#define CDNS_SCP_RX_FIFOLEVEL			0x2
-+
-+/*
-+ * register accessor helpers
-+ */
-+static inline u32 cdns_readl(struct sdw_cdns *cdns, int offset)
-+{
-+	return readl(cdns->registers + offset);
-+}
-+
-+static inline void cdns_writel(struct sdw_cdns *cdns, int offset, u32 value)
-+{
-+	writel(value, cdns->registers + offset);
-+}
-+
-+static inline void cdns_updatel(struct sdw_cdns *cdns,
-+				int offset, u32 mask, u32 val)
-+{
-+	u32 tmp;
-+
-+	tmp = cdns_readl(cdns, offset);
-+	tmp = (tmp & ~mask) | val;
-+	cdns_writel(cdns, offset, tmp);
-+}
-+
-+static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
-+{
-+	int timeout = 10;
-+	u32 reg_read;
-+
-+	writel(value, cdns->registers + offset);
-+
-+	/* Wait for bit to be self cleared */
-+	do {
-+		reg_read = readl(cdns->registers + offset);
-+		if ((reg_read & value) == 0)
-+			return 0;
-+
-+		timeout--;
-+		usleep_range(1, 50);
-+	} while (timeout != 0);
-+
-+	return -EIO;
-+}
-+
-+/*
-+ * IRQ handling
-+ */
-+
-+static int cdns_update_slave_status(struct sdw_cdns *cdns,
-+					u32 slave0, u32 slave1)
-+{
-+	enum sdw_slave_status status[SDW_MAX_DEVICES];
-+	bool is_slave = false;
-+	u64 slave, mask;
-+	int i, set_status;
-+
-+	/* combine the two status */
-+	slave = ((u64)slave1 << 32) | slave0;
-+	memset(status, 0, sizeof(status));
-+
-+	for (i = 0; i <= SDW_MAX_DEVICES; i++) {
-+		mask = (slave >> (i * CDNS_MCP_SLAVE_STATUS_NUM)) &
-+				CDNS_MCP_SLAVE_STATUS_BITS;
-+		if (!mask)
-+			continue;
-+
-+		is_slave = true;
-+		set_status = 0;
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_RESERVED) {
-+			status[i] = SDW_SLAVE_RESERVED;
-+			dev_err(cdns->dev,
-+				"Slave %d reports RESERVED status", i);
-+			set_status++;
-+		}
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_ATTACHED) {
-+			status[i] = SDW_SLAVE_ATTACHED;
-+			set_status++;
-+		}
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_ALERT) {
-+			status[i] = SDW_SLAVE_ALERT;
-+			set_status++;
-+		}
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_NPRESENT) {
-+			status[i] = SDW_SLAVE_UNATTACHED;
-+			set_status++;
-+		}
-+
-+		/* first check if Slave reported multiple status */
-+		if (set_status > 1) {
-+			dev_warn(cdns->dev,
-+					"Slave reported multiple Status: %d\n",
-+					status[i]);
-+			/*
-+			 * TODO: we need to reread the status here by
-+			 * issuing a PING cmd, now clear this status
-+			 */
-+			status[i] = 0;
-+		}
-+	}
-+
-+	if (is_slave)
-+		return sdw_handle_slave_status(&cdns->bus, status);
-+
-+	return 0;
-+}
-+
-+irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
-+{
-+	struct sdw_cdns *cdns = dev_id;
-+	u32 int_status;
-+	int ret = IRQ_HANDLED;
-+
-+	/* Check if the link is up */
-+	if (!cdns->link_up)
-+		return IRQ_NONE;
-+
-+	int_status = cdns_readl(cdns, CDNS_MCP_INTSTAT);
-+
-+	if (!(int_status & CDNS_MCP_INT_IRQ))
-+		return IRQ_NONE;
-+
-+	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
-+
-+		/* Slave is driving bit slot during control word */
-+		dev_err_ratelimited(cdns->dev, "Bus clash for control word\n");
-+		int_status |= CDNS_MCP_INT_CTRL_CLASH;
-+	}
-+
-+	if (int_status & CDNS_MCP_INT_DATA_CLASH) {
-+		/*
-+		 * Multiple slaves trying to drive bit slot, or issue with
-+		 * ownership of data bits or Slave gone bonkers
-+		 */
-+		dev_err_ratelimited(cdns->dev, "Bus clash for data word\n");
-+		int_status |= CDNS_MCP_INT_DATA_CLASH;
-+	}
-+
-+	if (int_status & CDNS_MCP_INT_SLAVE_MASK) {
-+		/* Mask the Slave interrupt and wake thread */
-+		cdns_updatel(cdns, CDNS_MCP_INTMASK,
-+				CDNS_MCP_INT_SLAVE_MASK, 0);
-+
-+		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
-+		ret = IRQ_WAKE_THREAD;
-+	}
-+
-+	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sdw_cdns_irq);
-+
-+irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
-+{
-+	struct sdw_cdns *cdns = dev_id;
-+	u32 slave0, slave1;
-+
-+	dev_dbg(cdns->dev, "Slave status change\n");
-+
-+	slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
-+	slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
-+
-+	cdns_update_slave_status(cdns, slave0, slave1);
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT0, slave0);
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave1);
-+
-+	/* clear and unmask Slave interrupt now */
-+	cdns_writel(cdns, CDNS_MCP_INTSTAT, CDNS_MCP_INT_SLAVE_MASK);
-+	cdns_updatel(cdns, CDNS_MCP_INTMASK,
-+			CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
-+
-+	return IRQ_HANDLED;
-+}
-+EXPORT_SYMBOL(sdw_cdns_thread);
-+
-+/*
-+ * init routines
-+ */
-+
-+/**
-+ * sdw_cdns_init: Cadence initialization
-+ *
-+ * @cdns: Cadence instance
-+ */
-+int sdw_cdns_init(struct sdw_cdns *cdns)
-+{
-+	u32 val;
-+	int ret;
-+
-+	/* Exit clock stop */
-+	ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
-+			CDNS_MCP_CONTROL_CLK_STOP_CLR);
-+	if (ret < 0) {
-+		dev_err(cdns->dev, "Couldn't exit from clock stop\n");
-+		return ret;
-+	}
-+
-+	/* Set clock divider */
-+	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
-+	val |= CDNS_DEFAULT_CLK_DIVIDER;
-+	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
-+
-+	/* Set the default frame shape */
-+	cdns_writel(cdns, CDNS_MCP_FRAME_SHAPE_INIT, CDNS_DEFAULT_FRAME_SHAPE);
-+
-+	/* Set SSP interval to default value */
-+	cdns_writel(cdns, CDNS_MCP_SSP_CTRL0, CDNS_DEFAULT_SSP_INTERVAL);
-+	cdns_writel(cdns, CDNS_MCP_SSP_CTRL1, CDNS_DEFAULT_SSP_INTERVAL);
-+
-+	/* Set cmd accept mode */
-+	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
-+					CDNS_MCP_CONTROL_CMD_ACCEPT);
-+
-+	/* Configure mcp config */
-+	val = cdns_readl(cdns, CDNS_MCP_CONFIG);
-+
-+	/* Set Max cmd retry to 15 */
-+	val |= CDNS_MCP_CONFIG_MCMD_RETRY;
-+
-+	/* Set frame delay between PREQ and ping frame to 15 frames */
-+	val |= 0xF << SDW_REG_SHIFT(CDNS_MCP_CONFIG_MPREQ_DELAY);
-+
-+	/* Disable auto bus release */
-+	val &= ~CDNS_MCP_CONFIG_BUS_REL;
-+
-+	/* Disable sniffer mode */
-+	val &= ~CDNS_MCP_CONFIG_SNIFFER;
-+
-+	/* Set cmd mode for Tx and Rx cmds */
-+	val &= ~CDNS_MCP_CONFIG_CMD;
-+
-+	/* Set operation to normal */
-+	val &= ~CDNS_MCP_CONFIG_OP;
-+	val |= CDNS_MCP_CONFIG_OP_NORMAL;
-+
-+	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(sdw_cdns_init);
-+
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_DESCRIPTION("Cadence Soundwire Library");
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-new file mode 100644
-index 000000000000..9fafd74bc13b
---- /dev/null
-+++ b/drivers/soundwire/cadence_master.h
-@@ -0,0 +1,80 @@
-+/*
-+ *  This file is provided under a dual BSD/GPLv2 license.  When using or
-+ *  redistributing this file, you may do so under either license.
-+ *
-+ *  GPL LICENSE SUMMARY
-+ *
-+ *  Copyright(c) 2015-17 Intel Corporation.
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of version 2 of the GNU General Public License as
-+ *  published by the Free Software Foundation.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ *  BSD LICENSE
-+ *
-+ *  Copyright(c) 2015-17 Intel Corporation.
-+ *
-+ *  Redistribution and use in source and binary forms, with or without
-+ *  modification, are permitted provided that the following conditions
-+ *  are met:
-+ *
-+ *    * Redistributions of source code must retain the above copyright
-+ *      notice, this list of conditions and the following disclaimer.
-+ *    * Redistributions in binary form must reproduce the above copyright
-+ *      notice, this list of conditions and the following disclaimer in
-+ *      the documentation and/or other materials provided with the
-+ *      distribution.
-+ *    * Neither the name of Intel Corporation nor the names of its
-+ *      contributors may be used to endorse or promote products derived
-+ *      from this software without specific prior written permission.
-+ *
-+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-+ *
-+ */
-+#ifndef __SDW_CADENCE_H
-+#define __SDW_CADENCE_H
-+
-+/**
-+ * struct sdw_cdns: Cadence driver context
-+ *
-+ * @dev: Linux device
-+ * @bus: Bus handle
-+ * @instance: instance number
-+ * @registers: Cadence registers
-+ * @link_up: Link status
-+ */
-+struct sdw_cdns {
-+	struct device *dev;
-+	struct sdw_bus bus;
-+	unsigned int instance;
-+
-+	void __iomem *registers;
-+
-+	bool link_up;
++#include <linux/platform_device.h>
++#include <linux/property.h>
++#include <linux/soundwire/sdw_intel.h>
++#include "intel.h"
++
++#define SDW_MAX_LINKS		4
++#define SDW_SHIM_LCAP		0x0
++#define SDW_SHIM_BASE		0x2C000
++#define SDW_ALH_BASE		0x2C800
++#define SDW_LINK_BASE		0x30000
++#define SDW_LINK_SIZE		0x10000
++
++struct sdw_link_data {
++	struct sdw_intel_link_res res;
++	struct platform_device *pdev;
 +};
 +
-+#define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
++struct sdw_intel_ctx {
++	int count;
++	struct sdw_link_data *links;
++};
 +
-+/* Exported symbols */
++static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
++{
++	struct sdw_link_data *link = ctx->links;
++	int i;
 +
-+irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
-+irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
++	if (!link)
++		return 0;
 +
-+int sdw_cdns_init(struct sdw_cdns *cdns);
++	for (i = 0; i < ctx->count; i++) {
++		if (link->pdev)
++			platform_device_unregister(link->pdev);
++		link++;
++	}
 +
-+#endif /* __SDW_CADENCE_H */
++	kfree(ctx->links);
++	ctx->links = NULL;
++
++	return 0;
++}
++
++static struct sdw_intel_ctx
++*sdw_intel_add_controller(struct sdw_intel_res *res)
++{
++	struct platform_device_info pdevinfo;
++	struct platform_device *pdev;
++	struct sdw_link_data *link;
++	struct sdw_intel_ctx *ctx;
++	struct acpi_device *adev;
++	int ret, i;
++	u8 count;
++	u32 caps;
++
++	if (acpi_bus_get_device(res->handle, &adev))
++		return NULL;
++
++	/* Found controller, find links supported */
++	count = 0;
++	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
++				  "mipi-sdw-master-count", &count, 1);
++
++	/* Don't fail on error, continue and use hw value */
++	if (ret) {
++		dev_err(&adev->dev,
++			"Failed to read mipi-sdw-master-count: %d\n", ret);
++		count = SDW_MAX_LINKS;
++	}
++
++	/* Check SNDWLCAP.LCOUNT */
++	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
++
++	/* Check HW supported vs property value and use min of two */
++	count = min_t(u8, caps, count);
++
++	/* Check count is within bounds */
++	if (count > SDW_MAX_LINKS) {
++		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
++						count, SDW_MAX_LINKS);
++		return NULL;
++	}
++
++	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
++
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return NULL;
++
++	ctx->count = count;
++	ctx->links = kcalloc(ctx->count, sizeof(*ctx->links), GFP_KERNEL);
++	if (!ctx->links)
++		goto link_err;
++
++	link = ctx->links;
++
++	/* Create SDW Master devices */
++	for (i = 0; i < count; i++) {
++
++		link->res.irq = res->irq;
++		link->res.registers = res->mmio_base + SDW_LINK_BASE
++					+ (SDW_LINK_SIZE * i);
++		link->res.shim = res->mmio_base + SDW_SHIM_BASE;
++		link->res.alh = res->mmio_base + SDW_ALH_BASE;
++
++		memset(&pdevinfo, 0, sizeof(pdevinfo));
++
++		pdevinfo.parent = res->parent;
++		pdevinfo.name = "int-sdw";
++		pdevinfo.id = i;
++		pdevinfo.fwnode = acpi_fwnode_handle(adev);
++		pdevinfo.data = &link->res;
++		pdevinfo.size_data = sizeof(link->res);
++
++		pdev = platform_device_register_full(&pdevinfo);
++		if (IS_ERR(pdev)) {
++			dev_err(&adev->dev,
++				"platform device creation failed: %ld\n",
++				PTR_ERR(pdev));
++			goto pdev_err;
++		}
++
++		link->pdev = pdev;
++		link++;
++	}
++
++	return ctx;
++
++pdev_err:
++	sdw_intel_cleanup_pdev(ctx);
++link_err:
++	kfree(ctx);
++	return NULL;
++}
++
++static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
++					void *cdata, void **return_value)
++{
++	struct sdw_intel_res *res = cdata;
++	struct acpi_device *adev;
++
++	if (acpi_bus_get_device(handle, &adev)) {
++		dev_err(&adev->dev, "Couldn't find ACPI handle\n");
++		return AE_NOT_FOUND;
++	}
++
++	res->handle = handle;
++	return AE_OK;
++}
++
++void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
++{
++	acpi_status status;
++
++	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
++					parent_handle, 1,
++					sdw_intel_acpi_cb,
++					NULL, res, NULL);
++	if (ACPI_FAILURE(status))
++		return NULL;
++
++	return sdw_intel_add_controller(res);
++}
++EXPORT_SYMBOL(sdw_intel_init);
++
++void sdw_intel_exit(void *arg)
++{
++	struct sdw_intel_ctx *ctx = arg;
++
++	sdw_intel_cleanup_pdev(ctx);
++	kfree(ctx);
++}
++EXPORT_SYMBOL(sdw_intel_exit);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_DESCRIPTION("Intel Soundwire Init Library");
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index ef4a3b437877..af3563ac80ce 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -66,4 +66,7 @@ struct sdw_intel_res {
+ 	struct device *parent;
+ };
+ 
++void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res);
++void sdw_intel_exit(void *arg);
++
+ #endif
 -- 
 2.7.4
