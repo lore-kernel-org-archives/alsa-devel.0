@@ -1,49 +1,46 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: Intel: sst: remove redundant variable dma_dev_name
-Date: Thu, 19 Oct 2017 14:33:52 +0200
-Message-ID: <20171019123352.30294-1-colin.king@canonical.com>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [INTERNAL][PATCH 0/7] ASoC: stm32: Add SAI
+	synchronization support
+Date: Thu, 19 Oct 2017 15:03:16 +0200
+Message-ID: <1508418203-16840-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0B54266DB1
+ for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 15:03:31 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
+Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This patch-set adds support of synchronization features for SAI interface.
+It also adds minor fixes and improvements.
 
-The pointer dma_dev_name is assigned but never read, it is redundant
-and can therefore be removed.
+Olivier Moysan (7):
+  ASoC: stm32: Add synchronization to SAI bindings
+  ASoC: stm32: sai: Move static settings to DAI init
+  ASoC: stm32: sai: Fix DMA burst size
+  ASoC: stm32: sai: fix stop management in isr
+  ASoC: stm32: sai: Remove spurious IRQs on stop
+  ASoC: stm32: sai: Fix get reset controller
+  ASoC: stm32: sai: Add synchronization support
 
-Cleans up clang warning:
-sound/soc/intel/common/sst-firmware.c:288:3: warning: Value stored to
-'dma_dev_name' is never read
+ .../devicetree/bindings/sound/st,stm32-sai.txt     |  14 +-
+ sound/soc/stm/stm32_sai.c                          | 162 ++++++++++++++++++++-
+ sound/soc/stm/stm32_sai.h                          |  22 ++-
+ sound/soc/stm/stm32_sai_sub.c                      | 156 +++++++++++++++++---
+ 4 files changed, 318 insertions(+), 36 deletions(-)
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/intel/common/sst-firmware.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index a086c35f91bb..79a9fdf94d38 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -274,7 +274,6 @@ int sst_dma_new(struct sst_dsp *sst)
- 	struct sst_pdata *sst_pdata = sst->pdata;
- 	struct sst_dma *dma;
- 	struct resource mem;
--	const char *dma_dev_name;
- 	int ret = 0;
- 
- 	if (sst->pdata->resindex_dma_base == -1)
-@@ -285,7 +284,6 @@ int sst_dma_new(struct sst_dsp *sst)
- 	* is attached to the ADSP IP. */
- 	switch (sst->pdata->dma_engine) {
- 	case SST_DMA_TYPE_DW:
--		dma_dev_name = "dw_dmac";
- 		break;
- 	default:
- 		dev_err(sst->dev, "error: invalid DMA engine %d\n",
 -- 
-2.14.1
+1.9.1
