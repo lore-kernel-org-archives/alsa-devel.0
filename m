@@ -1,46 +1,200 @@
-From: Ian W MORRISON <ianwmorrison@gmail.com>
-Subject: Re: HDMI LPE audio on Intel Compute Stick 2nd Gen (CHT)
-Date: Sat, 21 Oct 2017 00:45:30 +1100
-Message-ID: <CAFXWsS8THagHnx9BPurw4+3a+xH6DP653MjwjTSkYhU3zLmZHQ@mail.gmail.com>
-References: <CAFXWsS_V=nG8C+NM8qmtjdoZoWrsTnTFNR16kU05NNsx=c0-5Q@mail.gmail.com>
- <7827e954-d9d0-4737-5e47-13e0e69fd92d@linux.intel.com>
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Fri, 20 Oct 2017 07:00:07 -0700
+Message-ID: <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
+References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
+ <1507783506-3884-4-git-send-email-tharvey@gateworks.com> <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
+ <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com> <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id EA9F3267096
- for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 15:45:31 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id m72so22122349wmc.1
- for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 06:45:31 -0700 (PDT)
-In-Reply-To: <7827e954-d9d0-4737-5e47-13e0e69fd92d@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
 List-Id: alsa-devel@alsa-project.org
 
-> I've just noticed that non of the kernels from v4.13 and up run on my
->> Intel Compute Stick (2nd gen Cherry Trail STK1AW32SC) unit and have
->> HDMI LPE audio working.
+On Thu, Oct 19, 2017 at 12:39 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+<snip>
+>>> What I am missing here is handling of the RGB quantization range.
+>>> An HDMI receiver will typically send full range RGB or limited range YUV
+>>> to the SoC. The HDMI source can however send full or limited range RGB
+>>> or limited range YUV (full range YUV is theoretically possible, but nobody
+>>> does that).
+>>>
 >>
+>> isn't this quantization range a function of the colorspace and
+>> colorimetry dictated by the AVI infoframe? I'm taking these into
+>> consideration when setting up the conversion matrix in
+>> tda1997x_configure_conv().
 >
-> I have not tested HDMI in a while but I am not aware of any issues either.
-> There were some patches recently to fix PulseAudio problems and I suppose
-> some folks used a recent kernel?
+> No, it's independent of that.
+
+and from another reply:
+> A small correction here: while ideally you should indeed check if the current
+> EDID supports selectable RGB Quantization Range, in practice you don't need
+> to. If the source explicitly sets the RGB quantization range, then just use
+> that.
 >
+> Note: some hardware can do this automatically (adv7604) by detecting what is
+> transmitted in the AVI InfoFrame. That's probably not the case here since you
+> have to provide a conversion matrix.
+
+I see the AVI infoframe has hdmi_quantization_range and
+hdmi_ycc_quantization_range along with vid_code.
+
+I'm not at all clear what to do with this information. Is there
+anything you see in the datasheet [1] that points to something I need
+to be doing?
+
 >
-It actually happened since v4.12 as now I get three HDMI LPE Audio devices
-show up with 'aplay -l' rather than just one. Only 'device 2' works so if I
-change the sink to use that device I get sound. So basically it can be
-fixed in userland however I'm seeing others with different devices also
-complaining how audio is broken and I think it is something that many users
-don't know to fix. Is it worth looking into further or just leaving it as a
-known issue?
+>>
+>>> For a Full HD receiver the rules when receiving RGB video are as follows:
+>>>
+>>> If the EDID supports selectable RGB Quantization Range, then check if the
+>>> source explicitly sets the RGB quantization range in the AVI InfoFrame and
+>>> use that value.
+>>>
+>>> Otherwise fall back to the default rules:
+>>>
+>>> if VIC == 0, then expect full range RGB, otherwise expect limited range RGB.
+>>
+>> Are you referring to the video_code field of the AVI infoframe or vic
+>> from a vendor infoframe?
+>
+> AVI InfoFrame.
+>
+> The HDMI VIC codes in the vendor InfoFrame are only valid for 4k formats. And
+> that's not supported by this device, right?
+
+Right, the TDA1997x supports 1080p only.
+
+>
+>>
+>>>
+>>> It gets even more complicated with 4k video, but this is full HD only.
+>>>
+>>> In addition, you may also want to implement the V4L2_CID_DV_RX_RGB_RANGE control
+>>> to let userspace override the autodetection.
+>>
+>> I'll add that as an additional patch. Are there other V4L2_CID's that
+>> I should be adding here?
+>
+> V4L2_CID_DV_RX_POWER_PRESENT (if possible) and optionally V4L2_CID_DV_RX_IT_CONTENT_TYPE.
+>
+
+It looks like there is a register for 5V_HPD detect.
+
+I assume the content type to return is the value reported from the AVI frame?
+
+<snip>
+>>
+>> Regarding video standard detection where this chip provides me with
+>> vertical-period, horizontal-period, and horizontal-pulse-width I
+>> should be able to detect the standard simply based off of
+>> vertical-period (framerate) and horizontal-period (line width
+>> including blanking) right? I wasn't sure if my method of matching
+>> these within 14% tolerance made sense. I will be removing the hsmatch
+>> logic from that as it seems the horizontal-pulse-width should be
+>> irrelevant.
+>
+> For proper video detection you ideally need:
+>
+> h/v sync size
+> h/v back/front porch size
+> h/v polarity
+> pixelclock (usually an approximation)
+>
+> The v4l2_find_dv_timings_cap() helper can help you find the corresponding
+> timings, allowing for pixelclock variation.
+>
+> That function assumes that the sync/back/frontporch values are all known.
+> But not all devices can actually discover those values. What can your
+> hardware detect? Can it tell front and backporch apart? Can it determine
+> the sync size?
+>
+> I've been considering for some time to improve that helper function to be
+> able to handle hardware that isn't able separate sync/back/frontporch values.
+>
+
+The TDA1997x provides only the vertical/horizontal periods and the
+horizontal pulse
+width (section 8.3.4 of datasheet [1]).
+
+Can you point me to a good primer on the relationship between these
+values and the h/v back/front porch?
+
+Currently I iterate over the list of known formats calculating hper
+(bt->pixelclock / V4L2_DV_BT_FRAME_WIDTH(bt)) and vper (hper /
+V4L2_DV_BT_FRAME_HEIGHT(bt)) (framerate) and find the closest match
+within +/- 7% tolerance. The list of supported formats is sorted by
+framerate then width.
+
+        /* look for matching timings */
+        for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
+                const struct tda1997x_video_std *std = &tda1997x_hdmi_modes[i];
+                const struct v4l2_bt_timings *bt = &std->timings.bt;
+                int _hper, _vper, _hsper;
+                int vmin, vmax, hmin, hmax, hsmin, hsmax;
+                int vmatch, hsmatch;
+
+                width = V4L2_DV_BT_FRAME_WIDTH(bt);
+                lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
+
+                _hper = (int)bt->pixelclock / (int)width;
+                _vper = _hper / lines;
+                _hsper = (int)bt->pixelclock / (int)bt->hsync;
+                if (bt->interlaced)
+                        _vper *= 2;
+                /* vper +/- 0.7% */
+                vmin = 993 * (27000000 / _vper) / 1000;
+                vmax = 1007 * (27000000 / _vper) / 1000;
+                _hsper = (int)bt->pixelclock / (int)bt->hsync;
+                if (bt->interlaced)
+                        _vper *= 2;
+                /* vper +/- 0.7% */
+                vmin = 993 * (27000000 / _vper) / 1000;
+                vmax = 1007 * (27000000 / _vper) / 1000;
+                /* hper +/- 0.7% */
+                hmin = 993 * (27000000 / _hper) / 1000;
+                hmax = 1007 * (27000000 / _hper) / 1000;
+
+                /* vmatch matches the framerate */
+                vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
+                /* hmatch matches the width */
+                hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
+                if (vmatch && hsmatch) {
+                        v4l_info(state->client,
+                                 "resolution: %dx%d%c@%d (%d/%d/%d) %dMHz %d\n",
+                                 bt->width, bt->height, bt->interlaced?'i':'p',
+                                 _vper, vper, hper, hsper, pixrate, hsmatch);
+                        state->fps = (int)bt->pixelclock / (width * lines);
+                        state->std = std;
+                        return 0;
+                }
+        }
+
+Note that I've thrown out any comparisons based on horizontal pulse
+width from my first patch as that didn't appear to fit well. So far
+the above works well however I do fail to recognize the following
+modes (using a Marshall SG4K HDMI test generator):
+
+VESA640x480P_60HZ v4l2 defines this as 4L2_DV_BT_CEA_640X480P59_94
+which fails vmatch
+VESA1400x1050P_60HZ should match V4L2_DV_BT_DMT_1400X1050P60_RB but it
+calculates 59Hz and fails vmatch
+VESA1920x1200P_60HZ should match V4L2_DV_BT_DMT_1920X1200P60_RB but it
+calculates 59Hz and fails vmatch
+CEAVIC1440x480I_60HZ not in v4l2-dv-timings.h
+CEAVIC720x480P_60HZ not in v4l2-dv-timings.h (there's a 720x480p59)
+CEAVIC1440x576I_50HZ not in v4l2-dv-timings.h
+
+I should have mentioned in my cover letter that I only have a
+datasheet for this device and some fairly obfuscated vendor example
+code - I don't have proper register set documentation.
+
+Regards,
+
+Tim
+
+[1] http://dev.gateworks.com/datasheets/TDA19971-datasheet-rev3.pdf
