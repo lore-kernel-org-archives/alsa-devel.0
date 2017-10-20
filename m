@@ -1,19 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
-Date: Fri, 20 Oct 2017 10:41:01 +0530
-Message-ID: <20171020051101.GG30097@localhost>
+Subject: Re: [PATCH 03/14] soundwire: Add Master registration
+Date: Fri, 20 Oct 2017 10:49:59 +0530
+Message-ID: <20171020051959.GH30097@localhost>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
- <s5hzi8nvb55.wl-tiwai@suse.de>
+ <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
+ <s5hh8uvtt45.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 97654266A51
- for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 07:06:45 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75AF9266A51
+ for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 07:15:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hzi8nvb55.wl-tiwai@suse.de>
+In-Reply-To: <s5hh8uvtt45.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,133 +24,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Sagar Dharia <sdharia@codeaurora.org>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 19, 2017 at 09:40:06AM +0200, Takashi Iwai wrote:
-> On Thu, 19 Oct 2017 05:03:18 +0200,
+On Thu, Oct 19, 2017 at 10:54:50AM +0200, Takashi Iwai wrote:
+> On Thu, 19 Oct 2017 05:03:19 +0200,
 > Vinod Koul wrote:
-> > +
-> > +config SOUNDWIRE_BUS
-> > +	tristate
-> > +	default SOUNDWIRE
-> > +
-> 
-> Does it make sense to be tristate?
-> Since CONFIG_SOUNDWIRE is a bool, the above would be also only either
-> Y or N.  If it's Y and others select M, it'll be still Y.
 
-hmmm good point. I think would make sense to make SOUNDWIRE as tristate too,
-just like SOUND :)
-
-> > + * sdw_get_device_id: find the matching SoundWire device id
-> > + *
-> > + * @slave: SoundWire Slave device
-> > + * @drv: SoundWire Slave Driver
-> 
-> Inconsistent upper/lower letters in these two lines.
-
-thanks for spotting, will fix
-
-> > + * The match is done by comparing the mfg_id and part_id from the
-> > + * struct sdw_device_id. class_id is unused, as it is a placeholder
-> > + * in MIPI Spec.
-> > + */
-> > +static const struct sdw_device_id *
-> > +sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+> > +int sdw_add_bus_master(struct sdw_bus *bus)
 > > +{
-> > +	const struct sdw_device_id *id = drv->id_table;
+> > +	int ret;
 > > +
-> > +	while (id && id->mfg_id) {
-> > +		if (slave->id.mfg_id == id->mfg_id &&
-> > +				slave->id.part_id == id->part_id) {
-> 
-> Please indentation properly.
-
-what do you advise?
-
-		if (slave->id.mfg_id == id->mfg_id &&
-			slave->id.part_id == id->part_id) {
-
-would mean below one is at same indent. Some people use:
-
-		if (slave->id.mfg_id == id->mfg_id &&
-		   slave->id.part_id == id->part_id) {
-
-Is it Documented anywhere...
-
-
-> 
-> > +			return id;
-> > +		}
-> 
-> Superfluous braces for a single-line.
-
-That bit was intentional. Yes it is not required but given that if condition
-was falling to two lines, I wanted to help readability by adding these. I can
-remove them..
-
-> 
-> > +		id++;
+> > +	if (!bus->dev) {
+> > +		pr_err("SoundWire bus has no device");
+> > +		return -ENODEV;
 > > +	}
 > > +
-> > +	return NULL;
-> > +}
+> > +	mutex_init(&bus->bus_lock);
+> > +	INIT_LIST_HEAD(&bus->slaves);
 > > +
-> > +static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
+> > +	/*
+> > +	 * SDW is an enumerable bus, but devices can be powered off. So,
+> > +	 * they won't be able to report as present.
+> > +	 *
+> > +	 * Create Slave devices based on Slaves described in
+> > +	 * the respective firmware (ACPI/DT)
+> > +	 */
+> > +
+> > +	if (IS_ENABLED(CONFIG_ACPI) && bus->dev && ACPI_HANDLE(bus->dev))
+> > +		ret = sdw_acpi_find_slaves(bus);
+> > +	else if (IS_ENABLED(CONFIG_OF) && bus->dev && bus->dev->of_node)
+> 
+> The bus->dev NULL check is already done at the beginning of the
+> function, so here are superfluous.
+
+right
+
+> > +static int sdw_delete_slave(struct device *dev, void *data)
 > > +{
 > > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> > +	struct sdw_driver *drv = drv_to_sdw_driver(ddrv);
+> > +	struct sdw_bus *bus = slave->bus;
 > > +
-> > +	return !!sdw_get_device_id(slave, drv);
-> > +}
+> > +	mutex_lock(&bus->bus_lock);
+> > +	if (!list_empty(&bus->slaves))
+> > +		list_del(&slave->node);
+> 
+> You can perform list_del_init() without empty check.
+
+Better :)
+
+> 
+> > +void sdw_extract_slave_id(struct sdw_bus *bus,
+> > +			unsigned long long addr, struct sdw_slave_id *id)
+> 
+> Use u64 instead.
+
+okay
+
+> > +{
+> > +	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
 > > +
-> > +int sdw_slave_modalias(struct sdw_slave *slave, char *buf, size_t size)
+> > +	/*
+> > +	 * Spec definition
+> > +	 *   Register		Bit	Contents
+> > +	 *   DevId_0 [7:4]	47:44	sdw_version
+> > +	 *   DevId_0 [3:0]	43:40	unique_id
+> > +	 *   DevId_1		39:32	mfg_id [15:8]
+> > +	 *   DevId_2		31:24	mfg_id [7:0]
+> > +	 *   DevId_3		23:16	part_id [15:8]
+> > +	 *   DevId_4		15:08	part_id [7:0]
+> > +	 *   DevId_5		07:00	class_id
+> > +	 */
+> > +	id->sdw_version = (addr >> 44) & GENMASK(3, 0);
+> > +	id->unique_id = (addr >> 40) & GENMASK(3, 0);
+> > +	id->mfg_id = (addr >> 24) & GENMASK(15, 0);
+> > +	id->part_id = (addr >> 8) & GENMASK(15, 0);
+> > +	id->class_id = addr & GENMASK(7, 0);
+> > +
+> > +	dev_info(bus->dev,
+> > +		"SDW Slave class_id %x, part_id %x, mfg_id %x, unique_id %x, version %x",
+> > +				id->class_id, id->part_id, id->mfg_id,
+> > +				id->unique_id, id->sdw_version);
+> > +
 > 
-> I'd put const to slave argument, as it won't be modified.
+> Do we want to print a message always at each invocation?
 
-right...
+Not really, lets make it debug
 
+> > +static int sdw_slave_add(struct sdw_bus *bus,
+> > +		struct sdw_slave_id *id, struct fwnode_handle *fwnode)
+> > +{
+> > +	struct sdw_slave *slave;
+> > +	char name[32];
+> > +	int ret;
+> > +
+> > +	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
+> > +	if (!slave)
+> > +		return -ENOMEM;
+> > +
+> > +	/* Initialize data structure */
+> > +	memcpy(&slave->id, id, sizeof(*id));
+> > +
+> > +	/* name shall be sdw:link:mfg:part:class:unique */
+> > +	snprintf(name, sizeof(name), "sdw:%x:%x:%x:%x:%x",
+> > +			bus->link_id, id->mfg_id, id->part_id,
+> > +			id->class_id, id->unique_id);
 > 
-> > --- a/include/linux/mod_devicetable.h
-> > +++ b/include/linux/mod_devicetable.h
-> > @@ -228,6 +228,13 @@ struct hda_device_id {
-> >  	unsigned long driver_data;
-> >  };
-> >  
-> > +struct sdw_device_id {
-> > +	__u16 mfg_id;
-> > +	__u16 part_id;
-> > +	__u8 class_id;
-> > +	kernel_ulong_t driver_data;
-> 
-> Better to think of alignment.
+> You can set the name directly via dev_set_name().  It's printf format,
+> after all.
 
-sorry not quite clear, do you mind elaborating which ones to align?
+right, am using it but with this string :D
 
+> > +	slave->dev.parent = bus->dev;
+> > +	slave->dev.fwnode = fwnode;
+> > +	dev_set_name(&slave->dev, "%s", name);
+> > +	slave->dev.release = sdw_slave_release;
+> > +	slave->dev.bus = &sdw_bus_type;
+> > +	slave->bus = bus;
+> > +	slave->status = SDW_SLAVE_UNATTACHED;
+> > +	slave->dev_num = 0;
+> > +
+> > +	mutex_lock(&bus->bus_lock);
+> > +	list_add_tail(&slave->node, &bus->slaves);
+> > +	mutex_unlock(&bus->bus_lock);
+> > +
+> > +	ret = device_register(&slave->dev);
+> > +	if (ret) {
+> > +		dev_err(bus->dev, "Failed to add slave: ret %d\n", ret);
+> > +
+> > +		/*
+> > +		 * On err, don't free but drop ref as this will be freed
+> > +		 * when release method is invoked.
+> > +		 */
+> > +		put_device(&slave->dev);
 > 
-> 
-> > --- /dev/null
-> > +++ b/include/linux/soundwire/sdw.h
-> ....
-> > +/**
-> > + * struct sdw_bus: SoundWire bus
-> > + *
-> > + * @dev: Master linux device
-> > + * @link_id: Link id number, can be 0 to N, unique for each Master
-> > + * @slaves: list of Slaves on this bus
-> > + * @assigned: logical addresses assigned, Index 0 (broadcast) would be unused
-> > + * @bus_lock: bus lock
-> > + */
-> > +struct sdw_bus {
-> > +	struct device *dev;
-> > +	unsigned int link_id;
-> > +	struct list_head slaves;
-> > +	bool assigned[SDW_MAX_DEVICES + 1];
-> 
-> Why not a bitmap?
+> Wouldn't it leave a stale link to bus?
 
-That a very good suggestion, it will help in other things too :)
+yes that needs to be removed too, thanks for pointing
 
 -- 
 ~Vinod
