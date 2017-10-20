@@ -1,200 +1,102 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Fri, 20 Oct 2017 07:00:07 -0700
-Message-ID: <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
-References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
- <1507783506-3884-4-git-send-email-tharvey@gateworks.com> <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
- <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com> <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
+Date: Fri, 20 Oct 2017 21:16:49 +0530
+Message-ID: <20171020154649.GP30097@localhost>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
+ <s5hzi8nvb55.wl-tiwai@suse.de>
+ <20171020051101.GG30097@localhost>
+ <s5hpo9iuwwx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl>
+Content-Disposition: inline
+In-Reply-To: <s5hpo9iuwwx.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 19, 2017 at 12:39 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
-<snip>
->>> What I am missing here is handling of the RGB quantization range.
->>> An HDMI receiver will typically send full range RGB or limited range YUV
->>> to the SoC. The HDMI source can however send full or limited range RGB
->>> or limited range YUV (full range YUV is theoretically possible, but nobody
->>> does that).
->>>
->>
->> isn't this quantization range a function of the colorspace and
->> colorimetry dictated by the AVI infoframe? I'm taking these into
->> consideration when setting up the conversion matrix in
->> tda1997x_configure_conv().
->
-> No, it's independent of that.
+On Fri, Oct 20, 2017 at 08:59:42AM +0200, Takashi Iwai wrote:
+> On Fri, 20 Oct 2017 07:11:01 +0200,
+> Vinod Koul wrote:
+> > 
+> > On Thu, Oct 19, 2017 at 09:40:06AM +0200, Takashi Iwai wrote:
+> > > On Thu, 19 Oct 2017 05:03:18 +0200,
+> > > Vinod Koul wrote:
+> > > > +
+> > > > +config SOUNDWIRE_BUS
+> > > > +	tristate
+> > > > +	default SOUNDWIRE
+> > > > +
+> > > 
+> > > Does it make sense to be tristate?
+> > > Since CONFIG_SOUNDWIRE is a bool, the above would be also only either
+> > > Y or N.  If it's Y and others select M, it'll be still Y.
+> > 
+> > hmmm good point. I think would make sense to make SOUNDWIRE as tristate too,
+> > just like SOUND :)
+> 
+> It's one option.  Another would be to simply drop the "default" line.
 
-and from another reply:
-> A small correction here: while ideally you should indeed check if the current
-> EDID supports selectable RGB Quantization Range, in practice you don't need
-> to. If the source explicitly sets the RGB quantization range, then just use
-> that.
->
-> Note: some hardware can do this automatically (adv7604) by detecting what is
-> transmitted in the AVI InfoFrame. That's probably not the case here since you
-> have to provide a conversion matrix.
+Okay good suggestion
 
-I see the AVI infoframe has hdmi_quantization_range and
-hdmi_ycc_quantization_range along with vid_code.
+> > > > + * The match is done by comparing the mfg_id and part_id from the
+> > > > + * struct sdw_device_id. class_id is unused, as it is a placeholder
+> > > > + * in MIPI Spec.
+> > > > + */
+> > > > +static const struct sdw_device_id *
+> > > > +sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+> > > > +{
+> > > > +	const struct sdw_device_id *id = drv->id_table;
+> > > > +
+> > > > +	while (id && id->mfg_id) {
+> > > > +		if (slave->id.mfg_id == id->mfg_id &&
+> > > > +				slave->id.part_id == id->part_id) {
+> > > 
+> > > Please indentation properly.
+> > 
+> > what do you advise?
+> > 
+> > 		if (slave->id.mfg_id == id->mfg_id &&
+> > 			slave->id.part_id == id->part_id) {
+> > 
+> > would mean below one is at same indent. Some people use:
+> > 
+> > 		if (slave->id.mfg_id == id->mfg_id &&
+> > 		   slave->id.part_id == id->part_id) {
+> > 
+> > Is it Documented anywhere...
+> 
+> This is a matter of taste.  The latter is the way Emacs or indent does
+> as default.
 
-I'm not at all clear what to do with this information. Is there
-anything you see in the datasheet [1] that points to something I need
-to be doing?
+okay as vi user I will try to do above :)
 
->
->>
->>> For a Full HD receiver the rules when receiving RGB video are as follows:
->>>
->>> If the EDID supports selectable RGB Quantization Range, then check if the
->>> source explicitly sets the RGB quantization range in the AVI InfoFrame and
->>> use that value.
->>>
->>> Otherwise fall back to the default rules:
->>>
->>> if VIC == 0, then expect full range RGB, otherwise expect limited range RGB.
->>
->> Are you referring to the video_code field of the AVI infoframe or vic
->> from a vendor infoframe?
->
-> AVI InfoFrame.
->
-> The HDMI VIC codes in the vendor InfoFrame are only valid for 4k formats. And
-> that's not supported by this device, right?
+> 
+> > > > --- a/include/linux/mod_devicetable.h
+> > > > +++ b/include/linux/mod_devicetable.h
+> > > > @@ -228,6 +228,13 @@ struct hda_device_id {
+> > > >  	unsigned long driver_data;
+> > > >  };
+> > > >  
+> > > > +struct sdw_device_id {
+> > > > +	__u16 mfg_id;
+> > > > +	__u16 part_id;
+> > > > +	__u8 class_id;
+> > > > +	kernel_ulong_t driver_data;
+> > > 
+> > > Better to think of alignment.
+> > 
+> > sorry not quite clear, do you mind elaborating which ones to align?
+> 
+> kernel_ulong_t may be aligned to 4 or 8 bytes, depending on
+> architecture, so there can be a hole between class_id and driver_data.
+> It's not an ABI, so we don't have to care too much, but it's still
+> something exposed, hence better to be conscious about alignment.
 
-Right, the TDA1997x supports 1080p only.
+ah :) is that why hda is unsigned long :) Btw doesnt that cause compat
+issues, should we not do something like u64 here?
 
->
->>
->>>
->>> It gets even more complicated with 4k video, but this is full HD only.
->>>
->>> In addition, you may also want to implement the V4L2_CID_DV_RX_RGB_RANGE control
->>> to let userspace override the autodetection.
->>
->> I'll add that as an additional patch. Are there other V4L2_CID's that
->> I should be adding here?
->
-> V4L2_CID_DV_RX_POWER_PRESENT (if possible) and optionally V4L2_CID_DV_RX_IT_CONTENT_TYPE.
->
-
-It looks like there is a register for 5V_HPD detect.
-
-I assume the content type to return is the value reported from the AVI frame?
-
-<snip>
->>
->> Regarding video standard detection where this chip provides me with
->> vertical-period, horizontal-period, and horizontal-pulse-width I
->> should be able to detect the standard simply based off of
->> vertical-period (framerate) and horizontal-period (line width
->> including blanking) right? I wasn't sure if my method of matching
->> these within 14% tolerance made sense. I will be removing the hsmatch
->> logic from that as it seems the horizontal-pulse-width should be
->> irrelevant.
->
-> For proper video detection you ideally need:
->
-> h/v sync size
-> h/v back/front porch size
-> h/v polarity
-> pixelclock (usually an approximation)
->
-> The v4l2_find_dv_timings_cap() helper can help you find the corresponding
-> timings, allowing for pixelclock variation.
->
-> That function assumes that the sync/back/frontporch values are all known.
-> But not all devices can actually discover those values. What can your
-> hardware detect? Can it tell front and backporch apart? Can it determine
-> the sync size?
->
-> I've been considering for some time to improve that helper function to be
-> able to handle hardware that isn't able separate sync/back/frontporch values.
->
-
-The TDA1997x provides only the vertical/horizontal periods and the
-horizontal pulse
-width (section 8.3.4 of datasheet [1]).
-
-Can you point me to a good primer on the relationship between these
-values and the h/v back/front porch?
-
-Currently I iterate over the list of known formats calculating hper
-(bt->pixelclock / V4L2_DV_BT_FRAME_WIDTH(bt)) and vper (hper /
-V4L2_DV_BT_FRAME_HEIGHT(bt)) (framerate) and find the closest match
-within +/- 7% tolerance. The list of supported formats is sorted by
-framerate then width.
-
-        /* look for matching timings */
-        for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
-                const struct tda1997x_video_std *std = &tda1997x_hdmi_modes[i];
-                const struct v4l2_bt_timings *bt = &std->timings.bt;
-                int _hper, _vper, _hsper;
-                int vmin, vmax, hmin, hmax, hsmin, hsmax;
-                int vmatch, hsmatch;
-
-                width = V4L2_DV_BT_FRAME_WIDTH(bt);
-                lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
-
-                _hper = (int)bt->pixelclock / (int)width;
-                _vper = _hper / lines;
-                _hsper = (int)bt->pixelclock / (int)bt->hsync;
-                if (bt->interlaced)
-                        _vper *= 2;
-                /* vper +/- 0.7% */
-                vmin = 993 * (27000000 / _vper) / 1000;
-                vmax = 1007 * (27000000 / _vper) / 1000;
-                _hsper = (int)bt->pixelclock / (int)bt->hsync;
-                if (bt->interlaced)
-                        _vper *= 2;
-                /* vper +/- 0.7% */
-                vmin = 993 * (27000000 / _vper) / 1000;
-                vmax = 1007 * (27000000 / _vper) / 1000;
-                /* hper +/- 0.7% */
-                hmin = 993 * (27000000 / _hper) / 1000;
-                hmax = 1007 * (27000000 / _hper) / 1000;
-
-                /* vmatch matches the framerate */
-                vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
-                /* hmatch matches the width */
-                hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
-                if (vmatch && hsmatch) {
-                        v4l_info(state->client,
-                                 "resolution: %dx%d%c@%d (%d/%d/%d) %dMHz %d\n",
-                                 bt->width, bt->height, bt->interlaced?'i':'p',
-                                 _vper, vper, hper, hsper, pixrate, hsmatch);
-                        state->fps = (int)bt->pixelclock / (width * lines);
-                        state->std = std;
-                        return 0;
-                }
-        }
-
-Note that I've thrown out any comparisons based on horizontal pulse
-width from my first patch as that didn't appear to fit well. So far
-the above works well however I do fail to recognize the following
-modes (using a Marshall SG4K HDMI test generator):
-
-VESA640x480P_60HZ v4l2 defines this as 4L2_DV_BT_CEA_640X480P59_94
-which fails vmatch
-VESA1400x1050P_60HZ should match V4L2_DV_BT_DMT_1400X1050P60_RB but it
-calculates 59Hz and fails vmatch
-VESA1920x1200P_60HZ should match V4L2_DV_BT_DMT_1920X1200P60_RB but it
-calculates 59Hz and fails vmatch
-CEAVIC1440x480I_60HZ not in v4l2-dv-timings.h
-CEAVIC720x480P_60HZ not in v4l2-dv-timings.h (there's a 720x480p59)
-CEAVIC1440x576I_50HZ not in v4l2-dv-timings.h
-
-I should have mentioned in my cover letter that I only have a
-datasheet for this device and some fairly obfuscated vendor example
-code - I don't have proper register set documentation.
-
-Regards,
-
-Tim
-
-[1] http://dev.gateworks.com/datasheets/TDA19971-datasheet-rev3.pdf
+-- 
+~Vinod
