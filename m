@@ -1,166 +1,63 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 03/14] soundwire: Add Master registration
-Date: Fri, 20 Oct 2017 10:49:59 +0530
-Message-ID: <20171020051959.GH30097@localhost>
+Subject: Re: [alsa-devel] [PATCH 04/14] soundwire: Add MIPI DisCo property
+ helpers
+Date: Fri, 20 Oct 2017 10:55:18 +0530
+Message-ID: <20171020052518.GI30097@localhost>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
- <s5hh8uvtt45.wl-tiwai@suse.de>
+ <1508382211-3154-5-git-send-email-vinod.koul@intel.com>
+ <s5hfuaftss5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 75AF9266A51
- for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 07:15:43 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hh8uvtt45.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <s5hfuaftss5.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Sagar Dharia <sdharia@codeaurora.org>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 19, 2017 at 10:54:50AM +0200, Takashi Iwai wrote:
-> On Thu, 19 Oct 2017 05:03:19 +0200,
+On Thu, Oct 19, 2017 at 11:02:02AM +0200, Takashi Iwai wrote:
+> On Thu, 19 Oct 2017 05:03:20 +0200,
 > Vinod Koul wrote:
-
-> > +int sdw_add_bus_master(struct sdw_bus *bus)
-> > +{
-> > +	int ret;
+> >  
+> > +	slave->ops = drv->ops;
 > > +
-> > +	if (!bus->dev) {
-> > +		pr_err("SoundWire bus has no device");
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	mutex_init(&bus->bus_lock);
-> > +	INIT_LIST_HEAD(&bus->slaves);
-> > +
-> > +	/*
-> > +	 * SDW is an enumerable bus, but devices can be powered off. So,
-> > +	 * they won't be able to report as present.
-> > +	 *
-> > +	 * Create Slave devices based on Slaves described in
-> > +	 * the respective firmware (ACPI/DT)
-> > +	 */
-> > +
-> > +	if (IS_ENABLED(CONFIG_ACPI) && bus->dev && ACPI_HANDLE(bus->dev))
-> > +		ret = sdw_acpi_find_slaves(bus);
-> > +	else if (IS_ENABLED(CONFIG_OF) && bus->dev && bus->dev->of_node)
-> 
-> The bus->dev NULL check is already done at the beginning of the
-> function, so here are superfluous.
-
-right
-
-> > +static int sdw_delete_slave(struct device *dev, void *data)
-> > +{
-> > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> > +	struct sdw_bus *bus = slave->bus;
-> > +
-> > +	mutex_lock(&bus->bus_lock);
-> > +	if (!list_empty(&bus->slaves))
-> > +		list_del(&slave->node);
-> 
-> You can perform list_del_init() without empty check.
-
-Better :)
-
-> 
-> > +void sdw_extract_slave_id(struct sdw_bus *bus,
-> > +			unsigned long long addr, struct sdw_slave_id *id)
-> 
-> Use u64 instead.
-
-okay
-
-> > +{
-> > +	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
+> >  	ret = drv->probe(slave, id);
+> >  	if (ret) {
+> >  		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
+> >  		return ret;
+> >  	}
+> >  
+> > +	/* device is probed so let's read the properties now */
+> > +	if (slave->ops && slave->ops->read_prop)
+> > +		slave->ops->read_prop(slave);
 > > +
 > > +	/*
-> > +	 * Spec definition
-> > +	 *   Register		Bit	Contents
-> > +	 *   DevId_0 [7:4]	47:44	sdw_version
-> > +	 *   DevId_0 [3:0]	43:40	unique_id
-> > +	 *   DevId_1		39:32	mfg_id [15:8]
-> > +	 *   DevId_2		31:24	mfg_id [7:0]
-> > +	 *   DevId_3		23:16	part_id [15:8]
-> > +	 *   DevId_4		15:08	part_id [7:0]
-> > +	 *   DevId_5		07:00	class_id
+> > +	 * Check for valid clk_stop_timeout, use DisCo worst case value of
+> > +	 * 300ms
 > > +	 */
-> > +	id->sdw_version = (addr >> 44) & GENMASK(3, 0);
-> > +	id->unique_id = (addr >> 40) & GENMASK(3, 0);
-> > +	id->mfg_id = (addr >> 24) & GENMASK(15, 0);
-> > +	id->part_id = (addr >> 8) & GENMASK(15, 0);
-> > +	id->class_id = addr & GENMASK(7, 0);
+> > +	if (slave->prop.clk_stop_timeout == 0)
+> > +		slave->prop.clk_stop_timeout = 300;
 > > +
-> > +	dev_info(bus->dev,
-> > +		"SDW Slave class_id %x, part_id %x, mfg_id %x, unique_id %x, version %x",
-> > +				id->class_id, id->part_id, id->mfg_id,
-> > +				id->unique_id, id->sdw_version);
-> > +
+> > +	slave->bus->clk_stop_timeout = max_t(u32, slave->bus->clk_stop_timeout,
+> > +					slave->prop.clk_stop_timeout);
 > 
-> Do we want to print a message always at each invocation?
+> Isn't it racy?
+> Also what happens after removing a driver?  The clk_stop_timeout is
+> kept high?
 
-Not really, lets make it debug
+Well the spec mandates 300 as worst case, in practice this _should_ be
+lesser. I need to double check on behaviour of clock stop on driver removal.
+We need to keep in mind that multiple Slaves can be on a bus and removal
+maybe from one of them, so we may not do clock stop.
 
-> > +static int sdw_slave_add(struct sdw_bus *bus,
-> > +		struct sdw_slave_id *id, struct fwnode_handle *fwnode)
-> > +{
-> > +	struct sdw_slave *slave;
-> > +	char name[32];
-> > +	int ret;
 > > +
-> > +	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
-> > +	if (!slave)
-> > +		return -ENOMEM;
-> > +
-> > +	/* Initialize data structure */
-> > +	memcpy(&slave->id, id, sizeof(*id));
-> > +
-> > +	/* name shall be sdw:link:mfg:part:class:unique */
-> > +	snprintf(name, sizeof(name), "sdw:%x:%x:%x:%x:%x",
-> > +			bus->link_id, id->mfg_id, id->part_id,
-> > +			id->class_id, id->unique_id);
+> > +int sdw_slave_read_dpn(struct sdw_slave *slave,
+> > +		struct sdw_dpn_prop *dpn, int count, int ports, char *type)
 > 
-> You can set the name directly via dev_set_name().  It's printf format,
-> after all.
+> Missing comment for a public API function.
 
-right, am using it but with this string :D
-
-> > +	slave->dev.parent = bus->dev;
-> > +	slave->dev.fwnode = fwnode;
-> > +	dev_set_name(&slave->dev, "%s", name);
-> > +	slave->dev.release = sdw_slave_release;
-> > +	slave->dev.bus = &sdw_bus_type;
-> > +	slave->bus = bus;
-> > +	slave->status = SDW_SLAVE_UNATTACHED;
-> > +	slave->dev_num = 0;
-> > +
-> > +	mutex_lock(&bus->bus_lock);
-> > +	list_add_tail(&slave->node, &bus->slaves);
-> > +	mutex_unlock(&bus->bus_lock);
-> > +
-> > +	ret = device_register(&slave->dev);
-> > +	if (ret) {
-> > +		dev_err(bus->dev, "Failed to add slave: ret %d\n", ret);
-> > +
-> > +		/*
-> > +		 * On err, don't free but drop ref as this will be freed
-> > +		 * when release method is invoked.
-> > +		 */
-> > +		put_device(&slave->dev);
-> 
-> Wouldn't it leave a stale link to bus?
-
-yes that needs to be removed too, thanks for pointing
+Ah missed this one. It was made public for debug, lets make it static now :)
 
 -- 
 ~Vinod
