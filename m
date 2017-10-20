@@ -1,7 +1,7 @@
 From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH v2 1/5] ASoC: rt5651: Enable jack detection on JD* pins
-Date: Fri, 20 Oct 2017 12:18:55 +0100
-Message-ID: <20171020111859.2448-2-carlo@caione.org>
+Subject: [PATCH v2 2/5] ASoC: intel: byt: Add headset jack
+Date: Fri, 20 Oct 2017 12:18:56 +0100
+Message-ID: <20171020111859.2448-3-carlo@caione.org>
 References: <20171020111859.2448-1-carlo@caione.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171020111859.2448-1-carlo@caione.org>
@@ -12,293 +12,68 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Carlo Caione <carlo@endlessm.com>
 
-Enable jack detection for the RT5651 codec on the JD* pins.
+Introduce an headset jack in the machine driver and register it to the
+codec driver.
 
 Signed-off-by: Carlo Caione <carlo@endlessm.com>
 ---
- include/sound/rt5651.h    |   8 +++
- sound/soc/codecs/rt5651.c | 168 +++++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/rt5651.h |   4 ++
- 3 files changed, 178 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/include/sound/rt5651.h b/include/sound/rt5651.h
-index d35de758dfb5..18b79a761f10 100644
---- a/include/sound/rt5651.h
-+++ b/include/sound/rt5651.h
-@@ -11,11 +11,19 @@
- #ifndef __LINUX_SND_RT5651_H
- #define __LINUX_SND_RT5651_H
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 1dad5c98c9ef..5aca55baccda 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -47,6 +47,7 @@ enum {
  
-+enum rt5651_jd_src {
-+	RT5651_JD_NULL,
-+	RT5651_JD1_1,
-+	RT5651_JD1_2,
-+	RT5651_JD2,
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
++	struct snd_soc_jack jack;
+ };
+ 
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
+@@ -177,6 +178,17 @@ static const struct snd_kcontrol_new byt_rt5651_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Speaker"),
+ };
+ 
++static struct snd_soc_jack_pin bytcr_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
 +};
 +
- struct rt5651_platform_data {
- 	/* IN2 can optionally be differential */
- 	bool in2_diff;
- 
- 	bool dmic_en;
-+	enum rt5651_jd_src jd_src;
- };
- 
- #endif
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 28f7210cec91..91f254391452 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -26,6 +26,7 @@
- #include <sound/soc-dapm.h>
- #include <sound/initval.h>
- #include <sound/tlv.h>
-+#include <sound/jack.h>
- 
- #include "rl6231.h"
- #include "rt5651.h"
-@@ -880,6 +881,9 @@ static const struct snd_soc_dapm_widget rt5651_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("PLL1", RT5651_PWR_ANLG2,
- 			RT5651_PWR_PLL_BIT, 0, NULL, 0),
- 	/* Input Side */
-+	SND_SOC_DAPM_SUPPLY("JD Power", RT5651_PWR_ANLG2,
-+		RT5651_PWM_JD_M_BIT, 0, NULL, 0),
-+
- 	/* micbias */
- 	SND_SOC_DAPM_SUPPLY("LDO", RT5651_PWR_ANLG1,
- 			RT5651_PWR_LDO_BIT, 0, NULL, 0),
-@@ -1528,6 +1532,8 @@ static int rt5651_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- static int rt5651_set_bias_level(struct snd_soc_codec *codec,
- 			enum snd_soc_bias_level level)
+ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
  {
-+	struct rt5651_priv *rt5651 = snd_soc_codec_get_drvdata(codec);
-+
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
- 		if (SND_SOC_BIAS_STANDBY == snd_soc_codec_get_bias_level(codec)) {
-@@ -1556,8 +1562,13 @@ static int rt5651_set_bias_level(struct snd_soc_codec *codec,
- 		snd_soc_write(codec, RT5651_PWR_DIG2, 0x0000);
- 		snd_soc_write(codec, RT5651_PWR_VOL, 0x0000);
- 		snd_soc_write(codec, RT5651_PWR_MIXER, 0x0000);
--		snd_soc_write(codec, RT5651_PWR_ANLG1, 0x0000);
--		snd_soc_write(codec, RT5651_PWR_ANLG2, 0x0000);
-+		if (rt5651->pdata.jd_src) {
-+			snd_soc_write(codec, RT5651_PWR_ANLG2, 0x0204);
-+			snd_soc_write(codec, RT5651_PWR_ANLG1, 0x0002);
-+		} else {
-+			snd_soc_write(codec, RT5651_PWR_ANLG1, 0x0000);
-+			snd_soc_write(codec, RT5651_PWR_ANLG2, 0x0000);
-+		}
- 		break;
- 
- 	default:
-@@ -1570,6 +1581,7 @@ static int rt5651_set_bias_level(struct snd_soc_codec *codec,
- static int rt5651_probe(struct snd_soc_codec *codec)
+@@ -244,6 +256,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
  {
- 	struct rt5651_priv *rt5651 = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct snd_soc_card *card = runtime->card;
++	struct snd_soc_codec *codec = runtime->codec;
+ 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
+ 	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
+@@ -301,6 +314,16 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 			dev_err(card->dev, "unable to set MCLK rate\n");
+ 	}
  
- 	rt5651->codec = codec;
- 
-@@ -1585,6 +1597,15 @@ static int rt5651_probe(struct snd_soc_codec *codec)
- 
- 	snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
- 
-+	if (rt5651->pdata.jd_src) {
-+		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
-+		snd_soc_dapm_force_enable_pin(dapm, "LDO");
-+		snd_soc_dapm_sync(dapm);
-+
-+		regmap_update_bits(rt5651->regmap, RT5651_MICBIAS,
-+				   0x38, 0x38);
++	ret = snd_soc_card_jack_new(runtime->card, "Headset",
++				    SND_JACK_HEADSET, &priv->jack,
++				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
++	if (ret) {
++		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
++		return ret;
 +	}
 +
- 	return 0;
++	rt5651_set_jack_detect(codec, &priv->jack);
++
+ 	return ret;
  }
  
-@@ -1728,6 +1749,93 @@ static int rt5651_parse_dt(struct rt5651_priv *rt5651, struct device_node *np)
- 	return 0;
- }
- 
-+static irqreturn_t rt5651_irq(int irq, void *data)
-+{
-+	struct rt5651_priv *rt5651 = data;
-+
-+	queue_delayed_work(system_power_efficient_wq,
-+			   &rt5651->jack_detect_work, msecs_to_jiffies(250));
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int rt5651_jack_detect(struct snd_soc_codec *codec, int jack_insert)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	int jack_type;
-+
-+	if (jack_insert) {
-+		snd_soc_dapm_force_enable_pin(dapm, "LDO");
-+		snd_soc_dapm_sync(dapm);
-+
-+		snd_soc_update_bits(codec, RT5651_MICBIAS,
-+				    RT5651_MIC1_OVCD_MASK |
-+				    RT5651_MIC1_OVTH_MASK |
-+				    RT5651_PWR_CLK12M_MASK |
-+				    RT5651_PWR_MB_MASK,
-+				    RT5651_MIC1_OVCD_EN |
-+				    RT5651_MIC1_OVTH_600UA |
-+				    RT5651_PWR_MB_PU |
-+				    RT5651_PWR_CLK12M_PU);
-+		msleep(100);
-+		if (snd_soc_read(codec, RT5651_IRQ_CTRL2) & RT5651_MB1_OC_CLR)
-+			jack_type = SND_JACK_HEADPHONE;
-+		else
-+			jack_type = SND_JACK_HEADSET;
-+		snd_soc_update_bits(codec, RT5651_IRQ_CTRL2,
-+				    RT5651_MB1_OC_CLR, 0);
-+	} else { /* jack out */
-+		jack_type = 0;
-+
-+		snd_soc_update_bits(codec, RT5651_MICBIAS,
-+				    RT5651_MIC1_OVCD_MASK,
-+				    RT5651_MIC1_OVCD_DIS);
-+	}
-+
-+	return jack_type;
-+}
-+
-+static void rt5651_jack_detect_work(struct work_struct *work)
-+{
-+	struct rt5651_priv *rt5651 =
-+		container_of(work, struct rt5651_priv, jack_detect_work.work);
-+
-+	int report, val = 0;
-+
-+	if (!rt5651->codec)
-+		return;
-+
-+	switch (rt5651->pdata.jd_src) {
-+	case RT5651_JD1_1:
-+		val = snd_soc_read(rt5651->codec, RT5651_INT_IRQ_ST) & 0x1000;
-+		break;
-+	case RT5651_JD1_2:
-+		val = snd_soc_read(rt5651->codec, RT5651_INT_IRQ_ST) & 0x2000;
-+		break;
-+	case RT5651_JD2:
-+		val = snd_soc_read(rt5651->codec, RT5651_INT_IRQ_ST) & 0x4000;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	report = rt5651_jack_detect(rt5651->codec, !val);
-+
-+	snd_soc_jack_report(rt5651->hp_jack, report, SND_JACK_HEADSET);
-+}
-+
-+int rt5651_set_jack_detect(struct snd_soc_codec *codec,
-+			   struct snd_soc_jack *hp_jack)
-+{
-+	struct rt5651_priv *rt5651 = snd_soc_codec_get_drvdata(codec);
-+
-+	rt5651->hp_jack = hp_jack;
-+	rt5651_irq(0, rt5651);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(rt5651_set_jack_detect);
-+
- static int rt5651_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
- {
-@@ -1779,6 +1887,59 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- 
- 	rt5651->hp_mute = 1;
- 
-+	if (rt5651->pdata.jd_src) {
-+
-+		/* IRQ output on GPIO1 */
-+		regmap_update_bits(rt5651->regmap, RT5651_GPIO_CTRL1,
-+				   RT5651_GP1_PIN_MASK, RT5651_GP1_PIN_IRQ);
-+
-+		switch (rt5651->pdata.jd_src) {
-+		case RT5651_JD1_1:
-+			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
-+					   RT5651_JD_TRG_SEL_MASK,
-+					   RT5651_JD_TRG_SEL_JD1_1);
-+			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
-+					   RT5651_JD1_1_IRQ_EN,
-+					   RT5651_JD1_1_IRQ_EN);
-+			break;
-+		case RT5651_JD1_2:
-+			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
-+					   RT5651_JD_TRG_SEL_MASK,
-+					   RT5651_JD_TRG_SEL_JD1_2);
-+			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
-+					   RT5651_JD1_2_IRQ_EN,
-+					   RT5651_JD1_2_IRQ_EN);
-+			break;
-+		case RT5651_JD2:
-+			regmap_update_bits(rt5651->regmap, RT5651_JD_CTRL2,
-+					   RT5651_JD_TRG_SEL_MASK,
-+					   RT5651_JD_TRG_SEL_JD2);
-+			regmap_update_bits(rt5651->regmap, RT5651_IRQ_CTRL1,
-+					   RT5651_JD2_IRQ_EN,
-+					   RT5651_JD2_IRQ_EN);
-+			break;
-+		case RT5651_JD_NULL:
-+			break;
-+		default:
-+			dev_warn(&i2c->dev, "Currently only JD1_1 / JD1_2 / JD2 are supported\n");
-+			break;
-+		}
-+	}
-+
-+	INIT_DELAYED_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
-+
-+	if (i2c->irq) {
-+		ret = devm_request_threaded_irq(&i2c->dev, i2c->irq, NULL,
-+						rt5651_irq,
-+						IRQF_TRIGGER_RISING |
-+						IRQF_TRIGGER_FALLING |
-+						IRQF_ONESHOT, "rt5651", rt5651);
-+		if (ret) {
-+			dev_err(&i2c->dev, "Failed to reguest IRQ: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5651,
- 				rt5651_dai, ARRAY_SIZE(rt5651_dai));
- 
-@@ -1787,6 +1948,9 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- 
- static int rt5651_i2c_remove(struct i2c_client *i2c)
- {
-+	struct rt5651_priv *rt5651 = i2c_get_clientdata(i2c);
-+
-+	cancel_delayed_work_sync(&rt5651->jack_detect_work);
- 	snd_soc_unregister_codec(&i2c->dev);
- 
- 	return 0;
-diff --git a/sound/soc/codecs/rt5651.h b/sound/soc/codecs/rt5651.h
-index 1bd33cfa6411..4f8b202121d7 100644
---- a/sound/soc/codecs/rt5651.h
-+++ b/sound/soc/codecs/rt5651.h
-@@ -2062,6 +2062,8 @@ struct rt5651_priv {
- 	struct snd_soc_codec *codec;
- 	struct rt5651_platform_data pdata;
- 	struct regmap *regmap;
-+	struct snd_soc_jack *hp_jack;
-+	struct delayed_work jack_detect_work;
- 
- 	int sysclk;
- 	int sysclk_src;
-@@ -2077,4 +2079,6 @@ struct rt5651_priv {
- 	bool hp_mute;
- };
- 
-+int rt5651_set_jack_detect(struct snd_soc_codec *codec,
-+			   struct snd_soc_jack *hp_jack);
- #endif /* __RT5651_H__ */
 -- 
 2.14.2
