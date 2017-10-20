@@ -1,66 +1,92 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 03/14] soundwire: Add Master registration
-Date: Fri, 20 Oct 2017 21:35:56 +0530
-Message-ID: <20171020160556.GU30097@localhost>
+From: Philippe Ombredanne <pombredanne@nexb.com>
+Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
+Date: Fri, 20 Oct 2017 18:03:24 +0200
+Message-ID: <CAOFm3uExqnB45SDFKJo811aaEfeaEC02TUdpmPj1Wq9QEWqy_g@mail.gmail.com>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
- <20171020104726.GD3210@kroah.com>
+ <1508382211-3154-3-git-send-email-vinod.koul@intel.com> <20171020104528.GC3210@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171020104726.GD3210@kroah.com>
+In-Reply-To: <20171020104528.GC3210@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 20, 2017 at 12:47:26PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Oct 19, 2017 at 08:33:19AM +0530, Vinod Koul wrote:
-> > +void sdw_extract_slave_id(struct sdw_bus *bus,
-> > +			unsigned long long addr, struct sdw_slave_id *id)
-> > +{
-> > +	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
-> > +
-> > +	/*
-> > +	 * Spec definition
-> > +	 *   Register		Bit	Contents
-> > +	 *   DevId_0 [7:4]	47:44	sdw_version
-> > +	 *   DevId_0 [3:0]	43:40	unique_id
-> > +	 *   DevId_1		39:32	mfg_id [15:8]
-> > +	 *   DevId_2		31:24	mfg_id [7:0]
-> > +	 *   DevId_3		23:16	part_id [15:8]
-> > +	 *   DevId_4		15:08	part_id [7:0]
-> > +	 *   DevId_5		07:00	class_id
-> > +	 */
-> > +	id->sdw_version = (addr >> 44) & GENMASK(3, 0);
-> > +	id->unique_id = (addr >> 40) & GENMASK(3, 0);
-> > +	id->mfg_id = (addr >> 24) & GENMASK(15, 0);
-> > +	id->part_id = (addr >> 8) & GENMASK(15, 0);
-> > +	id->class_id = addr & GENMASK(7, 0);
-> > +
-> > +	dev_info(bus->dev,
-> > +		"SDW Slave class_id %x, part_id %x, mfg_id %x, unique_id %x, version %x",
-> > +				id->class_id, id->part_id, id->mfg_id,
-> > +				id->unique_id, id->sdw_version);
-> > +
-> 
-> Why are you so noisy?  Shouldn't this be dev_dbg()?
+On Fri, Oct 20, 2017 at 12:45 PM, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Thu, Oct 19, 2017 at 08:33:18AM +0530, Vinod Koul wrote:
+>> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+>> new file mode 100644
+>> index 000000000000..a14d1de80afa
+>> --- /dev/null
+>> +++ b/drivers/soundwire/bus_type.c
+>> @@ -0,0 +1,229 @@
+>> +/*
+>> + *  This file is provided under a dual BSD/GPLv2 license.  When using or
+>> + *  redistributing this file, you may do so under either license.
+>> + *
+>> + *  GPL LICENSE SUMMARY
+>> + *
+>> + *  Copyright(c) 2015-17 Intel Corporation.
+>> + *
+>> + *  This program is free software; you can redistribute it and/or modify
+>> + *  it under the terms of version 2 of the GNU General Public License as
+>> + *  published by the Free Software Foundation.
+>> + *
+>> + *  This program is distributed in the hope that it will be useful, but
+>> + *  WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+>> + *  General Public License for more details.
+>> + *
+>> + *  BSD LICENSE
+>> + *
+>> + *  Copyright(c) 2015-17 Intel Corporation.
+>> + *
+>> + *  Redistribution and use in source and binary forms, with or without
+>> + *  modification, are permitted provided that the following conditions
+>> + *  are met:
+>> + *
+>> + *    * Redistributions of source code must retain the above copyright
+>> + *      notice, this list of conditions and the following disclaimer.
+>> + *    * Redistributions in binary form must reproduce the above copyright
+>> + *      notice, this list of conditions and the following disclaimer in
+>> + *      the documentation and/or other materials provided with the
+>> + *      distribution.
+>> + *    * Neither the name of Intel Corporation nor the names of its
+>> + *      contributors may be used to endorse or promote products derived
+>> + *      from this software without specific prior written permission.
+>> + *
+>> + *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+>> + *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+>> + *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+>> + *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+>> + *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+>> + *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+>> + *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+>> + *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+>> + *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+>> + *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+>> + *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+>
+> Are you _sure_ that code that interacts with the driver core can have a
+> dual-license here?  Have you explained to lawyers what you are doing
+> here (wrapping gpl-only symbols with non-gpl-only exports)?
+>
+> And why dual license something that will only ever work on Linux?
+>
+> And finally, put a real SPDX header up there so that people don't have
+> to parse that horrid amount of text to try to determine exactly what
+> that license is.
 
-Sure, Takashi had same comment so this is fixed.
+Vinod:
 
-> > +static void sdw_slave_release(struct device *dev)
-> > +{
-> > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> > +
-> > +	kfree(slave);
-> > +}
-> 
-> Ah, finally a release function, nice.  But that's all you need to do for
-> it?
+It is hard to parse for people ... but it is quite hard for tools to catch
+this too. This license notice is so peculiar and special that I had to
+make a special detection rule just for it [1] in my tool :|
+Please have mercy: could you not pick something simpler?
 
-The only pending thing is to release the memory. The bus reference and
-related cleanup is done when device is unregistered.
-
+[1]  https://github.com/nexB/scancode-toolkit/blob/develop/src/licensedcode/data/rules/gpl-2.0_or_bsd-new33.RULE
 -- 
-~Vinod
+Cordially
+Philippe Ombredanne
