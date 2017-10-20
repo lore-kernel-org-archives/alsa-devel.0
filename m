@@ -1,119 +1,73 @@
 From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [Patch v6 2/7] slimbus: Add messaging APIs to slimbus framework
-Date: Thu, 19 Oct 2017 22:00:26 -0700
-Message-ID: <CAOCOHw4k+JTm-QRTvdYAKJy=bSSM1EXq+4Ne3E9APsKRC5pgtw@mail.gmail.com>
+Subject: Re: [Patch v6 7/7] MAINTAINERS: Add SLIMbus maintainer
+Date: Thu, 19 Oct 2017 22:00:40 -0700
+Message-ID: <CAOCOHw7ufGO40W7-_q9kTc4wO63jZAK3Xh-Hs9JpcgaCEQ79yA@mail.gmail.com>
 References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-3-srinivas.kandagatla@linaro.org> <20171018061500.GE1575@tuxbook>
- <1dfaba0b-78c2-8445-3b04-0bd6a25bf221@linaro.org>
+ <20171006155136.4682-8-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1dfaba0b-78c2-8445-3b04-0bd6a25bf221@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B4E5267670
+ for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 07:00:42 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id b79so9340906pfk.5
+ for <alsa-devel@alsa-project.org>; Thu, 19 Oct 2017 22:00:42 -0700 (PDT)
+In-Reply-To: <20171006155136.4682-8-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Sagar Dharia <sdharia@codeaurora.org>, bp@suse.de, poeschel@lemonage.de, Thierry Reding <treding@nvidia.com>, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, Mathieu Poirier <mathieu.poirier@linaro.org>, daniel@ffwll.ch, Jiri Kosina <jkosina@suse.cz>, sharon.dvir1@mail.huji.ac.il, joe@perches.com, David Miller <davem@davemloft.net>, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>, kheitke@audience.com, linux-arm-msm <linux-arm-msm@vger.ke>
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Michael Opdenacker <michael.opdenacker@free-electrons.com>, poeschel@lemonage.de, Andreas Noever <andreas.noever@gmail.com>, gong.chen@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, kheitke@audience.com, Thierry Reding <treding@nvidia.com>, devicetree <devicetree@vger.kernel.org>, james.hogan@imgtec.com, Pawel Moll <pawel.moll@arm.com>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, sharon.dvir1@mail.huji.ac.il, Rob Herring <robh+dt@kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com, bp@suse.de, Mathieu Poirier <mathieu.poirier@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, lkml <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Daniel Vetter <daniel@ffwll.ch>, Jiri Kosina <jkosina@suse.cz>, joe@perches.com, David Miller <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed 18 Oct 09:39 PDT 2017, Srinivas Kandagatla wrote:
+On Fri 06 Oct 08:51 PDT 2017, srinivas.kandagatla@linaro.org wrote:
 
-> Thanks for Review Comments,
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >
->
-> On 18/10/17 07:15, Bjorn Andersson wrote:
-> > On Fri 06 Oct 08:51 PDT 2017, srinivas.kandagatla@linaro.org wrote:
-[..]
-> >
-> > > + if (!async) {
-> > > + txn->msg->comp_cb = NULL;
-> > > + txn->msg->ctx = NULL;
-> >
-> > I believe txn->msg is always required, so you don't need to do this
-> > contidionally.
->
-> I don't get this, why do you want to set comp_cb to NULL unconditionally?
+> Add myself as maintainer for slimbus.
 >
 
-I'm just not happy about the complexity of this function, but perhaps
-it's confusing to always set them, regardless of them being used. Feel
-free to keep it.
-
-[..]
-> > > +void slim_return_tx(struct slim_controller *ctrl, int err)
-> > > +{
-> > > + unsigned long flags;
-> > > + int idx;
-> > > + struct slim_pending cur;
-> > > +
-> > > + spin_lock_irqsave(&ctrl->tx.lock, flags);
-> > > + idx = ctrl->tx.head;
-> > > + ctrl->tx.head = (ctrl->tx.head + 1) % ctrl->tx.n;
-> > > + cur = ctrl->pending_wr[idx];
-> >
-> > Why is this doing struct copy?
-> >
-> Not sure, do you see any issue with this?
->
-
-It's a rarely used feature and I don't see a reason for using it here.
-
-It's probably better to make a copy of cur.cb and cur.ctx to make their
-use after the spin-unlock more obvious (but should be fine as the
-spinlock is for the pending_wr array.
-
-> > > + spin_unlock_irqrestore(&ctrl->tx.lock, flags);
-> > > +
-> > > + if (!cur.cb)
-> > > + dev_err(&ctrl->dev, "NULL Transaction or completion");
-> > > + else
-> > > + cur.cb(cur.ctx, err);
-> > > +
-> > > + up(&ctrl->tx_sem);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(slim_return_tx);
-[..]
-> > > +/**
-> > > + * struct slim_ctrl_buf: circular buffer used by contoller for TX, RX
-> > > + * @base: virtual base address for this buffer
-> > > + * @phy: physical address for this buffer (this is useful if controller can
-> > > + *  DMA the buffers for TX and RX to/from controller hardware
-> > > + * @lock: lock protecting head and tail
-> > > + * @head: index where buffer is returned back
-> > > + * @tail: index from where buffer is consumed
-> > > + * @sl_sz: byte-size of each slot in this buffer
-> > > + * @n:  number of elements in this circular ring, note that this needs to be
-> > > + * 1 more than actual buffers to allow for one open slot
-> > > + */
-> >
-> > Is this ringbuffer mechanism defined in the slimbus specification? Looks
-> > like something specific to the Qualcomm controller, rather than
-> > something that should be enforced in the framework.
-> >
->
-> Yes, this is not part of the slimbus specs, but Qcom SOCs have concept of
-> Message Queues.
->
-> Are you suggesting that this buffer handling has to be moved out of core
-> into controller driver?
->
-
-The fact that this seems to describe a physical ring buffer, with some
-set of properties that are related to how a ring buffer works in the
-Qualcomm hardware and it carries a notion of physical mapping, all
-indicates to me that this describes some Qualcomm hardware interface.
-
-I believe this is a hardware implementation detail that should reside in
-the hardware part of the implementation (i.e. the Qualcomm driver).
-
->
-> > > +struct slim_ctrl_buf {
-> > > + void *base;
-> > > + phys_addr_t phy;
-> > > + spinlock_t lock;
-> > > + int head;
-> > > + int tail;
-> > > + int sl_sz;
-> > > + int n;
-> > > +};
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 Regards,
 Bjorn
+
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  MAINTAINERS | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2281af4..014f74b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12320,6 +12320,14 @@ T: git git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+>  F: include/linux/srcu.h
+>  F: kernel/rcu/srcu.c
+>
+> +SERIAL LOW-POWER INTER-CHIP MEDIA BUS (SLIMbus)
+> +M: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +L: alsa-devel@alsa-project.org (moderated for non-subscribers)
+> +S: Maintained
+> +F: drivers/slimbus/
+> +F: Documentation/devicetree/bindings/slimbus/
+> +F: include/linux/slimbus.h
+> +
+>  SMACK SECURITY MODULE
+>  M: Casey Schaufler <casey@schaufler-ca.com>
+>  L: linux-security-module@vger.kernel.org
+> --
+> 2.9.3
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-arm-msm" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
