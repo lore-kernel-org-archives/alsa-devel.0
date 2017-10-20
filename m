@@ -1,63 +1,139 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH 04/14] soundwire: Add MIPI DisCo property
- helpers
-Date: Fri, 20 Oct 2017 10:55:18 +0530
-Message-ID: <20171020052518.GI30097@localhost>
+Subject: Re: [PATCH 06/14] soundwire: Add IO transfer
+Date: Fri, 20 Oct 2017 11:00:06 +0530
+Message-ID: <20171020053006.GJ30097@localhost>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-5-git-send-email-vinod.koul@intel.com>
- <s5hfuaftss5.wl-tiwai@suse.de>
+ <1508382211-3154-7-git-send-email-vinod.koul@intel.com>
+ <s5hefpzts8j.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95CC5266A51
+ for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 07:25:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hfuaftss5.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <s5hefpzts8j.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 19, 2017 at 11:02:02AM +0200, Takashi Iwai wrote:
-> On Thu, 19 Oct 2017 05:03:20 +0200,
+On Thu, Oct 19, 2017 at 11:13:48AM +0200, Takashi Iwai wrote:
+> On Thu, 19 Oct 2017 05:03:22 +0200,
 > Vinod Koul wrote:
-> >  
-> > +	slave->ops = drv->ops;
+> > 
+> > +static inline int find_error_code(unsigned int sdw_ret)
+> > +{
+> > +	switch (sdw_ret) {
+> > +	case SDW_CMD_OK:
+> > +		return 0;
 > > +
-> >  	ret = drv->probe(slave, id);
-> >  	if (ret) {
-> >  		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-> >  		return ret;
-> >  	}
-> >  
-> > +	/* device is probed so let's read the properties now */
-> > +	if (slave->ops && slave->ops->read_prop)
-> > +		slave->ops->read_prop(slave);
+> > +	case SDW_CMD_IGNORED:
+> > +		return -ENODATA;
 > > +
-> > +	/*
-> > +	 * Check for valid clk_stop_timeout, use DisCo worst case value of
-> > +	 * 300ms
-> > +	 */
-> > +	if (slave->prop.clk_stop_timeout == 0)
-> > +		slave->prop.clk_stop_timeout = 300;
+> > +	case SDW_CMD_TIMEOUT:
+> > +		return -ETIMEDOUT;
+> > +	}
 > > +
-> > +	slave->bus->clk_stop_timeout = max_t(u32, slave->bus->clk_stop_timeout,
-> > +					slave->prop.clk_stop_timeout);
+> > +	return -EIO;
+> > +}
+> > +
+> > +static inline int do_transfer(struct sdw_bus *bus,
+> > +			struct sdw_msg *msg, bool page)
+> > +{
+> > +	int retry = bus->prop.err_threshold;
+> > +	int ret, i;
+> > +
+> > +	for (ret = 0, i = 0; i <= retry; i++) {
 > 
-> Isn't it racy?
-> Also what happens after removing a driver?  The clk_stop_timeout is
-> kept high?
+> Initializing ret here is a bit messy.  Better to do it outside.
 
-Well the spec mandates 300 as worst case, in practice this _should_ be
-lesser. I need to double check on behaviour of clock stop on driver removal.
-We need to keep in mind that multiple Slaves can be on a bus and removal
-maybe from one of them, so we may not do clock stop.
+sounds good
 
-> > +
-> > +int sdw_slave_read_dpn(struct sdw_slave *slave,
-> > +		struct sdw_dpn_prop *dpn, int count, int ports, char *type)
+> > +		ret = bus->ops->xfer_msg(bus, msg, page);
+> > +		ret = find_error_code(ret);
+> > +		/* if cmd is ok or ignored return */
+> > +		if (ret == 0 || ret == -ENODATA)
+> > +			return ret;
 > 
-> Missing comment for a public API function.
+> Hmm, it's not good to use the same variable for representing two
+> different things.  Either drop the substitution to ret for
+> bus->ops->xfer_msg() call, or use another variable to make clear which
+> one is for SDW_CMD_* and which one is for -EXXX.  The former should be
+> basically an enum.
 
-Ah missed this one. It was made public for debug, lets make it static now :)
+yes will do, sometimes we should not reuse :)
+
+> > +/**
+> > + * sdw_transfer: Synchronous transfer message to a SDW Slave device
+> > + *
+> > + * @bus: SDW bus
+> > + * @slave: SDW Slave
+> > + * @msg: SDW message to be xfered
+> > + */
+> > +int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
+> > +					struct sdw_msg *msg)
+> > +{
+> > +	bool page;
+> > +	int ret;
+> > +
+> > +	mutex_lock(&bus->msg_lock);
+> > +
+> > +	page = sdw_get_page(slave, msg);
+> > +
+> > +	ret = do_transfer(bus, msg, page);
+> > +	if (ret != 0 && ret != -ENODATA) {
+> > +		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
+> > +				msg->dev_num, ret);
+> > +		goto error;
+> > +	}
+> > +
+> > +	if (page)
+> > +		ret = sdw_reset_page(bus, msg->dev_num);
+> > +
+> > +error:
+> > +	mutex_unlock(&bus->msg_lock);
+> > +
+> > +	return ret;
+> 
+> So the logic here is that when -ENODATA is returned and page is false,
+> this function should return -ENODATA to the caller,  but when page
+> is set, it returns 0?
+
+Sorry no. do_transfer can succced (0) or in some case where Slaves didn't
+care for return error (ENODATA), or other errors.
+No ENODATA can be error depending on message sent so we dont treat this as
+failure and let caller decide.
+
+In case of errors (others) we don't need to reset page and we bail out
+
+> 
+> > +static inline int sdw_fill_msg(struct sdw_msg *msg, u16 addr,
+> > +				size_t count, u16 dev_num, u8 flags, u8 *buf)
+> > +{
+> > +	msg->addr = (addr >> SDW_REG_SHIFT(SDW_REGADDR));
+> > +	msg->len = count;
+> > +	msg->dev_num = dev_num;
+> > +	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
+> > +	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
+> > +	msg->flags = flags;
+> > +	msg->buf = buf;
+> > +	msg->ssp_sync = false;
+> > +
+> > +	return 0;
+> 
+> This function can be void.
+
+yup
 
 -- 
 ~Vinod
