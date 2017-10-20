@@ -1,83 +1,54 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH 06/14] soundwire: Add IO transfer
-Date: Fri, 20 Oct 2017 21:18:03 +0530
-Message-ID: <20171020154803.GQ30097@localhost>
+Subject: Re: [PATCH 01/14] Documentation: Add SoundWire summary
+Date: Fri, 20 Oct 2017 21:19:18 +0530
+Message-ID: <20171020154917.GR30097@localhost>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-7-git-send-email-vinod.koul@intel.com>
- <s5hefpzts8j.wl-tiwai@suse.de>
- <20171020053006.GJ30097@localhost>
- <s5ho9p2uwm2.wl-tiwai@suse.de>
+ <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
+ <20171020103934.GA3210@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id D86F92676ED
+ for <alsa-devel@alsa-project.org>; Fri, 20 Oct 2017 17:45:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5ho9p2uwm2.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, patches.audio@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, Sagar Dharia <sdharia@codeaurora.org>, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+In-Reply-To: <20171020103934.GA3210@kroah.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 20, 2017 at 09:06:13AM +0200, Takashi Iwai wrote:
-> On Fri, 20 Oct 2017 07:30:06 +0200,
-> Vinod Koul wrote:
+On Fri, Oct 20, 2017 at 12:39:34PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Oct 19, 2017 at 08:33:17AM +0530, Vinod Koul wrote:
+> > From: Sanyog Kale <sanyog.r.kale@intel.com>
 > > 
-> > On Thu, Oct 19, 2017 at 11:13:48AM +0200, Takashi Iwai wrote:
-> > > On Thu, 19 Oct 2017 05:03:22 +0200,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > +/**
-> > > > + * sdw_transfer: Synchronous transfer message to a SDW Slave device
-> > > > + *
-> > > > + * @bus: SDW bus
-> > > > + * @slave: SDW Slave
-> > > > + * @msg: SDW message to be xfered
-> > > > + */
-> > > > +int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
-> > > > +					struct sdw_msg *msg)
-> > > > +{
-> > > > +	bool page;
-> > > > +	int ret;
-> > > > +
-> > > > +	mutex_lock(&bus->msg_lock);
-> > > > +
-> > > > +	page = sdw_get_page(slave, msg);
-> > > > +
-> > > > +	ret = do_transfer(bus, msg, page);
-> > > > +	if (ret != 0 && ret != -ENODATA) {
-> > > > +		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
-> > > > +				msg->dev_num, ret);
-> > > > +		goto error;
-> > > > +	}
-> > > > +
-> > > > +	if (page)
-> > > > +		ret = sdw_reset_page(bus, msg->dev_num);
-> > > > +
-> > > > +error:
-> > > > +	mutex_unlock(&bus->msg_lock);
-> > > > +
-> > > > +	return ret;
-> > > 
-> > > So the logic here is that when -ENODATA is returned and page is false,
-> > > this function should return -ENODATA to the caller,  but when page
-> > > is set, it returns 0?
+> > SoundWire is a new Linux bus which implements a new MIPI bus protocol
+> > 'SoundWire'. The summary of SoundWire bus and registration APIs is
+> > documented in the 'summary' file.
 > > 
-> > Sorry no. do_transfer can succced (0) or in some case where Slaves didn't
-> > care for return error (ENODATA), or other errors.
-> > No ENODATA can be error depending on message sent so we dont treat this as
-> > failure and let caller decide.
-> > 
-> > In case of errors (others) we don't need to reset page and we bail out
+> > Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> > Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > ---
+> >  Documentation/soundwire/summary.txt | 192 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 192 insertions(+)
+> >  create mode 100644 Documentation/soundwire/summary.txt
 > 
-> Well, the question is the handling of ENODATA.  Whether the function
-> returns 0 or -ENODATA depends on page flag.  If page flag is true,
-> -ENODATA is cleared.  My question was whether this behavior is
-> intended or not.
-> 
-> If -ENODATA should be returned whenever it gets that from
-> do_transfer(), the code has a potential bug there.
+> Any specific reason this is not in .rst format and tied to the rest of
+> the kernel Documentation so it gets built automatically?
 
-Ah right, the return from do_transfer needs to preserved in that case. I
-will fix that up, thanks for spotting :)
+I was hoping to do rst conversion a bit later if that is not a deal
+breaker :) That is certainly a todo in my list.
 
 -- 
 ~Vinod
