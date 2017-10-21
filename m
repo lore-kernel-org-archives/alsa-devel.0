@@ -1,20 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 10/14] soundwire: Add sysfs for SoundWire
-	DisCo properties
-Date: Sat, 21 Oct 2017 17:23:35 +0530
-Message-ID: <20171021115335.GJ30097@localhost>
+Subject: Re: [PATCH 11/14] soundwire: cdns: Add cadence module
+Date: Sat, 21 Oct 2017 17:24:54 +0530
+Message-ID: <20171021115453.GK30097@localhost>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-11-git-send-email-vinod.koul@intel.com>
- <20171021094253.45qbp6wzyhifw5vc@sirena.org.uk>
+ <1508382211-3154-12-git-send-email-vinod.koul@intel.com>
+ <20171021095201.cxxmgvliyzzr4ydo@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B423266B38
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 13:49:18 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2A9E267174
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 13:50:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20171021094253.45qbp6wzyhifw5vc@sirena.org.uk>
+In-Reply-To: <20171021095201.cxxmgvliyzzr4ydo@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,47 +27,30 @@ To: Mark Brown <broonie@kernel.org>
 Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 21, 2017 at 10:42:53AM +0100, Mark Brown wrote:
-> On Thu, Oct 19, 2017 at 08:33:26AM +0530, Vinod Koul wrote:
+On Sat, Oct 21, 2017 at 10:52:01AM +0100, Mark Brown wrote:
+> On Thu, Oct 19, 2017 at 08:33:27AM +0530, Vinod Koul wrote:
 > 
-> > +static ssize_t clock_frequencies_show(struct sdw_bus *bus,
-> > +			struct sdw_prop_attribute *attr, char *buf)
-> > +{
-> > +	ssize_t size = 0;
-> > +	int i;
+> > Cadence IP implements SoundWire Master. Add base cadence module
+> > initialization and interrupt handling
+> 
+> It's probably worth saying something about how this isn't a device
+> driver but rather a library for device drivers.
+
+Yes you are right, I will update this to clarify
+
+> 
+> > +	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
 > > +
-> > +	for (i = 0; i < bus->prop.num_freq; i++)
-> > +		size += sprintf(buf + size, "%8d\n", bus->prop.freq[i]);
-> > +
-> > +	return size;
-> > +}
+> > +		/* Slave is driving bit slot during control word */
+> > +		dev_err_ratelimited(cdns->dev, "Bus clash for control word\n");
+> > +		int_status |= CDNS_MCP_INT_CTRL_CLASH;
+> > +	}
 > 
-> sysfs is supposed to be one value per file...
+> So with this (and the other error flags) we check to see if the bit is
+> set, print an error and then set the bit we were looking for in the same
+> variable we just checked?
 
-I though it needs to be human readable like:
+no this doesnt look right, I will fix it up.
 
-$ cat /sys/bus/cpu/devices/cpu0/cpufreq/scaling_available_governors
-performance powersave
-
-In this case, if this is allowed it does help to have a single file with all
-supported frequencies for a device
-
-> 
-> > +int sdw_sysfs_slave_init(struct sdw_slave *slave)
-> > +{
-> > +	/* TODO: Initialize dp0 and dpn kobject and attribute */
-> > +	return 0;
-> > +}
-> > +
-> > +void sdw_sysfs_slave_exit(struct sdw_slave *slave)
-> > +{
-> > +}
-> 
-> Seems like an important TODO?
-
-Yes. For now I will remove the dummy code and add the patches for this after
-this series is done.
-
-Thanks
 -- 
 ~Vinod
