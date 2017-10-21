@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/14] regmap: Add SoundWire bus support
-Date: Sat, 21 Oct 2017 10:34:26 +0100
-Message-ID: <20171021093426.vzhv3ponaxhi4yw3@sirena.org.uk>
+Subject: Re: [PATCH 10/14] soundwire: Add sysfs for SoundWire
+	DisCo properties
+Date: Sat, 21 Oct 2017 10:42:53 +0100
+Message-ID: <20171021094253.45qbp6wzyhifw5vc@sirena.org.uk>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-8-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-11-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0586434101452162164=="
+Content-Type: multipart/mixed; boundary="===============8797592867175546756=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 737CC266DF5
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 11:34:41 +0200 (CEST)
-In-Reply-To: <1508382211-3154-8-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD51A266DF5
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 11:42:58 +0200 (CEST)
+In-Reply-To: <1508382211-3154-11-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,81 +27,66 @@ Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirru
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0586434101452162164==
+--===============8797592867175546756==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m3dr2wzmgkqq57we"
+	protocol="application/pgp-signature"; boundary="qpyui4plsyem24go"
 Content-Disposition: inline
 
 
---m3dr2wzmgkqq57we
+--qpyui4plsyem24go
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 19, 2017 at 08:33:23AM +0530, Vinod Koul wrote:
+On Thu, Oct 19, 2017 at 08:33:26AM +0530, Vinod Koul wrote:
 
-> + *  BSD LICENSE
-> + *
-> + *  Copyright(c) 2015-17 Intel Corporation.
-> + *
-> + *  Redistribution and use in source and binary forms, with or without
-> + *  modification, are permitted provided that the following conditions
-> + *  are met:
-
-Really unhappy with the dual licensing for regmap code, this is
-interface code for some GPL only kernel code and...
-
-> +static int regmap_sdw_write(void *context, unsigned int reg, unsigned in=
-t val)
+> +static ssize_t clock_frequencies_show(struct sdw_bus *bus,
+> +			struct sdw_prop_attribute *attr, char *buf)
 > +{
-> +	struct device *dev =3D context;
-> +	struct sdw_slave *slave =3D dev_to_sdw_dev(dev);
+> +	ssize_t size = 0;
+> +	int i;
 > +
-> +	/* Check for Slave */
-> +	if (!slave)
-> +		return 0;
-
-We silently ignore the device not existing?
-
-> +static struct regmap_bus regmap_sdw =3D {
-> +	.reg_read =3D regmap_sdw_read,
-> +	.reg_write =3D regmap_sdw_write,
-
-Given that the bus appears to support bulk operations why are we
-implementing this with reg_read() and reg_write()? =20
-
-> +		return ERR_PTR(ret);
+> +	for (i = 0; i < bus->prop.num_freq; i++)
+> +		size += sprintf(buf + size, "%8d\n", bus->prop.freq[i]);
 > +
-> +	return __regmap_init(&sdw->dev, &regmap_sdw,
-> +			&sdw->dev, config, lock_key, lock_name);
+> +	return size;
 > +}
-> +EXPORT_SYMBOL(__regmap_init_sdw);
 
-=2E..this is just an obvious attempt to allow non-GPL code to directly use
-GPL code.
+sysfs is supposed to be one value per file...
 
---m3dr2wzmgkqq57we
+> +int sdw_sysfs_slave_init(struct sdw_slave *slave)
+> +{
+> +	/* TODO: Initialize dp0 and dpn kobject and attribute */
+> +	return 0;
+> +}
+> +
+> +void sdw_sysfs_slave_exit(struct sdw_slave *slave)
+> +{
+> +}
+
+Seems like an important TODO?
+
+--qpyui4plsyem24go
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnrFKIACgkQJNaLcl1U
-h9AfrAf/aqnMLF+cczpew0IHhZp4pu1bBBWAgqoBeXZvR1/2/kYvX+D+w3djJX8u
-afo/vaOJ59EGBnsnAOh4Lj5lq0xDEFAwxSruZl3DQLio5JwpMrrlk7DWXAwRbMAk
-LJd/6eHzOJCNNsSg0fcD/ZRbiDA/yeClu7Xq8pOUNFnefFjRJUYwwYNHgyfcA/VJ
-EJv7eDjmHzosu8EIHK0ZSJ10XfpkLvJ1YJyNR7nBkmmXPoWP61vWh12aC1brAVw0
-Ej4ajHkpeRWjA9jpOYvLDc2m1bFUddcAphLLHOUj0u3EzVEgNCucEYNAzjoiE2IJ
-6rK8mgNNReC+M9ul2NCVIGjh6DLIBg==
-=Fa+q
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnrFpwACgkQJNaLcl1U
+h9B85Qf/SFvCyFGVyYxIIm81d0UMnW+J7II2QK98Y9lMJn08y8dKHSCxydAUWxux
+wtXbVa+4BVKKMdwHlVpi0HNk86BdQSWvrClEZnmZ6M3JcCiPVmew5MLae37G+f3X
+ODXwpdp2uINqyfBjFfOC1PjXci9KUkXqYRHc3rrIgjvY8QiW0qiX8wHVEiw+v8OI
+ZGMrZ1NQQ0oJzsQJQkq712jRNOX69d6FNa8vsg955MatNVMKBO5F6WqH8JVu9nyx
+rKwHnF4ZEgf8e69U6oF8NfACpKOVpvUlO1t+R2vi4bAGE3kN5TJH7rcec8DXyCdJ
+xGN43AEqHv4byq3smSt9ulNVofuX3Q==
+=V34F
 -----END PGP SIGNATURE-----
 
---m3dr2wzmgkqq57we--
+--qpyui4plsyem24go--
 
---===============0586434101452162164==
+--===============8797592867175546756==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0586434101452162164==--
+--===============8797592867175546756==--
