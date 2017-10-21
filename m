@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: remove
-	unnecessary route patch from Example 1" to the asoc tree
-Date: Sat, 21 Oct 2017 11:27:40 +0100 (BST)
-Message-ID: <20171021102740.EA390440057@finisterre.ee.mobilebroadband>
-References: <87a80q6zg8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: audio-graph-scu-card: add missing
+	Capture routing on Example" to the asoc tree
+Date: Sat, 21 Oct 2017 11:27:48 +0100 (BST)
+Message-ID: <20171021102748.362BA440057@finisterre.ee.mobilebroadband>
+References: <87bml66zh3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C8468266DCF
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:27:44 +0200 (CEST)
-In-Reply-To: <87a80q6zg8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AC32226717B
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:27:49 +0200 (CEST)
+In-Reply-To: <87bml66zh3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: remove unnecessary route patch from Example 1
+   ASoC: audio-graph-scu-card: add missing Capture routing on Example
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 86d5b2c20d8ec255ef7646533b81dabc935e0eff Mon Sep 17 00:00:00 2001
+>From 05c006145054a86430ed4fdd4f8c1b4139a44bee Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 17 Oct 2017 06:57:49 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: remove unnecessary route patch
- from Example 1
+Date: Tue, 17 Oct 2017 06:57:19 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: add missing Capture routing on
+ Example
 
-Example 1 is for "Sampling Rate Conversion",
-sample has only 1 CPU, 1 Codec.
-Thus, "codec Playback", "DAI1 Playback" route is unnecessary.
+Both cases have 1 Capture path.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-index a10daf54aa0c..441dd6f29df1 100644
+index 8b8afe9fcb31..a10daf54aa0c 100644
 --- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
 +++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-@@ -43,7 +43,6 @@ Example 1. Sampling Rate Conversion
+@@ -43,7 +43,8 @@ Example 1. Sampling Rate Conversion
  		label = "sound-card";
  		prefix = "codec";
  		routing = "codec Playback", "DAI0 Playback",
--			  "codec Playback", "DAI1 Playback",
- 			  "DAI0 Capture",   "codec Capture";
+-			"codec Playback", "DAI1 Playback";
++			  "codec Playback", "DAI1 Playback",
++			  "DAI0 Capture",   "codec Capture";
  		convert-rate = <48000>;
  
+ 		dais = <&cpu_port>;
+@@ -79,7 +80,8 @@ Example 2. 2 CPU 1 Codec (Mixing)
+ 		label = "sound-card";
+ 		prefix = "codec";
+ 		routing = "codec Playback", "DAI0 Playback",
+-			"codec Playback", "DAI1 Playback";
++			  "codec Playback", "DAI1 Playback",
++			  "DAI0 Capture",   "codec Capture";
+ 		convert-rate = <48000>;
+ 
+ 		dais = <&cpu_port0
 -- 
 2.14.1
