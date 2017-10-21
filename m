@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: add missing
-	Capture routing on Example" to the asoc tree
-Date: Sat, 21 Oct 2017 11:27:48 +0100 (BST)
-Message-ID: <20171021102748.362BA440057@finisterre.ee.mobilebroadband>
-References: <87bml66zh3.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: clarify Kconfig dependencies" to
+	the asoc tree
+Date: Sat, 21 Oct 2017 11:27:54 +0100 (BST)
+Message-ID: <20171021102754.A8C89440057@finisterre.ee.mobilebroadband>
+References: <20170908205702.1985-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AC32226717B
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:27:49 +0200 (CEST)
-In-Reply-To: <87bml66zh3.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A4939267768
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:28:06 +0200 (CEST)
+In-Reply-To: <20170908205702.1985-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: add missing Capture routing on Example
+   ASoC: Intel: clarify Kconfig dependencies
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,354 @@ to this mail.
 Thanks,
 Mark
 
->From 05c006145054a86430ed4fdd4f8c1b4139a44bee Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 17 Oct 2017 06:57:19 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: add missing Capture routing on
- Example
+>From f6a118a800e35af2c63f90cbcc23093f4b53b3a2 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 12 Oct 2017 18:49:45 -0500
+Subject: [PATCH] ASoC: Intel: clarify Kconfig dependencies
 
-Both cases have 1 Capture path.
+Introduce more logical dependencies, with the SOC selected first and the
+relevant machine drivers are exposed.
+The same mechanism will be used for SOF support.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Also select SND_SOC_ACPI_INTEL_MATCH for all machine drivers
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/intel/Kconfig        | 25 +++++++++-----
+ sound/soc/intel/boards/Kconfig | 77 ++++++++++++++++++++++++++----------------
+ 2 files changed, 63 insertions(+), 39 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-index 8b8afe9fcb31..a10daf54aa0c 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-@@ -43,7 +43,8 @@ Example 1. Sampling Rate Conversion
- 		label = "sound-card";
- 		prefix = "codec";
- 		routing = "codec Playback", "DAI0 Playback",
--			"codec Playback", "DAI1 Playback";
-+			  "codec Playback", "DAI1 Playback",
-+			  "DAI0 Capture",   "codec Capture";
- 		convert-rate = <48000>;
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index b8ebf05469d5..1dcc9e456610 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -1,7 +1,3 @@
+-config SND_SST_ATOM_HIFI2_PLATFORM
+-	tristate
+-	select SND_SOC_COMPRESS
+-
+ config SND_SST_IPC
+ 	tristate
  
- 		dais = <&cpu_port>;
-@@ -79,7 +80,8 @@ Example 2. 2 CPU 1 Codec (Mixing)
- 		label = "sound-card";
- 		prefix = "codec";
- 		routing = "codec Playback", "DAI0 Playback",
--			"codec Playback", "DAI1 Playback";
-+			  "codec Playback", "DAI1 Playback",
-+			  "DAI0 Capture",   "codec Capture";
- 		convert-rate = <48000>;
+@@ -20,9 +16,7 @@ config SND_SOC_INTEL_COMMON
  
- 		dais = <&cpu_port0
+ config SND_SOC_INTEL_SST
+ 	tristate
+-	select SND_SOC_INTEL_COMMON
+ 	select SND_SOC_INTEL_SST_ACPI if ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 
+ config SND_SOC_INTEL_SST_FIRMWARE
+ 	tristate
+@@ -35,18 +29,31 @@ config SND_SOC_ACPI_INTEL_MATCH
+ 	tristate
+ 	select SND_SOC_ACPI if ACPI
+ 
++config SND_SOC_INTEL_SST_TOPLEVEL
++	tristate "Intel ASoC SST drivers"
++	select SND_SOC_INTEL_MACH
++	select SND_SOC_INTEL_COMMON
++
+ config SND_SOC_INTEL_HASWELL
+-	tristate
++	tristate "Intel ASoC SST driver for Haswell/Broadwell"
++	depends on SND_SOC_INTEL_SST_TOPLEVEL
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 
+ config SND_SOC_INTEL_BAYTRAIL
+-	tristate
++	tristate "Intel ASoC SST driver for Baytrail (legacy)"
++	depends on SND_SOC_INTEL_SST_TOPLEVEL
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 
++config SND_SST_ATOM_HIFI2_PLATFORM
++	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
++	depends on SND_SOC_INTEL_SST_TOPLEVEL
++	select SND_SOC_COMPRESS
++
+ config SND_SOC_INTEL_SKYLAKE
+-	tristate
++	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
++	depends on SND_SOC_INTEL_SST_TOPLEVEL
+ 	select SND_HDA_EXT_CORE
+ 	select SND_HDA_DSP_LOADER
+ 	select SND_SOC_TOPOLOGY
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 5bb0eb00df58..449bc8baaa60 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -1,8 +1,13 @@
++config SND_SOC_INTEL_MACH
++	tristate "Intel Audio machine drivers"
++	select SND_SOC_ACPI_INTEL_MATCH if ACPI
++
+ config SND_MFLD_MACHINE
+ 	tristate "SOC Machine Audio driver for Intel Medfield MID platform"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on INTEL_SCU_IPC
+ 	select SND_SOC_SN95031
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_PCI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) MID Medfield platform
+@@ -12,9 +17,10 @@ config SND_MFLD_MACHINE
+ 
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+ 	depends on DMADEVICES
+-	select SND_SOC_INTEL_HASWELL
++	depends on SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
+@@ -24,9 +30,10 @@ config SND_SOC_INTEL_HASWELL_MACH
+ 
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && GPIOLIB && I2C
+ 	depends on DMADEVICES
+-	select SND_SOC_INTEL_HASWELL
++	depends on SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5677
+ 	help
+ 	  This adds support for Intel Broadwell platform based boards with
+@@ -34,9 +41,10 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 
+ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+ 	depends on DMADEVICES
+-	select SND_SOC_INTEL_HASWELL
++	depends on SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT286
+ 	help
+ 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
+@@ -46,10 +54,11 @@ config SND_SOC_INTEL_BROADWELL_MACH
+ 
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C
+ 	depends on DMADEVICES
+ 	depends on SND_SST_IPC_ACPI = n
+-	select SND_SOC_INTEL_BAYTRAIL
++	depends on SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+@@ -57,10 +66,11 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C
+ 	depends on DMADEVICES
+ 	depends on SND_SST_IPC_ACPI = n
+-	select SND_SOC_INTEL_BAYTRAIL
++	depends on SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+@@ -69,11 +79,11 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86 && I2C && ACPI
+ 	select SND_SOC_RT5640
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+           platforms with RT5640 audio codec.
+@@ -82,11 +92,11 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86 && I2C && ACPI
+ 	select SND_SOC_RT5651
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+           platforms with RT5651 audio codec.
+@@ -95,11 +105,11 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+         tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
+-        depends on X86_INTEL_LPSS && I2C && ACPI
++        depends on SND_SOC_INTEL_MACH
++	depends on X86_INTEL_LPSS && I2C && ACPI
+         select SND_SOC_RT5670
+-        select SND_SST_ATOM_HIFI2_PLATFORM
++        depends on SND_SST_ATOM_HIFI2_PLATFORM
+         select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+         help
+           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+           platforms with RT5672 audio codec.
+@@ -108,11 +118,11 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_RT5645
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+ 	  platforms with RT5645/5650 audio codec.
+@@ -120,12 +130,12 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with MAX98090 & TI codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_TS3A227E
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+ 	  platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
+@@ -133,11 +143,11 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_DA7213
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
+ 	  platforms with DA7212/7213 audio codec.
+@@ -145,11 +155,11 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with ES8316 codec"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_ES8316
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail &
+ 	  Cherrytrail platforms with ES8316 audio codec.
+@@ -157,10 +167,10 @@ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+-	select SND_SST_ATOM_HIFI2_PLATFORM
++	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+-	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for the MinnowBoard Max or
+ 	  Up boards and provides access to I2S signals on the Low-Speed
+@@ -169,8 +179,9 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86 && ACPI && I2C
+-	select SND_SOC_INTEL_SKYLAKE
++	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT286
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -182,8 +193,9 @@ config SND_SOC_INTEL_SKL_RT286_MACH
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C
+-	select SND_SOC_INTEL_SKYLAKE
++	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_SSM4567
+ 	select SND_SOC_DMIC
+@@ -196,8 +208,9 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C
+-	select SND_SOC_INTEL_SKYLAKE
++	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -210,8 +223,9 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86 && ACPI && I2C
+-	select SND_SOC_INTEL_SKYLAKE
++	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -225,8 +239,9 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 
+ config SND_SOC_INTEL_BXT_RT298_MACH
+ 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86 && ACPI && I2C
+-	select SND_SOC_INTEL_SKYLAKE
++	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT298
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -239,9 +254,10 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927 in I2S Mode"
++	depends on SND_SOC_INTEL_MACH
+ 	depends on X86_INTEL_LPSS && I2C
+ 	select SND_SOC_INTEL_SST
+-	select SND_SOC_INTEL_SKYLAKE
++	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT5663
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+@@ -254,9 +270,10 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
++        depends on SND_SOC_INTEL_MACH
+         depends on X86_INTEL_LPSS && I2C && SPI
+         select SND_SOC_INTEL_SST
+-        select SND_SOC_INTEL_SKYLAKE
++        depends on SND_SOC_INTEL_SKYLAKE
+         select SND_SOC_RT5663
+         select SND_SOC_RT5514
+         select SND_SOC_RT5514_SPI
 -- 
 2.14.1
