@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [INTERNAL][PATCH 4/7] ASoC: stm32: sai: fix stop
- management in isr
-Date: Sat, 21 Oct 2017 11:16:07 +0100
-Message-ID: <20171021101607.uwnt4wniycthdld3@sirena.org.uk>
-References: <1508418203-16840-1-git-send-email-olivier.moysan@st.com>
- <1508418203-16840-5-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: audio-graph-scu-card: remove
+	unnecessary route patch from Example 1" to the asoc tree
+Date: Sat, 21 Oct 2017 11:27:40 +0100 (BST)
+Message-ID: <20171021102740.EA390440057@finisterre.ee.mobilebroadband>
+References: <87a80q6zg8.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2946829544656077648=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 15691266DF5
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:16:17 +0200 (CEST)
-In-Reply-To: <1508418203-16840-5-git-send-email-olivier.moysan@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C8468266DCF
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:27:44 +0200 (CEST)
+In-Reply-To: <87a80q6zg8.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Moysan <olivier.moysan@st.com>
-Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2946829544656077648==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="n7u74fjcsblg3ksr"
-Content-Disposition: inline
+   ASoC: audio-graph-scu-card: remove unnecessary route patch from Example 1
 
+has been applied to the asoc tree at
 
---n7u74fjcsblg3ksr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Oct 19, 2017 at 03:03:20PM +0200, Olivier Moysan wrote:
-> Add check on substream validity.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Fixes should go at the start of the series so they can be applied
-separately and sent to Linus without having to wait for new features.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---n7u74fjcsblg3ksr
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnrHmYACgkQJNaLcl1U
-h9AUqwf/bjjid5cbjGdvnjMp8ZwyhiDJQFTLXUAMIqCxpp+P3oGlPuOcETEc6Cc6
-RvTgTV6K3DcQ8iUQ5pFjkEjxUFGSgXfM8VdMsrzJ9SShxx1TbU/GukcIEgC5W/jr
-wY7e+M6Gt1XL/PJuVILu9iOHGFYd9ztKEMueDS92sTv9J2gtWDnkZYHFf6ye1YpD
-UsNF5UXXcJkj/e4l2xJs40+3v2rJJ7cPy7Qc6yiOa74i2ZQnY1tDAQxrtexVbif2
-KMMe0xCl1QOQ/rB5uz4rzsN8O1DdUiMpGzdlefENtAgJXva6WOq2sESs+GGqvn8l
-uQD/8o/lNdNkEwZ1gslxkMyPiq35Bw==
-=wCWl
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---n7u74fjcsblg3ksr--
+>From 86d5b2c20d8ec255ef7646533b81dabc935e0eff Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 17 Oct 2017 06:57:49 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: remove unnecessary route patch
+ from Example 1
 
---===============2946829544656077648==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Example 1 is for "Sampling Rate Conversion",
+sample has only 1 CPU, 1 Codec.
+Thus, "codec Playback", "DAI1 Playback" route is unnecessary.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt | 1 -
+ 1 file changed, 1 deletion(-)
 
---===============2946829544656077648==--
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+index a10daf54aa0c..441dd6f29df1 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+@@ -43,7 +43,6 @@ Example 1. Sampling Rate Conversion
+ 		label = "sound-card";
+ 		prefix = "codec";
+ 		routing = "codec Playback", "DAI0 Playback",
+-			  "codec Playback", "DAI1 Playback",
+ 			  "DAI0 Capture",   "codec Capture";
+ 		convert-rate = <48000>;
+ 
+-- 
+2.14.1
