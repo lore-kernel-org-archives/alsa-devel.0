@@ -1,80 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: remove redundant variable dma_dev_name" to the asoc tree
-Date: Sat, 21 Oct 2017 11:13:43 +0100 (BST)
-Message-ID: <20171021101343.69C41440057@finisterre.ee.mobilebroadband>
-References: <20171019123352.30294-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171019123352.30294-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Re: [INTERNAL][PATCH 4/7] ASoC: stm32: sai: fix stop
+ management in isr
+Date: Sat, 21 Oct 2017 11:16:07 +0100
+Message-ID: <20171021101607.uwnt4wniycthdld3@sirena.org.uk>
+References: <1508418203-16840-1-git-send-email-olivier.moysan@st.com>
+ <1508418203-16840-5-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2946829544656077648=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15691266DF5
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:16:17 +0200 (CEST)
+In-Reply-To: <1508418203-16840-5-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Olivier Moysan <olivier.moysan@st.com>
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: sst: remove redundant variable dma_dev_name
+--===============2946829544656077648==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="n7u74fjcsblg3ksr"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--n7u74fjcsblg3ksr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Oct 19, 2017 at 03:03:20PM +0200, Olivier Moysan wrote:
+> Add check on substream validity.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Fixes should go at the start of the series so they can be applied
+separately and sent to Linus without having to wait for new features.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--n7u74fjcsblg3ksr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnrHmYACgkQJNaLcl1U
+h9AUqwf/bjjid5cbjGdvnjMp8ZwyhiDJQFTLXUAMIqCxpp+P3oGlPuOcETEc6Cc6
+RvTgTV6K3DcQ8iUQ5pFjkEjxUFGSgXfM8VdMsrzJ9SShxx1TbU/GukcIEgC5W/jr
+wY7e+M6Gt1XL/PJuVILu9iOHGFYd9ztKEMueDS92sTv9J2gtWDnkZYHFf6ye1YpD
+UsNF5UXXcJkj/e4l2xJs40+3v2rJJ7cPy7Qc6yiOa74i2ZQnY1tDAQxrtexVbif2
+KMMe0xCl1QOQ/rB5uz4rzsN8O1DdUiMpGzdlefENtAgJXva6WOq2sESs+GGqvn8l
+uQD/8o/lNdNkEwZ1gslxkMyPiq35Bw==
+=wCWl
+-----END PGP SIGNATURE-----
 
->From 271ef65b5882425d500e969e875c98e47a6b0c86 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 19 Oct 2017 14:33:52 +0200
-Subject: [PATCH] ASoC: Intel: sst: remove redundant variable dma_dev_name
+--n7u74fjcsblg3ksr--
 
-The pointer dma_dev_name is assigned but never read, it is redundant
-and can therefore be removed.
+--===============2946829544656077648==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Cleans up clang warning:
-sound/soc/intel/common/sst-firmware.c:288:3: warning: Value stored to
-'dma_dev_name' is never read
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/common/sst-firmware.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index a086c35f91bb..79a9fdf94d38 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -274,7 +274,6 @@ int sst_dma_new(struct sst_dsp *sst)
- 	struct sst_pdata *sst_pdata = sst->pdata;
- 	struct sst_dma *dma;
- 	struct resource mem;
--	const char *dma_dev_name;
- 	int ret = 0;
- 
- 	if (sst->pdata->resindex_dma_base == -1)
-@@ -285,7 +284,6 @@ int sst_dma_new(struct sst_dsp *sst)
- 	* is attached to the ADSP IP. */
- 	switch (sst->pdata->dma_engine) {
- 	case SST_DMA_TYPE_DW:
--		dma_dev_name = "dw_dmac";
- 		break;
- 	default:
- 		dev_err(sst->dev, "error: invalid DMA engine %d\n",
--- 
-2.14.1
+--===============2946829544656077648==--
