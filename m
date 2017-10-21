@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/14] soundwire: Add Master registration
-Date: Sat, 21 Oct 2017 10:12:30 +0100
-Message-ID: <20171021091230.pwevgreloynqe7nu@sirena.org.uk>
+Subject: Re: [PATCH 04/14] soundwire: Add MIPI DisCo property
+	helpers
+Date: Sat, 21 Oct 2017 10:20:46 +0100
+Message-ID: <20171021092046.p6wsssjkonjjdidt@sirena.org.uk>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7342986047883179071=="
+Content-Type: multipart/mixed; boundary="===============3670903351988488920=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A14A1266DF5
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 11:12:40 +0200 (CEST)
-In-Reply-To: <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D7F4266DF5
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 11:20:52 +0200 (CEST)
+In-Reply-To: <1508382211-3154-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +27,54 @@ Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirru
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7342986047883179071==
+--===============3670903351988488920==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rvjvopyyczgw635m"
+	protocol="application/pgp-signature"; boundary="yz5cdsez4hj7pnct"
 Content-Disposition: inline
 
 
---rvjvopyyczgw635m
+--yz5cdsez4hj7pnct
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 19, 2017 at 08:33:19AM +0530, Vinod Koul wrote:
+On Thu, Oct 19, 2017 at 08:33:20AM +0530, Vinod Koul wrote:
 
-> +	/*
-> +	 * SDW is an enumerable bus, but devices can be powered off. So,
-> +	 * they won't be able to report as present.
-> +	 *
-> +	 * Create Slave devices based on Slaves described in
-> +	 * the respective firmware (ACPI/DT)
-> +	 */
-> +
-> +	if (IS_ENABLED(CONFIG_ACPI) && bus->dev && ACPI_HANDLE(bus->dev))
-> +		ret = sdw_acpi_find_slaves(bus);
-> +	else if (IS_ENABLED(CONFIG_OF) && bus->dev && bus->dev->of_node)
-> +		ret = sdw_of_find_slaves(bus);
-> +	else
-> +		ret = -ENOTSUPP; /* No ACPI/DT so error out */
+> +	/* device is probed so let's read the properties now */
+> +	if (slave->ops && slave->ops->read_prop)
+> +		slave->ops->read_prop(slave);
 
-Devices *can* be powered off but is there any reason that a system
-couldn't be designed with them always powered?  Also given that we don't
-actually have any DT support the stubs for it are at best misleading,
-it's not going to be hard for someone to add them later.
+Is it valid for us to not be able to read the properties?
 
-> +	mutex_lock(&bus->bus_lock);
-> +	if (!list_empty(&bus->slaves))
-> +		list_del(&slave->node);
+> +		fwnode_property_read_u32(node, "mipi-sdw-port-max-wordlength",
+> +						&dpn[i].max_word);
+> +		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
+> +						&dpn[i].min_word);
 
-Shouldn't that be a while?  Or at least warn if there's anything extra
-there.  The code just looks very wrong as is.
+Don't we know this stuff simply by virtue of knowing what device we're
+talking to (given that there aren't class devices)?
 
---rvjvopyyczgw635m
+--yz5cdsez4hj7pnct
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnrD30ACgkQJNaLcl1U
-h9Bcjwf/ccaEjkb4OOR5+y/8Y+odeGT2cr+wdOikOGyTtRXGn7oxBFDIeWSQWCfF
-FEIEhf0tOrLfXz3xMl0dEf/sjZf9NFm+VnC+5giKW+BwLCDpHJJUucxTrw5XAuH3
-tQnd1QTp4Llz62WA83PiOBkiF9WnbpzsfaTGEy6XQtm4tpnUTdov1UFzaPNGfvjE
-nxx4CkIMXTyIOHf09srwS07GRE6UHuYZuFtBOhHJZDG/DBHebpRqqpfkH12sd0J5
-kJipQt+/CnQ5RCX+zsm7iQzFpY/bEtkxw0/E+vwqm5Vm1S6lzreoqxhgdJWlfHEU
-jRDYoLoHlo9WZBislBV9xJrfWPEP9g==
-=Wicq
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnrEW0ACgkQJNaLcl1U
+h9ChiQf/ec5tEGVRwkHDt2tbITiDlyM+GpMlksmIWsD/ar9cxWKyRIPtnWhBWdR/
+QPGgE1YPspBDdV5OtgRf81AUE2Vj3l3uH9Z8ivdU6uJYchNBzWqG3UBT1SZ9Ollp
+eD5wfgOzG77eQ9RUcTdkvL186+gc2yXALe4Yn4z3NZUg6+I+L2yxSScKt2AJYUNQ
++OYuvLkIIvQAlP0HUj0BKTIDcQfv+kIa0PM2EjzpILRYO+PLqrPqXmqxMXX8mZ0Y
+icueDhVnCHb0NS5G08jOz6MjvvQggINW0BFGfufNG1QI11m34+yrABt7ZvqzqfXm
+iYScc1W9DuZz/O2C/FZo/V40IWeavw==
+=CJJD
 -----END PGP SIGNATURE-----
 
---rvjvopyyczgw635m--
+--yz5cdsez4hj7pnct--
 
---===============7342986047883179071==
+--===============3670903351988488920==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7342986047883179071==--
+--===============3670903351988488920==--
