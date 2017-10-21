@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: Fix DMA burst size" to the
-	asoc tree
-Date: Sat, 21 Oct 2017 11:32:07 +0100 (BST)
-Message-ID: <20171021103207.8EF64440057@finisterre.ee.mobilebroadband>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 01/14] Documentation: Add SoundWire summary
+Date: Sat, 21 Oct 2017 16:58:40 +0530
+Message-ID: <20171021112840.GD30097@localhost>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
+ <20171021085744.hpuvp34e4hckoisl@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 21CDE267787
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:32:13 +0200 (CEST)
-In-Reply-To: 
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89AC6266C2E
+ for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 13:24:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20171021085744.hpuvp34e4hckoisl@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,97 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, olivier moysan <olivier.moysan@st.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Sat, Oct 21, 2017 at 09:57:44AM +0100, Mark Brown wrote:
+> On Thu, Oct 19, 2017 at 08:33:17AM +0530, Vinod Koul wrote:
+> 
+> > +The SoundWire protocol supports up to eleven Slave interfaces. All the
+> 
+> There's lots of perfectly normal nouns in this document like Slave here
+> which are randomly capitalized.  Is there some great reason for this?
+> It makes the document pretty distracting to read.
 
-   ASoC: stm32: sai: Fix DMA burst size
+Slave, SoundWire etc are MIPI definitions hence capitalized.
 
-has been applied to the asoc tree at
+> > +Bus implements API to read standard Master MIPI properties and also provides
+> > +callback in Master ops for Master driver to implement own functions that
+> 
+> implement it's own functions.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+ok
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> 
+> > +provides capabilities information. DT support is not implemented at this
+> > +time but should be trivial to add since capabilities are enabled with the
+> > +device_property_ API.
+> 
+> Since we're making this up from whole cloth rather than following an
+> existing standard let's get a DT binding document together and review
+> the properties that are getting defined.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I don't have a DT to test, but looking at Slimbus code I guess assumptions
+are fair and we seem to have similar concepts and implementation.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> 
+> > +	/* Check ACPI for Slave devices */
+> > +        sdw_acpi_find_slaves(bus);
+> 
+> Tab/space issues here.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+fixed now
 
-Thanks,
-Mark
+> 
+> > +The MIPI specification requires each Slave interface to expose a unique
+> > +48-bit identifier, stored in 6 read only dev_id registers. This dev_id
+> > +identifier contains vendor and part information, as well as a field enabling
+> > +to differentiate between identical components. An additional class field is
+> > +currently unused. Slave driver is written for the specific 48-bit
+> > +identifier, Bus enumerates the Slave device based on the 48-bit identifier.
+> 
+> So this says that the instance identifer is part of the device
+> identifier but the driver should bind to the whole device identifer?
+> I'd expect the driver to bind to everything except the instance
+> identifer.
 
->From a4529d2b885747bb9393d507cd28649052d733f3 Mon Sep 17 00:00:00 2001
-From: Olivier Moysan <olivier.moysan@st.com>
-Date: Thu, 19 Oct 2017 15:03:19 +0200
-Subject: [PATCH] ASoC: stm32: sai: Fix DMA burst size
+Other parts are still TBD and not really used, like Device Class, Spec
+version. We are using only mfg id and part id for binding.
 
-Set best burst size tradeoff for 8, 16, 32 bits transfers.
-
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/stm/stm32_sai_sub.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 5e66bf310351..dde8ddf9e777 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -446,12 +446,16 @@ static int stm32_sai_set_config(struct snd_soc_dai *cpu_dai,
- {
- 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
- 	int cr1, cr1_mask, ret;
--	int fth = STM_SAI_FIFO_TH_HALF;
- 
--	/* FIFO config */
-+	/*
-+	 * DMA bursts increment is set to 4 words.
-+	 * SAI fifo threshold is set to half fifo, to keep enough space
-+	 * for DMA incoming bursts.
-+	 */
- 	regmap_update_bits(sai->regmap, STM_SAI_CR2_REGX,
- 			   SAI_XCR2_FFLUSH | SAI_XCR2_FTH_MASK,
--			   SAI_XCR2_FFLUSH | SAI_XCR2_FTH_SET(fth));
-+			   SAI_XCR2_FFLUSH |
-+			   SAI_XCR2_FTH_SET(STM_SAI_FIFO_TH_HALF));
- 
- 	/* Mode, data format and channel config */
- 	cr1 = SAI_XCR1_PRTCFG_SET(SAI_FREE_PROTOCOL);
-@@ -485,10 +489,6 @@ static int stm32_sai_set_config(struct snd_soc_dai *cpu_dai,
- 		return ret;
- 	}
- 
--	/* DMA config */
--	sai->dma_params.maxburst = STM_SAI_FIFO_SIZE * fth / sizeof(u32);
--	snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)&sai->dma_params);
--
- 	return 0;
- }
- 
-@@ -731,7 +731,12 @@ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- 	struct stm32_sai_sub_data *sai = dev_get_drvdata(cpu_dai->dev);
- 
- 	sai->dma_params.addr = (dma_addr_t)(sai->phys_addr + STM_SAI_DR_REGX);
--	sai->dma_params.maxburst = 1;
-+	/*
-+	 * DMA supports 4, 8 or 16 burst sizes. Burst size 4 is the best choice,
-+	 * as it allows bytes, half-word and words transfers. (See DMA fifos
-+	 * constraints).
-+	 */
-+	sai->dma_params.maxburst = 4;
- 	/* Buswidth will be set by framework at runtime */
- 	sai->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_UNDEFINED;
- 
 -- 
-2.14.1
+~Vinod
