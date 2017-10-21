@@ -1,34 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: use c99 syntax for
-	ACPI/machine tables" to the asoc tree
-Date: Sat, 21 Oct 2017 11:30:43 +0100 (BST)
-Message-ID: <20171021103043.3858A440057@finisterre.ee.mobilebroadband>
-References: <20170908205702.1985-3-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 42F94266DCF
- for <alsa-devel@alsa-project.org>; Sat, 21 Oct 2017 12:30:47 +0200 (CEST)
-In-Reply-To: <20170908205702.1985-3-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com
+Subject: Applied "ASoC: stm32: sai: Remove spurious IRQs on stop" to the asoc tree
+Date: Sat, 21 Oct 2017 11:31:45 +0100 (BST)
+Message-ID: <20171021103145.807AF440057@finisterre.ee.mobilebroadband>
+References: <1508418203-16840-6-git-send-email-olivier.moysan@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1508418203-16840-6-git-send-email-olivier.moysan@st.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: use c99 syntax for ACPI/machine tables
+   ASoC: stm32: sai: Remove spurious IRQs on stop
 
 has been applied to the asoc tree at
 
@@ -53,76 +36,41 @@ to this mail.
 Thanks,
 Mark
 
->From 928c8a8f1188dd59065e22bcedae57cb6156d836 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 12 Oct 2017 18:49:39 -0500
-Subject: [PATCH] ASoC: Intel: common: use c99 syntax for ACPI/machine tables
+>From 47a8907d7c73fad81030655f09832fbb4446a2f5 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Thu, 19 Oct 2017 15:03:21 +0200
+Subject: [PATCH] ASoC: stm32: sai: Remove spurious IRQs on stop
 
-Before we add new fields for SOF support, move to C99 syntax
-as done for atom/sst and legacy hsw/bdw code
-No functional change
+Clear IRQ mask on stream stop to avoid spurious IRQs.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-acpi.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-acpi.c b/sound/soc/intel/common/sst-acpi.c
-index 9866998de8be..32d74ba70e4a 100644
---- a/sound/soc/intel/common/sst-acpi.c
-+++ b/sound/soc/intel/common/sst-acpi.c
-@@ -180,7 +180,11 @@ static int sst_acpi_remove(struct platform_device *pdev)
- }
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 815ef1036199..fd7dc7760f58 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -419,8 +419,6 @@ static int stm32_sai_startup(struct snd_pcm_substream *substream,
+ 	}
  
- static struct snd_soc_acpi_mach haswell_machines[] = {
--	{ "INT33CA", "haswell-audio", "intel/IntcSST1.bin", NULL, NULL, NULL },
-+	{
-+		.id = "INT33CA",
-+		.drv_name = "haswell-audio",
-+		.fw_filename = "intel/IntcSST1.bin",
-+	},
- 	{}
- };
+ 	/* Enable ITs */
+-	regmap_update_bits(sai->regmap, STM_SAI_SR_REGX,
+-			   SAI_XSR_MASK, (unsigned int)~SAI_XSR_MASK);
  
-@@ -198,8 +202,16 @@ static struct sst_acpi_desc sst_acpi_haswell_desc = {
- };
+ 	regmap_update_bits(sai->regmap, STM_SAI_CLRFR_REGX,
+ 			   SAI_XCLRFR_MASK, SAI_XCLRFR_MASK);
+@@ -693,6 +691,9 @@ static int stm32_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		dev_dbg(cpu_dai->dev, "Disable DMA and SAI\n");
  
- static struct snd_soc_acpi_mach broadwell_machines[] = {
--	{ "INT343A", "broadwell-audio", "intel/IntcSST2.bin", NULL, NULL, NULL },
--	{ "RT5677CE", "bdw-rt5677", "intel/IntcSST2.bin", NULL, NULL, NULL },
-+	{
-+		.id = "INT343A",
-+		.drv_name = "broadwell-audio",
-+		.fw_filename =  "intel/IntcSST2.bin",
-+	},
-+	{
-+		.id = "RT5677CE",
-+		.drv_name = "bdw-rt5677",
-+		.fw_filename =  "intel/IntcSST2.bin",
-+	},
- 	{}
- };
- 
-@@ -218,8 +230,16 @@ static struct sst_acpi_desc sst_acpi_broadwell_desc = {
- 
- #if !IS_ENABLED(CONFIG_SND_SST_IPC_ACPI)
- static struct snd_soc_acpi_mach baytrail_machines[] = {
--	{ "10EC5640", "byt-rt5640", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
--	{ "193C9890", "byt-max98090", "intel/fw_sst_0f28.bin-48kHz_i2s_master", NULL, NULL, NULL },
-+	{
-+		.id = "10EC5640",
-+		.drv_name = "byt-rt5640",
-+		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-+	},
-+	{
-+		.id = "193C9890",
-+		.drv_name = "byt-max98090",
-+		.fw_filename = "intel/fw_sst_0f28.bin-48kHz_i2s_master",
-+	},
- 	{}
- };
- 
++		regmap_update_bits(sai->regmap, STM_SAI_IMR_REGX,
++				   SAI_XIMR_MASK, 0);
++
+ 		regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
+ 				   SAI_XCR1_SAIEN,
+ 				   (unsigned int)~SAI_XCR1_SAIEN);
 -- 
 2.14.1
