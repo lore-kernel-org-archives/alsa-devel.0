@@ -1,21 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 04/14] soundwire: Add MIPI DisCo property
- helpers
-Date: Sun, 22 Oct 2017 15:44:47 +0530
-Message-ID: <bfbe69a1-e1dd-de1a-52b9-8de48190bc0b@linux.intel.com>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-5-git-send-email-vinod.koul@intel.com>
- <20171021092046.p6wsssjkonjjdidt@sirena.org.uk>
- <20171021113718.GG30097@localhost>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: Re: HDMI LPE audio on Intel Compute Stick 2nd Gen (CHT)
+Date: Mon, 23 Oct 2017 00:00:12 +1100
+Message-ID: <CAFXWsS9i0f7vpdiCBtxkzOpQ_aC9C2w0vJ6qoTr__1UzDugzGw@mail.gmail.com>
+References: <CAFXWsS_V=nG8C+NM8qmtjdoZoWrsTnTFNR16kU05NNsx=c0-5Q@mail.gmail.com>
+ <7827e954-d9d0-4737-5e47-13e0e69fd92d@linux.intel.com>
+ <CAFXWsS8THagHnx9BPurw4+3a+xH6DP653MjwjTSkYhU3zLmZHQ@mail.gmail.com>
+ <11e337a4-0656-50d3-3c16-56cc437a32c7@linux.intel.com>
+ <s5hfuadvjz5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 7310E266D69
- for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 12:14:54 +0200 (CEST)
-In-Reply-To: <20171021113718.GG30097@localhost>
-Content-Language: en-US
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 609FB266D69
+ for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 15:00:13 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id u138so4950377wmu.5
+ for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 06:00:13 -0700 (PDT)
+In-Reply-To: <s5hfuadvjz5.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/21/17 5:07 PM, Vinod Koul wrote:
-> On Sat, Oct 21, 2017 at 10:20:46AM +0100, Mark Brown wrote:
->> On Thu, Oct 19, 2017 at 08:33:20AM +0530, Vinod Koul wrote:
->>
->>> +	/* device is probed so let's read the properties now */
->>> +	if (slave->ops && slave->ops->read_prop)
->>> +		slave->ops->read_prop(slave);
->>
->> Is it valid for us to not be able to read the properties?
-> 
-> Practically no. Without the values bus wont work
+On 21 October 2017 at 03:53, Takashi Iwai <tiwai@suse.de> wrote:
 
-The notion of read is a bit overloaded here. What is needed is that the 
-information is provided to the bus, whether you read it from firmware or 
-a table in the codec driver is an implementation choice - see below.
-> 
->>
->>> +		fwnode_property_read_u32(node, "mipi-sdw-port-max-wordlength",
->>> +						&dpn[i].max_word);
->>> +		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
->>> +						&dpn[i].min_word);
->>
->> Don't we know this stuff simply by virtue of knowing what device we're
->> talking to (given that there aren't class devices)?
-> 
-> Well I think the spec is midway to device class so they added it to make it
-> generic :)
+> On Fri, 20 Oct 2017 17:54:45 +0200,
+> Pierre-Louis Bossart wrote:
+> >
+> > On 10/20/17 8:45 AM, Ian W MORRISON wrote:
+> > >> I've just noticed that non of the kernels from v4.13 and up run on my
+> > >>> Intel Compute Stick (2nd gen Cherry Trail STK1AW32SC) unit and have
+> > >>> HDMI LPE audio working.
+> > >>>
+> > >>
+> > >> I have not tested HDMI in a while but I am not aware of any issues
+> either.
+> > >> There were some patches recently to fix PulseAudio problems and I
+> suppose
+> > >> some folks used a recent kernel?
+> > >>
+> > >>
+> > > It actually happened since v4.12 as now I get three HDMI LPE Audio
+> devices
+> > > show up with 'aplay -l' rather than just one. Only 'device 2' works so
+> if I
+> > > change the sink to use that device I get sound. So basically it can be
+> > > fixed in userland however I'm seeing others with different devices also
+> > > complaining how audio is broken and I think it is something that many
+> users
+> > > don't know to fix. Is it worth looking into further or just leaving it
+> as a
+> > > known issue?
+> >
+> > I don't think it's a bug, it's a feature...
+> > The jack information tells you which device is connected/active, so
+> > userspace has all the data needed to select the right routing.
+>
+> Right, it's a new feature that was recently added, for supporting
+> multiple HDMI/DPs.  The latest PA should be able to check the jack
+> detection of each port, so that it can switch to the actually
+> connected one.
+>
+>
+> Takashi
+>
 
-The properties are needed so that the bus can perform all the 
-transport-related stuff. As explained in the patches, we are not making 
-assumptions on how the codec driver is written, the implementation can 
-either get the properties from firmware (DT or ACPI) or hard-code them 
-in the driver.
-
-The only property that needs to be defined is for multi-lane setups, 
-since the topology is not known to a codec driver.
+Thanks for the explanation. The PA package for Ubuntu is a bit behind (v8
+for 16.04 LST and v10 for latest 17.10) so it will be easier for users just
+to edit /etc/pulse/default.pa in the interim. But is there a way to stop
+the multiple and repeating "Audio Port: ASoC: no backend DAIs enabled for
+Audio Port" messages in dmesg from occurring without modifying the distro's
+kernel?
