@@ -1,22 +1,20 @@
-From: Ian W MORRISON <ianwmorrison@gmail.com>
-Subject: Re: HDMI LPE audio on Intel Compute Stick 2nd Gen (CHT)
-Date: Mon, 23 Oct 2017 00:00:12 +1100
-Message-ID: <CAFXWsS9i0f7vpdiCBtxkzOpQ_aC9C2w0vJ6qoTr__1UzDugzGw@mail.gmail.com>
-References: <CAFXWsS_V=nG8C+NM8qmtjdoZoWrsTnTFNR16kU05NNsx=c0-5Q@mail.gmail.com>
- <7827e954-d9d0-4737-5e47-13e0e69fd92d@linux.intel.com>
- <CAFXWsS8THagHnx9BPurw4+3a+xH6DP653MjwjTSkYhU3zLmZHQ@mail.gmail.com>
- <11e337a4-0656-50d3-3c16-56cc437a32c7@linux.intel.com>
- <s5hfuadvjz5.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [asoc:topic/intel 38/38]
+ sound/soc/intel/common/sst-firmware.c:1278:20: error: expected declaration
+ specifiers or '...' before string constant
+Date: Sun, 22 Oct 2017 18:30:38 +0530
+Message-ID: <161a5a7b-a139-15d6-0ae9-fd73e6de8199@linux.intel.com>
+References: <201710211936.sIx11hK3%fengguang.wu@intel.com>
+ <60faca99-948d-6087-f909-538c1e5fccee@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 609FB266D69
- for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 15:00:13 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id u138so4950377wmu.5
- for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 06:00:13 -0700 (PDT)
-In-Reply-To: <s5hfuadvjz5.wl-tiwai@suse.de>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id B12E6266D69
+ for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 15:00:23 +0200 (CEST)
+In-Reply-To: <60faca99-948d-6087-f909-538c1e5fccee@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21 October 2017 at 03:53, Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Fri, 20 Oct 2017 17:54:45 +0200,
-> Pierre-Louis Bossart wrote:
-> >
-> > On 10/20/17 8:45 AM, Ian W MORRISON wrote:
-> > >> I've just noticed that non of the kernels from v4.13 and up run on my
-> > >>> Intel Compute Stick (2nd gen Cherry Trail STK1AW32SC) unit and have
-> > >>> HDMI LPE audio working.
-> > >>>
-> > >>
-> > >> I have not tested HDMI in a while but I am not aware of any issues
-> either.
-> > >> There were some patches recently to fix PulseAudio problems and I
-> suppose
-> > >> some folks used a recent kernel?
-> > >>
-> > >>
-> > > It actually happened since v4.12 as now I get three HDMI LPE Audio
-> devices
-> > > show up with 'aplay -l' rather than just one. Only 'device 2' works so
-> if I
-> > > change the sink to use that device I get sound. So basically it can be
-> > > fixed in userland however I'm seeing others with different devices also
-> > > complaining how audio is broken and I think it is something that many
-> users
-> > > don't know to fix. Is it worth looking into further or just leaving it
-> as a
-> > > known issue?
-> >
-> > I don't think it's a bug, it's a feature...
-> > The jack information tells you which device is connected/active, so
-> > userspace has all the data needed to select the right routing.
->
-> Right, it's a new feature that was recently added, for supporting
-> multiple HDMI/DPs.  The latest PA should be able to check the jack
-> detection of each port, so that it can switch to the actually
-> connected one.
->
->
-> Takashi
->
-
-Thanks for the explanation. The PA package for Ubuntu is a bit behind (v8
-for 16.04 LST and v10 for latest 17.10) so it will be easier for users just
-to edit /etc/pulse/default.pa in the interim. But is there a way to stop
-the multiple and repeating "Audio Port: ASoC: no backend DAIs enabled for
-Audio Port" messages in dmesg from occurring without modifying the distro's
-kernel?
+T24gMTAvMjIvMTcgMzoyNSBQTSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gTm90IHN1
+cmUgd2hhdCBoYXBwZW5lZCBoZXJlLCB0aGUgY29kZSB3YXMgcG9zdGVkIG9uIGFuIGludGVybmFs
+IG1haWxpbmcgCj4gbGlzdCB3aGljaCBpcyBzdXBwb3NlZCB0byBiZSBjaGVja2VkIGJ5IHRoZSAw
+LWRheSBpbmZyYXN0cnVjdHVyZSAKPiBwcmVjaXNlbHkgdG8gYXZvaWQgdGhpcyBzb3J0IG9mIGlz
+c3VlcyBiZWZvcmUgZ29pbmcgdXBzdHJlYW0uLi4KPiAKPiBBbnl3YXlzLCB0aGVyZSBpcyBvYnZp
+b3VzbHkgYSBtaXNzaW5nIGRlcGVuZGVuY3kgb24gWDg2LCB0aGlzIGNvZGUgY2FuJ3QgCj4gcG9z
+c2libHkgd29yayBvbiBleHRlbnNhIG9yIHMzOTAuCgpJIGFtIHJlYWxseSBjb25mdXNlZCBoZXJl
+LCBlcnJvcnMgYWxyZWFkeSBoYXBwZW4gd2l0aCA0LjEzIChiZWZvcmUgbXkgCnBhdGNoZXMpIHdp
+dGggdGhlIHR3byBzdWdnZXN0ZWQgY29uZmlncywgc28gaXQncyBlaXRoZXIgdGhhdCAwMS1kYXkg
+CmFkZGVkIGEgbmV3IHNldCBvZiB0ZXN0cyBmb3IgZXh0ZW5zYSBhbmQgczM5MCBvciBkaWRuJ3Qg
+cnVuIHRlc3RzIApjb3JyZWN0bHkgYmVmb3JlPwoKPiAKPiAKPiBPbiAxMC8yMS8xNyA0OjM4IFBN
+LCBrYnVpbGQgdGVzdCByb2JvdCB3cm90ZToKPj4gdHJlZTogICAKPj4gaHR0cHM6Ly9naXQua2Vy
+bmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25pZS9zb3VuZC5naXQgCj4+IHRv
+cGljL2ludGVsCj4+IGhlYWQ6wqDCoCBmNmExMThhODAwZTM1YWYyYzYzZjkwY2JjYzIzMDkzZjRi
+NTNiM2EyCj4+IGNvbW1pdDogZjZhMTE4YTgwMGUzNWFmMmM2M2Y5MGNiY2MyMzA5M2Y0YjUzYjNh
+MiBbMzgvMzhdIEFTb0M6IEludGVsOiAKPj4gY2xhcmlmeSBLY29uZmlnIGRlcGVuZGVuY2llcwo+
+PiBjb25maWc6IHh0ZW5zYS1hbGx5ZXNjb25maWcgKGF0dGFjaGVkIGFzIC5jb25maWcpCj4+IGNv
+bXBpbGVyOiB4dGVuc2EtbGludXgtZ2NjIChHQ0MpIDQuOS4wCj4+IHJlcHJvZHVjZToKPj4gwqDC
+oMKgwqDCoMKgwqDCoCB3Z2V0IAo+PiBodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20v
+aW50ZWwvbGtwLXRlc3RzL21hc3Rlci9zYmluL21ha2UuY3Jvc3MgCj4+IC1PIH4vYmluL21ha2Uu
+Y3Jvc3MKPj4gwqDCoMKgwqDCoMKgwqDCoCBjaG1vZCAreCB+L2Jpbi9tYWtlLmNyb3NzCj4+IMKg
+wqDCoMKgwqDCoMKgwqAgZ2l0IGNoZWNrb3V0IGY2YTExOGE4MDBlMzVhZjJjNjNmOTBjYmNjMjMw
+OTNmNGI1M2IzYTIKPj4gwqDCoMKgwqDCoMKgwqDCoCAjIHNhdmUgdGhlIGF0dGFjaGVkIC5jb25m
+aWcgdG8gbGludXggYnVpbGQgdHJlZQo+PiDCoMKgwqDCoMKgwqDCoMKgIG1ha2UuY3Jvc3MgQVJD
+SD14dGVuc2EKPj4KPj4gQWxsIGVycm9ycyAobmV3IG9uZXMgcHJlZml4ZWQgYnkgPj4pOgo+Pgo+
+Pj4+IHNvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWZpcm13YXJlLmM6MTI3ODoyMDogZXJyb3I6
+IGV4cGVjdGVkIAo+Pj4+IGRlY2xhcmF0aW9uIHNwZWNpZmllcnMgb3IgJy4uLicgYmVmb3JlIHN0
+cmluZyBjb25zdGFudAo+PiDCoMKgwqDCoCBNT0RVTEVfREVTQ1JJUFRJT04oIkludGVsIFNTVCBG
+aXJtd2FyZSBMb2FkZXIiKTsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBeCj4+IMKgwqDCoCBzb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1maXJtd2Fy
+ZS5jOjEyNzk6MTY6IGVycm9yOiBleHBlY3RlZCAKPj4gZGVjbGFyYXRpb24gc3BlY2lmaWVycyBv
+ciAnLi4uJyBiZWZvcmUgc3RyaW5nIGNvbnN0YW50Cj4+IMKgwqDCoMKgIE1PRFVMRV9MSUNFTlNF
+KCJHUEwgdjIiKTsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXgo+
+PiAtLSAKPj4gwqDCoMKgIHNvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLXBjbS5j
+OiBJbiBmdW5jdGlvbiAKPj4gJ2NyZWF0ZV9hZHNwX3BhZ2VfdGFibGUnOgo+Pj4+IHNvdW5kL3Nv
+Yy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLXBjbS5jOjQ0NjoyOiBlcnJvcjogaW1wbGljaXQg
+Cj4+Pj4gZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24gJ3NuZF9zZ2J1Zl9hbGlnbmVkX3BhZ2VzJyAK
+Pj4+PiBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPj4gwqDCoMKgwqDC
+oCBwYWdlcyA9IHNuZF9zZ2J1Zl9hbGlnbmVkX3BhZ2VzKHNpemUpOwo+PiDCoMKgwqDCoMKgIF4K
+Pj4gwqDCoMKgIGNjMTogc29tZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycwo+Pgo+
+PiB2aW0gKzEyNzggc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZmlybXdhcmUuYwo+Pgo+PiBh
+Mzk1YmRkNiBUYWthc2hpIEl3YWkgMjAxNi0wNy0xMcKgIDEyNzcKPj4gYTM5NWJkZDYgVGFrYXNo
+aSBJd2FpIDIwMTYtMDctMTEgQDEyNzjCoCBNT0RVTEVfREVTQ1JJUFRJT04oIkludGVsIFNTVCAK
+Pj4gRmlybXdhcmUgTG9hZGVyIik7Cj4+Cj4+IDo6Ojo6OiBUaGUgY29kZSBhdCBsaW5lIDEyNzgg
+d2FzIGZpcnN0IGludHJvZHVjZWQgYnkgY29tbWl0Cj4+IDo6Ojo6OiBhMzk1YmRkNmIyNGI2OTJh
+ZGJjZTBkZjY1MTBlYzlmMmFmNTc1NzNlIEFTb0M6IGludGVsOiBGaXggCj4+IHNzdC1kc3AgZGVw
+ZW5kZW5jeSBvbiBkdyBzdHVmZgo+Pgo+PiA6Ojo6OjogVE86IFRha2FzaGkgSXdhaSA8dGl3YWlA
+c3VzZS5kZT4KPj4gOjo6Ojo6IENDOiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4+
+Cj4+IC0tLQo+PiAwLURBWSBrZXJuZWwgdGVzdCBpbmZyYXN0cnVjdHVyZcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IAo+PiBDZW50ZXIKPj4gaHR0
+cHM6Ly9saXN0cy4wMS5vcmcvcGlwZXJtYWlsL2tidWlsZC1hbGzCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgSW50ZWwgCj4+IENvcnBvcmF0aW9uCj4+Cj4gCj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
