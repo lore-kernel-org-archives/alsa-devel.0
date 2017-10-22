@@ -1,88 +1,67 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 01/14] Documentation: Add SoundWire summary
-Date: Sun, 22 Oct 2017 15:36:32 +0530
-Message-ID: <32258d12-f405-a62d-143a-c801ad06e097@linux.intel.com>
+Subject: Re: [PATCH 04/14] soundwire: Add MIPI DisCo property
+ helpers
+Date: Sun, 22 Oct 2017 15:44:47 +0530
+Message-ID: <bfbe69a1-e1dd-de1a-52b9-8de48190bc0b@linux.intel.com>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
- <20171021085744.hpuvp34e4hckoisl@sirena.org.uk>
- <20171021112840.GD30097@localhost>
+ <1508382211-3154-5-git-send-email-vinod.koul@intel.com>
+ <20171021092046.p6wsssjkonjjdidt@sirena.org.uk>
+ <20171021113718.GG30097@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171021112840.GD30097@localhost>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7310E266D69
+ for <alsa-devel@alsa-project.org>; Sun, 22 Oct 2017 12:14:54 +0200 (CEST)
+In-Reply-To: <20171021113718.GG30097@localhost>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/21/17 4:58 PM, Vinod Koul wrote:
-> On Sat, Oct 21, 2017 at 09:57:44AM +0100, Mark Brown wrote:
->> On Thu, Oct 19, 2017 at 08:33:17AM +0530, Vinod Koul wrote:
+On 10/21/17 5:07 PM, Vinod Koul wrote:
+> On Sat, Oct 21, 2017 at 10:20:46AM +0100, Mark Brown wrote:
+>> On Thu, Oct 19, 2017 at 08:33:20AM +0530, Vinod Koul wrote:
 >>
->>> +The SoundWire protocol supports up to eleven Slave interfaces. All the
+>>> +	/* device is probed so let's read the properties now */
+>>> +	if (slave->ops && slave->ops->read_prop)
+>>> +		slave->ops->read_prop(slave);
 >>
->> There's lots of perfectly normal nouns in this document like Slave here
->> which are randomly capitalized.  Is there some great reason for this?
->> It makes the document pretty distracting to read.
+>> Is it valid for us to not be able to read the properties?
 > 
-> Slave, SoundWire etc are MIPI definitions hence capitalized.
+> Practically no. Without the values bus wont work
 
-I insisted to follow the conventions in the specification, it's not 
-random at all.
+The notion of read is a bit overloaded here. What is needed is that the 
+information is provided to the bus, whether you read it from firmware or 
+a table in the codec driver is an implementation choice - see below.
+> 
+>>
+>>> +		fwnode_property_read_u32(node, "mipi-sdw-port-max-wordlength",
+>>> +						&dpn[i].max_word);
+>>> +		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
+>>> +						&dpn[i].min_word);
+>>
+>> Don't we know this stuff simply by virtue of knowing what device we're
+>> talking to (given that there aren't class devices)?
+> 
+> Well I think the spec is midway to device class so they added it to make it
+> generic :)
 
-> 
->>> +Bus implements API to read standard Master MIPI properties and also provides
->>> +callback in Master ops for Master driver to implement own functions that
->>
->> implement it's own functions.
-> 
-> ok
-> 
->>
->>> +provides capabilities information. DT support is not implemented at this
->>> +time but should be trivial to add since capabilities are enabled with the
->>> +device_property_ API.
->>
->> Since we're making this up from whole cloth rather than following an
->> existing standard let's get a DT binding document together and review
->> the properties that are getting defined.
+The properties are needed so that the bus can perform all the 
+transport-related stuff. As explained in the patches, we are not making 
+assumptions on how the codec driver is written, the implementation can 
+either get the properties from firmware (DT or ACPI) or hard-code them 
+in the driver.
 
-The properties are already defined in the DisCo spec (publicly 
-accessible) and were reviewed by MIPI contributors, they are not Intel 
-specific and not invented by Intel.
-We can put together a DT binding document that follows the Disco spec 
-but it'd be a bad idea to change the definitions or come up with new ones...
-
-> 
-> I don't have a DT to test, but looking at Slimbus code I guess assumptions
-> are fair and we seem to have similar concepts and implementation.
-> 
->>
->>> +	/* Check ACPI for Slave devices */
->>> +        sdw_acpi_find_slaves(bus);
->>
->> Tab/space issues here.
-> 
-> fixed now
-> 
->>
->>> +The MIPI specification requires each Slave interface to expose a unique
->>> +48-bit identifier, stored in 6 read only dev_id registers. This dev_id
->>> +identifier contains vendor and part information, as well as a field enabling
->>> +to differentiate between identical components. An additional class field is
->>> +currently unused. Slave driver is written for the specific 48-bit
->>> +identifier, Bus enumerates the Slave device based on the 48-bit identifier.
->>
->> So this says that the instance identifer is part of the device
->> identifier but the driver should bind to the whole device identifer?
->> I'd expect the driver to bind to everything except the instance
->> identifer.
-> 
-> Other parts are still TBD and not really used, like Device Class, Spec
-> version. We are using only mfg id and part id for binding.
-
-Yes, for now the only useful information is manufacturer ID/part ID, the 
-spec version is not necessary since there is compatibility between 1.0 
-and 1.1 and the changes are documented in properties.
+The only property that needs to be defined is for multi-lane setups, 
+since the topology is not known to a codec driver.
