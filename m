@@ -1,45 +1,51 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 03/14] soundwire: Add Master registration
-Date: Mon, 23 Oct 2017 16:49:11 +0530
-Message-ID: <20171023111910.GG936@localhost>
+From: Alan Cox <alan@linux.intel.com>
+Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
+Date: Mon, 23 Oct 2017 12:46:18 +0100
+Message-ID: <1508759178.29460.1.camel@linux.intel.com>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
- <20171021091230.pwevgreloynqe7nu@sirena.org.uk>
- <20171021113513.GF30097@localhost>
- <20171023082426.77tcpq4wtd4cwi7i@sirena.org.uk>
+ <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
+ <20171020104528.GC3210@kroah.com> <20171020160134.GT30097@localhost>
+ <20171020162123.GA4538@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171023082426.77tcpq4wtd4cwi7i@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31302266A73
+ for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 13:46:28 +0200 (CEST)
+In-Reply-To: <20171020162123.GA4538@kroah.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 23, 2017 at 09:24:26AM +0100, Mark Brown wrote:
-> On Sat, Oct 21, 2017 at 05:05:13PM +0530, Vinod Koul wrote:
-> > On Sat, Oct 21, 2017 at 10:12:30AM +0100, Mark Brown wrote:
-> > > On Thu, Oct 19, 2017 at 08:33:19AM +0530, Vinod Koul wrote:
-> 
-> > > > +	mutex_lock(&bus->bus_lock);
-> > > > +	if (!list_empty(&bus->slaves))
-> > > > +		list_del(&slave->node);
-> 
-> > > Shouldn't that be a while?  Or at least warn if there's anything extra
-> > > there.  The code just looks very wrong as is.
-> 
-> > I think you missed that it is called from sdw_delete_bus_master() which does
-> > the loop by invoking device_for_each_child(), so this ones is supposed to
-> > ensure one Slave is removed cleaned.
-> 
-> > Let me know if i misread your comment.
-> 
-> My point is that this code just looks so obviously wrong it doesn't
-> matter if it actually works, we should refactor so people don't look at
-> the code and immediately think they've spotted a bug.
-
-Okay will check and try to refactor this part.
-
--- 
-~Vinod
+PiA+ID4gQW5kIHdoeSBkdWFsIGxpY2Vuc2Ugc29tZXRoaW5nIHRoYXQgd2lsbCBvbmx5IGV2ZXIg
+d29yayBvbiBMaW51eD8KPiA+IAo+ID4gV2UgaGF2ZSBub24gTGludXggdXNlcnMgKG1vc3RseSBS
+VE9TIGZvbGtzKSB3aGljaCB3ZSB3b3VsZCBsaWtlIHRvCj4gPiBzdXBwb3J0Cj4gPiB3aXRoIGFz
+IG11Y2ggYXMgY29tbW9uIGNvZGUuCj4gCj4gTm90ZSwgeW91IG5lZWQgdG8gYmUgVkVSWSBDQVJF
+RlVMIGFib3V0IGRvaW5nIHRoaXMuwqDCoFlvdSBuZWVkIHRvIGhhdmUKPiBhbGwgc29ydHMgb2Yg
+aW5mcmFzdHJ1Y3R1cmUgc2V0IHVwIGFuZCBpbiBwbGFjZSBhbmQgcGFwZXJ3b3JrIHVwIHRoZQo+
+IHdhem9vIGluIG9yZGVyIHRvIG1ha2UgaXQgd29yayBwcm9wZXJseS4KCkludGVsIGtub3dzIHRo
+YXQuIFdlIGhhdmUgcHJvY2Vzc2VzIGluIHBsYWNlLiBXZSd2ZSBiZWVuIGRvaW5nIGl0IGZvcgp5
+ZWFycyAoQUNQSSwgR3JhcGhpY3MsIC4uKQoKPiBJbiB0aGUgZW5kLCBJIGNhbiBhbG1vc3QgZ3Vh
+cmFudGVlIGl0IHdpbGwgbm90IGJlIHdvcnRoIHRoZSBleHRyYQo+IGhhc3NsZSBhbmQgZWZmb3J0
+IHlvdSBhcmUgdHJ5aW5nIHRvIGRvIGhlcmUuCgpXZSBkb24ndCB0aGluayB0aGF0IGlzIHRoZSBj
+YXNlLCBhbmQgSSdkIGltYWdpbmUgdGhlIE5ldEJTRCwgRnJlZUJTRCwKT3BlbkJTRCwgRHJhZ29u
+Zmx5IGFuZCBvdGhlciBwcm9qZWN0cyBwcm9iYWJseSBhbHNvIHByZWZlciBvdXIKYXBwcm9hY2gu
+CgpTZXJpb3VzbHksIGdvIHRhbGsgdG8geW91ciBtYW5hZ2VycyBhbmQgY29ycG9yYXRlIGxhd3ll
+ciBhYm91dCB0aGlzLAp5b3UgYXJlIGluIGZvciBhIHdvcmxkIG9mIGh1cnQgaWYgeW91IHdhbnQg
+dG8gZG8gdGhpcyBpbiBhIHdheSB0aGF0CmFjdHVhbGx5IHdvcmtzIChpLmUuIGRvZXNuJ3QganVz
+dCBkZWdyYWRlIHRvIEdQTHYyIG9ubHkgaW5zdGFudGx5LikKCkl0J3MgZmFyIGZyb20gdGhlIG9u
+bHkgcHJvamVjdCB3ZSBkbyB0aGlzIHdpdGggZm9yIGF0IGxlYXN0IHRoZSBjb3JlIE9TCmluZGVw
+ZW5kZW50IHBhcnRzIG9mIHRoZSBkcml2ZXIuCgpBbGFuCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
