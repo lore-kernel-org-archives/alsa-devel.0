@@ -1,22 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [asoc:topic/intel 38/38]
- sound/soc/intel/common/sst-firmware.c:1278:20: error: expected declaration
- specifiers or '...' before string constant
-Date: Mon, 23 Oct 2017 09:52:44 +0530
-Message-ID: <661027b9-4837-ef0b-5820-0926b56ff90f@linux.intel.com>
-References: <201710211936.sIx11hK3%fengguang.wu@intel.com>
- <60faca99-948d-6087-f909-538c1e5fccee@linux.intel.com>
- <161a5a7b-a139-15d6-0ae9-fd73e6de8199@linux.intel.com>
- <s5hvaj7rwfs.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: Intel: Add depends on X86
+Date: Mon, 23 Oct 2017 09:57:27 +0530
+Message-ID: <1508732847-6679-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id E999F266AE1
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 06:22:50 +0200 (CEST)
-In-Reply-To: <s5hvaj7rwfs.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7D30266FBD
+ for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 06:23:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,85 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTAvMjIvMTcgOTo0NSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFN1biwgMjIgT2N0
-IDIwMTcgMTU6MDA6MzggKzAyMDAsCj4gUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Cj4+
-IE9uIDEwLzIyLzE3IDM6MjUgUE0sIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pj4gTm90
-IHN1cmUgd2hhdCBoYXBwZW5lZCBoZXJlLCB0aGUgY29kZSB3YXMgcG9zdGVkIG9uIGFuIGludGVy
-bmFsCj4+PiBtYWlsaW5nIGxpc3Qgd2hpY2ggaXMgc3VwcG9zZWQgdG8gYmUgY2hlY2tlZCBieSB0
-aGUgMC1kYXkKPj4+IGluZnJhc3RydWN0dXJlIHByZWNpc2VseSB0byBhdm9pZCB0aGlzIHNvcnQg
-b2YgaXNzdWVzIGJlZm9yZSBnb2luZwo+Pj4gdXBzdHJlYW0uLi4KPj4+Cj4+PiBBbnl3YXlzLCB0
-aGVyZSBpcyBvYnZpb3VzbHkgYSBtaXNzaW5nIGRlcGVuZGVuY3kgb24gWDg2LCB0aGlzIGNvZGUK
-Pj4+IGNhbid0IHBvc3NpYmx5IHdvcmsgb24gZXh0ZW5zYSBvciBzMzkwLgo+Pgo+PiBJIGFtIHJl
-YWxseSBjb25mdXNlZCBoZXJlLCBlcnJvcnMgYWxyZWFkeSBoYXBwZW4gd2l0aCA0LjEzIChiZWZv
-cmUgbXkKPj4gcGF0Y2hlcykgd2l0aCB0aGUgdHdvIHN1Z2dlc3RlZCBjb25maWdzLCBzbyBpdCdz
-IGVpdGhlciB0aGF0IDAxLWRheQo+PiBhZGRlZCBhIG5ldyBzZXQgb2YgdGVzdHMgZm9yIGV4dGVu
-c2EgYW5kIHMzOTAgb3IgZGlkbid0IHJ1biB0ZXN0cwo+PiBjb3JyZWN0bHkgYmVmb3JlPwo+IAo+
-IEkgZ3Vlc3MgaXQgaGFwcGVucyBiZWNhdXNlIG5vdyB5b3UgY2hhbmdlZCBhIGZldyBLY29uZmln
-IGl0ZW1zIHRvIGJlCj4gdXNlci1zZWxlY3RhYmxlIGJ5IGFkZGluZyB0aGUgcHJvbXB0LiAgRm9y
-bWVybHksIHRoZXkgd2VyZSBvbmx5Cj4gc2VsZWN0ZWQgYnkgdGhlIHRvcC1sZXZlbCBkcml2ZXJz
-LCBhbmQgdGhlc2UgdG9wLWxldmVsIGRyaXZlcnMgaGF2ZQo+IHRoZSBwcm9wZXIgZGVwZW5kZW5j
-eSBvbiB4ODYuICBCdXQgdGhlIGxvd2VyIGxheWVycyBkb24ndCBoYXZlIHRoZQo+IGRlcGVuZGVu
-Y3ksIGFuZCBub3cgeW91IGFsbG93IHRvIHNlbGVjdCB0aGVtIGZyZWVseSwgaGVuY2Ugc3VjaCBh
-Cj4gdGhpbmcgbWF5IGhhcHBlbi4KCklmIHlvdSB0YWtlIDQuMTMgYW5kIHVzZSB0aGUgY29uZmln
-L2NvbW1hbmQgbGluZSBwcm92aWRlZCBiZWxvdyBpdCdzIAphbHNvIGJyb2tlbi4uLiB3ZSdsbCBm
-aXggdGhpcyBidXQgSSBhbSBub3QgY2xlYXIgb24gd2h5IHRoaXMgaXMgc2hvd2luZyBub3cuCgo+
-IAo+IAo+IFRha2FzaGkKPiAKPiAKPj4KPj4+Cj4+Pgo+Pj4gT24gMTAvMjEvMTcgNDozOCBQTSwg
-a2J1aWxkIHRlc3Qgcm9ib3Qgd3JvdGU6Cj4+Pj4gdHJlZToKPj4+PiBodHRwczovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9icm9vbmllL3NvdW5kLmdpdAo+Pj4+IHRv
-cGljL2ludGVsCj4+Pj4gaGVhZDrCoMKgIGY2YTExOGE4MDBlMzVhZjJjNjNmOTBjYmNjMjMwOTNm
-NGI1M2IzYTIKPj4+PiBjb21taXQ6IGY2YTExOGE4MDBlMzVhZjJjNjNmOTBjYmNjMjMwOTNmNGI1
-M2IzYTIgWzM4LzM4XSBBU29DOgo+Pj4+IEludGVsOiBjbGFyaWZ5IEtjb25maWcgZGVwZW5kZW5j
-aWVzCj4+Pj4gY29uZmlnOiB4dGVuc2EtYWxseWVzY29uZmlnIChhdHRhY2hlZCBhcyAuY29uZmln
-KQo+Pj4+IGNvbXBpbGVyOiB4dGVuc2EtbGludXgtZ2NjIChHQ0MpIDQuOS4wCj4+Pj4gcmVwcm9k
-dWNlOgo+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgIHdnZXQKPj4+PiBodHRwczovL3Jhdy5naXRodWJ1
-c2VyY29udGVudC5jb20vaW50ZWwvbGtwLXRlc3RzL21hc3Rlci9zYmluL21ha2UuY3Jvc3MKPj4+
-PiAtTyB+L2Jpbi9tYWtlLmNyb3NzCj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqAgY2htb2QgK3ggfi9i
-aW4vbWFrZS5jcm9zcwo+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgIGdpdCBjaGVja291dCBmNmExMThh
-ODAwZTM1YWYyYzYzZjkwY2JjYzIzMDkzZjRiNTNiM2EyCj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqAg
-IyBzYXZlIHRoZSBhdHRhY2hlZCAuY29uZmlnIHRvIGxpbnV4IGJ1aWxkIHRyZWUKPj4+PiAgwqDC
-oMKgwqDCoMKgwqDCoCBtYWtlLmNyb3NzIEFSQ0g9eHRlbnNhCj4+Pj4KPj4+PiBBbGwgZXJyb3Jz
-IChuZXcgb25lcyBwcmVmaXhlZCBieSA+Pik6Cj4+Pj4KPj4+Pj4+IHNvdW5kL3NvYy9pbnRlbC9j
-b21tb24vc3N0LWZpcm13YXJlLmM6MTI3ODoyMDogZXJyb3I6IGV4cGVjdGVkCj4+Pj4+PiBkZWNs
-YXJhdGlvbiBzcGVjaWZpZXJzIG9yICcuLi4nIGJlZm9yZSBzdHJpbmcgY29uc3RhbnQKPj4+PiAg
-wqDCoMKgwqAgTU9EVUxFX0RFU0NSSVBUSU9OKCJJbnRlbCBTU1QgRmlybXdhcmUgTG9hZGVyIik7
-Cj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXgo+
-Pj4+ICDCoMKgwqAgc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtZmlybXdhcmUuYzoxMjc5OjE2
-OiBlcnJvcjogZXhwZWN0ZWQKPj4+PiBkZWNsYXJhdGlvbiBzcGVjaWZpZXJzIG9yICcuLi4nIGJl
-Zm9yZSBzdHJpbmcgY29uc3RhbnQKPj4+PiAgwqDCoMKgwqAgTU9EVUxFX0xJQ0VOU0UoIkdQTCB2
-MiIpOwo+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBeCj4+Pj4g
-LS0gCj4+Pj4gIMKgwqDCoCBzb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1wY20u
-YzogSW4gZnVuY3Rpb24KPj4+PiAnY3JlYXRlX2Fkc3BfcGFnZV90YWJsZSc6Cj4+Pj4+PiBzb3Vu
-ZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1wY20uYzo0NDY6MjogZXJyb3I6IGltcGxp
-Y2l0Cj4+Pj4+PiBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiAnc25kX3NnYnVmX2FsaWduZWRfcGFn
-ZXMnCj4+Pj4+PiBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPj4+PiAg
-wqDCoMKgwqDCoCBwYWdlcyA9IHNuZF9zZ2J1Zl9hbGlnbmVkX3BhZ2VzKHNpemUpOwo+Pj4+ICDC
-oMKgwqDCoMKgIF4KPj4+PiAgwqDCoMKgIGNjMTogc29tZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVk
-IGFzIGVycm9ycwo+Pj4+Cj4+Pj4gdmltICsxMjc4IHNvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0
-LWZpcm13YXJlLmMKPj4+Pgo+Pj4+IGEzOTViZGQ2IFRha2FzaGkgSXdhaSAyMDE2LTA3LTExwqAg
-MTI3Nwo+Pj4+IGEzOTViZGQ2IFRha2FzaGkgSXdhaSAyMDE2LTA3LTExIEAxMjc4wqAgTU9EVUxF
-X0RFU0NSSVBUSU9OKCJJbnRlbAo+Pj4+IFNTVCBGaXJtd2FyZSBMb2FkZXIiKTsKPj4+Pgo+Pj4+
-IDo6Ojo6OiBUaGUgY29kZSBhdCBsaW5lIDEyNzggd2FzIGZpcnN0IGludHJvZHVjZWQgYnkgY29t
-bWl0Cj4+Pj4gOjo6Ojo6IGEzOTViZGQ2YjI0YjY5MmFkYmNlMGRmNjUxMGVjOWYyYWY1NzU3M2Ug
-QVNvQzogaW50ZWw6IEZpeAo+Pj4+IHNzdC1kc3AgZGVwZW5kZW5jeSBvbiBkdyBzdHVmZgo+Pj4+
-Cj4+Pj4gOjo6Ojo6IFRPOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4+Pj4gOjo6Ojo6
-IENDOiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4+Pj4KPj4+PiAtLS0KPj4+PiAw
-LURBWSBrZXJuZWwgdGVzdCBpbmZyYXN0cnVjdHVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBPcGVuIFNvdXJjZQo+Pj4+IFRlY2hub2xvZ3kgQ2VudGVyCj4+Pj4gaHR0cHM6Ly9saXN0
-cy4wMS5vcmcvcGlwZXJtYWlsL2tidWlsZC1hbGzCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgSW50ZWwKPj4+PiBDb3Jwb3JhdGlvbgo+Pj4+Cj4+Pgo+Pj4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IEFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0Cj4+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4+IGh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+Cj4+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0Cj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiBodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IAoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Make all Intel audio drivers dependent on X86 to avoid compilation
+errors for s390 and xtensa architectures.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 1dcc9e456610..a59dda39007e 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -31,6 +31,7 @@ config SND_SOC_ACPI_INTEL_MATCH
+ 
+ config SND_SOC_INTEL_SST_TOPLEVEL
+ 	tristate "Intel ASoC SST drivers"
++	depends on X86
+ 	select SND_SOC_INTEL_MACH
+ 	select SND_SOC_INTEL_COMMON
+ 
+-- 
+2.7.4
