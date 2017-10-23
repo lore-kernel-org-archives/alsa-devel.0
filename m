@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: snd_soc_component_driver has
-	pmdown_time" to the asoc tree
-Date: Mon, 23 Oct 2017 10:43:17 +0100 (BST)
-Message-ID: <20171023094317.35C6C440058@finisterre.ee.mobilebroadband>
-References: <87r2vrm1ka.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 84F65266FFE
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 11:43:17 +0200 (CEST)
-In-Reply-To: <87r2vrm1ka.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+Subject: Applied "ASoC: rt5651: Convert rt5651 micbias1 to a supply widget" to the asoc tree
+Date: Mon, 23 Oct 2017 10:43:45 +0100 (BST)
+Message-ID: <20171023094345.AC13B440058@finisterre.ee.mobilebroadband>
+References: <20171018170631.9189-1-carlo@caione.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171018170631.9189-1-carlo@caione.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Carlo Caione <carlo@endlessm.com>
+Cc: Mark Brown <broonie@kernel.org>, linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: snd_soc_component_driver has pmdown_time
+   ASoC: rt5651: Convert rt5651 micbias1 to a supply widget
 
 has been applied to the asoc tree at
 
@@ -53,86 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From fbb16563c6c2b7fc4944adc49f93c1dc6fe25770 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 11 Oct 2017 01:38:08 +0000
-Subject: [PATCH] ASoC: snd_soc_component_driver has pmdown_time
+>From be96fc54d2ed8eae6683b71d2dc5d1a939a10a1e Mon Sep 17 00:00:00 2001
+From: Carlo Caione <carlo@endlessm.com>
+Date: Wed, 18 Oct 2017 18:06:31 +0100
+Subject: [PATCH] ASoC: rt5651: Convert rt5651 micbias1 to a supply widget
 
-Current snd_soc_runtime_ignore_pmdown_time() tallys all Codec and
-CPU's "ignore_pmdown_time". Now, CPU (= via compoent)
-ignore_pmdown_time is fixed as "true". Codec's one is copied from Codec
-driver. This means Codec side default is "false".
+MICBIAS widget type has been deprecated. Convert it to a SUPPLY widget.
 
-Current all Codec driver will be replaced into Component, thus, we can
-use for_each_rtdcom() for this totalization. This patch adds new
-"pmdown_time" on Component driver. Its inverted value will be used
-for this "ignore" totalizaton.
-
-Of course all existing Component driver doesn't have its settings now,
-thus, all existing "pmdown_time" is "false". This means all
-Components will ignore pmdown time. This is current CPU behavior.
-To keep compatibility, snd_soc_runtime_ignore_pmdown_time() totalize
-Component's inverted "pmdown_time" (= total will be true) and
-Codec's "ignore_pmdown_time" (= depends on Codec driver settings).
-Because It is using AND operation, its result is based on Codec driver
-settings only.
-This means this operation can keep compatibility and doesn't have
-nonconformity.
-
-When we replace Codec to Component, the driver which has
-".ignore_pmdown_time = true" will be just removed,
-and the driver which doesn't have it will have new
-".pmdown_time = true".
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h |  1 +
- sound/soc/soc-pcm.c | 11 ++++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5651.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index ae0a27fdc016..44fab951b686 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -836,6 +836,7 @@ struct snd_soc_component_driver {
- 	/* bits */
- 	unsigned int idle_bias_on:1;
- 	unsigned int suspend_bias_off:1;
-+	unsigned int pmdown_time:1; /* care pmdown_time at stop */
- };
- 
- struct snd_soc_component {
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index daaa670ee9b7..8075856668c2 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -133,16 +133,25 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream)
-  */
- bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
- 	int i;
- 	bool ignore = true;
- 
- 	if (!rtd->pmdown_time || rtd->dai_link->ignore_pmdown_time)
- 		return true;
- 
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		ignore &= !component->driver->pmdown_time;
-+	}
-+
-+	/* this will be removed */
- 	for (i = 0; i < rtd->num_codecs; i++)
- 		ignore &= rtd->codec_dais[i]->component->ignore_pmdown_time;
- 
--	return rtd->cpu_dai->component->ignore_pmdown_time && ignore;
-+	return ignore;
- }
- 
- /**
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index da60b28ba3df..28f7210cec91 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -883,8 +883,8 @@ static const struct snd_soc_dapm_widget rt5651_dapm_widgets[] = {
+ 	/* micbias */
+ 	SND_SOC_DAPM_SUPPLY("LDO", RT5651_PWR_ANLG1,
+ 			RT5651_PWR_LDO_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_MICBIAS("micbias1", RT5651_PWR_ANLG2,
+-			RT5651_PWR_MB1_BIT, 0),
++	SND_SOC_DAPM_SUPPLY("micbias1", RT5651_PWR_ANLG2,
++			RT5651_PWR_MB1_BIT, 0, NULL, 0),
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("MIC1"),
+ 	SND_SOC_DAPM_INPUT("MIC2"),
 -- 
 2.14.1
