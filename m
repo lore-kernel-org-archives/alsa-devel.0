@@ -1,86 +1,64 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/14] soundwire: Add Master registration
-Date: Mon, 23 Oct 2017 09:24:26 +0100
-Message-ID: <20171023082426.77tcpq4wtd4cwi7i@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 01/14] Documentation: Add SoundWire summary
+Date: Mon, 23 Oct 2017 09:21:14 +0100
+Message-ID: <20171023082114.qxngdzkm42v7dzzi@sirena.org.uk>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
- <20171021091230.pwevgreloynqe7nu@sirena.org.uk>
- <20171021113513.GF30097@localhost>
+ <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
+ <20171021085744.hpuvp34e4hckoisl@sirena.org.uk>
+ <20171021112840.GD30097@localhost>
+ <32258d12-f405-a62d-143a-c801ad06e097@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3838039316523349916=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B85C1266DCD
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 11:26:03 +0200 (CEST)
-In-Reply-To: <20171021113513.GF30097@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tlozbvyivs3te3bf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <32258d12-f405-a62d-143a-c801ad06e097@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>, mark.rutland@arm.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3838039316523349916==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lqsfbivgarcojcqj"
-Content-Disposition: inline
-
-
---lqsfbivgarcojcqj
+--tlozbvyivs3te3bf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Oct 21, 2017 at 05:05:13PM +0530, Vinod Koul wrote:
-> On Sat, Oct 21, 2017 at 10:12:30AM +0100, Mark Brown wrote:
-> > On Thu, Oct 19, 2017 at 08:33:19AM +0530, Vinod Koul wrote:
+On Sun, Oct 22, 2017 at 03:36:32PM +0530, Pierre-Louis Bossart wrote:
+> On 10/21/17 4:58 PM, Vinod Koul wrote:
+> > On Sat, Oct 21, 2017 at 09:57:44AM +0100, Mark Brown wrote:
 
-> > > +	mutex_lock(&bus->bus_lock);
-> > > +	if (!list_empty(&bus->slaves))
-> > > +		list_del(&slave->node);
+> > > There's lots of perfectly normal nouns in this document like Slave here
+> > > which are randomly capitalized.  Is there some great reason for this?
+> > > It makes the document pretty distracting to read.
 
-> > Shouldn't that be a while?  Or at least warn if there's anything extra
-> > there.  The code just looks very wrong as is.
+> > Slave, SoundWire etc are MIPI definitions hence capitalized.
 
-> I think you missed that it is called from sdw_delete_bus_master() which does
-> the loop by invoking device_for_each_child(), so this ones is supposed to
-> ensure one Slave is removed cleaned.
+> I insisted to follow the conventions in the specification, it's not random
+> at all.
 
-> Let me know if i misread your comment.
+It's making it pretty painful to read as kernel documentation.
 
-My point is that this code just looks so obviously wrong it doesn't
-matter if it actually works, we should refactor so people don't look at
-the code and immediately think they've spotted a bug.
+> We can put together a DT binding document that follows the Disco spec but
+> it'd be a bad idea to change the definitions or come up with new ones...
 
---lqsfbivgarcojcqj
+Given that there's a goal to do this via the device property stuff with
+the apparent goal that we also use this stuff for DT it should at least
+be run past some DT people. It may be that everything is totally fine as
+is but we should at least check.
+
+--tlozbvyivs3te3bf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlntpzkACgkQJNaLcl1U
-h9C8IAf/ZPUBQ0L8rcDJUynlZVNRpg+CsnJ0IICwqF93Lazy/FVzEgoTxs8hnUuN
-IjV5w9aMZ0xxa1fqWvlEmkHIrJKaczGQGAQVE/CDTjYcue3jEIVMcQaqTNKnlZq+
-Anbtr4ndtZL6Ss07osv+64bvTa2glb7piuKhjKRe1D/VofBFYOhlZ035DSkFXpYG
-t1YfqTxq9c+NOt/dP3LI8IFQtt99FPiTsNr7WjI4uTvhUKmjCGTgR/Qee5dy4G7+
-oMFoumFWmkh7IfjhaXnVx6T+EQuTWmud0aKiDP9oV/odruryXisFQgTDv2oGedsw
-ZKcTq+QbSWLPU4vkOVKKuvwBM5Jp5A==
-=j6N+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlntpncACgkQJNaLcl1U
+h9CaWAf+NhQ6Hdd061aIsls9waNCgH8PQtGFYejgymD621rK4bQcWxJBupYN4bug
+op8Tzb1YF0A0UbSEHYwjNvcL8J75nC2AdWrP64jLHK50UHyRjCNxRMq6EERy3TLg
+pqXlqqTfrpntVmZbxBN47FFgnIylh/rJ6yG8B3G7FZTvet6Xrq/kshBhmWa13fFC
+EXlzTdl8vAzsxQPr3jIIwxA1HVd9yL9RTePYmghNsuI1FtgOMj8qdPohADK3TCKk
+/Kxhkjl14XtWWrWdRzOjuqvRXqSfA8j3LqtDd7ByJWRDEG/ul3t7aTOrR8bzqkCQ
+PRl0Pg3A6Tru7PLh0ScfDwZscoNtdg==
+=3+Q/
 -----END PGP SIGNATURE-----
 
---lqsfbivgarcojcqj--
-
---===============3838039316523349916==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3838039316523349916==--
+--tlozbvyivs3te3bf--
