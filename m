@@ -1,75 +1,106 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [Patch v6 1/7] slimbus: Device management on SLIMbus
-Date: Mon, 23 Oct 2017 11:06:54 +0200
-Message-ID: <20171023090654.ydaoom7pye72frvd@sirena.org.uk>
-References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
- <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: snd_soc_component_driver has
+	non_legacy_dai_naming" to the asoc tree
+Date: Mon, 23 Oct 2017 10:43:05 +0100 (BST)
+Message-ID: <20171023094305.5A92F440058@finisterre.ee.mobilebroadband>
+References: <87o9qvm1j8.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yvzcuim5ww5lon27"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org
-Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECD2A266FCC
+ for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 11:43:06 +0200 (CEST)
+In-Reply-To: <87o9qvm1j8.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---yvzcuim5ww5lon27
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: snd_soc_component_driver has non_legacy_dai_naming
 
-On Fri, Oct 06, 2017 at 05:51:30PM +0200, srinivas.kandagatla@linaro.org wrote:
+has been applied to the asoc tree at
 
-> ---
->  Documentation/devicetree/bindings/slimbus/bus.txt |  57 ++
->  Documentation/slimbus/summary                     | 109 ++++
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This is a 40k patch which is a bit offputting for review.  Splitting the
-docs out would help this a bit.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static int slim_boot_child(struct device *dev, void *unused)
-> +{
-> +	struct slim_driver *sbdrv;
-> +	struct slim_device *sbdev = to_slim_device(dev);
-> +
-> +	if (sbdev && sbdev->dev.driver) {
-> +		sbdrv = to_slim_driver(sbdev->dev.driver);
-> +		if (sbdrv->boot_device)
-> +			sbdrv->boot_device(sbdev);
-> +	}
-> +	return 0;
-> +}
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-We silently don't boot a device if it hasn't got a driver - is that the
-right thing?  It feels like the silencing should be in the calling
-function.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +ret_assigned_laddr:
-> +	mutex_unlock(&ctrl->m_ctrl);
-> +	if (exists || ret)
-> +		return ret;
-> +
-> +	dev_info(&ctrl->dev, "setting slimbus l-addr:%x, ea:%x,%x,%x,%x\n",
-> +		*laddr, e_addr->manf_id, e_addr->prod_code,
-> +		e_addr->dev_index, e_addr->instance);
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-dev_dbg()?
+Thanks,
+Mark
 
---yvzcuim5ww5lon27
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 69941bab7c7aeaa7bf7e84397e294c17f0b7c6df Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 11 Oct 2017 01:38:51 +0000
+Subject: [PATCH] ASoC: snd_soc_component_driver has non_legacy_dai_naming
 
------BEGIN PGP SIGNATURE-----
+Codec will be replaced into Component, then Codec side
+doesn't use legacy_dai_naming on snd_soc_register_dais().
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlntsS0ACgkQJNaLcl1U
-h9DF3gf9EmuE2gecayadrX+9wcXYmpFA3V78a7kZmZWzqqjm2pXZ+5Lzo+GwmK0B
-ezNv1CxBcHM/SNgO5XgP+ClAHsDd+snyiXDgEEbAs+zaPK3MkUee5JTTFZAhqRZ+
-f+81AmCW9CeXOtwJCRnIf7K68//nCCwaPxwxdzYUVgr82mUptOO70E+/yjv/wDMm
-D3f7TVCFnHjLxru48Mv0wjhIH2XxoHfUEU9Lo+C+423zheUQoutgpLWV6Cb7O3l0
-h/trq6G0TeTop3YFC+zNBgqvzEn3C+PwRP68fLi+falghsi3n7Ep+kZUeQ+EOg3U
-6UpbawH7r2/cWNpLnGJ33P59prU2BA==
-=1a7F
------END PGP SIGNATURE-----
+This patch adds new non_legacy_dai_naming flag on Component driver
+and use converted its value for snd_soc_register_dais().
 
---yvzcuim5ww5lon27--
+When Codec is replaced into Component, Codec driver needs
+to have non_legacy_dai_naming = 1 flags.
+Existing CPU side of course doesn't have this flag, thus CPU calls
+it as true.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc.h  | 1 +
+ sound/soc/soc-core.c | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 747d080a0853..6c808527a4f6 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -838,6 +838,7 @@ struct snd_soc_component_driver {
+ 	unsigned int suspend_bias_off:1;
+ 	unsigned int pmdown_time:1; /* care pmdown_time at stop */
+ 	unsigned int endianness:1;
++	unsigned int non_legacy_dai_naming:1;
+ };
+ 
+ struct snd_soc_component {
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 61c3d3649914..533c822ca6e6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3462,7 +3462,8 @@ int snd_soc_add_component(struct device *dev,
+ 		}
+ 	}
+ 
+-	ret = snd_soc_register_dais(component, dai_drv, num_dai, true);
++	ret = snd_soc_register_dais(component, dai_drv, num_dai,
++				    !component_driver->non_legacy_dai_naming);
+ 	if (ret < 0) {
+ 		dev_err(dev, "ASoC: Failed to register DAIs: %d\n", ret);
+ 		goto err_cleanup;
+-- 
+2.14.1
