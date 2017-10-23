@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: snd_soc_component_driver has
-	non_legacy_dai_naming" to the asoc tree
-Date: Mon, 23 Oct 2017 10:43:05 +0100 (BST)
-Message-ID: <20171023094305.5A92F440058@finisterre.ee.mobilebroadband>
-References: <87o9qvm1j8.wl%kuninori.morimoto.gx@renesas.com>
+	endianness" to the asoc tree
+Date: Mon, 23 Oct 2017 10:43:13 +0100 (BST)
+Message-ID: <20171023094313.21EE4440058@finisterre.ee.mobilebroadband>
+References: <87pobbm1jq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ECD2A266FCC
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 11:43:06 +0200 (CEST)
-In-Reply-To: <87o9qvm1j8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F610266FFE
+ for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 11:43:13 +0200 (CEST)
+In-Reply-To: <87pobbm1jq.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: snd_soc_component_driver has non_legacy_dai_naming
+   ASoC: snd_soc_component_driver has endianness
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,160 @@ to this mail.
 Thanks,
 Mark
 
->From 69941bab7c7aeaa7bf7e84397e294c17f0b7c6df Mon Sep 17 00:00:00 2001
+>From 273d778ef38a8861f880e9df5799029dc82bd55d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 11 Oct 2017 01:38:51 +0000
-Subject: [PATCH] ASoC: snd_soc_component_driver has non_legacy_dai_naming
+Date: Wed, 11 Oct 2017 01:38:29 +0000
+Subject: [PATCH] ASoC: snd_soc_component_driver has endianness
 
-Codec will be replaced into Component, then Codec side
-doesn't use legacy_dai_naming on snd_soc_register_dais().
+Codec will be replaced into Component, then Codec side only
+needs to call fixup_codec_formats() at this point.
 
-This patch adds new non_legacy_dai_naming flag on Component driver
-and use converted its value for snd_soc_register_dais().
+This patch adds new endianness flag on Component driver
+and call convert_endianness_formats() (= was fixup_codec_format())
+if endianness was true.
 
 When Codec is replaced into Component, Codec driver needs
-to have non_legacy_dai_naming = 1 flags.
-Existing CPU side of course doesn't have this flag, thus CPU calls
-it as true.
+to have endianness = 1 flags.
+Existing CPU side of course doesn't have this flag, thus CPU doesn't
+call it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 1 +
- sound/soc/soc-core.c | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ include/sound/soc.h  |  1 +
+ sound/soc/soc-core.c | 80 +++++++++++++++++++++++++++++-----------------------
+ 2 files changed, 46 insertions(+), 35 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 747d080a0853..6c808527a4f6 100644
+index 44fab951b686..747d080a0853 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -838,6 +838,7 @@ struct snd_soc_component_driver {
+@@ -837,6 +837,7 @@ struct snd_soc_component_driver {
+ 	unsigned int idle_bias_on:1;
  	unsigned int suspend_bias_off:1;
  	unsigned int pmdown_time:1; /* care pmdown_time at stop */
- 	unsigned int endianness:1;
-+	unsigned int non_legacy_dai_naming:1;
++	unsigned int endianness:1;
  };
  
  struct snd_soc_component {
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 61c3d3649914..533c822ca6e6 100644
+index a3dcf14befd8..61c3d3649914 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3462,7 +3462,8 @@ int snd_soc_add_component(struct device *dev,
- 		}
- 	}
+@@ -3404,6 +3404,41 @@ static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
+ 	list_del(&component->list);
+ }
  
--	ret = snd_soc_register_dais(component, dai_drv, num_dai, true);
-+	ret = snd_soc_register_dais(component, dai_drv, num_dai,
-+				    !component_driver->non_legacy_dai_naming);
++#define ENDIANNESS_MAP(name) \
++	(SNDRV_PCM_FMTBIT_##name##LE | SNDRV_PCM_FMTBIT_##name##BE)
++static u64 endianness_format_map[] = {
++	ENDIANNESS_MAP(S16_),
++	ENDIANNESS_MAP(U16_),
++	ENDIANNESS_MAP(S24_),
++	ENDIANNESS_MAP(U24_),
++	ENDIANNESS_MAP(S32_),
++	ENDIANNESS_MAP(U32_),
++	ENDIANNESS_MAP(S24_3),
++	ENDIANNESS_MAP(U24_3),
++	ENDIANNESS_MAP(S20_3),
++	ENDIANNESS_MAP(U20_3),
++	ENDIANNESS_MAP(S18_3),
++	ENDIANNESS_MAP(U18_3),
++	ENDIANNESS_MAP(FLOAT_),
++	ENDIANNESS_MAP(FLOAT64_),
++	ENDIANNESS_MAP(IEC958_SUBFRAME_),
++};
++
++/*
++ * Fix up the DAI formats for endianness: codecs don't actually see
++ * the endianness of the data but we're using the CPU format
++ * definitions which do need to include endianness so we ensure that
++ * codec DAIs always have both big and little endian variants set.
++ */
++static void convert_endianness_formats(struct snd_soc_pcm_stream *stream)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(endianness_format_map); i++)
++		if (stream->formats & endianness_format_map[i])
++			stream->formats |= endianness_format_map[i];
++}
++
+ int snd_soc_add_component(struct device *dev,
+ 			struct snd_soc_component *component,
+ 			const struct snd_soc_component_driver *component_driver,
+@@ -3411,6 +3446,7 @@ int snd_soc_add_component(struct device *dev,
+ 			int num_dai)
+ {
+ 	int ret;
++	int i;
+ 
+ 	ret = snd_soc_component_initialize(component, component_driver, dev);
+ 	if (ret)
+@@ -3419,6 +3455,13 @@ int snd_soc_add_component(struct device *dev,
+ 	component->ignore_pmdown_time = true;
+ 	component->registered_as_component = true;
+ 
++	if (component_driver->endianness) {
++		for (i = 0; i < num_dai; i++) {
++			convert_endianness_formats(&dai_drv[i].playback);
++			convert_endianness_formats(&dai_drv[i].capture);
++		}
++	}
++
+ 	ret = snd_soc_register_dais(component, dai_drv, num_dai, true);
  	if (ret < 0) {
  		dev_err(dev, "ASoC: Failed to register DAIs: %d\n", ret);
- 		goto err_cleanup;
+@@ -3675,39 +3718,6 @@ void snd_soc_unregister_platform(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_unregister_platform);
+ 
+-static u64 codec_format_map[] = {
+-	SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE,
+-	SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE,
+-	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE,
+-	SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE,
+-	SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE,
+-	SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_FMTBIT_U32_BE,
+-	SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_U24_3BE,
+-	SNDRV_PCM_FMTBIT_U24_3LE | SNDRV_PCM_FMTBIT_U24_3BE,
+-	SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S20_3BE,
+-	SNDRV_PCM_FMTBIT_U20_3LE | SNDRV_PCM_FMTBIT_U20_3BE,
+-	SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S18_3BE,
+-	SNDRV_PCM_FMTBIT_U18_3LE | SNDRV_PCM_FMTBIT_U18_3BE,
+-	SNDRV_PCM_FMTBIT_FLOAT_LE | SNDRV_PCM_FMTBIT_FLOAT_BE,
+-	SNDRV_PCM_FMTBIT_FLOAT64_LE | SNDRV_PCM_FMTBIT_FLOAT64_BE,
+-	SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
+-	| SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE,
+-};
+-
+-/* Fix up the DAI formats for endianness: codecs don't actually see
+- * the endianness of the data but we're using the CPU format
+- * definitions which do need to include endianness so we ensure that
+- * codec DAIs always have both big and little endian variants set.
+- */
+-static void fixup_codec_formats(struct snd_soc_pcm_stream *stream)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(codec_format_map); i++)
+-		if (stream->formats & codec_format_map[i])
+-			stream->formats |= codec_format_map[i];
+-}
+-
+ static int snd_soc_codec_drv_probe(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+@@ -3858,8 +3868,8 @@ int snd_soc_register_codec(struct device *dev,
+ 		codec->component.regmap = codec_drv->get_regmap(dev);
+ 
+ 	for (i = 0; i < num_dai; i++) {
+-		fixup_codec_formats(&dai_drv[i].playback);
+-		fixup_codec_formats(&dai_drv[i].capture);
++		convert_endianness_formats(&dai_drv[i].playback);
++		convert_endianness_formats(&dai_drv[i].capture);
+ 	}
+ 
+ 	ret = snd_soc_register_dais(&codec->component, dai_drv, num_dai, false);
 -- 
 2.14.1
