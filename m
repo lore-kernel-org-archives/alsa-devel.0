@@ -1,94 +1,62 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Prague Audio miniconference - draft schedule
-Date: Mon, 23 Oct 2017 14:44:06 +0200
-Message-ID: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
+Subject: Re: [PATCH 07/14] regmap: Add SoundWire bus support
+Date: Mon, 23 Oct 2017 15:16:39 +0200
+Message-ID: <20171023131639.x4cfpmylurp6eim6@sirena.org.uk>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-8-git-send-email-vinod.koul@intel.com>
+ <20171021093426.vzhv3ponaxhi4yw3@sirena.org.uk>
+ <1508759787.29460.6.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2817760932737269380=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2001D266A73
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 14:44:11 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Eric Laurent <elaurent@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6jsga5bvvfo3qmia"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1508759787.29460.6.camel@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alan Cox <alan@linux.intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2817760932737269380==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ng5ugvikxp35qf75"
-Content-Disposition: inline
-
-
---ng5ugvikxp35qf75
+--6jsga5bvvfo3qmia
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-As previously announced[1] by Takashi our annual Linux audio
-miniconference will be held this year at the SuSE offices in Prague on
-Friday 27th October (the week of ELC-E).  Thanks again to SuSE for
-sponsoring this.
+On Mon, Oct 23, 2017 at 12:56:27PM +0100, Alan Cox wrote:
+> On Sat, 2017-10-21 at 10:34 +0100, Mark Brown wrote:
+> > On Thu, Oct 19, 2017 at 08:33:23AM +0530, Vinod Koul wrote:
 
-Following the earlier discussion I've pulled together a list of topics.
-I've put people's names against everything, mostly the people who
-suggested things but sometimes also other people who should probably be
-involved.  I'm proposing that we work through things in roughly this
-order.  Does this make sense to people?  Any other topics?
+> > > +EXPORT_SYMBOL(__regmap_init_sdw);
 
-Summary
- - API status summary (tiwai)
-  - Userspace release schedule
-  - Docs
-  - Dropping old drivers
- - Treble overview (Eric)
- - aplay rewrite (Sakamoto-san)
+> > ...this is just an obvious attempt to allow non-GPL code to directly
+> > use
+> > GPL code.
 
-ABI issues
- - USB PCM handling (tiwai)
- - mmap no IRQ (Eric)
- - TLV API issues (Sakamoto-san)
- - Obsolete dimen from struct snd_ctl_elem_info (Sakamoto-san)
- - Y2038 (tiwai)
+> There's nothing in the GPL about EXPORT_SYMBOL. If its built GPL
+> dependent then it depends upon GPL code so is GPL.
 
-Future stuff/internals
- - Clock handling (Peter)
-  - CCF, multi-clock selection
- - Digital domains (Charles/Lars/Morimoto-san)
- - Large regmaps (Charles)
+My point is that in the context of this very thin wrapper around an API
+that's entirely EXPORT_SYMBOL_GPL() dropping the _GPL() from the export
+looks like it's going to enable questionable usage, probably in this
+case it's just an oversight caused by all the other non-GPL exports in
+the Slimbus code rather than something that's intentional.  This seems
+particularly important here in something that's for drivers rather than
+the subsystem itself since people might make assumptions (justified or
+not) based on the EXPORT_SYMBOL() exports.
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2017-August/124623.html
-
---ng5ugvikxp35qf75
+--6jsga5bvvfo3qmia
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnt5BEACgkQJNaLcl1U
-h9BKJgf/QJKoeDy+KpPR5N1iX4AirvTx3fi24I8hdVtjqMgei7cY+4Sg+2p83qqw
-TIOcswFWsh+cfXV+3MmpQx9lOnhpUAkCudS/zii1Qd72wbWd/cYp9r1LFqkb/2cN
-eqivW1wDoTscpytt/62lanu/d9TZ/SIvJ8gmo3mv2wEeDPjRP3CK7DHT2urtmWND
-Yxuat/1LpUji3spRiUgUn5fI7+UNQrHl48mbEs/dL5KTldfzyqKXweomH88OR33D
-KiTy6Y0Z8pciQejO7DE5Hg5ECq6TMYvk8Bf86a4PHrd5cYyJmmnGD9f4g7gX1Tkf
-id39F4SNgRUQDOJLdLaXwDGHzkwHwA==
-=i+aD
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnt67MACgkQJNaLcl1U
+h9CG8wf9FR6WLo4awBCzva+TmwQa5NvYRFmTEuwwbJM3eWU3KiTfXuo3p7zMRPyR
+OIbbVDZHM9azrOjmFV//+nNl50WqY4SUNm5z7xjAWHFinQDDTm92u5x5oqVr6+Sl
+MDkY+ZuRX89mX2H0c0DXZ9Tl3f2LiSZJRhg0ILkO29L4dhG79Rhc8BKIkTMjwE2M
+cwyPy5caNpAK4NMbZyg3aXE4PdrGQ00r9OsOVsBhdmYNtQCOst5Tl8mb67ajZphx
+VnHPosZbB3BEMRjkTD/IZarab71uafph9n3A5ZdBH2GbwFp0ADmkQ+xS86So2kvP
+McBCKYf5axUqS2P4ljp6iqX5a/E+pA==
+=U22W
 -----END PGP SIGNATURE-----
 
---ng5ugvikxp35qf75--
-
---===============2817760932737269380==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2817760932737269380==--
+--6jsga5bvvfo3qmia--
