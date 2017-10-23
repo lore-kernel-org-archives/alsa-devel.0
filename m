@@ -1,64 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 01/14] Documentation: Add SoundWire summary
-Date: Mon, 23 Oct 2017 09:21:14 +0100
-Message-ID: <20171023082114.qxngdzkm42v7dzzi@sirena.org.uk>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
- <20171021085744.hpuvp34e4hckoisl@sirena.org.uk>
- <20171021112840.GD30097@localhost>
- <32258d12-f405-a62d-143a-c801ad06e097@linux.intel.com>
+Subject: Re: [Patch v6 1/7] slimbus: Device management on SLIMbus
+Date: Mon, 23 Oct 2017 11:06:54 +0200
+Message-ID: <20171023090654.ydaoom7pye72frvd@sirena.org.uk>
+References: <20171006155136.4682-1-srinivas.kandagatla@linaro.org>
+ <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tlozbvyivs3te3bf"
+        protocol="application/pgp-signature"; boundary="yvzcuim5ww5lon27"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <32258d12-f405-a62d-143a-c801ad06e097@linux.intel.com>
+In-Reply-To: <20171006155136.4682-2-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>, mark.rutland@arm.com
+To: srinivas.kandagatla@linaro.org
+Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, gong.chen@linux.intel.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kheitke@audience.com, linux-arm-msm@vger.kernel.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
 
---tlozbvyivs3te3bf
+--yvzcuim5ww5lon27
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Oct 22, 2017 at 03:36:32PM +0530, Pierre-Louis Bossart wrote:
-> On 10/21/17 4:58 PM, Vinod Koul wrote:
-> > On Sat, Oct 21, 2017 at 09:57:44AM +0100, Mark Brown wrote:
+On Fri, Oct 06, 2017 at 05:51:30PM +0200, srinivas.kandagatla@linaro.org wrote:
 
-> > > There's lots of perfectly normal nouns in this document like Slave here
-> > > which are randomly capitalized.  Is there some great reason for this?
-> > > It makes the document pretty distracting to read.
+> ---
+>  Documentation/devicetree/bindings/slimbus/bus.txt |  57 ++
+>  Documentation/slimbus/summary                     | 109 ++++
 
-> > Slave, SoundWire etc are MIPI definitions hence capitalized.
+This is a 40k patch which is a bit offputting for review.  Splitting the
+docs out would help this a bit.
 
-> I insisted to follow the conventions in the specification, it's not random
-> at all.
+> +static int slim_boot_child(struct device *dev, void *unused)
+> +{
+> +	struct slim_driver *sbdrv;
+> +	struct slim_device *sbdev = to_slim_device(dev);
+> +
+> +	if (sbdev && sbdev->dev.driver) {
+> +		sbdrv = to_slim_driver(sbdev->dev.driver);
+> +		if (sbdrv->boot_device)
+> +			sbdrv->boot_device(sbdev);
+> +	}
+> +	return 0;
+> +}
 
-It's making it pretty painful to read as kernel documentation.
+We silently don't boot a device if it hasn't got a driver - is that the
+right thing?  It feels like the silencing should be in the calling
+function.
 
-> We can put together a DT binding document that follows the Disco spec but
-> it'd be a bad idea to change the definitions or come up with new ones...
+> +ret_assigned_laddr:
+> +	mutex_unlock(&ctrl->m_ctrl);
+> +	if (exists || ret)
+> +		return ret;
+> +
+> +	dev_info(&ctrl->dev, "setting slimbus l-addr:%x, ea:%x,%x,%x,%x\n",
+> +		*laddr, e_addr->manf_id, e_addr->prod_code,
+> +		e_addr->dev_index, e_addr->instance);
 
-Given that there's a goal to do this via the device property stuff with
-the apparent goal that we also use this stuff for DT it should at least
-be run past some DT people. It may be that everything is totally fine as
-is but we should at least check.
+dev_dbg()?
 
---tlozbvyivs3te3bf
+--yvzcuim5ww5lon27
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlntpncACgkQJNaLcl1U
-h9CaWAf+NhQ6Hdd061aIsls9waNCgH8PQtGFYejgymD621rK4bQcWxJBupYN4bug
-op8Tzb1YF0A0UbSEHYwjNvcL8J75nC2AdWrP64jLHK50UHyRjCNxRMq6EERy3TLg
-pqXlqqTfrpntVmZbxBN47FFgnIylh/rJ6yG8B3G7FZTvet6Xrq/kshBhmWa13fFC
-EXlzTdl8vAzsxQPr3jIIwxA1HVd9yL9RTePYmghNsuI1FtgOMj8qdPohADK3TCKk
-/Kxhkjl14XtWWrWdRzOjuqvRXqSfA8j3LqtDd7ByJWRDEG/ul3t7aTOrR8bzqkCQ
-PRl0Pg3A6Tru7PLh0ScfDwZscoNtdg==
-=3+Q/
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlntsS0ACgkQJNaLcl1U
+h9DF3gf9EmuE2gecayadrX+9wcXYmpFA3V78a7kZmZWzqqjm2pXZ+5Lzo+GwmK0B
+ezNv1CxBcHM/SNgO5XgP+ClAHsDd+snyiXDgEEbAs+zaPK3MkUee5JTTFZAhqRZ+
+f+81AmCW9CeXOtwJCRnIf7K68//nCCwaPxwxdzYUVgr82mUptOO70E+/yjv/wDMm
+D3f7TVCFnHjLxru48Mv0wjhIH2XxoHfUEU9Lo+C+423zheUQoutgpLWV6Cb7O3l0
+h/trq6G0TeTop3YFC+zNBgqvzEn3C+PwRP68fLi+falghsi3n7Ep+kZUeQ+EOg3U
+6UpbawH7r2/cWNpLnGJ33P59prU2BA==
+=1a7F
 -----END PGP SIGNATURE-----
 
---tlozbvyivs3te3bf--
+--yvzcuim5ww5lon27--
