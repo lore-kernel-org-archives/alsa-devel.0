@@ -1,18 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Prague Audio miniconference - topics for
-	discussion?
-Date: Mon, 23 Oct 2017 14:36:37 +0200
-Message-ID: <20171023123637.fv4irhokmtog7bvm@sirena.org.uk>
-References: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
- <s5hvajs5tbw.wl-tiwai@suse.de>
+Subject: Prague Audio miniconference - draft schedule
+Date: Mon, 23 Oct 2017 14:44:06 +0200
+Message-ID: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7079184924224644790=="
+Content-Type: multipart/mixed; boundary="===============2817760932737269380=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C5AB3266A73
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 14:38:07 +0200 (CEST)
-In-Reply-To: <s5hvajs5tbw.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2001D266A73
+ for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 14:44:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +18,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: alsa-devel@alsa-project.org
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Eric Laurent <elaurent@google.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7079184924224644790==
+--===============2817760932737269380==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h4zzgtiy4whqijvp"
+	protocol="application/pgp-signature"; boundary="ng5ugvikxp35qf75"
 Content-Disposition: inline
 
 
---h4zzgtiy4whqijvp
+--ng5ugvikxp35qf75
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 06, 2017 at 02:55:31PM +0200, Takashi Iwai wrote:
+As previously announced[1] by Takashi our annual Linux audio
+miniconference will be held this year at the SuSE offices in Prague on
+Friday 27th October (the week of ELC-E).  Thanks again to SuSE for
+sponsoring this.
 
-> - Year 2038 problem;
->   PCM API changes RFC were posted recently on alsa-devel, and we have
->   timespec in other APIs (rawmidi and timer), too.
+Following the earlier discussion I've pulled together a list of topics.
+I've put people's names against everything, mostly the people who
+suggested things but sometimes also other people who should probably be
+involved.  I'm proposing that we work through things in roughly this
+order.  Does this make sense to people?  Any other topics?
 
-Arnd is here, probably good to catch up with him if you can.
+Summary
+ - API status summary (tiwai)
+  - Userspace release schedule
+  - Docs
+  - Dropping old drivers
+ - Treble overview (Eric)
+ - aplay rewrite (Sakamoto-san)
 
---h4zzgtiy4whqijvp
+ABI issues
+ - USB PCM handling (tiwai)
+ - mmap no IRQ (Eric)
+ - TLV API issues (Sakamoto-san)
+ - Obsolete dimen from struct snd_ctl_elem_info (Sakamoto-san)
+ - Y2038 (tiwai)
+
+Future stuff/internals
+ - Clock handling (Peter)
+  - CCF, multi-clock selection
+ - Digital domains (Charles/Lars/Morimoto-san)
+ - Large regmaps (Charles)
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2017-August/124623.html
+
+--ng5ugvikxp35qf75
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnt4lEACgkQJNaLcl1U
-h9CkCAf+IYrsbpb/cvVLhuPuECqyPdl+yfzSPfWT0ZFrQiR7Q/YorZecwzBMXRmW
-/gm0r6h6jkhx4VmvZ+T3qAwyG3JcmrVDQIIv6I242QK+sPo/Iw5BLIZ6156UBwwc
-7EmOrI7MaybJRFilUY5raZWSLKNXUtvwGZMPxtWvjFsGmx1DD4+qUoV8fl9svcW2
-DBMVF8p6bYlSE22pHjdnQ/6TTzrnCyajhO7wDYcLyBsjHdqZbRR4PxrtKW4Yj/7b
-tdOiFYWsSshh8K5IsextsjU2WCgcwrFl0O3EFX167i4TMv0qcoMhBxifL7JOz9fe
-ewk5qMO4odeCUTTuFZk4aIQME0Zt4w==
-=zCJt
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnt5BEACgkQJNaLcl1U
+h9BKJgf/QJKoeDy+KpPR5N1iX4AirvTx3fi24I8hdVtjqMgei7cY+4Sg+2p83qqw
+TIOcswFWsh+cfXV+3MmpQx9lOnhpUAkCudS/zii1Qd72wbWd/cYp9r1LFqkb/2cN
+eqivW1wDoTscpytt/62lanu/d9TZ/SIvJ8gmo3mv2wEeDPjRP3CK7DHT2urtmWND
+Yxuat/1LpUji3spRiUgUn5fI7+UNQrHl48mbEs/dL5KTldfzyqKXweomH88OR33D
+KiTy6Y0Z8pciQejO7DE5Hg5ECq6TMYvk8Bf86a4PHrd5cYyJmmnGD9f4g7gX1Tkf
+id39F4SNgRUQDOJLdLaXwDGHzkwHwA==
+=i+aD
 -----END PGP SIGNATURE-----
 
---h4zzgtiy4whqijvp--
+--ng5ugvikxp35qf75--
 
---===============7079184924224644790==
+--===============2817760932737269380==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7079184924224644790==--
+--===============2817760932737269380==--
