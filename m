@@ -1,152 +1,78 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI
-	receiver driver
-Date: Mon, 23 Oct 2017 10:05:59 -0700
-Message-ID: <CAJ+vNU2a8qtL4hbg5FQamF3WanQG1610QsJv=2cCxpD8OsiQ6w@mail.gmail.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 2/4] media: dt-bindings: Add bindings for TDA1997X
+Date: Mon, 23 Oct 2017 17:22:10 -0500
+Message-ID: <20171023222210.gwyxlbvvbcbzbqie@rob-hp-laptop>
 References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
- <1507783506-3884-4-git-send-email-tharvey@gateworks.com>
- <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
- <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com>
- <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl>
- <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
- <5c68003a-380d-d339-718f-47bce64cdae8@xs4all.nl>
+ <1507783506-3884-3-git-send-email-tharvey@gateworks.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C780266A0C
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 19:06:00 +0200 (CEST)
-Received: by mail-wm0-f43.google.com with SMTP id q124so10890193wmb.0
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 10:06:00 -0700 (PDT)
-In-Reply-To: <5c68003a-380d-d339-718f-47bce64cdae8@xs4all.nl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1507783506-3884-3-git-send-email-tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Cc: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 20, 2017 at 9:23 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+On Wed, Oct 11, 2017 at 09:45:04PM -0700, Tim Harvey wrote:
+> Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+> ---
+> v2:
+>  - add vendor prefix and remove _ from vidout-portcfg
+>  - remove _ from labels
+>  - remove max-pixel-rate property
+>  - describe and provide example for single output port
+>  - use new audio port bindings
+> 
+> ---
+>  .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
+>  1 file changed, 179 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/tda1997x.txt b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+> new file mode 100644
+> index 0000000..269d7f0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+> @@ -0,0 +1,179 @@
+> +Device-Tree bindings for the NXP TDA1997x HDMI receiver
+> +
+> +The TDA19971/73 are HDMI video receivers.
+> +
+> +The TDA19971 Video port output pins can be used as follows:
+> + - RGB 8bit per color (24 bits total): R[11:4] B[11:4] G[11:4]
+> + - YUV444 8bit per color (24 bits total): Y[11:4] Cr[11:4] Cb[11:4]
+> + - YUV422 semi-planar 8bit per component (16 bits total): Y[11:4] CbCr[11:4]
+> + - YUV422 semi-planar 10bit per component (20 bits total): Y[11:2] CbCr[11:2]
+> + - YUV422 semi-planar 12bit per component (24 bits total): - Y[11:0] CbCr[11:0]
+> + - YUV422 BT656 8bit per component (8 bits total): YCbCr[11:4] (2-cycles)
+> + - YUV422 BT656 10bit per component (10 bits total): YCbCr[11:2] (2-cycles)
+> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
+> +
+> +The TDA19973 Video port output pins can be used as follows:
+> + - RGB 12bit per color (36 bits total): R[11:0] B[11:0] G[11:0]
+> + - YUV444 12bit per color (36 bits total): Y[11:0] Cb[11:0] Cr[11:0]
+> + - YUV422 semi-planar 12bit per component (24 bits total): Y[11:0] CbCr[11:0]
+> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
+> +
+> +The Video port output pins are mapped via 4-bit 'pin groups' allowing
+> +for a variety fo connection possibilities including swapping pin order within
 
->>
->> I see the AVI infoframe has hdmi_quantization_range and
->> hdmi_ycc_quantization_range along with vid_code.
->>
->> I'm not at all clear what to do with this information. Is there
->> anything you see in the datasheet [1] that points to something I need
->> to be doing?
->
-> You can ignore hdmi_ycc_quantization_range, it is the hdmi_quantization_range
-> that you need to read out.
->
-> The TDA can receive the following formats:
->
-> RGB Full Range
-> RGB Limited Range
-> YUV Bt.601 (aka SMPTE 170M)
-> YUV Rec.709
->
-> The YUV formats are always limited range.
->
-> The TDA can transmit RGB and YUV to the SoC. You want RGB to be full range and
-> YUV to be limited range. YUV can be either 601 or 709.
->
-> So if the TDA transmits RGB then you need to support the following conversions:
->
-> RGB Full -> RGB Full
-> RGB Limited -> RGB Full
-> YUV 601 -> RGB Full
-> YUV 709 -> RGB Full
->
-> And if the TDA transmits YUV then you need these conversions:
->
-> RGB Full -> YUV601 or YUV709
-> RGB Limited -> YUV601 or YUV709
-> YUV601 -> YUV601
-> YUV709 -> YUV709
->
-> For the RGB to YUV conversion you have a choice of converting to YUV601 or 709.
-> I recommend to either always convert to YUV601 or to let it depend on the resolution
-> (SDTV YUV601, HDTV YUV709).
->
+s/fo /of /
 
-Ok - this is a good explanation that I should be able to follow. I
-will make sure to take into account hdmi_quantization_range when I
-setup the colorspace conversion matrix for v3.
+> +pin groups. The video_portcfg device-tree property consists of register mapping
+> +pairs which map a chip-specific VP output register to a 4-bit pin group. If
+> +the pin group needs to be bit-swapped you can use the *_S pin-group defines.
 
-> Ideally the application should specify what it wants, but we don't have any API
-> support for that.
->
-<snip>
->>
->> The TDA1997x provides only the vertical/horizontal periods and the
->> horizontal pulse
->> width (section 8.3.4 of datasheet [1]).
->>
->> Can you point me to a good primer on the relationship between these
->> values and the h/v back/front porch?
->
-> The blanking consists of a front porch width, a sync width and a back porch width.
-> 'Width' is normally measured in pixels. Vertical blanking is the same, except that
-> is measured in lines. All these values are defined in the standards that define these
-> timings (e.g. VESA DMT, CTA-861).
->
-> So for 1080p60 the active video is 1920x1080. After each line of 1920 pixels you
-> have 88 'pixels' of front porch, a sync pulse of 44 'pixels' and a back porch of
-> 148 pixels. Total frame width is 2200. Similar for the vertical.
->
-> A good HDMI receiver will give you the exact values for these blanking sizes.
-> Especially the sync width/height is important since that can provide additional
-> format information when receiving VESA formats.
->
-> It looks as if the TDA does not measure in exact pixels but in 27 MHz clock
-> periods. Which is an approximation only.
->
-> So it appears that what you do is the best you can do.
->
-> Although I wonder about the hsper: the datasheet suggests that this is the width,
-> not a period. What is the value you read out when you receive 1080p60? If that
-> would be an exact width, then that would help a lot since you can compare that
-> against bt->hsync.
+The rest of the binding looks fine, but I have some reservations about 
+this. I think this should be common probably. There's been a few 
+bindings for display recently that deal with the interface format. Maybe 
+some vendor property is needed here to map a standard interface format 
+back to pin configuration.
 
-Here's a list of source modes and the vertical/horizontal period and
-horizontal pulse width returned from the TDA:
-00: VESA640x480P_60HZ 450427 856 101
-01: VESA800x600P_60HZ 447620 711 85
-02: VESA1024x768P_60HZ 449952 557 55
-03: VESA1280x768P_60HZ 450021 568 11
-04: VESA1360x768P_60HZ 449867 564 34
-05: VESA1280x960P_60HZ 449981 448 55
-06: VESA1280x1024P_60HZ 449833 420 27
-07: VESA1400x1050P_60HZ 450372 416 7
-08: VESA1600x1200P_60HZ 449981 358 27
-09: VESA1920x1200P_60HZ 450355 363 4
-10: CEAVIC1440x480I_60HZ 450430 1714 123
-11: CEAVIC720x480P_60HZ 450430 856 61
-12: CEAVIC1280x720P_60HZ 449981 598 13
-13: CEAVIC1280x720P_59.94 450431 599 13
-14: CEAVIC1920x1080I_60HZ 449981 798 15
-15: CEAVIC1920x1080I_59.95HZ 450431 799 15
-16: CEAVIC1920x1080P_30HZ 899962 798 15
-17: CEAVIC1920x1080P_29.95HZ 900862 799 15
-18: CEAVIC1920x1080P_24HZ 1124953 998 15
-19: CEAVIC1920x1080P_23.976HZ 1126077 999 15
-20: CEAVIC1920x1080P_60HZ 449981 398 7
-21: CEAVIC1920x1080P_59.94HZ 450431 399 7
-22: CEAVIC1440x576I_50HZ 539976 1726 127
-23: CEAVIC720x576P_50HZ 539976 862 63
-24: CEAVIC1280x720P_50HZ 539977 718 13
-25: CEAVIC1920x1080I_50HZ 539977 958 15
-26: CEAVIC1920x1080P_25HZ 1079954 958 15
-27: CEAVIC1920x1080P_50HZ 539977 478 7
-
-so 1080p60 gives a hswidth=7
-
-Tim
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
