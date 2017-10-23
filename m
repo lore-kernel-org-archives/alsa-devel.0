@@ -1,47 +1,72 @@
-From: Alan Cox <alan@linux.intel.com>
-Subject: Re: [PATCH 07/14] regmap: Add SoundWire bus support
-Date: Mon, 23 Oct 2017 12:56:27 +0100
-Message-ID: <1508759787.29460.6.camel@linux.intel.com>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
-         <1508382211-3154-8-git-send-email-vinod.koul@intel.com>
-         <20171021093426.vzhv3ponaxhi4yw3@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Prague Audio miniconference - topics for
+	discussion?
+Date: Mon, 23 Oct 2017 14:36:37 +0200
+Message-ID: <20171023123637.fv4irhokmtog7bvm@sirena.org.uk>
+References: <20170920174505.64nieg6plut36cl5@sirena.co.uk>
+ <s5hvajs5tbw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171021093426.vzhv3ponaxhi4yw3@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Content-Type: multipart/mixed; boundary="===============7079184924224644790=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5AB3266A73
+ for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 14:38:07 +0200 (CEST)
+In-Reply-To: <s5hvajs5tbw.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2017-10-21 at 10:34 +0100, Mark Brown wrote:
-> On Thu, Oct 19, 2017 at 08:33:23AM +0530, Vinod Koul wrote:
-> 
-> > + *  BSD LICENSE
-> > + *
-> > + *  Copyright(c) 2015-17 Intel Corporation.
-> > + *
-> > + *  Redistribution and use in source and binary forms, with or
-> > without
-> > + *  modification, are permitted provided that the following
-> > conditions
-> > + *  are met:
-> 
-> Really unhappy with the dual licensing for regmap code, this is
-> interface code for some GPL only kernel code and...
 
-if anyone uses it with GPL code then it ends up GPL so in the Linux
-kernel context it's always going to be GPL.
-
-> > +EXPORT_SYMBOL(__regmap_init_sdw);
-> 
-> ...this is just an obvious attempt to allow non-GPL code to directly
-> use
-> GPL code.
+--===============7079184924224644790==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h4zzgtiy4whqijvp"
+Content-Disposition: inline
 
 
-There's nothing in the GPL about EXPORT_SYMBOL. If its built GPL
-dependent then it depends upon GPL code so is GPL.
+--h4zzgtiy4whqijvp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Alan
+On Fri, Oct 06, 2017 at 02:55:31PM +0200, Takashi Iwai wrote:
+
+> - Year 2038 problem;
+>   PCM API changes RFC were posted recently on alsa-devel, and we have
+>   timespec in other APIs (rawmidi and timer), too.
+
+Arnd is here, probably good to catch up with him if you can.
+
+--h4zzgtiy4whqijvp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnt4lEACgkQJNaLcl1U
+h9CkCAf+IYrsbpb/cvVLhuPuECqyPdl+yfzSPfWT0ZFrQiR7Q/YorZecwzBMXRmW
+/gm0r6h6jkhx4VmvZ+T3qAwyG3JcmrVDQIIv6I242QK+sPo/Iw5BLIZ6156UBwwc
+7EmOrI7MaybJRFilUY5raZWSLKNXUtvwGZMPxtWvjFsGmx1DD4+qUoV8fl9svcW2
+DBMVF8p6bYlSE22pHjdnQ/6TTzrnCyajhO7wDYcLyBsjHdqZbRR4PxrtKW4Yj/7b
+tdOiFYWsSshh8K5IsextsjU2WCgcwrFl0O3EFX167i4TMv0qcoMhBxifL7JOz9fe
+ewk5qMO4odeCUTTuFZk4aIQME0Zt4w==
+=zCJt
+-----END PGP SIGNATURE-----
+
+--h4zzgtiy4whqijvp--
+
+--===============7079184924224644790==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7079184924224644790==--
