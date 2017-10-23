@@ -1,85 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Add depends on X86" to the asoc
-	tree
-Date: Mon, 23 Oct 2017 10:43:49 +0100 (BST)
-Message-ID: <20171023094349.E0149440058@finisterre.ee.mobilebroadband>
-References: <1508732847-6679-1-git-send-email-vinod.koul@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH 01/14] Documentation: Add SoundWire summary
+Date: Mon, 23 Oct 2017 16:48:13 +0530
+Message-ID: <20171023111813.GF936@localhost>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-2-git-send-email-vinod.koul@intel.com>
+ <20171021085744.hpuvp34e4hckoisl@sirena.org.uk>
+ <20171021112840.GD30097@localhost>
+ <20171023075050.tly3jx436vs3xuof@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 60671267235
- for <alsa-devel@alsa-project.org>; Mon, 23 Oct 2017 11:44:00 +0200 (CEST)
-In-Reply-To: <1508732847-6679-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org, kbuild test robot <fengguang.wu@intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171023075050.tly3jx436vs3xuof@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Oct 23, 2017 at 08:50:50AM +0100, Mark Brown wrote:
+> On Sat, Oct 21, 2017 at 04:58:40PM +0530, Vinod Koul wrote:
+> > On Sat, Oct 21, 2017 at 09:57:44AM +0100, Mark Brown wrote:
+> 
+> > > There's lots of perfectly normal nouns in this document like Slave here
+> > > which are randomly capitalized.  Is there some great reason for this?
+> > > It makes the document pretty distracting to read.
+> 
+> > Slave, SoundWire etc are MIPI definitions hence capitalized.
+> 
+> Slave?  Really?
+> 
+> > > > +provides capabilities information. DT support is not implemented at this
+> > > > +time but should be trivial to add since capabilities are enabled with the
+> > > > +device_property_ API.
+> 
+> > > Since we're making this up from whole cloth rather than following an
+> > > existing standard let's get a DT binding document together and review
+> > > the properties that are getting defined.
+> 
+> > I don't have a DT to test, but looking at Slimbus code I guess assumptions
+> > are fair and we seem to have similar concepts and implementation.
+> 
+> That's fine, we can still review binding documents.
 
-   ASoC: Intel: Add depends on X86
+I am not really sure about that part, let me see if I can come up or worst
+case not talk about DT at all.
 
-has been applied to the asoc tree at
+> > > > +The MIPI specification requires each Slave interface to expose a unique
+> > > > +48-bit identifier, stored in 6 read only dev_id registers. This dev_id
+> > > > +identifier contains vendor and part information, as well as a field enabling
+> > > > +to differentiate between identical components. An additional class field is
+> > > > +currently unused. Slave driver is written for the specific 48-bit
+> > > > +identifier, Bus enumerates the Slave device based on the 48-bit identifier.
+> 
+> > > So this says that the instance identifer is part of the device
+> > > identifier but the driver should bind to the whole device identifer?
+> > > I'd expect the driver to bind to everything except the instance
+> > > identifer.
+> 
+> > Other parts are still TBD and not really used, like Device Class, Spec
+> > version. We are using only mfg id and part id for binding.
+> 
+> That's not what the document claims.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Sorry about that fixed now. Thanks for pointing
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 468663a36a3e67bed1c32f46b2d1d0a69811da99 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 23 Oct 2017 09:57:27 +0530
-Subject: [PATCH] ASoC: Intel: Add depends on X86
-
-Make all Intel audio drivers dependent on X86 to avoid compilation
-errors for s390 and xtensa architectures.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 1dcc9e456610..a59dda39007e 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -31,6 +31,7 @@ config SND_SOC_ACPI_INTEL_MATCH
- 
- config SND_SOC_INTEL_SST_TOPLEVEL
- 	tristate "Intel ASoC SST drivers"
-+	depends on X86
- 	select SND_SOC_INTEL_MACH
- 	select SND_SOC_INTEL_COMMON
- 
 -- 
-2.14.1
+~Vinod
