@@ -1,21 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Prague Audio miniconference - draft schedule
-Date: Tue, 24 Oct 2017 12:29:50 +0200
-Message-ID: <20171024102950.xr4hhw3zvknwupnx@sirena.org.uk>
-References: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
- <c4e8bec2-b7c1-ff84-1a1a-a54e160bd1f7@sakamocchi.jp>
- <20171024082318.nvcqdyps64t7e2pj@sirena.org.uk>
- <a0d452d8-9bbe-0e2d-5ace-abfb053afd1a@sakamocchi.jp>
- <20171024102247.kfmqpzhytkmgpgaw@sirena.org.uk>
- <s5hh8uorgfu.wl-tiwai@suse.de>
+From: =?UTF-8?B?QWxiaW4gU3RpZ8O2?= <albin.stigo@gmail.com>
+Subject: New to this list. Proposed patch to soc-utils.c
+Date: Tue, 24 Oct 2017 12:42:25 +0200
+Message-ID: <CAMc++1XF4TM42+xxTSTOThGt8SWyfY_rjibSjPrHH+ZcKehLCg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5792633140657892313=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 43104266A73
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 12:29:52 +0200 (CEST)
-In-Reply-To: <s5hh8uorgfu.wl-tiwai@suse.de>
+Received: from mail-ua0-f176.google.com (mail-ua0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id C1D83266DD4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 12:42:27 +0200 (CEST)
+Received: by mail-ua0-f176.google.com with SMTP id w45so15072436uac.3
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 03:42:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,60 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Eric Laurent <elaurent@google.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---===============5792633140657892313==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gkeg4cs46zul3o4v"
-Content-Disposition: inline
+I'm new to this list so please excuse my ignorance. I'm an
+anesthesiologist by profession so I might be a bit out of my depth
+here...
 
+I was doing some experimentation with custom i2s codecs (FPGAs) using
+the snd-soc-dummy codec (defined in soc-utils.c). I found this codec
+to be needlessly restrictive with sample rates allowed
+(SNDRV_PCM_RATE_8000_192000). I needed to use more "exotic" sample
+rates so I came up with a patch.
 
---gkeg4cs46zul3o4v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I purpose using SNDRV_PCM_RATE_KNOT and setting some limits:
+.rate_min = 8000,
+.rate_max = 384000,
 
-On Tue, Oct 24, 2017 at 12:25:09PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+It's my understanding that SNDRV_PCM_RATE_CONTINIOUS is used for
+"known" rates and SNDRV_PCM_RATE_KNOT for more or less arbitrary
+rates?
 
-> > OK...  so does anyone actually want to talk about this then?
-
-> Hm, I thought Charles proposed that?
-
-I'd included it in the initial e-mail I sent out.  Charles has posted a
-patch in response to the big mail from Sakamoto-san but then there was
-no real discussion after that.
-
-> I'd like to see a consensus for the direction we'll be heading, at
-> least.
-
-Right, I thought that was where we were going but I'm not actually
-seeing much discussion that needs concluding.
-
---gkeg4cs46zul3o4v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnvFhoACgkQJNaLcl1U
-h9DUkAf/ZgBT1lESsOxma92dCdQiJ+sr9kkSLqa9gqaJgzrcWhq53MYApj4ZmyVy
-MR0qOxI/LI6x4xL1I7y4heRoKIPOk6EB/SwUbYMsU6P3ZccW80is1FhNN4kC1NN+
-5Nxvc9B5XuIsNB0MfNHGY57myAX1WiGWpbrJtdgECsLzSNIS3w6tZEqz0FvXpso3
-UwO53AEggsl88AbUXC5DXw8XLED+yJyWzreiUFA88tkcUPqKAFOcBevjxus5JhCT
-C+sTfGMGSHro6S1Xbj6jz+yzZ0g9nB1hMNxtwUTkPOlQy4ygU8llH25dVobcO386
-d8mwlw2vO1l2KwIBMQjs+D053+oEzg==
-=lP/t
------END PGP SIGNATURE-----
-
---gkeg4cs46zul3o4v--
-
---===============5792633140657892313==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I'm willing to submit my patch but might need some mentoring in the
+process. I don't think this simple patch could break anything..?
 
 
---===============5792633140657892313==--
+--Albin
