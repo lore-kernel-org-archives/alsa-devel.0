@@ -1,353 +1,45 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH] conf/ucm: rt5651: Add UCM config for
-	bytcr-rt5651
-Date: Tue, 24 Oct 2017 12:27:12 +0100
-Message-ID: <20171024112712.8763-1-carlo@caione.org>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH 5/6] ASoC: Intel: Skylake: Add ssp clock driver
+Date: Tue, 24 Oct 2017 07:15:17 -0700
+Message-ID: <20171024141517.GF15990@codeaurora.org>
+References: <1504794565-19168-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20170907164642.GX3053@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id E45DE266DD4
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 13:27:23 +0200 (CEST)
-Received: by mail-pg0-f66.google.com with SMTP id y5so6431256pgq.7
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 04:27:23 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-Cc: Carlo Caione <carlo@endlessm.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170907164642.GX3053@localhost>
+Sender: linux-clk-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, broonie@kernel.org, mturquette@baylibre.com, alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, linux-clk@vger.kernel.org, harshapriya.n@intel.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Carlo Caione <carlo@endlessm.com>
+On 09/07, Vinod Koul wrote:
+> On Thu, Sep 07, 2017 at 07:59:24PM +0530, Subhransu S. Prusty wrote:
+> > From: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
+> > 
+> > For certain platforms it is required to start the clocks (mclk/sclk/fs)
+> > before the stream start. Example: for few chrome systems, codec needs the
+> > mclk/sclk to be enabled early for a successful clock synchronization and
+> > for few IVI platforms, clock need to be enabled at boot and should be ON
+> > always.
+> > 
+> > This patch creates virtual clock driver, which allows the machine driver to
+> > use the clock interface to send IPCs to DSP to enable/disable the clocks.
+> 
+> Mark, Michael, Stephen,
+> 
+> So this one adds a 'virtual' clock driver for audio clocks (mclk, bclk...)
+> and we have DSP configuring them.  The SW (driver) sends messages to DSP for
+> controlling these clocks, that is why we decided to keep this in ASoC, do
+> let us know if that is okay.
+> 
 
-Add a UCM configuration for the rt5651 codec on Intel's Cherry-Trail
-platform. Adapted from [0].
+I know there's a v2 and I'm replying here but this is fine from
+clk perspective. I tend to think of it as a "remote" driver
+instead where the clk control is done by a non-linux processor or
+"remote" processor, in this case the DSP. I'll ack v2.
 
-[0] https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
-
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
----
- configure.ac                                |   1 +
- src/conf/ucm/Makefile.am                    |   2 +-
- src/conf/ucm/bytcr-rt5651/HiFi.conf         | 126 +++++++++++++++++++++++++
- src/conf/ucm/bytcr-rt5651/Makefile.am       |   4 +
- src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 138 ++++++++++++++++++++++++++++
- 5 files changed, 270 insertions(+), 1 deletion(-)
- create mode 100644 src/conf/ucm/bytcr-rt5651/HiFi.conf
- create mode 100644 src/conf/ucm/bytcr-rt5651/Makefile.am
- create mode 100644 src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-
-diff --git a/configure.ac b/configure.ac
-index fbcfa829..c16f2461 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -703,6 +703,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/VEYRON-I2S/Makefile \
- 	  src/conf/ucm/chtrt5645/Makefile \
- 	  src/conf/ucm/DB410c/Makefile \
-+	  src/conf/ucm/bytcr-rt5651/Makefile \
- 	  src/conf/topology/Makefile \
- 	  src/conf/topology/broadwell/Makefile \
- 	  modules/Makefile modules/mixer/Makefile modules/mixer/simple/Makefile \
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index ea9b3850..2bd4ebe7 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -1 +1 @@
--SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 skylake-rt286 VEYRON-I2S chtrt5645 DB410c broxton-rt298
-+SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 skylake-rt286 VEYRON-I2S chtrt5645 DB410c broxton-rt298 bytcr-rt5651
-diff --git a/src/conf/ucm/bytcr-rt5651/HiFi.conf b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-new file mode 100644
-index 00000000..b9da30f7
---- /dev/null
-+++ b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-@@ -0,0 +1,126 @@
-+# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
-+
-+SectionVerb {
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo HiFi enable sequence"
-+	]
-+
-+	DisableSequence [
-+		exec "echo HiFi disable sequence"
-+	]
-+
-+	Value {
-+		PlaybackPCM "hw:bytcrrt5651"
-+		CapturePCM "hw:bytcrrt5651"
-+	}
-+}
-+
-+SectionDevice."Headphones" {
-+	Comment "Headphones playback"
-+
-+	ConflictingDevice [
-+		"Speaker"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Headphones playback enable sequence"
-+		cset "name='Headphone Switch' on"
-+		cset "name='HPO L Playback Switch' on"
-+		cset "name='HPO R Playback Switch' on"
-+		cset "name='HP Playback Volume' 100"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Headphones playback disable sequence"
-+		cset "name='Headphone Switch' off"
-+		cset "name='HPO L Playback Switch' off"
-+		cset "name='HPO R Playback Switch' off"
-+		cset "name='HP Playback Volume' 0"
-+	]
-+
-+	Value {
-+		PlaybackChannels "2"
-+		JackControl "Headphone Jack"
-+	}
-+}
-+
-+SectionDevice."Speaker" {
-+	Comment "Speaker playback"
-+
-+	ConflictingDevice [
-+		"Headphones"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Speaker enable sequence"
-+		cset "name='Speaker Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Speaker disable sequence"
-+		cset "name='Speaker Switch' off"
-+	]
-+
-+	Value {
-+		PlaybackChannels "2"
-+	}
-+}
-+
-+SectionDevice."Handset" {
-+	Comment "Handset Microphone"
-+
-+	ConflictingDevice [
-+		"Mainmic"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Handset Microphone enable sequence"
-+		cset "name='RECMIXL BST1 Switch' on"
-+		cset "name='RECMIXR BST1 Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Handset Microphone disable sequence"
-+		cset "name='RECMIXL BST1 Switch' off"
-+		cset "name='RECMIXR BST1 Switch' off"
-+	]
-+
-+	Value {
-+		CaptureChannels "2"
-+		JackControl "Headset Mic Jack"
-+	}
-+}
-+
-+
-+SectionDevice."Mainmic" {
-+	Comment "Main Microphone"
-+
-+	ConflictingDevice [
-+		"Handset"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Main Microphone enable sequence"
-+		cset "name='RECMIXL BST2 Switch' on"
-+		cset "name='RECMIXR BST2 Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytcrrt5651"
-+		exec "echo Main Microphone disable sequence"
-+		cset "name='RECMIXL BST2 Switch' off"
-+		cset "name='RECMIXR BST2 Switch' off"
-+	]
-+
-+	Value {
-+		CaptureChannels "2"
-+	}
-+}
-diff --git a/src/conf/ucm/bytcr-rt5651/Makefile.am b/src/conf/ucm/bytcr-rt5651/Makefile.am
-new file mode 100644
-index 00000000..95aec978
---- /dev/null
-+++ b/src/conf/ucm/bytcr-rt5651/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651
-+ucm_DATA = bytcr-rt5651.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-new file mode 100644
-index 00000000..2dcc72cc
---- /dev/null
-+++ b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-@@ -0,0 +1,138 @@
-+# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
-+
-+SectionUseCase."HiFi" {
-+	File "HiFi"
-+	Comment "Play HiFi quality Music"
-+}
-+
-+SectionDefaults [
-+	cdev "hw:bytcrrt5651"
-+
-+	# media mixer settings
-+	#   compress
-+	cset "name='media0_in Gain 0 Switch' on"
-+	cset "name='media0_in Gain 0 Volume' 0"
-+	#   normal
-+	cset "name='media1_in Gain 0 Switch' on"
-+	cset "name='media1_in Gain 0 Volume' 0"
-+	#   swm loopback
-+	cset "name='media2_in Gain 0 Switch' off"
-+	cset "name='media2_in Gain 0 Volume' 0%"
-+	#   deep buffer
-+	cset "name='media3_in Gain 0 Switch' on"
-+	cset "name='media3_in Gain 0 Volume' 0"
-+	cset "name='media0_out mix 0 media0_in Switch' on"
-+	cset "name='media0_out mix 0 media1_in Switch' on"
-+	cset "name='media0_out mix 0 media2_in Switch' off"
-+	cset "name='media0_out mix 0 media3_in Switch' on"
-+	cset "name='media1_out mix 0 media0_in Switch' off"
-+	cset "name='media1_out mix 0 media1_in Switch' off"
-+	cset "name='media1_out mix 0 media2_in Switch' off"
-+	cset "name='media1_out mix 0 media3_in Switch' off"
-+	cset "name='pcm0_in Gain 0 Switch' on"
-+	cset "name='pcm0_in Gain 0 Volume' 0"
-+	cset "name='pcm1_in Gain 0 Switch' off"
-+	cset "name='pcm1_in Gain 0 Volume' 0%"
-+
-+	# codec0_out settings
-+	cset "name='codec_out0 mix 0 codec_in0 Switch' off"
-+	cset "name='codec_out0 mix 0 codec_in1 Switch' off"
-+	cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
-+	cset "name='codec_out0 mix 0 media_loop2_in Switch' off"
-+	cset "name='codec_out0 mix 0 pcm0_in Switch' on"
-+	cset "name='codec_out0 mix 0 pcm1_in Switch' off"
-+	cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
-+	cset "name='codec_out0 Gain 0 Switch' on"
-+	cset "name='codec_out0 Gain 0 Volume' 0"
-+
-+	# input settings
-+	# pcm1_out settings
-+	cset "name='codec_in0 Gain 0 Switch' on"
-+	cset "name='codec_in0 Gain 0 Volume' 0"
-+	cset "name='pcm1_out mix 0 codec_in0 Switch' on"
-+	cset "name='pcm1_out mix 0 codec_in1 Switch' off"
-+	cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
-+	cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
-+	cset "name='pcm1_out mix 0 pcm0_in Switch' off"
-+	cset "name='pcm1_out mix 0 pcm1_in Switch' off"
-+	cset "name='pcm1_out mix 0 sprot_loop_in Switch' off"
-+	cset "name='pcm1_out Gain 0 Switch' on"
-+	cset "name='pcm1_out Gain 0 Volume' 0"
-+
-+	# disable codec_out1
-+	cset "name='codec_out1 mix 0 codec_in0 Switch' off"
-+	cset "name='codec_out1 mix 0 codec_in1 Switch' off"
-+	cset "name='codec_out1 mix 0 media_loop1_in Switch' off"
-+	cset "name='codec_out1 mix 0 media_loop2_in Switch' off"
-+	cset "name='codec_out1 mix 0 pcm0_in Switch' off"
-+	cset "name='codec_out1 mix 0 pcm1_in Switch' off"
-+	cset "name='codec_out1 mix 0 sprot_loop_in Switch' off"
-+	cset "name='codec_out1 Gain 0 Switch' off"
-+	cset "name='codec_out1 Gain 0 Volume' 0%"
-+
-+	# disable codec_in1
-+	cset "name='codec_in1 Gain 0 Switch' off"
-+	cset "name='codec_in1 Gain 0 Volume' 0%"
-+
-+	# disable all loops
-+	cset "name='media_loop1_out mix 0 codec_in0 Switch' off"
-+	cset "name='media_loop1_out mix 0 codec_in1 Switch' off"
-+	cset "name='media_loop1_out mix 0 media_loop1_in Switch' off"
-+	cset "name='media_loop1_out mix 0 media_loop2_in Switch' off"
-+	cset "name='media_loop1_out mix 0 pcm0_in Switch' off"
-+	cset "name='media_loop1_out mix 0 pcm1_in Switch' off"
-+	cset "name='media_loop1_out mix 0 sprot_loop_in Switch' off"
-+	cset "name='media_loop2_out mix 0 codec_in0 Switch' off"
-+	cset "name='media_loop2_out mix 0 codec_in1 Switch' off"
-+	cset "name='media_loop2_out mix 0 media_loop1_in Switch' off"
-+	cset "name='media_loop2_out mix 0 media_loop2_in Switch' off"
-+	cset "name='media_loop2_out mix 0 pcm0_in Switch' off"
-+	cset "name='media_loop2_out mix 0 pcm1_in Switch' off"
-+	cset "name='media_loop2_out mix 0 sprot_loop_in Switch' off"
-+	cset "name='sprot_loop_out mix 0 codec_in0 Switch' off"
-+	cset "name='sprot_loop_out mix 0 codec_in1 Switch' off"
-+	cset "name='sprot_loop_out mix 0 media_loop1_in Switch' off"
-+	cset "name='sprot_loop_out mix 0 media_loop2_in Switch' off"
-+	cset "name='sprot_loop_out mix 0 pcm0_in Switch' off"
-+	cset "name='sprot_loop_out mix 0 pcm1_in Switch' off"
-+	cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
-+
-+	# default state
-+	cset "name='ADC Capture Volume' 126"
-+	cset "name='HP Playback Volume' 29"
-+	cset "name='HPO L Playback Switch' on"
-+	cset "name='HPO MIX DAC1 Switch' on"
-+	cset "name='HPO MIX HPVOL Switch' on"
-+	cset "name='HPO R Playback Switch' on"
-+	cset "name='HPOVOL L Switch' on"
-+	cset "name='HPOVOL R Switch' on"
-+	cset "name='IF1 ASRC Switch' on"
-+	cset "name='IN Capture Volume' 27"
-+	cset "name='IN2 Boost' 1"
-+	cset "name='IN1 Boost' 1"
-+	cset "name='LOUT L Playback Switch' on"
-+	cset "name='LOUT MIX DAC L1 Switch' on"
-+	cset "name='LOUT MIX DAC R1 Switch' on"
-+	cset "name='LOUT R Playback Switch' on"
-+	cset "name='OUT Playback Volume' 33"
-+	cset "name='Stereo DAC MIXL DAC L1 Switch' on"
-+	cset "name='Stereo DAC MIXR DAC R1 Switch' on"
-+	cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
-+	cset "name='Stereo1 ADC MIXR ADC2 Switch' on"
-+	cset "name='Stereo2 ADC MIXL ADC1 Switch' on"
-+	cset "name='Stereo2 ADC MIXL ADC2 Switch' on"
-+	cset "name='Stereo2 ADC MIXR ADC1 Switch' on"
-+	cset "name='Stereo2 ADC MIXR ADC2 Switch' on"
-+
-+	# input
-+	cset "name='Stereo1 ADC L1 Mux' ADC"
-+	cset "name='Stereo1 ADC R1 Mux' ADC"
-+	cset "name='Stereo1 ADC MIXL ADC1 Switch' on"
-+	cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
-+	cset "name='RECMIXL BST1 Switch' off"
-+	cset "name='RECMIXR BST1 Switch' off"
-+	cset "name='RECMIXL BST3 Switch' off"
-+	cset "name='RECMIXR BST3 Switch' off"
-+	cset "name='RECMIXL BST2 Switch' off"
-+	cset "name='RECMIXR BST2 Switch' off"
-+]
 -- 
-2.14.2
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
