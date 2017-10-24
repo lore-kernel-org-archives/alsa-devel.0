@@ -1,78 +1,36 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 2/4] media: dt-bindings: Add bindings for TDA1997X
-Date: Mon, 23 Oct 2017 17:22:10 -0500
-Message-ID: <20171023222210.gwyxlbvvbcbzbqie@rob-hp-laptop>
-References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
- <1507783506-3884-3-git-send-email-tharvey@gateworks.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Prague Audio miniconference - draft schedule
+Date: Tue, 24 Oct 2017 10:41:40 +0900
+Message-ID: <c4e8bec2-b7c1-ff84-1a1a-a54e160bd1f7@sakamocchi.jp>
+References: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1507783506-3884-3-git-send-email-tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Cc: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id D0702267258
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 03:41:43 +0200 (CEST)
+In-Reply-To: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Eric Laurent <elaurent@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 11, 2017 at 09:45:04PM -0700, Tim Harvey wrote:
-> Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-> ---
-> v2:
->  - add vendor prefix and remove _ from vidout-portcfg
->  - remove _ from labels
->  - remove max-pixel-rate property
->  - describe and provide example for single output port
->  - use new audio port bindings
-> 
-> ---
->  .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
->  1 file changed, 179 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/tda1997x.txt b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-> new file mode 100644
-> index 0000000..269d7f0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-> @@ -0,0 +1,179 @@
-> +Device-Tree bindings for the NXP TDA1997x HDMI receiver
-> +
-> +The TDA19971/73 are HDMI video receivers.
-> +
-> +The TDA19971 Video port output pins can be used as follows:
-> + - RGB 8bit per color (24 bits total): R[11:4] B[11:4] G[11:4]
-> + - YUV444 8bit per color (24 bits total): Y[11:4] Cr[11:4] Cb[11:4]
-> + - YUV422 semi-planar 8bit per component (16 bits total): Y[11:4] CbCr[11:4]
-> + - YUV422 semi-planar 10bit per component (20 bits total): Y[11:2] CbCr[11:2]
-> + - YUV422 semi-planar 12bit per component (24 bits total): - Y[11:0] CbCr[11:0]
-> + - YUV422 BT656 8bit per component (8 bits total): YCbCr[11:4] (2-cycles)
-> + - YUV422 BT656 10bit per component (10 bits total): YCbCr[11:2] (2-cycles)
-> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
-> +
-> +The TDA19973 Video port output pins can be used as follows:
-> + - RGB 12bit per color (36 bits total): R[11:0] B[11:0] G[11:0]
-> + - YUV444 12bit per color (36 bits total): Y[11:0] Cb[11:0] Cr[11:0]
-> + - YUV422 semi-planar 12bit per component (24 bits total): Y[11:0] CbCr[11:0]
-> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
-> +
-> +The Video port output pins are mapped via 4-bit 'pin groups' allowing
-> +for a variety fo connection possibilities including swapping pin order within
+On Oct 23 2017 21:44, Mark Brown wrote:
+> ABI issues
+>   - TLV API issues (Sakamoto-san)
 
-s/fo /of /
+It's outside of my proposed topics[1]. I think there's an appropriate 
+way when proposing topics or requesting things to the others, Mark.
 
-> +pin groups. The video_portcfg device-tree property consists of register mapping
-> +pairs which map a chip-specific VP output register to a 4-bit pin group. If
-> +the pin group needs to be bit-swapped you can use the *_S pin-group defines.
-
-The rest of the binding looks fine, but I have some reservations about 
-this. I think this should be common probably. There's been a few 
-bindings for display recently that deal with the interface format. Maybe 
-some vendor property is needed here to map a standard interface format 
-back to pin configuration.
-
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-October/126033.html
