@@ -1,17 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Prague Audio miniconference - draft schedule
-Date: Tue, 24 Oct 2017 10:41:40 +0900
-Message-ID: <c4e8bec2-b7c1-ff84-1a1a-a54e160bd1f7@sakamocchi.jp>
-References: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Subject: [PATCH v3] ALSA: hda: Abort capability probe on
+	invalid capability
+Date: Tue, 24 Oct 2017 18:26:47 +0530
+Message-ID: <1508849807-2250-1-git-send-email-rakesh.a.ughreja@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id D0702267258
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 03:41:43 +0200 (CEST)
-In-Reply-To: <20171023124406.khqpu4luxs2b72l2@sirena.org.uk>
-Content-Language: en-US
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6833E267258
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 07:10:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Eric Laurent <elaurent@google.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, vinod.koul@intel.com, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 23 2017 21:44, Mark Brown wrote:
-> ABI issues
->   - TLV API issues (Sakamoto-san)
+On reading wrong capability pointer values driver may crash, so whenever
+driver discovers unknown HDA capability, log it as error and stop traversing
+the link list further.
 
-It's outside of my proposed topics[1]. I think there's an appropriate 
-way when proposing topics or requesting things to the others, Mark.
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+---
+ sound/hda/hdac_controller.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-[1] 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-October/126033.html
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 978dc18..8f7d0d9 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -314,7 +314,8 @@ int snd_hdac_bus_parse_capabilities(struct hdac_bus *bus)
+ 			break;
+ 
+ 		default:
+-			dev_dbg(bus->dev, "Unknown capability %d\n", cur_cap);
++			dev_err(bus->dev, "Unknown capability %d\n", cur_cap);
++			cur_cap = 0;
+ 			break;
+ 		}
+ 
+-- 
+2.7.4
