@@ -1,17 +1,17 @@
 From: =?UTF-8?B?QWxiaW4gU3RpZ8O2?= <albin.stigo@gmail.com>
-Subject: New to this list. Proposed patch to soc-utils.c
-Date: Tue, 24 Oct 2017 12:42:25 +0200
-Message-ID: <CAMc++1XF4TM42+xxTSTOThGt8SWyfY_rjibSjPrHH+ZcKehLCg@mail.gmail.com>
+Subject: ASoC: writing basic custom codecs?
+Date: Tue, 24 Oct 2017 12:55:51 +0200
+Message-ID: <CAMc++1U5_dOs23h-dgtBHa==1b=AVUoh2DhXLtOFRN9GE-1fkw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f176.google.com (mail-ua0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id C1D83266DD4
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 12:42:27 +0200 (CEST)
-Received: by mail-ua0-f176.google.com with SMTP id w45so15072436uac.3
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 03:42:27 -0700 (PDT)
+Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
+ [209.85.217.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ED61266DD4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 12:55:52 +0200 (CEST)
+Received: by mail-ua0-f177.google.com with SMTP id s41so15095455uab.10
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 03:55:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,26 +26,21 @@ List-Id: alsa-devel@alsa-project.org
 
 Hello,
 
-I'm new to this list so please excuse my ignorance. I'm an
-anesthesiologist by profession so I might be a bit out of my depth
-here...
+I have implemented a custom i2s codec on an FPGA. Because of how the
+FPGA is clocked I'm getting samples at 39ksps, which to my surprise
+worked great after some simple kernel patching (the codec is bit &
+frame master).
 
-I was doing some experimentation with custom i2s codecs (FPGAs) using
-the snd-soc-dummy codec (defined in soc-utils.c). I found this codec
-to be needlessly restrictive with sample rates allowed
-(SNDRV_PCM_RATE_8000_192000). I needed to use more "exotic" sample
-rates so I came up with a patch.
+For experimentation I used the snd-soc-dummy coded defined in
+soc-utils.c. Now I'm trying to write a very simple codec to "lock" the
+rate to 39000:
 
-I purpose using SNDRV_PCM_RATE_KNOT and setting some limits:
-.rate_min = 8000,
-.rate_max = 384000,
+https://github.com/ast/vfzfpga-codec
 
-It's my understanding that SNDRV_PCM_RATE_CONTINIOUS is used for
-"known" rates and SNDRV_PCM_RATE_KNOT for more or less arbitrary
-rates?
-
-I'm willing to submit my patch but might need some mentoring in the
-process. I don't think this simple patch could break anything..?
+The driver loads just fine but I just get "not registered" when I try
+to use the codec. I feel I'm missing something very obvious here. I've
+been through the documentation and tried to read the sources but I'm a
+bit stuck.. What am I missing?
 
 
 --Albin
