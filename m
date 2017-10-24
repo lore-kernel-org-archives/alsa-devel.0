@@ -1,20 +1,20 @@
 From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] sound: oss: waveartist: Convert timers to
-	use timer_setup()
-Date: Tue, 24 Oct 2017 13:07:34 -0700
-Message-ID: <CAGXu5jLBDjeNs=yP76yhLvZXd2v3hH66K1QuMp5+LkCrQ+pW8w@mail.gmail.com>
-References: <20171024153521.GA112921@beast> <s5hshe8pcub.wl-tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: wavefront: Convert timers to use
+	timer_setup()
+Date: Tue, 24 Oct 2017 13:08:54 -0700
+Message-ID: <CAGXu5jKf6s6OemAbvDXHFi6dRTM+UDjPCothMXjcE+qkOQxfmw@mail.gmail.com>
+References: <20171024153509.GA112907@beast> <s5hr2tspcjs.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f193.google.com (mail-io0-f193.google.com
- [209.85.223.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 201CE266DB1
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 22:07:37 +0200 (CEST)
-Received: by mail-io0-f193.google.com with SMTP id 97so25204274iok.7
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 13:07:37 -0700 (PDT)
-In-Reply-To: <s5hshe8pcub.wl-tiwai@suse.de>
+Received: from mail-io0-f196.google.com (mail-io0-f196.google.com
+ [209.85.223.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CF2D266DB1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 22:08:56 +0200 (CEST)
+Received: by mail-io0-f196.google.com with SMTP id p186so25182277ioe.12
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 13:08:56 -0700 (PDT)
+In-Reply-To: <s5hr2tspcjs.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,11 +25,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: David Howells <dhowells@redhat.com>, moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 24, 2017 at 12:25 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 24 Oct 2017 17:35:21 +0200,
+On Tue, Oct 24, 2017 at 12:32 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 24 Oct 2017 17:35:09 +0200,
 > Kees Cook wrote:
 >>
 >> In preparation for unconditionally passing the struct timer_list pointer to
@@ -38,17 +38,19 @@ On Tue, Oct 24, 2017 at 12:25 PM, Takashi Iwai <tiwai@suse.de> wrote:
 >>
 >> Cc: Jaroslav Kysela <perex@perex.cz>
 >> Cc: Takashi Iwai <tiwai@suse.com>
->> Cc: David Howells <dhowells@redhat.com>
+>> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 >> Cc: alsa-devel@alsa-project.org
 >> Signed-off-by: Kees Cook <keescook@chromium.org>
 >
-> I'll skip this as sound/oss/* is already disabled in recent kernels in
-> kbuild, and we're going to remove the whole code soon later.
+> Thanks, applied.
+>
+> I guess we may deduce the card pointer from substream_output[], but
+> this approach will be simpler in the end.
 
-At the end of these conversions, the old init_timer() and
-setup_timer() APIs will be removed, which would break anything still
-trying to use it (obviously). But if sound/oss/* is _already_
-unbuildable, then sure, this is fine by me to leave out. :)
+Yeah, I looked at that as an option, and I couldn't tell if the
+lifetime might change out from under the timer, so I opted for an
+explicit pointer since that's no worse than what the old struct
+timer_list did anyway. :)
 
 Thanks!
 
