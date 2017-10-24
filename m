@@ -1,17 +1,17 @@
-From: =?UTF-8?B?QWxiaW4gU3RpZ8O2?= <albin.stigo@gmail.com>
-Subject: ASoC: writing basic custom codecs?
-Date: Tue, 24 Oct 2017 12:55:51 +0200
-Message-ID: <CAMc++1U5_dOs23h-dgtBHa==1b=AVUoh2DhXLtOFRN9GE-1fkw@mail.gmail.com>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: conflict between alsa-lib and libasound2-data
+ regarding alsa.conf file:
+Date: Tue, 24 Oct 2017 14:06:39 +0300
+Message-ID: <1508843199.2665.34.camel@iki.fi>
+References: <20171023185824.38c4566e@fx4100>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
- [209.85.217.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 1ED61266DD4
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 12:55:52 +0200 (CEST)
-Received: by mail-ua0-f177.google.com with SMTP id s41so15095455uab.10
- for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 03:55:52 -0700 (PDT)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 2B790266DD4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Oct 2017 13:06:42 +0200 (CEST)
+In-Reply-To: <20171023185824.38c4566e@fx4100>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: arne <sp113438@telfort.nl>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Mon, 2017-10-23 at 18:58 +0200, arne wrote:
+> Hi,
+> 
+> Debian conflicts between alsa-lib_1.1.4 and libasound2-data 1.1.3:
+> 
+> in the source tree of alsa-lib I do:
+> 
+> ./configure && make && sudo checkinstall
+> 
+> and the result is:
+> 
+> Unpacking alsa-lib (1.1.4.1-1) ...
+> dpkg: error processing
+> archive /home/temp/alsa-lib-1.1.4.1/alsa-lib_1.1.4.1-1_amd64.deb
+> (--install): trying to overwrite '/usr/share/alsa/alsa.conf', which is
+> also in package libasound2-data 1.1.3-5
 
-I have implemented a custom i2s codec on an FPGA. Because of how the
-FPGA is clocked I'm getting samples at 39ksps, which to my surprise
-worked great after some simple kernel patching (the codec is bit &
-frame master).
+This is a Debian packaging issue. It's better to contact the Debian
+alsa-lib package maintainer(s) directly.
 
-For experimentation I used the snd-soc-dummy coded defined in
-soc-utils.c. Now I'm trying to write a very simple codec to "lock" the
-rate to 39000:
+-- 
+Tanu
 
-https://github.com/ast/vfzfpga-codec
-
-The driver loads just fine but I just get "not registered" when I try
-to use the codec. I feel I'm missing something very obvious here. I've
-been through the documentation and tried to read the sources but I'm a
-bit stuck.. What am I missing?
-
-
---Albin
+https://www.patreon.com/tanuk
