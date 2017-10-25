@@ -1,88 +1,270 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Decrease loglevel for
-	topology loading" to the asoc tree
-Date: Wed, 25 Oct 2017 13:03:15 +0100 (BST)
-Message-ID: <20171025120315.1D4FD44005B@finisterre.ee.mobilebroadband>
-References: <1505253585-13487-1-git-send-email-chintan.m.patel@intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH v2 5/7] ASoC: Intel: Skylake: Add ssp clock driver
+Date: Wed, 25 Oct 2017 17:23:52 +0530
+Message-ID: <20171025115347.GA32586@subhransu-desktop>
+References: <1505710610-17952-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1505710610-17952-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20171024143312.GA22264@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C7F3B267092
- for <alsa-devel@alsa-project.org>; Wed, 25 Oct 2017 14:03:21 +0200 (CEST)
-In-Reply-To: <1505253585-13487-1-git-send-email-chintan.m.patel@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Chintan Patel <chintan.m.patel@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171024143312.GA22264@codeaurora.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com, patches.audio@intel.com, mturquette@baylibre.com, linux-clk@vger.kernel.org, harshapriya.n@intel.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, Oct 24, 2017 at 07:33:12AM -0700, Stephen Boyd wrote:
+> On 09/18, Subhransu S. Prusty wrote:
+> > diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
+> > new file mode 100644
+> > index 000000000000..769ece306f58
+> > --- /dev/null
+> > +++ b/sound/soc/intel/skylake/skl-ssp-clk.c
+> > @@ -0,0 +1,288 @@
+> > +/*
+> > + *  skl-ssp-clk.c - ASoC skylake ssp clock driver
+> > + *
+> > + *  Copyright (C) 2017 Intel Corp
+> > + *  Author: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
+> > + *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> > + *
+> > + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > + *
+> > + *  This program is free software; you can redistribute it and/or modify
+> > + *  it under the terms of the GNU General Public License as published by
+> > + *  the Free Software Foundation; version 2 of the License.
+> > + *
+> > + *  This program is distributed in the hope that it will be useful, but
+> > + *  WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> > + *  General Public License for more details.
+> > + *
+> > + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > + *
+> > + */
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/err.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/clk.h>
+> 
+> Is this include used?
 
-   ASoC: Intel: Skylake: Decrease loglevel for topology loading
+It is not used. Will remove.
 
-has been applied to the asoc tree at
+> 
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/clkdev.h>
+> > +#include "skl-ssp-clk.h"
+> > +
+> > +#define to_skl_clk(_hw)	container_of(_hw, struct skl_clk, hw)
+> > +
+> > +struct skl_clk_parent {
+> > +	struct clk_hw *hw;
+> > +	struct clk_lookup *lookup;
+> > +};
+> > +
+> > +struct skl_clk {
+> > +	struct clk_hw hw;
+> > +	struct clk_lookup *lookup;
+> > +	struct skl_clk_ops *ops;
+> > +	unsigned long rate;
+> > +	void *pvt_data;
+> > +	u32 id;
+> > +};
+> > +
+> > +struct skl_clk_data {
+> > +	struct skl_clk_parent parent[SKL_MAX_CLK_SRC];
+> > +	struct skl_clk *clk[SKL_MAX_CLK_CNT];
+> > +	u8 avail_clk_cnt;
+> > +};
+> > +
+> > +static int skl_clk_prepare(struct clk_hw *hw)
+> > +{
+> > +	struct skl_clk *clkdev = to_skl_clk(hw);
+> > +
+> > +	if (!clkdev->ops || !clkdev->ops->prepare)
+> > +		return -EIO;
+> 
+> Ok is this the "virtual" part? Because it is sort of odd. Why
+> can't we give clk ops directly for everything and get rid of
+> struct skl_clk_ops here? Bouncing through this layer must be
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Yes makes sense. I think we can remove the wrappers and move the code here
+which sends the IPC to enable the clocks. Will work on that for v3.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> because something isn't converted to CCF, but what is that?
+> 
+> > +
+> > +	if (!clkdev->rate)
+> > +		return -EINVAL;
+> > +
+> > +	return clkdev->ops->prepare(clkdev->pvt_data, clkdev->id, clkdev->rate);
+> > +}
+> > +
+> > +static void skl_clk_unprepare(struct clk_hw *hw)
+> > +{
+> > +	struct skl_clk *clkdev = to_skl_clk(hw);
+> > +
+> > +	if (!clkdev->ops || !clkdev->ops->unprepare)
+> > +		return;
+> > +
+> > +	if (!clkdev->rate)
+> > +		return;
+> > +
+> > +	clkdev->ops->unprepare(clkdev->pvt_data, clkdev->id, clkdev->rate);
+> > +}
+> > +
+> > +static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
+> > +					unsigned long parent_rate)
+> > +{
+> > +	struct skl_clk *clkdev = to_skl_clk(hw);
+> > +	int ret;
+> > +
+> > +	if (!clkdev->ops || !clkdev->ops->set_rate)
+> > +		return -EIO;
+> > +
+> > +	ret = clkdev->ops->set_rate(clkdev->id, rate);
+> > +	if (!ret)
+> > +		clkdev->rate = rate;
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +unsigned long skl_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+> > +{
+> > +	struct skl_clk *clkdev = to_skl_clk(hw);
+> > +
+> > +	if (clkdev->rate)
+> > +		return clkdev->rate;
+> > +
+> > +	if (!clkdev->ops || !clkdev->ops->recalc_rate)
+> > +		return -EIO;
+> > +
+> > +	clkdev->rate = clkdev->ops->recalc_rate(clkdev->id, parent_rate);
+> > +
+> > +	return clkdev->rate;
+> > +}
+> > +
+> > +/* Not supported by clk driver. Implemented to satisfy clk fw */
+> > +long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
+> > +				unsigned long *parent_rate)
+> > +{
+> > +	return rate;
+> > +}
+> > +
+> > +static const struct clk_ops skl_clk_ops = {
+> > +	.prepare = skl_clk_prepare,
+> > +	.unprepare = skl_clk_unprepare,
+> > +	.set_rate = skl_clk_set_rate,
+> > +	.round_rate = skl_clk_round_rate,
+> > +	.recalc_rate = skl_clk_recalc_rate,
+> > +};
+> > +
+> > +static void unregister_parent_src_clk(struct skl_clk_parent *pclk, u8 id)
+> 
+> Why is id a u8? Would be simpler as unsigned. Usually I think of
+> registers when using u8/16/32/64, not array sizes.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Will fix this.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> 
+> > +{
+> > +	while (id--) {
+> > +		clkdev_drop(pclk[id].lookup);
+> > +		clk_hw_unregister_fixed_rate(pclk[id].hw);
+> > +	}
+> > +}
+> > +
+> > +static void unregister_src_clk(struct skl_clk_data *dclk)
+> > +{
+> > +	u8 cnt = dclk->avail_clk_cnt;
+> > +
+> > +	while (cnt--)
+> > +		clkdev_drop(dclk->clk[cnt]->lookup);
+> > +}
+> > +
+> > +static int skl_register_parent_clks(struct device *dev,
+> > +			struct skl_clk_parent *parent,
+> > +			struct skl_clk_parent_src *pclk)
+> > +{
+> > +	int i, ret;
+> > +
+> > +	for (i = 0; i < SKL_MAX_CLK_SRC; i++) {
+> > +
+> > +		/* Register Parent clock */
+> > +		parent[i].hw = clk_hw_register_fixed_rate(dev, pclk[i].name,
+> > +				pclk[i].parent_name, 0, pclk[i].rate);
+> > +		if (IS_ERR(parent[i].hw)) {
+> > +			ret = PTR_ERR_OR_ZERO(parent[i].hw);
+> 
+> If it's an IS_ERR then we just need PTR_ERR.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Yes it should be PTR_ERR only. Will fix it.
 
-Thanks,
-Mark
+> 
+> > +			goto err;
+> > +		}
+> > +
+> > +		parent[i].lookup = clkdev_hw_create(parent[i].hw, pclk[i].name,
+> > +									NULL);
+> > +		if (!parent[i].lookup) {
+> > +			clk_hw_unregister_fixed_rate(parent[i].hw);
+> > +			ret = PTR_ERR_OR_ZERO(parent[i].lookup);
+> 
+> If it's not NULL then we always unregister parent and return some
+> random number? Maybe I'm missing something.
 
->From 19de7179974ff6cf43e8a893028d3aef06cdb0bf Mon Sep 17 00:00:00 2001
-From: Chintan Patel <chintan.m.patel@intel.com>
-Date: Thu, 12 Oct 2017 09:44:37 -0700
-Subject: [PATCH] ASoC: Intel: Skylake: Decrease loglevel for topology loading
+You are right. Will fix this.
 
-In case of failure in loading customize topology firmware, dfw_sst.bin
-gets loaded. However, current log provides this message as error even
-after successfully falling back to default topology "dfw_sst.bin".
+> 
+> 
+> > +			goto err;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +err:
+> > +	unregister_parent_src_clk(parent, i);
+> > +	return ret;
+> > +}
+> > +
+> [...]
+> > +
+> > +	return 0;
+> > +
+> > +err_unreg_skl_clk:
+> > +	unregister_src_clk(data);
+> > +	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int skl_clk_dev_remove(struct platform_device *pdev)
+> > +{
+> > +	struct skl_clk_data *data;
+> > +
+> > +	data = platform_get_drvdata(pdev);
+> > +	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
+> > +	unregister_src_clk(data);
+> 
+> This is opposite path of error path in probe, so something smells
+> wrong.
 
-Hence to convey proper message, changing log level and message.
+Yes this sequence is wrong. Will fix this as well.
 
-Signed-off-by: Chintan Patel <chintan.m.patel@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
+Subhransu
+> 
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-clk" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ff4f53cdc0a1..1200b7c6af56 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3405,7 +3405,7 @@ int skl_tplg_init(struct snd_soc_platform *platform, struct hdac_ext_bus *ebus)
- 
- 	ret = request_firmware(&fw, skl->tplg_name, bus->dev);
- 	if (ret < 0) {
--		dev_err(bus->dev, "tplg fw %s load failed with %d\n",
-+		dev_info(bus->dev, "tplg fw %s load failed with %d, falling back to dfw_sst.bin",
- 				skl->tplg_name, ret);
- 		ret = request_firmware(&fw, "dfw_sst.bin", bus->dev);
- 		if (ret < 0) {
 -- 
-2.14.1
