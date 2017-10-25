@@ -1,270 +1,271 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v2 5/7] ASoC: Intel: Skylake: Add ssp clock driver
-Date: Wed, 25 Oct 2017 17:23:52 +0530
-Message-ID: <20171025115347.GA32586@subhransu-desktop>
-References: <1505710610-17952-1-git-send-email-subhransu.s.prusty@intel.com>
- <1505710610-17952-6-git-send-email-subhransu.s.prusty@intel.com>
- <20171024143312.GA22264@codeaurora.org>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH] sound: Convert timers to use timer_setup()
+Date: Wed, 25 Oct 2017 08:09:27 -0700
+Message-ID: <20171025150927.GA12207@beast>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-clk-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20171024143312.GA22264@codeaurora.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, lgirdwood@gmail.com, patches.audio@intel.com, mturquette@baylibre.com, linux-clk@vger.kernel.org, harshapriya.n@intel.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 24, 2017 at 07:33:12AM -0700, Stephen Boyd wrote:
-> On 09/18, Subhransu S. Prusty wrote:
-> > diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
-> > new file mode 100644
-> > index 000000000000..769ece306f58
-> > --- /dev/null
-> > +++ b/sound/soc/intel/skylake/skl-ssp-clk.c
-> > @@ -0,0 +1,288 @@
-> > +/*
-> > + *  skl-ssp-clk.c - ASoC skylake ssp clock driver
-> > + *
-> > + *  Copyright (C) 2017 Intel Corp
-> > + *  Author: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
-> > + *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > + *
-> > + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > + *
-> > + *  This program is free software; you can redistribute it and/or modify
-> > + *  it under the terms of the GNU General Public License as published by
-> > + *  the Free Software Foundation; version 2 of the License.
-> > + *
-> > + *  This program is distributed in the hope that it will be useful, but
-> > + *  WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> > + *  General Public License for more details.
-> > + *
-> > + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > + *
-> > + */
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/err.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/clk.h>
-> 
-> Is this include used?
+In preparation for unconditionally passing the struct timer_list
+pointer to all timer callbacks, switch to using the new timer_setup()
+and from_timer() to pass the timer pointer explicitly. These are all the
+"mechanical" changes remaining in the sound subsystem.
 
-It is not used. Will remove.
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ sound/i2c/other/ak4117.c      |  8 ++++----
+ sound/pci/ctxfi/cttimer.c     |  7 +++----
+ sound/pci/echoaudio/midi.c    | 10 +++++-----
+ sound/pci/korg1212/korg1212.c |  7 +++----
+ sound/pci/rme9652/hdsp.c      |  8 ++++----
+ sound/pci/rme9652/hdspm.c     |  8 ++++----
+ sound/soc/codecs/rt5645.c     |  7 +++----
+ sound/soc/omap/ams-delta.c    |  4 ++--
+ 8 files changed, 28 insertions(+), 31 deletions(-)
 
-> 
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/clkdev.h>
-> > +#include "skl-ssp-clk.h"
-> > +
-> > +#define to_skl_clk(_hw)	container_of(_hw, struct skl_clk, hw)
-> > +
-> > +struct skl_clk_parent {
-> > +	struct clk_hw *hw;
-> > +	struct clk_lookup *lookup;
-> > +};
-> > +
-> > +struct skl_clk {
-> > +	struct clk_hw hw;
-> > +	struct clk_lookup *lookup;
-> > +	struct skl_clk_ops *ops;
-> > +	unsigned long rate;
-> > +	void *pvt_data;
-> > +	u32 id;
-> > +};
-> > +
-> > +struct skl_clk_data {
-> > +	struct skl_clk_parent parent[SKL_MAX_CLK_SRC];
-> > +	struct skl_clk *clk[SKL_MAX_CLK_CNT];
-> > +	u8 avail_clk_cnt;
-> > +};
-> > +
-> > +static int skl_clk_prepare(struct clk_hw *hw)
-> > +{
-> > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > +
-> > +	if (!clkdev->ops || !clkdev->ops->prepare)
-> > +		return -EIO;
-> 
-> Ok is this the "virtual" part? Because it is sort of odd. Why
-> can't we give clk ops directly for everything and get rid of
-> struct skl_clk_ops here? Bouncing through this layer must be
+diff --git a/sound/i2c/other/ak4117.c b/sound/i2c/other/ak4117.c
+index 3ab099fb8c15..b923342cadf4 100644
+--- a/sound/i2c/other/ak4117.c
++++ b/sound/i2c/other/ak4117.c
+@@ -35,7 +35,7 @@ MODULE_LICENSE("GPL");
+ 
+ #define AK4117_ADDR			0x00 /* fixed address */
+ 
+-static void snd_ak4117_timer(unsigned long data);
++static void snd_ak4117_timer(struct timer_list *t);
+ 
+ static void reg_write(struct ak4117 *ak4117, unsigned char reg, unsigned char val)
+ {
+@@ -91,7 +91,7 @@ int snd_ak4117_create(struct snd_card *card, ak4117_read_t *read, ak4117_write_t
+ 	chip->read = read;
+ 	chip->write = write;
+ 	chip->private_data = private_data;
+-	setup_timer(&chip->timer, snd_ak4117_timer, (unsigned long)chip);
++	timer_setup(&chip->timer, snd_ak4117_timer, 0);
+ 
+ 	for (reg = 0; reg < 5; reg++)
+ 		chip->regmap[reg] = pgm[reg];
+@@ -529,9 +529,9 @@ int snd_ak4117_check_rate_and_errors(struct ak4117 *ak4117, unsigned int flags)
+ 	return res;
+ }
+ 
+-static void snd_ak4117_timer(unsigned long data)
++static void snd_ak4117_timer(struct timer_list *t)
+ {
+-	struct ak4117 *chip = (struct ak4117 *)data;
++	struct ak4117 *chip = from_timer(chip, t, timer);
+ 
+ 	if (chip->init)
+ 		return;
+diff --git a/sound/pci/ctxfi/cttimer.c b/sound/pci/ctxfi/cttimer.c
+index 8f945341720b..08e874e9a7f6 100644
+--- a/sound/pci/ctxfi/cttimer.c
++++ b/sound/pci/ctxfi/cttimer.c
+@@ -63,9 +63,9 @@ struct ct_timer {
+  * system-timer-based updates
+  */
+ 
+-static void ct_systimer_callback(unsigned long data)
++static void ct_systimer_callback(struct timer_list *t)
+ {
+-	struct ct_timer_instance *ti = (struct ct_timer_instance *)data;
++	struct ct_timer_instance *ti = from_timer(ti, t, timer);
+ 	struct snd_pcm_substream *substream = ti->substream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct ct_atc_pcm *apcm = ti->apcm;
+@@ -93,8 +93,7 @@ static void ct_systimer_callback(unsigned long data)
+ 
+ static void ct_systimer_init(struct ct_timer_instance *ti)
+ {
+-	setup_timer(&ti->timer, ct_systimer_callback,
+-		    (unsigned long)ti);
++	timer_setup(&ti->timer, ct_systimer_callback, 0);
+ }
+ 
+ static void ct_systimer_start(struct ct_timer_instance *ti)
+diff --git a/sound/pci/echoaudio/midi.c b/sound/pci/echoaudio/midi.c
+index 8c685ddb1a41..6045a115cffe 100644
+--- a/sound/pci/echoaudio/midi.c
++++ b/sound/pci/echoaudio/midi.c
+@@ -199,9 +199,9 @@ static int snd_echo_midi_output_open(struct snd_rawmidi_substream *substream)
+ 
+ 
+ 
+-static void snd_echo_midi_output_write(unsigned long data)
++static void snd_echo_midi_output_write(struct timer_list *t)
+ {
+-	struct echoaudio *chip = (struct echoaudio *)data;
++	struct echoaudio *chip = from_timer(chip, t, timer);
+ 	unsigned long flags;
+ 	int bytes, sent, time;
+ 	unsigned char buf[MIDI_OUT_BUFFER_SIZE - 1];
+@@ -257,8 +257,8 @@ static void snd_echo_midi_output_trigger(struct snd_rawmidi_substream *substream
+ 	spin_lock_irq(&chip->lock);
+ 	if (up) {
+ 		if (!chip->tinuse) {
+-			setup_timer(&chip->timer, snd_echo_midi_output_write,
+-				    (unsigned long)chip);
++			timer_setup(&chip->timer, snd_echo_midi_output_write,
++				    0);
+ 			chip->tinuse = 1;
+ 		}
+ 	} else {
+@@ -273,7 +273,7 @@ static void snd_echo_midi_output_trigger(struct snd_rawmidi_substream *substream
+ 	spin_unlock_irq(&chip->lock);
+ 
+ 	if (up && !chip->midi_full)
+-		snd_echo_midi_output_write((unsigned long)chip);
++		snd_echo_midi_output_write(&chip->timer);
+ }
+ 
+ 
+diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
+index 04cd71c74e5c..c7b007164c99 100644
+--- a/sound/pci/korg1212/korg1212.c
++++ b/sound/pci/korg1212/korg1212.c
+@@ -599,9 +599,9 @@ static void snd_korg1212_SendStopAndWait(struct snd_korg1212 *korg1212)
+ }
+ 
+ /* timer callback for checking the ack of stop request */
+-static void snd_korg1212_timer_func(unsigned long data)
++static void snd_korg1212_timer_func(struct timer_list *t)
+ {
+-        struct snd_korg1212 *korg1212 = (struct snd_korg1212 *) data;
++	struct snd_korg1212 *korg1212 = from_timer(korg1212, t, timer);
+ 	unsigned long flags;
+ 	
+ 	spin_lock_irqsave(&korg1212->lock, flags);
+@@ -2189,8 +2189,7 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
+         init_waitqueue_head(&korg1212->wait);
+         spin_lock_init(&korg1212->lock);
+ 	mutex_init(&korg1212->open_mutex);
+-	setup_timer(&korg1212->timer, snd_korg1212_timer_func,
+-		    (unsigned long)korg1212);
++	timer_setup(&korg1212->timer, snd_korg1212_timer_func, 0);
+ 
+         korg1212->irq = -1;
+         korg1212->clkSource = K1212_CLKIDX_Local;
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index 9f0f73875f01..1bff4b1b39cd 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -1410,9 +1410,9 @@ static void snd_hdsp_midi_input_trigger(struct snd_rawmidi_substream *substream,
+ 	spin_unlock_irqrestore (&hdsp->lock, flags);
+ }
+ 
+-static void snd_hdsp_midi_output_timer(unsigned long data)
++static void snd_hdsp_midi_output_timer(struct timer_list *t)
+ {
+-	struct hdsp_midi *hmidi = (struct hdsp_midi *) data;
++	struct hdsp_midi *hmidi = from_timer(hmidi, t, timer);
+ 	unsigned long flags;
+ 
+ 	snd_hdsp_midi_output_write(hmidi);
+@@ -1439,8 +1439,8 @@ static void snd_hdsp_midi_output_trigger(struct snd_rawmidi_substream *substream
+ 	spin_lock_irqsave (&hmidi->lock, flags);
+ 	if (up) {
+ 		if (!hmidi->istimer) {
+-			setup_timer(&hmidi->timer, snd_hdsp_midi_output_timer,
+-				    (unsigned long) hmidi);
++			timer_setup(&hmidi->timer, snd_hdsp_midi_output_timer,
++				    0);
+ 			mod_timer(&hmidi->timer, 1 + jiffies);
+ 			hmidi->istimer++;
+ 		}
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index f20d42714e4d..4c59983158e0 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -1946,9 +1946,9 @@ snd_hdspm_midi_input_trigger(struct snd_rawmidi_substream *substream, int up)
+ 	spin_unlock_irqrestore (&hdspm->lock, flags);
+ }
+ 
+-static void snd_hdspm_midi_output_timer(unsigned long data)
++static void snd_hdspm_midi_output_timer(struct timer_list *t)
+ {
+-	struct hdspm_midi *hmidi = (struct hdspm_midi *) data;
++	struct hdspm_midi *hmidi = from_timer(hmidi, t, timer);
+ 	unsigned long flags;
+ 
+ 	snd_hdspm_midi_output_write(hmidi);
+@@ -1976,8 +1976,8 @@ snd_hdspm_midi_output_trigger(struct snd_rawmidi_substream *substream, int up)
+ 	spin_lock_irqsave (&hmidi->lock, flags);
+ 	if (up) {
+ 		if (!hmidi->istimer) {
+-			setup_timer(&hmidi->timer, snd_hdspm_midi_output_timer,
+-				    (unsigned long) hmidi);
++			timer_setup(&hmidi->timer,
++				    snd_hdspm_midi_output_timer, 0);
+ 			mod_timer(&hmidi->timer, 1 + jiffies);
+ 			hmidi->istimer++;
+ 		}
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a98647ac497c..735f2d0033dd 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3340,9 +3340,9 @@ static irqreturn_t rt5645_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void rt5645_btn_check_callback(unsigned long data)
++static void rt5645_btn_check_callback(struct timer_list *t)
+ {
+-	struct rt5645_priv *rt5645 = (struct rt5645_priv *)data;
++	struct rt5645_priv *rt5645 = from_timer(rt5645, t, btn_check_timer);
+ 
+ 	queue_delayed_work(system_power_efficient_wq,
+ 		   &rt5645->jack_detect_work, msecs_to_jiffies(5));
+@@ -3934,8 +3934,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+ 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+ 	}
+-	setup_timer(&rt5645->btn_check_timer,
+-		rt5645_btn_check_callback, (unsigned long)rt5645);
++	timer_setup(&rt5645->btn_check_timer, rt5645_btn_check_callback, 0);
+ 
+ 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
+ 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
+diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
+index 6c49f3d6fd96..d40219678700 100644
+--- a/sound/soc/omap/ams-delta.c
++++ b/sound/soc/omap/ams-delta.c
+@@ -260,7 +260,7 @@ static bool cx81801_cmd_pending;
+ static bool ams_delta_muted;
+ static DEFINE_SPINLOCK(ams_delta_lock);
+ 
+-static void cx81801_timeout(unsigned long data)
++static void cx81801_timeout(struct timer_list *unused)
+ {
+ 	int muted;
+ 
+@@ -349,7 +349,7 @@ static void cx81801_receive(struct tty_struct *tty,
+ 		/* First modem response, complete setup procedure */
+ 
+ 		/* Initialize timer used for config pulse generation */
+-		setup_timer(&cx81801_timer, cx81801_timeout, 0);
++		timer_setup(&cx81801_timer, cx81801_timeout, 0);
+ 
+ 		v253_ops.receive_buf(tty, cp, fp, count);
+ 
+-- 
+2.7.4
 
-Yes makes sense. I think we can remove the wrappers and move the code here
-which sends the IPC to enable the clocks. Will work on that for v3.
-
-> because something isn't converted to CCF, but what is that?
-> 
-> > +
-> > +	if (!clkdev->rate)
-> > +		return -EINVAL;
-> > +
-> > +	return clkdev->ops->prepare(clkdev->pvt_data, clkdev->id, clkdev->rate);
-> > +}
-> > +
-> > +static void skl_clk_unprepare(struct clk_hw *hw)
-> > +{
-> > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > +
-> > +	if (!clkdev->ops || !clkdev->ops->unprepare)
-> > +		return;
-> > +
-> > +	if (!clkdev->rate)
-> > +		return;
-> > +
-> > +	clkdev->ops->unprepare(clkdev->pvt_data, clkdev->id, clkdev->rate);
-> > +}
-> > +
-> > +static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
-> > +					unsigned long parent_rate)
-> > +{
-> > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > +	int ret;
-> > +
-> > +	if (!clkdev->ops || !clkdev->ops->set_rate)
-> > +		return -EIO;
-> > +
-> > +	ret = clkdev->ops->set_rate(clkdev->id, rate);
-> > +	if (!ret)
-> > +		clkdev->rate = rate;
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +unsigned long skl_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
-> > +{
-> > +	struct skl_clk *clkdev = to_skl_clk(hw);
-> > +
-> > +	if (clkdev->rate)
-> > +		return clkdev->rate;
-> > +
-> > +	if (!clkdev->ops || !clkdev->ops->recalc_rate)
-> > +		return -EIO;
-> > +
-> > +	clkdev->rate = clkdev->ops->recalc_rate(clkdev->id, parent_rate);
-> > +
-> > +	return clkdev->rate;
-> > +}
-> > +
-> > +/* Not supported by clk driver. Implemented to satisfy clk fw */
-> > +long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-> > +				unsigned long *parent_rate)
-> > +{
-> > +	return rate;
-> > +}
-> > +
-> > +static const struct clk_ops skl_clk_ops = {
-> > +	.prepare = skl_clk_prepare,
-> > +	.unprepare = skl_clk_unprepare,
-> > +	.set_rate = skl_clk_set_rate,
-> > +	.round_rate = skl_clk_round_rate,
-> > +	.recalc_rate = skl_clk_recalc_rate,
-> > +};
-> > +
-> > +static void unregister_parent_src_clk(struct skl_clk_parent *pclk, u8 id)
-> 
-> Why is id a u8? Would be simpler as unsigned. Usually I think of
-> registers when using u8/16/32/64, not array sizes.
-
-Will fix this.
-
-> 
-> > +{
-> > +	while (id--) {
-> > +		clkdev_drop(pclk[id].lookup);
-> > +		clk_hw_unregister_fixed_rate(pclk[id].hw);
-> > +	}
-> > +}
-> > +
-> > +static void unregister_src_clk(struct skl_clk_data *dclk)
-> > +{
-> > +	u8 cnt = dclk->avail_clk_cnt;
-> > +
-> > +	while (cnt--)
-> > +		clkdev_drop(dclk->clk[cnt]->lookup);
-> > +}
-> > +
-> > +static int skl_register_parent_clks(struct device *dev,
-> > +			struct skl_clk_parent *parent,
-> > +			struct skl_clk_parent_src *pclk)
-> > +{
-> > +	int i, ret;
-> > +
-> > +	for (i = 0; i < SKL_MAX_CLK_SRC; i++) {
-> > +
-> > +		/* Register Parent clock */
-> > +		parent[i].hw = clk_hw_register_fixed_rate(dev, pclk[i].name,
-> > +				pclk[i].parent_name, 0, pclk[i].rate);
-> > +		if (IS_ERR(parent[i].hw)) {
-> > +			ret = PTR_ERR_OR_ZERO(parent[i].hw);
-> 
-> If it's an IS_ERR then we just need PTR_ERR.
-
-Yes it should be PTR_ERR only. Will fix it.
-
-> 
-> > +			goto err;
-> > +		}
-> > +
-> > +		parent[i].lookup = clkdev_hw_create(parent[i].hw, pclk[i].name,
-> > +									NULL);
-> > +		if (!parent[i].lookup) {
-> > +			clk_hw_unregister_fixed_rate(parent[i].hw);
-> > +			ret = PTR_ERR_OR_ZERO(parent[i].lookup);
-> 
-> If it's not NULL then we always unregister parent and return some
-> random number? Maybe I'm missing something.
-
-You are right. Will fix this.
-
-> 
-> 
-> > +			goto err;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +err:
-> > +	unregister_parent_src_clk(parent, i);
-> > +	return ret;
-> > +}
-> > +
-> [...]
-> > +
-> > +	return 0;
-> > +
-> > +err_unreg_skl_clk:
-> > +	unregister_src_clk(data);
-> > +	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int skl_clk_dev_remove(struct platform_device *pdev)
-> > +{
-> > +	struct skl_clk_data *data;
-> > +
-> > +	data = platform_get_drvdata(pdev);
-> > +	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
-> > +	unregister_src_clk(data);
-> 
-> This is opposite path of error path in probe, so something smells
-> wrong.
-
-Yes this sequence is wrong. Will fix this as well.
-
-Regards,
-Subhransu
-> 
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-clk" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 -- 
+Kees Cook
+Pixel Security
