@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: byt: Add headset jack" to the
-	asoc tree
-Date: Thu, 26 Oct 2017 15:16:50 +0100 (BST)
-Message-ID: <20171026141650.3D56F44005B@finisterre.ee.mobilebroadband>
-References: <20171020111859.2448-3-carlo@caione.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 73772266E15
- for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 16:16:51 +0200 (CEST)
-In-Reply-To: <20171020111859.2448-3-carlo@caione.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: rt5651: Enable JD1_1 quirk for KIANO laptopt" to the asoc tree
+Date: Thu, 26 Oct 2017 15:16:54 +0100 (BST)
+Message-ID: <20171026141654.8531544005B@finisterre.ee.mobilebroadband>
+References: <20171020111859.2448-6-carlo@caione.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171020111859.2448-6-carlo@caione.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Carlo Caione <carlo@endlessm.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, edgar_shen@realtek.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org, albertchen@realtek.com, broonie@kernel.org, bardliao@realtek.com, linux@endlessm.com
+Cc: Mark Brown <broonie@kernel.org>, linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, pierre-louis.bossart@linux.intel.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, albertchen@realtek.com, edgar_shen@realtek.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: byt: Add headset jack
+   ASoC: rt5651: Enable JD1_1 quirk for KIANO laptopt
 
 has been applied to the asoc tree at
 
@@ -53,74 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From d9f8f9b2f3e2b95875cd59ae5c3276e4662e7513 Mon Sep 17 00:00:00 2001
+>From f85353fdd49fe0087438ef7d7475a832d16276c4 Mon Sep 17 00:00:00 2001
 From: Carlo Caione <carlo@endlessm.com>
-Date: Fri, 20 Oct 2017 12:18:56 +0100
-Subject: [PATCH] ASoC: intel: byt: Add headset jack
+Date: Fri, 20 Oct 2017 12:18:59 +0100
+Subject: [PATCH] ASoC: rt5651: Enable JD1_1 quirk for KIANO laptopt
 
-Introduce an headset jack in the machine driver and register it to the
-codec driver.
+The KIANO SlimNote 14.2 laptop uses the JD1_1 input pin for jack
+detection. Set the correct quirk in the codec driver.
 
 Signed-off-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ sound/soc/codecs/rt5651.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 51de1bbe8ecd..0df9067e4382 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -47,6 +47,7 @@ enum {
- 
- struct byt_rt5651_private {
- 	struct clk *mclk;
-+	struct snd_soc_jack jack;
- };
- 
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
-@@ -177,6 +178,17 @@ static const struct snd_kcontrol_new byt_rt5651_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Speaker"),
- };
- 
-+static struct snd_soc_jack_pin bytcr_jack_pins[] = {
-+	{
-+		.pin	= "Headphone",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Headset Mic",
-+		.mask	= SND_JACK_MICROPHONE,
-+	},
-+};
-+
- static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
- 					struct snd_pcm_hw_params *params)
- {
-@@ -244,6 +256,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
-+	struct snd_soc_codec *codec = runtime->codec;
- 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
- 	const struct snd_soc_dapm_route *custom_map;
- 	int num_routes;
-@@ -301,6 +314,16 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 			dev_err(card->dev, "unable to set MCLK rate\n");
- 	}
- 
-+	ret = snd_soc_card_jack_new(runtime->card, "Headset",
-+				    SND_JACK_HEADSET, &priv->jack,
-+				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
-+	if (ret) {
-+		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
-+		return ret;
-+	}
-+
-+	rt5651_set_jack_detect(codec, &priv->jack);
-+
- 	return ret;
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index f01d41101631..831b297978a4 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1753,6 +1753,14 @@ static int rt5651_quirk_cb(const struct dmi_system_id *id)
  }
+ 
+ static const struct dmi_system_id rt5651_quirk_table[] = {
++	{
++		.callback = rt5651_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
++		},
++		.driver_data = (unsigned long *) RT5651_JD1_1,
++	},
+ 	{}
+ };
  
 -- 
 2.14.1
