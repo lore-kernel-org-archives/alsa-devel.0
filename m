@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] sound: Convert timers to use timer_setup()
-Date: Thu, 26 Oct 2017 09:09:17 +0200
-Message-ID: <20171026070917.4et4xygn66xleteq@sirena.org.uk>
-References: <20171025150927.GA12207@beast>
+Subject: Re: [PATCH] dt-bindings: sgtl5000: Remove leading zero
+ from '@0a' notation
+Date: Thu, 26 Oct 2017 09:41:26 +0200
+Message-ID: <20171026074126.pe7vzws77dt4kyv6@sirena.org.uk>
+References: <1508952290-18794-1-git-send-email-marco.franchi@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7369175289326173371=="
+Content-Type: multipart/mixed; boundary="===============7476574249816128518=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D5409266A0C
- for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 09:09:25 +0200 (CEST)
-In-Reply-To: <20171025150927.GA12207@beast>
+ by alsa0.perex.cz (Postfix) with ESMTP id E17A1266A0C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 09:41:27 +0200 (CEST)
+In-Reply-To: <1508952290-18794-1-git-send-email-marco.franchi@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kees Cook <keescook@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Marco Franchi <marco.franchi@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, marcofrk@gmail.com, lgirdwood@gmail.com, robh+dt@kernel.org, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7369175289326173371==
+--===============7476574249816128518==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pfp3bxtbdgepfq2y"
+	protocol="application/pgp-signature"; boundary="ohocs6mgsip7aogz"
 Content-Disposition: inline
 
 
---pfp3bxtbdgepfq2y
+--ohocs6mgsip7aogz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 25, 2017 at 08:09:27AM -0700, Kees Cook wrote:
-> In preparation for unconditionally passing the struct timer_list
-> pointer to all timer callbacks, switch to using the new timer_setup()
-> and from_timer() to pass the timer pointer explicitly. These are all the
-> "mechanical" changes remaining in the sound subsystem.
+On Wed, Oct 25, 2017 at 03:24:50PM -0200, Marco Franchi wrote:
+> Improve the binding example by removing the leading 0 from '@0a' notation,
+> which fixes the following build warning:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
---pfp3bxtbdgepfq2y
+--ohocs6mgsip7aogz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnxihwACgkQJNaLcl1U
-h9AZJwf9EjaNuV3RQlO77RKx4oyVqQsk1Nbn/Te0m9AHi0WY1I36MoFYQT1NOdPV
-UIHp1Xg7ir4umKyDD/GUUGL/9FzVJMFd/RhTbPlYZIR72IwwTmC67LCul7hWa7gz
-iYmLlR7H8eBaXD/oYBd+wgzNUpqoHReyTX1RhBHdf68NJpsdE10s8Z9/7vRIIqKt
-0tXHXSnnT/vCM9U9MFrLqcaVGqabpH7Hfg089FP0oLgBpmE7S3t0zQXVZFJyrONl
-FvVWz7CUCShEgy3VgML9DhYPTMRJpL+Gwql9M2ZVYBwh4A06Jj+z0gR+cxdbAo1F
-MlL0wB1KteLC9wBxDchnkA4HmkZPTQ==
-=AIPw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnxkaYACgkQJNaLcl1U
+h9A9bgf8CuLdhG267vYXLM2TiJT0iQqPYOTFiIu3fWy+hT5Wh3JSX8XwxJK1qM6F
+b5COUGnvKD3Fk1BLPGfplkxGEmG5ExtUEDvTb5QslZ0rVO7+NtJFbnQummHtNU34
+xWPz6hEpQyHCeWi5f9f7KWOgfg3q+REGOSOYXccbUTvqqoobWxpFO+RmhPq9NgkP
+fhqKEx3SzzdQrgtxVUaCTJC4Y4i6L5oB2aDqpZaSAQBKCq84IJs1sMbykIe+Uy3H
+d6F9UHZUGgM703M1FJvfTBs5whdWnFzcGEuPEjoGDDyVpMQnz79YhqM28QGpMXi9
+dn5UZsKmrxbejRibxLEHHFv0eRFoUg==
+=4Y16
 -----END PGP SIGNATURE-----
 
---pfp3bxtbdgepfq2y--
+--ohocs6mgsip7aogz--
 
---===============7369175289326173371==
+--===============7476574249816128518==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7369175289326173371==--
+--===============7476574249816128518==--
