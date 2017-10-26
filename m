@@ -1,42 +1,70 @@
-From: Marco Franchi <marco.franchi-3arQi8VN3Tc@public.gmane.org>
-Subject: [PATCH] dt-bindings: sgtl5000: Remove leading zero from '@0a' notation
-Date: Wed, 25 Oct 2017 15:24:50 -0200
-Message-ID: <1508952290-18794-1-git-send-email-marco.franchi@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] sound: Convert timers to use timer_setup()
+Date: Thu, 26 Oct 2017 09:09:17 +0200
+Message-ID: <20171026070917.4et4xygn66xleteq@sirena.org.uk>
+References: <20171025150927.GA12207@beast>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, marcofrk-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Marco Franchi <marco.franchi-3arQi8VN3Tc@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============7369175289326173371=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5409266A0C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 09:09:25 +0200 (CEST)
+In-Reply-To: <20171025150927.GA12207@beast>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kees Cook <keescook@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Bard Liao <bardliao@realtek.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Improve the binding example by removing the leading 0 from '@0a' notation,
-which fixes the following build warning:
 
-Warning (unit_address_format): Node /sgtl5000@0a unit name should not have leading 0s
+--===============7369175289326173371==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pfp3bxtbdgepfq2y"
+Content-Disposition: inline
 
-Signed-off-by: Marco Franchi <marco.franchi-3arQi8VN3Tc@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/sgtl5000.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 7a73a9d..060cb4a 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -37,7 +37,7 @@ VDDIO		1.8V		2.5V		3.3V
- 
- Example:
- 
--codec: sgtl5000@0a {
-+codec: sgtl5000@a {
- 	compatible = "fsl,sgtl5000";
- 	reg = <0x0a>;
- 	clocks = <&clks 150>;
--- 
-2.7.4
+--pfp3bxtbdgepfq2y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+On Wed, Oct 25, 2017 at 08:09:27AM -0700, Kees Cook wrote:
+> In preparation for unconditionally passing the struct timer_list
+> pointer to all timer callbacks, switch to using the new timer_setup()
+> and from_timer() to pass the timer pointer explicitly. These are all the
+> "mechanical" changes remaining in the sound subsystem.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--pfp3bxtbdgepfq2y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlnxihwACgkQJNaLcl1U
+h9AZJwf9EjaNuV3RQlO77RKx4oyVqQsk1Nbn/Te0m9AHi0WY1I36MoFYQT1NOdPV
+UIHp1Xg7ir4umKyDD/GUUGL/9FzVJMFd/RhTbPlYZIR72IwwTmC67LCul7hWa7gz
+iYmLlR7H8eBaXD/oYBd+wgzNUpqoHReyTX1RhBHdf68NJpsdE10s8Z9/7vRIIqKt
+0tXHXSnnT/vCM9U9MFrLqcaVGqabpH7Hfg089FP0oLgBpmE7S3t0zQXVZFJyrONl
+FvVWz7CUCShEgy3VgML9DhYPTMRJpL+Gwql9M2ZVYBwh4A06Jj+z0gR+cxdbAo1F
+MlL0wB1KteLC9wBxDchnkA4HmkZPTQ==
+=AIPw
+-----END PGP SIGNATURE-----
+
+--pfp3bxtbdgepfq2y--
+
+--===============7369175289326173371==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7369175289326173371==--
