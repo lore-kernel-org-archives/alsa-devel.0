@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: rt5651: Enable jack detection on JD* pins" to the asoc tree
-Date: Thu, 26 Oct 2017 15:17:11 +0100 (BST)
-Message-ID: <20171026141711.58EC644005B@finisterre.ee.mobilebroadband>
+Date: Thu, 26 Oct 2017 15:17:02 +0100 (BST)
+Message-ID: <20171026141702.556E044005B@finisterre.ee.mobilebroadband>
 References: <20171020111859.2448-2-carlo@caione.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171020111859.2448-2-carlo@caione.org>
@@ -37,7 +37,7 @@ to this mail.
 Thanks,
 Mark
 
->From 60d5a1a47b9a8381c08d2263b11ac9c757c87746 Mon Sep 17 00:00:00 2001
+>From 80bbe4a30bc6b119df86c280c91cde2034309bf1 Mon Sep 17 00:00:00 2001
 From: Carlo Caione <carlo@endlessm.com>
 Date: Fri, 20 Oct 2017 12:18:55 +0100
 Subject: [PATCH] ASoC: rt5651: Enable jack detection on JD* pins
@@ -77,7 +77,7 @@ index d35de758dfb5..18b79a761f10 100644
  
  #endif
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index da60b28ba3df..2f0d0055c72f 100644
+index 28f7210cec91..91f254391452 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
 @@ -26,6 +26,7 @@
