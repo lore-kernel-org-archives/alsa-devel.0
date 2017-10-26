@@ -1,17 +1,15 @@
-From: Carlo Caione <carlo@caione.org>
-Subject: [PATCH] conf/ucm: rt5651: Fix HiFi file name
-Date: Thu, 26 Oct 2017 16:05:01 +0100
-Message-ID: <20171026150501.24631-1-carlo@caione.org>
+From: <jiada_wang@mentor.com>
+Subject: [PATCH linux-next 1/1] ASoC: rsnd: ssiu: reset
+	SSI_MODE register
+Date: Thu, 26 Oct 2017 08:07:42 -0700
+Message-ID: <1509030462-4799-1-git-send-email-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
- [209.85.128.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 32D9A266AF8
- for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 17:05:08 +0200 (CEST)
-Received: by mail-wr0-f194.google.com with SMTP id l1so3506933wrc.3
- for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 08:05:08 -0700 (PDT)
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6AFCA266AF8
+ for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 17:07:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,32 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-Cc: Carlo Caione <carlo@endlessm.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com, gustavo@embeddedor.com
+Cc: jiada_wang@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Carlo Caione <carlo@endlessm.com>
+From: Jiada Wang <jiada_wang@mentor.com>
 
-The conf HiFi file name is HiFi.conf, fix the name in the main
-configuration file.
+register SSI_MODE is set when SSI works in TDM Extended or
+TDM (Ex-)Split mode, but it isn't reset after SSI stops.
+this will cause issue, if SSI starts to work in other modes
+which requie SSI_MODE to have different value.
 
-Signed-off-by: Carlo Caione <carlo@endlessm.com>
+This patch resets SSI_MODE register in .stop callback,
+when last stream calls .stop.
+
+Fixes: 186fadc132f0 ("ASoC: rsnd: add TDM Extend Mode support")
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssiu.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-index 2dcc72cc..60798ce7 100644
---- a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-+++ b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-@@ -1,7 +1,7 @@
- # Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 4d94875..eff9f3b 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -217,6 +217,8 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_multi_slaves_runtime(io))
+ 		rsnd_mod_write(mod, SSI_CONTROL, 0);
  
- SectionUseCase."HiFi" {
--	File "HiFi"
-+	File "HiFi.conf"
- 	Comment "Play HiFi quality Music"
++	rsnd_mod_write(mod, SSI_MODE, 0);
++
+ 	return 0;
  }
  
 -- 
-2.14.2
+1.7.9.5
