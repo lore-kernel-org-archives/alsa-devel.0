@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Enable JD1_1 quirk for KIANO laptopt" to the asoc tree
-Date: Thu, 26 Oct 2017 15:16:54 +0100 (BST)
-Message-ID: <20171026141654.8531544005B@finisterre.ee.mobilebroadband>
-References: <20171020111859.2448-6-carlo@caione.org>
+Subject: Applied "ASoC: rt5651: Rework quirk logic" to the asoc tree
+Date: Thu, 26 Oct 2017 15:16:58 +0100 (BST)
+Message-ID: <20171026141658.69A5F44005B@finisterre.ee.mobilebroadband>
+References: <20171020111859.2448-5-carlo@caione.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171020111859.2448-6-carlo@caione.org>
+In-Reply-To: <20171020111859.2448-5-carlo@caione.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Carlo Caione <carlo@endlessm.com>
 Cc: Mark Brown <broonie@kernel.org>, linux@endlessm.com, bardliao@realtek.com, oder_chiou@realtek.com, pierre-louis.bossart@linux.intel.combroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, albertchen@realtek.com, edgar_shen@realtek.comalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Enable JD1_1 quirk for KIANO laptopt
+   ASoC: rt5651: Rework quirk logic
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,103 @@ to this mail.
 Thanks,
 Mark
 
->From f85353fdd49fe0087438ef7d7475a832d16276c4 Mon Sep 17 00:00:00 2001
+>From b4435130bc19cd54631588355b16326aeb760e34 Mon Sep 17 00:00:00 2001
 From: Carlo Caione <carlo@endlessm.com>
-Date: Fri, 20 Oct 2017 12:18:59 +0100
-Subject: [PATCH] ASoC: rt5651: Enable JD1_1 quirk for KIANO laptopt
+Date: Fri, 20 Oct 2017 12:18:58 +0100
+Subject: [PATCH] ASoC: rt5651: Rework quirk logic
 
-The KIANO SlimNote 14.2 laptop uses the JD1_1 input pin for jack
-detection. Set the correct quirk in the codec driver.
+Rework a bit the quirk logic in the codec driver to simplify the
+DMI-based quirk assignment for non-DT platforms.
 
 Signed-off-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/rt5651.c | 39 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 35 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index f01d41101631..831b297978a4 100644
+index 91f254391452..f01d41101631 100644
 --- a/sound/soc/codecs/rt5651.c
 +++ b/sound/soc/codecs/rt5651.c
-@@ -1753,6 +1753,14 @@ static int rt5651_quirk_cb(const struct dmi_system_id *id)
+@@ -19,6 +19,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/acpi.h>
++#include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -31,6 +32,10 @@
+ #include "rl6231.h"
+ #include "rt5651.h"
+ 
++#define RT5651_JD_MAP(quirk)	((quirk) & GENMASK(7, 0))
++#define RT5651_IN2_DIFF		BIT(16)
++#define RT5651_DMIC_EN		BIT(17)
++
+ #define RT5651_DEVICE_ID_VALUE 0x6281
+ 
+ #define RT5651_PR_RANGE_BASE (0xff + 1)
+@@ -38,6 +43,8 @@
+ 
+ #define RT5651_PR_BASE (RT5651_PR_RANGE_BASE + (0 * RT5651_PR_SPACING))
+ 
++static unsigned long rt5651_quirk;
++
+ static const struct regmap_range_cfg rt5651_ranges[] = {
+ 	{ .name = "PR", .range_min = RT5651_PR_BASE,
+ 	  .range_max = RT5651_PR_BASE + 0xb4,
+@@ -1739,16 +1746,36 @@ static const struct i2c_device_id rt5651_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5651_i2c_id);
+ 
++static int rt5651_quirk_cb(const struct dmi_system_id *id)
++{
++	rt5651_quirk = (unsigned long) id->driver_data;
++	return 1;
++}
++
++static const struct dmi_system_id rt5651_quirk_table[] = {
++	{}
++};
++
+ static int rt5651_parse_dt(struct rt5651_priv *rt5651, struct device_node *np)
+ {
+-	rt5651->pdata.in2_diff = of_property_read_bool(np,
+-		"realtek,in2-differential");
+-	rt5651->pdata.dmic_en = of_property_read_bool(np,
+-		"realtek,dmic-en");
++	if (of_property_read_bool(np, "realtek,in2-differential"))
++		rt5651_quirk |= RT5651_IN2_DIFF;
++	if (of_property_read_bool(np, "realtek,dmic-en"))
++		rt5651_quirk |= RT5651_DMIC_EN;
+ 
+ 	return 0;
  }
  
- static const struct dmi_system_id rt5651_quirk_table[] = {
-+	{
-+		.callback = rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
-+		},
-+		.driver_data = (unsigned long *) RT5651_JD1_1,
-+	},
- 	{}
- };
++static void rt5651_set_pdata(struct rt5651_priv *rt5651)
++{
++	if (rt5651_quirk & RT5651_IN2_DIFF)
++		rt5651->pdata.in2_diff = true;
++	if (rt5651_quirk & RT5651_DMIC_EN)
++		rt5651->pdata.dmic_en = true;
++	if (RT5651_JD_MAP(rt5651_quirk))
++		rt5651->pdata.jd_src = RT5651_JD_MAP(rt5651_quirk);
++}
++
+ static irqreturn_t rt5651_irq(int irq, void *data)
+ {
+ 	struct rt5651_priv *rt5651 = data;
+@@ -1854,6 +1881,10 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 		rt5651->pdata = *pdata;
+ 	else if (i2c->dev.of_node)
+ 		rt5651_parse_dt(rt5651, i2c->dev.of_node);
++	else
++		dmi_check_system(rt5651_quirk_table);
++
++	rt5651_set_pdata(rt5651);
  
+ 	rt5651->regmap = devm_regmap_init_i2c(i2c, &rt5651_regmap);
+ 	if (IS_ERR(rt5651->regmap)) {
 -- 
 2.14.1
