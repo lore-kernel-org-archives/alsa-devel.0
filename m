@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: byt: Enable IN2 map quirk for a
-	KIANO laptop" to the asoc tree
-Date: Thu, 26 Oct 2017 15:16:46 +0100 (BST)
-Message-ID: <20171026141646.46D4A44005B@finisterre.ee.mobilebroadband>
-References: <20171020111859.2448-4-carlo@caione.org>
+Subject: Applied "ASoC: intel: byt: Add headset jack" to the
+	asoc tree
+Date: Thu, 26 Oct 2017 15:16:50 +0100 (BST)
+Message-ID: <20171026141650.3D56F44005B@finisterre.ee.mobilebroadband>
+References: <20171020111859.2448-3-carlo@caione.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0988F266E15
- for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 16:16:48 +0200 (CEST)
-In-Reply-To: <20171020111859.2448-4-carlo@caione.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 73772266E15
+ for <alsa-devel@alsa-project.org>; Thu, 26 Oct 2017 16:16:51 +0200 (CEST)
+In-Reply-To: <20171020111859.2448-3-carlo@caione.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: byt: Enable IN2 map quirk for a KIANO laptop
+   ASoC: intel: byt: Add headset jack
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,74 @@ to this mail.
 Thanks,
 Mark
 
->From 2fe30129b0a6a8ddf71c46c8fb4524cb89739bc0 Mon Sep 17 00:00:00 2001
+>From d9f8f9b2f3e2b95875cd59ae5c3276e4662e7513 Mon Sep 17 00:00:00 2001
 From: Carlo Caione <carlo@endlessm.com>
-Date: Fri, 20 Oct 2017 12:18:57 +0100
-Subject: [PATCH] ASoC: intel: byt: Enable IN2 map quirk for a KIANO laptop
+Date: Fri, 20 Oct 2017 12:18:56 +0100
+Subject: [PATCH] ASoC: intel: byt: Add headset jack
 
-This cherry-trails laptop has the internal mic connected to the IN2
-input pins. Enable the quirk to correctly map the routes.
+Introduce an headset jack in the machine driver and register it to the
+codec driver.
 
 Signed-off-by: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 0df9067e4382..d955836c6870 100644
+index 51de1bbe8ecd..0df9067e4382 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -250,6 +250,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 		.driver_data = (void *)(BYT_RT5651_DMIC_MAP |
- 					BYT_RT5651_DMIC_EN),
- 	},
-+	{
-+		.callback = byt_rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
-+		},
-+		.driver_data = (void *)(BYT_RT5651_IN2_MAP),
-+	},
- 	{}
+@@ -47,6 +47,7 @@ enum {
+ 
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
++	struct snd_soc_jack jack;
  };
+ 
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DMIC_MAP |
+@@ -177,6 +178,17 @@ static const struct snd_kcontrol_new byt_rt5651_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Speaker"),
+ };
+ 
++static struct snd_soc_jack_pin bytcr_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
++
+ static int byt_rt5651_aif1_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
+ {
+@@ -244,6 +256,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
++	struct snd_soc_codec *codec = runtime->codec;
+ 	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
+ 	const struct snd_soc_dapm_route *custom_map;
+ 	int num_routes;
+@@ -301,6 +314,16 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+ 			dev_err(card->dev, "unable to set MCLK rate\n");
+ 	}
+ 
++	ret = snd_soc_card_jack_new(runtime->card, "Headset",
++				    SND_JACK_HEADSET, &priv->jack,
++				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
++	if (ret) {
++		dev_err(runtime->dev, "Headset jack creation failed %d\n", ret);
++		return ret;
++	}
++
++	rt5651_set_jack_detect(codec, &priv->jack);
++
+ 	return ret;
+ }
  
 -- 
 2.14.1
