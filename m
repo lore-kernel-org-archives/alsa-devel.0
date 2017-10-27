@@ -1,58 +1,39 @@
-From: Carlo Caione <carlo@endlessm.com>
-Subject: Re: [asoc:topic/intel 41/42]
- sound/soc/intel/boards/bytcr_rt5651.c:325:2: error: implicit declaration of
- function 'rt5651_set_jack_detect'
-Date: Fri, 27 Oct 2017 09:48:06 +0100
-Message-ID: <CAL9uMOFjwVX21wRJ8Ze+fv2YAv3Cq+njf37kAV1OnwAcf3WvHA@mail.gmail.com>
-References: <201710270442.UI1o2xEl%fengguang.wu@intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
+Date: Fri, 27 Oct 2017 10:57:39 +0200
+Message-ID: <20171027085739.GA28825@kroah.com>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
+ <20171020104528.GC3210@kroah.com>
+ <20171020160134.GT30097@localhost>
+ <20171026083342.GW936@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f196.google.com (mail-ua0-f196.google.com
- [209.85.217.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DC3B267456
- for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2017 10:48:07 +0200 (CEST)
-Received: by mail-ua0-f196.google.com with SMTP id z4so4365290uaz.5
- for <alsa-devel@alsa-project.org>; Fri, 27 Oct 2017 01:48:07 -0700 (PDT)
-In-Reply-To: <201710270442.UI1o2xEl%fengguang.wu@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171026083342.GW936@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 26, 2017 at 9:21 PM, kbuild test robot
-<fengguang.wu@intel.com> wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
-> head:   2fe30129b0a6a8ddf71c46c8fb4524cb89739bc0
-> commit: d9f8f9b2f3e2b95875cd59ae5c3276e4662e7513 [41/42] ASoC: intel: byt: Add headset jack
-> config: i386-allmodconfig (attached as .config)
-> compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
-> reproduce:
->         git checkout d9f8f9b2f3e2b95875cd59ae5c3276e4662e7513
->         # save the attached .config to linux build tree
->         make ARCH=i386
->
-> All errors (new ones prefixed by >>):
->
->    sound/soc/intel/boards/bytcr_rt5651.c: In function 'byt_rt5651_init':
->>> sound/soc/intel/boards/bytcr_rt5651.c:325:2: error: implicit declaration of function 'rt5651_set_jack_detect' [-Werror=implicit-function-declaration]
->      rt5651_set_jack_detect(codec, &priv->jack);
->      ^~~~~~~~~~~~~~~~~~~~~~
->    cc1: some warnings being treated as errors
+On Thu, Oct 26, 2017 at 02:03:42PM +0530, Vinod Koul wrote:
+> On Fri, Oct 20, 2017 at 09:31:34PM +0530, Vinod Koul wrote:
+> > On Fri, Oct 20, 2017 at 12:45:28PM +0200, Greg Kroah-Hartman wrote:
+> > > On Thu, Oct 19, 2017 at 08:33:18AM +0530, Vinod Koul wrote:
+> 
+> > > > +struct bus_type sdw_bus_type = {
+> > > > +	.name = "soundwire",
+> > > > +	.match = sdw_bus_match,
+> > > > +	.uevent = sdw_uevent,
+> > > > +};
+> > > > +EXPORT_SYMBOL(sdw_bus_type);
+> > > 
+> > > No release callback?  Who frees the device?
+> 
+> Hmmm, bus_type doesn't seem to have a release callback. The sdw_device has
+> release and that is added in the next patch. So I am not changing anything
+> here. Let me know If I missed anything...
 
-Hey Mark,
-should I ignore this? It looks like the kbuild robot is angry for the
-missing declaration that is added in a different commit on a different
-merging branch.
-
--- 
-Carlo Caione
+Ok, as long as you really have a release callback for when the device
+goes away, and you have tested device removal...
