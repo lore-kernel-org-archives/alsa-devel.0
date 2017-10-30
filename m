@@ -1,15 +1,18 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5645: remove unexisting route on new
-	rt5645
-Date: Mon, 30 Oct 2017 15:26:05 +0800
-Message-ID: <1509348365-16840-1-git-send-email-bardliao@realtek.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH linux-next 1/1] ASoC: rsnd: ssiu: reset
+	SSI_MODE register
+Date: Mon, 30 Oct 2017 17:08:32 +0900
+Message-ID: <3d8153c3-a8e1-93d8-daff-a4d37611e811@mentor.com>
+References: <1509030462-4799-1-git-send-email-jiada_wang@mentor.com>
+ <87d155ttv2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 00957266A0C
- for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2017 08:26:22 +0100 (CET)
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33A19266CED
+ for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2017 09:08:39 +0100 (CET)
+In-Reply-To: <87d155ttv2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,73 +22,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, gustavo@embeddedor.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-"SPOL MIX DAC R1 Switch" and "SPOL MIX SPKVOL R Switch" are only
-exist in the early version of rt5645.
+Hello Morimoto-san
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5645.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index e34f278..b7eef6a 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -432,6 +432,7 @@ struct rt5645_priv {
- 	int jack_type;
- 	bool en_button_func;
- 	bool hp_on;
-+	int v_id;
- };
- 
- static int rt5645_reset(struct snd_soc_codec *codec)
-@@ -2516,9 +2517,7 @@ static const struct snd_soc_dapm_route rt5645_dapm_routes[] = {
- 	{ "SPKVOL L", "Switch", "SPK MIXL" },
- 	{ "SPKVOL R", "Switch", "SPK MIXR" },
- 
--	{ "SPOL MIX", "DAC R1 Switch", "DAC R1" },
- 	{ "SPOL MIX", "DAC L1 Switch", "DAC L1" },
--	{ "SPOL MIX", "SPKVOL R Switch", "SPKVOL R" },
- 	{ "SPOL MIX", "SPKVOL L Switch", "SPKVOL L" },
- 	{ "SPOR MIX", "DAC R1 Switch", "DAC R1" },
- 	{ "SPOR MIX", "SPKVOL R Switch", "SPKVOL R" },
-@@ -2707,6 +2706,11 @@ static const struct snd_soc_dapm_route rt5645_specific_dapm_routes[] = {
- 	{ "DAC R2 Mux", "IF1 DAC", "RT5645 IF1 DAC2 R Mux" },
- };
- 
-+static const struct snd_soc_dapm_route rt5645_old_dapm_routes[] = {
-+	{ "SPOL MIX", "DAC R1 Switch", "DAC R1" },
-+	{ "SPOL MIX", "SPKVOL R Switch", "SPKVOL R" },
-+};
-+
- static int rt5645_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
-@@ -3363,6 +3367,11 @@ static int rt5645_probe(struct snd_soc_codec *codec)
- 		snd_soc_dapm_add_routes(dapm,
- 			rt5645_specific_dapm_routes,
- 			ARRAY_SIZE(rt5645_specific_dapm_routes));
-+		if (rt5645->v_id < 3) {
-+			snd_soc_dapm_add_routes(dapm,
-+				rt5645_old_dapm_routes,
-+				ARRAY_SIZE(rt5645_old_dapm_routes));
-+		}
- 		break;
- 	case CODEC_TYPE_RT5650:
- 		snd_soc_dapm_new_controls(dapm,
-@@ -3803,6 +3812,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 
- 	regmap_write(rt5645->regmap, RT5645_RESET, 0);
- 
-+	regmap_read(regmap, RT5645_VENDOR_ID, &val);
-+	rt5645->v_id = val & 0xff;
-+
- 	ret = regmap_register_patch(rt5645->regmap, init_list,
- 				    ARRAY_SIZE(init_list));
- 	if (ret != 0)
--- 
-2.7.4
+On 10/30/2017 08:38 AM, Kuninori Morimoto wrote:
+>
+> Hi Jiada
+>
+>> register SSI_MODE is set when SSI works in TDM Extended or
+>> TDM (Ex-)Split mode, but it isn't reset after SSI stops.
+>> this will cause issue, if SSI starts to work in other modes
+>> which requie SSI_MODE to have different value.
+>>
+>> This patch resets SSI_MODE register in .stop callback,
+>> when last stream calls .stop.
+>>
+>> Fixes: 186fadc132f0 ("ASoC: rsnd: add TDM Extend Mode support")
+>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+>> ---
+>>  sound/soc/sh/rcar/ssiu.c |    2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+>> index 4d94875..eff9f3b 100644
+>> --- a/sound/soc/sh/rcar/ssiu.c
+>> +++ b/sound/soc/sh/rcar/ssiu.c
+>> @@ -217,6 +217,8 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
+>>  	if (rsnd_ssi_multi_slaves_runtime(io))
+>>  		rsnd_mod_write(mod, SSI_CONTROL, 0);
+>>
+>> +	rsnd_mod_write(mod, SSI_MODE, 0);
+>> +
+>>  	return 0;
+>>  }
+>
+> Thank you for your patch.
+> But, I don't want to reset register when stop, because
+> it might be point-less if SoC has power domain.
+> How about this or similar (not tested) ?
+>
+> ------------------
+> diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+> index 4d94875..8dc2e92 100644
+> --- a/sound/soc/sh/rcar/ssiu.c
+> +++ b/sound/soc/sh/rcar/ssiu.c
+> @@ -130,14 +130,13 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+>  	if (ret < 0)
+>  		return ret;
+>
+> -	if (rsnd_runtime_is_ssi_tdm(io)) {
+> -		/*
+> -		 * TDM Extend Mode
+> -		 * see
+> -		 *	rsnd_ssi_config_init()
+> -		 */
+> -		rsnd_mod_write(mod, SSI_MODE, 0x1);
+> -	}
+> +	/*
+> +	 * TDM Extend Mode
+> +	 * see
+> +	 *	rsnd_ssi_config_init()
+> +	 */
+> +	rsnd_mod_write(mod, SSI_MODE,
+> +		       rsnd_runtime_is_ssi_tdm(io) ? 0x1 : 0x0);
+
+Thanks for your suggestion,
+I will do some test for this change,
+if it works fine, I will submit ver2 with it
+
+Thanks,
+Jiada
+>
+>  	if (rsnd_ssi_use_busif(io)) {
+>  		rsnd_mod_write(mod, SSI_BUSIF_ADINR,
+>
+>
+> Best regards
+> ---
+> Kuninori Morimoto
+>
