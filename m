@@ -1,84 +1,73 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: Cherry Trail + RT5645 devices with a mono speaker ?
-Date: Mon, 30 Oct 2017 03:29:46 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D7026F79BB@RTITMBSV02.realtek.com.tw>
-References: <f5ad13fc-2b25-7f64-d5f0-6ad035fd09ab@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7026E85AB@RTITMBSV02.realtek.com.tw>
- <c5eb261c-4a02-d793-aeab-abc845579343@redhat.com>
- <ABFD875FF5FB574BA706497D987D48D7026F4A1F@RTITMBSV02.realtek.com.tw>
- <d158e706-95a8-c1bc-2c8b-b198e16cbacd@redhat.com>
+From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Subject: [RFC] ALSA: vsnd: Add Xen para-virtualized frontend driver
+Date: Mon, 30 Oct 2017 08:33:46 +0200
+Message-ID: <77dc886e-f3e6-ecef-ed73-c92e966d02f9@epam.com>
+References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
+ <7e62a406-7dcd-b5c9-b2de-ea52e1d2afd0@sakamocchi.jp>
+ <b9e34f0e-4a9a-9ccf-6165-04cd22a070ac@gmail.com>
+ <CACvf2oU4puqSuNj2k5REpmFJdvWcTWY+AaNEJtknLP4XMPdbsg@mail.gmail.com>
+ <e5d52c8a-09e0-2823-dcff-e595868c7dee@sakamocchi.jp>
+ <2a2fd222-fc54-1709-bfc8-a530efc3f307@gmail.com>
+ <ad4f2201-bfab-415d-0120-308989653628@sakamocchi.jp>
+ <b129960e-b38f-ea94-3e4a-3cd409f7a707@gmail.com>
+ <3f8e535b-8607-6b15-6e17-da755a06cc1e@sakamocchi.jp>
+ <CACvf2oUJtxVTuV0qu4z4kV=aSOH5O_8v=UjH_3tr4wCJdXuEjw@mail.gmail.com>
+ <3fde10f8-4727-e37b-8001-ce2356fffb2b@sakamocchi.jp>
+ <162b7251-4040-c61f-1fcd-c32f65bd3c67@gmail.com>
+ <8542f293-f2d0-9ba3-7082-967b32fcec17@ladisch.de>
+ <CACvf2oUYM5_KWKsv1Q8=fkqzgMHieYQ76GyiwPTh8UsB+K9iFg@mail.gmail.com>
+ <d29615e8-0fc2-68b8-d158-90378dc5ebeb@gmail.com>
+ <5421f97e-cd7a-dd22-7557-b0fc25899c1b@gmail.com>
+ <232329e2-893f-d40a-3543-062098338bc2@gmail.com>
+ <e56a09e9-da66-b748-4e82-4b96a18cef32@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B91C266E0C
- for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2017 04:30:56 +0100 (CET)
-In-Reply-To: <d158e706-95a8-c1bc-2c8b-b198e16cbacd@redhat.com>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, =?utf-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Albert Chen <albertchen@realtek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <e56a09e9-da66-b748-4e82-4b96a18cef32@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, xen-devel@lists.xen.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Oleksandr Andrushchenko <andr2000@gmail.com>, Oleksandr Grytsov <al1img@gmail.com>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBIYW5zIGRlIEdvZWRlIFttYWls
-dG86aGRlZ29lZGVAcmVkaGF0LmNvbV0NCj4gU2VudDogRnJpZGF5LCBPY3RvYmVyIDI3LCAyMDE3
-IDY6MTggUE0NCj4gVG86IEJhcmQgTGlhbzsgUGllcnJlLUxvdWlzIEJvc3NhcnQNCj4gQ2M6IGFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgT2RlciBDaGlvdTsgU2h1bWluZyBb6IyD5pu46YqY
-XTsgQWxiZXJ0IENoZW4NCj4gU3ViamVjdDogUmU6IENoZXJyeSBUcmFpbCArIFJUNTY0NSBkZXZp
-Y2VzIHdpdGggYSBtb25vIHNwZWFrZXIgPw0KPiANCj4gPj4NCj4gPj4gT24gMTYtMTAtMTcgMTM6
-MzEsIEJhcmQgTGlhbyB3cm90ZToNCj4gPj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiA+Pj4+IEZyb206IEhhbnMgZGUgR29lZGUgW21haWx0bzpoZGVnb2VkZUByZWRoYXQuY29tXQ0K
-PiA+Pj4+IFNlbnQ6IFN1bmRheSwgT2N0b2JlciAxNSwgMjAxNyAyOjEyIEFNDQo+ID4+Pj4gVG86
-IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0OyBCYXJkIExpYW8NCj4gPj4+PiBDYzogYWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnDQo+ID4+Pj4gU3ViamVjdDogQ2hlcnJ5IFRyYWlsICsgUlQ1NjQ1IGRl
-dmljZXMgd2l0aCBhIG1vbm8gc3BlYWtlciA/DQo+ID4+Pj4NCj4gPj4+PiBIaSBQaWVycmUtTG91
-aXMsIEJhcmQsDQo+ID4+Pj4NCj4gPj4+PiBJJ3ZlIGJlZW4gbG9va2luZyBpbnRvIGdldHRpbmcg
-c29tZSBDaGVycnkgVHJhaWwgKyBSVDU2NDUNCj4gPj4+PiBkZXZpY2VzIHdpdGggYSBtb25vIHNw
-ZWFrZXIgSSBoYXZlIHRvIHdvcmsgcHJvcGVybHkuDQo+ID4+Pj4NCj4gPj4+PiBTcGVjaWZpY2Fs
-bHkgdGhlIGdvYWwgaXMgdG8gbWl4IHRoZSByaWdodCBjaGFubmVsIGludG8NCj4gPj4+PiB0aGUg
-bGVmdCBvdXRwdXQsIHNvIHRoYXQgc291bmRzIHdoaWNoIGFyZSBvbmx5IHBsYXllZA0KPiA+Pj4+
-IG92ZXIgdGhlIHJpZ2h0IGNoYW5uZWwgZG8gbm90IGdldCBsb3N0Lg0KPiA+Pj4+DQo+ID4+Pj4g
-SSdtIHVzaW5nIHRoaXMgVUNNIGZpbGU6DQo+ID4+Pj4gaHR0cHM6Ly9naXRodWIuY29tL3BsYm9z
-c2FydC9VQ00vYmxvYi9tYXN0ZXIvYnl0LXJ0NTY0MC9IaUZpDQo+ID4+Pj4NCj4gPj4+PiBMb29r
-aW5nIGF0IHRoZSBydGw1NjQwIFVDTSBmaWxlLCBnZXR0aW5nIHRoZSBtb25vIHNwZWFrZXINCj4g
-Pj4+PiB0byB3b3JrIChpbiBhIGZpcnN0IHNpbXBsZSBhdHRlbXB0KSBzaG91bGQgYmUgYXMgc2lt
-cGxlDQo+ID4+Pj4gYXMgcmVwbGFjaW5nOg0KPiA+Pj4+DQo+ID4+Pj4gICAgICAgICAgICAgICAg
-ICAgIGNzZXQgIm5hbWU9J1NQT1IgTUlYIFNQS1ZPTCBSIFN3aXRjaCcgb24iDQo+ID4+Pj4NCj4g
-Pj4+PiBXaXRoDQo+ID4+Pj4NCj4gPj4+PiAgICAgICAgICAgICAgICAgICAgY3NldCAibmFtZT0n
-U1BPTCBNSVggU1BLVk9MIFIgU3dpdGNoJyBvbiINCj4gPj4+Pg0KPiA+Pj4+IEJ1dCB0aGlzIGRv
-ZXMgbm90IHdvcmssIHRoZSBzcGVha2VyIHRlc3Qgc291bmQgZm9yIHRoZQ0KPiA+Pj4+IHJpZ2h0
-IHNwZWFrZXIgaXMgc3RpbGwgc2lsZW50ICh3b3JrcyB3aXRoIGhlYWRwaG9uZXMpLg0KPiA+Pj4+
-DQo+ID4+Pj4gSSd2ZSBhbHNvIGxvb2tlZCBpbnRvIGRpcmVjdGx5IHBva2luZyB0aGUNCj4gPj4+
-PiBSVDU2NDVfU1BPX01JWEVSIGkyYyByZWdpc3RlciBmb3IgdGVzdGluZywgYnV0IHdoZW4NCj4g
-Pj4+PiBjaGVja2luZyBpdHMgdmFsdWUgd2l0aCB0aGUgb3JpZ2luYWwgdW5tb2RpZmllZCBVQ00N
-Cj4gPj4+PiBmaWxlOg0KPiA+Pj4+DQo+ID4+Pj4gW3Jvb3RAbG9jYWxob3N0IH5dIyBpMmNnZXQg
-LXkgLWYgMSAweDFhIDB4NDggIHcNCj4gPj4+PiAweDA2YzgNCj4gPj4+Pg0KPiA+Pj4+IFRoYXQg
-aXM6IDB4YzgwNiBhcyB0aGUgb3V0cHV0IG9mIGkyY2dldCAidyIgbW9kZQ0KPiA+Pj4+IG5lZWRz
-IGJ5dGVzd2FwcGluZy4gTm90ZSB0aGF0IGJvdGggdGhlDQo+ID4+Pj4gUlQ1NjQ1X01fU1ZfTF9T
-UE1fTCBhbmQgUlQ1NjQ1X01fU1ZfUl9TUE1fTCBiaXRzDQo+ID4+Pj4gYXJlIGFscmVhZHkgY2xl
-YXJlZCwgd2hpY2ggaXMgd2VpcmQgYXMgdGhpcyBpcw0KPiA+Pj4+IGJlZm9yZSBJJ3ZlIG1vZGlm
-aWVkIGFueXRoaW5nLiBBbHNvIHRoZQ0KPiA+Pj4+IFJUNTY0NV9NX1NWX1JfU1BNX1IgYml0IGlz
-IGNsZWFyZWQsIGJ1dCB0aGF0IGlzDQo+ID4+Pj4gZXhwZWN0ZWQuDQo+ID4+Pj4NCj4gPj4+PiBF
-dmVuIGlmIEkgbWFudWFsbHkgc2V0IHJlZyAweDQ4IHRvIDB4MDdjOCB3aGljaCBBRkFJSw0KPiA+
-Pj4+IHNob3VsZCBlbmFibGUgb3V0cHV0IG9mIGJvdGggbGVmdCBhbmQgcmlnaHQgY2hhbm5lbHMN
-Cj4gPj4+PiBvbiB0aGUgbGVmdCBzcGVha2VyIEkgc3RpbGwgb25seSBnZXQgc291bmRzIHBsYXll
-ZA0KPiA+Pj4+IG9uIHRoZSBsZWZ0IGNoYW5uZWwuDQo+ID4+Pj4NCj4gPj4+PiBBbnkgaW5zaWdo
-dHMgLyBoZWxwIHdpdGggdGhpcyB3b3VsZCBiZSB2ZXJ5IG11Y2gNCj4gPj4+PiB3ZWxjb21lLg0K
-PiA+Pj4NCg0KVW5mb3J0dW5hdGVseSwgIlNQT0wgTUlYIERBQyBSMSBTd2l0Y2giIGFuZCAiU1BP
-TCBNSVggU1BLVk9MIFIgU3dpdGNoIg0KYXJlIG5vIGxvbmdlciB2YWxpZC4gSSB3aWxsIHNlbmQg
-YSBwYXRjaCBmb3IgdGhhdC4gUGxlYXNlIHVzZQ0KIlN0ZXJlbyBEQUMgTUlYTCBEQUMgUjEgU3dp
-dGNoIiB0byBkbyBML1IgY2hhbm5lbCBtaXguDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IA0KPiBIYW5z
-DQo+IA0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmlu
-dGluZyB0aGlzIGUtbWFpbC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+Hi, all!
+
+This is an attempt to summarize previous discussions on Xen para-virtual
+sound driver.
+
+A first attempt has been made to upstream the driver [1] which brought 
+number
+of fundamental questions, one of the biggest ones was that the frontend 
+driver
+has no means to synchronize its period elapsed event with the host driver,
+but uses software emulation on the guest side [2] with a timer.
+In order to address this a change to the existing Xen para-virtual sound
+protocol [3] was proposed to fill this gap [4] and remove emulation:
+1. Introduced a new event channel from back to front
+2. New event with number of bytes played/captured (XENSND_EVT_CUR_POS,
+to be used for sending snd_pcm_period_elapsed at frontend
+(in Linux implementation, sent in bytes, not frames to make the protocol
+generic and consistent)
+3. New request for playback/capture control (XENSND_OP_TRIGGER) with
+start/pause/stop/resume sub-ops.
+
+Along with these changes other comments on the driver were addressed,
+e.g. split into smaller chunks, moved the driver from misc to xen etc. [5].
+
+Hope, this helps to get the full picture of what was discussed and makes it
+possible to move forward: if the approach seems ok, then I'll start
+upstreaming the changes to the sndif protocol and then will send the 
+updated
+version of the driver for the further review.
+
+Thank you,
+Oleksandr
+
+
+[1] https://lkml.org/lkml/2017/8/7/363
+[2] https://lkml.org/lkml/2017/8/9/1167
+[3] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/xen/interface/io/sndif.h
+[4] https://lkml.org/lkml/2017/9/19/121
+[5] https://github.com/andr2000/linux/tree/snd_upstream_v1/sound/xen
