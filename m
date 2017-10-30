@@ -1,46 +1,84 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
-Date: Mon, 30 Oct 2017 18:41:04 +0530
-Message-ID: <20171030131104.GE3187@localhost>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
- <20171020104528.GC3210@kroah.com>
- <20171020160134.GT30097@localhost>
- <20171026083342.GW936@localhost>
- <20171027085739.GA28825@kroah.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: Cherry Trail + RT5645 devices with a mono speaker ?
+Date: Mon, 30 Oct 2017 14:17:04 +0100
+Message-ID: <bf0c011f-325c-feee-921a-5d91b2b003a8@redhat.com>
+References: <f5ad13fc-2b25-7f64-d5f0-6ad035fd09ab@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D7026E85AB@RTITMBSV02.realtek.com.tw>
+ <c5eb261c-4a02-d793-aeab-abc845579343@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D7026F4A1F@RTITMBSV02.realtek.com.tw>
+ <d158e706-95a8-c1bc-2c8b-b198e16cbacd@redhat.com>
+ <ABFD875FF5FB574BA706497D987D48D7026F79BB@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171027085739.GA28825@kroah.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9F3E266AE1
+ for <alsa-devel@alsa-project.org>; Mon, 30 Oct 2017 14:17:08 +0100 (CET)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7026F79BB@RTITMBSV02.realtek.com.tw>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Albert Chen <albertchen@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 27, 2017 at 10:57:39AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Oct 26, 2017 at 02:03:42PM +0530, Vinod Koul wrote:
-> > On Fri, Oct 20, 2017 at 09:31:34PM +0530, Vinod Koul wrote:
-> > > On Fri, Oct 20, 2017 at 12:45:28PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Thu, Oct 19, 2017 at 08:33:18AM +0530, Vinod Koul wrote:
-> > 
-> > > > > +struct bus_type sdw_bus_type = {
-> > > > > +	.name = "soundwire",
-> > > > > +	.match = sdw_bus_match,
-> > > > > +	.uevent = sdw_uevent,
-> > > > > +};
-> > > > > +EXPORT_SYMBOL(sdw_bus_type);
-> > > > 
-> > > > No release callback?  Who frees the device?
-> > 
-> > Hmmm, bus_type doesn't seem to have a release callback. The sdw_device has
-> > release and that is added in the next patch. So I am not changing anything
-> > here. Let me know If I missed anything...
-> 
-> Ok, as long as you really have a release callback for when the device
-> goes away, and you have tested device removal...
-
-Yup both checks done, thanks for confirming...
-
--- 
-~Vinod
+SEksCgpPbiAzMC0xMC0xNyAwNDoyOSwgQmFyZCBMaWFvIHdyb3RlOgo+PiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQo+PiBGcm9tOiBIYW5zIGRlIEdvZWRlIFttYWlsdG86aGRlZ29lZGVAcmVk
+aGF0LmNvbV0KPj4gU2VudDogRnJpZGF5LCBPY3RvYmVyIDI3LCAyMDE3IDY6MTggUE0KPj4gVG86
+IEJhcmQgTGlhbzsgUGllcnJlLUxvdWlzIEJvc3NhcnQKPj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZzsgT2RlciBDaGlvdTsgU2h1bWluZyBb6IyD5pu46YqYXTsgQWxiZXJ0IENoZW4K
+Pj4gU3ViamVjdDogUmU6IENoZXJyeSBUcmFpbCArIFJUNTY0NSBkZXZpY2VzIHdpdGggYSBtb25v
+IHNwZWFrZXIgPwo+Pgo+Pj4+Cj4+Pj4gT24gMTYtMTAtMTcgMTM6MzEsIEJhcmQgTGlhbyB3cm90
+ZToKPj4+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4+Pj4+PiBGcm9tOiBIYW5zIGRl
+IEdvZWRlIFttYWlsdG86aGRlZ29lZGVAcmVkaGF0LmNvbV0KPj4+Pj4+IFNlbnQ6IFN1bmRheSwg
+T2N0b2JlciAxNSwgMjAxNyAyOjEyIEFNCj4+Pj4+PiBUbzogUGllcnJlLUxvdWlzIEJvc3NhcnQ7
+IEJhcmQgTGlhbwo+Pj4+Pj4gQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+Pj4+Pj4g
+U3ViamVjdDogQ2hlcnJ5IFRyYWlsICsgUlQ1NjQ1IGRldmljZXMgd2l0aCBhIG1vbm8gc3BlYWtl
+ciA/Cj4+Pj4+Pgo+Pj4+Pj4gSGkgUGllcnJlLUxvdWlzLCBCYXJkLAo+Pj4+Pj4KPj4+Pj4+IEkn
+dmUgYmVlbiBsb29raW5nIGludG8gZ2V0dGluZyBzb21lIENoZXJyeSBUcmFpbCArIFJUNTY0NQo+
+Pj4+Pj4gZGV2aWNlcyB3aXRoIGEgbW9ubyBzcGVha2VyIEkgaGF2ZSB0byB3b3JrIHByb3Blcmx5
+Lgo+Pj4+Pj4KPj4+Pj4+IFNwZWNpZmljYWxseSB0aGUgZ29hbCBpcyB0byBtaXggdGhlIHJpZ2h0
+IGNoYW5uZWwgaW50bwo+Pj4+Pj4gdGhlIGxlZnQgb3V0cHV0LCBzbyB0aGF0IHNvdW5kcyB3aGlj
+aCBhcmUgb25seSBwbGF5ZWQKPj4+Pj4+IG92ZXIgdGhlIHJpZ2h0IGNoYW5uZWwgZG8gbm90IGdl
+dCBsb3N0Lgo+Pj4+Pj4KPj4+Pj4+IEknbSB1c2luZyB0aGlzIFVDTSBmaWxlOgo+Pj4+Pj4gaHR0
+cHM6Ly9naXRodWIuY29tL3BsYm9zc2FydC9VQ00vYmxvYi9tYXN0ZXIvYnl0LXJ0NTY0MC9IaUZp
+Cj4+Pj4+Pgo+Pj4+Pj4gTG9va2luZyBhdCB0aGUgcnRsNTY0MCBVQ00gZmlsZSwgZ2V0dGluZyB0
+aGUgbW9ubyBzcGVha2VyCj4+Pj4+PiB0byB3b3JrIChpbiBhIGZpcnN0IHNpbXBsZSBhdHRlbXB0
+KSBzaG91bGQgYmUgYXMgc2ltcGxlCj4+Pj4+PiBhcyByZXBsYWNpbmc6Cj4+Pj4+Pgo+Pj4+Pj4g
+ICAgICAgICAgICAgICAgICAgICBjc2V0ICJuYW1lPSdTUE9SIE1JWCBTUEtWT0wgUiBTd2l0Y2gn
+IG9uIgo+Pj4+Pj4KPj4+Pj4+IFdpdGgKPj4+Pj4+Cj4+Pj4+PiAgICAgICAgICAgICAgICAgICAg
+IGNzZXQgIm5hbWU9J1NQT0wgTUlYIFNQS1ZPTCBSIFN3aXRjaCcgb24iCj4+Pj4+Pgo+Pj4+Pj4g
+QnV0IHRoaXMgZG9lcyBub3Qgd29yaywgdGhlIHNwZWFrZXIgdGVzdCBzb3VuZCBmb3IgdGhlCj4+
+Pj4+PiByaWdodCBzcGVha2VyIGlzIHN0aWxsIHNpbGVudCAod29ya3Mgd2l0aCBoZWFkcGhvbmVz
+KS4KPj4+Pj4+Cj4+Pj4+PiBJJ3ZlIGFsc28gbG9va2VkIGludG8gZGlyZWN0bHkgcG9raW5nIHRo
+ZQo+Pj4+Pj4gUlQ1NjQ1X1NQT19NSVhFUiBpMmMgcmVnaXN0ZXIgZm9yIHRlc3RpbmcsIGJ1dCB3
+aGVuCj4+Pj4+PiBjaGVja2luZyBpdHMgdmFsdWUgd2l0aCB0aGUgb3JpZ2luYWwgdW5tb2RpZmll
+ZCBVQ00KPj4+Pj4+IGZpbGU6Cj4+Pj4+Pgo+Pj4+Pj4gW3Jvb3RAbG9jYWxob3N0IH5dIyBpMmNn
+ZXQgLXkgLWYgMSAweDFhIDB4NDggIHcKPj4+Pj4+IDB4MDZjOAo+Pj4+Pj4KPj4+Pj4+IFRoYXQg
+aXM6IDB4YzgwNiBhcyB0aGUgb3V0cHV0IG9mIGkyY2dldCAidyIgbW9kZQo+Pj4+Pj4gbmVlZHMg
+Ynl0ZXN3YXBwaW5nLiBOb3RlIHRoYXQgYm90aCB0aGUKPj4+Pj4+IFJUNTY0NV9NX1NWX0xfU1BN
+X0wgYW5kIFJUNTY0NV9NX1NWX1JfU1BNX0wgYml0cwo+Pj4+Pj4gYXJlIGFscmVhZHkgY2xlYXJl
+ZCwgd2hpY2ggaXMgd2VpcmQgYXMgdGhpcyBpcwo+Pj4+Pj4gYmVmb3JlIEkndmUgbW9kaWZpZWQg
+YW55dGhpbmcuIEFsc28gdGhlCj4+Pj4+PiBSVDU2NDVfTV9TVl9SX1NQTV9SIGJpdCBpcyBjbGVh
+cmVkLCBidXQgdGhhdCBpcwo+Pj4+Pj4gZXhwZWN0ZWQuCj4+Pj4+Pgo+Pj4+Pj4gRXZlbiBpZiBJ
+IG1hbnVhbGx5IHNldCByZWcgMHg0OCB0byAweDA3Yzggd2hpY2ggQUZBSUsKPj4+Pj4+IHNob3Vs
+ZCBlbmFibGUgb3V0cHV0IG9mIGJvdGggbGVmdCBhbmQgcmlnaHQgY2hhbm5lbHMKPj4+Pj4+IG9u
+IHRoZSBsZWZ0IHNwZWFrZXIgSSBzdGlsbCBvbmx5IGdldCBzb3VuZHMgcGxheWVkCj4+Pj4+PiBv
+biB0aGUgbGVmdCBjaGFubmVsLgo+Pj4+Pj4KPj4+Pj4+IEFueSBpbnNpZ2h0cyAvIGhlbHAgd2l0
+aCB0aGlzIHdvdWxkIGJlIHZlcnkgbXVjaAo+Pj4+Pj4gd2VsY29tZS4KPj4+Pj4KPiAKPiBVbmZv
+cnR1bmF0ZWx5LCAiU1BPTCBNSVggREFDIFIxIFN3aXRjaCIgYW5kICJTUE9MIE1JWCBTUEtWT0wg
+UiBTd2l0Y2giCj4gYXJlIG5vIGxvbmdlciB2YWxpZC4gSSB3aWxsIHNlbmQgYSBwYXRjaCBmb3Ig
+dGhhdC4gUGxlYXNlIHVzZQo+ICJTdGVyZW8gREFDIE1JWEwgREFDIFIxIFN3aXRjaCIgdG8gZG8g
+TC9SIGNoYW5uZWwgbWl4LgoKT2ssIHRoYW5rIHlvdSBJIHdpbGwgZ2l2ZSB0aGlzIGEgdHJ5LgoK
+UmVnYXJkcywKCkhhbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
