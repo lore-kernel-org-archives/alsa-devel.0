@@ -1,59 +1,32 @@
-From: Sergej Sawazki <sergej@taudac.com>
-Subject: Re: [PATCH v2] ASoC: wm8741: Add digital mute callback
-Date: Tue, 31 Oct 2017 10:36:26 +0100
-Message-ID: <9fd5fafe-0d07-75e2-a868-a349bd094a7c@taudac.com>
-References: <1509352096-5491-1-git-send-email-sergej@taudac.com>
- <20171030154110.5vl2ajatnsr5c4sm@localhost.localdomain>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: sound tree breaks make clean
+Date: Tue, 31 Oct 2017 10:41:15 +0100
+Message-ID: <CAKMK7uF1oX3JXE4DNOOtC5hm_LzQAdL=EORdTufLzn+r=8J-Qw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s62.goserver.host (s62.goserver.host [37.17.224.62])
- by alsa0.perex.cz (Postfix) with ESMTP id D54BD266A0C
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 10:36:28 +0100 (CET)
-In-Reply-To: <20171030154110.5vl2ajatnsr5c4sm@localhost.localdomain>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
-Cc: ce3a@gmx.de, patches@opensource.cirrus.com, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>, "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am 30.10.2017 um 16:41 schrieb Charles Keepax:
-> On Mon, Oct 30, 2017 at 09:28:16AM +0100, Sergej Sawazki wrote:
->> Signed-off-by: Sergej Sawazki <sergej@taudac.com>
->> ---
->> Changes in v2:
->>   * Refactored debug message.
->>
->>   sound/soc/codecs/wm8741.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
->> index b8c1940..5571882 100644
->> --- a/sound/soc/codecs/wm8741.c
->> +++ b/sound/soc/codecs/wm8741.c
->> @@ -351,6 +351,17 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
->>   	return 0;
->>   }
->>   
->> +int wm8741_mute(struct snd_soc_dai *codec_dai, int mute)
->> +{
->> +	struct snd_soc_codec *codec = codec_dai->codec;
->> +
->> +	dev_dbg(codec->dev, "wm8741_mute:    mute = %d\n", mute);
-> 
-> It is still not really normal style to include the function name
-> in the debug messages. How about just "digital mute = %d\n" or
-> something like that?
-> 
-
-Maybe not really normal, but CONSISTENT. That's the style used
-throughout the entire file. And it makes the log look consistent.
+SGkgYWxsLAoKVGhlIGZvbGxvd2luZyBjb21taXQKCmNvbW1pdCA2MGQ0OTgxY2NmMzYwMzY2OWM4
+ZGUzMDQ2MTkwNDhhZDVkYTcwN2JkCkF1dGhvcjogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
+PgpEYXRlOiAgIFR1ZSBPY3QgMjQgMDk6MTU6MjMgMjAxNyArMDIwMAoKICAgIHNvdW5kOiBSZXRp
+cmUgT1NTCgoKYnJlYWtzCgokIG1ha2UgZGVmY29uZmlnICYmIG1ha2UgY2xlYW4KCihqdXN0IG1h
+a2UgY2xlYW4gaW4gYW4gYWxyZWFkeSBjbGVhbiB0cmVlIHNlZW1zIHRvIHdvcmspLgoKV2UndmUg
+dGFrZW4gdGhlIHNvdW5kIHRyZWUgb3V0IG9mIGRybS10aXAgYW5kIG91ciBDSSBmb3Igbm93IHRv
+IHdvcmsKYXJvdW5kIHRoaXMuCgpUaGFua3MsIERhbmllbAotLSAKRGFuaWVsIFZldHRlcgpTb2Z0
+d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KKzQxICgwKSA3OSAzNjUgNTcgNDggLSBo
+dHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9p
+bnRlbC1nZngK
