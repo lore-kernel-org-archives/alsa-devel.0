@@ -1,19 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] sound: Retire OSS
-Date: Tue, 31 Oct 2017 11:29:59 +0100
-Message-ID: <4cc424fe-49b1-e923-604b-7f37e46fb9a3@perex.cz>
-References: <s5hwp3cr86f.wl-tiwai@suse.de>
- <83028545-9b12-4f43-1f31-46c18cd16681@perex.cz>
- <s5hmv47ep8n.wl-tiwai@suse.de> <s5h8tfrei7w.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: Intel: kbl: fix jack name
+Date: Tue, 31 Oct 2017 16:47:27 +0530
+Message-ID: <1509448647-5182-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 15BA3266A0C
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 11:30:02 +0100 (CET)
-In-Reply-To: <s5h8tfrei7w.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83B022670B6
+ for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:14:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,67 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 31.10.2017 v 11:15 Takashi Iwai napsal(a):
-> On Tue, 31 Oct 2017 08:43:52 +0100,
-> Takashi Iwai wrote:
->>
->> On Mon, 30 Oct 2017 20:31:38 +0100,
->> Jaroslav Kysela wrote:
->>>
->>> Dne 30.10.2017 v 16:01 Takashi Iwai napsal(a):
->>>> Hi,
->>>>
->>>> below is a snippet of the patch I'm going to apply for finally
->>>> dropping the OSS code.  It's been already disabled for a few kernel
->>>> versions, and we didn't get any complains.  So, as discussed in the
->>>> last audio mini-summit, we go forward now.
->>>>
->>>> Since the whole patch just removing a bunch of files is too big to
->>>> post (and useless), I attach only a part of it: namely, the changelog,
->>>> the diffstat, and the files that are modified (but not deleted).
->>>
->>> Reviewed-by: Jaroslav Kysela <perex@perex.cz>
->>
->> Thanks, now I merged the patch to for-next branch.
->> Let's see whether it goes well.
-> 
-> ... and it had a bug, a leftover at sound/Makefile.
-> The following diff was applied.
+Commit d1c4cb447a7e ("ASoC: Intel: Skylake: Fix jack name format
+substitution") added Jack name but erroneously added a space as well,
+so remove the space in Jack name.
 
-Thanks. This simple change is obvious.
+Fixes: d1c4cb447a7e ("ASoC: Intel: Skylake: Fix jack name format substitution")
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-			Jaroslav
-
-> 
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/Makefile b/sound/Makefile
-> index 6de45d2c32f7..e5794fdd3d79 100644
-> --- a/sound/Makefile
-> +++ b/sound/Makefile
-> @@ -2,8 +2,7 @@
->  #
->  
->  obj-$(CONFIG_SOUND) += soundcore.o
-> -obj-$(CONFIG_SOUND_PRIME) += oss/
-> -obj-$(CONFIG_DMASOUND) += oss/
-> +obj-$(CONFIG_DMASOUND) += oss/dmasound/
->  obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ sh/ synth/ usb/ \
->  	firewire/ sparc/ spi/ parisc/ pcmcia/ mips/ soc/ atmel/ hda/ x86/
->  obj-$(CONFIG_SND_AOA) += aoa/
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-
-
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 9cd0769ccd34..69ab55956492 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -605,7 +605,7 @@ static int kabylake_card_late_probe(struct snd_soc_card *card)
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+ 		codec = pcm->codec_dai->codec;
+ 		snprintf(jack_name, sizeof(jack_name),
+-			"HDMI/DP, pcm=%d Jack", pcm->device);
++			"HDMI/DP,pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+ 				SND_JACK_AVOUT, &ctx->kabylake_hdmi[i],
+ 				NULL, 0);
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.7.4
