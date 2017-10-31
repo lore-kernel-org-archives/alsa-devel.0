@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Enable tdm slots for max98927"
-	to the asoc tree
-Date: Tue, 31 Oct 2017 11:21:12 +0000
-Message-ID: <E1e9UbY-0002mG-4v@debutante>
-References: <1504291278-4482-2-git-send-email-harshapriya.n@intel.com>
+Subject: Applied "ASoC: rsnd: Don't check SSISR::DIRQ when
+	Capture" to the asoc tree
+Date: Tue, 31 Oct 2017 11:21:17 +0000
+Message-ID: <E1e9Ubd-0002nC-RG@debutante>
+References: <87she0xim3.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 47751267275
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:17 +0100 (CET)
-In-Reply-To: <1504291278-4482-2-git-send-email-harshapriya.n@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FEDF26728A
+ for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:23 +0100 (CET)
+In-Reply-To: <87she0xim3.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Harsha Priya <harshapriya.n@intel.com>, vinod.koul@intel.com, broonie@kernel.org, tiwai@suse.de, Naveen M <naveen.m@intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Enable tdm slots for max98927
+   ASoC: rsnd: Don't check SSISR::DIRQ when Capture
 
 has been applied to the asoc tree at
 
@@ -52,93 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 7a679ea75a1bc4ea6216aa6877a8bd47fd83e790 Mon Sep 17 00:00:00 2001
-From: Harsha Priya N <harshapriya.n@intel.com>
-Date: Thu, 26 Oct 2017 11:44:02 -0700
-Subject: [PATCH] ASoC: Intel: Enable tdm slots for max98927
+>From ce548931207c0d0059bd90171e2c458f897354d7 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 31 Oct 2017 00:40:32 +0000
+Subject: [PATCH] ASoC: rsnd: Don't check SSISR::DIRQ when Capture
 
-In this patch the SSP0 BE's mode is changed from I2S mode to DSP_B
-with 8 slots of 16 bits. It enables 4 slot for IV feedback and 2 slots for
-playback on max98927 for kabylake machine driver
+When stop case, it was Playback, it need to check all data were
+completely sent. But in Capture case, it might not receive data
+anymore. SSISR::DIRQ check is not need for Capture case.
 
-The layout of SSP0 Tx and Rx slots is as follows;
-1. Playback uses Tx slots 0 and 1
-2. Capture uses Rx slots 4,5,6,7.
-
-Slots 0 through 3 of Rx are used by DMIC codec RT5514 in another flavor
-of Kabylake platform. We are using the same slots 4 through 7 on all
-Kabylake platforms for max98927 in order to reuse same NHLT configuration.
-
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 40 +++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index e45b6feca076..5a4ee5b1c6a0 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -399,6 +399,43 @@ static int kabylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 61b4ce20ee2b..58e3420a1f05 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -598,15 +598,18 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_is_parent(mod, io))
+ 		return 0;
  
-+static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	int ret = 0, j;
-+
-+	for (j = 0; j < rtd->num_codecs; j++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[j];
-+
-+		if (!strcmp(codec_dai->component->name, MAXIM_DEV0_NAME)) {
-+			/*
-+			 * Use channel 4 and 5 for the first amp
-+			 */
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
-+			if (ret < 0) {
-+				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
-+			/*
-+			 * Use channel 6 and 7 for the second amp
-+			 */
-+			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
-+			if (ret < 0) {
-+				dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
-+				return ret;
-+			}
-+		}
+-	/*
+-	 * disable all IRQ,
+-	 * and, wait all data was sent
+-	 */
+ 	cr  =	ssi->cr_own	|
+ 		ssi->cr_clk;
+ 
+-	rsnd_mod_write(mod, SSICR, cr | EN);
+-	rsnd_ssi_status_check(mod, DIRQ);
++	/*
++	 * disable all IRQ,
++	 * Playback: Wait all data was sent
++	 * Capture:  It might not receave data. Do nothing
++	 */
++	if (rsnd_io_is_play(io)) {
++		rsnd_mod_write(mod, SSICR, cr | EN);
++		rsnd_ssi_status_check(mod, DIRQ);
 +	}
-+	return ret;
-+}
-+
-+static struct snd_soc_ops kabylake_ssp0_ops = {
-+	.hw_params = kabylake_ssp0_hw_params,
-+};
-+
- static unsigned int channels_dmic[] = {
- 	2, 4,
- };
-@@ -602,12 +639,13 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.no_pcm = 1,
- 		.codecs = max98927_codec_components,
- 		.num_codecs = ARRAY_SIZE(max98927_codec_components),
--		.dai_fmt = SND_SOC_DAIFMT_I2S |
-+		.dai_fmt = SND_SOC_DAIFMT_DSP_B |
- 			SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBS_CFS,
- 		.ignore_pmdown_time = 1,
- 		.be_hw_params_fixup = kabylake_ssp_fixup,
- 		.dpcm_playback = 1,
-+		.ops = &kabylake_ssp0_ops,
- 	},
- 	{
- 		/* SSP1 - Codec */
+ 
+ 	/*
+ 	 * disable SSI,
 -- 
 2.15.0.rc2
