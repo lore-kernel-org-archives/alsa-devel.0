@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't use io->mod[] directly" to
-	the asoc tree
-Date: Tue, 31 Oct 2017 11:21:45 +0000
-Message-ID: <E1e9Uc5-0002rO-Dg@debutante>
-References: <87zi88xiq2.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5645: remove unexisting route on new
+	rt5645" to the asoc tree
+Date: Tue, 31 Oct 2017 11:21:51 +0000
+Message-ID: <E1e9UcB-0002sT-AV@debutante>
+References: <1509348365-16840-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 082CE26727C
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:48 +0100 (CET)
-In-Reply-To: <87zi88xiq2.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B5F6C26727C
+ for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:22:03 +0100 (CET)
+In-Reply-To: <1509348365-16840-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't use io->mod[] directly
+   ASoC: rt5645: remove unexisting route on new rt5645
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 138f878647f2ac0d7700f669b860cb130306e062 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 31 Oct 2017 00:38:09 +0000
-Subject: [PATCH] ASoC: rsnd: don't use io->mod[] directly
+>From 50f510a33c7c906f8f75b02e3d1104984ebf6f78 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Mon, 30 Oct 2017 15:26:05 +0800
+Subject: [PATCH] ASoC: rt5645: remove unexisting route on new rt5645
 
-We have rsnd_io_to_mod() macro. Let's use it
+"SPOL MIX DAC R1 Switch" and "SPOL MIX SPKVOL R Switch" are only
+exist in the early version of rt5645.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index e9b0b0f5f0ee..b338c0009506 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -407,7 +407,7 @@ struct rsnd_mod *rsnd_mod_next(int *iterator,
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 4b2dbf0c3409..23cc2cb8393f 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -432,6 +432,7 @@ struct rt5645_priv {
+ 	int jack_type;
+ 	bool en_button_func;
+ 	bool hp_on;
++	int v_id;
+ };
  
- 	for (; *iterator < max; (*iterator)++) {
- 		type = (array) ? array[*iterator] : *iterator;
--		mod = io->mod[type];
-+		mod = rsnd_io_to_mod(io, type);
- 		if (!mod)
- 			continue;
+ static int rt5645_reset(struct snd_soc_codec *codec)
+@@ -2516,9 +2517,7 @@ static const struct snd_soc_dapm_route rt5645_dapm_routes[] = {
+ 	{ "SPKVOL L", "Switch", "SPK MIXL" },
+ 	{ "SPKVOL R", "Switch", "SPK MIXR" },
  
+-	{ "SPOL MIX", "DAC R1 Switch", "DAC R1" },
+ 	{ "SPOL MIX", "DAC L1 Switch", "DAC L1" },
+-	{ "SPOL MIX", "SPKVOL R Switch", "SPKVOL R" },
+ 	{ "SPOL MIX", "SPKVOL L Switch", "SPKVOL L" },
+ 	{ "SPOR MIX", "DAC R1 Switch", "DAC R1" },
+ 	{ "SPOR MIX", "SPKVOL R Switch", "SPKVOL R" },
+@@ -2707,6 +2706,11 @@ static const struct snd_soc_dapm_route rt5645_specific_dapm_routes[] = {
+ 	{ "DAC R2 Mux", "IF1 DAC", "RT5645 IF1 DAC2 R Mux" },
+ };
+ 
++static const struct snd_soc_dapm_route rt5645_old_dapm_routes[] = {
++	{ "SPOL MIX", "DAC R1 Switch", "DAC R1" },
++	{ "SPOL MIX", "SPKVOL R Switch", "SPKVOL R" },
++};
++
+ static int rt5645_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -3363,6 +3367,11 @@ static int rt5645_probe(struct snd_soc_codec *codec)
+ 		snd_soc_dapm_add_routes(dapm,
+ 			rt5645_specific_dapm_routes,
+ 			ARRAY_SIZE(rt5645_specific_dapm_routes));
++		if (rt5645->v_id < 3) {
++			snd_soc_dapm_add_routes(dapm,
++				rt5645_old_dapm_routes,
++				ARRAY_SIZE(rt5645_old_dapm_routes));
++		}
+ 		break;
+ 	case CODEC_TYPE_RT5650:
+ 		snd_soc_dapm_new_controls(dapm,
+@@ -3803,6 +3812,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 
+ 	regmap_write(rt5645->regmap, RT5645_RESET, 0);
+ 
++	regmap_read(regmap, RT5645_VENDOR_ID, &val);
++	rt5645->v_id = val & 0xff;
++
+ 	ret = regmap_register_patch(rt5645->regmap, init_list,
+ 				    ARRAY_SIZE(init_list));
+ 	if (ret != 0)
 -- 
 2.15.0.rc2
