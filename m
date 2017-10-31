@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: use snd_pcm_running() in
-	rsnd_io_is_working()" to the asoc tree
-Date: Tue, 31 Oct 2017 11:21:23 +0000
-Message-ID: <E1e9Ubj-0002o9-AS@debutante>
-References: <87vaiwxind.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: tidyup rsnd_mod_next() for loop
+	method" to the asoc tree
+Date: Tue, 31 Oct 2017 11:21:42 +0000
+Message-ID: <E1e9Uc2-0002qG-E9@debutante>
+References: <87y3nsxipb.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E3EFE26728A
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:26 +0100 (CET)
-In-Reply-To: <87vaiwxind.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DF3622672A0
+ for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:45 +0100 (CET)
+In-Reply-To: <87y3nsxipb.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: use snd_pcm_running() in rsnd_io_is_working()
+   ASoC: rsnd: tidyup rsnd_mod_next() for loop method
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 8fce974bc4d5478d4ddee2443a3e268532ab35a8 Mon Sep 17 00:00:00 2001
+>From b12f1e3a798e19727ca632d92abe619b418ad0d0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 31 Oct 2017 00:39:45 +0000
-Subject: [PATCH] ASoC: rsnd: use snd_pcm_running() in rsnd_io_is_working()
+Date: Tue, 31 Oct 2017 00:38:36 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup rsnd_mod_next() for loop method
 
-Let's use more common style to checking running/working
+Let's remove point less "continue"
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 0216d3f53097..b36832ef7342 100644
+index b338c0009506..8fc3bf2b20f5 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -199,7 +199,10 @@ void rsnd_mod_interrupt(struct rsnd_mod *mod,
- int rsnd_io_is_working(struct rsnd_dai_stream *io)
- {
- 	/* see rsnd_dai_stream_init/quit() */
--	return !!io->substream;
-+	if (io->substream)
-+		return snd_pcm_running(io->substream);
-+
-+	return 0;
- }
+@@ -408,10 +408,8 @@ struct rsnd_mod *rsnd_mod_next(int *iterator,
+ 	for (; *iterator < max; (*iterator)++) {
+ 		type = (array) ? array[*iterator] : *iterator;
+ 		mod = rsnd_io_to_mod(io, type);
+-		if (!mod)
+-			continue;
+-
+-		return mod;
++		if (mod)
++			return mod;
+ 	}
  
- int rsnd_runtime_channel_original(struct rsnd_dai_stream *io)
+ 	return NULL;
 -- 
 2.15.0.rc2
