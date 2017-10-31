@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: NULL check is not needed for
-	clk_unprepare()" to the asoc tree
-Date: Tue, 31 Oct 2017 11:21:26 +0000
-Message-ID: <E1e9Ubm-0002pD-Re@debutante>
-References: <87wp3cxio8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't use io->mod[] directly" to
+	the asoc tree
+Date: Tue, 31 Oct 2017 11:21:45 +0000
+Message-ID: <E1e9Uc5-0002rO-Dg@debutante>
+References: <87zi88xiq2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 568992672B2
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:30 +0100 (CET)
-In-Reply-To: <87wp3cxio8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 082CE26727C
+ for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:48 +0100 (CET)
+In-Reply-To: <87zi88xiq2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: NULL check is not needed for clk_unprepare()
+   ASoC: rsnd: don't use io->mod[] directly
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From ed3ac14ca90074d51f365dba5ed535e76ea155ea Mon Sep 17 00:00:00 2001
+>From 138f878647f2ac0d7700f669b860cb130306e062 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 31 Oct 2017 00:39:17 +0000
-Subject: [PATCH] ASoC: rsnd: NULL check is not needed for clk_unprepare()
+Date: Tue, 31 Oct 2017 00:38:09 +0000
+Subject: [PATCH] ASoC: rsnd: don't use io->mod[] directly
 
-clk_unprepare() is checking parameter by IS_ERR_OR_NULL().
-clk NULL check is not needed on rsnd_mod_quit()
+We have rsnd_io_to_mod() macro. Let's use it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sh/rcar/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 8fc3bf2b20f5..0216d3f53097 100644
+index e9b0b0f5f0ee..b338c0009506 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -172,8 +172,7 @@ int rsnd_mod_init(struct rsnd_priv *priv,
+@@ -407,7 +407,7 @@ struct rsnd_mod *rsnd_mod_next(int *iterator,
  
- void rsnd_mod_quit(struct rsnd_mod *mod)
- {
--	if (mod->clk)
--		clk_unprepare(mod->clk);
-+	clk_unprepare(mod->clk);
- 	mod->clk = NULL;
- }
+ 	for (; *iterator < max; (*iterator)++) {
+ 		type = (array) ? array[*iterator] : *iterator;
+-		mod = io->mod[type];
++		mod = rsnd_io_to_mod(io, type);
+ 		if (!mod)
+ 			continue;
  
 -- 
 2.15.0.rc2
