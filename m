@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Don't check SSISR::DIRQ when
-	Capture" to the asoc tree
-Date: Tue, 31 Oct 2017 11:21:17 +0000
-Message-ID: <E1e9Ubd-0002nC-RG@debutante>
-References: <87she0xim3.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: use snd_pcm_running() in
+	rsnd_io_is_working()" to the asoc tree
+Date: Tue, 31 Oct 2017 11:21:23 +0000
+Message-ID: <E1e9Ubj-0002o9-AS@debutante>
+References: <87vaiwxind.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FEDF26728A
- for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:23 +0100 (CET)
-In-Reply-To: <87she0xim3.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E3EFE26728A
+ for <alsa-devel@alsa-project.org>; Tue, 31 Oct 2017 12:21:26 +0100 (CET)
+In-Reply-To: <87vaiwxind.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Don't check SSISR::DIRQ when Capture
+   ASoC: rsnd: use snd_pcm_running() in rsnd_io_is_working()
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From ce548931207c0d0059bd90171e2c458f897354d7 Mon Sep 17 00:00:00 2001
+>From 8fce974bc4d5478d4ddee2443a3e268532ab35a8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 31 Oct 2017 00:40:32 +0000
-Subject: [PATCH] ASoC: rsnd: Don't check SSISR::DIRQ when Capture
+Date: Tue, 31 Oct 2017 00:39:45 +0000
+Subject: [PATCH] ASoC: rsnd: use snd_pcm_running() in rsnd_io_is_working()
 
-When stop case, it was Playback, it need to check all data were
-completely sent. But in Capture case, it might not receive data
-anymore. SSISR::DIRQ check is not need for Capture case.
+Let's use more common style to checking running/working
 
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/sh/rcar/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 61b4ce20ee2b..58e3420a1f05 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -598,15 +598,18 @@ static int rsnd_ssi_stop(struct rsnd_mod *mod,
- 	if (rsnd_ssi_is_parent(mod, io))
- 		return 0;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 0216d3f53097..b36832ef7342 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -199,7 +199,10 @@ void rsnd_mod_interrupt(struct rsnd_mod *mod,
+ int rsnd_io_is_working(struct rsnd_dai_stream *io)
+ {
+ 	/* see rsnd_dai_stream_init/quit() */
+-	return !!io->substream;
++	if (io->substream)
++		return snd_pcm_running(io->substream);
++
++	return 0;
+ }
  
--	/*
--	 * disable all IRQ,
--	 * and, wait all data was sent
--	 */
- 	cr  =	ssi->cr_own	|
- 		ssi->cr_clk;
- 
--	rsnd_mod_write(mod, SSICR, cr | EN);
--	rsnd_ssi_status_check(mod, DIRQ);
-+	/*
-+	 * disable all IRQ,
-+	 * Playback: Wait all data was sent
-+	 * Capture:  It might not receave data. Do nothing
-+	 */
-+	if (rsnd_io_is_play(io)) {
-+		rsnd_mod_write(mod, SSICR, cr | EN);
-+		rsnd_ssi_status_check(mod, DIRQ);
-+	}
- 
- 	/*
- 	 * disable SSI,
+ int rsnd_runtime_channel_original(struct rsnd_dai_stream *io)
 -- 
 2.15.0.rc2
