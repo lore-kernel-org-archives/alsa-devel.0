@@ -1,58 +1,47 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH 08/14] soundwire: Add Slave status handling
- helpers
-Date: Wed, 1 Nov 2017 16:10:08 -0500
-Message-ID: <11066ca7-f71c-5867-67f5-3c597b26bf61@linux.intel.com>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-9-git-send-email-vinod.koul@intel.com>
- <s5h60bbqmkz.wl-tiwai@suse.de> <20171031130412.GW3187@localhost>
- <98f1b39a-b48d-2603-8e9d-88b4f804e2c8@linux.intel.com>
- <20171101090820.GA3187@localhost>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: [PATCH] ALSA: usb-audio: support new Amanero Combo384
+	firmware version
+Date: Wed,  1 Nov 2017 23:32:33 +0200
+Message-ID: <1509571953-23030-1-git-send-email-jussi@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171101090820.GA3187@localhost>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37F7126737F
+ for <alsa-devel@alsa-project.org>; Wed,  1 Nov 2017 22:32:42 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Jussi Laako <jussi@sonarnerd.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/1/17 4:08 AM, Vinod Koul wrote:
-> On Wed, Nov 01, 2017 at 02:49:15AM +0530, Pierre-Louis Bossart wrote:
->>
->>>
->>>>> +		if (found == false) {
->>>>> +			/* TODO: Park this device in Group 13 */
->>>>> +			dev_err(bus->dev, "Slave Entry not found");
->>>>
->>>> No break here?  Otherwise...
->>>
->>> Thats intentional. We want to still read next device that show up
->>>
->>>>
->>>>> +		}
->>>>> +
->>>>> +	} while (ret == 0);
->>>>
->>>> ... the outer loop may go endlessly.
->>>> This condition doesn't look effective.
->>>
->>> not really. We cant keep reading successfully. At some point all slaves will
->>> ignore and return ENODATA and we exit. Bus errors will also make it exit
->>>
->>> BUT given that we have seen stuff i am inclined to add a counter, we cant
->>> have more than 11 device so that's a sane value to use :)
->>
->> Yep. Keep in mind however that there could be theoretical corner cases: if a
->> device is enumerated, loses sync and becomes attached again while you deal
->> with others, you'd have more than 11 iterations.
-> 
-> Not really as that would be another interrupt and another status report.
+Support DSD_U32_BE sample format on new Amanero Combo384 firmware
+version on older VID/PID.
 
-You are in a loop where you keep reading the devId registers, and that 
-really has nothing to do with interrupts or status report. The point was 
-that the number of times you read may be higher that the number of 
-devices with a device being handled several times.
-As mentioned above you need to limit this loop to a sane value.
+Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 5a040e3..77eecaa 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1369,6 +1369,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 			case 0x199:
+ 				return SNDRV_PCM_FMTBIT_DSD_U32_LE;
+ 			case 0x19b:
++			case 0x203:
+ 				return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 			default:
+ 				break;
+-- 
+2.7.4
