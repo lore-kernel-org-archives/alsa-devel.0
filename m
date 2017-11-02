@@ -1,46 +1,66 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH 08/14] soundwire: Add Slave status handling
- helpers
-Date: Thu, 2 Nov 2017 08:58:55 +0530
-Message-ID: <20171102032855.GB3187@localhost>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-9-git-send-email-vinod.koul@intel.com>
- <s5h60bbqmkz.wl-tiwai@suse.de>
- <20171031130412.GW3187@localhost>
- <98f1b39a-b48d-2603-8e9d-88b4f804e2c8@linux.intel.com>
- <20171101090820.GA3187@localhost>
- <11066ca7-f71c-5867-67f5-3c597b26bf61@linux.intel.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: HDA HDMI audio doesn't work on Intel Geminilake
+	machines
+Date: Thu, 2 Nov 2017 15:10:46 +0800
+Message-ID: <717967d0-a0bb-18fc-aa6c-80f52dccb350@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <11066ca7-f71c-5867-67f5-3c597b26bf61@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB64226737F
+ for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 08:10:53 +0100 (CET)
+Received: from [114.252.215.178] (helo=[192.168.1.111])
+ by youngberry.canonical.com with esmtpsa (TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16)
+ (Exim 4.76) (envelope-from <hui.wang@canonical.com>)
+ id 1eA9eO-0003lu-Ut
+ for alsa-devel@alsa-project.org; Thu, 02 Nov 2017 07:10:53 +0000
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 01, 2017 at 04:10:08PM -0500, Pierre-Louis Bossart wrote:
-> On 11/1/17 4:08 AM, Vinod Koul wrote:
-> >On Wed, Nov 01, 2017 at 02:49:15AM +0530, Pierre-Louis Bossart wrote:
-> >>>
-> >>>BUT given that we have seen stuff i am inclined to add a counter, we cant
-> >>>have more than 11 device so that's a sane value to use :)
-> >>
-> >>Yep. Keep in mind however that there could be theoretical corner cases: if a
-> >>device is enumerated, loses sync and becomes attached again while you deal
-> >>with others, you'd have more than 11 iterations.
-> >
-> >Not really as that would be another interrupt and another status report.
-> 
-> You are in a loop where you keep reading the devId registers, and that
-> really has nothing to do with interrupts or status report. The point was
-> that the number of times you read may be higher that the number of devices
-> with a device being handled several times.
-> As mentioned above you need to limit this loop to a sane value.
-
-Oh yes, I was thinking from status point of view which triggers this but yes
-we keep reading so your point is valid. Lets add 2x buffer for that.
-
--- 
-~Vinod
+V2UgaGF2ZSBzZXZlcmFsIEdlbWluaWxha2UgbGFwdG9wIGFuZCBkZXNrdG9wIG1hY2hpbmVzLCBv
+biB0aGVzZSAKbWFjaGluZXMsIHRoZSBIVyBjb25maWdzIGFyZSBzYW1lIGFuZCBhcmUgYXMgc2hv
+d24gYmVsb3c6Cgp0aGUgSERBIGNvbnRyb2xsZXI6IDAwOjBlLjAgQXVkaW8gZGV2aWNlIFswNDAz
+XTogSW50ZWwgQ29ycG9yYXRpb24gCkRldmljZSBbODA4NjozMTk4XSAocmV2IDAxKQp0aGUgSERN
+SSBjb2RlYzogVmVuZG9yIElkOiAweDgwODYyODBkClZHQSBjb250cm9sbGVyOiAwMDowMi4wIFZH
+QSBjb21wYXRpYmxlIGNvbnRyb2xsZXIgWzAzMDBdOiBJbnRlbCAKQ29ycG9yYXRpb24gRGV2aWNl
+IFs4MDg2OjMxODRdIChyZXYgMDEpIChwcm9nLWlmIDAwIFtWR0EgY29udHJvbGxlcl0pCgpUaGUg
+cHJvYmxlbSBpcyBpZiB3ZSBib290IHRoZSBzeXN0ZW0gd2l0aG91dCBwbHVnZ2luZyB0aGUgSERN
+SSBtb25pdG9yLCAKdGhlIExpbnV4IGtlcm5lbCBjYW4ndCBmaW5kIEhETUkgY29kZWMgYXQgYWxs
+LiBJZiB3ZSBwbHVnIHRoZSBIRE1JIAptb25pdG9yIGJlZm9yZSBib290aW5nIHVwLCB0aGUga2Vy
+bmVsIGNhbiBmaW5kIHRoZSBIRE1JIGNvZGVjLCBidXQgdGhlcmUgCmFyZSBtYW55IGVycm9ycyAo
+YXMgc2hvd24gYmVsb3cpIGFuZCB0aGUgSERNSSBhdWRpbyBjYW4ndCBwbGF5IGFueSBzb3VuZC4K
+CkNvZGVjOiBJbnRlbCBHZW1pbmlsYWtlIEhETUkKQWRkcmVzczogMgpBRkcgRnVuY3Rpb24gSWQ6
+IDB4MSAodW5zb2wgMCkKVmVuZG9yIElkOiAweDgwODYyODBkClN1YnN5c3RlbSBJZDogMHg4MDg2
+MDEwMQpSZXZpc2lvbiBJZDogMHgxMDAwMDAKTm8gTW9kZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQK
+RGVmYXVsdCBQQ006Ck4vQQpEZWZhdWx0IEFtcC1JbiBjYXBzOiBOL0EKRGVmYXVsdCBBbXAtT3V0
+IGNhcHM6IE4vQQpTdGF0ZSBvZiBBRkcgbm9kZSAweDAxOgogwqAgUG93ZXI6IHNldHRpbmc9VU5L
+Tk9XTiwgYWN0dWFsPVVOS05PV04sIEVycm9yLCBDbG9jay1zdG9wLU9LLCAKU2V0dGluZy1yZXNl
+dApJbnZhbGlkIEFGRyBzdWJ0cmVlCi0tZW5kY29sbGFwc2UtLQoKW8KgwqAgMjUuNTA0MDY5XSBz
+bmRfaGRhX2ludGVsIDAwMDA6MDA6MGUuMDogYXp4X2dldF9yZXNwb25zZSB0aW1lb3V0LCAKc3dp
+dGNoaW5nIHRvIHBvbGxpbmcgbW9kZTogbGFzdCBjbWQ9MHgyMGJmODEwMApbwqDCoCAyNi41MTYx
+MjVdIHNuZF9oZGFfaW50ZWwgMDAwMDowMDowZS4wOiBObyByZXNwb25zZSBmcm9tIGNvZGVjLCAK
+ZGlzYWJsaW5nIE1TSTogbGFzdCBjbWQ9MHgyMGJmODEwMApbwqDCoCAyNy41MjgwNThdIHNuZF9o
+ZGFfaW50ZWwgMDAwMDowMDowZS4wOiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVvdXQsIApzd2l0Y2hp
+bmcgdG8gc2luZ2xlX2NtZCBtb2RlOiBsYXN0IGNtZD0weDIwYmY4MTAwClvCoMKgIDI3LjUyODI1
+OV0gYXp4X3NpbmdsZV93YWl0X2Zvcl9yZXNwb25zZTogMTIgY2FsbGJhY2tzIHN1cHByZXNzZWQK
+W8KgwqAgMjcuNTQ3OTI3XSBzbmRfaGRhX2NvZGVjX2hkbWkgaGRhdWRpb0MwRDI6IFVuYWJsZSB0
+byBzeW5jIHJlZ2lzdGVyIAoweDJmMGQwMC4gLTUKCgpXZSBoYXZlIHRlc3RlZCB0aGUgbGF0ZXN0
+IG1haW5saW5lIGtlcm5lbCwgYnV0IHRoZSB0ZXN0aW5nIHJlc3VsdCBpcyB0aGUgCnNhbWUuCgpT
+byBkb2VzIHRoZSBleGlzdGluZyBrZXJuZWwgZHJpdmVyIHN1cHBvcnQgdGhlIEhETUkgYXVkaW8g
+d2VsbCBmb3IgCkdlbWluaWxha2U/IElmIGl0IGRvZXMsIHdoYXQgaXMgd3Jvbmcgd2l0aCB0aG9z
+ZSBtYWNoaW5lcywgSFcgaXNzdWUgb3IgCkJJT1MgaXNzdWU/CgoKVGhhbmtzIGluIGFkdmFuY2Uu
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
