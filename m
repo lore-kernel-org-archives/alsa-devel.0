@@ -1,188 +1,86 @@
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-Subject: Re: [alsa-devel] BUG: soft lockup
-Date: Thu, 2 Nov 2017 12:09:51 +0300
-Message-ID: <20171102090951.drjf7wc2urcmtla5@node.shutemov.name>
-References: <94eb2c19df188b1926055cf13c21@google.com>
- <CACT4Y+ZDVP7mJHaOpq9N5oewE0WwCCWgrtWX08DFdBJN4sBRhQ@mail.gmail.com>
- <s5hshdxay1t.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC] ALSA: vsnd: Add Xen para-virtualized frontend driver
+Date: Thu, 2 Nov 2017 18:44:05 +0900
+Message-ID: <b229c2d1-7628-d6dd-73f1-94a4a4106f52@sakamocchi.jp>
+References: <1502108577-8099-1-git-send-email-andr2000@gmail.com>
+ <b9e34f0e-4a9a-9ccf-6165-04cd22a070ac@gmail.com>
+ <CACvf2oU4puqSuNj2k5REpmFJdvWcTWY+AaNEJtknLP4XMPdbsg@mail.gmail.com>
+ <e5d52c8a-09e0-2823-dcff-e595868c7dee@sakamocchi.jp>
+ <2a2fd222-fc54-1709-bfc8-a530efc3f307@gmail.com>
+ <ad4f2201-bfab-415d-0120-308989653628@sakamocchi.jp>
+ <b129960e-b38f-ea94-3e4a-3cd409f7a707@gmail.com>
+ <3f8e535b-8607-6b15-6e17-da755a06cc1e@sakamocchi.jp>
+ <CACvf2oUJtxVTuV0qu4z4kV=aSOH5O_8v=UjH_3tr4wCJdXuEjw@mail.gmail.com>
+ <3fde10f8-4727-e37b-8001-ce2356fffb2b@sakamocchi.jp>
+ <162b7251-4040-c61f-1fcd-c32f65bd3c67@gmail.com>
+ <8542f293-f2d0-9ba3-7082-967b32fcec17@ladisch.de>
+ <CACvf2oUYM5_KWKsv1Q8=fkqzgMHieYQ76GyiwPTh8UsB+K9iFg@mail.gmail.com>
+ <d29615e8-0fc2-68b8-d158-90378dc5ebeb@gmail.com>
+ <5421f97e-cd7a-dd22-7557-b0fc25899c1b@gmail.com>
+ <232329e2-893f-d40a-3543-062098338bc2@gmail.com>
+ <e56a09e9-da66-b748-4e82-4b96a18cef32@gmail.com>
+ <77dc886e-f3e6-ecef-ed73-c92e966d02f9@epam.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="xqvwsu7vpwjsljlm"
-Return-path: <owner-linux-mm@kvack.org>
-Content-Disposition: inline
-In-Reply-To: <s5hshdxay1t.wl-tiwai@suse.de>
-Sender: owner-linux-mm@kvack.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dmitry Vyukov <dvyukov@google.com>, syzbot <bot+63583aefef5457348dcfa06b87d4fd1378b26b09@syzkaller.appspotmail.com>, aaron.lu@intel.com, alsa-devel@alsa-project.org, Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>, Peter Zijlstra <peterz@infradead.org>, ying.huang@intel.com, syzkaller-bugs@googlegroups.com, LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org, Takashi Iwai <tiwai@suse.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, shli@fb.com, David Rientjes <rientjes@google.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Andrew Morton <akpm@linux-foundation.org>, zi.yan@cs.rutgers.edu, Matthew Wilcox <willy@linux.intel.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <77dc886e-f3e6-ecef-ed73-c92e966d02f9@epam.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, xen-devel@lists.xen.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Oleksandr Andrushchenko <andr2000@gmail.com>, Oleksandr Grytsov <al1img@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-
---xqvwsu7vpwjsljlm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 02, 2017 at 09:23:58AM +0100, Takashi Iwai wrote:
+On Oct 30 2017 15:33, Oleksandr Andrushchenko wrote:
+> This is an attempt to summarize previous discussions on Xen para-virtual
+> sound driver.
 > 
-> Currently the least ALSA timer interrupt period is limited to 1ms.
-> Does it still too much?
+> A first attempt has been made to upstream the driver [1] which brought 
+> number
+> of fundamental questions, one of the biggest ones was that the frontend 
+> driver
+> has no means to synchronize its period elapsed event with the host driver,
+> but uses software emulation on the guest side [2] with a timer.
+> In order to address this a change to the existing Xen para-virtual sound
+> protocol [3] was proposed to fill this gap [4] and remove emulation:
+> 1. Introduced a new event channel from back to front
+> 2. New event with number of bytes played/captured (XENSND_EVT_CUR_POS,
+> to be used for sending snd_pcm_period_elapsed at frontend
+> (in Linux implementation, sent in bytes, not frames to make the protocol
+> generic and consistent)
+> 3. New request for playback/capture control (XENSND_OP_TRIGGER) with
+> start/pause/stop/resume sub-ops.
 > 
-> Can the reproducer triggers it reliably?  If yes, could you forward
-> it, too (and config as well), so that I'll try to dig down more exact
-> code paths?
+> Along with these changes other comments on the driver were addressed,
+> e.g. split into smaller chunks, moved the driver from misc to xen etc. [5].
+> 
+> Hope, this helps to get the full picture of what was discussed and makes it
+> possible to move forward: if the approach seems ok, then I'll start
+> upstreaming the changes to the sndif protocol and then will send the 
+> updated
+> version of the driver for the further review.
 
-All of that is part of original report:
+This message has below line in its header.
 
-http://lkml.kernel.org/r/94eb2c19df188b1926055cf13c21@google.com
+ > In-Reply-To: <e56a09e9-da66-b748-4e82-4b96a18cef32@gmail.com>
 
-marc.info hasn't stored repro.c for some reasone. Attached.
+This field is defined in RFC822[1], and recent mail clients use this 
+header field to associate the message to a message which the field 
+indicates. This results in a series of messages, so-called 'message 
+thread'. Iwai-san would like you to start a new message thread for your 
+topic. Would you please post this message again without the header field?
 
-I've just check it reproduces reliably for me in KVM.
+Generally, receiving no reactions means that readers/reviewers don't get 
+enough information for your idea yet. (Of course, there's a probability 
+that your work attracts no one...) In this case, submitting more 
+resources is better, rather than requesting comments to them. For 
+instance, you can point links to backend/frontend implementation as 
+para-virtualization drivers which use the new feature of interface, if 
+you did work for it. Indicating procedure to use a series of your work 
+is better for test, if possible.
 
-I also checked that it's not specific to THP -- still trigirable with huge
-pages disabled.
+[1] https://www.ietf.org/rfc/rfc0822.txt
 
--- 
- Kirill A. Shutemov
+Regards
 
---xqvwsu7vpwjsljlm
-Content-Type: text/x-c; charset=us-ascii
-Content-Disposition: attachment; filename="repro.c"
-
-// autogenerated by syzkaller (http://github.com/google/syzkaller)
-
-#define _GNU_SOURCE
-
-#include <fcntl.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <unistd.h>
-
-static uintptr_t syz_open_dev(uintptr_t a0, uintptr_t a1, uintptr_t a2)
-{
-  if (a0 == 0xc || a0 == 0xb) {
-    char buf[128];
-    sprintf(buf, "/dev/%s/%d:%d", a0 == 0xc ? "char" : "block",
-            (uint8_t)a1, (uint8_t)a2);
-    return open(buf, O_RDWR, 0);
-  } else {
-    char buf[1024];
-    char* hash;
-    strncpy(buf, (char*)a0, sizeof(buf));
-    buf[sizeof(buf) - 1] = 0;
-    while ((hash = strchr(buf, '#'))) {
-      *hash = '0' + (char)(a1 % 10);
-      a1 /= 10;
-    }
-    return open(buf, a2, 0);
-  }
-}
-
-static void test();
-
-void loop()
-{
-  while (1) {
-    test();
-  }
-}
-
-long r[64];
-void test()
-{
-  memset(r, -1, sizeof(r));
-  r[0] = syscall(__NR_mmap, 0x20000000ul, 0xfff000ul, 0x3ul, 0x32ul,
-                 0xfffffffffffffffful, 0x0ul);
-  memcpy((void*)0x203a2000, "\x2e\x2f\x66\x69\x6c\x65\x30\x00", 8);
-  *(uint64_t*)0x20000fe0 = (uint64_t)0x0;
-  *(uint64_t*)0x20000fe8 = (uint64_t)0x2710;
-  *(uint64_t*)0x20000ff0 = (uint64_t)0x77359400;
-  *(uint64_t*)0x20000ff8 = (uint64_t)0x0;
-  r[6] = syscall(__NR_utimes, 0x203a2000ul, 0x20000fe0ul);
-  r[7] = syscall(__NR_getdents64, 0xfffffffffffffffful, 0x2076e000ul,
-                 0x0ul);
-  memcpy((void*)0x20c67ff1,
-         "\x2f\x64\x65\x76\x2f\x73\x6e\x64\x2f\x74\x69\x6d\x65\x72\x00",
-         15);
-  r[9] = syz_open_dev(0x20c67ff1ul, 0x0ul, 0x0ul);
-  *(uint32_t*)0x205a3fcc = (uint32_t)0x0;
-  *(uint32_t*)0x205a3fd0 = (uint32_t)0x2;
-  *(uint32_t*)0x205a3fd4 = (uint32_t)0x0;
-  *(uint32_t*)0x205a3fd8 = (uint32_t)0xffffffffffffffff;
-  *(uint32_t*)0x205a3fdc = (uint32_t)0x0;
-  *(uint8_t*)0x205a3fe0 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe1 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe2 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe3 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe4 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe5 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe6 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe7 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe8 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fe9 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fea = (uint8_t)0x0;
-  *(uint8_t*)0x205a3feb = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fec = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fed = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fee = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fef = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff0 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff1 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff2 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff3 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff4 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff5 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff6 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff7 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff8 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ff9 = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ffa = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ffb = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ffc = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ffd = (uint8_t)0x0;
-  *(uint8_t*)0x205a3ffe = (uint8_t)0x0;
-  *(uint8_t*)0x205a3fff = (uint8_t)0x0;
-  r[47] = syscall(__NR_ioctl, r[9], 0x40345410ul, 0x205a3fccul);
-  r[48] = syscall(__NR_ioctl, r[9], 0x54a2ul);
-  memcpy((void*)0x20bd8000,
-         "\x2f\x64\x65\x76\x2f\x73\x65\x71\x75\x65\x6e\x63\x65\x72\x32"
-         "\x00",
-         16);
-  r[50] = syscall(__NR_openat, 0xffffffffffffff9cul, 0x20bd8000ul,
-                  0x101000ul, 0x0ul);
-  *(uint32_t*)0x20d1e000 = (uint32_t)0xffffffffffffffff;
-  *(uint32_t*)0x20d1e004 = (uint32_t)0x730e;
-  *(uint32_t*)0x20d1e008 = (uint32_t)0x7;
-  *(uint32_t*)0x20d1e00c = (uint32_t)0x3;
-  *(uint8_t*)0x20d1e010 = (uint8_t)0xffffffffffffffff;
-  *(uint8_t*)0x20d1e011 = (uint8_t)0x80000001;
-  *(uint8_t*)0x20d1e012 = (uint8_t)0x4610;
-  *(uint8_t*)0x20d1e013 = (uint8_t)0x9;
-  *(uint32_t*)0x20d1e014 = (uint32_t)0x8;
-  *(uint32_t*)0x20d1e018 = (uint32_t)0x9;
-  *(uint32_t*)0x20d1e01c = (uint32_t)0x7;
-  *(uint32_t*)0x20d1e020 = (uint32_t)0x1;
-  r[63] = syscall(__NR_ioctl, r[50], 0x5402ul, 0x20d1e000ul);
-}
-
-int main()
-{
-  int i;
-  for (i = 0; i < 8; i++) {
-    if (fork() == 0) {
-      loop();
-      return 0;
-    }
-  }
-  sleep(1000000);
-  return 0;
-}
-
---xqvwsu7vpwjsljlm--
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Takashi Sakamoto
