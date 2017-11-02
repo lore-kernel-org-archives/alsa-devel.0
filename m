@@ -1,22 +1,18 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: HDA HDMI audio doesn't work on Intel Geminilake
-	machines
-Date: Thu, 2 Nov 2017 15:10:46 +0800
-Message-ID: <717967d0-a0bb-18fc-aa6c-80f52dccb350@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Edirol M-16DX broken after fw upgrade
+Date: Thu, 2 Nov 2017 08:31:40 +0100
+Message-ID: <236a1966-cc2f-db5a-4336-35f10170f9d3@ladisch.de>
+References: <CAJtGUK60-RQ_b0Vf1g2tFCoGjPVfQzWwKsAJb0E+D3GgSUMxWQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id EB64226737F
- for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 08:10:53 +0100 (CET)
-Received: from [114.252.215.178] (helo=[192.168.1.111])
- by youngberry.canonical.com with esmtpsa (TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16)
- (Exim 4.76) (envelope-from <hui.wang@canonical.com>)
- id 1eA9eO-0003lu-Ut
- for alsa-devel@alsa-project.org; Thu, 02 Nov 2017 07:10:53 +0000
-Content-Language: en-GB
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6237926737F
+ for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 08:31:31 +0100 (CET)
+In-Reply-To: <CAJtGUK60-RQ_b0Vf1g2tFCoGjPVfQzWwKsAJb0E+D3GgSUMxWQ@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,41 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?UTF-8?Q?Andr=c3=a1s_Mur=c3=a1nyi?= <muranyia@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-V2UgaGF2ZSBzZXZlcmFsIEdlbWluaWxha2UgbGFwdG9wIGFuZCBkZXNrdG9wIG1hY2hpbmVzLCBv
-biB0aGVzZSAKbWFjaGluZXMsIHRoZSBIVyBjb25maWdzIGFyZSBzYW1lIGFuZCBhcmUgYXMgc2hv
-d24gYmVsb3c6Cgp0aGUgSERBIGNvbnRyb2xsZXI6IDAwOjBlLjAgQXVkaW8gZGV2aWNlIFswNDAz
-XTogSW50ZWwgQ29ycG9yYXRpb24gCkRldmljZSBbODA4NjozMTk4XSAocmV2IDAxKQp0aGUgSERN
-SSBjb2RlYzogVmVuZG9yIElkOiAweDgwODYyODBkClZHQSBjb250cm9sbGVyOiAwMDowMi4wIFZH
-QSBjb21wYXRpYmxlIGNvbnRyb2xsZXIgWzAzMDBdOiBJbnRlbCAKQ29ycG9yYXRpb24gRGV2aWNl
-IFs4MDg2OjMxODRdIChyZXYgMDEpIChwcm9nLWlmIDAwIFtWR0EgY29udHJvbGxlcl0pCgpUaGUg
-cHJvYmxlbSBpcyBpZiB3ZSBib290IHRoZSBzeXN0ZW0gd2l0aG91dCBwbHVnZ2luZyB0aGUgSERN
-SSBtb25pdG9yLCAKdGhlIExpbnV4IGtlcm5lbCBjYW4ndCBmaW5kIEhETUkgY29kZWMgYXQgYWxs
-LiBJZiB3ZSBwbHVnIHRoZSBIRE1JIAptb25pdG9yIGJlZm9yZSBib290aW5nIHVwLCB0aGUga2Vy
-bmVsIGNhbiBmaW5kIHRoZSBIRE1JIGNvZGVjLCBidXQgdGhlcmUgCmFyZSBtYW55IGVycm9ycyAo
-YXMgc2hvd24gYmVsb3cpIGFuZCB0aGUgSERNSSBhdWRpbyBjYW4ndCBwbGF5IGFueSBzb3VuZC4K
-CkNvZGVjOiBJbnRlbCBHZW1pbmlsYWtlIEhETUkKQWRkcmVzczogMgpBRkcgRnVuY3Rpb24gSWQ6
-IDB4MSAodW5zb2wgMCkKVmVuZG9yIElkOiAweDgwODYyODBkClN1YnN5c3RlbSBJZDogMHg4MDg2
-MDEwMQpSZXZpc2lvbiBJZDogMHgxMDAwMDAKTm8gTW9kZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQK
-RGVmYXVsdCBQQ006Ck4vQQpEZWZhdWx0IEFtcC1JbiBjYXBzOiBOL0EKRGVmYXVsdCBBbXAtT3V0
-IGNhcHM6IE4vQQpTdGF0ZSBvZiBBRkcgbm9kZSAweDAxOgogwqAgUG93ZXI6IHNldHRpbmc9VU5L
-Tk9XTiwgYWN0dWFsPVVOS05PV04sIEVycm9yLCBDbG9jay1zdG9wLU9LLCAKU2V0dGluZy1yZXNl
-dApJbnZhbGlkIEFGRyBzdWJ0cmVlCi0tZW5kY29sbGFwc2UtLQoKW8KgwqAgMjUuNTA0MDY5XSBz
-bmRfaGRhX2ludGVsIDAwMDA6MDA6MGUuMDogYXp4X2dldF9yZXNwb25zZSB0aW1lb3V0LCAKc3dp
-dGNoaW5nIHRvIHBvbGxpbmcgbW9kZTogbGFzdCBjbWQ9MHgyMGJmODEwMApbwqDCoCAyNi41MTYx
-MjVdIHNuZF9oZGFfaW50ZWwgMDAwMDowMDowZS4wOiBObyByZXNwb25zZSBmcm9tIGNvZGVjLCAK
-ZGlzYWJsaW5nIE1TSTogbGFzdCBjbWQ9MHgyMGJmODEwMApbwqDCoCAyNy41MjgwNThdIHNuZF9o
-ZGFfaW50ZWwgMDAwMDowMDowZS4wOiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVvdXQsIApzd2l0Y2hp
-bmcgdG8gc2luZ2xlX2NtZCBtb2RlOiBsYXN0IGNtZD0weDIwYmY4MTAwClvCoMKgIDI3LjUyODI1
-OV0gYXp4X3NpbmdsZV93YWl0X2Zvcl9yZXNwb25zZTogMTIgY2FsbGJhY2tzIHN1cHByZXNzZWQK
-W8KgwqAgMjcuNTQ3OTI3XSBzbmRfaGRhX2NvZGVjX2hkbWkgaGRhdWRpb0MwRDI6IFVuYWJsZSB0
-byBzeW5jIHJlZ2lzdGVyIAoweDJmMGQwMC4gLTUKCgpXZSBoYXZlIHRlc3RlZCB0aGUgbGF0ZXN0
-IG1haW5saW5lIGtlcm5lbCwgYnV0IHRoZSB0ZXN0aW5nIHJlc3VsdCBpcyB0aGUgCnNhbWUuCgpT
-byBkb2VzIHRoZSBleGlzdGluZyBrZXJuZWwgZHJpdmVyIHN1cHBvcnQgdGhlIEhETUkgYXVkaW8g
-d2VsbCBmb3IgCkdlbWluaWxha2U/IElmIGl0IGRvZXMsIHdoYXQgaXMgd3Jvbmcgd2l0aCB0aG9z
-ZSBtYWNoaW5lcywgSFcgaXNzdWUgb3IgCkJJT1MgaXNzdWU/CgoKVGhhbmtzIGluIGFkdmFuY2Uu
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+QW5kcsOhcyBNdXLDoW55aSB3cm90ZToKPiBUaGUgRWRpcm9sIE0tMTZEWCBoYXMgYmVlbiB3b3Jr
+aW5nIG91dCBvZiB0aGUgYm94IHdpdGggQUxTQSAodXNpbmcgZmlybXdhcmUKPiB2MS4yMSksIGNh
+cGFibGUgb2YgcmVjb3JkaW5nIDE4IGNoYW5uZWxzLCB1bnRpbCB1cGdyYWRlZCB0byBmaXJtd2Fy
+ZSB2Mi4wLgo+Cj4gc3ltcHRvbToKPiBXaGVuIGNvbm5lY3RlZCB2aWEgVVNCLCB0aGUgZGV2aWNl
+J3MgbGNkIGRpc3BsYXlzICJVU0IgT04gTElORSIgd2hpY2ggbmV2ZXIKPiBkaXNhcHBlYXJzLiBT
+b3VuZCBzdGlsbCBnb2VzIHRocm91Z2ggdGhlIGRldmljZSBidXQgdGhlIGludGVyZmFjZSAoa25v
+YnMsCj4gYnV0dG9ucykgZG9uJ3QgcmVhY3QgYW55IG1vcmUuIE9uIHRoZSBjb21wdXRlciwgdGhl
+IHNvdW5kIGRldmljZSBnZXRzCj4gbGlzdGVkLCBidXQgaXQgY2Fubm90IGJlIG9wZW5lZC4KClBs
+ZWFzZSBzaG93IHRoZSBvdXRwdXQgb2YgImxzdXNiIC12IiBmb3IgdGhpcyBkZXZpY2UuCgoKUmVn
+YXJkcywKQ2xlbWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
