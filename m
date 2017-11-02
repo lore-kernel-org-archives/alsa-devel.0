@@ -1,50 +1,82 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: [RFC PATCH v2 5/7] uapi: sound: Avoid using timespec for struct snd_ctl_elem_value
-Date: Thu,  2 Nov 2017 19:06:55 +0800
-Message-ID: <24089861471214ca49cf56e8a34a6304861cc170.1509612176.git.baolin.wang@linaro.org>
-References: <cover.1509612175.git.baolin.wang@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1509612175.git.baolin.wang@linaro.org>
-In-Reply-To: <cover.1509612175.git.baolin.wang@linaro.org>
-References: <cover.1509612175.git.baolin.wang@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, arnd@arndb.de
-Cc: lgirdwood@gmail.com, broonie@kernel.org, o-takashi@sakamocchi.jp, mingo@kernel.org, elfring@users.sourceforge.net, dan.carpenter@oracle.com, jeeja.kp@intel.com, vinod.koul@intel.com, guneshwor.o.singh@intel.com, subhransu.s.prusty@intel.com, bhumirks@gmail.com, gudishax.kranthikumar@intel.com, naveen.m@intel.com, hardik.t.shah@intel.com, arvind.yadav.cs@gmail.com, fabf@skynet.be, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, baolin.wang@linaro.org
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: Intel: fix Kconfig dependencies
+Date: Thu,  2 Nov 2017 12:07:04 +0100
+Message-ID: <20171102110737.2813128-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0E67267439
+ for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 12:08:04 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The struct snd_ctl_elem_value will use 'timespec' type variables to record
-timestamp, which is not year 2038 safe on 32bits system.
+I ran into multiple problems during randconfig builds of the
+recently changed Kconfig logic for Intel ASoC drivers:
 
-Since there are no drivers will implemented the tstamp member of the
-struct snd_ctl_elem_value, and also the stucture size will not be changed
-if we change timespec to s64 for tstamp member of struct snd_ctl_elem_value.
+- Building without DMADEVICES doesn't work in general
+- With that dependency added, we can relax the 'depends
+  on X86' again and allow compile-testing, except for
+  SND_SST_ATOM_HIFI2_PLATFORM, which depends on X86
+  for asm/platform_sst_audio.h
+- Skylake requires SND_SOC_INTEL_SST_ACPI, so we
+  have to depend on ACPI in turn
+- Haswell needs SND_DMA_SGBUF for snd_sgbuf_aligned_pages()
 
-Thus we can simply change timespec to s64 for tstamp member to avoid
-using the type which is not year 2038 safe on 32bits system.
+With the new set of dependencies, I no longer get any build
+failures.
 
-Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/uapi/sound/asound.h |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/intel/Kconfig | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 1949923..fabb283 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -943,8 +943,12 @@ struct snd_ctl_elem_value {
- 		} bytes;
- 		struct snd_aes_iec958 iec958;
- 	} value;		/* RO */
--	struct timespec tstamp;
--	unsigned char reserved[128-sizeof(struct timespec)];
-+#ifndef __KERNEL__
-+	struct { s64 tv_sec; s64 tv_nsec; } tstamp;
-+	unsigned char reserved[128-sizeof(struct { s64 tv_sec; s64 tv_nsec; })];
-+#else
-+	unsigned char reserved[128];
-+#endif
- };
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index a59dda39007e..e18118209b75 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -31,13 +31,14 @@ config SND_SOC_ACPI_INTEL_MATCH
  
- struct snd_ctl_tlv {
+ config SND_SOC_INTEL_SST_TOPLEVEL
+ 	tristate "Intel ASoC SST drivers"
+-	depends on X86
++	depends on X86 || COMPILE_TEST
++	depends on DMADEVICES
+ 	select SND_SOC_INTEL_MACH
+ 	select SND_SOC_INTEL_COMMON
+ 
+ config SND_SOC_INTEL_HASWELL
+ 	tristate "Intel ASoC SST driver for Haswell/Broadwell"
+-	depends on SND_SOC_INTEL_SST_TOPLEVEL
++	depends on SND_SOC_INTEL_SST_TOPLEVEL && SND_DMA_SGBUF
+ 	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 
+@@ -49,12 +50,12 @@ config SND_SOC_INTEL_BAYTRAIL
+ 
+ config SND_SST_ATOM_HIFI2_PLATFORM
+ 	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
+-	depends on SND_SOC_INTEL_SST_TOPLEVEL
++	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
+ 	select SND_SOC_COMPRESS
+ 
+ config SND_SOC_INTEL_SKYLAKE
+ 	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
+-	depends on SND_SOC_INTEL_SST_TOPLEVEL
++	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
+ 	select SND_HDA_EXT_CORE
+ 	select SND_HDA_DSP_LOADER
+ 	select SND_SOC_TOPOLOGY
 -- 
-1.7.9.5
+2.9.0
