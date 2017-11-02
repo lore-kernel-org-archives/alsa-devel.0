@@ -1,58 +1,72 @@
-From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 1/1] ASoC: stm32: sai: fix warning in
-	stm32_sai_set_config()
-Date: Thu, 2 Nov 2017 11:20:09 +0100
-Message-ID: <1509618009-30804-1-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F1A452673E8
- for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 11:20:35 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fix build warning in soc-core.c" to the asoc tree
+Date: Thu, 02 Nov 2017 11:06:08 +0000
+Message-ID: <E1eADK4-0002Fh-C2@debutante>
+References: <ef36bde9-d303-efe1-ce77-57e281311301@infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ef36bde9-d303-efe1-ce77-57e281311301@infradead.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mark Brown <broonie@kernel.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix uninitialized warning introduced by
-"Move static settings to DAI init" commit
-in stm32_sai_set_config() function.
+The patch
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+   ASoC: fix build warning in soc-core.c
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From bb19ba2a345439b4de3f6d59819da9853500ac4d Mon Sep 17 00:00:00 2001
+From: Randy Dunlap <rdunlap@infradead.org>
+Date: Sun, 29 Oct 2017 17:10:34 -0700
+Subject: [PATCH] ASoC: fix build warning in soc-core.c
+
+Fix kernel-doc build error. A symbol that ends with an underscore
+character ('_') has special meaning in reST (reStructuredText), so add
+a '*' to prevent this error and to indicate that there are several of
+these values to choose from.
+
+../sound/soc/soc-core.c:2799: ERROR: Unknown target name: "snd_soc_daifmt".
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 150ad54..08583b9 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -482,13 +482,13 @@ static int stm32_sai_set_config(struct snd_soc_dai *cpu_dai,
- 	cr1_mask = SAI_XCR1_DS_MASK;
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
--		cr1 |= SAI_XCR1_DS_SET(SAI_DATASIZE_8);
-+		cr1 = SAI_XCR1_DS_SET(SAI_DATASIZE_8);
- 		break;
- 	case SNDRV_PCM_FORMAT_S16_LE:
--		cr1 |= SAI_XCR1_DS_SET(SAI_DATASIZE_16);
-+		cr1 = SAI_XCR1_DS_SET(SAI_DATASIZE_16);
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
--		cr1 |= SAI_XCR1_DS_SET(SAI_DATASIZE_32);
-+		cr1 = SAI_XCR1_DS_SET(SAI_DATASIZE_32);
- 		break;
- 	default:
- 		dev_err(cpu_dai->dev, "Data format not supported");
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index fee4b0ef5566..3ef6989552c9 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2796,7 +2796,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
+ /**
+  * snd_soc_dai_set_fmt - configure DAI hardware audio format.
+  * @dai: DAI
+- * @fmt: SND_SOC_DAIFMT_ format value.
++ * @fmt: SND_SOC_DAIFMT_* format value.
+  *
+  * Configures the DAI hardware format and clocking.
+  */
 -- 
-1.9.1
+2.15.0
