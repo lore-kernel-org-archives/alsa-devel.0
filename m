@@ -1,55 +1,86 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: fix Kconfig dependencies
-Date: Thu, 2 Nov 2017 14:04:26 +0100
-Message-ID: <CAK8P3a3p4k=iU9Ym_h-Ahq5y93ga2yhDLO6S_6+g7dLN5aGbQQ@mail.gmail.com>
-References: <20171102110737.2813128-1-arnd@arndb.de> <48ffc83d-6ab0-3388-fade-9e02dc4459cf@linux.intel.com>
+From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Subject: [RFC v1] ALSA: xen-front: Add Xen para-virtualized
+	frontend driver
+Date: Thu, 2 Nov 2017 15:11:17 +0200
+Message-ID: <fff5d166-066c-c21e-94b9-bb50f8c1b2cd@epam.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <48ffc83d-6ab0-3388-fade-9e02dc4459cf@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01on0052.outbound.protection.outlook.com [104.47.0.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BCAE266DEA
+ for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 14:11:24 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, xen-devel <xen-devel@lists.xenproject.org>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 2, 2017 at 1:43 PM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> On 11/2/17 6:07 AM, Arnd Bergmann wrote:
->>
->> I ran into multiple problems during randconfig builds of the
->> recently changed Kconfig logic for Intel ASoC drivers:
->
->
-> we did quite a bit of testing on this change, looks like we missed a number
-> of cases. Gah.
->
->>
->> - Building without DMADEVICES doesn't work in general
->
->
-> the Intel audio hardware has its own DMA in general, be it based on
-> DesignWare controlled by audio firmware or HDaudio, not sure if/why this
-> dependency is needed across the board?
-
-Probably my mistake. I'll try again without the dependency and see
-what problems I run into then and what the correct fix is.
-
->> - With that dependency added, we can relax the 'depends
->>    on X86' again and allow compile-testing, except for
->>    SND_SST_ATOM_HIFI2_PLATFORM, which depends on X86
->>    for asm/platform_sst_audio. > - Skylake requires
->> SND_SOC_INTEL_SST_ACPI, so we
->>    have to depend on ACPI in turn
->> - Haswell needs SND_DMA_SGBUF for snd_sgbuf_aligned_pages()
->
->
-> This one is surprising as well, this was not there before so it either was
-> not detected or is not needed?
-
-No idea. The driver has clearly been calling snd_sgbuf_aligned_pages()
-since commit 0b708c87f66a ("ASoC: Intel: Fix Haswell/Broadwell DSP
-page table creation.") back in 2014, and the helper function has been
-unavailable since 2008. My best guess is that some other Kconfig option
-enforced the dependency implicitly before.
-
-       Arnd
+SGksIGFsbCEKCkZvcmV3b3JkCj09PT09PT09CgpUaGlzIFJGQyBpcyBhaW1lZCB0byBpbnRyb2R1
+Y2Ugc3VwcG9ydCBvZiBwYXJhLXZpcnR1YWxpemVkIHNvdW5kIGZyb250ZW5kCmRyaXZlciBmb3Ig
+WGVuIFsxXSBhbmQgZ2F0aGVyIG9waW5pb25zIGZyb20gdGhlIHJlbGV2YW50IGNvbW11bml0aWVz
+CihBTFNBLCBYZW4pLiBJdCBpbXBsZW1lbnRzIHRoZSBwcm90b2NvbCBmcm9tIFsyXSB3aXRoIHRo
+ZQpmb2xsb3dpbmcgbGltaXRhdGlvbnM6CiDCoCAtIG11dGUvdW5tdXRlIGlzIG5vdCBzdXBwb3J0
+ZWQKIMKgIC0gZ2V0L3NldCB2b2x1bWUgaXMgbm90IHN1cHBvcnRlZApWb2x1bWUgY29udHJvbCBp
+cyBub3Qgc3VwcG9ydGVkIGZvciB0aGUgcmVhc29uIHRoYXQgbW9zdCBvZiB0aGUgdXNlLWNhc2Vz
+CihhdCB0aGUgbW9tZW50KSBhcmUgYmFzZWQgb24gc2NlbmFyaW9zIHdoZXJlIHVucHJpdmlsZWdl
+ZCBPUwooZS5nLiBBbmRyb2lkLCBBR0wgZXRjKSB1c2VzIHNvZnR3YXJlIG1peGVycy4KQm90aCBj
+YXB0dXJlIGFuZCBwbGF5YmFjayBhcmUgc3VwcG9ydGVkLgoKVGhlIHJlbGV2YW50IGJhY2tlbmQg
+aXMgaW1wbGVtZW50ZWQgYXMgYSB1c2VyLXNwYWNlIGFwcGxpY2F0aW9uIFszXQphbmQgdXNlcyBh
+Y2NvbXBhbnlpbmcgaGVscGVyIGxpYnJhcnkgWzRdLgoKQm90aCBmcm9udGVuZCBkcml2ZXIgYW5k
+IGJhY2tlbmQgd2VyZSB0ZXN0ZWQgb24gcmVhbCBIVyBydW5uaW5nIFhlbiAKaHlwZXJ2aXNvcgoo
+UmVuZXNhcyBSLUNhciBBUk0gYmFzZWQgSDMvTTMgYm9hcmRzLCB4ODYpLgoKRGlzY3Vzc2lvbgo9
+PT09PT09PT09CgpEdXJpbmcgdGhlIGZpcnN0IGF0dGVtcHQgdG8gdXBzdHJlYW0gdGhlIGRyaXZl
+ciBbNV0gbnVtYmVyIG9mIGNvbW1lbnRzIGFuZApjb25jZXJucyB3ZXJlIHJhaXNlZCwgb25lIG9m
+IHRoZSBiaWdnZXN0IGZsYXdzIGluIHRoZSBkZXNpZ24gd2VyZSBxdWVzdGlvbmVkCmJ5IGJvdGgg
+Q2xlbWVucyBMYWRpc2NoIFs2XSBhbmQgVGFrYXNoaSBTYWthbW90byBbN106IHRoZSBhYnNlbmNl
+IG9mCnN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIGZyb250ZW5kIGFuZCBiYWNrZW5kIGR1cmluZyBj
+YXB0dXJlL3BsYXliYWNrLgpUd28gb3B0aW9ucyB3ZXJlIGRpc2N1c3NlZDoKCuKAnEluIGRlc2ln
+biBvZiBBTFNBIFBDTSBjb3JlLCBkcml2ZXJzIGFyZSBleHBlY3RlZCB0byBzeW5jaHJvbml6ZSB0
+bwphY3R1YWwgaGFyZHdhcmVzIGZvciBzZW1pLXJlYWx0aW1lIGRhdGEgdHJhbnNtaXNzaW9uLiBU
+aGUKc3luY2hyb25pemF0aW9uIGlzIGRvbmUgYnkgdHdvIHBvaW50czoKMSkgSW50ZXJydXB0cyB0
+byByZXNwb25kIGV2ZW50cyBmcm9tIGFjdHVhbCBoYXJkd2FyZXMuCjIpIFBvc2l0aW9ucyBvZiBh
+Y3R1YWwgZGF0YSB0cmFuc21pc3Npb24gaW4gYW55IHNlcmlhbCBzb3VuZCBpbnRlcmZhY2VzCiDC
+oMKgwqAgb2YgYWN0dWFsIGhhcmR3YXJlcy4K4oCcCgphbmQgZmluYWxseSBhIGNoYW5nZSB0byB0
+aGUgZXhpc3RpbmcgcHJvdG9jb2wgd2FzIHN1Z2dlc3RlZDoKCuKAnEluICdpbmNsdWRlL3hlbi9p
+bnRlcmZhY2UvaW8vc25kaWYuaCcsIHRoZXJlJ3Mgbm8gZnVuY3Rpb25hbGl0aWVzIEkKZGVzY3Jp
+YmVkIHRoZSBhYm92ZToKMS4gbm90aWZpY2F0aW9ucyBmcm9tIERvbVUgdG8gRG9tMCBhYm91dCB0
+aGUgc2l6ZSBvZiBwZXJpb2QgZm9yCiDCoMKgwqAgaW50ZXJydXB0cyBmcm9tIGFjdHVhbCBoYXJk
+d2FyZXMuIE9yIG5vIHdheSBmcm9tIERvbTAgdG8gRG9tVSBhYm91dAogwqDCoMKgIHRoZSBjb25m
+aWd1cmVkIHNpemUgb2YgdGhlIHBlcmlvZC4KMi4gbm90aWZpY2F0aW9ucyBvZiB0aGUgaW50ZXJy
+dXB0cyBmcm9tIGFjdHVhbCBoYXJkd2FyZXMgdG8gRG9tVS7igJ0KClRoaXMgaXMgaW1wbGVtZW50
+ZWQgYXMgYSBjaGFuZ2UgdG8gdGhlIHNuZGlmIHByb3RvY29sIFs4XSBhbmQgYWxsb3dzIApyZW1v
+dmluZwpwZXJpb2QgZW11bGF0aW9uOgoxLiBJbnRyb2R1Y2VkIGEgbmV3IGV2ZW50IGNoYW5uZWwg
+ZnJvbSBiYWNrIHRvIGZyb250CjIuIE5ldyBldmVudCB3aXRoIG51bWJlciBvZiBieXRlcyBwbGF5
+ZWQvY2FwdHVyZWQgKFhFTlNORF9FVlRfQ1VSX1BPUywKIMKgwqAgdG8gYmUgdXNlZCBmb3Igc2Vu
+ZGluZyBzbmRfcGNtX3BlcmlvZF9lbGFwc2VkIGF0IGZyb250ZW5kIChpbiBMaW51eAogwqDCoCBp
+bXBsZW1lbnRhdGlvbikuIFNlbnQgaW4gYnl0ZXMsIG5vdCBmcmFtZXMgdG8gbWFrZSB0aGUgcHJv
+dG9jb2wKIMKgwqAgZ2VuZXJpYyBhbmQgY29uc2lzdGVudCkKMy4gTmV3IHJlcXVlc3QgZm9yIHBs
+YXliYWNrL2NhcHR1cmUgY29udHJvbCAoWEVOU05EX09QX1RSSUdHRVIpIHdpdGgKIMKgwqAgc3Rh
+cnQvcGF1c2Uvc3RvcC9yZXN1bWUgc3ViLW9wcy4KCkFsb25nIHdpdGggdGhlc2UgY2hhbmdlcyBv
+dGhlciBjb21tZW50cyBvbiB0aGUgZHJpdmVyIHdlcmUgYWRkcmVzc2VkLAplLmcuIHNwbGl0IGlu
+dG8gc21hbGxlciBjaHVua3MsIG1vdmVkIHRoZSBkcml2ZXIgZnJvbSBtaXNjIHRvIHhlbiBldGMu
+CgoKSG9wZSwgdGhpcyBoZWxwcyB0byBnZXQgdGhlIGZ1bGwgcGljdHVyZSBvZiB3aGF0IHdhcyBk
+aXNjdXNzZWQgYW5kIG1ha2VzIGl0CnBvc3NpYmxlIHRvIG1vdmUgZm9yd2FyZC4KCldhaXRpbmcg
+Zm9yIHlvdXIgdmFsdWFibGUgY29tbWVudHMsCgpUaGFuayB5b3UsCk9sZWtzYW5kcgoKWzFdIGh0
+dHBzOi8vZ2l0aHViLmNvbS9hbmRyMjAwMC9saW51eC9jb21taXRzL3NuZF91cHN0cmVhbV92MQpb
+Ml0gCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZh
+bGRzL2xpbnV4LmdpdC90cmVlL2luY2x1ZGUveGVuL2ludGVyZmFjZS9pby9zbmRpZi5oClszXSBo
+dHRwczovL2dpdGh1Yi5jb20veGVuLXRyb29wcy9zbmRfYmUKWzRdIGh0dHBzOi8vZ2l0aHViLmNv
+bS94ZW4tdHJvb3BzL2xpYnhlbmJlCls1XSBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNy84Lzcv
+MzYzCls2XSAKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1k
+ZXZlbC8yMDE3LUF1Z3VzdC8xMjM2MTcuaHRtbApbN10gCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNy1BdWd1c3QvMTIzNzQ0Lmh0bWwKWzhd
+IApodHRwczovL2dpdGh1Yi5jb20vYW5kcjIwMDAvbGludXgvY29tbWl0LzA5NWQ3ZmVhZTAwYmYw
+MGM4NTJjNjdjNGYxMDQ0ZGU1NjAxNjc4ZWQKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
