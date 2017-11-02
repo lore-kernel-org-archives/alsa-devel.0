@@ -1,100 +1,95 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: fix Kconfig dependencies
-Date: Thu, 2 Nov 2017 22:02:28 +0530
-Message-ID: <20171102163228.GH3187@localhost>
-References: <20171102110737.2813128-1-arnd@arndb.de>
- <48ffc83d-6ab0-3388-fade-9e02dc4459cf@linux.intel.com>
- <CAK8P3a3p4k=iU9Ym_h-Ahq5y93ga2yhDLO6S_6+g7dLN5aGbQQ@mail.gmail.com>
- <CAK8P3a3DhaUvQiyggVopT=DnRV2octdx8Qh8EeYmHd6fKaYHkg@mail.gmail.com>
- <20171102160406.GG3187@localhost>
- <CAK8P3a2jXrL2-eEZ0h_ay6CR45quzVjiqD5dWxubz29rVpxFYA@mail.gmail.com>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [INTERNAL][PATCH 4/7] ASoC: stm32: sai: fix stop
+ management in isr
+Date: Thu, 2 Nov 2017 16:38:36 +0000
+Message-ID: <dcb5104f-2d32-f51b-16ba-4cdb9f4c5e59@st.com>
+References: <1508418203-16840-1-git-send-email-olivier.moysan@st.com>
+ <1508418203-16840-5-git-send-email-olivier.moysan@st.com>
+ <s5hmv4ekjr4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2jXrL2-eEZ0h_ay6CR45quzVjiqD5dWxubz29rVpxFYA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 40E2E266DEA
+ for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 17:38:38 +0100 (CET)
+In-Reply-To: <s5hmv4ekjr4.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <172B85CB8331A3469F89F22D57732EF8@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org" <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, Benjamin GAIGNARD <benjamin.gaignard@st.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "kernel@stlinux.com" <kernel@stlinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 02, 2017 at 05:25:01PM +0100, Arnd Bergmann wrote:
-> On Thu, Nov 2, 2017 at 5:04 PM, Vinod Koul <vinod.koul@intel.com> wrote:
-> > On Thu, Nov 02, 2017 at 02:12:11PM +0100, Arnd Bergmann wrote:
-> >> On Thu, Nov 2, 2017 at 2:04 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> >> > On Thu, Nov 2, 2017 at 1:43 PM, Pierre-Louis Bossart
-> >> > <pierre-louis.bossart@linux.intel.com> wrote:
-> >> >> On 11/2/17 6:07 AM, Arnd Bergmann wrote:
-> >> >>>
-> >> >>> I ran into multiple problems during randconfig builds of the
-> >> >>> recently changed Kconfig logic for Intel ASoC drivers:
-> >> >>
-> >> >>
-> >> >> we did quite a bit of testing on this change, looks like we missed a number
-> >> >> of cases. Gah.
-> >> >>
-> >> >>>
-> >> >>> - Building without DMADEVICES doesn't work in general
-> >> >>
-> >> >>
-> >> >> the Intel audio hardware has its own DMA in general, be it based on
-> >> >> DesignWare controlled by audio firmware or HDaudio, not sure if/why this
-> >> >> dependency is needed across the board?
-> >> >
-> >> > Probably my mistake. I'll try again without the dependency and see
-> >> > what problems I run into then and what the correct fix is.
-> >>
-> >> I immediately ran into this Kconfig warning, so this is clearly for the two
-> >> users of SND_SOC_INTEL_SST_FIRMWARE:
-> >>
-> >> warning: (SATA_DWC_OLD_DMA && SERIAL_8250_LPSS &&
-> >> SND_SOC_INTEL_SST_FIRMWARE) selects DW_DMAC_CORE which has unmet
-> >> direct dependencies (DMADEVICES)
-> >
-> > The BYT legacy drivers used DMAengine (dw) to load the firmware and hence the
-> > dependency. The Skylake and other drivers do not need that, so we should
-> > move this from toplevel to the BYT driver only.
+Hello Takashi,
+
+Sorry for late answer. I was OoO.
+Ok, I will add a protection on sai->substream accesses.
+
+Best regards
+Olivier
+
+
+On 10/26/2017 05:32 PM, Takashi Iwai wrote:
+> On Thu, 19 Oct 2017 15:03:20 +0200,
+> Olivier Moysan wrote:
+>>
+>> Add check on substream validity.
+>>
+>> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+>> ---
+>>   sound/soc/stm/stm32_sai_sub.c | 12 ++++++++----
+>>   1 file changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+>> index 2af397d..815ef10 100644
+>> --- a/sound/soc/stm/stm32_sai_sub.c
+>> +++ b/sound/soc/stm/stm32_sai_sub.c
+>> @@ -184,7 +184,6 @@ static bool stm32_sai_sub_writeable_reg(struct device *dev, unsigned int reg)
+>>   static irqreturn_t stm32_sai_isr(int irq, void *devid)
+>>   {
+>>   	struct stm32_sai_sub_data *sai = (struct stm32_sai_sub_data *)devid;
+>> -	struct snd_pcm_substream *substream = sai->substream;
+>>   	struct platform_device *pdev = sai->pdev;
+>>   	unsigned int sr, imr, flags;
+>>   	snd_pcm_state_t status = SNDRV_PCM_STATE_RUNNING;
+>> @@ -199,6 +198,11 @@ static irqreturn_t stm32_sai_isr(int irq, void *devid)
+>>   	regmap_update_bits(sai->regmap, STM_SAI_CLRFR_REGX, SAI_XCLRFR_MASK,
+>>   			   SAI_XCLRFR_MASK);
+>>   
+>> +	if (!sai->substream) {
+>> +		dev_err(&pdev->dev, "Device stopped. Spurious IRQ 0x%x\n", sr);
+>> +		return IRQ_NONE;
+>> +	}
+>> +
+>>   	if (flags & SAI_XIMR_OVRUDRIE) {
+>>   		dev_err(&pdev->dev, "IRQ %s\n",
+>>   			STM_SAI_IS_PLAYBACK(sai) ? "underrun" : "overrun");
+>> @@ -227,9 +231,9 @@ static irqreturn_t stm32_sai_isr(int irq, void *devid)
+>>   	}
+>>   
+>>   	if (status != SNDRV_PCM_STATE_RUNNING) {
+>> -		snd_pcm_stream_lock(substream);
+>> -		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
+>> -		snd_pcm_stream_unlock(substream);
+>> +		snd_pcm_stream_lock(sai->substream);
+>> +		snd_pcm_stop(sai->substream, SNDRV_PCM_STATE_XRUN);
+>> +		snd_pcm_stream_unlock(sai->substream);
 > 
-> Ok, so Haswell also shouldn't select SND_SOC_INTEL_SST_FIRMWARE, right?
-
-I am not sure on that. Liam?
-
+> Actually changing to sai->substream opens a race, so this chunk is a
+> bad move, at least.  We have no protection of sai->substream in this
+> context, thus it can hit a NULL dereference...
 > 
-> >>  config SND_SOC_INTEL_SST_FIRMWARE
-> >>         tristate
-> >> -       select DW_DMAC_CORE
-> >
-> > this is required as we need this DMA driver. It might not have issues on
-> > compile but functionality would be broken.
 > 
-> It's also broken at compile time, I just ran into that.
-
-okay better then :)
-
-> >>  config SND_SOC_INTEL_SST_ACPI
-> >>         tristate
-> >> @@ -32,19 +31,20 @@ config SND_SOC_ACPI_INTEL_MATCH
-> >>  config SND_SOC_INTEL_SST_TOPLEVEL
-> >>         tristate "Intel ASoC SST drivers"
-> >>         depends on X86 || COMPILE_TEST
-> >> -       depends on DMADEVICES
-> >
-> > This is fine
-> >
-> >>         select SND_SOC_INTEL_MACH
-> >>         select SND_SOC_INTEL_COMMON
-> >>
-> >>  config SND_SOC_INTEL_HASWELL
-> >>         tristate "Intel ASoC SST driver for Haswell/Broadwell"
-> >>         depends on SND_SOC_INTEL_SST_TOPLEVEL && SND_DMA_SGBUF
-> >> +       depends on DMADEVICES
-> >
-> > yes this and below seems right fix to me.
+> thanks,
 > 
-> Ok, thanks for taking a look! I'll let the randconfig builder chew on this
-> overnight, and send a new version tomorrow.
-
-Sounds good to me
-
--- 
-~Vinod
+> Takashi
+> 
