@@ -1,15 +1,17 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5514: The ACPI also should use the
-	function rt5514_parse_dp()
-Date: Thu, 2 Nov 2017 19:21:16 +0800
-Message-ID: <1509621676-14608-1-git-send-email-oder_chiou@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5514: The ACPI also should use the
+ function rt5514_parse_dp()
+Date: Thu, 2 Nov 2017 11:30:22 +0000
+Message-ID: <20171102113022.nfhb2wfw7p4bl3am@sirena.co.uk>
+References: <1509621676-14608-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8044478289504721874=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F4A4266DEA
- for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 12:21:36 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DC13266DEA
+ for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 12:30:25 +0100 (CET)
+In-Reply-To: <1509621676-14608-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch fixed that the ACPI cannot access the device property from the
-function rt5514_parse_dp().
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5514.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--===============8044478289504721874==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2vjzy47zxaeudtyq"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index d7956ab..2a5b5d7 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -1143,7 +1143,7 @@ static const struct acpi_device_id rt5514_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, rt5514_acpi_match);
- #endif
- 
--static int rt5514_parse_dt(struct rt5514_priv *rt5514, struct device *dev)
-+static int rt5514_parse_dp(struct rt5514_priv *rt5514, struct device *dev)
- {
- 	device_property_read_u32(dev, "realtek,dmic-init-delay-ms",
- 		&rt5514->pdata.dmic_init_delay);
-@@ -1183,8 +1183,8 @@ static int rt5514_i2c_probe(struct i2c_client *i2c,
- 
- 	if (pdata)
- 		rt5514->pdata = *pdata;
--	else if (i2c->dev.of_node)
--		rt5514_parse_dt(rt5514, &i2c->dev);
-+	else
-+		rt5514_parse_dp(rt5514, &i2c->dev);
- 
- 	rt5514->i2c_regmap = devm_regmap_init_i2c(i2c, &rt5514_i2c_regmap);
- 	if (IS_ERR(rt5514->i2c_regmap)) {
--- 
-2.7.4
+
+--2vjzy47zxaeudtyq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 02, 2017 at 07:21:16PM +0800, Oder Chiou wrote:
+
+> -	else if (i2c->dev.of_node)
+> -		rt5514_parse_dt(rt5514, &i2c->dev);
+> +	else
+> +		rt5514_parse_dp(rt5514, &i2c->dev);
+
+Should this be changed to i2c->dev.of_node || ACPI_HANDLE(&i2c->dev) or
+will the function cope fine if there are no properties at all?
+
+--2vjzy47zxaeudtyq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAln7Ac4ACgkQJNaLcl1U
+h9D8lAf7B5E7yXkP8c/FohNM+aVQodOBe6zl13OeDEFmH7DFcvImClyKTJ5AOLyb
+MoVXPv5vJ0V1Brkl1PmPzD6jEm3QK1h/Obp6+t97C33wTOpBA4cRG+o2paehxDR7
+m/uKlwujMs9w9yoXLJxeLTzyfBNM43uL6sDgas0isN1nEz9GjMCZ4T/1TO78fNJA
+dO70KKOLzkWuxS6j9TBFtt+zoYX6a3m7FT2H+HjKV+/+Jeq0zT+NjiwjWJun5GIe
+aCl2fxUQnEd5RMkHK7xRSkJnGImzKX/gt1gV/lEyfcdCoWquEa3mRgtDpXViicax
+XONqc0ekJ/KqQY9FNEsTkzQpSyhjyg==
+=Ifs+
+-----END PGP SIGNATURE-----
+
+--2vjzy47zxaeudtyq--
+
+--===============8044478289504721874==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8044478289504721874==--
