@@ -1,81 +1,57 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: stm32: sai: fix warning in stm32_sai_set_config()" to the asoc tree
-Date: Thu, 02 Nov 2017 11:05:55 +0000
-Message-ID: <E1eADJr-0002Cr-9J@debutante>
-References: <1509618009-30804-1-git-send-email-olivier.moysan@st.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1509618009-30804-1-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Olivier Moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.orgolivier.moysan-qxv4g6HH51o@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Baolin Wang <baolin.wang@linaro.org>
+Subject: [RFC PATCH v2 0/7] Fix year 2038 issue for sound subsystem
+Date: Thu,  2 Nov 2017 19:06:50 +0800
+Message-ID: <cover.1509612175.git.baolin.wang@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, arnd@arndb.de
+Cc: lgirdwood@gmail.com, broonie@kernel.org, o-takashi@sakamocchi.jp, mingo@kernel.org, elfring@users.sourceforge.net, dan.carpenter@oracle.com, jeeja.kp@intel.com, vinod.koul@intel.com, guneshwor.o.singh@intel.com, subhransu.s.prusty@intel.com, bhumirks@gmail.com, gudishax.kranthikumar@intel.com, naveen.m@intel.com, hardik.t.shah@intel.com, arvind.yadav.cs@gmail.com, fabf@skynet.be, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, baolin.wang@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Since many structures will use timespec type variables to record time stamp
+in uapi/asound.h, which are not year 2038 safe on 32bit system. This patchset
+tries to introduce new structures removing timespec type to compatible native
+mode and compat mode.
 
-   ASoC: stm32: sai: fix warning in stm32_sai_set_config()
+Moreover this patchset also converts the internal structrures to use timespec64
+type and related APIs.
 
-has been applied to the asoc tree at
+Changes since v1:
+ - Flat all structues to make them more clear.
+ - Re-modify the convertion for struct snd_timer_tread.
+ - Use same coding style when converting struct snd_rawmidi_status.
+ - Use struct snd_timer_user_status64 in compat mode directly when converting
+ struct snd_timer_status.
+ - Add #ifdef __KERNEL__ when converting struct snd_ctl_elem_value.
+ - Re-modify the convertion for struct snd_pcm_sync_ptr.
+ - Fix some building errors.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Appreciated for any comments, especially for patch6 which I am not sure if it
+is correct.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Baolin Wang (7):
+  sound: Replace timespec with timespec64
+  sound: core: Avoid using timespec for struct snd_pcm_status
+  sound: core: Avoid using timespec for struct snd_rawmidi_status
+  sound: core: Avoid using timespec for struct snd_timer_status
+  uapi: sound: Avoid using timespec for struct snd_ctl_elem_value
+  sound: core: Avoid using timespec for struct snd_pcm_sync_ptr
+  sound: core: Avoid using timespec for struct snd_timer_tread
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+ include/sound/pcm.h               |  126 +++++++++-
+ include/sound/timer.h             |    4 +-
+ include/uapi/sound/asound.h       |   19 +-
+ sound/core/pcm.c                  |   20 +-
+ sound/core/pcm_compat.c           |  469 ++++++++++++++++++++++++++++---------
+ sound/core/pcm_lib.c              |   33 ++-
+ sound/core/pcm_native.c           |  220 +++++++++++++----
+ sound/core/rawmidi.c              |   81 ++++++-
+ sound/core/rawmidi_compat.c       |  121 +++++++---
+ sound/core/timer.c                |  253 ++++++++++++++++----
+ sound/core/timer_compat.c         |   67 ++----
+ sound/pci/hda/hda_controller.c    |   10 +-
+ sound/soc/intel/skylake/skl-pcm.c |    4 +-
+ 13 files changed, 1090 insertions(+), 337 deletions(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7e751e375ae7218f8b49f0b47e855cf9bbbdbcf9 Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Date: Thu, 2 Nov 2017 11:20:09 +0100
-Subject: [PATCH] ASoC: stm32: sai: fix warning in stm32_sai_set_config()
-
-Fix uninitialized warning introduced by
-"Move static settings to DAI init" commit
-in stm32_sai_set_config() function.
-
-Signed-off-by: Olivier Moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
- sound/soc/stm/stm32_sai_sub.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 150ad546d8b9..08583b958430 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -482,13 +482,13 @@ static int stm32_sai_set_config(struct snd_soc_dai *cpu_dai,
- 	cr1_mask = SAI_XCR1_DS_MASK;
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
--		cr1 |= SAI_XCR1_DS_SET(SAI_DATASIZE_8);
-+		cr1 = SAI_XCR1_DS_SET(SAI_DATASIZE_8);
- 		break;
- 	case SNDRV_PCM_FORMAT_S16_LE:
--		cr1 |= SAI_XCR1_DS_SET(SAI_DATASIZE_16);
-+		cr1 = SAI_XCR1_DS_SET(SAI_DATASIZE_16);
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
--		cr1 |= SAI_XCR1_DS_SET(SAI_DATASIZE_32);
-+		cr1 = SAI_XCR1_DS_SET(SAI_DATASIZE_32);
- 		break;
- 	default:
- 		dev_err(cpu_dai->dev, "Data format not supported");
 -- 
-2.15.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.7.9.5
