@@ -1,15 +1,17 @@
-From: Naveen Manohar <naveen.m@intel.com>
-Subject: [PATCH v2] ASoC: Intel: kbl: Modify map for Headset
-	Playback to fix pop-noise
-Date: Fri,  3 Nov 2017 17:09:26 +0530
-Message-ID: <1509709166-26229-1-git-send-email-naveen.m@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8741: Fix setting BCLK and LRCLK
+ polarity
+Date: Fri, 3 Nov 2017 12:45:26 +0100
+Message-ID: <20171103114526.hjjmkkmkbxmotkpo@sirena.org.uk>
+References: <1509628982-9767-1-git-send-email-sergej@taudac.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3101102084896156274=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 12A7E26709F
- for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 12:40:02 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9911266A0C
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 12:45:28 +0100 (CET)
+In-Reply-To: <1509628982-9767-1-git-send-email-sergej@taudac.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,53 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
+To: Sergej Sawazki <sergej@taudac.com>
+Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Patch fixes wrong path in commit 0b06122fc8d0 ("ASoC: Intel: kbl: Add
-map for new DAIs for Multi-Playback & Echo Ref") which resulted in pop
-noise.
-Current topology for Headset results in unwanted pop noise, while
-switching from spk->hs at the start of Headset Playback.
-Hence re-introduced mixin-mixout dsp module in topology for headset
-playback pipe to fix the regression.
-And the corresponding modification for headset route is updated here.
 
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
----
-v1->v2: updated commit message to suit the change more appropriately.
+--===============3101102084896156274==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5spdrecq4kxrklyt"
+Content-Disposition: inline
 
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 6f9a8bc..6dcad0a 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -101,7 +101,7 @@ enum {
- 	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "hs_out" },
-+	{ "ssp1 Tx", NULL, "codec1_out" },
- 
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 6072164..271ae3c 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -109,7 +109,7 @@ enum {
- 	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "hs_out" },
-+	{ "ssp1 Tx", NULL, "codec1_out" },
- 
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
--- 
-1.9.1
+--5spdrecq4kxrklyt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 02, 2017 at 02:23:02PM +0100, Sergej Sawazki wrote:
+> After checking the code and the datasheet, it seems like we are handling
+> the clock inversion (SND_SOC_DAIFMT_NB_IF and SND_SOC_DAIFMT_IB_IF) not
+> correctly.
+
+This doesn't apply against current code, please check and resend.
+
+--5spdrecq4kxrklyt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAln8VtUACgkQJNaLcl1U
+h9BFzAf/YwTIE7EGthiB0r6sQiN1t6VheaHdNgY6QfS0hO3kn5HE1uTOJ8+luDqH
+QbAzEGDfU3Z8kKSjY3a5c/Nbz4Uw0ja9fyWS4pFQlQEvetHyVHVnE9U7fvLbFYVS
+iyvhYIu+p1vCpTxZiik4ffgfrcm0/kOirD4zNm2iEVWWyI6QinalTCs8A/N8G38p
+/Mae5YUo33bfjvD4XeJh/gaZO/EiA2vU+tTx6kZ5aaOKzbxKghRAxJs34mBPaSwb
+rrCv2rHNRn2rL0VRktXJlqkdpJrtloUME/s4KFQWOVOvaEUjod9XXr8CaIeDgqsM
+88UTShmmbUmgbc3pTUzef3SF3hbBKw==
+=bBfg
+-----END PGP SIGNATURE-----
+
+--5spdrecq4kxrklyt--
+
+--===============3101102084896156274==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3101102084896156274==--
