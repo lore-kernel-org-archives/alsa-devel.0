@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: How to handle jack detection through gpios
-Date: Fri, 3 Nov 2017 12:24:52 +0100
-Message-ID: <20171103112452.g7d7wbxhjhtbzmec@sirena.org.uk>
-References: <d8e782f1-acd9-09c4-9693-729a6ac07aa3@redhat.com>
+From: Naveen Manohar <naveen.m@intel.com>
+Subject: [PATCH v2] ASoC: Intel: kbl: Modify map for Headset
+	Playback to fix pop-noise
+Date: Fri,  3 Nov 2017 17:09:26 +0530
+Message-ID: <1509709166-26229-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7402757185190282982=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 926B1266A0C
- for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 12:24:56 +0100 (CET)
-In-Reply-To: <d8e782f1-acd9-09c4-9693-729a6ac07aa3@redhat.com>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12A7E26709F
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 12:40:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +19,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org, sfumato1977@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Patch fixes wrong path in commit 0b06122fc8d0 ("ASoC: Intel: kbl: Add
+map for new DAIs for Multi-Playback & Echo Ref") which resulted in pop
+noise.
+Current topology for Headset results in unwanted pop noise, while
+switching from spk->hs at the start of Headset Playback.
+Hence re-introduced mixin-mixout dsp module in topology for headset
+playback pipe to fix the regression.
+And the corresponding modification for headset route is updated here.
 
---===============7402757185190282982==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tr3oanaqr2inqpga"
-Content-Disposition: inline
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+---
+v1->v2: updated commit message to suit the change more appropriately.
 
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---tr3oanaqr2inqpga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Nov 03, 2017 at 09:41:29AM +0100, Hans de Goede wrote:
-
-> So I was wondering if there is a way to have a headphone
-> switch without tying it to a card, while userspace will
-> still know what to do ?
-
-You can make a GPIO input device but obviously can't have anything
-reporting through the sound card interface without a sound card.
-
---tr3oanaqr2inqpga
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAln8UgMACgkQJNaLcl1U
-h9DvnAf/Uinl6021AMPyLIaJc+bJUm/9+pC3VeOa9LUyUCzUtlHFJ0sGA1xXO5dt
-3+QJCpl/LMrVLY57gn3vUq5NGmdu6YSgVtclX1s2uwdC+K4R+EzAu56akHtr3q2j
-7V7MjWrDqq+lFVH6IqH+xg4rPFTcLcx3qBpVPBK8XWcyHzjRfdaeEfpUyiA5o5hb
-AfSjmmqyT0TI0PhwauW/eNO28JLLYheRvun6rMG0AubpArmK13QsY7OYNwYJuch8
-0dggEM4rk+YBRYG/DbStxkf7c8HjfiyhWdzsiQDcgwyZBKARlNFlRS2srmXlhySj
-Gd1/7KDeN7Xa/Br0j+fAqwktPwYvPQ==
-=UakS
------END PGP SIGNATURE-----
-
---tr3oanaqr2inqpga--
-
---===============7402757185190282982==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7402757185190282982==--
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 6f9a8bc..6dcad0a 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -101,7 +101,7 @@ enum {
+ 	{ "ssp0 Tx", NULL, "spk_out" },
+ 
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "hs_out" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
+ 
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 6072164..271ae3c 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -109,7 +109,7 @@ enum {
+ 	{ "ssp0 Tx", NULL, "spk_out" },
+ 
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "hs_out" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
+ 
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
+-- 
+1.9.1
