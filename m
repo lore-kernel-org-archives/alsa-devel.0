@@ -1,22 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: fix Kconfig dependencies
-Date: Thu, 02 Nov 2017 20:25:05 +0000
-Message-ID: <1509654305.2547.212.camel@loki>
-References: <20171102110737.2813128-1-arnd@arndb.de>
- <48ffc83d-6ab0-3388-fade-9e02dc4459cf@linux.intel.com>
- <CAK8P3a3p4k=iU9Ym_h-Ahq5y93ga2yhDLO6S_6+g7dLN5aGbQQ@mail.gmail.com>
- <CAK8P3a3DhaUvQiyggVopT=DnRV2octdx8Qh8EeYmHd6fKaYHkg@mail.gmail.com>
- <20171102160406.GG3187@localhost>
- <CAK8P3a2jXrL2-eEZ0h_ay6CR45quzVjiqD5dWxubz29rVpxFYA@mail.gmail.com>
- <20171102163228.GH3187@localhost>
+From: Naveen Manohar <naveen.m@intel.com>
+Subject: [PATCH] ASoC: Intel: kbl: Modify Headset map for
+	Multi-Playback
+Date: Fri,  3 Nov 2017 08:58:17 +0530
+Message-ID: <1509679697-22154-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 42AB0266DEA
- for <alsa-devel@alsa-project.org>; Thu,  2 Nov 2017 21:25:13 +0100 (CET)
-In-Reply-To: <20171102163228.GH3187@localhost>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A92E0266DEA
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 04:29:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Harsha Priya N <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2017-11-02 at 22:02 +0530, Vinod Koul wrote:
-> > > The BYT legacy drivers used DMAengine (dw) to load the firmware
-> and hence the
-> > > dependency. The Skylake and other drivers do not need that, so we
-> should
-> > > move this from toplevel to the BYT driver only.
-> > 
-> > Ok, so Haswell also shouldn't select SND_SOC_INTEL_SST_FIRMWARE,
-> right?
-> 
-> I am not sure on that. Liam?
+Current topology for Headset resulted in unwanted pop noise,
+while switching from spk->hs at the start of Headset Playback.
+Modified topology to fix the same.
+This modification also requires headset route to be updated.
 
-Haswell and Broadwell also use the DW DMAC for FW loading like the BYT
-legacy driver.
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+---
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Liam
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 6f9a8bc..6dcad0a 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -101,7 +101,7 @@ enum {
+ 	{ "ssp0 Tx", NULL, "spk_out" },
+ 
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "hs_out" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
+ 
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 6072164..271ae3c 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -109,7 +109,7 @@ enum {
+ 	{ "ssp0 Tx", NULL, "spk_out" },
+ 
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "hs_out" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
+ 
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
+-- 
+1.9.1
