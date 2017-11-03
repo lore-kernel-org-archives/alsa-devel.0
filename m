@@ -1,74 +1,80 @@
-From: Naveen Manohar <naveen.m@intel.com>
-Subject: [PATCH v3] ASoC: Intel: kbl: Modify map for Headset
-	Playback to fix pop-noise
-Date: Fri,  3 Nov 2017 19:15:02 +0530
-Message-ID: <1509716702-27145-1-git-send-email-naveen.m@intel.com>
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: usb/sound/usx2y: WARNING in usb_stream_start
+Date: Fri, 3 Nov 2017 15:44:59 +0100
+Message-ID: <CAAeHK+xoNQv3wVyqEdNEuk2hKwyoUrJ+uHFMLJ7VJVJAAuWeAQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id BCDEE266D07
- for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 14:45:33 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Dave Jiang <dave.jiang@intel.com>, Arnd Bergmann <arnd@arndb.de>, Mauro Carvalho Chehab <mchehab@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Markus Elfring <elfring@users.sourceforge.net>, Johan Hovold <johan@kernel.org>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-Patch fixes wrong path in commit 0b06122fc8d0 ("ASoC: Intel: kbl: Add
-map for new DAIs for Multi-Playback & Echo Ref") which resulted in pop
-noise.
-Current topology for Headset results in unwanted pop noise, while
-switching from spk->hs at the start of Headset Playback.
-Hence re-introduced mixin-mixout dsp module in topology for headset
-playback pipe to fix the regression.
-And the corresponding modification for headset route is updated here.
+Hi!
 
-Fixes: 0b06122fc8d0 ("ASoC: Intel: kbl: Add map for new DAIs for
-Multi-Playback & Echo Ref")
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
----
-v1->v2: updated commit message to suit the change more appropriately.
-v2->v3: Added Fixes Tag as suggested to explain a regression fix.
+I've got the following report while fuzzing the kernel with syzkaller.
 
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On commit 3a99df9a3d14cd866b5516f8cba515a3bfd554ab (4.14-rc7+).
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 6f9a8bc..6dcad0a 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -101,7 +101,7 @@ enum {
- 	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "hs_out" },
-+	{ "ssp1 Tx", NULL, "codec1_out" },
- 
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 6072164..271ae3c 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -109,7 +109,7 @@ enum {
- 	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "hs_out" },
-+	{ "ssp1 Tx", NULL, "codec1_out" },
- 
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
--- 
-1.9.1
+Looks like there's no check for the actual endpoint types.
+
+usb 1-1: BOGUS urb xfer, pipe 0 != type 3
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:471
+usb_submit_urb+0x113e/0x1400
+Modules linked in:
+CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted
+4.14.0-rc7-44290-gf28444df2601-dirty #52
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Workqueue: usb_hub_wq hub_event
+task: ffff88006bef5c00 task.stack: ffff88006bf60000
+RIP: 0010:usb_submit_urb+0x113e/0x1400 drivers/usb/core/urb.c:470
+RSP: 0018:ffff88006bf67440 EFLAGS: 00010286
+RAX: 0000000000000029 RBX: ffff880064698c80 RCX: ffffffff812495b5
+RDX: 0000000000000000 RSI: ffffffff8124d76a RDI: 0000000000000005
+RBP: ffff88006bf674b0 R08: ffff88006bef5c00 R09: 0000000000000006
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000003 R14: ffff880069a25a20 R15: ffff880064698d04
+FS:  0000000000000000(0000) GS:ffff88006ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe6fdba3000 CR3: 0000000068470000 CR4: 00000000000006f0
+Call Trace:
+ usb_stream_start+0x48a/0x9f0 sound/usb/usx2y/usb_stream.c:690
+ us122l_start+0x116/0x290 sound/usb/usx2y/us122l.c:365
+ us122l_create_card sound/usb/usx2y/us122l.c:502
+ us122l_usb_probe sound/usb/usx2y/us122l.c:588
+ snd_us122l_probe+0x7de/0x10a0 sound/usb/usx2y/us122l.c:623
+ usb_probe_interface+0x324/0x940 drivers/usb/core/driver.c:361
+ really_probe drivers/base/dd.c:413
+ driver_probe_device+0x522/0x740 drivers/base/dd.c:557
+ __device_attach_driver+0x25d/0x2d0 drivers/base/dd.c:653
+ bus_for_each_drv+0xff/0x160 drivers/base/bus.c:463
+ __device_attach+0x1a8/0x2a0 drivers/base/dd.c:710
+ device_initial_probe+0x1f/0x30 drivers/base/dd.c:757
+ bus_probe_device+0x1fc/0x2a0 drivers/base/bus.c:523
+ device_add+0xc27/0x15a0 drivers/base/core.c:1835
+ usb_set_configuration+0xd4f/0x17a0 drivers/usb/core/message.c:1932
+ generic_probe+0xbb/0x120 drivers/usb/core/generic.c:174
+ usb_probe_device+0xab/0x100 drivers/usb/core/driver.c:266
+ really_probe drivers/base/dd.c:413
+ driver_probe_device+0x522/0x740 drivers/base/dd.c:557
+ __device_attach_driver+0x25d/0x2d0 drivers/base/dd.c:653
+ bus_for_each_drv+0xff/0x160 drivers/base/bus.c:463
+ __device_attach+0x1a8/0x2a0 drivers/base/dd.c:710
+ device_initial_probe+0x1f/0x30 drivers/base/dd.c:757
+ bus_probe_device+0x1fc/0x2a0 drivers/base/bus.c:523
+ device_add+0xc27/0x15a0 drivers/base/core.c:1835
+ usb_new_device+0x7fa/0x1090 drivers/usb/core/hub.c:2538
+ hub_port_connect drivers/usb/core/hub.c:4987
+ hub_port_connect_change drivers/usb/core/hub.c:5093
+ port_event drivers/usb/core/hub.c:5199
+ hub_event_impl+0x17b8/0x3440 drivers/usb/core/hub.c:5311
+ hub_event+0x38/0x50 drivers/usb/core/hub.c:5209
+ process_one_work+0x925/0x15d0 kernel/workqueue.c:2113
+ worker_thread+0xef/0x10d0 kernel/workqueue.c:2247
+ kthread+0x346/0x410 kernel/kthread.c:231
+ ret_from_fork+0x2a/0x40 arch/x86/entry/entry_64.S:431
+Code: 75 aa fd 48 8b 45 d0 48 8d b8 98 00 00 00 e8 4a cf f4 fe 45 89
+e8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 10 62 20 86 e8 8c 3e 99 fd <0f>
+ff e9 ce f4 ff ff e8 c6 75 aa fd 48 8b 45 d0 48 8d b8 e8 00
+---[ end trace bcf7836f85bb5e85 ]---
