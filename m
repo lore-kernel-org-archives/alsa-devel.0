@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: wm8741: Fix setting BCLK and
- LRCLK polarity
-Date: Fri, 3 Nov 2017 18:50:32 +0000
-Message-ID: <20171103185032.acsb7blt46n5wn4b@sirena.co.uk>
-References: <1509734068-9693-1-git-send-email-sergej@taudac.com>
- <20171103183729.xhngptij3qgarf5o@sirena.co.uk>
- <320c629f-ac63-8c7b-19c3-8655756c86f7@taudac.com>
- <20171103184613.gm6ya5qbmtsgs7zu@sirena.co.uk>
- <920d4342-ef31-430f-51f0-b2a9994989a9@taudac.com>
+Subject: Applied "ASoC: wm8741: Fix setting BCLK and LRCLK
+	polarity" to the asoc tree
+Date: Fri, 03 Nov 2017 18:50:34 +0000
+Message-ID: <E1eAh34-0005lQ-U9@debutante>
+References: <1509628982-9767-1-git-send-email-sergej@taudac.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2523766060570388141=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AEC0266CFB
- for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 19:50:34 +0100 (CET)
-In-Reply-To: <920d4342-ef31-430f-51f0-b2a9994989a9@taudac.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B287F2675B3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 19:50:38 +0100 (CET)
+In-Reply-To: <1509628982-9767-1-git-send-email-sergej@taudac.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Sergej Sawazki <sergej@taudac.com>
-Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, ce3a@gmx.de
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2523766060570388141==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="u7vo2oe2yik5pjsa"
-Content-Disposition: inline
+   ASoC: wm8741: Fix setting BCLK and LRCLK polarity
 
+has been applied to the asoc tree at
 
---u7vo2oe2yik5pjsa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Nov 03, 2017 at 07:48:14PM +0100, Sergej Sawazki wrote:
-> Am 03.11.2017 um 19:46 schrieb Mark Brown:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Just to be clear when you say it's a new patch you mean it's the same
-> > patch but rebased?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Right, same content, rebased on current for-next.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Great!
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---u7vo2oe2yik5pjsa
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 81b3cc55afc3cde54df98f93fbd4704fab7cc0e0 Mon Sep 17 00:00:00 2001
+From: Sergej Sawazki <sergej@taudac.com>
+Date: Fri, 3 Nov 2017 19:34:28 +0100
+Subject: [PATCH] ASoC: wm8741: Fix setting BCLK and LRCLK polarity
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAln8uncACgkQJNaLcl1U
-h9Dulgf+MvDdbSaNwSaqrpxWhDoiAWy7r0FGfnDBozZ4mYOYs8MLaKUrXnKV5TPY
-HkcXBkBSiXf7CWkT3jFZWQi9hP25Sipem2gASZDKubUPQjXRkZpH92lE5kb3CJ1F
-Il2xOk5rFtFJ06+DntXmSpbDWwJFjD6EKNLiBb576EBYZ4v5inX6iFH5ixeeuZke
-lKl3sUnnk0pFWk4jLI87s4IicOhwju6S4OjFeHp9o+xQPpPa26swgL7m2Bp+GGiX
-0Flor6bpHtbgh8fwnlfzXD7Y6P/P+BqJXHWIGdew7LfHD/AkVqzGIWjk3WA5aj+U
-D5MtJ4D+45etjJV0gg3YO1GUCv2yOA==
-=83de
------END PGP SIGNATURE-----
+After checking the code and the datasheet, it seems like we are handling
+the clock inversion (SND_SOC_DAIFMT_NB_IF and SND_SOC_DAIFMT_IB_IF) not
+correctly.
 
---u7vo2oe2yik5pjsa--
+>From the datasheet (Table 58):
+R5 Format Control, BITS[5:4], [BCP:LRP]:
+  (0) 00 =  normal   BCLK, normal   LRCLK
+  (1) 01 =  normal   BCLK, inverted LRCLK <-- Fix this
+  (2) 10 =  inverted BCLK, normal   LRCLK
+  (3) 11 =  inverted BCLK, inverted LRCLK <-- Fix this
 
---===============2523766060570388141==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm8741.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
---===============2523766060570388141==--
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 3c96af057a3e..a394dbee77aa 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -333,13 +333,13 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+-	case SND_SOC_DAIFMT_IB_IF:
++	case SND_SOC_DAIFMT_NB_IF:
+ 		iface |= 0x10;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+ 		iface |= 0x20;
+ 		break;
+-	case SND_SOC_DAIFMT_NB_IF:
++	case SND_SOC_DAIFMT_IB_IF:
+ 		iface |= 0x30;
+ 		break;
+ 	default:
+-- 
+2.15.0
