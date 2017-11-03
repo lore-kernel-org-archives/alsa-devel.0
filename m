@@ -1,20 +1,19 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: How to handle jack detection through gpios
-Date: Fri, 3 Nov 2017 19:43:46 +0100
-Message-ID: <0d313367-eb11-f84b-6195-728b4270fab5@redhat.com>
-References: <d8e782f1-acd9-09c4-9693-729a6ac07aa3@redhat.com>
- <20171103112452.g7d7wbxhjhtbzmec@sirena.org.uk>
- <27d3a7cc-d67d-28e0-c615-f6e9a56f9de1@redhat.com>
- <20171103174027.iu556xlqmp2owtmd@sirena.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND] ASoC: wm8741: Fix setting BCLK and
+ LRCLK polarity
+Date: Fri, 3 Nov 2017 18:46:13 +0000
+Message-ID: <20171103184613.gm6ya5qbmtsgs7zu@sirena.co.uk>
+References: <1509734068-9693-1-git-send-email-sergej@taudac.com>
+ <20171103183729.xhngptij3qgarf5o@sirena.co.uk>
+ <320c629f-ac63-8c7b-19c3-8655756c86f7@taudac.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7896777189336343363=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F0CD266CFB
- for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 19:43:49 +0100 (CET)
-In-Reply-To: <20171103174027.iu556xlqmp2owtmd@sirena.co.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63A70266CFB
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 19:46:17 +0100 (CET)
+In-Reply-To: <320c629f-ac63-8c7b-19c3-8655756c86f7@taudac.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, sfumato1977@gmail.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+To: Sergej Sawazki <sergej@taudac.com>
+Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On 03-11-17 18:40, Mark Brown wrote:
-> On Fri, Nov 03, 2017 at 01:09:37PM +0100, Hans de Goede wrote:
->> On 03-11-17 12:24, Mark Brown wrote:
-> 
->>> You can make a GPIO input device but obviously can't have anything
->>> reporting through the sound card interface without a sound card.
-> 
->> Ok, so I could make the driver generate evdev events
->> of type EV_SW with code SW_HEADPHONE_INSERT. Does userspace
->> do anything useful with this like automatically switching
->> between headphones and speakers as a headphone-jack which
->> is part of the sound card would do ?
-> 
-> Depends on your userspace, you can also do an extcon which Android
-> listens to IIRC.
-> 
->> If not, then is there a way to get a list of registered
->> soundcards from a driver, then pick one of the cards
->> based on some heuristics and then do the snd_soc_card_jack_new,
->> etc. on the picked card?
-> 
->> I assume that the approach from:
->> https://github.com/me176c-dev/kernel_asus_me176c/commit/498116d7e7b4718fa0655c4879e59a163b1dd85b
-> 
->> Where the struct snd_soc_card byt_rt5640_card is made
->> non-static and exported is not acceptable ?
-> 
-> Why not have the sound card claim the GPIO and provide the jack?
+--===============7896777189336343363==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jnrrvaparmmas44s"
+Content-Disposition: inline
 
-Yes that would be ideal, but on some devices the ACPI resources
-table describing the gpio is not part of the acpi_companion of
-the codec, but rather of another ACPI device all together.
 
-It might be best to see if we can somehow search through the list
-of ACPI devices from the codec driver and get through the GPIO
-that way. I guess we will need a utility function for this to
-share between codec drivers, since the same AMCR0F28 ACPI device
-is used in DSTDs together with different codecs.
+--jnrrvaparmmas44s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards,
+On Fri, Nov 03, 2017 at 07:42:14PM +0100, Sergej Sawazki wrote:
+> Am 03.11.2017 um 19:37 schrieb Mark Brown:
+> > On Fri, Nov 03, 2017 at 07:34:28PM +0100, Sergej Sawazki wrote:
+> > >    (3) 11 =  inverted BCLK, inverted LRCLK <-- Fix this
 
-Hans
+> > > Signed-off-by: Sergej Sawazki <sergej@taudac.com>
+
+> > Is this a straight resend - you dropped Charles' ack?
+
+> Oops, sorry, forgot about Charles' ack. I have created a new patch,
+> made sure it applies and resent.
+
+Just to be clear when you say it's a new patch you mean it's the same
+patch but rebased?
+
+--jnrrvaparmmas44s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAln8uXUACgkQJNaLcl1U
+h9C/eQgAhSV1RUEcHeTWCw3ZjAPRhvjudwW88D9iqNxrRvkSjobs2SQBs8sM0j7a
+d3VeRldTa+O1XVIbDgAEKqctDVqZfiKfvhdB8DSncTHFqyKnu3PUuvUVv4ocRkFd
+aDjlx8dOlr0H3PAShWMKVKqrOno7C79Fwe1ogZjbuus0dN+57e8vuaYo5ijxe20/
+QV9I473t5SYv4Yl1mNbRvu4sCiDz1V0GfngaO+S6TY/MvbWDPoUeWkLkan+IMVA1
+fBjenVoBlMddGF2k7Z1zv9SpIJNqTAUArCHMuqCz2s1g/d9eaPER5bXPjfLAs6B9
+1eu27aaEYwYAKs0QwJqLApZBwDlcpg==
+=tNgT
+-----END PGP SIGNATURE-----
+
+--jnrrvaparmmas44s--
+
+--===============7896777189336343363==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7896777189336343363==--
