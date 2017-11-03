@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8741: Fix setting BCLK and LRCLK
-	polarity" to the asoc tree
-Date: Fri, 03 Nov 2017 18:50:34 +0000
-Message-ID: <E1eAh34-0005lQ-U9@debutante>
-References: <1509628982-9767-1-git-send-email-sergej@taudac.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: How to handle jack detection through gpios
+Date: Fri, 3 Nov 2017 20:09:06 +0100
+Message-ID: <15038adc-6989-d16d-80d8-da2d6e4f0bab@redhat.com>
+References: <d8e782f1-acd9-09c4-9693-729a6ac07aa3@redhat.com>
+ <4ae2c6dc-d3ee-2563-ee84-a8f26948d8f8@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B287F2675B3
- for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 19:50:38 +0100 (CET)
-In-Reply-To: <1509628982-9767-1-git-send-email-sergej@taudac.com>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 949AF266CFB
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 20:09:11 +0100 (CET)
+In-Reply-To: <4ae2c6dc-d3ee-2563-ee84-a8f26948d8f8@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,79 +22,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <sergej@taudac.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, ce3a@gmx.de
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, sfumato1977@gmail.com, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: wm8741: Fix setting BCLK and LRCLK polarity
+On 03-11-17 13:41, Pierre-Louis Bossart wrote:
+> On 11/3/17 3:41 AM, Hans de Goede wrote:
+>> Hi All,
+>>
+>> Umberto Izzo (in the Cc) mailed me to see if I could help
+>> with implementing headphone detection through GPIOS as I've
+>> been doing all kinds of Bay / Cherry Trail related work
+>> recently.
+>>
+>> Umberto found this commit:
+>>
+>> https://github.com/me176c-dev/kernel_asus_me176c/commit/498116d7e7b4718fa0655c4879e59a163b1dd85b
+>>
+>> Which looks interesting, but is specific to the RT5640
+>> driver. Looking at my own test devices I found a device
+>> with an ES8316 using a gpio for headphone detection.
+>>
+>> What Umberto and my device have in common is that
+>> the GPIO to use is listed in the ACPI tables
+>> under an AMCR0F28 device and that is also what the
+>> above commit binds too.
+> 
+> This is not a generic solution, these sort of ACPI entries are only present in devices designed for Android, in Windows the STA_ method typically reports 0 (not present) - the ASL code is usually shared between Windows and Android devices but there are variables controlling what the run-time behavior is, mostly to avoid the yellow bang the windows device manager if there is a device without a driver.
+> 
+> Also you have two quirks for each of jack detection / button press, some platforms rely on codec-based detection and some of gpios directly connected to the SOC. We tried to port some of the code from Android a while ago but i haven't had time to maintain or even clean it. See
+> https://github.com/plbossart/sound/pull/1
 
-has been applied to the asoc tree at
+So one problem here is that your work is based on getting gpios
+from the acpi_companion of the codec, but in the dsdt of Umberto's
+device: https://github.com/sfumato77/DSDT/blob/master/dsdt.dsl
+the gpio ("\\_SB.GPO2" pin 0x1b) is only part of the resources
+list of the TIMC0F28 and the AMCR0F28 devices and on one
+of my tablets with an es8316 which uses the same gpio for headphone
+detection the same is true.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+So as I said in my reply to Mark:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+"It might be best to see if we can somehow search through the list
+of ACPI devices from the codec driver and get to the GPIO
+that way. I guess we will need a utility function for this to
+share between codec drivers, since the same AMCR0F28 ACPI device
+is used in DSTDs together with different codecs."
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Would adding such a utility function to parse the gpio info
+in the AMCR0F28 ACPI device on devices where this is necessary
+be acceptable?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Of course using the AMCR0F28 ACPI device is not going to be
+the right thing to do everywhere, so we are going to need a
+(dmi-based) quirk table in the codec driver for this.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Regards,
 
-Thanks,
-Mark
+Hans
 
->From 81b3cc55afc3cde54df98f93fbd4704fab7cc0e0 Mon Sep 17 00:00:00 2001
-From: Sergej Sawazki <sergej@taudac.com>
-Date: Fri, 3 Nov 2017 19:34:28 +0100
-Subject: [PATCH] ASoC: wm8741: Fix setting BCLK and LRCLK polarity
 
-After checking the code and the datasheet, it seems like we are handling
-the clock inversion (SND_SOC_DAIFMT_NB_IF and SND_SOC_DAIFMT_IB_IF) not
-correctly.
 
->From the datasheet (Table 58):
-R5 Format Control, BITS[5:4], [BCP:LRP]:
-  (0) 00 =  normal   BCLK, normal   LRCLK
-  (1) 01 =  normal   BCLK, inverted LRCLK <-- Fix this
-  (2) 10 =  inverted BCLK, normal   LRCLK
-  (3) 11 =  inverted BCLK, inverted LRCLK <-- Fix this
-
-Signed-off-by: Sergej Sawazki <sergej@taudac.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8741.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 3c96af057a3e..a394dbee77aa 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -333,13 +333,13 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF:
- 		break;
--	case SND_SOC_DAIFMT_IB_IF:
-+	case SND_SOC_DAIFMT_NB_IF:
- 		iface |= 0x10;
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
- 		iface |= 0x20;
- 		break;
--	case SND_SOC_DAIFMT_NB_IF:
-+	case SND_SOC_DAIFMT_IB_IF:
- 		iface |= 0x30;
- 		break;
- 	default:
--- 
-2.15.0
+> 
+> 
+>>
+>> So I was wondering if there is a way to have a headphone
+>> switch without tying it to a card, while userspace will
+>> still know what to do ?
+>>
+>> ###
+>>
+>> Another (non audio) problem is that the AMCR0F28 ACPI
+>> device seems to be present in the DSTD for almost all
+>> Bay / Cherry Trail devices, but its _STA method always
+>> returns 0 even on devices where we do need to use gpios
+>> for headphone-detection.
+>>
+>> I'm thinking about solving this by adding the AMCR0F28
+>> device to the list of always present ACPI devices, so that
+>> the kernel ignores _STA and creates a platform device for
+>> it. And then in the platform driver for the AMCR0F28
+>> platform device use a DMI whitelist, this is not the
+>> prettiest solution but it is the best I can come up with
+>> atm. As said not really audio related,
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+> 
