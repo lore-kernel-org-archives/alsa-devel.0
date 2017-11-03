@@ -1,80 +1,85 @@
-From: Andrey Konovalov <andreyknvl@google.com>
-Subject: usb/sound/usx2y: WARNING in usb_stream_start
-Date: Fri, 3 Nov 2017 15:44:59 +0100
-Message-ID: <CAAeHK+xoNQv3wVyqEdNEuk2hKwyoUrJ+uHFMLJ7VJVJAAuWeAQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8741: Fix setting BCLK and LRCLK
+ polarity
+Date: Fri, 3 Nov 2017 17:20:49 +0000
+Message-ID: <20171103172049.d5o3qy54b5ci5jhe@sirena.co.uk>
+References: <1509628982-9767-1-git-send-email-sergej@taudac.com>
+ <20171103114526.hjjmkkmkbxmotkpo@sirena.org.uk>
+ <403c4e22-7caf-0a31-90b8-46586f8f53a1@taudac.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Dave Jiang <dave.jiang@intel.com>, Arnd Bergmann <arnd@arndb.de>, Mauro Carvalho Chehab <mchehab@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Markus Elfring <elfring@users.sourceforge.net>, Johan Hovold <johan@kernel.org>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
+Content-Type: multipart/mixed; boundary="===============0419662770112000903=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52779266CFB
+ for <alsa-devel@alsa-project.org>; Fri,  3 Nov 2017 18:20:55 +0100 (CET)
+In-Reply-To: <403c4e22-7caf-0a31-90b8-46586f8f53a1@taudac.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergej Sawazki <sergej@taudac.com>
+Cc: ce3a@gmx.de, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-I've got the following report while fuzzing the kernel with syzkaller.
+--===============0419662770112000903==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="srweh3d7tdpwhaav"
+Content-Disposition: inline
 
-On commit 3a99df9a3d14cd866b5516f8cba515a3bfd554ab (4.14-rc7+).
 
-Looks like there's no check for the actual endpoint types.
+--srweh3d7tdpwhaav
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-usb 1-1: BOGUS urb xfer, pipe 0 != type 3
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:471
-usb_submit_urb+0x113e/0x1400
-Modules linked in:
-CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted
-4.14.0-rc7-44290-gf28444df2601-dirty #52
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-Workqueue: usb_hub_wq hub_event
-task: ffff88006bef5c00 task.stack: ffff88006bf60000
-RIP: 0010:usb_submit_urb+0x113e/0x1400 drivers/usb/core/urb.c:470
-RSP: 0018:ffff88006bf67440 EFLAGS: 00010286
-RAX: 0000000000000029 RBX: ffff880064698c80 RCX: ffffffff812495b5
-RDX: 0000000000000000 RSI: ffffffff8124d76a RDI: 0000000000000005
-RBP: ffff88006bf674b0 R08: ffff88006bef5c00 R09: 0000000000000006
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000003 R14: ffff880069a25a20 R15: ffff880064698d04
-FS:  0000000000000000(0000) GS:ffff88006ca00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe6fdba3000 CR3: 0000000068470000 CR4: 00000000000006f0
-Call Trace:
- usb_stream_start+0x48a/0x9f0 sound/usb/usx2y/usb_stream.c:690
- us122l_start+0x116/0x290 sound/usb/usx2y/us122l.c:365
- us122l_create_card sound/usb/usx2y/us122l.c:502
- us122l_usb_probe sound/usb/usx2y/us122l.c:588
- snd_us122l_probe+0x7de/0x10a0 sound/usb/usx2y/us122l.c:623
- usb_probe_interface+0x324/0x940 drivers/usb/core/driver.c:361
- really_probe drivers/base/dd.c:413
- driver_probe_device+0x522/0x740 drivers/base/dd.c:557
- __device_attach_driver+0x25d/0x2d0 drivers/base/dd.c:653
- bus_for_each_drv+0xff/0x160 drivers/base/bus.c:463
- __device_attach+0x1a8/0x2a0 drivers/base/dd.c:710
- device_initial_probe+0x1f/0x30 drivers/base/dd.c:757
- bus_probe_device+0x1fc/0x2a0 drivers/base/bus.c:523
- device_add+0xc27/0x15a0 drivers/base/core.c:1835
- usb_set_configuration+0xd4f/0x17a0 drivers/usb/core/message.c:1932
- generic_probe+0xbb/0x120 drivers/usb/core/generic.c:174
- usb_probe_device+0xab/0x100 drivers/usb/core/driver.c:266
- really_probe drivers/base/dd.c:413
- driver_probe_device+0x522/0x740 drivers/base/dd.c:557
- __device_attach_driver+0x25d/0x2d0 drivers/base/dd.c:653
- bus_for_each_drv+0xff/0x160 drivers/base/bus.c:463
- __device_attach+0x1a8/0x2a0 drivers/base/dd.c:710
- device_initial_probe+0x1f/0x30 drivers/base/dd.c:757
- bus_probe_device+0x1fc/0x2a0 drivers/base/bus.c:523
- device_add+0xc27/0x15a0 drivers/base/core.c:1835
- usb_new_device+0x7fa/0x1090 drivers/usb/core/hub.c:2538
- hub_port_connect drivers/usb/core/hub.c:4987
- hub_port_connect_change drivers/usb/core/hub.c:5093
- port_event drivers/usb/core/hub.c:5199
- hub_event_impl+0x17b8/0x3440 drivers/usb/core/hub.c:5311
- hub_event+0x38/0x50 drivers/usb/core/hub.c:5209
- process_one_work+0x925/0x15d0 kernel/workqueue.c:2113
- worker_thread+0xef/0x10d0 kernel/workqueue.c:2247
- kthread+0x346/0x410 kernel/kthread.c:231
- ret_from_fork+0x2a/0x40 arch/x86/entry/entry_64.S:431
-Code: 75 aa fd 48 8b 45 d0 48 8d b8 98 00 00 00 e8 4a cf f4 fe 45 89
-e8 44 89 e1 4c 89 f2 48 89 c6 48 c7 c7 10 62 20 86 e8 8c 3e 99 fd <0f>
-ff e9 ce f4 ff ff e8 c6 75 aa fd 48 8b 45 d0 48 8d b8 e8 00
----[ end trace bcf7836f85bb5e85 ]---
+On Fri, Nov 03, 2017 at 02:05:30PM +0100, Sergej Sawazki wrote:
+> Am 03.11.2017 um 12:45 schrieb Mark Brown:
+> > On Thu, Nov 02, 2017 at 02:23:02PM +0100, Sergej Sawazki wrote:
+> > > After checking the code and the datasheet, it seems like we are handling
+> > > the clock inversion (SND_SOC_DAIFMT_NB_IF and SND_SOC_DAIFMT_IB_IF) not
+> > > correctly.
+
+> > This doesn't apply against current code, please check and resend.
+
+> It applies against "for-next" (e67852427fb). Is it the wrong branch?
+
+It didn't apply against my current for-next branch when I tried, are
+you sure you were working with something up to date?  I don't even have
+a copy of that commit locally, even in the reflog...
+
+In general I apply things against any existing topic branch for the
+part, or against any fixes branch, or against Linus' tags.  Exactly what
+depends on what kind of change it is and if there's a branch already
+there.
+
+--srweh3d7tdpwhaav
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAln8pW4ACgkQJNaLcl1U
+h9AF0Af/duL/kVdQBICfmHplA3MHAVmueU6kf7uG6BoT5z6RemEtQ/u5nKk0bCZi
+9uq37LLG8Lv8vCWPRd18P91dK4iZVXiHTMeRd7F4BItqlh2P6waeweWXaQP8/CRx
+uB7C5dI+C/SD2A0Cz2cOX2mvz5XnDPTqY6AxmwU+l3Gk3gZIzsd5rESGwznAzGPR
+NexNYI0Mf1L8uPUeJz3UBk1qa8LzuUHW5XPd7qhsfTNoiVvdBGY1J+vxAAHN7qq/
+7XDbWYBjmudzVf0UGHcNvTs6MJASBVupQvPR2YjE7E4GjBmGaSiNtB4KLtCAHaCH
+sk2ZXVziqsRfs8kjDo3JNK5K9Mtw4w==
+=cSYe
+-----END PGP SIGNATURE-----
+
+--srweh3d7tdpwhaav--
+
+--===============0419662770112000903==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0419662770112000903==--
