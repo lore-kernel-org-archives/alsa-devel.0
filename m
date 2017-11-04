@@ -1,55 +1,144 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 3/3] ASoC: rt5645: Wait for 400msec before concluding on value
- of RT5645_VENDOR_ID2
-Date: Fri,  3 Nov 2017 16:35:45 -0400
-Message-ID: <1509741345-1589-4-git-send-email-alexander.deucher@amd.com>
-References: <1509741345-1589-1-git-send-email-alexander.deucher@amd.com>
+From: Tim Harvey <tharvey@gateworks.com>
+Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Fri, 3 Nov 2017 17:17:55 -0700
+Message-ID: <CAJ+vNU1ipKzm5AX4HY0ckrBM3aMC1mn0Dp7nQfsjzJcEYgBV5Q@mail.gmail.com>
+References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
+ <1507783506-3884-4-git-send-email-tharvey@gateworks.com> <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
+ <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com>
+ <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl> <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
+ <5c68003a-380d-d339-718f-47bce64cdae8@xs4all.nl> <CAJ+vNU2a8qtL4hbg5FQamF3WanQG1610QsJv=2cCxpD8OsiQ6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <1509741345-1589-1-git-send-email-alexander.deucher-5C7GfCeVMHo@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org
-Cc: tiwai-l3A5Bk7waGM@public.gmane.org, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Akshu Agrawal <akshu.agrawal-5C7GfCeVMHo@public.gmane.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <CAJ+vNU2a8qtL4hbg5FQamF3WanQG1610QsJv=2cCxpD8OsiQ6w@mail.gmail.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQWtzaHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPgoKTWluaW11bSB0aW1l
-IHJlcXVpcmVkIGJldHdlZW4gcG93ZXIgT24gb2YgY29kZWMgYW5kIHJlYWQKb2YgUlQ1NjQ1X1ZF
-TkRPUl9JRDIgaXMgNDAwbXNlYy4gV2Ugc2hvdWxkIHdhaXQgYW5kIGF0dGVtcHQKYmVmb3JlIGVy
-cm9yaW5nIG91dC4KCkJVRz1iOjY2OTc4MzgzClRFU1Q9Q29sZCBib290IHRoZSBkZXZpY2UgYW5k
-IGNoZWNrIGZvciBzb3VuZCBkZXZpY2UuCgpTaWduZWQtb2ZmLWJ5OiBBa3NodSBBZ3Jhd2FsIDxh
-a3NodS5hZ3Jhd2FsQGFtZC5jb20+ClNpZ25lZC1vZmYtYnk6IEJhcmQgTGlhbyA8YmFyZGxpYW9A
-cmVhbHRlay5jb20+ClNpZ25lZC1vZmYtYnk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNo
-ZXJAYW1kLmNvbT4KLS0tCiBzb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jIHwgMTIgKysrKysrKysr
-KysrCiAxIGZpbGUgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5k
-L3NvYy9jb2RlY3MvcnQ1NjQ1LmMgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY0NS5jCmluZGV4IDIz
-Y2MyY2IuLjJkYTBiMzMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjQ1LmMKKysr
-IGIvc291bmQvc29jL2NvZGVjcy9ydDU2NDUuYwpAQCAtNTUsNiArNTUsOCBAQCBNT0RVTEVfUEFS
-TV9ERVNDKHF1aXJrLCAiUlQ1NjQ1IHBkYXRhIHF1aXJrIG92ZXJyaWRlIik7CiAKICNkZWZpbmUg
-UlQ1NjQ1X0hXRVFfTlVNIDU3CiAKKyNkZWZpbmUgVElNRV9UT19QT1dFUl9NUyA0MDAKKwogc3Rh
-dGljIGNvbnN0IHN0cnVjdCByZWdtYXBfcmFuZ2VfY2ZnIHJ0NTY0NV9yYW5nZXNbXSA9IHsKIAl7
-CiAJCS5uYW1lID0gIlBSIiwKQEAgLTM3MTIsNiArMzcxNCw3IEBAIHN0YXRpYyBpbnQgcnQ1NjQ1
-X2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjLAogCWludCByZXQsIGk7CiAJdW5zaWdu
-ZWQgaW50IHZhbDsKIAlzdHJ1Y3QgcmVnbWFwICpyZWdtYXA7CisJaW50IHRpbWVvdXQgPSBUSU1F
-X1RPX1BPV0VSX01TOwogCiAJcnQ1NjQ1ID0gZGV2bV9remFsbG9jKCZpMmMtPmRldiwgc2l6ZW9m
-KHN0cnVjdCBydDU2NDVfcHJpdiksCiAJCQkJR0ZQX0tFUk5FTCk7CkBAIC0zNzg2LDYgKzM3ODks
-MTUgQEAgc3RhdGljIGludCBydDU2NDVfaTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICppMmMs
-CiAJfQogCXJlZ21hcF9yZWFkKHJlZ21hcCwgUlQ1NjQ1X1ZFTkRPUl9JRDIsICZ2YWwpOwogCisJ
-LyoKKwkgKiBSZWFkIGZvciA0MDBtc2VjLCBhcyBpdCBpcyB0aGUgaW50ZXJ2YWwgcmVxdWlyZWQg
-YmV0d2VlbgorCSAqIHJlYWQgYW5kIHBvd2VyIE9uLgorCSAqLworCXdoaWxlICh2YWwgIT0gUlQ1
-NjQ1X0RFVklDRV9JRCAmJiB2YWwgIT0gUlQ1NjUwX0RFVklDRV9JRCAmJiAtLXRpbWVvdXQpIHsK
-KwkJbXNsZWVwKDEpOworCQlyZWdtYXBfcmVhZChyZWdtYXAsIFJUNTY0NV9WRU5ET1JfSUQyLCAm
-dmFsKTsKKwl9CisKIAlzd2l0Y2ggKHZhbCkgewogCWNhc2UgUlQ1NjQ1X0RFVklDRV9JRDoKIAkJ
-cnQ1NjQ1LT5yZWdtYXAgPSBkZXZtX3JlZ21hcF9pbml0X2kyYyhpMmMsICZydDU2NDVfcmVnbWFw
-KTsKLS0gCjIuNS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphbWQtZ2Z4IG1haWxpbmcgbGlzdAphbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
-dHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1nZngK
+On Mon, Oct 23, 2017 at 10:05 AM, Tim Harvey <tharvey@gateworks.com> wrote:
+>
+> On Fri, Oct 20, 2017 at 9:23 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> >>
+> >> I see the AVI infoframe has hdmi_quantization_range and
+> >> hdmi_ycc_quantization_range along with vid_code.
+> >>
+> >> I'm not at all clear what to do with this information. Is there
+> >> anything you see in the datasheet [1] that points to something I need
+> >> to be doing?
+> >
+> > You can ignore hdmi_ycc_quantization_range, it is the hdmi_quantization_range
+> > that you need to read out.
+> >
+> > The TDA can receive the following formats:
+> >
+> > RGB Full Range
+> > RGB Limited Range
+> > YUV Bt.601 (aka SMPTE 170M)
+> > YUV Rec.709
+> >
+> > The YUV formats are always limited range.
+> >
+> > The TDA can transmit RGB and YUV to the SoC. You want RGB to be full range and
+> > YUV to be limited range. YUV can be either 601 or 709.
+> >
+> > So if the TDA transmits RGB then you need to support the following conversions:
+> >
+> > RGB Full -> RGB Full
+> > RGB Limited -> RGB Full
+> > YUV 601 -> RGB Full
+> > YUV 709 -> RGB Full
+> >
+> > And if the TDA transmits YUV then you need these conversions:
+> >
+> > RGB Full -> YUV601 or YUV709
+> > RGB Limited -> YUV601 or YUV709
+> > YUV601 -> YUV601
+> > YUV709 -> YUV709
+> >
+> > For the RGB to YUV conversion you have a choice of converting to YUV601 or 709.
+> > I recommend to either always convert to YUV601 or to let it depend on the resolution
+> > (SDTV YUV601, HDTV YUV709).
+> >
+>
+> Ok - this is a good explanation that I should be able to follow. I
+> will make sure to take into account hdmi_quantization_range when I
+> setup the colorspace conversion matrix for v3.
+
+Hans,
+
+I'm having trouble figuring out the conversion matrix to use between
+limited and full.
+
+Currently I have the following conversion matrices, the values which
+came from some old vendor code:
+
+        /* Colorspace conversion matrix coefficients and offsets */
+        struct color_matrix_coefs {
+                /* Input offsets */
+                s16 offint1;
+                s16 offint2;
+                s16 offint3;
+                /* Coeficients */
+                s16 p11coef;
+                s16 p12coef;
+                s16 p13coef;
+                s16 p21coef;
+                s16 p22coef;
+                s16 p23coef;
+                s16 p31coef;
+                s16 p32coef;
+                s16 p33coef;
+                /* Output offsets */
+                s16 offout1;
+                s16 offout2;
+                s16 offout3;
+        };
+        /* Conversion matrixes */
+        enum {
+                ITU709_RGBLIMITED,
+                ITU601_RGBLIMITED,
+                RGBLIMITED_ITU601,
+       };
+       static const struct color_matrix_coefs conv_matrix[] = {
+                /* ITU709 -> RGBLimited */
+                {
+                        -256, -2048,  -2048,
+                        4096, -1875,   -750,
+                        4096,  6307,      0,
+                        4096,     0,   7431,
+                         256,   256,    256,
+                },
+                /* YUV601 limited -> RGB limited */
+                {
+                        -256, -2048,  -2048,
+                        4096, -2860,  -1378,
+                        4096,  5615,      0,
+                        4096,     0,   7097,
+                        256,    256,    256,
+                },
+                /* RGB limited -> ITU601 */
+                {
+                        -256,  -256,   -256,
+                        2404,  1225,    467,
+                        -1754, 2095,   -341,
+                        -1388, -707,   2095,
+                        256,   2048,   2048,
+                },
+        };
+
+Assuming the above are correct this leaves me missing RGB limitted ->
+RGB full, YUV601 -> RGB full, YUV709 -> RGB full, and RGB Full ->
+YUV601.
+
+I don't have documentation for the registers but I'm assuming the
+input offset is applied first, then the multiplication by the coef,
+then the output offset is applied. I'm looking over
+https://en.wikipedia.org/wiki/YUV for colorspace conversion matrices
+but I'm unable to figure out how to apply those to the above. Any
+ideas?
+
+Thanks,
+
+Tim
