@@ -1,86 +1,216 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [alsa-devel] [RFC PATCH v2 7/7] sound: core: Avoid using timespec
- for struct snd_timer_tread
-Date: Sun, 5 Nov 2017 14:16:28 +0100
-Message-ID: <CAK8P3a3B_QVJwQGQ5Uf07XzgZ3QBaybq_+K_wNeBH5-h5ThoLg@mail.gmail.com>
-References: <cover.1509612175.git.baolin.wang@linaro.org> <b920cd22144c6136abf0c82df6e2f26deea38cfc.1509612176.git.baolin.wang@linaro.org>
- <s5hvaipxblf.wl-tiwai@suse.de>
+From: Jerome Glisse <jglisse@redhat.com>
+Subject: ALSA trigger soft lockup since "ALSA: seq: Fix race at
+ creating a queue"
+Date: Fri, 3 Nov 2017 22:34:09 -0400
+Message-ID: <20171104023409.GB10353@redhat.com>
+References: <20171101130227.97f943b3318827b0ac5238a1@linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hvaipxblf.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Baolin Wang <baolin.wang@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Fabian Frederick <fabf@skynet.be>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, Liam Girdwood <lgirdwood@gmail.com>, SF Markus Elfring <elfring@users.sourceforge.net>, gudishax.kranthikumar@intel.com, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, Naveen M <naveen.m@intel.com>, jeeja.kp@intel.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, subhransu.s.prusty@intel.com, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: multipart/mixed; boundary="FL5UXtIhxfXey3p5"
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3354A266F52
+ for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2017 03:34:13 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171101130227.97f943b3318827b0ac5238a1@linux-foundation.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Daniel Mentz <danielmentz@google.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: alsa-devel@alsa-project.org, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 5, 2017 at 11:29 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 02 Nov 2017 12:06:57 +0100,
-> Baolin Wang wrote:
->>
->> The struct snd_timer_tread will use 'timespec' type variables to record
->> timestamp, which is not year 2038 safe on 32bits system.
->>
->> Since the struct snd_timer_tread is passed through read() rather than
->> ioctl(), and the read syscall has no command number that lets us pick
->> between the 32-bit or 64-bit version of this structure.
->>
->> Thus we introduced one new command SNDRV_TIMER_IOCTL_TREAD64 and new
->> struct snd_timer_tread64 replacing timespec with s64 type to handle
->> 64bit time_t. Also add one struct compat_snd_timer_tread64_x86_32 to
->> handle 64bit time_t with 32bit alignment. That means we will set
->> tu->tread = TREAD_FORMAT_64BIT when user space has a 64bit time_t,
->> then we will copy to user with struct snd_timer_tread64. For x86_32
->> mode, we will set tu->tread = TREAD_FORMAT_TIME32_X86 to copy
->> struct compat_snd_timer_tread64_x86_32 for user. Otherwise we will
->> use 32bit time_t variables when copying to user.
->
-> We should introduce SNDRV_TIMER_IOCTL_USER_PVERSION instead, where
-> user-space can tell which protocol version it understands.  If the
-> protocol version is higher than some definition, we can assume it's
-> 64-bit ready.  The *_USER_PVERSION is issued from alsa-lib side.
-> In that way, we can extend the ABI more flexibly.  A similar trick was
-> already used in PCM ABI.  (Ditto for control and rawmidi API; we
-> should have the same mechanism for all relevant APIs).
->
-> Moreover, once when the new protocol is used, we can use the standard
-> 64bit monotonic nsecs as a timestamp, so that we don't need to care
-> about 32/64bit compatibility.
 
-I think that's fine, we can do that too, but I don't see how we get around
-to doing something like Baolin's patch first. Without this, we will get
-existing user space code compiling against our kernel headers using a
-new glibc release that will inadvertently change the structure layout
-on the read file descriptor.
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-The trick with redefining SNDRV_TIMER_IOCTL_TREAD in that
-configuration lets the kernel know what API the user space expects
-without requiring source-level changes.
+On Wed, Nov 01, 2017 at 01:02:27PM -0700, Andrew Morton wrote:
+> Begin forwarded message:
+> 
+> Date: Wed, 01 Nov 2017 12:54:16 -0700
+> From: syzbot <bot+63583aefef5457348dcfa06b87d4fd1378b26b09@syzkaller.appspotmail.com>
+> To: aaron.lu@intel.com, akpm@linux-foundation.org, aneesh.kumar@linux.vnet.ibm.com, jack@suse.cz, kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com, minchan@kernel.org, peterz@infradead.org, rientjes@google.com, sfr@canb.auug.org.au, shli@fb.com, syzkaller-bugs@googlegroups.com, willy@linux.intel.com, ying.huang@intel.com, zi.yan@cs.rutgers.edu
+> Subject: BUG: soft lockup
+> 
+> 
+> Hello,
+> 
+> syzkaller hit the following crash on  
+> 1d53d908b79d7870d89063062584eead4cf83448
+> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/master
+> compiler: gcc (GCC) 7.1.1 20170620
+> .config is attached
+> Raw console output is attached.
+> C reproducer is attached
+> syzkaller reproducer is attached. See https://goo.gl/kgGztJ
+> for information about syzkaller reproducers
 
-If you want to for all users of SNDRV_TIMER_IOCTL_TREAD to move
-to a new interface for y2038-safety, we'd have to redefined the structure
-to avoid the libc-provided 'struct timespec' on 32-bit architectures, like:
+Sorry to be the bringer of bad news but after:
+4842e98f26dd80be3623c4714a244ba52ea096a8
+and
+7e1d90f60a0d501c8503e636942ca704a454d910
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 299a822d2c4e..f93cace4cd24 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -801,7 +801,14 @@ enum {
+The attached syzkaller repro trigger a softlockup in workqueue. I am unfamiliar
+with that code so some familiar in that domain is more likely to find a proper
+solution.
 
- struct snd_timer_tread {
-        int event;
-+#if __BITS_PER_LONG == 32
-+       struct {
-+               __kernel_long_t tv_sec;
-+               __kernel_long_t tv_usec;
-+       };
-+#else
-        struct timespec tstamp;
-+#endif
-        unsigned int val;
- };
+Note with
+git revert 7e1d90f60a0d501c8503e636942ca704a454d910
+git revert 4842e98f26dd80be3623c4714a244ba52ea096a8
+fix the issue
 
-This has a somewhat higher risk of breaking existing code (since the type
-changes), and it doesn't solve the overflow.
+Cheers,
+Jérôme
 
-      Arnd
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="repro.c"
+
+// autogenerated by syzkaller (http://github.com/google/syzkaller)
+
+#define _GNU_SOURCE
+
+#include <fcntl.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+static uintptr_t syz_open_dev(uintptr_t a0, uintptr_t a1, uintptr_t a2)
+{
+  if (a0 == 0xc || a0 == 0xb) {
+    char buf[128];
+    sprintf(buf, "/dev/%s/%d:%d", a0 == 0xc ? "char" : "block",
+            (uint8_t)a1, (uint8_t)a2);
+    return open(buf, O_RDWR, 0);
+  } else {
+    char buf[1024];
+    char* hash;
+    strncpy(buf, (char*)a0, sizeof(buf));
+    buf[sizeof(buf) - 1] = 0;
+    while ((hash = strchr(buf, '#'))) {
+      *hash = '0' + (char)(a1 % 10);
+      a1 /= 10;
+    }
+    return open(buf, a2, 0);
+  }
+}
+
+static void test();
+
+void loop()
+{
+  while (1) {
+    test();
+  }
+}
+
+long r[64];
+void test()
+{
+  memset(r, -1, sizeof(r));
+  r[0] = syscall(__NR_mmap, 0x20000000ul, 0xfff000ul, 0x3ul, 0x32ul,
+                 0xfffffffffffffffful, 0x0ul);
+  memcpy((void*)0x203a2000, "\x2e\x2f\x66\x69\x6c\x65\x30\x00", 8);
+  *(uint64_t*)0x20000fe0 = (uint64_t)0x0;
+  *(uint64_t*)0x20000fe8 = (uint64_t)0x2710;
+  *(uint64_t*)0x20000ff0 = (uint64_t)0x77359400;
+  *(uint64_t*)0x20000ff8 = (uint64_t)0x0;
+  r[6] = syscall(__NR_utimes, 0x203a2000ul, 0x20000fe0ul);
+  r[7] = syscall(__NR_getdents64, 0xfffffffffffffffful, 0x2076e000ul,
+                 0x0ul);
+  memcpy((void*)0x20c67ff1,
+         "\x2f\x64\x65\x76\x2f\x73\x6e\x64\x2f\x74\x69\x6d\x65\x72\x00",
+         15);
+  r[9] = syz_open_dev(0x20c67ff1ul, 0x0ul, 0x0ul);
+  *(uint32_t*)0x205a3fcc = (uint32_t)0x0;
+  *(uint32_t*)0x205a3fd0 = (uint32_t)0x2;
+  *(uint32_t*)0x205a3fd4 = (uint32_t)0x0;
+  *(uint32_t*)0x205a3fd8 = (uint32_t)0xffffffffffffffff;
+  *(uint32_t*)0x205a3fdc = (uint32_t)0x0;
+  *(uint8_t*)0x205a3fe0 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe1 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe2 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe3 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe4 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe5 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe6 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe7 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe8 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fe9 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fea = (uint8_t)0x0;
+  *(uint8_t*)0x205a3feb = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fec = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fed = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fee = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fef = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff0 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff1 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff2 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff3 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff4 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff5 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff6 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff7 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff8 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ff9 = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ffa = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ffb = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ffc = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ffd = (uint8_t)0x0;
+  *(uint8_t*)0x205a3ffe = (uint8_t)0x0;
+  *(uint8_t*)0x205a3fff = (uint8_t)0x0;
+  r[47] = syscall(__NR_ioctl, r[9], 0x40345410ul, 0x205a3fccul);
+  r[48] = syscall(__NR_ioctl, r[9], 0x54a2ul);
+  memcpy((void*)0x20bd8000,
+         "\x2f\x64\x65\x76\x2f\x73\x65\x71\x75\x65\x6e\x63\x65\x72\x32"
+         "\x00",
+         16);
+  r[50] = syscall(__NR_openat, 0xffffffffffffff9cul, 0x20bd8000ul,
+                  0x101000ul, 0x0ul);
+  *(uint32_t*)0x20d1e000 = (uint32_t)0xffffffffffffffff;
+  *(uint32_t*)0x20d1e004 = (uint32_t)0x730e;
+  *(uint32_t*)0x20d1e008 = (uint32_t)0x7;
+  *(uint32_t*)0x20d1e00c = (uint32_t)0x3;
+  *(uint8_t*)0x20d1e010 = (uint8_t)0xffffffffffffffff;
+  *(uint8_t*)0x20d1e011 = (uint8_t)0x80000001;
+  *(uint8_t*)0x20d1e012 = (uint8_t)0x4610;
+  *(uint8_t*)0x20d1e013 = (uint8_t)0x9;
+  *(uint32_t*)0x20d1e014 = (uint32_t)0x8;
+  *(uint32_t*)0x20d1e018 = (uint32_t)0x9;
+  *(uint32_t*)0x20d1e01c = (uint32_t)0x7;
+  *(uint32_t*)0x20d1e020 = (uint32_t)0x1;
+  r[63] = syscall(__NR_ioctl, r[50], 0x5402ul, 0x20d1e000ul);
+}
+
+int main()
+{
+  int i;
+  for (i = 0; i < 8; i++) {
+    if (fork() == 0) {
+      loop();
+      return 0;
+    }
+  }
+  sleep(1000000);
+  return 0;
+}
+
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--FL5UXtIhxfXey3p5--
