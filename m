@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 1/2] ctl: deprecate APIs of dimension
+Subject: [alsa-lib][PATCH 0/2] ctl: deprecate APIs of dimension
 	information
-Date: Sat,  4 Nov 2017 11:24:25 +0900
-Message-ID: <20171104022426.16230-2-o-takashi@sakamocchi.jp>
-References: <20171104022426.16230-1-o-takashi@sakamocchi.jp>
+Date: Sat,  4 Nov 2017 11:24:24 +0900
+Message-ID: <20171104022426.16230-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 344D7266F30
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 38BA2266F36
  for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2017 03:24:44 +0100 (CET)
-In-Reply-To: <20171104022426.16230-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,62 +23,40 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
 In ALSA control interface of asound.h, 'struct snd_ctl_elem_info' has
 'dimen' member to deliver information for multi-dimensional array, however
 there's no common way to handle the member. As a result, drivers can
 force userspace applications to handle the information by inconsistent
-ways.
+ways. A series of echoaudio drivers is an actual example of the
+inconsistent usage.
 
-This issue was reported by a commit 51db452df07b ('Revert "ALSA: echoaudio:
+This issue was addressed in a commit 51db452df07b ('Revert "ALSA: echoaudio:
 purge contradictions between dimension matrix members and total number of
-members"') to Linux kernel. As a result of discussion at Linux
-miniconference 2017, usage of 'dimen' member of 'struct snd_ctl_elem_info'
-is going to be deprecated for future removal.
+members"') to Linux kernel[1]. Fortunately, at present, this feature of
+interface is just used by the drivers, and there's a way to obsolete usage
+of the feature. We can obsolete it without large impacts to userland.
 
-This commit deprecates some APIs related to the dimension information. They
-are planned to be removed in a development period for Linux kernel v4.21.
+As a result of discussion at Linux miniconference 2017, usage of 'dimen'
+member of 'struct snd_ctl_elem_info' is going to be deprecated for future
+removal. This patchset is for proposed tasks at a development period of
+Linux kernel v4.15[3]. Some APIs of dimension information are deprecated.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/control/control.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/sound/pci/echoaudio?id=51db452df07bb4c5754b73789253ba21681d9dc2
 
-diff --git a/src/control/control.c b/src/control/control.c
-index 6439b294..88828f54 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -2503,6 +2503,10 @@ const char *snd_ctl_elem_info_get_item_name(const snd_ctl_elem_info_t *obj)
-  * \brief Get count of dimensions for given element
-  * \param obj CTL element id/info
-  * \return zero value if no dimensions are defined, otherwise positive value with count of dimensions
-+ *
-+ * \deprecated	Since 1.1.5
-+ * #snd_ctl_elem_info_get_dimensions is deprecated without any replacement,
-+ * under a decision to drop corresponding kernel ABI at Linux v4.21.
-  */
- #ifndef DOXYGEN
- int INTERNAL(snd_ctl_elem_info_get_dimensions)(const snd_ctl_elem_info_t *obj)
-@@ -2525,6 +2529,10 @@ use_default_symbol_version(__snd_ctl_elem_info_get_dimensions, snd_ctl_elem_info
-  * \param obj CTL element id/info
-  * \param idx The dimension index
-  * \return zero value if no dimension width is defined, otherwise positive value with with of specified dimension
-+ *
-+ * \deprecated	Since 1.1.5
-+ * #snd_ctl_elem_info_get_dimension is deprecated without any replacement,
-+ * under a decision to drop corresponding kernel ABI at Linux v4.21.
-  */
- #ifndef DOXYGEN
- int INTERNAL(snd_ctl_elem_info_get_dimension)(const snd_ctl_elem_info_t *obj, unsigned int idx)
-@@ -2553,6 +2561,10 @@ use_default_symbol_version(__snd_ctl_elem_info_get_dimension, snd_ctl_elem_info_
-  *
-  * \par Compatibility:
-  * This function is added in version 1.1.2.
-+ *
-+ * \deprecated Since 1.1.5
-+ * #snd_ctl_elem_info_set_dimension is deprecated without any replacement,
-+ * under a decision to drop corresponding kernel ABI at Linux v4.21.
-  */
- int snd_ctl_elem_info_set_dimension(snd_ctl_elem_info_t *info,
- 				    const int dimension[4])
+[2] [alsa-devel] [ANNOUNCE] Audio Mini Summit 2017 at Prague, Oct 27
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-July/123110.html
+
+[3] https://github.com/takaswie/presentations/blob/master/20171027/contents.md
+
+Takashi Sakamoto (2):
+  ctl: deprecate APIs of dimension information
+  test: obsolete usage of APIs of dimension information
+
+ src/control/control.c       | 12 ++++++++++++
+ test/user-ctl-element-set.c | 31 -------------------------------
+ 2 files changed, 12 insertions(+), 31 deletions(-)
+
 -- 
 2.11.0
