@@ -1,144 +1,86 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Fri, 3 Nov 2017 17:17:55 -0700
-Message-ID: <CAJ+vNU1ipKzm5AX4HY0ckrBM3aMC1mn0Dp7nQfsjzJcEYgBV5Q@mail.gmail.com>
-References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
- <1507783506-3884-4-git-send-email-tharvey@gateworks.com> <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
- <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com>
- <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl> <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
- <5c68003a-380d-d339-718f-47bce64cdae8@xs4all.nl> <CAJ+vNU2a8qtL4hbg5FQamF3WanQG1610QsJv=2cCxpD8OsiQ6w@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 1/2] ctl: deprecate APIs of dimension
+	information
+Date: Sat,  4 Nov 2017 11:24:25 +0900
+Message-ID: <20171104022426.16230-2-o-takashi@sakamocchi.jp>
+References: <20171104022426.16230-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <CAJ+vNU2a8qtL4hbg5FQamF3WanQG1610QsJv=2cCxpD8OsiQ6w@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 344D7266F30
+ for <alsa-devel@alsa-project.org>; Sat,  4 Nov 2017 03:24:44 +0100 (CET)
+In-Reply-To: <20171104022426.16230-1-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 23, 2017 at 10:05 AM, Tim Harvey <tharvey@gateworks.com> wrote:
->
-> On Fri, Oct 20, 2017 at 9:23 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->
-> >>
-> >> I see the AVI infoframe has hdmi_quantization_range and
-> >> hdmi_ycc_quantization_range along with vid_code.
-> >>
-> >> I'm not at all clear what to do with this information. Is there
-> >> anything you see in the datasheet [1] that points to something I need
-> >> to be doing?
-> >
-> > You can ignore hdmi_ycc_quantization_range, it is the hdmi_quantization_range
-> > that you need to read out.
-> >
-> > The TDA can receive the following formats:
-> >
-> > RGB Full Range
-> > RGB Limited Range
-> > YUV Bt.601 (aka SMPTE 170M)
-> > YUV Rec.709
-> >
-> > The YUV formats are always limited range.
-> >
-> > The TDA can transmit RGB and YUV to the SoC. You want RGB to be full range and
-> > YUV to be limited range. YUV can be either 601 or 709.
-> >
-> > So if the TDA transmits RGB then you need to support the following conversions:
-> >
-> > RGB Full -> RGB Full
-> > RGB Limited -> RGB Full
-> > YUV 601 -> RGB Full
-> > YUV 709 -> RGB Full
-> >
-> > And if the TDA transmits YUV then you need these conversions:
-> >
-> > RGB Full -> YUV601 or YUV709
-> > RGB Limited -> YUV601 or YUV709
-> > YUV601 -> YUV601
-> > YUV709 -> YUV709
-> >
-> > For the RGB to YUV conversion you have a choice of converting to YUV601 or 709.
-> > I recommend to either always convert to YUV601 or to let it depend on the resolution
-> > (SDTV YUV601, HDTV YUV709).
-> >
->
-> Ok - this is a good explanation that I should be able to follow. I
-> will make sure to take into account hdmi_quantization_range when I
-> setup the colorspace conversion matrix for v3.
+In ALSA control interface of asound.h, 'struct snd_ctl_elem_info' has
+'dimen' member to deliver information for multi-dimensional array, however
+there's no common way to handle the member. As a result, drivers can
+force userspace applications to handle the information by inconsistent
+ways.
 
-Hans,
+This issue was reported by a commit 51db452df07b ('Revert "ALSA: echoaudio:
+purge contradictions between dimension matrix members and total number of
+members"') to Linux kernel. As a result of discussion at Linux
+miniconference 2017, usage of 'dimen' member of 'struct snd_ctl_elem_info'
+is going to be deprecated for future removal.
 
-I'm having trouble figuring out the conversion matrix to use between
-limited and full.
+This commit deprecates some APIs related to the dimension information. They
+are planned to be removed in a development period for Linux kernel v4.21.
 
-Currently I have the following conversion matrices, the values which
-came from some old vendor code:
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ src/control/control.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-        /* Colorspace conversion matrix coefficients and offsets */
-        struct color_matrix_coefs {
-                /* Input offsets */
-                s16 offint1;
-                s16 offint2;
-                s16 offint3;
-                /* Coeficients */
-                s16 p11coef;
-                s16 p12coef;
-                s16 p13coef;
-                s16 p21coef;
-                s16 p22coef;
-                s16 p23coef;
-                s16 p31coef;
-                s16 p32coef;
-                s16 p33coef;
-                /* Output offsets */
-                s16 offout1;
-                s16 offout2;
-                s16 offout3;
-        };
-        /* Conversion matrixes */
-        enum {
-                ITU709_RGBLIMITED,
-                ITU601_RGBLIMITED,
-                RGBLIMITED_ITU601,
-       };
-       static const struct color_matrix_coefs conv_matrix[] = {
-                /* ITU709 -> RGBLimited */
-                {
-                        -256, -2048,  -2048,
-                        4096, -1875,   -750,
-                        4096,  6307,      0,
-                        4096,     0,   7431,
-                         256,   256,    256,
-                },
-                /* YUV601 limited -> RGB limited */
-                {
-                        -256, -2048,  -2048,
-                        4096, -2860,  -1378,
-                        4096,  5615,      0,
-                        4096,     0,   7097,
-                        256,    256,    256,
-                },
-                /* RGB limited -> ITU601 */
-                {
-                        -256,  -256,   -256,
-                        2404,  1225,    467,
-                        -1754, 2095,   -341,
-                        -1388, -707,   2095,
-                        256,   2048,   2048,
-                },
-        };
-
-Assuming the above are correct this leaves me missing RGB limitted ->
-RGB full, YUV601 -> RGB full, YUV709 -> RGB full, and RGB Full ->
-YUV601.
-
-I don't have documentation for the registers but I'm assuming the
-input offset is applied first, then the multiplication by the coef,
-then the output offset is applied. I'm looking over
-https://en.wikipedia.org/wiki/YUV for colorspace conversion matrices
-but I'm unable to figure out how to apply those to the above. Any
-ideas?
-
-Thanks,
-
-Tim
+diff --git a/src/control/control.c b/src/control/control.c
+index 6439b294..88828f54 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -2503,6 +2503,10 @@ const char *snd_ctl_elem_info_get_item_name(const snd_ctl_elem_info_t *obj)
+  * \brief Get count of dimensions for given element
+  * \param obj CTL element id/info
+  * \return zero value if no dimensions are defined, otherwise positive value with count of dimensions
++ *
++ * \deprecated	Since 1.1.5
++ * #snd_ctl_elem_info_get_dimensions is deprecated without any replacement,
++ * under a decision to drop corresponding kernel ABI at Linux v4.21.
+  */
+ #ifndef DOXYGEN
+ int INTERNAL(snd_ctl_elem_info_get_dimensions)(const snd_ctl_elem_info_t *obj)
+@@ -2525,6 +2529,10 @@ use_default_symbol_version(__snd_ctl_elem_info_get_dimensions, snd_ctl_elem_info
+  * \param obj CTL element id/info
+  * \param idx The dimension index
+  * \return zero value if no dimension width is defined, otherwise positive value with with of specified dimension
++ *
++ * \deprecated	Since 1.1.5
++ * #snd_ctl_elem_info_get_dimension is deprecated without any replacement,
++ * under a decision to drop corresponding kernel ABI at Linux v4.21.
+  */
+ #ifndef DOXYGEN
+ int INTERNAL(snd_ctl_elem_info_get_dimension)(const snd_ctl_elem_info_t *obj, unsigned int idx)
+@@ -2553,6 +2561,10 @@ use_default_symbol_version(__snd_ctl_elem_info_get_dimension, snd_ctl_elem_info_
+  *
+  * \par Compatibility:
+  * This function is added in version 1.1.2.
++ *
++ * \deprecated Since 1.1.5
++ * #snd_ctl_elem_info_set_dimension is deprecated without any replacement,
++ * under a decision to drop corresponding kernel ABI at Linux v4.21.
+  */
+ int snd_ctl_elem_info_set_dimension(snd_ctl_elem_info_t *info,
+ 				    const int dimension[4])
+-- 
+2.11.0
