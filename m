@@ -1,59 +1,70 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [alsa-devel] BUG: soft lockup
-Date: Mon, 6 Nov 2017 11:42:26 +0100
-Message-ID: <CACT4Y+bGBRrnu_rb9zZG1jWb8Zz4vx=ObmT-2K6bZGAQryA9Mg@mail.gmail.com>
-References: <94eb2c19df188b1926055cf13c21@google.com> <CACT4Y+ZDVP7mJHaOpq9N5oewE0WwCCWgrtWX08DFdBJN4sBRhQ@mail.gmail.com>
- <s5hshdxay1t.wl-tiwai@suse.de> <20171102090951.drjf7wc2urcmtla5@node.shutemov.name>
- <s5hy3njlmhe.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5663: Delay and retry reading
+	rt5663 ID register
+Date: Mon, 6 Nov 2017 11:30:14 +0000
+Message-ID: <20171106113014.674htnbx2i2dk2as@sirena.co.uk>
+References: <1509949082-21443-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <s5hy3njlmhe.wl-tiwai@suse.de>
-Sender: owner-linux-mm@kvack.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>, syzbot <bot+63583aefef5457348dcfa06b87d4fd1378b26b09@syzkaller.appspotmail.com>, aaron.lu@intel.com, alsa-devel@alsa-project.org, Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>, Peter Zijlstra <peterz@infradead.org>, ying.huang@intel.com, syzkaller-bugs@googlegroups.com, LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, shli@fb.com, David Rientjes <rientjes@google.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Andrew Morton <akpm@linux-foundation.org>, zi.yan@cs.rutgers.edu, Matthew Wilcox <willy@linux.intel.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: multipart/mixed; boundary="===============6496842458163640389=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E44F526713F
+ for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2017 12:30:16 +0100 (CET)
+In-Reply-To: <1509949082-21443-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 6, 2017 at 11:39 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 02 Nov 2017 10:09:51 +0100,
-> Kirill A. Shutemov wrote:
->>
->> On Thu, Nov 02, 2017 at 09:23:58AM +0100, Takashi Iwai wrote:
->> >
->> > Currently the least ALSA timer interrupt period is limited to 1ms.
->> > Does it still too much?
->> >
->> > Can the reproducer triggers it reliably?  If yes, could you forward
->> > it, too (and config as well), so that I'll try to dig down more exact
->> > code paths?
->>
->> All of that is part of original report:
->>
->> http://lkml.kernel.org/r/94eb2c19df188b1926055cf13c21@google.com
->>
->> marc.info hasn't stored repro.c for some reasone. Attached.
->>
->> I've just check it reproduces reliably for me in KVM.
->>
->> I also checked that it's not specific to THP -- still trigirable with huge
->> pages disabled.
->
-> I guess this is the same issue Jerome forwarded recently, and it was
-> fixed by limiting the amount of ALSA timer instances.  I queued the
-> fix in sound git tree for-linus branch, commit
-> 9b7d869ee5a77ed4a462372bb89af622e705bfb8
->     ALSA: timer: Limit max instances per timer
->
-> It'll be likely included in 4.14 final.
 
-Thanks
+--===============6496842458163640389==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="s62xzyx6hq52mjuu"
+Content-Disposition: inline
 
-Let's also tell the bot what fixes this:
 
-#syz fix: ALSA: timer: Limit max instances per timer
+--s62xzyx6hq52mjuu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+On Mon, Nov 06, 2017 at 02:18:02PM +0800, Oder Chiou wrote:
+> In the probe, the codec may not be ready for I2C reading. So if the value
+> is not correct, it will read again after delay.
+
+Why might this happen?  This sounds like papering over some other
+problem.
+
+--s62xzyx6hq52mjuu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloAR8UACgkQJNaLcl1U
+h9DFvgf/eqD6oxVuP+/4oA84mZ2lYIDtTx1vrm0ESQm7j0S94bGM1B5b/yyiPhyn
+BteIqIqrXRpfagcAJb+C//3LKQsNLtATDETtDp8JUjLis+JMkYGEXjUEzbRUMGcj
+9/w2B01Q+q0GQw05pEJPHngQTNlyjgjVhDTgz+g2qJyNwLIRMS074Kus9Hjgzgq+
+ncjctxUeFR+9369O+3oHFeLPwzG1gi0JeHEby+s3uGD6WOAbrjc2jw9e1Xvp7IQU
+81KzVyRw147mVlDsiiFXvrNMpmCvyr8EBTzeWbH6rVmrVAzT6ABVUyEy7iOHVIbN
+L5gEtzSzA35uuIfC7M3RCyZoIKVuyg==
+=xORs
+-----END PGP SIGNATURE-----
+
+--s62xzyx6hq52mjuu--
+
+--===============6496842458163640389==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6496842458163640389==--
