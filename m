@@ -1,105 +1,162 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt5645: Wait for 400msec before concluding on
- value of RT5645_VENDOR_ID2
-Date: Mon, 6 Nov 2017 16:24:22 +0000
-Message-ID: <20171106162422.vhurovalfxztf6ma@sirena.co.uk>
-References: <1509741345-1589-1-git-send-email-alexander.deucher@amd.com>
- <1509741345-1589-4-git-send-email-alexander.deucher@amd.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [alsa-devel] [RFC PATCH v2 7/7] sound: core: Avoid using timespec
+ for struct snd_timer_tread
+Date: Mon, 6 Nov 2017 17:33:26 +0100
+Message-ID: <CAK8P3a39BOUa_2pnHZ6URjv6uKgEtiySEExhE5qEegqfk-CDkg@mail.gmail.com>
+References: <cover.1509612175.git.baolin.wang@linaro.org> <b920cd22144c6136abf0c82df6e2f26deea38cfc.1509612176.git.baolin.wang@linaro.org>
+ <s5hvaipxblf.wl-tiwai@suse.de> <CAK8P3a3B_QVJwQGQ5Uf07XzgZ3QBaybq_+K_wNeBH5-h5ThoLg@mail.gmail.com>
+ <s5hr2tcy849.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0178174262=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1509741345-1589-4-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Akshu Agrawal <akshu.agrawal@amd.com>, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, Bard Liao <bardliao@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hr2tcy849.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Baolin Wang <baolin.wang@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Fabian Frederick <fabf@skynet.be>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, guneshwor.o.singh@intel.com, Liam Girdwood <lgirdwood@gmail.com>, SF Markus Elfring <elfring@users.sourceforge.net>, gudishax.kranthikumar@intel.com, Mark Brown <broonie@kernel.org>, Bhumika Goyal <bhumirks@gmail.com>, Naveen M <naveen.m@intel.com>, jeeja.kp@intel.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, subhransu.s.prusty@intel.com, Ingo Molnar <mingo@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Nov 5, 2017 at 5:59 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sun, 05 Nov 2017 14:16:28 +0100,
+>> On Sun, Nov 5, 2017 at 11:29 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > On Thu, 02 Nov 2017 12:06:57 +0100,
+>> > We should introduce SNDRV_TIMER_IOCTL_USER_PVERSION instead, where
+>> > user-space can tell which protocol version it understands.  If the
+>> > protocol version is higher than some definition, we can assume it's
+>> > 64-bit ready.  The *_USER_PVERSION is issued from alsa-lib side.
+>> > In that way, we can extend the ABI more flexibly.  A similar trick was
+>> > already used in PCM ABI.  (Ditto for control and rawmidi API; we
+>> > should have the same mechanism for all relevant APIs).
+>> >
+>> > Moreover, once when the new protocol is used, we can use the standard
+>> > 64bit monotonic nsecs as a timestamp, so that we don't need to care
+>> > about 32/64bit compatibility.
+>>
+>> I think that's fine, we can do that too, but I don't see how we get around
+>> to doing something like Baolin's patch first. Without this, we will get
+>> existing user space code compiling against our kernel headers using a
+>> new glibc release that will inadvertently change the structure layout
+>> on the read file descriptor.
+>
+> But it won't work in anyway in multiple ways, e.g. this timer read
+> stuff and another the structs embedded in the mmappged page.  If you
+> do rebuild things with new glibc, it should tell kernel about the new
+> ABI in anyway more or less explicitly.  And if you need it, it means
+> that some source-code level API change would be possible.
 
---===============0178174262==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rxwgg2fphhzmpdwe"
-Content-Disposition: inline
+Right, you mentioned the mmap interface at the kernel summit. This
+is certainly the most tricky part and will probably require source-level
+changes.
 
+Can you clarify a few things about the mmap() interface?
+Is this specifically about "struct snd_pcm_mmap_status" on the
+pcm device, or are there others?
 
---rxwgg2fphhzmpdwe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>From what I can see, it's already fairly limited:
+- on most architectures, it's completely disabled, only x86, ppc and
+  alpha allow it to start with, and user space can work around
+  the mmap not being available by falling back to ioctl if I read
+  the comments correctly
+- alpha is not affected since time_t is always 64-bit
+- x86 and ppc disable the mmap() in compat mode already because
+  of the same issue. If it comes to the worst, we can probably do
+  the same for x86-32 and ppc32, disabling the existing status mmap
+  for them as well, and change SNDRV_PCM_MMAP_OFFSET_STATUS
+  to a new value for 32-bit kernels that exposes the same structure
+  as 64-bit kernels.
+- I think that since we always use an offset that is defined in the
+  header file, we can use the same trick for mmap that we have
+  for the ioctl command number:
 
-On Fri, Nov 03, 2017 at 04:35:45PM -0400, Alex Deucher wrote:
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index c227ccba60ae..bcdbdac097d9 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -306,10 +306,19 @@ typedef int __bitwise snd_pcm_state_t;
 
-> Minimum time required between power On of codec and read
-> of RT5645_VENDOR_ID2 is 400msec. We should wait and attempt
-> before erroring out.
+ enum {
+        SNDRV_PCM_MMAP_OFFSET_DATA = 0x00000000,
+-       SNDRV_PCM_MMAP_OFFSET_STATUS = 0x80000000,
++       SNDRV_PCM_MMAP_OFFSET_STATUS_OLD = 0x80000000,
+        SNDRV_PCM_MMAP_OFFSET_CONTROL = 0x81000000,
++       SNDRV_PCM_MMAP_OFFSET_STATUS64 = 0x82000000,
+ };
 
-So the description says we have to wait 400ms before attempting a
-read...
++#if __BITS_PER_LONG == 64
++#define SNDRV_PCM_MMAP_OFFSET_STATUS SNDRV_PCM_MMAP_OFFSET_STATUS_OLD
++#else
++#define SNDRV_PCM_MMAP_OFFSET_STATUS ((sizeof(time_t) >
+sizeof(__kernel_long_t)) ? \
++                                       SNDRV_PCM_MMAP_OFFSET_STATUS64 : \
++                                       SNDRV_PCM_MMAP_OFFSET_STATUS_OLD)
++#endif
++
+ union snd_pcm_sync_id {
+        unsigned char id[16];
+        unsigned short id16[8];
 
-> BUG=3Db:66978383
+Does that make sense?
 
-What does this mean?
+> Of course, passing which data type is another question.  Maybe 64bit
+> nsecs wouldn't fit all places, and timespec64 style would be still
+> required.  But still, the current patch looks still too unnecessarily
+> complex to me.  (Yeah I know that the problem is complex, but the code
+> can be simpler, I hope!)
 
-> @@ -3786,6 +3789,15 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->  	}
->  	regmap_read(regmap, RT5645_VENDOR_ID2, &val);
-> =20
-> +	/*
-> +	 * Read for 400msec, as it is the interval required between
-> +	 * read and power On.
-> +	 */
-> +	while (val !=3D RT5645_DEVICE_ID && val !=3D RT5650_DEVICE_ID && --time=
-out) {
-> +		msleep(1);
-> +		regmap_read(regmap, RT5645_VENDOR_ID2, &val);
-> +	}
-> +
+I think we can simplify the x86_32 case, but probably not much beyond
+that. The trick above however can fix 32-bit compat mode for mmap
+if we want to do that.
 
-=2E..but what we actually do is try to read up to 400 times starting well
-before that 400ms is up.  This directly contradicts what the commit
-message said we needed, may take a lot longer if the chip misbehaves on
-the I2C bus while it's not ready (which wouldn't be that much of a
-surprise), might lead to us reporting before the chip is really stable
-(if the read happens to work while the chip isn't yet stable) and could
-cause lots of noise on the console if the I2C controller gets upset.
-What are we actually waiting for here?
+>> The trick with redefining SNDRV_TIMER_IOCTL_TREAD in that
+>> configuration lets the kernel know what API the user space expects
+>> without requiring source-level changes.
+>
+> Right, it works for this case, but not always.
+> If jumping the API would give a cleaner way of implementation, I'd
+> prefer that over too hackeries, IMO.
 
-If we really need 400ms of dead reckoning time (which is a lot for a
-modern chip, that feels more like a VMID ramp) then it's going to be
-safer to just do that.
+Generally speaking I try to avoid being incompatible since that causes
+more problems for users when they either fail to build existing source
+code, or get silent interface breakage after recompiling against a new
+glibc. If the kernel can make it work, that should be the first priority.
 
---rxwgg2fphhzmpdwe
-Content-Type: application/pgp-signature; name="signature.asc"
+>> If you want to for all users of SNDRV_TIMER_IOCTL_TREAD to move
+>> to a new interface for y2038-safety, we'd have to redefined the structure
+>> to avoid the libc-provided 'struct timespec' on 32-bit architectures, like:
+>>
+>> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+>> index 299a822d2c4e..f93cace4cd24 100644
+>> --- a/include/uapi/sound/asound.h
+>> +++ b/include/uapi/sound/asound.h
+>> @@ -801,7 +801,14 @@ enum {
+>>
+>>  struct snd_timer_tread {
+>>         int event;
+>> +#if __BITS_PER_LONG == 32
+>> +       struct {
+>> +               __kernel_long_t tv_sec;
+>> +               __kernel_long_t tv_usec;
+>> +       };
+>> +#else
+>>         struct timespec tstamp;
+>> +#endif
+>>         unsigned int val;
+>>  };
+>>
+>> This has a somewhat higher risk of breaking existing code (since the type
+>> changes), and it doesn't solve the overflow.
+>
+> Hm, how to define the timestamp type is one of the biggest questions
+> indeed.  In general, there can't be any guarantee that just rebuilding
+> with the 64bit timespec would work for all existing codes.  In theory
+> it shouldn't break, but who knows...
 
------BEGIN PGP SIGNATURE-----
+Right we can capture most cases then user space gets the kernel
+headers from /usr/include/linux and that gets created from a new enough
+kernel, or when the ioctl command number is defined in terms of
+the variable structure sizes that actually differ. This covers almost all
+interfaces, but I've seen some exceptions that will be silently broken
+no matter what we do. For all I can see, ALSA ioctls are fine, it's just a lot
+of work to get right. The mmap() problem might be fairly easy to solve
+in the end, or it may be very hard.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloAjLYACgkQJNaLcl1U
-h9BtnQf/a2uONbzWtC0XwNza98smNFt1sP+V3Zsny8kLbcyhp2SNldSk4Iq5lwMJ
-HlN54MzFTlgaQFXwxGuL5Ui3wVfMZu3K2zc5BCje0nLuyBura0/YdFboehUinWNT
-h0GG56vUqJEAlPZUWGsk1386DZR2L+8poHD3zs/gVeGo9z0w0Iz4sRV1PGTqBPo3
-sScISwGVS41mTQCVrYDuQ4dYwXV9mYqZ7RYCl4bH/545Bdb9oXYAWtnBDgOxCDsP
-izfW0ZskMYI+xDiiOGFlNYZP9gTpGe0P4YBNWRMQKXXBqwy1WM7EtRV30nZRFmSX
-zAUUAWGNaMeS4DICUvq6NC42imuw9w==
-=RnXa
------END PGP SIGNATURE-----
-
---rxwgg2fphhzmpdwe--
-
---===============0178174262==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0178174262==--
+      Arnd
