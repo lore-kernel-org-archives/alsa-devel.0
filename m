@@ -1,96 +1,168 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: return -EIO if
-	rsnd_dmaen_request_channel() failed" to the asoc tree
-Date: Mon, 06 Nov 2017 11:37:53 +0000
-Message-ID: <E1eBfiz-00057D-Jo@debutante>
-References: <877ev45ik4.wl%kuninori.morimoto.gx@renesas.com>
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: usb/sound/usx2y: WARNING in usb_stream_start
+Date: Mon, 6 Nov 2017 13:14:54 +0100
+Message-ID: <CAAeHK+wrWnzA9voCQa7uzJpubu+p0+q1R8fxpwuWEbFQLqgqEA@mail.gmail.com>
+References: <CAAeHK+xoNQv3wVyqEdNEuk2hKwyoUrJ+uHFMLJ7VJVJAAuWeAQ@mail.gmail.com>
+ <s5hwp37ywa6.wl-tiwai@suse.de> <s5h375rn319.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 09AA726713F
- for <alsa-devel@alsa-project.org>; Mon,  6 Nov 2017 12:38:01 +0100 (CET)
-In-Reply-To: <877ev45ik4.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Simon <horms@verge.net.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h375rn319.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Dave Jiang <dave.jiang@intel.com>, Johan Hovold <johan@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jaroslav Kysela <perex@perex.cz>, Markus Elfring <elfring@users.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>, Kostya Serebryany <kcc@google.com>, syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Nov 6, 2017 at 10:56 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 03 Nov 2017 20:52:49 +0100,
+> Takashi Iwai wrote:
+>>
+>> On Fri, 03 Nov 2017 15:44:59 +0100,
+>> Andrey Konovalov wrote:
+>> >
+>> > Hi!
+>> >
+>> > I've got the following report while fuzzing the kernel with syzkaller.
+>> >
+>> > On commit 3a99df9a3d14cd866b5516f8cba515a3bfd554ab (4.14-rc7+).
+>> >
+>> > Looks like there's no check for the actual endpoint types.
+>> >
+>> > usb 1-1: BOGUS urb xfer, pipe 0 != type 3
+>> > ------------[ cut here ]------------
+>> > WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:471
+>> > usb_submit_urb+0x113e/0x1400
+>> > Modules linked in:
+>> > CPU: 0 PID: 24 Comm: kworker/0:1 Not tainted
+>> > 4.14.0-rc7-44290-gf28444df2601-dirty #52
+>> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+>> > Workqueue: usb_hub_wq hub_event
+>> > task: ffff88006bef5c00 task.stack: ffff88006bf60000
+>> > RIP: 0010:usb_submit_urb+0x113e/0x1400 drivers/usb/core/urb.c:470
+>> > RSP: 0018:ffff88006bf67440 EFLAGS: 00010286
+>> > RAX: 0000000000000029 RBX: ffff880064698c80 RCX: ffffffff812495b5
+>> > RDX: 0000000000000000 RSI: ffffffff8124d76a RDI: 0000000000000005
+>> > RBP: ffff88006bf674b0 R08: ffff88006bef5c00 R09: 0000000000000006
+>> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>> > R13: 0000000000000003 R14: ffff880069a25a20 R15: ffff880064698d04
+>> > FS:  0000000000000000(0000) GS:ffff88006ca00000(0000) knlGS:0000000000000000
+>> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> > CR2: 00007fe6fdba3000 CR3: 0000000068470000 CR4: 00000000000006f0
+>> > Call Trace:
+>> >  usb_stream_start+0x48a/0x9f0 sound/usb/usx2y/usb_stream.c:690
+>> >  us122l_start+0x116/0x290 sound/usb/usx2y/us122l.c:365
+>> (snip)
+>>
+>> OK, so this looks like another typical issue.
+>> A totally untested patch is below.  Could you check whether it covers?
+>
+> FYI, below is the patch with a proper description that I queued to
+> for-next branch.
 
-   ASoC: rsnd: return -EIO if rsnd_dmaen_request_channel() failed
+This patch fixes the issue.
 
-has been applied to the asoc tree at
+Thanks!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Tested-by: Andrey Konovalov <andreyknvl@google.com>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c409c2a963475f0288ba3bb47a10f04f6441ffb9 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 6 Nov 2017 01:07:27 +0000
-Subject: [PATCH] ASoC: rsnd: return -EIO if rsnd_dmaen_request_channel()
- failed
-
-PTR_ERR(NULL) is success. Normally when a function returns both NULL
-and error pointers, it means that NULL is not a error.
-But, rsnd_dmaen_request_channel() returns NULL if requested resource
-was failed.
-Let's return -EIO if rsnd_dmaen_request_channel() was failed on
-rsnd_dmaen_nolock_start().
-This patch fixes commit edce5c496c6a ("ASoC: rsnd: Request/Release DMA
-channel eachtime")
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/dma.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 5bc9ec16813c..fd557abfe390 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -219,11 +219,9 @@ static int rsnd_dmaen_nolock_start(struct rsnd_mod *mod,
- 						 dma->mod_from,
- 						 dma->mod_to);
- 	if (IS_ERR_OR_NULL(dmaen->chan)) {
--		int ret = PTR_ERR(dmaen->chan);
--
- 		dmaen->chan = NULL;
- 		dev_err(dev, "can't get dma channel\n");
--		return ret;
-+		return -EIO;
- 	}
- 
- 	return 0;
--- 
-2.15.0
+>
+>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: usx2y: Fix invalid stream URBs
+>
+> The us122l driver creates URBs per the fixed endpoints, and this may
+> end up with URBs with inconsistent pipes when a fuzzer or a malicious
+> program deals with the manipulated endpoints.  It ends up with a
+> kernel warning like:
+>
+>   usb 1-1: BOGUS urb xfer, pipe 0 != type 3
+>   ------------[ cut here ]------------
+>   WARNING: CPU: 0 PID: 24 at drivers/usb/core/urb.c:471
+>   usb_submit_urb+0x113e/0x1400
+>   Call Trace:
+>    usb_stream_start+0x48a/0x9f0 sound/usb/usx2y/usb_stream.c:690
+>    us122l_start+0x116/0x290 sound/usb/usx2y/us122l.c:365
+>    us122l_create_card sound/usb/usx2y/us122l.c:502
+>    us122l_usb_probe sound/usb/usx2y/us122l.c:588
+>    ....
+>
+> For avoiding the bad access, this patch adds a few sanity checks of
+> the validity of created URBs like previous similar fixes using the new
+> usb_urb_ep_type_check() helper function.
+>
+> Reported-by: Andrey Konovalov <andreyknvl@google.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/usb/usx2y/usb_stream.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
+>
+> diff --git a/sound/usb/usx2y/usb_stream.c b/sound/usb/usx2y/usb_stream.c
+> index e229abd21652..b0f8979ff2d2 100644
+> --- a/sound/usb/usx2y/usb_stream.c
+> +++ b/sound/usb/usx2y/usb_stream.c
+> @@ -56,7 +56,7 @@ static void playback_prep_freqn(struct usb_stream_kernel *sk, struct urb *urb)
+>                     lb, s->period_size);
+>  }
+>
+> -static void init_pipe_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+> +static int init_pipe_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+>                            struct urb **urbs, char *transfer,
+>                            struct usb_device *dev, int pipe)
+>  {
+> @@ -77,6 +77,8 @@ static void init_pipe_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+>                 urb->interval = 1;
+>                 if (usb_pipeout(pipe))
+>                         continue;
+> +               if (usb_urb_ep_type_check(urb))
+> +                       return -EINVAL;
+>
+>                 urb->transfer_buffer_length = transfer_length;
+>                 desc = urb->iso_frame_desc;
+> @@ -87,9 +89,11 @@ static void init_pipe_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+>                         desc[p].length = maxpacket;
+>                 }
+>         }
+> +
+> +       return 0;
+>  }
+>
+> -static void init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+> +static int init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+>                       struct usb_device *dev, int in_pipe, int out_pipe)
+>  {
+>         struct usb_stream       *s = sk->s;
+> @@ -103,9 +107,12 @@ static void init_urbs(struct usb_stream_kernel *sk, unsigned use_packsize,
+>                 sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
+>         }
+>
+> -       init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe);
+> -       init_pipe_urbs(sk, use_packsize, sk->outurb, sk->write_page, dev,
+> -                      out_pipe);
+> +       if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
+> +           init_pipe_urbs(sk, use_packsize, sk->outurb, sk->write_page, dev,
+> +                          out_pipe))
+> +               return -EINVAL;
+> +
+> +       return 0;
+>  }
+>
+>
+> @@ -226,7 +233,11 @@ struct usb_stream *usb_stream_new(struct usb_stream_kernel *sk,
+>         else
+>                 sk->freqn = get_usb_high_speed_rate(sample_rate);
+>
+> -       init_urbs(sk, use_packsize, dev, in_pipe, out_pipe);
+> +       if (init_urbs(sk, use_packsize, dev, in_pipe, out_pipe) < 0) {
+> +               usb_stream_free(sk);
+> +               return NULL;
+> +       }
+> +
+>         sk->s->state = usb_stream_stopped;
+>  out:
+>         return sk->s;
+> --
+> 2.14.3
+>
