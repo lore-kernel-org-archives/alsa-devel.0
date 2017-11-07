@@ -1,135 +1,86 @@
-From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Mon, 6 Nov 2017 22:04:29 -0800
-Message-ID: <CAJ+vNU267VyOiq+fyv0dRm4Mui3YfK-ybqeOSENGMX6LmzZdcQ@mail.gmail.com>
-References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
- <1507783506-3884-4-git-send-email-tharvey@gateworks.com> <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
- <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com>
- <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl> <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH 3/3] ASoC: rt5645: Wait for 400msec before
+ concluding on value of RT5645_VENDOR_ID2
+Date: Tue, 7 Nov 2017 12:42:40 +0530
+Message-ID: <8dadcaa1-8712-2f56-14bf-0d070c8c76b9@amd.com>
+References: <1509741345-1589-1-git-send-email-alexander.deucher@amd.com>
+ <1509741345-1589-4-git-send-email-alexander.deucher@amd.com>
+ <20171106162422.vhurovalfxztf6ma@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
-Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com
+ (mail-bl2nam02on0066.outbound.protection.outlook.com [104.47.38.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A6A4266E15
+ for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 08:13:07 +0100 (CET)
+In-Reply-To: <20171106162422.vhurovalfxztf6ma@sirena.co.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Alex Deucher <alexdeucher@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, Bard Liao <bardliao@realtek.com>, airlied@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 20, 2017 at 7:00 AM, Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org> wrote:
-> On Thu, Oct 19, 2017 at 12:39 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
-> <snip>
->>>
->>> Regarding video standard detection where this chip provides me with
->>> vertical-period, horizontal-period, and horizontal-pulse-width I
->>> should be able to detect the standard simply based off of
->>> vertical-period (framerate) and horizontal-period (line width
->>> including blanking) right? I wasn't sure if my method of matching
->>> these within 14% tolerance made sense. I will be removing the hsmatch
->>> logic from that as it seems the horizontal-pulse-width should be
->>> irrelevant.
->>
->> For proper video detection you ideally need:
->>
->> h/v sync size
->> h/v back/front porch size
->> h/v polarity
->> pixelclock (usually an approximation)
->>
->> The v4l2_find_dv_timings_cap() helper can help you find the corresponding
->> timings, allowing for pixelclock variation.
->>
->> That function assumes that the sync/back/frontporch values are all known.
->> But not all devices can actually discover those values. What can your
->> hardware detect? Can it tell front and backporch apart? Can it determine
->> the sync size?
->>
->> I've been considering for some time to improve that helper function to be
->> able to handle hardware that isn't able separate sync/back/frontporch values.
->>
->
-> The TDA1997x provides only the vertical/horizontal periods and the
-> horizontal pulse
-> width (section 8.3.4 of datasheet [1]).
->
-> Can you point me to a good primer on the relationship between these
-> values and the h/v back/front porch?
->
-> Currently I iterate over the list of known formats calculating hper
-> (bt->pixelclock / V4L2_DV_BT_FRAME_WIDTH(bt)) and vper (hper /
-> V4L2_DV_BT_FRAME_HEIGHT(bt)) (framerate) and find the closest match
-> within +/- 7% tolerance. The list of supported formats is sorted by
-> framerate then width.
->
->         /* look for matching timings */
->         for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
->                 const struct tda1997x_video_std *std = &tda1997x_hdmi_modes[i];
->                 const struct v4l2_bt_timings *bt = &std->timings.bt;
->                 int _hper, _vper, _hsper;
->                 int vmin, vmax, hmin, hmax, hsmin, hsmax;
->                 int vmatch, hsmatch;
->
->                 width = V4L2_DV_BT_FRAME_WIDTH(bt);
->                 lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
->
->                 _hper = (int)bt->pixelclock / (int)width;
->                 _vper = _hper / lines;
->                 _hsper = (int)bt->pixelclock / (int)bt->hsync;
->                 if (bt->interlaced)
->                         _vper *= 2;
->                 /* vper +/- 0.7% */
->                 vmin = 993 * (27000000 / _vper) / 1000;
->                 vmax = 1007 * (27000000 / _vper) / 1000;
->                 _hsper = (int)bt->pixelclock / (int)bt->hsync;
->                 if (bt->interlaced)
->                         _vper *= 2;
->                 /* vper +/- 0.7% */
->                 vmin = 993 * (27000000 / _vper) / 1000;
->                 vmax = 1007 * (27000000 / _vper) / 1000;
->                 /* hper +/- 0.7% */
->                 hmin = 993 * (27000000 / _hper) / 1000;
->                 hmax = 1007 * (27000000 / _hper) / 1000;
->
->                 /* vmatch matches the framerate */
->                 vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
->                 /* hmatch matches the width */
->                 hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
->                 if (vmatch && hsmatch) {
->                         v4l_info(state->client,
->                                  "resolution: %dx%d%c@%d (%d/%d/%d) %dMHz %d\n",
->                                  bt->width, bt->height, bt->interlaced?'i':'p',
->                                  _vper, vper, hper, hsper, pixrate, hsmatch);
->                         state->fps = (int)bt->pixelclock / (width * lines);
->                         state->std = std;
->                         return 0;
->                 }
->         }
->
-> Note that I've thrown out any comparisons based on horizontal pulse
-> width from my first patch as that didn't appear to fit well. So far
-> the above works well however I do fail to recognize the following
-> modes (using a Marshall SG4K HDMI test generator):
->
 
-Hans,
 
-I've found that I do indeed need to look at the 'hsper' that the TDA
-provides above along with the vper/hper as there are several timings
-that match a given vper/hper. However I haven't figured out how to
-make sense of the hsper value that is returned.
+On 11/6/2017 9:54 PM, Mark Brown wrote:
+> On Fri, Nov 03, 2017 at 04:35:45PM -0400, Alex Deucher wrote:
+> 
+>> Minimum time required between power On of codec and read
+>> of RT5645_VENDOR_ID2 is 400msec. We should wait and attempt
+>> before erroring out.
+> 
+> So the description says we have to wait 400ms before attempting a
+> read...
 
-Here are some example timings and the vper/hper/hsper returned from the TDA:
-V4L2_DV_BT_DMT_1280X960P60 449981/448/55
-V4L2_DV_BT_DMT_1280X1024P60 449833/420/27
-V4L2_DV_BT_DMT_1280X768P60 450021/568/11
-V4L2_DV_BT_DMT_1360X768P60 449867/564/34
+Yes, that's true.
 
-Do you know what the hsper could be here? It doesn't appear to match
-v4l2_bt_timings hsync ((27MHz/bt->pixelclock)*bt->hsync).
+> 
+>> BUG=b:66978383
+> 
+> What does this mean?
 
-Thanks,
+A bug ID. Removing it in V2.
 
-Tim
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+>> @@ -3786,6 +3789,15 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+>>   	}
+>>   	regmap_read(regmap, RT5645_VENDOR_ID2, &val);
+>>   
+>> +	/*
+>> +	 * Read for 400msec, as it is the interval required between
+>> +	 * read and power On.
+>> +	 */
+>> +	while (val != RT5645_DEVICE_ID && val != RT5650_DEVICE_ID && --timeout) {
+>> +		msleep(1);
+>> +		regmap_read(regmap, RT5645_VENDOR_ID2, &val);
+>> +	}
+>> +
+> 
+> ...but what we actually do is try to read up to 400 times starting well
+> before that 400ms is up.  This directly contradicts what the commit
+> message said we needed, may take a lot longer if the chip misbehaves on
+> the I2C bus while it's not ready (which wouldn't be that much of a
+> surprise), might lead to us reporting before the chip is really stable
+> (if the read happens to work while the chip isn't yet stable) and could
+> cause lots of noise on the console if the I2C controller gets upset.
+> What are we actually waiting for here?
+> 
+
+In my understanding if we get RT5645 or RT5650 DEVICE ID from register 
+RT5645_VENDOR_ID2 then that means the chip is stable.
+
+> If we really need 400ms of dead reckoning time (which is a lot for a
+> modern chip, that feels more like a VMID ramp) then it's going to be
+> safer to just do that.
+> 
+
+Agreed, will just sleep for 400ms before reading the register value.
