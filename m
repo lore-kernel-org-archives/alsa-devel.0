@@ -1,16 +1,16 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 10/11] ASoC: hdac_hdmi: Fix possible NULL
-	pointer dereference
-Date: Tue,  7 Nov 2017 16:16:25 +0530
-Message-ID: <20171107104626.25800-11-guneshwor.o.singh@intel.com>
+Subject: [PATCH 11/11] ASoC: hdac_hdmi: Fix possible memory
+	leak on parse and map nid failure
+Date: Tue,  7 Nov 2017 16:16:26 +0530
+Message-ID: <20171107104626.25800-12-guneshwor.o.singh@intel.com>
 References: <20171107104626.25800-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 95DB4267398
- for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 11:47:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 574B226736D
+ for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 11:47:47 +0100 (CET)
 In-Reply-To: <20171107104626.25800-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,58 +27,88 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-Pointers hdac_hdmi_pcm and hda_device_id can be NULL, so add check for
-valid pointer to avoid NULL pointer dereference.
+During failure, widgets in cvt_list and pin_list are not freed. So fix
+the possible memory leak by freeing them when failure occurs.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/hdac_hdmi.c | 36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 6f3ff15c0962..0c0aa6182502 100644
+index 0c0aa6182502..f3b4f4dfae6a 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1895,6 +1895,9 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_port *port;
- 
-+	if (!pcm)
-+		return;
-+
- 	if (list_empty(&pcm->port_list))
- 		return;
- 
-@@ -1913,6 +1916,9 @@ static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
+@@ -1453,6 +1453,8 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
+ 	int i, num_nodes;
+ 	struct hdac_device *hdac = &edev->hdac;
  	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
++	struct hdac_hdmi_cvt *temp_cvt, *cvt_next;
++	struct hdac_hdmi_pin *temp_pin, *pin_next;
+ 	int ret;
  
-+	if (!pcm)
-+		return false;
+ 	hdac_hdmi_skl_enable_all_pins(hdac);
+@@ -1482,32 +1484,54 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
+ 		case AC_WID_AUD_OUT:
+ 			ret = hdac_hdmi_add_cvt(edev, nid);
+ 			if (ret < 0)
+-				return ret;
++				goto free_widgets;
+ 			break;
+ 
+ 		case AC_WID_PIN:
+ 			ret = hdac_hdmi_add_pin(edev, nid);
+ 			if (ret < 0)
+-				return ret;
++				goto free_widgets;
+ 			break;
+ 		}
+ 	}
+ 
+ 	hdac->end_nid = nid;
+ 
+-	if (!hdmi->num_pin || !hdmi->num_cvt)
+-		return -EIO;
++	if (!hdmi->num_pin || !hdmi->num_cvt) {
++		ret = -EIO;
++		goto free_widgets;
++	}
+ 
+ 	ret = hdac_hdmi_create_dais(hdac, dais, hdmi, hdmi->num_cvt);
+ 	if (ret) {
+ 		dev_err(&hdac->dev, "Failed to create dais with err: %d\n",
+ 							ret);
+-		return ret;
++		goto free_widgets;
+ 	}
+ 
+ 	*num_dais = hdmi->num_cvt;
++	ret = hdac_hdmi_init_dai_map(edev);
++	if (ret < 0)
++		goto free_widgets;
+ 
+-	return hdac_hdmi_init_dai_map(edev);
++	return ret;
 +
- 	if (list_empty(&pcm->port_list))
- 		return false;
- 
-@@ -1926,6 +1932,9 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_port *port;
- 
-+	if (!pcm)
-+		return 0;
++free_widgets:
++	list_for_each_entry_safe(temp_cvt, cvt_next, &hdmi->cvt_list, head) {
++		list_del(&temp_cvt->head);
++		kfree(temp_cvt->name);
++		kfree(temp_cvt);
++	}
 +
- 	if (list_empty(&pcm->port_list))
- 		return 0;
- 
-@@ -1979,6 +1988,9 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	hdmi_priv->chmap.ops.is_pcm_attached = is_hdac_hdmi_pcm_attached;
- 	hdmi_priv->chmap.ops.get_spk_alloc = hdac_hdmi_get_spk_alloc;
- 
-+	if (!hdac_id)
-+		return -ENODEV;
++	list_for_each_entry_safe(temp_pin, pin_next, &hdmi->pin_list, head) {
++		for (i = 0; i < temp_pin->num_ports; i++)
++			temp_pin->ports[i].pin = NULL;
++		kfree(temp_pin->ports);
++		list_del(&temp_pin->head);
++		kfree(temp_pin);
++	}
 +
- 	if (hdac_id->driver_data)
- 		hdmi_priv->drv_data =
- 			(struct hdac_hdmi_drv_data *)hdac_id->driver_data;
++	return ret;
+ }
+ 
+ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
 -- 
 2.14.2
