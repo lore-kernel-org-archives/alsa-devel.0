@@ -1,97 +1,135 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL]: Geminilake audio firmware update
-Date: Tue, 7 Nov 2017 10:30:33 +0530
-Message-ID: <20171107050032.GS3187@localhost>
+From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Mon, 6 Nov 2017 22:04:29 -0800
+Message-ID: <CAJ+vNU267VyOiq+fyv0dRm4Mui3YfK-ybqeOSENGMX6LmzZdcQ@mail.gmail.com>
+References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
+ <1507783506-3884-4-git-send-email-tharvey@gateworks.com> <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
+ <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com>
+ <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl> <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4124479238997691719=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 8761D266E15
- for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 05:57:24 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Oct 20, 2017 at 7:00 AM, Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org> wrote:
+> On Thu, Oct 19, 2017 at 12:39 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
+> <snip>
+>>>
+>>> Regarding video standard detection where this chip provides me with
+>>> vertical-period, horizontal-period, and horizontal-pulse-width I
+>>> should be able to detect the standard simply based off of
+>>> vertical-period (framerate) and horizontal-period (line width
+>>> including blanking) right? I wasn't sure if my method of matching
+>>> these within 14% tolerance made sense. I will be removing the hsmatch
+>>> logic from that as it seems the horizontal-pulse-width should be
+>>> irrelevant.
+>>
+>> For proper video detection you ideally need:
+>>
+>> h/v sync size
+>> h/v back/front porch size
+>> h/v polarity
+>> pixelclock (usually an approximation)
+>>
+>> The v4l2_find_dv_timings_cap() helper can help you find the corresponding
+>> timings, allowing for pixelclock variation.
+>>
+>> That function assumes that the sync/back/frontporch values are all known.
+>> But not all devices can actually discover those values. What can your
+>> hardware detect? Can it tell front and backporch apart? Can it determine
+>> the sync size?
+>>
+>> I've been considering for some time to improve that helper function to be
+>> able to handle hardware that isn't able separate sync/back/frontporch values.
+>>
+>
+> The TDA1997x provides only the vertical/horizontal periods and the
+> horizontal pulse
+> width (section 8.3.4 of datasheet [1]).
+>
+> Can you point me to a good primer on the relationship between these
+> values and the h/v back/front porch?
+>
+> Currently I iterate over the list of known formats calculating hper
+> (bt->pixelclock / V4L2_DV_BT_FRAME_WIDTH(bt)) and vper (hper /
+> V4L2_DV_BT_FRAME_HEIGHT(bt)) (framerate) and find the closest match
+> within +/- 7% tolerance. The list of supported formats is sorted by
+> framerate then width.
+>
+>         /* look for matching timings */
+>         for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
+>                 const struct tda1997x_video_std *std = &tda1997x_hdmi_modes[i];
+>                 const struct v4l2_bt_timings *bt = &std->timings.bt;
+>                 int _hper, _vper, _hsper;
+>                 int vmin, vmax, hmin, hmax, hsmin, hsmax;
+>                 int vmatch, hsmatch;
+>
+>                 width = V4L2_DV_BT_FRAME_WIDTH(bt);
+>                 lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
+>
+>                 _hper = (int)bt->pixelclock / (int)width;
+>                 _vper = _hper / lines;
+>                 _hsper = (int)bt->pixelclock / (int)bt->hsync;
+>                 if (bt->interlaced)
+>                         _vper *= 2;
+>                 /* vper +/- 0.7% */
+>                 vmin = 993 * (27000000 / _vper) / 1000;
+>                 vmax = 1007 * (27000000 / _vper) / 1000;
+>                 _hsper = (int)bt->pixelclock / (int)bt->hsync;
+>                 if (bt->interlaced)
+>                         _vper *= 2;
+>                 /* vper +/- 0.7% */
+>                 vmin = 993 * (27000000 / _vper) / 1000;
+>                 vmax = 1007 * (27000000 / _vper) / 1000;
+>                 /* hper +/- 0.7% */
+>                 hmin = 993 * (27000000 / _hper) / 1000;
+>                 hmax = 1007 * (27000000 / _hper) / 1000;
+>
+>                 /* vmatch matches the framerate */
+>                 vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
+>                 /* hmatch matches the width */
+>                 hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
+>                 if (vmatch && hsmatch) {
+>                         v4l_info(state->client,
+>                                  "resolution: %dx%d%c@%d (%d/%d/%d) %dMHz %d\n",
+>                                  bt->width, bt->height, bt->interlaced?'i':'p',
+>                                  _vper, vper, hper, hsper, pixrate, hsmatch);
+>                         state->fps = (int)bt->pixelclock / (width * lines);
+>                         state->std = std;
+>                         return 0;
+>                 }
+>         }
+>
+> Note that I've thrown out any comparisons based on horizontal pulse
+> width from my first patch as that didn't appear to fit well. So far
+> the above works well however I do fail to recognize the following
+> modes (using a Marshall SG4K HDMI test generator):
+>
 
---===============4124479238997691719==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
-Content-Disposition: inline
+Hans,
 
+I've found that I do indeed need to look at the 'hsper' that the TDA
+provides above along with the vper/hper as there are several timings
+that match a given vper/hper. However I haven't figured out how to
+make sense of the hsper value that is returned.
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here are some example timings and the vper/hper/hsper returned from the TDA:
+V4L2_DV_BT_DMT_1280X960P60 449981/448/55
+V4L2_DV_BT_DMT_1280X1024P60 449833/420/27
+V4L2_DV_BT_DMT_1280X768P60 450021/568/11
+V4L2_DV_BT_DMT_1360X768P60 449867/564/34
 
-Hi,
+Do you know what the hsper could be here? It doesn't appear to match
+v4l2_bt_timings hsync ((27MHz/bt->pixelclock)*bt->hsync).
 
-Please PULL to receive update for GLK audio firmware.
+Thanks,
 
-The following changes since commit bf04291309d3169c0ad3b8db52564235bbd08e30:
-
-  WHENCE: Add new qed firmware (2017-10-09 18:03:26 +0100)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git glk
-
-for you to fetch changes up to b964279f2d9955a6ce00d3a672b273ae4d7a362f:
-
-  linux-firmware: intel: Update Geminilake audio firmware (2017-11-07 10:25=
-:50 +0530)
-
-----------------------------------------------------------------
-Pradeep Tewani (1):
-      linux-firmware: intel: Update Geminilake audio firmware
-
- WHENCE                     |   4 +++-
- intel/dsp_fw_glk.bin       |   2 +-
- intel/dsp_fw_glk_v2880.bin | Bin 0 -> 505608 bytes
- 3 files changed, 4 insertions(+), 2 deletions(-)
- create mode 100644 intel/dsp_fw_glk_v2880.bin
-
-Thanks
---=20
-~Vinod
-
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJaAT3wAAoJEHwUBw8lI4NHK+wQAMmj7KWWkM269DUvYVQA8y6S
-iQF7RdGd8K/EweWTpctdw5YgIVVbZW1o4ERrTGAArJz1G8yzn2E9Hsf3Sz2rmKYz
-UD1CTOMv7IXtu1LMgKU4vIKTLYGumyLuLSBWR3s+pvW+pfP20Ctv3ww6mjsWkw3Y
-U/VwjLVUYrfJn8CNuxTY8nE+zMsKiWtD1G0ET3WKVPLHcQug1i5VvPwORHgiOAAT
-h+R3E1KNyPHpt37bFFhD/B9hAFWgMmaSV3I3EV5Fh8+NEFYAqzR+ybY7w17LQByM
-zL+seH3MlUTdNDmYco9eYm4xPiln7Ozz8LMWZyLxoIaAzpH3feFvKSMkLCAx1Pc+
-W4ULR52wB7fTNPXC+hBeuLaGU1GYa94ionbT+Iw51gcuLKaogQPO0pzz/dXgezUj
-Pe2SMuNqYctFaDSVMsOkzGP4ZzlUCgTwDdLMvurPo2z+9FrKkGhDcJMBIr0EOCqa
-9fCZoNPWWnsO1uZ0BshB54zMZTc8UvBQTckfmMGxtPjQEP3A9mp4NhOlzgB6ya/2
-0uP7B76KGN/VRmh7nMjNMhajKNDw4HbyOz8EeXqVCMJeXqvFSQ79w3vwOgp0BMgn
-cRUrALGZx4p4O2DLZ2fs6oL170pZI4k0gn3iUE27AW7H1hfVCBAFel/IeBY00oJ2
-VjG12+RbpJ/GYQUIn5Jg
-=VRsk
------END PGP SIGNATURE-----
-
---SLDf9lqlvOQaIe6s--
-
---===============4124479238997691719==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4124479238997691719==--
+Tim
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
