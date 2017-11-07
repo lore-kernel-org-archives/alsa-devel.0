@@ -1,21 +1,16 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: Re: [PATCH 3/3] ASoC: rt5645: Wait for 400msec before
- concluding on value of RT5645_VENDOR_ID2
-Date: Tue, 7 Nov 2017 12:42:40 +0530
-Message-ID: <8dadcaa1-8712-2f56-14bf-0d070c8c76b9@amd.com>
-References: <1509741345-1589-1-git-send-email-alexander.deucher@amd.com>
- <1509741345-1589-4-git-send-email-alexander.deucher@amd.com>
- <20171106162422.vhurovalfxztf6ma@sirena.co.uk>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH 2/3] ASoC: nau8540: PGA short to ground
+Date: Tue, 7 Nov 2017 15:23:18 +0800
+Message-ID: <1510039399-12807-2-git-send-email-KCHSU0@nuvoton.com>
+References: <1510039399-12807-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com
- (mail-bl2nam02on0066.outbound.protection.outlook.com [104.47.38.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A6A4266E15
- for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 08:13:07 +0100 (CET)
-In-Reply-To: <20171106162422.vhurovalfxztf6ma@sirena.co.uk>
-Content-Language: en-US
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11061266E15
+ for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 08:23:24 +0100 (CET)
+In-Reply-To: <1510039399-12807-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,62 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, Bard Liao <bardliao@realtek.com>, airlied@gmail.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
+Change channel PGA input mode selection for better recording quality.
+The patch shorts the inputs to ground with 12kOhm differentially
+terminated.
 
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8540.c |  7 +++++++
+ sound/soc/codecs/nau8540.h | 12 ++++++++++++
+ 2 files changed, 19 insertions(+)
 
-On 11/6/2017 9:54 PM, Mark Brown wrote:
-> On Fri, Nov 03, 2017 at 04:35:45PM -0400, Alex Deucher wrote:
-> 
->> Minimum time required between power On of codec and read
->> of RT5645_VENDOR_ID2 is 400msec. We should wait and attempt
->> before erroring out.
-> 
-> So the description says we have to wait 400ms before attempting a
-> read...
-
-Yes, that's true.
-
-> 
->> BUG=b:66978383
-> 
-> What does this mean?
-
-A bug ID. Removing it in V2.
-
-> 
->> @@ -3786,6 +3789,15 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->>   	}
->>   	regmap_read(regmap, RT5645_VENDOR_ID2, &val);
->>   
->> +	/*
->> +	 * Read for 400msec, as it is the interval required between
->> +	 * read and power On.
->> +	 */
->> +	while (val != RT5645_DEVICE_ID && val != RT5650_DEVICE_ID && --timeout) {
->> +		msleep(1);
->> +		regmap_read(regmap, RT5645_VENDOR_ID2, &val);
->> +	}
->> +
-> 
-> ...but what we actually do is try to read up to 400 times starting well
-> before that 400ms is up.  This directly contradicts what the commit
-> message said we needed, may take a lot longer if the chip misbehaves on
-> the I2C bus while it's not ready (which wouldn't be that much of a
-> surprise), might lead to us reporting before the chip is really stable
-> (if the read happens to work while the chip isn't yet stable) and could
-> cause lots of noise on the console if the I2C controller gets upset.
-> What are we actually waiting for here?
-> 
-
-In my understanding if we get RT5645 or RT5650 DEVICE ID from register 
-RT5645_VENDOR_ID2 then that means the chip is stable.
-
-> If we really need 400ms of dead reckoning time (which is a lot for a
-> modern chip, that feels more like a VMID ramp) then it's going to be
-> safer to just do that.
-> 
-
-Agreed, will just sleep for 400ms before reading the register value.
+diff --git a/sound/soc/codecs/nau8540.c b/sound/soc/codecs/nau8540.c
+index 2efa431..572bea2 100644
+--- a/sound/soc/codecs/nau8540.c
++++ b/sound/soc/codecs/nau8540.c
+@@ -737,6 +737,13 @@ static void nau8540_init_regs(struct nau8540 *nau8540)
+ 	regmap_update_bits(regmap, NAU8540_REG_ADC_SAMPLE_RATE,
+ 		NAU8540_CH_SYNC | NAU8540_ADC_OSR_MASK,
+ 		NAU8540_CH_SYNC | NAU8540_ADC_OSR_64);
++	/* PGA input mode selection */
++	regmap_update_bits(regmap, NAU8540_REG_FEPGA1,
++		NAU8540_FEPGA1_MODCH2_SHT | NAU8540_FEPGA1_MODCH1_SHT,
++		NAU8540_FEPGA1_MODCH2_SHT | NAU8540_FEPGA1_MODCH1_SHT);
++	regmap_update_bits(regmap, NAU8540_REG_FEPGA2,
++		NAU8540_FEPGA2_MODCH4_SHT | NAU8540_FEPGA2_MODCH3_SHT,
++		NAU8540_FEPGA2_MODCH4_SHT | NAU8540_FEPGA2_MODCH3_SHT);
+ }
+ 
+ static int __maybe_unused nau8540_suspend(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/nau8540.h b/sound/soc/codecs/nau8540.h
+index 5e0dd18..9595663 100644
+--- a/sound/soc/codecs/nau8540.h
++++ b/sound/soc/codecs/nau8540.h
+@@ -189,6 +189,18 @@
+ #define NAU8540_PRECHARGE_DIS		(0x1 << 13)
+ #define NAU8540_GLOBAL_BIAS_EN	(0x1 << 12)
+ 
++/* FEPGA1 (0x69) */
++#define NAU8540_FEPGA1_MODCH2_SHT_SFT	7
++#define NAU8540_FEPGA1_MODCH2_SHT	(0x1 << NAU8540_FEPGA1_MODCH2_SHT_SFT)
++#define NAU8540_FEPGA1_MODCH1_SHT_SFT	3
++#define NAU8540_FEPGA1_MODCH1_SHT	(0x1 << NAU8540_FEPGA1_MODCH1_SHT_SFT)
++
++/* FEPGA2 (0x6A) */
++#define NAU8540_FEPGA2_MODCH4_SHT_SFT	7
++#define NAU8540_FEPGA2_MODCH4_SHT	(0x1 << NAU8540_FEPGA2_MODCH4_SHT_SFT)
++#define NAU8540_FEPGA2_MODCH3_SHT_SFT	3
++#define NAU8540_FEPGA2_MODCH3_SHT	(0x1 << NAU8540_FEPGA2_MODCH3_SHT_SFT)
++
+ 
+ /* System Clock Source */
+ enum {
+-- 
+2.6.4
