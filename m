@@ -1,20 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-lib][PATCH 1/2] ctl: deprecate APIs of
- dimension information
-Date: Tue, 7 Nov 2017 09:34:02 +0900
-Message-ID: <db4e937b-c31b-575f-69b6-ce3c627df35c@sakamocchi.jp>
-References: <20171104022426.16230-1-o-takashi@sakamocchi.jp>
- <20171104022426.16230-2-o-takashi@sakamocchi.jp>
- <s5hy3nlxct7.wl-tiwai@suse.de>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH 0/1] USB Audio Device Class 3.0 support
+Date: Tue,  7 Nov 2017 04:01:19 +0200
+Message-ID: <1510020080-15849-1-git-send-email-ruslan.bilovol@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 25858266DF5
- for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 01:34:08 +0100 (CET)
-In-Reply-To: <s5hy3nlxct7.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A013266DF5
+ for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 03:01:22 +0100 (CET)
+Received: by mail-lf0-f66.google.com with SMTP id r129so12668884lff.8
+ for <alsa-devel@alsa-project.org>; Mon, 06 Nov 2017 18:01:22 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,71 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 05 2017 19:03, Takashi Iwai wrote:
-> On Sat, 04 Nov 2017 03:24:25 +0100,
-> Takashi Sakamoto wrote:
->>
->> In ALSA control interface of asound.h, 'struct snd_ctl_elem_info' has
->> 'dimen' member to deliver information for multi-dimensional array, however
->> there's no common way to handle the member. As a result, drivers can
->> force userspace applications to handle the information by inconsistent
->> ways.
-> 
-> Well, the text is slightly misleading.
-> Actually the API itself wasn't bad and you can implement it
-> consistently.
+Hi Takashi,
 
-Hm.
+This patch adds initial USB Audio Device Class 3.0 [1]
+support to the ALSA that we discussed at ELCE.
 
-I can assume that a series of echoaudio driver attempts to deliver 
-information about elements in the same element via the 'dimen' member. 
-This usage might not be so wrong.
+The patch was tested with UAC3 gadget [2] that I posted
+to USB mailing list before. It is good for working with
+BADD device which implements such topologies like
+BAIF (Basic Audio Input Functions), BAOF (Basic Audio
+Output Functions) or compbination of both.
 
-The 'dimen' member is supplemental information. It has an effect to the 
-way to parse any array relevant to control elements. Current ALSA 
-control interface includes two types of the array; value array and 
-element array in the same element set. This is a cause of this issue. 
-The double nature of meaning of the member brings inconsistent handling 
-of these arrays according to the value of 'dimen' member. Thus this is 
-an issue of the interface.
+UAC3 spec has changed descriptors laout and many other
+codes comparing to UAC2 spec, thus making reuse of existing
+sources impossible or quite complex.
 
-If we had any document about usage of the member (e.g. just a few more 
-words in asound.h), we would avoid this issue. We've failed to lead 
-developers to a consistent usage of the interface.
+There are still many areas of improvement, as this patch
+doesn't have UAC3 Mixer Unit support nor some new features
+like Power Management
 
-> But practically seen, we haven't got *any* driver using
-> the feature in the correct way for over decades.  The only user was
-> echoaudio drivers but it was obviously wrong.  So, judging from the
-> situation, keeping this doesn't make much sense -- that's the reason
-> for dropping.
+I tested this with BeagleBone Black as UAC3 gadget device.
 
-No objections for the above sentence just for our judgment of the removal.
+[1] http://www.usb.org/developers/docs/devclass_docs/USB_Audio_v3.0.zip
+[2] http://www.spinics.net/lists/linux-usb/msg162482.html
 
->> This issue was reported by a commit 51db452df07b ('Revert "ALSA: echoaudio:
->> purge contradictions between dimension matrix members and total number of
->> members"') to Linux kernel. As a result of discussion at Linux
->> miniconference 2017, usage of 'dimen' member of 'struct snd_ctl_elem_info'
->> is going to be deprecated for future removal.
->>
->> This commit deprecates some APIs related to the dimension information. They
->> are planned to be removed in a development period for Linux kernel v4.21.
-> 
-> IMO, the version to deprecate the feature may depend on LTS kernel
-> version.  4.21 looks OK, but we may shift it.
+Ruslan Bilovol (1):
+  ALSA: usb: initial USB Audio Device Class 3.0 support
 
-I still get no merit of your suggestion. Do you mean that the removal of 
-ABI should be done in several releases before target LTS will be 
-actually released, to produce stable ABI? If so, we need to estimate the 
-timing of next LTS. However, it's hard because for recent LTS we got no 
-official announcement from stable maintainers till LTS version of Linux 
-kernel is actually released. At least, I won't work with such uncertain 
-estimations.
+ include/linux/usb/audio-v2.h   |   4 +-
+ include/linux/usb/audio-v3.h   | 343 +++++++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/usb/audio.h |   1 +
+ sound/usb/card.c               |   7 +-
+ sound/usb/card.h               |   2 +-
+ sound/usb/clock.c              | 228 ++++++++++++++++++++++++---
+ sound/usb/clock.h              |   4 +-
+ sound/usb/format.c             |  87 +++++++++--
+ sound/usb/format.h             |   6 +-
+ sound/usb/mixer.c              | 332 ++++++++++++++++++++++++++-------------
+ sound/usb/stream.c             | 296 ++++++++++++++++++++++++++++++-----
+ 11 files changed, 1117 insertions(+), 193 deletions(-)
+ create mode 100644 include/linux/usb/audio-v3.h
 
-
-Regards
-
-Takashi Sakamoto
+-- 
+1.9.1
