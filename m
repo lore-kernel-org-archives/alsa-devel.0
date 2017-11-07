@@ -1,21 +1,16 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 1/3] ASoC: amd: Report accurate hw_ptr
-	during dma
-Date: Tue, 7 Nov 2017 19:26:03 +0530
-Message-ID: <e1db3baf-44f4-c35b-680b-822962823180@amd.com>
-References: <1509741345-1589-1-git-send-email-alexander.deucher@amd.com>
- <1509741345-1589-2-git-send-email-alexander.deucher@amd.com>
- <20171106154800.sotryjiadmobitac@sirena.co.uk>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH 2/2] ASoC: nau8824: condition for clock disable
+Date: Tue, 7 Nov 2017 17:06:33 +0800
+Message-ID: <1510045593-21477-2-git-send-email-KCHSU0@nuvoton.com>
+References: <1510045593-21477-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com
- (mail-bl2nam02on0069.outbound.protection.outlook.com [104.47.38.69])
- by alsa0.perex.cz (Postfix) with ESMTP id C0D1B266DF5
- for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 09:20:29 +0100 (CET)
-In-Reply-To: <20171106154800.sotryjiadmobitac@sirena.co.uk>
-Content-Language: en-US
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 177DD26735A
+ for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 10:06:38 +0100 (CET)
+In-Reply-To: <1510045593-21477-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Akshu Agrawal <Akshu.Agrawal@amd.com>, amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, airlied@gmail.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Removing URL links and commit-ready description in v2.
+There are headphone and speaker outputs in NAU88L24. During the
+playback, the codec should not change the clock status when
+switching these outputs.
 
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8824.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-On Monday 06 November 2017 09:18 PM, Mark Brown wrote:
-> On Fri, Nov 03, 2017 at 04:35:43PM -0400, Alex Deucher wrote:
->
->> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->> Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
->> Reviewed-on: https://chromium-review.googlesource.com/659699
->> Commit-Ready: Akshu Agrawal <akshu.agrawal@amd.com>
->> Tested-by: Akshu Agrawal <akshu.agrawal@amd.com>
->> Reviewed-by: Jason Clinton <jclinton@chromium.org>
->> Reviewed-on: https://chromium-review.googlesource.com/676627
-> These two URLs are different, what was being reviewed here?  What is
-> Commit-Ready supposed to mean?
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index b7b63ac..8a9a993 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -811,7 +811,8 @@ static void nau8824_eject_jack(struct nau8824 *nau8824)
+ 		NAU8824_JD_SLEEP_MODE, NAU8824_JD_SLEEP_MODE);
+ 
+ 	/* Close clock for jack type detection at manual mode */
+-	nau8824_config_sysclk(nau8824, NAU8824_CLK_DIS, 0);
++	if (dapm->bias_level < SND_SOC_BIAS_PREPARE)
++		nau8824_config_sysclk(nau8824, NAU8824_CLK_DIS, 0);
+ }
+ 
+ static void nau8824_jdet_work(struct work_struct *work)
+@@ -862,7 +863,8 @@ static void nau8824_setup_auto_irq(struct nau8824 *nau8824)
+ 	regmap_update_bits(regmap, NAU8824_REG_INTERRUPT_SETTING,
+ 		NAU8824_IRQ_EJECT_DIS, 0);
+ 	/* Enable internal VCO needed for interruptions */
+-	nau8824_config_sysclk(nau8824, NAU8824_CLK_INTERNAL, 0);
++	if (nau8824->dapm->bias_level < SND_SOC_BIAS_PREPARE)
++		nau8824_config_sysclk(nau8824, NAU8824_CLK_INTERNAL, 0);
+ 	regmap_update_bits(regmap, NAU8824_REG_ENA_CTRL,
+ 		NAU8824_JD_SLEEP_MODE, 0);
+ }
+-- 
+2.6.4
