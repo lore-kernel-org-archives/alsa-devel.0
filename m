@@ -1,134 +1,154 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH 3/3] ASoC: nau8540: fix the record pop noise
-Date: Tue, 7 Nov 2017 15:23:19 +0800
-Message-ID: <1510039399-12807-3-git-send-email-KCHSU0@nuvoton.com>
-References: <1510039399-12807-1-git-send-email-KCHSU0@nuvoton.com>
+From: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Subject: Re: [PATCH v2 3/4] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Tue, 7 Nov 2017 08:47:18 +0100
+Message-ID: <82454b04-1664-423b-2b9e-36b3ae76e83a@xs4all.nl>
+References: <1507783506-3884-1-git-send-email-tharvey@gateworks.com>
+ <1507783506-3884-4-git-send-email-tharvey@gateworks.com>
+ <230ceb18-1d69-7fa8-acb0-c810094f8e50@xs4all.nl>
+ <CAJ+vNU0Z988G+wTfpiSXXOM9QsPj-eRvH=F1b9__8kJ+18xk4g@mail.gmail.com>
+ <a5bd27c9-10e4-b9f5-f0ac-293528fa570e@xs4all.nl>
+ <CAJ+vNU2yHKDf5tCVyj6iw83z0sDuV0ZsZ-=sLfa+fTFbtjVo0A@mail.gmail.com>
+ <CAJ+vNU267VyOiq+fyv0dRm4Mui3YfK-ybqeOSENGMX6LmzZdcQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 15A44267328
- for <alsa-devel@alsa-project.org>; Tue,  7 Nov 2017 08:23:24 +0100 (CET)
-In-Reply-To: <1510039399-12807-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAJ+vNU267VyOiq+fyv0dRm4Mui3YfK-ybqeOSENGMX6LmzZdcQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-When the record starts, the driver turns on MICBIAS and the voltage is
-pulled up for an instant. If the receiver starts to capture the signal
-between the instant, there is an pop noise in the stream beginning.
-To avoid the pop noise, the driver makes a delay in the sequence.
-After MICBIAS powered up, the driver waits 300 ms for the voltage
-going down. Then turns on the ADC output, and sends signal to receiver.
-The pop noise can be erased.
+On 11/07/2017 07:04 AM, Tim Harvey wrote:
+> On Fri, Oct 20, 2017 at 7:00 AM, Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org> wrote:
+>> On Thu, Oct 19, 2017 at 12:39 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
+>> <snip>
+>>>>
+>>>> Regarding video standard detection where this chip provides me with
+>>>> vertical-period, horizontal-period, and horizontal-pulse-width I
+>>>> should be able to detect the standard simply based off of
+>>>> vertical-period (framerate) and horizontal-period (line width
+>>>> including blanking) right? I wasn't sure if my method of matching
+>>>> these within 14% tolerance made sense. I will be removing the hsmatch
+>>>> logic from that as it seems the horizontal-pulse-width should be
+>>>> irrelevant.
+>>>
+>>> For proper video detection you ideally need:
+>>>
+>>> h/v sync size
+>>> h/v back/front porch size
+>>> h/v polarity
+>>> pixelclock (usually an approximation)
+>>>
+>>> The v4l2_find_dv_timings_cap() helper can help you find the corresponding
+>>> timings, allowing for pixelclock variation.
+>>>
+>>> That function assumes that the sync/back/frontporch values are all known.
+>>> But not all devices can actually discover those values. What can your
+>>> hardware detect? Can it tell front and backporch apart? Can it determine
+>>> the sync size?
+>>>
+>>> I've been considering for some time to improve that helper function to be
+>>> able to handle hardware that isn't able separate sync/back/frontporch values.
+>>>
+>>
+>> The TDA1997x provides only the vertical/horizontal periods and the
+>> horizontal pulse
+>> width (section 8.3.4 of datasheet [1]).
+>>
+>> Can you point me to a good primer on the relationship between these
+>> values and the h/v back/front porch?
+>>
+>> Currently I iterate over the list of known formats calculating hper
+>> (bt->pixelclock / V4L2_DV_BT_FRAME_WIDTH(bt)) and vper (hper /
+>> V4L2_DV_BT_FRAME_HEIGHT(bt)) (framerate) and find the closest match
+>> within +/- 7% tolerance. The list of supported formats is sorted by
+>> framerate then width.
+>>
+>>         /* look for matching timings */
+>>         for (i = 0; i < ARRAY_SIZE(tda1997x_hdmi_modes); i++) {
+>>                 const struct tda1997x_video_std *std = &tda1997x_hdmi_modes[i];
+>>                 const struct v4l2_bt_timings *bt = &std->timings.bt;
+>>                 int _hper, _vper, _hsper;
+>>                 int vmin, vmax, hmin, hmax, hsmin, hsmax;
+>>                 int vmatch, hsmatch;
+>>
+>>                 width = V4L2_DV_BT_FRAME_WIDTH(bt);
+>>                 lines = V4L2_DV_BT_FRAME_HEIGHT(bt);
+>>
+>>                 _hper = (int)bt->pixelclock / (int)width;
+>>                 _vper = _hper / lines;
+>>                 _hsper = (int)bt->pixelclock / (int)bt->hsync;
+>>                 if (bt->interlaced)
+>>                         _vper *= 2;
+>>                 /* vper +/- 0.7% */
+>>                 vmin = 993 * (27000000 / _vper) / 1000;
+>>                 vmax = 1007 * (27000000 / _vper) / 1000;
+>>                 _hsper = (int)bt->pixelclock / (int)bt->hsync;
+>>                 if (bt->interlaced)
+>>                         _vper *= 2;
+>>                 /* vper +/- 0.7% */
+>>                 vmin = 993 * (27000000 / _vper) / 1000;
+>>                 vmax = 1007 * (27000000 / _vper) / 1000;
+>>                 /* hper +/- 0.7% */
+>>                 hmin = 993 * (27000000 / _hper) / 1000;
+>>                 hmax = 1007 * (27000000 / _hper) / 1000;
+>>
+>>                 /* vmatch matches the framerate */
+>>                 vmatch = ((vper <= vmax) && (vper >= vmin)) ? 1 : 0;
+>>                 /* hmatch matches the width */
+>>                 hmatch = ((hper <= hmax) && (hper >= hmin)) ? 1 : 0;
+>>                 if (vmatch && hsmatch) {
+>>                         v4l_info(state->client,
+>>                                  "resolution: %dx%d%c@%d (%d/%d/%d) %dMHz %d\n",
+>>                                  bt->width, bt->height, bt->interlaced?'i':'p',
+>>                                  _vper, vper, hper, hsper, pixrate, hsmatch);
+>>                         state->fps = (int)bt->pixelclock / (width * lines);
+>>                         state->std = std;
+>>                         return 0;
+>>                 }
+>>         }
+>>
+>> Note that I've thrown out any comparisons based on horizontal pulse
+>> width from my first patch as that didn't appear to fit well. So far
+>> the above works well however I do fail to recognize the following
+>> modes (using a Marshall SG4K HDMI test generator):
+>>
+> 
+> Hans,
+> 
+> I've found that I do indeed need to look at the 'hsper' that the TDA
+> provides above along with the vper/hper as there are several timings
+> that match a given vper/hper. However I haven't figured out how to
+> make sense of the hsper value that is returned.
+> 
+> Here are some example timings and the vper/hper/hsper returned from the TDA:
+> V4L2_DV_BT_DMT_1280X960P60 449981/448/55
+> V4L2_DV_BT_DMT_1280X1024P60 449833/420/27
+> V4L2_DV_BT_DMT_1280X768P60 450021/568/11
+> V4L2_DV_BT_DMT_1360X768P60 449867/564/34
+> 
+> Do you know what the hsper could be here? It doesn't appear to match
+> v4l2_bt_timings hsync ((27MHz/bt->pixelclock)*bt->hsync).
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8540.c | 47 ++++++++++++++++++++++++++++++++++++++--------
- sound/soc/codecs/nau8540.h |  2 ++
- 2 files changed, 41 insertions(+), 8 deletions(-)
+Actually, all numbers except for the first match (assuming V4L2_DV_BT_DMT_1280X768P60
+is really V4L2_DV_BT_DMT_1280X768P60_RB).
 
-diff --git a/sound/soc/codecs/nau8540.c b/sound/soc/codecs/nau8540.c
-index 572bea2..fd40c61 100644
---- a/sound/soc/codecs/nau8540.c
-+++ b/sound/soc/codecs/nau8540.c
-@@ -233,6 +233,28 @@ static SOC_ENUM_SINGLE_DECL(
- static const struct snd_kcontrol_new digital_ch1_mux =
- 	SOC_DAPM_ENUM("Digital CH1 Select", digital_ch1_enum);
- 
-+static int adc_power_control(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *k, int  event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		msleep(300);
-+		/* DO12 and DO34 pad output enable */
-+		regmap_update_bits(nau8540->regmap, NAU8540_REG_PCM_CTRL1,
-+			NAU8540_I2S_DO12_TRI, 0);
-+		regmap_update_bits(nau8540->regmap, NAU8540_REG_PCM_CTRL2,
-+			NAU8540_I2S_DO34_TRI, 0);
-+	} else if (SND_SOC_DAPM_EVENT_OFF(event)) {
-+		regmap_update_bits(nau8540->regmap, NAU8540_REG_PCM_CTRL1,
-+			NAU8540_I2S_DO12_TRI, NAU8540_I2S_DO12_TRI);
-+		regmap_update_bits(nau8540->regmap, NAU8540_REG_PCM_CTRL2,
-+			NAU8540_I2S_DO34_TRI, NAU8540_I2S_DO34_TRI);
-+	}
-+	return 0;
-+}
-+
- static int aiftx_power_control(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *k, int  event)
- {
-@@ -260,14 +282,18 @@ static const struct snd_soc_dapm_widget nau8540_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("Frontend PGA3", NAU8540_REG_PWR, 14, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("Frontend PGA4", NAU8540_REG_PWR, 15, 0, NULL, 0),
- 
--	SND_SOC_DAPM_ADC("ADC1", NULL,
--		NAU8540_REG_POWER_MANAGEMENT, 0, 0),
--	SND_SOC_DAPM_ADC("ADC2", NULL,
--		NAU8540_REG_POWER_MANAGEMENT, 1, 0),
--	SND_SOC_DAPM_ADC("ADC3", NULL,
--		NAU8540_REG_POWER_MANAGEMENT, 2, 0),
--	SND_SOC_DAPM_ADC("ADC4", NULL,
--		NAU8540_REG_POWER_MANAGEMENT, 3, 0),
-+	SND_SOC_DAPM_ADC_E("ADC1", NULL,
-+		NAU8540_REG_POWER_MANAGEMENT, 0, 0, adc_power_control,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_ADC_E("ADC2", NULL,
-+		NAU8540_REG_POWER_MANAGEMENT, 1, 0, adc_power_control,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_ADC_E("ADC3", NULL,
-+		NAU8540_REG_POWER_MANAGEMENT, 2, 0, adc_power_control,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_ADC_E("ADC4", NULL,
-+		NAU8540_REG_POWER_MANAGEMENT, 3, 0, adc_power_control,
-+		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
- 
- 	SND_SOC_DAPM_PGA("ADC CH1", NAU8540_REG_ANALOG_PWR, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("ADC CH2", NAU8540_REG_ANALOG_PWR, 1, 0, NULL, 0),
-@@ -744,6 +770,11 @@ static void nau8540_init_regs(struct nau8540 *nau8540)
- 	regmap_update_bits(regmap, NAU8540_REG_FEPGA2,
- 		NAU8540_FEPGA2_MODCH4_SHT | NAU8540_FEPGA2_MODCH3_SHT,
- 		NAU8540_FEPGA2_MODCH4_SHT | NAU8540_FEPGA2_MODCH3_SHT);
-+	/* DO12 and DO34 pad output disable */
-+	regmap_update_bits(regmap, NAU8540_REG_PCM_CTRL1,
-+		NAU8540_I2S_DO12_TRI, NAU8540_I2S_DO12_TRI);
-+	regmap_update_bits(regmap, NAU8540_REG_PCM_CTRL2,
-+		NAU8540_I2S_DO34_TRI, NAU8540_I2S_DO34_TRI);
- }
- 
- static int __maybe_unused nau8540_suspend(struct snd_soc_codec *codec)
-diff --git a/sound/soc/codecs/nau8540.h b/sound/soc/codecs/nau8540.h
-index 9595663..732b490 100644
---- a/sound/soc/codecs/nau8540.h
-+++ b/sound/soc/codecs/nau8540.h
-@@ -151,6 +151,7 @@
- #define NAU8540_I2S_DF_PCM_AB		0x3
- 
- /* PCM_CTRL1 (0x11) */
-+#define NAU8540_I2S_DO12_TRI		(0x1 << 15)
- #define NAU8540_I2S_LRC_DIV_SFT	12
- #define NAU8540_I2S_LRC_DIV_MASK	(0x3 << NAU8540_I2S_LRC_DIV_SFT)
- #define NAU8540_I2S_DO12_OE		(0x1 << 4)
-@@ -161,6 +162,7 @@
- #define NAU8540_I2S_BLK_DIV_MASK	0x7
- 
- /* PCM_CTRL1 (0x12) */
-+#define NAU8540_I2S_DO34_TRI		(0x1 << 15)
- #define NAU8540_I2S_DO34_OE		(0x1 << 11)
- #define NAU8540_I2S_TSLOT_L_MASK	0x3ff
- 
--- 
-2.6.4
+Are you sure about the first one?
+
+Unfortunately, due to rounding errors the hsper is simply not accurate enough to
+use reliably. Furthermore, what is really needed if you want to add support for
+GTF and CVT standards is the vsync value, and that's not reported at all.
+
+I'd just give up on this and use your original code.
+
+Very poor hardware design :-(
+
+Regards,
+
+	Hans
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
