@@ -1,142 +1,101 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Report accurate hw_ptr during dma" to the asoc
- tree
-Date: Wed, 08 Nov 2017 16:07:58 +0000
-Message-ID: <E1eCStS-0002BV-Cv@debutante>
-References: <1509741345-1589-2-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: rt5514-spi: Let the buf_size to align
+	with period_bytes" to the asoc tree
+Date: Wed, 08 Nov 2017 16:08:01 +0000
+Message-ID: <E1eCStV-0002CW-CH@debutante>
+References: <1510140107-9920-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1509741345-1589-2-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Akshu Agrawal <Akshu.Agrawal@amd.com>, broonie@kernel.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4AED2674B2
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 17:08:05 +0100 (CET)
+In-Reply-To: <1510140107-9920-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBBU29DOiBhbWQ6IFJlcG9ydCBhY2N1cmF0ZSBod19wdHIgZHVyaW5nIGRt
-YQoKaGFzIGJlZW4gYXBwbGllZCB0byB0aGUgYXNvYyB0cmVlIGF0CgogICBodHRwczovL2dpdC5r
-ZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9icm9vbmllL3NvdW5kLmdpdCAKCkFs
-bCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMgdGhhdCBpdCB3aWxsIGJlIGludGVncmF0ZWQgaW50byB0
-aGUgbGludXgtbmV4dAp0cmVlICh1c3VhbGx5IHNvbWV0aW1lIGluIHRoZSBuZXh0IDI0IGhvdXJz
-KSBhbmQgc2VudCB0byBMaW51cyBkdXJpbmcKdGhlIG5leHQgbWVyZ2Ugd2luZG93IChvciBzb29u
-ZXIgaWYgaXQgaXMgYSBidWcgZml4KSwgaG93ZXZlciBpZgpwcm9ibGVtcyBhcmUgZGlzY292ZXJl
-ZCB0aGVuIHRoZSBwYXRjaCBtYXkgYmUgZHJvcHBlZCBvciByZXZlcnRlZC4gIAoKWW91IG1heSBn
-ZXQgZnVydGhlciBlLW1haWxzIHJlc3VsdGluZyBmcm9tIGF1dG9tYXRlZCBvciBtYW51YWwgdGVz
-dGluZwphbmQgcmV2aWV3IG9mIHRoZSB0cmVlLCBwbGVhc2UgZW5nYWdlIHdpdGggcGVvcGxlIHJl
-cG9ydGluZyBwcm9ibGVtcyBhbmQKc2VuZCBmb2xsb3d1cCBwYXRjaGVzIGFkZHJlc3NpbmcgYW55
-IGlzc3VlcyB0aGF0IGFyZSByZXBvcnRlZCBpZiBuZWVkZWQuCgpJZiBhbnkgdXBkYXRlcyBhcmUg
-cmVxdWlyZWQgb3IgeW91IGFyZSBzdWJtaXR0aW5nIGZ1cnRoZXIgY2hhbmdlcyB0aGV5CnNob3Vs
-ZCBiZSBzZW50IGFzIGluY3JlbWVudGFsIHVwZGF0ZXMgYWdhaW5zdCBjdXJyZW50IGdpdCwgZXhp
-c3RpbmcKcGF0Y2hlcyB3aWxsIG5vdCBiZSByZXBsYWNlZC4KClBsZWFzZSBhZGQgYW55IHJlbGV2
-YW50IGxpc3RzIGFuZCBtYWludGFpbmVycyB0byB0aGUgQ0NzIHdoZW4gcmVwbHlpbmcKdG8gdGhp
-cyBtYWlsLgoKVGhhbmtzLApNYXJrCgpGcm9tIDYxYWRkODE0Nzk0MmQyMzUxOWI5MWYwZWRjMzA5
-ODBkN2MxNDQ4MmMgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCkZyb206IFZpamVuZGFyIE11a3Vu
-ZGEgPFZpamVuZGFyLk11a3VuZGFAYW1kLmNvbT4KRGF0ZTogRnJpLCAzIE5vdiAyMDE3IDE2OjM1
-OjQzIC0wNDAwClN1YmplY3Q6IFtQQVRDSF0gQVNvQzogYW1kOiBSZXBvcnQgYWNjdXJhdGUgaHdf
-cHRyIGR1cmluZyBkbWEKClVzaW5nIGh3IHJlZ2lzdGVyIHRvIHJlYWQgdHJhbnNtaXR0ZWQgYnl0
-ZSBjb3VudCBhbmQgcmVwb3J0CmFjY29yZGluZ2x5IHRoZSBodyBwb2ludGVyLgoKVEVTVD0KbW9k
-cHJvYmUgc25kLXNvYy1hY3AtcGNtLmtvCm1vZHByb2JlIHNuZC1zb2MtYWNwLXJ0NTY0NS5rbwph
-cGxheSA8ZmlsZT4KClNpZ25lZC1vZmYtYnk6IFZpamVuZGFyIE11a3VuZGEgPFZpamVuZGFyLk11
-a3VuZGFAYW1kLmNvbT4KU2lnbmVkLW9mZi1ieTogQWtzaHUgQWdyYXdhbCA8QWtzaHUuQWdyYXdh
-bEBhbWQuY29tPgpUZXN0ZWQtYnk6IEFrc2h1IEFncmF3YWwgPGFrc2h1LmFncmF3YWxAYW1kLmNv
-bT4KUmV2aWV3ZWQtYnk6IEphc29uIENsaW50b24gPGpjbGludG9uQGNocm9taXVtLm9yZz4KU2ln
-bmVkLW9mZi1ieTogQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBhbWQuY29tPgpTaWdu
-ZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Ci0tLQogc291bmQvc29j
-L2FtZC9hY3AtcGNtLWRtYS5jIHwgNzEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
-LS0tLS0tLS0tLS0tCiBzb3VuZC9zb2MvYW1kL2FjcC5oICAgICAgICAgfCAxMCArKysrKysrCiAy
-IGZpbGVzIGNoYW5nZWQsIDU1IGluc2VydGlvbnMoKyksIDI2IGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYyBiL3NvdW5kL3NvYy9hbWQvYWNwLXBj
-bS1kbWEuYwppbmRleCA3M2I1OGVlMDAzODMuLmUxOWYyODFhZmVhYSAxMDA2NDQKLS0tIGEvc291
-bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCisrKyBiL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEu
-YwpAQCAtODE3LDM5ICs4MTcsNDggQEAgc3RhdGljIGludCBhY3BfZG1hX2h3X2ZyZWUoc3RydWN0
-IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJcmV0dXJuIHNuZF9wY21fbGliX2ZyZWVf
-cGFnZXMoc3Vic3RyZWFtKTsKIH0KIAorc3RhdGljIHU2NCBhY3BfZ2V0X2J5dGVfY291bnQodm9p
-ZCBfX2lvbWVtICphY3BfbW1pbywgaW50IHN0cmVhbSkKK3sKKwl1bmlvbiBhY3BfZG1hX2NvdW50
-IHBsYXliYWNrX2RtYV9jb3VudDsKKwl1bmlvbiBhY3BfZG1hX2NvdW50IGNhcHR1cmVfZG1hX2Nv
-dW50OworCXU2NCBieXRlc2NvdW50ID0gMDsKKworCWlmIChzdHJlYW0gPT0gU05EUlZfUENNX1NU
-UkVBTV9QTEFZQkFDSykgeworCQlwbGF5YmFja19kbWFfY291bnQuYmNvdW50LmhpZ2ggPSBhY3Bf
-cmVnX3JlYWQoYWNwX21taW8sCisJCQkJCW1tQUNQX0kyU19UUkFOU01JVF9CWVRFX0NOVF9ISUdI
-KTsKKwkJcGxheWJhY2tfZG1hX2NvdW50LmJjb3VudC5sb3cgID0gYWNwX3JlZ19yZWFkKGFjcF9t
-bWlvLAorCQkJCQltbUFDUF9JMlNfVFJBTlNNSVRfQllURV9DTlRfTE9XKTsKKwkJYnl0ZXNjb3Vu
-dCA9IHBsYXliYWNrX2RtYV9jb3VudC5ieXRlc2NvdW50OworCX0gZWxzZSB7CisJCWNhcHR1cmVf
-ZG1hX2NvdW50LmJjb3VudC5oaWdoID0gYWNwX3JlZ19yZWFkKGFjcF9tbWlvLAorCQkJCQltbUFD
-UF9JMlNfUkVDRUlWRURfQllURV9DTlRfSElHSCk7CisJCWNhcHR1cmVfZG1hX2NvdW50LmJjb3Vu
-dC5sb3cgID0gYWNwX3JlZ19yZWFkKGFjcF9tbWlvLAorCQkJCQltbUFDUF9JMlNfUkVDRUlWRURf
-QllURV9DTlRfTE9XKTsKKwkJYnl0ZXNjb3VudCA9IGNhcHR1cmVfZG1hX2NvdW50LmJ5dGVzY291
-bnQ7CisJfQorCXJldHVybiBieXRlc2NvdW50OworfQorCiBzdGF0aWMgc25kX3BjbV91ZnJhbWVz
-X3QgYWNwX2RtYV9wb2ludGVyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQog
-ewotCXUxNiBkc2NyOwotCXUzMiBtdWwsIGRtYV9jb25maWcsIHBlcmlvZF9ieXRlczsKKwl1MzIg
-YnVmZmVyc2l6ZTsKIAl1MzIgcG9zID0gMDsKKwl1NjQgYnl0ZXNjb3VudCA9IDA7CiAKIAlzdHJ1
-Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOwogCXN0cnVj
-dCBhdWRpb19zdWJzdHJlYW1fZGF0YSAqcnRkID0gcnVudGltZS0+cHJpdmF0ZV9kYXRhOwogCi0J
-cGVyaW9kX2J5dGVzID0gZnJhbWVzX3RvX2J5dGVzKHJ1bnRpbWUsIHJ1bnRpbWUtPnBlcmlvZF9z
-aXplKTsKLQlpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFD
-SykgewotCQlkc2NyID0gYWNwX3JlZ19yZWFkKHJ0ZC0+YWNwX21taW8sIG1tQUNQX0RNQV9DVVJf
-RFNDUl8xMyk7CisJYnVmZmVyc2l6ZSA9IGZyYW1lc190b19ieXRlcyhydW50aW1lLCBydW50aW1l
-LT5idWZmZXJfc2l6ZSk7CisJYnl0ZXNjb3VudCA9IGFjcF9nZXRfYnl0ZV9jb3VudChydGQtPmFj
-cF9tbWlvLCBzdWJzdHJlYW0tPnN0cmVhbSk7CiAKLQkJaWYgKGRzY3IgPT0gUExBWUJBQ0tfU1RB
-UlRfRE1BX0RFU0NSX0NIMTMpCi0JCQltdWwgPSAwOwotCQllbHNlCi0JCQltdWwgPSAxOwotCQlw
-b3MgPSAgKG11bCAqIHBlcmlvZF9ieXRlcyk7CisJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNO
-RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKKwkJaWYgKGJ5dGVzY291bnQgPiBydGQtPnJlbmRl
-cmJ5dGVzY291bnQpCisJCQlieXRlc2NvdW50ID0gYnl0ZXNjb3VudCAtIHJ0ZC0+cmVuZGVyYnl0
-ZXNjb3VudDsKKwkJcG9zID0gIGJ5dGVzY291bnQgJSBidWZmZXJzaXplOwogCX0gZWxzZSB7Ci0J
-CWRtYV9jb25maWcgPSBhY3BfcmVnX3JlYWQocnRkLT5hY3BfbW1pbywgbW1BQ1BfRE1BX0NOVExf
-MTQpOwotCQlpZiAoZG1hX2NvbmZpZyAhPSAwKSB7Ci0JCQlkc2NyID0gYWNwX3JlZ19yZWFkKHJ0
-ZC0+YWNwX21taW8sCi0JCQkJCQltbUFDUF9ETUFfQ1VSX0RTQ1JfMTQpOwotCQkJaWYgKGRzY3Ig
-PT0gQ0FQVFVSRV9TVEFSVF9ETUFfREVTQ1JfQ0gxNCkKLQkJCQltdWwgPSAxOwotCQkJZWxzZQot
-CQkJCW11bCA9IDI7Ci0JCQlwb3MgPSAobXVsICogcGVyaW9kX2J5dGVzKTsKLQkJfQotCi0JCWlm
-IChwb3MgPj0gKDIgKiBwZXJpb2RfYnl0ZXMpKQotCQkJcG9zID0gMDsKLQorCQlpZiAoYnl0ZXNj
-b3VudCA+IHJ0ZC0+Y2FwdHVyZWJ5dGVzY291bnQpCisJCQlieXRlc2NvdW50ID0gYnl0ZXNjb3Vu
-dCAtIHJ0ZC0+Y2FwdHVyZWJ5dGVzY291bnQ7CisJCXBvcyA9IGJ5dGVzY291bnQgJSBidWZmZXJz
-aXplOwogCX0KIAlyZXR1cm4gYnl0ZXNfdG9fZnJhbWVzKHJ1bnRpbWUsIHBvcyk7CiB9CkBAIC05
-MDQsNiArOTEzLDcgQEAgc3RhdGljIGludCBhY3BfZG1hX3RyaWdnZXIoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0sIGludCBjbWQpCiB7CiAJaW50IHJldDsKIAl1MzIgbG9vcHMg
-PSAxMDAwOworCXU2NCBieXRlc2NvdW50ID0gMDsKIAogCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUg
-KnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CiAJc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRp
-bWUgKnBydGQgPSBzdWJzdHJlYW0tPnByaXZhdGVfZGF0YTsKQEAgLTkxNSw3ICs5MjUsMTEgQEAg
-c3RhdGljIGludCBhY3BfZG1hX3RyaWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sIGludCBjbWQpCiAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9TVEFSVDoKIAljYXNlIFNO
-RFJWX1BDTV9UUklHR0VSX1BBVVNFX1JFTEVBU0U6CiAJY2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9S
-RVNVTUU6CisJCWJ5dGVzY291bnQgPSBhY3BfZ2V0X2J5dGVfY291bnQocnRkLT5hY3BfbW1pbywK
-KwkJCQkJCXN1YnN0cmVhbS0+c3RyZWFtKTsKIAkJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNO
-RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKKwkJCWlmIChydGQtPnJlbmRlcmJ5dGVzY291bnQg
-PT0gMCkKKwkJCQlydGQtPnJlbmRlcmJ5dGVzY291bnQgPSBieXRlc2NvdW50OwogCQkJYWNwX2Rt
-YV9zdGFydChydGQtPmFjcF9tbWlvLAogCQkJCQkJU1lTUkFNX1RPX0FDUF9DSF9OVU0sIGZhbHNl
-KTsKIAkJCXdoaWxlIChhY3BfcmVnX3JlYWQocnRkLT5hY3BfbW1pbywgbW1BQ1BfRE1BX0NIX1NU
-UykgJgpAQCAtOTMyLDYgKzk0Niw4IEBAIHN0YXRpYyBpbnQgYWNwX2RtYV90cmlnZ2VyKHN0cnVj
-dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLCBpbnQgY21kKQogCQkJCQlBQ1BfVE9fSTJT
-X0RNQV9DSF9OVU0sIHRydWUpOwogCiAJCX0gZWxzZSB7CisJCQlpZiAocnRkLT5jYXB0dXJlYnl0
-ZXNjb3VudCA9PSAwKQorCQkJCXJ0ZC0+Y2FwdHVyZWJ5dGVzY291bnQgPSBieXRlc2NvdW50Owog
-CQkJYWNwX2RtYV9zdGFydChydGQtPmFjcF9tbWlvLAogCQkJCQkgICAgSTJTX1RPX0FDUF9ETUFf
-Q0hfTlVNLCB0cnVlKTsKIAkJfQpAQCAtOTQ1LDEyICs5NjEsMTUgQEAgc3RhdGljIGludCBhY3Bf
-ZG1hX3RyaWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sIGludCBjbWQp
-CiAJCSAqIGNoYW5uZWxzIHdpbGwgc3RvcHBlZCBhdXRvbWF0aWNhbGx5IGFmdGVyIGl0cyB0cmFu
-c2ZlcgogCQkgKiBjb21wbGV0ZXMgOiBTWVNSQU1fVE9fQUNQX0NIX05VTSAvIEFDUF9UT19TWVNS
-QU1fQ0hfTlVNCiAJCSAqLwotCQlpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZfUENNX1NU
-UkVBTV9QTEFZQkFDSykKKwkJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJF
-QU1fUExBWUJBQ0spIHsKIAkJCXJldCA9IGFjcF9kbWFfc3RvcChydGQtPmFjcF9tbWlvLAogCQkJ
-CQlBQ1BfVE9fSTJTX0RNQV9DSF9OVU0pOwotCQllbHNlCisJCQlydGQtPnJlbmRlcmJ5dGVzY291
-bnQgPSAwOworCQl9IGVsc2UgewogCQkJcmV0ID0gYWNwX2RtYV9zdG9wKHJ0ZC0+YWNwX21taW8s
-CiAJCQkJCUkyU19UT19BQ1BfRE1BX0NIX05VTSk7CisJCQlydGQtPmNhcHR1cmVieXRlc2NvdW50
-ID0gMDsKKwkJfQogCQlicmVhazsKIAlkZWZhdWx0OgogCQlyZXQgPSAtRUlOVkFMOwpkaWZmIC0t
-Z2l0IGEvc291bmQvc29jL2FtZC9hY3AuaCBiL3NvdW5kL3NvYy9hbWQvYWNwLmgKaW5kZXggYTMz
-MGE5OWJmZmY4Li5kZTA4ZmYwNzdhYzcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hbWQvYWNwLmgK
-KysrIGIvc291bmQvc29jL2FtZC9hY3AuaApAQCAtODMsNiArODMsOCBAQCBzdHJ1Y3QgYXVkaW9f
-c3Vic3RyZWFtX2RhdGEgewogCXUxNiBudW1fb2ZfcGFnZXM7CiAJdTE2IGRpcmVjdGlvbjsKIAl1
-aW50NjRfdCBzaXplOworCXU2NCByZW5kZXJieXRlc2NvdW50OworCXU2NCBjYXB0dXJlYnl0ZXNj
-b3VudDsKIAl2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwogfTsKIApAQCAtOTMsNiArOTUsMTQgQEAg
-c3RydWN0IGF1ZGlvX2Rydl9kYXRhIHsKIAl1MzIgYXNpY190eXBlOwogfTsKIAordW5pb24gYWNw
-X2RtYV9jb3VudCB7CisJc3RydWN0IHsKKwl1MzIgbG93OworCXUzMiBoaWdoOworCX0gYmNvdW50
-OworCXU2NCBieXRlc2NvdW50OworfTsKKwogZW51bSB7CiAJQUNQX1RJTEVfUDEgPSAwLAogCUFD
-UF9USUxFX1AyLAotLSAKMi4xNS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9kcmktZGV2ZWwK
+The patch
+
+   ASoC: rt5514-spi: Let the buf_size to align with period_bytes
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c4a71ff78e668a75a4a3cfd9ebbfbd5cbe8da5fb Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Wed, 8 Nov 2017 19:21:47 +0800
+Subject: [PATCH] ASoC: rt5514-spi: Let the buf_size to align with period_bytes
+
+The patch lets the buf_size to align with period_bytes to prevent the
+buffer reading over the real size of the DSP buffer and also avoid to
+calculate the wrong size of remaining data.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5514-spi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 12f2ecf3a4fe..0896817ffc3f 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -147,8 +147,13 @@ static void rt5514_spi_copy_work(struct work_struct *work)
+ 
+ static void rt5514_schedule_copy(struct rt5514_dsp *rt5514_dsp)
+ {
++	size_t period_bytes;
+ 	u8 buf[8];
+ 
++	if (!rt5514_dsp->substream)
++		return;
++
++	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
+ 	rt5514_dsp->get_size = 0;
+ 
+ 	/**
+@@ -176,6 +181,10 @@ static void rt5514_schedule_copy(struct rt5514_dsp *rt5514_dsp)
+ 
+ 	rt5514_dsp->buf_size = rt5514_dsp->buf_limit - rt5514_dsp->buf_base;
+ 
++	if (rt5514_dsp->buf_size % period_bytes)
++		rt5514_dsp->buf_size = (rt5514_dsp->buf_size / period_bytes) *
++			period_bytes;
++
+ 	if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
+ 		rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
+ 		schedule_delayed_work(&rt5514_dsp->copy_work, 0);
+-- 
+2.15.0
