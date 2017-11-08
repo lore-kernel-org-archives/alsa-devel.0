@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Check for NHLT ACPI
-	header signature" to the asoc tree
-Date: Wed, 08 Nov 2017 21:33:06 +0000
-Message-ID: <E1eCXy6-0005Wq-VH@debutante>
-References: <20171107104626.25800-7-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: tlv320aic23: mark expected switch
+	fall-through" to the asoc tree
+Date: Wed, 08 Nov 2017 21:31:38 +0000
+Message-ID: <E1eCXwg-0005KD-9A@debutante>
+References: <c72fc08548576887271e2f8b6a9e424cca4f271e.1510170034.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7222E2676B9
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:58 +0100 (CET)
-In-Reply-To: <20171107104626.25800-7-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DB49267670
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:58 +0100 (CET)
+In-Reply-To: <c72fc08548576887271e2f8b6a9e424cca4f271e.1510170034.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Check for NHLT ACPI header signature
+   ASoC: tlv320aic23: mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -53,49 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 3b47c9dc75be097bc0e2f3ac4b176fbf3eed85f2 Mon Sep 17 00:00:00 2001
-From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
-Date: Tue, 7 Nov 2017 16:16:21 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Check for NHLT ACPI header signature
+>From a47043ec35d4198b3858cb1eb4c38d712154ae99 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Wed, 8 Nov 2017 14:04:12 -0600
+Subject: [PATCH] ASoC: tlv320aic23: mark expected switch fall-through
 
-In certain buggy BIOS acpi_evaluate_dsm() may not return the correct
-NHLT table, so check the NHLT table header signature before accessing
-it.
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Addresses-Coverity-ID: 146566
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/codecs/tlv320aic23.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index e7d766d56c8e..d14c50a60289 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -20,6 +20,8 @@
- #include <linux/pci.h>
- #include "skl.h"
- 
-+#define NHLT_ACPI_HEADER_SIG	"NHLT"
-+
- /* Unique identification for getting NHLT blobs */
- static guid_t osc_guid =
- 	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
-@@ -45,6 +47,13 @@ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
- 				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
- 				MEMREMAP_WB);
- 		ACPI_FREE(obj);
-+		if (nhlt_table && (strncmp(nhlt_table->header.signature,
-+					NHLT_ACPI_HEADER_SIG,
-+					strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
-+			memunmap(nhlt_table);
-+			dev_err(dev, "NHLT ACPI header signature incorrect\n");
-+			return NULL;
-+		}
- 		return nhlt_table;
- 	}
- 
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 3d42138a7974..74909211c608 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -454,6 +454,7 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		iface_reg |= TLV320AIC23_LRP_ON;
++		/* fall through */
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		iface_reg |= TLV320AIC23_FOR_DSP;
+ 		break;
 -- 
 2.15.0
