@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Fix possible NULL pointer
-	dereference" to the asoc tree
-Date: Wed, 08 Nov 2017 21:32:41 +0000
-Message-ID: <E1eCXxh-0005SB-Ql@debutante>
-References: <20171107104626.25800-11-guneshwor.o.singh@intel.com>
+Subject: Re: [PATCH] ASoC: amd: use do_div rather than 64 bit
+ division to fix 32 bit builds
+Date: Wed, 8 Nov 2017 21:42:59 +0000
+Message-ID: <20171108214259.cjqcc46wikoslx67@sirena.co.uk>
+References: <20171108213454.7048-1-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1776374419573498235=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 81A5C267665
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:45 +0100 (CET)
-In-Reply-To: <20171107104626.25800-11-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C3104267683
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:43:26 +0100 (CET)
+In-Reply-To: <20171108213454.7048-1-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,95 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, Alex Deucher <alexander.deucher@amd.com>, Vijendar.Mukunda@amd.com, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: hdac_hdmi: Fix possible NULL pointer dereference
+--===============1776374419573498235==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fz7rez7cayifead4"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--fz7rez7cayifead4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Nov 08, 2017 at 04:34:54PM -0500, Alex Deucher wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> fixes: 61add8147942 (ASoC: amd: Report accurate hw_ptr during dma)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Fixes:
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> Signed-off-by: Guenter Roeck <groeck@chromium.org>
+> Reviewed-on: https://chromium-review.googlesource.com/678919
+> Reviewed-by: Jason Clinton <jclinton@chromium.org>
+> (cherry picked from commit 7ca726e80f21abdbaed9a5a70def1c33a26f8533)
 
-Thanks,
-Mark
+This isn't how we show cherry picks upstream for stable (you need a tree
+reference of some kind) and it's not relevant if you ever cherry picked
+anything in your internal process anyway.
 
->From eb50fa1739a63cc4b202b40a62d71055a2d7b80c Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 7 Nov 2017 16:16:25 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: Fix possible NULL pointer dereference
+--fz7rez7cayifead4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Pointers hdac_hdmi_pcm and hda_device_id can be NULL, so add check for
-valid pointer to avoid NULL pointer dereference.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDemIACgkQJNaLcl1U
+h9AX8wf+NfV9clmMLrgfUHhNH+fjLljri7qc2tiaH74YqU6ITCYabPv+lfVLr/nF
+Lis6oXJgghN24Q5IcqV5qo69Sl90XgxKYCT5Wn91ehJRz8VhhHozw9LRMzg8t4km
+tWaAXz6iFC7gN8uhq8bPZfKb6a8pkCdvm3c2lF7P7ZmeayTAO5GERVcPlaa0bQxu
+2bt/KVeccCXmLqg2xgT1njyFSH58LEszECaymaBTWMYV+zy3e/TNQH3Y/hZR//jI
+couPUbwL1j4Yw032vKG/U2aTewQJ3okVQF30CGpdDOGywMbPr5NB9CFwlggel5FU
+kuqp7H7KUWazE5MeyCtwxddAneST2A==
+=MnMd
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 6f3ff15c0962..0c0aa6182502 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -1895,6 +1895,9 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_port *port;
- 
-+	if (!pcm)
-+		return;
-+
- 	if (list_empty(&pcm->port_list))
- 		return;
- 
-@@ -1913,6 +1916,9 @@ static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 
-+	if (!pcm)
-+		return false;
-+
- 	if (list_empty(&pcm->port_list))
- 		return false;
- 
-@@ -1926,6 +1932,9 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_port *port;
- 
-+	if (!pcm)
-+		return 0;
-+
- 	if (list_empty(&pcm->port_list))
- 		return 0;
- 
-@@ -1979,6 +1988,9 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
- 	hdmi_priv->chmap.ops.is_pcm_attached = is_hdac_hdmi_pcm_attached;
- 	hdmi_priv->chmap.ops.get_spk_alloc = hdac_hdmi_get_spk_alloc;
- 
-+	if (!hdac_id)
-+		return -ENODEV;
-+
- 	if (hdac_id->driver_data)
- 		hdmi_priv->drv_data =
- 			(struct hdac_hdmi_drv_data *)hdac_id->driver_data;
--- 
-2.15.0
+--fz7rez7cayifead4--
+
+--===============1776374419573498235==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1776374419573498235==--
