@@ -1,18 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: snd-bebob - Edirol FA66
-Date: Wed, 8 Nov 2017 13:49:17 +0900
-Message-ID: <01dd8168-8c66-15a8-8650-b37499c834f9@sakamocchi.jp>
-References: <5a021c934d3df8.78585682@wp.pl>
- <406f3b76-4420-30cf-c8a0-853e2c3d36f9@sakamocchi.jp>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5514: Voice wakeup support.
+Date: Wed, 8 Nov 2017 15:04:21 +0800
+Message-ID: <1510124662-5065-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 71FFD2673F2
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 05:49:20 +0100 (CET)
-In-Reply-To: <406f3b76-4420-30cf-c8a0-853e2c3d36f9@sakamocchi.jp>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id A02BE266DF5
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 08:05:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +18,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pawel <xj@wp.pl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, Chinyue Chen <chinyue@chromium.org>, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-T29wcy4gSSBkZXNjcmliZWQgYmFzZWQgb24gcmVuZXdhbCBlbmdpbmUgZm9yIHdoaWNoIEknbSB3
-b3JraW5nLi4uCgpPbiBOb3YgOCAyMDE3IDA4OjAzLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+
-IChDQ2VkIHRvIGFsc2EtZGV2ZWwpCj4gCj4gT24gTm92IDggMjAxNyAwNTo1MCwgUGF3ZWwgd3Jv
-dGU6Cj4gID4gSW4gc3RhcnQgdGhhbmtzIGZvciB5b3VyIGdyZWF0IHdvcmsuCj4gID4gSSBoYXZl
-IHN1Y2ggY2FyZDoKPiAgPgo+ICA+wqDCoCAxIFtGQTY2wqDCoMKgwqDCoMKgwqDCoMKgwqAgXTog
-QmVCb0IgLSBFRElST0wgRkEtNjYKPiAgPsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgRURJUk9MIEVESVJPTCBGQS02NiAoaWQ6MiwgcmV2OjEpLCBHVUlEIAo+
-IDAwNDBhYjAwMDBjMzhhZTUgYXQgZncxLjAsIFM0MDAKPiAgPgo+ICA+Cj4gID4gLi4gd2hpY2gg
-ZmZhZG8gZHJpdmVycyAsIEkgY2FuIHN0YXJ0IGphY2sgd2l0aCBsb3cgcGFyYW1ldGVycyBsaWtl
-Owo+ICA+IGphY2tkIC1QODIgLXAxMjggLXQ1MDAwIC11IC1kZmlyZXdpcmUgLWRodzpGQTY2IC1y
-OTYwMDAgLXAxMjggLW4yCj4gID4KPiAgPiAuLiBidXQgd2l0aCBhbHNhIEkgbmVlZCB0byB1c2Ug
-cGVyaW9kIHZhbHVlIDMgYW5kIGJ1ZmZlciBzaXplIGJldHdlZW4gCj4gNTEyIGFuZCAyMDQ4Lgo+
-ICA+IFRoZXJlIGFyZSBwcm9iYWJseSBzb21lIGhhcmRjb2RlZCB2YWx1ZXMgaW4gYWxzYSBkcml2
-ZXIuCj4gCj4gRWRpcm9sIEZBLTY2IHVzZXMgRE0xMDAwIEFTSUMgYXMgY29tbXVuaWNhdGlvbiBl
-bmdpbmUuIFRoaXMgQVNJQyBpcyAKPiBwcm9kdWNlZCBieSBCcmlkZ2VDby4gaW4gaXRzIEJlQm9C
-IHNvbHV0aW9uLiBJbiB0aGlzIHNvbHV0aW9uLCBJRUMgCj4gNjE4ODMtMS82IHBhY2tldCBzdHJl
-YW1pbmcgaXMgdXNlZCB0byB0cmFuc2ZlciBhdWRpby9tdXNpYyBkYXRhIGJldHdlZW4gCj4gdW5p
-dHMgb24gSUVFRSAxMzk0IGJ1cyBhbmQgaG9zdCBkcml2ZXIuCj4gCj4gQWxsIG9mIGN1cnJlbnQg
-aW1wbGVtZW50YXRpb24gb2YgZHJpdmVycyBpbiBBTFNBIGZpcmV3aXJlIHN0YWNrIAo+IGluY2x1
-ZGluZyBCZUJvQiBkcml2ZXIgcmVsaWVzIG9uIEFMU0EgcGFja2V0IHN0cmVhbWluZyBlbmdpbmUg
-Zm9yIElFQyAKPiA2MTg4My0xLzYuIFRoaXMgZW5naW5lIHJ1bnMgd2l0aCBoYXJkd2FyZSBpbnRl
-cnJ1cHRzIGZyb20gMTM5NE9IQ0kgaG9zdCAKPiBjb250cm9sbGVycy4gSW50ZXJ2YWwgb2YgdGhl
-IGludGVycnVwdCBpcyBjdXJyZW50bHkgY29uZmlndXJlZCB0byBldmVyeSAKPiAxNiBpbnRlcnJ1
-cHRzLiBUaGlzIG1vc3RseSBlcXVhbHMgdG8gMiBtc2VjIGluIGFjdHVhbCB0aW1lIGZyYW1lLgo+
-IAo+IEluIGEgdmlldyBmcm9tIEFMU0EgUENNIGFwcGxpY2F0aW9uLCB0aGUgMiBtc2VjIGlzIGNv
-cnJlc3BvbmRpbmcgdG8gYSAKPiBwZXJpb2Qgb2YgUENNIGJ1ZmZlci4gVGh1cywgdXNlcnMgY2Fu
-IGNvbmZpZ3VyZSBzaXplIG9mIHBlcmlvZCBvdmVyIDIgCj4gbXNlYyBpbiBhbnkgUENNIHN1YnN0
-cmVhbS4gQWN0dWFsIHZhbHVlIG9mIHRoZSBzaXplIG9mIHBlcmlvZCBpcyBkZWNpZGVkIAo+IGRl
-cGVuZGluZyBvbiB1c2VkIHNhbXBsaW5nIGZyZXF1ZW5jeS4KClRoZSBhYm92ZSBzZWN0aW9uIGlz
-IG5vdCBmb3IgY3VycmVudCBpbXBsZW1lbnRhdGlvbiBpbiB1cHN0cmVhbS4gVGhlIApoYXJkd2Fy
-ZSBpbnRlcnJ1cHQgc3VyZWx5IG9jY3VycyBwZXIgMiBtc2VjIChwcmVjaXNlbHkgaW5jbHVkaW5n
-IHNvbWUgCmppdHRlcnMpLCB3aGlsZSB0aGUgbWluaW11bSBzaXplIG9mIHBlcmlvZCBmb3IgUENN
-IHN1YnN0cmVhbSBpcyBhY3R1YWxseSAKY29uc3RyYWluZWQgdG8gNSBtc2VjLCBkdWUgdG8gZGlm
-ZmVyZW5jZSBvZiB1bml0IG9mIGRhdGEgdHJhbnNtaXNzaW9uIApiZXR3ZWVuIElFQyA2MTg4My0x
-LzYgYW5kIEFMU0EgUENNIGludGVyZmFjZS4KClRoZSBpbnRlcnZhbCBvZiBpbnRlcnJ1cHQgaXMg
-MiBtc2VjLCB3aGlsZSB1bml0IG9mIGRhdGEgdHJhbnNtaXNzaW9uIGZvciAKUENNIGZyYW1lcyBk
-b2Vzbid0IGV4ZWN0bHkgZXF1YWwgdG8gMiBtc2VjLiBGb3Igc2FmZSBkYXRhIGhhbmRsaW5nLCB0
-aGUgCmVuZ2luZSB1c2VzIHRoZSBzYW1lIHNpemUgb2YgcGVyaW9kIGFzIG5lYXIgNSBtc2VjIHNv
-IHRoYXQgdGhlIGludGVycnVwdCAKbmVjZXNzYXJpbHkgb2NjdXJzIGJldHdlZW4gdHdvIGVsYXBz
-ZXMuIEZvciB0aGlzIG1lY2hhbmlzbSwgbXkgcmVwb3J0IApoZWxwcyB5b3VyIHVuZGVyc3RhbmRp
-bmdbMV0gKGJlIGF3YXJlIHRoYXQgaXQgaW5jbHVkZXMgc29tZSBvYnNvbGV0ZWQgCmNvbnRlbnRz
-KS4KCj4gRnVydGhlcm1vcmUsIGFueSBpbnRlcnJ1cHQtb3JpZW50ZWQgZHJpdmVyIHJlcXVpcmVz
-IDIgb3IgbW9yZSBwZXJpb2RzIGluIAo+IFBDTSBidWZmZXIuIFRoZXJlZm9yZSwgdXNlcnMgY2Fu
-IGNvbmZpZ3VyZSBzaXplIG9mIGJ1ZmZlciBvdmVyIG11bHRpcGxlcyAKPiBvZiAyIG1zZWMgYWNj
-b3JkaW5nIHRvIGNvbmZpZ3VyZWQgbnVtYmVyIG9mIHBlcmlvZHMuCj4gCj4gVGhhdCdzIGN1cnJl
-bnQgZGVzaWduIG9mIEFMU0EgSUVDIDYxODgzLTEvNiBlbmdpbmUgYW5kIGl0J3MgcmVzdHJpY3Rp
-b24uClsxXSBodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvYWxzYS1maXJld2lyZS1yZXBvcnQK
-CgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+If the rt5514 Wake on Voice device is opened while suspended, it will
+be able to wake up the system when a voice command is detected.
+This patch also supports user-space policy to override wakeup behavior
+by /sys/bus/spi/drivers/rt5514/spi2.0/power/wakeup.
+
+Signed-off-by: Chinyue Chen <chinyue@chromium.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514-spi.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index b90d6d5..0c0e209 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -448,9 +448,35 @@ static int rt5514_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
+ 
++	device_init_wakeup(&spi->dev, true);
++
++	return 0;
++}
++
++static int rt5514_suspend(struct device *dev)
++{
++	int irq = to_spi_device(dev)->irq;
++
++	if (device_may_wakeup(dev))
++		enable_irq_wake(irq);
++
+ 	return 0;
+ }
+ 
++static int rt5514_resume(struct device *dev)
++{
++	int irq = to_spi_device(dev)->irq;
++
++	if (device_may_wakeup(dev))
++		disable_irq_wake(irq);
++
++	return 0;
++}
++
++static const struct dev_pm_ops rt5514_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(rt5514_suspend, rt5514_resume)
++};
++
+ static const struct of_device_id rt5514_of_match[] = {
+ 	{ .compatible = "realtek,rt5514", },
+ 	{},
+@@ -460,6 +486,7 @@ MODULE_DEVICE_TABLE(of, rt5514_of_match);
+ static struct spi_driver rt5514_spi_driver = {
+ 	.driver = {
+ 		.name = "rt5514",
++		.pm = &rt5514_pm_ops,
+ 		.of_match_table = of_match_ptr(rt5514_of_match),
+ 	},
+ 	.probe = rt5514_spi_probe,
+-- 
+2.7.4
