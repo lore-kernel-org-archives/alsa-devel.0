@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514-spi: Let the buf_size to align
-	with period_bytes" to the asoc tree
-Date: Wed, 08 Nov 2017 16:08:01 +0000
-Message-ID: <E1eCStV-0002CW-CH@debutante>
-References: <1510140107-9920-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: stm32: spdifrx: fix control DMA error
+	management" to the asoc tree
+Date: Wed, 08 Nov 2017 16:08:04 +0000
+Message-ID: <E1eCStY-0002Do-DQ@debutante>
+References: <1509981533-28622-3-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C4AED2674B2
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 17:08:05 +0100 (CET)
-In-Reply-To: <1510140107-9920-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 08E9526748E
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 17:09:43 +0100 (CET)
+In-Reply-To: <1509981533-28622-3-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514-spi: Let the buf_size to align with period_bytes
+   ASoC: stm32: spdifrx: fix control DMA error management
 
 has been applied to the asoc tree at
 
@@ -53,49 +52,65 @@ to this mail.
 Thanks,
 Mark
 
->From c4a71ff78e668a75a4a3cfd9ebbfbd5cbe8da5fb Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Wed, 8 Nov 2017 19:21:47 +0800
-Subject: [PATCH] ASoC: rt5514-spi: Let the buf_size to align with period_bytes
+>From 98c8dc2fd59fdad77d26d7b0d7007776c5fbec16 Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Mon, 6 Nov 2017 16:18:53 +0100
+Subject: [PATCH] ASoC: stm32: spdifrx: fix control DMA error management
 
-The patch lets the buf_size to align with period_bytes to prevent the
-buffer reading over the real size of the DSP buffer and also avoid to
-calculate the wrong size of remaining data.
+Fix DMA channel request error handling.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/stm/stm32_spdifrx.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 12f2ecf3a4fe..0896817ffc3f 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -147,8 +147,13 @@ static void rt5514_spi_copy_work(struct work_struct *work)
- 
- static void rt5514_schedule_copy(struct rt5514_dsp *rt5514_dsp)
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index d7dbe84d5eeb..b9bdefcd3e10 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -392,6 +392,12 @@ static int stm32_spdifrx_dma_ctrl_register(struct device *dev,
  {
-+	size_t period_bytes;
- 	u8 buf[8];
+ 	int ret;
  
-+	if (!rt5514_dsp->substream)
-+		return;
++	spdifrx->ctrl_chan = dma_request_chan(dev, "rx-ctrl");
++	if (IS_ERR(spdifrx->ctrl_chan)) {
++		dev_err(dev, "dma_request_slave_channel failed\n");
++		return PTR_ERR(spdifrx->ctrl_chan);
++	}
 +
-+	period_bytes = snd_pcm_lib_period_bytes(rt5514_dsp->substream);
- 	rt5514_dsp->get_size = 0;
+ 	spdifrx->dmab = devm_kzalloc(dev, sizeof(struct snd_dma_buffer),
+ 				     GFP_KERNEL);
+ 	if (!spdifrx->dmab)
+@@ -406,12 +412,6 @@ static int stm32_spdifrx_dma_ctrl_register(struct device *dev,
+ 		return ret;
+ 	}
  
- 	/**
-@@ -176,6 +181,10 @@ static void rt5514_schedule_copy(struct rt5514_dsp *rt5514_dsp)
+-	spdifrx->ctrl_chan = dma_request_chan(dev, "rx-ctrl");
+-	if (!spdifrx->ctrl_chan) {
+-		dev_err(dev, "dma_request_slave_channel failed\n");
+-		return -EINVAL;
+-	}
+-
+ 	spdifrx->slave_config.direction = DMA_DEV_TO_MEM;
+ 	spdifrx->slave_config.src_addr = (dma_addr_t)(spdifrx->phys_addr +
+ 					 STM32_SPDIFRX_CSR);
+@@ -423,7 +423,6 @@ static int stm32_spdifrx_dma_ctrl_register(struct device *dev,
+ 				     &spdifrx->slave_config);
+ 	if (ret < 0) {
+ 		dev_err(dev, "dmaengine_slave_config returned error %d\n", ret);
+-		dma_release_channel(spdifrx->ctrl_chan);
+ 		spdifrx->ctrl_chan = NULL;
+ 	}
  
- 	rt5514_dsp->buf_size = rt5514_dsp->buf_limit - rt5514_dsp->buf_base;
+@@ -962,7 +961,7 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 	return 0;
  
-+	if (rt5514_dsp->buf_size % period_bytes)
-+		rt5514_dsp->buf_size = (rt5514_dsp->buf_size / period_bytes) *
-+			period_bytes;
-+
- 	if (rt5514_dsp->buf_base && rt5514_dsp->buf_limit &&
- 		rt5514_dsp->buf_rp && rt5514_dsp->buf_size)
- 		schedule_delayed_work(&rt5514_dsp->copy_work, 0);
+ error:
+-	if (spdifrx->ctrl_chan)
++	if (!IS_ERR(spdifrx->ctrl_chan))
+ 		dma_release_channel(spdifrx->ctrl_chan);
+ 	if (spdifrx->dmab)
+ 		snd_dma_free_pages(spdifrx->dmab);
 -- 
 2.15.0
