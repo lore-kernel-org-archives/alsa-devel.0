@@ -1,75 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
-Date: Wed, 8 Nov 2017 18:22:14 +0000
-Message-ID: <20171108182214.bwdvt5wwwz7wqf32@sirena.co.uk>
-References: <20171108181841.29332-1-alexander.deucher@amd.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0754935007=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20171108181841.29332-1-alexander.deucher@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Guenter Roeck <groeck@chromium.org>
+Subject: Applied "ASoC: sun8i-codec: Invert Master / Slave condition" to the asoc tree
+Date: Wed, 08 Nov 2017 18:26:19 +0000
+Message-ID: <E1eCV3L-0006hn-9S@debutante>
+References: <20171108154710.16407-2-maxime.ripard@free-electrons.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20171108154710.16407-2-maxime.ripard@free-electrons.com>
+Sender: stable-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, lgirdwood@gmail.com, Chen-Yu Tsai <wens@csie.org>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.orgstable@vger.kernel.org, codekipper@gmail.com, Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0754935007==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ntd73vxin3ez563k"
-Content-Disposition: inline
+   ASoC: sun8i-codec: Invert Master / Slave condition
 
+has been applied to the asoc tree at
 
---ntd73vxin3ez563k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Nov 08, 2017 at 01:18:41PM -0500, Alex Deucher wrote:
-> From: Guenter Roeck <groeck@chromium.org>
->=20
-> ERROR: "__aeabi_uldivmod" [sound/soc/amd/snd-soc-acp-pcm.ko] undefined!
->=20
-> 64-bit divides require special operations to avoid build errors on 32-bit
-> systems.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Like I said in reply to your other mail please don't resubmit already
-applied patches.  The current tip of my topic/amd branch appears to be
-this very patch, if there's anything needs changing please send an
-incremental patch.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---ntd73vxin3ez563k
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDS1YACgkQJNaLcl1U
-h9DRNQf/fM4SKHjSjCwvb/KtlSFw0oG0oYOoMfl7EbQjS1pK84r3cKkh1Z7sQ9T1
-xUv7XL3bVeZ9Id/874Iok9xT/GcUbkhFKV3PotAOhfgcumA8AzA3DFiMxlTdfH4B
-CBasyJE7U2b1/DaRNbWrgt5LJe7XlTpmVdvCuEKT1jzk1DLpP13rsELumSZ3Uup1
-/hAHOiYdjlofvVd7NencK8aqiwn9ZaaKGBn3sSuNijMHglwKMvtfRNVp5Yfv57PE
-m2q1RlJjVJNfSfjESDi6TZv9CYZSDliO0X1KT1ejLoAYYsnl5axGHLIQbftUVUng
-IVuL2BFJ3TrjIZDXPkC/8VEuH95/HA==
-=R5iY
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---ntd73vxin3ez563k--
+>From 560bfe774f058e97596f30ff71cffdac52b72914 Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Wed, 8 Nov 2017 16:47:08 +0100
+Subject: [PATCH] ASoC: sun8i-codec: Invert Master / Slave condition
 
---===============0754935007==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+The current code had the condition backward when checking if the codec
+should be running in slave or master mode.
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Fix it, and make the comment a bit more readable.
 
---===============0754935007==--
+Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org>
+---
+ sound/soc/sunxi/sun8i-codec.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index abfb710df7cb..038107baf414 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -170,11 +170,11 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 
+ 	/* clock masters */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS: /* DAI Slave */
+-		value = 0x0; /* Codec Master */
++	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
++		value = 0x1;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFM: /* DAI Master */
+-		value = 0x1; /* Codec Slave */
++	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
++		value = 0x0;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-- 
+2.15.0
