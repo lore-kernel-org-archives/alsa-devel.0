@@ -1,39 +1,74 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 8/9] ASoC: tlv320aic31xx: Fix the reset GPIO OF name
-Date: Wed, 8 Nov 2017 15:25:04 -0600
-Message-ID: <20171108212505.28320-9-afd@ti.com>
-References: <20171108212505.28320-1-afd@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171108212505.28320-1-afd@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun8i-codec: Fix left and right channels inversion" to the asoc tree
+Date: Wed, 08 Nov 2017 21:33:51 +0000
+Message-ID: <E1eCXyp-0005cC-G2@debutante>
+References: <20171108154710.16407-4-maxime.ripard@free-electrons.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20171108154710.16407-4-maxime.ripard@free-electrons.com>
+Sender: stable-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: stable@vger.kernel.org, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, Chen-Yu Tsai <wens@csie.org>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.orgstable@vger.kernel.org, codekipper@gmail.com, Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The correct DT property for specifying a GPIO used for reset
-is "reset-gpio", fix this here.
+The patch
 
-Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
+   ASoC: sun8i-codec: Fix left and right channels inversion
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 18c1bf35c1c09bca05cf70bc984a4764e0b0372b Mon Sep 17 00:00:00 2001
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Date: Wed, 8 Nov 2017 16:47:10 +0100
+Subject: [PATCH] ASoC: sun8i-codec: Fix left and right channels inversion
+
+Since its introduction, the codec had an inversion of the left and right
+channels. It turned out to be pretty simple as it appears that the codec
+doesn't have the same polarity on the LRCK signal than the I2S block.
+
+Fix this by inverting our bit value for the LRCK inversion.
+
+Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
+ sound/soc/sunxi/sun8i-codec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 54a87a905eb6..359eba15bb89 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1279,7 +1279,7 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
- 		aic31xx->pdata.micbias_vg = MICBIAS_2_0V;
- 	}
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 038107baf414..c2ceca485d6a 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -199,7 +199,7 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 			   value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
+-			   value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
++			   !value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
  
--	ret = of_get_named_gpio(np, "gpio-reset", 0);
-+	ret = of_get_named_gpio(np, "reset-gpio", 0);
- 	if (ret > 0)
- 		aic31xx->pdata.gpio_reset = ret;
- }
+ 	/* DAI format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 -- 
 2.15.0
