@@ -1,16 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: AMD: Make the driver name consistent across
- files
-Date: Wed, 8 Nov 2017 18:34:22 +0000
-Message-ID: <20171108183422.xwenze7tnzppa2j2@sirena.co.uk>
-References: <20171108172404.19118-1-alexander.deucher@amd.com>
- <20171108172404.19118-2-alexander.deucher@amd.com>
- <20171108180835.7nl7uzxzclcxrfga@sirena.co.uk>
- <BN6PR12MB165251734231887E8A1E213BF7560@BN6PR12MB1652.namprd12.prod.outlook.com>
+Subject: Applied "ASoC: amd: Make the driver name consistent across files" to
+ the asoc tree
+Date: Wed, 08 Nov 2017 18:34:49 +0000
+Message-ID: <E1eCVBZ-0007PH-R7@debutante>
+References: <1509741345-1589-3-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0819143835=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <BN6PR12MB165251734231887E8A1E213BF7560@BN6PR12MB1652.namprd12.prod.outlook.com>
+In-Reply-To: <1509741345-1589-3-git-send-email-alexander.deucher@amd.com>
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -20,56 +18,70 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Agrawal,
- Akshu" <Akshu.Agrawal@amd.com>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Jason Clinton <jclinton@chromium.org>, broonie@kernel.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0819143835==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b5wmkkiegcoso7dg"
-Content-Disposition: inline
-
-
---b5wmkkiegcoso7dg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 08, 2017 at 06:12:34PM +0000, Deucher, Alexander wrote:
-
-> This didn't not appear to be in your tree yet and I never got any confirmation it being
-> applied.  Apologies.
-
-Ah, sorry - my bad.  This was one that I tried to apply but which didn't
-apply.
-
---b5wmkkiegcoso7dg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDTi0ACgkQJNaLcl1U
-h9CQNAf/QLxnDLk6sfDLiocVEH2NmXHyTeRcKPYQfU7pgCi0AZudInCCRwfFVZ7I
-rDdVvK9LHLvPhLCjFMJ1a8uOE+g74hj5rHeXcsPh5fpn/BqyZoSFVcQy2K892vo8
-454Es5IbI6w3b6gHs830Rm3MAQDhF9Tvbutk2F/6UXP8hFTKzYi/T2lFQodRjuJF
-FPC71MZ/G5mFXPZajnOyqXlFeJR3pJw0FmWYIogWuUzBoGR8zgucn2uJjZNkAdKM
-Y9HE4wD+4BaBFJrJTFq6gpgk5tTXZnXEIMyKe34pOsrQx+5PuimBkx7GEypZ82uF
-FTBMy79r3Myp3U6NSwROXTHHllSE7g==
-=DXyD
------END PGP SIGNATURE-----
-
---b5wmkkiegcoso7dg--
-
---===============0819143835==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0819143835==--
+VGhlIHBhdGNoCgogICBBU29DOiBhbWQ6IE1ha2UgdGhlIGRyaXZlciBuYW1lIGNvbnNpc3RlbnQg
+YWNyb3NzIGZpbGVzCgpoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBhc29jIHRyZWUgYXQKCiAgIGh0
+dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291
+bmQuZ2l0IAoKQWxsIGJlaW5nIHdlbGwgdGhpcyBtZWFucyB0aGF0IGl0IHdpbGwgYmUgaW50ZWdy
+YXRlZCBpbnRvIHRoZSBsaW51eC1uZXh0CnRyZWUgKHVzdWFsbHkgc29tZXRpbWUgaW4gdGhlIG5l
+eHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmluZwp0aGUgbmV4dCBtZXJnZSB3aW5k
+b3cgKG9yIHNvb25lciBpZiBpdCBpcyBhIGJ1ZyBmaXgpLCBob3dldmVyIGlmCnByb2JsZW1zIGFy
+ZSBkaXNjb3ZlcmVkIHRoZW4gdGhlIHBhdGNoIG1heSBiZSBkcm9wcGVkIG9yIHJldmVydGVkLiAg
+CgpZb3UgbWF5IGdldCBmdXJ0aGVyIGUtbWFpbHMgcmVzdWx0aW5nIGZyb20gYXV0b21hdGVkIG9y
+IG1hbnVhbCB0ZXN0aW5nCmFuZCByZXZpZXcgb2YgdGhlIHRyZWUsIHBsZWFzZSBlbmdhZ2Ugd2l0
+aCBwZW9wbGUgcmVwb3J0aW5nIHByb2JsZW1zIGFuZApzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRk
+cmVzc2luZyBhbnkgaXNzdWVzIHRoYXQgYXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KCklmIGFueSB1
+cGRhdGVzIGFyZSByZXF1aXJlZCBvciB5b3UgYXJlIHN1Ym1pdHRpbmcgZnVydGhlciBjaGFuZ2Vz
+IHRoZXkKc2hvdWxkIGJlIHNlbnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBhZ2FpbnN0IGN1cnJl
+bnQgZ2l0LCBleGlzdGluZwpwYXRjaGVzIHdpbGwgbm90IGJlIHJlcGxhY2VkLgoKUGxlYXNlIGFk
+ZCBhbnkgcmVsZXZhbnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBDQ3Mgd2hlbiByZXBs
+eWluZwp0byB0aGlzIG1haWwuCgpUaGFua3MsCk1hcmsKCkZyb20gYmRkMmE4NThhZmQ1NWNjMTE3
+MjNkZjlkZDI4NDEyNDFhNGM0OWNlNSBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogQWtz
+aHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPgpEYXRlOiBXZWQsIDggTm92IDIwMTcg
+MTI6MjQ6MDIgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBU29DOiBhbWQ6IE1ha2UgdGhlIGRyaXZl
+ciBuYW1lIGNvbnNpc3RlbnQgYWNyb3NzIGZpbGVzCgpUaGlzIGZpeGVzIHRoZSBpc3N1ZSBvZiBk
+cml2ZXIgbm90IGdldHRpbmcgYXV0byBsb2FkZWQgd2l0aApNT0RVTEVfQUxJQVMuCmZpbmQgL3N5
+cy9kZXZpY2VzIC1uYW1lIG1vZGFsaWFzIC1wcmludDAgfCB4YXJncyAtMCBncmVwICdhdWRpbycK
+L3N5cy9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMS4wL2FjcF9hdWRpb19kbWEuMC5hdXRv
+L21vZGFsaWFzOnBsYXRmb3JtOmFjcF9hdWRpb19kbWEKClRFU1Q9Ym9vdCBhbmQgY2hlY2sgZm9y
+IGRldmljZSBpbiBsc21vZAoKW1JlbW92ZWQgeWV0IG1vcmUgQ2hyb21lT1MgY3JhcCBmcm9tIHRo
+ZSBjaGFuZ2Vsb2cgLS0gYnJvb25pZV0KClNpZ25lZC1vZmYtYnk6IEFrc2h1IEFncmF3YWwgPGFr
+c2h1LmFncmF3YWxAYW1kLmNvbT4KVGVzdGVkLWJ5OiBKYXNvbiBDbGludG9uIDxqY2xpbnRvbkBj
+aHJvbWl1bS5vcmc+ClJldmlld2VkLWJ5OiBKYXNvbiBDbGludG9uIDxqY2xpbnRvbkBjaHJvbWl1
+bS5vcmc+ClNpZ25lZC1vZmYtYnk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1k
+LmNvbT4KU2lnbmVkLW9mZi1ieTogTWFyayBCcm93biA8YnJvb25pZUBrZXJuZWwub3JnPgotLS0K
+IHNvdW5kL3NvYy9hbWQvTWFrZWZpbGUgICAgICB8IDQgKystLQogc291bmQvc29jL2FtZC9hY3At
+cGNtLWRtYS5jIHwgNiArKysrLS0KIDIgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCA0
+IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvTWFrZWZpbGUgYi9zb3Vu
+ZC9zb2MvYW1kL01ha2VmaWxlCmluZGV4IGVlZDY0ZmY2YzczZS4uZjA3ZmQyZTI4NzBhIDEwMDY0
+NAotLS0gYS9zb3VuZC9zb2MvYW1kL01ha2VmaWxlCisrKyBiL3NvdW5kL3NvYy9hbWQvTWFrZWZp
+bGUKQEAgLTEsNSArMSw1IEBACi1zbmQtc29jLWFjcC1wY20tb2Jqcwk6PSBhY3AtcGNtLWRtYS5v
+CithY3BfYXVkaW9fZG1hLW9ianMgOj0gYWNwLXBjbS1kbWEubwogc25kLXNvYy1hY3AtcnQ1NjQ1
+LW1hY2gtb2JqcyA6PSBhY3AtcnQ1NjQ1Lm8KIAotb2JqLSQoQ09ORklHX1NORF9TT0NfQU1EX0FD
+UCkgKz0gc25kLXNvYy1hY3AtcGNtLm8KK29iai0kKENPTkZJR19TTkRfU09DX0FNRF9BQ1ApICs9
+IGFjcF9hdWRpb19kbWEubwogb2JqLSQoQ09ORklHX1NORF9TT0NfQU1EX0NaX1JUNTY0NV9NQUNI
+KSArPSBzbmQtc29jLWFjcC1ydDU2NDUtbWFjaC5vCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1k
+L2FjcC1wY20tZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKaW5kZXggZTE5ZjI4
+MWFmZWFhLi4xM2QwNDBhNGQyNmYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1k
+bWEuYworKysgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKQEAgLTQwLDYgKzQwLDggQEAK
+ICNkZWZpbmUgU1RfTUFYX0JVRkZFUiAoU1RfUExBWUJBQ0tfTUFYX1BFUklPRF9TSVpFICogUExB
+WUJBQ0tfTUFYX05VTV9QRVJJT0RTKQogI2RlZmluZSBTVF9NSU5fQlVGRkVSIFNUX01BWF9CVUZG
+RVIKIAorI2RlZmluZSBEUlZfTkFNRSAiYWNwX2F1ZGlvX2RtYSIKKwogc3RhdGljIGNvbnN0IHN0
+cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGFjcF9wY21faGFyZHdhcmVfcGxheWJhY2sgPSB7CiAJLmlu
+Zm8gPSBTTkRSVl9QQ01fSU5GT19JTlRFUkxFQVZFRCB8CiAJCVNORFJWX1BDTV9JTkZPX0JMT0NL
+X1RSQU5TRkVSIHwgU05EUlZfUENNX0lORk9fTU1BUCB8CkBAIC0xMTg5LDcgKzExOTEsNyBAQCBz
+dGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBhY3BfZG1hX2RyaXZlciA9IHsKIAkucHJvYmUg
+PSBhY3BfYXVkaW9fcHJvYmUsCiAJLnJlbW92ZSA9IGFjcF9hdWRpb19yZW1vdmUsCiAJLmRyaXZl
+ciA9IHsKLQkJLm5hbWUgPSAiYWNwX2F1ZGlvX2RtYSIsCisJCS5uYW1lID0gRFJWX05BTUUsCiAJ
+CS5wbSA9ICZhY3BfcG1fb3BzLAogCX0sCiB9OwpAQCAtMTIwMCw0ICsxMjAyLDQgQEAgTU9EVUxF
+X0FVVEhPUigiVmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tIik7CiBNT0RVTEVfQVVUSE9SKCJNYXJ1
+dGhpLkJheXlhdmFyYXB1QGFtZC5jb20iKTsKIE1PRFVMRV9ERVNDUklQVElPTigiQU1EIEFDUCBQ
+Q00gRHJpdmVyIik7CiBNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7Ci1NT0RVTEVfQUxJQVMoInBs
+YXRmb3JtOmFjcC1kbWEtYXVkaW8iKTsKK01PRFVMRV9BTElBUygicGxhdGZvcm06IkRSVl9OQU1F
+KTsKLS0gCjIuMTUuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRl
+dmVsCg==
