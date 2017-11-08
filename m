@@ -1,98 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add channel map in
-	updown mixer module IPC" to the asoc tree
-Date: Wed, 08 Nov 2017 21:33:31 +0000
-Message-ID: <E1eCXyV-0005a9-6Q@debutante>
-References: <20171107104626.25800-3-guneshwor.o.singh@intel.com>
+From: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Subject: Re: [PATCH 8/9] ASoC: tlv320aic31xx: Fix the reset GPIO OF name
+Date: Wed, 8 Nov 2017 17:25:20 -0600
+Message-ID: <1374534b-ac17-82ef-7b3b-3c6e4d4c5cc9@ti.com>
+References: <20171108212505.28320-1-afd@ti.com>
+ <20171108212505.28320-9-afd@ti.com>
+ <20171108213639.iymb7wuyjpuirbdu@sirena.co.uk>
+ <80169c43-ad7f-d89c-61bf-5ca054aacda5@ti.com>
+ <20171108221814.m6j3dgrlqpy4htxf@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 93BB02676C3
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:36:54 +0100 (CET)
-In-Reply-To: <20171107104626.25800-3-guneshwor.o.singh@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171108221814.m6j3dgrlqpy4htxf-7j8lgAiuQgnQXOPxS62xeg@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 11/08/2017 04:18 PM, Mark Brown wrote:
+> On Wed, Nov 08, 2017 at 03:53:51PM -0600, Andrew F. Davis wrote:
+>> On 11/08/2017 03:36 PM, Mark Brown wrote:
+>>> On Wed, Nov 08, 2017 at 03:25:04PM -0600, Andrew F. Davis wrote:
+> 
+>>> This is obviously an incompatible change in the binding which will break
+>>> any production DTs relying on the current behaviour.  You need to keep
+>>> support for the existing property.
+> 
+>> I understand the reasons not to change driver behavior wrt DT, but this
+>> driver did not make functional use of this gpio, only going forward will
+>> this gpio be used for actually reseting the device (in some patches I
+>> will post soon). So I would like to fix this incorrect binding *before*
+>> fixing it will cause behavior incompatibilities.
+> 
+> There is code in the driver to use the GPIO, including in the probe
+> where the GPIO is requested and set to high (which will bring it out of
+> reset if the default state was low).  At least the probe seems rather
+> likely to have a concrete effect.
+> 
 
-   ASoC: Intel: Skylake: Add channel map in updown mixer module IPC
+None of the 4 boards that defined this gpio have this pulled low in the
+pin control, boards should have an external pull-up on the reset line.
 
-has been applied to the asoc tree at
+At any-rate, I'm pushing this fix to allow the driver to use new kernel
+frameworks that depend on the correct binding being used. This is not a
+case of a badly designed binding or trying to add incompatible
+functionality, it is a typo fix. If we have to keep this driver back
+using old frameworks and needlessly bloat the code solely for the sake
+of compatibility with a typo, then DT "stability" here is causing more
+issues than it solves. </rant>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I guess the alternative would be to have of_find_gpio() also consider
+prefixing, the 'gpio_suffixes' to 'con_id' and checking for those. That
+is rather ugly and probably encourages the spread of this bad binding
+property, but whatever the best fix is it cannot be to force bloat into
+the driver.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>>> It also doesn't look like a good fix if we're aiming for conformance
+>>> with DT naming conventions as unless things changed all GPIO related
+>>> properties are supposed to end -gpios even if they can only ever specify
+>>> a single GPIO.
+> 
+>> If that is the new standard I can fix this patch to use -gpios.
+> 
+> It's always been the standard AFAIK.
+> 
 
-Thanks,
-Mark
-
->From da3417fe1f6d54c864b05fd5710979bdffe78034 Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Tue, 7 Nov 2017 16:16:17 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add channel map in updown mixer module
- IPC
-
-DSP expects channel map to be sent in the IPC for updown mixer module.
-So add ch_map info in updown mixer module config.
-
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-messages.c | 1 +
- sound/soc/intel/skylake/skl-topology.h | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 55414be23b82..b9c205c8bb73 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -706,6 +706,7 @@ static void skl_set_updown_mixer_format(struct skl_sst *ctx,
- 	skl_set_base_module_format(ctx,	mconfig,
- 		(struct skl_base_cfg *)mixer_mconfig);
- 	mixer_mconfig->out_ch_cfg = fmt->ch_cfg;
-+	mixer_mconfig->ch_map = fmt->ch_map;
- }
- 
- /*
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 16cea466018c..bc3c29161ed0 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -161,6 +161,7 @@ struct skl_up_down_mixer_cfg {
- 	u32 coeff_sel;
- 	/* Pass the user coeff in this array */
- 	s32 coeff[UP_DOWN_MIXER_MAX_COEFF];
-+	u32 ch_map;
- } __packed;
- 
- struct skl_algo_cfg {
--- 
-2.15.0
+Will fix for v2.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
