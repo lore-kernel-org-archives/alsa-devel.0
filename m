@@ -1,17 +1,17 @@
-From: Alex Deucher <alexdeucher@gmail.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 3/3] FIXUP: FROMLIST: ASoC: amd: Report accurate hw_ptr
  during dma
-Date: Wed, 8 Nov 2017 12:45:16 -0500
-Message-ID: <CADnq5_N6hKegjtKmeftewvh1u4g_2zVMtm47JCL9m9OchpysBQ@mail.gmail.com>
+Date: Wed, 8 Nov 2017 18:00:15 +0000
+Message-ID: <20171108180015.3uspwemnuiljbtux@sirena.co.uk>
 References: <20171108172404.19118-1-alexander.deucher@amd.com>
  <20171108172404.19118-4-alexander.deucher@amd.com>
  <CABXOdTdgxOFJb0B7VRivFaf1ihfKQWiyXRX9hFnKetTanmjd5w@mail.gmail.com>
  <CADnq5_O4fm6f1n42Wb8=b2-5UeoO3VLTOPKnCenFSRT2xGLA_A@mail.gmail.com>
+ <CADnq5_N6hKegjtKmeftewvh1u4g_2zVMtm47JCL9m9OchpysBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0554339484=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CADnq5_O4fm6f1n42Wb8=b2-5UeoO3VLTOPKnCenFSRT2xGLA_A@mail.gmail.com>
+In-Reply-To: <CADnq5_N6hKegjtKmeftewvh1u4g_2zVMtm47JCL9m9OchpysBQ@mail.gmail.com>
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -21,51 +21,58 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Guenter Roeck <groeck@google.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, Mark Brown <broonie@kernel.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Guenter Roeck <groeck@chromium.org>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Guenter Roeck <groeck@google.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBOb3YgOCwgMjAxNyBhdCAxMjo0MiBQTSwgQWxleCBEZXVjaGVyIDxhbGV4ZGV1Y2hl
-ckBnbWFpbC5jb20+IHdyb3RlOgo+IE9uIFdlZCwgTm92IDgsIDIwMTcgYXQgMTI6MjkgUE0sIEd1
-ZW50ZXIgUm9lY2sgPGdyb2Vja0Bnb29nbGUuY29tPiB3cm90ZToKPj4gT24gV2VkLCBOb3YgOCwg
-MjAxNyBhdCA5OjI0IEFNLCBBbGV4IERldWNoZXIgPGFsZXhkZXVjaGVyQGdtYWlsLmNvbT4gd3Jv
-dGU6Cj4+Pgo+Pj4gRnJvbTogR3VlbnRlciBSb2VjayA8Z3JvZWNrQGNocm9taXVtLm9yZz4KPj4+
-Cj4+PiBFUlJPUjogIl9fYWVhYmlfdWxkaXZtb2QiIFtzb3VuZC9zb2MvYW1kL3NuZC1zb2MtYWNw
-LXBjbS5rb10gdW5kZWZpbmVkIQo+Pj4KPj4+IDY0LWJpdCBkaXZpZGVzIHJlcXVpcmUgc3BlY2lh
-bCBvcGVyYXRpb25zIHRvIGF2b2lkIGJ1aWxkIGVycm9ycyBvbiAzMi1iaXQKPj4+IHN5c3RlbXMu
-Cj4+Pgo+Pj4gQlVHPWI6NjMxMjE3MTYKPj4+IFRFU1Q9IkJ1aWxkIGkzODY6YWxsbW9kY29uZmln
-Igo+Pj4KPj4KPj4gSXMgdGhpcyBhbiB1cHN0cmVhbSBzdWJtaXNzaW9uID8gRmluZSB3aXRoIG1l
-LCBidXQgaXQgc2hvdWxkIG5vdCBpbmNsdWRlIGFueQo+PiBjaHJvbWl1bSBzcGVjaWZpYyB0YWdz
-LCBuZWl0aGVyIGluIHRoZSBzdWJqZWN0IG5vdCBpbiB0aGUgZGVzY3JpcHRpb24uCj4KPiBJJ20g
-bm90IGZhbWlsaWFyIHdpdGggd2hpY2ggYXJlIGNocm9taXVtIHNwZWNpZmljIChURVNULCBCVUcs
-IEZJWFVQLAo+IEZST01MSVNUIEkgZ3Vlc3M/KS4gVGhlIGluZm8gc2VlbXMgdXNlZnVsIHRvIGhh
-dmUgaW4gdGhlIGJ1ZywgYnV0IEkKPiBjYW4gcmVzcGluIGlmIGl0J3MgYSBiaWcgZGVhbC4KCnMv
-YnVnL2NvbW1pdCBtZXNzYWdlLwoKQWxleAoKPgo+IEFsZXgKPgo+Pgo+PiBHdWVudGVyCj4+Cj4+
-Pgo+Pj4gU2lnbmVkLW9mZi1ieTogR3VlbnRlciBSb2VjayA8Z3JvZWNrQGNocm9taXVtLm9yZz4K
-Pj4+IFJldmlld2VkLW9uOiBodHRwczovL2Nocm9taXVtLXJldmlldy5nb29nbGVzb3VyY2UuY29t
-LzY3ODkxOQo+Pj4gUmV2aWV3ZWQtYnk6IEphc29uIENsaW50b24gPGpjbGludG9uQGNocm9taXVt
-Lm9yZz4KPj4+IChjaGVycnkgcGlja2VkIGZyb20gY29tbWl0IDdjYTcyNmU4MGYyMWFiZGJhZWQ5
-YTVhNzBkZWYxYzMzYTI2Zjg1MzMpCj4+PiBSZXZpZXdlZC1vbjogaHR0cHM6Ly9jaHJvbWl1bS1y
-ZXZpZXcuZ29vZ2xlc291cmNlLmNvbS82ODE2MTgKPj4+IFNpZ25lZC1vZmYtYnk6IEFsZXggRGV1
-Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KPj4+IC0tLQo+Pj4gIHNvdW5kL3NvYy9h
-bWQvYWNwLXBjbS1kbWEuYyB8IDMgKy0tCj4+PiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspLCAyIGRlbGV0aW9ucygtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1kL2Fj
-cC1wY20tZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKPj4+IGluZGV4IDEzZDA0
-MGE0ZDI2Zi4uZWY3ZTk4YWQ5NjBjIDEwMDY0NAo+Pj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3At
-cGNtLWRtYS5jCj4+PiArKysgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKPj4+IEBAIC04
-NTYsMTIgKzg1NiwxMSBAQCBzdGF0aWMgc25kX3BjbV91ZnJhbWVzX3QgYWNwX2RtYV9wb2ludGVy
-KHN0cnVjdAo+Pj4gc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKPj4+ICAgICAgICAgaWYg
-KHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKPj4+ICAg
-ICAgICAgICAgICAgICBpZiAoYnl0ZXNjb3VudCA+IHJ0ZC0+cmVuZGVyYnl0ZXNjb3VudCkKPj4+
-ICAgICAgICAgICAgICAgICAgICAgICAgIGJ5dGVzY291bnQgPSBieXRlc2NvdW50IC0gcnRkLT5y
-ZW5kZXJieXRlc2NvdW50Owo+Pj4gLSAgICAgICAgICAgICAgIHBvcyA9ICBieXRlc2NvdW50ICUg
-YnVmZmVyc2l6ZTsKPj4+ICAgICAgICAgfSBlbHNlIHsKPj4+ICAgICAgICAgICAgICAgICBpZiAo
-Ynl0ZXNjb3VudCA+IHJ0ZC0+Y2FwdHVyZWJ5dGVzY291bnQpCj4+PiAgICAgICAgICAgICAgICAg
-ICAgICAgICBieXRlc2NvdW50ID0gYnl0ZXNjb3VudCAtIHJ0ZC0+Y2FwdHVyZWJ5dGVzY291bnQ7
-Cj4+PiAtICAgICAgICAgICAgICAgcG9zID0gYnl0ZXNjb3VudCAlIGJ1ZmZlcnNpemU7Cj4+PiAg
-ICAgICAgIH0KPj4+ICsgICAgICAgcG9zID0gZG9fZGl2KGJ5dGVzY291bnQsIGJ1ZmZlcnNpemUp
-Owo+Pj4gICAgICAgICByZXR1cm4gYnl0ZXNfdG9fZnJhbWVzKHJ1bnRpbWUsIHBvcyk7Cj4+PiAg
-fQo+Pj4KPj4+IC0tCj4+PiAyLjEzLjYKPj4+Cj4+Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--===============0554339484==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3ahfazquvb2o5xoz"
+Content-Disposition: inline
+
+
+--3ahfazquvb2o5xoz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Nov 08, 2017 at 12:45:16PM -0500, Alex Deucher wrote:
+> On Wed, Nov 8, 2017 at 12:42 PM, Alex Deucher <alexdeucher@gmail.com> wrote:
+
+> > I'm not familiar with which are chromium specific (TEST, BUG, FIXUP,
+> > FROMLIST I guess?). The info seems useful to have in the bug, but I
+> > can respin if it's a big deal.
+
+> s/bug/commit message/
+
+All of those are Chrome specific.  If in doubt look at what other people
+are using.
+
+--3ahfazquvb2o5xoz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDRi8ACgkQJNaLcl1U
+h9Ah6gf/VEo44eqIRzUGHEj61vbMbhYqdBbpXylr/wUw4LkQ1lBNH/IwSpPPUm1K
+fv8GXrRGMmkA9X28NezjcWhE7eLj8BXCqLRUU441NcYAg1I4Ee4CdjzkdzLktqhI
+nzWR4ocrdE1GHDJxjYY29sgGN8PvDuQfhN7FjfItRAoQZXvT1MK94JPSgnuI3BCI
+XF2zPV/FrERjNoXn/F3DBOMuSuQeDXMNO8Bs/7oKrw2dx4uOTgxxfyUT3+Q4RaUp
+ifGTRHASOjgm+JdSjvsasU2JTFHX18VuzjhpW10Y01XSzoABK8FK99wGsg+a4b7x
+rIlBnW5BH6udI95JAAVb7N9xcuVPHw==
+=ElLJ
+-----END PGP SIGNATURE-----
+
+--3ahfazquvb2o5xoz--
+
+--===============0554339484==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============0554339484==--
