@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320dac31xx: mark expected switch
-	fall-through" to the asoc tree
-Date: Wed, 08 Nov 2017 21:31:31 +0000
-Message-ID: <E1eCXwZ-0005JF-Nw@debutante>
-References: <a06a3f6e8dc2be1a56205c095f3146bfdf019d66.1510170034.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: add snd_soc_component_xxx_bias_level()"
+	to the asoc tree
+Date: Wed, 08 Nov 2017 21:32:18 +0000
+Message-ID: <E1eCXxK-0005Or-HO@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D13D0267684
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:50 +0100 (CET)
-In-Reply-To: <a06a3f6e8dc2be1a56205c095f3146bfdf019d66.1510170034.git.garsilva@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3BBC267661
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:44 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320dac31xx: mark expected switch fall-through
+   ASoC: add snd_soc_component_xxx_bias_level()
 
 has been applied to the asoc tree at
 
@@ -52,33 +52,89 @@ to this mail.
 Thanks,
 Mark
 
->From 09fc38c1af4cb888255e9ecf267bf9757c12885d Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Wed, 8 Nov 2017 14:04:17 -0600
-Subject: [PATCH] ASoC: tlv320dac31xx: mark expected switch fall-through
+>From 10e079d9874802c35dc3f51af922531e5423a6bf Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 6 Nov 2017 01:48:37 +0000
+Subject: [PATCH] ASoC: add snd_soc_component_xxx_bias_level()
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+snd_soc_codec_xxx_bias_level() (= for Codec) will be removed soon.
+This patch Component version of it.
 
-Addresses-Coverity-ID: 1195220
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc.h | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 54a87a905eb6..e2862372c26e 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -929,7 +929,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
--		dsp_a_val = 0x1;
-+		dsp_a_val = 0x1; /* fall through */
- 	case SND_SOC_DAIFMT_DSP_B:
- 		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
- 		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 747588273c96..f69b13c4a641 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1439,6 +1439,21 @@ static inline void snd_soc_codec_init_bias_level(struct snd_soc_codec *codec,
+ 	snd_soc_dapm_init_bias_level(snd_soc_codec_get_dapm(codec), level);
+ }
+ 
++/**
++ * snd_soc_component_init_bias_level() - Initialize COMPONENT DAPM bias level
++ * @component: The COMPONENT for which to initialize the DAPM bias level
++ * @level: The DAPM level to initialize to
++ *
++ * Initializes the COMPONENT DAPM bias level. See snd_soc_dapm_init_bias_level().
++ */
++static inline void
++snd_soc_component_init_bias_level(struct snd_soc_component *component,
++				  enum snd_soc_bias_level level)
++{
++	snd_soc_dapm_init_bias_level(
++		snd_soc_component_get_dapm(component), level);
++}
++
+ /**
+  * snd_soc_dapm_get_bias_level() - Get current CODEC DAPM bias level
+  * @codec: The CODEC for which to get the DAPM bias level
+@@ -1451,6 +1466,19 @@ static inline enum snd_soc_bias_level snd_soc_codec_get_bias_level(
+ 	return snd_soc_dapm_get_bias_level(snd_soc_codec_get_dapm(codec));
+ }
+ 
++/**
++ * snd_soc_component_get_bias_level() - Get current COMPONENT DAPM bias level
++ * @component: The COMPONENT for which to get the DAPM bias level
++ *
++ * Returns: The current DAPM bias level of the COMPONENT.
++ */
++static inline enum snd_soc_bias_level
++snd_soc_component_get_bias_level(struct snd_soc_component *component)
++{
++	return snd_soc_dapm_get_bias_level(
++		snd_soc_component_get_dapm(component));
++}
++
+ /**
+  * snd_soc_codec_force_bias_level() - Set the CODEC DAPM bias level
+  * @codec: The CODEC for which to set the level
+@@ -1466,6 +1494,23 @@ static inline int snd_soc_codec_force_bias_level(struct snd_soc_codec *codec,
+ 		level);
+ }
+ 
++/**
++ * snd_soc_component_force_bias_level() - Set the COMPONENT DAPM bias level
++ * @component: The COMPONENT for which to set the level
++ * @level: The level to set to
++ *
++ * Forces the COMPONENT bias level to a specific state. See
++ * snd_soc_dapm_force_bias_level().
++ */
++static inline int
++snd_soc_component_force_bias_level(struct snd_soc_component *component,
++				   enum snd_soc_bias_level level)
++{
++	return snd_soc_dapm_force_bias_level(
++		snd_soc_component_get_dapm(component),
++		level);
++}
++
+ /**
+  * snd_soc_dapm_kcontrol_codec() - Returns the codec associated to a kcontrol
+  * @kcontrol: The kcontrol
 -- 
 2.15.0
