@@ -1,78 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] FIXUP: FROMLIST: ASoC: amd: Report accurate hw_ptr
- during dma
-Date: Wed, 8 Nov 2017 18:00:15 +0000
-Message-ID: <20171108180015.3uspwemnuiljbtux@sirena.co.uk>
+Subject: Re: [PATCH 1/3] ASoC: AMD: Make the driver name
+ consistent across files
+Date: Wed, 8 Nov 2017 18:08:35 +0000
+Message-ID: <20171108180835.7nl7uzxzclcxrfga@sirena.co.uk>
 References: <20171108172404.19118-1-alexander.deucher@amd.com>
- <20171108172404.19118-4-alexander.deucher@amd.com>
- <CABXOdTdgxOFJb0B7VRivFaf1ihfKQWiyXRX9hFnKetTanmjd5w@mail.gmail.com>
- <CADnq5_O4fm6f1n42Wb8=b2-5UeoO3VLTOPKnCenFSRT2xGLA_A@mail.gmail.com>
- <CADnq5_N6hKegjtKmeftewvh1u4g_2zVMtm47JCL9m9OchpysBQ@mail.gmail.com>
+ <20171108172404.19118-2-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0554339484=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CADnq5_N6hKegjtKmeftewvh1u4g_2zVMtm47JCL9m9OchpysBQ@mail.gmail.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============3122621292284232664=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63CF32674F8
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 19:08:37 +0100 (CET)
+In-Reply-To: <20171108172404.19118-2-alexander.deucher@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Alex Deucher <alexdeucher@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Guenter Roeck <groeck@google.com>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Alex Deucher <alexander.deucher@amd.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Guenter Roeck <groeck@chromium.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Akshu Agrawal <akshu.agrawal@amd.com>, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0554339484==
+--===============3122621292284232664==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3ahfazquvb2o5xoz"
+	protocol="application/pgp-signature"; boundary="bqc7xc3mnwpe5gdf"
 Content-Disposition: inline
 
 
---3ahfazquvb2o5xoz
+--bqc7xc3mnwpe5gdf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 08, 2017 at 12:45:16PM -0500, Alex Deucher wrote:
-> On Wed, Nov 8, 2017 at 12:42 PM, Alex Deucher <alexdeucher@gmail.com> wrote:
+On Wed, Nov 08, 2017 at 12:24:02PM -0500, Alex Deucher wrote:
+> From: Akshu Agrawal <akshu.agrawal@amd.com>
+>=20
+> This fixes the issue of driver not getting auto loaded with
+> MODULE_ALIAS.
 
-> > I'm not familiar with which are chromium specific (TEST, BUG, FIXUP,
-> > FROMLIST I guess?). The info seems useful to have in the bug, but I
-> > can respin if it's a big deal.
+Please don't resubmit patches that have already been applied, you should
+submit patches against current code in the tree you're expecting things
+to be applied to.  If any updates are needed to a patch that's already
+been applied you should submit incremental patches which make those
+updates.  This avoids having to change published git commits which could
+cause problems for people working against git.
 
-> s/bug/commit message/
-
-All of those are Chrome specific.  If in doubt look at what other people
-are using.
-
---3ahfazquvb2o5xoz
+--bqc7xc3mnwpe5gdf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDRi8ACgkQJNaLcl1U
-h9Ah6gf/VEo44eqIRzUGHEj61vbMbhYqdBbpXylr/wUw4LkQ1lBNH/IwSpPPUm1K
-fv8GXrRGMmkA9X28NezjcWhE7eLj8BXCqLRUU441NcYAg1I4Ee4CdjzkdzLktqhI
-nzWR4ocrdE1GHDJxjYY29sgGN8PvDuQfhN7FjfItRAoQZXvT1MK94JPSgnuI3BCI
-XF2zPV/FrERjNoXn/F3DBOMuSuQeDXMNO8Bs/7oKrw2dx4uOTgxxfyUT3+Q4RaUp
-ifGTRHASOjgm+JdSjvsasU2JTFHX18VuzjhpW10Y01XSzoABK8FK99wGsg+a4b7x
-rIlBnW5BH6udI95JAAVb7N9xcuVPHw==
-=ElLJ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDSCIACgkQJNaLcl1U
+h9B7jQf+LeduT0FW9x6i2wT0+BIn/NU+Yia5aIhXcH69zvp2b33vZMy+ScfoqHOp
+kLpJg8kAysEuV4VGoCCoz6dg2jJ0JXNkYCx/b/WH+Q0OtxyEBAlqTDSsmbrvl+IJ
+5lMvr+azcX1o7SXwY7fp4rcqbt0NSDYGyfM0yLqsJ7PeT2DM9sSad+K9w2sW0Any
+Er6/jFouYfZysiC7GUr+aQdzv15S0SG6/ASVTukrg6riyxZHrgPdIEJjx8LKziOS
+Tq6rEzDron5Bynu1ILRe/4CAVyNAZFmjKXBhc76q6+BqV7NutpzvMBofYOzZ+L6h
+yOe6P1h0pqW909vJSoYJzgyTThzEyw==
+=a5kv
 -----END PGP SIGNATURE-----
 
---3ahfazquvb2o5xoz--
+--bqc7xc3mnwpe5gdf--
 
---===============0554339484==
-Content-Type: text/plain; charset="utf-8"
+--===============3122621292284232664==
+Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============0554339484==--
+--===============3122621292284232664==--
