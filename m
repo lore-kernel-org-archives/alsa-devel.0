@@ -1,105 +1,94 @@
-From: Guenter Roeck <groeck-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
-Date: Wed, 8 Nov 2017 11:13:50 -0800
-Message-ID: <CABXOdTd6ptUM3E0V6B_hg9unh+na_XHK6AbyfREx5WiYwdckkA@mail.gmail.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: fix report accurate hw_ptr
+	during dma
+Date: Wed, 8 Nov 2017 14:35:05 -0500
+Message-ID: <CADnq5_M8y44hapOkPoapGP-WRP=a-6zc3s-A_3Fv85ssPRFFEQ@mail.gmail.com>
 References: <20171108181841.29332-1-alexander.deucher@amd.com>
  <20171108182214.bwdvt5wwwz7wqf32@sirena.co.uk>
  <CADnq5_PM=C9OjseqvV8M5ohm7Mo18foHGPUkFZSnVNpVruut8Q@mail.gmail.com>
  <20171108184752.wff6qn6ssguaegkq@sirena.co.uk>
+ <BN6PR12MB1652F8671D062FDE91D42951F7560@BN6PR12MB1652.namprd12.prod.outlook.com>
+ <CABXOdTf=nEu_KAnAvT0p9tn96xiGGSqYzW1o0XUBDf9EHb+CoA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0715699664=="
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20171108184752.wff6qn6ssguaegkq-7j8lgAiuQgnQXOPxS62xeg@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Guenter Roeck <groeck-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Vijendar Mukunda <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f193.google.com (mail-yw0-f193.google.com
+ [209.85.161.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A982267581
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 20:35:07 +0100 (CET)
+Received: by mail-yw0-f193.google.com with SMTP id q126so3270307ywq.10
+ for <alsa-devel@alsa-project.org>; Wed, 08 Nov 2017 11:35:07 -0800 (PST)
+In-Reply-To: <CABXOdTf=nEu_KAnAvT0p9tn96xiGGSqYzW1o0XUBDf9EHb+CoA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Guenter Roeck <groeck@google.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Guenter Roeck <groeck@chromium.org>, Mark Brown <broonie@kernel.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
+ Alexander" <Alexander.Deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============0715699664==
-Content-Type: multipart/alternative; boundary="001a1140c8e6e57998055d7d7c04"
-
---001a1140c8e6e57998055d7d7c04
-Content-Type: text/plain; charset="UTF-8"
-
-On Wed, Nov 8, 2017 at 10:47 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-
-> On Wed, Nov 08, 2017 at 01:40:32PM -0500, Alex Deucher wrote:
-> > On Wed, Nov 8, 2017 at 1:22 PM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+On Wed, Nov 8, 2017 at 2:30 PM, Guenter Roeck <groeck@google.com> wrote:
+> On Wed, Nov 8, 2017 at 11:18 AM, Deucher, Alexander
+> <Alexander.Deucher@amd.com> wrote:
+>>
+>> > -----Original Message-----
+>> > From: Mark Brown [mailto:broonie@kernel.org]
+>> > Sent: Wednesday, November 08, 2017 1:48 PM
+>> > To: Alex Deucher
+>> > Cc: amd-gfx list; alsa-devel@alsa-project.org; Maling list - DRI
+>> > developers;
+>> > Mukunda, Vijendar; Liam Girdwood; Takashi Iwai; Guenter Roeck; Deucher,
+>> > Alexander
+>> > Subject: Re: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
+>> >
+>> > On Wed, Nov 08, 2017 at 01:40:32PM -0500, Alex Deucher wrote:
+>> > > On Wed, Nov 8, 2017 at 1:22 PM, Mark Brown <broonie@kernel.org>
+>> > wrote:
+>> >
+>> > > > Like I said in reply to your other mail please don't resubmit
+>> > > > already
+>> > > > applied patches.  The current tip of my topic/amd branch appears to
+>> > > > be
+>> > > > this very patch, if there's anything needs changing please send an
+>> > > > incremental patch.
+>> >
+>> > > I'm not seeing this one in your tree either.  This is just a resend of
+>> > > Guenter's patch from an hour ago with the chromium stuff removed.
+>> > > Maybe you already applied it in the interim?
+>> >
+>> > Is this different to "ASoC: amd: Report accurate hw_ptr during dma"
+>> > which was applied at 16:07?
+>>
+>> Yes, this is a fix for that patch.  It fixes a 64 bit division that wasn't
+>> properly handled.
+>>
 >
-> > > Like I said in reply to your other mail please don't resubmit already
-> > > applied patches.  The current tip of my topic/amd branch appears to be
-> > > this very patch, if there's anything needs changing please send an
-> > > incremental patch.
+> In that case, the subject should reflect the problem fixed, the description
+> should describe the problem, and there should be a Fixes: tag pointing to
+> the problematic patch.
+
+I updated the patch subject and added a fixes tag when I resent it
+after removing the chrome tags.  The subject could have been bit
+better, but I wasn't sure how far to take it since it wasn't my patch
+originally.
+
+Alex
+
 >
-> > I'm not seeing this one in your tree either.  This is just a resend of
-> > Guenter's patch from an hour ago with the chromium stuff removed.
-> > Maybe you already applied it in the interim?
+> Sorry, I was not aware that the problematic patch is already pending
+> upstream, or I would have submitted a proper patch upstream myself.
 >
-> Is this different to "ASoC: amd: Report accurate hw_ptr during dma"
-> which was applied at 16:07?
+> Guenter
 >
-
-I suspect we may be getting hit by chromeos-isms again. In Chrome OS, we
-don't use Fixes: tags but "FIXUP: <original description>" in the subject
-(not that I like it, but it is what it is).
-
-Guenter
-
---001a1140c8e6e57998055d7d7c04
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div class=3D"gmail_extra"><div class=3D"gmail_quote">On W=
-ed, Nov 8, 2017 at 10:47 AM, Mark Brown <span dir=3D"ltr">&lt;<a href=3D"ma=
-ilto:broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" target=3D"_blank">broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org</a>&gt;</span=
-> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;bo=
-rder-left:1px #ccc solid;padding-left:1ex"><span class=3D"">On Wed, Nov 08,=
- 2017 at 01:40:32PM -0500, Alex Deucher wrote:<br>
-&gt; On Wed, Nov 8, 2017 at 1:22 PM, Mark Brown &lt;<a href=3D"mailto:broon=
-ie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org">broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org</a>&gt; wrote:<br>
-<br>
-</span><span class=3D"">&gt; &gt; Like I said in reply to your other mail p=
-lease don&#39;t resubmit already<br>
-&gt; &gt; applied patches.=C2=A0 The current tip of my topic/amd branch app=
-ears to be<br>
-&gt; &gt; this very patch, if there&#39;s anything needs changing please se=
-nd an<br>
-&gt; &gt; incremental patch.<br>
-<br>
-&gt; I&#39;m not seeing this one in your tree either.=C2=A0 This is just a =
-resend of<br>
-&gt; Guenter&#39;s patch from an hour ago with the chromium stuff removed.<=
-br>
-&gt; Maybe you already applied it in the interim?<br>
-<br>
-</span>Is this different to &quot;ASoC: amd: Report accurate hw_ptr during =
-dma&quot;<br>
-which was applied at 16:07?<br>
-</blockquote></div><br></div><div class=3D"gmail_extra">I suspect we may be=
- getting hit by chromeos-isms again. In Chrome OS, we don&#39;t use Fixes: =
-tags but &quot;FIXUP: &lt;original description&gt;&quot; in the subject (no=
-t that I like it, but it is what it is).</div><div class=3D"gmail_extra"><b=
-r></div><div class=3D"gmail_extra">Guenter</div><div class=3D"gmail_extra">=
-<br></div><div class=3D"gmail_extra"><br></div></div>
-
---001a1140c8e6e57998055d7d7c04--
-
---===============0715699664==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBt
-YWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5m
-cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
-
---===============0715699664==--
+>>
+>> Alex
+>>
+>
