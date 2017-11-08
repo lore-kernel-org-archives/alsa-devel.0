@@ -1,16 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: snd-bebob - Edirol FA66
-Date: Wed, 8 Nov 2017 08:03:05 +0900
-Message-ID: <406f3b76-4420-30cf-c8a0-853e2c3d36f9@sakamocchi.jp>
+Date: Wed, 8 Nov 2017 13:49:17 +0900
+Message-ID: <01dd8168-8c66-15a8-8650-b37499c834f9@sakamocchi.jp>
 References: <5a021c934d3df8.78585682@wp.pl>
+ <406f3b76-4420-30cf-c8a0-853e2c3d36f9@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 35DB8267232
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 00:03:10 +0100 (CET)
-In-Reply-To: <5a021c934d3df8.78585682@wp.pl>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 71FFD2673F2
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 05:49:20 +0100 (CET)
+In-Reply-To: <406f3b76-4420-30cf-c8a0-853e2c3d36f9@sakamocchi.jp>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,47 +26,54 @@ To: Pawel <xj@wp.pl>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-(CCed to alsa-devel)
-
-On Nov 8 2017 05:50, Pawel wrote:
- > In start thanks for your great work.
- > I have such card:
- >
- >   1 [FA66           ]: BeBoB - EDIROL FA-66
- >                        EDIROL EDIROL FA-66 (id:2, rev:1), GUID 
-0040ab0000c38ae5 at fw1.0, S400
- >
- >
- > .. which ffado drivers , I can start jack with low parameters like;
- > jackd -P82 -p128 -t5000 -u -dfirewire -dhw:FA66 -r96000 -p128 -n2
- >
- > .. but with alsa I need to use period value 3 and buffer size between 
-512 and 2048.
- > There are probably some hardcoded values in alsa driver.
-
-Edirol FA-66 uses DM1000 ASIC as communication engine. This ASIC is 
-produced by BridgeCo. in its BeBoB solution. In this solution, IEC 
-61883-1/6 packet streaming is used to transfer audio/music data between 
-units on IEEE 1394 bus and host driver.
-
-All of current implementation of drivers in ALSA firewire stack 
-including BeBoB driver relies on ALSA packet streaming engine for IEC 
-61883-1/6. This engine runs with hardware interrupts from 1394OHCI host 
-controllers. Interval of the interrupt is currently configured to every 
-16 interrupts. This mostly equals to 2 msec in actual time frame.
-
-In a view from ALSA PCM application, the 2 msec is corresponding to a 
-period of PCM buffer. Thus, users can configure size of period over 2 
-msec in any PCM substream. Actual value of the size of period is decided 
-depending on used sampling frequency.
-
-Furthermore, any interrupt-oriented driver requires 2 or more periods in 
-PCM buffer. Therefore, users can configure size of buffer over multiples 
-of 2 msec according to configured number of periods.
-
-That's current design of ALSA IEC 61883-1/6 engine and it's restriction.
-
-
-Regards
-
-Takashi Sakamoto
+T29wcy4gSSBkZXNjcmliZWQgYmFzZWQgb24gcmVuZXdhbCBlbmdpbmUgZm9yIHdoaWNoIEknbSB3
+b3JraW5nLi4uCgpPbiBOb3YgOCAyMDE3IDA4OjAzLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+
+IChDQ2VkIHRvIGFsc2EtZGV2ZWwpCj4gCj4gT24gTm92IDggMjAxNyAwNTo1MCwgUGF3ZWwgd3Jv
+dGU6Cj4gID4gSW4gc3RhcnQgdGhhbmtzIGZvciB5b3VyIGdyZWF0IHdvcmsuCj4gID4gSSBoYXZl
+IHN1Y2ggY2FyZDoKPiAgPgo+ICA+wqDCoCAxIFtGQTY2wqDCoMKgwqDCoMKgwqDCoMKgwqAgXTog
+QmVCb0IgLSBFRElST0wgRkEtNjYKPiAgPsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgRURJUk9MIEVESVJPTCBGQS02NiAoaWQ6MiwgcmV2OjEpLCBHVUlEIAo+
+IDAwNDBhYjAwMDBjMzhhZTUgYXQgZncxLjAsIFM0MDAKPiAgPgo+ICA+Cj4gID4gLi4gd2hpY2gg
+ZmZhZG8gZHJpdmVycyAsIEkgY2FuIHN0YXJ0IGphY2sgd2l0aCBsb3cgcGFyYW1ldGVycyBsaWtl
+Owo+ICA+IGphY2tkIC1QODIgLXAxMjggLXQ1MDAwIC11IC1kZmlyZXdpcmUgLWRodzpGQTY2IC1y
+OTYwMDAgLXAxMjggLW4yCj4gID4KPiAgPiAuLiBidXQgd2l0aCBhbHNhIEkgbmVlZCB0byB1c2Ug
+cGVyaW9kIHZhbHVlIDMgYW5kIGJ1ZmZlciBzaXplIGJldHdlZW4gCj4gNTEyIGFuZCAyMDQ4Lgo+
+ICA+IFRoZXJlIGFyZSBwcm9iYWJseSBzb21lIGhhcmRjb2RlZCB2YWx1ZXMgaW4gYWxzYSBkcml2
+ZXIuCj4gCj4gRWRpcm9sIEZBLTY2IHVzZXMgRE0xMDAwIEFTSUMgYXMgY29tbXVuaWNhdGlvbiBl
+bmdpbmUuIFRoaXMgQVNJQyBpcyAKPiBwcm9kdWNlZCBieSBCcmlkZ2VDby4gaW4gaXRzIEJlQm9C
+IHNvbHV0aW9uLiBJbiB0aGlzIHNvbHV0aW9uLCBJRUMgCj4gNjE4ODMtMS82IHBhY2tldCBzdHJl
+YW1pbmcgaXMgdXNlZCB0byB0cmFuc2ZlciBhdWRpby9tdXNpYyBkYXRhIGJldHdlZW4gCj4gdW5p
+dHMgb24gSUVFRSAxMzk0IGJ1cyBhbmQgaG9zdCBkcml2ZXIuCj4gCj4gQWxsIG9mIGN1cnJlbnQg
+aW1wbGVtZW50YXRpb24gb2YgZHJpdmVycyBpbiBBTFNBIGZpcmV3aXJlIHN0YWNrIAo+IGluY2x1
+ZGluZyBCZUJvQiBkcml2ZXIgcmVsaWVzIG9uIEFMU0EgcGFja2V0IHN0cmVhbWluZyBlbmdpbmUg
+Zm9yIElFQyAKPiA2MTg4My0xLzYuIFRoaXMgZW5naW5lIHJ1bnMgd2l0aCBoYXJkd2FyZSBpbnRl
+cnJ1cHRzIGZyb20gMTM5NE9IQ0kgaG9zdCAKPiBjb250cm9sbGVycy4gSW50ZXJ2YWwgb2YgdGhl
+IGludGVycnVwdCBpcyBjdXJyZW50bHkgY29uZmlndXJlZCB0byBldmVyeSAKPiAxNiBpbnRlcnJ1
+cHRzLiBUaGlzIG1vc3RseSBlcXVhbHMgdG8gMiBtc2VjIGluIGFjdHVhbCB0aW1lIGZyYW1lLgo+
+IAo+IEluIGEgdmlldyBmcm9tIEFMU0EgUENNIGFwcGxpY2F0aW9uLCB0aGUgMiBtc2VjIGlzIGNv
+cnJlc3BvbmRpbmcgdG8gYSAKPiBwZXJpb2Qgb2YgUENNIGJ1ZmZlci4gVGh1cywgdXNlcnMgY2Fu
+IGNvbmZpZ3VyZSBzaXplIG9mIHBlcmlvZCBvdmVyIDIgCj4gbXNlYyBpbiBhbnkgUENNIHN1YnN0
+cmVhbS4gQWN0dWFsIHZhbHVlIG9mIHRoZSBzaXplIG9mIHBlcmlvZCBpcyBkZWNpZGVkIAo+IGRl
+cGVuZGluZyBvbiB1c2VkIHNhbXBsaW5nIGZyZXF1ZW5jeS4KClRoZSBhYm92ZSBzZWN0aW9uIGlz
+IG5vdCBmb3IgY3VycmVudCBpbXBsZW1lbnRhdGlvbiBpbiB1cHN0cmVhbS4gVGhlIApoYXJkd2Fy
+ZSBpbnRlcnJ1cHQgc3VyZWx5IG9jY3VycyBwZXIgMiBtc2VjIChwcmVjaXNlbHkgaW5jbHVkaW5n
+IHNvbWUgCmppdHRlcnMpLCB3aGlsZSB0aGUgbWluaW11bSBzaXplIG9mIHBlcmlvZCBmb3IgUENN
+IHN1YnN0cmVhbSBpcyBhY3R1YWxseSAKY29uc3RyYWluZWQgdG8gNSBtc2VjLCBkdWUgdG8gZGlm
+ZmVyZW5jZSBvZiB1bml0IG9mIGRhdGEgdHJhbnNtaXNzaW9uIApiZXR3ZWVuIElFQyA2MTg4My0x
+LzYgYW5kIEFMU0EgUENNIGludGVyZmFjZS4KClRoZSBpbnRlcnZhbCBvZiBpbnRlcnJ1cHQgaXMg
+MiBtc2VjLCB3aGlsZSB1bml0IG9mIGRhdGEgdHJhbnNtaXNzaW9uIGZvciAKUENNIGZyYW1lcyBk
+b2Vzbid0IGV4ZWN0bHkgZXF1YWwgdG8gMiBtc2VjLiBGb3Igc2FmZSBkYXRhIGhhbmRsaW5nLCB0
+aGUgCmVuZ2luZSB1c2VzIHRoZSBzYW1lIHNpemUgb2YgcGVyaW9kIGFzIG5lYXIgNSBtc2VjIHNv
+IHRoYXQgdGhlIGludGVycnVwdCAKbmVjZXNzYXJpbHkgb2NjdXJzIGJldHdlZW4gdHdvIGVsYXBz
+ZXMuIEZvciB0aGlzIG1lY2hhbmlzbSwgbXkgcmVwb3J0IApoZWxwcyB5b3VyIHVuZGVyc3RhbmRp
+bmdbMV0gKGJlIGF3YXJlIHRoYXQgaXQgaW5jbHVkZXMgc29tZSBvYnNvbGV0ZWQgCmNvbnRlbnRz
+KS4KCj4gRnVydGhlcm1vcmUsIGFueSBpbnRlcnJ1cHQtb3JpZW50ZWQgZHJpdmVyIHJlcXVpcmVz
+IDIgb3IgbW9yZSBwZXJpb2RzIGluIAo+IFBDTSBidWZmZXIuIFRoZXJlZm9yZSwgdXNlcnMgY2Fu
+IGNvbmZpZ3VyZSBzaXplIG9mIGJ1ZmZlciBvdmVyIG11bHRpcGxlcyAKPiBvZiAyIG1zZWMgYWNj
+b3JkaW5nIHRvIGNvbmZpZ3VyZWQgbnVtYmVyIG9mIHBlcmlvZHMuCj4gCj4gVGhhdCdzIGN1cnJl
+bnQgZGVzaWduIG9mIEFMU0EgSUVDIDYxODgzLTEvNiBlbmdpbmUgYW5kIGl0J3MgcmVzdHJpY3Rp
+b24uClsxXSBodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvYWxzYS1maXJld2lyZS1yZXBvcnQK
+CgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
