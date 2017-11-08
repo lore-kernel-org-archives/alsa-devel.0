@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add snd_soc_dapm_kcontrol_component()"
-	to the asoc tree
-Date: Wed, 08 Nov 2017 21:32:01 +0000
-Message-ID: <E1eCXx3-0005Mr-7l@debutante>
-References: <87inh3m1g9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: Intel: Skylake: Add dynamic module id
+	support" to the asoc tree
+Date: Wed, 08 Nov 2017 21:32:56 +0000
+Message-ID: <E1eCXxw-0005Uc-NZ@debutante>
+References: <20171107104626.25800-9-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 99A2B267637
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:32:44 +0100 (CET)
-In-Reply-To: <87inh3m1g9.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D738D2676A5
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:46 +0100 (CET)
+In-Reply-To: <20171107104626.25800-9-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add snd_soc_dapm_kcontrol_component()
+   ASoC: Intel: Skylake: Add dynamic module id support
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,83 @@ to this mail.
 Thanks,
 Mark
 
->From e07bd30bb87f6a6ca1f75fa41df71ff5e7bc6a3f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 6 Nov 2017 01:49:06 +0000
-Subject: [PATCH] ASoC: add snd_soc_dapm_kcontrol_component()
+>From d956147473ec1843c2660a89ef0fba80b66c6657 Mon Sep 17 00:00:00 2001
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Date: Tue, 7 Nov 2017 16:16:23 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add dynamic module id support
 
-snd_soc_dapm_kcontrol_codec() (= for Codec) will be removed soon.
-This patch Component version of it.
+Module id is a property of firmware manifest and can vary between
+platforms so use the uuid instead of module id for pins.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4961f4455b65..0668cbd9f0b5 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1524,6 +1524,19 @@ static inline struct snd_soc_codec *snd_soc_dapm_kcontrol_codec(
- 	return snd_soc_dapm_to_codec(snd_soc_dapm_kcontrol_dapm(kcontrol));
- }
- 
-+/**
-+ * snd_soc_dapm_kcontrol_component() - Returns the component associated to a kcontrol
-+ * @kcontrol: The kcontrol
-+ *
-+ * This function must only be used on DAPM contexts that are known to be part of
-+ * a COMPONENT (e.g. in a COMPONENT driver). Otherwise the behavior is undefined.
-+ */
-+static inline struct snd_soc_component *snd_soc_dapm_kcontrol_component(
-+	struct snd_kcontrol *kcontrol)
-+{
-+	return snd_soc_dapm_to_component(snd_soc_dapm_kcontrol_dapm(kcontrol));
-+}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 90f8c839bcef..b590742c5a7a 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2054,6 +2054,8 @@ static int skl_tplg_fill_pin(struct device *dev,
+ 			struct skl_module_pin *m_pin,
+ 			int pin_index)
+ {
++	int ret;
 +
- /* codec IO */
- unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg);
- int snd_soc_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	switch (tkn_elem->token) {
+ 	case SKL_TKN_U32_PIN_MOD_ID:
+ 		m_pin[pin_index].id.module_id = tkn_elem->value;
+@@ -2063,6 +2065,14 @@ static int skl_tplg_fill_pin(struct device *dev,
+ 		m_pin[pin_index].id.instance_id = tkn_elem->value;
+ 		break;
+ 
++	case SKL_TKN_UUID:
++		ret = skl_tplg_get_uuid(dev, m_pin[pin_index].id.mod_uuid.b,
++			(struct snd_soc_tplg_vendor_uuid_elem *)tkn_elem);
++		if (ret < 0)
++			return ret;
++
++		break;
++
+ 	default:
+ 		dev_err(dev, "%d Not a pin token\n", tkn_elem->token);
+ 		return -EINVAL;
+@@ -2487,6 +2497,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 
+ 	case SKL_TKN_U32_PIN_MOD_ID:
+ 	case SKL_TKN_U32_PIN_INST_ID:
++	case SKL_TKN_UUID:
+ 		ret = skl_tplg_fill_pins_info(dev,
+ 				mconfig, tkn_elem, dir,
+ 				pin_index);
+@@ -2549,6 +2560,7 @@ static int skl_tplg_get_tokens(struct device *dev,
+ 	struct snd_soc_tplg_vendor_value_elem *tkn_elem;
+ 	int tkn_count = 0, ret;
+ 	int off = 0, tuple_size = 0;
++	bool is_module_guid = true;
+ 
+ 	if (block_size <= 0)
+ 		return -EINVAL;
+@@ -2564,8 +2576,15 @@ static int skl_tplg_get_tokens(struct device *dev,
+ 			continue;
+ 
+ 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
+-			ret = skl_tplg_get_uuid(dev, mconfig->guid,
+-					array->uuid);
++			if (is_module_guid) {
++				ret = skl_tplg_get_uuid(dev, mconfig->guid,
++							array->uuid);
++				is_module_guid = false;
++			} else {
++				ret = skl_tplg_get_token(dev, array->value, skl,
++							 mconfig);
++			}
++
+ 			if (ret < 0)
+ 				return ret;
+ 
 -- 
 2.15.0
