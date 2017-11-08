@@ -1,17 +1,11 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: RE: [PATCH 1/3] ASoC: AMD: Make the driver name consistent across
- files
-Date: Wed, 8 Nov 2017 18:12:34 +0000
-Message-ID: <BN6PR12MB165251734231887E8A1E213BF7560@BN6PR12MB1652.namprd12.prod.outlook.com>
-References: <20171108172404.19118-1-alexander.deucher@amd.com>
- <20171108172404.19118-2-alexander.deucher@amd.com>
- <20171108180835.7nl7uzxzclcxrfga@sirena.co.uk>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
+Date: Wed,  8 Nov 2017 13:18:41 -0500
+Message-ID: <20171108181841.29332-1-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20171108180835.7nl7uzxzclcxrfga@sirena.co.uk>
-Content-Language: en-US
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -21,33 +15,36 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: 'Mark Brown' <broonie@kernel.org>, Alex Deucher <alexdeucher@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Agrawal,
- Akshu" <Akshu.Agrawal@amd.com>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>
+To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, broonie@kernel.org, Vijendar.Mukunda@amd.com
+Cc: Guenter Roeck <groeck@chromium.org>, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IE1hcmsgQnJvd24gW21haWx0bzpi
-cm9vbmllQGtlcm5lbC5vcmddCj4gU2VudDogV2VkbmVzZGF5LCBOb3ZlbWJlciAwOCwgMjAxNyAx
-OjA5IFBNCj4gVG86IEFsZXggRGV1Y2hlcgo+IENjOiBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZzsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBkcmktCj4gZGV2ZWxAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnOyBNdWt1bmRhLCBWaWplbmRhcjsgbGdpcmR3b29kQGdtYWlsLmNvbTsKPiB0
-aXdhaUBzdXNlLmRlOyBBZ3Jhd2FsLCBBa3NodTsgRGV1Y2hlciwgQWxleGFuZGVyCj4gU3ViamVj
-dDogUmU6IFtQQVRDSCAxLzNdIEFTb0M6IEFNRDogTWFrZSB0aGUgZHJpdmVyIG5hbWUgY29uc2lz
-dGVudAo+IGFjcm9zcyBmaWxlcwo+IAo+IE9uIFdlZCwgTm92IDA4LCAyMDE3IGF0IDEyOjI0OjAy
-UE0gLTA1MDAsIEFsZXggRGV1Y2hlciB3cm90ZToKPiA+IEZyb206IEFrc2h1IEFncmF3YWwgPGFr
-c2h1LmFncmF3YWxAYW1kLmNvbT4KPiA+Cj4gPiBUaGlzIGZpeGVzIHRoZSBpc3N1ZSBvZiBkcml2
-ZXIgbm90IGdldHRpbmcgYXV0byBsb2FkZWQgd2l0aAo+ID4gTU9EVUxFX0FMSUFTLgo+IAo+IFBs
-ZWFzZSBkb24ndCByZXN1Ym1pdCBwYXRjaGVzIHRoYXQgaGF2ZSBhbHJlYWR5IGJlZW4gYXBwbGll
-ZCwgeW91IHNob3VsZAo+IHN1Ym1pdCBwYXRjaGVzIGFnYWluc3QgY3VycmVudCBjb2RlIGluIHRo
-ZSB0cmVlIHlvdSdyZSBleHBlY3RpbmcgdGhpbmdzCj4gdG8gYmUgYXBwbGllZCB0by4gIElmIGFu
-eSB1cGRhdGVzIGFyZSBuZWVkZWQgdG8gYSBwYXRjaCB0aGF0J3MgYWxyZWFkeQo+IGJlZW4gYXBw
-bGllZCB5b3Ugc2hvdWxkIHN1Ym1pdCBpbmNyZW1lbnRhbCBwYXRjaGVzIHdoaWNoIG1ha2UgdGhv
-c2UKPiB1cGRhdGVzLiAgVGhpcyBhdm9pZHMgaGF2aW5nIHRvIGNoYW5nZSBwdWJsaXNoZWQgZ2l0
-IGNvbW1pdHMgd2hpY2ggY291bGQKPiBjYXVzZSBwcm9ibGVtcyBmb3IgcGVvcGxlIHdvcmtpbmcg
-YWdhaW5zdCBnaXQuCgpUaGlzIGRpZG4ndCBub3QgYXBwZWFyIHRvIGJlIGluIHlvdXIgdHJlZSB5
-ZXQgYW5kIEkgbmV2ZXIgZ290IGFueSBjb25maXJtYXRpb24gaXQgYmVpbmcKYXBwbGllZC4gIEFw
-b2xvZ2llcy4KCkFsZXgKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
-ZXZlbAo=
+RnJvbTogR3VlbnRlciBSb2VjayA8Z3JvZWNrQGNocm9taXVtLm9yZz4KCkVSUk9SOiAiX19hZWFi
+aV91bGRpdm1vZCIgW3NvdW5kL3NvYy9hbWQvc25kLXNvYy1hY3AtcGNtLmtvXSB1bmRlZmluZWQh
+Cgo2NC1iaXQgZGl2aWRlcyByZXF1aXJlIHNwZWNpYWwgb3BlcmF0aW9ucyB0byBhdm9pZCBidWls
+ZCBlcnJvcnMgb24gMzItYml0CnN5c3RlbXMuCgpmaXhlczogNjFhZGQ4MTQ3OTQyIChBU29DOiBh
+bWQ6IFJlcG9ydCBhY2N1cmF0ZSBod19wdHIgZHVyaW5nIGRtYSkKU2lnbmVkLW9mZi1ieTogR3Vl
+bnRlciBSb2VjayA8Z3JvZWNrQGNocm9taXVtLm9yZz4KUmV2aWV3ZWQtb246IGh0dHBzOi8vY2hy
+b21pdW0tcmV2aWV3Lmdvb2dsZXNvdXJjZS5jb20vNjc4OTE5ClJldmlld2VkLWJ5OiBKYXNvbiBD
+bGludG9uIDxqY2xpbnRvbkBjaHJvbWl1bS5vcmc+CihjaGVycnkgcGlja2VkIGZyb20gY29tbWl0
+IDdjYTcyNmU4MGYyMWFiZGJhZWQ5YTVhNzBkZWYxYzMzYTI2Zjg1MzMpClJldmlld2VkLW9uOiBo
+dHRwczovL2Nocm9taXVtLXJldmlldy5nb29nbGVzb3VyY2UuY29tLzY4MTYxOApTaWduZWQtb2Zm
+LWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+Ci0tLQoKdjI6IHJl
+c2VuZCB3aXRoIHRoZSBDaHJvbWl1bSB0YWdzIHJlbW92ZWQgYW5kIHRoZSBzdWJqZWN0IHVwZGF0
+ZWQuCgogc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jIHwgMyArLS0KIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+YW1kL2FjcC1wY20tZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKaW5kZXggMTNk
+MDQwYTRkMjZmLi5lZjdlOThhZDk2MGMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hbWQvYWNwLXBj
+bS1kbWEuYworKysgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKQEAgLTg1NiwxMiArODU2
+LDExIEBAIHN0YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBhY3BfZG1hX3BvaW50ZXIoc3RydWN0IHNu
+ZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNO
+RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKIAkJaWYgKGJ5dGVzY291bnQgPiBydGQtPnJlbmRl
+cmJ5dGVzY291bnQpCiAJCQlieXRlc2NvdW50ID0gYnl0ZXNjb3VudCAtIHJ0ZC0+cmVuZGVyYnl0
+ZXNjb3VudDsKLQkJcG9zID0gIGJ5dGVzY291bnQgJSBidWZmZXJzaXplOwogCX0gZWxzZSB7CiAJ
+CWlmIChieXRlc2NvdW50ID4gcnRkLT5jYXB0dXJlYnl0ZXNjb3VudCkKIAkJCWJ5dGVzY291bnQg
+PSBieXRlc2NvdW50IC0gcnRkLT5jYXB0dXJlYnl0ZXNjb3VudDsKLQkJcG9zID0gYnl0ZXNjb3Vu
+dCAlIGJ1ZmZlcnNpemU7CiAJfQorCXBvcyA9IGRvX2RpdihieXRlc2NvdW50LCBidWZmZXJzaXpl
+KTsKIAlyZXR1cm4gYnl0ZXNfdG9fZnJhbWVzKHJ1bnRpbWUsIHBvcyk7CiB9CiAKLS0gCjIuMTMu
+NgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
+dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
