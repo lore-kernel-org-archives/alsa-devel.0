@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Voice wakeup support." to the
-	asoc tree
-Date: Wed, 08 Nov 2017 21:30:54 +0000
-Message-ID: <E1eCXvy-0005Cu-FH@debutante>
-References: <1510124662-5065-1-git-send-email-oder_chiou@realtek.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: [PATCH] ASoC: amd: use do_div rather than 64 bit
+	division to fix 32 bit builds
+Date: Wed,  8 Nov 2017 16:34:54 -0500
+Message-ID: <20171108213454.7048-1-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3304026764D
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:03 +0100 (CET)
-In-Reply-To: <1510124662-5065-1-git-send-email-oder_chiou@realtek.com>
+Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
+ [209.85.214.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F56826768E
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:38:19 +0100 (CET)
+Received: by mail-it0-f68.google.com with SMTP id r127so8244247itb.5
+ for <alsa-devel@alsa-project.org>; Wed, 08 Nov 2017 13:38:19 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,100 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, Chinyue Chen <chinyue@chromium.org>, alsa-devel@alsa-project.org, jack.yu@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org, Vijendar.Mukunda@amd.com
+Cc: tiwai@suse.de, Guenter Roeck <groeck@chromium.org>, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Guenter Roeck <groeck@chromium.org>
 
-   ASoC: rt5514: Voice wakeup support.
+ERROR: "__aeabi_uldivmod" [sound/soc/amd/snd-soc-acp-pcm.ko] undefined!
 
-has been applied to the asoc tree at
+64-bit divides require special operations to avoid build errors on 32-bit
+systems.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+[Reword the commit message to make it clearer - Alex]
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 58f1c07d23cddbc4c8aa99a214934eb7d33e8523 Mon Sep 17 00:00:00 2001
-From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Wed, 8 Nov 2017 15:04:21 +0800
-Subject: [PATCH] ASoC: rt5514: Voice wakeup support.
-
-If the rt5514 Wake on Voice device is opened while suspended, it will
-be able to wake up the system when a voice command is detected.
-This patch also supports user-space policy to override wakeup behavior
-by /sys/bus/spi/drivers/rt5514/spi2.0/power/wakeup.
-
-Signed-off-by: Chinyue Chen <chinyue@chromium.org>
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+fixes: 61add8147942 (ASoC: amd: Report accurate hw_ptr during dma)
+Signed-off-by: Guenter Roeck <groeck@chromium.org>
+Reviewed-on: https://chromium-review.googlesource.com/678919
+Reviewed-by: Jason Clinton <jclinton@chromium.org>
+(cherry picked from commit 7ca726e80f21abdbaed9a5a70def1c33a26f8533)
+Reviewed-on: https://chromium-review.googlesource.com/681618
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/soc/codecs/rt5514-spi.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ sound/soc/amd/acp-pcm-dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 0896817ffc3f..d03756913dd9 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -456,9 +456,35 @@ static int rt5514_spi_probe(struct spi_device *spi)
- 		return ret;
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 13d040a4d26f..ef7e98ad960c 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -856,12 +856,11 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (bytescount > rtd->renderbytescount)
+ 			bytescount = bytescount - rtd->renderbytescount;
+-		pos =  bytescount % buffersize;
+ 	} else {
+ 		if (bytescount > rtd->capturebytescount)
+ 			bytescount = bytescount - rtd->capturebytescount;
+-		pos = bytescount % buffersize;
  	}
- 
-+	device_init_wakeup(&spi->dev, true);
-+
-+	return 0;
-+}
-+
-+static int rt5514_suspend(struct device *dev)
-+{
-+	int irq = to_spi_device(dev)->irq;
-+
-+	if (device_may_wakeup(dev))
-+		enable_irq_wake(irq);
-+
- 	return 0;
++	pos = do_div(bytescount, buffersize);
+ 	return bytes_to_frames(runtime, pos);
  }
  
-+static int rt5514_resume(struct device *dev)
-+{
-+	int irq = to_spi_device(dev)->irq;
-+
-+	if (device_may_wakeup(dev))
-+		disable_irq_wake(irq);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops rt5514_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(rt5514_suspend, rt5514_resume)
-+};
-+
- static const struct of_device_id rt5514_of_match[] = {
- 	{ .compatible = "realtek,rt5514", },
- 	{},
-@@ -468,6 +494,7 @@ MODULE_DEVICE_TABLE(of, rt5514_of_match);
- static struct spi_driver rt5514_spi_driver = {
- 	.driver = {
- 		.name = "rt5514",
-+		.pm = &rt5514_pm_ops,
- 		.of_match_table = of_match_ptr(rt5514_of_match),
- 	},
- 	.probe = rt5514_spi_probe,
 -- 
-2.15.0
+2.13.6
