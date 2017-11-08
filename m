@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic23: mark expected switch
+Subject: Applied "ASoC: tlv320dac31xx: mark expected switch
 	fall-through" to the asoc tree
-Date: Wed, 08 Nov 2017 21:31:38 +0000
-Message-ID: <E1eCXwg-0005KD-9A@debutante>
-References: <c72fc08548576887271e2f8b6a9e424cca4f271e.1510170034.git.garsilva@embeddedor.com>
+Date: Wed, 08 Nov 2017 21:31:31 +0000
+Message-ID: <E1eCXwZ-0005JF-Nw@debutante>
+References: <a06a3f6e8dc2be1a56205c095f3146bfdf019d66.1510170034.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DB49267670
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:58 +0100 (CET)
-In-Reply-To: <c72fc08548576887271e2f8b6a9e424cca4f271e.1510170034.git.garsilva@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D13D0267684
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:50 +0100 (CET)
+In-Reply-To: <a06a3f6e8dc2be1a56205c095f3146bfdf019d66.1510170034.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic23: mark expected switch fall-through
+   ASoC: tlv320dac31xx: mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From a47043ec35d4198b3858cb1eb4c38d712154ae99 Mon Sep 17 00:00:00 2001
+>From 09fc38c1af4cb888255e9ecf267bf9757c12885d Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Wed, 8 Nov 2017 14:04:12 -0600
-Subject: [PATCH] ASoC: tlv320aic23: mark expected switch fall-through
+Date: Wed, 8 Nov 2017 14:04:17 -0600
+Subject: [PATCH] ASoC: tlv320dac31xx: mark expected switch fall-through
 
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 146566
+Addresses-Coverity-ID: 1195220
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic23.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tlv320aic31xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 3d42138a7974..74909211c608 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -454,6 +454,7 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 54a87a905eb6..e2862372c26e 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -929,7 +929,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_I2S:
  		break;
  	case SND_SOC_DAIFMT_DSP_A:
- 		iface_reg |= TLV320AIC23_LRP_ON;
-+		/* fall through */
+-		dsp_a_val = 0x1;
++		dsp_a_val = 0x1; /* fall through */
  	case SND_SOC_DAIFMT_DSP_B:
- 		iface_reg |= TLV320AIC23_FOR_DSP;
- 		break;
+ 		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
+ 		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
 -- 
 2.15.0
