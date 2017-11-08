@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Optimize UUID handling
-	to fill pin info" to the asoc tree
-Date: Wed, 08 Nov 2017 21:33:03 +0000
-Message-ID: <E1eCXy3-0005Vo-O5@debutante>
-References: <20171107104626.25800-8-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix potential NULL
+	pointer dereference" to the asoc tree
+Date: Wed, 08 Nov 2017 21:33:26 +0000
+Message-ID: <E1eCXyQ-0005ZC-9i@debutante>
+References: <20171107104626.25800-4-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D3CA2676A6
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:48 +0100 (CET)
-In-Reply-To: <20171107104626.25800-8-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 66194266EDF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:35:02 +0100 (CET)
+In-Reply-To: <20171107104626.25800-4-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+To: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Optimize UUID handling to fill pin info
+   ASoC: Intel: Skylake: Fix potential NULL pointer dereference
 
 has been applied to the asoc tree at
 
@@ -53,109 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 22ebd6666efd8663a06715a052f74b6a7e904dc3 Mon Sep 17 00:00:00 2001
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Date: Tue, 7 Nov 2017 16:16:22 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Optimize UUID handling to fill pin info
+>From 0265ddd7b713bd8b68a9ec451761bcb87bbac4b3 Mon Sep 17 00:00:00 2001
+From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Date: Tue, 7 Nov 2017 16:16:18 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix potential NULL pointer dereference
 
-Modify skl_tplg_get_uuid() to copy just UUID rather than only
-for module UUID and skl_tplg_fill_pin() to fill the pin info
-which can include UUID token also.
+Pointer 'mconfig' returned from call to skl_tplg_fe_get_cpr_module() can
+be NULL. So check for the valid pointer before dereferencing.
 
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 46 +++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 1200b7c6af56..90f8c839bcef 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2036,21 +2036,35 @@ static int skl_tplg_add_pipe(struct device *dev,
- 	return 0;
- }
- 
--static int skl_tplg_fill_pin(struct device *dev, u32 tkn,
-+static int skl_tplg_get_uuid(struct device *dev, u8 *guid,
-+	      struct snd_soc_tplg_vendor_uuid_elem *uuid_tkn)
-+{
-+	if (uuid_tkn->token == SKL_TKN_UUID) {
-+		memcpy(guid, &uuid_tkn->uuid, 16);
-+		return 0;
-+	}
-+
-+	dev_err(dev, "Not an UUID token %d\n", uuid_tkn->token);
-+
-+	return -EINVAL;
-+}
-+
-+static int skl_tplg_fill_pin(struct device *dev,
-+			struct snd_soc_tplg_vendor_value_elem *tkn_elem,
- 			struct skl_module_pin *m_pin,
--			int pin_index, u32 value)
-+			int pin_index)
- {
--	switch (tkn) {
-+	switch (tkn_elem->token) {
- 	case SKL_TKN_U32_PIN_MOD_ID:
--		m_pin[pin_index].id.module_id = value;
-+		m_pin[pin_index].id.module_id = tkn_elem->value;
- 		break;
- 
- 	case SKL_TKN_U32_PIN_INST_ID:
--		m_pin[pin_index].id.instance_id = value;
-+		m_pin[pin_index].id.instance_id = tkn_elem->value;
- 		break;
- 
- 	default:
--		dev_err(dev, "%d Not a pin token\n", value);
-+		dev_err(dev, "%d Not a pin token\n", tkn_elem->token);
- 		return -EINVAL;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 2b1e513b1680..a3cb204e9640 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -355,7 +355,8 @@ static void skl_pcm_close(struct snd_pcm_substream *substream,
  	}
  
-@@ -2083,9 +2097,7 @@ static int skl_tplg_fill_pins_info(struct device *dev,
- 		return -EINVAL;
- 	}
+ 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
+-	skl_tplg_d0i3_put(skl, mconfig->d0i3_caps);
++	if (mconfig)
++		skl_tplg_d0i3_put(skl, mconfig->d0i3_caps);
  
--	ret = skl_tplg_fill_pin(dev, tkn_elem->token,
--			m_pin, pin_count, tkn_elem->value);
--
-+	ret = skl_tplg_fill_pin(dev, tkn_elem, m_pin, pin_count);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -2170,19 +2182,6 @@ static int skl_tplg_widget_fill_fmt(struct device *dev,
- 	return skl_tplg_fill_fmt(dev, dst_fmt, tkn, val);
+ 	kfree(dma_params);
  }
- 
--static int skl_tplg_get_uuid(struct device *dev, struct skl_module_cfg *mconfig,
--	      struct snd_soc_tplg_vendor_uuid_elem *uuid_tkn)
--{
--	if (uuid_tkn->token == SKL_TKN_UUID)
--		memcpy(&mconfig->guid, &uuid_tkn->uuid, 16);
--	else {
--		dev_err(dev, "Not an UUID token tkn %d\n", uuid_tkn->token);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
- static void skl_tplg_fill_pin_dynamic_val(
- 		struct skl_module_pin *mpin, u32 pin_count, u32 value)
- {
-@@ -2565,7 +2564,8 @@ static int skl_tplg_get_tokens(struct device *dev,
- 			continue;
- 
- 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
--			ret = skl_tplg_get_uuid(dev, mconfig, array->uuid);
-+			ret = skl_tplg_get_uuid(dev, mconfig->guid,
-+					array->uuid);
- 			if (ret < 0)
- 				return ret;
- 
 -- 
 2.15.0
