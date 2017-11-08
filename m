@@ -1,52 +1,235 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 3/3] ASoC: sun8i-codec: Fix left and right channels inversion
-Date: Thu, 9 Nov 2017 00:25:22 +0800
-Message-ID: <CAGb2v678wHyfCm1HzdmGT8f7qcv7VGkAZprMuK5rwqfT7BTvQw@mail.gmail.com>
-References: <20171108154710.16407-1-maxime.ripard@free-electrons.com> <20171108154710.16407-4-maxime.ripard@free-electrons.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: Intel: improve SND_SOC_INTEL_MACH
+ dependencies
+Date: Wed, 8 Nov 2017 10:39:29 -0600
+Message-ID: <96cb1362-d3ba-2a04-496e-32070743109f@linux.intel.com>
+References: <20171108130354.86106-1-arnd@arndb.de>
+ <20171108130354.86106-2-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20171108154710.16407-4-maxime.ripard@free-electrons.com>
-Sender: stable-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Code Kipper <codekipper@gmail.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171108130354.86106-2-arnd@arndb.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Harsha Priya N <harshapriya.n@intel.com>, Naveen M <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 8, 2017 at 11:47 PM, Maxime Ripard
-<maxime.ripard@free-electrons.com> wrote:
-> Since its introduction, the codec had an inversion of the left and right
-> channels. It turned out to be pretty simple as it appears that the codec
-> doesn't have the same polarity on the LRCK signal than the I2S block.
->
-> Fix this by inverting our bit value for the LRCK inversion.
->
-> Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+On 11/8/17 7:03 AM, Arnd Bergmann wrote:
+> I ran into a build error with CONFIG_SND_SOC_INTEL_COMMON=m
+> and SND_SOC_INTEL_MACH=y:
+> 
+> ERROR: "snd_soc_acpi_intel_broadwell_machines" [sound/soc/intel/common/snd-soc-sst-acpi.ko] undefined!
+> ERROR: "snd_soc_acpi_intel_haswell_machines" [sound/soc/intel/common/snd-soc-sst-acpi.ko] undefined!
+> ERROR: "snd_soc_acpi_intel_cherrytrail_machines" [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] undefined!
+> ERROR: "snd_soc_acpi_intel_baytrail_machines" [sound/soc/intel/atom/sst/snd-intel-sst-acpi.ko] undefined!
+> 
+> The problem here is that the sound/soc/intel/common/ directory
+> is then entered only for building modules, but the sst-acpi.o
+> never gets built since it depends on a built-in Kconfig symbol.
+> 
+> That configuration obviously makes no sense since all options
+> below SND_SOC_INTEL_MACH also depend on something else that
+> in turn depends on CONFIG_SND_SOC_INTEL_COMMON.
+> 
+> Adding a SND_SOC_INTEL_SST_TOPLEVEL dependency to SND_SOC_INTEL_MACH
+> solves the build error. I notice we can also consolidate the
+> 'depends on SND_SOC_INTEL_MACH' lines by using an 'if' block to
+> simplify it further and make sure the configuration stays sane.
 
-I suggest adding a comment in case anyone stumbles across it.
+Makes sense, thanks for the cleanup.
 
-Otherwise,
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  sound/soc/sunxi/sun8i-codec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-> index 522546e6b153..c8dcb1502d74 100644
-> --- a/sound/soc/sunxi/sun8i-codec.c
-> +++ b/sound/soc/sunxi/sun8i-codec.c
-> @@ -200,7 +200,7 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->                            value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
->         regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
->                            BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
-> -                          value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
-> +                          !value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
->
->         /* DAI format */
->         switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> --
-> 2.14.3
->
+>   sound/soc/intel/boards/Kconfig | 26 +++++---------------------
+>   1 file changed, 5 insertions(+), 21 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index 5063f15b4ca4..6f754708a48c 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -1,10 +1,12 @@
+>   config SND_SOC_INTEL_MACH
+>   	tristate "Intel Audio machine drivers"
+> +	depends on SND_SOC_INTEL_SST_TOPLEVEL
+>   	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+>   
+> +if SND_SOC_INTEL_MACH
+> +
+>   config SND_MFLD_MACHINE
+>   	tristate "SOC Machine Audio driver for Intel Medfield MID platform"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on INTEL_SCU_IPC
+>   	select SND_SOC_SN95031
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -17,7 +19,6 @@ config SND_MFLD_MACHINE
+>   
+>   config SND_SOC_INTEL_HASWELL_MACH
+>   	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+>   	depends on SND_SOC_INTEL_HASWELL
+>   	select SND_SOC_RT5640
+> @@ -29,7 +30,6 @@ config SND_SOC_INTEL_HASWELL_MACH
+>   
+>   config SND_SOC_INTEL_BDW_RT5677_MACH
+>   	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && GPIOLIB && I2C
+>   	depends on SND_SOC_INTEL_HASWELL
+>   	select SND_SOC_RT5677
+> @@ -39,7 +39,6 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+>   
+>   config SND_SOC_INTEL_BROADWELL_MACH
+>   	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+>   	depends on SND_SOC_INTEL_HASWELL
+>   	select SND_SOC_RT286
+> @@ -51,7 +50,6 @@ config SND_SOC_INTEL_BROADWELL_MACH
+>   
+>   config SND_SOC_INTEL_BYT_MAX98090_MACH
+>   	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C
+>   	depends on SND_SST_IPC_ACPI = n
+>   	depends on SND_SOC_INTEL_BAYTRAIL
+> @@ -62,7 +60,6 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+>   
+>   config SND_SOC_INTEL_BYT_RT5640_MACH
+>   	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C
+>   	depends on SND_SST_IPC_ACPI = n
+>   	depends on SND_SOC_INTEL_BAYTRAIL
+> @@ -74,7 +71,6 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+>   
+>   config SND_SOC_INTEL_BYTCR_RT5640_MACH
+>           tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86 && I2C && ACPI
+>   	select SND_SOC_RT5640
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -87,7 +83,6 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+>   
+>   config SND_SOC_INTEL_BYTCR_RT5651_MACH
+>           tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86 && I2C && ACPI
+>   	select SND_SOC_RT5651
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -100,7 +95,6 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+>   
+>   config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+>           tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
+> -        depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && ACPI
+>           select SND_SOC_RT5670
+>           depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -113,7 +107,6 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+>   
+>   config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+>   	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && ACPI
+>   	select SND_SOC_RT5645
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -125,7 +118,6 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+>   
+>   config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+>   	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with MAX98090 & TI codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && ACPI
+>   	select SND_SOC_MAX98090
+>   	select SND_SOC_TS3A227E
+> @@ -138,7 +130,6 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+>   
+>   config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+>   	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && ACPI
+>   	select SND_SOC_DA7213
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -150,7 +141,6 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+>   
+>   config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+>   	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with ES8316 codec"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && ACPI
+>   	select SND_SOC_ES8316
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+> @@ -162,7 +152,6 @@ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+>   
+>   config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+>   	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C && ACPI
+>   	depends on SND_SST_ATOM_HIFI2_PLATFORM
+>   	select SND_SST_IPC_ACPI
+> @@ -174,7 +163,6 @@ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+>   
+>   config SND_SOC_INTEL_SKL_RT286_MACH
+>   	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86 && ACPI && I2C
+>   	depends on SND_SOC_INTEL_SKYLAKE
+>   	select SND_SOC_RT286
+> @@ -188,7 +176,6 @@ config SND_SOC_INTEL_SKL_RT286_MACH
+>   
+>   config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+>   	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C
+>   	depends on SND_SOC_INTEL_SKYLAKE
+>   	select SND_SOC_NAU8825
+> @@ -203,7 +190,6 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+>   
+>   config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+>   	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C
+>   	depends on SND_SOC_INTEL_SKYLAKE
+>   	select SND_SOC_NAU8825
+> @@ -218,7 +204,6 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+>   
+>   config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+>   	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86 && ACPI && I2C
+>   	depends on SND_SOC_INTEL_SKYLAKE
+>   	select SND_SOC_DA7219
+> @@ -234,7 +219,6 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+>   
+>   config SND_SOC_INTEL_BXT_RT298_MACH
+>   	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86 && ACPI && I2C
+>   	depends on SND_SOC_INTEL_SKYLAKE
+>   	select SND_SOC_RT298
+> @@ -249,7 +233,6 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+>   
+>   config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+>   	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927 in I2S Mode"
+> -	depends on SND_SOC_INTEL_MACH
+>   	depends on X86_INTEL_LPSS && I2C
+>   	select SND_SOC_INTEL_SST
+>   	depends on SND_SOC_INTEL_SKYLAKE
+> @@ -265,7 +248,6 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+>   
+>   config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+>           tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
+> -        depends on SND_SOC_INTEL_MACH
+>           depends on X86_INTEL_LPSS && I2C && SPI
+>           select SND_SOC_INTEL_SST
+>           depends on SND_SOC_INTEL_SKYLAKE
+> @@ -279,3 +261,5 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+>             create an alsa sound card for RT5663 + RT5514 + MAX98927.
+>             Say Y if you have such a device.
+>             If unsure select "N".
+> +
+> +endif
+> 
