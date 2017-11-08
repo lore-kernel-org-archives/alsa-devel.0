@@ -1,74 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: Fix left and right channels inversion" to the asoc tree
-Date: Wed, 08 Nov 2017 21:33:51 +0000
-Message-ID: <E1eCXyp-0005cC-G2@debutante>
-References: <20171108154710.16407-4-maxime.ripard@free-electrons.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20171108154710.16407-4-maxime.ripard@free-electrons.com>
-Sender: stable-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: stable@vger.kernel.org, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, Chen-Yu Tsai <wens@csie.org>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, alsa-devel@alsa-project.orgstable@vger.kernel.org, codekipper@gmail.com, Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 8/9] ASoC: tlv320aic31xx: Fix the reset GPIO OF name
+Date: Wed, 8 Nov 2017 21:36:39 +0000
+Message-ID: <20171108213639.iymb7wuyjpuirbdu@sirena.co.uk>
+References: <20171108212505.28320-1-afd@ti.com>
+ <20171108212505.28320-9-afd@ti.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="da2whi6s6moxbdfk"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20171108212505.28320-9-afd-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: sun8i-codec: Fix left and right channels inversion
+--da2whi6s6moxbdfk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Wed, Nov 08, 2017 at 03:25:04PM -0600, Andrew F. Davis wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> -	ret = of_get_named_gpio(np, "gpio-reset", 0);
+> +	ret = of_get_named_gpio(np, "reset-gpio", 0);
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+This is obviously an incompatible change in the binding which will break
+any production DTs relying on the current behaviour.  You need to keep
+support for the existing property.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+It also doesn't look like a good fix if we're aiming for conformance
+with DT naming conventions as unless things changed all GPIO related
+properties are supposed to end -gpios even if they can only ever specify
+a single GPIO.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--da2whi6s6moxbdfk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDeOcACgkQJNaLcl1U
+h9AFewf5ASk4x+ieP4b/HvYCDyYdfSFIOn2fdmQ23uW5Zir/IjLxodbkXaBfh18c
+jJ9FCNWB4cyRtfEErbbinhVuHm83gQvojLZkq1qFOvWiFgFrk42HA4YLi8CtBsXg
+bnNYNyG6gwmmr48ureC2ocGo/V0u7OerKL+1qt9F9Uk2vu6mAVeN09U1p4m3SmIu
+LfsYvKrrBgrwJRdvYoXHP8rxgWe5j6MAIxU343oVMfjPTFIskkWVo4IyN+h9s8SU
+3sBjr7lWYTyVH6TK9SrvhOFiUKN6M/IRm4D4Y1R8+SjuMZUcwNcfSFNPzmKz6Q/h
+twDoj/eHNVQBm6jsszKTyTtA6VwGpA==
+=xKdq
+-----END PGP SIGNATURE-----
 
->From 18c1bf35c1c09bca05cf70bc984a4764e0b0372b Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Date: Wed, 8 Nov 2017 16:47:10 +0100
-Subject: [PATCH] ASoC: sun8i-codec: Fix left and right channels inversion
-
-Since its introduction, the codec had an inversion of the left and right
-channels. It turned out to be pretty simple as it appears that the codec
-doesn't have the same polarity on the LRCK signal than the I2S block.
-
-Fix this by inverting our bit value for the LRCK inversion.
-
-Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun8i-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 038107baf414..c2ceca485d6a 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -199,7 +199,7 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			   value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
--			   value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
-+			   !value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
- 
- 	/* DAI format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--- 
-2.15.0
+--da2whi6s6moxbdfk--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
