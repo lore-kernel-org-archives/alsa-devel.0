@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514-spi: check irq status to
-	schedule data copy in resume function" to the asoc tree
-Date: Wed, 08 Nov 2017 21:30:44 +0000
-Message-ID: <E1eCXvo-0005B1-21@debutante>
-References: <1510124662-5065-2-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rt5514: Voice wakeup support." to the
+	asoc tree
+Date: Wed, 08 Nov 2017 21:30:54 +0000
+Message-ID: <E1eCXvy-0005Cu-FH@debutante>
+References: <1510124662-5065-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D46F026767A
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:30:59 +0100 (CET)
-In-Reply-To: <1510124662-5065-2-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3304026764D
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:03 +0100 (CET)
+In-Reply-To: <1510124662-5065-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, Chinyue Chen <chinyue@chromium.org>, alsa-devel@alsa-project.org, jack.yu@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514-spi: check irq status to schedule data copy in resume function
+   ASoC: rt5514: Voice wakeup support.
 
 has been applied to the asoc tree at
 
@@ -52,49 +52,70 @@ to this mail.
 Thanks,
 Mark
 
->From e9c50aa6bd3996924b5fd87ab59289888cd5704a Mon Sep 17 00:00:00 2001
+>From 58f1c07d23cddbc4c8aa99a214934eb7d33e8523 Mon Sep 17 00:00:00 2001
 From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
-Date: Wed, 8 Nov 2017 15:04:22 +0800
-Subject: [PATCH] ASoC: rt5514-spi: check irq status to schedule data copy in
- resume function
+Date: Wed, 8 Nov 2017 15:04:21 +0800
+Subject: [PATCH] ASoC: rt5514: Voice wakeup support.
 
-For wake on voice use case, we need to copy data from DSP buffer
-to PCM stream when system wakes up by voice. However the edge
-triggered IRQ could be missed when system wakes up, in that case
-the irq function will not be called. If the substream was constructed
-beforce suspend, we will schedule data copy in resume function.
+If the rt5514 Wake on Voice device is opened while suspended, it will
+be able to wake up the system when a voice command is detected.
+This patch also supports user-space policy to override wakeup behavior
+by /sys/bus/spi/drivers/rt5514/spi2.0/power/wakeup.
 
+Signed-off-by: Chinyue Chen <chinyue@chromium.org>
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/codecs/rt5514-spi.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index d03756913dd9..36e0a58ffc87 100644
+index 0896817ffc3f..d03756913dd9 100644
 --- a/sound/soc/codecs/rt5514-spi.c
 +++ b/sound/soc/codecs/rt5514-spi.c
-@@ -473,11 +473,21 @@ static int rt5514_suspend(struct device *dev)
+@@ -456,9 +456,35 @@ static int rt5514_spi_probe(struct spi_device *spi)
+ 		return ret;
+ 	}
  
- static int rt5514_resume(struct device *dev)
- {
-+	struct snd_soc_platform *platform = snd_soc_lookup_platform(dev);
-+	struct rt5514_dsp *rt5514_dsp =
-+		snd_soc_platform_get_drvdata(platform);
- 	int irq = to_spi_device(dev)->irq;
-+	u8 buf[8];
- 
- 	if (device_may_wakeup(dev))
- 		disable_irq_wake(irq);
- 
-+	if (rt5514_dsp->substream) {
-+		rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf, sizeof(buf));
-+		if (buf[0] & RT5514_IRQ_STATUS_BIT)
-+			rt5514_schedule_copy(rt5514_dsp);
-+	}
++	device_init_wakeup(&spi->dev, true);
++
++	return 0;
++}
++
++static int rt5514_suspend(struct device *dev)
++{
++	int irq = to_spi_device(dev)->irq;
++
++	if (device_may_wakeup(dev))
++		enable_irq_wake(irq);
 +
  	return 0;
  }
  
++static int rt5514_resume(struct device *dev)
++{
++	int irq = to_spi_device(dev)->irq;
++
++	if (device_may_wakeup(dev))
++		disable_irq_wake(irq);
++
++	return 0;
++}
++
++static const struct dev_pm_ops rt5514_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(rt5514_suspend, rt5514_resume)
++};
++
+ static const struct of_device_id rt5514_of_match[] = {
+ 	{ .compatible = "realtek,rt5514", },
+ 	{},
+@@ -468,6 +494,7 @@ MODULE_DEVICE_TABLE(of, rt5514_of_match);
+ static struct spi_driver rt5514_spi_driver = {
+ 	.driver = {
+ 		.name = "rt5514",
++		.pm = &rt5514_pm_ops,
+ 		.of_match_table = of_match_ptr(rt5514_of_match),
+ 	},
+ 	.probe = rt5514_spi_probe,
 -- 
 2.15.0
