@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add snd_soc_component_xxx_bias_level()"
-	to the asoc tree
-Date: Wed, 08 Nov 2017 21:32:18 +0000
-Message-ID: <E1eCXxK-0005Or-HO@debutante>
+Subject: Applied "ASoC: msm8916-wcd-analog: mark expected
+	switch fall-through" to the asoc tree
+Date: Wed, 08 Nov 2017 21:31:52 +0000
+Message-ID: <E1eCXwu-0005M0-Lm@debutante>
+References: <2ab74b1aac4e26dcc083e09e9e066770a00dd8ca.1510170034.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D3BBC267661
+ by alsa0.perex.cz (Postfix) with ESMTP id D4832267662
  for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:44 +0100 (CET)
-In-Reply-To: 
+In-Reply-To: <2ab74b1aac4e26dcc083e09e9e066770a00dd8ca.1510170034.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add snd_soc_component_xxx_bias_level()
+   ASoC: msm8916-wcd-analog: mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -52,89 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 10e079d9874802c35dc3f51af922531e5423a6bf Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 6 Nov 2017 01:48:37 +0000
-Subject: [PATCH] ASoC: add snd_soc_component_xxx_bias_level()
+>From dc10622bb32f08383cf5a9942a91042d8f38bf3d Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Date: Wed, 8 Nov 2017 14:04:09 -0600
+Subject: [PATCH] ASoC: msm8916-wcd-analog: mark expected switch fall-through
 
-snd_soc_codec_xxx_bias_level() (= for Codec) will be removed soon.
-This patch Component version of it.
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Addresses-Coverity-ID: 1397957
+Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 45 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ sound/soc/codecs/msm8916-wcd-analog.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 747588273c96..f69b13c4a641 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1439,6 +1439,21 @@ static inline void snd_soc_codec_init_bias_level(struct snd_soc_codec *codec,
- 	snd_soc_dapm_init_bias_level(snd_soc_codec_get_dapm(codec), level);
- }
- 
-+/**
-+ * snd_soc_component_init_bias_level() - Initialize COMPONENT DAPM bias level
-+ * @component: The COMPONENT for which to initialize the DAPM bias level
-+ * @level: The DAPM level to initialize to
-+ *
-+ * Initializes the COMPONENT DAPM bias level. See snd_soc_dapm_init_bias_level().
-+ */
-+static inline void
-+snd_soc_component_init_bias_level(struct snd_soc_component *component,
-+				  enum snd_soc_bias_level level)
-+{
-+	snd_soc_dapm_init_bias_level(
-+		snd_soc_component_get_dapm(component), level);
-+}
-+
- /**
-  * snd_soc_dapm_get_bias_level() - Get current CODEC DAPM bias level
-  * @codec: The CODEC for which to get the DAPM bias level
-@@ -1451,6 +1466,19 @@ static inline enum snd_soc_bias_level snd_soc_codec_get_bias_level(
- 	return snd_soc_dapm_get_bias_level(snd_soc_codec_get_dapm(codec));
- }
- 
-+/**
-+ * snd_soc_component_get_bias_level() - Get current COMPONENT DAPM bias level
-+ * @component: The COMPONENT for which to get the DAPM bias level
-+ *
-+ * Returns: The current DAPM bias level of the COMPONENT.
-+ */
-+static inline enum snd_soc_bias_level
-+snd_soc_component_get_bias_level(struct snd_soc_component *component)
-+{
-+	return snd_soc_dapm_get_bias_level(
-+		snd_soc_component_get_dapm(component));
-+}
-+
- /**
-  * snd_soc_codec_force_bias_level() - Set the CODEC DAPM bias level
-  * @codec: The CODEC for which to set the level
-@@ -1466,6 +1494,23 @@ static inline int snd_soc_codec_force_bias_level(struct snd_soc_codec *codec,
- 		level);
- }
- 
-+/**
-+ * snd_soc_component_force_bias_level() - Set the COMPONENT DAPM bias level
-+ * @component: The COMPONENT for which to set the level
-+ * @level: The level to set to
-+ *
-+ * Forces the COMPONENT bias level to a specific state. See
-+ * snd_soc_dapm_force_bias_level().
-+ */
-+static inline int
-+snd_soc_component_force_bias_level(struct snd_soc_component *component,
-+				   enum snd_soc_bias_level level)
-+{
-+	return snd_soc_dapm_force_bias_level(
-+		snd_soc_component_get_dapm(component),
-+		level);
-+}
-+
- /**
-  * snd_soc_dapm_kcontrol_codec() - Returns the codec associated to a kcontrol
-  * @kcontrol: The kcontrol
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 549c269acc7d..518fa2a4ac78 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -614,6 +614,7 @@ static int pm8916_wcd_analog_enable_adc(struct snd_soc_dapm_widget *w,
+ 		case CDC_A_TX_2_EN:
+ 			snd_soc_update_bits(codec, CDC_A_MICB_1_CTL,
+ 					    MICB_1_CTL_CFILT_REF_SEL_MASK, 0);
++			/* fall through */
+ 		case CDC_A_TX_3_EN:
+ 			snd_soc_update_bits(codec, CDC_D_CDC_CONN_TX2_CTL,
+ 					    CONN_TX2_SERIAL_TX2_MUX,
 -- 
 2.15.0
