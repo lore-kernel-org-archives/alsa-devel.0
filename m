@@ -1,78 +1,54 @@
-From: Mark Brown <broonie@kernel.org>
+From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Subject: Re: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
-Date: Wed, 8 Nov 2017 19:49:48 +0000
-Message-ID: <20171108194948.bq46lwurlzf45tzm@sirena.co.uk>
+Date: Wed, 8 Nov 2017 15:01:04 -0500
+Message-ID: <CADnq5_PT5Gerz-gDUFw5VGZvcucHP3Ng-_SFTpBHxQXT9QezEA@mail.gmail.com>
 References: <20171108181841.29332-1-alexander.deucher@amd.com>
  <20171108182214.bwdvt5wwwz7wqf32@sirena.co.uk>
  <CADnq5_PM=C9OjseqvV8M5ohm7Mo18foHGPUkFZSnVNpVruut8Q@mail.gmail.com>
  <20171108184752.wff6qn6ssguaegkq@sirena.co.uk>
  <CABXOdTd6ptUM3E0V6B_hg9unh+na_XHK6AbyfREx5WiYwdckkA@mail.gmail.com>
+ <20171108194948.bq46lwurlzf45tzm@sirena.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0733822862=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <CABXOdTd6ptUM3E0V6B_hg9unh+na_XHK6AbyfREx5WiYwdckkA@mail.gmail.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Guenter Roeck <groeck@google.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Guenter Roeck <groeck@chromium.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <20171108194948.bq46lwurlzf45tzm-7j8lgAiuQgnQXOPxS62xeg@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Guenter Roeck <groeck-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Vijendar Mukunda <Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org>, Guenter Roeck <groeck-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============0733822862==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hv3dquwuhp3yl4gr"
-Content-Disposition: inline
-
-
---hv3dquwuhp3yl4gr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 08, 2017 at 11:13:50AM -0800, Guenter Roeck wrote:
-> On Wed, Nov 8, 2017 at 10:47 AM, Mark Brown <broonie@kernel.org> wrote:
-
-> > Is this different to "ASoC: amd: Report accurate hw_ptr during dma"
-> > which was applied at 16:07?
-
-> I suspect we may be getting hit by chromeos-isms again. In Chrome OS, we
-> don't use Fixes: tags but "FIXUP: <original description>" in the subject
-> (not that I like it, but it is what it is).
-
-So it probably is the same patch that was just resent with a slightly
-modified subject line?  That's what it looked like initially.
-
---hv3dquwuhp3yl4gr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDX9sACgkQJNaLcl1U
-h9C1twf/eb++fbK0W3tZug0uaJOXVhxZzeUlECLoiNvR4+SsbGCLLe7o678y7NfE
-7rsSJYWNqDzzYS1xzM6iTOom1QB44Hha8r6kkzR/KZjEYQplFFPFfeLOQTqmIolR
-GQyKTf3+dcUDwLaFNGA/uLko8fYutE49ga/FeBgH67bok++Oe54buon74pWVyZoh
-XuuSbNkpda8ZL97ZTHM4LE75WRVrnAn0FaXIw/WkMYjQEQsl8yQBi5CHUUb5uyWZ
-3OJAkJ+OYScTnHqnts9Ldz2eakW6TQvlyiPKCE0eK96diEeDpG8IhYZzOGsCdqIJ
-sumdmstGvho96MSXHR9NIoGBledf+w==
-=HJX6
------END PGP SIGNATURE-----
-
---hv3dquwuhp3yl4gr--
-
---===============0733822862==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0733822862==--
+T24gV2VkLCBOb3YgOCwgMjAxNyBhdCAyOjQ5IFBNLCBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5l
+bC5vcmc+IHdyb3RlOgo+IE9uIFdlZCwgTm92IDA4LCAyMDE3IGF0IDExOjEzOjUwQU0gLTA4MDAs
+IEd1ZW50ZXIgUm9lY2sgd3JvdGU6Cj4+IE9uIFdlZCwgTm92IDgsIDIwMTcgYXQgMTA6NDcgQU0s
+IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4gd3JvdGU6Cj4KPj4gPiBJcyB0aGlzIGRp
+ZmZlcmVudCB0byAiQVNvQzogYW1kOiBSZXBvcnQgYWNjdXJhdGUgaHdfcHRyIGR1cmluZyBkbWEi
+Cj4+ID4gd2hpY2ggd2FzIGFwcGxpZWQgYXQgMTY6MDc/Cj4KPj4gSSBzdXNwZWN0IHdlIG1heSBi
+ZSBnZXR0aW5nIGhpdCBieSBjaHJvbWVvcy1pc21zIGFnYWluLiBJbiBDaHJvbWUgT1MsIHdlCj4+
+IGRvbid0IHVzZSBGaXhlczogdGFncyBidXQgIkZJWFVQOiA8b3JpZ2luYWwgZGVzY3JpcHRpb24+
+IiBpbiB0aGUgc3ViamVjdAo+PiAobm90IHRoYXQgSSBsaWtlIGl0LCBidXQgaXQgaXMgd2hhdCBp
+dCBpcykuCj4KPiBTbyBpdCBwcm9iYWJseSBpcyB0aGUgc2FtZSBwYXRjaCB0aGF0IHdhcyBqdXN0
+IHJlc2VudCB3aXRoIGEgc2xpZ2h0bHkKPiBtb2RpZmllZCBzdWJqZWN0IGxpbmU/ICBUaGF0J3Mg
+d2hhdCBpdCBsb29rZWQgbGlrZSBpbml0aWFsbHkuCgpUaGUgb3JpZ2luYWwgcGF0Y2ggd2hpY2gg
+d2FzIGFwcGxpZWQgdG8geW91ciB0cmVlIGFscmVhZHk6Cmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcv
+cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291bmQuZ2l0L2NvbW1pdC8/aD1mb3It
+bmV4dCZpZD02MWFkZDgxNDc5NDJkMjM1MTliOTFmMGVkYzMwOTgwZDdjMTQ0ODJjClRoYXQgcGF0
+Y2ggYXMgYSA2NCBiaXQgZGl2aWRlIGluIGl0IHdoaWNoIHdhcyBmaXhlZCBieSB0aGlzIHBhdGNo
+IGZyb20gR3VlbnRlcjoKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvYXJjaGl2ZXMvZHJp
+LWRldmVsLzIwMTctTm92ZW1iZXIvMTU3MDYzLmh0bWwKd2hpY2ggY29udGFpbmVkIGEgYnVuY2gg
+b2YgQ2hyb21lIHRhZ3MuICBJIHJlbW92ZWQgdGhlIHRhZ3MgYW5kCnVwZGF0ZWQgdGhlIHN1Ympl
+Y3QgYW5kIGFkZGVkIGEgZml4ZXMgbGluZSBhbmQgcmVzZW50IGl0IGFzIHRoaXMgcGF0Y2gKKHN1
+YmplY3Qgb2YgdGhpcyB0aHJlYWQpOgpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9hcmNo
+aXZlcy9kcmktZGV2ZWwvMjAxNy1Ob3ZlbWJlci8xNTcwNzYuaHRtbApQbGVhc2UgYXBwbHkuICBT
+b3JyeSBmb3IgdGhlIGNvbmZ1c2lvbi4KCkFsZXgKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5m
+cmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbWQtZ2Z4Cg==
