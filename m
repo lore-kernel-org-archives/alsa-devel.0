@@ -1,7 +1,7 @@
 From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Subject: [PATCH 3/7] ASoC: tlv320dac31xx: mark expected switch fall-through
-Date: Wed, 8 Nov 2017 14:04:17 -0600
-Message-ID: <a06a3f6e8dc2be1a56205c095f3146bfdf019d66.1510170034.git.garsilva@embeddedor.com>
+Subject: [PATCH 4/7] ASoC: tpa6130a2: mark expected switch fall-through
+Date: Wed, 8 Nov 2017 14:04:22 -0600
+Message-ID: <e577b0ab7a298e7261f3297f6f7a495aa72e88e3.1510170034.git.garsilva@embeddedor.com>
 References: <cover.1510170034.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -16,24 +16,23 @@ List-Id: alsa-devel@alsa-project.org
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 1195220
+Addresses-Coverity-ID: 115164
 Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tpa6130a2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 54a87a9..e286237 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -929,7 +929,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_I2S:
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 2e014c8..616cd4b 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -274,6 +274,7 @@ static int tpa6130a2_probe(struct i2c_client *client,
+ 	default:
+ 		dev_warn(dev, "Unknown TPA model (%d). Assuming 6130A2\n",
+ 			 data->id);
++		/* fall through */
+ 	case TPA6130A2:
+ 		regulator = "Vdd";
  		break;
- 	case SND_SOC_DAIFMT_DSP_A:
--		dsp_a_val = 0x1;
-+		dsp_a_val = 0x1; /* fall through */
- 	case SND_SOC_DAIFMT_DSP_B:
- 		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
- 		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
 -- 
 2.7.4
