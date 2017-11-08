@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: Fix static checker warning
-	for sprintf usage" to the asoc tree
-Date: Wed, 08 Nov 2017 21:32:52 +0000
-Message-ID: <E1eCXxs-0005TV-8r@debutante>
-References: <20171107104626.25800-10-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: add snd_soc_component_cache_sync()" to
+	the asoc tree
+Date: Wed, 08 Nov 2017 21:32:05 +0000
+Message-ID: <E1eCXx7-0005Nl-Nr@debutante>
+References: <87k21jm1gz.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D69AD2676A3
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:46 +0100 (CET)
-In-Reply-To: <20171107104626.25800-10-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 35E172676A0
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:32:54 +0100 (CET)
+In-Reply-To: <87k21jm1gz.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdac_hdmi: Fix static checker warning for sprintf usage
+   ASoC: add snd_soc_component_cache_sync()
 
 has been applied to the asoc tree at
 
@@ -52,34 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 70e97a2d9c5266487dfec4cade28f8e587927f04 Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 7 Nov 2017 16:16:24 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: Fix static checker warning for sprintf usage
+>From 474db2c9991cc624e7415770c8b80fc7acf40cdd Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 6 Nov 2017 01:48:52 +0000
+Subject: [PATCH] ASoC: add snd_soc_component_cache_sync()
 
-Use snprintf instead of sprintf to shut the warning.
+snd_soc_cache_sync() (= for Codec) will be removed soon.
+This patch Component version of it.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index e824d47cc22b..6f3ff15c0962 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -942,7 +942,8 @@ static int hdac_hdmi_create_pin_port_muxs(struct hdac_ext_device *edev,
- 	if (!se)
- 		return -ENOMEM;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f69b13c4a641..4961f4455b65 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1540,6 +1540,18 @@ static inline int snd_soc_cache_sync(struct snd_soc_codec *codec)
+ 	return regcache_sync(codec->component.regmap);
+ }
  
--	sprintf(kc_name, "Pin %d port %d Input", pin->nid, port->id);
-+	snprintf(kc_name, NAME_SIZE, "Pin %d port %d Input",
-+						pin->nid, port->id);
- 	kc->name = devm_kstrdup(&edev->hdac.dev, kc_name, GFP_KERNEL);
- 	if (!kc->name)
- 		return -ENOMEM;
++/**
++ * snd_soc_component_cache_sync() - Sync the register cache with the hardware
++ * @component: COMPONENT to sync
++ *
++ * Note: This function will call regcache_sync()
++ */
++static inline int snd_soc_component_cache_sync(
++	struct snd_soc_component *component)
++{
++	return regcache_sync(component->regmap);
++}
++
+ /* component IO */
+ int snd_soc_component_read(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int *val);
 -- 
 2.15.0
