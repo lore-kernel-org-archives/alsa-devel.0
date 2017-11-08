@@ -1,11 +1,12 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
-Date: Wed,  8 Nov 2017 13:18:41 -0500
-Message-ID: <20171108181841.29332-1-alexander.deucher@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: amd: fix report accurate hw_ptr during dma
+Date: Wed, 8 Nov 2017 18:22:14 +0000
+Message-ID: <20171108182214.bwdvt5wwwz7wqf32@sirena.co.uk>
+References: <20171108181841.29332-1-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0754935007=="
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20171108181841.29332-1-alexander.deucher@amd.com>
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -15,36 +16,60 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, broonie@kernel.org, Vijendar.Mukunda@amd.com
-Cc: Guenter Roeck <groeck@chromium.org>, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogR3VlbnRlciBSb2VjayA8Z3JvZWNrQGNocm9taXVtLm9yZz4KCkVSUk9SOiAiX19hZWFi
-aV91bGRpdm1vZCIgW3NvdW5kL3NvYy9hbWQvc25kLXNvYy1hY3AtcGNtLmtvXSB1bmRlZmluZWQh
-Cgo2NC1iaXQgZGl2aWRlcyByZXF1aXJlIHNwZWNpYWwgb3BlcmF0aW9ucyB0byBhdm9pZCBidWls
-ZCBlcnJvcnMgb24gMzItYml0CnN5c3RlbXMuCgpmaXhlczogNjFhZGQ4MTQ3OTQyIChBU29DOiBh
-bWQ6IFJlcG9ydCBhY2N1cmF0ZSBod19wdHIgZHVyaW5nIGRtYSkKU2lnbmVkLW9mZi1ieTogR3Vl
-bnRlciBSb2VjayA8Z3JvZWNrQGNocm9taXVtLm9yZz4KUmV2aWV3ZWQtb246IGh0dHBzOi8vY2hy
-b21pdW0tcmV2aWV3Lmdvb2dsZXNvdXJjZS5jb20vNjc4OTE5ClJldmlld2VkLWJ5OiBKYXNvbiBD
-bGludG9uIDxqY2xpbnRvbkBjaHJvbWl1bS5vcmc+CihjaGVycnkgcGlja2VkIGZyb20gY29tbWl0
-IDdjYTcyNmU4MGYyMWFiZGJhZWQ5YTVhNzBkZWYxYzMzYTI2Zjg1MzMpClJldmlld2VkLW9uOiBo
-dHRwczovL2Nocm9taXVtLXJldmlldy5nb29nbGVzb3VyY2UuY29tLzY4MTYxOApTaWduZWQtb2Zm
-LWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+Ci0tLQoKdjI6IHJl
-c2VuZCB3aXRoIHRoZSBDaHJvbWl1bSB0YWdzIHJlbW92ZWQgYW5kIHRoZSBzdWJqZWN0IHVwZGF0
-ZWQuCgogc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jIHwgMyArLS0KIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
-YW1kL2FjcC1wY20tZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKaW5kZXggMTNk
-MDQwYTRkMjZmLi5lZjdlOThhZDk2MGMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hbWQvYWNwLXBj
-bS1kbWEuYworKysgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKQEAgLTg1NiwxMiArODU2
-LDExIEBAIHN0YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBhY3BfZG1hX3BvaW50ZXIoc3RydWN0IHNu
-ZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJaWYgKHN1YnN0cmVhbS0+c3RyZWFtID09IFNO
-RFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spIHsKIAkJaWYgKGJ5dGVzY291bnQgPiBydGQtPnJlbmRl
-cmJ5dGVzY291bnQpCiAJCQlieXRlc2NvdW50ID0gYnl0ZXNjb3VudCAtIHJ0ZC0+cmVuZGVyYnl0
-ZXNjb3VudDsKLQkJcG9zID0gIGJ5dGVzY291bnQgJSBidWZmZXJzaXplOwogCX0gZWxzZSB7CiAJ
-CWlmIChieXRlc2NvdW50ID4gcnRkLT5jYXB0dXJlYnl0ZXNjb3VudCkKIAkJCWJ5dGVzY291bnQg
-PSBieXRlc2NvdW50IC0gcnRkLT5jYXB0dXJlYnl0ZXNjb3VudDsKLQkJcG9zID0gYnl0ZXNjb3Vu
-dCAlIGJ1ZmZlcnNpemU7CiAJfQorCXBvcyA9IGRvX2RpdihieXRlc2NvdW50LCBidWZmZXJzaXpl
-KTsKIAlyZXR1cm4gYnl0ZXNfdG9fZnJhbWVzKHJ1bnRpbWUsIHBvcyk7CiB9CiAKLS0gCjIuMTMu
-NgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRl
-dmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============0754935007==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ntd73vxin3ez563k"
+Content-Disposition: inline
+
+
+--ntd73vxin3ez563k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 08, 2017 at 01:18:41PM -0500, Alex Deucher wrote:
+> From: Guenter Roeck <groeck@chromium.org>
+>=20
+> ERROR: "__aeabi_uldivmod" [sound/soc/amd/snd-soc-acp-pcm.ko] undefined!
+>=20
+> 64-bit divides require special operations to avoid build errors on 32-bit
+> systems.
+
+Like I said in reply to your other mail please don't resubmit already
+applied patches.  The current tip of my topic/amd branch appears to be
+this very patch, if there's anything needs changing please send an
+incremental patch.
+
+--ntd73vxin3ez563k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDS1YACgkQJNaLcl1U
+h9DRNQf/fM4SKHjSjCwvb/KtlSFw0oG0oYOoMfl7EbQjS1pK84r3cKkh1Z7sQ9T1
+xUv7XL3bVeZ9Id/874Iok9xT/GcUbkhFKV3PotAOhfgcumA8AzA3DFiMxlTdfH4B
+CBasyJE7U2b1/DaRNbWrgt5LJe7XlTpmVdvCuEKT1jzk1DLpP13rsELumSZ3Uup1
+/hAHOiYdjlofvVd7NencK8aqiwn9ZaaKGBn3sSuNijMHglwKMvtfRNVp5Yfv57PE
+m2q1RlJjVJNfSfjESDi6TZv9CYZSDliO0X1KT1ejLoAYYsnl5axGHLIQbftUVUng
+IVuL2BFJ3TrjIZDXPkC/8VEuH95/HA==
+=R5iY
+-----END PGP SIGNATURE-----
+
+--ntd73vxin3ez563k--
+
+--===============0754935007==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============0754935007==--
