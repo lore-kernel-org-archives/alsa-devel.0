@@ -1,40 +1,80 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: [PATCH 3/3] ASoC: sun8i-codec: Fix left and right channels inversion
-Date: Wed,  8 Nov 2017 16:47:10 +0100
-Message-ID: <20171108154710.16407-4-maxime.ripard@free-electrons.com>
-References: <20171108154710.16407-1-maxime.ripard@free-electrons.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20171108154710.16407-1-maxime.ripard@free-electrons.com>
-Sender: stable-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, codekipper@gmail.com, stable@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: amd: Report accurate hw_ptr during dma
+Date: Wed, 8 Nov 2017 16:05:54 +0000
+Message-ID: <20171108160554.qgx2rkewmbpfcdf6@sirena.co.uk>
+References: <1509741345-1589-1-git-send-email-alexander.deucher@amd.com>
+ <1509741345-1589-2-git-send-email-alexander.deucher@amd.com>
+ <20171106154800.sotryjiadmobitac@sirena.co.uk>
+ <e1db3baf-44f4-c35b-680b-822962823180@amd.com>
+ <20171107113714.bohg3f7ys3wygifn@sirena.org.uk>
+ <b7394063-321f-581f-2ba2-d87e277574b6@amd.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0723287992=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <b7394063-321f-581f-2ba2-d87e277574b6@amd.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>, amd-gfx@lists.freedesktop.org, "Mukunda, Vijendar" <vijendar.mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since its introduction, the codec had an inversion of the left and right
-channels. It turned out to be pretty simple as it appears that the codec
-doesn't have the same polarity on the LRCK signal than the I2S block.
 
-Fix this by inverting our bit value for the LRCK inversion.
+--===============0723287992==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ol7vjagx4luicymf"
+Content-Disposition: inline
 
-Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
----
- sound/soc/sunxi/sun8i-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 522546e6b153..c8dcb1502d74 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -200,7 +200,7 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 			   value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
--			   value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
-+			   !value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
- 
- 	/* DAI format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--- 
-2.14.3
+--ol7vjagx4luicymf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 07, 2017 at 09:34:35PM +0530, Agrawal, Akshu wrote:
+> On 11/7/2017 5:07 PM, Mark Brown wrote:
+
+> > > > These two URLs are different, what was being reviewed here?  What is
+> > > > Commit-Ready supposed to mean?
+
+> Same patch is reviewed, once on 4.4 kernel (659699) and then on 4.12 kernel
+> (672267).
+> Commit-ready is to get it merged on tree after receiving a +2.
+
+OK, that's not unreasonable but probably best to mention if the review
+was in the context of a very old kernel, sometimes upstream changes can
+invalidate the review.
+
+--ol7vjagx4luicymf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDK2IACgkQJNaLcl1U
+h9C4NAf+NqzMWvS0zbduNHhhSwXXgML2AuEr0LAkDam6jEHxaxIIejgAWqktnB4O
+Q3RcD4zTuHSaH6pXSJ7eV46KvSwgvpEUItqIYmk9lePAMTXuCNqXAnOiFCYO93xq
+BxXiiwioIPKuBSXV9/NimD9uO4ljW75ypm2T2xygWCmyaX49XAj0hsl1M5pXKg9l
+J1FiqJWnRWtMZDnNXxw6xERpC6qP6xoJVGaCoOh762PgrOFnaY6zODrypmyLlPoQ
+iriTwnCl4+6OlqrPuaNEsIcm3GUewULAt/78O4Ogync0UCeCA2Rn6MYEmsvQ0OqA
+NtjHtpOqwzg5L70VV7A4NGVoGm0Xgw==
+=CkR5
+-----END PGP SIGNATURE-----
+
+--ol7vjagx4luicymf--
+
+--===============0723287992==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============0723287992==--
