@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix uuid_module memory
-	leak in failure case" to the asoc tree
-Date: Wed, 08 Nov 2017 21:33:21 +0000
-Message-ID: <E1eCXyL-0005YD-JM@debutante>
-References: <20171107104626.25800-5-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Fix possible memory leak on
+	parse and map nid failure" to the asoc tree
+Date: Wed, 08 Nov 2017 21:32:33 +0000
+Message-ID: <E1eCXxZ-0005R4-HZ@debutante>
+References: <20171107104626.25800-12-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CA08D2676C4
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:36:54 +0100 (CET)
-In-Reply-To: <20171107104626.25800-5-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BCD5F267668
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:45 +0100 (CET)
+In-Reply-To: <20171107104626.25800-12-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix uuid_module memory leak in failure case
+   ASoC: hdac_hdmi: Fix possible memory leak on parse and map nid failure
 
 has been applied to the asoc tree at
 
@@ -53,70 +52,96 @@ to this mail.
 Thanks,
 Mark
 
->From f8e066521192c7debe59127d90abbe2773577e25 Mon Sep 17 00:00:00 2001
-From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
-Date: Tue, 7 Nov 2017 16:16:19 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix uuid_module memory leak in failure
- case
+>From 1c0a7de226660b0306b54aaf2cb52312e74723eb Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Tue, 7 Nov 2017 16:16:26 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix possible memory leak on parse and map
+ nid failure
 
-In the loop that adds the uuid_module to the uuid_list list, allocated
-memory is not properly freed in the error path free uuid_list whenever
-any of the memory allocation in the loop fails to avoid memory leak.
+During failure, widgets in cvt_list and pin_list are not freed. So fix
+the possible memory leak by freeing them when failure occurs.
 
-Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-utils.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index 369ef7ce981c..8ff89280d9fd 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -251,6 +251,7 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
- 	struct uuid_module *module;
- 	struct firmware stripped_fw;
- 	unsigned int safe_file;
-+	int ret = 0;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 0c0aa6182502..f3b4f4dfae6a 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1453,6 +1453,8 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
+ 	int i, num_nodes;
+ 	struct hdac_device *hdac = &edev->hdac;
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
++	struct hdac_hdmi_cvt *temp_cvt, *cvt_next;
++	struct hdac_hdmi_pin *temp_pin, *pin_next;
+ 	int ret;
  
- 	/* Get the FW pointer to derive ADSP header */
- 	stripped_fw.data = fw->data;
-@@ -299,8 +300,10 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
+ 	hdac_hdmi_skl_enable_all_pins(hdac);
+@@ -1482,32 +1484,54 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_ext_device *edev,
+ 		case AC_WID_AUD_OUT:
+ 			ret = hdac_hdmi_add_cvt(edev, nid);
+ 			if (ret < 0)
+-				return ret;
++				goto free_widgets;
+ 			break;
  
- 	for (i = 0; i < num_entry; i++, mod_entry++) {
- 		module = kzalloc(sizeof(*module), GFP_KERNEL);
--		if (!module)
--			return -ENOMEM;
-+		if (!module) {
-+			ret = -ENOMEM;
-+			goto free_uuid_list;
-+		}
- 
- 		uuid_bin = (uuid_le *)mod_entry->uuid.id;
- 		memcpy(&module->uuid, uuid_bin, sizeof(module->uuid));
-@@ -311,8 +314,8 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
- 		size = sizeof(int) * mod_entry->instance_max_count;
- 		module->instance_id = devm_kzalloc(ctx->dev, size, GFP_KERNEL);
- 		if (!module->instance_id) {
--			kfree(module);
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto free_uuid_list;
+ 		case AC_WID_PIN:
+ 			ret = hdac_hdmi_add_pin(edev, nid);
+ 			if (ret < 0)
+-				return ret;
++				goto free_widgets;
+ 			break;
  		}
- 
- 		list_add_tail(&module->list, &skl->uuid_list);
-@@ -323,6 +326,10 @@ int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
  	}
  
- 	return 0;
+ 	hdac->end_nid = nid;
+ 
+-	if (!hdmi->num_pin || !hdmi->num_cvt)
+-		return -EIO;
++	if (!hdmi->num_pin || !hdmi->num_cvt) {
++		ret = -EIO;
++		goto free_widgets;
++	}
+ 
+ 	ret = hdac_hdmi_create_dais(hdac, dais, hdmi, hdmi->num_cvt);
+ 	if (ret) {
+ 		dev_err(&hdac->dev, "Failed to create dais with err: %d\n",
+ 							ret);
+-		return ret;
++		goto free_widgets;
+ 	}
+ 
+ 	*num_dais = hdmi->num_cvt;
++	ret = hdac_hdmi_init_dai_map(edev);
++	if (ret < 0)
++		goto free_widgets;
+ 
+-	return hdac_hdmi_init_dai_map(edev);
++	return ret;
 +
-+free_uuid_list:
-+	skl_freeup_uuid_list(skl);
++free_widgets:
++	list_for_each_entry_safe(temp_cvt, cvt_next, &hdmi->cvt_list, head) {
++		list_del(&temp_cvt->head);
++		kfree(temp_cvt->name);
++		kfree(temp_cvt);
++	}
++
++	list_for_each_entry_safe(temp_pin, pin_next, &hdmi->pin_list, head) {
++		for (i = 0; i < temp_pin->num_ports; i++)
++			temp_pin->ports[i].pin = NULL;
++		kfree(temp_pin->ports);
++		list_del(&temp_pin->head);
++		kfree(temp_pin);
++	}
++
 +	return ret;
  }
  
- void skl_freeup_uuid_list(struct skl_sst *ctx)
+ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
 -- 
 2.15.0
