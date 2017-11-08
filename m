@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add dynamic module id
-	support" to the asoc tree
-Date: Wed, 08 Nov 2017 21:32:56 +0000
-Message-ID: <E1eCXxw-0005Uc-NZ@debutante>
-References: <20171107104626.25800-9-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Fix possible NULL pointer
+	dereference" to the asoc tree
+Date: Wed, 08 Nov 2017 21:32:41 +0000
+Message-ID: <E1eCXxh-0005SB-Ql@debutante>
+References: <20171107104626.25800-11-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D738D2676A5
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:46 +0100 (CET)
-In-Reply-To: <20171107104626.25800-9-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 81A5C267665
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:45 +0100 (CET)
+In-Reply-To: <20171107104626.25800-11-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add dynamic module id support
+   ASoC: hdac_hdmi: Fix possible NULL pointer dereference
 
 has been applied to the asoc tree at
 
@@ -53,83 +52,65 @@ to this mail.
 Thanks,
 Mark
 
->From d956147473ec1843c2660a89ef0fba80b66c6657 Mon Sep 17 00:00:00 2001
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Date: Tue, 7 Nov 2017 16:16:23 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add dynamic module id support
+>From eb50fa1739a63cc4b202b40a62d71055a2d7b80c Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Tue, 7 Nov 2017 16:16:25 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix possible NULL pointer dereference
 
-Module id is a property of firmware manifest and can vary between
-platforms so use the uuid instead of module id for pins.
+Pointers hdac_hdmi_pcm and hda_device_id can be NULL, so add check for
+valid pointer to avoid NULL pointer dereference.
 
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 90f8c839bcef..b590742c5a7a 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2054,6 +2054,8 @@ static int skl_tplg_fill_pin(struct device *dev,
- 			struct skl_module_pin *m_pin,
- 			int pin_index)
- {
-+	int ret;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 6f3ff15c0962..0c0aa6182502 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1895,6 +1895,9 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 	struct hdac_hdmi_port *port;
+ 
++	if (!pcm)
++		return;
 +
- 	switch (tkn_elem->token) {
- 	case SKL_TKN_U32_PIN_MOD_ID:
- 		m_pin[pin_index].id.module_id = tkn_elem->value;
-@@ -2063,6 +2065,14 @@ static int skl_tplg_fill_pin(struct device *dev,
- 		m_pin[pin_index].id.instance_id = tkn_elem->value;
- 		break;
+ 	if (list_empty(&pcm->port_list))
+ 		return;
  
-+	case SKL_TKN_UUID:
-+		ret = skl_tplg_get_uuid(dev, m_pin[pin_index].id.mod_uuid.b,
-+			(struct snd_soc_tplg_vendor_uuid_elem *)tkn_elem);
-+		if (ret < 0)
-+			return ret;
+@@ -1913,6 +1916,9 @@ static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 
++	if (!pcm)
++		return false;
 +
-+		break;
+ 	if (list_empty(&pcm->port_list))
+ 		return false;
+ 
+@@ -1926,6 +1932,9 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdac, int pcm_idx)
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 	struct hdac_hdmi_port *port;
+ 
++	if (!pcm)
++		return 0;
 +
- 	default:
- 		dev_err(dev, "%d Not a pin token\n", tkn_elem->token);
- 		return -EINVAL;
-@@ -2487,6 +2497,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 	if (list_empty(&pcm->port_list))
+ 		return 0;
  
- 	case SKL_TKN_U32_PIN_MOD_ID:
- 	case SKL_TKN_U32_PIN_INST_ID:
-+	case SKL_TKN_UUID:
- 		ret = skl_tplg_fill_pins_info(dev,
- 				mconfig, tkn_elem, dir,
- 				pin_index);
-@@ -2549,6 +2560,7 @@ static int skl_tplg_get_tokens(struct device *dev,
- 	struct snd_soc_tplg_vendor_value_elem *tkn_elem;
- 	int tkn_count = 0, ret;
- 	int off = 0, tuple_size = 0;
-+	bool is_module_guid = true;
+@@ -1979,6 +1988,9 @@ static int hdac_hdmi_dev_probe(struct hdac_ext_device *edev)
+ 	hdmi_priv->chmap.ops.is_pcm_attached = is_hdac_hdmi_pcm_attached;
+ 	hdmi_priv->chmap.ops.get_spk_alloc = hdac_hdmi_get_spk_alloc;
  
- 	if (block_size <= 0)
- 		return -EINVAL;
-@@ -2564,8 +2576,15 @@ static int skl_tplg_get_tokens(struct device *dev,
- 			continue;
- 
- 		case SND_SOC_TPLG_TUPLE_TYPE_UUID:
--			ret = skl_tplg_get_uuid(dev, mconfig->guid,
--					array->uuid);
-+			if (is_module_guid) {
-+				ret = skl_tplg_get_uuid(dev, mconfig->guid,
-+							array->uuid);
-+				is_module_guid = false;
-+			} else {
-+				ret = skl_tplg_get_token(dev, array->value, skl,
-+							 mconfig);
-+			}
++	if (!hdac_id)
++		return -ENODEV;
 +
- 			if (ret < 0)
- 				return ret;
- 
+ 	if (hdac_id->driver_data)
+ 		hdmi_priv->drv_data =
+ 			(struct hdac_hdmi_drv_data *)hdac_id->driver_data;
 -- 
 2.15.0
