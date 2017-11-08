@@ -1,76 +1,85 @@
-From: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH 8/9] ASoC: tlv320aic31xx: Fix the reset GPIO OF name
-Date: Wed, 8 Nov 2017 17:25:20 -0600
-Message-ID: <1374534b-ac17-82ef-7b3b-3c6e4d4c5cc9@ti.com>
-References: <20171108212505.28320-1-afd@ti.com>
- <20171108212505.28320-9-afd@ti.com>
- <20171108213639.iymb7wuyjpuirbdu@sirena.co.uk>
- <80169c43-ad7f-d89c-61bf-5ca054aacda5@ti.com>
- <20171108221814.m6j3dgrlqpy4htxf@sirena.co.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdac_hdmi: Fix static checker warning
+	for sprintf usage" to the asoc tree
+Date: Wed, 08 Nov 2017 21:32:52 +0000
+Message-ID: <E1eCXxs-0005TV-8r@debutante>
+References: <20171107104626.25800-10-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171108221814.m6j3dgrlqpy4htxf-7j8lgAiuQgnQXOPxS62xeg@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D69AD2676A3
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:46 +0100 (CET)
+In-Reply-To: <20171107104626.25800-10-guneshwor.o.singh@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/08/2017 04:18 PM, Mark Brown wrote:
-> On Wed, Nov 08, 2017 at 03:53:51PM -0600, Andrew F. Davis wrote:
->> On 11/08/2017 03:36 PM, Mark Brown wrote:
->>> On Wed, Nov 08, 2017 at 03:25:04PM -0600, Andrew F. Davis wrote:
-> 
->>> This is obviously an incompatible change in the binding which will break
->>> any production DTs relying on the current behaviour.  You need to keep
->>> support for the existing property.
-> 
->> I understand the reasons not to change driver behavior wrt DT, but this
->> driver did not make functional use of this gpio, only going forward will
->> this gpio be used for actually reseting the device (in some patches I
->> will post soon). So I would like to fix this incorrect binding *before*
->> fixing it will cause behavior incompatibilities.
-> 
-> There is code in the driver to use the GPIO, including in the probe
-> where the GPIO is requested and set to high (which will bring it out of
-> reset if the default state was low).  At least the probe seems rather
-> likely to have a concrete effect.
-> 
+The patch
 
-None of the 4 boards that defined this gpio have this pulled low in the
-pin control, boards should have an external pull-up on the reset line.
+   ASoC: hdac_hdmi: Fix static checker warning for sprintf usage
 
-At any-rate, I'm pushing this fix to allow the driver to use new kernel
-frameworks that depend on the correct binding being used. This is not a
-case of a badly designed binding or trying to add incompatible
-functionality, it is a typo fix. If we have to keep this driver back
-using old frameworks and needlessly bloat the code solely for the sake
-of compatibility with a typo, then DT "stability" here is causing more
-issues than it solves. </rant>
+has been applied to the asoc tree at
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I guess the alternative would be to have of_find_gpio() also consider
-prefixing, the 'gpio_suffixes' to 'con_id' and checking for those. That
-is rather ugly and probably encourages the spread of this bad binding
-property, but whatever the best fix is it cannot be to force bloat into
-the driver.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
->>> It also doesn't look like a good fix if we're aiming for conformance
->>> with DT naming conventions as unless things changed all GPIO related
->>> properties are supposed to end -gpios even if they can only ever specify
->>> a single GPIO.
-> 
->> If that is the new standard I can fix this patch to use -gpios.
-> 
-> It's always been the standard AFAIK.
-> 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Will fix for v2.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Mark
+
+>From 70e97a2d9c5266487dfec4cade28f8e587927f04 Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Tue, 7 Nov 2017 16:16:24 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Fix static checker warning for sprintf usage
+
+Use snprintf instead of sprintf to shut the warning.
+
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index e824d47cc22b..6f3ff15c0962 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -942,7 +942,8 @@ static int hdac_hdmi_create_pin_port_muxs(struct hdac_ext_device *edev,
+ 	if (!se)
+ 		return -ENOMEM;
+ 
+-	sprintf(kc_name, "Pin %d port %d Input", pin->nid, port->id);
++	snprintf(kc_name, NAME_SIZE, "Pin %d port %d Input",
++						pin->nid, port->id);
+ 	kc->name = devm_kstrdup(&edev->hdac.dev, kc_name, GFP_KERNEL);
+ 	if (!kc->name)
+ 		return -ENOMEM;
+-- 
+2.15.0
