@@ -1,71 +1,39 @@
-From: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH 2/9] ASoC: tlv320aic3x: Fix typo in DT binding documentation
-Date: Wed, 8 Nov 2017 15:24:58 -0600
-Message-ID: <20171108212505.28320-3-afd@ti.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH 8/9] ASoC: tlv320aic31xx: Fix the reset GPIO OF name
+Date: Wed, 8 Nov 2017 15:25:04 -0600
+Message-ID: <20171108212505.28320-9-afd@ti.com>
 References: <20171108212505.28320-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171108212505.28320-1-afd-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Andrew F . Davis" <afd-l0cyMroinI0@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171108212505.28320-1-afd@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The property used to specify a GPIO intended for reset is "reset-gpio",
-this binding uses "gpio-reset", as almost all other bindings use the
-former name this use of the latter is certainly not intended and
-was a typo. It is not compatible with newer methods used to fetch
-GPIO pins and to prevent the spread of this error to other bindings
-lets fix this here.
+The correct DT property for specifying a GPIO used for reset
+is "reset-gpio", fix this here.
 
-We also standardize the pin as active-low, different device trees have
-marked the GPIO different ways, luckily the driver currently uses the
-low-level GPIO set function which does not respect the active-low flag,
-but future changes may change this. This is an active-low reset, mark
-it as such.
+Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
 
-Lastly, add an example of use for this property.
-
-Fixes: c24fdc886fde ("ASoC: tlv320aic3x: Add device tree bindings")
-
-Signed-off-by: Andrew F. Davis <afd-l0cyMroinI0@public.gmane.org>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic31xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-index ba5b45c483f5..9e8eaa08ce90 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-@@ -17,7 +17,7 @@ Required properties:
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 54a87a905eb6..359eba15bb89 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1279,7 +1279,7 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
+ 		aic31xx->pdata.micbias_vg = MICBIAS_2_0V;
+ 	}
  
- Optional properties:
- 
--- gpio-reset - gpio pin number used for codec reset
-+- reset-gpio - GPIO specification for the active low RESET input.
- - ai3x-gpio-func - <array of 2 int> - AIC3X_GPIO1 & AIC3X_GPIO2 Functionality
- 				    - Not supported on tlv320aic3104
- - ai3x-micbias-vg - MicBias Voltage required.
-@@ -61,10 +61,14 @@ The pins can be used in referring sound node's audio-routing property.
- 
- Example:
- 
-+#include <dt-bindings/gpio/gpio.h>
-+
- tlv320aic3x: tlv320aic3x@1b {
- 	compatible = "ti,tlv320aic3x";
- 	reg = <0x1b>;
- 
-+	reset-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
-+
- 	AVDD-supply = <&regulator>;
- 	IOVDD-supply = <&regulator>;
- 	DRVDD-supply = <&regulator>;
+-	ret = of_get_named_gpio(np, "gpio-reset", 0);
++	ret = of_get_named_gpio(np, "reset-gpio", 0);
+ 	if (ret > 0)
+ 		aic31xx->pdata.gpio_reset = ret;
+ }
 -- 
 2.15.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
