@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8994: mark expected switch
-	fall-throughs" to the asoc tree
-Date: Wed, 08 Nov 2017 21:31:14 +0000
-Message-ID: <E1eCXwI-0005Ew-3o@debutante>
-References: <94d7abf866dbcc4052a36ca14e53f1ff8aa30e83.1510170034.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: Intel: Skylake: Check for NHLT ACPI
+	header signature" to the asoc tree
+Date: Wed, 08 Nov 2017 21:33:06 +0000
+Message-ID: <E1eCXy6-0005Wq-VH@debutante>
+References: <20171107104626.25800-7-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 336EB267694
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:32:08 +0100 (CET)
-In-Reply-To: <94d7abf866dbcc4052a36ca14e53f1ff8aa30e83.1510170034.git.garsilva@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7222E2676B9
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:58 +0100 (CET)
+In-Reply-To: <20171107104626.25800-7-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, linux-kernel@vger.kernel.org
+To: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8994: mark expected switch fall-throughs
+   ASoC: Intel: Skylake: Check for NHLT ACPI header signature
 
 has been applied to the asoc tree at
 
@@ -52,40 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 9d94305a7df4ce6af5070baa92cc784786b748b9 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Wed, 8 Nov 2017 14:04:43 -0600
-Subject: [PATCH] ASoC: wm8994: mark expected switch fall-throughs
+>From 3b47c9dc75be097bc0e2f3ac4b176fbf3eed85f2 Mon Sep 17 00:00:00 2001
+From: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Date: Tue, 7 Nov 2017 16:16:21 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Check for NHLT ACPI header signature
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+In certain buggy BIOS acpi_evaluate_dsm() may not return the correct
+NHLT table, so check the NHLT table header signature before accessing
+it.
 
-Addresses-Coverity-ID: 402005
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Signed-off-by: Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8994.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/skylake/skl-nhlt.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 3896523b71e9..f91b49e1ece3 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -860,6 +860,7 @@ static void vmid_reference(struct snd_soc_codec *codec)
- 		switch (wm8994->vmid_mode) {
- 		default:
- 			WARN_ON(NULL == "Invalid VMID mode");
-+			/* fall through */
- 		case WM8994_VMID_NORMAL:
- 			/* Startup bias, VMID ramp & buffer */
- 			snd_soc_update_bits(codec, WM8994_ANTIPOP_2,
-@@ -2654,6 +2655,7 @@ static int wm8994_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_DSP_B:
- 		aif1 |= WM8994_AIF1_LRCLK_INV;
- 		lrclk |= WM8958_AIF1_LRCLK_INV;
-+		/* fall through */
- 	case SND_SOC_DAIFMT_DSP_A:
- 		aif1 |= 0x18;
- 		break;
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index e7d766d56c8e..d14c50a60289 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -20,6 +20,8 @@
+ #include <linux/pci.h>
+ #include "skl.h"
+ 
++#define NHLT_ACPI_HEADER_SIG	"NHLT"
++
+ /* Unique identification for getting NHLT blobs */
+ static guid_t osc_guid =
+ 	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
+@@ -45,6 +47,13 @@ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
+ 				memremap(nhlt_ptr->min_addr, nhlt_ptr->length,
+ 				MEMREMAP_WB);
+ 		ACPI_FREE(obj);
++		if (nhlt_table && (strncmp(nhlt_table->header.signature,
++					NHLT_ACPI_HEADER_SIG,
++					strlen(NHLT_ACPI_HEADER_SIG)) != 0)) {
++			memunmap(nhlt_table);
++			dev_err(dev, "NHLT ACPI header signature incorrect\n");
++			return NULL;
++		}
+ 		return nhlt_table;
+ 	}
+ 
 -- 
 2.15.0
