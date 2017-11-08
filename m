@@ -1,81 +1,130 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: spdifrx: fix 16 bits capture" to the asoc tree
-Date: Wed, 08 Nov 2017 16:08:07 +0000
-Message-ID: <E1eCStb-0002F5-Ck@debutante>
-References: <1509981533-28622-2-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1509981533-28622-2-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Olivier Moysan <olivier.moysan@st.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.orgolivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH 2/3] ASoC: sun8i-codec: Set the BCLK divider
+Date: Thu, 9 Nov 2017 00:22:23 +0800
+Message-ID: <CAGb2v64taPeDRQUhh9pZMQ=UdNsZE9xSfiDF2pVRs1wvz8pubw@mail.gmail.com>
+References: <20171108154710.16407-1-maxime.ripard@free-electrons.com> <20171108154710.16407-3-maxime.ripard@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20171108154710.16407-3-maxime.ripard@free-electrons.com>
+Sender: stable-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mylene Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Code Kipper <codekipper@gmail.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Nov 8, 2017 at 11:47 PM, Maxime Ripard
+<maxime.ripard@free-electrons.com> wrote:
+> While the current code was reporting to be able to work in master mode, it
+> failed to do so because the BCLK divider wasn't programmed, meaning that
+> the BCLK would run at the PLL's frequency no matter the sample rate.
+>
+> It was obviously a bit too fast.
+>
+> Add support to retrieve the divider to use, and set it. Since our PLL is
+> not always able to generate a perfect multiple of the sample rate, we'll
+> have to choose the closest divider that matches our setup.
+>
+> Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+> ---
+>  sound/soc/sunxi/sun8i-codec.c | 53 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+> index 038107baf414..522546e6b153 100644
+> --- a/sound/soc/sunxi/sun8i-codec.c
+> +++ b/sound/soc/sunxi/sun8i-codec.c
+> @@ -73,6 +73,7 @@
+>  #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK         GENMASK(11, 8)
+>  #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK  GENMASK(5, 4)
+>  #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK  GENMASK(8, 6)
+> +#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK  GENMASK(12, 9)
+>
+>  struct sun8i_codec {
+>         struct device   *dev;
+> @@ -226,12 +227,57 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>         return 0;
+>  }
+>
+> +struct sun8i_codec_clk_div {
+> +       u8      div;
+> +       u8      val;
+> +};
+> +
+> +static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
+> +       { .div = 1,     .val = 0 },
+> +       { .div = 2,     .val = 1 },
+> +       { .div = 4,     .val = 2 },
+> +       { .div = 6,     .val = 3 },
+> +       { .div = 8,     .val = 4 },
+> +       { .div = 12,    .val = 5 },
+> +       { .div = 16,    .val = 6 },
+> +       { .div = 24,    .val = 7 },
+> +       { .div = 32,    .val = 8 },
+> +       { .div = 48,    .val = 9 },
+> +       { .div = 64,    .val = 10 },
+> +       { .div = 96,    .val = 11 },
+> +       { .div = 128,   .val = 12 },
+> +       { .div = 192,   .val = 13 },
+> +};
+> +
+> +static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
+> +                                  unsigned int rate,
+> +                                  unsigned int word_size)
+> +{
+> +       unsigned long clk_rate = clk_get_rate(scodec->clk_module);
+> +       unsigned int div = clk_rate / rate / word_size / 2;
+> +       unsigned int best_val = 0, best_diff = ~0;
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(sun8i_codec_bclk_div); i++) {
+> +               const struct sun8i_codec_clk_div *bdiv = &sun8i_codec_bclk_div[i];
+> +               unsigned int diff = abs(bdiv->div - div);
+> +
+> +               if (diff < best_diff) {
+> +                       best_diff = diff;
+> +                       best_val = bdiv->val;
+> +               }
+> +       }
+> +
+> +       return best_val;
+> +}
+> +
+>  static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+>                                  struct snd_pcm_hw_params *params,
+>                                  struct snd_soc_dai *dai)
+>  {
+>         struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
+>         int sample_rate;
+> +       u8 bclk_div;
+>
+>         /*
+>          * The CPU DAI handles only a sample of 16 bits. Configure the
+> @@ -241,6 +287,13 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+>                            SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
+>                            SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16);
 
-   ASoC: stm32: spdifrx: fix 16 bits capture
+This looks like it's using 16 bit words regardless of the settings in params.
 
-has been applied to the asoc tree at
+>
+> +       bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params),
+> +                                           params_width(params));
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+But here you pass params_width(params). Seems a bit error prone.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Otherwise,
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9036e4acc81700a51e5f42820ba4570bea9b6f48 Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan@st.com>
-Date: Mon, 6 Nov 2017 16:18:52 +0100
-Subject: [PATCH] ASoC: stm32: spdifrx: fix 16 bits capture
-
-Change DMA bus width to manage properly 16 bits packed format.
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/stm/stm32_spdifrx.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
-index 84cc5678beba..d7dbe84d5eeb 100644
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -750,17 +750,21 @@ static int stm32_spdifrx_hw_params(struct snd_pcm_substream *substream,
- 	switch (data_size) {
- 	case 16:
- 		fmt = SPDIFRX_DRFMT_PACKED;
--		spdifrx->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
- 	case 32:
- 		fmt = SPDIFRX_DRFMT_LEFT;
--		spdifrx->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 		break;
- 	default:
- 		dev_err(&spdifrx->pdev->dev, "Unexpected data format\n");
- 		return -EINVAL;
- 	}
- 
-+	/*
-+	 * Set buswidth to 4 bytes for all data formats.
-+	 * Packed format: transfer 2 x 2 bytes samples
-+	 * Left format: transfer 1 x 3 bytes samples + 1 dummy byte
-+	 */
-+	spdifrx->dma_params.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	snd_soc_dai_init_dma_data(cpu_dai, NULL, &spdifrx->dma_params);
- 
- 	return regmap_update_bits(spdifrx->regmap, STM32_SPDIFRX_CR,
--- 
-2.15.0
+> +
+> +       regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> +                          SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+> +                          bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+> +
+>         regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+>                            SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
+>                            SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16);
+> --
+> 2.14.3
+>
