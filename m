@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8753: mark expected switch
-	fall-throughs" to the asoc tree
-Date: Wed, 08 Nov 2017 21:31:22 +0000
-Message-ID: <E1eCXwQ-0005H2-4h@debutante>
-References: <2a3113ceca1b3f70258486038ed93cfbed70741c.1510170034.git.garsilva@embeddedor.com>
+Subject: Applied "ASoC: add snd_soc_component_read32" to the
+	asoc tree
+Date: Wed, 08 Nov 2017 21:32:21 +0000
+Message-ID: <E1eCXxN-0005Pm-D1@debutante>
+References: <87a80y4gir.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 50AF526767F
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:31:44 +0100 (CET)
-In-Reply-To: <2a3113ceca1b3f70258486038ed93cfbed70741c.1510170034.git.garsilva@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DA1D267647
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:33:44 +0100 (CET)
+In-Reply-To: <87a80y4gir.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <garsilva@embeddedor.com>, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8753: mark expected switch fall-throughs
+   ASoC: add snd_soc_component_read32
 
 has been applied to the asoc tree at
 
@@ -52,43 +53,71 @@ to this mail.
 Thanks,
 Mark
 
->From b0e92b515e2cbcad923ee1211f59c4b62e94ee37 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Date: Wed, 8 Nov 2017 14:04:31 -0600
-Subject: [PATCH] ASoC: wm8753: mark expected switch fall-throughs
+>From 738b49efe6c6ba485e2b45265db535c58bbd54e7 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 6 Nov 2017 01:48:19 +0000
+Subject: [PATCH] ASoC: add snd_soc_component_read32
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+Current codec drivers are using snd_soc_read(). It will be replaced
+into snd_soc_component_read(), but these 2 are using different style.
+For example, it will be
 
-Addresses-Coverity-ID: 146568
-Addresses-Coverity-ID: 146569
-Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+	- val = snd_soc_read(xxx, reg);
+	+ ret = snd_soc_component_read(xxx, reg, &val);
+	+ if (ret < 0) {
+	+	...
+	+ }
+
+To more smooth replace, let's add snd_soc_component_read32
+which is copied from snd_soc_read()
+
+	- val = snd_soc_read(xxx, reg);
+	+ val = snd_soc_component_read32(xxx, reg);
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8753.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc.h |  2 ++
+ sound/soc/soc-io.c  | 14 ++++++++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index d05d76e79c70..0271a5253bd3 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -971,7 +971,7 @@ static int wm8753_pcm_set_dai_fmt(struct snd_soc_codec *codec,
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		ioctl |= 0x2;
-+		ioctl |= 0x2; /* fall through */
- 	case SND_SOC_DAIFMT_CBM_CFS:
- 		voice |= 0x0040;
- 		break;
-@@ -1096,7 +1096,7 @@ static int wm8753_i2s_set_dai_fmt(struct snd_soc_codec *codec,
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		ioctl |= 0x1;
-+		ioctl |= 0x1; /* fall through */
- 	case SND_SOC_DAIFMT_CBM_CFS:
- 		hifi |= 0x0040;
- 		break;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 6c808527a4f6..747588273c96 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1498,6 +1498,8 @@ static inline int snd_soc_cache_sync(struct snd_soc_codec *codec)
+ /* component IO */
+ int snd_soc_component_read(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int *val);
++unsigned int snd_soc_component_read32(struct snd_soc_component *component,
++				      unsigned int reg);
+ int snd_soc_component_write(struct snd_soc_component *component,
+ 	unsigned int reg, unsigned int val);
+ int snd_soc_component_update_bits(struct snd_soc_component *component,
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index 9b3939049cef..20340ade20a7 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -41,6 +41,20 @@ int snd_soc_component_read(struct snd_soc_component *component,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_read);
+ 
++unsigned int snd_soc_component_read32(struct snd_soc_component *component,
++				      unsigned int reg)
++{
++	unsigned int val;
++	int ret;
++
++	ret = snd_soc_component_read(component, reg, &val);
++	if (ret < 0)
++		return -1;
++
++	return val;
++}
++EXPORT_SYMBOL_GPL(snd_soc_component_read32);
++
+ /**
+  * snd_soc_component_write() - Write register value
+  * @component: Component to write to
 -- 
 2.15.0
