@@ -1,18 +1,18 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [PATCH] ASoC: amd: use do_div rather than 64 bit
-	division to fix 32 bit builds
-Date: Wed,  8 Nov 2017 16:34:54 -0500
-Message-ID: <20171108213454.7048-1-alexander.deucher@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Skylake: Fix updown mixer module
+	format" to the asoc tree
+Date: Wed, 08 Nov 2017 21:33:46 +0000
+Message-ID: <E1eCXyk-0005b8-J2@debutante>
+References: <20171107104626.25800-2-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F56826768E
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:38:19 +0100 (CET)
-Received: by mail-it0-f68.google.com with SMTP id r127so8244247itb.5
- for <alsa-devel@alsa-project.org>; Wed, 08 Nov 2017 13:38:19 -0800 (PST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DD782676BF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:35:20 +0100 (CET)
+In-Reply-To: <20171107104626.25800-2-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +22,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, Vijendar.Mukunda@amd.com
-Cc: tiwai@suse.de, Guenter Roeck <groeck@chromium.org>, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Guenter Roeck <groeck@chromium.org>
+The patch
 
-ERROR: "__aeabi_uldivmod" [sound/soc/amd/snd-soc-acp-pcm.ko] undefined!
+   ASoC: Intel: Skylake: Fix updown mixer module format
 
-64-bit divides require special operations to avoid build errors on 32-bit
-systems.
+has been applied to the asoc tree at
 
-[Reword the commit message to make it clearer - Alex]
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-fixes: 61add8147942 (ASoC: amd: Report accurate hw_ptr during dma)
-Signed-off-by: Guenter Roeck <groeck@chromium.org>
-Reviewed-on: https://chromium-review.googlesource.com/678919
-Reviewed-by: Jason Clinton <jclinton@chromium.org>
-(cherry picked from commit 7ca726e80f21abdbaed9a5a70def1c33a26f8533)
-Reviewed-on: https://chromium-review.googlesource.com/681618
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 3e1b96c80f1a73594b2123173c551bb0fc829b21 Mon Sep 17 00:00:00 2001
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Date: Tue, 7 Nov 2017 16:16:16 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix updown mixer module format
+
+DSP expects length of the coefficient for updown mixer module to be 8.
+So fix the max coefficient length and since we are using default values
+for coefficient select which is zero, we need not explicitly initialize
+it.
+
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 8 --------
+ sound/soc/intel/skylake/skl-topology.h | 2 +-
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 13d040a4d26f..ef7e98ad960c 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -856,12 +856,11 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (bytescount > rtd->renderbytescount)
- 			bytescount = bytescount - rtd->renderbytescount;
--		pos =  bytescount % buffersize;
- 	} else {
- 		if (bytescount > rtd->capturebytescount)
- 			bytescount = bytescount - rtd->capturebytescount;
--		pos = bytescount % buffersize;
- 	}
-+	pos = do_div(bytescount, buffersize);
- 	return bytes_to_frames(runtime, pos);
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 89f70133c8e4..55414be23b82 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -702,18 +702,10 @@ static void skl_set_updown_mixer_format(struct skl_sst *ctx,
+ 	struct skl_module *module = mconfig->module;
+ 	struct skl_module_iface *iface = &module->formats[mconfig->fmt_idx];
+ 	struct skl_module_fmt *fmt = &iface->outputs[0].fmt;
+-	int i = 0;
+ 
+ 	skl_set_base_module_format(ctx,	mconfig,
+ 		(struct skl_base_cfg *)mixer_mconfig);
+ 	mixer_mconfig->out_ch_cfg = fmt->ch_cfg;
+-
+-	/* Select F/W default coefficient */
+-	mixer_mconfig->coeff_sel = 0x0;
+-
+-	/* User coeff, don't care since we are selecting F/W defaults */
+-	for (i = 0; i < UP_DOWN_MIXER_MAX_COEFF; i++)
+-		mixer_mconfig->coeff[i] = 0xDEADBEEF;
  }
  
+ /*
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 2717db92036b..16cea466018c 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -34,7 +34,7 @@
+ #define MAX_FIXED_DMIC_PARAMS_SIZE 727
+ 
+ /* Maximum number of coefficients up down mixer module */
+-#define UP_DOWN_MIXER_MAX_COEFF		6
++#define UP_DOWN_MIXER_MAX_COEFF		8
+ 
+ #define MODULE_MAX_IN_PINS	8
+ #define MODULE_MAX_OUT_PINS	8
 -- 
-2.13.6
+2.15.0
