@@ -1,75 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5663: Delay and retry reading
-	rt5663 ID register
-Date: Wed, 8 Nov 2017 21:20:54 +0000
-Message-ID: <20171108212054.k7iqelprbl4agimy@sirena.co.uk>
-References: <1509949082-21443-1-git-send-email-oder_chiou@realtek.com>
- <20171106113014.674htnbx2i2dk2as@sirena.co.uk>
- <7EB0DE829A537248AF2ED30C97D12694023CFB9D@RTITMBSV02.realtek.com.tw>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH 6/9] ARM: dts: imx: Fix the audio CODEC's reset pin
+Date: Wed, 8 Nov 2017 15:25:02 -0600
+Message-ID: <20171108212505.28320-7-afd@ti.com>
+References: <20171108212505.28320-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5523816490263981332=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A430C266EDF
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:20:56 +0100 (CET)
-In-Reply-To: <7EB0DE829A537248AF2ED30C97D12694023CFB9D@RTITMBSV02.realtek.com.tw>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, Bard Liao <bardliao@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>, "cychiang@chromium.org" <cychiang@chromium.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171108212505.28320-1-afd@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+The correct DT property for specifying a GPIO used for reset
+is "reset-gpio", fix this here.
 
---===============5523816490263981332==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6oxxn2bgkp4rmhje"
-Content-Disposition: inline
+Fixes: 50bffb78e2ee ("ARM: dts: imx: add Gateworks Ventana GW5903 support")
 
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+---
+ arch/arm/boot/dts/imx6qdl-gw5903.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---6oxxn2bgkp4rmhje
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Nov 07, 2017 at 02:21:21AM +0000, Oder Chiou wrote:
-
-> The issue is similar the patch https://patchwork.kernel.org/patch/9681421/.
-> And in current project, these 2 devices were connected to the same i2c host,
-> and they meet the same problem.
-
-OK...  can you resend with the log message all on one line please?  That
-makes it easier for people to grep the kernel source to find where the
-error came from, it's more important than 80 columns.
-
---6oxxn2bgkp4rmhje
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDdTUACgkQJNaLcl1U
-h9B3igf9Eo2ipmpUiUN6eXYADQMkZt/NecRAeQfMgXv35J459wU4NdZ2vl8emx+b
-IPgGfBjzxRWpwCu6n1hOBftB67EwUL0JritYS/Orpp8F941P00e0JoY4QLdZwnK6
-DAB9G7Y1+7Nno5G9KsgP6nHN6orO94Ls90ilnXcfKgYzNCMgGdKkiaet6M4qurQa
-GVrjMqr1owyYIGgix4mpvIRkGbif42vTfJk/SbnKCYW8osF6OeTzJbQMnKGx8GRC
-DqD6gxBFlRlCIXVCAsYfNxb3GOMdnJkaoFJr8TRn3zsH9Ihp5uw+lLluRgrsk95J
-o4WV4R4klJrKXglFAo361TYiv0FQig==
-=Cclm
------END PGP SIGNATURE-----
-
---6oxxn2bgkp4rmhje--
-
---===============5523816490263981332==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5523816490263981332==--
+diff --git a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+index 444425153fc7..b41ba46508db 100644
+--- a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+@@ -310,7 +310,7 @@
+ 	tlv320aic3105: codec@18 {
+ 		compatible = "ti,tlv320aic3x";
+ 		reg = <0x18>;
+-		gpio-reset = <&gpio5 17 GPIO_ACTIVE_LOW>;
++		reset-gpio = <&gpio5 17 GPIO_ACTIVE_LOW>;
+ 		clocks = <&clks IMX6QDL_CLK_CKO>;
+ 		ai3x-micbias-vg = <2>; /* MICBIAS_2_5V */
+ 		/* Regulators */
+-- 
+2.15.0
