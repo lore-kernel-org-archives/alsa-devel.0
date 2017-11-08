@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: use do_div rather than 64 bit
- division to fix 32 bit builds
-Date: Wed, 8 Nov 2017 21:42:59 +0000
-Message-ID: <20171108214259.cjqcc46wikoslx67@sirena.co.uk>
-References: <20171108213454.7048-1-alexander.deucher@amd.com>
+Subject: Applied "ASoC: cs42l56: Fix reset GPIO name in example
+	DT binding" to the asoc tree
+Date: Wed, 08 Nov 2017 21:43:45 +0000
+Message-ID: <E1eCY8P-0006Ug-BS@debutante>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1776374419573498235=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C3104267683
- for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:43:26 +0100 (CET)
-In-Reply-To: <20171108213454.7048-1-alexander.deucher@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C1AA267705
+ for <alsa-devel@alsa-project.org>; Wed,  8 Nov 2017 22:43:48 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, Alex Deucher <alexander.deucher@amd.com>, Vijendar.Mukunda@amd.com, Guenter Roeck <groeck@chromium.org>
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1776374419573498235==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fz7rez7cayifead4"
-Content-Disposition: inline
+   ASoC: cs42l56: Fix reset GPIO name in example DT binding
 
+has been applied to the asoc tree at
 
---fz7rez7cayifead4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Nov 08, 2017 at 04:34:54PM -0500, Alex Deucher wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> fixes: 61add8147942 (ASoC: amd: Report accurate hw_ptr during dma)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Fixes:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> Signed-off-by: Guenter Roeck <groeck@chromium.org>
-> Reviewed-on: https://chromium-review.googlesource.com/678919
-> Reviewed-by: Jason Clinton <jclinton@chromium.org>
-> (cherry picked from commit 7ca726e80f21abdbaed9a5a70def1c33a26f8533)
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This isn't how we show cherry picks upstream for stable (you need a tree
-reference of some kind) and it's not relevant if you ever cherry picked
-anything in your internal process anyway.
+Thanks,
+Mark
 
---fz7rez7cayifead4
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 8adc430603d67e76a0f8491df21654f691acda62 Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Wed, 8 Nov 2017 15:24:59 -0600
+Subject: [PATCH] ASoC: cs42l56: Fix reset GPIO name in example DT binding
 
------BEGIN PGP SIGNATURE-----
+The binding states the reset GPIO property shall be named
+"cirrus,gpio-nreset" and this is what the driver looks for,
+but the example uses "gpio-reset". Fix this here.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloDemIACgkQJNaLcl1U
-h9AX8wf+NfV9clmMLrgfUHhNH+fjLljri7qc2tiaH74YqU6ITCYabPv+lfVLr/nF
-Lis6oXJgghN24Q5IcqV5qo69Sl90XgxKYCT5Wn91ehJRz8VhhHozw9LRMzg8t4km
-tWaAXz6iFC7gN8uhq8bPZfKb6a8pkCdvm3c2lF7P7ZmeayTAO5GERVcPlaa0bQxu
-2bt/KVeccCXmLqg2xgT1njyFSH58LEszECaymaBTWMYV+zy3e/TNQH3Y/hZR//jI
-couPUbwL1j4Yw032vKG/U2aTewQJ3okVQF30CGpdDOGywMbPr5NB9CFwlggel5FU
-kuqp7H7KUWazE5MeyCtwxddAneST2A==
-=MnMd
------END PGP SIGNATURE-----
+Fixes: 3bb40619aca8 ("ASoC: cs42l56: bindings: sound: Add bindings for CS42L56 CODEC")
 
---fz7rez7cayifead4--
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/cs42l56.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============1776374419573498235==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1776374419573498235==--
+diff --git a/Documentation/devicetree/bindings/sound/cs42l56.txt b/Documentation/devicetree/bindings/sound/cs42l56.txt
+index 4feb0eb27ea4..4ba520a28ae8 100644
+--- a/Documentation/devicetree/bindings/sound/cs42l56.txt
++++ b/Documentation/devicetree/bindings/sound/cs42l56.txt
+@@ -55,7 +55,7 @@ Example:
+ codec: codec@4b {
+ 	compatible = "cirrus,cs42l56";
+ 	reg = <0x4b>;
+-	gpio-reset = <&gpio 10 0>;
++	cirrus,gpio-nreset = <&gpio 10 0>;
+ 	cirrus,chgfreq-divisor = <0x05>;
+ 	cirrus.ain1_ref_cfg;
+ 	cirrus,micbias-lvl = <5>;
+-- 
+2.15.0
