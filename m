@@ -1,14 +1,14 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 03/14] soundwire: Add Master registration
-Date: Thu, 9 Nov 2017 21:14:16 +0000
-Message-ID: <a44f40ab-bd8b-f778-6819-73ae151c97ab@linaro.org>
+Subject: Re: [PATCH 10/14] soundwire: Add sysfs for SoundWire DisCo properties
+Date: Thu, 9 Nov 2017 21:14:35 +0000
+Message-ID: <1e82021b-a721-b0a3-6586-cee0077f865a@linaro.org>
 References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-11-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1508382211-3154-4-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1508382211-3154-11-git-send-email-vinod.koul@intel.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -18,54 +18,46 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On 19/10/17 04:03, Vinod Koul wrote:
+> It helps to read the properties for understanding and debug
+> SoundWire systems, so add sysfs files for SoundWire DisCo
+> properties.
+> 
+> TODO: Add ABI files for sysfs
+> 
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
 
-> +/**
-> + * sdw_add_bus_master: add a bus Master instance
-> + *
-> + * @bus: bus instance
-> + *
-> + * Initializes the bus instance, read properties and create child
-> + * devices.
-> + */
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 6c4f41b64744..e3d7aea18892 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -90,6 +90,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+>   		}
+>   	}
+>   
+> +	sdw_sysfs_bus_init(bus);
+> +
+>   	/*
+>   	 * SDW is an enumerable bus, but devices can be powered off. So,
+>   	 * they won't be able to report as present.
+> @@ -119,6 +121,8 @@ static int sdw_delete_slave(struct device *dev, void *data)
+>   	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+>   	struct sdw_bus *bus = slave->bus;
+>   
+> +	sdw_sysfs_slave_exit(slave);
+> +
+>   	mutex_lock(&bus->bus_lock);
+>   	if (!list_empty(&bus->slaves))
+>   		list_del(&slave->node);
+> @@ -130,6 +134,7 @@ static int sdw_delete_slave(struct device *dev, void *data)
+>   
+>   void sdw_delete_bus_master(struct sdw_bus *bus)
+>   {
+> +	sdw_sysfs_bus_init(bus);
 
-Some of the exported functions are missing kerneldocs.
-Is it something you plan to add in next version of the patcheset?
+Shouldn't this be sdw_sysfs_bus_exit() here?
 
-> +int sdw_add_bus_master(struct sdw_bus *bus)
-> +{
-> +	int ret;
-> +
-> +	if (!bus->dev) {
-> +		pr_err("SoundWire bus has no device");
-> +		return -ENODEV;
-> +	}
-> +
-> +	mutex_init(&bus->bus_lock);
-> +	INIT_LIST_HEAD(&bus->slaves);
-> +
-> +	/*
-> +	 * SDW is an enumerable bus, but devices can be powered off. So,
-> +	 * they won't be able to report as present.
-> +	 *
-> +	 * Create Slave devices based on Slaves described in
-> +	 * the respective firmware (ACPI/DT)
-> +	 */
-> +
-> +	if (IS_ENABLED(CONFIG_ACPI) && bus->dev && ACPI_HANDLE(bus->dev))
-> +		ret = sdw_acpi_find_slaves(bus);
-> +	else if (IS_ENABLED(CONFIG_OF) && bus->dev && bus->dev->of_node)
-> +		ret = sdw_of_find_slaves(bus);
-> +	else
-bus->dev is already checked in the start of the function, do we need to 
-check once again ?
 
-> +		ret = -ENOTSUPP; /* No ACPI/DT so error out */
-> +
-> +	if (ret) {
-> +		dev_err(bus->dev, "Finding slaves failed:%d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(sdw_add_bus_master);
+>   	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+>   }
