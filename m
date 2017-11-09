@@ -1,7 +1,7 @@
 From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [PATCH v4 06/12] IIO: add DT bindings for stm32 DFSDM filter
-Date: Thu, 9 Nov 2017 11:12:28 +0100
-Message-ID: <1510222354-15290-7-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v4 10/12] IIO: consumer: allow to set buffer sizes
+Date: Thu, 9 Nov 2017 11:12:32 +0100
+Message-ID: <1510222354-15290-11-git-send-email-arnaud.pouliquen@st.com>
 References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,156 +12,62 @@ To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland 
 Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add bindings that describes STM32 Digital Filter for Sigma Delta
-Modulators. DFSDM allows to connect sigma delta
-modulators.
+Add iio consumer API to set buffer size and watermark according
+to sysfs API.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 ---
-V3->V4 changes:
-   V3 Acked-by Rob Herring but add some minor changes:
-	- rename compatibility to st,stm32h7-dfsdm
-	- update example to align with last clock patches upstreamed
-	- replace pdm by dmic in example
+V3 -> V4 changes:
+ - Set only the Watermark not the buffer lenght
+ - Rename functions to replace "params" with "watermark"
 
- .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 124 +++++++++++++++++++++
- 1 file changed, 124 insertions(+)
- .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 127 +++++++++++++++++++++
- 1 file changed, 127 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+ drivers/iio/buffer/industrialio-buffer-cb.c | 11 +++++++++++
+ include/linux/iio/consumer.h                | 11 +++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-new file mode 100644
-index 0000000..4a42d76
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-@@ -0,0 +1,127 @@
-+STMicroelectronics STM32 DFSDM ADC device driver
+diff --git a/drivers/iio/buffer/industrialio-buffer-cb.c b/drivers/iio/buffer/industrialio-buffer-cb.c
+index 4847534..ea63c83 100644
+--- a/drivers/iio/buffer/industrialio-buffer-cb.c
++++ b/drivers/iio/buffer/industrialio-buffer-cb.c
+@@ -104,6 +104,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(iio_channel_get_all_cb);
+ 
++int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buff,
++					size_t watermark)
++{
++	if (!watermark)
++		return -EINVAL;
++	cb_buff->buffer.watermark = watermark;
 +
++	return 0;
++}
++EXPORT_SYMBOL_GPL(iio_channel_cb_set_buffer_watermark);
 +
-+STM32 DFSDM ADC is a sigma delta analog-to-digital converter dedicated to
-+interface external sigma delta modulators to STM32 micro controllers.
-+It is mainly targeted for:
-+- Sigma delta modulators (motor control, metering...)
-+- PDM microphones (audio digital microphone)
+ int iio_channel_start_all_cb(struct iio_cb_buffer *cb_buff)
+ {
+ 	return iio_update_buffers(cb_buff->indio_dev, &cb_buff->buffer,
+diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+index 5e347a9..0d94557 100644
+--- a/include/linux/iio/consumer.h
++++ b/include/linux/iio/consumer.h
+@@ -134,6 +134,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
+ 						       void *private),
+ 					     void *private);
+ /**
++ * iio_channel_cb_set_buffer_watermark() - set the buffer watermark.
++ * @cb_buffer:		The callback buffer from whom we want the channel
++ *			information.
++ * @watermark: buffer watermark in bytes.
++ *
++ * This function allows to configure the buffer watermark.
++ */
++int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buffer,
++					size_t watermark);
 +
-+It features up to 8 serial digital interfaces (SPI or Manchester) and
-+up to 4 filters on stm32h7.
-+
-+Each child node match with a filter instance.
-+
-+Contents of a STM32 DFSDM root node:
-+------------------------------------
-+Required properties:
-+- compatible: Should be "st,stm32h7-dfsdm".
-+- reg: Offset and length of the DFSDM block register set.
-+- clocks: IP and serial interfaces clocking. Should be set according
-+		to rcc clock ID and "clock-names".
-+- clock-names: Input clock name "dfsdm" must be defined,
-+		"audio" is optional. If defined CLKOUT is based on the audio
-+		clock, else "dfsdm" is used.
-+- #interrupt-cells = <1>;
-+- #address-cells = <1>;
-+- #size-cells = <0>;
-+
-+Optional properties:
-+- spi-max-frequency: Requested only for SPI master mode.
-+		  SPI clock OUT frequency (Hz). This clock must be set according
-+		  to "clock" property. Frequency must be a multiple of the rcc
-+		  clock frequency. If not, SPI CLKOUT frequency will not be
-+		  accurate.
-+
-+Contents of a STM32 DFSDM child nodes:
-+--------------------------------------
-+
-+Required properties:
-+- compatible: Must be:
-+	"st,stm32-dfsdm-adc" for sigma delta ADCs
-+	"st,stm32-dfsdm-dmic" for audio digital microphone.
-+- reg: Specifies the DFSDM filter instance used.
-+- interrupts: IRQ lines connected to each DFSDM filter instance.
-+- st,adc-channels:	List of single-ended channels muxed for this ADC.
-+			valid values:
-+				"st,stm32h7-dfsdm" compatibility: 0 to 7.
-+- st,adc-channel-names:	List of single-ended channel names.
-+- st,filter-order:  SinC filter order from 0 to 5.
-+			0: FastSinC
-+			[1-5]: order 1 to 5.
-+			For audio purpose it is recommended to use order 3 to 5.
-+- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
-+
-+Required properties for "st,stm32-dfsdm-adc" compatibility:
-+- io-channels: From common IIO binding. Used to pipe external sigma delta
-+		modulator or internal ADC output to DFSDM channel.
-+		This is not required for "st,stm32-dfsdm-pdm" compatibility as
-+		PDM microphone is binded in Audio DT node.
-+
-+Required properties for "st,stm32-dfsdm-pdm" compatibility:
-+- #sound-dai-cells: Must be set to 0.
-+- dma: DMA controller phandle and DMA request line associated to the
-+		filter instance (specified by the field "reg")
-+- dma-names: Must be "rx"
-+
-+Optional properties:
-+- st,adc-channel-types:	Single-ended channel input type.
-+			- "SPI_R": SPI with data on rising edge (default)
-+			- "SPI_F": SPI with data on falling edge
-+			- "MANCH_R": manchester codec, rising edge = logic 0
-+			- "MANCH_F": manchester codec, falling edge = logic 1
-+- st,adc-channel-clk-src: Conversion clock source.
-+			  - "CLKIN": external SPI clock (CLKIN x)
-+			  - "CLKOUT": internal SPI clock (CLKOUT) (default)
-+			  - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
-+			  - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
-+
-+- st,adc-alt-channel: Must be defined if two sigma delta modulator are
-+			  connected on same SPI input.
-+			  If not set, channel n is connected to SPI input n.
-+			  If set, channel n is connected to SPI input n + 1.
-+
-+- st,filter0-sync: Set to 1 to synchronize with DFSDM filter instance 0.
-+		   Used for multi microphones synchronization.
-+
-+Example of a sigma delta adc connected on DFSDM SPI port 0
-+and a pdm microphone connected on DFSDM SPI port 1:
-+
-+	ads1202: simple_sd_adc@0 {
-+		compatible = "ads1202";
-+		#io-channel-cells = <1>;
-+	};
-+
-+	dfsdm: dfsdm@40017000 {
-+		compatible = "st,stm32h7-dfsdm";
-+		reg = <0x40017000 0x400>;
-+		clocks = <&rcc DFSDM1_CK>;
-+		clock-names = "dfsdm";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		dfsdm_adc0: dfsdm-adc@0 {
-+			compatible = "st,stm32-dfsdm-adc";
-+			#io-channel-cells = <1>;
-+			reg = <0>;
-+			interrupts = <110>;
-+			st,adc-channels = <0>;
-+			st,adc-channel-names = "sd_adc0";
-+			st,adc-channel-types = "SPI_F";
-+			st,adc-channel-clk-src = "CLKOUT";
-+			io-channels = <&ads1202 0>;
-+			st,filter-order = <3>;
-+		};
-+		dfsdm_pdm1: dfsdm-pdm@1 {
-+			compatible = "st,stm32-dfsdm-dmic";
-+			reg = <1>;
-+			interrupts = <111>;
-+			dmas = <&dmamux1 102 0x400 0x00>;
-+			dma-names = "rx";
-+			st,adc-channels = <1>;
-+			st,adc-channel-names = "dmic1";
-+			st,adc-channel-types = "SPI_R";
-+			st,adc-channel-clk-src = "CLKOUT";
-+			st,filter-order = <5>;
-+		};
-+	}
++/**
+  * iio_channel_release_all_cb() - release and unregister the callback.
+  * @cb_buffer:		The callback buffer that was allocated.
+  */
 -- 
 2.7.4
