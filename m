@@ -1,15 +1,17 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 0/2] ASoC: add mclk-fs support to audio graph
-	card
-Date: Thu, 9 Nov 2017 15:07:56 +0100
-Message-ID: <1510236478-2351-1-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 1/2] ASoC: add mclk-fs to audio graph card
+	binding
+Date: Thu, 9 Nov 2017 15:07:57 +0100
+Message-ID: <1510236478-2351-2-git-send-email-olivier.moysan@st.com>
+References: <1510236478-2351-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id DFF0D266B80
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 15:08:57 +0100 (CET)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 3DFE22677D5
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 15:08:58 +0100 (CET)
+In-Reply-To: <1510236478-2351-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,16 +25,25 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mco
 Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-The aim of these patches is to port mclk-fs property to audio graph card, 
-as originally implemented in simple card.
+Add mclk-fs support to audio graph card
+as initially supported in simple card.
 
-Olivier Moysan (2):
-  ASoC: add mclk-fs to audio graph card binding
-  ASoC: add mclk-fs support to audio graph card
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ Documentation/devicetree/bindings/sound/audio-graph-card.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../devicetree/bindings/sound/audio-graph-card.txt |  1 +
- sound/soc/generic/audio-graph-card.c               | 47 ++++++++++++++++++----
- 2 files changed, 40 insertions(+), 8 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+index 6e6720a..d04ea3b 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -17,6 +17,7 @@ Below are same as Simple-Card.
+ - bitclock-master
+ - bitclock-inversion
+ - frame-inversion
++- mclk-fs
+ - dai-tdm-slot-num
+ - dai-tdm-slot-width
+ - clocks / system-clock-frequency
 -- 
 1.9.1
