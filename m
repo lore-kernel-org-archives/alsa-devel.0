@@ -1,16 +1,16 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 10/17] ASoC: tlv320aic31xx: Fix inverted BCLK
-	handling
-Date: Wed, 8 Nov 2017 18:27:34 -0600
-Message-ID: <20171109002741.10897-11-afd@ti.com>
+Subject: [PATCH 13/17] ASoC: tlv320aic31xx: Add overflow
+	detection support
+Date: Wed, 8 Nov 2017 18:27:37 -0600
+Message-ID: <20171109002741.10897-14-afd@ti.com>
 References: <20171109002741.10897-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 13B11267671
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 01:27:45 +0100 (CET)
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0B45267673
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 01:27:46 +0100 (CET)
 In-Reply-To: <20171109002741.10897-1-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,61 +25,72 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently BCLK inverting is only handled when the DAI format is
-DSP, but the BCLK may be inverted in any supported mode. Without
-this using this CODEC in any other mode than DSP with the BCLK
-inverted leads to bad sampling timing and very poor audio quality.
-
-Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
+Similar to short circuit detection, when the ADC/DAC is saturated and
+overflows poor audio quality can result and should be reported to the
+user. This device support Automatic Dynamic Range Compression (DRC)
+to reduce this but it is not enabled currently in this driver.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 20 +++++++++++++++++++-
+ sound/soc/codecs/tlv320aic31xx.h |  7 +++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 19e74ab68692..e58b7a4e0402 100644
+index 34867274c102..f208362017c6 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -946,6 +946,16 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 		return -EINVAL;
- 	}
+@@ -1339,6 +1339,23 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 	if (value & AIC31XX_HPRSCDETECT)
+ 		dev_err(dev, "Short circuit on Right output is detected\n");
  
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		iface_reg2 |= AIC31XX_BCLKINV_MASK;
-+		break;
-+	default:
-+		return -EINVAL;
++	ret = regmap_read(aic31xx->regmap, AIC31XX_OFFLAG, &value);
++	if (ret) {
++		dev_err(dev, "Failed to read overflow flag: %d\n", ret);
++		return IRQ_NONE;
 +	}
 +
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -953,16 +963,12 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_DSP_A:
- 		dsp_a_val = 0x1;
- 	case SND_SOC_DAIFMT_DSP_B:
--		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
--		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--		case SND_SOC_DAIFMT_NB_NF:
--			iface_reg2 |= AIC31XX_BCLKINV_MASK;
--			break;
--		case SND_SOC_DAIFMT_IB_NF:
--			break;
--		default:
--			return -EINVAL;
--		}
-+		/*
-+		 * NOTE: This CODEC samples on the falling edge of BCLK in
-+		 * DSP mode, this is inverted compared to what most DAIs
-+		 * expect, so we invert for this mode
-+		 */
-+		iface_reg2 ^= AIC31XX_BCLKINV_MASK;
- 		iface_reg1 |= (AIC31XX_DSP_MODE <<
- 			       AIC31XX_IFACE1_DATATYPE_SHIFT);
- 		break;
++	if (value & AIC31XX_DAC_OF_LEFT)
++		dev_err(dev, "Left-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_RIGHT)
++		dev_err(dev, "Right-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_SHIFTER)
++		dev_err(dev, "DAC barrel shifter overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF)
++		dev_err(dev, "ADC overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF_SHIFTER)
++		dev_err(dev, "ADC barrel shifter overflow has occurred\n");
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -1413,7 +1430,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 				   AIC31XX_GPIO1_FUNC_SHIFT);
+ 
+ 		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
+-			     AIC31XX_SC);
++			     AIC31XX_SC |
++			     AIC31XX_ENGINE);
+ 
+ 		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
+ 						NULL, aic31xx_irq,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 3415a96aa6c3..944a19539324 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -174,6 +174,13 @@ enum aic31xx_type {
+ #define AIC31XX_HPRDRVPWRSTATUS		BIT(1)
+ #define AIC31XX_SPRDRVPWRSTATUS		BIT(0)
+ 
++/* AIC31XX_OFFLAG */
++#define AIC31XX_DAC_OF_LEFT		BIT(7)
++#define AIC31XX_DAC_OF_RIGHT		BIT(6)
++#define AIC31XX_DAC_OF_SHIFTER		BIT(5)
++#define AIC31XX_ADC_OF			BIT(3)
++#define AIC31XX_ADC_OF_SHIFTER		BIT(1)
++
+ /* AIC31XX_INTRDACFLAG */
+ #define AIC31XX_HPLSCDETECT		BIT(7)
+ #define AIC31XX_HPRSCDETECT		BIT(6)
 -- 
 2.15.0
