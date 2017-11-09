@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Wait for 400msec before
-	concluding on value of RT5645_VENDOR_ID2" to the asoc tree
-Date: Thu, 09 Nov 2017 17:42:50 +0000
-Message-ID: <E1eCqqo-0006dk-Oj@debutante>
-References: <20171109173552.21438-1-alexander.deucher@amd.com>
+Subject: Applied "ASoC: sun4i-codec: fixed 32bit audio capture
+	support for H3/H2+" to the asoc tree
+Date: Thu, 09 Nov 2017 17:43:08 +0000
+Message-ID: <E1eCqr6-0006f0-Au@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EDEFD267852
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:42:57 +0100 (CET)
-In-Reply-To: <20171109173552.21438-1-alexander.deucher@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BBF2F267826
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:43:09 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, broonie@kernel.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, Bard Liao <bardliao@realtek.com>
+To: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Wait for 400msec before concluding on value of RT5645_VENDOR_ID2
+   ASoC: sun4i-codec: fixed 32bit audio capture support for H3/H2+
 
 has been applied to the asoc tree at
 
@@ -53,51 +52,70 @@ to this mail.
 Thanks,
 Mark
 
->From 0c279a590fde66f4307c93ab2d4f680c7f41bbfa Mon Sep 17 00:00:00 2001
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Date: Thu, 9 Nov 2017 12:35:51 -0500
-Subject: [PATCH] ASoC: rt5645: Wait for 400msec before concluding on value of
- RT5645_VENDOR_ID2
+>From 8a0f95ce48304364979066600eba7cc5c939ba83 Mon Sep 17 00:00:00 2001
+From: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
+Date: Tue, 31 Oct 2017 12:58:18 +0100
+Subject: [PATCH] ASoC: sun4i-codec: fixed 32bit audio capture support for
+ H3/H2+
 
-Minimum time required between power On of codec and read
-of RT5645_VENDOR_ID2 is 400msec. We should wait that long
-before reading the value.
+32bit and 24bit audio capture formats for H3/H2+ are broken because the
+RX_SAMPLE_BITS and the RX_FIFO_MODE bits of AC_ADC_FIFOC register of the audio
+codec are not set to operate in 24bit mode but in 16bit mode only.
+The following patch sets the H3 audio codec registers and the DMA bus width
+properly when a 24/32bit capture is requested.
 
-TEST=Cold boot the device and check for sound device.
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/sunxi/sun4i-codec.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 23cc2cb8393f..5f24df4fae8e 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -55,6 +55,8 @@ MODULE_PARM_DESC(quirk, "RT5645 pdata quirk override");
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index baa9007464ed..5da4efe7a550 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -346,11 +346,6 @@ static int sun4i_codec_prepare_capture(struct snd_pcm_substream *substream,
+ 				   0x3 << 8,
+ 				   0x1 << 8);
  
- #define RT5645_HWEQ_NUM 57
+-	/* Fill most significant bits with valid data MSB */
+-	regmap_field_update_bits(scodec->reg_adc_fifoc,
+-				 BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE),
+-				 BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE));
+-
+ 	return 0;
+ }
  
-+#define TIME_TO_POWER_MS 400
+@@ -490,6 +485,30 @@ static int sun4i_codec_hw_params_capture(struct sun4i_codec *scodec,
+ 					 BIT(SUN4I_CODEC_ADC_FIFOC_MONO_EN),
+ 					 0);
+ 
++	/* Set the number of sample bits to either 16 or 24 bits */
++	if (hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS)->min == 32) {
++		regmap_field_update_bits(scodec->reg_adc_fifoc,
++				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS),
++				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS));
 +
- static const struct regmap_range_cfg rt5645_ranges[] = {
- 	{
- 		.name = "PR",
-@@ -3784,6 +3786,12 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 			ret);
- 		return ret;
- 	}
++		regmap_field_update_bits(scodec->reg_adc_fifoc,
++				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE),
++				   0);
 +
-+	/*
-+	 * Read after 400msec, as it is the interval required between
-+	 * read and power On.
-+	 */
-+	msleep(TIME_TO_POWER_MS);
- 	regmap_read(regmap, RT5645_VENDOR_ID2, &val);
++		scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	} else {
++		regmap_field_update_bits(scodec->reg_adc_fifoc,
++				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS),
++				   0);
++
++		/* Fill most significant bits with valid data MSB */
++		regmap_field_update_bits(scodec->reg_adc_fifoc,
++				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE),
++				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE));
++
++		scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	}
++
+ 	return 0;
+ }
  
- 	switch (val) {
 -- 
 2.15.0
