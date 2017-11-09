@@ -1,233 +1,106 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH 2/5] media: dt-bindings: Add bindings for
-	TDA1997X
-Date: Thu,  9 Nov 2017 10:45:33 -0800
-Message-ID: <1510253136-14153-3-git-send-email-tharvey@gateworks.com>
-References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?=
+        <benoit.thebaudeau.dev-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/9] ASoC: tlv320aic3x: Fix typo in DT
+ binding documentation
+Date: Thu, 9 Nov 2017 21:26:00 +0100
+Message-ID: <CA+sos78vOjcY=9B3-pFthe9UUBqiEUps967UDEY=o=fUu230=Q@mail.gmail.com>
+References: <20171108212505.28320-1-afd@ti.com> <20171108212505.28320-3-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BD19267826
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 19:45:52 +0100 (CET)
-Received: by mail-pg0-f65.google.com with SMTP id s75so5410217pgs.0
- for <alsa-devel@alsa-project.org>; Thu, 09 Nov 2017 10:45:52 -0800 (PST)
-In-Reply-To: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, shawnguo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171108212505.28320-3-afd-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alsa-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cc: Rob Herring <robh@kernel.org>
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
-v3:
- - fix typo
+Dear Andrew F. Davis,
 
-v2:
- - add vendor prefix and remove _ from vidout-portcfg
- - remove _ from labels
- - remove max-pixel-rate property
- - describe and provide example for single output port
- - update to new audio port bindings
----
- .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
- 1 file changed, 179 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+On Wed, Nov 8, 2017 at 10:24 PM, Andrew F. Davis <afd-l0cyMroinI0@public.gmane.org> wrote:
+> The property used to specify a GPIO intended for reset is "reset-gpio",
+> this binding uses "gpio-reset", as almost all other bindings use the
+> former name this use of the latter is certainly not intended and
+> was a typo. It is not compatible with newer methods used to fetch
+> GPIO pins and to prevent the spread of this error to other bindings
+> lets fix this here.
+>
+> We also standardize the pin as active-low, different device trees have
+> marked the GPIO different ways, luckily the driver currently uses the
+> low-level GPIO set function which does not respect the active-low flag,
+> but future changes may change this. This is an active-low reset, mark
+> it as such.
+>
+> Lastly, add an example of use for this property.
+>
+> Fixes: c24fdc886fde ("ASoC: tlv320aic3x: Add device tree bindings")
+>
+> Signed-off-by: Andrew F. Davis <afd-l0cyMroinI0@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Do=
+cumentation/devicetree/bindings/sound/tlv320aic3x.txt
+> index ba5b45c483f5..9e8eaa08ce90 100644
+> --- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+> +++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+> @@ -17,7 +17,7 @@ Required properties:
+>
+>  Optional properties:
+>
+> -- gpio-reset - gpio pin number used for codec reset
+> +- reset-gpio - GPIO specification for the active low RESET input.
+>  - ai3x-gpio-func - <array of 2 int> - AIC3X_GPIO1 & AIC3X_GPIO2 Function=
+ality
+>                                     - Not supported on tlv320aic3104
+>  - ai3x-micbias-vg - MicBias Voltage required.
+> @@ -61,10 +61,14 @@ The pins can be used in referring sound node's audio-=
+routing property.
+>
+>  Example:
+>
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+>  tlv320aic3x: tlv320aic3x@1b {
+>         compatible =3D "ti,tlv320aic3x";
+>         reg =3D <0x1b>;
+>
+> +       reset-gpio =3D <&gpio1 17 GPIO_ACTIVE_LOW>;
+> +
+>         AVDD-supply =3D <&regulator>;
+>         IOVDD-supply =3D <&regulator>;
+>         DRVDD-supply =3D <&regulator>;
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/tda1997x.txt b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-new file mode 100644
-index 0000000..dd37f14
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-@@ -0,0 +1,179 @@
-+Device-Tree bindings for the NXP TDA1997x HDMI receiver
-+
-+The TDA19971/73 are HDMI video receivers.
-+
-+The TDA19971 Video port output pins can be used as follows:
-+ - RGB 8bit per color (24 bits total): R[11:4] B[11:4] G[11:4]
-+ - YUV444 8bit per color (24 bits total): Y[11:4] Cr[11:4] Cb[11:4]
-+ - YUV422 semi-planar 8bit per component (16 bits total): Y[11:4] CbCr[11:4]
-+ - YUV422 semi-planar 10bit per component (20 bits total): Y[11:2] CbCr[11:2]
-+ - YUV422 semi-planar 12bit per component (24 bits total): - Y[11:0] CbCr[11:0]
-+ - YUV422 BT656 8bit per component (8 bits total): YCbCr[11:4] (2-cycles)
-+ - YUV422 BT656 10bit per component (10 bits total): YCbCr[11:2] (2-cycles)
-+ - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
-+
-+The TDA19973 Video port output pins can be used as follows:
-+ - RGB 12bit per color (36 bits total): R[11:0] B[11:0] G[11:0]
-+ - YUV444 12bit per color (36 bits total): Y[11:0] Cb[11:0] Cr[11:0]
-+ - YUV422 semi-planar 12bit per component (24 bits total): Y[11:0] CbCr[11:0]
-+ - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
-+
-+The Video port output pins are mapped via 4-bit 'pin groups' allowing
-+for a variety of connection possibilities including swapping pin order within
-+pin groups. The video_portcfg device-tree property consists of register mapping
-+pairs which map a chip-specific VP output register to a 4-bit pin group. If
-+the pin group needs to be bit-swapped you can use the *_S pin-group defines.
-+
-+Required Properties:
-+ - compatible          :
-+  - "nxp,tda19971" for the TDA19971
-+  - "nxp,tda19973" for the TDA19973
-+ - reg                 : I2C slave address
-+ - interrupts          : The interrupt number
-+ - DOVDD-supply        : Digital I/O supply
-+ - DVDD-supply         : Digital Core supply
-+ - AVDD-supply         : Analog supply
-+ - nxp,vidout-portcfg  : array of pairs mapping VP output pins to pin groups.
-+
-+Optional Properties:
-+ - nxp,audout-format   : DAI bus format: "i2s" or "spdif".
-+ - nxp,audout-width    : width of audio output data bus (1-4).
-+ - nxp,audout-layout   : data layout (0=AP0 used, 1=AP0/AP1/AP2/AP3 used).
-+ - nxp,audout-mclk-fs  : Multiplication factor between stream rate and codec
-+                         mclk.
-+
-+The device node must contain one 'port' child node for its digital output
-+video port, in accordance with the video interface bindings defined in
-+Documentation/devicetree/bindings/media/video-interfaces.txt.
-+
-+Optional Endpoint Properties:
-+  The following three properties are defined in video-interfaces.txt and
-+  are valid for source endpoints only:
-+  - hsync-active: Horizontal synchronization polarity. Defaults to active high.
-+  - vsync-active: Vertical synchronization polarity. Defaults to active high.
-+  - data-active: Data polarity. Defaults to active high.
-+
-+Examples:
-+ - VP[15:0] connected to IMX6 CSI_DATA[19:4] for 16bit YUV422
-+   16bit I2S layout0 with a 128*fs clock (A_WS, AP0, A_CLK pins)
-+	hdmi-receiver@48 {
-+		compatible = "nxp,tda19971";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tda1997x>;
-+		reg = <0x48>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+		DOVDD-supply = <&reg_3p3v>;
-+		AVDD-supply = <&reg_1p8v>;
-+		DVDD-supply = <&reg_1p8v>;
-+		/* audio */
-+		#sound-dai-cells = <0>;
-+		nxp,audout-format = "i2s";
-+		nxp,audout-layout = <0>;
-+		nxp,audout-width = <16>;
-+		nxp,audout-mclk-fs = <128>;
-+		/*
-+		 * The 8bpp YUV422 semi-planar mode outputs CbCr[11:4]
-+		 * and Y[11:4] across 16bits in the same pixclk cycle.
-+		 */
-+		nxp,vidout-portcfg =
-+			/* Y[11:8]<->VP[15:12]<->CSI_DATA[19:16] */
-+			< TDA1997X_VP24_V15_12 TDA1997X_G_Y_11_8 >,
-+			/* Y[7:4]<->VP[11:08]<->CSI_DATA[15:12] */
-+			< TDA1997X_VP24_V11_08 TDA1997X_G_Y_7_4 >,
-+			/* CbCc[11:8]<->VP[07:04]<->CSI_DATA[11:8] */
-+			< TDA1997X_VP24_V07_04 TDA1997X_R_CR_CBCR_11_8 >,
-+			/* CbCr[7:4]<->VP[03:00]<->CSI_DATA[7:4] */
-+			< TDA1997X_VP24_V03_00 TDA1997X_R_CR_CBCR_7_4 >;
-+
-+		port {
-+			tda1997x_to_ipu1_csi0_mux: endpoint {
-+				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-+				bus-width = <16>;
-+				hsync-active = <1>;
-+				vsync-active = <1>;
-+				data-active = <1>;
-+			};
-+		};
-+	};
-+ - VP[15:8] connected to IMX6 CSI_DATA[19:12] for 8bit BT656
-+   16bit I2S layout0 with a 128*fs clock (A_WS, AP0, A_CLK pins)
-+	hdmi-receiver@48 {
-+		compatible = "nxp,tda19971";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tda1997x>;
-+		reg = <0x48>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+		DOVDD-supply = <&reg_3p3v>;
-+		AVDD-supply = <&reg_1p8v>;
-+		DVDD-supply = <&reg_1p8v>;
-+		/* audio */
-+		#sound-dai-cells = <0>;
-+		nxp,audout-format = "i2s";
-+		nxp,audout-layout = <0>;
-+		nxp,audout-width = <16>;
-+		nxp,audout-mclk-fs = <128>;
-+		/*
-+		 * The 8bpp YUV422 semi-planar mode outputs CbCr[11:4]
-+		 * and Y[11:4] across 16bits in the same pixclk cycle.
-+		 */
-+		nxp,vidout-portcfg =
-+			/* Y[11:8]<->VP[15:12]<->CSI_DATA[19:16] */
-+			< TDA1997X_VP24_V15_12 TDA1997X_G_Y_11_8 >,
-+			/* Y[7:4]<->VP[11:08]<->CSI_DATA[15:12] */
-+			< TDA1997X_VP24_V11_08 TDA1997X_G_Y_7_4 >,
-+			/* CbCc[11:8]<->VP[07:04]<->CSI_DATA[11:8] */
-+			< TDA1997X_VP24_V07_04 TDA1997X_R_CR_CBCR_11_8 >,
-+			/* CbCr[7:4]<->VP[03:00]<->CSI_DATA[7:4] */
-+			< TDA1997X_VP24_V03_00 TDA1997X_R_CR_CBCR_7_4 >;
-+
-+		port {
-+			tda1997x_to_ipu1_csi0_mux: endpoint {
-+				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-+				bus-width = <16>;
-+				hsync-active = <1>;
-+				vsync-active = <1>;
-+				data-active = <1>;
-+			};
-+		};
-+	};
-+ - VP[15:8] connected to IMX6 CSI_DATA[19:12] for 8bit BT656
-+   16bit I2S layout0 with a 128*fs clock (A_WS, AP0, A_CLK pins)
-+	hdmi-receiver@48 {
-+		compatible = "nxp,tda19971";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tda1997x>;
-+		reg = <0x48>;
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+		DOVDD-supply = <&reg_3p3v>;
-+		AVDD-supply = <&reg_1p8v>;
-+		DVDD-supply = <&reg_1p8v>;
-+		/* audio */
-+		#sound-dai-cells = <0>;
-+		nxp,audout-format = "i2s";
-+		nxp,audout-layout = <0>;
-+		nxp,audout-width = <16>;
-+		nxp,audout-mclk-fs = <128>;
-+		/*
-+		 * The 8bpp BT656 mode outputs YCbCr[11:4] across 8bits over
-+		 * 2 pixclk cycles.
-+		 */
-+		nxp,vidout-portcfg =
-+			/* YCbCr[11:8]<->VP[15:12]<->CSI_DATA[19:16] */
-+			< TDA1997X_VP24_V15_12 TDA1997X_R_CR_CBCR_11_8 >,
-+			/* YCbCr[7:4]<->VP[11:08]<->CSI_DATA[15:12] */
-+			< TDA1997X_VP24_V11_08 TDA1997X_R_CR_CBCR_7_4 >,
-+
-+		port {
-+			tda1997x_to_ipu1_csi0_mux: endpoint {
-+				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-+				bus-width = <16>;
-+				hsync-active = <1>;
-+				vsync-active = <1>;
-+				data-active = <1>;
-+			};
-+		};
-+	};
-+
--- 
-2.7.4
+According to Documentation/devicetree/bindings/gpio/gpio.txt:
+"GPIO properties should be named "[<name>-]gpios", with <name> being the pu=
+rpose
+of this GPIO for the device. While a non-existent <name> is considered vali=
+d
+for compatibility reasons (resolving to the "gpios" property), it is not al=
+lowed
+for new bindings. Also, GPIO properties named "[<name>-]gpio" are valid and=
+ old
+bindings use it, but are only supported for compatibility reasons and shoul=
+d not
+be used for newer bindings since it has been deprecated."
+
+So it should be "reset-gpios" for new bindings.
+
+Also, sound/soc/codecs/tlv320aic3x.c still uses "gpio-reset", and I do
+not see any patch in your series changing this:
+ret =3D of_get_named_gpio(np, "gpio-reset", 0);
+
+Same remarks for your "[PATCH 6/9] ARM: dts: imx: Fix the audio
+CODEC's reset pin". I don't know if there are other DTS files using
+this, but they should all be updated accordingly. This would anyway
+break all of the out-of-tree DTS files using this, which I think is
+not allowed, so the driver should be changed in a way still allowing
+the legacy naming besides the new one.
+
+Best regards,
+Beno=C3=AEt
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
