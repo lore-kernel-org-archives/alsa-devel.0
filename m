@@ -1,48 +1,58 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 08/17] ASoC: tlv320aic31xx: Check clock and divider before division
-Date: Wed, 8 Nov 2017 18:27:32 -0600
-Message-ID: <20171109002741.10897-9-afd@ti.com>
+Subject: [PATCH 09/17] ASoC: tlv320aic31xx: Add CODEC clock
+	slave support
+Date: Wed, 8 Nov 2017 18:27:33 -0600
+Message-ID: <20171109002741.10897-10-afd@ti.com>
 References: <20171109002741.10897-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id B510426766C
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 01:27:45 +0100 (CET)
 In-Reply-To: <20171109002741.10897-1-afd@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-If our set_sysclk DAI callback has not been called yet p_div will be 0
-and dividing by this will cause an error. Print an error message and
-leave before this.
+This CODEC supports being the WCLK and/or BCLK slave, add
+support for this here.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic31xx.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index e8eb3de7af7b..95518eabd7e8 100644
+index 95518eabd7e8..19e74ab68692 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -763,11 +763,17 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- {
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 	int bclk_score = snd_soc_params_to_frame_size(params);
--	int mclk_p = aic31xx->sysclk / aic31xx->p_div;
-+	int mclk_p;
- 	int bclk_n = 0;
- 	int match = -1;
- 	int i;
+@@ -934,8 +934,15 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		iface_reg1 |= AIC31XX_BCLK_MASTER | AIC31XX_WCLK_MASTER;
+ 		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		iface_reg1 |= AIC31XX_WCLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		iface_reg1 |= AIC31XX_BCLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
+ 	default:
+-		dev_alert(codec->dev, "Invalid DAI master/slave interface\n");
+ 		return -EINVAL;
+ 	}
  
-+	if (!aic31xx->sysclk || !aic31xx->p_div) {
-+		dev_err(codec->dev, "Master clock not supplied\n");
-+		return -EINVAL;
-+	}
-+	mclk_p = aic31xx->sysclk / aic31xx->p_div;
-+
- 	/* Use PLL as CODEC_CLKIN and DAC_CLK as BDIV_CLKIN */
- 	snd_soc_update_bits(codec, AIC31XX_CLKMUX,
- 			    AIC31XX_CODEC_CLKIN_MASK, AIC31XX_CODEC_CLKIN_PLL);
 -- 
 2.15.0
