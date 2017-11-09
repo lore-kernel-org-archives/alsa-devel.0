@@ -1,20 +1,18 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: [PATCH] ASoC: amd: Modified DMA transfer Mechanism for
-	Playback
-Date: Thu,  9 Nov 2017 12:35:52 -0500
-Message-ID: <20171109173552.21438-2-alexander.deucher@amd.com>
-References: <20171109173552.21438-1-alexander.deucher@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: amd: Modified DMA transfer Mechanism
+	for Playback" to the asoc tree
+Date: Thu, 09 Nov 2017 17:42:26 +0000
+Message-ID: <E1eCqqQ-0006as-1m@debutante>
+References: <20171109173552.21438-2-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
- [209.85.216.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0294A26783F
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:36:02 +0100 (CET)
-Received: by mail-qt0-f193.google.com with SMTP id y45so2492737qty.6
- for <alsa-devel@alsa-project.org>; Thu, 09 Nov 2017 09:36:02 -0800 (PST)
-In-Reply-To: <20171109173552.21438-1-alexander.deucher@amd.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 366F8267826
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:42:32 +0100 (CET)
+In-Reply-To: <20171109173552.21438-2-alexander.deucher@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,11 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, Vijendar.Mukunda@amd.com
-Cc: tiwai@suse.de, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, Akshu Agrawal <Akshu.Agrawal@amd.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, Akshu Agrawal <Akshu.Agrawal@amd.com>, broonie@kernel.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
+
+   ASoC: amd: Modified DMA transfer Mechanism for Playback
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 31c45b3e8d0ecc3a5cbfbf3dfe18adeab2f17a48 Mon Sep 17 00:00:00 2001
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Date: Thu, 9 Nov 2017 12:35:52 -0500
+Subject: [PATCH] ASoC: amd: Modified DMA transfer Mechanism for Playback
 
 Before rendering starts, DMA driver copies full buffer valid data
 to ACP SRAM for the first time, after that ACP SRAM to I2S
@@ -45,6 +72,7 @@ during playback.
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/amd/acp-pcm-dma.c | 27 +++++----------------------
  1 file changed, 5 insertions(+), 22 deletions(-)
@@ -110,4 +138,4 @@ index ef7e98ad960c..9f521a55d610 100644
  
  	struct snd_pcm_runtime *runtime = substream->runtime;
 -- 
-2.13.6
+2.15.0
