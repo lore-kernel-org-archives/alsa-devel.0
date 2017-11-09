@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: Set the BCLK divider" to the asoc tree
-Date: Thu, 09 Nov 2017 17:44:33 +0000
-Message-ID: <E1eCqsT-0006kU-9P@debutante>
-References: <20171109093924.12803-1-maxime.ripard@free-electrons.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20171109093924.12803-1-maxime.ripard@free-electrons.com>
-Sender: stable-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, lgirdwood@gmail.com, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, Mylene Josserand <mylene.josserand@free-electrons.com>stable@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5663: Delay and retry reading rt5663
+	ID register" to the asoc tree
+Date: Thu, 09 Nov 2017 17:44:36 +0000
+Message-ID: <E1eCqsW-0006lU-9f@debutante>
+References: <1510226890-11507-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5551267850
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:44:39 +0100 (CET)
+In-Reply-To: <1510226890-11507-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun8i-codec: Set the BCLK divider
+   ASoC: rt5663: Delay and retry reading rt5663 ID register
 
 has been applied to the asoc tree at
 
@@ -37,111 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 316b7758c998fb13371d14bb6c9e45ab129c19a7 Mon Sep 17 00:00:00 2001
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Date: Thu, 9 Nov 2017 10:39:24 +0100
-Subject: [PATCH] ASoC: sun8i-codec: Set the BCLK divider
+>From ba68fa318442d25586d057c1e8c9165bdc62c1b3 Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Thu, 9 Nov 2017 19:28:10 +0800
+Subject: [PATCH] ASoC: rt5663: Delay and retry reading rt5663 ID register
 
-While the current code was reporting to be able to work in master mode, it
-failed to do so because the BCLK divider wasn't programmed, meaning that
-the BCLK would run at the PLL's frequency no matter the sample rate.
+In the probe, the codec may not be ready for I2C reading or there are some
+glitches on the i2c line. So if the i2c reading value is incorrect, it will
+read again after delay. This issue is similar the patch
+https://patchwork.kernel.org/patch/9681421/. In current project, these 2
+devices were connected to the same i2c line, and they met the same problem.
 
-It was obviously a bit too fast.
-
-Add support to retrieve the divider to use, and set it. Since our PLL is
-not always able to generate a perfect multiple of the sample rate, we'll
-have to choose the closest divider that matches our setup.
-
-Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 51 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ sound/soc/codecs/rt5663.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 038107baf414..50a9e077f01b 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -73,6 +73,7 @@
- #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
-+#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
- 
- struct sun8i_codec {
- 	struct device	*dev;
-@@ -226,12 +227,57 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
-+struct sun8i_codec_clk_div {
-+	u8	div;
-+	u8	val;
-+};
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index 767f219f6c42..eb3065a992ab 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3428,7 +3428,16 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+ 			ret);
+ 		return ret;
+ 	}
+-	regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
 +
-+static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
-+	{ .div = 1,	.val = 0 },
-+	{ .div = 2,	.val = 1 },
-+	{ .div = 4,	.val = 2 },
-+	{ .div = 6,	.val = 3 },
-+	{ .div = 8,	.val = 4 },
-+	{ .div = 12,	.val = 5 },
-+	{ .div = 16,	.val = 6 },
-+	{ .div = 24,	.val = 7 },
-+	{ .div = 32,	.val = 8 },
-+	{ .div = 48,	.val = 9 },
-+	{ .div = 64,	.val = 10 },
-+	{ .div = 96,	.val = 11 },
-+	{ .div = 128,	.val = 12 },
-+	{ .div = 192,	.val = 13 },
-+};
-+
-+static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
-+				   unsigned int rate,
-+				   unsigned int word_size)
-+{
-+	unsigned long clk_rate = clk_get_rate(scodec->clk_module);
-+	unsigned int div = clk_rate / rate / word_size / 2;
-+	unsigned int best_val = 0, best_diff = ~0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(sun8i_codec_bclk_div); i++) {
-+		const struct sun8i_codec_clk_div *bdiv = &sun8i_codec_bclk_div[i];
-+		unsigned int diff = abs(bdiv->div - div);
-+
-+		if (diff < best_diff) {
-+			best_diff = diff;
-+			best_val = bdiv->val;
-+		}
++	ret = regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
++	if (ret || (val != RT5663_DEVICE_ID_2 && val != RT5663_DEVICE_ID_1)) {
++		dev_err(&i2c->dev,
++			"Device with ID register %#x is not rt5663, retry one time.\n",
++			val);
++		msleep(100);
++		regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
 +	}
 +
-+	return best_val;
-+}
-+
- static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *dai)
- {
- 	struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
- 	int sample_rate;
-+	u8 bclk_div;
- 
- 	/*
- 	 * The CPU DAI handles only a sample of 16 bits. Configure the
-@@ -241,6 +287,11 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16);
- 
-+	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params), 16);
-+	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
-+			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
-+			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
-+
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16);
+ 	switch (val) {
+ 	case RT5663_DEVICE_ID_2:
+ 		rt5663->regmap = devm_regmap_init_i2c(i2c, &rt5663_v2_regmap);
 -- 
 2.15.0
