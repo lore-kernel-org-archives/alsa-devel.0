@@ -1,106 +1,106 @@
-From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?=
-        <benoit.thebaudeau.dev-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/9] ASoC: tlv320aic3x: Fix typo in DT
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH 2/9] ASoC: tlv320aic3x: Fix typo in DT
  binding documentation
-Date: Thu, 9 Nov 2017 21:26:00 +0100
-Message-ID: <CA+sos78vOjcY=9B3-pFthe9UUBqiEUps967UDEY=o=fUu230=Q@mail.gmail.com>
-References: <20171108212505.28320-1-afd@ti.com> <20171108212505.28320-3-afd@ti.com>
+Date: Thu, 9 Nov 2017 14:42:12 -0600
+Message-ID: <caa53427-7b27-105d-3207-807c4776eaec@ti.com>
+References: <20171108212505.28320-1-afd@ti.com>
+ <20171108212505.28320-3-afd@ti.com>
+ <CA+sos78vOjcY=9B3-pFthe9UUBqiEUps967UDEY=o=fUu230=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171108212505.28320-3-afd-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alsa-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07414267870
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 21:42:14 +0100 (CET)
+In-Reply-To: <CA+sos78vOjcY=9B3-pFthe9UUBqiEUps967UDEY=o=fUu230=Q@mail.gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?Q?Beno=c3=aet_Th=c3=a9baudeau?= <benoit.thebaudeau.dev@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Alsa-devel <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>, Shawn Guo <shawnguo@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Andrew F. Davis,
-
-On Wed, Nov 8, 2017 at 10:24 PM, Andrew F. Davis <afd-l0cyMroinI0@public.gmane.org> wrote:
-> The property used to specify a GPIO intended for reset is "reset-gpio",
-> this binding uses "gpio-reset", as almost all other bindings use the
-> former name this use of the latter is certainly not intended and
-> was a typo. It is not compatible with newer methods used to fetch
-> GPIO pins and to prevent the spread of this error to other bindings
-> lets fix this here.
->
-> We also standardize the pin as active-low, different device trees have
-> marked the GPIO different ways, luckily the driver currently uses the
-> low-level GPIO set function which does not respect the active-low flag,
-> but future changes may change this. This is an active-low reset, mark
-> it as such.
->
-> Lastly, add an example of use for this property.
->
-> Fixes: c24fdc886fde ("ASoC: tlv320aic3x: Add device tree bindings")
->
-> Signed-off-by: Andrew F. Davis <afd-l0cyMroinI0@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Do=
-cumentation/devicetree/bindings/sound/tlv320aic3x.txt
-> index ba5b45c483f5..9e8eaa08ce90 100644
-> --- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-> +++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-> @@ -17,7 +17,7 @@ Required properties:
->
->  Optional properties:
->
-> -- gpio-reset - gpio pin number used for codec reset
-> +- reset-gpio - GPIO specification for the active low RESET input.
->  - ai3x-gpio-func - <array of 2 int> - AIC3X_GPIO1 & AIC3X_GPIO2 Function=
-ality
->                                     - Not supported on tlv320aic3104
->  - ai3x-micbias-vg - MicBias Voltage required.
-> @@ -61,10 +61,14 @@ The pins can be used in referring sound node's audio-=
-routing property.
->
->  Example:
->
-> +#include <dt-bindings/gpio/gpio.h>
-> +
->  tlv320aic3x: tlv320aic3x@1b {
->         compatible =3D "ti,tlv320aic3x";
->         reg =3D <0x1b>;
->
-> +       reset-gpio =3D <&gpio1 17 GPIO_ACTIVE_LOW>;
-> +
->         AVDD-supply =3D <&regulator>;
->         IOVDD-supply =3D <&regulator>;
->         DRVDD-supply =3D <&regulator>;
-
-According to Documentation/devicetree/bindings/gpio/gpio.txt:
-"GPIO properties should be named "[<name>-]gpios", with <name> being the pu=
-rpose
-of this GPIO for the device. While a non-existent <name> is considered vali=
-d
-for compatibility reasons (resolving to the "gpios" property), it is not al=
-lowed
-for new bindings. Also, GPIO properties named "[<name>-]gpio" are valid and=
- old
-bindings use it, but are only supported for compatibility reasons and shoul=
-d not
-be used for newer bindings since it has been deprecated."
-
-So it should be "reset-gpios" for new bindings.
-
-Also, sound/soc/codecs/tlv320aic3x.c still uses "gpio-reset", and I do
-not see any patch in your series changing this:
-ret =3D of_get_named_gpio(np, "gpio-reset", 0);
-
-Same remarks for your "[PATCH 6/9] ARM: dts: imx: Fix the audio
-CODEC's reset pin". I don't know if there are other DTS files using
-this, but they should all be updated accordingly. This would anyway
-break all of the out-of-tree DTS files using this, which I think is
-not allowed, so the driver should be changed in a way still allowing
-the legacy naming besides the new one.
-
-Best regards,
-Beno=C3=AEt
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gMTEvMDkvMjAxNyAwMjoyNiBQTSwgQmVub8OudCBUaMOpYmF1ZGVhdSB3cm90ZToKPiBEZWFy
+IEFuZHJldyBGLiBEYXZpcywKPiAKPiBPbiBXZWQsIE5vdiA4LCAyMDE3IGF0IDEwOjI0IFBNLCBB
+bmRyZXcgRi4gRGF2aXMgPGFmZEB0aS5jb20+IHdyb3RlOgo+PiBUaGUgcHJvcGVydHkgdXNlZCB0
+byBzcGVjaWZ5IGEgR1BJTyBpbnRlbmRlZCBmb3IgcmVzZXQgaXMgInJlc2V0LWdwaW8iLAo+PiB0
+aGlzIGJpbmRpbmcgdXNlcyAiZ3Bpby1yZXNldCIsIGFzIGFsbW9zdCBhbGwgb3RoZXIgYmluZGlu
+Z3MgdXNlIHRoZQo+PiBmb3JtZXIgbmFtZSB0aGlzIHVzZSBvZiB0aGUgbGF0dGVyIGlzIGNlcnRh
+aW5seSBub3QgaW50ZW5kZWQgYW5kCj4+IHdhcyBhIHR5cG8uIEl0IGlzIG5vdCBjb21wYXRpYmxl
+IHdpdGggbmV3ZXIgbWV0aG9kcyB1c2VkIHRvIGZldGNoCj4+IEdQSU8gcGlucyBhbmQgdG8gcHJl
+dmVudCB0aGUgc3ByZWFkIG9mIHRoaXMgZXJyb3IgdG8gb3RoZXIgYmluZGluZ3MKPj4gbGV0cyBm
+aXggdGhpcyBoZXJlLgo+Pgo+PiBXZSBhbHNvIHN0YW5kYXJkaXplIHRoZSBwaW4gYXMgYWN0aXZl
+LWxvdywgZGlmZmVyZW50IGRldmljZSB0cmVlcyBoYXZlCj4+IG1hcmtlZCB0aGUgR1BJTyBkaWZm
+ZXJlbnQgd2F5cywgbHVja2lseSB0aGUgZHJpdmVyIGN1cnJlbnRseSB1c2VzIHRoZQo+PiBsb3ct
+bGV2ZWwgR1BJTyBzZXQgZnVuY3Rpb24gd2hpY2ggZG9lcyBub3QgcmVzcGVjdCB0aGUgYWN0aXZl
+LWxvdyBmbGFnLAo+PiBidXQgZnV0dXJlIGNoYW5nZXMgbWF5IGNoYW5nZSB0aGlzLiBUaGlzIGlz
+IGFuIGFjdGl2ZS1sb3cgcmVzZXQsIG1hcmsKPj4gaXQgYXMgc3VjaC4KPj4KPj4gTGFzdGx5LCBh
+ZGQgYW4gZXhhbXBsZSBvZiB1c2UgZm9yIHRoaXMgcHJvcGVydHkuCj4+Cj4+IEZpeGVzOiBjMjRm
+ZGM4ODZmZGUgKCJBU29DOiB0bHYzMjBhaWMzeDogQWRkIGRldmljZSB0cmVlIGJpbmRpbmdzIikK
+Pj4KPj4gU2lnbmVkLW9mZi1ieTogQW5kcmV3IEYuIERhdmlzIDxhZmRAdGkuY29tPgo+PiAtLS0K
+Pj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC90bHYzMjBhaWMzeC50
+eHQgfCA2ICsrKysrLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
+dGlvbigtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3NvdW5kL3RsdjMyMGFpYzN4LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9zb3VuZC90bHYzMjBhaWMzeC50eHQKPj4gaW5kZXggYmE1YjQ1YzQ4M2Y1Li45ZThlYWEw
+OGNlOTAgMTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b3VuZC90bHYzMjBhaWMzeC50eHQKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3NvdW5kL3RsdjMyMGFpYzN4LnR4dAo+PiBAQCAtMTcsNyArMTcsNyBAQCBSZXF1aXJl
+ZCBwcm9wZXJ0aWVzOgo+Pgo+PiAgT3B0aW9uYWwgcHJvcGVydGllczoKPj4KPj4gLS0gZ3Bpby1y
+ZXNldCAtIGdwaW8gcGluIG51bWJlciB1c2VkIGZvciBjb2RlYyByZXNldAo+PiArLSByZXNldC1n
+cGlvIC0gR1BJTyBzcGVjaWZpY2F0aW9uIGZvciB0aGUgYWN0aXZlIGxvdyBSRVNFVCBpbnB1dC4K
+Pj4gIC0gYWkzeC1ncGlvLWZ1bmMgLSA8YXJyYXkgb2YgMiBpbnQ+IC0gQUlDM1hfR1BJTzEgJiBB
+SUMzWF9HUElPMiBGdW5jdGlvbmFsaXR5Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIC0gTm90IHN1cHBvcnRlZCBvbiB0bHYzMjBhaWMzMTA0Cj4+ICAtIGFpM3gtbWljYmlh
+cy12ZyAtIE1pY0JpYXMgVm9sdGFnZSByZXF1aXJlZC4KPj4gQEAgLTYxLDEwICs2MSwxNCBAQCBU
+aGUgcGlucyBjYW4gYmUgdXNlZCBpbiByZWZlcnJpbmcgc291bmQgbm9kZSdzIGF1ZGlvLXJvdXRp
+bmcgcHJvcGVydHkuCj4+Cj4+ICBFeGFtcGxlOgo+Pgo+PiArI2luY2x1ZGUgPGR0LWJpbmRpbmdz
+L2dwaW8vZ3Bpby5oPgo+PiArCj4+ICB0bHYzMjBhaWMzeDogdGx2MzIwYWljM3hAMWIgewo+PiAg
+ICAgICAgIGNvbXBhdGlibGUgPSAidGksdGx2MzIwYWljM3giOwo+PiAgICAgICAgIHJlZyA9IDww
+eDFiPjsKPj4KPj4gKyAgICAgICByZXNldC1ncGlvID0gPCZncGlvMSAxNyBHUElPX0FDVElWRV9M
+T1c+Owo+PiArCj4+ICAgICAgICAgQVZERC1zdXBwbHkgPSA8JnJlZ3VsYXRvcj47Cj4+ICAgICAg
+ICAgSU9WREQtc3VwcGx5ID0gPCZyZWd1bGF0b3I+Owo+PiAgICAgICAgIERSVkRELXN1cHBseSA9
+IDwmcmVndWxhdG9yPjsKPiAKPiBBY2NvcmRpbmcgdG8gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL2dwaW8vZ3Bpby50eHQ6Cj4gIkdQSU8gcHJvcGVydGllcyBzaG91bGQgYmUgbmFt
+ZWQgIls8bmFtZT4tXWdwaW9zIiwgd2l0aCA8bmFtZT4gYmVpbmcgdGhlIHB1cnBvc2UKPiBvZiB0
+aGlzIEdQSU8gZm9yIHRoZSBkZXZpY2UuIFdoaWxlIGEgbm9uLWV4aXN0ZW50IDxuYW1lPiBpcyBj
+b25zaWRlcmVkIHZhbGlkCj4gZm9yIGNvbXBhdGliaWxpdHkgcmVhc29ucyAocmVzb2x2aW5nIHRv
+IHRoZSAiZ3Bpb3MiIHByb3BlcnR5KSwgaXQgaXMgbm90IGFsbG93ZWQKPiBmb3IgbmV3IGJpbmRp
+bmdzLiBBbHNvLCBHUElPIHByb3BlcnRpZXMgbmFtZWQgIls8bmFtZT4tXWdwaW8iIGFyZSB2YWxp
+ZCBhbmQgb2xkCj4gYmluZGluZ3MgdXNlIGl0LCBidXQgYXJlIG9ubHkgc3VwcG9ydGVkIGZvciBj
+b21wYXRpYmlsaXR5IHJlYXNvbnMgYW5kIHNob3VsZCBub3QKPiBiZSB1c2VkIGZvciBuZXdlciBi
+aW5kaW5ncyBzaW5jZSBpdCBoYXMgYmVlbiBkZXByZWNhdGVkLiIKPiAKPiBTbyBpdCBzaG91bGQg
+YmUgInJlc2V0LWdwaW9zIiBmb3IgbmV3IGJpbmRpbmdzLgo+IAoKWW91IGFyZSB0aGUgdGhpcmQg
+cGVyc29uIHRvIGNvbW1lbnQgdGhpcy4gSSB3aXNoIHBlb3BsZSB3b3VsZCBoYXZlIGJlZW4KdGhp
+cyBvYnNlcnZhbnQgd2hlbiB0aGUgb3JpZ2luYWwgcGF0Y2ggYWRkaW5nIHRoZSBjb21wbGV0ZWx5
+IGJhY2t3YXJkcwoiZ3Bpby1yZXNldCIgd2FzIHBvc3RlZC4uLiA6KQoKPiBBbHNvLCBzb3VuZC9z
+b2MvY29kZWNzL3RsdjMyMGFpYzN4LmMgc3RpbGwgdXNlcyAiZ3Bpby1yZXNldCIsIGFuZCBJIGRv
+Cj4gbm90IHNlZSBhbnkgcGF0Y2ggaW4geW91ciBzZXJpZXMgY2hhbmdpbmcgdGhpczoKPiByZXQg
+PSBvZl9nZXRfbmFtZWRfZ3BpbyhucCwgImdwaW8tcmVzZXQiLCAwKTsKPiAKCkNoZWNrIHBhdGNo
+ICM5Cgo+IFNhbWUgcmVtYXJrcyBmb3IgeW91ciAiW1BBVENIIDYvOV0gQVJNOiBkdHM6IGlteDog
+Rml4IHRoZSBhdWRpbwo+IENPREVDJ3MgcmVzZXQgcGluIi4gSSBkb24ndCBrbm93IGlmIHRoZXJl
+IGFyZSBvdGhlciBEVFMgZmlsZXMgdXNpbmcKPiB0aGlzLCBidXQgdGhleSBzaG91bGQgYWxsIGJl
+IHVwZGF0ZWQgYWNjb3JkaW5nbHkuIFRoaXMgd291bGQgYW55d2F5Cj4gYnJlYWsgYWxsIG9mIHRo
+ZSBvdXQtb2YtdHJlZSBEVFMgZmlsZXMgdXNpbmcgdGhpcywgd2hpY2ggSSB0aGluayBpcwo+IG5v
+dCBhbGxvd2VkLCBzbyB0aGUgZHJpdmVyIHNob3VsZCBiZSBjaGFuZ2VkIGluIGEgd2F5IHN0aWxs
+IGFsbG93aW5nCj4gdGhlIGxlZ2FjeSBuYW1pbmcgYmVzaWRlcyB0aGUgbmV3IG9uZS4KPiAKCkkg
+aGF2ZSB1cGRhdGVkIGV2ZXJ5IGluLXRyZWUgdXNlLiBJIGtub3cgd2Ugc2hvdWxkIHdvcmsgdG8g
+YXZvaWQKYnJlYWtpbmcgb3V0LW9mLXRyZWUgRFRTIGZpbGVzLCBidXQgSSdtIGFza2luZyBmb3Ig
+YSBzbWFsbCBleGNlcHRpb24KaGVyZSBmb3IgcmVhc29ucyBJJ3ZlIGRlc2NyaWJlZCBpbiB0aGUg
+Y292ZXItbGV0dGVyIGFuZCBvdGhlciBwYXRjaGVzLgoKSSBqdXN0IGNhbid0IHNlZSB0aGlzIGJy
+ZWFraW5nIGFueXRoaW5nLCBpZiB0aGVyZSBhY3R1YWxseSBleGlzdHMgYSByZWFsCm91dC1vZi10
+cmVlIHVzZXIgb2YgdGhpcyB3aXRoIGEgRFRCIHRoYXQgaXMgbm90IGJlaW5nIHVwZGF0ZWQgd2l0
+aCB0aGUKa2VybmVsIHZlcnNpb24gYW5kIHRoaXMgcGF0Y2ggY2F1c2VzIGFueSBmdW5jdGlvbmFs
+aXR5IGNoYW5nZSBmb3IgdGhlbSBJCndpbGwgbGl0ZXJhbGx5IGVhdCBhIGhhdC4KClRoYW5rcywK
+QW5kcmV3Cgo+IEJlc3QgcmVnYXJkcywKPiBCZW5vw650Cj4gCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
