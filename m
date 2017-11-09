@@ -1,145 +1,85 @@
-From: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH 16/17] NOT FOR MERGING: Add TLV320DAC3101 to BBB for testing
-Date: Wed, 8 Nov 2017 18:27:40 -0600
-Message-ID: <20171109002741.10897-17-afd@ti.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH 10/17] ASoC: tlv320aic31xx: Fix inverted BCLK
+	handling
+Date: Wed, 8 Nov 2017 18:27:34 -0600
+Message-ID: <20171109002741.10897-11-afd@ti.com>
 References: <20171109002741.10897-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171109002741.10897-1-afd-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Andrew F . Davis" <afd-l0cyMroinI0@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13B11267671
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 01:27:45 +0100 (CET)
+In-Reply-To: <20171109002741.10897-1-afd@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
----
- arch/arm/boot/dts/am335x-boneblack.dts | 106 +++++++++++++++++++++++++++++++++
- 1 file changed, 106 insertions(+)
+Currently BCLK inverting is only handled when the DAI format is
+DSP, but the BCLK may be inverted in any supported mode. Without
+this using this CODEC in any other mode than DSP with the BCLK
+inverted leads to bad sampling timing and very poor audio quality.
 
-diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
-index d154d3133c16..e52553d144ab 100644
---- a/arch/arm/boot/dts/am335x-boneblack.dts
-+++ b/arch/arm/boot/dts/am335x-boneblack.dts
-@@ -11,9 +11,115 @@
- #include "am335x-bone-common.dtsi"
- #include "am335x-boneblack-common.dtsi"
+Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
+
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 19e74ab68692..e58b7a4e0402 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -946,6 +946,16 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
  
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/sound/tlv320aic31xx-micbias.h>
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		iface_reg2 |= AIC31XX_BCLKINV_MASK;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
- / {
- 	model = "TI AM335x BeagleBone Black";
- 	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
-+
-+	sound {
-+		status = "disabled"; /* Disable default HDMI sound card */
-+	};
-+
-+	sound0: sound0 {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "BeagleBone-Black-TLV320DAC3101";
-+		simple-audio-card,widgets =
-+			"Headphone", "Headphone Jack",
-+			"Speaker", "Speaker External";
-+		simple-audio-card,routing =
-+			"Headphone Jack", "HPL",
-+			"Headphone Jack", "HPR",
-+			"Speaker External", "SPL",
-+			"Speaker External", "SPR";
-+		simple-audio-card,format = "i2s"; /* Change this to try out different DAI formats */
-+		simple-audio-card,bitclock-master = <&sound0_codec>; /* Change these to switch clock masters */
-+		simple-audio-card,frame-master = <&sound0_codec>;
-+
-+		sound0_cpu: simple-audio-card,cpu {
-+			sound-dai = <&mcasp0>;
-+			clocks = <&clk_mcasp0>;
-+		};
-+
-+		sound0_codec: simple-audio-card,codec {
-+			sound-dai = <&tlv320dac3101>;
-+			clocks = <&clkout2_ck>;
-+		};
-+	};
-+};
-+
-+&tda19988 {
-+	status = "disabled";
-+};
-+
-+&am33xx_pinmux {
-+	mcasp0_pins: mcasp0_pins {
-+		pinctrl-single,pins = <
-+			AM33XX_IOPAD(0x9ac, PIN_INPUT | MUX_MODE0) /* mcasp0_ahcklx.mcasp0_ahclkx */
-+			AM33XX_IOPAD(0x990, PIN_INPUT | MUX_MODE0 ) /* mcasp0_aclkx.mcasp0_aclkx */
-+			AM33XX_IOPAD(0x994, PIN_INPUT | MUX_MODE0 ) /* mcasp0_fsx.mcasp0_fsx */
-+			AM33XX_IOPAD(0x998, PIN_INPUT | MUX_MODE0 ) /* mcasp0_axr0.mcasp0_axr0 */
-+			AM33XX_IOPAD(0x9a4, PIN_INPUT | MUX_MODE2 ) /* mcasp0_fsr.mcasp0_axr3 */
-+			AM33XX_IOPAD(0x86c, PIN_OUTPUT_PULLDOWN | MUX_MODE7) /* gpmc_a11.gpio1_27 */
-+		>;
-+	};
-+
-+	tlv320dac3101_default: tlv320dac3101_default {
-+		pinctrl-single,pins = <
-+			AM33XX_IOPAD(0x844, PIN_OUTPUT_PULLUP | MUX_MODE7 ) /* gpmc_a1.gpio1_17 */
-+			AM33XX_IOPAD(0x878, PIN_INPUT | MUX_MODE7 ) /* gpmc_ben1.gpio1_28 */
-+		>;
-+	};
-+};
-+
-+&sysclkout_pre_ck {
-+	/*
-+	 * Switch to a higher-speed clock as a base for clkout2_div_ck other than
-+	 * the 32.768Hz default clock that is unusable for a CODEC. Possible
-+	 * options are clk_32768_ck, l3_gclk, dpll_ddr_m2_ck, dpll_per_m2_ck, and
-+	 * lcd_gclk. See am33xx-clocks.dtsi for more info.
-+	 */
-+	assigned-clocks = <&sysclkout_pre_ck>;
-+	assigned-clock-parents = <&lcd_gclk>;
-+};
-+
-+&clkout2_div_ck {
-+	assigned-clocks = <&clkout2_div_ck>;
-+	assigned-clock-rates = <12000000>;  /* Change this to try different CODEC MCLK speeds */
-+};
-+
-+&mcasp0	{
-+	#sound-dai-cells = <0>;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcasp0_pins>;
-+
-+	status = "okay";
-+
-+	op-mode = <0>; /* MCASP_IIS_MODE */
-+	tdm-slots = <2>;
-+	serial-dir = < 1 0 0 0 >; /* 0: INACTIVE, 1: TX, 2: RX */
-+	tx-num-evt = <32>;
-+	rx-num-evt = <32>;
-+};
-+
-+&i2c2 {
-+	tlv320dac3101: tlv320dac3101@18 {
-+		#sound-dai-cells = <0>;
-+		compatible = "ti,tlv320dac3101";
-+		reg = <0x18>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&tlv320dac3101_default>;
-+
-+		interrupt-parent = <&gpio1>;
-+		interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		reset-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
-+
-+		ai31xx-micbias-vg = <MICBIAS_2_0V>;
-+	};
- };
- 
- &cpu0_opp_table {
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+@@ -953,16 +963,12 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		dsp_a_val = 0x1;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
+-		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-		case SND_SOC_DAIFMT_NB_NF:
+-			iface_reg2 |= AIC31XX_BCLKINV_MASK;
+-			break;
+-		case SND_SOC_DAIFMT_IB_NF:
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
++		/*
++		 * NOTE: This CODEC samples on the falling edge of BCLK in
++		 * DSP mode, this is inverted compared to what most DAIs
++		 * expect, so we invert for this mode
++		 */
++		iface_reg2 ^= AIC31XX_BCLKINV_MASK;
+ 		iface_reg1 |= (AIC31XX_DSP_MODE <<
+ 			       AIC31XX_IFACE1_DATATYPE_SHIFT);
+ 		break;
 -- 
 2.15.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
