@@ -1,42 +1,130 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal-5C7GfCeVMHo@public.gmane.org>
-Subject: Re: [PATCH v2 2/3] ASoC: rt5645: Wait for 400msec before concluding
- on value of RT5645_VENDOR_ID2
-Date: Thu, 9 Nov 2017 14:44:59 +0530
-Message-ID: <042f85a6-2fa8-2a2f-1733-fd57f807722b@amd.com>
-References: <20171108172404.19118-1-alexander.deucher@amd.com>
- <20171108172404.19118-3-alexander.deucher@amd.com>
- <20171108180957.ddcdyzu2fschypbx@sirena.co.uk>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH v2] ASoC: sun8i-codec: Set the BCLK divider
+Date: Thu,  9 Nov 2017 10:39:24 +0100
+Message-ID: <20171109093924.12803-1-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20171108180957.ddcdyzu2fschypbx-7j8lgAiuQgnQXOPxS62xeg@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Vijendar.Mukunda-5C7GfCeVMHo@public.gmane.org, Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, Bard Liao <bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22D2B266AF8
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 10:39:36 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Mylene Josserand <mylene.josserand@free-electrons.com>, stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMS84LzIwMTcgMTE6MzkgUE0sIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gV2VkLCBOb3Yg
-MDgsIDIwMTcgYXQgMTI6MjQ6MDNQTSAtMDUwMCwgQWxleCBEZXVjaGVyIHdyb3RlOgo+IAo+PiAg
-IAlyZWdtYXBfcmVhZChyZWdtYXAsIFJUNTY0NV9WRU5ET1JfSUQyLCAmdmFsKTsKPj4gICAKPj4g
-KwkvKgo+PiArCSAqIFJlYWQgYWZ0ZXIgNDAwbXNlYywgYXMgaXQgaXMgdGhlIGludGVydmFsIHJl
-cXVpcmVkIGJldHdlZW4KPj4gKwkgKiByZWFkIGFuZCBwb3dlciBPbi4KPj4gKwkgKi8KPj4gKwlt
-c2xlZXAoVElNRV9UT19QT1dFUl9NUyk7Cj4+ICsJcmVnbWFwX3JlYWQocmVnbWFwLCBSVDU2NDVf
-VkVORE9SX0lEMiwgJnZhbCk7Cj4+ICsKPiAKPiBUaGlzIGxlYXZlcyB0aGUgb3JpZ2luYWwgcmVh
-ZCBpbiB0aGVyZSBzbyB3ZSd2ZSBib3RoIGdvdCB0aGUgZWFybHkgcmVhZAo+ICh3aGljaCBtaWdo
-dCB1cHNldCB0aGluZ3MgcG90ZW50aWFsbHkpIGFuZCB0aGUgZGVsYXllZCByZWFkLiAgU2hvdWxk
-bid0Cj4gd2UganVzdCBiZSBhZGRpbmcgYSBtc2xlZXAoKSBiZWZvcmUgdGhlIGV4aXN0aW5nIHJl
-YWQ/Cj4gCgpNeSBiYWQsIEkgc2hvdWxkIGhhdmUgcmVtb3ZlZCB0aGUgYWRkaXRpb24gb2YgcmVn
-aXN0ZXIgcmVhZCBmcm9tIHRoZSBwYXRjaC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5mcmVl
-ZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbWQtZ2Z4Cg==
+While the current code was reporting to be able to work in master mode, it
+failed to do so because the BCLK divider wasn't programmed, meaning that
+the BCLK would run at the PLL's frequency no matter the sample rate.
+
+It was obviously a bit too fast.
+
+Add support to retrieve the divider to use, and set it. Since our PLL is
+not always able to generate a perfect multiple of the sample rate, we'll
+have to choose the closest divider that matches our setup.
+
+Fixes: 36c684936fae ("ASoC: Add sun8i digital audio codec")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+
+---
+Changes from v1:
+  - Hardcoded the bit width to remain consistent with the rest of the driver
+---
+ sound/soc/sunxi/sun8i-codec.c | 51 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index c2ceca485d6a..7a312168f864 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -73,6 +73,7 @@
+ #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK	GENMASK(5, 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
++#define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
+ 
+ struct sun8i_codec {
+ 	struct device	*dev;
+@@ -226,12 +227,57 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
++struct sun8i_codec_clk_div {
++	u8	div;
++	u8	val;
++};
++
++static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
++	{ .div = 1,	.val = 0 },
++	{ .div = 2,	.val = 1 },
++	{ .div = 4,	.val = 2 },
++	{ .div = 6,	.val = 3 },
++	{ .div = 8,	.val = 4 },
++	{ .div = 12,	.val = 5 },
++	{ .div = 16,	.val = 6 },
++	{ .div = 24,	.val = 7 },
++	{ .div = 32,	.val = 8 },
++	{ .div = 48,	.val = 9 },
++	{ .div = 64,	.val = 10 },
++	{ .div = 96,	.val = 11 },
++	{ .div = 128,	.val = 12 },
++	{ .div = 192,	.val = 13 },
++};
++
++static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
++				   unsigned int rate,
++				   unsigned int word_size)
++{
++	unsigned long clk_rate = clk_get_rate(scodec->clk_module);
++	unsigned int div = clk_rate / rate / word_size / 2;
++	unsigned int best_val = 0, best_diff = ~0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sun8i_codec_bclk_div); i++) {
++		const struct sun8i_codec_clk_div *bdiv = &sun8i_codec_bclk_div[i];
++		unsigned int diff = abs(bdiv->div - div);
++
++		if (diff < best_diff) {
++			best_diff = diff;
++			best_val = bdiv->val;
++		}
++	}
++
++	return best_val;
++}
++
+ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+ 	struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
+ 	int sample_rate;
++	u8 bclk_div;
+ 
+ 	/*
+ 	 * The CPU DAI handles only a sample of 16 bits. Configure the
+@@ -241,6 +287,11 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_MASK,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16);
+ 
++	bclk_div = sun8i_codec_get_bclk_div(scodec, params_rate(params), 16);
++	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
++			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
++			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
++
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16);
+-- 
+2.14.3
