@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/17] ASoC: tlv320aic31xx: General source
- formatting cleanup
-Date: Thu, 9 Nov 2017 16:15:53 +0000
-Message-ID: <20171109161553.vgefnocjktnpmrj2@sirena.co.uk>
-References: <20171109002741.10897-1-afd@ti.com>
- <20171109002741.10897-2-afd@ti.com>
- <20171109124143.mpolqcvsdzj2t6tv@sirena.co.uk>
- <98eaa342-8405-56af-0804-38c7c1e5bc2a@ti.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH 1/9] ASoC: tlv320aic31xx: Fix typo in DT
+ binding documentation
+Date: Thu, 9 Nov 2017 10:28:45 -0600
+Message-ID: <0a640aec-1c8e-f778-3a72-f7d012e0604e@ti.com>
+References: <20171108212505.28320-1-afd@ti.com>
+ <20171108212505.28320-2-afd@ti.com> <1510237517.7659.10.camel@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1153015218566630172=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A5D96267826
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 17:16:05 +0100 (CET)
-In-Reply-To: <98eaa342-8405-56af-0804-38c7c1e5bc2a@ti.com>
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6995126782C
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 17:28:47 +0100 (CET)
+In-Reply-To: <1510237517.7659.10.camel@pengutronix.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +23,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>
+To: Philipp Zabel <p.zabel@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 11/09/2017 08:25 AM, Philipp Zabel wrote:
+> Hi Andrew,
+> 
+> On Wed, 2017-11-08 at 15:24 -0600, Andrew F. Davis wrote:
+>> The property used to specify a GPIO intended for reset is "reset-gpio",
+>> this binding uses "gpio-reset", as almost all other bindings use the
+>> former name this use of the latter is certainly not intended and
+>> was a typo. It is not compatible with newer methods used to fetch
+>> GPIO pins and to prevent the spread of this error to other bindings
+>> lets fix this here.
+>>
+>> We also standardize the pin as active-low, different device trees have
+>> marked the GPIO different ways, luckily the driver currently uses the
+>> low-level GPIO set function which does not respect the active-low flag,
+>> but future changes may change this. This is an active-low reset, mark
+>> it as such.
+>>
+>> Lastly, add an example of use for this property.
+>>
+>> Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
+>>
+>> Signed-off-by: Andrew F. Davis <afd@ti.com>
+>> ---
+>>  Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+>> index 6fbba562eaa7..4c4e77f97d87 100644
+>> --- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+>> +++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+>> @@ -22,7 +22,7 @@ Required properties:
+>>  
+>>  Optional properties:
+>>  
+>> -- gpio-reset - gpio pin number used for codec reset
+> 
+> I would move this into a "Deprecated properties:" section instead of
+> just hiding it away.
+> 
 
---===============1153015218566630172==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yfks4eiqhcynewa3"
-Content-Disposition: inline
+The hope was to fix this mistake and pretend it never existed :)
 
+I'll add a Deprecated section in case this breaks for someone they can
+see that it was changed.
 
---yfks4eiqhcynewa3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> +- reset-gpio - GPIO specification for the active low RESET input.
+> 
+> This should be "reset-gpios". For reference, see
+> Documentation/devicetree/bindings/gpio/gpio.txt.
+> 
 
-On Thu, Nov 09, 2017 at 08:13:17AM -0600, Andrew F. Davis wrote:
-> On 11/09/2017 06:41 AM, Mark Brown wrote:
+Yup, will fix for v2.
 
-> > There's other things in here like adding error reporting...  please
-> > don't send changes like this, if you want to do cleanups you should
-> > split them up in the same way you would other changes.  Bigger patches
-> > are harder to review especially if they're not repetitive examples of
-> > the same pattern. =20
-
-> I'm never really sure with these where the split point should be, almost
-> every change in here could be its own patch if I really wanted to pad my
-> kernel patch count, but this series is already 17 patches long and I
-> usually see these all as the same logical action: non-functional cleanups.
-
-> I agree the added error message isn't purely non-functional and so
-> should be broken out, I'll break out a couple other changes for v2.
-
-This is why cleanups don't happen :)
-
-A separate cleanup series would probably cover it, when they're split up
-well they're quick and easy to review.
-
---yfks4eiqhcynewa3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloEfzgACgkQJNaLcl1U
-h9Bwxgf+K/x//kbeY+xtueRKC+CWDmVc7UjYIAHAqS6s5l/psxdb2e6SPOY8e4MM
-VgRj0/gMsOkGDy/fUUEaI6ZiX+eqX4ucQLwV3wCgYPWqGxlkLG8OrAf6UPZrN8Ko
-/1O3/XD6ju6adaF6jC4BCzl1naF0tXSRzz6a4EICPKJj0Fi7NH97q56moKM4m/YT
-WU7aREusATrfXSyQdD8lU/iCbSLBgCTIAfBENLqKVy0fQIrx2uvhap/ACkEgunkI
-Z7nR9ufSaMJSiDOtJMl4QOTgvpdI9lKHu3NAKfBFYGgfwyfag4tqCWh9sI+yeTNE
-7gJjdIUyjBs82Wjx/SuQUoSPPylrOA==
-=B6Fn
------END PGP SIGNATURE-----
-
---yfks4eiqhcynewa3--
-
---===============1153015218566630172==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1153015218566630172==--
+>>  - ai31xx-micbias-vg - MicBias Voltage setting
+>>          1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
+>>          2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
+>> @@ -48,6 +48,7 @@ CODEC input pins:
+>>  The pins can be used in referring sound node's audio-routing property.
+>>  
+>>  Example:
+>> +#include <dt-bindings/gpio/gpio.h>
+>>  #include <dt-bindings/sound/tlv320aic31xx-micbias.h>
+>>  
+>>  tlv320aic31xx: tlv320aic31xx@18 {
+>> @@ -56,6 +57,8 @@ tlv320aic31xx: tlv320aic31xx@18 {
+>>  
+>>  	ai31xx-micbias-vg = <MICBIAS_OFF>;
+>>  
+>> +	reset-gpio = <&gpio1 17 GPIO_ACTIVE_LOW>;
+>> +
+>>  	HPVDD-supply = <&regulator>;
+>>  	SPRVDD-supply = <&regulator>;
+>>  	SPLVDD-supply = <&regulator>;
+> 
+> regards
+> Philipp
+> 
