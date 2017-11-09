@@ -1,17 +1,20 @@
-From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 2/2] ASoC: add mclk-fs support to audio graph
-	card
-Date: Thu, 9 Nov 2017 15:07:58 +0100
-Message-ID: <1510236478-2351-3-git-send-email-olivier.moysan@st.com>
-References: <1510236478-2351-1-git-send-email-olivier.moysan@st.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH 01/17] ASoC: tlv320aic31xx: General source
+ formatting cleanup
+Date: Thu, 9 Nov 2017 08:13:17 -0600
+Message-ID: <98eaa342-8405-56af-0804-38c7c1e5bc2a@ti.com>
+References: <20171109002741.10897-1-afd@ti.com>
+ <20171109002741.10897-2-afd@ti.com>
+ <20171109124143.mpolqcvsdzj2t6tv@sirena.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 99F80266B80
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 15:08:59 +0100 (CET)
-In-Reply-To: <1510236478-2351-1-git-send-email-olivier.moysan@st.com>
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52D3C266B80
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 15:13:19 +0100 (CET)
+In-Reply-To: <20171109124143.mpolqcvsdzj2t6tv@sirena.co.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,100 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add mclk-fs support to audio graph card
-as it was previously implemented in simple card.
+On 11/09/2017 06:41 AM, Mark Brown wrote:
+> On Wed, Nov 08, 2017 at 06:27:25PM -0600, Andrew F. Davis wrote:
+>> Simple non-functional changes including:
+>>
+>>  * Fix header copyright tags
+>>  * Fix spelling errors
+>>  * Reformat code for easier reading
+>>  * Move some code blocks to a more natural ordering
+>>  * Remove unneeded code
+>>  * Remove assignments that are always overridden
+>>  * Normalize function return paths
+>>
+>> Signed-off-by: Andrew F. Davis <afd@ti.com>
+> 
+> There's other things in here like adding error reporting...  please
+> don't send changes like this, if you want to do cleanups you should
+> split them up in the same way you would other changes.  Bigger patches
+> are harder to review especially if they're not repetitive examples of
+> the same pattern.  
+> 
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/generic/audio-graph-card.c | 47 ++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 8 deletions(-)
+I'm never really sure with these where the split point should be, almost
+every change in here could be its own patch if I really wanted to pad my
+kernel patch count, but this series is already 17 patches long and I
+usually see these all as the same logical action: non-functional cleanups.
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 488c52f..1b61642 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -29,7 +29,9 @@ struct graph_card_data {
- 	struct graph_dai_props {
- 		struct asoc_simple_dai cpu_dai;
- 		struct asoc_simple_dai codec_dai;
-+		unsigned int mclk_fs;
- 	} *dai_props;
-+	unsigned int mclk_fs;
- 	struct snd_soc_dai_link *dai_link;
- 	struct gpio_desc *pa_gpio;
- };
-@@ -95,9 +97,43 @@ static void asoc_graph_card_shutdown(struct snd_pcm_substream *substream)
- 	asoc_simple_card_clk_disable(&dai_props->codec_dai);
- }
- 
-+static int asoc_graph_card_hw_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
-+	struct graph_dai_props *dai_props = graph_priv_to_props(priv, rtd->num);
-+	unsigned int mclk, mclk_fs = 0;
-+	int ret = 0;
-+
-+	if (priv->mclk_fs)
-+		mclk_fs = priv->mclk_fs;
-+	else if (dai_props->mclk_fs)
-+		mclk_fs = dai_props->mclk_fs;
-+
-+	if (mclk_fs) {
-+		mclk = params_rate(params) * mclk_fs;
-+		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret && ret != -ENOTSUPP)
-+			goto err;
-+
-+		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
-+					     SND_SOC_CLOCK_OUT);
-+		if (ret && ret != -ENOTSUPP)
-+			goto err;
-+	}
-+	return 0;
-+err:
-+	return ret;
-+}
-+
- static const struct snd_soc_ops asoc_graph_card_ops = {
- 	.startup = asoc_graph_card_startup,
- 	.shutdown = asoc_graph_card_shutdown,
-+	.hw_params = asoc_graph_card_hw_params,
- };
- 
- static int asoc_graph_card_dai_init(struct snd_soc_pcm_runtime *rtd)
-@@ -146,10 +182,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	/*
--	 * we need to consider "mclk-fs" around here
--	 * see simple-card
--	 */
-+	of_property_read_u32(rcpu_ep, "mclk-fs", &dai_props->mclk_fs);
- 
- 	ret = asoc_simple_card_parse_graph_cpu(cpu_ep, dai_link);
- 	if (ret < 0)
-@@ -217,10 +250,8 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret < 0)
- 		return ret;
- 
--	/*
--	 * we need to consider "mclk-fs" around here
--	 * see simple-card
--	 */
-+	/* Factor to mclk, used in hw_params() */
-+	of_property_read_u32(node, "mclk-fs", &priv->mclk_fs);
- 
- 	of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
- 		ret = asoc_graph_card_dai_link_of(it.node, priv, idx++);
--- 
-1.9.1
+I agree the added error message isn't purely non-functional and so
+should be broken out, I'll break out a couple other changes for v2.
