@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-codec: fixed 32bit audio capture
-	support for H3/H2+" to the asoc tree
-Date: Thu, 09 Nov 2017 17:43:08 +0000
-Message-ID: <E1eCqr6-0006f0-Au@debutante>
+Subject: Applied "ASoC: da7213: add support for DSP modes" to
+	the asoc tree
+Date: Thu, 09 Nov 2017 17:43:45 +0000
+Message-ID: <E1eCqrh-0006gb-2B@debutante>
+References: <20171108224231.30564-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BBF2F267826
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:43:09 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id B4E58267877
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:43:50 +0100 (CET)
+In-Reply-To: <20171108224231.30564-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, broonie@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-codec: fixed 32bit audio capture support for H3/H2+
+   ASoC: da7213: add support for DSP modes
 
 has been applied to the asoc tree at
 
@@ -52,70 +53,127 @@ to this mail.
 Thanks,
 Mark
 
->From 8a0f95ce48304364979066600eba7cc5c939ba83 Mon Sep 17 00:00:00 2001
-From: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
-Date: Tue, 31 Oct 2017 12:58:18 +0100
-Subject: [PATCH] ASoC: sun4i-codec: fixed 32bit audio capture support for
- H3/H2+
+>From e0d746cc0155a51cc24eb56286cd21a2c5aa4985 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 8 Nov 2017 16:42:31 -0600
+Subject: [PATCH] ASoC: da7213: add support for DSP modes
 
-32bit and 24bit audio capture formats for H3/H2+ are broken because the
-RX_SAMPLE_BITS and the RX_FIFO_MODE bits of AC_ADC_FIFOC register of the audio
-codec are not set to operate in 24bit mode but in 16bit mode only.
-The following patch sets the H3 audio codec registers and the DMA bus width
-properly when a 24/32bit capture is requested.
+DSP modes are documented in the data sheet but not enabled in the driver.
+The work-around already implemented for DA7218/9 is also required to
+make sure the bit clock handling in DSP modes follows ASoC conventions.
 
-Signed-off-by: Andrea Bondavalli <andrea.bondavalli74@gmail.com>
+Tested with ARD-AUDIO-DA7212 and Minnowmax Turbot boards
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
+ sound/soc/codecs/da7213.c | 58 +++++++++++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/da7213.h |  1 +
+ 2 files changed, 49 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index baa9007464ed..5da4efe7a550 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -346,11 +346,6 @@ static int sun4i_codec_prepare_capture(struct snd_pcm_substream *substream,
- 				   0x3 << 8,
- 				   0x1 << 8);
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index cc0b2d2eaf15..41d9b1da27c2 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1220,6 +1220,7 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
+ 	u8 dai_clk_mode = 0, dai_ctrl = 0;
++	u8 dai_offset = 0;
  
--	/* Fill most significant bits with valid data MSB */
--	regmap_field_update_bits(scodec->reg_adc_fifoc,
--				 BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE),
--				 BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE));
--
+ 	/* Set master/slave mode */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -1234,17 +1235,46 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	}
+ 
+ 	/* Set clock normal/inverted */
+-	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+-	case SND_SOC_DAIFMT_NB_NF:
+-		break;
+-	case SND_SOC_DAIFMT_NB_IF:
+-		dai_clk_mode |= DA7213_DAI_WCLK_POL_INV;
+-		break;
+-	case SND_SOC_DAIFMT_IB_NF:
+-		dai_clk_mode |= DA7213_DAI_CLK_POL_INV;
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_RIGHT_J:
++		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++		case SND_SOC_DAIFMT_NB_NF:
++			break;
++		case SND_SOC_DAIFMT_NB_IF:
++			dai_clk_mode |= DA7213_DAI_WCLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_IB_NF:
++			dai_clk_mode |= DA7213_DAI_CLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_IB_IF:
++			dai_clk_mode |= DA7213_DAI_WCLK_POL_INV |
++					DA7213_DAI_CLK_POL_INV;
++			break;
++		default:
++			return -EINVAL;
++		}
+ 		break;
+-	case SND_SOC_DAIFMT_IB_IF:
+-		dai_clk_mode |= DA7213_DAI_WCLK_POL_INV | DA7213_DAI_CLK_POL_INV;
++	case SND_SOC_DAI_FORMAT_DSP_A:
++	case SND_SOC_DAI_FORMAT_DSP_B:
++		/* The bclk is inverted wrt ASoC conventions */
++		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++		case SND_SOC_DAIFMT_NB_NF:
++			dai_clk_mode |= DA7213_DAI_CLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_NB_IF:
++			dai_clk_mode |= DA7213_DAI_WCLK_POL_INV |
++					DA7213_DAI_CLK_POL_INV;
++			break;
++		case SND_SOC_DAIFMT_IB_NF:
++			break;
++		case SND_SOC_DAIFMT_IB_IF:
++			dai_clk_mode |= DA7213_DAI_WCLK_POL_INV;
++			break;
++		default:
++			return -EINVAL;
++		}
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -1261,6 +1291,13 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		dai_ctrl |= DA7213_DAI_FORMAT_RIGHT_J;
+ 		break;
++	case SND_SOC_DAI_FORMAT_DSP_A: /* L data MSB after FRM LRC */
++		dai_ctrl |= DA7213_DAI_FORMAT_DSP;
++		dai_offset = 1;
++		break;
++	case SND_SOC_DAI_FORMAT_DSP_B: /* L data MSB during FRM LRC */
++		dai_ctrl |= DA7213_DAI_FORMAT_DSP;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -1271,6 +1308,7 @@ static int da7213_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	snd_soc_write(codec, DA7213_DAI_CLK_MODE, dai_clk_mode);
+ 	snd_soc_update_bits(codec, DA7213_DAI_CTRL, DA7213_DAI_FORMAT_MASK,
+ 			    dai_ctrl);
++	snd_soc_write(codec, DA7213_DAI_OFFSET, dai_offset);
+ 
  	return 0;
  }
- 
-@@ -490,6 +485,30 @@ static int sun4i_codec_hw_params_capture(struct sun4i_codec *scodec,
- 					 BIT(SUN4I_CODEC_ADC_FIFOC_MONO_EN),
- 					 0);
- 
-+	/* Set the number of sample bits to either 16 or 24 bits */
-+	if (hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS)->min == 32) {
-+		regmap_field_update_bits(scodec->reg_adc_fifoc,
-+				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS),
-+				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS));
-+
-+		regmap_field_update_bits(scodec->reg_adc_fifoc,
-+				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE),
-+				   0);
-+
-+		scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	} else {
-+		regmap_field_update_bits(scodec->reg_adc_fifoc,
-+				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_SAMPLE_BITS),
-+				   0);
-+
-+		/* Fill most significant bits with valid data MSB */
-+		regmap_field_update_bits(scodec->reg_adc_fifoc,
-+				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE),
-+				   BIT(SUN4I_CODEC_ADC_FIFOC_RX_FIFO_MODE));
-+
-+		scodec->capture_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+	}
-+
- 	return 0;
- }
- 
+diff --git a/sound/soc/codecs/da7213.h b/sound/soc/codecs/da7213.h
+index 16ef56f77cd4..5a78dba1dcb5 100644
+--- a/sound/soc/codecs/da7213.h
++++ b/sound/soc/codecs/da7213.h
+@@ -188,6 +188,7 @@
+ #define DA7213_DAI_FORMAT_I2S_MODE				(0x0 << 0)
+ #define DA7213_DAI_FORMAT_LEFT_J				(0x1 << 0)
+ #define DA7213_DAI_FORMAT_RIGHT_J				(0x2 << 0)
++#define DA7213_DAI_FORMAT_DSP					(0x3 << 0)
+ #define DA7213_DAI_FORMAT_MASK					(0x3 << 0)
+ #define DA7213_DAI_WORD_LENGTH_S16_LE				(0x0 << 2)
+ #define DA7213_DAI_WORD_LENGTH_S20_LE				(0x1 << 2)
 -- 
 2.15.0
