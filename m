@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5663: Delay and retry reading
- rt5663 ID register
-Date: Thu, 9 Nov 2017 11:21:38 +0000
-Message-ID: <20171109112138.xz7qjrixlexv5qm6@sirena.co.uk>
-References: <1510210091-10848-1-git-send-email-oder_chiou@realtek.com>
+From: "Singh, Guneshwor" <guneshwor.o.singh@intel.com>
+Subject: Re: [PATCH] ALSA: hda - Fix memory leak on
+	snd_hdac_device_init error
+Date: Thu, 9 Nov 2017 16:59:08 +0530
+Message-ID: <20171109112908.GA2856@g2>
+References: <20171109032751.20573-1-guneshwor.o.singh@intel.com>
+ <20171109044419.GD3187@localhost> <s5hvaijvrf7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4469357693394413166=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 328FD266B80
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 12:21:40 +0100 (CET)
-In-Reply-To: <1510210091-10848-1-git-send-email-oder_chiou@realtek.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC92B26773C
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 12:29:13 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hvaijvrf7.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 09, 2017 at 08:31:56AM +0100, Takashi Iwai wrote:
+> On Thu, 09 Nov 2017 05:44:19 +0100,
+> Vinod Koul wrote:
+> > 
+> > On Thu, Nov 09, 2017 at 08:57:51AM +0530, Guneshwor Singh wrote:
+> > > From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+> > > 
+> > > Free codec vendor name on snd_hdac_device_init error.
+> > > 
+> > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> > > Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+> > > ---
+> > >  sound/hda/hdac_device.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+> > > index 19deb306facb..467b949544e2 100644
+> > > --- a/sound/hda/hdac_device.c
+> > > +++ b/sound/hda/hdac_device.c
+> > > @@ -111,6 +111,8 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
+> > >  	return 0;
+> > >  
+> > >   error:
+> > > +	kfree(codec->vendor_name);
+> > 
+> > Sorry I dont think this is right.
+> > 
+> > The vendor name is freed in the snd_hdac_device_exit()
+> > 
+> > We drop the reference here and release method would be called to
+> > free up the resources.
+> 
+> Correct.  The patch would lead to a double-free.
+> 
+> 
 
---===============4469357693394413166==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kzkmdtenwpr3nf44"
-Content-Disposition: inline
+Yes, you are right. Please ignore the patch.
 
-
---kzkmdtenwpr3nf44
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 09, 2017 at 02:48:11PM +0800, Oder Chiou wrote:
-
-> +		dev_err(&i2c->dev,
-> +			"Device with ID register %#x is not rt5663,"
-> +			" retry one time.\n", val);
-
-This still splits the error message over two lines - like I said that'll
-make it harder for someone to search the kernel source to find where the
-error was generated and understand what it means.
-
---kzkmdtenwpr3nf44
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloEOkIACgkQJNaLcl1U
-h9ArNgf+NEiERX/vyPqKu0aLDadztN+3e/ENBAW/q6hlfc6brYfJzXzGAfol2c3b
-dh1tbi15TVR6RCQXKcy5wEtAZIWDdxfXNVrRF2dOLaq3o3cVZgXxEJ4q9ye9d7NE
-2XrZSo8VrWgML6UogvYYyAhtR+bRAQyiJtHrRKATaX5KqqiaorzMbkT2Z8kR+FBP
-/VtqPW3V3JJHkvAl5m18AWgz7N9w0D1dqupRsPbRG/gCpO34OY+mMrWMVLLK0+e9
-03NXSt3kusiXliLw4RXK5ZCl0u85hwSBRDEQ891iZdAnBFQIUNB/NDS7dDm9WHJT
-h6+ngeLeY6cW3S+Sep5vYHwfF+S1ww==
-=liEI
------END PGP SIGNATURE-----
-
---kzkmdtenwpr3nf44--
-
---===============4469357693394413166==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4469357693394413166==--
+> thanks,
+> 
+> Takashi
+> 
+> 
+> > 
+> > >  	put_device(&codec->dev);
+> > >  	return err;
+> > >  }
+> > > -- 
+> > > 2.15.0
+> > > 
+> > 
+> > -- 
+> > ~Vinod
+> > 
