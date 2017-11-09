@@ -1,7 +1,7 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 07/17] ASoC: tlv320aic31xx: Add MICBIAS off setting
-Date: Wed, 8 Nov 2017 18:27:31 -0600
-Message-ID: <20171109002741.10897-8-afd@ti.com>
+Subject: [PATCH 08/17] ASoC: tlv320aic31xx: Check clock and divider before division
+Date: Wed, 8 Nov 2017 18:27:32 -0600
+Message-ID: <20171109002741.10897-9-afd@ti.com>
 References: <20171109002741.10897-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,51 +12,37 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Leaving microphone bias off is a valid setting and even used in the DT
-binding document example. Add this setting here and document the same.
+If our set_sysclk DAI callback has not been called yet p_div will be 0
+and dividing by this will cause an error. Print an error message and
+leave before this.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 1 +
- include/dt-bindings/sound/tlv320aic31xx-micbias.h         | 1 +
- sound/soc/codecs/tlv320aic31xx.c                          | 1 +
- 3 files changed, 3 insertions(+)
+ sound/soc/codecs/tlv320aic31xx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 4c4e77f97d87..a56b40a1726c 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -24,6 +24,7 @@ Optional properties:
- 
- - reset-gpio - GPIO specification for the active low RESET input.
- - ai31xx-micbias-vg - MicBias Voltage setting
-+        0 or MICBIAS_OFF - MICBIAS output is powered off
-         1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
-         2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
-         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
-diff --git a/include/dt-bindings/sound/tlv320aic31xx-micbias.h b/include/dt-bindings/sound/tlv320aic31xx-micbias.h
-index c6895a18a455..069484070fcf 100644
---- a/include/dt-bindings/sound/tlv320aic31xx-micbias.h
-+++ b/include/dt-bindings/sound/tlv320aic31xx-micbias.h
-@@ -2,6 +2,7 @@
- #ifndef __DT_TLV320AIC31XX_MICBIAS_H
- #define __DT_TLV320AIC31XX_MICBIAS_H
- 
-+#define MICBIAS_OFF		0
- #define MICBIAS_2_0V		1
- #define MICBIAS_2_5V		2
- #define MICBIAS_AVDDV		3
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 44502a847af4..e8eb3de7af7b 100644
+index e8eb3de7af7b..95518eabd7e8 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1313,6 +1313,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 	fwnode_property_read_u32(aic31xx->dev->fwnode, "ai31xx-micbias-vg",
- 				 &micbias_value);
- 	switch (micbias_value) {
-+	case MICBIAS_OFF:
- 	case MICBIAS_2_0V:
- 	case MICBIAS_2_5V:
- 	case MICBIAS_AVDDV:
+@@ -763,11 +763,17 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
+ {
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
+ 	int bclk_score = snd_soc_params_to_frame_size(params);
+-	int mclk_p = aic31xx->sysclk / aic31xx->p_div;
++	int mclk_p;
+ 	int bclk_n = 0;
+ 	int match = -1;
+ 	int i;
+ 
++	if (!aic31xx->sysclk || !aic31xx->p_div) {
++		dev_err(codec->dev, "Master clock not supplied\n");
++		return -EINVAL;
++	}
++	mclk_p = aic31xx->sysclk / aic31xx->p_div;
++
+ 	/* Use PLL as CODEC_CLKIN and DAC_CLK as BDIV_CLKIN */
+ 	snd_soc_update_bits(codec, AIC31XX_CLKMUX,
+ 			    AIC31XX_CODEC_CLKIN_MASK, AIC31XX_CODEC_CLKIN_PLL);
 -- 
 2.15.0
