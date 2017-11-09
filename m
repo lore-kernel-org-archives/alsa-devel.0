@@ -1,26 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC PATCH v2 7/7] sound: core: Avoid using
- timespec for struct snd_timer_tread
-Date: Thu, 9 Nov 2017 18:01:47 +0100
-Message-ID: <CAK8P3a2a2hummJN8AiQmngKm53CArGsWdEESmjovLyz=Qc+uFQ@mail.gmail.com>
-References: <cover.1509612175.git.baolin.wang@linaro.org>
- <b920cd22144c6136abf0c82df6e2f26deea38cfc.1509612176.git.baolin.wang@linaro.org>
- <s5hvaipxblf.wl-tiwai@suse.de>
- <CAK8P3a3B_QVJwQGQ5Uf07XzgZ3QBaybq_+K_wNeBH5-h5ThoLg@mail.gmail.com>
- <s5hr2tcy849.wl-tiwai@suse.de>
- <CAK8P3a39BOUa_2pnHZ6URjv6uKgEtiySEExhE5qEegqfk-CDkg@mail.gmail.com>
- <s5h1sl7e6np.wl-tiwai@suse.de>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: [PATCH v3] ASoC: rt5645: Wait for 400msec before
+	concluding on value of RT5645_VENDOR_ID2
+Date: Thu,  9 Nov 2017 12:35:51 -0500
+Message-ID: <20171109173552.21438-1-alexander.deucher@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
- [74.125.82.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FB76267826
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:01:49 +0100 (CET)
-Received: by mail-ot0-f194.google.com with SMTP id o9so5896876ota.3
- for <alsa-devel@alsa-project.org>; Thu, 09 Nov 2017 09:01:48 -0800 (PST)
-In-Reply-To: <s5h1sl7e6np.wl-tiwai@suse.de>
+Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
+ [209.85.216.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00166267826
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 18:36:02 +0100 (CET)
+Received: by mail-qt0-f193.google.com with SMTP id n61so8612413qte.10
+ for <alsa-devel@alsa-project.org>; Thu, 09 Nov 2017 09:36:02 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,68 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: jeeja.kp@intel.com, gudishax.kranthikumar@intel.com, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Baolin Wang <baolin.wang@linaro.org>, Vinod Koul <vinod.koul@intel.com>, hardik.t.shah@intel.com, Ingo Molnar <mingo@kernel.org>, guneshwor.o.singh@intel.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, Naveen M <naveen.m@intel.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, subhransu.s.prusty@intel.com, SF Markus Elfring <elfring@users.sourceforge.net>, Bhumika Goyal <bhumirks@gmail.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org, Vijendar.Mukunda@amd.com
+Cc: tiwai@suse.de, Bard Liao <bardliao@realtek.com>, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 9, 2017 at 5:52 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 06 Nov 2017 17:33:26 +0100,
+From: Akshu Agrawal <akshu.agrawal@amd.com>
 
->> --- a/include/uapi/sound/asound.h
->> +++ b/include/uapi/sound/asound.h
->> @@ -306,10 +306,19 @@ typedef int __bitwise snd_pcm_state_t;
->>
->>  enum {
->>         SNDRV_PCM_MMAP_OFFSET_DATA = 0x00000000,
->> -       SNDRV_PCM_MMAP_OFFSET_STATUS = 0x80000000,
->> +       SNDRV_PCM_MMAP_OFFSET_STATUS_OLD = 0x80000000,
->>         SNDRV_PCM_MMAP_OFFSET_CONTROL = 0x81000000,
->> +       SNDRV_PCM_MMAP_OFFSET_STATUS64 = 0x82000000,
->>  };
->>
->> +#if __BITS_PER_LONG == 64
->> +#define SNDRV_PCM_MMAP_OFFSET_STATUS SNDRV_PCM_MMAP_OFFSET_STATUS_OLD
->> +#else
->> +#define SNDRV_PCM_MMAP_OFFSET_STATUS ((sizeof(time_t) >
->> sizeof(__kernel_long_t)) ? \
->> +                                       SNDRV_PCM_MMAP_OFFSET_STATUS64 : \
->> +                                       SNDRV_PCM_MMAP_OFFSET_STATUS_OLD)
->> +#endif
->> +
->>  union snd_pcm_sync_id {
->>         unsigned char id[16];
->>         unsigned short id16[8];
->>
->> Does that make sense?
->
-> Yeah, that should work.
->
-> But can we make the flip without the dynamic sizeof() comparison but
-> some ifdef?  The above doesn't allow the usage with switch(), for
-> example.
->
-> IOW, is there any macro indicating the 64bit user time_t?
+Minimum time required between power On of codec and read
+of RT5645_VENDOR_ID2 is 400msec. We should wait that long
+before reading the value.
 
-There is a macro defined by the C library, but so far we have not
-started relying on it in kernel headers, because there is no guarantee
-that this symbol is visible before sys/time.h has been included,
-and there are some cases where it's possible to include a kernel
-header before sys/time.h.
+TEST=Cold boot the device and check for sound device.
 
-In case of sound/asound.h, that should be no problem since we rely
-on having seen the definition on 'struct timeval' already today, and
-that must come from sys/time.h. Then we just need to make sure that
-all C libraries define the same macro.
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
 
-Are you sure about the switch()/case problem? I thought that worked
-in C99, the only problem would be using the macro outside of a
-function, e.g. as initalizer for a variable
+v2: rework the patch based on mailing list discussion.
+    Just wait before reading the register.
+v3: Drop the extra read
 
-> In theory we can have the shadow mmap for the compat timespec, and
-> convert it always when the status gets changed.  But I guess disabling
-> the mmap should work simply as is, judging from the 64bit compat
-> status.
+ sound/soc/codecs/rt5645.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Ok.
-
-       Arnd
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 23cc2cb8393f..5f24df4fae8e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -55,6 +55,8 @@ MODULE_PARM_DESC(quirk, "RT5645 pdata quirk override");
+ 
+ #define RT5645_HWEQ_NUM 57
+ 
++#define TIME_TO_POWER_MS 400
++
+ static const struct regmap_range_cfg rt5645_ranges[] = {
+ 	{
+ 		.name = "PR",
+@@ -3784,6 +3786,12 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 			ret);
+ 		return ret;
+ 	}
++
++	/*
++	 * Read after 400msec, as it is the interval required between
++	 * read and power On.
++	 */
++	msleep(TIME_TO_POWER_MS);
+ 	regmap_read(regmap, RT5645_VENDOR_ID2, &val);
+ 
+ 	switch (val) {
+-- 
+2.13.6
