@@ -1,93 +1,205 @@
-From: Jeremy Cline <jeremy@jcline.org>
-Subject: [PATCH] ASoC: Intel: common: Replace sst_acpi_check_hid with acpi_dev_present
-Date: Thu, 9 Nov 2017 21:07:41 +0000
-Message-ID: <0100015fa29c1e78-d78dbbd4-d14a-4ec1-9f8a-69addb10921b-000000@email.amazonses.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
+Date: Thu, 9 Nov 2017 21:14:07 +0000
+Message-ID: <5fee4ccb-1030-b698-e7ef-7f4390563a76@linaro.org>
+References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
+ <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E04B2678A9
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 22:14:10 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id s66so19784297wmf.5
+ for <alsa-devel@alsa-project.org>; Thu, 09 Nov 2017 13:14:10 -0800 (PST)
+In-Reply-To: <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, Sudheer Papothi <spapothi@codeaurora.org>, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Replace the sst_acpi_check_hid helper function added in
-commit 915ae2b9f0fe ("ASoC: Intel: Create a helper to search for
-matching machine") with the generic acpi_dev_present helper function
-and remove the now unused sst_acpi_check_hid function. This should have
-no functional change.
 
-Signed-off-by: Jeremy Cline <jeremy@jcline.org>
----
- sound/soc/intel/common/sst-acpi.h       |  3 ---
- sound/soc/intel/common/sst-match-acpi.c | 32 ++------------------------------
- 2 files changed, 2 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
-index afe9b87b8bd5..d7facac83b7e 100644
---- a/sound/soc/intel/common/sst-acpi.h
-+++ b/sound/soc/intel/common/sst-acpi.h
-@@ -43,9 +43,6 @@ static inline bool sst_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- /* acpi match */
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines);
- 
--/* acpi check hid */
--bool sst_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
--
- /* Descriptor for SST ASoC machine driver */
- struct sst_acpi_mach {
- 	/* ACPI ID for the matching machine driver. Audio codec for instance */
-diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
-index 56d26f36a3cb..f8e1b92de79a 100644
---- a/sound/soc/intel/common/sst-match-acpi.c
-+++ b/sound/soc/intel/common/sst-match-acpi.c
-@@ -49,40 +49,12 @@ const char *sst_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
- }
- EXPORT_SYMBOL_GPL(sst_acpi_find_name_from_hid);
- 
--static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
--				       void *context, void **ret)
--{
--	unsigned long long sta;
--	acpi_status status;
--
--	*(bool *)context = true;
--	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
--	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
--		*(bool *)context = false;
--
--	return AE_OK;
--}
--
--bool sst_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
--{
--	acpi_status status;
--	bool found = false;
--
--	status = acpi_get_devices(hid, sst_acpi_mach_match, &found, NULL);
--
--	if (ACPI_FAILURE(status))
--		return false;
--
--	return found;
--}
--EXPORT_SYMBOL_GPL(sst_acpi_check_hid);
--
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
- {
- 	struct sst_acpi_mach *mach;
- 
- 	for (mach = machines; mach->id[0]; mach++) {
--		if (sst_acpi_check_hid(mach->id) == true) {
-+		if (acpi_dev_present(mach->id, NULL, -1) == true) {
- 			if (mach->machine_quirk == NULL)
- 				return mach;
- 
-@@ -161,7 +133,7 @@ struct sst_acpi_mach *sst_acpi_codec_list(void *arg)
- 		return mach;
- 
- 	for (i = 0; i < codec_list->num_codecs; i++) {
--		if (sst_acpi_check_hid(codec_list->codecs[i]) != true)
-+		if (acpi_dev_present(codec_list->codecs[i], NULL, -1) != true)
- 			return NULL;
- 	}
- 
--- 
-2.14.3
+On 19/10/17 04:03, Vinod Koul wrote:
+> This adds the base SoundWire bus type, bus and driver registration.
+> along with changes to module device table for new SoundWire
+> device type.
+> 
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+
+> +++ b/drivers/soundwire/Kconfig
+> @@ -0,0 +1,22 @@
+> +#
+> +# SoundWire subsystem configuration
+> +#
+> +
+> +menuconfig SOUNDWIRE
+> +	bool "SoundWire support"
+
+Any reason why this subsystem can not be build as module?
+
+> +	---help---
+> +	  SoundWire is a 2-Pin interface with data and clock line ratified
+> +	  by the MIPI Alliance. SoundWire is used for transporting data
+> +	  typically related to audio functions. SoundWire interface is
+
+> +#ifndef __SDW_BUS_H
+> +#define __SDW_BUS_H
+> +
+> +#include <linux/init.h>
+> +#include <linux/device.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/acpi.h>
+Do you need these headers here?
+
+> +#include <linux/soundwire/sdw.h>
+> +
+> +int sdw_slave_modalias(struct sdw_slave *slave, char *buf, size_t size);
+> +
+> +#endif /* __SDW_BUS_H */
+> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+> new file mode 100644
+> index 000000000000..a14d1de80afa
+> --- /dev/null
+> +++ b/drivers/soundwire/bus_type.c
+>
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/soundwire/sdw.h>
+> +#include "bus.h"
+> +
+> +/**
+> + * sdw_get_device_id: find the matching SoundWire device id
+> + *
+function name should end with () - according to kernel doc.
+
+> + * @slave: SoundWire Slave device
+> + * @drv: SoundWire Slave Driver
+> + *
+> + * The match is done by comparing the mfg_id and part_id from the
+> + * struct sdw_device_id. class_id is unused, as it is a placeholder
+> + * in MIPI Spec.
+> + */
+
+BTW, This is a static private function, why are we adding kernel doc for 
+this?
+
+> +static const struct sdw_device_id *
+> +sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+> +{
+> +	const struct sdw_device_id *id = drv->id_table;
+> +
+> +	while (id && id->mfg_id) {
+> +		if (slave->id.mfg_id == id->mfg_id &&
+> +				slave->id.part_id == id->part_id) {
+> +			return id;
+> +		}
+> +		id++;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
+> +{
+> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_driver *drv = drv_to_sdw_driver(ddrv);
+> +
+> +	return !!sdw_get_device_id(slave, drv);
+> +}
+> +
+> +int sdw_slave_modalias(struct sdw_slave *slave, char *buf, size_t size)
+> +{
+> +	/* modalias is sdw:m<mfg_id>p<part_id> */
+> +
+> +	return snprintf(buf, size, "sdw:m%04Xp%04X\n",
+> +			slave->id.mfg_id, slave->id.part_id);
+> +}
+> +
+> +static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
+> +{
+> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	char modalias[32];
+> +
+> +	sdw_slave_modalias(slave, modalias, sizeof(modalias));
+> +
+> +	if (add_uevent_var(env, "MODALIAS=%s", modalias))
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +
+> +struct bus_type sdw_bus_type = {
+> +	.name = "soundwire",
+> +	.match = sdw_bus_match,
+> +	.uevent = sdw_uevent,
+> +};
+> +EXPORT_SYMBOL(sdw_bus_type);
+> +
+> +static int sdw_drv_probe(struct device *dev)
+> +{
+> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+> +	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
+> +	const struct sdw_device_id *id;
+> +	int ret;
+> +
+> +	id = sdw_get_device_id(slave, drv);
+
+By this time we must have already matched dev and driver by the ID, 
+shouldn't it be just slave->id  here?
+> +	if (!id)
+> +		return -ENODEV;
+> +
+> +	/*
+> +	 * attach to power domain but don't turn on (last arg)
+> +	 */
+> +	ret = dev_pm_domain_attach(dev, false);
+> +	if (ret) {
+Shouldn't it just handle the EPROBE_DEFER case and ignore it for other 
+errors.
+
+
+> +		dev_err(dev, "Failed to attach PM domain: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = drv->probe(slave, id);
+> +	if (ret) {
+> +		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
+> +		return ret;
+> +	}
+
+
+What happens if the slave driver is built as module and loaded after the 
+slave device is attached to the bus. How does the slave driver get 
+updated status in this case?
+
+We have similar usecase in slimbus too.
+
+> +
+> +	return 0;
+> +}
+> +
+
+
+
+
+> 
