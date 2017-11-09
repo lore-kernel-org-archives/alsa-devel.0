@@ -1,74 +1,46 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH 4/5] ARM: dts: imx: Add TDA19971 HDMI Receiver to GW54xx
-Date: Thu,  9 Nov 2017 10:45:35 -0800
-Message-ID: <1510253136-14153-5-git-send-email-tharvey@gateworks.com>
+From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Subject: [PATCH 5/5] ARM: dts: imx: Add TDA19971 HDMI Receiver to GW551x
+Date: Thu,  9 Nov 2017 10:45:36 -0800
+Message-ID: <1510253136-14153-6-git-send-email-tharvey@gateworks.com>
 References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, shawnguo@kernel.org, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1510253136-14153-1-git-send-email-tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The GW54xx has a front-panel microHDMI connector routed to a TDA19971
-which is connected the the IPU CSI when using IMX6Q.
-
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
 ---
-v2:
- - add HDMI audio input support
----
- arch/arm/boot/dts/imx6q-gw54xx.dts    | 102 ++++++++++++++++++++++++++++++++++
- arch/arm/boot/dts/imx6qdl-gw54xx.dtsi |  29 +++++++++-
- 2 files changed, 128 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/imx6qdl-gw551x.dtsi | 85 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
 
-diff --git a/arch/arm/boot/dts/imx6q-gw54xx.dts b/arch/arm/boot/dts/imx6q-gw54xx.dts
-index 56e5b50..99dac63 100644
---- a/arch/arm/boot/dts/imx6q-gw54xx.dts
-+++ b/arch/arm/boot/dts/imx6q-gw54xx.dts
-@@ -12,10 +12,27 @@
- /dts-v1/;
- #include "imx6q.dtsi"
- #include "imx6qdl-gw54xx.dtsi"
+diff --git a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+index 30d4662..8ce0b15 100644
+--- a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+@@ -46,6 +46,7 @@
+  */
+ 
+ #include <dt-bindings/gpio/gpio.h>
 +#include <dt-bindings/media/tda1997x.h>
  
  / {
- 	model = "Gateworks Ventana i.MX6 Dual/Quad GW54XX";
- 	compatible = "gw,imx6q-gw54xx", "gw,ventana", "fsl,imx6q";
-+
-+	sound-digital {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "tda1997x-audio";
-+		simple-audio-card,dai-link@0 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&ssi2>;
-+			};
-+			codec {
-+				bitclock-master;
-+				frame-master;
-+				sound-dai = <&tda1997x>;
-+			};
-+		};
-+	};
- };
- 
- &i2c3 {
-@@ -35,6 +52,61 @@
- 			};
- 		};
+ 	/* these are used by bootloader for disabling nodes */
+@@ -263,6 +264,60 @@
+ 		#gpio-cells = <2>;
  	};
-+
-+	tda1997x: codec@48 {
+ 
++	tda1997x: tda1997x@48 {
 +		compatible = "nxp,tda19971";
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&pinctrl_tda1997x>;
 +		reg = <0x48>;
 +		interrupt-parent = <&gpio1>;
 +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+		DOVDD-supply = <&reg_3p3v>;
-+		AVDD-supply = <&sw4_reg>;
-+		DVDD-supply = <&sw4_reg>;
++		DOVDD-supply = <&reg_3p3>;
++		AVDD-supply = <&reg_1p8b>;
++		DVDD-supply = <&reg_1p8a>;
 +		#sound-dai-cells = <0>;
 +		nxp,audout-format = "i2s";
 +		nxp,audout-layout = <0>;
@@ -115,8 +87,8 @@ index 56e5b50..99dac63 100644
 +	pinctrl-0 = <&pinctrl_ipu1_csi0>;
  };
  
- &ipu2_csi1_from_ipu2_csi1_mux {
-@@ -63,6 +135,30 @@
+ &pcie {
+@@ -375,6 +430,30 @@
  		>;
  	};
  
@@ -144,91 +116,26 @@ index 56e5b50..99dac63 100644
 +		>;
 +	};
 +
- 	pinctrl_ipu2_csi1: ipu2_csi1grp {
+ 	pinctrl_pcie: pciegrp {
  		fsl,pins = <
- 			MX6QDL_PAD_EIM_EB2__IPU2_CSI1_DATA19    0x1b0b0
-@@ -78,4 +174,10 @@
- 			MX6QDL_PAD_EIM_A16__IPU2_CSI1_PIXCLK    0x1b0b0
+ 			MX6QDL_PAD_GPIO_0__GPIO1_IO00		0x1b0b0 /* PCIE RST */
+@@ -399,6 +478,12 @@
  		>;
  	};
-+
+ 
 +	pinctrl_tda1997x: tda1997xgrp {
 +		fsl,pins = <
-+			MX6QDL_PAD_GPIO_7__GPIO1_IO07	0x1b0b0
-+		>;
-+	};
- };
-diff --git a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
-index 07458a2..1bcb298 100644
---- a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
-@@ -10,6 +10,7 @@
-  */
- 
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/sound/fsl-imx-audmux.h>
- 
- / {
- 	/* these are used by bootloader for disabling nodes */
-@@ -114,12 +115,12 @@
- 		};
- 	};
- 
--	sound {
-+	sound-analog {
- 		compatible = "fsl,imx6q-ventana-sgtl5000",
- 			     "fsl,imx-audio-sgtl5000";
- 		model = "sgtl5000-audio";
- 		ssi-controller = <&ssi1>;
--		audio-codec = <&codec>;
-+		audio-codec = <&sgtl5000>;
- 		audio-routing =
- 			"MIC_IN", "Mic Jack",
- 			"Mic Jack", "Mic Bias",
-@@ -133,6 +134,25 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_audmux>; /* AUD4<->sgtl5000 */
- 	status = "okay";
-+
-+	ssi2 {
-+		fsl,audmux-port = <1>;
-+		fsl,port-config = <
-+			(IMX_AUDMUX_V2_PTCR_TFSDIR |
-+			IMX_AUDMUX_V2_PTCR_TFSEL(4+8) | /* RXFS */
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(4+8) | /* RXC */
-+			IMX_AUDMUX_V2_PTCR_SYN)
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(4)
++			MX6QDL_PAD_GPIO_7__GPIO1_IO07		0x1b0b0
 +		>;
 +	};
 +
-+	aud5 {
-+		fsl,audmux-port = <4>;
-+		fsl,port-config = <
-+			IMX_AUDMUX_V2_PTCR_SYN
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(1)>;
-+	};
- };
- 
- &can1 {
-@@ -331,7 +351,7 @@
- 	pinctrl-0 = <&pinctrl_i2c3>;
- 	status = "okay";
- 
--	codec: sgtl5000@0a {
-+	sgtl5000: codec@0a {
- 		compatible = "fsl,sgtl5000";
- 		reg = <0x0a>;
- 		clocks = <&clks IMX6QDL_CLK_CKO>;
-@@ -475,6 +495,9 @@
- 			MX6QDL_PAD_SD2_DAT2__AUD4_TXD		0x110b0
- 			MX6QDL_PAD_SD2_DAT1__AUD4_TXFS		0x130b0
- 			MX6QDL_PAD_GPIO_0__CCM_CLKO1		0x130b0 /* AUD4_MCK */
-+			MX6QDL_PAD_EIM_D25__AUD5_RXC            0x130b0
-+			MX6QDL_PAD_DISP0_DAT19__AUD5_RXD        0x130b0
-+			MX6QDL_PAD_EIM_D24__AUD5_RXFS           0x130b0
- 		>;
- 	};
- 
+ 	pinctrl_uart2: uart2grp {
+ 		fsl,pins = <
+ 			MX6QDL_PAD_SD4_DAT7__UART2_TX_DATA	0x1b0b1
 -- 
 2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
