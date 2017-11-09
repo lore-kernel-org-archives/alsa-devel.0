@@ -1,19 +1,15 @@
-From: "Singh, Guneshwor" <guneshwor.o.singh@intel.com>
-Subject: Re: [PATCH] ALSA: hda - Fix memory leak on
-	snd_hdac_device_init error
-Date: Thu, 9 Nov 2017 16:59:08 +0530
-Message-ID: <20171109112908.GA2856@g2>
-References: <20171109032751.20573-1-guneshwor.o.singh@intel.com>
- <20171109044419.GD3187@localhost> <s5hvaijvrf7.wl-tiwai@suse.de>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH v3] ASoC: rt5663: Delay and retry reading
+	rt5663 ID register
+Date: Thu, 9 Nov 2017 19:28:10 +0800
+Message-ID: <1510226890-11507-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id DC92B26773C
- for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 12:29:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hvaijvrf7.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 519E6266B80
+ for <alsa-devel@alsa-project.org>; Thu,  9 Nov 2017 12:30:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 09, 2017 at 08:31:56AM +0100, Takashi Iwai wrote:
-> On Thu, 09 Nov 2017 05:44:19 +0100,
-> Vinod Koul wrote:
-> > 
-> > On Thu, Nov 09, 2017 at 08:57:51AM +0530, Guneshwor Singh wrote:
-> > > From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-> > > 
-> > > Free codec vendor name on snd_hdac_device_init error.
-> > > 
-> > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > > Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-> > > ---
-> > >  sound/hda/hdac_device.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-> > > index 19deb306facb..467b949544e2 100644
-> > > --- a/sound/hda/hdac_device.c
-> > > +++ b/sound/hda/hdac_device.c
-> > > @@ -111,6 +111,8 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
-> > >  	return 0;
-> > >  
-> > >   error:
-> > > +	kfree(codec->vendor_name);
-> > 
-> > Sorry I dont think this is right.
-> > 
-> > The vendor name is freed in the snd_hdac_device_exit()
-> > 
-> > We drop the reference here and release method would be called to
-> > free up the resources.
-> 
-> Correct.  The patch would lead to a double-free.
-> 
-> 
+In the probe, the codec may not be ready for I2C reading or there are some
+glitches on the i2c line. So if the i2c reading value is incorrect, it will
+read again after delay. This issue is similar the patch
+https://patchwork.kernel.org/patch/9681421/. In current project, these 2
+devices were connected to the same i2c line, and they met the same problem.
 
-Yes, you are right. Please ignore the patch.
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5663.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> > 
-> > >  	put_device(&codec->dev);
-> > >  	return err;
-> > >  }
-> > > -- 
-> > > 2.15.0
-> > > 
-> > 
-> > -- 
-> > ~Vinod
-> > 
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index fcd1643..18dc1ec 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3429,7 +3429,16 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+ 			ret);
+ 		return ret;
+ 	}
+-	regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
++
++	ret = regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
++	if (ret || (val != RT5663_DEVICE_ID_2 && val != RT5663_DEVICE_ID_1)) {
++		dev_err(&i2c->dev,
++			"Device with ID register %#x is not rt5663, retry one time.\n",
++			val);
++		msleep(100);
++		regmap_read(regmap, RT5663_VENDOR_ID_2, &val);
++	}
++
+ 	switch (val) {
+ 	case RT5663_DEVICE_ID_2:
+ 		rt5663->regmap = devm_regmap_init_i2c(i2c, &rt5663_v2_regmap);
+-- 
+2.7.4
