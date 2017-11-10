@@ -1,21 +1,34 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: C-Media CM6533 limited sample rate
-Date: Fri, 10 Nov 2017 12:49:46 +0100
-Message-ID: <a58d7b22-548a-27c0-b3b2-9669a7e4018d@ladisch.de>
-References: <CAKkO-Eh96_VQpQVyMCqbBkm3tgmxB26jm7ufpBRHrA8CqyugSg@mail.gmail.com>
+From: Henrik Eriksson <henrik.eriksson@axis.com>
+Subject: dsnoop, hwpointer and avail
+Date: Fri, 10 Nov 2017 13:29:43 +0100
+Message-ID: <20171110122943.GB5483@lnxhenriken2.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id E989226792F
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 12:49:30 +0100 (CET)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 9ED4D55828DF
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 12:49:29 +0100 (CET)
-In-Reply-To: <CAKkO-Eh96_VQpQVyMCqbBkm3tgmxB26jm7ufpBRHrA8CqyugSg@mail.gmail.com>
-Content-Language: en-US
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 951FB266A73
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 13:29:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id D897918519
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 13:29:44 +0100 (CET)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id 2rcth4_oowTO for <alsa-devel@alsa-project.org>;
+ Fri, 10 Nov 2017 13:29:44 +0100 (CET)
+Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
+ by bastet.se.axis.com (Postfix) with ESMTPS id 21E0D184F0
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 13:29:44 +0100 (CET)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id EFE1D1E084
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 13:29:43 +0100 (CET)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id D02EE1E083
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 13:29:43 +0100 (CET)
+Received: from thoth.se.axis.com (unknown [10.0.2.173])
+ by boulder03.se.axis.com (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 13:29:43 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,25 +41,23 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Luigi Tarenga wrote:
-> The datasheet say the chip support PCM at 8K/11.025K/16K/22.05K/32K/
-> 44.1K/48K/96K Hz with 16 or 24 bit depth.
+Hello
 
-Or not; see footnote 2 on page 7.
+Is there any documentation/rationale for how pcm_dsnoop works in
+snd_pcm_{dsnoop_}status?  I am particularly wondering about the ordering
+of the snd_pcm_dsnoop_sync_ptr and the snd_pcm_status call on the slave
+pcm.
 
-> is the firmware on the chip that limit the hardware capabilities and
-> when queried by the driver it report only 2 sample rates?
-
-Yes.
-
-> do you think adding a quirk for this chip and trying to overcome the
-> firmware configuration and adding support for other sample rate can
-> be a solution?
-
-Maybe.
-
-Please find out how you can recompile the kernel of your distribution.
-
+I see occasional spikes (>1000 frames) of difference between the slave
+pcm hwpointer after the snd_pcm_status call on it and the pointers in
+the dsnoop pcm, and a correspondingly bad avail count.  I suspect the
+mismatches are due to process scheduling (the slave pcm status is
+delayed because the application process not running and the hardware
+progresses during that delay).  Does this seem plausible?  If so, could
+the code be simplified to reduce the the number of systemcalls needed?
+The status of the slave pcm seems to provide much of the information
+used to sync the pointers.  Or is there some other way to get a tighter
+coupling between the dsnoop status htstamp and avail count?
 
 Regards,
-Clemens
+/henrik
