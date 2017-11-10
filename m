@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bcm2835: Support additional samplerates
-	up to 384kHz" to the asoc tree
-Date: Fri, 10 Nov 2017 21:29:15 +0000
-Message-ID: <E1eDGrT-0004Pm-95@debutante>
-References: <1466358739-31669-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A11BC2679CD
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 22:29:19 +0100 (CET)
-In-Reply-To: <1466358739-31669-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Reichl <hias@horus.com>
-Cc: Clive Messer <clive.messer@digitaldreamtime.co.uk>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: rt5514: work around link error" to the asoc tree
+Date: Fri, 10 Nov 2017 21:29:32 +0000
+Message-ID: <E1eDGrk-0004Ui-U1@debutante>
+References: <20171110145455.821805-2-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171110145455.821805-2-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: bcm2835: Support additional samplerates up to 384kHz
+   ASoC: rt5514: work around link error
 
 has been applied to the asoc tree at
 
@@ -53,51 +37,57 @@ to this mail.
 Thanks,
 Mark
 
->From 675c0ee514f56ea39f6f550299621aafe9a53fc0 Mon Sep 17 00:00:00 2001
-From: Matthias Reichl <hias@horus.com>
-Date: Wed, 8 Nov 2017 21:03:31 +0100
-Subject: [PATCH] ASoC: bcm2835: Support additional samplerates up to 384kHz
+>From c56308775b5b81683789f9ee03f009493b51e6ab Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 10 Nov 2017 15:54:43 +0100
+Subject: [PATCH] ASoC: rt5514: work around link error
 
-Sample rates are only restricted by the capabilities of the
-clock driver, so use SNDRV_PCM_RATE_CONTINUOUS instead of
-SNDRV_PCM_RATE_8000_192000.
+The main rt5514 driver optionally calls into the SPI back-end to load
+the firmware. This causes a link error when one driver selects rt5514
+as built-in and another driver selects rt5514-spi as a loadable module:
 
-Tests (eg with pcm5122) have shown that bcm2835 works fine
-in 384kHz/32bit stereo mode, so change the maximum allowed
-rate from 192kHz to 384kHz.
+sound/soc/codecs/rt5514.o: In function `rt5514_dsp_voice_wake_up_put':
+rt5514.c:(.text+0xac8): undefined reference to `rt5514_spi_burst_write'
 
-Signed-off-by: Matthias Reichl <hias@horus.com>
-Reviewed-by: Eric Anholt <eric@anholt.net>
+As a workaround, this adds another silent symbol, to force rt5514-spi
+to be built-in for that configuration. I'm not overly happy with
+that solution, but couldn't come up with anything better. Using
+'IS_REACHABLE()' would break the case that relies on the loadable
+module, and all other ideas would result in more complexity.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/Kconfig  | 4 ++++
+ sound/soc/codecs/Makefile | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index dcacf7f83c93..f4b778ed350b 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -719,7 +719,9 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
- 	.playback = {
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates =	SNDRV_PCM_RATE_8000_192000,
-+		.rates =	SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min =	8000,
-+		.rate_max =	384000,
- 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
- 				| SNDRV_PCM_FMTBIT_S24_LE
- 				| SNDRV_PCM_FMTBIT_S32_LE
-@@ -727,7 +729,9 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
- 	.capture = {
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates =	SNDRV_PCM_RATE_8000_192000,
-+		.rates =	SNDRV_PCM_RATE_CONTINUOUS,
-+		.rate_min =	8000,
-+		.rate_max =	384000,
- 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
- 				| SNDRV_PCM_FMTBIT_S24_LE
- 				| SNDRV_PCM_FMTBIT_S32_LE
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c367d11079bc..01f436cc14c6 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -749,6 +749,10 @@ config SND_SOC_RT5514
+ config SND_SOC_RT5514_SPI
+ 	tristate
+ 
++config SND_SOC_RT5514_SPI_BUILTIN
++	bool # force RT5514_SPI to be built-in to avoid link errors
++	default SND_SOC_RT5514=y && SND_SOC_RT5514_SPI=m
++
+ config SND_SOC_RT5616
+ 	tristate "Realtek RT5616 CODEC"
+ 	depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 77c18189c9ad..2dc42b296973 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -359,6 +359,7 @@ obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
+ obj-$(CONFIG_SND_SOC_RT298)	+= snd-soc-rt298.o
+ obj-$(CONFIG_SND_SOC_RT5514)	+= snd-soc-rt5514.o
+ obj-$(CONFIG_SND_SOC_RT5514_SPI)	+= snd-soc-rt5514-spi.o
++obj-$(CONFIG_SND_SOC_RT5514_SPI_BUILTIN)	+= snd-soc-rt5514-spi.o
+ obj-$(CONFIG_SND_SOC_RT5616)	+= snd-soc-rt5616.o
+ obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
+ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
 -- 
 2.15.0
