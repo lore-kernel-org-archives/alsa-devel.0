@@ -1,15 +1,15 @@
-From: Jeremy Cline <jeremy@jcline.org>
-Subject: [PATCH v3] ASoC: Replace snd_soc_acpi_check_hid with
-	acpi_dev_present
-Date: Fri, 10 Nov 2017 18:36:17 +0000
-Message-ID: <0100015fa737dec2-4d7283d5-bba0-4270-9f92-8f258d2835dd-000000@email.amazonses.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH 1/2] ASoC: codecs: Add PCM186x binding
+	documentation
+Date: Fri, 10 Nov 2017 13:57:10 -0600
+Message-ID: <20171110195711.24210-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from a8-57.smtp-out.amazonses.com (a8-57.smtp-out.amazonses.com
- [54.240.8.57]) by alsa0.perex.cz (Postfix) with ESMTP id 4386A26705F
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 19:36:19 +0100 (CET)
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA94326705F
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 20:57:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,92 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>, Hans de Goede <hdegoede@redhat.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Replace snd_soc_acpi_check_hid() with the generic acpi_dev_present()
-and remove the now unused snd_soc_acpi_check_hid function. This should
-have no functional change.
+Add the dt-binding documentation for the TI PCM186x 2ch and 4ch Audio
+ADCs With Universal Front End.
 
-Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
-Changes in v3:
-  - Remove the unnecessary "== true" and "!= true"
+ .../devicetree/bindings/sound/pcm186x.txt          | 42 ++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/pcm186x.txt
 
- include/sound/soc-acpi.h |  3 ---
- sound/soc/soc-acpi.c     | 32 ++------------------------------
- 2 files changed, 2 insertions(+), 33 deletions(-)
-
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index a7d8d335b043..057805489af3 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -49,9 +49,6 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
- 
--/* acpi check hid */
--bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
--
- /**
-  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
-  * related to the hardware, except for the firmware and topology file names.
-diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-index f21df28bc28e..3543a7749490 100644
---- a/sound/soc/soc-acpi.c
-+++ b/sound/soc/soc-acpi.c
-@@ -49,41 +49,13 @@ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
- }
- EXPORT_SYMBOL_GPL(snd_soc_acpi_find_name_from_hid);
- 
--static acpi_status snd_soc_acpi_mach_match(acpi_handle handle, u32 level,
--				       void *context, void **ret)
--{
--	unsigned long long sta;
--	acpi_status status;
--
--	*(bool *)context = true;
--	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
--	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
--		*(bool *)context = false;
--
--	return AE_OK;
--}
--
--bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
--{
--	acpi_status status;
--	bool found = false;
--
--	status = acpi_get_devices(hid, snd_soc_acpi_mach_match, &found, NULL);
--
--	if (ACPI_FAILURE(status))
--		return false;
--
--	return found;
--}
--EXPORT_SYMBOL_GPL(snd_soc_acpi_check_hid);
--
- struct snd_soc_acpi_mach *
- snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
- {
- 	struct snd_soc_acpi_mach *mach;
- 
- 	for (mach = machines; mach->id[0]; mach++) {
--		if (snd_soc_acpi_check_hid(mach->id) == true) {
-+		if (acpi_dev_present(mach->id, NULL, -1)) {
- 			if (mach->machine_quirk == NULL)
- 				return mach;
- 
-@@ -163,7 +135,7 @@ struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
- 		return mach;
- 
- 	for (i = 0; i < codec_list->num_codecs; i++) {
--		if (snd_soc_acpi_check_hid(codec_list->codecs[i]) != true)
-+		if (!acpi_dev_present(codec_list->codecs[i], NULL, -1))
- 			return NULL;
- 	}
- 
+diff --git a/Documentation/devicetree/bindings/sound/pcm186x.txt b/Documentation/devicetree/bindings/sound/pcm186x.txt
+new file mode 100644
+index 000000000000..0bc7d265c7bd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/pcm186x.txt
+@@ -0,0 +1,42 @@
++Texas Instruments PCM186x Universal Audio ADC
++
++These devices support both I2C and SPI (configured with pin strapping
++on the board).
++
++Required properties:
++
++ - compatible : "ti,pcm1862",
++                "ti,pcm1863",
++                "ti,pcm1864",
++                "ti,pcm1865"
++
++ - reg : The I2C address of the device for I2C, the chip select
++         number for SPI.
++
++ - avdd-supply: Analog core power supply (3.3v)
++ - dvdd-supply: Digital core power supply
++ - iovdd-supply: Digital IO power supply
++        See regulator/regulator.txt for more information
++
++CODEC input pins:
++ * VINL1
++ * VINR1
++ * VINL2
++ * VINR2
++ * VINL3
++ * VINR3
++ * VINL4
++ * VINR4
++
++The pins can be used in referring sound node's audio-routing property.
++
++Example:
++
++	pcm186x: pcm186x@4a {
++		compatible = "ti,pcm1865";
++		reg = <0x4a>;
++
++		avdd-supply = <&reg_3v3_analog>;
++		dvdd-supply = <&reg_3v3>;
++		iovdd-supply = <&reg_1v8>;
++	};
 -- 
-2.14.3
+2.15.0
