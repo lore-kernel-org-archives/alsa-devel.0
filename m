@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 10/14] soundwire: Add sysfs for SoundWire DisCo properties
-Date: Fri, 10 Nov 2017 17:19:12 +0530
-Message-ID: <1510314556-13002-11-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 14/14] soundwire: intel: Add Intel init module
+Date: Fri, 10 Nov 2017 17:19:16 +0530
+Message-ID: <1510314556-13002-15-git-send-email-vinod.koul@intel.com>
 References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
@@ -10,86 +10,36 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-It helps to read the properties for understanding and debugging
-systems, so add sysfs files for SoundWire DisCo properties.
-
-TODO: Add ABI files for sysfs
+The SoundWire Master is implemented as part of Audio controller in
+Intel platforms. Add a init module which creates SoundWire Master
+platform devices based on the links supported in the hardware.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Makefile    |   2 +-
- drivers/soundwire/bus.c       |   3 +
- drivers/soundwire/bus.h       |   2 +
- drivers/soundwire/slave.c     |   1 +
- drivers/soundwire/sysfs.c     | 388 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h |  13 ++
- 6 files changed, 408 insertions(+), 1 deletion(-)
- create mode 100644 drivers/soundwire/sysfs.c
+ drivers/soundwire/Makefile          |   3 +
+ drivers/soundwire/intel_init.c      | 232 ++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw_intel.h |   3 +
+ 3 files changed, 238 insertions(+)
+ create mode 100644 drivers/soundwire/intel_init.c
 
 diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index bcde0d26524c..67dc7b546258 100644
+index 0813b2c74426..94272c965d6c 100644
 --- a/drivers/soundwire/Makefile
 +++ b/drivers/soundwire/Makefile
-@@ -3,5 +3,5 @@
- #
- 
- #Bus Objs
--soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o
-+soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o sysfs.o
- obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 9199daafeffc..3cc0bba85057 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -89,6 +89,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 		}
- 	}
- 
-+	sdw_sysfs_bus_init(bus);
+@@ -13,3 +13,6 @@ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+ #Intel driver
+ soundwire-intel-objs :=	intel.o
+ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
 +
- 	/*
- 	 * Enumeration device number and broadcast device number are
- 	 * not used for assignment so mask these and other higher bits
-@@ -143,6 +145,7 @@ static int sdw_delete_slave(struct device *dev, void *data)
- 
- void sdw_delete_bus_master(struct sdw_bus *bus)
- {
-+	sdw_sysfs_bus_exit(bus);
- 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
- }
- EXPORT_SYMBOL(sdw_delete_bus_master);
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 0b670ac3aae4..a9a9bd2940ef 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -81,6 +81,8 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			unsigned long long addr, struct sdw_slave_id *id);
- 
-+extern const struct attribute_group *sdw_slave_dev_attr_groups[];
-+
- enum {
- 	SDW_MSG_FLAG_READ = 0,
- 	SDW_MSG_FLAG_WRITE,
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 4bf2a6cf732c..63e234b5253e 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -82,6 +82,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 			id->class_id, id->unique_id);
- 
- 	slave->dev.release = sdw_slave_release;
-+	slave->dev.groups = sdw_slave_dev_attr_groups;
- 	slave->dev.bus = &sdw_bus_type;
- 	slave->bus = bus;
- 	slave->status = SDW_SLAVE_UNATTACHED;
-diff --git a/drivers/soundwire/sysfs.c b/drivers/soundwire/sysfs.c
++soundwire-intel-init-objs := intel_init.o
++obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel-init.o
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
 new file mode 100644
-index 000000000000..a7caaa1f6b34
+index 000000000000..e3d029032ffb
 --- /dev/null
-+++ b/drivers/soundwire/sysfs.c
-@@ -0,0 +1,388 @@
++++ b/drivers/soundwire/intel_init.c
+@@ -0,0 +1,232 @@
 +/*
 + *  This file is provided under a dual BSD/GPLv2 license.  When using or
 + *  redistributing this file, you may do so under either license.
@@ -141,394 +91,198 @@ index 000000000000..a7caaa1f6b34
 + *
 + */
 +
-+#include <linux/slab.h>
-+#include <linux/sysfs.h>
-+#include <linux/soundwire/sdw.h>
-+#include "bus.h"
-+
 +/*
-+ * The sysfs for properties reflects the MIPI description as given
-+ * in the MIPI DisCo spec
++ * SDW Intel Init Routines
 + *
-+ * Base file is:
-+ *		properties
-+ *		|---- interface-revision
-+ *		|---- master-count
-+ *		|---- link-N
-+ *		      |---- clock-stop-modes
-+ *		      |---- max-clock-frequency
-+ *		      |---- clock-frequencies
-+ *		      |---- default-frame-rows
-+ *		      |---- default-frame-cols
-+ *		      |---- dynamic-frame-shape
-+ *		      |---- command-error-threshold
++ * Initializes and creates SDW devices based on ACPI and Hardware values
 + */
 +
-+struct sdw_master_sysfs {
-+	struct kobject kobj;
-+	struct sdw_bus *bus;
++#include <linux/platform_device.h>
++#include <linux/property.h>
++#include <linux/soundwire/sdw_intel.h>
++#include "intel.h"
++
++#define SDW_MAX_LINKS		4
++#define SDW_SHIM_LCAP		0x0
++#define SDW_SHIM_BASE		0x2C000
++#define SDW_ALH_BASE		0x2C800
++#define SDW_LINK_BASE		0x30000
++#define SDW_LINK_SIZE		0x10000
++
++struct sdw_link_data {
++	struct sdw_intel_link_res res;
++	struct platform_device *pdev;
 +};
 +
-+struct sdw_prop_attribute {
-+	struct attribute attr;
-+	ssize_t (*show)(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf);
++struct sdw_intel_ctx {
++	int count;
++	struct sdw_link_data *links;
 +};
 +
-+static ssize_t sdw_prop_attr_show(struct kobject *kobj,
-+		struct attribute *attr, char *buf)
++static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
 +{
-+	struct sdw_prop_attribute *prop_attr =
-+		container_of(attr, struct sdw_prop_attribute, attr);
-+	struct sdw_master_sysfs *master =
-+		container_of(kobj, struct sdw_master_sysfs, kobj);
-+
-+	if (!prop_attr->show)
-+		return -EIO;
-+
-+	return prop_attr->show(master->bus, prop_attr, buf);
-+}
-+
-+static const struct sysfs_ops sdw_prop_sysfs_ops = {
-+	.show	= sdw_prop_attr_show,
-+};
-+
-+static void prop_release(struct kobject *kobj)
-+{
-+	struct sdw_master_sysfs *master =
-+		container_of(kobj, struct sdw_master_sysfs, kobj);
-+
-+	kfree(master);
-+}
-+
-+static struct kobj_type sdw_master_prop_ktype = {
-+	.release	= prop_release,
-+	.sysfs_ops	= &sdw_prop_sysfs_ops,
-+};
-+
-+
-+#define MASTER_ATTR(_name) \
-+	struct sdw_prop_attribute master_attr_##_name = __ATTR_RO(_name)
-+
-+static ssize_t revision_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.revision);
-+}
-+
-+static ssize_t count_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.master_count);
-+}
-+
-+static ssize_t clock_stop_modes_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.clk_stop_mode);
-+}
-+
-+static ssize_t max_clock_frequency_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.max_freq);
-+}
-+
-+static ssize_t clock_frequencies_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	ssize_t size = 0;
++	struct sdw_link_data *link = ctx->links;
 +	int i;
 +
-+	for (i = 0; i < bus->prop.num_freq; i++)
-+		size += sprintf(buf + size, "%8d\n", bus->prop.freq[i]);
++	if (!link)
++		return 0;
 +
-+	return size;
-+}
-+
-+static ssize_t clock_gears_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	ssize_t size = 0;
-+	int i;
-+
-+	for (i = 0; i < bus->prop.num_clk_gears; i++)
-+		size += sprintf(buf + size, "%8d\n", bus->prop.clk_gears[i]);
-+
-+	return size;
-+}
-+
-+static ssize_t default_frame_rows_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.default_row);
-+}
-+
-+static ssize_t default_frame_cols_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.default_col);
-+}
-+
-+static ssize_t dynamic_frame_shape_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.dynamic_frame);
-+}
-+
-+static ssize_t command_error_threshold_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.err_threshold);
-+}
-+
-+static MASTER_ATTR(revision);
-+static MASTER_ATTR(count);
-+static MASTER_ATTR(clock_stop_modes);
-+static MASTER_ATTR(max_clock_frequency);
-+static MASTER_ATTR(clock_frequencies);
-+static MASTER_ATTR(clock_gears);
-+static MASTER_ATTR(default_frame_rows);
-+static MASTER_ATTR(default_frame_cols);
-+static MASTER_ATTR(dynamic_frame_shape);
-+static MASTER_ATTR(command_error_threshold);
-+
-+static struct attribute *master_node_attrs[] = {
-+	&master_attr_revision.attr,
-+	&master_attr_count.attr,
-+	&master_attr_clock_stop_modes.attr,
-+	&master_attr_max_clock_frequency.attr,
-+	&master_attr_clock_frequencies.attr,
-+	&master_attr_clock_gears.attr,
-+	&master_attr_default_frame_rows.attr,
-+	&master_attr_default_frame_cols.attr,
-+	&master_attr_dynamic_frame_shape.attr,
-+	&master_attr_command_error_threshold.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group sdw_master_node_group = {
-+	.attrs = master_node_attrs,
-+};
-+
-+int sdw_sysfs_bus_init(struct sdw_bus *bus)
-+{
-+	struct kset *sdw_bus_kset;
-+	struct sdw_master_sysfs *master;
-+	int err;
-+
-+	if (bus->sysfs) {
-+		dev_err(bus->dev, "SDW sysfs is already initialized\n");
-+		return -EIO;
++	for (i = 0; i < ctx->count; i++) {
++		if (link->pdev)
++			platform_device_unregister(link->pdev);
++		link++;
 +	}
 +
-+	sdw_bus_kset = bus_get_kset(&sdw_bus_type);
++	kfree(ctx->links);
++	ctx->links = NULL;
 +
-+	master = bus->sysfs = kzalloc(sizeof(*master), GFP_KERNEL);
-+	if (!master)
-+		return -ENOMEM;
-+
-+	err = kobject_init_and_add(&master->kobj,
-+			&sdw_master_prop_ktype, &sdw_bus_kset->kobj,
-+			"mipi-properties-link%d", bus->link_id);
-+	if (err < 0)
-+		return err;
-+
-+	master->bus = bus;
-+
-+	err = sysfs_create_group(&master->kobj, &sdw_master_node_group);
-+	if (err < 0) {
-+		kobject_put(&master->kobj);
-+		return err;
-+	}
-+
-+	kobject_uevent(&master->kobj, KOBJ_CHANGE);
 +	return 0;
 +}
 +
-+void sdw_sysfs_bus_exit(struct sdw_bus *bus)
++static struct sdw_intel_ctx
++*sdw_intel_add_controller(struct sdw_intel_res *res)
 +{
-+	struct sdw_master_sysfs *master = bus->sysfs;
++	struct platform_device_info pdevinfo;
++	struct platform_device *pdev;
++	struct sdw_link_data *link;
++	struct sdw_intel_ctx *ctx;
++	struct acpi_device *adev;
++	int ret, i;
++	u8 count;
++	u32 caps;
 +
-+	if (!master)
-+		return;
++	if (acpi_bus_get_device(res->handle, &adev))
++		return NULL;
 +
-+	kobject_put(&master->kobj);
-+	bus->sysfs = NULL;
++	/* Found controller, find links supported */
++	count = 0;
++	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
++				  "mipi-sdw-master-count", &count, 1);
++
++	/* Don't fail on error, continue and use hw value */
++	if (ret) {
++		dev_err(&adev->dev,
++			"Failed to read mipi-sdw-master-count: %d\n", ret);
++		count = SDW_MAX_LINKS;
++	}
++
++	/* Check SNDWLCAP.LCOUNT */
++	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
++
++	/* Check HW supported vs property value and use min of two */
++	count = min_t(u8, caps, count);
++
++	/* Check count is within bounds */
++	if (count > SDW_MAX_LINKS) {
++		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
++						count, SDW_MAX_LINKS);
++		return NULL;
++	}
++
++	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
++
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return NULL;
++
++	ctx->count = count;
++	ctx->links = kcalloc(ctx->count, sizeof(*ctx->links), GFP_KERNEL);
++	if (!ctx->links)
++		goto link_err;
++
++	link = ctx->links;
++
++	/* Create SDW Master devices */
++	for (i = 0; i < count; i++) {
++
++		link->res.irq = res->irq;
++		link->res.registers = res->mmio_base + SDW_LINK_BASE
++					+ (SDW_LINK_SIZE * i);
++		link->res.shim = res->mmio_base + SDW_SHIM_BASE;
++		link->res.alh = res->mmio_base + SDW_ALH_BASE;
++
++		memset(&pdevinfo, 0, sizeof(pdevinfo));
++
++		pdevinfo.parent = res->parent;
++		pdevinfo.name = "int-sdw";
++		pdevinfo.id = i;
++		pdevinfo.fwnode = acpi_fwnode_handle(adev);
++		pdevinfo.data = &link->res;
++		pdevinfo.size_data = sizeof(link->res);
++
++		pdev = platform_device_register_full(&pdevinfo);
++		if (IS_ERR(pdev)) {
++			dev_err(&adev->dev,
++				"platform device creation failed: %ld\n",
++				PTR_ERR(pdev));
++			goto pdev_err;
++		}
++
++		link->pdev = pdev;
++		link++;
++	}
++
++	return ctx;
++
++pdev_err:
++	sdw_intel_cleanup_pdev(ctx);
++link_err:
++	kfree(ctx);
++	return NULL;
 +}
 +
-+/*
-+ * Slave sysfs
-+ */
-+
-+/*
-+ * The sysfs for Slave reflects the MIPI description as given
-+ * in the MIPI DisCo spec
-+ *
-+ * Base file is device
-+ *	|---- mipi_revision
-+ *	|---- wake_capable
-+ *	|---- test_mode_capable
-+ *	|---- simple_clk_stop_capable
-+ *	|---- clk_stop_timeout
-+ *	|---- ch_prep_timeout
-+ *	|---- reset_behave
-+ *	|---- high_PHY_capable
-+ *	|---- paging_support
-+ *	|---- bank_delay_support
-+ *	|---- p15_behave
-+ *	|---- master_count
-+ *	|---- source_ports
-+ *	|---- sink_ports
-+ *	|---- dp0
-+ *		|---- max_word
-+ *		|---- min_word
-+ *		|---- words
-+ *		|---- flow_controlled
-+ *		|---- simple_ch_prep_sm
-+ *		|---- device_interrupts
-+ *	|---- dpN
-+ *		|---- max_word
-+ *		|---- min_word
-+ *		|---- words
-+ *		|---- type
-+ *		|---- max_grouping
-+ *		|---- simple_ch_prep_sm
-+ *		|---- ch_prep_timeout
-+ *		|---- device_interrupts
-+ *		|---- max_ch
-+ *		|---- min_ch
-+ *		|---- ch
-+ *		|---- ch_combinations
-+ *		|---- modes
-+ *		|---- max_async_buffer
-+ *		|---- block_pack_mode
-+ *		|---- port_encoding
-+ *		|---- bus_min_freq
-+ *		|---- bus_max_freq
-+ *		|---- bus_freq
-+ *		|---- max_freq
-+ *		|---- min_freq
-+ *		|---- freq
-+ *		|---- prep_ch_behave
-+ *		|---- glitchless
-+ *
-+ */
-+struct sdw_slave_sysfs {
-+	struct sdw_slave *slave;
-+};
-+
-+#define SLAVE_ATTR(type)					\
-+static ssize_t type##_show(struct device *dev,			\
-+		struct device_attribute *attr, char *buf)	\
-+{								\
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);		\
-+	return sprintf(buf, "0x%x\n", slave->prop.type);	\
-+}								\
-+static DEVICE_ATTR_RO(type)
-+
-+SLAVE_ATTR(mipi_revision);
-+SLAVE_ATTR(wake_capable);
-+SLAVE_ATTR(test_mode_capable);
-+SLAVE_ATTR(clk_stop_mode1);
-+SLAVE_ATTR(simple_clk_stop_capable);
-+SLAVE_ATTR(clk_stop_timeout);
-+SLAVE_ATTR(ch_prep_timeout);
-+SLAVE_ATTR(reset_behave);
-+SLAVE_ATTR(high_PHY_capable);
-+SLAVE_ATTR(paging_support);
-+SLAVE_ATTR(bank_delay_support);
-+SLAVE_ATTR(p15_behave);
-+SLAVE_ATTR(master_count);
-+SLAVE_ATTR(source_ports);
-+
-+static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
-+			     char *buf)
++static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
++					void *cdata, void **return_value)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_intel_res *res = cdata;
++	struct acpi_device *adev;
 +
-+	return sdw_slave_modalias(slave, buf, 256);
++	if (acpi_bus_get_device(handle, &adev)) {
++		dev_err(&adev->dev, "Couldn't find ACPI handle\n");
++		return AE_NOT_FOUND;
++	}
++
++	res->handle = handle;
++	return AE_OK;
 +}
-+static DEVICE_ATTR_RO(modalias);
 +
-+static struct attribute *slave_dev_attrs[] = {
-+	&dev_attr_mipi_revision.attr,
-+	&dev_attr_wake_capable.attr,
-+	&dev_attr_test_mode_capable.attr,
-+	&dev_attr_clk_stop_mode1.attr,
-+	&dev_attr_simple_clk_stop_capable.attr,
-+	&dev_attr_clk_stop_timeout.attr,
-+	&dev_attr_ch_prep_timeout.attr,
-+	&dev_attr_reset_behave.attr,
-+	&dev_attr_high_PHY_capable.attr,
-+	&dev_attr_paging_support.attr,
-+	&dev_attr_bank_delay_support.attr,
-+	&dev_attr_p15_behave.attr,
-+	&dev_attr_master_count.attr,
-+	&dev_attr_source_ports.attr,
-+	&dev_attr_modalias.attr,
-+	NULL,
-+};
++void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
++{
++	acpi_status status;
 +
-+static struct attribute_group sdw_slave_dev_attr_group = {
-+	.attrs	= slave_dev_attrs,
-+};
++	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
++					parent_handle, 1,
++					sdw_intel_acpi_cb,
++					NULL, res, NULL);
++	if (ACPI_FAILURE(status))
++		return NULL;
 +
-+const struct attribute_group *sdw_slave_dev_attr_groups[] = {
-+	&sdw_slave_dev_attr_group,
-+	NULL
-+};
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 9a42fa336184..f9058e604581 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -362,6 +362,15 @@ int sdw_master_read_prop(struct sdw_bus *bus);
- int sdw_slave_read_prop(struct sdw_slave *slave);
- 
- /*
-+ * SDW sysfs APIs
-+ */
-+struct sdw_slave_sysfs;
-+struct sdw_master_sysfs;
++	return sdw_intel_add_controller(res);
++}
++EXPORT_SYMBOL(sdw_intel_init);
 +
-+int sdw_sysfs_bus_init(struct sdw_bus *bus);
-+void sdw_sysfs_bus_exit(struct sdw_bus *bus);
++void sdw_intel_exit(void *arg)
++{
++	struct sdw_intel_ctx *ctx = arg;
 +
-+/*
-  * SDW Slave Structures and APIs
-  */
- 
-@@ -421,6 +430,7 @@ struct sdw_slave_ops {
-  * @bus: Bus handle
-  * @ops: Slave callback ops
-  * @prop: Slave properties
-+ * @sysfs: Sysfs interface
-  * @node: node for bus list
-  * @port_ready: Port ready completion flag for each Slave port
-  * @dev_num: Device Number assigned by Bus
-@@ -432,6 +442,7 @@ struct sdw_slave {
- 	struct sdw_bus *bus;
- 	const struct sdw_slave_ops *ops;
- 	struct sdw_slave_prop prop;
-+	struct sdw_slave_sysfs *sysfs;
- 	struct list_head node;
- 	struct completion *port_ready;
- 	u16 dev_num;
-@@ -521,6 +532,7 @@ struct sdw_master_ops {
-  * @msg_lock: message lock
-  * @ops: Master callback ops
-  * @prop: Master properties
-+ * @sysfs: Bus sysfs
-  * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
-  */
-@@ -533,6 +545,7 @@ struct sdw_bus {
- 	struct mutex msg_lock;
- 	const struct sdw_master_ops *ops;
- 	struct sdw_master_prop prop;
-+	struct sdw_master_sysfs *sysfs;
- 	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
++	sdw_intel_cleanup_pdev(ctx);
++	kfree(ctx);
++}
++EXPORT_SYMBOL(sdw_intel_exit);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_DESCRIPTION("Intel Soundwire Init Library");
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 27a5c4f76576..3a47e3b544b6 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -68,4 +68,7 @@ struct sdw_intel_res {
+ 	struct device *parent;
  };
+ 
++void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res);
++void sdw_intel_exit(void *arg);
++
+ #endif
 -- 
 2.7.4
