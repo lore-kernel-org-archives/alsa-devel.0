@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bcm2835: Enforce full symmetry" to the
-	asoc tree
-Date: Fri, 10 Nov 2017 21:28:57 +0000
-Message-ID: <E1eDGrB-0004NB-4r@debutante>
-References: <20171108200332.28949-5-hias@horus.com>
+Subject: Applied "ASoC: bcm2835: Support additional samplerates
+	up to 384kHz" to the asoc tree
+Date: Fri, 10 Nov 2017 21:29:15 +0000
+Message-ID: <E1eDGrT-0004Pm-95@debutante>
+References: <1466358739-31669-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E16A267985
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 22:29:01 +0100 (CET)
-In-Reply-To: <20171108200332.28949-5-hias@horus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A11BC2679CD
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 22:29:19 +0100 (CET)
+In-Reply-To: <1466358739-31669-1-git-send-email-clive.messer@digitaldreamtime.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Matthias Reichl <hias@horus.com>
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, Eric Anholt <eric@anholt.net>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org
+Cc: Clive Messer <clive.messer@digitaldreamtime.co.uk>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: bcm2835: Enforce full symmetry
+   ASoC: bcm2835: Support additional samplerates up to 384kHz
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From 3d2b3c707b3f9516d6c183eb1ffbf02a6dc5dc98 Mon Sep 17 00:00:00 2001
+>From 675c0ee514f56ea39f6f550299621aafe9a53fc0 Mon Sep 17 00:00:00 2001
 From: Matthias Reichl <hias@horus.com>
-Date: Wed, 8 Nov 2017 21:03:32 +0100
-Subject: [PATCH] ASoC: bcm2835: Enforce full symmetry
+Date: Wed, 8 Nov 2017 21:03:31 +0100
+Subject: [PATCH] ASoC: bcm2835: Support additional samplerates up to 384kHz
 
-bcm2835's configuration registers can't be changed when a stream
-is running, which means asymmetric configurations aren't supported.
+Sample rates are only restricted by the capabilities of the
+clock driver, so use SNDRV_PCM_RATE_CONTINUOUS instead of
+SNDRV_PCM_RATE_8000_192000.
 
-Channel and rate symmetry are already enforced by constraints
-but samplebits had been missed.
-
-As hw_params doesn't check for symmetry constraints by itself
-and just returns success if a stream is running this led to
-situations where asymmetric configurations were seeming to
-succeed but of course didn't work because the hardware wasn't
-configured at all.
-
-Fix this by adding the missing samplerate symmetry constraint.
+Tests (eg with pcm5122) have shown that bcm2835 works fine
+in 384kHz/32bit stereo mode, so change the maximum allowed
+rate from 192kHz to 384kHz.
 
 Signed-off-by: Matthias Reichl <hias@horus.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/bcm/bcm2835-i2s.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index f4b778ed350b..111b4ef7ce35 100644
+index dcacf7f83c93..f4b778ed350b 100644
 --- a/sound/soc/bcm/bcm2835-i2s.c
 +++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -737,7 +737,8 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+@@ -719,7 +719,9 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates =	SNDRV_PCM_RATE_8000_192000,
++		.rates =	SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min =	8000,
++		.rate_max =	384000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+ 				| SNDRV_PCM_FMTBIT_S24_LE
  				| SNDRV_PCM_FMTBIT_S32_LE
- 		},
- 	.ops = &bcm2835_i2s_dai_ops,
--	.symmetric_rates = 1
-+	.symmetric_rates = 1,
-+	.symmetric_samplebits = 1,
- };
- 
- static bool bcm2835_i2s_volatile_reg(struct device *dev, unsigned int reg)
+@@ -727,7 +729,9 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 	.capture = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates =	SNDRV_PCM_RATE_8000_192000,
++		.rates =	SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min =	8000,
++		.rate_max =	384000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+ 				| SNDRV_PCM_FMTBIT_S24_LE
+ 				| SNDRV_PCM_FMTBIT_S32_LE
 -- 
 2.15.0
