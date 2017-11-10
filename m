@@ -1,490 +1,429 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 06/14] soundwire: Add IO transfer
-Date: Fri, 10 Nov 2017 17:19:08 +0530
-Message-ID: <1510314556-13002-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 12/14] soundwire: cdns: Add sdw_master_ops and IO transfer support
+Date: Fri, 10 Nov 2017 17:19:14 +0530
+Message-ID: <1510314556-13002-13-git-send-email-vinod.koul@intel.com>
 References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 4379E267905
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 12:46:23 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-SoundWire bus supports read or write register(s) for SoundWire Slave
-device. sdw_read() and sdw_write() APIs are provided for single
-register read/write. sdw_nread() and sdw_nwrite() for operations on
-contiguous registers.
+From: Sanyog Kale <sanyog.r.kale@intel.com>
 
+Implement sdw_master_ops with support for xfer_msg, xfer_msg_defer
+and reset_page_addr. Since Cadence module doesn't know the systems
+it will be used, set the read_prop to the bus helper.
+
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/bus.c       | 278 ++++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/bus.h       |  38 ++++++
- include/linux/soundwire/sdw.h |  59 +++++++++
- 3 files changed, 375 insertions(+)
+ drivers/soundwire/cadence_master.c | 322 +++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/cadence_master.h |  14 ++
+ 2 files changed, 336 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 6cf4e5a7faea..70b60ba84592 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -72,6 +72,12 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 		return -ENODEV;
- 	}
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 7a9dc2fbf695..cf612b573b3e 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -269,9 +269,261 @@ static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
+ }
  
-+	if (!bus->ops) {
-+		dev_err(bus->dev, "SoundWire Bus ops are not set");
-+		return -EINVAL;
+ /*
++ * IO Calls
++ */
++static enum sdw_command_response cdns_fill_msg_resp(
++			struct sdw_cdns *cdns,
++			struct sdw_msg *msg, int count, int offset)
++{
++	int nack = 0, no_ack = 0;
++	int i;
++
++	/* check message response */
++	for (i = 0; i < count; i++) {
++		if (!(cdns->response_buf[i] & CDNS_MCP_RESP_ACK)) {
++			no_ack = 1;
++			dev_dbg(cdns->dev, "Msg Ack not received\n");
++			if (cdns->response_buf[i] & CDNS_MCP_RESP_NACK) {
++				nack = 1;
++				dev_err(cdns->dev, "Msg NACK received\n");
++			}
++		}
 +	}
 +
-+	mutex_init(&bus->msg_lock);
- 	mutex_init(&bus->bus_lock);
- 	INIT_LIST_HEAD(&bus->slaves);
- 
-@@ -141,6 +147,278 @@ void sdw_delete_bus_master(struct sdw_bus *bus)
- }
- EXPORT_SYMBOL(sdw_delete_bus_master);
- 
-+/*
-+ * SDW IO Calls
-+ */
++	if (nack) {
++		dev_err(cdns->dev, "Msg NACKed for Slave %d\n", msg->dev_num);
++		return SDW_CMD_FAIL;
++	} else if (no_ack) {
++		dev_dbg(cdns->dev, "Msg ignored for Slave %d\n", msg->dev_num);
++		return SDW_CMD_IGNORED;
++	}
 +
-+static inline int find_response_code(enum sdw_command_response resp)
++	/* fill response */
++	for (i = 0; i < count; i++)
++		msg->buf[i + offset] = cdns->response_buf[i] >>
++				SDW_REG_SHIFT(CDNS_MCP_RESP_RDATA);
++
++	return SDW_CMD_OK;
++}
++
++static enum sdw_command_response
++_cdns_xfer_msg(struct sdw_cdns *cdns, struct sdw_msg *msg, int cmd,
++				int offset, int count, bool defer)
 +{
-+	switch (resp) {
-+	case SDW_CMD_OK:
-+		return 0;
++	unsigned long time;
++	u32 base, i, data;
++	u16 addr;
 +
-+	case SDW_CMD_IGNORED:
-+		return -ENODATA;
++	/* Program the watermark level for RX FIFO */
++	if (cdns->msg_count != count) {
++		cdns_writel(cdns, CDNS_MCP_FIFOLEVEL, count);
++		cdns->msg_count = count;
++	}
 +
-+	case SDW_CMD_TIMEOUT:
-+		return -ETIMEDOUT;
++	base = CDNS_MCP_CMD_BASE;
++	addr = msg->addr;
++
++	for (i = 0; i < count; i++) {
++		data = msg->dev_num << SDW_REG_SHIFT(CDNS_MCP_CMD_DEV_ADDR);
++		data |= cmd << SDW_REG_SHIFT(CDNS_MCP_CMD_COMMAND);
++		data |= addr++  << SDW_REG_SHIFT(CDNS_MCP_CMD_REG_ADDR_L);
++
++		if (msg->flags == SDW_MSG_FLAG_WRITE)
++			data |= msg->buf[i + offset];
++
++		data |= msg->ssp_sync << SDW_REG_SHIFT(CDNS_MCP_CMD_SSP_TAG);
++		cdns_writel(cdns, base, data);
++		base += CDNS_MCP_CMD_WORD_LEN;
++	}
++
++	if (defer)
++		return SDW_CMD_OK;
++
++	/* wait for timeout or response */
++	time = wait_for_completion_timeout(&cdns->tx_complete,
++				msecs_to_jiffies(CDNS_TX_TIMEOUT));
++	if (!time) {
++		dev_err(cdns->dev, "IO transfer timed out\n");
++		msg->len = 0;
++		return SDW_CMD_TIMEOUT;
++	}
++
++	return cdns_fill_msg_resp(cdns, msg, count, offset);
++}
++
++static enum sdw_command_response cdns_program_scp_addr(
++			struct sdw_cdns *cdns, struct sdw_msg *msg)
++{
++	int nack = 0, no_ack = 0;
++	unsigned long time;
++	u32 data[2], base;
++	int i;
++
++	/* Program the watermark level for RX FIFO */
++	if (cdns->msg_count != CDNS_SCP_RX_FIFOLEVEL) {
++		cdns_writel(cdns, CDNS_MCP_FIFOLEVEL, CDNS_SCP_RX_FIFOLEVEL);
++		cdns->msg_count = CDNS_SCP_RX_FIFOLEVEL;
++	}
++
++	data[0] = msg->dev_num << SDW_REG_SHIFT(CDNS_MCP_CMD_DEV_ADDR);
++	data[0] |= 0x3 << SDW_REG_SHIFT(CDNS_MCP_CMD_COMMAND);
++	data[1] = data[0];
++
++	data[0] |= SDW_SCP_ADDRPAGE1 << SDW_REG_SHIFT(CDNS_MCP_CMD_REG_ADDR_L);
++	data[1] |= SDW_SCP_ADDRPAGE2 << SDW_REG_SHIFT(CDNS_MCP_CMD_REG_ADDR_L);
++
++	data[0] |= msg->addr_page1;
++	data[1] |= msg->addr_page2;
++
++	base = CDNS_MCP_CMD_BASE;
++	cdns_writel(cdns, base, data[0]);
++	base += CDNS_MCP_CMD_WORD_LEN;
++	cdns_writel(cdns, base, data[1]);
++
++	time = wait_for_completion_timeout(&cdns->tx_complete,
++				msecs_to_jiffies(CDNS_TX_TIMEOUT));
++	if (!time) {
++		dev_err(cdns->dev, "SCP Msg trf timed out\n");
++		msg->len = 0;
++		return SDW_CMD_TIMEOUT;
++	}
++
++	/* check response the writes */
++	for (i = 0; i < 2; i++) {
++		if (!(cdns->response_buf[i] & CDNS_MCP_RESP_ACK)) {
++			no_ack = 1;
++			dev_err(cdns->dev, "Program SCP Ack not received");
++			if (cdns->response_buf[i] & CDNS_MCP_RESP_NACK) {
++				nack = 1;
++				dev_err(cdns->dev, "Program SCP NACK received");
++			}
++		}
++	}
++
++	/* For NACK, NO ack, don't return err if we are in Broadcast mode */
++	if (nack) {
++		dev_err(cdns->dev,
++			"SCP_addrpage NACKed for Slave %d", msg->dev_num);
++		return SDW_CMD_FAIL;
++	} else if (no_ack) {
++		dev_dbg(cdns->dev,
++			"SCP_addrpage ignored for Slave %d", msg->dev_num);
++		return SDW_CMD_IGNORED;
++	}
++
++	return SDW_CMD_OK;
++}
++
++static int cdns_prep_msg(struct sdw_cdns *cdns, struct sdw_msg *msg, int *cmd)
++{
++	int ret;
++
++	if (msg->page) {
++		ret = cdns_program_scp_addr(cdns, msg);
++		if (ret) {
++			msg->len = 0;
++			return ret;
++		}
++	}
++
++	switch (msg->flags) {
++	case SDW_MSG_FLAG_READ:
++		*cmd = CDNS_MCP_CMD_READ;
++		break;
++
++	case SDW_MSG_FLAG_WRITE:
++		*cmd = CDNS_MCP_CMD_WRITE;
++		break;
 +
 +	default:
-+		return -EIO;
++		dev_err(cdns->dev, "Invalid msg cmd: %d\n", msg->flags);
++		return -EINVAL;
 +	}
++
++	return 0;
 +}
 +
-+static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
++static enum sdw_command_response
++cdns_xfer_msg(struct sdw_bus *bus, struct sdw_msg *msg)
 +{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	int cmd = 0, ret, i;
 +
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->xfer_msg(bus, msg);
-+		ret = find_response_code(resp);
++	ret = cdns_prep_msg(cdns, msg, &cmd);
++	if (ret)
++		return SDW_CMD_FAIL_OTHER;
 +
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
-+			return ret;
++	for (i = 0; i < msg->len / CDNS_MCP_CMD_LEN; i++) {
++		ret = _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
++				CDNS_MCP_CMD_LEN, false);
++		if (ret < 0)
++			goto exit;
 +	}
 +
++	if (!(msg->len % CDNS_MCP_CMD_LEN))
++		goto exit;
++
++	ret = _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
++			msg->len % CDNS_MCP_CMD_LEN, false);
++
++exit:
 +	return ret;
 +}
 +
-+static inline int do_transfer_defer(struct sdw_bus *bus,
-+			struct sdw_msg *msg, struct sdw_defer *defer)
++static enum sdw_command_response
++cdns_xfer_msg_defer(struct sdw_bus *bus,
++		struct sdw_msg *msg, struct sdw_defer *defer)
 +{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	int cmd = 0, ret;
 +
-+	defer->msg = msg;
-+	defer->length = msg->len;
-+
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
-+		ret = find_response_code(resp);
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
-+{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
-+
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->reset_page_addr(bus, dev_num);
-+		ret = find_response_code(resp);
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * sdw_transfer: Synchronous transfer message to a SDW Slave device
-+ *
-+ * @bus: SDW bus
-+ * @slave: SDW Slave
-+ * @msg: SDW message to be xfered
-+ */
-+int sdw_transfer(struct sdw_bus *bus,
-+		struct sdw_slave *slave, struct sdw_msg *msg)
-+{
-+	int ret;
-+
-+	mutex_lock(&bus->msg_lock);
-+
-+	ret = do_transfer(bus, msg);
-+	if (ret != 0 && ret != -ENODATA)
-+		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
-+				msg->dev_num, ret);
-+
-+	if (msg->page)
-+		sdw_reset_page(bus, msg->dev_num);
-+
-+	mutex_unlock(&bus->msg_lock);
-+
-+	return ret;
-+}
-+
-+/**
-+ * sdw_transfer_defer: Asynchronously transfer message to a SDW Slave device
-+ *
-+ * @bus: SDW bus
-+ * @slave: SDW Slave
-+ * @msg: SDW message to be xfered
-+ * @defer: Defer block for signal completion
-+ *
-+ * Caller needs to hold the msg_lock lock while calling this
-+ */
-+int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
-+			struct sdw_msg *msg, struct sdw_defer *defer)
-+{
-+	int ret;
-+
-+	if (!bus->ops->xfer_msg_defer)
++	/* for defer only 1 message is supported */
++	if (msg->len > 1)
 +		return -ENOTSUPP;
 +
-+	ret = do_transfer_defer(bus, msg, defer);
-+	if (ret != 0 && ret != -ENODATA)
-+		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
-+				msg->dev_num, ret);
++	ret = cdns_prep_msg(cdns, msg, &cmd);
++	if (ret)
++		return SDW_CMD_FAIL_OTHER;
 +
-+	if (msg->page)
-+		sdw_reset_page(bus, msg->dev_num);
++	cdns->defer = defer;
++	cdns->defer->length = msg->len;
 +
-+	return ret;
++	return _cdns_xfer_msg(cdns, msg, cmd, 0, msg->len, true);
 +}
 +
-+
-+int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
-+		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
++static enum sdw_command_response
++cdns_reset_page_addr(struct sdw_bus *bus, unsigned int dev_num)
 +{
-+	msg->addr = addr;
-+	msg->len = count;
-+	msg->dev_num = dev_num;
-+	msg->flags = flags;
-+	msg->buf = buf;
-+	msg->ssp_sync = false;
-+	msg->page = false;
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++	struct sdw_msg msg;
 +
-+	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
-+		return 0;
-+	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
-+		pr_err("SDW: Invalid address %x passed\n", addr);
-+		return -EINVAL;
++	/* Create dummy message with valid device number */
++	memset(&msg, 0, sizeof(msg));
++	msg.dev_num = dev_num;
++
++	return cdns_program_scp_addr(cdns, &msg);
++}
++
++/*
+  * IRQ handling
+  */
+ 
++static void cdns_read_response(struct sdw_cdns *cdns)
++{
++	u32 num_resp, cmd_base;
++	int i;
++
++	num_resp = cdns_readl(cdns, CDNS_MCP_FIFOSTAT);
++	num_resp &= CDNS_MCP_RX_FIFO_AVAIL;
++
++	cmd_base = CDNS_MCP_CMD_BASE;
++
++	for (i = 0; i < num_resp; i++) {
++		cdns->response_buf[i] = cdns_readl(cdns, cmd_base);
++		cmd_base += CDNS_MCP_CMD_WORD_LEN;
++	}
++}
++
+ static int cdns_update_slave_status(struct sdw_cdns *cdns,
+ 					u32 slave0, u32 slave1)
+ {
+@@ -346,6 +598,18 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ 	if (!(int_status & CDNS_MCP_INT_IRQ))
+ 		return IRQ_NONE;
+ 
++	if (int_status & CDNS_MCP_INT_RX_WL) {
++		cdns_read_response(cdns);
++
++		if (cdns->defer) {
++			cdns_fill_msg_resp(cdns, cdns->defer->msg,
++					cdns->defer->length, 0);
++			complete(&cdns->defer->complete);
++			cdns->defer = NULL;
++		} else
++			complete(&cdns->tx_complete);
 +	}
 +
-+	if (addr < SDW_REG_OPTIONAL_PAGE) { /* 32k but no page */
-+		if (slave && !slave->prop.paging_support)
-+			return 0;
-+		/* no need for else as that will fall thru to paging */
-+	}
+ 	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
+ 
+ 		/* Slave is driving bit slot during control word */
+@@ -402,6 +666,43 @@ EXPORT_SYMBOL(sdw_cdns_thread);
+ /*
+  * init routines
+  */
++static int _cdns_enable_interrupt(struct sdw_cdns *cdns)
++{
++	u32 mask;
 +
-+	/* paging madatory */
-+	if (dev_num == SDW_ENUM_DEV_NUM || dev_num == SDW_BROADCAST_DEV_NUM) {
-+		pr_err("SDW: Invalid device for paging :%d\n", dev_num);
-+		return -EINVAL;
-+	}
++	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK0,
++				CDNS_MCP_SLAVE_INTMASK0_MASK);
++	cdns_writel(cdns, CDNS_MCP_SLAVE_INTMASK1,
++				CDNS_MCP_SLAVE_INTMASK1_MASK);
 +
-+	if (!slave) {
-+		pr_err("SDW: No slave for paging addr\n");
-+		return -EINVAL;
-+	} else if (!slave->prop.paging_support) {
-+		dev_err(&slave->dev,
-+			"address %x needs paging but no support", addr);
-+		return -EINVAL;
-+	}
++	mask = CDNS_MCP_INT_SLAVE_RSVD | CDNS_MCP_INT_SLAVE_ALERT |
++		CDNS_MCP_INT_SLAVE_ATTACH | CDNS_MCP_INT_SLAVE_NATTACH |
++		CDNS_MCP_INT_CTRL_CLASH | CDNS_MCP_INT_DATA_CLASH |
++		CDNS_MCP_INT_RX_WL | CDNS_MCP_INT_IRQ | CDNS_MCP_INT_DPINT;
 +
-+	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
-+	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
-+	msg->addr |= BIT(15);
-+	msg->page = true;
++	cdns_writel(cdns, CDNS_MCP_INTMASK, mask);
 +
 +	return 0;
 +}
 +
 +/**
-+ * sdw_nread: Read "n" contiguous SDW Slave registers
++ * sdw_cdns_enable_interrupt: Enable SDW interrupts and update config
 + *
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @count: length
-+ * @val: Buffer for values to be read
++ * @cdns: Cadence instance
 + */
-+int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
 +{
-+	struct sdw_msg msg;
 +	int ret;
 +
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			slave->dev_num, SDW_MSG_FLAG_READ, val);
++	_cdns_enable_interrupt(cdns);
++	ret = cdns_clear_bit(cdns, CDNS_MCP_CONFIG_UPDATE,
++			CDNS_MCP_CONFIG_UPDATE_BIT);
 +	if (ret < 0)
-+		return ret;
-+
-+	ret = pm_runtime_get_sync(slave->bus->dev);
-+	if (!ret)
-+		return ret;
-+
-+	ret = sdw_transfer(slave->bus, slave, &msg);
-+	pm_runtime_put(slave->bus->dev);
++		dev_err(cdns->dev, "Config update timedout");
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL(sdw_nread);
-+
-+/**
-+ * sdw_nwrite: Write "n" contiguous SDW Slave registers
-+ *
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @count: length
-+ * @val: Buffer for values to be read
-+ */
-+int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-+{
-+	struct sdw_msg msg;
-+	int ret;
-+
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			slave->dev_num, SDW_MSG_FLAG_WRITE, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = pm_runtime_get_sync(slave->bus->dev);
-+	if (!ret)
-+		return ret;
-+
-+	ret = sdw_transfer(slave->bus, slave, &msg);
-+	pm_runtime_put(slave->bus->dev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(sdw_nwrite);
-+
-+/**
-+ * sdw_read: Read a SDW Slave register
-+ *
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ */
-+int sdw_read(struct sdw_slave *slave, u32 addr)
-+{
-+	u8 buf;
-+	int ret;
-+
-+	ret = sdw_nread(slave, addr, 1, &buf);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return buf;
-+}
-+EXPORT_SYMBOL(sdw_read);
-+
-+/**
-+ * sdw_write: Write a SDW Slave register
-+ *
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @value: Register value
-+ */
-+int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
-+{
-+	return sdw_nwrite(slave, addr, 1, &value);
-+
-+}
-+EXPORT_SYMBOL(sdw_write);
-+
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			u64 addr, struct sdw_slave_id *id)
- {
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 7b764661c89d..d6943b6ceeb6 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -81,4 +81,42 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			unsigned long long addr, struct sdw_slave_id *id);
- 
-+enum {
-+	SDW_MSG_FLAG_READ = 0,
-+	SDW_MSG_FLAG_WRITE,
-+};
-+
-+/**
-+ * struct sdw_msg: Message structure
-+ *
-+ * @addr: Register address accessed in the Slave
-+ * @len: number of messages
-+ * @dev_num: Slave device number
-+ * @addr_page1: SCP address page 1 Slave register
-+ * @addr_page2: SCP address page 2 Slave register
-+ * @flags: transfer flags, indicate if xfer is read or write
-+ * @buf: message data buffer
-+ * @ssp_sync: Send message at SSP (Stream Synchronization Point)
-+ * @page: address requires paging
-+ */
-+struct sdw_msg {
-+	u16 addr;
-+	u16 len;
-+	u16 dev_num;
-+	u8 addr_page1;
-+	u8 addr_page2;
-+	u8 flags;
-+	u8 *buf;
-+	bool ssp_sync;
-+	bool page;
-+};
-+
-+int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
-+			struct sdw_msg *msg);
-+int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
-+			struct sdw_msg *msg, struct sdw_defer *defer);
-+
-+int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
-+		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
-+
- #endif /* __SDW_BUS_H */
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 7e6edb26ce4b..f9a3e397afa6 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -84,6 +84,28 @@ enum sdw_slave_status {
- 	SDW_SLAVE_RESERVED = 3,
- };
- 
-+/**
-+ * enum sdw_command_response: Command response as defined by SDW spec
-+ *
-+ * @SDW_CMD_OK: cmd was successful
-+ * @SDW_CMD_IGNORED: cmd was ignored
-+ * @SDW_CMD_FAIL: cmd was NACKed
-+ * @SDW_CMD_TIMEOUT: cmd timedout
-+ * @SDW_CMD_FAIL_OTHER: cmd failed due to other reason than above
-+ *
-+ * NOTE: The enum is different than actual Spec as response in the Spec is
-+ * combination of ACK/NAK bits
-+ *
-+ * SDW_CMD_TIMEOUT/FAIL_OTHER is defined for SW use, not in spec
-+ */
-+enum sdw_command_response {
-+	SDW_CMD_OK = 0,
-+	SDW_CMD_IGNORED = 1,
-+	SDW_CMD_FAIL = 2,
-+	SDW_CMD_TIMEOUT = 4,
-+	SDW_CMD_FAIL_OTHER = 8,
-+};
-+
- /*
-  * SDW properties, defined in MIPI DisCo spec v1.0
-  */
-@@ -430,13 +452,39 @@ void sdw_unregister_driver(struct sdw_driver *drv);
-  * SDW master structures and APIs
-  */
- 
-+struct sdw_msg;
-+
-+/**
-+ * struct sdw_defer: SDW deffered message
-+ *
-+ * @length: message length
-+ * @complete: message completion
-+ * @msg: SDW message
-+ */
-+struct sdw_defer {
-+	int length;
-+	struct completion complete;
-+	struct sdw_msg *msg;
-+};
-+
- /**
-  * struct sdw_master_ops: Master driver ops
-  *
-  * @read_prop: Read Master properties
-+ * @xfer_msg: Transfer message callback
-+ * @xfer_msg_defer: Defer version of transfer message callback
-+ * @reset_page_addr: Reset the SCP page address registers
-  */
- struct sdw_master_ops {
- 	int (*read_prop)(struct sdw_bus *bus);
-+
-+	enum sdw_command_response (*xfer_msg)
-+			(struct sdw_bus *bus, struct sdw_msg *msg);
-+	enum sdw_command_response (*xfer_msg_defer)
-+			(struct sdw_bus *bus, struct sdw_msg *msg,
-+			struct sdw_defer *defer);
-+	enum sdw_command_response (*reset_page_addr)
-+			(struct sdw_bus *bus, unsigned int dev_num);
- };
++EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
  
  /**
-@@ -448,8 +496,10 @@ struct sdw_master_ops {
-  * @assigned: Bitmap for Slave device numbers.
-  * Bit set implies used number, bit clear implies unused number.
-  * @bus_lock: bus lock
-+ * @msg_lock: message lock
-  * @ops: Master callback ops
-  * @prop: Master properties
-+ * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
+  * sdw_cdns_init: Cadence initialization
+@@ -465,5 +766,26 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
+ }
+ EXPORT_SYMBOL(sdw_cdns_init);
+ 
++struct sdw_master_ops sdw_cdns_master_ops = {
++	.read_prop = sdw_master_read_prop,
++	.xfer_msg = cdns_xfer_msg,
++	.xfer_msg_defer = cdns_xfer_msg_defer,
++	.reset_page_addr = cdns_reset_page_addr,
++};
++EXPORT_SYMBOL(sdw_cdns_master_ops);
++
++/**
++ * sdw_cdns_probe: Cadence probe routine
++ *
++ * @cdns: Cadence instance
++ */
++int sdw_cdns_probe(struct sdw_cdns *cdns)
++{
++	init_completion(&cdns->tx_complete);
++
++	return 0;
++}
++EXPORT_SYMBOL(sdw_cdns_probe);
++
+ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_DESCRIPTION("Cadence Soundwire Library");
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index a8cb82a15126..5ea7b9ec74e6 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -57,26 +57,40 @@
+  * @dev: Linux device
+  * @bus: Bus handle
+  * @instance: instance number
++ * @response_buf: SoundWire response buffer
++ * @tx_complete: Tx completion
++ * @defer: Defer pointer
+  * @registers: Cadence registers
+  * @link_up: Link status
++ * @msg_count: Messages sent on bus
   */
- struct sdw_bus {
-@@ -458,12 +508,21 @@ struct sdw_bus {
- 	struct list_head slaves;
- 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
- 	struct mutex bus_lock;
-+	struct mutex msg_lock;
- 	const struct sdw_master_ops *ops;
- 	struct sdw_master_prop prop;
-+	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
+ struct sdw_cdns {
+ 	struct device *dev;
+ 	struct sdw_bus bus;
+ 	unsigned int instance;
+ 
++	u32 response_buf[0x80];
++	struct completion tx_complete;
++	struct sdw_defer *defer;
++
+ 	void __iomem *registers;
+ 
+ 	bool link_up;
++	unsigned int msg_count;
  };
  
- int sdw_add_bus_master(struct sdw_bus *bus);
- void sdw_delete_bus_master(struct sdw_bus *bus);
+ #define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
  
-+/* messaging and data APIs */
+ /* Exported symbols */
+ 
++int sdw_cdns_probe(struct sdw_cdns *cdns);
++extern struct sdw_master_ops sdw_cdns_master_ops;
 +
-+int sdw_read(struct sdw_slave *slave, u32 addr);
-+int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
-+int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+ irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
+ irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
+ 
+ int sdw_cdns_init(struct sdw_cdns *cdns);
++int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
 +
- #endif /* __SOUNDWIRE_H */
+ 
+ #endif /* __SDW_CADENCE_H */
 -- 
 2.7.4
