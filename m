@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: work around link error" to the asoc tree
-Date: Fri, 10 Nov 2017 21:29:32 +0000
-Message-ID: <E1eDGrk-0004Ui-U1@debutante>
-References: <20171110145455.821805-2-arnd@arndb.de>
+Subject: Applied "ASoC: rt5514: mark PM functions as __maybe_unused" to the asoc tree
+Date: Fri, 10 Nov 2017 21:29:38 +0000
+Message-ID: <E1eDGrq-0004WS-NV@debutante>
+References: <20171110145455.821805-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171110145455.821805-2-arnd@arndb.de>
+In-Reply-To: <20171110145455.821805-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, Chinyue Chen <chinyue@chromium.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Hsin-Yu Chao <hychao@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: work around link error
+   ASoC: rt5514: mark PM functions as __maybe_unused
 
 has been applied to the asoc tree at
 
@@ -37,57 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From c56308775b5b81683789f9ee03f009493b51e6ab Mon Sep 17 00:00:00 2001
+>From 7e6358ec3b6f69815a42af6203219584a80d4e22 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 10 Nov 2017 15:54:43 +0100
-Subject: [PATCH] ASoC: rt5514: work around link error
+Date: Fri, 10 Nov 2017 15:54:42 +0100
+Subject: [PATCH] ASoC: rt5514: mark PM functions as __maybe_unused
 
-The main rt5514 driver optionally calls into the SPI back-end to load
-the firmware. This causes a link error when one driver selects rt5514
-as built-in and another driver selects rt5514-spi as a loadable module:
+The new functions are only used when CONFIG_PM is enabled,
+leading to a harmless warning:
 
-sound/soc/codecs/rt5514.o: In function `rt5514_dsp_voice_wake_up_put':
-rt5514.c:(.text+0xac8): undefined reference to `rt5514_spi_burst_write'
+sound/soc/codecs/rt5514-spi.c:474:12: error: 'rt5514_resume' defined but not used [-Werror=unused-function]
+sound/soc/codecs/rt5514-spi.c:464:12: error: 'rt5514_suspend' defined but not used [-Werror=unused-function]
 
-As a workaround, this adds another silent symbol, to force rt5514-spi
-to be built-in for that configuration. I'm not overly happy with
-that solution, but couldn't come up with anything better. Using
-'IS_REACHABLE()' would break the case that relies on the loadable
-module, and all other ideas would result in more complexity.
+This marks them as __maybe_unused to make the build silent
+again.
 
+Fixes: 58f1c07d23cd ("ASoC: rt5514: Voice wakeup support.")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig  | 4 ++++
- sound/soc/codecs/Makefile | 1 +
- 2 files changed, 5 insertions(+)
+ sound/soc/codecs/rt5514-spi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c367d11079bc..01f436cc14c6 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -749,6 +749,10 @@ config SND_SOC_RT5514
- config SND_SOC_RT5514_SPI
- 	tristate
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 36e0a58ffc87..2df91db765ac 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -461,7 +461,7 @@ static int rt5514_spi_probe(struct spi_device *spi)
+ 	return 0;
+ }
  
-+config SND_SOC_RT5514_SPI_BUILTIN
-+	bool # force RT5514_SPI to be built-in to avoid link errors
-+	default SND_SOC_RT5514=y && SND_SOC_RT5514_SPI=m
-+
- config SND_SOC_RT5616
- 	tristate "Realtek RT5616 CODEC"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 77c18189c9ad..2dc42b296973 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -359,6 +359,7 @@ obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
- obj-$(CONFIG_SND_SOC_RT298)	+= snd-soc-rt298.o
- obj-$(CONFIG_SND_SOC_RT5514)	+= snd-soc-rt5514.o
- obj-$(CONFIG_SND_SOC_RT5514_SPI)	+= snd-soc-rt5514-spi.o
-+obj-$(CONFIG_SND_SOC_RT5514_SPI_BUILTIN)	+= snd-soc-rt5514-spi.o
- obj-$(CONFIG_SND_SOC_RT5616)	+= snd-soc-rt5616.o
- obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+-static int rt5514_suspend(struct device *dev)
++static int __maybe_unused rt5514_suspend(struct device *dev)
+ {
+ 	int irq = to_spi_device(dev)->irq;
+ 
+@@ -471,7 +471,7 @@ static int rt5514_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int rt5514_resume(struct device *dev)
++static int __maybe_unused rt5514_resume(struct device *dev)
+ {
+ 	struct snd_soc_platform *platform = snd_soc_lookup_platform(dev);
+ 	struct rt5514_dsp *rt5514_dsp =
 -- 
 2.15.0
