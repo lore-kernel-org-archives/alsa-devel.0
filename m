@@ -1,19 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: common: Replace
- sst_acpi_check_hid with acpi_dev_present
-Date: Fri, 10 Nov 2017 08:39:37 -0600
-Message-ID: <b0794da6-d51b-268c-3d22-289bb000ca30@linux.intel.com>
-References: <0100015fa29c1e78-d78dbbd4-d14a-4ec1-9f8a-69addb10921b-000000@email.amazonses.com>
- <2c94120e-74b3-052f-a86f-fa3a95af9095@redhat.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 1/2] ASoC: rt5514: mark PM functions as
+	__maybe_unused
+Date: Fri, 10 Nov 2017 15:54:42 +0100
+Message-ID: <20171110145455.821805-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 016FC266C99
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 15:39:41 +0100 (CET)
-In-Reply-To: <2c94120e-74b3-052f-a86f-fa3a95af9095@redhat.com>
-Content-Language: en-US
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D322266C99
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 15:55:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,85 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Jeremy Cline <jeremy@jcline.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: Bard Liao <bardliao@realtek.com>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Chinyue Chen <chinyue@chromium.org>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Hsin-Yu Chao <hychao@chromium.org>, Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMS8xMC8yMDE3IDA1OjMzIEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpLAo+Cj4g
-T24gMDktMTEtMTcgMjI6MDcsIEplcmVteSBDbGluZSB3cm90ZToKPj4gUmVwbGFjZSB0aGUgc3N0
-X2FjcGlfY2hlY2tfaGlkIGhlbHBlciBmdW5jdGlvbiBhZGRlZCBpbgo+PiBjb21taXQgOTE1YWUy
-YjlmMGZlICgiQVNvQzogSW50ZWw6IENyZWF0ZSBhIGhlbHBlciB0byBzZWFyY2ggZm9yCj4+IG1h
-dGNoaW5nIG1hY2hpbmUiKSB3aXRoIHRoZSBnZW5lcmljIGFjcGlfZGV2X3ByZXNlbnQgaGVscGVy
-IGZ1bmN0aW9uCj4+IGFuZCByZW1vdmUgdGhlIG5vdyB1bnVzZWQgc3N0X2FjcGlfY2hlY2tfaGlk
-IGZ1bmN0aW9uLiBUaGlzIHNob3VsZCBoYXZlCj4+IG5vIGZ1bmN0aW9uYWwgY2hhbmdlLgo+Pgo+
-PiBTaWduZWQtb2ZmLWJ5OiBKZXJlbXkgQ2xpbmUgPGplcmVteUBqY2xpbmUub3JnPgo+Cj4gSSd2
-ZSBqdXN0IHN1Y2Nlc3NmdWxseSB0ZXN0ZWQgdGhpcyBvbiBhbiBBc3N1IFQxMDBIQToKPgo+IFRl
-c3RlZC1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPiBSZXZpZXdlZC1i
-eTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KCkkgZG9uJ3QgbWluZCB0aGlz
-IGNoYW5nZSwgYnV0IEknZCBhbHNvIGxpa2UgdG8gc2VlIGEgYml0IG1vcmUgdGVzdGluZyAKd2l0
-aCB3ZWlyZCBkZXZpY2VzIHRvIGNoZWNrIHRoYXQgdGhlIGNvZGUgaXMgaW5kZWVkIGVxdWl2YWxl
-bnQgKG5vdCAKb2J2aW91cyBmcm9tIGEgcXVpY2sgY29kZSBpbnNwZWN0aW9uKS4gU3VyZmFjZSAz
-IHdhcyBicm9rZW4gcmVjZW50bHkgZHVlIAp0byBsYWNrIG9mIHRlc3Rpbmcgb2YgYSBjaGFuZ2Ug
-dGhhdCAnc2hvdWxkIGhhdmUgYmVlbiBmdW5jdGlvbmFsbHkgCmVxdWl2YWxlbnQnLgoKQWxzbyB0
-aGlzIHBhdGNoIHdpbGwgbm90IGFwcGx5LCB0aGUgY29kZSB3YXMgY2hhbmdlZCB0byByZW1vdmUg
-YW55IApyZWZlcmVuY2UgdG8gdGhlIHNzdCBkcml2ZXIsIHlvdSBuZWVkIHRvIHJlYmFzZSBhZ2Fp
-bnN0IGJyb29uaWUvZm9yLW5leHQuCgo+Cj4gUmVnYXJkcywKPgo+IEhhbnMKPgo+Cj4KPj4gLS0t
-Cj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWFjcGkuaMKgwqDCoMKgwqDCoCB8wqAg
-MyAtLS0KPj4gwqAgc291bmQvc29jL2ludGVsL2NvbW1vbi9zc3QtbWF0Y2gtYWNwaS5jIHwgMzIg
-Cj4+ICsrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+IMKgIDIgZmlsZXMgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspLCAzMyBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Nv
-dW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWFjcGkuaCAKPj4gYi9zb3VuZC9zb2MvaW50ZWwvY29t
-bW9uL3NzdC1hY3BpLmgKPj4gaW5kZXggYWZlOWI4N2I4YmQ1Li5kN2ZhY2FjODNiN2UgMTAwNjQ0
-Cj4+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LWFjcGkuaAo+PiArKysgYi9zb3Vu
-ZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1hY3BpLmgKPj4gQEAgLTQzLDkgKzQzLDYgQEAgc3RhdGlj
-IGlubGluZSBib29sIAo+PiBzc3RfYWNwaV9maW5kX3BhY2thZ2VfZnJvbV9oaWQoY29uc3QgdTgg
-aGlkW0FDUElfSURfTEVOXSwKPj4gwqAgLyogYWNwaSBtYXRjaCAqLwo+PiDCoCBzdHJ1Y3Qgc3N0
-X2FjcGlfbWFjaCAqc3N0X2FjcGlfZmluZF9tYWNoaW5lKHN0cnVjdCBzc3RfYWNwaV9tYWNoIAo+
-PiAqbWFjaGluZXMpOwo+PiDCoCAtLyogYWNwaSBjaGVjayBoaWQgKi8KPj4gLWJvb2wgc3N0X2Fj
-cGlfY2hlY2tfaGlkKGNvbnN0IHU4IGhpZFtBQ1BJX0lEX0xFTl0pOwo+PiAtCj4+IMKgIC8qIERl
-c2NyaXB0b3IgZm9yIFNTVCBBU29DIG1hY2hpbmUgZHJpdmVyICovCj4+IMKgIHN0cnVjdCBzc3Rf
-YWNwaV9tYWNoIHsKPj4gwqDCoMKgwqDCoCAvKiBBQ1BJIElEIGZvciB0aGUgbWF0Y2hpbmcgbWFj
-aGluZSBkcml2ZXIuIEF1ZGlvIGNvZGVjIGZvciAKPj4gaW5zdGFuY2UgKi8KPj4gZGlmZiAtLWdp
-dCBhL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LW1hdGNoLWFjcGkuYyAKPj4gYi9zb3VuZC9z
-b2MvaW50ZWwvY29tbW9uL3NzdC1tYXRjaC1hY3BpLmMKPj4gaW5kZXggNTZkMjZmMzZhM2NiLi5m
-OGUxYjkyZGU3OWEgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9jb21tb24vc3N0LW1h
-dGNoLWFjcGkuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvY29tbW9uL3NzdC1tYXRjaC1hY3Bp
-LmMKPj4gQEAgLTQ5LDQwICs0OSwxMiBAQCBjb25zdCBjaGFyICpzc3RfYWNwaV9maW5kX25hbWVf
-ZnJvbV9oaWQoY29uc3QgdTggCj4+IGhpZFtBQ1BJX0lEX0xFTl0pCj4+IMKgIH0KPj4gwqAgRVhQ
-T1JUX1NZTUJPTF9HUEwoc3N0X2FjcGlfZmluZF9uYW1lX2Zyb21faGlkKTsKPj4gwqAgLXN0YXRp
-YyBhY3BpX3N0YXR1cyBzc3RfYWNwaV9tYWNoX21hdGNoKGFjcGlfaGFuZGxlIGhhbmRsZSwgdTMy
-IGxldmVsLAo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-dm9pZCAqY29udGV4dCwgdm9pZCAqKnJldCkKPj4gLXsKPj4gLcKgwqDCoCB1bnNpZ25lZCBsb25n
-IGxvbmcgc3RhOwo+PiAtwqDCoMKgIGFjcGlfc3RhdHVzIHN0YXR1czsKPj4gLQo+PiAtwqDCoMKg
-ICooYm9vbCAqKWNvbnRleHQgPSB0cnVlOwo+PiAtwqDCoMKgIHN0YXR1cyA9IGFjcGlfZXZhbHVh
-dGVfaW50ZWdlcihoYW5kbGUsICJfU1RBIiwgTlVMTCwgJnN0YSk7Cj4+IC3CoMKgwqAgaWYgKEFD
-UElfRkFJTFVSRShzdGF0dXMpIHx8ICEoc3RhICYgQUNQSV9TVEFfREVWSUNFX1BSRVNFTlQpKQo+
-PiAtwqDCoMKgwqDCoMKgwqAgKihib29sICopY29udGV4dCA9IGZhbHNlOwo+PiAtCj4+IC3CoMKg
-wqAgcmV0dXJuIEFFX09LOwo+PiAtfQo+PiAtCj4+IC1ib29sIHNzdF9hY3BpX2NoZWNrX2hpZChj
-b25zdCB1OCBoaWRbQUNQSV9JRF9MRU5dKQo+PiAtewo+PiAtwqDCoMKgIGFjcGlfc3RhdHVzIHN0
-YXR1czsKPj4gLcKgwqDCoCBib29sIGZvdW5kID0gZmFsc2U7Cj4+IC0KPj4gLcKgwqDCoCBzdGF0
-dXMgPSBhY3BpX2dldF9kZXZpY2VzKGhpZCwgc3N0X2FjcGlfbWFjaF9tYXRjaCwgJmZvdW5kLCBO
-VUxMKTsKPj4gLQo+PiAtwqDCoMKgIGlmIChBQ1BJX0ZBSUxVUkUoc3RhdHVzKSkKPj4gLcKgwqDC
-oMKgwqDCoMKgIHJldHVybiBmYWxzZTsKPj4gLQo+PiAtwqDCoMKgIHJldHVybiBmb3VuZDsKPj4g
-LX0KPj4gLUVYUE9SVF9TWU1CT0xfR1BMKHNzdF9hY3BpX2NoZWNrX2hpZCk7Cj4+IC0KPj4gwqAg
-c3RydWN0IHNzdF9hY3BpX21hY2ggKnNzdF9hY3BpX2ZpbmRfbWFjaGluZShzdHJ1Y3Qgc3N0X2Fj
-cGlfbWFjaCAKPj4gKm1hY2hpbmVzKQo+PiDCoCB7Cj4+IMKgwqDCoMKgwqAgc3RydWN0IHNzdF9h
-Y3BpX21hY2ggKm1hY2g7Cj4+IMKgIMKgwqDCoMKgwqAgZm9yIChtYWNoID0gbWFjaGluZXM7IG1h
-Y2gtPmlkWzBdOyBtYWNoKyspIHsKPj4gLcKgwqDCoMKgwqDCoMKgIGlmIChzc3RfYWNwaV9jaGVj
-a19oaWQobWFjaC0+aWQpID09IHRydWUpIHsKPj4gK8KgwqDCoMKgwqDCoMKgIGlmIChhY3BpX2Rl
-dl9wcmVzZW50KG1hY2gtPmlkLCBOVUxMLCAtMSkgPT0gdHJ1ZSkgewo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBpZiAobWFjaC0+bWFjaGluZV9xdWlyayA9PSBOVUxMKQo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBtYWNoOwo+PiDCoCBAQCAtMTYxLDcg
-KzEzMyw3IEBAIHN0cnVjdCBzc3RfYWNwaV9tYWNoICpzc3RfYWNwaV9jb2RlY19saXN0KHZvaWQg
-Cj4+ICphcmcpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbWFjaDsKPj4gwqAgwqDCoMKg
-wqDCoCBmb3IgKGkgPSAwOyBpIDwgY29kZWNfbGlzdC0+bnVtX2NvZGVjczsgaSsrKSB7Cj4+IC3C
-oMKgwqDCoMKgwqDCoCBpZiAoc3N0X2FjcGlfY2hlY2tfaGlkKGNvZGVjX2xpc3QtPmNvZGVjc1tp
-XSkgIT0gdHJ1ZSkKPj4gK8KgwqDCoMKgwqDCoMKgIGlmIChhY3BpX2Rldl9wcmVzZW50KGNvZGVj
-X2xpc3QtPmNvZGVjc1tpXSwgTlVMTCwgLTEpICE9IHRydWUpCj4+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHJldHVybiBOVUxMOwo+PiDCoMKgwqDCoMKgIH0KPj4KPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The new functions are only used when CONFIG_PM is enabled,
+leading to a harmless warning:
+
+sound/soc/codecs/rt5514-spi.c:474:12: error: 'rt5514_resume' defined but not used [-Werror=unused-function]
+sound/soc/codecs/rt5514-spi.c:464:12: error: 'rt5514_suspend' defined but not used [-Werror=unused-function]
+
+This marks them as __maybe_unused to make the build silent
+again.
+
+Fixes: 58f1c07d23cd ("ASoC: rt5514: Voice wakeup support.")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/codecs/rt5514-spi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 36e0a58ffc87..2df91db765ac 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -461,7 +461,7 @@ static int rt5514_spi_probe(struct spi_device *spi)
+ 	return 0;
+ }
+ 
+-static int rt5514_suspend(struct device *dev)
++static int __maybe_unused rt5514_suspend(struct device *dev)
+ {
+ 	int irq = to_spi_device(dev)->irq;
+ 
+@@ -471,7 +471,7 @@ static int rt5514_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int rt5514_resume(struct device *dev)
++static int __maybe_unused rt5514_resume(struct device *dev)
+ {
+ 	struct snd_soc_platform *platform = snd_soc_lookup_platform(dev);
+ 	struct rt5514_dsp *rt5514_dsp =
+-- 
+2.9.0
