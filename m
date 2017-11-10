@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 09/14] soundwire: Add slave status handling
-Date: Fri, 10 Nov 2017 17:19:11 +0530
-Message-ID: <1510314556-13002-10-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 13/14] soundwire: intel: Add Intel Master driver
+Date: Fri, 10 Nov 2017 17:19:15 +0530
+Message-ID: <1510314556-13002-14-git-send-email-vinod.koul@intel.com>
 References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
@@ -10,431 +10,607 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add status handling API sdw_handle_slave_status() to handle
-Slave status changes.
+Some Intel platforms have SoundWire Master, so add Intel SoundWire
+Master driver which uses Cadence module. This patch adds probe and
+initialization routines for Intel Master driver.
 
 Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/bus.c       | 348 ++++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/bus.h       |   2 +
- include/linux/soundwire/sdw.h |  21 +++
- 3 files changed, 371 insertions(+)
+ drivers/soundwire/Kconfig           |  11 +
+ drivers/soundwire/Makefile          |   4 +
+ drivers/soundwire/intel.c           | 391 ++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/intel.h           |  72 +++++++
+ include/linux/soundwire/sdw_intel.h |  71 +++++++
+ 5 files changed, 549 insertions(+)
+ create mode 100644 drivers/soundwire/intel.c
+ create mode 100644 drivers/soundwire/intel.h
+ create mode 100644 include/linux/soundwire/sdw_intel.h
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 16bc295634de..9199daafeffc 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -660,3 +660,351 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 65d97ef59fbb..0b8e4b9cef99 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -22,4 +22,15 @@ config SOUNDWIRE_BUS
+ config SOUNDWIRE_CADENCE
+ 	tristate
  
- 	return 0;
- }
++config SOUNDWIRE_INTEL
++	tristate "Intel SoundWire Master driver"
++	select SOUNDWIRE_CADENCE
++	select SOUNDWIRE_BUS
++	depends on X86 && ACPI
++	---help---
++	  SoundWire Intel Master driver.
++	  If you have an Intel platform which has a SoundWire Master then
++	  enable this config option to get the SoundWire support for that
++	  device.
 +
-+static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
+ endif
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index f9a1ce3a860e..0813b2c74426 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -9,3 +9,7 @@ obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+ #Cadence Objs
+ soundwire-cadence-objs := cadence_master.o
+ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
++
++#Intel driver
++soundwire-intel-objs :=	intel.o
++obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+new file mode 100644
+index 000000000000..120f11cc652b
+--- /dev/null
++++ b/drivers/soundwire/intel.c
+@@ -0,0 +1,391 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
++ *
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
++/*
++ * Soundwire Intel Master Driver
++ */
++
++#include <sound/soc.h>
++#include <linux/soundwire/sdw.h>
++#include <linux/soundwire/sdw_intel.h>
++#include "cadence_master.h"
++#include "intel.h"
++
++/* Intel SHIM Registers Definition */
++#define SDW_SHIM_LCAP			0x0
++#define SDW_SHIM_LCTL			0x4
++#define SDW_SHIM_IPPTR			0x8
++#define SDW_SHIM_SYNC			0xC
++
++#define SDW_SHIM_CTLSCAP(x)		(0x010 + 0x60 * x)
++#define SDW_SHIM_CTLS0CM(x)		(0x012 + 0x60 * x)
++#define SDW_SHIM_CTLS1CM(x)		(0x014 + 0x60 * x)
++#define SDW_SHIM_CTLS2CM(x)		(0x016 + 0x60 * x)
++#define SDW_SHIM_CTLS3CM(x)		(0x018 + 0x60 * x)
++#define SDW_SHIM_PCMSCAP(x)		(0x020 + 0x60 * x)
++
++#define SDW_SHIM_PCMSYCHM(x, y)		(0x022 + (0x60 * x) + (0x2 * y))
++#define SDW_SHIM_PCMSYCHC(x, y)		(0x042 + (0x60 * x) + (0x2 * y))
++#define SDW_SHIM_PDMSCAP(x)		(0x062 + 0x60 * x)
++#define SDW_SHIM_IOCTL(x)		(0x06C + 0x60 * x)
++#define SDW_SHIM_CTMCTL(x)		(0x06E + 0x60 * x)
++
++#define SDW_SHIM_WAKEEN			0x190
++#define SDW_SHIM_WAKESTS		0x192
++
++#define SDW_SHIM_LCTL_SPA		BIT(0)
++#define SDW_SHIM_LCTL_CPA		BIT(8)
++
++#define SDW_SHIM_SYNC_SYNCPRD_VAL	0x176F
++#define SDW_SHIM_SYNC_SYNCPRD		GENMASK(14, 0)
++#define SDW_SHIM_SYNC_SYNCCPU		BIT(15)
++#define SDW_SHIM_SYNC_CMDSYNC_MASK	GENMASK(19, 16)
++#define SDW_SHIM_SYNC_CMDSYNC		BIT(16)
++#define SDW_SHIM_SYNC_SYNCGO		BIT(24)
++
++#define SDW_SHIM_PCMSCAP_ISS		GENMASK(3, 0)
++#define SDW_SHIM_PCMSCAP_OSS		GENMASK(7, 4)
++#define SDW_SHIM_PCMSCAP_BSS		GENMASK(12, 8)
++
++#define SDW_SHIM_PCMSYCM_LCHN		GENMASK(3, 0)
++#define SDW_SHIM_PCMSYCM_HCHN		GENMASK(7, 4)
++#define SDW_SHIM_PCMSYCM_STREAM		GENMASK(13, 8)
++#define SDW_SHIM_PCMSYCM_DIR		BIT(15)
++
++#define SDW_SHIM_PDMSCAP_ISS		GENMASK(3, 0)
++#define SDW_SHIM_PDMSCAP_OSS		GENMASK(7, 4)
++#define SDW_SHIM_PDMSCAP_BSS		GENMASK(12, 8)
++#define SDW_SHIM_PDMSCAP_CPSS		GENMASK(15, 13)
++
++#define SDW_SHIM_IOCTL_MIF		BIT(0)
++#define SDW_SHIM_IOCTL_CO		BIT(1)
++#define SDW_SHIM_IOCTL_COE		BIT(2)
++#define SDW_SHIM_IOCTL_DO		BIT(3)
++#define SDW_SHIM_IOCTL_DOE		BIT(4)
++#define SDW_SHIM_IOCTL_BKE		BIT(5)
++#define SDW_SHIM_IOCTL_WPDD		BIT(6)
++#define SDW_SHIM_IOCTL_CIBD		BIT(8)
++#define SDW_SHIM_IOCTL_DIBD		BIT(9)
++
++#define SDW_SHIM_CTMCTL_DACTQE		BIT(0)
++#define SDW_SHIM_CTMCTL_DODS		BIT(1)
++#define SDW_SHIM_CTMCTL_DOAIS		GENMASK(4, 3)
++
++#define SDW_SHIM_WAKEEN_ENABLE		BIT(0)
++#define SDW_SHIM_WAKESTS_STATUS		BIT(0)
++
++/* Intel ALH Register definitions */
++#define SDW_ALH_STRMZCFG(x)		(0x000 + (0x4 * x))
++
++#define SDW_ALH_STRMZCFG_DMAT_VAL	0x3
++#define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
++#define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
++
++struct sdw_intel {
++	struct sdw_cdns cdns;
++	int instance;
++	struct sdw_intel_link_res *res;
++};
++
++#define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
++
++/*
++ * Read, write helpers for HW registers
++ */
++static inline int sdw_readl(void __iomem *base, int offset)
 +{
-+	u8 clear = 0, impl_int_mask;
-+	int status, ret, count = 0;
-+
-+	status = sdw_read(slave, SDW_DP0_INT);
-+	if (status < 0) {
-+		dev_err(slave->bus->dev,
-+				"SDW_DP0_INT read failed:%d", status);
-+		return status;
-+	}
-+
-+	do {
-+
-+		if (status & SDW_DP0_INT_TEST_FAIL) {
-+			dev_err(&slave->dev, "Test fail for port 0");
-+			clear |= SDW_DP0_INT_TEST_FAIL;
-+		}
-+
-+		/*
-+		 * Assumption: PORT_READY interrupt will be received only for
-+		 * ports implementing Channel Prepare state machine (CP_SM)
-+		 */
-+
-+		if (status & SDW_DP0_INT_PORT_READY) {
-+			complete(&slave->port_ready[0]);
-+			clear |= SDW_DP0_INT_PORT_READY;
-+		}
-+
-+		if (status & SDW_DP0_INT_BRA_FAILURE) {
-+			dev_err(&slave->dev, "BRA failed");
-+			clear |= SDW_DP0_INT_BRA_FAILURE;
-+		}
-+
-+		impl_int_mask = SDW_DP0_INT_IMPDEF1 |
-+			SDW_DP0_INT_IMPDEF2 | SDW_DP0_INT_IMPDEF3;
-+
-+		if (status & impl_int_mask) {
-+			clear |= impl_int_mask;
-+			*slave_status = clear;
-+		}
-+
-+		/* clear the interrupt */
-+		ret = sdw_write(slave, SDW_DP0_INT, clear);
-+		if (ret < 0) {
-+			dev_err(slave->bus->dev,
-+				"SDW_DP0_INT write failed:%d", ret);
-+			return ret;
-+		}
-+
-+		/* Read DP0 interrupt again */
-+		status = sdw_read(slave, SDW_DP0_INT);
-+		if (status < 0) {
-+			dev_err(slave->bus->dev,
-+				"SDW_DP0_INT read failed:%d", status);
-+			return status;
-+		}
-+
-+		count++;
-+
-+		/* we can get alerts while processing so keep retrying */
-+	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
-+
-+	if (count == SDW_READ_INTR_CLEAR_RETRY)
-+		dev_warn(slave->bus->dev, "Reached MAX_RETRY on DP0 read");
-+
-+	return ret;
++	return readl(base + offset);
 +}
 +
-+static int sdw_handle_port_interrupt(struct sdw_slave *slave,
-+		int port, u8 *slave_status)
++static inline void sdw_writel(void __iomem *base, int offset, int value)
 +{
-+	u8 clear = 0, impl_int_mask;
-+	int status, ret, count = 0;
-+	u32 addr;
-+
-+	if (port == 0)
-+		return sdw_handle_dp0_interrupt(slave, slave_status);
-+
-+	addr = SDW_DPN_INT(port);
-+	status = sdw_read(slave, addr);
-+	if (status < 0) {
-+		dev_err(slave->bus->dev,
-+				"SDW_DPN_INT read failed:%d", status);
-+
-+		return status;
-+	}
-+
-+	do {
-+
-+		if (status & SDW_DPN_INT_TEST_FAIL) {
-+			dev_err(&slave->dev, "Test fail for port:%d", port);
-+			clear |= SDW_DPN_INT_TEST_FAIL;
-+		}
-+
-+		/*
-+		 * Assumption: PORT_READY interrupt will be received only
-+		 * for ports implementing CP_SM.
-+		 */
-+		if (status & SDW_DPN_INT_PORT_READY) {
-+			complete(&slave->port_ready[port]);
-+			clear |= SDW_DPN_INT_PORT_READY;
-+		}
-+
-+		impl_int_mask = SDW_DPN_INT_IMPDEF1 |
-+			SDW_DPN_INT_IMPDEF2 | SDW_DPN_INT_IMPDEF3;
-+
-+
-+		if (status & impl_int_mask) {
-+			clear |= impl_int_mask;
-+			*slave_status = clear;
-+		}
-+
-+		/* clear the interrupt */
-+		ret = sdw_write(slave, addr, clear);
-+		if (ret < 0) {
-+			dev_err(slave->bus->dev,
-+					"SDW_DPN_INT write failed:%d", ret);
-+			return ret;
-+		}
-+
-+		/* Read DPN interrupt again */
-+		status = sdw_read(slave, addr);
-+		if (status < 0) {
-+			dev_err(slave->bus->dev,
-+					"SDW_DPN_INT read failed:%d", status);
-+			return status;
-+		}
-+
-+		count++;
-+
-+		/* we can get alerts while processing so keep retrying */
-+	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
-+
-+	if (count == SDW_READ_INTR_CLEAR_RETRY)
-+		dev_warn(slave->bus->dev, "Reached MAX_RETRY on port read");
-+
-+	return ret;
++	writel(value, base + offset);
 +}
 +
-+static int sdw_handle_slave_alerts(struct sdw_slave *slave)
++static inline u16 sdw_readw(void __iomem *base, int offset)
 +{
-+	u8 clear = 0, bit, port_status[15];
-+	int port_num, stat, ret, count = 0;
-+	unsigned long port;
-+	bool slave_notify = false;
-+	u8 buf[3];
++	return readw(base + offset);
++}
 +
-+	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
++static inline void sdw_writew(void __iomem *base, int offset, u16 value)
++{
++	writew(value, base + offset);
++}
 +
-+	/* Read Instat 1, Instat 2 and Instat 3 registers */
-+	ret = sdw_nread(slave, SDW_SCP_INT1, 3, buf);
-+	if (ret < 0) {
-+		dev_err(slave->bus->dev,
-+					"SDW_SCP_INT1 read failed:%d", ret);
++static int sdw_clear_bit(void __iomem *base, int offset, u32 value, u32 mask)
++{
++	int timeout = 10;
++	u32 reg_read;
++
++	writel(value, base + offset);
++	do {
++		reg_read = readl(base + offset);
++		if (!(reg_read & mask))
++			return 0;
++
++		timeout--;
++		usleep_range(1, 50);
++
++	} while (timeout != 0);
++
++	return -EAGAIN;
++}
++
++static int sdw_set_bit(void __iomem *base, int offset, u32 value, u32 mask)
++{
++	int timeout = 10;
++	u32 reg_read;
++
++	writel(value, base + offset);
++	do {
++		reg_read = readl(base + offset);
++		if (reg_read & mask)
++			return 0;
++
++		timeout--;
++		usleep_range(1, 50);
++
++	} while (timeout != 0);
++
++	return -EAGAIN;
++}
++
++/*
++ * shim ops
++ */
++
++static int intel_link_power_up(struct sdw_intel *sdw)
++{
++	unsigned int link_id = sdw->instance;
++	void __iomem *shim = sdw->res->shim;
++	int spa_mask, cpa_mask;
++	int link_control, ret;
++
++	/* Link power up sequence */
++	link_control = sdw_readl(shim, SDW_SHIM_LCTL);
++	spa_mask = (SDW_SHIM_LCTL_SPA << link_id);
++	cpa_mask = (SDW_SHIM_LCTL_SPA << link_id);
++	link_control |=  spa_mask;
++
++	ret = sdw_set_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
++	if (ret < 0)
 +		return ret;
-+	}
 +
-+	do {
-+		/*
-+		 * Check parity, bus clash and Slave (impl defined)
-+		 * interrupt
-+		 */
-+		if (buf[0] & SDW_SCP_INT1_PARITY) {
-+			dev_err(&slave->dev, "Parity error detected");
-+			clear |= SDW_SCP_INT1_PARITY;
-+		}
++	sdw->cdns.link_up = true;
++	return 0;
++}
 +
-+		if (buf[0] & SDW_SCP_INT1_BUS_CLASH) {
-+			dev_err(&slave->dev, "Bus clash error detected");
-+			clear |= SDW_SCP_INT1_BUS_CLASH;
-+		}
++static int intel_shim_init(struct sdw_intel *sdw)
++{
++	void __iomem *shim = sdw->res->shim;
++	unsigned int link_id = sdw->instance;
++	int sync_reg, ret;
++	u16 ioctl = 0, act = 0;
 +
-+		/*
-+		 * When bus clash or parity errors are detected, such errors
-+		 * are unlikely to be recoverable errors.
-+		 * TODO: In such scenario, reset bus. Make this configurable
-+		 * via sysfs property with bus reset being the default.
-+		 */
++	/* Initialize Shim */
++	ioctl |= SDW_SHIM_IOCTL_BKE;
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		if (buf[0] & SDW_SCP_INT1_IMPL_DEF) {
-+			dev_dbg(&slave->dev, "Slave impl defined interrupt\n");
-+			clear |= SDW_SCP_INT1_IMPL_DEF;
-+			slave_notify = true;
-+		}
++	ioctl |= SDW_SHIM_IOCTL_WPDD;
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		/* Check port 0 - 4 interrupts */
-+		port = buf[0] & SDW_SCP_INT1_PORT0_3;
++	ioctl |= SDW_SHIM_IOCTL_DO;
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		/* To get port number corresponding to bits, shift it */
-+		port = port >> SDW_REG_SHIFT(SDW_SCP_INT1_PORT0_3);
-+		for_each_set_bit(bit, &port, 8) {
-+			sdw_handle_port_interrupt(slave, bit,
-+						&port_status[bit]);
++	ioctl |= SDW_SHIM_IOCTL_DOE;
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		}
++	/* Switch to MIP from Glue logic */
++	ioctl = sdw_readw(shim,  SDW_SHIM_IOCTL(link_id));
 +
-+		/* Check if cascade 2 interrupt is present */
-+		if (buf[0] & SDW_SCP_INT1_SCP2_CASCADE) {
-+			port = buf[1] & SDW_SCP_INTSTAT2_PORT4_10;
-+			for_each_set_bit(bit, &port, 8) {
-+				/* scp2 ports start from 4 */
-+				port_num = bit + 3;
-+				sdw_handle_port_interrupt(slave,
-+						port_num,
-+						&port_status[port_num]);
-+			}
-+		}
++	ioctl &= ~(SDW_SHIM_IOCTL_DOE);
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		/* now check last cascade */
-+		if (buf[1] & SDW_SCP_INTSTAT2_SCP3_CASCADE) {
-+			port = buf[2] & SDW_SCP_INTSTAT3_PORT11_14;
-+			for_each_set_bit(bit, &port, 8) {
-+				/* scp3 ports start from 11 */
-+				port_num = bit + 10;
-+				sdw_handle_port_interrupt(slave,
-+						port_num,
-+						&port_status[port_num]);
-+			}
-+		}
++	ioctl &= ~(SDW_SHIM_IOCTL_DO);
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		/* Update the Slave driver */
-+		if (slave_notify && (slave->ops) &&
-+					(slave->ops->interrupt_callback)) {
-+			struct sdw_slave_intr_status slave_intr;
++	ioctl |= (SDW_SHIM_IOCTL_MIF);
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+			slave_intr.control_port = clear;
-+			memcpy(slave_intr.port, &port_status,
-+						sizeof(slave_intr.port));
++	ioctl &= ~(SDW_SHIM_IOCTL_BKE);
++	ioctl &= ~(SDW_SHIM_IOCTL_COE);
 +
-+			slave->ops->interrupt_callback(slave, &slave_intr);
-+		}
++	sdw_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
 +
-+		/* Ack interrupt */
-+		ret = sdw_write(slave, SDW_SCP_INT1, clear);
-+		if (ret < 0) {
-+			dev_err(slave->bus->dev,
-+					"SDW_SCP_INT1 write failed:%d", ret);
-+			return ret;
-+		}
++	act |= 0x1 << SDW_REG_SHIFT(SDW_SHIM_CTMCTL_DOAIS);
++	act |= SDW_SHIM_CTMCTL_DACTQE;
++	act |= SDW_SHIM_CTMCTL_DODS;
++	sdw_writew(shim, SDW_SHIM_CTMCTL(link_id), act);
 +
-+		/*
-+		 * Read status again to ensure no new interrupts arrived
-+		 * while servicing interrupts
-+		 */
-+		ret = sdw_nread(slave, SDW_SCP_INT1, 3, buf);
-+		if (ret < 0) {
-+			dev_err(slave->bus->dev,
-+					"SDW_SCP_INT1 read failed:%d", ret);
-+			return ret;
-+		}
++	/* Now set SyncPRD period */
++	sync_reg = sdw_readl(shim, SDW_SHIM_SYNC);
++	sync_reg |= (SDW_SHIM_SYNC_SYNCPRD_VAL <<
++			SDW_REG_SHIFT(SDW_SHIM_SYNC_SYNCPRD));
 +
-+		/* Make sure no interrupts are pending */
-+		stat = buf[0] || buf[1] || buf[2];
-+
-+		/*
-+		 * Exit loop if Slave is continuously in ALERT state even
-+		 * after servicing the interrupt multiple times.
-+		 */
-+		count++;
-+
-+		/* we can get alerts while processing so keep retrying */
-+	} while (stat != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
-+
-+	if (count == SDW_READ_INTR_CLEAR_RETRY)
-+		dev_warn(slave->bus->dev, "Reached MAX_RETRY on alert read");
++	/* Set SyncCPU bit */
++	sync_reg |= SDW_SHIM_SYNC_SYNCCPU;
++	ret = sdw_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
++				SDW_SHIM_SYNC_SYNCCPU);
++	if (ret < 0)
++		dev_err(sdw->cdns.dev, "Failed to set sync period: %d", ret);
 +
 +	return ret;
 +}
 +
-+static int sdw_update_slave_status(struct sdw_slave *slave,
-+				enum sdw_slave_status status)
++static int intel_prop_read(struct sdw_bus *bus)
 +{
-+	if ((slave->ops) && (slave->ops->update_status))
-+		return slave->ops->update_status(slave, status);
++	/* Initialize with default handler to read all DisCo properties */
++	sdw_master_read_prop(bus);
++
++	/* BIOS is not giving some values correctly. So, lets override them */
++	bus->prop.num_freq = 1;
++	bus->prop.freq = devm_kcalloc(bus->dev, sizeof(*bus->prop.freq),
++					bus->prop.num_freq, GFP_KERNEL);
++	if (!bus->prop.freq)
++		return -ENOMEM;
++
++	bus->prop.freq[0] = bus->prop.max_freq;
++	bus->prop.err_threshold = 5;
 +
 +	return 0;
 +}
 +
-+/**
-+ * sdw_handle_slave_status: Handle Slave status
-+ *
-+ * @bus: SDW bus instance
-+ * @status: Status for all Slave(s)
++/*
++ * probe and init
 + */
-+int sdw_handle_slave_status(struct sdw_bus *bus,
-+			enum sdw_slave_status status[])
++static int intel_probe(struct platform_device *pdev)
 +{
-+	struct sdw_slave *slave;
-+	int i, ret = 0;
++	struct sdw_intel *sdw;
++	int ret;
 +
-+	if (status[0] == SDW_SLAVE_ATTACHED) {
-+		ret = sdw_program_device_num(bus);
-+		if (ret)
-+			dev_err(bus->dev, "Slave attach failed: %d", ret);
++	sdw = devm_kzalloc(&pdev->dev, sizeof(*sdw), GFP_KERNEL);
++	if (!sdw)
++		return -ENOMEM;
++
++	sdw->instance = pdev->id;
++	sdw->res = dev_get_platdata(&pdev->dev);
++	sdw->cdns.dev = &pdev->dev;
++	sdw->cdns.registers = sdw->res->registers;
++	sdw->cdns.instance = sdw->instance;
++	sdw->cdns.msg_count = 0;
++	sdw->cdns.bus.dev = &pdev->dev;
++	sdw->cdns.bus.link_id = pdev->id;
++
++	sdw_cdns_probe(&sdw->cdns);
++
++	/* Set property read ops */
++	sdw_cdns_master_ops.read_prop = intel_prop_read;
++	sdw->cdns.bus.ops = &sdw_cdns_master_ops;
++
++	platform_set_drvdata(pdev, sdw);
++
++	ret = sdw_add_bus_master(&sdw->cdns.bus);
++	if (ret) {
++		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
++		goto err_master_reg;
 +	}
 +
-+	/* Continue to check other slave statuses */
-+	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
-+		if (test_bit(i, bus->assigned) == true)
-+			continue;
++	/* Initialize shim and controller */
++	intel_link_power_up(sdw);
++	intel_shim_init(sdw);
 +
-+		slave = sdw_get_slave(bus, i);
-+		if (!slave)
-+			continue;
++	ret = sdw_cdns_init(&sdw->cdns);
++	if (ret)
++		goto err_init;
 +
-+		switch (status[i]) {
-+		case SDW_SLAVE_UNATTACHED:
-+			if (slave->status == SDW_SLAVE_UNATTACHED)
-+				break;
++	sdw_cdns_enable_interrupt(&sdw->cdns);
++	if (ret)
++		goto err_init;
 +
-+			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
-+			break;
-+
-+		case SDW_SLAVE_ALERT:
-+			ret = sdw_handle_slave_alerts(slave);
-+			if (ret)
-+				dev_err(bus->dev,
-+					"Slave %d alert handling failed: %d",
-+					i, ret);
-+			break;
-+
-+		case SDW_SLAVE_ATTACHED:
-+			if (slave->status == SDW_SLAVE_ATTACHED)
-+				break;
-+
-+			sdw_initialize_slave(slave);
-+			sdw_modify_slave_status(slave, SDW_SLAVE_ATTACHED);
-+
-+			break;
-+
-+		default:
-+			dev_err(bus->dev, "Invalid slave %d status:%d",
-+							i, status[i]);
-+			break;
-+		}
-+
-+		ret = sdw_update_slave_status(slave, status[i]);
-+		if (ret)
-+			dev_err(slave->bus->dev,
-+				"Update Slave status failed:%d", ret);
-+
++	/* Acquire IRQ */
++	ret = request_threaded_irq(sdw->res->irq, sdw_cdns_irq,
++			sdw_cdns_thread, IRQF_SHARED, KBUILD_MODNAME,
++			&sdw->cdns);
++	if (ret < 0) {
++		dev_err(sdw->cdns.dev, "unable to grab IRQ %d, disabling device\n",
++				sdw->res->irq);
++		goto err_init;
 +	}
 +
++	return 0;
++
++err_init:
++	sdw_delete_bus_master(&sdw->cdns.bus);
++err_master_reg:
 +	return ret;
 +}
-+EXPORT_SYMBOL(sdw_handle_slave_status);
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index d6943b6ceeb6..0b670ac3aae4 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -111,6 +111,8 @@ struct sdw_msg {
- 	bool page;
- };
- 
-+#define SDW_READ_INTR_CLEAR_RETRY	10
 +
- int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
- 			struct sdw_msg *msg);
- int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 71b69c17cc1b..9a42fa336184 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -386,12 +386,30 @@ struct sdw_slave_id {
- };
- 
- /**
-+ * struct sdw_slave_intr_status: Slave interrupt status
-+ *
-+ * @control_port: control port status
-+ * @port: data port status
-+ */
-+struct sdw_slave_intr_status {
-+	u8 control_port;
-+	u8 port[14];
++static int intel_remove(struct platform_device *pdev)
++{
++	struct sdw_intel *sdw;
++
++	sdw = platform_get_drvdata(pdev);
++
++	free_irq(sdw->res->irq, sdw);
++	sdw_delete_bus_master(&sdw->cdns.bus);
++
++	return 0;
++}
++
++static struct platform_driver sdw_intel_drv = {
++	.probe = intel_probe,
++	.remove = intel_remove,
++	.driver = {
++		.name = "int-sdw",
++
++	},
 +};
 +
-+/**
-  * struct sdw_slave_ops: Slave driver callback ops
-  *
-  * @read_prop: Read Slave properties
-+ * @interrupt_callback: Device interrupt notification (invoked in thread
-+ * context)
-+ * @update_status: Update Slave status
-  */
- struct sdw_slave_ops {
- 	int (*read_prop)(struct sdw_slave *sdw);
-+	int (*interrupt_callback)(struct sdw_slave *slave,
-+			struct sdw_slave_intr_status *status);
-+	int (*update_status)(struct sdw_slave *slave,
-+			enum sdw_slave_status status);
- };
- 
- /**
-@@ -449,6 +467,9 @@ struct sdw_driver {
- int __sdw_register_driver(struct sdw_driver *drv, struct module *);
- void sdw_unregister_driver(struct sdw_driver *drv);
- 
-+int sdw_handle_slave_status(struct sdw_bus *bus,
-+			enum sdw_slave_status status[]);
++module_platform_driver(sdw_intel_drv);
 +
- /*
-  * SDW master structures and APIs
-  */
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_ALIAS("platform:int-sdw");
++MODULE_DESCRIPTION("Intel Soundwire Master Driver");
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+new file mode 100644
+index 000000000000..23393a8c3b29
+--- /dev/null
++++ b/drivers/soundwire/intel.h
+@@ -0,0 +1,72 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
++ *
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
++#ifndef __SDW_INTEL_LOCAL_H
++#define __SDW_INTEL_LOCAL_H
++
++/**
++ * struct sdw_intel_res: Soundwire link resources
++ *
++ * @registers: Link IO registers base
++ * @shim: Audio shim pointer
++ * @alh: ALH (Audio Link Hub) pointer
++ * @irq: Interrupt line
++ *
++ * This is set as pdata for each link instance.
++ */
++struct sdw_intel_link_res {
++	void __iomem *registers;
++	void __iomem *shim;
++	void __iomem *alh;
++	int irq;
++};
++
++#endif /* __SDW_INTEL_LOCAL_H */
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+new file mode 100644
+index 000000000000..27a5c4f76576
+--- /dev/null
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -0,0 +1,71 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
++ *
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ */
++
++#ifndef __SDW_INTEL_H
++#define __SDW_INTEL_H
++
++#include <linux/acpi.h>
++
++/**
++ * struct sdw_intel_res: Soundwire Intel resource structure
++ *
++ * @mmio_base: mmio base of SoundWire registers
++ * @irq: interrupt number
++ * @handle: ACPI parent handle
++ * @parent: parent device
++ */
++struct sdw_intel_res {
++	void __iomem *mmio_base;
++	int irq;
++	acpi_handle handle;
++	struct device *parent;
++};
++
++#endif
 -- 
 2.7.4
