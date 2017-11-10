@@ -1,16 +1,15 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 2/2] ASoC: rt5514: work around link error
-Date: Fri, 10 Nov 2017 15:54:43 +0100
-Message-ID: <20171110145455.821805-2-arnd@arndb.de>
-References: <20171110145455.821805-1-arnd@arndb.de>
+From: Jeremy Cline <jeremy@jcline.org>
+Subject: [PATCH v2] ASoC: Replace snd_soc_acpi_check_hid with
+	acpi_dev_present
+Date: Fri, 10 Nov 2017 16:20:50 +0000
+Message-ID: <0100015fa6bbda9e-656f1a61-3a47-403f-b0d8-550fee55ea9f-000000@email.amazonses.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 78D7A26705E
- for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 15:56:08 +0100 (CET)
-In-Reply-To: <20171110145455.821805-1-arnd@arndb.de>
+Received: from a8-53.smtp-out.amazonses.com (a8-53.smtp-out.amazonses.com
+ [54.240.8.53]) by alsa0.perex.cz (Postfix) with ESMTP id 210B326791E
+ for <alsa-devel@alsa-project.org>; Fri, 10 Nov 2017 17:20:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +19,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>, Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-The main rt5514 driver optionally calls into the SPI back-end to load
-the firmware. This causes a link error when one driver selects rt5514
-as built-in and another driver selects rt5514-spi as a loadable module:
+Replace snd_soc_acpi_check_hid() with the generic acpi_dev_present()
+and remove the now unused snd_soc_acpi_check_hid function. This should
+have no functional change.
 
-sound/soc/codecs/rt5514.o: In function `rt5514_dsp_voice_wake_up_put':
-rt5514.c:(.text+0xac8): undefined reference to `rt5514_spi_burst_write'
-
-As a workaround, this adds another silent symbol, to force rt5514-spi
-to be built-in for that configuration. I'm not overly happy with
-that solution, but couldn't come up with anything better. Using
-'IS_REACHABLE()' would break the case that relies on the loadable
-module, and all other ideas would result in more complexity.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jeremy Cline <jeremy@jcline.org>
 ---
- sound/soc/codecs/Kconfig  | 4 ++++
- sound/soc/codecs/Makefile | 1 +
- 2 files changed, 5 insertions(+)
+Changes since v1 (https://patchwork.kernel.org/patch/10051951/):
+  - Rebase against broonie/for-next
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0838ae710941..a42ddbc93f3d 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -749,6 +749,10 @@ config SND_SOC_RT5514
- config SND_SOC_RT5514_SPI
- 	tristate
+ include/sound/soc-acpi.h |  3 ---
+ sound/soc/soc-acpi.c     | 32 ++------------------------------
+ 2 files changed, 2 insertions(+), 33 deletions(-)
+
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index a7d8d335b043..057805489af3 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -49,9 +49,6 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
+ struct snd_soc_acpi_mach *
+ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
  
-+config SND_SOC_RT5514_SPI_BUILTIN
-+	bool # force RT5514_SPI to be built-in to avoid link errors
-+	default SND_SOC_RT5514=y && SND_SOC_RT5514_SPI=m
-+
- config SND_SOC_RT5616
- 	tristate "Realtek RT5616 CODEC"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 05018b7ca72b..0001069ce2a7 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -360,6 +360,7 @@ obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
- obj-$(CONFIG_SND_SOC_RT298)	+= snd-soc-rt298.o
- obj-$(CONFIG_SND_SOC_RT5514)	+= snd-soc-rt5514.o
- obj-$(CONFIG_SND_SOC_RT5514_SPI)	+= snd-soc-rt5514-spi.o
-+obj-$(CONFIG_SND_SOC_RT5514_SPI_BUILTIN)	+= snd-soc-rt5514-spi.o
- obj-$(CONFIG_SND_SOC_RT5616)	+= snd-soc-rt5616.o
- obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
- obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+-/* acpi check hid */
+-bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
+-
+ /**
+  * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
+  * related to the hardware, except for the firmware and topology file names.
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index f21df28bc28e..8cdeae977a00 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -49,41 +49,13 @@ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_find_name_from_hid);
+ 
+-static acpi_status snd_soc_acpi_mach_match(acpi_handle handle, u32 level,
+-				       void *context, void **ret)
+-{
+-	unsigned long long sta;
+-	acpi_status status;
+-
+-	*(bool *)context = true;
+-	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
+-	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
+-		*(bool *)context = false;
+-
+-	return AE_OK;
+-}
+-
+-bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
+-{
+-	acpi_status status;
+-	bool found = false;
+-
+-	status = acpi_get_devices(hid, snd_soc_acpi_mach_match, &found, NULL);
+-
+-	if (ACPI_FAILURE(status))
+-		return false;
+-
+-	return found;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_acpi_check_hid);
+-
+ struct snd_soc_acpi_mach *
+ snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+ {
+ 	struct snd_soc_acpi_mach *mach;
+ 
+ 	for (mach = machines; mach->id[0]; mach++) {
+-		if (snd_soc_acpi_check_hid(mach->id) == true) {
++		if (acpi_dev_present(mach->id, NULL, -1) == true) {
+ 			if (mach->machine_quirk == NULL)
+ 				return mach;
+ 
+@@ -163,7 +135,7 @@ struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
+ 		return mach;
+ 
+ 	for (i = 0; i < codec_list->num_codecs; i++) {
+-		if (snd_soc_acpi_check_hid(codec_list->codecs[i]) != true)
++		if (acpi_dev_present(codec_list->codecs[i], NULL, -1) != true)
+ 			return NULL;
+ 	}
+ 
 -- 
-2.9.0
+2.14.3
