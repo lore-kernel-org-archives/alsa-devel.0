@@ -1,163 +1,307 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 02/14] soundwire: Add SoundWire bus type
-Date: Fri, 10 Nov 2017 16:28:48 +0530
-Message-ID: <20171110105847.GR3187@localhost>
-References: <1508382211-3154-1-git-send-email-vinod.koul@intel.com>
- <1508382211-3154-3-git-send-email-vinod.koul@intel.com>
- <5fee4ccb-1030-b698-e7ef-7f4390563a76@linaro.org>
- <20171110045951.GL3187@localhost>
- <fc897871-3ed6-5c19-98bf-51a95d4ac313@linaro.org>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: usb: initial USB Audio Device Class 3.0 support
+Date: Fri, 10 Nov 2017 13:12:53 +0200
+Message-ID: <CAB=otbR9=56mc7sJhgjhKBjdAzS+iHTRYtxT6mk_JVdx2mmMsQ@mail.gmail.com>
+References: <1510020080-15849-1-git-send-email-ruslan.bilovol@gmail.com>
+ <1510020080-15849-2-git-send-email-ruslan.bilovol@gmail.com> <s5h1sl8hm38.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <fc897871-3ed6-5c19-98bf-51a95d4ac313@linaro.org>
+In-Reply-To: <s5h1sl8hm38.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 10, 2017 at 10:42:06AM +0000, Srinivas Kandagatla wrote:
-> 
-> 
-> On 10/11/17 04:59, Vinod Koul wrote:
-> >On Thu, Nov 09, 2017 at 09:14:07PM +0000, Srinivas Kandagatla wrote:
-> >>
-> >>
-> >>On 19/10/17 04:03, Vinod Koul wrote:
-> >>>This adds the base SoundWire bus type, bus and driver registration.
-> >>>along with changes to module device table for new SoundWire
-> >>>device type.
-> >>>
-> >>>Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> >>>Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> >>>---
-> >>
-> >>>+++ b/drivers/soundwire/Kconfig
-> >>>@@ -0,0 +1,22 @@
-> >>>+#
-> >>>+# SoundWire subsystem configuration
-> >>>+#
-> >>>+
-> >>>+menuconfig SOUNDWIRE
-> >>>+	bool "SoundWire support"
-> >>
-> >>Any reason why this subsystem can not be build as module?
-> >
-> >This is not subsystem symbol but the menu. The SOUNDWIRE_BUS can be module.
-> I Noticed that.
-> 
-> Are you able to be build SOUNDWIRE_BUS as moudles?
-> 
-> I think the issue is that SOUNDWIRE_BUS default is set to SOUNDWIRE
-> This would never allow SOUNDWIRE_BUS to set as module if SOUNDWIRE is bool.
-> 
-> May be that is the issue.
-> 
-> config SOUNDWIRE_BUS
->         tristate
->         default SOUNDWIRE
+On Wed, Nov 8, 2017 at 4:38 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 07 Nov 2017 03:01:20 +0100,
+> Ruslan Bilovol wrote:
+>>
+>> Recently released USB Audio Class 3.0 specification
+>> introduces many significant changes comparing to
+>> previous versions, like
+>>  - new Power Domains, support for LPM/L1
+>>  - new Cluster descriptor
+>>  - changed layout of all class-specific descriptors
+>>  - new High Capability descriptors
+>>  - New class-specific String descriptors
+>>  - new and removed units
+>>  - additional sources for interrupts
+>>  - removed Type II Audio Data Formats
+>>  - ... and many other things (check spec)
+>>
+>> It also provides backward compatibility through
+>> multiple configurations, as well as requires
+>> mandatory support for BADD (Basic Audio Device
+>> Definition) on each ADC3.0 compliant device
+>>
+>> This patch adds initial support of UAC3 specification
+>> that is enough for Generic I/O Profile (BAOF, BAIF)
+>> device support from BADD document.
+>>
+>> Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+>
+> The patch looks good, but the timing is fairly late for merging to
+> 4.15.
 
-removing this makes it build as module, sorry I assumed you have already
-seen Takashi's comment. I have fixed it in v2. Posting anytime now :)
+That's OK
 
-> >
-> >>
-> >>>+ * @slave: SoundWire Slave device
-> >>>+ * @drv: SoundWire Slave Driver
-> >>>+ *
-> >>>+ * The match is done by comparing the mfg_id and part_id from the
-> >>>+ * struct sdw_device_id. class_id is unused, as it is a placeholder
-> >>>+ * in MIPI Spec.
-> >>>+ */
-> >>
-> >>BTW, This is a static private function, why are we adding kernel doc for
-> >>this?
-> >
-> >the match is an important routine and helps people understand the logic
-> >hence documentation. More doc is better right :)
-> >
-> I agree, more doc is better.
-> 
-> >>>+struct bus_type sdw_bus_type = {
-> >>>+	.name = "soundwire",
-> >>>+	.match = sdw_bus_match,
-> >>>+	.uevent = sdw_uevent,
-> >>>+};
-> >>>+EXPORT_SYMBOL(sdw_bus_type);
-> >>>+
-> >>>+static int sdw_drv_probe(struct device *dev)
-> >>>+{
-> >>>+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> >>>+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-> >>>+	const struct sdw_device_id *id;
-> >>>+	int ret;
-> >>>+
-> >>>+	id = sdw_get_device_id(slave, drv);
-> >>
-> >>By this time we must have already matched dev and driver by the ID,
-> >>shouldn't it be just slave->id  here?
-> >
-> >I don't think so we do not have slave->id, we pass the id in probe as an
-> >argument
-> >
-> Which probe function are you referening too ?
-> 
-> Not sure I get it, Only way to get to this probe is that id_table from
-> driver matches slave id which is done as part of sdw_bus_match().
-> So the id should be valid and calling sdw_get_device_id() is redundant here?
+>
+> So from my side, the primary question is whether the changes in USB
+> (audio) header files are OK for USB guys.
+>
+> Greg, could you check these changes and give an ack if it's OK to
+> merge?  Or if you prefer postpone, just let me know.
+>
+>
+> Below are some nitpicking:
+>
+>> --- a/include/linux/usb/audio-v2.h
+>> +++ b/include/linux/usb/audio-v2.h
+>> @@ -33,12 +33,12 @@
+>>   *
+>>   */
+>>
+>> -static inline bool uac2_control_is_readable(u32 bmControls, u8 control)
+>> +static inline bool uac_v2v3_control_is_readable(u32 bmControls, u8 control)
+>>  {
+>>       return (bmControls >> (control * 2)) & 0x1;
+>>  }
+>>
+>> -static inline bool uac2_control_is_writeable(u32 bmControls, u8 control)
+>> +static inline bool uac_v2v3_control_is_writeable(u32 bmControls, u8 control)
+>>  {
+>>       return (bmControls >> (control * 2)) & 0x2;
+>>  }
+>
+> This change looks a bit strange, but later one I noticed the reason
+> you didn't copy these functions into usb/audio-v3.h.  Though, I guess
+> a compiler can optimize out even if you call the same inline code
+> twice for v2 and v3...
 
-we dont store in id so we have to lookup again. I see the point
-in doing so, let me check that
+The main idea of this rename was to make code more clear.
+Since with UAC3 clock handling (and many other things) still is the
+same as in UAC2 but discriptor layouts and some constatns numbers
+changed. So it will possible to not introduce extra comparisons
+to run the same function.
+On the other hand we still can use uac2 named function, but
+programming becomes pure hell in this case. This is because
+some part of constatns are common for UAC1 and UAC2, some
+are common UAC2 and UAC3, and some are common for
+all three of them. To make the code more understandable,
+I tried to change common function names to see in the code
+what is common.
 
-> >>>+	if (!id)
-> >>>+		return -ENODEV;
-> >>>+
-> >>>+	/*
-> >>>+	 * attach to power domain but don't turn on (last arg)
-> >>>+	 */
-> >>>+	ret = dev_pm_domain_attach(dev, false);
-> >>>+	if (ret) {
-> >>Shouldn't it just handle the EPROBE_DEFER case and ignore it for other
-> >>errors.
-> >
-> >why should we ignore other errors and continue?
-> >
-> 
-> If you are making power domain as mandatory for all the devices, then it
-> makes sense to err out. But not all the devices might have pm domains
-> associated, so continuing on other errors makes sense.. All of the bus
-> drivers in the kernel do that ex: ./drivers/base/platform.c,
-> ./drivers/mmc/core/sdio_bus.c, ./drivers/spi/spi.c...
+By the way, I'll try to do it another way in this particular case
 
-Ah thanks for pointing, let me check that
+>
+> In anyway, if we do rename, let's mention about it in the comment.
+>
+>
+>> diff --git a/include/linux/usb/audio-v3.h b/include/linux/usb/audio-v3.h
+>> new file mode 100644
+>> index 0000000..cbbe51e
+>> --- /dev/null
+>> +++ b/include/linux/usb/audio-v3.h
+>> @@ -0,0 +1,343 @@
+>> +// SPDX-License-Identifier: GPL-2.0+
+>
+> You can use the C-style comment for SPDX line,
+>   /* SPDX-License-Identifier: GPL-2.0+ */
+>
+>> +static struct uac3_clock_source_descriptor *
+>> +     snd_usb_find_clock_source_v3(struct usb_host_interface *ctrl_iface,
+>> +                               int clock_id)
+>> +{
+>> +     struct uac3_clock_source_descriptor *cs = NULL;
+>> +
+>> +     while ((cs = snd_usb_find_csint_desc(ctrl_iface->extra,
+>> +                                          ctrl_iface->extralen,
+>> +                                          cs, UAC3_CLOCK_SOURCE))) {
+>> +             if (cs->bClockID == clock_id)
+>> +                     return cs;
+>> +     }
+>> +
+>> +     return NULL;
+>> +}
+>
+> We may clean up the whole find_clock_xxx stuff later, but let's keep
+> it dumb and straight for now...
+>
+>
+>> +static int __uac3_clock_find_source(struct snd_usb_audio *chip, int entity_id,
+>> +                                unsigned long *visited, bool validate)
+>> +{
+> (snip)
+>> +             /* the entity ID we are looking for is a selector.
+>> +              * find out what it currently selects */
+>
+> The multi-line comment should be properly formatted like
+>   /*
+>    * XXX
+>    */
 
-> >>>+		dev_err(dev, "Failed to attach PM domain: %d\n", ret);
-> >>>+		return ret;
-> >>>+	}
-> >>>+
-> >>>+	ret = drv->probe(slave, id);
-> >>>+	if (ret) {
-> >>>+		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-> >>>+		return ret;
-> >>>+	}
-> >>
-> >>
-> >>What happens if the slave driver is built as module and loaded after the
-> >>slave device is attached to the bus. How does the slave driver get updated
-> >>status in this case?
-> >>
-> >>We have similar usecase in slimbus too.
-> >
-> >So we create devices based on firmware description, then the Slave may
-> >report as present and we mark it as present. Once a driver is loaded, the
-> >driver is probed here, the slave->status clearly tells the driver that slave
-> >has already reported present.
-> 
-> Yep, that solution makes sense, Looks like I can do the same for slimbus
-> too.
+Correct. I used it only because other places in clock.c has
+same coding style. Will fix it.
 
-yup!
+>
+>> +             /* The current clock source is invalid, try others. */
+>> +             for (i = 1; i <= selector->bNrInPins; i++) {
+>> +                     int err;
+>> +
+>> +                     if (i == cur)
+>> +                             continue;
+>> +
+>> +                     ret = __uac3_clock_find_source(chip, selector->baCSourceID[i - 1],
+>> +                             visited, true);
+>> +                     if (ret < 0)
+>> +                             continue;
+>> +
+>> +                     err = uac_clock_selector_set_val(chip, entity_id, i);
+>> +                     if (err < 0)
+>> +                             continue;
+>> +
+>> +                     usb_audio_info(chip,
+>> +                              "found and selected valid clock source %d\n",
+>> +                              ret);
+>
+> Do we need to print this at each time?
 
--- 
-~Vinod
+We have the same info print in UAC2 version of function, let's keep
+it consistent (or change in both places)
+
+>
+>
+>>  static int parse_audio_format_i(struct snd_usb_audio *chip,
+>> -                             struct audioformat *fp, unsigned int format,
+>> -                             struct uac_format_type_i_continuous_descriptor *fmt)
+>> +                             struct audioformat *fp, u64 format,
+>> +                             void *_fmt)
+>>  {
+>>       snd_pcm_format_t pcm_format;
+>> +     unsigned int fmt_type;
+>>       int ret;
+>>
+>> -     if (fmt->bFormatType == UAC_FORMAT_TYPE_III) {
+>> +     switch (fp->protocol) {
+>> +     default:
+>> +     case UAC_VERSION_1:
+>> +     case UAC_VERSION_2: {
+>> +             struct uac_format_type_i_continuous_descriptor *fmt = _fmt;
+>> +
+>> +             fmt_type = fmt->bFormatType;
+>> +             break;
+>> +     }
+>> +     case UAC_VERSION_3: {
+>> +             /* fp->fmt_type is already set in this case */
+>> +             fmt_type = fp->fmt_type;
+>> +             break;
+>> +     }
+>> +     }
+>
+> The double-braces don't look beautiful.  And in this case it's just
+> for the temporary fmt variable, so it can be moved to the top level
+> and drop the internal whole braces.
+
+Agree.
+
+>
+>
+>> @@ -405,15 +435,20 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
+>>        */
+>>       switch (fp->protocol) {
+>>       default:
+>> -     case UAC_VERSION_1:
+>> +     case UAC_VERSION_1: {
+>> +             struct uac_format_type_i_continuous_descriptor *fmt = _fmt;
+>> +
+>>               fp->channels = fmt->bNrChannels;
+>>               ret = parse_audio_format_rates_v1(chip, fp, (unsigned char *) fmt, 7);
+>>               break;
+>> +     }
+>>       case UAC_VERSION_2:
+>> +     case UAC_VERSION_3: {
+>>               /* fp->channels is already set in this case */
+>> -             ret = parse_audio_format_rates_v2(chip, fp);
+>> +             ret = parse_audio_format_rates_v2v3(chip, fp);
+>>               break;
+>>       }
+>> +     }
+>
+> DItto.
+>
+>> @@ -520,3 +555,23 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip,
+>>       return 0;
+>>  }
+>>
+>> +int snd_usb_parse_audio_format_v3(struct snd_usb_audio *chip,
+>> +                            struct audioformat *fp,
+>> +                            struct uac3_as_header_descriptor *as,
+>> +                            int stream)
+>> +{
+>> +     u64 format = le64_to_cpu(as->bmFormats);
+>> +     int err;
+>> +
+>> +     /* Type I format bits are D0..D6 */
+>> +     if (format & 0x7f)
+>> +             fp->fmt_type = UAC_FORMAT_TYPE_I;
+>> +     else
+>> +             fp->fmt_type = UAC_FORMAT_TYPE_III;
+>> +
+>> +     err = parse_audio_format_i(chip, fp, format, as);
+>> +     if (err < 0)
+>> +             return err;
+>> +
+>> +     return 0;
+>
+> You can simply return from parse_audio_format_i() without err check.
+
+Agree, will fix it
+
+>
+>> @@ -460,9 +461,10 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+>>
+>>       validx += cval->idx_off;
+>>
+>> +
+>
+> Superfluous blank line.
+
+Yes, somehow I missed this before submitting the patch. Will fix it
+
+>
+>> @@ -718,16 +721,104 @@ static int check_input_term(struct mixer_build *state, int id,
+>> +                             } else { /* UAC_VERSION_2 */
+>> +                                     struct uac2_input_terminal_descriptor *d = p1;
+>> +
+>> +                                     /* call recursively to verify that the
+>> +                                      * referenced clock entity is valid */
+>
+> Fix the comment style.
+>
+>> @@ -624,38 +708,158 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+>>                               iface_no, altno, as->bTerminalLink);
+>>                       continue;
+>>               }
+>> -             }
+>>
+>> -             /* get format type */
+>> -             fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, UAC_FORMAT_TYPE);
+>> -             if (!fmt) {
+>> +             case UAC_VERSION_3: {
+>> +                     struct uac3_input_terminal_descriptor *input_term;
+>> +                     struct uac3_output_terminal_descriptor *output_term;
+>> +                     struct uac3_as_header_descriptor *as;
+>> +                     struct uac3_cluster_header_descriptor *cluster;
+>> +                     struct uac3_hc_descriptor_header hc_header;
+>> +                     u16 cluster_id, wLength;
+> (snip)
+>
+> Now snd_usb_parse_audio_interface() becomes too lengthy and hard to
+> read through.  It'd be great if you can split / cleanup this in
+> another patch.
+
+Okay, I'll do that.
+
+Thanks,
+Ruslan Bilovol
