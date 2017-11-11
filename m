@@ -1,17 +1,15 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ALSA: ml403-ac97cr: Adjust four checks for
-	null pointers
-Date: Sat, 11 Nov 2017 14:19:28 +0100
-Message-ID: <71f0710a-c884-4b3e-7e8e-6033a9142e3e@users.sourceforge.net>
-References: <4c38a970-2407-3559-060d-501b8259b3fc@users.sourceforge.net>
+Subject: [PATCH] ALSA: i2c: Use common error handling code in
+	two functions
+Date: Sat, 11 Nov 2017 17:17:04 +0100
+Message-ID: <1af701eb-c379-336f-aa00-28c30cd33d51@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 40B3426718D
- for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2017 14:19:34 +0100 (CET)
-In-Reply-To: <4c38a970-2407-3559-060d-501b8259b3fc@users.sourceforge.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 39A6B266B67
+ for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2017 17:17:10 +0100 (CET)
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,46 +20,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBTYXQsIDExIE5vdiAyMDE3IDE0OjA0OjA0ICswMTAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
-bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
-aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
-dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
-IHdyaXR0ZW4g4oCmCgpUaHVzIGZpeCB0aGUgYWZmZWN0ZWQgc291cmNlIGNvZGUgcGxhY2VzLgoK
-U2lnbmVkLW9mZi1ieTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2Uu
-bmV0PgotLS0KIHNvdW5kL2RyaXZlcnMvbWw0MDMtYWM5N2NyLmMgfCA4ICsrKystLS0tCiAxIGZp
-bGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L3NvdW5kL2RyaXZlcnMvbWw0MDMtYWM5N2NyLmMgYi9zb3VuZC9kcml2ZXJzL21sNDAzLWFjOTdj
-ci5jCmluZGV4IDRjZjk2NGVhMjgwMi4uZDg5NzE3NWE2M2IyIDEwMDY0NAotLS0gYS9zb3VuZC9k
-cml2ZXJzL21sNDAzLWFjOTdjci5jCisrKyBiL3NvdW5kL2RyaXZlcnMvbWw0MDMtYWM5N2NyLmMK
-QEAgLTUzMyw3ICs1MzMsNyBAQCBzbmRfbWw0MDNfYWM5N2NyX3BjbV9wb2ludGVyKHN0cnVjdCBz
-bmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogCWlmIChzdWJzdHJlYW0gPT0gbWw0MDNfYWM5
-N2NyLT5jYXB0dXJlX3N1YnN0cmVhbSkKIAkJaW5kMl9yZWMgPSAmbWw0MDNfYWM5N2NyLT5jYXB0
-dXJlX2luZDJfcmVjOwogCi0JaWYgKGluZDJfcmVjICE9IE5VTEwpCisJaWYgKGluZDJfcmVjKQog
-CQlyZXR1cm4gc25kX3BjbV9pbmRpcmVjdDJfcG9pbnRlcihzdWJzdHJlYW0sIGluZDJfcmVjKTsK
-IAlyZXR1cm4gKHNuZF9wY21fdWZyYW1lc190KSAwOwogfQpAQCAtNzg4LDcgKzc4OCw3IEBAIHN0
-YXRpYyBpcnFyZXR1cm5fdCBzbmRfbWw0MDNfYWM5N2NyX2lycShpbnQgaXJxLCB2b2lkICpkZXZf
-aWQpCiAJaW50IGNtcF9pcnE7CiAKIAltbDQwM19hYzk3Y3IgPSAoc3RydWN0IHNuZF9tbDQwM19h
-Yzk3Y3IgKilkZXZfaWQ7Ci0JaWYgKG1sNDAzX2FjOTdjciA9PSBOVUxMKQorCWlmICghbWw0MDNf
-YWM5N2NyKQogCQlyZXR1cm4gSVJRX05PTkU7CiAKIAlwZmRldiA9IG1sNDAzX2FjOTdjci0+cGZk
-ZXY7CkBAIC0xMTIwLDcgKzExMjAsNyBAQCBzbmRfbWw0MDNfYWM5N2NyX2NyZWF0ZShzdHJ1Y3Qg
-c25kX2NhcmQgKmNhcmQsIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBmZGV2LAogCiAJKnJtbDQw
-M19hYzk3Y3IgPSBOVUxMOwogCW1sNDAzX2FjOTdjciA9IGt6YWxsb2Moc2l6ZW9mKCptbDQwM19h
-Yzk3Y3IpLCBHRlBfS0VSTkVMKTsKLQlpZiAobWw0MDNfYWM5N2NyID09IE5VTEwpCisJaWYgKCFt
-bDQwM19hYzk3Y3IpCiAJCXJldHVybiAtRU5PTUVNOwogCXNwaW5fbG9ja19pbml0KCZtbDQwM19h
-Yzk3Y3ItPnJlZ19sb2NrKTsKIAltdXRleF9pbml0KCZtbDQwM19hYzk3Y3ItPmNkY19tdXRleCk7
-CkBAIC0xMTM5LDcgKzExMzksNyBAQCBzbmRfbWw0MDNfYWM5N2NyX2NyZWF0ZShzdHJ1Y3Qgc25k
-X2NhcmQgKmNhcmQsIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBmZGV2LAogCW1sNDAzX2FjOTdj
-ci0+cG9ydCA9IGlvcmVtYXBfbm9jYWNoZShyZXNvdXJjZS0+c3RhcnQsCiAJCQkJCSAgICAgKHJl
-c291cmNlLT5lbmQpIC0KIAkJCQkJICAgICAocmVzb3VyY2UtPnN0YXJ0KSArIDEpOwotCWlmICht
-bDQwM19hYzk3Y3ItPnBvcnQgPT0gTlVMTCkgeworCWlmICghbWw0MDNfYWM5N2NyLT5wb3J0KSB7
-CiAJCXNuZF9wcmludGsoS0VSTl9FUlIgU05EX01MNDAzX0FDOTdDUl9EUklWRVIgIjogIgogCQkJ
-ICAgInVuYWJsZSB0byByZW1hcCBtZW1vcnkgcmVnaW9uICglcFIpXG4iLAogCQkJICAgcmVzb3Vy
-Y2UpOwotLSAKMi4xNS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sat, 11 Nov 2017 17:10:24 +0100
+
+Add jump targets so that a bit of exception handling can be better reused
+at the end of these functions.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/i2c/i2c.c | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/sound/i2c/i2c.c b/sound/i2c/i2c.c
+index ef2a9afe9e19..9292aa60f3a2 100644
+--- a/sound/i2c/i2c.c
++++ b/sound/i2c/i2c.c
+@@ -282,20 +282,22 @@ static int snd_i2c_bit_sendbytes(struct snd_i2c_device *device,
+ 		return -EIO;		/* not yet implemented */
+ 	snd_i2c_bit_start(bus);
+ 	err = snd_i2c_bit_sendbyte(bus, device->addr << 1);
+-	if (err < 0) {
+-		snd_i2c_bit_hw_stop(bus);
+-		return err;
+-	}
++	if (err < 0)
++		goto stop_bus;
++
+ 	while (count-- > 0) {
+ 		err = snd_i2c_bit_sendbyte(bus, *bytes++);
+-		if (err < 0) {
+-			snd_i2c_bit_hw_stop(bus);
+-			return err;
+-		}
++		if (err < 0)
++			goto stop_bus;
++
+ 		res++;
+ 	}
+ 	snd_i2c_bit_stop(bus);
+ 	return res;
++
++stop_bus:
++	snd_i2c_bit_hw_stop(bus);
++	return err;
+ }
+ 
+ static int snd_i2c_bit_readbytes(struct snd_i2c_device *device,
+@@ -308,21 +310,23 @@ static int snd_i2c_bit_readbytes(struct snd_i2c_device *device,
+ 		return -EIO;		/* not yet implemented */
+ 	snd_i2c_bit_start(bus);
+ 	err = snd_i2c_bit_sendbyte(bus, (device->addr << 1) | 1);
+-	if (err < 0) {
+-		snd_i2c_bit_hw_stop(bus);
+-		return err;
+-	}
++	if (err < 0)
++		goto stop_bus;
++
+ 	while (count-- > 0) {
+ 		err = snd_i2c_bit_readbyte(bus, count == 0);
+-		if (err < 0) {
+-			snd_i2c_bit_hw_stop(bus);
+-			return err;
+-		}
++		if (err < 0)
++			goto stop_bus;
++
+ 		*bytes++ = (unsigned char)err;
+ 		res++;
+ 	}
+ 	snd_i2c_bit_stop(bus);
+ 	return res;
++
++stop_bus:
++	snd_i2c_bit_hw_stop(bus);
++	return err;
+ }
+ 
+ static int snd_i2c_bit_probeaddr(struct snd_i2c_bus *bus, unsigned short addr)
+-- 
+2.15.0
