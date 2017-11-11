@@ -1,16 +1,15 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ALSA: hal2: Fix a typo in two comment lines
-Date: Sat, 11 Nov 2017 19:15:06 +0100
-Message-ID: <cebdb072-5ac8-b7c8-97b3-bc9c66838774@users.sourceforge.net>
-References: <118a96d5-c52a-fd22-23d5-28f20de7ff22@users.sourceforge.net>
+Subject: [PATCH 0/3] ALSA: sgio2audio: Fine-tuning for two
+ function implementations
+Date: Sat, 11 Nov 2017 20:20:36 +0100
+Message-ID: <eb375101-03bd-37bb-67ef-e261eeca206e@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 04B0E2671BE
- for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2017 19:15:12 +0100 (CET)
-In-Reply-To: <118a96d5-c52a-fd22-23d5-28f20de7ff22@users.sourceforge.net>
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28929266B67
+ for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2017 20:21:14 +0100 (CET)
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,41 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: trivial@kernel.org, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 11 Nov 2017 18:48:41 +0100
+Date: Sat, 11 Nov 2017 20:16:32 +0100
 
-Add a missing character in these descriptions.
+Three update suggestions were taken into account
+from static source code analysis.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/mips/hal2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Markus Elfring (3):
+  Use common error handling code in two functions
+  Improve a size determination in snd_sgio2audio_create()
+  Adjust two null pointer checks in snd_sgio2audio_create()
 
-diff --git a/sound/mips/hal2.c b/sound/mips/hal2.c
-index 675c3aba794e..4fa5f161ef2d 100644
---- a/sound/mips/hal2.c
-+++ b/sound/mips/hal2.c
-@@ -388,7 +388,7 @@ static void hal2_setup_dac(struct snd_hal2 *hal2)
- 	hal2_i_clearbit16(hal2, H2I_DMA_PORT_EN, H2I_DMA_PORT_EN_CODECTX);
- 	/* Setup the HAL2 for playback */
- 	hal2_set_dac_rate(hal2);
--	/* Set endianess */
-+	/* Set endianness */
- 	hal2_i_clearbit16(hal2, H2I_DMA_END, H2I_DMA_END_CODECTX);
- 	/* Set DMA bus */
- 	hal2_i_setbit16(hal2, H2I_DMA_DRV, (1 << pbus->pbusnr));
-@@ -413,7 +413,7 @@ static void hal2_setup_adc(struct snd_hal2 *hal2)
- 	hal2_i_clearbit16(hal2, H2I_DMA_PORT_EN, H2I_DMA_PORT_EN_CODECR);
- 	/* Setup the HAL2 for record */
- 	hal2_set_adc_rate(hal2);
--	/* Set endianess */
-+	/* Set endianness */
- 	hal2_i_clearbit16(hal2, H2I_DMA_END, H2I_DMA_END_CODECR);
- 	/* Set DMA bus */
- 	hal2_i_setbit16(hal2, H2I_DMA_DRV, (1 << pbus->pbusnr));
+ sound/mips/sgio2audio.c | 53 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 26 insertions(+), 27 deletions(-)
+
 -- 
 2.15.0
