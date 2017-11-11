@@ -1,17 +1,15 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ALSA: sgio2audio: Adjust two null pointer
- checks in snd_sgio2audio_create()
-Date: Sat, 11 Nov 2017 20:23:31 +0100
-Message-ID: <249efc55-0688-6772-fc70-526a1bfa2603@users.sourceforge.net>
-References: <eb375101-03bd-37bb-67ef-e261eeca206e@users.sourceforge.net>
+Subject: [PATCH] ALSA: ac97_codec: Use common error handling
+ code in snd_ac97_mixer()
+Date: Sat, 11 Nov 2017 22:40:35 +0100
+Message-ID: <18b1926e-d801-4b9b-abab-8474113f556f@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id B9D6A266B67
- for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2017 20:24:09 +0100 (CET)
-In-Reply-To: <eb375101-03bd-37bb-67ef-e261eeca206e@users.sourceforge.net>
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED966266B67
+ for <alsa-devel@alsa-project.org>; Sat, 11 Nov 2017 22:40:42 +0100 (CET)
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,31 +20,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogTWFya3VzIEVsZnJpbmcgPGVsZnJpbmdAdXNlcnMuc291cmNlZm9yZ2UubmV0PgpEYXRl
-OiBTYXQsIDExIE5vdiAyMDE3IDIwOjEwOjIyICswMTAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRl
-bnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNldD1VVEYtOApDb250ZW50LVRyYW5zZmVyLUVuY29k
-aW5nOiA4Yml0CgpUaGUgc2NyaXB0IOKAnGNoZWNrcGF0Y2gucGzigJ0gcG9pbnRlZCBpbmZvcm1h
-dGlvbiBvdXQgbGlrZSB0aGUgZm9sbG93aW5nLgoKQ29tcGFyaXNvbiB0byBOVUxMIGNvdWxkIGJl
-IHdyaXR0ZW4gIeKApgoKVGh1cyBmaXggdGhlIGFmZmVjdGVkIHNvdXJjZSBjb2RlIHBsYWNlcy4K
-ClNpZ25lZC1vZmYtYnk6IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdl
-Lm5ldD4KLS0tCiBzb3VuZC9taXBzL3NnaW8yYXVkaW8uYyB8IDQgKystLQogMSBmaWxlIGNoYW5n
-ZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9t
-aXBzL3NnaW8yYXVkaW8uYyBiL3NvdW5kL21pcHMvc2dpbzJhdWRpby5jCmluZGV4IDllMTc1YTE4
-NGI2Ni4uNDAyN2YwZmM4ZGI2IDEwMDY0NAotLS0gYS9zb3VuZC9taXBzL3NnaW8yYXVkaW8uYwor
-KysgYi9zb3VuZC9taXBzL3NnaW8yYXVkaW8uYwpAQCAtODQxLDE0ICs4NDEsMTQgQEAgc3RhdGlj
-IGludCBzbmRfc2dpbzJhdWRpb19jcmVhdGUoc3RydWN0IHNuZF9jYXJkICpjYXJkLAogCQlyZXR1
-cm4gLUVOT0VOVDsKIAogCWNoaXAgPSBremFsbG9jKHNpemVvZigqY2hpcCksIEdGUF9LRVJORUwp
-OwotCWlmIChjaGlwID09IE5VTEwpCisJaWYgKCFjaGlwKQogCQlyZXR1cm4gLUVOT01FTTsKIAog
-CWNoaXAtPmNhcmQgPSBjYXJkOwogCiAJY2hpcC0+cmluZ19iYXNlID0gZG1hX2FsbG9jX2NvaGVy
-ZW50KE5VTEwsIE1BQ0VJU0FfUklOR0JVRkZFUlNfU0laRSwKIAkJCQkJICAgICAmY2hpcC0+cmlu
-Z19iYXNlX2RtYSwgR0ZQX1VTRVIpOwotCWlmIChjaGlwLT5yaW5nX2Jhc2UgPT0gTlVMTCkgewor
-CWlmICghY2hpcC0+cmluZ19iYXNlKSB7CiAJCXByaW50ayhLRVJOX0VSUgogCQkgICAgICAgInNn
-aW8yYXVkaW86IGNvdWxkIG5vdCBhbGxvY2F0ZSByaW5nIGJ1ZmZlcnNcbiIpOwogCQlrZnJlZShj
-aGlwKTsKLS0gCjIuMTUuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sat, 11 Nov 2017 22:30:51 +0100
+
+* Add jump targets so that a bit of exception handling can be better reused
+  at the end of this function.
+
+  This issue was detected by using the Coccinelle software.
+
+* The script "checkpatch.pl" pointed information out like the following.
+
+  ERROR: do not use assignment in if condition
+
+  Thus fix three affected source code places.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/pci/ac97/ac97_codec.c | 50 +++++++++++++++++++++++----------------------
+ 1 file changed, 26 insertions(+), 24 deletions(-)
+
+diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
+index 1ef7cdf1d3e8..2289cdcf2d48 100644
+--- a/sound/pci/ac97/ac97_codec.c
++++ b/sound/pci/ac97/ac97_codec.c
+@@ -2103,8 +2103,8 @@ int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template,
+ 		ac97_err(ac97,
+ 			 "AC'97 %d access is not valid [0x%x], removing mixer.\n",
+ 			 ac97->num, ac97->id);
+-		snd_ac97_free(ac97);
+-		return -EIO;
++		err = -EIO;
++		goto free_ac;
+ 	}
+ 	pid = look_for_codec_id(snd_ac97_codec_ids, ac97->id);
+ 	if (pid)
+@@ -2138,8 +2138,8 @@ int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template,
+ 			ac97_err(ac97,
+ 				 "AC'97 %d access error (not audio or modem codec)\n",
+ 				 ac97->num);
+-		snd_ac97_free(ac97);
+-		return -EACCES;
++		err = -EACCES;
++		goto free_ac;
+ 	}
+ 
+ 	if (bus->ops->reset) // FIXME: always skipping?
+@@ -2267,14 +2267,12 @@ int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template,
+ 			}
+ 		}
+ 		sprintf(comp, "AC97a:%08x", ac97->id);
+-		if ((err = snd_component_add(card, comp)) < 0) {
+-			snd_ac97_free(ac97);
+-			return err;
+-		}
+-		if (snd_ac97_mixer_build(ac97) < 0) {
+-			snd_ac97_free(ac97);
+-			return -ENOMEM;
+-		}
++		err = snd_component_add(card, comp);
++		if (err < 0)
++			goto free_ac;
++
++		if (snd_ac97_mixer_build(ac97) < 0)
++			goto e_nomem;
+ 	}
+ 	if (ac97_is_modem(ac97)) {
+ 		char comp[16];
+@@ -2287,24 +2285,28 @@ int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template,
+ 			}
+ 		}
+ 		sprintf(comp, "AC97m:%08x", ac97->id);
+-		if ((err = snd_component_add(card, comp)) < 0) {
+-			snd_ac97_free(ac97);
+-			return err;
+-		}
+-		if (snd_ac97_modem_build(card, ac97) < 0) {
+-			snd_ac97_free(ac97);
+-			return -ENOMEM;
+-		}
++		err = snd_component_add(card, comp);
++		if (err < 0)
++			goto free_ac;
++
++		if (snd_ac97_modem_build(card, ac97) < 0)
++			goto e_nomem;
+ 	}
+ 	if (ac97_is_audio(ac97))
+ 		update_power_regs(ac97);
+ 	snd_ac97_proc_init(ac97);
+-	if ((err = snd_device_new(card, SNDRV_DEV_CODEC, ac97, &ops)) < 0) {
+-		snd_ac97_free(ac97);
+-		return err;
+-	}
++	err = snd_device_new(card, SNDRV_DEV_CODEC, ac97, &ops);
++	if (err < 0)
++		goto free_ac;
++
+ 	*rac97 = ac97;
+ 	return 0;
++
++e_nomem:
++	err = -ENOMEM;
++free_ac:
++	snd_ac97_free(ac97);
++	return err;
+ }
+ 
+ EXPORT_SYMBOL(snd_ac97_mixer);
+-- 
+2.15.0
