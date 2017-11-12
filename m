@@ -1,16 +1,18 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ALSA: als4000: Use common error handling code
- in snd_card_als4000_probe()
-Date: Sun, 12 Nov 2017 14:04:55 +0100
-Message-ID: <c954ffd3-ef05-295f-1318-f05aab0aace4@users.sourceforge.net>
+From: VDR User <user.vdr@gmail.com>
+Subject: Missing surround channels with Nvidia HDMI &
+	snd-hda-intel driver
+Date: Sun, 12 Nov 2017 10:01:14 -0800
+Message-ID: <CAA7C2qgvC65Cjbf=AsUWd3gFCqAgHpctA=CnnfAD9E9Z0bxJQw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 63790266A73
- for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2017 14:05:06 +0100 (CET)
-Content-Language: en-GB
+Received: from mail-lf0-f53.google.com (mail-lf0-f53.google.com
+ [209.85.215.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id C97E4266A73
+ for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2017 19:01:16 +0100 (CET)
+Received: by mail-lf0-f53.google.com with SMTP id a132so15947385lfa.7
+ for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2017 10:01:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,182 +22,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, David Howells <dhowells@redhat.com>, Fabian Frederick <fabf@skynet.be>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 12 Nov 2017 13:50:48 +0100
+Hi. I just noticed that I'm missing some surround channels and I think
+it may be a bug in the alsa drivers because my current setup used to
+work just fine. I'm running Debian Testing, stable kernel 4.13.12,
+alsa-utils 1.1.3-1. My ~/.asoundrc is:
 
-* Adjust jump targets so that a bit of exception handling can be better
-  reused at the end of this function.
+~$ cat .asoundrc
+pcm.!default "hdmi:NVidia,1"
+~$
 
-  This issue was detected by using the Coccinelle software.
+I am not setting anything on my kernel load line:
 
-* The script "checkpatch.pl" pointed information out like the following.
+        echo    'Loading Linux 4.13.12-amd ...'
+        linux   /vmlinuz-4.13.12-amd
+root=UUID=6df5733d-b089-450c-9ec6-661dd013c7c0 ro
+        echo    'Loading initial ramdisk ...'
+        initrd  /initrd.img-4.13.12-amd
 
-  ERROR: do not use assignment in if condition
+The driver being used is snd-hda-intel with an Nvidia GT520 video
+card. And lastly I do not have Pulse or a desktop environment. This is
+a minimal HTPC setup that runs only an xserver to provide video
+output, with audio/video being sent to my surround receiver via HDMI.
 
-  Thus fix eight affected source code places.
+The first thing I noticed was mpv-player was downmixing 5.1 to 3.1 and
+giving the following log message:
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/als4000.c | 90 ++++++++++++++++++++++++++++-------------------------
- 1 file changed, 47 insertions(+), 43 deletions(-)
+[ao/alsa] trying to set ALSA channel map: FL FR FC LFE RL RR
+[ao/alsa] channel map reported by ALSA: FL FR FC LFE UNKNOWN UNKNOWN
+[ao/alsa] which we understand as: fl-fr-fc-lfe-na-na
+[ao/alsa] using the ALSA channel map.
+[ao/alsa] hw pausing supported: yes
+[ao/alsa] buffersize: 2720 samples
+[ao/alsa] period size: 160 samples
+[ao/alsa] device buffer: 2720 samples.
+[ao/alsa] using soft-buffer of 8820 samples.
+[cplayer] AO: [alsa] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32
+[cplayer] AO: Description: ALSA audio output
+[af] Adding filter lavrresample
+[lavrresample] Remix: 5.1 -> 3.1
+[af] Audio filter chain:
+[af]   [in] 44100Hz 5.1 6ch floatp
+[af]   [lavrresample] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32 [a]
+[af]   [out] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32
+[af]   [ao] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32
 
-diff --git a/sound/pci/als4000.c b/sound/pci/als4000.c
-index 26b097edec8c..e63598c036f6 100644
---- a/sound/pci/als4000.c
-+++ b/sound/pci/als4000.c
-@@ -867,21 +867,22 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	}
- 
- 	/* enable PCI device */
--	if ((err = pci_enable_device(pci)) < 0) {
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
--	}
-+
- 	/* check, if we can restrict PCI DMA transfers to 24 bits */
- 	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(24)) < 0 ||
- 	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(24)) < 0) {
- 		dev_err(&pci->dev, "architecture does not support 24bit PCI busmaster DMA\n");
--		pci_disable_device(pci);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto disable_device;
- 	}
- 
--	if ((err = pci_request_regions(pci, "ALS4000")) < 0) {
--		pci_disable_device(pci);
--		return err;
--	}
-+	err = pci_request_regions(pci, "ALS4000");
-+	if (err < 0)
-+		goto disable_device;
-+
- 	iobase = pci_resource_start(pci, 0);
- 
- 	pci_read_config_word(pci, PCI_COMMAND, &word);
-@@ -893,8 +894,7 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 			   &card);
- 	if (err < 0) {
- 		pci_release_regions(pci);
--		pci_disable_device(pci);
--		return err;
-+		goto disable_device;
- 	}
- 
- 	acard = card->private_data;
-@@ -905,17 +905,18 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	/* disable all legacy ISA stuff */
- 	snd_als4000_set_addr(acard->iobase, 0, 0, 0, 0);
- 
--	if ((err = snd_sbdsp_create(card,
--				    iobase + ALS4K_IOB_10_ADLIB_ADDR0,
--				    pci->irq,
-+	err = snd_sbdsp_create(card,
-+			       iobase + ALS4K_IOB_10_ADLIB_ADDR0,
-+			       pci->irq,
- 		/* internally registered as IRQF_SHARED in case of ALS4000 SB */
--				    snd_als4000_interrupt,
--				    -1,
--				    -1,
--				    SB_HW_ALS4000,
--				    &chip)) < 0) {
--		goto out_err;
--	}
-+			       snd_als4000_interrupt,
-+			       -1,
-+			       -1,
-+			       SB_HW_ALS4000,
-+			       &chip);
-+	if (err < 0)
-+		goto free_card;
-+
- 	acard->chip = chip;
- 
- 	chip->pci = pci;
-@@ -928,14 +929,14 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	sprintf(card->longname, "%s at 0x%lx, irq %i",
- 		card->shortname, chip->alt_port, chip->irq);
- 
--	if ((err = snd_mpu401_uart_new( card, 0, MPU401_HW_ALS4000,
--					iobase + ALS4K_IOB_30_MIDI_DATA,
--					MPU401_INFO_INTEGRATED |
--					MPU401_INFO_IRQ_HOOK,
--					-1, &chip->rmidi)) < 0) {
-+	err = snd_mpu401_uart_new(card, 0, MPU401_HW_ALS4000,
-+				  iobase + ALS4K_IOB_30_MIDI_DATA,
-+				  MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK,
-+				  -1, &chip->rmidi);
-+	if (err < 0) {
- 		dev_err(&pci->dev, "no MPU-401 device at 0x%lx?\n",
- 				iobase + ALS4K_IOB_30_MIDI_DATA);
--		goto out_err;
-+		goto free_card;
- 	}
- 	/* FIXME: ALS4000 has interesting MPU401 configuration features
- 	 * at ALS4K_CR1A_MPU401_UART_MODE_CONTROL
-@@ -943,12 +944,13 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 	 * however there doesn't seem to be an ALSA API for this...
- 	 * SPECS_PAGE: 21 */
- 
--	if ((err = snd_als4000_pcm(chip, 0)) < 0) {
--		goto out_err;
--	}
--	if ((err = snd_sbmixer_new(chip)) < 0) {
--		goto out_err;
--	}	    
-+	err = snd_als4000_pcm(chip, 0);
-+	if (err < 0)
-+		goto free_card;
-+
-+	err = snd_sbmixer_new(chip);
-+	if (err < 0)
-+		goto free_card;
- 
- 	if (snd_opl3_create(card,
- 				iobase + ALS4K_IOB_10_ADLIB_ADDR0,
-@@ -958,25 +960,27 @@ static int snd_card_als4000_probe(struct pci_dev *pci,
- 			   iobase + ALS4K_IOB_10_ADLIB_ADDR0,
- 			   iobase + ALS4K_IOB_12_ADLIB_ADDR2);
- 	} else {
--		if ((err = snd_opl3_hwdep_new(opl3, 0, 1, NULL)) < 0) {
--			goto out_err;
--		}
-+		err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
-+		if (err < 0)
-+			goto free_card;
- 	}
- 
- 	snd_als4000_create_gameport(acard, dev);
- 
--	if ((err = snd_card_register(card)) < 0) {
--		goto out_err;
--	}
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto free_card;
-+
- 	pci_set_drvdata(pci, card);
- 	dev++;
--	err = 0;
--	goto out;
-+	return 0;
- 
--out_err:
-+disable_device:
-+	pci_disable_device(pci);
-+	return err;
-+
-+free_card:
- 	snd_card_free(card);
--	
--out:
- 	return err;
- }
- 
--- 
-2.15.0
+That makes it look like Rear Left/Right channels are absent. I think
+ran speaker-test. 4 and 5 show as "Unknown" but correctly audibly
+announced as "front center" and "subwoofer" respectively:
+
+~$ speaker-test -c 6 -t wav
+
+speaker-test 1.1.3
+
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 5440
+Period size range from 32 to 2720
+Using max buffer size 5440
+Periods = 4
+was set period_size = 1088
+was set buffer_size = 5440
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 4 - Unknown
+ 5 - Unknown
+
+Additional information that may be of use:
+
+~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 1: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: NVidia [HDA NVidia], device 7: HDMI 1 [HDMI 1]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+
+~$ cat /proc/asound/card1/eld#0.1
+monitor_present         1
+eld_valid               1
+monitor_name            SONY AVAMP
+
+connection_type         HDMI
+eld_version             [0x2] CEA-861D or below
+edid_version            [0x3] CEA-861-B, C or D
+manufacture_id          0xd94d
+product_id              0xf02
+port_id                 0x200
+support_hdcp            0
+support_ai              0
+audio_sync_delay        0
+speakers                [0x5f] FL/FR LFE FC RL/RR RC RLC/RRC
+sad_count               12
+sad0_coding_type        [0xc] MLP (Dolby TrueHD)
+sad0_channels           2
+sad0_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
+sad1_coding_type        [0xc] MLP (Dolby TrueHD)
+sad1_channels           6
+sad1_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
+sad2_coding_type        [0xc] MLP (Dolby TrueHD)
+sad2_channels           8
+sad2_rates              [0x6c0] 44100 48000 88200 96000
+sad3_coding_type        [0xb] DTS-HD
+sad3_channels           2
+sad3_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
+sad4_coding_type        [0xb] DTS-HD
+sad4_channels           6
+sad4_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
+sad5_coding_type        [0xb] DTS-HD
+sad5_channels           8
+sad5_rates              [0x6c0] 44100 48000 88200 96000
+sad6_coding_type        [0x1] LPCM
+sad6_channels           2
+sad6_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
+sad6_bits               [0xe0000] 16 20 24
+sad7_coding_type        [0x1] LPCM
+sad7_channels           6
+sad7_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
+sad7_bits               [0xe0000] 16 20 24
+sad8_coding_type        [0x1] LPCM
+sad8_channels           8
+sad8_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
+sad8_bits               [0xe0000] 16 20 24
+sad9_coding_type        [0x2] AC-3
+sad9_channels           6
+sad9_rates              [0xe0] 32000 44100 48000
+sad9_max_bitrate        680000
+sad10_coding_type       [0x7] DTS
+sad10_channels          6
+sad10_rates             [0x6e0] 32000 44100 48000 88200 96000
+sad10_max_bitrate       1536000
+sad11_coding_type       [0xa] E-AC-3/DD+ (Dolby Digital Plus)
+sad11_channels          8
+sad11_rates             [0xc0] 44100 48000
+
+02:00.0 VGA compatible controller: NVIDIA Corporation GF119 [GeForce
+GT 520] (rev a1) (prog-if 00 [VGA controller])
+        Subsystem: eVga.com. Corp. GF119 [GeForce GT 520]
+        Flags: bus master, fast devsel, latency 0, IRQ 25
+        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
+        Memory at f0000000 (64-bit, prefetchable) [size=128M]
+        Memory at fa000000 (64-bit, prefetchable) [size=32M]
+        I/O ports at ec00 [size=128]
+        [virtual] Expansion ROM at 000c0000 [disabled] [size=128K]
+        Capabilities: <access denied>
+        Kernel driver in use: nvidia
+        Kernel modules: nvidia
+
+02:00.1 Audio device: NVIDIA Corporation GF119 HDMI Audio Controller (rev a1)
+        Subsystem: eVga.com. Corp. GF119 HDMI Audio Controller
+        Flags: bus master, fast devsel, latency 0, IRQ 17
+        Memory at fea7c000 (32-bit, non-prefetchable) [size=16K]
+        Capabilities: <access denied>
+        Kernel driver in use: snd_hda_intel
+        Kernel modules: snd_hda_intel
