@@ -1,18 +1,16 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Missing surround channels with Nvidia HDMI &
-	snd-hda-intel driver
-Date: Sun, 12 Nov 2017 10:01:14 -0800
-Message-ID: <CAA7C2qgvC65Cjbf=AsUWd3gFCqAgHpctA=CnnfAD9E9Z0bxJQw@mail.gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] ALSA: au88x0: Fine-tuning for some
+ function implementations
+Date: Sun, 12 Nov 2017 22:36:39 +0100
+Message-ID: <e42f1434-f1d7-a43b-d887-a82b50158280@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f53.google.com (mail-lf0-f53.google.com
- [209.85.215.53])
- by alsa0.perex.cz (Postfix) with ESMTP id C97E4266A73
- for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2017 19:01:16 +0100 (CET)
-Received: by mail-lf0-f53.google.com with SMTP id a132so15947385lfa.7
- for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2017 10:01:16 -0800 (PST)
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D4CF266A73
+ for <alsa-devel@alsa-project.org>; Sun, 12 Nov 2017 22:36:45 +0100 (CET)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,164 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Colin Ian King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi. I just noticed that I'm missing some surround channels and I think
-it may be a bug in the alsa drivers because my current setup used to
-work just fine. I'm running Debian Testing, stable kernel 4.13.12,
-alsa-utils 1.1.3-1. My ~/.asoundrc is:
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 12 Nov 2017 22:30:44 +0100
 
-~$ cat .asoundrc
-pcm.!default "hdmi:NVidia,1"
-~$
+A few update suggestions were taken into account
+from static source code analysis.
 
-I am not setting anything on my kernel load line:
+Markus Elfring (2):
+  Adjust 40 function calls together with a variable assignment
+  Use common error handling code in two functions
 
-        echo    'Loading Linux 4.13.12-amd ...'
-        linux   /vmlinuz-4.13.12-amd
-root=UUID=6df5733d-b089-450c-9ec6-661dd013c7c0 ro
-        echo    'Loading initial ramdisk ...'
-        initrd  /initrd.img-4.13.12-amd
+ sound/pci/au88x0/au88x0.c        | 112 +++++++++++++++++++--------------------
+ sound/pci/au88x0/au88x0_a3d.c    |  28 +++++-----
+ sound/pci/au88x0/au88x0_core.c   |  78 +++++++++++++--------------
+ sound/pci/au88x0/au88x0_eq.c     |  21 +++++---
+ sound/pci/au88x0/au88x0_mixer.c  |   3 +-
+ sound/pci/au88x0/au88x0_mpu401.c |  14 ++---
+ sound/pci/au88x0/au88x0_pcm.c    |  16 +++---
+ 7 files changed, 140 insertions(+), 132 deletions(-)
 
-The driver being used is snd-hda-intel with an Nvidia GT520 video
-card. And lastly I do not have Pulse or a desktop environment. This is
-a minimal HTPC setup that runs only an xserver to provide video
-output, with audio/video being sent to my surround receiver via HDMI.
-
-The first thing I noticed was mpv-player was downmixing 5.1 to 3.1 and
-giving the following log message:
-
-[ao/alsa] trying to set ALSA channel map: FL FR FC LFE RL RR
-[ao/alsa] channel map reported by ALSA: FL FR FC LFE UNKNOWN UNKNOWN
-[ao/alsa] which we understand as: fl-fr-fc-lfe-na-na
-[ao/alsa] using the ALSA channel map.
-[ao/alsa] hw pausing supported: yes
-[ao/alsa] buffersize: 2720 samples
-[ao/alsa] period size: 160 samples
-[ao/alsa] device buffer: 2720 samples.
-[ao/alsa] using soft-buffer of 8820 samples.
-[cplayer] AO: [alsa] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32
-[cplayer] AO: Description: ALSA audio output
-[af] Adding filter lavrresample
-[lavrresample] Remix: 5.1 -> 3.1
-[af] Audio filter chain:
-[af]   [in] 44100Hz 5.1 6ch floatp
-[af]   [lavrresample] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32 [a]
-[af]   [out] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32
-[af]   [ao] 44100Hz fl-fr-fc-lfe-na-na (3.1) 6ch s32
-
-That makes it look like Rear Left/Right channels are absent. I think
-ran speaker-test. 4 and 5 show as "Unknown" but correctly audibly
-announced as "front center" and "subwoofer" respectively:
-
-~$ speaker-test -c 6 -t wav
-
-speaker-test 1.1.3
-
-Playback device is default
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 5440
-Period size range from 32 to 2720
-Using max buffer size 5440
-Periods = 4
-was set period_size = 1088
-was set buffer_size = 5440
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 4 - Unknown
- 5 - Unknown
-
-Additional information that may be of use:
-
-~$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 1: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia [HDA NVidia], device 7: HDMI 1 [HDMI 1]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-
-~$ cat /proc/asound/card1/eld#0.1
-monitor_present         1
-eld_valid               1
-monitor_name            SONY AVAMP
-
-connection_type         HDMI
-eld_version             [0x2] CEA-861D or below
-edid_version            [0x3] CEA-861-B, C or D
-manufacture_id          0xd94d
-product_id              0xf02
-port_id                 0x200
-support_hdcp            0
-support_ai              0
-audio_sync_delay        0
-speakers                [0x5f] FL/FR LFE FC RL/RR RC RLC/RRC
-sad_count               12
-sad0_coding_type        [0xc] MLP (Dolby TrueHD)
-sad0_channels           2
-sad0_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
-sad1_coding_type        [0xc] MLP (Dolby TrueHD)
-sad1_channels           6
-sad1_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
-sad2_coding_type        [0xc] MLP (Dolby TrueHD)
-sad2_channels           8
-sad2_rates              [0x6c0] 44100 48000 88200 96000
-sad3_coding_type        [0xb] DTS-HD
-sad3_channels           2
-sad3_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
-sad4_coding_type        [0xb] DTS-HD
-sad4_channels           6
-sad4_rates              [0x1ec0] 44100 48000 88200 96000 176400 192000
-sad5_coding_type        [0xb] DTS-HD
-sad5_channels           8
-sad5_rates              [0x6c0] 44100 48000 88200 96000
-sad6_coding_type        [0x1] LPCM
-sad6_channels           2
-sad6_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-sad6_bits               [0xe0000] 16 20 24
-sad7_coding_type        [0x1] LPCM
-sad7_channels           6
-sad7_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-sad7_bits               [0xe0000] 16 20 24
-sad8_coding_type        [0x1] LPCM
-sad8_channels           8
-sad8_rates              [0x1ee0] 32000 44100 48000 88200 96000 176400 192000
-sad8_bits               [0xe0000] 16 20 24
-sad9_coding_type        [0x2] AC-3
-sad9_channels           6
-sad9_rates              [0xe0] 32000 44100 48000
-sad9_max_bitrate        680000
-sad10_coding_type       [0x7] DTS
-sad10_channels          6
-sad10_rates             [0x6e0] 32000 44100 48000 88200 96000
-sad10_max_bitrate       1536000
-sad11_coding_type       [0xa] E-AC-3/DD+ (Dolby Digital Plus)
-sad11_channels          8
-sad11_rates             [0xc0] 44100 48000
-
-02:00.0 VGA compatible controller: NVIDIA Corporation GF119 [GeForce
-GT 520] (rev a1) (prog-if 00 [VGA controller])
-        Subsystem: eVga.com. Corp. GF119 [GeForce GT 520]
-        Flags: bus master, fast devsel, latency 0, IRQ 25
-        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at f0000000 (64-bit, prefetchable) [size=128M]
-        Memory at fa000000 (64-bit, prefetchable) [size=32M]
-        I/O ports at ec00 [size=128]
-        [virtual] Expansion ROM at 000c0000 [disabled] [size=128K]
-        Capabilities: <access denied>
-        Kernel driver in use: nvidia
-        Kernel modules: nvidia
-
-02:00.1 Audio device: NVIDIA Corporation GF119 HDMI Audio Controller (rev a1)
-        Subsystem: eVga.com. Corp. GF119 HDMI Audio Controller
-        Flags: bus master, fast devsel, latency 0, IRQ 17
-        Memory at fea7c000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: <access denied>
-        Kernel driver in use: snd_hda_intel
-        Kernel modules: snd_hda_intel
+-- 
+2.15.0
