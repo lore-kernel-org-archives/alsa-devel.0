@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ALSA: cs4281: Use common error handling
- code in snd_cs4281_probe()
-Date: Mon, 13 Nov 2017 13:52:41 +0100
-Message-ID: <79d61453-352c-c5a7-a306-4c4304a74195@users.sourceforge.net>
+Subject: [PATCH 3/3] ALSA: cs4281: Use common error handling
+ code in snd_cs4281_create()
+Date: Mon, 13 Nov 2017 13:53:52 +0100
+Message-ID: <c6e82722-df16-6781-be3f-eba6e9e0fd08@users.sourceforge.net>
 References: <ac9d010b-7a26-1f2d-5034-15abe603c6fd@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 34379266D86
- for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 13:53:16 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 119C4266D86
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 13:54:33 +0100 (CET)
 In-Reply-To: <ac9d010b-7a26-1f2d-5034-15abe603c6fd@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,101 +27,104 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 13 Nov 2017 13:10:11 +0100
+Date: Mon, 13 Nov 2017 13:34:57 +0100
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
+* Add jump targets so that a bit of exception handling can be better reused
+  at the end of this function.
 
-This issue was detected by using the Coccinelle software.
+* Delete the local variable "tmp" which was unnecessary
+  because the variable "err" could be used at this place again.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/cs4281.c | 52 ++++++++++++++++++++++++----------------------------
- 1 file changed, 24 insertions(+), 28 deletions(-)
+ sound/pci/cs4281.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
 diff --git a/sound/pci/cs4281.c b/sound/pci/cs4281.c
-index cf0bcab2a36b..ed6b97dbd1cc 100644
+index ed6b97dbd1cc..6cd7300a0182 100644
 --- a/sound/pci/cs4281.c
 +++ b/sound/pci/cs4281.c
-@@ -1934,40 +1934,34 @@ static int snd_cs4281_probe(struct pci_dev *pci,
+@@ -1347,7 +1347,6 @@ static int snd_cs4281_create(struct snd_card *card,
+ 			     int dual_codec)
+ {
+ 	struct cs4281 *chip;
+-	unsigned int tmp;
+ 	int err;
+ 	static struct snd_device_ops ops = {
+ 		.dev_free =	snd_cs4281_dev_free,
+@@ -1359,8 +1358,8 @@ static int snd_cs4281_create(struct snd_card *card,
  		return err;
+ 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+ 	if (chip == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto disable_device;
+ 	}
+ 	spin_lock_init(&chip->reg_lock);
+ 	chip->card = card;
+@@ -1376,43 +1375,45 @@ static int snd_cs4281_create(struct snd_card *card,
+ 	err = pci_request_regions(pci, "CS4281");
+ 	if (err < 0) {
+ 		kfree(chip);
+-		pci_disable_device(pci);
+-		return err;
++		goto disable_device;
+ 	}
+ 	chip->ba0_addr = pci_resource_start(pci, 0);
+ 	chip->ba1_addr = pci_resource_start(pci, 1);
  
- 	err = snd_cs4281_create(card, pci, &chip, dual_codec[dev]);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
+ 	chip->ba0 = pci_ioremap_bar(pci, 0);
+ 	chip->ba1 = pci_ioremap_bar(pci, 1);
+-	if (!chip->ba0 || !chip->ba1) {
+-		snd_cs4281_free(chip);
+-		return -ENOMEM;
 -	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	card->private_data = chip;
++	if (!chip->ba0 || !chip->ba1)
++		goto e_nomem;
+ 	
+ 	if (request_irq(pci->irq, snd_cs4281_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_cs4281_free(chip);
+-		return -ENOMEM;
++		goto e_nomem;
+ 	}
+ 	chip->irq = pci->irq;
  
- 	err = snd_cs4281_mixer(chip);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
+-	tmp = snd_cs4281_chip_init(chip);
+-	if (tmp) {
+-		snd_cs4281_free(chip);
+-		return tmp;
 -	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	err = snd_cs4281_pcm(chip, 0);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	err = snd_cs4281_midi(chip, 0);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	err = snd_opl3_new(card, OPL3_HW_OPL3_CS4281, &opl3);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	opl3->private_data = chip;
- 	opl3->command = snd_cs4281_opl3_command;
- 	snd_opl3_init(opl3);
- 	err = snd_opl3_hwdep_new(opl3, 0, 1, NULL);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	snd_cs4281_create_gameport(chip);
- 	strcpy(card->driver, "CS4281");
- 	strcpy(card->shortname, "Cirrus Logic CS4281");
-@@ -1977,14 +1971,16 @@ static int snd_cs4281_probe(struct pci_dev *pci,
- 		chip->irq);
++	err = snd_cs4281_chip_init(chip);
++	if (err)
++		goto free_sound_chip;
  
- 	err = snd_card_register(card);
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
 -	if (err < 0) {
--		snd_card_free(card);
+-		snd_cs4281_free(chip);
 -		return err;
 -	}
 +	if (err < 0)
-+		goto free_card;
++		goto free_sound_chip;
  
- 	pci_set_drvdata(pci, card);
- 	dev++;
+ 	snd_cs4281_proc_init(chip);
+ 
+ 	*rchip = chip;
  	return 0;
 +
-+free_card:
-+	snd_card_free(card);
++disable_device:
++	pci_disable_device(pci);
++	return err;
++
++e_nomem:
++	err = -ENOMEM;
++free_sound_chip:
++	snd_cs4281_free(chip);
 +	return err;
  }
  
- static void snd_cs4281_remove(struct pci_dev *pci)
+ static int snd_cs4281_chip_init(struct cs4281 *chip)
 -- 
 2.15.0
