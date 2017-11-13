@@ -1,163 +1,111 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ALSA: cs5530: Use common error handling code
- in snd_cs5530_create()
-Date: Mon, 13 Nov 2017 20:40:20 +0100
-Message-ID: <6acf9697-a5df-0cd4-6cac-1198980c943b@users.sourceforge.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v3] ASoC: Replace snd_soc_acpi_check_hid with
+ acpi_dev_present
+Date: Mon, 13 Nov 2017 13:43:57 -0600
+Message-ID: <20618d9a-4bd3-1653-b749-6db0c2162ac3@linux.intel.com>
+References: <0100015fa737dec2-4d7283d5-bba0-4270-9f92-8f258d2835dd-000000@email.amazonses.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id C59182673B9
- for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 20:40:30 +0100 (CET)
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0100015fa737dec2-4d7283d5-bba0-4270-9f92-8f258d2835dd-000000@email.amazonses.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jeremy Cline <jeremy@jcline.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 13 Nov 2017 20:33:07 +0100
 
-Add jump targets so that a bit of exception handling can be better reused
-at the end of this function.
 
-This issue was detected by using the Coccinelle software.
+On 11/10/2017 12:36 PM, Jeremy Cline wrote:
+> Replace snd_soc_acpi_check_hid() with the generic acpi_dev_present()
+> and remove the now unused snd_soc_acpi_check_hid function. This should
+> have no functional change.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/cs5530.c | 48 ++++++++++++++++++++++++------------------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+The code looks ok, but I'd like to first add the fix for the quirk 
+handling regression which appeared in 4.13 and is still there in 4.14. 
+Current fix is at https://bugzilla.kernel.org/attachment.cgi?id=258581
 
-diff --git a/sound/pci/cs5530.c b/sound/pci/cs5530.c
-index 0a8cf94c4858..88f253489075 100644
---- a/sound/pci/cs5530.c
-+++ b/sound/pci/cs5530.c
-@@ -124,8 +124,8 @@ static int snd_cs5530_create(struct snd_card *card,
- 
- 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
- 	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto disable_device;
- 	}
- 
- 	chip->card = card;
-@@ -134,15 +134,14 @@ static int snd_cs5530_create(struct snd_card *card,
- 	err = pci_request_regions(pci, "CS5530");
- 	if (err < 0) {
- 		kfree(chip); 
--		pci_disable_device(pci);
--		return err;
-+		goto disable_device;
- 	}
- 	chip->pci_base = pci_resource_start(pci, 0);
- 
- 	mem = pci_ioremap_bar(pci, 0);
- 	if (mem == NULL) {
--		snd_cs5530_free(chip);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto free_sound_chip;
- 	}
- 
- 	map = readw(mem + 0x18);
-@@ -163,8 +162,7 @@ static int snd_cs5530_create(struct snd_card *card,
- 		dev_info(card->dev, "XpressAudio at 0x%lx\n", sb_base);
- 	else {
- 		dev_err(card->dev, "Could not find XpressAudio!\n");
--		snd_cs5530_free(chip);
--		return -ENODEV;
-+		goto e_nodev;
- 	}
- 
- 	if (map & (1<<5))
-@@ -183,8 +181,7 @@ static int snd_cs5530_create(struct snd_card *card,
- 		dma16 = 7;
- 	else {
- 		dev_err(card->dev, "No 16bit DMA enabled\n");
--		snd_cs5530_free(chip);
--		return -ENODEV;
-+		goto e_nodev;
- 	}
- 
- 	if (dma8 & 0x01)
-@@ -195,8 +192,7 @@ static int snd_cs5530_create(struct snd_card *card,
- 		dma8 = 3;
- 	else {
- 		dev_err(card->dev, "No 8bit DMA enabled\n");
--		snd_cs5530_free(chip);
--		return -ENODEV;
-+		goto e_nodev;
- 	}
- 
- 	if (irq & 1)
-@@ -209,8 +205,7 @@ static int snd_cs5530_create(struct snd_card *card,
- 		irq = 10;
- 	else {
- 		dev_err(card->dev, "SoundBlaster IRQ not set\n");
--		snd_cs5530_free(chip);
--		return -ENODEV;
-+		goto e_nodev;
- 	}
- 
- 	dev_info(card->dev, "IRQ: %d DMA8: %d DMA16: %d\n", irq, dma8, dma16);
-@@ -219,32 +214,37 @@ static int snd_cs5530_create(struct snd_card *card,
- 						dma16, SB_HW_CS5530, &chip->sb);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create SoundBlaster\n");
--		snd_cs5530_free(chip);
--		return err;
-+		goto free_sound_chip;
- 	}
- 
- 	err = snd_sb16dsp_pcm(chip->sb, 0);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create PCM\n");
--		snd_cs5530_free(chip);
--		return err;
-+		goto free_sound_chip;
- 	}
- 
- 	err = snd_sbmixer_new(chip->sb);
- 	if (err < 0) {
- 		dev_err(card->dev, "Could not create Mixer\n");
--		snd_cs5530_free(chip);
--		return err;
-+		goto free_sound_chip;
- 	}
- 
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_cs5530_free(chip);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_sound_chip;
- 
- 	*rchip = chip;
- 	return 0;
-+
-+disable_device:
-+	pci_disable_device(pci);
-+	return err;
-+
-+e_nodev:
-+	err = -ENODEV;
-+free_sound_chip:
-+	snd_cs5530_free(chip);
-+	return err;
- }
- 
- static int snd_cs5530_probe(struct pci_dev *pci,
--- 
-2.15.0
+Can we wait a couple of days on this one to avoid mixing bug fixes and 
+renames? this would also make the stable branch fix easier to handle.
+
+>
+> Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+> ---
+> Changes in v3:
+>    - Remove the unnecessary "== true" and "!= true"
+>
+>   include/sound/soc-acpi.h |  3 ---
+>   sound/soc/soc-acpi.c     | 32 ++------------------------------
+>   2 files changed, 2 insertions(+), 33 deletions(-)
+>
+> diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+> index a7d8d335b043..057805489af3 100644
+> --- a/include/sound/soc-acpi.h
+> +++ b/include/sound/soc-acpi.h
+> @@ -49,9 +49,6 @@ snd_soc_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
+>   struct snd_soc_acpi_mach *
+>   snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines);
+>   
+> -/* acpi check hid */
+> -bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
+> -
+>   /**
+>    * snd_soc_acpi_mach: ACPI-based machine descriptor. Most of the fields are
+>    * related to the hardware, except for the firmware and topology file names.
+> diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+> index f21df28bc28e..3543a7749490 100644
+> --- a/sound/soc/soc-acpi.c
+> +++ b/sound/soc/soc-acpi.c
+> @@ -49,41 +49,13 @@ const char *snd_soc_acpi_find_name_from_hid(const u8 hid[ACPI_ID_LEN])
+>   }
+>   EXPORT_SYMBOL_GPL(snd_soc_acpi_find_name_from_hid);
+>   
+> -static acpi_status snd_soc_acpi_mach_match(acpi_handle handle, u32 level,
+> -				       void *context, void **ret)
+> -{
+> -	unsigned long long sta;
+> -	acpi_status status;
+> -
+> -	*(bool *)context = true;
+> -	status = acpi_evaluate_integer(handle, "_STA", NULL, &sta);
+> -	if (ACPI_FAILURE(status) || !(sta & ACPI_STA_DEVICE_PRESENT))
+> -		*(bool *)context = false;
+> -
+> -	return AE_OK;
+> -}
+> -
+> -bool snd_soc_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
+> -{
+> -	acpi_status status;
+> -	bool found = false;
+> -
+> -	status = acpi_get_devices(hid, snd_soc_acpi_mach_match, &found, NULL);
+> -
+> -	if (ACPI_FAILURE(status))
+> -		return false;
+> -
+> -	return found;
+> -}
+> -EXPORT_SYMBOL_GPL(snd_soc_acpi_check_hid);
+> -
+>   struct snd_soc_acpi_mach *
+>   snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+>   {
+>   	struct snd_soc_acpi_mach *mach;
+>   
+>   	for (mach = machines; mach->id[0]; mach++) {
+> -		if (snd_soc_acpi_check_hid(mach->id) == true) {
+> +		if (acpi_dev_present(mach->id, NULL, -1)) {
+>   			if (mach->machine_quirk == NULL)
+>   				return mach;
+>   
+> @@ -163,7 +135,7 @@ struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
+>   		return mach;
+>   
+>   	for (i = 0; i < codec_list->num_codecs; i++) {
+> -		if (snd_soc_acpi_check_hid(codec_list->codecs[i]) != true)
+> +		if (!acpi_dev_present(codec_list->codecs[i], NULL, -1))
+>   			return NULL;
+>   	}
+>   
