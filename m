@@ -1,16 +1,36 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ALSA: aw2: Use common error handling code in
-	three functions
-Date: Mon, 13 Nov 2017 09:56:51 +0100
-Message-ID: <ba658643-9ab7-5c78-832b-401291c184c0@users.sourceforge.net>
+From: Henrik Eriksson <henrik.eriksson@axis.com>
+Subject: Re: dsnoop, hwpointer and avail
+Date: Mon, 13 Nov 2017 11:12:43 +0100
+Message-ID: <20171113101243.GC5483@lnxhenriken2.se.axis.com>
+References: <20171110122943.GB5483@lnxhenriken2.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FCF1266A73
- for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 09:57:37 +0100 (CET)
-Content-Language: en-GB
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6520B26698E
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 11:12:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by bastet.se.axis.com (Postfix) with ESMTP id 6B3441811A
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 11:12:45 +0100 (CET)
+Received: from bastet.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bastet.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id HUJLgpYiZXQR for <alsa-devel@alsa-project.org>;
+ Mon, 13 Nov 2017 11:12:43 +0100 (CET)
+Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
+ by bastet.se.axis.com (Postfix) with ESMTPS id B045F18107
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 11:12:43 +0100 (CET)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9632A1E078
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 11:12:43 +0100 (CET)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 8A2301E079
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 11:12:43 +0100 (CET)
+Received: from thoth.se.axis.com (unknown [10.0.2.173])
+ by boulder03.se.axis.com (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Mon, 13 Nov 2017 11:12:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171110122943.GB5483@lnxhenriken2.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,204 +40,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 13 Nov 2017 09:49:15 +0100
+Hello
 
-Add jump targets so that a bit of exception handling can be better reused
-at the end of these functions.
+On Fri,=A0Nov=A010,=A02017=A0at=A013:29:43=A0+0100, Henrik Eriksson wrote:
+> Is there any documentation/rationale for how pcm_dsnoop works in
+> snd_pcm_{dsnoop_}status?  I am particularly wondering about the ordering
+> of the snd_pcm_dsnoop_sync_ptr and the snd_pcm_status call on the slave
+> pcm.
+> =
 
-This issue was detected by using the Coccinelle software.
+> I see occasional spikes (>1000 frames) of difference between the slave
+> pcm hwpointer after the snd_pcm_status call on it and the pointers in
+> the dsnoop pcm, and a correspondingly bad avail count.  I suspect the
+> mismatches are due to process scheduling (the slave pcm status is
+> delayed because the application process not running and the hardware
+> progresses during that delay).  Does this seem plausible?  If so, could
+> the code be simplified to reduce the the number of systemcalls needed?
+> The status of the slave pcm seems to provide much of the information
+> used to sync the pointers.  Or is there some other way to get a tighter
+> coupling between the dsnoop status htstamp and avail count?
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/pci/aw2/aw2-alsa.c | 85 +++++++++++++++++++++++-------------------------
- 1 file changed, 40 insertions(+), 45 deletions(-)
+Or, rather, in snd_pcm_dnsoop_status() would it not make more sense to
+use the dsnoop->update_tstamp as tstamp in the returned status, at least
+when the state is SNDRV_PCM_STATE_RUNNING?  The returned status->avail
+count originates from snd_pcm_dsnoop_sync_ptr() and it seems sensible to
+me that the tstamp would match that.
 
-diff --git a/sound/pci/aw2/aw2-alsa.c b/sound/pci/aw2/aw2-alsa.c
-index 9a49e4243a9c..25710043c79d 100644
---- a/sound/pci/aw2/aw2-alsa.c
-+++ b/sound/pci/aw2/aw2-alsa.c
-@@ -261,13 +261,13 @@ static int snd_aw2_create(struct snd_card *card,
- 	if ((dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) ||
- 	    (dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32)) < 0)) {
- 		dev_err(card->dev, "Impossible to set 32bit mask DMA\n");
--		pci_disable_device(pci);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto disable_device;
- 	}
- 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
- 	if (chip == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto disable_device;
- 	}
- 
- 	/* initialize the stuff */
-@@ -277,11 +277,9 @@ static int snd_aw2_create(struct snd_card *card,
- 
- 	/* (1) PCI resource allocation */
- 	err = pci_request_regions(pci, "Audiowerk2");
--	if (err < 0) {
--		pci_disable_device(pci);
--		kfree(chip);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_data;
-+
- 	chip->iobase_phys = pci_resource_start(pci, 0);
- 	chip->iobase_virt =
- 		ioremap_nocache(chip->iobase_phys,
-@@ -289,10 +287,8 @@ static int snd_aw2_create(struct snd_card *card,
- 
- 	if (chip->iobase_virt == NULL) {
- 		dev_err(card->dev, "unable to remap memory region");
--		pci_release_regions(pci);
--		pci_disable_device(pci);
--		kfree(chip);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto release_regions;
- 	}
- 
- 	/* (2) initialization of the chip hardware */
-@@ -301,23 +297,15 @@ static int snd_aw2_create(struct snd_card *card,
- 	if (request_irq(pci->irq, snd_aw2_saa7146_interrupt,
- 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "Cannot grab irq %d\n", pci->irq);
--
--		iounmap(chip->iobase_virt);
--		pci_release_regions(chip->pci);
--		pci_disable_device(chip->pci);
--		kfree(chip);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto unmap_io;
- 	}
- 	chip->irq = pci->irq;
- 
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
- 	if (err < 0) {
- 		free_irq(chip->irq, (void *)chip);
--		iounmap(chip->iobase_virt);
--		pci_release_regions(chip->pci);
--		pci_disable_device(chip->pci);
--		kfree(chip);
--		return err;
-+		goto unmap_io;
- 	}
- 
- 	*rchip = chip;
-@@ -325,6 +313,16 @@ static int snd_aw2_create(struct snd_card *card,
- 	dev_info(card->dev,
- 		 "Audiowerk 2 sound card (saa7146 chipset) detected and managed\n");
- 	return 0;
-+
-+unmap_io:
-+	iounmap(chip->iobase_virt);
-+release_regions:
-+	pci_release_regions(pci);
-+free_data:
-+	kfree(chip);
-+disable_device:
-+	pci_disable_device(pci);
-+	return err;
- }
- 
- /* constructor */
-@@ -352,10 +350,8 @@ static int snd_aw2_probe(struct pci_dev *pci,
- 
- 	/* (3) Create main component */
- 	err = snd_aw2_create(card, pci, &chip);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
- 
- 	/* initialize mutex */
- 	mutex_init(&chip->mtx);
-@@ -373,16 +369,18 @@ static int snd_aw2_probe(struct pci_dev *pci,
- 
- 	/* (6) Register card instance */
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
- 
- 	/* (7) Set PCI driver data */
- 	pci_set_drvdata(pci, card);
- 
- 	dev++;
- 	return 0;
-+
-+free_card:
-+	snd_card_free(card);
-+	return err;
- }
- 
- /* destructor */
-@@ -599,10 +597,8 @@ static int snd_aw2_new_pcm(struct aw2 *chip)
- 
- 	err = snd_pcm_new(chip->card, "Audiowerk2 analog playback", 0, 1, 0,
- 			  &pcm_playback_ana);
--	if (err < 0) {
--		dev_err(chip->card->dev, "snd_pcm_new error (0x%X)\n", err);
--		return err;
--	}
-+	if (err < 0)
-+		goto report_failure;
- 
- 	/* Creation ok */
- 	pcm_device = &chip->device_playback[NUM_STREAM_PLAYBACK_ANA];
-@@ -636,11 +632,9 @@ static int snd_aw2_new_pcm(struct aw2 *chip)
- 
- 	err = snd_pcm_new(chip->card, "Audiowerk2 digital playback", 1, 1, 0,
- 			  &pcm_playback_num);
-+	if (err < 0)
-+		goto report_failure;
- 
--	if (err < 0) {
--		dev_err(chip->card->dev, "snd_pcm_new error (0x%X)\n", err);
--		return err;
--	}
- 	/* Creation ok */
- 	pcm_device = &chip->device_playback[NUM_STREAM_PLAYBACK_DIG];
- 
-@@ -673,11 +667,8 @@ static int snd_aw2_new_pcm(struct aw2 *chip)
- 
- 	err = snd_pcm_new(chip->card, "Audiowerk2 capture", 2, 0, 1,
- 			  &pcm_capture);
--
--	if (err < 0) {
--		dev_err(chip->card->dev, "snd_pcm_new error (0x%X)\n", err);
--		return err;
--	}
-+	if (err < 0)
-+		goto report_failure;
- 
- 	/* Creation ok */
- 	pcm_device = &chip->device_capture[NUM_STREAM_CAPTURE_ANA];
-@@ -718,6 +709,10 @@ static int snd_aw2_new_pcm(struct aw2 *chip)
- 	}
- 
- 	return 0;
-+
-+report_failure:
-+	dev_err(chip->card->dev, "snd_pcm_new error (0x%X)\n", err);
-+	return err;
- }
- 
- static int snd_aw2_control_switch_capture_info(struct snd_kcontrol *kcontrol,
--- 
-2.15.0
+For background, this is on a machine with not mmap'ed status and control
+(in pcm_hw.c) and using slowptr in dsnoop.
+
+Regards,
+/henrik
