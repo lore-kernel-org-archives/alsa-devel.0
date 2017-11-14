@@ -1,17 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ASoC: ak4613: call dummy write for
- PW_MGMT1/3 when Playback
-Date: Tue, 14 Nov 2017 17:27:42 +0900
-Message-ID: <bc955a77-fcdf-bfc7-1a87-5fec5f88ac63@sakamocchi.jp>
-References: <87a7zpwfae.wl%kuninori.morimoto.gx@renesas.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA 1.1.5 release
+Date: Tue, 14 Nov 2017 10:33:14 +0100
+Message-ID: <9727277c-ad3b-3a0f-2a60-8e26de5c0ce5@perex.cz>
+References: <b6c04c7b-a4ad-a8eb-a157-0511e4f884a9@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9AF03266CFB
- for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2017 09:27:45 +0100 (CET)
-In-Reply-To: <87a7zpwfae.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3905266CFB
+ for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2017 10:33:15 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BA4BEA003F
+ for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2017 10:33:15 +0100 (CET)
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
+ for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2017 10:33:14 +0100 (CET)
+In-Reply-To: <b6c04c7b-a4ad-a8eb-a157-0511e4f884a9@perex.cz>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,55 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, "Yokoyama (Renesas)" <hiroyuki.yokoyama.vx@renesas.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 14 2017 15:31, Kuninori Morimoto wrote:
-> 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Power Down Release Command (PMVR, PMDAC, RSTN, PMDA1-PMDA6)
-> which are located on PW_MGMT1 / PW_MGMT3 register must be
-> write again after at least 5 LRCK cycle or later from the first
-> command. Otherwise, Playback volume will be 0dB.
-> This patch adds dummy write when Playback Start timing.
-> ...
-> +
-> +	delay = 6000000 / priv->rate;
-> +	priv->component = &codec->component;
-> +	schedule_delayed_work(&priv->dummy_write_work,
-> +			      usecs_to_jiffies(delay));
+Hello all,
 
-In my understanding, kernel's service of delayed work relies on kernel's 
-timer service. Resolution of the service is quite coarse in this 
-purpose, at least for several phases of word select clock. In the worst 
-case when task scheduling is too delay, many audio samples are not 
-presented by the DAC in the beginning of playback. I can easily imagine 
-that users get confused.
+  the userspace packages alsa-lib, alsa-utils, alsa-plugins, alsa-tools,
+tinycompress were released. You may download them from the ALSA website
+http://www.alsa-project.org or directly from the FTP server
+ftp://ftp.alsa-project.org/pub .
 
-For this purpose, hrtimer kernel service is better. However, in design 
-of ALSA PCM core, .trigger callback can be done in any IRQ context, 
-basically. This means that we can't call task scheduler in the callback 
-as long as issuing the command in the callback. This is a reason that 
-you use workqueue for this purpose.
+Full list of changes:
 
+  http://www.alsa-project.org/main/index.php/Changes_v1.1.4_v1.1.5
 
-In your patch description, 5 word select phases after 'the first 
-command'. According to "Digital Attenuator" section per page 44 of 
-AK4613 English datasheet (AsahiKASEI 2015, MS1052-E-05)[1], your 'the 
-first command' seems to be the previous command issueing of 'power-down 
-release command'. In my understanding, in ak4613 codec driver, issueing 
-of the previous command is done in 'ak4613_set_bias_level()'. If there's 
-a guarantee for DAPM stuffs to call this function on any non-IRQ 
-context, it's better to call the subsequent commands in the function 
-with interval of sleep functionality with finer resolution (e.g. 
-usleep_range()) but I don't know exactly that any components has 
-guarantee to receive word select clock when the function is called.
+				Have fun,
+					Jaroslav
 
-
-[1] http://www.akm.com/akm/en/file/datasheet/AK4613VQ.pdf
-
-Regards
-
-Takashi Sakamoto
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
