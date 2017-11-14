@@ -1,16 +1,16 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ALSA: synth: emux: remove redundant test for r
-	<= 13
-Date: Tue, 14 Nov 2017 17:26:53 +0000
-Message-ID: <20171114172653.6690-1-colin.king@canonical.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/3] ALSA: ens1370: Fine-tuning for six
+ function implementations
+Date: Tue, 14 Nov 2017 18:43:07 +0100
+Message-ID: <8bcf1ada-f44c-cb83-0890-adc8ae8edda0@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AB10266F61
- for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2017 18:27:27 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 882DD266F61
+ for <alsa-devel@alsa-project.org>; Tue, 14 Nov 2017 18:43:52 +0100 (CET)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,38 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, Colin Ian King <colin.king@canonical.com>, David Howells <dhowells@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 14 Nov 2017 18:38:28 +0100
 
-The calculation r = (3 - ((rate >> 6) & 3)) * 3 results in r being
-0, 3, 6 or 9 and so the check (13 > r) is always true and hence we
-can remove the redundant check and the else path.
+A few update suggestions were taken into account
+from static source code analysis.
 
-Detected by CoverityScan, CID#744415 ("Logically dead code")
+Markus Elfring (3):
+  Adjust 15 function calls together with a variable assignment
+  Use common error handling code in snd_audiopci_probe()
+  Use common error handling code in snd_ensoniq_create()
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/synth/emux/soundfont.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/pci/ens1370.c | 110 +++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 61 insertions(+), 49 deletions(-)
 
-diff --git a/sound/synth/emux/soundfont.c b/sound/synth/emux/soundfont.c
-index 31a4ea94830e..0beb5a737c8b 100644
---- a/sound/synth/emux/soundfont.c
-+++ b/sound/synth/emux/soundfont.c
-@@ -858,10 +858,7 @@ calc_gus_envelope_time(int rate, int start, int end)
- 	p = rate & 0x3f;
- 	t = end - start;
- 	if (t < 0) t = -t;
--	if (13 > r)
--		t = t << (13 - r);
--	else
--		t = t >> (r - 13);
-+	t = t << (13 - r);
- 	return (t * 10) / (p * 441);
- }
- 
 -- 
-2.14.1
+2.15.0
