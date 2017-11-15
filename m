@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v7 05/13] slimbus: core: add support to device tree helper
-Date: Wed, 15 Nov 2017 14:10:35 +0000
-Message-ID: <20171115141043.29202-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 04/13] slimbus: core: Add slim controllers support
+Date: Wed, 15 Nov 2017 14:10:34 +0000
+Message-ID: <20171115141043.29202-5-srinivas.kandagatla@linaro.org>
 References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
@@ -10,96 +10,502 @@ To: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org
 Cc: sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Sagar Dharia <sdharia@codeaurora.org>
 
-This patch adds support to parse slim devices from device tree.
+This patch adds support to slim controllers in the slim core,
+including some utility functions invoked by the controller and
+slim device drivers.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/core.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ drivers/slimbus/core.c    | 312 ++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/slimbus/slimbus.h | 116 +++++++++++++++++
+ include/linux/slimbus.h   |   7 ++
+ 3 files changed, 435 insertions(+)
+ create mode 100644 drivers/slimbus/slimbus.h
 
 diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index d31a9c4fe7e9..f7b14961c7e3 100644
+index 22edebf1a233..d31a9c4fe7e9 100644
 --- a/drivers/slimbus/core.c
 +++ b/drivers/slimbus/core.c
-@@ -15,6 +15,7 @@
+@@ -14,7 +14,11 @@
+ #include <linux/errno.h>
  #include <linux/slab.h>
  #include <linux/init.h>
- #include <linux/idr.h>
-+#include <linux/of.h>
++#include <linux/idr.h>
  #include <linux/slimbus.h>
- #include "slimbus.h"
- 
-@@ -128,6 +129,9 @@ static int slim_add_device(struct slim_controller *ctrl,
- 	sbdev->dev.driver = NULL;
- 	sbdev->ctrl = ctrl;
- 
-+	if (node)
-+		sbdev->dev.of_node = of_node_get(node);
++#include "slimbus.h"
 +
- 	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
- 				  sbdev->e_addr.manf_id,
- 				  sbdev->e_addr.prod_code,
-@@ -160,6 +164,50 @@ static struct slim_device *slim_alloc_device(struct slim_controller *ctrl,
- 	return sbdev;
++static DEFINE_IDA(ctrl_ida);
+ 
+ static const struct slim_device_id *slim_match(const struct slim_device_id *id,
+ 					       const struct slim_device *sbdev)
+@@ -106,6 +110,314 @@ void slim_driver_unregister(struct slim_driver *drv)
  }
+ EXPORT_SYMBOL_GPL(slim_driver_unregister);
  
-+static void of_register_slim_devices(struct slim_controller *ctrl)
++static void slim_dev_release(struct device *dev)
 +{
-+	struct device *dev = ctrl->dev;
-+	struct device_node *node;
++	struct slim_device *sbdev = to_slim_device(dev);
 +
-+	if (!ctrl->dev->of_node)
-+		return;
-+
-+	for_each_child_of_node(ctrl->dev->of_node, node) {
-+		struct slim_device *sbdev;
-+		struct slim_eaddr e_addr;
-+		const char *compat = NULL;
-+		int reg[2], ret;
-+		int manf_id, prod_code;
-+
-+		compat = of_get_property(node, "compatible", NULL);
-+		if (!compat)
-+			continue;
-+
-+		ret = sscanf(compat, "slim%x,%x", &manf_id, &prod_code);
-+		if (ret != 2) {
-+			dev_err(dev, "Manf ID & Product code not found %s\n",
-+				compat);
-+			continue;
-+		}
-+
-+		ret = of_property_read_u32_array(node, "reg", reg, 2);
-+		if (ret) {
-+			dev_err(dev, "Device and Instance id not found:%d\n",
-+				ret);
-+			continue;
-+		}
-+
-+		e_addr.dev_index = reg[0];
-+		e_addr.instance = reg[1];
-+		e_addr.manf_id = manf_id;
-+		e_addr.prod_code = prod_code;
-+
-+		sbdev = slim_alloc_device(ctrl, &e_addr, node);
-+		if (!sbdev)
-+			continue;
-+	}
++	put_device(sbdev->ctrl->dev);
++	kfree(sbdev);
 +}
 +
- /*
-  * slim_register_controller() - Controller bring-up and registration.
-  *
-@@ -191,6 +239,8 @@ int slim_register_controller(struct slim_controller *ctrl)
- 	dev_dbg(ctrl->dev, "Bus [%s] registered:dev:%p\n",
- 		ctrl->name, ctrl->dev);
- 
-+	of_register_slim_devices(ctrl);
++static int slim_add_device(struct slim_controller *ctrl,
++			   struct slim_device *sbdev,
++			   struct device_node *node)
++{
++	sbdev->dev.bus = &slimbus_bus;
++	sbdev->dev.parent = ctrl->dev;
++	sbdev->dev.release = slim_dev_release;
++	sbdev->dev.driver = NULL;
++	sbdev->ctrl = ctrl;
 +
- 	return 0;
++	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
++				  sbdev->e_addr.manf_id,
++				  sbdev->e_addr.prod_code,
++				  sbdev->e_addr.dev_index,
++				  sbdev->e_addr.instance);
++
++	get_device(ctrl->dev);
++
++	return device_register(&sbdev->dev);
++}
++
++static struct slim_device *slim_alloc_device(struct slim_controller *ctrl,
++					     struct slim_eaddr *eaddr,
++					     struct device_node *node)
++{
++	struct slim_device *sbdev;
++	int ret;
++
++	sbdev = kzalloc(sizeof(struct slim_device), GFP_KERNEL);
++	if (!sbdev)
++		return NULL;
++
++	sbdev->e_addr = *eaddr;
++	ret = slim_add_device(ctrl, sbdev, node);
++	if (ret) {
++		kfree(sbdev);
++		return NULL;
++	}
++
++	return sbdev;
++}
++
++/*
++ * slim_register_controller() - Controller bring-up and registration.
++ *
++ * @ctrl: Controller to be registered.
++ *
++ * A controller is registered with the framework using this API.
++ * If devices on a controller were registered before controller,
++ * this will make sure that they get probed when controller is up
++ */
++int slim_register_controller(struct slim_controller *ctrl)
++{
++	int id;
++
++	id = ida_simple_get(&ctrl_ida, 0, 0, GFP_KERNEL);
++	if (id < 0)
++		return id;
++
++	ctrl->id = id;
++
++	if (!ctrl->min_cg)
++		ctrl->min_cg = SLIM_MIN_CLK_GEAR;
++	if (!ctrl->max_cg)
++		ctrl->max_cg = SLIM_MAX_CLK_GEAR;
++
++	ida_init(&ctrl->laddr_ida);
++	idr_init(&ctrl->tid_idr);
++	mutex_init(&ctrl->lock);
++
++	dev_dbg(ctrl->dev, "Bus [%s] registered:dev:%p\n",
++		ctrl->name, ctrl->dev);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(slim_register_controller);
++
++/* slim_remove_device: Remove the effect of slim_add_device() */
++static void slim_remove_device(struct slim_device *sbdev)
++{
++	device_unregister(&sbdev->dev);
++}
++
++static int slim_ctrl_remove_device(struct device *dev, void *null)
++{
++	slim_remove_device(to_slim_device(dev));
++	return 0;
++}
++
++/**
++ * slim_unregister_controller() - Controller tear-down.
++ *
++ * @ctrl: Controller to tear-down.
++ */
++int slim_unregister_controller(struct slim_controller *ctrl)
++{
++	/* Remove all clients */
++	device_for_each_child(ctrl->dev, NULL, slim_ctrl_remove_device);
++	ida_simple_remove(&ctrl_ida, ctrl->id);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(slim_unregister_controller);
++
++static void slim_device_update_status(struct slim_device *sbdev,
++				      enum slim_device_status status)
++{
++	struct slim_driver *sbdrv;
++
++	if (sbdev->status == status)
++		return;
++
++	sbdev->status = status;
++	if (!sbdev->dev.driver)
++		return;
++
++	sbdrv = to_slim_driver(sbdev->dev.driver);
++	if (sbdrv->device_status)
++		sbdrv->device_status(sbdev, sbdev->status);
++}
++
++/**
++ * slim_report_absent() - Controller calls this function when a device
++ *	reports absent, OR when the device cannot be communicated with
++ *
++ * @sbdev: Device that cannot be reached, or sent report absent
++ */
++void slim_report_absent(struct slim_device *sbdev)
++{
++	struct slim_controller *ctrl = sbdev->ctrl;
++
++	if (!ctrl)
++		return;
++
++	/* invalidate logical addresses */
++	mutex_lock(&ctrl->lock);
++	sbdev->is_laddr_valid = false;
++	mutex_unlock(&ctrl->lock);
++
++	ida_simple_remove(&ctrl->laddr_ida, sbdev->laddr);
++	slim_device_update_status(sbdev, SLIM_DEVICE_STATUS_DOWN);
++}
++EXPORT_SYMBOL_GPL(slim_report_absent);
++
++static bool slim_eaddr_equal(struct slim_eaddr *a, struct slim_eaddr *b)
++{
++	return (a->manf_id == b->manf_id &&
++		a->prod_code == b->prod_code &&
++		a->dev_index == b->dev_index &&
++		a->instance == b->instance);
++}
++
++static int slim_match_dev(struct device *dev, void *data)
++{
++	struct slim_eaddr *e_addr = data;
++	struct slim_device *sbdev = to_slim_device(dev);
++
++	return slim_eaddr_equal(&sbdev->e_addr, e_addr);
++}
++
++static struct slim_device *find_slim_device(struct slim_controller *ctrl,
++					    struct slim_eaddr *eaddr)
++{
++	struct slim_device *sbdev;
++	struct device *dev;
++
++	dev = device_find_child(ctrl->dev, eaddr, slim_match_dev);
++	if (dev) {
++		sbdev = to_slim_device(dev);
++		return sbdev;
++	}
++
++	return NULL;
++}
++
++/**
++ * slim_get_device() - get handle to a device.
++ *
++ * @ctrl: Controller on which this device will be added/queried
++ * @e_addr: Enumeration address of the device to be queried
++ *
++ * Return: pointer to a device if it has already reported. Creates a new
++ * device and returns pointer to it if the device has not yet enumerated.
++ */
++struct slim_device *slim_get_device(struct slim_controller *ctrl,
++				    struct slim_eaddr *e_addr)
++{
++	struct slim_device *sbdev;
++
++	sbdev = find_slim_device(ctrl, e_addr);
++	if (!sbdev) {
++		sbdev = slim_alloc_device(ctrl, e_addr, NULL);
++		if (!sbdev)
++			return ERR_PTR(-ENOMEM);
++	}
++
++	return sbdev;
++}
++EXPORT_SYMBOL_GPL(slim_get_device);
++
++static int slim_device_alloc_laddr(struct slim_device *sbdev,
++				   u8 *laddr, bool report_present)
++{
++	struct slim_controller *ctrl = sbdev->ctrl;
++	int ret;
++
++	mutex_lock(&ctrl->lock);
++	if (ctrl->get_laddr) {
++		ret = ctrl->get_laddr(ctrl, &sbdev->e_addr, laddr);
++		if (ret < 0)
++			goto err;
++	} else if (report_present) {
++		ret = ida_simple_get(&ctrl->laddr_ida,
++				     0, SLIM_LA_MANAGER - 1, GFP_KERNEL);
++		if (ret < 0)
++			goto err;
++
++		*laddr = ret;
++	} else {
++		ret = -EINVAL;
++		goto err;
++	}
++
++	if (ctrl->set_laddr) {
++		ret = ctrl->set_laddr(ctrl, &sbdev->e_addr, *laddr);
++		if (ret) {
++			ret = -EINVAL;
++			goto err;
++		}
++	}
++
++	sbdev->laddr = *laddr;
++	sbdev->is_laddr_valid = true;
++
++	slim_device_update_status(sbdev, SLIM_DEVICE_STATUS_UP);
++
++	dev_dbg(ctrl->dev, "setting slimbus l-addr:%x, ea:%x,%x,%x,%x\n",
++		*laddr, sbdev->e_addr.manf_id, sbdev->e_addr.prod_code,
++		sbdev->e_addr.dev_index, sbdev->e_addr.instance);
++
++err:
++	mutex_unlock(&ctrl->lock);
++	return ret;
++
++}
++
++/**
++ * slim_device_report_present() - Report enumerated device.
++ *
++ * @ctrl: Controller with which device is enumerated.
++ * @e_addr: Enumeration address of the device.
++ * @laddr: Return logical address (if valid flag is false)
++ *
++ * Called by controller in response to REPORT_PRESENT. Framework will assign
++ * a logical address to this enumeration address.
++ * Function returns -EXFULL to indicate that all logical addresses are already
++ * taken.
++ */
++int slim_device_report_present(struct slim_controller *ctrl,
++			       struct slim_eaddr *e_addr, u8 *laddr)
++{
++	struct slim_device *sbdev;
++	int ret;
++
++	sbdev = slim_get_device(ctrl, e_addr);
++	if (IS_ERR(sbdev))
++		return -ENODEV;
++
++	if (sbdev->is_laddr_valid) {
++		*laddr = sbdev->laddr;
++		return 0;
++	}
++
++	ret = slim_device_alloc_laddr(sbdev, laddr, true);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(slim_device_report_present);
++
++/**
++ * slim_get_logical_addr() - Return the logical address of a slimbus device.
++ *
++ * @sbdev: client handle requesting the address.
++ * @laddr: output buffer to store the address
++ *
++ * Can sleep, -EINVAL is returned in case of invalid parameters,
++ * and -ENXIO is returned if the device with this enumeration address
++ * is not found.
++ */
++int slim_get_logical_addr(struct slim_device *sbdev, u8 *laddr)
++{
++	if (sbdev->is_laddr_valid) {
++		*laddr =  sbdev->laddr;
++		return 0;
++	}
++
++	return slim_device_alloc_laddr(sbdev, laddr, false);
++}
++EXPORT_SYMBOL_GPL(slim_get_logical_addr);
++
+ static void __exit slimbus_exit(void)
+ {
+ 	bus_unregister(&slimbus_bus);
+diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
+new file mode 100644
+index 000000000000..b53319992ad4
+--- /dev/null
++++ b/drivers/slimbus/slimbus.h
+@@ -0,0 +1,116 @@
++/* Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef _DRIVERS_SLIMBUS_H
++#define _DRIVERS_SLIMBUS_H
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/mutex.h>
++#include <linux/slimbus.h>
++
++/* Standard values per SLIMbus spec needed by controllers and devices */
++#define SLIM_MAX_CLK_GEAR		10
++#define SLIM_MIN_CLK_GEAR		1
++
++/* Manager's logical address is set to 0xFF per spec */
++#define SLIM_LA_MANAGER 0xFF
++
++/**
++ * struct slim_framer - Represents Slimbus framer.
++ * Every controller may have multiple framers. There is 1 active framer device
++ * responsible for clocking the bus.
++ * Manager is responsible for framer hand-over.
++ * @dev: Driver model representation of the device.
++ * @e_addr: Enumeration address of the framer.
++ * @rootfreq: Root Frequency at which the framer can run. This is maximum
++ *	frequency ('clock gear 10') at which the bus can operate.
++ * @superfreq: Superframes per root frequency. Every frame is 6144 bits.
++ */
++struct slim_framer {
++	struct device		dev;
++	struct slim_eaddr	e_addr;
++	int			rootfreq;
++	int			superfreq;
++};
++
++#define to_slim_framer(d) container_of(d, struct slim_framer, dev)
++
++/**
++ * struct slim_controller  - Controls every instance of SLIMbus
++ *				(similar to 'master' on SPI)
++ * @dev: Device interface to this driver
++ * @id: Board-specific number identifier for this controller/bus
++ * @name: Name for this controller
++ * @min_cg: Minimum clock gear supported by this controller (default value: 1)
++ * @max_cg: Maximum clock gear supported by this controller (default value: 10)
++ * @clkgear: Current clock gear in which this bus is running
++ * @laddr_ida: logical address id allocator
++ * @a_framer: Active framer which is clocking the bus managed by this controller
++ * @lock: Mutex protecting controller data structures
++ * @addr: Logical address table
++ * @devices: Slim device list
++ * @tid_idr: tid id allocator
++ * @txn_lock: Lock to protect table of transactions
++ * @set_laddr: Setup logical address at laddr for the slave with elemental
++ *	address e_addr. Drivers implementing controller will be expected to
++ *	send unicast message to this device with its logical address.
++ * @get_laddr: It is possible that controller needs to set fixed logical
++ *	address table and get_laddr can be used in that case so that controller
++ *	can do this assignment. Use case is when the master is on the remote
++ *	processor side, who is resposible for allocating laddr.
++ *
++ *	'Manager device' is responsible for  device management, bandwidth
++ *	allocation, channel setup, and port associations per channel.
++ *	Device management means Logical address assignment/removal based on
++ *	enumeration (report-present, report-absent) of a device.
++ *	Bandwidth allocation is done dynamically by the manager based on active
++ *	channels on the bus, message-bandwidth requests made by slimbus devices.
++ *	Based on current bandwidth usage, manager chooses a frequency to run
++ *	the bus at (in steps of 'clock-gear', 1 through 10, each clock gear
++ *	representing twice the frequency than the previous gear).
++ *	Manager is also responsible for entering (and exiting) low-power-mode
++ *	(known as 'clock pause').
++ *	Manager can do handover of framer if there are multiple framers on the
++ *	bus and a certain usecase warrants using certain framer to avoid keeping
++ *	previous framer being powered-on.
++ *
++ *	Controller here performs duties of the manager device, and 'interface
++ *	device'. Interface device is responsible for monitoring the bus and
++ *	reporting information such as loss-of-synchronization, data
++ *	slot-collision.
++ */
++struct slim_controller {
++	struct device		*dev;
++	unsigned int		id;
++	char			name[SLIMBUS_NAME_SIZE];
++	int			min_cg;
++	int			max_cg;
++	int			clkgear;
++	struct ida		laddr_ida;
++	struct slim_framer	*a_framer;
++	struct mutex		lock;
++	struct list_head	devices;
++	struct idr		tid_idr;
++	spinlock_t		txn_lock;
++	int			(*set_laddr)(struct slim_controller *ctrl,
++					     struct slim_eaddr *ea, u8 laddr);
++	int			(*get_laddr)(struct slim_controller *ctrl,
++					     struct slim_eaddr *ea, u8 *laddr);
++};
++
++int slim_device_report_present(struct slim_controller *ctrl,
++			       struct slim_eaddr *e_addr, u8 *laddr);
++void slim_report_absent(struct slim_device *sbdev);
++int slim_register_controller(struct slim_controller *ctrl);
++int slim_unregister_controller(struct slim_controller *ctrl);
++
++#endif /* _LINUX_SLIMBUS_H */
+diff --git a/include/linux/slimbus.h b/include/linux/slimbus.h
+index 057198216a65..ba3fdf1f5176 100644
+--- a/include/linux/slimbus.h
++++ b/include/linux/slimbus.h
+@@ -49,6 +49,8 @@ enum slim_device_status {
+ 	SLIM_DEVICE_STATUS_RESERVED,
+ };
+ 
++struct slim_controller;
++
+ /**
+  * struct slim_device - Slim device handle.
+  * @dev: Driver model representation of the device.
+@@ -65,6 +67,7 @@ struct slim_device {
+ 	struct device		dev;
+ 	struct slim_eaddr	e_addr;
+ 	struct list_head node;
++	struct slim_controller	*ctrl;
+ 	enum slim_device_status	status;
+ 	u8			laddr;
+ 	bool			is_laddr_valid;
+@@ -126,4 +129,8 @@ static inline void slim_set_devicedata(struct slim_device *dev, void *data)
+ {
+ 	dev_set_drvdata(&dev->dev, data);
  }
- EXPORT_SYMBOL_GPL(slim_register_controller);
++
++struct slim_device *slim_get_device(struct slim_controller *ctrl,
++				    struct slim_eaddr *e_addr);
++int slim_get_logical_addr(struct slim_device *sbdev, u8 *laddr);
+ #endif /* _LINUX_SLIMBUS_H */
 -- 
 2.15.0
