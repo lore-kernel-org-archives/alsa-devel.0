@@ -1,74 +1,253 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v7 10/13] dt-bindings: Add qcom slimbus controller bindings
-Date: Wed, 15 Nov 2017 14:10:40 +0000
-Message-ID: <20171115141043.29202-11-srinivas.kandagatla@linaro.org>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH] ALSA: ice1712: Use common error handling code
+ in two functions
+Date: Wed, 15 Nov 2017 15:55:24 +0100
+Message-ID: <d3ffaa82-c47d-82a8-3325-1b95acfb70c8@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 340D2266D11
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 15:55:29 +0100 (CET)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sagar Dharia <sdharia@codeaurora.org>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 15 Nov 2017 15:50:06 +0100
 
-This patch add device tree bindings for Qualcomm slimbus controller.
+Add jump targets so that a bit of exception handling can be better reused
+at the end of these functions.
 
-Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt | 43 ++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+ sound/pci/ice1712/ice1712.c | 114 +++++++++++++++++++-------------------------
+ 1 file changed, 50 insertions(+), 64 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-new file mode 100644
-index 000000000000..e4d28910b2e0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-@@ -0,0 +1,43 @@
-+Qualcomm SLIMBUS controller
-+This controller is used if applications processor driver controls slimbus
-+master component.
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index 0e66afa403a3..691b8844465f 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -2534,14 +2534,14 @@ static int snd_ice1712_create(struct snd_card *card,
+ 	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(28)) < 0) {
+ 		dev_err(card->dev,
+ 			"architecture does not support 28bit PCI busmaster DMA\n");
+-		pci_disable_device(pci);
+-		return -ENXIO;
++		err = -ENXIO;
++		goto disable_device;
+ 	}
+ 
+ 	ice = kzalloc(sizeof(*ice), GFP_KERNEL);
+ 	if (ice == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto disable_device;
+ 	}
+ 	ice->omni = omni ? 1 : 0;
+ 	if (cs8427_timeout < 1)
+@@ -2580,8 +2580,7 @@ static int snd_ice1712_create(struct snd_card *card,
+ 	err = pci_request_regions(pci, "ICE1712");
+ 	if (err < 0) {
+ 		kfree(ice);
+-		pci_disable_device(pci);
+-		return err;
++		goto disable_device;
+ 	}
+ 	ice->port = pci_resource_start(pci, 0);
+ 	ice->ddma_port = pci_resource_start(pci, 1);
+@@ -2591,29 +2590,31 @@ static int snd_ice1712_create(struct snd_card *card,
+ 	if (request_irq(pci->irq, snd_ice1712_interrupt, IRQF_SHARED,
+ 			KBUILD_MODNAME, ice)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_ice1712_free(ice);
+-		return -EIO;
++		goto e_io;
+ 	}
+ 
+ 	ice->irq = pci->irq;
+ 
+-	if (snd_ice1712_read_eeprom(ice, modelname) < 0) {
+-		snd_ice1712_free(ice);
+-		return -EIO;
+-	}
+-	if (snd_ice1712_chip_init(ice) < 0) {
+-		snd_ice1712_free(ice);
+-		return -EIO;
+-	}
++	if (snd_ice1712_read_eeprom(ice, modelname) < 0 ||
++	    snd_ice1712_chip_init(ice) < 0)
++		goto e_io;
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, ice, &ops);
+-	if (err < 0) {
+-		snd_ice1712_free(ice);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_sound_chip;
+ 
+ 	*r_ice1712 = ice;
+ 	return 0;
 +
-+Required properties:
++disable_device:
++	pci_disable_device(pci);
++	return err;
 +
-+ - #address-cells - refer to Documentation/devicetree/bindings/slimbus/bus.txt
-+ - #size-cells	- refer to Documentation/devicetree/bindings/slimbus/bus.txt
++e_io:
++	err = -EIO;
++free_sound_chip:
++	snd_ice1712_free(ice);
++	return err;
+ }
+ 
+ 
+@@ -2651,10 +2652,8 @@ static int snd_ice1712_probe(struct pci_dev *pci,
+ 
+ 	err = snd_ice1712_create(card, pci, model[dev], omni[dev],
+ 		cs8427_timeout[dev], dxr_enable[dev], &ice);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
+ 
+ 	for (tbl = card_tables; *tbl; tbl++) {
+ 		for (c = *tbl; c->subvendor; c++) {
+@@ -2665,10 +2664,8 @@ static int snd_ice1712_probe(struct pci_dev *pci,
+ 					strcpy(card->driver, c->driver);
+ 				if (c->chip_init) {
+ 					err = c->chip_init(ice);
+-					if (err < 0) {
+-						snd_card_free(card);
+-						return err;
+-					}
++					if (err < 0)
++						goto free_card;
+ 				}
+ 				goto __found;
+ 			}
+@@ -2678,45 +2675,33 @@ static int snd_ice1712_probe(struct pci_dev *pci,
+  __found:
+ 
+ 	err = snd_ice1712_pcm_profi(ice, pcm_dev++);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
+ 
+ 	if (ice_has_con_ac97(ice)) {
+ 		err = snd_ice1712_pcm(ice, pcm_dev++);
+-		if (err < 0) {
+-			snd_card_free(card);
+-			return err;
+-		}
++		if (err < 0)
++			goto free_card;
+ 	}
+ 
+ 	err = snd_ice1712_ac97_mixer(ice);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
+ 
+ 	err = snd_ice1712_build_controls(ice);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
+ 
+ 	if (c->build_controls) {
+ 		err = c->build_controls(ice);
+-		if (err < 0) {
+-			snd_card_free(card);
+-			return err;
+-		}
++		if (err < 0)
++			goto free_card;
+ 	}
+ 
+ 	if (ice_has_con_ac97(ice)) {
+ 		err = snd_ice1712_pcm_ds(ice, pcm_dev++);
+-		if (err < 0) {
+-			snd_card_free(card);
+-			return err;
+-		}
++		if (err < 0)
++			goto free_card;
+ 	}
+ 
+ 	if (!c->no_mpu401) {
+@@ -2725,10 +2710,9 @@ static int snd_ice1712_probe(struct pci_dev *pci,
+ 			c->mpu401_1_info_flags |
+ 			MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK,
+ 			-1, &ice->rmidi[0]);
+-		if (err < 0) {
+-			snd_card_free(card);
+-			return err;
+-		}
++		if (err < 0)
++			goto free_card;
 +
-+ - reg : Offset and length of the register region(s) for the device
-+ - reg-names : Register region name(s) referenced in reg above
-+	 Required register resource entries are:
-+	 "ctrl": Physical address of controller register blocks
-+ - compatible : should be "qcom,<SOC-NAME>-slim" for SOC specific compatible
-+ 		followed by "qcom,slim" for fallback.
-+ - interrupts : Interrupt number used by this controller
-+ - clocks : Interface and core clocks used by this slimbus controller
-+ - clock-names : Required clock-name entries are:
-+	"iface_clk" : Interface clock for this controller
-+	"core_clk" : Interrupt for controller core's BAM
+ 		if (c->mpu401_1_name)
+ 			/*  Preferred name available in card_info */
+ 			snprintf(ice->rmidi[0]->name,
+@@ -2743,10 +2727,9 @@ static int snd_ice1712_probe(struct pci_dev *pci,
+ 				MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK,
+ 				-1, &ice->rmidi[1]);
+ 
+-			if (err < 0) {
+-				snd_card_free(card);
+-				return err;
+-			}
++			if (err < 0)
++				goto free_card;
 +
+ 			if (c->mpu401_2_name)
+ 				/*  Preferred name available in card_info */
+ 				snprintf(ice->rmidi[1]->name,
+@@ -2762,13 +2745,16 @@ static int snd_ice1712_probe(struct pci_dev *pci,
+ 		card->shortname, ice->port, ice->irq);
+ 
+ 	err = snd_card_register(card);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
 +
-+Optional property:
-+ - reg entry for slew rate : If slew rate control register is provided, this
-+	entry should be used.
-+ - reg-name for slew rate: "slew"
+ 	pci_set_drvdata(pci, card);
+ 	dev++;
+ 	return 0;
 +
-+Example:
-+
-+	slim@28080000 {
-+		compatible = "qcom,apq8064-slim", "qcom,slim";
-+		reg = <0x28080000 0x2000>,
-+		interrupts = <0 33 0>;
-+		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-+		clock-names = "iface", "core";
-+		#address-cells = <2>;
-+		#size-cell = <0>;
-+
-+		codec: wcd9310@1,0{
-+			compatible = "slim217,60";
-+			reg = <1 0>;
-+		};
-+	};
++free_card:
++	snd_card_free(card);
++	return err;
+ }
+ 
+ static void snd_ice1712_remove(struct pci_dev *pci)
 -- 
 2.15.0
