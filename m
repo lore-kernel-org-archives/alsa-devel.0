@@ -1,19 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: mfld: allow mfld machine to
- be build
-Date: Wed, 15 Nov 2017 20:55:34 +0530
-Message-ID: <20171115152534.GJ3187@localhost>
-References: <1510743172-18829-1-git-send-email-vinod.koul@intel.com>
- <2fc42908-631d-364f-c531-c05f077eceb4@linux.intel.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 07/17] ASoC: tlv320aic31xx: Add MICBIAS off
+	setting
+Date: Wed, 15 Nov 2017 09:30:42 -0600
+Message-ID: <20171115153042.4f72ackp7sy2flpf@rob-hp-laptop>
+References: <20171109002741.10897-1-afd@ti.com>
+ <20171109002741.10897-8-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 94834266D11
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 16:22:16 +0100 (CET)
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id B620A266D11
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 16:30:44 +0100 (CET)
+Received: by mail-oi0-f45.google.com with SMTP id f135so1136039oib.0
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 07:30:44 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <2fc42908-631d-364f-c531-c05f077eceb4@linux.intel.com>
+In-Reply-To: <20171109002741.10897-8-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,25 +26,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 08:41:18AM -0600, Pierre-Louis Bossart wrote:
-> On 11/15/17 4:52 AM, Vinod Koul wrote:
-> >Commit b97169da0699: ("ASoC: Intel: create atom folder and move atom
-> >platform files in") missed adding Kconfig and Makefile support for
-> >MFLD machine driver, so add it while alos fixing the relative patch to
-> >codec header
+On Wed, Nov 08, 2017 at 06:27:31PM -0600, Andrew F. Davis wrote:
+> Leaving microphone bias off is a valid setting and even used in the DT
+> binding document example. Add this setting here and document the same.
 > 
-> Does anyone test this code? I don't think anyone on the Intel side has a
-> working platform any longer...
+> Signed-off-by: Andrew F. Davis <afd@ti.com>
+> ---
+>  Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 1 +
+>  include/dt-bindings/sound/tlv320aic31xx-micbias.h         | 1 +
+>  sound/soc/codecs/tlv320aic31xx.c                          | 1 +
+>  3 files changed, 3 insertions(+)
 
-That is good question, we had boards for these but not sure if this is
-needed. This was not compiling and noone noticed, so I dont mind removing
-these bits.
-
-Any objections..
-
--- 
-~Vinod
+Acked-by: Rob Herring <robh@kernel.org>
