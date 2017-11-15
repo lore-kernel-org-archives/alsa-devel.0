@@ -1,84 +1,140 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fix for v4.14
-Date: Wed, 15 Nov 2017 16:09:53 +0000
-Message-ID: <20171115160953.rcep7zd5c2pu2f25@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [GIT PULL] sound updates for 4.15-rc1
+Date: Wed, 15 Nov 2017 10:19:09 -0600
+Message-ID: <355efb61-f59d-05c3-3715-86e56df1ee7f@linux.intel.com>
+References: <s5h4lpwap7p.wl-tiwai@suse.de>
+ <CA+55aFw0PPt3T1DG9HL_x_wH56D-5R_CoOy=rnRJduDo_Qp6nQ@mail.gmail.com>
+ <s5hmv3oatce.wl-tiwai@suse.de>
+ <20171115113742.27b2nvfsbtvv7gfs@sirena.org.uk>
+ <s5ha7zn69e7.wl-tiwai@suse.de> <20171115152411.GI3187@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8726957027243917611=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AEF03266D11
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 17:09:55 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171115152411.GI3187@localhost>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 11/15/17 9:24 AM, Vinod Koul wrote:
+> On Wed, Nov 15, 2017 at 12:58:40PM +0100, Takashi Iwai wrote:
+>> On Wed, 15 Nov 2017 12:37:42 +0100,
+>> Mark Brown wrote:
+>>>
+>>> On Wed, Nov 15, 2017 at 08:34:09AM +0100, Takashi Iwai wrote:
+>>>
+>>>> And I believe there are a few more possible cleanups / fixes in the
+>>>> messy Intel ASoC Kconfigs.  For example, SND_SOC_INTEL_SST is almost
+>>>> always set.  The only exception is via SND_SST_ATOM_HIFI2_PLATFORM.
+>>>> But all machine drivers using Atom Hifi2 do set SND_SST_IPC_ACPI,
+>>>> which also requires SND_SOC_INTEL_SST.
+>>>
+>>> I'm not 100% convinced that the recent changes away from just having the
+>>> only user selectable options be the board ones have really helped that
+>>> much.
+>>
+>> Yeah, now it resulted in a mixture of selects and depends, which is a
+>> bad sign.  I'm not against this kind of reorganization but we need to
+>> sort out more.
+>>
+>>> Though transitioning back would probably just create more misery.
+>>> It's a real shame that ACPI doesn't have standards for the machine
+>>> descriptions here like DT does, it'd cut down on the amount of stuff
+>>> that needs configuring.
+>>
+>> True.  Although I don't think ACPI is the center of the mess in this
+>> case, but rather too many kconfigs is it.
+>>
+>> In soc/intel/*, we have the following entries:
+>>
+>> as non-selectable ones:
+>> - SND_SST_IPC
+>> - SND_SST_IPC_PCI
+>> - SND_SST_IPC_ACPI
+>> - SND_SOC_INTEL_COMMON
+>> - SND_SOC_INTEL_SST
+>> - SND_SOC_INTEL_SST_FIRMWARE
+>> - SND_SOC_INTEL_SST_ACPI
+>> - SND_SOC_ACPI_INTEL_MATCH
+>>
+>> and the selectable ones:
+>> - SND_SOC_INTEL_SST_TOPLEVEL
+>> - SND_SOC_INTEL_HASWELL
+>> - SND_SOC_INTEL_BAYTRAIL
+>> - SND_SST_ATOM_HIFI2_PLATFORM
+>> - SND_SOC_INTEL_SKYLAKE
+>>
+>> And yet, there are tons of machine drivers as selectable kconfigs:
+>> - SND_SOC_INTEL_MACH
+> 
+> this will be top level menu entry no select/default here as Takashi
+> suggested.
+> 
+>> - SND_MFLD_MACHINE
+> 
+> this would be a lone ranger
+> 
+>> - SND_SOC_INTEL_HASWELL_MACH
+>> - SND_SOC_INTEL_BDW_RT5677_MACH
+>> - SND_SOC_INTEL_BROADWELL_MACH
+> 
+> we can bucket this in SND_SOC_INTEL_HSW_MACHS
+> 
+>> - SND_SOC_INTEL_BYT_MAX98090_MACH
+>> - SND_SOC_INTEL_BYT_RT5640_MACH
+> 
+> SND_SOC_INTEL_LEGACY_BYT
+> 
+>> - SND_SOC_INTEL_BYTCR_RT5640_MACH
+>> - SND_SOC_INTEL_BYTCR_RT5651_MACH
+>> - SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+>> - SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+>> - SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+>> - SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+>> - SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+>> - SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
 
---===============8726957027243917611==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="osacawsakyica5w5"
-Content-Disposition: inline
+this last one should not be enabled by default, it's for people who have 
+a development platform with a connector (e.g. MinnowBoard), not for 
+commercial products.
 
+> 
+> SND_SOC_INTEL_BYT_MACHS
+> 
+>> - SND_SOC_INTEL_SKL_RT286_MACH
+>> - SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+>> - SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+>> - SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+>> - SND_SOC_INTEL_BXT_RT298_MACH
+>> - SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+>> - SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+> 
+> SND_SOC_INTEL_SKL_MACHS
+> 
+> This set is growing and will keep growing. One machine is already posted and
+> it's cousins should follow soon. I don't see a point in having options for
+> these ad distro's would be enabling all of them and having all of them
+> enabled works fine for me
 
---osacawsakyica5w5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I disagree. We should leave the ability to take out what you don't need.
 
-The following changes since commit df6a3e245541ac61cc99f2887437e0a43dd08f2e:
+The bucketization you are talking about is already implemented in 
+practice, when you select the SOC options you have a set of machine 
+drivers that show up in the menu options. It should be the distros' job 
+to select which ones they want rather than us making decisions on their 
+behalf. E.g. a Gallium distro running on Chromebooks should be able to 
+select the relevant machine drivers and not the ones which will never be 
+used.
 
-  Merge remote-tracking branches 'asoc/topic/tfa9879', 'asoc/topic/ts3a277e', 'asoc/topic/wm8741', 'asoc/topic/wm97xx' and 'asoc/topic/zte' into asoc-next (2017-11-10 21:31:33 +0000)
+> 
+>> We should begin with thinking of which entries (and layer) to be
+>> selectable, and which not.
+> 
+> Trickier part is non selectable ones, I am going to take a stab at them and
+> see if we can merge few which can help is making lesser options and clean
+> that part a bit, maybe a common SST_IPC symbol which adds IPC, MATCH etc.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.14-intel-kconfig
-
-for you to fetch changes up to 20a52c059be2eb470db75076d55e1d932173fcc3:
-
-  ASoC: Intel: Add help text for SND_SOC_INTEL_SST_TOPLEVEL (2017-11-15 11:43:41 +0000)
-
-----------------------------------------------------------------
-ASoC: Fix for Intel Kconfig
-
-Fix the Intel Kconfig issue reported by Linus.
-
-----------------------------------------------------------------
-Vinod Koul (1):
-      ASoC: Intel: Add help text for SND_SOC_INTEL_SST_TOPLEVEL
-
- sound/soc/intel/Kconfig | 5 +++++
- 1 file changed, 5 insertions(+)
-
---osacawsakyica5w5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloMZtAACgkQJNaLcl1U
-h9BvSwf/Y2HrdNWNhRZx4WwamhdZWff1JgbkASrqt67sa+YLhkur+x7Shtzu3JsG
-1ZSlGg4wgB7ITFdvPyN6G6RxZIQABjlncCW0/LDJObCUgs+wgODRQ7RjCpWIb65U
-BQQ7KTz26HcaVZbg9ADpMVbGfVjZuYzA96skMbGIKq0Np+M3tk921oW5eFqcjK5W
-1PuV09TvKDK1uNrCF1782gSbgoY3/9BLMrRBxL1PPL28NQ5pdxAaiQthudGWllHd
-BXodZt4i7/KjP/w7Rc94EzRuDjxMiV8x0o3UFq39axRTL/dCTZXKX73hflIcx7xe
-v43nAgOyAYVj52rD4PjQnoHwVV02Ng==
-=5f84
------END PGP SIGNATURE-----
-
---osacawsakyica5w5--
-
---===============8726957027243917611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8726957027243917611==--
+I agree this is where things are complicated, but this is really for the 
+Intel side of things and unrelated to machine driver options.
