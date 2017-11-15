@@ -1,119 +1,184 @@
-From: srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Subject: [PATCH v7 00/13] Introduce framework for SLIMbus device driver
-Date: Wed, 15 Nov 2017 14:10:30 +0000
-Message-ID: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v7 01/13] Documentation: Add SLIMbus summary
+Date: Wed, 15 Nov 2017 14:10:31 +0000
+Message-ID: <20171115141043.29202-2-srinivas.kandagatla@linaro.org>
+References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D240D2675B8
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 15:13:25 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id o14so1671939wrf.9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 06:13:25 -0800 (PST)
+In-Reply-To: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, andreas.noever@gmail.com, arnd@arndb.de, vinod.koul@intel.com, bp@suse.de, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, treding@nvidia.com, mathieu.poirier@linaro.org, jkosina@suse.cz, linux-kernel@vger.kernel.org, daniel@ffwll.ch, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-
-Thanks for everyone who reviewed v6 patchset, here is v7 with
-review comments addressed.
+From: Sagar Dharia <sdharia@codeaurora.org>
 
 SLIMbus (Serial Low Power Interchip Media Bus) is a specification
 developed by MIPI (Mobile Industry Processor Interface) alliance.
 SLIMbus is a 2-wire implementation, which is used to communicate with
 peripheral components like audio-codec.
-SLIMbus uses Time-Division-Multiplexing to accommodate multiple data
-channels, and control channel. Control channel has messages to do
-device-enumeration, messages to send/receive control-data to/from
-slimbus devices, messages for port/channel management, and messages to
-do bandwidth allocation.
-Framework is introduced to support  multiple instances of the bus
-(1 controller per bus), and multiple slave devices per controller.
-SPI and I2C frameworks, and comments from last time when I submitted
-the patches were referred-to while working on this framework.
 
-These patchsets introduce device-management, OF helpers, and messaging
-APIs, controller driver for Qualcomm's slimbus controller, and
-clock-pause feature for entering/exiting low-power mode for SLIMbus.
-Framework patches to do channel, port and bandwidth
-management are work-in-progress and will be sent out once these
-initial patches are accepted.
+The summary of SLIMbus and API is documented in the 'summary' file.
 
-These patchsets were tested on Qualcomm Snapdragon processor board
-using the controller driver, and a test slave device.
-
-v6: https://lwn.net/Articles/735693/
-
-Changes from v6 to v7:
-* Various improvements in commenting style and kerneldoc
- suggested by various reviewers.
-* Removed usage of semaphores.
-* Split patches into more reviewable sizes.
-* Move buffer management into the controller driver.
-* use IDR for TID transactions.
-* use IDA for controller ids.
-* Remove lot of redundant code.
-* remove framer booted call for now, which can be added in future.
-* Added slim_readb/writeb and slim_read/write apis for 
-simplified value element interface. Inspired by Soundwire patches.
-* Added slim device state so the the drivers which are 
-probed after the device is announced, can get device state.
-* Lots of code cleanup.
-* move summary to .rst format.
-* move from callbacks to completions for async reads.
-* split slimbus.h into device and controller specific parts.
-
-Sagar Dharia (9):
-  Documentation: Add SLIMbus summary
-  dt-bindings: Add SLIMbus bindings
-  slimbus: Add SLIMbus bus type
-  slimbus: core: Add slim controllers support
-  slimbus: Add messaging APIs to slimbus framework
-  slimbus: Add support for 'clock-pause' feature
-  dt-bindings: Add qcom slimbus controller bindings
-  slimbus: qcom: Add Qualcomm Slimbus controller driver
-  slimbus: qcom: Add runtime-pm support using clock-pause
-
-Srinivas Kandagatla (4):
-  slimbus: core: add support to device tree helper
-  regmap: add SLIMbus support
-  slimbus: core: add common defines required for controllers
-  MAINTAINERS: Add SLIMbus maintainer
-
- Documentation/devicetree/bindings/slimbus/bus.txt  |  50 ++
- .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt |  43 ++
- Documentation/driver-api/slimbus/index.rst         |  15 +
- Documentation/driver-api/slimbus/summary.rst       | 108 +++
- MAINTAINERS                                        |   8 +
- drivers/Kconfig                                    |   2 +
- drivers/Makefile                                   |   1 +
- drivers/base/regmap/Kconfig                        |   4 +
- drivers/base/regmap/Makefile                       |   1 +
- drivers/base/regmap/regmap-slimbus.c               |  95 +++
- drivers/slimbus/Kconfig                            |  22 +
- drivers/slimbus/Makefile                           |   9 +
- drivers/slimbus/core.c                             | 500 +++++++++++++
- drivers/slimbus/messaging.c                        | 448 ++++++++++++
- drivers/slimbus/qcom-ctrl.c                        | 791 +++++++++++++++++++++
- drivers/slimbus/sched.c                            | 128 ++++
- drivers/slimbus/slimbus.h                          | 276 +++++++
- include/linux/mod_devicetable.h                    |  13 +
- include/linux/regmap.h                             |  18 +
- include/linux/slimbus.h                            | 167 +++++
- 20 files changed, 2699 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/slimbus/bus.txt
- create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ Documentation/driver-api/slimbus/index.rst   |  15 ++++
+ Documentation/driver-api/slimbus/summary.rst | 108 +++++++++++++++++++++++++++
+ 2 files changed, 123 insertions(+)
  create mode 100644 Documentation/driver-api/slimbus/index.rst
  create mode 100644 Documentation/driver-api/slimbus/summary.rst
- create mode 100644 drivers/base/regmap/regmap-slimbus.c
- create mode 100644 drivers/slimbus/Kconfig
- create mode 100644 drivers/slimbus/Makefile
- create mode 100644 drivers/slimbus/core.c
- create mode 100644 drivers/slimbus/messaging.c
- create mode 100644 drivers/slimbus/qcom-ctrl.c
- create mode 100644 drivers/slimbus/sched.c
- create mode 100644 drivers/slimbus/slimbus.h
- create mode 100644 include/linux/slimbus.h
 
+diff --git a/Documentation/driver-api/slimbus/index.rst b/Documentation/driver-api/slimbus/index.rst
+new file mode 100644
+index 000000000000..586f979659e6
+--- /dev/null
++++ b/Documentation/driver-api/slimbus/index.rst
+@@ -0,0 +1,15 @@
++=====================
++SLIMbus Documentation
++=====================
++
++.. toctree::
++   :maxdepth: 1
++
++   summary
++
++.. only::  subproject
++
++   Indices
++   =======
++
++   * :ref:`genindex`
+diff --git a/Documentation/driver-api/slimbus/summary.rst b/Documentation/driver-api/slimbus/summary.rst
+new file mode 100644
+index 000000000000..d379d1e6be06
+--- /dev/null
++++ b/Documentation/driver-api/slimbus/summary.rst
+@@ -0,0 +1,108 @@
++============================
++Linux kernel SLIMbus support
++============================
++
++Overview
++========
++
++What is SLIMbus?
++----------------
++SLIMbus (Serial Low Power Interchip Media Bus) is a specification developed by
++MIPI (Mobile Industry Processor Interface) alliance. The bus uses master/slave
++configuration, and is a 2-wire multi-drop implementation (clock, and data).
++
++Currently, SLIMbus is used to interface between application processors of SoCs
++(System-on-Chip) and peripheral components (typically codec).SLIMbus uses
++Time-Division-Multiplexing to accommodate multiple data channels, and
++a control channel.
++
++The control channel is used for various control functions such as bus
++management, configuration and status updates.These messages can be unicast (e.g.
++reading/writing device specific values), or multicast (e.g. data channel
++reconfiguration sequence is a broadcast message announced to all devices)
++
++A data channel is used for data-transfer between 2 Slimbus devices. Data
++channel uses dedicated ports on the device.
++
++Hardware description:
++---------------------
++Slimbus specification has different types of device classifications based on
++their capabilities.
++A manager device is responsible for enumeration, configuration, and dynamic
++channel allocation. Every bus has 1 active manager.
++
++A generic device is a device providing application functionality (e.g. codec).
++
++Framer device is responsible for clocking the bus, and transmitting frame-sync
++and framing information on the bus.
++
++Each SLIMbus component has an interface device for monitoring physical layer.
++
++Typically each SoC contains SLIMbus component having 1 manager, 1 framer device,
++1 generic device (for data channel support), and 1 interface device.
++External peripheral SLIMbus component usually has 1 generic device (for
++functionality/data channel support), and an associated interface device.
++The generic device's registers are mapped as 'value elements' so that they can
++be written/read using Slimbus control channel exchanging control/status type of
++information.
++In case there are multiple framer devices on the same bus, manager device is
++responsible to select the active-framer for clocking the bus.
++
++Per specification, Slimbus uses "clock gears" to do power management based on
++current frequency and bandwidth requirements. There are 10 clock gears and each
++gear changes the Slimbus frequency to be twice its previous gear.
++
++Each device has a 6-byte enumeration-address and the manager assigns every
++device with a 1-byte logical address after the devices report presence on the
++bus.
++
++Software description:
++---------------------
++There are 2 types of SLIMbus drivers:
++
++slim_controller represents a 'controller' for SLIMbus. This driver should
++implement duties needed by the SoC (manager device, associated
++interface device for monitoring the layers and reporting errors, default
++framer device).
++
++slim_device represents the 'generic device/component' for SLIMbus, and a
++slim_driver should implement driver for that slim_device.
++
++Device notifications to the driver:
++-----------------------------------
++Since SLIMbus devices have mechanisms for reporting their presence, the
++framework allows drivers to bind when corresponding devices report their
++presence on the bus.
++However, it is possible that the driver needs to be probed
++first so that it can enable corresponding SLIMbus device (e.g. power it up and/or
++take it out of reset). To support that behavior, the framework allows drivers
++to probe first as well  (e.g. using standard DeviceTree compatbility field).
++This creates the necessity for the driver to know when the device is functional
++(i.e. reported present). device_up callback is used for that reason when the
++device reports present and is assigned a logical address by the controller.
++
++Similarly, SLIMbus devices 'report absent' when they go down. A 'device_down'
++callback notifies the driver when the device reports absent and its logical
++address assignment is invalidated by the controller.
++
++Another notification "boot_device" is used to notify the slim_driver when
++controller resets the bus. This notification allows the driver to take necessary
++steps to boot the device so that it's functional after the bus has been reset.
++
++Clock-pause:
++------------
++SLIMbus mandates that a reconfiguration sequence (known as clock-pause) be
++broadcast to all active devices on the bus before the bus can enter low-power
++mode. Controller uses this sequence when it decides to enter low-power mode so
++that corresponding clocks and/or power-rails can be turned off to save power.
++Clock-pause is exited by waking up framer device (if controller driver initiates
++exiting low power mode), or by toggling the data line (if a slave device wants
++to initiate it).
++
++Messaging APIs:
++---------------
++The framework supports APIs to exchange control-information with a SLIMbus
++device. APIs can be synchronous or asynchronous.
++From controller's perspective, multiple buffers can be queued to/from
++hardware for sending/receiving data using slim_ctrl_buf circular buffer.
++The header file <linux/slimbus.h> has more documentation about messaging APIs.
 -- 
 2.15.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
