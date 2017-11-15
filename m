@@ -1,88 +1,121 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] sound updates for 4.15-rc1
-Date: Wed, 15 Nov 2017 15:37:08 +0000
-Message-ID: <20171115153708.gfodg2wa7ttllcoh@sirena.org.uk>
-References: <s5h4lpwap7p.wl-tiwai@suse.de>
- <CA+55aFw0PPt3T1DG9HL_x_wH56D-5R_CoOy=rnRJduDo_Qp6nQ@mail.gmail.com>
- <s5hmv3oatce.wl-tiwai@suse.de>
- <20171115113742.27b2nvfsbtvv7gfs@sirena.org.uk>
- <s5ha7zn69e7.wl-tiwai@suse.de> <20171115152411.GI3187@localhost>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 11/12] ASoC: add bindings for stm32 DFSDM filter
+Date: Wed, 15 Nov 2017 09:43:04 -0600
+Message-ID: <20171115154304.dzrezz7trvoway73@rob-hp-laptop>
+References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
+ <1510222354-15290-12-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4866837609723436442=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 77FE4266D11
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 16:37:17 +0100 (CET)
-In-Reply-To: <20171115152411.GI3187@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1510222354-15290-12-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 09, 2017 at 11:12:33AM +0100, Arnaud Pouliquen wrote:
+> Add bindings that describes audio settings to support
+> Digital Filter for pulse density modulation(PDM) microphone.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> ---
+> V3 -> V4 changes:
+> 	- Update to move on of_graph description.
+> 	- Link to DFSDM IIO bindings.
+> 
+>  .../devicetree/bindings/sound/st,stm32-adfsdm.txt  | 63 ++++++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+> new file mode 100644
+> index 0000000..75e298b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+> @@ -0,0 +1,63 @@
+> +STMicroelectronics audio DFSDM DT bindings
+> +
+> +This driver supports audio PDM microphone capture through Digital Filter format
 
---===============4866837609723436442==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="n34csul3ahsfe7oo"
-Content-Disposition: inline
+Bindings aren't drivers.
 
+> +Sigma Delta modulators (DFSDM).
+> +
+> +Required properties:
+> +  - compatible: "st,stm32h7-dfsdm-dai".
+> +
+> +  - #sound-dai-cells : Must be equal to 0
+> +
+> +  - io-channels : phandle to iio dfsdm instance node.
+> +		[See: ../iio/adc/st,stm32-dfsdm-adc.txt for DFSDM options]
+> +
+> +Example of a sound card using audio DFSDM node.
+> +
+> +	sound_card {
+> +		compatible = "audio-graph-card";
+> +
+> +		dais = <&cpu_port>;
+> +	};
+> +
+> +	dfsdm: dfsdm@40017000 {
+> +		compatible = "st,stm32h7-dfsdm";
+> +		reg = <0x40017000 0x400>;
+> +		clocks = <&rcc DFSDM1_CK>;
+> +		clock-names = "dfsdm";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		dfsdm_adc0: dfsdm-adc@0 {
+> +			compatible = "st,stm32-dfsdm-dmic";
+> +			reg = <0>;
+> +			interrupts = <110>;
+> +			dmas = <&dmamux1 101 0x400 0x00>;
+> +			dma-names = "rx";
+> +			st,adc-channels = <1>;
+> +			st,adc-channel-names = "dmic0";
+> +			st,adc-channel-types = "SPI_R";
+> +			st,adc-channel-clk-src = "CLKOUT";
+> +			st,filter-order = <5>;
+> +		};
+> +	}
+> +
+> +	dfsdm_dai0:dfsdm_dai@0 {
 
---n34csul3ahsfe7oo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Unit address without reg property is not valid. Building your dtb with 
+W=2 will tell you this.
 
-On Wed, Nov 15, 2017 at 08:54:11PM +0530, Vinod Koul wrote:
+Need a space after the ':'.
 
-> This set is growing and will keep growing. One machine is already posted and
-> it's cousins should follow soon. I don't see a point in having options for
-> these ad distro's would be enabling all of them and having all of them
-> enabled works fine for me
+Should be a child of dfsdm?
 
-Distros enable the overwhelming majority of drivers anyway, they're not
-really relevant in terms of driver configurability.  More relevant are
-people trying to build a stripped down machine specific configuration.
+> +		compatible = "st,stm32h7-dfsdm-dai";
+> +		#sound-dai-cells = <0>;
+> +		io-channels = <&dfsdm_adc0 0>;
 
-> > We should begin with thinking of which entries (and layer) to be
-> > selectable, and which not.
+It doesn't seem like this is an actual h/w block. Why can't 'dais' point 
+directly to the ADC?
 
-> Trickier part is non selectable ones, I am going to take a stab at them and
-> see if we can merge few which can help is making lesser options and clean
-> that part a bit, maybe a common SST_IPC symbol which adds IPC, MATCH etc.
-
-Those ones are less important so long as they're selected correctly by
-the things that need them, it's not like there's not lots of complexity
-in this driver.
-
---n34csul3ahsfe7oo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloMXyQACgkQJNaLcl1U
-h9Dkvgf/Tz36afXDfbtfjRmZ1r7hF4Z4MreiFRBkX9Ai9Iiv2sKB7NQ4RXrbeFBV
-OwEZPl6krlct/xDN/LFk/r7QvazLKgDx7mdvxqtQZ0BmnSvouAjiHXoHxYdKlNYr
-yUD1owifuHXOwoKONbltGDlpsqSCQ74h9x0JzlaBJmo/GmrwfVqv5pauhPFNUrYo
-xciVmRvkrCEkzRCAI5o2iLzSFY3bV1OETeJUYEBqT64U/a3ICFAK76Zf07dGytK1
-s2NQYXDO8yVIQepuQgEyoYjnB4s56nDP4qdeKNEsOqjcB9G4jQ4YYSg5McQkhyZ0
-UPVowkF1Z++4B8S+S5ZBlSH12rr37A==
-=nboD
------END PGP SIGNATURE-----
-
---n34csul3ahsfe7oo--
-
---===============4866837609723436442==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4866837609723436442==--
+> +		cpu_port: port {
+> +			dfsdm_endpoint: endpoint {
+> +				remote-endpoint = <&dmic0_endpoint>;
+> +			};
+> +		};
+> +	};
+> +
+> +	dmic0: dmic@0 {
+> +		compatible = "dmic-codec";
+> +		#sound-dai-cells = <0>;
+> +		port {
+> +			dmic0_endpoint: endpoint {
+> +				remote-endpoint = <&dfsdm_endpoint>;
+> +			};
+> +		};
+> +	};
+> -- 
+> 2.7.4
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
