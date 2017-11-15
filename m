@@ -1,109 +1,101 @@
 From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: Fix out-of-bound error
-Date: Wed, 15 Nov 2017 17:07:41 +0900
-Message-ID: <1510733261-28878-1-git-send-email-climbbb.kim@gmail.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: Fix out-of-bound error
+Date: Wed, 15 Nov 2017 17:57:56 +0900
+Message-ID: <CAL6iAaJTKi+S4izrrbjdceuqHMHOwqDEYO2Mx9-B4Z8F7GrohQ@mail.gmail.com>
+References: <1510733261-28878-1-git-send-email-climbbb.kim@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f54.google.com (mail-it0-f54.google.com
+ [209.85.214.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9B69266E67
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 09:57:58 +0100 (CET)
+Received: by mail-it0-f54.google.com with SMTP id m191so935710itg.2
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 00:57:58 -0800 (PST)
+In-Reply-To: <1510733261-28878-1-git-send-email-climbbb.kim@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Jaejoong Kim <climbbb.kim@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The snd_usb_copy_string_desc() retrieves the usb string corresponding to
-the index number thought the usb_string(). And for NULL-terminated, insert
-'0' by using the return value of usb_string() as the index of buffer to
-hold the string.
-
-The problem is that the usb_string() also returns the length of the string
-read(>= 0), but it can also return a negative value, the error or status
-value of usb_control_msg(). If iClockSource is '0' as shown below,
-usb_string() will return -EINVAL. This will result in '0' being inserted
-into buf[-22], and the following KASAN out-of-bound error message will be
-output.
-
-AudioControl Interface Descriptor:
-  bLength                 8
-  bDescriptorType        36
-  bDescriptorSubtype     10 (CLOCK_SOURCE)
-  bClockID                1
-  bmAttributes         0x07 Internal programmable Clock (synced to SOF)
-  bmControls           0x07
-  Clock Frequency Control (read/write)
-  Clock Validity Control (read-only)
-  bAssocTerminal          0
-  iClockSource            0
-
-To fix out-of-bound error, insert 0 only if the return value of
-usb_string() is greater than 0.
-
-==================================================================
-BUG: KASAN: stack-out-of-bounds in parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
-Write of size 1 at addr ffff88007e66735a by task systemd-udevd/18376
-
-CPU: 0 PID: 18376 Comm: systemd-udevd Not tainted 4.13.0+ #3
-Hardware name: LG Electronics                   15N540-RFLGL/White Tip Mountain, BIOS 15N5
-Call Trace:
-dump_stack+0x63/0x8d
-print_address_description+0x70/0x290
-? parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
-kasan_report+0x265/0x350
-__asan_store1+0x4a/0x50
-parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
-? save_stack+0xb5/0xd0
-? save_stack_trace+0x1b/0x20
-? save_stack+0x46/0xd0
-? kasan_kmalloc+0xad/0xe0
-? kmem_cache_alloc_trace+0xff/0x230
-? snd_usb_create_mixer+0xb0/0x4b0 [snd_usb_audio]
-? usb_audio_probe+0x4de/0xf40 [snd_usb_audio]
-? usb_probe_interface+0x1f5/0x440
-? driver_probe_device+0x3ed/0x660
-? build_feature_ctl+0xb10/0xb10 [snd_usb_audio]
-? save_stack_trace+0x1b/0x20
-? init_object+0x69/0xa0
-? snd_usb_find_csint_desc+0xa8/0xf0 [snd_usb_audio]
-snd_usb_mixer_controls+0x1dc/0x370 [snd_usb_audio]
-? build_audio_procunit+0x890/0x890 [snd_usb_audio]
-? snd_usb_create_mixer+0xb0/0x4b0 [snd_usb_audio]
-? kmem_cache_alloc_trace+0xff/0x230
-? usb_ifnum_to_if+0xbd/0xf0
-snd_usb_create_mixer+0x25b/0x4b0 [snd_usb_audio]
-? snd_usb_create_stream+0x255/0x2c0 [snd_usb_audio]
-usb_audio_probe+0x4de/0xf40 [snd_usb_audio]
-? snd_usb_autosuspend.part.7+0x30/0x30 [snd_usb_audio]
-? __pm_runtime_idle+0x90/0x90
-? kernfs_activate+0xa6/0xc0
-? usb_match_one_id_intf+0xdc/0x130
-? __pm_runtime_set_status+0x2d4/0x450
-usb_probe_interface+0x1f5/0x440
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
----
-
-The AudioControl Interface Descriptor in commit message is from
-lsusb output with real usb audio DAC.
-
-The usb audio product causing the OOB are as follows:
-http://www.lg.com/uk/lg-friends/lg-AFD-1200
-
-It only prints OOB error and usb audio works well. :)
-
- sound/usb/mixer.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index e630813..5a83c2c 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -204,7 +204,8 @@ static int snd_usb_copy_string_desc(struct mixer_build *state,
- 				    int index, char *buf, int maxlen)
- {
- 	int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
--	buf[len] = 0;
-+	if (len > 0)
-+		buf[len] = 0;
- 	return len;
- }
- 
--- 
-2.7.4
+MjAxNy4gMTEuIDE1LiDsmKTtm4QgNTowOOyXkCAiSmFlam9vbmcgS2ltIiA8Y2xpbWJiYi5raW1A
+Z21haWwuY29tPuuLmOydtCDsnpHshLE6CgpUaGUgc25kX3VzYl9jb3B5X3N0cmluZ19kZXNjKCkg
+cmV0cmlldmVzIHRoZSB1c2Igc3RyaW5nIGNvcnJlc3BvbmRpbmcgdG8KdGhlIGluZGV4IG51bWJl
+ciB0aG91Z2h0IHRoZSB1c2Jfc3RyaW5nKCkuIEFuZCBmb3IgTlVMTC10ZXJtaW5hdGVkLCBpbnNl
+cnQKJzAnIGJ5IHVzaW5nIHRoZSByZXR1cm4gdmFsdWUgb2YgdXNiX3N0cmluZygpIGFzIHRoZSBp
+bmRleCBvZiBidWZmZXIgdG8KaG9sZCB0aGUgc3RyaW5nLgoKCndyb25nIGRlc2NyaXB0aW9uIGZv
+ciBhYm91dCAnMCcuCgoKVGhlIHByb2JsZW0gaXMgdGhhdCB0aGUgdXNiX3N0cmluZygpIGFsc28g
+cmV0dXJucyB0aGUgbGVuZ3RoIG9mIHRoZSBzdHJpbmcKcmVhZCg+PSAwKSwgYnV0IGl0IGNhbiBh
+bHNvIHJldHVybiBhIG5lZ2F0aXZlIHZhbHVlLCB0aGUgZXJyb3Igb3Igc3RhdHVzCnZhbHVlIG9m
+IHVzYl9jb250cm9sX21zZygpLiBJZiBpQ2xvY2tTb3VyY2UgaXMgJzAnIGFzIHNob3duIGJlbG93
+LAp1c2Jfc3RyaW5nKCkgd2lsbCByZXR1cm4gLUVJTlZBTC4gVGhpcyB3aWxsIHJlc3VsdCBpbiAn
+MCcgYmVpbmcgaW5zZXJ0ZWQKaW50byBidWZbLTIyXSwgYW5kIHRoZSBmb2xsb3dpbmcgS0FTQU4g
+b3V0LW9mLWJvdW5kIGVycm9yIG1lc3NhZ2Ugd2lsbCBiZQpvdXRwdXQuCgoKCkkgZm91bmQgVUFD
+Ml9DTE9DS19TT1VSQ0UgaXMgbm9wIGluIHRoZSBsYXRlc3Qga2VybmVsLiBTbyBjb21taXQgbWVz
+c2FnZSBpcwpub3QgZml0IGluIGxhc3Qga2VybmVsIHZlcnNpb24uCihJIHRlc3QgYW5kIHBhdGNo
+IGluIDQuMTMsIHNvcnJ5IGFib3V0IHRoYXQpCgppIHdpbGwgc2VuZCB2MiBpbiB0aGUgbGF0ZXN0
+IGtlcm5lbAoKCkF1ZGlvQ29udHJvbCBJbnRlcmZhY2UgRGVzY3JpcHRvcjoKICBiTGVuZ3RoICAg
+ICAgICAgICAgICAgICA4CiAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAzNgogIGJEZXNjcmlwdG9y
+U3VidHlwZSAgICAgMTAgKENMT0NLX1NPVVJDRSkKICBiQ2xvY2tJRCAgICAgICAgICAgICAgICAx
+CiAgYm1BdHRyaWJ1dGVzICAgICAgICAgMHgwNyBJbnRlcm5hbCBwcm9ncmFtbWFibGUgQ2xvY2sg
+KHN5bmNlZCB0byBTT0YpCiAgYm1Db250cm9scyAgICAgICAgICAgMHgwNwogIENsb2NrIEZyZXF1
+ZW5jeSBDb250cm9sIChyZWFkL3dyaXRlKQogIENsb2NrIFZhbGlkaXR5IENvbnRyb2wgKHJlYWQt
+b25seSkKICBiQXNzb2NUZXJtaW5hbCAgICAgICAgICAwCiAgaUNsb2NrU291cmNlICAgICAgICAg
+ICAgMAoKVG8gZml4IG91dC1vZi1ib3VuZCBlcnJvciwgaW5zZXJ0IDAgb25seSBpZiB0aGUgcmV0
+dXJuIHZhbHVlIG9mCnVzYl9zdHJpbmcoKSBpcyBncmVhdGVyIHRoYW4gMC4KCj09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpC
+VUc6IEtBU0FOOiBzdGFjay1vdXQtb2YtYm91bmRzIGluIHBhcnNlX2F1ZGlvX3VuaXQrMHgxMzI3
+LzB4MTk2MApbc25kX3VzYl9hdWRpb10KV3JpdGUgb2Ygc2l6ZSAxIGF0IGFkZHIgZmZmZjg4MDA3
+ZTY2NzM1YSBieSB0YXNrIHN5c3RlbWQtdWRldmQvMTgzNzYKCkNQVTogMCBQSUQ6IDE4Mzc2IENv
+bW06IHN5c3RlbWQtdWRldmQgTm90IHRhaW50ZWQgNC4xMy4wKyAjMwpIYXJkd2FyZSBuYW1lOiBM
+RyBFbGVjdHJvbmljcyAgICAgICAgICAgICAgICAgICAxNU41NDAtUkZMR0wvV2hpdGUgVGlwCk1v
+dW50YWluLCBCSU9TIDE1TjUKQ2FsbCBUcmFjZToKZHVtcF9zdGFjaysweDYzLzB4OGQKcHJpbnRf
+YWRkcmVzc19kZXNjcmlwdGlvbisweDcwLzB4MjkwCj8gcGFyc2VfYXVkaW9fdW5pdCsweDEzMjcv
+MHgxOTYwIFtzbmRfdXNiX2F1ZGlvXQprYXNhbl9yZXBvcnQrMHgyNjUvMHgzNTAKX19hc2FuX3N0
+b3JlMSsweDRhLzB4NTAKcGFyc2VfYXVkaW9fdW5pdCsweDEzMjcvMHgxOTYwIFtzbmRfdXNiX2F1
+ZGlvXQo/IHNhdmVfc3RhY2srMHhiNS8weGQwCj8gc2F2ZV9zdGFja190cmFjZSsweDFiLzB4MjAK
+PyBzYXZlX3N0YWNrKzB4NDYvMHhkMAo/IGthc2FuX2ttYWxsb2MrMHhhZC8weGUwCj8ga21lbV9j
+YWNoZV9hbGxvY190cmFjZSsweGZmLzB4MjMwCj8gc25kX3VzYl9jcmVhdGVfbWl4ZXIrMHhiMC8w
+eDRiMCBbc25kX3VzYl9hdWRpb10KPyB1c2JfYXVkaW9fcHJvYmUrMHg0ZGUvMHhmNDAgW3NuZF91
+c2JfYXVkaW9dCj8gdXNiX3Byb2JlX2ludGVyZmFjZSsweDFmNS8weDQ0MAo/IGRyaXZlcl9wcm9i
+ZV9kZXZpY2UrMHgzZWQvMHg2NjAKPyBidWlsZF9mZWF0dXJlX2N0bCsweGIxMC8weGIxMCBbc25k
+X3VzYl9hdWRpb10KPyBzYXZlX3N0YWNrX3RyYWNlKzB4MWIvMHgyMAo/IGluaXRfb2JqZWN0KzB4
+NjkvMHhhMAo/IHNuZF91c2JfZmluZF9jc2ludF9kZXNjKzB4YTgvMHhmMCBbc25kX3VzYl9hdWRp
+b10Kc25kX3VzYl9taXhlcl9jb250cm9scysweDFkYy8weDM3MCBbc25kX3VzYl9hdWRpb10KPyBi
+dWlsZF9hdWRpb19wcm9jdW5pdCsweDg5MC8weDg5MCBbc25kX3VzYl9hdWRpb10KPyBzbmRfdXNi
+X2NyZWF0ZV9taXhlcisweGIwLzB4NGIwIFtzbmRfdXNiX2F1ZGlvXQo/IGttZW1fY2FjaGVfYWxs
+b2NfdHJhY2UrMHhmZi8weDIzMAo/IHVzYl9pZm51bV90b19pZisweGJkLzB4ZjAKc25kX3VzYl9j
+cmVhdGVfbWl4ZXIrMHgyNWIvMHg0YjAgW3NuZF91c2JfYXVkaW9dCj8gc25kX3VzYl9jcmVhdGVf
+c3RyZWFtKzB4MjU1LzB4MmMwIFtzbmRfdXNiX2F1ZGlvXQp1c2JfYXVkaW9fcHJvYmUrMHg0ZGUv
+MHhmNDAgW3NuZF91c2JfYXVkaW9dCj8gc25kX3VzYl9hdXRvc3VzcGVuZC5wYXJ0LjcrMHgzMC8w
+eDMwIFtzbmRfdXNiX2F1ZGlvXQo/IF9fcG1fcnVudGltZV9pZGxlKzB4OTAvMHg5MAo/IGtlcm5m
+c19hY3RpdmF0ZSsweGE2LzB4YzAKPyB1c2JfbWF0Y2hfb25lX2lkX2ludGYrMHhkYy8weDEzMAo/
+IF9fcG1fcnVudGltZV9zZXRfc3RhdHVzKzB4MmQ0LzB4NDUwCnVzYl9wcm9iZV9pbnRlcmZhY2Ur
+MHgxZjUvMHg0NDAKCkNjOiA8c3RhYmxlQHZnZXIua2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTog
+SmFlam9vbmcgS2ltIDxjbGltYmJiLmtpbUBnbWFpbC5jb20+Ci0tLQoKVGhlIEF1ZGlvQ29udHJv
+bCBJbnRlcmZhY2UgRGVzY3JpcHRvciBpbiBjb21taXQgbWVzc2FnZSBpcyBmcm9tCmxzdXNiIG91
+dHB1dCB3aXRoIHJlYWwgdXNiIGF1ZGlvIERBQy4KClRoZSB1c2IgYXVkaW8gcHJvZHVjdCBjYXVz
+aW5nIHRoZSBPT0IgYXJlIGFzIGZvbGxvd3M6Cmh0dHA6Ly93d3cubGcuY29tL3VrL2xnLWZyaWVu
+ZHMvbGctQUZELTEyMDAKCkl0IG9ubHkgcHJpbnRzIE9PQiBlcnJvciBhbmQgdXNiIGF1ZGlvIHdv
+cmtzIHdlbGwuIDopCgogc291bmQvdXNiL21peGVyLmMgfCAzICsrLQogMSBmaWxlIGNoYW5nZWQs
+IDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9t
+aXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKaW5kZXggZTYzMDgxMy4uNWE4M2MyYyAxMDA2NDQK
+LS0tIGEvc291bmQvdXNiL21peGVyLmMKKysrIGIvc291bmQvdXNiL21peGVyLmMKQEAgLTIwNCw3
+ICsyMDQsOCBAQCBzdGF0aWMgaW50IHNuZF91c2JfY29weV9zdHJpbmdfZGVzYyhzdHJ1Y3QgbWl4
+ZXJfYnVpbGQKKnN0YXRlLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnQg
+aW5kZXgsIGNoYXIgKmJ1ZiwgaW50IG1heGxlbikKIHsKICAgICAgICBpbnQgbGVuID0gdXNiX3N0
+cmluZyhzdGF0ZS0+Y2hpcC0+ZGV2LCBpbmRleCwgYnVmLCBtYXhsZW4gLSAxKTsKLSAgICAgICBi
+dWZbbGVuXSA9IDA7CisgICAgICAgaWYgKGxlbiA+IDApCisgICAgICAgICAgICAgICBidWZbbGVu
+XSA9IDA7CiAgICAgICAgcmV0dXJuIGxlbjsKIH0KCgp0aGFua3MuCmphZWpvb25nCgoKLS0KMi43
+LjQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
