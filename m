@@ -1,22 +1,14 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver
-	driver
-Date: Wed, 15 Nov 2017 09:52:04 -0600
-Message-ID: <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
-References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
- <1510253136-14153-4-git-send-email-tharvey@gateworks.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fix for v4.14
+Date: Wed, 15 Nov 2017 16:09:53 +0000
+Message-ID: <20171115160953.rcep7zd5c2pu2f25@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8726957027243917611=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f181.google.com (mail-ot0-f181.google.com
- [74.125.82.181])
- by alsa0.perex.cz (Postfix) with ESMTP id B95F9266D11
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 16:52:06 +0100 (CET)
-Received: by mail-ot0-f181.google.com with SMTP id g104so7864803otg.7
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 07:52:06 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1510253136-14153-4-git-send-email-tharvey@gateworks.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEF03266D11
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 17:09:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +18,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, shawnguo@kernel.org, linux-media@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 09, 2017 at 10:45:34AM -0800, Tim Harvey wrote:
-> Add support for the TDA1997x HDMI receivers.
-> 
-> Cc: Hans Verkuil <hverkuil@xs4all.nl>
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
-> v3:
->  - use V4L2_DV_BT_FRAME_WIDTH/HEIGHT macros
->  - fixed missing break
->  - use only hdmi_infoframe_log for infoframe logging
->  - simplify tda1997x_s_stream error handling
->  - add delayed work proc to handle hotplug enable/disable
->  - fix set_edid (disable HPD before writing, enable after)
->  - remove enabling edid by default
->  - initialize timings
->  - take quant range into account in colorspace conversion
->  - remove vendor/product tracking (we provide this in log_status via infoframes)
->  - add v4l_controls
->  - add more detail to log_status
->  - calculate vhref generator timings
->  - timing detection fixes (rounding errors, hswidth errors)
->  - rename configure_input/configure_conv functions
-> 
-> v2:
->  - implement dv timings enum/cap
->  - remove deprecated g_mbus_config op
->  - fix dv_query_timings
->  - add EDID get/set handling
->  - remove max-pixel-rate support
->  - add audio codec DAI support
->  - change audio bindings
-> ---
->  drivers/media/i2c/Kconfig            |    9 +
->  drivers/media/i2c/Makefile           |    1 +
->  drivers/media/i2c/tda1997x.c         | 3485 ++++++++++++++++++++++++++++++++++
->  include/dt-bindings/media/tda1997x.h |   78 +
 
-This belongs with the binding documentation patch.
+--===============8726957027243917611==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="osacawsakyica5w5"
+Content-Disposition: inline
 
->  include/media/i2c/tda1997x.h         |   53 +
->  5 files changed, 3626 insertions(+)
->  create mode 100644 drivers/media/i2c/tda1997x.c
->  create mode 100644 include/dt-bindings/media/tda1997x.h
->  create mode 100644 include/media/i2c/tda1997x.h
+
+--osacawsakyica5w5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit df6a3e245541ac61cc99f2887437e0a43dd08f2e:
+
+  Merge remote-tracking branches 'asoc/topic/tfa9879', 'asoc/topic/ts3a277e', 'asoc/topic/wm8741', 'asoc/topic/wm97xx' and 'asoc/topic/zte' into asoc-next (2017-11-10 21:31:33 +0000)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v4.14-intel-kconfig
+
+for you to fetch changes up to 20a52c059be2eb470db75076d55e1d932173fcc3:
+
+  ASoC: Intel: Add help text for SND_SOC_INTEL_SST_TOPLEVEL (2017-11-15 11:43:41 +0000)
+
+----------------------------------------------------------------
+ASoC: Fix for Intel Kconfig
+
+Fix the Intel Kconfig issue reported by Linus.
+
+----------------------------------------------------------------
+Vinod Koul (1):
+      ASoC: Intel: Add help text for SND_SOC_INTEL_SST_TOPLEVEL
+
+ sound/soc/intel/Kconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+--osacawsakyica5w5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloMZtAACgkQJNaLcl1U
+h9BvSwf/Y2HrdNWNhRZx4WwamhdZWff1JgbkASrqt67sa+YLhkur+x7Shtzu3JsG
+1ZSlGg4wgB7ITFdvPyN6G6RxZIQABjlncCW0/LDJObCUgs+wgODRQ7RjCpWIb65U
+BQQ7KTz26HcaVZbg9ADpMVbGfVjZuYzA96skMbGIKq0Np+M3tk921oW5eFqcjK5W
+1PuV09TvKDK1uNrCF1782gSbgoY3/9BLMrRBxL1PPL28NQ5pdxAaiQthudGWllHd
+BXodZt4i7/KjP/w7Rc94EzRuDjxMiV8x0o3UFq39axRTL/dCTZXKX73hflIcx7xe
+v43nAgOyAYVj52rD4PjQnoHwVV02Ng==
+=5f84
+-----END PGP SIGNATURE-----
+
+--osacawsakyica5w5--
+
+--===============8726957027243917611==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8726957027243917611==--
