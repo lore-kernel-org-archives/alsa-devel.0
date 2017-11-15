@@ -1,85 +1,41 @@
-From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
-Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Wed, 15 Nov 2017 10:31:14 -0800
-Message-ID: <CAJ+vNU0NuNjZePQBaxWHT4HtYGxZJ_DUSvuHvb6wAFDGA_xX9A@mail.gmail.com>
-References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
- <1510253136-14153-4-git-send-email-tharvey@gateworks.com> <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] ALSA: intel8x0: Fine-tuning for seven
+ function implementations
+Date: Wed, 15 Nov 2017 20:48:10 +0100
+Message-ID: <981b2716-2828-6478-46b3-5f8f3c36db46@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id AC6E5267064
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 20:48:22 +0100 (CET)
+Content-Language: en-GB
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Laura Abbott <labbott@redhat.com>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 7:52 AM, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Thu, Nov 09, 2017 at 10:45:34AM -0800, Tim Harvey wrote:
->> Add support for the TDA1997x HDMI receivers.
->>
->> Cc: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
->> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
->> ---
->> v3:
->>  - use V4L2_DV_BT_FRAME_WIDTH/HEIGHT macros
->>  - fixed missing break
->>  - use only hdmi_infoframe_log for infoframe logging
->>  - simplify tda1997x_s_stream error handling
->>  - add delayed work proc to handle hotplug enable/disable
->>  - fix set_edid (disable HPD before writing, enable after)
->>  - remove enabling edid by default
->>  - initialize timings
->>  - take quant range into account in colorspace conversion
->>  - remove vendor/product tracking (we provide this in log_status via infoframes)
->>  - add v4l_controls
->>  - add more detail to log_status
->>  - calculate vhref generator timings
->>  - timing detection fixes (rounding errors, hswidth errors)
->>  - rename configure_input/configure_conv functions
->>
->> v2:
->>  - implement dv timings enum/cap
->>  - remove deprecated g_mbus_config op
->>  - fix dv_query_timings
->>  - add EDID get/set handling
->>  - remove max-pixel-rate support
->>  - add audio codec DAI support
->>  - change audio bindings
->> ---
->>  drivers/media/i2c/Kconfig            |    9 +
->>  drivers/media/i2c/Makefile           |    1 +
->>  drivers/media/i2c/tda1997x.c         | 3485 ++++++++++++++++++++++++++++++++++
->>  include/dt-bindings/media/tda1997x.h |   78 +
->
-> This belongs with the binding documentation patch.
->
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 15 Nov 2017 20:40:30 +0100
 
-Rob,
+Two update suggestions were taken into account
+from static source code analysis.
 
-Thanks - missed that. I will move it for v4.
+Markus Elfring (2):
+  Adjust 15 function calls together with a variable assignment
+  Use common error handling code in two functions
 
-Regarding your previous comment to the v2 series:
-> The rest of the binding looks fine, but I have some reservations about
-> this. I think this should be common probably. There's been a few
-> bindings for display recently that deal with the interface format. Maybe
-> some vendor property is needed here to map a standard interface format
-> back to pin configuration.
+ sound/pci/intel8x0.c | 111 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 65 insertions(+), 46 deletions(-)
 
-I take it this is not an 'Ack' for the bindings?
-
-Which did you feel should be made common? I admit I was surprised
-there wasn't a common binding for audio bus format (i2s|spdif) but if
-you were referring to the video data that would probably be much more
-complicated.
-
-I was hoping one of the media/driver maintainers would respond to your
-comment with thoughts as I'm not familiar with a very wide variety of
-receivers.
-
-Best regards,
-
-Tim
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+2.15.0
