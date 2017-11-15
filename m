@@ -1,19 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [GIT PULL] sound updates for 4.15-rc1
-Date: Wed, 15 Nov 2017 16:13:46 +0530
-Message-ID: <20171115104346.GH3187@localhost>
-References: <s5h4lpwap7p.wl-tiwai@suse.de>
- <CA+55aFw0PPt3T1DG9HL_x_wH56D-5R_CoOy=rnRJduDo_Qp6nQ@mail.gmail.com>
- <s5hmv3oatce.wl-tiwai@suse.de>
+Subject: [PATCH] ASoC: Intel: mfld: allow mfld machine to be
+	build
+Date: Wed, 15 Nov 2017 16:22:52 +0530
+Message-ID: <1510743172-18829-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 49955266E65
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 11:40:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hmv3oatce.wl-tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BB54266E65
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 11:49:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,75 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 08:34:09AM +0100, Takashi Iwai wrote:
-> [Adding more people and alsa-devel to Cc]
-> 
-> On Wed, 15 Nov 2017 03:40:09 +0100,
-> Linus Torvalds wrote:
-> > 
-> > On Tue, Nov 14, 2017 at 6:51 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > please pull sound updates for v4.15-rc1 from:
-> > 
-> > Hmm. Making "oldconfig" on my laptop with this, my
-> > SND_SOC_INTEL_SKYLAKE went away.
-> > 
-> > And the reason seems to be that new SND_SOC_INTEL_SST_TOPLEVEL config option.
-> > 
-> > Which has no help associated with it.
-> > 
-> > This is not a friendly thing to do to people. It basically breaks
-> > existing setups for no documented reason, and with no explanation.
-> > 
-> > Please fix the config situation. At the very least, add documentation.
-> 
-> Sorry about that.  I saw Vinod already submitted a patch to add the
-> help text to CONFIG_SND_SOC_INTEL_SST_TOPLEVEL, so the least fix
-> should go in soon.
-> 
-> But now looking at these changes, I noticed a few things, too:
-> 
-> - With the introduction of SND_SOC_INTEL_SST_TOPLEVEL, keeping
->   SND_SOC_INTEL_COMMON and SND_SOC_INTEL_MACH individually doesn't
->   make much sense.  They can be dropped and replaced with
->   SND_SOC_INTEL_SST_TOPLEVEL as a further cleanup.
-> 
-> - ... or, make SND_SOC_INTEL_SST_TOPLEVEL=y as default, if this is
->   considered to be a top-level filter config (like the network vendor
->   kconfig items).  In that case, the reverse-selection of
->   SND_SOC_INTEL_COMMON and SND_SOC_INTEL_MACH should be avoided, but
->   they should be selected from the actual drivers instead.
+Commit b97169da0699: ("ASoC: Intel: create atom folder and move atom
+platform files in") missed adding Kconfig and Makefile support for
+MFLD machine driver, so add it while alos fixing the relative patch to
+codec header
 
-both make sense to me. Sometimes back I also was thinking of having single
-user config for a group of machine configs. I dont know if people really
-care about various types of skylake audio machines so enabling all of
-them with a single option maynot be a very bad idea... thoughts?
+Fixes: b97169da0699: ("ASoC: Intel: create atom folder and move atom platform files in")
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/boards/Makefile       | 2 ++
+ sound/soc/intel/boards/mfld_machine.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-This way we can have a skylake based, legacy BYT, HSW group, Atom BYT-CHT
-group. Distro anyway enable all and having all drivers selected works fine
-This way our expanding kconfig can be limited.
-
-> And I believe there are a few more possible cleanups / fixes in the
-> messy Intel ASoC Kconfigs.  For example, SND_SOC_INTEL_SST is almost
-> always set.  The only exception is via SND_SST_ATOM_HIFI2_PLATFORM.
-> But all machine drivers using Atom Hifi2 do set SND_SST_IPC_ACPI,
-> which also requires SND_SOC_INTEL_SST.
-> 
-> Further looking at this, we see that the only entry that does *not*
-> require SND_SOC_INTEL_SST is the case with SND_MFLD_MACHINE in
-> sound/soc/intel/boards.  And now more interesting part -- there is no
-> corresponding entry in Makefile.  That is, this kconfig is effectively
-> dead!  The source code mfld_machine.c exists, but it's just a place
-> holder now.  The code was supposed to be integrated into atom
-> directory by the commit b97169da0699, but it seems forgotten to be
-> updated.
-
-Looks like it was missed indeed, I will send this one out too and lets
-discuss which way all like to solve this and I shall send patches :)
-
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index a5c5bc5732a2..070cb1afefe1 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -1,3 +1,4 @@
++snd-soc-sst-mfld-objs := mfld_machine.o
+ snd-soc-sst-haswell-objs := haswell.o
+ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+ snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
+@@ -19,6 +20,7 @@ snd-soc-skl_rt286-objs := skl_rt286.o
+ snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
+ snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
+ 
++obj-$(CONFIG_SND_MFLD_MACHINE) += snd-soc-sst-mfld.o
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
+diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
+index 6f44acfb4aae..c3d80123610e 100644
+--- a/sound/soc/intel/boards/mfld_machine.c
++++ b/sound/soc/intel/boards/mfld_machine.c
+@@ -33,7 +33,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/jack.h>
+-#include "../codecs/sn95031.h"
++#include "../../codecs/sn95031.h"
+ 
+ #define MID_MONO 1
+ #define MID_STEREO 2
 -- 
-~Vinod
+2.7.4
