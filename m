@@ -1,19 +1,20 @@
-From: "Singh, Guneshwor" <guneshwor.o.singh@intel.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - Enable jack detection
- for Intel CFL + ALC700
-Date: Wed, 15 Nov 2017 08:28:37 +0530
-Message-ID: <20171115025837.GA20938@g2>
-References: <20171114030008.858-1-guneshwor.o.singh@intel.com>
- <s5h8tf99bjm.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [GIT PULL] ASoC updates for v4.15
+Date: Wed, 15 Nov 2017 10:03:05 +0530
+Message-ID: <20171115043305.GT3187@localhost>
+References: <20171113115242.pmc7asf4yumj5ubk@sirena.co.uk>
+ <s5h4lpyb2e2.wl-tiwai@suse.de>
+ <20171113163014.qtdfgpqiign5xahk@sirena.co.uk>
+ <s5hshdi9lvr.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A4CE726751C
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 03:58:42 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E2D426751C
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 05:29:46 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5h8tf99bjm.wl-tiwai@suse.de>
+In-Reply-To: <s5hshdi9lvr.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: PeiSen Hou <pshou@realtek.com>, ALSA ML <alsa-devel@alsa-project.org>, kailang@realtek.com, CHLin <doomko@realtek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 14, 2017 at 03:31:41PM +0100, Takashi Iwai wrote:
-> On Tue, 14 Nov 2017 04:00:08 +0100,
-> Guneshwor Singh wrote:
+On Mon, Nov 13, 2017 at 05:36:08PM +0100, Takashi Iwai wrote:
+> On Mon, 13 Nov 2017 17:30:14 +0100,
+> Mark Brown wrote:
 > > 
-> > From: PeiSen Hou <pshou@realtek.com>
+> > On Mon, Nov 13, 2017 at 04:54:13PM +0100, Takashi Iwai wrote:
 > > 
-> > ALC700 has jack detection disabled by default in Intel Coffeelake
-> > Reference board. To enable it, this fixup is required.
+> > > BTW, one thing Linus requested in the last KS is to avoid merging to a
+> > > stub branch when you're managing topic branches.  If any, just smash
+> > > the rest branches into one of your branches, instead of merging into
+> > > the upstream point.  Just a reminder for the next time.
 > > 
-> > Signed-off-by: PeiSen Hou <pshou@realtek.com>
-> > Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-> > ---
-> >  sound/pci/hda/patch_realtek.c | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
+> > I saw the LWN writeup after Vinod mentioned it but what he seemed to be
+> > talking about was the practice of doing incremental merges to master
+> > each time a topic branch is updated and instead requesting that
+> > everything just get merged down at the end which is what I do.  Unless
+> > he says something directly I'm going to assume my understanding is
+> > correct, it's how I send all the stuff I send directly to him so if it
+> > was bothering him I guess he'd have said something.  I can't see that
+> > picking a random topic branch is going to be especially helpful either,
+> > it'd end up being one of the fixes branches as they go first which'd
+> > quite likely already be in his tree anyway and end up looking like an
+> > empty branch based off a non-tag which'd probably upset him more.  It's
+> > also the mechanism I'm using to merge fixes from him so there is stuff
+> > on there relative to the other branches.
 > > 
-> > diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> > index 0ce71111b4e3..61ef08173b1c 100644
-> > --- a/sound/pci/hda/patch_realtek.c
-> > +++ b/sound/pci/hda/patch_realtek.c
-> > @@ -5264,6 +5264,7 @@ enum {
-> >  	ALC233_FIXUP_LENOVO_MULTI_CODECS,
-> >  	ALC294_FIXUP_LENOVO_MIC_LOCATION,
-> >  	ALC700_FIXUP_INTEL_REFERENCE,
-> > +	ALC700_FIXUP_INTEL_CFL,
-> >  };
-> >  
-> >  static const struct hda_fixup alc269_fixups[] = {
-> > @@ -6074,6 +6075,21 @@ static const struct hda_fixup alc269_fixups[] = {
-> >  			{}
-> >  		}
-> >  	},
-> > +	[ALC700_FIXUP_INTEL_CFL] = {
-> > +		.type = HDA_FIXUP_VERBS,
-> > +		.v.verbs = (const struct hda_verb[]) {
-> > +			/* Enables internal speaker */
-> > +			{0x20, AC_VERB_SET_COEF_INDEX, 0x45},
-> > +			{0x20, AC_VERB_SET_PROC_COEF, 0x5289},
-> > +			{0x20, AC_VERB_SET_COEF_INDEX, 0x4a},
-> > +			{0x20, AC_VERB_SET_PROC_COEF, 0x201b},
+> > If it's an actual problem I'm sure he'll say something.
 > 
-> I see only one bit here is different from the previous quirk for Intel
-> reference board.  Do we really need to keep both quirks separately?
-> Or maybe this new one is the correct verb in anyway?
-> 
-> 
+> Yeah, that's why I also took your pull request as is at this time.
+> Let's see :)
 
-Will check if both are needed. Otherwise the same quirk can be reused
-(by correcting the older verb if required). Thanks for the review.
+I have the same work flow where I merge the topic branches into for-linus
+and tag it and send. I did ask him to check and let me know if he wants any
+changes. Since he has merged both my tree and sound today, I am assuming our
+workflow is good for now :)
 
-> thanks,
-> 
-> Takashi
+> My understanding is that it's git-request-pull containing the marginal
+> stuff that annoys him.  He usually compares the diffstat between the
+> pull-request and the actual merge result, and it doesn't work when the
+> pull-request already contains the old commits in itself.
+
+And he seemed not to like missing help text for SND_SOC_INTEL_SST_TOPLEVEL,
+will send a patch
+
+-- 
+~Vinod
