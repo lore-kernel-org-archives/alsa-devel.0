@@ -1,90 +1,85 @@
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [GIT PULL] sound updates for 4.15-rc1
-Date: Wed, 15 Nov 2017 09:11:28 -0800
-Message-ID: <CA+55aFyrseO4ywbxeQ90qYdHKnDbnOm6vEEHvTLo61S7oZRWuQ@mail.gmail.com>
-References: <s5h4lpwap7p.wl-tiwai@suse.de>
- <CA+55aFw0PPt3T1DG9HL_x_wH56D-5R_CoOy=rnRJduDo_Qp6nQ@mail.gmail.com>
- <s5hmv3oatce.wl-tiwai@suse.de> <20171115113742.27b2nvfsbtvv7gfs@sirena.org.uk>
- <s5ha7zn69e7.wl-tiwai@suse.de> <20171115152411.GI3187@localhost>
- <355efb61-f59d-05c3-3715-86e56df1ee7f@linux.intel.com>
+From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Wed, 15 Nov 2017 10:31:14 -0800
+Message-ID: <CAJ+vNU0NuNjZePQBaxWHT4HtYGxZJ_DUSvuHvb6wAFDGA_xX9A@mail.gmail.com>
+References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
+ <1510253136-14153-4-git-send-email-tharvey@gateworks.com> <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f54.google.com (mail-it0-f54.google.com
- [209.85.214.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 1099E266D11
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 18:11:30 +0100 (CET)
-Received: by mail-it0-f54.google.com with SMTP id b5so2560272itc.3
- for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 09:11:30 -0800 (PST)
-In-Reply-To: <355efb61-f59d-05c3-3715-86e56df1ee7f@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 8:19 AM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
+On Wed, Nov 15, 2017 at 7:52 AM, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Thu, Nov 09, 2017 at 10:45:34AM -0800, Tim Harvey wrote:
+>> Add support for the TDA1997x HDMI receivers.
+>>
+>> Cc: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+>> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+>> ---
+>> v3:
+>>  - use V4L2_DV_BT_FRAME_WIDTH/HEIGHT macros
+>>  - fixed missing break
+>>  - use only hdmi_infoframe_log for infoframe logging
+>>  - simplify tda1997x_s_stream error handling
+>>  - add delayed work proc to handle hotplug enable/disable
+>>  - fix set_edid (disable HPD before writing, enable after)
+>>  - remove enabling edid by default
+>>  - initialize timings
+>>  - take quant range into account in colorspace conversion
+>>  - remove vendor/product tracking (we provide this in log_status via infoframes)
+>>  - add v4l_controls
+>>  - add more detail to log_status
+>>  - calculate vhref generator timings
+>>  - timing detection fixes (rounding errors, hswidth errors)
+>>  - rename configure_input/configure_conv functions
+>>
+>> v2:
+>>  - implement dv timings enum/cap
+>>  - remove deprecated g_mbus_config op
+>>  - fix dv_query_timings
+>>  - add EDID get/set handling
+>>  - remove max-pixel-rate support
+>>  - add audio codec DAI support
+>>  - change audio bindings
+>> ---
+>>  drivers/media/i2c/Kconfig            |    9 +
+>>  drivers/media/i2c/Makefile           |    1 +
+>>  drivers/media/i2c/tda1997x.c         | 3485 ++++++++++++++++++++++++++++++++++
+>>  include/dt-bindings/media/tda1997x.h |   78 +
 >
-> The bucketization you are talking about is already implemented in practice,
-> when you select the SOC options you have a set of machine drivers that show
-> up in the menu options.
+> This belongs with the binding documentation patch.
+>
 
-So what the network drivers do - because they have an absolutely
-sh*tload of drivers - is to have vendor-specific helper "gatekeeping"
-options that do not affect the code in *any* way, but only affect the
-config option dependencies for that vendor.
+Rob,
 
-And those gatekeeping options are then "default y", so that when you
-add a new gatekeeper, you do not limit people by default - but you
-also don't add any actual code to the kernel!
+Thanks - missed that. I will move it for v4.
 
-So for example, you'll see things like this:
+Regarding your previous comment to the v2 series:
+> The rest of the binding looks fine, but I have some reservations about
+> this. I think this should be common probably. There's been a few
+> bindings for display recently that deal with the interface format. Maybe
+> some vendor property is needed here to map a standard interface format
+> back to pin configuration.
 
-    config NET_VENDOR_ADAPTEC
-            bool "Adaptec devices"
-            default y
-            depends on PCI
+I take it this is not an 'Ack' for the bindings?
 
-    if NET_VENDOR_ADAPTEC
+Which did you feel should be made common? I admit I was surprised
+there wasn't a common binding for audio bus format (i2s|spdif) but if
+you were referring to the video data that would probably be much more
+complicated.
 
-    ... all the ADAPTEC network driver configs go here,
-    ... even if right now there's only one
+I was hoping one of the media/driver maintainers would respond to your
+comment with thoughts as I'm not familiar with a very wide variety of
+receivers.
 
-    endif # NET_VENDOR_ADAPTEC
+Best regards,
 
-and note how CONFIG_NET_VENDOR_ADAPTEC does not show up in the source
-AT ALL, except as a "ok, the make recurses into the adapted
-subdirectory".
-
-So NET_VENDOR_ADAPTEC is purely used to make the configuration choice
-easy. Instead of seeing a million different network driver questions,
-you see a hundred different network driver _vendor_ choices, and then
-only if you enable a vendor will you see the individual drivers.
-
-So by default, all vendors are enabled, so "make oldconfig" etc works
-fine, but if you are a human that goes through things by hand, you can
-just say 'n' to the vendor, and not have to say 'n' to the fifteen
-different (or sometimes just one - the ADAPTEC example really was a
-bad choice) individual drivers.
-
-That actually works quite well. And exactly because there is no actual
-code that gets enabled by these vendor choices, they can be enabled by
-default, so that when you add a new vendor gatekeeper and move an old
-config option to depend on that vendor, it doesn't affect "make
-oldconfig" negatively.
-
-(Networking didn't always do this, but they've been pretty consistent
-about it the last many years - exactly because networking used to be a
-nightmare just because there are _so_ many different random network
-cards).
-
-            Linus
+Tim
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
