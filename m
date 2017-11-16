@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/3] ALSA: korg1212: Adjust eight function
- calls together with a variable assignment
-Date: Thu, 16 Nov 2017 12:51:27 +0100
-Message-ID: <029bd28a-1691-58d8-e1e8-56ae4f189439@users.sourceforge.net>
+Subject: [PATCH 2/3] ALSA: korg1212: Delete a duplicate
+ function call "release_firmware" in snd_korg1212_create()
+Date: Thu, 16 Nov 2017 12:52:41 +0100
+Message-ID: <7b5b034c-e441-f363-a94f-c81bd0b5ed7a@users.sourceforge.net>
 References: <3f68211d-51f0-2990-d711-44eaeb85ba4d@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E1AC266EE4
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 12:52:04 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9753B266EE4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 12:53:20 +0100 (CET)
 In-Reply-To: <3f68211d-51f0-2990-d711-44eaeb85ba4d@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,106 +27,33 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 16 Nov 2017 09:42:45 +0100
+Date: Thu, 16 Nov 2017 11:22:26 +0100
 
-The script "checkpatch.pl" pointed information out like the following.
+The function "release_firmware" is called in the current implementation of
+the function "_request_firmware" after a failure was detected.
+Link: https://elixir.free-electrons.com/linux/v4.14-rc8/source/drivers/base/firmware_class.c#L1196
 
-ERROR: do not use assignment in if condition
-
-Thus fix the affected source code places.
+Such a call should therefore not be repeated directly after the
+corresponding error information was received in the local variable "err"
+of the function "snd_korg1212_create".
+Thus remove a misplaced function call.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/korg1212/korg1212.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ sound/pci/korg1212/korg1212.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-index c7b007164c99..6dde8c215b48 100644
+index 6dde8c215b48..dc701519d219 100644
 --- a/sound/pci/korg1212/korg1212.c
 +++ b/sound/pci/korg1212/korg1212.c
-@@ -1542,7 +1542,8 @@ static int snd_korg1212_hw_params(struct snd_pcm_substream *substream,
- 	        return 0;
- 	}
+@@ -2352,7 +2352,6 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
  
--        if ((err = snd_korg1212_SetRate(korg1212, params_rate(params))) < 0) {
-+	err = snd_korg1212_SetRate(korg1212, params_rate(params));
-+	if (err < 0) {
-                 spin_unlock_irqrestore(&korg1212->lock, flags);
-                 return err;
-         }
-@@ -2174,8 +2175,9 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
-         };
- 
-         * rchip = NULL;
--        if ((err = pci_enable_device(pci)) < 0)
--                return err;
-+	err = pci_enable_device(pci);
-+	if (err < 0)
-+		return err;
- 
-         korg1212 = kzalloc(sizeof(*korg1212), GFP_KERNEL);
-         if (korg1212 == NULL) {
-@@ -2211,7 +2213,8 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
-         for (i=0; i<kAudioChannels; i++)
-                 korg1212->volumePhase[i] = 0;
- 
--	if ((err = pci_request_regions(pci, "korg1212")) < 0) {
-+	err = pci_request_regions(pci, "korg1212");
-+	if (err < 0) {
- 		kfree(korg1212);
- 		pci_disable_device(pci);
+ 	err = request_firmware(&dsp_code, "korg/k1212.dsp", &pci->dev);
+ 	if (err < 0) {
+-		release_firmware(dsp_code);
+ 		snd_printk(KERN_ERR "firmware not available\n");
+ 		snd_korg1212_free(korg1212);
  		return err;
-@@ -2235,7 +2238,8 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
- 		   korg1212->iomem2, iomem2_size,
- 		   stateName[korg1212->cardState]);
- 
--        if ((korg1212->iobase = ioremap(korg1212->iomem, iomem_size)) == NULL) {
-+	korg1212->iobase = ioremap(korg1212->iomem, iomem_size);
-+	if (!korg1212->iobase) {
- 		snd_printk(KERN_ERR "korg1212: unable to remap memory region 0x%lx-0x%lx\n", korg1212->iomem,
-                            korg1212->iomem + iomem_size - 1);
-                 snd_korg1212_free(korg1212);
-@@ -2375,7 +2379,8 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
- 	if (rc)
- 		K1212_DEBUG_PRINTK("K1212_DEBUG: Reboot Card - RC = %d [%s]\n", rc, stateName[korg1212->cardState]);
- 
--        if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, korg1212, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, korg1212, &ops);
-+	if (err < 0) {
-                 snd_korg1212_free(korg1212);
-                 return err;
-         }
-@@ -2400,8 +2405,9 @@ static int snd_korg1212_create(struct snd_card *card, struct pci_dev *pci,
-                korg1212->RoutingTablePhy, LowerWordSwap(korg1212->RoutingTablePhy),
-                korg1212->AdatTimeCodePhy, LowerWordSwap(korg1212->AdatTimeCodePhy));
- 
--        if ((err = snd_pcm_new(korg1212->card, "korg1212", 0, 1, 1, &korg1212->pcm)) < 0)
--                return err;
-+	err = snd_pcm_new(korg1212->card, "korg1212", 0, 1, 1, &korg1212->pcm);
-+	if (err < 0)
-+		return err;
- 
- 	korg1212->pcm->private_data = korg1212;
-         korg1212->pcm->private_free = snd_korg1212_free_pcm;
-@@ -2451,7 +2457,8 @@ snd_korg1212_probe(struct pci_dev *pci,
- 	if (err < 0)
- 		return err;
- 
--        if ((err = snd_korg1212_create(card, pci, &korg1212)) < 0) {
-+	err = snd_korg1212_create(card, pci, &korg1212);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -2463,7 +2470,8 @@ snd_korg1212_probe(struct pci_dev *pci,
- 
-         K1212_DEBUG_PRINTK("K1212_DEBUG: %s\n", card->longname);
- 
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
 -- 
 2.15.0
