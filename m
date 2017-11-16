@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8540: improve FLL performance" to
-	the asoc tree
-Date: Thu, 16 Nov 2017 19:28:36 +0000 (GMT)
-Message-ID: <20171116192836.A589744005B@finisterre.ee.mobilebroadband>
-References: <1510539377-26916-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: Intel: kbl: Modify map for Headset
+	Playback to fix pop-noise" to the asoc tree
+Date: Thu, 16 Nov 2017 19:28:40 +0000 (GMT)
+Message-ID: <20171116192840.2CE0D44005B@finisterre.ee.mobilebroadband>
+References: <1509679697-22154-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B7BC0267774
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:28:37 +0100 (CET)
-In-Reply-To: <1510539377-26916-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EB6A267784
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:28:49 +0100 (CET)
+In-Reply-To: <1509679697-22154-1-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8540: improve FLL performance
+   ASoC: Intel: kbl: Modify map for Headset Playback to fix pop-noise
 
 has been applied to the asoc tree at
 
@@ -53,124 +52,57 @@ to this mail.
 Thanks,
 Mark
 
->From fe83b1b7d7d0ff11210f84f25b8e1ba1afbac76f Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Mon, 13 Nov 2017 10:16:17 +0800
-Subject: [PATCH] ASoC: nau8540: improve FLL performance
+>From 4c761ebfcb2d04ee36783c4c8c45ae00caf59d36 Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Fri, 3 Nov 2017 19:15:02 +0530
+Subject: [PATCH] ASoC: Intel: kbl: Modify map for Headset Playback to fix
+ pop-noise
 
-Add these parameters to improve the FLL performance.
-The comments show as follows:
+Patch fixes wrong path in commit 0b06122fc8d0 ("ASoC: Intel: kbl: Add
+map for new DAIs for Multi-Playback & Echo Ref") which resulted in pop
+noise.
+Current topology for Headset results in unwanted pop noise, while
+switching from spk->hs at the start of Headset Playback.
+Hence re-introduced mixin-mixout dsp module in topology for headset
+playback pipe to fix the regression.
+And the corresponding modification for headset route is updated here.
 
-(1)ICTRL_LATCH: FLL DSP speed capability control
-When FLL running at high frequency with long decimal number, DSP needs
-to operate at high speed. FLL DSP can optimize between performance and
-power consumption by ICTRL_LATCH.(111 has highest power consumption.)
-The default setting can be used to reduce power.
-(2)CUTOFF500: loop filter cutoff frequency at 500Khz
-It will give the best FLL performance but highest power consumption
-to enable the cutoff frequency. FLL Loop Filter enable to reduce FLL
-output noise, especially,(DCO frequency)/(FLL input reference frequency)
-is not a integer.
-(3)GAIN_ERR: FLL gain error correction threshold setting
-The threshold is comparison between DCO and target frequency.
-The value 1111 has the most sensitive threshold, that is, 1111 can have
-the most accurate DCO to target frequency. However, the gain error setting
-conditionally and inversely depends on FLL input reference clock rate.
-Higher FLL reference input frequency can only set lower gain error, such
-as 0000 for input reference from MCLK=12.288Mhz. On the other side, if FLL
-reference input is from Frame Sync, 48KHz, higher error gain can apply
-such as 1111.
-
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Fixes: 0b06122fc8d0 ("ASoC: Intel: kbl: Add map for new DAIs for
+Multi-Playback & Echo Ref")
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8540.c | 21 ++++++++++++++-------
- sound/soc/codecs/nau8540.h |  5 +++++
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8540.c b/sound/soc/codecs/nau8540.c
-index 9565f9a181a9..b08fb7e243c3 100644
---- a/sound/soc/codecs/nau8540.c
-+++ b/sound/soc/codecs/nau8540.c
-@@ -615,7 +615,8 @@ static void nau8540_fll_apply(struct regmap *regmap,
- 		NAU8540_CLK_SRC_MASK | NAU8540_CLK_MCLK_SRC_MASK,
- 		NAU8540_CLK_SRC_MCLK | fll_param->mclk_src);
- 	regmap_update_bits(regmap, NAU8540_REG_FLL1,
--		NAU8540_FLL_RATIO_MASK, fll_param->ratio);
-+		NAU8540_FLL_RATIO_MASK | NAU8540_ICTRL_LATCH_MASK,
-+		fll_param->ratio | (0x6 << NAU8540_ICTRL_LATCH_SFT));
- 	/* FLL 16-bit fractional input */
- 	regmap_write(regmap, NAU8540_REG_FLL2, fll_param->fll_frac);
- 	/* FLL 10-bit integer input */
-@@ -636,13 +637,14 @@ static void nau8540_fll_apply(struct regmap *regmap,
- 			NAU8540_FLL_PDB_DAC_EN | NAU8540_FLL_LOOP_FTR_EN |
- 			NAU8540_FLL_FTR_SW_FILTER);
- 		regmap_update_bits(regmap, NAU8540_REG_FLL6,
--			NAU8540_SDM_EN, NAU8540_SDM_EN);
-+			NAU8540_SDM_EN | NAU8540_CUTOFF500,
-+			NAU8540_SDM_EN | NAU8540_CUTOFF500);
- 	} else {
- 		regmap_update_bits(regmap, NAU8540_REG_FLL5,
- 			NAU8540_FLL_PDB_DAC_EN | NAU8540_FLL_LOOP_FTR_EN |
- 			NAU8540_FLL_FTR_SW_MASK, NAU8540_FLL_FTR_SW_ACCU);
--		regmap_update_bits(regmap,
--			NAU8540_REG_FLL6, NAU8540_SDM_EN, 0);
-+		regmap_update_bits(regmap, NAU8540_REG_FLL6,
-+			NAU8540_SDM_EN | NAU8540_CUTOFF500, 0);
- 	}
- }
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 6f9a8bcf20f3..6dcad0a8a0d0 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -101,7 +101,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "ssp0 Tx", NULL, "spk_out" },
  
-@@ -657,17 +659,22 @@ static int nau8540_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
- 	switch (pll_id) {
- 	case NAU8540_CLK_FLL_MCLK:
- 		regmap_update_bits(nau8540->regmap, NAU8540_REG_FLL3,
--			NAU8540_FLL_CLK_SRC_MASK, NAU8540_FLL_CLK_SRC_MCLK);
-+			NAU8540_FLL_CLK_SRC_MASK | NAU8540_GAIN_ERR_MASK,
-+			NAU8540_FLL_CLK_SRC_MCLK | 0);
- 		break;
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "hs_out" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
  
- 	case NAU8540_CLK_FLL_BLK:
- 		regmap_update_bits(nau8540->regmap, NAU8540_REG_FLL3,
--			NAU8540_FLL_CLK_SRC_MASK, NAU8540_FLL_CLK_SRC_BLK);
-+			NAU8540_FLL_CLK_SRC_MASK | NAU8540_GAIN_ERR_MASK,
-+			NAU8540_FLL_CLK_SRC_BLK |
-+			(0xf << NAU8540_GAIN_ERR_SFT));
- 		break;
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index 6072164f2d43..271ae3c2c535 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -109,7 +109,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "ssp0 Tx", NULL, "spk_out" },
  
- 	case NAU8540_CLK_FLL_FS:
- 		regmap_update_bits(nau8540->regmap, NAU8540_REG_FLL3,
--			NAU8540_FLL_CLK_SRC_MASK, NAU8540_FLL_CLK_SRC_FS);
-+			NAU8540_FLL_CLK_SRC_MASK | NAU8540_GAIN_ERR_MASK,
-+			NAU8540_FLL_CLK_SRC_FS |
-+			(0xf << NAU8540_GAIN_ERR_SFT));
- 		break;
+ 	{ "AIF Playback", NULL, "ssp1 Tx" },
+-	{ "ssp1 Tx", NULL, "hs_out" },
++	{ "ssp1 Tx", NULL, "codec1_out" },
  
- 	default:
-diff --git a/sound/soc/codecs/nau8540.h b/sound/soc/codecs/nau8540.h
-index dceb04b23c19..732b490edf81 100644
---- a/sound/soc/codecs/nau8540.h
-+++ b/sound/soc/codecs/nau8540.h
-@@ -100,9 +100,13 @@
- #define NAU8540_CLK_MCLK_SRC_MASK	0xf
- 
- /* FLL1 (0x04) */
-+#define NAU8540_ICTRL_LATCH_SFT	10
-+#define NAU8540_ICTRL_LATCH_MASK	(0x7 << NAU8540_ICTRL_LATCH_SFT)
- #define NAU8540_FLL_RATIO_MASK	0x7f
- 
- /* FLL3 (0x06) */
-+#define NAU8540_GAIN_ERR_SFT		12
-+#define NAU8540_GAIN_ERR_MASK		(0xf << NAU8540_GAIN_ERR_SFT)
- #define NAU8540_FLL_CLK_SRC_SFT	10
- #define NAU8540_FLL_CLK_SRC_MASK	(0x3 << NAU8540_FLL_CLK_SRC_SFT)
- #define NAU8540_FLL_CLK_SRC_MCLK	(0 << NAU8540_FLL_CLK_SRC_SFT)
-@@ -127,6 +131,7 @@
- /* FLL6 (0x9) */
- #define NAU8540_DCO_EN			(0x1 << 15)
- #define NAU8540_SDM_EN			(0x1 << 14)
-+#define NAU8540_CUTOFF500		(0x1 << 13)
- 
- /* PCM_CTRL0 (0x10) */
- #define NAU8540_I2S_BP_SFT		7
+ 	{ "hs_in", NULL, "ssp1 Rx" },
+ 	{ "ssp1 Rx", NULL, "AIF Capture" },
 -- 
 2.14.1
