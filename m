@@ -1,20 +1,19 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 02/14] soundwire: Add SoundWire bus type
-Date: Thu, 16 Nov 2017 16:05:17 +0000
-Message-ID: <cb4fbc87-7857-5ab3-a2cd-413ee57c463e@linaro.org>
+Subject: Re: [PATCH v2 03/14] soundwire: Add Master registration
+Date: Thu, 16 Nov 2017 16:05:22 +0000
+Message-ID: <2ba56597-2178-6389-bc4d-153a17505981@linaro.org>
 References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-3-git-send-email-vinod.koul@intel.com>
+ <1510314556-13002-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id ADE24266EE4
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 17:05:25 +0100 (CET)
-Received: by mail-wr0-f195.google.com with SMTP id u97so23289769wrc.1
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 08:05:25 -0800 (PST)
-In-Reply-To: <1510314556-13002-3-git-send-email-vinod.koul@intel.com>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2283026716A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 17:05:26 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id l8so1204447wmg.4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 08:05:26 -0800 (PST)
+In-Reply-To: <1510314556-13002-4-git-send-email-vinod.koul@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,124 +31,182 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On 10/11/17 11:49, Vinod Koul wrote:
-> index 000000000000..9b3dca95a098
-> --- /dev/null
-> +++ b/drivers/soundwire/bus.h
-> +
-> +#ifndef __SDW_BUS_H
-> +#define __SDW_BUS_H
-> +
-> +#include <linux/init.h>
-> +#include <linux/device.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/acpi.h>
+> A Master registers with SoundWire bus and scans the firmware provided
+> for device description. In this patch we scan the ACPI namespaces and
+> create the SoundWire Slave devices based on the ACPI description
+> 
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>   drivers/soundwire/Makefile    |   2 +-
+>   drivers/soundwire/bus.c       | 163 +++++++++++++++++++++++++++++++++++++++
+>   drivers/soundwire/bus.h       |  20 +++++
+>   drivers/soundwire/slave.c     | 172 ++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/soundwire/sdw.h |  11 +++
+>   5 files changed, 367 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/soundwire/bus.c
+>   create mode 100644 drivers/soundwire/slave.c
+> 
+> diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+> index d1281def7662..c875e434f8b3 100644
+> --- a/drivers/soundwire/Makefile
+> +++ b/drivers/soundwire/Makefile
+> @@ -3,5 +3,5 @@
+>   #
+>   
+>   #Bus Objs
+> -soundwire-bus-objs := bus_type.o
+> +soundwire-bus-objs := bus_type.o bus.o slave.o
 
-Do you need all these headers as part of this patch?
+> +
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/pm_runtime.h>
+Does this belong to this patch.
 
 > +#include <linux/soundwire/sdw.h>
+> +#include "bus.h"
 > +
-> +int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
-> +
-> +#endif /* __SDW_BUS_H */
-> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-> new file mode 100644
-> index 000000000000..3e97a8284871
-> --- /dev/null
-> +++ b/drivers/soundwire/bus_type.c
-> @@ -0,0 +1,227 @@
-...
-
-> +static const struct sdw_device_id *
-> +sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
-Indentation looks Odd here,
-
+> +/**
+> + * sdw_add_bus_master: add a bus Master instance
+> + *
+> + * @bus: bus instance
+> + *
+> + * Initializes the bus instance, read properties and create child
+> + * devices.
+> + */
+> +int sdw_add_bus_master(struct sdw_bus *bus)
 > +{
-> +	const struct sdw_device_id *id = drv->id_table;
+> +	int ret;
 > +
-> +	while (id && id->mfg_id) {
-> +		if (slave->id.mfg_id == id->mfg_id &&
-> +		    slave->id.part_id == id->part_id)
-> +			return id;
-> +		id++;
+> +	if (!bus->dev) {
+> +		pr_err("SoundWire bus has no device");
+> +		return -ENODEV;
 > +	}
 > +
-> +	return NULL;
-> +}
-...
+> +	mutex_init(&bus->bus_lock);
+> +	INIT_LIST_HEAD(&bus->slaves);
 > +
-> +static int sdw_drv_probe(struct device *dev)
+> +	/*
+> +	 * Enumeration device number and broadcast device number are
+> +	 * not used for assignment so mask these and other higher bits
+> +	 */
+> +
+> +	/* Set higher order bits */
+> +	*bus->assigned = ~GENMASK(SDW_BROADCAST_DEV_NUM, SDW_ENUM_DEV_NUM);
+Can't we use ida for this.
+This would also cut down code added for allocating dev_num.
+
+> +
+> +	/* Set device number and broadcast device number */
+> +	set_bit(SDW_ENUM_DEV_NUM, bus->assigned);
+> +	set_bit(SDW_BROADCAST_DEV_NUM, bus->assigned);
+
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(sdw_add_bus_master);
+> +
+> +static int sdw_delete_slave(struct device *dev, void *data)
 > +{
 > +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> +	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-> +	const struct sdw_device_id *id;
-> +	int ret;
-...
-> +	/*
-> +	 * attach to power domain but don't turn on (last arg)
-> +	 */
-> +	ret = dev_pm_domain_attach(dev, false);
-> +	if (ret) {
-
-I think we discussed this in v1, but erring out here means that all the 
-devices need to have pm domain  attached, which might not be true all 
-the time.
-
-> +		dev_err(dev, "Failed to attach PM domain: %d\n", ret);
-> +		return ret;
-> +	}
+> +	struct sdw_bus *bus = slave->bus;
 > +
-> +	ret = drv->probe(slave, id);
-> +	if (ret) {
-> +		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-> +		dev_pm_domain_detach(dev, false);
-> +		return ret;
-> +	}
+> +	mutex_lock(&bus->bus_lock);
 > +
+> +	if (slave->dev_num) /* clear dev_num if assigned */
+> +		clear_bit(slave->dev_num, bus->assigned);
+> +
+> +	list_del_init(&slave->node);
+> +	mutex_unlock(&bus->bus_lock);
+> +
+> +	device_unregister(dev);
 > +	return 0;
 > +}
 > +
-> +
->
-...
+> +void sdw_delete_bus_master(struct sdw_bus *bus)
+> +{
+> +	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+> +}
+> +EXPORT_SYMBOL(sdw_delete_bus_master);
+No kerneldoc..??
 
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> +#ifndef __SOUNDWIRE_H
-> +#define __SOUNDWIRE_H
 > +
-> +#include <linux/device.h>
-> +#include <linux/mod_devicetable.h>
-> +
-> +struct sdw_bus;
-> +struct sdw_slave;
-> +
-> +#define SDW_MAX_DEVICES			11
-> +
-> +/**
-> + * enum sdw_slave_status: Slave status
-> + *
-> + * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
-> + * @SDW_SLAVE_ATTACHED: Slave is attached with bus.
-> + * @SDW_SLAVE_ALERT: Some alert condition on the Slave
-> + * @SDW_SLAVE_RESERVED: Reserved for future use
-> + */
-> +enum sdw_slave_status {
-> +	SDW_SLAVE_UNATTACHED = 0,
-> +	SDW_SLAVE_ATTACHED = 1,
-> +	SDW_SLAVE_ALERT = 2,
-> +	SDW_SLAVE_RESERVED = 3,
-> +};
-> +
-> +/*
-> + * SDW Slave Structures and APIs
-> + */
-> +
-> +/**
-> + * struct sdw_slave_id: Slave ID
-> + *
-Do we need an empty line Here?? same thing for all the kernel doc comments.
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+> new file mode 100644
+> index 000000000000..4bf2a6cf732c
+> --- /dev/null
+> +++ b/drivers/soundwire/slave.c
 
-Also looking at examples in Documentation/doc-guide/kernel-doc.rst
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/init.h>
+> +#include <linux/soundwire/sdw.h>
+> +#include "bus.h"
+> +
+> +}
+> +
+> +static int sdw_slave_add(struct sdw_bus *bus,
+> +		struct sdw_slave_id *id, struct fwnode_handle *fwnode)
+> +{
+> +	struct sdw_slave *slave;
+> +	int ret;
+> +
+> +	slave = kzalloc(sizeof(*slave), GFP_KERNEL);
+> +	if (!slave)
+> +		return -ENOMEM;
+> +
+> +	/* Initialize data structure */
+> +	memcpy(&slave->id, id, sizeof(*id));
+> +	slave->dev.parent = bus->dev;
+> +	slave->dev.fwnode = fwnode;
+> +
+> +	/* name shall be sdw:link:mfg:part:class:unique */
+> +	dev_set_name(&slave->dev, "sdw:%x:%x:%x:%x:%x",
+> +			bus->link_id, id->mfg_id, id->part_id,
+> +			id->class_id, id->unique_id);
+> +
+> +	slave->dev.release = sdw_slave_release;
+> +	slave->dev.bus = &sdw_bus_type;
+> +	slave->bus = bus;
+> +	slave->status = SDW_SLAVE_UNATTACHED;
+> +	slave->dev_num = 0;
+> +
+> +	mutex_lock(&bus->bus_lock);
+> +	list_add_tail(&slave->node, &bus->slaves);
+> +	mutex_unlock(&bus->bus_lock);
+> +
+> +	ret = device_register(&slave->dev);
+> +	if (ret) {
+> +		dev_err(bus->dev, "Failed to add slave: ret %d\n", ret);
+> +
+> +		/*
+> +		 * On err, don't free but drop ref as this will be freed
+> +		 * when release method is invoked.
+> +		 */
+> +		mutex_lock(&bus->bus_lock);
+> +		list_del(&slave->node);
+> +		mutex_unlock(&bus->bus_lock);
+> +		put_device(&slave->dev);
+> +		return ret;
 
-struct should follow with  - instead of :
-same for functions..
+remove this line and ..
+> +	}
+> +
+> +	return 0;
+
+	return ret;
+
+> +
+> 
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_OF)
+> +int sdw_of_find_slaves(struct sdw_bus *bus)
+> +{
+> +	/* placeholder now, fill on OF support */
+> +	return -ENOTSUPP;
+> +}
+> +#endif
+
+We should probably remove this dummy function, and add this 
+functionality later.
