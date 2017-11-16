@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: initialize return value
-	properly" to the asoc tree
-Date: Thu, 16 Nov 2017 19:28:51 +0000 (GMT)
-Message-ID: <20171116192851.EF7D344005B@finisterre.ee.mobilebroadband>
-References: <20171106133114.339667-1-arnd@arndb.de>
+Subject: Applied "ASoC: nau8824: move key irq after jd done" to
+	the asoc tree
+Date: Thu, 16 Nov 2017 19:29:22 +0000 (GMT)
+Message-ID: <20171116192922.2DBCF44005B@finisterre.ee.mobilebroadband>
+References: <1510045593-21477-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 618AB267799
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:28:56 +0100 (CET)
-In-Reply-To: <20171106133114.339667-1-arnd@arndb.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1921C2677A6
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:29:22 +0100 (CET)
+In-Reply-To: <1510045593-21477-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Harsha Priya N <harshapriya.n@intel.com>, Mark Brown <broonie@kernel.org>, Naveen Manohar <naveen.m@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: initialize return value properly
+   ASoC: nau8824: move key irq after jd done
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From cc20c4df1627dd515ea90dd20e2684a8a1c76693 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 6 Nov 2017 14:30:36 +0100
-Subject: [PATCH] ASoC: intel: initialize return value properly
+>From cf6b68d192138d67b49002b499eb507af0c8c56d Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Tue, 7 Nov 2017 17:06:32 +0800
+Subject: [PATCH] ASoC: nau8824: move key irq after jd done
 
-When CONFIG_SND_SOC_HDAC_HDMI is disabled, we can run into an
-uninitialized variable:
+It is possible to get the fake key press interruption when the codec
+do jack detection. We think it's proper to move the key interruption
+configuration after jack detection done.
 
-sound/soc/intel/skylake/skl.c: In function 'skl_resume':
-sound/soc/intel/skylake/skl.c:326:6: error: 'ret' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-
-I have run into this on today's linux-next kernel, but it appears
-that this is an older problem that was just hard to trigger
-with randconfig builds as CONFIG_SND_SOC_HDAC_HDMI would in
-effect be impossible to disable when having SND_SOC_INTEL_SKYLAKE
-enabled.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/nau8824.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 31d8634e8aa1..acb0ab470ca6 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -355,6 +355,7 @@ static int skl_resume(struct device *dev)
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 0240759f951c..b7b63ac037a7 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -843,6 +843,11 @@ static void nau8824_jdet_work(struct work_struct *work)
+ 	event_mask |= SND_JACK_HEADSET;
+ 	snd_soc_jack_report(nau8824->jack, event, event_mask);
  
- 		if (ebus->cmd_dma_state)
- 			snd_hdac_bus_init_cmd_io(&ebus->bus);
-+		ret = 0;
- 	} else {
- 		ret = _skl_resume(ebus);
++	/* Enable short key press and release interruption. */
++	regmap_update_bits(regmap, NAU8824_REG_INTERRUPT_SETTING,
++		NAU8824_IRQ_KEY_RELEASE_DIS |
++		NAU8824_IRQ_KEY_SHORT_PRESS_DIS, 0);
++
+ 	nau8824_sema_release(nau8824);
+ }
  
+@@ -850,13 +855,12 @@ static void nau8824_setup_auto_irq(struct nau8824 *nau8824)
+ {
+ 	struct regmap *regmap = nau8824->regmap;
+ 
+-	/* Enable jack ejection, short key press and release interruption. */
++	/* Enable jack ejection interruption. */
+ 	regmap_update_bits(regmap, NAU8824_REG_INTERRUPT_SETTING_1,
+ 		NAU8824_IRQ_INSERT_EN | NAU8824_IRQ_EJECT_EN,
+ 		NAU8824_IRQ_EJECT_EN);
+ 	regmap_update_bits(regmap, NAU8824_REG_INTERRUPT_SETTING,
+-		NAU8824_IRQ_EJECT_DIS | NAU8824_IRQ_KEY_RELEASE_DIS |
+-		NAU8824_IRQ_KEY_SHORT_PRESS_DIS, 0);
++		NAU8824_IRQ_EJECT_DIS, 0);
+ 	/* Enable internal VCO needed for interruptions */
+ 	nau8824_config_sysclk(nau8824, NAU8824_CLK_INTERNAL, 0);
+ 	regmap_update_bits(regmap, NAU8824_REG_ENA_CTRL,
 -- 
 2.14.1
