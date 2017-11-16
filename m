@@ -1,151 +1,73 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 04/14] soundwire: Add MIPI DisCo property helpers
-Date: Thu, 16 Nov 2017 16:05:34 +0000
-Message-ID: <ce51acdd-7f56-e6bf-4067-393f7118c4c3@linaro.org>
-References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-5-git-send-email-vinod.koul@intel.com>
+From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v7 03/13] slimbus: Add SLIMbus bus type
+Date: Thu, 16 Nov 2017 21:44:26 +0530
+Message-ID: <20171116161426.GA3187@localhost>
+References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
+ <20171115141043.29202-4-srinivas.kandagatla@linaro.org>
+ <20171116131814.GV3187@localhost>
+ <e2fa6b56-965d-74e7-af2f-77baf0f50901@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1510314556-13002-5-git-send-email-vinod.koul@intel.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <e2fa6b56-965d-74e7-af2f-77baf0f50901-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Few Minor comments!!
+On Thu, Nov 16, 2017 at 01:40:05PM +0000, Srinivas Kandagatla wrote:
+> On 16/11/17 13:18, Vinod Koul wrote:
+> >On Wed, Nov 15, 2017 at 02:10:33PM +0000, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
+> >
+> >>+menuconfig SLIMBUS
+> >>+	tristate "Slimbus support"
+> >>+	help
+> >>+	  Slimbus is standard interface between System-on-Chip and audio codec,
+> >>+	  and other peripheral components in typical embedded systems.
+> >>+
+> >>+	  If unsure, choose N.
+> >>+
+> >>+if SLIMBUS
+> >>+
+> >>+# SlIMbus controllers
+> >
+> >Slimbus perhaps?
+> >
+> slimbus is specified as "SLIMbus" in the mipi specs, so I should probably
+> stay with it and make it consistent across the patchset.
 
-On 10/11/17 11:49, Vinod Koul wrote:
+Yeah this I though was a first use, so I though this was a typo. I think
+Documentation should use the spec term (like SoundWire) and code should pick
+anyone and just be consistent on it.
 
-> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> ---
->   drivers/soundwire/Makefile     |   2 +-
->   drivers/soundwire/bus.c        |   8 +
->   drivers/soundwire/bus_type.c   |  18 ++
->   drivers/soundwire/mipi_disco.c | 422 +++++++++++++++++++++++++++++++++++++++++
->   include/linux/soundwire/sdw.h  | 284 +++++++++++++++++++++++++++
->   5 files changed, 733 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/soundwire/mipi_disco.c
-> 
+> >>+static int slim_device_match(struct device *dev, struct device_driver *drv)
+> >>+{
+> >>+	struct slim_device *sbdev = to_slim_device(dev);
+> >>+	struct slim_driver *sbdrv = to_slim_driver(drv);
+> >>+
+> >>+	return slim_match(sbdrv->id_table, sbdev) != NULL;
+> >
+> >return !!slim_match() ?
 
->
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index 9070aec77576..741b29d974fe 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -84,6 +84,260 @@ enum sdw_slave_status {
->   };
->   
+I guess you missed this one..
 
-> +/**
-> + * enum sdw_clk_stop_mode: Clock Stop modes
-> + *
-> + * @SDW_CLK_STOP_MODE_0: Slave can continue operation seamlessly on clock
-> + * restart
-> + * @SDW_CLK_STOP_MODE_1: Slave may have entered a deeper power-saving mode,
-Should be MODE0 and MODE1.. here
+> >>+struct slim_device_id {
+> >>+	__u16 manf_id, prod_code;
+> >>+	__u8 dev_index, instance;
+> >>+
+> >>+	/* Data private to the driver */
+> >>+	kernel_ulong_t driver_data;
+> >
+> >As Takashi pointed out in SDW patches, this needs to be aligned.
+> >
+> Okay, I will make sure that driver_data is aligned.
 
-> + * not capable of continuing operation seamlessly when the clock restarts
-> + */
-> +enum sdw_clk_stop_mode {
-> +	SDW_CLK_STOP_MODE0 = 1,
-> +	SDW_CLK_STOP_MODE1 = 2,
-> +};
-> +
+You may want to look at comments and disucssion on the SoundWire patches
 
-> +/**
-> + * struct sdw_dpn_audio_mode: Audio mode properties for DPn
-> + *
-> + * @bus_min_freq: Minimum bus frequency, in Hz
-> + * @bus_max_freq: Maximum bus frequency, in Hz
-> + * @bus_num_freq: Number of discrete frequencies supported
-> + * @bus_freq: Discrete bus frequencies, in Hz
-> + * @bus_min_freq: Minimum sampling frequency, in Hz
-Should be min_freq
-> + * @bus_max_freq: Maximum sampling bus frequency, in Hz
-Should be max_freq
-> + * @bus_num_freq: Number of discrete sampling frequency supported
-Should be num_freq
-
-> + * @bus_freq: Discrete sampling frequencies, in Hz
-Should be freq
-> + * @prep_ch_behave: Specifies the dependencies between Channel Prepare
-> + * sequence and bus clock configuration
-> + * If 0, Channel Prepare can happen at any Bus clock rate
-> + * If 1, Channel Prepare sequence shall happen only after Bus clock is
-> + * changed to a frequency supported by this mode or compatible modes
-> + * described by the next field
-> + * @glitchless: Bitmap describing possible glitchless transitions from this
-> + * Audio Mode to other Audio Modes
-> + */
-> +struct sdw_dpn_audio_mode {
-> +	u32 bus_min_freq;
-> +	u32 bus_max_freq;
-> +	u32 bus_num_freq;
-> +	u32 *bus_freq;
-> +	u32 max_freq;
-> +	u32 min_freq;
-> +	u32 num_freq;
-> +	u32 *freq;
-> +	u32 prep_ch_behave;
-> +	u32 glitchless;
-> +};
-> +
->
-> +/**
-> + * struct sdw_slave_prop: SoundWire Slave properties
-> + *
-> + * @mipi_revision: Spec version of the implementation
-> + * @wake_capable: Wake-up events are supported
-> + * @test_mode_capable: If test mode is supported
-> + * @clk_stop_mode1: Clock-Stop Mode 1 is supported
-> + * @simple_clk_stop_capable: Simple clock mode is supported
-> + * @clk_stop_timeout: Worst-case latency of the Clock Stop Prepare State
-> + * Machine transitions, in milliseconds
-> + * @ch_prep_timeout: Worst-case latency of the Channel Prepare State Machine
-> + * transitions, in milliseconds
-> + * @reset_behave: Slave keeps the status of the SlaveStopClockPrepare
-> + * state machine (P=1 SCSP_SM) after exit from clock-stop mode1
-> + * @high_PHY_capable: Slave is HighPHY capable
-> + * @paging_support: Slave implements paging registers SCP_AddrPage1 and
-> + * SCP_AddrPage2
-> + * @bank_delay_support: Slave implements bank delay/bridge support registers
-> + * SCP_BankDelay and SCP_NextFrame
-> + * @p15_behave: Slave behavior when the Master attempts a read to the Port15
-> + * alias
-> + * @lane_control_support:
-
-?? do description here..
-
-> + * @master_count: Number of Masters present on this Slave
-> + * @source_ports: Bitmap identifying source ports
-> + * @sink_ports: Bitmap identifying sink ports
-> + * @dp0_prop: Data Port 0 properties
-> + * @src_dpn_prop: Source Data Port N properties
-> + * @sink_dpn_prop: Sink Data Port N properties
-> + */
-> +struct sdw_slave_prop {
-> +	u32 mipi_revision;
-> +	bool wake_capable;
-> +	bool test_mode_capable;
-> +	bool clk_stop_mode1;
-> +	bool simple_clk_stop_capable;
-> +	u32 clk_stop_timeout;
-> +	u32 ch_prep_timeout;
-> +	enum sdw_clk_stop_reset_behave reset_behave;
-> +	bool high_PHY_capable;
-> +	bool paging_support;
-> +	bool bank_delay_support;
-> +	enum sdw_p15_behave p15_behave;
-> +	bool lane_control_support;
-> +	u32 master_count;
-> +	u32 source_ports;
-> +	u32 sink_ports;
-> +	struct sdw_dp0_prop *dp0_prop;
-> +	struct sdw_dpn_prop *src_dpn_prop;
-> +	struct sdw_dpn_prop *sink_dpn_prop;
-> +};
-> +
+-- 
+~Vinod
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
