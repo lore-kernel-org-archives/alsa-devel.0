@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 07/14] regmap: Add SoundWire bus support
-Date: Thu, 16 Nov 2017 14:48:13 +0000
-Message-ID: <20171116144813.qb446fhkdzok2fo7@sirena.org.uk>
-References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-8-git-send-email-vinod.koul@intel.com>
- <20171116120437.h2ghxvwpsd6ovdhe@sirena.org.uk>
- <20171116130235.GT3187@localhost>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [GIT PULL] sound updates for 4.15-rc1
+Date: Thu, 16 Nov 2017 08:55:35 -0600
+Message-ID: <8bcf9060-92b9-8058-cdee-4a222e796b3e@linux.intel.com>
+References: <s5h4lpwap7p.wl-tiwai@suse.de>
+ <CA+55aFw0PPt3T1DG9HL_x_wH56D-5R_CoOy=rnRJduDo_Qp6nQ@mail.gmail.com>
+ <s5hmv3oatce.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1070551795712851644=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 819A32676EC
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 15:48:28 +0100 (CET)
-In-Reply-To: <20171116130235.GT3187@localhost>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0DF426716A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 15:55:38 +0100 (CET)
+In-Reply-To: <s5hmv3oatce.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,66 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 11/15/17 1:34 AM, Takashi Iwai wrote:
+> [Adding more people and alsa-devel to Cc]
+> 
+> On Wed, 15 Nov 2017 03:40:09 +0100,
+> Linus Torvalds wrote:
+>>
+>> On Tue, Nov 14, 2017 at 6:51 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>>>
+>>> please pull sound updates for v4.15-rc1 from:
+>>
+>> Hmm. Making "oldconfig" on my laptop with this, my
+>> SND_SOC_INTEL_SKYLAKE went away.
+>>
+>> And the reason seems to be that new SND_SOC_INTEL_SST_TOPLEVEL config option.
+>>
+>> Which has no help associated with it.
+>>
+>> This is not a friendly thing to do to people. It basically breaks
+>> existing setups for no documented reason, and with no explanation.
+>>
+>> Please fix the config situation. At the very least, add documentation.
+> 
+> Sorry about that.  I saw Vinod already submitted a patch to add the
+> help text to CONFIG_SND_SOC_INTEL_SST_TOPLEVEL, so the least fix
+> should go in soon.
+> 
+> But now looking at these changes, I noticed a few things, too:
+> 
+> - With the introduction of SND_SOC_INTEL_SST_TOPLEVEL, keeping
+>    SND_SOC_INTEL_COMMON and SND_SOC_INTEL_MACH individually doesn't
+>    make much sense.  They can be dropped and replaced with
+>    SND_SOC_INTEL_SST_TOPLEVEL as a further cleanup.
+> 
+> - ... or, make SND_SOC_INTEL_SST_TOPLEVEL=y as default, if this is
+>    considered to be a top-level filter config (like the network vendor
+>    kconfig items).  In that case, the reverse-selection of
+>    SND_SOC_INTEL_COMMON and SND_SOC_INTEL_MACH should be avoided, but
+>    they should be selected from the actual drivers instead.
 
---===============1070551795712851644==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3rabfvwi5xzx4spk"
-Content-Disposition: inline
+This level was introduced as a shortcut to help select the platform 
+drivers associated with the closed-source audio firmware.
+There will be a follow-up set of patches coming soon, and we'll need to 
+have the corresponding top-level selector for the drivers handling the 
+open-source audio firmware. Please don't make too many assumptions on 
+this SND_SOC_INTEL_SST_TOPLEVEL, it is not going to be true for everyone 
+moving forward.
 
+If you want look at the Kconfig setup, the latest code cherry-picked on 
+top of v4.14 is here
+https://github.com/plbossart/sound/tree/backport/intel-audio-stable-v4.14
 
---3rabfvwi5xzx4spk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+the menuconfig options are still in device drivers/sound/ASoC but now 
+you have SST and SOF menus.
 
-On Thu, Nov 16, 2017 at 06:32:35PM +0530, Vinod Koul wrote:
-> On Thu, Nov 16, 2017 at 12:04:37PM +0000, Mark Brown wrote:
-> > On Fri, Nov 10, 2017 at 05:19:09PM +0530, Vinod Koul wrote:
-
-> > > +EXPORT_SYMBOL(__regmap_init_sdw);
-
-> > We still have plain EXPORT_SYMBOL() on the regmap exports...
-
-> I assumed after Alan's clarification that it is okay to do so. Let me know if
-> you feel otherwise
-
-No, I'm not which is why I replied to Alan's most recent mail explaining
-that I felt he was missing my point.  For the bus code itself I don't
-really care either way, this is just about this one file.
-
-To repeat this is a pretty thin layer of code tying regmap and Soundwire
-together, it's not as substantial as the bus code itself.  The exports
-have no meaning outside of a kernel context and within that context it's
-hard to see a natural use case for doing this.  It's much easier to see
-cases where someone causes themselves problems by reading too much into
-the use of plain EXPORT_SYMBOL(), perhaps not considering things as
-carefully as they might otherwise have done.
-
---3rabfvwi5xzx4spk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloNpSwACgkQJNaLcl1U
-h9BPnAf/e1/amYdWLpq1G3QdnVVOqGCggPM6R0MZu+RzaRYaTlQktq5XeFH1+eQn
-Oa0pIo0lgaNafxbGq4Yb9meiXDjL/4AGFvBGCs9tLCkysLm0JN06deKFGLXOTHVz
-uitv2uCUfpLH778ttWzkuVLS8xMPnXUuyeAvibpyj7hQQddD2hlVV/MvxtPk5x5H
-QE8XOlCMew5c/YjDHaQqPk1QL43QTIQF4p+gyut8xFlXzJin+PRFy1VNfBeEHMnu
-m/E5VqxynqaEYKjZ6ODyQWSiGsIV4Llb/PsoLbq87SOq+nMNfbosKR4GTsn1qmFF
-l2kQkGHo2Kocp0KPfgdarCzRscEjpQ==
-=GYJS
------END PGP SIGNATURE-----
-
---3rabfvwi5xzx4spk--
-
---===============1070551795712851644==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1070551795712851644==--
+> 
+> 
+> And I believe there are a few more possible cleanups / fixes in the
+> messy Intel ASoC Kconfigs.  For example, SND_SOC_INTEL_SST is almost
+> always set.  The only exception is via SND_SST_ATOM_HIFI2_PLATFORM.
+> But all machine drivers using Atom Hifi2 do set SND_SST_IPC_ACPI,
+> which also requires SND_SOC_INTEL_SST.
+> 
+> Further looking at this, we see that the only entry that does *not*
+> require SND_SOC_INTEL_SST is the case with SND_MFLD_MACHINE in
+> sound/soc/intel/boards.  And now more interesting part -- there is no
+> corresponding entry in Makefile.  That is, this kconfig is effectively
+> dead!  The source code mfld_machine.c exists, but it's just a place
+> holder now.  The code was supposed to be integrated into atom
+> directory by the commit b97169da0699, but it seems forgotten to be
+> updated.
+> 
+> Hmm...
+> 
+> 
+> Takashi
+> 
