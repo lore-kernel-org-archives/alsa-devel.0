@@ -1,75 +1,55 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 02/13] dt-bindings: Add SLIMbus bindings
-Date: Thu, 16 Nov 2017 13:40:13 +0000
-Message-ID: <a32232fc-3995-60f6-878e-76aaed4c52d6@linaro.org>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-3-srinivas.kandagatla@linaro.org>
- <20171116130914.GU3187@localhost>
+From: Carlo Caione <carlo@caione.org>
+Subject: Re: [PATCH] SoC: intel: byt: Introduce new custom IN2
+	map
+Date: Thu, 16 Nov 2017 13:53:58 +0000
+Message-ID: <CAOQ7t2YFfkCEkgoGPspr8Kvuomz-eeprqC6NJXiUhDApFqbduA@mail.gmail.com>
+References: <20171018164957.2270-1-carlo@caione.org>
+ <b09a704c-bb3e-32c4-afcb-d11379b6a3b9@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171116130914.GU3187@localhost>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C40A26710A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 14:54:00 +0100 (CET)
+Received: by mail-pg0-f65.google.com with SMTP id u3so5489514pgn.7
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 05:54:00 -0800 (PST)
+In-Reply-To: <b09a704c-bb3e-32c4-afcb-d11379b6a3b9@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Carlo Caione <carlo@caione.org>, Linux Upstreaming Team <linux@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review comments.
-
-On 16/11/17 13:09, Vinod Koul wrote:
-> On Wed, Nov 15, 2017 at 02:10:32PM +0000, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
->> From: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+On Wed, Oct 18, 2017 at 7:05 PM, Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 10/18/17 11:49 AM, Carlo Caione wrote:
+>>
+>> From: Carlo Caione <carlo@endlessm.com>
+>>
+>> Introduce a new custom dapm routes map to quirk platforms with the
+>> internal mic connected to IN2P.
 >
->> +
->> +Child nodes:
->> +Every SLIMbus controller node can contain zero or more child nodes
->> +representing slave devices on the bus. Every SLIMbus slave device is
->> +uniquely determined by the enumeration address containing 4 fields:
->> +Manufacturer ID, Product code, Device index, and Instance value for
->> +the device.
->> +If child node is not present and it is instantiated after device
->> +discovery (slave device reporting itself present).
-> 
-> So you allow the devices to work even if the respective firmware description
-> is absent?
-Yes, As SLIMbus itself itself is discoverable bus.
+>
+> LGTM. If we start getting more quirks for this codec, we should think of
+> adding a module parameters to select them from the command line or with
+> modprobe (as done in other machine drivers).
 
-> 
->> +
->> +In some cases it may be necessary to describe non-probeable device
->> +details such as non-standard ways of powering up a device. In
->> +such cases, child nodes for those devices will be present as
->> +slaves of the slimbus-controller, as detailed below.
->> +
->> +Required property for SLIMbus child node if it is present:
->> +- reg		- Should be ('Device index', 'Instance ID') from SLIMbus
->> +		  Enumeration  Address.
->> +		  Device Index Uniquely identifies multiple Devices within
->> +		  a single Component.
->> +		  Instance ID Is for the cases where multiple Devices of the
->> +		  same type or Class are attached to the bus.
->> +
->> +- compatible	-"slimMID,PID". The textual representation of Manufacturer ID,
->> +	 	  Product Code, shall be in lower case hexadecimal with leading
->> +		  zeroes suppressed
->> +
+Hey Pierre,
+I'm currently working on a laptop (always with the rt5651 codec)
+having two separate internal mics (on IN1P and IN2P) and the headset
+on IN3P. I was thinking how to describe this situation in the current
+driver without having to add all the 6 different configuration as
+quirks. Any suggestion?
 
->> +		codec: wcd9310@1,0{
->> +			compatible = "slim217,60";
->> +			reg = <1 0>;
->> +		};
->> +	};
-> 
-> Pardon my ignorance as I am not very familiar with DT nodes, but where are
-> the Manufacturer ID, Product code, Device index, and Instance values here?
+Cheers,
 
-Manfacturer ID and Product code is part of compatible string
-Device index and Instance value are part of reg.
-
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Carlo Caione
