@@ -1,180 +1,316 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/2] ALSA: pcxhr: Use common error handling
- code in pcxhr_probe()
-Date: Thu, 16 Nov 2017 22:28:11 +0100
-Message-ID: <5860adfd-3357-68ba-5508-96fde59faf5f@users.sourceforge.net>
-References: <c110ba76-d99d-9f80-d927-14d437115004@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BCA126779C
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 22:28:26 +0100 (CET)
-In-Reply-To: <c110ba76-d99d-9f80-d927-14d437115004@users.sourceforge.net>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Add defaults for SND_SST_ options and machine drivers
+Date: Thu, 16 Nov 2017 16:16:43 -0600
+Message-ID: <20171116221643.30128-1-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, tiwai@suse.de, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 16 Nov 2017 22:11:52 +0100
+Add 'default m' when sensible, move common dependencies in if/endif block
+and clarify which options default to n - distro configurations
+should not enable legacy Baytrail stuff and NOCODEC (test only)
 
-Add jump targets so that a bit of exception handling can be better reused
-at the end of this function.
+Basic tests run with defconfig, oldconfig, olddefconfig, there should be
+no functionality change.
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Fixes: f6a118a800e3 ("ASoC: Intel: clarify Kconfig dependencies")
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/pcxhr/pcxhr.c | 62 ++++++++++++++++++++++++-------------------------
- 1 file changed, 31 insertions(+), 31 deletions(-)
+ sound/soc/intel/Kconfig        |  5 ++++
+ sound/soc/intel/boards/Kconfig | 60 ++++++++++++++++++++++++++----------------
+ 2 files changed, 43 insertions(+), 22 deletions(-)
 
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index c490d7e57ff7..f05c6a042890 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -1541,21 +1541,21 @@ static int pcxhr_probe(struct pci_dev *pci,
- 	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(32)) < 0) {
- 		dev_err(&pci->dev,
- 			"architecture does not support 32bit PCI busmaster DMA\n");
--		pci_disable_device(pci);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto disable_device;
- 	}
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 7b49d04e3c60..b40719396e9d 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -31,6 +31,7 @@ config SND_SOC_ACPI_INTEL_MATCH
  
- 	/* alloc card manager */
- 	mgr = kzalloc(sizeof(*mgr), GFP_KERNEL);
--	if (! mgr) {
--		pci_disable_device(pci);
--		return -ENOMEM;
-+	if (!mgr) {
-+		err = -ENOMEM;
-+		goto disable_device;
- 	}
+ config SND_SOC_INTEL_SST_TOPLEVEL
+ 	tristate "Intel ASoC SST drivers"
++	default m
+ 	depends on X86 || COMPILE_TEST
+ 	select SND_SOC_INTEL_MACH
+ 	select SND_SOC_INTEL_COMMON
+@@ -42,6 +43,7 @@ config SND_SOC_INTEL_SST_TOPLEVEL
  
- 	if (snd_BUG_ON(pci_id->driver_data >= PCI_ID_LAST)) {
- 		kfree(mgr);
--		pci_disable_device(pci);
--		return -ENODEV;
-+		err = -ENODEV;
-+		goto disable_device;
- 	}
- 	card_name =
- 		pcxhr_board_params[pci_id->driver_data].board_name;
-@@ -1581,8 +1581,7 @@ static int pcxhr_probe(struct pci_dev *pci,
- 	err = pci_request_regions(pci, card_name);
- 	if (err < 0) {
- 		kfree(mgr);
--		pci_disable_device(pci);
--		return err;
-+		goto disable_device;
- 	}
- 	for (i = 0; i < 3; i++)
- 		mgr->port[i] = pci_resource_start(pci, i);
-@@ -1594,8 +1593,8 @@ static int pcxhr_probe(struct pci_dev *pci,
- 				 pcxhr_threaded_irq, IRQF_SHARED,
- 				 KBUILD_MODNAME, mgr)) {
- 		dev_err(&pci->dev, "unable to grab IRQ %d\n", pci->irq);
--		pcxhr_free(mgr);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto free_manager;
- 	}
- 	mgr->irq = pci->irq;
+ config SND_SOC_INTEL_HASWELL
+ 	tristate "Intel ASoC SST driver for Haswell/Broadwell"
++	default m
+ 	depends on SND_SOC_INTEL_SST_TOPLEVEL && SND_DMA_SGBUF
+ 	depends on DMADEVICES
+ 	select SND_SOC_INTEL_SST
+@@ -49,6 +51,7 @@ config SND_SOC_INTEL_HASWELL
  
-@@ -1614,10 +1613,8 @@ static int pcxhr_probe(struct pci_dev *pci,
- 			    sizeof(u32) * (PCXHR_SIZE_MAX_LONG_STATUS -
- 					   PCXHR_SIZE_MAX_STATUS),
- 			    GFP_KERNEL);
--	if (! mgr->prmh) {
--		pcxhr_free(mgr);
--		return -ENOMEM;
--	}
-+	if (!mgr->prmh)
-+		goto e_nomem;
+ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate "Intel ASoC SST driver for Baytrail (legacy)"
++	default n
+ 	depends on SND_SOC_INTEL_SST_TOPLEVEL
+ 	depends on DMADEVICES
+ 	select SND_SOC_INTEL_SST
+@@ -56,11 +59,13 @@ config SND_SOC_INTEL_BAYTRAIL
  
- 	for (i=0; i < PCXHR_MAX_CARDS; i++) {
- 		struct snd_card *card;
-@@ -1640,8 +1637,7 @@ static int pcxhr_probe(struct pci_dev *pci,
+ config SND_SST_ATOM_HIFI2_PLATFORM
+ 	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
++	default m
+ 	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
+ 	select SND_SOC_COMPRESS
  
- 		if (err < 0) {
- 			dev_err(&pci->dev, "cannot allocate the card %d\n", i);
--			pcxhr_free(mgr);
--			return err;
-+			goto free_manager;
- 		}
+ config SND_SOC_INTEL_SKYLAKE
+ 	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
++	default m
+ 	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
+ 	select SND_HDA_EXT_CORE
+ 	select SND_HDA_DSP_LOADER
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 6f754708a48c..6069328c5c28 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -17,10 +17,12 @@ config SND_MFLD_MACHINE
+           Say Y if you have such a device.
+           If unsure select "N".
  
- 		strcpy(card->driver, DRIVER_NAME);
-@@ -1653,8 +1649,7 @@ static int pcxhr_probe(struct pci_dev *pci,
- 		err = pcxhr_create(mgr, card, i);
- 		if (err < 0) {
- 			snd_card_free(card);
--			pcxhr_free(mgr);
--			return err;
-+			goto free_manager;
- 		}
- 
- 		if (i == 0)
-@@ -1662,32 +1657,37 @@ static int pcxhr_probe(struct pci_dev *pci,
- 			pcxhr_proc_init(mgr->chip[i]);
- 
- 		err = snd_card_register(card);
--		if (err < 0) {
--			pcxhr_free(mgr);
--			return err;
--		}
-+		if (err < 0)
-+			goto free_manager;
- 	}
- 
- 	/* create hostport purgebuffer */
- 	size = PAGE_ALIGN(sizeof(struct pcxhr_hostport));
- 	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
--				size, &mgr->hostport) < 0) {
--		pcxhr_free(mgr);
--		return -ENOMEM;
--	}
-+				size, &mgr->hostport) < 0)
-+		goto e_nomem;
++if SND_SOC_INTEL_HASWELL
 +
- 	/* init purgebuffer */
- 	memset(mgr->hostport.area, 0, size);
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+-	depends on SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds support for the Lynxpoint Audio DSP on Intel(R) Haswell
+@@ -30,8 +32,8 @@ config SND_SOC_INTEL_HASWELL_MACH
  
- 	/* create a DSP loader */
- 	err = pcxhr_setup_firmware(mgr);
--	if (err < 0) {
--		pcxhr_free(mgr);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_manager;
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
++	default m
+ 	depends on X86_INTEL_LPSS && GPIOLIB && I2C
+-	depends on SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5677
+ 	help
+ 	  This adds support for Intel Broadwell platform based boards with
+@@ -39,41 +41,50 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
  
- 	pci_set_drvdata(pci, mgr);
- 	dev++;
- 	return 0;
+ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+-	depends on SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT286
+ 	help
+ 	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
+ 	  Ultrabook platforms.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
++endif
 +
-+disable_device:
-+	pci_disable_device(pci);
-+	return err;
-+
-+e_nomem:
-+	err = -ENOMEM;
-+free_manager:
-+	pcxhr_free(mgr);
-+	return err;
- }
++if SND_SOC_INTEL_BAYTRAIL
  
- static void pcxhr_remove(struct pci_dev *pci)
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
++	default n
+ 	depends on X86_INTEL_LPSS && I2C
+ 	depends on SND_SST_IPC_ACPI = n
+-	depends on SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_MAX98090
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+-	  with the MAX98090 audio codec.
++	  with the MAX98090 audio codec. This driver is deprecated, use
++	  SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH instead for better
++	  functionality.
+ 
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
++	default n
+ 	depends on X86_INTEL_LPSS && I2C
+ 	depends on SND_SST_IPC_ACPI = n
+-	depends on SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+ 	  with the RT5640 audio codec. This driver is deprecated, use
+ 	  SND_SOC_INTEL_BYTCR_RT5640_MACH instead for better functionality.
+ 
++endif
++
++if SND_SST_ATOM_HIFI2_PLATFORM
++
+ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
++	default m
+ 	depends on X86 && I2C && ACPI
+ 	select SND_SOC_RT5640
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+@@ -83,9 +94,9 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
+ 
+ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+         tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
++	default m
+ 	depends on X86 && I2C && ACPI
+ 	select SND_SOC_RT5651
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+           This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+@@ -95,9 +106,9 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+         tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+         select SND_SOC_RT5670
+-        depends on SND_SST_ATOM_HIFI2_PLATFORM
+         select SND_SST_IPC_ACPI
+         help
+           This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -107,9 +118,9 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_RT5645
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -118,10 +129,10 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
+ 
+ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with MAX98090 & TI codec"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_TS3A227E
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
+@@ -130,9 +141,9 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_DA7213
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
+@@ -141,9 +152,9 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with ES8316 codec"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+ 	select SND_SOC_ES8316
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for Intel(R) Baytrail &
+@@ -152,19 +163,23 @@ config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
+ 
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
++	default n
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+-	depends on SND_SST_ATOM_HIFI2_PLATFORM
+ 	select SND_SST_IPC_ACPI
+ 	help
+ 	  This adds support for ASoC machine driver for the MinnowBoard Max or
+ 	  Up boards and provides access to I2S signals on the Low-Speed
+-	  connector
++	  connector. It is not intended to be enabled by distros by default.
+ 	  If unsure select "N".
+ 
++endif
++
++if SND_SOC_INTEL_SKYLAKE
++
+ config SND_SOC_INTEL_SKL_RT286_MACH
+ 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
++	default m
+ 	depends on X86 && ACPI && I2C
+-	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT286
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -176,8 +191,8 @@ config SND_SOC_INTEL_SKL_RT286_MACH
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_SSM4567
+ 	select SND_SOC_DMIC
+@@ -190,8 +205,8 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
+ 
+ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_NAU8825
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -204,8 +219,8 @@ config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
+ 
+ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
++	default m
+ 	depends on X86 && ACPI && I2C
+-	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_DMIC
+@@ -219,8 +234,8 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
+ 
+ config SND_SOC_INTEL_BXT_RT298_MACH
+ 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
++	default m
+ 	depends on X86 && ACPI && I2C
+-	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT298
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+@@ -233,9 +248,9 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	tristate "ASoC Audio driver for KBL with RT5663 and MAX98927 in I2S Mode"
++	default m
+ 	depends on X86_INTEL_LPSS && I2C
+ 	select SND_SOC_INTEL_SST
+-	depends on SND_SOC_INTEL_SKYLAKE
+ 	select SND_SOC_RT5663
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+@@ -248,9 +263,9 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 
+ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+         tristate "ASoC Audio driver for KBL with RT5663, RT5514 and MAX98927 in I2S Mode"
++	default m
+         depends on X86_INTEL_LPSS && I2C && SPI
+         select SND_SOC_INTEL_SST
+-        depends on SND_SOC_INTEL_SKYLAKE
+         select SND_SOC_RT5663
+         select SND_SOC_RT5514
+         select SND_SOC_RT5514_SPI
+@@ -261,5 +276,6 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+           create an alsa sound card for RT5663 + RT5514 + MAX98927.
+           Say Y if you have such a device.
+           If unsure select "N".
++endif
+ 
+ endif
 -- 
-2.15.0
+2.14.1
