@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8540: PGA short to ground" to the
-	asoc tree
-Date: Thu, 16 Nov 2017 19:29:29 +0000 (GMT)
-Message-ID: <20171116192929.230B544005B@finisterre.ee.mobilebroadband>
-References: <1510039399-12807-2-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: nau8540: reset state machine for
+	channel phase sync" to the asoc tree
+Date: Thu, 16 Nov 2017 19:29:32 +0000 (GMT)
+Message-ID: <20171116192932.8422244005B@finisterre.ee.mobilebroadband>
+References: <1510039399-12807-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CE14126779A
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:29:29 +0100 (CET)
-In-Reply-To: <1510039399-12807-2-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E772267799
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:29:33 +0100 (CET)
+In-Reply-To: <1510039399-12807-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8540: PGA short to ground
+   ASoC: nau8540: reset state machine for channel phase sync
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,86 @@ to this mail.
 Thanks,
 Mark
 
->From 14323ff8c21825e20810e893312f9321f9e4e72c Mon Sep 17 00:00:00 2001
+>From e4d0db60e8d25cc62b9b7e32c18e7f6acc136055 Mon Sep 17 00:00:00 2001
 From: John Hsu <KCHSU0@nuvoton.com>
-Date: Tue, 7 Nov 2017 15:23:18 +0800
-Subject: [PATCH] ASoC: nau8540: PGA short to ground
+Date: Tue, 7 Nov 2017 15:23:17 +0800
+Subject: [PATCH] ASoC: nau8540: reset state machine for channel phase sync
 
-Change channel PGA input mode selection for better recording quality.
-The patch shorts the inputs to ground with 12kOhm differentially
-terminated.
+The four channel ADCs in NAU85L40 have difference control registers,
+it is hard to synchronous these four channels without correct sequence.
+The phase difference will not be a constant and not to conjecture easily.
+It may be 2.55 degree, or more ,or less.
+Intended to prevent phase difference of channels, the solution as follows:
+(1)Channel_Sync need to be enabled.
+(2)Do soft reset without affecting register when recording done.
 
 Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8540.c |  7 +++++++
- sound/soc/codecs/nau8540.h | 12 ++++++++++++
- 2 files changed, 19 insertions(+)
+ sound/soc/codecs/nau8540.c | 23 ++++++++++++++++++++---
+ sound/soc/codecs/nau8540.h |  1 +
+ 2 files changed, 21 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/nau8540.c b/sound/soc/codecs/nau8540.c
-index c10cbffa6314..8246486a588d 100644
+index f9c9933acffb..c10cbffa6314 100644
 --- a/sound/soc/codecs/nau8540.c
 +++ b/sound/soc/codecs/nau8540.c
-@@ -730,6 +730,13 @@ static void nau8540_init_regs(struct nau8540 *nau8540)
+@@ -233,6 +233,19 @@ static SOC_ENUM_SINGLE_DECL(
+ static const struct snd_kcontrol_new digital_ch1_mux =
+ 	SOC_DAPM_ENUM("Digital CH1 Select", digital_ch1_enum);
+ 
++static int aiftx_power_control(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		regmap_write(nau8540->regmap, NAU8540_REG_RST, 0x0001);
++		regmap_write(nau8540->regmap, NAU8540_REG_RST, 0x0000);
++	}
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget nau8540_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS2", NAU8540_REG_MIC_BIAS, 11, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("MICBIAS1", NAU8540_REG_MIC_BIAS, 10, 0, NULL, 0),
+@@ -270,7 +283,8 @@ static const struct snd_soc_dapm_widget nau8540_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Digital CH1 Mux",
+ 		SND_SOC_NOPM, 0, 0, &digital_ch1_mux),
+ 
+-	SND_SOC_DAPM_AIF_OUT("AIFTX", "Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT_E("AIFTX", "Capture", 0, SND_SOC_NOPM, 0, 0,
++		aiftx_power_control, SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route nau8540_dapm_routes[] = {
+@@ -710,9 +724,12 @@ static void nau8540_init_regs(struct nau8540 *nau8540)
+ 	regmap_update_bits(regmap, NAU8540_REG_CLOCK_CTRL,
+ 		NAU8540_CLK_ADC_EN | NAU8540_CLK_I2S_EN,
+ 		NAU8540_CLK_ADC_EN | NAU8540_CLK_I2S_EN);
+-	/* ADC OSR selection, CLK_ADC = Fs * OSR */
++	/* ADC OSR selection, CLK_ADC = Fs * OSR;
++	 * Channel time alignment enable.
++	 */
  	regmap_update_bits(regmap, NAU8540_REG_ADC_SAMPLE_RATE,
- 		NAU8540_CH_SYNC | NAU8540_ADC_OSR_MASK,
- 		NAU8540_CH_SYNC | NAU8540_ADC_OSR_64);
-+	/* PGA input mode selection */
-+	regmap_update_bits(regmap, NAU8540_REG_FEPGA1,
-+		NAU8540_FEPGA1_MODCH2_SHT | NAU8540_FEPGA1_MODCH1_SHT,
-+		NAU8540_FEPGA1_MODCH2_SHT | NAU8540_FEPGA1_MODCH1_SHT);
-+	regmap_update_bits(regmap, NAU8540_REG_FEPGA2,
-+		NAU8540_FEPGA2_MODCH4_SHT | NAU8540_FEPGA2_MODCH3_SHT,
-+		NAU8540_FEPGA2_MODCH4_SHT | NAU8540_FEPGA2_MODCH3_SHT);
+-		NAU8540_ADC_OSR_MASK, NAU8540_ADC_OSR_64);
++		NAU8540_CH_SYNC | NAU8540_ADC_OSR_MASK,
++		NAU8540_CH_SYNC | NAU8540_ADC_OSR_64);
  }
  
  static int __maybe_unused nau8540_suspend(struct snd_soc_codec *codec)
 diff --git a/sound/soc/codecs/nau8540.h b/sound/soc/codecs/nau8540.h
-index 14339f9bb01a..7083d4821ce4 100644
+index 5db5b224944d..14339f9bb01a 100644
 --- a/sound/soc/codecs/nau8540.h
 +++ b/sound/soc/codecs/nau8540.h
-@@ -184,6 +184,18 @@
- #define NAU8540_PRECHARGE_DIS		(0x1 << 13)
- #define NAU8540_GLOBAL_BIAS_EN	(0x1 << 12)
+@@ -165,6 +165,7 @@
+ #define NAU8540_TDM_TX_MASK		0xf
  
-+/* FEPGA1 (0x69) */
-+#define NAU8540_FEPGA1_MODCH2_SHT_SFT	7
-+#define NAU8540_FEPGA1_MODCH2_SHT	(0x1 << NAU8540_FEPGA1_MODCH2_SHT_SFT)
-+#define NAU8540_FEPGA1_MODCH1_SHT_SFT	3
-+#define NAU8540_FEPGA1_MODCH1_SHT	(0x1 << NAU8540_FEPGA1_MODCH1_SHT_SFT)
-+
-+/* FEPGA2 (0x6A) */
-+#define NAU8540_FEPGA2_MODCH4_SHT_SFT	7
-+#define NAU8540_FEPGA2_MODCH4_SHT	(0x1 << NAU8540_FEPGA2_MODCH4_SHT_SFT)
-+#define NAU8540_FEPGA2_MODCH3_SHT_SFT	3
-+#define NAU8540_FEPGA2_MODCH3_SHT	(0x1 << NAU8540_FEPGA2_MODCH3_SHT_SFT)
-+
- 
- /* System Clock Source */
- enum {
+ /* ADC_SAMPLE_RATE (0x3A) */
++#define NAU8540_CH_SYNC		(0x1 << 14)
+ #define NAU8540_ADC_OSR_MASK		0x3
+ #define NAU8540_ADC_OSR_256		0x3
+ #define NAU8540_ADC_OSR_128		0x2
 -- 
 2.14.1
