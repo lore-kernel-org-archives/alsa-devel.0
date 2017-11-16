@@ -1,20 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 08/14] soundwire: Add Slave status
-	handling helpers
-Date: Thu, 16 Nov 2017 22:38:50 +0530
-Message-ID: <20171116170850.GF3187@localhost>
-References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-9-git-send-email-vinod.koul@intel.com>
- <06a1bcfc-eeca-b3ec-1d74-e6ac9cadce53@linaro.org>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] ALSA: nm256: Fine-tuning for three
+ function implementations
+Date: Thu, 16 Nov 2017 18:05:27 +0100
+Message-ID: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7340C266EE4
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:05:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <06a1bcfc-eeca-b3ec-1d74-e6ac9cadce53@linaro.org>
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C78D26774A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:06:18 +0100 (CET)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +20,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, Sudheer Papothi <spapothi@codeaurora.org>, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+To: alsa-devel@alsa-project.org, Arvind Yadav <arvind.yadav.cs@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 16, 2017 at 04:05:29PM +0000, Srinivas Kandagatla wrote:
-> 
-> Minor Comment!
-> 
-> On 10/11/17 11:49, Vinod Koul wrote:
-> >From: Sanyog Kale <sanyog.r.kale@intel.com>
-> >
-> >SoundWire Slaves report status to bus. Add helpers to handle
-> >the status changes.
-> >
-> >Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-> >Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> >Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> >---
-> 
-> >+static int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id)
-> >+{
-> >+
-> >+	if ((slave->id.unique_id != id.unique_id) ||
-> >+	    (slave->id.mfg_id != id.mfg_id) ||
-> >+	    (slave->id.part_id != id.part_id) ||
-> >+	    (slave->id.class_id != id.class_id))
-> >+		return -ENODEV;
-> >+
-> >+	return 0;
-> >+}
-> >+
-> >+/* called with bus_lock held */
-> >+static int sdw_get_device_num(struct sdw_slave *slave)
-> >+{
-> If we use ida we would not need this function.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 16 Nov 2017 18:00:18 +0100
 
-Not really, find_first_zero_bit and set_bit will be replaced by get_ida()
+Two update suggestions were taken into account
+from static source code analysis.
 
-the bound check will still be required as we have finite set of ids to work
-with. Nevertheless I will check if it helps in this case and move if
-helpful.
+Markus Elfring (2):
+  Adjust five function calls together with a variable assignment
+  Use common error handling code in snd_nm256_probe()
 
-> >+	int bit;
-> >+
-> >+	bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
-> >+	if (bit == SDW_MAX_DEVICES) {
-> >+		bit = -ENODEV;
-> >+		goto err;
-> >+	}
-> >+
-> >+	/*
-> >+	 * Do not update dev_num in Slave data structure here,
-> >+	 * Update once program dev_num is successful
-> >+	 */
-> >+	set_bit(bit, slave->bus->assigned);
-> >+
-> >+err:
-> >+	return bit;
-> >+}
+ sound/pci/nm256/nm256.c | 48 +++++++++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 19 deletions(-)
 
 -- 
-~Vinod
+2.15.0
