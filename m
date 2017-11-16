@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: revert IOMMU support so far" to
-	the asoc tree
-Date: Thu, 16 Nov 2017 11:02:27 +0000
-Message-ID: <E1eFHwB-0003za-Dl@debutante>
-References: <87lgj6g84q.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: kbl: Remove option of
+ choosing CH count based on pdata
+Date: Thu, 16 Nov 2017 11:48:46 +0000
+Message-ID: <20171116114846.lnlpesev5yo3d23b@sirena.org.uk>
+References: <1510236276-3416-1-git-send-email-naveen.m@intel.com>
+ <1510236276-3416-2-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0873128624844230064=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CE945266F5B
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 12:02:33 +0100 (CET)
-In-Reply-To: <87lgj6g84q.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 92FCA266EE4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 12:48:54 +0100 (CET)
+In-Reply-To: <1510236276-3416-2-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,227 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Simon <horms@verge.net.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Ryo Kodama <ryo.kodama.vz@renesas.com>
+To: Naveen Manohar <naveen.m@intel.com>
+Cc: vinod.koul@intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, liam.r.girdwood@linux.intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rcar: revert IOMMU support so far
+--===============0873128624844230064==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="reinwvt2xen5qudd"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--reinwvt2xen5qudd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Nov 09, 2017 at 07:34:35PM +0530, Naveen Manohar wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> User-space expects 4ch DMIC data and uses channel-map in ucm to
+> figure-out the desired channel to use. Hence removing driver change
+> to allow choosing channels using pdata.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Which userspace and are you sure there are no boards that only have two
+of the mics?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--reinwvt2xen5qudd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From c20c6704bf2dafaba0d90c8310ef9e919fe4d2e2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 16 Nov 2017 04:36:51 +0000
-Subject: [PATCH] ASoC: rcar: revert IOMMU support so far
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloNex0ACgkQJNaLcl1U
+h9CWfwf+Ie5JKIegviLfX2ZN25LsYXtOfSQP6JyOU4OS1BXkoWXfAX0zabOtxAE7
+Nk1ZJYUhdTh75rUfFHzZzLgb6LAksJDuayXiwTf15WhSLsnjCk9hUStezJE7qDv3
+ykBZnnkIvIdR7gVgLI29wrH6ucaU103k4plIvDJWP3GpqHO/anHRB+8vsZ1Kdc0y
+PjGGJuNtdk8AXQUWafuFbLPaSk2TcnCtR2gM2pWd7uPl2Kw0Gqkg6xOsCYXMKo/y
+JlYm6k3lqbtBS6pm+wqf3l+kdTMU5W1/kInUUzpxORO1iKbzdByl3ohgnrzsPkMs
+cAWh69dd6HH3Wb3l5uPV/uE9jgaM7g==
+=JHZE
+-----END PGP SIGNATURE-----
 
-commit 4821d914fe74 ("ASoC: rsnd: use dma_sync_single_for_xxx() for
-IOMMU") had supported IOMMU, but it breaks normal sound "recorde"
-and both PulseAudio's "playback/recorde". The sound will be noisy.
+--reinwvt2xen5qudd--
 
-That commit was using dma_sync_single_for_xxx(), and driver should
-make sure memory is protected during CPU or Device are using it.
-But if driver returns current "residue" data size correctly on pointer
-function, player/recorder will access to protected memory.
+--===============0873128624844230064==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-IOMMU feature should be supported, but I don't know how to handle it
-without memory cache problem at this point.
-Thus, this patch simply revert it to avoid current noisy sound.
 
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Tested-by: Ryo Kodama <ryo.kodama.vz@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/core.c |  4 +--
- sound/soc/sh/rcar/dma.c  | 86 ++++--------------------------------------------
- 2 files changed, 8 insertions(+), 82 deletions(-)
-
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index c70eb2097816..f12a88a21dfa 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1332,8 +1332,8 @@ static int rsnd_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 
- 	return snd_pcm_lib_preallocate_pages_for_all(
- 		rtd->pcm,
--		SNDRV_DMA_TYPE_CONTINUOUS,
--		snd_dma_continuous_data(GFP_KERNEL),
-+		SNDRV_DMA_TYPE_DEV,
-+		rtd->card->snd_card->dev,
- 		PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
- }
- 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index fd557abfe390..4d750bdf8e24 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -26,10 +26,7 @@
- struct rsnd_dmaen {
- 	struct dma_chan		*chan;
- 	dma_cookie_t		cookie;
--	dma_addr_t		dma_buf;
- 	unsigned int		dma_len;
--	unsigned int		dma_period;
--	unsigned int		dma_cnt;
- };
- 
- struct rsnd_dmapp {
-@@ -71,38 +68,10 @@ static struct rsnd_mod mem = {
- /*
-  *		Audio DMAC
-  */
--#define rsnd_dmaen_sync(dmaen, io, i)	__rsnd_dmaen_sync(dmaen, io, i, 1)
--#define rsnd_dmaen_unsync(dmaen, io, i)	__rsnd_dmaen_sync(dmaen, io, i, 0)
--static void __rsnd_dmaen_sync(struct rsnd_dmaen *dmaen, struct rsnd_dai_stream *io,
--			      int i, int sync)
--{
--	struct device *dev = dmaen->chan->device->dev;
--	enum dma_data_direction dir;
--	int is_play = rsnd_io_is_play(io);
--	dma_addr_t buf;
--	int len, max;
--	size_t period;
--
--	len	= dmaen->dma_len;
--	period	= dmaen->dma_period;
--	max	= len / period;
--	i	= i % max;
--	buf	= dmaen->dma_buf + (period * i);
--
--	dir = is_play ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
--
--	if (sync)
--		dma_sync_single_for_device(dev, buf, period, dir);
--	else
--		dma_sync_single_for_cpu(dev, buf, period, dir);
--}
--
- static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
- 				  struct rsnd_dai_stream *io)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
--	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
--	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
- 	bool elapsed = false;
- 	unsigned long flags;
- 
-@@ -115,22 +84,9 @@ static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
- 	 */
- 	spin_lock_irqsave(&priv->lock, flags);
- 
--	if (rsnd_io_is_working(io)) {
--		rsnd_dmaen_unsync(dmaen, io, dmaen->dma_cnt);
--
--		/*
--		 * Next period is already started.
--		 * Let's sync Next Next period
--		 * see
--		 *	rsnd_dmaen_start()
--		 */
--		rsnd_dmaen_sync(dmaen, io, dmaen->dma_cnt + 2);
--
-+	if (rsnd_io_is_working(io))
- 		elapsed = true;
- 
--		dmaen->dma_cnt++;
--	}
--
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
- 	if (elapsed)
-@@ -165,14 +121,8 @@ static int rsnd_dmaen_stop(struct rsnd_mod *mod,
- 	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
- 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
- 
--	if (dmaen->chan) {
--		int is_play = rsnd_io_is_play(io);
--
-+	if (dmaen->chan)
- 		dmaengine_terminate_all(dmaen->chan);
--		dma_unmap_single(dmaen->chan->device->dev,
--				 dmaen->dma_buf, dmaen->dma_len,
--				 is_play ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
--	}
- 
- 	return 0;
- }
-@@ -237,11 +187,7 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct dma_async_tx_descriptor *desc;
- 	struct dma_slave_config cfg = {};
--	dma_addr_t buf;
--	size_t len;
--	size_t period;
- 	int is_play = rsnd_io_is_play(io);
--	int i;
- 	int ret;
- 
- 	cfg.direction	= is_play ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
-@@ -258,19 +204,10 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
- 	if (ret < 0)
- 		return ret;
- 
--	len	= snd_pcm_lib_buffer_bytes(substream);
--	period	= snd_pcm_lib_period_bytes(substream);
--	buf	= dma_map_single(dmaen->chan->device->dev,
--				 substream->runtime->dma_area,
--				 len,
--				 is_play ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
--	if (dma_mapping_error(dmaen->chan->device->dev, buf)) {
--		dev_err(dev, "dma map failed\n");
--		return -EIO;
--	}
--
- 	desc = dmaengine_prep_dma_cyclic(dmaen->chan,
--					 buf, len, period,
-+					 substream->runtime->dma_addr,
-+					 snd_pcm_lib_buffer_bytes(substream),
-+					 snd_pcm_lib_period_bytes(substream),
- 					 is_play ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM,
- 					 DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 
-@@ -282,18 +219,7 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
- 	desc->callback		= rsnd_dmaen_complete;
- 	desc->callback_param	= rsnd_mod_get(dma);
- 
--	dmaen->dma_buf		= buf;
--	dmaen->dma_len		= len;
--	dmaen->dma_period	= period;
--	dmaen->dma_cnt		= 0;
--
--	/*
--	 * synchronize this and next period
--	 * see
--	 *	__rsnd_dmaen_complete()
--	 */
--	for (i = 0; i < 2; i++)
--		rsnd_dmaen_sync(dmaen, io, i);
-+	dmaen->dma_len		= snd_pcm_lib_buffer_bytes(substream);
- 
- 	dmaen->cookie = dmaengine_submit(desc);
- 	if (dmaen->cookie < 0) {
--- 
-2.15.0
+--===============0873128624844230064==--
