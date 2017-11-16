@@ -1,87 +1,85 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Make the driver name consistent across files" to
- the asoc tree
-Date: Thu, 16 Nov 2017 19:28:48 +0000 (GMT)
-Message-ID: <20171116192848.26DFF44005B@finisterre.ee.mobilebroadband>
-References: <1509741345-1589-3-git-send-email-alexander.deucher@amd.com>
+Subject: Applied "ASoC: nau8824: change FVCO maximum threshold"
+	to the asoc tree
+Date: Thu, 16 Nov 2017 19:28:22 +0000 (GMT)
+Message-ID: <20171116192822.B413544005B@finisterre.ee.mobilebroadband>
+References: <1510540588-2463-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1509741345-1589-3-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Jason Clinton <jclinton@chromium.org>, broonie@kernel.org, amd-gfx@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C415826777A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:28:25 +0100 (CET)
+In-Reply-To: <1510540588-2463-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBBU29DOiBBTUQ6IE1ha2UgdGhlIGRyaXZlciBuYW1lIGNvbnNpc3RlbnQg
-YWNyb3NzIGZpbGVzCgpoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBhc29jIHRyZWUgYXQKCiAgIGh0
-dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29uaWUvc291
-bmQuZ2l0IAoKQWxsIGJlaW5nIHdlbGwgdGhpcyBtZWFucyB0aGF0IGl0IHdpbGwgYmUgaW50ZWdy
-YXRlZCBpbnRvIHRoZSBsaW51eC1uZXh0CnRyZWUgKHVzdWFsbHkgc29tZXRpbWUgaW4gdGhlIG5l
-eHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmluZwp0aGUgbmV4dCBtZXJnZSB3aW5k
-b3cgKG9yIHNvb25lciBpZiBpdCBpcyBhIGJ1ZyBmaXgpLCBob3dldmVyIGlmCnByb2JsZW1zIGFy
-ZSBkaXNjb3ZlcmVkIHRoZW4gdGhlIHBhdGNoIG1heSBiZSBkcm9wcGVkIG9yIHJldmVydGVkLiAg
-CgpZb3UgbWF5IGdldCBmdXJ0aGVyIGUtbWFpbHMgcmVzdWx0aW5nIGZyb20gYXV0b21hdGVkIG9y
-IG1hbnVhbCB0ZXN0aW5nCmFuZCByZXZpZXcgb2YgdGhlIHRyZWUsIHBsZWFzZSBlbmdhZ2Ugd2l0
-aCBwZW9wbGUgcmVwb3J0aW5nIHByb2JsZW1zIGFuZApzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRk
-cmVzc2luZyBhbnkgaXNzdWVzIHRoYXQgYXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KCklmIGFueSB1
-cGRhdGVzIGFyZSByZXF1aXJlZCBvciB5b3UgYXJlIHN1Ym1pdHRpbmcgZnVydGhlciBjaGFuZ2Vz
-IHRoZXkKc2hvdWxkIGJlIHNlbnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBhZ2FpbnN0IGN1cnJl
-bnQgZ2l0LCBleGlzdGluZwpwYXRjaGVzIHdpbGwgbm90IGJlIHJlcGxhY2VkLgoKUGxlYXNlIGFk
-ZCBhbnkgcmVsZXZhbnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBDQ3Mgd2hlbiByZXBs
-eWluZwp0byB0aGlzIG1haWwuCgpUaGFua3MsCk1hcmsKCkZyb20gYTc2ZDdmNTQ1NGM2ODhiNTJk
-Yzg0OWU4MzJjYzRjNmRkMDk3NTcyMyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogQWtz
-aHUgQWdyYXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPgpEYXRlOiBGcmksIDMgTm92IDIwMTcg
-MTY6MzU6NDQgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBU29DOiBBTUQ6IE1ha2UgdGhlIGRyaXZl
-ciBuYW1lIGNvbnNpc3RlbnQgYWNyb3NzIGZpbGVzCgpUaGlzIGZpeGVzIHRoZSBpc3N1ZSBvZiBk
-cml2ZXIgbm90IGdldHRpbmcgYXV0byBsb2FkZWQgd2l0aApNT0RVTEVfQUxJQVMuCmZpbmQgL3N5
-cy9kZXZpY2VzIC1uYW1lIG1vZGFsaWFzIC1wcmludDAgfCB4YXJncyAtMCBncmVwICdhdWRpbycK
-L3N5cy9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMS4wL2FjcF9hdWRpb19kbWEuMC5hdXRv
-L21vZGFsaWFzOnBsYXRmb3JtOmFjcF9hdWRpb19kbWEKCkJVRz1iOjYyMTAzODM3ClRFU1Q9Ym9v
-dCBhbmQgY2hlY2sgZm9yIGRldmljZSBpbiBsc21vZAoKU2lnbmVkLW9mZi1ieTogQWtzaHUgQWdy
-YXdhbCA8YWtzaHUuYWdyYXdhbEBhbWQuY29tPgpSZXZpZXdlZC1vbjogaHR0cHM6Ly9jaHJvbWl1
-bS1yZXZpZXcuZ29vZ2xlc291cmNlLmNvbS82NzgyNzgKVGVzdGVkLWJ5OiBKYXNvbiBDbGludG9u
-IDxqY2xpbnRvbkBjaHJvbWl1bS5vcmc+ClJldmlld2VkLWJ5OiBKYXNvbiBDbGludG9uIDxqY2xp
-bnRvbkBjaHJvbWl1bS5vcmc+ClNpZ25lZC1vZmYtYnk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVy
-LmRldWNoZXJAYW1kLmNvbT4KU2lnbmVkLW9mZi1ieTogTWFyayBCcm93biA8YnJvb25pZUBrZXJu
-ZWwub3JnPgotLS0KIHNvdW5kL3NvYy9hbWQvTWFrZWZpbGUgICAgICB8IDQgKystLQogc291bmQv
-c29jL2FtZC9hY3AtcGNtLWRtYS5jIHwgNiArKysrLS0KIDIgZmlsZXMgY2hhbmdlZCwgNiBpbnNl
-cnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvTWFr
-ZWZpbGUgYi9zb3VuZC9zb2MvYW1kL01ha2VmaWxlCmluZGV4IGVlZDY0ZmY2YzczZS4uZjA3ZmQy
-ZTI4NzBhIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvYW1kL01ha2VmaWxlCisrKyBiL3NvdW5kL3Nv
-Yy9hbWQvTWFrZWZpbGUKQEAgLTEsNSArMSw1IEBACi1zbmQtc29jLWFjcC1wY20tb2Jqcwk6PSBh
-Y3AtcGNtLWRtYS5vCithY3BfYXVkaW9fZG1hLW9ianMgOj0gYWNwLXBjbS1kbWEubwogc25kLXNv
-Yy1hY3AtcnQ1NjQ1LW1hY2gtb2JqcyA6PSBhY3AtcnQ1NjQ1Lm8KIAotb2JqLSQoQ09ORklHX1NO
-RF9TT0NfQU1EX0FDUCkgKz0gc25kLXNvYy1hY3AtcGNtLm8KK29iai0kKENPTkZJR19TTkRfU09D
-X0FNRF9BQ1ApICs9IGFjcF9hdWRpb19kbWEubwogb2JqLSQoQ09ORklHX1NORF9TT0NfQU1EX0Na
-X1JUNTY0NV9NQUNIKSArPSBzbmQtc29jLWFjcC1ydDU2NDUtbWFjaC5vCmRpZmYgLS1naXQgYS9z
-b3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMK
-aW5kZXggNzNiNThlZTAwMzgzLi45NWM2MWVjZGQxZGQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9h
-bWQvYWNwLXBjbS1kbWEuYworKysgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKQEAgLTQw
-LDYgKzQwLDggQEAKICNkZWZpbmUgU1RfTUFYX0JVRkZFUiAoU1RfUExBWUJBQ0tfTUFYX1BFUklP
-RF9TSVpFICogUExBWUJBQ0tfTUFYX05VTV9QRVJJT0RTKQogI2RlZmluZSBTVF9NSU5fQlVGRkVS
-IFNUX01BWF9CVUZGRVIKIAorI2RlZmluZSBEUlZfTkFNRSAiYWNwX2F1ZGlvX2RtYSIKKwogc3Rh
-dGljIGNvbnN0IHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlIGFjcF9wY21faGFyZHdhcmVfcGxheWJh
-Y2sgPSB7CiAJLmluZm8gPSBTTkRSVl9QQ01fSU5GT19JTlRFUkxFQVZFRCB8CiAJCVNORFJWX1BD
-TV9JTkZPX0JMT0NLX1RSQU5TRkVSIHwgU05EUlZfUENNX0lORk9fTU1BUCB8CkBAIC0xMTcwLDcg
-KzExNzIsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBhY3BfZG1hX2RyaXZlciA9
-IHsKIAkucHJvYmUgPSBhY3BfYXVkaW9fcHJvYmUsCiAJLnJlbW92ZSA9IGFjcF9hdWRpb19yZW1v
-dmUsCiAJLmRyaXZlciA9IHsKLQkJLm5hbWUgPSAiYWNwX2F1ZGlvX2RtYSIsCisJCS5uYW1lID0g
-RFJWX05BTUUsCiAJCS5wbSA9ICZhY3BfcG1fb3BzLAogCX0sCiB9OwpAQCAtMTE4MSw0ICsxMTgz
-LDQgQEAgTU9EVUxFX0FVVEhPUigiVmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tIik7CiBNT0RVTEVf
-QVVUSE9SKCJNYXJ1dGhpLkJheXlhdmFyYXB1QGFtZC5jb20iKTsKIE1PRFVMRV9ERVNDUklQVElP
-TigiQU1EIEFDUCBQQ00gRHJpdmVyIik7CiBNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7Ci1NT0RV
-TEVfQUxJQVMoInBsYXRmb3JtOmFjcC1kbWEtYXVkaW8iKTsKK01PRFVMRV9BTElBUygicGxhdGZv
-cm06IkRSVl9OQU1FKTsKLS0gCjIuMTQuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
-ZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlz
-dGluZm8vZHJpLWRldmVsCg==
+The patch
+
+   ASoC: nau8824: change FVCO maximum threshold
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 080f773d226a9c2b0fa0d8f02107518c560f8b77 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Mon, 13 Nov 2017 10:36:28 +0800
+Subject: [PATCH] ASoC: nau8824: change FVCO maximum threshold
+
+Change the maximum of FDCO which remains between 90MHz-100MHz.
+FDCO must be within the 90MHz-100MHz or the FFL cannot be
+guaranteed across the full range of operation.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8824.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 8a9a9939827e..088e0cef4cb8 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -43,7 +43,7 @@ static bool nau8824_is_jack_inserted(struct nau8824 *nau8824);
+ 
+ /* the parameter threshold of FLL */
+ #define NAU_FREF_MAX 13500000
+-#define NAU_FVCO_MAX 124000000
++#define NAU_FVCO_MAX 100000000
+ #define NAU_FVCO_MIN 90000000
+ 
+ /* scaling for mclk from sysclk_src output */
+-- 
+2.14.1
