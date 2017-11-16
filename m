@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 02/14] soundwire: Add SoundWire bus type
-Date: Thu, 16 Nov 2017 17:24:37 +0000
-Message-ID: <20171116172437.k64r5c6ehujwvogd@sirena.org.uk>
-References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-3-git-send-email-vinod.koul@intel.com>
- <cb4fbc87-7857-5ab3-a2cd-413ee57c463e@linaro.org>
- <20171116170221.GD3187@localhost>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v7 04/13] slimbus: core: Add slim
+	controllers support
+Date: Thu, 16 Nov 2017 17:29:35 +0000
+Message-ID: <55794ca5-b70a-4866-1e80-bc0e78880c50@linaro.org>
+References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
+ <20171115141043.29202-5-srinivas.kandagatla@linaro.org>
+ <20171116164233.GB3187@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6917654132416990514=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BED6C266EE4
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:25:00 +0100 (CET)
-In-Reply-To: <20171116170221.GD3187@localhost>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64B6D266EE4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:29:38 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id x63so1763005wmf.2
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 09:29:38 -0800 (PST)
+In-Reply-To: <20171116164233.GB3187@localhost>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,68 +27,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, arnd@arndb.de, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, daniel@ffwll.ch, jkosina@suse.cz, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6917654132416990514==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="df5lijvbkbhlb2pz"
-Content-Disposition: inline
+thanks for the comments.
 
 
---df5lijvbkbhlb2pz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 16/11/17 16:42, Vinod Koul wrote:
+> On Wed, Nov 15, 2017 at 02:10:34PM +0000, srinivas.kandagatla@linaro.org wrote:
+> 
+>> +static void slim_dev_release(struct device *dev)
+>> +{
+>> +	struct slim_device *sbdev = to_slim_device(dev);
+>> +
+>> +	put_device(sbdev->ctrl->dev);
+> 
+> which device would that be?
+This is controller device
 
-On Thu, Nov 16, 2017 at 10:32:21PM +0530, Vinod Koul wrote:
-> On Thu, Nov 16, 2017 at 04:05:17PM +0000, Srinivas Kandagatla wrote:
+> 
+>> +static int slim_add_device(struct slim_controller *ctrl,
+>> +			   struct slim_device *sbdev,
+>> +			   struct device_node *node)
+>> +{
+>> +	sbdev->dev.bus = &slimbus_bus;
+>> +	sbdev->dev.parent = ctrl->dev;
+>> +	sbdev->dev.release = slim_dev_release;
+>> +	sbdev->dev.driver = NULL;
+>> +	sbdev->ctrl = ctrl;
+>> +
+>> +	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
+>> +				  sbdev->e_addr.manf_id,
+>> +				  sbdev->e_addr.prod_code,
+>> +				  sbdev->e_addr.dev_index,
+>> +				  sbdev->e_addr.instance);
+>> +
+>> +	get_device(ctrl->dev);
+> 
+> is this controller device and you ensuring it doesnt go away while you have
+> slaves on it?
 
-> > >+static const struct sdw_device_id *
-> > >+sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
-> > Indentation looks Odd here,
+Yes.
 
-> not really, the return type in preceding line is a perfect way to define
-> things...
+> 
+>> +static struct slim_device *slim_alloc_device(struct slim_controller *ctrl,
+>> +					     struct slim_eaddr *eaddr,
+>> +					     struct device_node *node)
+>> +{
+>> +	struct slim_device *sbdev;
+>> +	int ret;
+>> +
+>> +	sbdev = kzalloc(sizeof(struct slim_device), GFP_KERNEL);
+> 
+> Usual kernel way of doing is kzalloc(*sbdev)
+> 
+I agree will fix it in next version.
 
-Yeah, that's fairly normal - just ugly long.  You could also do it by
-splitting the arguments over two lines.
+>> +void slim_report_absent(struct slim_device *sbdev)
+>> +{
+>> +	struct slim_controller *ctrl = sbdev->ctrl;
+>> +
+>> +	if (!ctrl)
+>> +		return;
+>> +
+>> +	/* invalidate logical addresses */
+>> +	mutex_lock(&ctrl->lock);
+>> +	sbdev->is_laddr_valid = false;
+>> +	mutex_unlock(&ctrl->lock);
+>> +
+>> +	ida_simple_remove(&ctrl->laddr_ida, sbdev->laddr);
+>> +	slim_device_update_status(sbdev, SLIM_DEVICE_STATUS_DOWN);
+>> +}
+>> +EXPORT_SYMBOL_GPL(slim_report_absent);
+> 
+> Do you have APIs for report present too, if so why not add te status in
+> argument as you may have common handling
+Yes, We do  have api for reporting too, I will give it a try to combine 
+both.
 
-> > >+	ret = dev_pm_domain_attach(dev, false);
-> > >+	if (ret) {
+> 
+>> +static int slim_device_alloc_laddr(struct slim_device *sbdev,
+>> +				   u8 *laddr, bool report_present)
+>> +{
+>> +	struct slim_controller *ctrl = sbdev->ctrl;
+>> +	int ret;
+>> +
+>> +	mutex_lock(&ctrl->lock);
+>> +	if (ctrl->get_laddr) {
+>> +		ret = ctrl->get_laddr(ctrl, &sbdev->e_addr, laddr);
+>> +		if (ret < 0)
+>> +			goto err;
+>> +	} else if (report_present) {
+>> +		ret = ida_simple_get(&ctrl->laddr_ida,
+>> +				     0, SLIM_LA_MANAGER - 1, GFP_KERNEL);
+>> +		if (ret < 0)
+>> +			goto err;
+>> +
+>> +		*laddr = ret;
+>> +	} else {
+>> +		ret = -EINVAL;
+>> +		goto err;
+>> +	}
+>> +
+>> +	if (ctrl->set_laddr) {
+>> +		ret = ctrl->set_laddr(ctrl, &sbdev->e_addr, *laddr);
+>> +		if (ret) {
+>> +			ret = -EINVAL;
+>> +			goto err;
+>> +		}
+>> +	}
+>> +
+>> +	sbdev->laddr = *laddr;
+> 
+> if you have this in sbdev, then why have this as an arg also?
+Yes makes sens, laddr argument in this function is redundant, it can be 
+removed totally.
+> 
+>> +	sbdev->is_laddr_valid = true;
+> 
+> shouldn't non-zero value signify that?
+0 is also a valid laddr.
 
-> > I think we discussed this in v1, but erring out here means that all the
-> > devices need to have pm domain  attached, which might not be true all the
-> > time.
-
-> oh yes, sorry i missed this one. will fix
-
-Looking at this pattern here I'm wondering if this should be folded into
-the domain code, everything attaching a domain is going to need to take
-care of this at the minute.
-
---df5lijvbkbhlb2pz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloNydEACgkQJNaLcl1U
-h9DlgQf/RM3wclY4vIX0lMJ41qavcaOQRMMe5WG2EdLoktgNQ+SugKjcAdYrGbW5
-JoXIAN3acZVWYxNvFtRuvKU8AgwHtF+KeFU1IJR4ku3qTCSHNhb+JMGHgtsEZtIW
-6m/nxb6Cnj+H46uxet33Ir5Przujd6C2Ki8Y2iJkiKZwpeA744FYslsx70HpKBX2
-983L60+isaKBl/WacAM7QqerTLHHGSCXSuozHrNjN+Wb+TWj3+l5UBouKMKRvmnz
-grjRGMzoCKogubr756vWGtukzXHzk5DPXFlREdCQEHrv3QJxmR3bQVptsL0UNjcn
-GZarTowd13s3hh8lxboiDF7q+W6mjg==
-=PgY5
------END PGP SIGNATURE-----
-
---df5lijvbkbhlb2pz--
-
---===============6917654132416990514==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6917654132416990514==--
+> 
