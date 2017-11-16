@@ -1,65 +1,107 @@
-From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix out-of-bound error
-Date: Thu, 16 Nov 2017 09:42:38 +0900
-Message-ID: <CAL6iAa+ntXgBO0OXkR+QiL2Mus-NSry64q7g=Bj4aDtVEkw9zw@mail.gmail.com>
-References: <1510733261-28878-1-git-send-email-climbbb.kim@gmail.com>
- <CAL6iAaJTKi+S4izrrbjdceuqHMHOwqDEYO2Mx9-B4Z8F7GrohQ@mail.gmail.com> <s5hefozc36l.wl-tiwai@suse.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver
+	driver
+Date: Wed, 15 Nov 2017 22:30:59 -0600
+Message-ID: <20171116043059.azaqjfbjeo4rlaon@rob-hp-laptop>
+References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
+ <1510253136-14153-4-git-send-email-tharvey@gateworks.com>
+ <20171115155204.yhqjocdm32qunllx@rob-hp-laptop>
+ <CAJ+vNU0NuNjZePQBaxWHT4HtYGxZJ_DUSvuHvb6wAFDGA_xX9A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5hefozc36l.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, stable <stable@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f170.google.com (mail-ot0-f170.google.com
+ [74.125.82.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id D71B3266D7D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 05:31:02 +0100 (CET)
+Received: by mail-ot0-f170.google.com with SMTP id j29so18085493oth.13
+ for <alsa-devel@alsa-project.org>; Wed, 15 Nov 2017 20:31:02 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <CAJ+vNU0NuNjZePQBaxWHT4HtYGxZJ_DUSvuHvb6wAFDGA_xX9A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tim Harvey <tharvey@gateworks.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, Shawn Guo <shawnguo@kernel.org>, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi
+On Wed, Nov 15, 2017 at 10:31:14AM -0800, Tim Harvey wrote:
+> On Wed, Nov 15, 2017 at 7:52 AM, Rob Herring <robh@kernel.org> wrote:
+> > On Thu, Nov 09, 2017 at 10:45:34AM -0800, Tim Harvey wrote:
+> >> Add support for the TDA1997x HDMI receivers.
+> >>
+> >> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+> >> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> >> ---
+> >> v3:
+> >>  - use V4L2_DV_BT_FRAME_WIDTH/HEIGHT macros
+> >>  - fixed missing break
+> >>  - use only hdmi_infoframe_log for infoframe logging
+> >>  - simplify tda1997x_s_stream error handling
+> >>  - add delayed work proc to handle hotplug enable/disable
+> >>  - fix set_edid (disable HPD before writing, enable after)
+> >>  - remove enabling edid by default
+> >>  - initialize timings
+> >>  - take quant range into account in colorspace conversion
+> >>  - remove vendor/product tracking (we provide this in log_status via infoframes)
+> >>  - add v4l_controls
+> >>  - add more detail to log_status
+> >>  - calculate vhref generator timings
+> >>  - timing detection fixes (rounding errors, hswidth errors)
+> >>  - rename configure_input/configure_conv functions
+> >>
+> >> v2:
+> >>  - implement dv timings enum/cap
+> >>  - remove deprecated g_mbus_config op
+> >>  - fix dv_query_timings
+> >>  - add EDID get/set handling
+> >>  - remove max-pixel-rate support
+> >>  - add audio codec DAI support
+> >>  - change audio bindings
+> >> ---
+> >>  drivers/media/i2c/Kconfig            |    9 +
+> >>  drivers/media/i2c/Makefile           |    1 +
+> >>  drivers/media/i2c/tda1997x.c         | 3485 ++++++++++++++++++++++++++++++++++
+> >>  include/dt-bindings/media/tda1997x.h |   78 +
+> >
+> > This belongs with the binding documentation patch.
+> >
+> 
+> Rob,
+> 
+> Thanks - missed that. I will move it for v4.
+> 
+> Regarding your previous comment to the v2 series:
+> > The rest of the binding looks fine, but I have some reservations about
+> > this. I think this should be common probably. There's been a few
+> > bindings for display recently that deal with the interface format. Maybe
+> > some vendor property is needed here to map a standard interface format
+> > back to pin configuration.
+> 
+> I take it this is not an 'Ack' for the bindings?
+> 
+> Which did you feel should be made common? I admit I was surprised
+> there wasn't a common binding for audio bus format (i2s|spdif) but if
+> you were referring to the video data that would probably be much more
+> complicated.
 
-2017-11-15 18:16 GMT+09:00 Takashi Iwai <tiwai@suse.de>:
-> On Wed, 15 Nov 2017 09:57:56 +0100,
-> Jaejoong Kim wrote:
->>
->> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
->> index e630813..5a83c2c 100644
->> --- a/sound/usb/mixer.c
->> +++ b/sound/usb/mixer.c
->> @@ -204,7 +204,8 @@ static int snd_usb_copy_string_desc(struct mixer_build
->> *state,
->>                                     int index, char *buf, int maxlen)
->>  {
->>         int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
->> -       buf[len] = 0;
->> +       if (len > 0)
->> +               buf[len] = 0;
->>         return len;
->
-> I'd rather put an explicit error bail-out, i.e.
->
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 91bc8f18791e..296a63a9d09c 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -204,6 +204,10 @@ static int snd_usb_copy_string_desc(struct mixer_build *state,
->                                     int index, char *buf, int maxlen)
->  {
->         int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
-> +
-> +       if (len < 0)
-> +               return len;
-> +
->         buf[len] = 0;
->         return len;
->  }
+The video data. Either you have to try to come up with some way to map 
+color components to signals/pins (and even cycles) or you just enumerate 
+the formats and keep adding to them when new ones appear. There's h/w 
+that allows the former, but in the end you have to interoperate, so 
+enumerating the formats is probably enough.
 
-OK.
+> I was hoping one of the media/driver maintainers would respond to your
+> comment with thoughts as I'm not familiar with a very wide variety of
+> receivers.
 
-I will resend v2 patch with your suggestion.
+I am hoping, too.
 
->
->
-> thanks,
->
-> Takashi
-
-thanks,
-Jaejoong
+Rob
