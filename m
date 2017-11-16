@@ -1,21 +1,18 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v4 11/12] ASoC: add bindings for stm32
-	DFSDM filter
-Date: Thu, 16 Nov 2017 11:53:18 +0100
-Message-ID: <86764d6d-5e6a-9dce-f9fb-a5806041e60e@st.com>
-References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
- <1510222354-15290-12-git-send-email-arnaud.pouliquen@st.com>
- <20171115154304.dzrezz7trvoway73@rob-hp-laptop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rcar: revert IOMMU support so far" to
+	the asoc tree
+Date: Thu, 16 Nov 2017 11:02:27 +0000
+Message-ID: <E1eFHwB-0003za-Dl@debutante>
+References: <87lgj6g84q.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 87CEA266F5B
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 11:53:24 +0100 (CET)
-In-Reply-To: <20171115154304.dzrezz7trvoway73@rob-hp-laptop>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE945266F5B
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 12:02:33 +0100 (CET)
+In-Reply-To: <87lgj6g84q.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,109 +22,227 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Simon <horms@verge.net.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Ryo Kodama <ryo.kodama.vz@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gUm9iLAoKVGhhbmtzIGZvciB0aGUgUmV2aWV3LAoKCk9uIDExLzE1LzIwMTcgMDQ6NDMg
-UE0sIFJvYiBIZXJyaW5nIHdyb3RlOgo+IE9uIFRodSwgTm92IDA5LCAyMDE3IGF0IDExOjEyOjMz
-QU0gKzAxMDAsIEFybmF1ZCBQb3VsaXF1ZW4gd3JvdGU6Cj4+IEFkZCBiaW5kaW5ncyB0aGF0IGRl
-c2NyaWJlcyBhdWRpbyBzZXR0aW5ncyB0byBzdXBwb3J0Cj4+IERpZ2l0YWwgRmlsdGVyIGZvciBw
-dWxzZSBkZW5zaXR5IG1vZHVsYXRpb24oUERNKSBtaWNyb3Bob25lLgo+PiAKPj4gU2lnbmVkLW9m
-Zi1ieTogQXJuYXVkIFBvdWxpcXVlbiA8YXJuYXVkLnBvdWxpcXVlbkBzdC5jb20+Cj4+IC0tLQo+
-PiBWMyAtPiBWNCBjaGFuZ2VzOgo+PsKgwqDCoMKgwqDCoMKgIC0gVXBkYXRlIHRvIG1vdmUgb24g
-b2ZfZ3JhcGggZGVzY3JpcHRpb24uCj4+wqDCoMKgwqDCoMKgwqAgLSBMaW5rIHRvIERGU0RNIElJ
-TyBiaW5kaW5ncy4KPj4gCj4+wqAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc3Qsc3Rt
-MzItYWRmc2RtLnR4dMKgIHwgNjMgKysrKysrKysrKysrKysrKysrKysrKwo+PsKgIDEgZmlsZSBj
-aGFuZ2VkLCA2MyBpbnNlcnRpb25zKCspCj4+wqAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdCxzdG0zMi1hZGZzZG0udHh0Cj4+IAo+
-PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N0
-LHN0bTMyLWFkZnNkbS50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
-bmQvc3Qsc3RtMzItYWRmc2RtLnR4dAo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRleCAw
-MDAwMDAwLi43NWUyOThiCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N0LHN0bTMyLWFkZnNkbS50eHQKPj4gQEAgLTAsMCAr
-MSw2MyBAQAo+PiArU1RNaWNyb2VsZWN0cm9uaWNzIGF1ZGlvIERGU0RNIERUIGJpbmRpbmdzCj4+
-ICsKPj4gK1RoaXMgZHJpdmVyIHN1cHBvcnRzIGF1ZGlvIFBETSBtaWNyb3Bob25lIGNhcHR1cmUg
-dGhyb3VnaCBEaWdpdGFsIEZpbHRlciBmb3JtYXQKPiAKPiBCaW5kaW5ncyBhcmVuJ3QgZHJpdmVy
-cy4KWWVzLCBzb3JyeSB2ZXJ5IGJhZCB3b3JkaW5nLCBpIHdpbGwgY2hhbmdlIHNlbnRlbmNlLgo+
-IAo+PiArU2lnbWEgRGVsdGEgbW9kdWxhdG9ycyAoREZTRE0pLgo+PiArCj4+ICtSZXF1aXJlZCBw
-cm9wZXJ0aWVzOgo+PiArwqAgLSBjb21wYXRpYmxlOiAic3Qsc3RtMzJoNy1kZnNkbS1kYWkiLgo+
-PiArCj4+ICvCoCAtICNzb3VuZC1kYWktY2VsbHMgOiBNdXN0IGJlIGVxdWFsIHRvIDAKPj4gKwo+
-PiArwqAgLSBpby1jaGFubmVscyA6IHBoYW5kbGUgdG8gaWlvIGRmc2RtIGluc3RhbmNlIG5vZGUu
-Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgW1NlZTogLi4vaWlvL2FkYy9zdCxzdG0zMi1k
-ZnNkbS1hZGMudHh0IGZvciBERlNETSBvcHRpb25zXQo+PiArCj4+ICtFeGFtcGxlIG9mIGEgc291
-bmQgY2FyZCB1c2luZyBhdWRpbyBERlNETSBub2RlLgo+PiArCj4+ICvCoMKgwqDCoCBzb3VuZF9j
-YXJkIHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gImF1ZGlvLWdy
-YXBoLWNhcmQiOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGFpcyA9IDwmY3B1
-X3BvcnQ+Owo+PiArwqDCoMKgwqAgfTsKPj4gKwo+PiArwqDCoMKgwqAgZGZzZG06IGRmc2RtQDQw
-MDE3MDAwIHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gInN0LHN0
-bTMyaDctZGZzZG0iOwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlZyA9IDwweDQwMDE3
-MDAwIDB4NDAwPjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9ja3MgPSA8JnJjYyBE
-RlNETTFfQ0s+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNsb2NrLW5hbWVzID0gImRm
-c2RtIjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjYWRkcmVzcy1jZWxscyA9IDwxPjsK
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwwPjsKPj4gKwo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRmc2RtX2FkYzA6IGRmc2RtLWFkY0AwIHsKPj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJzdCxz
-dG0zMi1kZnNkbS1kbWljIjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgcmVnID0gPDA+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBpbnRlcnJ1cHRzID0gPDExMD47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGRtYXMgPSA8JmRtYW11eDEgMTAxIDB4NDAwIDB4MDA+Owo+PiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkbWEtbmFtZXMgPSAicngiOwo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdCxhZGMtY2hhbm5lbHMg
-PSA8MT47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0LGFk
-Yy1jaGFubmVsLW5hbWVzID0gImRtaWMwIjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgc3QsYWRjLWNoYW5uZWwtdHlwZXMgPSAiU1BJX1IiOwo+PiArwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdCxhZGMtY2hhbm5lbC1jbGstc3Jj
-ID0gIkNMS09VVCI7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHN0LGZpbHRlci1vcmRlciA9IDw1PjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Owo+
-PiArwqDCoMKgwqAgfQo+PiArCj4+ICvCoMKgwqDCoCBkZnNkbV9kYWkwOmRmc2RtX2RhaUAwIHsK
-PiAKPiBVbml0IGFkZHJlc3Mgd2l0aG91dCByZWcgcHJvcGVydHkgaXMgbm90IHZhbGlkLiBCdWls
-ZGluZyB5b3VyIGR0YiB3aXRoCj4gVz0yIHdpbGwgdGVsbCB5b3UgdGhpcy4KPiAKPiBOZWVkIGEg
-c3BhY2UgYWZ0ZXIgdGhlICc6Jy4KPiAKPiBTaG91bGQgYmUgYSBjaGlsZCBvZiBkZnNkbT8KCj4g
-Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJzdCxzdG0zMmg3LWRm
-c2RtLWRhaSI7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgI3NvdW5kLWRhaS1jZWxscyA9
-IDwwPjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpby1jaGFubmVscyA9IDwmZGZzZG1f
-YWRjMCAwPjsKPiAKPiBJdCBkb2Vzbid0IHNlZW0gbGlrZSB0aGlzIGlzIGFuIGFjdHVhbCBoL3cg
-YmxvY2suIFdoeSBjYW4ndCAnZGFpcycgcG9pbnQKPiBkaXJlY3RseSB0byB0aGUgQURDP0RGU0RN
-IGlzIG5vdCBzaW1wbGUgdG8gZGVzY3JpYmUgaW4gRFQgZm9yIGF1ZGlvLgpBc3N1bXB0aW9uIGlz
-IHRoYXQgIGF1ZGlvIGZlYXR1cmUgc2hvdWxkIGJlIHBhcnQgb2YgdGhlIEFTb2MgZnJhbWV3b3Jr
-LgpUaGlzIG1lYW5zIHRoYXQgd2UgZXhwZWN0IHRvICB1c2Ugb2ZfZ3JhcGggYmFzZWQgb24gYSBE
-VCBkZXNjcmlwdGlvbi4Kb2ZfZ3JhcGggc2hvdWxkIHBvaW50IHRvIHRoZSBEQUkgZGV2aWNlLiBJ
-biB0aGlzIGNhc2Ugd2UgbmVlZCB0bwpkZXNjcmliZSBhIERBSSBBbHNhIGRldmljZSAoIGFzc29j
-aWF0ZWQgY29tcGF0aWJsZSBkcml2ZXIgaW4gQVNvQyk6CmRmc2RtX2RhaTAuClRoaXMgREFJIGRl
-dmljZSBpcyBhIGNsaWVudCBvZiB0aGUgSUlPIGRldmljZSBkZnNkbV9hZGMwIHVzaW5nIGluLWtl
-cm5lbAppaW8gY29uc3VtZXIgaW50ZXJmYWNlLCBzbyBwb2ludHMgdG8gaXQgdXNpbmcgaW8tY2hh
-bm5lbHMgcHJvcGVydHkuCgpOb3cgYXMgeW91IHByb3Bvc2UgYWJvdmUsIGkgY2FuIGRlc2NyaWJl
-IERBSSBkZXZpY2UgYXMgYSBjaGlsZCBvZiB0aGUKREZTRE0gQURDIGRldmljZSBsaWtlIHRoaXM6
-CgoKCWRmc2RtOiBkZnNkbUA0MDAxNzAwMCB7CgkJY29tcGF0aWJsZSA9ICJzdCxzdG0zMmg3LWRm
-c2RtIjsKCQlyZWcgPSA8MHg0MDAxNzAwMCAweDQwMD47CgkJY2xvY2tzID0gPCZyY2MgREZTRE0x
-X0NLPjsKCQljbG9jay1uYW1lcyA9ICJkZnNkbSI7CgkJI2FkZHJlc3MtY2VsbHMgPSA8MT47CgkJ
-I3NpemUtY2VsbHMgPSA8MD47CgoJCWRmc2RtX2FkYzA6IGRmc2RtLWFkY0AwIHsKCQkJY29tcGF0
-aWJsZSA9ICJzdCxzdG0zMi1kZnNkbS1kbWljIjsKCQkJcmVnID0gPDA+OwoJCQlpbnRlcnJ1cHRz
-ID0gPDExMD47CgkJCWRtYXMgPSA8JmRtYW11eDEgMTAxIDB4NDAwIDB4MDA+OwoJCQlkbWEtbmFt
-ZXMgPSAicngiOwoJCQlzdCxhZGMtY2hhbm5lbHMgPSA8MT47CgkJCXN0LGFkYy1jaGFubmVsLW5h
-bWVzID0gImRtaWMwIjsKCQkJc3QsYWRjLWNoYW5uZWwtdHlwZXMgPSAiU1BJX1IiOwoJCQlzdCxh
-ZGMtY2hhbm5lbC1jbGstc3JjID0gIkNMS09VVCI7CgkJCXN0LGZpbHRlci1vcmRlciA9IDw1PjsK
-CQkJCgkJCWRmc2RtX2RhaTA6IGRmc2RtLWRhaSB7CgkJCQljb21wYXRpYmxlID0gInN0LHN0bTMy
-aDctZGZzZG0tZGFpIjsKCQkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CgkJCQlpby1jaGFubmVs
-cyA9IDwmZGZzZG1fYWRjMCAwPjsKCQkJCWNwdV9wb3J0OiBwb3J0IHsKCQkJCWRmc2RtX2VuZHBv
-aW50OiBlbmRwb2ludCB7CgkJCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZkbWljMF9lbmRwb2ludD47
-CgkJCQl9OwoJCQl9OwoJCX07Cgl9OwoKSXMgaXMgc29tZXRoaW5nIHRoYXQgd291bGQgc291bmQg
-YmV0dGVyIGZvciB5b3U/CgpSZWdhcmRzLAoKQXJuYXVkCj4gCj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgY3B1X3BvcnQ6IHBvcnQgewo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBkZnNkbV9lbmRwb2ludDogZW5kcG9pbnQgewo+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVtb3RlLWVuZHBv
-aW50ID0gPCZkbWljMF9lbmRwb2ludD47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIH07Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsKPj4gK8KgwqDC
-oMKgIH07Cj4+ICsKPj4gK8KgwqDCoMKgIGRtaWMwOiBkbWljQDAgewo+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGNvbXBhdGlibGUgPSAiZG1pYy1jb2RlYyI7Cj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBwb3J0IHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgZG1pYzBfZW5kcG9pbnQ6IGVuZHBvaW50IHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlbW90ZS1lbmRwb2ludCA9IDwmZGZz
-ZG1fZW5kcG9pbnQ+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCB9Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07Cj4+ICvCoMKgwqDCoCB9Owo+PiAt
-LSAKPj4gMi43LjQKPj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+The patch
+
+   ASoC: rcar: revert IOMMU support so far
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c20c6704bf2dafaba0d90c8310ef9e919fe4d2e2 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 16 Nov 2017 04:36:51 +0000
+Subject: [PATCH] ASoC: rcar: revert IOMMU support so far
+
+commit 4821d914fe74 ("ASoC: rsnd: use dma_sync_single_for_xxx() for
+IOMMU") had supported IOMMU, but it breaks normal sound "recorde"
+and both PulseAudio's "playback/recorde". The sound will be noisy.
+
+That commit was using dma_sync_single_for_xxx(), and driver should
+make sure memory is protected during CPU or Device are using it.
+But if driver returns current "residue" data size correctly on pointer
+function, player/recorder will access to protected memory.
+
+IOMMU feature should be supported, but I don't know how to handle it
+without memory cache problem at this point.
+Thus, this patch simply revert it to avoid current noisy sound.
+
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Tested-by: Ryo Kodama <ryo.kodama.vz@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c |  4 +--
+ sound/soc/sh/rcar/dma.c  | 86 ++++--------------------------------------------
+ 2 files changed, 8 insertions(+), 82 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index c70eb2097816..f12a88a21dfa 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1332,8 +1332,8 @@ static int rsnd_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 
+ 	return snd_pcm_lib_preallocate_pages_for_all(
+ 		rtd->pcm,
+-		SNDRV_DMA_TYPE_CONTINUOUS,
+-		snd_dma_continuous_data(GFP_KERNEL),
++		SNDRV_DMA_TYPE_DEV,
++		rtd->card->snd_card->dev,
+ 		PREALLOC_BUFFER, PREALLOC_BUFFER_MAX);
+ }
+ 
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index fd557abfe390..4d750bdf8e24 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -26,10 +26,7 @@
+ struct rsnd_dmaen {
+ 	struct dma_chan		*chan;
+ 	dma_cookie_t		cookie;
+-	dma_addr_t		dma_buf;
+ 	unsigned int		dma_len;
+-	unsigned int		dma_period;
+-	unsigned int		dma_cnt;
+ };
+ 
+ struct rsnd_dmapp {
+@@ -71,38 +68,10 @@ static struct rsnd_mod mem = {
+ /*
+  *		Audio DMAC
+  */
+-#define rsnd_dmaen_sync(dmaen, io, i)	__rsnd_dmaen_sync(dmaen, io, i, 1)
+-#define rsnd_dmaen_unsync(dmaen, io, i)	__rsnd_dmaen_sync(dmaen, io, i, 0)
+-static void __rsnd_dmaen_sync(struct rsnd_dmaen *dmaen, struct rsnd_dai_stream *io,
+-			      int i, int sync)
+-{
+-	struct device *dev = dmaen->chan->device->dev;
+-	enum dma_data_direction dir;
+-	int is_play = rsnd_io_is_play(io);
+-	dma_addr_t buf;
+-	int len, max;
+-	size_t period;
+-
+-	len	= dmaen->dma_len;
+-	period	= dmaen->dma_period;
+-	max	= len / period;
+-	i	= i % max;
+-	buf	= dmaen->dma_buf + (period * i);
+-
+-	dir = is_play ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+-
+-	if (sync)
+-		dma_sync_single_for_device(dev, buf, period, dir);
+-	else
+-		dma_sync_single_for_cpu(dev, buf, period, dir);
+-}
+-
+ static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
+ 				  struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
+-	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
+ 	bool elapsed = false;
+ 	unsigned long flags;
+ 
+@@ -115,22 +84,9 @@ static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
+ 	 */
+ 	spin_lock_irqsave(&priv->lock, flags);
+ 
+-	if (rsnd_io_is_working(io)) {
+-		rsnd_dmaen_unsync(dmaen, io, dmaen->dma_cnt);
+-
+-		/*
+-		 * Next period is already started.
+-		 * Let's sync Next Next period
+-		 * see
+-		 *	rsnd_dmaen_start()
+-		 */
+-		rsnd_dmaen_sync(dmaen, io, dmaen->dma_cnt + 2);
+-
++	if (rsnd_io_is_working(io))
+ 		elapsed = true;
+ 
+-		dmaen->dma_cnt++;
+-	}
+-
+ 	spin_unlock_irqrestore(&priv->lock, flags);
+ 
+ 	if (elapsed)
+@@ -165,14 +121,8 @@ static int rsnd_dmaen_stop(struct rsnd_mod *mod,
+ 	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
+ 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
+ 
+-	if (dmaen->chan) {
+-		int is_play = rsnd_io_is_play(io);
+-
++	if (dmaen->chan)
+ 		dmaengine_terminate_all(dmaen->chan);
+-		dma_unmap_single(dmaen->chan->device->dev,
+-				 dmaen->dma_buf, dmaen->dma_len,
+-				 is_play ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
+-	}
+ 
+ 	return 0;
+ }
+@@ -237,11 +187,7 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct dma_async_tx_descriptor *desc;
+ 	struct dma_slave_config cfg = {};
+-	dma_addr_t buf;
+-	size_t len;
+-	size_t period;
+ 	int is_play = rsnd_io_is_play(io);
+-	int i;
+ 	int ret;
+ 
+ 	cfg.direction	= is_play ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
+@@ -258,19 +204,10 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	len	= snd_pcm_lib_buffer_bytes(substream);
+-	period	= snd_pcm_lib_period_bytes(substream);
+-	buf	= dma_map_single(dmaen->chan->device->dev,
+-				 substream->runtime->dma_area,
+-				 len,
+-				 is_play ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
+-	if (dma_mapping_error(dmaen->chan->device->dev, buf)) {
+-		dev_err(dev, "dma map failed\n");
+-		return -EIO;
+-	}
+-
+ 	desc = dmaengine_prep_dma_cyclic(dmaen->chan,
+-					 buf, len, period,
++					 substream->runtime->dma_addr,
++					 snd_pcm_lib_buffer_bytes(substream),
++					 snd_pcm_lib_period_bytes(substream),
+ 					 is_play ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM,
+ 					 DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+ 
+@@ -282,18 +219,7 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ 	desc->callback		= rsnd_dmaen_complete;
+ 	desc->callback_param	= rsnd_mod_get(dma);
+ 
+-	dmaen->dma_buf		= buf;
+-	dmaen->dma_len		= len;
+-	dmaen->dma_period	= period;
+-	dmaen->dma_cnt		= 0;
+-
+-	/*
+-	 * synchronize this and next period
+-	 * see
+-	 *	__rsnd_dmaen_complete()
+-	 */
+-	for (i = 0; i < 2; i++)
+-		rsnd_dmaen_sync(dmaen, io, i);
++	dmaen->dma_len		= snd_pcm_lib_buffer_bytes(substream);
+ 
+ 	dmaen->cookie = dmaengine_submit(desc);
+ 	if (dmaen->cookie < 0) {
+-- 
+2.15.0
