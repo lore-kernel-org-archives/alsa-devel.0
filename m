@@ -1,20 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 04/14] soundwire: Add MIPI DisCo
-	property helpers
-Date: Thu, 16 Nov 2017 22:34:43 +0530
-Message-ID: <20171116170443.GE3187@localhost>
+Subject: Re: [PATCH v2 08/14] soundwire: Add Slave status
+	handling helpers
+Date: Thu, 16 Nov 2017 22:38:50 +0530
+Message-ID: <20171116170850.GF3187@localhost>
 References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-5-git-send-email-vinod.koul@intel.com>
- <ce51acdd-7f56-e6bf-4067-393f7118c4c3@linaro.org>
+ <1510314556-13002-9-git-send-email-vinod.koul@intel.com>
+ <06a1bcfc-eeca-b3ec-1d74-e6ac9cadce53@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id CD9B8266EE4
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:01:27 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7340C266EE4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:05:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <ce51acdd-7f56-e6bf-4067-393f7118c4c3@linaro.org>
+In-Reply-To: <06a1bcfc-eeca-b3ec-1d74-e6ac9cadce53@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,47 +28,61 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, Sudheer Papothi <spapothi@codeaurora.org>, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 16, 2017 at 04:05:34PM +0000, Srinivas Kandagatla wrote:
-> Few Minor comments!!
-
-All are helpful :)
-
-> >+/**
-> >+ * enum sdw_clk_stop_mode: Clock Stop modes
-> >+ *
-> >+ * @SDW_CLK_STOP_MODE_0: Slave can continue operation seamlessly on clock
-> >+ * restart
-> >+ * @SDW_CLK_STOP_MODE_1: Slave may have entered a deeper power-saving mode,
-> Should be MODE0 and MODE1.. here
-
-yes thanks for spotting
-
-> >+/**
-> >+ * struct sdw_dpn_audio_mode: Audio mode properties for DPn
-> >+ *
-> >+ * @bus_min_freq: Minimum bus frequency, in Hz
-> >+ * @bus_max_freq: Maximum bus frequency, in Hz
-> >+ * @bus_num_freq: Number of discrete frequencies supported
-> >+ * @bus_freq: Discrete bus frequencies, in Hz
-> >+ * @bus_min_freq: Minimum sampling frequency, in Hz
-> Should be min_freq
-> >+ * @bus_max_freq: Maximum sampling bus frequency, in Hz
-> Should be max_freq
-> >+ * @bus_num_freq: Number of discrete sampling frequency supported
-> Should be num_freq
+On Thu, Nov 16, 2017 at 04:05:29PM +0000, Srinivas Kandagatla wrote:
 > 
-> >+ * @bus_freq: Discrete sampling frequencies, in Hz
-> Should be freq
-
-yes, will fix
-
-> >+ * @p15_behave: Slave behavior when the Master attempts a read to the Port15
-> >+ * alias
-> >+ * @lane_control_support:
+> Minor Comment!
 > 
-> ?? do description here..
+> On 10/11/17 11:49, Vinod Koul wrote:
+> >From: Sanyog Kale <sanyog.r.kale@intel.com>
+> >
+> >SoundWire Slaves report status to bus. Add helpers to handle
+> >the status changes.
+> >
+> >Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
+> >Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> >Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> >---
+> 
+> >+static int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id)
+> >+{
+> >+
+> >+	if ((slave->id.unique_id != id.unique_id) ||
+> >+	    (slave->id.mfg_id != id.mfg_id) ||
+> >+	    (slave->id.part_id != id.part_id) ||
+> >+	    (slave->id.class_id != id.class_id))
+> >+		return -ENODEV;
+> >+
+> >+	return 0;
+> >+}
+> >+
+> >+/* called with bus_lock held */
+> >+static int sdw_get_device_num(struct sdw_slave *slave)
+> >+{
+> If we use ida we would not need this function.
 
-will add
+Not really, find_first_zero_bit and set_bit will be replaced by get_ida()
+
+the bound check will still be required as we have finite set of ids to work
+with. Nevertheless I will check if it helps in this case and move if
+helpful.
+
+> >+	int bit;
+> >+
+> >+	bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
+> >+	if (bit == SDW_MAX_DEVICES) {
+> >+		bit = -ENODEV;
+> >+		goto err;
+> >+	}
+> >+
+> >+	/*
+> >+	 * Do not update dev_num in Slave data structure here,
+> >+	 * Update once program dev_num is successful
+> >+	 */
+> >+	set_bit(bit, slave->bus->assigned);
+> >+
+> >+err:
+> >+	return bit;
+> >+}
 
 -- 
 ~Vinod
