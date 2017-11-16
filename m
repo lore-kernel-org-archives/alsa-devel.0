@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 03/14] soundwire: Add Master registration
-Date: Thu, 16 Nov 2017 17:30:24 +0000
-Message-ID: <20171116173024.owiotfwriclu2won@sirena.org.uk>
-References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
- <1510314556-13002-4-git-send-email-vinod.koul@intel.com>
- <2ba56597-2178-6389-bc4d-153a17505981@linaro.org>
- <20171116164944.GC3187@localhost>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: Re: [PATCH 0/2] ALSA: nm256: Fine-tuning for three
+ function implementations
+Date: Thu, 16 Nov 2017 18:48:43 +0100
+Message-ID: <dfa99045-f213-3dad-b1f4-2e90eb38ddbd@users.sourceforge.net>
+References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
+ <s5hefoy16xg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7966509454509373452=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 288A7266EE4
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:30:40 +0100 (CET)
-In-Reply-To: <20171116164944.GC3187@localhost>
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DF33266EE4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 18:48:50 +0100 (CET)
+In-Reply-To: <s5hefoy16xg.wl-tiwai@suse.de>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +23,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+>> Two update suggestions were taken into account
+>> from static source code analysis.
+> 
+> Markus, I'd apply this kind of patches only when they are really
+> tested on the hardware,
 
---===============7966509454509373452==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3lfb2wtppqddt5wa"
-Content-Disposition: inline
-
-
---3lfb2wtppqddt5wa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 16, 2017 at 10:19:44PM +0530, Vinod Koul wrote:
-> On Thu, Nov 16, 2017 at 04:05:22PM +0000, Srinivas Kandagatla wrote:
-
-> > >+	*bus->assigned = ~GENMASK(SDW_BROADCAST_DEV_NUM, SDW_ENUM_DEV_NUM);
-
-> > Can't we use ida for this.
-> > This would also cut down code added for allocating dev_num.
-
-> Device numbers in SoundWire are 0 thru 15 with 0 and 15 having special
-> meaning so can'r be allocated. Bitmaps give me a nice way to ensure we dont
-> use those by masking these and above 15... IDR uses bitmap with stuff on top
-> which maynot be helpful here as I need a number 1 to 14. For a generic, give
-> me a number IDRs are very useful.
-
-Perhaps we need some comments or something explaining the constraints
-here to stop people doing misguided cleanups?
-
---3lfb2wtppqddt5wa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloNyy4ACgkQJNaLcl1U
-h9AwHgf/U1yjfTdPmXXBjMg8Hweoij7JLUFnHh5LybuiY5KIcWEOCRg3LEPwBLLF
-caFGQnKe4+actb14AN8MuUXXxgZKkh3f4JpkQuRsSfrobdPHDoSPDTj2vwth0MU7
-FlEqDTyzgMtFR4UoVFY7e0ZBsn7uSXjCSixvs2Kui/XYZs+FDXXwwNjVFVz0QBNX
-LouqFv1qyhvYV6crUEE+5RHMN59LsjO4l/JcPR08W2Km2TmIgNPyoJZLWduWebLJ
-q0wF+vqdw+u/zAiV57PHf/Y1cA4JWPPLzu0gwu43yIx2ShSzSLWc03QBHzWUsE7y
-GtKtD9tWzcwd83EB63pnMnxreUzX1A==
-=QZQ/
------END PGP SIGNATURE-----
-
---3lfb2wtppqddt5wa--
-
---===============7966509454509373452==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I can not test all software and hardware combinations (so far)
+for which I dare to show change possibilities.
 
 
---===============7966509454509373452==--
+> or they were converted systematically by a script like spatch.
+
+There is a general source code transformation pattern involved.
+So I find that it is systematic.
+
+But I did not dare to develop a script variant for the semantic patch
+language (Coccinelle software) which can handle all special use cases
+as a few of them are already demonstrated in this tiny patch series.
+
+
+> The reason is that you might break something
+
+There are the usual software development risks.
+
+
+> (and you already broke things in the past).
+
+I presented also some improvable update suggestions.
+
+Another look on the corresponding circumstances might be interesting
+for further clarification.
+
+
+> The merit by such a patch is negligible in comparison of the risk of breakage.
+
+I imagine that you might like a small object code reduction also for
+this software module.
+
+
+> These codes aren't too bad without fixing, after all;
+> everyone can read it pretty well as is.
+
+The script "checkpatch.pl" points implementation details out for
+further considerations.
+
+
+> If these patches were tested on a real hardware,
+
+I assume that this aspect can become a big challenge.
+
+
+> or at least on VM, so that you can show that they don't break anything,
+
+Which test results would you trust (from me)?
+
+
+> I'll happily apply them for the next (4.16) kernel.
+
+Thanks for your general offer.
+
+
+> Or, if you're really working on other real changes
+
+I would find a bit more efficient exception handling useful.
+
+
+> (no cosmetic coding style fixes nor the code shuffling,
+
+I propose to apply also corresponding checkpatch cosmetic.
+
+
+> but fixing a real bug)
+
+I am trying to adjust the software situation a bit more for better
+run time characteristics.
+
+
+> *and* such a cleanup is mandatory as preliminary, it can be accepted, too.
+
+There are change combinations needed for the proposed software
+design direction.
+Can you see positive effects here?
+
+Regards,
+Markus
