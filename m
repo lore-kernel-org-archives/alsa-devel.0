@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Modify map for Headset
-	Playback to fix pop-noise" to the asoc tree
-Date: Thu, 16 Nov 2017 19:28:40 +0000 (GMT)
-Message-ID: <20171116192840.2CE0D44005B@finisterre.ee.mobilebroadband>
-References: <1509679697-22154-1-git-send-email-naveen.m@intel.com>
+Subject: Applied "ASoC: nau8824: condition for clock disable"
+	to the asoc tree
+Date: Thu, 16 Nov 2017 19:28:55 +0000 (GMT)
+Message-ID: <20171116192855.7150D44005B@finisterre.ee.mobilebroadband>
+References: <1510045593-21477-2-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8EB6A267784
- for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:28:49 +0100 (CET)
-In-Reply-To: <1509679697-22154-1-git-send-email-naveen.m@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3233E26778C
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 20:28:56 +0100 (CET)
+In-Reply-To: <1510045593-21477-2-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Sathya Prakash M R <sathya.prakash.m.r@intel.com>, naveen.m@intel.com, pierre-louis.bossart@intel.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl: Modify map for Headset Playback to fix pop-noise
+   ASoC: nau8824: condition for clock disable
 
 has been applied to the asoc tree at
 
@@ -52,57 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 4c761ebfcb2d04ee36783c4c8c45ae00caf59d36 Mon Sep 17 00:00:00 2001
-From: Naveen Manohar <naveen.m@intel.com>
-Date: Fri, 3 Nov 2017 19:15:02 +0530
-Subject: [PATCH] ASoC: Intel: kbl: Modify map for Headset Playback to fix
- pop-noise
+>From a2eb62edbd01064cee0c4c00854a25f04237605b Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Tue, 7 Nov 2017 17:06:33 +0800
+Subject: [PATCH] ASoC: nau8824: condition for clock disable
 
-Patch fixes wrong path in commit 0b06122fc8d0 ("ASoC: Intel: kbl: Add
-map for new DAIs for Multi-Playback & Echo Ref") which resulted in pop
-noise.
-Current topology for Headset results in unwanted pop noise, while
-switching from spk->hs at the start of Headset Playback.
-Hence re-introduced mixin-mixout dsp module in topology for headset
-playback pipe to fix the regression.
-And the corresponding modification for headset route is updated here.
+There are headphone and speaker outputs in NAU88L24. During the
+playback, the codec should not change the clock status when
+switching these outputs.
 
-Fixes: 0b06122fc8d0 ("ASoC: Intel: kbl: Add map for new DAIs for
-Multi-Playback & Echo Ref")
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Sathya Prakash M R <sathya.prakash.m.r@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c        | 2 +-
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8824.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 6f9a8bcf20f3..6dcad0a8a0d0 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -101,7 +101,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
- 	{ "ssp0 Tx", NULL, "spk_out" },
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index b7b63ac037a7..8a9a9939827e 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -811,7 +811,8 @@ static void nau8824_eject_jack(struct nau8824 *nau8824)
+ 		NAU8824_JD_SLEEP_MODE, NAU8824_JD_SLEEP_MODE);
  
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "hs_out" },
-+	{ "ssp1 Tx", NULL, "codec1_out" },
+ 	/* Close clock for jack type detection at manual mode */
+-	nau8824_config_sysclk(nau8824, NAU8824_CLK_DIS, 0);
++	if (dapm->bias_level < SND_SOC_BIAS_PREPARE)
++		nau8824_config_sysclk(nau8824, NAU8824_CLK_DIS, 0);
+ }
  
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 6072164f2d43..271ae3c2c535 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -109,7 +109,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
- 	{ "ssp0 Tx", NULL, "spk_out" },
- 
- 	{ "AIF Playback", NULL, "ssp1 Tx" },
--	{ "ssp1 Tx", NULL, "hs_out" },
-+	{ "ssp1 Tx", NULL, "codec1_out" },
- 
- 	{ "hs_in", NULL, "ssp1 Rx" },
- 	{ "ssp1 Rx", NULL, "AIF Capture" },
+ static void nau8824_jdet_work(struct work_struct *work)
+@@ -862,7 +863,8 @@ static void nau8824_setup_auto_irq(struct nau8824 *nau8824)
+ 	regmap_update_bits(regmap, NAU8824_REG_INTERRUPT_SETTING,
+ 		NAU8824_IRQ_EJECT_DIS, 0);
+ 	/* Enable internal VCO needed for interruptions */
+-	nau8824_config_sysclk(nau8824, NAU8824_CLK_INTERNAL, 0);
++	if (nau8824->dapm->bias_level < SND_SOC_BIAS_PREPARE)
++		nau8824_config_sysclk(nau8824, NAU8824_CLK_INTERNAL, 0);
+ 	regmap_update_bits(regmap, NAU8824_REG_ENA_CTRL,
+ 		NAU8824_JD_SLEEP_MODE, 0);
+ }
 -- 
 2.14.1
