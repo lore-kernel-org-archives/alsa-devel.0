@@ -1,58 +1,133 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 10/13] dt-bindings: Add qcom slimbus controller
- bindings
-Date: Thu, 16 Nov 2017 09:42:28 +0000
-Message-ID: <570e58a7-06dd-7e0c-e427-28b5abc08533@linaro.org>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-11-srinivas.kandagatla@linaro.org>
- <20171116051911.tvl6mioxpbo4h72c@rob-hp-laptop>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v4 11/12] ASoC: add bindings for stm32
+	DFSDM filter
+Date: Thu, 16 Nov 2017 11:53:18 +0100
+Message-ID: <86764d6d-5e6a-9dce-f9fb-a5806041e60e@st.com>
+References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
+ <1510222354-15290-12-git-send-email-arnaud.pouliquen@st.com>
+ <20171115154304.dzrezz7trvoway73@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171116051911.tvl6mioxpbo4h72c@rob-hp-laptop>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87CEA266F5B
+ for <alsa-devel@alsa-project.org>; Thu, 16 Nov 2017 11:53:24 +0100 (CET)
+In-Reply-To: <20171115154304.dzrezz7trvoway73@rob-hp-laptop>
 Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review,
-
-On 16/11/17 05:19, Rob Herring wrote:
->> +	entry should be used.
->> + - reg-name for slew rate: "slew"
-> reg-names
-> 
-> I'd prefer it be explicit as to which compatibles do or don't have this
-> register.
-Makes sense, I will take this in before sending next version.
-> 
->> +
->> +Example:
->> +
->> +	slim@28080000 {
->> +		compatible = "qcom,apq8064-slim", "qcom,slim";
->> +		reg = <0x28080000 0x2000>,
-> error                                    ^
-> 
-thanks for spotting.. will fix this.
->> +		interrupts = <0 33 0>;
->> +		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
->> +		clock-names = "iface", "core";
->> +		#address-cells = <2>;
->> +		#size-cell = <0>;
->> +
->> +		codec: wcd9310@1,0{
-> Use generic node names:
-> 
-> wcd9310: audio-codec@1,0
-Yep, will do that.
-
-thanks,
-srini
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGVsbG8gUm9iLAoKVGhhbmtzIGZvciB0aGUgUmV2aWV3LAoKCk9uIDExLzE1LzIwMTcgMDQ6NDMg
+UE0sIFJvYiBIZXJyaW5nIHdyb3RlOgo+IE9uIFRodSwgTm92IDA5LCAyMDE3IGF0IDExOjEyOjMz
+QU0gKzAxMDAsIEFybmF1ZCBQb3VsaXF1ZW4gd3JvdGU6Cj4+IEFkZCBiaW5kaW5ncyB0aGF0IGRl
+c2NyaWJlcyBhdWRpbyBzZXR0aW5ncyB0byBzdXBwb3J0Cj4+IERpZ2l0YWwgRmlsdGVyIGZvciBw
+dWxzZSBkZW5zaXR5IG1vZHVsYXRpb24oUERNKSBtaWNyb3Bob25lLgo+PiAKPj4gU2lnbmVkLW9m
+Zi1ieTogQXJuYXVkIFBvdWxpcXVlbiA8YXJuYXVkLnBvdWxpcXVlbkBzdC5jb20+Cj4+IC0tLQo+
+PiBWMyAtPiBWNCBjaGFuZ2VzOgo+PsKgwqDCoMKgwqDCoMKgIC0gVXBkYXRlIHRvIG1vdmUgb24g
+b2ZfZ3JhcGggZGVzY3JpcHRpb24uCj4+wqDCoMKgwqDCoMKgwqAgLSBMaW5rIHRvIERGU0RNIElJ
+TyBiaW5kaW5ncy4KPj4gCj4+wqAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc3Qsc3Rt
+MzItYWRmc2RtLnR4dMKgIHwgNjMgKysrKysrKysrKysrKysrKysrKysrKwo+PsKgIDEgZmlsZSBj
+aGFuZ2VkLCA2MyBpbnNlcnRpb25zKCspCj4+wqAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdCxzdG0zMi1hZGZzZG0udHh0Cj4+IAo+
+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N0
+LHN0bTMyLWFkZnNkbS50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
+bmQvc3Qsc3RtMzItYWRmc2RtLnR4dAo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRleCAw
+MDAwMDAwLi43NWUyOThiCj4+IC0tLSAvZGV2L251bGwKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N0LHN0bTMyLWFkZnNkbS50eHQKPj4gQEAgLTAsMCAr
+MSw2MyBAQAo+PiArU1RNaWNyb2VsZWN0cm9uaWNzIGF1ZGlvIERGU0RNIERUIGJpbmRpbmdzCj4+
+ICsKPj4gK1RoaXMgZHJpdmVyIHN1cHBvcnRzIGF1ZGlvIFBETSBtaWNyb3Bob25lIGNhcHR1cmUg
+dGhyb3VnaCBEaWdpdGFsIEZpbHRlciBmb3JtYXQKPiAKPiBCaW5kaW5ncyBhcmVuJ3QgZHJpdmVy
+cy4KWWVzLCBzb3JyeSB2ZXJ5IGJhZCB3b3JkaW5nLCBpIHdpbGwgY2hhbmdlIHNlbnRlbmNlLgo+
+IAo+PiArU2lnbWEgRGVsdGEgbW9kdWxhdG9ycyAoREZTRE0pLgo+PiArCj4+ICtSZXF1aXJlZCBw
+cm9wZXJ0aWVzOgo+PiArwqAgLSBjb21wYXRpYmxlOiAic3Qsc3RtMzJoNy1kZnNkbS1kYWkiLgo+
+PiArCj4+ICvCoCAtICNzb3VuZC1kYWktY2VsbHMgOiBNdXN0IGJlIGVxdWFsIHRvIDAKPj4gKwo+
+PiArwqAgLSBpby1jaGFubmVscyA6IHBoYW5kbGUgdG8gaWlvIGRmc2RtIGluc3RhbmNlIG5vZGUu
+Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgW1NlZTogLi4vaWlvL2FkYy9zdCxzdG0zMi1k
+ZnNkbS1hZGMudHh0IGZvciBERlNETSBvcHRpb25zXQo+PiArCj4+ICtFeGFtcGxlIG9mIGEgc291
+bmQgY2FyZCB1c2luZyBhdWRpbyBERlNETSBub2RlLgo+PiArCj4+ICvCoMKgwqDCoCBzb3VuZF9j
+YXJkIHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gImF1ZGlvLWdy
+YXBoLWNhcmQiOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGFpcyA9IDwmY3B1
+X3BvcnQ+Owo+PiArwqDCoMKgwqAgfTsKPj4gKwo+PiArwqDCoMKgwqAgZGZzZG06IGRmc2RtQDQw
+MDE3MDAwIHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gInN0LHN0
+bTMyaDctZGZzZG0iOwo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlZyA9IDwweDQwMDE3
+MDAwIDB4NDAwPjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbG9ja3MgPSA8JnJjYyBE
+RlNETTFfQ0s+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNsb2NrLW5hbWVzID0gImRm
+c2RtIjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjYWRkcmVzcy1jZWxscyA9IDwxPjsK
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwwPjsKPj4gKwo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRmc2RtX2FkYzA6IGRmc2RtLWFkY0AwIHsKPj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJzdCxz
+dG0zMi1kZnNkbS1kbWljIjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmVnID0gPDA+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBpbnRlcnJ1cHRzID0gPDExMD47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIGRtYXMgPSA8JmRtYW11eDEgMTAxIDB4NDAwIDB4MDA+Owo+PiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkbWEtbmFtZXMgPSAicngiOwo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdCxhZGMtY2hhbm5lbHMg
+PSA8MT47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0LGFk
+Yy1jaGFubmVsLW5hbWVzID0gImRtaWMwIjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgc3QsYWRjLWNoYW5uZWwtdHlwZXMgPSAiU1BJX1IiOwo+PiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdCxhZGMtY2hhbm5lbC1jbGstc3Jj
+ID0gIkNMS09VVCI7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHN0LGZpbHRlci1vcmRlciA9IDw1PjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Owo+
+PiArwqDCoMKgwqAgfQo+PiArCj4+ICvCoMKgwqDCoCBkZnNkbV9kYWkwOmRmc2RtX2RhaUAwIHsK
+PiAKPiBVbml0IGFkZHJlc3Mgd2l0aG91dCByZWcgcHJvcGVydHkgaXMgbm90IHZhbGlkLiBCdWls
+ZGluZyB5b3VyIGR0YiB3aXRoCj4gVz0yIHdpbGwgdGVsbCB5b3UgdGhpcy4KPiAKPiBOZWVkIGEg
+c3BhY2UgYWZ0ZXIgdGhlICc6Jy4KPiAKPiBTaG91bGQgYmUgYSBjaGlsZCBvZiBkZnNkbT8KCj4g
+Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJzdCxzdG0zMmg3LWRm
+c2RtLWRhaSI7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgI3NvdW5kLWRhaS1jZWxscyA9
+IDwwPjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpby1jaGFubmVscyA9IDwmZGZzZG1f
+YWRjMCAwPjsKPiAKPiBJdCBkb2Vzbid0IHNlZW0gbGlrZSB0aGlzIGlzIGFuIGFjdHVhbCBoL3cg
+YmxvY2suIFdoeSBjYW4ndCAnZGFpcycgcG9pbnQKPiBkaXJlY3RseSB0byB0aGUgQURDP0RGU0RN
+IGlzIG5vdCBzaW1wbGUgdG8gZGVzY3JpYmUgaW4gRFQgZm9yIGF1ZGlvLgpBc3N1bXB0aW9uIGlz
+IHRoYXQgIGF1ZGlvIGZlYXR1cmUgc2hvdWxkIGJlIHBhcnQgb2YgdGhlIEFTb2MgZnJhbWV3b3Jr
+LgpUaGlzIG1lYW5zIHRoYXQgd2UgZXhwZWN0IHRvICB1c2Ugb2ZfZ3JhcGggYmFzZWQgb24gYSBE
+VCBkZXNjcmlwdGlvbi4Kb2ZfZ3JhcGggc2hvdWxkIHBvaW50IHRvIHRoZSBEQUkgZGV2aWNlLiBJ
+biB0aGlzIGNhc2Ugd2UgbmVlZCB0bwpkZXNjcmliZSBhIERBSSBBbHNhIGRldmljZSAoIGFzc29j
+aWF0ZWQgY29tcGF0aWJsZSBkcml2ZXIgaW4gQVNvQyk6CmRmc2RtX2RhaTAuClRoaXMgREFJIGRl
+dmljZSBpcyBhIGNsaWVudCBvZiB0aGUgSUlPIGRldmljZSBkZnNkbV9hZGMwIHVzaW5nIGluLWtl
+cm5lbAppaW8gY29uc3VtZXIgaW50ZXJmYWNlLCBzbyBwb2ludHMgdG8gaXQgdXNpbmcgaW8tY2hh
+bm5lbHMgcHJvcGVydHkuCgpOb3cgYXMgeW91IHByb3Bvc2UgYWJvdmUsIGkgY2FuIGRlc2NyaWJl
+IERBSSBkZXZpY2UgYXMgYSBjaGlsZCBvZiB0aGUKREZTRE0gQURDIGRldmljZSBsaWtlIHRoaXM6
+CgoKCWRmc2RtOiBkZnNkbUA0MDAxNzAwMCB7CgkJY29tcGF0aWJsZSA9ICJzdCxzdG0zMmg3LWRm
+c2RtIjsKCQlyZWcgPSA8MHg0MDAxNzAwMCAweDQwMD47CgkJY2xvY2tzID0gPCZyY2MgREZTRE0x
+X0NLPjsKCQljbG9jay1uYW1lcyA9ICJkZnNkbSI7CgkJI2FkZHJlc3MtY2VsbHMgPSA8MT47CgkJ
+I3NpemUtY2VsbHMgPSA8MD47CgoJCWRmc2RtX2FkYzA6IGRmc2RtLWFkY0AwIHsKCQkJY29tcGF0
+aWJsZSA9ICJzdCxzdG0zMi1kZnNkbS1kbWljIjsKCQkJcmVnID0gPDA+OwoJCQlpbnRlcnJ1cHRz
+ID0gPDExMD47CgkJCWRtYXMgPSA8JmRtYW11eDEgMTAxIDB4NDAwIDB4MDA+OwoJCQlkbWEtbmFt
+ZXMgPSAicngiOwoJCQlzdCxhZGMtY2hhbm5lbHMgPSA8MT47CgkJCXN0LGFkYy1jaGFubmVsLW5h
+bWVzID0gImRtaWMwIjsKCQkJc3QsYWRjLWNoYW5uZWwtdHlwZXMgPSAiU1BJX1IiOwoJCQlzdCxh
+ZGMtY2hhbm5lbC1jbGstc3JjID0gIkNMS09VVCI7CgkJCXN0LGZpbHRlci1vcmRlciA9IDw1PjsK
+CQkJCgkJCWRmc2RtX2RhaTA6IGRmc2RtLWRhaSB7CgkJCQljb21wYXRpYmxlID0gInN0LHN0bTMy
+aDctZGZzZG0tZGFpIjsKCQkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CgkJCQlpby1jaGFubmVs
+cyA9IDwmZGZzZG1fYWRjMCAwPjsKCQkJCWNwdV9wb3J0OiBwb3J0IHsKCQkJCWRmc2RtX2VuZHBv
+aW50OiBlbmRwb2ludCB7CgkJCQkJcmVtb3RlLWVuZHBvaW50ID0gPCZkbWljMF9lbmRwb2ludD47
+CgkJCQl9OwoJCQl9OwoJCX07Cgl9OwoKSXMgaXMgc29tZXRoaW5nIHRoYXQgd291bGQgc291bmQg
+YmV0dGVyIGZvciB5b3U/CgpSZWdhcmRzLAoKQXJuYXVkCj4gCj4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgY3B1X3BvcnQ6IHBvcnQgewo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBkZnNkbV9lbmRwb2ludDogZW5kcG9pbnQgewo+PiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVtb3RlLWVuZHBv
+aW50ID0gPCZkbWljMF9lbmRwb2ludD47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIH07Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsKPj4gK8KgwqDC
+oMKgIH07Cj4+ICsKPj4gK8KgwqDCoMKgIGRtaWMwOiBkbWljQDAgewo+PiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIGNvbXBhdGlibGUgPSAiZG1pYy1jb2RlYyI7Cj4+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBwb3J0IHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgZG1pYzBfZW5kcG9pbnQ6IGVuZHBvaW50IHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlbW90ZS1lbmRwb2ludCA9IDwmZGZz
+ZG1fZW5kcG9pbnQ+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCB9Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07Cj4+ICvCoMKgwqDCoCB9Owo+PiAt
+LSAKPj4gMi43LjQKPj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
