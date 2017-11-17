@@ -1,31 +1,21 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: Missing surround channels with Nvidia HDMI &
- snd-hda-intel driver
-Date: Fri, 17 Nov 2017 00:28:55 -0800
-Message-ID: <CAA7C2qga_DG-FA46qTBDO3dSzjJSSLKccgDtmw68DGfOfRj7ww@mail.gmail.com>
-References: <CAA7C2qgvC65Cjbf=AsUWd3gFCqAgHpctA=CnnfAD9E9Z0bxJQw@mail.gmail.com>
- <s5hr2t29loc.wl-tiwai@suse.de>
- <CAA7C2qiGQ-VuCFPG51kXaB7bCSyC+nQvWgF=EeUSwdkybXZ=wQ@mail.gmail.com>
- <s5ha7zqt310.wl-tiwai@suse.de>
- <CAA7C2qg7RsJRsTFu03KRwTeBjcN5LK7m-b22iyw6kp5x4ymuBw@mail.gmail.com>
- <CAA7C2qjoUf5gJ-Bu8vc4sQW7rfdSVa3s-stqngFtq0EZoxTNEw@mail.gmail.com>
- <s5ha7znc1he.wl-tiwai@suse.de>
- <CAA7C2qgCp1az49jxqQhGhiJbJFyP3RumT+GFn2m926L_mGfvKQ@mail.gmail.com>
- <CAA7C2qiNPo_CQpoTERX-9PHS-Z=86sZo10v8XUuz2--v6tDqWA@mail.gmail.com>
- <s5htvxuag8e.wl-tiwai@suse.de>
- <CAA7C2qgAW7k6tULe=SBpUG1_6D+N5NYsPmYZ2pi9j8HhdjicwQ@mail.gmail.com>
- <s5h375d9x5k.wl-tiwai@suse.de>
+From: Henrik Eriksson <henrik.eriksson@axis.com>
+Subject: Re: [RFC PATCH] ALSA: core: do not update tstamp when
+ hw ptr has not moved
+Date: Fri, 17 Nov 2017 09:34:01 +0100
+Message-ID: <20171117083401.GE5483@lnxhenriken2.se.axis.com>
+References: <20171116124349.GA21810@lnxhenriken2.se.axis.com>
+ <s5h375e2sbb.wl-tiwai@suse.de>
+ <172e5ff0-472e-be36-0208-5ccc88baebfa@linux.intel.com>
+ <s5h8tf69hz3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 34C0A266CFB
- for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 09:28:56 +0100 (CET)
-Received: by mail-lf0-f66.google.com with SMTP id y2so856884lfj.4
- for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 00:28:56 -0800 (PST)
-In-Reply-To: <s5h375d9x5k.wl-tiwai@suse.de>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id B338B266CFB
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 09:34:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h8tf69hz3.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,144 +26,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Henrik Eriksson <henriken@axis.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Thu,=A0Nov=A016,=A02017=A0at=A019:49:36=A0+0100, Takashi Iwai wrote:
+> On Thu, 16 Nov 2017 19:11:37 +0100,
+> Pierre-Louis Bossart wrote:
+> > =
 
-I can confirm that your patch does fix the bug:
+> > On 11/16/17 8:48 AM, Takashi Iwai wrote:
+> > > On Thu, 16 Nov 2017 13:43:57 +0100,
+> > > Henrik Eriksson wrote:
+> > >>
+> > >> Hello
+> > >>
+> > >> This reverts a change that was part of a larger commit.  That change
+> > >> broke timestamps in some application code for us as outlined in the =
+log,
+> > >> and reverting it obviously fixes this.  Since the original change did
+> > >> not explain why the behaviour was modified I can't speak for the eff=
+ects
+> > >> on that use case.
+> > >>
+> > >> Regards,
+> > >> /henrik
+> > >>> 8------------------------------------------------------8<
+> > >> Commit 3179f62001880e588e229db3006a59ad87b7792a ("ALSA: core: add
+> > >> .get_time_info") made an undocumented change to the behaviour of the
+> > >> PCM runtime tstamp.  Prior to this change the tstamp was not updated
+> > >> by snd_pcm_update_hw_ptr0() unless the hw ptr had moved, after this
+> > >> change the tstamp is always updated.
+> > >>
+> > >> For an application, using alsa-lib, doing snd_pcm_readi() followed by
+> > >> snd_pcm_status() to estimate the age of the read samples by subtract=
+ing
+> > >> status->avail * [sample rate] from status->tstamp this change degrad=
+ed
+> > >> the accuracy of that estimate on devices where the pcm hw does not
+> > >> provide a granular hw pointer.  On a device using
+> > >> soc-generic-dmaengine-pcm.c and a dma-engine with residue_granularity
+> > >> DMA_RESIDUE_GRANULARITY_DESCRIPTOR the accuracy of the estimate depe=
+nded
+> > >> on the latency between the PCM hw completing a period and when the
+> > >> driver called snd_pcm_period_elapsed() to notify ALSA core, typically
+> > >> determined by interrupt handling latency.  After this change the
+> > >> accuracy of the estimate is determined by the latency between the PC=
+M hw
+> > >> completing a period and the application calling snd_pcm_status(),
+> > >> determined by the scheduling of the application process.
+> > >>
+> > >> Revert the part of commit 3179f62001880e588e229db3006a59ad87b7792a
+> > >> ("ALSA: core: add .get_time_info") that changed be behaviour of
+> > >> snd_pcm_update_hw_ptr0() when the PCM hw pointer has not moved.
+> > >>
+> > >> Fixes: 3179f6200188 ("ALSA: core: add .get_time_info")
+> > >> Signed-off-by: Henrik Eriksson <henrik.eriksson@axis.com>
+> > >
+> > > So this is a regression and we need to address it.
+> > >
+> > > I *guess* that the reason to update tstamp event at the same hwptr is
+> > > that now we can get a more fine-grained tstamp.  OTOH, we have to
+> > > avoid the regression by that.
+> > >
+> > > What about the (untested) patch like below?  It skips the tstamp
+> > > update as default but follows the new standard when a better tstamp
+> > > mode is deployed.
+> > =
 
-[ao/alsa] trying to set ALSA channel map: FL FR FC LFE RL RR
-[ao/alsa] channel map reported by ALSA: FL FR FC LFE RL RR
-[ao/alsa] which we understand as: 5.1
+> > update_audio_tstamp() only updates the audio timestamp when the type
+> > is DEFAULT already, but indeed update runtime->status->tstamp is
+> > updated unconditionally.
+> > =
 
-/usr/src/linux$ uname -r
-4.14.0-amd
-/usr/src/linux$ speaker-test -c 6 -t wav
+> > I have a bit of heartburn with the suggested solutions because the
+> > delay can change even with the same hw_ptr. Not updating the
+> > timestamps would be going back to the days where timing updates was
+> > dependent on DMA granularity.
+> > =
 
-speaker-test 1.1.3
+> > Maybe we could make the tstamp update dependent on a change in
+> > audio_tstamp, e.g.
+> > =
 
-Playback device is default
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 5440
-Period size range from 32 to 2720
-Using max buffer size 5440
-Periods = 4
-was set period_size = 1088
-was set buffer_size = 5440
- 0 - Front Left
- 4 - Front Center
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
- 5 - LFE
-Time per period = 8.525875
+> > =
 
-Thank you for all your help to resolve this bug!
--Derek
+> > diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> > index a93a4235a332..b606f3ea7a17 100644
+> > --- a/sound/core/pcm_lib.c
+> > +++ b/sound/core/pcm_lib.c
+> > @@ -248,8 +248,10 @@ static void update_audio_tstamp(struct
+> > snd_pcm_substream *substream,
+> >                                 runtime->rate);
+> >                 *audio_tstamp =3D ns_to_timespec(audio_nsecs);
+> >         }
+> > -       runtime->status->audio_tstamp =3D *audio_tstamp;
+> > -       runtime->status->tstamp =3D *curr_tstamp;
+> > +       if (runtime->status->audio_tstamp !=3D *audio_tstamp) {
+> > +               runtime->status->audio_tstamp =3D *audio_tstamp;
+> > +               runtime->status->tstamp =3D *curr_tstamp;
+> > +       }
+> =
 
-On Thu, Nov 16, 2017 at 11:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 16 Nov 2017 22:28:17 +0100,
-> VDR User wrote:
->>
->> > What you can try is to bisect like
->> >    git bisect start -- sound/hda sound/pci/hda
->> >    git bisect good v4.5
->> >    git bisect bad v4.6-rc1
->>
->> Ok, did more bisect'ing. I had to skip a commit because the compile
->> failed but other than that, this is what I wound up with:
->>
->> git bisect start '--' 'sound/hda' 'sound/pci/hda'
->> # good: [fe0d128c57bf927a713159f60a18d9f315d4d91d] ALSA: jack: Allow
->> building the jack layer without input device
->> git bisect good fe0d128c57bf927a713159f60a18d9f315d4d91d
->> # bad: [9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0] ALSA: hda - Register
->> chmap obj as priv data instead of codec
->> git bisect bad 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0
->> # skip: [d61b04f801e6005182d432ebe4a0211c1d6feadd] Merge branch
->> 'for-linus' into for-next
->> git bisect skip d61b04f801e6005182d432ebe4a0211c1d6feadd
->> # good: [ec75a940b1037e877efd9a5a9e94eab1e464f73b] ALSA: hda - hdmi
->> add wmb barrier for audio component
->> git bisect good ec75a940b1037e877efd9a5a9e94eab1e464f73b
->> # good: [d10a80de04a3a8c0d7c1567cbc0a8d2e1181c10a] ALSA: hda -
->> hdmi_find_pcm_slot return value bug fix
->> git bisect good d10a80de04a3a8c0d7c1567cbc0a8d2e1181c10a
->> # good: [6defb60ae4ffe92c29291ed49695daa255b8f559] Merge branch
->> 'for-linus' into for-next
->> git bisect good 6defb60ae4ffe92c29291ed49695daa255b8f559
->> # good: [67b90cb84be8fde0e51f71834e15c32fbec08562] ALSA: hda - Create
->> common chmap object
->> git bisect good 67b90cb84be8fde0e51f71834e15c32fbec08562
->> # first bad commit: [9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0] ALSA:
->> hda - Register chmap obj as priv data instead of codec
->>
->> 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0 is the first bad commit
->> commit 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0
->> Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->> Date:   Fri Mar 4 19:59:47 2016 +0530
->>
->>     ALSA: hda - Register chmap obj as priv data instead of codec
->>
->>     With this chmap object is added as private data and new ops are
->>     added to access driver specific chmap.
->>
->>     Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->>     Signed-off-by: Vinod Koul <vinod.koul@intel.com>
->>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>
->> :040000 040000 11dc1a68fd79182d4e38c2a7fd73fd699dbd0685
->> 69c05f445bc255fc02441742b091247af99fb177 M      include
->> :040000 040000 8946088a30757dfcbc1ea6badbe6ea8366b2b39f
->> 6fcf7ce7986ffd29d3b5686ebe63168713b866ed M      sound
->>
->> Does this sound like it could be where the bug resides?.
->
-> Thanks for the effort!
-> Yes, it looks more likely than before.
->
->> I created a
->> patch with `git format-patch -1
->> 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0` and tried to apply it to
->> kernel 4.6-rc1 but I failed. I didn't bother trying to hand-reverse it
->> because it looks like it would just cause breakage. Not sure what to
->> do next here so I'll wait and see what you think..
->
-> I guess the bug is at copying the chmap data where calculating the
-> size wrongly.  A typical error of sizeof() usage.
->
-> The fix would be to correct sizeof(chmap) to ARRAY_SIZE(pcm_chmap).
-> At the commit 9b3dc8aa3fb1a5f3, it's in hdmi_chmap_ctl_get() in
-> patch_hdmi.c, correct like:
->
-> -       for (i = 0; i < sizeof(chmap); i++)
-> +       for (i = 0; i < ARRAY_SIZE(pcm_chmap); i++)
->
->
-> For the latest upstream, the relevant code was moved to
-> sound/hda/hdmi_chmap.c, and the fix would be a patch like below.
->
->
-> Could you check it?
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/hda/hdmi_chmap.c b/sound/hda/hdmi_chmap.c
-> index 81acc20c2535..f21633cd9b38 100644
-> --- a/sound/hda/hdmi_chmap.c
-> +++ b/sound/hda/hdmi_chmap.c
-> @@ -746,7 +746,7 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
->         memset(pcm_chmap, 0, sizeof(pcm_chmap));
->         chmap->ops.get_chmap(chmap->hdac, pcm_idx, pcm_chmap);
->
-> -       for (i = 0; i < sizeof(chmap); i++)
-> +       for (i = 0; i < ARRAY_SIZE(pcm_chmap); i++)
->                 ucontrol->value.integer.value[i] = pcm_chmap[i];
->
->         return 0;
+> OK for me as long as it works.
+> Henrik?
+
+It seems reasonable at first glance.  I'll try it out.
+
+BTW, I ran your patch variant overnight and, as expected, it has the
+same behaviour as my original take since we do not have get_time_info
+in the pcm driver.  In real terms that means that the result of
+status->tstamp - status->avail * [rate] on consequtive buffers stayed
+within 64 +- 3 ms, on a 64 ms period length.
+
+Thanks.
+
+/henrik
