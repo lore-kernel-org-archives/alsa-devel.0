@@ -1,58 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] sound updates for 4.15-rc1
-Date: Fri, 17 Nov 2017 14:24:16 +0000
-Message-ID: <20171117142416.r3xkxmwshrvntkrr@sirena.org.uk>
-References: <s5h4lpwap7p.wl-tiwai@suse.de>
- <CA+55aFw0PPt3T1DG9HL_x_wH56D-5R_CoOy=rnRJduDo_Qp6nQ@mail.gmail.com>
- <s5hmv3oatce.wl-tiwai@suse.de>
- <8bcf9060-92b9-8058-cdee-4a222e796b3e@linux.intel.com>
- <s5hy3n61cpq.wl-tiwai@suse.de>
- <a70760ea-50e9-229e-9f89-d56136e1872d@linux.intel.com>
+From: Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: Again about regression introduced by commit
+ 70d435ba1cd6 ("ASoC: imx-pcm-dma: simplify pcm_config")
+Date: Fri, 17 Nov 2017 15:32:09 +0100
+Message-ID: <1510929129.8104.1.camel@pengutronix.de>
+References: <CAFuYjm4vdToNBsurLrDUruwnUTJGpj0qH_1b9+0g9jEmqtkbUg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l5gvxtrwggf3nv2j"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <a70760ea-50e9-229e-9f89-d56136e1872d@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>, Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4C53126721A
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 15:32:09 +0100 (CET)
+In-Reply-To: <CAFuYjm4vdToNBsurLrDUruwnUTJGpj0qH_1b9+0g9jEmqtkbUg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kalle Kankare <kalle.kankare@vincit.com>, alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---l5gvxtrwggf3nv2j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Nov 16, 2017 at 02:27:48PM -0600, Pierre-Louis Bossart wrote:
-
-> I am also not sure if there should be hard-coded 'y' default. If you use
-> make defconfig, there is currently nothing selected at all for any of the
-> ASoC drivers, should we instead use 'default m' for all the sensible drivers
-> (i.e. default n for deprecated stuff) and automagically select them when
-> X86+ASoC is true?
-
-The hard coded defaults were being talked about in the context of the
-SoC level options that mask out the machines for a given platform -
-those should default on so the user gets the full list of machines by
-default and so that existing users don't get the config options for
-their boards turned off.  Those options shouldn't directly enable any
-code, they should just function to make the list of boards more
-manageable.
-
---l5gvxtrwggf3nv2j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloO8Q0ACgkQJNaLcl1U
-h9CKNQf9FNjF9FojTfM2ofxY1GKKllyAN43oCLH3J1ue7GxaDi2Rt3K3JjKyKa2c
-6IhxqPelYRL7FVnmhwYS4bDrH1XwAYrnSd45IlEtYUon1JIpL81Q/8wtk951iQJ+
-+Ge0B1y/NEtgvNm5ib851CV1QtiHkKStHm+s4R8T39FeqIm0ZFkSiHPqdZcnwXFp
-X0MFWEE/DK+xEfglh/yQg5y/dFu3UOctSfjjjA0aLoIt5spiaPQzdqd6CprzZFKE
-IgIucjHPPEzk4j+VXAuMeY7psRxU8dPY3h4YytofzyzNwZ/cN6zVh2rNdOIAFRfV
-wJWkkox/u+W6CsaGwGKvFM5S/NJdUw==
-=a8Fp
------END PGP SIGNATURE-----
-
---l5gvxtrwggf3nv2j--
+SGkgS2FsbGUsCgpBbSBGcmVpdGFnLCBkZW4gMTcuMTEuMjAxNywgMTY6MjcgKzAyMDAgc2Nocmll
+YiBLYWxsZSBLYW5rYXJlOgo+IEhpLAo+IAo+IFRoZSByZWdyZXNzaW9uIHdhcyBwcmV2aW91c2x5
+IGRpc2N1c3NlZCBvbiB0aGlzIG1haWxpbmcgbGlzdCBsYXN0Cj4gbW9udGggKDIwMTctMTAtMDQp
+Lgo+IAo+IEFzIGluIHRoZSBwcmV2aW91cyBkaXNjdXNzaW9uLCB0aGlzIGNvbW1pdCByZXN0cmlj
+dHMgdGhlIHN1cHBvcnRlZAo+IHNvdW5kIGZvcm1hdHMgdG8gUzI0X0xFLiBUaGlzIHByb2JsZW0g
+aXMgZXhwZXJpZW5jZWQgaW4gb3VyIGlNWDZxCj4gYmFzZWQgaGFyZHdhcmUgd2l0aCBTR1RMNTAw
+MCBzb3VuZCBjaGlwLiBJLmUuOgo+IAo+ICMgYXJlY29yZCAtbCB8IGdyZXAgJ2NhcmQgMCcgLUEy
+Cj4gY2FyZCAwOiBpbXg2cWJhMTZzZ3RsNTAgW2lteDZxLWJhMTYtc2d0bDUwMDBdLCBkZXZpY2Ug
+MDogSGlGaQo+IHNndGw1MDAwLTAgW10KPiDCoCBTdWJkZXZpY2VzOiAxLzEKPiDCoCBTdWJkZXZp
+Y2UgIzA6IHN1YmRldmljZSAjMAo+IAo+IEluIGtlcm5lbCA0LjExLjA6Cj4gCj4gIyBhcmVjb3Jk
+IC0tZHVtcC1ody1wYXJhbXMgLUQgaHc6MCwwIDI+JjEgfCBncmVwICdeRk9STUFUJwo+IEZPUk1B
+VDrCoCBTMTZfTEUKPiAKPiBBbmQgaW4gbm93IGluIGtlcm5lbCA0LjEzLjM6Cj4gCj4gIyBhcmVj
+b3JkIC0tZHVtcC1ody1wYXJhbXMgLUQgaHc6MCwwIDI+JjEgfCBncmVwICdeRk9STUFUJwo+IEZP
+Uk1BVDrCoCBTMjRfTEUKPiAKPiBCeSByZXZlcnRpbmcgdGhlIG1lbnRpb25lZCBjb21taXQgNzBk
+NDM1YmExY2Q2LCB0aGUgZm9ybWF0IHJldHVybmVkCj4gdG8gUzE2X0xFLiBIb3dldmVyLCBJJ20g
+dW5zdXJlIGlmIHRoYXQgaXMgdGhlIHByb3BlciB3YXkgdG8gc29sdmUKPiB0aGlzIGlzc3VlLiBJ
+LmUuIGRvZXMgcmV2ZXJ0aW5nIHRoZSBtZW50aW9uZWQgY29tbWl0IGNhdXNlIHNvbWUgb3RoZXIK
+PiB1bndhbnRlZCBlZmZlY3QgPwo+IAo+IFdoYXQgd291bGQgYmUgdGhlIGJlc3Qgc29sdXRpb24g
+dGhhdCB3b3VsZCBtYWtlIHRoZSBTMTZfTEUgZm9ybWF0Cj4gc3VwcG9ydGVkIGFnYWluIGZvciBT
+R1RMNTAwMCA/CgpQbGVhc2UgY2hlcnJ5LXBpY2sgZjlkNGEzOThmMTIxIChkbWFlbmdpbmU6IGlt
+eC1zZG1hOiBDb3JyZWN0CnNyY19hZGRyX3dpZHRocyBhbmQgZGlyZWN0aW9ucykgZnJvbSBjdXJy
+ZW50IExpbnVzIG1haW5saW5lIHRyZWUuCgpSZWdhcmRzLApMdWNhcwpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
