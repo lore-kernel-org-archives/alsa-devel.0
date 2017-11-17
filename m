@@ -1,86 +1,65 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl_asrc: constify some arrays
-Date: Thu, 16 Nov 2017 20:09:57 -0800
-Message-ID: <20171117040956.GA3153@Asurada-CZ80>
-References: <cover.1510849466.git.joe@perches.com>
- <b8a2684d6615ab36fa28f67606e5560c8097c8ef.1510849466.git.joe@perches.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v7 04/13] slimbus: core: Add slim controllers support
+Date: Fri, 17 Nov 2017 10:12:22 +0530
+Message-ID: <20171117044222.GK3187@localhost>
+References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
+ <20171115141043.29202-5-srinivas.kandagatla@linaro.org>
+ <20171116164233.GB3187@localhost>
+ <55794ca5-b70a-4866-1e80-bc0e78880c50@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <b8a2684d6615ab36fa28f67606e5560c8097c8ef.1510849466.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <55794ca5-b70a-4866-1e80-bc0e78880c50@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, gregkh@linuxfoundation.org
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 16, 2017 at 08:25:47AM -0800, Joe Perches wrote:
-> Using const reduces data.
+On Thu, Nov 16, 2017 at 05:29:35PM +0000, Srinivas Kandagatla wrote:
+> thanks for the comments.
 > 
-> $ size sound/soc/fsl/fsl_asrc.o*
->    text	   data	    bss	    dec	    hex	filename
->   21691	   5872	    192	  27755	   6c6b	sound/soc/fsl/fsl_asrc.o.new
->   21435	   6128	    192	  27755	   6c6b	sound/soc/fsl/fsl_asrc.o.old
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
+> On 16/11/17 16:42, Vinod Koul wrote:
+> >On Wed, Nov 15, 2017 at 02:10:34PM +0000, srinivas.kandagatla@linaro.org wrote:
+> >
+> >>+static void slim_dev_release(struct device *dev)
+> >>+{
+> >>+	struct slim_device *sbdev = to_slim_device(dev);
+> >>+
+> >>+	put_device(sbdev->ctrl->dev);
+> >
+> >which device would that be?
+> This is controller device
+> 
+> >
+> >>+static int slim_add_device(struct slim_controller *ctrl,
+> >>+			   struct slim_device *sbdev,
+> >>+			   struct device_node *node)
+> >>+{
+> >>+	sbdev->dev.bus = &slimbus_bus;
+> >>+	sbdev->dev.parent = ctrl->dev;
+> >>+	sbdev->dev.release = slim_dev_release;
+> >>+	sbdev->dev.driver = NULL;
+> >>+	sbdev->ctrl = ctrl;
+> >>+
+> >>+	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
+> >>+				  sbdev->e_addr.manf_id,
+> >>+				  sbdev->e_addr.prod_code,
+> >>+				  sbdev->e_addr.dev_index,
+> >>+				  sbdev->e_addr.instance);
+> >>+
+> >>+	get_device(ctrl->dev);
+> >
+> >is this controller device and you ensuring it doesnt go away while you have
+> >slaves on it?
+> 
+> Yes.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+I thought since you are marking ctrl->dev as parent, the device core should
+ensure that parent doesn't go off when you have child device?
 
-> ---
->  sound/soc/fsl/fsl_asrc.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-> index ed683fe8b94a..641724c9b3f8 100644
-> --- a/sound/soc/fsl/fsl_asrc.c
-> +++ b/sound/soc/fsl/fsl_asrc.c
-> @@ -49,12 +49,12 @@ static const u8 process_option[][12][2] = {
->  };
->  
->  /* Corresponding to process_option */
-> -static int supported_input_rate[] = {
-> +static const int supported_input_rate[] = {
->  	5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200,
->  	96000, 176400, 192000,
->  };
->  
-> -static int supported_asrc_rate[] = {
-> +static const int supported_asrc_rate[] = {
->  	8000, 11025, 16000, 22050, 32000, 44100, 48000, 64000, 88200, 96000, 176400, 192000,
->  };
->  
-> @@ -62,26 +62,26 @@ static int supported_asrc_rate[] = {
->   * The following tables map the relationship between asrc_inclk/asrc_outclk in
->   * fsl_asrc.h and the registers of ASRCSR
->   */
-> -static unsigned char input_clk_map_imx35[] = {
-> +static const unsigned char input_clk_map_imx35[] = {
->  	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf,
->  };
->  
-> -static unsigned char output_clk_map_imx35[] = {
-> +static const unsigned char output_clk_map_imx35[] = {
->  	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf,
->  };
->  
->  /* i.MX53 uses the same map for input and output */
-> -static unsigned char input_clk_map_imx53[] = {
-> +static const unsigned char input_clk_map_imx53[] = {
->  /*	0x0  0x1  0x2  0x3  0x4  0x5  0x6  0x7  0x8  0x9  0xa  0xb  0xc  0xd  0xe  0xf */
->  	0x0, 0x1, 0x2, 0x7, 0x4, 0x5, 0x6, 0x3, 0x8, 0x9, 0xa, 0xb, 0xc, 0xf, 0xe, 0xd,
->  };
->  
-> -static unsigned char output_clk_map_imx53[] = {
-> +static const unsigned char output_clk_map_imx53[] = {
->  /*	0x0  0x1  0x2  0x3  0x4  0x5  0x6  0x7  0x8  0x9  0xa  0xb  0xc  0xd  0xe  0xf */
->  	0x8, 0x9, 0xa, 0x7, 0xc, 0x5, 0x6, 0xb, 0x0, 0x1, 0x2, 0x3, 0x4, 0xf, 0xe, 0xd,
->  };
->  
-> -static unsigned char *clk_map[2];
-> +static const unsigned char *clk_map[2];
->  
->  /**
->   * Request ASRC pair
-> -- 
-> 2.15.0
-> 
+Greg, is that understanding correct, if so we may not need these calls.
+
+-- 
+~Vinod
