@@ -1,44 +1,142 @@
-From: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 1/2] ASoC: da7219: Correct IRQ level in DT binding example
-Date: Fri, 17 Nov 2017 15:09:27 +0000
-Message-ID: <e21b3fdd673d9baf8b4872d251df57b32b6149f6.1510930791.git.Adam.Thomson.Opensource@diasemi.com>
-References: <cover.1510930791.git.Adam.Thomson.Opensource@diasemi.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Missing surround channels with Nvidia HDMI &
+ snd-hda-intel driver
+Date: Fri, 17 Nov 2017 07:24:17 -0800
+Message-ID: <CAA7C2qiXgWs-hy01rQvhRuvdQ-SAkETMTEpvdMvLrzYy=-cn_w@mail.gmail.com>
+References: <CAA7C2qgvC65Cjbf=AsUWd3gFCqAgHpctA=CnnfAD9E9Z0bxJQw@mail.gmail.com>
+ <s5hr2t29loc.wl-tiwai@suse.de>
+ <CAA7C2qiGQ-VuCFPG51kXaB7bCSyC+nQvWgF=EeUSwdkybXZ=wQ@mail.gmail.com>
+ <s5ha7zqt310.wl-tiwai@suse.de>
+ <CAA7C2qg7RsJRsTFu03KRwTeBjcN5LK7m-b22iyw6kp5x4ymuBw@mail.gmail.com>
+ <CAA7C2qjoUf5gJ-Bu8vc4sQW7rfdSVa3s-stqngFtq0EZoxTNEw@mail.gmail.com>
+ <s5ha7znc1he.wl-tiwai@suse.de>
+ <CAA7C2qgCp1az49jxqQhGhiJbJFyP3RumT+GFn2m926L_mGfvKQ@mail.gmail.com>
+ <CAA7C2qiNPo_CQpoTERX-9PHS-Z=86sZo10v8XUuz2--v6tDqWA@mail.gmail.com>
+ <s5htvxuag8e.wl-tiwai@suse.de>
+ <CAA7C2qgAW7k6tULe=SBpUG1_6D+N5NYsPmYZ2pi9j8HhdjicwQ@mail.gmail.com>
+ <s5h375d9x5k.wl-tiwai@suse.de>
+ <CAA7C2qga_DG-FA46qTBDO3dSzjJSSLKccgDtmw68DGfOfRj7ww@mail.gmail.com>
+ <s5htvxtywum.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1510930791.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
+ [209.85.215.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F86626722D
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 16:24:18 +0100 (CET)
+Received: by mail-lf0-f67.google.com with SMTP id w23so3069223lfd.11
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 07:24:18 -0800 (PST)
+In-Reply-To: <s5htvxtywum.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Current DT binding documentation shows an example where the IRQ
-for the device is chosen to be ACTIVE_HIGH. This is incorrect as
-the device only supports ACTIVE_LOW, so this commit fixes that
-discrepancy.
+Takashi,
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/da7219.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good! It's interesting to hear the final detailing of the exact
+cause of the problem.
 
-diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
-index cf61681..5b54d2d 100644
---- a/Documentation/devicetree/bindings/sound/da7219.txt
-+++ b/Documentation/devicetree/bindings/sound/da7219.txt
-@@ -77,7 +77,7 @@ Example:
- 		reg = <0x1a>;
- 
- 		interrupt-parent = <&gpio6>;
--		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
- 
- 		VDD-supply = <&reg_audio>;
- 		VDDMIC-supply = <&reg_audio>;
--- 
-1.9.1
+Many thanks,
+Derek
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+On Fri, Nov 17, 2017 at 3:21 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 17 Nov 2017 09:28:55 +0100,
+> VDR User wrote:
+>>
+>> Hi Takashi,
+>>
+>> I can confirm that your patch does fix the bug:
+>>
+>> [ao/alsa] trying to set ALSA channel map: FL FR FC LFE RL RR
+>> [ao/alsa] channel map reported by ALSA: FL FR FC LFE RL RR
+>> [ao/alsa] which we understand as: 5.1
+>>
+>> /usr/src/linux$ uname -r
+>> 4.14.0-amd
+>> /usr/src/linux$ speaker-test -c 6 -t wav
+>>
+>> speaker-test 1.1.3
+>>
+>> Playback device is default
+>> Stream parameters are 48000Hz, S16_LE, 6 channels
+>> WAV file(s)
+>> Rate set to 48000Hz (requested 48000Hz)
+>> Buffer size range from 64 to 5440
+>> Period size range from 32 to 2720
+>> Using max buffer size 5440
+>> Periods = 4
+>> was set period_size = 1088
+>> was set buffer_size = 5440
+>>  0 - Front Left
+>>  4 - Front Center
+>>  1 - Front Right
+>>  3 - Rear Right
+>>  2 - Rear Left
+>>  5 - LFE
+>> Time per period = 8.525875
+>>
+>> Thank you for all your help to resolve this bug!
+>
+> Great, thanks for your patient testing!
+> FWIW, below is the patch I'm going to queue.
+>
+>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda: Fix too short HDMI/DP chmap reporting
+>
+> We got a regression report about the HD-audio HDMI chmap, where some
+> surround channels are reported as UNKNOWN.  The git bisection pointed
+> the culprit at the commit 9b3dc8aa3fb1 ("ALSA: hda - Register chmap
+> obj as priv data instead of codec").  The story behind scene is like
+> this:
+>
+> - While moving the code out of the legacy HDA to the HDA common place,
+>   the patch modifies the code to obtain the chmap array indirectly in
+>   a byte array, and it expands it to kctl value array.
+> - At the latter operation, the size of the array is wrongly passed by
+>   sizeof() to the pointer.
+> - It can be 4 on 32bit arch, thus too short for 6+ channels.
+>   (And that's the reason why it didn't hit other persons; it's 8 on
+>   64bit arch, thus it's usually enough.)
+>
+> The code was further changed meanwhile, but the problem persisted.
+> Let's fix it by correctly evaluating the array size.
+>
+> Fixes: 9b3dc8aa3fb1 ("ALSA: hda - Register chmap obj as priv data instead of codec")
+> Reported-by: VDR User <user.vdr@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/hda/hdmi_chmap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/hda/hdmi_chmap.c b/sound/hda/hdmi_chmap.c
+> index 81acc20c2535..f21633cd9b38 100644
+> --- a/sound/hda/hdmi_chmap.c
+> +++ b/sound/hda/hdmi_chmap.c
+> @@ -746,7 +746,7 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+>         memset(pcm_chmap, 0, sizeof(pcm_chmap));
+>         chmap->ops.get_chmap(chmap->hdac, pcm_idx, pcm_chmap);
+>
+> -       for (i = 0; i < sizeof(chmap); i++)
+> +       for (i = 0; i < ARRAY_SIZE(pcm_chmap); i++)
+>                 ucontrol->value.integer.value[i] = pcm_chmap[i];
+>
+>         return 0;
+> --
+> 2.15.0
+>
