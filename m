@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/4] ALSA: riptide: Reduce the scope for two
- variables in snd_riptide_proc_read()
-Date: Fri, 17 Nov 2017 10:50:23 +0100
-Message-ID: <2362b245-fcde-3327-11e1-f54985c95dd6@users.sourceforge.net>
+Subject: [PATCH 4/4] ALSA: riptide: Use common error handling
+ code in snd_riptide_create()
+Date: Fri, 17 Nov 2017 10:51:40 +0100
+Message-ID: <855689e0-dc52-0669-7394-ec7151658115@users.sourceforge.net>
 References: <0eef2699-f28a-c1e0-9351-268b5eb7e0c1@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 51680266B67
- for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 10:50:32 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B1ED266B67
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 10:52:20 +0100 (CET)
 In-Reply-To: <0eef2699-f28a-c1e0-9351-268b5eb7e0c1@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,35 +27,69 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 17 Nov 2017 09:55:27 +0100
+Date: Fri, 17 Nov 2017 10:22:33 +0100
 
-Move the definitions for the local variables "lval" and "rval" into
-an if branch so that the corresponding setting will only be performed
-on concrete demand in this function.
+Add jump targets so that a bit of exception handling can be better reused
+at the end of this function.
+
+This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/riptide/riptide.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/riptide/riptide.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index 3d00488ff137..774fba5bba48 100644
+index 774fba5bba48..b1b834e1b614 100644
 --- a/sound/pci/riptide/riptide.c
 +++ b/sound/pci/riptide/riptide.c
-@@ -1921,5 +1921,4 @@ snd_riptide_proc_read(struct snd_info_entry *entry,
- 	unsigned char p[256];
--	unsigned short rval = 0, lval = 0;
- 	unsigned int rate;
+@@ -1878,8 +1878,7 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 		snd_printk(KERN_ERR
+ 			   "Riptide: unable to grab region 0x%lx-0x%lx\n",
+ 			   chip->port, chip->port + 64 - 1);
+-		snd_riptide_free(chip);
+-		return -EBUSY;
++		goto e_busy;
+ 	}
+ 	hwport = (struct riptideport *)chip->port;
+ 	UNSET_AIE(hwport);
+@@ -1888,26 +1887,27 @@ snd_riptide_create(struct snd_card *card, struct pci_dev *pci,
+ 			KBUILD_MODNAME, chip)) {
+ 		snd_printk(KERN_ERR "Riptide: unable to grab IRQ %d\n",
+ 			   pci->irq);
+-		snd_riptide_free(chip);
+-		return -EBUSY;
++		goto e_busy;
+ 	}
+ 	chip->irq = pci->irq;
+ 	chip->device_id = pci->device;
+ 	pci_set_master(pci);
+ 	err = snd_riptide_initialize(chip);
+-	if (err < 0) {
+-		snd_riptide_free(chip);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_sound_chip;
  
- 	if (!chip)
-@@ -1934,6 +1933,8 @@ snd_riptide_proc_read(struct snd_info_entry *entry,
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		snd_riptide_free(chip);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_sound_chip;
  
- 	cif = chip->cif;
- 	if (cif) {
-+		unsigned short rval = 0, lval = 0;
+ 	*rchip = chip;
+ 	return 0;
 +
- 		snd_iprintf(buffer,
- 			    "\nVersion: ASIC: %d CODEC: %d AUXDSP: %d PROG: %d",
- 			    chip->firmware.firmware.ASIC,
++e_busy:
++	err = -EBUSY;
++free_sound_chip:
++	snd_riptide_free(chip);
++	return err;
+ }
+ 
+ static void
 -- 
 2.15.0
