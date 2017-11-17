@@ -1,74 +1,179 @@
-From: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v7 04/13] slimbus: core: Add slim controllers support
-Date: Fri, 17 Nov 2017 09:13:22 +0100
-Message-ID: <20171117081322.GF10671@kroah.com>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-5-srinivas.kandagatla@linaro.org>
- <20171116164233.GB3187@localhost>
- <55794ca5-b70a-4866-1e80-bc0e78880c50@linaro.org>
- <20171117044222.GK3187@localhost>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Missing surround channels with Nvidia HDMI &
+ snd-hda-intel driver
+Date: Fri, 17 Nov 2017 00:28:55 -0800
+Message-ID: <CAA7C2qga_DG-FA46qTBDO3dSzjJSSLKccgDtmw68DGfOfRj7ww@mail.gmail.com>
+References: <CAA7C2qgvC65Cjbf=AsUWd3gFCqAgHpctA=CnnfAD9E9Z0bxJQw@mail.gmail.com>
+ <s5hr2t29loc.wl-tiwai@suse.de>
+ <CAA7C2qiGQ-VuCFPG51kXaB7bCSyC+nQvWgF=EeUSwdkybXZ=wQ@mail.gmail.com>
+ <s5ha7zqt310.wl-tiwai@suse.de>
+ <CAA7C2qg7RsJRsTFu03KRwTeBjcN5LK7m-b22iyw6kp5x4ymuBw@mail.gmail.com>
+ <CAA7C2qjoUf5gJ-Bu8vc4sQW7rfdSVa3s-stqngFtq0EZoxTNEw@mail.gmail.com>
+ <s5ha7znc1he.wl-tiwai@suse.de>
+ <CAA7C2qgCp1az49jxqQhGhiJbJFyP3RumT+GFn2m926L_mGfvKQ@mail.gmail.com>
+ <CAA7C2qiNPo_CQpoTERX-9PHS-Z=86sZo10v8XUuz2--v6tDqWA@mail.gmail.com>
+ <s5htvxuag8e.wl-tiwai@suse.de>
+ <CAA7C2qgAW7k6tULe=SBpUG1_6D+N5NYsPmYZ2pi9j8HhdjicwQ@mail.gmail.com>
+ <s5h375d9x5k.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171117044222.GK3187@localhost>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, arnd@arndb.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
+ [209.85.215.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34C0A266CFB
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 09:28:56 +0100 (CET)
+Received: by mail-lf0-f66.google.com with SMTP id y2so856884lfj.4
+ for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 00:28:56 -0800 (PST)
+In-Reply-To: <s5h375d9x5k.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 17, 2017 at 10:12:22AM +0530, Vinod Koul wrote:
-> On Thu, Nov 16, 2017 at 05:29:35PM +0000, Srinivas Kandagatla wrote:
-> > thanks for the comments.
-> > 
-> > 
-> > On 16/11/17 16:42, Vinod Koul wrote:
-> > >On Wed, Nov 15, 2017 at 02:10:34PM +0000, srinivas.kandagatla@linaro.org wrote:
-> > >
-> > >>+static void slim_dev_release(struct device *dev)
-> > >>+{
-> > >>+	struct slim_device *sbdev = to_slim_device(dev);
-> > >>+
-> > >>+	put_device(sbdev->ctrl->dev);
-> > >
-> > >which device would that be?
-> > This is controller device
-> > 
-> > >
-> > >>+static int slim_add_device(struct slim_controller *ctrl,
-> > >>+			   struct slim_device *sbdev,
-> > >>+			   struct device_node *node)
-> > >>+{
-> > >>+	sbdev->dev.bus = &slimbus_bus;
-> > >>+	sbdev->dev.parent = ctrl->dev;
-> > >>+	sbdev->dev.release = slim_dev_release;
-> > >>+	sbdev->dev.driver = NULL;
-> > >>+	sbdev->ctrl = ctrl;
-> > >>+
-> > >>+	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
-> > >>+				  sbdev->e_addr.manf_id,
-> > >>+				  sbdev->e_addr.prod_code,
-> > >>+				  sbdev->e_addr.dev_index,
-> > >>+				  sbdev->e_addr.instance);
-> > >>+
-> > >>+	get_device(ctrl->dev);
-> > >
-> > >is this controller device and you ensuring it doesnt go away while you have
-> > >slaves on it?
-> > 
-> > Yes.
-> 
-> I thought since you are marking ctrl->dev as parent, the device core should
-> ensure that parent doesn't go off when you have child device?
-> 
-> Greg, is that understanding correct, if so we may not need these calls.
+Hi Takashi,
 
-That understanding should be correct, as the reference count is
-incremented on the parent when a child is added.
+I can confirm that your patch does fix the bug:
 
-It would be trivial for this to be tested, and yes, I am pretty sure you
-don't need this call.
+[ao/alsa] trying to set ALSA channel map: FL FR FC LFE RL RR
+[ao/alsa] channel map reported by ALSA: FL FR FC LFE RL RR
+[ao/alsa] which we understand as: 5.1
 
-thanks,
+/usr/src/linux$ uname -r
+4.14.0-amd
+/usr/src/linux$ speaker-test -c 6 -t wav
 
-greg k-h
+speaker-test 1.1.3
+
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 64 to 5440
+Period size range from 32 to 2720
+Using max buffer size 5440
+Periods = 4
+was set period_size = 1088
+was set buffer_size = 5440
+ 0 - Front Left
+ 4 - Front Center
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 5 - LFE
+Time per period = 8.525875
+
+Thank you for all your help to resolve this bug!
+-Derek
+
+On Thu, Nov 16, 2017 at 11:33 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Thu, 16 Nov 2017 22:28:17 +0100,
+> VDR User wrote:
+>>
+>> > What you can try is to bisect like
+>> >    git bisect start -- sound/hda sound/pci/hda
+>> >    git bisect good v4.5
+>> >    git bisect bad v4.6-rc1
+>>
+>> Ok, did more bisect'ing. I had to skip a commit because the compile
+>> failed but other than that, this is what I wound up with:
+>>
+>> git bisect start '--' 'sound/hda' 'sound/pci/hda'
+>> # good: [fe0d128c57bf927a713159f60a18d9f315d4d91d] ALSA: jack: Allow
+>> building the jack layer without input device
+>> git bisect good fe0d128c57bf927a713159f60a18d9f315d4d91d
+>> # bad: [9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0] ALSA: hda - Register
+>> chmap obj as priv data instead of codec
+>> git bisect bad 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0
+>> # skip: [d61b04f801e6005182d432ebe4a0211c1d6feadd] Merge branch
+>> 'for-linus' into for-next
+>> git bisect skip d61b04f801e6005182d432ebe4a0211c1d6feadd
+>> # good: [ec75a940b1037e877efd9a5a9e94eab1e464f73b] ALSA: hda - hdmi
+>> add wmb barrier for audio component
+>> git bisect good ec75a940b1037e877efd9a5a9e94eab1e464f73b
+>> # good: [d10a80de04a3a8c0d7c1567cbc0a8d2e1181c10a] ALSA: hda -
+>> hdmi_find_pcm_slot return value bug fix
+>> git bisect good d10a80de04a3a8c0d7c1567cbc0a8d2e1181c10a
+>> # good: [6defb60ae4ffe92c29291ed49695daa255b8f559] Merge branch
+>> 'for-linus' into for-next
+>> git bisect good 6defb60ae4ffe92c29291ed49695daa255b8f559
+>> # good: [67b90cb84be8fde0e51f71834e15c32fbec08562] ALSA: hda - Create
+>> common chmap object
+>> git bisect good 67b90cb84be8fde0e51f71834e15c32fbec08562
+>> # first bad commit: [9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0] ALSA:
+>> hda - Register chmap obj as priv data instead of codec
+>>
+>> 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0 is the first bad commit
+>> commit 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0
+>> Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+>> Date:   Fri Mar 4 19:59:47 2016 +0530
+>>
+>>     ALSA: hda - Register chmap obj as priv data instead of codec
+>>
+>>     With this chmap object is added as private data and new ops are
+>>     added to access driver specific chmap.
+>>
+>>     Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+>>     Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+>>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>
+>> :040000 040000 11dc1a68fd79182d4e38c2a7fd73fd699dbd0685
+>> 69c05f445bc255fc02441742b091247af99fb177 M      include
+>> :040000 040000 8946088a30757dfcbc1ea6badbe6ea8366b2b39f
+>> 6fcf7ce7986ffd29d3b5686ebe63168713b866ed M      sound
+>>
+>> Does this sound like it could be where the bug resides?.
+>
+> Thanks for the effort!
+> Yes, it looks more likely than before.
+>
+>> I created a
+>> patch with `git format-patch -1
+>> 9b3dc8aa3fb1a5f38ca9501f20f6ea4dced10fa0` and tried to apply it to
+>> kernel 4.6-rc1 but I failed. I didn't bother trying to hand-reverse it
+>> because it looks like it would just cause breakage. Not sure what to
+>> do next here so I'll wait and see what you think..
+>
+> I guess the bug is at copying the chmap data where calculating the
+> size wrongly.  A typical error of sizeof() usage.
+>
+> The fix would be to correct sizeof(chmap) to ARRAY_SIZE(pcm_chmap).
+> At the commit 9b3dc8aa3fb1a5f3, it's in hdmi_chmap_ctl_get() in
+> patch_hdmi.c, correct like:
+>
+> -       for (i = 0; i < sizeof(chmap); i++)
+> +       for (i = 0; i < ARRAY_SIZE(pcm_chmap); i++)
+>
+>
+> For the latest upstream, the relevant code was moved to
+> sound/hda/hdmi_chmap.c, and the fix would be a patch like below.
+>
+>
+> Could you check it?
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/hda/hdmi_chmap.c b/sound/hda/hdmi_chmap.c
+> index 81acc20c2535..f21633cd9b38 100644
+> --- a/sound/hda/hdmi_chmap.c
+> +++ b/sound/hda/hdmi_chmap.c
+> @@ -746,7 +746,7 @@ static int hdmi_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+>         memset(pcm_chmap, 0, sizeof(pcm_chmap));
+>         chmap->ops.get_chmap(chmap->hdac, pcm_idx, pcm_chmap);
+>
+> -       for (i = 0; i < sizeof(chmap); i++)
+> +       for (i = 0; i < ARRAY_SIZE(pcm_chmap); i++)
+>                 ucontrol->value.integer.value[i] = pcm_chmap[i];
+>
+>         return 0;
