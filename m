@@ -1,55 +1,60 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH RESEND 0/2] ASoC: Intel: kbl: update dmic
-	fixup params
-Date: Fri, 17 Nov 2017 09:05:20 +0530
-Message-ID: <20171117033519.GH3187@localhost>
-References: <1510740463-21655-1-git-send-email-naveen.m@intel.com>
+Subject: Re: [PATCH v2 02/14] soundwire: Add SoundWire bus type
+Date: Fri, 17 Nov 2017 09:22:37 +0530
+Message-ID: <20171117035237.GI3187@localhost>
+References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
+ <1510314556-13002-3-git-send-email-vinod.koul@intel.com>
+ <cb4fbc87-7857-5ab3-a2cd-413ee57c463e@linaro.org>
+ <20171116170221.GD3187@localhost>
+ <20171116172437.k64r5c6ehujwvogd@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CBAE52677BD
- for <alsa-devel@alsa-project.org>; Fri, 17 Nov 2017 04:32:01 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1510740463-21655-1-git-send-email-naveen.m@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Naveen Manohar <naveen.m@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
+In-Reply-To: <20171116172437.k64r5c6ehujwvogd@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 03:37:41PM +0530, Naveen Manohar wrote:
-> Hi Mark,
+On Thu, Nov 16, 2017 at 05:24:37PM +0000, Mark Brown wrote:
+> On Thu, Nov 16, 2017 at 10:32:21PM +0530, Vinod Koul wrote:
+> > On Thu, Nov 16, 2017 at 04:05:17PM +0000, Srinivas Kandagatla wrote:
 > 
-> These are resend of an already acked patch series.
-> I posted it a week ago but there has been update on the base branch.
-> I want to resend these. Kindly review and merge.
+> > > >+static const struct sdw_device_id *
+> > > >+sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
+> > > Indentation looks Odd here,
 > 
-> Update dmic fixup params to always expose QUAD channel capture device,
-> enabling User-space to control channel count.
-> Assign min and max channel only based on input hw_params.
-> And removes choosing the channel count based on pdata. 
+> > not really, the return type in preceding line is a perfect way to define
+> > things...
+> 
+> Yeah, that's fairly normal - just ugly long.  You could also do it by
+> splitting the arguments over two lines.
 
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+IMO that makes it look even worse :(
 
-> Naveen Manohar (2):
->   ASoC: Intel: kbl: Remove option of choosing CH count based on pdata
->   ASoC: Intel: kbl: update dmic fixup params
+static const struct sdw_device_id *sdw_get_device_id(
+					struct sdw_slave *slave,
+					struct sdw_driver *drv)
+
+current one seemed lesser evil :)
+
 > 
->  sound/soc/intel/boards/kbl_rt5663_max98927.c | 44 +++++++++-------------------
->  1 file changed, 14 insertions(+), 30 deletions(-)
+> > > >+	ret = dev_pm_domain_attach(dev, false);
+> > > >+	if (ret) {
 > 
-> -- 
-> 1.9.1
+> > > I think we discussed this in v1, but erring out here means that all the
+> > > devices need to have pm domain  attached, which might not be true all the
+> > > time.
 > 
+> > oh yes, sorry i missed this one. will fix
+> 
+> Looking at this pattern here I'm wondering if this should be folded into
+> the domain code, everything attaching a domain is going to need to take
+> care of this at the minute.
+
+Yes, but then only busses call this, handful of users and some like platform
+core have bit different handling, so it may not work for them
 
 -- 
 ~Vinod
