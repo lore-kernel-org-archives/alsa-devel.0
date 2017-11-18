@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/2] ALSA: vx222: Adjust ten function calls
- together with a variable assignment
-Date: Sat, 18 Nov 2017 21:39:51 +0100
-Message-ID: <76f53fb4-b7c4-ccd9-58c8-ad478bb3a9b0@users.sourceforge.net>
+Subject: [PATCH 2/2] ALSA: vx222: Use common error handling
+ code in two functions
+Date: Sat, 18 Nov 2017 21:40:55 +0100
+Message-ID: <7d7de279-baaa-d41c-d5d3-af8eb3fc5948@users.sourceforge.net>
 References: <e961ecef-9f03-0c2a-ad64-64102bbc1389@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id C3BE4266EFA
- for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2017 21:39:58 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4CA7266EFA
+ for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2017 21:41:02 +0100 (CET)
 In-Reply-To: <e961ecef-9f03-0c2a-ad64-64102bbc1389@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,121 +27,106 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 18 Nov 2017 21:10:37 +0100
+Date: Sat, 18 Nov 2017 21:23:27 +0100
 
-The script "checkpatch.pl" pointed information out like the following.
+Add jump targets so that a bit of exception handling can be better reused
+at the end of these functions.
 
-ERROR: do not use assignment in if condition
-
-Thus fix the affected source code places.
+This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/vx222/vx222.c     | 19 +++++++++++++------
- sound/pci/vx222/vx222_ops.c | 19 +++++++++++--------
- 2 files changed, 24 insertions(+), 14 deletions(-)
+ sound/pci/vx222/vx222.c | 44 ++++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
 diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index 55861849d7df..1f866a810a98 100644
+index 1f866a810a98..672b8f190777 100644
 --- a/sound/pci/vx222/vx222.c
 +++ b/sound/pci/vx222/vx222.c
-@@ -147,7 +147,8 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	struct snd_vx_ops *vx_ops;
- 
- 	/* enable PCI device */
--	if ((err = pci_enable_device(pci)) < 0)
-+	err = pci_enable_device(pci);
-+	if (err < 0)
- 		return err;
- 	pci_set_master(pci);
- 
-@@ -161,7 +162,8 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	vx = to_vx222(chip);
+@@ -163,10 +163,9 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
  	vx->pci = pci;
  
--	if ((err = pci_request_regions(pci, CARD_NAME)) < 0) {
-+	err = pci_request_regions(pci, CARD_NAME);
-+	if (err < 0) {
- 		snd_vx222_free(chip);
- 		return err;
- 	}
-@@ -177,7 +179,8 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
+ 	err = pci_request_regions(pci, CARD_NAME);
+-	if (err < 0) {
+-		snd_vx222_free(chip);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_sound_chip;
++
+ 	for (i = 0; i < 2; i++)
+ 		vx->port[i] = pci_resource_start(pci, i + 1);
+ 
+@@ -174,19 +173,21 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
+ 				 snd_vx_threaded_irq_handler, IRQF_SHARED,
+ 				 KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_vx222_free(chip);
+-		return -EBUSY;
++		err = -EBUSY;
++		goto free_sound_chip;
  	}
  	chip->irq = pci->irq;
  
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
- 		snd_vx222_free(chip);
- 		return err;
- 	}
-@@ -220,7 +223,9 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 			hw = &vx222_v2_hw;
- 		break;
- 	}
--	if ((err = snd_vx222_create(card, pci, hw, &vx)) < 0) {
-+
-+	err = snd_vx222_create(card, pci, hw, &vx);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-@@ -236,12 +241,14 @@ static int snd_vx222_probe(struct pci_dev *pci,
- 	vx->core.dev = &pci->dev;
- #endif
- 
--	if ((err = snd_vx_setup_firmware(&vx->core)) < 0) {
-+	err = snd_vx_setup_firmware(&vx->core);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 
--	if ((err = snd_card_register(card)) < 0) {
-+	err = snd_card_register(card);
-+	if (err < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
-diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
-index d4298af6d3ee..4447d7f57dee 100644
---- a/sound/pci/vx222/vx222_ops.c
-+++ b/sound/pci/vx222/vx222_ops.c
-@@ -421,11 +421,12 @@ static int vx2_load_dsp(struct vx_core *vx, int index, const struct firmware *ds
- 	switch (index) {
- 	case 1:
- 		/* xilinx image */
--		if ((err = vx2_load_xilinx_binary(vx, dsp)) < 0)
-+		err = vx2_load_xilinx_binary(vx, dsp);
-+		if (err < 0)
- 			return err;
--		if ((err = vx2_test_xilinx(vx)) < 0)
--			return err;
--		return 0;
-+
-+		err = vx2_test_xilinx(vx);
-+		return (err < 0) ? err : 0;
- 	case 2:
- 		/* DSP boot */
- 		return snd_vx_dsp_boot(vx, dsp);
-@@ -985,12 +986,14 @@ static int vx2_add_mic_controls(struct vx_core *_chip)
- 	vx2_set_input_level(chip);
- 
- 	/* controls */
--	if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_input_level, chip))) < 0)
+ 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
+-	if (err < 0) {
+-		snd_vx222_free(chip);
 -		return err;
--	if ((err = snd_ctl_add(_chip->card, snd_ctl_new1(&vx_control_mic_level, chip))) < 0)
-+	err = snd_ctl_add(_chip->card,
-+			  snd_ctl_new1(&vx_control_input_level, chip));
+-	}
 +	if (err < 0)
- 		return err;
++		goto free_sound_chip;
  
--	return 0;
-+	err = snd_ctl_add(_chip->card,
-+			  snd_ctl_new1(&vx_control_mic_level, chip));
-+	return (err < 0) ? err : 0;
+ 	*rchip = vx;
+ 	return 0;
++
++free_sound_chip:
++	snd_vx222_free(chip);
++	return err;
  }
  
  
+@@ -225,10 +226,9 @@ static int snd_vx222_probe(struct pci_dev *pci,
+ 	}
+ 
+ 	err = snd_vx222_create(card, pci, hw, &vx);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
++
+ 	card->private_data = vx;
+ 	vx->core.ibl.size = ibl[dev];
+ 
+@@ -242,20 +242,20 @@ static int snd_vx222_probe(struct pci_dev *pci,
+ #endif
+ 
+ 	err = snd_vx_setup_firmware(&vx->core);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
+ 
+ 	err = snd_card_register(card);
+-	if (err < 0) {
+-		snd_card_free(card);
+-		return err;
+-	}
++	if (err < 0)
++		goto free_card;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	dev++;
+ 	return 0;
++
++free_card:
++	snd_card_free(card);
++	return err;
+ }
+ 
+ static void snd_vx222_remove(struct pci_dev *pci)
 -- 
 2.15.0
