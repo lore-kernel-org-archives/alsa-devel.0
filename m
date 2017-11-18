@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ALSA: trident: Use common error handling
- code in two functions
-Date: Sat, 18 Nov 2017 20:12:33 +0100
-Message-ID: <5fc2dcb3-3016-5a0a-62f4-5e873252677e@users.sourceforge.net>
+Subject: [PATCH 3/3] ALSA: trident: Use common error handling
+ code in snd_trident_mixer()
+Date: Sat, 18 Nov 2017 20:13:31 +0100
+Message-ID: <e00a1980-2558-baa4-d8fb-7e39f833a7d8@users.sourceforge.net>
 References: <498d6d73-2c62-178a-3c7a-b0fcb092d81e@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 66FF7266EFA
- for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2017 20:12:39 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9149266EFA
+ for <alsa-devel@alsa-project.org>; Sat, 18 Nov 2017 20:13:34 +0100 (CET)
 In-Reply-To: <498d6d73-2c62-178a-3c7a-b0fcb092d81e@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,199 +27,191 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 18 Nov 2017 19:29:35 +0100
+Date: Sat, 18 Nov 2017 19:49:50 +0100
 
-Add jump targets so that a bit of exception handling can be better reused
-at the end of these functions.
-
-This issue was detected by using the Coccinelle software.
+Adjust jump targets so that a bit of exception handling can be better
+reused at the end of this function.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/pci/trident/trident.c      | 54 +++++++++++++++++++---------------------
- sound/pci/trident/trident_main.c | 41 +++++++++++++++---------------
- 2 files changed, 47 insertions(+), 48 deletions(-)
+ sound/pci/trident/trident_main.c | 71 +++++++++++++++++++---------------------
+ 1 file changed, 33 insertions(+), 38 deletions(-)
 
-diff --git a/sound/pci/trident/trident.c b/sound/pci/trident/trident.c
-index fd35f7826845..830402c32395 100644
---- a/sound/pci/trident/trident.c
-+++ b/sound/pci/trident/trident.c
-@@ -100,10 +100,9 @@ static int snd_trident_probe(struct pci_dev *pci,
- 				 == TRIDENT_DEVICE_ID_SI7018 ? 1 : 2,
- 				 wavetable_size[dev],
- 				 &trident);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	card->private_data = trident;
- 
- 	switch (trident->device) {
-@@ -130,47 +129,46 @@ static int snd_trident_probe(struct pci_dev *pci,
- 		card->shortname, trident->port, trident->irq);
- 
- 	err = snd_trident_pcm(trident, pcm_dev++);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	switch (trident->device) {
- 	case TRIDENT_DEVICE_ID_DX:
- 	case TRIDENT_DEVICE_ID_NX:
- 		err = snd_trident_foldback_pcm(trident, pcm_dev++);
--		if (err < 0) {
--			snd_card_free(card);
--			return err;
--		}
-+		if (err < 0)
-+			goto free_card;
- 		break;
- 	}
- 	if (trident->device == TRIDENT_DEVICE_ID_NX || trident->device == TRIDENT_DEVICE_ID_SI7018) {
- 		err = snd_trident_spdif_pcm(trident, pcm_dev++);
--		if (err < 0) {
--			snd_card_free(card);
--			return err;
--		}
-+		if (err < 0)
-+			goto free_card;
- 	}
--	if (trident->device != TRIDENT_DEVICE_ID_SI7018 &&
--	    (err = snd_mpu401_uart_new(card, 0, MPU401_HW_TRID4DWAVE,
--				       trident->midi_port,
--				       MPU401_INFO_INTEGRATED |
--				       MPU401_INFO_IRQ_HOOK,
--				       -1, &trident->rmidi)) < 0) {
--		snd_card_free(card);
--		return err;
-+
-+	if (trident->device != TRIDENT_DEVICE_ID_SI7018) {
-+		err = snd_mpu401_uart_new(card, 0, MPU401_HW_TRID4DWAVE,
-+					  trident->midi_port,
-+					  MPU401_INFO_INTEGRATED |
-+					  MPU401_INFO_IRQ_HOOK,
-+					  -1, &trident->rmidi);
-+		if (err < 0)
-+			goto free_card;
- 	}
- 
- 	snd_trident_create_gameport(trident);
- 
- 	err = snd_card_register(card);
--	if (err < 0) {
--		snd_card_free(card);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_card;
-+
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
-+
-+free_card:
-+	snd_card_free(card);
-+	return err;
- }
- 
- static void snd_trident_remove(struct pci_dev *pci)
 diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-index 88d666cb3300..9843a61a8ead 100644
+index 9843a61a8ead..2cb5da02ad9b 100644
 --- a/sound/pci/trident/trident_main.c
 +++ b/sound/pci/trident/trident_main.c
-@@ -3587,14 +3587,14 @@ int snd_trident_create(struct snd_card *card,
- 	    dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(30)) < 0) {
- 		dev_err(card->dev,
- 			"architecture does not support 30bit PCI busmaster DMA\n");
--		pci_disable_device(pci);
--		return -ENXIO;
-+		err = -ENXIO;
-+		goto disable_device;
+@@ -2980,7 +2980,7 @@ static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
+ 
+ 	err = snd_ac97_bus(trident->card, 0, &ops, NULL, &trident->ac97_bus);
+ 	if (err < 0)
+-		goto __out;
++		goto free_control;
+ 
+ 	memset(&_ac97, 0, sizeof(_ac97));
+ 	_ac97.private_data = trident;
+@@ -2992,12 +2992,12 @@ static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
+ 		if (trident->device == TRIDENT_DEVICE_ID_SI7018) {
+ 			err = snd_trident_sis_reset(trident);
+ 			if (err < 0)
+-				goto __out;
++				goto free_control;
+ 			if (retries-- > 0)
+ 				goto __again;
+ 			err = -EIO;
+ 		}
+-		goto __out;
++		goto free_control;
  	}
  	
- 	trident = kzalloc(sizeof(*trident), GFP_KERNEL);
- 	if (trident == NULL) {
--		pci_disable_device(pci);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto disable_device;
- 	}
- 	trident->device = (pci->vendor << 16) | pci->device;
- 	trident->card = card;
-@@ -3617,16 +3617,15 @@ int snd_trident_create(struct snd_card *card,
- 	err = pci_request_regions(pci, "Trident Audio");
- 	if (err < 0) {
- 		kfree(trident);
--		pci_disable_device(pci);
--		return err;
-+		goto disable_device;
- 	}
- 	trident->port = pci_resource_start(pci, 0);
+ 	/* secondary codec? */
+@@ -3025,12 +3025,12 @@ static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
+ 		kctl = snd_ctl_new1(&snd_trident_vol_wave_control, trident);
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 		kctl->put(kctl, uctl);
+ 		kctl = snd_ctl_new1(&snd_trident_vol_music_control, trident);
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 		kctl->put(kctl, uctl);
+ 		outl(trident->musicvol_wavevol = 0x00000000, TRID_REG(trident, T4D_MUSICVOL_WAVEVOL));
+ 	} else {
+@@ -3046,52 +3046,51 @@ static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
  
- 	if (request_irq(pci->irq, snd_trident_interrupt, IRQF_SHARED,
- 			KBUILD_MODNAME, trident)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
--		snd_trident_free(trident);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto free_sound_chip;
- 	}
- 	trident->irq = pci->irq;
+ 	trident->ctl_vol = snd_ctl_new1(&snd_trident_pcm_vol_control, trident);
+ 	if (!trident->ctl_vol)
+-		goto __nomem;
++		goto e_nomem;
  
-@@ -3635,10 +3634,8 @@ int snd_trident_create(struct snd_card *card,
- 	trident->tlb.buffer.area = NULL;
+ 	err = snd_ctl_add(card, trident->ctl_vol);
+ 	if (err)
+-		goto __out;
++		goto free_control;
+ 		
+ 	trident->ctl_pan = snd_ctl_new1(&snd_trident_pcm_pan_control, trident);
+ 	if (!trident->ctl_pan)
+-		goto __nomem;
++		goto e_nomem;
+ 
+ 	err = snd_ctl_add(card, trident->ctl_pan);
+ 	if (err)
+-		goto __out;
++		goto free_control;
+ 
+ 	trident->ctl_rvol = snd_ctl_new1(&snd_trident_pcm_rvol_control,
+ 					 trident);
+ 	if (!trident->ctl_rvol)
+-		goto __nomem;
++		goto e_nomem;
+ 
+ 	err = snd_ctl_add(card, trident->ctl_rvol);
+ 	if (err)
+-		goto __out;
++		goto free_control;
+ 
+ 	trident->ctl_cvol = snd_ctl_new1(&snd_trident_pcm_cvol_control,
+ 					 trident);
+ 	if (!trident->ctl_cvol)
+-		goto __nomem;
++		goto e_nomem;
+ 
+ 	err = snd_ctl_add(card, trident->ctl_cvol);
+ 	if (err)
+-		goto __out;
++		goto free_control;
+ 
  	if (trident->device == TRIDENT_DEVICE_ID_NX) {
- 		err = snd_trident_tlb_alloc(trident);
--		if (err < 0) {
--			snd_trident_free(trident);
--			return err;
+ 		kctl = snd_ctl_new1(&snd_trident_ac97_rear_control, trident);
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 		kctl->put(kctl, uctl);
+ 	}
+ 	if (trident->device == TRIDENT_DEVICE_ID_NX || trident->device == TRIDENT_DEVICE_ID_SI7018) {
+ 
+ 		kctl = snd_ctl_new1(&snd_trident_spdif_control, trident);
+-		if (kctl == NULL) {
+-			err = -ENOMEM;
+-			goto __out;
 -		}
-+		if (err < 0)
-+			goto free_sound_chip;
++		if (!kctl)
++			goto e_nomem;
++
+ 		if (trident->ac97->ext_id & AC97_EI_SPDIF)
+ 			kctl->id.index++;
+ 		if (trident->ac97_sec && (trident->ac97_sec->ext_id & AC97_EI_SPDIF))
+@@ -3099,51 +3098,47 @@ static int snd_trident_mixer(struct snd_trident *trident, int pcm_spdif_device)
+ 		idx = kctl->id.index;
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 		kctl->put(kctl, uctl);
+ 
+ 		kctl = snd_ctl_new1(&snd_trident_spdif_default, trident);
+-		if (kctl == NULL) {
+-			err = -ENOMEM;
+-			goto __out;
+-		}
++		if (!kctl)
++			goto e_nomem;
++
+ 		kctl->id.index = idx;
+ 		kctl->id.device = pcm_spdif_device;
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 
+ 		kctl = snd_ctl_new1(&snd_trident_spdif_mask, trident);
+-		if (kctl == NULL) {
+-			err = -ENOMEM;
+-			goto __out;
+-		}
++		if (!kctl)
++			goto e_nomem;
++
+ 		kctl->id.index = idx;
+ 		kctl->id.device = pcm_spdif_device;
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 
+ 		kctl = snd_ctl_new1(&snd_trident_spdif_stream, trident);
+-		if (kctl == NULL) {
+-			err = -ENOMEM;
+-			goto __out;
+-		}
++		if (!kctl)
++			goto e_nomem;
++
+ 		kctl->id.index = idx;
+ 		kctl->id.device = pcm_spdif_device;
+ 		err = snd_ctl_add(card, kctl);
+ 		if (err < 0)
+-			goto __out;
++			goto free_control;
+ 		trident->spdif_pcm_ctl = kctl;
  	}
  
- 	trident->spdif_bits = trident->spdif_pcm_bits = SNDRV_PCM_DEFAULT_CON_SPDIF;
-@@ -3658,16 +3655,12 @@ int snd_trident_create(struct snd_card *card,
- 		snd_BUG();
- 		break;
- 	}
--	if (err < 0) {
--		snd_trident_free(trident);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_sound_chip;
+ 	err = 0;
+-	goto __out;
++	goto free_control;
  
- 	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, trident, &ops);
--	if (err < 0) {
--		snd_trident_free(trident);
--		return err;
--	}
-+	if (err < 0)
-+		goto free_sound_chip;
+- __nomem:
++e_nomem:
+ 	err = -ENOMEM;
+-
+- __out:
++free_control:
+ 	kfree(uctl);
  
- 	err = snd_trident_mixer(trident, pcm_spdif_device);
- 	if (err < 0)
-@@ -3693,6 +3686,14 @@ int snd_trident_create(struct snd_card *card,
- 	snd_trident_proc_init(trident);
- 	*rtrident = trident;
- 	return 0;
-+
-+disable_device:
-+	pci_disable_device(pci);
-+	return err;
-+
-+free_sound_chip:
-+	snd_trident_free(trident);
-+	return err;
- }
- 
- /*---------------------------------------------------------------------------
+ 	return err;
 -- 
 2.15.0
