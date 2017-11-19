@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 2/5 v4] ASoC: mt8173: Fix platform_get_irq's error checking
-Date: Sun, 19 Nov 2017 09:45:01 +0530
-Message-ID: <3486c0c54d071b1d5cab0c070f2cc7ab63ef0806.1511062844.git.arvind.yadav.cs@gmail.com>
+Subject: [PATCH 5/5 v3] ASoC: intel: mfld: Handle return value of platform_get_irq
+Date: Sun, 19 Nov 2017 09:45:04 +0530
+Message-ID: <64135c4647a3a94261a669d7f49611a356f334bf.1511062844.git.arvind.yadav.cs@gmail.com>
 References: <082d4479211d425219f4ab275ecc12e1011eca2f.1511062844.git.arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <082d4479211d425219f4ab275ecc12e1011eca2f.1511062844.git.arvind.yadav.cs@gmail.com>
@@ -12,43 +12,30 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mat
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The platform_get_irq() function returns negative if an error occurs.
-zero or positive number on success. platform_get_irq() error checking
-for zero is not correct.
+platform_get_irq() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
 changes in v2 :
-               irq was unsigned. so changed it to signed.
-changes in v3 :
               Add failure case '<= 0' instead of '< 0'. IRQ0 is not valid.
-changes in v4 :
-              Return -ENODEV insted of irq_id.
+changes in v3 :
+              Return EIO insted of ctx->irq_num.
 
- sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/mfld_machine.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-index 8a643a3..1153566 100644
---- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-@@ -1083,7 +1083,7 @@ static int mt8173_afe_init_audio_clk(struct mtk_base_afe *afe)
- static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
- {
- 	int ret, i;
--	unsigned int irq_id;
-+	int irq_id;
- 	struct mtk_base_afe *afe;
- 	struct mt8173_afe_private *afe_priv;
- 	struct resource *res;
-@@ -1105,7 +1105,7 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
- 	afe->dev = &pdev->dev;
+diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
+index 6f44acf..c819210 100644
+--- a/sound/soc/intel/boards/mfld_machine.c
++++ b/sound/soc/intel/boards/mfld_machine.c
+@@ -372,6 +372,8 @@ static int snd_mfld_mc_probe(struct platform_device *pdev)
  
- 	irq_id = platform_get_irq(pdev, 0);
--	if (!irq_id) {
-+	if (irq_id <= 0) {
- 		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
- 		return -ENXIO;
- 	}
+ 	/* retrive the irq number */
+ 	irq = platform_get_irq(pdev, 0);
++	if (irq <= 0)
++		return -ENODEV;
+ 
+ 	/* audio interrupt base of SRAM location where
+ 	 * interrupts are stored by System FW */
 -- 
 2.7.4
