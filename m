@@ -1,38 +1,85 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 0/2] ASoC-Rockchip: Fine-tuning for rk_aif1_hw_params()
-Date: Sun, 19 Nov 2017 13:42:13 +0100
-Message-ID: <255fa488-a5f1-2ea3-dd48-b10ad8b2c18c@users.sourceforge.net>
+Subject: [PATCH 1/2] ASoC: rockchip: Use common error handling code in
+ rk_aif1_hw_params()
+Date: Sun, 19 Nov 2017 13:43:26 +0100
+Message-ID: <72605b8c-a5dc-3cc6-8e9f-940c8e72581d@users.sourceforge.net>
+References: <255fa488-a5f1-2ea3-dd48-b10ad8b2c18c@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <255fa488-a5f1-2ea3-dd48-b10ad8b2c18c@users.sourceforge.net>
 Content-Language: en-GB
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 19 Nov 2017 13:34:56 +0100
+Date: Sun, 19 Nov 2017 13:23:35 +0100
 
-Two update suggestions were taken into account
-from static source code analysis.
+Add a jump target so that a bit of exception handling can be better reused
+in an if branch of these functions.
 
-Markus Elfring (2):
-  Use common error handling code
-  Delete two unnecessary variable initialisations
+This issue was detected by using the Coccinelle software.
 
- sound/soc/rockchip/rockchip_max98090.c | 13 +++++--------
- sound/soc/rockchip/rockchip_rt5645.c   | 13 +++++--------
- 2 files changed, 10 insertions(+), 16 deletions(-)
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/rockchip/rockchip_max98090.c | 11 ++++-------
+ sound/soc/rockchip/rockchip_rt5645.c   | 11 ++++-------
+ 2 files changed, 8 insertions(+), 14 deletions(-)
 
+diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
+index 789d6f1e2b5f..419fa6ef14bb 100644
+--- a/sound/soc/rockchip/rockchip_max98090.c
++++ b/sound/soc/rockchip/rockchip_max98090.c
+@@ -104,17 +104,14 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
+ 				     SND_SOC_CLOCK_OUT);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "Can't set codec clock %d\n", ret);
+-		return ret;
+-	}
++	if (ret < 0)
++		goto report_failure;
+ 
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+ 				     SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
++	if (ret < 0)
++report_failure:
+ 		dev_err(codec_dai->dev, "Can't set codec clock %d\n", ret);
+-		return ret;
+-	}
+ 
+ 	return ret;
+ }
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index 9e0c17805807..7f763d0963d3 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -98,17 +98,14 @@ static int rk_aif1_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
+ 				     SND_SOC_CLOCK_OUT);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "Can't set codec clock %d\n", ret);
+-		return ret;
+-	}
++	if (ret < 0)
++		goto report_failure;
+ 
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+ 				     SND_SOC_CLOCK_IN);
+-	if (ret < 0) {
++	if (ret < 0)
++report_failure:
+ 		dev_err(codec_dai->dev, "Can't set codec clock %d\n", ret);
+-		return ret;
+-	}
+ 
+ 	return ret;
+ }
 -- 
 2.15.0
