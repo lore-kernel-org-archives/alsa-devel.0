@@ -1,87 +1,113 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: sst-firmware: Improve unlocking of a
- mutex in sst_block_alloc_scratch()
-Date: Sun, 19 Nov 2017 10:56:37 +0100
-Message-ID: <49e56746-f178-d0e1-7b01-c75bde63f72c@users.sourceforge.net>
+From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 02/12] docs: driver-api: add iio hw consumer section
+Date: Sun, 19 Nov 2017 12:31:15 +0000
+Message-ID: <20171119123115.06eb6d63@archlinux>
+References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
+        <1510222354-15290-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 14EF1266DE0
- for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 10:57:46 +0100 (CET)
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Colin Ian King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1510222354-15290-3-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 19 Nov 2017 10:45:36 +0100
+On Thu, 9 Nov 2017 11:12:24 +0100
+Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
 
-* Add a jump target so that a call of the function "mutex_unlock" is stored
-  only once in this function implementation.
+> This adds a section about the Hardware consumer
+> Api of the IIO subsystem to the driver API
+> documentation.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 
-* Replace three calls by goto statements.
+Good little bit of docs.  A couple of minor formatting
+comments inline.
 
-* Increase the lock scope.
+Jonathan
 
-This issue was detected by using the Coccinelle software.
+> ---
+>  Documentation/driver-api/iio/hw-consumer.rst | 50 ++++++++++++++++++++++++++++
+>  Documentation/driver-api/iio/index.rst       |  1 +
+>  2 files changed, 51 insertions(+)
+>  create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
+> 
+> diff --git a/Documentation/driver-api/iio/hw-consumer.rst b/Documentation/driver-api/iio/hw-consumer.rst
+> new file mode 100644
+> index 0000000..b777133
+> --- /dev/null
+> +++ b/Documentation/driver-api/iio/hw-consumer.rst
+> @@ -0,0 +1,50 @@
+> +===========
+> +HW consumer
+> +===========
+> +An IIO device can be directly connected to another device in hardware. in this
+> +case the buffers between IIO provider and IIO consumer are handled by hardware.
+> +The Industrial I/O hw consumer offers a way to bond these IIO devices without
+> +software buffer for data. The implementation can be found under
+> +:file:`drivers/iio/buffer/hw-consumer.c`
+> +
+> +
+> +* struct :c:type:`iio_hw_consumer` — Hardware consumer structure
+> +* :c:func:`iio_hw_consumer_alloc` — Allocate IIO hardware consumer
+> +* :c:func:`iio_hw_consumer_free` — Free IIO hardware consumer
+> +* :c:func:`iio_hw_consumer_enable` — Enable IIO hardware consumer
+> +* :c:func:`iio_hw_consumer_disable` — Disable IIO hardware consumer
+> +
+> +
+> +HW consumer setup
+> +=================
+> +
+> +As standard IIO device the implementation is based on IIO provider/consumer.
+> +A typical IIO Hw conumer setup looks like this::
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/intel/common/sst-firmware.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+HW
 
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index 79a9fdf94d38..665e66670512 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -1097,8 +1097,8 @@ int sst_block_alloc_scratch(struct sst_dsp *dsp)
- 
- 	if (dsp->scratch_size == 0) {
- 		dev_info(dsp->dev, "no modules need scratch buffer\n");
--		mutex_unlock(&dsp->mutex);
--		return 0;
-+		ret = 0;
-+		goto unlock;
- 	}
- 
- 	/* allocate blocks for module scratch buffers */
-@@ -1127,21 +1127,21 @@ int sst_block_alloc_scratch(struct sst_dsp *dsp)
- 	}
- 	if (ret < 0) {
- 		dev_err(dsp->dev, "error: can't alloc scratch blocks\n");
--		mutex_unlock(&dsp->mutex);
--		return ret;
-+		goto unlock;
- 	}
- 
- 	ret = block_list_prepare(dsp, &dsp->scratch_block_list);
- 	if (ret < 0) {
- 		dev_err(dsp->dev, "error: scratch block prepare failed\n");
--		mutex_unlock(&dsp->mutex);
--		return ret;
-+		goto unlock;
- 	}
- 
- 	/* assign the same offset of scratch to each module */
- 	dsp->scratch_offset = ba.offset;
-+	ret = dsp->scratch_size;
-+unlock:
- 	mutex_unlock(&dsp->mutex);
--	return dsp->scratch_size;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(sst_block_alloc_scratch);
- 
--- 
-2.15.0
+> +
+> +	static struct iio_hw_consumer *hwc;
+> +
+> +	static const struct iio_info adc_info = {
+> +		.read_raw = adc_read_raw,
+> +	};
+> +
+> +	static int adc_read_raw(struct iio_dev *indio_dev,
+> +				struct iio_chan_spec const *chan, int *val,
+> +				int *val2, long mask)
+> +	{
+> +		ret = iio_hw_consumer_enable(hwc);
+> +
+> +		/* Acquire data */
+
+Blank line here to make it clear the Acquire data doesn't apply to
+the line below but is representing a missing block.
+
+> +		ret = iio_hw_consumer_disable(hwc);
+> +	}
+> +
+> +	static int adc_probe(struct platform_device *pdev)
+> +	{
+> +		hwc = devm_iio_hw_consumer_alloc(&iio->dev);
+> +	}
+> +
+> +More details
+> +============
+> +.. kernel-doc:: include/linux/iio/hw-consumer.h
+> +.. kernel-doc:: drivers/iio/buffer/industrialio-hw-consumer.c
+> +   :export:
+> +
+> diff --git a/Documentation/driver-api/iio/index.rst b/Documentation/driver-api/iio/index.rst
+> index e5c3922..7fba341 100644
+> --- a/Documentation/driver-api/iio/index.rst
+> +++ b/Documentation/driver-api/iio/index.rst
+> @@ -15,3 +15,4 @@ Contents:
+>     buffers
+>     triggers
+>     triggered-buffers
+> +   hw-consumer
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
