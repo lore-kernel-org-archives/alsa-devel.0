@@ -1,7 +1,7 @@
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 4/5 v3] ASoC: intel: sst: Handle return value of platform_get_irq
-Date: Sun, 19 Nov 2017 09:45:03 +0530
-Message-ID: <ab173ba649ad4990ec95c10ccb455a495b6b8651.1511062844.git.arvind.yadav.cs@gmail.com>
+Subject: [PATCH 2/5 v4] ASoC: mt8173: Fix platform_get_irq's error checking
+Date: Sun, 19 Nov 2017 09:45:01 +0530
+Message-ID: <3486c0c54d071b1d5cab0c070f2cc7ab63ef0806.1511062844.git.arvind.yadav.cs@gmail.com>
 References: <082d4479211d425219f4ab275ecc12e1011eca2f.1511062844.git.arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <082d4479211d425219f4ab275ecc12e1011eca2f.1511062844.git.arvind.yadav.cs@gmail.com>
@@ -12,31 +12,43 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mat
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-platform_get_irq() can fail here and we must check its return value.
+The platform_get_irq() function returns negative if an error occurs.
+zero or positive number on success. platform_get_irq() error checking
+for zero is not correct.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 ---
 changes in v2 :
-              Add failure case '<= 0' instead of '< 0'. IRQ0 is not valid.
+               irq was unsigned. so changed it to signed.
 changes in v3 :
-              Return EIO insted of ctx->irq_num.
+              Add failure case '<= 0' instead of '< 0'. IRQ0 is not valid.
+changes in v4 :
+              Return -ENODEV insted of irq_id.
 
- sound/soc/intel/atom/sst/sst_acpi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 32d6e02..5e46d06f 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -236,6 +236,9 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	/* Find the IRQ */
- 	ctx->irq_num = platform_get_irq(pdev,
- 				ctx->pdata->res_info->acpi_ipc_irq_index);
-+	if (ctx->irq_num <= 0)
-+		return -EIO;
-+
- 	return 0;
- }
+diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+index 8a643a3..1153566 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
++++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+@@ -1083,7 +1083,7 @@ static int mt8173_afe_init_audio_clk(struct mtk_base_afe *afe)
+ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
+ {
+ 	int ret, i;
+-	unsigned int irq_id;
++	int irq_id;
+ 	struct mtk_base_afe *afe;
+ 	struct mt8173_afe_private *afe_priv;
+ 	struct resource *res;
+@@ -1105,7 +1105,7 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	afe->dev = &pdev->dev;
  
+ 	irq_id = platform_get_irq(pdev, 0);
+-	if (!irq_id) {
++	if (irq_id <= 0) {
+ 		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
+ 		return -ENXIO;
+ 	}
 -- 
 2.7.4
