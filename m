@@ -1,81 +1,162 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: bells: Use common error handling code in
- bells_set_bias_level_post()
-Date: Sun, 19 Nov 2017 15:08:39 +0100
-Message-ID: <8c4e72ae-7606-a4c8-3d53-42364d7edbb2@users.sourceforge.net>
+From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 05/12] IIO: ADC: add sigma delta modulator support
+Date: Sun, 19 Nov 2017 12:44:10 +0000
+Message-ID: <20171119124410.5c704680@archlinux>
+References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
+        <1510222354-15290-6-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A3AB267403
- for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 15:08:55 +0100 (CET)
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1510222354-15290-6-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 19 Nov 2017 15:00:22 +0100
+On Thu, 9 Nov 2017 11:12:27 +0100
+Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
 
-* Add a jump target so that a specific error message is stored only once
-  at the end of this function implementation.
+> Add generic driver to support sigma delta modulators.
+A trivial comment inline..
 
-* Replace two calls of the macro "pr_err" by goto statements.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> ---
+>  drivers/iio/adc/Kconfig            | 12 ++++++
+>  drivers/iio/adc/Makefile           |  1 +
+>  drivers/iio/adc/sd_adc_modulator.c | 82 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 95 insertions(+)
+>  create mode 100644 drivers/iio/adc/sd_adc_modulator.c
+> 
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index 5762565..c5db62f 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -626,6 +626,18 @@ config SPEAR_ADC
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called spear_adc.
+>  
+> +config SD_ADC_MODULATOR
+> +	tristate "Generic sigma delta modulator"
+> +	depends on OF
+> +	select IIO_BUFFER
+> +	select IIO_TRIGGERED_BUFFER
+> +	help
+> +	  Select this option to enables sigma delta modulator. This driver can
+> +	  support generic sigma delta modulators.
+> +
+> +	  This driver can also be built as a module.  If so, the module
+> +	  will be called sd_adc_modulator.
+> +
+>  config STM32_ADC_CORE
+>  	tristate "STMicroelectronics STM32 adc core"
+>  	depends on ARCH_STM32 || COMPILE_TEST
+> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> index 9874e05..d800325 100644
+> --- a/drivers/iio/adc/Makefile
+> +++ b/drivers/iio/adc/Makefile
+> @@ -81,3 +81,4 @@ obj-$(CONFIG_VF610_ADC) += vf610_adc.o
+>  obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
+>  xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
+>  obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o
+> +obj-$(CONFIG_SD_ADC_MODULATOR) += sd_adc_modulator.o
+> diff --git a/drivers/iio/adc/sd_adc_modulator.c b/drivers/iio/adc/sd_adc_modulator.c
+> new file mode 100644
+> index 0000000..ff2504a
+> --- /dev/null
+> +++ b/drivers/iio/adc/sd_adc_modulator.c
+> @@ -0,0 +1,82 @@
+> +/*
+> + * Generic sigma delta modulator driver
+> + *
+> + * Copyright (C) 2017, STMicroelectronics - All Rights Reserved
+> + * Author: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>.
+> + *
+> + * License type: GPLv2
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of the GNU General Public License version 2 as published by
+> + * the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+> + * or FITNESS FOR A PARTICULAR PURPOSE.
+> + * See the GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along with
+> + * this program. If not, see <http://www.gnu.org/licenses/>.
+> + */
+> +
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/triggered_buffer.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +
+> +static const struct iio_info iio_sd_mod_iio_info;
+> +
+> +static const struct iio_chan_spec iio_sd_mod_ch = {
+> +	.type = IIO_VOLTAGE,
+> +	.indexed = 1,
+> +	.scan_index = 0,
 
-This issue was detected by using the Coccinelle software.
+Don't specify a scan index until you add buffered support.
+Actually scan type isn't usually supplied until then either, but
+here it kind of acts as documentation of the odd nature of this
+device.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/samsung/bells.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> +	.scan_type = {
+> +		.sign = 'u',
+> +		.realbits = 1,
+> +		.shift = 0,
+> +	},
+> +};
+> +
+> +static int iio_sd_mod_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct iio_dev *iio;
+> +
+> +	iio = devm_iio_device_alloc(dev, 0);
+> +	if (!iio)
+> +		return -ENOMEM;
+> +
+> +	iio->dev.parent = dev;
+> +	iio->dev.of_node = dev->of_node;
+> +	iio->name = dev_name(dev);
+> +	iio->info = &iio_sd_mod_iio_info;
+> +	iio->modes = INDIO_BUFFER_HARDWARE;
+> +
+> +	iio->num_channels = 1;
+> +	iio->channels = &iio_sd_mod_ch;
+> +
+> +	platform_set_drvdata(pdev, iio);
+> +
+> +	return devm_iio_device_register(&pdev->dev, iio);
+> +}
+> +
+> +static const struct of_device_id sd_adc_of_match[] = {
+> +	{ .compatible = "sd-modulator" },
+> +	{ .compatible = "ads1201" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, sd_adc_of_match);
+> +
+> +static struct platform_driver iio_sd_mod_adc = {
+> +	.driver = {
+> +		.name = "iio_sd_adc_mod",
+> +		.of_match_table = of_match_ptr(sd_adc_of_match),
+> +	},
+> +	.probe = iio_sd_mod_probe,
+> +};
+> +
+> +module_platform_driver(iio_sd_mod_adc);
+> +
+> +MODULE_DESCRIPTION("Basic sigma delta modulator");
+> +MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>");
+> +MODULE_LICENSE("GPL v2");
 
-diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
-index 34deba461ae1..fc9a71523b3e 100644
---- a/sound/soc/samsung/bells.c
-+++ b/sound/soc/samsung/bells.c
-@@ -120,18 +120,14 @@ static int bells_set_bias_level_post(struct snd_soc_card *card,
- 	switch (level) {
- 	case SND_SOC_BIAS_STANDBY:
- 		ret = snd_soc_codec_set_pll(codec, WM5102_FLL1, 0, 0, 0);
--		if (ret < 0) {
--			pr_err("Failed to stop FLL: %d\n", ret);
--			return ret;
--		}
-+		if (ret < 0)
-+			goto report_failure;
- 
- 		if (bells->asyncclk_rate) {
- 			ret = snd_soc_codec_set_pll(codec, WM5102_FLL2,
- 						    0, 0, 0);
--			if (ret < 0) {
--				pr_err("Failed to stop FLL: %d\n", ret);
--				return ret;
--			}
-+			if (ret < 0)
-+				goto report_failure;
- 		}
- 		break;
- 
-@@ -142,6 +138,10 @@ static int bells_set_bias_level_post(struct snd_soc_card *card,
- 	dapm->bias_level = level;
- 
- 	return 0;
-+
-+report_failure:
-+	pr_err("Failed to stop FLL: %d\n", ret);
-+	return ret;
- }
- 
- static int bells_late_probe(struct snd_soc_card *card)
--- 
-2.15.0
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
