@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/4] ASoC: soc-pcm: Add some blank lines for
- better code readability
-Date: Sun, 19 Nov 2017 21:21:41 +0100
-Message-ID: <fc48c14e-3fdc-c84f-9079-fad8273ec28a@users.sourceforge.net>
+Subject: [PATCH 3/4] ASoC: soc-pcm: Add some spaces for better
+ code readability
+Date: Sun, 19 Nov 2017 21:22:52 +0100
+Message-ID: <7d8de535-d0fa-57cd-911b-25f3b97d8fc2@users.sourceforge.net>
 References: <54203404-1e40-3c97-a6e5-75a41ec3e742@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 705CC266E76
- for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 21:21:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id F32C0266F35
+ for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 21:22:59 +0100 (CET)
 In-Reply-To: <54203404-1e40-3c97-a6e5-75a41ec3e742@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,107 +27,174 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 19 Nov 2017 20:37:58 +0100
+Date: Sun, 19 Nov 2017 21:00:13 +0100
 
-Use blank lines at some source code places according to
+Use space characters at some source code places according to
 the Linux coding style convention.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/soc-pcm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/soc-pcm.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ea771316afa9..dc1b984bd68e 100644
+index dc1b984bd68e..fa2f7ccceacf 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -165,6 +165,7 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hardware *hw)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-+
- 	runtime->hw.info = hw->info;
- 	runtime->hw.formats = hw->formats;
- 	runtime->hw.period_bytes_min = hw->period_bytes_min;
-@@ -1067,6 +1068,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- codec_err:
- 	while (--i >= 0) {
- 		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+
- 		if (codec_dai->driver->ops->hw_free)
- 			codec_dai->driver->ops->hw_free(substream, codec_dai);
- 		codec_dai->rate = 0;
-@@ -1238,6 +1240,7 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+@@ -982,7 +982,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 						   codec_dai->rx_mask);
+ 
+ 		ret = soc_dai_hw_params(substream, &codec_params, codec_dai);
+-		if(ret < 0)
++		if (ret < 0)
+ 			goto codec_err;
+ 
+ 		codec_dai->rate = params_rate(&codec_params);
+@@ -1903,7 +1903,7 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 
+ 	ret = dpcm_be_dai_startup(fe, fe_substream->stream);
+ 	if (ret < 0) {
+-		dev_err(fe->dev,"ASoC: failed to start some BEs %d\n", ret);
++		dev_err(fe->dev, "ASoC: failed to start some BEs %d\n", ret);
+ 		goto be_err;
  	}
- 	return 0;
- }
-+
- /*
-  * soc level wrapper for pointer callback
-  * If cpu_dai, codec_dai, platform driver has the delay callback, than
-@@ -1403,6 +1406,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
  
- 			for (i = 0; i < be->num_codecs; i++) {
- 				struct snd_soc_dai *dai = be->codec_dais[i];
-+
- 				if (dai->playback_widget == widget)
- 					return be;
- 			}
-@@ -1419,6 +1423,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
- 
- 			for (i = 0; i < be->num_codecs; i++) {
- 				struct snd_soc_dai *dai = be->codec_dais[i];
-+
- 				if (dai->capture_widget == widget)
- 					return be;
- 			}
-@@ -1469,6 +1474,7 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
- 
- 			for (i = 0; i < rtd->num_codecs; ++i) {
- 				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+
- 				if (dai->playback_widget == widget)
- 					return true;
- 			}
-@@ -1483,6 +1489,7 @@ static bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget,
- 
- 			for (i = 0; i < rtd->num_codecs; ++i) {
- 				struct snd_soc_dai *dai = rtd->codec_dais[i];
-+
- 				if (dai->capture_widget == widget)
- 					return true;
- 			}
-@@ -1530,6 +1537,7 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
- 		/* is there a valid CODEC DAI widget for this BE */
- 		for (i = 0; i < dpcm->be->num_codecs; i++) {
- 			struct snd_soc_dai *dai = dpcm->be->codec_dais[i];
-+
- 			widget = dai_get_widget(dai, stream);
- 
- 			/* prune the BE if it's no longer in our active list */
-@@ -2603,6 +2611,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
- 	/* disconnect any non started BEs */
- 	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
-+
- 		if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
- 				dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+@@ -1912,7 +1912,7 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	/* start the DAI frontend */
+ 	ret = soc_pcm_open(fe_substream);
+ 	if (ret < 0) {
+-		dev_err(fe->dev,"ASoC: failed to start FE %d\n", ret);
++		dev_err(fe->dev, "ASoC: failed to start FE %d\n", ret);
+ 		goto unwind;
  	}
-@@ -2736,6 +2745,7 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
- 	mutex_unlock(&card->mutex);
- 	return paths;
+ 
+@@ -2055,7 +2055,7 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+ 	/* call hw_free on the frontend */
+ 	err = soc_pcm_hw_free(substream);
+ 	if (err < 0)
+-		dev_err(fe->dev,"ASoC: hw_free FE %s failed\n",
++		dev_err(fe->dev, "ASoC: hw_free FE %s failed\n",
+ 			fe->dai_link->name);
+ 
+ 	/* only hw_params backends that are either sinks or sources
+@@ -2162,7 +2162,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 			sizeof(struct snd_pcm_hw_params));
+ 	ret = dpcm_be_dai_hw_params(fe, substream->stream);
+ 	if (ret < 0) {
+-		dev_err(fe->dev,"ASoC: hw_params BE failed %d\n", ret);
++		dev_err(fe->dev, "ASoC: hw_params BE failed %d\n", ret);
+ 		goto out;
+ 	}
+ 
+@@ -2173,7 +2173,7 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	/* call hw_params on the frontend */
+ 	ret = soc_pcm_hw_params(substream, params);
+ 	if (ret < 0) {
+-		dev_err(fe->dev,"ASoC: hw_params FE failed %d\n", ret);
++		dev_err(fe->dev, "ASoC: hw_params FE failed %d\n", ret);
+ 		dpcm_be_dai_hw_free(fe, stream);
+ 	 } else
+ 		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_PARAMS;
+@@ -2194,7 +2194,7 @@ static int dpcm_do_trigger(struct snd_soc_dpcm *dpcm,
+ 
+ 	ret = soc_pcm_trigger(substream, cmd);
+ 	if (ret < 0)
+-		dev_err(dpcm->be->dev,"ASoC: trigger BE failed %d\n", ret);
++		dev_err(dpcm->be->dev, "ASoC: trigger BE failed %d\n", ret);
+ 
+ 	return ret;
  }
-+
- int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute)
- {
- 	struct snd_soc_dpcm *dpcm;
-@@ -3299,6 +3309,7 @@ static ssize_t dpcm_show_state(struct snd_soc_pcm_runtime *fe,
+@@ -2310,7 +2310,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
  
- 	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
- 		struct snd_soc_pcm_runtime *be = dpcm->be;
-+
- 		params = &dpcm->hw_params;
+ 		ret = soc_pcm_trigger(substream, cmd);
+ 		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
++			dev_err(fe->dev, "ASoC: trigger FE failed %d\n", ret);
+ 			goto out;
+ 		}
  
- 		offset += snprintf(buf + offset, size - offset,
+@@ -2321,7 +2321,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 
+ 		ret = dpcm_be_dai_trigger(fe, substream->stream, cmd);
+ 		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
++			dev_err(fe->dev, "ASoC: trigger FE failed %d\n", ret);
+ 			goto out;
+ 		}
+ 
+@@ -2338,7 +2338,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 
+ 		ret = soc_pcm_bespoke_trigger(substream, cmd);
+ 		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
++			dev_err(fe->dev, "ASoC: trigger FE failed %d\n", ret);
+ 			goto out;
+ 		}
+ 		break;
+@@ -2447,7 +2447,7 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 	/* call prepare on the frontend */
+ 	ret = soc_pcm_prepare(substream);
+ 	if (ret < 0) {
+-		dev_err(fe->dev,"ASoC: prepare FE %s failed\n",
++		dev_err(fe->dev, "ASoC: prepare FE %s failed\n",
+ 			fe->dai_link->name);
+ 		goto out;
+ 	}
+@@ -2509,23 +2509,23 @@ static int dpcm_run_update_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		err = soc_pcm_bespoke_trigger(substream, SNDRV_PCM_TRIGGER_STOP);
+ 		if (err < 0)
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", err);
++			dev_err(fe->dev, "ASoC: trigger FE failed %d\n", err);
+ 	} else {
+ 		dev_dbg(fe->dev, "ASoC: trigger FE %s cmd stop\n",
+ 			fe->dai_link->name);
+ 
+ 		err = dpcm_be_dai_trigger(fe, stream, SNDRV_PCM_TRIGGER_STOP);
+ 		if (err < 0)
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", err);
++			dev_err(fe->dev, "ASoC: trigger FE failed %d\n", err);
+ 	}
+ 
+ 	err = dpcm_be_dai_hw_free(fe, stream);
+ 	if (err < 0)
+-		dev_err(fe->dev,"ASoC: hw_free FE failed %d\n", err);
++		dev_err(fe->dev, "ASoC: hw_free FE failed %d\n", err);
+ 
+ 	err = dpcm_be_dai_shutdown(fe, stream);
+ 	if (err < 0)
+-		dev_err(fe->dev,"ASoC: shutdown FE failed %d\n", err);
++		dev_err(fe->dev, "ASoC: shutdown FE failed %d\n", err);
+ 
+ 	/* run the stream event for each BE */
+ 	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_NOP);
+@@ -2586,7 +2586,8 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 		ret = soc_pcm_bespoke_trigger(substream, SNDRV_PCM_TRIGGER_START);
+ 		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: bespoke trigger FE failed %d\n", ret);
++			dev_err(fe->dev,
++				"ASoC: bespoke trigger FE failed %d\n", ret);
+ 			goto hw_free;
+ 		}
+ 	} else {
+@@ -2596,7 +2597,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 		ret = dpcm_be_dai_trigger(fe, stream,
+ 					SNDRV_PCM_TRIGGER_START);
+ 		if (ret < 0) {
+-			dev_err(fe->dev,"ASoC: trigger FE failed %d\n", ret);
++			dev_err(fe->dev, "ASoC: trigger FE failed %d\n", ret);
+ 			goto hw_free;
+ 		}
+ 	}
+@@ -3048,7 +3049,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->dai_link->name);
+ 		return ret;
+ 	}
+-	dev_dbg(rtd->card->dev, "ASoC: registered pcm #%d %s\n",num, new_name);
++	dev_dbg(rtd->card->dev, "ASoC: registered pcm #%d %s\n", num, new_name);
+ 
+ 	/* DAPM dai link stream work */
+ 	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
 -- 
 2.15.0
