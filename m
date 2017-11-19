@@ -1,287 +1,139 @@
 From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 01/12] iio: Add hardware consumer buffer support
-Date: Sun, 19 Nov 2017 12:32:07 +0000
-Message-ID: <20171119123207.0c5e82fa@archlinux>
+Subject: Re: [PATCH v4 03/12] IIO: hw_consumer: add
+ devm_iio_hw_consumer_alloc
+Date: Sun, 19 Nov 2017 12:34:53 +0000
+Message-ID: <20171119123453.188da309@archlinux>
 References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
-        <1510222354-15290-2-git-send-email-arnaud.pouliquen@st.com>
+        <1510222354-15290-4-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1510222354-15290-2-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+In-Reply-To: <1510222354-15290-4-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 Nov 2017 11:12:23 +0100
+On Thu, 9 Nov 2017 11:12:25 +0100
 Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
 
-> From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
+> Add devm_iio_hw_consumer_alloc function that calls iio_hw_consumer_free
+> when the device is unbound from the bus.
 > 
-> Hardware consumer interface can be used when one IIO device has
-> a direct connection to another device in hardware.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
 > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-
-I think this is fine though it is something we will have to
-keep an eye on to make sure it is appropriately used...
+Hmm.. I normally don't like devm for what is a single use case in
+a driver (for now) but I guess this is generic enough it will have
+additional users reasonably soon.  Hence fine.
 
 Jonathan
-
 > ---
->  drivers/iio/buffer/Kconfig                    |  10 ++
->  drivers/iio/buffer/Makefile                   |   1 +
->  drivers/iio/buffer/industrialio-hw-consumer.c | 182 ++++++++++++++++++++++++++
->  include/linux/iio/hw-consumer.h               |  20 +++
->  4 files changed, 213 insertions(+)
->  create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
->  create mode 100644 include/linux/iio/hw-consumer.h
+>  drivers/iio/buffer/industrialio-hw-consumer.c | 70 ++++++++++++++++++++++++++-
+>  include/linux/iio/hw-consumer.h               |  2 +
+>  2 files changed, 70 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/iio/buffer/Kconfig b/drivers/iio/buffer/Kconfig
-> index 4ffd3db..338774c 100644
-> --- a/drivers/iio/buffer/Kconfig
-> +++ b/drivers/iio/buffer/Kconfig
-> @@ -29,6 +29,16 @@ config IIO_BUFFER_DMAENGINE
->  
->  	  Should be selected by drivers that want to use this functionality.
->  
-> +config IIO_BUFFER_HW_CONSUMER
-> +	tristate "Industrial I/O HW buffering"
-> +	help
-> +	  Provides a way to bonding when an IIO device has a direct connection
-> +	  to another device in hardware. In this case buffers for data transfers
-> +	  are handled by hardware.
-> +
-> +	  Should be selected by drivers that want to use the generic Hw consumer
-> +	  interface.
-> +
->  config IIO_KFIFO_BUF
->  	tristate "Industrial I/O buffering based on kfifo"
->  	help
-> diff --git a/drivers/iio/buffer/Makefile b/drivers/iio/buffer/Makefile
-> index 85beaae..324a36b 100644
-> --- a/drivers/iio/buffer/Makefile
-> +++ b/drivers/iio/buffer/Makefile
-> @@ -6,5 +6,6 @@
->  obj-$(CONFIG_IIO_BUFFER_CB) += industrialio-buffer-cb.o
->  obj-$(CONFIG_IIO_BUFFER_DMA) += industrialio-buffer-dma.o
->  obj-$(CONFIG_IIO_BUFFER_DMAENGINE) += industrialio-buffer-dmaengine.o
-> +obj-$(CONFIG_IIO_BUFFER_HW_CONSUMER) += industrialio-hw-consumer.o
->  obj-$(CONFIG_IIO_TRIGGERED_BUFFER) += industrialio-triggered-buffer.o
->  obj-$(CONFIG_IIO_KFIFO_BUF) += kfifo_buf.o
 > diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
-> new file mode 100644
-> index 0000000..7d4d800
-> --- /dev/null
+> index 7d4d800..e980a79 100644
+> --- a/drivers/iio/buffer/industrialio-hw-consumer.c
 > +++ b/drivers/iio/buffer/industrialio-hw-consumer.c
-> @@ -0,0 +1,182 @@
-> +/*
-> + * Copyright 2017 Analog Devices Inc.
-> + *  Author: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-> + *
-> + * Licensed under the GPL-2 or later.
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/export.h>
-> +#include <linux/slab.h>
-> +#include <linux/module.h>
-> +
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/consumer.h>
-> +#include <linux/iio/hw-consumer.h>
-> +#include <linux/iio/buffer_impl.h>
-> +
-> +/**
-> + * struct iio_hw_consumer - IIO hw consumer block
-> + * @buffers: hardware buffers list head.
-> + * @channels: IIO provider channels.
-> + */
-> +struct iio_hw_consumer {
-> +	struct list_head buffers;
-> +	struct iio_channel *channels;
-> +};
-> +
-> +struct hw_consumer_buffer {
-> +	struct list_head head;
-> +	struct iio_dev *indio_dev;
-> +	struct iio_buffer buffer;
-> +	long scan_mask[];
-> +};
-> +
-> +static struct hw_consumer_buffer *iio_buffer_to_hw_consumer_buffer(
-> +	struct iio_buffer *buffer)
+> @@ -129,15 +129,81 @@ EXPORT_SYMBOL_GPL(iio_hw_consumer_alloc);
+>   */
+>  void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
+>  {
+> -	struct hw_consumer_buffer *buf;
+> +	struct hw_consumer_buffer *buf, *n;
+>  
+>  	iio_channel_release_all(hwc->channels);
+> -	list_for_each_entry(buf, &hwc->buffers, head)
+> +	list_for_each_entry_safe(buf, n, &hwc->buffers, head)
+>  		iio_buffer_put(&buf->buffer);
+
+This looks like an unrelated fix.  Push back into the
+original patch?
+
+>  	kfree(hwc);
+>  }
+>  EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
+>  
+> +static void devm_iio_hw_consumer_release(struct device *dev, void *res)
 > +{
-> +	return container_of(buffer, struct hw_consumer_buffer, buffer);
+> +	iio_hw_consumer_free(*(struct iio_hw_consumer **)res);
 > +}
 > +
-> +static void iio_hw_buf_release(struct iio_buffer *buffer)
+> +static int devm_iio_hw_consumer_match(struct device *dev, void *res, void *data)
 > +{
-> +	struct hw_consumer_buffer *hw_buf =
-> +		iio_buffer_to_hw_consumer_buffer(buffer);
-> +	kfree(hw_buf);
-> +}
+> +	struct iio_hw_consumer **r = res;
 > +
-> +static const struct iio_buffer_access_funcs iio_hw_buf_access = {
-> +	.release = &iio_hw_buf_release,
-> +	.modes = INDIO_BUFFER_HARDWARE,
-> +};
-> +
-> +static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
-> +	struct iio_hw_consumer *hwc, struct iio_dev *indio_dev)
-> +{
-> +	size_t mask_size = BITS_TO_LONGS(indio_dev->masklength) * sizeof(long);
-> +	struct hw_consumer_buffer *buf;
-> +
-> +	list_for_each_entry(buf, &hwc->buffers, head) {
-> +		if (buf->indio_dev == indio_dev)
-> +			return buf;
+> +	if (!r || !*r) {
+> +		WARN_ON(!r || !*r);
+> +		return 0;
 > +	}
-> +
-> +	buf = kzalloc(sizeof(*buf) + mask_size, GFP_KERNEL);
-> +	if (!buf)
-> +		return NULL;
-> +
-> +	buf->buffer.access = &iio_hw_buf_access;
-> +	buf->indio_dev = indio_dev;
-> +	buf->buffer.scan_mask = buf->scan_mask;
-> +
-> +	iio_buffer_init(&buf->buffer);
-> +	list_add_tail(&buf->head, &hwc->buffers);
-> +
-> +	return buf;
+> +	return *r == data;
 > +}
 > +
 > +/**
-> + * iio_hw_consumer_alloc() - Allocate IIO hardware consumer
+> + * devm_iio_hw_consumer_alloc - Resource-managed iio_hw_consumer_alloc()
 > + * @dev: Pointer to consumer device.
 > + *
-> + * Returns a valid iio_hw_consumer on success or a ERR_PTR() on failure.
-> + */
-> +struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev)
-> +{
-> +	struct hw_consumer_buffer *buf;
-> +	struct iio_hw_consumer *hwc;
-> +	struct iio_channel *chan;
-> +	int ret;
-> +
-> +	hwc = kzalloc(sizeof(*hwc), GFP_KERNEL);
-> +	if (!hwc)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	INIT_LIST_HEAD(&hwc->buffers);
-> +
-> +	hwc->channels = iio_channel_get_all(dev);
-> +	if (IS_ERR(hwc->channels)) {
-> +		ret = PTR_ERR(hwc->channels);
-> +		goto err_free_hwc;
-> +	}
-> +
-> +	chan = &hwc->channels[0];
-> +	while (chan->indio_dev) {
-> +		buf = iio_hw_consumer_get_buffer(hwc, chan->indio_dev);
-> +		if (!buf) {
-> +			ret = -ENOMEM;
-> +			goto err_put_buffers;
-> +		}
-> +		set_bit(chan->channel->scan_index, buf->buffer.scan_mask);
-> +		chan++;
-> +	}
-> +
-> +	return hwc;
-> +
-> +err_put_buffers:
-> +	list_for_each_entry(buf, &hwc->buffers, head)
-> +		iio_buffer_put(&buf->buffer);
-> +	iio_channel_release_all(hwc->channels);
-> +err_free_hwc:
-> +	kfree(hwc);
-> +	return ERR_PTR(ret);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_hw_consumer_alloc);
-> +
-> +/**
-> + * iio_hw_consumer_free() - Free IIO hardware consumer
-> + * @hwc: hw consumer to free.
-> + */
-> +void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
-> +{
-> +	struct hw_consumer_buffer *buf;
-> +
-> +	iio_channel_release_all(hwc->channels);
-> +	list_for_each_entry(buf, &hwc->buffers, head)
-> +		iio_buffer_put(&buf->buffer);
-> +	kfree(hwc);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
-> +
-> +/**
-> + * iio_hw_consumer_enable() - Enable IIO hardware consumer
-> + * @hwc: iio_hw_consumer to enable.
+> + * Managed iio_hw_consumer_alloc. iio_hw_consumer allocated with this function
+> + * is automatically freed on driver detach.
 > + *
-> + * Returns 0 on success.
+> + * If an iio_hw_consumer allocated with this function needs to be freed
+> + * separately, devm_iio_hw_consumer_free() must be used.
+> + *
+> + * returns pointer to allocated iio_hw_consumer on success, NULL on failure.
 > + */
-> +int iio_hw_consumer_enable(struct iio_hw_consumer *hwc)
+> +struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev)
 > +{
-> +	struct hw_consumer_buffer *buf;
-> +	int ret;
+> +	struct iio_hw_consumer **ptr, *iio_hwc;
 > +
-> +	list_for_each_entry(buf, &hwc->buffers, head) {
-> +		ret = iio_update_buffers(buf->indio_dev, &buf->buffer, NULL);
-> +		if (ret)
-> +			goto err_disable_buffers;
+> +	ptr = devres_alloc(devm_iio_hw_consumer_release, sizeof(*ptr),
+> +			   GFP_KERNEL);
+> +	if (!ptr)
+> +		return NULL;
+> +
+> +	iio_hwc = iio_hw_consumer_alloc(dev);
+> +	if (IS_ERR(iio_hwc)) {
+> +		devres_free(ptr);
+> +	} else {
+> +		*ptr = iio_hwc;
+> +		devres_add(dev, ptr);
 > +	}
 > +
-> +	return 0;
-> +
-> +err_disable_buffers:
-> +	list_for_each_entry_continue_reverse(buf, &hwc->buffers, head)
-> +		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
-> +	return ret;
+> +	return iio_hwc;
 > +}
-> +EXPORT_SYMBOL_GPL(iio_hw_consumer_enable);
+> +EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_alloc);
 > +
 > +/**
-> + * iio_hw_consumer_disable() - Disable IIO hardware consumer
-> + * @hwc: iio_hw_consumer to disable.
+> + * devm_iio_hw_consumer_free - Resource-managed iio_hw_consumer_free()
+> + * @dev: Pointer to consumer device.
+> + * @hwc: iio_hw_consumer to free.
+> + *
+> + * Free iio_hw_consumer allocated with devm_iio_hw_consumer_alloc().
 > + */
-> +void iio_hw_consumer_disable(struct iio_hw_consumer *hwc)
+> +void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc)
 > +{
-> +	struct hw_consumer_buffer *buf;
+> +	int rc;
 > +
-> +	list_for_each_entry(buf, &hwc->buffers, head)
-> +		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
+> +	rc = devres_release(dev, devm_iio_hw_consumer_release,
+> +			    devm_iio_hw_consumer_match, hwc);
+> +	WARN_ON(rc);
 > +}
-> +EXPORT_SYMBOL_GPL(iio_hw_consumer_disable);
+> +EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_free);
 > +
-> +MODULE_AUTHOR("Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>");
-> +MODULE_DESCRIPTION("Hardware consumer buffer the IIO framework");
-> +MODULE_LICENSE("GPL v2");
+>  /**
+>   * iio_hw_consumer_enable() - Enable IIO hardware consumer
+>   * @hwc: iio_hw_consumer to enable.
 > diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
-> new file mode 100644
-> index 0000000..f16791b
-> --- /dev/null
+> index f16791b..90ecfce 100644
+> --- a/include/linux/iio/hw-consumer.h
 > +++ b/include/linux/iio/hw-consumer.h
-> @@ -0,0 +1,20 @@
-> +/*
-> + * Industrial I/O in kernel hardware consumer interface
-> + *
-> + * Copyright 2017 Analog Devices Inc.
-> + *  Author: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-> + *
-> + * Licensed under the GPL-2 or later.
-> + */
-> +
-> +#ifndef LINUX_IIO_HW_CONSUMER_H
-> +#define LINUX_IIO_HW_CONSUMER_H
-> +
-> +struct iio_hw_consumer;
-> +
-> +struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
-> +void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
-> +int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
-> +void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
-> +
-> +#endif
+> @@ -14,6 +14,8 @@ struct iio_hw_consumer;
+>  
+>  struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
+>  void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
+> +struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev);
+> +void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc);
+>  int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
+>  void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
+>  
