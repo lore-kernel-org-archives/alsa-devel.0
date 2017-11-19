@@ -1,18 +1,15 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: [PATCH] ALSA: via82xx: Use common error handling
- code in snd_via82xx_create()
-Date: Sun, 19 Nov 2017 07:37:37 +0100
-Message-ID: <3a2f0905-231d-b2af-d1e8-1635158c6e53@users.sourceforge.net>
-References: <2332472c-61d2-8c21-bf46-5c80745d6380@users.sourceforge.net>
- <s5hpobnscx1.wl-tiwai@suse.de>
+Subject: [PATCH] ASoC: wm8804: Use common error handling code
+ in wm8804_probe()
+Date: Sun, 19 Nov 2017 08:04:28 +0100
+Message-ID: <0027af2f-e560-556c-e5af-effe5179a227@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 21AD2266847
- for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 07:37:49 +0100 (CET)
-In-Reply-To: <s5hpobnscx1.wl-tiwai@suse.de>
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9439266847
+ for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 08:05:37 +0100 (CET)
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,18 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Julia Lawall <Julia.Lawall@lip6.fr>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Fabio Estevam <fabio.estevam@nxp.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pj4gQEAgLTExNTMsNiArMTE1MCwxNCBAQCBzdGF0aWMgaW50IHNuZF92aWE4Mnh4X2NyZWF0ZShz
-dHJ1Y3Qgc25kX2NhcmQgKmNhcmQsCj4+ICAKPj4gIAkqcl92aWEgPSBjaGlwOwo+PiAgCXJldHVy
-biAwOwo+PiArCj4+ICtkaXNhYmxlX2RldmljZToKPj4gKwlwY2lfZGlzYWJsZV9kZXZpY2UocGNp
-KTsKPj4gKwlnb3RvIGV4aXQ7Cj4+ICtmcmVlX2NoaXA6Cj4+ICsJc25kX3ZpYTgyeHhfZnJlZShj
-aGlwKTsKPj4gK2V4aXQ6Cj4+ICsJcmV0dXJuIGVycjsKPiAKPiBEb3VibHkgZ290byBkb2Vzbid0
-IGxvb2sgbGlrZSBhbiBpbXByb3ZlbWVudC4KCldvdWxkIHlvdSBsaWtlIHRvIGludGVncmF0ZSBh
-bm90aGVyIHNvZnR3YXJlIHVwZGF0ZSB3aXRoIHRoZSBzdGF0ZW1lbnQK4oCccmV0dXJuIGVycjvi
-gJ0gaW5zdGVhZCBvZiDigJxnb3RvIGV4aXQ74oCdIGF0IHRoaXMgcGxhY2U/CgpSZWdhcmRzLApN
-YXJrdXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 19 Nov 2017 07:55:49 +0100
+
+* Add a jump target so that a specific error message is stored only once
+  at the end of this function implementation.
+
+* Replace two calls of the function "dev_err" by goto statements.
+
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/codecs/wm8804.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index fc69b87443d8..a45812417909 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -626,16 +626,12 @@ int wm8804_probe(struct device *dev, struct regmap *regmap)
+ 	gpiod_set_value_cansleep(wm8804->reset, 1);
+ 
+ 	ret = regmap_read(regmap, WM8804_RST_DEVID1, &id1);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to read device ID: %d\n", ret);
+-		goto err_reg_enable;
+-	}
++	if (ret < 0)
++		goto report_read_failure;
+ 
+ 	ret = regmap_read(regmap, WM8804_DEVID2, &id2);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to read device ID: %d\n", ret);
+-		goto err_reg_enable;
+-	}
++	if (ret < 0)
++		goto report_read_failure;
+ 
+ 	id2 = (id2 << 8) | id1;
+ 
+@@ -674,6 +670,8 @@ int wm8804_probe(struct device *dev, struct regmap *regmap)
+ 
+ 	return 0;
+ 
++report_read_failure:
++	dev_err(dev, "Failed to read device ID: %d\n", ret);
+ err_reg_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8804->supplies), wm8804->supplies);
+ 	return ret;
+-- 
+2.15.0
