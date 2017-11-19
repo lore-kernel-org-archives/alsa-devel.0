@@ -1,15 +1,15 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH] ASoC: audio-graph-scu-card: Use common error
- handling code in asoc_graph_card_parse_of()
-Date: Sun, 19 Nov 2017 09:09:38 +0100
-Message-ID: <3b978ab5-5a7f-369f-c663-938955a36e58@users.sourceforge.net>
+Subject: [PATCH] ASoC: cht_bsw_rt5645: Use common error
+ handling code in cht_codec_fixup()
+Date: Sun, 19 Nov 2017 10:00:56 +0100
+Message-ID: <287c2ccc-2411-8a6d-bb1b-8b1062b92738@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 79DBF266F30
- for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 09:10:57 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED351266DE0
+ for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 10:02:02 +0100 (CET)
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,73 +20,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, Takashi Iwai <tiwai@suse.com>, Tony Lindgren <tony@atomide.com>
+To: alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 19 Nov 2017 08:51:41 +0100
+Date: Sun, 19 Nov 2017 09:53:56 +0100
 
-Add a jump target so that a bit of exception handling can be better reused
-at the end of this function.
+* Add a jump target so that a specific error message is stored only once
+  at the end of this function implementation.
+
+* Replace two calls of the function "dev_err" by goto statements.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/generic/audio-graph-scu-card.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index a967aa143d51..c4b999fba7e6 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -231,10 +231,8 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 
- 		ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
- 							    NULL, &daifmt);
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 18d129caa974..bf3ffc2b0d8f 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -357,20 +357,16 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 					SND_SOC_DAIFMT_NB_NF   |
+ 					SND_SOC_DAIFMT_CBS_CFS
+ 			);
 -		if (ret < 0) {
--			of_node_put(cpu_port);
--			goto parse_of_err;
+-			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-			return ret;
 -		}
 +		if (ret < 0)
-+			goto put_node;
- 	}
++			goto report_failure;
  
- 	dai_idx = 0;
-@@ -266,17 +264,13 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 		ret = snd_soc_dai_set_fmt(rtd->codec_dai,
+ 					SND_SOC_DAIFMT_I2S     |
+ 					SND_SOC_DAIFMT_NB_NF   |
+ 					SND_SOC_DAIFMT_CBS_CFS
+ 			);
+-		if (ret < 0) {
+-			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+-			return ret;
+-		}
++		if (ret < 0)
++			goto report_failure;
  
- 				/* Back-End (= Codec) */
- 				ret = asoc_graph_card_dai_link_of(codec_ep, priv, daifmt, dai_idx++, 0);
--				if (ret < 0) {
--					of_node_put(cpu_port);
--					goto parse_of_err;
--				}
-+				if (ret < 0)
-+					goto put_node;
- 			} else {
- 				/* Front-End (= CPU) */
- 				ret = asoc_graph_card_dai_link_of(cpu_ep, priv, daifmt, dai_idx++, 1);
--				if (ret < 0) {
--					of_node_put(cpu_port);
--					goto parse_of_err;
--				}
-+				if (ret < 0)
-+					goto put_node;
- 			}
+ 		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
+ 		if (ret < 0) {
+@@ -403,6 +399,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  		}
  	}
-@@ -285,8 +279,10 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret)
- 		goto parse_of_err;
- 
--	ret = 0;
-+	return 0;
- 
-+put_node:
-+	of_node_put(cpu_port);
- parse_of_err:
- 	return ret;
+ 	return 0;
++
++report_failure:
++	dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++	return ret;
  }
+ 
+ static int cht_aif1_startup(struct snd_pcm_substream *substream)
 -- 
 2.15.0
