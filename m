@@ -1,15 +1,15 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH] ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt()
- just once in AC'97 mode
-Date: Mon, 20 Nov 2017 23:13:45 +0100
-Message-ID: <81ad2e7e-e070-c38e-b318-9607b4558ee7@maciej.szmigiero.name>
+Subject: [PATCH 1/2] ASoC: fsl_ssi: AC'97 ops need regmap,
+ clock and cleaning up on failure
+Date: Mon, 20 Nov 2017 23:14:55 +0100
+Message-ID: <ecfcedaa-f0e9-ec1f-82c5-f0d319068a5d@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A04E267065
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 23:13:52 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 984B0267065
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 23:15:01 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,68 +24,56 @@ To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li
 Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-In AC'97 mode we configure and start SSI RX / TX on probe path via
-a call to _fsl_ssi_set_dai_fmt() function.
-We don't need to call this function again later and in fact don't want to
-do it since this function temporarily sets STCR, SRCR and SCR to some
-intermediate values.
+AC'97 ops (register read / write) need SSI regmap and clock, so they have
+to be set after them.
 
-We need to make sure, however, that only proper channel slots are enabled
-at playback start time since some AC'97 CODECs (like VT1613) were observed
-requesting via SLOTREQ (and so enabling at SSI) spurious ones just after
-an AC'97 link is started but before the CODEC is configured by its driver.
-Theoretically, this should be necessary only for the very first playback
-but let's play safe here and make sure that no extra slots are enabled
-every time a playback is started.
+We also need to set these ops back to NULL if we fail the probe.
 
 Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
- sound/soc/fsl/fsl_ssi.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 48bb850a34d9..dad80b4b0cfc 100644
+index dad80b4b0cfc..a71bb8391f61 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -630,12 +630,6 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
- 	regmap_write(regs, CCSR_SSI_SACNT,
- 			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
+@@ -1460,12 +1460,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 				sizeof(fsl_ssi_ac97_dai));
  
--	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
--	if (!ssi_private->soc->imx21regs) {
--		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
--		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
--	}
+ 		fsl_ac97_data = ssi_private;
 -
- 	/*
- 	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
- 	 * codec before a stream is started.
-@@ -1076,6 +1070,9 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+-		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
+-		if (ret) {
+-			dev_err(&pdev->dev, "could not set AC'97 ops\n");
+-			return ret;
+-		}
+ 	} else {
+ 		/* Initialize this copy of the CPU DAI driver structure */
+ 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+@@ -1576,6 +1570,14 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
  
++	if (fsl_ssi_is_ac97(ssi_private)) {
++		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
++		if (ret) {
++			dev_err(&pdev->dev, "could not set AC'97 ops\n");
++			goto error_ac97_ops;
++		}
++	}
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_ssi_component,
+ 					      &ssi_private->cpu_dai_drv, 1);
+ 	if (ret) {
+@@ -1659,6 +1661,10 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	fsl_ssi_debugfs_remove(&ssi_private->dbg_stats);
+ 
+ error_asoc_register:
 +	if (fsl_ssi_is_ac97(ssi_private))
-+		return 0;
++		snd_soc_set_ac97_ops(NULL);
 +
- 	return _fsl_ssi_set_dai_fmt(cpu_dai->dev, ssi_private, fmt);
- }
- 
-@@ -1149,9 +1146,16 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+			/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
-+			if (fsl_ssi_is_ac97(ssi_private) &&
-+				!ssi_private->soc->imx21regs) {
-+				regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
-+				regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
-+			}
-+
- 			fsl_ssi_tx_config(ssi_private, true);
--		else
-+		} else
- 			fsl_ssi_rx_config(ssi_private, true);
- 		break;
++error_ac97_ops:
+ 	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
  
