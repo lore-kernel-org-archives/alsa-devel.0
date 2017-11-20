@@ -1,180 +1,1328 @@
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [v5 RESEND 08/17] regulator: arizona-ldo1: Add support
-	for Cirrus Logic Madera codecs
-Date: Mon, 20 Nov 2017 14:10:42 +0000
-Message-ID: <20171120141051.29467-9-rf@opensource.cirrus.com>
+Subject: [v5 RESEND 03/17] mfd: madera: Add common support for Cirrus Logic Madera codecs
+Date: Mon, 20 Nov 2017 14:10:37 +0000
+Message-ID: <ea316a71-db29-4d1f-ad37-879ee5f02c70@EX17.ad.cirrus.com>
 References: <20171120141051.29467-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AF8E266FFD
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 15:11:00 +0100 (CET)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171120141051.29467-1-rf@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
-This adds a new driver identity "madera-ldo1" and probe function
-so that this driver can be used to control the LDO1 regulator on
-some Cirrus Logic Madera codecs.
+This adds the generic core support for Cirrus Logic "Madera" class codecs.
+These are complex audio codec SoCs with a variety of digital and analogue
+I/O, onboard audio processing and DSPs, and other features.
 
+These codecs are all based off a common set of hardware IP so can be
+supported by a core of common code (with a few minor device-to-device
+variations).
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- drivers/regulator/Kconfig        |  8 ++--
- drivers/regulator/arizona-ldo1.c | 82 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 85 insertions(+), 5 deletions(-)
+ MAINTAINERS                      |   3 +
+ drivers/mfd/Kconfig              |  27 ++
+ drivers/mfd/Makefile             |   4 +
+ drivers/mfd/madera-core.c        | 599 +++++++++++++++++++++++++++++++++++++++
+ drivers/mfd/madera-i2c.c         | 139 +++++++++
+ drivers/mfd/madera-spi.c         | 138 +++++++++
+ drivers/mfd/madera.h             |  44 +++
+ include/linux/mfd/madera/core.h  | 196 +++++++++++++
+ include/linux/mfd/madera/pdata.h |  61 ++++
+ 9 files changed, 1211 insertions(+)
+ create mode 100644 drivers/mfd/madera-core.c
+ create mode 100644 drivers/mfd/madera-i2c.c
+ create mode 100644 drivers/mfd/madera-spi.c
+ create mode 100644 drivers/mfd/madera.h
+ create mode 100644 include/linux/mfd/madera/core.h
+ create mode 100644 include/linux/mfd/madera/pdata.h
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 53639a6bd888..3db4f994aea8 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -126,12 +126,12 @@ config REGULATOR_AB8500
- 	  signal AB8500 PMIC
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b397f2d2cbe8..c765acb42126 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3483,7 +3483,10 @@ L:	patches@opensource.wolfsonmicro.com
+ T:	git https://github.com/CirrusLogic/linux-drivers.git
+ W:	https://github.com/CirrusLogic/linux-drivers/wiki
+ S:	Supported
++F:	Documentation/devicetree/bindings/mfd/madera.txt
+ F:	include/linux/mfd/madera/*
++F:	drivers/mfd/madera*
++F:	drivers/mfd/cs47l*
  
- config REGULATOR_ARIZONA_LDO1
--	tristate "Wolfson Arizona class devices LDO1"
--	depends on MFD_ARIZONA
-+	tristate "Cirrus Madera and Wolfson Arizona class devices LDO1"
-+	depends on MFD_ARIZONA || MFD_MADERA
- 	depends on SND_SOC
- 	help
--	  Support for the LDO1 regulators found on Wolfson Arizona class
--	  devices.
-+	  Support for the LDO1 regulators found on Cirrus Logic Madera codecs
-+	  and Wolfson Arizona codecs.
+ CLEANCACHE API
+ M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 1d20a800e967..7c47dd79cbaa 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -222,6 +222,33 @@ config MFD_CROS_EC_SPI
+ 	  response time cannot be guaranteed, we support ignoring
+ 	  'pre-amble' bytes before the response actually starts.
  
- config REGULATOR_ARIZONA_MICSUPP
- 	tristate "Cirrus Madera and Wolfson Arizona class devices MICSUPP"
-diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
-index 96fddfff5dc4..c64625e76124 100644
---- a/drivers/regulator/arizona-ldo1.c
-+++ b/drivers/regulator/arizona-ldo1.c
-@@ -31,6 +31,10 @@
- #include <linux/mfd/arizona/pdata.h>
- #include <linux/mfd/arizona/registers.h>
++config MFD_MADERA
++	bool
++	select MFD_CORE
++	select REGMAP
++	select REGMAP_IRQ
++	select MADERA_IRQ
++
++config MFD_MADERA_I2C
++	bool "Cirrus Logic Madera codecs with I2C"
++	select MFD_MADERA
++	select REGMAP_I2C
++	depends on I2C
++	depends on PINCTRL
++	help
++	  Support for the Cirrus Logic Madera platform audio SoC
++	  core functionality controlled via I2C.
++
++config MFD_MADERA_SPI
++	bool "Cirrus Logic Madera codecs with SPI"
++	select MFD_MADERA
++	select REGMAP_SPI
++	depends on SPI_MASTER
++	depends on PINCTRL
++	help
++	  Support for the Cirrus Logic Madera platform audio SoC
++	  core functionality controlled via SPI.
++
+ config MFD_ASIC3
+ 	bool "Compaq ASIC3"
+ 	depends on GPIOLIB && ARM
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index d9474ade32e6..bcff419deab9 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -76,6 +76,10 @@ wm8994-objs			:= wm8994-core.o wm8994-irq.o wm8994-regmap.o
+ obj-$(CONFIG_MFD_WM8994)	+= wm8994.o
+ obj-$(CONFIG_MFD_WM97xx)	+= wm97xx-core.o
  
++obj-$(CONFIG_MFD_MADERA)	+= madera-core.o
++obj-$(CONFIG_MFD_MADERA_I2C)	+= madera-i2c.o
++obj-$(CONFIG_MFD_MADERA_SPI)	+= madera-spi.o
++
+ obj-$(CONFIG_TPS6105X)		+= tps6105x.o
+ obj-$(CONFIG_TPS65010)		+= tps65010.o
+ obj-$(CONFIG_TPS6507X)		+= tps6507x.o
+diff --git a/drivers/mfd/madera-core.c b/drivers/mfd/madera-core.c
+new file mode 100644
+index 000000000000..de1208b2f587
+--- /dev/null
++++ b/drivers/mfd/madera-core.c
+@@ -0,0 +1,599 @@
++/*
++ * Core MFD support for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * Author: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/gpio.h>
++#include <linux/mfd/core.h>
++#include <linux/module.h>
++#include <linux/notifier.h>
++#include <linux/of.h>
++#include <linux/of_gpio.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++#include <linux/regulator/machine.h>
++#include <linux/regulator/of_regulator.h>
++
 +#include <linux/mfd/madera/core.h>
-+#include <linux/mfd/madera/pdata.h>
 +#include <linux/mfd/madera/registers.h>
 +
- struct arizona_ldo1 {
- 	struct regulator_dev *regulator;
- 	struct regmap *regmap;
-@@ -188,6 +192,31 @@ static const struct regulator_init_data arizona_ldo1_wm5110 = {
- 	.num_consumer_supplies = 1,
- };
- 
-+static const struct regulator_desc madera_ldo1 = {
-+	.name = "LDO1",
-+	.supply_name = "LDOVDD",
-+	.type = REGULATOR_VOLTAGE,
-+	.ops = &arizona_ldo1_ops,
++#include "madera.h"
 +
-+	.vsel_reg = MADERA_LDO1_CONTROL_1,
-+	.vsel_mask = MADERA_LDO1_VSEL_MASK,
-+	.min_uV = 900000,
-+	.uV_step = 25000,
-+	.n_voltages = 13,
-+	.enable_time = 3000,
++#define CS47L35_SILICON_ID	0x6360
++#define CS47L85_SILICON_ID	0x6338
++#define CS47L90_SILICON_ID	0x6364
 +
-+	.owner = THIS_MODULE,
++#define MADERA_32KZ_MCLK2	1
++
++static const char * const madera_core_supplies[] = {
++	"AVDD",
++	"DBVDD1",
 +};
 +
-+static const struct regulator_init_data madera_ldo1_default = {
-+	.constraints = {
-+		.min_uV = 1200000,
-+		.max_uV = 1200000,
-+		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
++static const struct mfd_cell madera_ldo1_devs[] = {
++	{ .name = "madera-ldo1" },
++};
++
++static const char * const cs47l35_supplies[] = {
++	"MICVDD",
++	"DBVDD2",
++	"CPVDD1",
++	"CPVDD2",
++	"SPKVDD",
++};
++
++static const struct mfd_cell cs47l35_devs[] = {
++	{ .name = "madera-pinctrl", },
++	{ .name = "madera-irq", },
++	{ .name = "madera-micsupp", },
++	{ .name = "madera-gpio", },
++	{ .name = "madera-extcon", },
++	{
++		.name = "cs47l35-codec",
++		.parent_supplies = cs47l35_supplies,
++		.num_parent_supplies = ARRAY_SIZE(cs47l35_supplies),
 +	},
-+	.num_consumer_supplies = 1,
 +};
 +
- static int arizona_ldo1_of_get_pdata(struct arizona_ldo1_pdata *pdata,
- 				     struct regulator_config *config,
- 				     const struct regulator_desc *desc,
-@@ -341,6 +370,32 @@ static int arizona_ldo1_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static int madera_ldo1_probe(struct platform_device *pdev)
++static const char * const cs47l85_supplies[] = {
++	"MICVDD",
++	"DBVDD2",
++	"DBVDD3",
++	"DBVDD4",
++	"CPVDD1",
++	"CPVDD2",
++	"SPKVDDL",
++	"SPKVDDR",
++};
++
++static const struct mfd_cell cs47l85_devs[] = {
++	{ .name = "madera-pinctrl", },
++	{ .name = "madera-irq", },
++	{ .name = "madera-micsupp" },
++	{ .name = "madera-gpio", },
++	{ .name = "madera-extcon", },
++	{
++		.name = "cs47l85-codec",
++		.parent_supplies = cs47l85_supplies,
++		.num_parent_supplies = ARRAY_SIZE(cs47l85_supplies),
++	},
++};
++
++static const char * const cs47l90_supplies[] = {
++	"MICVDD",
++	"DBVDD2",
++	"DBVDD3",
++	"DBVDD4",
++	"CPVDD1",
++	"CPVDD2",
++};
++
++static const struct mfd_cell cs47l90_devs[] = {
++	{ .name = "madera-pinctrl", },
++	{ .name = "madera-irq", },
++	{ .name = "madera-micsupp", },
++	{ .name = "madera-gpio", },
++	{ .name = "madera-extcon", },
++	{
++		.name = "cs47l90-codec",
++		.parent_supplies = cs47l90_supplies,
++		.num_parent_supplies = ARRAY_SIZE(cs47l90_supplies),
++	},
++};
++
++/* Used by madera-i2c and madera-spi drivers */
++const char *madera_name_from_type(enum madera_type type)
 +{
-+	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-+	struct arizona_ldo1 *ldo1;
-+	bool external_dcvdd;
++	switch (type) {
++	case CS47L35:
++		return "CS47L35";
++	case CS47L85:
++		return "CS47L85";
++	case CS47L90:
++		return "CS47L90";
++	case CS47L91:
++		return "CS47L91";
++	case WM1840:
++		return "WM1840";
++	default:
++		return "Unknown";
++	}
++}
++EXPORT_SYMBOL_GPL(madera_name_from_type);
++
++#define MADERA_BOOT_POLL_MAX_INTERVAL_US  5000
++#define MADERA_BOOT_POLL_TIMEOUT_US	 25000
++
++static int madera_wait_for_boot(struct madera *madera)
++{
++	unsigned int val;
 +	int ret;
 +
-+	ldo1 = devm_kzalloc(&pdev->dev, sizeof(*ldo1), GFP_KERNEL);
-+	if (!ldo1)
-+		return -ENOMEM;
++	/*
++	 * We can't use an interrupt as we need to runtime resume to do so,
++	 * so we poll the status bit. This won't race with the interrupt
++	 * handler because it will be blocked on runtime resume.
++	 */
++	ret = regmap_read_poll_timeout(madera->regmap,
++				       MADERA_IRQ1_RAW_STATUS_1,
++				       val,
++				       (val & MADERA_BOOT_DONE_STS1),
++				       MADERA_BOOT_POLL_MAX_INTERVAL_US,
++				       MADERA_BOOT_POLL_TIMEOUT_US);
 +
-+	ldo1->regmap = madera->regmap;
-+
-+	ldo1->init_data = madera_ldo1_default;
-+
-+	ret = arizona_ldo1_common_init(pdev, ldo1, &arizona_ldo1,
-+				       &madera->pdata.ldo1,
-+				       &external_dcvdd);
 +	if (ret)
-+		return ret;
++		dev_err(madera->dev, "Polling BOOT_DONE_STS failed: %d\n", ret);
 +
-+	madera->internal_dcvdd = !external_dcvdd;
++	/*
++	 * BOOT_DONE defaults to unmasked on boot so we must ack it.
++	 * Do this unconditionally to avoid interrupt storms
++	 */
++	regmap_write(madera->regmap, MADERA_IRQ1_STATUS_1,
++		     MADERA_BOOT_DONE_EINT1);
++
++	pm_runtime_mark_last_busy(madera->dev);
++
++	return ret;
++}
++
++static int madera_soft_reset(struct madera *madera)
++{
++	int ret;
++
++	ret = regmap_write(madera->regmap, MADERA_SOFTWARE_RESET, 0);
++	if (ret != 0) {
++		dev_err(madera->dev, "Failed to soft reset device: %d\n", ret);
++		return ret;
++	}
++
++	/* Allow time for internal clocks to startup after reset */
++	usleep_range(1000, 2000);
 +
 +	return 0;
 +}
 +
- static struct platform_driver arizona_ldo1_driver = {
- 	.probe = arizona_ldo1_probe,
- 	.driver		= {
-@@ -348,10 +403,35 @@ static struct platform_driver arizona_ldo1_driver = {
- 	},
- };
- 
--module_platform_driver(arizona_ldo1_driver);
-+static struct platform_driver madera_ldo1_driver = {
-+	.probe = madera_ldo1_probe,
-+	.driver		= {
-+		.name	= "madera-ldo1",
++static void madera_enable_hard_reset(struct madera *madera)
++{
++	if (madera->reset_gpio)
++		gpiod_set_value_cansleep(madera->reset_gpio, 0);
++}
++
++static void madera_disable_hard_reset(struct madera *madera)
++{
++	if (madera->reset_gpio) {
++		gpiod_set_value_cansleep(madera->reset_gpio, 1);
++		usleep_range(1000, 2000);
++	}
++}
++
++#ifdef CONFIG_PM
++static int madera_runtime_resume(struct device *dev)
++{
++	struct madera *madera = dev_get_drvdata(dev);
++	int ret;
++
++	dev_dbg(dev, "Leaving sleep mode\n");
++
++	ret = regulator_enable(madera->dcvdd);
++	if (ret) {
++		dev_err(dev, "Failed to enable DCVDD: %d\n", ret);
++		return ret;
++	}
++
++	regcache_cache_only(madera->regmap, false);
++	regcache_cache_only(madera->regmap_32bit, false);
++
++	ret = madera_wait_for_boot(madera);
++	if (ret)
++		goto err;
++
++	ret = regcache_sync(madera->regmap);
++	if (ret) {
++		dev_err(dev, "Failed to restore 16-bit register cache\n");
++		goto err;
++	}
++
++	ret = regcache_sync(madera->regmap_32bit);
++	if (ret) {
++		dev_err(dev, "Failed to restore 32-bit register cache\n");
++		goto err;
++	}
++
++	return 0;
++
++err:
++	regcache_cache_only(madera->regmap_32bit, true);
++	regcache_cache_only(madera->regmap, true);
++	regulator_disable(madera->dcvdd);
++
++	return ret;
++}
++
++static int madera_runtime_suspend(struct device *dev)
++{
++	struct madera *madera = dev_get_drvdata(dev);
++
++	dev_dbg(madera->dev, "Entering sleep mode\n");
++
++	regcache_cache_only(madera->regmap, true);
++	regcache_mark_dirty(madera->regmap);
++	regcache_cache_only(madera->regmap_32bit, true);
++	regcache_mark_dirty(madera->regmap_32bit);
++
++	regulator_disable(madera->dcvdd);
++
++	return 0;
++}
++#endif
++
++const struct dev_pm_ops madera_pm_ops = {
++	SET_RUNTIME_PM_OPS(madera_runtime_suspend,
++			   madera_runtime_resume,
++			   NULL)
++};
++EXPORT_SYMBOL_GPL(madera_pm_ops);
++
++const struct of_device_id madera_of_match[] = {
++	{ .compatible = "cirrus,cs47l35", .data = (void *)CS47L35 },
++	{ .compatible = "cirrus,cs47l85", .data = (void *)CS47L85 },
++	{ .compatible = "cirrus,cs47l90", .data = (void *)CS47L90 },
++	{ .compatible = "cirrus,cs47l91", .data = (void *)CS47L91 },
++	{ .compatible = "cirrus,wm1840", .data = (void *)WM1840 },
++	{},
++};
++EXPORT_SYMBOL_GPL(madera_of_match);
++
++static int madera_get_reset_gpio(struct madera *madera)
++{
++	int ret = 0;
++
++	/* We use 0 in pdata to indicate a GPIO has not been set */
++	if (dev_get_platdata(madera->dev) && (madera->pdata.reset > 0)) {
++		/* Start out with /RESET asserted */
++		ret = devm_gpio_request_one(madera->dev,
++					    madera->pdata.reset,
++					    GPIOF_DIR_OUT | GPIOF_INIT_LOW,
++					    "madera reset");
++		if (!ret)
++			madera->reset_gpio = gpio_to_desc(madera->pdata.reset);
++	} else {
++		madera->reset_gpio = devm_gpiod_get_optional(madera->dev,
++							     "reset",
++							     GPIOD_OUT_LOW);
++		if (IS_ERR(madera->reset_gpio))
++			ret = PTR_ERR(madera->reset_gpio);
++	}
++
++	if (ret == -EPROBE_DEFER)
++		return ret;
++
++	if (ret) {
++		dev_err(madera->dev, "Failed to request /RESET: %d\n", ret);
++		return ret;
++	}
++
++	if (!madera->reset_gpio)
++		dev_warn(madera->dev,
++			 "Running without reset GPIO is not recommended\n");
++
++	return 0;
++}
++
++static void madera_set_micbias_info(struct madera *madera)
++{
++	/*
++	 * childbias is an array because future codecs can have different
++	 * childbiases for each micbias
++	 */
++	switch (madera->type) {
++	case CS47L35:
++		madera->num_micbias = 2;
++		madera->num_childbias[0] = 2;
++		madera->num_childbias[1] = 2;
++		return;
++	case CS47L85:
++	case WM1840:
++		madera->num_micbias = 4;
++		return;
++	case CS47L90:
++	case CS47L91:
++		madera->num_micbias = 2;
++		madera->num_childbias[0] = 4;
++		madera->num_childbias[1] = 4;
++		return;
++	default:
++		return;
++	}
++}
++
++int madera_dev_init(struct madera *madera)
++{
++	struct device *dev = madera->dev;
++	unsigned int hwid;
++	int (*patch_fn)(struct madera *) = NULL;
++	const struct mfd_cell *mfd_devs;
++	int n_devs = 0;
++	int i, ret;
++
++	dev_set_drvdata(madera->dev, madera);
++	BLOCKING_INIT_NOTIFIER_HEAD(&madera->notifier);
++	madera_set_micbias_info(madera);
++
++	if (dev_get_platdata(madera->dev)) {
++		memcpy(&madera->pdata, dev_get_platdata(madera->dev),
++		       sizeof(madera->pdata));
++	}
++
++	ret = madera_get_reset_gpio(madera);
++	if (ret)
++		return ret;
++
++	regcache_cache_only(madera->regmap, true);
++	regcache_cache_only(madera->regmap_32bit, true);
++
++	for (i = 0; i < ARRAY_SIZE(madera_core_supplies); i++)
++		madera->core_supplies[i].supply = madera_core_supplies[i];
++
++	madera->num_core_supplies = ARRAY_SIZE(madera_core_supplies);
++
++	/*
++	 * On some codecs DCVDD could be supplied by the internal LDO1.
++	 * For those we must add the LDO1 driver before requesting DCVDD
++	 */
++	switch (madera->type) {
++	case CS47L35:
++	case CS47L90:
++	case CS47L91:
++		break;
++	case CS47L85:
++	case WM1840:
++		ret = mfd_add_devices(madera->dev, PLATFORM_DEVID_NONE,
++				      madera_ldo1_devs,
++				      ARRAY_SIZE(madera_ldo1_devs),
++				      NULL, 0, NULL);
++		if (ret) {
++			dev_err(dev, "Failed to add LDO1 child: %d\n", ret);
++			return ret;
++		}
++		break;
++	default:
++		/* No point continuing if the type is unknown */
++		dev_err(madera->dev, "Unknown device type %d\n", madera->type);
++		return -ENODEV;
++	}
++
++	ret = devm_regulator_bulk_get(dev, madera->num_core_supplies,
++				      madera->core_supplies);
++	if (ret) {
++		dev_err(dev, "Failed to request core supplies: %d\n", ret);
++		goto err_devs;
++	}
++
++	/*
++	 * Don't use devres here because the only device we have to get
++	 * against is the MFD device and DCVDD will likely be supplied by
++	 * one of its children. Meaning that the regulator will be
++	 * destroyed by the time devres calls regulator put.
++	 */
++	madera->dcvdd = regulator_get_exclusive(madera->dev, "DCVDD");
++	if (IS_ERR(madera->dcvdd)) {
++		ret = PTR_ERR(madera->dcvdd);
++		dev_err(dev, "Failed to request DCVDD: %d\n", ret);
++		goto err_devs;
++	}
++
++	ret = regulator_bulk_enable(madera->num_core_supplies,
++				    madera->core_supplies);
++	if (ret) {
++		dev_err(dev, "Failed to enable core supplies: %d\n", ret);
++		goto err_dcvdd;
++	}
++
++	ret = regulator_enable(madera->dcvdd);
++	if (ret) {
++		dev_err(dev, "Failed to enable DCVDD: %d\n", ret);
++		goto err_enable;
++	}
++
++	madera_disable_hard_reset(madera);
++
++	regcache_cache_only(madera->regmap, false);
++	regcache_cache_only(madera->regmap_32bit, false);
++
++	/*
++	 * Verify that this is a chip we know about before we
++	 * starting doing any writes to its registers
++	 */
++	ret = regmap_read(madera->regmap, MADERA_SOFTWARE_RESET, &hwid);
++	if (ret) {
++		dev_err(dev, "Failed to read ID register: %d\n", ret);
++		goto err_reset;
++	}
++
++	switch (hwid) {
++	case CS47L35_SILICON_ID:
++		if (IS_ENABLED(CONFIG_MFD_CS47L35)) {
++			switch (madera->type) {
++			case CS47L35:
++				patch_fn = cs47l35_patch;
++				mfd_devs = cs47l35_devs;
++				n_devs = ARRAY_SIZE(cs47l35_devs);
++				break;
++			default:
++				break;
++			}
++		}
++		break;
++	case CS47L85_SILICON_ID:
++		if (IS_ENABLED(CONFIG_MFD_CS47L85)) {
++			switch (madera->type) {
++			case CS47L85:
++			case WM1840:
++				patch_fn = cs47l85_patch;
++				mfd_devs = cs47l85_devs;
++				n_devs = ARRAY_SIZE(cs47l85_devs);
++				break;
++			default:
++				break;
++			}
++		}
++		break;
++	case CS47L90_SILICON_ID:
++		if (IS_ENABLED(CONFIG_MFD_CS47L90)) {
++			switch (madera->type) {
++			case CS47L90:
++			case CS47L91:
++				patch_fn = cs47l90_patch;
++				mfd_devs = cs47l90_devs;
++				n_devs = ARRAY_SIZE(cs47l90_devs);
++				break;
++			default:
++				break;
++			}
++		}
++		break;
++	default:
++		dev_err(madera->dev, "Unknown device ID: %x\n", hwid);
++		ret = -EINVAL;
++		goto err_reset;
++	}
++
++	if (!n_devs) {
++		dev_err(madera->dev, "Device ID 0x%x not a %s\n", hwid,
++			madera->type_name);
++		ret = -ENODEV;
++		goto err_reset;
++	}
++
++	/*
++	 * It looks like a device we support. If we don't have a hard reset
++	 * we can now attempt a soft reset
++	 */
++	if (!madera->reset_gpio) {
++		ret = madera_soft_reset(madera);
++		if (ret)
++			goto err_reset;
++	}
++
++	ret = madera_wait_for_boot(madera);
++	if (ret) {
++		dev_err(madera->dev, "Device failed initial boot: %d\n", ret);
++		goto err_reset;
++	}
++
++	ret = regmap_read(madera->regmap, MADERA_HARDWARE_REVISION,
++			  &madera->rev);
++	if (ret) {
++		dev_err(dev, "Failed to read revision register: %d\n", ret);
++		goto err_reset;
++	}
++	madera->rev &= MADERA_HW_REVISION_MASK;
++
++	dev_info(dev, "%s silicon revision %d\n", madera->type_name,
++		 madera->rev);
++
++	/* Apply hardware patch */
++	if (patch_fn) {
++		ret = patch_fn(madera);
++		if (ret) {
++			dev_err(madera->dev, "Failed to apply patch %d\n", ret);
++			goto err_reset;
++		}
++	}
++
++	/* Init 32k clock sourced from MCLK2 */
++	ret = regmap_update_bits(madera->regmap,
++			MADERA_CLOCK_32K_1,
++			MADERA_CLK_32K_ENA_MASK | MADERA_CLK_32K_SRC_MASK,
++			MADERA_CLK_32K_ENA | MADERA_32KZ_MCLK2);
++	if (ret) {
++		dev_err(madera->dev, "Failed to init 32k clock: %d\n", ret);
++		goto err_reset;
++	}
++
++	pm_runtime_set_active(madera->dev);
++	pm_runtime_enable(madera->dev);
++	pm_runtime_set_autosuspend_delay(madera->dev, 100);
++	pm_runtime_use_autosuspend(madera->dev);
++
++	ret = mfd_add_devices(madera->dev, PLATFORM_DEVID_NONE,
++			      mfd_devs, n_devs,
++			      NULL, 0, NULL);
++	if (ret) {
++		dev_err(madera->dev, "Failed to add subdevices: %d\n", ret);
++		goto err_pm_runtime;
++	}
++
++	return 0;
++
++err_pm_runtime:
++	pm_runtime_disable(madera->dev);
++err_reset:
++	madera_enable_hard_reset(madera);
++	regulator_disable(madera->dcvdd);
++err_enable:
++	regulator_bulk_disable(madera->num_core_supplies,
++			       madera->core_supplies);
++err_dcvdd:
++	regulator_put(madera->dcvdd);
++err_devs:
++	mfd_remove_devices(dev);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(madera_dev_init);
++
++int madera_dev_exit(struct madera *madera)
++{
++	/* Prevent any IRQs being serviced while we clean up */
++	disable_irq(madera->irq);
++
++	/*
++	 * DCVDD could be supplied by a child node, we must disable it before
++	 * removing the children, and prevent PM runtime from turning it back on
++	 */
++	pm_runtime_disable(madera->dev);
++
++	regulator_disable(madera->dcvdd);
++	regulator_put(madera->dcvdd);
++
++	mfd_remove_devices(madera->dev);
++	madera_enable_hard_reset(madera);
++
++	regulator_bulk_disable(madera->num_core_supplies,
++			       madera->core_supplies);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(madera_dev_exit);
+diff --git a/drivers/mfd/madera-i2c.c b/drivers/mfd/madera-i2c.c
+new file mode 100644
+index 000000000000..526ab7c5a2c6
+--- /dev/null
++++ b/drivers/mfd/madera-i2c.c
+@@ -0,0 +1,139 @@
++/*
++ * I2C bus interface to Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++
++#include <linux/mfd/madera/core.h>
++
++#include "madera.h"
++
++static int madera_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
++{
++	struct madera *madera;
++	const struct regmap_config *regmap_16bit_config = NULL;
++	const struct regmap_config *regmap_32bit_config = NULL;
++	const struct of_device_id *of_id;
++	unsigned long type = 0;
++	const char *name;
++	int ret;
++
++	if (i2c->dev.of_node)
++		of_id = of_match_device(madera_of_match, &i2c->dev);
++		if (of_id)
++			type = (unsigned long)of_id->data;
++	else
++		type = id->driver_data;
++
++	switch (type) {
++	case CS47L35:
++		if (IS_ENABLED(CONFIG_MFD_CS47L35)) {
++			regmap_16bit_config = &cs47l35_16bit_i2c_regmap;
++			regmap_32bit_config = &cs47l35_32bit_i2c_regmap;
++		}
++		break;
++	case CS47L85:
++	case WM1840:
++		if (IS_ENABLED(CONFIG_MFD_CS47L85)) {
++			regmap_16bit_config = &cs47l85_16bit_i2c_regmap;
++			regmap_32bit_config = &cs47l85_32bit_i2c_regmap;
++		}
++		break;
++	case CS47L90:
++	case CS47L91:
++		if (IS_ENABLED(CONFIG_MFD_CS47L90)) {
++			regmap_16bit_config = &cs47l90_16bit_i2c_regmap;
++			regmap_32bit_config = &cs47l90_32bit_i2c_regmap;
++		}
++		break;
++	default:
++		dev_err(&i2c->dev,
++			"Unknown Madera I2C device type %ld\n", type);
++		return -EINVAL;
++	}
++
++	name = madera_name_from_type(type);
++
++	if (!regmap_16bit_config) {
++		dev_err(&i2c->dev,
++			"Kernel does not include support for %s\n", name);
++		return -EINVAL;
++	}
++
++	madera = devm_kzalloc(&i2c->dev, sizeof(*madera), GFP_KERNEL);
++	if (!madera)
++		return -ENOMEM;
++
++
++	madera->regmap = devm_regmap_init_i2c(i2c, regmap_16bit_config);
++	if (IS_ERR(madera->regmap)) {
++		ret = PTR_ERR(madera->regmap);
++		dev_err(&i2c->dev,
++			"Failed to allocate 16-bit register map: %d\n",	ret);
++		return ret;
++	}
++
++	madera->regmap_32bit = devm_regmap_init_i2c(i2c, regmap_32bit_config);
++	if (IS_ERR(madera->regmap_32bit)) {
++		ret = PTR_ERR(madera->regmap_32bit);
++		dev_err(&i2c->dev,
++			"Failed to allocate 32-bit register map: %d\n", ret);
++		return ret;
++	}
++
++	madera->type = type;
++	madera->type_name = name;
++	madera->dev = &i2c->dev;
++	madera->irq = i2c->irq;
++
++	return madera_dev_init(madera);
++}
++
++static int madera_i2c_remove(struct i2c_client *i2c)
++{
++	struct madera *madera = dev_get_drvdata(&i2c->dev);
++
++	madera_dev_exit(madera);
++
++	return 0;
++}
++
++static const struct i2c_device_id madera_i2c_id[] = {
++	{ "cs47l35", CS47L35 },
++	{ "cs47l85", CS47L85 },
++	{ "cs47l90", CS47L90 },
++	{ "cs47l91", CS47L91 },
++	{ "wm1840", WM1840 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, madera_i2c_id);
++
++static struct i2c_driver madera_i2c_driver = {
++	.driver = {
++		.name	= "madera",
++		.pm	= &madera_pm_ops,
++		.of_match_table	= of_match_ptr(madera_of_match),
 +	},
++	.probe		= madera_i2c_probe,
++	.remove		= madera_i2c_remove,
++	.id_table	= madera_i2c_id,
 +};
 +
-+static struct platform_driver * const madera_ldo1_drivers[] = {
-+	&arizona_ldo1_driver,
-+	&madera_ldo1_driver,
++module_i2c_driver(madera_i2c_driver);
++
++MODULE_DESCRIPTION("Madera I2C bus interface");
++MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mfd/madera-spi.c b/drivers/mfd/madera-spi.c
+new file mode 100644
+index 000000000000..5280c428de15
+--- /dev/null
++++ b/drivers/mfd/madera-spi.c
+@@ -0,0 +1,138 @@
++/*
++ * SPI bus interface to Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++#include <linux/spi/spi.h>
++
++#include <linux/mfd/madera/core.h>
++
++#include "madera.h"
++
++static int madera_spi_probe(struct spi_device *spi)
++{
++	const struct spi_device_id *id = spi_get_device_id(spi);
++	struct madera *madera;
++	const struct regmap_config *regmap_16bit_config = NULL;
++	const struct regmap_config *regmap_32bit_config = NULL;
++	const struct of_device_id *of_id;
++	unsigned long type = 0;
++	const char *name;
++	int ret;
++
++	if (spi->dev.of_node)
++		of_id = of_match_device(madera_of_match, &spi->dev);
++		if (of_id)
++			type = (unsigned long)of_id->data;
++	else
++		type = id->driver_data;
++
++	switch (type) {
++	case CS47L35:
++		if (IS_ENABLED(CONFIG_MFD_CS47L35)) {
++			regmap_16bit_config = &cs47l35_16bit_spi_regmap;
++			regmap_32bit_config = &cs47l35_32bit_spi_regmap;
++		}
++		break;
++	case CS47L85:
++	case WM1840:
++		if (IS_ENABLED(CONFIG_MFD_CS47L85)) {
++			regmap_16bit_config = &cs47l85_16bit_spi_regmap;
++			regmap_32bit_config = &cs47l85_32bit_spi_regmap;
++		}
++		break;
++	case CS47L90:
++	case CS47L91:
++		if (IS_ENABLED(CONFIG_MFD_CS47L90)) {
++			regmap_16bit_config = &cs47l90_16bit_spi_regmap;
++			regmap_32bit_config = &cs47l90_32bit_spi_regmap;
++		}
++		break;
++	default:
++		dev_err(&spi->dev,
++			"Unknown Madera SPI device type %ld\n", type);
++		return -EINVAL;
++	}
++
++	name = madera_name_from_type(type);
++
++	if (!regmap_16bit_config) {
++		dev_err(&spi->dev,
++			"Kernel does not include support for %s\n", name);
++		return -EINVAL;
++	}
++
++	madera = devm_kzalloc(&spi->dev, sizeof(*madera), GFP_KERNEL);
++	if (!madera)
++		return -ENOMEM;
++
++	madera->regmap = devm_regmap_init_spi(spi, regmap_16bit_config);
++	if (IS_ERR(madera->regmap)) {
++		ret = PTR_ERR(madera->regmap);
++		dev_err(&spi->dev,
++			"Failed to allocate 16-bit register map: %d\n",	ret);
++		return ret;
++	}
++
++	madera->regmap_32bit = devm_regmap_init_spi(spi, regmap_32bit_config);
++	if (IS_ERR(madera->regmap_32bit)) {
++		ret = PTR_ERR(madera->regmap_32bit);
++		dev_err(&spi->dev,
++			"Failed to allocate 32-bit register map: %d\n",	ret);
++		return ret;
++	}
++
++	madera->type = type;
++	madera->type_name = name;
++	madera->dev = &spi->dev;
++	madera->irq = spi->irq;
++
++	return madera_dev_init(madera);
++}
++
++static int madera_spi_remove(struct spi_device *spi)
++{
++	struct madera *madera = spi_get_drvdata(spi);
++
++	madera_dev_exit(madera);
++
++	return 0;
++}
++
++static const struct spi_device_id madera_spi_ids[] = {
++	{ "cs47l35", CS47L35 },
++	{ "cs47l85", CS47L85 },
++	{ "cs47l90", CS47L90 },
++	{ "cs47l91", CS47L91 },
++	{ "wm1840", WM1840 },
++	{ },
++};
++MODULE_DEVICE_TABLE(spi, madera_spi_ids);
++
++static struct spi_driver madera_spi_driver = {
++	.driver = {
++		.name	= "madera",
++		.pm	= &madera_pm_ops,
++		.of_match_table	= of_match_ptr(madera_of_match),
++	},
++	.probe		= madera_spi_probe,
++	.remove		= madera_spi_remove,
++	.id_table	= madera_spi_ids,
 +};
 +
-+static int __init arizona_ldo1_init(void)
-+{
-+	return platform_register_drivers(madera_ldo1_drivers,
-+					 ARRAY_SIZE(madera_ldo1_drivers));
-+}
-+module_init(arizona_ldo1_init);
++module_spi_driver(madera_spi_driver);
 +
-+static void __exit madera_ldo1_exit(void)
-+{
-+	platform_unregister_drivers(madera_ldo1_drivers,
-+				    ARRAY_SIZE(madera_ldo1_drivers));
-+}
-+module_exit(madera_ldo1_exit);
- 
- /* Module information */
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_DESCRIPTION("Arizona LDO1 driver");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:arizona-ldo1");
-+MODULE_ALIAS("platform:madera-ldo1");
++MODULE_DESCRIPTION("Madera SPI bus interface");
++MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mfd/madera.h b/drivers/mfd/madera.h
+new file mode 100644
+index 000000000000..1450b91afae3
+--- /dev/null
++++ b/drivers/mfd/madera.h
+@@ -0,0 +1,44 @@
++/*
++ * MFD internals for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef MADERA_MFD_H
++#define MADERA_MFD_H
++
++#include <linux/of.h>
++#include <linux/pm.h>
++
++struct madera;
++
++extern const struct dev_pm_ops madera_pm_ops;
++extern const struct of_device_id madera_of_match[];
++
++int madera_dev_init(struct madera *madera);
++int madera_dev_exit(struct madera *madera);
++
++const char *madera_name_from_type(enum madera_type type);
++
++extern const struct regmap_config cs47l35_16bit_spi_regmap;
++extern const struct regmap_config cs47l35_32bit_spi_regmap;
++extern const struct regmap_config cs47l35_16bit_i2c_regmap;
++extern const struct regmap_config cs47l35_32bit_i2c_regmap;
++int cs47l35_patch(struct madera *madera);
++
++extern const struct regmap_config cs47l85_16bit_spi_regmap;
++extern const struct regmap_config cs47l85_32bit_spi_regmap;
++extern const struct regmap_config cs47l85_16bit_i2c_regmap;
++extern const struct regmap_config cs47l85_32bit_i2c_regmap;
++int cs47l85_patch(struct madera *madera);
++
++extern const struct regmap_config cs47l90_16bit_spi_regmap;
++extern const struct regmap_config cs47l90_32bit_spi_regmap;
++extern const struct regmap_config cs47l90_16bit_i2c_regmap;
++extern const struct regmap_config cs47l90_32bit_i2c_regmap;
++int cs47l90_patch(struct madera *madera);
++#endif
+diff --git a/include/linux/mfd/madera/core.h b/include/linux/mfd/madera/core.h
+new file mode 100644
+index 000000000000..1a48ce9609d6
+--- /dev/null
++++ b/include/linux/mfd/madera/core.h
+@@ -0,0 +1,196 @@
++/*
++ * MFD internals for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef MADERA_CORE_H
++#define MADERA_CORE_H
++
++#include <linux/gpio/consumer.h>
++#include <linux/interrupt.h>
++#include <linux/irqchip/irq-madera.h>
++#include <linux/mfd/madera/pdata.h>
++#include <linux/notifier.h>
++#include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++
++#include <sound/madera-pdata.h>
++
++enum madera_type {
++	/* 0 is reserved for indicating failure to identify */
++	CS47L35 = 1,
++	CS47L85 = 2,
++	CS47L90 = 3,
++	CS47L91 = 4,
++	WM1840 = 7,
++};
++
++#define MADERA_MAX_CORE_SUPPLIES	2
++#define MADERA_MAX_GPIOS		40
++
++#define CS47L35_NUM_GPIOS		16
++#define CS47L85_NUM_GPIOS		40
++#define CS47L90_NUM_GPIOS		38
++
++#define MADERA_MAX_MICBIAS		4
++
++/* Notifier events */
++#define MADERA_NOTIFY_VOICE_TRIGGER	0x1
++#define MADERA_NOTIFY_HPDET		0x2
++#define MADERA_NOTIFY_MICDET		0x4
++
++/* GPIO Function Definitions */
++#define MADERA_GP_FN_ALTERNATE		0x00
++#define MADERA_GP_FN_GPIO		0x01
++#define MADERA_GP_FN_DSP_GPIO		0x02
++#define MADERA_GP_FN_IRQ1		0x03
++#define MADERA_GP_FN_IRQ2		0x04
++#define MADERA_GP_FN_FLL1_CLOCK		0x10
++#define MADERA_GP_FN_FLL2_CLOCK		0x11
++#define MADERA_GP_FN_FLL3_CLOCK		0x12
++#define MADERA_GP_FN_FLLAO_CLOCK	0x13
++#define MADERA_GP_FN_FLL1_LOCK		0x18
++#define MADERA_GP_FN_FLL2_LOCK		0x19
++#define MADERA_GP_FN_FLL3_LOCK		0x1A
++#define MADERA_GP_FN_FLLAO_LOCK		0x1B
++#define MADERA_GP_FN_OPCLK_OUT		0x40
++#define MADERA_GP_FN_OPCLK_ASYNC_OUT	0x41
++#define MADERA_GP_FN_PWM1		0x48
++#define MADERA_GP_FN_PWM2		0x49
++#define MADERA_GP_FN_SPDIF_OUT		0x4C
++#define MADERA_GP_FN_HEADPHONE_DET	0x50
++#define MADERA_GP_FN_MIC_DET		0x58
++#define MADERA_GP_FN_DRC1_SIGNAL_DETECT	0x80
++#define MADERA_GP_FN_DRC2_SIGNAL_DETECT	0x81
++#define MADERA_GP_FN_ASRC1_IN1_LOCK	0x88
++#define MADERA_GP_FN_ASRC1_IN2_LOCK	0x89
++#define MADERA_GP_FN_ASRC2_IN1_LOCK	0x8A
++#define MADERA_GP_FN_ASRC2_IN2_LOCK	0x8B
++#define MADERA_GP_FN_DSP_IRQ1		0xA0
++#define MADERA_GP_FN_DSP_IRQ2		0xA1
++#define MADERA_GP_FN_DSP_IRQ3		0xA2
++#define MADERA_GP_FN_DSP_IRQ4		0xA3
++#define MADERA_GP_FN_DSP_IRQ5		0xA4
++#define MADERA_GP_FN_DSP_IRQ6		0xA5
++#define MADERA_GP_FN_DSP_IRQ7		0xA6
++#define MADERA_GP_FN_DSP_IRQ8		0xA7
++#define MADERA_GP_FN_DSP_IRQ9		0xA8
++#define MADERA_GP_FN_DSP_IRQ10		0xA9
++#define MADERA_GP_FN_DSP_IRQ11		0xAA
++#define MADERA_GP_FN_DSP_IRQ12		0xAB
++#define MADERA_GP_FN_DSP_IRQ13		0xAC
++#define MADERA_GP_FN_DSP_IRQ14		0xAD
++#define MADERA_GP_FN_DSP_IRQ15		0xAE
++#define MADERA_GP_FN_DSP_IRQ16		0xAF
++#define MADERA_GP_FN_HPOUT1L_SC		0xB0
++#define MADERA_GP_FN_HPOUT1R_SC		0xB1
++#define MADERA_GP_FN_HPOUT2L_SC		0xB2
++#define MADERA_GP_FN_HPOUT2R_SC		0xB3
++#define MADERA_GP_FN_HPOUT3L_SC		0xB4
++#define MADERA_GP_FN_HPOUT4R_SC		0xB5
++#define MADERA_GP_FN_SPKOUTL_SC		0xB6
++#define MADERA_GP_FN_SPKOUTR_SC		0xB7
++#define MADERA_GP_FN_HPOUT1L_ENA	0xC0
++#define MADERA_GP_FN_HPOUT1R_ENA	0xC1
++#define MADERA_GP_FN_HPOUT2L_ENA	0xC2
++#define MADERA_GP_FN_HPOUT2R_ENA	0xC3
++#define MADERA_GP_FN_HPOUT3L_ENA	0xC4
++#define MADERA_GP_FN_HPOUT4R_ENA	0xC5
++#define MADERA_GP_FN_SPKOUTL_ENA	0xC6
++#define MADERA_GP_FN_SPKOUTR_ENA	0xC7
++#define MADERA_GP_FN_HPOUT1L_DIS	0xD0
++#define MADERA_GP_FN_HPOUT1R_DIS	0xD1
++#define MADERA_GP_FN_HPOUT2L_DIS	0xD2
++#define MADERA_GP_FN_HPOUT2R_DIS	0xD3
++#define MADERA_GP_FN_HPOUT3L_DIS	0xD4
++#define MADERA_GP_FN_HPOUT4R_DIS	0xD5
++#define MADERA_GP_FN_SPKOUTL_DIS	0xD6
++#define MADERA_GP_FN_SPKOUTR_DIS	0xD7
++#define MADERA_GP_FN_SPK_SHUTDOWN	0xE0
++#define MADERA_GP_FN_SPK_OVH_SHUTDOWN	0xE1
++#define MADERA_GP_FN_SPK_OVH_WARN	0xE2
++#define MADERA_GP_FN_TIMER1_STATUS	0x140
++#define MADERA_GP_FN_TIMER2_STATUS	0x141
++#define MADERA_GP_FN_TIMER3_STATUS	0x142
++#define MADERA_GP_FN_TIMER4_STATUS	0x143
++#define MADERA_GP_FN_TIMER5_STATUS	0x144
++#define MADERA_GP_FN_TIMER6_STATUS	0x145
++#define MADERA_GP_FN_TIMER7_STATUS	0x146
++#define MADERA_GP_FN_TIMER8_STATUS	0x147
++#define MADERA_GP_FN_EVENTLOG1_FIFO_STS	0x150
++#define MADERA_GP_FN_EVENTLOG2_FIFO_STS	0x151
++#define MADERA_GP_FN_EVENTLOG3_FIFO_STS	0x152
++#define MADERA_GP_FN_EVENTLOG4_FIFO_STS	0x153
++#define MADERA_GP_FN_EVENTLOG5_FIFO_STS	0x154
++#define MADERA_GP_FN_EVENTLOG6_FIFO_STS	0x155
++#define MADERA_GP_FN_EVENTLOG7_FIFO_STS	0x156
++#define MADERA_GP_FN_EVENTLOG8_FIFO_STS	0x157
++
++struct snd_soc_dapm_context;
++
++/*
++ * struct madera - internal data shared by the set of Madera drivers
++ *
++ * This should not be used by anything except child drivers of the Madera MFD
++ *
++ * @regmap:		pointer to the regmap instance for 16-bit registers
++ * @regmap_32bit:	pointer to the regmap instance for 32-bit registers
++ * @dev:		pointer to the MFD device
++ * @type:		type of codec
++ * @rev:		silicon revision
++ * @type_name:		display name of this codec
++ * @reset_gpio:		gpio controlling the reset line
++ * @num_core_supplies:	number of core supply regulators
++ * @core_supplies:	list of core supplies that are always required
++ * @dcvdd:		pointer to DCVDD regulator
++ * @internal_dcvdd:	true if DCVDD is supplied from the internal LDO1
++ * @pdata:		our pdata
++ * @irq_dev:		the irqchip child driver device
++ * @irq:		host irq number from SPI or I2C configuration
++ * @out_clamp:		indicates output clamp state for each analogue output
++ * @out_shorted:	indicates short circuit state for each analogue output
++ * @hp_ena:		bitflags of enable state for the headphone outputs
++ * @num_micbias:	number of MICBIAS outputs
++ * @num_childbias:	number of child biases for each MICBIAS
++ * @dapm:		pointer to codec driver DAPM context
++ * @notifier:		notifier for signalling events to ASoC machine driver
++ */
++struct madera {
++	struct regmap *regmap;
++	struct regmap *regmap_32bit;
++
++	struct device *dev;
++
++	enum madera_type type;
++	unsigned int rev;
++	const char *type_name;
++
++	struct gpio_desc *reset_gpio;
++
++	int num_core_supplies;
++	struct regulator_bulk_data core_supplies[MADERA_MAX_CORE_SUPPLIES];
++	struct regulator *dcvdd;
++	bool internal_dcvdd;
++
++	struct madera_pdata pdata;
++
++	struct device *irq_dev;
++	int irq;
++
++	unsigned int out_clamp[MADERA_MAX_OUTPUT];
++	unsigned int out_shorted[MADERA_MAX_OUTPUT];
++	unsigned int hp_ena;
++
++	unsigned int num_micbias;
++	unsigned int num_childbias[MADERA_MAX_MICBIAS];
++
++	struct snd_soc_dapm_context *dapm;
++
++	struct blocking_notifier_head notifier;
++};
++#endif
+diff --git a/include/linux/mfd/madera/pdata.h b/include/linux/mfd/madera/pdata.h
+new file mode 100644
+index 000000000000..6b09fdb13878
+--- /dev/null
++++ b/include/linux/mfd/madera/pdata.h
+@@ -0,0 +1,61 @@
++/*
++ * Platform data for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef MADERA_PDATA_H
++#define MADERA_PDATA_H
++
++#include <linux/irqchip/irq-madera-pdata.h>
++#include <linux/kernel.h>
++#include <linux/regulator/arizona-ldo1.h>
++#include <linux/regulator/arizona-micsupp.h>
++#include <linux/regulator/machine.h>
++#include <sound/madera-pdata.h>
++
++#define MADERA_MAX_MICBIAS		4
++#define MADERA_MAX_CHILD_MICBIAS	4
++
++#define MADERA_MAX_GPSW			2
++
++struct pinctrl_map;
++
++/**
++ * struct madera_pdata - Configuration data for Madera devices
++ *
++ * @reset:	    GPIO controlling /RESET (0 = none)
++ * @ldo1:	    Substruct of pdata for the LDO1 regulator
++ * @micvdd:	    Substruct of pdata for the MICVDD regulator
++ * @irqchip:	    Substruct of pdata for the irqchip driver
++ * @gpio_base:	    Base GPIO number
++ * @gpio_configs:   Array of GPIO configurations (See Documentation/pinctrl.txt)
++ * @n_gpio_configs: Number of entries in gpio_configs
++ * @codec:	    Substructure of pdata for the ASoC codec driver
++ *		    See include/sound/madera-pdata.h
++ * @gpsw:	    General purpose switch mode setting (See the SW1_MODE field
++ *		    in the datasheet for the available values for your codec)
++ */
++struct madera_pdata {
++	int reset;
++
++	struct arizona_ldo1_pdata ldo1;
++	struct arizona_micsupp_pdata micvdd;
++
++	struct madera_irqchip_pdata irqchip;
++
++	int gpio_base;
++
++	const struct pinctrl_map *gpio_configs;
++	int n_gpio_configs;
++
++	struct madera_codec_pdata codec;
++
++	u32 gpsw[MADERA_MAX_GPSW];
++};
++
++#endif
 -- 
 2.11.0
