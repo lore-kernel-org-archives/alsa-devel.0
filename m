@@ -1,80 +1,65 @@
-From: arvindY <arvind.yadav.cs@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 1/5 v4] ASoC: ep93xx-ac97: Fix
- platform_get_irq's error checking
-Date: Mon, 20 Nov 2017 21:31:40 +0530
-Message-ID: <5A12FC64.3020205@gmail.com>
-References: <082d4479211d425219f4ab275ecc12e1011eca2f.1511062844.git.arvind.yadav.cs@gmail.com>
- <20171120133717.kscrjsb3y7gnvd2t@piout.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/7] ASoC: Intel: Fix Kconfig
+Date: Mon, 20 Nov 2017 10:18:01 -0600
+Message-ID: <3c0db712-ed68-35ce-d50a-0a4557b42ef1@linux.intel.com>
+References: <20171118000202.22302-1-pierre-louis.bossart@linux.intel.com>
+ <20171118000202.22302-2-pierre-louis.bossart@linux.intel.com>
+ <s5hine78rbx.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171120133717.kscrjsb3y7gnvd2t@piout.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, linux@armlinux.org.uk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C0E0266F52
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 17:18:05 +0100 (CET)
+In-Reply-To: <s5hine78rbx.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de, vinod.koul@intel.com, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Monday 20 November 2017 07:07 PM, Alexandre Belloni wrote:
-> On 19/11/2017 at 09:45:00 +0530, Arvind Yadav wrote:
->> The platform_get_irq() function returns negative if an error occurs.
->> zero or positive number on success. platform_get_irq() error checking
->> for zero is not correct.
->>
->> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
->> ---
->> changes in v2 :
->>                 irq was unsigned. so changed it to signed.
->> changes in v3 :
->>                Add failure case '<= 0' instead of '< 0'. IRQ0 is not valid.
->> changes in v4 :
->>                Return -ENODEV insted of irq.
->>
-> To ensure this doesn't get applied: platform_get_irq can return
-> -EPROBE_DEFER and this must be handled properly.
+
+On 11/18/2017 10:49 AM, Takashi Iwai wrote:
+> On Sat, 18 Nov 2017 01:01:56 +0100,
+> Pierre-Louis Bossart wrote:
+>> +if SND_SOC_INTEL_BAYTRAIL
+>>   
+>>   config SND_SOC_INTEL_BYT_MAX98090_MACH
+>>   	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+>> +	default n
+> default=n is superfluous, can be dropped.
 >
-> (Or maybe this has never caused anything and never failed at all and
-> nobody cares).
-Yes, you are right. We should retry to get an irq for device. But ASoC
-  driver is not retrying. if platfore_get_irq() fail here, Driver is 
-throwing an error.
-and this patch is only to fix error checking which is not correct in 
-Driver.
-
-~arvind
+>>   	depends on X86_INTEL_LPSS && I2C
+>> -	depends on SND_SST_IPC_ACPI = n
+>> -	depends on SND_SOC_INTEL_BAYTRAIL
+>>   	select SND_SOC_MAX98090
+> So the dependency on ND_SST_IPC_ACPI=n is removed here too, and I
+> guess this will allow this machine driver built although it shouldn't
+> be?
+This dependency doesn't really make sense any longer at the machine 
+driver level. There is now an explicit layer on the platform side 
+(SND_SOC_INTEL_BAYTRAIL) where the exclusion with SND_SOC_INTEL_HIFI2 
+platforms should be handled.
+I also removed this dependency because it was 'one way', I couldn't find 
+a way to show explicit mutual exclusions without getting into circular 
+dependencies.
 
 >
->>   sound/soc/cirrus/ep93xx-ac97.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
->> index bbf7a92..efeecee 100644
->> --- a/sound/soc/cirrus/ep93xx-ac97.c
->> +++ b/sound/soc/cirrus/ep93xx-ac97.c
->> @@ -365,7 +365,7 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
->>   {
->>   	struct ep93xx_ac97_info *info;
->>   	struct resource *res;
->> -	unsigned int irq;
->> +	int irq;
->>   	int ret;
->>   
->>   	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
->> @@ -378,7 +378,7 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
->>   		return PTR_ERR(info->regs);
->>   
->>   	irq = platform_get_irq(pdev, 0);
->> -	if (!irq)
->> +	if (irq <= 0)
->>   		return -ENODEV;
->>   
->>   	ret = devm_request_irq(&pdev->dev, irq, ep93xx_ac97_interrupt,
->> -- 
->> 2.7.4
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
