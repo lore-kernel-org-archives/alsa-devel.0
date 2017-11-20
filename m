@@ -1,20 +1,20 @@
-From: =?UTF-8?Q?Hans_Peter_M=C3=B6ller?= <hmoller@uc.cl>
-Subject: Re: [PATCH] ALSA: line6: add support for POD HD DESKTOP
-Date: Mon, 20 Nov 2017 13:54:27 -0300
-Message-ID: <CALSLyV4qD4L4uhQURfNpvvCvvQz9CvMm=J=S=H4iGG3CV5FQbw@mail.gmail.com>
-References: <1505835934-3226-1-git-send-email-hmoller@uc.cl>
- <s5hvakee9dd.wl-tiwai@suse.de>
+From: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+Subject: Re: [RFC PATCH 2/7] ASoC: Intel: Kconfig:
+ Simplify-clarify ACPI/PCI dependencies
+Date: Mon, 20 Nov 2017 16:58:52 +0000
+Message-ID: <20171120165852.7492d92c@alans-desktop>
+References: <20171118000202.22302-1-pierre-louis.bossart@linux.intel.com>
+ <20171118000202.22302-3-pierre-louis.bossart@linux.intel.com>
+ <1511024018.25007.310.camel@linux.intel.com>
+ <5b2dde66-d30e-5cd6-15df-12f002850274@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
- [209.85.220.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 272C5266F52
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 17:54:28 +0100 (CET)
-Received: by mail-qk0-f194.google.com with SMTP id p19so8251269qke.2
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 08:54:28 -0800 (PST)
-In-Reply-To: <s5hvakee9dd.wl-tiwai@suse.de>
+Received: from fuzix.org (www.llwyncelyn.cymru [82.70.14.225])
+ by alsa0.perex.cz (Postfix) with ESMTP id D860F266F52
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 17:58:54 +0100 (CET)
+In-Reply-To: <5b2dde66-d30e-5cd6-15df-12f002850274@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, =?UTF-8?Q?Andrej_Krut=C3=A1k?= <dev@andree.sk>, linux-kernel@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksIHNpbmNlIGZvciBLZXJuZWwgNC4xNCB0aGUgc291cmNlIHdhcyBjaGFuZ2VkIGZvciB0aGUg
-dGltZXIgaXNzdWUsIEkKbmVlZCB0byByZXNlbmQgdGhlIHBhdGNoZXMgdG8gYXBwbHkgb3ZlciA0
-LjE0IG9yIGl0J3Mgbm8gbmVlZCBmb3IgdGhhdD8KdGhhbmtzCmJyZ2RzCkhQTQoKT24gVHVlLCBT
-ZXAgMTksIDIwMTcgYXQgNToxMSBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
-ZToKCj4gT24gVHVlLCAxOSBTZXAgMjAxNyAxNzo0NTozNCArMDIwMCwKPiBIYW5zIFAuIE3Dtmxs
-ZXIgRWJuZXIgd3JvdGU6Cj4gPgo+ID4gQWRkIHN1cHBvcnQgZm9yIHRoZSBMaW5lNiBQT0QgSEQ1
-MDBYIG11bHRpIGVmZmVjdCBwcm9jZXNzb3IgZm9yIHBsYXliYWNrCj4gPiBhbmQgY2FwdHVyZSAo
-aW4vb3V0IGF1ZGlvKSB0aHJvdWdoIFVTQi4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBIYW5zIFAu
-IE1vbGxlciA8aG1vbGxlckB1Yy5jbD4KPgo+IEFwcGxpZWQsIHRoYW5rcy4KPgo+Cj4gVGFrYXNo
-aQo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+ 
+> I am aware that Edison could run with a modified 4.4 kernel, I just 
+> don't know where the firmware is. I don't see anything for Merrifield in 
+> /lib/firmware/intel?
+
+https://downloadmirror.intel.com/25028/eng/edison-image-from-src-package-ww25.5-15.zip
+
+I have no idea why it never made it into the standard Linux firmware
+package but with Edison now defunct I also don't have anyone I can ask
+about that !
+
+Alan
