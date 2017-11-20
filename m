@@ -1,17 +1,15 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] ASoC: soc-utils: add const to dummy_codec
-Date: Mon, 20 Nov 2017 10:13:00 +0100
-Message-ID: <20171120091300.ai3yl6ftqzdp6d3a@verge.net.au>
-References: <87o9nxbrrb.wl%kuninori.morimoto.gx@renesas.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5514: Add the sanity check for the
+	driver_data in the resume function
+Date: Mon, 20 Nov 2017 18:23:19 +0800
+Message-ID: <1511173399-26065-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kirsty.vergenet.net (kirsty.vergenet.net [202.4.237.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 04ACB266847
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 10:13:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87o9nxbrrb.wl%kuninori.morimoto.gx@renesas.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0922F2674FC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 11:23:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,15 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 20, 2017 at 02:45:36AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Let's align dummy_platform and dummy_codec
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+If the rt5514 spi driver is loaded, but the snd_soc_platform_driver is not
+loaded by the correct DAI settings, the NULL pointer will be gotten by
+snd_soc_platform_get_drvdata in the resume function.
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514-spi.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index a7604b9..4339f23 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -483,10 +483,13 @@ static int __maybe_unused rt5514_resume(struct device *dev)
+ 	if (device_may_wakeup(dev))
+ 		disable_irq_wake(irq);
+ 
+-	if (rt5514_dsp->substream) {
+-		rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf, sizeof(buf));
+-		if (buf[0] & RT5514_IRQ_STATUS_BIT)
+-			rt5514_schedule_copy(rt5514_dsp);
++	if (rt5514_dsp) {
++		if (rt5514_dsp->substream) {
++			rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf,
++				sizeof(buf));
++			if (buf[0] & RT5514_IRQ_STATUS_BIT)
++				rt5514_schedule_copy(rt5514_dsp);
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.7.4
