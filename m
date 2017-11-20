@@ -1,83 +1,107 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in snd_seq_oss_readq_puts
-Date: Mon, 20 Nov 2017 13:49:02 +0100
-Message-ID: <CACT4Y+bDMbms_-qxKKOL0FTZAWcAckra0-a1Qt9iDHTns7MQWw@mail.gmail.com>
-References: <001a1140b6b825822a055cf02f93@google.com> <CACT4Y+a2eNABZqqcGe1idMX80pS+HrYgM74BiNz8LZjNXDPKXA@mail.gmail.com>
- <s5h4lqddbk9.wl-tiwai@suse.de> <CACT4Y+bMCWVZXM8NEzC=RhDigxm8ibwZdpmAOPKN1nDra0wBGQ@mail.gmail.com>
+From: Henrik Eriksson <henrik.eriksson@axis.com>
+Subject: Re: [RFC PATCH] ALSA: core: do not update tstamp when
+ hw ptr has not moved
+Date: Mon, 20 Nov 2017 14:13:32 +0100
+Message-ID: <20171120131332.GF5483@lnxhenriken2.se.axis.com>
+References: <20171116124349.GA21810@lnxhenriken2.se.axis.com>
+ <s5h375e2sbb.wl-tiwai@suse.de>
+ <172e5ff0-472e-be36-0208-5ccc88baebfa@linux.intel.com>
+ <s5h8tf69hz3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACT4Y+bMCWVZXM8NEzC=RhDigxm8ibwZdpmAOPKN1nDra0wBGQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: syzbot <bot+31681772ec7a18dde8d3f8caf475f361a89b9514@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, syzkaller-bugs@googlegroups.com, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B77C266FEC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 14:13:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h8tf69hz3.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Henrik Eriksson <henriken@axis.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 20, 2017 at 1:47 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Wed, Nov 1, 2017 at 8:49 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> On Wed, 01 Nov 2017 19:39:46 +0100,
->> Dmitry Vyukov wrote:
->>>
->>> On Wed, Nov 1, 2017 at 9:38 PM, syzbot
->>> <bot+31681772ec7a18dde8d3f8caf475f361a89b9514@syzkaller.appspotmail.com>
->>> wrote:
->>> > Hello,
->>> >
->>> > syzkaller hit the following crash on
->>> > fc2e8b1a47c14b22c33eb087fca0db58e1f4ed0e
->>> > git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/master
->>> > compiler: gcc (GCC) 7.1.1 20170620
->>> > .config is attached
->>> > Raw console output is attached.
->>> > C reproducer is attached
->>> > syzkaller reproducer is attached. See https://goo.gl/kgGztJ
->>> > for information about syzkaller reproducers
->>>
->>> This also happened on more recent commits, including upstream
->>> 9c323bff13f92832e03657cabdd70d731408d621 (Oct 20):
->>
->> Could you try the patch below with CONFIG_SND_DEBUG=y and see whether
->> it catches any bad calls?  It's already in for-next branch for 4.15.
->
->
-> Hi Takashi,
->
-> Unfortunately it's not possible to test custom patches in syzbot infrastructure.
-> We've experimented with applying a bunch of custom patches in the past
-> and it lead to unrecoverable mess. We were not able to communicate
-> precise state of code with reports, we were not able to provide
-> meaningful report with line numbers that matter (not possible to
-> understand what exactly line caused a bug), developers could
-> (rightfully) suspect that some bugs might be caused the unknown set of
-> private patches, random subset of patches won't apply and that set
-> changes over time and depends on order in which we apply patches, etc.
-> It's also not possible to dedicate a syzkaller instance with a bunch
-> of attached machines for this. First, it will require lots of
-> resources (your request is not unique). Then, whenever we test kernel
-> we get dozens of bugs. What should we do with these bugs? We don't
-> know which are related to your patch and which are not. We can't
-> report them upstream (see above). Basically you would need to go
-> through these dozens of bugs after testing and do something with each
-> of them, but I don't think you want to.
->
-> But we are happy to test whatever is in upstream tree (this patch already is).
->
-> Re CONFIG_SND_DEBUG=y, should we enable it permanently in syzbot configs?
-> From our point of view, the more debug configs are enabled, the more
-> bugs we find, the better. There just must be somebody who will then
-> fix problems uncovered by the config (either bugs of config false
-> positives).
-> If you will take a look on the config attached to the first mail, do
-> you see anything else to fix there re sound? Maybe turn off some
-> deprecated configs that nobody uses for a long time? Or enable some
-> new configs?
+On Thu,=A0Nov=A016,=A02017=A0at=A019:49:36=A0+0100, Takashi Iwai wrote:
+> On Thu, 16 Nov 2017 19:11:37 +0100,
+> Pierre-Louis Bossart wrote:
+> > =
 
+> > On 11/16/17 8:48 AM, Takashi Iwai wrote:
+> > > On Thu, 16 Nov 2017 13:43:57 +0100,
+> > > Henrik Eriksson wrote:
+> > >>
+> > >> This reverts a change that was part of a larger commit.  That change
+> > >> broke timestamps in some application code for us as outlined in the =
+log,
+> > >> and reverting it obviously fixes this.  Since the original change did
+> > >> not explain why the behaviour was modified I can't speak for the eff=
+ects
+> > >> on that use case.
 
-FYI, we are also rolling out syzbot feature that allows testing of
-custom patches (but only on the exact reproducer, not general
-fuzzing):
+> > > So this is a regression and we need to address it.
+> > >
+> > > I *guess* that the reason to update tstamp event at the same hwptr is
+> > > that now we can get a more fine-grained tstamp.  OTOH, we have to
+> > > avoid the regression by that.
+> > >
+> > > What about the (untested) patch like below?  It skips the tstamp
+> > > update as default but follows the new standard when a better tstamp
+> > > mode is deployed.
+> > =
 
-https://github.com/google/syzkaller/blob/master/docs/syzbot.md#communication-with-syzbot
+> > update_audio_tstamp() only updates the audio timestamp when the type
+> > is DEFAULT already, but indeed update runtime->status->tstamp is
+> > updated unconditionally.
+> > =
 
-As far as I understand this was not applicable in this particular
-case, but if you need it in future, give it a try.
+> > I have a bit of heartburn with the suggested solutions because the
+> > delay can change even with the same hw_ptr. Not updating the
+> > timestamps would be going back to the days where timing updates was
+> > dependent on DMA granularity.
+> > =
+
+> > Maybe we could make the tstamp update dependent on a change in
+> > audio_tstamp, e.g.
+> > =
+
+> > =
+
+> > diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> > index a93a4235a332..b606f3ea7a17 100644
+> > --- a/sound/core/pcm_lib.c
+> > +++ b/sound/core/pcm_lib.c
+> > @@ -248,8 +248,10 @@ static void update_audio_tstamp(struct
+> > snd_pcm_substream *substream,
+> >                                 runtime->rate);
+> >                 *audio_tstamp =3D ns_to_timespec(audio_nsecs);
+> >         }
+> > -       runtime->status->audio_tstamp =3D *audio_tstamp;
+> > -       runtime->status->tstamp =3D *curr_tstamp;
+> > +       if (runtime->status->audio_tstamp !=3D *audio_tstamp) {
+
+This should be
+
+if (!timespec_equal(&runtime->status->audio_tstamp, audio_tstamp)) {
+
+> > +               runtime->status->audio_tstamp =3D *audio_tstamp;
+> > +               runtime->status->tstamp =3D *curr_tstamp;
+> > +       }
+> =
+
+> OK for me as long as it works.
+> Henrik?
+
+This appears to work for our use case.
+
+How do I progress this, i.e., do I update my patch to use Pierre-Louis's
+fix?  How should I attribute that?
+
+Regards,
+/henrik
