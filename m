@@ -1,101 +1,83 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in snd_seq_oss_readq_puts
-Date: Mon, 20 Nov 2017 17:31:45 +0100
-Message-ID: <CACT4Y+ZbLcyZYCcKnFGKbTqT6B-a_9YqSN_g1ypQgepXkyN35w@mail.gmail.com>
-References: <001a1140b6b825822a055cf02f93@google.com> <CACT4Y+a2eNABZqqcGe1idMX80pS+HrYgM74BiNz8LZjNXDPKXA@mail.gmail.com>
- <s5h4lqddbk9.wl-tiwai@suse.de> <CACT4Y+bMCWVZXM8NEzC=RhDigxm8ibwZdpmAOPKN1nDra0wBGQ@mail.gmail.com>
- <s5hbmjxxezo.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: cht_bsw_rt5645: Use common error handling code in
+ cht_codec_fixup()
+Date: Mon, 20 Nov 2017 10:35:45 -0600
+Message-ID: <3218a1a0-fc9a-28b9-ecf6-466f51a8b245@linux.intel.com>
+References: <287c2ccc-2411-8a6d-bb1b-8b1062b92738@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hbmjxxezo.wl-tiwai@suse.de>
+In-Reply-To: <287c2ccc-2411-8a6d-bb1b-8b1062b92738@users.sourceforge.net>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: syzbot <bot+31681772ec7a18dde8d3f8caf475f361a89b9514@syzkaller.appspotmail.com>, alsa-devel@alsa-project.org, syzkaller-bugs@googlegroups.com, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>
+To: SF Markus Elfring <elfring@users.sourceforge.net>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 20, 2017 at 2:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 20 Nov 2017 13:47:28 +0100,
-> Dmitry Vyukov wrote:
->>
->> On Wed, Nov 1, 2017 at 8:49 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Wed, 01 Nov 2017 19:39:46 +0100,
->> > Dmitry Vyukov wrote:
->> >>
->> >> On Wed, Nov 1, 2017 at 9:38 PM, syzbot
->> >> <bot+31681772ec7a18dde8d3f8caf475f361a89b9514@syzkaller.appspotmail.com>
->> >> wrote:
->> >> > Hello,
->> >> >
->> >> > syzkaller hit the following crash on
->> >> > fc2e8b1a47c14b22c33eb087fca0db58e1f4ed0e
->> >> > git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/master
->> >> > compiler: gcc (GCC) 7.1.1 20170620
->> >> > .config is attached
->> >> > Raw console output is attached.
->> >> > C reproducer is attached
->> >> > syzkaller reproducer is attached. See https://goo.gl/kgGztJ
->> >> > for information about syzkaller reproducers
->> >>
->> >> This also happened on more recent commits, including upstream
->> >> 9c323bff13f92832e03657cabdd70d731408d621 (Oct 20):
->> >
->> > Could you try the patch below with CONFIG_SND_DEBUG=y and see whether
->> > it catches any bad calls?  It's already in for-next branch for 4.15.
->>
->>
->> Hi Takashi,
->>
->> Unfortunately it's not possible to test custom patches in syzbot infrastructure.
->> We've experimented with applying a bunch of custom patches in the past
->> and it lead to unrecoverable mess. We were not able to communicate
->> precise state of code with reports, we were not able to provide
->> meaningful report with line numbers that matter (not possible to
->> understand what exactly line caused a bug), developers could
->> (rightfully) suspect that some bugs might be caused the unknown set of
->> private patches, random subset of patches won't apply and that set
->> changes over time and depends on order in which we apply patches, etc.
->> It's also not possible to dedicate a syzkaller instance with a bunch
->> of attached machines for this. First, it will require lots of
->> resources (your request is not unique). Then, whenever we test kernel
->> we get dozens of bugs. What should we do with these bugs? We don't
->> know which are related to your patch and which are not. We can't
->> report them upstream (see above). Basically you would need to go
->> through these dozens of bugs after testing and do something with each
->> of them, but I don't think you want to.
->>
->> But we are happy to test whatever is in upstream tree (this patch already is).
->
-> The bug turned out to be a different issue as the suggested patch may
-> fix, and I believe we already address it by the upstream commit
-> 132d358b183ac6ad8b3fea32ad5e0663456d18d1
->     ALSA: seq: Fix OSS sysex delivery in OSS emulation
->
-> I thought I submitted the fix line, but it might be to another syzbot
-> report or I did wrong.
-
-Yes, you submitted the fix line above.
-syzbot already detected that the fix reached all of tested branches
-for this bug.
 
 
->> Re CONFIG_SND_DEBUG=y, should we enable it permanently in syzbot configs?
+On 11/19/2017 03:00 AM, SF Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 19 Nov 2017 09:53:56 +0100
 >
-> Yes, it's worth to have CONFIG_SND_DEBUG=y in fuzzer.
+> * Add a jump target so that a specific error message is stored only once
+>    at the end of this function implementation.
 >
->> From our point of view, the more debug configs are enabled, the more
->> bugs we find, the better. There just must be somebody who will then
->> fix problems uncovered by the config (either bugs of config false
->> positives).
+> * Replace two calls of the function "dev_err" by goto statements.
 >
-> In the case of CONFIG_SND_DEBUG, it gives more debug hints by adding
-> WARN_ON(), but the code behavior is almost same.
->
->> If you will take a look on the config attached to the first mail, do
->> you see anything else to fix there re sound? Maybe turn off some
->> deprecated configs that nobody uses for a long time? Or enable some
->> new configs?
->
-> CONFIG_SND_DYNAMIC_MINORS=y is recommended for modern systems, too.
+> This issue was detected by using the Coccinelle software.
+Indeed this isn't very smart to provide the same test but no, this is 
+the wrong way to fix this. The error message is in reply to two 
+different configurations, one on the codec side and one on the cpu-dai 
+side. We should change the error message to more clearly indicate the 
+issue rather than fold both cases under the same handler.
+Besides this is the same code as in other machine drivers so needs to be 
+handled in multiple files as well.
 
-I've enabled CONFIG_SND_DEBUG and CONFIG_SND_DYNAMIC_MINORS in syzbot configs.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>   sound/soc/intel/boards/cht_bsw_rt5645.c | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+> index 18d129caa974..bf3ffc2b0d8f 100644
+> --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
+> +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+> @@ -357,20 +357,16 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+>   					SND_SOC_DAIFMT_NB_NF   |
+>   					SND_SOC_DAIFMT_CBS_CFS
+>   			);
+> -		if (ret < 0) {
+> -			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+> -			return ret;
+> -		}
+> +		if (ret < 0)
+> +			goto report_failure;
+>   
+>   		ret = snd_soc_dai_set_fmt(rtd->codec_dai,
+>   					SND_SOC_DAIFMT_I2S     |
+>   					SND_SOC_DAIFMT_NB_NF   |
+>   					SND_SOC_DAIFMT_CBS_CFS
+>   			);
+> -		if (ret < 0) {
+> -			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+> -			return ret;
+> -		}
+> +		if (ret < 0)
+> +			goto report_failure;
+>   
+>   		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
+>   		if (ret < 0) {
+> @@ -403,6 +399,10 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+>   		}
+>   	}
+>   	return 0;
+> +
+> +report_failure:
+> +	dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
+> +	return ret;
+>   }
+>   
+>   static int cht_aif1_startup(struct snd_pcm_substream *substream)
