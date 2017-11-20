@@ -1,149 +1,48 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH 2/2] ASoC: fsl_ssi: serialize AC'97 register
-	access operations
-Date: Mon, 20 Nov 2017 23:16:07 +0100
-Message-ID: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_ssi: remove duplicated flag
+ setting in fsl_ssi_setup_reg_vals()
+Date: Mon, 20 Nov 2017 15:16:09 -0800
+Message-ID: <20171120231608.GA14136@Asurada-Nvidia>
+References: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 771B9267065
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 23:16:13 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-AC'97 register access operations (both read and write) on SSI use a one,
-shared set of SSI registers for AC'97 register address and data.
-This means that only one such access is possible at a time and so all these
-operations need to be serialized.
+On Mon, Nov 20, 2017 at 11:12:01PM +0100, Maciej S. Szmigiero wrote:
+> We don't need to set CCSR_SSI_SIER_RFF0_EN / CCSR_SSI_SIER_TFE0_EN bits
+> in reg->rx.sier / reg->tx.sier variables in a non-AC'97 mode considering we
+> had just initialized these variables to these very values unconditionally a
+> few lines earlier.
+> 
+> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 
-Since an AC'97 register access operation in this driver takes 100us+ let's
-use a mutex for this.
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-Use this opportunity to also change a default value returned from AC'97
-register read function from -1 to 0, since that's what AC'97 specs require
-to be returned when unknown / undefined registers are read.
-
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
- sound/soc/fsl/fsl_ssi.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index a71bb8391f61..9dea1b16de82 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -38,6 +38,7 @@
- #include <linux/ctype.h>
- #include <linux/device.h>
- #include <linux/delay.h>
-+#include <linux/mutex.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/of.h>
-@@ -265,6 +266,8 @@ struct fsl_ssi_private {
- 
- 	u32 fifo_watermark;
- 	u32 dma_maxburst;
-+
-+	struct mutex ac97_reg_lock;
- };
- 
- /*
-@@ -1262,11 +1265,13 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	if (reg > 0x7f)
- 		return;
- 
-+	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
-+
- 	ret = clk_prepare_enable(fsl_ac97_data->clk);
- 	if (ret) {
- 		pr_err("ac97 write clk_prepare_enable failed: %d\n",
- 			ret);
--		return;
-+		goto ret_unlock;
- 	}
- 
- 	lreg = reg <<  12;
-@@ -1280,6 +1285,9 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	udelay(100);
- 
- 	clk_disable_unprepare(fsl_ac97_data->clk);
-+
-+ret_unlock:
-+	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
- }
- 
- static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
-@@ -1287,16 +1295,18 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
- {
- 	struct regmap *regs = fsl_ac97_data->regs;
- 
--	unsigned short val = -1;
-+	unsigned short val = 0;
- 	u32 reg_val;
- 	unsigned int lreg;
- 	int ret;
- 
-+	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
-+
- 	ret = clk_prepare_enable(fsl_ac97_data->clk);
- 	if (ret) {
- 		pr_err("ac97 read clk_prepare_enable failed: %d\n",
- 			ret);
--		return -1;
-+		goto ret_unlock;
- 	}
- 
- 	lreg = (reg & 0x7f) <<  12;
-@@ -1311,6 +1321,8 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
- 
- 	clk_disable_unprepare(fsl_ac97_data->clk);
- 
-+ret_unlock:
-+	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
- 	return val;
- }
- 
-@@ -1571,6 +1583,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	if (fsl_ssi_is_ac97(ssi_private)) {
-+		mutex_init(&ssi_private->ac97_reg_lock);
- 		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
- 		if (ret) {
- 			dev_err(&pdev->dev, "could not set AC'97 ops\n");
-@@ -1665,6 +1678,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		snd_soc_set_ac97_ops(NULL);
- 
- error_ac97_ops:
-+	if (fsl_ssi_is_ac97(ssi_private))
-+		mutex_destroy(&ssi_private->ac97_reg_lock);
-+
- 	if (ssi_private->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
-@@ -1683,8 +1699,10 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (ssi_private->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
--	if (fsl_ssi_is_ac97(ssi_private))
-+	if (fsl_ssi_is_ac97(ssi_private)) {
- 		snd_soc_set_ac97_ops(NULL);
-+		mutex_destroy(&ssi_private->ac97_reg_lock);
-+	}
- 
- 	return 0;
- }
+> ---
+>  sound/soc/fsl/fsl_ssi.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index f2f51e06e22c..48bb850a34d9 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -597,9 +597,7 @@ static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
+>  
+>  	if (!fsl_ssi_is_ac97(ssi_private)) {
+>  		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
+> -		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
+>  		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
+> -		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
+>  	}
+>  
+>  	if (ssi_private->use_dma) {
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
