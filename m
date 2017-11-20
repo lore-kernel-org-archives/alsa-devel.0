@@ -1,7 +1,7 @@
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [v5 RESEND 12/17] gpio: madera: Support Cirrus Logic Madera class codecs
-Date: Mon, 20 Nov 2017 14:10:46 +0000
-Message-ID: <20171120141051.29467-13-rf@opensource.cirrus.com>
+Subject: [v5 RESEND 10/17] pinctrl: madera: Add DT bindings for Cirrus Logic Madera codecs
+Date: Mon, 20 Nov 2017 14:10:44 +0000
+Message-ID: <20171120141051.29467-11-rf@opensource.cirrus.com>
 References: <20171120141051.29467-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -9,270 +9,127 @@ Return-path: <linux-gpio-owner@vger.kernel.org>
 In-Reply-To: <20171120141051.29467-1-rf@opensource.cirrus.com>
 Sender: linux-gpio-owner@vger.kernel.org
 To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Nariman Poushin <nariman@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
-This adds support for the GPIOs on Cirrus Logic Madera class codecs.
-Any pins not used for special functions (see the pinctrl driver) can be
-used as general single-bit input or output lines. The number of available
-GPIOs varies between codecs.
+This is the binding description of the pinctrl driver for Cirru Logic
+Madera codecs. The binding uses the generic pinctrl binding so  the main
+purpose here is to describe the device-specific names for groups and
+functions.
 
-Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- MAINTAINERS                |   1 +
- drivers/gpio/Kconfig       |   6 ++
- drivers/gpio/Makefile      |   1 +
- drivers/gpio/gpio-madera.c | 196 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 204 insertions(+)
- create mode 100644 drivers/gpio/gpio-madera.c
+ .../bindings/pinctrl/cirrus,madera-pinctrl.txt     | 99 ++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ee6a000c3f24..56be40a3cc62 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3487,6 +3487,7 @@ F:	Documentation/devicetree/bindings/mfd/madera.txt
- F:	Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- F:	include/linux/irqchip/irq-madera*
- F:	include/linux/mfd/madera/*
-+F:	drivers/gpio/gpio-madera*
- F:	drivers/irqchip/irq-madera*
- F:	drivers/mfd/madera*
- F:	drivers/mfd/cs47l*
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index d6a8e851ad13..95e4bbcf9bf7 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -993,6 +993,12 @@ config GPIO_LP87565
- 	  This driver can also be built as a module. If so, the module will be
- 	  called gpio-lp87565.
- 
-+config GPIO_MADERA
-+	bool "Cirrus Logic Madera class codecs"
-+	depends on PINCTRL_MADERA
-+	help
-+	  Support for GPIOs on Cirrus Logic Madera class codecs.
-+
- config GPIO_MAX77620
- 	tristate "GPIO support for PMIC MAX77620 and MAX20024"
- 	depends on MFD_MAX77620
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index 4bc24febb889..765125eb7d4c 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -70,6 +70,7 @@ obj-$(CONFIG_ARCH_LPC32XX)	+= gpio-lpc32xx.o
- obj-$(CONFIG_GPIO_LP873X)	+= gpio-lp873x.o
- obj-$(CONFIG_GPIO_LP87565)	+= gpio-lp87565.o
- obj-$(CONFIG_GPIO_LYNXPOINT)	+= gpio-lynxpoint.o
-+obj-$(CONFIG_GPIO_MADERA)	+= gpio-madera.o
- obj-$(CONFIG_GPIO_MAX3191X)	+= gpio-max3191x.o
- obj-$(CONFIG_GPIO_MAX730X)	+= gpio-max730x.o
- obj-$(CONFIG_GPIO_MAX7300)	+= gpio-max7300.o
-diff --git a/drivers/gpio/gpio-madera.c b/drivers/gpio/gpio-madera.c
+diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
 new file mode 100644
-index 000000000000..e45905d59238
+index 000000000000..b0e36cf0d289
 --- /dev/null
-+++ b/drivers/gpio/gpio-madera.c
-@@ -0,0 +1,196 @@
-+/*
-+ * GPIO support for Cirrus Logic Madera codecs
-+ *
-+ * Copyright 2015-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
++++ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
+@@ -0,0 +1,99 @@
++Cirrus Logic Madera class audio codecs pinctrl driver
 +
-+#include <linux/device.h>
-+#include <linux/gpio.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
++The Cirrus Logic Madera codecs provide a number of GPIO functions for
++interfacing to external hardware and to provide logic outputs to other devices.
++Certain groups of GPIO pins also have an alternate function, normally as an
++audio interface.
 +
-+#include <linux/mfd/madera/core.h>
-+#include <linux/mfd/madera/pdata.h>
-+#include <linux/mfd/madera/registers.h>
++The set of available GPIOs, functions and alternate function groups differs
++between codecs so refer to the datasheet for the codec for further information
++on what is supported on that device.
 +
-+struct madera_gpio {
-+	struct madera *madera;
-+	struct gpio_chip gpio_chip;
++The properties for this driver exist within the parent MFD driver node.
++
++See also
++  the core bindings for the parent MFD driver:
++    Documentation/devicetree/bindings/mfd/madera.txt
++
++  the generic pinmix bindings:
++    Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
++
++Required properties of parent mfd node:
++  - pinctrl-names : must be "default"
++  - pinctrl-0 : a phandle to the node containing the subnodes containing default
++      configurations
++
++Required subnodes:
++  One subnode is required to contain the default settings. It contains an
++  arbitrary number of configuration subnodes, one for each group or pin
++  configuration you want to apply as a default.
++
++Required properties of configuration subnodes:
++  - groups : name of one pin group to configure. One of:
++	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
++	dmic4, dmic5, dmic6,
++	gpio1, gpio2, ..., gpio40
++    The gpioN groups select the single pin of this name for configuration
++
++Optional properties of configuration subnodes:
++  Any configuration option not explicitly listed in the dts will be left at
++  chip default setting.
++
++  - function : name of function to assign to this group. One of:
++	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
++	dmic3, dmic4, dmic5, dmic6,
++	io, dsp-gpio, irq1, irq2,
++	fll1-clk, fll1-lock, fll2-clk, fll2-lock, fll3-clk, fll3-lock,
++	fllao-clk, fllao-lock,
++	opclk, opclk-async, pwm1, pwm2, spdif,
++	asrc1-in1-lock, asrc1-in2-lock, asrc2-in1-lock, asrc2-in2-lock,
++	spkl-short-circuit, spkr-short-circuit, spk-shutdown,
++	spk-overheat-shutdown, spk-overheat-warn,
++	timer1-sts, timer2-sts, timer3-sts, timer4-sts, timer5-sts, timer6-sts,
++	timer7-sts, timer8-sts,
++	log1-fifo-ne, log2-fifo-ne, log3-fifo-ne, log4-fifo-ne, log5-fifo-ne,
++	log6-fifo-ne, log7-fifo-ne, log8-fifo-ne,
++
++  - bias-disable : disable pull-up and pull-down
++  - bias-bus-hold : enable buskeeper
++  - bias-pull-up : output is pulled-up
++  - bias-pull-down : output is pulled-down
++  - drive-push-pull : CMOS output
++  - drive-open-drain : open-drain output
++  - drive-strength : drive strength in mA. Valid values are 4 or 8
++  - input-schmitt-enable : enable schmitt-trigger mode
++  - input-schmitt-disable : disable schmitt-trigger mode
++  - input-debounce : A value of 0 disables debounce, a value !=0 enables
++	debounce
++  - output-low : set the pin to output mode with low level
++  - output-high : set the pin to output mode with high level
++
++Example:
++
++cs47l85@0 {
++	compatible = "cirrus,cs47l85";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&cs47l85_defaults>;
++
++	cs47l85_defaults: cs47l85-gpio-defaults {
++		aif1 {
++			groups = "aif1";
++			function = "aif1";
++			bias-bus-hold;
++		};
++
++		aif2 {
++			groups = "aif2";
++			function = "aif2";
++			bias-bus-hold;
++		};
++
++		opclk {
++			groups = "gpio1";
++			function = "opclk";
++			bias-pull-up;
++			drive-strength = <8>;
++		};
++	};
 +};
-+
-+static int madera_gpio_get_direction(struct gpio_chip *chip,
-+				     unsigned int offset)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap,
-+			  MADERA_GPIO1_CTRL_2 + (2 * offset), &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return (val & MADERA_GP1_DIR_MASK) >> MADERA_GP1_DIR_SHIFT;
-+}
-+
-+static int madera_gpio_direction_in(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+
-+	return regmap_update_bits(madera->regmap,
-+				  MADERA_GPIO1_CTRL_2 + (2 * offset),
-+				  MADERA_GP1_DIR_MASK, MADERA_GP1_DIR);
-+}
-+
-+static int madera_gpio_get(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap,
-+			  MADERA_GPIO1_CTRL_1 + (2 * offset), &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return !!(val & MADERA_GP1_LVL_MASK);
-+}
-+
-+static int madera_gpio_direction_out(struct gpio_chip *chip,
-+				     unsigned int offset, int value)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int regval;
-+	int ret;
-+
-+	if (value)
-+		regval = MADERA_GP1_LVL;
-+	else
-+		regval = 0;
-+
-+	ret = regmap_update_bits(madera->regmap,
-+				 MADERA_GPIO1_CTRL_2 + (2 * offset),
-+				 MADERA_GP1_DIR_MASK, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	return regmap_update_bits(madera->regmap,
-+				  MADERA_GPIO1_CTRL_1 + (2 * offset),
-+				  MADERA_GP1_LVL_MASK, regval);
-+}
-+
-+static void madera_gpio_set(struct gpio_chip *chip, unsigned int offset,
-+			    int value)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int regval;
-+	int ret;
-+
-+	if (value)
-+		regval = MADERA_GP1_LVL;
-+	else
-+		regval = 0;
-+
-+	ret = regmap_update_bits(madera->regmap,
-+				 MADERA_GPIO1_CTRL_1 + (2 * offset),
-+				 MADERA_GP1_LVL_MASK, regval);
-+	if (ret)
-+		dev_warn(madera->dev, "Failed to write to 0x%x (%d)\n",
-+			 MADERA_GPIO1_CTRL_1 + (2 * offset), ret);
-+}
-+
-+static struct gpio_chip template_chip = {
-+	.label			= "madera",
-+	.owner			= THIS_MODULE,
-+	.request		= gpiochip_generic_request,
-+	.free			= gpiochip_generic_free,
-+	.get_direction		= madera_gpio_get_direction,
-+	.direction_input	= madera_gpio_direction_in,
-+	.get			= madera_gpio_get,
-+	.direction_output	= madera_gpio_direction_out,
-+	.set			= madera_gpio_set,
-+	.set_config		= gpiochip_generic_config,
-+	.can_sleep		= true,
-+};
-+
-+static int madera_gpio_probe(struct platform_device *pdev)
-+{
-+	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-+	struct madera_pdata *pdata = dev_get_platdata(madera->dev);
-+	struct madera_gpio *madera_gpio;
-+	int ret;
-+
-+	madera_gpio = devm_kzalloc(&pdev->dev, sizeof(*madera_gpio),
-+				   GFP_KERNEL);
-+	if (!madera_gpio)
-+		return -ENOMEM;
-+
-+	madera_gpio->madera = madera;
-+	madera_gpio->gpio_chip = template_chip;
-+	madera_gpio->gpio_chip.parent = &pdev->dev;
-+
-+	if (IS_ENABLED(CONFIG_OF_GPIO))
-+		madera_gpio->gpio_chip.of_node = madera->dev->of_node;
-+
-+	switch (madera->type) {
-+	case CS47L35:
-+		madera_gpio->gpio_chip.ngpio = CS47L35_NUM_GPIOS;
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		madera_gpio->gpio_chip.ngpio = CS47L85_NUM_GPIOS;
-+		break;
-+	case CS47L90:
-+	case CS47L91:
-+		madera_gpio->gpio_chip.ngpio = CS47L90_NUM_GPIOS;
-+		break;
-+	default:
-+		dev_err(&pdev->dev, "Unknown chip variant %d\n", madera->type);
-+		return -EINVAL;
-+	}
-+
-+	if (pdata && pdata->gpio_base)
-+		madera_gpio->gpio_chip.base = pdata->gpio_base;
-+	else
-+		madera_gpio->gpio_chip.base = -1;
-+
-+	ret = devm_gpiochip_add_data(&pdev->dev, &madera_gpio->gpio_chip,
-+				     madera_gpio);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = gpiochip_add_pin_range(&madera_gpio->gpio_chip, "madera-pinctrl",
-+				     0, 0, madera_gpio->gpio_chip.ngpio);
-+	if (ret) {
-+		dev_warn(&pdev->dev, "Failed to add pin range (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct platform_driver madera_gpio_driver = {
-+	.driver.name	= "madera-gpio",
-+	.driver.owner	= THIS_MODULE,
-+	.probe		= madera_gpio_probe,
-+};
-+
-+module_platform_driver(madera_gpio_driver);
-+
-+MODULE_DESCRIPTION("GPIO interface for Madera codecs");
-+MODULE_AUTHOR("Nariman Poushin <nariman@opensource.wolfsonmicro.com>");
-+MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:madera-gpio");
 -- 
 2.11.0
 
