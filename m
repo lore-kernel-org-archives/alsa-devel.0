@@ -1,72 +1,40 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH] ASoC: bells: Use common error handling
-	code in bells_set_bias_level_post()
-Date: Mon, 20 Nov 2017 08:38:57 +0100
-Message-ID: <CAJKOXPfHg4MeYr_WxxRRzF0BOBJLR8UNZb689tCLQgQFrONNww@mail.gmail.com>
-References: <8c4e72ae-7606-a4c8-3d53-42364d7edbb2@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 85633266F89
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 08:39:01 +0100 (CET)
-Received: from mail-wm0-f42.google.com (mail-wm0-f42.google.com [74.125.82.42])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CA53C21985
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 07:38:59 +0000 (UTC)
-Received: by mail-wm0-f42.google.com with SMTP id y82so5242345wmg.1
- for <alsa-devel@alsa-project.org>; Sun, 19 Nov 2017 23:38:59 -0800 (PST)
-In-Reply-To: <8c4e72ae-7606-a4c8-3d53-42364d7edbb2@users.sourceforge.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Jesse Chan <jc@linux.com>
+Subject: [PATCH v2] ASoC: pcm512x-spi: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
+Date: Sun, 19 Nov 2017 23:45:49 -0800
+Message-ID: <20171120074550.67067-1-jc@linux.com>
+References: <20171120060517.7083-1-jc@linux.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171120060517.7083-1-jc@linux.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Jesse Chan <jc@linux.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 19, 2017 at 3:08 PM, SF Markus Elfring
-<elfring@users.sourceforge.net> wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sun, 19 Nov 2017 15:00:22 +0100
->
-> * Add a jump target so that a specific error message is stored only once
->   at the end of this function implementation.
->
-> * Replace two calls of the macro "pr_err" by goto statements.
->
-> This issue was detected by using the Coccinelle software.
->
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  sound/soc/samsung/bells.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
-> index 34deba461ae1..fc9a71523b3e 100644
-> --- a/sound/soc/samsung/bells.c
-> +++ b/sound/soc/samsung/bells.c
-> @@ -120,18 +120,14 @@ static int bells_set_bias_level_post(struct snd_soc_card *card,
->         switch (level) {
->         case SND_SOC_BIAS_STANDBY:
->                 ret = snd_soc_codec_set_pll(codec, WM5102_FLL1, 0, 0, 0);
-> -               if (ret < 0) {
-> -                       pr_err("Failed to stop FLL: %d\n", ret);
-> -                       return ret;
-> -               }
-> +               if (ret < 0)
-> +                       goto report_failure;
->
+This change resolves a new compile-time warning
+when built as a loadable module:
 
-No. The same as previously - just for error path code this makes code
-less readable.
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/codecs/snd-soc-pcm512x-spi.o
+see include/linux/module.h for more information
 
-Best regards,
-Krzysztof
+This adds the license as "GPL v2", which matches the header of the file.
+
+MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
+
+Signed-off-by: Jesse Chan <jc@linux.com>
+---
+ sound/soc/codecs/pcm512x-spi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/codecs/pcm512x-spi.c b/sound/soc/codecs/pcm512x-spi.c
+index 25c63510ae15..7cdd2dc4fd79 100644
+--- a/sound/soc/codecs/pcm512x-spi.c
++++ b/sound/soc/codecs/pcm512x-spi.c
+@@ -70,3 +70,7 @@ static struct spi_driver pcm512x_spi_driver = {
+ };
+ 
+ module_spi_driver(pcm512x_spi_driver);
++
++MODULE_DESCRIPTION("ASoC PCM512x codec driver - SPI");
++MODULE_AUTHOR("Mark Brown <broonie@kernel.org>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.14.1
