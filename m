@@ -1,16 +1,21 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: [PATCH] ALSA: hda/realtek: Add headset mic support for
-	Intel NUC Skull Canyon
-Date: Mon, 20 Nov 2017 02:29:13 -0500
-Message-ID: <20171120072913.306-1-kai.heng.feng@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: strange code in pcm_route.c for 3 byte formats
+Date: Mon, 20 Nov 2017 08:34:46 +0100
+Message-ID: <e98090fc-ac39-93cf-c958-47c2faaea185@ladisch.de>
+References: <b5b7e7f2-ff97-11d0-1e72-c119842dd266@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EC0F266F89
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 08:29:20 +0100 (CET)
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 331BB266F89
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 08:34:22 +0100 (CET)
+Received: from [10.1.2.4] (unknown [94.101.37.79])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 839595581244
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 08:34:22 +0100 (CET)
+In-Reply-To: <b5b7e7f2-ff97-11d0-1e72-c119842dd266@maciej.szmigiero.name>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Users have been using knob "model=dell-headset-multi" on Intel Skull
-Canyon for a while.
+Maciej S. Szmigiero wrote:
+> While reading alsa-lib sources I've spotted some strange code in
+> src/pcm/pcm_route.c:
+>        /* 3 bytes formats? */
+>        route->params.use_getput =
+>                (snd_pcm_format_physical_width(src_format) + 7) / 3 == 3 ||
+>                (snd_pcm_format_physical_width(dst_format) + 7) / 3 == 3;
 
-Add the equivalent quirk, ALC269_FIXUP_DELL1_MIC_NO_PRESENCE for Skull
-Canyon.
+"(x + n-1) / n" is "divide by n while rounding up".
 
-BugLink: https://bugs.launchpad.net/bugs/1732034
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 4 ++++
- 1 file changed, 4 insertions(+)
+"/ 3" should have been "/ 8".
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1797110cb096..5bb5623339dc 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6455,6 +6455,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		ALC225_STANDARD_PINS,
- 		{0x12, 0xb7a60130},
- 		{0x1b, 0x90170110}),
-+	SND_HDA_PIN_QUIRK(0x10ec0233, 0x8086, "Intel NUC Skull Canyon", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x1b, 0x01111010},
-+		{0x1e, 0x01451130},
-+		{0x21, 0x02211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0236, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60140},
- 		{0x14, 0x90170110},
--- 
-2.14.1
+
+Regards,
+Clemens
