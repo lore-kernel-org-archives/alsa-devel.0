@@ -1,48 +1,25 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: strange code in pcm_route.c for 3 byte formats
-Date: Mon, 20 Nov 2017 13:14:45 +0100
-Message-ID: <0ca2bc15-c949-fc74-f587-0aae16c836d6@maciej.szmigiero.name>
-References: <b5b7e7f2-ff97-11d0-1e72-c119842dd266@maciej.szmigiero.name>
- <e98090fc-ac39-93cf-c958-47c2faaea185@ladisch.de>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] ASoC: cht_bsw_rt5645: Use common error handling code in
+ cht_codec_fixup()
+Date: Mon, 20 Nov 2017 14:34:09 +0200
+Message-ID: <1511181249.25007.329.camel@linux.intel.com>
+References: <287c2ccc-2411-8a6d-bb1b-8b1062b92738@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id A998C266D61
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 13:14:46 +0100 (CET)
-In-Reply-To: <e98090fc-ac39-93cf-c958-47c2faaea185@ladisch.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <287c2ccc-2411-8a6d-bb1b-8b1062b92738@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 20.11.2017 08:34, Clemens Ladisch wrote:
-> Maciej S. Szmigiero wrote:
->> While reading alsa-lib sources I've spotted some strange code in
->> src/pcm/pcm_route.c:
->>        /* 3 bytes formats? */
->>        route->params.use_getput =
->>                (snd_pcm_format_physical_width(src_format) + 7) / 3 == 3 ||
->>                (snd_pcm_format_physical_width(dst_format) + 7) / 3 == 3;
-> 
-> "(x + n-1) / n" is "divide by n while rounding up".
-> 
-> "/ 3" should have been "/ 8".
+On Sun, 2017-11-19 at 10:00 +0100, SF Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
 
-Thanks for your explanation, I've submitted a patch for alsa-lib now.
+get_maintainter.pl --git-min-percent=67 will do a nice job to make at
+least me not seeing this stuff.
 
-> Regards,
-> Clemens
-
-Best regards,
-Maciej
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
