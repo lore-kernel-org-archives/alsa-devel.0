@@ -1,21 +1,18 @@
-From: Henrik Eriksson <henrik.eriksson@axis.com>
-Subject: Re: [RFC PATCH] ALSA: core: do not update tstamp when
- hw ptr has not moved
-Date: Mon, 20 Nov 2017 14:13:32 +0100
-Message-ID: <20171120131332.GF5483@lnxhenriken2.se.axis.com>
-References: <20171116124349.GA21810@lnxhenriken2.se.axis.com>
- <s5h375e2sbb.wl-tiwai@suse.de>
- <172e5ff0-472e-be36-0208-5ccc88baebfa@linux.intel.com>
- <s5h8tf69hz3.wl-tiwai@suse.de>
+From: Matthias Reichl <hias@horus.com>
+Subject: Re: [PATCH RFC] ARM: dts: bcm283x: Fix probing of
+	bcm2835-i2s
+Date: Mon, 20 Nov 2017 14:18:15 +0100
+Message-ID: <20171120131815.2oaa7mvksi2h5bip@camel2.lan>
+References: <1511110827-2726-1-git-send-email-stefan.wahren@i2se.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B77C266FEC
- for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 14:13:34 +0100 (CET)
+Received: from mail.horus.com (mail.horus.com [78.46.148.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id 185AA266FEC
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 14:18:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5h8tf69hz3.wl-tiwai@suse.de>
+In-Reply-To: <1511110827-2726-1-git-send-email-stefan.wahren@i2se.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,83 +22,180 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Henrik Eriksson <henriken@axis.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Stefan Wahren <stefan.wahren@i2se.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Florian Fainelli <f.fainelli@gmail.com>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu,=A0Nov=A016,=A02017=A0at=A019:49:36=A0+0100, Takashi Iwai wrote:
-> On Thu, 16 Nov 2017 19:11:37 +0100,
-> Pierre-Louis Bossart wrote:
-> > =
+Hi Stefan!
 
-> > On 11/16/17 8:48 AM, Takashi Iwai wrote:
-> > > On Thu, 16 Nov 2017 13:43:57 +0100,
-> > > Henrik Eriksson wrote:
-> > >>
-> > >> This reverts a change that was part of a larger commit.  That change
-> > >> broke timestamps in some application code for us as outlined in the =
-log,
-> > >> and reverting it obviously fixes this.  Since the original change did
-> > >> not explain why the behaviour was modified I can't speak for the eff=
-ects
-> > >> on that use case.
+On Sun, Nov 19, 2017 at 06:00:27PM +0100, Stefan Wahren wrote:
+> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
+> the bcm2835-i2s requires a clock as DT property. Unfortunately
+> the necessary DT change has never been applied. While we are at it
+> also fix the first PCM register range to cover the PCM_GRAY register.
+> 
+> This patch also fixes the dt-bindings accordlingly.
+> 
+> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+> ---
+>  Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt   | 4 ++--
+>  Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt | 9 ++++-----
+>  arch/arm/boot/dts/bcm283x.dtsi                               | 4 ++--
+>  3 files changed, 8 insertions(+), 9 deletions(-)
+> 
+> Hi, this is only probe tested with a RPi 1B. I don't have the sound hardware
+> to test the drivers function.
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt b/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
+> index baf9b34..b6a8cc0 100644
+> --- a/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
+> +++ b/Documentation/devicetree/bindings/dma/brcm,bcm2835-dma.txt
+> @@ -74,8 +74,8 @@ Example:
+>  
+>  bcm2835_i2s: i2s@7e203000 {
+>  	compatible = "brcm,bcm2835-i2s";
+> -	reg = <	0x7e203000 0x20>,
+> -	      < 0x7e101098 0x02>;
+> +	reg = <	0x7e203000 0x24>;
+> +	clocks = <&clocks BCM2835_CLOCK_PCM>;
+>  
+>  	dmas = <&dma 2>,
+>  	       <&dma 3>;
+> diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+> index 65783de..7bb0362 100644
+> --- a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+> @@ -2,9 +2,8 @@
+>  
+>  Required properties:
+>  - compatible: "brcm,bcm2835-i2s"
+> -- reg: A list of base address and size entries:
+> -	* The first entry should cover the PCM registers
+> -	* The second entry should cover the PCM clock registers
+> +- reg: Should contain PCM registers location and length.
+> +- clocks: the (PCM) clock to use
+>  - dmas: List of DMA controller phandle and DMA request line ordered pairs.
+>  - dma-names: Identifier string for each DMA request line in the dmas property.
+>    These strings correspond 1:1 with the ordered pairs in dmas.
+> @@ -16,8 +15,8 @@ Example:
+>  
+>  bcm2835_i2s: i2s@7e203000 {
+>  	compatible = "brcm,bcm2835-i2s";
+> -	reg = <0x7e203000 0x20>,
+> -	      <0x7e101098 0x02>;
+> +	reg = <0x7e203000 0x24>;
+> +	clocks = <&clocks BCM2835_CLOCK_PCM>;
+>  
+>  	dmas = <&dma 2>,
+>  	       <&dma 3>;
+> diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+> index 431dcfc..01733a9 100644
+> --- a/arch/arm/boot/dts/bcm283x.dtsi
+> +++ b/arch/arm/boot/dts/bcm283x.dtsi
+> @@ -391,8 +391,8 @@
+>  
+>  		i2s: i2s@7e203000 {
+>  			compatible = "brcm,bcm2835-i2s";
+> -			reg = <0x7e203000 0x20>,
+> -			      <0x7e101098 0x02>;
+> +			reg = <0x7e203000 0x24>;
+> +			clocks = <&clocks BCM2835_CLOCK_PCM>;
+>  
+>  			dmas = <&dma 2>,
+>  			       <&dma 3>;
+> -- 
 
-> > > So this is a regression and we need to address it.
-> > >
-> > > I *guess* that the reason to update tstamp event at the same hwptr is
-> > > that now we can get a more fine-grained tstamp.  OTOH, we have to
-> > > avoid the regression by that.
-> > >
-> > > What about the (untested) patch like below?  It skips the tstamp
-> > > update as default but follows the new standard when a better tstamp
-> > > mode is deployed.
-> > =
+Thanks a lot for fixing the DT and binding docs, the register range
+and clock changes look fine to me.
 
-> > update_audio_tstamp() only updates the audio timestamp when the type
-> > is DEFAULT already, but indeed update runtime->status->tstamp is
-> > updated unconditionally.
-> > =
+While testing with a simple card DT overlay I noticed another
+issue: the i2s node is missing the #sound-dai-cells property
+and simple card refuses to load because of that:
 
-> > I have a bit of heartburn with the suggested solutions because the
-> > delay can change even with the same hw_ptr. Not updating the
-> > timestamps would be going back to the days where timing updates was
-> > dependent on DMA granularity.
-> > =
+[    0.956912] OF: /sound/simple-audio-card,cpu: could not get #sound-dai-cells for /soc/i2s@7e203000
 
-> > Maybe we could make the tstamp update dependent on a change in
-> > audio_tstamp, e.g.
-> > =
+As bcm2835-i2s has only a single DAI I think that property should
+be set to 0:
 
-> > =
+diff --git a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+index 7bb0362828ec..7349f22bed1b 100644
+--- a/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/brcm,bcm2835-i2s.txt
+@@ -7,6 +7,7 @@ Required properties:
+ - dmas: List of DMA controller phandle and DMA request line ordered pairs.
+ - dma-names: Identifier string for each DMA request line in the dmas property.
+   These strings correspond 1:1 with the ordered pairs in dmas.
++- #sound-dai-cells: Must be set to 0.
+ 
+   One of the DMA channels will be responsible for transmission (should be
+   named "tx") and one for reception (should be named "rx").
+@@ -21,4 +22,5 @@ bcm2835_i2s: i2s@7e203000 {
+ 	dmas = <&dma 2>,
+ 	       <&dma 3>;
+ 	dma-names = "tx", "rx";
++	#sound-dai-cells = <0>;
+ };
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index e08203c1d74a..bbe890d4dbb5 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -402,6 +402,7 @@
+ 			dmas = <&dma 2>,
+ 			       <&dma 3>;
+ 			dma-names = "tx", "rx";
++			#sound-dai-cells = <0>;
+ 			status = "disabled";
+ 		};
 
-> > diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> > index a93a4235a332..b606f3ea7a17 100644
-> > --- a/sound/core/pcm_lib.c
-> > +++ b/sound/core/pcm_lib.c
-> > @@ -248,8 +248,10 @@ static void update_audio_tstamp(struct
-> > snd_pcm_substream *substream,
-> >                                 runtime->rate);
-> >                 *audio_tstamp =3D ns_to_timespec(audio_nsecs);
-> >         }
-> > -       runtime->status->audio_tstamp =3D *audio_tstamp;
-> > -       runtime->status->tstamp =3D *curr_tstamp;
-> > +       if (runtime->status->audio_tstamp !=3D *audio_tstamp) {
+With this additional change I could successfully test the following
+overlay with a PCM5102 codec attached to a RPi B+:
 
-This should be
+/dts-v1/;
+/plugin/;
 
-if (!timespec_equal(&runtime->status->audio_tstamp, audio_tstamp)) {
+/ {
+    compatible = "brcm,bcm2835";
 
-> > +               runtime->status->audio_tstamp =3D *audio_tstamp;
-> > +               runtime->status->tstamp =3D *curr_tstamp;
-> > +       }
-> =
+    fragment@0 {
+        target = <&i2s>;
+        __overlay__ {
+            status = "okay";
+        };
+    };
 
-> OK for me as long as it works.
-> Henrik?
+    fragment@1 {
+        target-path = "/";
+        __overlay__ {
+            spdif_codec: spdif-transmitter {
+                #address-cells = <0>;
+                #size-cells = <0>;
+                #sound-dai-cells = <0>;
+                compatible = "linux,spdif-dit";
+            };
 
-This appears to work for our use case.
+            sound {
+                compatible = "simple-audio-card";
+                simple-audio-card,name = "simple";
+                simple-audio-card,format = "i2s";
+                simple-audio-card,bitclock-master = <&dailink_master>;
+                simple-audio-card,frame-master = <&dailink_master>;
 
-How do I progress this, i.e., do I update my patch to use Pierre-Louis's
-fix?  How should I attribute that?
+                dailink_master: simple-audio-card,cpu {
+                        sound-dai = <&i2s>;
+                };
 
-Regards,
-/henrik
+                simple-audio-card,codec {
+                        sound-dai = <&spdif_codec>;
+                };
+            };
+        };
+    };
+};
+
+BTW: this overlay will work without any hardware attached, you
+just need to enable SND_SIMPLE_CARD and SND_SOC_SPDIF (which
+serves as a generic codec) in your config.
+
+so long,
+
+Hias
