@@ -1,75 +1,55 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v7 04/13] slimbus: core: Add slim controllers support
-Date: Mon, 20 Nov 2017 06:47:58 +0000
-Message-ID: <64797182-9244-e6e7-8044-dbc404cdda7c@linaro.org>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-5-srinivas.kandagatla@linaro.org>
- <20171116164233.GB3187@localhost>
- <55794ca5-b70a-4866-1e80-bc0e78880c50@linaro.org>
- <20171117044222.GK3187@localhost> <20171117081322.GF10671@kroah.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek: Add headset mic support for
+	Intel NUC Skull Canyon
+Date: Mon, 20 Nov 2017 02:29:13 -0500
+Message-ID: <20171120072913.306-1-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171117081322.GF10671@kroah.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <gregkh@linuxfoundation.org>, Vinod Koul <vinod.koul@intel.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, arnd@arndb.de
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EC0F266F89
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 08:29:20 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Users have been using knob "model=dell-headset-multi" on Intel Skull
+Canyon for a while.
 
+Add the equivalent quirk, ALC269_FIXUP_DELL1_MIC_NO_PRESENCE for Skull
+Canyon.
 
-On 17/11/17 08:13, Greg KH wrote:
-> On Fri, Nov 17, 2017 at 10:12:22AM +0530, Vinod Koul wrote:
->> On Thu, Nov 16, 2017 at 05:29:35PM +0000, Srinivas Kandagatla wrote:
->>> thanks for the comments.
->>>
->>>
->>> On 16/11/17 16:42, Vinod Koul wrote:
->>>> On Wed, Nov 15, 2017 at 02:10:34PM +0000,srinivas.kandagatla@linaro.org  wrote:
->>>>
->>>>> +static void slim_dev_release(struct device *dev)
->>>>> +{
->>>>> +	struct slim_device *sbdev = to_slim_device(dev);
->>>>> +
->>>>> +	put_device(sbdev->ctrl->dev);
->>>> which device would that be?
->>> This is controller device
->>>
->>>>> +static int slim_add_device(struct slim_controller *ctrl,
->>>>> +			   struct slim_device *sbdev,
->>>>> +			   struct device_node *node)
->>>>> +{
->>>>> +	sbdev->dev.bus = &slimbus_bus;
->>>>> +	sbdev->dev.parent = ctrl->dev;
->>>>> +	sbdev->dev.release = slim_dev_release;
->>>>> +	sbdev->dev.driver = NULL;
->>>>> +	sbdev->ctrl = ctrl;
->>>>> +
->>>>> +	dev_set_name(&sbdev->dev, "%x:%x:%x:%x",
->>>>> +				  sbdev->e_addr.manf_id,
->>>>> +				  sbdev->e_addr.prod_code,
->>>>> +				  sbdev->e_addr.dev_index,
->>>>> +				  sbdev->e_addr.instance);
->>>>> +
->>>>> +	get_device(ctrl->dev);
->>>> is this controller device and you ensuring it doesnt go away while you have
->>>> slaves on it?
->>> Yes.
->> I thought since you are marking ctrl->dev as parent, the device core should
->> ensure that parent doesn't go off when you have child device?
->>
->> Greg, is that understanding correct, if so we may not need these calls.
-> That understanding should be correct, as the reference count is
-> incremented on the parent when a child is added.
-> 
-> It would be trivial for this to be tested, and yes, I am pretty sure you
-> don't need this call.
-> 
+BugLink: https://bugs.launchpad.net/bugs/1732034
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks for suggestion, I will remove this in next version.
-
-
-thanks,
-srini
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1797110cb096..5bb5623339dc 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6455,6 +6455,10 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+ 		{0x1b, 0x90170110}),
++	SND_HDA_PIN_QUIRK(0x10ec0233, 0x8086, "Intel NUC Skull Canyon", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
++		{0x1b, 0x01111010},
++		{0x1e, 0x01451130},
++		{0x21, 0x02211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0236, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60140},
+ 		{0x14, 0x90170110},
+-- 
+2.14.1
