@@ -1,33 +1,39 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: da7218: Correct IRQ level in DT binding example
-Date: Mon, 20 Nov 2017 14:44:25 -0600
-Message-ID: <20171120204425.4fltek756ggpp3ps@rob-hp-laptop>
-References: <cover.1510930791.git.Adam.Thomson.Opensource@diasemi.com>
- <c57eabe7cd6bb5a5466c774725c5150cc33d1ab5.1510930791.git.Adam.Thomson.Opensource@diasemi.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH] ASoC: fsl_ssi: remove duplicated flag setting in
+ fsl_ssi_setup_reg_vals()
+Date: Mon, 20 Nov 2017 23:12:01 +0100
+Message-ID: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <c57eabe7cd6bb5a5466c774725c5150cc33d1ab5.1510930791.git.Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Support Opensource <support.opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 17, 2017 at 03:09:28PM +0000, Adam Thomson wrote:
-> Current DT binding documentation shows an example where the IRQ
-> for the device is chosen to be ACTIVE_HIGH. This is incorrect as
-> the device only supports ACTIVE_LOW, so this commit fixes that
-> discrepancy.
-> 
-> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource-WBD+wuPFNBhBDgjK7y7TUQ@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/sound/da7218.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+We don't need to set CCSR_SSI_SIER_RFF0_EN / CCSR_SSI_SIER_TFE0_EN bits
+in reg->rx.sier / reg->tx.sier variables in a non-AC'97 mode considering we
+had just initialized these variables to these very values unconditionally a
+few lines earlier.
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+---
+ sound/soc/fsl/fsl_ssi.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index f2f51e06e22c..48bb850a34d9 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -597,9 +597,7 @@ static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
+ 
+ 	if (!fsl_ssi_is_ac97(ssi_private)) {
+ 		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
+-		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
+ 		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
+-		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
+ 	}
+ 
+ 	if (ssi_private->use_dma) {
