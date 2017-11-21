@@ -1,79 +1,43 @@
-From: Henrik Eriksson <henrik.eriksson@axis.com>
-Subject: [PATCH v2] ALSA: core: update tstamp only if
- audio_tstamp changed
-Date: Tue, 21 Nov 2017 09:29:28 +0100
-Message-ID: <20171121082921.GA25386@lnxhenriken2.se.axis.com>
+From: Carlo Caione <carlo@caione.org>
+Subject: Re: [alsa-devel] [PATCH] SoC: intel: byt: Introduce new custom IN2 map
+Date: Tue, 21 Nov 2017 09:30:02 +0000
+Message-ID: <CAOQ7t2Y--RJcV5bcnsWwuc7G6tc_EsgCBuNqELD2CE1zFJcCdQ@mail.gmail.com>
+References: <20171018164957.2270-1-carlo@caione.org> <b09a704c-bb3e-32c4-afcb-d11379b6a3b9@linux.intel.com>
+ <CAOQ7t2YFfkCEkgoGPspr8Kvuomz-eeprqC6NJXiUhDApFqbduA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id D02A82670BC
- for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 09:29:30 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOQ7t2YFfkCEkgoGPspr8Kvuomz-eeprqC6NJXiUhDApFqbduA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Linux Upstreaming Team <linux@endlessm.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, open list <linux-kernel@vger.kernel.org>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-commit 3179f6200188 ("ALSA: core: add .get_time_info") had a side effect
-of changing the behaviour of the PCM runtime tstamp.  Prior to this
-change tstamp was not updated by snd_pcm_update_hw_ptr0() unless the
-hw_ptr had moved, after this change tstamp was always updated.
+On Thu, Nov 16, 2017 at 1:53 PM, Carlo Caione <carlo@caione.org> wrote:
+> On Wed, Oct 18, 2017 at 7:05 PM, Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>> On 10/18/17 11:49 AM, Carlo Caione wrote:
+>>>
+>>> From: Carlo Caione <carlo@endlessm.com>
+>>>
+>>> Introduce a new custom dapm routes map to quirk platforms with the
+>>> internal mic connected to IN2P.
+>>
+>>
+>> LGTM. If we start getting more quirks for this codec, we should think of
+>> adding a module parameters to select them from the command line or with
+>> modprobe (as done in other machine drivers).
+>
+> Hey Pierre,
+> I'm currently working on a laptop (always with the rt5651 codec)
+> having two separate internal mics (on IN1P and IN2P) and the headset
+> on IN3P. I was thinking how to describe this situation in the current
+> driver without having to add all the 6 different configuration as
+> quirks. Any suggestion?
 
-For an application using alsa-lib, doing snd_pcm_readi() followed by
-snd_pcm_status() to estimate the age of the read samples by subtracting
-status->avail * [sample rate] from status->tstamp this change degraded
-the accuracy of the estimate on devices where the pcm hw does not
-provide a granular hw_ptr, e.g., devices using
-soc-generic-dmaengine-pcm.c and a dma-engine with residue_granularity
-DMA_RESIDUE_GRANULARITY_DESCRIPTOR.  The accuracy of the estimate
-depended on the latency between the PCM hw completing a period and the
-driver called snd_pcm_period_elapsed() to notify ALSA core, typically
-determined by interrupt handling latency.  After the change the accuracy
-of the estimate depended on the latency between the PCM hw completing a
-period and the application calling snd_pcm_status(), determined by the
-scheduling of the application process.  The maximum error of the
-estimate is one period length in both cases, but the error average and
-variance is smaller when it depends on interrupt latency.
+gentle ping on this question.
 
-Instead of always updating tstamp, update it only if audio_tstamp
-changed.
+cheers,
 
-Fixes: 3179f6200188 ("ALSA: core: add .get_time_info")
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Henrik Eriksson <henrik.eriksson@axis.com>
----
-Changes since v1:
-- Use Pierre-Louis Bossart's suggested fix
-- Clean up commit log
-
- sound/core/pcm_lib.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index a93a4235a332..10e7ef7a8804 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -248,8 +248,10 @@ static void update_audio_tstamp(struct snd_pcm_substream *substream,
- 				runtime->rate);
- 		*audio_tstamp = ns_to_timespec(audio_nsecs);
- 	}
--	runtime->status->audio_tstamp = *audio_tstamp;
--	runtime->status->tstamp = *curr_tstamp;
-+	if (!timespec_equal(&runtime->status->audio_tstamp, audio_tstamp)) {
-+		runtime->status->audio_tstamp = *audio_tstamp;
-+		runtime->status->tstamp = *curr_tstamp;
-+	}
- 
- 	/*
- 	 * re-take a driver timestamp to let apps detect if the reference tstamp
 -- 
-2.11.0
+Carlo Caione
