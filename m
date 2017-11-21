@@ -1,20 +1,16 @@
-From: Stefan Wahren <stefan.wahren@i2se.com>
+From: Eric Anholt <eric@anholt.net>
 Subject: Re: [PATCH RFC] ARM: dts: bcm283x: Fix probing of
 	bcm2835-i2s
-Date: Tue, 21 Nov 2017 21:28:04 +0100 (CET)
-Message-ID: <1845541920.312172.1511296084835@email.1und1.de>
+Date: Tue, 21 Nov 2017 12:32:17 -0800
+Message-ID: <87k1yjcqzy.fsf@anholt.net>
 References: <1511110827-2726-1-git-send-email-stefan.wahren@i2se.com>
- <20171120131815.2oaa7mvksi2h5bip@camel2.lan>
- <1656114989.298026.1511209469286@email.1und1.de>
- <20171121195851.x5vv3qrlfx2t2xb2@camel2.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3128915139088678528=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 54AF9266F52
- for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 21:28:13 +0100 (CET)
-In-Reply-To: <20171121195851.x5vv3qrlfx2t2xb2@camel2.lan>
+Received: from anholt.net (anholt.net [50.246.234.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AAAA266F52
+ for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 21:32:22 +0100 (CET)
+In-Reply-To: <1511110827-2726-1-git-send-email-stefan.wahren@i2se.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Reichl <hias@horus.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Florian Fainelli <f.fainelli@gmail.com>, Mark Brown <broonie@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, Rob Herring <robh+dt@kernel.org>, linux-rpi-kernel@lists.infradead.org, kernel@martin.sperl.org, linux-arm-kernel@lists.infradead.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, kernel@martin.sperl.org, Matthias Reichl <hias@horus.com>, phil@raspberrypi.org
+Cc: Stefan Wahren <stefan.wahren@i2se.com>, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Hias,
+--===============3128915139088678528==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-> Matthias Reichl <hias@horus.com> hat am 21. November 2017 um 20:58 geschrieben:
-> 
-> 
-> Hi Stefan,
-> 
-> On Mon, Nov 20, 2017 at 09:24:29PM +0100, Stefan Wahren wrote:
-> > > Matthias Reichl <hias@horus.com> hat am 20. November 2017 um 14:18 geschrieben:
-> > > 
-> > > While testing with a simple card DT overlay I noticed another
-> > > issue: the i2s node is missing the #sound-dai-cells property
-> > > and simple card refuses to load because of that:
-> > > 
-> > > [    0.956912] OF: /sound/simple-audio-card,cpu: could not get #sound-dai-cells for /soc/i2s@7e203000
-> > 
-> > This should be a separate patch. Could you please send a proper one after this has been applied?
-> 
-> Sure, will do that.
+--=-=-=
+Content-Type: text/plain
 
-Great. Can i assume your Tested-by for my patch?
+Stefan Wahren <stefan.wahren@i2se.com> writes:
+
+> Since 517e7a1537a ("ASoC: bcm2835: move to use the clock framework")
+> the bcm2835-i2s requires a clock as DT property. Unfortunately
+> the necessary DT change has never been applied. While we are at it
+> also fix the first PCM register range to cover the PCM_GRAY register.
+>
+> This patch also fixes the dt-bindings accordlingly.
+>
+> Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+
+Reviewed-by: Eric Anholt <eric@anholt.net>
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAloUjVEACgkQtdYpNtH8
+nuiazg//REHKfhYexJRA6GDHEjJkBRUsWGIQzUcRP1FIQlF7iAFr+ED6cr2i+13r
+p3GRehQNNvgm8lG7VyRNxjhUpyFJcYZplF1kAFHbWBrlBKI1c+nNmU/RExSi67Wq
+saCOnDFs0FmOgiZDs8g3VEyKt/IU4oe34CskO4jg0qCMxGEG1/qsaCdzxAMcA9nI
+S92pE9vKjsQnM4Nq51dDOxMo1KbnDEvnF76p+XPmd/BVv77gryqnqD/a+Nky2PDm
+vhPC6sqICiInRTLlLTW9YnK+Ko6aiun398IfTVsw42lHlOX3ss8P2kXWQynwrj9J
+oACStLh6lsSS5KN5PHqL6/XSBaa1BXbQE7d7Xi080XjiSLs6O6RtyGD2CQW19tCa
+IUJJvTaQJIFsE4zJrJBJUAtu+1nLp2KwGHhgVXmm5jokfJZXr7iUIGrSnYXHNlGQ
+ArhLGsO+h6Qqej89wle3mj2+Ddam/4pzG1KZOiz2bMZrZK6zZCtfDfFsoERbHJTj
+2ydrEt7hmY+0UZ9xbNlIpWrQ1j9H3B3K3xjZlxznfM2NGxlpkh9uPssAr5QmWSmF
+Giu1BDZ02Dzmw6sTvFzmEKIxvnRaG4tlLjUz/GZBZqyp4lXwuWiP36cI0LXvRs1S
+NdyYINho65rEKd8zWCKkTWNGNm8d9gHtk094eqYg/7lD4OyMrSQ=
+=1/pD
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============3128915139088678528==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3128915139088678528==--
