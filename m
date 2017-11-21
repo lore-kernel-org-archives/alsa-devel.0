@@ -1,15 +1,16 @@
-From: Jeffy Chen <jeffy.chen@rock-chips.com>
-Subject: [PATCH] ASoC: rockchip: Use dummy_dai for rt5514 dsp
-	dailink
-Date: Tue, 21 Nov 2017 16:25:17 +0800
-Message-ID: <20171121082517.17233-1-jeffy.chen@rock-chips.com>
+From: Henrik Eriksson <henrik.eriksson@axis.com>
+Subject: [PATCH v2] ALSA: core: update tstamp only if
+ audio_tstamp changed
+Date: Tue, 21 Nov 2017 09:29:28 +0100
+Message-ID: <20171121082921.GA25386@lnxhenriken2.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A97F2670BC
- for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 09:25:39 +0100 (CET)
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id D02A82670BC
+ for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 09:29:30 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,66 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jeffy Chen <jeffy.chen@rock-chips.com>, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, mka@chromium.org, linux-arm-kernel@lists.infradead.org, cychiang@google.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The rt5514 dsp captures pcm data through spi directly, so we should not
-use rockchip-i2s as it's cpu dai like other codecs.
+commit 3179f6200188 ("ALSA: core: add .get_time_info") had a side effect
+of changing the behaviour of the PCM runtime tstamp.  Prior to this
+change tstamp was not updated by snd_pcm_update_hw_ptr0() unless the
+hw_ptr had moved, after this change tstamp was always updated.
 
-Use dummy_dai for rt5514 dsp dailink to make voice wakeup work again.
+For an application using alsa-lib, doing snd_pcm_readi() followed by
+snd_pcm_status() to estimate the age of the read samples by subtracting
+status->avail * [sample rate] from status->tstamp this change degraded
+the accuracy of the estimate on devices where the pcm hw does not
+provide a granular hw_ptr, e.g., devices using
+soc-generic-dmaengine-pcm.c and a dma-engine with residue_granularity
+DMA_RESIDUE_GRANULARITY_DESCRIPTOR.  The accuracy of the estimate
+depended on the latency between the PCM hw completing a period and the
+driver called snd_pcm_period_elapsed() to notify ALSA core, typically
+determined by interrupt handling latency.  After the change the accuracy
+of the estimate depended on the latency between the PCM hw completing a
+period and the application calling snd_pcm_status(), determined by the
+scheduling of the application process.  The maximum error of the
+estimate is one period length in both cases, but the error average and
+variance is smaller when it depends on interrupt latency.
 
-Reported-by: Jimmy Cheng-Yi Chiang <cychiang@google.com>
-Fixes: (72cfb0f20c75 ASoC: rockchip: Use codec of_node and dai_name for rt5514 dsp)
-Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Instead of always updating tstamp, update it only if audio_tstamp
+changed.
+
+Fixes: 3179f6200188 ("ALSA: core: add .get_time_info")
+Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Henrik Eriksson <henrik.eriksson@axis.com>
 ---
+Changes since v1:
+- Use Pierre-Louis Bossart's suggested fix
+- Clean up commit log
 
- sound/soc/rockchip/rk3399_gru_sound.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ sound/core/pcm_lib.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
-index d64fbbd50544..aa8ffd035377 100644
---- a/sound/soc/rockchip/rk3399_gru_sound.c
-+++ b/sound/soc/rockchip/rk3399_gru_sound.c
-@@ -367,7 +367,8 @@ static const struct snd_soc_dai_link rockchip_dais[] = {
- 	[DAILINK_RT5514_DSP] = {
- 		.name = "RT5514 DSP",
- 		.stream_name = "Wake on Voice",
--		.codec_dai_name = "rt5514-dsp-cpu-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
- 	},
- };
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index a93a4235a332..10e7ef7a8804 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -248,8 +248,10 @@ static void update_audio_tstamp(struct snd_pcm_substream *substream,
+ 				runtime->rate);
+ 		*audio_tstamp = ns_to_timespec(audio_nsecs);
+ 	}
+-	runtime->status->audio_tstamp = *audio_tstamp;
+-	runtime->status->tstamp = *curr_tstamp;
++	if (!timespec_equal(&runtime->status->audio_tstamp, audio_tstamp)) {
++		runtime->status->audio_tstamp = *audio_tstamp;
++		runtime->status->tstamp = *curr_tstamp;
++	}
  
-@@ -528,7 +529,18 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 		if (index < 0)
- 			continue;
- 
--		np_cpu = (index == DAILINK_CDNDP) ? np_cpu1 : np_cpu0;
-+		switch (index) {
-+		case DAILINK_CDNDP:
-+			np_cpu = np_cpu1;
-+			break;
-+		case DAILINK_RT5514_DSP:
-+			np_cpu = np_codec;
-+			break;
-+		default:
-+			np_cpu = np_cpu0;
-+			break;
-+		}
-+
- 		if (!np_cpu) {
- 			dev_err(dev, "Missing 'rockchip,cpu' for %s\n",
- 				rockchip_dais[index].name);
-@@ -538,7 +550,8 @@ static int rockchip_sound_of_parse_dais(struct device *dev,
- 		dai = &card->dai_link[card->num_links++];
- 		*dai = rockchip_dais[index];
- 
--		dai->codec_of_node = np_codec;
-+		if (!dai->codec_name)
-+			dai->codec_of_node = np_codec;
- 		dai->platform_of_node = np_cpu;
- 		dai->cpu_of_node = np_cpu;
- 
+ 	/*
+ 	 * re-take a driver timestamp to let apps detect if the reference tstamp
 -- 
 2.11.0
