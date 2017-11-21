@@ -1,69 +1,69 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: fsl_ssi: serialize AC'97 register
- access operations
-Date: Mon, 20 Nov 2017 17:52:48 -0800
-Message-ID: <20171121015247.GE14136@Asurada-Nvidia>
-References: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] ASoC: amd: Add error checking to probe function
+Date: Mon, 20 Nov 2017 20:27:56 -0800
+Message-ID: <1511238476-10314-1-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0104B267096
+ for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 05:28:10 +0100 (CET)
+Received: by mail-pg0-f68.google.com with SMTP id 4so9204795pge.1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 20:28:10 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Dominik Behr <dbehr@chromium.org>, linux-kernel@vger.kernel.org, Daniel Kurtz <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 20, 2017 at 11:16:07PM +0100, Maciej S. Szmigiero wrote:
-> AC'97 register access operations (both read and write) on SSI use a one,
-> shared set of SSI registers for AC'97 register address and data.
-> This means that only one such access is possible at a time and so all these
-> operations need to be serialized.
-> 
-> Since an AC'97 register access operation in this driver takes 100us+ let's
-> use a mutex for this.
-> 
-> Use this opportunity to also change a default value returned from AC'97
-> register read function from -1 to 0, since that's what AC'97 specs require
-> to be returned when unknown / undefined registers are read.
-> 
-> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+The acp_audio_dma does not perform sufficient error checking in its probe
+function. This can result in crashes if a critical error path is
+encountered.
 
->  static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
-> @@ -1287,16 +1295,18 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
->  {
->  	struct regmap *regs = fsl_ac97_data->regs;
->  
-> -	unsigned short val = -1;
-> +	unsigned short val = 0;
->  	u32 reg_val;
->  	unsigned int lreg;
->  	int ret;
->  
-> +	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
-> +
->  	ret = clk_prepare_enable(fsl_ac97_data->clk);
->  	if (ret) {
->  		pr_err("ac97 read clk_prepare_enable failed: %d\n",
->  			ret);
-> -		return -1;
-> +		goto ret_unlock;
+Fixes: 7c31335a03b6a ("ASoC: AMD: add AMD ASoC ACP 2.x DMA driver")
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Dominik Behr <dbehr@chromium.org>
+Cc: Daniel Kurtz <djkurtz@chromium.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+I didn't add an error check to acp_init() since I was not sure if
+its return value is ignored on purpose.
 
-It will return val (== 0) in this case. Will this be correctly
-handled by callers? I find sound/ac97/bus.c checks if ret < 0
-for ops->read().
+ sound/soc/amd/acp-pcm-dma.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-So it might be better to add "val = ret;" before goto? Or use
-val instead of ret directly?
-
->  	}
->  
->  	lreg = (reg & 0x7f) <<  12;
-> @@ -1311,6 +1321,8 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
->  
->  	clk_disable_unprepare(fsl_ac97_data->clk);
->  
-> +ret_unlock:
-> +	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
->  	return val;
->  }
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 9f521a55d610..b5e41df6bb3a 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -1051,6 +1051,11 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	const u32 *pdata = pdev->dev.platform_data;
+ 
++	if (!pdata) {
++		dev_err(&pdev->dev, "Missing platform data\n");
++		return -ENODEV;
++	}
++
+ 	audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
+ 					GFP_KERNEL);
+ 	if (audio_drv_data == NULL)
+@@ -1058,6 +1063,8 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(audio_drv_data->acp_mmio))
++		return PTR_ERR(audio_drv_data->acp_mmio);
+ 
+ 	/* The following members gets populated in device 'open'
+ 	 * function. Till then interrupts are disabled in 'acp_init'
+-- 
+2.7.4
