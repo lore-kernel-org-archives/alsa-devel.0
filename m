@@ -1,111 +1,78 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH 1/7] ASoC: Intel: Fix Kconfig
-Date: Tue, 21 Nov 2017 15:31:03 -0600
-Message-ID: <5b450209-36d7-d12a-54d2-503592e5f71f@linux.intel.com>
+Subject: Re: [RFC PATCH 3/7] ASoC: Intel: document what Kconfig
+ options do
+Date: Tue, 21 Nov 2017 15:32:48 -0600
+Message-ID: <ad219e4f-7f54-27a9-3d07-01d9f3d5d223@linux.intel.com>
 References: <20171118000202.22302-1-pierre-louis.bossart@linux.intel.com>
- <20171118000202.22302-2-pierre-louis.bossart@linux.intel.com>
- <s5hzi7ftvao.wl-tiwai@suse.de>
+ <20171118000202.22302-4-pierre-louis.bossart@linux.intel.com>
+ <s5hy3mztv7f.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hzi7ftvao.wl-tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59D89266F52
+ for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 22:32:51 +0100 (CET)
+In-Reply-To: <s5hy3mztv7f.wl-tiwai@suse.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de, vinod.koul@intel.com, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/21/17 11:07 AM, Takashi Iwai wrote:
-> On Sat, 18 Nov 2017 01:01:56 +0100,
+On 11/21/17 11:09 AM, Takashi Iwai wrote:
+> On Sat, 18 Nov 2017 01:01:58 +0100,
 > Pierre-Louis Bossart wrote:
 >>
->> Follow network example suggested by Linus, move Intel definitions
->> in if/endif block and clarify which options distro configurations
->> should enable - everything except legacy Baytrail stuff and
->> NOCODEC (test only)
+>> Document what the options are supposed to mean, before clean-up in
+>> next patch.
 >>
->> There should be no functionality change - except that sound capabilities
->> are restored when using older configs without any user selection.
+>> No functionality change here.
 >>
->> Fixes: f6a118a800e3 ("ASoC: Intel: clarify Kconfig dependencies")
->> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
 >> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> A few another things I noticed while looking at the end result:
-> 
->>   config SND_SOC_INTEL_SKYLAKE
->>   	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
->> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
->> +	depends on PCI && ACPI
->>   	select SND_HDA_EXT_CORE
->>   	select SND_HDA_DSP_LOADER
->>   	select SND_SOC_TOPOLOGY
->>   	select SND_SOC_INTEL_SST
->> +	select SND_SOC_INTEL_COMMON
->> +
->> +endif ## SND_SOC_INTEL_SST_TOPLEVEL
-> 
-> This endif should cover the whole including the source
-> boards/Kconfig.  In that way, deselecting SND_SOC_INTEL_SST_TOPLEVEL
-> will skip the whole.  As of this patch, you'll be still asked about
-> the board config even if you say TOPLEVEL=n.
-
-yes for now, but it's a feature needed for SOF integration...see below.
-
-> 
->>   # ASoC codec drivers
->>   source "sound/soc/intel/boards/Kconfig"
->> +
->> +# configs common to SST and SOF to compile sound/soc/intel/common
->> +# directory and use matching tables
->> +
->> +config SND_SOC_INTEL_COMMON
->> +	tristate
->> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
->> +
->> +config SND_SOC_ACPI_INTEL_MATCH
->> +	tristate
->> +	select SND_SOC_ACPI if ACPI
-> 
-> ... so here should be placed the endif.
-
-Those two are needed for SOF and shouldn't be filtered out by SST. we 
-can move them somewhere else if needed.
-
-> 
->> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
->> index 6f754708a48c..4ae44b0cea0a 100644
->> --- a/sound/soc/intel/boards/Kconfig
->> +++ b/sound/soc/intel/boards/Kconfig
->> @@ -1,7 +1,14 @@
->> -config SND_SOC_INTEL_MACH
->> -	tristate "Intel Audio machine drivers"
->> -	depends on SND_SOC_INTEL_SST_TOPLEVEL
->> -	select SND_SOC_ACPI_INTEL_MATCH if ACPI
->> +config  SND_SOC_INTEL_MACH
->> +	bool "Intel ASoC machine drivers"
->> +	default y
+>> ---
+>>   sound/soc/intel/Kconfig | 20 +++++++++++++++++---
+>>   1 file changed, 17 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+>> index 175b2965ca21..136426d60da0 100644
+>> --- a/sound/soc/intel/Kconfig
+>> +++ b/sound/soc/intel/Kconfig
+>> @@ -15,16 +15,30 @@ if SND_SOC_INTEL_SST_TOPLEVEL
+>>   
+>>   config SND_SST_IPC
+>>   	tristate
 >> +	help
->> +          Intel ASoC Audio Machine Drivers. If you have a Intel machine that
->> +          has audio controller with a DSP and I2S or DMIC port, then
->> +          enable this option by saying Y
->> +
->> +	  Note that the answer to this question doesn't directly affect the
->> +	  kernel: saying N will just cause the configurator to skip all
->> +	  the questions about Intel SST machine drivers.
+>> +	  This option controls the IPC core for HiFi2 platforms
 > 
-> Do we still need this filtering?  Since we have a top-level filter,
-> users who want to skip the Intel stuff can say N there already, and I
-> can't imagine anyone who want only the SST core / platform drivers
-> built without machine drivers explicitly.
+> A help section for non-selectable config is fine, per se, but in most
+> cases it's written as a comment.
 
-Yes, but when we add SOF we will have an alternate top-level and the 
-machine drivers should be selectable even when SST is filtered out.
+yes, I can move back to a comment. the main point was to explain the 
+simplifications in the next patch
+> 
+> And, if we do add the help text, it's more important to do that for
+> selectable items.  Currently the help texts are missing for the
+> platform configs like SND_SOC_INTEL_HASWELL.
+
+Ah, that's a miss, I did have a help but I didn't add it in the final 
+RFC version. Will add in v2.
 
 > 
 > 
 > thanks,
 > 
 > Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > 
