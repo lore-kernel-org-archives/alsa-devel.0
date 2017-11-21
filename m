@@ -1,47 +1,102 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: fsl_ssi: remove duplicated flag
- setting in fsl_ssi_setup_reg_vals()
-Date: Mon, 20 Nov 2017 15:16:09 -0800
-Message-ID: <20171120231608.GA14136@Asurada-Nvidia>
-References: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
+Subject: Re: [PATCH] ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt()
+ just once in AC'97 mode
+Date: Mon, 20 Nov 2017 16:00:43 -0800
+Message-ID: <20171121000042.GB14136@Asurada-Nvidia>
+References: <81ad2e7e-e070-c38e-b318-9607b4558ee7@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3F4E26761D
+ for <alsa-devel@alsa-project.org>; Tue, 21 Nov 2017 01:00:46 +0100 (CET)
+Received: by mail-pg0-f68.google.com with SMTP id 4so8698023pge.1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Nov 2017 16:00:46 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <81ad2e7e-e070-c38e-b318-9607b4558ee7@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 20, 2017 at 11:12:01PM +0100, Maciej S. Szmigiero wrote:
-> We don't need to set CCSR_SSI_SIER_RFF0_EN / CCSR_SSI_SIER_TFE0_EN bits
-> in reg->rx.sier / reg->tx.sier variables in a non-AC'97 mode considering we
-> had just initialized these variables to these very values unconditionally a
-> few lines earlier.
+On Mon, Nov 20, 2017 at 11:13:45PM +0100, Maciej S. Szmigiero wrote:
+> In AC'97 mode we configure and start SSI RX / TX on probe path via
+> a call to _fsl_ssi_set_dai_fmt() function.
+> We don't need to call this function again later and in fact don't want to
+> do it since this function temporarily sets STCR, SRCR and SCR to some
+> intermediate values.
+> 
+> We need to make sure, however, that only proper channel slots are enabled
+> at playback start time since some AC'97 CODECs (like VT1613) were observed
+> requesting via SLOTREQ (and so enabling at SSI) spurious ones just after
+> an AC'97 link is started but before the CODEC is configured by its driver.
+
+I don't really understand this part. Why do we need to *make sure*
+and set SACCDIS and SACCEN again since they're initialized already?
+
+Could you please elaborate a bit more?
+
+> Theoretically, this should be necessary only for the very first playback
+> but let's play safe here and make sure that no extra slots are enabled
+> every time a playback is started.
 > 
 > Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-
 > ---
->  sound/soc/fsl/fsl_ssi.c | 2 --
->  1 file changed, 2 deletions(-)
+>  sound/soc/fsl/fsl_ssi.c | 20 ++++++++++++--------
+>  1 file changed, 12 insertions(+), 8 deletions(-)
 > 
 > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-> index f2f51e06e22c..48bb850a34d9 100644
+> index 48bb850a34d9..dad80b4b0cfc 100644
 > --- a/sound/soc/fsl/fsl_ssi.c
 > +++ b/sound/soc/fsl/fsl_ssi.c
-> @@ -597,9 +597,7 @@ static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
+> @@ -630,12 +630,6 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+>  	regmap_write(regs, CCSR_SSI_SACNT,
+>  			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
 >  
->  	if (!fsl_ssi_is_ac97(ssi_private)) {
->  		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
-> -		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
->  		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
-> -		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
->  	}
+> -	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
+> -	if (!ssi_private->soc->imx21regs) {
+> -		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+> -		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
+> -	}
+
+> @@ -1149,9 +1146,16 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+>  	case SNDRV_PCM_TRIGGER_START:
+>  	case SNDRV_PCM_TRIGGER_RESUME:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> -		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +			/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
+> +			if (fsl_ssi_is_ac97(ssi_private) &&
+> +				!ssi_private->soc->imx21regs) {
+> +				regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+> +				regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
+> +			}
+
+And second, why could we ignore them for STREAM_CAPTURE here?
+
+Well, at least this part could be moved into fsl_ssi_tx_config()
+since we have an abstraction layer of register configurations.
+
+Thanks
+Nic
+
+> +
+>  			fsl_ssi_tx_config(ssi_private, true);
+> -		else
+> +		} else
+>  			fsl_ssi_rx_config(ssi_private, true);
+>  		break;
 >  
->  	if (ssi_private->use_dma) {
+> 
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
