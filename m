@@ -1,75 +1,49 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: RE: [PATCH] ASoC: amd: Add error checking to probe function
-Date: Tue, 21 Nov 2017 15:08:01 +0000
-Message-ID: <BN6PR12MB1652C591F3D7744E549A77ABF7230@BN6PR12MB1652.namprd12.prod.outlook.com>
-References: <1511238476-10314-1-git-send-email-linux@roeck-us.net>
- <BN6PR12MB16524EF04A6F7050D60AC602F7230@BN6PR12MB1652.namprd12.prod.outlook.com>
- <ab2e75d2-d1e4-860e-f1de-cf0ef60c94bc@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] SoC: intel: byt: Introduce new custom IN2
+ map
+Date: Tue, 21 Nov 2017 09:12:16 -0600
+Message-ID: <b527fea6-ab27-1d13-a465-954659eec011@linux.intel.com>
+References: <20171018164957.2270-1-carlo@caione.org>
+ <b09a704c-bb3e-32c4-afcb-d11379b6a3b9@linux.intel.com>
+ <CAOQ7t2YFfkCEkgoGPspr8Kvuomz-eeprqC6NJXiUhDApFqbduA@mail.gmail.com>
+ <CAOQ7t2Y--RJcV5bcnsWwuc7G6tc_EsgCBuNqELD2CE1zFJcCdQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ab2e75d2-d1e4-860e-f1de-cf0ef60c94bc@amd.com>
+In-Reply-To: <CAOQ7t2Y--RJcV5bcnsWwuc7G6tc_EsgCBuNqELD2CE1zFJcCdQ@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, 'Guenter Roeck' <linux@roeck-us.net>, Liam Girdwood <lgirdwood@gmail.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
-Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dominik Behr <dbehr@chromium.org>, Daniel Kurtz <djkurtz@chromium.org>
+To: Carlo Caione <carlo@caione.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Linux Upstreaming Team <linux@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBZ3Jhd2FsLCBBa3NodQ0KPiBT
-ZW50OiBUdWVzZGF5LCBOb3ZlbWJlciAyMSwgMjAxNyAxOjE1IEFNDQo+IFRvOiBEZXVjaGVyLCBB
-bGV4YW5kZXI7ICdHdWVudGVyIFJvZWNrJzsgTGlhbSBHaXJkd29vZDsgTXVrdW5kYSwNCj4gVmlq
-ZW5kYXINCj4gQ2M6IE1hcmsgQnJvd247IEphcm9zbGF2IEt5c2VsYTsgVGFrYXNoaSBJd2FpOyBh
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
-cmc7IERvbWluaWsgQmVocjsgRGFuaWVsIEt1cnR6DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIEFT
-b0M6IGFtZDogQWRkIGVycm9yIGNoZWNraW5nIHRvIHByb2JlIGZ1bmN0aW9uDQo+IA0KPiANCj4g
-DQo+IE9uIDExLzIxLzIwMTcgMTA6MTcgQU0sIERldWNoZXIsIEFsZXhhbmRlciB3cm90ZToNCj4g
-Pj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPj4gRnJvbTogR3VlbnRlciBSb2VjayBb
-bWFpbHRvOmdyb2VjazdAZ21haWwuY29tXSBPbiBCZWhhbGYgT2YgR3VlbnRlcg0KPiA+PiBSb2Vj
-aw0KPiA+PiBTZW50OiBNb25kYXksIE5vdmVtYmVyIDIwLCAyMDE3IDExOjI4IFBNDQo+ID4+IFRv
-OiBMaWFtIEdpcmR3b29kDQo+ID4+IENjOiBNYXJrIEJyb3duOyBKYXJvc2xhdiBLeXNlbGE7IFRh
-a2FzaGkgSXdhaTsgYWxzYS1kZXZlbEBhbHNhLQ0KPiBwcm9qZWN0Lm9yZzsNCj4gPj4gbGludXgt
-a2VybmVsQHZnZXIua2VybmVsLm9yZzsgR3VlbnRlciBSb2VjazsgRGV1Y2hlciwgQWxleGFuZGVy
-Ow0KPiBEb21pbmlrDQo+ID4+IEJlaHI7IERhbmllbCBLdXJ0eg0KPiA+PiBTdWJqZWN0OiBbUEFU
-Q0hdIEFTb0M6IGFtZDogQWRkIGVycm9yIGNoZWNraW5nIHRvIHByb2JlIGZ1bmN0aW9uDQo+ID4+
-DQo+ID4+IFRoZSBhY3BfYXVkaW9fZG1hIGRvZXMgbm90IHBlcmZvcm0gc3VmZmljaWVudCBlcnJv
-ciBjaGVja2luZyBpbiBpdHMNCj4gcHJvYmUNCj4gPj4gZnVuY3Rpb24uIFRoaXMgY2FuIHJlc3Vs
-dCBpbiBjcmFzaGVzIGlmIGEgY3JpdGljYWwgZXJyb3IgcGF0aCBpcw0KPiA+PiBlbmNvdW50ZXJl
-ZC4NCj4gPj4NCj4gPj4gRml4ZXM6IDdjMzEzMzVhMDNiNmEgKCJBU29DOiBBTUQ6IGFkZCBBTUQg
-QVNvQyBBQ1AgMi54IERNQSBkcml2ZXIiKQ0KPiA+PiBDYzogQWxleCBEZXVjaGVyIDxhbGV4YW5k
-ZXIuZGV1Y2hlckBhbWQuY29tPg0KPiA+PiBDYzogRG9taW5payBCZWhyIDxkYmVockBjaHJvbWl1
-bS5vcmc+DQo+ID4+IENjOiBEYW5pZWwgS3VydHogPGRqa3VydHpAY2hyb21pdW0ub3JnPg0KPiA+
-PiBTaWduZWQtb2ZmLWJ5OiBHdWVudGVyIFJvZWNrIDxsaW51eEByb2Vjay11cy5uZXQ+DQo+ID4+
-IC0tLQ0KPiA+PiBJIGRpZG4ndCBhZGQgYW4gZXJyb3IgY2hlY2sgdG8gYWNwX2luaXQoKSBzaW5j
-ZSBJIHdhcyBub3Qgc3VyZSBpZg0KPiA+PiBpdHMgcmV0dXJuIHZhbHVlIGlzIGlnbm9yZWQgb24g
-cHVycG9zZS4NCj4gPg0KPiA+IFZpamVuZGFyLCBBa3NodSBjYW4geW91IGNvbW1lbnQ/DQo+IA0K
-PiBUaGlzIGlzIGFsc28gdGhlIGNhc2Ugb2YgbWlzc2luZyBlcnJvciBjaGVjay4NCj4gYWNwX2lu
-aXQgd2lsbCByZXR1cm4gZXJyb3IgaWYgZWl0aGVyIHN3IHJlc2V0IGRpZCBub3QgaGFwcGVuIG9y
-IGNsb2NrDQo+IGRpZCBub3QgZ2V0IGVuYWJsZWQuIEluIGJvdGggY2FzZXMgd2Ugc2hvdWxkIGVy
-cm9yIG91dCBpbiBwcm9iZS4NCj4gDQoNCkNhbiB5b3Ugc2VuZCBvdXQgYSBwYXRjaCB0byBlbmFi
-bGUgdGhhdCBlcnJvciBjaGVja2luZz8NCg0KVGhhbmtzLA0KDQpBbGV4DQoNCj4gPg0KPiA+IFRo
-ZSBwYXRjaCBsb29rcyBnb29kIHRvIG1lLg0KPiA+IFJldmlld2VkLWJ5OiBBbGV4IERldWNoZXIg
-PGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+ID4NCj4gPj4NCj4gPj4gICBzb3VuZC9zb2Mv
-YW1kL2FjcC1wY20tZG1hLmMgfCA3ICsrKysrKysNCj4gPj4gICAxIGZpbGUgY2hhbmdlZCwgNyBp
-bnNlcnRpb25zKCspDQo+ID4+DQo+ID4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1kL2FjcC1w
-Y20tZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tDQo+ID4+IGRtYS5jDQo+ID4+IGluZGV4
-IDlmNTIxYTU1ZDYxMC4uYjVlNDFkZjZiYjNhIDEwMDY0NA0KPiA+PiAtLS0gYS9zb3VuZC9zb2Mv
-YW1kL2FjcC1wY20tZG1hLmMNCj4gPj4gKysrIGIvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5j
-DQo+ID4+IEBAIC0xMDUxLDYgKzEwNTEsMTEgQEAgc3RhdGljIGludCBhY3BfYXVkaW9fcHJvYmUo
-c3RydWN0DQo+IHBsYXRmb3JtX2RldmljZQ0KPiA+PiAqcGRldikNCj4gPj4gICAJc3RydWN0IHJl
-c291cmNlICpyZXM7DQo+ID4+ICAgCWNvbnN0IHUzMiAqcGRhdGEgPSBwZGV2LT5kZXYucGxhdGZv
-cm1fZGF0YTsNCj4gPj4NCj4gPj4gKwlpZiAoIXBkYXRhKSB7DQo+ID4+ICsJCWRldl9lcnIoJnBk
-ZXYtPmRldiwgIk1pc3NpbmcgcGxhdGZvcm0gZGF0YVxuIik7DQo+ID4+ICsJCXJldHVybiAtRU5P
-REVWOw0KPiA+PiArCX0NCj4gPj4gKw0KPiA+PiAgIAlhdWRpb19kcnZfZGF0YSA9IGRldm1fa3ph
-bGxvYygmcGRldi0+ZGV2LCBzaXplb2Yoc3RydWN0DQo+ID4+IGF1ZGlvX2Rydl9kYXRhKSwNCj4g
-Pj4gICAJCQkJCUdGUF9LRVJORUwpOw0KPiA+PiAgIAlpZiAoYXVkaW9fZHJ2X2RhdGEgPT0gTlVM
-TCkNCj4gPj4gQEAgLTEwNTgsNiArMTA2Myw4IEBAIHN0YXRpYyBpbnQgYWNwX2F1ZGlvX3Byb2Jl
-KHN0cnVjdA0KPiBwbGF0Zm9ybV9kZXZpY2UNCj4gPj4gKnBkZXYpDQo+ID4+DQo+ID4+ICAgCXJl
-cyA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7DQo+ID4+
-ICAgCWF1ZGlvX2Rydl9kYXRhLT5hY3BfbW1pbyA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgmcGRl
-di0NCj4gPj4+IGRldiwgcmVzKTsNCj4gPj4gKwlpZiAoSVNfRVJSKGF1ZGlvX2Rydl9kYXRhLT5h
-Y3BfbW1pbykpDQo+ID4+ICsJCXJldHVybiBQVFJfRVJSKGF1ZGlvX2Rydl9kYXRhLT5hY3BfbW1p
-byk7DQo+ID4+DQo+ID4+ICAgCS8qIFRoZSBmb2xsb3dpbmcgbWVtYmVycyBnZXRzIHBvcHVsYXRl
-ZCBpbiBkZXZpY2UgJ29wZW4nDQo+ID4+ICAgCSAqIGZ1bmN0aW9uLiBUaWxsIHRoZW4gaW50ZXJy
-dXB0cyBhcmUgZGlzYWJsZWQgaW4gJ2FjcF9pbml0Jw0KPiA+PiAtLQ0KPiA+PiAyLjcuNA0KPiA+
-DQo=
+On 11/21/17 3:30 AM, Carlo Caione wrote:
+> On Thu, Nov 16, 2017 at 1:53 PM, Carlo Caione <carlo@caione.org> wrote:
+>> On Wed, Oct 18, 2017 at 7:05 PM, Pierre-Louis Bossart
+>> <pierre-louis.bossart@linux.intel.com> wrote:
+>>> On 10/18/17 11:49 AM, Carlo Caione wrote:
+>>>>
+>>>> From: Carlo Caione <carlo@endlessm.com>
+>>>>
+>>>> Introduce a new custom dapm routes map to quirk platforms with the
+>>>> internal mic connected to IN2P.
+>>>
+>>>
+>>> LGTM. If we start getting more quirks for this codec, we should think of
+>>> adding a module parameters to select them from the command line or with
+>>> modprobe (as done in other machine drivers).
+>>
+>> Hey Pierre,
+>> I'm currently working on a laptop (always with the rt5651 codec)
+>> having two separate internal mics (on IN1P and IN2P) and the headset
+>> on IN3P. I was thinking how to describe this situation in the current
+>> driver without having to add all the 6 different configuration as
+>> quirks. Any suggestion?
+
+
+The microphone configurations are not handled with a mask but an enum 
+and the BYT_RT5651_MAP() macro. You can just add a new configuration 
+such at BYT_RT5651_IN1_IN2 which uses the analog mics on those two and 
+implicitly use IN3 for the headset. I don't see the point of handling 
+all possible permutations at this point.
