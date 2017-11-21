@@ -1,73 +1,52 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: fsl_ssi: serialize AC'97 register
- access operations
-Date: Tue, 21 Nov 2017 12:27:50 +0100
-Message-ID: <33ec14ef-7b05-544d-58ba-0e14aa2a97d4@maciej.szmigiero.name>
-References: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
- <20171121015247.GE14136@Asurada-Nvidia>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH 2/7] ASoC: Intel: Kconfig:
+ Simplify-clarify ACPI/PCI dependencies
+Date: Tue, 21 Nov 2017 14:05:19 +0200
+Message-ID: <1511265919.25007.336.camel@linux.intel.com>
+References: <20171118000202.22302-1-pierre-louis.bossart@linux.intel.com>
+         <20171118000202.22302-3-pierre-louis.bossart@linux.intel.com>
+         <1511024018.25007.310.camel@linux.intel.com>
+         <5b2dde66-d30e-5cd6-15df-12f002850274@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171121015247.GE14136@Asurada-Nvidia>
-Content-Language: en-US
+In-Reply-To: <5b2dde66-d30e-5cd6-15df-12f002850274@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21.11.2017 02:52, Nicolin Chen wrote:
-> On Mon, Nov 20, 2017 at 11:16:07PM +0100, Maciej S. Szmigiero wrote:
-(..)
->>  static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
->> @@ -1287,16 +1295,18 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
->>  {
->>  	struct regmap *regs = fsl_ac97_data->regs;
->>  
->> -	unsigned short val = -1;
->> +	unsigned short val = 0;
->>  	u32 reg_val;
->>  	unsigned int lreg;
->>  	int ret;
->>  
->> +	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
->> +
->>  	ret = clk_prepare_enable(fsl_ac97_data->clk);
->>  	if (ret) {
->>  		pr_err("ac97 read clk_prepare_enable failed: %d\n",
->>  			ret);
->> -		return -1;
->> +		goto ret_unlock;
+On Mon, 2017-11-20 at 10:23 -0600, Pierre-Louis Bossart wrote:
+> On 11/18/2017 10:53 AM, Andy Shevchenko wrote:
+> > On Fri, 2017-11-17 at 18:01 -0600, Pierre-Louis Bossart wrote:
+
+> >   and there is no publicly available firmware for
+> > > Merrifield.
+> > 
+> > while this is not true. Intel Edison board is based on Merrifield
+> > SoC
+> > and I'm sure people are able to make a sound out of it.
 > 
-> It will return val (== 0) in this case. Will this be correctly
-> handled by callers? I find sound/ac97/bus.c checks if ret < 0
-> for ops->read().
+> I am aware that Edison could run with a modified 4.4 kernel,
 
-Both 0 and -1 (0xffff really) are valid register values.
+Edison can just run vanilla (with some caveats, though not related to
+LPE). But okay, there was last official Yocto kernel v3.10.98 based and
+v4.4 with Brillo.
 
-AC'97 code that is used in companion with fsl_ssi lives in sound/pci/ac97
-directory and does register reads via snd_ac97_read() function in
-ac97_codec.c file (located in that directory).
-This function has no such check.
+>  I just 
+> don't know where the firmware is. I don't see anything for Merrifield
+> in 
+> /lib/firmware/intel?
+> If there is a simple way of testing this I don't mind looking into
+> this, 
+> I just don't have the pointers.
 
-The reason why AC'97 specs call for unknown register read to return zero
-is that if there is some capability bit in a register then this bit is
-set when a CODEC has such capability.
-If we return -1 then it means that in this case a CODEC would be
-detected as having all possible capabilities that are exposed via this
-register (including these that aren't really supported) while if we
-return 0 instead then we merely wouldn't make use of some that are actually
-present.
+In any case the official bundle has it (sha1):
 
-> 
-> So it might be better to add "val = ret;" before goto? Or use
-> val instead of ret directly?
+fcedef11ac49405389b0fb83d526600e0bd933a3  /lib/firmware/fw_sst_119a.bin
 
-Then we would be returning an error number from clk_prepare_enable()
-as a register value which would be almost certainly wrong.
 
-Note that this method returns unsigned short - a type with the same width
-as an AC'97 register, so there are no unused values in this type which
-could be reliably used to signify that an error had happened.
-
-Maciej
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
