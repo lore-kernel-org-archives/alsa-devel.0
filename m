@@ -1,20 +1,18 @@
-From: Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [PATCH 2/5] media: dt-bindings: Add bindings for
-	TDA1997X
-Date: Wed, 22 Nov 2017 09:36:06 +0200
-Message-ID: <20171122073606.56ldk3bzg23dkkfm@valkosipuli.retiisi.org.uk>
-References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
- <1510253136-14153-3-git-send-email-tharvey@gateworks.com>
+From: Cedric Roux <sed@free.fr>
+Subject: Re: [PATCH] Emit an error message when dlopen fails.
+Date: Wed, 22 Nov 2017 08:45:25 +0100
+Message-ID: <eaae406c-ee3e-92f4-f4d4-5cc47934079b@free.fr>
+References: <5471e331-1e5b-3bf6-6128-469e39d049cd@free.fr>
+ <6dc8da2a-fabc-7826-3311-dd6a15831782@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hillosipuli.retiisi.org.uk (nblzone-211-213.nblnetworks.fi
- [83.145.211.213])
- by alsa0.perex.cz (Postfix) with ESMTP id 307112671E7
- for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 08:36:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1510253136-14153-3-git-send-email-tharvey@gateworks.com>
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E5FD2671E7
+ for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 08:42:38 +0100 (CET)
+In-Reply-To: <6dc8da2a-fabc-7826-3311-dd6a15831782@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,227 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Philipp Zabel <p.zabel@pengutronix.de>, Steve Longerbeam <slongerbeam@gmail.com>, shawnguo@kernel.org, linux-media@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tim,
-
-On Thu, Nov 09, 2017 at 10:45:33AM -0800, Tim Harvey wrote:
-> Cc: Rob Herring <robh@kernel.org>
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
-> v3:
->  - fix typo
-> 
-> v2:
->  - add vendor prefix and remove _ from vidout-portcfg
->  - remove _ from labels
->  - remove max-pixel-rate property
->  - describe and provide example for single output port
->  - update to new audio port bindings
-> ---
->  .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
->  1 file changed, 179 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/tda1997x.txt b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-> new file mode 100644
-> index 0000000..dd37f14
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
-> @@ -0,0 +1,179 @@
-> +Device-Tree bindings for the NXP TDA1997x HDMI receiver
-> +
-> +The TDA19971/73 are HDMI video receivers.
-> +
-> +The TDA19971 Video port output pins can be used as follows:
-> + - RGB 8bit per color (24 bits total): R[11:4] B[11:4] G[11:4]
-> + - YUV444 8bit per color (24 bits total): Y[11:4] Cr[11:4] Cb[11:4]
-> + - YUV422 semi-planar 8bit per component (16 bits total): Y[11:4] CbCr[11:4]
-> + - YUV422 semi-planar 10bit per component (20 bits total): Y[11:2] CbCr[11:2]
-> + - YUV422 semi-planar 12bit per component (24 bits total): - Y[11:0] CbCr[11:0]
-> + - YUV422 BT656 8bit per component (8 bits total): YCbCr[11:4] (2-cycles)
-> + - YUV422 BT656 10bit per component (10 bits total): YCbCr[11:2] (2-cycles)
-> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
-> +
-> +The TDA19973 Video port output pins can be used as follows:
-> + - RGB 12bit per color (36 bits total): R[11:0] B[11:0] G[11:0]
-> + - YUV444 12bit per color (36 bits total): Y[11:0] Cb[11:0] Cr[11:0]
-> + - YUV422 semi-planar 12bit per component (24 bits total): Y[11:0] CbCr[11:0]
-> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
-> +
-> +The Video port output pins are mapped via 4-bit 'pin groups' allowing
-> +for a variety of connection possibilities including swapping pin order within
-> +pin groups. The video_portcfg device-tree property consists of register mapping
-> +pairs which map a chip-specific VP output register to a 4-bit pin group. If
-> +the pin group needs to be bit-swapped you can use the *_S pin-group defines.
-> +
-> +Required Properties:
-> + - compatible          :
-> +  - "nxp,tda19971" for the TDA19971
-> +  - "nxp,tda19973" for the TDA19973
-> + - reg                 : I2C slave address
-> + - interrupts          : The interrupt number
-> + - DOVDD-supply        : Digital I/O supply
-> + - DVDD-supply         : Digital Core supply
-> + - AVDD-supply         : Analog supply
-> + - nxp,vidout-portcfg  : array of pairs mapping VP output pins to pin groups.
-> +
-> +Optional Properties:
-> + - nxp,audout-format   : DAI bus format: "i2s" or "spdif".
-> + - nxp,audout-width    : width of audio output data bus (1-4).
-> + - nxp,audout-layout   : data layout (0=AP0 used, 1=AP0/AP1/AP2/AP3 used).
-> + - nxp,audout-mclk-fs  : Multiplication factor between stream rate and codec
-> +                         mclk.
-> +
-> +The device node must contain one 'port' child node for its digital output
-> +video port, in accordance with the video interface bindings defined in
-> +Documentation/devicetree/bindings/media/video-interfaces.txt.
-
-Could you add that this port has one endpoint node as well? (Unless you
-support multiple, that is.)
-
-> +
-> +Optional Endpoint Properties:
-> +  The following three properties are defined in video-interfaces.txt and
-> +  are valid for source endpoints only:
-
-Transmitters? Don't you have an endpoint only in the port representing the
-transmitter?
-
-> +  - hsync-active: Horizontal synchronization polarity. Defaults to active high.
-> +  - vsync-active: Vertical synchronization polarity. Defaults to active high.
-> +  - data-active: Data polarity. Defaults to active high.
-> +
-> +Examples:
-> + - VP[15:0] connected to IMX6 CSI_DATA[19:4] for 16bit YUV422
-> +   16bit I2S layout0 with a 128*fs clock (A_WS, AP0, A_CLK pins)
-> +	hdmi-receiver@48 {
-> +		compatible = "nxp,tda19971";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_tda1997x>;
-> +		reg = <0x48>;
-> +		interrupt-parent = <&gpio1>;
-> +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-> +		DOVDD-supply = <&reg_3p3v>;
-> +		AVDD-supply = <&reg_1p8v>;
-> +		DVDD-supply = <&reg_1p8v>;
-> +		/* audio */
-> +		#sound-dai-cells = <0>;
-> +		nxp,audout-format = "i2s";
-> +		nxp,audout-layout = <0>;
-> +		nxp,audout-width = <16>;
-> +		nxp,audout-mclk-fs = <128>;
-> +		/*
-> +		 * The 8bpp YUV422 semi-planar mode outputs CbCr[11:4]
-> +		 * and Y[11:4] across 16bits in the same pixclk cycle.
-> +		 */
-> +		nxp,vidout-portcfg =
-> +			/* Y[11:8]<->VP[15:12]<->CSI_DATA[19:16] */
-> +			< TDA1997X_VP24_V15_12 TDA1997X_G_Y_11_8 >,
-> +			/* Y[7:4]<->VP[11:08]<->CSI_DATA[15:12] */
-> +			< TDA1997X_VP24_V11_08 TDA1997X_G_Y_7_4 >,
-> +			/* CbCc[11:8]<->VP[07:04]<->CSI_DATA[11:8] */
-> +			< TDA1997X_VP24_V07_04 TDA1997X_R_CR_CBCR_11_8 >,
-> +			/* CbCr[7:4]<->VP[03:00]<->CSI_DATA[7:4] */
-> +			< TDA1997X_VP24_V03_00 TDA1997X_R_CR_CBCR_7_4 >;
-> +
-> +		port {
-> +			tda1997x_to_ipu1_csi0_mux: endpoint {
-> +				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-> +				bus-width = <16>;
-> +				hsync-active = <1>;
-> +				vsync-active = <1>;
-> +				data-active = <1>;
-> +			};
-> +		};
-> +	};
-> + - VP[15:8] connected to IMX6 CSI_DATA[19:12] for 8bit BT656
-> +   16bit I2S layout0 with a 128*fs clock (A_WS, AP0, A_CLK pins)
-> +	hdmi-receiver@48 {
-> +		compatible = "nxp,tda19971";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_tda1997x>;
-> +		reg = <0x48>;
-> +		interrupt-parent = <&gpio1>;
-> +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-> +		DOVDD-supply = <&reg_3p3v>;
-> +		AVDD-supply = <&reg_1p8v>;
-> +		DVDD-supply = <&reg_1p8v>;
-> +		/* audio */
-> +		#sound-dai-cells = <0>;
-> +		nxp,audout-format = "i2s";
-> +		nxp,audout-layout = <0>;
-> +		nxp,audout-width = <16>;
-> +		nxp,audout-mclk-fs = <128>;
-> +		/*
-> +		 * The 8bpp YUV422 semi-planar mode outputs CbCr[11:4]
-> +		 * and Y[11:4] across 16bits in the same pixclk cycle.
-> +		 */
-> +		nxp,vidout-portcfg =
-> +			/* Y[11:8]<->VP[15:12]<->CSI_DATA[19:16] */
-> +			< TDA1997X_VP24_V15_12 TDA1997X_G_Y_11_8 >,
-> +			/* Y[7:4]<->VP[11:08]<->CSI_DATA[15:12] */
-> +			< TDA1997X_VP24_V11_08 TDA1997X_G_Y_7_4 >,
-> +			/* CbCc[11:8]<->VP[07:04]<->CSI_DATA[11:8] */
-> +			< TDA1997X_VP24_V07_04 TDA1997X_R_CR_CBCR_11_8 >,
-> +			/* CbCr[7:4]<->VP[03:00]<->CSI_DATA[7:4] */
-> +			< TDA1997X_VP24_V03_00 TDA1997X_R_CR_CBCR_7_4 >;
-> +
-> +		port {
-> +			tda1997x_to_ipu1_csi0_mux: endpoint {
-> +				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-> +				bus-width = <16>;
-> +				hsync-active = <1>;
-> +				vsync-active = <1>;
-> +				data-active = <1>;
-> +			};
-> +		};
-> +	};
-> + - VP[15:8] connected to IMX6 CSI_DATA[19:12] for 8bit BT656
-> +   16bit I2S layout0 with a 128*fs clock (A_WS, AP0, A_CLK pins)
-> +	hdmi-receiver@48 {
-> +		compatible = "nxp,tda19971";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_tda1997x>;
-> +		reg = <0x48>;
-> +		interrupt-parent = <&gpio1>;
-> +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-> +		DOVDD-supply = <&reg_3p3v>;
-> +		AVDD-supply = <&reg_1p8v>;
-> +		DVDD-supply = <&reg_1p8v>;
-> +		/* audio */
-> +		#sound-dai-cells = <0>;
-> +		nxp,audout-format = "i2s";
-> +		nxp,audout-layout = <0>;
-> +		nxp,audout-width = <16>;
-> +		nxp,audout-mclk-fs = <128>;
-> +		/*
-> +		 * The 8bpp BT656 mode outputs YCbCr[11:4] across 8bits over
-> +		 * 2 pixclk cycles.
-> +		 */
-> +		nxp,vidout-portcfg =
-> +			/* YCbCr[11:8]<->VP[15:12]<->CSI_DATA[19:16] */
-> +			< TDA1997X_VP24_V15_12 TDA1997X_R_CR_CBCR_11_8 >,
-> +			/* YCbCr[7:4]<->VP[11:08]<->CSI_DATA[15:12] */
-> +			< TDA1997X_VP24_V11_08 TDA1997X_R_CR_CBCR_7_4 >,
-> +
-> +		port {
-> +			tda1997x_to_ipu1_csi0_mux: endpoint {
-> +				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-> +				bus-width = <16>;
-> +				hsync-active = <1>;
-> +				vsync-active = <1>;
-> +				data-active = <1>;
-> +			};
-> +		};
-> +	};
-> +
-> -- 
-> 2.7.4
-> 
-
--- 
-Sakari Ailus
-e-mail: sakari.ailus@iki.fi
+T24gMTEvMjIvMjAxNyAwMjowOSBBTSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBJbiBteSBv
+cGluaW9uLCB0aGlzIHBhdGNoIGlzIHByZWZlcmFibGUsIGhvd2V2ZXIgaXQgY2FuIGFsd2F5cyBn
+ZW5lcmF0ZSBzdXBlcmZsdW91cyBlcnJvciBtZXNzYWdlcyB3aGVuIGhhbmRsaW5nIGhvb2sgY29u
+ZmlndXJhdGlvbiBvbiAnYWxzYS5jb25mJy4gRm9yIGV4YW1wbGU6Cj4gCj4gJCBMRF9QUkVMT0FE
+PS4vc3JjLy5saWJzL2xpYmFzb3VuZC5zby4yLjAuMCBhbWl4ZXIKPiBBTFNBIGxpYiBkbG1pc2Mu
+Yzo4NTooc25kX2Rsb3Blbikgc25kX2Rsb3BlbjogL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudS9h
+bHNhLWxpYi8vLi9zcmMvLmxpYnMvbGliYXNvdW5kLnNvLjIuMC4wOiAvdXNyL2xpYi94ODZfNjQt
+bGludXgtZ251L2Fsc2EtbGliLy8uL3NyYy8ubGlicy9saWJhc291bmQuc28uMi4wLjA6IGNhbm5v
+dCBvcGVuIHNoYXJlZCBvYmplY3QgZmlsZTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+IEFM
+U0EgbGliIGRsbWlzYy5jOjg1OihzbmRfZGxvcGVuKSBzbmRfZGxvcGVuOiAvdXNyL2xpYi94ODZf
+NjQtbGludXgtZ251L2Fsc2EtbGliLy8uL3NyYy8ubGlicy9saWJhc291bmQuc28uMi4wLjA6IC91
+c3IvbGliL3g4Nl82NC1saW51eC1nbnUvYWxzYS1saWIvLy4vc3JjLy5saWJzL2xpYmFzb3VuZC5z
+by4yLjAuMDogY2Fubm90IG9wZW4gc2hhcmVkIG9iamVjdCBmaWxlOiBObyBzdWNoIGZpbGUgb3Ig
+ZGlyZWN0b3J5Cj4gQUxTQSBsaWIgZGxtaXNjLmM6ODU6KHNuZF9kbG9wZW4pIHNuZF9kbG9wZW46
+IC91c3IvbGliL3g4Nl82NC1saW51eC1nbnUvYWxzYS1saWIvLy4vc3JjLy5saWJzL2xpYmFzb3Vu
+ZC5zby4yLjAuMDogL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudS9hbHNhLWxpYi8vLi9zcmMvLmxp
+YnMvbGliYXNvdW5kLnNvLjIuMC4wOiBjYW5ub3Qgb3BlbiBzaGFyZWQgb2JqZWN0IGZpbGU6IE5v
+IHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKPiBBTFNBIGxpYiBkbG1pc2MuYzo4NTooc25kX2Rsb3Bl
+bikgc25kX2Rsb3BlbjogL3Vzci9saWIveDg2XzY0LWxpbnV4LWdudS9hbHNhLWxpYi8vLi9zcmMv
+LmxpYnMvbGliYXNvdW5kLnNvLjIuMC4wOiAvdXNyL2xpYi94ODZfNjQtbGludXgtZ251L2Fsc2Et
+bGliLy8uL3NyYy8ubGlicy9saWJhc291bmQuc28uMi4wLjA6IGNhbm5vdCBvcGVuIHNoYXJlZCBv
+YmplY3QgZmlsZTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+IEFMU0EgbGliIGRsbWlzYy5j
+Ojg1OihzbmRfZGxvcGVuKSBzbmRfZGxvcGVuOiAvdXNyL2xpYi94ODZfNjQtbGludXgtZ251L2Fs
+c2EtbGliLy8uL3NyYy8ubGlicy9saWJhc291bmQuc28uMi4wLjA6IC91c3IvbGliL3g4Nl82NC1s
+aW51eC1nbnUvYWxzYS1saWIvLy4vc3JjLy5saWJzL2xpYmFzb3VuZC5zby4yLjAuMDogY2Fubm90
+IG9wZW4gc2hhcmVkIG9iamVjdCBmaWxlOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gQUxT
+QSBsaWIgZGxtaXNjLmM6ODU6KHNuZF9kbG9wZW4pIHNuZF9kbG9wZW46IC91c3IvbGliL3g4Nl82
+NC1saW51eC1nbnUvYWxzYS1saWIvLy4vc3JjLy5saWJzL2xpYmFzb3VuZC5zby4yLjAuMDogL3Vz
+ci9saWIveDg2XzY0LWxpbnV4LWdudS9hbHNhLWxpYi8vLi9zcmMvLmxpYnMvbGliYXNvdW5kLnNv
+LjIuMC4wOiBjYW5ub3Qgb3BlbiBzaGFyZWQgb2JqZWN0IGZpbGU6IE5vIHN1Y2ggZmlsZSBvciBk
+aXJlY3RvcnkKPiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4JywwCj4gwqAgQ2FwYWJpbGl0
+aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCj4gwqAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8K
+PiDCoCBNb25vOiBQbGF5YmFjayBbb25dCj4gLi4uCj4gCj4gV2hlbiBhbnkgaG9vayBjb25maWd1
+cmF0aW9uIGluY2x1ZGVzIG5vIGxpbmVzIHdpdGggJ2xpYicsICdzbmRfZGxvcGVuKCknIGdldHMg
+TlVMTCBhcyBpdHMgZmlyc3QgYXJndW1lbnQsIHRoZW4gJ2Rsb3BlbigpJyBnZXRzIGFuIGluZXhp
+c3RlbnQgcGF0aCBhcyBpdHMgZmlyc3QgYXJndW1lbnQsIGxpa2U6CgpBaCwgdGhpcyBpcyBhIHBy
+b2JsZW0uCkJ1dCBJIHN0cnVnZ2xlZCB3aXRoIHRoZSAiYWxzYWVxIHBsdWdpbiIgd2hpY2gsIHVu
+ZGVyIHVidW50dSAxNyBzb21ldGhpbmcKaXMgbm90IGxpbmtlZCBhZ2FpbnN0IGxpYmFzb3VuZCBh
+bmQgd2hlbiBwdWxzZWF1ZGlvIGlzIGNvbmZpZ3VyZWQgdG8gdXNlCml0LCBpdCBmYWlscyB3aXRo
+b3V0IHNheWluZyBhbnl0aGluZyB1c2VmdWwgYW5kIHRoZSBoYWNrZXIgKG1lKSBoYXMgdG8gc3Bl
+bmQgdG9vCm11Y2ggdGltZSBiZWNhdXNlIEFMU0EgZG9lcyBub3QgdXNlIGRsZXJyb3IuCgo+IAo+
+IChwYXJzaW5nIGFsc2EuY29uZikKPiBzbmRfY29uZmlnX2hvb2tzX2NhbGwoKQo+IMKgIC0+c25k
+X2Rsb3BlbihuYW1lID0gTlVMTCkKPiDCoMKgwqAgaWYgKG5hbWUgPT0gTlVMTCkKPiDCoMKgwqDC
+oMKgIG5hbWUgPSBzZWxmCj4gwqDCoMKgIGZpbGVuYW1lID0gQUxTQV9QTFVHSU5fRElSICsgJy8n
+ICsgbmFtZQo+IMKgwqDCoCBkbG9wZW4oZmlsZW5hbWUpCj4gwqDCoMKgIChnZW5lcmF0ZSB0aGUg
+ZXJyb3IgbWVzc2FnZXMpCj4gCj4gSSBkb24ndCBrbm93IHdoeSBhbHNhLWxpYiBpcyBwcm9ncmFt
+bWVkIGFzIHdoYXQgaXQgaXMsIHNvIGhhdmUgbm8gaWRlYSB0byBzdWdnZXN0IGJldHRlciBzb2x1
+dGlvbi4uLgo+IAo+IEFkZGl0aW9uYWxseSwgeW91ciBwYXRjaCBpbmNsdWRlcyBzb21lIGlzc3Vl
+cyBvZiBwYXRjaCBmb3JtYXQ6Cj4gKiBOb3Qgb25seSB5b3VyIHNpZ25hdHVyZSBidXQgYWxzbyBw
+YXRjaCBjb21tZW50IGlzIHJlcXVpcmVkLiBUaGUgZmlyc3QKPiDCoCBsaW5lIGlzIGludGVycHJl
+dGVkIGFzIHBhdGNoIHRpdGxlLCBhbmQgdGhlIHJlc3QgaXMgYXMgY29tbWVudC4KCm9rYXksIG5l
+eHQgdGltZSBJJ2xsIHdyaXRlIHNvbWUgdGV4dC4KCj4gKiBQYXRjaGVzIHNob3VsZCBiZSBjb21w
+bGlhbnQgdG8gZ2l0LXBhdGNoIGZvcm1hdC4gSSBlbmNvdW50ZXJlZCBmYWlsdXJlCj4gwqAgb2Yg
+J2dpdCBhbScgZm9yIHRoaXMgcGF0Y2guIFBsZWFzZSB1c2UgJ2dpdCBmb3JtYXQtcGF0Y2gnIGNv
+bW1hbmQgdG8KPiDCoCBnZW5lcmF0ZSBwYXRjaGVzIGZvciBwb3N0aW5nLgoKSSB1c2VkIGZvcm1h
+dC1wYXRjaCBhbmQgaW1hcC1zZW5kLiBNYXliZSB0aGlzIGJsb2F0ZWQgdGh1bmRlcmJpcmQgZGlk
+Cm1lc3MgdXAgKEkgY29uZmlndXJlZCBpdCBhcyBleHBsYWluZWQgaW4gdGhlIG1hbiBwYWdlcyku
+CgpBbnl3YXksIGRvIHdoYXQgeW91IHdhbnQgd2l0aCB0aGUgcGF0Y2ggYWJvdmUsIEkgZG9uJ3Qg
+cmVhbGx5IGNhcmUgYWN0dWFsbHkuClByb2JsZW0gaXMgc29sdmVkIG9uIG15IHNpZGUuIEkndmUg
+c2VlbiBtZXNzYWdlcyBpbiB0aGUgd2lsZCBmcm9tIHBlb3BsZQp3aXRoIHRoZSBzYW1lIHByb2Js
+ZW0sIEkgdGhvdWdodCBJIGNvdWxkIGhlbHAgYSBiaXQuIEkgZGlkbid0IHNlZSB0aGUKImJpZyBw
+aWN0dXJlIiAodGhhdCBpczogYmFkIGRlc2lnbiBvZiB0b28gbWFueSBzb2Z0d2FyZSkuCgpBbGwg
+SSBrbm93IGlzIHRoYXQgaXQncyBnb29kIHByYWN0aWNlIHRvIHJlcG9ydCBlcnJvcnMgdG8gdXNl
+cnMuIElmCmEgY29kZSBwYXRoIGNhbiAibGVnaXRpbWF0ZWx5IiBnZW5lcmF0ZSBlcnJvcnMsIHRo
+ZW4gdGhlIHByb2dyYW1tZXIKbmVlZHMgdG8gZGVhbCB3aXRoIGl0IGluIGEgY29udmVuaWVudCB3
+YXkuCgpCdXQgeWVhaCwgSSBkb24ndCBjYXJlLiBBTFNBIGxpYiBpcyBibG9hdGVkIHRvIHN0YXJ0
+IHdpdGguCihUaGlzIGVtYWlsIGlzIG15IGxhc3QsIEkgd29uJ3QgdHJvbGwgbW9yZSwgcHJvbWlz
+ZS4pCgo+IAo+IFdoZW4gcG9zdGluZyBwYXRjaGVzLCBwbGVhc2UgdGFrZSBjYXJlIG9mIHRoZSBh
+Ym92ZS4KPiAKPiAKPiBSZWdhcmRzCj4gCj4gVGFrYXNoaSBTYWthbW90bwoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
