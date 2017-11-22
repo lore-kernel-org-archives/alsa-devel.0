@@ -1,16 +1,16 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 1/2] ASoC: cs42l52: Delete an error message for
- a failed memory allocation in cs42l52_i2c_probe()
-Date: Wed, 22 Nov 2017 22:22:14 +0100
-Message-ID: <0c7a61a4-580e-e7ae-acef-047f8cff24ca@users.sourceforge.net>
+Subject: [PATCH 2/2] ASoC: cs42l52: Improve two size
+ determinations in cs42l52_i2c_probe()
+Date: Wed, 22 Nov 2017 22:23:41 +0100
+Message-ID: <d02ceefc-8918-f24d-6de7-8c6f348d5ed9@users.sourceforge.net>
 References: <c1e180fd-3c93-a724-09be-e12974ffdb9f@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 337CA266F03
- for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 22:22:25 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A498266F03
+ for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 22:24:23 +0100 (CET)
 In-Reply-To: <c1e180fd-3c93-a724-09be-e12974ffdb9f@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,33 +27,44 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 22 Nov 2017 22:08:06 +0100
+Date: Wed, 22 Nov 2017 22:11:30 +0100
 
-Omit an extra message for a memory allocation failure in this function.
+Replace the specification of two data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/codecs/cs42l52.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs42l52.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 0d9c4a57301b..e8645f2ac0d9 100644
+index e8645f2ac0d9..9731e5dff291 100644
 --- a/sound/soc/codecs/cs42l52.c
 +++ b/sound/soc/codecs/cs42l52.c
-@@ -1118,10 +1118,9 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
- 		pdata = devm_kzalloc(&i2c_client->dev,
- 				     sizeof(struct cs42l52_platform_data),
- 				GFP_KERNEL);
--		if (!pdata) {
--			dev_err(&i2c_client->dev, "could not allocate pdata\n");
-+		if (!pdata)
+@@ -1100,8 +1100,7 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 	unsigned int reg;
+ 	u32 val32;
+ 
+-	cs42l52 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l52_private),
+-			       GFP_KERNEL);
++	cs42l52 = devm_kzalloc(&i2c_client->dev, sizeof(*cs42l52), GFP_KERNEL);
+ 	if (cs42l52 == NULL)
+ 		return -ENOMEM;
+ 	cs42l52->dev = &i2c_client->dev;
+@@ -1115,9 +1114,8 @@ static int cs42l52_i2c_probe(struct i2c_client *i2c_client,
+ 	if (pdata) {
+ 		cs42l52->pdata = *pdata;
+ 	} else {
+-		pdata = devm_kzalloc(&i2c_client->dev,
+-				     sizeof(struct cs42l52_platform_data),
+-				GFP_KERNEL);
++		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
++				     GFP_KERNEL);
+ 		if (!pdata)
  			return -ENOMEM;
--		}
-+
- 		if (i2c_client->dev.of_node) {
- 			if (of_property_read_bool(i2c_client->dev.of_node,
- 				"cirrus,mica-differential-cfg"))
+ 
 -- 
 2.15.0
