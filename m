@@ -1,76 +1,58 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,
-	U}20_4
-Date: Thu, 23 Nov 2017 08:27:10 +0900
-Message-ID: <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S, U}20_4
+Date: Thu, 23 Nov 2017 00:44:19 +0100
+Message-ID: <4d0f43f5-0161-3dfb-1692-e755ad7fe641@maciej.szmigiero.name>
 References: <53d527c0-89f6-d501-09e9-1effea8a5bac@maciej.szmigiero.name>
+ <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 3566B266F03
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 00:27:16 +0100 (CET)
-In-Reply-To: <53d527c0-89f6-d501-09e9-1effea8a5bac@maciej.szmigiero.name>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 23 2017 04:17, Maciej S. Szmigiero wrote:
-> This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
-> 20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
-> allow 3-byte accesses (including DMA) so a 4-byte format is needed for it.
+On 23.11.2017 00:27, Takashi Sakamoto wrote:
+> On Nov 23 2017 04:17, Maciej S. Szmigiero wrote:
+(..)
+>> --- a/include/uapi/sound/asound.h
+>> +++ b/include/uapi/sound/asound.h
+>> @@ -236,7 +236,11 @@ typedef int __bitwise snd_pcm_format_t;
+>>   #define    SNDRV_PCM_FORMAT_DSD_U32_LE    ((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
+>>   #define    SNDRV_PCM_FORMAT_DSD_U16_BE    ((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
+>>   #define    SNDRV_PCM_FORMAT_DSD_U32_BE    ((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
+>> -#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_DSD_U32_BE
+>> +#define    SNDRV_PCM_FORMAT_S20_4LE    ((__force snd_pcm_format_t) 53)    /* in four bytes */
+>> +#define    SNDRV_PCM_FORMAT_S20_4BE    ((__force snd_pcm_format_t) 54)    /* in four bytes */
+>> +#define    SNDRV_PCM_FORMAT_U20_4LE    ((__force snd_pcm_format_t) 55)    /* in four bytes */
+>> +#define    SNDRV_PCM_FORMAT_U20_4BE    ((__force snd_pcm_format_t) 56)    /* in four bytes */
+>> +#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_U20_4BE
 > 
-> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-> ---
->   include/sound/pcm.h         |  8 ++++++++
->   include/sound/soc-dai.h     |  2 ++
->   include/uapi/sound/asound.h | 10 +++++++++-
->   sound/core/pcm_misc.c       | 16 ++++++++++++++++
->   4 files changed, 35 insertions(+), 1 deletion(-)
->
-> ... >
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index c227ccba60ae..69b661816491 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -236,7 +236,11 @@ typedef int __bitwise snd_pcm_format_t;
->   #define	SNDRV_PCM_FORMAT_DSD_U32_LE	((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
->   #define	SNDRV_PCM_FORMAT_DSD_U16_BE	((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
->   #define	SNDRV_PCM_FORMAT_DSD_U32_BE	((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
-> -#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_BE
-> +#define	SNDRV_PCM_FORMAT_S20_4LE	((__force snd_pcm_format_t) 53)	/* in four bytes */
-> +#define	SNDRV_PCM_FORMAT_S20_4BE	((__force snd_pcm_format_t) 54)	/* in four bytes */
-> +#define	SNDRV_PCM_FORMAT_U20_4LE	((__force snd_pcm_format_t) 55)	/* in four bytes */
-> +#define	SNDRV_PCM_FORMAT_U20_4BE	((__force snd_pcm_format_t) 56)	/* in four bytes */
-> +#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_U20_4BE
+> In my opinion, for this type of definition, it's better to declare left/right-adjusted or padding side. (Of course, silence definition is already a hint, however the lack of information forces developers to have a careful behaviour to handle entries on the list.> (I note that in current ALSA PCM interface there's no way to deliver MSB/LSB-first information about sample format.)
 
-In my opinion, for this type of definition, it's better to declare 
-left/right-adjusted or padding side. (Of course, silence definition is 
-already a hint, however the lack of information forces developers to 
-have a careful behaviour to handle entries on the list.)
+No other sound format includes this information in its name so if we name
+these formats SNDRV_PCM_FORMAT_{S, U}20LSB_4 they are going to have it
+inconsistent with every other one (I assume you meant to include such
+information in a format name?).
 
-(I note that in current ALSA PCM interface there's no way to deliver 
-MSB/LSB-first information about sample format.)
+But information about whether this format is MSB or LSB justified can be
+added in a comment so the situation is clear for other developers from
+the definition without needing to read the actual processing code.
 
-Additionally, alsa-lib includes some codes related to the definition[1]. 
-If you'd like to thing goes well out of ALSA SoC part, it's better to 
-submit changes to the library as well.
+> Additionally, alsa-lib includes some codes related to the definition[1]. If you'd like to thing goes well out of ALSA SoC part, it's better to submit changes to the library as well.
+> 
+> [1] http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_misc.c;h=5420b1895713a3aec3624a5218794a7b49baf167;hb=HEAD
 
-[1] 
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_misc.c;h=5420b1895713a3aec3624a5218794a7b49baf167;hb=HEAD
+I have alsa-lib changes ready for these formats - they were needed to
+test these patches, will post them when this is merged on the kernel
+side (in case some changes are needed which affect both).
 
+> Regards
+> 
+> Takashi Sakamoto
 
-Regards
-
-Takashi Sakamoto
+Best regards,
+Maciej Szmigiero
