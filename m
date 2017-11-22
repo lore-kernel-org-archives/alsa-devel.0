@@ -1,295 +1,67 @@
 From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH 8/8] arm64: dts: uniphier: add sound node for UniPhier
-Date: Wed, 22 Nov 2017 20:43:21 +0900
-Message-ID: <20171122114321.29196-9-suzuki.katsuhiro@socionext.com>
-References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
+Subject: [PATCH 0/8] add UniPhier audio system support
+Date: Wed, 22 Nov 2017 20:43:13 +0900
+Message-ID: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>
 Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds audio controller, codec and simple card node of
-UniPhier AIO sound system for LD11/20 SoCs.
+This series adds support for Socionext audio system for
+UniPhier LD11/LD20 SoCs. This driver supports I2S output
+for Line-In, Line-Out and S/PDIF output.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
----
- .../boot/dts/socionext/uniphier-ld11-global.dts    | 72 ++++++++++++++++++++++
- arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi   | 31 ++++++++++
- .../boot/dts/socionext/uniphier-ld20-global.dts    | 72 ++++++++++++++++++++++
- arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi   | 35 +++++++++++
- 4 files changed, 210 insertions(+)
+UniPhier AIO DAI driver provides sound devices such as I2S, S/PDIF.
+Since the AIO has mixed register map for those I/Os, it is hard to
+split register areas for each sound devices.
 
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-index 2452b2243f42..4eb8d00a8c02 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld11-global.dts
-@@ -37,6 +37,29 @@
- 		device_type = "memory";
- 		reg = <0 0x80000000 0 0x40000000>;
- 	};
-+
-+	soc@0 {
-+		sound {
-+			compatible = "audio-graph-card";
-+			label = "UniPhier LD11";
-+			widgets = "Headphone", "Headphone Jack";
-+
-+			dais = <&i2s_port2
-+				&i2s_port4
-+				&spdif_port0>;
-+		};
-+
-+		spdif-out {
-+			compatible = "linux,spdif-dit";
-+			#sound-dai-cells = <0>;
-+
-+			port@0 {
-+				spdif_tx: endpoint {
-+					remote-endpoint = <&spdif_hiecout1>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &serial0 {
-@@ -72,3 +95,52 @@
- &nand {
- 	status = "okay";
- };
-+
-+&audio {
-+	i2s_port0: port@0 {
-+		i2s_hdmi: endpoint {
-+		};
-+	};
-+
-+	i2s_port1: port@1 {
-+		i2s_pcmin2: endpoint {
-+		};
-+	};
-+
-+	i2s_port2: port@2 {
-+		i2s_line: endpoint {
-+			remote-endpoint = <&evea_line>;
-+		};
-+	};
-+
-+	i2s_port3: port@3 {
-+		i2s_hpcmout1: endpoint {
-+		};
-+	};
-+
-+	i2s_port4: port@4 {
-+		i2s_pcmout3: endpoint {
-+			remote-endpoint = <&evea_hp>;
-+		};
-+	};
-+
-+	spdif_port0: port@5 {
-+		spdif_hiecout1: endpoint {
-+			remote-endpoint = <&spdif_tx>;
-+		};
-+	};
-+};
-+
-+&evea {
-+	port@0 {
-+		evea_line: endpoint {
-+			remote-endpoint = <&i2s_line>;
-+		};
-+	};
-+
-+	port@1 {
-+		evea_hp: endpoint {
-+			remote-endpoint = <&i2s_pcmout3>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-index 1c63d0ab8a58..875e3d832090 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi
-@@ -186,6 +186,29 @@
- 						     <21 217 3>;
- 		};
- 
-+		audio: audio@56000000 {
-+			compatible = "socionext,uniphier-ld11-aio";
-+			reg = <0x56000000 0x80000>;
-+			interrupts = <0 144 4>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_aout>;
-+			clock-names = "aio";
-+			clocks = <&sys_clk 40>;
-+			reset-names = "aio";
-+			resets = <&sys_rst 40>;
-+			#sound-dai-cells = <1>;
-+		};
-+
-+		evea: codec@57900000 {
-+			compatible = "socionext,uniphier-evea";
-+			reg = <0x57900000 0x1000>;
-+			clock-names = "evea", "exiv";
-+			clocks = <&sys_clk 41>, <&sys_clk 42>;
-+			reset-names = "evea", "exiv", "adamv";
-+			resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
-+			#sound-dai-cells = <1>;
-+		};
-+
- 		adamv@57920000 {
- 			compatible = "socionext,uniphier-ld11-adamv",
- 				     "simple-mfd", "syscon";
-@@ -471,3 +494,11 @@
- };
- 
- #include "uniphier-pinctrl.dtsi"
-+
-+&pinctrl_aout {
-+	drive-strength = <4>;	/* default: 4mA */
-+	group_1 {
-+		pins = "AO1ARC";
-+		drive-strength = <8>;	/* 8mA */
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-index fc2bc9d75d35..ebcd65631bca 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20-global.dts
-@@ -37,6 +37,29 @@
- 		device_type = "memory";
- 		reg = <0 0x80000000 0 0xc0000000>;
- 	};
-+
-+	soc@0 {
-+		sound {
-+			compatible = "audio-graph-card";
-+			label = "UniPhier LD20";
-+			widgets = "Headphone", "Headphone Jack";
-+
-+			dais = <&i2s_port2
-+				&i2s_port4
-+				&spdif_port0>;
-+		};
-+
-+		spdif-out {
-+			compatible = "linux,spdif-dit";
-+			#sound-dai-cells = <0>;
-+
-+			port@0 {
-+				spdif_tx: endpoint {
-+					remote-endpoint = <&spdif_hiecout1>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &serial0 {
-@@ -54,3 +77,52 @@
- &nand {
- 	status = "okay";
- };
-+
-+&audio {
-+	i2s_port0: port@0 {
-+		i2s_hdmi: endpoint {
-+		};
-+	};
-+
-+	i2s_port1: port@1 {
-+		i2s_pcmin2: endpoint {
-+		};
-+	};
-+
-+	i2s_port2: port@2 {
-+		i2s_line: endpoint {
-+			remote-endpoint = <&evea_line>;
-+		};
-+	};
-+
-+	i2s_port3: port@3 {
-+		i2s_hpcmout1: endpoint {
-+		};
-+	};
-+
-+	i2s_port4: port@4 {
-+		i2s_pcmout3: endpoint {
-+			remote-endpoint = <&evea_hp>;
-+		};
-+	};
-+
-+	spdif_port0: port@5 {
-+		spdif_hiecout1: endpoint {
-+			remote-endpoint = <&spdif_tx>;
-+		};
-+	};
-+};
-+
-+&evea {
-+	port@0 {
-+		evea_line: endpoint {
-+			remote-endpoint = <&i2s_line>;
-+		};
-+	};
-+
-+	port@1 {
-+		evea_hp: endpoint {
-+			remote-endpoint = <&i2s_pcmout3>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-index 5c81070944cc..d42bb1be1137 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi
-@@ -286,6 +286,29 @@
- 						     <21 217 3>;
- 		};
- 
-+		audio: audio@56000000 {
-+			compatible = "socionext,uniphier-ld20-aio";
-+			reg = <0x56000000 0x80000>;
-+			interrupts = <0 144 4>;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_aout>;
-+			clock-names = "aio";
-+			clocks = <&sys_clk 40>;
-+			reset-names = "aio";
-+			resets = <&sys_rst 40>;
-+			#sound-dai-cells = <1>;
-+		};
-+
-+		evea: codec@57900000 {
-+			compatible = "socionext,uniphier-evea";
-+			reg = <0x57900000 0x1000>;
-+			clock-names = "evea", "exiv";
-+			clocks = <&sys_clk 41>, <&sys_clk 42>;
-+			reset-names = "evea", "exiv", "adamv";
-+			resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
-+			#sound-dai-cells = <1>;
-+		};
-+
- 		adamv@57920000 {
- 			compatible = "socionext,uniphier-ld20-adamv",
- 				     "simple-mfd", "syscon";
-@@ -527,3 +550,15 @@
- };
- 
- #include "uniphier-pinctrl.dtsi"
-+
-+&pinctrl_aout {
-+	drive-strength = <4>;	/* default: 3.5mA */
-+	group_1 {
-+		pins = "AO1DACCK";
-+		drive-strength = <5>;	/* 5mA */
-+	};
-+	group_2 {
-+		pins = "AO1ARC";
-+		drive-strength = <11>;	/* 11mA */
-+	};
-+};
+UniPhier EVEA is a codec core for Line-In, Line-Out. Since this core
+is only in internal of UniPhier series SoC, this driver works
+independently but only UniPhier SoC can use it.
+
+Katsuhiro Suzuki (8):
+  ASoC: spdif: Add S32_LE support for S/PDIF dummy codec drivers
+  ASoC: uniphier: add DT bindings documentation for UniPhier EVEA
+  ASoC: uniphier: add DT bindings documentation for UniPhier AIO
+  ASoC: uniphier: add support for UniPhier EVEA codec
+  ASoC: uniphier: add support for UniPhier AIO driver
+  ASoC: uniphier: add support for UniPhier LD11/LD20 AIO driver
+  MAINTAINERS: add entries for UniPhier ASoC sound drivers
+  arm64: dts: uniphier: add sound node for UniPhier
+
+ .../devicetree/bindings/sound/uniphier,aio.txt     |  36 ++
+ .../devicetree/bindings/sound/uniphier,evea.txt    |  26 +
+ MAINTAINERS                                        |   6 +
+ .../boot/dts/socionext/uniphier-ld11-global.dts    |  72 +++
+ arch/arm64/boot/dts/socionext/uniphier-ld11.dtsi   |  31 +
+ .../boot/dts/socionext/uniphier-ld20-global.dts    |  72 +++
+ arch/arm64/boot/dts/socionext/uniphier-ld20.dtsi   |  35 ++
+ sound/soc/Kconfig                                  |   1 +
+ sound/soc/Makefile                                 |   1 +
+ sound/soc/codecs/spdif_receiver.c                  |   5 +-
+ sound/soc/codecs/spdif_transmitter.c               |   5 +-
+ sound/soc/uniphier/Kconfig                         |  34 +
+ sound/soc/uniphier/Makefile                        |   8 +
+ sound/soc/uniphier/aio-core.c                      | 368 +++++++++++
+ sound/soc/uniphier/aio-dma.c                       | 266 ++++++++
+ sound/soc/uniphier/aio-ld11.c                      | 343 ++++++++++
+ sound/soc/uniphier/aio-regctrl.c                   | 699 +++++++++++++++++++++
+ sound/soc/uniphier/aio-regctrl.h                   | 495 +++++++++++++++
+ sound/soc/uniphier/aio.h                           | 261 ++++++++
+ sound/soc/uniphier/evea.c                          | 567 +++++++++++++++++
+ 20 files changed, 3327 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/uniphier,aio.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/uniphier,evea.txt
+ create mode 100644 sound/soc/uniphier/Kconfig
+ create mode 100644 sound/soc/uniphier/Makefile
+ create mode 100644 sound/soc/uniphier/aio-core.c
+ create mode 100644 sound/soc/uniphier/aio-dma.c
+ create mode 100644 sound/soc/uniphier/aio-ld11.c
+ create mode 100644 sound/soc/uniphier/aio-regctrl.c
+ create mode 100644 sound/soc/uniphier/aio-regctrl.h
+ create mode 100644 sound/soc/uniphier/aio.h
+ create mode 100644 sound/soc/uniphier/evea.c
+
 -- 
 2.15.0
