@@ -1,636 +1,196 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [alsa-devel] [PATCH v3 2/7] ASoC: Intel: Skylake: Add ssp clock driver
-Date: Wed, 22 Nov 2017 16:11:14 +0530
-Message-ID: <1511347279-26989-3-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [alsa-devel] [PATCH v3 4/7] ASoC: Intel: kbl: Enable mclk and ssp sclk early
+Date: Wed, 22 Nov 2017 16:11:16 +0530
+Message-ID: <1511347279-26989-5-git-send-email-sriramx.periyasamy@intel.com>
 References: <1511347279-26989-1-git-send-email-sriramx.periyasamy@intel.com>
 Return-path: <linux-clk-owner@vger.kernel.org>
 In-Reply-To: <1511347279-26989-1-git-send-email-sriramx.periyasamy@intel.com>
 Sender: linux-clk-owner@vger.kernel.org
 To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Harsha Priya <harshapriya.n@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For certain platforms, it is required to start the clocks (mclk/sclk/fs)
-before the stream start. Example: for few chrome systems, codec needs the
-mclk/sclk to be enabled early for a successful clock synchronization and
-for few IVI platforms, clock need to be enabled at boot and should be ON
-always.
+From: Harsha Priya <harshapriya.n@intel.com>
 
-Add the required structures and create set_dma_control ipc to enable or
-disable the clock. To enable sclk without fs, mclk ipc structure is used,
-else sclkfs ipc structure is used.
+rt5663 needs mclk/sclk early to synchronize its internal clocks. Enable
+these clocks early.
 
-Clock prepare/unprepare are used to enable/disable the clock as the IPC
-will be sent in non-atomic context. The clk set_dma_control IPC
-structures are populated during the set_rate callback and IPC is sent
-to enable the clock during prepare callback.
-
-This patch creates virtual clock driver, which allows the machine driver
-to use the clock interface to send IPCs to DSP to enable/disable the
-clocks.
-
-Signed-off-by: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/Kconfig                |   3 +
- sound/soc/intel/skylake/Makefile       |   5 +
- sound/soc/intel/skylake/skl-messages.c |   1 +
- sound/soc/intel/skylake/skl-ssp-clk.c  | 470 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-ssp-clk.h  |  38 +++
- sound/soc/intel/skylake/skl.h          |   6 +
- 6 files changed, 523 insertions(+)
- create mode 100644 sound/soc/intel/skylake/skl-ssp-clk.c
+ sound/soc/intel/boards/Kconfig               |   1 +
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 101 ++++++++++++++++++++++++++-
+ 2 files changed, 101 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index e181182..826a30f 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -53,6 +53,9 @@ config SND_SST_ATOM_HIFI2_PLATFORM
- 	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
- 	select SND_SOC_COMPRESS
- 
-+config SND_SOC_INTEL_SKYLAKE_SSP_CLK
-+	tristate
-+
- config SND_SOC_INTEL_SKYLAKE
- 	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
- 	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
-diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index 3380deb..9131c35 100644
---- a/sound/soc/intel/skylake/Makefile
-+++ b/sound/soc/intel/skylake/Makefile
-@@ -13,3 +13,8 @@ snd-soc-skl-ipc-objs := skl-sst-ipc.o skl-sst-dsp.o cnl-sst-dsp.o \
- 		skl-sst-utils.o
- 
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl-ipc.o
-+
-+#Skylake Clock device support
-+snd-soc-skl-ssp-clk-objs := skl-ssp-clk.o
-+
-+obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE_SSP_CLK) += snd-soc-skl-ssp-clk.o
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index f637829..e9fd352 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -653,6 +653,7 @@ int skl_dsp_set_dma_control(struct skl_sst *ctx, u32 *caps,
- 	kfree(dma_ctrl);
- 	return err;
- }
-+EXPORT_SYMBOL_GPL(skl_dsp_set_dma_control);
- 
- static void skl_setup_out_format(struct skl_sst *ctx,
- 			struct skl_module_cfg *mconfig,
-diff --git a/sound/soc/intel/skylake/skl-ssp-clk.c b/sound/soc/intel/skylake/skl-ssp-clk.c
-new file mode 100644
-index 0000000..856831d
---- /dev/null
-+++ b/sound/soc/intel/skylake/skl-ssp-clk.c
-@@ -0,0 +1,470 @@
-+/*
-+ *  skl-ssp-clk.c - ASoC skylake ssp clock driver
-+ *
-+ *  Copyright (C) 2017 Intel Corp
-+ *  Author: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
-+ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-+ *
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/err.h>
-+#include <linux/platform_device.h>
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 449bc8b..f62f2ab 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -262,6 +262,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
++	select SND_SOC_INTEL_SKYLAKE_SSP_CLK
+ 	help
+ 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+ 	  create an alsa sound card for RT5663 + MAX98927.
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 6f9a8bc..409c321 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -28,6 +28,9 @@
+ #include "../../codecs/rt5663.h"
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../skylake/skl.h"
++#include <linux/clk.h>
 +#include <linux/clk-provider.h>
 +#include <linux/clkdev.h>
-+#include "skl.h"
-+#include "skl-ssp-clk.h"
-+#include "skl-topology.h"
-+
-+#define to_skl_clk(_hw)	container_of(_hw, struct skl_clk, hw)
-+
-+struct skl_clk_parent {
-+	struct clk_hw *hw;
-+	struct clk_lookup *lookup;
-+};
-+
-+struct skl_clk {
-+	struct clk_hw hw;
-+	struct clk_lookup *lookup;
-+	unsigned long rate;
-+	struct skl_clk_pdata *pdata;
-+	u32 id;
-+};
-+
-+struct skl_clk_data {
-+	struct skl_clk_parent parent[SKL_MAX_CLK_SRC];
-+	struct skl_clk *clk[SKL_MAX_CLK_CNT];
-+	u8 avail_clk_cnt;
-+};
-+
-+static int skl_get_clk_type(u32 index)
+ 
+ #define KBL_REALTEK_CODEC_DAI "rt5663-aif"
+ #define KBL_MAXIM_CODEC_DAI "max98927-aif1"
+@@ -48,6 +51,8 @@ struct kbl_hdmi_pcm {
+ struct kbl_rt5663_private {
+ 	struct snd_soc_jack kabylake_headset;
+ 	struct list_head hdmi_pcm_list;
++	struct clk *mclk;
++	struct clk *sclk;
+ };
+ 
+ enum {
+@@ -69,6 +74,67 @@ static const struct snd_kcontrol_new kabylake_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Right Spk"),
+ };
+ 
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++			struct snd_kcontrol *k, int  event)
 +{
-+	switch (index) {
-+	case 0 ... (SKL_SCLK_OFS - 1):
-+		return SKL_MCLK;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
++	int ret = 0;
 +
-+	case SKL_SCLK_OFS ... (SKL_SCLKFS_OFS - 1):
-+		return SKL_SCLK;
++	/*
++	 * MCLK/SCLK need to be ON early for a successful synchronization of
++	 * codec internal clock. And the clocks are turned off during
++	 * POST_PMD after the stream is stopped.
++	 */
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (__clk_is_enabled(priv->mclk))
++			return 0;
 +
-+	case SKL_SCLKFS_OFS ... (SKL_MAX_CLK_CNT - 1):
-+		return SKL_SCLK_FS;
++		/* Enable MCLK */
++		ret = clk_set_rate(priv->mclk, 24000000);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
++				ret);
++			return ret;
++		}
 +
++		ret = clk_prepare_enable(priv->mclk);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
++			return ret;
++		}
++
++		/* Enable SCLK */
++		ret = clk_set_rate(priv->sclk, 3072000);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't set rate for sclk, err: %d\n",
++				ret);
++			clk_disable_unprepare(priv->mclk);
++			return ret;
++		}
++
++		ret = clk_prepare_enable(priv->sclk);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
++			clk_disable_unprepare(priv->mclk);
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		if (!__clk_is_enabled(priv->mclk))
++			return 0;
++
++		clk_disable_unprepare(priv->mclk);
++		clk_disable_unprepare(priv->sclk);
++		break;
 +	default:
-+		return -EINVAL;
++		return 0;
 +	}
-+}
-+
-+static int skl_get_vbus_id(u32 index, u8 clk_type)
-+{
-+	switch (clk_type) {
-+	case SKL_MCLK:
-+		return index;
-+
-+	case SKL_SCLK:
-+		return index - SKL_SCLK_OFS;
-+
-+	case SKL_SCLK_FS:
-+		return index - SKL_SCLKFS_OFS;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static void skl_fill_clk_ipc(struct skl_clk_rate_cfg_table *rcfg, u8 clk_type)
-+{
-+	struct nhlt_fmt_cfg *fmt_cfg;
-+	union skl_clk_ctrl_ipc *ipc;
-+	struct wav_fmt *wfmt;
-+
-+	if (!rcfg)
-+		return;
-+
-+	ipc = &rcfg->dma_ctl_ipc;
-+	if (clk_type == SKL_SCLK_FS) {
-+		fmt_cfg = (struct nhlt_fmt_cfg *)rcfg->config;
-+		wfmt = &fmt_cfg->fmt_ext.fmt;
-+
-+		/* Remove TLV Header size */
-+		ipc->sclk_fs.hdr.size = sizeof(struct skl_dmactrl_sclkfs_cfg) -
-+						sizeof(struct skl_tlv_hdr);
-+		ipc->sclk_fs.sampling_frequency = wfmt->samples_per_sec;
-+		ipc->sclk_fs.bit_depth = wfmt->bits_per_sample;
-+		ipc->sclk_fs.valid_bit_depth =
-+			fmt_cfg->fmt_ext.sample.valid_bits_per_sample;
-+		ipc->sclk_fs.number_of_channels = wfmt->channels;
-+	} else {
-+		ipc->mclk.hdr.type = DMA_CLK_CONTROLS;
-+		/* Remove TLV Header size */
-+		ipc->mclk.hdr.size = sizeof(struct skl_dmactrl_mclk_cfg) -
-+						sizeof(struct skl_tlv_hdr);
-+	}
-+}
-+
-+/* Sends dma control IPC to turn the clock ON/OFF */
-+static int skl_send_clk_dma_control(struct skl *skl,
-+				struct skl_clk_rate_cfg_table *rcfg,
-+				u32 vbus_id, u8 clk_type,
-+				bool enable)
-+{
-+	struct nhlt_specific_cfg *sp_cfg;
-+	u32 i2s_config_size, node_id = 0;
-+	struct nhlt_fmt_cfg *fmt_cfg;
-+	union skl_clk_ctrl_ipc *ipc;
-+	void *i2s_config = NULL;
-+	u8 *data, size;
-+	int ret;
-+
-+	if (!rcfg)
-+		return -EIO;
-+
-+	ipc = &rcfg->dma_ctl_ipc;
-+	fmt_cfg = (struct nhlt_fmt_cfg *)rcfg->config;
-+	sp_cfg = &fmt_cfg->config;
-+
-+	if (clk_type == SKL_SCLK_FS) {
-+		ipc->sclk_fs.hdr.type =
-+			enable ? DMA_TRANSMITION_START : DMA_TRANSMITION_STOP;
-+		data = (u8 *)&ipc->sclk_fs;
-+		size = sizeof(struct skl_dmactrl_sclkfs_cfg);
-+	} else {
-+		/* 1 to enable mclk, 0 to enable sclk */
-+		if (clk_type == SKL_SCLK)
-+			ipc->mclk.mclk = 0;
-+		else
-+			ipc->mclk.mclk = 1;
-+
-+		ipc->mclk.keep_running = enable;
-+		ipc->mclk.warm_up_over = enable;
-+		ipc->mclk.clk_stop_over = !enable;
-+		data = (u8 *)&ipc->mclk;
-+		size = sizeof(struct skl_dmactrl_mclk_cfg);
-+	}
-+
-+	i2s_config_size = sp_cfg->size + size;
-+	i2s_config = kzalloc(i2s_config_size, GFP_KERNEL);
-+	if (!i2s_config)
-+		return -ENOMEM;
-+
-+	/* copy blob */
-+	memcpy(i2s_config, sp_cfg->caps, sp_cfg->size);
-+
-+	/* copy additional dma controls information */
-+	memcpy(i2s_config + sp_cfg->size, data, size);
-+
-+	node_id = ((SKL_DMA_I2S_LINK_INPUT_CLASS << 8) | (vbus_id << 4));
-+	ret = skl_dsp_set_dma_control(skl->skl_sst, (u32 *)i2s_config,
-+					i2s_config_size, node_id);
-+	kfree(i2s_config);
-+
-+	return ret;
-+}
-+
-+static struct skl_clk_rate_cfg_table *skl_get_rate_cfg(
-+		struct skl_clk_rate_cfg_table *rcfg,
-+				unsigned long rate)
-+{
-+	int i;
-+
-+	for (i = 0; (i < SKL_MAX_CLK_RATES) && rcfg[i].rate; i++) {
-+		if (rcfg[i].rate == rate)
-+			return &rcfg[i];
-+	}
-+
-+	return NULL;
-+}
-+
-+static int skl_clk_change_status(struct skl_clk *clkdev,
-+				bool enable)
-+{
-+	struct skl_clk_rate_cfg_table *rcfg;
-+	int vbus_id, clk_type;
-+
-+	clk_type = skl_get_clk_type(clkdev->id);
-+	if (clk_type < 0)
-+		return clk_type;
-+
-+	vbus_id = skl_get_vbus_id(clkdev->id, clk_type);
-+	if (vbus_id < 0)
-+		return vbus_id;
-+
-+	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-+						clkdev->rate);
-+	if (!rcfg)
-+		return -EINVAL;
-+
-+	return skl_send_clk_dma_control(clkdev->pdata->pvt_data, rcfg,
-+					vbus_id, clk_type, enable);
-+}
-+
-+static int skl_clk_prepare(struct clk_hw *hw)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+
-+	if (!clkdev)
-+		return -ENODEV;
-+
-+	return skl_clk_change_status(clkdev, true);
-+}
-+
-+static void skl_clk_unprepare(struct clk_hw *hw)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+
-+	if (!clkdev)
-+		return;
-+
-+	skl_clk_change_status(clkdev, false);
-+}
-+
-+static int skl_clk_set_rate(struct clk_hw *hw, unsigned long rate,
-+					unsigned long parent_rate)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+	struct skl_clk_rate_cfg_table *rcfg;
-+	int clk_type;
-+
-+	if (!clkdev)
-+		return -ENODEV;
-+
-+	if (!rate)
-+		return -EINVAL;
-+
-+	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-+							rate);
-+	if (!rcfg)
-+		return -EINVAL;
-+
-+	clk_type = skl_get_clk_type(clkdev->id);
-+	if (clk_type < 0)
-+		return clk_type;
-+
-+	skl_fill_clk_ipc(rcfg, clk_type);
-+	clkdev->rate = rate;
 +
 +	return 0;
 +}
 +
-+static unsigned long skl_clk_recalc_rate(struct clk_hw *hw,
-+				unsigned long parent_rate)
-+{
-+	struct skl_clk *clkdev = to_skl_clk(hw);
-+	struct skl_clk_rate_cfg_table *rcfg;
-+	int clk_type;
-+
-+	if (!clkdev)
-+		return 0;
-+
-+	if (clkdev->rate)
-+		return clkdev->rate;
-+
-+	rcfg = skl_get_rate_cfg(clkdev->pdata->ssp_clks[clkdev->id].rate_cfg,
-+					parent_rate);
-+	if (!rcfg)
-+		return 0;
-+
-+	clk_type = skl_get_clk_type(clkdev->id);
-+	if (clk_type < 0)
-+		return 0;
-+
-+	skl_fill_clk_ipc(rcfg, clk_type);
-+	clkdev->rate = rcfg->rate;
-+
-+	return clkdev->rate;
-+}
-+
-+/* Not supported by clk driver. Implemented to satisfy clk fw */
-+long skl_clk_round_rate(struct clk_hw *hw, unsigned long rate,
-+				unsigned long *parent_rate)
-+{
-+	return rate;
-+}
-+
-+/*
-+ * prepare/unprepare are used instead of enable/disable as IPC will be sent
-+ * in non-atomic context.
-+ */
-+static const struct clk_ops skl_clk_ops = {
-+	.prepare = skl_clk_prepare,
-+	.unprepare = skl_clk_unprepare,
-+	.set_rate = skl_clk_set_rate,
-+	.round_rate = skl_clk_round_rate,
-+	.recalc_rate = skl_clk_recalc_rate,
-+};
-+
-+static void unregister_parent_src_clk(struct skl_clk_parent *pclk,
-+					unsigned int id)
-+{
-+	while (id--) {
-+		clkdev_drop(pclk[id].lookup);
-+		clk_hw_unregister_fixed_rate(pclk[id].hw);
-+	}
-+}
-+
-+static void unregister_src_clk(struct skl_clk_data *dclk)
-+{
-+	u8 cnt = dclk->avail_clk_cnt;
-+
-+	while (cnt--)
-+		clkdev_drop(dclk->clk[cnt]->lookup);
-+}
-+
-+static int skl_register_parent_clks(struct device *dev,
-+			struct skl_clk_parent *parent,
-+			struct skl_clk_parent_src *pclk)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < SKL_MAX_CLK_SRC; i++) {
-+
-+		/* Register Parent clock */
-+		parent[i].hw = clk_hw_register_fixed_rate(dev, pclk[i].name,
-+				pclk[i].parent_name, 0, pclk[i].rate);
-+		if (IS_ERR(parent[i].hw)) {
-+			ret = PTR_ERR(parent[i].hw);
-+			goto err;
-+		}
-+
-+		parent[i].lookup = clkdev_hw_create(parent[i].hw, pclk[i].name,
-+									NULL);
-+		if (!parent[i].lookup) {
-+			clk_hw_unregister_fixed_rate(parent[i].hw);
-+			ret = -ENOMEM;
-+			goto err;
-+		}
-+	}
-+
-+	return 0;
-+err:
-+	unregister_parent_src_clk(parent, i);
-+	return ret;
-+}
-+
-+/* Assign fmt_config to clk_data */
-+static struct skl_clk *register_skl_clk(struct device *dev,
-+			struct skl_ssp_clk *clk,
-+			struct skl_clk_pdata *clk_pdata, int id)
-+{
-+	struct clk_init_data init;
-+	struct skl_clk *clkdev;
+ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+@@ -78,11 +144,14 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
+-
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	/* HP jack connectors - unknown if we have jack detection */
++	{ "Headphone Jack", NULL, "Platform Clock" },
+ 	{ "Headphone Jack", NULL, "HPOL" },
+ 	{ "Headphone Jack", NULL, "HPOR" },
+ 
+@@ -91,6 +160,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "Right Spk", NULL, "Right BE_OUT" },
+ 
+ 	/* other jacks */
++	{ "Headset Mic", NULL, "Platform Clock" },
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 	{ "IN1N", NULL, "Headset Mic" },
+ 	{ "DMic", NULL, "SoC DMIC" },
+@@ -901,6 +971,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_rt5663_private *ctx;
+ 	struct skl_machine_pdata *pdata;
 +	int ret;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
+ 	if (!ctx)
+@@ -919,6 +990,34 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 		dmic_constraints = pdata->dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+ 
++	ctx->mclk = devm_clk_get(&pdev->dev, "ssp1_mclk");
++	if (IS_ERR(ctx->mclk)) {
++		ret = PTR_ERR(ctx->mclk);
++		if (ret == -ENOENT) {
++			dev_info(&pdev->dev,
++				"Failed to get ssp1_sclk, defer probe\n");
++			return -EPROBE_DEFER;
++		}
 +
-+	clkdev = devm_kzalloc(dev, sizeof(*clkdev), GFP_KERNEL);
-+	if (!clkdev)
-+		return ERR_PTR(-ENOMEM);
-+
-+	init.name = clk->name;
-+	init.ops = &skl_clk_ops;
-+	init.flags = 0;
-+	init.parent_names = &clk->parent_name;
-+	init.num_parents = 1;
-+	clkdev->hw.init = &init;
-+	clkdev->pdata = clk_pdata;
-+
-+	clkdev->id = id;
-+	ret = devm_clk_hw_register(dev, &clkdev->hw);
-+	if (ret) {
-+		clkdev = ERR_PTR(ret);
-+		return clkdev;
-+	}
-+
-+	clkdev->lookup = clkdev_hw_create(&clkdev->hw, init.name, NULL);
-+	if (!clkdev->lookup)
-+		clkdev = ERR_PTR(-ENOMEM);
-+
-+	return clkdev;
-+}
-+
-+static int skl_clk_dev_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device *parent_dev = dev->parent;
-+	struct skl_clk_parent_src *parent_clks;
-+	struct skl_clk_pdata *clk_pdata;
-+	struct skl_clk_data *data;
-+	struct skl_ssp_clk *clks;
-+	int ret, i;
-+
-+	clk_pdata = dev_get_platdata(&pdev->dev);
-+	parent_clks = clk_pdata->parent_clks;
-+	clks = clk_pdata->ssp_clks;
-+	if (!parent_clks || !clks)
-+		return -EIO;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	/* Register Parent clock */
-+	ret = skl_register_parent_clks(parent_dev, data->parent, parent_clks);
-+	if (ret < 0)
++		dev_err(&pdev->dev, "Failed to get ssp1_mclk with err:%d\n",
++								ret);
 +		return ret;
-+
-+	for (i = 0; i < clk_pdata->num_clks; i++) {
-+		/*
-+		 * Only register valid clocks
-+		 * i.e. for which nhlt entry is present.
-+		 */
-+		if (clks[i].rate_cfg[0].rate == 0)
-+			continue;
-+
-+		data->clk[i] = register_skl_clk(dev, &clks[i], clk_pdata, i);
-+		if (IS_ERR(data->clk[i])) {
-+			ret = PTR_ERR(data->clk[i]);
-+			goto err_unreg_skl_clk;
-+		}
-+
-+		data->avail_clk_cnt++;
 +	}
 +
-+	platform_set_drvdata(pdev, data);
++	ctx->sclk = devm_clk_get(&pdev->dev, "ssp1_sclk");
++	if (IS_ERR(ctx->sclk)) {
++		ret = PTR_ERR(ctx->sclk);
++		if (ret == -ENOENT) {
++			dev_info(&pdev->dev,
++				"Failed to get ssp1_sclk, defer probe\n");
++			return -EPROBE_DEFER;
++		}
 +
-+	return 0;
++		dev_err(&pdev->dev, "Failed to get ssp1_sclk with err:%d\n",
++								ret);
++		return ret;
++	}
 +
-+err_unreg_skl_clk:
-+	unregister_src_clk(data);
-+	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
-+
-+	return ret;
-+}
-+
-+static int skl_clk_dev_remove(struct platform_device *pdev)
-+{
-+	struct skl_clk_data *data;
-+
-+	data = platform_get_drvdata(pdev);
-+	unregister_src_clk(data);
-+	unregister_parent_src_clk(data->parent, SKL_MAX_CLK_SRC);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver skl_clk_driver = {
-+	.driver = {
-+		.name = "skl-ssp-clk",
-+	},
-+	.probe = skl_clk_dev_probe,
-+	.remove = skl_clk_dev_remove,
-+};
-+
-+module_platform_driver(skl_clk_driver);
-+
-+MODULE_DESCRIPTION("Skylake clock driver");
-+MODULE_AUTHOR("Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>");
-+MODULE_AUTHOR("Subhransu S. Prusty <subhransu.s.prusty@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:skl-ssp-clk");
-diff --git a/sound/soc/intel/skylake/skl-ssp-clk.h b/sound/soc/intel/skylake/skl-ssp-clk.h
-index c9ea840..d1be50f 100644
---- a/sound/soc/intel/skylake/skl-ssp-clk.h
-+++ b/sound/soc/intel/skylake/skl-ssp-clk.h
-@@ -54,8 +54,46 @@ struct skl_clk_parent_src {
- 	const char *parent_name;
- };
- 
-+struct skl_tlv_hdr {
-+	u32 type;
-+	u32 size;
-+};
-+
-+struct skl_dmactrl_mclk_cfg {
-+	struct skl_tlv_hdr hdr;
-+	/* DMA Clk TLV params */
-+	u32 clk_warm_up:16;
-+	u32 mclk:1;
-+	u32 warm_up_over:1;
-+	u32 rsvd0:14;
-+	u32 clk_stop_delay:16;
-+	u32 keep_running:1;
-+	u32 clk_stop_over:1;
-+	u32 rsvd1:14;
-+};
-+
-+struct skl_dmactrl_sclkfs_cfg {
-+	struct skl_tlv_hdr hdr;
-+	/* DMA SClk&FS  TLV params */
-+	u32 sampling_frequency;
-+	u32 bit_depth;
-+	u32 channel_map;
-+	u32 channel_config;
-+	u32 interleaving_style;
-+	u32 number_of_channels : 8;
-+	u32 valid_bit_depth : 8;
-+	u32 sample_type : 8;
-+	u32 reserved : 8;
-+};
-+
-+union skl_clk_ctrl_ipc {
-+	struct skl_dmactrl_mclk_cfg mclk;
-+	struct skl_dmactrl_sclkfs_cfg sclk_fs;
-+};
-+
- struct skl_clk_rate_cfg_table {
- 	unsigned long rate;
-+	union skl_clk_ctrl_ipc dma_ctl_ipc;
- 	void *config;
- };
- 
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 554ad6b..e27dc7a 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -36,6 +36,10 @@
- /* D0I3C Register fields */
- #define AZX_REG_VS_D0I3C_CIP      0x1 /* Command in progress */
- #define AZX_REG_VS_D0I3C_I3       0x4 /* D0i3 enable */
-+#define SKL_MAX_DMACTRL_CFG	18
-+#define DMA_CLK_CONTROLS	1
-+#define DMA_TRANSMITION_START	2
-+#define DMA_TRANSMITION_STOP	3
- 
- struct skl_dsp_resource {
- 	u32 max_mcps;
-@@ -129,6 +133,8 @@ int skl_nhlt_create_sysfs(struct skl *skl);
- void skl_nhlt_remove_sysfs(struct skl *skl);
- void skl_get_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks);
- struct skl_clk_parent_src *skl_get_parent_clk(u8 clk_id);
-+int skl_dsp_set_dma_control(struct skl_sst *ctx, u32 *caps,
-+				u32 caps_size, u32 node_id);
- 
- struct skl_module_cfg;
+ 	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
+ }
  
 -- 
 2.7.4
