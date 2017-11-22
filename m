@@ -1,161 +1,198 @@
 From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [alsa-devel] [PATCH v4 3/7] ASoC: Intel: Skylake: Add extended I2S config blob support in Clock driver
-Date: Wed, 22 Nov 2017 17:39:48 +0530
-Message-ID: <1511352592-4006-4-git-send-email-sriramx.periyasamy@intel.com>
+Subject: [alsa-devel] [PATCH v4 4/7] ASoC: Intel: kbl: Enable mclk and ssp sclk early
+Date: Wed, 22 Nov 2017 17:39:49 +0530
+Message-ID: <1511352592-4006-5-git-send-email-sriramx.periyasamy@intel.com>
 References: <1511352592-4006-1-git-send-email-sriramx.periyasamy@intel.com>
 Return-path: <linux-clk-owner@vger.kernel.org>
 In-Reply-To: <1511352592-4006-1-git-send-email-sriramx.periyasamy@intel.com>
 Sender: linux-clk-owner@vger.kernel.org
 To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Harsha Priya <harshapriya.n@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Extended I2S config blob supports multiple mclk dividers in NHLT blob.
-This patch detects whether the I2S blob is legacy or extended based on the
-signature value and chooses the mclk source and divider accordingly.
+From: Harsha Priya <harshapriya.n@intel.com>
 
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+rt5663 needs mclk/sclk early to synchronize its internal clocks. Enable
+these clocks early.
+
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
 ---
- sound/soc/intel/skylake/skl-i2s.h  | 31 ++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-nhlt.c | 41 +++++++++++++++++++++++++++-----------
- 2 files changed, 60 insertions(+), 12 deletions(-)
+ sound/soc/intel/boards/Kconfig               |   1 +
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 101 ++++++++++++++++++++++++++-
+ 2 files changed, 101 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-i2s.h b/sound/soc/intel/skylake/skl-i2s.h
-index dcf819b..ad0a1bb 100644
---- a/sound/soc/intel/skylake/skl-i2s.h
-+++ b/sound/soc/intel/skylake/skl-i2s.h
-@@ -27,6 +27,12 @@
- #define SKL_SHIFT(x)			(ffs(x) - 1)
- #define SKL_MCLK_DIV_RATIO_MASK		GENMASK(11, 0)
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 449bc8b..f62f2ab 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -262,6 +262,7 @@ config SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH
+ 	select SND_SOC_MAX98927
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
++	select SND_SOC_INTEL_SKYLAKE_SSP_CLK
+ 	help
+ 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
+ 	  create an alsa sound card for RT5663 + MAX98927.
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 6f9a8bc..409c321 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -28,6 +28,9 @@
+ #include "../../codecs/rt5663.h"
+ #include "../../codecs/hdac_hdmi.h"
+ #include "../skylake/skl.h"
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
  
-+#define is_legacy_blob(x) (x.signature != 0xEE)
-+#define ext_to_legacy_blob(i2s_config_blob_ext) \
-+	((struct skl_i2s_config_blob_legacy *) i2s_config_blob_ext)
-+
-+#define get_clk_src(mclk, mask) \
-+		((mclk.mdivctrl & mask) >> SKL_SHIFT(mask))
- struct skl_i2s_config {
- 	u32 ssc0;
- 	u32 ssc1;
-@@ -45,6 +51,24 @@ struct skl_i2s_config_mclk {
- 	u32 mdivr;
+ #define KBL_REALTEK_CODEC_DAI "rt5663-aif"
+ #define KBL_MAXIM_CODEC_DAI "max98927-aif1"
+@@ -48,6 +51,8 @@ struct kbl_hdmi_pcm {
+ struct kbl_rt5663_private {
+ 	struct snd_soc_jack kabylake_headset;
+ 	struct list_head hdmi_pcm_list;
++	struct clk *mclk;
++	struct clk *sclk;
  };
  
-+struct skl_i2s_config_mclk_ext {
-+	u32 mdivctrl;
-+	u32 mdivr_count;
-+	u32 mdivr[0];
-+} __packed;
-+
-+struct skl_i2s_config_blob_signature {
-+	u32 minor_ver : 8;
-+	u32 major_ver : 8;
-+	u32 resvdz : 8;
-+	u32 signature : 8;
-+} __packed;
-+
-+struct skl_i2s_config_blob_header {
-+	struct skl_i2s_config_blob_signature sig;
-+	u32 size;
-+};
-+
- /**
-  * struct skl_i2s_config_blob_legacy - Structure defines I2S Gateway
-  * configuration legacy blob
-@@ -61,4 +85,11 @@ struct skl_i2s_config_blob_legacy {
- 	struct skl_i2s_config_mclk mclk;
+ enum {
+@@ -69,6 +74,67 @@ static const struct snd_kcontrol_new kabylake_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Right Spk"),
  };
  
-+struct skl_i2s_config_blob_ext {
-+	u32 gtw_attr;
-+	struct skl_i2s_config_blob_header hdr;
-+	u32 tdm_ts_group[SKL_I2S_MAX_TIME_SLOTS];
-+	struct skl_i2s_config i2s_cfg;
-+	struct skl_i2s_config_mclk_ext mclk;
-+} __packed;
- #endif /* __SOUND_SOC_SKL_I2S_H */
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 4d2136c..c2dcce9 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -26,6 +26,7 @@ static guid_t osc_guid =
- 	GUID_INIT(0xA69F886E, 0x6CEB, 0x4594,
- 		  0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53);
- 
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++			struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
++	int ret = 0;
 +
- struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
- {
- 	acpi_handle handle;
-@@ -272,6 +273,7 @@ void skl_nhlt_remove_sysfs(struct skl *skl)
- void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
- 				struct nhlt_fmt *fmt, u8 id)
- {
-+	struct skl_i2s_config_blob_ext *i2s_config_ext;
- 	struct skl_i2s_config_blob_legacy *i2s_config;
- 	struct skl_clk_parent_src *parent;
- 	struct skl_ssp_clk *sclk, *sclkfs;
-@@ -332,12 +334,18 @@ void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
- 
- 		/* Fill rate and parent for sclk/sclkfs */
- 		if (!present) {
--			/* MCLK Divider Source Select */
--			i2s_config = (struct skl_i2s_config_blob_legacy *)
-+			i2s_config_ext = (struct skl_i2s_config_blob_ext *)
- 						fmt->fmt_config[0].config.caps;
--			clk_src = ((i2s_config->mclk.mdivctrl)
--					& SKL_MNDSS_DIV_CLK_SRC_MASK) >>
--					SKL_SHIFT(SKL_MNDSS_DIV_CLK_SRC_MASK);
++	/*
++	 * MCLK/SCLK need to be ON early for a successful synchronization of
++	 * codec internal clock. And the clocks are turned off during
++	 * POST_PMD after the stream is stopped.
++	 */
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (__clk_is_enabled(priv->mclk))
++			return 0;
 +
-+			/* MCLK Divider Source Select */
-+			if (is_legacy_blob(i2s_config_ext->hdr.sig)) {
-+				i2s_config = ext_to_legacy_blob(i2s_config_ext);
-+				clk_src = get_clk_src(i2s_config->mclk,
-+						SKL_MNDSS_DIV_CLK_SRC_MASK);
-+			} else {
-+				clk_src = get_clk_src(i2s_config_ext->mclk,
-+						SKL_MNDSS_DIV_CLK_SRC_MASK);
-+			}
- 
- 			parent = skl_get_parent_clk(clk_src);
- 
-@@ -363,6 +371,7 @@ void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
- void skl_get_mclk(struct skl *skl, struct skl_ssp_clk *mclk,
- 				struct nhlt_fmt *fmt, u8 id)
- {
-+	struct skl_i2s_config_blob_ext *i2s_config_ext;
- 	struct skl_i2s_config_blob_legacy *i2s_config;
- 	struct nhlt_specific_cfg *fmt_cfg;
- 	struct skl_clk_parent_src *parent;
-@@ -370,13 +379,21 @@ void skl_get_mclk(struct skl *skl, struct skl_ssp_clk *mclk,
- 	u8 clk_src;
- 
- 	fmt_cfg = &fmt->fmt_config[0].config;
--	i2s_config = (struct skl_i2s_config_blob_legacy *)fmt_cfg->caps;
--
--	/* MCLK Divider Source Select */
--	clk_src = ((i2s_config->mclk.mdivctrl) & SKL_MCLK_DIV_CLK_SRC_MASK) >>
--					SKL_SHIFT(SKL_MCLK_DIV_CLK_SRC_MASK);
--
--	clkdiv = i2s_config->mclk.mdivr & SKL_MCLK_DIV_RATIO_MASK;
-+	i2s_config_ext = (struct skl_i2s_config_blob_ext *)fmt_cfg->caps;
++		/* Enable MCLK */
++		ret = clk_set_rate(priv->mclk, 24000000);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't set rate for mclk, err: %d\n",
++				ret);
++			return ret;
++		}
 +
-+	/* MCLK Divider Source Select and divider */
-+	if (is_legacy_blob(i2s_config_ext->hdr.sig)) {
-+		i2s_config = ext_to_legacy_blob(i2s_config_ext);
-+		clk_src = get_clk_src(i2s_config->mclk,
-+				SKL_MCLK_DIV_CLK_SRC_MASK);
-+		clkdiv = i2s_config->mclk.mdivr &
-+				SKL_MCLK_DIV_RATIO_MASK;
-+	} else {
-+		clk_src = get_clk_src(i2s_config_ext->mclk,
-+				SKL_MCLK_DIV_CLK_SRC_MASK);
-+		clkdiv = i2s_config_ext->mclk.mdivr[0] &
-+				SKL_MCLK_DIV_RATIO_MASK;
++		ret = clk_prepare_enable(priv->mclk);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't enable mclk, err: %d\n", ret);
++			return ret;
++		}
++
++		/* Enable SCLK */
++		ret = clk_set_rate(priv->sclk, 3072000);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't set rate for sclk, err: %d\n",
++				ret);
++			clk_disable_unprepare(priv->mclk);
++			return ret;
++		}
++
++		ret = clk_prepare_enable(priv->sclk);
++		if (ret < 0) {
++			dev_err(card->dev, "Can't enable sclk, err: %d\n", ret);
++			clk_disable_unprepare(priv->mclk);
++		}
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		if (!__clk_is_enabled(priv->mclk))
++			return 0;
++
++		clk_disable_unprepare(priv->mclk);
++		clk_disable_unprepare(priv->sclk);
++		break;
++	default:
++		return 0;
 +	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+@@ -78,11 +144,14 @@ static const struct snd_soc_dapm_widget kabylake_widgets[] = {
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
+-
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
+ };
  
- 	/* bypass divider */
- 	div_ratio = 1;
+ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	/* HP jack connectors - unknown if we have jack detection */
++	{ "Headphone Jack", NULL, "Platform Clock" },
+ 	{ "Headphone Jack", NULL, "HPOL" },
+ 	{ "Headphone Jack", NULL, "HPOR" },
+ 
+@@ -91,6 +160,7 @@ static const struct snd_soc_dapm_route kabylake_map[] = {
+ 	{ "Right Spk", NULL, "Right BE_OUT" },
+ 
+ 	/* other jacks */
++	{ "Headset Mic", NULL, "Platform Clock" },
+ 	{ "IN1P", NULL, "Headset Mic" },
+ 	{ "IN1N", NULL, "Headset Mic" },
+ 	{ "DMic", NULL, "SoC DMIC" },
+@@ -901,6 +971,7 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ {
+ 	struct kbl_rt5663_private *ctx;
+ 	struct skl_machine_pdata *pdata;
++	int ret;
+ 
+ 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
+ 	if (!ctx)
+@@ -919,6 +990,34 @@ static int kabylake_audio_probe(struct platform_device *pdev)
+ 		dmic_constraints = pdata->dmic_num == 2 ?
+ 			&constraints_dmic_2ch : &constraints_dmic_channels;
+ 
++	ctx->mclk = devm_clk_get(&pdev->dev, "ssp1_mclk");
++	if (IS_ERR(ctx->mclk)) {
++		ret = PTR_ERR(ctx->mclk);
++		if (ret == -ENOENT) {
++			dev_info(&pdev->dev,
++				"Failed to get ssp1_sclk, defer probe\n");
++			return -EPROBE_DEFER;
++		}
++
++		dev_err(&pdev->dev, "Failed to get ssp1_mclk with err:%d\n",
++								ret);
++		return ret;
++	}
++
++	ctx->sclk = devm_clk_get(&pdev->dev, "ssp1_sclk");
++	if (IS_ERR(ctx->sclk)) {
++		ret = PTR_ERR(ctx->sclk);
++		if (ret == -ENOENT) {
++			dev_info(&pdev->dev,
++				"Failed to get ssp1_sclk, defer probe\n");
++			return -EPROBE_DEFER;
++		}
++
++		dev_err(&pdev->dev, "Failed to get ssp1_sclk with err:%d\n",
++								ret);
++		return ret;
++	}
++
+ 	return devm_snd_soc_register_card(&pdev->dev, kabylake_audio_card);
+ }
+ 
 -- 
 2.7.4
 
