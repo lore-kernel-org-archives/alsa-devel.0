@@ -1,16 +1,16 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH 2/2] ASoC: fsl_ssi: add 20-bit sample format
- for AC'97 and use it for capture
-Date: Wed, 22 Nov 2017 20:18:47 +0100
-Message-ID: <714aa8d8-a63b-d0f6-81d9-92a419e1a90a@maciej.szmigiero.name>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 0/2] ASoC: cs35l32: Adjustments for
+	cs35l32_i2c_probe()
+Date: Wed, 22 Nov 2017 20:55:39 +0100
+Message-ID: <caf22f25-6c27-b869-89e8-ef2904a2baf2@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id C6A40266F03
- for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 20:18:52 +0100 (CET)
-Content-Language: en-US
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72064266F03
+ for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 20:56:02 +0100 (CET)
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,73 +20,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>
+Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-When testing AC'97 capture on UDOO board (currently the only user of
-fsl_ssi driver in the AC'97 mode) it become obvious that there is a massive
-distortion above certain, small input signal.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 22 Nov 2017 20:49:45 +0100
 
-This problem has been traced to silicon errata ERR003778:
-"In AC97, 16-bit mode, received data is shifted by 4-bit locations" that
-has "No fix scheduled".
-This errata suggests a workaround of doing a 4-bit shift back in SDMA
-script for this specific operation mode, however our SDMA scripts are
-shared between various SoC peripherals so we can't really modify them.
+Two update suggestions were taken into account
+from static source code analysis.
 
-There is a simple way to avoid this problem, however, that is to disallow
-recording in 16-bit mode and only support it in AC'97-native 20-bit mode.
-We have to use a 4-byte format for this since SSI FIFOs do not allow 3-byte
-accesses (and these aren't supported by imx-sdma driver anyway).
-With this change the capture distortion is gone.
+Markus Elfring (2):
+  Delete two error messages for a failed memory allocation
+  Improve two size determinations
 
-We can also add this format as an additional one supported for playback,
-using this opportunity to make sure that we use CPU-endian-native formats
-in AC'97 mode as we already do in I2S mode.
+ sound/soc/codecs/cs35l32.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-There is no problem in using different bit widths in playback and capture
-in AC'97 mode so allow this, too.
-
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
- sound/soc/fsl/fsl_ssi.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 20ef09e1a395..2aed089fdd76 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1278,14 +1278,15 @@ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S20_4,
- 	},
- 	.capture = {
- 		.stream_name = "AC97 Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		/* 16-bit capture is broken (errata ERR003778) */
-+		.formats = SNDRV_PCM_FMTBIT_S20_4,
- 	},
- 	.ops = &fsl_ssi_dai_ops,
- };
-@@ -1557,11 +1558,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 
- 	/* Are the RX and the TX clocks locked? */
- 	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
--		if (!fsl_ssi_is_ac97(ssi_private))
-+		if (!fsl_ssi_is_ac97(ssi_private)) {
- 			ssi_private->cpu_dai_drv.symmetric_rates = 1;
-+			ssi_private->cpu_dai_drv.symmetric_samplebits = 1;
-+		}
- 
- 		ssi_private->cpu_dai_drv.symmetric_channels = 1;
--		ssi_private->cpu_dai_drv.symmetric_samplebits = 1;
- 	}
- 
- 	/* Determine the FIFO depth. */
+-- 
+2.15.0
