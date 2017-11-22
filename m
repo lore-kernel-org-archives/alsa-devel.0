@@ -1,43 +1,118 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH v2 2/2] ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once
- in AC'97 mode
-Date: Wed, 22 Nov 2017 00:55:14 +0100
-Message-ID: <5c2325bd-3e7b-0026-4c1a-65f32737a74a@maciej.szmigiero.name>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] Emit an error message when dlopen fails.
+Date: Wed, 22 Nov 2017 10:09:44 +0900
+Message-ID: <6dc8da2a-fabc-7826-3311-dd6a15831782@sakamocchi.jp>
+References: <5471e331-1e5b-3bf6-6128-469e39d049cd@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 899582671E7
+ for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 02:09:47 +0100 (CET)
+In-Reply-To: <5471e331-1e5b-3bf6-6128-469e39d049cd@free.fr>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Cedric Roux <sed@free.fr>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In AC'97 mode we configure and start SSI RX / TX on probe path via
-a call to _fsl_ssi_set_dai_fmt() function.
-We don't need to call this function again later and in fact don't want to
-do it since this function temporarily sets STCR, SRCR and SCR to some
-intermediate values.
+Hi,
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
-Changes from v1: The SACCST setup code was split out into a separate
-commit.
+On Nov 22 2017 07:12, Cedric Roux wrote:
+> Signed-off-by: Cedric Roux <sed@free.fr>
+> ---
+>   src/dlmisc.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git src/dlmisc.c src/dlmisc.c
+> index f154ebd0..9e8e401e 100644
+> --- src/dlmisc.c
+> +++ src/dlmisc.c
+> @@ -81,10 +81,14 @@ void *snd_dlopen(const char *name, int mode)
+>   		strcat(filename, "/");
+>   		strcat(filename, name);
+>   		handle = dlopen(filename, mode);
+> +		if (!handle)
+> +			SNDERR("snd_dlopen: %s: %s", filename, dlerror());
+>   		free(filename);
+>   	}
+>   	if (!handle)
+>   		handle = dlopen(name, mode);
+> +	if (!handle)
+> +		SNDERR("snd_dlopen: %s: %s", name, dlerror());
+>   	return handle;
+>   #else
+>   	return NULL;
 
- sound/soc/fsl/fsl_ssi.c | 3 +++
- 1 file changed, 3 insertions(+)
+In my opinion, this patch is preferable, however it can always generate 
+superfluous error messages when handling hook configuration on 
+'alsa.conf'. For example:
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 375aaaf6080d..70df6bf832df 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1116,6 +1116,9 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 
-+	if (fsl_ssi_is_ac97(ssi_private))
-+		return 0;
-+
- 	return _fsl_ssi_set_dai_fmt(cpu_dai->dev, ssi_private, fmt);
- }
- 
+$ LD_PRELOAD=./src/.libs/libasound.so.2.0.0 amixer
+ALSA lib dlmisc.c:85:(snd_dlopen) snd_dlopen: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+cannot open shared object file: No such file or directory
+ALSA lib dlmisc.c:85:(snd_dlopen) snd_dlopen: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+cannot open shared object file: No such file or directory
+ALSA lib dlmisc.c:85:(snd_dlopen) snd_dlopen: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+cannot open shared object file: No such file or directory
+ALSA lib dlmisc.c:85:(snd_dlopen) snd_dlopen: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+cannot open shared object file: No such file or directory
+ALSA lib dlmisc.c:85:(snd_dlopen) snd_dlopen: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+cannot open shared object file: No such file or directory
+ALSA lib dlmisc.c:85:(snd_dlopen) snd_dlopen: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+/usr/lib/x86_64-linux-gnu/alsa-lib//./src/.libs/libasound.so.2.0.0: 
+cannot open shared object file: No such file or directory
+Simple mixer control 'IEC958',0
+   Capabilities: pswitch pswitch-joined
+   Playback channels: Mono
+   Mono: Playback [on]
+...
+
+When any hook configuration includes no lines with 'lib', 'snd_dlopen()' 
+gets NULL as its first argument, then 'dlopen()' gets an inexistent path 
+as its first argument, like:
+
+(parsing alsa.conf)
+snd_config_hooks_call()
+   ->snd_dlopen(name = NULL)
+     if (name == NULL)
+       name = self
+     filename = ALSA_PLUGIN_DIR + '/' + name
+     dlopen(filename)
+     (generate the error messages)
+
+I don't know why alsa-lib is programmed as what it is, so have no idea 
+to suggest better solution...
+
+Additionally, your patch includes some issues of patch format:
+* Not only your signature but also patch comment is required. The first
+   line is interpreted as patch title, and the rest is as comment.
+* Patches should be compliant to git-patch format. I encountered failure
+   of 'git am' for this patch. Please use 'git format-patch' command to
+   generate patches for posting.
+
+When posting patches, please take care of the above.
+
+
+Regards
+
+Takashi Sakamoto
