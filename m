@@ -1,90 +1,103 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] Emit an error message when dlopen fails.
-Date: Wed, 22 Nov 2017 19:19:53 +0900
-Message-ID: <42a89782-5483-41be-f822-5083abc48fd4@sakamocchi.jp>
-References: <5471e331-1e5b-3bf6-6128-469e39d049cd@free.fr>
- <6dc8da2a-fabc-7826-3311-dd6a15831782@sakamocchi.jp>
- <eaae406c-ee3e-92f4-f4d4-5cc47934079b@free.fr>
- <7be9ad65-5d21-31bc-3d44-3a48173d0c8f@sakamocchi.jp>
- <5cfb1e53-874b-02a9-43d8-67e160300028@perex.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 16556266CFB
- for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 11:19:55 +0100 (CET)
-In-Reply-To: <5cfb1e53-874b-02a9-43d8-67e160300028@perex.cz>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Cedric Roux <sed@free.fr>, alsa-devel@alsa-project.org
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: [alsa-devel] [PATCH v3 0/7] ASoC: Intel: Skylake: Add a clk driver to enable ssp clks early
+Date: Wed, 22 Nov 2017 16:11:12 +0530
+Message-ID: <1511347279-26989-1-git-send-email-sriramx.periyasamy@intel.com>
+Return-path: <linux-clk-owner@vger.kernel.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>, mturquette@baylibre.com, sboyd@codeaurora.org, linux-clk@vger.kernel.org, Sriram Periyasamy <sriramx.periyasamy@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSmFyb3NsYXYsCgpPbiBvdiAyMiAyMDE3IDE5OjEzLCBKYXJvc2xhdiBLeXNlbGEgd3JvdGU6
-Cj4gRG5lIDIyLjExLjIwMTcgdiAxMDozMCBUYWthc2hpIFNha2Ftb3RvIG5hcHNhbChhKToKPj4g
-T24gTm92IDIyIDIwMTcgMTY6NDUsIENlZHJpYyBSb3V4IHdyb3RlOgo+Pj4gQWgsIHRoaXMgaXMg
-YSBwcm9ibGVtLgo+Pj4gQnV0IEkgc3RydWdnbGVkIHdpdGggdGhlICJhbHNhZXEgcGx1Z2luIiB3
-aGljaCwgdW5kZXIgdWJ1bnR1IDE3IHNvbWV0aGluZwo+Pj4gaXMgbm90IGxpbmtlZCBhZ2FpbnN0
-IGxpYmFzb3VuZCBhbmQgd2hlbiBwdWxzZWF1ZGlvIGlzIGNvbmZpZ3VyZWQgdG8gdXNlCj4+PiBp
-dCwgaXQgZmFpbHMgd2l0aG91dCBzYXlpbmcgYW55dGhpbmcgdXNlZnVsIGFuZCB0aGUgaGFja2Vy
-IChtZSkgaGFzIHRvIHNwZW5kIHRvbwo+Pj4gbXVjaCB0aW1lIGJlY2F1c2UgQUxTQSBkb2VzIG5v
-dCB1c2UgZGxlcnJvci4KPj4+Cj4+Pj4KPj4+PiAocGFyc2luZyBhbHNhLmNvbmYpCj4+Pj4gc25k
-X2NvbmZpZ19ob29rc19jYWxsKCkKPj4+PiAgIMKgIC0+c25kX2Rsb3BlbihuYW1lID0gTlVMTCkK
-Pj4+PiAgIMKgwqDCoCBpZiAobmFtZSA9PSBOVUxMKQo+Pj4+ICAgwqDCoMKgwqDCoCBuYW1lID0g
-c2VsZgo+Pj4+ICAgwqDCoMKgIGZpbGVuYW1lID0gQUxTQV9QTFVHSU5fRElSICsgJy8nICsgbmFt
-ZQo+Pj4+ICAgwqDCoMKgIGRsb3BlbihmaWxlbmFtZSkKPj4+PiAgIMKgwqDCoCAoZ2VuZXJhdGUg
-dGhlIGVycm9yIG1lc3NhZ2VzKQo+Pj4+Cj4+Pj4gSSBkb24ndCBrbm93IHdoeSBhbHNhLWxpYiBp
-cyBwcm9ncmFtbWVkIGFzIHdoYXQgaXQgaXMsIHNvIGhhdmUgbm8gaWRlYSB0byBzdWdnZXN0IGJl
-dHRlciBzb2x1dGlvbi4uLgo+Pj4+Cj4+Pj4gQWRkaXRpb25hbGx5LCB5b3VyIHBhdGNoIGluY2x1
-ZGVzIHNvbWUgaXNzdWVzIG9mIHBhdGNoIGZvcm1hdDoKPj4+PiAqIE5vdCBvbmx5IHlvdXIgc2ln
-bmF0dXJlIGJ1dCBhbHNvIHBhdGNoIGNvbW1lbnQgaXMgcmVxdWlyZWQuIFRoZSBmaXJzdAo+Pj4+
-ICAgwqAgbGluZSBpcyBpbnRlcnByZXRlZCBhcyBwYXRjaCB0aXRsZSwgYW5kIHRoZSByZXN0IGlz
-IGFzIGNvbW1lbnQuCj4+Pgo+Pj4gb2theSwgbmV4dCB0aW1lIEknbGwgd3JpdGUgc29tZSB0ZXh0
-Lgo+Pj4KPj4+PiAqIFBhdGNoZXMgc2hvdWxkIGJlIGNvbXBsaWFudCB0byBnaXQtcGF0Y2ggZm9y
-bWF0LiBJIGVuY291bnRlcmVkIGZhaWx1cmUKPj4+PiAgIMKgIG9mICdnaXQgYW0nIGZvciB0aGlz
-IHBhdGNoLiBQbGVhc2UgdXNlICdnaXQgZm9ybWF0LXBhdGNoJyBjb21tYW5kIHRvCj4+Pj4gICDC
-oCBnZW5lcmF0ZSBwYXRjaGVzIGZvciBwb3N0aW5nLgo+Pj4KPj4+IEkgdXNlZCBmb3JtYXQtcGF0
-Y2ggYW5kIGltYXAtc2VuZC4gTWF5YmUgdGhpcyBibG9hdGVkIHRodW5kZXJiaXJkIGRpZAo+Pj4g
-bWVzcyB1cCAoSSBjb25maWd1cmVkIGl0IGFzIGV4cGxhaW5lZCBpbiB0aGUgbWFuIHBhZ2VzKS4K
-Pj4KPj4gQWhhLiBZb3UgZGlkIHVzZSBnaXQtZm9ybWF0LXBhdGNoIHRvIGdlbmVyYXRlIGl0Lgo+
-Pgo+PiBXaGVuIEkgZ2VuZXJhdGUgcGF0Y2hlcyBieSAnZ2l0IGZvcm1hdC1wYXRjaCcsIGNvZGUg
-ZGlmZmVyZW5jZXMgYXJlCj4+IG91dHB1dCB3aXRoICdkaWZmIC0tZ2l0IGEvc3JjL2RsbWlzYy5j
-IGIvc3JjL2RsbWlzYy5jJy4gT24gdGhlIG90aGVyCj4+IGhhbmQsIHlvdXIgcGF0Y2ggaW5jbHVk
-ZXMgJ2RpZmYgLS1naXQgc3JjL2RsbWlzYy5jIHNyYy9kbG1pc2MuYycuIEFzCj4+IGxvbmcgYXMg
-YXNraW5nIG15IGNvbGxlYWd1ZSwgdGhpcyBzZWVtcyB0byBjb21lIGZyb20gJy0tbm8tcHJlZml4
-Jwo+PiBvcHRpb24gZm9yICdnaXQtZm9ybWF0LXBhdGNoJy4gVGhpcyBpcyBhIGNhdXNlIG9mIG15
-IGZhaWx1cmUgdG8gcnVuICdnaXQKPj4gYW0nIGJlY2F1c2UgYW4gYWRkaXRpb25hbCBvcHRpb24s
-ICctcDEnIGlzIHJlcXVpcmVkIHRvIGFwcGx5IHlvdXIgcGF0Y2guCj4+IE5vdyBJIGdvdCBpdC4K
-Pj4KPj4+IEFueXdheSwgZG8gd2hhdCB5b3Ugd2FudCB3aXRoIHRoZSBwYXRjaCBhYm92ZSwgSSBk
-b24ndCByZWFsbHkgY2FyZSBhY3R1YWxseS4KPj4+IFByb2JsZW0gaXMgc29sdmVkIG9uIG15IHNp
-ZGUuIEkndmUgc2VlbiBtZXNzYWdlcyBpbiB0aGUgd2lsZCBmcm9tIHBlb3BsZQo+Pj4gd2l0aCB0
-aGUgc2FtZSBwcm9ibGVtLCBJIHRob3VnaHQgSSBjb3VsZCBoZWxwIGEgYml0LiBJIGRpZG4ndCBz
-ZWUgdGhlCj4+PiAiYmlnIHBpY3R1cmUiICh0aGF0IGlzOiBiYWQgZGVzaWduIG9mIHRvbyBtYW55
-IHNvZnR3YXJlKS4KPj4+Cj4+PiBBbGwgSSBrbm93IGlzIHRoYXQgaXQncyBnb29kIHByYWN0aWNl
-IHRvIHJlcG9ydCBlcnJvcnMgdG8gdXNlcnMuIElmCj4+PiBhIGNvZGUgcGF0aCBjYW4gImxlZ2l0
-aW1hdGVseSIgZ2VuZXJhdGUgZXJyb3JzLCB0aGVuIHRoZSBwcm9ncmFtbWVyCj4+PiBuZWVkcyB0
-byBkZWFsIHdpdGggaXQgaW4gYSBjb252ZW5pZW50IHdheS4KPj4+Cj4+PiBCdXQgeWVhaCwgSSBk
-b24ndCBjYXJlLiBBTFNBIGxpYiBpcyBibG9hdGVkIHRvIHN0YXJ0IHdpdGguCj4+PiAoVGhpcyBl
-bWFpbCBpcyBteSBsYXN0LCBJIHdvbid0IHRyb2xsIG1vcmUsIHByb21pc2UuKQo+Pgo+PiBDdXJy
-ZW50IGltcGxlbWVudGF0aW9uIG9mIGFsc2EtbGliIGlzIHRvbyBibG9hdGVkIHRvIG1lIGFzIHdl
-bGwuIEJ1dCBJJ2QKPj4gbGlrZSB0byBhdm9pZCBwZW9wbGUgZW5jb3VudGVyaW5nIHRoZSBzaW1p
-bGFyIGlzc3Vlcy4gVGhpcyBpcyBteQo+PiBtb3RpdmF0aW9uIHRvIHRhY2tsZSBzdWNoIGEgaHVn
-ZSwgY29tcGxpY2F0ZWQgYW5kIHRyb3VibGVzb21lIGxpYnJhcnkuCj4gCj4gV2Ugc2hvdWxkIHJl
-dHVybiB0aGUgZXJyb3Igc3RyaW5nIGZyb20gc25kX2Rsb3BlbigpIGluIHRoaXMgY2FzZS4gSXQn
-cwo+IHVwIHRvIHRoZSBjYWxsZXIgdG8gaGFuZGxlIHRoaXMgKGlnbm9yZSBvciBwcmludCkgY29y
-cmVjdGx5Lgo+IAo+IEkgd2lsbCBpbXBsZW1lbnQgaXQuCgpJIGhhZCB0aGUgc2FtZSBpZGVhIGFu
-ZCBpbiBteSBvcGluaW9uIGl0J3MgbW9yZSBjb252ZW5pZW50IHRoYW4gCkl3YWktc2FuJ3Mgc3Vn
-Z2VzdGlvbiAodXNpbmcgbG9jYWwgU05ETVNHIG1hY3JvKS4gRmVlbCBmcmVlIHRvIGFkZCBtZSB0
-byAKQ0MgbGlzdCB3aGVuIHBvc3RpbmcgeW91ciBwYXRjaCBmb3IgaXQuIEknbSB3aWxsaW5nIHRv
-IHJldmlldyBpdCA7KQoKClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+For certain platforms, clocks (mclk/sclk/fs) are required to be up before
+the stream start. Example: some codecs needs the mclk/sclk/fs to be
+enabled early for a successful clock synchronization. Some platforms
+require clock to be enabled at boot and be always ON.
+
+By sending set_dma_control IPC (with the i2s blobs queried from NHLT),
+these clocks can be enabled early after the firmware is downloaded.
+
+With this series, a virtual clock driver is created which provides
+interface to send the required IPCs from machine driver to enable the
+clocks. NHLT is parsed during probe and the clock information is populated.
+The pointer to blob is cached and sent along with the set_dma_control IPC
+structure during the clk prepare/unprepare callback. Clocks are created for
+a ssp if the nhlt table has endpoint configuration for that particular ssp.
+Skylake driver creates a platform driver with the clock information and
+register the clk ops callback.
+
+Kabylake machine driver uses the clock interface to enable the clocks early
+as it is required by the rt5663 driver for clock synchronization.
+
+v2 -> v3
+	- Moved the clk ops and IPCs from Skylake driver to clk driver and
+	  reordered commits accordingly
+
+	- Add the support for extended I2S blob config which supports
+	  multiple mclk dividers in NHLT
+
+	- Enable the clocks as well in DAPM PMU event instead of hw_params
+	  in machine drivers as confirmed by codec vendor
+
+	- Do not register the clk if there is no valid clock source is
+	  avail in the I2S blob
+
+	- Take care of error return in the clk driver
+
+	- Address rest of the review comments and more optimization added
+
+	- Fix the warning
+		sound/soc/intel/skylake/skl.c:724:1-3:
+		WARNING: PTR_ERR_OR_ZERO can be used
+	  reported by scripts/coccinelle/api/ptr_ret.cocci
+
+	- Modified DSP replies as human readable to ease the debugging
+
+	- Add firmware replies for MCLK/SCLK clocks if they are running
+	  already
+
+v1 -> v2
+	- Register parent clocks with skylake device.
+	  With the patch "clk: Add support for runtime PM" soon to be merged
+	  will help DSP to stay active on call to clock enable.
+	  Reference: (https://patchwork.kernel.org/patch/9911741/)
+
+	- Fix the machine driver to enable clocks early for headphone
+	  playback path as well to fix a pop noise issue
+
+Harsha Priya (1):
+  ASoC: Intel: kbl: Enable mclk and ssp sclk early
+
+Naveen M (1):
+  ASoC: Intel: eve: Enable mclk and ssp sclk early
+
+Sriram Periyasamy (3):
+  ASoC: Intel: Skylake: Parse nhlt and register clock device
+  ASoC: Intel: Skylake: Add ssp clock driver
+  ASoC: Intel: Skylake: Add extended I2S config blob support in Clock
+    driver
+
+Subhransu S. Prusty (2):
+  ASoC: Intel: Skylake: Make DSP replies more human readable
+  ASoC: Intel: Skylake: Add FW reply for MCLK/SCLK IPC
+
+ sound/soc/intel/Kconfig                            |   3 +
+ sound/soc/intel/boards/Kconfig                     |   2 +
+ sound/soc/intel/boards/kbl_rt5663_max98927.c       | 101 ++++-
+ .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 100 +++++
+ sound/soc/intel/skylake/Makefile                   |   5 +
+ sound/soc/intel/skylake/skl-i2s.h                  |  95 +++++
+ sound/soc/intel/skylake/skl-messages.c             |   1 +
+ sound/soc/intel/skylake/skl-nhlt.c                 | 172 ++++++++
+ sound/soc/intel/skylake/skl-ssp-clk.c              | 470 +++++++++++++++++++++
+ sound/soc/intel/skylake/skl-ssp-clk.h              | 117 +++++
+ sound/soc/intel/skylake/skl-sst-ipc.c              |  50 ++-
+ sound/soc/intel/skylake/skl.c                      |  93 ++++
+ sound/soc/intel/skylake/skl.h                      |  10 +
+ 13 files changed, 1207 insertions(+), 12 deletions(-)
+ create mode 100644 sound/soc/intel/skylake/skl-i2s.h
+ create mode 100644 sound/soc/intel/skylake/skl-ssp-clk.c
+ create mode 100644 sound/soc/intel/skylake/skl-ssp-clk.h
+
+-- 
+2.7.4
+
