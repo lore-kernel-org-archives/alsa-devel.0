@@ -1,16 +1,15 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 2/3] ASoC: cs42l73: Improve two size
- determinations in cs42l73_i2c_probe()
-Date: Wed, 22 Nov 2017 16:49:29 +0100
-Message-ID: <7229b291-d1e3-6269-4c68-435bbdffb0fd@users.sourceforge.net>
+Subject: [PATCH 3/3] ASoC: cs42l73: Fix a typo in two comments
+Date: Wed, 22 Nov 2017 16:50:20 +0100
+Message-ID: <a2278841-1791-0c00-af0a-7aa358a0d09d@users.sourceforge.net>
 References: <609e2542-4750-fe60-4f42-08bca79bfb56@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id F290B266F03
- for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 16:49:40 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E51A266F03
+ for <alsa-devel@alsa-project.org>; Wed, 22 Nov 2017 16:50:28 +0100 (CET)
 In-Reply-To: <609e2542-4750-fe60-4f42-08bca79bfb56@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,44 +26,39 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 22 Nov 2017 16:07:42 +0100
+Date: Wed, 22 Nov 2017 16:26:27 +0100
 
-Replace the specification of two data structures by pointer dereferences
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
-
-This issue was detected by using the Coccinelle software.
+Add a missing character in these descriptions.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 ---
- sound/soc/codecs/cs42l73.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l73.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 978cfbbad408..dde37e569ade 100644
+index dde37e569ade..928036eeb11f 100644
 --- a/sound/soc/codecs/cs42l73.c
 +++ b/sound/soc/codecs/cs42l73.c
-@@ -1289,8 +1289,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	unsigned int reg;
- 	u32 val32;
+@@ -763,7 +763,7 @@ static const struct snd_soc_dapm_route cs42l73_audio_map[] = {
+ 	{"ASPOUTL", "ASP-IP Volume", "ASPL Output Mixer"},
+ 	{"ASPOUTR", "ASP-IP Volume", "ASPR Output Mixer"},
  
--	cs42l73 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l73_private),
--			       GFP_KERNEL);
-+	cs42l73 = devm_kzalloc(&i2c_client->dev, sizeof(*cs42l73), GFP_KERNEL);
- 	if (!cs42l73)
- 		return -ENOMEM;
+-	/* Auxillary Capture */
++	/* Auxiliary Capture */
+ 	{"XSPL Output Mixer", NULL, "Input Left Capture"},
+ 	{"XSPR Output Mixer", NULL, "Input Right Capture"},
  
-@@ -1304,9 +1303,8 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	if (pdata) {
- 		cs42l73->pdata = *pdata;
- 	} else {
--		pdata = devm_kzalloc(&i2c_client->dev,
--				     sizeof(struct cs42l73_platform_data),
--				GFP_KERNEL);
-+		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
-+				     GFP_KERNEL);
- 		if (!pdata)
- 			return -ENOMEM;
- 
+@@ -1127,9 +1127,8 @@ static int cs42l73_set_bias_level(struct snd_soc_codec *codec,
+ 			mdelay(cs42l73->shutdwn_delay);
+ 			cs42l73->shutdwn_delay = 0;
+ 		} else {
+-			mdelay(15); /* Min amount of time requred to power
+-				     * down.
+-				     */
++			/* Min amount of time required to power down. */
++			mdelay(15);
+ 		}
+ 		snd_soc_update_bits(codec, CS42L73_DMMCC, CS42L73_MCLKDIS, 1);
+ 		break;
 -- 
 2.15.0
