@@ -1,77 +1,142 @@
-From: Jens Verwiebe <info@jensverwiebe.de>
-Subject: Focusrite Scarlett 6i6 gen1 - input handling fix
-Date: Thu, 23 Nov 2017 11:28:20 +0100
-Message-ID: <c306e7cf-6d8c-542d-bd51-66a92d17445a@jensverwiebe.de>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH] ASoC: amd: added error checks in dma driver
+Date: Thu, 23 Nov 2017 22:00:02 +0530
+Message-ID: <1511454602-7259-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
- by alsa0.perex.cz (Postfix) with ESMTP id EE370266B38
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 11:28:21 +0100 (CET)
-Received: from [192.168.178.21] ([85.179.205.209]) by mrelayeu.kundenserver.de
- (mreue104 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 0MJkO4-1eGioL1IFY-001DPf for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017
- 11:28:21 +0100
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, perex@perex.cz, Alexander.Deucher@amd.com, Akshu.Agrawal@amd.com, linux@roeck-us.net, linux-kernel@vger.kernel.org, dbehr@chromium.org, djkurtz@chromium.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFNjYXJsZXR0IDZpNiBoYXMgbm8gcGFkZGluZyBvbiByZWFyIGlucHV0cyAzLzQgYnV0IGEg
-Z2FpbnN0YWdlLgpUaGlzIHBhdGNoIGludHJvZHVjZXMgdGhpcyBmdW5jdGlvbmFsaXR5IGFzIHRv
-IGJlIHNlZW4gaW4gdGhlIG1hYwpvciB3aW5kb3dzIHNjYXJsZXR0IGNvbnRyb2wuClRoZSBjb3Jy
-ZWN0IGFkZHJlc3MgY291bGQgYWxyZWFkeSBiZSBmb3VuZCBpbiB0aGUgZHVtcCBpbmZvLApidXQg
-d2FzIG5ldmVyIHVzZWQuCgpDaGVlcnMgLi4uIEplbnMKCgpTaWduZWQtb2ZmLWJ5OiBKZW5zIFZl
-cndpZWJlIDxpbmZvQGplbnN2ZXJ3aWViZS5kZT4KCgoKCmRpZmYgLS1naXQgYS9zb3VuZC91c2Iv
-bWl4ZXJfc2NhcmxldHQuYyBiL3NvdW5kL3VzYi9taXhlcl9zY2FybGV0dC5jCmluZGV4IDc0Mzhl
-N2MuLmYzYmRhYzMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9taXhlcl9zY2FybGV0dC5jCisrKyBi
-L3NvdW5kL3VzYi9taXhlcl9zY2FybGV0dC5jCkBAIC0xNTIsNiArMTUyLDcgQEAgZW51bSB7CiDC
-oMKgwqDCoCBTQ0FSTEVUVF9PVVRQVVRTLAogwqDCoMKgwqAgU0NBUkxFVFRfU1dJVENIX0lNUEVE
-QU5DRSwKIMKgwqDCoMKgIFNDQVJMRVRUX1NXSVRDSF9QQUQsCivCoMKgwqAgU0NBUkxFVFRfU1dJ
-VENIX0dBSU4sCiDCoH07CgogwqBlbnVtIHsKQEAgLTIwMiw2ICsyMDMsMTUgQEAgc3RydWN0IHNj
-YXJsZXR0X2RldmljZV9pbmZvIHsKIMKgwqDCoMKgIH0KIMKgfTsKCitzdGF0aWMgY29uc3Qgc3Ry
-dWN0IHNjYXJsZXR0X21peGVyX2VsZW1fZW51bV9pbmZvIG9wdF9nYWluID0geworwqDCoMKgIC5z
-dGFydCA9IDAsCivCoMKgwqAgLmxlbiA9IDIsCivCoMKgwqAgLm9mZnNldHMgPSB7fSwKK8KgwqDC
-oCAubmFtZXMgPSAoY2hhciBjb25zdCAqIGNvbnN0IFtdKXsKK8KgwqDCoMKgwqDCoMKgICJMbyIs
-ICJIaSIKK8KgwqDCoCB9Cit9OworCiDCoHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc2NhcmxldHRfbWl4
-ZXJfZWxlbV9lbnVtX2luZm8gb3B0X2ltcGVkYW5jZSA9IHsKIMKgwqDCoMKgIC5zdGFydCA9IDAs
-CiDCoMKgwqDCoCAubGVuID0gMiwKQEAgLTY2NCw4ICs2NzQsOCBAQCBzdGF0aWMgaW50IGFkZF9v
-dXRwdXRfY3RscyhzdHJ1Y3QgCnVzYl9taXhlcl9pbnRlcmZhY2UgKm1peGVyLAogwqDCoMKgwqAg
-wqDCoMKgIHsgLm51bSA9IDEsIC50eXBlID0gU0NBUkxFVFRfU1dJVENIX1BBRCwgLm5hbWUgPSBO
-VUxMfSwKIMKgwqDCoMKgIMKgwqDCoCB7IC5udW0gPSAyLCAudHlwZSA9IFNDQVJMRVRUX1NXSVRD
-SF9JTVBFREFOQ0UsIC5uYW1lID0gTlVMTH0sCiDCoMKgwqDCoCDCoMKgwqAgeyAubnVtID0gMiwg
-LnR5cGUgPSBTQ0FSTEVUVF9TV0lUQ0hfUEFELCAubmFtZSA9IE5VTEx9LAotwqDCoMKgIMKgwqDC
-oCB7IC5udW0gPSAzLCAudHlwZSA9IFNDQVJMRVRUX1NXSVRDSF9QQUQsIC5uYW1lID0gTlVMTH0s
-Ci3CoMKgwqAgwqDCoMKgIHsgLm51bSA9IDQsIC50eXBlID0gU0NBUkxFVFRfU1dJVENIX1BBRCwg
-Lm5hbWUgPSBOVUxMfSwKK8KgwqDCoCDCoMKgwqAgeyAubnVtID0gMywgLnR5cGUgPSBTQ0FSTEVU
-VF9TV0lUQ0hfR0FJTiwgLm5hbWUgPSBOVUxMfSwKK8KgwqDCoCDCoMKgwqAgeyAubnVtID0gNCwg
-LnR5cGUgPSBTQ0FSTEVUVF9TV0lUQ0hfR0FJTiwgLm5hbWUgPSBOVUxMfSwKIMKgwqDCoMKgIH0s
-CgogwqDCoMKgwqAgLm1hdHJpeF9tdXhfaW5pdCA9IHsKQEAgLTg5NSw2ICs5MDUsMTUgQEAgc3Rh
-dGljIGludCBzY2FybGV0dF9jb250cm9sc19jcmVhdGVfZ2VuZXJpYyhzdHJ1Y3QgCnVzYl9taXhl
-cl9pbnRlcmZhY2UgKm1peGVyLAogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBpZiAoZXJyIDwgMCkK
-IMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiBlcnI7CiDCoMKgwqDCoCDCoMKg
-wqAgwqDCoMKgIGJyZWFrOworwqDCoMKgIMKgwqDCoCBjYXNlIFNDQVJMRVRUX1NXSVRDSF9HQUlO
-OgorwqDCoMKgIMKgwqDCoCDCoMKgwqAgc3ByaW50ZihteCwgIklucHV0ICVkIEdhaW4gU3dpdGNo
-IiwgY3RsLT5udW0pOworwqDCoMKgIMKgwqDCoCDCoMKgwqAgZXJyID0gYWRkX25ld19jdGwobWl4
-ZXIsICZ1c2Jfc2NhcmxldHRfY3RsX2VudW0sCivCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIMKgIHNjYXJsZXR0X2N0bF9lbnVtX3Jlc3VtZSwgMHgwMSwKK8KgwqDCoCDCoMKgwqAg
-wqDCoMKgIMKgwqDCoCDCoMKgwqAgwqAgMHgwOCwgY3RsLT5udW0sIFVTQl9NSVhFUl9TMTYsIDEs
-IG14LAorwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoCAmb3B0X2dhaW4sICZl
-bGVtKTsKK8KgwqDCoCDCoMKgwqAgwqDCoMKgIGlmIChlcnIgPCAwKQorwqDCoMKgIMKgwqDCoCDC
-oMKgwqAgwqDCoMKgIHJldHVybiBlcnI7CivCoMKgwqAgwqDCoMKgIMKgwqDCoCBicmVhazsKIMKg
-wqDCoMKgIMKgwqDCoCB9CiDCoMKgwqDCoCB9CgotLSAKCkplbnMgVmVyd2llYmUKQWxsZXJza2Vo
-cmUgNDQgLSAyMjMwOSBIYW1idXJnCgpUZWwuOiArNDkgNDAgNjggNzggNTAKbW9iaWxlOiArNDkg
-MTcyIDQwMCA0OSAwNwptYWlsdG86IGluZm9AamVuc3ZlcndpZWJlLmRlCndlYjogaHR0cDovL3d3
-dy5qZW5zdmVyd2llYmUuZGUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+added error checks in acp dma driver
+
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
+Signed-off-by: Guenter Roeck <groeck@chromium.org>
+---
+ sound/soc/amd/acp-pcm-dma.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 40 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 17d76fa..804e659 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -848,6 +848,9 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+ 
++	if (!rtd)
++		return -EINVAL;
++
+ 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+ 	bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
+ 
+@@ -873,6 +876,8 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+ 
++	if (!rtd)
++		return -EINVAL;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
+ 					PLAYBACK_START_DMA_DESCR_CH12,
+@@ -1066,6 +1071,10 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	const u32 *pdata = pdev->dev.platform_data;
+ 
++	if (!pdata) {
++		dev_err(&pdev->dev, "Missing platform data\n");
++		return -ENODEV;
++	}
+ 	audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
+ 					GFP_KERNEL);
+ 	if (audio_drv_data == NULL)
+@@ -1074,6 +1083,8 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
+ 
++	if (IS_ERR(audio_drv_data->acp_mmio))
++		return PTR_ERR(audio_drv_data->acp_mmio);
+ 	/* The following members gets populated in device 'open'
+ 	 * function. Till then interrupts are disabled in 'acp_init'
+ 	 * and device doesn't generate any interrupts.
+@@ -1099,7 +1110,11 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, audio_drv_data);
+ 
+ 	/* Initialize the ACP */
+-	acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
++	status = acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
++	if (status) {
++		dev_err(&pdev->dev, "ACP Init failed\n");
++		return status;
++	}
+ 
+ 	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
+ 	if (status != 0) {
+@@ -1116,9 +1131,14 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 
+ static int acp_audio_remove(struct platform_device *pdev)
+ {
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(&pdev->dev);
+ 
+-	acp_deinit(adata->acp_mmio);
++	status = acp_deinit(adata->acp_mmio);
++	if (status) {
++		dev_err(&pdev->dev, "ACP Deinit failed\n");
++		return status;
++	}
+ 	snd_soc_unregister_platform(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+@@ -1128,9 +1148,14 @@ static int acp_audio_remove(struct platform_device *pdev)
+ static int acp_pcm_resume(struct device *dev)
+ {
+ 	u16 bank;
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_init(adata->acp_mmio, adata->asic_type);
++	status = acp_init(adata->acp_mmio, adata->asic_type);
++	if (status) {
++		dev_err(dev, "ACP Init failed\n");
++		return status;
++	}
+ 
+ 	if (adata->play_stream && adata->play_stream->runtime) {
+ 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
+@@ -1162,18 +1187,28 @@ static int acp_pcm_resume(struct device *dev)
+ 
+ static int acp_pcm_runtime_suspend(struct device *dev)
+ {
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_deinit(adata->acp_mmio);
++	status = acp_deinit(adata->acp_mmio);
++	if (status) {
++		dev_err(dev, "ACP Deinit failed\n");
++		return status;
++	}
+ 	acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+ 
+ static int acp_pcm_runtime_resume(struct device *dev)
+ {
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_init(adata->acp_mmio, adata->asic_type);
++	status = acp_init(adata->acp_mmio, adata->asic_type);
++	if (status) {
++		dev_err(dev, "ACP Init failed\n");
++		return status;
++	}
+ 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+-- 
+2.7.4
