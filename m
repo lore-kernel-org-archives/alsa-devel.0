@@ -1,19 +1,20 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm0010: Delete an error message for
- a failed memory allocation in wm0010_boot()
-Date: Thu, 23 Nov 2017 05:55:08 +0000
-Message-ID: <20171123055508.exw4ht2ojrvv5y3s@localhost.localdomain>
-References: <fcfdbb1f-5b43-f430-dee9-61b86d6cfc79@users.sourceforge.net>
+Subject: Re: [PATCH 7/7] ASoC: wm8994: mark expected switch
+	fall-throughs
+Date: Thu, 23 Nov 2017 06:41:27 +0000
+Message-ID: <20171123064127.rg5vuj76oqmftcvm@localhost.localdomain>
+References: <cover.1510170034.git.garsilva@embeddedor.com>
+ <94d7abf866dbcc4052a36ca14e53f1ff8aa30e83.1510170034.git.garsilva@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 39EB4266CFB
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 06:55:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 51387266CFB
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 07:41:30 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <fcfdbb1f-5b43-f430-dee9-61b86d6cfc79@users.sourceforge.net>
+In-Reply-To: <94d7abf866dbcc4052a36ca14e53f1ff8aa30e83.1510170034.git.garsilva@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Corentin Labbe <clabbe.montjoie@gmail.com>, Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, LKML <linux-kernel@vger.kernel.org>
+To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 22, 2017 at 05:27:11PM +0100, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 22 Nov 2017 17:17:48 +0100
+On Wed, Nov 08, 2017 at 02:04:43PM -0600, Gustavo A. R. Silva wrote:
+> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+> where we are expecting to fall through.
 > 
-> Omit an extra message for a memory allocation failure in this function.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> Addresses-Coverity-ID: 402005
+> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 > ---
 
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
