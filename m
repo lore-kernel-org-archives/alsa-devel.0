@@ -1,17 +1,20 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Disable DAPM for click avoidance ?
-Date: Thu, 23 Nov 2017 10:41:33 +0100
-Message-ID: <alpine.DEB.2.11.1711231024510.27895@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1711221315370.27895@lnxricardw1.se.axis.com>
- <20171122161315.vpahz77si5xgkmct@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v7 11/13] slimbus: qcom: Add Qualcomm
+ Slimbus controller driver
+Date: Thu, 23 Nov 2017 10:07:03 +0000
+Message-ID: <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
+References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
+ <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 58B2E267295
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 10:41:42 +0100 (CET)
-In-Reply-To: <20171122161315.vpahz77si5xgkmct@sirena.org.uk>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0C2B267295
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 11:07:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,104 +24,234 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, arnd@arndb.de, vinod.koul@intel.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, daniel@ffwll.ch, jkosina@suse.cz, joe@perches.com, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Nov 15, 2017 at 02:10:41PM +0000, srinivas.kandagatla@linaro.org wrote:
+> From: Sagar Dharia <sdharia@codeaurora.org>
+> 
+> This controller driver programs manager, interface, and framer
+> devices for Qualcomm's slimbus HW block.
+> Manager component currently implements logical address setting,
+> and messaging interface.
+> Interface device reports bus synchronization information, and framer
+> device clocks the bus from the time it's woken up, until clock-pause
+> is executed by the manager device.
+> 
+> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+> +
+> +static irqreturn_t qcom_slim_handle_rx_irq(struct qcom_slim_ctrl *ctrl,
+> +					   u32 stat)
+> +{
+> +	u32 *rx_buf, pkt[10];
+> +	bool q_rx = false;
+> +	u8 la, *buf, mc, mt, len, *b = (u8 *)&pkt[0];
+> +	u16 ele;
+> +
 
-On Wed, 22 Nov 2017, Mark Brown wrote:
+This function feels pretty funky, we basically have rx_buf, pkt,
+b and buf all of which basically point to the same thing. Can we
+simplify it a little?
 
-> On Wed, Nov 22, 2017 at 01:33:37PM +0100, Ricard Wanderlof wrote:
-> =
+> +	pkt[0] = readl_relaxed(ctrl->base + MGR_RX_MSG);
+> +	mt = SLIM_HEADER_GET_MT(b[0]);
+> +	len = SLIM_HEADER_GET_RL(b[0]);
+> +	mc = SLIM_HEADER_GET_MC(b[1]);
+> +
+> +	/*
+> +	 * this message cannot be handled by ISR, so
+> +	 * let work-queue handle it
+> +	 */
+> +	if (mt == SLIM_MSG_MT_CORE &&
+> +		mc == SLIM_MSG_MC_REPORT_PRESENT)
+> +		rx_buf = (u32 *)slim_alloc_rxbuf(ctrl);
+> +	else
+> +		rx_buf = pkt;
+> +
+> +	if (rx_buf == NULL) {
+> +		dev_err(ctrl->dev, "dropping RX:0x%x due to RX full\n",
+> +					pkt[0]);
+> +		goto rx_ret_irq;
+> +	}
+> +
+> +	rx_buf[0] = pkt[0];
 
-> Always CC maintainers on postings if you want them to be reliably
-> seen...
+This is the only time that rx_buf is used without being cast to a
+u8* would there be any milage in combining b and buf, and getting
+rid of rx_buf?
 
-Ok. I thought it was more of a general question than a maintainer question =
+> +	__ioread32_copy(rx_buf + 1, ctrl->base + MGR_RX_MSG + 4,
+> +			DIV_ROUND_UP(len, 4));
+> +
+> +	switch (mc) {
+> +
+> +	case SLIM_MSG_MC_REPORT_PRESENT:
+> +		q_rx = true;
+> +		break;
+> +	case SLIM_MSG_MC_REPLY_INFORMATION:
+> +	case SLIM_MSG_MC_REPLY_VALUE:
+> +		slim_msg_response(&ctrl->ctrl, (u8 *)(rx_buf + 1),
+> +				  (u8)(*rx_buf >> 24), (len - 4));
+> +		break;
+> +	case SLIM_MSG_MC_REPORT_INFORMATION:
+> +		buf = (u8 *)rx_buf;
+> +		la = buf[2];
+> +		ele = (u16)buf[4] << 4;
+> +
+> +		ele |= ((buf[3] & 0xf0) >> 4);
+> +		/*
+> +		 * report information is most likely loss of
+> +		 * sync or collision detected in data slots
+> +		 */
+> +		dev_info(ctrl->dev, "LA:%d report inf ele:0x%x\n",
+> +			 la, ele);
+> +		break;
+> +	default:
+> +		dev_err(ctrl->dev, "unsupported MC,%x MT:%x\n",
+> +			mc, mt);
+> +		break;
+> +	}
+> +rx_ret_irq:
+> +	writel(MGR_INT_RX_MSG_RCVD, ctrl->base +
+> +		       MGR_INT_CLR);
+> +	if (q_rx)
+> +		queue_work(ctrl->rxwq, &ctrl->wd);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int qcom_xfer_msg(struct slim_controller *sctrl,
+> +			 struct slim_msg_txn *txn)
+> +{
+> +	struct qcom_slim_ctrl *ctrl = dev_get_drvdata(sctrl->dev);
+> +	DECLARE_COMPLETION_ONSTACK(done);
+> +	void *pbuf = slim_alloc_txbuf(ctrl, txn, &done);
+> +	unsigned long ms = txn->rl + HZ;
+> +	u8 *puc;
+> +	int ret = 0, timeout, retries = QCOM_BUF_ALLOC_RETRIES;
+> +	u8 la = txn->la;
+> +	u32 *head;
+> +	/* HW expects length field to be excluded */
+> +	txn->rl--;
+> +
+> +	/* spin till buffer is made available */
+> +	if (!pbuf) {
+> +		while (retries--) {
+> +			usleep_range(10000, 15000);
+> +			pbuf = slim_alloc_txbuf(ctrl, txn, &done);
+> +			if (pbuf)
+> +				break;
+> +		}
+> +	}
+> +
+> +	if (!retries && !pbuf)
+> +		return -ENOMEM;
+> +
+> +	puc = (u8 *)pbuf;
+> +	head = (u32 *)pbuf;
+> +
+> +	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR)
+> +		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt, txn->mc, 0,
+> +						la);
+> +	else
+> +		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt, txn->mc, 1,
+> +						la);
+> +
+> +	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR)
+> +		puc += 3;
+> +	else
+> +		puc += 2;
 
-but I'll keep it in mind in future.
+Combine these two if statements, makes it much clearer the actions
+are related.
 
-> > I'm having an issue with a codec where the normal DAPM procedure of =
+> +
+> +	if (txn->mt == SLIM_MSG_MT_CORE && slim_tid_txn(txn->mt, txn->mc))
 
-> > disabling most of the codec when there is no stream ongoing results in =
+slim_tid_txn checks for SLIM_MSG_MT_CORE so the check here should
+be redundant.
 
-> > large clicks when a playback stream starts and stops, because the outpu=
-t =
+> +		*(puc++) = txn->tid;
+> +
+> +	if ((txn->mt == SLIM_MSG_MT_CORE) &&
+> +		((txn->mc >= SLIM_MSG_MC_REQUEST_INFORMATION &&
+> +		txn->mc <= SLIM_MSG_MC_REPORT_INFORMATION) ||
+> +		(txn->mc >= SLIM_MSG_MC_REQUEST_VALUE &&
+> +		 txn->mc <= SLIM_MSG_MC_CHANGE_VALUE))) {
+> +		*(puc++) = (txn->ec & 0xFF);
+> +		*(puc++) = (txn->ec >> 8) & 0xFF;
+> +	}
 
-> > jumps from 0V when the output is disabled to over a volt when the outpu=
-t =
+As you already have slim_tid_txn, would it be worth adding
+something like slim_ec_txn? To state if an element code is
+required, feels like other controls will probably want to do a
+similar thing and would make the code a little more readable
+here.
 
-> > is enabled. =
+> +
+> +	if (txn->msg && txn->msg->wbuf)
+> +		memcpy(puc, txn->msg->wbuf, txn->msg->num_bytes);
+> +
+> +	qcom_slim_queue_tx(ctrl, head, txn->rl, MGR_TX_MSG);
+> +	timeout = wait_for_completion_timeout(&done, msecs_to_jiffies(ms));
+> +
+> +	if (!timeout) {
+> +		dev_err(ctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
+> +					txn->mt);
+> +		ret = -ETIMEDOUT;
+> +	}
+> +
+> +	return ret;
+> +
+> +}
+> +
+> +static void qcom_slim_rxwq(struct work_struct *work)
+> +{
+> +	u8 buf[SLIM_MSGQ_BUF_LEN];
+> +	u8 mc, mt, len;
+> +	int i, ret;
+> +	struct qcom_slim_ctrl *ctrl = container_of(work, struct qcom_slim_ctrl,
+> +						 wd);
+> +
+> +	while ((slim_get_current_rxbuf(ctrl, buf)) != -ENODATA) {
+> +		len = SLIM_HEADER_GET_RL(buf[0]);
+> +		mt = SLIM_HEADER_GET_MT(buf[0]);
+> +		mc = SLIM_HEADER_GET_MC(buf[1]);
+> +		if (mt == SLIM_MSG_MT_CORE &&
+> +			mc == SLIM_MSG_MC_REPORT_PRESENT) {
+> +			u8 laddr;
+> +			struct slim_eaddr ea;
+> +			u8 e_addr[6];
+> +
+> +			for (i = 0; i < 6; i++)
+> +				e_addr[i] = buf[7-i];
+> +
+> +			ea.manf_id = (u16)(e_addr[5] << 8) | e_addr[4];
+> +			ea.prod_code = (u16)(e_addr[3] << 8) | e_addr[2];
+> +			ea.dev_index = e_addr[1];
+> +			ea.instance = e_addr[0];
 
-> =
+If we are just bitshifting this out of the bytes does it really
+make it much more clear to reverse the byte order first? Feels
+like you might as well shift it out of buf directly.
 
-> > There appears to be a 'slow stop/start' feature in the codec, however, =
-it =
+Also we didn't bother to reverse the bytes for the element code
+above, so feels more consistent.
 
-> > takes about one second to ramp up and down the output voltage, and that=
- is =
+> +			ret = slim_device_report_present(&ctrl->ctrl,
+> +							 &ea, &laddr);
+> +			if (ret < 0)
+> +				dev_err(ctrl->dev, "assign laddr failed:%d\n",
+> +					ret);
+> +		} else {
+> +			dev_err(ctrl->dev, "unexpected message:mc:%x, mt:%x\n",
+> +				mc, mt);
+> +		}
+> +	}
+> +}
 
-> > too long a delay when starting a stream.
-> =
-
-> The CODEC driver is broken, it shouldn't be powering off on idle if it
-> takes a second to ramp, it should be leaving VMID up while the system is
-> running - this is what the _STANDBY bias level is all about.  Look at
-> what older CODEC drivers like the wm8731 do.
-
-It actually does leave VMID on as soon as the codec is not at the =
-
-_OFF level, the problem is really that the output buffer is not enabled =
-
-until a playback stream is set up, and its not until the output buffer is =
-
-enabled that the output attains its operating level.
-
-Of course, one solution would be to change the driver to enable the output =
-
-already at the _STANDBY level. It does seem to me that that would violate =
-
-part of the whole point of DAPM, on the other hand, I would think that =
-
-at some point power management must take a second seat to actually getting =
-
-a good user experience.
-
-> > Another use for this feature is that we have had a lot of problems over =
-
-> > the years with buggy I2S interfaces misbehaving when streams are starte=
-d =
-
-> > and stopped, and there would be an advantage to letting the AIF run the =
-
-> > whole time after startup.
-> =
-
-> This is why we've got the digital_mute() callback - the idea is that the =
-
-> output is just going to be discarded until the interface has had a =
-
-> chance to settle down.
-
-The problems we've had have been on the CPU side, with I2S interfaces that =
-
-have problems synchronizing to an ongoing I2S stream when the CPU AIF is =
-
-in slave mode, to the extent that in some cases its impossible to =
-
-determine if the first sample received by or sent from the I2S interface =
-
-is the left or right channel. If the DAIs had been set up once and been =
-
-allowed to run continuously even when there is no actual audio to =
-
-transfer, it would have helped this situation. Agreed, I'd rather have a =
-
-DAI that worked properly, but sometimes one doesn't have that luxery. :-(
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+Charles
