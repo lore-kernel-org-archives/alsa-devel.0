@@ -1,55 +1,141 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 4/4] ASoC: twl4030: Delete an unnecessary
- variable initialisation in twl4030_get_pdata()
-Date: Thu, 23 Nov 2017 22:12:09 +0100
-Message-ID: <7fda4752-0546-b194-997e-0db5b673aeab@users.sourceforge.net>
-References: <d2edbce1-ffce-9c18-3f50-baa0cdfb0152@users.sourceforge.net>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH v2 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,U}20
+Date: Fri, 24 Nov 2017 00:31:46 +0100
+Message-ID: <a54e6905-6124-9a59-b7ca-97cc650a8f99@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 74FB8266F1C
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 22:12:17 +0100 (CET)
-In-Reply-To: <d2edbce1-ffce-9c18-3f50-baa0cdfb0152@users.sourceforge.net>
-Content-Language: en-GB
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 21:54:10 +0100
+This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
+20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
+allow 3-byte accesses (including DMA) so a 4-byte (more conventional)
+format is needed for it.
 
-The variable "twl4030_codec_node" will be reassigned by
-a following statement.
-Thus omit the explicit initialisation at the beginning.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
- sound/soc/codecs/twl4030.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes from v1: Drop "_4" suffix from these formats since they aren't
+non-standard ones, use empty format slots starting from format number 25
+for them, add information that they are LSB justified formats.
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 946818a0412c..3ea6117beceb 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -230,7 +230,7 @@ static void twl4030_setup_pdata_of(struct twl4030_codec_data *pdata,
- static struct twl4030_codec_data *twl4030_get_pdata(struct snd_soc_codec *codec)
- {
- 	struct twl4030_codec_data *pdata = dev_get_platdata(codec->dev);
--	struct device_node *twl4030_codec_node = NULL;
-+	struct device_node *twl4030_codec_node;
+Corresponding alsa-lib changes will be posted as soon as this patch is
+merged on the kernel side, to keep alsa-lib and kernel synchronized.
+
+ include/sound/pcm.h         |  8 ++++++++
+ include/sound/soc-dai.h     |  2 ++
+ include/uapi/sound/asound.h |  9 +++++++++
+ sound/core/pcm_misc.c       | 16 ++++++++++++++++
+ 4 files changed, 35 insertions(+)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 24febf9e177c..e054c583d3b3 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -169,6 +169,10 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_IMA_ADPCM	_SNDRV_PCM_FMTBIT(IMA_ADPCM)
+ #define SNDRV_PCM_FMTBIT_MPEG		_SNDRV_PCM_FMTBIT(MPEG)
+ #define SNDRV_PCM_FMTBIT_GSM		_SNDRV_PCM_FMTBIT(GSM)
++#define SNDRV_PCM_FMTBIT_S20_LE	_SNDRV_PCM_FMTBIT(S20_LE)
++#define SNDRV_PCM_FMTBIT_U20_LE	_SNDRV_PCM_FMTBIT(U20_LE)
++#define SNDRV_PCM_FMTBIT_S20_BE	_SNDRV_PCM_FMTBIT(S20_BE)
++#define SNDRV_PCM_FMTBIT_U20_BE	_SNDRV_PCM_FMTBIT(U20_BE)
+ #define SNDRV_PCM_FMTBIT_SPECIAL	_SNDRV_PCM_FMTBIT(SPECIAL)
+ #define SNDRV_PCM_FMTBIT_S24_3LE	_SNDRV_PCM_FMTBIT(S24_3LE)
+ #define SNDRV_PCM_FMTBIT_U24_3LE	_SNDRV_PCM_FMTBIT(U24_3LE)
+@@ -202,6 +206,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_LE
+ #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_LE
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
++#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_LE
++#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_BE
+@@ -213,6 +219,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_BE
+ #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_BE
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
++#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_BE
++#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_BE
+ #endif
  
- 	twl4030_codec_node = of_get_child_by_name(codec->dev->parent->of_node,
- 						  "codec");
--- 
-2.15.0
+ struct snd_pcm_file {
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 58acd00cae19..d970879944fc 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -102,6 +102,8 @@ struct snd_compr_stream;
+ 			       SNDRV_PCM_FMTBIT_S16_BE |\
+ 			       SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			       SNDRV_PCM_FMTBIT_S20_3BE |\
++			       SNDRV_PCM_FMTBIT_S20_LE |\
++			       SNDRV_PCM_FMTBIT_S20_BE |\
+ 			       SNDRV_PCM_FMTBIT_S24_3LE |\
+ 			       SNDRV_PCM_FMTBIT_S24_3BE |\
+                                SNDRV_PCM_FMTBIT_S32_LE |\
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index c227ccba60ae..7385024041d2 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -214,6 +214,11 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
+ #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
+ #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
++#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* \ 			*/
++#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* | 			*/
++#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* | in four bytes,	*/
++#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* / LSB justified	*/
++/* gap in the numbering for a future standard linear format */
+ #define	SNDRV_PCM_FORMAT_SPECIAL	((__force snd_pcm_format_t) 31)
+ #define	SNDRV_PCM_FORMAT_S24_3LE	((__force snd_pcm_format_t) 32)	/* in three bytes */
+ #define	SNDRV_PCM_FORMAT_S24_3BE	((__force snd_pcm_format_t) 33)	/* in three bytes */
+@@ -248,6 +253,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_LE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_LE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_LE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
+@@ -259,6 +266,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_BE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_BE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_BE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_BE
+ #endif
+ 
+ typedef int __bitwise snd_pcm_subformat_t;
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index 9be81025372f..c62bfe27106f 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -170,6 +170,22 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
+ 	[SNDRV_PCM_FORMAT_GSM] = {
+ 		.le = -1, .signd = -1,
+ 	},
++	[SNDRV_PCM_FORMAT_S20_LE] = {
++		.width = 20, .phys = 32, .le = 1, .signd = 1,
++		.silence = {},
++	},
++	[SNDRV_PCM_FORMAT_S20_BE] = {
++		.width = 20, .phys = 32, .le = 0, .signd = 1,
++		.silence = {},
++	},
++	[SNDRV_PCM_FORMAT_U20_LE] = {
++		.width = 20, .phys = 32, .le = 1, .signd = 0,
++		.silence = { 0x00, 0x00, 0x08, 0x00 },
++	},
++	[SNDRV_PCM_FORMAT_U20_BE] = {
++		.width = 20, .phys = 32, .le = 0, .signd = 0,
++		.silence = { 0x00, 0x08, 0x00, 0x00 },
++	},
+ 	[SNDRV_PCM_FORMAT_SPECIAL] = {
+ 		.le = -1, .signd = -1,
+ 	},
