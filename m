@@ -1,19 +1,20 @@
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Disable DAPM for click avoidance ?
-Date: Thu, 23 Nov 2017 15:32:26 +0100
-Message-ID: <alpine.DEB.2.11.1711231512490.27895@lnxricardw1.se.axis.com>
-References: <alpine.DEB.2.11.1711221315370.27895@lnxricardw1.se.axis.com>
- <20171122161315.vpahz77si5xgkmct@sirena.org.uk>
- <alpine.DEB.2.11.1711231024510.27895@lnxricardw1.se.axis.com>
- <20171123110403.cut6okmjxiithxsj@sirena.org.uk>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 04/14] soundwire: Add MIPI DisCo
+	property helpers
+Date: Thu, 23 Nov 2017 14:38:12 +0000
+Message-ID: <20171123143812.braw737aciq4qmb7@localhost.localdomain>
+References: <1510314556-13002-1-git-send-email-vinod.koul@intel.com>
+ <1510314556-13002-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 98A74266B02
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 15:32:34 +0100 (CET)
-In-Reply-To: <20171123110403.cut6okmjxiithxsj@sirena.org.uk>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5A23266B02
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 15:38:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1510314556-13002-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,114 +24,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Shreyas NC <shreyas.nc@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Nov 10, 2017 at 05:19:06PM +0530, Vinod Koul wrote:
+> MIPI Discovery And Configuration (DisCo) Specification for SoundWire
+> specifies properties to be implemented for SoundWire Masters and
+> Slaves. The DisCo spec doesn't mandate these properties. However,
+> SDW bus cannot work without knowing these values.
+> 
+> The helper functions read the Master and Slave properties.
+> Implementers of Master or Slave drivers can use any of the below
+> three mechanisms:
+>    a) Use these APIs here as .read_prop() callback for Master
+>       and Slave
+>    b) Implement own methods and set those as .read_prop(), but invoke
+>       APIs in this file for generic read and override the values with
+>       platform specific data
+>    c) Implement ones own methods which do not use anything provided
+>       here
+> 
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+>  5 files changed, 733 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/soundwire/mipi_disco.c
+> --- a/drivers/soundwire/bus_type.c
+> +++ b/drivers/soundwire/bus_type.c
+> @@ -135,6 +135,8 @@ static int sdw_drv_probe(struct device *dev)
+>  		return ret;
+>  	}
+>  
+> +	slave->ops = drv->ops;
+> +
+>  	ret = drv->probe(slave, id);
+>  	if (ret) {
+>  		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
+> @@ -142,6 +144,22 @@ static int sdw_drv_probe(struct device *dev)
+>  		return ret;
+>  	}
+>  
+> +	/* device is probed so let's read the properties now */
+> +	if (slave->ops && slave->ops->read_prop)
+> +		slave->ops->read_prop(slave);
+> +
+> +	/*
+> +	 * Check for valid clk_stop_timeout, use DisCo worst case value of
+> +	 * 300ms
+> +	 *
+> +	 * TODO: check the timeouts and driver removal case
+> +	 */
+> +	if (slave->prop.clk_stop_timeout == 0)
+> +		slave->prop.clk_stop_timeout = 300;
+> +
+> +	slave->bus->clk_stop_timeout = max_t(u32, slave->bus->clk_stop_timeout,
+> +					slave->prop.clk_stop_timeout);
+> +
+>  	return 0;
+>  }
+>  
 
-On Thu, 23 Nov 2017, Mark Brown wrote:
+This brings up something I have been struggling with a little on
+both the soundwire and slimbus chains at the moment.
 
-> If you don't copy any actual people the chances of getting a response
-> are vastly reduced.
+This happens after probe but if I am understanding right these
+properties might be required to communicate with the device.
+Which directly implies that probe shouldn't attempt to talk to
+the device? This is also implied in both series by the fact that
+probe will usually setup the things necessary for enumeration
+(power, clocks, etc). But it is fairly common in probe to at
+least do something like read some ID registers to check we are
+probing the right device.
 
-My point has been that I don't want to pester any specific people ... but =
+On the slimbus side I guess you can get round this using the fact
+they have device_status callbacks to the driver so the driver can
+tell when the device is actually available, and could perform
+some actions when the device first becomes available on the
+bus. But this SoundWire chain doesn't have an equivalent.
 
-point taken that otherwise it just ends up as an FYI.
+Apologies for the long and slightly vague comment, but I guess my
+question is do you have a thought on how drivers should know when
+it is safe to communicate with a SoundWire device?
 
-> > Of course, one solution would be to change the driver to enable the out=
-put =
-
-> > already at the _STANDBY level. It does seem to me that that would viola=
-te =
-
-> > part of the whole point of DAPM, on the other hand, I would think that =
-
-> > at some point power management must take a second seat to actually gett=
-ing =
-
-> > a good user experience.
-> =
-
-> Yes, you'll need to do something like leave the outputs enabled.  Most
-> devices have some facility to keep VMID switched to the outputs, though
-> I did see a few where someone thought it was a good idea to power on
-> from cold always.  A device that old isn't going to be that competitive
-> power wise anyway even if it were well implemented which this one seems
-> to not have been.
-
-In my case the codec is only a couple of years old, so I'd say it =
-
-qualifies as 'modern'. There's a table in the data sheet describing the =
-
-power consumption for various combinations of the PM control bits but =
-
-unfortunately the case of having the outbut buffer enabled but not the DAC =
-
-is not listed. I could always ask the manufacturer directly of course. Or =
-
-simply measure it myself on an evaluation board to get an idea.
-
-> > > This is why we've got the digital_mute() callback - the idea is that =
-the =
-
-> > > output is just going to be discarded until the interface has had a =
-
-> > > chance to settle down.
-> =
-
-> > The problems we've had have been on the CPU side, with I2S interfaces t=
-hat =
-
-> > have problems synchronizing to an ongoing I2S stream when the CPU AIF i=
-s =
-
-> =
-
-> That's what the digital mute handling is for - we're just throwing away
-> any garbage the CPU puts out before it's stable.  We're not expecting it
-> to work around any CODEC side issues.
-
-During which time period is the digital mute enabled? From the first =
-
-stream startup until everything is up and running?
-> =
-
-> > in slave mode, to the extent that in some cases its impossible to =
-
-> > determine if the first sample received by or sent from the I2S interfac=
-e =
-
-> > is the left or right channel. If the DAIs had been set up once and been =
-
-> > allowed to run continuously even when there is no actual audio to =
-
-> > transfer, it would have helped this situation. Agreed, I'd rather have =
-a =
-
-> > DAI that worked properly, but sometimes one doesn't have that luxery. :=
--(
-> =
-
-> If you're getting L/R swap issues on some startups leaving things
-> enabled all the time will mean that your random swap issue gets moved to
-> boot.
-
-Basically the situation I had was that it worked fine on first startup, it =
-
-was on subsequent startups/shutdowns that the problems occurred, as
-shutting down the audio streams seemed to leave the CPU DAI in some =
-
-intermediate state, from which it could only recover if completely reset, =
-
-which did not play well with the concept of for instance having a capture =
-
-stream running continuously while a playback stream was started and =
-
-stopped.
-
-/Ricard
--- =
-
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thanks,
+Charles
