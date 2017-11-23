@@ -1,15 +1,17 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 0/3] ASoC: da7218: Adjustments for two function
- implementations
-Date: Thu, 23 Nov 2017 21:03:28 +0100
-Message-ID: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
+Subject: [PATCH 1/3] ASoC: da7218: Delete two error messages
+ for a failed memory allocation in da7218_of_to_pdata()
+Date: Thu, 23 Nov 2017 21:04:42 +0100
+Message-ID: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
+References: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 690B0266F1C
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 21:03:38 +0100 (CET)
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87236266F1C
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 21:04:51 +0100 (CET)
+In-Reply-To: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
 Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,19 +27,41 @@ Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 21:00:12 +0100
+Date: Thu, 23 Nov 2017 20:42:20 +0100
 
-Three update suggestions were taken into account
-from static source code analysis.
+Omit extra messages for a memory allocation failure in this function.
 
-Markus Elfring (3):
-  Delete two error messages for a failed memory allocation
-    in da7218_of_to_pdata()
-  Use common error handling code in da7218_of_to_pdata()
-  Improve a size determination in da7218_i2c_probe()
+This issue was detected by using the Coccinelle software.
 
- sound/soc/codecs/da7218.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/soc/codecs/da7218.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index 56564ce90cb6..25ab7443d803 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2455,10 +2455,8 @@ static struct da7218_pdata *da7218_of_to_pdata(struct snd_soc_codec *codec)
+ 	u32 of_val32;
+ 
+ 	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
+-	if (!pdata) {
+-		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
++	if (!pdata)
+ 		return NULL;
+-	}
+ 
+ 	if (of_property_read_u32(np, "dlg,micbias1-lvl-millivolt", &of_val32) >= 0)
+ 		pdata->micbias1_lvl = da7218_of_micbias_lvl(codec, of_val32);
+@@ -2527,8 +2525,6 @@ static struct da7218_pdata *da7218_of_to_pdata(struct snd_soc_codec *codec)
+ 		hpldet_pdata = devm_kzalloc(codec->dev, sizeof(*hpldet_pdata),
+ 					    GFP_KERNEL);
+ 		if (!hpldet_pdata) {
+-			dev_warn(codec->dev,
+-				 "Failed to allocate memory for hpldet pdata\n");
+ 			of_node_put(hpldet_np);
+ 			return pdata;
+ 		}
 -- 
 2.15.0
