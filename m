@@ -1,120 +1,152 @@
-From: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Subject: Re: [PATCH v7 11/13] slimbus: qcom: Add Qualcomm Slimbus controller
- driver
-Date: Thu, 23 Nov 2017 17:42:12 +0100
-Message-ID: <20171123164212.655yliz3tmlpsjje@latitude>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
- <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
+From: Guenter Roeck <groeck@google.com>
+Subject: Re: [PATCH] ASoC: amd: added error checks in dma driver
+Date: Thu, 23 Nov 2017 08:59:43 -0800
+Message-ID: <CABXOdTezJbmEU=Oa+G1NN+WHoZqJERH8DAapJqgbPXkLnyweLw@mail.gmail.com>
+References: <1511454602-7259-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="knjhfwnnbku77kry"
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org, Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1511454602-7259-1-git-send-email-Vijendar.Mukunda@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, Alex Deucher <Alexander.Deucher@amd.com>, Akshu.Agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>, linux-kernel <linux-kernel@vger.kernel.org>, Dominik Behr <dbehr@chromium.org>, Daniel Kurtz <djkurtz@chromium.org>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 23, 2017 at 8:30 AM, Vijendar Mukunda
+<Vijendar.Mukunda@amd.com> wrote:
+> added error checks in acp dma driver
+>
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
+> Signed-off-by: Guenter Roeck <groeck@chromium.org>
 
---knjhfwnnbku77kry
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is inappropriate.
 
-Hello Srinivas and Charles,
+Guenter
 
-On Thu, Nov 23, 2017 at 10:07:03AM +0000, Charles Keepax wrote:
-> On Wed, Nov 15, 2017 at 02:10:41PM +0000, srinivas.kandagatla@linaro.org =
-wrote:
-> > From: Sagar Dharia <sdharia@codeaurora.org>
-> >=20
-> > This controller driver programs manager, interface, and framer
-> > devices for Qualcomm's slimbus HW block.
-> > Manager component currently implements logical address setting,
-> > and messaging interface.
-> > Interface device reports bus synchronization information, and framer
-> > device clocks the bus from the time it's woken up, until clock-pause
-> > is executed by the manager device.
-> >=20
-> > Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
-> > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > ---
-[...]
-> > +static void qcom_slim_rxwq(struct work_struct *work)
-> > +{
-> > +	u8 buf[SLIM_MSGQ_BUF_LEN];
-> > +	u8 mc, mt, len;
-> > +	int i, ret;
-> > +	struct qcom_slim_ctrl *ctrl =3D container_of(work, struct qcom_slim_c=
-trl,
-> > +						 wd);
-> > +
-> > +	while ((slim_get_current_rxbuf(ctrl, buf)) !=3D -ENODATA) {
-> > +		len =3D SLIM_HEADER_GET_RL(buf[0]);
-> > +		mt =3D SLIM_HEADER_GET_MT(buf[0]);
-> > +		mc =3D SLIM_HEADER_GET_MC(buf[1]);
-> > +		if (mt =3D=3D SLIM_MSG_MT_CORE &&
-> > +			mc =3D=3D SLIM_MSG_MC_REPORT_PRESENT) {
-> > +			u8 laddr;
-> > +			struct slim_eaddr ea;
-> > +			u8 e_addr[6];
-> > +
-> > +			for (i =3D 0; i < 6; i++)
-> > +				e_addr[i] =3D buf[7-i];
-> > +
-> > +			ea.manf_id =3D (u16)(e_addr[5] << 8) | e_addr[4];
-> > +			ea.prod_code =3D (u16)(e_addr[3] << 8) | e_addr[2];
-> > +			ea.dev_index =3D e_addr[1];
-> > +			ea.instance =3D e_addr[0];
->=20
-> If we are just bitshifting this out of the bytes does it really
-> make it much more clear to reverse the byte order first? Feels
-> like you might as well shift it out of buf directly.
-
-In any case, there is a predefined function to make this code a little
-nicer in <asm/byteorder.h>:
-
-	le16_to_cpu(x):  Converts the 16-bit little endian value x to
-	                 CPU-endian
-	le16_to_cpup(p): Converts the 16-bit little endian value pointed
-	                 to by p to CPU-endian
-
-If you use le16_to_cpup, you need to cast your pointer to __le16 *:
-
-	ea.manf_id =3D le16_to_cpup((__le16 *)&e_addr[4]);
-
-Like Charles, I don't quite see the point of the for loop that fills
-e_addr. I guess it did effectively a byteswap, so the original code,
-that assumed little-endian, could simply dereference a u16 *. This does
-not make a lot of sense anymore, once you use properly (CPU-)endian-
-independent code. (Of course, you'll need to replace le16 with be16 if
-you drop that loop.)
-
-
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---knjhfwnnbku77kry
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAABAgAGBQJaFvpdAAoJEAgwRJqO81/b3PEP/RRAYO4xMTLAH105EMLGB3/J
-CJL984xFxuICot4hjcKOmx+C0uy52S4O3qy5CHUJKI5/+LKMU7nOsUdkESq5ftlN
-bm6s0GWY51EjWPxtlmi1dL7S5b8/VW9Y3DsRnJpDO+PyGgSucijFKqxClVnNsfIB
-i4qFw9Vo719eJofbRVcQBpjoprBaSqwHG8ZAnrqjVsWFjF3/0yIohnzy6ZrgzIeZ
-ZNlvtwnwKq8TmIudcWDNw3JmkipqKsQxdOXhYEJqIC/6hgJO3PMxQErKVINrIHYt
-ZiHuXhs3vbXNCZx4q4uuyW1W/YdEor5WMvYLPJmWHZbSygGRnmviIhUaeio4REE1
-oMjBVus815NviFLRvWRwuS1VwEvNGY+9MzpOiPxGA0DDO0xGhweTx7frbpOknqHL
-EXxxp/RUhO6WcOHumviEhhKvwroqV7TXp9LfMKMPnw2mRlf/QtScZLS8ddeBESfL
-TOlFfbIzUEMX4h/LzbbcgQPiRBdXUTbZ8LgVxPTTX889kzgiUn5ie2RIHy1V+hNu
-eUVCwWJqu0Wc5TtYbNSDJd5Ysiuz62b4t/+MuVt8C62/CrizXdzELndLbxSPRZG4
-4wb084GR2/WP35R0DTWIa33k0QXK5IiRboQEA6fHCJzE8FOrW1LY0CbAVE8slzO7
-etfHmr89OMEc8+Eedrqu
-=FqbW
------END PGP SIGNATURE-----
-
---knjhfwnnbku77kry--
+> ---
+>  sound/soc/amd/acp-pcm-dma.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 40 insertions(+), 5 deletions(-)
+>
+> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+> index 17d76fa..804e659 100644
+> --- a/sound/soc/amd/acp-pcm-dma.c
+> +++ b/sound/soc/amd/acp-pcm-dma.c
+> @@ -848,6 +848,9 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+>         struct snd_pcm_runtime *runtime = substream->runtime;
+>         struct audio_substream_data *rtd = runtime->private_data;
+>
+> +       if (!rtd)
+> +               return -EINVAL;
+> +
+>         buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+>         bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
+>
+> @@ -873,6 +876,8 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+>         struct snd_pcm_runtime *runtime = substream->runtime;
+>         struct audio_substream_data *rtd = runtime->private_data;
+>
+> +       if (!rtd)
+> +               return -EINVAL;
+>         if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>                 config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
+>                                         PLAYBACK_START_DMA_DESCR_CH12,
+> @@ -1066,6 +1071,10 @@ static int acp_audio_probe(struct platform_device *pdev)
+>         struct resource *res;
+>         const u32 *pdata = pdev->dev.platform_data;
+>
+> +       if (!pdata) {
+> +               dev_err(&pdev->dev, "Missing platform data\n");
+> +               return -ENODEV;
+> +       }
+>         audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
+>                                         GFP_KERNEL);
+>         if (audio_drv_data == NULL)
+> @@ -1074,6 +1083,8 @@ static int acp_audio_probe(struct platform_device *pdev)
+>         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>         audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
+>
+> +       if (IS_ERR(audio_drv_data->acp_mmio))
+> +               return PTR_ERR(audio_drv_data->acp_mmio);
+>         /* The following members gets populated in device 'open'
+>          * function. Till then interrupts are disabled in 'acp_init'
+>          * and device doesn't generate any interrupts.
+> @@ -1099,7 +1110,11 @@ static int acp_audio_probe(struct platform_device *pdev)
+>         dev_set_drvdata(&pdev->dev, audio_drv_data);
+>
+>         /* Initialize the ACP */
+> -       acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
+> +       status = acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
+> +       if (status) {
+> +               dev_err(&pdev->dev, "ACP Init failed\n");
+> +               return status;
+> +       }
+>
+>         status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
+>         if (status != 0) {
+> @@ -1116,9 +1131,14 @@ static int acp_audio_probe(struct platform_device *pdev)
+>
+>  static int acp_audio_remove(struct platform_device *pdev)
+>  {
+> +       int status;
+>         struct audio_drv_data *adata = dev_get_drvdata(&pdev->dev);
+>
+> -       acp_deinit(adata->acp_mmio);
+> +       status = acp_deinit(adata->acp_mmio);
+> +       if (status) {
+> +               dev_err(&pdev->dev, "ACP Deinit failed\n");
+> +               return status;
+> +       }
+>         snd_soc_unregister_platform(&pdev->dev);
+>         pm_runtime_disable(&pdev->dev);
+>
+> @@ -1128,9 +1148,14 @@ static int acp_audio_remove(struct platform_device *pdev)
+>  static int acp_pcm_resume(struct device *dev)
+>  {
+>         u16 bank;
+> +       int status;
+>         struct audio_drv_data *adata = dev_get_drvdata(dev);
+>
+> -       acp_init(adata->acp_mmio, adata->asic_type);
+> +       status = acp_init(adata->acp_mmio, adata->asic_type);
+> +       if (status) {
+> +               dev_err(dev, "ACP Init failed\n");
+> +               return status;
+> +       }
+>
+>         if (adata->play_stream && adata->play_stream->runtime) {
+>                 /* For Stoney, Memory gating is disabled,i.e SRAM Banks
+> @@ -1162,18 +1187,28 @@ static int acp_pcm_resume(struct device *dev)
+>
+>  static int acp_pcm_runtime_suspend(struct device *dev)
+>  {
+> +       int status;
+>         struct audio_drv_data *adata = dev_get_drvdata(dev);
+>
+> -       acp_deinit(adata->acp_mmio);
+> +       status = acp_deinit(adata->acp_mmio);
+> +       if (status) {
+> +               dev_err(dev, "ACP Deinit failed\n");
+> +               return status;
+> +       }
+>         acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+>         return 0;
+>  }
+>
+>  static int acp_pcm_runtime_resume(struct device *dev)
+>  {
+> +       int status;
+>         struct audio_drv_data *adata = dev_get_drvdata(dev);
+>
+> -       acp_init(adata->acp_mmio, adata->asic_type);
+> +       status = acp_init(adata->acp_mmio, adata->asic_type);
+> +       if (status) {
+> +               dev_err(dev, "ACP Init failed\n");
+> +               return status;
+> +       }
+>         acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+>         return 0;
+>  }
+> --
+> 2.7.4
+>
