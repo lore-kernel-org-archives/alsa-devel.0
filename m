@@ -1,142 +1,135 @@
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH] ASoC: amd: added error checks in dma driver
-Date: Thu, 23 Nov 2017 22:00:02 +0530
-Message-ID: <1511454602-7259-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Disable DAPM for click avoidance ?
+Date: Thu, 23 Nov 2017 11:04:03 +0000
+Message-ID: <20171123110403.cut6okmjxiithxsj@sirena.org.uk>
+References: <alpine.DEB.2.11.1711221315370.27895@lnxricardw1.se.axis.com>
+ <20171122161315.vpahz77si5xgkmct@sirena.org.uk>
+ <alpine.DEB.2.11.1711231024510.27895@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, perex@perex.cz, Alexander.Deucher@amd.com, Akshu.Agrawal@amd.com, linux@roeck-us.net, linux-kernel@vger.kernel.org, dbehr@chromium.org, djkurtz@chromium.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Guenter Roeck <groeck@chromium.org>
+Content-Type: multipart/mixed; boundary="===============1113773720012464742=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00566266DF5
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 12:04:05 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.11.1711231024510.27895@lnxricardw1.se.axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-added error checks in acp dma driver
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
-Signed-off-by: Guenter Roeck <groeck@chromium.org>
----
- sound/soc/amd/acp-pcm-dma.c | 45 ++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 40 insertions(+), 5 deletions(-)
+--===============1113773720012464742==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="doaeiedsujzi35tp"
+Content-Disposition: inline
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 17d76fa..804e659 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -848,6 +848,9 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
- 
-+	if (!rtd)
-+		return -EINVAL;
-+
- 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
- 	bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
- 
-@@ -873,6 +876,8 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
- 
-+	if (!rtd)
-+		return -EINVAL;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
- 					PLAYBACK_START_DMA_DESCR_CH12,
-@@ -1066,6 +1071,10 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	const u32 *pdata = pdev->dev.platform_data;
- 
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "Missing platform data\n");
-+		return -ENODEV;
-+	}
- 	audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
- 					GFP_KERNEL);
- 	if (audio_drv_data == NULL)
-@@ -1074,6 +1083,8 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
- 
-+	if (IS_ERR(audio_drv_data->acp_mmio))
-+		return PTR_ERR(audio_drv_data->acp_mmio);
- 	/* The following members gets populated in device 'open'
- 	 * function. Till then interrupts are disabled in 'acp_init'
- 	 * and device doesn't generate any interrupts.
-@@ -1099,7 +1110,11 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, audio_drv_data);
- 
- 	/* Initialize the ACP */
--	acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
-+	status = acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
-+	if (status) {
-+		dev_err(&pdev->dev, "ACP Init failed\n");
-+		return status;
-+	}
- 
- 	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
- 	if (status != 0) {
-@@ -1116,9 +1131,14 @@ static int acp_audio_probe(struct platform_device *pdev)
- 
- static int acp_audio_remove(struct platform_device *pdev)
- {
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(&pdev->dev);
- 
--	acp_deinit(adata->acp_mmio);
-+	status = acp_deinit(adata->acp_mmio);
-+	if (status) {
-+		dev_err(&pdev->dev, "ACP Deinit failed\n");
-+		return status;
-+	}
- 	snd_soc_unregister_platform(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-@@ -1128,9 +1148,14 @@ static int acp_audio_remove(struct platform_device *pdev)
- static int acp_pcm_resume(struct device *dev)
- {
- 	u16 bank;
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
--	acp_init(adata->acp_mmio, adata->asic_type);
-+	status = acp_init(adata->acp_mmio, adata->asic_type);
-+	if (status) {
-+		dev_err(dev, "ACP Init failed\n");
-+		return status;
-+	}
- 
- 	if (adata->play_stream && adata->play_stream->runtime) {
- 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
-@@ -1162,18 +1187,28 @@ static int acp_pcm_resume(struct device *dev)
- 
- static int acp_pcm_runtime_suspend(struct device *dev)
- {
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
--	acp_deinit(adata->acp_mmio);
-+	status = acp_deinit(adata->acp_mmio);
-+	if (status) {
-+		dev_err(dev, "ACP Deinit failed\n");
-+		return status;
-+	}
- 	acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
- 
- static int acp_pcm_runtime_resume(struct device *dev)
- {
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
--	acp_init(adata->acp_mmio, adata->asic_type);
-+	status = acp_init(adata->acp_mmio, adata->asic_type);
-+	if (status) {
-+		dev_err(dev, "ACP Init failed\n");
-+		return status;
-+	}
- 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
--- 
-2.7.4
+
+--doaeiedsujzi35tp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 23, 2017 at 10:41:33AM +0100, Ricard Wanderlof wrote:
+> On Wed, 22 Nov 2017, Mark Brown wrote:
+> > On Wed, Nov 22, 2017 at 01:33:37PM +0100, Ricard Wanderlof wrote:
+
+> > Always CC maintainers on postings if you want them to be reliably
+> > seen...
+
+> Ok. I thought it was more of a general question than a maintainer questio=
+n=20
+> but I'll keep it in mind in future.
+
+If you don't copy any actual people the chances of getting a response
+are vastly reduced.
+
+> > The CODEC driver is broken, it shouldn't be powering off on idle if it
+> > takes a second to ramp, it should be leaving VMID up while the system is
+> > running - this is what the _STANDBY bias level is all about.  Look at
+> > what older CODEC drivers like the wm8731 do.
+
+> It actually does leave VMID on as soon as the codec is not at the=20
+> _OFF level, the problem is really that the output buffer is not enabled=
+=20
+> until a playback stream is set up, and its not until the output buffer is=
+=20
+> enabled that the output attains its operating level.
+
+> Of course, one solution would be to change the driver to enable the outpu=
+t=20
+> already at the _STANDBY level. It does seem to me that that would violate=
+=20
+> part of the whole point of DAPM, on the other hand, I would think that=20
+> at some point power management must take a second seat to actually gettin=
+g=20
+> a good user experience.
+
+Yes, you'll need to do something like leave the outputs enabled.  Most
+devices have some facility to keep VMID switched to the outputs, though
+I did see a few where someone thought it was a good idea to power on
+=66rom cold always.  A device that old isn't going to be that competitive
+power wise anyway even if it were well implemented which this one seems
+to not have been.
+
+> > This is why we've got the digital_mute() callback - the idea is that th=
+e=20
+> > output is just going to be discarded until the interface has had a=20
+> > chance to settle down.
+
+> The problems we've had have been on the CPU side, with I2S interfaces tha=
+t=20
+> have problems synchronizing to an ongoing I2S stream when the CPU AIF is=
+=20
+
+That's what the digital mute handling is for - we're just throwing away
+any garbage the CPU puts out before it's stable.  We're not expecting it
+to work around any CODEC side issues.
+
+> in slave mode, to the extent that in some cases its impossible to=20
+> determine if the first sample received by or sent from the I2S interface=
+=20
+> is the left or right channel. If the DAIs had been set up once and been=
+=20
+> allowed to run continuously even when there is no actual audio to=20
+> transfer, it would have helped this situation. Agreed, I'd rather have a=
+=20
+> DAI that worked properly, but sometimes one doesn't have that luxery. :-(
+
+If you're getting L/R swap issues on some startups leaving things
+enabled all the time will mean that your random swap issue gets moved to
+boot.
+
+--doaeiedsujzi35tp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloWqyIACgkQJNaLcl1U
+h9Cd3gf/SCiXA7lp4CwPLGKBryqFbBzUcY6W+jYX8KaitKJDaY2Zu5ypzc3W35xL
+FacTwaW+BeewXB4d7U2dAjTUM9gDKM47Co530ftN1tAWFb4mmVBolGYUH/8kQu4h
+AssQ34qmHLIXHp8iHuuoB0CtH+W9ym3IB/GH3X0gf4EJpB94xVd79D6z7c3SB6CW
+Lhq2mhuir8fIy3pXdtL5ycTq8qv5dwaXHE5pRoOjQPQvruXdy4AHm2uTcdcJNUkb
+75xQfuNLvaTbLeprmzD0LtJ620dW2CPt5mq7BSeek7aHL6X9W9XSMrM19OQRgTgP
+ct3ur8PGqrp1cq6tNpbSuvMXh3a45w==
+=MzFM
+-----END PGP SIGNATURE-----
+
+--doaeiedsujzi35tp--
+
+--===============1113773720012464742==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1113773720012464742==--
