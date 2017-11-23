@@ -1,111 +1,73 @@
-From: Jens Verwiebe <info@jensverwiebe.de>
-Subject: Re: Focusrite Scarlett 6i6 gen1 - input handling fix
-Date: Thu, 23 Nov 2017 12:59:29 +0100
-Message-ID: <d8c83f1a-13d1-b600-681c-3c83eb374953@jensverwiebe.de>
-References: <c306e7cf-6d8c-542d-bd51-66a92d17445a@jensverwiebe.de>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,U}20_4
+Date: Thu, 23 Nov 2017 13:26:25 +0100
+Message-ID: <38602575-acc5-2106-38ef-3a71076de398@maciej.szmigiero.name>
+References: <53d527c0-89f6-d501-09e9-1effea8a5bac@maciej.szmigiero.name>
+ <s5hwp2h4dto.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------0714C6E25815FCF1ED400B61"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
- by alsa0.perex.cz (Postfix) with ESMTP id A4BD1266DF5
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 12:59:36 +0100 (CET)
-Received: from [192.168.178.21] ([85.179.205.209]) by mrelayeu.kundenserver.de
- (mreue103 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 0MEKbo-1eONbj3stc-00FPKt for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017
- 12:59:36 +0100
-In-Reply-To: <c306e7cf-6d8c-542d-bd51-66a92d17445a@jensverwiebe.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hwp2h4dto.wl-tiwai@suse.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Timur Tabi <timur@tabi.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org, Fabio Estevam <fabio.estevam@nxp.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------0714C6E25815FCF1ED400B61
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On 23.11.2017 09:08, Takashi Iwai wrote:
+> On Wed, 22 Nov 2017 20:17:34 +0100,
+>  Maciej S. Szmigiero  wrote:
+>>
+>> This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
+>> 20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
+>> allow 3-byte accesses (including DMA) so a 4-byte format is needed for it.
+>>
+>> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+>> ---
+>>  include/sound/pcm.h         |  8 ++++++++
+>>  include/sound/soc-dai.h     |  2 ++
+>>  include/uapi/sound/asound.h | 10 +++++++++-
+>>  sound/core/pcm_misc.c       | 16 ++++++++++++++++
+>>  4 files changed, 35 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+>> index 24febf9e177c..7ad2d3f0934f 100644
+>> --- a/include/sound/pcm.h
+>> +++ b/include/sound/pcm.h
+>> @@ -191,6 +191,10 @@ struct snd_pcm_ops {
+>>  #define SNDRV_PCM_FMTBIT_DSD_U32_LE	_SNDRV_PCM_FMTBIT(DSD_U32_LE)
+>>  #define SNDRV_PCM_FMTBIT_DSD_U16_BE	_SNDRV_PCM_FMTBIT(DSD_U16_BE)
+>>  #define SNDRV_PCM_FMTBIT_DSD_U32_BE	_SNDRV_PCM_FMTBIT(DSD_U32_BE)
+>> +#define SNDRV_PCM_FMTBIT_S20_4LE	_SNDRV_PCM_FMTBIT(S20_4LE)
+>> +#define SNDRV_PCM_FMTBIT_U20_4LE	_SNDRV_PCM_FMTBIT(U20_4LE)
+>> +#define SNDRV_PCM_FMTBIT_S20_4BE	_SNDRV_PCM_FMTBIT(S20_4BE)
+>> +#define SNDRV_PCM_FMTBIT_U20_4BE	_SNDRV_PCM_FMTBIT(U20_4BE)
+> 
+> The conventional names aren't with "4" suffix,
+> e.g. SNDRV_PCM_FMTBIT_S20_LE.
 
-Ups, cleanup own indentation/formatting mistake.
+Will rename it in a respin.
+> Also, there are still empty slots under 32, e.g. start from 25.
+> The formats over 31 were used for 3 bytes or other unusual formats
+> (although nowadays it makes little sense), and the slots < 32 would
+> fit for 4 bytes linear format.
 
-Signed-off-by: Jens Verwiebe <info@jensverwiebe.de>
+Will renumber these formats to start from 25 in a respin.
 
+> It's still an open question whether we should increase the protocol
+> number when we add a new PCM format definition.  I guess it's not, as
+> the ABI behavior itself doesn't change, but I might have overlooked
+> some possible breakage.
 
+This isn't an incompatible, application-breaking, ABI change (it is
+rather kind of an additional "ABI"), so I think an ALSA protocol number
+should not be increased for it.
 
---------------0714C6E25815FCF1ED400B61
-Content-Type: text/x-patch;
- name="scarlett6i6rev1_gain.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="scarlett6i6rev1_gain.patch"
+> thanks,
+> 
+> Takashi
+> 
 
-diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
-index 7438e7c..2c86d595 100644
---- a/sound/usb/mixer_scarlett.c
-+++ b/sound/usb/mixer_scarlett.c
-@@ -152,6 +152,7 @@ enum {
- 	SCARLETT_OUTPUTS,
- 	SCARLETT_SWITCH_IMPEDANCE,
- 	SCARLETT_SWITCH_PAD,
-+	SCARLETT_SWITCH_GAIN,
- };
- 
- enum {
-@@ -202,6 +203,15 @@ struct scarlett_device_info {
- 	}
- };
- 
-+static const struct scarlett_mixer_elem_enum_info opt_gain = {
-+	.start = 0,
-+	.len = 2,
-+	.offsets = {},
-+	.names = (char const * const []){
-+		"Lo", "Hi"
-+	}
-+};
-+
- static const struct scarlett_mixer_elem_enum_info opt_impedance = {
- 	.start = 0,
- 	.len = 2,
-@@ -664,8 +674,8 @@ static int add_output_ctls(struct usb_mixer_interface *mixer,
- 		{ .num = 1, .type = SCARLETT_SWITCH_PAD, .name = NULL},
- 		{ .num = 2, .type = SCARLETT_SWITCH_IMPEDANCE, .name = NULL},
- 		{ .num = 2, .type = SCARLETT_SWITCH_PAD, .name = NULL},
--		{ .num = 3, .type = SCARLETT_SWITCH_PAD, .name = NULL},
--		{ .num = 4, .type = SCARLETT_SWITCH_PAD, .name = NULL},
-+		{ .num = 3, .type = SCARLETT_SWITCH_GAIN, .name = NULL},
-+		{ .num = 4, .type = SCARLETT_SWITCH_GAIN, .name = NULL},
- 	},
- 
- 	.matrix_mux_init = {
-@@ -895,6 +905,15 @@ static int scarlett_controls_create_generic(struct usb_mixer_interface *mixer,
- 			if (err < 0)
- 				return err;
- 			break;
-+		case SCARLETT_SWITCH_GAIN:
-+			sprintf(mx, "Input %d Gain Switch", ctl->num);
-+			err = add_new_ctl(mixer, &usb_scarlett_ctl_enum,
-+					  scarlett_ctl_enum_resume, 0x01,
-+					  0x08, ctl->num, USB_MIXER_S16, 1, mx,
-+					  &opt_gain, &elem);
-+			if (err < 0)
-+				return err;
-+			break;
- 		}
- 	}
- 
-
---------------0714C6E25815FCF1ED400B61
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------0714C6E25815FCF1ED400B61--
+Thanks,
+Maciej
