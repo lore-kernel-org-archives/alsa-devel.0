@@ -1,23 +1,14 @@
-From: Jens Verwiebe <info@jensverwiebe.de>
-Subject: Re: Focusrite Scarlett 6i6 gen1 - input handling fix
-Date: Thu, 23 Nov 2017 15:50:24 +0100
-Message-ID: <b0f3ca28-9369-137e-0cde-48bc520549a8@jensverwiebe.de>
-References: <c306e7cf-6d8c-542d-bd51-66a92d17445a@jensverwiebe.de>
- <d8c83f1a-13d1-b600-681c-3c83eb374953@jensverwiebe.de>
- <s5ho9nt3yu7.wl-tiwai@suse.de>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Multiple codecs on the same DAI
+Date: Thu, 23 Nov 2017 15:51:19 +0100
+Message-ID: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
- by alsa0.perex.cz (Postfix) with ESMTP id E26C0266B02
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 15:50:26 +0100 (CET)
-Received: from [192.168.178.21] ([85.179.205.209]) by mrelayeu.kundenserver.de
- (mreue007 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 0LhHE4-1evKIz3LtY-00mdz0 for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017
- 15:50:25 +0100
-In-Reply-To: <s5ho9nt3yu7.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3427266B02
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 15:51:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,93 +18,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T2theSwgaG9wZSBpIGdvdCBhbGwgbmVlZGVkIGluZm8gbm93IHJpZ2h0IDoKCgoKVGhlIFNjYXJs
-ZXR0IDZpNiBoYXMgbm8gcGFkZGluZyBvbiByZWFyIGlucHV0cyAzLzQgYnV0IGEgZ2FpbnN0YWdl
-IAooTG93L0hpKS4gQWRkaW5nIHRoaXMgZnVuY3Rpb25hbGl0eQoKU2lnbmVkLW9mZi1ieTogSmVu
-cyBWZXJ3aWViZSA8aW5mbyBhdCBqZW5zdmVyd2llYmUuZGUgCjxodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbD4+CgoxIGZpbGUgY2hhbmdl
-ZCwgMjEgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCgpkaWZmIC0tZ2l0IGEvc291bmQv
-dXNiL21peGVyX3NjYXJsZXR0LmMgYi9zb3VuZC91c2IvbWl4ZXJfc2NhcmxldHQuYwppbmRleCA3
-NDM4ZTdjLi4yYzg2ZDU5NSAxMDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVyX3NjYXJsZXR0LmMK
-KysrIGIvc291bmQvdXNiL21peGVyX3NjYXJsZXR0LmMKQEAgLTE1Miw2ICsxNTIsNyBAQCBlbnVt
-IHsKIMKgwqDCoMKgwqDCoMKgIFNDQVJMRVRUX09VVFBVVFMsCiDCoMKgwqDCoMKgwqDCoCBTQ0FS
-TEVUVF9TV0lUQ0hfSU1QRURBTkNFLAogwqDCoMKgwqDCoMKgwqAgU0NBUkxFVFRfU1dJVENIX1BB
-RCwKK8KgwqDCoMKgwqDCoCBTQ0FSTEVUVF9TV0lUQ0hfR0FJTiwKIMKgfTsKCiDCoGVudW0gewpA
-QCAtMjAyLDYgKzIwMywxNSBAQCBzdHJ1Y3Qgc2NhcmxldHRfZGV2aWNlX2luZm8gewogwqDCoMKg
-wqDCoMKgwqAgfQogwqB9OwoKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc2NhcmxldHRfbWl4ZXJfZWxl
-bV9lbnVtX2luZm8gb3B0X2dhaW4gPSB7CivCoMKgwqDCoMKgwqAgLnN0YXJ0ID0gMCwKK8KgwqDC
-oMKgwqDCoCAubGVuID0gMiwKK8KgwqDCoMKgwqDCoCAub2Zmc2V0cyA9IHt9LAorwqDCoMKgwqDC
-oMKgIC5uYW1lcyA9IChjaGFyIGNvbnN0ICogY29uc3QgW10peworwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAiTG8iLCAiSGkiCivCoMKgwqDCoMKgwqAgfQorfTsKKwogwqBzdGF0aWMgY29u
-c3Qgc3RydWN0IHNjYXJsZXR0X21peGVyX2VsZW1fZW51bV9pbmZvIG9wdF9pbXBlZGFuY2UgPSB7
-CiDCoMKgwqDCoMKgwqDCoCAuc3RhcnQgPSAwLAogwqDCoMKgwqDCoMKgwqAgLmxlbiA9IDIsCkBA
-IC02NjQsOCArNjc0LDggQEAgc3RhdGljIGludCBhZGRfb3V0cHV0X2N0bHMoc3RydWN0IAp1c2Jf
-bWl4ZXJfaW50ZXJmYWNlICptaXhlciwKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB7
-IC5udW0gPSAxLCAudHlwZSA9IFNDQVJMRVRUX1NXSVRDSF9QQUQsIC5uYW1lID0gTlVMTH0sCjou
-Li5za2lwcGluZy4uLgpjb21taXQgNDE1OTIwZGM0ZjZhMGMxNGEwOGJjODMyZWNhODlhYWY3NDdh
-N2ZiOQpBdXRob3I6IEplbnMgVmVyd2llYmUgPGluZm9AamVuc3ZlcndpZWJlLmRlPgpEYXRlOsKg
-wqAgVGh1IE5vdiAyMyAxNTozNzo0MCAyMDE3ICswMTAwCgogwqDCoMKgIFRoZSBTY2FybGV0dCA2
-aTYgaGFzIG5vIHBhZGRpbmcgb24gcmVhciBpbnB1dHMgMy80IGJ1dCBhIGdhaW5zdGFnZSAKKExv
-dy9IaSkuIEFkZGluZyB0aGlzIGZ1bmN0aW9uYWxpdHkKCmRpZmYgLS1naXQgYS9zb3VuZC91c2Iv
-bWl4ZXJfc2NhcmxldHQuYyBiL3NvdW5kL3VzYi9taXhlcl9zY2FybGV0dC5jCmluZGV4IDc0Mzhl
-N2MuLjJjODZkNTk1IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvbWl4ZXJfc2NhcmxldHQuYworKysg
-Yi9zb3VuZC91c2IvbWl4ZXJfc2NhcmxldHQuYwpAQCAtMTUyLDYgKzE1Miw3IEBAIGVudW0gewog
-wqDCoMKgwqDCoMKgwqAgU0NBUkxFVFRfT1VUUFVUUywKIMKgwqDCoMKgwqDCoMKgIFNDQVJMRVRU
-X1NXSVRDSF9JTVBFREFOQ0UsCiDCoMKgwqDCoMKgwqDCoCBTQ0FSTEVUVF9TV0lUQ0hfUEFELAor
-wqDCoMKgwqDCoMKgIFNDQVJMRVRUX1NXSVRDSF9HQUlOLAogwqB9OwoKIMKgZW51bSB7CkBAIC0y
-MDIsNiArMjAzLDE1IEBAIHN0cnVjdCBzY2FybGV0dF9kZXZpY2VfaW5mbyB7CiDCoMKgwqDCoMKg
-wqDCoCB9CiDCoH07Cgorc3RhdGljIGNvbnN0IHN0cnVjdCBzY2FybGV0dF9taXhlcl9lbGVtX2Vu
-dW1faW5mbyBvcHRfZ2FpbiA9IHsKK8KgwqDCoMKgwqDCoCAuc3RhcnQgPSAwLAorwqDCoMKgwqDC
-oMKgIC5sZW4gPSAyLAorwqDCoMKgwqDCoMKgIC5vZmZzZXRzID0ge30sCivCoMKgwqDCoMKgwqAg
-Lm5hbWVzID0gKGNoYXIgY29uc3QgKiBjb25zdCBbXSl7CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgICJMbyIsICJIaSIKK8KgwqDCoMKgwqDCoCB9Cit9OworCiDCoHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc2NhcmxldHRfbWl4ZXJfZWxlbV9lbnVtX2luZm8gb3B0X2ltcGVkYW5jZSA9IHsKIMKg
-wqDCoMKgwqDCoMKgIC5zdGFydCA9IDAsCiDCoMKgwqDCoMKgwqDCoCAubGVuID0gMiwKQEAgLTY2
-NCw4ICs2NzQsOCBAQCBzdGF0aWMgaW50IGFkZF9vdXRwdXRfY3RscyhzdHJ1Y3QgCnVzYl9taXhl
-cl9pbnRlcmZhY2UgKm1peGVyLAogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHsgLm51
-bSA9IDEsIC50eXBlID0gU0NBUkxFVFRfU1dJVENIX1BBRCwgLm5hbWUgPSBOVUxMfSwKIMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB7IC5udW0gPSAyLCAudHlwZSA9IFNDQVJMRVRUX1NX
-SVRDSF9JTVBFREFOQ0UsIC5uYW1lID0gCk5VTEx9LAogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHsgLm51bSA9IDIsIC50eXBlID0gU0NBUkxFVFRfU1dJVENIX1BBRCwgLm5hbWUgPSBO
-VUxMfSwKLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgeyAubnVtID0gMywgLnR5cGUgPSBT
-Q0FSTEVUVF9TV0lUQ0hfUEFELCAubmFtZSA9IE5VTEx9LAotwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB7IC5udW0gPSA0LCAudHlwZSA9IFNDQVJMRVRUX1NXSVRDSF9QQUQsIC5uYW1lID0g
-TlVMTH0sCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHsgLm51bSA9IDMsIC50eXBlID0g
-U0NBUkxFVFRfU1dJVENIX0dBSU4sIC5uYW1lID0gTlVMTH0sCivCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHsgLm51bSA9IDQsIC50eXBlID0gU0NBUkxFVFRfU1dJVENIX0dBSU4sIC5uYW1l
-ID0gTlVMTH0sCiDCoMKgwqDCoMKgwqDCoCB9LAoKIMKgwqDCoMKgwqDCoMKgIC5tYXRyaXhfbXV4
-X2luaXQgPSB7CkBAIC04OTUsNiArOTA1LDE1IEBAIHN0YXRpYyBpbnQgc2NhcmxldHRfY29udHJv
-bHNfY3JlYXRlX2dlbmVyaWMoc3RydWN0IAp1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlciwKIMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGVyciA8IDAp
-CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCByZXR1cm4gZXJyOwogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBicmVhazsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY2FzZSBTQ0FS
-TEVUVF9TV0lUQ0hfR0FJTjoKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHNwcmludGYobXgsICJJbnB1dCAlZCBHYWluIFN3aXRjaCIsIGN0bC0+bnVtKTsKK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVyciA9IGFkZF9uZXdf
-Y3RsKG1peGVyLCAmdXNiX3NjYXJsZXR0X2N0bF9lbnVtLAorIHNjYXJsZXR0X2N0bF9lbnVtX3Jl
-c3VtZSwgMHgwMSwKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDB4MDgsIGN0bC0+bnVtLCBVU0Jf
-TUlYRVJfUzE2LCAKMSwgbXgsCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAmb3B0X2dhaW4sICZl
-bGVtKTsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChl
-cnIgPCAwKQorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHJldHVybiBlcnI7CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBicmVhazsKIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9CiDC
-oMKgwqDCoMKgwqDCoCB9CgoKCkFtIDIzLjExLjIwMTcgdW0gMTQ6MzIgc2NocmllYiBUYWthc2hp
-IEl3YWk6Cj4gT24gVGh1LCAyMyBOb3YgMjAxNyAxMjo1OToyOSArMDEwMCwKPiBKZW5zIFZlcndp
-ZWJlIHdyb3RlOgo+PiBVcHMsIGNsZWFudXAgb3duIGluZGVudGF0aW9uL2Zvcm1hdHRpbmcgbWlz
-dGFrZS4KPiBDb3VsZCB5b3UgcHV0IHRoZSBwcm9wZXIgY2hhbmdlbG9nIGFzIHdlbGw/Cj4gVGhl
-IGNvZGUgY2hhbmdlcyBsb29rIE9LLgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KCi0tIAoKSmVu
-cyBWZXJ3aWViZQpBbGxlcnNrZWhyZSA0NCAtIDIyMzA5IEhhbWJ1cmcKClRlbC46ICs0OSA0MCA2
-OCA3OCA1MAptb2JpbGU6ICs0OSAxNzIgNDAwIDQ5IDA3Cm1haWx0bzppbmZvQGplbnN2ZXJ3aWVi
-ZS5kZQp3ZWI6aHR0cDovL3d3dy5qZW5zdmVyd2llYmUuZGUKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+Hi,
+
+I'm studying a hardware implementation where an S/PDIF receiver is on the =
+
+same I2S connection as codec. Essentially, the S/PDIF receiver echos the =
+
+I2S capture data from the codec unless there is a digital input signal =
+
+which it can lock on to. For playback, the I2S output from the CPU DAI =
+
+goes directly to the codec.
+
+I'm a bit at a loss for how to model this in ALSA. I know it's possible to =
+
+have multiple codecs on a card, but those cases seem to be either separate =
+
+codecs for the left and right channels, or separate codecs for capture and =
+
+playback. In my case the playback codec is always the same, but the =
+
+capture codec can switch between the two avilable input methods (more or =
+
+less automatically if the S/PDIF receiver is so configured).
+
+>From a user perspective, it's not important that ALSA knows where the data =
+
+is actually coming from, so if I could just register the two "codecs" on =
+
+the same dai_link at the same time it would be fine, but I'm just =
+
+imagining that I'll run into problems when ALSA tries to set up streams =
+
+with two different codecs being involved. (Of course, at some level, the =
+
+user might be interested to know the signal routing, but that can be =
+
+determined by reading appropriate status bits in the S/PDIF receiver for =
+
+instance using amixer controls).
+
+Do you have any ideas about how to configure this in ALSA?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
