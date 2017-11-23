@@ -1,105 +1,45 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S, U}20_4
-Date: Thu, 23 Nov 2017 13:26:37 +0100
-Message-ID: <e514c578-9ea1-8bbf-2c6e-84658f043a31@maciej.szmigiero.name>
-References: <53d527c0-89f6-d501-09e9-1effea8a5bac@maciej.szmigiero.name>
- <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
- <4d0f43f5-0161-3dfb-1692-e755ad7fe641@maciej.szmigiero.name>
- <181cd3a8-cc74-d858-071a-7ae3e465406a@sakamocchi.jp>
+From: b_lkasam@codeaurora.org
+Subject: ALSA: Soc_compress open file node allows more than once
+Date: Thu, 23 Nov 2017 18:48:30 +0530
+Message-ID: <f469eb3a04f49f7b5603572546852685@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <181cd3a8-cc74-d858-071a-7ae3e465406a@sakamocchi.jp>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFBE6266B02
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 14:18:31 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: lkasam@qti.qualcomm.com, mangeshk@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-On 23.11.2017 08:40, Takashi Sakamoto wrote:
-> On Nov 23 2017 08:44, Maciej S. Szmigiero wrote:
->> On 23.11.2017 00:27, Takashi Sakamoto wrote:
->>> On Nov 23 2017 04:17, Maciej S. Szmigiero wrote:
->> (..)
->>>> --- a/include/uapi/sound/asound.h
->>>> +++ b/include/uapi/sound/asound.h
->>>> @@ -236,7 +236,11 @@ typedef int __bitwise snd_pcm_format_t;
->>>>    #define    SNDRV_PCM_FORMAT_DSD_U32_LE    ((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
->>>>    #define    SNDRV_PCM_FORMAT_DSD_U16_BE    ((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
->>>>    #define    SNDRV_PCM_FORMAT_DSD_U32_BE    ((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
->>>> -#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_DSD_U32_BE
->>>> +#define    SNDRV_PCM_FORMAT_S20_4LE    ((__force snd_pcm_format_t) 53)    /* in four bytes */
->>>> +#define    SNDRV_PCM_FORMAT_S20_4BE    ((__force snd_pcm_format_t) 54)    /* in four bytes */
->>>> +#define    SNDRV_PCM_FORMAT_U20_4LE    ((__force snd_pcm_format_t) 55)    /* in four bytes */
->>>> +#define    SNDRV_PCM_FORMAT_U20_4BE    ((__force snd_pcm_format_t) 56)    /* in four bytes */
->>>> +#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_U20_4BE
->>>
->>> In my opinion, for this type of definition, it's better to declare left/right-adjusted or padding side. (Of course, silence definition is already a hint, however the lack of information forces developers to have a careful behaviour to handle entries on the list.
->>> (I note that in current ALSA PCM interface there's no way to deliver MSB/LSB-first information about sample format.)
->>
->> No other sound format includes this information in its name
-> 
-> You overlook comments in 'SNDRV_PCM_FORMAT_[U|S]24_[LE|BE]'. Let me refer to them [1]:
-> 
-> 198 #define SNDRV_PCM_FORMAT_S24_LE ((__force snd_pcm_format_t) 6) /* low three bytes */
-> 199 #define SNDRV_PCM_FORMAT_S24_BE ((__force snd_pcm_format_t) 7) /* low three bytes */
-> 200 #define SNDRV_PCM_FORMAT_U24_LE ((__force snd_pcm_format_t) 8) /* low three bytes */
-> 201 #define SNDRV_PCM_FORMAT_U24_BE ((__force snd_pcm_format_t) 9) /* low three bytes */
+Hi ALSA team,
+This is regarding compress offload framework file operations wrt open 
+system call.
 
-Yes, I can add this information in a comment, just like these formats are
-described as "low three bytes" (in other words, LSB justified formats)
+For open call to this driver currently allows for same node more than 
+once.
 
-> In your way, these types of format can be represented by 'SNDRV_PCM_FORMAT_[U|S]24_4[LE|BE]', thus for playback direction they
-> mean:
-> 
-> ```
-> #include <sound/asound.h>
-> #include <endian.h>
-> 
-> uint32_t *buf;
-> uint32_t sample;
-> snd_pcm_format_t format;
-> 
-> sample = generate_a_sample();
-> (sample & ~0x00ffffff) /* invalid bits as sample */
-> 
-> if (format == SNDRV_PCM_FORMAT_[U|S]24_LE) {
->   buf[0] = htole32(sample);
-> else
->   buf[0] = htobe32(sample);
-> 
-> /* transfer content of the buf via ALSA kernel stuffs. */
-> ```
-> 
-> The comments are good enough for application developers in an aspect of a position for padding.
-> 
-> In general, studying from the past is preferable behaviour to be genius, however accumulated history includes mistakes and defects. Just pretending the past is not so genius, without further consideration.
-> 
-> Actually additions of the rest of entries for PCM format were done without enough cares of what information they give to application developers. Adding new entries is easier than fixing and improving them once exposed. It's a reason that they're left what they're.
-> 
-> I wish you had enough care to assist applications developers. Without applications, drivers are worthless and just waste of code base.
+This may result in memleak issues or data corruption if same node in use 
+by multiple instances.
 
-Right, I will add this information to a comment.
+can we have restriction to avoid open of same node using some refcount?
 
-(..)
->>> Additionally, alsa-lib includes some codes related to the definition[1]. If you'd like to thing goes well out of ALSA SoC part, it's better to submit changes to the library as well.
->>>
->>> [1] http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_misc.c;h=5420b1895713a3aec3624a5218794a7b49baf167;hb=HEAD
->>
->> I have alsa-lib changes ready for these formats - they were needed to
->> test these patches, will post them when this is merged on the kernel
->> side (in case some changes are needed which affect both).
-> 
-> Please pay enough care when writing patch comment. Silence means nothing, at least for reviewers, even if you have good preparations.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.15-rc1#n198
+we can either have refcount under compr->private_data and cross check in 
+below function before proceeding.
+static int snd_compr_open(struct inode *inode, struct file *f)
 
-I will add this information (about alsa-lib changes) to commit notes in this patch description.
+Please suggest accordingly.
 
-> Regards
-> 
-> Takashi Sakamoto
-
-Best regards,
-Maciej Szmigiero
+Thanks
+Laxminath Kasam,
+Qualcomm.
