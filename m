@@ -1,20 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v7 11/13] slimbus: qcom: Add Qualcomm
- Slimbus controller driver
-Date: Thu, 23 Nov 2017 10:07:03 +0000
-Message-ID: <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8825: disable crosstalk by default
+Date: Thu, 23 Nov 2017 18:07:09 +0800
+Message-ID: <5A169DCD.80107@nuvoton.com>
+References: <1511407163-9667-1-git-send-email-KCHSU0@nuvoton.com>
+ <CAOMLVLiqY95zvz9=SrRSprJwyBq0evDNn=pipK1KaNr7aTEWLA@mail.gmail.com>
+ <5A167810.1060000@nuvoton.com>
+ <CAOMLVLj-OQzGNB5M3qOWtCU=Q9sXBPcA7=gduTig=cVzMJmKnA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A0C2B267295
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 11:07:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB4CE267848
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 11:07:13 +0100 (CET)
+In-Reply-To: <CAOMLVLj-OQzGNB5M3qOWtCU=Q9sXBPcA7=gduTig=cVzMJmKnA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,234 +23,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, arnd@arndb.de, vinod.koul@intel.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, daniel@ffwll.ch, jkosina@suse.cz, joe@perches.com, davem@davemloft.net
+To: =?UTF-8?B?Ild1LUNoZW5nIExpICjmnY7li5noqqApIg==?= <wuchengli@google.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Cheng-yi Chiang <cychiang@google.com>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 WTLi <WTLI@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, Mac Chiang <mac.chiang@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 02:10:41PM +0000, srinivas.kandagatla@linaro.org wrote:
-> From: Sagar Dharia <sdharia@codeaurora.org>
-> 
-> This controller driver programs manager, interface, and framer
-> devices for Qualcomm's slimbus HW block.
-> Manager component currently implements logical address setting,
-> and messaging interface.
-> Interface device reports bus synchronization information, and framer
-> device clocks the bus from the time it's woken up, until clock-pause
-> is executed by the manager device.
-> 
-> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
-> +
-> +static irqreturn_t qcom_slim_handle_rx_irq(struct qcom_slim_ctrl *ctrl,
-> +					   u32 stat)
-> +{
-> +	u32 *rx_buf, pkt[10];
-> +	bool q_rx = false;
-> +	u8 la, *buf, mc, mt, len, *b = (u8 *)&pkt[0];
-> +	u16 ele;
-> +
-
-This function feels pretty funky, we basically have rx_buf, pkt,
-b and buf all of which basically point to the same thing. Can we
-simplify it a little?
-
-> +	pkt[0] = readl_relaxed(ctrl->base + MGR_RX_MSG);
-> +	mt = SLIM_HEADER_GET_MT(b[0]);
-> +	len = SLIM_HEADER_GET_RL(b[0]);
-> +	mc = SLIM_HEADER_GET_MC(b[1]);
-> +
-> +	/*
-> +	 * this message cannot be handled by ISR, so
-> +	 * let work-queue handle it
-> +	 */
-> +	if (mt == SLIM_MSG_MT_CORE &&
-> +		mc == SLIM_MSG_MC_REPORT_PRESENT)
-> +		rx_buf = (u32 *)slim_alloc_rxbuf(ctrl);
-> +	else
-> +		rx_buf = pkt;
-> +
-> +	if (rx_buf == NULL) {
-> +		dev_err(ctrl->dev, "dropping RX:0x%x due to RX full\n",
-> +					pkt[0]);
-> +		goto rx_ret_irq;
-> +	}
-> +
-> +	rx_buf[0] = pkt[0];
-
-This is the only time that rx_buf is used without being cast to a
-u8* would there be any milage in combining b and buf, and getting
-rid of rx_buf?
-
-> +	__ioread32_copy(rx_buf + 1, ctrl->base + MGR_RX_MSG + 4,
-> +			DIV_ROUND_UP(len, 4));
-> +
-> +	switch (mc) {
-> +
-> +	case SLIM_MSG_MC_REPORT_PRESENT:
-> +		q_rx = true;
-> +		break;
-> +	case SLIM_MSG_MC_REPLY_INFORMATION:
-> +	case SLIM_MSG_MC_REPLY_VALUE:
-> +		slim_msg_response(&ctrl->ctrl, (u8 *)(rx_buf + 1),
-> +				  (u8)(*rx_buf >> 24), (len - 4));
-> +		break;
-> +	case SLIM_MSG_MC_REPORT_INFORMATION:
-> +		buf = (u8 *)rx_buf;
-> +		la = buf[2];
-> +		ele = (u16)buf[4] << 4;
-> +
-> +		ele |= ((buf[3] & 0xf0) >> 4);
-> +		/*
-> +		 * report information is most likely loss of
-> +		 * sync or collision detected in data slots
-> +		 */
-> +		dev_info(ctrl->dev, "LA:%d report inf ele:0x%x\n",
-> +			 la, ele);
-> +		break;
-> +	default:
-> +		dev_err(ctrl->dev, "unsupported MC,%x MT:%x\n",
-> +			mc, mt);
-> +		break;
-> +	}
-> +rx_ret_irq:
-> +	writel(MGR_INT_RX_MSG_RCVD, ctrl->base +
-> +		       MGR_INT_CLR);
-> +	if (q_rx)
-> +		queue_work(ctrl->rxwq, &ctrl->wd);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int qcom_xfer_msg(struct slim_controller *sctrl,
-> +			 struct slim_msg_txn *txn)
-> +{
-> +	struct qcom_slim_ctrl *ctrl = dev_get_drvdata(sctrl->dev);
-> +	DECLARE_COMPLETION_ONSTACK(done);
-> +	void *pbuf = slim_alloc_txbuf(ctrl, txn, &done);
-> +	unsigned long ms = txn->rl + HZ;
-> +	u8 *puc;
-> +	int ret = 0, timeout, retries = QCOM_BUF_ALLOC_RETRIES;
-> +	u8 la = txn->la;
-> +	u32 *head;
-> +	/* HW expects length field to be excluded */
-> +	txn->rl--;
-> +
-> +	/* spin till buffer is made available */
-> +	if (!pbuf) {
-> +		while (retries--) {
-> +			usleep_range(10000, 15000);
-> +			pbuf = slim_alloc_txbuf(ctrl, txn, &done);
-> +			if (pbuf)
-> +				break;
-> +		}
-> +	}
-> +
-> +	if (!retries && !pbuf)
-> +		return -ENOMEM;
-> +
-> +	puc = (u8 *)pbuf;
-> +	head = (u32 *)pbuf;
-> +
-> +	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR)
-> +		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt, txn->mc, 0,
-> +						la);
-> +	else
-> +		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt, txn->mc, 1,
-> +						la);
-> +
-> +	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR)
-> +		puc += 3;
-> +	else
-> +		puc += 2;
-
-Combine these two if statements, makes it much clearer the actions
-are related.
-
-> +
-> +	if (txn->mt == SLIM_MSG_MT_CORE && slim_tid_txn(txn->mt, txn->mc))
-
-slim_tid_txn checks for SLIM_MSG_MT_CORE so the check here should
-be redundant.
-
-> +		*(puc++) = txn->tid;
-> +
-> +	if ((txn->mt == SLIM_MSG_MT_CORE) &&
-> +		((txn->mc >= SLIM_MSG_MC_REQUEST_INFORMATION &&
-> +		txn->mc <= SLIM_MSG_MC_REPORT_INFORMATION) ||
-> +		(txn->mc >= SLIM_MSG_MC_REQUEST_VALUE &&
-> +		 txn->mc <= SLIM_MSG_MC_CHANGE_VALUE))) {
-> +		*(puc++) = (txn->ec & 0xFF);
-> +		*(puc++) = (txn->ec >> 8) & 0xFF;
-> +	}
-
-As you already have slim_tid_txn, would it be worth adding
-something like slim_ec_txn? To state if an element code is
-required, feels like other controls will probably want to do a
-similar thing and would make the code a little more readable
-here.
-
-> +
-> +	if (txn->msg && txn->msg->wbuf)
-> +		memcpy(puc, txn->msg->wbuf, txn->msg->num_bytes);
-> +
-> +	qcom_slim_queue_tx(ctrl, head, txn->rl, MGR_TX_MSG);
-> +	timeout = wait_for_completion_timeout(&done, msecs_to_jiffies(ms));
-> +
-> +	if (!timeout) {
-> +		dev_err(ctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
-> +					txn->mt);
-> +		ret = -ETIMEDOUT;
-> +	}
-> +
-> +	return ret;
-> +
-> +}
-> +
-> +static void qcom_slim_rxwq(struct work_struct *work)
-> +{
-> +	u8 buf[SLIM_MSGQ_BUF_LEN];
-> +	u8 mc, mt, len;
-> +	int i, ret;
-> +	struct qcom_slim_ctrl *ctrl = container_of(work, struct qcom_slim_ctrl,
-> +						 wd);
-> +
-> +	while ((slim_get_current_rxbuf(ctrl, buf)) != -ENODATA) {
-> +		len = SLIM_HEADER_GET_RL(buf[0]);
-> +		mt = SLIM_HEADER_GET_MT(buf[0]);
-> +		mc = SLIM_HEADER_GET_MC(buf[1]);
-> +		if (mt == SLIM_MSG_MT_CORE &&
-> +			mc == SLIM_MSG_MC_REPORT_PRESENT) {
-> +			u8 laddr;
-> +			struct slim_eaddr ea;
-> +			u8 e_addr[6];
-> +
-> +			for (i = 0; i < 6; i++)
-> +				e_addr[i] = buf[7-i];
-> +
-> +			ea.manf_id = (u16)(e_addr[5] << 8) | e_addr[4];
-> +			ea.prod_code = (u16)(e_addr[3] << 8) | e_addr[2];
-> +			ea.dev_index = e_addr[1];
-> +			ea.instance = e_addr[0];
-
-If we are just bitshifting this out of the bytes does it really
-make it much more clear to reverse the byte order first? Feels
-like you might as well shift it out of buf directly.
-
-Also we didn't bother to reverse the bytes for the element code
-above, so feels more consistent.
-
-> +			ret = slim_device_report_present(&ctrl->ctrl,
-> +							 &ea, &laddr);
-> +			if (ret < 0)
-> +				dev_err(ctrl->dev, "assign laddr failed:%d\n",
-> +					ret);
-> +		} else {
-> +			dev_err(ctrl->dev, "unexpected message:mc:%x, mt:%x\n",
-> +				mc, mt);
-> +		}
-> +	}
-> +}
-
-Thanks,
-Charles
+T24gMTEvMjMvMjAxNyA0OjM2IFBNLCBXdS1DaGVuZyBMaSAo5p2O5YuZ6KqgKSB3cm90ZToKPiBP
+biBUaHUsIE5vdiAyMywgMjAxNyBhdCAzOjI2IFBNLCBKb2huIEhzdSA8S0NIU1UwQG51dm90b24u
+Y29tPiB3cm90ZToKPj4gT24gMTEvMjMvMjAxNyAxMjo0MyBQTSwgV3UtQ2hlbmcgTGkgKOadjuWL
+meiqoCkgd3JvdGU6Cj4+PiBPbiBUaHUsIE5vdiAyMywgMjAxNyBhdCAxMToxOSBBTSwgSm9obiBI
+c3UgPEtDSFNVMEBudXZvdG9uLmNvbT4gd3JvdGU6Cj4+Pj4gVGhlIGRyaXZlciBtYWtlcyB0aGUg
+Y3Jvc3N0YWxrIGZ1bmNpdG9uIGRpc2FibGVkIGJ5IGRlZmF1bHQKPj4+PiB3aGljaCBjYW4gc2lt
+cGxpZnkgdGhlIGNvZGVjIGZ1bmN0aW9uLiBUaGUgcGxhdGZvcm0gbWF5IG5vdAo+Pj4+IG5lZWQg
+dGhpcyBmdW5jaXRvbiBhbmQgcmVkdWNlIHRoZSBwb3RlbnRpYWwgcmlzay4gVGhlcmVmb3JlLAo+
+Pj4+IFdlIGNoYW5nZSB0aGUgcHJvcGVydHkgIm51dm90b24sY3Jvc3N0YWxrLWJ5cGFzcyIgdG8K
+Pj4+PiAibnV2b3Rvbixjcm9zc3RhbGstZW5hYmxlIi4gVGhlIGNyb3NzdGFsayBtZWFzdXJlbWVu
+dCBpcyBlbmFibGVkCj4+Pj4gaWYgdGhlIHByb3BlcnR5IGlzIHNldC4gT3RoZXJ3aXNlLCBpdCBp
+cyBkaXNhYmxlZC4gQmVzaWRlcywKPj4+PiBhZGQgbW9yZSBjb25kaXRpb24gaW4gdGhlIGVudHJ5
+IHBvaW50IG9mIHRoZSBjcm9zc3RhbGsgc2VxdWVuY2UKPj4+PiB0byBkaXNhYmxlIHRoZSBmdW5j
+dGlvbiBjb21wbGV0ZWx5Lgo+Pj4+Cj4+Pj4gU2lnbmVkLW9mZi1ieTogSm9obiBIc3UgPEtDSFNV
+MEBudXZvdG9uLmNvbT4KPj4+PiAtLS0KPj4+PiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3NvdW5kL25hdTg4MjUudHh0IHwgIDQgKystLQo+Pj4+ICBzb3VuZC9zb2MvY29kZWNz
+L25hdTg4MjUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyMQo+Pj4+ICsrKysrKysrKysr
+KystLS0tLS0tLQo+Pj4+ICBzb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuaCAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgMiArLQo+Pj4+ICAzIGZpbGVzIGNoYW5nZWQsIDE2IGluc2VydGlvbnMo
+KyksIDExIGRlbGV0aW9ucygtKQo+Pj4+Cj4+Pj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9uYXU4ODI1LnR4dAo+Pj4+IGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL25hdTg4MjUudHh0Cj4+Pj4gaW5kZXggMmY1ZTk3
+My4uZDE2ZDk2OCAxMDA2NDQKPj4+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvbmF1ODgyNS50eHQKPj4+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3Mvc291bmQvbmF1ODgyNS50eHQKPj4+PiBAQCAtNjksNyArNjksNyBAQCBPcHRp
+b25hbCBwcm9wZXJ0aWVzOgo+Pj4+ICAgIC0gbnV2b3RvbixqYWNrLWluc2VydC1kZWJvdW5jZTog
+bnVtYmVyIGZyb20gMCB0byA3IHRoYXQgc2V0cyBkZWJvdW5jZQo+Pj4+IHRpbWUgdG8gMl4obisy
+KSBtcwo+Pj4+ICAgIC0gbnV2b3RvbixqYWNrLWVqZWN0LWRlYm91bmNlOiBudW1iZXIgZnJvbSAw
+IHRvIDcgdGhhdCBzZXRzIGRlYm91bmNlCj4+Pj4gdGltZSB0byAyXihuKzIpIG1zCj4+Pj4KPj4+
+PiAtICAtIG51dm90b24sY3Jvc3N0YWxrLWJ5cGFzczogbWFrZSBjcm9zc3RhbGsgZnVuY3Rpb24g
+YnlwYXNzIGlmIHNldC4KPj4+PiArICAtIG51dm90b24sY3Jvc3N0YWxrLWVuYWJsZTogbWFrZSBj
+cm9zc3RhbGsgZnVuY3Rpb24gZW5hYmxlIGlmIHNldC4KPj4+Pgo+Pj4+ICAgIC0gY2xvY2tzOiBs
+aXN0IG9mIHBoYW5kbGUgYW5kIGNsb2NrIHNwZWNpZmllciBwYWlycyBhY2NvcmRpbmcgdG8KPj4+
+PiBjb21tb24gY2xvY2sgYmluZGluZ3MgZm9yIHRoZQo+Pj4+ICAgICAgICBjbG9ja3MgZGVzY3Jp
+YmVkIGluIGNsb2NrLW5hbWVzCj4+Pj4gQEAgLTk4LDcgKzk4LDcgQEAgRXhhbXBsZToKPj4+PiAg
+ICAgICAgbnV2b3RvbixzaG9ydC1rZXktZGVib3VuY2UgPSA8Mj47Cj4+Pj4gICAgICAgIG51dm90
+b24samFjay1pbnNlcnQtZGVib3VuY2UgPSA8Nz47Cj4+Pj4gICAgICAgIG51dm90b24samFjay1l
+amVjdC1kZWJvdW5jZSA9IDw3PjsKPj4+PiAtICAgICAgbnV2b3Rvbixjcm9zc3RhbGstYnlwYXNz
+Owo+Pj4+ICsgICAgICBudXZvdG9uLGNyb3NzdGFsay1lbmFibGU7Cj4+Pj4KPj4+PiAgICAgICAg
+Y2xvY2stbmFtZXMgPSAibWNsayI7Cj4+Pj4gICAgICAgIGNsb2NrcyA9IDwmdGVncmFfY2FyIFRF
+R1JBMjEwX0NMS19DTEtfT1VUXzI+Owo+Pj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNz
+L25hdTg4MjUuYyBiL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5jCj4+Pj4gaW5kZXggNzE0Y2Ux
+Ny4uMmQ2YzUzNiAxMDA2NDQKPj4+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuYwo+
+Pj4+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5jCj4+Pj4gQEAgLTc5Miw2ICs3OTIs
+MTAgQEAgc3RhdGljIHZvaWQgbmF1ODgyNV94dGFsa193b3JrKHN0cnVjdCB3b3JrX3N0cnVjdAo+
+Pj4+ICp3b3JrKQo+Pj4+ICAgICAgICAgc3RydWN0IG5hdTg4MjUgKm5hdTg4MjUgPSBjb250YWlu
+ZXJfb2YoCj4+Pj4gICAgICAgICAgICAgICAgIHdvcmssIHN0cnVjdCBuYXU4ODI1LCB4dGFsa193
+b3JrKTsKPj4+Pgo+Pj4+ICsgICAgICAgLyogYmxvY2sgd2hlbiBjcm9zc3RhbGsgZGlzYWJsZWQg
+Ki8KPj4+PiArICAgICAgIGlmICghbmF1ODgyNS0+eHRhbGtfZW5hYmxlKQo+Pj4gVGhpcyBjYW4g
+b25seSBoYXBwZW4gd2hlbiBOQVU4ODI1X0lNUEVEQU5DRV9NRUFTX0lSUSBpcyB0cmlnZ2VyZWQu
+Cj4+PiBJIHN1Z2dlc3QgbW92aW5nIHRoZSBjaGVjayB0byBuYXU4ODI1X2ludGVycnVwdCgpLiBE
+byBub3Qgc2NoZWR1bGUgYSB3b3JrCj4+PiBpZiB4dGFsa19lbmFibGUgaXMgZmFsc2UuCj4+Cj4+
+IFRoZSBjb25kaXRpb24gY2hlY2sgYWxzbyBleGlzdHMgaW4gbmF1ODgyNV9pbnRlcnJ1cHQuIEl0
+J3MgaW5kZWVkCj4+IHJlZHVuZGFudCBoZXJlLCBidXQganVzdCBmb3IgYWNjaWRlbnQuCj4KPiBU
+aGVyZSBhcmUgdHdvIHBsYWNlcyB0aGF0IHNjaGVkdWxlIGEgd29yay4gT25lIGlzIGFscmVhZHkg
+c3Vycm91bmRlZCBieSBhIGNoZWNrCj4gb2YgeHRhbGtfZW5hYmxlLiBUaGUgb3RoZXIgZG9lc24n
+dC4gSXQncyBiZXR0ZXIgdG8gYmUgY29uc2lzdGVudCBmb3IKPiBib3RoIHBsYWNlcyB0bwo+IGNo
+ZWNrIHh0YWxrX2VuYWJsZSBiZWZvcmUgc2NoZWR1bGluZyBhIHdvcmsuIEJlc2lkZXMsIElmIHRo
+ZSBjYWxsZXIKPiB0cmllcyB0byBzY2hlZHVsZQo+IG5hdTg4MjVfeHRhbGtfd29yayB3aGVuIGNy
+b3NzdGFsayBpcyBkaXNhYmxlZCwgc29tZXRoaW5nIGlzIHdyb25nLgoKQWdyZWUuIEknbGwgbW92
+ZSBhbGwgY2hlY2tzIHRvIElTUiBiZWZvcmUgaXQgc2NoZWR1bGVzIGEgd29yay4KCj4+Pj4gKyAg
+ICAgICAgICAgICAgIHJldHVybjsKPj4+PiArCj4+Pj4gICAgICAgICBuYXU4ODI1X3h0YWxrX21l
+YXN1cmUobmF1ODgyNSk7Cj4+Pj4gICAgICAgICAvKiBUbyBkZXRlcm1pbmUgdGhlIGNyb3NzIHRh
+bGsgc2lkZSB0b25lIGdhaW4gd2hlbiByZWFjaAo+Pj4+ICAgICAgICAgICogdGhlIGltcGVkYW5j
+ZSBtZWFzdXJlIHN0YXRlLgo+Pj4+IEBAIC04MTUsMTEgKzgxOSwxMiBAQCBzdGF0aWMgdm9pZCBu
+YXU4ODI1X3h0YWxrX3dvcmsoc3RydWN0IHdvcmtfc3RydWN0Cj4+Pj4gKndvcmspCj4+Pj4KPj4+
+PiAgc3RhdGljIHZvaWQgbmF1ODgyNV94dGFsa19jYW5jZWwoc3RydWN0IG5hdTg4MjUgKm5hdTg4
+MjUpCj4+Pj4gIHsKPj4+PiAtICAgICAgIC8qIElmIHRoZSB4dGFsa19wcm90ZWN0IGlzIHRydWUs
+IHRoYXQgbWVhbnMgdGhlIHByb2Nlc3MgaXMgc3RpbGwKPj4+PiAtICAgICAgICAqIG9uIGdvaW5n
+LiBUaGUgZHJpdmVyIGZvcmNlcyB0byBjYW5jZWwgdGhlIGNyb3NzIHRhbGsgdGFzayBhbmQKPj4+
+PiArICAgICAgIC8qIElmIHRoZSBjcm9zc3RhbGsgaXMgZWFuYmxlZCBhbmQgdGhlIHByb2Nlc3Mg
+aXMgb24gZ29pbmcsCj4+Pj4gKyAgICAgICAgKiB0aGUgZHJpdmVyIGZvcmNlcyB0byBjYW5jZWwg
+dGhlIGNyb3NzIHRhbGsgdGFzayBhbmQKPj4+PiAgICAgICAgICAqIHJlc3RvcmVzIHRoZSBjb25m
+aWd1cmF0aW9uIHRvIG9yaWdpbmFsIHN0YXR1cy4KPj4+PiAgICAgICAgICAqLwo+Pj4+IC0gICAg
+ICAgaWYgKG5hdTg4MjUtPnh0YWxrX3Byb3RlY3QpIHsKPj4+PiArICAgICAgIGlmIChuYXU4ODI1
+LT54dGFsa19lbmFibGUgJiYgbmF1ODgyNS0+eHRhbGtfcHJvdGVjdCAmJgo+Pj4+ICsgICAgICAg
+ICAgICAgICBuYXU4ODI1LT54dGFsa19zdGF0ZSAhPSBOQVU4ODI1X1hUQUxLX0RPTkUpIHsKPj4+
+IERvIHdlIG5lZWQgdG8gY2hlY2sgeHRhbGtfc3RhdGU/IEl0IGxvb2tzIGxpa2UgeHRhbGtfc3Rh
+dGUgd29uJ3QgYmUKPj4+IE5BVTg4MjVfWFRBTEtfRE9ORSBpZiB4dGFsa19wcm90ZWN0IGlzIHRy
+dWUuCj4+Cj4+IFN1cHBvc2UgdGhlIGNyb3NzdGFsayBpcyBlbmFibGVkLiBJbiBub3JtYWwgY2Fz
+ZSwgdGhlIGphY2sgaW5zZXJ0aW9uCj4+IGFuZCBjcm9zc3RhbGsgbWVhc3VyZW1lbnQgaXMgb24g
+Z29pbmcuIFRoZSB4dGFsa19wcm90ZWN0IGNhbiBwcmVzZW50Cj4+IHRoZSBhY3Rpb24gYW5kIGRv
+IHJlY292ZXJ5IGlmIHRoZSBtZWFzdXJlbWVudCBpcyBjYW5jZWxsZWQgb24gdGhlIHdheS4KPj4g
+SW4gdGhlIGNhc2UsIHRoZSB4dGFsa19zdGF0ZSBjaGVjayBqdXN0IGFkZCB0aGUgbGltaXRhdGlv
+biB3aGVyZSB0aGUKPj4gcmVjb3ZlcnkgaXMgdW5uZWNlc3Nhcnkgd2hlbiB0aGUgY3Jvc3N0YWxr
+IGlzIGluIGRvbmUgc3RhdGUuCj4+IEJ1dCB0aGUgeHRhbGtfc3RhdGUgY2hlY2sgYWxzbyB3b3Jr
+cyB3aGVuIHJlc3VtZS4gQWZ0ZXIgcmVzdW1lLCB0aGUKPj4geHRhbGtfcHJvdGVjdCBmbGFnIHdp
+bGwgYWxzbyBiZWVuIHJhaXNlZCBmb3IgdGhlIHByb3RlY3Rpb24gb2YgamFjawo+PiBkZXRlY3Rp
+b24gZnJvbSBwbGF5YmFjay4gQnV0IHRoZSBjb2RlYyB3aWxsIGRldGVjdCBib3RoIGluc2V0aW9u
+IGFuZAo+PiBlamVjdGlvbi4gSWYgdGhlIGphY2sgZWplY3RzLCB0aGUgZWplY3QgaW50ZXJydXB0
+aW9uIHdpbGwgaGFwcGVuIGFuZAo+PiBnbyB0byB0aGUgY2FuY2VsIGZ1bmN0aW9uLiBUaGUgeHRh
+bGtfc3RhdGUgY2hlY2sgY2FuIGF2b2lkIHRoZQo+PiByZWNvdmVyeS4KPgo+IEkgc2VlLiBUaGVu
+IHdoeSBkbyB3ZSBuZWVkIHRvIGNoZWNrIHh0YWxrX3Byb3RlY3QgaGVyZT8gQ2hlY2tpbmcKPiB4
+dGFsa19zdGF0ZSBpcyBlbm91Z2guIFJpZ2h0PwoKWW91J3JlIHJpZ2h0LiBUaGUgeHRhbGtfcHJv
+dGVjdCBjaGVjayBzZWVtcyBub3QgbmVjZXNzYXJ5LgpJIGNhbiByZW1vdmUgaXQuCgo+Pgo+Pj4+
+ICAgICAgICAgICAgICAgICBjYW5jZWxfd29ya19zeW5jKCZuYXU4ODI1LT54dGFsa193b3JrKTsK
+Pj4+PiAgICAgICAgICAgICAgICAgbmF1ODgyNV94dGFsa19jbGVhbihuYXU4ODI1KTsKPj4+PiAg
+ICAgICAgIH0KPj4+PiBAQCAtMTY4Niw3ICsxNjkxLDcgQEAgc3RhdGljIGlycXJldHVybl90IG5h
+dTg4MjVfaW50ZXJydXB0KGludCBpcnEsIHZvaWQKPj4+PiAqZGF0YSkKPj4+PiAgICAgICAgIH0g
+ZWxzZSBpZiAoYWN0aXZlX2lycSAmIE5BVTg4MjVfSEVBRFNFVF9DT01QTEVUSU9OX0lSUSkgewo+
+Pj4+ICAgICAgICAgICAgICAgICBpZiAobmF1ODgyNV9pc19qYWNrX2luc2VydGVkKHJlZ21hcCkp
+IHsKPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICBldmVudCB8PSBuYXU4ODI1X2phY2tfaW5z
+ZXJ0KG5hdTg4MjUpOwo+Pj4+IC0gICAgICAgICAgICAgICAgICAgICAgIGlmICghbmF1ODgyNS0+
+eHRhbGtfYnlwYXNzICYmCj4+Pj4gIW5hdTg4MjUtPmhpZ2hfaW1wZWQpIHsKPj4+PiArICAgICAg
+ICAgICAgICAgICAgICAgICBpZiAobmF1ODgyNS0+eHRhbGtfZW5hYmxlICYmCj4+Pj4gIW5hdTg4
+MjUtPmhpZ2hfaW1wZWQpIHsKPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8q
+IEFwcGx5IHRoZSBjcm9zcyB0YWxrIHN1cHByZXNzaW9uIGluCj4+Pj4gdGhlCj4+Pj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKiBoZWFkc2V0IHdpdGhvdXQgaGlnaCBpbXBlZGFu
+Y2UuCj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KPj4+PiBAQCAtMjQ0
+MCw4ICsyNDQ1LDggQEAgc3RhdGljIHZvaWQgbmF1ODgyNV9wcmludF9kZXZpY2VfcHJvcGVydGll
+cyhzdHJ1Y3QKPj4+PiBuYXU4ODI1ICpuYXU4ODI1KQo+Pj4+ICAgICAgICAgICAgICAgICAgICAg
+ICAgIG5hdTg4MjUtPmphY2tfaW5zZXJ0X2RlYm91bmNlKTsKPj4+PiAgICAgICAgIGRldl9kYmco
+ZGV2LCAiamFjay1lamVjdC1kZWJvdW5jZTogICVkXG4iLAo+Pj4+ICAgICAgICAgICAgICAgICAg
+ICAgICAgIG5hdTg4MjUtPmphY2tfZWplY3RfZGVib3VuY2UpOwo+Pj4+IC0gICAgICAgZGV2X2Ri
+ZyhkZXYsICJjcm9zc3RhbGstYnlwYXNzOiAgICAgJWRcbiIsCj4+Pj4gLSAgICAgICAgICAgICAg
+ICAgICAgICAgbmF1ODgyNS0+eHRhbGtfYnlwYXNzKTsKPj4+PiArICAgICAgIGRldl9kYmcoZGV2
+LCAiY3Jvc3N0YWxrLWVuYWJsZTogICAgICVkXG4iLAo+Pj4+ICsgICAgICAgICAgICAgICAgICAg
+ICAgIG5hdTg4MjUtPnh0YWxrX2VuYWJsZSk7Cj4+Pj4gIH0KPj4+Pgo+Pj4+ICBzdGF0aWMgaW50
+IG5hdTg4MjVfcmVhZF9kZXZpY2VfcHJvcGVydGllcyhzdHJ1Y3QgZGV2aWNlICpkZXYsCj4+Pj4g
+QEAgLTI1MDYsOCArMjUxMSw4IEBAIHN0YXRpYyBpbnQgbmF1ODgyNV9yZWFkX2RldmljZV9wcm9w
+ZXJ0aWVzKHN0cnVjdAo+Pj4+IGRldmljZSAqZGV2LAo+Pj4+ICAgICAgICAgICAgICAgICAmbmF1
+ODgyNS0+amFja19lamVjdF9kZWJvdW5jZSk7Cj4+Pj4gICAgICAgICBpZiAocmV0KQo+Pj4+ICAg
+ICAgICAgICAgICAgICBuYXU4ODI1LT5qYWNrX2VqZWN0X2RlYm91bmNlID0gMDsKPj4+PiAtICAg
+ICAgIG5hdTg4MjUtPnh0YWxrX2J5cGFzcyA9IGRldmljZV9wcm9wZXJ0eV9yZWFkX2Jvb2woZGV2
+LAo+Pj4+IC0gICAgICAgICAgICAgICAibnV2b3Rvbixjcm9zc3RhbGstYnlwYXNzIik7Cj4+Pj4g
+KyAgICAgICBuYXU4ODI1LT54dGFsa19lbmFibGUgPSBkZXZpY2VfcHJvcGVydHlfcmVhZF9ib29s
+KGRldiwKPj4+PiArICAgICAgICAgICAgICAgIm51dm90b24sY3Jvc3N0YWxrLWVuYWJsZSIpOwo+
+Pj4+Cj4+Pj4gICAgICAgICBuYXU4ODI1LT5tY2xrID0gZGV2bV9jbGtfZ2V0KGRldiwgIm1jbGsi
+KTsKPj4+PiAgICAgICAgIGlmIChQVFJfRVJSKG5hdTg4MjUtPm1jbGspID09IC1FUFJPQkVfREVG
+RVIpIHsKPj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9uYXU4ODI1LmggYi9zb3Vu
+ZC9zb2MvY29kZWNzL25hdTg4MjUuaAo+Pj4+IGluZGV4IDhhZWU1Yzg2Li4xOTlkNmVhIDEwMDY0
+NAo+Pj4+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oCj4+Pj4gKysrIGIvc291bmQv
+c29jL2NvZGVjcy9uYXU4ODI1LmgKPj4+PiBAQCAtNDc2LDcgKzQ3Niw3IEBAIHN0cnVjdCBuYXU4
+ODI1IHsKPj4+PiAgICAgICAgIGludCB4dGFsa19ldmVudF9tYXNrOwo+Pj4+ICAgICAgICAgYm9v
+bCB4dGFsa19wcm90ZWN0Owo+Pj4+ICAgICAgICAgaW50IGltcF9ybXNbTkFVODgyNV9YVEFMS19J
+TU1dOwo+Pj4+IC0gICAgICAgaW50IHh0YWxrX2J5cGFzczsKPj4+PiArICAgICAgIGludCB4dGFs
+a19lbmFibGU7Cj4+Pj4gIH07Cj4+Pj4KPj4+PiAgaW50IG5hdTg4MjVfZW5hYmxlX2phY2tfZGV0
+ZWN0KHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKPj4+PiAtLQo+Pj4+IDIuNi40Cj4+Pj4K
+Pj4KPj4KPj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+PiBUaGUgcHJpdmls
+ZWdlZCBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgZW1haWwgaXMg
+aW50ZW5kZWQKPj4gZm9yIHVzZSBvbmx5IGJ5IHRoZSBhZGRyZXNzZWVzIGFzIGluZGljYXRlZCBi
+eSB0aGUgb3JpZ2luYWwgc2VuZGVyIG9mIHRoaXMKPj4gZW1haWwuIElmIHlvdSBhcmUgbm90IHRo
+ZSBhZGRyZXNzZWUgaW5kaWNhdGVkIGluIHRoaXMgZW1haWwgb3IgYXJlIG5vdAo+PiByZXNwb25z
+aWJsZSBmb3IgZGVsaXZlcnkgb2YgdGhlIGVtYWlsIHRvIHN1Y2ggYSBwZXJzb24sIHBsZWFzZSBr
+aW5kbHkgcmVwbHkKPj4gdG8gdGhlIHNlbmRlciBpbmRpY2F0aW5nIHRoaXMgZmFjdCBhbmQgZGVs
+ZXRlIGFsbCBjb3BpZXMgb2YgaXQgZnJvbSB5b3VyCj4+IGNvbXB1dGVyIGFuZCBuZXR3b3JrIHNl
+cnZlciBpbW1lZGlhdGVseS4gWW91ciBjb29wZXJhdGlvbiBpcyBoaWdobHkKPj4gYXBwcmVjaWF0
+ZWQuIEl0IGlzIGFkdmlzZWQgdGhhdCBhbnkgdW5hdXRob3JpemVkIHVzZSBvZiBjb25maWRlbnRp
+YWwKPj4gaW5mb3JtYXRpb24gb2YgTnV2b3RvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkOyBhbmQg
+YW55IGluZm9ybWF0aW9uIGluIHRoaXMKPj4gZW1haWwgaXJyZWxldmFudCB0byB0aGUgb2ZmaWNp
+YWwgYnVzaW5lc3Mgb2YgTnV2b3RvbiBzaGFsbCBiZSBkZWVtZWQgYXMKPj4gbmVpdGhlciBnaXZl
+biBub3IgZW5kb3JzZWQgYnkgTnV2b3Rvbi4KCgoKPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQpUaGUgcHJpdmlsZWdlZCBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gY29udGFpbmVk
+IGluIHRoaXMgZW1haWwgaXMgaW50ZW5kZWQgZm9yIHVzZSBvbmx5IGJ5IHRoZSBhZGRyZXNzZWVz
+IGFzIGluZGljYXRlZCBieSB0aGUgb3JpZ2luYWwgc2VuZGVyIG9mIHRoaXMgZW1haWwuIElmIHlv
+dSBhcmUgbm90IHRoZSBhZGRyZXNzZWUgaW5kaWNhdGVkIGluIHRoaXMgZW1haWwgb3IgYXJlIG5v
+dCByZXNwb25zaWJsZSBmb3IgZGVsaXZlcnkgb2YgdGhlIGVtYWlsIHRvIHN1Y2ggYSBwZXJzb24s
+IHBsZWFzZSBraW5kbHkgcmVwbHkgdG8gdGhlIHNlbmRlciBpbmRpY2F0aW5nIHRoaXMgZmFjdCBh
+bmQgZGVsZXRlIGFsbCBjb3BpZXMgb2YgaXQgZnJvbSB5b3VyIGNvbXB1dGVyIGFuZCBuZXR3b3Jr
+IHNlcnZlciBpbW1lZGlhdGVseS4gWW91ciBjb29wZXJhdGlvbiBpcyBoaWdobHkgYXBwcmVjaWF0
+ZWQuIEl0IGlzIGFkdmlzZWQgdGhhdCBhbnkgdW5hdXRob3JpemVkIHVzZSBvZiBjb25maWRlbnRp
+YWwgaW5mb3JtYXRpb24gb2YgTnV2b3RvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkOyBhbmQgYW55
+IGluZm9ybWF0aW9uIGluIHRoaXMgZW1haWwgaXJyZWxldmFudCB0byB0aGUgb2ZmaWNpYWwgYnVz
+aW5lc3Mgb2YgTnV2b3RvbiBzaGFsbCBiZSBkZWVtZWQgYXMgbmVpdGhlciBnaXZlbiBub3IgZW5k
+b3JzZWQgYnkgTnV2b3Rvbi4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
