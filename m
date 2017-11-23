@@ -1,139 +1,239 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC: nau8825: disable crosstalk by default
-Date: Thu, 23 Nov 2017 11:19:23 +0800
-Message-ID: <1511407163-9667-1-git-send-email-KCHSU0@nuvoton.com>
+From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver driver
+Date: Wed, 22 Nov 2017 20:27:12 -0800
+Message-ID: <CAJ+vNU0q4Ab-1sFsyQv3JRMd54ntMU3=Er6yCNiY=tLCN1N5VQ@mail.gmail.com>
+References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
+ <1510253136-14153-4-git-send-email-tharvey@gateworks.com> <4048cb21-c65c-6282-a1d7-81ad9a0d7cfa@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C60142671E7
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 04:19:30 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, anatol.pomozov@gmail.com, WTLI@nuvoton.com, wuchengli@google.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <4048cb21-c65c-6282-a1d7-81ad9a0d7cfa-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>
+Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The driver makes the crosstalk funciton disabled by default
-which can simplify the codec function. The platform may not
-need this funciton and reduce the potential risk. Therefore,
-We change the property "nuvoton,crosstalk-bypass" to
-"nuvoton,crosstalk-enable". The crosstalk measurement is enabled
-if the property is set. Otherwise, it is disabled. Besides,
-add more condition in the entry point of the crosstalk sequence
-to disable the function completely.
+On Mon, Nov 20, 2017 at 7:39 AM, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org> wrote:
+> Hi Tim,
+>
+> Some more review comments:
+>
+> On 11/09/2017 07:45 PM, Tim Harvey wrote:
+>> Add support for the TDA1997x HDMI receivers.
+<snip>
+>> + */
+>> +struct color_matrix_coefs {
+>> +     const char *name;
+>> +     /* Input offsets */
+>> +     s16 offint1;
+>> +     s16 offint2;
+>> +     s16 offint3;
+>> +     /* Coeficients */
+>> +     s16 p11coef;
+>> +     s16 p12coef;
+>> +     s16 p13coef;
+>> +     s16 p21coef;
+>> +     s16 p22coef;
+>> +     s16 p23coef;
+>> +     s16 p31coef;
+>> +     s16 p32coef;
+>> +     s16 p33coef;
+>> +     /* Output offsets */
+>> +     s16 offout1;
+>> +     s16 offout2;
+>> +     s16 offout3;
+>> +};
+>> +
+>> +enum {
+>> +     ITU709_RGBLIMITED,
+>> +     ITU709_RGBFULL,
+>> +     ITU601_RGBLIMITED,
+>> +     ITU601_RGBFULL,
+>> +     RGBLIMITED_RGBFULL,
+>> +     RGBLIMITED_ITU601,
+>> +     RGBFULL_ITU601,
+>
+> This can't be right.
+>ITU709_RGBLIMITED
+> You have these conversions:
+>
+> ITU709_RGBFULL
+> ITU601_RGBFULL
+> RGBLIMITED_RGBFULL
+> RGBLIMITED_ITU601
+> RGBFULL_ITU601
+> RGBLIMITED_ITU709
+> RGBFULL_ITU709
+>
+> I.e. on the HDMI receiver side you can receive RGB full/limited or ITU601/709.
+> On the output side you have RGB full or ITU601/709.
+>
+> So something like ITU709_RGBLIMITED makes no sense.
+>
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- Documentation/devicetree/bindings/sound/nau8825.txt |  4 ++--
- sound/soc/codecs/nau8825.c                          | 21 +++++++++++++--------
- sound/soc/codecs/nau8825.h                          |  2 +-
- 3 files changed, 16 insertions(+), 11 deletions(-)
+I misunderstood the V4L2_CID_DV_RX_RGB_RANGE thinking that it allowed
+you to configure the output range. If output to the SoC is only ever
+full quant range for RGB then I can drop the
+ITU709_RGBLIMITED/ITU601_RGBLIMITED conversions.
 
-diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
-index 2f5e973..d16d968 100644
---- a/Documentation/devicetree/bindings/sound/nau8825.txt
-+++ b/Documentation/devicetree/bindings/sound/nau8825.txt
-@@ -69,7 +69,7 @@ Optional properties:
-   - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
-   - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
- 
--  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set.
-+  - nuvoton,crosstalk-enable: make crosstalk function enable if set.
- 
-   - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
-       clocks described in clock-names
-@@ -98,7 +98,7 @@ Example:
-       nuvoton,short-key-debounce = <2>;
-       nuvoton,jack-insert-debounce = <7>;
-       nuvoton,jack-eject-debounce = <7>;
--      nuvoton,crosstalk-bypass;
-+      nuvoton,crosstalk-enable;
- 
-       clock-names = "mclk";
-       clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 714ce17..2d6c536 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -792,6 +792,10 @@ static void nau8825_xtalk_work(struct work_struct *work)
- 	struct nau8825 *nau8825 = container_of(
- 		work, struct nau8825, xtalk_work);
- 
-+	/* block when crosstalk disabled */
-+	if (!nau8825->xtalk_enable)
-+		return;
-+
- 	nau8825_xtalk_measure(nau8825);
- 	/* To determine the cross talk side tone gain when reach
- 	 * the impedance measure state.
-@@ -815,11 +819,12 @@ static void nau8825_xtalk_work(struct work_struct *work)
- 
- static void nau8825_xtalk_cancel(struct nau8825 *nau8825)
- {
--	/* If the xtalk_protect is true, that means the process is still
--	 * on going. The driver forces to cancel the cross talk task and
-+	/* If the crosstalk is eanbled and the process is on going,
-+	 * the driver forces to cancel the cross talk task and
- 	 * restores the configuration to original status.
- 	 */
--	if (nau8825->xtalk_protect) {
-+	if (nau8825->xtalk_enable && nau8825->xtalk_protect &&
-+		nau8825->xtalk_state != NAU8825_XTALK_DONE) {
- 		cancel_work_sync(&nau8825->xtalk_work);
- 		nau8825_xtalk_clean(nau8825);
- 	}
-@@ -1686,7 +1691,7 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
- 	} else if (active_irq & NAU8825_HEADSET_COMPLETION_IRQ) {
- 		if (nau8825_is_jack_inserted(regmap)) {
- 			event |= nau8825_jack_insert(nau8825);
--			if (!nau8825->xtalk_bypass && !nau8825->high_imped) {
-+			if (nau8825->xtalk_enable && !nau8825->high_imped) {
- 				/* Apply the cross talk suppression in the
- 				 * headset without high impedance.
- 				 */
-@@ -2440,8 +2445,8 @@ static void nau8825_print_device_properties(struct nau8825 *nau8825)
- 			nau8825->jack_insert_debounce);
- 	dev_dbg(dev, "jack-eject-debounce:  %d\n",
- 			nau8825->jack_eject_debounce);
--	dev_dbg(dev, "crosstalk-bypass:     %d\n",
--			nau8825->xtalk_bypass);
-+	dev_dbg(dev, "crosstalk-enable:     %d\n",
-+			nau8825->xtalk_enable);
- }
- 
- static int nau8825_read_device_properties(struct device *dev,
-@@ -2506,8 +2511,8 @@ static int nau8825_read_device_properties(struct device *dev,
- 		&nau8825->jack_eject_debounce);
- 	if (ret)
- 		nau8825->jack_eject_debounce = 0;
--	nau8825->xtalk_bypass = device_property_read_bool(dev,
--		"nuvoton,crosstalk-bypass");
-+	nau8825->xtalk_enable = device_property_read_bool(dev,
-+		"nuvoton,crosstalk-enable");
- 
- 	nau8825->mclk = devm_clk_get(dev, "mclk");
- 	if (PTR_ERR(nau8825->mclk) == -EPROBE_DEFER) {
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 8aee5c86..199d6ea 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -476,7 +476,7 @@ struct nau8825 {
- 	int xtalk_event_mask;
- 	bool xtalk_protect;
- 	int imp_rms[NAU8825_XTALK_IMM];
--	int xtalk_bypass;
-+	int xtalk_enable;
- };
- 
- int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
--- 
-2.6.4
+However, If the output is YUV how do I know if I need to convert to
+ITU709 or ITU601 and what are my conversion matrices for
+RGBLIMITED_ITU709/RGBFULL_ITU709?
+
+Sorry for all the questions, the colorspace/colorimetry options
+confuse the heck out of me.
+
+>> +};
+>> +
+<snip>
+>> +
+>> +/* parse an infoframe and do some sanity checks on it */
+>> +static unsigned int
+>> +tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
+>> +{
+>> +     struct v4l2_subdev *sd = &state->sd;
+>> +     union hdmi_infoframe frame;
+>> +     u8 buffer[40];
+>> +     u8 reg;
+>> +     int len, err;
+>> +
+>> +     /* read data */
+>> +     len = io_readn(sd, addr, sizeof(buffer), buffer);
+>> +     err = hdmi_infoframe_unpack(&frame, buffer);
+>> +     if (err) {
+>> +             v4l_err(state->client,
+>> +                     "failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
+>> +                     len, addr, buffer[0]);
+>> +             return err;
+>> +     }
+>> +     hdmi_infoframe_log(KERN_INFO, &state->client->dev, &frame);
+>> +     switch (frame.any.type) {
+>> +     /* Audio InfoFrame: see HDMI spec 8.2.2 */
+>> +     case HDMI_INFOFRAME_TYPE_AUDIO:
+>> +             /* sample rate */
+>> +             switch (frame.audio.sample_frequency) {
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_32000:
+>> +                     state->audio_samplerate = 32000;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_44100:
+>> +                     state->audio_samplerate = 44100;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_48000:
+>> +                     state->audio_samplerate = 48000;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_88200:
+>> +                     state->audio_samplerate = 88200;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_96000:
+>> +                     state->audio_samplerate = 96000;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_176400:
+>> +                     state->audio_samplerate = 176400;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_192000:
+>> +                     state->audio_samplerate = 192000;
+>> +                     break;
+>> +             default:
+>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM:
+>> +                     break;
+>> +             }
+>> +
+>> +             /* sample size */
+>> +             switch (frame.audio.sample_size) {
+>> +             case HDMI_AUDIO_SAMPLE_SIZE_16:
+>> +                     state->audio_samplesize = 16;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_SIZE_20:
+>> +                     state->audio_samplesize = 20;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_SIZE_24:
+>> +                     state->audio_samplesize = 24;
+>> +                     break;
+>> +             case HDMI_AUDIO_SAMPLE_SIZE_STREAM:
+>> +             default:
+>> +                     break;
+>> +             }
+>> +
+>> +             /* Channel Count */
+>> +             state->audio_channels = frame.audio.channels;
+>> +             if (frame.audio.channel_allocation &&
+>> +                 frame.audio.channel_allocation != state->audio_ch_alloc) {
+>> +                     /* use the channel assignment from the infoframe */
+>> +                     state->audio_ch_alloc = frame.audio.channel_allocation;
+>> +                     tda1997x_configure_audout(sd, state->audio_ch_alloc);
+>> +                     /* reset the audio FIFO */
+>> +                     tda1997x_hdmi_info_reset(sd, RESET_AUDIO, false);
+>> +             }
+>> +             break;
+>> +
+>> +     /* Auxiliary Video information (AVI) InfoFrame: see HDMI spec 8.2.1 */
+>> +     case HDMI_INFOFRAME_TYPE_AVI:
+>> +             state->colorspace = frame.avi.colorspace;
+>> +             state->colorimetry = frame.avi.colorimetry;
+>> +             state->range = frame.avi.quantization_range;
+>
+> This should be ignored if it is overridden by the RGB Quantization Range
+> control, or am I missing something?
+>
+
+Ok. Sounds like I should only use the range from the infoframe if
+range == V4L2_DV_RGB_RANGE_AUTO:
+
+                /* Quantization Range */
+                if (state->range == V4L2_DV_RGB_RANGE_AUTO)
+                        state->range = frame.avi.quantization_range;
+                if (state->range == HDMI_QUANTIZATION_RANGE_DEFAULT) {
+                        if (frame.avi.video_code <= 1)
+                                state->range = HDMI_QUANTIZATION_RANGE_FULL;
+                        else
+                                state->range = HDMI_QUANTIZATION_RANGE_LIMITED;
+                }
+
+
+>> +             state->content = frame.avi.content_type;
+>> +             /*
+>> +              * If colorimetry not specified, conversion depends on res type:
+>> +              *  - SDTV: ITU601 for SD (480/576/240/288 line resolution)
+>> +              *  - HDTV: ITU709 for HD (720/1080 line resolution)
+>> +              *  -   PC: sRGB
+>> +              * see HDMI specification section 6.7
+>> +              */
+>> +             if ((state->colorspace == HDMI_COLORSPACE_YUV422 ||
+>> +                  state->colorspace == HDMI_COLORSPACE_YUV444) &&
+>> +                 (state->colorimetry == HDMI_COLORIMETRY_EXTENDED ||
+>> +                  state->colorimetry == HDMI_COLORIMETRY_NONE)) {
+>> +                     switch (state->timings.bt.height) {
+>> +                     case 480:
+>> +                     case 576:
+>> +                     case 240:
+>> +                     case 288:
+>> +                             state->colorimetry = HDMI_COLORIMETRY_ITU_601;
+>> +                             break;
+>> +                     case 720:
+>> +                     case 1080:
+>> +                             state->colorimetry = HDMI_COLORIMETRY_ITU_709;
+>> +                             break;
+>> +                     default:
+>> +                             state->colorimetry = HDMI_COLORIMETRY_NONE;
+>> +                             break;
+>> +                     }
+>> +             }
+>> +             /* if range not specified */
+>> +             if (state->range == HDMI_QUANTIZATION_RANGE_DEFAULT) {
+>> +                     if (frame.avi.video_code == 0)
+>
+> This should be:
+>
+>                         if (frame.avi.video_code <= 1)
+>
+> VIC code 1 (VGA) is also full range. It's an exception to the rule.
+
+ok
+
+Thanks,
+
+Tim
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
