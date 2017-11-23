@@ -1,66 +1,121 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v7 07/13] slimbus: Add support for
-	'clock-pause' feature
-Date: Thu, 23 Nov 2017 07:28:00 +0000
-Message-ID: <20171123072800.z2pkmelom374zr63@localhost.localdomain>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-8-srinivas.kandagatla@linaro.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S, U}20_4
+Date: Thu, 23 Nov 2017 16:40:21 +0900
+Message-ID: <181cd3a8-cc74-d858-071a-7ae3e465406a@sakamocchi.jp>
+References: <53d527c0-89f6-d501-09e9-1effea8a5bac@maciej.szmigiero.name>
+ <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
+ <4d0f43f5-0161-3dfb-1692-e755ad7fe641@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B5C98266CFB
- for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 08:28:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20171115141043.29202-8-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, andreas.noever@gmail.com, arnd@arndb.de, vinod.koul@intel.com, treding@nvidia.com, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, bp@suse.de, mathieu.poirier@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, daniel@ffwll.ch, jkosina@suse.cz, joe@perches.com, davem@davemloft.net
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4d0f43f5-0161-3dfb-1692-e755ad7fe641@maciej.szmigiero.name>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 15, 2017 at 02:10:37PM +0000, srinivas.kandagatla@linaro.org wrote:
-> From: Sagar Dharia <sdharia@codeaurora.org>
+On Nov 23 2017 08:44, Maciej S. Szmigiero wrote:
+> On 23.11.2017 00:27, Takashi Sakamoto wrote:
+>> On Nov 23 2017 04:17, Maciej S. Szmigiero wrote:
+> (..)
+>>> --- a/include/uapi/sound/asound.h
+>>> +++ b/include/uapi/sound/asound.h
+>>> @@ -236,7 +236,11 @@ typedef int __bitwise snd_pcm_format_t;
+>>>    #define    SNDRV_PCM_FORMAT_DSD_U32_LE    ((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
+>>>    #define    SNDRV_PCM_FORMAT_DSD_U16_BE    ((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
+>>>    #define    SNDRV_PCM_FORMAT_DSD_U32_BE    ((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
+>>> -#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_DSD_U32_BE
+>>> +#define    SNDRV_PCM_FORMAT_S20_4LE    ((__force snd_pcm_format_t) 53)    /* in four bytes */
+>>> +#define    SNDRV_PCM_FORMAT_S20_4BE    ((__force snd_pcm_format_t) 54)    /* in four bytes */
+>>> +#define    SNDRV_PCM_FORMAT_U20_4LE    ((__force snd_pcm_format_t) 55)    /* in four bytes */
+>>> +#define    SNDRV_PCM_FORMAT_U20_4BE    ((__force snd_pcm_format_t) 56)    /* in four bytes */
+>>> +#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_U20_4BE
+>>
+>> In my opinion, for this type of definition, it's better to declare left/right-adjusted or padding side. (Of course, silence definition is already a hint, however the lack of information forces developers to have a careful behaviour to handle entries on the list.
+>> (I note that in current ALSA PCM interface there's no way to deliver MSB/LSB-first information about sample format.)
 > 
-> Per slimbus specification, a reconfiguration sequence known as
-> 'clock pause' needs to be broadcast over the bus while entering low-
-> power mode. Clock-pause is initiated by the controller driver.
-> To exit clock-pause, controller typically wakes up the framer device.
-> Since wakeup precedure is controller-specific, framework calls it via
-> controller's function pointer to invoke it.
+> No other sound format includes this information in its name
+
+You overlook comments in 'SNDRV_PCM_FORMAT_[U|S]24_[LE|BE]'. Let me 
+refer to them [1]:
+
+198 #define SNDRV_PCM_FORMAT_S24_LE ((__force snd_pcm_format_t) 6) /* 
+low three bytes */
+199 #define SNDRV_PCM_FORMAT_S24_BE ((__force snd_pcm_format_t) 7) /* 
+low three bytes */
+200 #define SNDRV_PCM_FORMAT_U24_LE ((__force snd_pcm_format_t) 8) /* 
+low three bytes */
+201 #define SNDRV_PCM_FORMAT_U24_BE ((__force snd_pcm_format_t) 9) /* 
+low three bytes */
+
+In your way, these types of format can be represented by 
+'SNDRV_PCM_FORMAT_[U|S]24_4[LE|BE]', thus for playback direction they
+mean:
+
+```
+#include <sound/asound.h>
+#include <endian.h>
+
+uint32_t *buf;
+uint32_t sample;
+snd_pcm_format_t format;
+
+sample = generate_a_sample();
+(sample & ~0x00ffffff) /* invalid bits as sample */
+
+if (format == SNDRV_PCM_FORMAT_[U|S]24_LE) {
+   buf[0] = htole32(sample);
+else
+   buf[0] = htobe32(sample);
+
+/* transfer content of the buf via ALSA kernel stuffs. */
+```
+
+The comments are good enough for application developers in an aspect of 
+a position for padding.
+
+In general, studying from the past is preferable behaviour to be genius, 
+however accumulated history includes mistakes and defects. Just 
+pretending the past is not so genius, without further consideration.
+
+Actually additions of the rest of entries for PCM format were done 
+without enough cares of what information they give to application 
+developers. Adding new entries is easier than fixing and improving them 
+once exposed. It's a reason that they're left what they're.
+
+I wish you had enough care to assist applications developers. Without 
+applications, drivers are worthless and just waste of code base.
+
+> so if we name
+> these formats SNDRV_PCM_FORMAT_{S, U}20LSB_4 they are going to have it
+> inconsistent with every other one
+>
+> (I assume you meant to include such information in a format name?).
+>
+> But information about whether this format is MSB or LSB justified can be
+> added in a comment so the situation is clear for other developers from
+> the definition without needing to read the actual processing code.
+
+For consistency of the other entries, this is not so preferable, in my 
+opinion. So I didn't suggest it and just noted.
+
+>> Additionally, alsa-lib includes some codes related to the definition[1]. If you'd like to thing goes well out of ALSA SoC part, it's better to submit changes to the library as well.
+>>
+>> [1] http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_misc.c;h=5420b1895713a3aec3624a5218794a7b49baf167;hb=HEAD
 > 
-> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
-> +/**
-> + * struct slim_sched: Framework uses this structure internally for scheduling.
+> I have alsa-lib changes ready for these formats - they were needed to
+> test these patches, will post them when this is merged on the kernel
+> side (in case some changes are needed which affect both).
 
-Missing kernel doc for clkgear here.
+Please pay enough care when writing patch comment. Silence means 
+nothing, at least for reviewers, even if you have good preparations.
 
-> + * @clk_state: Controller's clock state from enum slim_clk_state
-> + * @pause_comp: Signals completion of clock pause sequence. This is useful when
-> + *	client tries to call slimbus transaction when controller is entering
-> + *	clock pause.
-> + * @m_reconf: This mutex is held until current reconfiguration (data channel
-> + *	scheduling, message bandwidth reservation) is done. Message APIs can
-> + *	use the bus concurrently when this mutex is held since elemental access
-> + *	messages can be sent on the bus when reconfiguration is in progress.
-> + */
-> +struct slim_sched {
-> +	int			clkgear;
-> +	enum slim_clk_state	clk_state;
-> +	struct completion	pause_comp;
-> +	struct mutex		m_reconf;
-> +};
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/include/uapi/sound/asound.h?h=sound-4.15-rc1#n198
 
-Thanks,
-Charles
+
+Regards
+
+Takashi Sakamoto
