@@ -1,58 +1,104 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S, U}20_4
-Date: Thu, 23 Nov 2017 00:44:19 +0100
-Message-ID: <4d0f43f5-0161-3dfb-1692-e755ad7fe641@maciej.szmigiero.name>
-References: <53d527c0-89f6-d501-09e9-1effea8a5bac@maciej.szmigiero.name>
- <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: [GIT PULL]: Geminilake audio firmware update
+Date: Thu, 23 Nov 2017 01:49:08 +0000
+Message-ID: <1511401748.14687.14.camel@decadent.org.uk>
+References: <20171107050032.GS3187@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ff52e871-fec0-9095-f2c1-9680aedec431@sakamocchi.jp>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/mixed; boundary="===============7991207739286659386=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from shadbolt.e.decadent.org.uk (shadbolt.e.decadent.org.uk
+ [88.96.1.126]) by alsa0.perex.cz (Postfix) with ESMTP id B0099266B67
+ for <alsa-devel@alsa-project.org>; Thu, 23 Nov 2017 02:49:25 +0100 (CET)
+In-Reply-To: <20171107050032.GS3187@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23.11.2017 00:27, Takashi Sakamoto wrote:
-> On Nov 23 2017 04:17, Maciej S. Szmigiero wrote:
-(..)
->> --- a/include/uapi/sound/asound.h
->> +++ b/include/uapi/sound/asound.h
->> @@ -236,7 +236,11 @@ typedef int __bitwise snd_pcm_format_t;
->>   #define    SNDRV_PCM_FORMAT_DSD_U32_LE    ((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
->>   #define    SNDRV_PCM_FORMAT_DSD_U16_BE    ((__force snd_pcm_format_t) 51) /* DSD, 2-byte samples DSD (x16), big endian */
->>   #define    SNDRV_PCM_FORMAT_DSD_U32_BE    ((__force snd_pcm_format_t) 52) /* DSD, 4-byte samples DSD (x32), big endian */
->> -#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_DSD_U32_BE
->> +#define    SNDRV_PCM_FORMAT_S20_4LE    ((__force snd_pcm_format_t) 53)    /* in four bytes */
->> +#define    SNDRV_PCM_FORMAT_S20_4BE    ((__force snd_pcm_format_t) 54)    /* in four bytes */
->> +#define    SNDRV_PCM_FORMAT_U20_4LE    ((__force snd_pcm_format_t) 55)    /* in four bytes */
->> +#define    SNDRV_PCM_FORMAT_U20_4BE    ((__force snd_pcm_format_t) 56)    /* in four bytes */
->> +#define    SNDRV_PCM_FORMAT_LAST        SNDRV_PCM_FORMAT_U20_4BE
-> 
-> In my opinion, for this type of definition, it's better to declare left/right-adjusted or padding side. (Of course, silence definition is already a hint, however the lack of information forces developers to have a careful behaviour to handle entries on the list.> (I note that in current ALSA PCM interface there's no way to deliver MSB/LSB-first information about sample format.)
 
-No other sound format includes this information in its name so if we name
-these formats SNDRV_PCM_FORMAT_{S, U}20LSB_4 they are going to have it
-inconsistent with every other one (I assume you meant to include such
-information in a format name?).
+--===============7991207739286659386==
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-UwxbH97ZcoYrZtujim4B"
 
-But information about whether this format is MSB or LSB justified can be
-added in a comment so the situation is clear for other developers from
-the definition without needing to read the actual processing code.
 
-> Additionally, alsa-lib includes some codes related to the definition[1]. If you'd like to thing goes well out of ALSA SoC part, it's better to submit changes to the library as well.
-> 
-> [1] http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_misc.c;h=5420b1895713a3aec3624a5218794a7b49baf167;hb=HEAD
+--=-UwxbH97ZcoYrZtujim4B
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I have alsa-lib changes ready for these formats - they were needed to
-test these patches, will post them when this is merged on the kernel
-side (in case some changes are needed which affect both).
+On Tue, 2017-11-07 at 10:30 +0530, Vinod Koul wrote:
+> Hi,
+>=20
+> Please PULL to receive update for GLK audio firmware.
+>=20
+> The following changes since commit bf04291309d3169c0ad3b8db52564235bbd08e=
+30:
+>=20
+>   WHENCE: Add new qed firmware (2017-10-09 18:03:26 +0100)
+>=20
+> are available in the git repository at:
+>=20
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git glk
+>=20
+> for you to fetch changes up to b964279f2d9955a6ce00d3a672b273ae4d7a362f:
+>=20
+>   linux-firmware: intel: Update Geminilake audio firmware (2017-11-07 10:=
+25:50 +0530)
+>=20
+> ----------------------------------------------------------------
+> Pradeep Tewani (1):
+>       linux-firmware: intel: Update Geminilake audio firmware
+>=20
+>  WHENCE                     |   4 +++-
+>  intel/dsp_fw_glk.bin       |   2 +-
+>  intel/dsp_fw_glk_v2880.bin | Bin 0 -> 505608 bytes
+>  3 files changed, 4 insertions(+), 2 deletions(-)
+>  create mode 100644 intel/dsp_fw_glk_v2880.bin
 
-> Regards
-> 
-> Takashi Sakamoto
+Pulled, thanks.
 
-Best regards,
-Maciej Szmigiero
+Ben.
+
+--=20
+Ben Hutchings
+When in doubt, use brute force. - Ken Thompson
+
+
+--=-UwxbH97ZcoYrZtujim4B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAloWKRQACgkQ57/I7JWG
+EQln1hAAzHluetgHhGT+9hYKMG8yZav8rLmagtxzN1apCgJepT/JMibZtAm8GZg4
+CJ5HmUsIC80rSu9dNfvbtHSAWRhF7BUvTody5S4NGoVDkdCIFcK0d7YSkgq9hqua
+jsBnSDcz91BWKoZQZvUbrjU2bBsgfbrwy94xhqwEnLLPYLxnAREKeUEddFhJdndU
+SGHXmVpHlaNvCib6zO3vmSuoebw18+yEHWO1A/SjDve0xqES3HPHPjwLN0ZwIddE
+54pgxACDWNRmARVNwm6Tbu9ZPSZCs4prSo9XMeYxGAo2QVudnRSQeuGmuiWC0Ipm
+FQtrsbNoqrZlvMO1Hs2Ju/hRq5mxMSST9eFe6bKW/c+L7jPnRvgpdqAZo6T8dj+8
+TO3OSs36cVd397xguBjWQNqVZ7+/zpE69pKfvDgvT/ZTgK/6QOCxXZsNIZ2P2DcU
+/BrA77AY2+g5ftkBud1LvfGir0T6yO7dUz6jWRF4DNed2XiIgEO27GY56Ej70FKh
+uKoeyIeJSHTQCpYe6cCGo0WIeR+cEPnLJyzkNyIL2YKqRoaIFt1zZ6z9N6XhvRY8
+MKjro8BS+pKVxdAFZuexpsorwCfLi5K1qPYGJXXg+VhjXh4rhmRHODzmjq/Uqeex
+4RshFgOXe4PoIK/ysiePvztWxndbNaPZtNtuqCUwb1155E8GbBM=
+=MSjd
+-----END PGP SIGNATURE-----
+
+--=-UwxbH97ZcoYrZtujim4B--
+
+--===============7991207739286659386==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7991207739286659386==--
