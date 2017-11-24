@@ -1,88 +1,120 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v7 11/13] slimbus: qcom: Add Qualcomm Slimbus controller
- driver
-Date: Fri, 24 Nov 2017 14:40:10 +0000
-Message-ID: <7200d3c4-79c8-b461-9883-182a1c8b4476@linaro.org>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
- <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
- <20171123164212.655yliz3tmlpsjje@latitude>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v4 03/12] IIO: hw_consumer: add
+	devm_iio_hw_consumer_alloc
+Date: Fri, 24 Nov 2017 15:48:54 +0100
+Message-ID: <f840aa0d-bd0c-2507-ee31-e2a0165b51c8@st.com>
+References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
+ <1510222354-15290-4-git-send-email-arnaud.pouliquen@st.com>
+ <20171119123453.188da309@archlinux>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171123164212.655yliz3tmlpsjje@latitude>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70BC3266AE1
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 15:49:02 +0100 (CET)
+In-Reply-To: <20171119123453.188da309@archlinux>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>, Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your review,
-
-On 23/11/17 16:42, Jonathan Neuschäfer wrote:
-> Hello Srinivas and Charles,
-> 
-> On Thu, Nov 23, 2017 at 10:07:03AM +0000, Charles Keepax wrote:
->> On Wed, Nov 15, 2017 at 02:10:41PM +0000, srinivas.kandagatla@linaro.org wrote:
->>> From: Sagar Dharia <sdharia@codeaurora.org>
->>>
->>> This controller driver programs manager, interface, and framer
->>> devices for Qualcomm's slimbus HW block.
->>> Manager component currently implements logical address setting,
->>> and messaging interface.
->>> Interface device reports bus synchronization information, and framer
->>> device clocks the bus from the time it's woken up, until clock-pause
->>> is executed by the manager device.
->>>
->>> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
->>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>> ---
-> [...]
->>> +static void qcom_slim_rxwq(struct work_struct *work)
->>> +{
->>> +	u8 buf[SLIM_MSGQ_BUF_LEN];
->>> +	u8 mc, mt, len;
->>> +	int i, ret;
->>> +	struct qcom_slim_ctrl *ctrl = container_of(work, struct qcom_slim_ctrl,
->>> +						 wd);
->>> +
->>> +	while ((slim_get_current_rxbuf(ctrl, buf)) != -ENODATA) {
->>> +		len = SLIM_HEADER_GET_RL(buf[0]);
->>> +		mt = SLIM_HEADER_GET_MT(buf[0]);
->>> +		mc = SLIM_HEADER_GET_MC(buf[1]);
->>> +		if (mt == SLIM_MSG_MT_CORE &&
->>> +			mc == SLIM_MSG_MC_REPORT_PRESENT) {
->>> +			u8 laddr;
->>> +			struct slim_eaddr ea;
->>> +			u8 e_addr[6];
->>> +
->>> +			for (i = 0; i < 6; i++)
->>> +				e_addr[i] = buf[7-i];
->>> +
->>> +			ea.manf_id = (u16)(e_addr[5] << 8) | e_addr[4];
->>> +			ea.prod_code = (u16)(e_addr[3] << 8) | e_addr[2];
->>> +			ea.dev_index = e_addr[1];
->>> +			ea.instance = e_addr[0];
->>
->> If we are just bitshifting this out of the bytes does it really
->> make it much more clear to reverse the byte order first? Feels
->> like you might as well shift it out of buf directly.
-> 
-> In any case, there is a predefined function to make this code a little
-> nicer in <asm/byteorder.h>:
-> 
-> 	le16_to_cpu(x):  Converts the 16-bit little endian value x to
-> 	                 CPU-endian
-> 	le16_to_cpup(p): Converts the 16-bit little endian value pointed
-> 	                 to by p to CPU-endian
-> 
-> If you use le16_to_cpup, you need to cast your pointer to __le16 *:
-> 
-> 	ea.manf_id = le16_to_cpup((__le16 *)&e_addr[4]);
-> 
-It Looks like I can make use of these apis here, I will give this a go 
-to cleanup this part of the code.
-
-thanks,
-srini
+CgpPbiAxMS8xOS8yMDE3IDAxOjM0IFBNLCBKb25hdGhhbiBDYW1lcm9uIHdyb3RlOgo+IE9uIFRo
+dSwgOSBOb3YgMjAxNyAxMToxMjoyNSArMDEwMAo+IEFybmF1ZCBQb3VsaXF1ZW4gPGFybmF1ZC5w
+b3VsaXF1ZW5Ac3QuY29tPiB3cm90ZToKPiAKPj4gQWRkIGRldm1faWlvX2h3X2NvbnN1bWVyX2Fs
+bG9jIGZ1bmN0aW9uIHRoYXQgY2FsbHMgaWlvX2h3X2NvbnN1bWVyX2ZyZWUKPj4gd2hlbiB0aGUg
+ZGV2aWNlIGlzIHVuYm91bmQgZnJvbSB0aGUgYnVzLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogQXJu
+YXVkIFBvdWxpcXVlbiA8YXJuYXVkLnBvdWxpcXVlbkBzdC5jb20+Cj4gSG1tLi4gSSBub3JtYWxs
+eSBkb24ndCBsaWtlIGRldm0gZm9yIHdoYXQgaXMgYSBzaW5nbGUgdXNlIGNhc2UgaW4KPiBhIGRy
+aXZlciAoZm9yIG5vdykgYnV0IEkgZ3Vlc3MgdGhpcyBpcyBnZW5lcmljIGVub3VnaCBpdCB3aWxs
+IGhhdmUKPiBhZGRpdGlvbmFsIHVzZXJzIHJlYXNvbmFibHkgc29vbi7CoCBIZW5jZSBmaW5lLgo+
+IAo+IEpvbmF0aGFuCj4+IC0tLQo+PsKgIGRyaXZlcnMvaWlvL2J1ZmZlci9pbmR1c3RyaWFsaW8t
+aHctY29uc3VtZXIuYyB8IDcwICsrKysrKysrKysrKysrKysrKysrKysrKysrLQo+PsKgIGluY2x1
+ZGUvbGludXgvaWlvL2h3LWNvbnN1bWVyLmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzC
+oCAyICsKPj7CoCAyIGZpbGVzIGNoYW5nZWQsIDcwIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25z
+KC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9paW8vYnVmZmVyL2luZHVzdHJpYWxpby1o
+dy1jb25zdW1lci5jIGIvZHJpdmVycy9paW8vYnVmZmVyL2luZHVzdHJpYWxpby1ody1jb25zdW1l
+ci5jCj4+IGluZGV4IDdkNGQ4MDAuLmU5ODBhNzkgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvaWlv
+L2J1ZmZlci9pbmR1c3RyaWFsaW8taHctY29uc3VtZXIuYwo+PiArKysgYi9kcml2ZXJzL2lpby9i
+dWZmZXIvaW5kdXN0cmlhbGlvLWh3LWNvbnN1bWVyLmMKPj4gQEAgLTEyOSwxNSArMTI5LDgxIEBA
+IEVYUE9SVF9TWU1CT0xfR1BMKGlpb19od19jb25zdW1lcl9hbGxvYyk7Cj4+wqDCoCAqLwo+PsKg
+IHZvaWQgaWlvX2h3X2NvbnN1bWVyX2ZyZWUoc3RydWN0IGlpb19od19jb25zdW1lciAqaHdjKQo+
+PsKgIHsKPj4gLcKgwqDCoMKgIHN0cnVjdCBod19jb25zdW1lcl9idWZmZXIgKmJ1ZjsKPj4gK8Kg
+wqDCoMKgIHN0cnVjdCBod19jb25zdW1lcl9idWZmZXIgKmJ1ZiwgKm47Cj4+wqAgCj4+wqDCoMKg
+wqDCoMKgwqAgaWlvX2NoYW5uZWxfcmVsZWFzZV9hbGwoaHdjLT5jaGFubmVscyk7Cj4+IC3CoMKg
+wqDCoCBsaXN0X2Zvcl9lYWNoX2VudHJ5KGJ1ZiwgJmh3Yy0+YnVmZmVycywgaGVhZCkKPj4gK8Kg
+wqDCoMKgIGxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShidWYsIG4sICZod2MtPmJ1ZmZlcnMsIGhl
+YWQpCj4+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpb19idWZmZXJfcHV0KCZidWYt
+PmJ1ZmZlcik7Cj4gCj4gVGhpcyBsb29rcyBsaWtlIGFuIHVucmVsYXRlZCBmaXguwqAgUHVzaCBi
+YWNrIGludG8gdGhlCj4gb3JpZ2luYWwgcGF0Y2g/ClllcywgSSBtaXNzZWQgdG8gYXBwbHkgdGhp
+cyBmaXggZGlyZWN0bHkgaW4gTGFycydzIHBhdGNoOgpbMDEvMTJdIGlpbzogQWRkIGhhcmR3YXJl
+IGNvbnN1bWVyIGJ1ZmZlciBzdXBwb3J0CgpUaGFua3MKCkFybmF1ZAo+IAo+PsKgwqDCoMKgwqDC
+oMKgIGtmcmVlKGh3Yyk7Cj4+wqAgfQo+PsKgIEVYUE9SVF9TWU1CT0xfR1BMKGlpb19od19jb25z
+dW1lcl9mcmVlKTsKPj7CoCAKPj4gK3N0YXRpYyB2b2lkIGRldm1faWlvX2h3X2NvbnN1bWVyX3Jl
+bGVhc2Uoc3RydWN0IGRldmljZSAqZGV2LCB2b2lkICpyZXMpCj4+ICt7Cj4+ICvCoMKgwqDCoCBp
+aW9faHdfY29uc3VtZXJfZnJlZSgqKHN0cnVjdCBpaW9faHdfY29uc3VtZXIgKiopcmVzKTsKPj4g
+K30KPj4gKwo+PiArc3RhdGljIGludCBkZXZtX2lpb19od19jb25zdW1lcl9tYXRjaChzdHJ1Y3Qg
+ZGV2aWNlICpkZXYsIHZvaWQgKnJlcywgdm9pZCAqZGF0YSkKPj4gK3sKPj4gK8KgwqDCoMKgIHN0
+cnVjdCBpaW9faHdfY29uc3VtZXIgKipyID0gcmVzOwo+PiArCj4+ICvCoMKgwqDCoCBpZiAoIXIg
+fHwgISpyKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV0FSTl9PTighciB8fCAhKnIp
+Owo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAwOwo+PiArwqDCoMKgwqAgfQo+
+PiArwqDCoMKgwqAgcmV0dXJuICpyID09IGRhdGE7Cj4+ICt9Cj4+ICsKPj4gKy8qKgo+PiArICog
+ZGV2bV9paW9faHdfY29uc3VtZXJfYWxsb2MgLSBSZXNvdXJjZS1tYW5hZ2VkIGlpb19od19jb25z
+dW1lcl9hbGxvYygpCj4+ICsgKiBAZGV2OiBQb2ludGVyIHRvIGNvbnN1bWVyIGRldmljZS4KPj4g
+KyAqCj4+ICsgKiBNYW5hZ2VkIGlpb19od19jb25zdW1lcl9hbGxvYy4gaWlvX2h3X2NvbnN1bWVy
+IGFsbG9jYXRlZCB3aXRoIHRoaXMgZnVuY3Rpb24KPj4gKyAqIGlzIGF1dG9tYXRpY2FsbHkgZnJl
+ZWQgb24gZHJpdmVyIGRldGFjaC4KPj4gKyAqCj4+ICsgKiBJZiBhbiBpaW9faHdfY29uc3VtZXIg
+YWxsb2NhdGVkIHdpdGggdGhpcyBmdW5jdGlvbiBuZWVkcyB0byBiZSBmcmVlZAo+PiArICogc2Vw
+YXJhdGVseSwgZGV2bV9paW9faHdfY29uc3VtZXJfZnJlZSgpIG11c3QgYmUgdXNlZC4KPj4gKyAq
+Cj4+ICsgKiByZXR1cm5zIHBvaW50ZXIgdG8gYWxsb2NhdGVkIGlpb19od19jb25zdW1lciBvbiBz
+dWNjZXNzLCBOVUxMIG9uIGZhaWx1cmUuCj4+ICsgKi8KPj4gK3N0cnVjdCBpaW9faHdfY29uc3Vt
+ZXIgKmRldm1faWlvX2h3X2NvbnN1bWVyX2FsbG9jKHN0cnVjdCBkZXZpY2UgKmRldikKPj4gK3sK
+Pj4gK8KgwqDCoMKgIHN0cnVjdCBpaW9faHdfY29uc3VtZXIgKipwdHIsICppaW9faHdjOwo+PiAr
+Cj4+ICvCoMKgwqDCoCBwdHIgPSBkZXZyZXNfYWxsb2MoZGV2bV9paW9faHdfY29uc3VtZXJfcmVs
+ZWFzZSwgc2l6ZW9mKCpwdHIpLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBHRlBfS0VSTkVMKTsKPj4gK8KgwqDCoMKgIGlmICghcHRyKQo+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBOVUxMOwo+PiArCj4+ICvCoMKgwqDCoCBpaW9f
+aHdjID0gaWlvX2h3X2NvbnN1bWVyX2FsbG9jKGRldik7Cj4+ICvCoMKgwqDCoCBpZiAoSVNfRVJS
+KGlpb19od2MpKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2cmVzX2ZyZWUocHRy
+KTsKPj4gK8KgwqDCoMKgIH0gZWxzZSB7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKnB0
+ciA9IGlpb19od2M7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2cmVzX2FkZChkZXYs
+IHB0cik7Cj4+ICvCoMKgwqDCoCB9Cj4+ICsKPj4gK8KgwqDCoMKgIHJldHVybiBpaW9faHdjOwo+
+PiArfQo+PiArRVhQT1JUX1NZTUJPTF9HUEwoZGV2bV9paW9faHdfY29uc3VtZXJfYWxsb2MpOwo+
+PiArCj4+ICsvKioKPj4gKyAqIGRldm1faWlvX2h3X2NvbnN1bWVyX2ZyZWUgLSBSZXNvdXJjZS1t
+YW5hZ2VkIGlpb19od19jb25zdW1lcl9mcmVlKCkKPj4gKyAqIEBkZXY6IFBvaW50ZXIgdG8gY29u
+c3VtZXIgZGV2aWNlLgo+PiArICogQGh3YzogaWlvX2h3X2NvbnN1bWVyIHRvIGZyZWUuCj4+ICsg
+Kgo+PiArICogRnJlZSBpaW9faHdfY29uc3VtZXIgYWxsb2NhdGVkIHdpdGggZGV2bV9paW9faHdf
+Y29uc3VtZXJfYWxsb2MoKS4KPj4gKyAqLwo+PiArdm9pZCBkZXZtX2lpb19od19jb25zdW1lcl9m
+cmVlKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGlpb19od19jb25zdW1lciAqaHdjKQo+PiAr
+ewo+PiArwqDCoMKgwqAgaW50IHJjOwo+PiArCj4+ICvCoMKgwqDCoCByYyA9IGRldnJlc19yZWxl
+YXNlKGRldiwgZGV2bV9paW9faHdfY29uc3VtZXJfcmVsZWFzZSwKPj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZtX2lpb19od19jb25zdW1lcl9t
+YXRjaCwgaHdjKTsKPj4gK8KgwqDCoMKgIFdBUk5fT04ocmMpOwo+PiArfQo+PiArRVhQT1JUX1NZ
+TUJPTF9HUEwoZGV2bV9paW9faHdfY29uc3VtZXJfZnJlZSk7Cj4+ICsKPj7CoCAvKioKPj7CoMKg
+ICogaWlvX2h3X2NvbnN1bWVyX2VuYWJsZSgpIC0gRW5hYmxlIElJTyBoYXJkd2FyZSBjb25zdW1l
+cgo+PsKgwqAgKiBAaHdjOiBpaW9faHdfY29uc3VtZXIgdG8gZW5hYmxlLgo+PiBkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9saW51eC9paW8vaHctY29uc3VtZXIuaCBiL2luY2x1ZGUvbGludXgvaWlvL2h3
+LWNvbnN1bWVyLmgKPj4gaW5kZXggZjE2NzkxYi4uOTBlY2ZjZSAxMDA2NDQKPj4gLS0tIGEvaW5j
+bHVkZS9saW51eC9paW8vaHctY29uc3VtZXIuaAo+PiArKysgYi9pbmNsdWRlL2xpbnV4L2lpby9o
+dy1jb25zdW1lci5oCj4+IEBAIC0xNCw2ICsxNCw4IEBAIHN0cnVjdCBpaW9faHdfY29uc3VtZXI7
+Cj4+wqAgCj4+wqAgc3RydWN0IGlpb19od19jb25zdW1lciAqaWlvX2h3X2NvbnN1bWVyX2FsbG9j
+KHN0cnVjdCBkZXZpY2UgKmRldik7Cj4+wqAgdm9pZCBpaW9faHdfY29uc3VtZXJfZnJlZShzdHJ1
+Y3QgaWlvX2h3X2NvbnN1bWVyICpod2MpOwo+PiArc3RydWN0IGlpb19od19jb25zdW1lciAqZGV2
+bV9paW9faHdfY29uc3VtZXJfYWxsb2Moc3RydWN0IGRldmljZSAqZGV2KTsKPj4gK3ZvaWQgZGV2
+bV9paW9faHdfY29uc3VtZXJfZnJlZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBpaW9faHdf
+Y29uc3VtZXIgKmh3Yyk7Cj4+wqAgaW50IGlpb19od19jb25zdW1lcl9lbmFibGUoc3RydWN0IGlp
+b19od19jb25zdW1lciAqaHdjKTsKPj7CoCB2b2lkIGlpb19od19jb25zdW1lcl9kaXNhYmxlKHN0
+cnVjdCBpaW9faHdfY29uc3VtZXIgKmh3Yyk7Cj4+wqAgCj4gCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
