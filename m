@@ -1,75 +1,98 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v7 12/13] slimbus: qcom: Add runtime-pm support using
- clock-pause
-Date: Fri, 24 Nov 2017 14:39:53 +0000
-Message-ID: <fac57b60-05b6-a546-bdd4-9e1d994cd74b@linaro.org>
+Subject: Re: [PATCH v7 08/13] regmap: add SLIMbus support
+Date: Fri, 24 Nov 2017 14:39:47 +0000
+Message-ID: <a1d79f5e-882f-b761-ebfd-d3354e1b8fe2@linaro.org>
 References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-13-srinivas.kandagatla@linaro.org>
- <20171123101749.ojiv6l52jjq6b55b@localhost.localdomain>
+ <20171115141043.29202-9-srinivas.kandagatla@linaro.org>
+ <20171123074925.hk3omwaqkg7swwmw@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <20171123101749.ojiv6l52jjq6b55b@localhost.localdomain>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCFF426742C
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 15:39:49 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id r68so23184752wmr.1
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 06:39:49 -0800 (PST)
+Received: from [192.168.0.18]
+ (cpc90716-aztw32-2-0-cust92.18-1.cable.virginm.net. [86.26.100.93])
+ by smtp.googlemail.com with ESMTPSA id w10sm15064901edj.11.2017.11.24.06.39.48
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 24 Nov 2017 06:39:48 -0800 (PST)
+In-Reply-To: <20171123074925.hk3omwaqkg7swwmw@localhost.localdomain>
 Content-Language: en-US
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review,
+Thanks for the Review,
 
-On 23/11/17 10:17, Charles Keepax wrote:
-> On Wed, Nov 15, 2017 at 02:10:42PM +0000, srinivas.kandagatla@linaro.org wrote:
->> From: Sagar Dharia <sdharia@codeaurora.org>
+On 23/11/17 07:49, Charles Keepax wrote:
+> On Wed, Nov 15, 2017 at 02:10:38PM +0000, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >>
->> Slimbus HW mandates that clock-pause sequence has to be executed
->> before disabling relevant interface and core clocks.
->> Runtime-PM's autosuspend feature is used here to enter/exit low
->> power mode for Qualcomm's Slimbus controller. Autosuspend feature
->> enables driver to avoid changing power-modes too frequently since
->> entering clock-pause is an expensive sequence
+>> This patch adds support to read/write slimbus value elements.
+>> Currently it only supports byte read/write. Adding this support in
+>> regmap would give codec drivers more flexibility when there are more
+>> than 2 control interfaces like slimbus, i2c.
 >>
->> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+>> Without this patch each codec driver has to directly call slimbus value
+>> element apis, and this could would get messy once we want to add i2c
+>> interface to it.
+>>
 >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >> ---
 >> +
->> +#ifdef CONFIG_PM_SLEEP
->> +static int qcom_slim_suspend(struct device *dev)
+>> +static int regmap_slimbus_byte_reg_read(void *context, unsigned int reg,
+>> +					unsigned int *val)
 >> +{
->> +	int ret = 0;
+>> +	struct slim_device *sdev = context;
+>> +	int v;
 >> +
->> +	if (!pm_runtime_enabled(dev) ||
->> +		(!pm_runtime_suspended(dev))) {
->> +		dev_dbg(dev, "system suspend");
->> +		ret = qcom_slim_runtime_suspend(dev);
->> +	}
->> +
->> +	/*
->> +	 * If the clock pause failed due to active channels, there is
->> +	 * a possibility that some audio stream is active during suspend.
->> +	 * (e.g. modem usecase during suspend)
->> +	 * We dont want to return suspend failure in that case so that
->> +	 * display and relevant components can still go to suspend.
->> +	 * If there is some other error, then it should prevent
->> +	 * system level suspend
->> +	 */
->> +	if (ret == -EISCONN)
->> +		ret = 0;
+>> +	if (!sdev)
+>> +		return 0;
 > 
-> Who actually returns the EISCONN for this to catch? Or will that
-> be added to slim_ctrl_clk_pause once support for the audio
-> channels is added?
+> Is there a specific reason we are checking the context here? The
+> other regmap buses don't both and whilst I don't mind checking
+> shouldn't we return an error if we don't have a context rather
+> than pretending to succeed?
+looks like over done here, I will fix it in next version.
 
-This looks like a leftover code, I will remove it in next version and we 
-can add it once related code is added.
-
-
-
+> 
+>> +
+>> +	v = slim_readb(sdev, reg);
+>> +
+>> +	if (v < 0)
+>> +		return v;
+>> +
+>> +	*val = v;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int regmap_slimbus_byte_reg_write(void *context, unsigned int reg,
+>> +					 unsigned int val)
+>> +{
+>> +	struct slim_device *sdev = context;
+>> +
+>> +	if (!sdev)
+>> +		return 0;
+> 
+> ditto.
 > 
 > Thanks,
 > Charles
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 > 
->> +
->> +	return ret;
->> +}
