@@ -1,19 +1,19 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 1/3] ASoC: da7218: Delete two error
- messages for a failed memory allocation in da7218_of_to_pdata()
-Date: Fri, 24 Nov 2017 11:44:52 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1B11AC@SW-EX-MBX01.diasemi.com>
-References: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
- <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
+Subject: Re: [PATCH 2/2] ASoC: da7213: Improve a size
+ determination in da7213_i2c_probe()
+Date: Fri, 24 Nov 2017 11:49:08 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1B11B9@SW-EX-MBX01.diasemi.com>
+References: <babe2503-46f1-2e1e-b482-62cd3e89f246@users.sourceforge.net>
+ <0ec34e2a-8e18-bc1d-b07f-a606499b3682@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.143])
- by alsa0.perex.cz (Postfix) with ESMTP id C275C266E3A
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 12:44:54 +0100 (CET)
-In-Reply-To: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
+Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
+ [195.245.230.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id 384AD266E3A
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 12:49:10 +0100 (CET)
+In-Reply-To: <0ec34e2a-8e18-bc1d-b07f-a606499b3682@users.sourceforge.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,16 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: SF Markus Elfring <elfring@users.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support
- Opensource <Support.Opensource@diasemi.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+ Opensource <Support.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 23 November 2017 20:05, SF Markus Elfring wrote:
+On 23 November 2017 17:34, SF Markus Elfring wrote:
 
 > From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 23 Nov 2017 20:42:20 +0100
+> Date: Thu, 23 Nov 2017 18:15:30 +0100
 > 
-> Omit extra messages for a memory allocation failure in this function.
+> Replace the specification of a data structure by a pointer dereference
+> as the parameter for the operator "sizeof" to make the corresponding size
+> determination a bit safer according to the Linux coding style convention.
 > 
 > This issue was detected by using the Coccinelle software.
 > 
@@ -43,35 +45,22 @@ On 23 November 2017 20:05, SF Markus Elfring wrote:
 Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 
 > ---
->  sound/soc/codecs/da7218.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+>  sound/soc/codecs/da7213.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-> index 56564ce90cb6..25ab7443d803 100644
-> --- a/sound/soc/codecs/da7218.c
-> +++ b/sound/soc/codecs/da7218.c
-> @@ -2455,10 +2455,8 @@ static struct da7218_pdata *da7218_of_to_pdata(struct
-> snd_soc_codec *codec)
->  	u32 of_val32;
+> diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+> index d1b77a0e3b74..b2b4e90fc02a 100644
+> --- a/sound/soc/codecs/da7213.c
+> +++ b/sound/soc/codecs/da7213.c
+> @@ -1853,8 +1853,7 @@ static int da7213_i2c_probe(struct i2c_client *i2c,
+>  	struct da7213_priv *da7213;
+>  	int ret;
 > 
->  	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
-> -	if (!pdata) {
-> -		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
-> +	if (!pdata)
->  		return NULL;
-> -	}
+> -	da7213 = devm_kzalloc(&i2c->dev, sizeof(struct da7213_priv),
+> -			      GFP_KERNEL);
+> +	da7213 = devm_kzalloc(&i2c->dev, sizeof(*da7213), GFP_KERNEL);
+>  	if (!da7213)
+>  		return -ENOMEM;
 > 
->  	if (of_property_read_u32(np, "dlg,micbias1-lvl-millivolt", &of_val32) >= 0)
->  		pdata->micbias1_lvl = da7218_of_micbias_lvl(codec, of_val32);
-> @@ -2527,8 +2525,6 @@ static struct da7218_pdata *da7218_of_to_pdata(struct
-> snd_soc_codec *codec)
->  		hpldet_pdata = devm_kzalloc(codec->dev, sizeof(*hpldet_pdata),
->  					    GFP_KERNEL);
->  		if (!hpldet_pdata) {
-> -			dev_warn(codec->dev,
-> -				 "Failed to allocate memory for hpldet pdata\n");
->  			of_node_put(hpldet_np);
->  			return pdata;
->  		}
 > --
 > 2.15.0
