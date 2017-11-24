@@ -1,21 +1,19 @@
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 1/2] ASoC: da7213: Delete an error message
- for a failed memory allocation in da7213_fw_to_pdata()
-Date: Fri, 24 Nov 2017 11:43:09 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1B11A1@SW-EX-MBX01.diasemi.com>
-References: <babe2503-46f1-2e1e-b482-62cd3e89f246@users.sourceforge.net>
- <6dc71b14-4c14-82f6-9dad-92bfa9854de2@users.sourceforge.net>
- <2E89032DDAA8B9408CB92943514A0337014C1B116F@SW-EX-MBX01.diasemi.com>
- <alpine.DEB.2.20.1711241231560.3316@hadrien>
+Subject: Re: [PATCH 1/3] ASoC: da7218: Delete two error
+ messages for a failed memory allocation in da7218_of_to_pdata()
+Date: Fri, 24 Nov 2017 11:44:52 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1B11AC@SW-EX-MBX01.diasemi.com>
+References: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
+ <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 01BC7266E3A
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 12:43:13 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.20.1711241231560.3316@hadrien>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id C275C266E3A
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 12:44:54 +0100 (CET)
+In-Reply-To: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,43 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia.lawall@lip6.fr>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>
+To: SF Markus Elfring <elfring@users.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support
+ Opensource <Support.Opensource@diasemi.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjQgTm92ZW1iZXIgMjAxNyAxMTozMywgSnVsaWEgTGF3YWxsIHdyb3RlOg0KDQo+IE9uIEZy
-aSwgMjQgTm92IDIwMTcsIEFkYW0gVGhvbXNvbiB3cm90ZToNCj4gDQo+ID4gT24gMjMgTm92ZW1i
-ZXIgMjAxNyAxNzozMywgU0YgTWFya3VzIEVsZnJpbmcgd3JvdGU6DQo+ID4NCj4gPiA+IEZyb206
-IE1hcmt1cyBFbGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdlLm5ldD4NCj4gPiA+IERh
-dGU6IFRodSwgMjMgTm92IDIwMTcgMTc6NTY6NTQgKzAxMDANCj4gPiA+DQo+ID4gPiBPbWl0IGFu
-IGV4dHJhIG1lc3NhZ2UgZm9yIGEgbWVtb3J5IGFsbG9jYXRpb24gZmFpbHVyZSBpbiB0aGlzIGZ1
-bmN0aW9uLg0KPiA+DQo+ID4gSSdtIG5vdCBzdXJlIHRoaXMgaXMgYW4gZXh0cmEgbWVzc2FnZS4g
-V2UgZG9uJ3QgcmV0dXJuIC1FTk9NRU0gYXMgYSByZXN1bHQgb2YNCj4gPiB0aGlzIG9wZXJhdGlv
-biBhbmQgcHJvYmUgd29uJ3QgZmFpbCBvbiB0aGlzLiBTbyBkb2VzIGRldm1fa3phbGxvYygpIHBy
-aW50IGVycm9yDQo+ID4gbWVzc2FnZXM/DQo+IA0KPiBVbmxlc3MgdGhlcmUgaXMgTk8gV0FSTiwg
-YSBiYWNrdHJhY2Ugd2lsbCBiZSBnZW5lcmF0ZWQgaW4gdGhlIG91dCBvZg0KPiBtZW1vcnkgY2Fz
-ZS4NCj4gDQo+IGp1bGlhDQoNCk9rLCBmYWlyIGVub3VnaC4gSW4gd2hpY2ggY2FzZToNCg0KQWNr
-ZWQtYnk6IEFkYW0gVGhvbXNvbiA8QWRhbS5UaG9tc29uLk9wZW5zb3VyY2VAZGlhc2VtaS5jb20+
-DQoNCj4gDQo+ID4NCj4gPiA+IFRoaXMgaXNzdWUgd2FzIGRldGVjdGVkIGJ5IHVzaW5nIHRoZSBD
-b2NjaW5lbGxlIHNvZnR3YXJlLg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IE1hcmt1cyBF
-bGZyaW5nIDxlbGZyaW5nQHVzZXJzLnNvdXJjZWZvcmdlLm5ldD4NCj4gPiA+IC0tLQ0KPiA+ID4g
-IHNvdW5kL3NvYy9jb2RlY3MvZGE3MjEzLmMgfCA0ICstLS0NCj4gPiA+ICAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdp
-dCBhL3NvdW5kL3NvYy9jb2RlY3MvZGE3MjEzLmMgYi9zb3VuZC9zb2MvY29kZWNzL2RhNzIxMy5j
-DQo+ID4gPiBpbmRleCA0MWQ5YjFkYTI3YzIuLmQxYjc3YTBlM2I3NCAxMDA2NDQNCj4gPiA+IC0t
-LSBhL3NvdW5kL3NvYy9jb2RlY3MvZGE3MjEzLmMNCj4gPiA+ICsrKyBiL3NvdW5kL3NvYy9jb2Rl
-Y3MvZGE3MjEzLmMNCj4gPiA+IEBAIC0xNjU0LDEwICsxNjU0LDggQEAgc3RhdGljIHN0cnVjdCBk
-YTcyMTNfcGxhdGZvcm1fZGF0YQ0KPiA+ID4gIAl1MzIgZndfdmFsMzI7DQo+ID4gPg0KPiA+ID4g
-IAlwZGF0YSA9IGRldm1fa3phbGxvYyhjb2RlYy0+ZGV2LCBzaXplb2YoKnBkYXRhKSwgR0ZQX0tF
-Uk5FTCk7DQo+ID4gPiAtCWlmICghcGRhdGEpIHsNCj4gPiA+IC0JCWRldl93YXJuKGNvZGVjLT5k
-ZXYsICJGYWlsZWQgdG8gYWxsb2NhdGUgbWVtb3J5IGZvciBwZGF0YVxuIik7DQo+ID4gPiArCWlm
-ICghcGRhdGEpDQo+ID4gPiAgCQlyZXR1cm4gTlVMTDsNCj4gPiA+IC0JfQ0KPiA+ID4NCj4gPiA+
-ICAJaWYgKGRldmljZV9wcm9wZXJ0eV9yZWFkX3UzMihkZXYsICJkbGcsbWljYmlhczEtbHZsIiwg
-JmZ3X3ZhbDMyKSA+PSAwKQ0KPiA+ID4gIAkJcGRhdGEtPm1pY2JpYXMxX2x2bCA9IGRhNzIxM19v
-Zl9taWNiaWFzX2x2bChjb2RlYywgZndfdmFsMzIpOw0KPiA+ID4gLS0NCj4gPiA+IDIuMTUuMA0K
-PiA+IE4/Pz8/P3I/P3k/Pz8/Pz9YPz/Hp3Y/Pz8p3rp7Lm4/Pz8/P3o/3pY2Pz8/Pz8pPz8/Pz8q
-wqwNCj4gamc/Pz8gPz8/Pz/domovPz8/ej/elj8/Pz/emT8/Pz8mPynfoT9hPz8/Pz8/P0c/Pz8/
-PyA/Pzordj8/P3c/Pz8/DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+On 23 November 2017 20:05, SF Markus Elfring wrote:
+
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Thu, 23 Nov 2017 20:42:20 +0100
+> 
+> Omit extra messages for a memory allocation failure in this function.
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+
+> ---
+>  sound/soc/codecs/da7218.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+> index 56564ce90cb6..25ab7443d803 100644
+> --- a/sound/soc/codecs/da7218.c
+> +++ b/sound/soc/codecs/da7218.c
+> @@ -2455,10 +2455,8 @@ static struct da7218_pdata *da7218_of_to_pdata(struct
+> snd_soc_codec *codec)
+>  	u32 of_val32;
+> 
+>  	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
+> -	if (!pdata) {
+> -		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
+> +	if (!pdata)
+>  		return NULL;
+> -	}
+> 
+>  	if (of_property_read_u32(np, "dlg,micbias1-lvl-millivolt", &of_val32) >= 0)
+>  		pdata->micbias1_lvl = da7218_of_micbias_lvl(codec, of_val32);
+> @@ -2527,8 +2525,6 @@ static struct da7218_pdata *da7218_of_to_pdata(struct
+> snd_soc_codec *codec)
+>  		hpldet_pdata = devm_kzalloc(codec->dev, sizeof(*hpldet_pdata),
+>  					    GFP_KERNEL);
+>  		if (!hpldet_pdata) {
+> -			dev_warn(codec->dev,
+> -				 "Failed to allocate memory for hpldet pdata\n");
+>  			of_node_put(hpldet_np);
+>  			return pdata;
+>  		}
+> --
+> 2.15.0
