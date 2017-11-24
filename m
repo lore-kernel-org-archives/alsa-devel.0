@@ -1,21 +1,17 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: ASoC: da7218: Use common error handling code in
- da7218_of_to_pdata()
-Date: Fri, 24 Nov 2017 14:50:59 +0100
-Message-ID: <2a38fc07-ebf1-3e61-d809-ba6ed6dbe45a@users.sourceforge.net>
-References: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
- <32a4c9e8-2030-c4e8-eb54-9ce6712ef0cd@users.sourceforge.net>
- <2E89032DDAA8B9408CB92943514A0337014C1B11E5@SW-EX-MBX01.diasemi.com>
- <20171124125558.uvfognezm75dtlbc@sirena.org.uk>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Multiple codecs on the same DAI
+Date: Fri, 24 Nov 2017 15:21:24 +0100
+Message-ID: <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
+ <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.4])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CAF6266E57
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 14:51:09 +0100 (CET)
-In-Reply-To: <20171124125558.uvfognezm75dtlbc@sirena.org.uk>
-Content-Language: en-GB
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FADA266AE1
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 15:21:32 +0100 (CET)
+In-Reply-To: <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +21,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, support.opensource@diasemi.com
-Cc: LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pj4+IEFkZCBhIGp1bXAgdGFyZ2V0IHNvIHRoYXQgYSBiaXQgb2YgZXhjZXB0aW9uIGhhbmRsaW5n
-IGNhbiBiZSBiZXR0ZXIgcmV1c2VkCj4+PiBpbiBhbiBpZiBicmFuY2ggb2YgdGhpcyBmdW5jdGlv
-bi4KPiAKPj4gSG1tLiBEb2Vzbid0IHJlYWxseSBnYWluIGFuIGF3ZnVsIGxvdCB0aGlzLiBXb3Vs
-ZCB1bmRlcnN0YW5kIGlmIHRoZXJlIHdlcmUKPj4gbXVsdGlwbGUgcmV0dXJuIHBhdGhzLCBidXQg
-aW4gdGhhdCBjYXNlIEknZCBoYXZlIGltcGxlbWVudGVkIHNvbWV0aGluZyBsaWtlCj4+IHRoaXMg
-YW55d2F5LiBBbHNvIHlvdXIgcGF0Y2ggZGVzY3JpcHRpb24gaXNuJ3QgcmVhbGx5IGNvcnJlY3Qu
-IFlvdSdyZSByZS11c2luZwo+PiBjb2RlIGZyb20gdGhlIHN1bm55IGRheSBzY2VuYXJpbyB0byBo
-YW5kbGUgYW4gZXhjZXB0aW9uLgo+IAo+IE90aGVyIHBlb3BsZSBoYXZlIGdpdmVuIGhpbSBzaW1p
-bGFyIGZlZWRiYWNrIG9uIGhpcyBvdGhlciBwYXRjaGVzIHdpdGgKPiB0aGlzIHBhdHRlcm4uICBJ
-J20gbm90IGludGVuZGluZyB0byBhcHBseSBhbnkgb2YgdGhlbS4KCkkgY2FuIG9mZmVyIGFub3Ro
-ZXIgYml0IG9mIGluZm9ybWF0aW9uIGZvciBhIHNvZnR3YXJlIGRldmVsb3BtZW50IGRpc2N1c3Np
-b24uIPCfkq0KClRoZSBhZmZlY3RlZCBzb3VyY2UgZmlsZSBjYW4gYmUgY29tcGlsZWQgZm9yIHRo
-ZSBwcm9jZXNzb3IgYXJjaGl0ZWN0dXJlIOKAnHg4Nl82NOKAnQpieSBhIHRvb2wgbGlrZSDigJxH
-Q0MgNi40LjErcjI1MTYzMS0xLjPigJ0gZnJvbSB0aGUgc29mdHdhcmUgZGlzdHJpYnV0aW9uCuKA
-nG9wZW5TVVNFIFR1bWJsZXdlZWTigJ0gd2l0aCB0aGUgZm9sbG93aW5nIGNvbW1hbmQgZXhhbXBs
-ZS4KCm15X2NjPS91c3IvYmluL2djYy02IFwKJiYgbXlfbW9kdWxlPXNvdW5kL3NvYy9jb2RlY3Mv
-ZGE3MjE4Lm8gXAomJiBmb3IgWFlaIGluIDAgcyAzOyBkbyBlY2hvICIgICBfX19fXyAkWFlaIF9f
-X19fIiBcCiYmIG15X2V4dHJhPSItTyRYWVoiIFwKJiYgZ2l0IGNoZWNrb3V0ICc6L15BU29DOiBk
-YTcyMTg6IERlbGV0ZSB0d28gZXJyb3IgbWVzc2FnZXMgZm9yIGEgZmFpbGVkIG1lbW9yeSBhbGxv
-Y2F0aW9uIGluIGRhNzIxOF9vZl90b19wZGF0YScgXAomJiBtYWtlIC1qNCBDQz0iJHtteV9jY30i
-IEhPU1RDQz0iJHtteV9jY30iIEVYVFJBX0NGTEFHUz0iJHtteV9leHRyYX0iIGFsbG1vZGNvbmZp
-ZyAiJHtteV9tb2R1bGV9IiBcCiYmIHNpemUgIiR7bXlfbW9kdWxlfSIgXAomJiBnaXQgY2hlY2tv
-dXQgJzovXkFTb0M6IGRhNzIxODogVXNlIGNvbW1vbiBlcnJvciBoYW5kbGluZyBjb2RlIGluIGRh
-NzIxOF9vZl90b19wZGF0YScgXAomJiBtYWtlIC1qNCBDQz0iJHtteV9jY30iIEhPU1RDQz0iJHtt
-eV9jY30iIEVYVFJBX0NGTEFHUz0iJHtteV9leHRyYX0iIGFsbG1vZGNvbmZpZyAiJHtteV9tb2R1
-bGV9IiBcCiYmIHNpemUgIiR7bXlfbW9kdWxlfSI7IGRvbmUKCgrwn5SuIERvIHlvdSBmaW5kIHRo
-ZSBmb2xsb3dpbmcgZGlmZmVyZW5jZXMgd29ydGggZm9yIGZ1cnRoZXIgY2xhcmlmaWNhdGlvbj8K
-CuKVlOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVkOKVpOKVkOKVkOKVkOKVkOKVkOKVkOKVlwri
-lZEgc2V0dGluZyDilIIgdGV4dCDilZEK4pWg4pWQ4pWQ4pWQ4pWQ4pWQ4pWQ4pWQ4pWQ4pWQ4pWq
-4pWQ4pWQ4pWQ4pWQ4pWQ4pWQ4pWjCuKVkSAgIE8wICAgIOKUgiAtMjUgIOKVkQrilZEgICBPcyAg
-ICDilIIgLTE0ICDilZEK4pWRICAgTzMgICAg4pSCICsxMSAg4pWRCuKVmuKVkOKVkOKVkOKVkOKV
-kOKVkOKVkOKVkOKVkOKVp+KVkOKVkOKVkOKVkOKVkOKVkOKVnQoKClJlZ2FyZHMsCk1hcmt1cwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+On Fri, 24 Nov 2017, Mark Brown wrote:
+
+> On Thu, Nov 23, 2017 at 03:51:19PM +0100, Ricard Wanderlof wrote:
+> =
+
+> > I'm studying a hardware implementation where an S/PDIF receiver is on t=
+he =
+
+> > same I2S connection as codec. Essentially, the S/PDIF receiver echos th=
+e =
+
+> > I2S capture data from the codec unless there is a digital input signal =
+
+> > which it can lock on to. For playback, the I2S output from the CPU DAI =
+
+> > goes directly to the codec.
+> =
+
+> I take it this is a TDM setup?
+
+No, it is not.
+
+The S/PDIF receiver chip contains a mux, that switches between the =
+
+capture data generated by the codec and the decoded S/PDIF data. By =
+
+default, the chip automatically switches over from echoing the codec data =
+
+to the decoded S/PDIF data when valid S/PDIF data is present, and back to =
+
+the codec data when S/PDIF lock is lost.
+
+So what comes out of the conglomeration is standard stereo I2S, which has =
+
+originated either from the codec or the S/PDIF receiver. Furthermore, the =
+
+S/PDIF receiver generates the clocking for the codec (using either the =
+
+clock derived from the incoming S/PDIF signal, or an internal crystal =
+
+oscillator), so it can (and does apparantly, looking at the signals on a =
+
+'scope) more or less seemlessly segue between the two sources.
+
+> The capture CODEC is the problem here.  If we had digital domain stuff
+> working well then we could model this easily enough by showing a
+> loopback within the S/PDIF chip but that's not there yet.  As it is it
+> sounds like the easiest thing is just going to be to ignore the S/PDIF
+> CODEC in software and fudge things by telling the SoC to read the TDM
+> slot that it is sending on.  That way the regular CODEC will get set up
+> normally and the S/PDIF device can transparently handle the switching.
+
+What I've done so far is to ignore the S/PDIF chip, and that approach =
+
+works well to start with, but I'd really like to link it into the machine =
+
+driver somehow, so that any ALSA controls for the S/PDIF receiver can be =
+
+exposed as being part of the same sound card as the codec. I haven't tried =
+
+adding the S/PDIF receiver into the dai_link in my snd_soc_card as I think =
+
+that would problematic for instance since the S/PDIF receiver only =
+
+supports capture, not playback.
+
+In a sense, what I'd want would be to bring in the S/PDIF receiver as a =
+
+codec driver, but separate from the ordinary chain of sound drivers =
+
+(codec, platform, etc). I suppose one way would be to somehow (via =
+
+platform data or DT) pass a reference to the S/PDIF receiver to the =
+
+machine driver, which would then somehow convert this to a snd_soc_codec =
+
+*, and then have it explicitly call the the snd_soc_codec_driver.probe =
+
+function set up by the S/PDIF receiver driver to initialize it much the =
+
+way ALSA would have done if it had been part of a dai_link for card. =
+
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
