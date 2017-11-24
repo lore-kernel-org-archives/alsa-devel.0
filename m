@@ -1,64 +1,143 @@
-From: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v7 07/13] slimbus: Add support for 'clock-pause' feature
-Date: Fri, 24 Nov 2017 14:39:41 +0000
-Message-ID: <4c0c8dae-fad2-8e95-c12f-cb5542fecb95@linaro.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v7 11/13] slimbus: qcom: Add Qualcomm Slimbus controller
+ driver
+Date: Fri, 24 Nov 2017 14:39:59 +0000
+Message-ID: <6e0b6516-c5dd-d76c-15e8-1cbe0550059f@linaro.org>
 References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-8-srinivas.kandagatla@linaro.org>
- <20171123072800.z2pkmelom374zr63@localhost.localdomain>
+ <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
+ <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171123072800.z2pkmelom374zr63-bi+AKbBUZKY6gyzm1THtWbp2dZbC/Bob@public.gmane.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
 Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AA4QjBA90+/kJqQE7yCjDx5@public.gmane.org>
-Cc: gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, bp-l3A5Bk7waGM@public.gmane.org, poeschel-Xtl8qvBWbHwb1SvskN2V4Q@public.gmane.org, treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, andreas.noever-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alan-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, daniel-/w4YWyX8dFk@public.gmane.org, jkosina-AlSwsSmVLrQ@public.gmane.org, sharon.dvir1-MQgwKvJRKlGYZoqfULhbRA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org, james.hogan-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, michael.opdenacker-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the Review,
+Thanks for your review,
 
-On 23/11/17 07:28, Charles Keepax wrote:
-> On Wed, Nov 15, 2017 at 02:10:37PM +0000, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org wrote:
->> From: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->>
->> Per slimbus specification, a reconfiguration sequence known as
->> 'clock pause' needs to be broadcast over the bus while entering low-
->> power mode. Clock-pause is initiated by the controller driver.
->> To exit clock-pause, controller typically wakes up the framer device.
->> Since wakeup precedure is controller-specific, framework calls it via
->> controller's function pointer to invoke it.
->>
->> Signed-off-by: Sagar Dharia <sdharia-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
->> ---
->> +/**
->> + * struct slim_sched: Framework uses this structure internally for scheduling.
+On 23/11/17 10:07, Charles Keepax wrote:
+>> +static irqreturn_t qcom_slim_handle_rx_irq(struct qcom_slim_ctrl *ctrl,
+>> +					   u32 stat)
+>> +{
+>> +	u32 *rx_buf, pkt[10];
+>> +	bool q_rx = false;
+>> +	u8 la, *buf, mc, mt, len, *b = (u8 *)&pkt[0];
+>> +	u16 ele;
+>> +
 > 
-> Missing kernel doc for clkgear here.
-Will add that in next version.
+> This function feels pretty funky, we basically have rx_buf, pkt,
+> b and buf all of which basically point to the same thing. Can we
+> simplify it a little?
+I will give that a try before I send next version.
+> 
+>> +	pkt[0] = readl_relaxed(ctrl->base + MGR_RX_MSG);
+>> +	mt = SLIM_HEADER_GET_MT(b[0]);
+>> +	len = SLIM_HEADER_GET_RL(b[0]);
+>> +	mc = SLIM_HEADER_GET_MC(b[1]);
+>> +
+>> +	/*
+...
+
+>> +
+>> +	puc = (u8 *)pbuf;
+>> +	head = (u32 *)pbuf;
+>> +
+>> +	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR)
+>> +		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt, txn->mc, 0,
+>> +						la);
+>> +	else
+>> +		*head = SLIM_MSG_ASM_FIRST_WORD(txn->rl, txn->mt, txn->mc, 1,
+>> +						la);
+>> +
+>> +	if (txn->dt == SLIM_MSG_DEST_LOGICALADDR)
+>> +		puc += 3;
+>> +	else
+>> +		puc += 2;
+> 
+> Combine these two if statements, makes it much clearer the actions
+> are related.
+I agree!!
 
 > 
->> + * @clk_state: Controller's clock state from enum slim_clk_state
->> + * @pause_comp: Signals completion of clock pause sequence. This is useful when
->> + *	client tries to call slimbus transaction when controller is entering
->> + *	clock pause.
->> + * @m_reconf: This mutex is held until current reconfiguration (data channel
->> + *	scheduling, message bandwidth reservation) is done. Message APIs can
->> + *	use the bus concurrently when this mutex is held since elemental access
->> + *	messages can be sent on the bus when reconfiguration is in progress.
->> + */
->> +struct slim_sched {
->> +	int			clkgear;
->> +	enum slim_clk_state	clk_state;
->> +	struct completion	pause_comp;
->> +	struct mutex		m_reconf;
->> +};
+>> +
+>> +	if (txn->mt == SLIM_MSG_MT_CORE && slim_tid_txn(txn->mt, txn->mc))
 > 
-> Thanks,
-> Charles
+> slim_tid_txn checks for SLIM_MSG_MT_CORE so the check here should
+> be redundant.
 > 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Yep, will remove this in next version.
+
+>> +		*(puc++) = txn->tid;
+>> +
+>> +	if ((txn->mt == SLIM_MSG_MT_CORE) &&
+>> +		((txn->mc >= SLIM_MSG_MC_REQUEST_INFORMATION &&
+>> +		txn->mc <= SLIM_MSG_MC_REPORT_INFORMATION) ||
+>> +		(txn->mc >= SLIM_MSG_MC_REQUEST_VALUE &&
+>> +		 txn->mc <= SLIM_MSG_MC_CHANGE_VALUE))) {
+>> +		*(puc++) = (txn->ec & 0xFF);
+>> +		*(puc++) = (txn->ec >> 8) & 0xFF;
+>> +	}
+> 
+> As you already have slim_tid_txn, would it be worth adding
+> something like slim_ec_txn? 
+I will give it a go and see how it looks like..
+
+To state if an element code is
+> required, feels like other controls will probably want to do a
+> similar thing and would make the code a little more readable
+> here.
+> 
+>> +
+>> +	if (txn->msg && txn->msg->wbuf)
+>> +		memcpy(puc, txn->msg->wbuf, txn->msg->num_bytes);
+>> +
+>> +	qcom_slim_queue_tx(ctrl, head, txn->rl, MGR_TX_MSG);
+>> +	timeout = wait_for_completion_timeout(&done, msecs_to_jiffies(ms));
+>> +
+>> +	if (!timeout) {
+>> +		dev_err(ctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
+>> +					txn->mt);
+>> +		ret = -ETIMEDOUT;
+>> +	}
+>> +
+>> +	return ret;
+>> +
+>> +}
+>> +
+>> +static void qcom_slim_rxwq(struct work_struct *work)
+>> +{
+>> +	u8 buf[SLIM_MSGQ_BUF_LEN];
+>> +	u8 mc, mt, len;
+>> +	int i, ret;
+>> +	struct qcom_slim_ctrl *ctrl = container_of(work, struct qcom_slim_ctrl,
+>> +						 wd);
+>> +
+>> +	while ((slim_get_current_rxbuf(ctrl, buf)) != -ENODATA) {
+>> +		len = SLIM_HEADER_GET_RL(buf[0]);
+>> +		mt = SLIM_HEADER_GET_MT(buf[0]);
+>> +		mc = SLIM_HEADER_GET_MC(buf[1]);
+>> +		if (mt == SLIM_MSG_MT_CORE &&
+>> +			mc == SLIM_MSG_MC_REPORT_PRESENT) {
+>> +			u8 laddr;
+>> +			struct slim_eaddr ea;
+>> +			u8 e_addr[6];
+>> +
+>> +			for (i = 0; i < 6; i++)
+>> +				e_addr[i] = buf[7-i];
+>> +
+>> +			ea.manf_id = (u16)(e_addr[5] << 8) | e_addr[4];
+>> +			ea.prod_code = (u16)(e_addr[3] << 8) | e_addr[2];
+>> +			ea.dev_index = e_addr[1];
+>> +			ea.instance = e_addr[0];
+> 
+> If we are just bitshifting this out of the bytes does it really
+> make it much more clear to reverse the byte order first? Feels
+> like you might as well shift it out of buf directly.
+> 
+> Also we didn't bother to reverse the bytes for the element code
+> above, so feels more consistent.
+I will try Jonathan Neuschäfer Suggestion to simplify this area of code.
