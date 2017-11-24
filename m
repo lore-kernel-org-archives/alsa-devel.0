@@ -1,19 +1,22 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 1/2] ASoC: da7213: Delete an error message
- for a failed memory allocation in da7213_fw_to_pdata()
-Date: Fri, 24 Nov 2017 12:33:04 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1711241231560.3316@hadrien>
-References: <babe2503-46f1-2e1e-b482-62cd3e89f246@users.sourceforge.net>
- <6dc71b14-4c14-82f6-9dad-92bfa9854de2@users.sourceforge.net>
- <2E89032DDAA8B9408CB92943514A0337014C1B116F@SW-EX-MBX01.diasemi.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Disable DAPM for click avoidance ?
+Date: Fri, 24 Nov 2017 11:41:07 +0000
+Message-ID: <20171124114107.bdadlf3qbekhfccp@sirena.org.uk>
+References: <alpine.DEB.2.11.1711221315370.27895@lnxricardw1.se.axis.com>
+ <20171122161315.vpahz77si5xgkmct@sirena.org.uk>
+ <alpine.DEB.2.11.1711231024510.27895@lnxricardw1.se.axis.com>
+ <20171123110403.cut6okmjxiithxsj@sirena.org.uk>
+ <alpine.DEB.2.11.1711231512490.27895@lnxricardw1.se.axis.com>
+ <20171123173427.p3vtifkpqjziifjr@sirena.org.uk>
+ <alpine.DEB.2.11.1711241028370.27895@lnxricardw1.se.axis.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-640844049-1511523185=:3316"
+Content-Type: multipart/mixed; boundary="===============4722242269539250482=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id F3433266E3A
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 12:33:06 +0100 (CET)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1B116F@SW-EX-MBX01.diasemi.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20C2E266E3A
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 12:41:09 +0100 (CET)
+In-Reply-To: <alpine.DEB.2.11.1711241028370.27895@lnxricardw1.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,67 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---8323329-640844049-1511523185=:3316
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+
+--===============4722242269539250482==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ivnmd53dshm55mzy"
+Content-Disposition: inline
 
 
+--ivnmd53dshm55mzy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 24 Nov 2017, Adam Thomson wrote:
+On Fri, Nov 24, 2017 at 10:43:48AM +0100, Ricard Wanderlof wrote:
 
-> On 23 November 2017 17:33, SF Markus Elfring wrote:
->
-> > From: Markus Elfring <elfring@users.sourceforge.net>
-> > Date: Thu, 23 Nov 2017 17:56:54 +0100
-> >
-> > Omit an extra message for a memory allocation failure in this function.
->
-> I'm not sure this is an extra message. We don't return -ENOMEM as a result of
-> this operation and probe won't fail on this. So does devm_kzalloc() print error
-> messages?
+> I know there are codecs that do not need their inputs/outputs (internally=
+)=20
+> biased to a VMID, but have a 0V bias level using an internal charge-pump=
+=20
+> design to generate the required internal negative voltages, if that is=20
+> what you're thinking of. One disadvantage from a cost perspective is the=
+=20
+> external capacitors needed for the charge pump to operate, and the design=
+=20
+> in which this one is used is extermely cost optimized.
 
-Unless there is NO WARN, a backtrace will be generated in the out of
-memory case.
+Right, but it's not like none of that wasn't already covered by the many
+existing CODECs in that space that already paid back their development
+costs years ago, it's surprising that anyone would try to make something
+new there.
 
-julia
+> > > During which time period is the digital mute enabled? From the first=
+=20
+> > > stream startup until everything is up and running?
 
->
-> > This issue was detected by using the Coccinelle software.
-> >
-> > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> > ---
-> >  sound/soc/codecs/da7213.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> >
-> > diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-> > index 41d9b1da27c2..d1b77a0e3b74 100644
-> > --- a/sound/soc/codecs/da7213.c
-> > +++ b/sound/soc/codecs/da7213.c
-> > @@ -1654,10 +1654,8 @@ static struct da7213_platform_data
-> >  	u32 fw_val32;
-> >
-> >  	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
-> > -	if (!pdata) {
-> > -		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
-> > +	if (!pdata)
-> >  		return NULL;
-> > -	}
-> >
-> >  	if (device_property_read_u32(dev, "dlg,micbias1-lvl", &fw_val32) >= 0)
-> >  		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, fw_val32);
-> > --
-> > 2.15.0
-> N?????r??y??????X??ǧv???)޺{.n?????z?ޖ6?????)?????*jg???
-?????ݢj/???z?ޖ????ޙ????&?)ߡ?a???????G???????:+v???w????
---8323329-640844049-1511523185=:3316
+> > It should be enabled at all times that we're not actively playing
+> > anything. =20
+
+> Ok. So it really would be the last callback made (with mute =3D off) to t=
+he=20
+> codec driver once everything else has been set up then?
+
+That's the idea.
+
+--ivnmd53dshm55mzy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloYBVMACgkQJNaLcl1U
+h9BMxgf8D3ihyiBl2XkBuusNlQFY0qvyc6X9Htwge8hYZEupZd8XPVgvYXCWLD3s
+RaaAq5XGyu7wfaFVJnPXDTKYpuDY7qq+BT2+B5dC17gerIhEB1ocD42FbpD2+CDX
+mQwyKz30Q23VgniiidrN/Ifawg/IPRekeDJGOC1pULYZThQU05DkUPgDgVd/C8TA
+sd+GZVg+w/SfvDdRC3LE1LjmqhvfnO38SOAsWsM1LT64zUxneWZz3GLf6cWm5CBx
+61L+E/GMuyGNMWTHEjHC4aM6HvuHYU30NtZFjee+2P63lTZ5vtTdFrlsCqbWJi10
+fUVkozkzFb+YnaZxjpe2HIC34WoT3Q==
+=/Z9e
+-----END PGP SIGNATURE-----
+
+--ivnmd53dshm55mzy--
+
+--===============4722242269539250482==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---8323329-640844049-1511523185=:3316--
+--===============4722242269539250482==--
