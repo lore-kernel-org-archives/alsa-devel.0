@@ -1,20 +1,14 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH 2/3] ASoC: da7218: Use common error
- handling code in da7218_of_to_pdata()
-Date: Fri, 24 Nov 2017 12:03:32 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1B11E5@SW-EX-MBX01.diasemi.com>
-References: <07c631e4-e2df-7ae2-ea31-9430c89dc8e3@users.sourceforge.net>
- <32a4c9e8-2030-c4e8-eb54-9ce6712ef0cd@users.sourceforge.net>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] test: correct emulation for channel-map TLV
+Date: Fri, 24 Nov 2017 21:10:51 +0900
+Message-ID: <20171124121051.9968-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EC17266E3A
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 13:03:34 +0100 (CET)
-In-Reply-To: <32a4c9e8-2030-c4e8-eb54-9ce6712ef0cd@users.sourceforge.net>
-Content-Language: en-US
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 45C88266E3A
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 13:11:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +18,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Support
- Opensource <Support.Opensource@diasemi.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23 November 2017 20:06, SF Markus Elfring wrote:
+Current implementation of channel-map TLV on test program is not valid.
+Furthermore, it brings buffer-over-run due to byte counting.
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Thu, 23 Nov 2017 20:48:05 +0100
-> 
-> Add a jump target so that a bit of exception handling can be better reused
-> in an if branch of this function.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+This commit fixes it.
 
-Hmm. Doesn't really gain an awful lot this. Would understand if there were
-multiple return paths, but in that case I'd have implemented something like
-this anyway. Also your patch description isn't really correct. You're re-using
-code from the sunny day scenario to handle an exception.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ test/user-ctl-element-set.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-> ---
->  sound/soc/codecs/da7218.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-> index 25ab7443d803..93a0cb741751 100644
-> --- a/sound/soc/codecs/da7218.c
-> +++ b/sound/soc/codecs/da7218.c
-> @@ -2524,10 +2524,9 @@ static struct da7218_pdata *da7218_of_to_pdata(struct
-> snd_soc_codec *codec)
-> 
->  		hpldet_pdata = devm_kzalloc(codec->dev, sizeof(*hpldet_pdata),
->  					    GFP_KERNEL);
-> -		if (!hpldet_pdata) {
-> -			of_node_put(hpldet_np);
-> -			return pdata;
-> -		}
-> +		if (!hpldet_pdata)
-> +			goto put_node;
-> +
->  		pdata->hpldet_pdata = hpldet_pdata;
-> 
->  		if (of_property_read_u32(hpldet_np, "dlg,jack-rate-us",
-> @@ -2561,6 +2560,7 @@ static struct da7218_pdata *da7218_of_to_pdata(struct
-> snd_soc_codec *codec)
->  		if (of_property_read_bool(hpldet_np, "dlg,discharge"))
->  			hpldet_pdata->discharge = true;
-> 
-> +put_node:
->  		of_node_put(hpldet_np);
->  	}
-> 
-> --
-> 2.15.0
+diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+index 668831a8..e94152b9 100644
+--- a/test/user-ctl-element-set.c
++++ b/test/user-ctl-element-set.c
+@@ -126,33 +126,39 @@ static void change_int_elem_members(struct elem_set_trial *trial,
+ static int allocate_int_elem_set_tlv(struct elem_set_trial *trial,
+ 				     unsigned int **tlv)
+ {
+-	unsigned int len, pos;
++	unsigned int count, pos;
+ 	unsigned int i, j;
+ 	struct chmap_entry *entry;
+ 
+ 	/* Calculate size of TLV packet for channel-mapping information. */
+-	len = 0;
++	count = 0;
+ 	for (i = 1; i <= 25; ++i) {
+-		len += sizeof(struct chmap_entry);
+-		len += i * sizeof(unsigned int);
++		count += 2; /* sizeof(struct chmap_entry). */
++		count += i; /* struct chmap_entry.maps. */
+ 	}
+ 
+-	*tlv = malloc(len);
+-	if (*tlv == NULL)
++	*tlv = malloc((2 + count) * sizeof(unsigned int));
++	if (!*tlv)
+ 		return -ENOMEM;
+ 
+ 	/*
+ 	 * Emulate channel-mapping information in in-kernel implementation.
+ 	 * Here, 25 entries are for each different channel.
+ 	 */
+-	pos = 0;
+-	for (i = 1; i <= 25 && pos < len; ++i) {
++	(*tlv)[0] = SNDRV_CTL_TLVT_CONTAINER;
++	(*tlv)[1] = count * sizeof(unsigned int);
++	pos = 2;
++
++	for (i = 1; i <= 25 && pos < count; ++i) {
+ 		entry = (struct chmap_entry *)&(*tlv)[pos];
++
+ 		entry->type = SNDRV_CTL_TLVT_CHMAP_FIXED;
+ 		entry->length = i * sizeof(unsigned int);
++		pos += 2;
++
+ 		for (j = 0; j < i; ++j)
+ 			entry->maps[j] = SND_CHMAP_MONO + j;
+-		pos += sizeof(struct chmap_entry) + i * sizeof(unsigned int);
++		pos += i;
+ 	}
+ 
+ 	return 0;
+-- 
+2.14.1
