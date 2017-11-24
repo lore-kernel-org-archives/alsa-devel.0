@@ -1,41 +1,49 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: amd: added error checks in dma driver
-Date: Fri, 24 Nov 2017 16:37:47 +0530
-Message-ID: <5ec79579-c6c6-6a74-5eca-fecf87defb59@amd.com>
-References: <1511454602-7259-1-git-send-email-Vijendar.Mukunda@amd.com>
- <CABXOdTezJbmEU=Oa+G1NN+WHoZqJERH8DAapJqgbPXkLnyweLw@mail.gmail.com>
- <20171123172904.4akrfhlonlwkmgs6@sirena.org.uk>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] SoC: rt5514: Make sure the DMIC delay will be
+	happened after normal SUPPLY widgets power on
+Date: Fri, 24 Nov 2017 14:23:17 +0800
+Message-ID: <1511504597-2948-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171123172904.4akrfhlonlwkmgs6@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Guenter Roeck <groeck@google.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, Alex Deucher <Alexander.Deucher@amd.com>, Akshu.Agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>, linux-kernel <linux-kernel@vger.kernel.org>, Dominik Behr <dbehr@chromium.org>, Daniel Kurtz <djkurtz@chromium.org>, Guenter Roeck <groeck@chromium.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 913E7266A74
+ for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 07:23:28 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch makes sure the DMIC delay will be happened after normal SUPPLY
+widgets power on. If there are some platforms that provide the MCLK using
+the SUPPLY widget, it will make sure the delay time is helpful.
 
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-On Thursday 23 November 2017 10:59 PM, Mark Brown wrote:
-> On Thu, Nov 23, 2017 at 08:59:43AM -0800, Guenter Roeck wrote:
->> On Thu, Nov 23, 2017 at 8:30 AM, Vijendar Mukunda
->> <Vijendar.Mukunda@amd.com> wrote:
->>> added error checks in acp dma driver
->>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->>> Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
->>> Signed-off-by: Guenter Roeck <groeck@chromium.org>
->> This is inappropriate.
-> Specifically: if Guenter wasn't involved in writing or forwarding the
-> patch he shouldn't have a signoff in there, and if you're the one
-> sending the mail you should be the last person in the chain of signoffs.
-> Please see SubmittingPatches for details of what a signoff means and why
-> they're important.
-
-   This patch was implemented on top of changes implemented by Guenter.
-   There is a separate thread - RE: [PATCH] ASoC: amd: Add error checking
-   to probe function in which Guenter posted changes.
-     
-   Got it, apologies will post changes as v2 version.
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 61ccbc6..198df01 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -567,7 +567,7 @@ static const struct snd_soc_dapm_widget rt5514_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("DMIC1", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("DMIC2", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 
+-	SND_SOC_DAPM_SUPPLY("DMIC CLK", SND_SOC_NOPM, 0, 0,
++	SND_SOC_DAPM_SUPPLY_S("DMIC CLK", 1, SND_SOC_NOPM, 0, 0,
+ 		rt5514_set_dmic_clk, SND_SOC_DAPM_PRE_PMU),
+ 
+ 	SND_SOC_DAPM_SUPPLY("ADC CLK", RT5514_CLK_CTRL1,
+-- 
+2.7.4
