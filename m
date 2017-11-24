@@ -1,47 +1,53 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 4/4] ASoC: wm2000: Improve a size
- determination in wm2000_i2c_probe()
-Date: Fri, 24 Nov 2017 08:34:57 +0000
-Message-ID: <20171124083457.ezopgjiowejhklhi@localhost.localdomain>
-References: <cd76c876-81a5-3cf6-e7d9-52037729fb98@users.sourceforge.net>
- <a6e50094-3d1c-6ad4-67e4-377036f5ccd6@users.sourceforge.net>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Subject: Re: [PATCH] ASoC: amd: added error checks in dma driver
+Date: Fri, 24 Nov 2017 19:49:00 +0530
+Message-ID: <f9306aaa-616f-99cd-0c4e-00652b0d6a79@amd.com>
+References: <1511454602-7259-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <CABXOdTezJbmEU=Oa+G1NN+WHoZqJERH8DAapJqgbPXkLnyweLw@mail.gmail.com>
+ <20171123172904.4akrfhlonlwkmgs6@sirena.org.uk>
+ <5ec79579-c6c6-6a74-5eca-fecf87defb59@amd.com>
+ <CABXOdTeR9P3mAithS++cZaGkWRjgjPrPfT4dGDojyT5VSUsNRA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EFBA2673FD
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 09:35:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <a6e50094-3d1c-6ad4-67e4-377036f5ccd6@users.sourceforge.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: SF Markus Elfring <elfring@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CABXOdTeR9P3mAithS++cZaGkWRjgjPrPfT4dGDojyT5VSUsNRA@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <groeck@google.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, perex@perex.cz, Alex Deucher <Alexander.Deucher@amd.com>, Akshu.Agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>, linux-kernel <linux-kernel@vger.kernel.org>, Dominik Behr <dbehr@chromium.org>, Daniel Kurtz <djkurtz@chromium.org>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 24, 2017 at 08:40:22AM +0100, SF Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 24 Nov 2017 08:18:14 +0100
-> 
-> Replace the specification of a data structure by a pointer dereference
-> as the parameter for the operator "sizeof" to make the corresponding size
-> determination a bit safer according to the Linux coding style convention.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks,
-Charles
+On Friday 24 November 2017 01:41 PM, Guenter Roeck wrote:
+> On Fri, Nov 24, 2017 at 3:07 AM, Mukunda,Vijendar
+> <vijendar.mukunda@amd.com> wrote:
+>>
+>>
+>> On Thursday 23 November 2017 10:59 PM, Mark Brown wrote:
+>>> On Thu, Nov 23, 2017 at 08:59:43AM -0800, Guenter Roeck wrote:
+>>>> On Thu, Nov 23, 2017 at 8:30 AM, Vijendar Mukunda
+>>>> <Vijendar.Mukunda@amd.com> wrote:
+>>>>> added error checks in acp dma driver
+>>>>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+>>>>> Signed-off-by: Akshu Agrawal <Akshu.Agrawal@amd.com>
+>>>>> Signed-off-by: Guenter Roeck <groeck@chromium.org>
+>>>> This is inappropriate.
+>>> Specifically: if Guenter wasn't involved in writing or forwarding the
+>>> patch he shouldn't have a signoff in there, and if you're the one
+>>> sending the mail you should be the last person in the chain of signoffs.
+>>> Please see SubmittingPatches for details of what a signoff means and why
+>>> they're important.
+>>
+>>    This patch was implemented on top of changes implemented by Guenter.
+>>    There is a separate thread - RE: [PATCH] ASoC: amd: Add error checking
+>>    to probe function in which Guenter posted changes.
+> That was my patch. This is yours.
+>
+> Guenter
+     Got it , Let your patch go as it is. Will submit a fresh patch for additional
+     error checks in acp dma driver.
+>
+>>        Got it, apologies will post changes as v2 version.
+>>
