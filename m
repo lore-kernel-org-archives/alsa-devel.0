@@ -1,98 +1,88 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v7 08/13] regmap: add SLIMbus support
-Date: Fri, 24 Nov 2017 14:39:47 +0000
-Message-ID: <a1d79f5e-882f-b761-ebfd-d3354e1b8fe2@linaro.org>
+Subject: Re: [PATCH v7 11/13] slimbus: qcom: Add Qualcomm Slimbus controller
+ driver
+Date: Fri, 24 Nov 2017 14:40:10 +0000
+Message-ID: <7200d3c4-79c8-b461-9883-182a1c8b4476@linaro.org>
 References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-9-srinivas.kandagatla@linaro.org>
- <20171123074925.hk3omwaqkg7swwmw@localhost.localdomain>
+ <20171115141043.29202-12-srinivas.kandagatla@linaro.org>
+ <20171123100703.gqwcdm7qij63cuwz@localhost.localdomain>
+ <20171123164212.655yliz3tmlpsjje@latitude>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id DCFF426742C
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 15:39:49 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id r68so23184752wmr.1
- for <alsa-devel@alsa-project.org>; Fri, 24 Nov 2017 06:39:49 -0800 (PST)
-Received: from [192.168.0.18]
- (cpc90716-aztw32-2-0-cust92.18-1.cable.virginm.net. [86.26.100.93])
- by smtp.googlemail.com with ESMTPSA id w10sm15064901edj.11.2017.11.24.06.39.48
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 24 Nov 2017 06:39:48 -0800 (PST)
-In-Reply-To: <20171123074925.hk3omwaqkg7swwmw@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171123164212.655yliz3tmlpsjje@latitude>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>, Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the Review,
+Thanks for your review,
 
-On 23/11/17 07:49, Charles Keepax wrote:
-> On Wed, Nov 15, 2017 at 02:10:38PM +0000, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch adds support to read/write slimbus value elements.
->> Currently it only supports byte read/write. Adding this support in
->> regmap would give codec drivers more flexibility when there are more
->> than 2 control interfaces like slimbus, i2c.
->>
->> Without this patch each codec driver has to directly call slimbus value
->> element apis, and this could would get messy once we want to add i2c
->> interface to it.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->> +
->> +static int regmap_slimbus_byte_reg_read(void *context, unsigned int reg,
->> +					unsigned int *val)
->> +{
->> +	struct slim_device *sdev = context;
->> +	int v;
->> +
->> +	if (!sdev)
->> +		return 0;
+On 23/11/17 16:42, Jonathan Neuschäfer wrote:
+> Hello Srinivas and Charles,
 > 
-> Is there a specific reason we are checking the context here? The
-> other regmap buses don't both and whilst I don't mind checking
-> shouldn't we return an error if we don't have a context rather
-> than pretending to succeed?
-looks like over done here, I will fix it in next version.
+> On Thu, Nov 23, 2017 at 10:07:03AM +0000, Charles Keepax wrote:
+>> On Wed, Nov 15, 2017 at 02:10:41PM +0000, srinivas.kandagatla@linaro.org wrote:
+>>> From: Sagar Dharia <sdharia@codeaurora.org>
+>>>
+>>> This controller driver programs manager, interface, and framer
+>>> devices for Qualcomm's slimbus HW block.
+>>> Manager component currently implements logical address setting,
+>>> and messaging interface.
+>>> Interface device reports bus synchronization information, and framer
+>>> device clocks the bus from the time it's woken up, until clock-pause
+>>> is executed by the manager device.
+>>>
+>>> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> ---
+> [...]
+>>> +static void qcom_slim_rxwq(struct work_struct *work)
+>>> +{
+>>> +	u8 buf[SLIM_MSGQ_BUF_LEN];
+>>> +	u8 mc, mt, len;
+>>> +	int i, ret;
+>>> +	struct qcom_slim_ctrl *ctrl = container_of(work, struct qcom_slim_ctrl,
+>>> +						 wd);
+>>> +
+>>> +	while ((slim_get_current_rxbuf(ctrl, buf)) != -ENODATA) {
+>>> +		len = SLIM_HEADER_GET_RL(buf[0]);
+>>> +		mt = SLIM_HEADER_GET_MT(buf[0]);
+>>> +		mc = SLIM_HEADER_GET_MC(buf[1]);
+>>> +		if (mt == SLIM_MSG_MT_CORE &&
+>>> +			mc == SLIM_MSG_MC_REPORT_PRESENT) {
+>>> +			u8 laddr;
+>>> +			struct slim_eaddr ea;
+>>> +			u8 e_addr[6];
+>>> +
+>>> +			for (i = 0; i < 6; i++)
+>>> +				e_addr[i] = buf[7-i];
+>>> +
+>>> +			ea.manf_id = (u16)(e_addr[5] << 8) | e_addr[4];
+>>> +			ea.prod_code = (u16)(e_addr[3] << 8) | e_addr[2];
+>>> +			ea.dev_index = e_addr[1];
+>>> +			ea.instance = e_addr[0];
+>>
+>> If we are just bitshifting this out of the bytes does it really
+>> make it much more clear to reverse the byte order first? Feels
+>> like you might as well shift it out of buf directly.
+> 
+> In any case, there is a predefined function to make this code a little
+> nicer in <asm/byteorder.h>:
+> 
+> 	le16_to_cpu(x):  Converts the 16-bit little endian value x to
+> 	                 CPU-endian
+> 	le16_to_cpup(p): Converts the 16-bit little endian value pointed
+> 	                 to by p to CPU-endian
+> 
+> If you use le16_to_cpup, you need to cast your pointer to __le16 *:
+> 
+> 	ea.manf_id = le16_to_cpup((__le16 *)&e_addr[4]);
+> 
+It Looks like I can make use of these apis here, I will give this a go 
+to cleanup this part of the code.
 
-> 
->> +
->> +	v = slim_readb(sdev, reg);
->> +
->> +	if (v < 0)
->> +		return v;
->> +
->> +	*val = v;
->> +
->> +	return 0;
->> +}
->> +
->> +static int regmap_slimbus_byte_reg_write(void *context, unsigned int reg,
->> +					 unsigned int val)
->> +{
->> +	struct slim_device *sdev = context;
->> +
->> +	if (!sdev)
->> +		return 0;
-> 
-> ditto.
-> 
-> Thanks,
-> Charles
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+thanks,
+srini
