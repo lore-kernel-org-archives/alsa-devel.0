@@ -1,105 +1,133 @@
-From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 09/12] IIO: ADC: add stm32 DFSDM support for PDM
- microphone
-Date: Sat, 25 Nov 2017 14:36:10 +0000
-Message-ID: <20171125143610.3dba71da@archlinux>
-References: <1510222354-15290-1-git-send-email-arnaud.pouliquen@st.com>
-        <1510222354-15290-10-git-send-email-arnaud.pouliquen@st.com>
-        <20171119141830.29f1cfc9@archlinux>
-        <4362763f-2182-a3cf-cbd6-6c71df59af52@st.com>
+From: Lukasz Majewski <lukma@denx.de>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate
+ based on slot number
+Date: Sat, 25 Nov 2017 23:29:48 +0100
+Message-ID: <20171125232921.01994d72@jawa>
+References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
+ <2020d72a-4517-55d0-59a1-171c71f91c7b@invoxia.com>
+ <20170912213233.GA11419@Asurada-Nvidia>
+ <fdb71350-0b89-8c5a-9ed0-c744bb6f2118@invoxia.com>
+ <20170913230147.GA21287@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <4362763f-2182-a3cf-cbd6-6c71df59af52-qxv4g6HH51o@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============2201350990141337788=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67D47266B0F
+ for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2017 23:30:04 +0100 (CET)
+In-Reply-To: <20170913230147.GA21287@Asurada-Nvidia>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, max.krummenacher@toradex.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, caleb@crome.org, tiwai@suse.com, mpa@pengutronix.de, broonie@kernel.org, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 24 Nov 2017 15:52:26 +0100
-Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
+--===============2201350990141337788==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/P9/mtF/.pSIy2CD/LP33DJF"; protocol="application/pgp-signature"
 
-> On 11/19/2017 03:18 PM, Jonathan Cameron wrote:
-> > On Thu, 9 Nov 2017 11:12:31 +0100
-> > Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
-> >   
-> >> This code offers a way to handle PDM audio microphones in
-> >> ASOC framework. Audio driver should use consumer API.
-> >> A specific management is implemented for DMA, with a
-> >> callback, to allows to handle audio buffers efficiently.
-> >> 
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>  
-> > 
-> > A few minor points inline.  I'm not sure I really 'like' the
-> > solution we've ended up with currently but if it works it will
-> > do just fine for now :)
-> > 
-> > Jonathan
-> > 
-> >   
-> >> ---
-> >> V3 -> V4 changes:
-> >>  - Merge audio implementation in stm32-dfsdm-adc.c instead of creating separate file
-> >>  - Add sysfs document for exported attributes
-> >> 
-> >>  .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |  22 +
-> >>  drivers/iio/adc/stm32-dfsdm-adc.c                  | 517 ++++++++++++++++++++-
-> >>  include/linux/iio/adc/stm32-dfsdm-adc.h            |  27 ++
-> >>  3 files changed, 562 insertions(+), 4 deletions(-)
-> >>  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
-> >>  create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
-> >> 
-> >> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32 b/Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
-> >> new file mode 100644
-> >> index 0000000..0ce5508
-> >> --- /dev/null
-> >> +++ b/Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
-> >> @@ -0,0 +1,22 @@
-> >> +What:                /sys/bus/iio/devices/iio:deviceX/in_voltage_audio_sampling_rate
-> >> +KernelVersion:       4.14
-> >> +Contact:     arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
-> >> +Description:
-> >> +             For audio purpose only.
-> >> +             Used by audio driver to set/get the audio sampling rate.
-> >> +             Reading returns current audio sample frequency.
-> >> +             Writing value before starting conversions.  
-> > 
-> > I would like to see a note here on why sampling_frequency can't be used for
-> > this purpose.  
-> The IIO_CHAN_INFO_SAMP_FREQ can not be used because consumer API allows
-> only to access to ext_info attributes.
-> An alternate is to export channel attribute functions the consumer API.
-> - iio_read_channel_attribute (already exist)
-> - iio_write_channel_attribute
+--Sig_/P9/mtF/.pSIy2CD/LP33DJF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes - add these please.  Just not been a usecase before for the general write.
+Hi Nicolin,
 
-> 
-> Please, tell me your preference.
+> On Wed, Sep 13, 2017 at 10:02:20AM +0200, Arnaud Mouiche wrote:
+>=20
+> > >Could you please give me a few set of examples of how you set
+> > >set_sysclk(), set_tdm_slot() with the current driver? The idea
+> > >here is to figure out a way to calculate the bclk in hw_params
+> > >without getting set_sysclk() involved any more. =20
+>=20
+> > Here is one, where a bclk =3D 4*16*fs is expected =20
+>=20
+> > In another setup, there are 8 x 16 bits slots, whatever the number
+> > of active channels is.
+> > In this case bclk =3D 128 * fs
+> > The number of slots is completely arbitrary. Some slots can even be
+> > reserved for communication between codecs that don't communicate
+> > with linux. =20
+>=20
+> In summary, bclk =3D sample rate * slots * slot_width;
+>=20
+> I will update my patch soon.
+>=20
+> > >Unfortunately, it looks like a work around to me. I understand
+> > >the idea of leaving set_sysclk() out there to override the bit
+> > >clock is convenient, but it is not a standard ALSA design and
+> > >may eventually introduce new problems like today. =20
+> >=20
+> > I agree. I'm not conservative at all concerning this question.
+> > I don't see a way to remove set_sysclk without breaking current TDM
+> > users anyway, at least for those who don't have their code
+> > upstreamed. =20
+>=20
+> Which TDM case would be broken by this removal? The only impact
+> that I can see is that the ASoC core returns an ENOTSUPP for a
+> set_sysclk() call now, which is something that a dai-link driver
+> should have taken care of anyway.
+>=20
+> > All information provided through snd_soc_dai_set_tdm_slot( cpu_dai,
+> > mask, mask, slots, width ) should be enough
+> > In this case, for TDM users
+> >=20
+> >    bclk =3D slots * width * fs   (where slots is !=3D channels) =20
+>=20
+> > will manage 99 % of the cases.
+> > And the remaining 1% will concern people who need to hack the kernel
+> > so widely they don't care about the set_sysclk removal. =20
+>=20
+> A patch from those people will be always welcome.
+>=20
+> > - fsl-asoc-card.c : *something will break since
+> > snd_soc_dai_set_sysclk returned code is checked* =20
+>=20
+> I've already submitted a patch to ignore all ENOTSUPP.
 
-<snip>
+Nicolin, do you know what happened with this patch? I couldn't find it
+in current linux/master.
 
-> >> +/**
-> >> + * stm32_dfsdm_get_buff_cb - register a callback
-> >> + *   that will be called when DMA transfer period is achieved.  
-> > Please run kernel-doc over this file. I'm fairly sure this isn't
-> > quite meeting the spec...  
-> Sorry it is not crystal clear for me, could you detail what you would
-> mean by
-> "I'm fairly sure this isn't quite meeting the spec.."?
+Has it been applied to any asoc tree for being upstreamed?
 
-I don't think it lets you have multiple lines for the short description
-IIRC.  Not sure about the indented function parameters.. Might be
-new since I last looked!
+Best regards,
 
-> 
-> >   
-> >> + *
-> >> + * @iio_dev: Handle to IIO device.
-> >> + * @cb: pointer to callback function.
-> >> + *   @data: pointer to data buffer
-> >> + *   @size: size in byte of the data buffer
-> >> + *   @private: pointer to consumer private structure
-> >> + * @private: pointer to consumer private structure
-> >> + */
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+
+--Sig_/P9/mtF/.pSIy2CD/LP33DJF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAloZ7twACgkQAR8vZIA0
+zr3UNwgAxc7jIVuPCbUqlreObR7s2qxgN7/9bH9gZb06a6jYk1mItbMYU6wPqB62
+2FxeHSqxWxRUrAFARxpLxDOD8Wr5C86OrWs2qFL9a1ljKN2wyUCcCtWceiVNfkfP
+Lhq9R93SBBcYv2djUYezv5W5aOGF2kSlr7blAanf01oC48WDkBdMnTaMK9UCbxB0
+u8s5gkfXAyODs68JqxvI+v4LJH9yj05hjv/ZN+cntyhJKsydZJNNiAIH37z2JmwY
+iql07mOzalBdsgjfMiikArgyFJQq7g+WoiVzMYUU0ldfcytZFDl6lHHtF/bUqicd
+Ywk9UFGdwZUUC14uZDB2iJYWGirVgg==
+=8trV
+-----END PGP SIGNATURE-----
+
+--Sig_/P9/mtF/.pSIy2CD/LP33DJF--
+
+--===============2201350990141337788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2201350990141337788==--
