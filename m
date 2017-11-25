@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/24] ALSA: ctl: add replace helper function
-	to allocate own buffer
-Date: Sat, 25 Nov 2017 18:19:58 +0900
-Message-ID: <20171125092006.24408-17-o-takashi@sakamocchi.jp>
+Subject: [PATCH 14/24] ALSA: ctl: change prototype of local
+	function for ELEM_READ ioctl
+Date: Sat, 25 Nov 2017 18:19:56 +0900
+Message-ID: <20171125092006.24408-15-o-takashi@sakamocchi.jp>
 References: <20171125092006.24408-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id CAD2E26698E
- for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2017 10:20:17 +0100 (CET)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 1FF70267403
+ for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2017 10:20:16 +0100 (CET)
 In-Reply-To: <20171125092006.24408-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,75 +25,169 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation, an execution path of ELEM_REPLACE request
-joins in an execution path of ELEM_ADD in the last. An advance preparation
-of the replacement can be split from processing of the addition. This
-separation might be a good granularity of helper functions.
+When investigating compatibility layer, several functions for native ABI
+are called by the layer. A 'snd_ctl_elem_read()' is such a function,
+while it's prototype is not similar to the others. This will bring a
+future inconvenience in integration of the layer.
 
-For a preparation to it, this commit adds an unique helper function for
-the replacement. In this time, the execution path still joins in the one
-of the addition.
+This commit changes its prototype to get a first argument for data of
+'struct snd_ctl_file' type.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+ sound/core/control.c        | 16 ++++++++--------
+ sound/core/control_compat.c | 21 ++++++++++-----------
+ 2 files changed, 18 insertions(+), 19 deletions(-)
 
 diff --git a/sound/core/control.c b/sound/core/control.c
-index a321576a6308..9e23f84d284d 100644
+index c7b43f3f069b..268771ed2939 100644
 --- a/sound/core/control.c
 +++ b/sound/core/control.c
-@@ -1406,7 +1406,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
+@@ -894,7 +894,7 @@ static int snd_ctl_elem_info_user(struct snd_ctl_file *ctl, void __user *arg)
+ 	return err;
  }
  
- static int snd_ctl_elem_add_user(struct snd_ctl_file *ctl_file,
--				 void __user *arg, int replace)
-+				 void __user *arg)
+-static int snd_ctl_elem_read(struct snd_card *card,
++static int snd_ctl_elem_read(struct snd_ctl_file *ctl_file,
+ 			     struct snd_ctl_elem_value *control)
  {
- 	struct snd_ctl_elem_info *info;
+ 	struct snd_kcontrol *kctl;
+@@ -902,13 +902,13 @@ static int snd_ctl_elem_read(struct snd_card *card,
+ 	unsigned int index_offset;
  	int err;
-@@ -1415,7 +1415,29 @@ static int snd_ctl_elem_add_user(struct snd_ctl_file *ctl_file,
- 	if (IS_ERR(info))
- 		return PTR_ERR(info);
  
--	err = snd_ctl_elem_add(ctl_file, info, replace);
-+	err = snd_ctl_elem_add(ctl_file, info, 0);
-+	if (err >= 0) {
-+		if (copy_to_user(arg, info, sizeof(*info))) {
-+			snd_ctl_remove_user_ctl(ctl_file, &info->id);
-+			err = -EFAULT;
-+		}
-+	}
-+
-+	kfree(info);
-+	return err;
-+}
-+
-+static int snd_ctl_elem_replace_user(struct snd_ctl_file *ctl_file,
-+				     void __user *arg)
-+{
-+	struct snd_ctl_elem_info *info;
-+	int err;
-+
-+	info = memdup_user(arg, sizeof(*info));
-+	if (IS_ERR(info))
-+		return PTR_ERR(info);
-+
-+	err = snd_ctl_elem_add(ctl_file, info, 1);
- 	if (err >= 0) {
- 		if (copy_to_user(arg, info, sizeof(*info))) {
- 			snd_ctl_remove_user_ctl(ctl_file, &info->id);
-@@ -1592,9 +1614,9 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
- 	case SNDRV_CTL_IOCTL_ELEM_UNLOCK:
- 		return snd_ctl_elem_unlock(ctl, argp);
- 	case SNDRV_CTL_IOCTL_ELEM_ADD:
--		return snd_ctl_elem_add_user(ctl, argp, 0);
-+		return snd_ctl_elem_add_user(ctl, argp);
- 	case SNDRV_CTL_IOCTL_ELEM_REPLACE:
--		return snd_ctl_elem_add_user(ctl, argp, 1);
-+		return snd_ctl_elem_replace_user(ctl, argp);
- 	case SNDRV_CTL_IOCTL_ELEM_REMOVE:
- 		return snd_ctl_elem_remove(ctl, argp);
- 	case SNDRV_CTL_IOCTL_SUBSCRIBE_EVENTS:
+-	err = snd_power_wait(card, SNDRV_CTL_POWER_D0);
++	err = snd_power_wait(ctl_file->card, SNDRV_CTL_POWER_D0);
+ 	if (err < 0)
+ 		return err;
+ 
+-	down_read(&card->controls_rwsem);
++	down_read(&ctl_file->card->controls_rwsem);
+ 
+-	kctl = snd_ctl_find_id(card, &control->id);
++	kctl = snd_ctl_find_id(ctl_file->card, &control->id);
+ 	if (kctl == NULL) {
+ 		err = -ENOENT;
+ 		goto end;
+@@ -924,11 +924,11 @@ static int snd_ctl_elem_read(struct snd_card *card,
+ 	snd_ctl_build_ioff(&control->id, kctl, index_offset);
+ 	err = kctl->get(kctl, control);
+ end:
+-	up_read(&card->controls_rwsem);
++	up_read(&ctl_file->card->controls_rwsem);
+ 	return err;
+ }
+ 
+-static int snd_ctl_elem_read_user(struct snd_card *card,
++static int snd_ctl_elem_read_user(struct snd_ctl_file *ctl_file,
+ 				  struct snd_ctl_elem_value __user *_control)
+ {
+ 	struct snd_ctl_elem_value *control;
+@@ -938,7 +938,7 @@ static int snd_ctl_elem_read_user(struct snd_card *card,
+ 	if (IS_ERR(control))
+ 		return PTR_ERR(control);
+ 
+-	result = snd_ctl_elem_read(card, control);
++	result = snd_ctl_elem_read(ctl_file, control);
+ 	if (result < 0)
+ 		goto error;
+ 
+@@ -1581,7 +1581,7 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ 	case SNDRV_CTL_IOCTL_ELEM_INFO:
+ 		return snd_ctl_elem_info_user(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_READ:
+-		return snd_ctl_elem_read_user(card, argp);
++		return snd_ctl_elem_read_user(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_WRITE:
+ 		return snd_ctl_elem_write_user(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_LOCK:
+diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+index 11e0966f86bb..d6d1a2bf9542 100644
+--- a/sound/core/control_compat.c
++++ b/sound/core/control_compat.c
+@@ -673,7 +673,7 @@ static int copy_ctl_value_to_user(void __user *userdata,
+ 	return 0;
+ }
+ 
+-static int ctl_elem_read_user(struct snd_card *card,
++static int ctl_elem_read_user(struct snd_ctl_file *ctl_file,
+ 			      void __user *userdata, void __user *valuep)
+ {
+ 	struct snd_ctl_elem_value *data;
+@@ -683,12 +683,12 @@ static int ctl_elem_read_user(struct snd_card *card,
+ 	if (data == NULL)
+ 		return -ENOMEM;
+ 
+-	err = copy_ctl_value_from_user(card, data, userdata, valuep,
++	err = copy_ctl_value_from_user(ctl_file->card, data, userdata, valuep,
+ 				       &type, &count);
+ 	if (err < 0)
+ 		goto error;
+ 
+-	err = snd_ctl_elem_read(card, data);
++	err = snd_ctl_elem_read(ctl_file, data);
+ 	if (err < 0)
+ 		goto error;
+ 	err = copy_ctl_value_to_user(userdata, valuep, data, type, count);
+@@ -701,14 +701,13 @@ static int ctl_elem_write_user(struct snd_ctl_file *ctl_file,
+ 			       void __user *userdata, void __user *valuep)
+ {
+ 	struct snd_ctl_elem_value *data;
+-	struct snd_card *card = ctl_file->card;
+ 	int err, type, count;
+ 
+ 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 	if (data == NULL)
+ 		return -ENOMEM;
+ 
+-	err = copy_ctl_value_from_user(card, data, userdata, valuep,
++	err = copy_ctl_value_from_user(ctl_file->card, data, userdata, valuep,
+ 				       &type, &count);
+ 	if (err < 0)
+ 		goto error;
+@@ -722,10 +721,10 @@ static int ctl_elem_write_user(struct snd_ctl_file *ctl_file,
+ 	return err;
+ }
+ 
+-static int snd_ctl_elem_read_user_compat(struct snd_card *card,
++static int snd_ctl_elem_read_user_compat(struct snd_ctl_file *ctl_file,
+ 					 struct snd_ctl_elem_value32 __user *data32)
+ {
+-	return ctl_elem_read_user(card, data32, &data32->value);
++	return ctl_elem_read_user(ctl_file, data32, &data32->value);
+ }
+ 
+ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+@@ -735,10 +734,10 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+ }
+ 
+ #ifdef CONFIG_X86_X32
+-static int snd_ctl_elem_read_user_x32(struct snd_card *card,
++static int snd_ctl_elem_read_user_x32(struct snd_ctl_file *ctl_file,
+ 				      struct snd_ctl_elem_value_x32 __user *data32)
+ {
+-	return ctl_elem_read_user(card, data32, &data32->value);
++	return ctl_elem_read_user(ctl_file, data32, &data32->value);
+ }
+ 
+ static int snd_ctl_elem_write_user_x32(struct snd_ctl_file *file,
+@@ -843,7 +842,7 @@ static long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd,
+ 	case SNDRV_CTL_IOCTL_ELEM_INFO32:
+ 		return snd_ctl_elem_info_compat(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_READ32:
+-		return snd_ctl_elem_read_user_compat(ctl->card, argp);
++		return snd_ctl_elem_read_user_compat(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_WRITE32:
+ 		return snd_ctl_elem_write_user_compat(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_ADD32:
+@@ -852,7 +851,7 @@ static long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd,
+ 		return snd_ctl_elem_add_compat(ctl, argp, 1);
+ #ifdef CONFIG_X86_X32
+ 	case SNDRV_CTL_IOCTL_ELEM_READ_X32:
+-		return snd_ctl_elem_read_user_x32(ctl->card, argp);
++		return snd_ctl_elem_read_user_x32(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_WRITE_X32:
+ 		return snd_ctl_elem_write_user_x32(ctl, argp);
+ #endif /* CONFIG_X86_X32 */
 -- 
 2.14.1
