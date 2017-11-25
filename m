@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/24] ALSA: ctl: add serializer/deserializer
-	of 'elem_value' structure for modern 32 bit ABIs compatibility
-Date: Sat, 25 Nov 2017 18:19:46 +0900
-Message-ID: <20171125092006.24408-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/24] ALSA: ctl: introduce local framework to
+	handle compat ioctl requests
+Date: Sat, 25 Nov 2017 18:19:43 +0900
+Message-ID: <20171125092006.24408-2-o-takashi@sakamocchi.jp>
 References: <20171125092006.24408-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 420FB266F6B
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 40F59266F66
  for <alsa-devel@alsa-project.org>; Sat, 25 Nov 2017 10:20:12 +0100 (CET)
 In-Reply-To: <20171125092006.24408-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,165 +25,169 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A structure of 'snd_ctl_elem_value' includes a member of 'long' type. A
-machine type for this type is known to have different size and alignment
-between System V ABIs for architectures which adopts 'ILP32' or 'LP64'
-data model.
+Some architectures have a execution mode to execute programs for derived
+architectures. Linux system supports the execution mode. For this purpose,
+system call compatibility layer is available to manage ABI differences of
+the architectures; e.g. adoption different data model (ILP32/LP64) and
+size/alignment of machine types.
 
-Furthermore, the structure has another issue about offset for union with
-a member of 'long long' type. Regardless of the ABIs, this type has 8 bytes
-size and 8 bytes alignment. This causes the offset as multiples of 8 bytes.
-On the other hand, total in the structure, size of members forth of the
-union is not multiples of 8 bytes. This brings 'internal padding' to the
-structure.
+In ALSA control interface, there're some structures which have different
+layout depending on the ABIs. To absorb the difference, ALSA control core
+has an I/O compatibility layer. Tasks of this layer are summarized as:
+1. convert structure layout from program ABI to native ABI
+2. process I/O request with structure layout of native ABI
+3. convert structure layout from native ABI to program ABI
 
-This commit adds a pair of serializer and deserializer to convert data
-between different layout of the structure on the ABIs. To describe
-layout of the structure for ILP32 ABI, bitfield is used for the internal
-padding, and 'packed' attribute is used as a hint for compilers to
-native padding convention.
+Current implementation of this layer is not enough structured for the above
+processing. This commit adds a consistent way to handle the above tasks.
 
-On machines of Intel architecture, unless support for x32 ABI is enabled,
-the serializer/deserializer are useless. For this case, '__maybe_unused'
-is added as a hint to compilers for optimization.
+Actual implementation of the tasks differs depending on the structures.
+This commit adds a local framework for handlers tothe tasks. A handler
+includes below members:
+ - cmd: a command of ioctl(2) on program ABI. The 'size' field is used to
+        distinguish compat I/O requests from native I/O requests, and
+        allocate data buffer.
+ - deserialize: for task 1.
+ - func: for task 2.
+ - serialize: for task 3.
+ - orig_cmd: a command of ioctl(2) on native ABI. The 'size' field is used
+             to allocate an alternative buffer.
 
-Reference: System V application binary interface AMD64 architecture
-           processor supplement (with LP64 and ILP32 programming models)
-           draft version 0.99.8 (2017, H.J. Lu, Michael Matz, Milind
-           Girkar, Jan Hubicka, Andreas Jaeger and Mark Mitchell)
-Reference: Procedure call standard for the ARM architecture (2015, ARM
-           Ltd.) ARM IHI 0042F
-Reference: Procedure call standard for the ARM 64-bit architecture
-           (aarch64) (2013, ARM Limited) ARM IHI 0055C_beta
-Reference: System V application binary interface PowerPC processor
-           supplement, revision A (1995, Steve Zecker and Kari Karhi)
-           802-334-10
-Reference: 64-bit PowerPC ELF application binary interface supplement, 1.7
-           edition (2003, Ian Lance Taylor)
+The handlers are processed in a callback of
+'struct file_operations.compat_ioctl'. In this callback, two buffers are
+allocated/deallocated for safe conversion of layout between program/native
+ABI.
+
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/control_compat.c | 109 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 109 insertions(+)
+ sound/core/control_compat.c | 97 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 74 insertions(+), 23 deletions(-)
 
 diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-index 7ebae996804a..5c0e82afe400 100644
+index a848836a5de0..dec89717d8e3 100644
 --- a/sound/core/control_compat.c
 +++ b/sound/core/control_compat.c
-@@ -199,6 +199,115 @@ static int serialize_to_elem_info_32(struct snd_ctl_file *ctl_file, void *dst,
- 	return 0;
- }
+@@ -443,11 +443,25 @@ enum {
+ #endif /* CONFIG_X86_X32 */
+ };
  
-+/*
-+ * Unfortunately, unlike the above structure, total size of '.id' and
-+ * '.indirect' is not multiples of 8 bytes (it's 68 bytes). Except for System V
-+ * ABI for i386 architecture, 'double-word' type has 8 bytes alignment. For such
-+ * architectures, 32 bit padding is needed.
-+ */
-+struct snd_ctl_elem_value_32 {
-+	struct snd_ctl_elem_id id;
-+	u32 indirect:1;
-+	u64 padding1:63;		/* For 8 bytes alignment of '.value'. */
-+	union {
-+		s32 integer[128];	/* long on ILP32. */
-+		u8 data[512];
-+		s64 integer64[64];
-+	} value;
-+	struct {
-+		s32 tv_sec;		/* long on ILP32. */
-+		s32 tv_nsec;		/* long on ILP32. */
-+	} tstamp;
-+	u8 reserved[128 - sizeof(s32) - sizeof(s32)];
-+} __packed;
+-static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
++static long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd,
++				 unsigned long arg)
+ {
++	static const struct {
++		unsigned int cmd;
++		int (*deserialize)(struct snd_ctl_file *ctl_file, void *dst,
++				   void *src);
++		int (*func)(struct snd_ctl_file *ctl_file, void *buf);
++		int (*serialize)(struct snd_ctl_file *ctl_file, void *dst,
++				 void *src);
++		unsigned int orig_cmd;
++	} handlers[] = {
++		{ 0, NULL, NULL, NULL, 0, },
++	};
+ 	struct snd_ctl_file *ctl;
+-	struct snd_kctl_ioctl *p;
+ 	void __user *argp = compat_ptr(arg);
++	void *buf, *data;
++	unsigned int size;
++	int i;
+ 	int err;
+ 
+ 	ctl = file->private_data;
+@@ -455,18 +469,6 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
+ 		return -ENXIO;
+ 
+ 	switch (cmd) {
+-	case SNDRV_CTL_IOCTL_PVERSION:
+-	case SNDRV_CTL_IOCTL_CARD_INFO:
+-	case SNDRV_CTL_IOCTL_SUBSCRIBE_EVENTS:
+-	case SNDRV_CTL_IOCTL_POWER:
+-	case SNDRV_CTL_IOCTL_POWER_STATE:
+-	case SNDRV_CTL_IOCTL_ELEM_LOCK:
+-	case SNDRV_CTL_IOCTL_ELEM_UNLOCK:
+-	case SNDRV_CTL_IOCTL_ELEM_REMOVE:
+-	case SNDRV_CTL_IOCTL_TLV_READ:
+-	case SNDRV_CTL_IOCTL_TLV_WRITE:
+-	case SNDRV_CTL_IOCTL_TLV_COMMAND:
+-		return snd_ctl_ioctl(file, cmd, (unsigned long)argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_LIST32:
+ 		return snd_ctl_elem_list_compat(ctl->card, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_INFO32:
+@@ -487,16 +489,65 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
+ #endif /* CONFIG_X86_X32 */
+ 	}
+ 
+-	down_read(&snd_ioctl_rwsem);
+-	list_for_each_entry(p, &snd_control_compat_ioctls, list) {
+-		if (p->fioctl) {
+-			err = p->fioctl(ctl->card, ctl, cmd, arg);
+-			if (err != -ENOIOCTLCMD) {
+-				up_read(&snd_ioctl_rwsem);
+-				return err;
++	for (i = 0; i < ARRAY_SIZE(handlers); ++i) {
++		if (handlers[i].cmd == cmd)
++			break;
++	}
++	if (i == ARRAY_SIZE(handlers)) {
++		struct snd_kctl_ioctl *p;
 +
-+static int get_type(struct snd_ctl_file *ctl_file, struct snd_ctl_elem_id *id,
-+		    snd_ctl_elem_type_t *type)
-+{
-+	struct snd_ctl_elem_info *info;
-+	int err;
++		down_read(&snd_ioctl_rwsem);
++		list_for_each_entry(p, &snd_control_compat_ioctls, list) {
++			if (p->fioctl) {
++				err = p->fioctl(ctl->card, ctl, cmd, arg);
++				if (err != -ENOIOCTLCMD) {
++					up_read(&snd_ioctl_rwsem);
++					return err;
++				}
+ 			}
+ 		}
++		up_read(&snd_ioctl_rwsem);
 +
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info)
++		return snd_ctl_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
++	}
++
++	/* Allocate a buffer to convert layout of structure for native ABI. */
++	buf = kzalloc(_IOC_SIZE(handlers[i].orig_cmd), GFP_KERNEL);
++	if (!buf)
 +		return -ENOMEM;
-+	info->id = *id;
 +
-+	err = snd_ctl_elem_info(ctl_file, info);
-+	if (err >= 0)
-+		*type = info->type;
++	/* Allocate an alternative buffer to copy from/to user space. */
++	size = _IOC_SIZE(handlers[i].cmd);
++	data = kzalloc(size, GFP_KERNEL);
++	if (!data) {
++		kfree(buf);
++		return -ENOMEM;
++	}
 +
-+	kfree(info);
++	if (handlers[i].cmd & IOC_IN) {
++		if (copy_from_user(data, compat_ptr(arg), size)) {
++			err = -EFAULT;
++			goto end;
++		}
+ 	}
+-	up_read(&snd_ioctl_rwsem);
+-	return -ENOIOCTLCMD;
++
++	err = handlers[i].deserialize(ctl, buf, data);
++	if (err < 0)
++		goto end;
++
++	err = handlers[i].func(ctl, buf);
++	if (err < 0)
++		goto end;
++
++	err = handlers[i].serialize(ctl, data, buf);
++	if (err >= 0) {
++		if (handlers[i].cmd & IOC_OUT) {
++			if (copy_to_user(compat_ptr(arg), data, size))
++				err = -EFAULT;
++		}
++	}
++end:
++	kfree(data);
++	kfree(buf);
 +	return err;
-+}
-+
-+static int __maybe_unused deserialize_from_elem_value_32(
-+			struct snd_ctl_file *ctl_file, void *dst, void *src)
-+{
-+	struct snd_ctl_elem_value *data = dst;
-+	struct snd_ctl_elem_value_32 *data32 = src;
-+	snd_ctl_elem_type_t type;
-+	int err;
-+
-+	err = get_type(ctl_file, &data32->id, &type);
-+	if (err < 0)
-+		return err;
-+
-+	data->id = data32->id;
-+	data->indirect = data32->indirect;
-+
-+	if (type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-+	    type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
-+		int i;
-+		for (i = 0; i < 128; ++i) {
-+			data->value.integer.value[i] =
-+						(s64)data32->value.integer[i];
-+		}
-+		/* Drop rest of this field. */
-+	} else {
-+		/* Copy whole space of this field. */
-+		memcpy(&data->value, &data32->value, sizeof(data->value));
-+	}
-+
-+	data->tstamp.tv_sec = (s64)data32->tstamp.tv_sec;
-+	data->tstamp.tv_nsec = (s64)data32->tstamp.tv_nsec;
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused serialize_to_elem_value_32(
-+			struct snd_ctl_file *ctl_file, void *dst, void *src)
-+{
-+	struct snd_ctl_elem_value_32 *data32 = dst;
-+	struct snd_ctl_elem_value *data = src;
-+	snd_ctl_elem_type_t type;
-+	int err;
-+
-+	err = get_type(ctl_file, &data->id, &type);
-+	if (err < 0)
-+		return err;
-+
-+	data32->id = data->id;
-+	data32->indirect = data->indirect;
-+
-+	if (type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-+	    type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
-+		int i;
-+		for (i = 0; i < 128; ++i) {
-+			data32->value.integer[i] =
-+					(s32)data->value.integer.value[i];
-+		}
-+		/* Drop rest of this field. */
-+	} else {
-+		/* Copy whole space of this field. */
-+		memcpy(&data32->value, &data->value, sizeof(data32->value));
-+	}
-+
-+	data32->tstamp.tv_sec = (s32)data->tstamp.tv_sec;
-+	data32->tstamp.tv_nsec = (s32)data->tstamp.tv_nsec;
-+
-+	return 0;
-+}
-+
- struct snd_ctl_elem_list32 {
- 	u32 offset;
- 	u32 space;
+ }
 -- 
 2.14.1
