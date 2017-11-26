@@ -1,14 +1,15 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH v3 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S, U}20
-Date: Mon, 27 Nov 2017 00:09:47 +0100
-Message-ID: <c0667b29-661d-2b48-d5c2-75291f97d55a@maciej.szmigiero.name>
+Subject: [PATCH v3 2/2] ASoC: fsl_ssi: add 20-bit sample format
+ for AC'97 and use it for capture
+Date: Mon, 27 Nov 2017 00:10:53 +0100
+Message-ID: <4c45ccaf-004d-30ec-3306-7f9d4698188c@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id ECF142670C1
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 00:09:55 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C377E2670C1
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 00:10:58 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,146 +20,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
-20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
-allow 3-byte accesses (including DMA) so a 4-byte (more conventional)
-format is needed for it.
+When testing AC'97 capture on UDOO board (currently the only user of
+fsl_ssi driver in the AC'97 mode) it become obvious that there is a massive
+distortion above certain, small input signal.
+
+This problem has been traced to silicon errata ERR003778:
+"In AC97, 16-bit mode, received data is shifted by 4-bit locations" that
+has "No fix scheduled".
+This errata suggests a workaround of doing a 4-bit shift back in SDMA
+script for this specific operation mode, however our SDMA scripts are
+shared between various SoC peripherals so we can't really modify them.
+
+There is a simple way to avoid this problem, however, that is to disallow
+recording in 16-bit mode and only support it in AC'97-native 20-bit mode.
+We have to use a 4-byte format for this since SSI FIFOs do not allow 3-byte
+accesses (and these aren't supported by imx-sdma driver anyway).
+With this change the capture distortion is gone.
+
+We can also add this format as an additional one supported for playback,
+using this opportunity to make sure that we use CPU-endian-native formats
+in AC'97 mode as we already do in I2S mode.
+
+There is no problem in using different bit widths in playback and capture
+in AC'97 mode so allow this, too.
 
 Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 ---
-Changes from v1: Drop "_4" suffix from these formats since they aren't
-non-standard ones, use empty format slots starting from format number 25
-for them, add information that they are LSB justified formats.
+Changes from v1: Adapt format name to changes in the first patch from
+this series.
 
-Changes from v2: Adapt a comment in sound/core/pcm_misc.c so it still
-refers to the same sample formats as before.
+Changes from v2: None.
 
-Corresponding alsa-lib changes will be posted as soon as this patch is
-merged on the kernel side, to keep alsa-lib and kernel synchronized.
+ sound/soc/fsl/fsl_ssi.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
- include/sound/pcm.h         |  8 ++++++++
- include/sound/soc-dai.h     |  2 ++
- include/uapi/sound/asound.h |  9 +++++++++
- sound/core/pcm_misc.c       | 19 ++++++++++++++++++-
- 4 files changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 24febf9e177c..e054c583d3b3 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -169,6 +169,10 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_IMA_ADPCM	_SNDRV_PCM_FMTBIT(IMA_ADPCM)
- #define SNDRV_PCM_FMTBIT_MPEG		_SNDRV_PCM_FMTBIT(MPEG)
- #define SNDRV_PCM_FMTBIT_GSM		_SNDRV_PCM_FMTBIT(GSM)
-+#define SNDRV_PCM_FMTBIT_S20_LE	_SNDRV_PCM_FMTBIT(S20_LE)
-+#define SNDRV_PCM_FMTBIT_U20_LE	_SNDRV_PCM_FMTBIT(U20_LE)
-+#define SNDRV_PCM_FMTBIT_S20_BE	_SNDRV_PCM_FMTBIT(S20_BE)
-+#define SNDRV_PCM_FMTBIT_U20_BE	_SNDRV_PCM_FMTBIT(U20_BE)
- #define SNDRV_PCM_FMTBIT_SPECIAL	_SNDRV_PCM_FMTBIT(SPECIAL)
- #define SNDRV_PCM_FMTBIT_S24_3LE	_SNDRV_PCM_FMTBIT(S24_3LE)
- #define SNDRV_PCM_FMTBIT_U24_3LE	_SNDRV_PCM_FMTBIT(U24_3LE)
-@@ -202,6 +206,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_LE
- #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_LE
- #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
-+#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_LE
-+#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_LE
- #endif
- #ifdef SNDRV_BIG_ENDIAN
- #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_BE
-@@ -213,6 +219,8 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_BE
- #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_BE
- #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
-+#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_BE
-+#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_BE
- #endif
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 20ef09e1a395..c350117c8e31 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1278,14 +1278,15 @@ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S20,
+ 	},
+ 	.capture = {
+ 		.stream_name = "AC97 Capture",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		/* 16-bit capture is broken (errata ERR003778) */
++		.formats = SNDRV_PCM_FMTBIT_S20,
+ 	},
+ 	.ops = &fsl_ssi_dai_ops,
+ };
+@@ -1557,11 +1558,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
  
- struct snd_pcm_file {
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 58acd00cae19..d970879944fc 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -102,6 +102,8 @@ struct snd_compr_stream;
- 			       SNDRV_PCM_FMTBIT_S16_BE |\
- 			       SNDRV_PCM_FMTBIT_S20_3LE |\
- 			       SNDRV_PCM_FMTBIT_S20_3BE |\
-+			       SNDRV_PCM_FMTBIT_S20_LE |\
-+			       SNDRV_PCM_FMTBIT_S20_BE |\
- 			       SNDRV_PCM_FMTBIT_S24_3LE |\
- 			       SNDRV_PCM_FMTBIT_S24_3BE |\
-                                SNDRV_PCM_FMTBIT_S32_LE |\
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index c227ccba60ae..7385024041d2 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -214,6 +214,11 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
- #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
- #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
-+#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* \ 			*/
-+#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* | 			*/
-+#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* | in four bytes,	*/
-+#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* / LSB justified	*/
-+/* gap in the numbering for a future standard linear format */
- #define	SNDRV_PCM_FORMAT_SPECIAL	((__force snd_pcm_format_t) 31)
- #define	SNDRV_PCM_FORMAT_S24_3LE	((__force snd_pcm_format_t) 32)	/* in three bytes */
- #define	SNDRV_PCM_FORMAT_S24_3BE	((__force snd_pcm_format_t) 33)	/* in three bytes */
-@@ -248,6 +253,8 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_LE
- #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_LE
- #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
-+#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_LE
-+#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_LE
- #endif
- #ifdef SNDRV_BIG_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
-@@ -259,6 +266,8 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_BE
- #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_BE
- #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
-+#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_BE
-+#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_BE
- #endif
+ 	/* Are the RX and the TX clocks locked? */
+ 	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
+-		if (!fsl_ssi_is_ac97(ssi_private))
++		if (!fsl_ssi_is_ac97(ssi_private)) {
+ 			ssi_private->cpu_dai_drv.symmetric_rates = 1;
++			ssi_private->cpu_dai_drv.symmetric_samplebits = 1;
++		}
  
- typedef int __bitwise snd_pcm_subformat_t;
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index 9be81025372f..c4eb561d2008 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -163,13 +163,30 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
- 		.width = 32, .phys = 32, .le = 0, .signd = 0,
- 		.silence = { 0x69, 0x69, 0x69, 0x69 },
- 	},
--	/* FIXME: the following three formats are not defined properly yet */
-+	/* FIXME: the following two formats are not defined properly yet */
- 	[SNDRV_PCM_FORMAT_MPEG] = {
- 		.le = -1, .signd = -1,
- 	},
- 	[SNDRV_PCM_FORMAT_GSM] = {
- 		.le = -1, .signd = -1,
- 	},
-+	[SNDRV_PCM_FORMAT_S20_LE] = {
-+		.width = 20, .phys = 32, .le = 1, .signd = 1,
-+		.silence = {},
-+	},
-+	[SNDRV_PCM_FORMAT_S20_BE] = {
-+		.width = 20, .phys = 32, .le = 0, .signd = 1,
-+		.silence = {},
-+	},
-+	[SNDRV_PCM_FORMAT_U20_LE] = {
-+		.width = 20, .phys = 32, .le = 1, .signd = 0,
-+		.silence = { 0x00, 0x00, 0x08, 0x00 },
-+	},
-+	[SNDRV_PCM_FORMAT_U20_BE] = {
-+		.width = 20, .phys = 32, .le = 0, .signd = 0,
-+		.silence = { 0x00, 0x08, 0x00, 0x00 },
-+	},
-+	/* FIXME: the following format is not defined properly yet */
- 	[SNDRV_PCM_FORMAT_SPECIAL] = {
- 		.le = -1, .signd = -1,
- 	},
+ 		ssi_private->cpu_dai_drv.symmetric_channels = 1;
+-		ssi_private->cpu_dai_drv.symmetric_samplebits = 1;
+ 	}
+ 
+ 	/* Determine the FIFO depth. */
