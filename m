@@ -1,20 +1,18 @@
-From: =?UTF-8?B?V3UtQ2hlbmcgTGkgKOadjuWLmeiqoCk=?= <wuchengli@google.com>
-Subject: Re: [PATCH 1/2] ASoC: nau8825: disable crosstalk by
-	default
-Date: Mon, 27 Nov 2017 14:12:17 +0800
-Message-ID: <CAOMLVLi-hdWqqSPw_x1P1_28TkMr5BOU=FCOi=vYofzvx+66+g@mail.gmail.com>
-References: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
+From: Dennis Mungai <dmngaie@gmail.com>
+Subject: Issue with the Realtek ALC 898 codec on the Clevo
+ P751DM2-G and the ESS Sabre Audio Jack for the headphone output.
+Date: Sun, 26 Nov 2017 23:18:12 +0300
+Message-ID: <CAKKYfmGZN42wTKoknuSyWZmAmce+2SgBaTpf+56evCzJJ2a8bg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id E02C2266F52
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 07:12:39 +0100 (CET)
-Received: by mail-it0-f68.google.com with SMTP id y71so8043067ita.1
- for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2017 22:12:39 -0800 (PST)
-In-Reply-To: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from mail-qk0-f174.google.com (mail-qk0-f174.google.com
+ [209.85.220.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FFEF266E6C
+ for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2017 21:18:54 +0100 (CET)
+Received: by mail-qk0-f174.google.com with SMTP id a194so30004826qkc.9
+ for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2017 12:18:54 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,134 +22,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Cheng-yi Chiang <cychiang@google.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, AC30 WTLi <WTLI@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, Mac Chiang <mac.chiang@intel.com>, broonie@kernel.org, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <mhkuo@nuvoton.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 24, 2017 at 6:08 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
-> The driver makes the crosstalk funciton disabled by default
-> which can simplify the codec function. The platform may not
-> need this funciton and reduce the potential risk. Therefore,
-> We change the property "nuvoton,crosstalk-bypass" to
-> "nuvoton,crosstalk-enable". The crosstalk measurement is enabled
-> if the property is set. Otherwise, it is disabled. Besides,
-> add more condition in the entry point of the crosstalk sequence
-> to disable the function completely.
->
-> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-> ---
->  .../devicetree/bindings/sound/nau8825.txt          |  4 ++--
->  sound/soc/codecs/nau8825.c                         | 23 ++++++++++++----------
->  sound/soc/codecs/nau8825.h                         |  2 +-
->  3 files changed, 16 insertions(+), 13 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
-> index 2f5e973..d16d968 100644
-> --- a/Documentation/devicetree/bindings/sound/nau8825.txt
-> +++ b/Documentation/devicetree/bindings/sound/nau8825.txt
-> @@ -69,7 +69,7 @@ Optional properties:
->    - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
->    - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
->
-> -  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set.
-> +  - nuvoton,crosstalk-enable: make crosstalk function enable if set.
->
->    - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
->        clocks described in clock-names
-> @@ -98,7 +98,7 @@ Example:
->        nuvoton,short-key-debounce = <2>;
->        nuvoton,jack-insert-debounce = <7>;
->        nuvoton,jack-eject-debounce = <7>;
-> -      nuvoton,crosstalk-bypass;
-> +      nuvoton,crosstalk-enable;
->
->        clock-names = "mclk";
->        clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
-> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-> index 714ce17..d3c1a02 100644
-> --- a/sound/soc/codecs/nau8825.c
-> +++ b/sound/soc/codecs/nau8825.c
-> @@ -815,11 +815,12 @@ static void nau8825_xtalk_work(struct work_struct *work)
->
->  static void nau8825_xtalk_cancel(struct nau8825 *nau8825)
->  {
-> -       /* If the xtalk_protect is true, that means the process is still
-> -        * on going. The driver forces to cancel the cross talk task and
-> +       /* If the crosstalk is eanbled and the process is on going,
+Hello there,
 
-s/eanbled/enabled/
+I have Ubuntu 16.04LTS installed on the Clevo P751DM2-G, also marketed
+as the Schenker XMG U507, the System76's Serval WS (2017 model), the
+Eurocom Sky X4E2, among others.
 
-> +        * the driver forces to cancel the crosstalk task and
->          * restores the configuration to original status.
->          */
-> -       if (nau8825->xtalk_protect) {
-> +       if (nau8825->xtalk_enable && nau8825->xtalk_state !=
-> +               NAU8825_XTALK_DONE) {
->                 cancel_work_sync(&nau8825->xtalk_work);
->                 nau8825_xtalk_clean(nau8825);
->         }
-> @@ -1686,7 +1687,7 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
->         } else if (active_irq & NAU8825_HEADSET_COMPLETION_IRQ) {
->                 if (nau8825_is_jack_inserted(regmap)) {
->                         event |= nau8825_jack_insert(nau8825);
-> -                       if (!nau8825->xtalk_bypass && !nau8825->high_imped) {
-> +                       if (nau8825->xtalk_enable && !nau8825->high_imped) {
->                                 /* Apply the cross talk suppression in the
->                                  * headset without high impedance.
->                                  */
-> @@ -1732,8 +1733,10 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
->                         nau8825->xtalk_event_mask = event_mask;
->                 }
->         } else if (active_irq & NAU8825_IMPEDANCE_MEAS_IRQ) {
-> -               schedule_work(&nau8825->xtalk_work);
-> -               clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
-> +               if (nau8825->xtalk_enable) {
-> +                       schedule_work(&nau8825->xtalk_work);
-> +                       clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
-> +               }
+The sound card is the Realtek ALC898 with the following output
+configuration:
 
-Shouldn't we still set clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ if
-crosstalk is disabled?
-Otherwise, all active_irq will be disabled later in this function.
+1. One SPDIF/headphone combo jack (to the right)
+2. One Line Out.
+3. One Line-In.
+4. One Mic-In.
 
->         } else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
->                 NAU8825_JACK_INSERTION_DETECTED) {
->                 /* One more step to check GPIO status directly. Thus, the
-> @@ -2440,8 +2443,8 @@ static void nau8825_print_device_properties(struct nau8825 *nau8825)
->                         nau8825->jack_insert_debounce);
->         dev_dbg(dev, "jack-eject-debounce:  %d\n",
->                         nau8825->jack_eject_debounce);
-> -       dev_dbg(dev, "crosstalk-bypass:     %d\n",
-> -                       nau8825->xtalk_bypass);
-> +       dev_dbg(dev, "crosstalk-enable:     %d\n",
-> +                       nau8825->xtalk_enable);
->  }
->
->  static int nau8825_read_device_properties(struct device *dev,
-> @@ -2506,8 +2509,8 @@ static int nau8825_read_device_properties(struct device *dev,
->                 &nau8825->jack_eject_debounce);
->         if (ret)
->                 nau8825->jack_eject_debounce = 0;
-> -       nau8825->xtalk_bypass = device_property_read_bool(dev,
-> -               "nuvoton,crosstalk-bypass");
-> +       nau8825->xtalk_enable = device_property_read_bool(dev,
-> +               "nuvoton,crosstalk-enable");
->
->         nau8825->mclk = devm_clk_get(dev, "mclk");
->         if (PTR_ERR(nau8825->mclk) == -EPROBE_DEFER) {
-> diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-> index 8aee5c86..199d6ea 100644
-> --- a/sound/soc/codecs/nau8825.h
-> +++ b/sound/soc/codecs/nau8825.h
-> @@ -476,7 +476,7 @@ struct nau8825 {
->         int xtalk_event_mask;
->         bool xtalk_protect;
->         int imp_rms[NAU8825_XTALK_IMM];
-> -       int xtalk_bypass;
-> +       int xtalk_enable;
->  };
->
->  int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
-> --
-> 2.6.4
->
+Background information:
+
+On Windows, one can use the Realtek HD Audio control panel pop-up menu
+on jack detection to set the output type when an audio device is plugged
+in to an appropriate jack, combined with Sound Blaster X-Fi MB5 software
+to enable post-processing effects such as Bass, noise cancellation, etc.
+
+What I have tried so far:
+
+1. Setting the model definition at /etc/modprobe.d/sound.conf with the
+following entries:
+
+options snd-hda-intel model=no-primary-hp enable=1 index=0
+
+Using such a line worked before on an MSI GS43VR 6RE Phantom Pro that
+also has the same (or a similar) ESS Sabre Audio DAC component.
+
+Expected behavior:
+
+When plugged into the microphone jack, the ESS Sabre DAC should be
+activated and sound should be routed to the headset.
+
+Observed anomaly:
+
+Sound comes out through the speakers instead.
+
+However, the line-out output works. In that case, when plugged into the
+line out, Audio works as expected.
+
+I was able to report this as a bug to Launchpad, with the information below:
+
+https://bugs.launchpad.net/bugs/1731940
+
+ProblemType: Bug
+DistroRelease: Ubuntu 16.04
+Package: alsa-base 1.0.25+dfsg-0ubuntu5
+Uname: Linux 4.14.0 x86_64
+NonfreeKernelModules: nvidia_uvm nvidia_drm nvidia_modeset nvidia
+ApportVersion: 2.20.1-0ubuntu2.10
+Architecture: amd64
+AudioDevicesInUse:
+ USER        PID ACCESS COMMAND
+ /dev/snd/controlC1:  lin        2199 F.... pulseaudio
+ /dev/snd/controlC0:  lin        2199 F.... pulseaudio
+CurrentDesktop: GNOME
+Date: Mon Nov 13 17:34:53 2017
+InstallationDate: Installed on 2017-07-25 (111 days ago)
+InstallationMedia: Ubuntu 16.04.2 LTS "Xenial Xerus" - Release amd64
+(20170215.2)
+PackageArchitecture: all
+SourcePackage: alsa-driver
+Symptom: audio
+Symptom_AlsaPlaybackTest: ALSA playback test through plughw:PCH failed
+Symptom_Card: Built-in Audio - HDA Intel PCH
+Symptom_DevicesInUse:
+ USER        PID ACCESS COMMAND
+ /dev/snd/controlC1:  gdm        1812 F.... pulseaudio
+                      lin        2199 F.... pulseaudio
+ /dev/snd/controlC0:  gdm        1812 F.... pulseaudio
+                      lin        2199 F.... pulseaudio
+Symptom_Jack: Speaker, Internal
+Symptom_Type: No sound at all
+Title: [P7xxDM2(-G), Realtek ALC898, Speaker, Internal] No sound at all
+UpgradeStatus: No upgrade log present (probably fresh install)
+dmi.bios.date: 12/21/2016
+dmi.bios.vendor: American Megatrends Inc.
+dmi.bios.version: 1.06.04
+dmi.board.asset.tag: Tag 12345
+dmi.board.name: P7xxDM2(-G)
+dmi.board.vendor: Notebook
+dmi.board.version: Not Applicable
+dmi.chassis.asset.tag: No Asset Tag
+dmi.chassis.type: 10
+dmi.chassis.vendor: No Enclosure
+dmi.chassis.version: N/A
+dmi.modalias: dmi:bvnAmericanMegatrendsInc.:bvr1.06.04:bd12/21/2016:svnNotebook:pnP7xxDM2(-G):pvrNotApplicable:rvnNotebook:rnP7xxDM2(-G):rvrNotApplicable:cvnNoEnclosure:ct10:cvrN/A:
+dmi.product.family: Not Applicable
+dmi.product.name: P7xxDM2(-G)
+dmi.product.version: Not Applicable
+dmi.sys.vendor: Notebook
+
+** Affects: alsa-driver (Ubuntu)
+     Importance: Undecided
+         Status: New
+
+
+Regards,
+
+Dennis.
