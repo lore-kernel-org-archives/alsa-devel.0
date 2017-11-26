@@ -1,21 +1,15 @@
-From: Lukasz Majewski <lukma@denx.de>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Override bit clock rate
- based on slot number
-Date: Sun, 26 Nov 2017 21:22:15 +0100
-Message-ID: <20171126212215.1f984a9c@jawa>
-References: <1504848223-3376-1-git-send-email-nicoleotsuka@gmail.com>
- <2020d72a-4517-55d0-59a1-171c71f91c7b@invoxia.com>
- <20170912213233.GA11419@Asurada-Nvidia>
- <fdb71350-0b89-8c5a-9ed0-c744bb6f2118@invoxia.com>
- <20170913230147.GA21287@Asurada-Nvidia>
- <20171125232921.01994d72@jawa> <20171126003622.GA7276@Asurada>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: [PATCH v3 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S, U}20
+Date: Mon, 27 Nov 2017 00:09:47 +0100
+Message-ID: <c0667b29-661d-2b48-d5c2-75291f97d55a@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0386370571728085787=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D1622670C1
- for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2017 21:22:30 +0100 (CET)
-In-Reply-To: <20171126003622.GA7276@Asurada>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECF142670C1
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 00:09:55 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,70 +19,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, max.krummenacher@toradex.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, caleb@crome.org, tiwai@suse.com, mpa@pengutronix.de, broonie@kernel.org, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, fabio.estevam@nxp.com, mail@maciej.szmigiero.name, linuxppc-dev@lists.ozlabs.org
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0386370571728085787==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/crbDPMbWs4Bbum9pNHcdk6i"; protocol="application/pgp-signature"
+This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
+20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
+allow 3-byte accesses (including DMA) so a 4-byte (more conventional)
+format is needed for it.
 
---Sig_/crbDPMbWs4Bbum9pNHcdk6i
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+---
+Changes from v1: Drop "_4" suffix from these formats since they aren't
+non-standard ones, use empty format slots starting from format number 25
+for them, add information that they are LSB justified formats.
 
-Hi Nicolin,
+Changes from v2: Adapt a comment in sound/core/pcm_misc.c so it still
+refers to the same sample formats as before.
 
-> On Sat, Nov 25, 2017 at 11:29:48PM +0100, Lukasz Majewski wrote:
->=20
-> > Nicolin, do you know what happened with this patch? I couldn't find
-> > it in current linux/master.
-> >=20
-> > Has it been applied to any asoc tree for being upstreamed? =20
->=20
-> A similar patch with an updated subject got applied:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commi=
-t/?h=3Dnext-20171124&id=3Db0a7043d5c2ccdd306959f295bf1a62be025cbf5
+Corresponding alsa-lib changes will be posted as soon as this patch is
+merged on the kernel side, to keep alsa-lib and kernel synchronized.
 
-Thanks for update - I was not aware of it.
+ include/sound/pcm.h         |  8 ++++++++
+ include/sound/soc-dai.h     |  2 ++
+ include/uapi/sound/asound.h |  9 +++++++++
+ sound/core/pcm_misc.c       | 19 ++++++++++++++++++-
+ 4 files changed, 37 insertions(+), 1 deletion(-)
 
-Tested-by: Lukasz Majewski <lukma@denx.de>
-
-HW: iMX6Q.
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-
---Sig_/crbDPMbWs4Bbum9pNHcdk6i
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAlobIngACgkQAR8vZIA0
-zr3a6Af/Tnsxno4ByiusDxsJjRrTblzhiSpcXrLvPziM9WxNDQECI6JUTFAByXJF
-ZWoPHG2R6clJUmnWfuqxnSa8L+p322Jas4ypmNU7cZPHPGvX79j7NqbWkCskn4lS
-YYSkRgDxjuwDD4JmGbG6NcmdwUMgGCrqMsAvz2XdHPolKKMZq+/Vk5ue2MykZzMb
-QIm0SoRKvWUkUw4jU/K2wBqwNGq7D5iIB4iKyOs6eoCeM8E7I0RRVZ8zhd7RBnEA
-hGMHWur+EpVg19RWL9/c2Aj7v2CJYqB8SCKoWARpojC7g722wT+yWrzJIK26XFbM
-wIc7GWjsVlHhlS1jcbtQVxZq3oaO0w==
-=omi6
------END PGP SIGNATURE-----
-
---Sig_/crbDPMbWs4Bbum9pNHcdk6i--
-
---===============0386370571728085787==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0386370571728085787==--
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 24febf9e177c..e054c583d3b3 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -169,6 +169,10 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_IMA_ADPCM	_SNDRV_PCM_FMTBIT(IMA_ADPCM)
+ #define SNDRV_PCM_FMTBIT_MPEG		_SNDRV_PCM_FMTBIT(MPEG)
+ #define SNDRV_PCM_FMTBIT_GSM		_SNDRV_PCM_FMTBIT(GSM)
++#define SNDRV_PCM_FMTBIT_S20_LE	_SNDRV_PCM_FMTBIT(S20_LE)
++#define SNDRV_PCM_FMTBIT_U20_LE	_SNDRV_PCM_FMTBIT(U20_LE)
++#define SNDRV_PCM_FMTBIT_S20_BE	_SNDRV_PCM_FMTBIT(S20_BE)
++#define SNDRV_PCM_FMTBIT_U20_BE	_SNDRV_PCM_FMTBIT(U20_BE)
+ #define SNDRV_PCM_FMTBIT_SPECIAL	_SNDRV_PCM_FMTBIT(SPECIAL)
+ #define SNDRV_PCM_FMTBIT_S24_3LE	_SNDRV_PCM_FMTBIT(S24_3LE)
+ #define SNDRV_PCM_FMTBIT_U24_3LE	_SNDRV_PCM_FMTBIT(U24_3LE)
+@@ -202,6 +206,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_LE
+ #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_LE
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
++#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_LE
++#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_BE
+@@ -213,6 +219,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_BE
+ #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_BE
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
++#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_BE
++#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_BE
+ #endif
+ 
+ struct snd_pcm_file {
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 58acd00cae19..d970879944fc 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -102,6 +102,8 @@ struct snd_compr_stream;
+ 			       SNDRV_PCM_FMTBIT_S16_BE |\
+ 			       SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			       SNDRV_PCM_FMTBIT_S20_3BE |\
++			       SNDRV_PCM_FMTBIT_S20_LE |\
++			       SNDRV_PCM_FMTBIT_S20_BE |\
+ 			       SNDRV_PCM_FMTBIT_S24_3LE |\
+ 			       SNDRV_PCM_FMTBIT_S24_3BE |\
+                                SNDRV_PCM_FMTBIT_S32_LE |\
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index c227ccba60ae..7385024041d2 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -214,6 +214,11 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
+ #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
+ #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
++#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* \ 			*/
++#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* | 			*/
++#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* | in four bytes,	*/
++#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* / LSB justified	*/
++/* gap in the numbering for a future standard linear format */
+ #define	SNDRV_PCM_FORMAT_SPECIAL	((__force snd_pcm_format_t) 31)
+ #define	SNDRV_PCM_FORMAT_S24_3LE	((__force snd_pcm_format_t) 32)	/* in three bytes */
+ #define	SNDRV_PCM_FORMAT_S24_3BE	((__force snd_pcm_format_t) 33)	/* in three bytes */
+@@ -248,6 +253,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_LE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_LE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_LE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
+@@ -259,6 +266,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_BE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_BE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_BE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_BE
+ #endif
+ 
+ typedef int __bitwise snd_pcm_subformat_t;
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index 9be81025372f..c4eb561d2008 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -163,13 +163,30 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
+ 		.width = 32, .phys = 32, .le = 0, .signd = 0,
+ 		.silence = { 0x69, 0x69, 0x69, 0x69 },
+ 	},
+-	/* FIXME: the following three formats are not defined properly yet */
++	/* FIXME: the following two formats are not defined properly yet */
+ 	[SNDRV_PCM_FORMAT_MPEG] = {
+ 		.le = -1, .signd = -1,
+ 	},
+ 	[SNDRV_PCM_FORMAT_GSM] = {
+ 		.le = -1, .signd = -1,
+ 	},
++	[SNDRV_PCM_FORMAT_S20_LE] = {
++		.width = 20, .phys = 32, .le = 1, .signd = 1,
++		.silence = {},
++	},
++	[SNDRV_PCM_FORMAT_S20_BE] = {
++		.width = 20, .phys = 32, .le = 0, .signd = 1,
++		.silence = {},
++	},
++	[SNDRV_PCM_FORMAT_U20_LE] = {
++		.width = 20, .phys = 32, .le = 1, .signd = 0,
++		.silence = { 0x00, 0x00, 0x08, 0x00 },
++	},
++	[SNDRV_PCM_FORMAT_U20_BE] = {
++		.width = 20, .phys = 32, .le = 0, .signd = 0,
++		.silence = { 0x00, 0x08, 0x00, 0x00 },
++	},
++	/* FIXME: the following format is not defined properly yet */
+ 	[SNDRV_PCM_FORMAT_SPECIAL] = {
+ 		.le = -1, .signd = -1,
+ 	},
