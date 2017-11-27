@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: don't use snd_soc_write/read on
-	twl6040" to the asoc tree
-Date: Mon, 27 Nov 2017 18:51:45 +0000
-Message-ID: <E1eJOVN-0006mS-MY@debutante>
-References: <87ziafklgc.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: cx20442: don't use reg_cache" to the
+	asoc tree
+Date: Mon, 27 Nov 2017 18:51:48 +0000
+Message-ID: <E1eJOVQ-0006nH-Mj@debutante>
+References: <871snrm01j.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BC12267544
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:51:48 +0100 (CET)
-In-Reply-To: <87ziafklgc.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 317B8266DCC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:51:52 +0100 (CET)
+In-Reply-To: <871snrm01j.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: don't use snd_soc_write/read on twl6040
+   ASoC: cx20442: don't use reg_cache
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,80 @@ to this mail.
 Thanks,
 Mark
 
->From 93a00c467fe998bf5716cbc9cabc127046054782 Mon Sep 17 00:00:00 2001
+>From 39b5a0f80c07f41440f38761e4b8d36bf2072007 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 14 Nov 2017 01:04:58 +0000
-Subject: [PATCH] ASoC: don't use snd_soc_write/read on twl6040
+Date: Tue, 14 Nov 2017 01:04:42 +0000
+Subject: [PATCH] ASoC: cx20442: don't use reg_cache
 
-twl6040 doesn't use regmap nor reg_cache. Its write/read are done
-through twl6040_reg_write/read. This driver directly calling these
-functions, but sometimes using snd_soc_write/read.
-As part of cleanup, snd_soc_codec_driver::write, read will be
-removed soon. Then, write/read access through snd_soc_write/read
-will doesn't work on this driver, since it doesn't use regmap nor
-reg_cache.
-This patch replace snd_soc_write/read to twl6040_write/read.
+Codec reg_cache is legacy feature and very few driver only are using
+it. But, ALSA SoC framework needs to support it.
+Codec will be merged into Component in the future, so, let's remove
+legacy and unused feature from framework.
+
+cx20442 is using reg_cache but it is only 1byte, and it doesn't use
+snd_soc_write/read/update_bits function which uses reg_cache.
+reg_cache user is only debugfs. Let's clean reg_cache for now.
+But let's keep .write function since it can be used for new additional
+feature. .read will not be used, let's remove.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl6040.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/cx20442.c | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index a8e6941a1868..3b895b4b451c 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -543,7 +543,7 @@ int twl6040_get_dl1_gain(struct snd_soc_codec *codec)
- 	if (snd_soc_dapm_get_pin_status(dapm, "HSOR") ||
- 		snd_soc_dapm_get_pin_status(dapm, "HSOL")) {
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 2083f7eb9de2..6b6f8e44369b 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -88,17 +88,6 @@ static const struct snd_soc_dapm_route cx20442_audio_map[] = {
+ 	{"ADC", NULL, "Input Mixer"},
+ };
  
--		u8 val = snd_soc_read(codec, TWL6040_REG_HSLCTL);
-+		u8 val = twl6040_read(codec, TWL6040_REG_HSLCTL);
- 		if (val & TWL6040_HSDACMODE)
- 			/* HSDACL in LP mode */
- 			return -8; /* -8dB */
-@@ -1158,8 +1158,6 @@ static int twl6040_remove(struct snd_soc_codec *codec)
- static const struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
- 	.probe = twl6040_probe,
- 	.remove = twl6040_remove,
--	.read = twl6040_read,
--	.write = twl6040_write,
- 	.set_bias_level = twl6040_set_bias_level,
- 	.suspend_bias_off = true,
- 	.ignore_pmdown_time = true,
+-static unsigned int cx20442_read_reg_cache(struct snd_soc_codec *codec,
+-							unsigned int reg)
+-{
+-	u8 *reg_cache = codec->reg_cache;
+-
+-	if (reg >= codec->driver->reg_cache_size)
+-		return -EINVAL;
+-
+-	return reg_cache[reg];
+-}
+-
+ enum v253_vls {
+ 	V253_VLS_NONE = 0,
+ 	V253_VLS_T,
+@@ -123,6 +112,8 @@ enum v253_vls {
+ 	V253_VLS_TEST,
+ };
+ 
++#if 0
++/* FIXME : these function will be re-used */
+ static int cx20442_pm_to_v253_vls(u8 value)
+ {
+ 	switch (value & ~(1 << CX20442_AGC)) {
+@@ -199,7 +190,7 @@ static int cx20442_write(struct snd_soc_codec *codec, unsigned int reg,
+ 
+ 	return 0;
+ }
+-
++#endif
+ 
+ /*
+  * Line discpline related code
+@@ -399,11 +390,7 @@ static const struct snd_soc_codec_driver cx20442_codec_dev = {
+ 	.probe = 	cx20442_codec_probe,
+ 	.remove = 	cx20442_codec_remove,
+ 	.set_bias_level = cx20442_set_bias_level,
+-	.reg_cache_default = &cx20442_reg,
+-	.reg_cache_size = 1,
+-	.reg_word_size = sizeof(u8),
+-	.read = cx20442_read_reg_cache,
+-	.write = cx20442_write,
++
+ 	.component_driver = {
+ 		.dapm_widgets		= cx20442_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(cx20442_dapm_widgets),
 -- 
 2.15.0
