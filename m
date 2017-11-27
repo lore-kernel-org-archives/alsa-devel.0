@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: use internal reg_cache on uda1380" to
-	the asoc tree
-Date: Mon, 27 Nov 2017 18:51:59 +0000
-Message-ID: <E1eJOVb-0006pa-Cj@debutante>
-References: <874lsnm02f.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2499C267567
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:02 +0100 (CET)
-In-Reply-To: <874lsnm02f.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+Subject: Applied "ASoC: cs35l34: Improve two size determinations in cs35l34_i2c_probe()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:53 +0000
+Message-ID: <E1eJOWT-00075X-RW@debutante>
+References: <044cfc92-158f-3bff-a2e6-4993a9070e13@users.sourceforge.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <044cfc92-158f-3bff-a2e6-4993a9070e13@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Elfring <elfring@users.sourceforge.net>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use internal reg_cache on uda1380
+   ASoC: cs35l34: Improve two size determinations in cs35l34_i2c_probe()
 
 has been applied to the asoc tree at
 
@@ -53,96 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From c001bf633a910cfc8a5b84b80634db4636bf1724 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 14 Nov 2017 01:04:08 +0000
-Subject: [PATCH] ASoC: use internal reg_cache on uda1380
+>From 7f9f3abd285433e224faaf854b165b189270c923 Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 22 Nov 2017 21:17:42 +0100
+Subject: [PATCH] ASoC: cs35l34: Improve two size determinations in
+ cs35l34_i2c_probe()
 
-Codec reg_cache is legacy feature and very few driver only are using
-it. But, ALSA SoC framework needs to support it.
-Codec will be merged into Component in the future, so, let's remove
-legacy and unused feature from framework.
-This patch implements ALSA SoC reg_cache feature into driver,
-and don't use  ALSA SoC framework's feature.
+Replace the specification of two data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/uda1380.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ sound/soc/codecs/cs35l34.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 44448023edb0..46a495b4da8d 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -38,6 +38,7 @@ struct uda1380_priv {
- 	unsigned int dac_clk;
- 	struct work_struct work;
- 	struct i2c_client *i2c;
-+	u16 *reg_cache;
- };
+diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
+index 6cbdbbe53940..0600d5264c4c 100644
+--- a/sound/soc/codecs/cs35l34.c
++++ b/sound/soc/codecs/cs35l34.c
+@@ -1004,9 +1004,7 @@ static int cs35l34_i2c_probe(struct i2c_client *i2c_client,
+ 	unsigned int devid = 0;
+ 	unsigned int reg;
  
- /*
-@@ -63,7 +64,9 @@ static unsigned long uda1380_cache_dirty;
- static inline unsigned int uda1380_read_reg_cache(struct snd_soc_codec *codec,
- 	unsigned int reg)
- {
--	u16 *cache = codec->reg_cache;
-+	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
-+	u16 *cache = uda1380->reg_cache;
-+
- 	if (reg == UDA1380_RESET)
- 		return 0;
- 	if (reg >= UDA1380_CACHEREGNUM)
-@@ -77,7 +80,8 @@ static inline unsigned int uda1380_read_reg_cache(struct snd_soc_codec *codec,
- static inline void uda1380_write_reg_cache(struct snd_soc_codec *codec,
- 	u16 reg, unsigned int value)
- {
--	u16 *cache = codec->reg_cache;
-+	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
-+	u16 *cache = uda1380->reg_cache;
+-	cs35l34 = devm_kzalloc(&i2c_client->dev,
+-			       sizeof(struct cs35l34_private),
+-			       GFP_KERNEL);
++	cs35l34 = devm_kzalloc(&i2c_client->dev, sizeof(*cs35l34), GFP_KERNEL);
+ 	if (!cs35l34)
+ 		return -ENOMEM;
  
- 	if (reg >= UDA1380_CACHEREGNUM)
- 		return;
-@@ -134,7 +138,7 @@ static void uda1380_sync_cache(struct snd_soc_codec *codec)
- 	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
- 	int reg;
- 	u8 data[3];
--	u16 *cache = codec->reg_cache;
-+	u16 *cache = uda1380->reg_cache;
- 
- 	/* Sync reg_cache with the hardware */
- 	for (reg = 0; reg < UDA1380_MVOL; reg++) {
-@@ -722,16 +726,9 @@ static int uda1380_probe(struct snd_soc_codec *codec)
- 
- static const struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
- 	.probe =	uda1380_probe,
--	.read =		uda1380_read_reg_cache,
--	.write =	uda1380_write,
- 	.set_bias_level = uda1380_set_bias_level,
- 	.suspend_bias_off = true,
- 
--	.reg_cache_size = ARRAY_SIZE(uda1380_reg),
--	.reg_word_size = sizeof(u16),
--	.reg_cache_default = uda1380_reg,
--	.reg_cache_step = 1,
--
- 	.component_driver = {
- 		.controls		= uda1380_snd_controls,
- 		.num_controls		= ARRAY_SIZE(uda1380_snd_controls),
-@@ -771,6 +768,13 @@ static int uda1380_i2c_probe(struct i2c_client *i2c,
- 			return ret;
- 	}
- 
-+	uda1380->reg_cache = devm_kmemdup(&i2c->dev,
-+					uda1380_reg,
-+					ARRAY_SIZE(uda1380_reg) * sizeof(u16),
-+					GFP_KERNEL);
-+	if (!uda1380->reg_cache)
-+		return -ENOMEM;
-+
- 	i2c_set_clientdata(i2c, uda1380);
- 	uda1380->i2c = i2c;
+@@ -1042,9 +1040,8 @@ static int cs35l34_i2c_probe(struct i2c_client *i2c_client,
+ 	if (pdata) {
+ 		cs35l34->pdata = *pdata;
+ 	} else {
+-		pdata = devm_kzalloc(&i2c_client->dev,
+-				sizeof(struct cs35l34_platform_data),
+-				GFP_KERNEL);
++		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
++				     GFP_KERNEL);
+ 		if (!pdata)
+ 			return -ENOMEM;
  
 -- 
 2.15.0
