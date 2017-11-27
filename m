@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm512x: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE" to the asoc tree
-Date: Mon, 27 Nov 2017 18:52:41 +0000
-Message-ID: <E1eJOWH-00071H-FD@debutante>
-References: <20171120060517.7083-1-jc@linux.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171120060517.7083-1-jc@linux.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jesse Chan <jc@linux.com>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: use internal reg_cache on uda1380" to
+	the asoc tree
+Date: Mon, 27 Nov 2017 18:51:59 +0000
+Message-ID: <E1eJOVb-0006pa-Cj@debutante>
+References: <874lsnm02f.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2499C267567
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:02 +0100 (CET)
+In-Reply-To: <874lsnm02f.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm512x: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
+   ASoC: use internal reg_cache on uda1380
 
 has been applied to the asoc tree at
 
@@ -37,38 +53,96 @@ to this mail.
 Thanks,
 Mark
 
->From 0cab20cec0b663b7be8e2be5998d5a4113647f86 Mon Sep 17 00:00:00 2001
-From: Jesse Chan <jc@linux.com>
-Date: Sun, 19 Nov 2017 23:45:49 -0800
-Subject: [PATCH] ASoC: pcm512x: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
+>From c001bf633a910cfc8a5b84b80634db4636bf1724 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 14 Nov 2017 01:04:08 +0000
+Subject: [PATCH] ASoC: use internal reg_cache on uda1380
 
-This change resolves a new compile-time warning
-when built as a loadable module:
+Codec reg_cache is legacy feature and very few driver only are using
+it. But, ALSA SoC framework needs to support it.
+Codec will be merged into Component in the future, so, let's remove
+legacy and unused feature from framework.
+This patch implements ALSA SoC reg_cache feature into driver,
+and don't use  ALSA SoC framework's feature.
 
-WARNING: modpost: missing MODULE_LICENSE() in sound/soc/codecs/snd-soc-pcm512x-spi.o
-see include/linux/module.h for more information
-
-This adds the license as "GPL v2", which matches the header of the file.
-
-MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
-
-Signed-off-by: Jesse Chan <jc@linux.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm512x-spi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/codecs/uda1380.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm512x-spi.c b/sound/soc/codecs/pcm512x-spi.c
-index 25c63510ae15..7cdd2dc4fd79 100644
---- a/sound/soc/codecs/pcm512x-spi.c
-+++ b/sound/soc/codecs/pcm512x-spi.c
-@@ -70,3 +70,7 @@ static struct spi_driver pcm512x_spi_driver = {
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 44448023edb0..46a495b4da8d 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -38,6 +38,7 @@ struct uda1380_priv {
+ 	unsigned int dac_clk;
+ 	struct work_struct work;
+ 	struct i2c_client *i2c;
++	u16 *reg_cache;
  };
  
- module_spi_driver(pcm512x_spi_driver);
+ /*
+@@ -63,7 +64,9 @@ static unsigned long uda1380_cache_dirty;
+ static inline unsigned int uda1380_read_reg_cache(struct snd_soc_codec *codec,
+ 	unsigned int reg)
+ {
+-	u16 *cache = codec->reg_cache;
++	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
++	u16 *cache = uda1380->reg_cache;
 +
-+MODULE_DESCRIPTION("ASoC PCM512x codec driver - SPI");
-+MODULE_AUTHOR("Mark Brown <broonie@kernel.org>");
-+MODULE_LICENSE("GPL v2");
+ 	if (reg == UDA1380_RESET)
+ 		return 0;
+ 	if (reg >= UDA1380_CACHEREGNUM)
+@@ -77,7 +80,8 @@ static inline unsigned int uda1380_read_reg_cache(struct snd_soc_codec *codec,
+ static inline void uda1380_write_reg_cache(struct snd_soc_codec *codec,
+ 	u16 reg, unsigned int value)
+ {
+-	u16 *cache = codec->reg_cache;
++	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
++	u16 *cache = uda1380->reg_cache;
+ 
+ 	if (reg >= UDA1380_CACHEREGNUM)
+ 		return;
+@@ -134,7 +138,7 @@ static void uda1380_sync_cache(struct snd_soc_codec *codec)
+ 	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
+ 	int reg;
+ 	u8 data[3];
+-	u16 *cache = codec->reg_cache;
++	u16 *cache = uda1380->reg_cache;
+ 
+ 	/* Sync reg_cache with the hardware */
+ 	for (reg = 0; reg < UDA1380_MVOL; reg++) {
+@@ -722,16 +726,9 @@ static int uda1380_probe(struct snd_soc_codec *codec)
+ 
+ static const struct snd_soc_codec_driver soc_codec_dev_uda1380 = {
+ 	.probe =	uda1380_probe,
+-	.read =		uda1380_read_reg_cache,
+-	.write =	uda1380_write,
+ 	.set_bias_level = uda1380_set_bias_level,
+ 	.suspend_bias_off = true,
+ 
+-	.reg_cache_size = ARRAY_SIZE(uda1380_reg),
+-	.reg_word_size = sizeof(u16),
+-	.reg_cache_default = uda1380_reg,
+-	.reg_cache_step = 1,
+-
+ 	.component_driver = {
+ 		.controls		= uda1380_snd_controls,
+ 		.num_controls		= ARRAY_SIZE(uda1380_snd_controls),
+@@ -771,6 +768,13 @@ static int uda1380_i2c_probe(struct i2c_client *i2c,
+ 			return ret;
+ 	}
+ 
++	uda1380->reg_cache = devm_kmemdup(&i2c->dev,
++					uda1380_reg,
++					ARRAY_SIZE(uda1380_reg) * sizeof(u16),
++					GFP_KERNEL);
++	if (!uda1380->reg_cache)
++		return -ENOMEM;
++
+ 	i2c_set_clientdata(i2c, uda1380);
+ 	uda1380->i2c = i2c;
+ 
 -- 
 2.15.0
