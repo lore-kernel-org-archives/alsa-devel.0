@@ -1,14 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rl6231: get better PLL parameters
-Date: Mon, 27 Nov 2017 20:03:14 +0800
-Message-ID: <1511784194-10083-1-git-send-email-bardliao@realtek.com>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH] ASoC: Intel: Boards: Add CNL RT274 I2S machine
+	driver
+Date: Mon, 27 Nov 2017 18:14:37 +0530
+Message-ID: <20171127124437.8441-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E825266DCC
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 13:03:25 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7018F266DCC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 13:44:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,151 +19,315 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For those which can only get approximation PLL out cases, this patch
-will use higher resolution to get a better PLL parameter.
+Add CNL I2S machine driver using Realtek RT274 codec in I2S mode
+configured to ssp0.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 ---
- sound/soc/codecs/rl6231.c | 95 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 66 insertions(+), 29 deletions(-)
+ sound/soc/intel/boards/Kconfig     |  13 ++
+ sound/soc/intel/boards/Makefile    |   2 +
+ sound/soc/intel/boards/cnl_rt274.c | 250 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 265 insertions(+)
+ create mode 100644 sound/soc/intel/boards/cnl_rt274.c
 
-diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
-index 974a904..33690e9 100644
---- a/sound/soc/codecs/rl6231.c
-+++ b/sound/soc/codecs/rl6231.c
-@@ -13,6 +13,7 @@
- #include <linux/module.h>
- #include <linux/regmap.h>
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 6f754708a48c..29066f0b744f 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -262,4 +262,17 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
+           Say Y if you have such a device.
+           If unsure select "N".
  
-+#include <linux/gcd.h>
- #include "rl6231.h"
++config SND_SOC_INTEL_CNL_RT274_MACH
++	tristate "ASoC Audio driver for Cannonlake with RT274 I2S mode"
++	depends on X86 && ACPI && I2C
++	select SND_SOC_INTEL_SST
++	depends on SND_SOC_INTEL_SKYLAKE
++	select SND_SOC_RT274
++	select SND_SOC_DMIC
++	help
++	   This adds support for ASoC machine driver for Cannonlake platform
++	   with RT274 I2S audio codec.
++	   Say Y if you have such a device.
++	   If unsure select "N".
++
+ endif
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 69d2dfaeb00c..a7a832c072ca 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -19,6 +19,7 @@ snd-soc-kbl_rt5663_rt5514_max98927-objs := kbl_rt5663_rt5514_max98927.o
+ snd-soc-skl_rt286-objs := skl_rt286.o
+ snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
+ snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
++snd-soc-cnl-rt274-objs := cnl_rt274.o
  
- /**
-@@ -106,6 +107,25 @@ static const struct pll_calc_map pll_preset_table[] = {
- 	{19200000,  24576000,  3, 30, 3, false},
- };
- 
-+static unsigned int find_best_div(unsigned int in,
-+	unsigned int max, unsigned int div)
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+@@ -40,3 +41,4 @@ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH) += snd-soc-kbl_rt566
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
++obj-$(CONFIG_SND_SOC_INTEL_CNL_RT274_MACH) += snd-soc-cnl-rt274.o
+diff --git a/sound/soc/intel/boards/cnl_rt274.c b/sound/soc/intel/boards/cnl_rt274.c
+new file mode 100644
+index 000000000000..19458fb50f55
+--- /dev/null
++++ b/sound/soc/intel/boards/cnl_rt274.c
+@@ -0,0 +1,250 @@
++/*
++ *  cnl_rt274.c - ASOC Machine driver for CNL
++ *
++ *  Copyright (C) 2016-17 Intel Corp
++ *  Author: Guneshwor Singh <guneshwor.o.singh@intel.com>
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
++#include <linux/module.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include "../../codecs/rt274.h"
++
++#define CNL_FREQ_OUT		24000000
++#define CNL_BE_FIXUP_RATE	48000
++#define RT274_CODEC_DAI		"rt274-aif1"
++
++static int cnl_rt274_clock_control(struct snd_soc_dapm_widget *w,
++				   struct snd_kcontrol *k, int event)
 +{
-+	unsigned int d;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai =
++		snd_soc_card_get_codec_dai(card, RT274_CODEC_DAI);
++	int ret, ratio = 100;
 +
-+	if (in <= max)
-+		return 1;
++	if (!codec_dai)
++		return -EINVAL;
 +
-+	d = in / max;
-+	if (in % max)
-+		d++;
++	/* Codec needs clock for Jack detection and button press */
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT274_SCLK_S_PLL2,
++				     CNL_FREQ_OUT, SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "set codec sysclk failed: %d\n", ret);
++		return ret;
++	}
 +
-+	while (div % d != 0)
-+		d++;
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		ret = snd_soc_dai_set_bclk_ratio(codec_dai, ratio);
++		if (ret) {
++			dev_err(codec_dai->dev,
++				"set bclk ratio failed: %d\n", ret);
++			return ret;
++		}
 +
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT274_PLL2_S_BCLK,
++					  CNL_BE_FIXUP_RATE * ratio,
++					  CNL_FREQ_OUT);
++		if (ret) {
++			dev_err(codec_dai->dev,
++				"enable PLL2 failed: %d\n", ret);
++			return ret;
++		}
++	}
 +
-+	return d;
++	return 0;
 +}
 +
- /**
-  * rl6231_pll_calc - Calcualte PLL M/N/K code.
-  * @freq_in: external clock provided to codec.
-@@ -120,9 +140,11 @@ int rl6231_pll_calc(const unsigned int freq_in,
- 	const unsigned int freq_out, struct rl6231_pll_code *pll_code)
- {
- 	int max_n = RL6231_PLL_N_MAX, max_m = RL6231_PLL_M_MAX;
--	int i, k, red, n_t, pll_out, in_t, out_t;
--	int n = 0, m = 0, m_t = 0;
--	int red_t = abs(freq_out - freq_in);
-+	int i, k, n_t;
-+	int k_t, min_k, max_k, n = 0, m = 0, m_t = 0;
-+	unsigned int red, pll_out, in_t, out_t, div, div_t;
-+	unsigned int red_t = abs(freq_out - freq_in);
-+	unsigned int f_in, f_out, f_max;
- 	bool bypass = false;
- 
- 	if (RL6231_PLL_INP_MAX < freq_in || RL6231_PLL_INP_MIN > freq_in)
-@@ -140,39 +162,54 @@ int rl6231_pll_calc(const unsigned int freq_in,
- 		}
- 	}
- 
--	k = 100000000 / freq_out - 2;
--	if (k > RL6231_PLL_K_MAX)
--		k = RL6231_PLL_K_MAX;
--	for (n_t = 0; n_t <= max_n; n_t++) {
--		in_t = freq_in / (k + 2);
--		pll_out = freq_out / (n_t + 2);
--		if (in_t < 0)
--			continue;
--		if (in_t == pll_out) {
--			bypass = true;
--			n = n_t;
--			goto code_find;
--		}
--		red = abs(in_t - pll_out);
--		if (red < red_t) {
--			bypass = true;
--			n = n_t;
--			m = m_t;
--			if (red == 0)
-+	min_k = 80000000 / freq_out - 2;
-+	max_k = 150000000 / freq_out - 2;
-+	if (max_k > RL6231_PLL_K_MAX)
-+		max_k = RL6231_PLL_K_MAX;
-+	if (min_k > RL6231_PLL_K_MAX)
-+		min_k = max_k = RL6231_PLL_K_MAX;
-+	div_t = gcd(freq_in, freq_out);
-+	f_max = 0xffffffff / RL6231_PLL_N_MAX;
-+	div = find_best_div(freq_in, f_max, div_t);
-+	f_in = freq_in / div;
-+	f_out = freq_out / div;
-+	k = min_k;
-+	for (k_t = min_k; k_t <= max_k; k_t++) {
-+		for (n_t = 0; n_t <= max_n; n_t++) {
-+			in_t = f_in * (n_t + 2);
-+			pll_out = f_out * (k_t + 2);
-+			if (in_t < 0)
-+				continue;
-+			if (in_t == pll_out) {
-+				bypass = true;
-+				n = n_t;
-+				k = k_t;
- 				goto code_find;
--			red_t = red;
--		}
--		for (m_t = 0; m_t <= max_m; m_t++) {
--			out_t = in_t / (m_t + 2);
--			red = abs(out_t - pll_out);
-+			}
-+			out_t = in_t / (k_t + 2);
-+			red = abs(f_out - out_t);
- 			if (red < red_t) {
--				bypass = false;
-+				bypass = true;
- 				n = n_t;
--				m = m_t;
-+				m = 0;
-+				k = k_t;
- 				if (red == 0)
- 					goto code_find;
- 				red_t = red;
- 			}
-+			for (m_t = 0; m_t <= max_m; m_t++) {
-+				out_t = in_t / ((m_t + 2) * (k_t + 2));
-+				red = abs(f_out - out_t);
-+				if (red < red_t) {
-+					bypass = false;
-+					n = n_t;
-+					m = m_t;
-+					k = k_t;
-+					if (red == 0)
-+						goto code_find;
-+					red_t = red;
-+				}
-+			}
- 		}
- 	}
- 	pr_debug("Only get approximation about PLL\n");
++static struct snd_soc_jack cnl_headset;
++
++/* Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin cnl_headset_pins[] = {
++	{
++		.pin = "Mic Jack",
++		.mask = SND_JACK_MICROPHONE,
++	},
++	{
++		.pin = "Headphone Jack",
++		.mask = SND_JACK_HEADPHONE,
++	},
++};
++
++static const struct snd_kcontrol_new cnl_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Mic Jack"),
++};
++
++static const struct snd_soc_dapm_widget cnl_rt274_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			    cnl_rt274_clock_control,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++};
++
++static int cnl_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
++			  struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *channels =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	if (params_channels(params) == 2)
++		channels->min = channels->max = 2;
++	else
++		channels->min = channels->max = 4;
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_route cnl_map[] = {
++	{"Headphone Jack", NULL, "HPO Pin"},
++	{"MIC", NULL, "Mic Jack"},
++	{"DMic", NULL, "SoC DMIC"},
++	{"DMIC01 Rx", NULL, "Capture"},
++	{"dmic01_hifi", NULL, "DMIC01 Rx"},
++
++	{"AIF1 Playback", NULL, "ssp0 Tx"},
++	{"ssp0 Tx", NULL, "codec1_out"},
++	{"ssp0 Tx", NULL, "codec0_out"},
++
++	{"ssp0 Rx", NULL, "AIF1 Capture"},
++	{"codec0_in", NULL, "ssp0 Rx"},
++
++	{"Headphone Jack", NULL, "Platform Clock"},
++	{"Mic Jack", NULL, "Platform Clock"},
++};
++
++static int cnl_rt274_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_codec *codec = runtime->codec;
++	struct snd_soc_card *card = runtime->card;
++	struct snd_soc_dai *codec_dai = runtime->codec_dai;
++	int ret;
++
++	ret = snd_soc_card_jack_new(runtime->card, "Headset",
++		SND_JACK_HEADSET, &cnl_headset,
++		cnl_headset_pins, ARRAY_SIZE(cnl_headset_pins));
++	if (ret)
++		return ret;
++
++	ret = snd_soc_codec_set_jack(codec, &cnl_headset, NULL);
++	if (ret)
++		return ret;
++
++	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0xf, 4, 24);
++	if (ret < 0) {
++		dev_err(runtime->dev, "can't set codec pcm format %d\n", ret);
++		return ret;
++	}
++
++	card->dapm.idle_bias_off = true;
++
++	return 0;
++}
++
++static int cnl_be_fixup(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	rate->min = rate->max = CNL_BE_FIXUP_RATE;
++	channels->min = channels->max = 2;
++	snd_mask_none(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT));
++	snd_mask_set(hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT),
++		     SNDRV_PCM_FORMAT_S24_LE);
++
++	return 0;
++}
++
++static struct snd_soc_dai_link cnl_rt274_dailink[] = {
++	{
++		.name = "SSP0-Codec",
++		.cpu_dai_name = "SSP0 Pin",
++		.codec_name = "i2c-INT34C2:00",
++		.codec_dai_name = "rt274-aif1",
++		.platform_name = "0000:00:1f.3",
++		.be_hw_params_fixup = cnl_be_fixup,
++		.no_pcm = 1,
++		.ignore_pmdown_time = 1,
++		.dai_fmt = SND_SOC_DAIFMT_DSP_A |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.init = cnl_rt274_init,
++	},
++	{
++		.name = "dmic01",
++		.cpu_dai_name = "DMIC01 Pin",
++		.codec_name = "dmic-codec",
++		.codec_dai_name = "dmic-hifi",
++		.platform_name = "0000:00:1f.3",
++		.be_hw_params_fixup = cnl_dmic_fixup,
++		.no_pcm = 1,
++		.ignore_suspend = 1,
++		.dpcm_capture = 1,
++	},
++};
++
++static int
++cnl_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
++{
++	link->platform_name = "0000:00:1f.3";
++	link->nonatomic = 1;
++
++	return 0;
++}
++
++/* SoC card */
++static struct snd_soc_card snd_soc_card_cnl = {
++	.name = "cnl-audio",
++	.dai_link = cnl_rt274_dailink,
++	.num_links = ARRAY_SIZE(cnl_rt274_dailink),
++	.dapm_widgets = cnl_rt274_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(cnl_rt274_widgets),
++	.dapm_routes = cnl_map,
++	.num_dapm_routes = ARRAY_SIZE(cnl_map),
++	.controls = cnl_controls,
++	.num_controls = ARRAY_SIZE(cnl_controls),
++	.add_dai_link = cnl_add_dai_link,
++	.fully_routed = true,
++};
++
++static int snd_cnl_rt274_probe(struct platform_device *pdev)
++{
++	snd_soc_card_cnl.dev = &pdev->dev;
++
++	return devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cnl);
++}
++
++static struct platform_driver snd_cnl_rt274_driver = {
++	.driver = {
++		.name = "cnl_rt274",
++		.pm = &snd_soc_pm_ops,
++	},
++	.probe = snd_cnl_rt274_probe,
++};
++
++module_platform_driver(snd_cnl_rt274_driver);
++
++MODULE_AUTHOR("Guneshwor Singh <guneshwor.o.singh@intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:cnl_rt274");
 -- 
-2.7.4
+2.15.0
