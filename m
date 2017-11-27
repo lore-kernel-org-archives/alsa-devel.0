@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: don't use codec hw_write on max98926"
-	to the asoc tree
-Date: Mon, 27 Nov 2017 18:52:05 +0000
-Message-ID: <E1eJOVh-0006rl-Ew@debutante>
-References: <87a82fm0zs.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 10B67267567
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:08 +0100 (CET)
-In-Reply-To: <87a82fm0zs.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+Subject: Applied "ASoC: cs42l73: Delete an error message for a failed memory allocation in cs42l73_i2c_probe()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:53:11 +0000
+Message-ID: <E1eJOWl-0007CT-Qd@debutante>
+References: <ac3d081a-377d-f016-bdb1-63dceb951281@users.sourceforge.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <ac3d081a-377d-f016-bdb1-63dceb951281@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Elfring <elfring@users.sourceforge.net>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: don't use codec hw_write on max98926
+   ASoC: cs42l73: Delete an error message for a failed memory allocation in cs42l73_i2c_probe()
 
 has been applied to the asoc tree at
 
@@ -53,32 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 866b9c81ad8450eb1e2a0132b4bd9fd909afd647 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 9 Nov 2017 01:04:54 +0000
-Subject: [PATCH] ASoC: don't use codec hw_write on max98926
+>From ddedd797943df21a2464420744d117e930a43af8 Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 22 Nov 2017 15:50:46 +0100
+Subject: [PATCH] ASoC: cs42l73: Delete an error message for a failed memory
+ allocation in cs42l73_i2c_probe()
 
-max98926 driver is using codec hw_write/control_data,
-but it is redundant code. This patch cleanup these
+Omit an extra message for a memory allocation failure in this function.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98926.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs42l73.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/max98926.c b/sound/soc/codecs/max98926.c
-index 03d07bf4d942..7b1d1b0fa879 100644
---- a/sound/soc/codecs/max98926.c
-+++ b/sound/soc/codecs/max98926.c
-@@ -490,7 +490,7 @@ static int max98926_probe(struct snd_soc_codec *codec)
- 	struct max98926_priv *max98926 = snd_soc_codec_get_drvdata(codec);
- 
- 	max98926->codec = codec;
--	codec->control_data = max98926->regmap;
+diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
+index 3df2c473ab88..978cfbbad408 100644
+--- a/sound/soc/codecs/cs42l73.c
++++ b/sound/soc/codecs/cs42l73.c
+@@ -1307,10 +1307,9 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 		pdata = devm_kzalloc(&i2c_client->dev,
+ 				     sizeof(struct cs42l73_platform_data),
+ 				GFP_KERNEL);
+-		if (!pdata) {
+-			dev_err(&i2c_client->dev, "could not allocate pdata\n");
++		if (!pdata)
+ 			return -ENOMEM;
+-		}
 +
- 	/* Hi-Z all the slots */
- 	regmap_write(max98926->regmap, MAX98926_DOUT_HIZ_CFG4, 0xF0);
- 	return 0;
+ 		if (i2c_client->dev.of_node) {
+ 			if (of_property_read_u32(i2c_client->dev.of_node,
+ 				"chgfreq", &val32) >= 0)
 -- 
 2.15.0
