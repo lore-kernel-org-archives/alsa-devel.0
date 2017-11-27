@@ -1,34 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: remove duplicated flag setting
-	in fsl_ssi_setup_reg_vals()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:52:27 +0000
-Message-ID: <E1eJOW3-0006yi-7A@debutante>
-References: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
+Subject: Applied "ASoC: stm32: sai: simplify sync modes management" to the
+ asoc tree
+Date: Mon, 27 Nov 2017 18:53:18 +0000
+Message-ID: <E1eJOWs-0007FC-7e@debutante>
+References: <1511362947-14747-3-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B05A2675CA
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:36 +0100 (CET)
-In-Reply-To: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1511362947-14747-3-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: remove duplicated flag setting in fsl_ssi_setup_reg_vals()
+   ASoC: stm32: sai: simplify sync modes management
 
 has been applied to the asoc tree at
 
@@ -53,37 +48,184 @@ to this mail.
 Thanks,
 Mark
 
->From 74231295c67ada29a4566272d8ac4886d09f3e83 Mon Sep 17 00:00:00 2001
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Date: Mon, 20 Nov 2017 23:12:01 +0100
-Subject: [PATCH] ASoC: fsl_ssi: remove duplicated flag setting in
- fsl_ssi_setup_reg_vals()
+>From 7dd0d835582ff72b0b3bd0f4fa074967dff1ce82 Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Wed, 22 Nov 2017 16:02:26 +0100
+Subject: [PATCH] ASoC: stm32: sai: simplify sync modes management
 
-We don't need to set CCSR_SSI_SIER_RFF0_EN / CCSR_SSI_SIER_TFE0_EN bits
-in reg->rx.sier / reg->tx.sier variables in a non-AC'97 mode considering we
-had just initialized these variables to these very values unconditionally a
-few lines earlier.
+Use function of_find_device_by_node() to retrieve SAI
+synchro provider device and private data.
+This allows to remove registration of probed SAI
+in a linked list.
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/stm/stm32_sai.c | 105 ++++++++++------------------------------------
+ 1 file changed, 22 insertions(+), 83 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 424bafaf51ef..9e97a0529f37 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -600,9 +600,7 @@ static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index d6f71a3406e9..0a1f06418bf4 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -28,16 +28,6 @@
  
- 	if (!fsl_ssi_is_ac97(ssi_private)) {
- 		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
--		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
- 		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
--		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
+ #include "stm32_sai.h"
+ 
+-static LIST_HEAD(sync_providers);
+-static DEFINE_MUTEX(sync_mutex);
+-
+-struct sync_provider {
+-	struct list_head link;
+-	struct device_node *node;
+-	int  (*sync_conf)(void *data, int synco);
+-	void *data;
+-};
+-
+ static const struct stm32_sai_conf stm32_sai_conf_f4 = {
+ 	.version = SAI_STM32F4,
+ };
+@@ -70,9 +60,8 @@ static int stm32_sai_sync_conf_client(struct stm32_sai_data *sai, int synci)
+ 	return 0;
+ }
+ 
+-static int stm32_sai_sync_conf_provider(void *data, int synco)
++static int stm32_sai_sync_conf_provider(struct stm32_sai_data *sai, int synco)
+ {
+-	struct stm32_sai_data *sai = (struct stm32_sai_data *)data;
+ 	u32 prev_synco;
+ 	int ret;
+ 
+@@ -103,73 +92,34 @@ static int stm32_sai_sync_conf_provider(void *data, int synco)
+ 	return 0;
+ }
+ 
+-static int stm32_sai_set_sync_provider(struct device_node *np, int synco)
++static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
++			      struct device_node *np_provider,
++			      int synco, int synci)
+ {
+-	struct sync_provider *provider;
++	struct platform_device *pdev = of_find_device_by_node(np_provider);
++	struct stm32_sai_data *sai_provider;
+ 	int ret;
+ 
+-	mutex_lock(&sync_mutex);
+-	list_for_each_entry(provider, &sync_providers, link) {
+-		if (provider->node == np) {
+-			ret = provider->sync_conf(provider->data, synco);
+-			mutex_unlock(&sync_mutex);
+-			return ret;
+-		}
++	if (!pdev) {
++		dev_err(&sai_client->pdev->dev,
++			"Device not found for node %s\n", np_provider->name);
++		return -ENODEV;
+ 	}
+-	mutex_unlock(&sync_mutex);
+ 
+-	/* SAI sync provider not found */
+-	return -ENODEV;
+-}
+-
+-static int stm32_sai_set_sync(struct stm32_sai_data *sai,
+-			      struct device_node *np_provider,
+-			      int synco, int synci)
+-{
+-	int ret;
++	sai_provider = platform_get_drvdata(pdev);
++	if (!sai_provider) {
++		dev_err(&sai_client->pdev->dev,
++			"SAI sync provider data not found\n");
++		return -EINVAL;
++	}
+ 
+ 	/* Configure sync client */
+-	stm32_sai_sync_conf_client(sai, synci);
++	ret = stm32_sai_sync_conf_client(sai_client, synci);
++	if (ret < 0)
++		return ret;
+ 
+ 	/* Configure sync provider */
+-	ret = stm32_sai_set_sync_provider(np_provider, synco);
+-
+-	return ret;
+-}
+-
+-static int stm32_sai_sync_add_provider(struct platform_device *pdev,
+-				       void *data)
+-{
+-	struct sync_provider *sp;
+-
+-	sp = devm_kzalloc(&pdev->dev, sizeof(*sp), GFP_KERNEL);
+-	if (!sp)
+-		return -ENOMEM;
+-
+-	sp->node = of_node_get(pdev->dev.of_node);
+-	sp->data = data;
+-	sp->sync_conf = &stm32_sai_sync_conf_provider;
+-
+-	mutex_lock(&sync_mutex);
+-	list_add(&sp->link, &sync_providers);
+-	mutex_unlock(&sync_mutex);
+-
+-	return 0;
+-}
+-
+-static void stm32_sai_sync_del_provider(struct device_node *np)
+-{
+-	struct sync_provider *sp;
+-
+-	mutex_lock(&sync_mutex);
+-	list_for_each_entry(sp, &sync_providers, link) {
+-		if (sp->node == np) {
+-			list_del(&sp->link);
+-			of_node_put(sp->node);
+-			break;
+-		}
+-	}
+-	mutex_unlock(&sync_mutex);
++	return stm32_sai_sync_conf_provider(sai_provider, synco);
+ }
+ 
+ static int stm32_sai_probe(struct platform_device *pdev)
+@@ -179,7 +129,6 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 	struct reset_control *rst;
+ 	struct resource *res;
+ 	const struct of_device_id *of_id;
+-	int ret;
+ 
+ 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
+ 	if (!sai)
+@@ -231,27 +180,17 @@ static int stm32_sai_probe(struct platform_device *pdev)
+ 		reset_control_deassert(rst);
  	}
  
- 	if (ssi_private->use_dma) {
+-	ret = stm32_sai_sync_add_provider(pdev, sai);
+-	if (ret < 0)
+-		return ret;
+-	sai->set_sync = &stm32_sai_set_sync;
+-
+ 	sai->pdev = pdev;
++	sai->set_sync = &stm32_sai_set_sync;
+ 	platform_set_drvdata(pdev, sai);
+ 
+-	ret = of_platform_populate(np, NULL, NULL, &pdev->dev);
+-	if (ret < 0)
+-		stm32_sai_sync_del_provider(np);
+-
+-	return ret;
++	return of_platform_populate(np, NULL, NULL, &pdev->dev);
+ }
+ 
+ static int stm32_sai_remove(struct platform_device *pdev)
+ {
+ 	of_platform_depopulate(&pdev->dev);
+ 
+-	stm32_sai_sync_del_provider(pdev->dev.of_node);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.15.0
