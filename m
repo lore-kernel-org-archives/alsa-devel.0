@@ -1,43 +1,157 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v7 06/13] slimbus: Add messaging APIs to slimbus framework
-Date: Mon, 27 Nov 2017 11:26:06 +0530
-Message-ID: <20171127055606.GR3187@localhost>
-References: <20171115141043.29202-1-srinivas.kandagatla@linaro.org>
- <20171115141043.29202-7-srinivas.kandagatla@linaro.org>
- <20171117074834.GM3187@localhost>
- <d58b8cca-7b28-75be-8081-dad6595f499d@linaro.org>
+From: =?UTF-8?B?V3UtQ2hlbmcgTGkgKOadjuWLmeiqoCk=?= <wuchengli@google.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: disable crosstalk by
+	default
+Date: Mon, 27 Nov 2017 14:12:17 +0800
+Message-ID: <CAOMLVLi-hdWqqSPw_x1P1_28TkMr5BOU=FCOi=vYofzvx+66+g@mail.gmail.com>
+References: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d58b8cca-7b28-75be-8081-dad6595f499d@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, arnd@arndb.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
+ [209.85.214.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id E02C2266F52
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 07:12:39 +0100 (CET)
+Received: by mail-it0-f68.google.com with SMTP id y71so8043067ita.1
+ for <alsa-devel@alsa-project.org>; Sun, 26 Nov 2017 22:12:39 -0800 (PST)
+In-Reply-To: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Cheng-yi Chiang <cychiang@google.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, AC30 WTLi <WTLI@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, Mac Chiang <mac.chiang@intel.com>, broonie@kernel.org, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <mhkuo@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 20, 2017 at 06:47:52AM +0000, Srinivas Kandagatla wrote:
+On Fri, Nov 24, 2017 at 6:08 PM, John Hsu <KCHSU0@nuvoton.com> wrote:
+> The driver makes the crosstalk funciton disabled by default
+> which can simplify the codec function. The platform may not
+> need this funciton and reduce the potential risk. Therefore,
+> We change the property "nuvoton,crosstalk-bypass" to
+> "nuvoton,crosstalk-enable". The crosstalk measurement is enabled
+> if the property is set. Otherwise, it is disabled. Besides,
+> add more condition in the entry point of the crosstalk sequence
+> to disable the function completely.
+>
+> Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+> ---
+>  .../devicetree/bindings/sound/nau8825.txt          |  4 ++--
+>  sound/soc/codecs/nau8825.c                         | 23 ++++++++++++----------
+>  sound/soc/codecs/nau8825.h                         |  2 +-
+>  3 files changed, 16 insertions(+), 13 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
+> index 2f5e973..d16d968 100644
+> --- a/Documentation/devicetree/bindings/sound/nau8825.txt
+> +++ b/Documentation/devicetree/bindings/sound/nau8825.txt
+> @@ -69,7 +69,7 @@ Optional properties:
+>    - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+>    - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+>
+> -  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set.
+> +  - nuvoton,crosstalk-enable: make crosstalk function enable if set.
+>
+>    - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
+>        clocks described in clock-names
+> @@ -98,7 +98,7 @@ Example:
+>        nuvoton,short-key-debounce = <2>;
+>        nuvoton,jack-insert-debounce = <7>;
+>        nuvoton,jack-eject-debounce = <7>;
+> -      nuvoton,crosstalk-bypass;
+> +      nuvoton,crosstalk-enable;
+>
+>        clock-names = "mclk";
+>        clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
+> diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+> index 714ce17..d3c1a02 100644
+> --- a/sound/soc/codecs/nau8825.c
+> +++ b/sound/soc/codecs/nau8825.c
+> @@ -815,11 +815,12 @@ static void nau8825_xtalk_work(struct work_struct *work)
+>
+>  static void nau8825_xtalk_cancel(struct nau8825 *nau8825)
+>  {
+> -       /* If the xtalk_protect is true, that means the process is still
+> -        * on going. The driver forces to cancel the cross talk task and
+> +       /* If the crosstalk is eanbled and the process is on going,
 
-> >>+ *	-ENOTCONN: If the transmitted message was not ACKed by destination
-> >>+ *	device.
-> >
-> >I am preferring ENODATA in SDW for this case, as Slaves didnt respond or
-> >ACK.
-> Isn't that a timeout error then.
-> 
-> ENODATA is for "No data available", reporting ENODATA would be misleading.
+s/eanbled/enabled/
 
-Do you get a explict NACK or no response for this
+> +        * the driver forces to cancel the crosstalk task and
+>          * restores the configuration to original status.
+>          */
+> -       if (nau8825->xtalk_protect) {
+> +       if (nau8825->xtalk_enable && nau8825->xtalk_state !=
+> +               NAU8825_XTALK_DONE) {
+>                 cancel_work_sync(&nau8825->xtalk_work);
+>                 nau8825_xtalk_clean(nau8825);
+>         }
+> @@ -1686,7 +1687,7 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+>         } else if (active_irq & NAU8825_HEADSET_COMPLETION_IRQ) {
+>                 if (nau8825_is_jack_inserted(regmap)) {
+>                         event |= nau8825_jack_insert(nau8825);
+> -                       if (!nau8825->xtalk_bypass && !nau8825->high_imped) {
+> +                       if (nau8825->xtalk_enable && !nau8825->high_imped) {
+>                                 /* Apply the cross talk suppression in the
+>                                  * headset without high impedance.
+>                                  */
+> @@ -1732,8 +1733,10 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+>                         nau8825->xtalk_event_mask = event_mask;
+>                 }
+>         } else if (active_irq & NAU8825_IMPEDANCE_MEAS_IRQ) {
+> -               schedule_work(&nau8825->xtalk_work);
+> -               clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
+> +               if (nau8825->xtalk_enable) {
+> +                       schedule_work(&nau8825->xtalk_work);
+> +                       clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
+> +               }
 
-> 
-> >
-> >ENOTCONN is defined as /* Transport endpoint is not connected */ which is
-> >not the case here, connected yes but not responded.
-> 
-> Code as it is would not return this, so i will be deleting ENOTCONN from
-> kernel doc.
+Shouldn't we still set clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ if
+crosstalk is disabled?
+Otherwise, all active_irq will be disabled later in this function.
 
-ok
-
--- 
-~Vinod
+>         } else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
+>                 NAU8825_JACK_INSERTION_DETECTED) {
+>                 /* One more step to check GPIO status directly. Thus, the
+> @@ -2440,8 +2443,8 @@ static void nau8825_print_device_properties(struct nau8825 *nau8825)
+>                         nau8825->jack_insert_debounce);
+>         dev_dbg(dev, "jack-eject-debounce:  %d\n",
+>                         nau8825->jack_eject_debounce);
+> -       dev_dbg(dev, "crosstalk-bypass:     %d\n",
+> -                       nau8825->xtalk_bypass);
+> +       dev_dbg(dev, "crosstalk-enable:     %d\n",
+> +                       nau8825->xtalk_enable);
+>  }
+>
+>  static int nau8825_read_device_properties(struct device *dev,
+> @@ -2506,8 +2509,8 @@ static int nau8825_read_device_properties(struct device *dev,
+>                 &nau8825->jack_eject_debounce);
+>         if (ret)
+>                 nau8825->jack_eject_debounce = 0;
+> -       nau8825->xtalk_bypass = device_property_read_bool(dev,
+> -               "nuvoton,crosstalk-bypass");
+> +       nau8825->xtalk_enable = device_property_read_bool(dev,
+> +               "nuvoton,crosstalk-enable");
+>
+>         nau8825->mclk = devm_clk_get(dev, "mclk");
+>         if (PTR_ERR(nau8825->mclk) == -EPROBE_DEFER) {
+> diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+> index 8aee5c86..199d6ea 100644
+> --- a/sound/soc/codecs/nau8825.h
+> +++ b/sound/soc/codecs/nau8825.h
+> @@ -476,7 +476,7 @@ struct nau8825 {
+>         int xtalk_event_mask;
+>         bool xtalk_protect;
+>         int imp_rms[NAU8825_XTALK_IMM];
+> -       int xtalk_bypass;
+> +       int xtalk_enable;
+>  };
+>
+>  int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
+> --
+> 2.6.4
+>
