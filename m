@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: don't use codec hw_write on
-	tlv320dac33" to the asoc tree
-Date: Mon, 27 Nov 2017 18:52:14 +0000
-Message-ID: <E1eJOVq-0006uG-Sc@debutante>
-References: <87efrrm11c.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 68123267568
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:18 +0100 (CET)
-In-Reply-To: <87efrrm11c.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+Subject: Applied "ASoC: da7218: Delete two error messages for a failed memory allocation in da7218_of_to_pdata()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:54:01 +0000
+Message-ID: <E1eJOXZ-0007T5-9U@debutante>
+References: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Elfring <elfring@users.sourceforge.net>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, support.opensource@diasemi.comAdam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: don't use codec hw_write on tlv320dac33
+   ASoC: da7218: Delete two error messages for a failed memory allocation in da7218_of_to_pdata()
 
 has been applied to the asoc tree at
 
@@ -53,77 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From ce9544dc8f9a83f9e8ff08eca30821edbe51d177 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 9 Nov 2017 00:19:48 +0000
-Subject: [PATCH] ASoC: don't use codec hw_write on tlv320dac33
+>From 14a07f1d8c4c64af29566316df0415052e8bdfe4 Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 23 Nov 2017 20:42:20 +0100
+Subject: [PATCH] ASoC: da7218: Delete two error messages for a failed memory
+ allocation in da7218_of_to_pdata()
 
-uda1380 driver is using codec hw_write/control_data,
-but it is redundant code. This patch cleanup these
+Omit extra messages for a memory allocation failure in this function.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This issue was detected by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320dac33.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/soc/codecs/da7218.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 5b94a151539c..80a26418827c 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -121,7 +121,7 @@ struct tlv320dac33_priv {
- 	unsigned int uthr;
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index 56564ce90cb6..25ab7443d803 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2455,10 +2455,8 @@ static struct da7218_pdata *da7218_of_to_pdata(struct snd_soc_codec *codec)
+ 	u32 of_val32;
  
- 	enum dac33_state state;
--	void *control_data;
-+	struct i2c_client *i2c;
- };
+ 	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
+-	if (!pdata) {
+-		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
++	if (!pdata)
+ 		return NULL;
+-	}
  
- static const u8 dac33_reg[DAC33_CACHEREGNUM] = {
-@@ -200,7 +200,7 @@ static int dac33_read(struct snd_soc_codec *codec, unsigned int reg,
- 
- 	/* If powered off, return the cached value */
- 	if (dac33->chip_power) {
--		val = i2c_smbus_read_byte_data(codec->control_data, value[0]);
-+		val = i2c_smbus_read_byte_data(dac33->i2c, value[0]);
- 		if (val < 0) {
- 			dev_err(codec->dev, "Read failed (%d)\n", val);
- 			value[0] = dac33_read_reg_cache(codec, reg);
-@@ -233,7 +233,7 @@ static int dac33_write(struct snd_soc_codec *codec, unsigned int reg,
- 
- 	dac33_write_reg_cache(codec, data[0], data[1]);
- 	if (dac33->chip_power) {
--		ret = codec->hw_write(codec->control_data, data, 2);
-+		ret = i2c_master_send(dac33->i2c, data, 2);
- 		if (ret != 2)
- 			dev_err(codec->dev, "Write failed (%d)\n", ret);
- 		else
-@@ -280,7 +280,7 @@ static int dac33_write16(struct snd_soc_codec *codec, unsigned int reg,
- 	if (dac33->chip_power) {
- 		/* We need to set autoincrement mode for 16 bit writes */
- 		data[0] |= DAC33_I2C_ADDR_AUTOINC;
--		ret = codec->hw_write(codec->control_data, data, 3);
-+		ret = i2c_master_send(dac33->i2c, data, 3);
- 		if (ret != 3)
- 			dev_err(codec->dev, "Write failed (%d)\n", ret);
- 		else
-@@ -1379,8 +1379,6 @@ static int dac33_soc_probe(struct snd_soc_codec *codec)
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
--	codec->control_data = dac33->control_data;
--	codec->hw_write = (hw_write_t) i2c_master_send;
- 	dac33->codec = codec;
- 
- 	/* Read the tlv320dac33 ID registers */
-@@ -1499,7 +1497,7 @@ static int dac33_i2c_probe(struct i2c_client *client,
- 	if (dac33 == NULL)
- 		return -ENOMEM;
- 
--	dac33->control_data = client;
-+	dac33->i2c = client;
- 	mutex_init(&dac33->mutex);
- 	spin_lock_init(&dac33->lock);
- 
+ 	if (of_property_read_u32(np, "dlg,micbias1-lvl-millivolt", &of_val32) >= 0)
+ 		pdata->micbias1_lvl = da7218_of_micbias_lvl(codec, of_val32);
+@@ -2527,8 +2525,6 @@ static struct da7218_pdata *da7218_of_to_pdata(struct snd_soc_codec *codec)
+ 		hpldet_pdata = devm_kzalloc(codec->dev, sizeof(*hpldet_pdata),
+ 					    GFP_KERNEL);
+ 		if (!hpldet_pdata) {
+-			dev_warn(codec->dev,
+-				 "Failed to allocate memory for hpldet pdata\n");
+ 			of_node_put(hpldet_np);
+ 			return pdata;
+ 		}
 -- 
 2.15.0
