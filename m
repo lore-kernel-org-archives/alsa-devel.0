@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l73: Improve two size determinations in cs42l73_i2c_probe()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:08 +0000
-Message-ID: <E1eJOWi-0007BO-Qa@debutante>
-References: <7229b291-d1e3-6269-4c68-435bbdffb0fd@users.sourceforge.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <7229b291-d1e3-6269-4c68-435bbdffb0fd@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: don't use codec hw_write on twl6040" to
+	the asoc tree
+Date: Mon, 27 Nov 2017 18:52:08 +0000
+Message-ID: <E1eJOVk-0006sc-P3@debutante>
+References: <87bmmvm108.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87FBE26758B
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:12 +0100 (CET)
+In-Reply-To: <87bmmvm108.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l73: Improve two size determinations in cs42l73_i2c_probe()
+   ASoC: don't use codec hw_write on twl6040
 
 has been applied to the asoc tree at
 
@@ -37,49 +53,98 @@ to this mail.
 Thanks,
 Mark
 
->From 68fa08c665e51b2fe100876692e57bca3aea7711 Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 22 Nov 2017 16:07:42 +0100
-Subject: [PATCH] ASoC: cs42l73: Improve two size determinations in
- cs42l73_i2c_probe()
+>From 3bd333677d6091d989068b0f7ff7aba975e62dc5 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 9 Nov 2017 01:04:37 +0000
+Subject: [PATCH] ASoC: don't use codec hw_write on twl6040
 
-Replace the specification of two data structures by pointer dereferences
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+twl6040 driver is using codec hw_write/control_data,
+but it is redundant code. This patch cleanup these
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l73.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/codecs/twl6040.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 978cfbbad408..dde37e569ade 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1289,8 +1289,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	unsigned int reg;
- 	u32 val32;
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 1773ff84ee3b..a8e6941a1868 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -106,10 +106,12 @@ static const struct snd_pcm_hw_constraint_list sysclk_constraints[] = {
+ 	{ .count = ARRAY_SIZE(hp_rates), .list = hp_rates, },
+ };
  
--	cs42l73 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l73_private),
--			       GFP_KERNEL);
-+	cs42l73 = devm_kzalloc(&i2c_client->dev, sizeof(*cs42l73), GFP_KERNEL);
- 	if (!cs42l73)
- 		return -ENOMEM;
++#define to_twl6040(codec)	dev_get_drvdata((codec)->dev->parent)
++
+ static unsigned int twl6040_read(struct snd_soc_codec *codec, unsigned int reg)
+ {
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+-	struct twl6040 *twl6040 = codec->control_data;
++	struct twl6040 *twl6040 = to_twl6040(codec);
+ 	u8 value;
  
-@@ -1304,9 +1303,8 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 	if (pdata) {
- 		cs42l73->pdata = *pdata;
- 	} else {
--		pdata = devm_kzalloc(&i2c_client->dev,
--				     sizeof(struct cs42l73_platform_data),
--				GFP_KERNEL);
-+		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
-+				     GFP_KERNEL);
- 		if (!pdata)
- 			return -ENOMEM;
+ 	if (reg >= TWL6040_CACHEREGNUM)
+@@ -171,7 +173,7 @@ static inline void twl6040_update_dl12_cache(struct snd_soc_codec *codec,
+ static int twl6040_write(struct snd_soc_codec *codec,
+ 			unsigned int reg, unsigned int value)
+ {
+-	struct twl6040 *twl6040 = codec->control_data;
++	struct twl6040 *twl6040 = to_twl6040(codec);
  
+ 	if (reg >= TWL6040_CACHEREGNUM)
+ 		return -EIO;
+@@ -572,7 +574,7 @@ EXPORT_SYMBOL_GPL(twl6040_get_trim_value);
+ 
+ int twl6040_get_hs_step_size(struct snd_soc_codec *codec)
+ {
+-	struct twl6040 *twl6040 = codec->control_data;
++	struct twl6040 *twl6040 = to_twl6040(codec);
+ 
+ 	if (twl6040_get_revid(twl6040) < TWL6040_REV_ES1_3)
+ 		/* For ES under ES_1.3 HS step is 2 mV */
+@@ -830,7 +832,7 @@ static const struct snd_soc_dapm_route intercon[] = {
+ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
+ 				enum snd_soc_bias_level level)
+ {
+-	struct twl6040 *twl6040 = codec->control_data;
++	struct twl6040 *twl6040 = to_twl6040(codec);
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+ 
+@@ -922,7 +924,7 @@ static int twl6040_prepare(struct snd_pcm_substream *substream,
+ 			struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+-	struct twl6040 *twl6040 = codec->control_data;
++	struct twl6040 *twl6040 = to_twl6040(codec);
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+@@ -964,7 +966,7 @@ static int twl6040_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ static void twl6040_mute_path(struct snd_soc_codec *codec, enum twl6040_dai_id id,
+ 			     int mute)
+ {
+-	struct twl6040 *twl6040 = codec->control_data;
++	struct twl6040 *twl6040 = to_twl6040(codec);
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	int hslctl, hsrctl, earctl;
+ 	int hflctl, hfrctl;
+@@ -1108,7 +1110,6 @@ static struct snd_soc_dai_driver twl6040_dai[] = {
+ static int twl6040_probe(struct snd_soc_codec *codec)
+ {
+ 	struct twl6040_data *priv;
+-	struct twl6040 *twl6040 = dev_get_drvdata(codec->dev->parent);
+ 	struct platform_device *pdev = to_platform_device(codec->dev);
+ 	int ret = 0;
+ 
+@@ -1119,7 +1120,6 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	snd_soc_codec_set_drvdata(codec, priv);
+ 
+ 	priv->codec = codec;
+-	codec->control_data = twl6040;
+ 
+ 	priv->plug_irq = platform_get_irq(pdev, 0);
+ 	if (priv->plug_irq < 0) {
 -- 
 2.15.0
