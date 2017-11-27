@@ -1,19 +1,19 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v2 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,
-	U}20
-Date: Mon, 27 Nov 2017 00:13:39 +0100
-Message-ID: <618daa73-dfd4-6e88-617f-10478b45ad64@maciej.szmigiero.name>
-References: <a54e6905-6124-9a59-b7ca-97cc650a8f99@maciej.szmigiero.name>
- <c9310a8f-d16d-ee8f-fe86-8316e71cf7fc@sakamocchi.jp>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: ALSA: Soc_compress open file node allows more than
+ once
+Date: Mon, 27 Nov 2017 11:20:20 +0530
+Message-ID: <20171127055019.GP3187@localhost>
+References: <f469eb3a04f49f7b5603572546852685@codeaurora.org>
+ <s5hmv3d3yfn.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 416B32670C1
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 00:13:48 +0100 (CET)
-In-Reply-To: <c9310a8f-d16d-ee8f-fe86-8316e71cf7fc@sakamocchi.jp>
-Content-Language: en-US
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 501DD266F52
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 06:46:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hmv3d3yfn.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, b_lkasam@codeaurora.org, lkasam@qti.qualcomm.com, mangeshk@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAyNi4xMS4yMDE3IDEwOjI3LCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+IEhpLAo+
-IAooLi4pCj4gQmVmb3JlIGFwcGx5aW5nIHRoaXMgcGF0Y2g6Cj4gMTY2wqDCoMKgwqDCoMKgwqDC
-oCAvKiBGSVhNRTogdGhlIGZvbGxvd2luZyB0aHJlZSBmb3JtYXRzIGFyZSBub3QgZGVmaW5lZCBw
-cm9wZXJseSB5ZXQgKi8KPiAxNjfCoMKgwqDCoMKgwqDCoMKgIFtTTkRSVl9QQ01fRk9STUFUX01Q
-RUddID0gewo+IDE2OMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5sZSA9IC0xLCAu
-c2lnbmQgPSAtMSwKPiAxNjnCoMKgwqDCoMKgwqDCoMKgIH0sCj4gMTcwwqDCoMKgwqDCoMKgwqDC
-oCBbU05EUlZfUENNX0ZPUk1BVF9HU01dID0gewo+IDE3McKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIC5sZSA9IC0xLCAuc2lnbmQgPSAtMSwKPiAxNzLCoMKgwqDCoMKgwqDCoMKgIH0s
-Cj4gMTczwqDCoMKgwqDCoMKgwqDCoCBbU05EUlZfUENNX0ZPUk1BVF9TUEVDSUFMXSA9IHsKPiAx
-NzTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAubGUgPSAtMSwgLnNpZ25kID0gLTEs
-Cj4gMTc1wqDCoMKgwqDCoMKgwqDCoCB9LAo+IAo+IEFmdGVyIGFwcGx5aW5nIHRoaXMgcGF0Y2g6
-Cj4gCj4gMTY2wqDCoMKgwqDCoMKgwqDCoCAvKiBGSVhNRTogdGhlIGZvbGxvd2luZyB0aHJlZSBm
-b3JtYXRzIGFyZSBub3QgZGVmaW5lZCBwcm9wZXJseSB5ZXQgKi8KPiAxNjfCoMKgwqDCoMKgwqDC
-oMKgIFtTTkRSVl9QQ01fRk9STUFUX01QRUddID0gewo+IDE2OMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIC5sZSA9IC0xLCAuc2lnbmQgPSAtMSwKPiAxNjnCoMKgwqDCoMKgwqDCoMKg
-IH0sCj4gMTcwwqDCoMKgwqDCoMKgwqDCoCBbU05EUlZfUENNX0ZPUk1BVF9HU01dID0gewo+IDE3
-McKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5sZSA9IC0xLCAuc2lnbmQgPSAtMSwK
-PiAxNzLCoMKgwqDCoMKgwqDCoMKgIH0sCj4gMTczwqDCoMKgwqDCoMKgwqDCoCBbU05EUlZfUENN
-X0ZPUk1BVF9TMjBfTEVdID0gewooLi4pPiAKPiBJIHRoaW5rIGl0IGdvb2QgdG8gYWRkIGFuIGFs
-dGVybmF0aXZlIGNvbW1lbnQgZm9yIGVhY2ggb2YgZW50cnkgd2hpY2ggaXMgbm90IGRlZmluZWQg
-eWV0LCBsaWtlOgo+IAo+IC0+IDE2NsKgwqDCoMKgwqDCoMKgwqAgLyogRklYTUU6IHRoaXMgZm9y
-bWF0IGlzIG5vdCBkZWZpbmVkIHByb3Blcmx5IHlldCAqLwo+IDE2N8KgwqDCoMKgwqDCoMKgwqAg
-W1NORFJWX1BDTV9GT1JNQVRfTVBFR10gPSB7Cj4gMTY4wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgLmxlID0gLTEsIC5zaWduZCA9IC0xLAo+IDE2OcKgwqDCoMKgwqDCoMKgwqAgfSwK
-PiAtPiAxNzDCoMKgwqDCoMKgwqDCoMKgIC8qIEZJWE1FOiB0aGlzIGZvcm1hdCBpcyBub3QgZGVm
-aW5lZCBwcm9wZXJseSB5ZXQgKi8KPiAxNzHCoMKgwqDCoMKgwqDCoMKgIFtTTkRSVl9QQ01fRk9S
-TUFUX0dTTV0gPSB7Cj4gMTcywqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLmxlID0g
-LTEsIC5zaWduZCA9IC0xLAo+IDE3M8KgwqDCoMKgwqDCoMKgwqAgfSwKPiAxNzTCoMKgwqDCoMKg
-wqDCoMKgIFtTTkRSVl9QQ01fRk9STUFUX1MyMF9MRV0gPSB7Cj4gMTc1wqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgLndpZHRoID0gMjAsIC5waHlzID0gMzIsIC5sZSA9IDEsIC5zaWdu
-ZCA9IDEsCj4gMTc2wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLnNpbGVuY2UgPSB7
-fSwKPiAxNzfCoMKgwqDCoMKgwqDCoMKgIH0sCj4gMTc4wqDCoMKgwqDCoMKgwqDCoCBbU05EUlZf
-UENNX0ZPUk1BVF9TMjBfQkVdID0gewo+IDE3OcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIC53aWR0aCA9IDIwLCAucGh5cyA9IDMyLCAubGUgPSAwLCAuc2lnbmQgPSAxLAo+IDE4MMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5zaWxlbmNlID0ge30sCj4gMTgxwqDCoMKg
-wqDCoMKgwqDCoCB9LAo+IDE4MsKgwqDCoMKgwqDCoMKgwqAgW1NORFJWX1BDTV9GT1JNQVRfVTIw
-X0xFXSA9IHsKPiAxODPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAud2lkdGggPSAy
-MCwgLnBoeXMgPSAzMiwgLmxlID0gMSwgLnNpZ25kID0gMCwKPiAxODTCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAuc2lsZW5jZSA9IHsgMHgwMCwgMHgwMCwgMHgwOCwgMHgwMCB9LAo+
-IDE4NcKgwqDCoMKgwqDCoMKgwqAgfSwKPiAxODbCoMKgwqDCoMKgwqDCoMKgIFtTTkRSVl9QQ01f
-Rk9STUFUX1UyMF9CRV0gPSB7Cj4gMTg3wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-LndpZHRoID0gMjAsIC5waHlzID0gMzIsIC5sZSA9IDAsIC5zaWduZCA9IDAsCj4gMTg4wqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLnNpbGVuY2UgPSB7IDB4MDAsIDB4MDgsIDB4MDAs
-IDB4MDAgfSwKPiAxODnCoMKgwqDCoMKgwqDCoMKgIH0sCj4gLT4gMTkwwqDCoMKgwqDCoMKgwqDC
-oCAvKiBGSVhNRTogdGhpcyBmb3JtYXQgaXMgbm90IGRlZmluZWQgcHJvcGVybHkgeWV0ICovCj4g
-MTkxwqDCoMKgwqDCoMKgwqDCoCBbU05EUlZfUENNX0ZPUk1BVF9TUEVDSUFMXSA9IHsKPiAxOTLC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAubGUgPSAtMSwgLnNpZ25kID0gLTEsCj4g
-MTkzwqDCoMKgwqDCoMKgwqDCoCB9LAo+IAoKVGhhbmtzLCBmaXhlZCBub3cgaW4gdjMuCgo+IFJl
-Z2FyZHMKPiAKPiBUYWthc2hpIFNha2Ftb3RvCgpCZXN0IHJlZ2FyZHMsCk1hY2llaiBTem1pZ2ll
-cm8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, Nov 23, 2017 at 02:41:00PM +0100, Takashi Iwai wrote:
+> On Thu, 23 Nov 2017 14:18:30 +0100,
+> b_lkasam@codeaurora.org wrote:
+> > 
+> > Hi ALSA team,
+> > This is regarding compress offload framework file operations wrt open
+> > system call.
+> > 
+> > For open call to this driver currently allows for same node more than
+> > once.
+> > 
+> > This may result in memleak issues or data corruption if same node in
+> > use by multiple instances.
+> 
+> This only depends on the driver side implementation.  There is no
+> restriction in the core side, as the multiple open is possible
+> depending on the hardware design and the driver implementation.
+
+sounds right to me, also is the leak on core side or your driver?
+
+> 
+> > can we have restriction to avoid open of same node using some refcount?
+> > 
+> > we can either have refcount under compr->private_data and cross check
+> > in below function before proceeding.
+> > static int snd_compr_open(struct inode *inode, struct file *f)
+> > 
+> > Please suggest accordingly.
+> 
+> I'd suggest just to add an exclusive open check in the driver side.
+> The open/close callbacks are protected via a mutex, so it can be a
+> simple bool flag check.
+> 
+> If the exclusive access is regarded as a common pattern, we can add
+> some flag to snd_compr later and check it in the core, instead, too.
+
+-- 
+~Vinod
