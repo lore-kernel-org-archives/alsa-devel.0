@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl_rt5663_max98927: Map BTN_0
-	to KEY_PLAYPAUSE" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:23 +0000
-Message-ID: <E1eJOWx-0007HJ-Uu@debutante>
+Subject: Applied "ASoC: Intel: kbl_rt5663_rt5514_max98927: Map
+	BTN_0 to KEY_PLAYPAUSE" to the asoc tree
+Date: Mon, 27 Nov 2017 18:53:26 +0000
+Message-ID: <E1eJOX0-0007I4-1i@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C60272675DD
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DF0F12675A4
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:26 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE
+   ASoC: Intel: kbl_rt5663_rt5514_max98927: Map BTN_0 to KEY_PLAYPAUSE
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,11 @@ to this mail.
 Thanks,
 Mark
 
->From 38a5882e4292d135cebabad0b56c9420dfdd80a5 Mon Sep 17 00:00:00 2001
+>From 8ee649283b1e542aedba007f6c828d6767c48e0d Mon Sep 17 00:00:00 2001
 From: Benson Leung <bleung@chromium.org>
-Date: Wed, 22 Nov 2017 12:56:40 -0800
-Subject: [PATCH] ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE
+Date: Wed, 22 Nov 2017 12:56:39 -0800
+Subject: [PATCH] ASoC: Intel: kbl_rt5663_rt5514_max98927: Map BTN_0 to
+ KEY_PLAYPAUSE
 
 The Android 3.5mm Headset jack specification mentions that BTN_0 should
 be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
@@ -71,14 +72,14 @@ https://source.android.com/devices/accessories/headset/usb-headset-spec
 Signed-off-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_rt5663_max98927.c | 2 +-
+ sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-index 6f9a8bcf20f3..94a34db4f8c0 100644
---- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
-@@ -225,7 +225,7 @@ static int kabylake_rt5663_codec_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+index e7672831bc49..38512f0d1a73 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
+@@ -195,7 +195,7 @@ static int kabylake_rt5663_codec_init(struct snd_soc_pcm_runtime *rtd)
  	}
  
  	jack = &ctx->kabylake_headset;
