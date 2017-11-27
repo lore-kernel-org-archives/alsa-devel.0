@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: serialize AC'97 register
-	access operations" to the asoc tree
-Date: Mon, 27 Nov 2017 18:52:44 +0000
-Message-ID: <E1eJOWK-00072K-EV@debutante>
-References: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
+Subject: Applied "ASoC: da7219: Correct IRQ level in DT binding
+	example" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:23 +0000
+Message-ID: <E1eJOVz-0006xG-TP@debutante>
+References: <e21b3fdd673d9baf8b4872d251df57b32b6149f6.1510930791.git.Adam.Thomson.Opensource@diasemi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E83A26757F
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:54 +0100 (CET)
-In-Reply-To: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
+ by alsa0.perex.cz (Postfix) with ESMTP id D1F002675F5
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:58 +0100 (CET)
+In-Reply-To: <e21b3fdd673d9baf8b4872d251df57b32b6149f6.1510930791.git.Adam.Thomson.Opensource@diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: serialize AC'97 register access operations
+   ASoC: da7219: Correct IRQ level in DT binding example
 
 has been applied to the asoc tree at
 
@@ -53,134 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From b880b8056b31288323745a13930bc45cf4c86e9d Mon Sep 17 00:00:00 2001
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Date: Mon, 20 Nov 2017 23:16:07 +0100
-Subject: [PATCH] ASoC: fsl_ssi: serialize AC'97 register access operations
+>From d3b0535216f04e7e149eaebe8e967c46bdf88dc3 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Fri, 17 Nov 2017 15:09:27 +0000
+Subject: [PATCH] ASoC: da7219: Correct IRQ level in DT binding example
 
-AC'97 register access operations (both read and write) on SSI use a one,
-shared set of SSI registers for AC'97 register address and data.
-This means that only one such access is possible at a time and so all these
-operations need to be serialized.
+Current DT binding documentation shows an example where the IRQ
+for the device is chosen to be ACTIVE_HIGH. This is incorrect as
+the device only supports ACTIVE_LOW, so this commit fixes that
+discrepancy.
 
-Since an AC'97 register access operation in this driver takes 100us+ let's
-use a mutex for this.
-
-Use this opportunity to also change a default value returned from AC'97
-register read function from -1 to 0, since that's what AC'97 specs require
-to be returned when unknown / undefined registers are read.
-
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/da7219.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index c3a83ed0297e..424bafaf51ef 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -38,6 +38,7 @@
- #include <linux/ctype.h>
- #include <linux/device.h>
- #include <linux/delay.h>
-+#include <linux/mutex.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/of.h>
-@@ -265,6 +266,8 @@ struct fsl_ssi_private {
+diff --git a/Documentation/devicetree/bindings/sound/da7219.txt b/Documentation/devicetree/bindings/sound/da7219.txt
+index cf61681826b6..5b54d2d045c3 100644
+--- a/Documentation/devicetree/bindings/sound/da7219.txt
++++ b/Documentation/devicetree/bindings/sound/da7219.txt
+@@ -77,7 +77,7 @@ Example:
+ 		reg = <0x1a>;
  
- 	u32 fifo_watermark;
- 	u32 dma_maxburst;
-+
-+	struct mutex ac97_reg_lock;
- };
+ 		interrupt-parent = <&gpio6>;
+-		interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
++		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
  
- /*
-@@ -1260,11 +1263,13 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	if (reg > 0x7f)
- 		return;
- 
-+	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
-+
- 	ret = clk_prepare_enable(fsl_ac97_data->clk);
- 	if (ret) {
- 		pr_err("ac97 write clk_prepare_enable failed: %d\n",
- 			ret);
--		return;
-+		goto ret_unlock;
- 	}
- 
- 	lreg = reg <<  12;
-@@ -1278,6 +1283,9 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	udelay(100);
- 
- 	clk_disable_unprepare(fsl_ac97_data->clk);
-+
-+ret_unlock:
-+	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
- }
- 
- static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
-@@ -1285,16 +1293,18 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
- {
- 	struct regmap *regs = fsl_ac97_data->regs;
- 
--	unsigned short val = -1;
-+	unsigned short val = 0;
- 	u32 reg_val;
- 	unsigned int lreg;
- 	int ret;
- 
-+	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
-+
- 	ret = clk_prepare_enable(fsl_ac97_data->clk);
- 	if (ret) {
- 		pr_err("ac97 read clk_prepare_enable failed: %d\n",
- 			ret);
--		return -1;
-+		goto ret_unlock;
- 	}
- 
- 	lreg = (reg & 0x7f) <<  12;
-@@ -1309,6 +1319,8 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
- 
- 	clk_disable_unprepare(fsl_ac97_data->clk);
- 
-+ret_unlock:
-+	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
- 	return val;
- }
- 
-@@ -1569,6 +1581,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	}
- 
- 	if (fsl_ssi_is_ac97(ssi_private)) {
-+		mutex_init(&ssi_private->ac97_reg_lock);
- 		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
- 		if (ret) {
- 			dev_err(&pdev->dev, "could not set AC'97 ops\n");
-@@ -1663,6 +1676,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		snd_soc_set_ac97_ops(NULL);
- 
- error_ac97_ops:
-+	if (fsl_ssi_is_ac97(ssi_private))
-+		mutex_destroy(&ssi_private->ac97_reg_lock);
-+
- 	if (ssi_private->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
-@@ -1681,8 +1697,10 @@ static int fsl_ssi_remove(struct platform_device *pdev)
- 	if (ssi_private->soc->imx)
- 		fsl_ssi_imx_clean(pdev, ssi_private);
- 
--	if (fsl_ssi_is_ac97(ssi_private))
-+	if (fsl_ssi_is_ac97(ssi_private)) {
- 		snd_soc_set_ac97_ops(NULL);
-+		mutex_destroy(&ssi_private->ac97_reg_lock);
-+	}
- 
- 	return 0;
- }
+ 		VDD-supply = <&reg_audio>;
+ 		VDDMIC-supply = <&reg_audio>;
 -- 
 2.15.0
