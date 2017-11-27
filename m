@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: Add error checking to probe function" to the asoc tree
-Date: Mon, 27 Nov 2017 18:52:50 +0000
-Message-ID: <E1eJOWQ-00074W-Q2@debutante>
-References: <1511238476-10314-1-git-send-email-linux@roeck-us.net>
+Subject: Applied "ASoC: pcm512x: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:41 +0000
+Message-ID: <E1eJOWH-00071H-FD@debutante>
+References: <20171120060517.7083-1-jc@linux.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1511238476-10314-1-git-send-email-linux@roeck-us.net>
+In-Reply-To: <20171120060517.7083-1-jc@linux.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Alex Deucher <alexander.deucher@amd.com>, Dominik Behr <dbehr@chromium.org>, Daniel Kurtz <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.orgDominik Behr <dbehr@chromium.org>, linux-kernel@vger.kernel.orgDaniel Kurtz <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>Alex Deucher <alexander.deucher@amd.com>alsa-devel@alsa-project.org
+To: Jesse Chan <jc@linux.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: Add error checking to probe function
+   ASoC: pcm512x: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From fdaa451107ce543d345a339b4d5e20e8e4bac396 Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <linux@roeck-us.net>
-Date: Mon, 20 Nov 2017 20:27:56 -0800
-Subject: [PATCH] ASoC: amd: Add error checking to probe function
+>From 0cab20cec0b663b7be8e2be5998d5a4113647f86 Mon Sep 17 00:00:00 2001
+From: Jesse Chan <jc@linux.com>
+Date: Sun, 19 Nov 2017 23:45:49 -0800
+Subject: [PATCH] ASoC: pcm512x: add missing MODULE_DESCRIPTION/AUTHOR/LICENSE
 
-The acp_audio_dma does not perform sufficient error checking in its probe
-function. This can result in crashes if a critical error path is
-encountered.
+This change resolves a new compile-time warning
+when built as a loadable module:
 
-Fixes: 7c31335a03b6a ("ASoC: AMD: add AMD ASoC ACP 2.x DMA driver")
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: Dominik Behr <dbehr@chromium.org>
-Cc: Daniel Kurtz <djkurtz@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/codecs/snd-soc-pcm512x-spi.o
+see include/linux/module.h for more information
+
+This adds the license as "GPL v2", which matches the header of the file.
+
+MODULE_DESCRIPTION and MODULE_AUTHOR are also added.
+
+Signed-off-by: Jesse Chan <jc@linux.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/pcm512x-spi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 9f521a55d610..b5e41df6bb3a 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1051,6 +1051,11 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	const u32 *pdata = pdev->dev.platform_data;
+diff --git a/sound/soc/codecs/pcm512x-spi.c b/sound/soc/codecs/pcm512x-spi.c
+index 25c63510ae15..7cdd2dc4fd79 100644
+--- a/sound/soc/codecs/pcm512x-spi.c
++++ b/sound/soc/codecs/pcm512x-spi.c
+@@ -70,3 +70,7 @@ static struct spi_driver pcm512x_spi_driver = {
+ };
  
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "Missing platform data\n");
-+		return -ENODEV;
-+	}
+ module_spi_driver(pcm512x_spi_driver);
 +
- 	audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
- 					GFP_KERNEL);
- 	if (audio_drv_data == NULL)
-@@ -1058,6 +1063,8 @@ static int acp_audio_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(audio_drv_data->acp_mmio))
-+		return PTR_ERR(audio_drv_data->acp_mmio);
- 
- 	/* The following members gets populated in device 'open'
- 	 * function. Till then interrupts are disabled in 'acp_init'
++MODULE_DESCRIPTION("ASoC PCM512x codec driver - SPI");
++MODULE_AUTHOR("Mark Brown <broonie@kernel.org>");
++MODULE_LICENSE("GPL v2");
 -- 
 2.15.0
