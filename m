@@ -1,17 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: use devm_of_platform_populate()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:14 +0000
-Message-ID: <E1eJOWo-0007Dq-Qf@debutante>
-References: <1511362947-14747-4-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1511362947-14747-4-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>, Olivier Moysan <olivier.moysan@st.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.orgolivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comBenjamin Gaignard <benjamin.gaignard@linaro.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5514: Add the sanity check for the
+	driver_data in the resume function" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:31 +0000
+Message-ID: <E1eJOW7-000706-Mc@debutante>
+References: <1511173399-26065-1-git-send-email-oder_chiou@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C1C72675C0
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:35 +0100 (CET)
+In-Reply-To: <1511173399-26065-1-git-send-email-oder_chiou@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com, cychiang@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: use devm_of_platform_populate()
+   ASoC: rt5514: Add the sanity check for the driver_data in the resume function
 
 has been applied to the asoc tree at
 
@@ -36,56 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 512d1bb4e86bd0fd4d665d4e454a3486236a419f Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan@st.com>
-Date: Wed, 22 Nov 2017 16:02:27 +0100
-Subject: [PATCH] ASoC: stm32: sai: use devm_of_platform_populate()
+>From 346cccf88319344c9f513bd85df6ae2258e8a8ea Mon Sep 17 00:00:00 2001
+From: "oder_chiou@realtek.com" <oder_chiou@realtek.com>
+Date: Mon, 20 Nov 2017 18:23:19 +0800
+Subject: [PATCH] ASoC: rt5514: Add the sanity check for the driver_data in the
+ resume function
 
-Use devm_of_platform_populate() instead of of_platform_depopulate()
-to simplify driver code.
+If the rt5514 spi driver is loaded, but the snd_soc_platform_driver is not
+loaded by the correct DAI settings, the NULL pointer will be gotten by
+snd_soc_platform_get_drvdata in the resume function.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ sound/soc/codecs/rt5514-spi.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index 0a1f06418bf4..d743b7dd52fb 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -124,7 +124,6 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 2df91db765ac..ca6a90d8fc39 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -482,10 +482,13 @@ static int __maybe_unused rt5514_resume(struct device *dev)
+ 	if (device_may_wakeup(dev))
+ 		disable_irq_wake(irq);
  
- static int stm32_sai_probe(struct platform_device *pdev)
- {
--	struct device_node *np = pdev->dev.of_node;
- 	struct stm32_sai_data *sai;
- 	struct reset_control *rst;
- 	struct resource *res;
-@@ -184,14 +183,7 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 	sai->set_sync = &stm32_sai_set_sync;
- 	platform_set_drvdata(pdev, sai);
+-	if (rt5514_dsp->substream) {
+-		rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf, sizeof(buf));
+-		if (buf[0] & RT5514_IRQ_STATUS_BIT)
+-			rt5514_schedule_copy(rt5514_dsp);
++	if (rt5514_dsp) {
++		if (rt5514_dsp->substream) {
++			rt5514_spi_burst_read(RT5514_IRQ_CTRL, (u8 *)&buf,
++				sizeof(buf));
++			if (buf[0] & RT5514_IRQ_STATUS_BIT)
++				rt5514_schedule_copy(rt5514_dsp);
++		}
+ 	}
  
--	return of_platform_populate(np, NULL, NULL, &pdev->dev);
--}
--
--static int stm32_sai_remove(struct platform_device *pdev)
--{
--	of_platform_depopulate(&pdev->dev);
--
--	return 0;
-+	return devm_of_platform_populate(&pdev->dev);
- }
- 
- MODULE_DEVICE_TABLE(of, stm32_sai_ids);
-@@ -202,7 +194,6 @@ static struct platform_driver stm32_sai_driver = {
- 		.of_match_table = stm32_sai_ids,
- 	},
- 	.probe = stm32_sai_probe,
--	.remove = stm32_sai_remove,
- };
- 
- module_platform_driver(stm32_sai_driver);
+ 	return 0;
 -- 
 2.15.0
