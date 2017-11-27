@@ -1,29 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: simplify sync modes management" to the
- asoc tree
-Date: Mon, 27 Nov 2017 18:53:18 +0000
-Message-ID: <E1eJOWs-0007FC-7e@debutante>
-References: <1511362947-14747-3-git-send-email-olivier.moysan@st.com>
+Subject: Applied "ASoC: fsl_ssi: AC'97 ops need regmap,
+	clock and cleaning up on failure" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:47 +0000
+Message-ID: <E1eJOWN-00073R-Gi@debutante>
+References: <ecfcedaa-f0e9-ec1f-82c5-f0d319068a5d@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1511362947-14747-3-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA0EE267589
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:54 +0100 (CET)
+In-Reply-To: <ecfcedaa-f0e9-ec1f-82c5-f0d319068a5d@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@tabi.org>, stable@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: simplify sync modes management
+   ASoC: fsl_ssi: AC'97 ops need regmap, clock and cleaning up on failure
 
 has been applied to the asoc tree at
 
@@ -48,184 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 7dd0d835582ff72b0b3bd0f4fa074967dff1ce82 Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan@st.com>
-Date: Wed, 22 Nov 2017 16:02:26 +0100
-Subject: [PATCH] ASoC: stm32: sai: simplify sync modes management
+>From 695b78b548d8a26288f041e907ff17758df9e1d5 Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Mon, 20 Nov 2017 23:14:55 +0100
+Subject: [PATCH] ASoC: fsl_ssi: AC'97 ops need regmap, clock and cleaning up
+ on failure
 
-Use function of_find_device_by_node() to retrieve SAI
-synchro provider device and private data.
-This allows to remove registration of probed SAI
-in a linked list.
+AC'97 ops (register read / write) need SSI regmap and clock, so they have
+to be set after them.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+We also need to set these ops back to NULL if we fail the probe.
+
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/stm/stm32_sai.c | 105 ++++++++++------------------------------------
- 1 file changed, 22 insertions(+), 83 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index d6f71a3406e9..0a1f06418bf4 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -28,16 +28,6 @@
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index f2f51e06e22c..c3a83ed0297e 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1458,12 +1458,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 				sizeof(fsl_ssi_ac97_dai));
  
- #include "stm32_sai.h"
- 
--static LIST_HEAD(sync_providers);
--static DEFINE_MUTEX(sync_mutex);
+ 		fsl_ac97_data = ssi_private;
 -
--struct sync_provider {
--	struct list_head link;
--	struct device_node *node;
--	int  (*sync_conf)(void *data, int synco);
--	void *data;
--};
--
- static const struct stm32_sai_conf stm32_sai_conf_f4 = {
- 	.version = SAI_STM32F4,
- };
-@@ -70,9 +60,8 @@ static int stm32_sai_sync_conf_client(struct stm32_sai_data *sai, int synci)
- 	return 0;
- }
- 
--static int stm32_sai_sync_conf_provider(void *data, int synco)
-+static int stm32_sai_sync_conf_provider(struct stm32_sai_data *sai, int synco)
- {
--	struct stm32_sai_data *sai = (struct stm32_sai_data *)data;
- 	u32 prev_synco;
- 	int ret;
- 
-@@ -103,73 +92,34 @@ static int stm32_sai_sync_conf_provider(void *data, int synco)
- 	return 0;
- }
- 
--static int stm32_sai_set_sync_provider(struct device_node *np, int synco)
-+static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
-+			      struct device_node *np_provider,
-+			      int synco, int synci)
- {
--	struct sync_provider *provider;
-+	struct platform_device *pdev = of_find_device_by_node(np_provider);
-+	struct stm32_sai_data *sai_provider;
- 	int ret;
- 
--	mutex_lock(&sync_mutex);
--	list_for_each_entry(provider, &sync_providers, link) {
--		if (provider->node == np) {
--			ret = provider->sync_conf(provider->data, synco);
--			mutex_unlock(&sync_mutex);
+-		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
+-		if (ret) {
+-			dev_err(&pdev->dev, "could not set AC'97 ops\n");
 -			return ret;
 -		}
-+	if (!pdev) {
-+		dev_err(&sai_client->pdev->dev,
-+			"Device not found for node %s\n", np_provider->name);
-+		return -ENODEV;
+ 	} else {
+ 		/* Initialize this copy of the CPU DAI driver structure */
+ 		memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
+@@ -1574,6 +1568,14 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 			return ret;
  	}
--	mutex_unlock(&sync_mutex);
  
--	/* SAI sync provider not found */
--	return -ENODEV;
--}
--
--static int stm32_sai_set_sync(struct stm32_sai_data *sai,
--			      struct device_node *np_provider,
--			      int synco, int synci)
--{
--	int ret;
-+	sai_provider = platform_get_drvdata(pdev);
-+	if (!sai_provider) {
-+		dev_err(&sai_client->pdev->dev,
-+			"SAI sync provider data not found\n");
-+		return -EINVAL;
++	if (fsl_ssi_is_ac97(ssi_private)) {
++		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
++		if (ret) {
++			dev_err(&pdev->dev, "could not set AC'97 ops\n");
++			goto error_ac97_ops;
++		}
 +	}
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_ssi_component,
+ 					      &ssi_private->cpu_dai_drv, 1);
+ 	if (ret) {
+@@ -1657,6 +1659,10 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	fsl_ssi_debugfs_remove(&ssi_private->dbg_stats);
  
- 	/* Configure sync client */
--	stm32_sai_sync_conf_client(sai, synci);
-+	ret = stm32_sai_sync_conf_client(sai_client, synci);
-+	if (ret < 0)
-+		return ret;
- 
- 	/* Configure sync provider */
--	ret = stm32_sai_set_sync_provider(np_provider, synco);
--
--	return ret;
--}
--
--static int stm32_sai_sync_add_provider(struct platform_device *pdev,
--				       void *data)
--{
--	struct sync_provider *sp;
--
--	sp = devm_kzalloc(&pdev->dev, sizeof(*sp), GFP_KERNEL);
--	if (!sp)
--		return -ENOMEM;
--
--	sp->node = of_node_get(pdev->dev.of_node);
--	sp->data = data;
--	sp->sync_conf = &stm32_sai_sync_conf_provider;
--
--	mutex_lock(&sync_mutex);
--	list_add(&sp->link, &sync_providers);
--	mutex_unlock(&sync_mutex);
--
--	return 0;
--}
--
--static void stm32_sai_sync_del_provider(struct device_node *np)
--{
--	struct sync_provider *sp;
--
--	mutex_lock(&sync_mutex);
--	list_for_each_entry(sp, &sync_providers, link) {
--		if (sp->node == np) {
--			list_del(&sp->link);
--			of_node_put(sp->node);
--			break;
--		}
--	}
--	mutex_unlock(&sync_mutex);
-+	return stm32_sai_sync_conf_provider(sai_provider, synco);
- }
- 
- static int stm32_sai_probe(struct platform_device *pdev)
-@@ -179,7 +129,6 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 	struct reset_control *rst;
- 	struct resource *res;
- 	const struct of_device_id *of_id;
--	int ret;
- 
- 	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
- 	if (!sai)
-@@ -231,27 +180,17 @@ static int stm32_sai_probe(struct platform_device *pdev)
- 		reset_control_deassert(rst);
- 	}
- 
--	ret = stm32_sai_sync_add_provider(pdev, sai);
--	if (ret < 0)
--		return ret;
--	sai->set_sync = &stm32_sai_set_sync;
--
- 	sai->pdev = pdev;
-+	sai->set_sync = &stm32_sai_set_sync;
- 	platform_set_drvdata(pdev, sai);
- 
--	ret = of_platform_populate(np, NULL, NULL, &pdev->dev);
--	if (ret < 0)
--		stm32_sai_sync_del_provider(np);
--
--	return ret;
-+	return of_platform_populate(np, NULL, NULL, &pdev->dev);
- }
- 
- static int stm32_sai_remove(struct platform_device *pdev)
- {
- 	of_platform_depopulate(&pdev->dev);
- 
--	stm32_sai_sync_del_provider(pdev->dev.of_node);
--
- 	return 0;
- }
+ error_asoc_register:
++	if (fsl_ssi_is_ac97(ssi_private))
++		snd_soc_set_ac97_ops(NULL);
++
++error_ac97_ops:
+ 	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
  
 -- 
 2.15.0
