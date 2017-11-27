@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: use internal reg_cache on tlv320dac33"
-	to the asoc tree
-Date: Mon, 27 Nov 2017 18:51:52 +0000
-Message-ID: <E1eJOVU-0006oj-9c@debutante>
-References: <873787m01y.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0799526755D
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:51:55 +0100 (CET)
-In-Reply-To: <873787m01y.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+Subject: Applied "ASoC: amd: Add error checking to probe function" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:50 +0000
+Message-ID: <E1eJOWQ-00074W-Q2@debutante>
+References: <1511238476-10314-1-git-send-email-linux@roeck-us.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1511238476-10314-1-git-send-email-linux@roeck-us.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Alex Deucher <alexander.deucher@amd.com>, Dominik Behr <dbehr@chromium.org>, Daniel Kurtz <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.orgDominik Behr <dbehr@chromium.org>, linux-kernel@vger.kernel.orgDaniel Kurtz <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>Alex Deucher <alexander.deucher@amd.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use internal reg_cache on tlv320dac33
+   ASoC: amd: Add error checking to probe function
 
 has been applied to the asoc tree at
 
@@ -53,104 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From c4305af43a80158fba0d2801be9a0e774634add0 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 14 Nov 2017 01:04:25 +0000
-Subject: [PATCH] ASoC: use internal reg_cache on tlv320dac33
+>From fdaa451107ce543d345a339b4d5e20e8e4bac396 Mon Sep 17 00:00:00 2001
+From: Guenter Roeck <linux@roeck-us.net>
+Date: Mon, 20 Nov 2017 20:27:56 -0800
+Subject: [PATCH] ASoC: amd: Add error checking to probe function
 
-Codec reg_cache is legacy feature and very few driver only are using
-it. But, ALSA SoC framework needs to support it.
-Codec will be merged into Component in the future, so, let's remove
-legacy and unused feature from framework.
-This patch implements ALSA SoC reg_cache feature into driver,
-and don't use  ALSA SoC framework's feature.
+The acp_audio_dma does not perform sufficient error checking in its probe
+function. This can result in crashes if a critical error path is
+encountered.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Fixes: 7c31335a03b6a ("ASoC: AMD: add AMD ASoC ACP 2.x DMA driver")
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Dominik Behr <dbehr@chromium.org>
+Cc: Daniel Kurtz <djkurtz@chromium.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320dac33.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 80a26418827c..675f5b1b90a6 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -106,6 +106,7 @@ struct tlv320dac33_priv {
- 	int mode1_latency;		/* latency caused by the i2c writes in
- 					 * us */
- 	u8 burst_bclkdiv;		/* BCLK divider value in burst mode */
-+	u8 *reg_cache;
- 	unsigned int burst_rate;	/* Interface speed in Burst modes */
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 9f521a55d610..b5e41df6bb3a 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -1051,6 +1051,11 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	const u32 *pdata = pdev->dev.platform_data;
  
- 	int keep_bclk;			/* Keep the BCLK continuously running
-@@ -173,7 +174,8 @@ static const u8 dac33_reg[DAC33_CACHEREGNUM] = {
- static inline unsigned int dac33_read_reg_cache(struct snd_soc_codec *codec,
- 						unsigned reg)
- {
--	u8 *cache = codec->reg_cache;
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
-+	u8 *cache = dac33->reg_cache;
- 	if (reg >= DAC33_CACHEREGNUM)
- 		return 0;
- 
-@@ -183,7 +185,8 @@ static inline unsigned int dac33_read_reg_cache(struct snd_soc_codec *codec,
- static inline void dac33_write_reg_cache(struct snd_soc_codec *codec,
- 					 u8 reg, u8 value)
- {
--	u8 *cache = codec->reg_cache;
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
-+	u8 *cache = dac33->reg_cache;
- 	if (reg >= DAC33_CACHEREGNUM)
- 		return;
- 
-@@ -243,19 +246,6 @@ static int dac33_write(struct snd_soc_codec *codec, unsigned int reg,
- 	return ret;
- }
- 
--static int dac33_write_locked(struct snd_soc_codec *codec, unsigned int reg,
--		       unsigned int value)
--{
--	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
--	int ret;
--
--	mutex_lock(&dac33->mutex);
--	ret = dac33_write(codec, reg, value);
--	mutex_unlock(&dac33->mutex);
--
--	return ret;
--}
--
- #define DAC33_I2C_ADDR_AUTOINC	0x80
- static int dac33_write16(struct snd_soc_codec *codec, unsigned int reg,
- 		       unsigned int value)
-@@ -1432,13 +1422,9 @@ static int dac33_soc_remove(struct snd_soc_codec *codec)
- }
- 
- static const struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
--	.read = dac33_read_reg_cache,
--	.write = dac33_write_locked,
- 	.set_bias_level = dac33_set_bias_level,
- 	.idle_bias_off = true,
--	.reg_cache_size = ARRAY_SIZE(dac33_reg),
--	.reg_word_size = sizeof(u8),
--	.reg_cache_default = dac33_reg,
++	if (!pdata) {
++		dev_err(&pdev->dev, "Missing platform data\n");
++		return -ENODEV;
++	}
 +
- 	.probe = dac33_soc_probe,
- 	.remove = dac33_soc_remove,
+ 	audio_drv_data = devm_kzalloc(&pdev->dev, sizeof(struct audio_drv_data),
+ 					GFP_KERNEL);
+ 	if (audio_drv_data == NULL)
+@@ -1058,6 +1063,8 @@ static int acp_audio_probe(struct platform_device *pdev)
  
-@@ -1497,6 +1483,13 @@ static int dac33_i2c_probe(struct i2c_client *client,
- 	if (dac33 == NULL)
- 		return -ENOMEM;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	audio_drv_data->acp_mmio = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(audio_drv_data->acp_mmio))
++		return PTR_ERR(audio_drv_data->acp_mmio);
  
-+	dac33->reg_cache = devm_kmemdup(&client->dev,
-+					dac33_reg,
-+					ARRAY_SIZE(dac33_reg) * sizeof(u8),
-+					GFP_KERNEL);
-+	if (!dac33->reg_cache)
-+		return -ENOMEM;
-+
- 	dac33->i2c = client;
- 	mutex_init(&dac33->mutex);
- 	spin_lock_init(&dac33->lock);
+ 	/* The following members gets populated in device 'open'
+ 	 * function. Till then interrupts are disabled in 'acp_init'
 -- 
 2.15.0
