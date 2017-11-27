@@ -1,18 +1,18 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 0/2] ASoC: cs35l34: Adjustments for
-	cs35l34_i2c_probe()
-Date: Mon, 27 Nov 2017 08:50:50 -0600
-Message-ID: <33c417da-fd14-4497-bc97-be45f997a815@EX3.ad.cirrus.com>
-References: <f524230c-6dbd-cb66-4c61-570b5ef185c1@users.sourceforge.net>
+Subject: Re: [PATCH 0/2] ASoC: cs35l32: Adjustments for
+	cs35l32_i2c_probe()
+Date: Mon, 27 Nov 2017 08:53:10 -0600
+Message-ID: <a0aa7fcd-c80d-4eb3-b3de-5b412dbfbdd7@EX3.ad.cirrus.com>
+References: <caf22f25-6c27-b869-89e8-ef2904a2baf2@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id AE46A266DCC
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 15:50:35 +0100 (CET)
-In-Reply-To: <f524230c-6dbd-cb66-4c61-570b5ef185c1@users.sourceforge.net>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B58F7266DCC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 15:52:54 +0100 (CET)
+In-Reply-To: <caf22f25-6c27-b869-89e8-ef2904a2baf2@users.sourceforge.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,7 +29,7 @@ List-Id: alsa-devel@alsa-project.org
 On Wed, 22 Nov 2017, SF Markus Elfring wrote:
 
 > From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 22 Nov 2017 21:23:45 +0100
+> Date: Wed, 22 Nov 2017 20:49:45 +0100
 > 
 > Two update suggestions were taken into account
 > from static source code analysis.
@@ -38,12 +38,15 @@ On Wed, 22 Nov 2017, SF Markus Elfring wrote:
 >   Delete two error messages for a failed memory allocation
 >   Improve two size determinations
 > 
->  sound/soc/codecs/cs35l34.c | 19 ++++++-------------
->  1 file changed, 6 insertions(+), 13 deletions(-)
+>  sound/soc/codecs/cs35l32.c | 18 ++++++------------
+>  1 file changed, 6 insertions(+), 12 deletions(-)
 > 
 > -- 
 > 2.15.0
 > 
 > 
-For the series, Thanks
+Sorry for the company notification that this is an external email. Very 
+clever indeed
+
+For the Series, Thanks
 Acked-by: Brian Austin <brian.austin@cirrus.com>
