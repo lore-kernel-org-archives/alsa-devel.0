@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Delete an error message for a failed memory allocation in da7213_fw_to_pdata()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:53 +0000
-Message-ID: <E1eJOXR-0007QY-LS@debutante>
-References: <6dc71b14-4c14-82f6-9dad-92bfa9854de2@users.sourceforge.net>
+Subject: Applied "ASoC: wm8903: Improve two size determinations in wm8903_i2c_probe()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:54:13 +0000
+Message-ID: <E1eJOXl-0007VV-Aq@debutante>
+References: <013d9ad7-a8ff-6fad-ba82-40e68cf0a601@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6dc71b14-4c14-82f6-9dad-92bfa9854de2@users.sourceforge.net>
+In-Reply-To: <013d9ad7-a8ff-6fad-ba82-40e68cf0a601@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, support.opensource@diasemi.com, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: Delete an error message for a failed memory allocation in da7213_fw_to_pdata()
+   ASoC: wm8903: Improve two size determinations in wm8903_i2c_probe()
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 13d5ea5f10b7359cd0f846179fe0b2411e12cfeb Mon Sep 17 00:00:00 2001
+>From 017b9b35cb107c0aeaad2ad770460c49e3f71395 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 17:56:54 +0100
-Subject: [PATCH] ASoC: da7213: Delete an error message for a failed memory
- allocation in da7213_fw_to_pdata()
+Date: Fri, 24 Nov 2017 10:40:43 +0100
+Subject: [PATCH] ASoC: wm8903: Improve two size determinations in
+ wm8903_i2c_probe()
 
-Omit an extra message for a memory allocation failure in this function.
+Replace the specification of two data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/wm8903.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 41d9b1da27c2..d1b77a0e3b74 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -1654,10 +1654,8 @@ static struct da7213_platform_data
- 	u32 fw_val32;
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 51eb7d61d446..cba90f21161f 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1995,8 +1995,7 @@ static int wm8903_i2c_probe(struct i2c_client *i2c,
+ 	unsigned int val, irq_pol;
+ 	int ret, i;
  
- 	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
--	if (!pdata) {
--		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
-+	if (!pdata)
- 		return NULL;
--	}
+-	wm8903 = devm_kzalloc(&i2c->dev,  sizeof(struct wm8903_priv),
+-			      GFP_KERNEL);
++	wm8903 = devm_kzalloc(&i2c->dev, sizeof(*wm8903), GFP_KERNEL);
+ 	if (wm8903 == NULL)
+ 		return -ENOMEM;
  
- 	if (device_property_read_u32(dev, "dlg,micbias1-lvl", &fw_val32) >= 0)
- 		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, fw_val32);
+@@ -2017,9 +2016,8 @@ static int wm8903_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata) {
+ 		wm8903->pdata = pdata;
+ 	} else {
+-		wm8903->pdata = devm_kzalloc(&i2c->dev,
+-					sizeof(struct wm8903_platform_data),
+-					GFP_KERNEL);
++		wm8903->pdata = devm_kzalloc(&i2c->dev, sizeof(*wm8903->pdata),
++					     GFP_KERNEL);
+ 		if (!wm8903->pdata)
+ 			return -ENOMEM;
+ 
 -- 
 2.15.0
