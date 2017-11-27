@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l56: Improve two size
-	determinations in cs42l56_i2c_probe()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:42 +0000
-Message-ID: <E1eJOXG-0007NP-J5@debutante>
-References: <8c36fc94-1f7d-5d22-7d3a-f2f6117199aa@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A0BDC26767A
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:58 +0100 (CET)
-In-Reply-To: <8c36fc94-1f7d-5d22-7d3a-f2f6117199aa@users.sourceforge.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: twl4030: Delete an error message for a failed memory allocation in twl4030_get_pdata()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:54:04 +0000
+Message-ID: <E1eJOXc-0007U4-Uk@debutante>
+References: <5e96623c-ad1f-5260-2580-f487e64abaf8@users.sourceforge.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5e96623c-ad1f-5260-2580-f487e64abaf8@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l56: Improve two size determinations in cs42l56_i2c_probe()
+   ASoC: twl4030: Delete an error message for a failed memory allocation in twl4030_get_pdata()
 
 has been applied to the asoc tree at
 
@@ -53,48 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From e8d8b98c0a6edab5d6cc0292e1ed603d8d4ff5b6 Mon Sep 17 00:00:00 2001
+>From 2dbb29cd977fc281f71f8895abce7e382efe77e1 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 09:33:15 +0100
-Subject: [PATCH] ASoC: cs42l56: Improve two size determinations in
- cs42l56_i2c_probe()
+Date: Thu, 23 Nov 2017 21:30:07 +0100
+Subject: [PATCH] ASoC: twl4030: Delete an error message for a failed memory
+ allocation in twl4030_get_pdata()
 
-Replace the specification of two data structures by pointer dereferences
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+Omit an extra message for a memory allocation failure in this function.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l56.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/soc/codecs/twl4030.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 13ee46217d78..fd7b8d32c2b2 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1190,9 +1190,7 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
- 	unsigned int alpha_rev, metal_rev;
- 	unsigned int reg;
- 
--	cs42l56 = devm_kzalloc(&i2c_client->dev,
--			       sizeof(struct cs42l56_private),
--			       GFP_KERNEL);
-+	cs42l56 = devm_kzalloc(&i2c_client->dev, sizeof(*cs42l56), GFP_KERNEL);
- 	if (cs42l56 == NULL)
- 		return -ENOMEM;
- 	cs42l56->dev = &i2c_client->dev;
-@@ -1207,8 +1205,7 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
- 	if (pdata) {
- 		cs42l56->pdata = *pdata;
- 	} else {
--		pdata = devm_kzalloc(&i2c_client->dev,
--				     sizeof(struct cs42l56_platform_data),
-+		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index cfe72b9d4356..90691701b082 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -240,7 +240,6 @@ static struct twl4030_codec_data *twl4030_get_pdata(struct snd_soc_codec *codec)
+ 				     sizeof(struct twl4030_codec_data),
  				     GFP_KERNEL);
- 		if (!pdata)
- 			return -ENOMEM;
+ 		if (!pdata) {
+-			dev_err(codec->dev, "Can not allocate memory\n");
+ 			of_node_put(twl4030_codec_node);
+ 			return NULL;
+ 		}
 -- 
 2.15.0
