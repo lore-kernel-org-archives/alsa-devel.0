@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: apq8016-sbc: Map BTN_0 to
+Subject: Applied "ASoC: rk3399_gru_sound: Map BTN_0 to
 	KEY_PLAYPAUSE" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:28 +0000
-Message-ID: <E1eJOX2-0007In-4g@debutante>
+Date: Mon, 27 Nov 2017 18:53:30 +0000
+Message-ID: <E1eJOX4-0007JX-76@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CCB426762A
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:29 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 17C8D267631
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:31 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: apq8016-sbc: Map BTN_0 to KEY_PLAYPAUSE
+   ASoC: rk3399_gru_sound: Map BTN_0 to KEY_PLAYPAUSE
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5f6d1df8ced6bb52453149f96d9b7005058641b6 Mon Sep 17 00:00:00 2001
+>From af1b1cefd735c919d3185ce06b549c2b121067ba Mon Sep 17 00:00:00 2001
 From: Benson Leung <bleung@chromium.org>
-Date: Wed, 22 Nov 2017 12:56:43 -0800
-Subject: [PATCH] ASoC: qcom: apq8016-sbc: Map BTN_0 to KEY_PLAYPAUSE
+Date: Wed, 22 Nov 2017 12:56:42 -0800
+Subject: [PATCH] ASoC: rk3399_gru_sound: Map BTN_0 to KEY_PLAYPAUSE
 
 The Android 3.5mm Headset jack specification mentions that BTN_0 should
 be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
@@ -71,21 +71,22 @@ https://source.android.com/devices/accessories/headset/usb-headset-spec
 Signed-off-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/apq8016_sbc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rk3399_gru_sound.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index d49adc822a11..03851fedd1e2 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -92,7 +92,7 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index d64fbbd50544..fa6cd1de828b 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -206,7 +206,8 @@ static int rockchip_sound_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 		return ret;
+ 	}
  
- 		jack = pdata->jack.jack;
- 
--		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_MEDIA);
-+		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
- 		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
- 		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
- 		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+-	snd_jack_set_key(rockchip_sound_jack.jack, SND_JACK_BTN_0, KEY_MEDIA);
++	snd_jack_set_key(
++		rockchip_sound_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+ 	snd_jack_set_key(
+ 		rockchip_sound_jack.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+ 	snd_jack_set_key(
 -- 
 2.15.0
