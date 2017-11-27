@@ -1,17 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v3 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,
-	U}20
-Date: Tue, 28 Nov 2017 02:40:37 +0900
-Message-ID: <cd3bc8b1-612b-7e9d-fa67-7b88b1a6f251@sakamocchi.jp>
-References: <c0667b29-661d-2b48-d5c2-75291f97d55a@maciej.szmigiero.name>
+Subject: Re: ["PATCH alsa-lib"] Change snd_dlopen() function to
+ return the error string
+Date: Tue, 28 Nov 2017 03:19:51 +0900
+Message-ID: <511ce0ed-77e2-b319-e1a1-e461ba1ac1e1@sakamocchi.jp>
+References: <20171127085016.11339-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 685CD266DCC
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 18:40:40 +0100 (CET)
-In-Reply-To: <c0667b29-661d-2b48-d5c2-75291f97d55a@maciej.szmigiero.name>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 827E6266DCC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:19:53 +0100 (CET)
+In-Reply-To: <20171127085016.11339-1-perex@perex.cz>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,162 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 27 2017 08:09, Maciej S. Szmigiero wrote:
-> This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
-> 20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
-> allow 3-byte accesses (including DMA) so a 4-byte (more conventional)
-> format is needed for it.
+Hi Jaroslav,
+
+On Nov 27 2017 17:50, Jaroslav Kysela wrote:
+> The dlopen() function might fail also for another reason than
+> a missing file, thus return the error string from dlerror().
 > 
-> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 > ---
-> Changes from v1: Drop "_4" suffix from these formats since they aren't
-> non-standard ones, use empty format slots starting from format number 25
-> for them, add information that they are LSB justified formats.
-> 
-> Changes from v2: Adapt a comment in sound/core/pcm_misc.c so it still
-> refers to the same sample formats as before.
-> 
-> Corresponding alsa-lib changes will be posted as soon as this patch is
-> merged on the kernel side, to keep alsa-lib and kernel synchronized.
-> 
->   include/sound/pcm.h         |  8 ++++++++
->   include/sound/soc-dai.h     |  2 ++
->   include/uapi/sound/asound.h |  9 +++++++++
->   sound/core/pcm_misc.c       | 19 ++++++++++++++++++-
->   4 files changed, 37 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> index 24febf9e177c..e054c583d3b3 100644
-> --- a/include/sound/pcm.h
-> +++ b/include/sound/pcm.h
-> @@ -169,6 +169,10 @@ struct snd_pcm_ops {
->   #define SNDRV_PCM_FMTBIT_IMA_ADPCM	_SNDRV_PCM_FMTBIT(IMA_ADPCM)
->   #define SNDRV_PCM_FMTBIT_MPEG		_SNDRV_PCM_FMTBIT(MPEG)
->   #define SNDRV_PCM_FMTBIT_GSM		_SNDRV_PCM_FMTBIT(GSM)
-> +#define SNDRV_PCM_FMTBIT_S20_LE	_SNDRV_PCM_FMTBIT(S20_LE)
-> +#define SNDRV_PCM_FMTBIT_U20_LE	_SNDRV_PCM_FMTBIT(U20_LE)
-> +#define SNDRV_PCM_FMTBIT_S20_BE	_SNDRV_PCM_FMTBIT(S20_BE)
-> +#define SNDRV_PCM_FMTBIT_U20_BE	_SNDRV_PCM_FMTBIT(U20_BE)
->   #define SNDRV_PCM_FMTBIT_SPECIAL	_SNDRV_PCM_FMTBIT(SPECIAL)
->   #define SNDRV_PCM_FMTBIT_S24_3LE	_SNDRV_PCM_FMTBIT(S24_3LE)
->   #define SNDRV_PCM_FMTBIT_U24_3LE	_SNDRV_PCM_FMTBIT(U24_3LE)
-> @@ -202,6 +206,8 @@ struct snd_pcm_ops {
->   #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_LE
->   #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_LE
->   #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
-> +#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_LE
-> +#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_LE
+>   include/global.h        |  2 +-
+>   src/Versions.in         |  5 +++++
+>   src/conf.c              | 13 ++++++-----
+>   src/dlmisc.c            | 60 +++++++++++++++++++++++++++++++++++++++----------
+>   src/hwdep/hwdep.c       |  6 ++---
+>   src/mixer/simple_abst.c | 10 ++++-----
+>   src/pcm/pcm_hooks.c     |  8 +++----
+>   src/pcm/pcm_meter.c     |  6 ++---
+>   src/rawmidi/rawmidi.c   |  6 ++---
+>   src/seq/seq.c           |  6 ++---
+>   src/timer/timer.c       |  6 ++---
+>   src/timer/timer_query.c |  6 ++---
+>   12 files changed, 88 insertions(+), 46 deletions(-)
+
+Unfortunately, this patch brings build error in my environment (Ubuntu 
+17.10 amd64, gcc7.2.0 from gcc-7 7.2.0-8ubuntu3).
+
+$ ./gitcompile
+$ make
+make[2]: Entering directory '/tmp/alsa-lib/src'
+   CCLD     libasound.la
+/usr/bin/ld: unable to find version dependency `ALSA_1.1.6'
+pcm/.libs/libpcm.a(pcm_generic.o): In function `snd1_pcm_generic_hwsync':
+/tmp/alsa-lib/src/pcm/pcm_generic.c:142: warning:
+collect2: error: ld returned 1 exit status
+Makefile:491: recipe for target 'libasound.la' failed
+make[2]: *** [libasound.la] Error 1
+
+At present, I don't know exactly the reason, but I'll start 
+investigating it in next morning (I'd like to have sleep...).
+
+I found some nitpicking.
+
+1. 'modules/mixer/simple/sbasedl.c' calls this function but missing 
+changes in this patch.
+
+(As I suggested to you in a previous Audiominiconf, it's good to us to 
+investigate simplification of the unused abstraction of 'simple' mixer 
+functionality.)
+
+2. A line includes a tab only.
+
+> diff --git a/src/dlmisc.c b/src/dlmisc.c
+> index f154ebd0..fca843e1 100644
+> --- a/src/dlmisc.c
+> +++ b/src/dlmisc.c
+> @@ -73,24 +79,49 @@ void *snd_dlopen(const char *name, int mode)
+> ...
+> +errpath:
+> +	if (errbuf)
+> +		snprintf(errbuf, errbuflen, "%s: %s", filename, dlerror());
+> +	return NULL;
+> +	
+>   #else
+>   	return NULL;
 >   #endif
->   #ifdef SNDRV_BIG_ENDIAN
->   #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_BE
-> @@ -213,6 +219,8 @@ struct snd_pcm_ops {
->   #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_BE
->   #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_BE
->   #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
-> +#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_BE
-> +#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_BE
->   #endif
->   
->   struct snd_pcm_file {
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index 58acd00cae19..d970879944fc 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -102,6 +102,8 @@ struct snd_compr_stream;
->   			       SNDRV_PCM_FMTBIT_S16_BE |\
->   			       SNDRV_PCM_FMTBIT_S20_3LE |\
->   			       SNDRV_PCM_FMTBIT_S20_3BE |\
-> +			       SNDRV_PCM_FMTBIT_S20_LE |\
-> +			       SNDRV_PCM_FMTBIT_S20_BE |\
->   			       SNDRV_PCM_FMTBIT_S24_3LE |\
->   			       SNDRV_PCM_FMTBIT_S24_3BE |\
->                                  SNDRV_PCM_FMTBIT_S32_LE |\
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index c227ccba60ae..7385024041d2 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -214,6 +214,11 @@ typedef int __bitwise snd_pcm_format_t;
->   #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
->   #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
->   #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
-> +#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* \ 			*/
-> +#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* | 			*/
-> +#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* | in four bytes,	*/
-> +#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* / LSB justified	*/
-> +/* gap in the numbering for a future standard linear format */
->   #define	SNDRV_PCM_FORMAT_SPECIAL	((__force snd_pcm_format_t) 31)
->   #define	SNDRV_PCM_FORMAT_S24_3LE	((__force snd_pcm_format_t) 32)	/* in three bytes */
->   #define	SNDRV_PCM_FORMAT_S24_3BE	((__force snd_pcm_format_t) 33)	/* in three bytes */
-> @@ -248,6 +253,8 @@ typedef int __bitwise snd_pcm_format_t;
->   #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_LE
->   #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_LE
->   #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
-> +#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_LE
-> +#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_LE
->   #endif
->   #ifdef SNDRV_BIG_ENDIAN
->   #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
-> @@ -259,6 +266,8 @@ typedef int __bitwise snd_pcm_format_t;
->   #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_BE
->   #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_BE
->   #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
-> +#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_BE
-> +#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_BE
->   #endif
->   
->   typedef int __bitwise snd_pcm_subformat_t;
-> diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-> index 9be81025372f..c4eb561d2008 100644
-> --- a/sound/core/pcm_misc.c
-> +++ b/sound/core/pcm_misc.c
-> @@ -163,13 +163,30 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
->   		.width = 32, .phys = 32, .le = 0, .signd = 0,
->   		.silence = { 0x69, 0x69, 0x69, 0x69 },
->   	},
-> -	/* FIXME: the following three formats are not defined properly yet */
-> +	/* FIXME: the following two formats are not defined properly yet */
->   	[SNDRV_PCM_FORMAT_MPEG] = {
->   		.le = -1, .signd = -1,
->   	},
->   	[SNDRV_PCM_FORMAT_GSM] = {
->   		.le = -1, .signd = -1,
->   	},
-> +	[SNDRV_PCM_FORMAT_S20_LE] = {
-> +		.width = 20, .phys = 32, .le = 1, .signd = 1,
-> +		.silence = {},
-> +	},
-> +	[SNDRV_PCM_FORMAT_S20_BE] = {
-> +		.width = 20, .phys = 32, .le = 0, .signd = 1,
-> +		.silence = {},
-> +	},
-> +	[SNDRV_PCM_FORMAT_U20_LE] = {
-> +		.width = 20, .phys = 32, .le = 1, .signd = 0,
-> +		.silence = { 0x00, 0x00, 0x08, 0x00 },
-> +	},
-> +	[SNDRV_PCM_FORMAT_U20_BE] = {
-> +		.width = 20, .phys = 32, .le = 0, .signd = 0,
-> +		.silence = { 0x00, 0x08, 0x00, 0x00 },
-> +	},
-> +	/* FIXME: the following format is not defined properly yet */
->   	[SNDRV_PCM_FORMAT_SPECIAL] = {
->   		.le = -1, .signd = -1,
->   	},
-
-Looks good to me.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-In next time to post any of your v2 patchset, it's better to add 
-commenters of v1 patchset to CC list, so that your patch reaches the 
-person who has practical interests in it.
-
-I'm waiting for your another patch to alsa-lib.
+>   }
 
 
-Thanks
+Regards
 
 Takashi Sakamoto
