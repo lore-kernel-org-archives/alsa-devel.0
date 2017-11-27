@@ -1,60 +1,53 @@
-From: walter harms <wharms@bfs.de>
-Subject: Re: [PATCH] ALSA: drivers: make array 'names' const, reduces object
- code size
-Date: Mon, 27 Nov 2017 15:55:28 +0100
-Message-ID: <5A1C2760.1030704@bfs.de>
-References: <20171127125851.10076-1-colin.king@canonical.com>
-Reply-To: wharms@bfs.de
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH 0/3] ASoC-cs42l73: Adjustments for two
+ function implementations
+Date: Mon, 27 Nov 2017 08:57:03 -0600
+Message-ID: <d9b4a77a-ad22-4a30-8e7a-6a30511ee064@EX3.ad.cirrus.com>
+References: <609e2542-4750-fe60-4f42-08bca79bfb56@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171127125851.10076-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin King <colin.king@canonical.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E46E266DCC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 15:56:45 +0100 (CET)
+In-Reply-To: <609e2542-4750-fe60-4f42-08bca79bfb56@users.sourceforge.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 22 Nov 2017, SF Markus Elfring wrote:
 
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 22 Nov 2017 16:38:32 +0100
+> 
+> Three update suggestions were taken into account
+> from static source code analysis.
+> 
+> Markus Elfring (3):
+>   Delete an error message for a failed memory allocation in cs42l73_i2c_probe()
+>   Improve two size determinations in cs42l73_i2c_probe()
+>   Fix a typo in two comments
+> 
+>  sound/soc/codecs/cs42l73.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> -- 
+> 2.15.0
+> 
+> 
+Sorry for the company notification that this is an external email. Very   
+clever indeed
 
-Am 27.11.2017 13:58, schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate array 'names' on the stack but instead make them static.
-> Makes the object code smaller by 50 bytes:
-> 
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->   21237	   9192	   1120	  31549	   7b3d	linux/sound/drivers/dummy.o
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->   21095	   9280	   1120	  31495	   7b07	linux/sound/drivers/dummy.o
-> 
-> (gcc version 7.2.0 x86_64)
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  sound/drivers/dummy.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-> index 7b2b1f766b00..69db45bc0197 100644
-> --- a/sound/drivers/dummy.c
-> +++ b/sound/drivers/dummy.c
-> @@ -830,7 +830,7 @@ static int snd_dummy_capsrc_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
->  static int snd_dummy_iobox_info(struct snd_kcontrol *kcontrol,
->  				struct snd_ctl_elem_info *info)
->  {
-> -	const char *const names[] = { "None", "CD Player" };
-> +	static const char *const names[] = { "None", "CD Player" };
->  
->  	return snd_ctl_enum_info(info, 1, 2, names);
->  }
-
-nitpick: while here
-   snd_ctl_enum_info(info, 1, ARRAY_SIZE(names), names);
-
-just my 2 cents,
-re,
- wh
+For the Series, Thanks
+Acked-by: Brian Austin <brian.austin@cirrus.com>
