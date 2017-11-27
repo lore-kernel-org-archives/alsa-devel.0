@@ -1,76 +1,156 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [alsa-devel] [PATCH v3 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,
- U}20
-Date: Mon, 27 Nov 2017 22:26:36 +0100
-Message-ID: <8110a97f-c230-8117-2a2d-81b42766a8ec@maciej.szmigiero.name>
-References: <c0667b29-661d-2b48-d5c2-75291f97d55a@maciej.szmigiero.name>
- <s5h374zmpoi.wl-tiwai@suse.de>
+Subject: [PATCH v4 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,U}20
+Date: Mon, 27 Nov 2017 23:33:29 +0100
+Message-ID: <3a279ea2-8098-d5a4-a53e-b0e3585fa9bf@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h374zmpoi.wl-tiwai@suse.de>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On 27.11.2017 21:28, Takashi Iwai wrote:
-> On Mon, 27 Nov 2017 00:09:47 +0100,
-> Maciej S. Szmigiero wrote:
->> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
->> index 58acd00cae19..d970879944fc 100644
->> --- a/include/sound/soc-dai.h
->> +++ b/include/sound/soc-dai.h
->> @@ -102,6 +102,8 @@ struct snd_compr_stream;
->>  			       SNDRV_PCM_FMTBIT_S16_BE |\
->>  			       SNDRV_PCM_FMTBIT_S20_3LE |\
->>  			       SNDRV_PCM_FMTBIT_S20_3BE |\
->> +			       SNDRV_PCM_FMTBIT_S20_LE |\
->> +			       SNDRV_PCM_FMTBIT_S20_BE |\
->>  			       SNDRV_PCM_FMTBIT_S24_3LE |\
->>  			       SNDRV_PCM_FMTBIT_S24_3BE |\
->>                                 SNDRV_PCM_FMTBIT_S32_LE |\
-> 
-> Is it really safe to include them unconditionally...?
+This format is similar to existing SNDRV_PCM_FORMAT_{S,U}20_3 that keep
+20-bit PCM samples in 3 bytes, however i.MX6 platform SSI FIFO does not
+allow 3-byte accesses (including DMA) so a 4-byte (more conventional)
+format is needed for it.
 
-This define is used as a template of supported formats only in ASoC AC'97
-CODECs.
-A list of effective supported sample formats will be calculated as an
-intersection of CODEC and CPU-supported formats (and DMA
-controller-supported bit widths).
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+---
+Changes from v1: Drop "_4" suffix from these formats since they aren't
+non-standard ones, use empty format slots starting from format number 25
+for them, add information that they are LSB justified formats.
 
-This means that as long as ASoC CPUs don't add these sample formats to
-their list of supported formats they should not be offered as supported
-by any sound card.
+Changes from v2: Adapt a comment in sound/core/pcm_misc.c so it still
+refers to the same sample formats as before.
 
-Also, we already have similar SNDRV_PCM_FMTBIT_S20_3 formats in this
-define.
+Changes from v3: Make the comment style in include/uapi/sound/asound.h
+match the style of comments at other sample formats.
 
->> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
->> index c227ccba60ae..7385024041d2 100644
->> --- a/include/uapi/sound/asound.h
->> +++ b/include/uapi/sound/asound.h
->> @@ -214,6 +214,11 @@ typedef int __bitwise snd_pcm_format_t;
->>  #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
->>  #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
->>  #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
->> +#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* \ 			*/
->> +#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* | 			*/
->> +#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* | in four bytes,	*/
->> +#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* / LSB justified	*/
-> 
-> This style of comments is unusual, so I prefer rather a dumb style,
-> even don't mind repeating the same text in each line.  They'll be over
-> 80 chars in anyway, so ignore what checkpatch complains.
+Corresponding alsa-lib changes will be posted as soon as this patch is
+merged on the kernel side, to keep alsa-lib and kernel synchronized.
 
-OK, will change it to the repetitive style then in a respin.
+ include/sound/pcm.h         |  8 ++++++++
+ include/sound/soc-dai.h     |  2 ++
+ include/uapi/sound/asound.h |  9 +++++++++
+ sound/core/pcm_misc.c       | 19 ++++++++++++++++++-
+ 4 files changed, 37 insertions(+), 1 deletion(-)
 
-> thanks,
-> 
-> Takashi
-> 
-
-Thanks,
-Maciej
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 24febf9e177c..e054c583d3b3 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -169,6 +169,10 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_IMA_ADPCM	_SNDRV_PCM_FMTBIT(IMA_ADPCM)
+ #define SNDRV_PCM_FMTBIT_MPEG		_SNDRV_PCM_FMTBIT(MPEG)
+ #define SNDRV_PCM_FMTBIT_GSM		_SNDRV_PCM_FMTBIT(GSM)
++#define SNDRV_PCM_FMTBIT_S20_LE	_SNDRV_PCM_FMTBIT(S20_LE)
++#define SNDRV_PCM_FMTBIT_U20_LE	_SNDRV_PCM_FMTBIT(U20_LE)
++#define SNDRV_PCM_FMTBIT_S20_BE	_SNDRV_PCM_FMTBIT(S20_BE)
++#define SNDRV_PCM_FMTBIT_U20_BE	_SNDRV_PCM_FMTBIT(U20_BE)
+ #define SNDRV_PCM_FMTBIT_SPECIAL	_SNDRV_PCM_FMTBIT(SPECIAL)
+ #define SNDRV_PCM_FMTBIT_S24_3LE	_SNDRV_PCM_FMTBIT(S24_3LE)
+ #define SNDRV_PCM_FMTBIT_U24_3LE	_SNDRV_PCM_FMTBIT(U24_3LE)
+@@ -202,6 +206,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_LE
+ #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_LE
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
++#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_LE
++#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_BE
+@@ -213,6 +219,8 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_FLOAT		SNDRV_PCM_FMTBIT_FLOAT_BE
+ #define SNDRV_PCM_FMTBIT_FLOAT64	SNDRV_PCM_FMTBIT_FLOAT64_BE
+ #define SNDRV_PCM_FMTBIT_IEC958_SUBFRAME SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE
++#define SNDRV_PCM_FMTBIT_S20		SNDRV_PCM_FMTBIT_S20_BE
++#define SNDRV_PCM_FMTBIT_U20		SNDRV_PCM_FMTBIT_U20_BE
+ #endif
+ 
+ struct snd_pcm_file {
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 58acd00cae19..d970879944fc 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -102,6 +102,8 @@ struct snd_compr_stream;
+ 			       SNDRV_PCM_FMTBIT_S16_BE |\
+ 			       SNDRV_PCM_FMTBIT_S20_3LE |\
+ 			       SNDRV_PCM_FMTBIT_S20_3BE |\
++			       SNDRV_PCM_FMTBIT_S20_LE |\
++			       SNDRV_PCM_FMTBIT_S20_BE |\
+ 			       SNDRV_PCM_FMTBIT_S24_3LE |\
+ 			       SNDRV_PCM_FMTBIT_S24_3BE |\
+                                SNDRV_PCM_FMTBIT_S32_LE |\
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index c227ccba60ae..07d61583fd02 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -214,6 +214,11 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_IMA_ADPCM	((__force snd_pcm_format_t) 22)
+ #define	SNDRV_PCM_FORMAT_MPEG		((__force snd_pcm_format_t) 23)
+ #define	SNDRV_PCM_FORMAT_GSM		((__force snd_pcm_format_t) 24)
++#define	SNDRV_PCM_FORMAT_S20_LE	((__force snd_pcm_format_t) 25) /* in four bytes, LSB justified */
++#define	SNDRV_PCM_FORMAT_S20_BE	((__force snd_pcm_format_t) 26) /* in four bytes, LSB justified */
++#define	SNDRV_PCM_FORMAT_U20_LE	((__force snd_pcm_format_t) 27) /* in four bytes, LSB justified */
++#define	SNDRV_PCM_FORMAT_U20_BE	((__force snd_pcm_format_t) 28) /* in four bytes, LSB justified */
++/* gap in the numbering for a future standard linear format */
+ #define	SNDRV_PCM_FORMAT_SPECIAL	((__force snd_pcm_format_t) 31)
+ #define	SNDRV_PCM_FORMAT_S24_3LE	((__force snd_pcm_format_t) 32)	/* in three bytes */
+ #define	SNDRV_PCM_FORMAT_S24_3BE	((__force snd_pcm_format_t) 33)	/* in three bytes */
+@@ -248,6 +253,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_LE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_LE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_LE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_LE
+ #endif
+ #ifdef SNDRV_BIG_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_BE
+@@ -259,6 +266,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_FLOAT		SNDRV_PCM_FORMAT_FLOAT_BE
+ #define	SNDRV_PCM_FORMAT_FLOAT64	SNDRV_PCM_FORMAT_FLOAT64_BE
+ #define	SNDRV_PCM_FORMAT_IEC958_SUBFRAME SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE
++#define	SNDRV_PCM_FORMAT_S20		SNDRV_PCM_FORMAT_S20_BE
++#define	SNDRV_PCM_FORMAT_U20		SNDRV_PCM_FORMAT_U20_BE
+ #endif
+ 
+ typedef int __bitwise snd_pcm_subformat_t;
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index 9be81025372f..c4eb561d2008 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -163,13 +163,30 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
+ 		.width = 32, .phys = 32, .le = 0, .signd = 0,
+ 		.silence = { 0x69, 0x69, 0x69, 0x69 },
+ 	},
+-	/* FIXME: the following three formats are not defined properly yet */
++	/* FIXME: the following two formats are not defined properly yet */
+ 	[SNDRV_PCM_FORMAT_MPEG] = {
+ 		.le = -1, .signd = -1,
+ 	},
+ 	[SNDRV_PCM_FORMAT_GSM] = {
+ 		.le = -1, .signd = -1,
+ 	},
++	[SNDRV_PCM_FORMAT_S20_LE] = {
++		.width = 20, .phys = 32, .le = 1, .signd = 1,
++		.silence = {},
++	},
++	[SNDRV_PCM_FORMAT_S20_BE] = {
++		.width = 20, .phys = 32, .le = 0, .signd = 1,
++		.silence = {},
++	},
++	[SNDRV_PCM_FORMAT_U20_LE] = {
++		.width = 20, .phys = 32, .le = 1, .signd = 0,
++		.silence = { 0x00, 0x00, 0x08, 0x00 },
++	},
++	[SNDRV_PCM_FORMAT_U20_BE] = {
++		.width = 20, .phys = 32, .le = 0, .signd = 0,
++		.silence = { 0x00, 0x08, 0x00, 0x00 },
++	},
++	/* FIXME: the following format is not defined properly yet */
+ 	[SNDRV_PCM_FORMAT_SPECIAL] = {
+ 		.le = -1, .signd = -1,
+ 	},
