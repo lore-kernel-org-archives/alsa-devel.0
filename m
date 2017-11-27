@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l32: Delete two error messages for
-	a failed memory allocation in cs35l32_i2c_probe()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:02 +0000
-Message-ID: <E1eJOWc-00079F-RT@debutante>
-References: <8980f9c6-f559-816f-9ec8-e22194e0f3aa@users.sourceforge.net>
+Subject: Applied "ASoC: Intel: kbl_rt5663_max98927: Map BTN_0
+	to KEY_PLAYPAUSE" to the asoc tree
+Date: Mon, 27 Nov 2017 18:53:23 +0000
+Message-ID: <E1eJOWx-0007HJ-Uu@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C178267614
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:18 +0100 (CET)
-In-Reply-To: <8980f9c6-f559-816f-9ec8-e22194e0f3aa@users.sourceforge.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id C60272675DD
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:24 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>
+To: Benson Leung <bleung@chromium.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l32: Delete two error messages for a failed memory allocation in cs35l32_i2c_probe()
+   ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE
 
 has been applied to the asoc tree at
 
@@ -53,50 +52,40 @@ to this mail.
 Thanks,
 Mark
 
->From 410afed04b130fc1c22f82b10b20aed1636d2f15 Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 22 Nov 2017 20:35:06 +0100
-Subject: [PATCH] ASoC: cs35l32: Delete two error messages for a failed memory
- allocation in cs35l32_i2c_probe()
+>From 38a5882e4292d135cebabad0b56c9420dfdd80a5 Mon Sep 17 00:00:00 2001
+From: Benson Leung <bleung@chromium.org>
+Date: Wed, 22 Nov 2017 12:56:40 -0800
+Subject: [PATCH] ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE
 
-Omit extra messages for a memory allocation failure in this function.
+The Android 3.5mm Headset jack specification mentions that BTN_0 should
+be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
+which has much broader userspace support.
 
-This issue was detected by using the Coccinelle software.
+For example, the Chrome OS userspace now supports KEY_PLAYPAUSE to toggle
+play/pause of videos and audio, but does not handle KEY_MEDIA.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Furthermore, Android itself now supports KEY_PLAYPAUSE equivalently, as the
+new USB headset spec requires KEY_PLAYPAUSE for BTN_0.
+https://source.android.com/devices/accessories/headset/usb-headset-spec
+
+Signed-off-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l32.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/kbl_rt5663_max98927.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 7e9806206648..e41d8ebe6eea 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -358,10 +358,8 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
+diff --git a/sound/soc/intel/boards/kbl_rt5663_max98927.c b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+index 6f9a8bcf20f3..94a34db4f8c0 100644
+--- a/sound/soc/intel/boards/kbl_rt5663_max98927.c
++++ b/sound/soc/intel/boards/kbl_rt5663_max98927.c
+@@ -225,7 +225,7 @@ static int kabylake_rt5663_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	}
  
- 	cs35l32 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs35l32_private),
- 			       GFP_KERNEL);
--	if (!cs35l32) {
--		dev_err(&i2c_client->dev, "could not allocate codec\n");
-+	if (!cs35l32)
- 		return -ENOMEM;
--	}
- 
- 	i2c_set_clientdata(i2c_client, cs35l32);
- 
-@@ -378,10 +376,9 @@ static int cs35l32_i2c_probe(struct i2c_client *i2c_client,
- 		pdata = devm_kzalloc(&i2c_client->dev,
- 				     sizeof(struct cs35l32_platform_data),
- 				GFP_KERNEL);
--		if (!pdata) {
--			dev_err(&i2c_client->dev, "could not allocate pdata\n");
-+		if (!pdata)
- 			return -ENOMEM;
--		}
-+
- 		if (i2c_client->dev.of_node) {
- 			ret = cs35l32_handle_of_data(i2c_client,
- 						     &cs35l32->pdata);
+ 	jack = &ctx->kabylake_headset;
+-	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
 -- 
 2.15.0
