@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42l73: Delete an error message for a failed memory allocation in cs42l73_i2c_probe()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:11 +0000
-Message-ID: <E1eJOWl-0007CT-Qd@debutante>
-References: <ac3d081a-377d-f016-bdb1-63dceb951281@users.sourceforge.net>
+Subject: Applied "ASoC: cs42l73: Improve two size determinations in cs42l73_i2c_probe()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:53:08 +0000
+Message-ID: <E1eJOWi-0007BO-Qa@debutante>
+References: <7229b291-d1e3-6269-4c68-435bbdffb0fd@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ac3d081a-377d-f016-bdb1-63dceb951281@users.sourceforge.net>
+In-Reply-To: <7229b291-d1e3-6269-4c68-435bbdffb0fd@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
 Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42l73: Delete an error message for a failed memory allocation in cs42l73_i2c_probe()
+   ASoC: cs42l73: Improve two size determinations in cs42l73_i2c_probe()
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From ddedd797943df21a2464420744d117e930a43af8 Mon Sep 17 00:00:00 2001
+>From 68fa08c665e51b2fe100876692e57bca3aea7711 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 22 Nov 2017 15:50:46 +0100
-Subject: [PATCH] ASoC: cs42l73: Delete an error message for a failed memory
- allocation in cs42l73_i2c_probe()
+Date: Wed, 22 Nov 2017 16:07:42 +0100
+Subject: [PATCH] ASoC: cs42l73: Improve two size determinations in
+ cs42l73_i2c_probe()
 
-Omit an extra message for a memory allocation failure in this function.
+Replace the specification of two data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs42l73.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs42l73.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 3df2c473ab88..978cfbbad408 100644
+index 978cfbbad408..dde37e569ade 100644
 --- a/sound/soc/codecs/cs42l73.c
 +++ b/sound/soc/codecs/cs42l73.c
-@@ -1307,10 +1307,9 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
- 		pdata = devm_kzalloc(&i2c_client->dev,
- 				     sizeof(struct cs42l73_platform_data),
- 				GFP_KERNEL);
--		if (!pdata) {
--			dev_err(&i2c_client->dev, "could not allocate pdata\n");
-+		if (!pdata)
+@@ -1289,8 +1289,7 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	unsigned int reg;
+ 	u32 val32;
+ 
+-	cs42l73 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l73_private),
+-			       GFP_KERNEL);
++	cs42l73 = devm_kzalloc(&i2c_client->dev, sizeof(*cs42l73), GFP_KERNEL);
+ 	if (!cs42l73)
+ 		return -ENOMEM;
+ 
+@@ -1304,9 +1303,8 @@ static int cs42l73_i2c_probe(struct i2c_client *i2c_client,
+ 	if (pdata) {
+ 		cs42l73->pdata = *pdata;
+ 	} else {
+-		pdata = devm_kzalloc(&i2c_client->dev,
+-				     sizeof(struct cs42l73_platform_data),
+-				GFP_KERNEL);
++		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
++				     GFP_KERNEL);
+ 		if (!pdata)
  			return -ENOMEM;
--		}
-+
- 		if (i2c_client->dev.of_node) {
- 			if (of_property_read_u32(i2c_client->dev.of_node,
- 				"chgfreq", &val32) >= 0)
+ 
 -- 
 2.15.0
