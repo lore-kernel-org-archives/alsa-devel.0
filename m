@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7218: Delete two error messages for a failed memory allocation in da7218_of_to_pdata()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:54:01 +0000
-Message-ID: <E1eJOXZ-0007T5-9U@debutante>
-References: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <d6ca1c55-1bb9-7ec2-de4a-63b994567d59@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, support.opensource@diasemi.comAdam Thomson <Adam.Thomson.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: don't use codec hw_write on uda1380" to
+	the asoc tree
+Date: Mon, 27 Nov 2017 18:52:17 +0000
+Message-ID: <E1eJOVt-0006v5-Rz@debutante>
+References: <87fuc7m11v.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB84B267588
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:21 +0100 (CET)
+In-Reply-To: <87fuc7m11v.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7218: Delete two error messages for a failed memory allocation in da7218_of_to_pdata()
+   ASoC: don't use codec hw_write on uda1380
 
 has been applied to the asoc tree at
 
@@ -37,47 +53,107 @@ to this mail.
 Thanks,
 Mark
 
->From 14a07f1d8c4c64af29566316df0415052e8bdfe4 Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 20:42:20 +0100
-Subject: [PATCH] ASoC: da7218: Delete two error messages for a failed memory
- allocation in da7218_of_to_pdata()
+>From eaa53216c5909ae1567d15888e55d9b1d7269ca7 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 9 Nov 2017 00:19:33 +0000
+Subject: [PATCH] ASoC: don't use codec hw_write on uda1380
 
-Omit extra messages for a memory allocation failure in this function.
+uda1380 driver is using codec hw_write/control_data,
+but it is redundant code. This patch cleanup these
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7218.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/codecs/uda1380.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index 56564ce90cb6..25ab7443d803 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -2455,10 +2455,8 @@ static struct da7218_pdata *da7218_of_to_pdata(struct snd_soc_codec *codec)
- 	u32 of_val32;
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index 926c81ae8185..44448023edb0 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -37,7 +37,7 @@ struct uda1380_priv {
+ 	struct snd_soc_codec *codec;
+ 	unsigned int dac_clk;
+ 	struct work_struct work;
+-	void *control_data;
++	struct i2c_client *i2c;
+ };
  
- 	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
--	if (!pdata) {
--		dev_warn(codec->dev, "Failed to allocate memory for pdata\n");
-+	if (!pdata)
- 		return NULL;
--	}
+ /*
+@@ -92,6 +92,7 @@ static inline void uda1380_write_reg_cache(struct snd_soc_codec *codec,
+ static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	unsigned int value)
+ {
++	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
+ 	u8 data[3];
  
- 	if (of_property_read_u32(np, "dlg,micbias1-lvl-millivolt", &of_val32) >= 0)
- 		pdata->micbias1_lvl = da7218_of_micbias_lvl(codec, of_val32);
-@@ -2527,8 +2525,6 @@ static struct da7218_pdata *da7218_of_to_pdata(struct snd_soc_codec *codec)
- 		hpldet_pdata = devm_kzalloc(codec->dev, sizeof(*hpldet_pdata),
- 					    GFP_KERNEL);
- 		if (!hpldet_pdata) {
--			dev_warn(codec->dev,
--				 "Failed to allocate memory for hpldet pdata\n");
- 			of_node_put(hpldet_np);
- 			return pdata;
+ 	/* data is
+@@ -111,10 +112,10 @@ static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	if (!snd_soc_codec_is_active(codec) && (reg >= UDA1380_MVOL))
+ 		return 0;
+ 	pr_debug("uda1380: hw write %x val %x\n", reg, value);
+-	if (codec->hw_write(codec->control_data, data, 3) == 3) {
++	if (i2c_master_send(uda1380->i2c, data, 3) == 3) {
+ 		unsigned int val;
+-		i2c_master_send(codec->control_data, data, 1);
+-		i2c_master_recv(codec->control_data, data, 2);
++		i2c_master_send(uda1380->i2c, data, 1);
++		i2c_master_recv(uda1380->i2c, data, 2);
+ 		val = (data[0]<<8) | data[1];
+ 		if (val != value) {
+ 			pr_debug("uda1380: READ BACK VAL %x\n",
+@@ -130,6 +131,7 @@ static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
+ 
+ static void uda1380_sync_cache(struct snd_soc_codec *codec)
+ {
++	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
+ 	int reg;
+ 	u8 data[3];
+ 	u16 *cache = codec->reg_cache;
+@@ -139,7 +141,7 @@ static void uda1380_sync_cache(struct snd_soc_codec *codec)
+ 		data[0] = reg;
+ 		data[1] = (cache[reg] & 0xff00) >> 8;
+ 		data[2] = cache[reg] & 0x00ff;
+-		if (codec->hw_write(codec->control_data, data, 3) != 3)
++		if (i2c_master_send(uda1380->i2c, data, 3) != 3)
+ 			dev_err(codec->dev, "%s: write to reg 0x%x failed\n",
+ 				__func__, reg);
+ 	}
+@@ -148,6 +150,7 @@ static void uda1380_sync_cache(struct snd_soc_codec *codec)
+ static int uda1380_reset(struct snd_soc_codec *codec)
+ {
+ 	struct uda1380_platform_data *pdata = codec->dev->platform_data;
++	struct uda1380_priv *uda1380 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (gpio_is_valid(pdata->gpio_reset)) {
+ 		gpio_set_value(pdata->gpio_reset, 1);
+@@ -160,7 +163,7 @@ static int uda1380_reset(struct snd_soc_codec *codec)
+ 		data[1] = 0;
+ 		data[2] = 0;
+ 
+-		if (codec->hw_write(codec->control_data, data, 3) != 3) {
++		if (i2c_master_send(uda1380->i2c, data, 3) != 3) {
+ 			dev_err(codec->dev, "%s: failed\n", __func__);
+ 			return -EIO;
  		}
+@@ -695,9 +698,6 @@ static int uda1380_probe(struct snd_soc_codec *codec)
+ 
+ 	uda1380->codec = codec;
+ 
+-	codec->hw_write = (hw_write_t)i2c_master_send;
+-	codec->control_data = uda1380->control_data;
+-
+ 	if (!gpio_is_valid(pdata->gpio_power)) {
+ 		ret = uda1380_reset(codec);
+ 		if (ret)
+@@ -772,7 +772,7 @@ static int uda1380_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	i2c_set_clientdata(i2c, uda1380);
+-	uda1380->control_data = i2c;
++	uda1380->i2c = i2c;
+ 
+ 	ret =  snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_uda1380, uda1380_dai, ARRAY_SIZE(uda1380_dai));
 -- 
 2.15.0
