@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm2000: Improve a size determination in wm2000_i2c_probe()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:54:32 +0000
-Message-ID: <E1eJOY4-0007Xr-IK@debutante>
-References: <a6e50094-3d1c-6ad4-67e4-377036f5ccd6@users.sourceforge.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a6e50094-3d1c-6ad4-67e4-377036f5ccd6@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: fsl_ssi: serialize AC'97 register
+	access operations" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:44 +0000
+Message-ID: <E1eJOWK-00072K-EV@debutante>
+References: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E83A26757F
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:54 +0100 (CET)
+In-Reply-To: <9010cdad-4b05-d456-bf73-24cc48e38d69@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm2000: Improve a size determination in wm2000_i2c_probe()
+   ASoC: fsl_ssi: serialize AC'97 register access operations
 
 has been applied to the asoc tree at
 
@@ -37,38 +53,134 @@ to this mail.
 Thanks,
 Mark
 
->From bf0842ba3afa85d37b35e65dedec9a994988e346 Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 24 Nov 2017 08:18:14 +0100
-Subject: [PATCH] ASoC: wm2000: Improve a size determination in
- wm2000_i2c_probe()
+>From b880b8056b31288323745a13930bc45cf4c86e9d Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Mon, 20 Nov 2017 23:16:07 +0100
+Subject: [PATCH] ASoC: fsl_ssi: serialize AC'97 register access operations
 
-Replace the specification of a data structure by a pointer dereference
-as the parameter for the operator "sizeof" to make the corresponding size
-determination a bit safer according to the Linux coding style convention.
+AC'97 register access operations (both read and write) on SSI use a one,
+shared set of SSI registers for AC'97 register address and data.
+This means that only one such access is possible at a time and so all these
+operations need to be serialized.
 
-This issue was detected by using the Coccinelle software.
+Since an AC'97 register access operation in this driver takes 100us+ let's
+use a mutex for this.
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Use this opportunity to also change a default value returned from AC'97
+register read function from -1 to 0, since that's what AC'97 specs require
+to be returned when unknown / undefined registers are read.
+
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm2000.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
-index 480ceb07c3ed..abfa052c07d8 100644
---- a/sound/soc/codecs/wm2000.c
-+++ b/sound/soc/codecs/wm2000.c
-@@ -826,8 +826,7 @@ static int wm2000_i2c_probe(struct i2c_client *i2c,
- 	int reg;
- 	u16 id;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index c3a83ed0297e..424bafaf51ef 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -38,6 +38,7 @@
+ #include <linux/ctype.h>
+ #include <linux/device.h>
+ #include <linux/delay.h>
++#include <linux/mutex.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/of.h>
+@@ -265,6 +266,8 @@ struct fsl_ssi_private {
  
--	wm2000 = devm_kzalloc(&i2c->dev, sizeof(struct wm2000_priv),
--			      GFP_KERNEL);
-+	wm2000 = devm_kzalloc(&i2c->dev, sizeof(*wm2000), GFP_KERNEL);
- 	if (!wm2000)
- 		return -ENOMEM;
+ 	u32 fifo_watermark;
+ 	u32 dma_maxburst;
++
++	struct mutex ac97_reg_lock;
+ };
  
+ /*
+@@ -1260,11 +1263,13 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 	if (reg > 0x7f)
+ 		return;
+ 
++	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
++
+ 	ret = clk_prepare_enable(fsl_ac97_data->clk);
+ 	if (ret) {
+ 		pr_err("ac97 write clk_prepare_enable failed: %d\n",
+ 			ret);
+-		return;
++		goto ret_unlock;
+ 	}
+ 
+ 	lreg = reg <<  12;
+@@ -1278,6 +1283,9 @@ static void fsl_ssi_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 	udelay(100);
+ 
+ 	clk_disable_unprepare(fsl_ac97_data->clk);
++
++ret_unlock:
++	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
+ }
+ 
+ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
+@@ -1285,16 +1293,18 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
+ {
+ 	struct regmap *regs = fsl_ac97_data->regs;
+ 
+-	unsigned short val = -1;
++	unsigned short val = 0;
+ 	u32 reg_val;
+ 	unsigned int lreg;
+ 	int ret;
+ 
++	mutex_lock(&fsl_ac97_data->ac97_reg_lock);
++
+ 	ret = clk_prepare_enable(fsl_ac97_data->clk);
+ 	if (ret) {
+ 		pr_err("ac97 read clk_prepare_enable failed: %d\n",
+ 			ret);
+-		return -1;
++		goto ret_unlock;
+ 	}
+ 
+ 	lreg = (reg & 0x7f) <<  12;
+@@ -1309,6 +1319,8 @@ static unsigned short fsl_ssi_ac97_read(struct snd_ac97 *ac97,
+ 
+ 	clk_disable_unprepare(fsl_ac97_data->clk);
+ 
++ret_unlock:
++	mutex_unlock(&fsl_ac97_data->ac97_reg_lock);
+ 	return val;
+ }
+ 
+@@ -1569,6 +1581,7 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (fsl_ssi_is_ac97(ssi_private)) {
++		mutex_init(&ssi_private->ac97_reg_lock);
+ 		ret = snd_soc_set_ac97_ops_of_reset(&fsl_ssi_ac97_ops, pdev);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "could not set AC'97 ops\n");
+@@ -1663,6 +1676,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		snd_soc_set_ac97_ops(NULL);
+ 
+ error_ac97_ops:
++	if (fsl_ssi_is_ac97(ssi_private))
++		mutex_destroy(&ssi_private->ac97_reg_lock);
++
+ 	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
+ 
+@@ -1681,8 +1697,10 @@ static int fsl_ssi_remove(struct platform_device *pdev)
+ 	if (ssi_private->soc->imx)
+ 		fsl_ssi_imx_clean(pdev, ssi_private);
+ 
+-	if (fsl_ssi_is_ac97(ssi_private))
++	if (fsl_ssi_is_ac97(ssi_private)) {
+ 		snd_soc_set_ac97_ops(NULL);
++		mutex_destroy(&ssi_private->ac97_reg_lock);
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.15.0
