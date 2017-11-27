@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: don't use snd_soc_write/read on
-	twl4030" to the asoc tree
-Date: Mon, 27 Nov 2017 18:51:42 +0000
-Message-ID: <E1eJOVK-0006lV-2b@debutante>
-References: <87y3pzklfl.wl%kuninori.morimoto.gx@renesas.com>
+	twl6040" to the asoc tree
+Date: Mon, 27 Nov 2017 18:51:45 +0000
+Message-ID: <E1eJOVN-0006mS-MY@debutante>
+References: <87ziafklgc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A1EF266DCC
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:51:47 +0100 (CET)
-In-Reply-To: <87y3pzklfl.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BC12267544
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:51:48 +0100 (CET)
+In-Reply-To: <87ziafklgc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: don't use snd_soc_write/read on twl4030
+   ASoC: don't use snd_soc_write/read on twl6040
 
 has been applied to the asoc tree at
 
@@ -53,67 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 3bb0f7c31b1aedd0f85c675297031281799145d7 Mon Sep 17 00:00:00 2001
+>From 93a00c467fe998bf5716cbc9cabc127046054782 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 14 Nov 2017 01:05:17 +0000
-Subject: [PATCH] ASoC: don't use snd_soc_write/read on twl4030
+Date: Tue, 14 Nov 2017 01:04:58 +0000
+Subject: [PATCH] ASoC: don't use snd_soc_write/read on twl6040
 
-twl4030 doesn't use regmap nor reg_cache. Its write/read are done
-through twl4030_reg_write/read. This driver directly calling these
+twl6040 doesn't use regmap nor reg_cache. Its write/read are done
+through twl6040_reg_write/read. This driver directly calling these
 functions, but sometimes using snd_soc_write/read.
 As part of cleanup, snd_soc_codec_driver::write, read will be
 removed soon. Then, write/read access through snd_soc_write/read
 will doesn't work on this driver, since it doesn't use regmap nor
 reg_cache.
-This patch replace snd_soc_write/read to twl4030_write/read.
+This patch replace snd_soc_write/read to twl6040_write/read.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl4030.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/codecs/twl6040.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 90691701b082..8798182959c1 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -850,14 +850,14 @@ static int snd_soc_get_volsw_twl4030(struct snd_kcontrol *kcontrol,
- 	int mask = (1 << fls(max)) - 1;
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index a8e6941a1868..3b895b4b451c 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -543,7 +543,7 @@ int twl6040_get_dl1_gain(struct snd_soc_codec *codec)
+ 	if (snd_soc_dapm_get_pin_status(dapm, "HSOR") ||
+ 		snd_soc_dapm_get_pin_status(dapm, "HSOL")) {
  
- 	ucontrol->value.integer.value[0] =
--		(snd_soc_read(codec, reg) >> shift) & mask;
-+		(twl4030_read(codec, reg) >> shift) & mask;
- 	if (ucontrol->value.integer.value[0])
- 		ucontrol->value.integer.value[0] =
- 			max + 1 - ucontrol->value.integer.value[0];
- 
- 	if (shift != rshift) {
- 		ucontrol->value.integer.value[1] =
--			(snd_soc_read(codec, reg) >> rshift) & mask;
-+			(twl4030_read(codec, reg) >> rshift) & mask;
- 		if (ucontrol->value.integer.value[1])
- 			ucontrol->value.integer.value[1] =
- 				max + 1 - ucontrol->value.integer.value[1];
-@@ -908,9 +908,9 @@ static int snd_soc_get_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
- 	int mask = (1<<fls(max))-1;
- 
- 	ucontrol->value.integer.value[0] =
--		(snd_soc_read(codec, reg) >> shift) & mask;
-+		(twl4030_read(codec, reg) >> shift) & mask;
- 	ucontrol->value.integer.value[1] =
--		(snd_soc_read(codec, reg2) >> shift) & mask;
-+		(twl4030_read(codec, reg2) >> shift) & mask;
- 
- 	if (ucontrol->value.integer.value[0])
- 		ucontrol->value.integer.value[0] =
-@@ -2195,8 +2195,6 @@ static int twl4030_soc_remove(struct snd_soc_codec *codec)
- static const struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
- 	.probe = twl4030_soc_probe,
- 	.remove = twl4030_soc_remove,
--	.read = twl4030_read,
--	.write = twl4030_write,
- 	.set_bias_level = twl4030_set_bias_level,
- 	.idle_bias_off = true,
- 
+-		u8 val = snd_soc_read(codec, TWL6040_REG_HSLCTL);
++		u8 val = twl6040_read(codec, TWL6040_REG_HSLCTL);
+ 		if (val & TWL6040_HSDACMODE)
+ 			/* HSDACL in LP mode */
+ 			return -8; /* -8dB */
+@@ -1158,8 +1158,6 @@ static int twl6040_remove(struct snd_soc_codec *codec)
+ static const struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
+ 	.probe = twl6040_probe,
+ 	.remove = twl6040_remove,
+-	.read = twl6040_read,
+-	.write = twl6040_write,
+ 	.set_bias_level = twl6040_set_bias_level,
+ 	.suspend_bias_off = true,
+ 	.ignore_pmdown_time = true,
 -- 
 2.15.0
