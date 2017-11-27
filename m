@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ts3a227e: Map BTN_0 to KEY_PLAYPAUSE"
-	to the asoc tree
-Date: Mon, 27 Nov 2017 18:53:32 +0000
-Message-ID: <E1eJOX6-0007KI-A3@debutante>
+Subject: Applied "ASoC: cs42l56: Improve two size
+	determinations in cs42l56_i2c_probe()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:53:42 +0000
+Message-ID: <E1eJOXG-0007NP-J5@debutante>
+References: <8c36fc94-1f7d-5d22-7d3a-f2f6117199aa@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B148267632
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:33 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id A0BDC26767A
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:53:58 +0100 (CET)
+In-Reply-To: <8c36fc94-1f7d-5d22-7d3a-f2f6117199aa@users.sourceforge.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Benson Leung <bleung@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Markus Elfring <elfring@users.sourceforge.net>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ts3a227e: Map BTN_0 to KEY_PLAYPAUSE
+   ASoC: cs42l56: Improve two size determinations in cs42l56_i2c_probe()
 
 has been applied to the asoc tree at
 
@@ -52,40 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From af0f6c5820845b66c76296f281da5cf916d7e094 Mon Sep 17 00:00:00 2001
-From: Benson Leung <bleung@chromium.org>
-Date: Wed, 22 Nov 2017 12:56:41 -0800
-Subject: [PATCH] ASoC: ts3a227e: Map BTN_0 to KEY_PLAYPAUSE
+>From e8d8b98c0a6edab5d6cc0292e1ed603d8d4ff5b6 Mon Sep 17 00:00:00 2001
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Thu, 23 Nov 2017 09:33:15 +0100
+Subject: [PATCH] ASoC: cs42l56: Improve two size determinations in
+ cs42l56_i2c_probe()
 
-The Android 3.5mm Headset jack specification mentions that BTN_0 should
-be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
-which has much broader userspace support.
+Replace the specification of two data structures by pointer dereferences
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
-For example, the Chrome OS userspace now supports KEY_PLAYPAUSE to toggle
-play/pause of videos and audio, but does not handle KEY_MEDIA.
+This issue was detected by using the Coccinelle software.
 
-Furthermore, Android itself now supports KEY_PLAYPAUSE equivalently, as the
-new USB headset spec requires KEY_PLAYPAUSE for BTN_0.
-https://source.android.com/devices/accessories/headset/usb-headset-spec
-
-Signed-off-by: Benson Leung <bleung@chromium.org>
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ts3a227e.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs42l56.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 738e04b09116..1271e7e1fc78 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -241,7 +241,7 @@ int ts3a227e_enable_jack_detect(struct snd_soc_component *component,
- {
- 	struct ts3a227e *ts3a227e = snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 13ee46217d78..fd7b8d32c2b2 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -1190,9 +1190,7 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
+ 	unsigned int alpha_rev, metal_rev;
+ 	unsigned int reg;
  
--	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
- 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+-	cs42l56 = devm_kzalloc(&i2c_client->dev,
+-			       sizeof(struct cs42l56_private),
+-			       GFP_KERNEL);
++	cs42l56 = devm_kzalloc(&i2c_client->dev, sizeof(*cs42l56), GFP_KERNEL);
+ 	if (cs42l56 == NULL)
+ 		return -ENOMEM;
+ 	cs42l56->dev = &i2c_client->dev;
+@@ -1207,8 +1205,7 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client,
+ 	if (pdata) {
+ 		cs42l56->pdata = *pdata;
+ 	} else {
+-		pdata = devm_kzalloc(&i2c_client->dev,
+-				     sizeof(struct cs42l56_platform_data),
++		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
+ 				     GFP_KERNEL);
+ 		if (!pdata)
+ 			return -ENOMEM;
 -- 
 2.15.0
