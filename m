@@ -1,19 +1,18 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v3 1/2] ALSA: pcm: add SNDRV_PCM_FORMAT_{S,
-	U}20
-Date: Mon, 27 Nov 2017 19:40:52 +0100
-Message-ID: <afbe88bb-b7bb-7556-ebbc-b2c8f161f574@maciej.szmigiero.name>
-References: <c0667b29-661d-2b48-d5c2-75291f97d55a@maciej.szmigiero.name>
- <cd3bc8b1-612b-7e9d-fa67-7b88b1a6f251@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: don't use snd_soc_write/read on
+	twl4030" to the asoc tree
+Date: Mon, 27 Nov 2017 18:51:42 +0000
+Message-ID: <E1eJOVK-0006lV-2b@debutante>
+References: <87y3pzklfl.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 1692C266DCC
- for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:41:07 +0100 (CET)
-In-Reply-To: <cd3bc8b1-612b-7e9d-fa67-7b88b1a6f251@sakamocchi.jp>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A1EF266DCC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:51:47 +0100 (CET)
+In-Reply-To: <87y3pzklfl.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +22,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 27.11.2017 18:40, Takashi Sakamoto wrote:
-(..)
-> 
-> Looks good to me.
-> 
-> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+The patch
 
-Thanks.
+   ASoC: don't use snd_soc_write/read on twl4030
 
-> In next time to post any of your v2 patchset, it's better to add commenters of v1 patchset to CC list, so that your patch reaches the person who has practical interests in it.
+has been applied to the asoc tree at
 
-Will do it the next time.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Thanks
-> 
-> Takashi Sakamoto
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Best regards,
-Maciej Szmigiero
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 3bb0f7c31b1aedd0f85c675297031281799145d7 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 14 Nov 2017 01:05:17 +0000
+Subject: [PATCH] ASoC: don't use snd_soc_write/read on twl4030
+
+twl4030 doesn't use regmap nor reg_cache. Its write/read are done
+through twl4030_reg_write/read. This driver directly calling these
+functions, but sometimes using snd_soc_write/read.
+As part of cleanup, snd_soc_codec_driver::write, read will be
+removed soon. Then, write/read access through snd_soc_write/read
+will doesn't work on this driver, since it doesn't use regmap nor
+reg_cache.
+This patch replace snd_soc_write/read to twl4030_write/read.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/twl4030.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 90691701b082..8798182959c1 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -850,14 +850,14 @@ static int snd_soc_get_volsw_twl4030(struct snd_kcontrol *kcontrol,
+ 	int mask = (1 << fls(max)) - 1;
+ 
+ 	ucontrol->value.integer.value[0] =
+-		(snd_soc_read(codec, reg) >> shift) & mask;
++		(twl4030_read(codec, reg) >> shift) & mask;
+ 	if (ucontrol->value.integer.value[0])
+ 		ucontrol->value.integer.value[0] =
+ 			max + 1 - ucontrol->value.integer.value[0];
+ 
+ 	if (shift != rshift) {
+ 		ucontrol->value.integer.value[1] =
+-			(snd_soc_read(codec, reg) >> rshift) & mask;
++			(twl4030_read(codec, reg) >> rshift) & mask;
+ 		if (ucontrol->value.integer.value[1])
+ 			ucontrol->value.integer.value[1] =
+ 				max + 1 - ucontrol->value.integer.value[1];
+@@ -908,9 +908,9 @@ static int snd_soc_get_volsw_r2_twl4030(struct snd_kcontrol *kcontrol,
+ 	int mask = (1<<fls(max))-1;
+ 
+ 	ucontrol->value.integer.value[0] =
+-		(snd_soc_read(codec, reg) >> shift) & mask;
++		(twl4030_read(codec, reg) >> shift) & mask;
+ 	ucontrol->value.integer.value[1] =
+-		(snd_soc_read(codec, reg2) >> shift) & mask;
++		(twl4030_read(codec, reg2) >> shift) & mask;
+ 
+ 	if (ucontrol->value.integer.value[0])
+ 		ucontrol->value.integer.value[0] =
+@@ -2195,8 +2195,6 @@ static int twl4030_soc_remove(struct snd_soc_codec *codec)
+ static const struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
+ 	.probe = twl4030_soc_probe,
+ 	.remove = twl4030_soc_remove,
+-	.read = twl4030_read,
+-	.write = twl4030_write,
+ 	.set_bias_level = twl4030_set_bias_level,
+ 	.idle_bias_off = true,
+ 
+-- 
+2.15.0
