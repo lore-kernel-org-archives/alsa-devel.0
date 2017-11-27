@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl4030: Delete an error message for a failed memory allocation in twl4030_get_pdata()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:54:04 +0000
-Message-ID: <E1eJOXc-0007U4-Uk@debutante>
-References: <5e96623c-ad1f-5260-2580-f487e64abaf8@users.sourceforge.net>
+Subject: Applied "ASoC: da7213: Improve a size determination in da7213_i2c_probe()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:53:49 +0000
+Message-ID: <E1eJOXN-0007PX-GJ@debutante>
+References: <0ec34e2a-8e18-bc1d-b07f-a606499b3682@users.sourceforge.net>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5e96623c-ad1f-5260-2580-f487e64abaf8@users.sourceforge.net>
+In-Reply-To: <0ec34e2a-8e18-bc1d-b07f-a606499b3682@users.sourceforge.net>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, support.opensource@diasemi.com, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl4030: Delete an error message for a failed memory allocation in twl4030_get_pdata()
+   ASoC: da7213: Improve a size determination in da7213_i2c_probe()
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 2dbb29cd977fc281f71f8895abce7e382efe77e1 Mon Sep 17 00:00:00 2001
+>From 8080699a3649cb0a0aed2c650a7a3a76c2025b30 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 21:30:07 +0100
-Subject: [PATCH] ASoC: twl4030: Delete an error message for a failed memory
- allocation in twl4030_get_pdata()
+Date: Thu, 23 Nov 2017 18:15:30 +0100
+Subject: [PATCH] ASoC: da7213: Improve a size determination in
+ da7213_i2c_probe()
 
-Omit an extra message for a memory allocation failure in this function.
+Replace the specification of a data structure by a pointer dereference
+as the parameter for the operator "sizeof" to make the corresponding size
+determination a bit safer according to the Linux coding style convention.
 
 This issue was detected by using the Coccinelle software.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/twl4030.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/da7213.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index cfe72b9d4356..90691701b082 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -240,7 +240,6 @@ static struct twl4030_codec_data *twl4030_get_pdata(struct snd_soc_codec *codec)
- 				     sizeof(struct twl4030_codec_data),
- 				     GFP_KERNEL);
- 		if (!pdata) {
--			dev_err(codec->dev, "Can not allocate memory\n");
- 			of_node_put(twl4030_codec_node);
- 			return NULL;
- 		}
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index d1b77a0e3b74..b2b4e90fc02a 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1853,8 +1853,7 @@ static int da7213_i2c_probe(struct i2c_client *i2c,
+ 	struct da7213_priv *da7213;
+ 	int ret;
+ 
+-	da7213 = devm_kzalloc(&i2c->dev, sizeof(struct da7213_priv),
+-			      GFP_KERNEL);
++	da7213 = devm_kzalloc(&i2c->dev, sizeof(*da7213), GFP_KERNEL);
+ 	if (!da7213)
+ 		return -ENOMEM;
+ 
 -- 
 2.15.0
