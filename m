@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm2000: Delete an error message for a failed memory allocation in wm2000_i2c_probe()" to the asoc tree
-Date: Mon, 27 Nov 2017 18:54:39 +0000
-Message-ID: <E1eJOYB-0007Zw-Op@debutante>
-References: <87078639-7ec0-c3cc-5399-5607f2329c63@users.sourceforge.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87078639-7ec0-c3cc-5399-5607f2329c63@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Elfring <elfring@users.sourceforge.net>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: fsl_ssi: remove duplicated flag setting
+	in fsl_ssi_setup_reg_vals()" to the asoc tree
+Date: Mon, 27 Nov 2017 18:52:27 +0000
+Message-ID: <E1eJOW3-0006yi-7A@debutante>
+References: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B05A2675CA
+ for <alsa-devel@alsa-project.org>; Mon, 27 Nov 2017 19:52:36 +0100 (CET)
+In-Reply-To: <9c78bea8-c264-0094-c2e9-950a9f7797e6@maciej.szmigiero.name>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm2000: Delete an error message for a failed memory allocation in wm2000_i2c_probe()
+   ASoC: fsl_ssi: remove duplicated flag setting in fsl_ssi_setup_reg_vals()
 
 has been applied to the asoc tree at
 
@@ -37,34 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From e866d87a7de38672f52c6e7567e88c3f82f937dc Mon Sep 17 00:00:00 2001
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 23 Nov 2017 22:28:00 +0100
-Subject: [PATCH] ASoC: wm2000: Delete an error message for a failed memory
- allocation in wm2000_i2c_probe()
+>From 74231295c67ada29a4566272d8ac4886d09f3e83 Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Mon, 20 Nov 2017 23:12:01 +0100
+Subject: [PATCH] ASoC: fsl_ssi: remove duplicated flag setting in
+ fsl_ssi_setup_reg_vals()
 
-Omit an extra message for a memory allocation failure in this function.
+We don't need to set CCSR_SSI_SIER_RFF0_EN / CCSR_SSI_SIER_TFE0_EN bits
+in reg->rx.sier / reg->tx.sier variables in a non-AC'97 mode considering we
+had just initialized these variables to these very values unconditionally a
+few lines earlier.
 
-This issue was detected by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm2000.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/fsl/fsl_ssi.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
-index 23cde3a0dc11..ce936deed7e3 100644
---- a/sound/soc/codecs/wm2000.c
-+++ b/sound/soc/codecs/wm2000.c
-@@ -902,7 +902,6 @@ static int wm2000_i2c_probe(struct i2c_client *i2c,
- 					    wm2000->anc_download_size,
- 					    GFP_KERNEL);
- 	if (wm2000->anc_download == NULL) {
--		dev_err(&i2c->dev, "Out of memory\n");
- 		ret = -ENOMEM;
- 		goto err_supplies;
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 424bafaf51ef..9e97a0529f37 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -600,9 +600,7 @@ static void fsl_ssi_setup_reg_vals(struct fsl_ssi_private *ssi_private)
+ 
+ 	if (!fsl_ssi_is_ac97(ssi_private)) {
+ 		reg->rx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_RE;
+-		reg->rx.sier |= CCSR_SSI_SIER_RFF0_EN;
+ 		reg->tx.scr = CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE;
+-		reg->tx.sier |= CCSR_SSI_SIER_TFE0_EN;
  	}
+ 
+ 	if (ssi_private->use_dma) {
 -- 
 2.15.0
