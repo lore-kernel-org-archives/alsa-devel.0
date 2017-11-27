@@ -1,73 +1,66 @@
-From: walter harms <wharms@bfs.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH] ALSA: drivers: make array 'names' const, reduces object
  code size
-Date: Mon, 27 Nov 2017 17:00:03 +0100
-Message-ID: <5A1C3683.7080901@bfs.de>
-References: <20171127125851.10076-1-colin.king@canonical.com>         <5A1C2760.1030704@bfs.de> <1511797207.32426.41.camel@perches.com>
-Reply-To: wharms@bfs.de
+Date: Tue, 28 Nov 2017 02:34:17 +0900
+Message-ID: <11bbcc13-2ff9-68ed-6331-f65c2247b4db@sakamocchi.jp>
+References: <20171127125851.10076-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1511797207.32426.41.camel@perches.com>
+In-Reply-To: <20171127125851.10076-1-colin.king@canonical.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: Colin King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Colin King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, walter harms <wharms@bfs.de>wharms@bfs.de
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+
+On Nov 27 2017 21:58, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Don't populate array 'names' on the stack but instead make them static.
+> Makes the object code smaller by 50 bytes:
+> 
+> Before:
+>     text	   data	    bss	    dec	    hex	filename
+>    21237	   9192	   1120	  31549	   7b3d	linux/sound/drivers/dummy.o
+> 
+> After:
+>     text	   data	    bss	    dec	    hex	filename
+>    21095	   9280	   1120	  31495	   7b07	linux/sound/drivers/dummy.o
+> 
+> (gcc version 7.2.0 x86_64)
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   sound/drivers/dummy.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+> index 7b2b1f766b00..69db45bc0197 100644
+> --- a/sound/drivers/dummy.c
+> +++ b/sound/drivers/dummy.c
+> @@ -830,7 +830,7 @@ static int snd_dummy_capsrc_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
+>   static int snd_dummy_iobox_info(struct snd_kcontrol *kcontrol,
+>   				struct snd_ctl_elem_info *info)
+>   {
+> -	const char *const names[] = { "None", "CD Player" };
+> +	static const char *const names[] = { "None", "CD Player" };
+>   
+>   	return snd_ctl_enum_info(info, 1, 2, names);
+>   }
+
+Total size of snd-dummy.ko increases but this patch has an advantage to 
+have the symbol in read-only section. This looks good to me.
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+Another issue is addressed by the others, but here I focus on the 
+original intention of this patch.
 
 
-Am 27.11.2017 16:40, schrieb Joe Perches:
-> On Mon, 2017-11-27 at 15:55 +0100, walter harms wrote:
->> Am 27.11.2017 13:58, schrieb Colin King:
->>> From: Colin Ian King <colin.king@canonical.com>
->>> Don't populate array 'names' on the stack but instead make them static.
->>> Makes the object code smaller by 50 bytes:
-> []
->>> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-> []
->>> @@ -830,7 +830,7 @@ static int snd_dummy_capsrc_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
->>>  static int snd_dummy_iobox_info(struct snd_kcontrol *kcontrol,
->>>  				struct snd_ctl_elem_info *info)
->>>  {
->>> -	const char *const names[] = { "None", "CD Player" };
->>> +	static const char *const names[] = { "None", "CD Player" };
->>>  
->>>  	return snd_ctl_enum_info(info, 1, 2, names);
->>>  }
->>
->> nitpick: while here
->>    snd_ctl_enum_info(info, 1, ARRAY_SIZE(names), names);
->>
->> just my 2 cents,
-> 
-> True, but that seems counter style for most uses of snd_ctl_enum_info
-> 
-> $ git grep -w snd_ctl_enum_info | grep -v ARRAY_SIZE | wc -l
-> 159
-> $ git grep -w snd_ctl_enum_info | grep ARRAY_SIZE | wc -l
-> 10
-> 
-> but most of those seem to choose variable amounts of a single
-> array.  Here, ARRAY_SIZE seems better to me too.
+Thanks
 
-I will not argue. I was curious about the magic numbers and
-int this case it seems an obvious choice in other cases
-it may be wrong i did not and i will not investigate.
-
-re,
- wh
-
-> 
-> For another real nitpick, please prefer "const *" over "const*"
-> 
-> $ git grep -P "\*\s+const\b" | wc -l
-> 7068
-> $ git grep -P "\*const\b" | wc -l
-> 1801
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Takashi Sakamoto
