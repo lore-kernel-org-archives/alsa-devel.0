@@ -1,289 +1,98 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v5 01/13] iio: Add hardware consumer buffer support
-Date: Tue, 28 Nov 2017 16:05:45 +0100
-Message-ID: <1511881557-28596-2-git-send-email-arnaud.pouliquen@st.com>
+From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Subject: [PATCH v5 12/13] ASoC: add bindings for stm32 DFSDM filter
+Date: Tue, 28 Nov 2017 16:05:56 +0100
+Message-ID: <1511881557-28596-13-git-send-email-arnaud.pouliquen@st.com>
 References: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1511881557-28596-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+Add bindings that describes audio settings to support
+Digital Filter for pulse density modulation(PDM) microphone.
 
-Hardware consumer interface can be used when one IIO device has
-a direct connection to another device in hardware.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 ---
-V4->V5: No delta.
+ .../devicetree/bindings/sound/st,stm32-adfsdm.txt  | 62 ++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
 
- drivers/iio/buffer/Kconfig                    |  10 ++
- drivers/iio/buffer/Makefile                   |   1 +
- drivers/iio/buffer/industrialio-hw-consumer.c | 182 ++++++++++++++++++++++++++
- include/linux/iio/hw-consumer.h               |  20 +++
- 4 files changed, 213 insertions(+)
- create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
- create mode 100644 include/linux/iio/hw-consumer.h
-
-diff --git a/drivers/iio/buffer/Kconfig b/drivers/iio/buffer/Kconfig
-index 4ffd3db..338774c 100644
---- a/drivers/iio/buffer/Kconfig
-+++ b/drivers/iio/buffer/Kconfig
-@@ -29,6 +29,16 @@ config IIO_BUFFER_DMAENGINE
- 
- 	  Should be selected by drivers that want to use this functionality.
- 
-+config IIO_BUFFER_HW_CONSUMER
-+	tristate "Industrial I/O HW buffering"
-+	help
-+	  Provides a way to bonding when an IIO device has a direct connection
-+	  to another device in hardware. In this case buffers for data transfers
-+	  are handled by hardware.
-+
-+	  Should be selected by drivers that want to use the generic Hw consumer
-+	  interface.
-+
- config IIO_KFIFO_BUF
- 	tristate "Industrial I/O buffering based on kfifo"
- 	help
-diff --git a/drivers/iio/buffer/Makefile b/drivers/iio/buffer/Makefile
-index 85beaae..324a36b 100644
---- a/drivers/iio/buffer/Makefile
-+++ b/drivers/iio/buffer/Makefile
-@@ -6,5 +6,6 @@
- obj-$(CONFIG_IIO_BUFFER_CB) += industrialio-buffer-cb.o
- obj-$(CONFIG_IIO_BUFFER_DMA) += industrialio-buffer-dma.o
- obj-$(CONFIG_IIO_BUFFER_DMAENGINE) += industrialio-buffer-dmaengine.o
-+obj-$(CONFIG_IIO_BUFFER_HW_CONSUMER) += industrialio-hw-consumer.o
- obj-$(CONFIG_IIO_TRIGGERED_BUFFER) += industrialio-triggered-buffer.o
- obj-$(CONFIG_IIO_KFIFO_BUF) += kfifo_buf.o
-diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
 new file mode 100644
-index 0000000..0253be1
+index 0000000..2782cda
 --- /dev/null
-+++ b/drivers/iio/buffer/industrialio-hw-consumer.c
-@@ -0,0 +1,182 @@
-+/*
-+ * Copyright 2017 Analog Devices Inc.
-+ *  Author: Lars-Peter Clausen <lars@metafoo.de>
-+ *
-+ * Licensed under the GPL-2 or later.
-+ */
++++ b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+@@ -0,0 +1,62 @@
++STMicroelectronics Audio Digital Filter Sigma Delta modulators(DFSDM)
 +
-+#include <linux/err.h>
-+#include <linux/export.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
++The DFSDM allows PDM microphones capture through SPI interface. The Audio
++interface is seems as a sub block of the DFSDM device.
++For details on DFSDM bindings refer to ../iio/adc/st,stm32-dfsdm-adc.txt
 +
-+#include <linux/iio/iio.h>
-+#include <linux/iio/consumer.h>
-+#include <linux/iio/hw-consumer.h>
-+#include <linux/iio/buffer_impl.h>
++Required properties:
++  - compatible: "st,stm32h7-dfsdm-dai".
 +
-+/**
-+ * struct iio_hw_consumer - IIO hw consumer block
-+ * @buffers: hardware buffers list head.
-+ * @channels: IIO provider channels.
-+ */
-+struct iio_hw_consumer {
-+	struct list_head buffers;
-+	struct iio_channel *channels;
-+};
++  - #sound-dai-cells : Must be equal to 0
 +
-+struct hw_consumer_buffer {
-+	struct list_head head;
-+	struct iio_dev *indio_dev;
-+	struct iio_buffer buffer;
-+	long scan_mask[];
-+};
++  - io-channels : phandle to iio dfsdm instance node.
 +
-+static struct hw_consumer_buffer *iio_buffer_to_hw_consumer_buffer(
-+	struct iio_buffer *buffer)
-+{
-+	return container_of(buffer, struct hw_consumer_buffer, buffer);
-+}
++Example of a sound card using audio DFSDM node.
 +
-+static void iio_hw_buf_release(struct iio_buffer *buffer)
-+{
-+	struct hw_consumer_buffer *hw_buf =
-+		iio_buffer_to_hw_consumer_buffer(buffer);
-+	kfree(hw_buf);
-+}
++	sound_card {
++		compatible = "audio-graph-card";
 +
-+static const struct iio_buffer_access_funcs iio_hw_buf_access = {
-+	.release = &iio_hw_buf_release,
-+	.modes = INDIO_BUFFER_HARDWARE,
-+};
++		dais = <&cpu_port>;
++	};
 +
-+static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
-+	struct iio_hw_consumer *hwc, struct iio_dev *indio_dev)
-+{
-+	size_t mask_size = BITS_TO_LONGS(indio_dev->masklength) * sizeof(long);
-+	struct hw_consumer_buffer *buf;
++	dfsdm: dfsdm@40017000 {
++		compatible = "st,stm32h7-dfsdm";
++		reg = <0x40017000 0x400>;
++		clocks = <&rcc DFSDM1_CK>;
++		clock-names = "dfsdm";
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+	list_for_each_entry(buf, &hwc->buffers, head) {
-+		if (buf->indio_dev == indio_dev)
-+			return buf;
-+	}
++		dfsdm_adc0: dfsdm-adc@0 {
++			compatible = "st,stm32-dfsdm-dmic";
++			reg = <0>;
++			interrupts = <110>;
++			dmas = <&dmamux1 101 0x400 0x00>;
++			dma-names = "rx";
++			st,adc-channels = <1>;
++			st,adc-channel-names = "dmic0";
++			st,adc-channel-types = "SPI_R";
++			st,adc-channel-clk-src = "CLKOUT";
++			st,filter-order = <5>;
 +
-+	buf = kzalloc(sizeof(*buf) + mask_size, GFP_KERNEL);
-+	if (!buf)
-+		return NULL;
++			dfsdm_dai0: dfsdm-dai {
++				compatible = "st,stm32h7-dfsdm-dai";
++				#sound-dai-cells = <0>;
++				io-channels = <&dfsdm_adc0 0>;
++				cpu_port: port {
++				dfsdm_endpoint: endpoint {
++					remote-endpoint = <&dmic0_endpoint>;
++				};
++			};
++		};
++	};
 +
-+	buf->buffer.access = &iio_hw_buf_access;
-+	buf->indio_dev = indio_dev;
-+	buf->buffer.scan_mask = buf->scan_mask;
-+
-+	iio_buffer_init(&buf->buffer);
-+	list_add_tail(&buf->head, &hwc->buffers);
-+
-+	return buf;
-+}
-+
-+/**
-+ * iio_hw_consumer_alloc() - Allocate IIO hardware consumer
-+ * @dev: Pointer to consumer device.
-+ *
-+ * Returns a valid iio_hw_consumer on success or a ERR_PTR() on failure.
-+ */
-+struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev)
-+{
-+	struct hw_consumer_buffer *buf;
-+	struct iio_hw_consumer *hwc;
-+	struct iio_channel *chan;
-+	int ret;
-+
-+	hwc = kzalloc(sizeof(*hwc), GFP_KERNEL);
-+	if (!hwc)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&hwc->buffers);
-+
-+	hwc->channels = iio_channel_get_all(dev);
-+	if (IS_ERR(hwc->channels)) {
-+		ret = PTR_ERR(hwc->channels);
-+		goto err_free_hwc;
-+	}
-+
-+	chan = &hwc->channels[0];
-+	while (chan->indio_dev) {
-+		buf = iio_hw_consumer_get_buffer(hwc, chan->indio_dev);
-+		if (!buf) {
-+			ret = -ENOMEM;
-+			goto err_put_buffers;
-+		}
-+		set_bit(chan->channel->scan_index, buf->buffer.scan_mask);
-+		chan++;
-+	}
-+
-+	return hwc;
-+
-+err_put_buffers:
-+	list_for_each_entry(buf, &hwc->buffers, head)
-+		iio_buffer_put(&buf->buffer);
-+	iio_channel_release_all(hwc->channels);
-+err_free_hwc:
-+	kfree(hwc);
-+	return ERR_PTR(ret);
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_alloc);
-+
-+/**
-+ * iio_hw_consumer_free() - Free IIO hardware consumer
-+ * @hwc: hw consumer to free.
-+ */
-+void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
-+{
-+	struct hw_consumer_buffer *buf, *n;
-+
-+	iio_channel_release_all(hwc->channels);
-+	list_for_each_entry_safe(buf, n, &hwc->buffers, head)
-+		iio_buffer_put(&buf->buffer);
-+	kfree(hwc);
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
-+
-+/**
-+ * iio_hw_consumer_enable() - Enable IIO hardware consumer
-+ * @hwc: iio_hw_consumer to enable.
-+ *
-+ * Returns 0 on success.
-+ */
-+int iio_hw_consumer_enable(struct iio_hw_consumer *hwc)
-+{
-+	struct hw_consumer_buffer *buf;
-+	int ret;
-+
-+	list_for_each_entry(buf, &hwc->buffers, head) {
-+		ret = iio_update_buffers(buf->indio_dev, &buf->buffer, NULL);
-+		if (ret)
-+			goto err_disable_buffers;
-+	}
-+
-+	return 0;
-+
-+err_disable_buffers:
-+	list_for_each_entry_continue_reverse(buf, &hwc->buffers, head)
-+		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_enable);
-+
-+/**
-+ * iio_hw_consumer_disable() - Disable IIO hardware consumer
-+ * @hwc: iio_hw_consumer to disable.
-+ */
-+void iio_hw_consumer_disable(struct iio_hw_consumer *hwc)
-+{
-+	struct hw_consumer_buffer *buf;
-+
-+	list_for_each_entry(buf, &hwc->buffers, head)
-+		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
-+}
-+EXPORT_SYMBOL_GPL(iio_hw_consumer_disable);
-+
-+MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-+MODULE_DESCRIPTION("Hardware consumer buffer the IIO framework");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
-new file mode 100644
-index 0000000..f16791b
---- /dev/null
-+++ b/include/linux/iio/hw-consumer.h
-@@ -0,0 +1,20 @@
-+/*
-+ * Industrial I/O in kernel hardware consumer interface
-+ *
-+ * Copyright 2017 Analog Devices Inc.
-+ *  Author: Lars-Peter Clausen <lars@metafoo.de>
-+ *
-+ * Licensed under the GPL-2 or later.
-+ */
-+
-+#ifndef LINUX_IIO_HW_CONSUMER_H
-+#define LINUX_IIO_HW_CONSUMER_H
-+
-+struct iio_hw_consumer;
-+
-+struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
-+void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
-+int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
-+void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
-+
-+#endif
++	dmic0: dmic@0 {
++		compatible = "dmic-codec";
++		#sound-dai-cells = <0>;
++		port {
++			dmic0_endpoint: endpoint {
++				remote-endpoint = <&dfsdm_endpoint>;
++			};
++		};
++	};
 -- 
 2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
