@@ -1,38 +1,18 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: ALSA: nm256: Fine-tuning for three function
-	implementations
-Date: Tue, 28 Nov 2017 21:18:01 +0100
-Message-ID: <ed8d5cd3-ae6e-db9e-fa55-fe5842102a51@users.sourceforge.net>
-References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
- <3b7b24bd-4bdf-752e-1a62-cc71e9152acc@users.sourceforge.net>
- <s5hbmjmqxzs.wl-tiwai@suse.de>
- <bafa4437-2aaf-245d-da60-2353ca5debab@users.sourceforge.net>
- <s5h8teqqxhx.wl-tiwai@suse.de>
- <f7189a7c-3b07-e976-ac18-6143365bbd21@users.sourceforge.net>
- <s5h7euaqwtp.wl-tiwai@suse.de>
- <a1cd0902-c8bb-9813-8d0c-d394975ef745@users.sourceforge.net>
- <s5h4lpeqvin.wl-tiwai@suse.de>
- <6da7e6dc-b181-d26c-9f09-6592469193be@users.sourceforge.net>
- <s5hvahupdwe.wl-tiwai@suse.de>
- <fda75395-50ac-cd81-b483-6f03833472fb@users.sourceforge.net>
- <s5hr2sipd2z.wl-tiwai@suse.de>
- <99282c06-bfad-d7cf-16d8-eb1e015ebdbd@users.sourceforge.net>
- <s5hr2sijlp7.wl-tiwai@suse.de>
- <19724fa4-47eb-827c-cb17-126440500179@users.sourceforge.net>
- <s5hk1yajij2.wl-tiwai@suse.de>
- <727d5044-bad0-5170-83c0-dfddcc919588@users.sourceforge.net>
- <s5hh8teji1s.wl-tiwai@suse.de>
- <68fd71f5-a3e5-dbb7-d0d9-f9844fabe6c8@users.sourceforge.net>
- <s5hbmjmjhr1.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: call snd_soc_disconnect_sync()
+	when remove" to the asoc tree
+Date: Tue, 28 Nov 2017 20:22:04 +0000
+Message-ID: <E1eJmOK-000894-UW@debutante>
+References: <87mv3z4xj5.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 86A9D266B02
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 21:18:49 +0100 (CET)
-In-Reply-To: <s5hbmjmjhr1.wl-tiwai@suse.de>
-Content-Language: en-GB
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 642DF266B02
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 21:22:10 +0100 (CET)
+In-Reply-To: <87mv3z4xj5.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -42,47 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
->> Would you like to discuss the circumstances for the one glitch
->> to which you might refer to?
-> 
-> No need for discussion.
+The patch
 
-I disagree to this view again.
+   ASoC: rsnd: call snd_soc_disconnect_sync() when remove
 
+has been applied to the asoc tree at
 
-> It's difficult to recover a lost trust.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I can follow this view to some degree.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-But I find that the current might point also other weaknesses out
-in the general software development process.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> The best way is to show how you don't fall into the same issue any longer,
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Your expectations go into lower failure probabilities.
-But you might become disappointed again because of human work in general.
+Thanks,
+Mark
 
+>From 180d9ef58104dfae78622d01910b9b7756701134 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 6 Nov 2017 08:41:37 +0000
+Subject: [PATCH] ASoC: rsnd: call snd_soc_disconnect_sync() when remove
 
-> and it essentially means the actual testing of the patches.
+Renesas R-Car sound driver should be stopped if unbinded during
+playbacking/capturing. Otherwise clock open/close counter mismatch
+happen.
 
-I find that corresponding progress depends then also on reasonable
-and accepted procedures from trusted test environments.
+One note is that we can't skip from remove function (= return -Exxx)
+in such case if user used unbind. Because unbind function doesn't
+check return value from each driver's remove function.
+This means we must to stop and remove driver in remove function.
 
+Now ASoC has snd_soc_disconnect_sync() for this purpose.
+Let's use it.
 
-> Now it's clear why the testing is demanded?
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I can follow your desire to some degree.
-
-
-> There is no other way.
-
-There are more (technical) possibilities to consider where development tools
-like a continuous integration system can help.
-
-Regards,
-Markus
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index f12a88a21dfa..bd64dc6ec1c3 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1496,6 +1496,8 @@ static int rsnd_remove(struct platform_device *pdev)
+ 	};
+ 	int ret = 0, i;
+ 
++	snd_soc_disconnect_sync(&pdev->dev);
++
+ 	pm_runtime_disable(&pdev->dev);
+ 
+ 	for_each_rsnd_dai(rdai, priv, i) {
+-- 
+2.15.0
