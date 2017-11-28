@@ -1,20 +1,38 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Boards: Add CNL RT274 I2S
- machine driver
-Date: Tue, 28 Nov 2017 10:44:50 -0600
-Message-ID: <f0425e26-a13d-d0ed-4191-f5973cb14231@linux.intel.com>
-References: <20171127124437.8441-1-guneshwor.o.singh@intel.com>
- <5bdd77e1-fb83-0626-c377-a457294ca38d@linux.intel.com>
- <20171128162415.GV3187@localhost>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: Re: ALSA: nm256: Fine-tuning for three function
+	implementations
+Date: Tue, 28 Nov 2017 18:15:34 +0100
+Message-ID: <99282c06-bfad-d7cf-16d8-eb1e015ebdbd@users.sourceforge.net>
+References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
+ <1547a4c2-5b70-e3a3-b482-d28c538e615c@users.sourceforge.net>
+ <s5hy3mqr5v9.wl-tiwai@suse.de>
+ <c2b7543c-cd2c-f7f6-98f3-23e2ca6f8b90@users.sourceforge.net>
+ <s5hshcyr2on.wl-tiwai@suse.de>
+ <539adde3-a713-721f-2a0d-1d1ef925fb86@users.sourceforge.net>
+ <s5hpo82r1s5.wl-tiwai@suse.de>
+ <9a9348f4-d059-de28-1445-0189b7fb0ba3@users.sourceforge.net>
+ <s5hlgiqr0ad.wl-tiwai@suse.de>
+ <3b7b24bd-4bdf-752e-1a62-cc71e9152acc@users.sourceforge.net>
+ <s5hbmjmqxzs.wl-tiwai@suse.de>
+ <bafa4437-2aaf-245d-da60-2353ca5debab@users.sourceforge.net>
+ <s5h8teqqxhx.wl-tiwai@suse.de>
+ <f7189a7c-3b07-e976-ac18-6143365bbd21@users.sourceforge.net>
+ <s5h7euaqwtp.wl-tiwai@suse.de>
+ <a1cd0902-c8bb-9813-8d0c-d394975ef745@users.sourceforge.net>
+ <s5h4lpeqvin.wl-tiwai@suse.de>
+ <6da7e6dc-b181-d26c-9f09-6592469193be@users.sourceforge.net>
+ <s5hvahupdwe.wl-tiwai@suse.de>
+ <fda75395-50ac-cd81-b483-6f03833472fb@users.sourceforge.net>
+ <s5hr2sipd2z.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id F331D267845
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 17:44:55 +0100 (CET)
-In-Reply-To: <20171128162415.GV3187@localhost>
-Content-Language: en-US
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47111266DCF
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 18:15:41 +0100 (CET)
+In-Reply-To: <s5hr2sipd2z.wl-tiwai@suse.de>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,47 +42,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+>> Do you want that I point any other patch out which you could find
+>> easier to handle again?
+> 
+> Only if they got tested and/or got reviewed by others.
 
+Would you find any of the following update suggestions trivial enough
+to integrate them?
 
-On 11/28/2017 10:24 AM, Vinod Koul wrote:
-> On Mon, Nov 27, 2017 at 08:45:16AM -0600, Pierre-Louis Bossart wrote:
->> On 11/27/17 6:44 AM, Guneshwor Singh wrote:
->>> Add CNL I2S machine driver using Realtek RT274 codec in I2S mode
->>> configured to ssp0.
->>>
->>> Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
->>> ---
->>>   sound/soc/intel/boards/Kconfig     |  13 ++
->>>   sound/soc/intel/boards/Makefile    |   2 +
->>>   sound/soc/intel/boards/cnl_rt274.c | 250 +++++++++++++++++++++++++++++++++++++
->>>   3 files changed, 265 insertions(+)
->>>   create mode 100644 sound/soc/intel/boards/cnl_rt274.c
->>>
->>> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
->>> index 6f754708a48c..29066f0b744f 100644
->>> --- a/sound/soc/intel/boards/Kconfig
->>> +++ b/sound/soc/intel/boards/Kconfig
->>> @@ -262,4 +262,17 @@ config SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH
->>>             Say Y if you have such a device.
->>>             If unsure select "N".
->>> +config SND_SOC_INTEL_CNL_RT274_MACH
->>> +	tristate "ASoC Audio driver for Cannonlake with RT274 I2S mode"
->>> +	depends on X86 && ACPI && I2C
->>> +	select SND_SOC_INTEL_SST
->>> +	depends on SND_SOC_INTEL_SKYLAKE
->> this is going to conflict with the fixes I am working on.
->> Vinod, can this wait a bit?
-> Hey Pierre,
->
-> Since you are still working on the fixes, I guess this can sneak in before.
-> The machine drivers are typically low hanging in terms on complexity so we
-> can merge this first followed by the rework you are doing. I think that part
-> will still take a bit to stabilize and cleanup.
-the update goes out this afternoon, working on it, does this patch 
-really need to 'sneak in'?
+Examples:
+* ALSA: cs5530: Use common error handling code in snd_cs5530_probe()
+  https://lkml.org/lkml/2017/11/18/266
+  https://patchwork.kernel.org/patch/10064945/
+  https://lkml.kernel.org/r/<a2cb6494-a01c-668a-cd9b-1a8428a0d4c9@users.sourceforge.net>
 
->
+* ASoC: dapm: Use kcalloc() in snd_soc_dapm_new_widgets()
+  https://lkml.org/lkml/2017/8/10/425
+  https://patchwork.kernel.org/patch/9893713/
+  https://lkml.kernel.org/r/<62be9e32-1b8d-3980-7998-72f82c62a6fe@users.sourceforge.net>
+
+* ALSA: seq: Delete unnecessary checks in snd_seq_ioctl_query_subs()
+  https://lkml.org/lkml/2017/1/24/293
+  https://patchwork.kernel.org/patch/9534795/
+  https://lkml.kernel.org/r/<39bc00c0-ffe7-851c-f329-e7d499f561be@users.sourceforge.net>
+
+Regards,
+Markus
