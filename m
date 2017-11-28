@@ -1,86 +1,103 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [PATCH v4 2/2] ASoC: fsl_ssi: add 20-bit sample format for AC'97 and
- use it for capture
-Date: Mon, 27 Nov 2017 23:34:44 +0100
-Message-ID: <5dfa7813-385e-d9c7-84e0-12cf1f7d3a5f@maciej.szmigiero.name>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: [PATCH 1/3] ALSA: usb-audio: Fix out-of-bound error
+Date: Tue, 28 Nov 2017 09:36:26 +0900
+Message-ID: <1511829388-5245-2-git-send-email-climbbb.kim@gmail.com>
+References: <1511829388-5245-1-git-send-email-climbbb.kim@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1511829388-5245-1-git-send-email-climbbb.kim@gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, stable <stable@vger.kernel.org>, alsa-devel@alsa-project.org, Jaejoong Kim <climbbb.kim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-When testing AC'97 capture on UDOO board (currently the only user of
-fsl_ssi driver in the AC'97 mode) it become obvious that there is a massive
-distortion above certain, small input signal.
+The snd_usb_copy_string_desc() retrieves the usb string corresponding to
+the index number through the usb_string(). The problem is that the
+usb_string() returns the length of the string (>= 0) when successful, but
+it can also return a negative value about the error case or status of
+usb_control_msg().
 
-This problem has been traced to silicon errata ERR003778:
-"In AC97, 16-bit mode, received data is shifted by 4-bit locations" that
-has "No fix scheduled".
-This errata suggests a workaround of doing a 4-bit shift back in SDMA
-script for this specific operation mode, however our SDMA scripts are
-shared between various SoC peripherals so we can't really modify them.
+If iClockSource is '0' as shown below, usb_string() will returns -EINVAL.
+This will result in '0' being inserted into buf[-22], and the following
+KASAN out-of-bound error message will be output.
 
-There is a simple way to avoid this problem, however, that is to disallow
-recording in 16-bit mode and only support it in AC'97-native 20-bit mode.
-We have to use a 4-byte format for this since SSI FIFOs do not allow 3-byte
-accesses (and these aren't supported by imx-sdma driver anyway).
-With this change the capture distortion is gone.
+AudioControl Interface Descriptor:
+  bLength                 8
+  bDescriptorType        36
+  bDescriptorSubtype     10 (CLOCK_SOURCE)
+  bClockID                1
+  bmAttributes         0x07 Internal programmable Clock (synced to SOF)
+  bmControls           0x07
+  Clock Frequency Control (read/write)
+  Clock Validity Control (read-only)
+  bAssocTerminal          0
+  iClockSource            0
 
-We can also add this format as an additional one supported for playback,
-using this opportunity to make sure that we use CPU-endian-native formats
-in AC'97 mode as we already do in I2S mode.
+To fix it, check usb_string() return value and bail out.
 
-There is no problem in using different bit widths in playback and capture
-in AC'97 mode so allow this, too.
+==================================================================
+BUG: KASAN: stack-out-of-bounds in parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
+Write of size 1 at addr ffff88007e66735a by task systemd-udevd/18376
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+CPU: 0 PID: 18376 Comm: systemd-udevd Not tainted 4.13.0+ #3
+Hardware name: LG Electronics                   15N540-RFLGL/White Tip Mountain, BIOS 15N5
+Call Trace:
+dump_stack+0x63/0x8d
+print_address_description+0x70/0x290
+? parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
+kasan_report+0x265/0x350
+__asan_store1+0x4a/0x50
+parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
+? save_stack+0xb5/0xd0
+? save_stack_trace+0x1b/0x20
+? save_stack+0x46/0xd0
+? kasan_kmalloc+0xad/0xe0
+? kmem_cache_alloc_trace+0xff/0x230
+? snd_usb_create_mixer+0xb0/0x4b0 [snd_usb_audio]
+? usb_audio_probe+0x4de/0xf40 [snd_usb_audio]
+? usb_probe_interface+0x1f5/0x440
+? driver_probe_device+0x3ed/0x660
+? build_feature_ctl+0xb10/0xb10 [snd_usb_audio]
+? save_stack_trace+0x1b/0x20
+? init_object+0x69/0xa0
+? snd_usb_find_csint_desc+0xa8/0xf0 [snd_usb_audio]
+snd_usb_mixer_controls+0x1dc/0x370 [snd_usb_audio]
+? build_audio_procunit+0x890/0x890 [snd_usb_audio]
+? snd_usb_create_mixer+0xb0/0x4b0 [snd_usb_audio]
+? kmem_cache_alloc_trace+0xff/0x230
+? usb_ifnum_to_if+0xbd/0xf0
+snd_usb_create_mixer+0x25b/0x4b0 [snd_usb_audio]
+? snd_usb_create_stream+0x255/0x2c0 [snd_usb_audio]
+usb_audio_probe+0x4de/0xf40 [snd_usb_audio]
+? snd_usb_autosuspend.part.7+0x30/0x30 [snd_usb_audio]
+? __pm_runtime_idle+0x90/0x90
+? kernfs_activate+0xa6/0xc0
+? usb_match_one_id_intf+0xdc/0x130
+? __pm_runtime_set_status+0x2d4/0x450
+usb_probe_interface+0x1f5/0x440
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
-Changes from v1: Adapt format name to changes in the first patch from
-this series.
+Changes in V2:
+ - put an explicit error bail-out(by Takashi iwai)
 
-Changes from v2, v3: None.
+ sound/usb/mixer.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- sound/soc/fsl/fsl_ssi.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 20ef09e1a395..c350117c8e31 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1278,14 +1278,15 @@ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S20,
- 	},
- 	.capture = {
- 		.stream_name = "AC97 Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		/* 16-bit capture is broken (errata ERR003778) */
-+		.formats = SNDRV_PCM_FMTBIT_S20,
- 	},
- 	.ops = &fsl_ssi_dai_ops,
- };
-@@ -1557,11 +1558,12 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 
- 	/* Are the RX and the TX clocks locked? */
- 	if (!of_find_property(np, "fsl,ssi-asynchronous", NULL)) {
--		if (!fsl_ssi_is_ac97(ssi_private))
-+		if (!fsl_ssi_is_ac97(ssi_private)) {
- 			ssi_private->cpu_dai_drv.symmetric_rates = 1;
-+			ssi_private->cpu_dai_drv.symmetric_samplebits = 1;
-+		}
- 
- 		ssi_private->cpu_dai_drv.symmetric_channels = 1;
--		ssi_private->cpu_dai_drv.symmetric_samplebits = 1;
- 	}
- 
- 	/* Determine the FIFO depth. */
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index e630813..da7cbe7 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -204,6 +204,10 @@ static int snd_usb_copy_string_desc(struct mixer_build *state,
+ 				    int index, char *buf, int maxlen)
+ {
+ 	int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
++
++	if (len < 0)
++		return len;
++
+ 	buf[len] = 0;
+ 	return len;
+ }
+-- 
+2.7.4
