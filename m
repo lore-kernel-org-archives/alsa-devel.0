@@ -1,38 +1,15 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: ALSA: nm256: Fine-tuning for three function
-	implementations
-Date: Tue, 28 Nov 2017 16:01:47 +0100
-Message-ID: <a1cd0902-c8bb-9813-8d0c-d394975ef745@users.sourceforge.net>
-References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
- <dfa99045-f213-3dad-b1f4-2e90eb38ddbd@users.sourceforge.net>
- <s5h7euq9hqt.wl-tiwai@suse.de>
- <24f8c777-1eb4-e7e7-9371-79f32700c9dc@users.sourceforge.net>
- <s5hbmjmluba.wl-tiwai@suse.de>
- <2cbef557-5f89-c630-e108-14ef2ce6b41a@users.sourceforge.net>
- <s5h4lpelqfm.wl-tiwai@suse.de>
- <1547a4c2-5b70-e3a3-b482-d28c538e615c@users.sourceforge.net>
- <s5hy3mqr5v9.wl-tiwai@suse.de>
- <c2b7543c-cd2c-f7f6-98f3-23e2ca6f8b90@users.sourceforge.net>
- <s5hshcyr2on.wl-tiwai@suse.de>
- <539adde3-a713-721f-2a0d-1d1ef925fb86@users.sourceforge.net>
- <s5hpo82r1s5.wl-tiwai@suse.de>
- <9a9348f4-d059-de28-1445-0189b7fb0ba3@users.sourceforge.net>
- <s5hlgiqr0ad.wl-tiwai@suse.de>
- <3b7b24bd-4bdf-752e-1a62-cc71e9152acc@users.sourceforge.net>
- <s5hbmjmqxzs.wl-tiwai@suse.de>
- <bafa4437-2aaf-245d-da60-2353ca5debab@users.sourceforge.net>
- <s5h8teqqxhx.wl-tiwai@suse.de>
- <f7189a7c-3b07-e976-ac18-6143365bbd21@users.sourceforge.net>
- <s5h7euaqwtp.wl-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v5 00/13] Add STM32 DFSDM support
+Date: Tue, 28 Nov 2017 16:05:44 +0100
+Message-ID: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 942A3266B0F
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 16:01:54 +0100 (CET)
-In-Reply-To: <s5h7euaqwtp.wl-tiwai@suse.de>
-Content-Language: en-GB
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0F10266B0F
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 16:06:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -42,36 +19,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
->>> Give the test result before speaking too much.
->>
->> Which concrete data do you expect here?
-> 
-> Depends on the result.
+Hello,
 
-How can this vary?
+Here is a new version integrating remarks from Rob and Jonathan.
 
+Main deltas vs V4:
+- Integrate ASOC DAI not as a subnode of the DFSDM.
+- Add in kernel consumer interface to allow to manipulate attribute.
 
-> The bottom line is that you run your patched kernel on the real hardware
+Context reminder:
+-----------------
 
-Which test configurations would you trust finally?
+DFSDM peripheral is a peripheral that allows to connect some sigma delta ADCs
+or PDM microphones via a SPI or Manchester bus.
+DFSDM integrates digital filters to offer up to 24 bits final resolution.
 
+In term of SW architecture. 2 use-cases have to be supported:
 
-> or equivalent (VM or emulation) for the device you touched.
+1) Sigma delta ADC conversion through IIO framework.
+Sigma delta ADC is handled by generic sigma delta modulator driver. 
+DFSDM peripheral is binded to a SD modulator ADC using the IIO HW consumer interface. 
+Please notice that IIO HW consumer interface has be proposed by Lars, but is
+part of this patchset with Lars's agreement.
+User interface is IIO one.
+Notice that this patch-set propose only a raw conversion, to simplify review.
+Buffer and trigger management will be added in next patch-sets.
 
-Can all the devices for which I dared to adjust their source code a bit
-tested in desired ways within virtual machines?
-
-
-> Run your patched kernel and the driver code on the real machine with
-> the corresponding device.  Show the device is running.  That's the
-> very first step.  Then follow the more detailed tests, but it depends
-> on the subsystem.
-
-How can such descriptions improve the trust situation?
+2) PDM microphone record through ALSA framework.
+PDM microphone is handled by ASOC Generic DMIC codec driver.
+ADFSDM ASOC DAI driver is binded to IIO driver using the IIO consumer interface
+ADFSDM ASOC DAI driver is binded to a PDM microphone ASOC component using ASOC Of_graph.
+User interface is ALSA one.
+As IIO DMA management is not adapted to an audio realtime stream. A specific DMA 
+management has been implemented in IIO driver for audio purposes.
 
 Regards,
-Markus
+Arnaud
+
+
+
+Arnaud Pouliquen (12):
+  docs: driver-api: add iio hw consumer section
+  IIO: hw_consumer: add devm_iio_hw_consumer_alloc
+  IIO: inkern: API for manipulating channel attributes
+  IIO: Add DT bindings for sigma delta adc modulator
+  IIO: ADC: add sigma delta modulator support
+  IIO: add DT bindings for stm32 DFSDM filter
+  IIO: ADC: add stm32 DFSDM core support
+  IIO: ADC: add STM32 DFSDM sigma delta ADC support
+  IIO: ADC: add stm32 DFSDM support for PDM microphone
+  IIO: consumer: allow to set buffer sizes
+  ASoC: add bindings for stm32 DFSDM filter
+  ASoC: stm32: add DFSDM DAI support
+
+Lars-Peter Clausen (1):
+  iio: Add hardware consumer buffer support
+
+ .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |   16 +
+ .../bindings/iio/adc/sigma-delta-modulator.txt     |   13 +
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        |  127 ++
+ .../devicetree/bindings/sound/st,stm32-adfsdm.txt  |   62 +
+ Documentation/driver-api/iio/hw-consumer.rst       |   51 +
+ Documentation/driver-api/iio/index.rst             |    1 +
+ drivers/iio/adc/Kconfig                            |   37 +
+ drivers/iio/adc/Makefile                           |    3 +
+ drivers/iio/adc/sd_adc_modulator.c                 |   81 ++
+ drivers/iio/adc/stm32-dfsdm-adc.c                  | 1232 ++++++++++++++++++++
+ drivers/iio/adc/stm32-dfsdm-core.c                 |  318 +++++
+ drivers/iio/adc/stm32-dfsdm.h                      |  319 +++++
+ drivers/iio/buffer/Kconfig                         |   10 +
+ drivers/iio/buffer/Makefile                        |    1 +
+ drivers/iio/buffer/industrialio-buffer-cb.c        |   11 +
+ drivers/iio/buffer/industrialio-hw-consumer.c      |  248 ++++
+ drivers/iio/inkern.c                               |   18 +-
+ include/linux/iio/adc/stm32-dfsdm-adc.h            |   28 +
+ include/linux/iio/consumer.h                       |   37 +
+ include/linux/iio/hw-consumer.h                    |   22 +
+ sound/soc/stm/Kconfig                              |   11 +
+ sound/soc/stm/Makefile                             |    3 +
+ sound/soc/stm/stm32_adfsdm.c                       |  386 ++++++
+ 23 files changed, 3030 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+ create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
+ create mode 100644 drivers/iio/adc/sd_adc_modulator.c
+ create mode 100644 drivers/iio/adc/stm32-dfsdm-adc.c
+ create mode 100644 drivers/iio/adc/stm32-dfsdm-core.c
+ create mode 100644 drivers/iio/adc/stm32-dfsdm.h
+ create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
+ create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
+ create mode 100644 include/linux/iio/hw-consumer.h
+ create mode 100644 sound/soc/stm/stm32_adfsdm.c
+
+-- 
+2.7.4
