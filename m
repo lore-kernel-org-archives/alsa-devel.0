@@ -1,92 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: added error checks in dma driver
-Date: Tue, 28 Nov 2017 11:52:10 +0000
-Message-ID: <20171128115210.n3lp3s2ryygx2m3v@sirena.org.uk>
-References: <1511844224-32404-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [alsa-devel] ALSA: nm256: Fine-tuning for three function implementations
+Date: Tue, 28 Nov 2017 13:33:14 +0100
+Message-ID: <201711281333.15131.linux@rainbow-software.org>
+References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net> <s5hbmjmluba.wl-tiwai@suse.de> <2cbef557-5f89-c630-e108-14ef2ce6b41a@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4552880152109763911=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9381B266B0F
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 12:52:12 +0100 (CET)
-In-Reply-To: <1511844224-32404-1-git-send-email-Vijendar.Mukunda@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Alexander.Deucher@amd.com
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <2cbef557-5f89-c630-e108-14ef2ce6b41a@users.sourceforge.net>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: SF Markus Elfring <elfring@users.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 28 November 2017, SF Markus Elfring wrote:
+> >>>> There is a general source code transformation pattern involved.
+> >>>> So I find that it is systematic.
+> >>>>
+> >>>> But I did not dare to develop a script variant for the semantic patch
+> >>>> language (Coccinelle software) which can handle all special use cases
+> >>>> as a few of them are already demonstrated in this tiny patch series.
+> >>>
+> >>> Then you're doing everything by hands,
+> >>
+> >> I am navigating through possible changes around the pattern
+> >> =E2=80=9CUse common error handling code=E2=80=9D mostly manually so fa=
+r.
+> >>
+> >>> and can be wrong
+> >>
+> >> Such a possibility remains as usual.
+> >
+> > "As usual" doesn't suffice.
+>
+> There can be additional means be used to reduce the probability
+> of undesired side effects.
+>
+> > It must be "almost perfect" for such a code refactoring.
+>
+> Can you get the impression that the shown transformation patterns were
+> correctly applied for the source file =E2=80=9Csound/pci/nm256/nm256.c=E2=
+=80=9D?
 
---===============4552880152109763911==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vzvdiw5dgntn7l5w"
-Content-Disposition: inline
+Have you tested the driver? Probably not. Please don't "improve" working=20
+drivers unless you have the hardware to test your changes. Patches like thi=
+s=20
+are known to cause regressions. If the hardware is rare (like the NM256), t=
+he=20
+regression can hit years later when someone with such HW upgrades distro=20
+(e.g. Debian stable).
 
-
---vzvdiw5dgntn7l5w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Nov 28, 2017 at 10:13:44AM +0530, Vijendar Mukunda wrote:
-
-> -	acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
-> +	status =3D acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type=
-);
-> +	if (status) {
-> +		dev_err(&pdev->dev, "ACP Init failed\n");
-> +		return status;
-> +	}
-> =20
-
-Better to print the error code to help people see what went wrong.
-
->  static int acp_audio_remove(struct platform_device *pdev)
->  {
-> +	int status;
->  	struct audio_drv_data *adata =3D dev_get_drvdata(&pdev->dev);
-> =20
-> -	acp_deinit(adata->acp_mmio);
-> +	status =3D acp_deinit(adata->acp_mmio);
-> +	if (status) {
-> +		dev_err(&pdev->dev, "ACP Deinit failed\n");
-> +		return status;
-> +	}
->  	snd_soc_unregister_platform(&pdev->dev);
-
-Remove operations can't meaningfully fail, better to just log the error
-and carry on.
-
---vzvdiw5dgntn7l5w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlodTecACgkQJNaLcl1U
-h9B+oAf/Yu/LTK7xxSOEYlKwd6lo5PosdmH08qlURPKyIMayCqTRL68hg4yx532F
-l1T4+PNZT3UXMxQDQP0G51IM7PQFVLk4TlMdJrwbVP55TeYBz6vHpTLjCkHrU/nB
-mh7LDB6sPjF1dtabmLYy5TJgmpF0zP6ZAmK+OuQ48tahF1diz2rV/GeXmIk1/bHD
-k4WPj8KE8yyx8A6O7dVLcrgvOBwEIWTLabHZx4LtOnKzScLqNpPw8/ocaPWVLLEx
-/eJRrk1FQFPULsf5+fvU0Ay9mpWIFBcgw9LxNjCdg6+X3LMVdTDiRNzgjWnlep3x
-QkUV1QbGZMcs7JsoyrYhLUwFXzay0Q==
-=U1Jk
------END PGP SIGNATURE-----
-
---vzvdiw5dgntn7l5w--
-
---===============4552880152109763911==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4552880152109763911==--
+=2D-=20
+Ondrej Zary
