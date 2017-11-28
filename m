@@ -1,18 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add snd_soc_disconnect_sync()" to the
-	asoc tree
-Date: Tue, 28 Nov 2017 16:09:12 +0000
-Message-ID: <E1eJiRc-0001rc-DX@debutante>
-References: <87o9of4xjt.wl%kuninori.morimoto.gx@renesas.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: Re: ALSA: nm256: Fine-tuning for three function
+	implementations
+Date: Tue, 28 Nov 2017 17:15:27 +0100
+Message-ID: <6da7e6dc-b181-d26c-9f09-6592469193be@users.sourceforge.net>
+References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
+ <24f8c777-1eb4-e7e7-9371-79f32700c9dc@users.sourceforge.net>
+ <s5hbmjmluba.wl-tiwai@suse.de>
+ <2cbef557-5f89-c630-e108-14ef2ce6b41a@users.sourceforge.net>
+ <s5h4lpelqfm.wl-tiwai@suse.de>
+ <1547a4c2-5b70-e3a3-b482-d28c538e615c@users.sourceforge.net>
+ <s5hy3mqr5v9.wl-tiwai@suse.de>
+ <c2b7543c-cd2c-f7f6-98f3-23e2ca6f8b90@users.sourceforge.net>
+ <s5hshcyr2on.wl-tiwai@suse.de>
+ <539adde3-a713-721f-2a0d-1d1ef925fb86@users.sourceforge.net>
+ <s5hpo82r1s5.wl-tiwai@suse.de>
+ <9a9348f4-d059-de28-1445-0189b7fb0ba3@users.sourceforge.net>
+ <s5hlgiqr0ad.wl-tiwai@suse.de>
+ <3b7b24bd-4bdf-752e-1a62-cc71e9152acc@users.sourceforge.net>
+ <s5hbmjmqxzs.wl-tiwai@suse.de>
+ <bafa4437-2aaf-245d-da60-2353ca5debab@users.sourceforge.net>
+ <s5h8teqqxhx.wl-tiwai@suse.de>
+ <f7189a7c-3b07-e976-ac18-6143365bbd21@users.sourceforge.net>
+ <s5h7euaqwtp.wl-tiwai@suse.de>
+ <a1cd0902-c8bb-9813-8d0c-d394975ef745@users.sourceforge.net>
+ <s5h4lpeqvin.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CE052677F9
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 17:09:20 +0100 (CET)
-In-Reply-To: <87o9of4xjt.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99A4C2677C6
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 17:15:32 +0100 (CET)
+In-Reply-To: <s5h4lpeqvin.wl-tiwai@suse.de>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,85 +42,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+> Because I didn't see any test result from you,
 
-   ASoC: add snd_soc_disconnect_sync()
+This is correct so far.
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> so I can't trust you.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+This view did not hinder you to integrate some of my update suggestions
+which you found easier to handle.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>> Which test configurations would you trust finally?
+> 
+> Do test whatever like the users do.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I find such an information too unsafe for an official acceptance test.
 
-Thanks,
-Mark
 
->From ef2e8175eb19011f756469d4d14f4207bf7f289c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:27:09 +0000
-Subject: [PATCH] ASoC: add snd_soc_disconnect_sync()
+>> How can such descriptions improve the trust situation?
+> 
+> It's the first step.  At least then I can see you did some test.
+> Currently nothing.  zero.  nada.
 
-Now, we have snd_card_disconnect_sync() on ALSA framework.
-snd_soc_disconnect_sync() is ASoC version of it.
+I am unsure if acceptable test results will ever be published for this
+software module.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h  |  2 ++
- sound/soc/soc-core.c | 10 ++++++++++
- 2 files changed, 12 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1a7323238c49..22f479e1da0a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -494,6 +494,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
- int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
- #endif
- 
-+void snd_soc_disconnect_sync(struct device *dev);
-+
- struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
- 		const char *dai_link, int stream);
- struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0edac80df34..9047046c749c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1392,6 +1392,16 @@ static int soc_init_dai_link(struct snd_soc_card *card,
- 	return 0;
- }
- 
-+void snd_soc_disconnect_sync(struct device *dev)
-+{
-+	struct snd_soc_component *component = snd_soc_lookup_component(dev, NULL);
-+
-+	if (!component || !component->card)
-+		return;
-+
-+	snd_card_disconnect_sync(component->card->snd_card);
-+}
-+
- /**
-  * snd_soc_add_dai_link - Add a DAI link dynamically
-  * @card: The ASoC card to which the DAI link is added
--- 
-2.15.0
+> How can I trust it?
+
+* Would you dare to inspect the shown source code adjustments again?
+
+* How do you think about to sort the remaining update candidates
+  by their change size (or software age)?
+
+Regards,
+Markus
