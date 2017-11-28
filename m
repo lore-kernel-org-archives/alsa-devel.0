@@ -1,193 +1,120 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH 1/2] ASoC: nau8825: disable crosstalk by
-	default
-Date: Tue, 28 Nov 2017 12:07:11 +0800
-Message-ID: <5A1CE0EF.5010802@nuvoton.com>
-References: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
- <CAOMLVLi-hdWqqSPw_x1P1_28TkMr5BOU=FCOi=vYofzvx+66+g@mail.gmail.com>
- <5A1CCC8E.6030603@nuvoton.com>
- <CAOMLVLg29ET-6RMSkYwxzWwko1qHkY0fFBhRWGtqp1_C_QJMAA@mail.gmail.com>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH] ASoC: amd: added error checks in dma driver
+Date: Tue, 28 Nov 2017 10:13:44 +0530
+Message-ID: <1511844224-32404-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DE71B266F03
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 05:07:16 +0100 (CET)
-In-Reply-To: <CAOMLVLg29ET-6RMSkYwxzWwko1qHkY0fFBhRWGtqp1_C_QJMAA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?Ild1LUNoZW5nIExpICjmnY7li5noqqApIg==?= <wuchengli@google.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Cheng-yi Chiang <cychiang@google.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, AC30 WTLi <WTLI@nuvoton.com>, Liam Girdwood <lgirdwood@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, Mac Chiang <mac.chiang@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, perex@perex.cz, Alexander.Deucher@amd.com, linux-kernel@vger.kernel.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTEvMjgvMjAxNyAxMToyMSBBTSwgV3UtQ2hlbmcgTGkgKOadjuWLmeiqoCkgd3JvdGU6Cj4g
-T24gVHVlLCBOb3YgMjgsIDIwMTcgYXQgMTA6NDAgQU0sIEpvaG4gSHN1IDxLQ0hTVTBAbnV2b3Rv
-bi5jb20+IHdyb3RlOgo+PiBPbiAxMS8yNy8yMDE3IDI6MTIgUE0sIFd1LUNoZW5nIExpICjmnY7l
-i5noqqApIHdyb3RlOgo+Pj4gT24gRnJpLCBOb3YgMjQsIDIwMTcgYXQgNjowOCBQTSwgSm9obiBI
-c3UgPEtDSFNVMEBudXZvdG9uLmNvbT4gd3JvdGU6Cj4+Pj4gVGhlIGRyaXZlciBtYWtlcyB0aGUg
-Y3Jvc3N0YWxrIGZ1bmNpdG9uIGRpc2FibGVkIGJ5IGRlZmF1bHQKPj4+PiB3aGljaCBjYW4gc2lt
-cGxpZnkgdGhlIGNvZGVjIGZ1bmN0aW9uLiBUaGUgcGxhdGZvcm0gbWF5IG5vdAo+Pj4+IG5lZWQg
-dGhpcyBmdW5jaXRvbiBhbmQgcmVkdWNlIHRoZSBwb3RlbnRpYWwgcmlzay4gVGhlcmVmb3JlLAo+
-Pj4+IFdlIGNoYW5nZSB0aGUgcHJvcGVydHkgIm51dm90b24sY3Jvc3N0YWxrLWJ5cGFzcyIgdG8K
-Pj4+PiAibnV2b3Rvbixjcm9zc3RhbGstZW5hYmxlIi4gVGhlIGNyb3NzdGFsayBtZWFzdXJlbWVu
-dCBpcyBlbmFibGVkCj4+Pj4gaWYgdGhlIHByb3BlcnR5IGlzIHNldC4gT3RoZXJ3aXNlLCBpdCBp
-cyBkaXNhYmxlZC4gQmVzaWRlcywKPj4+PiBhZGQgbW9yZSBjb25kaXRpb24gaW4gdGhlIGVudHJ5
-IHBvaW50IG9mIHRoZSBjcm9zc3RhbGsgc2VxdWVuY2UKPj4+PiB0byBkaXNhYmxlIHRoZSBmdW5j
-dGlvbiBjb21wbGV0ZWx5Lgo+Pj4+Cj4+Pj4gU2lnbmVkLW9mZi1ieTogSm9obiBIc3UgPEtDSFNV
-MEBudXZvdG9uLmNvbT4KPj4+PiAtLS0KPj4+PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
-bmQvbmF1ODgyNS50eHQgICAgICAgICAgfCAgNCArKy0tCj4+Pj4gIHNvdW5kL3NvYy9jb2RlY3Mv
-bmF1ODgyNS5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjMKPj4+PiArKysrKysrKysrKyst
-LS0tLS0tLS0tCj4+Pj4gIHNvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwgIDIgKy0KPj4+PiAgMyBmaWxlcyBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCsp
-LCAxMyBkZWxldGlvbnMoLSkKPj4+Pgo+Pj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3Mvc291bmQvbmF1ODgyNS50eHQKPj4+PiBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9uYXU4ODI1LnR4dAo+Pj4+IGluZGV4IDJmNWU5NzMu
-LmQxNmQ5NjggMTAwNjQ0Cj4+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NvdW5kL25hdTg4MjUudHh0Cj4+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL3NvdW5kL25hdTg4MjUudHh0Cj4+Pj4gQEAgLTY5LDcgKzY5LDcgQEAgT3B0aW9u
-YWwgcHJvcGVydGllczoKPj4+PiAgICAtIG51dm90b24samFjay1pbnNlcnQtZGVib3VuY2U6IG51
-bWJlciBmcm9tIDAgdG8gNyB0aGF0IHNldHMgZGVib3VuY2UKPj4+PiB0aW1lIHRvIDJeKG4rMikg
-bXMKPj4+PiAgICAtIG51dm90b24samFjay1lamVjdC1kZWJvdW5jZTogbnVtYmVyIGZyb20gMCB0
-byA3IHRoYXQgc2V0cyBkZWJvdW5jZQo+Pj4+IHRpbWUgdG8gMl4obisyKSBtcwo+Pj4+Cj4+Pj4g
-LSAgLSBudXZvdG9uLGNyb3NzdGFsay1ieXBhc3M6IG1ha2UgY3Jvc3N0YWxrIGZ1bmN0aW9uIGJ5
-cGFzcyBpZiBzZXQuCj4+Pj4gKyAgLSBudXZvdG9uLGNyb3NzdGFsay1lbmFibGU6IG1ha2UgY3Jv
-c3N0YWxrIGZ1bmN0aW9uIGVuYWJsZSBpZiBzZXQuCj4+Pj4KPj4+PiAgICAtIGNsb2NrczogbGlz
-dCBvZiBwaGFuZGxlIGFuZCBjbG9jayBzcGVjaWZpZXIgcGFpcnMgYWNjb3JkaW5nIHRvCj4+Pj4g
-Y29tbW9uIGNsb2NrIGJpbmRpbmdzIGZvciB0aGUKPj4+PiAgICAgICAgY2xvY2tzIGRlc2NyaWJl
-ZCBpbiBjbG9jay1uYW1lcwo+Pj4+IEBAIC05OCw3ICs5OCw3IEBAIEV4YW1wbGU6Cj4+Pj4gICAg
-ICAgIG51dm90b24sc2hvcnQta2V5LWRlYm91bmNlID0gPDI+Owo+Pj4+ICAgICAgICBudXZvdG9u
-LGphY2staW5zZXJ0LWRlYm91bmNlID0gPDc+Owo+Pj4+ICAgICAgICBudXZvdG9uLGphY2stZWpl
-Y3QtZGVib3VuY2UgPSA8Nz47Cj4+Pj4gLSAgICAgIG51dm90b24sY3Jvc3N0YWxrLWJ5cGFzczsK
-Pj4+PiArICAgICAgbnV2b3Rvbixjcm9zc3RhbGstZW5hYmxlOwo+Pj4+Cj4+Pj4gICAgICAgIGNs
-b2NrLW5hbWVzID0gIm1jbGsiOwo+Pj4+ICAgICAgICBjbG9ja3MgPSA8JnRlZ3JhX2NhciBURUdS
-QTIxMF9DTEtfQ0xLX09VVF8yPjsKPj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy9u
-YXU4ODI1LmMgYi9zb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuYwo+Pj4+IGluZGV4IDcxNGNlMTcu
-LmQzYzFhMDIgMTAwNjQ0Cj4+Pj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy9uYXU4ODI1LmMKPj4+
-PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuYwo+Pj4+IEBAIC04MTUsMTEgKzgxNSwx
-MiBAQCBzdGF0aWMgdm9pZCBuYXU4ODI1X3h0YWxrX3dvcmsoc3RydWN0IHdvcmtfc3RydWN0Cj4+
-Pj4gKndvcmspCj4+Pj4KPj4+PiAgc3RhdGljIHZvaWQgbmF1ODgyNV94dGFsa19jYW5jZWwoc3Ry
-dWN0IG5hdTg4MjUgKm5hdTg4MjUpCj4+Pj4gIHsKPj4+PiAtICAgICAgIC8qIElmIHRoZSB4dGFs
-a19wcm90ZWN0IGlzIHRydWUsIHRoYXQgbWVhbnMgdGhlIHByb2Nlc3MgaXMgc3RpbGwKPj4+PiAt
-ICAgICAgICAqIG9uIGdvaW5nLiBUaGUgZHJpdmVyIGZvcmNlcyB0byBjYW5jZWwgdGhlIGNyb3Nz
-IHRhbGsgdGFzayBhbmQKPj4+PiArICAgICAgIC8qIElmIHRoZSBjcm9zc3RhbGsgaXMgZWFuYmxl
-ZCBhbmQgdGhlIHByb2Nlc3MgaXMgb24gZ29pbmcsCj4+Pgo+Pj4gcy9lYW5ibGVkL2VuYWJsZWQv
-Cj4+Pgo+Pj4+ICsgICAgICAgICogdGhlIGRyaXZlciBmb3JjZXMgdG8gY2FuY2VsIHRoZSBjcm9z
-c3RhbGsgdGFzayBhbmQKPj4+PiAgICAgICAgICAqIHJlc3RvcmVzIHRoZSBjb25maWd1cmF0aW9u
-IHRvIG9yaWdpbmFsIHN0YXR1cy4KPj4+PiAgICAgICAgICAqLwo+Pj4+IC0gICAgICAgaWYgKG5h
-dTg4MjUtPnh0YWxrX3Byb3RlY3QpIHsKPj4+PiArICAgICAgIGlmIChuYXU4ODI1LT54dGFsa19l
-bmFibGUgJiYgbmF1ODgyNS0+eHRhbGtfc3RhdGUgIT0KPj4+PiArICAgICAgICAgICAgICAgTkFV
-ODgyNV9YVEFMS19ET05FKSB7Cj4+Pj4gICAgICAgICAgICAgICAgIGNhbmNlbF93b3JrX3N5bmMo
-Jm5hdTg4MjUtPnh0YWxrX3dvcmspOwo+Pj4+ICAgICAgICAgICAgICAgICBuYXU4ODI1X3h0YWxr
-X2NsZWFuKG5hdTg4MjUpOwo+Pj4+ICAgICAgICAgfQo+Pj4+IEBAIC0xNjg2LDcgKzE2ODcsNyBA
-QCBzdGF0aWMgaXJxcmV0dXJuX3QgbmF1ODgyNV9pbnRlcnJ1cHQoaW50IGlycSwgdm9pZAo+Pj4+
-ICpkYXRhKQo+Pj4+ICAgICAgICAgfSBlbHNlIGlmIChhY3RpdmVfaXJxICYgTkFVODgyNV9IRUFE
-U0VUX0NPTVBMRVRJT05fSVJRKSB7Cj4+Pj4gICAgICAgICAgICAgICAgIGlmIChuYXU4ODI1X2lz
-X2phY2tfaW5zZXJ0ZWQocmVnbWFwKSkgewo+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgIGV2
-ZW50IHw9IG5hdTg4MjVfamFja19pbnNlcnQobmF1ODgyNSk7Cj4+Pj4gLSAgICAgICAgICAgICAg
-ICAgICAgICAgaWYgKCFuYXU4ODI1LT54dGFsa19ieXBhc3MgJiYKPj4+PiAhbmF1ODgyNS0+aGln
-aF9pbXBlZCkgewo+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmIChuYXU4ODI1LT54dGFs
-a19lbmFibGUgJiYKPj4+PiAhbmF1ODgyNS0+aGlnaF9pbXBlZCkgewo+Pj4+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgLyogQXBwbHkgdGhlIGNyb3NzIHRhbGsgc3VwcHJlc3Npb24g
-aW4KPj4+PiB0aGUKPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqIGhlYWRz
-ZXQgd2l0aG91dCBoaWdoIGltcGVkYW5jZS4KPj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAqLwo+Pj4+IEBAIC0xNzMyLDggKzE3MzMsMTAgQEAgc3RhdGljIGlycXJldHVybl90
-IG5hdTg4MjVfaW50ZXJydXB0KGludCBpcnEsIHZvaWQKPj4+PiAqZGF0YSkKPj4+PiAgICAgICAg
-ICAgICAgICAgICAgICAgICBuYXU4ODI1LT54dGFsa19ldmVudF9tYXNrID0gZXZlbnRfbWFzazsK
-Pj4+PiAgICAgICAgICAgICAgICAgfQo+Pj4+ICAgICAgICAgfSBlbHNlIGlmIChhY3RpdmVfaXJx
-ICYgTkFVODgyNV9JTVBFREFOQ0VfTUVBU19JUlEpIHsKPj4+PiAtICAgICAgICAgICAgICAgc2No
-ZWR1bGVfd29yaygmbmF1ODgyNS0+eHRhbGtfd29yayk7Cj4+Pj4gLSAgICAgICAgICAgICAgIGNs
-ZWFyX2lycSA9IE5BVTg4MjVfSU1QRURBTkNFX01FQVNfSVJROwo+Pj4+ICsgICAgICAgICAgICAg
-ICBpZiAobmF1ODgyNS0+eHRhbGtfZW5hYmxlKSB7Cj4+Pj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgc2NoZWR1bGVfd29yaygmbmF1ODgyNS0+eHRhbGtfd29yayk7Cj4+Pj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgY2xlYXJfaXJxID0gTkFVODgyNV9JTVBFREFOQ0VfTUVBU19JUlE7Cj4+Pj4g
-KyAgICAgICAgICAgICAgIH0KPj4+Cj4+PiBTaG91bGRuJ3Qgd2Ugc3RpbGwgc2V0IGNsZWFyX2ly
-cSA9IE5BVTg4MjVfSU1QRURBTkNFX01FQVNfSVJRIGlmCj4+PiBjcm9zc3RhbGsgaXMgZGlzYWJs
-ZWQ/Cj4+PiBPdGhlcndpc2UsIGFsbCBhY3RpdmVfaXJxIHdpbGwgYmUgZGlzYWJsZWQgbGF0ZXIg
-aW4gdGhpcyBmdW5jdGlvbi4KPj4+Cj4+IEFjdHVhbGx5LCB0aGVyZSBpcyBhc3NpZ25tZW50IGFi
-b3V0IGNsZWFyX2lycSBiZWZvcmUgdGhlIGVuZCBvZiBJU1IKPj4gYXMgZm9sbG93czoKPj4gaWYg
-KCFjbGVhcl9pcnEpIGNsZWFyX2lycSA9IGFjdGl2ZV9pcnE7Cj4gUmlnaHQuIEJ1dCB0aGF0IHdp
-bGwgZGlzYWJsZSBhbGwgb3RoZXIgYWN0aXZlIElSUXMuIE5vPyBJIHRob3VnaHQgeW91IHdhbnRl
-ZCB0bwo+IG9ubHkgZGlzYWJsZSB0aGUgSVJRIHRoYXQgd2FzIGhhbmRsZWQuCgpZZXMsIEkgZG8g
-d2FudCB0byBjbGVhciB0aGUgSVJRIHRoYXQgaGFuZGVkIGluIHRoaXMgdGltZS4gV2hlbmV2ZXIK
-dGhlIGludGVycnVwdGlvbiBoYXBwZW5zLCB0aGUgSVNSIHdpbGwgcmVhZCB0aGUgSVJRIHN0YXR1
-cyBiaXRtYXBzLAphbmQgb25seSBvbmUgSVJRIHJhaXNlZCBpbiBlYWNoIHRpbWUuIEFmdGVyIGl0
-IGlzIGNsZWFyZWQsIHRoZSBjb2RlYwpqdXN0IGNhbiBtb25pdG9yIHRoZSBuZXh0IGV2ZW50IGFu
-ZCBtYWtlcyB0aGUgYWN0aXZlIElSUXMuCgo+PiBUaGUgSVJRIHdpbGwgc3RpbGwgYmUgY2xlYXJl
-ZC4gWW91ciBjb21tZW50IGlzIGNvcnJlY3QgZm9yIHRoZSBjbGVhcgo+PiBzZW1hbnRpYy4gQnV0
-IHRoZSBJUlEgd2lsbCBuZXZlciBoYXBwZW4gaWYgdGhlIGNyb3NzdGFsayBkaXNhYmxlZCwKPj4g
-YmVjYXVzZSB0aGUgSVJRIGlzIHRyaWdnZXJlZCBpbiB0aGUgY3Jvc3N0YWxrIHNlcXVlbmNlLgo+
-IFRoZW9yZXRpY2FsbHkgSVJRIHNob3VsZCBub3QgaGFwcGVuIGlmIGNyb3NzdGFsayBpcyBkaXNh
-YmxlZC4gSSB0aGluayB0aGlzIGNoZWNrCj4gY2FuIGJlIHVzZWQgdG8gcHJldmVudCBmcm9tIGEg
-aGFyZHdhcmUgYnVnLgo+Pgo+Pj4+ICAgICAgICAgfSBlbHNlIGlmICgoYWN0aXZlX2lycSAmIE5B
-VTg4MjVfSkFDS19JTlNFUlRJT05fSVJRX01BU0spID09Cj4+Pj4gICAgICAgICAgICAgICAgIE5B
-VTg4MjVfSkFDS19JTlNFUlRJT05fREVURUNURUQpIHsKPj4+PiAgICAgICAgICAgICAgICAgLyog
-T25lIG1vcmUgc3RlcCB0byBjaGVjayBHUElPIHN0YXR1cyBkaXJlY3RseS4gVGh1cywgdGhlCj4+
-Pj4gQEAgLTI0NDAsOCArMjQ0Myw4IEBAIHN0YXRpYyB2b2lkIG5hdTg4MjVfcHJpbnRfZGV2aWNl
-X3Byb3BlcnRpZXMoc3RydWN0Cj4+Pj4gbmF1ODgyNSAqbmF1ODgyNSkKPj4+PiAgICAgICAgICAg
-ICAgICAgICAgICAgICBuYXU4ODI1LT5qYWNrX2luc2VydF9kZWJvdW5jZSk7Cj4+Pj4gICAgICAg
-ICBkZXZfZGJnKGRldiwgImphY2stZWplY3QtZGVib3VuY2U6ICAlZFxuIiwKPj4+PiAgICAgICAg
-ICAgICAgICAgICAgICAgICBuYXU4ODI1LT5qYWNrX2VqZWN0X2RlYm91bmNlKTsKPj4+PiAtICAg
-ICAgIGRldl9kYmcoZGV2LCAiY3Jvc3N0YWxrLWJ5cGFzczogICAgICVkXG4iLAo+Pj4+IC0gICAg
-ICAgICAgICAgICAgICAgICAgIG5hdTg4MjUtPnh0YWxrX2J5cGFzcyk7Cj4+Pj4gKyAgICAgICBk
-ZXZfZGJnKGRldiwgImNyb3NzdGFsay1lbmFibGU6ICAgICAlZFxuIiwKPj4+PiArICAgICAgICAg
-ICAgICAgICAgICAgICBuYXU4ODI1LT54dGFsa19lbmFibGUpOwo+Pj4+ICB9Cj4+Pj4KPj4+PiAg
-c3RhdGljIGludCBuYXU4ODI1X3JlYWRfZGV2aWNlX3Byb3BlcnRpZXMoc3RydWN0IGRldmljZSAq
-ZGV2LAo+Pj4+IEBAIC0yNTA2LDggKzI1MDksOCBAQCBzdGF0aWMgaW50IG5hdTg4MjVfcmVhZF9k
-ZXZpY2VfcHJvcGVydGllcyhzdHJ1Y3QKPj4+PiBkZXZpY2UgKmRldiwKPj4+PiAgICAgICAgICAg
-ICAgICAgJm5hdTg4MjUtPmphY2tfZWplY3RfZGVib3VuY2UpOwo+Pj4+ICAgICAgICAgaWYgKHJl
-dCkKPj4+PiAgICAgICAgICAgICAgICAgbmF1ODgyNS0+amFja19lamVjdF9kZWJvdW5jZSA9IDA7
-Cj4+Pj4gLSAgICAgICBuYXU4ODI1LT54dGFsa19ieXBhc3MgPSBkZXZpY2VfcHJvcGVydHlfcmVh
-ZF9ib29sKGRldiwKPj4+PiAtICAgICAgICAgICAgICAgIm51dm90b24sY3Jvc3N0YWxrLWJ5cGFz
-cyIpOwo+Pj4+ICsgICAgICAgbmF1ODgyNS0+eHRhbGtfZW5hYmxlID0gZGV2aWNlX3Byb3BlcnR5
-X3JlYWRfYm9vbChkZXYsCj4+Pj4gKyAgICAgICAgICAgICAgICJudXZvdG9uLGNyb3NzdGFsay1l
-bmFibGUiKTsKPj4+Pgo+Pj4+ICAgICAgICAgbmF1ODgyNS0+bWNsayA9IGRldm1fY2xrX2dldChk
-ZXYsICJtY2xrIik7Cj4+Pj4gICAgICAgICBpZiAoUFRSX0VSUihuYXU4ODI1LT5tY2xrKSA9PSAt
-RVBST0JFX0RFRkVSKSB7Cj4+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgy
-NS5oIGIvc291bmQvc29jL2NvZGVjcy9uYXU4ODI1LmgKPj4+PiBpbmRleCA4YWVlNWM4Ni4uMTk5
-ZDZlYSAxMDA2NDQKPj4+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuaAo+Pj4+ICsr
-KyBiL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oCj4+Pj4gQEAgLTQ3Niw3ICs0NzYsNyBAQCBz
-dHJ1Y3QgbmF1ODgyNSB7Cj4+Pj4gICAgICAgICBpbnQgeHRhbGtfZXZlbnRfbWFzazsKPj4+PiAg
-ICAgICAgIGJvb2wgeHRhbGtfcHJvdGVjdDsKPj4+PiAgICAgICAgIGludCBpbXBfcm1zW05BVTg4
-MjVfWFRBTEtfSU1NXTsKPj4+PiAtICAgICAgIGludCB4dGFsa19ieXBhc3M7Cj4+Pj4gKyAgICAg
-ICBpbnQgeHRhbGtfZW5hYmxlOwo+Pj4+ICB9Owo+Pj4+Cj4+Pj4gIGludCBuYXU4ODI1X2VuYWJs
-ZV9qYWNrX2RldGVjdChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsCj4+Pj4gLS0KPj4+PiAy
-LjYuNAo+Pj4+Cj4+Cj4+Cj4+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4g
-VGhlIHByaXZpbGVnZWQgY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlz
-IGVtYWlsIGlzIGludGVuZGVkCj4+IGZvciB1c2Ugb25seSBieSB0aGUgYWRkcmVzc2VlcyBhcyBp
-bmRpY2F0ZWQgYnkgdGhlIG9yaWdpbmFsIHNlbmRlciBvZiB0aGlzCj4+IGVtYWlsLiBJZiB5b3Ug
-YXJlIG5vdCB0aGUgYWRkcmVzc2VlIGluZGljYXRlZCBpbiB0aGlzIGVtYWlsIG9yIGFyZSBub3QK
-Pj4gcmVzcG9uc2libGUgZm9yIGRlbGl2ZXJ5IG9mIHRoZSBlbWFpbCB0byBzdWNoIGEgcGVyc29u
-LCBwbGVhc2Uga2luZGx5IHJlcGx5Cj4+IHRvIHRoZSBzZW5kZXIgaW5kaWNhdGluZyB0aGlzIGZh
-Y3QgYW5kIGRlbGV0ZSBhbGwgY29waWVzIG9mIGl0IGZyb20geW91cgo+PiBjb21wdXRlciBhbmQg
-bmV0d29yayBzZXJ2ZXIgaW1tZWRpYXRlbHkuIFlvdXIgY29vcGVyYXRpb24gaXMgaGlnaGx5Cj4+
-IGFwcHJlY2lhdGVkLiBJdCBpcyBhZHZpc2VkIHRoYXQgYW55IHVuYXV0aG9yaXplZCB1c2Ugb2Yg
-Y29uZmlkZW50aWFsCj4+IGluZm9ybWF0aW9uIG9mIE51dm90b24gaXMgc3RyaWN0bHkgcHJvaGli
-aXRlZDsgYW5kIGFueSBpbmZvcm1hdGlvbiBpbiB0aGlzCj4+IGVtYWlsIGlycmVsZXZhbnQgdG8g
-dGhlIG9mZmljaWFsIGJ1c2luZXNzIG9mIE51dm90b24gc2hhbGwgYmUgZGVlbWVkIGFzCj4+IG5l
-aXRoZXIgZ2l2ZW4gbm9yIGVuZG9yc2VkIGJ5IE51dm90b24uCgoKCj09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT0KVGhlIHByaXZpbGVnZWQgY29uZmlkZW50aWFsIGluZm9ybWF0aW9u
-IGNvbnRhaW5lZCBpbiB0aGlzIGVtYWlsIGlzIGludGVuZGVkIGZvciB1c2Ugb25seSBieSB0aGUg
-YWRkcmVzc2VlcyBhcyBpbmRpY2F0ZWQgYnkgdGhlIG9yaWdpbmFsIHNlbmRlciBvZiB0aGlzIGVt
-YWlsLiBJZiB5b3UgYXJlIG5vdCB0aGUgYWRkcmVzc2VlIGluZGljYXRlZCBpbiB0aGlzIGVtYWls
-IG9yIGFyZSBub3QgcmVzcG9uc2libGUgZm9yIGRlbGl2ZXJ5IG9mIHRoZSBlbWFpbCB0byBzdWNo
-IGEgcGVyc29uLCBwbGVhc2Uga2luZGx5IHJlcGx5IHRvIHRoZSBzZW5kZXIgaW5kaWNhdGluZyB0
-aGlzIGZhY3QgYW5kIGRlbGV0ZSBhbGwgY29waWVzIG9mIGl0IGZyb20geW91ciBjb21wdXRlciBh
-bmQgbmV0d29yayBzZXJ2ZXIgaW1tZWRpYXRlbHkuIFlvdXIgY29vcGVyYXRpb24gaXMgaGlnaGx5
-IGFwcHJlY2lhdGVkLiBJdCBpcyBhZHZpc2VkIHRoYXQgYW55IHVuYXV0aG9yaXplZCB1c2Ugb2Yg
-Y29uZmlkZW50aWFsIGluZm9ybWF0aW9uIG9mIE51dm90b24gaXMgc3RyaWN0bHkgcHJvaGliaXRl
-ZDsgYW5kIGFueSBpbmZvcm1hdGlvbiBpbiB0aGlzIGVtYWlsIGlycmVsZXZhbnQgdG8gdGhlIG9m
-ZmljaWFsIGJ1c2luZXNzIG9mIE51dm90b24gc2hhbGwgYmUgZGVlbWVkIGFzIG5laXRoZXIgZ2l2
-ZW4gbm9yIGVuZG9yc2VkIGJ5IE51dm90b24uCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+added additional error checks in acp dma driver
+
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ sound/soc/amd/acp-pcm-dma.c | 39 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index fb09578..71ab5b5 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -848,6 +848,9 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+ 
++	if (!rtd)
++		return -EINVAL;
++
+ 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+ 	bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
+ 
+@@ -873,6 +876,8 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+ 
++	if (!rtd)
++		return -EINVAL;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
+ 					PLAYBACK_START_DMA_DESCR_CH12,
+@@ -1082,7 +1087,11 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, audio_drv_data);
+ 
+ 	/* Initialize the ACP */
+-	acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
++	status = acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
++	if (status) {
++		dev_err(&pdev->dev, "ACP Init failed\n");
++		return status;
++	}
+ 
+ 	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
+ 	if (status != 0) {
+@@ -1099,9 +1108,14 @@ static int acp_audio_probe(struct platform_device *pdev)
+ 
+ static int acp_audio_remove(struct platform_device *pdev)
+ {
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(&pdev->dev);
+ 
+-	acp_deinit(adata->acp_mmio);
++	status = acp_deinit(adata->acp_mmio);
++	if (status) {
++		dev_err(&pdev->dev, "ACP Deinit failed\n");
++		return status;
++	}
+ 	snd_soc_unregister_platform(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+@@ -1111,9 +1125,14 @@ static int acp_audio_remove(struct platform_device *pdev)
+ static int acp_pcm_resume(struct device *dev)
+ {
+ 	u16 bank;
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_init(adata->acp_mmio, adata->asic_type);
++	status = acp_init(adata->acp_mmio, adata->asic_type);
++	if (status) {
++		dev_err(dev, "ACP Init failed\n");
++		return status;
++	}
+ 
+ 	if (adata->play_stream && adata->play_stream->runtime) {
+ 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
+@@ -1145,18 +1164,28 @@ static int acp_pcm_resume(struct device *dev)
+ 
+ static int acp_pcm_runtime_suspend(struct device *dev)
+ {
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_deinit(adata->acp_mmio);
++	status = acp_deinit(adata->acp_mmio);
++	if (status) {
++		dev_err(dev, "ACP Deinit failed\n");
++		return status;
++	}
+ 	acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+ 
+ static int acp_pcm_runtime_resume(struct device *dev)
+ {
++	int status;
+ 	struct audio_drv_data *adata = dev_get_drvdata(dev);
+ 
+-	acp_init(adata->acp_mmio, adata->asic_type);
++	status = acp_init(adata->acp_mmio, adata->asic_type);
++	if (status) {
++		dev_err(dev, "ACP Init failed\n");
++		return status;
++	}
+ 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+ 	return 0;
+ }
+-- 
+2.7.4
