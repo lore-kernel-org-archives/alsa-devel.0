@@ -1,75 +1,126 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v5 02/13] docs: driver-api: add iio hw consumer
-	section
-Date: Tue, 28 Nov 2017 16:05:46 +0100
-Message-ID: <1511881557-28596-3-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v5 03/13] IIO: hw_consumer: add devm_iio_hw_consumer_alloc
+Date: Tue, 28 Nov 2017 16:05:47 +0100
+Message-ID: <1511881557-28596-4-git-send-email-arnaud.pouliquen@st.com>
 References: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F40A72677C6
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 16:06:08 +0100 (CET)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBhZGRzIGEgc2VjdGlvbiBhYm91dCB0aGUgSGFyZHdhcmUgY29uc3VtZXIKQVBJIG9mIHRo
-ZSBJSU8gc3Vic3lzdGVtIHRvIHRoZSBkcml2ZXIgQVBJCmRvY3VtZW50YXRpb24uCgpTaWduZWQt
-b2ZmLWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91bGlxdWVuQHN0LmNvbT4KLS0tClY0
-LT5WNTogTWlub3IgZm9ybWF0aW5nIGZpeGVzLgoKIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9p
-aW8vaHctY29uc3VtZXIucnN0IHwgNTEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogRG9j
-dW1lbnRhdGlvbi9kcml2ZXItYXBpL2lpby9pbmRleC5yc3QgICAgICAgfCAgMSArCiAyIGZpbGVz
-IGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0
-aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJzdAoKZGlmZiAtLWdpdCBhL0RvY3VtZW50
-YXRpb24vZHJpdmVyLWFwaS9paW8vaHctY29uc3VtZXIucnN0IGIvRG9jdW1lbnRhdGlvbi9kcml2
-ZXItYXBpL2lpby9ody1jb25zdW1lci5yc3QKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAw
-MDAwMC4uOGZhY2NlNgotLS0gL2Rldi9udWxsCisrKyBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFw
-aS9paW8vaHctY29uc3VtZXIucnN0CkBAIC0wLDAgKzEsNTEgQEAKKz09PT09PT09PT09CitIVyBj
-b25zdW1lcgorPT09PT09PT09PT0KK0FuIElJTyBkZXZpY2UgY2FuIGJlIGRpcmVjdGx5IGNvbm5l
-Y3RlZCB0byBhbm90aGVyIGRldmljZSBpbiBoYXJkd2FyZS4gaW4gdGhpcworY2FzZSB0aGUgYnVm
-ZmVycyBiZXR3ZWVuIElJTyBwcm92aWRlciBhbmQgSUlPIGNvbnN1bWVyIGFyZSBoYW5kbGVkIGJ5
-IGhhcmR3YXJlLgorVGhlIEluZHVzdHJpYWwgSS9PIEhXIGNvbnN1bWVyIG9mZmVycyBhIHdheSB0
-byBib25kIHRoZXNlIElJTyBkZXZpY2VzIHdpdGhvdXQKK3NvZnR3YXJlIGJ1ZmZlciBmb3IgZGF0
-YS4gVGhlIGltcGxlbWVudGF0aW9uIGNhbiBiZSBmb3VuZCB1bmRlcgorOmZpbGU6YGRyaXZlcnMv
-aWlvL2J1ZmZlci9ody1jb25zdW1lci5jYAorCisKKyogc3RydWN0IDpjOnR5cGU6YGlpb19od19j
-b25zdW1lcmAg4oCUIEhhcmR3YXJlIGNvbnN1bWVyIHN0cnVjdHVyZQorKiA6YzpmdW5jOmBpaW9f
-aHdfY29uc3VtZXJfYWxsb2NgIOKAlCBBbGxvY2F0ZSBJSU8gaGFyZHdhcmUgY29uc3VtZXIKKyog
-OmM6ZnVuYzpgaWlvX2h3X2NvbnN1bWVyX2ZyZWVgIOKAlCBGcmVlIElJTyBoYXJkd2FyZSBjb25z
-dW1lcgorKiA6YzpmdW5jOmBpaW9faHdfY29uc3VtZXJfZW5hYmxlYCDigJQgRW5hYmxlIElJTyBo
-YXJkd2FyZSBjb25zdW1lcgorKiA6YzpmdW5jOmBpaW9faHdfY29uc3VtZXJfZGlzYWJsZWAg4oCU
-IERpc2FibGUgSUlPIGhhcmR3YXJlIGNvbnN1bWVyCisKKworSFcgY29uc3VtZXIgc2V0dXAKKz09
-PT09PT09PT09PT09PT09CisKK0FzIHN0YW5kYXJkIElJTyBkZXZpY2UgdGhlIGltcGxlbWVudGF0
-aW9uIGlzIGJhc2VkIG9uIElJTyBwcm92aWRlci9jb25zdW1lci4KK0EgdHlwaWNhbCBJSU8gSFcg
-Y29uc3VtZXIgc2V0dXAgbG9va3MgbGlrZSB0aGlzOjoKKworCXN0YXRpYyBzdHJ1Y3QgaWlvX2h3
-X2NvbnN1bWVyICpod2M7CisKKwlzdGF0aWMgY29uc3Qgc3RydWN0IGlpb19pbmZvIGFkY19pbmZv
-ID0geworCQkucmVhZF9yYXcgPSBhZGNfcmVhZF9yYXcsCisJfTsKKworCXN0YXRpYyBpbnQgYWRj
-X3JlYWRfcmF3KHN0cnVjdCBpaW9fZGV2ICppbmRpb19kZXYsCisJCQkJc3RydWN0IGlpb19jaGFu
-X3NwZWMgY29uc3QgKmNoYW4sIGludCAqdmFsLAorCQkJCWludCAqdmFsMiwgbG9uZyBtYXNrKQor
-CXsKKwkJcmV0ID0gaWlvX2h3X2NvbnN1bWVyX2VuYWJsZShod2MpOworCisJCS8qIEFjcXVpcmUg
-ZGF0YSAqLworCisJCXJldCA9IGlpb19od19jb25zdW1lcl9kaXNhYmxlKGh3Yyk7CisJfQorCisJ
-c3RhdGljIGludCBhZGNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKKwl7CisJ
-CWh3YyA9IGRldm1faWlvX2h3X2NvbnN1bWVyX2FsbG9jKCZpaW8tPmRldik7CisJfQorCitNb3Jl
-IGRldGFpbHMKKz09PT09PT09PT09PQorLi4ga2VybmVsLWRvYzo6IGluY2x1ZGUvbGludXgvaWlv
-L2h3LWNvbnN1bWVyLmgKKy4uIGtlcm5lbC1kb2M6OiBkcml2ZXJzL2lpby9idWZmZXIvaW5kdXN0
-cmlhbGlvLWh3LWNvbnN1bWVyLmMKKyAgIDpleHBvcnQ6CisKZGlmZiAtLWdpdCBhL0RvY3VtZW50
-YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0IGIvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBp
-L2lpby9pbmRleC5yc3QKaW5kZXggZTVjMzkyMi4uN2ZiYTM0MSAxMDA2NDQKLS0tIGEvRG9jdW1l
-bnRhdGlvbi9kcml2ZXItYXBpL2lpby9pbmRleC5yc3QKKysrIGIvRG9jdW1lbnRhdGlvbi9kcml2
-ZXItYXBpL2lpby9pbmRleC5yc3QKQEAgLTE1LDMgKzE1LDQgQEAgQ29udGVudHM6CiAgICBidWZm
-ZXJzCiAgICB0cmlnZ2VycwogICAgdHJpZ2dlcmVkLWJ1ZmZlcnMKKyAgIGh3LWNvbnN1bWVyCi0t
-IAoyLjcuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Add devm_iio_hw_consumer_alloc function that calls iio_hw_consumer_free
+when the device is unbound from the bus.
+
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+V4->V5 No delta.
+
+ drivers/iio/buffer/industrialio-hw-consumer.c | 66 +++++++++++++++++++++++++++
+ include/linux/iio/hw-consumer.h               |  2 +
+ 2 files changed, 68 insertions(+)
+
+diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
+index 0253be1..e980a79 100644
+--- a/drivers/iio/buffer/industrialio-hw-consumer.c
++++ b/drivers/iio/buffer/industrialio-hw-consumer.c
+@@ -138,6 +138,72 @@ void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
+ }
+ EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
+ 
++static void devm_iio_hw_consumer_release(struct device *dev, void *res)
++{
++	iio_hw_consumer_free(*(struct iio_hw_consumer **)res);
++}
++
++static int devm_iio_hw_consumer_match(struct device *dev, void *res, void *data)
++{
++	struct iio_hw_consumer **r = res;
++
++	if (!r || !*r) {
++		WARN_ON(!r || !*r);
++		return 0;
++	}
++	return *r == data;
++}
++
++/**
++ * devm_iio_hw_consumer_alloc - Resource-managed iio_hw_consumer_alloc()
++ * @dev: Pointer to consumer device.
++ *
++ * Managed iio_hw_consumer_alloc. iio_hw_consumer allocated with this function
++ * is automatically freed on driver detach.
++ *
++ * If an iio_hw_consumer allocated with this function needs to be freed
++ * separately, devm_iio_hw_consumer_free() must be used.
++ *
++ * returns pointer to allocated iio_hw_consumer on success, NULL on failure.
++ */
++struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev)
++{
++	struct iio_hw_consumer **ptr, *iio_hwc;
++
++	ptr = devres_alloc(devm_iio_hw_consumer_release, sizeof(*ptr),
++			   GFP_KERNEL);
++	if (!ptr)
++		return NULL;
++
++	iio_hwc = iio_hw_consumer_alloc(dev);
++	if (IS_ERR(iio_hwc)) {
++		devres_free(ptr);
++	} else {
++		*ptr = iio_hwc;
++		devres_add(dev, ptr);
++	}
++
++	return iio_hwc;
++}
++EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_alloc);
++
++/**
++ * devm_iio_hw_consumer_free - Resource-managed iio_hw_consumer_free()
++ * @dev: Pointer to consumer device.
++ * @hwc: iio_hw_consumer to free.
++ *
++ * Free iio_hw_consumer allocated with devm_iio_hw_consumer_alloc().
++ */
++void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc)
++{
++	int rc;
++
++	rc = devres_release(dev, devm_iio_hw_consumer_release,
++			    devm_iio_hw_consumer_match, hwc);
++	WARN_ON(rc);
++}
++EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_free);
++
+ /**
+  * iio_hw_consumer_enable() - Enable IIO hardware consumer
+  * @hwc: iio_hw_consumer to enable.
+diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
+index f16791b..90ecfce 100644
+--- a/include/linux/iio/hw-consumer.h
++++ b/include/linux/iio/hw-consumer.h
+@@ -14,6 +14,8 @@ struct iio_hw_consumer;
+ 
+ struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
+ void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
++struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev);
++void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc);
+ int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
+ void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
+ 
+-- 
+2.7.4
