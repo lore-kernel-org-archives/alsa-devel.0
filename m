@@ -1,75 +1,93 @@
-From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [PATCH v5 11/13] IIO: consumer: allow to set buffer sizes
-Date: Tue, 28 Nov 2017 16:05:55 +0100
-Message-ID: <1511881557-28596-12-git-send-email-arnaud.pouliquen@st.com>
-References: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2] Update codec driver for dual mics
+	configuration
+Date: Tue, 28 Nov 2017 15:15:17 +0000
+Message-ID: <20171128151517.fxs7dgyyhsj6zu7q@sirena.org.uk>
+References: <20171121171546.5656-1-carlo@caione.org>
+ <CAOQ7t2Z=gyX5jyewnM_1gD6_Vnsrs2v6GGToyEkd7tSTHc7FQg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1511881557-28596-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3138754064453123803=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 630BE2677C6
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 16:15:23 +0100 (CET)
+In-Reply-To: <CAOQ7t2Z=gyX5jyewnM_1gD6_Vnsrs2v6GGToyEkd7tSTHc7FQg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Carlo Caione <carlo@caione.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Linux Upstreaming Team <linux@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add iio consumer API to set buffer size and watermark according
-to sysfs API.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
----
- drivers/iio/buffer/industrialio-buffer-cb.c | 11 +++++++++++
- include/linux/iio/consumer.h                | 11 +++++++++++
- 2 files changed, 22 insertions(+)
+--===============3138754064453123803==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="skg3pher4tzzn6ro"
+Content-Disposition: inline
 
-diff --git a/drivers/iio/buffer/industrialio-buffer-cb.c b/drivers/iio/buffer/industrialio-buffer-cb.c
-index 4847534..ea63c83 100644
---- a/drivers/iio/buffer/industrialio-buffer-cb.c
-+++ b/drivers/iio/buffer/industrialio-buffer-cb.c
-@@ -104,6 +104,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(iio_channel_get_all_cb);
- 
-+int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buff,
-+					size_t watermark)
-+{
-+	if (!watermark)
-+		return -EINVAL;
-+	cb_buff->buffer.watermark = watermark;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(iio_channel_cb_set_buffer_watermark);
-+
- int iio_channel_start_all_cb(struct iio_cb_buffer *cb_buff)
- {
- 	return iio_update_buffers(cb_buff->indio_dev, &cb_buff->buffer,
-diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
-index 2017f35..9887f4f 100644
---- a/include/linux/iio/consumer.h
-+++ b/include/linux/iio/consumer.h
-@@ -134,6 +134,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
- 						       void *private),
- 					     void *private);
- /**
-+ * iio_channel_cb_set_buffer_watermark() - set the buffer watermark.
-+ * @cb_buffer:		The callback buffer from whom we want the channel
-+ *			information.
-+ * @watermark: buffer watermark in bytes.
-+ *
-+ * This function allows to configure the buffer watermark.
-+ */
-+int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buffer,
-+					size_t watermark);
-+
-+/**
-  * iio_channel_release_all_cb() - release and unregister the callback.
-  * @cb_buffer:		The callback buffer that was allocated.
-  */
--- 
-2.7.4
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--skg3pher4tzzn6ro
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 28, 2017 at 02:08:05PM +0000, Carlo Caione wrote:
+> On Tue, Nov 21, 2017 at 5:15 PM, Carlo Caione <carlo@caione.org> wrote:
+> > From: Carlo Caione <carlo@endlessm.com>
+> >
+> > The RT5651 codec has 3 analog input ports. Some laptops (like the KIANO=
+ laptop)
+> > have two different analog mics on two ports, leaving the headset on the
+> > remaining one. We need to add a new quirk to support also this configur=
+ation.
+> >
+> > Carlo Caione (2):
+> >   ASoC: intel: byt: Introduce new map for dual mics
+> >   ASoC: intel: byt: Fix quirk for KIANO laptop
+>=20
+> gentle ping.
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, though there are some other maintainers who like them - if in
+doubt look at how patches for the subsystem are normally handled.
+
+--skg3pher4tzzn6ro
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlodfYUACgkQJNaLcl1U
+h9AOTwf8DOTbmi0BSW/2GBf0ySfgRDCCxhju2WKAupyBFMfBQStgjlhsJGZQjlZ+
+xGAf6sXyoqWFFi/Sjaur9VMNOTrlZD0xEaz+CvrnjU2jkTnEE32UnoHvLq7RDXKw
+/+mDzQ4fYKdCC/0mXlaHV69o1dLCPb+ttQT9JwkWjHX4Vwc+hKnwmmGlhnVn3cyf
+SLDQ38+1vGno8D8GaYbNj0Vt/gn0utNGfEzHYhVwb3UDGLALmt/tlggdeE0ia8+q
+72UtPUXEvbvt8l5ptCqq2GfMiSnMy/Kvo7og6UacGWvskhgdjjlUQMGJRib8607H
+bahGiqFYAkAv2S7M1dyAMxTwtjSrBw==
+=UUTw
+-----END PGP SIGNATURE-----
+
+--skg3pher4tzzn6ro--
+
+--===============3138754064453123803==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3138754064453123803==--
