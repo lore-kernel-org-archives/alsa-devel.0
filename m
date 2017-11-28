@@ -1,15 +1,18 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v5 00/13] Add STM32 DFSDM support
-Date: Tue, 28 Nov 2017 16:05:44 +0100
-Message-ID: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v5 02/13] docs: driver-api: add iio hw consumer
+	section
+Date: Tue, 28 Nov 2017 16:05:46 +0100
+Message-ID: <1511881557-28596-3-git-send-email-arnaud.pouliquen@st.com>
+References: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F0F10266B0F
+ by alsa0.perex.cz (Postfix) with ESMTP id F40A72677C6
  for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 16:06:08 +0100 (CET)
+In-Reply-To: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,99 +26,50 @@ To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonat
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-Here is a new version integrating remarks from Rob and Jonathan.
-
-Main deltas vs V4:
-- Integrate ASOC DAI not as a subnode of the DFSDM.
-- Add in kernel consumer interface to allow to manipulate attribute.
-
-Context reminder:
------------------
-
-DFSDM peripheral is a peripheral that allows to connect some sigma delta ADCs
-or PDM microphones via a SPI or Manchester bus.
-DFSDM integrates digital filters to offer up to 24 bits final resolution.
-
-In term of SW architecture. 2 use-cases have to be supported:
-
-1) Sigma delta ADC conversion through IIO framework.
-Sigma delta ADC is handled by generic sigma delta modulator driver. 
-DFSDM peripheral is binded to a SD modulator ADC using the IIO HW consumer interface. 
-Please notice that IIO HW consumer interface has be proposed by Lars, but is
-part of this patchset with Lars's agreement.
-User interface is IIO one.
-Notice that this patch-set propose only a raw conversion, to simplify review.
-Buffer and trigger management will be added in next patch-sets.
-
-2) PDM microphone record through ALSA framework.
-PDM microphone is handled by ASOC Generic DMIC codec driver.
-ADFSDM ASOC DAI driver is binded to IIO driver using the IIO consumer interface
-ADFSDM ASOC DAI driver is binded to a PDM microphone ASOC component using ASOC Of_graph.
-User interface is ALSA one.
-As IIO DMA management is not adapted to an audio realtime stream. A specific DMA 
-management has been implemented in IIO driver for audio purposes.
-
-Regards,
-Arnaud
-
-
-
-Arnaud Pouliquen (12):
-  docs: driver-api: add iio hw consumer section
-  IIO: hw_consumer: add devm_iio_hw_consumer_alloc
-  IIO: inkern: API for manipulating channel attributes
-  IIO: Add DT bindings for sigma delta adc modulator
-  IIO: ADC: add sigma delta modulator support
-  IIO: add DT bindings for stm32 DFSDM filter
-  IIO: ADC: add stm32 DFSDM core support
-  IIO: ADC: add STM32 DFSDM sigma delta ADC support
-  IIO: ADC: add stm32 DFSDM support for PDM microphone
-  IIO: consumer: allow to set buffer sizes
-  ASoC: add bindings for stm32 DFSDM filter
-  ASoC: stm32: add DFSDM DAI support
-
-Lars-Peter Clausen (1):
-  iio: Add hardware consumer buffer support
-
- .../ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32      |   16 +
- .../bindings/iio/adc/sigma-delta-modulator.txt     |   13 +
- .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        |  127 ++
- .../devicetree/bindings/sound/st,stm32-adfsdm.txt  |   62 +
- Documentation/driver-api/iio/hw-consumer.rst       |   51 +
- Documentation/driver-api/iio/index.rst             |    1 +
- drivers/iio/adc/Kconfig                            |   37 +
- drivers/iio/adc/Makefile                           |    3 +
- drivers/iio/adc/sd_adc_modulator.c                 |   81 ++
- drivers/iio/adc/stm32-dfsdm-adc.c                  | 1232 ++++++++++++++++++++
- drivers/iio/adc/stm32-dfsdm-core.c                 |  318 +++++
- drivers/iio/adc/stm32-dfsdm.h                      |  319 +++++
- drivers/iio/buffer/Kconfig                         |   10 +
- drivers/iio/buffer/Makefile                        |    1 +
- drivers/iio/buffer/industrialio-buffer-cb.c        |   11 +
- drivers/iio/buffer/industrialio-hw-consumer.c      |  248 ++++
- drivers/iio/inkern.c                               |   18 +-
- include/linux/iio/adc/stm32-dfsdm-adc.h            |   28 +
- include/linux/iio/consumer.h                       |   37 +
- include/linux/iio/hw-consumer.h                    |   22 +
- sound/soc/stm/Kconfig                              |   11 +
- sound/soc/stm/Makefile                             |    3 +
- sound/soc/stm/stm32_adfsdm.c                       |  386 ++++++
- 23 files changed, 3030 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dfsdm-adc-stm32
- create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
- create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
- create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
- create mode 100644 drivers/iio/adc/sd_adc_modulator.c
- create mode 100644 drivers/iio/adc/stm32-dfsdm-adc.c
- create mode 100644 drivers/iio/adc/stm32-dfsdm-core.c
- create mode 100644 drivers/iio/adc/stm32-dfsdm.h
- create mode 100644 drivers/iio/buffer/industrialio-hw-consumer.c
- create mode 100644 include/linux/iio/adc/stm32-dfsdm-adc.h
- create mode 100644 include/linux/iio/hw-consumer.h
- create mode 100644 sound/soc/stm/stm32_adfsdm.c
-
--- 
-2.7.4
+VGhpcyBhZGRzIGEgc2VjdGlvbiBhYm91dCB0aGUgSGFyZHdhcmUgY29uc3VtZXIKQVBJIG9mIHRo
+ZSBJSU8gc3Vic3lzdGVtIHRvIHRoZSBkcml2ZXIgQVBJCmRvY3VtZW50YXRpb24uCgpTaWduZWQt
+b2ZmLWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91bGlxdWVuQHN0LmNvbT4KLS0tClY0
+LT5WNTogTWlub3IgZm9ybWF0aW5nIGZpeGVzLgoKIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9p
+aW8vaHctY29uc3VtZXIucnN0IHwgNTEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogRG9j
+dW1lbnRhdGlvbi9kcml2ZXItYXBpL2lpby9pbmRleC5yc3QgICAgICAgfCAgMSArCiAyIGZpbGVz
+IGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0
+aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJzdAoKZGlmZiAtLWdpdCBhL0RvY3VtZW50
+YXRpb24vZHJpdmVyLWFwaS9paW8vaHctY29uc3VtZXIucnN0IGIvRG9jdW1lbnRhdGlvbi9kcml2
+ZXItYXBpL2lpby9ody1jb25zdW1lci5yc3QKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAw
+MDAwMC4uOGZhY2NlNgotLS0gL2Rldi9udWxsCisrKyBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFw
+aS9paW8vaHctY29uc3VtZXIucnN0CkBAIC0wLDAgKzEsNTEgQEAKKz09PT09PT09PT09CitIVyBj
+b25zdW1lcgorPT09PT09PT09PT0KK0FuIElJTyBkZXZpY2UgY2FuIGJlIGRpcmVjdGx5IGNvbm5l
+Y3RlZCB0byBhbm90aGVyIGRldmljZSBpbiBoYXJkd2FyZS4gaW4gdGhpcworY2FzZSB0aGUgYnVm
+ZmVycyBiZXR3ZWVuIElJTyBwcm92aWRlciBhbmQgSUlPIGNvbnN1bWVyIGFyZSBoYW5kbGVkIGJ5
+IGhhcmR3YXJlLgorVGhlIEluZHVzdHJpYWwgSS9PIEhXIGNvbnN1bWVyIG9mZmVycyBhIHdheSB0
+byBib25kIHRoZXNlIElJTyBkZXZpY2VzIHdpdGhvdXQKK3NvZnR3YXJlIGJ1ZmZlciBmb3IgZGF0
+YS4gVGhlIGltcGxlbWVudGF0aW9uIGNhbiBiZSBmb3VuZCB1bmRlcgorOmZpbGU6YGRyaXZlcnMv
+aWlvL2J1ZmZlci9ody1jb25zdW1lci5jYAorCisKKyogc3RydWN0IDpjOnR5cGU6YGlpb19od19j
+b25zdW1lcmAg4oCUIEhhcmR3YXJlIGNvbnN1bWVyIHN0cnVjdHVyZQorKiA6YzpmdW5jOmBpaW9f
+aHdfY29uc3VtZXJfYWxsb2NgIOKAlCBBbGxvY2F0ZSBJSU8gaGFyZHdhcmUgY29uc3VtZXIKKyog
+OmM6ZnVuYzpgaWlvX2h3X2NvbnN1bWVyX2ZyZWVgIOKAlCBGcmVlIElJTyBoYXJkd2FyZSBjb25z
+dW1lcgorKiA6YzpmdW5jOmBpaW9faHdfY29uc3VtZXJfZW5hYmxlYCDigJQgRW5hYmxlIElJTyBo
+YXJkd2FyZSBjb25zdW1lcgorKiA6YzpmdW5jOmBpaW9faHdfY29uc3VtZXJfZGlzYWJsZWAg4oCU
+IERpc2FibGUgSUlPIGhhcmR3YXJlIGNvbnN1bWVyCisKKworSFcgY29uc3VtZXIgc2V0dXAKKz09
+PT09PT09PT09PT09PT09CisKK0FzIHN0YW5kYXJkIElJTyBkZXZpY2UgdGhlIGltcGxlbWVudGF0
+aW9uIGlzIGJhc2VkIG9uIElJTyBwcm92aWRlci9jb25zdW1lci4KK0EgdHlwaWNhbCBJSU8gSFcg
+Y29uc3VtZXIgc2V0dXAgbG9va3MgbGlrZSB0aGlzOjoKKworCXN0YXRpYyBzdHJ1Y3QgaWlvX2h3
+X2NvbnN1bWVyICpod2M7CisKKwlzdGF0aWMgY29uc3Qgc3RydWN0IGlpb19pbmZvIGFkY19pbmZv
+ID0geworCQkucmVhZF9yYXcgPSBhZGNfcmVhZF9yYXcsCisJfTsKKworCXN0YXRpYyBpbnQgYWRj
+X3JlYWRfcmF3KHN0cnVjdCBpaW9fZGV2ICppbmRpb19kZXYsCisJCQkJc3RydWN0IGlpb19jaGFu
+X3NwZWMgY29uc3QgKmNoYW4sIGludCAqdmFsLAorCQkJCWludCAqdmFsMiwgbG9uZyBtYXNrKQor
+CXsKKwkJcmV0ID0gaWlvX2h3X2NvbnN1bWVyX2VuYWJsZShod2MpOworCisJCS8qIEFjcXVpcmUg
+ZGF0YSAqLworCisJCXJldCA9IGlpb19od19jb25zdW1lcl9kaXNhYmxlKGh3Yyk7CisJfQorCisJ
+c3RhdGljIGludCBhZGNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKKwl7CisJ
+CWh3YyA9IGRldm1faWlvX2h3X2NvbnN1bWVyX2FsbG9jKCZpaW8tPmRldik7CisJfQorCitNb3Jl
+IGRldGFpbHMKKz09PT09PT09PT09PQorLi4ga2VybmVsLWRvYzo6IGluY2x1ZGUvbGludXgvaWlv
+L2h3LWNvbnN1bWVyLmgKKy4uIGtlcm5lbC1kb2M6OiBkcml2ZXJzL2lpby9idWZmZXIvaW5kdXN0
+cmlhbGlvLWh3LWNvbnN1bWVyLmMKKyAgIDpleHBvcnQ6CisKZGlmZiAtLWdpdCBhL0RvY3VtZW50
+YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0IGIvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBp
+L2lpby9pbmRleC5yc3QKaW5kZXggZTVjMzkyMi4uN2ZiYTM0MSAxMDA2NDQKLS0tIGEvRG9jdW1l
+bnRhdGlvbi9kcml2ZXItYXBpL2lpby9pbmRleC5yc3QKKysrIGIvRG9jdW1lbnRhdGlvbi9kcml2
+ZXItYXBpL2lpby9pbmRleC5yc3QKQEAgLTE1LDMgKzE1LDQgQEAgQ29udGVudHM6CiAgICBidWZm
+ZXJzCiAgICB0cmlnZ2VycwogICAgdHJpZ2dlcmVkLWJ1ZmZlcnMKKyAgIGh3LWNvbnN1bWVyCi0t
+IAoyLjcuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
