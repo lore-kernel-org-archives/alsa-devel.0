@@ -1,16 +1,16 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 3/4] ASoC: Intel: Skylake: Parse vendor tokens
-	to build A-State table
-Date: Tue, 28 Nov 2017 16:40:20 +0530
-Message-ID: <20171128111021.11830-4-guneshwor.o.singh@intel.com>
+Subject: [PATCH 4/4] ASoC: Intel: Skylake: Configure DSP clock
+	source
+Date: Tue, 28 Nov 2017 16:40:21 +0530
+Message-ID: <20171128111021.11830-5-guneshwor.o.singh@intel.com>
 References: <20171128111021.11830-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 81B95267745
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 12:11:00 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 40EBD267752
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 12:11:05 +0100 (CET)
 In-Reply-To: <20171128111021.11830-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,161 +27,83 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Pradeep Tewani <pradeep.d.tewani@intel.com>
 
-A-State table is a power management table which allows the driver to
-configure the DSP clock source corresponding to various load thresholds.
-The table contains upto 3 A-State entries. The patch adds and parses the
-corresponding A-State tokens to build the table.
+DSP clock source is configured by sending the A-State table to the FW.
+Add the large config set IPC to configure the desired clock source
 
 Signed-off-by: Pradeep Tewani <pradeep.d.tewani@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 ---
- include/uapi/sound/snd_sst_tokens.h    | 17 ++++++++++++-
- sound/soc/intel/skylake/skl-topology.c | 44 +++++++++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl.h          | 17 +++++++++++++
- 3 files changed, 76 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 18 ++++++++++++++++++
+ sound/soc/intel/skylake/skl-pcm.c      |  6 ++++++
+ sound/soc/intel/skylake/skl-sst-dsp.h  |  3 +++
+ 3 files changed, 27 insertions(+)
 
-diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
-index 326054a72bc7..8ba0112e5336 100644
---- a/include/uapi/sound/snd_sst_tokens.h
-+++ b/include/uapi/sound/snd_sst_tokens.h
-@@ -222,6 +222,17 @@
-  * %SKL_TKN_MM_U32_NUM_IN_FMT:  Number of input formats
-  * %SKL_TKN_MM_U32_NUM_OUT_FMT: Number of output formats
-  *
-+ * %SKL_TKN_U32_ASTATE_IDX:     Table Index for the A-State entry to be filled
-+ *                              with kcps and clock source
-+ *
-+ * %SKL_TKN_U32_ASTATE_COUNT:   Number of valid entries in A-State table
-+ *
-+ * %SKL_TKN_U32_ASTATE_KCPS:    Specifies the core load threshold (in kilo
-+ *                              cycles per second) below which DSP is clocked
-+ *                              from source specified by clock source.
-+ *
-+ * %SKL_TKN_U32_ASTATE_CLK_SRC: Clock source for A-State entry
-+ *
-  * module_id and loadable flags dont have tokens as these values will be
-  * read from the DSP FW manifest
-  *
-@@ -309,7 +320,11 @@ enum SKL_TKNS {
- 	SKL_TKN_MM_U32_NUM_IN_FMT,
- 	SKL_TKN_MM_U32_NUM_OUT_FMT,
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 61b5bfa79d13..81ee1118ed71 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -55,6 +55,19 @@ static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
+ 	return 0;
+ }
  
--	SKL_TKN_MAX = SKL_TKN_MM_U32_NUM_OUT_FMT,
-+	SKL_TKN_U32_ASTATE_IDX,
-+	SKL_TKN_U32_ASTATE_COUNT,
-+	SKL_TKN_U32_ASTATE_KCPS,
-+	SKL_TKN_U32_ASTATE_CLK_SRC,
-+	SKL_TKN_MAX = SKL_TKN_U32_ASTATE_CLK_SRC,
- };
++#define SKL_ASTATE_PARAM_ID	4
++
++void skl_dsp_set_astate_cfg(struct skl_sst *ctx, u32 cnt, void *data)
++{
++	struct skl_ipc_large_config_msg	msg = {0};
++
++	msg.large_param_id = SKL_ASTATE_PARAM_ID;
++	msg.param_data_size = (cnt * sizeof(struct skl_astate_param) +
++				sizeof(cnt));
++
++	skl_ipc_set_large_config(&ctx->ipc, &msg, data);
++}
++
+ #define NOTIFICATION_PARAM_ID 3
+ #define NOTIFICATION_MASK 0xf
  
- #endif
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index a072bcf209d2..6a5f8462c380 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3056,11 +3056,13 @@ static int skl_tplg_get_int_tkn(struct device *dev,
- 		struct snd_soc_tplg_vendor_value_elem *tkn_elem,
- 		struct skl *skl)
- {
--	int tkn_count = 0, ret;
-+	int tkn_count = 0, ret, size;
- 	static int mod_idx, res_val_idx, intf_val_idx, dir, pin_idx;
- 	struct skl_module_res *res = NULL;
- 	struct skl_module_iface *fmt = NULL;
- 	struct skl_module *mod = NULL;
-+	static struct skl_astate_param *astate_table;
-+	static int astate_cfg_idx, count;
- 	int i;
+@@ -409,6 +422,11 @@ int skl_resume_dsp(struct skl *skl)
+ 		return ret;
  
- 	if (skl->modules) {
-@@ -3093,6 +3095,46 @@ static int skl_tplg_get_int_tkn(struct device *dev,
- 		mod_idx = tkn_elem->value;
- 		break;
+ 	skl_dsp_enable_notification(skl->skl_sst, false);
++
++	if (skl->cfg.astate_cfg != NULL) {
++		skl_dsp_set_astate_cfg(skl->skl_sst, skl->cfg.astate_cfg->count,
++					skl->cfg.astate_cfg);
++	}
+ 	return ret;
+ }
  
-+	case SKL_TKN_U32_ASTATE_COUNT:
-+		if (astate_table != NULL) {
-+			dev_err(dev, "More than one entry for A-State count");
-+			return -EINVAL;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 1dd97479e0c0..07150860680f 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1351,6 +1351,12 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ 		skl_populate_modules(skl);
+ 		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
+ 		skl_dsp_enable_notification(skl->skl_sst, false);
++
++		if (skl->cfg.astate_cfg != NULL) {
++			skl_dsp_set_astate_cfg(skl->skl_sst,
++					skl->cfg.astate_cfg->count,
++					skl->cfg.astate_cfg);
 +		}
-+
-+		if (tkn_elem->value > SKL_MAX_ASTATE_CFG) {
-+			dev_err(dev, "Invalid A-State count %d\n",
-+				tkn_elem->value);
-+			return -EINVAL;
-+		}
-+
-+		size = tkn_elem->value * sizeof(struct skl_astate_param) +
-+				sizeof(count);
-+		skl->cfg.astate_cfg = devm_kzalloc(dev, size, GFP_KERNEL);
-+		if (!skl->cfg.astate_cfg)
-+			return -ENOMEM;
-+
-+		astate_table = skl->cfg.astate_cfg->astate_table;
-+		count = skl->cfg.astate_cfg->count = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_ASTATE_IDX:
-+		if (tkn_elem->value >= count) {
-+			dev_err(dev, "Invalid A-State index %d\n",
-+				tkn_elem->value);
-+			return -EINVAL;
-+		}
-+
-+		astate_cfg_idx = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_ASTATE_KCPS:
-+		astate_table[astate_cfg_idx].kcps = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_ASTATE_CLK_SRC:
-+		astate_table[astate_cfg_idx].clk_src = tkn_elem->value;
-+		break;
-+
- 	case SKL_TKN_U8_IN_PIN_TYPE:
- 	case SKL_TKN_U8_OUT_PIN_TYPE:
- 	case SKL_TKN_U8_IN_QUEUE_COUNT:
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index e00cde8200dd..fa46a5782929 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -28,6 +28,8 @@
+ 	}
+ 	pm_runtime_mark_last_busy(platform->dev);
+ 	pm_runtime_put_autosuspend(platform->dev);
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index eba20d37ba8c..b8e799ed65ef 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -251,6 +251,9 @@ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
- #define SKL_SUSPEND_DELAY 2000
- 
-+#define SKL_MAX_ASTATE_CFG		3
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
+ void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable);
 +
- #define AZX_PCIREG_PGCTL		0x44
- #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
- #define AZX_PCIREG_CGCTL		0x48
-@@ -45,6 +47,20 @@ struct skl_dsp_resource {
- 
- struct skl_debug;
- 
-+struct skl_astate_param {
-+	u32 kcps;
-+	u32 clk_src;
-+};
++void skl_dsp_set_astate_cfg(struct skl_sst *ctx, u32 cnt, void *data);
 +
-+struct skl_astate_config {
-+	u32 count;
-+	struct skl_astate_param astate_table[0];
-+};
-+
-+struct skl_fw_config {
-+	struct skl_astate_config *astate_cfg;
-+};
-+
- struct skl {
- 	struct hdac_ext_bus ebus;
- 	struct pci_dev *pci;
-@@ -75,6 +91,7 @@ struct skl {
- 	u8 nr_modules;
- 	struct skl_module **modules;
- 	bool use_tplg_pcm;
-+	struct skl_fw_config cfg;
- };
- 
- #define skl_to_ebus(s)	(&(s)->ebus)
+ int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
+ 		struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp,
+ 		struct sst_dsp_device *skl_dev);
 -- 
 2.15.0
