@@ -1,25 +1,20 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: ALSA: nm256: Fine-tuning for three function
-	implementations
-Date: Tue, 28 Nov 2017 10:50:21 +0100
-Message-ID: <1547a4c2-5b70-e3a3-b482-d28c538e615c@users.sourceforge.net>
-References: <d98a2685-ddf9-1cba-839a-d12c5ff8d3ba@users.sourceforge.net>
- <s5hefoy16xg.wl-tiwai@suse.de>
- <dfa99045-f213-3dad-b1f4-2e90eb38ddbd@users.sourceforge.net>
- <s5h7euq9hqt.wl-tiwai@suse.de>
- <24f8c777-1eb4-e7e7-9371-79f32700c9dc@users.sourceforge.net>
- <s5hbmjmluba.wl-tiwai@suse.de>
- <2cbef557-5f89-c630-e108-14ef2ce6b41a@users.sourceforge.net>
- <s5h4lpelqfm.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: drivers: make array 'names' const,
+ reduces object code size
+Date: Tue, 28 Nov 2017 19:39:24 +0900
+Message-ID: <7ac4b078-5c9a-5285-1bc1-8c02adfd56c0@sakamocchi.jp>
+References: <20171127125851.10076-1-colin.king@canonical.com>
+ <11bbcc13-2ff9-68ed-6331-f65c2247b4db@sakamocchi.jp>
+ <s5h7eubmrev.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id CEED62671AE
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 10:50:26 +0100 (CET)
-In-Reply-To: <s5h4lpelqfm.wl-tiwai@suse.de>
-Content-Language: en-GB
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 89160266B80
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 11:39:26 +0100 (CET)
+In-Reply-To: <s5h7eubmrev.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,50 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Colin King <colin.king@canonical.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, wharms@bfs.de
 List-Id: alsa-devel@alsa-project.org
 
-Pj4gVGhlcmUgY2FuIGJlIGFkZGl0aW9uYWwgbWVhbnMgYmUgdXNlZCB0byByZWR1Y2UgdGhlIHBy
-b2JhYmlsaXR5Cj4+IG9mIHVuZGVzaXJlZCBzaWRlIGVmZmVjdHMuCj4gCj4gSXJyZWxldmFudCwK
-CkkgZ290IGFuIG90aGVyIG9waW5pb24gaGVyZS4KCgo+IGl0IGRvZXNuJ3QgZml4IGEgYnVnLAoK
-RGlkIEkgc3VnZ2VzdCB0byBjb3JyZWN0IGEgY29kaW5nIHN0eWxlIOKAnGJ1Z+KAnT8KCgo+IG5v
-ciBkcmFtYXRpYyBpbXByb3ZlbWVudC4KCkkgYWdyZWUgdGhhdCB0aGUgY2hhbmdlIGNvdWxkIGJl
-IHNtYWxsIG9ubHkgZm9yIHRoaXMgc29mdHdhcmUgbW9kdWxlIGFsb25lLgpJIGd1ZXNzIHRoYXQg
-d2UgZGlzY3VzcyBub3Qgb25seSBjaGFuZ2UgcGF0dGVybnMgZm9yIHRoaXMgb25lCmJ1dCBhbHNv
-IG90aGVyIGFmZmVjdGVkIG1vZHVsZXMgaGVyZSAoYmVzaWRlcyBhIGNvbmNyZXRlIGV4YW1wbGUp
-LgpUaGUgcmVzdWx0IHN1bW1hcnkgbWlnaHQgYmUgbW9yZSBzaWduaWZpY2FudCBvdmVyYWxsLgoK
-Cj4+PiBJdCBtdXN0IGJlICJhbG1vc3QgcGVyZmVjdCIgZm9yIHN1Y2ggYSBjb2RlIHJlZmFjdG9y
-aW5nLgo+Pgo+PiBDYW4geW91IGdldCB0aGUgaW1wcmVzc2lvbiB0aGF0IHRoZSBzaG93biB0cmFu
-c2Zvcm1hdGlvbiBwYXR0ZXJucyB3ZXJlIGNvcnJlY3RseQo+PiBhcHBsaWVkIGZvciB0aGUgc291
-cmNlIGZpbGUg4oCcc291bmQvcGNpL25tMjU2L25tMjU2LmPigJ0/Cj4gCj4gSW1wcmVzc2lvbiBk
-b2Vzbid0IG1hdHRlci4KCkl0IHNlZW1zIHRoZW4gdGhhdCB5b3UgY2FuIG5vdCBnZXQgdGhlIGtp
-bmQgb2YgaW5mb3JtYXRpb24geW91IG1pZ2h0IGJlIGxvb2tpbmcgZm9yCmF0IHRoZSBtb21lbnQg
-ZnJvbSBtZSAoYWxvbmUpLgoKCj4gVGhlIHF1ZXN0aW9uIGlzIHdoZXRoZXIgaXQncyAxMDAlIGNv
-cnJlY3Qgb3Igbm90IGluIHN1Y2ggYSBjYXNlLgoKV291bGQgYW55IG90aGVyIHNvdXJjZSBjb2Rl
-IHJldmlld2VycyBsaWtlIHRvIHByb3ZpZGUgYSBjb3JyZXNwb25kaW5nIGFja25vd2xlZGdlbWVu
-dApmb3IgY29uY3JldGUgY2hhbmdlcz8KCgo+PiBBcmUgdGhlcmUgYW55IG1vcmUgc29mdHdhcmUg
-ZGV2ZWxvcGVycyBhbmQgY29kZSByZXZpZXdlcnMgYXZhaWxhYmxlCj4+IHdobyB3b3VsZCBsaWtl
-IHRvIHBvaW50IGFub3RoZXIgcHJvZ3JhbW1pbmcgbWlzdGFrZSBvdXQgZm9yIHRoaXMgTGludXgg
-bW9kdWxlPwo+IAo+IElmIHlvdSBoYXZlIGZpbmQgc3VjaCwgdGhlbiBpdCdzIGZpbmUsIHlvdSBj
-YW4gZ2V0IHlvdXIgcGF0Y2hlcwo+IHJldmlld2VkIGFuZCBtb3JlIGFzc3VyZWQuCgpJIGhvcGUg
-dGhhdCBtYWlsaW5nIGxpc3QgcmVhZGVycyBjb3VsZCBvZmZlciBzb21ldGhpbmcuCgoKPiBCdXQg
-aW4gdGhlIGN1cnJlbnQgc2l0dWF0aW9uLCBubyBvbmUgZWxzZSBpcyBpbnRlcmVzdGVkIGluIGl0
-LAo+IGFuZCB0aGF0J3MgZ29pbmcgdG8gbm93aGVyZS4KCkRpZCB0aGlzIHNvZnR3YXJlIG1vZHVs
-ZSBiZWNvbWUg4oCcdG9vIG9sZOKAnT8KCgo+IFRoZSAqcmVhbGx5KiB0cml2aWFsIG9uZXMgd2Vy
-ZSBhcHBsaWVkLiAgVGhlIHJlc3QgYXJlIG5vdC4KCkNhbiBoaWdoZXIgbGV2ZWwgdHJhbnNmb3Jt
-YXRpb24gcGF0dGVybnMgYmVjb21lIGVhc2llciB0byBhY2NlcHQKYnkgYW55IG90aGVyIG1lYW5z
-PwoKCj4+IERvIHlvdSBuZWVkIGFueSBtb3JlIGluZm9ybWF0aW9uIHRvIHNlZSBhbmQgZXZlbnR1
-YWxseSBhY2NlcHQgdGhlIHNlbnNlIGFnYWluPwo+IAo+IE5vLiAgVGhpcyBraW5kIG9mIGNvZGUg
-cmVmYWN0b3JpbmcgaGFzIG5vIG1vcmUgaW5mb3JtYXRpb24uCj4gSXQncyBhICJ0cml2aWFsIiBj
-aGFuZ2UsIGFmdGVyIGFsbC4KCldvdWxkIHlvdSBsaWtlIHRvIGRpc3Rpbmd1aXNoIHRoZSBwb3Nz
-aWJsZSB1cGRhdGUgc3RlcHMgYmV0dGVyIHRvIGF2b2lkCmZ1cnRoZXIgY29uZnVzaW9uIGFyb3Vu
-ZCDigJx0cml2aWFsaXR54oCdPwoKCj4+IEFyZSB5b3UgdXNpbmcgYSBjb250aW51b3VzIGludGVn
-cmF0aW9uIHN5c3RlbT8KPiAKPiBOb3QgcmVhbGx5IGluIG15IHNpZGUuICBCdXQgdGhlcmUgYXJl
-IG90aGVycyBkb2luZyB0aGF0LgoKSG93IG11Y2ggZG9lcyB0aGUgb21pc3Npb24gb2Ygc3VjaCBh
-biB1c2VmdWwgZGV2ZWxvcG1lbnQgdG9vbAppbmZsdWVuY2UgeW91ciBjb25jZXJucz8KCldvdWxk
-IHlvdSBsaWtlIHRvIGltcHJvdmUgdGhlIHNvZnR3YXJlIHNpdHVhdGlvbiBpbiBhbnkgd2F5cyB0
-aGVyZT8KClJlZ2FyZHMsCk1hcmt1cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+On Nov 28 2017 04:51, Takashi Iwai wrote:
+> On Mon, 27 Nov 2017 18:34:17 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On Nov 27 2017 21:58, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> Don't populate array 'names' on the stack but instead make them static.
+>>> Makes the object code smaller by 50 bytes:
+>>>
+>>> Before:
+>>>      text	   data	    bss	    dec	    hex	filename
+>>>     21237	   9192	   1120	  31549	   7b3d	linux/sound/drivers/dummy.o
+>>>
+>>> After:
+>>>      text	   data	    bss	    dec	    hex	filename
+>>>     21095	   9280	   1120	  31495	   7b07	linux/sound/drivers/dummy.o
+>>>
+>>> (gcc version 7.2.0 x86_64)
+>>>
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>> ---
+>>>    sound/drivers/dummy.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+>>> index 7b2b1f766b00..69db45bc0197 100644
+>>> --- a/sound/drivers/dummy.c
+>>> +++ b/sound/drivers/dummy.c
+>>> @@ -830,7 +830,7 @@ static int snd_dummy_capsrc_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
+>>>    static int snd_dummy_iobox_info(struct snd_kcontrol *kcontrol,
+>>>    				struct snd_ctl_elem_info *info)
+>>>    {
+>>> -	const char *const names[] = { "None", "CD Player" };
+>>> +	static const char *const names[] = { "None", "CD Player" };
+>>>      	return snd_ctl_enum_info(info, 1, 2, names);
+>>>    }
+>>
+>> Total size of snd-dummy.ko increases but this patch has an advantage
+>> to have the symbol in read-only section.
+> 
+> The total size decreases :)
+
+Ah, yes. The state of my local build tree is not good to calculate it... 
+In fact, the relocatable object decreases its size when built with a 
+header package from Ubuntu repository.
+
+
+Thanks
+
+Takashi Sakamoto
