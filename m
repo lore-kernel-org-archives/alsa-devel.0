@@ -1,15 +1,17 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 0/4] ASoC: Intel: Skylake: Skylake driver
-	updates
-Date: Tue, 28 Nov 2017 16:40:17 +0530
-Message-ID: <20171128111021.11830-1-guneshwor.o.singh@intel.com>
+Subject: [PATCH 1/4] ASoC: Intel: Skylake: Remove second shim
+	read in register_poll
+Date: Tue, 28 Nov 2017 16:40:18 +0530
+Message-ID: <20171128111021.11830-2-guneshwor.o.singh@intel.com>
+References: <20171128111021.11830-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 663B7266B0F
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 12:10:32 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4BAF26773D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 12:10:45 +0100 (CET)
+In-Reply-To: <20171128111021.11830-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series includes fixes for HDMI widgets sysfs not updating, shim read
-optimization and feature to configure DSP clock source.
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 
-Pradeep Tewani (2):
-  ASoC: Intel: Skylake: Parse vendor tokens to build A-State table
-  ASoC: Intel: Skylake: Configure DSP clock source
+No need to read the register again if the value read has already matched
+the target during the loop. So remove the second shim read.
 
-Puneeth Prabhu (1):
-  ASoC: hdac_hdmi: Refresh sysfs during hdmi device probe
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/common/sst-dsp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Subhransu S. Prusty (1):
-  ASoC: Intel: Skylake: Remove second shim read in register_poll
-
- include/uapi/sound/snd_sst_tokens.h    | 17 ++++++++++++-
- sound/soc/codecs/hdac_hdmi.c           |  1 +
- sound/soc/intel/common/sst-dsp.c       |  4 +---
- sound/soc/intel/skylake/skl-messages.c | 18 ++++++++++++++
- sound/soc/intel/skylake/skl-pcm.c      |  6 +++++
- sound/soc/intel/skylake/skl-sst-dsp.h  |  3 +++
- sound/soc/intel/skylake/skl-topology.c | 44 +++++++++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl.h          | 17 +++++++++++++
- 8 files changed, 105 insertions(+), 5 deletions(-)
-
+diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
+index 11c0805393ff..fd82f4b1d4a0 100644
+--- a/sound/soc/intel/common/sst-dsp.c
++++ b/sound/soc/intel/common/sst-dsp.c
+@@ -269,7 +269,7 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
+ 	 */
+ 
+ 	timeout = jiffies + msecs_to_jiffies(time);
+-	while (((sst_dsp_shim_read_unlocked(ctx, offset) & mask) != target)
++	while ((((reg = sst_dsp_shim_read_unlocked(ctx, offset)) & mask) != target)
+ 		&& time_before(jiffies, timeout)) {
+ 		k++;
+ 		if (k > 10)
+@@ -278,8 +278,6 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
+ 		usleep_range(s, 2*s);
+ 	}
+ 
+-	reg = sst_dsp_shim_read_unlocked(ctx, offset);
+-
+ 	if ((reg & mask) == target) {
+ 		dev_dbg(ctx->dev, "FW Poll Status: reg=%#x %s successful\n",
+ 					reg, operation);
 -- 
 2.15.0
