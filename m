@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ssiu: clear SSI_MODE for non TDM
-	Extended modes" to the asoc tree
-Date: Tue, 28 Nov 2017 16:09:15 +0000
-Message-ID: <E1eJiRf-0001sS-2v@debutante>
+Subject: Applied "ASoC: add snd_soc_disconnect_sync()" to the
+	asoc tree
+Date: Tue, 28 Nov 2017 16:09:12 +0000
+Message-ID: <E1eJiRc-0001rc-DX@debutante>
+References: <87o9of4xjt.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E15D2677C6
- for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 17:09:19 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CE052677F9
+ for <alsa-devel@alsa-project.org>; Tue, 28 Nov 2017 17:09:20 +0100 (CET)
+In-Reply-To: <87o9of4xjt.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: ssiu: clear SSI_MODE for non TDM Extended modes
+   ASoC: add snd_soc_disconnect_sync()
 
 has been applied to the asoc tree at
 
@@ -52,50 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From a91d7fb97092d6b840af5899ded3b389603fd7f1 Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Tue, 28 Nov 2017 16:05:13 +0900
-Subject: [PATCH] ASoC: rsnd: ssiu: clear SSI_MODE for non TDM Extended modes
+>From ef2e8175eb19011f756469d4d14f4207bf7f289c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 28 Nov 2017 06:27:09 +0000
+Subject: [PATCH] ASoC: add snd_soc_disconnect_sync()
 
-register SSI_MODE is set when SSI works in TDM Extended,
-but it isn't reset when SSI starts to work in other modes,
-thus causes issues.
+Now, we have snd_card_disconnect_sync() on ALSA framework.
+snd_soc_disconnect_sync() is ASoC version of it.
 
-This patch clearss SSI_MODE register when SSI works in modes
-other than TDM Extended.
-
-Fixes: 186fadc132f0 ("ASoC: rsnd: add TDM Extend Mode support")
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/sound/soc.h  |  2 ++
+ sound/soc/soc-core.c | 10 ++++++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 4d948757d300..6ff8a36c2c82 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -125,6 +125,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- {
- 	int hdmi = rsnd_ssi_hdmi_port(io);
- 	int ret;
-+	u32 mode = 0;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1a7323238c49..22f479e1da0a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -494,6 +494,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
+ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
+ #endif
  
- 	ret = rsnd_ssiu_init(mod, io, priv);
- 	if (ret < 0)
-@@ -136,9 +137,11 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 		 * see
- 		 *	rsnd_ssi_config_init()
- 		 */
--		rsnd_mod_write(mod, SSI_MODE, 0x1);
-+		mode = 0x1;
- 	}
- 
-+	rsnd_mod_write(mod, SSI_MODE, mode);
++void snd_soc_disconnect_sync(struct device *dev);
 +
- 	if (rsnd_ssi_use_busif(io)) {
- 		rsnd_mod_write(mod, SSI_BUSIF_ADINR,
- 			       rsnd_get_adinr_bit(mod, io) |
+ struct snd_pcm_substream *snd_soc_get_dai_substream(struct snd_soc_card *card,
+ 		const char *dai_link, int stream);
+ struct snd_soc_pcm_runtime *snd_soc_get_pcm_runtime(struct snd_soc_card *card,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0edac80df34..9047046c749c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1392,6 +1392,16 @@ static int soc_init_dai_link(struct snd_soc_card *card,
+ 	return 0;
+ }
+ 
++void snd_soc_disconnect_sync(struct device *dev)
++{
++	struct snd_soc_component *component = snd_soc_lookup_component(dev, NULL);
++
++	if (!component || !component->card)
++		return;
++
++	snd_card_disconnect_sync(component->card->snd_card);
++}
++
+ /**
+  * snd_soc_add_dai_link - Add a DAI link dynamically
+  * @card: The ASoC card to which the DAI link is added
 -- 
 2.15.0
