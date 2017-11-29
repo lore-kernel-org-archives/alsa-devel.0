@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 4/6] usb: audio: Fix variable length field
- to be variable.
-Date: Wed, 29 Nov 2017 12:33:00 +0100
-Message-ID: <68216f6d-9795-c501-9512-152294558340@ladisch.de>
-References: <20171129105532.15420-1-jorge.sanjuan@codethink.co.uk>
- <20171129105532.15420-5-jorge.sanjuan@codethink.co.uk>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v6 03/17] mfd: madera: Add common support
+ for Cirrus Logic Madera codecs
+Date: Wed, 29 Nov 2017 11:36:58 +0000
+Message-ID: <1eff5a38-cff3-449b-bda4-047f50a9f1d4@EX17.ad.cirrus.com>
+References: <20171123171316.10868-1-rf@opensource.wolfsonmicro.com>
+ <fe8064a5-8692-46c1-9f53-ab0a429baeeb@EX17.ad.cirrus.com>
+ <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CF7D266B67
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 12:32:35 +0100 (CET)
-In-Reply-To: <20171129105532.15420-5-jorge.sanjuan@codethink.co.uk>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE57D266B67
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 12:37:03 +0100 (CET)
+In-Reply-To: <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,25 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, devicetree@vger.kernel.org, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Lee Jones <lee.jones@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jorge Sanjuan wrote:
-> Make bmaControls be a pointer insted of a fixed size array so it
-> can have a variable length.
+On 29/11/17 10:18, Linus Walleij wrote:
+> On Thu, Nov 23, 2017 at 6:13 PM, Richard Fitzgerald
+> <rf@opensource.wolfsonmicro.com> wrote:
+> 
+>> +config MFD_MADERA_I2C
+>> +       bool "Cirrus Logic Madera codecs with I2C"
+>> +       select MFD_MADERA
+>> +       select REGMAP_I2C
+>> +       depends on I2C
+>> +       depends on PINCTRL
+>> +       help
+>> +         Support for the Cirrus Logic Madera platform audio SoC
+>> +         core functionality controlled via I2C.
+>> +
+>> +config MFD_MADERA_SPI
+>> +       bool "Cirrus Logic Madera codecs with SPI"
+>> +       select MFD_MADERA
+>> +       select REGMAP_SPI
+>> +       depends on SPI_MASTER
+>> +       depends on PINCTRL
+>> +       help
+>> +         Support for the Cirrus Logic Madera platform audio SoC
+>> +         core functionality controlled via SPI.
+> 
+> Why do the I2C and SPI subdrivers depend on PINCTRL?
+> 
+> They sure don't seem to be using any pinctrl-specific APIs.
+> 
 
->  	/* bmaControls is actually u32,
->  	 * but u8 is needed for the hybrid parser */
-> -	__u8 bmaControls[0]; /* variable length */
-> +	__u8 bmaControls[]; /* variable length */
->  	/* wFeatureDescrStr omitted */
->  } __attribute__((packed));
+They require PINCTRL even if they don't call any functions on it because 
+the chip won't work correctly if there isn't a PINCTRL driver to apply 
+the correct pinmux configuration.
 
-This is not a pointer but a flexible array member.
-And in theory, it does not change anything:
-https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-
-
-Regards,
-Clemens
+> Yours,
+> Linus Walleij
+> 
