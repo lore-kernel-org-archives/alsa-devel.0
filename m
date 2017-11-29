@@ -1,48 +1,50 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH v2 11/19] ASoC: tlv320aic31xx: Check clock and divider before division
-Date: Wed, 29 Nov 2017 15:32:52 -0600
-Message-ID: <20171129213300.20021-12-afd@ti.com>
+Subject: [PATCH v2 05/19] ASoC: tlv320aic31xx: Fix GPIO1
+	register definition
+Date: Wed, 29 Nov 2017 15:32:46 -0600
+Message-ID: <20171129213300.20021-6-afd@ti.com>
 References: <20171129213300.20021-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3290726796D
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 22:33:03 +0100 (CET)
 In-Reply-To: <20171129213300.20021-1-afd@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-If our set_sysclk DAI callback has not been called yet p_div will be 0
-and dividing by this will cause an error. Print an error message and
-leave before this.
+GPIO1 control register is number 51, fix this here.
 
+Fixes: bafcbfe429eb ("ASoC: tlv320aic31xx: Make the register values human readable")
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic31xx.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 252d99af6688..41e2d8077a62 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -755,11 +755,17 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- {
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 	int bclk_score = snd_soc_params_to_frame_size(params);
--	int mclk_p = aic31xx->sysclk / aic31xx->p_div;
-+	int mclk_p;
- 	int bclk_n = 0;
- 	int match = -1;
- 	int i;
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index a9ea2f99eba0..6efea0485392 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -109,7 +109,7 @@ struct aic31xx_pdata {
+ /* INT2 interrupt control */
+ #define AIC31XX_INT2CTRL	AIC31XX_REG(0, 49)
+ /* GPIO1 control */
+-#define AIC31XX_GPIO1		AIC31XX_REG(0, 50)
++#define AIC31XX_GPIO1		AIC31XX_REG(0, 51)
  
-+	if (!aic31xx->sysclk || !aic31xx->p_div) {
-+		dev_err(codec->dev, "Master clock not supplied\n");
-+		return -EINVAL;
-+	}
-+	mclk_p = aic31xx->sysclk / aic31xx->p_div;
-+
- 	/* Use PLL as CODEC_CLKIN and DAC_CLK as BDIV_CLKIN */
- 	snd_soc_update_bits(codec, AIC31XX_CLKMUX,
- 			    AIC31XX_CODEC_CLKIN_MASK, AIC31XX_CODEC_CLKIN_PLL);
+ #define AIC31XX_DACPRB		AIC31XX_REG(0, 60)
+ /* ADC Instruction Set Register */
 -- 
 2.15.0
