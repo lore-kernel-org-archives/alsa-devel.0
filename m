@@ -1,22 +1,17 @@
-From: Jens Verwiebe <info@jensverwiebe.de>
-Subject: Re: Line6 Helix - usb compliant but not working correct
-Date: Wed, 29 Nov 2017 16:24:10 +0100
-Message-ID: <8faa629e-b9e0-5124-b9c1-4c5d9678351d@jensverwiebe.de>
-References: <4d9d4dd7-1b49-574c-ac0b-62fd0e40ba82@jensverwiebe.de>
- <17555436-4918-0b12-48a6-44c84cc009d2@codethink.co.uk>
+From: Anna-Maria Gleixner <anna-maria@linutronix.de>
+Subject: [PATCH v3 34/36] ALSA/dummy: Replace tasklet with
+	softirq hrtimer
+Date: Wed, 29 Nov 2017 16:30:59 +0100
+Message-ID: <20171129153101.27297-35-anna-maria@linutronix.de>
+References: <20171129153101.27297-1-anna-maria@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 7232A266AE4
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 16:24:11 +0100 (CET)
-Received: from [192.168.178.21] ([77.187.108.128]) by mrelayeu.kundenserver.de
- (mreue002 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 0MDYoX-1eLTGR3cJZ-00GsH9 for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017
- 16:24:10 +0100
-In-Reply-To: <17555436-4918-0b12-48a6-44c84cc009d2@codethink.co.uk>
-Content-Language: en-US
+Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DC56267426
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 16:32:36 +0100 (CET)
+In-Reply-To: <20171129153101.27297-1-anna-maria@linutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,137 +21,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, keescook@chromium.org, Peter Zijlstra <peterz@infradead.org>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@redhat.com>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Anna-Maria Gleixner <anna-maria@linutronix.de>, Christoph Hellwig <hch@lst.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGksLCB5ZWFoIHRoeCBmb3IgbG9va2luZyBpbnRvIGl0LgoKVEJIIGkgdHJpZWQgYWxsIGtpbmRh
-IHN0dWZmIGFscmVhZHkgYW5kIGFsc28gYW0gYWJsZSB0byBjb21wYXJlIGFsbCBsb2dzIAp3aXRo
-IGEgRm9jdXNyaXRlIFNjYXJsZXR0IDZpNiwgd2hpY2ggc2hvd3MKCmFsbW9zdCBleGFjdGx5IHNh
-bWUgb3V0cHV0cyBidXQgd29ya3MganVzdCBmaW5lLiBUaGlzIG1ha2VzIG1lIGNsdWVsZXNzLgoK
-SSBhbHNvIGludmVzdGlnYXRlZCBpZiB0aGlzIGNvdWxkIGJlIGEgZmlybXdhcmUgYnVnLCBidXQg
-dGhlbiBpdCB3b3VsZCAKbm90IHdvcmsgb24gb3N4IGVpdGhlciwgbm8gPwoKU29tZXRoaW5nIG5l
-dyBpIGZvdW5kOiBpZiBpIGNhcHR1cmUgZnJvbSBoZWxpeCBhbmQgcGxheSB0aGlzIGZpbGUgd2l0
-aCAKc2NhcmxldHQgYWxsIGlzIGZpbmUuIFNvIGl0IHNlZW1zIHRvIGJlIHNvbWV0aGluZwp3aXRo
-IG91dC1vZi1zeW5jIHBsYXliYWNrIG9ubHkuCgoKQW0gMjkuMTEuMjAxNyB1bSAxNTo1MSBzY2hy
-aWViIEpvcmdlOgo+Cj4KPiBPbiAyOS8xMS8xNyAxMzoyNiwgSmVucyBWZXJ3aWViZSB3cm90ZToK
-Pj4gSGkgZm9sa3MKPj4KPj4gSSByZWNlbnRseSBnb3QgYSBMaW5lNiBIZWxpeCBMVCB3aGljaCBj
-YW4gd29yayB1c2IgY29tcGxpYW50IGZvciAKPj4gZXhhbXBsZSBvbgo+Cj4gSW50ZXJlc3Rpbmcu
-IEkgd291bGQgbGlrZSB0byB0cnkgdGhlIEhlbGl4IGluIExpbnV4IHRvby4gSSBoYXZlIHNlZW4g
-Cj4gc2ltaWxhciBpc3N1ZXMgd2hlbiBmaWRkbGluZyB3aXRoCj4gc2V0X3NhbXBsZV9yYXRlLiBT
-b21lIGNvbW1lbnRzL2lkZWFzIGJlbG93Lgo+Cj4+Cj4+IE9TWCBvciBJT1MuIE5vIGRyaXZlciBp
-cyBuZWVkZWQgYnV0IHRoZSBzYW1wbGVyYXRlIGlzIGZpeGVkIHRvIDQ4MDAwIAo+PiAoIHdoaWNo
-IGlzIG9rYXkgZm9yIHRoZSBmaXJzdCApLgo+Pgo+PiBOb3cgaSBleHBlY3RlZCB0aGlzIGRldmlj
-ZSB0byB3b3JrIG9vdGIgaW4gYWxzYSwgd2hpY2ggdHVybmVkIG91dCB0byAKPj4gYmUgaGFsZiB0
-aGUgdHJ1dGguCj4+Cj4+IENvbm5lY3RpbmcgdGhlIGRldmljZSB0aHJldyAiIHVzYiA3LTI6IHBh
-cnNlX2F1ZGlvX2Zvcm1hdF9yYXRlc192MigpOiAKPj4gdW5hYmxlIHRvIHJldHJpZXZlIG51bWJl
-ciBvZiBzYW1wbGUgcmF0ZXMgKGNsb2NrIDE2KSIKPj4KPj4gc28gaSBpbnZlc3RpZ2F0ZWQgYSBi
-aXQgYW5kIGZvdW5kIHRoaXMgd29ya2Fyb3VuZDoKPj4KPj4gLS0tIAo+PiAiL21lZGlhL1dvcmtk
-YXRhMy9EZXZlbG9wbWVudC9rZXJuZWxfbG93bGF0XzQuNC05Ny9saW51eC00LjQuOTcvc291bmQv
-dXNiL2Nsb2NrIAo+PiAoS29waWUpLmMiwqDCoMKgIDIwMTctMTEtMDggMTA6MDY6MzEuMDAwMDAw
-MDAwICswMTAwCj4+ICsrKyAKPj4gL21lZGlhL1dvcmtkYXRhMy9EZXZlbG9wbWVudC9rZXJuZWxf
-bG93bGF0XzQuNC05Ny9saW51eC00LjQuOTcvc291bmQvdXNiL2Nsb2NrLmMgCj4+IDIwMTctMTEt
-MTQgMjM6MDY6NTEuNzUwOTI0MDUxICswMTAwCj4+IEBAIC0zNjEsNiArMzYxLDEzIEBAIHN0YXRp
-YyBpbnQgc2V0X3NhbXBsZV9yYXRlX3YyKHN0cnVjdCBzbmQKPj4gwqDCoMKgwqAgc3RydWN0IHVh
-Y19jbG9ja19zb3VyY2VfZGVzY3JpcHRvciAqY3NfZGVzYzsKPj4KPj4gwqDCoMKgwqAgY2xvY2sg
-PSBzbmRfdXNiX2Nsb2NrX2ZpbmRfc291cmNlKGNoaXAsIGZtdC0+Y2xvY2ssIHRydWUpOwo+PiAr
-wqDCoMKgIMKgwqDCoCAvKgo+PiArwqDCoMKgwqAgwqDCoMKgICogTGluZTYgSEVMSVggZG9lcyBu
-b3QgcmVzcG9uZCB0byBzYW1wbGUgcmF0ZQo+PiArwqDCoMKgwqAgwqDCoMKgICogc2V0IHJlcXVl
-c3RzLiBUaGUgb25seSB2YWxpZCByYXRlIGlzIDQ4MDAwLgo+PiArwqDCoMKgwqAgwqDCoMKgICov
-Cj4+ICvCoMKgwqAgwqDCoMKgIGlmIChjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MGU0MSwgMHg0
-MjQ0KSAmJiByYXRlID09IDQ4MDAwKQo+PiArwqDCoMKgwqDCoMKgwqAgwqDCoMKgIHJldHVybiAw
-Owo+PiArCj4+IMKgwqDCoMKgIGlmIChjbG9jayA8IDApCj4+IMKgwqDCoMKgIMKgwqDCoCByZXR1
-cm4gY2xvY2s7Cj4+Cj4+IC0tLSAKPj4gIi9tZWRpYS9Xb3JrZGF0YTMvRGV2ZWxvcG1lbnQva2Vy
-bmVsX2xvd2xhdF80LjQtOTcvbGludXgtNC40Ljk3L3NvdW5kL3VzYi9mb3JtYXQgCj4+IChLb3Bp
-ZSkuYyLCoMKgwqAgMjAxNy0xMS0wOCAxMDowNjozMS4wMDAwMDAwMDAgKzAxMDAKPj4gKysrIAo+
-PiAvbWVkaWEvV29ya2RhdGEzL0RldmVsb3BtZW50L2tlcm5lbF9sb3dsYXRfNC40LTk3L2xpbnV4
-LTQuNC45Ny9zb3VuZC91c2IvZm9ybWF0LmMgCj4+IDIwMTctMTEtMTQgMjM6MTI6MjQuMzI5NzY2
-MjQzICswMTAwCj4+IEBAIC0yOTMsNiArMjkzLDIwIEBAIHN0YXRpYyBpbnQgcGFyc2VfYXVkaW9f
-Zm9ybWF0X3JhdGVzX3YyKHMKPj4gwqDCoMKgwqAgaW50IG5yX3RyaXBsZXRzLCBkYXRhX3NpemUs
-IHJldCA9IDA7Cj4+IMKgwqDCoMKgIGludCBjbG9jayA9IHNuZF91c2JfY2xvY2tfZmluZF9zb3Vy
-Y2UoY2hpcCwgZnAtPmNsb2NrLCBmYWxzZSk7Cj4+Cj4+ICvCoMKgwqAgLyoKPj4gK8KgwqDCoCAq
-IExpbmU2IEhFTElYIGRvZXMgbm90IHJlc3BvbmQgdG8gc2FtcGxlIHJhdGUKPj4gK8KgwqDCoCAq
-IHF1ZXJ5IHJlcXVlc3RzLiBUaGUgb25seSB2YWxpZCByYXRlIGlzIDQ4MDAwLgo+PiArwqDCoMKg
-ICovCj4+ICvCoMKgwqAgaWYgKGNoaXAtPnVzYl9pZCA9PSBVU0JfSUQoMHgwZTQxLCAweDQyNDQp
-KSB7Cj4+ICvCoMKgwqAgwqDCoMKgIGZwLT5ucl9yYXRlcyA9IDE7Cj4+ICvCoMKgwqDCoMKgwqDC
-oCDCoMKgwqAgZnAtPnJhdGVfbWluID0gNDgwMDA7Cj4+ICvCoMKgwqDCoMKgwqDCoCDCoMKgwqAg
-ZnAtPnJhdGVfbWF4ID0gNDgwMDA7Cj4+ICvCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVz
-ID0gU05EUlZfUENNX1JBVEVfNDgwMDA7Cj4+ICvCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJh
-dGVfdGFibGUgPSBrbWFsbG9jKHNpemVvZihpbnQpLCBHRlBfS0VSTkVMKTsKPj4gK8KgwqDCoMKg
-wqDCoMKgIMKgwqDCoCBmcC0+cmF0ZV90YWJsZVswXSA9IDQ4MDAwOwo+PiArwqDCoMKgwqDCoMKg
-wqAgwqDCoMKgIHJldHVybiAwOwo+PiArwqDCoMKgIMKgwqDCoCB9Cj4+ICsKPj4gwqDCoMKgwqAg
-aWYgKGNsb2NrIDwgMCkgewo+PiDCoMKgwqDCoCDCoMKgwqAgZGV2X2VycigmZGV2LT5kZXYsCj4+
-IMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgIiVzKCk6IHVuYWJsZSB0byBmaW5kIGNsb2NrIHNvdXJj
-ZSAoY2xvY2sgJWQpXG4iLAo+Pgo+Pgo+PiBUaGlzIHRyaWNrIG1hZGUgdGhlIGRldmljZSBhcHBl
-YXIgaW4gYXBsYXkgLWwgYW5kIC9wcm9jL2Fzb3VuZCBqdXN0IAo+PiBhcyBleHBlY3RlZC4KPj4K
-Pj4gWyA3OTg4LjQ5NTA4NV0gdXNiIDctMjogbmV3IGhpZ2gtc3BlZWQgVVNCIGRldmljZSBudW1i
-ZXIgNCB1c2luZyAKPj4geGhjaV9oY2QKPj4gWyA3OTg4LjY2MzYyMl0gdXNiIDctMjogTmV3IFVT
-QiBkZXZpY2UgZm91bmQsIGlkVmVuZG9yPTBlNDEsIAo+PiBpZFByb2R1Y3Q9NDI0NAo+PiBbIDc5
-ODguNjYzNjI1XSB1c2IgNy0yOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MSwgUHJvZHVj
-dD0yLCAKPj4gU2VyaWFsTnVtYmVyPTMKPj4gWyA3OTg4LjY2MzYyN10gdXNiIDctMjogUHJvZHVj
-dDogSEVMSVgKPj4gWyA3OTg4LjY2MzYyOV0gdXNiIDctMjogTWFudWZhY3R1cmVyOiBMSU5FIDYK
-Pj4gWyA3OTg4LjY2MzYzMF0gdXNiIDctMjogU2VyaWFsTnVtYmVyOsKgwqDCoCAyNzQ0NTM1Cj4+
-Cj4+IEJ1dCBpIGVuZGVkIHVwIHdpdGggc29tZXRpbWVzIG9jY3VyaW5nIHNvZnQgY2xpY2tzIGlu
-IHBsYXliYWNrIHdoaWNoIAo+PiBpbXBseSBpIGhhdmUgdGltaW5nIHByb2JsZW1zLgo+Pgo+PiBB
-bm90aGVyIHN5bXB0b20gaXMgYXBsYXkgZG9lcyBub3Qgb3V0cHV0IGFueSBzb3VuZCB3aGlsZSBu
-b3QgdGhyb3dpbmcgCj4+IGFueSBlcnJvciB3aGlsZSBpbiBqYWNrIGkgY2FuIGNyZWF0ZSB0aGUg
-ZHJpdmVyIGp1c3QgZmluZS4KPgo+IEhhdmUgeW91IHRyaWVkIGRlYnVnZ2luZyB0aGUgcG9pbnRl
-ciBwb3NpdGlvbiB3aXRoIHRoYXQgZGV2aWNlPyBEbyB5b3UgCj4gZ2V0IHNlbnNpYmxlIGJ1ZmZl
-ciBzaXplcwo+IHdpdGggYC12YCBpbiBhcGxheSBmb3IgNDhLSHosIDI0IGJpdHMsIGV0Yz8KSSBn
-ZXQganVzdCB0aGlzIGJ1dCBzaWxlbmNlICggd2hpbGUgcGx1Z2hodzoxLDAgPT0gc2NhcmxldHQg
-bG9va3Mgc2FtZSAKYW5kIHBsYXlzIHNvdW5kICk6CgphcGxheSAtRCBwbHVnaHc6NiwwIC12diB0
-ZXN0LndhdgpXaWVkZXJnYWJlOiBXQVZFICd0ZXN0LndhdicgOiBTaWduZWQgMTYgYml0IExpdHRs
-ZSBFbmRpYW4sIFJhdGU6IDQ0MTAwIApIeiwgc3RlcmVvClBsdWcgUENNOiBSYXRlIGNvbnZlcnNp
-b24gUENNICg0ODAwMCwgc2Zvcm1hdD1TMTZfTEUpCkNvbnZlcnRlcjogbGlic3BlZXggKGJ1aWx0
-aW4pClByb3RvY29sIHZlcnNpb246IDEwMDAyCkl0cyBzZXR1cCBpczoKIMKgIHN0cmVhbcKgwqDC
-oMKgwqDCoCA6IFBMQVlCQUNLCiDCoCBhY2Nlc3PCoMKgwqDCoMKgwqAgOiBSV19JTlRFUkxFQVZF
-RAogwqAgZm9ybWF0wqDCoMKgwqDCoMKgIDogUzE2X0xFCiDCoCBzdWJmb3JtYXTCoMKgwqAgOiBT
-VEQKIMKgIGNoYW5uZWxzwqDCoMKgwqAgOiAyCiDCoCByYXRlwqDCoMKgwqDCoMKgwqDCoCA6IDQ0
-MTAwCiDCoCBleGFjdCByYXRlwqDCoCA6IDQ0MTAwICg0NDEwMC8xKQogwqAgbXNiaXRzwqDCoMKg
-wqDCoMKgIDogMTYKIMKgIGJ1ZmZlcl9zaXplwqAgOiAyMjA1MAogwqAgcGVyaW9kX3NpemXCoCA6
-IDU1MTIKIMKgIHBlcmlvZF90aW1lwqAgOiAxMjUwMDAKIMKgIHRzdGFtcF9tb2RlwqAgOiBOT05F
-CiDCoCBwZXJpb2Rfc3RlcMKgIDogMQogwqAgYXZhaWxfbWluwqDCoMKgIDogNTUxMgogwqAgcGVy
-aW9kX2V2ZW50IDogMAogwqAgc3RhcnRfdGhyZXNob2xkwqAgOiAyMjA1MAogwqAgc3RvcF90aHJl
-c2hvbGTCoMKgIDogMjIwNTAKIMKgIHNpbGVuY2VfdGhyZXNob2xkOiAwCiDCoCBzaWxlbmNlX3Np
-emUgOiAwCiDCoCBib3VuZGFyecKgwqDCoMKgIDogNjIwNjUyMzIzNjQ2OTk2NDgwMApTbGF2ZTog
-Um91dGUgY29udmVyc2lvbiBQQ00gKHNmb3JtYXQ9UzMyX0xFKQogwqAgVHJhbnNmb3JtYXRpb24g
-dGFibGU6CiDCoMKgwqAgMCA8LSAwCiDCoMKgwqAgMSA8LSAxCiDCoMKgwqAgMiA8LSBub25lCiDC
-oMKgwqAgMyA8LSBub25lCiDCoMKgwqAgNCA8LSBub25lCiDCoMKgwqAgNSA8LSBub25lCiDCoMKg
-wqAgNiA8LSBub25lCiDCoMKgwqAgNyA8LSBub25lCkl0cyBzZXR1cCBpczoKIMKgIHN0cmVhbcKg
-wqDCoMKgwqDCoCA6IFBMQVlCQUNLCiDCoCBhY2Nlc3PCoMKgwqDCoMKgwqAgOiBNTUFQX0lOVEVS
-TEVBVkVECiDCoCBmb3JtYXTCoMKgwqDCoMKgwqAgOiBTMTZfTEUKIMKgIHN1YmZvcm1hdMKgwqDC
-oCA6IFNURAogwqAgY2hhbm5lbHPCoMKgwqDCoCA6IDIKIMKgIHJhdGXCoMKgwqDCoMKgwqDCoMKg
-IDogNDgwMDAKIMKgIGV4YWN0IHJhdGXCoMKgIDogNDgwMDAgKDQ4MDAwLzEpCiDCoCBtc2JpdHPC
-oMKgwqDCoMKgwqAgOiAxNgogwqAgYnVmZmVyX3NpemXCoCA6IDI0MDAxCiDCoCBwZXJpb2Rfc2l6
-ZcKgIDogNjAwMAogwqAgcGVyaW9kX3RpbWXCoCA6IDEyNTAwMAogwqAgdHN0YW1wX21vZGXCoCA6
-IE5PTkUKIMKgIHBlcmlvZF9zdGVwwqAgOiAxCiDCoCBhdmFpbF9taW7CoMKgwqAgOiA2MDAwCiDC
-oCBwZXJpb2RfZXZlbnQgOiAwCiDCoCBzdGFydF90aHJlc2hvbGTCoCA6IDI0MDAwCiDCoCBzdG9w
-X3RocmVzaG9sZMKgwqAgOiAyNDAwMQogwqAgc2lsZW5jZV90aHJlc2hvbGQ6IDAKIMKgIHNpbGVu
-Y2Vfc2l6ZSA6IDAKIMKgIGJvdW5kYXJ5wqDCoMKgwqAgOiA2NzU1NjgwOTE2MDMyNDU0NjU2ClNs
-YXZlOiBIYXJkd2FyZSBQQ00gY2FyZCA2ICdIRUxJWCcgZGV2aWNlIDAgc3ViZGV2aWNlIDAKSXRz
-IHNldHVwIGlzOgogwqAgc3RyZWFtwqDCoMKgwqDCoMKgIDogUExBWUJBQ0sKIMKgIGFjY2Vzc8Kg
-wqDCoMKgwqDCoCA6IE1NQVBfSU5URVJMRUFWRUQKIMKgIGZvcm1hdMKgwqDCoMKgwqDCoCA6IFMz
-Ml9MRQogwqAgc3ViZm9ybWF0wqDCoMKgIDogU1RECiDCoCBjaGFubmVsc8KgwqDCoMKgIDogOAog
-wqAgcmF0ZcKgwqDCoMKgwqDCoMKgwqAgOiA0ODAwMAogwqAgZXhhY3QgcmF0ZcKgwqAgOiA0ODAw
-MCAoNDgwMDAvMSkKIMKgIG1zYml0c8KgwqDCoMKgwqDCoCA6IDMyCiDCoCBidWZmZXJfc2l6ZcKg
-IDogMjQwMDEKIMKgIHBlcmlvZF9zaXplwqAgOiA2MDAwCiDCoCBwZXJpb2RfdGltZcKgIDogMTI1
-MDAwCiDCoCB0c3RhbXBfbW9kZcKgIDogTk9ORQogwqAgcGVyaW9kX3N0ZXDCoCA6IDEKIMKgIGF2
-YWlsX21pbsKgwqDCoCA6IDYwMDAKIMKgIHBlcmlvZF9ldmVudCA6IDAKIMKgIHN0YXJ0X3RocmVz
-aG9sZMKgIDogMjQwMDAKIMKgIHN0b3BfdGhyZXNob2xkwqDCoCA6IDI0MDAxCiDCoCBzaWxlbmNl
-X3RocmVzaG9sZDogMAogwqAgc2lsZW5jZV9zaXplIDogMAogwqAgYm91bmRhcnnCoMKgwqDCoCA6
-IDY3NTU2ODA5MTYwMzI0NTQ2NTYKIMKgIGFwcGxfcHRywqDCoMKgwqAgOiAwCiDCoCBod19wdHLC
-oMKgwqDCoMKgwqAgOiAwCgoKPgo+IEkgb25jZSBlbmRlZCB1cCB3aXRoIHJlYWxseSBzbWFsbCBi
-dWZmZXJzIHdoZW4gSSBjaGFuZ2VkIHRoZSB1c2IgCj4gYXVkaW9mb3JtYXRzIGZvciBhIGZpeGVk
-IHJhdGUgZGV2aWNlCj4gc28gdGhlcmUgd2FzIG5vdCBzb3VuZCB3aGF0c29ldmVyIGV2ZW4gdGhv
-dWdoIGFsbCB0aGUgZGV2aWNlcyB3ZXJlIAo+IHByZXNlbnQuIEkgYW0gbm90IHN1cmUgd2hldGhl
-cgo+IGZwLT5yYXRlcyBzaG91bGQgZ2V0IFNORFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMgZWl0aGVy
-IHdheSBhbmQgdGhlbiAKPiBtaW4vbWF4ID0gNDhLSHogZGVsaW1pdGluZyBpdC4KClRyaWVkIHRo
-aXMgYWxyZWFkeSwgbWFrZXMgbm8gZGlmZmVyZW5jZS4KPgo+IEpvcmdlLgo+Cj4+Cj4+IEkgd291
-bGQgYXByZWNpYXRlIGFueSBoaW50IHdoYXQgaSBjb3VsZCB0cnkgb3V0IGhlcmUuCj4+Cj4+Cj4+
-IEdyZWV0aW5ncyBmcm9tIEhhbWJ1cmcgLi4uIEplbnMKPj4KPgo+CgpNeSB3aXNkb20gaXMgYXQg
-dGhlIGVuZCBoZXJlIC4uLiBKZW5zIDstKQoKLS0gCgpKZW5zIFZlcndpZWJlCkFsbGVyc2tlaHJl
-IDQ0IC0gMjIzMDkgSGFtYnVyZwoKVGVsLjogKzQ5IDQwIDY4IDc4IDUwCm1vYmlsZTogKzQ5IDE3
-MiA0MDAgNDkgMDcKbWFpbHRvOiBpbmZvQGplbnN2ZXJ3aWViZS5kZQp3ZWI6IGh0dHA6Ly93d3cu
-amVuc3ZlcndpZWJlLmRlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+From: Thomas Gleixner <tglx@linutronix.de>
+
+The tasklet is used to defer the execution of snd_pcm_period_elapsed() to
+the softirq context. Using the HRTIMER_MODE_SOFT mode invokes the timer
+callback in softirq context as well which renders the tasklet useless.
+
+[o-takashi: avoid stall due to a call of hrtimer_cancel() on a callback
+            of hrtimer]
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
+Cc: alsa-devel@alsa-project.org
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Link: http://lkml.kernel.org/r/20170905161820.jtysvxtfleunbbmf@breakpoint.cc
+---
+ sound/drivers/dummy.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
+index 7b2b1f766b00..6ad2ff57833d 100644
+--- a/sound/drivers/dummy.c
++++ b/sound/drivers/dummy.c
+@@ -375,17 +375,9 @@ struct dummy_hrtimer_pcm {
+ 	ktime_t period_time;
+ 	atomic_t running;
+ 	struct hrtimer timer;
+-	struct tasklet_struct tasklet;
+ 	struct snd_pcm_substream *substream;
+ };
+ 
+-static void dummy_hrtimer_pcm_elapsed(unsigned long priv)
+-{
+-	struct dummy_hrtimer_pcm *dpcm = (struct dummy_hrtimer_pcm *)priv;
+-	if (atomic_read(&dpcm->running))
+-		snd_pcm_period_elapsed(dpcm->substream);
+-}
+-
+ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
+ {
+ 	struct dummy_hrtimer_pcm *dpcm;
+@@ -393,7 +385,14 @@ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
+ 	dpcm = container_of(timer, struct dummy_hrtimer_pcm, timer);
+ 	if (!atomic_read(&dpcm->running))
+ 		return HRTIMER_NORESTART;
+-	tasklet_schedule(&dpcm->tasklet);
++	/*
++	 * In cases of XRUN and draining, this calls .trigger to stop PCM
++	 * substream.
++	 */
++	snd_pcm_period_elapsed(dpcm->substream);
++	if (!atomic_read(&dpcm->running))
++		return HRTIMER_NORESTART;
++
+ 	hrtimer_forward_now(timer, dpcm->period_time);
+ 	return HRTIMER_RESTART;
+ }
+@@ -403,7 +402,7 @@ static int dummy_hrtimer_start(struct snd_pcm_substream *substream)
+ 	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
+ 
+ 	dpcm->base_time = hrtimer_cb_get_time(&dpcm->timer);
+-	hrtimer_start(&dpcm->timer, dpcm->period_time, HRTIMER_MODE_REL);
++	hrtimer_start(&dpcm->timer, dpcm->period_time, HRTIMER_MODE_REL_SOFT);
+ 	atomic_set(&dpcm->running, 1);
+ 	return 0;
+ }
+@@ -413,14 +412,14 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
+ 	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
+ 
+ 	atomic_set(&dpcm->running, 0);
+-	hrtimer_cancel(&dpcm->timer);
++	if (!hrtimer_callback_running(&dpcm->timer))
++		hrtimer_cancel(&dpcm->timer);
+ 	return 0;
+ }
+ 
+ static inline void dummy_hrtimer_sync(struct dummy_hrtimer_pcm *dpcm)
+ {
+ 	hrtimer_cancel(&dpcm->timer);
+-	tasklet_kill(&dpcm->tasklet);
+ }
+ 
+ static snd_pcm_uframes_t
+@@ -465,12 +464,10 @@ static int dummy_hrtimer_create(struct snd_pcm_substream *substream)
+ 	if (!dpcm)
+ 		return -ENOMEM;
+ 	substream->runtime->private_data = dpcm;
+-	hrtimer_init(&dpcm->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	hrtimer_init(&dpcm->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+ 	dpcm->timer.function = dummy_hrtimer_callback;
+ 	dpcm->substream = substream;
+ 	atomic_set(&dpcm->running, 0);
+-	tasklet_init(&dpcm->tasklet, dummy_hrtimer_pcm_elapsed,
+-		     (unsigned long)dpcm);
+ 	return 0;
+ }
+ 
+-- 
+2.11.0
