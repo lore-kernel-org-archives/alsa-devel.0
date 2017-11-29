@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 1/2] ASoC: Intel: kbl: Remove option
- of choosing CH count based on pdata
-Date: Wed, 29 Nov 2017 12:33:14 +0000
-Message-ID: <20171129123314.4x4giq4hk2ew2zol@sirena.org.uk>
-References: <1510740463-21655-1-git-send-email-naveen.m@intel.com>
- <1510740463-21655-2-git-send-email-naveen.m@intel.com>
+From: Jens Verwiebe <info@jensverwiebe.de>
+Subject: Line6 Helix - usb compliant but not working correct
+Date: Wed, 29 Nov 2017 14:26:06 +0100
+Message-ID: <4d9d4dd7-1b49-574c-ac0b-62fd0e40ba82@jensverwiebe.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8156267986855793272=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C1A0266B67
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 13:33:25 +0100 (CET)
-In-Reply-To: <1510740463-21655-2-git-send-email-naveen.m@intel.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AE53266B67
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 14:26:07 +0100 (CET)
+Received: from [192.168.178.21] ([77.187.108.128]) by mrelayeu.kundenserver.de
+ (mreue104 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 0Mdurl-1eUGZ81oAn-00Pcs2 for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017
+ 14:26:07 +0100
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Naveen Manohar <naveen.m@intel.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8156267986855793272==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vk5lptp5ghfq2wt3"
-Content-Disposition: inline
-
-
---vk5lptp5ghfq2wt3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Nov 15, 2017 at 03:37:42PM +0530, Naveen Manohar wrote:
-> Remove option of choosing channel count based on pdata for
-> kbl_rt5663_max98927 machine driver.
-> As User-space expects 4ch DMIC data and uses channel-map in ucm to
-> figure-out the desired channel to use, Hence removing driver change
-> to allow choosing channels.
-
-To repeat my previous question which I don't seem to see a response to:
-
-| Which userspace and are you sure there are no boards that only have two
-| of the mics?
-
---vk5lptp5ghfq2wt3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloeqQkACgkQJNaLcl1U
-h9B2HggAgTMfHP3mnLszYgc11PMA6bZAA0Vn/EAMYorTVb+LFNkTP9HE3QQ4dJ2z
-J2EpjxeKenGe9lJWoc+2cMd7R0TgHBp+mBfNjbFFST9VuEM70zMUMxektFEugB1b
-4yStf/et7XjkvJxmcAWT6Ht+QenMzO/8MP4hJ97OxpqHrQp0aqf8QEiEmMyqZXmG
-xLjZkYtm2hCMP+I3/WFTOyonJtnVwLyayop4zR92pgbBwFLYSTX3mADEmnm4qF9b
-0EQKebPPTCVbYhAE5J1Uet1ZYgZzk/12zqIv++a+3xcSk1ZCLrJrTuClQHeL/0JP
-1QCrYL9AaT4HfBEwOM+QdQASXtbbfA==
-=PRp9
------END PGP SIGNATURE-----
-
---vk5lptp5ghfq2wt3--
-
---===============8156267986855793272==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8156267986855793272==--
+SGkgZm9sa3MKCkkgcmVjZW50bHkgZ290IGEgTGluZTYgSGVsaXggTFQgd2hpY2ggY2FuIHdvcmsg
+dXNiIGNvbXBsaWFudCBmb3IgZXhhbXBsZSBvbgoKT1NYIG9yIElPUy4gTm8gZHJpdmVyIGlzIG5l
+ZWRlZCBidXQgdGhlIHNhbXBsZXJhdGUgaXMgZml4ZWQgdG8gNDgwMDAgKCAKd2hpY2ggaXMgb2th
+eSBmb3IgdGhlIGZpcnN0ICkuCgpOb3cgaSBleHBlY3RlZCB0aGlzIGRldmljZSB0byB3b3JrIG9v
+dGIgaW4gYWxzYSwgd2hpY2ggdHVybmVkIG91dCB0byBiZSAKaGFsZiB0aGUgdHJ1dGguCgpDb25u
+ZWN0aW5nIHRoZSBkZXZpY2UgdGhyZXcgIiB1c2IgNy0yOiBwYXJzZV9hdWRpb19mb3JtYXRfcmF0
+ZXNfdjIoKTogCnVuYWJsZSB0byByZXRyaWV2ZSBudW1iZXIgb2Ygc2FtcGxlIHJhdGVzIChjbG9j
+ayAxNikiCgpzbyBpIGludmVzdGlnYXRlZCBhIGJpdCBhbmQgZm91bmQgdGhpcyB3b3JrYXJvdW5k
+OgoKLS0tIAoiL21lZGlhL1dvcmtkYXRhMy9EZXZlbG9wbWVudC9rZXJuZWxfbG93bGF0XzQuNC05
+Ny9saW51eC00LjQuOTcvc291bmQvdXNiL2Nsb2NrIAooS29waWUpLmMiwqDCoMKgIDIwMTctMTEt
+MDggMTA6MDY6MzEuMDAwMDAwMDAwICswMTAwCisrKyAKL21lZGlhL1dvcmtkYXRhMy9EZXZlbG9w
+bWVudC9rZXJuZWxfbG93bGF0XzQuNC05Ny9saW51eC00LjQuOTcvc291bmQvdXNiL2Nsb2NrLmMg
+CjIwMTctMTEtMTQgMjM6MDY6NTEuNzUwOTI0MDUxICswMTAwCkBAIC0zNjEsNiArMzYxLDEzIEBA
+IHN0YXRpYyBpbnQgc2V0X3NhbXBsZV9yYXRlX3YyKHN0cnVjdCBzbmQKIMKgwqDCoMKgIHN0cnVj
+dCB1YWNfY2xvY2tfc291cmNlX2Rlc2NyaXB0b3IgKmNzX2Rlc2M7CgogwqDCoMKgwqAgY2xvY2sg
+PSBzbmRfdXNiX2Nsb2NrX2ZpbmRfc291cmNlKGNoaXAsIGZtdC0+Y2xvY2ssIHRydWUpOworwqDC
+oMKgIMKgwqDCoCAvKgorwqDCoMKgwqAgwqDCoMKgICogTGluZTYgSEVMSVggZG9lcyBub3QgcmVz
+cG9uZCB0byBzYW1wbGUgcmF0ZQorwqDCoMKgwqAgwqDCoMKgICogc2V0IHJlcXVlc3RzLiBUaGUg
+b25seSB2YWxpZCByYXRlIGlzIDQ4MDAwLgorwqDCoMKgwqAgwqDCoMKgICovCivCoMKgwqAgwqDC
+oMKgIGlmIChjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MGU0MSwgMHg0MjQ0KSAmJiByYXRlID09
+IDQ4MDAwKQorwqDCoMKgwqDCoMKgwqAgwqDCoMKgIHJldHVybiAwOworCiDCoMKgwqDCoCBpZiAo
+Y2xvY2sgPCAwKQogwqDCoMKgwqAgwqDCoMKgIHJldHVybiBjbG9jazsKCi0tLSAKIi9tZWRpYS9X
+b3JrZGF0YTMvRGV2ZWxvcG1lbnQva2VybmVsX2xvd2xhdF80LjQtOTcvbGludXgtNC40Ljk3L3Nv
+dW5kL3VzYi9mb3JtYXQgCihLb3BpZSkuYyLCoMKgwqAgMjAxNy0xMS0wOCAxMDowNjozMS4wMDAw
+MDAwMDAgKzAxMDAKKysrIAovbWVkaWEvV29ya2RhdGEzL0RldmVsb3BtZW50L2tlcm5lbF9sb3ds
+YXRfNC40LTk3L2xpbnV4LTQuNC45Ny9zb3VuZC91c2IvZm9ybWF0LmMgCjIwMTctMTEtMTQgMjM6
+MTI6MjQuMzI5NzY2MjQzICswMTAwCkBAIC0yOTMsNiArMjkzLDIwIEBAIHN0YXRpYyBpbnQgcGFy
+c2VfYXVkaW9fZm9ybWF0X3JhdGVzX3YyKHMKIMKgwqDCoMKgIGludCBucl90cmlwbGV0cywgZGF0
+YV9zaXplLCByZXQgPSAwOwogwqDCoMKgwqAgaW50IGNsb2NrID0gc25kX3VzYl9jbG9ja19maW5k
+X3NvdXJjZShjaGlwLCBmcC0+Y2xvY2ssIGZhbHNlKTsKCivCoMKgwqAgLyoKK8KgwqDCoCAqIExp
+bmU2IEhFTElYIGRvZXMgbm90IHJlc3BvbmQgdG8gc2FtcGxlIHJhdGUKK8KgwqDCoCAqIHF1ZXJ5
+IHJlcXVlc3RzLiBUaGUgb25seSB2YWxpZCByYXRlIGlzIDQ4MDAwLgorwqDCoMKgICovCivCoMKg
+wqAgaWYgKGNoaXAtPnVzYl9pZCA9PSBVU0JfSUQoMHgwZTQxLCAweDQyNDQpKSB7CivCoMKgwqAg
+wqDCoMKgIGZwLT5ucl9yYXRlcyA9IDE7CivCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVf
+bWluID0gNDgwMDA7CivCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVfbWF4ID0gNDgwMDA7
+CivCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVzID0gU05EUlZfUENNX1JBVEVfNDgwMDA7
+CivCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVfdGFibGUgPSBrbWFsbG9jKHNpemVvZihp
+bnQpLCBHRlBfS0VSTkVMKTsKK8KgwqDCoMKgwqDCoMKgIMKgwqDCoCBmcC0+cmF0ZV90YWJsZVsw
+XSA9IDQ4MDAwOworwqDCoMKgwqDCoMKgwqAgwqDCoMKgIHJldHVybiAwOworwqDCoMKgIMKgwqDC
+oCB9CisKIMKgwqDCoMKgIGlmIChjbG9jayA8IDApIHsKIMKgwqDCoMKgIMKgwqDCoCBkZXZfZXJy
+KCZkZXYtPmRldiwKIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgIiVzKCk6IHVuYWJsZSB0byBmaW5k
+IGNsb2NrIHNvdXJjZSAoY2xvY2sgJWQpXG4iLAoKClRoaXMgdHJpY2sgbWFkZSB0aGUgZGV2aWNl
+IGFwcGVhciBpbiBhcGxheSAtbCBhbmQgL3Byb2MvYXNvdW5kIGp1c3QgYXMgCmV4cGVjdGVkLgoK
+WyA3OTg4LjQ5NTA4NV0gdXNiIDctMjogbmV3IGhpZ2gtc3BlZWQgVVNCIGRldmljZSBudW1iZXIg
+NCB1c2luZyB4aGNpX2hjZApbIDc5ODguNjYzNjIyXSB1c2IgNy0yOiBOZXcgVVNCIGRldmljZSBm
+b3VuZCwgaWRWZW5kb3I9MGU0MSwgaWRQcm9kdWN0PTQyNDQKWyA3OTg4LjY2MzYyNV0gdXNiIDct
+MjogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZyPTEsIFByb2R1Y3Q9MiwgClNlcmlhbE51bWJl
+cj0zClsgNzk4OC42NjM2MjddIHVzYiA3LTI6IFByb2R1Y3Q6IEhFTElYClsgNzk4OC42NjM2Mjld
+IHVzYiA3LTI6IE1hbnVmYWN0dXJlcjogTElORSA2ClsgNzk4OC42NjM2MzBdIHVzYiA3LTI6IFNl
+cmlhbE51bWJlcjrCoMKgwqAgMjc0NDUzNQoKQnV0IGkgZW5kZWQgdXAgd2l0aCBzb21ldGltZXMg
+b2NjdXJpbmcgc29mdCBjbGlja3MgaW4gcGxheWJhY2sgd2hpY2ggCmltcGx5IGkgaGF2ZSB0aW1p
+bmcgcHJvYmxlbXMuCgpBbm90aGVyIHN5bXB0b20gaXMgYXBsYXkgZG9lcyBub3Qgb3V0cHV0IGFu
+eSBzb3VuZCB3aGlsZSBub3QgdGhyb3dpbmcgCmFueSBlcnJvciB3aGlsZSBpbiBqYWNrIGkgY2Fu
+IGNyZWF0ZSB0aGUgZHJpdmVyIGp1c3QgZmluZS4KCkkgd291bGQgYXByZWNpYXRlIGFueSBoaW50
+IHdoYXQgaSBjb3VsZCB0cnkgb3V0IGhlcmUuCgoKR3JlZXRpbmdzIGZyb20gSGFtYnVyZyAuLi4g
+SmVucwoKLS0gCgpKZW5zIFZlcndpZWJlCkFsbGVyc2tlaHJlIDQ0IC0gMjIzMDkgSGFtYnVyZwoK
+VGVsLjogKzQ5IDQwIDY4IDc4IDUwCm1vYmlsZTogKzQ5IDE3MiA0MDAgNDkgMDcKbWFpbHRvOiBp
+bmZvQGplbnN2ZXJ3aWViZS5kZQp3ZWI6IGh0dHA6Ly93d3cuamVuc3ZlcndpZWJlLmRlCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
