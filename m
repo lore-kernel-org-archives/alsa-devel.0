@@ -1,18 +1,12 @@
 From: Tamaki Nishino <otamachan@gmail.com>
 Subject: [PATCH] ALSA: usb-audio: Fix the enable parameter
 	behavior
-Date: Thu, 30 Nov 2017 00:27:47 +0900
-Message-ID: <1511969267-15431-1-git-send-email-otamachan@gmail.com>
+Date: Thu, 30 Nov 2017 06:43:30 +0900
+Message-ID: <1511991810-1868-1-git-send-email-otamachan@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
- [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 07523266AE4
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 16:27:53 +0100 (CET)
-Received: by mail-pl0-f66.google.com with SMTP id x22so2277093pln.11
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 07:27:53 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,7 +16,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Tamaki Nishino <otamachan@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
