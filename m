@@ -1,217 +1,130 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH 1/2] ASoC: nau8825: disable crosstalk by
- default
-Date: Wed, 29 Nov 2017 08:33:08 +0800
-Message-ID: <5A1E0044.20506@nuvoton.com>
-References: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
- <CAOMLVLi-hdWqqSPw_x1P1_28TkMr5BOU=FCOi=vYofzvx+66+g@mail.gmail.com>
- <5A1CCC8E.6030603@nuvoton.com>
- <CAOMLVLg29ET-6RMSkYwxzWwko1qHkY0fFBhRWGtqp1_C_QJMAA@mail.gmail.com>
- <5A1CE0EF.5010802@nuvoton.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: fsl_ssi: only enable proper
+ channel slots in AC'97 mode
+Date: Tue, 28 Nov 2017 17:45:25 -0800
+Message-ID: <20171129014524.GA7918@Asurada-Nvidia>
+References: <5fafe9ba-ef40-66ef-80ca-b8333e10774e@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A0B1266B02
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 01:33:12 +0100 (CET)
-In-Reply-To: <5A1CE0EF.5010802@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, Cheng-yi Chiang <cychiang@google.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, AC30 WTLi <WTLI@nuvoton.com>, =?UTF-8?B?Ild1LUNoZW5nIExpICjmnY7li5noqqApIg==?= <wuchengli@google.com>, Liam Girdwood <lgirdwood@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, Mac Chiang <mac.chiang@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5fafe9ba-ef40-66ef-80ca-b8333e10774e@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTEvMjgvMjAxNyAxMjowNyBQTSwgSm9obiBIc3Ugd3JvdGU6Cj4gT24gMTEvMjgvMjAxNyAx
-MToyMSBBTSwgV3UtQ2hlbmcgTGkgKOadjuWLmeiqoCkgd3JvdGU6Cj4+IE9uIFR1ZSwgTm92IDI4
-LCAyMDE3IGF0IDEwOjQwIEFNLCBKb2huIEhzdSA8S0NIU1UwQG51dm90b24uY29tPiB3cm90ZToK
-Pj4+IE9uIDExLzI3LzIwMTcgMjoxMiBQTSwgV3UtQ2hlbmcgTGkgKOadjuWLmeiqoCkgd3JvdGU6
-Cj4+Pj4gT24gRnJpLCBOb3YgMjQsIDIwMTcgYXQgNjowOCBQTSwgSm9obiBIc3UgPEtDSFNVMEBu
-dXZvdG9uLmNvbT4gd3JvdGU6Cj4+Pj4+IFRoZSBkcml2ZXIgbWFrZXMgdGhlIGNyb3NzdGFsayBm
-dW5jaXRvbiBkaXNhYmxlZCBieSBkZWZhdWx0Cj4+Pj4+IHdoaWNoIGNhbiBzaW1wbGlmeSB0aGUg
-Y29kZWMgZnVuY3Rpb24uIFRoZSBwbGF0Zm9ybSBtYXkgbm90Cj4+Pj4+IG5lZWQgdGhpcyBmdW5j
-aXRvbiBhbmQgcmVkdWNlIHRoZSBwb3RlbnRpYWwgcmlzay4gVGhlcmVmb3JlLAo+Pj4+PiBXZSBj
-aGFuZ2UgdGhlIHByb3BlcnR5ICJudXZvdG9uLGNyb3NzdGFsay1ieXBhc3MiIHRvCj4+Pj4+ICJu
-dXZvdG9uLGNyb3NzdGFsay1lbmFibGUiLiBUaGUgY3Jvc3N0YWxrIG1lYXN1cmVtZW50IGlzIGVu
-YWJsZWQKPj4+Pj4gaWYgdGhlIHByb3BlcnR5IGlzIHNldC4gT3RoZXJ3aXNlLCBpdCBpcyBkaXNh
-YmxlZC4gQmVzaWRlcywKPj4+Pj4gYWRkIG1vcmUgY29uZGl0aW9uIGluIHRoZSBlbnRyeSBwb2lu
-dCBvZiB0aGUgY3Jvc3N0YWxrIHNlcXVlbmNlCj4+Pj4+IHRvIGRpc2FibGUgdGhlIGZ1bmN0aW9u
-IGNvbXBsZXRlbHkuCj4+Pj4+Cj4+Pj4+IFNpZ25lZC1vZmYtYnk6IEpvaG4gSHN1IDxLQ0hTVTBA
-bnV2b3Rvbi5jb20+Cj4+Pj4+IC0tLQo+Pj4+PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
-bmQvbmF1ODgyNS50eHQgICAgICAgICAgfCAgNCArKy0tCj4+Pj4+ICBzb3VuZC9zb2MvY29kZWNz
-L25hdTg4MjUuYyAgICAgICAgICAgICAgICAgICAgICAgICB8IDIzCj4+Pj4+ICsrKysrKysrKysr
-Ky0tLS0tLS0tLS0KPj4+Pj4gIHNvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgIDIgKy0KPj4+Pj4gIDMgZmlsZXMgY2hhbmdlZCwgMTYgaW5zZXJ0aW9u
-cygrKSwgMTMgZGVsZXRpb25zKC0pCj4+Pj4+Cj4+Pj4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvbmF1ODgyNS50eHQKPj4+Pj4gYi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvbmF1ODgyNS50eHQKPj4+Pj4gaW5kZXgg
-MmY1ZTk3My4uZDE2ZDk2OCAxMDA2NDQKPj4+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NvdW5kL25hdTg4MjUudHh0Cj4+Pj4+ICsrKyBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9uYXU4ODI1LnR4dAo+Pj4+PiBAQCAtNjksNyArNjks
-NyBAQCBPcHRpb25hbCBwcm9wZXJ0aWVzOgo+Pj4+PiAgICAtIG51dm90b24samFjay1pbnNlcnQt
-ZGVib3VuY2U6IG51bWJlciBmcm9tIDAgdG8gNyB0aGF0IHNldHMKPj4+Pj4gZGVib3VuY2UKPj4+
-Pj4gdGltZSB0byAyXihuKzIpIG1zCj4+Pj4+ICAgIC0gbnV2b3RvbixqYWNrLWVqZWN0LWRlYm91
-bmNlOiBudW1iZXIgZnJvbSAwIHRvIDcgdGhhdCBzZXRzCj4+Pj4+IGRlYm91bmNlCj4+Pj4+IHRp
-bWUgdG8gMl4obisyKSBtcwo+Pj4+Pgo+Pj4+PiAtICAtIG51dm90b24sY3Jvc3N0YWxrLWJ5cGFz
-czogbWFrZSBjcm9zc3RhbGsgZnVuY3Rpb24gYnlwYXNzIGlmIHNldC4KPj4+Pj4gKyAgLSBudXZv
-dG9uLGNyb3NzdGFsay1lbmFibGU6IG1ha2UgY3Jvc3N0YWxrIGZ1bmN0aW9uIGVuYWJsZSBpZiBz
-ZXQuCj4+Pj4+Cj4+Pj4+ICAgIC0gY2xvY2tzOiBsaXN0IG9mIHBoYW5kbGUgYW5kIGNsb2NrIHNw
-ZWNpZmllciBwYWlycyBhY2NvcmRpbmcgdG8KPj4+Pj4gY29tbW9uIGNsb2NrIGJpbmRpbmdzIGZv
-ciB0aGUKPj4+Pj4gICAgICAgIGNsb2NrcyBkZXNjcmliZWQgaW4gY2xvY2stbmFtZXMKPj4+Pj4g
-QEAgLTk4LDcgKzk4LDcgQEAgRXhhbXBsZToKPj4+Pj4gICAgICAgIG51dm90b24sc2hvcnQta2V5
-LWRlYm91bmNlID0gPDI+Owo+Pj4+PiAgICAgICAgbnV2b3RvbixqYWNrLWluc2VydC1kZWJvdW5j
-ZSA9IDw3PjsKPj4+Pj4gICAgICAgIG51dm90b24samFjay1lamVjdC1kZWJvdW5jZSA9IDw3PjsK
-Pj4+Pj4gLSAgICAgIG51dm90b24sY3Jvc3N0YWxrLWJ5cGFzczsKPj4+Pj4gKyAgICAgIG51dm90
-b24sY3Jvc3N0YWxrLWVuYWJsZTsKPj4+Pj4KPj4+Pj4gICAgICAgIGNsb2NrLW5hbWVzID0gIm1j
-bGsiOwo+Pj4+PiAgICAgICAgY2xvY2tzID0gPCZ0ZWdyYV9jYXIgVEVHUkEyMTBfQ0xLX0NMS19P
-VVRfMj47Cj4+Pj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL25hdTg4MjUuYyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5jCj4+Pj4+IGluZGV4IDcxNGNlMTcuLmQzYzFhMDIgMTAw
-NjQ0Cj4+Pj4+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5jCj4+Pj4+ICsrKyBiL3Nv
-dW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5jCj4+Pj4+IEBAIC04MTUsMTEgKzgxNSwxMiBAQCBzdGF0
-aWMgdm9pZCBuYXU4ODI1X3h0YWxrX3dvcmsoc3RydWN0Cj4+Pj4+IHdvcmtfc3RydWN0Cj4+Pj4+
-ICp3b3JrKQo+Pj4+Pgo+Pj4+PiAgc3RhdGljIHZvaWQgbmF1ODgyNV94dGFsa19jYW5jZWwoc3Ry
-dWN0IG5hdTg4MjUgKm5hdTg4MjUpCj4+Pj4+ICB7Cj4+Pj4+IC0gICAgICAgLyogSWYgdGhlIHh0
-YWxrX3Byb3RlY3QgaXMgdHJ1ZSwgdGhhdCBtZWFucyB0aGUgcHJvY2VzcyBpcwo+Pj4+PiBzdGls
-bAo+Pj4+PiAtICAgICAgICAqIG9uIGdvaW5nLiBUaGUgZHJpdmVyIGZvcmNlcyB0byBjYW5jZWwg
-dGhlIGNyb3NzIHRhbGsKPj4+Pj4gdGFzayBhbmQKPj4+Pj4gKyAgICAgICAvKiBJZiB0aGUgY3Jv
-c3N0YWxrIGlzIGVhbmJsZWQgYW5kIHRoZSBwcm9jZXNzIGlzIG9uIGdvaW5nLAo+Pj4+Cj4+Pj4g
-cy9lYW5ibGVkL2VuYWJsZWQvCj4+Pj4KPj4+Pj4gKyAgICAgICAgKiB0aGUgZHJpdmVyIGZvcmNl
-cyB0byBjYW5jZWwgdGhlIGNyb3NzdGFsayB0YXNrIGFuZAo+Pj4+PiAgICAgICAgICAqIHJlc3Rv
-cmVzIHRoZSBjb25maWd1cmF0aW9uIHRvIG9yaWdpbmFsIHN0YXR1cy4KPj4+Pj4gICAgICAgICAg
-Ki8KPj4+Pj4gLSAgICAgICBpZiAobmF1ODgyNS0+eHRhbGtfcHJvdGVjdCkgewo+Pj4+PiArICAg
-ICAgIGlmIChuYXU4ODI1LT54dGFsa19lbmFibGUgJiYgbmF1ODgyNS0+eHRhbGtfc3RhdGUgIT0K
-Pj4+Pj4gKyAgICAgICAgICAgICAgIE5BVTg4MjVfWFRBTEtfRE9ORSkgewo+Pj4+PiAgICAgICAg
-ICAgICAgICAgY2FuY2VsX3dvcmtfc3luYygmbmF1ODgyNS0+eHRhbGtfd29yayk7Cj4+Pj4+ICAg
-ICAgICAgICAgICAgICBuYXU4ODI1X3h0YWxrX2NsZWFuKG5hdTg4MjUpOwo+Pj4+PiAgICAgICAg
-IH0KPj4+Pj4gQEAgLTE2ODYsNyArMTY4Nyw3IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBuYXU4ODI1
-X2ludGVycnVwdChpbnQgaXJxLAo+Pj4+PiB2b2lkCj4+Pj4+ICpkYXRhKQo+Pj4+PiAgICAgICAg
-IH0gZWxzZSBpZiAoYWN0aXZlX2lycSAmIE5BVTg4MjVfSEVBRFNFVF9DT01QTEVUSU9OX0lSUSkg
-ewo+Pj4+PiAgICAgICAgICAgICAgICAgaWYgKG5hdTg4MjVfaXNfamFja19pbnNlcnRlZChyZWdt
-YXApKSB7Cj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgIGV2ZW50IHw9IG5hdTg4MjVfamFj
-a19pbnNlcnQobmF1ODgyNSk7Cj4+Pj4+IC0gICAgICAgICAgICAgICAgICAgICAgIGlmICghbmF1
-ODgyNS0+eHRhbGtfYnlwYXNzICYmCj4+Pj4+ICFuYXU4ODI1LT5oaWdoX2ltcGVkKSB7Cj4+Pj4+
-ICsgICAgICAgICAgICAgICAgICAgICAgIGlmIChuYXU4ODI1LT54dGFsa19lbmFibGUgJiYKPj4+
-Pj4gIW5hdTg4MjUtPmhpZ2hfaW1wZWQpIHsKPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAvKiBBcHBseSB0aGUgY3Jvc3MgdGFsayBzdXBwcmVzc2lvbiBpbgo+Pj4+PiB0aGUK
-Pj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKiBoZWFkc2V0IHdpdGhvdXQg
-aGlnaCBpbXBlZGFuY2UuCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICov
-Cj4+Pj4+IEBAIC0xNzMyLDggKzE3MzMsMTAgQEAgc3RhdGljIGlycXJldHVybl90IG5hdTg4MjVf
-aW50ZXJydXB0KGludAo+Pj4+PiBpcnEsIHZvaWQKPj4+Pj4gKmRhdGEpCj4+Pj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgIG5hdTg4MjUtPnh0YWxrX2V2ZW50X21hc2sgPSBldmVudF9tYXNrOwo+
-Pj4+PiAgICAgICAgICAgICAgICAgfQo+Pj4+PiAgICAgICAgIH0gZWxzZSBpZiAoYWN0aXZlX2ly
-cSAmIE5BVTg4MjVfSU1QRURBTkNFX01FQVNfSVJRKSB7Cj4+Pj4+IC0gICAgICAgICAgICAgICBz
-Y2hlZHVsZV93b3JrKCZuYXU4ODI1LT54dGFsa193b3JrKTsKPj4+Pj4gLSAgICAgICAgICAgICAg
-IGNsZWFyX2lycSA9IE5BVTg4MjVfSU1QRURBTkNFX01FQVNfSVJROwo+Pj4+PiArICAgICAgICAg
-ICAgICAgaWYgKG5hdTg4MjUtPnh0YWxrX2VuYWJsZSkgewo+Pj4+PiArICAgICAgICAgICAgICAg
-ICAgICAgICBzY2hlZHVsZV93b3JrKCZuYXU4ODI1LT54dGFsa193b3JrKTsKPj4+Pj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgY2xlYXJfaXJxID0gTkFVODgyNV9JTVBFREFOQ0VfTUVBU19JUlE7
-Cj4+Pj4+ICsgICAgICAgICAgICAgICB9Cj4+Pj4KPj4+PiBTaG91bGRuJ3Qgd2Ugc3RpbGwgc2V0
-IGNsZWFyX2lycSA9IE5BVTg4MjVfSU1QRURBTkNFX01FQVNfSVJRIGlmCj4+Pj4gY3Jvc3N0YWxr
-IGlzIGRpc2FibGVkPwo+Pj4+IE90aGVyd2lzZSwgYWxsIGFjdGl2ZV9pcnEgd2lsbCBiZSBkaXNh
-YmxlZCBsYXRlciBpbiB0aGlzIGZ1bmN0aW9uLgo+Pj4+Cj4+PiBBY3R1YWxseSwgdGhlcmUgaXMg
-YXNzaWdubWVudCBhYm91dCBjbGVhcl9pcnEgYmVmb3JlIHRoZSBlbmQgb2YgSVNSCj4+PiBhcyBm
-b2xsb3dzOgo+Pj4gaWYgKCFjbGVhcl9pcnEpIGNsZWFyX2lycSA9IGFjdGl2ZV9pcnE7Cj4+IFJp
-Z2h0LiBCdXQgdGhhdCB3aWxsIGRpc2FibGUgYWxsIG90aGVyIGFjdGl2ZSBJUlFzLiBObz8gSSB0
-aG91Z2h0IHlvdQo+PiB3YW50ZWQgdG8KPj4gb25seSBkaXNhYmxlIHRoZSBJUlEgdGhhdCB3YXMg
-aGFuZGxlZC4KPgo+IFllcywgSSBkbyB3YW50IHRvIGNsZWFyIHRoZSBJUlEgdGhhdCBoYW5kZWQg
-aW4gdGhpcyB0aW1lLiBXaGVuZXZlcgo+IHRoZSBpbnRlcnJ1cHRpb24gaGFwcGVucywgdGhlIElT
-UiB3aWxsIHJlYWQgdGhlIElSUSBzdGF0dXMgYml0bWFwcywKPiBhbmQgb25seSBvbmUgSVJRIHJh
-aXNlZCBpbiBlYWNoIHRpbWUuIEFmdGVyIGl0IGlzIGNsZWFyZWQsIHRoZSBjb2RlYwo+IGp1c3Qg
-Y2FuIG1vbml0b3IgdGhlIG5leHQgZXZlbnQgYW5kIG1ha2VzIHRoZSBhY3RpdmUgSVJRcy4KPgoK
-SSdsbCBzZXQgdGhlIGNsZWFyX2lycSBldmVuIHRocm91Z2ggdGhlIGNyb3NzdGFsayBpcyBkaXNh
-YmxlZC4KCj4+PiBUaGUgSVJRIHdpbGwgc3RpbGwgYmUgY2xlYXJlZC4gWW91ciBjb21tZW50IGlz
-IGNvcnJlY3QgZm9yIHRoZSBjbGVhcgo+Pj4gc2VtYW50aWMuIEJ1dCB0aGUgSVJRIHdpbGwgbmV2
-ZXIgaGFwcGVuIGlmIHRoZSBjcm9zc3RhbGsgZGlzYWJsZWQsCj4+PiBiZWNhdXNlIHRoZSBJUlEg
-aXMgdHJpZ2dlcmVkIGluIHRoZSBjcm9zc3RhbGsgc2VxdWVuY2UuCj4+IFRoZW9yZXRpY2FsbHkg
-SVJRIHNob3VsZCBub3QgaGFwcGVuIGlmIGNyb3NzdGFsayBpcyBkaXNhYmxlZC4gSSB0aGluawo+
-PiB0aGlzIGNoZWNrCj4+IGNhbiBiZSB1c2VkIHRvIHByZXZlbnQgZnJvbSBhIGhhcmR3YXJlIGJ1
-Zy4KPj4+Cj4+Pj4+ICAgICAgICAgfSBlbHNlIGlmICgoYWN0aXZlX2lycSAmIE5BVTg4MjVfSkFD
-S19JTlNFUlRJT05fSVJRX01BU0spID09Cj4+Pj4+ICAgICAgICAgICAgICAgICBOQVU4ODI1X0pB
-Q0tfSU5TRVJUSU9OX0RFVEVDVEVEKSB7Cj4+Pj4+ICAgICAgICAgICAgICAgICAvKiBPbmUgbW9y
-ZSBzdGVwIHRvIGNoZWNrIEdQSU8gc3RhdHVzIGRpcmVjdGx5Lgo+Pj4+PiBUaHVzLCB0aGUKPj4+
-Pj4gQEAgLTI0NDAsOCArMjQ0Myw4IEBAIHN0YXRpYyB2b2lkCj4+Pj4+IG5hdTg4MjVfcHJpbnRf
-ZGV2aWNlX3Byb3BlcnRpZXMoc3RydWN0Cj4+Pj4+IG5hdTg4MjUgKm5hdTg4MjUpCj4+Pj4+ICAg
-ICAgICAgICAgICAgICAgICAgICAgIG5hdTg4MjUtPmphY2tfaW5zZXJ0X2RlYm91bmNlKTsKPj4+
-Pj4gICAgICAgICBkZXZfZGJnKGRldiwgImphY2stZWplY3QtZGVib3VuY2U6ICAlZFxuIiwKPj4+
-Pj4gICAgICAgICAgICAgICAgICAgICAgICAgbmF1ODgyNS0+amFja19lamVjdF9kZWJvdW5jZSk7
-Cj4+Pj4+IC0gICAgICAgZGV2X2RiZyhkZXYsICJjcm9zc3RhbGstYnlwYXNzOiAgICAgJWRcbiIs
-Cj4+Pj4+IC0gICAgICAgICAgICAgICAgICAgICAgIG5hdTg4MjUtPnh0YWxrX2J5cGFzcyk7Cj4+
-Pj4+ICsgICAgICAgZGV2X2RiZyhkZXYsICJjcm9zc3RhbGstZW5hYmxlOiAgICAgJWRcbiIsCj4+
-Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgIG5hdTg4MjUtPnh0YWxrX2VuYWJsZSk7Cj4+Pj4+
-ICB9Cj4+Pj4+Cj4+Pj4+ICBzdGF0aWMgaW50IG5hdTg4MjVfcmVhZF9kZXZpY2VfcHJvcGVydGll
-cyhzdHJ1Y3QgZGV2aWNlICpkZXYsCj4+Pj4+IEBAIC0yNTA2LDggKzI1MDksOCBAQCBzdGF0aWMg
-aW50IG5hdTg4MjVfcmVhZF9kZXZpY2VfcHJvcGVydGllcyhzdHJ1Y3QKPj4+Pj4gZGV2aWNlICpk
-ZXYsCj4+Pj4+ICAgICAgICAgICAgICAgICAmbmF1ODgyNS0+amFja19lamVjdF9kZWJvdW5jZSk7
-Cj4+Pj4+ICAgICAgICAgaWYgKHJldCkKPj4+Pj4gICAgICAgICAgICAgICAgIG5hdTg4MjUtPmph
-Y2tfZWplY3RfZGVib3VuY2UgPSAwOwo+Pj4+PiAtICAgICAgIG5hdTg4MjUtPnh0YWxrX2J5cGFz
-cyA9IGRldmljZV9wcm9wZXJ0eV9yZWFkX2Jvb2woZGV2LAo+Pj4+PiAtICAgICAgICAgICAgICAg
-Im51dm90b24sY3Jvc3N0YWxrLWJ5cGFzcyIpOwo+Pj4+PiArICAgICAgIG5hdTg4MjUtPnh0YWxr
-X2VuYWJsZSA9IGRldmljZV9wcm9wZXJ0eV9yZWFkX2Jvb2woZGV2LAo+Pj4+PiArICAgICAgICAg
-ICAgICAgIm51dm90b24sY3Jvc3N0YWxrLWVuYWJsZSIpOwo+Pj4+Pgo+Pj4+PiAgICAgICAgIG5h
-dTg4MjUtPm1jbGsgPSBkZXZtX2Nsa19nZXQoZGV2LCAibWNsayIpOwo+Pj4+PiAgICAgICAgIGlm
-IChQVFJfRVJSKG5hdTg4MjUtPm1jbGspID09IC1FUFJPQkVfREVGRVIpIHsKPj4+Pj4gZGlmZiAt
-LWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oIGIvc291bmQvc29jL2NvZGVjcy9uYXU4
-ODI1LmgKPj4+Pj4gaW5kZXggOGFlZTVjODYuLjE5OWQ2ZWEgMTAwNjQ0Cj4+Pj4+IC0tLSBhL3Nv
-dW5kL3NvYy9jb2RlY3MvbmF1ODgyNS5oCj4+Pj4+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbmF1
-ODgyNS5oCj4+Pj4+IEBAIC00NzYsNyArNDc2LDcgQEAgc3RydWN0IG5hdTg4MjUgewo+Pj4+PiAg
-ICAgICAgIGludCB4dGFsa19ldmVudF9tYXNrOwo+Pj4+PiAgICAgICAgIGJvb2wgeHRhbGtfcHJv
-dGVjdDsKPj4+Pj4gICAgICAgICBpbnQgaW1wX3Jtc1tOQVU4ODI1X1hUQUxLX0lNTV07Cj4+Pj4+
-IC0gICAgICAgaW50IHh0YWxrX2J5cGFzczsKPj4+Pj4gKyAgICAgICBpbnQgeHRhbGtfZW5hYmxl
-Owo+Pj4+PiAgfTsKPj4+Pj4KPj4+Pj4gIGludCBuYXU4ODI1X2VuYWJsZV9qYWNrX2RldGVjdChz
-dHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsCj4+Pj4+IC0tCj4+Pj4+IDIuNi40Cj4+Pj4+Cj4+
-Pgo+Pj4KPj4+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4+Cj4+PiBUaGUg
-cHJpdmlsZWdlZCBjb25maWRlbnRpYWwgaW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgZW1h
-aWwgaXMKPj4+IGludGVuZGVkCj4+PiBmb3IgdXNlIG9ubHkgYnkgdGhlIGFkZHJlc3NlZXMgYXMg
-aW5kaWNhdGVkIGJ5IHRoZSBvcmlnaW5hbCBzZW5kZXIgb2YKPj4+IHRoaXMKPj4+IGVtYWlsLiBJ
-ZiB5b3UgYXJlIG5vdCB0aGUgYWRkcmVzc2VlIGluZGljYXRlZCBpbiB0aGlzIGVtYWlsIG9yIGFy
-ZSBub3QKPj4+IHJlc3BvbnNpYmxlIGZvciBkZWxpdmVyeSBvZiB0aGUgZW1haWwgdG8gc3VjaCBh
-IHBlcnNvbiwgcGxlYXNlIGtpbmRseQo+Pj4gcmVwbHkKPj4+IHRvIHRoZSBzZW5kZXIgaW5kaWNh
-dGluZyB0aGlzIGZhY3QgYW5kIGRlbGV0ZSBhbGwgY29waWVzIG9mIGl0IGZyb20geW91cgo+Pj4g
-Y29tcHV0ZXIgYW5kIG5ldHdvcmsgc2VydmVyIGltbWVkaWF0ZWx5LiBZb3VyIGNvb3BlcmF0aW9u
-IGlzIGhpZ2hseQo+Pj4gYXBwcmVjaWF0ZWQuIEl0IGlzIGFkdmlzZWQgdGhhdCBhbnkgdW5hdXRo
-b3JpemVkIHVzZSBvZiBjb25maWRlbnRpYWwKPj4+IGluZm9ybWF0aW9uIG9mIE51dm90b24gaXMg
-c3RyaWN0bHkgcHJvaGliaXRlZDsgYW5kIGFueSBpbmZvcm1hdGlvbiBpbgo+Pj4gdGhpcwo+Pj4g
-ZW1haWwgaXJyZWxldmFudCB0byB0aGUgb2ZmaWNpYWwgYnVzaW5lc3Mgb2YgTnV2b3RvbiBzaGFs
-bCBiZSBkZWVtZWQgYXMKPj4+IG5laXRoZXIgZ2l2ZW4gbm9yIGVuZG9yc2VkIGJ5IE51dm90b24u
-Cj4KPgo+Cj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+Cj4gVGhlIHByaXZp
-bGVnZWQgY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzIGVtYWlsIGlz
-Cj4gaW50ZW5kZWQgZm9yIHVzZSBvbmx5IGJ5IHRoZSBhZGRyZXNzZWVzIGFzIGluZGljYXRlZCBi
-eSB0aGUgb3JpZ2luYWwKPiBzZW5kZXIgb2YgdGhpcyBlbWFpbC4gSWYgeW91IGFyZSBub3QgdGhl
-IGFkZHJlc3NlZSBpbmRpY2F0ZWQgaW4gdGhpcwo+IGVtYWlsIG9yIGFyZSBub3QgcmVzcG9uc2li
-bGUgZm9yIGRlbGl2ZXJ5IG9mIHRoZSBlbWFpbCB0byBzdWNoIGEgcGVyc29uLAo+IHBsZWFzZSBr
-aW5kbHkgcmVwbHkgdG8gdGhlIHNlbmRlciBpbmRpY2F0aW5nIHRoaXMgZmFjdCBhbmQgZGVsZXRl
-IGFsbAo+IGNvcGllcyBvZiBpdCBmcm9tIHlvdXIgY29tcHV0ZXIgYW5kIG5ldHdvcmsgc2VydmVy
-IGltbWVkaWF0ZWx5LiBZb3VyCj4gY29vcGVyYXRpb24gaXMgaGlnaGx5IGFwcHJlY2lhdGVkLiBJ
-dCBpcyBhZHZpc2VkIHRoYXQgYW55IHVuYXV0aG9yaXplZAo+IHVzZSBvZiBjb25maWRlbnRpYWwg
-aW5mb3JtYXRpb24gb2YgTnV2b3RvbiBpcyBzdHJpY3RseSBwcm9oaWJpdGVkOyBhbmQKPiBhbnkg
-aW5mb3JtYXRpb24gaW4gdGhpcyBlbWFpbCBpcnJlbGV2YW50IHRvIHRoZSBvZmZpY2lhbCBidXNp
-bmVzcyBvZgo+IE51dm90b24gc2hhbGwgYmUgZGVlbWVkIGFzIG5laXRoZXIgZ2l2ZW4gbm9yIGVu
-ZG9yc2VkIGJ5IE51dm90b24uCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCgoKCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KVGhl
-IHByaXZpbGVnZWQgY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzIGVt
-YWlsIGlzIGludGVuZGVkIGZvciB1c2Ugb25seSBieSB0aGUgYWRkcmVzc2VlcyBhcyBpbmRpY2F0
-ZWQgYnkgdGhlIG9yaWdpbmFsIHNlbmRlciBvZiB0aGlzIGVtYWlsLiBJZiB5b3UgYXJlIG5vdCB0
-aGUgYWRkcmVzc2VlIGluZGljYXRlZCBpbiB0aGlzIGVtYWlsIG9yIGFyZSBub3QgcmVzcG9uc2li
-bGUgZm9yIGRlbGl2ZXJ5IG9mIHRoZSBlbWFpbCB0byBzdWNoIGEgcGVyc29uLCBwbGVhc2Uga2lu
-ZGx5IHJlcGx5IHRvIHRoZSBzZW5kZXIgaW5kaWNhdGluZyB0aGlzIGZhY3QgYW5kIGRlbGV0ZSBh
-bGwgY29waWVzIG9mIGl0IGZyb20geW91ciBjb21wdXRlciBhbmQgbmV0d29yayBzZXJ2ZXIgaW1t
-ZWRpYXRlbHkuIFlvdXIgY29vcGVyYXRpb24gaXMgaGlnaGx5IGFwcHJlY2lhdGVkLiBJdCBpcyBh
-ZHZpc2VkIHRoYXQgYW55IHVuYXV0aG9yaXplZCB1c2Ugb2YgY29uZmlkZW50aWFsIGluZm9ybWF0
-aW9uIG9mIE51dm90b24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZDsgYW5kIGFueSBpbmZvcm1hdGlv
-biBpbiB0aGlzIGVtYWlsIGlycmVsZXZhbnQgdG8gdGhlIG9mZmljaWFsIGJ1c2luZXNzIG9mIE51
-dm90b24gc2hhbGwgYmUgZGVlbWVkIGFzIG5laXRoZXIgZ2l2ZW4gbm9yIGVuZG9yc2VkIGJ5IE51
-dm90b24uCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Nov 22, 2017 at 12:54:26AM +0100, Maciej S. Szmigiero wrote:
+> We need to make sure that only proper channel slots (in SACCST register)
+> are enabled at playback start time since some AC'97 CODECs (like VT1613 on
+> UDOO board) were observed requesting via SLOTREQ spurious ones just after
+> an AC'97 link is started but before the CODEC is configured by its driver.
+> When a bit for some channel slot is set in a SLOTREQ request then SSI sets
+> the relevant bit in SACCST automatically, which then 'sticks' until it is
+> manually unset.
+> The SACCST register is not writable directly, we have to use SACCDIS and
+> SACCEN registers to configure it instead (these aren't normal registers:
+> writing a '1' bit at some position in SACCEN sets the relevant bit in
+> SACCST; SACCDIS operates in a similar way but allows unsetting bits in
+> SACCST).
+> 
+> Theoretically, this should be necessary only for the very first playback
+> but since some CODECs are so untrustworthy and extra channel slots enabled
+> mean ruined playback let's play safe here and make sure that no extra
+> slots are enabled in SACCST every time a playback is started.
+> 
+> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+
+The inline comments feel over descriptive but not critical. Anyway,
+I plan to do some clean up to this driver after all pending changes
+get finalized. So,
+
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+> ---
+> Changes from v1: Split out this part from
+> "fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in AC'97 mode" commit,
+> describe the problem and its solution better both in the commit message and
+> in the code, move the SACCST setup code into a separate function and call
+> it from TX config instead of doing it from trigger handler function.
+> 
+>  sound/soc/fsl/fsl_ssi.c | 52 +++++++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 46 insertions(+), 6 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 48bb850a34d9..375aaaf6080d 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -574,8 +574,54 @@ static void fsl_ssi_rx_config(struct fsl_ssi_private *ssi_private, bool enable)
+>  	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.rx);
+>  }
+>  
+> +static void fsl_ssi_tx_ac97_saccst_setup(struct fsl_ssi_private *ssi_private)
+> +{
+> +	struct regmap *regs = ssi_private->regs;
+> +
+> +	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
+> +	if (!ssi_private->soc->imx21regs) {
+> +		/*
+> +		 * Note that these below aren't just normal registers.
+> +		 * They are a way to disable or enable bits in SACCST
+> +		 * register:
+> +		 * - writing a '1' bit at some position in SACCEN sets the
+> +		 * relevant bit in SACCST,
+> +		 * - writing a '1' bit at some position in SACCDIS unsets
+> +		 * the relevant bit in SACCST register.
+> +		 *
+> +		 * The two writes below first disable all channels slots,
+> +		 * then enable just slots 3 & 4 ("PCM Playback Left Channel"
+> +		 * and "PCM Playback Right Channel").
+> +		 */
+> +		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+> +		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
+> +	}
+> +}
+> +
+>  static void fsl_ssi_tx_config(struct fsl_ssi_private *ssi_private, bool enable)
+>  {
+> +	/*
+> +	 * Why are we setting up SACCST everytime we are starting a
+> +	 * playback?
+> +	 * Some CODECs (like VT1613 CODEC on UDOO board) like to
+> +	 * (sometimes) set extra bits in their SLOTREQ requests.
+> +	 * When a bit is set in a SLOTREQ request then SSI sets the
+> +	 * relevant bit in SACCST automatically (it is enough if a bit was
+> +	 * set in a SLOTREQ just once, bits in SACCST are 'sticky').
+> +	 * If an extra slot gets enabled that's a disaster for playback
+> +	 * because some of normal left or right channel samples are
+> +	 * redirected instead to this extra slot.
+> +	 *
+> +	 * A workaround implemented in fsl-asoc-card of setting an
+> +	 * appropriate CODEC register so that slots 3 & 4 (the normal
+> +	 * stereo playback slots) are used for S/PDIF seems to mostly fix
+> +	 * this issue on the UDOO board but since this CODEC is so
+> +	 * untrustworthy let's play safe here and make sure that no extra
+> +	 * slots are enabled every time a playback is started.
+> +	 */
+> +	if (enable && fsl_ssi_is_ac97(ssi_private))
+> +		fsl_ssi_tx_ac97_saccst_setup(ssi_private);
+> +
+>  	fsl_ssi_config(ssi_private, enable, &ssi_private->rxtx_reg_val.tx);
+>  }
+>  
+> @@ -630,12 +676,6 @@ static void fsl_ssi_setup_ac97(struct fsl_ssi_private *ssi_private)
+>  	regmap_write(regs, CCSR_SSI_SACNT,
+>  			CCSR_SSI_SACNT_AC97EN | CCSR_SSI_SACNT_FV);
+>  
+> -	/* no SACC{ST,EN,DIS} regs on imx21-class SSI */
+> -	if (!ssi_private->soc->imx21regs) {
+> -		regmap_write(regs, CCSR_SSI_SACCDIS, 0xff);
+> -		regmap_write(regs, CCSR_SSI_SACCEN, 0x300);
+> -	}
+> -
+>  	/*
+>  	 * Enable SSI, Transmit and Receive. AC97 has to communicate with the
+>  	 * codec before a stream is started.
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
