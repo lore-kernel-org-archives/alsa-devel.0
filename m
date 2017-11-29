@@ -1,21 +1,18 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6 03/17] mfd: madera: Add common support
- for Cirrus Logic Madera codecs
-Date: Wed, 29 Nov 2017 11:36:58 +0000
-Message-ID: <1eff5a38-cff3-449b-bda4-047f50a9f1d4@EX17.ad.cirrus.com>
-References: <20171123171316.10868-1-rf@opensource.wolfsonmicro.com>
- <fe8064a5-8692-46c1-9f53-ab0a429baeeb@EX17.ad.cirrus.com>
- <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND 1/2] ASoC: Intel: kbl: Remove option
+ of choosing CH count based on pdata
+Date: Wed, 29 Nov 2017 12:33:14 +0000
+Message-ID: <20171129123314.4x4giq4hk2ew2zol@sirena.org.uk>
+References: <1510740463-21655-1-git-send-email-naveen.m@intel.com>
+ <1510740463-21655-2-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8156267986855793272=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id DE57D266B67
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 12:37:03 +0100 (CET)
-In-Reply-To: <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C1A0266B67
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 13:33:25 +0100 (CET)
+In-Reply-To: <1510740463-21655-2-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, devicetree@vger.kernel.org, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Lee Jones <lee.jones@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+To: Naveen Manohar <naveen.m@intel.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 29/11/17 10:18, Linus Walleij wrote:
-> On Thu, Nov 23, 2017 at 6:13 PM, Richard Fitzgerald
-> <rf@opensource.wolfsonmicro.com> wrote:
-> 
->> +config MFD_MADERA_I2C
->> +       bool "Cirrus Logic Madera codecs with I2C"
->> +       select MFD_MADERA
->> +       select REGMAP_I2C
->> +       depends on I2C
->> +       depends on PINCTRL
->> +       help
->> +         Support for the Cirrus Logic Madera platform audio SoC
->> +         core functionality controlled via I2C.
->> +
->> +config MFD_MADERA_SPI
->> +       bool "Cirrus Logic Madera codecs with SPI"
->> +       select MFD_MADERA
->> +       select REGMAP_SPI
->> +       depends on SPI_MASTER
->> +       depends on PINCTRL
->> +       help
->> +         Support for the Cirrus Logic Madera platform audio SoC
->> +         core functionality controlled via SPI.
-> 
-> Why do the I2C and SPI subdrivers depend on PINCTRL?
-> 
-> They sure don't seem to be using any pinctrl-specific APIs.
-> 
 
-They require PINCTRL even if they don't call any functions on it because 
-the chip won't work correctly if there isn't a PINCTRL driver to apply 
-the correct pinmux configuration.
+--===============8156267986855793272==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vk5lptp5ghfq2wt3"
+Content-Disposition: inline
 
-> Yours,
-> Linus Walleij
-> 
+
+--vk5lptp5ghfq2wt3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Nov 15, 2017 at 03:37:42PM +0530, Naveen Manohar wrote:
+> Remove option of choosing channel count based on pdata for
+> kbl_rt5663_max98927 machine driver.
+> As User-space expects 4ch DMIC data and uses channel-map in ucm to
+> figure-out the desired channel to use, Hence removing driver change
+> to allow choosing channels.
+
+To repeat my previous question which I don't seem to see a response to:
+
+| Which userspace and are you sure there are no boards that only have two
+| of the mics?
+
+--vk5lptp5ghfq2wt3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloeqQkACgkQJNaLcl1U
+h9B2HggAgTMfHP3mnLszYgc11PMA6bZAA0Vn/EAMYorTVb+LFNkTP9HE3QQ4dJ2z
+J2EpjxeKenGe9lJWoc+2cMd7R0TgHBp+mBfNjbFFST9VuEM70zMUMxektFEugB1b
+4yStf/et7XjkvJxmcAWT6Ht+QenMzO/8MP4hJ97OxpqHrQp0aqf8QEiEmMyqZXmG
+xLjZkYtm2hCMP+I3/WFTOyonJtnVwLyayop4zR92pgbBwFLYSTX3mADEmnm4qF9b
+0EQKebPPTCVbYhAE5J1Uet1ZYgZzk/12zqIv++a+3xcSk1ZCLrJrTuClQHeL/0JP
+1QCrYL9AaT4HfBEwOM+QdQASXtbbfA==
+=PRp9
+-----END PGP SIGNATURE-----
+
+--vk5lptp5ghfq2wt3--
+
+--===============8156267986855793272==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8156267986855793272==--
