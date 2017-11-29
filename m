@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: Fix typo in a field define" to the asoc tree
-Date: Wed, 29 Nov 2017 10:57:32 +0000
-Message-ID: <E1eK03Y-0005z9-7c@debutante>
-References: <1510862118-16104-1-git-send-email-nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1510862118-16104-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Laurent Charpentier <laurent.charpentier@nxp.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, fabio.estevam@nxp.com, alsa-devel@alsa-project.orglaurent.charpentier@nxp.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: soc-utils: add const to dummy_codec" to
+	the asoc tree
+Date: Wed, 29 Nov 2017 10:57:29 +0000
+Message-ID: <E1eK03V-0005y5-7f@debutante>
+References: <87o9nxbrrb.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3AB52678D8
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:57:34 +0100 (CET)
+In-Reply-To: <87o9nxbrrb.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc: Fix typo in a field define
+   ASoC: soc-utils: add const to dummy_codec
 
 has been applied to the asoc tree at
 
@@ -37,37 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From b89b6925bb9d48926d7ba713d3f13b14fc35c544 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Thu, 16 Nov 2017 11:55:18 -0800
-Subject: [PATCH] ASoC: fsl_asrc: Fix typo in a field define
+>From 494665a0f91b51443ca14ee1dca6d96cfd003b38 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 20 Nov 2017 02:45:36 +0000
+Subject: [PATCH] ASoC: soc-utils: add const to dummy_codec
 
-ASRFSTi_IAEi has an 11-bit offset as its _SHIFT macro defines.
+Let's align dummy_platform and dummy_codec
 
-So this patch just fixes that.
-
-Reported-by: Laurent Charpentier <laurent.charpentier@nxp.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index 0f163abe4ba3..52c27a358933 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -260,8 +260,8 @@
- #define ASRFSTi_OUTPUT_FIFO_SHIFT	12
- #define ASRFSTi_OUTPUT_FIFO_MASK	(((1 << ASRFSTi_OUTPUT_FIFO_WIDTH) - 1) << ASRFSTi_OUTPUT_FIFO_SHIFT)
- #define ASRFSTi_IAEi_SHIFT		11
--#define ASRFSTi_IAEi_MASK		(1 << ASRFSTi_OAFi_SHIFT)
--#define ASRFSTi_IAEi			(1 << ASRFSTi_OAFi_SHIFT)
-+#define ASRFSTi_IAEi_MASK		(1 << ASRFSTi_IAEi_SHIFT)
-+#define ASRFSTi_IAEi			(1 << ASRFSTi_IAEi_SHIFT)
- #define ASRFSTi_INPUT_FIFO_WIDTH	7
- #define ASRFSTi_INPUT_FIFO_SHIFT	0
- #define ASRFSTi_INPUT_FIFO_MASK		((1 << ASRFSTi_INPUT_FIFO_WIDTH) - 1)
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index e30aacbcfc29..bcd3da2739e2 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -288,7 +288,7 @@ static const struct snd_soc_platform_driver dummy_platform = {
+ 	.ops = &dummy_dma_ops,
+ };
+ 
+-static struct snd_soc_codec_driver dummy_codec;
++static const struct snd_soc_codec_driver dummy_codec;
+ 
+ #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
+ #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
 -- 
 2.15.0
