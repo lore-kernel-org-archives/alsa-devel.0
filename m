@@ -1,15 +1,18 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH v2 1/2] ASoC: codecs: Add PCM186x binding
-	documentation
-Date: Wed, 29 Nov 2017 12:50:14 -0600
-Message-ID: <20171129185015.5304-1-afd@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: intel: byt: Fix quirk for KIANO laptop"
+	to the asoc tree
+Date: Wed, 29 Nov 2017 18:59:49 +0000
+Message-ID: <E1eK7aH-0004dy-6m@debutante>
+References: <20171121171546.5656-3-carlo@caione.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F572267952
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 19:50:38 +0100 (CET)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A12326793A
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 19:59:56 +0100 (CET)
+In-Reply-To: <20171121171546.5656-3-carlo@caione.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+To: Carlo Caione <carlo@endlessm.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, linux@endlessm.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the dt-binding documentation for the TI PCM186x 2ch and 4ch Audio
-ADCs With Universal Front End.
+The patch
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
-Acked-by: Rob Herring <robh@kernel.org>
+   ASoC: intel: byt: Fix quirk for KIANO laptop
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 56fa898be862053327b2ff8abfa0a6e7f350f81d Mon Sep 17 00:00:00 2001
+From: Carlo Caione <carlo@endlessm.com>
+Date: Tue, 21 Nov 2017 17:15:46 +0000
+Subject: [PATCH] ASoC: intel: byt: Fix quirk for KIANO laptop
+
+This laptop has actually two different analog mics, no just one. Fix the
+quirk to reflect the correct configuration.
+
+Signed-off-by: Carlo Caione <carlo@endlessm.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
+ sound/soc/intel/boards/bytcr_rt5651.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes from v1:
- - pcm186x@4a -> audio-codec@4a
- - Added Acked-by
-
- .../devicetree/bindings/sound/pcm186x.txt          | 42 ++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/pcm186x.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/pcm186x.txt b/Documentation/devicetree/bindings/sound/pcm186x.txt
-new file mode 100644
-index 000000000000..1087f4855980
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/pcm186x.txt
-@@ -0,0 +1,42 @@
-+Texas Instruments PCM186x Universal Audio ADC
-+
-+These devices support both I2C and SPI (configured with pin strapping
-+on the board).
-+
-+Required properties:
-+
-+ - compatible : "ti,pcm1862",
-+                "ti,pcm1863",
-+                "ti,pcm1864",
-+                "ti,pcm1865"
-+
-+ - reg : The I2C address of the device for I2C, the chip select
-+         number for SPI.
-+
-+ - avdd-supply: Analog core power supply (3.3v)
-+ - dvdd-supply: Digital core power supply
-+ - iovdd-supply: Digital IO power supply
-+        See regulator/regulator.txt for more information
-+
-+CODEC input pins:
-+ * VINL1
-+ * VINR1
-+ * VINL2
-+ * VINR2
-+ * VINL3
-+ * VINR3
-+ * VINL4
-+ * VINR4
-+
-+The pins can be used in referring sound node's audio-routing property.
-+
-+Example:
-+
-+	pcm186x: audio-codec@4a {
-+		compatible = "ti,pcm1865";
-+		reg = <0x4a>;
-+
-+		avdd-supply = <&reg_3v3_analog>;
-+		dvdd-supply = <&reg_3v3>;
-+		iovdd-supply = <&reg_1v8>;
-+	};
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index e3d5e6ea707f..488ec48f296a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -264,7 +264,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "KIANO"),
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "KIANO SlimNote 14.2"),
+ 		},
+-		.driver_data = (void *)(BYT_RT5651_IN2_MAP),
++		.driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP),
+ 	},
+ 	{}
+ };
 -- 
 2.15.0
