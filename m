@@ -1,135 +1,44 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/24] ALSA: ctl: refactoring compat layer
-Date: Wed, 29 Nov 2017 17:45:37 +0900
-Message-ID: <55c61418-f4ea-be3c-2f12-5bf0e51df1e1@sakamocchi.jp>
-References: <20171125092006.24408-1-o-takashi@sakamocchi.jp>
- <s5h1skjmp4w.wl-tiwai@suse.de>
- <41eb40d0-8e12-e6d0-abf5-d37915eb503b@sakamocchi.jp>
- <s5hk1yaqzsp.wl-tiwai@suse.de>
- <2d4d3cad-381e-519a-ff18-c93ad2923fe6@sakamocchi.jp>
- <s5hshcximn5.wl-tiwai@suse.de>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v6 03/17] mfd: madera: Add common support for Cirrus Logic
+ Madera codecs
+Date: Wed, 29 Nov 2017 11:18:29 +0100
+Message-ID: <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
+References: <20171123171316.10868-1-rf@opensource.wolfsonmicro.com> <fe8064a5-8692-46c1-9f53-ab0a429baeeb@EX17.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id BA102266B02
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 09:45:40 +0100 (CET)
-In-Reply-To: <s5hshcximn5.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <fe8064a5-8692-46c1-9f53-ab0a429baeeb@EX17.ad.cirrus.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, alsa-devel@alsa-project.org, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 29 2017 16:12, Takashi Iwai wrote:
- >> On Nov 28 2017 22:48, Takashi Iwai wrote:
- >>> Well, both the code size and the code performance are rather the basic
- >>> question.  Usually a code refactoring is done because of performance,
- >>> not because of the code itself.  IOW, the refactoring is based on the
- >>> implicit rule -- a better code performs better.  If it's not true, the
- >>> only exception is about the portability.  But I don't think that your
- >>> patchset would improve that dramatically.  It's the point making me
- >>> hesitating to apply the patches.
- >>>
- >>> In short, the patch result doesn't look convincing enough.  At least,
- >>> I'd like to see an improvement in the resultant binary.
- >>
- >> Hm. For these concerns, I can propose additional improvements to this
- >> patchset.
- >>   * Use kernel stack for buffers to convert layout of structure
- >>    - (pros) This is for your concern about an overhead to use additional
- >>      kernel heap. Additionally, this can reduce one member from handler
- >>      structure because no need to calculate original buffer size.
- >>    - (cons) two buffers for purse consumes the kernel stack by around
- >>      2000 bytes.
- >
- > I'm afraid that this increase isn't acceptable.
+On Thu, Nov 23, 2017 at 6:13 PM, Richard Fitzgerald
+<rf@opensource.wolfsonmicro.com> wrote:
 
-Yep. It's a reason to allocate on heap, instead of usage of stack, in my
-patchset.
+> +config MFD_MADERA_I2C
+> +       bool "Cirrus Logic Madera codecs with I2C"
+> +       select MFD_MADERA
+> +       select REGMAP_I2C
+> +       depends on I2C
+> +       depends on PINCTRL
+> +       help
+> +         Support for the Cirrus Logic Madera platform audio SoC
+> +         core functionality controlled via I2C.
+> +
+> +config MFD_MADERA_SPI
+> +       bool "Cirrus Logic Madera codecs with SPI"
+> +       select MFD_MADERA
+> +       select REGMAP_SPI
+> +       depends on SPI_MASTER
+> +       depends on PINCTRL
+> +       help
+> +         Support for the Cirrus Logic Madera platform audio SoC
+> +         core functionality controlled via SPI.
 
- > The current compat code was originally with stack, too, but had to be
- > converted later to kmalloc for reducing the stack size usage.  Now the
- > new code would even double.
- >
- > Although the requirement of stack usage reduction came from 4k stack
- > and the condition was relaxed nowadays after giving up the idea, the
- > stack is still precious and we are not allowed to consume too much.
- > As a rule of thumb, maybe 100 to 200 bytes would be maximum per
- > function.
+Why do the I2C and SPI subdrivers depend on PINCTRL?
 
-It's definitely preferable. No objections I have. In this point, it's
-better to apply better refactoring to current ALSA control core because
-kernel stack is used for some medium structures.
+They sure don't seem to be using any pinctrl-specific APIs.
 
- >>   * Change some functions in 'control.c' to get 'void *' as an argument.
- >>    - (pros) these functions can get callback from 'control_compat.c'
- >>      directly. As a result, .text section can be decreased.
- >>    - (cons) these functions lose type information for the argument. This
- >>      also can fake static code analyzer, perhaps.
- >
- > This isn't fascinating, either, but more acceptable than the former.
- > (Read: let's think of other ways, but this can be still taken as a
- >   last resort.)
- >
- > BTW, if we go in that way, I guess the idea of using the conversion
- > table can be applied to 64bit native stuff, too.  Basically
- > memdup_user() and and copy_to_user() calls correspond to deserialize
- > and serialize.  Using a common helper in both sides might reduce the
- > code size, and it makes the change to void* more demanded.
-
-Hm, OK. There might be a space to re-design my local framework for this
-purpose.
-
- >>> There are lots of other architectures supporting 64/32 compatibility,
- >>> e.g. s390, powerpc, sparc, etc.  That's my concern.  At least these
- >>> major active architectures have to be checked (maybe MIPS, too).
- >>
- >> If you'd like me to check more architectures, I'll do it. Please send
- >> a list of architectures to investigate.
- >
- > You can grep COMPAT definition in Kconfig in arch/*.  mips and tile
- > seem to have the compat layer, too.
-
-$ find arch -name Kconfig | xargs grep -l COMPAT
-arch/parisc/Kconfig
-arch/arm/Kconfig
-arch/mips/Kconfig
-arch/arm64/Kconfig
-arch/Kconfig
-arch/s390/Kconfig
-arch/sparc/Kconfig
-arch/x86/Kconfig
-arch/powerpc/Kconfig
-arch/tile/Kconfig
-
-One of my friend who is a debian user uses Tile-Gx machine, but I've
-never used it. Far from it, I've never used most of the architectures
-actually...
-
- >> But in practical points, I'll
- >> omit s390, sparc and sparc64 because nowadays we have no products
- >> based on these architectures for consumer use. At least, in data
- >> center, sound devices are needless.
- >
- > Don't underestimate it.  There are always crazy users, and the sound
- > usage isn't always tied with the real hardware but also with a VM or
- > data processing.  (And also there are still desktop users of SPARC
- > boxen :)
-
-(The compat layer is for 64 bit machine. I cannot imagine sparc64
-machine for desktop use...)
-
-
-Thanks
-
-Takashi Sakamoto
+Yours,
+Linus Walleij
