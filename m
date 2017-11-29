@@ -1,15 +1,17 @@
 From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: [alsa-lib][PATCH 4/4] pcm: plug: add SND_PCM_FORMAT_{S,
- U}20 to linear_preferred_formats
-Date: Wed, 29 Nov 2017 23:17:51 +0100
-Message-ID: <43cb4e59-50c3-436c-b7bb-c66bed1d9c7e@maciej.szmigiero.name>
+Subject: Re: [PATCH] pcm: add SNDRV_PCM_FORMAT_{S,U}20
+Date: Wed, 29 Nov 2017 23:24:19 +0100
+Message-ID: <6643a314-7f66-72a7-1115-f1138f7798a0@maciej.szmigiero.name>
+References: <58bd7b03-66c3-1fdb-b810-c8604d2d4ef2@maciej.szmigiero.name>
+ <5b3ec6c5-cbc2-c0fd-9dd6-b830e53d1bce@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id DCF63267A53
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 23:17:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CB6D267960
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 23:24:21 +0100 (CET)
+In-Reply-To: <5b3ec6c5-cbc2-c0fd-9dd6-b830e53d1bce@sakamocchi.jp>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,39 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the recently added formats SND_PCM_FORMAT_{S,U}20 to
-the linear_preferred_formats array in pcm_plug.
-Let's give them lower priority than more standard S24 formats but a higher
-priority than less typical 3-byte versions.
-
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
----
- src/pcm/pcm_plug.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-index f1d7792db709..abf6f1ab9751 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -138,6 +138,17 @@ static const snd_pcm_format_t linear_preferred_formats[] = {
- 	SND_PCM_FORMAT_S24_LE,
- 	SND_PCM_FORMAT_U24_LE,
- #endif
-+#ifdef SND_LITTLE_ENDIAN
-+	SND_PCM_FORMAT_S20_LE,
-+	SND_PCM_FORMAT_U20_LE,
-+	SND_PCM_FORMAT_S20_BE,
-+	SND_PCM_FORMAT_U20_BE,
-+#else
-+	SND_PCM_FORMAT_S20_BE,
-+	SND_PCM_FORMAT_U20_BE,
-+	SND_PCM_FORMAT_S20_LE,
-+	SND_PCM_FORMAT_U20_LE,
-+#endif
- #ifdef SND_LITTLE_ENDIAN
- 	SND_PCM_FORMAT_S24_3LE,
- 	SND_PCM_FORMAT_U24_3LE,
+SGkgVGFrYXNoaSwKCk9uIDI5LjExLjIwMTcgMTU6NDksIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6
+Cj4gSGksCj4gCj4gT24gTm92IDI5IDIwMTcgMjI6NDMsIE1hY2llaiBTLiBTem1pZ2llcm8gd3Jv
+dGU6Cj4+IFRoaXMgZm9ybWF0IGlzIHNpbWlsYXIgdG8gYW4gZXhpc3RpbmcgMjAtYml0IFBDTSBm
+b3JtYXQKPj4gU05EUlZfUENNX0ZPUk1BVF97UyxVfTIwXzMsIGhvd2V2ZXIgaXQgb2NjdXBpZXMg
+NCBieXRlcyBpbnN0ZWFkIG9mIDMuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hY2llaiBTLiBTem1p
+Z2llcm8gPG1haWxAbWFjaWVqLnN6bWlnaWVyby5uYW1lPgo+PiAtLS0KPj4gwqAgaW5jbHVkZS9w
+Y20uaMKgwqDCoMKgwqDCoMKgwqDCoCB8IDIwICsrKysrKysrKysrKysrKysrKy0tCj4+IMKgIGlu
+Y2x1ZGUvc291bmQvYXNvdW5kLmggfMKgIDkgKysrKysrKysrCj4+IMKgIHNyYy9wY20vcGNtLmPC
+oMKgwqDCoMKgwqDCoMKgwqAgfCAxMCArKysrKysrKysrCj4+IMKgIHNyYy9wY20vcGNtX2xpbmVh
+ci5jwqDCoCB8IDE2ICsrKysrKysrKysrKystLS0KPj4gwqAgc3JjL3BjbS9wY21fbG9jYWwuaMKg
+wqDCoCB8wqAgNCArKysrCj4+IMKgIHNyYy9wY20vcGNtX21pc2MuY8KgwqDCoMKgIHwgNDEgKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0KPj4gwqAgc3JjL3BjbS9wY21f
+cGx1Zy5jwqDCoMKgwqAgfCAxMSArKysrKysrKysrKwo+PiDCoCBzcmMvcGNtL3BjbV9yb3V0ZS5j
+wqDCoMKgIHzCoCA2ICsrKystLQo+PiDCoCBzcmMvcGNtL3BsdWdpbl9vcHMuaMKgwqAgfCA1MCAr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+PiDCoCA5
+IGZpbGVzIGNoYW5nZWQsIDE1MyBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKPiAKPiBJ
+biBteSBvcGluaW9uLCB0aGlzIHBhdGNoIGlzIGVub3VnaCB0byBkaXNjb3VyYWdlIHJldmlld2Vy
+cy4gSXQncyBiZXR0ZXIgdG8gc3BsaXQgaW50byBzZXZlcmFsIHBhdGNoZXMgd2l0aCBwcm9wZXIg
+Z3JhbnVsYXJpdGllcyBvZiB0b3BpY3MuIEZvcgo+IGV4YW1wbGU6Cj4gCj4gMS81OiBzeW5jIGFz
+b3VuZC5oIHRvIHJlY2VudCBrZXJuZWwgdXBkYXRlIChpbmNsdWRlL3NvdW5kL2Fzb3VuZC5oKQo+
+IDIvNTogcHJvZHVjZSBuZXcgUENNIGZvcm1hdHMgdG8gYXBwbGljYXRpb25zIChwY20uaCwgcGNt
+X2xvY2FsLmggYW5kCj4gwqDCoMKgwqAgcGNtX21pc2MuYykKPiAzLzU6IHVwZGF0ZSBwbHVnIHBs
+dWdpbiAocGNtX3BsdWcuYykKPiA0LzU6IHVwZGF0ZSBsaW5lYXIgcGx1Z2luIChwY21fbGluZWFy
+LmMpCj4gNS81OiB1cGRhdGUgcm91dGUgcGx1Z2luIChwY21fcm91dGUuYykKPiAKPiBJbiBnZW5l
+cmFsLCBwcm9wZXIgZ3JhbnVsYXJpdHkgcHJvbW90ZXMgcmV2aWV3ZXJzIGFuZCBldmVuIGF1dGhv
+cnMgdG8gZmluZCBvdmVybG9va2VkIG1pc3Rha2VzLiBQbGVhc2Uga2VlcCBpdCBpbiB5b3VyIG1p
+bmQuCj4gCgpJIGhhdmUgc3BsaXQgdGhlIHN1Ym1pc3Npb24gbm93IGFsbW9zdCB0aGUgd2F5IHlv
+dSBoYWQgc3VnZ2VzdGVkIGFib3ZlIC0KaG93ZXZlciBJIGhhdmUgam9pbmVkIHRoZSAoc2luZ2xl
+KSByb3V0ZSBwbHVnaW4gY2hhbmdlIHRvIHRoZSBsaW5lYXIKcGx1Z2luIGNvbW1pdCBzaW5jZSBp
+dCBpcyB0aGUgc2FtZSBjaGFuZ2UgYXMgaW4gdGhpcyBwbHVnaW4gYW5kIGFsc28gaXQKaXMgYWJv
+dXQgdXNpbmcgYSBwcm9wZXIgY29udmVyc2lvbiBtZXRob2QgKGdldHB1dCkgdGhhdCB0aGlzIGNv
+bW1pdApoYWQgaW50cm9kdWNlZC4KCj4gUmVnYXJkcwo+IAo+IFRha2FzaGkgU2FrYW1vdG8KCkJl
+c3QgcmVnYXJkcyBhbmQgdGhhbmtzLApNYWNpZWogU3ptaWdpZXJvCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
