@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: TDM 6ch needs 8ch clock for hw
-	refine" to the asoc tree
-Date: Wed, 29 Nov 2017 10:57:47 +0000
-Message-ID: <E1eK03n-00064x-7Q@debutante>
-References: <87zi75rdsm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: nau8825: disable crosstalk by default"
+	to the asoc tree
+Date: Wed, 29 Nov 2017 10:57:41 +0000
+Message-ID: <E1eK03h-00062p-73@debutante>
+References: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A3762678BD
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:57:51 +0100 (CET)
-In-Reply-To: <87zi75rdsm.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A19F2678D4
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:57:57 +0100 (CET)
+In-Reply-To: <1511518107-7488-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, anatol.pomozov@gmail.com, WTLI@nuvoton.com, wuchengli@google.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, mac.chiang@intel.com, broonie@kernel.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: TDM 6ch needs 8ch clock for hw refine
+   ASoC: nau8825: disable crosstalk by default
 
 has been applied to the asoc tree at
 
@@ -53,259 +53,126 @@ to this mail.
 Thanks,
 Mark
 
->From b2fb31bb7454d5479b1c7214ccd10c1af85a6245 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 29 Nov 2017 03:07:51 +0000
-Subject: [PATCH] ASoC: rsnd: TDM 6ch needs 8ch clock for hw refine
+>From 226d7449135ffc62866c06d73b28cac90b3f31e4 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Fri, 24 Nov 2017 18:08:26 +0800
+Subject: [PATCH] ASoC: nau8825: disable crosstalk by default
 
-Renesas sound needs 8ch clock if TDM 6ch mode, and needs 2ch clock for
-6ch or 8ch sound if Multi SSI mode. And these are related to before/after
-CTU (= Channel Transfer Unit).
-To calculate these we already has rsnd_runtime_channel_for_ssi() which
-returns runtime necessary channels.
-But, it based on runtime->channels  which is not yet set when hw refine.
-We need to use hw_params instead of runtime->xxx when hw refine,
-and it is not needed after runtime was set.
-This patch adds new hw_params on rsnd_dai_stream, and it will be removed
-on rsnd_hw_params().
-This is very temporary durty code, but it seems no choice at this point.
+The driver makes the crosstalk funciton disabled by default
+which can simplify the codec function. The platform may not
+need this funciton and reduce the potential risk. Therefore,
+We change the property "nuvoton,crosstalk-bypass" to
+"nuvoton,crosstalk-enable". The crosstalk measurement is enabled
+if the property is set. Otherwise, it is disabled. Besides,
+add more condition in the entry point of the crosstalk sequence
+to disable the function completely.
 
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 92 +++++++++++++++++++++++++++++++++++-------------
- sound/soc/sh/rcar/rsnd.h | 15 ++++++--
- 2 files changed, 80 insertions(+), 27 deletions(-)
+ .../devicetree/bindings/sound/nau8825.txt          |  4 ++--
+ sound/soc/codecs/nau8825.c                         | 23 ++++++++++++----------
+ sound/soc/codecs/nau8825.h                         |  2 +-
+ 3 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index bd64dc6ec1c3..d76ad46a6fd9 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -197,16 +197,27 @@ int rsnd_io_is_working(struct rsnd_dai_stream *io)
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
+index 2f5e973285a6..d16d96839bcb 100644
+--- a/Documentation/devicetree/bindings/sound/nau8825.txt
++++ b/Documentation/devicetree/bindings/sound/nau8825.txt
+@@ -69,7 +69,7 @@ Optional properties:
+   - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+   - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
  
--int rsnd_runtime_channel_original(struct rsnd_dai_stream *io)
-+int rsnd_runtime_channel_original_with_params(struct rsnd_dai_stream *io,
-+					      struct snd_pcm_hw_params *params)
+-  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set.
++  - nuvoton,crosstalk-enable: make crosstalk function enable if set.
+ 
+   - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
+       clocks described in clock-names
+@@ -98,7 +98,7 @@ Example:
+       nuvoton,short-key-debounce = <2>;
+       nuvoton,jack-insert-debounce = <7>;
+       nuvoton,jack-eject-debounce = <7>;
+-      nuvoton,crosstalk-bypass;
++      nuvoton,crosstalk-enable;
+ 
+       clock-names = "mclk";
+       clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 714ce17da717..d3c1a02f1e15 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -815,11 +815,12 @@ static void nau8825_xtalk_work(struct work_struct *work)
+ 
+ static void nau8825_xtalk_cancel(struct nau8825 *nau8825)
  {
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 
--	return runtime->channels;
-+	/*
-+	 * params will be added when refine
-+	 * see
-+	 *	__rsnd_soc_hw_rule_rate()
-+	 *	__rsnd_soc_hw_rule_channels()
-+	 */
-+	if (params)
-+		return params_channels(params);
-+	else
-+		return runtime->channels;
- }
- 
--int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io)
-+int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
-+					       struct snd_pcm_hw_params *params)
- {
--	int chan = rsnd_runtime_channel_original(io);
-+	int chan = rsnd_runtime_channel_original_with_params(io, params);
- 	struct rsnd_mod *ctu_mod = rsnd_io_to_mod_ctu(io);
- 
- 	if (ctu_mod) {
-@@ -219,12 +230,13 @@ int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io)
- 	return chan;
- }
- 
--int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io)
-+int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
-+					     struct snd_pcm_hw_params *params)
- {
- 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
- 	int chan = rsnd_io_is_play(io) ?
--		rsnd_runtime_channel_after_ctu(io) :
--		rsnd_runtime_channel_original(io);
-+		rsnd_runtime_channel_after_ctu_with_params(io, params) :
-+		rsnd_runtime_channel_original_with_params(io, params);
- 
- 	/* Use Multi SSI */
- 	if (rsnd_runtime_is_ssi_multi(io))
-@@ -616,8 +628,6 @@ static int rsnd_soc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		rsnd_dai_stream_init(io, substream);
--
- 		ret = rsnd_dai_call(init, io, priv);
- 		if (ret < 0)
- 			goto dai_trigger_end;
-@@ -639,7 +649,6 @@ static int rsnd_soc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 		ret |= rsnd_dai_call(quit, io, priv);
- 
--		rsnd_dai_stream_quit(io);
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -784,8 +793,9 @@ static int rsnd_soc_hw_rule(struct rsnd_priv *priv,
- 	return snd_interval_refine(iv, &p);
- }
- 
--static int rsnd_soc_hw_rule_rate(struct snd_pcm_hw_params *params,
--				 struct snd_pcm_hw_rule *rule)
-+static int __rsnd_soc_hw_rule_rate(struct snd_pcm_hw_params *params,
-+				   struct snd_pcm_hw_rule *rule,
-+				   int is_play)
- {
- 	struct snd_interval *ic_ = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_interval *ir = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-@@ -793,25 +803,37 @@ static int rsnd_soc_hw_rule_rate(struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *dai = rule->private;
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
-+	struct rsnd_dai_stream *io = is_play ? &rdai->playback : &rdai->capture;
- 
- 	/*
- 	 * possible sampling rate limitation is same as
- 	 * 2ch if it supports multi ssi
-+	 * and same as 8ch if TDM 6ch (see rsnd_ssi_config_init())
+-	/* If the xtalk_protect is true, that means the process is still
+-	 * on going. The driver forces to cancel the cross talk task and
++	/* If the crosstalk is eanbled and the process is on going,
++	 * the driver forces to cancel the crosstalk task and
+ 	 * restores the configuration to original status.
  	 */
- 	ic = *ic_;
--	if (1 < rsnd_rdai_ssi_lane_get(rdai)) {
--		ic.min = 2;
--		ic.max = 2;
--	}
-+	ic.min =
-+	ic.max = rsnd_runtime_channel_for_ssi_with_params(io, params);
- 
- 	return rsnd_soc_hw_rule(priv, rsnd_soc_hw_rate_list,
- 				ARRAY_SIZE(rsnd_soc_hw_rate_list),
- 				&ic, ir);
- }
- 
-+static int rsnd_soc_hw_rule_rate_playback(struct snd_pcm_hw_params *params,
-+				 struct snd_pcm_hw_rule *rule)
-+{
-+	return __rsnd_soc_hw_rule_rate(params, rule, 1);
-+}
-+
-+static int rsnd_soc_hw_rule_rate_capture(struct snd_pcm_hw_params *params,
-+					  struct snd_pcm_hw_rule *rule)
-+{
-+	return __rsnd_soc_hw_rule_rate(params, rule, 0);
-+}
- 
--static int rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
--				     struct snd_pcm_hw_rule *rule)
-+static int __rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
-+				       struct snd_pcm_hw_rule *rule,
-+				       int is_play)
- {
- 	struct snd_interval *ic_ = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_interval *ir = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-@@ -819,22 +841,34 @@ static int rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *dai = rule->private;
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
-+	struct rsnd_dai_stream *io = is_play ? &rdai->playback : &rdai->capture;
- 
- 	/*
- 	 * possible sampling rate limitation is same as
- 	 * 2ch if it supports multi ssi
-+	 * and same as 8ch if TDM 6ch (see rsnd_ssi_config_init())
- 	 */
- 	ic = *ic_;
--	if (1 < rsnd_rdai_ssi_lane_get(rdai)) {
--		ic.min = 2;
--		ic.max = 2;
--	}
-+	ic.min =
-+	ic.max = rsnd_runtime_channel_for_ssi_with_params(io, params);
- 
- 	return rsnd_soc_hw_rule(priv, rsnd_soc_hw_channels_list,
- 				ARRAY_SIZE(rsnd_soc_hw_channels_list),
- 				ir, &ic);
- }
- 
-+static int rsnd_soc_hw_rule_channels_playback(struct snd_pcm_hw_params *params,
-+					      struct snd_pcm_hw_rule *rule)
-+{
-+	return __rsnd_soc_hw_rule_channels(params, rule, 1);
-+}
-+
-+static int rsnd_soc_hw_rule_channels_capture(struct snd_pcm_hw_params *params,
-+					     struct snd_pcm_hw_rule *rule)
-+{
-+	return __rsnd_soc_hw_rule_channels(params, rule, 0);
-+}
-+
- static const struct snd_pcm_hardware rsnd_pcm_hardware = {
- 	.info =		SNDRV_PCM_INFO_INTERLEAVED	|
- 			SNDRV_PCM_INFO_MMAP		|
-@@ -859,6 +893,8 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
- 	int ret;
- 	int i;
- 
-+	rsnd_dai_stream_init(io, substream);
-+
- 	/*
- 	 * Channel Limitation
- 	 * It depends on Platform design
-@@ -886,11 +922,17 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
- 	 * It depends on Clock Master Mode
- 	 */
- 	if (rsnd_rdai_is_clk_master(rdai)) {
-+		int is_play = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-+
- 		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--				    rsnd_soc_hw_rule_rate, dai,
-+				    is_play ? rsnd_soc_hw_rule_rate_playback :
-+					      rsnd_soc_hw_rule_rate_capture,
-+				    dai,
- 				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				    rsnd_soc_hw_rule_channels, dai,
-+				    is_play ? rsnd_soc_hw_rule_channels_playback :
-+					      rsnd_soc_hw_rule_channels_capture,
-+				    dai,
- 				    SNDRV_PCM_HW_PARAM_RATE, -1);
+-	if (nau8825->xtalk_protect) {
++	if (nau8825->xtalk_enable && nau8825->xtalk_state !=
++		NAU8825_XTALK_DONE) {
+ 		cancel_work_sync(&nau8825->xtalk_work);
+ 		nau8825_xtalk_clean(nau8825);
  	}
- 
-@@ -915,6 +957,8 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
- 	 * call rsnd_dai_call without spinlock
- 	 */
- 	rsnd_dai_call(nolock_stop, io, priv);
-+
-+	rsnd_dai_stream_quit(io);
+@@ -1686,7 +1687,7 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 	} else if (active_irq & NAU8825_HEADSET_COMPLETION_IRQ) {
+ 		if (nau8825_is_jack_inserted(regmap)) {
+ 			event |= nau8825_jack_insert(nau8825);
+-			if (!nau8825->xtalk_bypass && !nau8825->high_imped) {
++			if (nau8825->xtalk_enable && !nau8825->high_imped) {
+ 				/* Apply the cross talk suppression in the
+ 				 * headset without high impedance.
+ 				 */
+@@ -1732,8 +1733,10 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 			nau8825->xtalk_event_mask = event_mask;
+ 		}
+ 	} else if (active_irq & NAU8825_IMPEDANCE_MEAS_IRQ) {
+-		schedule_work(&nau8825->xtalk_work);
+-		clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
++		if (nau8825->xtalk_enable) {
++			schedule_work(&nau8825->xtalk_work);
++			clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
++		}
+ 	} else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
+ 		NAU8825_JACK_INSERTION_DETECTED) {
+ 		/* One more step to check GPIO status directly. Thus, the
+@@ -2440,8 +2443,8 @@ static void nau8825_print_device_properties(struct nau8825 *nau8825)
+ 			nau8825->jack_insert_debounce);
+ 	dev_dbg(dev, "jack-eject-debounce:  %d\n",
+ 			nau8825->jack_eject_debounce);
+-	dev_dbg(dev, "crosstalk-bypass:     %d\n",
+-			nau8825->xtalk_bypass);
++	dev_dbg(dev, "crosstalk-enable:     %d\n",
++			nau8825->xtalk_enable);
  }
  
- static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 57cd2bc773c2..ad6523595b0a 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -399,9 +399,18 @@ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
- 		struct device_node *playback,
- 		struct device_node *capture);
+ static int nau8825_read_device_properties(struct device *dev,
+@@ -2506,8 +2509,8 @@ static int nau8825_read_device_properties(struct device *dev,
+ 		&nau8825->jack_eject_debounce);
+ 	if (ret)
+ 		nau8825->jack_eject_debounce = 0;
+-	nau8825->xtalk_bypass = device_property_read_bool(dev,
+-		"nuvoton,crosstalk-bypass");
++	nau8825->xtalk_enable = device_property_read_bool(dev,
++		"nuvoton,crosstalk-enable");
  
--int rsnd_runtime_channel_original(struct rsnd_dai_stream *io);
--int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io);
--int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io);
-+#define rsnd_runtime_channel_original(io) \
-+	rsnd_runtime_channel_original_with_params(io, NULL)
-+int rsnd_runtime_channel_original_with_params(struct rsnd_dai_stream *io,
-+				struct snd_pcm_hw_params *params);
-+#define rsnd_runtime_channel_after_ctu(io)			\
-+	rsnd_runtime_channel_after_ctu_with_params(io, NULL)
-+int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
-+				struct snd_pcm_hw_params *params);
-+#define rsnd_runtime_channel_for_ssi(io) \
-+	rsnd_runtime_channel_for_ssi_with_params(io, NULL)
-+int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
-+				 struct snd_pcm_hw_params *params);
- int rsnd_runtime_is_ssi_multi(struct rsnd_dai_stream *io);
- int rsnd_runtime_is_ssi_tdm(struct rsnd_dai_stream *io);
+ 	nau8825->mclk = devm_clk_get(dev, "mclk");
+ 	if (PTR_ERR(nau8825->mclk) == -EPROBE_DEFER) {
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 8aee5c8647ae..199d6ea4dcdc 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -476,7 +476,7 @@ struct nau8825 {
+ 	int xtalk_event_mask;
+ 	bool xtalk_protect;
+ 	int imp_rms[NAU8825_XTALK_IMM];
+-	int xtalk_bypass;
++	int xtalk_enable;
+ };
  
+ int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
 -- 
 2.15.0
