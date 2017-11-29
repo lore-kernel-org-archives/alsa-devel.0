@@ -1,15 +1,15 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH v2 13/19] ASoC: tlv320aic31xx: Fix inverted
-	BCLK handling
-Date: Wed, 29 Nov 2017 15:32:54 -0600
-Message-ID: <20171129213300.20021-14-afd@ti.com>
+Subject: [PATCH v2 12/19] ASoC: tlv320aic31xx: Add CODEC clock
+	slave support
+Date: Wed, 29 Nov 2017 15:32:53 -0600
+Message-ID: <20171129213300.20021-13-afd@ti.com>
 References: <20171129213300.20021-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id F3925267984
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D5202679AB
  for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 22:33:05 +0100 (CET)
 In-Reply-To: <20171129213300.20021-1-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,63 +25,38 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently BCLK inverting is only handled when the DAI format is
-DSP, but the BCLK may be inverted in any supported mode. Without
-this using this CODEC in any other mode than DSP with the BCLK
-inverted leads to bad sampling timing and very poor audio quality.
+This CODEC supports being the WCLK and/or BCLK slave, add
+support for this here.
 
-Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
+Also make the alert into an error as alert is more urgent
+than needed here and is rarely used.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index b39db3eb06d0..f7b1ec96d826 100644
+index 41e2d8077a62..b39db3eb06d0 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -939,6 +939,18 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+@@ -926,8 +926,16 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		iface_reg1 |= AIC31XX_BCLK_MASTER | AIC31XX_WCLK_MASTER;
+ 		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		iface_reg1 |= AIC31XX_WCLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		iface_reg1 |= AIC31XX_BCLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
+ 	default:
+-		dev_alert(codec->dev, "Invalid DAI master/slave interface\n");
++		dev_err(codec->dev, "Invalid DAI master/slave interface\n");
  		return -EINVAL;
  	}
  
-+	/* signal polarity */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		iface_reg2 |= AIC31XX_BCLKINV_MASK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid DAI clock signal polarity\n");
-+		return -EINVAL;
-+	}
-+
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -946,16 +958,12 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_DSP_A:
- 		dsp_a_val = 0x1; /* fall through */
- 	case SND_SOC_DAIFMT_DSP_B:
--		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
--		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--		case SND_SOC_DAIFMT_NB_NF:
--			iface_reg2 |= AIC31XX_BCLKINV_MASK;
--			break;
--		case SND_SOC_DAIFMT_IB_NF:
--			break;
--		default:
--			return -EINVAL;
--		}
-+		/*
-+		 * NOTE: This CODEC samples on the falling edge of BCLK in
-+		 * DSP mode, this is inverted compared to what most DAIs
-+		 * expect, so we invert for this mode
-+		 */
-+		iface_reg2 ^= AIC31XX_BCLKINV_MASK;
- 		iface_reg1 |= (AIC31XX_DSP_MODE <<
- 			       AIC31XX_IFACE1_DATATYPE_SHIFT);
- 		break;
 -- 
 2.15.0
