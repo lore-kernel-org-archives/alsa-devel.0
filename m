@@ -1,76 +1,63 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with top-level
- selector
-Date: Wed, 29 Nov 2017 15:57:34 +0530
-Message-ID: <20171129102734.GA32417@localhost>
+Subject: Re: [RFC PATCH v2 5/7] ASoC: Intel: boards: align
+ Kconfig dependencies for Haswell/Broadwell
+Date: Wed, 29 Nov 2017 16:01:41 +0530
+Message-ID: <20171129103140.GB32417@localhost>
 References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
- <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
+ <20171129014551.30552-6-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1B43266A74
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:28:10 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20171129014551.30552-6-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Nov 28, 2017 at 07:45:49PM -0600, Pierre-Louis Bossart wrote:
+> Make sure that the same I2C/I2C_DESIGNWARE_PLATFORM are selected.
+> The latter might actually need to be moved to the SOC side of things,
+> it really has no place in a machine driver dependency
 
-I am not sure about top level being default to Y...
+not really, given that we will come with platforms where I2C may not be used
+for audio, we should keep this in machine or better move to codecs as it
+belongs to them, machine being second best :)
 
->  config SND_SST_ATOM_HIFI2_PLATFORM
->  	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
-> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
-> +	depends on X86
->  	select SND_SOC_COMPRESS
-> +	select SND_SOC_INTEL_COMMON
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/soc/intel/boards/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index df41a6016217..a1e169c86526 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -42,7 +42,7 @@ config SND_SOC_INTEL_HASWELL_MACH
 >  
->  config SND_SOC_INTEL_SKYLAKE
->  	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
-> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
-> +	depends on PCI && ACPI
->  	select SND_HDA_EXT_CORE
->  	select SND_HDA_DSP_LOADER
->  	select SND_SOC_TOPOLOGY
->  	select SND_SOC_INTEL_SST
-> +	select SND_SOC_INTEL_COMMON
-> +	help
-> +	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
-> +	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-> +	  then enable this option by saying Y or m.
-
-this is good stuff, helps in improving UX vastly. Btw can we have select ALL
-machine also as an option for people who dont want to select a specfic one,
-that one will really help for a better UX
-
-> +
-> +endif ## SND_SOC_INTEL_SST_TOPLEVEL
->  
->  # ASoC codec drivers
->  source "sound/soc/intel/boards/Kconfig"
-> +
-> +# configs common to SST and SOF to compile sound/soc/intel/common
-> +# directory and use matching tables
-> +
-> +config SND_SOC_INTEL_COMMON
-> +	tristate
-> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
-
-common selects only MATCH
-
-> +	# this option controls the compilation of the sound/soc/intel/common
-> +	# directory and is not meant to be selected by the user. It is
-> +	# not filtered out on purpose by the top-level selector since
-> +	# it will be selected by SST or SOF platform driver options
-> +
-> +config SND_SOC_ACPI_INTEL_MATCH
-> +	tristate
-> +	select SND_SOC_ACPI if ACPI
-
-then why keep common, lets remove one level and have
-SND_SOC_ACPI_INTEL_MATCH selected. ACPI is must have at top level so we can
-add depends on that symbol
+>  config SND_SOC_INTEL_BDW_RT5677_MACH
+>  	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+> -	depends on X86_INTEL_LPSS && GPIOLIB && I2C
+> +	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM && GPIOLIB
+>  	select SND_SOC_RT5677
+>  	help
+>  	  This adds support for Intel Broadwell platform based boards with
+> -- 
+> 2.14.1
+> 
 
 -- 
 ~Vinod
