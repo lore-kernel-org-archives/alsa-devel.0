@@ -1,16 +1,19 @@
-From: Jorge <jorge.sanjuan@codethink.co.uk>
-Subject: Re: Line6 Helix - usb compliant but not working correct
-Date: Wed, 29 Nov 2017 14:51:28 +0000
-Message-ID: <17555436-4918-0b12-48a6-44c84cc009d2@codethink.co.uk>
-References: <4d9d4dd7-1b49-574c-ac0b-62fd0e40ba82@jensverwiebe.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with
+ top-level selector
+Date: Wed, 29 Nov 2017 08:52:58 -0600
+Message-ID: <8ba6af88-5cb4-8174-2ecc-46f80420ff28@linux.intel.com>
+References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
+ <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
+ <20171129102734.GA32417@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F0B2266B67
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 15:51:28 +0100 (CET)
-In-Reply-To: <4d9d4dd7-1b49-574c-ac0b-62fd0e40ba82@jensverwiebe.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5E44266B67
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 15:53:01 +0100 (CET)
+In-Reply-To: <20171129102734.GA32417@localhost>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,79 +24,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: info@jensverwiebe.de
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de, tiwai@suse.de, linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com, broonie@kernel.org, andriy.shevchenko@linux.intel.com, torvalds@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyOS8xMS8xNyAxMzoyNiwgSmVucyBWZXJ3aWViZSB3cm90ZToKPiBIaSBmb2xrcwo+Cj4g
-SSByZWNlbnRseSBnb3QgYSBMaW5lNiBIZWxpeCBMVCB3aGljaCBjYW4gd29yayB1c2IgY29tcGxp
-YW50IGZvciAKPiBleGFtcGxlIG9uCgpJbnRlcmVzdGluZy4gSSB3b3VsZCBsaWtlIHRvIHRyeSB0
-aGUgSGVsaXggaW4gTGludXggdG9vLiBJIGhhdmUgc2VlbiAKc2ltaWxhciBpc3N1ZXMgd2hlbiBm
-aWRkbGluZyB3aXRoCnNldF9zYW1wbGVfcmF0ZS4gU29tZSBjb21tZW50cy9pZGVhcyBiZWxvdy4K
-Cj4KPiBPU1ggb3IgSU9TLiBObyBkcml2ZXIgaXMgbmVlZGVkIGJ1dCB0aGUgc2FtcGxlcmF0ZSBp
-cyBmaXhlZCB0byA0ODAwMCAoIAo+IHdoaWNoIGlzIG9rYXkgZm9yIHRoZSBmaXJzdCApLgo+Cj4g
-Tm93IGkgZXhwZWN0ZWQgdGhpcyBkZXZpY2UgdG8gd29yayBvb3RiIGluIGFsc2EsIHdoaWNoIHR1
-cm5lZCBvdXQgdG8gCj4gYmUgaGFsZiB0aGUgdHJ1dGguCj4KPiBDb25uZWN0aW5nIHRoZSBkZXZp
-Y2UgdGhyZXcgIiB1c2IgNy0yOiBwYXJzZV9hdWRpb19mb3JtYXRfcmF0ZXNfdjIoKTogCj4gdW5h
-YmxlIHRvIHJldHJpZXZlIG51bWJlciBvZiBzYW1wbGUgcmF0ZXMgKGNsb2NrIDE2KSIKPgo+IHNv
-IGkgaW52ZXN0aWdhdGVkIGEgYml0IGFuZCBmb3VuZCB0aGlzIHdvcmthcm91bmQ6Cj4KPiAtLS0g
-Cj4gIi9tZWRpYS9Xb3JrZGF0YTMvRGV2ZWxvcG1lbnQva2VybmVsX2xvd2xhdF80LjQtOTcvbGlu
-dXgtNC40Ljk3L3NvdW5kL3VzYi9jbG9jayAKPiAoS29waWUpLmMiwqDCoMKgIDIwMTctMTEtMDgg
-MTA6MDY6MzEuMDAwMDAwMDAwICswMTAwCj4gKysrIAo+IC9tZWRpYS9Xb3JrZGF0YTMvRGV2ZWxv
-cG1lbnQva2VybmVsX2xvd2xhdF80LjQtOTcvbGludXgtNC40Ljk3L3NvdW5kL3VzYi9jbG9jay5j
-IAo+IDIwMTctMTEtMTQgMjM6MDY6NTEuNzUwOTI0MDUxICswMTAwCj4gQEAgLTM2MSw2ICszNjEs
-MTMgQEAgc3RhdGljIGludCBzZXRfc2FtcGxlX3JhdGVfdjIoc3RydWN0IHNuZAo+IMKgwqDCoMKg
-IHN0cnVjdCB1YWNfY2xvY2tfc291cmNlX2Rlc2NyaXB0b3IgKmNzX2Rlc2M7Cj4KPiDCoMKgwqDC
-oCBjbG9jayA9IHNuZF91c2JfY2xvY2tfZmluZF9zb3VyY2UoY2hpcCwgZm10LT5jbG9jaywgdHJ1
-ZSk7Cj4gK8KgwqDCoCDCoMKgwqAgLyoKPiArwqDCoMKgwqAgwqDCoMKgICogTGluZTYgSEVMSVgg
-ZG9lcyBub3QgcmVzcG9uZCB0byBzYW1wbGUgcmF0ZQo+ICvCoMKgwqDCoCDCoMKgwqAgKiBzZXQg
-cmVxdWVzdHMuIFRoZSBvbmx5IHZhbGlkIHJhdGUgaXMgNDgwMDAuCj4gK8KgwqDCoMKgIMKgwqDC
-oCAqLwo+ICvCoMKgwqAgwqDCoMKgIGlmIChjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MGU0MSwg
-MHg0MjQ0KSAmJiByYXRlID09IDQ4MDAwKQo+ICvCoMKgwqDCoMKgwqDCoCDCoMKgwqAgcmV0dXJu
-IDA7Cj4gKwo+IMKgwqDCoMKgIGlmIChjbG9jayA8IDApCj4gwqDCoMKgwqAgwqDCoMKgIHJldHVy
-biBjbG9jazsKPgo+IC0tLSAKPiAiL21lZGlhL1dvcmtkYXRhMy9EZXZlbG9wbWVudC9rZXJuZWxf
-bG93bGF0XzQuNC05Ny9saW51eC00LjQuOTcvc291bmQvdXNiL2Zvcm1hdCAKPiAoS29waWUpLmMi
-wqDCoMKgIDIwMTctMTEtMDggMTA6MDY6MzEuMDAwMDAwMDAwICswMTAwCj4gKysrIAo+IC9tZWRp
-YS9Xb3JrZGF0YTMvRGV2ZWxvcG1lbnQva2VybmVsX2xvd2xhdF80LjQtOTcvbGludXgtNC40Ljk3
-L3NvdW5kL3VzYi9mb3JtYXQuYyAKPiAyMDE3LTExLTE0IDIzOjEyOjI0LjMyOTc2NjI0MyArMDEw
-MAo+IEBAIC0yOTMsNiArMjkzLDIwIEBAIHN0YXRpYyBpbnQgcGFyc2VfYXVkaW9fZm9ybWF0X3Jh
-dGVzX3YyKHMKPiDCoMKgwqDCoCBpbnQgbnJfdHJpcGxldHMsIGRhdGFfc2l6ZSwgcmV0ID0gMDsK
-PiDCoMKgwqDCoCBpbnQgY2xvY2sgPSBzbmRfdXNiX2Nsb2NrX2ZpbmRfc291cmNlKGNoaXAsIGZw
-LT5jbG9jaywgZmFsc2UpOwo+Cj4gK8KgwqDCoCAvKgo+ICvCoMKgwqAgKiBMaW5lNiBIRUxJWCBk
-b2VzIG5vdCByZXNwb25kIHRvIHNhbXBsZSByYXRlCj4gK8KgwqDCoCAqIHF1ZXJ5IHJlcXVlc3Rz
-LiBUaGUgb25seSB2YWxpZCByYXRlIGlzIDQ4MDAwLgo+ICvCoMKgwqAgKi8KPiArwqDCoMKgIGlm
-IChjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MGU0MSwgMHg0MjQ0KSkgewo+ICvCoMKgwqAgwqDC
-oMKgIGZwLT5ucl9yYXRlcyA9IDE7Cj4gK8KgwqDCoMKgwqDCoMKgIMKgwqDCoCBmcC0+cmF0ZV9t
-aW4gPSA0ODAwMDsKPiArwqDCoMKgwqDCoMKgwqAgwqDCoMKgIGZwLT5yYXRlX21heCA9IDQ4MDAw
-Owo+ICvCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVzID0gU05EUlZfUENNX1JBVEVfNDgw
-MDA7Cj4gK8KgwqDCoMKgwqDCoMKgIMKgwqDCoCBmcC0+cmF0ZV90YWJsZSA9IGttYWxsb2Moc2l6
-ZW9mKGludCksIEdGUF9LRVJORUwpOwo+ICvCoMKgwqDCoMKgwqDCoCDCoMKgwqAgZnAtPnJhdGVf
-dGFibGVbMF0gPSA0ODAwMDsKPiArwqDCoMKgwqDCoMKgwqAgwqDCoMKgIHJldHVybiAwOwo+ICvC
-oMKgwqAgwqDCoMKgIH0KPiArCj4gwqDCoMKgwqAgaWYgKGNsb2NrIDwgMCkgewo+IMKgwqDCoMKg
-IMKgwqDCoCBkZXZfZXJyKCZkZXYtPmRldiwKPiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgICIlcygp
-OiB1bmFibGUgdG8gZmluZCBjbG9jayBzb3VyY2UgKGNsb2NrICVkKVxuIiwKPgo+Cj4gVGhpcyB0
-cmljayBtYWRlIHRoZSBkZXZpY2UgYXBwZWFyIGluIGFwbGF5IC1sIGFuZCAvcHJvYy9hc291bmQg
-anVzdCBhcyAKPiBleHBlY3RlZC4KPgo+IFsgNzk4OC40OTUwODVdIHVzYiA3LTI6IG5ldyBoaWdo
-LXNwZWVkIFVTQiBkZXZpY2UgbnVtYmVyIDQgdXNpbmcgeGhjaV9oY2QKPiBbIDc5ODguNjYzNjIy
-XSB1c2IgNy0yOiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MGU0MSwgCj4gaWRQcm9k
-dWN0PTQyNDQKPiBbIDc5ODguNjYzNjI1XSB1c2IgNy0yOiBOZXcgVVNCIGRldmljZSBzdHJpbmdz
-OiBNZnI9MSwgUHJvZHVjdD0yLCAKPiBTZXJpYWxOdW1iZXI9Mwo+IFsgNzk4OC42NjM2MjddIHVz
-YiA3LTI6IFByb2R1Y3Q6IEhFTElYCj4gWyA3OTg4LjY2MzYyOV0gdXNiIDctMjogTWFudWZhY3R1
-cmVyOiBMSU5FIDYKPiBbIDc5ODguNjYzNjMwXSB1c2IgNy0yOiBTZXJpYWxOdW1iZXI6wqDCoMKg
-IDI3NDQ1MzUKPgo+IEJ1dCBpIGVuZGVkIHVwIHdpdGggc29tZXRpbWVzIG9jY3VyaW5nIHNvZnQg
-Y2xpY2tzIGluIHBsYXliYWNrIHdoaWNoIAo+IGltcGx5IGkgaGF2ZSB0aW1pbmcgcHJvYmxlbXMu
-Cj4KPiBBbm90aGVyIHN5bXB0b20gaXMgYXBsYXkgZG9lcyBub3Qgb3V0cHV0IGFueSBzb3VuZCB3
-aGlsZSBub3QgdGhyb3dpbmcgCj4gYW55IGVycm9yIHdoaWxlIGluIGphY2sgaSBjYW4gY3JlYXRl
-IHRoZSBkcml2ZXIganVzdCBmaW5lLgoKSGF2ZSB5b3UgdHJpZWQgZGVidWdnaW5nIHRoZSBwb2lu
-dGVyIHBvc2l0aW9uIHdpdGggdGhhdCBkZXZpY2U/IERvIHlvdSAKZ2V0IHNlbnNpYmxlIGJ1ZmZl
-ciBzaXplcwp3aXRoIGAtdmAgaW4gYXBsYXkgZm9yIDQ4S0h6LCAyNCBiaXRzLCBldGM/CgpJIG9u
-Y2UgZW5kZWQgdXAgd2l0aCByZWFsbHkgc21hbGwgYnVmZmVycyB3aGVuIEkgY2hhbmdlZCB0aGUg
-dXNiIAphdWRpb2Zvcm1hdHMgZm9yIGEgZml4ZWQgcmF0ZSBkZXZpY2UKc28gdGhlcmUgd2FzIG5v
-dCBzb3VuZCB3aGF0c29ldmVyIGV2ZW4gdGhvdWdoIGFsbCB0aGUgZGV2aWNlcyB3ZXJlIApwcmVz
-ZW50LiBJIGFtIG5vdCBzdXJlIHdoZXRoZXIKZnAtPnJhdGVzIHNob3VsZCBnZXQgU05EUlZfUENN
-X1JBVEVfQ09OVElOVU9VUyBlaXRoZXIgd2F5IGFuZCB0aGVuIAptaW4vbWF4ID0gNDhLSHogZGVs
-aW1pdGluZyBpdC4KCkpvcmdlLgoKPgo+IEkgd291bGQgYXByZWNpYXRlIGFueSBoaW50IHdoYXQg
-aSBjb3VsZCB0cnkgb3V0IGhlcmUuCj4KPgo+IEdyZWV0aW5ncyBmcm9tIEhhbWJ1cmcgLi4uIEpl
-bnMKPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 11/29/17 4:27 AM, Vinod Koul wrote:
+> On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
+> 
+> I am not sure about top level being default to Y...
+
+It's standard procedure apparently, see Linus/Mark/Takashi's emails.
+
+> 
+>>   config SND_SST_ATOM_HIFI2_PLATFORM
+>>   	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
+>> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
+>> +	depends on X86
+>>   	select SND_SOC_COMPRESS
+>> +	select SND_SOC_INTEL_COMMON
+>>   
+>>   config SND_SOC_INTEL_SKYLAKE
+>>   	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
+>> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
+>> +	depends on PCI && ACPI
+>>   	select SND_HDA_EXT_CORE
+>>   	select SND_HDA_DSP_LOADER
+>>   	select SND_SOC_TOPOLOGY
+>>   	select SND_SOC_INTEL_SST
+>> +	select SND_SOC_INTEL_COMMON
+>> +	help
+>> +	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+>> +	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+>> +	  then enable this option by saying Y or m.
+> 
+> this is good stuff, helps in improving UX vastly. Btw can we have select ALL
+> machine also as an option for people who dont want to select a specfic one,
+> that one will really help for a better UX
+
+no, we shouldn't select things, especially with the Baytrail legacy 
+which is kept to avoid breaking existing setups but shouldn't be used 
+any longer.
+And with SOF coming, we may have hybrid configurations with SOF used on 
+Baytrail/Cherrytrail/APL/CNL but SST used on Skylake/Kabylake due to 
+firmware authentication stuff.
+
+> 
+>> +
+>> +endif ## SND_SOC_INTEL_SST_TOPLEVEL
+>>   
+>>   # ASoC codec drivers
+>>   source "sound/soc/intel/boards/Kconfig"
+>> +
+>> +# configs common to SST and SOF to compile sound/soc/intel/common
+>> +# directory and use matching tables
+>> +
+>> +config SND_SOC_INTEL_COMMON
+>> +	tristate
+>> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+> 
+> common selects only MATCH
+
+COMMON is only there to go compile the sound/soc/intel/common directory. 
+That's not very useful indeed but otherwise the Makefile doesn't compile 
+the match tables or the sst-ipc stuff. If you find a better solution I 
+am all ears.
+
+> 
+>> +	# this option controls the compilation of the sound/soc/intel/common
+>> +	# directory and is not meant to be selected by the user. It is
+>> +	# not filtered out on purpose by the top-level selector since
+>> +	# it will be selected by SST or SOF platform driver options
+>> +
+>> +config SND_SOC_ACPI_INTEL_MATCH
+>> +	tristate
+>> +	select SND_SOC_ACPI if ACPI
+> 
+> then why keep common, lets remove one level and have
+> SND_SOC_ACPI_INTEL_MATCH selected. ACPI is must have at top level so we can
+> add depends on that symbol
+
+we still have platforms which don't depend on ACPI, so we shouldn't take 
+this out.
