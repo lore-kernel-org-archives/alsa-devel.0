@@ -1,46 +1,76 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v6 10/17] pinctrl: madera: Add DT bindings
- for Cirrus Logic Madera codecs
-Date: Wed, 29 Nov 2017 11:21:16 +0100
-Message-ID: <CACRpkdbU42sQQQnHx9qL4p1Jp0J3vKkFo4BU6ZPoVTkx3kvumw@mail.gmail.com>
-References: <20171123171316.10868-1-rf@opensource.wolfsonmicro.com>
- <20171123171316.10868-11-rf@opensource.wolfsonmicro.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with top-level
+ selector
+Date: Wed, 29 Nov 2017 15:57:34 +0530
+Message-ID: <20171129102734.GA32417@localhost>
+References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
+ <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f170.google.com (mail-io0-f170.google.com
- [209.85.223.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CD16266A74
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:21:18 +0100 (CET)
-Received: by mail-io0-f170.google.com with SMTP id h12so3153490iof.6
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 02:21:18 -0800 (PST)
-In-Reply-To: <20171123171316.10868-11-rf@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, devicetree@vger.kernel.org, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 23, 2017 at 6:13 PM, Richard Fitzgerald
-<rf@opensource.wolfsonmicro.com> wrote:
+On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
 
-> This is the binding description of the pinctrl driver for Cirru Logic
-> Madera codecs. The binding uses the generic pinctrl binding so  the main
-> purpose here is to describe the device-specific names for groups and
-> functions.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> Acked-by: Rob Herring <robh@kernel.org>
+I am not sure about top level being default to Y...
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>  config SND_SST_ATOM_HIFI2_PLATFORM
+>  	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
+> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
+> +	depends on X86
+>  	select SND_SOC_COMPRESS
+> +	select SND_SOC_INTEL_COMMON
+>  
+>  config SND_SOC_INTEL_SKYLAKE
+>  	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
+> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
+> +	depends on PCI && ACPI
+>  	select SND_HDA_EXT_CORE
+>  	select SND_HDA_DSP_LOADER
+>  	select SND_SOC_TOPOLOGY
+>  	select SND_SOC_INTEL_SST
+> +	select SND_SOC_INTEL_COMMON
+> +	help
+> +	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+> +	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+> +	  then enable this option by saying Y or m.
 
-Yours,
-Linus Walleij
+this is good stuff, helps in improving UX vastly. Btw can we have select ALL
+machine also as an option for people who dont want to select a specfic one,
+that one will really help for a better UX
+
+> +
+> +endif ## SND_SOC_INTEL_SST_TOPLEVEL
+>  
+>  # ASoC codec drivers
+>  source "sound/soc/intel/boards/Kconfig"
+> +
+> +# configs common to SST and SOF to compile sound/soc/intel/common
+> +# directory and use matching tables
+> +
+> +config SND_SOC_INTEL_COMMON
+> +	tristate
+> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+
+common selects only MATCH
+
+> +	# this option controls the compilation of the sound/soc/intel/common
+> +	# directory and is not meant to be selected by the user. It is
+> +	# not filtered out on purpose by the top-level selector since
+> +	# it will be selected by SST or SOF platform driver options
+> +
+> +config SND_SOC_ACPI_INTEL_MATCH
+> +	tristate
+> +	select SND_SOC_ACPI if ACPI
+
+then why keep common, lets remove one level and have
+SND_SOC_ACPI_INTEL_MATCH selected. ACPI is must have at top level so we can
+add depends on that symbol
+
+-- 
+~Vinod
