@@ -1,50 +1,311 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with top-level
- selector
-Date: Wed, 29 Nov 2017 10:59:17 +0000
-Message-ID: <20171129105917.rgnptzbyp4ammahb@sirena.org.uk>
-References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
- <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
- <20171129102734.GA32417@localhost>
+Subject: Applied "ASoC: rsnd: TDM 6ch needs 8ch clock for hw
+	refine" to the asoc tree
+Date: Wed, 29 Nov 2017 10:57:47 +0000
+Message-ID: <E1eK03n-00064x-7Q@debutante>
+References: <87zi75rdsm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xyserliakqg6wkeb"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171129102734.GA32417@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, tiwai@suse.de, torvalds@linux-foundation.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A3762678BD
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:57:51 +0100 (CET)
+In-Reply-To: <87zi75rdsm.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---xyserliakqg6wkeb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: rsnd: TDM 6ch needs 8ch clock for hw refine
 
-On Wed, Nov 29, 2017 at 03:57:34PM +0530, Vinod Koul wrote:
-> On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
+has been applied to the asoc tree at
 
-> I am not sure about top level being default to Y...
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-This is the same as the handling of the vendor configuration options for
-ethernet drivers - it doesn't enable any actual code itself, it just
-makes the configuration options below it visible by default so that
-people running make oldconfig don't get their drivers turned off.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---xyserliakqg6wkeb
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloekwQACgkQJNaLcl1U
-h9ApyAf+Ljg5FnLzYlev5c0Tpkx6gAf2nYBCKX2rNRlaK2EdwuAuiABBB7DUb+WH
-lnVs+7ADmXKooBLTkvdXCZaoQRFDy15qZtBRRt09H0NtYcrngmGNTRSmlxBo+DtX
-GHNHGMwPv3yknxj6LQXw62Gb5Yi8iy9gWg80ZPVU1uGOq2Vg/f7p5IboHNNj05a/
-ck8JdtJYnqvPCQ4Uqtxh8EG3boXlbkY5SoUipnpsIp3wTwqvnjCF7jMCAuwvMKRI
-vsSebpodRQFPPYmeQeSw2Axr1MdY1qINIow6qMg5PC3QB11yn5FtVTLqWPMlF+Tf
-UhKd+J9F7bmTkRZuBtzMM7qS33ONWA==
-=REy7
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---xyserliakqg6wkeb--
+Thanks,
+Mark
+
+>From b2fb31bb7454d5479b1c7214ccd10c1af85a6245 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 29 Nov 2017 03:07:51 +0000
+Subject: [PATCH] ASoC: rsnd: TDM 6ch needs 8ch clock for hw refine
+
+Renesas sound needs 8ch clock if TDM 6ch mode, and needs 2ch clock for
+6ch or 8ch sound if Multi SSI mode. And these are related to before/after
+CTU (= Channel Transfer Unit).
+To calculate these we already has rsnd_runtime_channel_for_ssi() which
+returns runtime necessary channels.
+But, it based on runtime->channels  which is not yet set when hw refine.
+We need to use hw_params instead of runtime->xxx when hw refine,
+and it is not needed after runtime was set.
+This patch adds new hw_params on rsnd_dai_stream, and it will be removed
+on rsnd_hw_params().
+This is very temporary durty code, but it seems no choice at this point.
+
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 92 +++++++++++++++++++++++++++++++++++-------------
+ sound/soc/sh/rcar/rsnd.h | 15 ++++++--
+ 2 files changed, 80 insertions(+), 27 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index bd64dc6ec1c3..d76ad46a6fd9 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -197,16 +197,27 @@ int rsnd_io_is_working(struct rsnd_dai_stream *io)
+ 	return 0;
+ }
+ 
+-int rsnd_runtime_channel_original(struct rsnd_dai_stream *io)
++int rsnd_runtime_channel_original_with_params(struct rsnd_dai_stream *io,
++					      struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 
+-	return runtime->channels;
++	/*
++	 * params will be added when refine
++	 * see
++	 *	__rsnd_soc_hw_rule_rate()
++	 *	__rsnd_soc_hw_rule_channels()
++	 */
++	if (params)
++		return params_channels(params);
++	else
++		return runtime->channels;
+ }
+ 
+-int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io)
++int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
++					       struct snd_pcm_hw_params *params)
+ {
+-	int chan = rsnd_runtime_channel_original(io);
++	int chan = rsnd_runtime_channel_original_with_params(io, params);
+ 	struct rsnd_mod *ctu_mod = rsnd_io_to_mod_ctu(io);
+ 
+ 	if (ctu_mod) {
+@@ -219,12 +230,13 @@ int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io)
+ 	return chan;
+ }
+ 
+-int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io)
++int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
++					     struct snd_pcm_hw_params *params)
+ {
+ 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
+ 	int chan = rsnd_io_is_play(io) ?
+-		rsnd_runtime_channel_after_ctu(io) :
+-		rsnd_runtime_channel_original(io);
++		rsnd_runtime_channel_after_ctu_with_params(io, params) :
++		rsnd_runtime_channel_original_with_params(io, params);
+ 
+ 	/* Use Multi SSI */
+ 	if (rsnd_runtime_is_ssi_multi(io))
+@@ -616,8 +628,6 @@ static int rsnd_soc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		rsnd_dai_stream_init(io, substream);
+-
+ 		ret = rsnd_dai_call(init, io, priv);
+ 		if (ret < 0)
+ 			goto dai_trigger_end;
+@@ -639,7 +649,6 @@ static int rsnd_soc_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ 		ret |= rsnd_dai_call(quit, io, priv);
+ 
+-		rsnd_dai_stream_quit(io);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -784,8 +793,9 @@ static int rsnd_soc_hw_rule(struct rsnd_priv *priv,
+ 	return snd_interval_refine(iv, &p);
+ }
+ 
+-static int rsnd_soc_hw_rule_rate(struct snd_pcm_hw_params *params,
+-				 struct snd_pcm_hw_rule *rule)
++static int __rsnd_soc_hw_rule_rate(struct snd_pcm_hw_params *params,
++				   struct snd_pcm_hw_rule *rule,
++				   int is_play)
+ {
+ 	struct snd_interval *ic_ = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_interval *ir = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+@@ -793,25 +803,37 @@ static int rsnd_soc_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai = rule->private;
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+ 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
++	struct rsnd_dai_stream *io = is_play ? &rdai->playback : &rdai->capture;
+ 
+ 	/*
+ 	 * possible sampling rate limitation is same as
+ 	 * 2ch if it supports multi ssi
++	 * and same as 8ch if TDM 6ch (see rsnd_ssi_config_init())
+ 	 */
+ 	ic = *ic_;
+-	if (1 < rsnd_rdai_ssi_lane_get(rdai)) {
+-		ic.min = 2;
+-		ic.max = 2;
+-	}
++	ic.min =
++	ic.max = rsnd_runtime_channel_for_ssi_with_params(io, params);
+ 
+ 	return rsnd_soc_hw_rule(priv, rsnd_soc_hw_rate_list,
+ 				ARRAY_SIZE(rsnd_soc_hw_rate_list),
+ 				&ic, ir);
+ }
+ 
++static int rsnd_soc_hw_rule_rate_playback(struct snd_pcm_hw_params *params,
++				 struct snd_pcm_hw_rule *rule)
++{
++	return __rsnd_soc_hw_rule_rate(params, rule, 1);
++}
++
++static int rsnd_soc_hw_rule_rate_capture(struct snd_pcm_hw_params *params,
++					  struct snd_pcm_hw_rule *rule)
++{
++	return __rsnd_soc_hw_rule_rate(params, rule, 0);
++}
+ 
+-static int rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
+-				     struct snd_pcm_hw_rule *rule)
++static int __rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
++				       struct snd_pcm_hw_rule *rule,
++				       int is_play)
+ {
+ 	struct snd_interval *ic_ = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_interval *ir = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+@@ -819,22 +841,34 @@ static int rsnd_soc_hw_rule_channels(struct snd_pcm_hw_params *params,
+ 	struct snd_soc_dai *dai = rule->private;
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+ 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
++	struct rsnd_dai_stream *io = is_play ? &rdai->playback : &rdai->capture;
+ 
+ 	/*
+ 	 * possible sampling rate limitation is same as
+ 	 * 2ch if it supports multi ssi
++	 * and same as 8ch if TDM 6ch (see rsnd_ssi_config_init())
+ 	 */
+ 	ic = *ic_;
+-	if (1 < rsnd_rdai_ssi_lane_get(rdai)) {
+-		ic.min = 2;
+-		ic.max = 2;
+-	}
++	ic.min =
++	ic.max = rsnd_runtime_channel_for_ssi_with_params(io, params);
+ 
+ 	return rsnd_soc_hw_rule(priv, rsnd_soc_hw_channels_list,
+ 				ARRAY_SIZE(rsnd_soc_hw_channels_list),
+ 				ir, &ic);
+ }
+ 
++static int rsnd_soc_hw_rule_channels_playback(struct snd_pcm_hw_params *params,
++					      struct snd_pcm_hw_rule *rule)
++{
++	return __rsnd_soc_hw_rule_channels(params, rule, 1);
++}
++
++static int rsnd_soc_hw_rule_channels_capture(struct snd_pcm_hw_params *params,
++					     struct snd_pcm_hw_rule *rule)
++{
++	return __rsnd_soc_hw_rule_channels(params, rule, 0);
++}
++
+ static const struct snd_pcm_hardware rsnd_pcm_hardware = {
+ 	.info =		SNDRV_PCM_INFO_INTERLEAVED	|
+ 			SNDRV_PCM_INFO_MMAP		|
+@@ -859,6 +893,8 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
+ 	int ret;
+ 	int i;
+ 
++	rsnd_dai_stream_init(io, substream);
++
+ 	/*
+ 	 * Channel Limitation
+ 	 * It depends on Platform design
+@@ -886,11 +922,17 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
+ 	 * It depends on Clock Master Mode
+ 	 */
+ 	if (rsnd_rdai_is_clk_master(rdai)) {
++		int is_play = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++
+ 		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-				    rsnd_soc_hw_rule_rate, dai,
++				    is_play ? rsnd_soc_hw_rule_rate_playback :
++					      rsnd_soc_hw_rule_rate_capture,
++				    dai,
+ 				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+ 		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+-				    rsnd_soc_hw_rule_channels, dai,
++				    is_play ? rsnd_soc_hw_rule_channels_playback :
++					      rsnd_soc_hw_rule_channels_capture,
++				    dai,
+ 				    SNDRV_PCM_HW_PARAM_RATE, -1);
+ 	}
+ 
+@@ -915,6 +957,8 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
+ 	 * call rsnd_dai_call without spinlock
+ 	 */
+ 	rsnd_dai_call(nolock_stop, io, priv);
++
++	rsnd_dai_stream_quit(io);
+ }
+ 
+ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 57cd2bc773c2..ad6523595b0a 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -399,9 +399,18 @@ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
+ 		struct device_node *playback,
+ 		struct device_node *capture);
+ 
+-int rsnd_runtime_channel_original(struct rsnd_dai_stream *io);
+-int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io);
+-int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io);
++#define rsnd_runtime_channel_original(io) \
++	rsnd_runtime_channel_original_with_params(io, NULL)
++int rsnd_runtime_channel_original_with_params(struct rsnd_dai_stream *io,
++				struct snd_pcm_hw_params *params);
++#define rsnd_runtime_channel_after_ctu(io)			\
++	rsnd_runtime_channel_after_ctu_with_params(io, NULL)
++int rsnd_runtime_channel_after_ctu_with_params(struct rsnd_dai_stream *io,
++				struct snd_pcm_hw_params *params);
++#define rsnd_runtime_channel_for_ssi(io) \
++	rsnd_runtime_channel_for_ssi_with_params(io, NULL)
++int rsnd_runtime_channel_for_ssi_with_params(struct rsnd_dai_stream *io,
++				 struct snd_pcm_hw_params *params);
+ int rsnd_runtime_is_ssi_multi(struct rsnd_dai_stream *io);
+ int rsnd_runtime_is_ssi_tdm(struct rsnd_dai_stream *io);
+ 
+-- 
+2.15.0
