@@ -1,34 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-utils: add const to dummy_codec" to
-	the asoc tree
-Date: Wed, 29 Nov 2017 10:57:29 +0000
-Message-ID: <E1eK03V-0005y5-7f@debutante>
-References: <87o9nxbrrb.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E3AB52678D8
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:57:34 +0100 (CET)
-In-Reply-To: <87o9nxbrrb.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Subject: Applied "ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in
+ AC'97 mode" to the asoc tree
+Date: Wed, 29 Nov 2017 10:57:38 +0000
+Message-ID: <E1eK03e-00061f-6a@debutante>
+References: <5c2325bd-3e7b-0026-4c1a-65f32737a74a@maciej.szmigiero.name>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <5c2325bd-3e7b-0026-4c1a-65f32737a74a@maciej.szmigiero.name>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-utils: add const to dummy_codec
+   ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in AC'97 mode
 
 has been applied to the asoc tree at
 
@@ -53,32 +47,38 @@ to this mail.
 Thanks,
 Mark
 
->From 494665a0f91b51443ca14ee1dca6d96cfd003b38 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 20 Nov 2017 02:45:36 +0000
-Subject: [PATCH] ASoC: soc-utils: add const to dummy_codec
+>From c997a92a78161af605b314cbe6cf636663999652 Mon Sep 17 00:00:00 2001
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Date: Wed, 22 Nov 2017 00:55:14 +0100
+Subject: [PATCH] ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in AC'97
+ mode
 
-Let's align dummy_platform and dummy_codec
+In AC'97 mode we configure and start SSI RX / TX on probe path via
+a call to _fsl_ssi_set_dai_fmt() function.
+We don't need to call this function again later and in fact don't want to
+do it since this function temporarily sets STCR, SRCR and SCR to some
+intermediate values.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_ssi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index e30aacbcfc29..bcd3da2739e2 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -288,7 +288,7 @@ static const struct snd_soc_platform_driver dummy_platform = {
- 	.ops = &dummy_dma_ops,
- };
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 9e97a0529f37..939d1b8894dc 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1079,6 +1079,9 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ {
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
  
--static struct snd_soc_codec_driver dummy_codec;
-+static const struct snd_soc_codec_driver dummy_codec;
++	if (fsl_ssi_is_ac97(ssi_private))
++		return 0;
++
+ 	return _fsl_ssi_set_dai_fmt(cpu_dai->dev, ssi_private, fmt);
+ }
  
- #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
- #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
 -- 
 2.15.0
