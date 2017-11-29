@@ -1,78 +1,85 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH v2 00/19] Add Headphone Detection to
-	TLV320AIC31xx Driver
-Date: Wed, 29 Nov 2017 15:32:41 -0600
-Message-ID: <20171129213300.20021-1-afd@ti.com>
+From: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH v2 08/19] ASoC: tlv320aic31xx: Switch GPIO handling to use gpiod_* API
+Date: Wed, 29 Nov 2017 15:32:49 -0600
+Message-ID: <20171129213300.20021-9-afd@ti.com>
+References: <20171129213300.20021-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id B4A8C267957
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 22:33:02 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171129213300.20021-1-afd-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Andrew F . Davis" <afd-l0cyMroinI0@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+Move to using newer gpiod_* GPIO handling functions. This simplifies
+the code and eases dropping platform data in the next patch. Also
+remember GPIO are active low, so set "1" to reset.
 
-This series has the end goal of adding headphone detection to
-the tlv320aic31xx driver. The first few patches are mostly cleanups.
-Then a couple bug fixes I noticed. Followed by adding interrupt
-handling and finally headphone detection.
+Signed-off-by: Andrew F. Davis <afd-l0cyMroinI0@public.gmane.org>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
-This series (or at least patch #8) depend on this DT fix[0].
-
-Thanks,
-Andrew
-
-Changes from v1:
- - Splitup the cleanup patch a bit more
- - Move the GPIO1 register fix patch before header cleanup
-   so it can be taken back into stable
- - Added Acked-by
- - New patch dealing with regulator notifications
- - Various small touchups
- - Rebased on v4.15-rc1 + [0]
-
-[0] http://www.spinics.net/lists/kernel/msg2660968.html
-
-Andrew F. Davis (19):
-  ASoC: tlv320aic31xx: File header and copyright cleanup
-  ASoC: tlv320aic31xx: Change aic31xx_power_off return type to void
-  ASoC: tlv320aic31xx: Move ACPI table next to OF table
-  ASoC: tlv320aic31xx: General source formatting cleanup
-  ASoC: tlv320aic31xx: Fix GPIO1 register definition
-  ASoC: tlv320aic31xx: Reformat header file using GENMASK and BIT macros
-  ASoC: tlv320aic31xx: Merge init function into probe
-  ASoC: tlv320aic31xx: Switch GPIO handling to use gpiod_* API
-  ASoC: tlv320aic31xx: Remove platform data
-  ASoC: tlv320aic31xx: Add MICBIAS off setting
-  ASoC: tlv320aic31xx: Check clock and divider before division
-  ASoC: tlv320aic31xx: Add CODEC clock slave support
-  ASoC: tlv320aic31xx: Fix inverted BCLK handling
-  ASoC: tlv320aic31xx: Remove regulator notification handling
-  ASoC: tlv320aic31xx: Reset registers during power up
-  ASoC: tlv320aic31xx: Add short circuit detection support
-  ASoC: tlv320aic31xx: Add overflow detection support
-  ASoC: tlv320aic31xx: Add headphone/headset detection
-  ASoC: tlv320aic31xx: Add button press detection
-
- .../devicetree/bindings/sound/tlv320aic31xx.txt    |   1 +
- include/dt-bindings/sound/tlv320aic31xx-micbias.h  |   1 +
- sound/soc/codecs/tlv320aic31xx.c                   | 422 ++++++++++--------
- sound/soc/codecs/tlv320aic31xx.h                   | 496 ++++++++++-----------
- 4 files changed, 471 insertions(+), 449 deletions(-)
- rewrite sound/soc/codecs/tlv320aic31xx.h (83%)
-
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index c84febd991a0..ab03a19f6aaa 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -157,6 +157,7 @@ struct aic31xx_priv {
+ 	u8 i2c_regs_status;
+ 	struct device *dev;
+ 	struct regmap *regmap;
++	struct gpio_desc *gpio_reset;
+ 	struct aic31xx_pdata pdata;
+ 	struct regulator_bulk_data supplies[AIC31XX_NUM_SUPPLIES];
+ 	struct aic31xx_disable_nb disable_nb[AIC31XX_NUM_SUPPLIES];
+@@ -1020,8 +1021,8 @@ static int aic31xx_regulator_event(struct notifier_block *nb,
+ 		 * Put codec to reset and as at least one of the
+ 		 * supplies was disabled.
+ 		 */
+-		if (gpio_is_valid(aic31xx->pdata.gpio_reset))
+-			gpio_set_value(aic31xx->pdata.gpio_reset, 0);
++		if (aic31xx->gpio_reset)
++			gpiod_set_value(aic31xx->gpio_reset, 1);
+ 
+ 		regcache_mark_dirty(aic31xx->regmap);
+ 		dev_dbg(aic31xx->dev, "## %s: DISABLE received\n", __func__);
+@@ -1073,8 +1074,8 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (gpio_is_valid(aic31xx->pdata.gpio_reset)) {
+-		gpio_set_value(aic31xx->pdata.gpio_reset, 1);
++	if (aic31xx->gpio_reset) {
++		gpiod_set_value(aic31xx->gpio_reset, 0);
+ 		udelay(100);
+ 	}
+ 	regcache_cache_only(aic31xx->regmap, false);
+@@ -1334,15 +1335,11 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 	else if (aic31xx->dev->of_node)
+ 		aic31xx_pdata_from_of(aic31xx);
+ 
+-	if (aic31xx->pdata.gpio_reset) {
+-		ret = devm_gpio_request_one(aic31xx->dev,
+-					    aic31xx->pdata.gpio_reset,
+-					    GPIOF_OUT_INIT_HIGH,
+-					    "aic31xx-reset-pin");
+-		if (ret < 0) {
+-			dev_err(aic31xx->dev, "not able to acquire gpio\n");
+-			return ret;
+-		}
++	aic31xx->gpio_reset = devm_gpiod_get_optional(aic31xx->dev, "reset",
++						      GPIOD_OUT_LOW);
++	if (IS_ERR(aic31xx->gpio_reset)) {
++		dev_err(aic31xx->dev, "not able to acquire gpio\n");
++		return PTR_ERR(aic31xx->gpio_reset);
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++)
 -- 
 2.15.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
