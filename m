@@ -1,28 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in
- AC'97 mode" to the asoc tree
-Date: Wed, 29 Nov 2017 10:57:38 +0000
-Message-ID: <E1eK03e-00061f-6a@debutante>
-References: <5c2325bd-3e7b-0026-4c1a-65f32737a74a@maciej.szmigiero.name>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <5c2325bd-3e7b-0026-4c1a-65f32737a74a@maciej.szmigiero.name>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Subject: Applied "ASoC: rsnd: dma.c: spin lock is no longer
+	needed in IRQ handler" to the asoc tree
+Date: Wed, 29 Nov 2017 10:57:44 +0000
+Message-ID: <E1eK03k-00063l-7X@debutante>
+References: <87y3mprdre.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A976D267895
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 11:57:47 +0100 (CET)
+In-Reply-To: <87y3mprdre.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in AC'97 mode
+   ASoC: rsnd: dma.c: spin lock is no longer needed in IRQ handler
 
 has been applied to the asoc tree at
 
@@ -47,37 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From c997a92a78161af605b314cbe6cf636663999652 Mon Sep 17 00:00:00 2001
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Date: Wed, 22 Nov 2017 00:55:14 +0100
-Subject: [PATCH] ASoC: fsl_ssi: call _fsl_ssi_set_dai_fmt() just once in AC'97
- mode
+>From 65bedda1feec4f57e1322a200853cc29079b01c6 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 29 Nov 2017 03:08:35 +0000
+Subject: [PATCH] ASoC: rsnd: dma.c: spin lock is no longer needed in IRQ
+ handler
 
-In AC'97 mode we configure and start SSI RX / TX on probe path via
-a call to _fsl_ssi_set_dai_fmt() function.
-We don't need to call this function again later and in fact don't want to
-do it since this function temporarily sets STCR, SRCR and SCR to some
-intermediate values.
+DMA handler had needed to calculate pointer before, but it doesn't
+need now. Thus, we can remove unnecessary spin lock from DMAC handler.
 
-Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sh/rcar/dma.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 9e97a0529f37..939d1b8894dc 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1079,6 +1079,9 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index 4d750bdf8e24..41de23417c4a 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -71,25 +71,7 @@ static struct rsnd_mod mem = {
+ static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
+ 				  struct rsnd_dai_stream *io)
  {
- 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
- 
-+	if (fsl_ssi_is_ac97(ssi_private))
-+		return 0;
-+
- 	return _fsl_ssi_set_dai_fmt(cpu_dai->dev, ssi_private, fmt);
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+-	bool elapsed = false;
+-	unsigned long flags;
+-
+-	/*
+-	 * Renesas sound Gen1 needs 1 DMAC,
+-	 * Gen2 needs 2 DMAC.
+-	 * In Gen2 case, it are Audio-DMAC, and Audio-DMAC-peri-peri.
+-	 * But, Audio-DMAC-peri-peri doesn't have interrupt,
+-	 * and this driver is assuming that here.
+-	 */
+-	spin_lock_irqsave(&priv->lock, flags);
+-
+ 	if (rsnd_io_is_working(io))
+-		elapsed = true;
+-
+-	spin_unlock_irqrestore(&priv->lock, flags);
+-
+-	if (elapsed)
+ 		rsnd_dai_period_elapsed(io);
  }
  
 -- 
