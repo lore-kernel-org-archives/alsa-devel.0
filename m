@@ -1,18 +1,12 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH] pcm: add SNDRV_PCM_FORMAT_{S,U}20
-Date: Wed, 29 Nov 2017 23:24:19 +0100
-Message-ID: <6643a314-7f66-72a7-1115-f1138f7798a0@maciej.szmigiero.name>
-References: <58bd7b03-66c3-1fdb-b810-c8604d2d4ef2@maciej.szmigiero.name>
- <5b3ec6c5-cbc2-c0fd-9dd6-b830e53d1bce@sakamocchi.jp>
+From: Tamaki Nishino <otamachan@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Fix the enable parameter
+	behavior
+Date: Thu, 30 Nov 2017 07:26:16 +0900
+Message-ID: <1511994376-1803-1-git-send-email-otamachan@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CB6D267960
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 23:24:21 +0100 (CET)
-In-Reply-To: <5b3ec6c5-cbc2-c0fd-9dd6-b830e53d1bce@sakamocchi.jp>
-Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,43 +16,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Tamaki Nishino <otamachan@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKCk9uIDI5LjExLjIwMTcgMTU6NDksIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6
-Cj4gSGksCj4gCj4gT24gTm92IDI5IDIwMTcgMjI6NDMsIE1hY2llaiBTLiBTem1pZ2llcm8gd3Jv
-dGU6Cj4+IFRoaXMgZm9ybWF0IGlzIHNpbWlsYXIgdG8gYW4gZXhpc3RpbmcgMjAtYml0IFBDTSBm
-b3JtYXQKPj4gU05EUlZfUENNX0ZPUk1BVF97UyxVfTIwXzMsIGhvd2V2ZXIgaXQgb2NjdXBpZXMg
-NCBieXRlcyBpbnN0ZWFkIG9mIDMuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hY2llaiBTLiBTem1p
-Z2llcm8gPG1haWxAbWFjaWVqLnN6bWlnaWVyby5uYW1lPgo+PiAtLS0KPj4gwqAgaW5jbHVkZS9w
-Y20uaMKgwqDCoMKgwqDCoMKgwqDCoCB8IDIwICsrKysrKysrKysrKysrKysrKy0tCj4+IMKgIGlu
-Y2x1ZGUvc291bmQvYXNvdW5kLmggfMKgIDkgKysrKysrKysrCj4+IMKgIHNyYy9wY20vcGNtLmPC
-oMKgwqDCoMKgwqDCoMKgwqAgfCAxMCArKysrKysrKysrCj4+IMKgIHNyYy9wY20vcGNtX2xpbmVh
-ci5jwqDCoCB8IDE2ICsrKysrKysrKysrKystLS0KPj4gwqAgc3JjL3BjbS9wY21fbG9jYWwuaMKg
-wqDCoCB8wqAgNCArKysrCj4+IMKgIHNyYy9wY20vcGNtX21pc2MuY8KgwqDCoMKgIHwgNDEgKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0KPj4gwqAgc3JjL3BjbS9wY21f
-cGx1Zy5jwqDCoMKgwqAgfCAxMSArKysrKysrKysrKwo+PiDCoCBzcmMvcGNtL3BjbV9yb3V0ZS5j
-wqDCoMKgIHzCoCA2ICsrKystLQo+PiDCoCBzcmMvcGNtL3BsdWdpbl9vcHMuaMKgwqAgfCA1MCAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+PiDCoCA5
-IGZpbGVzIGNoYW5nZWQsIDE1MyBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKPiAKPiBJ
-biBteSBvcGluaW9uLCB0aGlzIHBhdGNoIGlzIGVub3VnaCB0byBkaXNjb3VyYWdlIHJldmlld2Vy
-cy4gSXQncyBiZXR0ZXIgdG8gc3BsaXQgaW50byBzZXZlcmFsIHBhdGNoZXMgd2l0aCBwcm9wZXIg
-Z3JhbnVsYXJpdGllcyBvZiB0b3BpY3MuIEZvcgo+IGV4YW1wbGU6Cj4gCj4gMS81OiBzeW5jIGFz
-b3VuZC5oIHRvIHJlY2VudCBrZXJuZWwgdXBkYXRlIChpbmNsdWRlL3NvdW5kL2Fzb3VuZC5oKQo+
-IDIvNTogcHJvZHVjZSBuZXcgUENNIGZvcm1hdHMgdG8gYXBwbGljYXRpb25zIChwY20uaCwgcGNt
-X2xvY2FsLmggYW5kCj4gwqDCoMKgwqAgcGNtX21pc2MuYykKPiAzLzU6IHVwZGF0ZSBwbHVnIHBs
-dWdpbiAocGNtX3BsdWcuYykKPiA0LzU6IHVwZGF0ZSBsaW5lYXIgcGx1Z2luIChwY21fbGluZWFy
-LmMpCj4gNS81OiB1cGRhdGUgcm91dGUgcGx1Z2luIChwY21fcm91dGUuYykKPiAKPiBJbiBnZW5l
-cmFsLCBwcm9wZXIgZ3JhbnVsYXJpdHkgcHJvbW90ZXMgcmV2aWV3ZXJzIGFuZCBldmVuIGF1dGhv
-cnMgdG8gZmluZCBvdmVybG9va2VkIG1pc3Rha2VzLiBQbGVhc2Uga2VlcCBpdCBpbiB5b3VyIG1p
-bmQuCj4gCgpJIGhhdmUgc3BsaXQgdGhlIHN1Ym1pc3Npb24gbm93IGFsbW9zdCB0aGUgd2F5IHlv
-dSBoYWQgc3VnZ2VzdGVkIGFib3ZlIC0KaG93ZXZlciBJIGhhdmUgam9pbmVkIHRoZSAoc2luZ2xl
-KSByb3V0ZSBwbHVnaW4gY2hhbmdlIHRvIHRoZSBsaW5lYXIKcGx1Z2luIGNvbW1pdCBzaW5jZSBp
-dCBpcyB0aGUgc2FtZSBjaGFuZ2UgYXMgaW4gdGhpcyBwbHVnaW4gYW5kIGFsc28gaXQKaXMgYWJv
-dXQgdXNpbmcgYSBwcm9wZXIgY29udmVyc2lvbiBtZXRob2QgKGdldHB1dCkgdGhhdCB0aGlzIGNv
-bW1pdApoYWQgaW50cm9kdWNlZC4KCj4gUmVnYXJkcwo+IAo+IFRha2FzaGkgU2FrYW1vdG8KCkJl
-c3QgcmVnYXJkcyBhbmQgdGhhbmtzLApNYWNpZWogU3ptaWdpZXJvCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The enable parameter doesn't seem to work as expected. Even when the
+enable parameter is set to false in /etc/modprobe.d/alsa-base.conf like
+"options snd-usb-audio index=-2 vid=0x1415 pid=0x1d27 enable=0",
+the specified device is not disabled.
+
+This patch fixes the enable parameter behavior to disable the device
+correctly.
+
+Signed-off-by: Tamaki Nishino <otamachan@gmail.com>
+---
+ sound/usb/card.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 23d1d23..8018d56 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -585,15 +585,24 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 		 * now look for an empty slot and create a new card instance
+ 		 */
+ 		for (i = 0; i < SNDRV_CARDS; i++)
+-			if (enable[i] && ! usb_chip[i] &&
++			if (!usb_chip[i] &&
+ 			    (vid[i] == -1 || vid[i] == USB_ID_VENDOR(id)) &&
+ 			    (pid[i] == -1 || pid[i] == USB_ID_PRODUCT(id))) {
+-				err = snd_usb_audio_create(intf, dev, i, quirk,
+-							   id, &chip);
+-				if (err < 0)
++				if (enable[i]) {
++					err = snd_usb_audio_create(intf, dev, i, quirk,
++								   id, &chip);
++					if (err < 0)
++						goto __error;
++					chip->pm_intf = intf;
++					break;
++				} else if (vid[i] != -1 || pid[i] != -1) {
++					dev_info(&dev->dev,
++						 "device (%04x:%04x) is disabled\n",
++						 USB_ID_VENDOR(id),
++						 USB_ID_PRODUCT(id));
++					err = -ENOENT;
+ 					goto __error;
+-				chip->pm_intf = intf;
+-				break;
++				}
+ 			}
+ 		if (!chip) {
+ 			dev_err(&dev->dev, "no available usb audio device\n");
+-- 
+2.7.4
