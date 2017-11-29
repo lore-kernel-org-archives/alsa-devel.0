@@ -1,17 +1,17 @@
-From: Anna-Maria Gleixner <anna-maria@linutronix.de>
-Subject: [PATCH v3 34/36] ALSA/dummy: Replace tasklet with
-	softirq hrtimer
-Date: Wed, 29 Nov 2017 16:30:59 +0100
-Message-ID: <20171129153101.27297-35-anna-maria@linutronix.de>
-References: <20171129153101.27297-1-anna-maria@linutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 13/13] ASoC: stm32: add DFSDM DAI support
+Date: Wed, 29 Nov 2017 15:37:48 +0000
+Message-ID: <20171129153748.awllz4aoziaxpk2c@sirena.org.uk>
+References: <1511881557-28596-1-git-send-email-arnaud.pouliquen@st.com>
+ <1511881557-28596-14-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0396587120412731283=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DC56267426
- for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 16:32:36 +0100 (CET)
-In-Reply-To: <20171129153101.27297-1-anna-maria@linutronix.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 03E6D267426
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 16:38:39 +0100 (CET)
+In-Reply-To: <1511881557-28596-14-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,107 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@alsa-project.org, keescook@chromium.org, Peter Zijlstra <peterz@infradead.org>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@redhat.com>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Anna-Maria Gleixner <anna-maria@linutronix.de>, Christoph Hellwig <hch@lst.de>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
 
-The tasklet is used to defer the execution of snd_pcm_period_elapsed() to
-the softirq context. Using the HRTIMER_MODE_SOFT mode invokes the timer
-callback in softirq context as well which renders the tasklet useless.
+--===============0396587120412731283==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ubr6w2kr5kkkan2b"
+Content-Disposition: inline
 
-[o-takashi: avoid stall due to a call of hrtimer_cancel() on a callback
-            of hrtimer]
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
-Cc: alsa-devel@alsa-project.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Link: http://lkml.kernel.org/r/20170905161820.jtysvxtfleunbbmf@breakpoint.cc
----
- sound/drivers/dummy.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+--ubr6w2kr5kkkan2b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 7b2b1f766b00..6ad2ff57833d 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -375,17 +375,9 @@ struct dummy_hrtimer_pcm {
- 	ktime_t period_time;
- 	atomic_t running;
- 	struct hrtimer timer;
--	struct tasklet_struct tasklet;
- 	struct snd_pcm_substream *substream;
- };
- 
--static void dummy_hrtimer_pcm_elapsed(unsigned long priv)
--{
--	struct dummy_hrtimer_pcm *dpcm = (struct dummy_hrtimer_pcm *)priv;
--	if (atomic_read(&dpcm->running))
--		snd_pcm_period_elapsed(dpcm->substream);
--}
--
- static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
- {
- 	struct dummy_hrtimer_pcm *dpcm;
-@@ -393,7 +385,14 @@ static enum hrtimer_restart dummy_hrtimer_callback(struct hrtimer *timer)
- 	dpcm = container_of(timer, struct dummy_hrtimer_pcm, timer);
- 	if (!atomic_read(&dpcm->running))
- 		return HRTIMER_NORESTART;
--	tasklet_schedule(&dpcm->tasklet);
-+	/*
-+	 * In cases of XRUN and draining, this calls .trigger to stop PCM
-+	 * substream.
-+	 */
-+	snd_pcm_period_elapsed(dpcm->substream);
-+	if (!atomic_read(&dpcm->running))
-+		return HRTIMER_NORESTART;
-+
- 	hrtimer_forward_now(timer, dpcm->period_time);
- 	return HRTIMER_RESTART;
- }
-@@ -403,7 +402,7 @@ static int dummy_hrtimer_start(struct snd_pcm_substream *substream)
- 	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
- 
- 	dpcm->base_time = hrtimer_cb_get_time(&dpcm->timer);
--	hrtimer_start(&dpcm->timer, dpcm->period_time, HRTIMER_MODE_REL);
-+	hrtimer_start(&dpcm->timer, dpcm->period_time, HRTIMER_MODE_REL_SOFT);
- 	atomic_set(&dpcm->running, 1);
- 	return 0;
- }
-@@ -413,14 +412,14 @@ static int dummy_hrtimer_stop(struct snd_pcm_substream *substream)
- 	struct dummy_hrtimer_pcm *dpcm = substream->runtime->private_data;
- 
- 	atomic_set(&dpcm->running, 0);
--	hrtimer_cancel(&dpcm->timer);
-+	if (!hrtimer_callback_running(&dpcm->timer))
-+		hrtimer_cancel(&dpcm->timer);
- 	return 0;
- }
- 
- static inline void dummy_hrtimer_sync(struct dummy_hrtimer_pcm *dpcm)
- {
- 	hrtimer_cancel(&dpcm->timer);
--	tasklet_kill(&dpcm->tasklet);
- }
- 
- static snd_pcm_uframes_t
-@@ -465,12 +464,10 @@ static int dummy_hrtimer_create(struct snd_pcm_substream *substream)
- 	if (!dpcm)
- 		return -ENOMEM;
- 	substream->runtime->private_data = dpcm;
--	hrtimer_init(&dpcm->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	hrtimer_init(&dpcm->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
- 	dpcm->timer.function = dummy_hrtimer_callback;
- 	dpcm->substream = substream;
- 	atomic_set(&dpcm->running, 0);
--	tasklet_init(&dpcm->tasklet, dummy_hrtimer_pcm_elapsed,
--		     (unsigned long)dpcm);
- 	return 0;
- }
- 
--- 
-2.11.0
+On Tue, Nov 28, 2017 at 04:05:57PM +0100, Arnaud Pouliquen wrote:
+> Add driver to handle DAI interface for PDM microphones connected
+> to Digital Filter for Sigma Delta Modulators IP.
+
+This is basically fine, if someone could send me a pull request and the
+relevant patches when the IIO stuff is sorted out I'll give it a final
+check and apply then.
+
+--ubr6w2kr5kkkan2b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloe1EsACgkQJNaLcl1U
+h9BVlAf9GgCBlhd0NGfdwnmtmo4I9hpicJhKkSm5CoRoPoSVZrjSoO+hSxQim9ea
+mslKawzNOUb5yJkXpmiYIXq2AKDsZqTNTPH5s1MsUeeGvOsVynPjFD9AdQvwFY0u
+kCz3DrTRH9eijZ4/3yUhzNZE6xE810JKKfMh8/GVO8JU/WzWLqfQW/hJNB43JS3w
+47beIOvNyHWeqoYOPqHasndk2Z7vKX3StMJqXBm2aND4V2S/sDbPr5Ibxm+pxKBn
+bK8i6+fP+8nbW00narB67Or4n1NUbE6o0wDFwyDP+Hqk/VLVZiDOGFgMpD+IBWw4
+lF0HSawOKJHYRKjx6uwUc893stEjQQ==
+=9NM4
+-----END PGP SIGNATURE-----
+
+--ubr6w2kr5kkkan2b--
+
+--===============0396587120412731283==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0396587120412731283==--
