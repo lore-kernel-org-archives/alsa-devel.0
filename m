@@ -1,286 +1,136 @@
-From: Tim Harvey <tharvey@gateworks.com>
-Subject: Re: [PATCH 3/5] media: i2c: Add TDA1997x HDMI receiver driver
-Date: Wed, 29 Nov 2017 07:47:13 -0800
-Message-ID: <CAJ+vNU1XCegEuWtwCW71J47DKYRXkSwJMQdx8zDHPQXh7tjpJw@mail.gmail.com>
+From: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+Subject: Re: [PATCH 2/5] media: dt-bindings: Add bindings for TDA1997X
+Date: Wed, 29 Nov 2017 07:54:32 -0800
+Message-ID: <CAJ+vNU37WG-X1TOgOeuv7NkqjkEmDiQChC-v4WOv-CrS9oTnTw@mail.gmail.com>
 References: <1510253136-14153-1-git-send-email-tharvey@gateworks.com>
- <1510253136-14153-4-git-send-email-tharvey@gateworks.com> <4048cb21-c65c-6282-a1d7-81ad9a0d7cfa@xs4all.nl>
- <CAJ+vNU0q4Ab-1sFsyQv3JRMd54ntMU3=Er6yCNiY=tLCN1N5VQ@mail.gmail.com> <0f5227cb-913b-1d55-0b1a-5c41d68f5bf9@xs4all.nl>
+ <1510253136-14153-3-git-send-email-tharvey@gateworks.com> <20171122073606.56ldk3bzg23dkkfm@valkosipuli.retiisi.org.uk>
+ <CAJ+vNU1FEp5aU6aXXOuGr3ifcngfP0Pj0rnBBxDh_mVtQyvLAQ@mail.gmail.com> <20171123082532.znxnmwpgrdjbhxbi@valkosipuli.retiisi.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0f5227cb-913b-1d55-0b1a-5c41d68f5bf9@xs4all.nl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: linux-media <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Shawn Guo <shawnguo@kernel.org>, Steve Longerbeam <slongerbeam@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, Hans Verkuil <hansverk@cisco.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171123082532.znxnmwpgrdjbhxbi-S+BSfZ9RZZmRSg0ZkenSGLdO1Tsj/99ntUK59QYPAWc@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sakari Ailus <sakari.ailus-X3B1VOXEql0@public.gmane.org>
+Cc: linux-media <linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Steve Longerbeam <slongerbeam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Hans Verkuil <hansverk-FYB4Gu1CFyUAvxtiuMwx3w@public.gmane.org>, Mauro Carvalho Chehab <mchehab-JsYNTwtnfakRB7SZvlqPiA@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 23, 2017 at 12:08 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
-> On 11/23/2017 05:27 AM, Tim Harvey wrote:
->> On Mon, Nov 20, 2017 at 7:39 AM, Hans Verkuil <hverkuil@xs4all.nl> wrote:
->>> Hi Tim,
->>>
->>> Some more review comments:
->>>
->>> On 11/09/2017 07:45 PM, Tim Harvey wrote:
->>>> Add support for the TDA1997x HDMI receivers.
->> <snip>
->>>> + */
->>>> +struct color_matrix_coefs {
->>>> +     const char *name;
->>>> +     /* Input offsets */
->>>> +     s16 offint1;
->>>> +     s16 offint2;
->>>> +     s16 offint3;
->>>> +     /* Coeficients */
->>>> +     s16 p11coef;
->>>> +     s16 p12coef;
->>>> +     s16 p13coef;
->>>> +     s16 p21coef;
->>>> +     s16 p22coef;
->>>> +     s16 p23coef;
->>>> +     s16 p31coef;
->>>> +     s16 p32coef;
->>>> +     s16 p33coef;
->>>> +     /* Output offsets */
->>>> +     s16 offout1;
->>>> +     s16 offout2;
->>>> +     s16 offout3;
->>>> +};
->>>> +
->>>> +enum {
->>>> +     ITU709_RGBLIMITED,
->>>> +     ITU709_RGBFULL,
->>>> +     ITU601_RGBLIMITED,
->>>> +     ITU601_RGBFULL,
->>>> +     RGBLIMITED_RGBFULL,
->>>> +     RGBLIMITED_ITU601,
->>>> +     RGBFULL_ITU601,
->>>
->>> This can't be right.
->>> ITU709_RGBLIMITED
->>> You have these conversions:
->>>
->>> ITU709_RGBFULL
->>> ITU601_RGBFULL
->>> RGBLIMITED_RGBFULL
->>> RGBLIMITED_ITU601
->>> RGBFULL_ITU601
->>> RGBLIMITED_ITU709
->>> RGBFULL_ITU709
->>>
->>> I.e. on the HDMI receiver side you can receive RGB full/limited or ITU601/709.
->>> On the output side you have RGB full or ITU601/709.
->>>
->>> So something like ITU709_RGBLIMITED makes no sense.
->>>
+On Thu, Nov 23, 2017 at 12:25 AM, Sakari Ailus <sakari.ailus-X3B1VOXEql0@public.gmane.org> wrote:
+> On Wed, Nov 22, 2017 at 08:37:04PM -0800, Tim Harvey wrote:
+>> On Tue, Nov 21, 2017 at 11:36 PM, Sakari Ailus <sakari.ailus-X3B1VOXEql0@public.gmane.org> wrote:
+>> > Hi Tim,
+>> >
+>> > On Thu, Nov 09, 2017 at 10:45:33AM -0800, Tim Harvey wrote:
+>> >> Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+>> >> Signed-off-by: Tim Harvey <tharvey-UMMOYl/HMS+akBO8gow8eQ@public.gmane.org>
+>> >> ---
+>> >> v3:
+>> >>  - fix typo
+>> >>
+>> >> v2:
+>> >>  - add vendor prefix and remove _ from vidout-portcfg
+>> >>  - remove _ from labels
+>> >>  - remove max-pixel-rate property
+>> >>  - describe and provide example for single output port
+>> >>  - update to new audio port bindings
+>> >> ---
+>> >>  .../devicetree/bindings/media/i2c/tda1997x.txt     | 179 +++++++++++++++++++++
+>> >>  1 file changed, 179 insertions(+)
+>> >>  create mode 100644 Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+>> >>
+>> >> diff --git a/Documentation/devicetree/bindings/media/i2c/tda1997x.txt b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+>> >> new file mode 100644
+>> >> index 0000000..dd37f14
+>> >> --- /dev/null
+>> >> +++ b/Documentation/devicetree/bindings/media/i2c/tda1997x.txt
+>> >> @@ -0,0 +1,179 @@
+>> >> +Device-Tree bindings for the NXP TDA1997x HDMI receiver
+>> >> +
+>> >> +The TDA19971/73 are HDMI video receivers.
+>> >> +
+>> >> +The TDA19971 Video port output pins can be used as follows:
+>> >> + - RGB 8bit per color (24 bits total): R[11:4] B[11:4] G[11:4]
+>> >> + - YUV444 8bit per color (24 bits total): Y[11:4] Cr[11:4] Cb[11:4]
+>> >> + - YUV422 semi-planar 8bit per component (16 bits total): Y[11:4] CbCr[11:4]
+>> >> + - YUV422 semi-planar 10bit per component (20 bits total): Y[11:2] CbCr[11:2]
+>> >> + - YUV422 semi-planar 12bit per component (24 bits total): - Y[11:0] CbCr[11:0]
+>> >> + - YUV422 BT656 8bit per component (8 bits total): YCbCr[11:4] (2-cycles)
+>> >> + - YUV422 BT656 10bit per component (10 bits total): YCbCr[11:2] (2-cycles)
+>> >> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
+>> >> +
+>> >> +The TDA19973 Video port output pins can be used as follows:
+>> >> + - RGB 12bit per color (36 bits total): R[11:0] B[11:0] G[11:0]
+>> >> + - YUV444 12bit per color (36 bits total): Y[11:0] Cb[11:0] Cr[11:0]
+>> >> + - YUV422 semi-planar 12bit per component (24 bits total): Y[11:0] CbCr[11:0]
+>> >> + - YUV422 BT656 12bit per component (12 bits total): YCbCr[11:0] (2-cycles)
+>> >> +
+>> >> +The Video port output pins are mapped via 4-bit 'pin groups' allowing
+>> >> +for a variety of connection possibilities including swapping pin order within
+>> >> +pin groups. The video_portcfg device-tree property consists of register mapping
+>> >> +pairs which map a chip-specific VP output register to a 4-bit pin group. If
+>> >> +the pin group needs to be bit-swapped you can use the *_S pin-group defines.
+>> >> +
+>> >> +Required Properties:
+>> >> + - compatible          :
+>> >> +  - "nxp,tda19971" for the TDA19971
+>> >> +  - "nxp,tda19973" for the TDA19973
+>> >> + - reg                 : I2C slave address
+>> >> + - interrupts          : The interrupt number
+>> >> + - DOVDD-supply        : Digital I/O supply
+>> >> + - DVDD-supply         : Digital Core supply
+>> >> + - AVDD-supply         : Analog supply
+>> >> + - nxp,vidout-portcfg  : array of pairs mapping VP output pins to pin groups.
+>> >> +
+>> >> +Optional Properties:
+>> >> + - nxp,audout-format   : DAI bus format: "i2s" or "spdif".
+>> >> + - nxp,audout-width    : width of audio output data bus (1-4).
+>> >> + - nxp,audout-layout   : data layout (0=AP0 used, 1=AP0/AP1/AP2/AP3 used).
+>> >> + - nxp,audout-mclk-fs  : Multiplication factor between stream rate and codec
+>> >> +                         mclk.
+>> >> +
+>> >> +The device node must contain one 'port' child node for its digital output
+>> >> +video port, in accordance with the video interface bindings defined in
+>> >> +Documentation/devicetree/bindings/media/video-interfaces.txt.
+>> >
+>> > Could you add that this port has one endpoint node as well? (Unless you
+>> > support multiple, that is.)
 >>
->> I misunderstood the V4L2_CID_DV_RX_RGB_RANGE thinking that it allowed
->> you to configure the output range. If output to the SoC is only ever
->> full quant range for RGB then I can drop the
->> ITU709_RGBLIMITED/ITU601_RGBLIMITED conversions.
+>> Sure... will clarify as:
+>>
+>> The device node must contain one endpoint 'port' child node for its
+>> digital output
+>> video port, in accordance with the video interface bindings defined in
+>> Documentation/devicetree/bindings/media/video-interfaces.txt.
 >
-> Output for RGB is always full range. The reason is simply that the V4L2 API
-> has no way of selecting the quantization range it wants to receive. I made
-> a patch for that a few years back, but there really is no demand for it (yet).
-> Userspace expects full range RGB and limited range YUV.
+> I think it'd be clearer if you just add "The port node shall contain one
+> endpoint child node".
+
+ok
+
 >
 >>
->> However, If the output is YUV how do I know if I need to convert to
->> ITU709 or ITU601 and what are my conversion matrices for
->> RGBLIMITED_ITU709/RGBFULL_ITU709?
+>> >> +
+>> >> +Optional Endpoint Properties:
+>> >> +  The following three properties are defined in video-interfaces.txt and
+>> >> +  are valid for source endpoints only:
+>> >
+>> > Transmitters? Don't you have an endpoint only in the port representing the
+>> > transmitter?
+>>
+>> I'm not usre what you mean.
+>>
+>> The TDA1997x is an HDMI receiver meaning it receives HDMI and decodes
+>> it to a parallel video bus. HDMI transmitters are the opposite.
 >
-> You can choose yourself whether you convert to YUV 601 or 709. I would
-> recommend to use 601 for SDTV resolutions (i.e. width/height <= 720x576)
-> and 709 for HDTV.
->
-> I made a little program that calculates the values for RGB lim/full to
-> YUV 601/709:
->
-> -------------------------------------
-> #include <stdlib.h>
-> #include <stdio.h>
->
-> #define COEFF(v, r) ((v) * (r) * 16.0)
->
-> static const double bt601[3][3] = {
->         { COEFF(0.299, 219),   COEFF(0.587, 219),   COEFF(0.114, 219)   },
->         { COEFF(-0.1687, 224), COEFF(-0.3313, 224), COEFF(0.5, 224)     },
->         { COEFF(0.5, 224),     COEFF(-0.4187, 224), COEFF(-0.0813, 224) },
-> };
-> static const double rec709[3][3] = {
->         { COEFF(0.2126, 219),  COEFF(0.7152, 219),  COEFF(0.0722, 219)  },
->         { COEFF(-0.1146, 224), COEFF(-0.3854, 224), COEFF(0.5, 224)     },
->         { COEFF(0.5, 224),     COEFF(-0.4542, 224), COEFF(-0.0458, 224) },
-> };
->
-> int main(int argc, char **argv)
-> {
->         int i, j;
->         int mapi[] = { 0, 2, 1 };
->         int mapj[] = { 1, 0, 2 };
->
->         printf("rgb full -> 601\n");
->         printf("    0,     0,     0,\n");
->         for (i = 0; i < 3; i++) {
->                 for (j = 0; j < 3; j++) {
->                         printf("%5d, ",  (int)(0.5 + bt601[mapi[i]][mapj[j]]));
->                 }
->                 printf("\n");
->         }
->         printf("  256,  2048,  2048,\n\n");
->
->         printf("rgb lim -> 601\n");
->         printf(" -256,  -256,  -256,\n");
->         for (i = 0; i < 3; i++) {
->                 for (j = 0; j < 3; j++) {
->                         printf("%5d, ",  (int)(0.5 + 255.0 / 219.0 * bt601[mapi[i]][mapj[j]]));
->                 }
->                 printf("\n");
->         }
->         printf("  256,  2048,  2048,\n\n");
->
->         printf("rgb full -> 709\n");
->         printf("    0,     0,     0,\n");
->         for (i = 0; i < 3; i++) {
->                 for (j = 0; j < 3; j++) {
->                         printf("%5d, ",  (int)(0.5 + rec709[mapi[i]][mapj[j]]));
->                 }
->                 printf("\n");
->         }
->         printf("  256,  2048,  2048,\n\n");
->
->         printf("rgb lim -> 709\n");
->         printf(" -256,  -256,  -256,\n");
->         for (i = 0; i < 3; i++) {
->                 for (j = 0; j < 3; j++) {
->                         printf("%5d, ",  (int)(0.5 + 255.0 / 219.0 * rec709[mapi[i]][mapj[j]]));
->                 }
->                 printf("\n");
->         }
->         printf("  256,  2048,  2048,\n\n");
->         return 0;
-> }
-> -------------------------------------
->
-> This should give you the needed matrices. It's up to you whether to keep the
-> existing matrices for 601 or replace them with these. Probably best to keep
-> them.
+> The parallel bus. If you mean that, then you could just say that. "Source
+> endpoint" is a bit vague, or requires knowing V4L2.
 >
 
-Hans,
+agreed
 
-Thanks for the code - this gives me what I need.
-
->>
->> Sorry for all the questions, the colorspace/colorimetry options
->> confuse the heck out of me.
->>
->>>> +};
->>>> +
->> <snip>
->>>> +
->>>> +/* parse an infoframe and do some sanity checks on it */
->>>> +static unsigned int
->>>> +tda1997x_parse_infoframe(struct tda1997x_state *state, u16 addr)
->>>> +{
->>>> +     struct v4l2_subdev *sd = &state->sd;
->>>> +     union hdmi_infoframe frame;
->>>> +     u8 buffer[40];
->>>> +     u8 reg;
->>>> +     int len, err;
->>>> +
->>>> +     /* read data */
->>>> +     len = io_readn(sd, addr, sizeof(buffer), buffer);
->>>> +     err = hdmi_infoframe_unpack(&frame, buffer);
->>>> +     if (err) {
->>>> +             v4l_err(state->client,
->>>> +                     "failed parsing %d byte infoframe: 0x%04x/0x%02x\n",
->>>> +                     len, addr, buffer[0]);
->>>> +             return err;
->>>> +     }
->>>> +     hdmi_infoframe_log(KERN_INFO, &state->client->dev, &frame);
->>>> +     switch (frame.any.type) {
->>>> +     /* Audio InfoFrame: see HDMI spec 8.2.2 */
->>>> +     case HDMI_INFOFRAME_TYPE_AUDIO:
->>>> +             /* sample rate */
->>>> +             switch (frame.audio.sample_frequency) {
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_32000:
->>>> +                     state->audio_samplerate = 32000;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_44100:
->>>> +                     state->audio_samplerate = 44100;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_48000:
->>>> +                     state->audio_samplerate = 48000;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_88200:
->>>> +                     state->audio_samplerate = 88200;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_96000:
->>>> +                     state->audio_samplerate = 96000;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_176400:
->>>> +                     state->audio_samplerate = 176400;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_192000:
->>>> +                     state->audio_samplerate = 192000;
->>>> +                     break;
->>>> +             default:
->>>> +             case HDMI_AUDIO_SAMPLE_FREQUENCY_STREAM:
->>>> +                     break;
->>>> +             }
->>>> +
->>>> +             /* sample size */
->>>> +             switch (frame.audio.sample_size) {
->>>> +             case HDMI_AUDIO_SAMPLE_SIZE_16:
->>>> +                     state->audio_samplesize = 16;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_SIZE_20:
->>>> +                     state->audio_samplesize = 20;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_SIZE_24:
->>>> +                     state->audio_samplesize = 24;
->>>> +                     break;
->>>> +             case HDMI_AUDIO_SAMPLE_SIZE_STREAM:
->>>> +             default:
->>>> +                     break;
->>>> +             }
->>>> +
->>>> +             /* Channel Count */
->>>> +             state->audio_channels = frame.audio.channels;
->>>> +             if (frame.audio.channel_allocation &&
->>>> +                 frame.audio.channel_allocation != state->audio_ch_alloc) {
->>>> +                     /* use the channel assignment from the infoframe */
->>>> +                     state->audio_ch_alloc = frame.audio.channel_allocation;
->>>> +                     tda1997x_configure_audout(sd, state->audio_ch_alloc);
->>>> +                     /* reset the audio FIFO */
->>>> +                     tda1997x_hdmi_info_reset(sd, RESET_AUDIO, false);
->>>> +             }
->>>> +             break;
->>>> +
->>>> +     /* Auxiliary Video information (AVI) InfoFrame: see HDMI spec 8.2.1 */
->>>> +     case HDMI_INFOFRAME_TYPE_AVI:
->>>> +             state->colorspace = frame.avi.colorspace;
->>>> +             state->colorimetry = frame.avi.colorimetry;
->>>> +             state->range = frame.avi.quantization_range;
->>>
->>> This should be ignored if it is overridden by the RGB Quantization Range
->>> control, or am I missing something?
->>>
->>
->> Ok. Sounds like I should only use the range from the infoframe if
->> range == V4L2_DV_RGB_RANGE_AUTO:
->>
->>                 /* Quantization Range */
->>                 if (state->range == V4L2_DV_RGB_RANGE_AUTO)
->>                         state->range = frame.avi.quantization_range;
->
-> Huh? You're mixing V4L2_DV_RGB_* defines with HDMI_QUANTIZATION_RANGE_*
-> defines.
->
-> You probably mean to check the control value here.
->
-
-Yes, I think I've got it now and will post a v4 today.
+Thanks,
 
 Tim
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
