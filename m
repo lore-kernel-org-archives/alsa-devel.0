@@ -1,43 +1,62 @@
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: [PATCH 5/5 v4] ASoC: intel: mfld: Handle return value of platform_get_irq
-Date: Wed, 29 Nov 2017 21:47:14 +0530
-Message-ID: <3c83856bd9f1f23d1e0f5e8753d3998ae4785e37.1511970158.git.arvind.yadav.cs@gmail.com>
-References: <4ce907b8389af30eb0677e70cf543a2b795cca12.1511970158.git.arvind.yadav.cs@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4ce907b8389af30eb0677e70cf543a2b795cca12.1511970158.git.arvind.yadav.cs@gmail.com>
-In-Reply-To: <4ce907b8389af30eb0677e70cf543a2b795cca12.1511970158.git.arvind.yadav.cs@gmail.com>
-References: <4ce907b8389af30eb0677e70cf543a2b795cca12.1511970158.git.arvind.yadav.cs@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH v2 3/8] ASoC: tlv320aic31xx: Fix the reset GPIO
+	OF name
+Date: Wed, 29 Nov 2017 11:13:54 -0600
+Message-ID: <20171129171359.29382-4-afd@ti.com>
+References: <20171129171359.29382-1-afd@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0922B267426
+ for <alsa-devel@alsa-project.org>; Wed, 29 Nov 2017 18:14:01 +0100 (CET)
+In-Reply-To: <20171129171359.29382-1-afd@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-platform_get_irq() can fail here and we must check its return value.
+The correct DT property for specifying a GPIO used for reset
+is "reset-gpios", fix this here.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Fixes: e00447fafbf7 ("ASoC: tlv320aic31xx: Add basic codec driver implementation")
+
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
-changes in v2 :
-              Add failure case '<= 0' instead of '< 0'. IRQ0 is not valid.
-changes in v3 :
-              Return -ENODEV insted of irq.
-changes in v4 :
-              Add separate error for irq == 0 and irq < 0.
+ sound/soc/codecs/tlv320aic31xx.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
- sound/soc/intel/boards/mfld_machine.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
-index 6f44acf..7cb44fd 100644
---- a/sound/soc/intel/boards/mfld_machine.c
-+++ b/sound/soc/intel/boards/mfld_machine.c
-@@ -372,6 +372,8 @@ static int snd_mfld_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index e2862372c26e..4837f25b0760 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1279,9 +1279,16 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
+ 		aic31xx->pdata.micbias_vg = MICBIAS_2_0V;
+ 	}
  
- 	/* retrive the irq number */
- 	irq = platform_get_irq(pdev, 0);
-+	if (irq <= 0)
-+		return irq < 0 ? irq : -ENODEV;
- 
- 	/* audio interrupt base of SRAM location where
- 	 * interrupts are stored by System FW */
+-	ret = of_get_named_gpio(np, "gpio-reset", 0);
+-	if (ret > 0)
++	ret = of_get_named_gpio(np, "reset-gpios", 0);
++	if (ret > 0) {
+ 		aic31xx->pdata.gpio_reset = ret;
++	} else {
++		ret = of_get_named_gpio(np, "gpio-reset", 0);
++		if (ret > 0) {
++			dev_warn(aic31xx->dev, "Using deprecated property \"gpio-reset\", please update your DT");
++			aic31xx->pdata.gpio_reset = ret;
++		}
++	}
+ }
+ #else /* CONFIG_OF */
+ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
 -- 
-2.7.4
+2.15.0
