@@ -1,81 +1,58 @@
-From: Tamaki Nishino <otamachan@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix the enable parameter
-	behavior
-Date: Thu, 30 Nov 2017 19:08:51 +0900
-Message-ID: <CABwGrsbdD2wzJQoQMHkCGhw+0BVkc4fy9_ZnCkzaM7-9Joay2w@mail.gmail.com>
-References: <1511994376-1803-1-git-send-email-otamachan@gmail.com>
- <s5h374wi1aa.wl-tiwai@suse.de>
-Reply-To: otamachan@gmail.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f45.google.com (mail-vk0-f45.google.com
- [209.85.213.45])
- by alsa0.perex.cz (Postfix) with ESMTP id C5BDC266A74
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 11:08:53 +0100 (CET)
-Received: by mail-vk0-f45.google.com with SMTP id u84so3051123vke.10
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 02:08:53 -0800 (PST)
-In-Reply-To: <s5h374wi1aa.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH] ASoC: codecs: msm8916-wcd: Fix supported formats
+Date: Thu, 30 Nov 2017 10:15:02 +0000
+Message-ID: <20171130101502.4660-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-Thanks for your feedback.
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-I'm sorry but I didn't know the origin of the enable option.
-So is it acceptable like
+This codec is configurable for only 16 bit and 32 bit samples, so reflect
+this in the supported formats also remove 24bit sample from supported list.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
-Change the semantics of the enable option for snd-usb-audio
+ sound/soc/codecs/msm8916-wcd-analog.c  | 2 +-
+ sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-This patch changes the semantics of the enable option for snd-usb-audio
-in order to allow users to disable a device specified by either or both of the
-vendor id and the product id.
----
-
-I would appreciate for your any feedback in advance.
-
-Best regards,
-
-Tamaki
-
-On Thu, Nov 30, 2017 at 6:06 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 29 Nov 2017 23:26:16 +0100,
-> Tamaki Nishino wrote:
->>
->> The enable parameter doesn't seem to work as expected. Even when the
->> enable parameter is set to false in /etc/modprobe.d/alsa-base.conf like
->> "options snd-usb-audio index=-2 vid=0x1415 pid=0x1d27 enable=0",
->> the specified device is not disabled.
->>
->> This patch fixes the enable parameter behavior to disable the device
->> correctly.
->
-> Heh, strictly speaking, this is no "fix".  The behavior of the current
-> enable option is "correct", per se; it disables the first-defined
-> slot, and in the case of USB-audio, the probe continues to the next
-> slot as it's a hot-plug device.
->
-> OTOH, it's just badly designed, and the option is present just for
-> compatibility with other modules -- e.g. YaST has put enable option
-> always when configuring manually.
->
-> So, I find it OK to change the semantics of this option, as it's
-> practically useless, and the breakage is very unlikely.
-> But please make it clear that the patch is rather to improve the
-> usability, not about the correctness.
->
->
-> thanks,
->
-> Takashi
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 5f3c42c4f74a..066ea2f4ce7b 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -267,7 +267,7 @@
+ #define MSM8916_WCD_ANALOG_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+ 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
+ #define MSM8916_WCD_ANALOG_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+-				    SNDRV_PCM_FMTBIT_S24_LE)
++				    SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static int btn_mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 	       SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_BTN_4;
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index a10a724eb448..13354d6304a8 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -194,7 +194,7 @@
+ 				   SNDRV_PCM_RATE_32000 | \
+ 				   SNDRV_PCM_RATE_48000)
+ #define MSM8916_WCD_DIGITAL_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+-				     SNDRV_PCM_FMTBIT_S24_LE)
++				     SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ struct msm8916_wcd_digital_priv {
+ 	struct clk *ahbclk, *mclk;
+@@ -645,7 +645,7 @@ static int msm8916_wcd_digital_hw_params(struct snd_pcm_substream *substream,
+ 				    RX_I2S_CTL_RX_I2S_MODE_MASK,
+ 				    RX_I2S_CTL_RX_I2S_MODE_16);
+ 		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
++	case SNDRV_PCM_FORMAT_S32_LE:
+ 		snd_soc_update_bits(dai->codec, LPASS_CDC_CLK_TX_I2S_CTL,
+ 				    TX_I2S_CTL_TX_I2S_MODE_MASK,
+ 				    TX_I2S_CTL_TX_I2S_MODE_32);
+-- 
+2.15.0
