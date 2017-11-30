@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: set clear_irq when imm IRQ
-	happened" to the asoc tree
-Date: Thu, 30 Nov 2017 12:33:04 +0000
-Message-ID: <E1eKO1Y-0000XO-Ex@debutante>
-References: <1512007997-31704-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: tlv320aic31xx: Use standard reset GPIO
+	OF name" to the asoc tree
+Date: Thu, 30 Nov 2017 12:33:14 +0000
+Message-ID: <E1eKO1i-0000cz-GY@debutante>
+References: <20171129171359.29382-4-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D164D2679BD
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:18 +0100 (CET)
-In-Reply-To: <1512007997-31704-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 839F32679D3
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:20 +0100 (CET)
+In-Reply-To: <20171129171359.29382-4-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com, anatol.pomozov@gmail.com, WTLI@nuvoton.com, wuchengli@google.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, mac.chiang@intel.com, broonie@kernel.org, Wu-Cheng Li <wuchengli@chromium.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>, Shawn Guo <shawnguo@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: set clear_irq when imm IRQ happened
+   ASoC: tlv320aic31xx: Use standard reset GPIO OF name
 
 has been applied to the asoc tree at
 
@@ -53,40 +52,44 @@ to this mail.
 Thanks,
 Mark
 
->From e3fee43a968fd39dcc56be3757fcdfe250964125 Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Thu, 30 Nov 2017 10:13:17 +0800
-Subject: [PATCH] ASoC: nau8825: set clear_irq when imm IRQ happened
+>From a825f31f93281bbe7126b25801deb476d07aaf82 Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Wed, 29 Nov 2017 11:13:54 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Use standard reset GPIO OF name
 
-Although the crosstalk is disabled, it is better to set clear_irq
-properly when the impedance measurement interrupt happens.
-It can avoid that the driver clears other IRQs by accident
-if the active_irq has another IRQ events.
+The correct DT property for specifying a GPIO used for reset
+is "reset-gpios", fix this here.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Reviewed-by: Wu-Cheng Li <wuchengli@chromium.org>
-Tested-by: Wu-Cheng Li <wuchengli@chromium.org>
+[Retitled for accuracy -- broonie]
+
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index d3c1a02f1e15..603cd72c2a25 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1733,10 +1733,9 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
- 			nau8825->xtalk_event_mask = event_mask;
- 		}
- 	} else if (active_irq & NAU8825_IMPEDANCE_MEAS_IRQ) {
--		if (nau8825->xtalk_enable) {
-+		if (nau8825->xtalk_enable)
- 			schedule_work(&nau8825->xtalk_work);
--			clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
--		}
-+		clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
- 	} else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
- 		NAU8825_JACK_INSERTION_DETECTED) {
- 		/* One more step to check GPIO status directly. Thus, the
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index e2862372c26e..4837f25b0760 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1279,9 +1279,16 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
+ 		aic31xx->pdata.micbias_vg = MICBIAS_2_0V;
+ 	}
+ 
+-	ret = of_get_named_gpio(np, "gpio-reset", 0);
+-	if (ret > 0)
++	ret = of_get_named_gpio(np, "reset-gpios", 0);
++	if (ret > 0) {
+ 		aic31xx->pdata.gpio_reset = ret;
++	} else {
++		ret = of_get_named_gpio(np, "gpio-reset", 0);
++		if (ret > 0) {
++			dev_warn(aic31xx->dev, "Using deprecated property \"gpio-reset\", please update your DT");
++			aic31xx->pdata.gpio_reset = ret;
++		}
++	}
+ }
+ #else /* CONFIG_OF */
+ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
 -- 
 2.15.0
