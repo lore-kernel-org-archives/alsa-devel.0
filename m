@@ -1,48 +1,60 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 05/15] soundwire: Add SoundWire MIPI defined
-	registers
-Date: Thu, 30 Nov 2017 15:27:00 +0530
-Message-ID: <1512035830-29161-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 11/15] soundwire: cdns: Add cadence library
+Date: Thu, 30 Nov 2017 15:27:06 +0530
+Message-ID: <1512035830-29161-12-git-send-email-vinod.koul@intel.com>
 References: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 12BFA266FA1
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 10:54:02 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sanyog Kale <sanyog.r.kale@intel.com>
+Cadence IP implements SoundWire Master. Add base cadence library
+initialization and interrupt handling
 
-MIPI SoundWire spec defines standard SoundWire registers mandatory for
-SoundWire Slave devices, so add them.
-
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/linux/soundwire/sdw_registers.h | 242 ++++++++++++++++++++++++++++++++
- 1 file changed, 242 insertions(+)
- create mode 100644 include/linux/soundwire/sdw_registers.h
+ drivers/soundwire/Kconfig          |   3 +
+ drivers/soundwire/Makefile         |   4 +
+ drivers/soundwire/cadence_master.c | 477 +++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/cadence_master.h |  81 +++++++
+ 4 files changed, 565 insertions(+)
+ create mode 100644 drivers/soundwire/cadence_master.c
+ create mode 100644 drivers/soundwire/cadence_master.h
 
-diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index 92a2c3bad87f..34361952310e 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -20,4 +20,7 @@ config SOUNDWIRE_BUS
+ 	tristate
+ 	select REGMAP_SOUNDWIRE
+ 
++config SOUNDWIRE_CADENCE
++	tristate
++
+ endif
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
+index 67dc7b546258..f9a1ce3a860e 100644
+--- a/drivers/soundwire/Makefile
++++ b/drivers/soundwire/Makefile
+@@ -5,3 +5,7 @@
+ #Bus Objs
+ soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o sysfs.o
+ obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
++
++#Cadence Objs
++soundwire-cadence-objs := cadence_master.o
++obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
 new file mode 100644
-index 000000000000..d973794f1e83
+index 000000000000..bc37f957a92e
 --- /dev/null
-+++ b/include/linux/soundwire/sdw_registers.h
-@@ -0,0 +1,242 @@
++++ b/drivers/soundwire/cadence_master.c
+@@ -0,0 +1,477 @@
 +/*
 + *  This file is provided under a dual BSD/GPLv2 license.  When using or
 + *  redistributing this file, you may do so under either license.
@@ -94,196 +106,518 @@ index 000000000000..d973794f1e83
 + *
 + */
 +
-+#ifndef __SDW_REGISTERS_H
-+#define __SDW_REGISTERS_H
-+
 +/*
-+ * typically we define register and shifts but if one observes carefully,
-+ * the shift can be generated from MASKS using few bit primitaives like ffs
-+ * etc, so we use that and avoid defining shifts
++ * Cadence SoundWire Master module
++ * Used by Master driver
 + */
-+#define SDW_REG_SHIFT(n)			(ffs(n) - 1)
++
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/soundwire/sdw_registers.h>
++#include <linux/soundwire/sdw.h>
++#include "bus.h"
++#include "cadence_master.h"
++
++#define CDNS_MCP_CONFIG				0x0
++
++#define CDNS_MCP_CONFIG_MCMD_RETRY		GENMASK(27, 24)
++#define CDNS_MCP_CONFIG_MPREQ_DELAY		GENMASK(20, 16)
++#define CDNS_MCP_CONFIG_MMASTER			BIT(7)
++#define CDNS_MCP_CONFIG_BUS_REL			BIT(6)
++#define CDNS_MCP_CONFIG_SNIFFER			BIT(5)
++#define CDNS_MCP_CONFIG_SSPMOD			BIT(4)
++#define CDNS_MCP_CONFIG_CMD			BIT(3)
++#define CDNS_MCP_CONFIG_OP			GENMASK(2, 0)
++#define CDNS_MCP_CONFIG_OP_NORMAL		0
++
++#define CDNS_MCP_CONTROL			0x4
++
++#define CDNS_MCP_CONTROL_RST_DELAY		GENMASK(10, 8)
++#define CDNS_MCP_CONTROL_CMD_RST		BIT(7)
++#define CDNS_MCP_CONTROL_SOFT_RST		BIT(6)
++#define CDNS_MCP_CONTROL_SW_RST			BIT(5)
++#define CDNS_MCP_CONTROL_HW_RST			BIT(4)
++#define CDNS_MCP_CONTROL_CLK_PAUSE		BIT(3)
++#define CDNS_MCP_CONTROL_CLK_STOP_CLR		BIT(2)
++#define CDNS_MCP_CONTROL_CMD_ACCEPT		BIT(1)
++#define CDNS_MCP_CONTROL_BLOCK_WAKEUP		BIT(0)
++
++
++#define CDNS_MCP_CMDCTRL			0x8
++#define CDNS_MCP_SSPSTAT			0xC
++#define CDNS_MCP_FRAME_SHAPE			0x10
++#define CDNS_MCP_FRAME_SHAPE_INIT		0x14
++
++#define CDNS_MCP_CONFIG_UPDATE			0x18
++#define CDNS_MCP_CONFIG_UPDATE_BIT		BIT(0)
++
++#define CDNS_MCP_PHYCTRL			0x1C
++#define CDNS_MCP_SSP_CTRL0			0x20
++#define CDNS_MCP_SSP_CTRL1			0x28
++#define CDNS_MCP_CLK_CTRL0			0x30
++#define CDNS_MCP_CLK_CTRL1			0x38
++
++#define CDNS_MCP_STAT				0x40
++
++#define CDNS_MCP_STAT_ACTIVE_BANK		BIT(20)
++#define CDNS_MCP_STAT_CLK_STOP			BIT(16)
++
++#define CDNS_MCP_INTSTAT			0x44
++#define CDNS_MCP_INTMASK			0x48
++
++#define CDNS_MCP_INT_IRQ			BIT(31)
++#define CDNS_MCP_INT_WAKEUP			BIT(16)
++#define CDNS_MCP_INT_SLAVE_RSVD			BIT(15)
++#define CDNS_MCP_INT_SLAVE_ALERT		BIT(14)
++#define CDNS_MCP_INT_SLAVE_ATTACH		BIT(13)
++#define CDNS_MCP_INT_SLAVE_NATTACH		BIT(12)
++#define CDNS_MCP_INT_SLAVE_MASK			GENMASK(15, 12)
++#define CDNS_MCP_INT_DPINT			BIT(11)
++#define CDNS_MCP_INT_CTRL_CLASH			BIT(10)
++#define CDNS_MCP_INT_DATA_CLASH			BIT(9)
++#define CDNS_MCP_INT_CMD_ERR			BIT(7)
++#define CDNS_MCP_INT_RX_WL			BIT(2)
++#define CDNS_MCP_INT_TXE			BIT(1)
++
++#define CDNS_MCP_INTSET				0x4C
++
++#define CDNS_SDW_SLAVE_STAT			0x50
++#define CDNS_MCP_SLAVE_STAT_MASK		BIT(1, 0)
++
++#define CDNS_MCP_SLAVE_INTSTAT0			0x54
++#define CDNS_MCP_SLAVE_INTSTAT1			0x58
++#define CDNS_MCP_SLAVE_INTSTAT_NPRESENT		BIT(0)
++#define CDNS_MCP_SLAVE_INTSTAT_ATTACHED		BIT(1)
++#define CDNS_MCP_SLAVE_INTSTAT_ALERT		BIT(2)
++#define CDNS_MCP_SLAVE_INTSTAT_RESERVED		BIT(3)
++#define CDNS_MCP_SLAVE_STATUS_BITS		GENMASK(3, 0)
++#define CDNS_MCP_SLAVE_STATUS_NUM		4
++
++#define CDNS_MCP_SLAVE_INTMASK0			0x5C
++#define CDNS_MCP_SLAVE_INTMASK1			0x60
++
++#define CDNS_MCP_SLAVE_INTMASK0_MASK		GENMASK(30, 0)
++#define CDNS_MCP_SLAVE_INTMASK1_MASK		GENMASK(16, 0)
++
++#define CDNS_MCP_PORT_INTSTAT			0x64
++#define CDNS_MCP_PDI_STAT			0x6C
++
++#define CDNS_MCP_FIFOLEVEL			0x78
++#define CDNS_MCP_FIFOSTAT			0x7C
++#define CDNS_MCP_RX_FIFO_AVAIL			GENMASK(5, 0)
++
++#define CDNS_MCP_CMD_BASE			0x80
++#define CDNS_MCP_RESP_BASE			0x80
++#define CDNS_MCP_CMD_LEN			0x20
++#define CDNS_MCP_CMD_WORD_LEN			0x4
++
++#define CDNS_MCP_CMD_SSP_TAG			BIT(31)
++#define CDNS_MCP_CMD_COMMAND			GENMASK(30, 28)
++#define CDNS_MCP_CMD_DEV_ADDR			GENMASK(27, 24)
++#define CDNS_MCP_CMD_REG_ADDR_H			GENMASK(23, 16)
++#define CDNS_MCP_CMD_REG_ADDR_L			GENMASK(15, 8)
++#define CDNS_MCP_CMD_REG_DATA			GENMASK(7, 0)
++
++#define CDNS_MCP_CMD_READ			2
++#define CDNS_MCP_CMD_WRITE			3
++
++#define CDNS_MCP_RESP_RDATA			GENMASK(15, 8)
++#define CDNS_MCP_RESP_ACK			BIT(0)
++#define CDNS_MCP_RESP_NACK			BIT(1)
++
++#define CDNS_DP_SIZE				128
++
++#define CDNS_DPN_B0_CONFIG(n)			(0x100 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B0_CH_EN(n)			(0x104 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B0_SAMPLE_CTRL(n)		(0x108 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B0_OFFSET_CTRL(n)		(0x10C + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B0_HCTRL(n)			(0x110 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B0_ASYNC_CTRL(n)		(0x114 + CDNS_DP_SIZE * (n))
++
++#define CDNS_DPN_B1_CONFIG(n)			(0x118 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B1_CH_EN(n)			(0x11C + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B1_SAMPLE_CTRL(n)		(0x120 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B1_OFFSET_CTRL(n)		(0x124 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B1_HCTRL(n)			(0x128 + CDNS_DP_SIZE * (n))
++#define CDNS_DPN_B1_ASYNC_CTRL(n)		(0x12C + CDNS_DP_SIZE * (n))
++
++#define CDNS_DPN_CONFIG_BPM			BIT(18)
++#define CDNS_DPN_CONFIG_BGC			GENMASK(17, 16)
++#define CDNS_DPN_CONFIG_WL			GENMASK(12, 8)
++#define CDNS_DPN_CONFIG_PORT_DAT		GENMASK(3, 2)
++#define CDNS_DPN_CONFIG_PORT_FLOW		GENMASK(1, 0)
++
++#define CDNS_DPN_SAMPLE_CTRL_SI			GENMASK(15, 0)
++
++#define CDNS_DPN_OFFSET_CTRL_1			GENMASK(7, 0)
++#define CDNS_DPN_OFFSET_CTRL_2			GENMASK(15, 8)
++
++#define CDNS_DPN_HCTRL_HSTOP			GENMASK(3, 0)
++#define CDNS_DPN_HCTRL_HSTART			GENMASK(7, 4)
++#define CDNS_DPN_HCTRL_LCTRL			GENMASK(10, 8)
++
++#define CDNS_PORTCTRL				0x130
++#define CDNS_PORTCTRL_DIRN			BIT(7)
++#define CDNS_PORTCTRL_BANK_INVERT		BIT(8)
++
++#define CDNS_PORT_OFFSET			0x80
++
++#define CDNS_PDI_CONFIG(n)			(0x1100 + (n) * 16)
++
++#define CDNS_PDI_CONFIG_SOFT_RESET		BIT(24)
++#define CDNS_PDI_CONFIG_CHANNEL			GENMASK(15, 8)
++#define CDNS_PDI_CONFIG_PORT			GENMASK(4, 0)
++
++/* Driver defaults */
++
++#define CDNS_DEFAULT_CLK_DIVIDER		0
++#define CDNS_DEFAULT_FRAME_SHAPE		0x30
++#define CDNS_DEFAULT_SSP_INTERVAL		0x18
++#define CDNS_TX_TIMEOUT				2000
++
++#define CDNS_PCM_PDI_OFFSET			0x2
++#define CDNS_PDM_PDI_OFFSET			0x6
++
++#define CDNS_SCP_RX_FIFOLEVEL			0x2
 +
 +/*
-+ * SDW registers as defined by MIPI 1.1 Spec
++ * register accessor helpers
 + */
-+#define SDW_REGADDR				GENMASK(14, 0)
-+#define SDW_SCP_ADDRPAGE2_MASK			GENMASK(22, 15)
-+#define SDW_SCP_ADDRPAGE1_MASK			GENMASK(30, 23)
++static inline u32 cdns_readl(struct sdw_cdns *cdns, int offset)
++{
++	return readl(cdns->registers + offset);
++}
 +
-+#define SDW_REG_NO_PAGE				0x00008000
-+#define SDW_REG_OPTIONAL_PAGE			0x00010000
-+#define SDW_REG_MAX				0x80000000
++static inline void cdns_writel(struct sdw_cdns *cdns, int offset, u32 value)
++{
++	writel(value, cdns->registers + offset);
++}
 +
-+#define SDW_DPN_SIZE				0x100
-+#define SDW_BANK1_OFFSET			0x10
++static inline void cdns_updatel(struct sdw_cdns *cdns,
++				int offset, u32 mask, u32 val)
++{
++	u32 tmp;
++
++	tmp = cdns_readl(cdns, offset);
++	tmp = (tmp & ~mask) | val;
++	cdns_writel(cdns, offset, tmp);
++}
++
++static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
++{
++	int timeout = 10;
++	u32 reg_read;
++
++	writel(value, cdns->registers + offset);
++
++	/* Wait for bit to be self cleared */
++	do {
++		reg_read = readl(cdns->registers + offset);
++		if ((reg_read & value) == 0)
++			return 0;
++
++		timeout--;
++		usleep_range(1, 50);
++	} while (timeout != 0);
++
++	return -EIO;
++}
 +
 +/*
-+ * DP0 Interrupt register & bits
++ * IRQ handling
++ */
++
++static int cdns_update_slave_status(struct sdw_cdns *cdns,
++					u32 slave0, u32 slave1)
++{
++	enum sdw_slave_status status[SDW_MAX_DEVICES + 1];
++	bool is_slave = false;
++	u64 slave, mask;
++	int i, set_status;
++
++	/* combine the two status */
++	slave = ((u64)slave1 << 32) | slave0;
++	memset(status, 0, sizeof(status));
++
++	for (i = 0; i <= SDW_MAX_DEVICES; i++) {
++		mask = (slave >> (i * CDNS_MCP_SLAVE_STATUS_NUM)) &
++				CDNS_MCP_SLAVE_STATUS_BITS;
++		if (!mask)
++			continue;
++
++		is_slave = true;
++		set_status = 0;
++
++		if (mask & CDNS_MCP_SLAVE_INTSTAT_RESERVED) {
++			status[i] = SDW_SLAVE_RESERVED;
++			set_status++;
++		}
++
++		if (mask & CDNS_MCP_SLAVE_INTSTAT_ATTACHED) {
++			status[i] = SDW_SLAVE_ATTACHED;
++			set_status++;
++		}
++
++		if (mask & CDNS_MCP_SLAVE_INTSTAT_ALERT) {
++			status[i] = SDW_SLAVE_ALERT;
++			set_status++;
++		}
++
++		if (mask & CDNS_MCP_SLAVE_INTSTAT_NPRESENT) {
++			status[i] = SDW_SLAVE_UNATTACHED;
++			set_status++;
++		}
++
++		/* first check if Slave reported multiple status */
++		if (set_status > 1) {
++			dev_warn(cdns->dev,
++					"Slave reported multiple Status: %d\n",
++					status[i]);
++			/*
++			 * TODO: we need to reread the status here by
++			 * issuing a PING cmd
++			 */
++		}
++	}
++
++	if (is_slave)
++		return sdw_handle_slave_status(&cdns->bus, status);
++
++	return 0;
++}
++
++/**
++ * sdw_cdns_irq() - Cadence interrupt handler
++ * @irq: irq number
++ * @dev_id: irq context
++ */
++irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
++{
++	struct sdw_cdns *cdns = dev_id;
++	u32 int_status;
++	int ret = IRQ_HANDLED;
++
++	/* Check if the link is up */
++	if (!cdns->link_up)
++		return IRQ_NONE;
++
++	int_status = cdns_readl(cdns, CDNS_MCP_INTSTAT);
++
++	if (!(int_status & CDNS_MCP_INT_IRQ))
++		return IRQ_NONE;
++
++	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
++
++		/* Slave is driving bit slot during control word */
++		dev_err_ratelimited(cdns->dev, "Bus clash for control word\n");
++	}
++
++	if (int_status & CDNS_MCP_INT_DATA_CLASH) {
++		/*
++		 * Multiple slaves trying to drive bit slot, or issue with
++		 * ownership of data bits or Slave gone bonkers
++		 */
++		dev_err_ratelimited(cdns->dev, "Bus clash for data word\n");
++	}
++
++	if (int_status & CDNS_MCP_INT_SLAVE_MASK) {
++		/* Mask the Slave interrupt and wake thread */
++		cdns_updatel(cdns, CDNS_MCP_INTMASK,
++				CDNS_MCP_INT_SLAVE_MASK, 0);
++
++		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
++		ret = IRQ_WAKE_THREAD;
++	}
++
++	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
++	return ret;
++}
++EXPORT_SYMBOL(sdw_cdns_irq);
++
++/**
++ * sdw_cdns_thread() - Cadence irq thread handler
++ * @irq: irq number
++ * @dev_id: irq context
++ */
++irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
++{
++	struct sdw_cdns *cdns = dev_id;
++	u32 slave0, slave1;
++
++	dev_dbg(cdns->dev, "Slave status change\n");
++
++	slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
++	slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
++
++	cdns_update_slave_status(cdns, slave0, slave1);
++	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT0, slave0);
++	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave1);
++
++	/* clear and unmask Slave interrupt now */
++	cdns_writel(cdns, CDNS_MCP_INTSTAT, CDNS_MCP_INT_SLAVE_MASK);
++	cdns_updatel(cdns, CDNS_MCP_INTMASK,
++			CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
++
++	return IRQ_HANDLED;
++}
++EXPORT_SYMBOL(sdw_cdns_thread);
++
++/*
++ * init routines
++ */
++
++/**
++ * sdw_cdns_init() - Cadence initialization
++ * @cdns: Cadence instance
++ */
++int sdw_cdns_init(struct sdw_cdns *cdns)
++{
++	u32 val;
++	int ret;
++
++	/* Exit clock stop */
++	ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
++			CDNS_MCP_CONTROL_CLK_STOP_CLR);
++	if (ret < 0) {
++		dev_err(cdns->dev, "Couldn't exit from clock stop\n");
++		return ret;
++	}
++
++	/* Set clock divider */
++	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
++	val |= CDNS_DEFAULT_CLK_DIVIDER;
++	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
++
++	/* Set the default frame shape */
++	cdns_writel(cdns, CDNS_MCP_FRAME_SHAPE_INIT, CDNS_DEFAULT_FRAME_SHAPE);
++
++	/* Set SSP interval to default value */
++	cdns_writel(cdns, CDNS_MCP_SSP_CTRL0, CDNS_DEFAULT_SSP_INTERVAL);
++	cdns_writel(cdns, CDNS_MCP_SSP_CTRL1, CDNS_DEFAULT_SSP_INTERVAL);
++
++	/* Set cmd accept mode */
++	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
++					CDNS_MCP_CONTROL_CMD_ACCEPT);
++
++	/* Configure mcp config */
++	val = cdns_readl(cdns, CDNS_MCP_CONFIG);
++
++	/* Set Max cmd retry to 15 */
++	val |= CDNS_MCP_CONFIG_MCMD_RETRY;
++
++	/* Set frame delay between PREQ and ping frame to 15 frames */
++	val |= 0xF << SDW_REG_SHIFT(CDNS_MCP_CONFIG_MPREQ_DELAY);
++
++	/* Disable auto bus release */
++	val &= ~CDNS_MCP_CONFIG_BUS_REL;
++
++	/* Disable sniffer mode */
++	val &= ~CDNS_MCP_CONFIG_SNIFFER;
++
++	/* Set cmd mode for Tx and Rx cmds */
++	val &= ~CDNS_MCP_CONFIG_CMD;
++
++	/* Set operation to normal */
++	val &= ~CDNS_MCP_CONFIG_OP;
++	val |= CDNS_MCP_CONFIG_OP_NORMAL;
++
++	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
++
++	return 0;
++}
++EXPORT_SYMBOL(sdw_cdns_init);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_DESCRIPTION("Cadence Soundwire Library");
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+new file mode 100644
+index 000000000000..0ad73e39d296
+--- /dev/null
++++ b/drivers/soundwire/cadence_master.h
+@@ -0,0 +1,81 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
 + *
-+ * Spec treats Status (RO) and Clear (WC) as separate but they are same
-+ * address, so treat as same register with WC.
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
 + */
++#ifndef __SDW_CADENCE_H
++#define __SDW_CADENCE_H
 +
-+/* both INT and STATUS register are same */
-+#define SDW_DP0_INT				0x0
-+#define SDW_DP0_INTMASK				0x1
-+#define SDW_DP0_PORTCTRL			0x2
-+#define SDW_DP0_BLOCKCTRL1			0x3
-+#define SDW_DP0_PREPARESTATUS			0x4
-+#define SDW_DP0_PREPARECTRL			0x5
++/**
++ * struct sdw_cdns - Cadence driver context
++ * @dev: Linux device
++ * @bus: Bus handle
++ * @instance: instance number
++ * @registers: Cadence registers
++ * @link_up: Link status
++ */
++struct sdw_cdns {
++	struct device *dev;
++	struct sdw_bus bus;
++	unsigned int instance;
 +
-+#define SDW_DP0_INT_TEST_FAIL			BIT(0)
-+#define SDW_DP0_INT_PORT_READY			BIT(1)
-+#define SDW_DP0_INT_BRA_FAILURE			BIT(2)
-+#define SDW_DP0_INT_IMPDEF1			BIT(5)
-+#define SDW_DP0_INT_IMPDEF2			BIT(6)
-+#define SDW_DP0_INT_IMPDEF3			BIT(7)
++	void __iomem *registers;
 +
-+#define SDW_DP0_PORTCTRL_DATAMODE		GENMASK(3, 2)
-+#define SDW_DP0_PORTCTRL_NXTINVBANK		BIT(4)
-+#define SDW_DP0_PORTCTRL_BPT_PAYLD		GENMASK(7, 6)
++	bool link_up;
++};
 +
-+#define SDW_DP0_CHANNELEN			0x20
-+#define SDW_DP0_SAMPLECTRL1			0x22
-+#define SDW_DP0_SAMPLECTRL2			0x23
-+#define SDW_DP0_OFFSETCTRL1			0x24
-+#define SDW_DP0_OFFSETCTRL2			0x25
-+#define SDW_DP0_HCTRL				0x26
-+#define SDW_DP0_LANECTRL			0x28
++#define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
 +
-+/* Both INT and STATUS register are same */
-+#define SDW_SCP_INT1				0x40
-+#define SDW_SCP_INTMASK1			0x41
++/* Exported symbols */
 +
-+#define SDW_SCP_INT1_PARITY			BIT(0)
-+#define SDW_SCP_INT1_BUS_CLASH			BIT(1)
-+#define SDW_SCP_INT1_IMPL_DEF			BIT(2)
-+#define SDW_SCP_INT1_SCP2_CASCADE		BIT(7)
-+#define SDW_SCP_INT1_PORT0_3			GENMASK(6, 3)
++irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
++irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
 +
-+#define SDW_SCP_INTSTAT2			0x42
-+#define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
-+#define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
++int sdw_cdns_init(struct sdw_cdns *cdns);
 +
-+
-+#define SDW_SCP_INTSTAT3			0x43
-+#define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
-+
-+/* Number of interrupt status registers */
-+#define SDW_NUM_INT_STAT_REGISTERS		3
-+
-+/* Number of interrupt clear registers */
-+#define SDW_NUM_INT_CLEAR_REGISTERS		1
-+
-+#define SDW_SCP_CTRL				0x44
-+#define SDW_SCP_CTRL_CLK_STP_NOW		BIT(1)
-+#define SDW_SCP_CTRL_FORCE_RESET		BIT(7)
-+
-+#define SDW_SCP_STAT				0x44
-+#define SDW_SCP_STAT_CLK_STP_NF			BIT(0)
-+#define SDW_SCP_STAT_HPHY_NOK			BIT(5)
-+#define SDW_SCP_STAT_CURR_BANK			BIT(6)
-+
-+#define SDW_SCP_SYSTEMCTRL			0x45
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP		BIT(0)
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE		BIT(2)
-+#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN		BIT(3)
-+#define SDW_SCP_SYSTEMCTRL_HIGH_PHY		BIT(4)
-+
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE0	0
-+#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE1	BIT(2)
-+
-+#define SDW_SCP_DEVNUMBER			0x46
-+#define SDW_SCP_HIGH_PHY_CHECK			0x47
-+#define SDW_SCP_ADDRPAGE1			0x48
-+#define SDW_SCP_ADDRPAGE2			0x49
-+#define SDW_SCP_KEEPEREN			0x4A
-+#define SDW_SCP_BANKDELAY			0x4B
-+#define SDW_SCP_TESTMODE			0x4F
-+#define SDW_SCP_DEVID_0				0x50
-+#define SDW_SCP_DEVID_1				0x51
-+#define SDW_SCP_DEVID_2				0x52
-+#define SDW_SCP_DEVID_3				0x53
-+#define SDW_SCP_DEVID_4				0x54
-+#define SDW_SCP_DEVID_5				0x55
-+
-+/* Banked Registers */
-+#define SDW_SCP_FRAMECTRL_B0			0x60
-+#define SDW_SCP_FRAMECTRL_B1			(0x60 + SDW_BANK1_OFFSET)
-+#define SDW_SCP_NEXTFRAME_B0			0x61
-+#define SDW_SCP_NEXTFRAME_B1			(0x61 + SDW_BANK1_OFFSET)
-+
-+/* Both INT and STATUS register is same */
-+#define SDW_DPN_INT(n)				(0x0 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_INTMASK(n)			(0x1 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_PORTCTRL(n)			(0x2 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_BLOCKCTRL1(n)			(0x3 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_PREPARESTATUS(n)		(0x4 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_PREPARECTRL(n)			(0x5 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_INT_TEST_FAIL			BIT(0)
-+#define SDW_DPN_INT_PORT_READY			BIT(1)
-+#define SDW_DPN_INT_IMPDEF1			BIT(5)
-+#define SDW_DPN_INT_IMPDEF2			BIT(6)
-+#define SDW_DPN_INT_IMPDEF3			BIT(7)
-+
-+#define SDW_DPN_PORTCTRL_FLOWMODE		GENMASK(1, 0)
-+#define SDW_DPN_PORTCTRL_DATAMODE		GENMASK(3, 2)
-+#define SDW_DPN_PORTCTRL_NXTINVBANK		BIT(4)
-+
-+#define SDW_DPN_BLOCKCTRL1_WDLEN		GENMASK(5, 0)
-+
-+#define SDW_DPN_PREPARECTRL_CH_PREP		GENMASK(7, 0)
-+
-+#define SDW_DPN_CHANNELEN_B0(n)			(0x20 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_CHANNELEN_B1(n)			(0x30 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_BLOCKCTRL2_B0(n)		(0x21 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_BLOCKCTRL2_B1(n)		(0x31 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_SAMPLECTRL1_B0(n)		(0x22 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_SAMPLECTRL1_B1(n)		(0x32 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_SAMPLECTRL2_B0(n)		(0x23 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_SAMPLECTRL2_B1(n)		(0x33 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_OFFSETCTRL1_B0(n)		(0x24 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_OFFSETCTRL1_B1(n)		(0x34 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_OFFSETCTRL2_B0(n)		(0x25 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_OFFSETCTRL2_B1(n)		(0x35 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_HCTRL_B0(n)			(0x26 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_HCTRL_B1(n)			(0x36 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_BLOCKCTRL3_B0(n)		(0x27 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_BLOCKCTRL3_B1(n)		(0x37 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_LANECTRL_B0(n)			(0x28 + SDW_DPN_SIZE * (n))
-+#define SDW_DPN_LANECTRL_B1(n)			(0x38 + SDW_DPN_SIZE * (n))
-+
-+#define SDW_DPN_SAMPLECTRL_LOW			GENMASK(7, 0)
-+#define SDW_DPN_SAMPLECTRL_HIGH			GENMASK(15, 8)
-+
-+#define SDW_DPN_HCTRL_HSTART			GENMASK(7, 4)
-+#define SDW_DPN_HCTRL_HSTOP			GENMASK(3, 0)
-+
-+#define SDW_NUM_CASC_PORT_INTSTAT1		4
-+#define SDW_CASC_PORT_START_INTSTAT1		0
-+#define SDW_CASC_PORT_MASK_INTSTAT1		0x8
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT1	0x0
-+
-+#define SDW_NUM_CASC_PORT_INTSTAT2		7
-+#define SDW_CASC_PORT_START_INTSTAT2		4
-+#define SDW_CASC_PORT_MASK_INTSTAT2		1
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT2	1
-+
-+#define SDW_NUM_CASC_PORT_INTSTAT3		4
-+#define SDW_CASC_PORT_START_INTSTAT3		11
-+#define SDW_CASC_PORT_MASK_INTSTAT3		1
-+#define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
-+
-+#endif /* __SDW_REGISTERS_H */
++#endif /* __SDW_CADENCE_H */
 -- 
 2.7.4
