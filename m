@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Fix GPIO1 register
-	definition" to the asoc tree
-Date: Thu, 30 Nov 2017 12:32:41 +0000
-Message-ID: <E1eKO1B-0000Qa-A0@debutante>
-References: <20171129213300.20021-6-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic31xx: Move ACPI table next to
+	OF table" to the asoc tree
+Date: Thu, 30 Nov 2017 12:32:50 +0000
+Message-ID: <E1eKO1K-0000S4-EY@debutante>
+References: <20171129213300.20021-4-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A0A8F26698E
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:32:47 +0100 (CET)
-In-Reply-To: <20171129213300.20021-6-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 216BF2679BE
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:32:55 +0100 (CET)
+In-Reply-To: <20171129213300.20021-4-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Fix GPIO1 register definition
+   ASoC: tlv320aic31xx: Move ACPI table next to OF table
 
 has been applied to the asoc tree at
 
@@ -52,33 +52,50 @@ to this mail.
 Thanks,
 Mark
 
->From 737e0b7b67bdfe24090fab2852044bb283282fc5 Mon Sep 17 00:00:00 2001
+>From 09303601bacda714220048a61f6864f88594b231 Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 15:32:46 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Fix GPIO1 register definition
+Date: Wed, 29 Nov 2017 15:32:44 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Move ACPI table next to OF table
 
-GPIO1 control register is number 51, fix this here.
-
-Fixes: bafcbfe429eb ("ASoC: tlv320aic31xx: Make the register values human readable")
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/tlv320aic31xx.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic31xx.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 730fb2058869..1ff3edb7bbb6 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -116,7 +116,7 @@ struct aic31xx_pdata {
- /* INT2 interrupt control */
- #define AIC31XX_INT2CTRL	AIC31XX_REG(0, 49)
- /* GPIO1 control */
--#define AIC31XX_GPIO1		AIC31XX_REG(0, 50)
-+#define AIC31XX_GPIO1		AIC31XX_REG(0, 51)
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 0563a49cc5e4..d974e8651e30 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1285,6 +1285,14 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
+ }
+ #endif /* CONFIG_OF */
  
- #define AIC31XX_DACPRB		AIC31XX_REG(0, 60)
- /* ADC Instruction Set Register */
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id aic31xx_acpi_match[] = {
++	{ "10TI3100", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
++#endif
++
+ static int aic31xx_device_init(struct aic31xx_priv *aic31xx)
+ {
+ 	int ret, i;
+@@ -1382,14 +1390,6 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
+ 
+-#ifdef CONFIG_ACPI
+-static const struct acpi_device_id aic31xx_acpi_match[] = {
+-	{ "10TI3100", 0 },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
+-#endif
+-
+ static struct i2c_driver aic31xx_i2c_driver = {
+ 	.driver = {
+ 		.name	= "tlv320aic31xx-codec",
 -- 
 2.15.0
