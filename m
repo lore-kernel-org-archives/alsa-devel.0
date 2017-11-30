@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 01/15] Documentation: Add SoundWire summary
-Date: Thu, 30 Nov 2017 15:26:56 +0530
-Message-ID: <1512035830-29161-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 02/15] soundwire: Add SoundWire bus type
+Date: Thu, 30 Nov 2017 15:26:57 +0530
+Message-ID: <1512035830-29161-3-git-send-email-vinod.koul@intel.com>
 References: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
@@ -10,267 +10,614 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-
-SoundWire is a new Linux bus which implements a new MIPI bus protocol
-'SoundWire'. The summary of SoundWire bus and API is documented in the
-'summary' file.
+This adds the base SoundWire bus type, bus and driver registration.
+along with changes to module device table for new SoundWire
+device type.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- Documentation/driver-api/index.rst             |   1 +
- Documentation/driver-api/soundwire/index.rst   |  15 ++
- Documentation/driver-api/soundwire/summary.rst | 205 +++++++++++++++++++++++++
- 3 files changed, 221 insertions(+)
- create mode 100644 Documentation/driver-api/soundwire/index.rst
- create mode 100644 Documentation/driver-api/soundwire/summary.rst
+ drivers/Kconfig                   |   2 +
+ drivers/Makefile                  |   1 +
+ drivers/soundwire/Kconfig         |  22 ++++
+ drivers/soundwire/Makefile        |   7 ++
+ drivers/soundwire/bus.h           |  57 ++++++++++
+ drivers/soundwire/bus_type.c      | 220 ++++++++++++++++++++++++++++++++++++++
+ include/linux/mod_devicetable.h   |   6 ++
+ include/linux/soundwire/sdw.h     | 166 ++++++++++++++++++++++++++++
+ scripts/mod/devicetable-offsets.c |   4 +
+ scripts/mod/file2alias.c          |  15 +++
+ 10 files changed, 500 insertions(+)
+ create mode 100644 drivers/soundwire/Kconfig
+ create mode 100644 drivers/soundwire/Makefile
+ create mode 100644 drivers/soundwire/bus.h
+ create mode 100644 drivers/soundwire/bus_type.c
+ create mode 100644 include/linux/soundwire/sdw.h
 
-diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
-index d17a9876b473..17992b9e4a55 100644
---- a/Documentation/driver-api/index.rst
-+++ b/Documentation/driver-api/index.rst
-@@ -47,6 +47,7 @@ available subsections can be seen below.
-    gpio
-    misc_devices
-    dmaengine/index
-+   soundwire/index
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index 152744c5ef0f..3a0bbbd42292 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -153,6 +153,8 @@ source "drivers/remoteproc/Kconfig"
  
- .. only::  subproject and html
+ source "drivers/rpmsg/Kconfig"
  
-diff --git a/Documentation/driver-api/soundwire/index.rst b/Documentation/driver-api/soundwire/index.rst
++source "drivers/soundwire/Kconfig"
++
+ source "drivers/soc/Kconfig"
+ 
+ source "drivers/devfreq/Kconfig"
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 1d034b680431..cd13b2ed7ed6 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -156,6 +156,7 @@ obj-$(CONFIG_MAILBOX)		+= mailbox/
+ obj-$(CONFIG_HWSPINLOCK)	+= hwspinlock/
+ obj-$(CONFIG_REMOTEPROC)	+= remoteproc/
+ obj-$(CONFIG_RPMSG)		+= rpmsg/
++obj-$(CONFIG_SOUNDWIRE)		+= soundwire/
+ 
+ # Virtualization drivers
+ obj-$(CONFIG_VIRT_DRIVERS)	+= virt/
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
 new file mode 100644
-index 000000000000..647e94654752
+index 000000000000..d7d3908f4913
 --- /dev/null
-+++ b/Documentation/driver-api/soundwire/index.rst
-@@ -0,0 +1,15 @@
-+=======================
-+SoundWire Documentation
-+=======================
++++ b/drivers/soundwire/Kconfig
+@@ -0,0 +1,22 @@
++#
++# SoundWire subsystem configuration
++#
 +
-+.. toctree::
-+   :maxdepth: 1
++menuconfig SOUNDWIRE
++	bool "SoundWire support"
++	---help---
++	  SoundWire is a 2-Pin interface with data and clock line ratified
++	  by the MIPI Alliance. SoundWire is used for transporting data
++	  typically related to audio functions. SoundWire interface is
++	  optimized to integrate audio devices in mobile or mobile inspired
++	  systems. Say Y to enable this subsystem, N if you do not have such
++	  a device
 +
-+   summary
++if SOUNDWIRE
 +
-+.. only::  subproject
++comment "SoundWire Devices"
 +
-+   Indices
-+   =======
++config SOUNDWIRE_BUS
++	tristate
 +
-+   * :ref:`genindex`
-diff --git a/Documentation/driver-api/soundwire/summary.rst b/Documentation/driver-api/soundwire/summary.rst
++endif
+diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
 new file mode 100644
-index 000000000000..51b82c1972f5
+index 000000000000..d1281def7662
 --- /dev/null
-+++ b/Documentation/driver-api/soundwire/summary.rst
-@@ -0,0 +1,205 @@
-+===========================
-+SoundWire Subsystem Summary
-+===========================
++++ b/drivers/soundwire/Makefile
+@@ -0,0 +1,7 @@
++#
++# Makefile for soundwire core
++#
 +
-+SoundWire is a new interface ratified in 2015 by the MIPI Alliance.
-+SoundWire is used for transporting data typically related to audio
-+functions. SoundWire interface is optimized to integrate audio devices in
-+mobile or mobile inspired systems.
++#Bus Objs
++soundwire-bus-objs := bus_type.o
++obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+new file mode 100644
+index 000000000000..2af05b21961e
+--- /dev/null
++++ b/drivers/soundwire/bus.h
+@@ -0,0 +1,57 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
++ *
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
 +
-+SoundWire is a 2-pin multi-drop interface with data and clock line. It
-+facilitates development of low cost, efficient, high performance systems.
-+Broad level key features of SoundWire interface include:
++#ifndef __SDW_BUS_H
++#define __SDW_BUS_H
 +
-+ (1) Transporting all of payload data channels, control information, and setup
-+     commands over a single two-pin interface.
++int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
 +
-+ (2) Lower clock frequency, and hence lower power consumption, by use of DDR
-+     (Dual Data Rate) data transmission.
++#endif /* __SDW_BUS_H */
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+new file mode 100644
+index 000000000000..ed8275d047f5
+--- /dev/null
++++ b/drivers/soundwire/bus_type.c
+@@ -0,0 +1,220 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
++ *
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
 +
-+ (3) Clock scaling and optional multiple data lanes to give wide flexibility
-+     in data rate to match system requirements.
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/pm_domain.h>
++#include <linux/soundwire/sdw.h>
++#include "bus.h"
 +
-+ (4) Device status monitoring, including interrupt-style alerts to the Master.
++/**
++ * sdw_get_device_id - find the matching SoundWire device id
++ * @slave: SoundWire Slave Device
++ * @drv: SoundWire Slave Driver
++ *
++ * The match is done by comparing the mfg_id and part_id from the
++ * struct sdw_device_id.
++ */
++static const struct sdw_device_id *
++sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
++{
++	const struct sdw_device_id *id = drv->id_table;
 +
-+The SoundWire protocol supports up to eleven Slave interfaces. All the
-+interfaces share the common Bus containing data and clock line. Each of the
-+Slaves can support up to 14 Data Ports. 13 Data Ports are dedicated to audio
-+transport. Data Port0 is dedicated to transport of Bulk control information,
-+each of the audio Data Ports (1..14) can support up to 8 Channels in
-+transmit or receiving mode (typically fixed direction but configurable
-+direction is enabled by the specification).  Bandwidth restrictions to
-+~19.2..24.576Mbits/s don't however allow for 11*13*8 channels to be
-+transmitted simultaneously.
-+
-+Below figure shows an example of connectivity between a SoundWire Master and
-+two Slave devices. ::
-+
-+        +---------------+                                       +---------------+
-+        |               |                       Clock Signal    |               |
-+        |    Master     |-------+-------------------------------|    Slave      |
-+        |   Interface   |       |               Data Signal     |  Interface 1  |
-+        |               |-------|-------+-----------------------|               |
-+        +---------------+       |       |                       +---------------+
-+                                |       |
-+                                |       |
-+                                |       |
-+                             +--+-------+--+
-+                             |             |
-+                             |   Slave     |
-+                             | Interface 2 |
-+                             |             |
-+                             +-------------+
-+
-+
-+Terminology
-+===========
-+
-+The MIPI SoundWire specification uses the term 'device' to refer to a Master
-+or Slave interface, which of course can be confusing. In this summary and
-+code we use the term interface only to refer to the hardware. We follow the
-+Linux device model by mapping each Slave interface connected on the bus as a
-+device managed by a specific driver. The Linux SoundWire subsystem provides
-+a framework to implement a SoundWire Slave driver with an API allowing
-+3rd-party vendors to enable implementation-defined functionality while
-+common setup/configuration tasks are handled by the bus.
-+
-+Bus:
-+Implements SoundWire Linux Bus which handles the SoundWire protocol.
-+Programs all the MIPI-defined Slave registers. Represents a SoundWire
-+Master. Multiple instances of Bus may be present in a system.
-+
-+Slave:
-+Registers as SoundWire Slave device (Linux Device). Multiple Slave devices
-+can register to a Bus instance.
-+
-+Slave driver:
-+Driver controlling the Slave device. MIPI-specified registers are controlled
-+directly by the Bus (and transmitted through the Master driver/interface).
-+Any implementation-defined Slave register is controlled by Slave driver. In
-+practice, it is expected that the Slave driver relies on regmap and does not
-+request direct register access.
-+
-+Programming interfaces (SoundWire Master interface Driver)
-+==========================================================
-+
-+SoundWire Bus supports programming interfaces for the SoundWire Master
-+implementation and SoundWire Slave devices. All the code uses the "sdw"
-+prefix commonly used by SoC designers and 3rd party vendors.
-+
-+Each of the SoundWire Master interfaces needs to be registered to the Bus.
-+Bus implements API to read standard Master MIPI properties and also provides
-+callback in Master ops for Master driver to implement its own functions that
-+provides capabilities information. DT support is not implemented at this
-+time but should be trivial to add since capabilities are enabled with the
-+``device_property_`` API.
-+
-+The Master interface along with the Master interface capabilities are
-+registered based on board file, DT or ACPI.
-+
-+Following is the Bus API to register the SoundWire Bus:
-+
-+.. code-block:: c
-+
-+	int sdw_add_bus_master(struct sdw_bus *bus)
-+	{
-+		if (!bus->dev)
-+			return -ENODEV;
-+
-+		mutex_init(&bus->lock);
-+		INIT_LIST_HEAD(&bus->slaves);
-+
-+		/* Check ACPI for Slave devices */
-+		sdw_acpi_find_slaves(bus);
-+
-+		/* Check DT for Slave devices */
-+		sdw_of_find_slaves(bus);
-+
-+		return 0;
++	while (id && id->mfg_id) {
++		if (slave->id.mfg_id == id->mfg_id &&
++		    slave->id.part_id == id->part_id)
++			return id;
++		id++;
 +	}
 +
-+This will initialize sdw_bus object for Master device. "sdw_master_ops" and
-+"sdw_master_port_ops" callback functions are provided to the Bus.
++	return NULL;
++}
 +
-+"sdw_master_ops" is used by Bus to control the Bus in the hardware specific
-+way. It includes Bus control functions such as sending the SoundWire
-+read/write messages on Bus, setting up clock frequency & Stream
-+Synchronization Point (SSP). The "sdw_master_ops" structure abstracts the
-+hardware details of the Master from the Bus.
++static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_driver *drv = drv_to_sdw_driver(ddrv);
 +
-+"sdw_master_port_ops" is used by Bus to setup the Port parameters of the
-+Master interface Port. Master interface Port register map is not defined by
-+MIPI specification, so Bus calls the "sdw_master_port_ops" callback
-+function to do Port operations like "Port Prepare", "Port Transport params
-+set", "Port enable and disable". The implementation of the Master driver can
-+then perform hardware-specific configurations.
++	return !!sdw_get_device_id(slave, drv);
++}
 +
-+Programming interfaces (SoundWire Slave Driver)
-+===============================================
++int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
++{
++	/* modalias is sdw:m<mfg_id>p<part_id> */
 +
-+The MIPI specification requires each Slave interface to expose a unique
-+48-bit identifier, stored in 6 read-only dev_id registers. This dev_id
-+identifier contains vendor and part information, as well as a field enabling
-+to differentiate between identical components. An additional class field is
-+currently unused. Slave driver is written for a specific vendor and part
-+identifier, Bus enumerates the Slave device based on these two ids.
-+Slave device and driver match is done based on these two ids . Probe
-+of the Slave driver is called by Bus on successful match between device and
-+driver id. A parent/child relationship is enforced between Master and Slave
-+devices (the logical representation is aligned with the physical
-+connectivity).
++	return snprintf(buf, size, "sdw:m%04Xp%04X\n",
++			slave->id.mfg_id, slave->id.part_id);
++}
 +
-+The information on Master/Slave dependencies is stored in platform data,
-+board-file, ACPI or DT. The MIPI Software specification defines additional
-+link_id parameters for controllers that have multiple Master interfaces. The
-+dev_id registers are only unique in the scope of a link, and the link_id
-+unique in the scope of a controller. Both dev_id and link_id are not
-+necessarily unique at the system level but the parent/child information is
-+used to avoid ambiguity.
++static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	char modalias[32];
 +
-+.. code-block:: c
++	sdw_slave_modalias(slave, modalias, sizeof(modalias));
 +
-+	static const struct sdw_device_id slave_id[] = {
-+	        SDW_SLAVE_ENTRY(0x025d, 0x700, 0),
-+	        {},
-+	};
-+	MODULE_DEVICE_TABLE(sdw, slave_id);
++	if (add_uevent_var(env, "MODALIAS=%s", modalias))
++		return -ENOMEM;
 +
-+	static struct sdw_driver slave_sdw_driver = {
-+	        .driver = {
-+	                   .name = "slave_xxx",
-+	                   .pm = &slave_runtime_pm,
-+	                   },
-+		.probe = slave_sdw_probe,
-+		.remove = slave_sdw_remove,
-+		.ops = &slave_slave_ops,
-+		.id_table = slave_id,
-+	};
++	return 0;
++}
 +
++struct bus_type sdw_bus_type = {
++	.name = "soundwire",
++	.match = sdw_bus_match,
++	.uevent = sdw_uevent,
++};
++EXPORT_SYMBOL(sdw_bus_type);
 +
-+For capabilities, Bus implements API to read standard Slave MIPI properties
-+and also provides callback in Slave ops for Slave driver to implement own
-+function that provides capabilities information. Bus needs to know a set of
-+Slave capabilities to program Slave registers and to control the Bus
-+reconfigurations.
++static int sdw_drv_probe(struct device *dev)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
++	const struct sdw_device_id *id;
++	int ret;
 +
-+Future enhancements to be done
-+==============================
++	id = sdw_get_device_id(slave, drv);
++	if (!id)
++		return -ENODEV;
 +
-+ (1) Bulk Register Access (BRA) transfers.
++	/*
++	 * attach to power domain but don't turn on (last arg)
++	 */
++	ret = dev_pm_domain_attach(dev, false);
++	if (ret != -EPROBE_DEFER) {
++		ret = drv->probe(slave, id);
++		if (ret) {
++			dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
++			dev_pm_domain_detach(dev, false);
++		}
++	}
 +
++	return ret;
++}
 +
-+ (2) Multiple data lane support.
++static int sdw_drv_remove(struct device *dev)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
++	int ret = 0;
 +
-+Links
-+=====
++	if (drv->remove)
++		ret = drv->remove(slave);
 +
-+SoundWire MIPI specification 1.1 is available at:
-+https://members.mipi.org/wg/All-Members/document/70290
++	dev_pm_domain_detach(dev, false);
 +
-+SoundWire MIPI DisCo (Discovery and Configuration) specification is
-+available at:
-+https://www.mipi.org/specifications/mipi-disco-soundwire
++	return ret;
++}
 +
-+(publicly accessible with registration or directly accessible to MIPI
-+members)
++static void sdw_drv_shutdown(struct device *dev)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
++
++	if (drv->shutdown)
++		drv->shutdown(slave);
++}
++
++/**
++ * __sdw_register_driver() - register a SoundWire Slave driver
++ * @drv: driver to register
++ * @owner: owning module/driver
++ *
++ * Return: zero on success, else a negative error code.
++ */
++int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
++{
++	drv->driver.bus = &sdw_bus_type;
++
++	if (!drv->probe) {
++		pr_err("driver %s didn't provide SDW probe routine\n",
++							drv->name);
++		return -EINVAL;
++	}
++
++	drv->driver.owner = owner;
++	drv->driver.probe = sdw_drv_probe;
++
++	if (drv->remove)
++		drv->driver.remove = sdw_drv_remove;
++
++	if (drv->shutdown)
++		drv->driver.shutdown = sdw_drv_shutdown;
++
++	return driver_register(&drv->driver);
++}
++EXPORT_SYMBOL(__sdw_register_driver);
++
++/**
++ * sdw_unregister_driver() - unregisters the SoundWire Slave driver
++ * @drv: driver to unregister
++ */
++void sdw_unregister_driver(struct sdw_driver *drv)
++{
++	driver_unregister(&drv->driver);
++}
++EXPORT_SYMBOL(sdw_unregister_driver);
++
++static int __init sdw_bus_init(void)
++{
++	return bus_register(&sdw_bus_type);
++}
++
++static void __exit sdw_bus_exit(void)
++{
++	bus_unregister(&sdw_bus_type);
++}
++
++postcore_initcall(sdw_bus_init);
++module_exit(sdw_bus_exit);
++
++MODULE_DESCRIPTION("SoundWire bus");
++MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index abb6dc2ebbf8..d6f727a68eb1 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -229,6 +229,12 @@ struct hda_device_id {
+ 	unsigned long driver_data;
+ };
+ 
++struct sdw_device_id {
++	__u16 mfg_id;
++	__u16 part_id;
++	kernel_ulong_t driver_data;
++};
++
+ /*
+  * Struct used for matching a device
+  */
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+new file mode 100644
+index 000000000000..96a59fd4834b
+--- /dev/null
++++ b/include/linux/soundwire/sdw.h
+@@ -0,0 +1,166 @@
++/*
++ *  This file is provided under a dual BSD/GPLv2 license.  When using or
++ *  redistributing this file, you may do so under either license.
++ *
++ *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++ *
++ *  GPL LICENSE SUMMARY
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of version 2 of the GNU General Public License as
++ *  published by the Free Software Foundation.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  BSD LICENSE
++ *
++ *  Copyright(c) 2015-17 Intel Corporation.
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *
++ *    * Redistributions of source code must retain the above copyright
++ *      notice, this list of conditions and the following disclaimer.
++ *    * Redistributions in binary form must reproduce the above copyright
++ *      notice, this list of conditions and the following disclaimer in
++ *      the documentation and/or other materials provided with the
++ *      distribution.
++ *    * Neither the name of Intel Corporation nor the names of its
++ *      contributors may be used to endorse or promote products derived
++ *      from this software without specific prior written permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
++#ifndef __SOUNDWIRE_H
++#define __SOUNDWIRE_H
++
++struct sdw_bus;
++struct sdw_slave;
++
++#define SDW_MAX_DEVICES			11
++
++/**
++ * enum sdw_slave_status - Slave status
++ * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
++ * @SDW_SLAVE_ATTACHED: Slave is attached with bus.
++ * @SDW_SLAVE_ALERT: Some alert condition on the Slave
++ * @SDW_SLAVE_RESERVED: Reserved for future use
++ */
++enum sdw_slave_status {
++	SDW_SLAVE_UNATTACHED = 0,
++	SDW_SLAVE_ATTACHED = 1,
++	SDW_SLAVE_ALERT = 2,
++	SDW_SLAVE_RESERVED = 3,
++};
++
++/*
++ * SDW Slave Structures and APIs
++ */
++
++/**
++ * struct sdw_slave_id - Slave ID
++ * @mfg_id: MIPI Manufacturer ID
++ * @part_id: Device Part ID
++ * @class_id: MIPI Class ID, unused now.
++ * Currently a placeholder in MIPI SoundWire Spec
++ * @unique_id: Device unique ID
++ * @sdw_version: SDW version implemented
++ *
++ * The order of the IDs here does not follow the DisCo spec definitions
++ */
++struct sdw_slave_id {
++	__u16 mfg_id;
++	__u16 part_id;
++	__u8 class_id;
++	__u8 unique_id:4;
++	__u8 sdw_version:4;
++};
++
++/**
++ * struct sdw_slave - SoundWire Slave
++ * @id: MIPI device ID
++ * @dev: Linux device
++ * @status: Status reported by the Slave
++ * @bus: Bus handle
++ * @node: node for bus list
++ * @dev_num: Device Number assigned by Bus
++ */
++struct sdw_slave {
++	struct sdw_slave_id id;
++	struct device dev;
++	enum sdw_slave_status status;
++	struct sdw_bus *bus;
++	struct list_head node;
++	u16 dev_num;
++};
++
++#define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
++
++extern struct bus_type sdw_bus_type;
++
++struct sdw_driver {
++	const char *name;
++
++	int (*probe)(struct sdw_slave *sdw,
++			const struct sdw_device_id *id);
++	int (*remove)(struct sdw_slave *sdw);
++	void (*shutdown)(struct sdw_slave *sdw);
++
++	const struct sdw_device_id *id_table;
++	const struct sdw_slave_ops *ops;
++
++	struct device_driver driver;
++};
++
++#define SDW_SLAVE_ENTRY(_mfg_id, _part_id, _drv_data) \
++	{ .mfg_id = (_mfg_id), .part_id = (_part_id), \
++	  .driver_data = (unsigned long)(_drv_data) }
++
++#define drv_to_sdw_driver(_drv) container_of(_drv, struct sdw_driver, driver)
++
++#define sdw_register_driver(drv) \
++	__sdw_register_driver(drv, THIS_MODULE)
++
++int __sdw_register_driver(struct sdw_driver *drv, struct module *);
++void sdw_unregister_driver(struct sdw_driver *drv);
++
++/*
++ * SDW master structures and APIs
++ */
++
++/**
++ * struct sdw_bus - SoundWire bus
++ * @dev: Master linux device
++ * @link_id: Link id number, can be 0 to N, unique for each Master
++ * @slaves: list of Slaves on this bus
++ * @assigned: Bitmap for Slave device numbers.
++ * Bit set implies used number, bit clear implies unused number.
++ * @bus_lock: bus lock
++ */
++struct sdw_bus {
++	struct device *dev;
++	unsigned int link_id;
++	struct list_head slaves;
++	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
++	struct mutex bus_lock;
++};
++
++#endif /* __SOUNDWIRE_H */
+diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
+index 9826b9a6543c..9fad6afe4c41 100644
+--- a/scripts/mod/devicetable-offsets.c
++++ b/scripts/mod/devicetable-offsets.c
+@@ -203,6 +203,10 @@ int main(void)
+ 	DEVID_FIELD(hda_device_id, rev_id);
+ 	DEVID_FIELD(hda_device_id, api_version);
+ 
++	DEVID(sdw_device_id);
++	DEVID_FIELD(sdw_device_id, mfg_id);
++	DEVID_FIELD(sdw_device_id, part_id);
++
+ 	DEVID(fsl_mc_device_id);
+ 	DEVID_FIELD(fsl_mc_device_id, vendor);
+ 	DEVID_FIELD(fsl_mc_device_id, obj_type);
+diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+index 6ef6e63f96fd..b9beeaa4695b 100644
+--- a/scripts/mod/file2alias.c
++++ b/scripts/mod/file2alias.c
+@@ -1289,6 +1289,21 @@ static int do_hda_entry(const char *filename, void *symval, char *alias)
+ }
+ ADD_TO_DEVTABLE("hdaudio", hda_device_id, do_hda_entry);
+ 
++/* Looks like: sdw:mNpN */
++static int do_sdw_entry(const char *filename, void *symval, char *alias)
++{
++	DEF_FIELD(symval, sdw_device_id, mfg_id);
++	DEF_FIELD(symval, sdw_device_id, part_id);
++
++	strcpy(alias, "sdw:");
++	ADD(alias, "m", mfg_id != 0, mfg_id);
++	ADD(alias, "p", part_id != 0, part_id);
++
++	add_wildcard(alias);
++	return 1;
++}
++ADD_TO_DEVTABLE("sdw", sdw_device_id, do_sdw_entry);
++
+ /* Looks like: fsl-mc:vNdN */
+ static int do_fsl_mc_entry(const char *filename, void *symval,
+ 			   char *alias)
 -- 
 2.7.4
