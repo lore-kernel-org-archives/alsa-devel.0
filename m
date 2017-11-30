@@ -1,237 +1,51 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with
- top-level selector
-Date: Thu, 30 Nov 2017 08:41:36 -0600
-Message-ID: <6e7e8326-60b9-bae8-f0d0-44d53388893e@linux.intel.com>
-References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
- <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
- <20171129102734.GA32417@localhost>
- <8ba6af88-5cb4-8174-2ecc-46f80420ff28@linux.intel.com>
- <20171130122432.GX32417@localhost>
+Subject: Re: [PATCH RESEND 1/2] ASoC: Intel: kbl: Remove option
+ of choosing CH count based on pdata
+Date: Thu, 30 Nov 2017 08:53:15 -0600
+Message-ID: <f28b63e9-2e1d-f4ce-3ce1-fba6527d8a2d@linux.intel.com>
+References: <1510740463-21655-1-git-send-email-naveen.m@intel.com>
+ <1510740463-21655-2-git-send-email-naveen.m@intel.com>
+ <20171129123314.4x4giq4hk2ew2zol@sirena.org.uk>
+ <20171130040204.GK32417@localhost>
+ <20171130061443.GA31069@nm-B85M-D3Hnaveen.m@intel.com>
+ <20171130111511.up2f2te5mc3orkit@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171130122432.GX32417@localhost>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1315526698E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 15:53:18 +0100 (CET)
+In-Reply-To: <20171130111511.up2f2te5mc3orkit@sirena.org.uk>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 11/30/17 6:24 AM, Vinod Koul wrote:
-> On Wed, Nov 29, 2017 at 08:52:58AM -0600, Pierre-Louis Bossart wrote:
->> On 11/29/17 4:27 AM, Vinod Koul wrote:
->>> On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
->>>
->>> I am not sure about top level being default to Y...
+On 11/30/17 5:15 AM, Mark Brown wrote:
+> On Thu, Nov 30, 2017 at 11:44:43AM +0530, Naveen M wrote:
+> 
+>> Regarding the Query:
+>> As Vinod mentioned, I'm working on Chrome OS user-space stack that uses
+>> customized audio server "CRAS".
+>> These patches are verified on a board that has only 2 dmics.
 >>
->> It's standard procedure apparently, see Linus/Mark/Takashi's emails.
->>
->>>
->>>>   config SND_SST_ATOM_HIFI2_PLATFORM
->>>>   	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
->>>> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
->>>> +	depends on X86
->>>>   	select SND_SOC_COMPRESS
->>>> +	select SND_SOC_INTEL_COMMON
->>>>   config SND_SOC_INTEL_SKYLAKE
->>>>   	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
->>>> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
->>>> +	depends on PCI && ACPI
->>>>   	select SND_HDA_EXT_CORE
->>>>   	select SND_HDA_DSP_LOADER
->>>>   	select SND_SOC_TOPOLOGY
->>>>   	select SND_SOC_INTEL_SST
->>>> +	select SND_SOC_INTEL_COMMON
->>>> +	help
->>>> +	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
->>>> +	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
->>>> +	  then enable this option by saying Y or m.
->>>
->>> this is good stuff, helps in improving UX vastly. Btw can we have select ALL
->>> machine also as an option for people who dont want to select a specfic one,
->>> that one will really help for a better UX
->>
->> no, we shouldn't select things, especially with the Baytrail legacy which is
->> kept to avoid breaking existing setups but shouldn't be used any longer.
->> And with SOF coming, we may have hybrid configurations with SOF used on
->> Baytrail/Cherrytrail/APL/CNL but SST used on Skylake/Kabylake due to
->> firmware authentication stuff.
+>> Giving the control to CRAS, enables to select the desired dmic using
+>> channel-map configuration in user-space.
+>> Ex:Rear/Front mic selection for World & Front facing camera scenario
 > 
-> Okay I am checking this out.
-> 
-> Btw you need to rebase this series I wasn't able to apply to mark/intel/topic
-> So I grabbed the branch from your github tree. Assuming I have the right
-> branch (topic/fix-kconfig)
+> People do run non-ChromeOS installs on their Chromebooks so we can't
+> just assume that there's nobody out there with a regular distro on this
+> hardware - a user like this reported the problems with the ABI for
+> topology files breaking for example.
 
-I rebased against Mark's for-next branch on Tuesday?
-
-> 
-> At top level UX is bit confusing:
-> 
-> 			[ ]   Intel ASoC SST drivers
-> 			[*]   Intel ASoC machine drivers
-
-I don't know how you reached this since there is a dependency on the 
-first one. Is this a real case you've seen, it's not supposed to happen.
-
-I just tested and the second line is indeed filtered out if the first 
-one is not selected. Can you please check on your side?
-
-The opposite can happen though if the user explicitly disables the 
-compilation of machine drivers
-
-[*]   Intel ASoC SST drivers
-[ ]   Intel ASoC machine drivers
-
-not sure if there's a way or need to prevent this though?
-
-> 
-> And selecting first symbol shows me the platforms and once I select platform
-> then machines appear under second menu. Now this is really not a great way
-> from UX. Why are we adding platforms selectable? We might be able to
-> simplify this by getting rid of first set and let machine then select
-> Platfroms specfied.
-
-No. This is done so that I can have alternate platform drivers based on 
-SOF and still share the machine drivers.
-The selection of machine first also leads to multiple complications 
-mixing Intel and board level.
-
-> 
-> 			[*]   Intel ASoC SST drivers
-> 			< >     Intel ASoC SST driver for Haswell/Broadwell (NEW)
-> 			< >     Intel ASoC SST driver for Baytrail (legacy) (NEW)
-> 			< >     Intel ASoC SST driver for PCI HiFi2 platforms (Medfield, Merrifield) (NEW)
-> 			< >     Intel ASoC SST driver for ACPI HiFi2 platforms (Baytrail, Cherrytrail) (NEW)
-> 			<*>     Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL
-> 			[*]   Intel ASoC machine drivers
-> 			< >     ASoC Audio driver for SKL with RT286 I2S mode (NEW)
-> 			< >     ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode (NEW)
-> 			< >     ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode (NEW)
-> 
-> If we still want both I would like the machine to appear below the
-> respective platform, in above example, I would like to see:
-> 
-> 			[*]   Intel ASoC SST drivers
-> 			< >     Intel ASoC SST driver for Haswell/Broadwell (NEW)
-> 			< >     Intel ASoC SST driver for Baytrail (legacy) (NEW)
-> 			< >     Intel ASoC SST driver for PCI HiFi2 platforms (Medfield, Merrifield) (NEW)
-> 			< >     Intel ASoC SST driver for ACPI HiFi2 platforms (Baytrail, Cherrytrail) (NEW)
-> 			<*>     Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL
-> 			< >       ASoC Audio driver for SKL with RT286 I2S mode (NEW)
-> 			< >       ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode (NEW)
-> 			< >       ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode (NEW)
-> 
-> Then you can get rid of global mach symbol and select platform and then
-> respective machine and better UX :).
-
-And how is this going to look when I add SOF? I'll have to duplicate the 
-machine drivers entry?
-
-> 
->>>> +endif ## SND_SOC_INTEL_SST_TOPLEVEL
->>>>   # ASoC codec drivers
->>>>   source "sound/soc/intel/boards/Kconfig"
->>>> +
->>>> +# configs common to SST and SOF to compile sound/soc/intel/common
->>>> +# directory and use matching tables
->>>> +
->>>> +config SND_SOC_INTEL_COMMON
->>>> +	tristate
->>>> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
->>>
->>> common selects only MATCH
->>
->> COMMON is only there to go compile the sound/soc/intel/common directory.
->> That's not very useful indeed but otherwise the Makefile doesn't compile the
->> match tables or the sst-ipc stuff. If you find a better solution I am all
->> ears.
-> 
-> Coming to this topic (my original intention to check this), I found that
-> common symbol is not doing anything expect adding common directory, which is
-> not really needed as we have individual bits for files, so I kept this but
-> removed the match one.
-
-I really don't get what you are trying to do, see below.
-
-> 
-> -- >8 --
-> 
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index dee731d42634..33a05aa2cf32 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -99,8 +99,4 @@ source "sound/soc/intel/boards/Kconfig"
-> 
->   config SND_SOC_INTEL_COMMON
->          tristate
-> -       select SND_SOC_ACPI_INTEL_MATCH if ACPI
-> -
-> -config SND_SOC_ACPI_INTEL_MATCH
-> -       tristate
-> -       select SND_SOC_ACPI if ACPI
-> +       depends on ACPI
-> diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-> index b973d457e834..8160520fd74c 100644
-> --- a/sound/soc/intel/Makefile
-> +++ b/sound/soc/intel/Makefile
-> @@ -1,6 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0
->   # Core support
-> -obj-$(CONFIG_SND_SOC_INTEL_COMMON) += common/
-> +obj-$(CONFIG_SND_SOC) += common/
-> 
->   # Platform Support
->   obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
-> diff --git a/sound/soc/intel/common/Makefile
-> b/sound/soc/intel/common/Makefile
-> index 7379d8830c39..92c66c47eb78 100644
-> --- a/sound/soc/intel/common/Makefile
-> +++ b/sound/soc/intel/common/Makefile
-> @@ -8,4 +8,4 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o
-> soc-acpi-intel-cht-m
->   obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
->   obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
->   obj-$(CONFIG_SND_SOC_INTEL_SST_FIRMWARE) += snd-soc-sst-firmware.o
-> -obj-$(CONFIG_SND_SOC_ACPI_INTEL_MATCH) += snd-soc-acpi-intel-match.o
-> +obj-$(CONFIG_SND_SOC_INTEL_COMMON) += snd-soc-acpi-intel-match.o
-
-not very elegant, is it?
-
-> 
-> -- >8 --
-> 
-> This way we have one lesser symbol to manage :) I am okay if you want to
-> keep match and remove common.
-
-if that's possible yes, i don't mind removing the common part and moving 
-the CONFIG_SND_SOC_ACPI_INTEL_MATCH to each platform where it makes 
-sense. In my initial trial the COMMON symbol was required, if it can be 
-removed then fine.
-
-> 
-> 
->>>> +	# this option controls the compilation of the sound/soc/intel/common
->>>> +	# directory and is not meant to be selected by the user. It is
->>>> +	# not filtered out on purpose by the top-level selector since
->>>> +	# it will be selected by SST or SOF platform driver options
->>>> +
->>>> +config SND_SOC_ACPI_INTEL_MATCH
->>>> +	tristate
->>>> +	select SND_SOC_ACPI if ACPI
->>>
->>> then why keep common, lets remove one level and have
->>> SND_SOC_ACPI_INTEL_MATCH selected. ACPI is must have at top level so we can
->>> add depends on that symbol
->>
->> we still have platforms which don't depend on ACPI, so we shouldn't take
->> this out.
-> 
-> For the controllers which are PCI only, yes. But as a platform we won't boot
-> without ACPI :) so take your pick!
-
-I was referring to Medfield/Merrifield. As I mentioned it the fate of 
-those platforms in to be determined but as of today your assertions that 
-all platforms need ACPI is not correct.
+Valid point indeed.
