@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Use standard reset GPIO OF
-	name" to the asoc tree
-Date: Thu, 30 Nov 2017 12:33:07 +0000
-Message-ID: <E1eKO1b-0000Zw-TA@debutante>
-References: <20171129171359.29382-5-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic3x: Rename property for reset
+	GPIO" to the asoc tree
+Date: Thu, 30 Nov 2017 12:33:11 +0000
+Message-ID: <E1eKO1f-0000bm-FW@debutante>
+References: <20171129171359.29382-3-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FFD92679E6
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:14 +0100 (CET)
-In-Reply-To: <20171129171359.29382-5-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3E15267AC9
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:16 +0100 (CET)
+In-Reply-To: <20171129171359.29382-3-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic3x: Use standard reset GPIO OF name
+   ASoC: tlv320aic3x: Rename property for reset GPIO
 
 has been applied to the asoc tree at
 
@@ -52,46 +52,70 @@ to this mail.
 Thanks,
 Mark
 
->From 025f8449818c46770f5652a0263f8cfb89d01455 Mon Sep 17 00:00:00 2001
+>From 943293232ca45988ba0aa693b51025c58e1189ca Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 11:13:55 -0600
-Subject: [PATCH] ASoC: tlv320aic3x: Use standard reset GPIO OF name
+Date: Wed, 29 Nov 2017 11:13:53 -0600
+Subject: [PATCH] ASoC: tlv320aic3x: Rename property for reset GPIO
 
-The correct DT property for specifying a GPIO used for reset
-is "reset-gpios", fix this here.
+The property used to specify a GPIO intended for reset is "reset-gpios",
+but this binding uses "gpio-reset".  It is not compatible with newer
+methods used to fetch GPIO pins and to prevent the spread of this error
+to other bindings let's rename to be more standard.
+
+We also standardize the pin as active-low, different device trees have
+marked the GPIO different ways, luckily the driver currently uses the
+low-level GPIO set function which does not respect the active-low flag,
+but future changes may change this. This is an active-low reset, mark
+it as such.
+
+Lastly, add an example of use for this property.
+
+[Rewrote title & first paragraph for clarity & accuracy -- broonie]
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic3x.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 06f92571eba4..b751cad545da 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1804,11 +1804,18 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 		if (!ai3x_setup)
- 			return -ENOMEM;
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+index ba5b45c483f5..9796c4639262 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
+@@ -17,7 +17,7 @@ Required properties:
  
--		ret = of_get_named_gpio(np, "gpio-reset", 0);
--		if (ret >= 0)
-+		ret = of_get_named_gpio(np, "reset-gpios", 0);
-+		if (ret >= 0) {
- 			aic3x->gpio_reset = ret;
--		else
--			aic3x->gpio_reset = -1;
-+		} else {
-+			ret = of_get_named_gpio(np, "gpio-reset", 0);
-+			if (ret > 0) {
-+				dev_warn(&i2c->dev, "Using deprecated property \"gpio-reset\", please update your DT");
-+				aic3x->gpio_reset = ret;
-+			} else {
-+				aic3x->gpio_reset = -1;
-+			}
-+		}
+ Optional properties:
  
- 		if (of_property_read_u32_array(np, "ai3x-gpio-func",
- 					ai3x_setup->gpio_func, 2) >= 0) {
+-- gpio-reset - gpio pin number used for codec reset
++- reset-gpios - GPIO specification for the active low RESET input.
+ - ai3x-gpio-func - <array of 2 int> - AIC3X_GPIO1 & AIC3X_GPIO2 Functionality
+ 				    - Not supported on tlv320aic3104
+ - ai3x-micbias-vg - MicBias Voltage required.
+@@ -34,6 +34,10 @@ Optional properties:
+ - AVDD-supply, IOVDD-supply, DRVDD-supply, DVDD-supply : power supplies for the
+   device as covered in Documentation/devicetree/bindings/regulator/regulator.txt
+ 
++Deprecated properties:
++
++- gpio-reset - gpio pin number used for codec reset
++
+ CODEC output pins:
+   * LLOUT
+   * RLOUT
+@@ -61,10 +65,14 @@ The pins can be used in referring sound node's audio-routing property.
+ 
+ Example:
+ 
++#include <dt-bindings/gpio/gpio.h>
++
+ tlv320aic3x: tlv320aic3x@1b {
+ 	compatible = "ti,tlv320aic3x";
+ 	reg = <0x1b>;
+ 
++	reset-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
+ 	AVDD-supply = <&regulator>;
+ 	IOVDD-supply = <&regulator>;
+ 	DRVDD-supply = <&regulator>;
 -- 
 2.15.0
