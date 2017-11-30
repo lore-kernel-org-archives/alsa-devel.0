@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: msm8916-wcd: Fix supported formats" to the asoc tree
-Date: Thu, 30 Nov 2017 12:33:20 +0000
-Message-ID: <E1eKO1o-0000f2-IA@debutante>
-References: <20171130101502.4660-1-srinivas.kandagatla@linaro.org>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20171130101502.4660-1-srinivas.kandagatla@linaro.org>
-Sender: stable-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: tlv320aic31xx: File header and
+	copyright cleanup" to the asoc tree
+Date: Thu, 30 Nov 2017 12:33:01 +0000
+Message-ID: <E1eKO1V-0000Vn-EA@debutante>
+References: <20171129213300.20021-2-afd@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F1E82679D8
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:06 +0100 (CET)
+In-Reply-To: <20171129213300.20021-2-afd@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: msm8916-wcd: Fix supported formats
+   ASoC: tlv320aic31xx: File header and copyright cleanup
 
 has been applied to the asoc tree at
 
@@ -37,56 +52,89 @@ to this mail.
 Thanks,
 Mark
 
->From 51f493ae71adc2c49a317a13c38e54e1cdf46005 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 30 Nov 2017 10:15:02 +0000
-Subject: [PATCH] ASoC: codecs: msm8916-wcd: Fix supported formats
+>From b1c52b7e7cc6a57128869008b84d98a4de78fe2d Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Wed, 29 Nov 2017 15:32:42 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: File header and copyright cleanup
 
-This codec is configurable for only 16 bit and 32 bit samples, so reflect
-this in the supported formats also remove 24bit sample from supported list.
+Fix header copyright tags, while we are here, also switch to SPDX
+and fixup MODULE tags to match.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/msm8916-wcd-analog.c  | 2 +-
- sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 26 +++++++++-----------------
+ sound/soc/codecs/tlv320aic31xx.h | 15 ++++-----------
+ 2 files changed, 13 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 5f3c42c4f74a..066ea2f4ce7b 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -267,7 +267,7 @@
- #define MSM8916_WCD_ANALOG_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
- 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
- #define MSM8916_WCD_ANALOG_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
--				    SNDRV_PCM_FMTBIT_S24_LE)
-+				    SNDRV_PCM_FMTBIT_S32_LE)
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 4837f25b0760..b98d9b1f216f 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1,22 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * ALSA SoC TLV320AIC31XX codec driver
++ * ALSA SoC TLV320AIC31xx CODEC Driver
+  *
+- * Copyright (C) 2014 Texas Instruments, Inc.
+- *
+- * Author: Jyri Sarha <jsarha@ti.com>
++ * Copyright (C) 2014-2017 Texas Instruments Incorporated - http://www.ti.com/
++ *	Jyri Sarha <jsarha@ti.com>
+  *
+  * Based on ground work by: Ajit Kulkarni <x0175765@ti.com>
+  *
+- * This package is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * THIS PACKAGE IS PROVIDED AS IS AND WITHOUT ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+- * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+- *
+- * The TLV320AIC31xx series of audio codec is a low-power, highly integrated
+- * high performance codec which provides a stereo DAC, a mono ADC,
++ * The TLV320AIC31xx series of audio codecs are low-power, highly integrated
++ * high performance codecs which provides a stereo DAC, a mono ADC,
+  * and mono/stereo Class-D speaker driver.
+  */
  
- static int btn_mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 	       SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_BTN_4;
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index a10a724eb448..13354d6304a8 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -194,7 +194,7 @@
- 				   SNDRV_PCM_RATE_32000 | \
- 				   SNDRV_PCM_RATE_48000)
- #define MSM8916_WCD_DIGITAL_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
--				     SNDRV_PCM_FMTBIT_S24_LE)
-+				     SNDRV_PCM_FMTBIT_S32_LE)
+@@ -1414,6 +1406,6 @@ static struct i2c_driver aic31xx_i2c_driver = {
  
- struct msm8916_wcd_digital_priv {
- 	struct clk *ahbclk, *mclk;
-@@ -645,7 +645,7 @@ static int msm8916_wcd_digital_hw_params(struct snd_pcm_substream *substream,
- 				    RX_I2S_CTL_RX_I2S_MODE_MASK,
- 				    RX_I2S_CTL_RX_I2S_MODE_16);
- 		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S32_LE:
- 		snd_soc_update_bits(dai->codec, LPASS_CDC_CLK_TX_I2S_CTL,
- 				    TX_I2S_CTL_TX_I2S_MODE_MASK,
- 				    TX_I2S_CTL_TX_I2S_MODE_32);
+ module_i2c_driver(aic31xx_i2c_driver);
+ 
+-MODULE_DESCRIPTION("ASoC TLV320AIC3111 codec driver");
+-MODULE_AUTHOR("Jyri Sarha");
+-MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Jyri Sarha <jsarha@ti.com>");
++MODULE_DESCRIPTION("ASoC TLV320AIC31xx CODEC Driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 730fb2058869..a9ea2f99eba0 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -1,17 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+- * ALSA SoC TLV320AIC31XX codec driver
+- *
+- * Copyright (C) 2013 Texas Instruments, Inc.
+- *
+- * This package is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * THIS PACKAGE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+- * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++ * ALSA SoC TLV320AIC31xx CODEC Driver Definitions
+  *
++ * Copyright (C) 2014-2017 Texas Instruments Incorporated - http://www.ti.com/
+  */
++
+ #ifndef _TLV320AIC31XX_H
+ #define _TLV320AIC31XX_H
+ 
 -- 
 2.15.0
