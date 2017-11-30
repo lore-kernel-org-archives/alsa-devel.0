@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 06/15] soundwire: Add IO transfer
-Date: Thu, 30 Nov 2017 15:27:01 +0530
-Message-ID: <1512035830-29161-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 09/15] soundwire: Add slave status handling
+Date: Thu, 30 Nov 2017 15:27:04 +0530
+Message-ID: <1512035830-29161-10-git-send-email-vinod.koul@intel.com>
 References: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
@@ -10,467 +10,432 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-SoundWire bus supports read or write register(s) for SoundWire Slave
-device. sdw_read() and sdw_write() APIs are provided for single
-register read/write. sdw_nread() and sdw_nwrite() for operations on
-contiguous registers.
+Add status handling API sdw_handle_slave_status() to handle
+Slave status changes.
 
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/bus.c       | 275 ++++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/bus.h       |  37 ++++++
- include/linux/soundwire/sdw.h |  57 +++++++++
- 3 files changed, 369 insertions(+)
+ drivers/soundwire/bus.c       | 351 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/bus.h       |   2 +
+ include/linux/soundwire/sdw.h |  20 +++
+ 3 files changed, 373 insertions(+)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index c0db6d6243b3..82796463fd18 100644
+index 0f063b20efe9..b05d1f8e15e9 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -51,6 +51,8 @@
+@@ -650,3 +650,354 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
  
- #include <linux/acpi.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/soundwire/sdw_registers.h>
- #include <linux/soundwire/sdw.h>
- #include "bus.h"
- 
-@@ -70,6 +72,12 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 		return -ENODEV;
- 	}
- 
-+	if (!bus->ops) {
-+		dev_err(bus->dev, "SoundWire Bus ops are not set");
-+		return -EINVAL;
-+	}
-+
-+	mutex_init(&bus->msg_lock);
- 	mutex_init(&bus->bus_lock);
- 	INIT_LIST_HEAD(&bus->slaves);
- 
-@@ -145,6 +153,273 @@ void sdw_delete_bus_master(struct sdw_bus *bus)
+ 	return 0;
  }
- EXPORT_SYMBOL(sdw_delete_bus_master);
- 
-+/*
-+ * SDW IO Calls
-+ */
 +
-+static inline int find_response_code(enum sdw_command_response resp)
++static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
 +{
-+	switch (resp) {
-+	case SDW_CMD_OK:
-+		return 0;
++	u8 clear = 0, impl_int_mask;
++	int status, ret, count = 0;
 +
-+	case SDW_CMD_IGNORED:
-+		return -ENODATA;
-+
-+	case SDW_CMD_TIMEOUT:
-+		return -ETIMEDOUT;
-+
-+	default:
-+		return -EIO;
++	status = sdw_read(slave, SDW_DP0_INT);
++	if (status < 0) {
++		dev_err(slave->bus->dev,
++				"SDW_DP0_INT read failed:%d", status);
++		return status;
 +	}
-+}
 +
-+static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
-+{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
++	do {
 +
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->xfer_msg(bus, msg);
-+		ret = find_response_code(resp);
++		if (status & SDW_DP0_INT_TEST_FAIL) {
++			dev_err(&slave->dev, "Test fail for port 0");
++			clear |= SDW_DP0_INT_TEST_FAIL;
++		}
 +
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
++		/*
++		 * Assumption: PORT_READY interrupt will be received only for
++		 * ports implementing Channel Prepare state machine (CP_SM)
++		 */
++
++		if (status & SDW_DP0_INT_PORT_READY) {
++			complete(&slave->port_ready[0]);
++			clear |= SDW_DP0_INT_PORT_READY;
++		}
++
++		if (status & SDW_DP0_INT_BRA_FAILURE) {
++			dev_err(&slave->dev, "BRA failed");
++			clear |= SDW_DP0_INT_BRA_FAILURE;
++		}
++
++		impl_int_mask = SDW_DP0_INT_IMPDEF1 |
++			SDW_DP0_INT_IMPDEF2 | SDW_DP0_INT_IMPDEF3;
++
++		if (status & impl_int_mask) {
++			clear |= impl_int_mask;
++			*slave_status = clear;
++		}
++
++		/* clear the interrupt */
++		ret = sdw_write(slave, SDW_DP0_INT, clear);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++				"SDW_DP0_INT write failed:%d", ret);
 +			return ret;
-+	}
++		}
++
++		/* Read DP0 interrupt again */
++		status = sdw_read(slave, SDW_DP0_INT);
++		if (status < 0) {
++			dev_err(slave->bus->dev,
++				"SDW_DP0_INT read failed:%d", status);
++			return status;
++		}
++
++		count++;
++
++		/* we can get alerts while processing so keep retrying */
++	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
++
++	if (count == SDW_READ_INTR_CLEAR_RETRY)
++		dev_warn(slave->bus->dev, "Reached MAX_RETRY on DP0 read");
 +
 +	return ret;
 +}
 +
-+static inline int do_transfer_defer(struct sdw_bus *bus,
-+			struct sdw_msg *msg, struct sdw_defer *defer)
++static int sdw_handle_port_interrupt(struct sdw_slave *slave,
++		int port, u8 *slave_status)
 +{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
++	u8 clear = 0, impl_int_mask;
++	int status, ret, count = 0;
++	u32 addr;
 +
-+	defer->msg = msg;
-+	defer->length = msg->len;
++	if (port == 0)
++		return sdw_handle_dp0_interrupt(slave, slave_status);
 +
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
-+		ret = find_response_code(resp);
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
++	addr = SDW_DPN_INT(port);
++	status = sdw_read(slave, addr);
++	if (status < 0) {
++		dev_err(slave->bus->dev,
++				"SDW_DPN_INT read failed:%d", status);
++
++		return status;
++	}
++
++	do {
++
++		if (status & SDW_DPN_INT_TEST_FAIL) {
++			dev_err(&slave->dev, "Test fail for port:%d", port);
++			clear |= SDW_DPN_INT_TEST_FAIL;
++		}
++
++		/*
++		 * Assumption: PORT_READY interrupt will be received only
++		 * for ports implementing CP_SM.
++		 */
++		if (status & SDW_DPN_INT_PORT_READY) {
++			complete(&slave->port_ready[port]);
++			clear |= SDW_DPN_INT_PORT_READY;
++		}
++
++		impl_int_mask = SDW_DPN_INT_IMPDEF1 |
++			SDW_DPN_INT_IMPDEF2 | SDW_DPN_INT_IMPDEF3;
++
++
++		if (status & impl_int_mask) {
++			clear |= impl_int_mask;
++			*slave_status = clear;
++		}
++
++		/* clear the interrupt */
++		ret = sdw_write(slave, addr, clear);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_DPN_INT write failed:%d", ret);
 +			return ret;
-+	}
++		}
++
++		/* Read DPN interrupt again */
++		status = sdw_read(slave, addr);
++		if (status < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_DPN_INT read failed:%d", status);
++			return status;
++		}
++
++		count++;
++
++		/* we can get alerts while processing so keep retrying */
++	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
++
++	if (count == SDW_READ_INTR_CLEAR_RETRY)
++		dev_warn(slave->bus->dev, "Reached MAX_RETRY on port read");
 +
 +	return ret;
 +}
 +
-+static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
++static int sdw_handle_slave_alerts(struct sdw_slave *slave)
 +{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
++	u8 clear = 0, bit, port_status[15];
++	int port_num, stat, ret, count = 0;
++	unsigned long port;
++	bool slave_notify = false;
++	u8 buf[3];
 +
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->reset_page_addr(bus, dev_num);
-+		ret = find_response_code(resp);
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
++	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
++
++	/* Read Instat 1, Instat 2 and Instat 3 registers */
++	ret = sdw_nread(slave, SDW_SCP_INT1, 3, buf);
++	if (ret < 0) {
++		dev_err(slave->bus->dev,
++					"SDW_SCP_INT1 read failed:%d", ret);
++		return ret;
++	}
++
++	do {
++		/*
++		 * Check parity, bus clash and Slave (impl defined)
++		 * interrupt
++		 */
++		if (buf[0] & SDW_SCP_INT1_PARITY) {
++			dev_err(&slave->dev, "Parity error detected");
++			clear |= SDW_SCP_INT1_PARITY;
++		}
++
++		if (buf[0] & SDW_SCP_INT1_BUS_CLASH) {
++			dev_err(&slave->dev, "Bus clash error detected");
++			clear |= SDW_SCP_INT1_BUS_CLASH;
++		}
++
++		/*
++		 * When bus clash or parity errors are detected, such errors
++		 * are unlikely to be recoverable errors.
++		 * TODO: In such scenario, reset bus. Make this configurable
++		 * via sysfs property with bus reset being the default.
++		 */
++
++		if (buf[0] & SDW_SCP_INT1_IMPL_DEF) {
++			dev_dbg(&slave->dev, "Slave impl defined interrupt\n");
++			clear |= SDW_SCP_INT1_IMPL_DEF;
++			slave_notify = true;
++		}
++
++		/* Check port 0 - 4 interrupts */
++		port = buf[0] & SDW_SCP_INT1_PORT0_3;
++
++		/* To get port number corresponding to bits, shift it */
++		port = port >> SDW_REG_SHIFT(SDW_SCP_INT1_PORT0_3);
++		for_each_set_bit(bit, &port, 8) {
++			sdw_handle_port_interrupt(slave, bit,
++						&port_status[bit]);
++
++		}
++
++		/* Check if cascade 2 interrupt is present */
++		if (buf[0] & SDW_SCP_INT1_SCP2_CASCADE) {
++			port = buf[1] & SDW_SCP_INTSTAT2_PORT4_10;
++			for_each_set_bit(bit, &port, 8) {
++				/* scp2 ports start from 4 */
++				port_num = bit + 3;
++				sdw_handle_port_interrupt(slave,
++						port_num,
++						&port_status[port_num]);
++			}
++		}
++
++		/* now check last cascade */
++		if (buf[1] & SDW_SCP_INTSTAT2_SCP3_CASCADE) {
++			port = buf[2] & SDW_SCP_INTSTAT3_PORT11_14;
++			for_each_set_bit(bit, &port, 8) {
++				/* scp3 ports start from 11 */
++				port_num = bit + 10;
++				sdw_handle_port_interrupt(slave,
++						port_num,
++						&port_status[port_num]);
++			}
++		}
++
++		/* Update the Slave driver */
++		if (slave_notify && (slave->ops) &&
++					(slave->ops->interrupt_callback)) {
++			struct sdw_slave_intr_status slave_intr;
++
++			slave_intr.control_port = clear;
++			memcpy(slave_intr.port, &port_status,
++						sizeof(slave_intr.port));
++
++			slave->ops->interrupt_callback(slave, &slave_intr);
++		}
++
++		/* Ack interrupt */
++		ret = sdw_write(slave, SDW_SCP_INT1, clear);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_SCP_INT1 write failed:%d", ret);
 +			return ret;
-+	}
++		}
++
++		/*
++		 * Read status again to ensure no new interrupts arrived
++		 * while servicing interrupts
++		 */
++		ret = sdw_nread(slave, SDW_SCP_INT1, 3, buf);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_SCP_INT1 read failed:%d", ret);
++			return ret;
++		}
++
++		/* Make sure no interrupts are pending */
++		stat = buf[0] || buf[1] || buf[2];
++
++		/*
++		 * Exit loop if Slave is continuously in ALERT state even
++		 * after servicing the interrupt multiple times.
++		 */
++		count++;
++
++		/* we can get alerts while processing so keep retrying */
++	} while (stat != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
++
++	if (count == SDW_READ_INTR_CLEAR_RETRY)
++		dev_warn(slave->bus->dev, "Reached MAX_RETRY on alert read");
 +
 +	return ret;
 +}
 +
-+/**
-+ * sdw_transfer() - Synchronous transfer message to a SDW Slave device
-+ * @bus: SDW bus
-+ * @slave: SDW Slave
-+ * @msg: SDW message to be xfered
-+ */
-+int sdw_transfer(struct sdw_bus *bus,
-+		struct sdw_slave *slave, struct sdw_msg *msg)
++static int sdw_update_slave_status(struct sdw_slave *slave,
++				enum sdw_slave_status status)
 +{
-+	int ret;
-+
-+	mutex_lock(&bus->msg_lock);
-+
-+	ret = do_transfer(bus, msg);
-+	if (ret != 0 && ret != -ENODATA)
-+		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
-+				msg->dev_num, ret);
-+
-+	if (msg->page)
-+		sdw_reset_page(bus, msg->dev_num);
-+
-+	mutex_unlock(&bus->msg_lock);
-+
-+	return ret;
-+}
-+
-+/**
-+ * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
-+ * @bus: SDW bus
-+ * @slave: SDW Slave
-+ * @msg: SDW message to be xfered
-+ * @defer: Defer block for signal completion
-+ *
-+ * Caller needs to hold the msg_lock lock while calling this
-+ */
-+int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
-+			struct sdw_msg *msg, struct sdw_defer *defer)
-+{
-+	int ret;
-+
-+	if (!bus->ops->xfer_msg_defer)
-+		return -ENOTSUPP;
-+
-+	ret = do_transfer_defer(bus, msg, defer);
-+	if (ret != 0 && ret != -ENODATA)
-+		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
-+				msg->dev_num, ret);
-+
-+	if (msg->page)
-+		sdw_reset_page(bus, msg->dev_num);
-+
-+	return ret;
-+}
-+
-+
-+int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
-+		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
-+{
-+	memset(msg, 0, sizeof(*msg));
-+	msg->addr = addr;
-+	msg->len = count;
-+	msg->dev_num = dev_num;
-+	msg->flags = flags;
-+	msg->buf = buf;
-+	msg->ssp_sync = false;
-+	msg->page = false;
-+
-+	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
-+		return 0;
-+	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
-+		pr_err("SDW: Invalid address %x passed\n", addr);
-+		return -EINVAL;
-+	}
-+
-+	if (addr < SDW_REG_OPTIONAL_PAGE) { /* 32k but no page */
-+		if (slave && !slave->prop.paging_support)
-+			return 0;
-+		/* no need for else as that will fall thru to paging */
-+	}
-+
-+	/* paging madatory */
-+	if (dev_num == SDW_ENUM_DEV_NUM || dev_num == SDW_BROADCAST_DEV_NUM) {
-+		pr_err("SDW: Invalid device for paging :%d\n", dev_num);
-+		return -EINVAL;
-+	}
-+
-+	if (!slave) {
-+		pr_err("SDW: No slave for paging addr\n");
-+		return -EINVAL;
-+	} else if (!slave->prop.paging_support) {
-+		dev_err(&slave->dev,
-+			"address %x needs paging but no support", addr);
-+		return -EINVAL;
-+	}
-+
-+	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
-+	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
-+	msg->addr |= BIT(15);
-+	msg->page = true;
++	if ((slave->ops) && (slave->ops->update_status))
++		return slave->ops->update_status(slave, status);
 +
 +	return 0;
 +}
 +
 +/**
-+ * sdw_nread() - Read "n" contiguous SDW Slave registers
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @count: length
-+ * @val: Buffer for values to be read
++ * sdw_handle_slave_status() - Handle Slave status
++ * @bus: SDW bus instance
++ * @status: Status for all Slave(s)
 + */
-+int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++int sdw_handle_slave_status(struct sdw_bus *bus,
++			enum sdw_slave_status status[])
 +{
-+	struct sdw_msg msg;
-+	int ret;
++	struct sdw_slave *slave;
++	int i, ret = 0;
 +
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			slave->dev_num, SDW_MSG_FLAG_READ, val);
-+	if (ret < 0)
-+		return ret;
++	if (status[0] == SDW_SLAVE_ATTACHED) {
++		ret = sdw_program_device_num(bus);
++		if (ret)
++			dev_err(bus->dev, "Slave attach failed: %d", ret);
++	}
 +
-+	ret = pm_runtime_get_sync(slave->bus->dev);
-+	if (!ret)
-+		return ret;
++	/* Continue to check other slave statuses */
++	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
++		mutex_lock(&bus->bus_lock);
++		if (test_bit(i, bus->assigned) == false) {
++			mutex_unlock(&bus->bus_lock);
++			continue;
++		}
++		mutex_unlock(&bus->bus_lock);
 +
-+	ret = sdw_transfer(slave->bus, slave, &msg);
-+	pm_runtime_put(slave->bus->dev);
++		slave = sdw_get_slave(bus, i);
++		if (!slave)
++			continue;
++
++		switch (status[i]) {
++		case SDW_SLAVE_UNATTACHED:
++			if (slave->status == SDW_SLAVE_UNATTACHED)
++				break;
++
++			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
++			break;
++
++		case SDW_SLAVE_ALERT:
++			ret = sdw_handle_slave_alerts(slave);
++			if (ret)
++				dev_err(bus->dev,
++					"Slave %d alert handling failed: %d",
++					i, ret);
++			break;
++
++		case SDW_SLAVE_ATTACHED:
++			if (slave->status == SDW_SLAVE_ATTACHED)
++				break;
++
++			sdw_initialize_slave(slave);
++			sdw_modify_slave_status(slave, SDW_SLAVE_ATTACHED);
++
++			break;
++
++		default:
++			dev_err(bus->dev, "Invalid slave %d status:%d",
++							i, status[i]);
++			break;
++		}
++
++		ret = sdw_update_slave_status(slave, status[i]);
++		if (ret)
++			dev_err(slave->bus->dev,
++				"Update Slave status failed:%d", ret);
++
++	}
 +
 +	return ret;
 +}
-+EXPORT_SYMBOL(sdw_nread);
-+
-+/**
-+ * sdw_nwrite() - Write "n" contiguous SDW Slave registers
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @count: length
-+ * @val: Buffer for values to be read
-+ */
-+int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-+{
-+	struct sdw_msg msg;
-+	int ret;
-+
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			slave->dev_num, SDW_MSG_FLAG_WRITE, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = pm_runtime_get_sync(slave->bus->dev);
-+	if (!ret)
-+		return ret;
-+
-+	ret = sdw_transfer(slave->bus, slave, &msg);
-+	pm_runtime_put(slave->bus->dev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(sdw_nwrite);
-+
-+/**
-+ * sdw_read() - Read a SDW Slave register
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ */
-+int sdw_read(struct sdw_slave *slave, u32 addr)
-+{
-+	u8 buf;
-+	int ret;
-+
-+	ret = sdw_nread(slave, addr, 1, &buf);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return buf;
-+}
-+EXPORT_SYMBOL(sdw_read);
-+
-+/**
-+ * sdw_write() - Write a SDW Slave register
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @value: Register value
-+ */
-+int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
-+{
-+	return sdw_nwrite(slave, addr, 1, &value);
-+
-+}
-+EXPORT_SYMBOL(sdw_write);
-+
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			u64 addr, struct sdw_slave_id *id)
- {
++EXPORT_SYMBOL(sdw_handle_slave_status);
 diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index c7e8d89271a1..baf173441ac2 100644
+index 885456bd48ac..adffbcea0262 100644
 --- a/drivers/soundwire/bus.h
 +++ b/drivers/soundwire/bus.h
-@@ -65,4 +65,41 @@ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			u64 addr, struct sdw_slave_id *id);
+@@ -94,6 +94,8 @@ struct sdw_msg {
+ 	bool page;
+ };
  
-+enum {
-+	SDW_MSG_FLAG_READ = 0,
-+	SDW_MSG_FLAG_WRITE,
-+};
++#define SDW_READ_INTR_CLEAR_RETRY	10
 +
-+/**
-+ * struct sdw_msg - Message structure
-+ * @addr: Register address accessed in the Slave
-+ * @len: number of messages
-+ * @dev_num: Slave device number
-+ * @addr_page1: SCP address page 1 Slave register
-+ * @addr_page2: SCP address page 2 Slave register
-+ * @flags: transfer flags, indicate if xfer is read or write
-+ * @buf: message data buffer
-+ * @ssp_sync: Send message at SSP (Stream Synchronization Point)
-+ * @page: address requires paging
-+ */
-+struct sdw_msg {
-+	u16 addr;
-+	u16 len;
-+	u16 dev_num;
-+	u8 addr_page1;
-+	u8 addr_page2;
-+	u8 flags;
-+	u8 *buf;
-+	bool ssp_sync;
-+	bool page;
-+};
-+
-+int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
-+			struct sdw_msg *msg);
-+int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
-+			struct sdw_msg *msg, struct sdw_defer *defer);
-+
-+int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
-+		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
-+
- #endif /* __SDW_BUS_H */
+ int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
+ 			struct sdw_msg *msg);
+ int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 06524af644e9..9c6ea5dbe5c8 100644
+index 7c3f8a815d43..151a2c82a219 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -79,6 +79,27 @@ enum sdw_slave_status {
- 	SDW_SLAVE_RESERVED = 3,
+@@ -371,11 +371,28 @@ struct sdw_slave_id {
  };
  
-+/**
-+ * enum sdw_command_response - Command response as defined by SDW spec
-+ * @SDW_CMD_OK: cmd was successful
-+ * @SDW_CMD_IGNORED: cmd was ignored
-+ * @SDW_CMD_FAIL: cmd was NACKed
-+ * @SDW_CMD_TIMEOUT: cmd timedout
-+ * @SDW_CMD_FAIL_OTHER: cmd failed due to other reason than above
-+ *
-+ * NOTE: The enum is different than actual Spec as response in the Spec is
-+ * combination of ACK/NAK bits
-+ *
-+ * SDW_CMD_TIMEOUT/FAIL_OTHER is defined for SW use, not in spec
+ /**
++ * struct sdw_slave_intr_status - Slave interrupt status
++ * @control_port: control port status
++ * @port: data port status
 + */
-+enum sdw_command_response {
-+	SDW_CMD_OK = 0,
-+	SDW_CMD_IGNORED = 1,
-+	SDW_CMD_FAIL = 2,
-+	SDW_CMD_TIMEOUT = 4,
-+	SDW_CMD_FAIL_OTHER = 8,
++struct sdw_slave_intr_status {
++	u8 control_port;
++	u8 port[14];
 +};
++
++/**
+  * struct sdw_slave_ops - Slave driver callback ops
+  * @read_prop: Read Slave properties
++ * @interrupt_callback: Device interrupt notification (invoked in thread
++ * context)
++ * @update_status: Update Slave status
+  */
+ struct sdw_slave_ops {
+ 	int (*read_prop)(struct sdw_slave *sdw);
++	int (*interrupt_callback)(struct sdw_slave *slave,
++			struct sdw_slave_intr_status *status);
++	int (*update_status)(struct sdw_slave *slave,
++			enum sdw_slave_status status);
+ };
+ 
+ /**
+@@ -432,6 +449,9 @@ struct sdw_driver {
+ int __sdw_register_driver(struct sdw_driver *drv, struct module *);
+ void sdw_unregister_driver(struct sdw_driver *drv);
+ 
++int sdw_handle_slave_status(struct sdw_bus *bus,
++			enum sdw_slave_status status[]);
 +
  /*
-  * SDW properties, defined in MIPI DisCo spec v1.0
-  */
-@@ -414,12 +435,37 @@ void sdw_unregister_driver(struct sdw_driver *drv);
   * SDW master structures and APIs
   */
- 
-+struct sdw_msg;
-+
-+/**
-+ * struct sdw_defer - SDW deffered message
-+ * @length: message length
-+ * @complete: message completion
-+ * @msg: SDW message
-+ */
-+struct sdw_defer {
-+	int length;
-+	struct completion complete;
-+	struct sdw_msg *msg;
-+};
-+
- /**
-  * struct sdw_master_ops - Master driver ops
-  * @read_prop: Read Master properties
-+ * @xfer_msg: Transfer message callback
-+ * @xfer_msg_defer: Defer version of transfer message callback
-+ * @reset_page_addr: Reset the SCP page address registers
-  */
- struct sdw_master_ops {
- 	int (*read_prop)(struct sdw_bus *bus);
-+
-+	enum sdw_command_response (*xfer_msg)
-+			(struct sdw_bus *bus, struct sdw_msg *msg);
-+	enum sdw_command_response (*xfer_msg_defer)
-+			(struct sdw_bus *bus, struct sdw_msg *msg,
-+			struct sdw_defer *defer);
-+	enum sdw_command_response (*reset_page_addr)
-+			(struct sdw_bus *bus, unsigned int dev_num);
- };
- 
- /**
-@@ -430,8 +476,10 @@ struct sdw_master_ops {
-  * @assigned: Bitmap for Slave device numbers.
-  * Bit set implies used number, bit clear implies unused number.
-  * @bus_lock: bus lock
-+ * @msg_lock: message lock
-  * @ops: Master callback ops
-  * @prop: Master properties
-+ * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
-  */
- struct sdw_bus {
-@@ -440,12 +488,21 @@ struct sdw_bus {
- 	struct list_head slaves;
- 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
- 	struct mutex bus_lock;
-+	struct mutex msg_lock;
- 	const struct sdw_master_ops *ops;
- 	struct sdw_master_prop prop;
-+	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
- };
- 
- int sdw_add_bus_master(struct sdw_bus *bus);
- void sdw_delete_bus_master(struct sdw_bus *bus);
- 
-+/* messaging and data APIs */
-+
-+int sdw_read(struct sdw_slave *slave, u32 addr);
-+int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
-+int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+
- #endif /* __SOUNDWIRE_H */
 -- 
 2.7.4
