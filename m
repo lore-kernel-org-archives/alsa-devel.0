@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/19] ASoC: tlv320aic31xx: File header
- and copyright cleanup
-Date: Thu, 30 Nov 2017 12:29:45 +0000
-Message-ID: <20171130122945.37p4malktmtvxupu@sirena.org.uk>
-References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-2-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic31xx: Fix GPIO1 register
+	definition" to the asoc tree
+Date: Thu, 30 Nov 2017 12:32:41 +0000
+Message-ID: <E1eKO1B-0000Qa-A0@debutante>
+References: <20171129213300.20021-6-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1095822919812112909=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9047A26698E
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:29:51 +0100 (CET)
-In-Reply-To: <20171129213300.20021-2-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A0A8F26698E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:32:47 +0100 (CET)
+In-Reply-To: <20171129213300.20021-6-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,54 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1095822919812112909==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ggjeo5pp6et7vhra"
-Content-Disposition: inline
+   ASoC: tlv320aic31xx: Fix GPIO1 register definition
 
+has been applied to the asoc tree at
 
---ggjeo5pp6et7vhra
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Nov 29, 2017 at 03:32:42PM -0600, Andrew F. Davis wrote:
-> Fix header copyright tags, while we are here, also switch to SPDX
-> and fixup MODULE tags to match.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> - * The TLV320AIC31xx series of audio codec is a low-power, highly integrated
-> - * high performance codec which provides a stereo DAC, a mono ADC,
-> + * The TLV320AIC31xx series of audio codecs are low-power, highly integrated
-> + * high performance codecs which provides a stereo DAC, a mono ADC,
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-...and also correct some grammar in the description of the part.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---ggjeo5pp6et7vhra
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlof+bkACgkQJNaLcl1U
-h9Asxwf+N/N4wIEU8elkVo4k8hhhWFRXrDsLteguOIWVNMxDlFGkg5PZuBLwZbF3
-lmKQuZozz4cjluPOMwtddlOaPRNvIKLYsL8FeuUEe/LrXMIRgDsCR0sHg2tZP/rt
-SwocK4JEvs2YCCXFwkfMPAwvCwjt61UYp+N5PmGchVSgC6wqLdBHgQ1byuUbxpah
-qOUPJqQZqvOTHdylcgH32ISjP1FeDCLiuJEgvI1OWIcLYO/t/GnBeYXt5ObGLQ3I
-veqCbPpHdi563CTyV8XCuHu5ApGxLXo6Jc0cpjjp36FnZu8i7LUIOYo0v7YXAHNV
-IMdpoygxdSH80+UtqqBto4eJ/CLn0g==
-=gK+M
------END PGP SIGNATURE-----
+>From 737e0b7b67bdfe24090fab2852044bb283282fc5 Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Wed, 29 Nov 2017 15:32:46 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Fix GPIO1 register definition
 
---ggjeo5pp6et7vhra--
+GPIO1 control register is number 51, fix this here.
 
---===============1095822919812112909==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Fixes: bafcbfe429eb ("ASoC: tlv320aic31xx: Make the register values human readable")
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/codecs/tlv320aic31xx.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---===============1095822919812112909==--
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 730fb2058869..1ff3edb7bbb6 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -116,7 +116,7 @@ struct aic31xx_pdata {
+ /* INT2 interrupt control */
+ #define AIC31XX_INT2CTRL	AIC31XX_REG(0, 49)
+ /* GPIO1 control */
+-#define AIC31XX_GPIO1		AIC31XX_REG(0, 50)
++#define AIC31XX_GPIO1		AIC31XX_REG(0, 51)
+ 
+ #define AIC31XX_DACPRB		AIC31XX_REG(0, 60)
+ /* ADC Instruction Set Register */
+-- 
+2.15.0
