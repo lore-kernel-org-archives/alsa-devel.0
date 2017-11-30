@@ -1,108 +1,54 @@
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Subject: Re: [PATCH v3 02/15] soundwire: Add SoundWire bus type
-Date: Thu, 30 Nov 2017 12:42:30 +0100
-Message-ID: <CAOFm3uGxCQQvtts47_ZdjQryokujmunOpf4ZNcG94WpkcQ7A7g@mail.gmail.com>
-References: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
- <1512035830-29161-3-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/8] ASoC: tlv320aic31xx: Fix typo in DT binding
+ documentation
+Date: Thu, 30 Nov 2017 11:43:32 +0000
+Message-ID: <20171130114332.decoq4b5zrth3r6c@sirena.org.uk>
+References: <20171129171359.29382-1-afd@ti.com>
+ <20171129171359.29382-2-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id A5C7026698E
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 12:43:11 +0100 (CET)
-Received: by mail-wm0-f44.google.com with SMTP id g130so1256891wme.0
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 03:43:11 -0800 (PST)
-In-Reply-To: <1512035830-29161-3-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hvcqbqcmhfxn7e3r"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20171129171359.29382-2-afd-l0cyMroinI0@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 30, 2017 at 10:56 AM, Vinod Koul <vinod.koul@intel.com> wrote:
-[]
-> diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-> new file mode 100644
-> index 000000000000..2af05b21961e
-> --- /dev/null
-> +++ b/drivers/soundwire/bus.h
-> @@ -0,0 +1,57 @@
-> +/*
-> + *  This file is provided under a dual BSD/GPLv2 license.  When using or
-> + *  redistributing this file, you may do so under either license.
-> + *
-> + *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> + *
-> + *  GPL LICENSE SUMMARY
-> + *
-> + *  Copyright(c) 2015-17 Intel Corporation.
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of version 2 of the GNU General Public License as
-> + *  published by the Free Software Foundation.
-> + *
-> + *  This program is distributed in the hope that it will be useful, but
-> + *  WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + *  General Public License for more details.
-> + *
-> + *  BSD LICENSE
-> + *
-> + *  Copyright(c) 2015-17 Intel Corporation.
-> + *
-> + *  Redistribution and use in source and binary forms, with or without
-> + *  modification, are permitted provided that the following conditions
-> + *  are met:
-> + *
-> + *    * Redistributions of source code must retain the above copyright
-> + *      notice, this list of conditions and the following disclaimer.
-> + *    * Redistributions in binary form must reproduce the above copyright
-> + *      notice, this list of conditions and the following disclaimer in
-> + *      the documentation and/or other materials provided with the
-> + *      distribution.
-> + *    * Neither the name of Intel Corporation nor the names of its
-> + *      contributors may be used to endorse or promote products derived
-> + *      from this software without specific prior written permission.
-> + *
-> + *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-> + *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-> + *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-> + *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-> + *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-> + *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-> + *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-> + *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-> + *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-> + *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-> + *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-> + *
-> + */
 
-Hi Vinod,
+--hvcqbqcmhfxn7e3r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You may want to use the proper SPDX ids convention here instead? e.g.
-below is all you need IMHO: not 50 lines of boilerplate but only two.
+On Wed, Nov 29, 2017 at 11:13:52AM -0600, Andrew F. Davis wrote:
+> The property used to specify a GPIO intended for reset is "reset-gpios",
+> this binding uses "gpio-reset", as almost all other bindings use the
+> former name this use of the latter was certainly not intended. It is not
+> compatible with newer methods used to fetch GPIO pins and to prevent the
+> spread of this error to other bindings lets fix this here.
 
-You will make everyone happier with a sigh of relief when you remove
-this boilerplate, and you will also have saved a few trees if this
-ever printed on paper, making earth a better planet as a bonus ;)
+When you say you're fixing a typo I'm looking for a fix for something
+like two letters being transposed.  This isn't that, it's a completely
+different property name.
 
-> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> +// Copyright (c) 2015-17 Intel Corporation.
+--hvcqbqcmhfxn7e3r
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Neater and simpler, is it not? In any case the SPDX line should go at the top.
-See Linus and tglx doc posts for comment and doc styles for this.
-NB: some includes used in assembly sometimes require to use /**/
-comments instead.
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Cordially
-Philippe Ombredanne
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlof7uQACgkQJNaLcl1U
+h9CvIwf/YadZJ2lET+uHIGa9oIZOifvUb+/z0OS5gg72gDEZ50Xx2+FN7EIMd8YB
+MR+GnteSzxbHS2BZl8OGquD9TaHZuZj4r26NNoQehgwxzC9f53CnciLF7eDjEOEz
+TSHdH3qdXTMcJZUmlu3Xg8SfslRnRF+unb29rcp6yjyi5rGINLgGKZDvwPL/J3zZ
+tB5t9tPiPmxIcPrTFUB0AGKRjIiQWrlNDqEFlfXC2HgyDC/dUYLQjHKir52G2bpJ
+K1kZX/nx12S2310bH1QIk3jgJeRL7mCQi2D2sVgQ7+YTFeVqkTZ2SIe7zsA+b/iA
+wfw7Hp3fjYbaX3Ldr02191xZf8Qvuw==
+=rxS3
+-----END PGP SIGNATURE-----
+
+--hvcqbqcmhfxn7e3r--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
