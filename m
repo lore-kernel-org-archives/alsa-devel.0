@@ -1,58 +1,74 @@
-From: srinivas.kandagatla@linaro.org
-Subject: [PATCH] ASoC: codecs: msm8916-wcd: Fix supported formats
-Date: Thu, 30 Nov 2017 10:15:02 +0000
-Message-ID: <20171130101502.4660-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ALSA: pcm: add SNDRV_PCM_FORMAT_{S,
+ U}20" to the asoc tree
+Date: Thu, 30 Nov 2017 10:41:59 +0000
+Message-ID: <20171130104159.r2zgwblievcyfpya@sirena.org.uk>
+References: <3a279ea2-8098-d5a4-a53e-b0e3585fa9bf@maciej.szmigiero.name>
+ <E1eK7aT-0004iV-CY@debutante> <s5hmv34ixtg.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============5016317532407380294=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF82E26698E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 11:42:07 +0100 (CET)
+In-Reply-To: <s5hmv34ixtg.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This codec is configurable for only 16 bit and 32 bit samples, so reflect
-this in the supported formats also remove 24bit sample from supported list.
+--===============5016317532407380294==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="amgpeomm6p7ycbrs"
+Content-Disposition: inline
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/msm8916-wcd-analog.c  | 2 +-
- sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 5f3c42c4f74a..066ea2f4ce7b 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -267,7 +267,7 @@
- #define MSM8916_WCD_ANALOG_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
- 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
- #define MSM8916_WCD_ANALOG_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
--				    SNDRV_PCM_FMTBIT_S24_LE)
-+				    SNDRV_PCM_FMTBIT_S32_LE)
- 
- static int btn_mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 	       SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_BTN_4;
-diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
-index a10a724eb448..13354d6304a8 100644
---- a/sound/soc/codecs/msm8916-wcd-digital.c
-+++ b/sound/soc/codecs/msm8916-wcd-digital.c
-@@ -194,7 +194,7 @@
- 				   SNDRV_PCM_RATE_32000 | \
- 				   SNDRV_PCM_RATE_48000)
- #define MSM8916_WCD_DIGITAL_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
--				     SNDRV_PCM_FMTBIT_S24_LE)
-+				     SNDRV_PCM_FMTBIT_S32_LE)
- 
- struct msm8916_wcd_digital_priv {
- 	struct clk *ahbclk, *mclk;
-@@ -645,7 +645,7 @@ static int msm8916_wcd_digital_hw_params(struct snd_pcm_substream *substream,
- 				    RX_I2S_CTL_RX_I2S_MODE_MASK,
- 				    RX_I2S_CTL_RX_I2S_MODE_16);
- 		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S32_LE:
- 		snd_soc_update_bits(dai->codec, LPASS_CDC_CLK_TX_I2S_CTL,
- 				    TX_I2S_CTL_TX_I2S_MODE_MASK,
- 				    TX_I2S_CTL_TX_I2S_MODE_32);
--- 
-2.15.0
+--amgpeomm6p7ycbrs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Nov 29, 2017 at 10:23:23PM +0100, Takashi Iwai wrote:
+
+> Mark, I already took this into my tree, as it's a change in ALSA core
+> stuff.  As mentioned in another mail, the branch was exposed to
+> topic/pcm-20bit branch, so that you can pull cleanly.
+
+That's what this is reporting - the result of my pull.  My script
+reports all new patches I push rather than things I apply, I pull
+infrequently enough I didn't need to fix it yet.
+
+--amgpeomm6p7ycbrs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlof4HYACgkQJNaLcl1U
+h9C8dwf/c225aQcNBAPeEDVGx59FZBrBkNJeUG8Gqt8mDKvCyQ8NkBXXZxLi2URn
+BexsCUBUBqq/0HnaI+EpiZZyR/Uk0e+lxAJ6E7QTnLAfuTiMPuU5sp0n5Lrj5e/C
+UNTBwZEPut4+VkQMWvd5jjSrwcmDK2hf9xDhfnmhFIgC8PAuPBFm0qP1UvJWHhls
+VNKSYh0Awl9ZDJ5n9R4Ufxve7/3faCEq6uTWq8BHA2VQva3KOGODhpCD+bBCNBzf
+j4EHzUyx08rfSNXy1muAMnz92mbJ/wl5yLcUx2OaZzu5w65tWHh2UIL/Hh2FtTwl
+9wkajHmo4MudzuK+oBejRaLu1JjNJA==
+=tO2u
+-----END PGP SIGNATURE-----
+
+--amgpeomm6p7ycbrs--
+
+--===============5016317532407380294==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5016317532407380294==--
