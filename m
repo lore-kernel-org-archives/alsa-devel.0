@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Move ACPI table next to
-	OF table" to the asoc tree
-Date: Thu, 30 Nov 2017 12:32:50 +0000
-Message-ID: <E1eKO1K-0000S4-EY@debutante>
-References: <20171129213300.20021-4-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic31xx: Change aic31xx_power_off
+	return type to void" to the asoc tree
+Date: Thu, 30 Nov 2017 12:32:58 +0000
+Message-ID: <E1eKO1S-0000US-Eb@debutante>
+References: <20171129213300.20021-3-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 216BF2679BE
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:32:55 +0100 (CET)
-In-Reply-To: <20171129213300.20021-4-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A25DD26698E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:02 +0100 (CET)
+In-Reply-To: <20171129213300.20021-3-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Move ACPI table next to OF table
+   ASoC: tlv320aic31xx: Change aic31xx_power_off return type to void
 
 has been applied to the asoc tree at
 
@@ -52,50 +52,44 @@ to this mail.
 Thanks,
 Mark
 
->From 09303601bacda714220048a61f6864f88594b231 Mon Sep 17 00:00:00 2001
+>From c7734e8e7eddf065c15e865b8de4224b01f03409 Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 15:32:44 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Move ACPI table next to OF table
+Date: Wed, 29 Nov 2017 15:32:43 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Change aic31xx_power_off return type to
+ void
+
+The return value is not checked, and even if it was there is nothing
+we could do about it and messages are already printed.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 0563a49cc5e4..d974e8651e30 100644
+index b98d9b1f216f..0563a49cc5e4 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1285,6 +1285,14 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
+@@ -1081,16 +1081,13 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ 	return 0;
  }
- #endif /* CONFIG_OF */
  
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id aic31xx_acpi_match[] = {
-+	{ "10TI3100", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
-+#endif
-+
- static int aic31xx_device_init(struct aic31xx_priv *aic31xx)
+-static int aic31xx_power_off(struct snd_soc_codec *codec)
++static void aic31xx_power_off(struct snd_soc_codec *codec)
  {
- 	int ret, i;
-@@ -1382,14 +1390,6 @@ static const struct i2c_device_id aic31xx_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, aic31xx_i2c_id);
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
+-	int ret = 0;
  
--#ifdef CONFIG_ACPI
--static const struct acpi_device_id aic31xx_acpi_match[] = {
--	{ "10TI3100", 0 },
--	{ }
--};
--MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
--#endif
+ 	regcache_cache_only(aic31xx->regmap, true);
+-	ret = regulator_bulk_disable(ARRAY_SIZE(aic31xx->supplies),
+-				     aic31xx->supplies);
 -
- static struct i2c_driver aic31xx_i2c_driver = {
- 	.driver = {
- 		.name	= "tlv320aic31xx-codec",
+-	return ret;
++	regulator_bulk_disable(ARRAY_SIZE(aic31xx->supplies),
++			       aic31xx->supplies);
+ }
+ 
+ static int aic31xx_set_bias_level(struct snd_soc_codec *codec,
 -- 
 2.15.0
