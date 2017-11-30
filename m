@@ -1,45 +1,48 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 14/15] soundwire: intel: Add Intel init module
-Date: Thu, 30 Nov 2017 15:27:09 +0530
-Message-ID: <1512035830-29161-15-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v3 05/15] soundwire: Add SoundWire MIPI defined
+	registers
+Date: Thu, 30 Nov 2017 15:27:00 +0530
+Message-ID: <1512035830-29161-6-git-send-email-vinod.koul@intel.com>
 References: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12BFA266FA1
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 10:54:02 +0100 (CET)
 In-Reply-To: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The SoundWire Master is implemented as part of Audio controller in
-Intel platforms. Add a init module which creates SoundWire Master
-platform devices based on the links supported in the hardware.
+From: Sanyog Kale <sanyog.r.kale@intel.com>
+
+MIPI SoundWire spec defines standard SoundWire registers mandatory for
+SoundWire Slave devices, so add them.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Makefile          |   3 +
- drivers/soundwire/intel_init.c      | 246 ++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw_intel.h |   3 +
- 3 files changed, 252 insertions(+)
- create mode 100644 drivers/soundwire/intel_init.c
+ include/linux/soundwire/sdw_registers.h | 242 ++++++++++++++++++++++++++++++++
+ 1 file changed, 242 insertions(+)
+ create mode 100644 include/linux/soundwire/sdw_registers.h
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index 0813b2c74426..94272c965d6c 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -13,3 +13,6 @@ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
- #Intel driver
- soundwire-intel-objs :=	intel.o
- obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
-+
-+soundwire-intel-init-objs := intel_init.o
-+obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel-init.o
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
 new file mode 100644
-index 000000000000..60a9b19ae818
+index 000000000000..d973794f1e83
 --- /dev/null
-+++ b/drivers/soundwire/intel_init.c
-@@ -0,0 +1,246 @@
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -0,0 +1,242 @@
 +/*
 + *  This file is provided under a dual BSD/GPLv2 license.  When using or
 + *  redistributing this file, you may do so under either license.
@@ -91,212 +94,196 @@ index 000000000000..60a9b19ae818
 + *
 + */
 +
++#ifndef __SDW_REGISTERS_H
++#define __SDW_REGISTERS_H
++
 +/*
-+ * SDW Intel Init Routines
++ * typically we define register and shifts but if one observes carefully,
++ * the shift can be generated from MASKS using few bit primitaives like ffs
++ * etc, so we use that and avoid defining shifts
++ */
++#define SDW_REG_SHIFT(n)			(ffs(n) - 1)
++
++/*
++ * SDW registers as defined by MIPI 1.1 Spec
++ */
++#define SDW_REGADDR				GENMASK(14, 0)
++#define SDW_SCP_ADDRPAGE2_MASK			GENMASK(22, 15)
++#define SDW_SCP_ADDRPAGE1_MASK			GENMASK(30, 23)
++
++#define SDW_REG_NO_PAGE				0x00008000
++#define SDW_REG_OPTIONAL_PAGE			0x00010000
++#define SDW_REG_MAX				0x80000000
++
++#define SDW_DPN_SIZE				0x100
++#define SDW_BANK1_OFFSET			0x10
++
++/*
++ * DP0 Interrupt register & bits
 + *
-+ * Initializes and creates SDW devices based on ACPI and Hardware values
++ * Spec treats Status (RO) and Clear (WC) as separate but they are same
++ * address, so treat as same register with WC.
 + */
 +
-+#include <linux/acpi.h>
-+#include <linux/platform_device.h>
-+#include <linux/soundwire/sdw_intel.h>
-+#include "intel.h"
++/* both INT and STATUS register are same */
++#define SDW_DP0_INT				0x0
++#define SDW_DP0_INTMASK				0x1
++#define SDW_DP0_PORTCTRL			0x2
++#define SDW_DP0_BLOCKCTRL1			0x3
++#define SDW_DP0_PREPARESTATUS			0x4
++#define SDW_DP0_PREPARECTRL			0x5
 +
-+#define SDW_MAX_LINKS		4
-+#define SDW_SHIM_LCAP		0x0
-+#define SDW_SHIM_BASE		0x2C000
-+#define SDW_ALH_BASE		0x2C800
-+#define SDW_LINK_BASE		0x30000
-+#define SDW_LINK_SIZE		0x10000
++#define SDW_DP0_INT_TEST_FAIL			BIT(0)
++#define SDW_DP0_INT_PORT_READY			BIT(1)
++#define SDW_DP0_INT_BRA_FAILURE			BIT(2)
++#define SDW_DP0_INT_IMPDEF1			BIT(5)
++#define SDW_DP0_INT_IMPDEF2			BIT(6)
++#define SDW_DP0_INT_IMPDEF3			BIT(7)
 +
-+struct sdw_link_data {
-+	struct sdw_intel_link_res res;
-+	struct platform_device *pdev;
-+};
++#define SDW_DP0_PORTCTRL_DATAMODE		GENMASK(3, 2)
++#define SDW_DP0_PORTCTRL_NXTINVBANK		BIT(4)
++#define SDW_DP0_PORTCTRL_BPT_PAYLD		GENMASK(7, 6)
 +
-+struct sdw_intel_ctx {
-+	int count;
-+	struct sdw_link_data *links;
-+};
++#define SDW_DP0_CHANNELEN			0x20
++#define SDW_DP0_SAMPLECTRL1			0x22
++#define SDW_DP0_SAMPLECTRL2			0x23
++#define SDW_DP0_OFFSETCTRL1			0x24
++#define SDW_DP0_OFFSETCTRL2			0x25
++#define SDW_DP0_HCTRL				0x26
++#define SDW_DP0_LANECTRL			0x28
 +
-+static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
-+{
-+	struct sdw_link_data *link = ctx->links;
-+	int i;
++/* Both INT and STATUS register are same */
++#define SDW_SCP_INT1				0x40
++#define SDW_SCP_INTMASK1			0x41
 +
-+	if (!link)
-+		return 0;
++#define SDW_SCP_INT1_PARITY			BIT(0)
++#define SDW_SCP_INT1_BUS_CLASH			BIT(1)
++#define SDW_SCP_INT1_IMPL_DEF			BIT(2)
++#define SDW_SCP_INT1_SCP2_CASCADE		BIT(7)
++#define SDW_SCP_INT1_PORT0_3			GENMASK(6, 3)
 +
-+	for (i = 0; i < ctx->count; i++) {
-+		if (link->pdev)
-+			platform_device_unregister(link->pdev);
-+		link++;
-+	}
++#define SDW_SCP_INTSTAT2			0x42
++#define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
++#define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
 +
-+	kfree(ctx->links);
-+	ctx->links = NULL;
 +
-+	return 0;
-+}
++#define SDW_SCP_INTSTAT3			0x43
++#define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
 +
-+static struct sdw_intel_ctx
-+*sdw_intel_add_controller(struct sdw_intel_res *res)
-+{
-+	struct platform_device_info pdevinfo;
-+	struct platform_device *pdev;
-+	struct sdw_link_data *link;
-+	struct sdw_intel_ctx *ctx;
-+	struct acpi_device *adev;
-+	int ret, i;
-+	u8 count;
-+	u32 caps;
++/* Number of interrupt status registers */
++#define SDW_NUM_INT_STAT_REGISTERS		3
 +
-+	if (acpi_bus_get_device(res->handle, &adev))
-+		return NULL;
++/* Number of interrupt clear registers */
++#define SDW_NUM_INT_CLEAR_REGISTERS		1
 +
-+	/* Found controller, find links supported */
-+	count = 0;
-+	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
-+				  "mipi-sdw-master-count", &count, 1);
++#define SDW_SCP_CTRL				0x44
++#define SDW_SCP_CTRL_CLK_STP_NOW		BIT(1)
++#define SDW_SCP_CTRL_FORCE_RESET		BIT(7)
 +
-+	/* Don't fail on error, continue and use hw value */
-+	if (ret) {
-+		dev_err(&adev->dev,
-+			"Failed to read mipi-sdw-master-count: %d\n", ret);
-+		count = SDW_MAX_LINKS;
-+	}
++#define SDW_SCP_STAT				0x44
++#define SDW_SCP_STAT_CLK_STP_NF			BIT(0)
++#define SDW_SCP_STAT_HPHY_NOK			BIT(5)
++#define SDW_SCP_STAT_CURR_BANK			BIT(6)
 +
-+	/* Check SNDWLCAP.LCOUNT */
-+	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
++#define SDW_SCP_SYSTEMCTRL			0x45
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP		BIT(0)
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE		BIT(2)
++#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN		BIT(3)
++#define SDW_SCP_SYSTEMCTRL_HIGH_PHY		BIT(4)
 +
-+	/* Check HW supported vs property value and use min of two */
-+	count = min_t(u8, caps, count);
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE0	0
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE1	BIT(2)
 +
-+	/* Check count is within bounds */
-+	if (count > SDW_MAX_LINKS) {
-+		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
-+						count, SDW_MAX_LINKS);
-+		return NULL;
-+	}
++#define SDW_SCP_DEVNUMBER			0x46
++#define SDW_SCP_HIGH_PHY_CHECK			0x47
++#define SDW_SCP_ADDRPAGE1			0x48
++#define SDW_SCP_ADDRPAGE2			0x49
++#define SDW_SCP_KEEPEREN			0x4A
++#define SDW_SCP_BANKDELAY			0x4B
++#define SDW_SCP_TESTMODE			0x4F
++#define SDW_SCP_DEVID_0				0x50
++#define SDW_SCP_DEVID_1				0x51
++#define SDW_SCP_DEVID_2				0x52
++#define SDW_SCP_DEVID_3				0x53
++#define SDW_SCP_DEVID_4				0x54
++#define SDW_SCP_DEVID_5				0x55
 +
-+	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
++/* Banked Registers */
++#define SDW_SCP_FRAMECTRL_B0			0x60
++#define SDW_SCP_FRAMECTRL_B1			(0x60 + SDW_BANK1_OFFSET)
++#define SDW_SCP_NEXTFRAME_B0			0x61
++#define SDW_SCP_NEXTFRAME_B1			(0x61 + SDW_BANK1_OFFSET)
 +
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return NULL;
++/* Both INT and STATUS register is same */
++#define SDW_DPN_INT(n)				(0x0 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_INTMASK(n)			(0x1 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PORTCTRL(n)			(0x2 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL1(n)			(0x3 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PREPARESTATUS(n)		(0x4 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PREPARECTRL(n)			(0x5 + SDW_DPN_SIZE * (n))
 +
-+	ctx->count = count;
-+	ctx->links = kcalloc(ctx->count, sizeof(*ctx->links), GFP_KERNEL);
-+	if (!ctx->links)
-+		goto link_err;
++#define SDW_DPN_INT_TEST_FAIL			BIT(0)
++#define SDW_DPN_INT_PORT_READY			BIT(1)
++#define SDW_DPN_INT_IMPDEF1			BIT(5)
++#define SDW_DPN_INT_IMPDEF2			BIT(6)
++#define SDW_DPN_INT_IMPDEF3			BIT(7)
 +
-+	link = ctx->links;
++#define SDW_DPN_PORTCTRL_FLOWMODE		GENMASK(1, 0)
++#define SDW_DPN_PORTCTRL_DATAMODE		GENMASK(3, 2)
++#define SDW_DPN_PORTCTRL_NXTINVBANK		BIT(4)
 +
-+	/* Create SDW Master devices */
-+	for (i = 0; i < count; i++) {
++#define SDW_DPN_BLOCKCTRL1_WDLEN		GENMASK(5, 0)
 +
-+		link->res.irq = res->irq;
-+		link->res.registers = res->mmio_base + SDW_LINK_BASE
-+					+ (SDW_LINK_SIZE * i);
-+		link->res.shim = res->mmio_base + SDW_SHIM_BASE;
-+		link->res.alh = res->mmio_base + SDW_ALH_BASE;
++#define SDW_DPN_PREPARECTRL_CH_PREP		GENMASK(7, 0)
 +
-+		memset(&pdevinfo, 0, sizeof(pdevinfo));
++#define SDW_DPN_CHANNELEN_B0(n)			(0x20 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_CHANNELEN_B1(n)			(0x30 + SDW_DPN_SIZE * (n))
 +
-+		pdevinfo.parent = res->parent;
-+		pdevinfo.name = "int-sdw";
-+		pdevinfo.id = i;
-+		pdevinfo.fwnode = acpi_fwnode_handle(adev);
-+		pdevinfo.data = &link->res;
-+		pdevinfo.size_data = sizeof(link->res);
++#define SDW_DPN_BLOCKCTRL2_B0(n)		(0x21 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL2_B1(n)		(0x31 + SDW_DPN_SIZE * (n))
 +
-+		pdev = platform_device_register_full(&pdevinfo);
-+		if (IS_ERR(pdev)) {
-+			dev_err(&adev->dev,
-+				"platform device creation failed: %ld\n",
-+				PTR_ERR(pdev));
-+			goto pdev_err;
-+		}
++#define SDW_DPN_SAMPLECTRL1_B0(n)		(0x22 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_SAMPLECTRL1_B1(n)		(0x32 + SDW_DPN_SIZE * (n))
 +
-+		link->pdev = pdev;
-+		link++;
-+	}
++#define SDW_DPN_SAMPLECTRL2_B0(n)		(0x23 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_SAMPLECTRL2_B1(n)		(0x33 + SDW_DPN_SIZE * (n))
 +
-+	return ctx;
++#define SDW_DPN_OFFSETCTRL1_B0(n)		(0x24 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_OFFSETCTRL1_B1(n)		(0x34 + SDW_DPN_SIZE * (n))
 +
-+pdev_err:
-+	sdw_intel_cleanup_pdev(ctx);
-+link_err:
-+	kfree(ctx);
-+	return NULL;
-+}
++#define SDW_DPN_OFFSETCTRL2_B0(n)		(0x25 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_OFFSETCTRL2_B1(n)		(0x35 + SDW_DPN_SIZE * (n))
 +
-+static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
-+					void *cdata, void **return_value)
-+{
-+	struct sdw_intel_res *res = cdata;
-+	struct acpi_device *adev;
++#define SDW_DPN_HCTRL_B0(n)			(0x26 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_HCTRL_B1(n)			(0x36 + SDW_DPN_SIZE * (n))
 +
-+	if (acpi_bus_get_device(handle, &adev)) {
-+		dev_err(&adev->dev, "Couldn't find ACPI handle\n");
-+		return AE_NOT_FOUND;
-+	}
++#define SDW_DPN_BLOCKCTRL3_B0(n)		(0x27 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL3_B1(n)		(0x37 + SDW_DPN_SIZE * (n))
 +
-+	res->handle = handle;
-+	return AE_OK;
-+}
++#define SDW_DPN_LANECTRL_B0(n)			(0x28 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_LANECTRL_B1(n)			(0x38 + SDW_DPN_SIZE * (n))
 +
-+/**
-+ * sdw_intel_init() - SoundWire Intel init routine
-+ * @parent_handle: ACPI parent handle
-+ * @res: resource data
-+ *
-+ * This scans the namespace and creates SoundWire link controller devices
-+ * based on the info queried.
-+ */
-+void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
-+{
-+	acpi_status status;
++#define SDW_DPN_SAMPLECTRL_LOW			GENMASK(7, 0)
++#define SDW_DPN_SAMPLECTRL_HIGH			GENMASK(15, 8)
 +
-+	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
-+					parent_handle, 1,
-+					sdw_intel_acpi_cb,
-+					NULL, res, NULL);
-+	if (ACPI_FAILURE(status))
-+		return NULL;
++#define SDW_DPN_HCTRL_HSTART			GENMASK(7, 4)
++#define SDW_DPN_HCTRL_HSTOP			GENMASK(3, 0)
 +
-+	return sdw_intel_add_controller(res);
-+}
-+EXPORT_SYMBOL(sdw_intel_init);
++#define SDW_NUM_CASC_PORT_INTSTAT1		4
++#define SDW_CASC_PORT_START_INTSTAT1		0
++#define SDW_CASC_PORT_MASK_INTSTAT1		0x8
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT1	0x0
 +
-+/**
-+ * sdw_intel_exit() - SoundWire Intel exit
-+ * @arg: callback context
-+ *
-+ * Delete the controller instances created and cleanup
-+ */
-+void sdw_intel_exit(void *arg)
-+{
-+	struct sdw_intel_ctx *ctx = arg;
++#define SDW_NUM_CASC_PORT_INTSTAT2		7
++#define SDW_CASC_PORT_START_INTSTAT2		4
++#define SDW_CASC_PORT_MASK_INTSTAT2		1
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT2	1
 +
-+	sdw_intel_cleanup_pdev(ctx);
-+	kfree(ctx);
-+}
-+EXPORT_SYMBOL(sdw_intel_exit);
++#define SDW_NUM_CASC_PORT_INTSTAT3		4
++#define SDW_CASC_PORT_START_INTSTAT3		11
++#define SDW_CASC_PORT_MASK_INTSTAT3		1
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
 +
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_DESCRIPTION("Intel Soundwire Init Library");
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 59c3546cfe36..cb94b35e461f 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -65,4 +65,7 @@ struct sdw_intel_res {
- 	struct device *parent;
- };
- 
-+void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res);
-+void sdw_intel_exit(void *arg);
-+
- #endif
++#endif /* __SDW_REGISTERS_H */
 -- 
 2.7.4
