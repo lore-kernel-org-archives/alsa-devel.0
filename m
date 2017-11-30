@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Use standard reset GPIO
-	OF name" to the asoc tree
-Date: Thu, 30 Nov 2017 12:33:14 +0000
-Message-ID: <E1eKO1i-0000cz-GY@debutante>
-References: <20171129171359.29382-4-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic31xx: Rename property for
+	reset GPIO" to the asoc tree
+Date: Thu, 30 Nov 2017 12:33:17 +0000
+Message-ID: <E1eKO1l-0000e6-GO@debutante>
+References: <20171129171359.29382-2-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 839F32679D3
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:20 +0100 (CET)
-In-Reply-To: <20171129171359.29382-4-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 96E6B2679C0
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:22 +0100 (CET)
+In-Reply-To: <20171129171359.29382-2-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Use standard reset GPIO OF name
+   ASoC: tlv320aic31xx: Rename property for reset GPIO
 
 has been applied to the asoc tree at
 
@@ -52,44 +52,73 @@ to this mail.
 Thanks,
 Mark
 
->From a825f31f93281bbe7126b25801deb476d07aaf82 Mon Sep 17 00:00:00 2001
+>From f00e0030bcbf49936d265330f6e0b8c739ad90c3 Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 11:13:54 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Use standard reset GPIO OF name
+Date: Wed, 29 Nov 2017 11:13:52 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Rename property for reset GPIO
 
-The correct DT property for specifying a GPIO used for reset
-is "reset-gpios", fix this here.
+The property used to specify a GPIO intended for reset is "reset-gpios",
+but this binding uses "gpio-reset".  It is not compatible with newer
+methods used to fetch GPIO pins and to prevent the spread of this error
+to other bindings let's rename to be more standard.
 
-[Retitled for accuracy -- broonie]
+We also standardize the pin as active-low, different device trees have
+marked the GPIO different ways, luckily the driver currently uses the
+low-level GPIO set function which does not respect the active-low flag,
+but future changes may change this. This is an active-low reset, mark
+it as such.
+
+Lastly, add an example of use for this property.
+
+[Rewrote the title & first paragraph of the commit message for clarity
+-- broonie]
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index e2862372c26e..4837f25b0760 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1279,9 +1279,16 @@ static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
- 		aic31xx->pdata.micbias_vg = MICBIAS_2_0V;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+index 6fbba562eaa7..5b3c33bb99e5 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
++++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
+@@ -22,7 +22,7 @@ Required properties:
  
--	ret = of_get_named_gpio(np, "gpio-reset", 0);
--	if (ret > 0)
-+	ret = of_get_named_gpio(np, "reset-gpios", 0);
-+	if (ret > 0) {
- 		aic31xx->pdata.gpio_reset = ret;
-+	} else {
-+		ret = of_get_named_gpio(np, "gpio-reset", 0);
-+		if (ret > 0) {
-+			dev_warn(aic31xx->dev, "Using deprecated property \"gpio-reset\", please update your DT");
-+			aic31xx->pdata.gpio_reset = ret;
-+		}
-+	}
- }
- #else /* CONFIG_OF */
- static void aic31xx_pdata_from_of(struct aic31xx_priv *aic31xx)
+ Optional properties:
+ 
+-- gpio-reset - gpio pin number used for codec reset
++- reset-gpios - GPIO specification for the active low RESET input.
+ - ai31xx-micbias-vg - MicBias Voltage setting
+         1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
+         2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
+@@ -30,6 +30,10 @@ Optional properties:
+ 	If this node is not mentioned or if the value is unknown, then
+ 	micbias	is set to 2.0V.
+ 
++Deprecated properties:
++
++- gpio-reset - gpio pin number used for codec reset
++
+ CODEC output pins:
+   * HPL
+   * HPR
+@@ -48,6 +52,7 @@ CODEC input pins:
+ The pins can be used in referring sound node's audio-routing property.
+ 
+ Example:
++#include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/sound/tlv320aic31xx-micbias.h>
+ 
+ tlv320aic31xx: tlv320aic31xx@18 {
+@@ -56,6 +61,8 @@ tlv320aic31xx: tlv320aic31xx@18 {
+ 
+ 	ai31xx-micbias-vg = <MICBIAS_OFF>;
+ 
++	reset-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
++
+ 	HPVDD-supply = <&regulator>;
+ 	SPRVDD-supply = <&regulator>;
+ 	SPLVDD-supply = <&regulator>;
 -- 
 2.15.0
