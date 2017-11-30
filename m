@@ -1,193 +1,102 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with top-level
- selector
-Date: Thu, 30 Nov 2017 17:54:32 +0530
-Message-ID: <20171130122432.GX32417@localhost>
-References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
- <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
- <20171129102734.GA32417@localhost>
- <8ba6af88-5cb4-8174-2ecc-46f80420ff28@linux.intel.com>
+Subject: Re: [PATCH v3 02/15] soundwire: Add SoundWire bus type
+Date: Thu, 30 Nov 2017 18:01:03 +0530
+Message-ID: <20171130123102.GY32417@localhost>
+References: <1512035830-29161-1-git-send-email-vinod.koul@intel.com>
+ <1512035830-29161-3-git-send-email-vinod.koul@intel.com>
+ <CAOFm3uGxCQQvtts47_ZdjQryokujmunOpf4ZNcG94WpkcQ7A7g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8ba6af88-5cb4-8174-2ecc-46f80420ff28@linux.intel.com>
+In-Reply-To: <CAOFm3uGxCQQvtts47_ZdjQryokujmunOpf4ZNcG94WpkcQ7A7g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
+To: Philippe Ombredanne <pombredanne@nexb.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 29, 2017 at 08:52:58AM -0600, Pierre-Louis Bossart wrote:
-> On 11/29/17 4:27 AM, Vinod Koul wrote:
-> >On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
-> >
-> >I am not sure about top level being default to Y...
+On Thu, Nov 30, 2017 at 12:42:30PM +0100, Philippe Ombredanne wrote:
+> On Thu, Nov 30, 2017 at 10:56 AM, Vinod Koul <vinod.koul@intel.com> wrote:
+> []
+> > diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> > new file mode 100644
+> > index 000000000000..2af05b21961e
+> > --- /dev/null
+> > +++ b/drivers/soundwire/bus.h
+> > @@ -0,0 +1,57 @@
+> > +/*
+> > + *  This file is provided under a dual BSD/GPLv2 license.  When using or
+> > + *  redistributing this file, you may do so under either license.
+> > + *
+> > + *  SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> > + *
+> > + *  GPL LICENSE SUMMARY
+> > + *
+> > + *  Copyright(c) 2015-17 Intel Corporation.
+> > + *
+> > + *  This program is free software; you can redistribute it and/or modify
+> > + *  it under the terms of version 2 of the GNU General Public License as
+> > + *  published by the Free Software Foundation.
+> > + *
+> > + *  This program is distributed in the hope that it will be useful, but
+> > + *  WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> > + *  General Public License for more details.
+> > + *
+> > + *  BSD LICENSE
+> > + *
+> > + *  Copyright(c) 2015-17 Intel Corporation.
+> > + *
+> > + *  Redistribution and use in source and binary forms, with or without
+> > + *  modification, are permitted provided that the following conditions
+> > + *  are met:
+> > + *
+> > + *    * Redistributions of source code must retain the above copyright
+> > + *      notice, this list of conditions and the following disclaimer.
+> > + *    * Redistributions in binary form must reproduce the above copyright
+> > + *      notice, this list of conditions and the following disclaimer in
+> > + *      the documentation and/or other materials provided with the
+> > + *      distribution.
+> > + *    * Neither the name of Intel Corporation nor the names of its
+> > + *      contributors may be used to endorse or promote products derived
+> > + *      from this software without specific prior written permission.
+> > + *
+> > + *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+> > + *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+> > + *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+> > + *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+> > + *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+> > + *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+> > + *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+> > + *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+> > + *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+> > + *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+> > + *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+> > + *
+> > + */
 > 
-> It's standard procedure apparently, see Linus/Mark/Takashi's emails.
+> Hi Vinod,
 > 
-> >
-> >>  config SND_SST_ATOM_HIFI2_PLATFORM
-> >>  	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
-> >>-	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
-> >>+	depends on X86
-> >>  	select SND_SOC_COMPRESS
-> >>+	select SND_SOC_INTEL_COMMON
-> >>  config SND_SOC_INTEL_SKYLAKE
-> >>  	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
-> >>-	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
-> >>+	depends on PCI && ACPI
-> >>  	select SND_HDA_EXT_CORE
-> >>  	select SND_HDA_DSP_LOADER
-> >>  	select SND_SOC_TOPOLOGY
-> >>  	select SND_SOC_INTEL_SST
-> >>+	select SND_SOC_INTEL_COMMON
-> >>+	help
-> >>+	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
-> >>+	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
-> >>+	  then enable this option by saying Y or m.
-> >
-> >this is good stuff, helps in improving UX vastly. Btw can we have select ALL
-> >machine also as an option for people who dont want to select a specfic one,
-> >that one will really help for a better UX
+> You may want to use the proper SPDX ids convention here instead? e.g.
+> below is all you need IMHO: not 50 lines of boilerplate but only two.
 > 
-> no, we shouldn't select things, especially with the Baytrail legacy which is
-> kept to avoid breaking existing setups but shouldn't be used any longer.
-> And with SOF coming, we may have hybrid configurations with SOF used on
-> Baytrail/Cherrytrail/APL/CNL but SST used on Skylake/Kabylake due to
-> firmware authentication stuff.
-
-Okay I am checking this out.
-
-Btw you need to rebase this series I wasn't able to apply to mark/intel/topic
-So I grabbed the branch from your github tree. Assuming I have the right
-branch (topic/fix-kconfig)
-
-At top level UX is bit confusing:
-
-			[ ]   Intel ASoC SST drivers
-			[*]   Intel ASoC machine drivers
-
-And selecting first symbol shows me the platforms and once I select platform
-then machines appear under second menu. Now this is really not a great way
-from UX. Why are we adding platforms selectable? We might be able to
-simplify this by getting rid of first set and let machine then select
-Platfroms specfied.
-
-			[*]   Intel ASoC SST drivers
-			< >     Intel ASoC SST driver for Haswell/Broadwell (NEW)
-			< >     Intel ASoC SST driver for Baytrail (legacy) (NEW)
-			< >     Intel ASoC SST driver for PCI HiFi2 platforms (Medfield, Merrifield) (NEW)
-			< >     Intel ASoC SST driver for ACPI HiFi2 platforms (Baytrail, Cherrytrail) (NEW)
-			<*>     Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL
-			[*]   Intel ASoC machine drivers
-			< >     ASoC Audio driver for SKL with RT286 I2S mode (NEW)
-			< >     ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode (NEW)
-			< >     ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode (NEW) 
-
-If we still want both I would like the machine to appear below the
-respective platform, in above example, I would like to see:
-
-			[*]   Intel ASoC SST drivers
-			< >     Intel ASoC SST driver for Haswell/Broadwell (NEW)
-			< >     Intel ASoC SST driver for Baytrail (legacy) (NEW)
-			< >     Intel ASoC SST driver for PCI HiFi2 platforms (Medfield, Merrifield) (NEW)
-			< >     Intel ASoC SST driver for ACPI HiFi2 platforms (Baytrail, Cherrytrail) (NEW)
-			<*>     Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL
-			< >       ASoC Audio driver for SKL with RT286 I2S mode (NEW)
-			< >       ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode (NEW)
-			< >       ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode (NEW) 
-
-Then you can get rid of global mach symbol and select platform and then
-respective machine and better UX :).
-
-> >>+endif ## SND_SOC_INTEL_SST_TOPLEVEL
-> >>  # ASoC codec drivers
-> >>  source "sound/soc/intel/boards/Kconfig"
-> >>+
-> >>+# configs common to SST and SOF to compile sound/soc/intel/common
-> >>+# directory and use matching tables
-> >>+
-> >>+config SND_SOC_INTEL_COMMON
-> >>+	tristate
-> >>+	select SND_SOC_ACPI_INTEL_MATCH if ACPI
-> >
-> >common selects only MATCH
+> You will make everyone happier with a sigh of relief when you remove
+> this boilerplate, and you will also have saved a few trees if this
+> ever printed on paper, making earth a better planet as a bonus ;)
 > 
-> COMMON is only there to go compile the sound/soc/intel/common directory.
-> That's not very useful indeed but otherwise the Makefile doesn't compile the
-> match tables or the sst-ipc stuff. If you find a better solution I am all
-> ears.
+> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> > +// Copyright (c) 2015-17 Intel Corporation.
 
-Coming to this topic (my original intention to check this), I found that
-common symbol is not doing anything expect adding common directory, which is
-not really needed as we have individual bits for files, so I kept this but
-removed the match one.
+I hadn't seen this one, thanks for pointing. A quick google pointed me to
+relevant post.
 
--- >8 --
+> Neater and simpler, is it not? In any case the SPDX line should go at the top.
+> See Linus and tglx doc posts for comment and doc styles for this.
+> NB: some includes used in assembly sometimes require to use /**/
+> comments instead.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index dee731d42634..33a05aa2cf32 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -99,8 +99,4 @@ source "sound/soc/intel/boards/Kconfig"
+IANAL and recommendation at Intel is to keep the text with the tags.
 
- config SND_SOC_INTEL_COMMON
-        tristate
--       select SND_SOC_ACPI_INTEL_MATCH if ACPI
--
--config SND_SOC_ACPI_INTEL_MATCH
--       tristate
--       select SND_SOC_ACPI if ACPI
-+       depends on ACPI
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index b973d457e834..8160520fd74c 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- # Core support
--obj-$(CONFIG_SND_SOC_INTEL_COMMON) += common/
-+obj-$(CONFIG_SND_SOC) += common/
-
- # Platform Support
- obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
-diff --git a/sound/soc/intel/common/Makefile
-b/sound/soc/intel/common/Makefile
-index 7379d8830c39..92c66c47eb78 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -8,4 +8,4 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o
-soc-acpi-intel-cht-m
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
- obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
- obj-$(CONFIG_SND_SOC_INTEL_SST_FIRMWARE) += snd-soc-sst-firmware.o
--obj-$(CONFIG_SND_SOC_ACPI_INTEL_MATCH) += snd-soc-acpi-intel-match.o
-+obj-$(CONFIG_SND_SOC_INTEL_COMMON) += snd-soc-acpi-intel-match.o
-
--- >8 --
-
-This way we have one lesser symbol to manage :) I am okay if you want to
-keep match and remove common.
-
-
-> >>+	# this option controls the compilation of the sound/soc/intel/common
-> >>+	# directory and is not meant to be selected by the user. It is
-> >>+	# not filtered out on purpose by the top-level selector since
-> >>+	# it will be selected by SST or SOF platform driver options
-> >>+
-> >>+config SND_SOC_ACPI_INTEL_MATCH
-> >>+	tristate
-> >>+	select SND_SOC_ACPI if ACPI
-> >
-> >then why keep common, lets remove one level and have
-> >SND_SOC_ACPI_INTEL_MATCH selected. ACPI is must have at top level so we can
-> >add depends on that symbol
-> 
-> we still have platforms which don't depend on ACPI, so we shouldn't take
-> this out.
-
-For the controllers which are PCI only, yes. But as a platform we won't boot
-without ACPI :) so take your pick!
-
+Thanks
 -- 
 ~Vinod
