@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Rename property for reset
-	GPIO" to the asoc tree
-Date: Thu, 30 Nov 2017 12:33:11 +0000
-Message-ID: <E1eKO1f-0000bm-FW@debutante>
-References: <20171129171359.29382-3-afd@ti.com>
+Subject: Applied "ASoC: nau8825: set clear_irq when imm IRQ
+	happened" to the asoc tree
+Date: Thu, 30 Nov 2017 12:33:04 +0000
+Message-ID: <E1eKO1Y-0000XO-Ex@debutante>
+References: <1512007997-31704-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D3E15267AC9
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:16 +0100 (CET)
-In-Reply-To: <20171129171359.29382-3-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D164D2679BD
+ for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:18 +0100 (CET)
+In-Reply-To: <1512007997-31704-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>, Shawn Guo <shawnguo@kernel.org>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, anatol.pomozov@gmail.com, WTLI@nuvoton.com, wuchengli@google.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, mac.chiang@intel.com, broonie@kernel.org, Wu-Cheng Li <wuchengli@chromium.org>, CTLIN0@nuvoton.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic3x: Rename property for reset GPIO
+   ASoC: nau8825: set clear_irq when imm IRQ happened
 
 has been applied to the asoc tree at
 
@@ -52,70 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 943293232ca45988ba0aa693b51025c58e1189ca Mon Sep 17 00:00:00 2001
-From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 11:13:53 -0600
-Subject: [PATCH] ASoC: tlv320aic3x: Rename property for reset GPIO
+>From e3fee43a968fd39dcc56be3757fcdfe250964125 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Thu, 30 Nov 2017 10:13:17 +0800
+Subject: [PATCH] ASoC: nau8825: set clear_irq when imm IRQ happened
 
-The property used to specify a GPIO intended for reset is "reset-gpios",
-but this binding uses "gpio-reset".  It is not compatible with newer
-methods used to fetch GPIO pins and to prevent the spread of this error
-to other bindings let's rename to be more standard.
+Although the crosstalk is disabled, it is better to set clear_irq
+properly when the impedance measurement interrupt happens.
+It can avoid that the driver clears other IRQs by accident
+if the active_irq has another IRQ events.
 
-We also standardize the pin as active-low, different device trees have
-marked the GPIO different ways, luckily the driver currently uses the
-low-level GPIO set function which does not respect the active-low flag,
-but future changes may change this. This is an active-low reset, mark
-it as such.
-
-Lastly, add an example of use for this property.
-
-[Rewrote title & first paragraph for clarity & accuracy -- broonie]
-
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Reviewed-by: Wu-Cheng Li <wuchengli@chromium.org>
+Tested-by: Wu-Cheng Li <wuchengli@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/tlv320aic3x.txt | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/codecs/nau8825.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-index ba5b45c483f5..9796c4639262 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic3x.txt
-@@ -17,7 +17,7 @@ Required properties:
- 
- Optional properties:
- 
--- gpio-reset - gpio pin number used for codec reset
-+- reset-gpios - GPIO specification for the active low RESET input.
- - ai3x-gpio-func - <array of 2 int> - AIC3X_GPIO1 & AIC3X_GPIO2 Functionality
- 				    - Not supported on tlv320aic3104
- - ai3x-micbias-vg - MicBias Voltage required.
-@@ -34,6 +34,10 @@ Optional properties:
- - AVDD-supply, IOVDD-supply, DRVDD-supply, DVDD-supply : power supplies for the
-   device as covered in Documentation/devicetree/bindings/regulator/regulator.txt
- 
-+Deprecated properties:
-+
-+- gpio-reset - gpio pin number used for codec reset
-+
- CODEC output pins:
-   * LLOUT
-   * RLOUT
-@@ -61,10 +65,14 @@ The pins can be used in referring sound node's audio-routing property.
- 
- Example:
- 
-+#include <dt-bindings/gpio/gpio.h>
-+
- tlv320aic3x: tlv320aic3x@1b {
- 	compatible = "ti,tlv320aic3x";
- 	reg = <0x1b>;
- 
-+	reset-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
-+
- 	AVDD-supply = <&regulator>;
- 	IOVDD-supply = <&regulator>;
- 	DRVDD-supply = <&regulator>;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index d3c1a02f1e15..603cd72c2a25 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1733,10 +1733,9 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 			nau8825->xtalk_event_mask = event_mask;
+ 		}
+ 	} else if (active_irq & NAU8825_IMPEDANCE_MEAS_IRQ) {
+-		if (nau8825->xtalk_enable) {
++		if (nau8825->xtalk_enable)
+ 			schedule_work(&nau8825->xtalk_work);
+-			clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
+-		}
++		clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
+ 	} else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
+ 		NAU8825_JACK_INSERTION_DETECTED) {
+ 		/* One more step to check GPIO status directly. Thus, the
 -- 
 2.15.0
