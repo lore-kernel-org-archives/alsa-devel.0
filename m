@@ -1,94 +1,50 @@
-From: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v2 2/2] ASoC: codecs: Add initial PCM1862/63/64/65
- universal ADC driver
-Date: Thu, 30 Nov 2017 09:56:08 -0600
-Message-ID: <d4f015ab-3b17-dab8-33ba-4144b7571554@ti.com>
-References: <20171129185015.5304-1-afd@ti.com>
- <20171129185015.5304-2-afd@ti.com>
- <20171130122035.wgj2jpvzx6md5gnl@sirena.org.uk>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v2 5/8] ARM: dts: am335x-pepper: Fix the audio CODEC's
+ reset pin
+Date: Thu, 30 Nov 2017 08:18:26 -0800
+Message-ID: <20171130161826.GP28152@atomide.com>
+References: <20171129171359.29382-1-afd@ti.com>
+ <20171129171359.29382-6-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171130122035.wgj2jpvzx6md5gnl-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171129171359.29382-6-afd@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/30/2017 06:20 AM, Mark Brown wrote:
-> On Wed, Nov 29, 2017 at 12:50:15PM -0600, Andrew F. Davis wrote:
+* Andrew F. Davis <afd@ti.com> [171129 17:16]:
+> The correct DT property for specifying a GPIO used for reset
+> is "reset-gpios", fix this here.
 > 
->> +	case SND_SOC_BIAS_STANDBY:
->> +		pcm186x_power_on(codec);
->> +		break;
->> +	case SND_SOC_BIAS_OFF:
->> +		pcm186x_power_off(codec);
->> +		break;
->> +	}
-> 
->> +/*
->> + * The PCM186x's page register is located on every page, allowing to program it
->> + * without having to switch pages. Take advantage of this by defining the range
->> + * such to have this register located inside the data window.
->> + */
-> 
-> That sounds like a normal page register?
-> 
+> Fixes: 4341881d0562 ("ARM: dts: Add devicetree for Gumstix Pepper board")
 
-It is, I believe Andreas commented this for his own reference, I'll drop it.
+So it seems this and patch 8/8 are safe for me to pick separately?
 
->> +int pcm186x_probe(struct device *dev, enum pcm186x_type type, int irq,
->> +		  struct regmap *regmap)
->> +{
-> 
->> +	ret = regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
->> +				     priv->supplies);
->> +	if (ret) {
->> +		dev_err(dev, "failed disable supplies: %d\n", ret);
->> +		return ret;
->> +	}
-> 
->> +static int __maybe_unused pcm186x_resume(struct device *dev)
->> +{
->> +	struct pcm186x_priv *priv = dev_get_drvdata(dev);
->> +	int ret;
->> +
->> +	ret = regulator_bulk_enable(ARRAY_SIZE(priv->supplies),
->> +				    priv->supplies);
->> +	if (ret != 0) {
->> +		dev_err(dev, "failed to enable supplies: %d\n", ret);
->> +		return ret;
->> +	}
-> 
->> +const struct dev_pm_ops pcm186x_pm_ops = {
->> +	SET_RUNTIME_PM_OPS(pcm186x_suspend, pcm186x_resume, NULL)
->> +};
->> +EXPORT_SYMBOL_GPL(pcm186x_pm_ops);
-> 
-> There's no code in the driver that enables runtime PM so this isn't
-> going to do anything.  I'm also not clear that the power management
-> handling is in general joined up - we leave the regulators disabled
-> at the end of probe, relying on the bias level configuration to reenable
-> them but then the runtime PM configuration also tries to enable and
-> disable them.  Based on what I think the intention is I'd suggest
-> removing the bias level handling and then having probe enable runtime
-> PM with the device flagged as active, letting runtime PM do any
-> disabling if the device is idle.
-> 
+Regards,
 
-I beleive this was meant to be be SIMPLE_DEV_PM_OPS and not
-SET_RUNTIME_PM_OPS. I'll fix this all up for v3.
+Tony
 
-Just thinking, the sound core sets SND_SOC_BIAS_OFF before suspend
-anyway, right? So the results would be similar just having all the PM
-stuff in the bias level handling for consistency, but I'm open to
-whatever is the preferred way.
-
-> I'd also expect to see some system suspend handling.
+> Signed-off-by: Andrew F. Davis <afd@ti.com>
+> ---
+>  arch/arm/boot/dts/am335x-pepper.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> diff --git a/arch/arm/boot/dts/am335x-pepper.dts b/arch/arm/boot/dts/am335x-pepper.dts
+> index 03c7d77023c6..9fb7426070ce 100644
+> --- a/arch/arm/boot/dts/am335x-pepper.dts
+> +++ b/arch/arm/boot/dts/am335x-pepper.dts
+> @@ -139,7 +139,7 @@
+>  &audio_codec {
+>  	status = "okay";
+>  
+> -	gpio-reset = <&gpio1 16 GPIO_ACTIVE_LOW>;
+> +	reset-gpios = <&gpio1 16 GPIO_ACTIVE_LOW>;
+>  	AVDD-supply = <&ldo3_reg>;
+>  	IOVDD-supply = <&ldo3_reg>;
+>  	DRVDD-supply = <&ldo3_reg>;
+> -- 
+> 2.15.0
+> 
