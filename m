@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Change aic31xx_power_off
-	return type to void" to the asoc tree
-Date: Thu, 30 Nov 2017 12:32:58 +0000
-Message-ID: <E1eKO1S-0000US-Eb@debutante>
-References: <20171129213300.20021-3-afd@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A25DD26698E
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:02 +0100 (CET)
-In-Reply-To: <20171129213300.20021-3-afd@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>
+Subject: Applied "ASoC: codecs: msm8916-wcd: Fix supported formats" to the asoc tree
+Date: Thu, 30 Nov 2017 12:33:20 +0000
+Message-ID: <E1eKO1o-0000f2-IA@debutante>
+References: <20171130101502.4660-1-srinivas.kandagatla@linaro.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20171130101502.4660-1-srinivas.kandagatla@linaro.org>
+Sender: stable-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.orgMark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Change aic31xx_power_off return type to void
+   ASoC: codecs: msm8916-wcd: Fix supported formats
 
 has been applied to the asoc tree at
 
@@ -52,44 +37,56 @@ to this mail.
 Thanks,
 Mark
 
->From c7734e8e7eddf065c15e865b8de4224b01f03409 Mon Sep 17 00:00:00 2001
-From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 15:32:43 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Change aic31xx_power_off return type to
- void
+>From 51f493ae71adc2c49a317a13c38e54e1cdf46005 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 30 Nov 2017 10:15:02 +0000
+Subject: [PATCH] ASoC: codecs: msm8916-wcd: Fix supported formats
 
-The return value is not checked, and even if it was there is nothing
-we could do about it and messages are already printed.
+This codec is configurable for only 16 bit and 32 bit samples, so reflect
+this in the supported formats also remove 24bit sample from supported list.
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/tlv320aic31xx.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c  | 2 +-
+ sound/soc/codecs/msm8916-wcd-digital.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index b98d9b1f216f..0563a49cc5e4 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1081,16 +1081,13 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
- 	return 0;
- }
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index 5f3c42c4f74a..066ea2f4ce7b 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -267,7 +267,7 @@
+ #define MSM8916_WCD_ANALOG_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+ 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
+ #define MSM8916_WCD_ANALOG_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+-				    SNDRV_PCM_FMTBIT_S24_LE)
++				    SNDRV_PCM_FMTBIT_S32_LE)
  
--static int aic31xx_power_off(struct snd_soc_codec *codec)
-+static void aic31xx_power_off(struct snd_soc_codec *codec)
- {
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
--	int ret = 0;
+ static int btn_mask = SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 	       SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_BTN_4;
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index a10a724eb448..13354d6304a8 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -194,7 +194,7 @@
+ 				   SNDRV_PCM_RATE_32000 | \
+ 				   SNDRV_PCM_RATE_48000)
+ #define MSM8916_WCD_DIGITAL_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
+-				     SNDRV_PCM_FMTBIT_S24_LE)
++				     SNDRV_PCM_FMTBIT_S32_LE)
  
- 	regcache_cache_only(aic31xx->regmap, true);
--	ret = regulator_bulk_disable(ARRAY_SIZE(aic31xx->supplies),
--				     aic31xx->supplies);
--
--	return ret;
-+	regulator_bulk_disable(ARRAY_SIZE(aic31xx->supplies),
-+			       aic31xx->supplies);
- }
- 
- static int aic31xx_set_bias_level(struct snd_soc_codec *codec,
+ struct msm8916_wcd_digital_priv {
+ 	struct clk *ahbclk, *mclk;
+@@ -645,7 +645,7 @@ static int msm8916_wcd_digital_hw_params(struct snd_pcm_substream *substream,
+ 				    RX_I2S_CTL_RX_I2S_MODE_MASK,
+ 				    RX_I2S_CTL_RX_I2S_MODE_16);
+ 		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
++	case SNDRV_PCM_FORMAT_S32_LE:
+ 		snd_soc_update_bits(dai->codec, LPASS_CDC_CLK_TX_I2S_CTL,
+ 				    TX_I2S_CTL_TX_I2S_MODE_MASK,
+ 				    TX_I2S_CTL_TX_I2S_MODE_32);
 -- 
 2.15.0
