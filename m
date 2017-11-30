@@ -1,183 +1,408 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v8 01/13] Documentation: Add SLIMbus summary
-Date: Thu, 30 Nov 2017 17:41:48 +0000
-Message-ID: <20171130174200.6684-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v8 07/13] slimbus: Add support for 'clock-pause' feature
+Date: Thu, 30 Nov 2017 17:41:54 +0000
+Message-ID: <20171130174200.6684-8-srinivas.kandagatla@linaro.org>
 References: <20171130174200.6684-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 5895F26698E
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 18:45:49 +0100 (CET)
-Received: by mail-wm0-f52.google.com with SMTP id l141so14608613wmg.1
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 09:45:49 -0800 (PST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171130174200.6684-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, michael.opdenacker@free-electrons.com, poeschel@lemonage.de, srinivas.kandagatla@linaro.org, andreas.noever@gmail.com, arnd@arndb.de, vinod.koul@intel.com, bp@suse.de, devicetree@vger.kernel.org, james.hogan@imgtec.com, pawel.moll@arm.com, linux-arm-msm@vger.kernel.org, sharon.dvir1@mail.huji.ac.il, robh+dt@kernel.org, sdharia@codeaurora.org, alan@linux.intel.com, treding@nvidia.com, mathieu.poirier@linaro.org, jkosina@suse.cz, linux-kernel@vger.kernel.org, daniel@ffwll.ch, joe@perches.com, davem@davemloft.net
+Cc: sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Sagar Dharia <sdharia@codeaurora.org>
 
-SLIMbus (Serial Low Power Interchip Media Bus) is a specification
-developed by MIPI (Mobile Industry Processor Interface) alliance.
-SLIMbus is a 2-wire implementation, which is used to communicate with
-peripheral components like audio-codec.
-
-The summary of SLIMbus and API is documented in the 'summary' file.
+Per SLIMbus specification, a reconfiguration sequence known as
+'clock pause' needs to be broadcast over the bus while entering low-
+power mode. Clock-pause is initiated by the controller driver.
+To exit clock-pause, controller typically wakes up the framer device.
+Since wakeup precedure is controller-specific, framework calls it via
+controller's function pointer to invoke it.
 
 Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- Documentation/driver-api/slimbus/index.rst   |  15 ++++
- Documentation/driver-api/slimbus/summary.rst | 108 +++++++++++++++++++++++++++
- 2 files changed, 123 insertions(+)
- create mode 100644 Documentation/driver-api/slimbus/index.rst
- create mode 100644 Documentation/driver-api/slimbus/summary.rst
+ drivers/slimbus/Makefile    |   2 +-
+ drivers/slimbus/core.c      |  16 ++++++
+ drivers/slimbus/messaging.c |  35 +++++++++++-
+ drivers/slimbus/sched.c     | 128 ++++++++++++++++++++++++++++++++++++++++++++
+ drivers/slimbus/slimbus.h   |  53 ++++++++++++++++++
+ 5 files changed, 232 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/slimbus/sched.c
 
-diff --git a/Documentation/driver-api/slimbus/index.rst b/Documentation/driver-api/slimbus/index.rst
+diff --git a/drivers/slimbus/Makefile b/drivers/slimbus/Makefile
+index a65677ec3f7a..fd794f83d1cf 100644
+--- a/drivers/slimbus/Makefile
++++ b/drivers/slimbus/Makefile
+@@ -2,4 +2,4 @@
+ # Makefile for kernel SLIMbus framework.
+ #
+ obj-$(CONFIG_SLIMBUS)			+= slimbus.o
+-slimbus-y				:= core.o messaging.o
++slimbus-y				:= core.o messaging.o sched.o
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index 0c66f76b1a85..17485b0d0771 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -16,6 +16,7 @@
+ #include <linux/init.h>
+ #include <linux/idr.h>
+ #include <linux/of.h>
++#include <linux/pm_runtime.h>
+ #include <linux/slimbus.h>
+ #include "slimbus.h"
+ 
+@@ -225,6 +226,8 @@ int slim_register_controller(struct slim_controller *ctrl)
+ 	ida_init(&ctrl->laddr_ida);
+ 	idr_init(&ctrl->tid_idr);
+ 	mutex_init(&ctrl->lock);
++	mutex_init(&ctrl->sched.m_reconf);
++	init_completion(&ctrl->sched.pause_comp);
+ 
+ 	dev_dbg(ctrl->dev, "Bus [%s] registered:dev:%p\n",
+ 		ctrl->name, ctrl->dev);
+@@ -256,6 +259,8 @@ int slim_unregister_controller(struct slim_controller *ctrl)
+ {
+ 	/* Remove all clients */
+ 	device_for_each_child(ctrl->dev, NULL, slim_ctrl_remove_device);
++	/* Enter Clock Pause */
++	slim_ctrl_clk_pause(ctrl, false, 0);
+ 	ida_simple_remove(&ctrl_ida, ctrl->id);
+ 
+ 	return 0;
+@@ -423,6 +428,14 @@ int slim_device_report_present(struct slim_controller *ctrl,
+ 	struct slim_device *sbdev;
+ 	int ret;
+ 
++	ret = pm_runtime_get_sync(ctrl->dev);
++
++	if (ctrl->sched.clk_state != SLIM_CLK_ACTIVE) {
++		dev_err(ctrl->dev, "slim ctrl not active,state:%d, ret:%d\n",
++				    ctrl->sched.clk_state, ret);
++		goto slimbus_not_active;
++	}
++
+ 	sbdev = slim_get_device(ctrl, e_addr);
+ 	if (IS_ERR(sbdev))
+ 		return -ENODEV;
+@@ -434,6 +447,9 @@ int slim_device_report_present(struct slim_controller *ctrl,
+ 
+ 	ret = slim_device_alloc_laddr(sbdev, true);
+ 
++slimbus_not_active:
++	pm_runtime_mark_last_busy(ctrl->dev);
++	pm_runtime_put_autosuspend(ctrl->dev);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(slim_device_report_present);
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index 7c12dc933816..5f3bab2cd9e3 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -10,6 +10,7 @@
+  * GNU General Public License for more details.
+  */
+ #include <linux/slab.h>
++#include <linux/pm_runtime.h>
+ #include "slimbus.h"
+ 
+ /**
+@@ -52,6 +53,10 @@ void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 len)
+ 	memcpy(msg->rbuf, reply, len);
+ 	if (txn->comp)
+ 		complete(txn->comp);
++
++	/* Remove runtime-pm vote now that response was received for TID txn */
++	pm_runtime_mark_last_busy(ctrl->dev);
++	pm_runtime_put_autosuspend(ctrl->dev);
+ }
+ EXPORT_SYMBOL_GPL(slim_msg_response);
+ 
+@@ -71,10 +76,29 @@ EXPORT_SYMBOL_GPL(slim_msg_response);
+ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
+ {
+ 	DECLARE_COMPLETION_ONSTACK(done);
+-	bool need_tid;
++	bool need_tid, clk_pause_msg = false;
+ 	unsigned long flags;
+ 	int ret, tid, timeout;
+ 
++	/*
++	 * do not vote for runtime-PM if the transactions are part of clock
++	 * pause sequence
++	 */
++	if (ctrl->sched.clk_state == SLIM_CLK_ENTERING_PAUSE &&
++		(txn->mt == SLIM_MSG_MT_CORE &&
++		 txn->mc >= SLIM_MSG_MC_BEGIN_RECONFIGURATION &&
++		 txn->mc <= SLIM_MSG_MC_RECONFIGURE_NOW))
++		clk_pause_msg = true;
++
++	if (!clk_pause_msg) {
++		ret = pm_runtime_get_sync(ctrl->dev);
++		if (ctrl->sched.clk_state != SLIM_CLK_ACTIVE) {
++			dev_err(ctrl->dev, "ctrl wrong state:%d, ret:%d\n",
++				ctrl->sched.clk_state, ret);
++			goto slim_xfer_err;
++		}
++	}
++
+ 	need_tid = slim_tid_txn(txn->mt, txn->mc);
+ 
+ 	if (need_tid) {
+@@ -113,6 +137,15 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
+ 		dev_err(ctrl->dev, "Tx:MT:0x%x, MC:0x%x, LA:0x%x failed:%d\n",
+ 			txn->mt, txn->mc, txn->la, ret);
+ 
++slim_xfer_err:
++	if (!clk_pause_msg && (!need_tid  || ret == -ETIMEDOUT)) {
++		/*
++		 * remove runtime-pm vote if this was TX only, or
++		 * if there was error during this transaction
++		 */
++		pm_runtime_mark_last_busy(ctrl->dev);
++		pm_runtime_mark_last_busy(ctrl->dev);
++	}
+ 	return ret;
+ }
+ 
+diff --git a/drivers/slimbus/sched.c b/drivers/slimbus/sched.c
 new file mode 100644
-index 000000000000..586f979659e6
+index 000000000000..74300f1a6898
 --- /dev/null
-+++ b/Documentation/driver-api/slimbus/index.rst
-@@ -0,0 +1,15 @@
-+=====================
-+SLIMbus Documentation
-+=====================
++++ b/drivers/slimbus/sched.c
+@@ -0,0 +1,128 @@
++/* Copyright (c) 2011-2016, The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ */
 +
-+.. toctree::
-+   :maxdepth: 1
++#include <linux/errno.h>
++#include "slimbus.h"
 +
-+   summary
++/**
++ * slim_ctrl_clk_pause() - Called by slimbus controller to enter/exit
++ *			   'clock pause'
++ * @ctrl: controller requesting bus to be paused or woken up
++ * @wakeup: Wakeup this controller from clock pause.
++ * @restart: Restart time value per spec used for clock pause. This value
++ *	isn't used when controller is to be woken up.
++ *
++ * Slimbus specification needs this sequence to turn-off clocks for the bus.
++ * The sequence involves sending 3 broadcast messages (reconfiguration
++ * sequence) to inform all devices on the bus.
++ * To exit clock-pause, controller typically wakes up active framer device.
++ * This API executes clock pause reconfiguration sequence if wakeup is false.
++ * If wakeup is true, controller's wakeup is called.
++ * For entering clock-pause, -EBUSY is returned if a message txn in pending.
++ */
++int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 restart)
++{
++	int i, ret = 0;
++	unsigned long flags;
++	struct slim_sched *sched = &ctrl->sched;
++	struct slim_val_inf msg = {0, 0, NULL, NULL};
 +
-+.. only::  subproject
++	DEFINE_SLIM_BCAST_TXN(txn, SLIM_MSG_MC_BEGIN_RECONFIGURATION,
++				3, SLIM_LA_MANAGER, &msg);
 +
-+   Indices
-+   =======
++	if (wakeup == false && restart > SLIM_CLK_UNSPECIFIED)
++		return -EINVAL;
 +
-+   * :ref:`genindex`
-diff --git a/Documentation/driver-api/slimbus/summary.rst b/Documentation/driver-api/slimbus/summary.rst
-new file mode 100644
-index 000000000000..ba165611725a
---- /dev/null
-+++ b/Documentation/driver-api/slimbus/summary.rst
-@@ -0,0 +1,108 @@
-+============================
-+Linux kernel SLIMbus support
-+============================
++	mutex_lock(&sched->m_reconf);
++	if (wakeup) {
++		if (sched->clk_state == SLIM_CLK_ACTIVE) {
++			mutex_unlock(&sched->m_reconf);
++			return 0;
++		}
 +
-+Overview
-+========
++		/*
++		 * Fine-tune calculation based on clock gear,
++		 * message-bandwidth after bandwidth management
++		 */
++		ret = wait_for_completion_timeout(&sched->pause_comp,
++				msecs_to_jiffies(100));
++		if (!ret) {
++			mutex_unlock(&sched->m_reconf);
++			pr_err("Previous clock pause did not finish");
++			return -ETIMEDOUT;
++		}
++		ret = 0;
 +
-+What is SLIMbus?
-+----------------
-+SLIMbus (Serial Low Power Interchip Media Bus) is a specification developed by
-+MIPI (Mobile Industry Processor Interface) alliance. The bus uses master/slave
-+configuration, and is a 2-wire multi-drop implementation (clock, and data).
++		/*
++		 * Slimbus framework will call controller wakeup
++		 * Controller should make sure that it sets active framer
++		 * out of clock pause
++		 */
++		if (sched->clk_state == SLIM_CLK_PAUSED && ctrl->wakeup)
++			ret = ctrl->wakeup(ctrl);
++		if (!ret)
++			sched->clk_state = SLIM_CLK_ACTIVE;
++		mutex_unlock(&sched->m_reconf);
 +
-+Currently, SLIMbus is used to interface between application processors of SoCs
-+(System-on-Chip) and peripheral components (typically codec).SLIMbus uses
-+Time-Division-Multiplexing to accommodate multiple data channels, and
-+a control channel.
++		return ret;
++	}
 +
-+The control channel is used for various control functions such as bus
-+management, configuration and status updates.These messages can be unicast (e.g.
-+reading/writing device specific values), or multicast (e.g. data channel
-+reconfiguration sequence is a broadcast message announced to all devices)
++	/* already paused */
++	if (ctrl->sched.clk_state == SLIM_CLK_PAUSED) {
++		mutex_unlock(&sched->m_reconf);
++		return 0;
++	}
 +
-+A data channel is used for data-transfer between 2 SLIMbus devices. Data
-+channel uses dedicated ports on the device.
++	spin_lock_irqsave(&ctrl->txn_lock, flags);
++	for (i = 0; i < SLIM_MAX_TIDS; i++) {
++		/* Pending response for a message */
++		if (idr_find(&ctrl->tid_idr, i)) {
++			spin_unlock_irqrestore(&ctrl->txn_lock, flags);
++			mutex_unlock(&sched->m_reconf);
++			return -EBUSY;
++		}
++	}
++	spin_unlock_irqrestore(&ctrl->txn_lock, flags);
 +
-+Hardware description:
-+---------------------
-+SLIMbus specification has different types of device classifications based on
-+their capabilities.
-+A manager device is responsible for enumeration, configuration, and dynamic
-+channel allocation. Every bus has 1 active manager.
++	sched->clk_state = SLIM_CLK_ENTERING_PAUSE;
 +
-+A generic device is a device providing application functionality (e.g. codec).
++	/* clock pause sequence */
++	ret = slim_do_transfer(ctrl, &txn);
++	if (ret)
++		goto clk_pause_ret;
 +
-+Framer device is responsible for clocking the bus, and transmitting frame-sync
-+and framing information on the bus.
++	txn.mc = SLIM_MSG_MC_NEXT_PAUSE_CLOCK;
++	txn.rl = 4;
++	msg.num_bytes = 1;
++	msg.wbuf = &restart;
++	ret = slim_do_transfer(ctrl, &txn);
++	if (ret)
++		goto clk_pause_ret;
 +
-+Each SLIMbus component has an interface device for monitoring physical layer.
++	txn.mc = SLIM_MSG_MC_RECONFIGURE_NOW;
++	txn.rl = 3;
++	msg.num_bytes = 1;
++	msg.wbuf = NULL;
++	ret = slim_do_transfer(ctrl, &txn);
 +
-+Typically each SoC contains SLIMbus component having 1 manager, 1 framer device,
-+1 generic device (for data channel support), and 1 interface device.
-+External peripheral SLIMbus component usually has 1 generic device (for
-+functionality/data channel support), and an associated interface device.
-+The generic device's registers are mapped as 'value elements' so that they can
-+be written/read using SLIMbus control channel exchanging control/status type of
-+information.
-+In case there are multiple framer devices on the same bus, manager device is
-+responsible to select the active-framer for clocking the bus.
++clk_pause_ret:
++	if (ret) {
++		sched->clk_state = SLIM_CLK_ACTIVE;
++	} else {
++		sched->clk_state = SLIM_CLK_PAUSED;
++		complete(&sched->pause_comp);
++	}
++	mutex_unlock(&sched->m_reconf);
 +
-+Per specification, SLIMbus uses "clock gears" to do power management based on
-+current frequency and bandwidth requirements. There are 10 clock gears and each
-+gear changes the SLIMbus frequency to be twice its previous gear.
++	return ret;
++}
++EXPORT_SYMBOL_GPL(slim_ctrl_clk_pause);
+diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
+index 5a83ce15c63a..e0ae7bb1ba47 100644
+--- a/drivers/slimbus/slimbus.h
++++ b/drivers/slimbus/slimbus.h
+@@ -21,6 +21,16 @@
+ /* SLIMbus message types. Related to interpretation of message code. */
+ #define SLIM_MSG_MT_CORE			0x0
+ 
++/* Clock pause Reconfiguration messages */
++#define SLIM_MSG_MC_BEGIN_RECONFIGURATION        0x40
++#define SLIM_MSG_MC_NEXT_PAUSE_CLOCK             0x4A
++#define SLIM_MSG_MC_RECONFIGURE_NOW              0x5F
 +
-+Each device has a 6-byte enumeration-address and the manager assigns every
-+device with a 1-byte logical address after the devices report presence on the
-+bus.
++/* Clock pause values per SLIMbus spec */
++#define SLIM_CLK_FAST				0
++#define SLIM_CLK_CONST_PHASE			1
++#define SLIM_CLK_UNSPECIFIED			2
 +
-+Software description:
-+---------------------
-+There are 2 types of SLIMbus drivers:
+ /* Destination type Values */
+ #define SLIM_MSG_DEST_LOGICALADDR	0
+ #define SLIM_MSG_DEST_ENUMADDR		1
+@@ -87,6 +97,42 @@ struct slim_msg_txn {
+ #define DEFINE_SLIM_LDEST_TXN(name, mc, rl, la, msg) \
+ 	struct slim_msg_txn name = { rl, 0, mc, SLIM_MSG_DEST_LOGICALADDR, 0,\
+ 					0, la, msg, }
 +
-+slim_controller represents a 'controller' for SLIMbus. This driver should
-+implement duties needed by the SoC (manager device, associated
-+interface device for monitoring the layers and reporting errors, default
-+framer device).
++#define DEFINE_SLIM_BCAST_TXN(name, mc, rl, la, msg) \
++	struct slim_msg_txn name = { rl, 0, mc, SLIM_MSG_DEST_BROADCAST, 0,\
++					0, la, msg, }
++/**
++ * enum slim_clk_state: SLIMbus controller's clock state used internally for
++ *	maintaining current clock state.
++ * @SLIM_CLK_ACTIVE: SLIMbus clock is active
++ * @SLIM_CLK_ENTERING_PAUSE: SLIMbus clock pause sequence is being sent on the
++ *	bus. If this succeeds, state changes to SLIM_CLK_PAUSED. If the
++ *	transition fails, state changes back to SLIM_CLK_ACTIVE
++ * @SLIM_CLK_PAUSED: SLIMbus controller clock has paused.
++ */
++enum slim_clk_state {
++	SLIM_CLK_ACTIVE,
++	SLIM_CLK_ENTERING_PAUSE,
++	SLIM_CLK_PAUSED,
++};
 +
-+slim_device represents the 'generic device/component' for SLIMbus, and a
-+slim_driver should implement driver for that slim_device.
++/**
++ * struct slim_sched: Framework uses this structure internally for scheduling.
++ * @clk_state: Controller's clock state from enum slim_clk_state
++ * @pause_comp: Signals completion of clock pause sequence. This is useful when
++ *	client tries to call SLIMbus transaction when controller is entering
++ *	clock pause.
++ * @m_reconf: This mutex is held until current reconfiguration (data channel
++ *	scheduling, message bandwidth reservation) is done. Message APIs can
++ *	use the bus concurrently when this mutex is held since elemental access
++ *	messages can be sent on the bus when reconfiguration is in progress.
++ */
++struct slim_sched {
++	enum slim_clk_state	clk_state;
++	struct completion	pause_comp;
++	struct mutex		m_reconf;
++};
 +
-+Device notifications to the driver:
-+-----------------------------------
-+Since SLIMbus devices have mechanisms for reporting their presence, the
-+framework allows drivers to bind when corresponding devices report their
-+presence on the bus.
-+However, it is possible that the driver needs to be probed
-+first so that it can enable corresponding SLIMbus device (e.g. power it up and/or
-+take it out of reset). To support that behavior, the framework allows drivers
-+to probe first as well  (e.g. using standard DeviceTree compatbility field).
-+This creates the necessity for the driver to know when the device is functional
-+(i.e. reported present). device_up callback is used for that reason when the
-+device reports present and is assigned a logical address by the controller.
-+
-+Similarly, SLIMbus devices 'report absent' when they go down. A 'device_down'
-+callback notifies the driver when the device reports absent and its logical
-+address assignment is invalidated by the controller.
-+
-+Another notification "boot_device" is used to notify the slim_driver when
-+controller resets the bus. This notification allows the driver to take necessary
-+steps to boot the device so that it's functional after the bus has been reset.
-+
-+Clock-pause:
-+------------
-+SLIMbus mandates that a reconfiguration sequence (known as clock-pause) be
-+broadcast to all active devices on the bus before the bus can enter low-power
-+mode. Controller uses this sequence when it decides to enter low-power mode so
-+that corresponding clocks and/or power-rails can be turned off to save power.
-+Clock-pause is exited by waking up framer device (if controller driver initiates
-+exiting low power mode), or by toggling the data line (if a slave device wants
-+to initiate it).
-+
-+Messaging APIs:
-+---------------
-+The framework supports APIs to exchange control-information with a SLIMbus
-+device. APIs can be synchronous or asynchronous.
-+From controller's perspective, multiple buffers can be queued to/from
-+hardware for sending/receiving data using slim_ctrl_buf circular buffer.
-+The header file <linux/slimbus.h> has more documentation about messaging APIs.
+ /**
+  * struct slim_controller  - Controls every instance of SLIMbus
+  *				(similar to 'master' on SPI)
+@@ -102,6 +148,7 @@ struct slim_msg_txn {
+  * @devices: Slim device list
+  * @tid_idr: tid id allocator
+  * @txn_lock: Lock to protect table of transactions
++ * @sched: scheduler structure used by the controller
+  * @xfer_msg: Transfer a message on this controller (this can be a broadcast
+  *	control/status message like data channel setup, or a unicast message
+  *	like value element read/write.
+@@ -112,6 +159,9 @@ struct slim_msg_txn {
+  *	address table and get_laddr can be used in that case so that controller
+  *	can do this assignment. Use case is when the master is on the remote
+  *	processor side, who is resposible for allocating laddr.
++ * @wakeup: This function pointer implements controller-specific procedure
++ *	to wake it up from clock-pause. Framework will call this to bring
++ *	the controller out of clock pause.
+  *
+  *	'Manager device' is responsible for  device management, bandwidth
+  *	allocation, channel setup, and port associations per channel.
+@@ -146,12 +196,14 @@ struct slim_controller {
+ 	struct list_head	devices;
+ 	struct idr		tid_idr;
+ 	spinlock_t		txn_lock;
++	struct slim_sched	sched;
+ 	int			(*xfer_msg)(struct slim_controller *ctrl,
+ 					    struct slim_msg_txn *tx);
+ 	int			(*set_laddr)(struct slim_controller *ctrl,
+ 					     struct slim_eaddr *ea, u8 laddr);
+ 	int			(*get_laddr)(struct slim_controller *ctrl,
+ 					     struct slim_eaddr *ea, u8 *laddr);
++	int			(*wakeup)(struct slim_controller *ctrl);
+ };
+ 
+ int slim_device_report_present(struct slim_controller *ctrl,
+@@ -161,6 +213,7 @@ int slim_register_controller(struct slim_controller *ctrl);
+ int slim_unregister_controller(struct slim_controller *ctrl);
+ void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 l);
+ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn);
++int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 restart);
+ 
+ static inline bool slim_tid_txn(u8 mt, u8 mc)
+ {
 -- 
 2.15.0
