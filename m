@@ -1,21 +1,12 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 1/2] ASoC: Intel: kbl: Remove option
- of choosing CH count based on pdata
-Date: Thu, 30 Nov 2017 11:15:11 +0000
-Message-ID: <20171130111511.up2f2te5mc3orkit@sirena.org.uk>
-References: <1510740463-21655-1-git-send-email-naveen.m@intel.com>
- <1510740463-21655-2-git-send-email-naveen.m@intel.com>
- <20171129123314.4x4giq4hk2ew2zol@sirena.org.uk>
- <20171130040204.GK32417@localhost>
- <20171130061443.GA31069@nm-B85M-D3Hnaveen.m@intel.com>
+From: Tamaki Nishino <otamachan@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: Change the semantics of the
+	enable option
+Date: Thu, 30 Nov 2017 20:27:52 +0900
+Message-ID: <1512041272-8653-1-git-send-email-otamachan@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8777204051288281382=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3110F2674D1
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 12:15:20 +0100 (CET)
-In-Reply-To: <20171130061443.GA31069@nm-B85M-D3Hnaveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,60 +16,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Naveen M <naveen.m@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@intel.com
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Tamaki Nishino <otamachan@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch changes the semantics of the enable option for snd-usb-audio
+in order to allow users to disable a device specified by either or both
+of the vendor id and the product id.
 
---===============8777204051288281382==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="x5ruhut7rmailsxk"
-Content-Disposition: inline
+Signed-off-by: Tamaki Nishino <otamachan@gmail.com>
+---
+ sound/usb/card.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-
---x5ruhut7rmailsxk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 30, 2017 at 11:44:43AM +0530, Naveen M wrote:
-
-> Regarding the Query:
-> As Vinod mentioned, I'm working on Chrome OS user-space stack that uses
-> customized audio server "CRAS".
-> These patches are verified on a board that has only 2 dmics.
->=20
-> Giving the control to CRAS, enables to select the desired dmic using
-> channel-map configuration in user-space.
-> Ex:Rear/Front mic selection for World & Front facing camera scenario=20
-
-People do run non-ChromeOS installs on their Chromebooks so we can't
-just assume that there's nobody out there with a regular distro on this
-hardware - a user like this reported the problems with the ABI for
-topology files breaking for example.
-
---x5ruhut7rmailsxk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlof6D4ACgkQJNaLcl1U
-h9Ab1Af/WYTlfWdDASFZRbbnQqz5EH5Y+tQrLFdsA/1HyRuqv6l7/arLzvfUHC1b
-dntDpGtkUm8uFeYZR+/3Fe2M1NxUiwTacyPg1TirX8eEPv+v0VhBQLnK/lI0Twxx
-MgsLyHFR+l7jXMdihS/8oksw2Rb5q+u6kfaVsYJyZu0Tcf/gcoMnP7pWoiS+cpnN
-wnP4qTAeamcSWFLWinUhZaTamlSaV6evoQy8Wkmjc713UCQMrmOZScMzjJwPTq0P
-/T9R27SXXeWSG+FOxNObqHO7B83LwBagzPy+6xxI/X7u3+xfe4ucuQ0pU0cx2n+h
-AfpyqqzCbtzY96lFdpHg0nXvwGqsbg==
-=dULD
------END PGP SIGNATURE-----
-
---x5ruhut7rmailsxk--
-
---===============8777204051288281382==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8777204051288281382==--
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 23d1d23..8018d56 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -585,15 +585,24 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 		 * now look for an empty slot and create a new card instance
+ 		 */
+ 		for (i = 0; i < SNDRV_CARDS; i++)
+-			if (enable[i] && ! usb_chip[i] &&
++			if (!usb_chip[i] &&
+ 			    (vid[i] == -1 || vid[i] == USB_ID_VENDOR(id)) &&
+ 			    (pid[i] == -1 || pid[i] == USB_ID_PRODUCT(id))) {
+-				err = snd_usb_audio_create(intf, dev, i, quirk,
+-							   id, &chip);
+-				if (err < 0)
++				if (enable[i]) {
++					err = snd_usb_audio_create(intf, dev, i, quirk,
++								   id, &chip);
++					if (err < 0)
++						goto __error;
++					chip->pm_intf = intf;
++					break;
++				} else if (vid[i] != -1 || pid[i] != -1) {
++					dev_info(&dev->dev,
++						 "device (%04x:%04x) is disabled\n",
++						 USB_ID_VENDOR(id),
++						 USB_ID_PRODUCT(id));
++					err = -ENOENT;
+ 					goto __error;
+-				chip->pm_intf = intf;
+-				break;
++				}
+ 			}
+ 		if (!chip) {
+ 			dev_err(&dev->dev, "no available usb audio device\n");
+-- 
+2.7.4
