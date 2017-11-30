@@ -1,124 +1,237 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Rename property for
-	reset GPIO" to the asoc tree
-Date: Thu, 30 Nov 2017 12:33:17 +0000
-Message-ID: <E1eKO1l-0000e6-GO@debutante>
-References: <20171129171359.29382-2-afd@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC PATCH v2 1/7] ASoC: Intel: Fix Kconfig with
+ top-level selector
+Date: Thu, 30 Nov 2017 08:41:36 -0600
+Message-ID: <6e7e8326-60b9-bae8-f0d0-44d53388893e@linux.intel.com>
+References: <20171129014551.30552-1-pierre-louis.bossart@linux.intel.com>
+ <20171129014551.30552-2-pierre-louis.bossart@linux.intel.com>
+ <20171129102734.GA32417@localhost>
+ <8ba6af88-5cb4-8174-2ecc-46f80420ff28@linux.intel.com>
+ <20171130122432.GX32417@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 96E6B2679C0
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 13:33:22 +0100 (CET)
-In-Reply-To: <20171129171359.29382-2-afd@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>, Shawn Guo <shawnguo@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171130122432.GX32417@localhost>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org, torvalds@linux-foundation.org, liam.r.girdwood@linux.intel.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 11/30/17 6:24 AM, Vinod Koul wrote:
+> On Wed, Nov 29, 2017 at 08:52:58AM -0600, Pierre-Louis Bossart wrote:
+>> On 11/29/17 4:27 AM, Vinod Koul wrote:
+>>> On Tue, Nov 28, 2017 at 07:45:45PM -0600, Pierre-Louis Bossart wrote:
+>>>
+>>> I am not sure about top level being default to Y...
+>>
+>> It's standard procedure apparently, see Linus/Mark/Takashi's emails.
+>>
+>>>
+>>>>   config SND_SST_ATOM_HIFI2_PLATFORM
+>>>>   	tristate "Intel ASoC SST driver for HiFi2 platforms (*field, *trail)"
+>>>> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && X86
+>>>> +	depends on X86
+>>>>   	select SND_SOC_COMPRESS
+>>>> +	select SND_SOC_INTEL_COMMON
+>>>>   config SND_SOC_INTEL_SKYLAKE
+>>>>   	tristate "Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL"
+>>>> -	depends on SND_SOC_INTEL_SST_TOPLEVEL && PCI && ACPI
+>>>> +	depends on PCI && ACPI
+>>>>   	select SND_HDA_EXT_CORE
+>>>>   	select SND_HDA_DSP_LOADER
+>>>>   	select SND_SOC_TOPOLOGY
+>>>>   	select SND_SOC_INTEL_SST
+>>>> +	select SND_SOC_INTEL_COMMON
+>>>> +	help
+>>>> +	  If you have a Intel Skylake/Broxton/ApolloLake/KabyLake/
+>>>> +	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+>>>> +	  then enable this option by saying Y or m.
+>>>
+>>> this is good stuff, helps in improving UX vastly. Btw can we have select ALL
+>>> machine also as an option for people who dont want to select a specfic one,
+>>> that one will really help for a better UX
+>>
+>> no, we shouldn't select things, especially with the Baytrail legacy which is
+>> kept to avoid breaking existing setups but shouldn't be used any longer.
+>> And with SOF coming, we may have hybrid configurations with SOF used on
+>> Baytrail/Cherrytrail/APL/CNL but SST used on Skylake/Kabylake due to
+>> firmware authentication stuff.
+> 
+> Okay I am checking this out.
+> 
+> Btw you need to rebase this series I wasn't able to apply to mark/intel/topic
+> So I grabbed the branch from your github tree. Assuming I have the right
+> branch (topic/fix-kconfig)
 
-   ASoC: tlv320aic31xx: Rename property for reset GPIO
+I rebased against Mark's for-next branch on Tuesday?
 
-has been applied to the asoc tree at
+> 
+> At top level UX is bit confusing:
+> 
+> 			[ ]   Intel ASoC SST drivers
+> 			[*]   Intel ASoC machine drivers
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I don't know how you reached this since there is a dependency on the 
+first one. Is this a real case you've seen, it's not supposed to happen.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+I just tested and the second line is indeed filtered out if the first 
+one is not selected. Can you please check on your side?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The opposite can happen though if the user explicitly disables the 
+compilation of machine drivers
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+[*]   Intel ASoC SST drivers
+[ ]   Intel ASoC machine drivers
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+not sure if there's a way or need to prevent this though?
 
-Thanks,
-Mark
+> 
+> And selecting first symbol shows me the platforms and once I select platform
+> then machines appear under second menu. Now this is really not a great way
+> from UX. Why are we adding platforms selectable? We might be able to
+> simplify this by getting rid of first set and let machine then select
+> Platfroms specfied.
 
->From f00e0030bcbf49936d265330f6e0b8c739ad90c3 Mon Sep 17 00:00:00 2001
-From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 11:13:52 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Rename property for reset GPIO
+No. This is done so that I can have alternate platform drivers based on 
+SOF and still share the machine drivers.
+The selection of machine first also leads to multiple complications 
+mixing Intel and board level.
 
-The property used to specify a GPIO intended for reset is "reset-gpios",
-but this binding uses "gpio-reset".  It is not compatible with newer
-methods used to fetch GPIO pins and to prevent the spread of this error
-to other bindings let's rename to be more standard.
+> 
+> 			[*]   Intel ASoC SST drivers
+> 			< >     Intel ASoC SST driver for Haswell/Broadwell (NEW)
+> 			< >     Intel ASoC SST driver for Baytrail (legacy) (NEW)
+> 			< >     Intel ASoC SST driver for PCI HiFi2 platforms (Medfield, Merrifield) (NEW)
+> 			< >     Intel ASoC SST driver for ACPI HiFi2 platforms (Baytrail, Cherrytrail) (NEW)
+> 			<*>     Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL
+> 			[*]   Intel ASoC machine drivers
+> 			< >     ASoC Audio driver for SKL with RT286 I2S mode (NEW)
+> 			< >     ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode (NEW)
+> 			< >     ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode (NEW)
+> 
+> If we still want both I would like the machine to appear below the
+> respective platform, in above example, I would like to see:
+> 
+> 			[*]   Intel ASoC SST drivers
+> 			< >     Intel ASoC SST driver for Haswell/Broadwell (NEW)
+> 			< >     Intel ASoC SST driver for Baytrail (legacy) (NEW)
+> 			< >     Intel ASoC SST driver for PCI HiFi2 platforms (Medfield, Merrifield) (NEW)
+> 			< >     Intel ASoC SST driver for ACPI HiFi2 platforms (Baytrail, Cherrytrail) (NEW)
+> 			<*>     Intel ASoC SST driver for SKL/BXT/KBL/GLK/CNL
+> 			< >       ASoC Audio driver for SKL with RT286 I2S mode (NEW)
+> 			< >       ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode (NEW)
+> 			< >       ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode (NEW)
+> 
+> Then you can get rid of global mach symbol and select platform and then
+> respective machine and better UX :).
 
-We also standardize the pin as active-low, different device trees have
-marked the GPIO different ways, luckily the driver currently uses the
-low-level GPIO set function which does not respect the active-low flag,
-but future changes may change this. This is an active-low reset, mark
-it as such.
+And how is this going to look when I add SOF? I'll have to duplicate the 
+machine drivers entry?
 
-Lastly, add an example of use for this property.
+> 
+>>>> +endif ## SND_SOC_INTEL_SST_TOPLEVEL
+>>>>   # ASoC codec drivers
+>>>>   source "sound/soc/intel/boards/Kconfig"
+>>>> +
+>>>> +# configs common to SST and SOF to compile sound/soc/intel/common
+>>>> +# directory and use matching tables
+>>>> +
+>>>> +config SND_SOC_INTEL_COMMON
+>>>> +	tristate
+>>>> +	select SND_SOC_ACPI_INTEL_MATCH if ACPI
+>>>
+>>> common selects only MATCH
+>>
+>> COMMON is only there to go compile the sound/soc/intel/common directory.
+>> That's not very useful indeed but otherwise the Makefile doesn't compile the
+>> match tables or the sst-ipc stuff. If you find a better solution I am all
+>> ears.
+> 
+> Coming to this topic (my original intention to check this), I found that
+> common symbol is not doing anything expect adding common directory, which is
+> not really needed as we have individual bits for files, so I kept this but
+> removed the match one.
 
-[Rewrote the title & first paragraph of the commit message for clarity
--- broonie]
+I really don't get what you are trying to do, see below.
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> -- >8 --
+> 
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index dee731d42634..33a05aa2cf32 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -99,8 +99,4 @@ source "sound/soc/intel/boards/Kconfig"
+> 
+>   config SND_SOC_INTEL_COMMON
+>          tristate
+> -       select SND_SOC_ACPI_INTEL_MATCH if ACPI
+> -
+> -config SND_SOC_ACPI_INTEL_MATCH
+> -       tristate
+> -       select SND_SOC_ACPI if ACPI
+> +       depends on ACPI
+> diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+> index b973d457e834..8160520fd74c 100644
+> --- a/sound/soc/intel/Makefile
+> +++ b/sound/soc/intel/Makefile
+> @@ -1,6 +1,6 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   # Core support
+> -obj-$(CONFIG_SND_SOC_INTEL_COMMON) += common/
+> +obj-$(CONFIG_SND_SOC) += common/
+> 
+>   # Platform Support
+>   obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
+> diff --git a/sound/soc/intel/common/Makefile
+> b/sound/soc/intel/common/Makefile
+> index 7379d8830c39..92c66c47eb78 100644
+> --- a/sound/soc/intel/common/Makefile
+> +++ b/sound/soc/intel/common/Makefile
+> @@ -8,4 +8,4 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o
+> soc-acpi-intel-cht-m
+>   obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+>   obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+>   obj-$(CONFIG_SND_SOC_INTEL_SST_FIRMWARE) += snd-soc-sst-firmware.o
+> -obj-$(CONFIG_SND_SOC_ACPI_INTEL_MATCH) += snd-soc-acpi-intel-match.o
+> +obj-$(CONFIG_SND_SOC_INTEL_COMMON) += snd-soc-acpi-intel-match.o
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 6fbba562eaa7..5b3c33bb99e5 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -22,7 +22,7 @@ Required properties:
- 
- Optional properties:
- 
--- gpio-reset - gpio pin number used for codec reset
-+- reset-gpios - GPIO specification for the active low RESET input.
- - ai31xx-micbias-vg - MicBias Voltage setting
-         1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
-         2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
-@@ -30,6 +30,10 @@ Optional properties:
- 	If this node is not mentioned or if the value is unknown, then
- 	micbias	is set to 2.0V.
- 
-+Deprecated properties:
-+
-+- gpio-reset - gpio pin number used for codec reset
-+
- CODEC output pins:
-   * HPL
-   * HPR
-@@ -48,6 +52,7 @@ CODEC input pins:
- The pins can be used in referring sound node's audio-routing property.
- 
- Example:
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/sound/tlv320aic31xx-micbias.h>
- 
- tlv320aic31xx: tlv320aic31xx@18 {
-@@ -56,6 +61,8 @@ tlv320aic31xx: tlv320aic31xx@18 {
- 
- 	ai31xx-micbias-vg = <MICBIAS_OFF>;
- 
-+	reset-gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
-+
- 	HPVDD-supply = <&regulator>;
- 	SPRVDD-supply = <&regulator>;
- 	SPLVDD-supply = <&regulator>;
--- 
-2.15.0
+not very elegant, is it?
+
+> 
+> -- >8 --
+> 
+> This way we have one lesser symbol to manage :) I am okay if you want to
+> keep match and remove common.
+
+if that's possible yes, i don't mind removing the common part and moving 
+the CONFIG_SND_SOC_ACPI_INTEL_MATCH to each platform where it makes 
+sense. In my initial trial the COMMON symbol was required, if it can be 
+removed then fine.
+
+> 
+> 
+>>>> +	# this option controls the compilation of the sound/soc/intel/common
+>>>> +	# directory and is not meant to be selected by the user. It is
+>>>> +	# not filtered out on purpose by the top-level selector since
+>>>> +	# it will be selected by SST or SOF platform driver options
+>>>> +
+>>>> +config SND_SOC_ACPI_INTEL_MATCH
+>>>> +	tristate
+>>>> +	select SND_SOC_ACPI if ACPI
+>>>
+>>> then why keep common, lets remove one level and have
+>>> SND_SOC_ACPI_INTEL_MATCH selected. ACPI is must have at top level so we can
+>>> add depends on that symbol
+>>
+>> we still have platforms which don't depend on ACPI, so we shouldn't take
+>> this out.
+> 
+> For the controllers which are PCI only, yes. But as a platform we won't boot
+> without ACPI :) so take your pick!
+
+I was referring to Medfield/Merrifield. As I mentioned it the fate of 
+those platforms in to be determined but as of today your assertions that 
+all platforms need ACPI is not correct.
