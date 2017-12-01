@@ -1,16 +1,28 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 11/15] soundwire: cdns: Add cadence library
-Date: Fri,  1 Dec 2017 15:26:13 +0530
-Message-ID: <1512122177-2889-12-git-send-email-vinod.koul@intel.com>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
+Subject: Guarantee a 0-terminated string for all usages of
+	strncpy()
+Date: Fri, 1 Dec 2017 09:58:27 +0000
+Message-ID: <B0FB33DC1499054591F62C0EF1E013D7684C8400@HI2EXCH01.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E219267C62
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:53:28 +0100 (CET)
-In-Reply-To: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7730C266E04
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:58:34 +0100 (CET)
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+ by smtp1.de.adit-jv.com (Postfix) with ESMTP id 818CF3C023A
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:58:34 +0100 (CET)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+ by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id yut76VggWn4m for <alsa-devel@alsa-project.org>;
+ Fri,  1 Dec 2017 10:58:28 +0100 (CET)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 732A93C0034
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:58:28 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,523 +32,132 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cadence IP implements SoundWire Master. Add base cadence library
-initialization and interrupt handling
+--_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- drivers/soundwire/Kconfig          |   3 +
- drivers/soundwire/Makefile         |   4 +
- drivers/soundwire/cadence_master.c | 429 +++++++++++++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h |  34 +++
- 4 files changed, 470 insertions(+)
- create mode 100644 drivers/soundwire/cadence_master.c
- create mode 100644 drivers/soundwire/cadence_master.h
+Hi all,
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index 92a2c3bad87f..34361952310e 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -20,4 +20,7 @@ config SOUNDWIRE_BUS
- 	tristate
- 	select REGMAP_SOUNDWIRE
- 
-+config SOUNDWIRE_CADENCE
-+	tristate
-+
- endif
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index 67dc7b546258..f9a1ce3a860e 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -5,3 +5,7 @@
- #Bus Objs
- soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o sysfs.o
- obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
-+
-+#Cadence Objs
-+soundwire-cadence-objs := cadence_master.o
-+obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-new file mode 100644
-index 000000000000..ec7faf228812
---- /dev/null
-+++ b/drivers/soundwire/cadence_master.c
-@@ -0,0 +1,429 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+/*
-+ * Cadence SoundWire Master module
-+ * Used by Master driver
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/soundwire/sdw_registers.h>
-+#include <linux/soundwire/sdw.h>
-+#include "bus.h"
-+#include "cadence_master.h"
-+
-+#define CDNS_MCP_CONFIG				0x0
-+
-+#define CDNS_MCP_CONFIG_MCMD_RETRY		GENMASK(27, 24)
-+#define CDNS_MCP_CONFIG_MPREQ_DELAY		GENMASK(20, 16)
-+#define CDNS_MCP_CONFIG_MMASTER			BIT(7)
-+#define CDNS_MCP_CONFIG_BUS_REL			BIT(6)
-+#define CDNS_MCP_CONFIG_SNIFFER			BIT(5)
-+#define CDNS_MCP_CONFIG_SSPMOD			BIT(4)
-+#define CDNS_MCP_CONFIG_CMD			BIT(3)
-+#define CDNS_MCP_CONFIG_OP			GENMASK(2, 0)
-+#define CDNS_MCP_CONFIG_OP_NORMAL		0
-+
-+#define CDNS_MCP_CONTROL			0x4
-+
-+#define CDNS_MCP_CONTROL_RST_DELAY		GENMASK(10, 8)
-+#define CDNS_MCP_CONTROL_CMD_RST		BIT(7)
-+#define CDNS_MCP_CONTROL_SOFT_RST		BIT(6)
-+#define CDNS_MCP_CONTROL_SW_RST			BIT(5)
-+#define CDNS_MCP_CONTROL_HW_RST			BIT(4)
-+#define CDNS_MCP_CONTROL_CLK_PAUSE		BIT(3)
-+#define CDNS_MCP_CONTROL_CLK_STOP_CLR		BIT(2)
-+#define CDNS_MCP_CONTROL_CMD_ACCEPT		BIT(1)
-+#define CDNS_MCP_CONTROL_BLOCK_WAKEUP		BIT(0)
-+
-+
-+#define CDNS_MCP_CMDCTRL			0x8
-+#define CDNS_MCP_SSPSTAT			0xC
-+#define CDNS_MCP_FRAME_SHAPE			0x10
-+#define CDNS_MCP_FRAME_SHAPE_INIT		0x14
-+
-+#define CDNS_MCP_CONFIG_UPDATE			0x18
-+#define CDNS_MCP_CONFIG_UPDATE_BIT		BIT(0)
-+
-+#define CDNS_MCP_PHYCTRL			0x1C
-+#define CDNS_MCP_SSP_CTRL0			0x20
-+#define CDNS_MCP_SSP_CTRL1			0x28
-+#define CDNS_MCP_CLK_CTRL0			0x30
-+#define CDNS_MCP_CLK_CTRL1			0x38
-+
-+#define CDNS_MCP_STAT				0x40
-+
-+#define CDNS_MCP_STAT_ACTIVE_BANK		BIT(20)
-+#define CDNS_MCP_STAT_CLK_STOP			BIT(16)
-+
-+#define CDNS_MCP_INTSTAT			0x44
-+#define CDNS_MCP_INTMASK			0x48
-+
-+#define CDNS_MCP_INT_IRQ			BIT(31)
-+#define CDNS_MCP_INT_WAKEUP			BIT(16)
-+#define CDNS_MCP_INT_SLAVE_RSVD			BIT(15)
-+#define CDNS_MCP_INT_SLAVE_ALERT		BIT(14)
-+#define CDNS_MCP_INT_SLAVE_ATTACH		BIT(13)
-+#define CDNS_MCP_INT_SLAVE_NATTACH		BIT(12)
-+#define CDNS_MCP_INT_SLAVE_MASK			GENMASK(15, 12)
-+#define CDNS_MCP_INT_DPINT			BIT(11)
-+#define CDNS_MCP_INT_CTRL_CLASH			BIT(10)
-+#define CDNS_MCP_INT_DATA_CLASH			BIT(9)
-+#define CDNS_MCP_INT_CMD_ERR			BIT(7)
-+#define CDNS_MCP_INT_RX_WL			BIT(2)
-+#define CDNS_MCP_INT_TXE			BIT(1)
-+
-+#define CDNS_MCP_INTSET				0x4C
-+
-+#define CDNS_SDW_SLAVE_STAT			0x50
-+#define CDNS_MCP_SLAVE_STAT_MASK		BIT(1, 0)
-+
-+#define CDNS_MCP_SLAVE_INTSTAT0			0x54
-+#define CDNS_MCP_SLAVE_INTSTAT1			0x58
-+#define CDNS_MCP_SLAVE_INTSTAT_NPRESENT		BIT(0)
-+#define CDNS_MCP_SLAVE_INTSTAT_ATTACHED		BIT(1)
-+#define CDNS_MCP_SLAVE_INTSTAT_ALERT		BIT(2)
-+#define CDNS_MCP_SLAVE_INTSTAT_RESERVED		BIT(3)
-+#define CDNS_MCP_SLAVE_STATUS_BITS		GENMASK(3, 0)
-+#define CDNS_MCP_SLAVE_STATUS_NUM		4
-+
-+#define CDNS_MCP_SLAVE_INTMASK0			0x5C
-+#define CDNS_MCP_SLAVE_INTMASK1			0x60
-+
-+#define CDNS_MCP_SLAVE_INTMASK0_MASK		GENMASK(30, 0)
-+#define CDNS_MCP_SLAVE_INTMASK1_MASK		GENMASK(16, 0)
-+
-+#define CDNS_MCP_PORT_INTSTAT			0x64
-+#define CDNS_MCP_PDI_STAT			0x6C
-+
-+#define CDNS_MCP_FIFOLEVEL			0x78
-+#define CDNS_MCP_FIFOSTAT			0x7C
-+#define CDNS_MCP_RX_FIFO_AVAIL			GENMASK(5, 0)
-+
-+#define CDNS_MCP_CMD_BASE			0x80
-+#define CDNS_MCP_RESP_BASE			0x80
-+#define CDNS_MCP_CMD_LEN			0x20
-+#define CDNS_MCP_CMD_WORD_LEN			0x4
-+
-+#define CDNS_MCP_CMD_SSP_TAG			BIT(31)
-+#define CDNS_MCP_CMD_COMMAND			GENMASK(30, 28)
-+#define CDNS_MCP_CMD_DEV_ADDR			GENMASK(27, 24)
-+#define CDNS_MCP_CMD_REG_ADDR_H			GENMASK(23, 16)
-+#define CDNS_MCP_CMD_REG_ADDR_L			GENMASK(15, 8)
-+#define CDNS_MCP_CMD_REG_DATA			GENMASK(7, 0)
-+
-+#define CDNS_MCP_CMD_READ			2
-+#define CDNS_MCP_CMD_WRITE			3
-+
-+#define CDNS_MCP_RESP_RDATA			GENMASK(15, 8)
-+#define CDNS_MCP_RESP_ACK			BIT(0)
-+#define CDNS_MCP_RESP_NACK			BIT(1)
-+
-+#define CDNS_DP_SIZE				128
-+
-+#define CDNS_DPN_B0_CONFIG(n)			(0x100 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_CH_EN(n)			(0x104 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_SAMPLE_CTRL(n)		(0x108 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_OFFSET_CTRL(n)		(0x10C + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_HCTRL(n)			(0x110 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B0_ASYNC_CTRL(n)		(0x114 + CDNS_DP_SIZE * (n))
-+
-+#define CDNS_DPN_B1_CONFIG(n)			(0x118 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_CH_EN(n)			(0x11C + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_SAMPLE_CTRL(n)		(0x120 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_OFFSET_CTRL(n)		(0x124 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_HCTRL(n)			(0x128 + CDNS_DP_SIZE * (n))
-+#define CDNS_DPN_B1_ASYNC_CTRL(n)		(0x12C + CDNS_DP_SIZE * (n))
-+
-+#define CDNS_DPN_CONFIG_BPM			BIT(18)
-+#define CDNS_DPN_CONFIG_BGC			GENMASK(17, 16)
-+#define CDNS_DPN_CONFIG_WL			GENMASK(12, 8)
-+#define CDNS_DPN_CONFIG_PORT_DAT		GENMASK(3, 2)
-+#define CDNS_DPN_CONFIG_PORT_FLOW		GENMASK(1, 0)
-+
-+#define CDNS_DPN_SAMPLE_CTRL_SI			GENMASK(15, 0)
-+
-+#define CDNS_DPN_OFFSET_CTRL_1			GENMASK(7, 0)
-+#define CDNS_DPN_OFFSET_CTRL_2			GENMASK(15, 8)
-+
-+#define CDNS_DPN_HCTRL_HSTOP			GENMASK(3, 0)
-+#define CDNS_DPN_HCTRL_HSTART			GENMASK(7, 4)
-+#define CDNS_DPN_HCTRL_LCTRL			GENMASK(10, 8)
-+
-+#define CDNS_PORTCTRL				0x130
-+#define CDNS_PORTCTRL_DIRN			BIT(7)
-+#define CDNS_PORTCTRL_BANK_INVERT		BIT(8)
-+
-+#define CDNS_PORT_OFFSET			0x80
-+
-+#define CDNS_PDI_CONFIG(n)			(0x1100 + (n) * 16)
-+
-+#define CDNS_PDI_CONFIG_SOFT_RESET		BIT(24)
-+#define CDNS_PDI_CONFIG_CHANNEL			GENMASK(15, 8)
-+#define CDNS_PDI_CONFIG_PORT			GENMASK(4, 0)
-+
-+/* Driver defaults */
-+
-+#define CDNS_DEFAULT_CLK_DIVIDER		0
-+#define CDNS_DEFAULT_FRAME_SHAPE		0x30
-+#define CDNS_DEFAULT_SSP_INTERVAL		0x18
-+#define CDNS_TX_TIMEOUT				2000
-+
-+#define CDNS_PCM_PDI_OFFSET			0x2
-+#define CDNS_PDM_PDI_OFFSET			0x6
-+
-+#define CDNS_SCP_RX_FIFOLEVEL			0x2
-+
-+/*
-+ * register accessor helpers
-+ */
-+static inline u32 cdns_readl(struct sdw_cdns *cdns, int offset)
-+{
-+	return readl(cdns->registers + offset);
-+}
-+
-+static inline void cdns_writel(struct sdw_cdns *cdns, int offset, u32 value)
-+{
-+	writel(value, cdns->registers + offset);
-+}
-+
-+static inline void cdns_updatel(struct sdw_cdns *cdns,
-+				int offset, u32 mask, u32 val)
-+{
-+	u32 tmp;
-+
-+	tmp = cdns_readl(cdns, offset);
-+	tmp = (tmp & ~mask) | val;
-+	cdns_writel(cdns, offset, tmp);
-+}
-+
-+static int cdns_clear_bit(struct sdw_cdns *cdns, int offset, u32 value)
-+{
-+	int timeout = 10;
-+	u32 reg_read;
-+
-+	writel(value, cdns->registers + offset);
-+
-+	/* Wait for bit to be self cleared */
-+	do {
-+		reg_read = readl(cdns->registers + offset);
-+		if ((reg_read & value) == 0)
-+			return 0;
-+
-+		timeout--;
-+		usleep_range(1, 50);
-+	} while (timeout != 0);
-+
-+	return -EIO;
-+}
-+
-+/*
-+ * IRQ handling
-+ */
-+
-+static int cdns_update_slave_status(struct sdw_cdns *cdns,
-+					u32 slave0, u32 slave1)
-+{
-+	enum sdw_slave_status status[SDW_MAX_DEVICES + 1];
-+	bool is_slave = false;
-+	u64 slave, mask;
-+	int i, set_status;
-+
-+	/* combine the two status */
-+	slave = ((u64)slave1 << 32) | slave0;
-+	memset(status, 0, sizeof(status));
-+
-+	for (i = 0; i <= SDW_MAX_DEVICES; i++) {
-+		mask = (slave >> (i * CDNS_MCP_SLAVE_STATUS_NUM)) &
-+				CDNS_MCP_SLAVE_STATUS_BITS;
-+		if (!mask)
-+			continue;
-+
-+		is_slave = true;
-+		set_status = 0;
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_RESERVED) {
-+			status[i] = SDW_SLAVE_RESERVED;
-+			set_status++;
-+		}
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_ATTACHED) {
-+			status[i] = SDW_SLAVE_ATTACHED;
-+			set_status++;
-+		}
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_ALERT) {
-+			status[i] = SDW_SLAVE_ALERT;
-+			set_status++;
-+		}
-+
-+		if (mask & CDNS_MCP_SLAVE_INTSTAT_NPRESENT) {
-+			status[i] = SDW_SLAVE_UNATTACHED;
-+			set_status++;
-+		}
-+
-+		/* first check if Slave reported multiple status */
-+		if (set_status > 1) {
-+			dev_warn(cdns->dev,
-+					"Slave reported multiple Status: %d\n",
-+					status[i]);
-+			/*
-+			 * TODO: we need to reread the status here by
-+			 * issuing a PING cmd
-+			 */
-+		}
-+	}
-+
-+	if (is_slave)
-+		return sdw_handle_slave_status(&cdns->bus, status);
-+
-+	return 0;
-+}
-+
-+/**
-+ * sdw_cdns_irq() - Cadence interrupt handler
-+ * @irq: irq number
-+ * @dev_id: irq context
-+ */
-+irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
-+{
-+	struct sdw_cdns *cdns = dev_id;
-+	u32 int_status;
-+	int ret = IRQ_HANDLED;
-+
-+	/* Check if the link is up */
-+	if (!cdns->link_up)
-+		return IRQ_NONE;
-+
-+	int_status = cdns_readl(cdns, CDNS_MCP_INTSTAT);
-+
-+	if (!(int_status & CDNS_MCP_INT_IRQ))
-+		return IRQ_NONE;
-+
-+	if (int_status & CDNS_MCP_INT_CTRL_CLASH) {
-+
-+		/* Slave is driving bit slot during control word */
-+		dev_err_ratelimited(cdns->dev, "Bus clash for control word\n");
-+	}
-+
-+	if (int_status & CDNS_MCP_INT_DATA_CLASH) {
-+		/*
-+		 * Multiple slaves trying to drive bit slot, or issue with
-+		 * ownership of data bits or Slave gone bonkers
-+		 */
-+		dev_err_ratelimited(cdns->dev, "Bus clash for data word\n");
-+	}
-+
-+	if (int_status & CDNS_MCP_INT_SLAVE_MASK) {
-+		/* Mask the Slave interrupt and wake thread */
-+		cdns_updatel(cdns, CDNS_MCP_INTMASK,
-+				CDNS_MCP_INT_SLAVE_MASK, 0);
-+
-+		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
-+		ret = IRQ_WAKE_THREAD;
-+	}
-+
-+	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
-+	return ret;
-+}
-+EXPORT_SYMBOL(sdw_cdns_irq);
-+
-+/**
-+ * sdw_cdns_thread() - Cadence irq thread handler
-+ * @irq: irq number
-+ * @dev_id: irq context
-+ */
-+irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
-+{
-+	struct sdw_cdns *cdns = dev_id;
-+	u32 slave0, slave1;
-+
-+	dev_dbg(cdns->dev, "Slave status change\n");
-+
-+	slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
-+	slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
-+
-+	cdns_update_slave_status(cdns, slave0, slave1);
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT0, slave0);
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave1);
-+
-+	/* clear and unmask Slave interrupt now */
-+	cdns_writel(cdns, CDNS_MCP_INTSTAT, CDNS_MCP_INT_SLAVE_MASK);
-+	cdns_updatel(cdns, CDNS_MCP_INTMASK,
-+			CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
-+
-+	return IRQ_HANDLED;
-+}
-+EXPORT_SYMBOL(sdw_cdns_thread);
-+
-+/*
-+ * init routines
-+ */
-+
-+/**
-+ * sdw_cdns_init() - Cadence initialization
-+ * @cdns: Cadence instance
-+ */
-+int sdw_cdns_init(struct sdw_cdns *cdns)
-+{
-+	u32 val;
-+	int ret;
-+
-+	/* Exit clock stop */
-+	ret = cdns_clear_bit(cdns, CDNS_MCP_CONTROL,
-+			CDNS_MCP_CONTROL_CLK_STOP_CLR);
-+	if (ret < 0) {
-+		dev_err(cdns->dev, "Couldn't exit from clock stop\n");
-+		return ret;
-+	}
-+
-+	/* Set clock divider */
-+	val = cdns_readl(cdns, CDNS_MCP_CLK_CTRL0);
-+	val |= CDNS_DEFAULT_CLK_DIVIDER;
-+	cdns_writel(cdns, CDNS_MCP_CLK_CTRL0, val);
-+
-+	/* Set the default frame shape */
-+	cdns_writel(cdns, CDNS_MCP_FRAME_SHAPE_INIT, CDNS_DEFAULT_FRAME_SHAPE);
-+
-+	/* Set SSP interval to default value */
-+	cdns_writel(cdns, CDNS_MCP_SSP_CTRL0, CDNS_DEFAULT_SSP_INTERVAL);
-+	cdns_writel(cdns, CDNS_MCP_SSP_CTRL1, CDNS_DEFAULT_SSP_INTERVAL);
-+
-+	/* Set cmd accept mode */
-+	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
-+					CDNS_MCP_CONTROL_CMD_ACCEPT);
-+
-+	/* Configure mcp config */
-+	val = cdns_readl(cdns, CDNS_MCP_CONFIG);
-+
-+	/* Set Max cmd retry to 15 */
-+	val |= CDNS_MCP_CONFIG_MCMD_RETRY;
-+
-+	/* Set frame delay between PREQ and ping frame to 15 frames */
-+	val |= 0xF << SDW_REG_SHIFT(CDNS_MCP_CONFIG_MPREQ_DELAY);
-+
-+	/* Disable auto bus release */
-+	val &= ~CDNS_MCP_CONFIG_BUS_REL;
-+
-+	/* Disable sniffer mode */
-+	val &= ~CDNS_MCP_CONFIG_SNIFFER;
-+
-+	/* Set cmd mode for Tx and Rx cmds */
-+	val &= ~CDNS_MCP_CONFIG_CMD;
-+
-+	/* Set operation to normal */
-+	val &= ~CDNS_MCP_CONFIG_OP;
-+	val |= CDNS_MCP_CONFIG_OP_NORMAL;
-+
-+	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(sdw_cdns_init);
-+
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_DESCRIPTION("Cadence Soundwire Library");
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-new file mode 100644
-index 000000000000..f723c3395c0f
---- /dev/null
-+++ b/drivers/soundwire/cadence_master.h
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SDW_CADENCE_H
-+#define __SDW_CADENCE_H
-+
-+/**
-+ * struct sdw_cdns - Cadence driver context
-+ * @dev: Linux device
-+ * @bus: Bus handle
-+ * @instance: instance number
-+ * @registers: Cadence registers
-+ * @link_up: Link status
-+ */
-+struct sdw_cdns {
-+	struct device *dev;
-+	struct sdw_bus bus;
-+	unsigned int instance;
-+
-+	void __iomem *registers;
-+
-+	bool link_up;
-+};
-+
-+#define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
-+
-+/* Exported symbols */
-+
-+irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
-+irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
-+
-+int sdw_cdns_init(struct sdw_cdns *cdns);
-+
-+#endif /* __SDW_CADENCE_H */
--- 
-2.7.4
+see attached a patch for ensuring a 0-terminated string when using strncpy(=
+).
+I observed this issue in the ext control implementation.
+
+Best regards
+
+Timo Wischer
+
+Advanced Driver Information Technology GmbH
+Engineering Software Base (ADITG/ESB)
+Robert-Bosch-Str. 200
+31139 Hildesheim
+Germany
+
+Tel. +49 5121 49 6938
+Fax +49 5121 49 6999
+twischer@de.adit-jv.com
+
+ADIT is a joint venture company of Robert Bosch GmbH/Robert Bosch Car Multi=
+media GmbH and DENSO Corporation
+Sitz: Hildesheim, Registergericht: Amtsgericht Hildesheim HRB 3438
+Gesch=E4ftsf=FChrung: Wilhelm Grabow, Ken Yaguchi
+
+--_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_
+Content-Type: text/x-patch; name="append-0-after-strncpy.patch"
+Content-Description: append-0-after-strncpy.patch
+Content-Disposition: attachment; filename="append-0-after-strncpy.patch";
+	size=4537; creation-date="Fri, 01 Dec 2017 09:55:39 GMT";
+	modification-date="Fri, 01 Dec 2017 09:55:39 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSBiMDhkZDJkMzk1ZmMxZDA1MTM0NWYxOWQxMmI2MmIyZmFhMTRiYzY3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBUaW1vIFdpc2NoZXIgPHR3aXNjaGVyQGRlLmFkaXQtanYuY29t
+PgpEYXRlOiBGcmksIDEgRGVjIDIwMTcgMTA6NDU6MDQgKzAxMDAKU3ViamVjdDogQWx3YXlzIHRl
+cm1pbmF0ZSBzdHJpbmcgd2l0aCAwIHdoaWNoIHdhcyBjb3BpZWQgd2l0aCBzdHJuY3B5KCkKClNp
+Z25lZC1vZmYtYnk6IFRpbW8gV2lzY2hlciA8dHdpc2NoZXJAZGUuYWRpdC1qdi5jb20+CgpkaWZm
+IC0tZ2l0IGEvc3JjL2NvbnRyb2wvY29udHJvbC5jIGIvc3JjL2NvbnRyb2wvY29udHJvbC5jCmlu
+ZGV4IDExZjc4MTUuLjM0YThkZWUgMTAwNjQ0Ci0tLSBhL3NyYy9jb250cm9sL2NvbnRyb2wuYwor
+KysgYi9zcmMvY29udHJvbC9jb250cm9sLmMKQEAgLTE4MDQsNiArMTgwNCw3IEBAIHZvaWQgc25k
+X2N0bF9lbGVtX2lkX3NldF9uYW1lKHNuZF9jdGxfZWxlbV9pZF90ICpvYmosIGNvbnN0IGNoYXIg
+KnZhbCkKIHsKIAlhc3NlcnQob2JqKTsKIAlzdHJuY3B5KChjaGFyICopb2JqLT5uYW1lLCB2YWws
+IHNpemVvZihvYmotPm5hbWUpKTsKKwlvYmotPm5hbWVbc2l6ZW9mKG9iai0+bmFtZSktMV0gPSAw
+OwogfQogCiAvKioKQEAgLTI3MjIsNiArMjcyMyw3IEBAIHZvaWQgc25kX2N0bF9lbGVtX2luZm9f
+c2V0X25hbWUoc25kX2N0bF9lbGVtX2luZm9fdCAqb2JqLCBjb25zdCBjaGFyICp2YWwpCiB7CiAJ
+YXNzZXJ0KG9iaik7CiAJc3RybmNweSgoY2hhciAqKW9iai0+aWQubmFtZSwgdmFsLCBzaXplb2Yo
+b2JqLT5pZC5uYW1lKSk7CisJb2JqLT5pZC5uYW1lW3NpemVvZihvYmotPmlkLm5hbWUpLTFdID0g
+MDsKIH0KIAogLyoqCkBAIC0yOTQ0LDYgKzI5NDYsNyBAQCB2b2lkIHNuZF9jdGxfZWxlbV92YWx1
+ZV9zZXRfbmFtZShzbmRfY3RsX2VsZW1fdmFsdWVfdCAqb2JqLCBjb25zdCBjaGFyICp2YWwpCiB7
+CiAJYXNzZXJ0KG9iaik7CiAJc3RybmNweSgoY2hhciAqKW9iai0+aWQubmFtZSwgdmFsLCBzaXpl
+b2Yob2JqLT5pZC5uYW1lKSk7CisJb2JqLT5pZC5uYW1lW3NpemVvZihvYmotPmlkLm5hbWUpLTFd
+ID0gMDsKIH0KIAogLyoqCmRpZmYgLS1naXQgYS9zcmMvbWl4ZXIvc2ltcGxlX25vbmUuYyBiL3Ny
+Yy9taXhlci9zaW1wbGVfbm9uZS5jCmluZGV4IGU5ZGMxNzMuLjMyNzA0N2MgMTAwNjQ0Ci0tLSBh
+L3NyYy9taXhlci9zaW1wbGVfbm9uZS5jCisrKyBiL3NyYy9taXhlci9zaW1wbGVfbm9uZS5jCkBA
+IC0xMzM0LDYgKzEzMzQsNyBAQCBzdGF0aWMgaW50IGVudW1faXRlbV9uYW1lX29wcyhzbmRfbWl4
+ZXJfZWxlbV90ICplbGVtLAogCXNuZF9jdGxfZWxlbV9pbmZvX3NldF9pdGVtKCZpbmZvLCBpdGVt
+KTsKIAlzbmRfaGN0bF9lbGVtX2luZm8oaGVsZW0sICZpbmZvKTsKIAlzdHJuY3B5KGJ1Ziwgc25k
+X2N0bF9lbGVtX2luZm9fZ2V0X2l0ZW1fbmFtZSgmaW5mbyksIG1heGxlbik7CisJYnVmW21heGxl
+bi0xXSA9IDA7CiAJcmV0dXJuIDA7CiB9CiAKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX2RpcmVj
+dC5jIGIvc3JjL3BjbS9wY21fZGlyZWN0LmMKaW5kZXggYWJmNzM3OC4uMDExNzIyMyAxMDA2NDQK
+LS0tIGEvc3JjL3BjbS9wY21fZGlyZWN0LmMKKysrIGIvc3JjL3BjbS9wY21fZGlyZWN0LmMKQEAg
+LTc2Nyw4ICs3NjcsMTEgQEAgaW50IHNuZF9wY21fZGlyZWN0X2luZm8oc25kX3BjbV90ICpwY20s
+IHNuZF9wY21faW5mb190ICogaW5mbykKIAkvKiBGSVhNRTogZmlsbCB0aGlzIHdpdGggc29tZXRo
+aW5nIG1vcmUgdXNlZnVsOiB3ZSBrbm93IHRoZSBoYXJkd2FyZSBuYW1lICovCiAJaWYgKHBjbS0+
+bmFtZSkgewogCQlzdHJuY3B5KChjaGFyICopaW5mby0+aWQsIHBjbS0+bmFtZSwgc2l6ZW9mKGlu
+Zm8tPmlkKSk7CisJCWluZm8tPmlkW3NpemVvZihpbmZvLT5pZCktMV0gPSAwOwogCQlzdHJuY3B5
+KChjaGFyICopaW5mby0+bmFtZSwgcGNtLT5uYW1lLCBzaXplb2YoaW5mby0+bmFtZSkpOworCQlp
+bmZvLT5uYW1lW3NpemVvZihpbmZvLT5uYW1lKS0xXSA9IDA7CiAJCXN0cm5jcHkoKGNoYXIgKilp
+bmZvLT5zdWJuYW1lLCBwY20tPm5hbWUsIHNpemVvZihpbmZvLT5zdWJuYW1lKSk7CisJCWluZm8t
+PnN1Ym5hbWVbc2l6ZW9mKGluZm8tPnN1Ym5hbWUpLTFdID0gMDsKIAl9CiAJaW5mby0+c3ViZGV2
+aWNlc19jb3VudCA9IDE7CiAJcmV0dXJuIDA7CmRpZmYgLS1naXQgYS9zcmMvcGNtL3BjbV9pb3Bs
+dWcuYyBiL3NyYy9wY20vcGNtX2lvcGx1Zy5jCmluZGV4IDdhNzgyZTYuLjI5NmRlYTAgMTAwNjQ0
+Ci0tLSBhL3NyYy9wY20vcGNtX2lvcGx1Zy5jCisrKyBiL3NyYy9wY20vcGNtX2lvcGx1Zy5jCkBA
+IC03NCw4ICs3NCwxMSBAQCBzdGF0aWMgaW50IHNuZF9wY21faW9wbHVnX2luZm8oc25kX3BjbV90
+ICpwY20sIHNuZF9wY21faW5mb190ICppbmZvKQogCWluZm8tPmNhcmQgPSAtMTsKIAlpZiAocGNt
+LT5uYW1lKSB7CiAJCXN0cm5jcHkoKGNoYXIgKilpbmZvLT5pZCwgcGNtLT5uYW1lLCBzaXplb2Yo
+aW5mby0+aWQpKTsKKwkJaW5mby0+aWRbc2l6ZW9mKGluZm8tPmlkKS0xXSA9IDA7CiAJCXN0cm5j
+cHkoKGNoYXIgKilpbmZvLT5uYW1lLCBwY20tPm5hbWUsIHNpemVvZihpbmZvLT5uYW1lKSk7CisJ
+CWluZm8tPm5hbWVbc2l6ZW9mKGluZm8tPm5hbWUpLTFdID0gMDsKIAkJc3RybmNweSgoY2hhciAq
+KWluZm8tPnN1Ym5hbWUsIHBjbS0+bmFtZSwgc2l6ZW9mKGluZm8tPnN1Ym5hbWUpKTsKKwkJaW5m
+by0+c3VibmFtZVtzaXplb2YoaW5mby0+c3VibmFtZSktMV0gPSAwOwogCX0KIAlpbmZvLT5zdWJk
+ZXZpY2VzX2NvdW50ID0gMTsKIAlyZXR1cm4gMDsKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX251
+bGwuYyBiL3NyYy9wY20vcGNtX251bGwuYwppbmRleCA3YWZlMTU4Li5mZmUyMDU5IDEwMDY0NAot
+LS0gYS9zcmMvcGNtL3BjbV9udWxsLmMKKysrIGIvc3JjL3BjbS9wY21fbnVsbC5jCkBAIC03Miw4
+ICs3MiwxMSBAQCBzdGF0aWMgaW50IHNuZF9wY21fbnVsbF9pbmZvKHNuZF9wY21fdCAqcGNtLCBz
+bmRfcGNtX2luZm9fdCAqIGluZm8pCiAJaW5mby0+Y2FyZCA9IC0xOwogCWlmIChwY20tPm5hbWUp
+IHsKIAkJc3RybmNweSgoY2hhciAqKWluZm8tPmlkLCBwY20tPm5hbWUsIHNpemVvZihpbmZvLT5p
+ZCkpOworCQlpbmZvLT5pZFtzaXplb2YoaW5mby0+aWQpLTFdID0gMDsKIAkJc3RybmNweSgoY2hh
+ciAqKWluZm8tPm5hbWUsIHBjbS0+bmFtZSwgc2l6ZW9mKGluZm8tPm5hbWUpKTsKKwkJaW5mby0+
+bmFtZVtzaXplb2YoaW5mby0+bmFtZSktMV0gPSAwOwogCQlzdHJuY3B5KChjaGFyICopaW5mby0+
+c3VibmFtZSwgcGNtLT5uYW1lLCBzaXplb2YoaW5mby0+c3VibmFtZSkpOworCQlpbmZvLT5zdWJu
+YW1lW3NpemVvZihpbmZvLT5zdWJuYW1lKS0xXSA9IDA7CiAJfQogCWluZm8tPnN1YmRldmljZXNf
+Y291bnQgPSAxOwogCXJldHVybiAwOwpkaWZmIC0tZ2l0IGEvc3JjL3NlcS9zZXEuYyBiL3NyYy9z
+ZXEvc2VxLmMKaW5kZXggOTgzYzRmYS4uYjcwYTY0MCAxMDA2NDQKLS0tIGEvc3JjL3NlcS9zZXEu
+YworKysgYi9zcmMvc2VxL3NlcS5jCkBAIC0xNzQ1LDYgKzE3NDUsNyBAQCB2b2lkIHNuZF9zZXFf
+Y2xpZW50X2luZm9fc2V0X25hbWUoc25kX3NlcV9jbGllbnRfaW5mb190ICppbmZvLCBjb25zdCBj
+aGFyICpuYW1lKQogewogCWFzc2VydChpbmZvICYmIG5hbWUpOwogCXN0cm5jcHkoaW5mby0+bmFt
+ZSwgbmFtZSwgc2l6ZW9mKGluZm8tPm5hbWUpKTsKKwlpbmZvLT5uYW1lW3NpemVvZihpbmZvLT5u
+YW1lKS0xXSA9IDA7CiB9CiAKIC8qKgpAQCAtMjE3OCw2ICsyMTc5LDcgQEAgdm9pZCBzbmRfc2Vx
+X3BvcnRfaW5mb19zZXRfbmFtZShzbmRfc2VxX3BvcnRfaW5mb190ICppbmZvLCBjb25zdCBjaGFy
+ICpuYW1lKQogewogCWFzc2VydChpbmZvICYmIG5hbWUpOwogCXN0cm5jcHkoaW5mby0+bmFtZSwg
+bmFtZSwgc2l6ZW9mKGluZm8tPm5hbWUpKTsKKwlpbmZvLT5uYW1lW3NpemVvZihpbmZvLT5uYW1l
+KS0xXSA9IDA7CiB9CiAKIC8qKgpAQCAtMzEyMyw2ICszMTI1LDcgQEAgdm9pZCBzbmRfc2VxX3F1
+ZXVlX2luZm9fc2V0X25hbWUoc25kX3NlcV9xdWV1ZV9pbmZvX3QgKmluZm8sIGNvbnN0IGNoYXIg
+Km5hbWUpCiB7CiAJYXNzZXJ0KGluZm8gJiYgbmFtZSk7CiAJc3RybmNweShpbmZvLT5uYW1lLCBu
+YW1lLCBzaXplb2YoaW5mby0+bmFtZSkpOworCWluZm8tPm5hbWVbc2l6ZW9mKGluZm8tPm5hbWUp
+LTFdID0gMDsKIH0KIAogLyoqCkBAIC0zMjgwLDYgKzMyODMsNyBAQCBpbnQgc25kX3NlcV9xdWVy
+eV9uYW1lZF9xdWV1ZShzbmRfc2VxX3QgKnNlcSwgY29uc3QgY2hhciAqbmFtZSkKIAlzbmRfc2Vx
+X3F1ZXVlX2luZm9fdCBpbmZvOwogCWFzc2VydChzZXEgJiYgbmFtZSk7CiAJc3RybmNweShpbmZv
+Lm5hbWUsIG5hbWUsIHNpemVvZihpbmZvLm5hbWUpKTsKKwlpbmZvLm5hbWVbc2l6ZW9mKGluZm8u
+bmFtZSktMV0gPSAwOwogCWVyciA9IHNlcS0+b3BzLT5nZXRfbmFtZWRfcXVldWUoc2VxLCAmaW5m
+byk7CiAJaWYgKGVyciA8IDApCiAJCXJldHVybiBlcnI7Cg==
+
+--_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_--
