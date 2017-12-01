@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ep93xx-ac97: Fix platform_get_irq's error checking" to the asoc tree
-Date: Fri, 01 Dec 2017 13:44:13 +0000
-Message-ID: <E1eKlbx-0001L1-A7@debutante>
-References: <4ce907b8389af30eb0677e70cf543a2b795cca12.1511970158.git.arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: mt8173: Fix platform_get_irq's error checking" to the asoc tree
+Date: Fri, 01 Dec 2017 13:44:06 +0000
+Message-ID: <E1eKlbq-0001Ju-5D@debutante>
+References: <79e17e6083f5142c4707c94519577b6682a76566.1511970158.git.arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4ce907b8389af30eb0677e70cf543a2b795cca12.1511970158.git.arvind.yadav.cs@gmail.com>
+In-Reply-To: <79e17e6083f5142c4707c94519577b6682a76566.1511970158.git.arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ep93xx-ac97: Fix platform_get_irq's error checking
+   ASoC: mt8173: Fix platform_get_irq's error checking
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8d6fb0bce2021baf056344cb0abb2df00c5fe6d5 Mon Sep 17 00:00:00 2001
+>From d6e2c4ffdf67de68e0263630525d2b521132d66a Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Wed, 29 Nov 2017 21:47:10 +0530
-Subject: [PATCH] ASoC: ep93xx-ac97: Fix platform_get_irq's error checking
+Date: Wed, 29 Nov 2017 21:47:11 +0530
+Subject: [PATCH] ASoC: mt8173: Fix platform_get_irq's error checking
 
 The platform_get_irq() function returns negative if an error occurs.
 zero or positive number on success. platform_get_irq() error checking
@@ -49,32 +49,33 @@ for zero is not correct.
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/cirrus/ep93xx-ac97.c | 6 +++---
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/cirrus/ep93xx-ac97.c b/sound/soc/cirrus/ep93xx-ac97.c
-index bbf7a9266a99..cd5a939ad608 100644
---- a/sound/soc/cirrus/ep93xx-ac97.c
-+++ b/sound/soc/cirrus/ep93xx-ac97.c
-@@ -365,7 +365,7 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
+diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+index 8a643a35d3d4..c7f7f8add5d9 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
++++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+@@ -1083,7 +1083,7 @@ static int mt8173_afe_init_audio_clk(struct mtk_base_afe *afe)
+ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
  {
- 	struct ep93xx_ac97_info *info;
+ 	int ret, i;
+-	unsigned int irq_id;
++	int irq_id;
+ 	struct mtk_base_afe *afe;
+ 	struct mt8173_afe_private *afe_priv;
  	struct resource *res;
--	unsigned int irq;
-+	int irq;
- 	int ret;
+@@ -1105,9 +1105,9 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
+ 	afe->dev = &pdev->dev;
  
- 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-@@ -378,8 +378,8 @@ static int ep93xx_ac97_probe(struct platform_device *pdev)
- 		return PTR_ERR(info->regs);
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (!irq)
--		return -ENODEV;
-+	if (irq <= 0)
-+		return irq < 0 ? irq : -ENODEV;
- 
- 	ret = devm_request_irq(&pdev->dev, irq, ep93xx_ac97_interrupt,
- 			       IRQF_TRIGGER_HIGH, pdev->name, info);
+ 	irq_id = platform_get_irq(pdev, 0);
+-	if (!irq_id) {
++	if (irq_id <= 0) {
+ 		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
+-		return -ENXIO;
++		return irq_id < 0 ? irq_id : -ENXIO;
+ 	}
+ 	ret = devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler,
+ 			       0, "Afe_ISR_Handle", (void *)afe);
 -- 
 2.15.0
