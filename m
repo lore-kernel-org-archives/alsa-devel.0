@@ -1,254 +1,250 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 14/15] soundwire: intel: Add Intel init module
-Date: Fri,  1 Dec 2017 15:26:16 +0530
-Message-ID: <1512122177-2889-15-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 07/15] regmap: Add SoundWire bus support
+Date: Fri,  1 Dec 2017 15:26:09 +0530
+Message-ID: <1512122177-2889-8-git-send-email-vinod.koul@intel.com>
 References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F7E1267C09
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:53:12 +0100 (CET)
 In-Reply-To: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The SoundWire Master is implemented as part of Audio controller in
-Intel platforms. Add a init module which creates SoundWire Master
-platform devices based on the links supported in the hardware.
+SoundWire bus provides sdw_read() and sdw_write() APIs for Slave
+devices to program the registers. Provide support in regmap for
+SoundWire bus.
 
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Makefile          |   3 +
- drivers/soundwire/intel_init.c      | 198 ++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw_intel.h |   3 +
- 3 files changed, 204 insertions(+)
- create mode 100644 drivers/soundwire/intel_init.c
+ drivers/base/regmap/Kconfig      |  4 ++
+ drivers/base/regmap/Makefile     |  1 +
+ drivers/base/regmap/regmap-sdw.c | 92 ++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/Kconfig        |  1 +
+ include/linux/regmap.h           | 37 ++++++++++++++++
+ 5 files changed, 135 insertions(+)
+ create mode 100644 drivers/base/regmap/regmap-sdw.c
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index 0813b2c74426..94272c965d6c 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -13,3 +13,6 @@ obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
- #Intel driver
- soundwire-intel-objs :=	intel.o
- obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
+diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+index 3a1535d812d8..71dc88a48cfa 100644
+--- a/drivers/base/regmap/Kconfig
++++ b/drivers/base/regmap/Kconfig
+@@ -41,3 +41,7 @@ config REGMAP_IRQ
+ 
+ config REGMAP_HWSPINLOCK
+ 	bool
 +
-+soundwire-intel-init-objs := intel_init.o
-+obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel-init.o
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
++config REGMAP_SOUNDWIRE
++	tristate
++	depends on SOUNDWIRE_BUS
+diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
+index 0d298c446108..22d263cca395 100644
+--- a/drivers/base/regmap/Makefile
++++ b/drivers/base/regmap/Makefile
+@@ -13,3 +13,4 @@ obj-$(CONFIG_REGMAP_SPMI) += regmap-spmi.o
+ obj-$(CONFIG_REGMAP_MMIO) += regmap-mmio.o
+ obj-$(CONFIG_REGMAP_IRQ) += regmap-irq.o
+ obj-$(CONFIG_REGMAP_W1) += regmap-w1.o
++obj-$(CONFIG_REGMAP_SOUNDWIRE) += regmap-sdw.o
+diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
 new file mode 100644
-index 000000000000..6f2bb99526f2
+index 000000000000..3a72039e94ea
 --- /dev/null
-+++ b/drivers/soundwire/intel_init.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++++ b/drivers/base/regmap/regmap-sdw.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0
 +// Copyright(c) 2015-17 Intel Corporation.
 +
-+/*
-+ * SDW Intel Init Routines
-+ *
-+ * Initializes and creates SDW devices based on ACPI and Hardware values
-+ */
++#include <linux/device.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/soundwire/sdw.h>
++#include "internal.h"
 +
-+#include <linux/acpi.h>
-+#include <linux/platform_device.h>
-+#include <linux/soundwire/sdw_intel.h>
-+#include "intel.h"
-+
-+#define SDW_MAX_LINKS		4
-+#define SDW_SHIM_LCAP		0x0
-+#define SDW_SHIM_BASE		0x2C000
-+#define SDW_ALH_BASE		0x2C800
-+#define SDW_LINK_BASE		0x30000
-+#define SDW_LINK_SIZE		0x10000
-+
-+struct sdw_link_data {
-+	struct sdw_intel_link_res res;
-+	struct platform_device *pdev;
-+};
-+
-+struct sdw_intel_ctx {
-+	int count;
-+	struct sdw_link_data *links;
-+};
-+
-+static int sdw_intel_cleanup_pdev(struct sdw_intel_ctx *ctx)
++static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
 +{
-+	struct sdw_link_data *link = ctx->links;
-+	int i;
++	struct device *dev = context;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
 +
-+	if (!link)
-+		return 0;
++	return sdw_write(slave, reg, val);
++}
 +
-+	for (i = 0; i < ctx->count; i++) {
-+		if (link->pdev)
-+			platform_device_unregister(link->pdev);
-+		link++;
-+	}
++static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
++{
++	struct device *dev = context;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	int read;
 +
-+	kfree(ctx->links);
-+	ctx->links = NULL;
++	read = sdw_read(slave, reg);
++	if (read < 0)
++		return read;
++
++	*val = read;
++	return 0;
++}
++
++static struct regmap_bus regmap_sdw = {
++	.reg_read = regmap_sdw_read,
++	.reg_write = regmap_sdw_write,
++	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
++	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
++};
++
++static int regmap_sdw_config_check(const struct regmap_config *config)
++{
++	/* All register are 8-bits wide as per MIPI Soundwire 1.0 Spec */
++	if (config->val_bits != 8)
++		return -ENOTSUPP;
++
++	/* Registers are 32 bits wide */
++	if (config->reg_bits != 32)
++		return -ENOTSUPP;
++
++	/* SoundWire register address are contiguous */
++	if (config->reg_stride != 0)
++		return -ENOTSUPP;
++
++	if (config->pad_bits != 0)
++		return -ENOTSUPP;
 +
 +	return 0;
 +}
 +
-+static struct sdw_intel_ctx
-+*sdw_intel_add_controller(struct sdw_intel_res *res)
++struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name)
 +{
-+	struct platform_device_info pdevinfo;
-+	struct platform_device *pdev;
-+	struct sdw_link_data *link;
-+	struct sdw_intel_ctx *ctx;
-+	struct acpi_device *adev;
-+	int ret, i;
-+	u8 count;
-+	u32 caps;
++	int ret;
 +
-+	if (acpi_bus_get_device(res->handle, &adev))
-+		return NULL;
++	ret = regmap_sdw_config_check(config);
++	if (ret)
++		return ERR_PTR(ret);
 +
-+	/* Found controller, find links supported */
-+	count = 0;
-+	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
-+				  "mipi-sdw-master-count", &count, 1);
-+
-+	/* Don't fail on error, continue and use hw value */
-+	if (ret) {
-+		dev_err(&adev->dev,
-+			"Failed to read mipi-sdw-master-count: %d\n", ret);
-+		count = SDW_MAX_LINKS;
-+	}
-+
-+	/* Check SNDWLCAP.LCOUNT */
-+	caps = ioread32(res->mmio_base + SDW_SHIM_BASE + SDW_SHIM_LCAP);
-+
-+	/* Check HW supported vs property value and use min of two */
-+	count = min_t(u8, caps, count);
-+
-+	/* Check count is within bounds */
-+	if (count > SDW_MAX_LINKS) {
-+		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
-+						count, SDW_MAX_LINKS);
-+		return NULL;
-+	}
-+
-+	dev_dbg(&adev->dev, "Creating %d SDW Link devices\n", count);
-+
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return NULL;
-+
-+	ctx->count = count;
-+	ctx->links = kcalloc(ctx->count, sizeof(*ctx->links), GFP_KERNEL);
-+	if (!ctx->links)
-+		goto link_err;
-+
-+	link = ctx->links;
-+
-+	/* Create SDW Master devices */
-+	for (i = 0; i < count; i++) {
-+
-+		link->res.irq = res->irq;
-+		link->res.registers = res->mmio_base + SDW_LINK_BASE
-+					+ (SDW_LINK_SIZE * i);
-+		link->res.shim = res->mmio_base + SDW_SHIM_BASE;
-+		link->res.alh = res->mmio_base + SDW_ALH_BASE;
-+
-+		memset(&pdevinfo, 0, sizeof(pdevinfo));
-+
-+		pdevinfo.parent = res->parent;
-+		pdevinfo.name = "int-sdw";
-+		pdevinfo.id = i;
-+		pdevinfo.fwnode = acpi_fwnode_handle(adev);
-+		pdevinfo.data = &link->res;
-+		pdevinfo.size_data = sizeof(link->res);
-+
-+		pdev = platform_device_register_full(&pdevinfo);
-+		if (IS_ERR(pdev)) {
-+			dev_err(&adev->dev,
-+				"platform device creation failed: %ld\n",
-+				PTR_ERR(pdev));
-+			goto pdev_err;
-+		}
-+
-+		link->pdev = pdev;
-+		link++;
-+	}
-+
-+	return ctx;
-+
-+pdev_err:
-+	sdw_intel_cleanup_pdev(ctx);
-+link_err:
-+	kfree(ctx);
-+	return NULL;
++	return __regmap_init(&sdw->dev, &regmap_sdw,
++			&sdw->dev, config, lock_key, lock_name);
 +}
++EXPORT_SYMBOL_GPL(__regmap_init_sdw);
 +
-+static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
-+					void *cdata, void **return_value)
++struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
++				      const struct regmap_config *config,
++				      struct lock_class_key *lock_key,
++				      const char *lock_name)
 +{
-+	struct sdw_intel_res *res = cdata;
-+	struct acpi_device *adev;
++	int ret;
 +
-+	if (acpi_bus_get_device(handle, &adev)) {
-+		dev_err(&adev->dev, "Couldn't find ACPI handle\n");
-+		return AE_NOT_FOUND;
-+	}
++	ret = regmap_sdw_config_check(config);
++	if (ret)
++		return ERR_PTR(ret);
 +
-+	res->handle = handle;
-+	return AE_OK;
++	return __devm_regmap_init(&sdw->dev, &regmap_sdw,
++			&sdw->dev, config, lock_key, lock_name);
 +}
++EXPORT_SYMBOL_GPL(__devm_regmap_init_sdw);
 +
-+/**
-+ * sdw_intel_init() - SoundWire Intel init routine
-+ * @parent_handle: ACPI parent handle
-+ * @res: resource data
-+ *
-+ * This scans the namespace and creates SoundWire link controller devices
-+ * based on the info queried.
-+ */
-+void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res)
-+{
-+	acpi_status status;
-+
-+	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
-+					parent_handle, 1,
-+					sdw_intel_acpi_cb,
-+					NULL, res, NULL);
-+	if (ACPI_FAILURE(status))
-+		return NULL;
-+
-+	return sdw_intel_add_controller(res);
-+}
-+EXPORT_SYMBOL(sdw_intel_init);
-+
-+/**
-+ * sdw_intel_exit() - SoundWire Intel exit
-+ * @arg: callback context
-+ *
-+ * Delete the controller instances created and cleanup
-+ */
-+void sdw_intel_exit(void *arg)
-+{
-+	struct sdw_intel_ctx *ctx = arg;
-+
-+	sdw_intel_cleanup_pdev(ctx);
-+	kfree(ctx);
-+}
-+EXPORT_SYMBOL(sdw_intel_exit);
-+
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_DESCRIPTION("Intel Soundwire Init Library");
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 370cc52d8d1e..4b37528f592d 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -18,4 +18,7 @@ struct sdw_intel_res {
- 	struct device *parent;
- };
++MODULE_DESCRIPTION("Regmap SoundWire Module");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index d7d3908f4913..92a2c3bad87f 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -18,5 +18,6 @@ comment "SoundWire Devices"
  
-+void *sdw_intel_init(acpi_handle *parent_handle, struct sdw_intel_res *res);
-+void sdw_intel_exit(void *arg);
+ config SOUNDWIRE_BUS
+ 	tristate
++	select REGMAP_SOUNDWIRE
+ 
+ endif
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 15eddc1353ba..97a9c6563bb1 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -30,6 +30,7 @@ struct regmap;
+ struct regmap_range_cfg;
+ struct regmap_field;
+ struct snd_ac97;
++struct sdw_slave;
+ 
+ /* An enum of all the supported cache types */
+ enum regcache_type {
+@@ -524,6 +525,10 @@ struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
+ 				  const struct regmap_config *config,
+ 				  struct lock_class_key *lock_key,
+ 				  const char *lock_name);
++struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name);
+ 
+ struct regmap *__devm_regmap_init(struct device *dev,
+ 				  const struct regmap_bus *bus,
+@@ -561,6 +566,10 @@ struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
+ 				       const struct regmap_config *config,
+ 				       struct lock_class_key *lock_key,
+ 				       const char *lock_name);
++struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name);
+ 
+ /*
+  * Wrapper for regmap_init macros to include a unique lockdep key and name
+@@ -710,6 +719,20 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
+ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
+ 
+ /**
++ * regmap_init_sdw() - Initialise register map
++ *
++ * @sdw: Device that will be interacted with
++ * @config: Configuration for register map
++ *
++ * The return value will be an ERR_PTR() on error or a valid pointer to
++ * a struct regmap.
++ */
++#define regmap_init_sdw(sdw, config)					\
++	__regmap_lockdep_wrapper(__regmap_init_sdw, #config,		\
++				sdw, config)
 +
- #endif
++
++/**
+  * devm_regmap_init() - Initialise managed register map
+  *
+  * @dev: Device that will be interacted with
+@@ -839,6 +862,20 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
+ 	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
+ 				ac97, config)
+ 
++/**
++ * devm_regmap_init_sdw() - Initialise managed register map
++ *
++ * @sdw: Device that will be interacted with
++ * @config: Configuration for register map
++ *
++ * The return value will be an ERR_PTR() on error or a valid pointer
++ * to a struct regmap. The regmap will be automatically freed by the
++ * device management code.
++ */
++#define devm_regmap_init_sdw(sdw, config)				\
++	__regmap_lockdep_wrapper(__devm_regmap_init_sdw, #config,	\
++				sdw, config)
++
+ void regmap_exit(struct regmap *map);
+ int regmap_reinit_cache(struct regmap *map,
+ 			const struct regmap_config *config);
 -- 
 2.7.4
