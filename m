@@ -1,19 +1,19 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH v2 10/19] ASoC: tlv320aic31xx: Add MICBIAS
-	off setting
-Date: Fri, 1 Dec 2017 08:56:31 -0600
-Message-ID: <afa96737-d17a-c854-b3a8-30730e06dd99@ti.com>
+Subject: Re: [PATCH v2 14/19] ASoC: tlv320aic31xx: Remove
+ regulator notification handling
+Date: Fri, 1 Dec 2017 09:01:19 -0600
+Message-ID: <216ac36e-772a-0919-67cc-86589d3916fc@ti.com>
 References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-11-afd@ti.com>
- <20171201133028.svemo5qedyfqrt7y@sirena.org.uk>
+ <20171129213300.20021-15-afd@ti.com>
+ <20171201133604.6v3ychahwvlaygxi@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A465267C99
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 15:56:33 +0100 (CET)
-In-Reply-To: <20171201133028.svemo5qedyfqrt7y@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 19AC8267029
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 16:01:20 +0100 (CET)
+In-Reply-To: <20171201133604.6v3ychahwvlaygxi@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,35 +28,18 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/01/2017 07:30 AM, Mark Brown wrote:
-> On Wed, Nov 29, 2017 at 03:32:51PM -0600, Andrew F. Davis wrote:
->> Leaving microphone bias off is a valid setting and even used in the DT
->> binding document example. Add this setting here and document the same.
+On 12/01/2017 07:36 AM, Mark Brown wrote:
+> On Wed, Nov 29, 2017 at 03:32:55PM -0600, Andrew F. Davis wrote:
+>> A regulator being forcefully disabled is a catastrophic event that
+>> should never happen to most devices, especially not sound CODECs.
 > 
->>  - ai31xx-micbias-vg - MicBias Voltage setting
->> +        0 or MICBIAS_OFF - MICBIAS output is powered off
->>          1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
->>          2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
->>          3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
-> 
-> This doesn't make much sense.  If we enable the microphone with a
-> voltage of 0V that's not going to work terribly well - I'd expect this
-> property to control the voltage set when it's enabled, not if it's
-> enabled.
+> That's not what the disable notification handling is for.  It's there so
+> that the driver can skip having to reinitialize the device if other
+> constraints mean the power doesn't actually get turned off when it
+> disables the regualtors.  It's nothing to do with forced disables.
 > 
 
-I agree about this not making much sense, but I'm not sure the right way
-forward here.
-
-Personally I wouldn't have put MicBias voltage in DT to begin with, it
-is runtime configurable and depends on user runtime inserted microphone,
-not really a hardware description :/
-
-The enable/disable is controlled by a DAPM and should be wired to enable
-whenever we are recording from the related microphone pin. So then
-without MICBIAS_OFF the user is forced to select from the above voltages
-whenever recording, which may not be correct if they are using a mic
-that doesn't need bias.
-
-The best option I think would be to drop this from DT, but I don't feel
-like fighting that battle right now.
+Looking into the call sites, at least in this case the only time this
+notification will be called, outside the normal enable/disable paths
+(which do the same thing here: turn on regmap cache only mode and mark
+it dirty), will be during a force disable scenario.
