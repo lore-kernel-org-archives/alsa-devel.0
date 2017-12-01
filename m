@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Add CODEC clock slave
-	support" to the asoc tree
-Date: Fri, 01 Dec 2017 13:43:15 +0000
-Message-ID: <E1eKlb1-00019v-SE@debutante>
-References: <20171129213300.20021-13-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic31xx: Check clock and divider
+	before division" to the asoc tree
+Date: Fri, 01 Dec 2017 13:43:21 +0000
+Message-ID: <E1eKlb7-0001B2-Ob@debutante>
+References: <20171109002741.10897-9-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A5E9A267C74
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 14:43:20 +0100 (CET)
-In-Reply-To: <20171129213300.20021-13-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 58231267C5D
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 14:43:26 +0100 (CET)
+In-Reply-To: <20171109002741.10897-9-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Add CODEC clock slave support
+   ASoC: tlv320aic31xx: Check clock and divider before division
 
 has been applied to the asoc tree at
 
@@ -52,44 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 77f8b3cfc33cd4231cc2748bcac9f43b9eea546c Mon Sep 17 00:00:00 2001
+>From c6b8c779213dfe2a31e12400b1a2cf2a9a843236 Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 15:32:53 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Add CODEC clock slave support
+Date: Wed, 29 Nov 2017 15:32:52 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Check clock and divider before division
 
-This CODEC supports being the WCLK and/or BCLK slave, add
-support for this here.
-
-Also make the alert into an error as alert is more urgent
-than needed here and is rarely used.
+If our set_sysclk DAI callback has not been called yet p_div will be 0
+and dividing by this will cause an error. Print an error message and
+leave before this.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/codecs/tlv320aic31xx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 05e6d194d6a9..d77cc36d7360 100644
+index ab03a19f6aaa..05e6d194d6a9 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -925,8 +925,16 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		iface_reg1 |= AIC31XX_BCLK_MASTER | AIC31XX_WCLK_MASTER;
- 		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		iface_reg1 |= AIC31XX_WCLK_MASTER;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		iface_reg1 |= AIC31XX_BCLK_MASTER;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		break;
- 	default:
--		dev_alert(codec->dev, "Invalid DAI master/slave interface\n");
-+		dev_err(codec->dev, "Invalid DAI master/slave interface\n");
- 		return -EINVAL;
- 	}
+@@ -754,11 +754,17 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
+ {
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
+ 	int bclk_score = snd_soc_params_to_frame_size(params);
+-	int mclk_p = aic31xx->sysclk / aic31xx->p_div;
++	int mclk_p;
+ 	int bclk_n = 0;
+ 	int match = -1;
+ 	int i;
  
++	if (!aic31xx->sysclk || !aic31xx->p_div) {
++		dev_err(codec->dev, "Master clock not supplied\n");
++		return -EINVAL;
++	}
++	mclk_p = aic31xx->sysclk / aic31xx->p_div;
++
+ 	/* Use PLL as CODEC_CLKIN and DAC_CLK as BDIV_CLKIN */
+ 	snd_soc_update_bits(codec, AIC31XX_CLKMUX,
+ 			    AIC31XX_CODEC_CLKIN_MASK, AIC31XX_CODEC_CLKIN_PLL);
 -- 
 2.15.0
