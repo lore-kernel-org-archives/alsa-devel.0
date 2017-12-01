@@ -1,70 +1,63 @@
-From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [PATCH v6 11/13] IIO: consumer: allow to set buffer sizes
-Date: Fri, 1 Dec 2017 18:40:18 +0100
-Message-ID: <1512150020-20335-12-git-send-email-arnaud.pouliquen@st.com>
-References: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 10/19] ASoC: tlv320aic31xx: Add MICBIAS off setting
+Date: Fri, 1 Dec 2017 17:43:00 +0000
+Message-ID: <20171201174300.hoocutyi6c7jtfx3@sirena.org.uk>
+References: <20171129213300.20021-1-afd@ti.com>
+ <20171129213300.20021-11-afd@ti.com>
+ <20171201133028.svemo5qedyfqrt7y@sirena.org.uk>
+ <afa96737-d17a-c854-b3a8-30730e06dd99@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1512150020-20335-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zvyefnnbzf3kwr2l"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <afa96737-d17a-c854-b3a8-30730e06dd99@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add iio consumer API to set buffer size and watermark according
-to sysfs API.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
----
- drivers/iio/buffer/industrialio-buffer-cb.c | 11 +++++++++++
- include/linux/iio/consumer.h                | 11 +++++++++++
- 2 files changed, 22 insertions(+)
+--zvyefnnbzf3kwr2l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/iio/buffer/industrialio-buffer-cb.c b/drivers/iio/buffer/industrialio-buffer-cb.c
-index 4847534..ea63c83 100644
---- a/drivers/iio/buffer/industrialio-buffer-cb.c
-+++ b/drivers/iio/buffer/industrialio-buffer-cb.c
-@@ -104,6 +104,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(iio_channel_get_all_cb);
- 
-+int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buff,
-+					size_t watermark)
-+{
-+	if (!watermark)
-+		return -EINVAL;
-+	cb_buff->buffer.watermark = watermark;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(iio_channel_cb_set_buffer_watermark);
-+
- int iio_channel_start_all_cb(struct iio_cb_buffer *cb_buff)
- {
- 	return iio_update_buffers(cb_buff->indio_dev, &cb_buff->buffer,
-diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
-index 70658b1..33202f8 100644
---- a/include/linux/iio/consumer.h
-+++ b/include/linux/iio/consumer.h
-@@ -134,6 +134,17 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
- 						       void *private),
- 					     void *private);
- /**
-+ * iio_channel_cb_set_buffer_watermark() - set the buffer watermark.
-+ * @cb_buffer:		The callback buffer from whom we want the channel
-+ *			information.
-+ * @watermark: buffer watermark in bytes.
-+ *
-+ * This function allows to configure the buffer watermark.
-+ */
-+int iio_channel_cb_set_buffer_watermark(struct iio_cb_buffer *cb_buffer,
-+					size_t watermark);
-+
-+/**
-  * iio_channel_release_all_cb() - release and unregister the callback.
-  * @cb_buffer:		The callback buffer that was allocated.
-  */
--- 
-2.7.4
+On Fri, Dec 01, 2017 at 08:56:31AM -0600, Andrew F. Davis wrote:
+
+> Personally I wouldn't have put MicBias voltage in DT to begin with, it
+> is runtime configurable and depends on user runtime inserted microphone,
+> not really a hardware description :/
+
+Usually the system as a whole is specified to have some particular kind
+of microphone attached (or soldered in) and this follows from that.
+There's typically also soldered down analogue components that are
+selected based on the bias voltage so a specific system likely won't
+have the full flexibility.
+
+> The enable/disable is controlled by a DAPM and should be wired to enable
+> whenever we are recording from the related microphone pin. So then
+> without MICBIAS_OFF the user is forced to select from the above voltages
+> whenever recording, which may not be correct if they are using a mic
+> that doesn't need bias.
+
+That'd depend on someone having a board that was able to detect that a
+line input was plugged in or a user control for this.  If the board was
+permenantly set up for line input presumably the bias wouldn't even be
+wired up.
+
+--zvyefnnbzf3kwr2l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlohlKMACgkQJNaLcl1U
+h9BQSAgAg1QaEZmgNMhIy9+/1qv6q++jghnEYt5WehUwUBLMGrVkIFeLLdm9D4ri
+E+4ds/VqVP/u0H00gqGj6QDQ/I49QSpElm8cGlWGMF8rR5/CxTCTbWHnxStQxZ0B
+Q/HPT8wCEOwC2rk58tsLsn2qSwB5MWgo8zIGzVP43z5LB+JmUGunIrzgdKLQ3B1Z
+RXQspBS/pZez2YUJpZPSyFpKgfCdU0ZYixX1DMHX2Dgqu+UQ/SMfJamSSMrBVqga
+SESbjYZ5p4jAcrkxEvYHD116fJRpC3beKqfmjE9f/CvUIYpQwEH37fz/u1RObsUv
+8UYjSP5rzIdBFvnLWLzT42F4hfe9vA==
+=2cYJ
+-----END PGP SIGNATURE-----
+
+--zvyefnnbzf3kwr2l--
