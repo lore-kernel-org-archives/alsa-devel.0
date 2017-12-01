@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: hdac_hdmi: introduce macro to
- access HDMI private data" to the asoc tree
-Date: Fri, 1 Dec 2017 15:53:58 +0000
-Message-ID: <20171201155358.2uz224exbtl4s7q4@sirena.org.uk>
-References: <1512119602-2416-2-git-send-email-rakesh.a.ughreja@intel.com>
- <E1eKlcI-0001RU-QR@debutante> <s5hindqjydq.wl-tiwai@suse.de>
+Subject: Re: [PATCH v2 14/19] ASoC: tlv320aic31xx: Remove
+ regulator notification handling
+Date: Fri, 1 Dec 2017 15:55:33 +0000
+Message-ID: <20171201155533.ayjzh4wxokwlbtsy@sirena.org.uk>
+References: <20171129213300.20021-1-afd@ti.com>
+ <20171129213300.20021-15-afd@ti.com>
+ <20171201133604.6v3ychahwvlaygxi@sirena.org.uk>
+ <216ac36e-772a-0919-67cc-86589d3916fc@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3970976695308227059=="
+Content-Type: multipart/mixed; boundary="===============0714516517714184540=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 591DA267029
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 16:54:04 +0100 (CET)
-In-Reply-To: <s5hindqjydq.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 33E45267029
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 16:55:38 +0100 (CET)
+In-Reply-To: <216ac36e-772a-0919-67cc-86589d3916fc@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Rakesh A <rakesh.a.ughreja@intel.com>, Ughreja@sirena.org.uk
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3970976695308227059==
+--===============0714516517714184540==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yyt7bhxnihvx35fx"
+	protocol="application/pgp-signature"; boundary="adpueagi53trpasx"
 Content-Disposition: inline
 
 
---yyt7bhxnihvx35fx
+--adpueagi53trpasx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 01, 2017 at 03:50:25PM +0100, Takashi Iwai wrote:
+On Fri, Dec 01, 2017 at 09:01:19AM -0600, Andrew F. Davis wrote:
 
-> Isn't it a RFC patchset?  Please hold on.
+> Looking into the call sites, at least in this case the only time this
+> notification will be called, outside the normal enable/disable paths
+> (which do the same thing here: turn on regmap cache only mode and mark
+> it dirty), will be during a force disable scenario.
 
-These just look like useful cleanups to improve consistency and so on of
-the code - they're nowhere near the meat of the series.
+If all the disable sites in the driver mark the cache dirty then they
+should be fixed not to.
 
-> The patchset includes the changes in ALSA HD-audio legacy side, I'd
-> like to evaluate the whole at first.  Although it looks good at a
-> quick glance, I guess this is the preliminary work for the legacy
-> HD-audio codec support on ASoC, so the whole design should be
-> discussed beforehand.
-
-Right, I've not touched any of that stuff.
-
---yyt7bhxnihvx35fx
+--adpueagi53trpasx
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlohexUACgkQJNaLcl1U
-h9Df2Af+I7PnJxugGoaSnUnjC+OwVSupp2eL9O6gdLUoGUycr5UbgL4BIsNxqiMv
-ZJZwPXfyFtz7By5vcJBTWvsz8BqVEc9HAnHiGNvdX3NcvSaFFHA3xdvmGQmNTipy
-66eoEoUr2pEH0Kwzga1oOfZb6P1DgYoCIwjRC46Qo/MoU23srC3j/dseBPlG4pt1
-g6CkxKsdWu7dZpdurWSZwf1CggnZesLbDnDKbGDFeWjTYQq6fTsd2WO0T/bRNsW4
-/TPnXUTlpRlByhuoMgXdj27tTs3oy66BQOm00u6BY7JFzoHFt9QHrWL7EzGl65Ex
-EA+vVZN49OqhYe8iYA7X42zYnrY46g==
-=wShQ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlohe3UACgkQJNaLcl1U
+h9DyVwf/Txy0JVTNnMSj8TemYe3Rp5XRmDAY8up7HMPbDPYYxfgQIET52AM1gpDl
+sVAoNq3svyGPb1iwP75H2ygdN1JoV/ybfvOHBRZ+99RRo4PZr8oCz8B6i85Gxa1X
+6310wE9rsSypV3OZ50S6Py2H4qLxF1kZI4UkMCemOGcnQsGmKNtTCpmjOIqtcY/E
+mWSbz7VbZ0yBrd1It2pJJ7RSenVm6qixz4OkMASLmJR/ArDqYFAfpa6wH3OWYipA
+16KQxjayJ6sxVWzfrHJCznBpH6SSzezguWIv6fcYbajqYEI2GBO5lkrXpc5tYR9U
+p05syTc7WKSn/DE+bstipL8ibL7yjw==
+=n0Kw
 -----END PGP SIGNATURE-----
 
---yyt7bhxnihvx35fx--
+--adpueagi53trpasx--
 
---===============3970976695308227059==
+--===============0714516517714184540==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3970976695308227059==--
+--===============0714516517714184540==--
