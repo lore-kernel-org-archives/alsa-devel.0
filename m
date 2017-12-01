@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 04/15] soundwire: Add MIPI DisCo property
-	helpers
-Date: Fri,  1 Dec 2017 15:26:06 +0530
-Message-ID: <1512122177-2889-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 05/15] soundwire: Add SoundWire MIPI defined
+	registers
+Date: Fri,  1 Dec 2017 15:26:07 +0530
+Message-ID: <1512122177-2889-6-git-send-email-vinod.koul@intel.com>
 References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 44902267BFA
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:53:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 112BF267C18
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:53:04 +0100 (CET)
 In-Reply-To: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,810 +25,217 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-MIPI Discovery And Configuration (DisCo) Specification for SoundWire
-specifies properties to be implemented for SoundWire Masters and
-Slaves. The DisCo spec doesn't mandate these properties. However,
-SDW bus cannot work without knowing these values.
+From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-The helper functions read the Master and Slave properties.
-Implementers of Master or Slave drivers can use any of the below
-three mechanisms:
-   a) Use these APIs here as .read_prop() callback for Master
-      and Slave
-   b) Implement own methods and set those as .read_prop(), but invoke
-      APIs in this file for generic read and override the values with
-      platform specific data
-   c) Implement ones own methods which do not use anything provided
-      here
+MIPI SoundWire spec defines standard SoundWire registers mandatory for
+SoundWire Slave devices, so add them.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Makefile     |   2 +-
- drivers/soundwire/bus.c        |   8 +
- drivers/soundwire/bus_type.c   |  23 ++-
- drivers/soundwire/mipi_disco.c | 374 +++++++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h  | 274 ++++++++++++++++++++++++++++++
- 5 files changed, 679 insertions(+), 2 deletions(-)
- create mode 100644 drivers/soundwire/mipi_disco.c
+ include/linux/soundwire/sdw_registers.h | 194 ++++++++++++++++++++++++++++++++
+ 1 file changed, 194 insertions(+)
+ create mode 100644 include/linux/soundwire/sdw_registers.h
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index c875e434f8b3..bcde0d26524c 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -3,5 +3,5 @@
- #
- 
- #Bus Objs
--soundwire-bus-objs := bus_type.o bus.o slave.o
-+soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o
- obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 0f89b2f36938..507ae85ad58e 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -25,6 +25,14 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 	mutex_init(&bus->bus_lock);
- 	INIT_LIST_HEAD(&bus->slaves);
- 
-+	if (bus->ops->read_prop) {
-+		ret = bus->ops->read_prop(bus);
-+		if (ret < 0) {
-+			dev_err(bus->dev, "Bus read properties failed:%d", ret);
-+			return ret;
-+		}
-+	}
-+
- 	/*
- 	 * Device numbers in SoundWire are 0 thru 15 with 0 being
- 	 * Enumeration device number and 15 broadcast device number. So
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 8d8dcc68e9a8..d5f3a70c06b0 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -77,6 +77,8 @@ static int sdw_drv_probe(struct device *dev)
- 	if (!id)
- 		return -ENODEV;
- 
-+	slave->ops = drv->ops;
-+
- 	/*
- 	 * attach to power domain but don't turn on (last arg)
- 	 */
-@@ -89,7 +91,26 @@ static int sdw_drv_probe(struct device *dev)
- 		}
- 	}
- 
--	return ret;
-+	if (ret)
-+		return ret;
-+
-+	/* device is probed so let's read the properties now */
-+	if (slave->ops && slave->ops->read_prop)
-+		slave->ops->read_prop(slave);
-+
-+	/*
-+	 * Check for valid clk_stop_timeout, use DisCo worst case value of
-+	 * 300ms
-+	 *
-+	 * TODO: check the timeouts and driver removal case
-+	 */
-+	if (slave->prop.clk_stop_timeout == 0)
-+		slave->prop.clk_stop_timeout = 300;
-+
-+	slave->bus->clk_stop_timeout = max_t(u32, slave->bus->clk_stop_timeout,
-+					slave->prop.clk_stop_timeout);
-+
-+	return 0;
- }
- 
- static int sdw_drv_remove(struct device *dev)
-diff --git a/drivers/soundwire/mipi_disco.c b/drivers/soundwire/mipi_disco.c
+diff --git a/include/linux/soundwire/sdw_registers.h b/include/linux/soundwire/sdw_registers.h
 new file mode 100644
-index 000000000000..b8870d4a25ba
+index 000000000000..df472b1ab410
 --- /dev/null
-+++ b/drivers/soundwire/mipi_disco.c
-@@ -0,0 +1,374 @@
++++ b/include/linux/soundwire/sdw_registers.h
+@@ -0,0 +1,194 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +// Copyright(c) 2015-17 Intel Corporation.
 +
-+/*
-+ * MIPI Discovery And Configuration (DisCo) Specification for SoundWire
-+ * specifies properties to be implemented for SoundWire Masters and Slaves.
-+ * The DisCo spec doesn't mandate these properties. However, SDW bus cannot
-+ * work without knowing these values.
-+ *
-+ * The helper functions read the Master and Slave properties. Implementers
-+ * of Master or Slave drivers can use any of the below three mechanisms:
-+ *    a) Use these APIs here as .read_prop() callback for Master and Slave
-+ *    b) Implement own methods and set those as .read_prop(), but invoke
-+ *    APIs in this file for generic read and override the values with
-+ *    platform specific data
-+ *    c) Implement ones own methods which do not use anything provided
-+ *    here
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/property.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/soundwire/sdw.h>
-+#include "bus.h"
-+
-+/**
-+ * sdw_master_read_prop() - Read Master properties
-+ * @bus: SDW bus instance
-+ */
-+int sdw_master_read_prop(struct sdw_bus *bus)
-+{
-+	struct sdw_master_prop *prop = &bus->prop;
-+	struct fwnode_handle *link;
-+	unsigned int count = 0;
-+	char name[32];
-+	int nval, i;
-+
-+	device_property_read_u32(bus->dev,
-+			"mipi-sdw-sw-interface-revision", &prop->revision);
-+	device_property_read_u32(bus->dev, "mipi-sdw-master-count", &count);
-+
-+	/* Find link handle */
-+	snprintf(name, sizeof(name),
-+			"mipi-sdw-link-%d-subproperties", bus->link_id);
-+
-+	link = device_get_named_child_node(bus->dev, name);
-+	if (!link) {
-+		dev_err(bus->dev, "Link node %s not found\n", name);
-+		return -EIO;
-+	}
-+
-+	if (fwnode_property_read_bool(link,
-+			"mipi-sdw-clock-stop-mode0-supported") == true)
-+		prop->clk_stop_mode = SDW_CLK_STOP_MODE0;
-+
-+	if (fwnode_property_read_bool(link,
-+			"mipi-sdw-clock-stop-mode1-supported") == true)
-+		prop->clk_stop_mode |= SDW_CLK_STOP_MODE1;
-+
-+	fwnode_property_read_u32(link,
-+			"mipi-sdw-max-clock-frequency", &prop->max_freq);
-+
-+	nval = fwnode_property_read_u32_array(link,
-+			"mipi-sdw-clock-frequencies-supported", NULL, 0);
-+	if (nval > 0)
-+		prop->num_freq = nval;
-+
-+	if (prop->num_freq) {
-+		prop->freq = devm_kcalloc(bus->dev, nval,
-+					sizeof(*prop->freq), GFP_KERNEL);
-+		if (!prop->freq)
-+			return -ENOMEM;
-+
-+		fwnode_property_read_u32_array(link,
-+				"mipi-sdw-clock-frequencies-supported",
-+				prop->freq, nval);
-+
-+		/*
-+		 * Check the frequencies supported. If FW doesn't provide max
-+		 * freq, then populate here by checking values.
-+		 */
-+		if (!prop->max_freq) {
-+			prop->max_freq = prop->freq[0];
-+			for (i = 1; i < prop->num_freq; i++) {
-+				if (prop->freq[i] > prop->max_freq)
-+					prop->max_freq = prop->freq[i];
-+			}
-+		}
-+	}
-+
-+	nval = fwnode_property_read_u32_array(link,
-+			"mipi-sdw-supported-clock-gears", NULL, 0);
-+	if (nval > 0)
-+		prop->num_clk_gears = nval;
-+
-+	if (prop->num_clk_gears) {
-+		prop->clk_gears = devm_kcalloc(bus->dev, nval,
-+				sizeof(*prop->clk_gears), GFP_KERNEL);
-+		if (!prop->clk_gears)
-+			return -ENOMEM;
-+
-+		fwnode_property_read_u32_array(link,
-+				"mipi-sdw-supported-clock-gears",
-+				prop->clk_gears, nval);
-+	}
-+
-+	fwnode_property_read_u32(link, "mipi-sdw-default-frame-rate",
-+				&prop->default_frame_rate);
-+	fwnode_property_read_u32(link, "mipi-sdw-default-frame-row-size",
-+				&prop->default_row);
-+	fwnode_property_read_u32(link, "mipi-sdw-default-frame-col-size",
-+				&prop->default_col);
-+	prop->dynamic_frame =  fwnode_property_read_bool(link,
-+				"mipi-sdw-dynamic-frame-shape");
-+	fwnode_property_read_u32(link, "mipi-sdw-command-error-threshold",
-+				&prop->err_threshold);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(sdw_master_read_prop);
-+
-+static int sdw_slave_read_dpn(struct sdw_slave *slave,
-+		struct sdw_dpn_prop *dpn, int count, int ports, char *type)
-+{
-+	struct fwnode_handle *node;
-+	u32 bit, i = 0, nval;
-+	unsigned long addr;
-+	char name[40];
-+
-+	addr = ports;
-+	/* valid ports are 1 to 14 so apply mask */
-+	addr &= GENMASK(14, 1);
-+
-+	for_each_set_bit(bit, &addr, 32) {
-+		snprintf(name, sizeof(name),
-+			"mipi-sdw-dp-%d-%s-subproperties", bit, type);
-+
-+		dpn[i].num = bit;
-+
-+		node = device_get_named_child_node(&slave->dev, name);
-+		if (!node) {
-+			dev_err(&slave->dev, "%s dpN not found\n", name);
-+			return -EIO;
-+		}
-+
-+		fwnode_property_read_u32(node, "mipi-sdw-port-max-wordlength",
-+						&dpn[i].max_word);
-+		fwnode_property_read_u32(node, "mipi-sdw-port-min-wordlength",
-+						&dpn[i].min_word);
-+
-+		nval = fwnode_property_read_u32_array(node,
-+				"mipi-sdw-port-wordlength-configs", NULL, 0);
-+		if (nval > 0)
-+			dpn[i].num_words = nval;
-+
-+		if (dpn[i].num_words) {
-+			dpn[i].words = devm_kcalloc(&slave->dev, nval,
-+				sizeof(*dpn[i].words), GFP_KERNEL);
-+			if (!dpn[i].words)
-+				return -ENOMEM;
-+
-+			fwnode_property_read_u32_array(node,
-+					"mipi-sdw-port-wordlength-configs",
-+					&dpn[i].num_words, nval);
-+		}
-+
-+		fwnode_property_read_u32(node, "mipi-sdw-data-port-type",
-+				&dpn[i].type);
-+		fwnode_property_read_u32(node,
-+				"mipi-sdw-max-grouping-supported",
-+				&dpn[i].max_grouping);
-+		dpn[i].simple_ch_prep_sm = fwnode_property_read_bool(node,
-+				"mipi-sdw-simplified-channelprepare-sm");
-+		fwnode_property_read_u32(node,
-+				"mipi-sdw-port-channelprepare-timeout",
-+				&dpn[i].ch_prep_timeout);
-+		fwnode_property_read_u32(node,
-+				"mipi-sdw-imp-def-dpn-interrupts-supported",
-+				&dpn[i].device_interrupts);
-+		fwnode_property_read_u32(node, "mipi-sdw-min-channel-number",
-+				&dpn[i].min_ch);
-+		fwnode_property_read_u32(node, "mipi-sdw-max-channel-number",
-+				&dpn[i].max_ch);
-+
-+		nval = fwnode_property_read_u32_array(node,
-+				"mipi-sdw-channel-number-list", NULL, 0);
-+		if (nval > 0)
-+			dpn[i].num_ch = nval;
-+
-+		if (dpn[i].num_ch) {
-+			dpn[i].ch = devm_kcalloc(&slave->dev, nval,
-+					sizeof(*dpn[i].ch), GFP_KERNEL);
-+			if (!dpn[i].ch)
-+				return -ENOMEM;
-+
-+			fwnode_property_read_u32_array(node,
-+					"mipi-sdw-channel-number-list",
-+					dpn[i].ch, nval);
-+		}
-+
-+		nval = fwnode_property_read_u32_array(node,
-+				"mipi-sdw-channel-combination-list", NULL, 0);
-+		if (nval > 0)
-+			dpn[i].num_ch_combinations = nval;
-+
-+		if (dpn[i].num_ch_combinations) {
-+			dpn[i].ch_combinations = devm_kcalloc(&slave->dev,
-+					nval, sizeof(*dpn[i].ch_combinations),
-+					GFP_KERNEL);
-+			if (!dpn[i].ch_combinations)
-+				return -ENOMEM;
-+
-+			fwnode_property_read_u32_array(node,
-+					"mipi-sdw-channel-combination-list",
-+					dpn[i].ch_combinations, nval);
-+		}
-+
-+		fwnode_property_read_u32(node,
-+				"mipi-sdw-modes-supported", &dpn[i].modes);
-+		fwnode_property_read_u32(node, "mipi-sdw-max-async-buffer",
-+				&dpn[i].max_async_buffer);
-+		dpn[i].block_pack_mode = fwnode_property_read_bool(node,
-+				"mipi-sdw-block-packing-mode");
-+
-+		fwnode_property_read_u32(node, "mipi-sdw-port-encoding-type",
-+				&dpn[i].port_encoding);
-+
-+		/* TODO: Read audio mode */
-+
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * sdw_slave_read_prop() - Read Slave properties
-+ * @slave: SDW Slave
-+ */
-+int sdw_slave_read_prop(struct sdw_slave *slave)
-+{
-+	struct sdw_slave_prop *prop = &slave->prop;
-+	struct device *dev = &slave->dev;
-+	struct fwnode_handle *port;
-+	int num_of_ports, nval, i;
-+
-+	device_property_read_u32(dev, "mipi-sdw-sw-interface-revision",
-+				&prop->mipi_revision);
-+
-+	prop->wake_capable = device_property_read_bool(dev,
-+				"mipi-sdw-wake-up-unavailable");
-+	prop->wake_capable = !prop->wake_capable;
-+
-+	prop->test_mode_capable = device_property_read_bool(dev,
-+				"mipi-sdw-test-mode-supported");
-+
-+	prop->clk_stop_mode1 = false;
-+	if (device_property_read_bool(dev,
-+				"mipi-sdw-clock-stop-mode1-supported"))
-+		prop->clk_stop_mode1 = true;
-+
-+	prop->simple_clk_stop_capable = device_property_read_bool(dev,
-+			"mipi-sdw-simplified-clockstopprepare-sm-supported");
-+
-+	device_property_read_u32(dev, "mipi-sdw-clockstopprepare-timeout",
-+			&prop->clk_stop_timeout);
-+	device_property_read_u32(dev, "mipi-sdw-slave-channelprepare-timeout",
-+			&prop->ch_prep_timeout);
-+	device_property_read_u32(dev,
-+			"mipi-sdw-clockstopprepare-hard-reset-behavior",
-+			&prop->reset_behave);
-+
-+	prop->high_PHY_capable = device_property_read_bool(dev,
-+			"mipi-sdw-highPHY-capable");
-+	prop->paging_support = device_property_read_bool(dev,
-+			"mipi-sdw-paging-support");
-+	prop->bank_delay_support = device_property_read_bool(dev,
-+			"mipi-sdw-bank-delay-support");
-+	device_property_read_u32(dev,
-+			"mipi-sdw-port15-read-behavior", &prop->p15_behave);
-+	device_property_read_u32(dev, "mipi-sdw-master-count",
-+				&prop->master_count);
-+
-+	device_property_read_u32(dev, "mipi-sdw-source-port-list",
-+				&prop->source_ports);
-+	device_property_read_u32(dev, "mipi-sdw-sink-port-list",
-+				&prop->sink_ports);
-+
-+	/* Read dp0 properties */
-+	port = device_get_named_child_node(dev, "mipi-sdw-dp-0-subproperties");
-+	if (!port) {
-+		dev_err(dev, "DP0 node not found!!\n");
-+		return -EIO;
-+	}
-+
-+	prop->dp0_prop = devm_kzalloc(&slave->dev,
-+			sizeof(*prop->dp0_prop), GFP_KERNEL);
-+	if (!prop->dp0_prop)
-+		return -ENOMEM;
-+
-+	fwnode_property_read_u32(port, "mipi-sdw-port-max-wordlength",
-+			&prop->dp0_prop->max_word);
-+	fwnode_property_read_u32(port, "mipi-sdw-port-min-wordlength",
-+			&prop->dp0_prop->min_word);
-+	nval = fwnode_property_read_u32_array(port,
-+			"mipi-sdw-port-wordlength-configs", NULL, 0);
-+	if (nval > 0)
-+		prop->dp0_prop->num_words = nval;
-+
-+	if (prop->dp0_prop->num_words) {
-+		prop->dp0_prop->words = devm_kcalloc(&slave->dev, nval,
-+				sizeof(*prop->dp0_prop->words), GFP_KERNEL);
-+		if (!prop->dp0_prop->words)
-+			return -ENOMEM;
-+
-+		fwnode_property_read_u32_array(port,
-+				"mipi-sdw-port-wordlength-configs",
-+				prop->dp0_prop->words, nval);
-+	}
-+
-+	prop->dp0_prop->flow_controlled = fwnode_property_read_bool(port,
-+			"mipi-sdw-bra-flow-controlled");
-+
-+	prop->dp0_prop->simple_ch_prep_sm = fwnode_property_read_bool(port,
-+			"mipi-sdw-simplified-channel-prepare-sm");
-+
-+	prop->dp0_prop->device_interrupts = fwnode_property_read_bool(port,
-+			"mipi-sdw-imp-def-dp0-interrupts-supported");
-+
-+	/*
-+	 * Based on each DPn port, get source and sink dpn properties.
-+	 * Also, some ports can operate as both source or sink.
-+	 */
-+
-+	/* Allocate memory for set bits in port lists */
-+	nval = hweight32(prop->source_ports);
-+	num_of_ports += nval;
-+	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
-+				sizeof(*prop->src_dpn_prop), GFP_KERNEL);
-+	if (!prop->src_dpn_prop)
-+		return -ENOMEM;
-+
-+	/* Read dpn properties for source port(s) */
-+	sdw_slave_read_dpn(slave, prop->src_dpn_prop, nval,
-+			prop->source_ports, "source");
-+
-+	nval = hweight32(prop->sink_ports);
-+	num_of_ports += nval;
-+	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
-+				sizeof(*prop->sink_dpn_prop), GFP_KERNEL);
-+	if (!prop->sink_dpn_prop)
-+		return -ENOMEM;
-+
-+	/* Read dpn properties for sink port(s) */
-+	sdw_slave_read_dpn(slave, prop->sink_dpn_prop, nval,
-+			prop->sink_ports, "sink");
-+
-+	/* some ports are bidirectional so check total ports by ORing */
-+	nval = prop->source_ports | prop->sink_ports;
-+	num_of_ports = hweight32(nval) + 1; /* add 1 for DP0 */
-+
-+	/* Allocate port_ready based on num_of_ports */
-+	slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
-+				sizeof(*slave->port_ready), GFP_KERNEL);
-+	if (!slave->port_ready)
-+		return -ENOMEM;
-+
-+	/* Initialize completion */
-+	for (i = 0; i < num_of_ports; i++)
-+		init_completion(&slave->port_ready[i]);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(sdw_slave_read_prop);
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 7e9579941c66..ddfae18f4306 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -32,6 +32,252 @@ enum sdw_slave_status {
- };
- 
- /*
-+ * SDW properties, defined in MIPI DisCo spec v1.0
-+ */
-+enum sdw_clk_stop_reset_behave {
-+	SDW_CLK_STOP_KEEP_STATUS = 1,
-+};
-+
-+/**
-+ * enum sdw_p15_behave - Slave Port 15 behaviour when the Master attempts a
-+ * read
-+ * @SDW_P15_READ_IGNORED: Read is ignored
-+ * @SDW_P15_CMD_OK: Command is ok
-+ */
-+enum sdw_p15_behave {
-+	SDW_P15_READ_IGNORED = 0,
-+	SDW_P15_CMD_OK = 1,
-+};
-+
-+/**
-+ * enum sdw_dpn_type - Data port types
-+ * @SDW_DPN_FULL: Full Data Port is supported
-+ * @SDW_DPN_SIMPLE: Simplified Data Port as defined in spec.
-+ * DPN_SampleCtrl2, DPN_OffsetCtrl2, DPN_HCtrl and DPN_BlockCtrl3
-+ * are not implemented.
-+ * @SDW_DPN_REDUCED: Reduced Data Port as defined in spec.
-+ * DPN_SampleCtrl2, DPN_HCtrl are not implemented.
-+ */
-+enum sdw_dpn_type {
-+	SDW_DPN_FULL = 0,
-+	SDW_DPN_SIMPLE = 1,
-+	SDW_DPN_REDUCED = 2,
-+};
-+
-+/**
-+ * enum sdw_clk_stop_mode - Clock Stop modes
-+ * @SDW_CLK_STOP_MODE0: Slave can continue operation seamlessly on clock
-+ * restart
-+ * @SDW_CLK_STOP_MODE1: Slave may have entered a deeper power-saving mode,
-+ * not capable of continuing operation seamlessly when the clock restarts
-+ */
-+enum sdw_clk_stop_mode {
-+	SDW_CLK_STOP_MODE0 = 1,
-+	SDW_CLK_STOP_MODE1 = 2,
-+};
-+
-+/**
-+ * struct sdw_dp0_prop - DP0 properties
-+ * @max_word: Maximum number of bits in a Payload Channel Sample, 1 to 64
-+ * (inclusive)
-+ * @min_word: Minimum number of bits in a Payload Channel Sample, 1 to 64
-+ * (inclusive)
-+ * @num_words: number of wordlengths supported
-+ * @words: wordlengths supported
-+ * @flow_controlled: Slave implementation results in an OK_NotReady
-+ * response
-+ * @simple_ch_prep_sm: If channel prepare sequence is required
-+ * @device_interrupts: If implementation-defined interrupts are supported
-+ *
-+ * The wordlengths are specified by Spec as max, min AND number of
-+ * discrete values, implementation can define based on the wordlengths they
-+ * support
-+ */
-+struct sdw_dp0_prop {
-+	u32 max_word;
-+	u32 min_word;
-+	u32 num_words;
-+	u32 *words;
-+	bool flow_controlled;
-+	bool simple_ch_prep_sm;
-+	bool device_interrupts;
-+};
-+
-+/**
-+ * struct sdw_dpn_audio_mode - Audio mode properties for DPn
-+ * @bus_min_freq: Minimum bus frequency, in Hz
-+ * @bus_max_freq: Maximum bus frequency, in Hz
-+ * @bus_num_freq: Number of discrete frequencies supported
-+ * @bus_freq: Discrete bus frequencies, in Hz
-+ * @min_freq: Minimum sampling frequency, in Hz
-+ * @max_freq: Maximum sampling bus frequency, in Hz
-+ * @num_freq: Number of discrete sampling frequency supported
-+ * @freq: Discrete sampling frequencies, in Hz
-+ * @prep_ch_behave: Specifies the dependencies between Channel Prepare
-+ * sequence and bus clock configuration
-+ * If 0, Channel Prepare can happen at any Bus clock rate
-+ * If 1, Channel Prepare sequence shall happen only after Bus clock is
-+ * changed to a frequency supported by this mode or compatible modes
-+ * described by the next field
-+ * @glitchless: Bitmap describing possible glitchless transitions from this
-+ * Audio Mode to other Audio Modes
-+ */
-+struct sdw_dpn_audio_mode {
-+	u32 bus_min_freq;
-+	u32 bus_max_freq;
-+	u32 bus_num_freq;
-+	u32 *bus_freq;
-+	u32 max_freq;
-+	u32 min_freq;
-+	u32 num_freq;
-+	u32 *freq;
-+	u32 prep_ch_behave;
-+	u32 glitchless;
-+};
-+
-+/**
-+ * struct sdw_dpn_prop - Data Port DPn properties
-+ * @num: port number
-+ * @max_word: Maximum number of bits in a Payload Channel Sample, 1 to 64
-+ * (inclusive)
-+ * @min_word: Minimum number of bits in a Payload Channel Sample, 1 to 64
-+ * (inclusive)
-+ * @num_words: Number of discrete supported wordlengths
-+ * @words: Discrete supported wordlength
-+ * @type: Data port type. Full, Simplified or Reduced
-+ * @max_grouping: Maximum number of samples that can be grouped together for
-+ * a full data port
-+ * @simple_ch_prep_sm: If the port supports simplified channel prepare state
-+ * machine
-+ * @ch_prep_timeout: Port-specific timeout value, in milliseconds
-+ * @device_interrupts: If set, each bit corresponds to support for
-+ * implementation-defined interrupts
-+ * @max_ch: Maximum channels supported
-+ * @min_ch: Minimum channels supported
-+ * @num_ch: Number of discrete channels supported
-+ * @ch: Discrete channels supported
-+ * @num_ch_combinations: Number of channel combinations supported
-+ * @ch_combinations: Channel combinations supported
-+ * @modes: SDW mode supported
-+ * @max_async_buffer: Number of samples that this port can buffer in
-+ * asynchronous modes
-+ * @block_pack_mode: Type of block port mode supported
-+ * @port_encoding: Payload Channel Sample encoding schemes supported
-+ * @audio_modes: Audio modes supported
-+ */
-+struct sdw_dpn_prop {
-+	u32 num;
-+	u32 max_word;
-+	u32 min_word;
-+	u32 num_words;
-+	u32 *words;
-+	enum sdw_dpn_type type;
-+	u32 max_grouping;
-+	bool simple_ch_prep_sm;
-+	u32 ch_prep_timeout;
-+	u32 device_interrupts;
-+	u32 max_ch;
-+	u32 min_ch;
-+	u32 num_ch;
-+	u32 *ch;
-+	u32 num_ch_combinations;
-+	u32 *ch_combinations;
-+	u32 modes;
-+	u32 max_async_buffer;
-+	bool block_pack_mode;
-+	u32 port_encoding;
-+	struct sdw_dpn_audio_mode *audio_modes;
-+};
-+
-+/**
-+ * struct sdw_slave_prop - SoundWire Slave properties
-+ * @mipi_revision: Spec version of the implementation
-+ * @wake_capable: Wake-up events are supported
-+ * @test_mode_capable: If test mode is supported
-+ * @clk_stop_mode1: Clock-Stop Mode 1 is supported
-+ * @simple_clk_stop_capable: Simple clock mode is supported
-+ * @clk_stop_timeout: Worst-case latency of the Clock Stop Prepare State
-+ * Machine transitions, in milliseconds
-+ * @ch_prep_timeout: Worst-case latency of the Channel Prepare State Machine
-+ * transitions, in milliseconds
-+ * @reset_behave: Slave keeps the status of the SlaveStopClockPrepare
-+ * state machine (P=1 SCSP_SM) after exit from clock-stop mode1
-+ * @high_PHY_capable: Slave is HighPHY capable
-+ * @paging_support: Slave implements paging registers SCP_AddrPage1 and
-+ * SCP_AddrPage2
-+ * @bank_delay_support: Slave implements bank delay/bridge support registers
-+ * SCP_BankDelay and SCP_NextFrame
-+ * @p15_behave: Slave behavior when the Master attempts a read to the Port15
-+ * alias
-+ * @lane_control_support: Slave supports lane control
-+ * @master_count: Number of Masters present on this Slave
-+ * @source_ports: Bitmap identifying source ports
-+ * @sink_ports: Bitmap identifying sink ports
-+ * @dp0_prop: Data Port 0 properties
-+ * @src_dpn_prop: Source Data Port N properties
-+ * @sink_dpn_prop: Sink Data Port N properties
-+ */
-+struct sdw_slave_prop {
-+	u32 mipi_revision;
-+	bool wake_capable;
-+	bool test_mode_capable;
-+	bool clk_stop_mode1;
-+	bool simple_clk_stop_capable;
-+	u32 clk_stop_timeout;
-+	u32 ch_prep_timeout;
-+	enum sdw_clk_stop_reset_behave reset_behave;
-+	bool high_PHY_capable;
-+	bool paging_support;
-+	bool bank_delay_support;
-+	enum sdw_p15_behave p15_behave;
-+	bool lane_control_support;
-+	u32 master_count;
-+	u32 source_ports;
-+	u32 sink_ports;
-+	struct sdw_dp0_prop *dp0_prop;
-+	struct sdw_dpn_prop *src_dpn_prop;
-+	struct sdw_dpn_prop *sink_dpn_prop;
-+};
-+
-+/**
-+ * struct sdw_master_prop - Master properties
-+ * @revision: MIPI spec version of the implementation
-+ * @master_count: Number of masters
-+ * @clk_stop_mode: Bitmap for Clock Stop modes supported
-+ * @max_freq: Maximum Bus clock frequency, in Hz
-+ * @num_clk_gears: Number of clock gears supported
-+ * @clk_gears: Clock gears supported
-+ * @num_freq: Number of clock frequencies supported, in Hz
-+ * @freq: Clock frequencies supported, in Hz
-+ * @default_frame_rate: Controller default Frame rate, in Hz
-+ * @default_row: Number of rows
-+ * @default_col: Number of columns
-+ * @dynamic_frame: Dynamic frame supported
-+ * @err_threshold: Number of times that software may retry sending a single
-+ * command
-+ * @dpn_prop: Data Port N properties
-+ */
-+struct sdw_master_prop {
-+	u32 revision;
-+	u32 master_count;
-+	enum sdw_clk_stop_mode clk_stop_mode;
-+	u32 max_freq;
-+	u32 num_clk_gears;
-+	u32 *clk_gears;
-+	u32 num_freq;
-+	u32 *freq;
-+	u32 default_frame_rate;
-+	u32 default_row;
-+	u32 default_col;
-+	bool dynamic_frame;
-+	u32 err_threshold;
-+	struct sdw_dpn_prop *dpn_prop;
-+};
-+
-+int sdw_master_read_prop(struct sdw_bus *bus);
-+int sdw_slave_read_prop(struct sdw_slave *slave);
++#ifndef __SDW_REGISTERS_H
++#define __SDW_REGISTERS_H
 +
 +/*
-  * SDW Slave Structures and APIs
-  */
- 
-@@ -55,12 +301,23 @@ struct sdw_slave_id {
- };
- 
- /**
-+ * struct sdw_slave_ops - Slave driver callback ops
-+ * @read_prop: Read Slave properties
++ * typically we define register and shifts but if one observes carefully,
++ * the shift can be generated from MASKS using few bit primitaives like ffs
++ * etc, so we use that and avoid defining shifts
 + */
-+struct sdw_slave_ops {
-+	int (*read_prop)(struct sdw_slave *sdw);
-+};
++#define SDW_REG_SHIFT(n)			(ffs(n) - 1)
 +
-+/**
-  * struct sdw_slave - SoundWire Slave
-  * @id: MIPI device ID
-  * @dev: Linux device
-  * @status: Status reported by the Slave
-  * @bus: Bus handle
-+ * @ops: Slave callback ops
-+ * @prop: Slave properties
-  * @node: node for bus list
-+ * @port_ready: Port ready completion flag for each Slave port
-  * @dev_num: Device Number assigned by Bus
-  */
- struct sdw_slave {
-@@ -68,7 +325,10 @@ struct sdw_slave {
- 	struct device dev;
- 	enum sdw_slave_status status;
- 	struct sdw_bus *bus;
-+	const struct sdw_slave_ops *ops;
-+	struct sdw_slave_prop prop;
- 	struct list_head node;
-+	struct completion *port_ready;
- 	u16 dev_num;
- };
- 
-@@ -100,6 +360,14 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
-  */
- 
- /**
-+ * struct sdw_master_ops - Master driver ops
-+ * @read_prop: Read Master properties
++/*
++ * SDW registers as defined by MIPI 1.1 Spec
 + */
-+struct sdw_master_ops {
-+	int (*read_prop)(struct sdw_bus *bus);
-+};
++#define SDW_REGADDR				GENMASK(14, 0)
++#define SDW_SCP_ADDRPAGE2_MASK			GENMASK(22, 15)
++#define SDW_SCP_ADDRPAGE1_MASK			GENMASK(30, 23)
 +
-+/**
-  * struct sdw_bus - SoundWire bus
-  * @dev: Master linux device
-  * @link_id: Link id number, can be 0 to N, unique for each Master
-@@ -107,6 +375,9 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
-  * @assigned: Bitmap for Slave device numbers.
-  * Bit set implies used number, bit clear implies unused number.
-  * @bus_lock: bus lock
-+ * @ops: Master callback ops
-+ * @prop: Master properties
-+ * @clk_stop_timeout: Clock stop timeout computed
-  */
- struct sdw_bus {
- 	struct device *dev;
-@@ -114,6 +385,9 @@ struct sdw_bus {
- 	struct list_head slaves;
- 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
- 	struct mutex bus_lock;
-+	const struct sdw_master_ops *ops;
-+	struct sdw_master_prop prop;
-+	unsigned int clk_stop_timeout;
- };
- 
- int sdw_add_bus_master(struct sdw_bus *bus);
++#define SDW_REG_NO_PAGE				0x00008000
++#define SDW_REG_OPTIONAL_PAGE			0x00010000
++#define SDW_REG_MAX				0x80000000
++
++#define SDW_DPN_SIZE				0x100
++#define SDW_BANK1_OFFSET			0x10
++
++/*
++ * DP0 Interrupt register & bits
++ *
++ * Spec treats Status (RO) and Clear (WC) as separate but they are same
++ * address, so treat as same register with WC.
++ */
++
++/* both INT and STATUS register are same */
++#define SDW_DP0_INT				0x0
++#define SDW_DP0_INTMASK				0x1
++#define SDW_DP0_PORTCTRL			0x2
++#define SDW_DP0_BLOCKCTRL1			0x3
++#define SDW_DP0_PREPARESTATUS			0x4
++#define SDW_DP0_PREPARECTRL			0x5
++
++#define SDW_DP0_INT_TEST_FAIL			BIT(0)
++#define SDW_DP0_INT_PORT_READY			BIT(1)
++#define SDW_DP0_INT_BRA_FAILURE			BIT(2)
++#define SDW_DP0_INT_IMPDEF1			BIT(5)
++#define SDW_DP0_INT_IMPDEF2			BIT(6)
++#define SDW_DP0_INT_IMPDEF3			BIT(7)
++
++#define SDW_DP0_PORTCTRL_DATAMODE		GENMASK(3, 2)
++#define SDW_DP0_PORTCTRL_NXTINVBANK		BIT(4)
++#define SDW_DP0_PORTCTRL_BPT_PAYLD		GENMASK(7, 6)
++
++#define SDW_DP0_CHANNELEN			0x20
++#define SDW_DP0_SAMPLECTRL1			0x22
++#define SDW_DP0_SAMPLECTRL2			0x23
++#define SDW_DP0_OFFSETCTRL1			0x24
++#define SDW_DP0_OFFSETCTRL2			0x25
++#define SDW_DP0_HCTRL				0x26
++#define SDW_DP0_LANECTRL			0x28
++
++/* Both INT and STATUS register are same */
++#define SDW_SCP_INT1				0x40
++#define SDW_SCP_INTMASK1			0x41
++
++#define SDW_SCP_INT1_PARITY			BIT(0)
++#define SDW_SCP_INT1_BUS_CLASH			BIT(1)
++#define SDW_SCP_INT1_IMPL_DEF			BIT(2)
++#define SDW_SCP_INT1_SCP2_CASCADE		BIT(7)
++#define SDW_SCP_INT1_PORT0_3			GENMASK(6, 3)
++
++#define SDW_SCP_INTSTAT2			0x42
++#define SDW_SCP_INTSTAT2_SCP3_CASCADE		BIT(7)
++#define SDW_SCP_INTSTAT2_PORT4_10		GENMASK(6, 0)
++
++
++#define SDW_SCP_INTSTAT3			0x43
++#define SDW_SCP_INTSTAT3_PORT11_14		GENMASK(3, 0)
++
++/* Number of interrupt status registers */
++#define SDW_NUM_INT_STAT_REGISTERS		3
++
++/* Number of interrupt clear registers */
++#define SDW_NUM_INT_CLEAR_REGISTERS		1
++
++#define SDW_SCP_CTRL				0x44
++#define SDW_SCP_CTRL_CLK_STP_NOW		BIT(1)
++#define SDW_SCP_CTRL_FORCE_RESET		BIT(7)
++
++#define SDW_SCP_STAT				0x44
++#define SDW_SCP_STAT_CLK_STP_NF			BIT(0)
++#define SDW_SCP_STAT_HPHY_NOK			BIT(5)
++#define SDW_SCP_STAT_CURR_BANK			BIT(6)
++
++#define SDW_SCP_SYSTEMCTRL			0x45
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_PREP		BIT(0)
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE		BIT(2)
++#define SDW_SCP_SYSTEMCTRL_WAKE_UP_EN		BIT(3)
++#define SDW_SCP_SYSTEMCTRL_HIGH_PHY		BIT(4)
++
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE0	0
++#define SDW_SCP_SYSTEMCTRL_CLK_STP_MODE1	BIT(2)
++
++#define SDW_SCP_DEVNUMBER			0x46
++#define SDW_SCP_HIGH_PHY_CHECK			0x47
++#define SDW_SCP_ADDRPAGE1			0x48
++#define SDW_SCP_ADDRPAGE2			0x49
++#define SDW_SCP_KEEPEREN			0x4A
++#define SDW_SCP_BANKDELAY			0x4B
++#define SDW_SCP_TESTMODE			0x4F
++#define SDW_SCP_DEVID_0				0x50
++#define SDW_SCP_DEVID_1				0x51
++#define SDW_SCP_DEVID_2				0x52
++#define SDW_SCP_DEVID_3				0x53
++#define SDW_SCP_DEVID_4				0x54
++#define SDW_SCP_DEVID_5				0x55
++
++/* Banked Registers */
++#define SDW_SCP_FRAMECTRL_B0			0x60
++#define SDW_SCP_FRAMECTRL_B1			(0x60 + SDW_BANK1_OFFSET)
++#define SDW_SCP_NEXTFRAME_B0			0x61
++#define SDW_SCP_NEXTFRAME_B1			(0x61 + SDW_BANK1_OFFSET)
++
++/* Both INT and STATUS register is same */
++#define SDW_DPN_INT(n)				(0x0 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_INTMASK(n)			(0x1 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PORTCTRL(n)			(0x2 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL1(n)			(0x3 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PREPARESTATUS(n)		(0x4 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_PREPARECTRL(n)			(0x5 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_INT_TEST_FAIL			BIT(0)
++#define SDW_DPN_INT_PORT_READY			BIT(1)
++#define SDW_DPN_INT_IMPDEF1			BIT(5)
++#define SDW_DPN_INT_IMPDEF2			BIT(6)
++#define SDW_DPN_INT_IMPDEF3			BIT(7)
++
++#define SDW_DPN_PORTCTRL_FLOWMODE		GENMASK(1, 0)
++#define SDW_DPN_PORTCTRL_DATAMODE		GENMASK(3, 2)
++#define SDW_DPN_PORTCTRL_NXTINVBANK		BIT(4)
++
++#define SDW_DPN_BLOCKCTRL1_WDLEN		GENMASK(5, 0)
++
++#define SDW_DPN_PREPARECTRL_CH_PREP		GENMASK(7, 0)
++
++#define SDW_DPN_CHANNELEN_B0(n)			(0x20 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_CHANNELEN_B1(n)			(0x30 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_BLOCKCTRL2_B0(n)		(0x21 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL2_B1(n)		(0x31 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_SAMPLECTRL1_B0(n)		(0x22 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_SAMPLECTRL1_B1(n)		(0x32 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_SAMPLECTRL2_B0(n)		(0x23 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_SAMPLECTRL2_B1(n)		(0x33 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_OFFSETCTRL1_B0(n)		(0x24 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_OFFSETCTRL1_B1(n)		(0x34 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_OFFSETCTRL2_B0(n)		(0x25 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_OFFSETCTRL2_B1(n)		(0x35 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_HCTRL_B0(n)			(0x26 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_HCTRL_B1(n)			(0x36 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_BLOCKCTRL3_B0(n)		(0x27 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_BLOCKCTRL3_B1(n)		(0x37 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_LANECTRL_B0(n)			(0x28 + SDW_DPN_SIZE * (n))
++#define SDW_DPN_LANECTRL_B1(n)			(0x38 + SDW_DPN_SIZE * (n))
++
++#define SDW_DPN_SAMPLECTRL_LOW			GENMASK(7, 0)
++#define SDW_DPN_SAMPLECTRL_HIGH			GENMASK(15, 8)
++
++#define SDW_DPN_HCTRL_HSTART			GENMASK(7, 4)
++#define SDW_DPN_HCTRL_HSTOP			GENMASK(3, 0)
++
++#define SDW_NUM_CASC_PORT_INTSTAT1		4
++#define SDW_CASC_PORT_START_INTSTAT1		0
++#define SDW_CASC_PORT_MASK_INTSTAT1		0x8
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT1	0x0
++
++#define SDW_NUM_CASC_PORT_INTSTAT2		7
++#define SDW_CASC_PORT_START_INTSTAT2		4
++#define SDW_CASC_PORT_MASK_INTSTAT2		1
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT2	1
++
++#define SDW_NUM_CASC_PORT_INTSTAT3		4
++#define SDW_CASC_PORT_START_INTSTAT3		11
++#define SDW_CASC_PORT_MASK_INTSTAT3		1
++#define SDW_CASC_PORT_REG_OFFSET_INTSTAT3	2
++
++#endif /* __SDW_REGISTERS_H */
 -- 
 2.7.4
