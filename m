@@ -1,98 +1,115 @@
 From: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Subject: [PATCH v6 12/13] ASoC: add bindings for stm32 DFSDM filter
-Date: Fri, 1 Dec 2017 18:40:19 +0100
-Message-ID: <1512150020-20335-13-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v6 03/13] IIO: hw_consumer: add devm_iio_hw_consumer_alloc
+Date: Fri, 1 Dec 2017 18:40:10 +0100
+Message-ID: <1512150020-20335-4-git-send-email-arnaud.pouliquen@st.com>
 References: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1512150020-20335-1-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add bindings that describes audio settings to support
-Digital Filter for pulse density modulation(PDM) microphone.
+Add devm_iio_hw_consumer_alloc function that calls iio_hw_consumer_free
+when the device is unbound from the bus.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 ---
- .../devicetree/bindings/sound/st,stm32-adfsdm.txt  | 62 ++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+ drivers/iio/buffer/industrialio-hw-consumer.c | 66 +++++++++++++++++++++++++++
+ include/linux/iio/hw-consumer.h               |  2 +
+ 2 files changed, 68 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
-new file mode 100644
-index 0000000..2782cda
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
-@@ -0,0 +1,62 @@
-+STMicroelectronics Audio Digital Filter Sigma Delta modulators(DFSDM)
+diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
+index 0253be1..e980a79 100644
+--- a/drivers/iio/buffer/industrialio-hw-consumer.c
++++ b/drivers/iio/buffer/industrialio-hw-consumer.c
+@@ -138,6 +138,72 @@ void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
+ }
+ EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
+ 
++static void devm_iio_hw_consumer_release(struct device *dev, void *res)
++{
++	iio_hw_consumer_free(*(struct iio_hw_consumer **)res);
++}
 +
-+The DFSDM allows PDM microphones capture through SPI interface. The Audio
-+interface is seems as a sub block of the DFSDM device.
-+For details on DFSDM bindings refer to ../iio/adc/st,stm32-dfsdm-adc.txt
++static int devm_iio_hw_consumer_match(struct device *dev, void *res, void *data)
++{
++	struct iio_hw_consumer **r = res;
 +
-+Required properties:
-+  - compatible: "st,stm32h7-dfsdm-dai".
++	if (!r || !*r) {
++		WARN_ON(!r || !*r);
++		return 0;
++	}
++	return *r == data;
++}
 +
-+  - #sound-dai-cells : Must be equal to 0
++/**
++ * devm_iio_hw_consumer_alloc - Resource-managed iio_hw_consumer_alloc()
++ * @dev: Pointer to consumer device.
++ *
++ * Managed iio_hw_consumer_alloc. iio_hw_consumer allocated with this function
++ * is automatically freed on driver detach.
++ *
++ * If an iio_hw_consumer allocated with this function needs to be freed
++ * separately, devm_iio_hw_consumer_free() must be used.
++ *
++ * returns pointer to allocated iio_hw_consumer on success, NULL on failure.
++ */
++struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev)
++{
++	struct iio_hw_consumer **ptr, *iio_hwc;
 +
-+  - io-channels : phandle to iio dfsdm instance node.
++	ptr = devres_alloc(devm_iio_hw_consumer_release, sizeof(*ptr),
++			   GFP_KERNEL);
++	if (!ptr)
++		return NULL;
 +
-+Example of a sound card using audio DFSDM node.
++	iio_hwc = iio_hw_consumer_alloc(dev);
++	if (IS_ERR(iio_hwc)) {
++		devres_free(ptr);
++	} else {
++		*ptr = iio_hwc;
++		devres_add(dev, ptr);
++	}
 +
-+	sound_card {
-+		compatible = "audio-graph-card";
++	return iio_hwc;
++}
++EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_alloc);
 +
-+		dais = <&cpu_port>;
-+	};
++/**
++ * devm_iio_hw_consumer_free - Resource-managed iio_hw_consumer_free()
++ * @dev: Pointer to consumer device.
++ * @hwc: iio_hw_consumer to free.
++ *
++ * Free iio_hw_consumer allocated with devm_iio_hw_consumer_alloc().
++ */
++void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc)
++{
++	int rc;
 +
-+	dfsdm: dfsdm@40017000 {
-+		compatible = "st,stm32h7-dfsdm";
-+		reg = <0x40017000 0x400>;
-+		clocks = <&rcc DFSDM1_CK>;
-+		clock-names = "dfsdm";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
++	rc = devres_release(dev, devm_iio_hw_consumer_release,
++			    devm_iio_hw_consumer_match, hwc);
++	WARN_ON(rc);
++}
++EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_free);
 +
-+		dfsdm_adc0: dfsdm-adc@0 {
-+			compatible = "st,stm32-dfsdm-dmic";
-+			reg = <0>;
-+			interrupts = <110>;
-+			dmas = <&dmamux1 101 0x400 0x00>;
-+			dma-names = "rx";
-+			st,adc-channels = <1>;
-+			st,adc-channel-names = "dmic0";
-+			st,adc-channel-types = "SPI_R";
-+			st,adc-channel-clk-src = "CLKOUT";
-+			st,filter-order = <5>;
-+
-+			dfsdm_dai0: dfsdm-dai {
-+				compatible = "st,stm32h7-dfsdm-dai";
-+				#sound-dai-cells = <0>;
-+				io-channels = <&dfsdm_adc0 0>;
-+				cpu_port: port {
-+				dfsdm_endpoint: endpoint {
-+					remote-endpoint = <&dmic0_endpoint>;
-+				};
-+			};
-+		};
-+	};
-+
-+	dmic0: dmic@0 {
-+		compatible = "dmic-codec";
-+		#sound-dai-cells = <0>;
-+		port {
-+			dmic0_endpoint: endpoint {
-+				remote-endpoint = <&dfsdm_endpoint>;
-+			};
-+		};
-+	};
+ /**
+  * iio_hw_consumer_enable() - Enable IIO hardware consumer
+  * @hwc: iio_hw_consumer to enable.
+diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
+index f16791b..90ecfce 100644
+--- a/include/linux/iio/hw-consumer.h
++++ b/include/linux/iio/hw-consumer.h
+@@ -14,6 +14,8 @@ struct iio_hw_consumer;
+ 
+ struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
+ void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
++struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev);
++void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc);
+ int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
+ void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
+ 
 -- 
 2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
