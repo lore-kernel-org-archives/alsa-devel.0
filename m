@@ -1,25 +1,14 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH v4 2/2] ASoC: fsl_ssi: add 20-bit sample
- format for AC'97 and use it for capture
-Date: Thu, 30 Nov 2017 17:29:35 -0800
-Message-ID: <20171201012934.GA32588@Asurada-Nvidia>
-References: <5dfa7813-385e-d9c7-84e0-12cf1f7d3a5f@maciej.szmigiero.name>
- <20171130072357.GA992@Asurada>
- <ba46e597-6ae7-5fb4-40b3-bb2a5e08066a@maciej.szmigiero.name>
- <20171130235335.GA26530@Asurada-Nvidia>
- <aaedc37a-1536-462f-515e-19c6cb711e4f@maciej.szmigiero.name>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: ASoC: nau8825: improve crosstalk measurement protection
+Date: Fri, 1 Dec 2017 10:01:37 +0800
+Message-ID: <1512093697-11043-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f177.google.com (mail-pf0-f177.google.com
- [209.85.192.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C3AA266DF0
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 02:29:39 +0100 (CET)
-Received: by mail-pf0-f177.google.com with SMTP id j28so3921181pfk.8
- for <alsa-devel@alsa-project.org>; Thu, 30 Nov 2017 17:29:39 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <aaedc37a-1536-462f-515e-19c6cb711e4f@maciej.szmigiero.name>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id E419D266DF0
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 03:01:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,54 +18,175 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Timur Tabi <timur@tabi.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, cychiang@google.com, anatol.pomozov@gmail.com, WTLI@nuvoton.com, wuchengli@google.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 01, 2017 at 02:02:29AM +0100, Maciej S. Szmigiero wrote:
+The sequence of crosstalk measurement is not robust. The driver
+add more protections to make it stronger. The improvements as follows:
+(1)Give backup table the default value. The values are the same
+with the default of hardware registers. The impact will decline
+once restoring the backup table in the wrong way.
+(2)Add xtalk_baktab_initialized flag. The flag can keep the
+initiation status of backup table. It helps to backup and restore
+the backup-table correctly.
+(3)Add cancel parameter in the restore function. The volume ramping
+should do in crosstalk DONE state only. Otherwise, the delay action
+is not allowed because the restore may happen during the jack
+eject interruption.
+(4)Add xtalk_protect condition check before scheduling work in ISR.
+It makes sure the semaphore hold during the crosstalk measurement.
+The sequence is still under protection from playback interference.
 
-> > I will clean up the driver a bit and I think the change would be
-> > highly related to AC97 code. So I'll later need you review/test.
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8825.c | 45 +++++++++++++++++++++++++++++++--------------
+ sound/soc/codecs/nau8825.h |  1 +
+ 2 files changed, 32 insertions(+), 14 deletions(-)
 
-> From my perspective it would be great if the whole cleanup was in one
-> series, so the whole testing doesn't need to be repeated per patch
-> (it involves a lot of manual work).
-
-Understood.
-
-> >> Regarding a sample rate in AC'97 mode its effective value isn't really
-> >> controlled by the CPU (that is, SSI), but by a CODEC since it is
-> >> the CODEC which tells the CPU when it should send a next sample for
-> >> playback and when a next capture sample is ready.
-> >> There are no problems if they are different (as long as the CODEC
-> >> supports this, naturally, but it's up to its driver to restrict the
-> >> sample rate space accordingly).
-> > 
-> > It's because CODEC drives the bit clock and framesync clock, isn't
-> > it? 
-> 
-> Strictly speaking, the frame sync is driven by the controller (SSI),
-> but it is simply the CODEC-provided bit clock divided by 256.
-> And the CODEC-provided bit clock is fixed at 12.288MHz by the AC'97
-> specs.
-> 
-> But every frame from CODEC also has 'TAG' bits which tell the
-> controller whether this frame contains valid capture samples or not.
-> If the capture sample rate currently programmed in CODEC is less
-> than 48kHz (the frame rate) it simply means that some of incoming
-> frames will contain 'TAG' bits indicating that these frames do not
-> contain valid capture samples (for example, if the capture rate is
-> 24kHz then only half of the frames, on average, will be marked by CODEC
-> as containing valid capture samples).
-> 
-> The situation with playback is similar: the frame from CODEC also has
-> 'SLOTREQ' bits which tell the controller if it should send playback
-> samples (and which) in the next frame - for example, if the playback
-> rate is 24kHz then in half of the frames, on average, the CODEC will
-> request playback samples.
-> 
-> Hope it is clear now.
-
-Thanks for the explain. It's clear now.
-
-Nicolin
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 603cd72..7947b11 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -194,10 +194,10 @@ static const struct reg_default nau8825_reg_defaults[] = {
+ 
+ /* register backup table when cross talk detection */
+ static struct reg_default nau8825_xtalk_baktab[] = {
+-	{ NAU8825_REG_ADC_DGAIN_CTRL, 0 },
++	{ NAU8825_REG_ADC_DGAIN_CTRL, 0x00cf },
+ 	{ NAU8825_REG_HSVOL_CTRL, 0 },
+-	{ NAU8825_REG_DACL_CTRL, 0 },
+-	{ NAU8825_REG_DACR_CTRL, 0 },
++	{ NAU8825_REG_DACL_CTRL, 0x00cf },
++	{ NAU8825_REG_DACR_CTRL, 0x02cf },
+ };
+ 
+ static const unsigned short logtable[256] = {
+@@ -454,22 +454,32 @@ static void nau8825_xtalk_backup(struct nau8825 *nau8825)
+ {
+ 	int i;
+ 
++	if (nau8825->xtalk_baktab_initialized)
++		return;
++
+ 	/* Backup some register values to backup table */
+ 	for (i = 0; i < ARRAY_SIZE(nau8825_xtalk_baktab); i++)
+ 		regmap_read(nau8825->regmap, nau8825_xtalk_baktab[i].reg,
+ 				&nau8825_xtalk_baktab[i].def);
++
++	nau8825->xtalk_baktab_initialized = true;
+ }
+ 
+-static void nau8825_xtalk_restore(struct nau8825 *nau8825)
++static void nau8825_xtalk_restore(struct nau8825 *nau8825, bool cause_cancel)
+ {
+ 	int i, volume;
+ 
++	if (!nau8825->xtalk_baktab_initialized)
++		return;
++
+ 	/* Restore register values from backup table; When the driver restores
+-	 * the headphone volumem, it needs recover to original level gradually
+-	 * with 3dB per step for less pop noise.
++	 * the headphone volume in XTALK_DONE state, it needs recover to
++	 * original level gradually with 3dB per step for less pop noise.
++	 * Otherwise, the restore should do ASAP.
+ 	 */
+ 	for (i = 0; i < ARRAY_SIZE(nau8825_xtalk_baktab); i++) {
+-		if (nau8825_xtalk_baktab[i].reg == NAU8825_REG_HSVOL_CTRL) {
++		if (!cause_cancel && nau8825_xtalk_baktab[i].reg ==
++			NAU8825_REG_HSVOL_CTRL) {
+ 			/* Ramping up the volume change to reduce pop noise */
+ 			volume = nau8825_xtalk_baktab[i].def &
+ 				NAU8825_HPR_VOL_MASK;
+@@ -479,6 +489,8 @@ static void nau8825_xtalk_restore(struct nau8825 *nau8825)
+ 		regmap_write(nau8825->regmap, nau8825_xtalk_baktab[i].reg,
+ 				nau8825_xtalk_baktab[i].def);
+ 	}
++
++	nau8825->xtalk_baktab_initialized = false;
+ }
+ 
+ static void nau8825_xtalk_prepare_dac(struct nau8825 *nau8825)
+@@ -644,7 +656,7 @@ static void nau8825_xtalk_clean_adc(struct nau8825 *nau8825)
+ 		NAU8825_POWERUP_ADCL | NAU8825_ADC_VREFSEL_MASK, 0);
+ }
+ 
+-static void nau8825_xtalk_clean(struct nau8825 *nau8825)
++static void nau8825_xtalk_clean(struct nau8825 *nau8825, bool cause_cancel)
+ {
+ 	/* Enable internal VCO needed for interruptions */
+ 	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
+@@ -660,7 +672,7 @@ static void nau8825_xtalk_clean(struct nau8825 *nau8825)
+ 		NAU8825_I2S_MS_MASK | NAU8825_I2S_LRC_DIV_MASK |
+ 		NAU8825_I2S_BLK_DIV_MASK, NAU8825_I2S_MS_SLAVE);
+ 	/* Restore value of specific register for cross talk */
+-	nau8825_xtalk_restore(nau8825);
++	nau8825_xtalk_restore(nau8825, cause_cancel);
+ }
+ 
+ static void nau8825_xtalk_imm_start(struct nau8825 *nau8825, int vol)
+@@ -779,7 +791,7 @@ static void nau8825_xtalk_measure(struct nau8825 *nau8825)
+ 		dev_dbg(nau8825->dev, "cross talk sidetone: %x\n", sidetone);
+ 		regmap_write(nau8825->regmap, NAU8825_REG_DAC_DGAIN_CTRL,
+ 					(sidetone << 8) | sidetone);
+-		nau8825_xtalk_clean(nau8825);
++		nau8825_xtalk_clean(nau8825, false);
+ 		nau8825->xtalk_state = NAU8825_XTALK_DONE;
+ 		break;
+ 	default:
+@@ -822,7 +834,7 @@ static void nau8825_xtalk_cancel(struct nau8825 *nau8825)
+ 	if (nau8825->xtalk_enable && nau8825->xtalk_state !=
+ 		NAU8825_XTALK_DONE) {
+ 		cancel_work_sync(&nau8825->xtalk_work);
+-		nau8825_xtalk_clean(nau8825);
++		nau8825_xtalk_clean(nau8825, true);
+ 	}
+ 	/* Reset parameters for cross talk suppression function */
+ 	nau8825_sema_reset(nau8825);
+@@ -1705,8 +1717,11 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 						nau8825->xtalk_protect = false;
+ 				}
+ 				/* Startup cross talk detection process */
+-				nau8825->xtalk_state = NAU8825_XTALK_PREPARE;
+-				schedule_work(&nau8825->xtalk_work);
++				if (nau8825->xtalk_protect) {
++					nau8825->xtalk_state =
++						NAU8825_XTALK_PREPARE;
++					schedule_work(&nau8825->xtalk_work);
++				}
+ 			} else {
+ 				/* The cross talk suppression shouldn't apply
+ 				 * in the headset with high impedance. Thus,
+@@ -1733,7 +1748,8 @@ static irqreturn_t nau8825_interrupt(int irq, void *data)
+ 			nau8825->xtalk_event_mask = event_mask;
+ 		}
+ 	} else if (active_irq & NAU8825_IMPEDANCE_MEAS_IRQ) {
+-		if (nau8825->xtalk_enable)
++		/* crosstalk detection enable and process on going */
++		if (nau8825->xtalk_enable && nau8825->xtalk_protect)
+ 			schedule_work(&nau8825->xtalk_work);
+ 		clear_irq = NAU8825_IMPEDANCE_MEAS_IRQ;
+ 	} else if ((active_irq & NAU8825_JACK_INSERTION_IRQ_MASK) ==
+@@ -2570,6 +2586,7 @@ static int nau8825_i2c_probe(struct i2c_client *i2c,
+ 	 */
+ 	nau8825->xtalk_state = NAU8825_XTALK_DONE;
+ 	nau8825->xtalk_protect = false;
++	nau8825->xtalk_baktab_initialized = false;
+ 	sema_init(&nau8825->xtalk_sem, 1);
+ 	INIT_WORK(&nau8825->xtalk_work, nau8825_xtalk_work);
+ 
+diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
+index 199d6ea..f7e7321 100644
+--- a/sound/soc/codecs/nau8825.h
++++ b/sound/soc/codecs/nau8825.h
+@@ -477,6 +477,7 @@ struct nau8825 {
+ 	bool xtalk_protect;
+ 	int imp_rms[NAU8825_XTALK_IMM];
+ 	int xtalk_enable;
++	bool xtalk_baktab_initialized; /* True if initialized. */
+ };
+ 
+ int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
+-- 
+2.6.4
