@@ -1,250 +1,61 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 07/15] regmap: Add SoundWire bus support
-Date: Fri,  1 Dec 2017 15:26:09 +0530
-Message-ID: <1512122177-2889-8-git-send-email-vinod.koul@intel.com>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v8 07/13] slimbus: Add support for 'clock-pause' feature
+Date: Fri, 1 Dec 2017 09:54:32 +0000
+Message-ID: <5a882bef-3928-4865-8f05-cdfa3d220ad3@linaro.org>
+References: <20171130174200.6684-1-srinivas.kandagatla@linaro.org>
+ <20171130174200.6684-8-srinivas.kandagatla@linaro.org>
+ <CAOFm3uE+ehT+WGHO2tYz4W8h35wBgge+BO5fS=yuxemq28TERg@mail.gmail.com>
+ <20171201095131.GF9353@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F7E1267C09
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:53:12 +0100 (CET)
-In-Reply-To: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+In-Reply-To: <20171201095131.GF9353@kroah.com>
+Content-Language: en-US
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>
+Cc: Mark <broonie@kernel.org>, ALSA <alsa-devel@alsa-project.org>, Sagar Dharia <sdharia@codeaurora.org>, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, Joe Perches <joe@perches.com>, "David S. Miller" <davem@davemloft.net>, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, Rob Herring <robh+dt@kernel.org>, pawel.moll@arm.com, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-arm-msm@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-SoundWire bus provides sdw_read() and sdw_write() APIs for Slave
-devices to program the registers. Provide support in regmap for
-SoundWire bus.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- drivers/base/regmap/Kconfig      |  4 ++
- drivers/base/regmap/Makefile     |  1 +
- drivers/base/regmap/regmap-sdw.c | 92 ++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/Kconfig        |  1 +
- include/linux/regmap.h           | 37 ++++++++++++++++
- 5 files changed, 135 insertions(+)
- create mode 100644 drivers/base/regmap/regmap-sdw.c
 
-diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-index 3a1535d812d8..71dc88a48cfa 100644
---- a/drivers/base/regmap/Kconfig
-+++ b/drivers/base/regmap/Kconfig
-@@ -41,3 +41,7 @@ config REGMAP_IRQ
- 
- config REGMAP_HWSPINLOCK
- 	bool
-+
-+config REGMAP_SOUNDWIRE
-+	tristate
-+	depends on SOUNDWIRE_BUS
-diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
-index 0d298c446108..22d263cca395 100644
---- a/drivers/base/regmap/Makefile
-+++ b/drivers/base/regmap/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_REGMAP_SPMI) += regmap-spmi.o
- obj-$(CONFIG_REGMAP_MMIO) += regmap-mmio.o
- obj-$(CONFIG_REGMAP_IRQ) += regmap-irq.o
- obj-$(CONFIG_REGMAP_W1) += regmap-w1.o
-+obj-$(CONFIG_REGMAP_SOUNDWIRE) += regmap-sdw.o
-diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
-new file mode 100644
-index 000000000000..3a72039e94ea
---- /dev/null
-+++ b/drivers/base/regmap/regmap-sdw.c
-@@ -0,0 +1,92 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#include <linux/device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/soundwire/sdw.h>
-+#include "internal.h"
-+
-+static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct device *dev = context;
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+
-+	return sdw_write(slave, reg, val);
-+}
-+
-+static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct device *dev = context;
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	int read;
-+
-+	read = sdw_read(slave, reg);
-+	if (read < 0)
-+		return read;
-+
-+	*val = read;
-+	return 0;
-+}
-+
-+static struct regmap_bus regmap_sdw = {
-+	.reg_read = regmap_sdw_read,
-+	.reg_write = regmap_sdw_write,
-+	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
-+	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
-+};
-+
-+static int regmap_sdw_config_check(const struct regmap_config *config)
-+{
-+	/* All register are 8-bits wide as per MIPI Soundwire 1.0 Spec */
-+	if (config->val_bits != 8)
-+		return -ENOTSUPP;
-+
-+	/* Registers are 32 bits wide */
-+	if (config->reg_bits != 32)
-+		return -ENOTSUPP;
-+
-+	/* SoundWire register address are contiguous */
-+	if (config->reg_stride != 0)
-+		return -ENOTSUPP;
-+
-+	if (config->pad_bits != 0)
-+		return -ENOTSUPP;
-+
-+	return 0;
-+}
-+
-+struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name)
-+{
-+	int ret;
-+
-+	ret = regmap_sdw_config_check(config);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return __regmap_init(&sdw->dev, &regmap_sdw,
-+			&sdw->dev, config, lock_key, lock_name);
-+}
-+EXPORT_SYMBOL_GPL(__regmap_init_sdw);
-+
-+struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
-+				      const struct regmap_config *config,
-+				      struct lock_class_key *lock_key,
-+				      const char *lock_name)
-+{
-+	int ret;
-+
-+	ret = regmap_sdw_config_check(config);
-+	if (ret)
-+		return ERR_PTR(ret);
-+
-+	return __devm_regmap_init(&sdw->dev, &regmap_sdw,
-+			&sdw->dev, config, lock_key, lock_name);
-+}
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_sdw);
-+
-+MODULE_DESCRIPTION("Regmap SoundWire Module");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index d7d3908f4913..92a2c3bad87f 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -18,5 +18,6 @@ comment "SoundWire Devices"
- 
- config SOUNDWIRE_BUS
- 	tristate
-+	select REGMAP_SOUNDWIRE
- 
- endif
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index 15eddc1353ba..97a9c6563bb1 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -30,6 +30,7 @@ struct regmap;
- struct regmap_range_cfg;
- struct regmap_field;
- struct snd_ac97;
-+struct sdw_slave;
- 
- /* An enum of all the supported cache types */
- enum regcache_type {
-@@ -524,6 +525,10 @@ struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
- 				  const struct regmap_config *config,
- 				  struct lock_class_key *lock_key,
- 				  const char *lock_name);
-+struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
- 
- struct regmap *__devm_regmap_init(struct device *dev,
- 				  const struct regmap_bus *bus,
-@@ -561,6 +566,10 @@ struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
- 				       const struct regmap_config *config,
- 				       struct lock_class_key *lock_key,
- 				       const char *lock_name);
-+struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
-+				 const struct regmap_config *config,
-+				 struct lock_class_key *lock_key,
-+				 const char *lock_name);
- 
- /*
-  * Wrapper for regmap_init macros to include a unique lockdep key and name
-@@ -710,6 +719,20 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
- bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 
- /**
-+ * regmap_init_sdw() - Initialise register map
-+ *
-+ * @sdw: Device that will be interacted with
-+ * @config: Configuration for register map
-+ *
-+ * The return value will be an ERR_PTR() on error or a valid pointer to
-+ * a struct regmap.
-+ */
-+#define regmap_init_sdw(sdw, config)					\
-+	__regmap_lockdep_wrapper(__regmap_init_sdw, #config,		\
-+				sdw, config)
-+
-+
-+/**
-  * devm_regmap_init() - Initialise managed register map
-  *
-  * @dev: Device that will be interacted with
-@@ -839,6 +862,20 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
- 				ac97, config)
- 
-+/**
-+ * devm_regmap_init_sdw() - Initialise managed register map
-+ *
-+ * @sdw: Device that will be interacted with
-+ * @config: Configuration for register map
-+ *
-+ * The return value will be an ERR_PTR() on error or a valid pointer
-+ * to a struct regmap. The regmap will be automatically freed by the
-+ * device management code.
-+ */
-+#define devm_regmap_init_sdw(sdw, config)				\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_sdw, #config,	\
-+				sdw, config)
-+
- void regmap_exit(struct regmap *map);
- int regmap_reinit_cache(struct regmap *map,
- 			const struct regmap_config *config);
--- 
-2.7.4
+On 01/12/17 09:51, Greg Kroah-Hartman wrote:
+> On Thu, Nov 30, 2017 at 08:25:26PM +0100, Philippe Ombredanne wrote:
+>> On Thu, Nov 30, 2017 at 6:41 PM,<srinivas.kandagatla@linaro.org>  wrote:
+>> []
+>>> diff --git a/drivers/slimbus/sched.c b/drivers/slimbus/sched.c
+>>> new file mode 100644
+>>> index 000000000000..74300f1a6898
+>>> --- /dev/null
+>>> +++ b/drivers/slimbus/sched.c
+>>> @@ -0,0 +1,128 @@
+>>> +/* Copyright (c) 2011-2016, The Linux Foundation. All rights reserved.
+>>> + *
+>>> + * This program is free software; you can redistribute it and/or modify
+>>> + * it under the terms of the GNU General Public License version 2 and
+>>> + * only version 2 as published by the Free Software Foundation.
+>>> + *
+>>> + * This program is distributed in the hope that it will be useful,
+>>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+>>> + * GNU General Public License for more details.
+>> Could it make sense to use the new SPDX ids here? e.g.
+>>
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +// Copyright (c) 2011-2016, The Linux Foundation
+>> This neat and cleaner, is it?
+>> See tglx doc posted as patches and Linus comments for a rationale on
+>> the comment styles.
+> Yes please, otherwise I'll just have to write add-on patches to do just
+> this:)
+> 
+Yep, I will take care of this before sending another version.
+
+
+Thanks,
+srini
+
+
+> thanks,
+> 
+> greg k-h
