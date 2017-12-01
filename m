@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Reformat header file
-	using GENMASK and BIT macros" to the asoc tree
-Date: Fri, 01 Dec 2017 13:43:51 +0000
-Message-ID: <E1eKlbb-0001E9-JS@debutante>
+Subject: Applied "ASoC: tlv320aic31xx: General source
+	formatting cleanup" to the asoc tree
+Date: Fri, 01 Dec 2017 13:43:54 +0000
+Message-ID: <E1eKlbe-0001FG-2D@debutante>
+References: <20171129213300.20021-5-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 10C26267C9D
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 14:43:54 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 3549B267C6B
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 14:43:59 +0100 (CET)
+In-Reply-To: <20171129213300.20021-5-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Reformat header file using GENMASK and BIT macros
+   ASoC: tlv320aic31xx: General source formatting cleanup
 
 has been applied to the asoc tree at
 
@@ -52,402 +52,210 @@ to this mail.
 Thanks,
 Mark
 
->From 12eb4d66ba2e14072b54f37f5a4a6f70457e228a Mon Sep 17 00:00:00 2001
+>From ca7840fb47208a3521f3b60c1b78a2f0c59b4dc5 Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 15:32:47 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Reformat header file using GENMASK and
- BIT macros
+Date: Wed, 29 Nov 2017 15:32:45 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: General source formatting cleanup
 
-We also move the comments describing the registers to after the register
-definition to remove non-uniform vertical white-space, this makes
-cross-referencing with the datasheet much easier.
+Simple non-functional changes including:
+
+ * Fix spelling errors
+ * Reformat code for easier reading
+ * Remove unneeded code
+ * Remove assignments that are always overridden
+ * Normalize function return paths
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.h | 320 ++++++++++++++++-----------------------
- 1 file changed, 133 insertions(+), 187 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 63 ++++++++++++++++++++++------------------
+ 1 file changed, 35 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 6efea0485392..15ac7cba86fe 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -10,20 +10,21 @@
- 
- #define AIC31XX_RATES	SNDRV_PCM_RATE_8000_192000
- 
--#define AIC31XX_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE \
--			 | SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_LE \
--			 | SNDRV_PCM_FMTBIT_S32_LE)
-+#define AIC31XX_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-+			 SNDRV_PCM_FMTBIT_S20_3LE | \
-+			 SNDRV_PCM_FMTBIT_S24_3LE | \
-+			 SNDRV_PCM_FMTBIT_S24_LE | \
-+			 SNDRV_PCM_FMTBIT_S32_LE)
- 
--
--#define AIC31XX_STEREO_CLASS_D_BIT	0x1
--#define AIC31XX_MINIDSP_BIT		0x2
--#define DAC31XX_BIT			0x4
-+#define AIC31XX_STEREO_CLASS_D_BIT	BIT(1)
-+#define AIC31XX_MINIDSP_BIT		BIT(2)
-+#define DAC31XX_BIT			BIT(3)
- 
- enum aic31xx_type {
- 	AIC3100	= 0,
- 	AIC3110 = AIC31XX_STEREO_CLASS_D_BIT,
- 	AIC3120 = AIC31XX_MINIDSP_BIT,
--	AIC3111 = (AIC31XX_STEREO_CLASS_D_BIT | AIC31XX_MINIDSP_BIT),
-+	AIC3111 = AIC31XX_STEREO_CLASS_D_BIT | AIC31XX_MINIDSP_BIT,
- 	DAC3100 = DAC31XX_BIT,
- 	DAC3101 = DAC31XX_BIT | AIC31XX_STEREO_CLASS_D_BIT,
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index d974e8651e30..07c014501e5e 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -136,8 +136,7 @@ static const struct regmap_config aic31xx_i2c_regmap = {
+ 	.max_register = 12 * 128,
  };
-@@ -36,222 +37,167 @@ struct aic31xx_pdata {
  
- #define AIC31XX_REG(page, reg)	((page * 128) + reg)
+-#define AIC31XX_NUM_SUPPLIES	6
+-static const char * const aic31xx_supply_names[AIC31XX_NUM_SUPPLIES] = {
++static const char * const aic31xx_supply_names[] = {
+ 	"HPVDD",
+ 	"SPRVDD",
+ 	"SPLVDD",
+@@ -146,6 +145,8 @@ static const char * const aic31xx_supply_names[AIC31XX_NUM_SUPPLIES] = {
+ 	"DVDD",
+ };
  
--/* Page Control Register */
--#define AIC31XX_PAGECTL		AIC31XX_REG(0, 0)
-+#define AIC31XX_PAGECTL		AIC31XX_REG(0, 0) /* Page Control Register */
- 
- /* Page 0 Registers */
--/* Software reset register */
--#define AIC31XX_RESET		AIC31XX_REG(0, 1)
--/* OT FLAG register */
--#define AIC31XX_OT_FLAG		AIC31XX_REG(0, 3)
--/* Clock clock Gen muxing, Multiplexers*/
--#define AIC31XX_CLKMUX		AIC31XX_REG(0, 4)
--/* PLL P and R-VAL register */
--#define AIC31XX_PLLPR		AIC31XX_REG(0, 5)
--/* PLL J-VAL register */
--#define AIC31XX_PLLJ		AIC31XX_REG(0, 6)
--/* PLL D-VAL MSB register */
--#define AIC31XX_PLLDMSB		AIC31XX_REG(0, 7)
--/* PLL D-VAL LSB register */
--#define AIC31XX_PLLDLSB		AIC31XX_REG(0, 8)
--/* DAC NDAC_VAL register*/
--#define AIC31XX_NDAC		AIC31XX_REG(0, 11)
--/* DAC MDAC_VAL register */
--#define AIC31XX_MDAC		AIC31XX_REG(0, 12)
--/* DAC OSR setting register 1, MSB value */
--#define AIC31XX_DOSRMSB		AIC31XX_REG(0, 13)
--/* DAC OSR setting register 2, LSB value */
--#define AIC31XX_DOSRLSB		AIC31XX_REG(0, 14)
-+#define AIC31XX_RESET		AIC31XX_REG(0, 1) /* Software reset register */
-+#define AIC31XX_OT_FLAG		AIC31XX_REG(0, 3) /* OT FLAG register */
-+#define AIC31XX_CLKMUX		AIC31XX_REG(0, 4) /* Clock clock Gen muxing, Multiplexers*/
-+#define AIC31XX_PLLPR		AIC31XX_REG(0, 5) /* PLL P and R-VAL register */
-+#define AIC31XX_PLLJ		AIC31XX_REG(0, 6) /* PLL J-VAL register */
-+#define AIC31XX_PLLDMSB		AIC31XX_REG(0, 7) /* PLL D-VAL MSB register */
-+#define AIC31XX_PLLDLSB		AIC31XX_REG(0, 8) /* PLL D-VAL LSB register */
-+#define AIC31XX_NDAC		AIC31XX_REG(0, 11) /* DAC NDAC_VAL register*/
-+#define AIC31XX_MDAC		AIC31XX_REG(0, 12) /* DAC MDAC_VAL register */
-+#define AIC31XX_DOSRMSB		AIC31XX_REG(0, 13) /* DAC OSR setting register 1, MSB value */
-+#define AIC31XX_DOSRLSB		AIC31XX_REG(0, 14) /* DAC OSR setting register 2, LSB value */
- #define AIC31XX_MINI_DSP_INPOL	AIC31XX_REG(0, 16)
--/* Clock setting register 8, PLL */
--#define AIC31XX_NADC		AIC31XX_REG(0, 18)
--/* Clock setting register 9, PLL */
--#define AIC31XX_MADC		AIC31XX_REG(0, 19)
--/* ADC Oversampling (AOSR) Register */
--#define AIC31XX_AOSR		AIC31XX_REG(0, 20)
--/* Clock setting register 9, Multiplexers */
--#define AIC31XX_CLKOUTMUX	AIC31XX_REG(0, 25)
--/* Clock setting register 10, CLOCKOUT M divider value */
--#define AIC31XX_CLKOUTMVAL	AIC31XX_REG(0, 26)
--/* Audio Interface Setting Register 1 */
--#define AIC31XX_IFACE1		AIC31XX_REG(0, 27)
--/* Audio Data Slot Offset Programming */
--#define AIC31XX_DATA_OFFSET	AIC31XX_REG(0, 28)
--/* Audio Interface Setting Register 2 */
--#define AIC31XX_IFACE2		AIC31XX_REG(0, 29)
--/* Clock setting register 11, BCLK N Divider */
--#define AIC31XX_BCLKN		AIC31XX_REG(0, 30)
--/* Audio Interface Setting Register 3, Secondary Audio Interface */
--#define AIC31XX_IFACESEC1	AIC31XX_REG(0, 31)
--/* Audio Interface Setting Register 4 */
--#define AIC31XX_IFACESEC2	AIC31XX_REG(0, 32)
--/* Audio Interface Setting Register 5 */
--#define AIC31XX_IFACESEC3	AIC31XX_REG(0, 33)
--/* I2C Bus Condition */
--#define AIC31XX_I2C		AIC31XX_REG(0, 34)
--/* ADC FLAG */
--#define AIC31XX_ADCFLAG		AIC31XX_REG(0, 36)
--/* DAC Flag Registers */
--#define AIC31XX_DACFLAG1	AIC31XX_REG(0, 37)
-+#define AIC31XX_NADC		AIC31XX_REG(0, 18) /* Clock setting register 8, PLL */
-+#define AIC31XX_MADC		AIC31XX_REG(0, 19) /* Clock setting register 9, PLL */
-+#define AIC31XX_AOSR		AIC31XX_REG(0, 20) /* ADC Oversampling (AOSR) Register */
-+#define AIC31XX_CLKOUTMUX	AIC31XX_REG(0, 25) /* Clock setting register 9, Multiplexers */
-+#define AIC31XX_CLKOUTMVAL	AIC31XX_REG(0, 26) /* Clock setting register 10, CLOCKOUT M divider value */
-+#define AIC31XX_IFACE1		AIC31XX_REG(0, 27) /* Audio Interface Setting Register 1 */
-+#define AIC31XX_DATA_OFFSET	AIC31XX_REG(0, 28) /* Audio Data Slot Offset Programming */
-+#define AIC31XX_IFACE2		AIC31XX_REG(0, 29) /* Audio Interface Setting Register 2 */
-+#define AIC31XX_BCLKN		AIC31XX_REG(0, 30) /* Clock setting register 11, BCLK N Divider */
-+#define AIC31XX_IFACESEC1	AIC31XX_REG(0, 31) /* Audio Interface Setting Register 3, Secondary Audio Interface */
-+#define AIC31XX_IFACESEC2	AIC31XX_REG(0, 32) /* Audio Interface Setting Register 4 */
-+#define AIC31XX_IFACESEC3	AIC31XX_REG(0, 33) /* Audio Interface Setting Register 5 */
-+#define AIC31XX_I2C		AIC31XX_REG(0, 34) /* I2C Bus Condition */
-+#define AIC31XX_ADCFLAG		AIC31XX_REG(0, 36) /* ADC FLAG */
-+#define AIC31XX_DACFLAG1	AIC31XX_REG(0, 37) /* DAC Flag Registers */
- #define AIC31XX_DACFLAG2	AIC31XX_REG(0, 38)
--/* Sticky Interrupt flag (overflow) */
--#define AIC31XX_OFFLAG		AIC31XX_REG(0, 39)
--/* Sticy DAC Interrupt flags */
--#define AIC31XX_INTRDACFLAG	AIC31XX_REG(0, 44)
--/* Sticy ADC Interrupt flags */
--#define AIC31XX_INTRADCFLAG	AIC31XX_REG(0, 45)
--/* DAC Interrupt flags 2 */
--#define AIC31XX_INTRDACFLAG2	AIC31XX_REG(0, 46)
--/* ADC Interrupt flags 2 */
--#define AIC31XX_INTRADCFLAG2	AIC31XX_REG(0, 47)
--/* INT1 interrupt control */
--#define AIC31XX_INT1CTRL	AIC31XX_REG(0, 48)
--/* INT2 interrupt control */
--#define AIC31XX_INT2CTRL	AIC31XX_REG(0, 49)
--/* GPIO1 control */
--#define AIC31XX_GPIO1		AIC31XX_REG(0, 51)
--
-+#define AIC31XX_OFFLAG		AIC31XX_REG(0, 39) /* Sticky Interrupt flag (overflow) */
-+#define AIC31XX_INTRDACFLAG	AIC31XX_REG(0, 44) /* Sticy DAC Interrupt flags */
-+#define AIC31XX_INTRADCFLAG	AIC31XX_REG(0, 45) /* Sticy ADC Interrupt flags */
-+#define AIC31XX_INTRDACFLAG2	AIC31XX_REG(0, 46) /* DAC Interrupt flags 2 */
-+#define AIC31XX_INTRADCFLAG2	AIC31XX_REG(0, 47) /* ADC Interrupt flags 2 */
-+#define AIC31XX_INT1CTRL	AIC31XX_REG(0, 48) /* INT1 interrupt control */
-+#define AIC31XX_INT2CTRL	AIC31XX_REG(0, 49) /* INT2 interrupt control */
-+#define AIC31XX_GPIO1		AIC31XX_REG(0, 51) /* GPIO1 control */
- #define AIC31XX_DACPRB		AIC31XX_REG(0, 60)
--/* ADC Instruction Set Register */
--#define AIC31XX_ADCPRB		AIC31XX_REG(0, 61)
--/* DAC channel setup register */
--#define AIC31XX_DACSETUP	AIC31XX_REG(0, 63)
--/* DAC Mute and volume control register */
--#define AIC31XX_DACMUTE		AIC31XX_REG(0, 64)
--/* Left DAC channel digital volume control */
--#define AIC31XX_LDACVOL		AIC31XX_REG(0, 65)
--/* Right DAC channel digital volume control */
--#define AIC31XX_RDACVOL		AIC31XX_REG(0, 66)
--/* Headset detection */
--#define AIC31XX_HSDETECT	AIC31XX_REG(0, 67)
--/* ADC Digital Mic */
--#define AIC31XX_ADCSETUP	AIC31XX_REG(0, 81)
--/* ADC Digital Volume Control Fine Adjust */
--#define AIC31XX_ADCFGA		AIC31XX_REG(0, 82)
--/* ADC Digital Volume Control Coarse Adjust */
--#define AIC31XX_ADCVOL		AIC31XX_REG(0, 83)
--
-+#define AIC31XX_ADCPRB		AIC31XX_REG(0, 61) /* ADC Instruction Set Register */
-+#define AIC31XX_DACSETUP	AIC31XX_REG(0, 63) /* DAC channel setup register */
-+#define AIC31XX_DACMUTE		AIC31XX_REG(0, 64) /* DAC Mute and volume control register */
-+#define AIC31XX_LDACVOL		AIC31XX_REG(0, 65) /* Left DAC channel digital volume control */
-+#define AIC31XX_RDACVOL		AIC31XX_REG(0, 66) /* Right DAC channel digital volume control */
-+#define AIC31XX_HSDETECT	AIC31XX_REG(0, 67) /* Headset detection */
-+#define AIC31XX_ADCSETUP	AIC31XX_REG(0, 81) /* ADC Digital Mic */
-+#define AIC31XX_ADCFGA		AIC31XX_REG(0, 82) /* ADC Digital Volume Control Fine Adjust */
-+#define AIC31XX_ADCVOL		AIC31XX_REG(0, 83) /* ADC Digital Volume Control Coarse Adjust */
- 
- /* Page 1 Registers */
--/* Headphone drivers */
--#define AIC31XX_HPDRIVER	AIC31XX_REG(1, 31)
--/* Class-D Speakear Amplifier */
--#define AIC31XX_SPKAMP		AIC31XX_REG(1, 32)
--/* HP Output Drivers POP Removal Settings */
--#define AIC31XX_HPPOP		AIC31XX_REG(1, 33)
--/* Output Driver PGA Ramp-Down Period Control */
--#define AIC31XX_SPPGARAMP	AIC31XX_REG(1, 34)
--/* DAC_L and DAC_R Output Mixer Routing */
--#define AIC31XX_DACMIXERROUTE	AIC31XX_REG(1, 35)
--/* Left Analog Vol to HPL */
--#define AIC31XX_LANALOGHPL	AIC31XX_REG(1, 36)
--/* Right Analog Vol to HPR */
--#define AIC31XX_RANALOGHPR	AIC31XX_REG(1, 37)
--/* Left Analog Vol to SPL */
--#define AIC31XX_LANALOGSPL	AIC31XX_REG(1, 38)
--/* Right Analog Vol to SPR */
--#define AIC31XX_RANALOGSPR	AIC31XX_REG(1, 39)
--/* HPL Driver */
--#define AIC31XX_HPLGAIN		AIC31XX_REG(1, 40)
--/* HPR Driver */
--#define AIC31XX_HPRGAIN		AIC31XX_REG(1, 41)
--/* SPL Driver */
--#define AIC31XX_SPLGAIN		AIC31XX_REG(1, 42)
--/* SPR Driver */
--#define AIC31XX_SPRGAIN		AIC31XX_REG(1, 43)
--/* HP Driver Control */
--#define AIC31XX_HPCONTROL	AIC31XX_REG(1, 44)
--/* MIC Bias Control */
--#define AIC31XX_MICBIAS		AIC31XX_REG(1, 46)
--/* MIC PGA*/
--#define AIC31XX_MICPGA		AIC31XX_REG(1, 47)
--/* Delta-Sigma Mono ADC Channel Fine-Gain Input Selection for P-Terminal */
--#define AIC31XX_MICPGAPI	AIC31XX_REG(1, 48)
--/* ADC Input Selection for M-Terminal */
--#define AIC31XX_MICPGAMI	AIC31XX_REG(1, 49)
--/* Input CM Settings */
--#define AIC31XX_MICPGACM	AIC31XX_REG(1, 50)
--
--/* Bits, masks and shifts */
-+#define AIC31XX_HPDRIVER	AIC31XX_REG(1, 31) /* Headphone drivers */
-+#define AIC31XX_SPKAMP		AIC31XX_REG(1, 32) /* Class-D Speakear Amplifier */
-+#define AIC31XX_HPPOP		AIC31XX_REG(1, 33) /* HP Output Drivers POP Removal Settings */
-+#define AIC31XX_SPPGARAMP	AIC31XX_REG(1, 34) /* Output Driver PGA Ramp-Down Period Control */
-+#define AIC31XX_DACMIXERROUTE	AIC31XX_REG(1, 35) /* DAC_L and DAC_R Output Mixer Routing */
-+#define AIC31XX_LANALOGHPL	AIC31XX_REG(1, 36) /* Left Analog Vol to HPL */
-+#define AIC31XX_RANALOGHPR	AIC31XX_REG(1, 37) /* Right Analog Vol to HPR */
-+#define AIC31XX_LANALOGSPL	AIC31XX_REG(1, 38) /* Left Analog Vol to SPL */
-+#define AIC31XX_RANALOGSPR	AIC31XX_REG(1, 39) /* Right Analog Vol to SPR */
-+#define AIC31XX_HPLGAIN		AIC31XX_REG(1, 40) /* HPL Driver */
-+#define AIC31XX_HPRGAIN		AIC31XX_REG(1, 41) /* HPR Driver */
-+#define AIC31XX_SPLGAIN		AIC31XX_REG(1, 42) /* SPL Driver */
-+#define AIC31XX_SPRGAIN		AIC31XX_REG(1, 43) /* SPR Driver */
-+#define AIC31XX_HPCONTROL	AIC31XX_REG(1, 44) /* HP Driver Control */
-+#define AIC31XX_MICBIAS		AIC31XX_REG(1, 46) /* MIC Bias Control */
-+#define AIC31XX_MICPGA		AIC31XX_REG(1, 47) /* MIC PGA*/
-+#define AIC31XX_MICPGAPI	AIC31XX_REG(1, 48) /* Delta-Sigma Mono ADC Channel Fine-Gain Input Selection for P-Terminal */
-+#define AIC31XX_MICPGAMI	AIC31XX_REG(1, 49) /* ADC Input Selection for M-Terminal */
-+#define AIC31XX_MICPGACM	AIC31XX_REG(1, 50) /* Input CM Settings */
++#define AIC31XX_NUM_SUPPLIES ARRAY_SIZE(aic31xx_supply_names)
 +
-+/* Bits, masks, and shifts */
+ struct aic31xx_disable_nb {
+ 	struct notifier_block nb;
+ 	struct aic31xx_priv *aic31xx;
+@@ -177,7 +178,7 @@ struct aic31xx_rate_divs {
+ 	u8 madc;
+ };
  
- /* AIC31XX_CLKMUX */
--#define AIC31XX_PLL_CLKIN_MASK			0x0c
--#define AIC31XX_PLL_CLKIN_SHIFT			2
--#define AIC31XX_PLL_CLKIN_MCLK			0
--#define AIC31XX_CODEC_CLKIN_MASK		0x03
--#define AIC31XX_CODEC_CLKIN_SHIFT		0
--#define AIC31XX_CODEC_CLKIN_PLL			3
--#define AIC31XX_CODEC_CLKIN_BCLK		1
--
--/* AIC31XX_PLLPR, AIC31XX_NDAC, AIC31XX_MDAC, AIC31XX_NADC, AIC31XX_MADC,
--   AIC31XX_BCLKN */
--#define AIC31XX_PLL_MASK		0x7f
--#define AIC31XX_PM_MASK			0x80
-+#define AIC31XX_PLL_CLKIN_MASK		GENMASK(3, 2)
-+#define AIC31XX_PLL_CLKIN_SHIFT		(2)
-+#define AIC31XX_PLL_CLKIN_MCLK		0x00
-+#define AIC31XX_PLL_CLKIN_BCKL		0x01
-+#define AIC31XX_PLL_CLKIN_GPIO1		0x02
-+#define AIC31XX_PLL_CLKIN_DIN		0x03
-+#define AIC31XX_CODEC_CLKIN_MASK	GENMASK(1, 0)
-+#define AIC31XX_CODEC_CLKIN_SHIFT	(0)
-+#define AIC31XX_CODEC_CLKIN_MCLK	0x00
-+#define AIC31XX_CODEC_CLKIN_BCLK	0x01
-+#define AIC31XX_CODEC_CLKIN_GPIO1	0x02
-+#define AIC31XX_CODEC_CLKIN_PLL		0x03
+-/* ADC dividers can be disabled by cofiguring them to 0 */
++/* ADC dividers can be disabled by configuring them to 0 */
+ static const struct aic31xx_rate_divs aic31xx_divs[] = {
+ 	/* mclk/p    rate  pll: j     d        dosr ndac mdac  aors nadc madc */
+ 	/* 8k rate */
+@@ -832,11 +833,17 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
+ 
+ 	dev_dbg(codec->dev,
+ 		"pll %d.%04d/%d dosr %d n %d m %d aosr %d n %d m %d bclk_n %d\n",
+-		aic31xx_divs[i].pll_j, aic31xx_divs[i].pll_d,
+-		aic31xx->p_div, aic31xx_divs[i].dosr,
+-		aic31xx_divs[i].ndac, aic31xx_divs[i].mdac,
+-		aic31xx_divs[i].aosr, aic31xx_divs[i].nadc,
+-		aic31xx_divs[i].madc, bclk_n);
++		aic31xx_divs[i].pll_j,
++		aic31xx_divs[i].pll_d,
++		aic31xx->p_div,
++		aic31xx_divs[i].dosr,
++		aic31xx_divs[i].ndac,
++		aic31xx_divs[i].mdac,
++		aic31xx_divs[i].aosr,
++		aic31xx_divs[i].nadc,
++		aic31xx_divs[i].madc,
++		bclk_n
++	);
+ 
+ 	return 0;
+ }
+@@ -973,8 +980,9 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	dev_dbg(codec->dev, "## %s: clk_id = %d, freq = %d, dir = %d\n",
+ 		__func__, clk_id, freq, dir);
+ 
+-	for (i = 1; freq/i > 20000000 && i < 8; i++)
+-		;
++	for (i = 1; i < 8; i++)
++		if (freq / i <= 20000000)
++			break;
+ 	if (freq/i > 20000000) {
+ 		dev_err(aic31xx->dev, "%s: Too high mclk frequency %u\n",
+ 			__func__, freq);
+@@ -982,9 +990,9 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	}
+ 	aic31xx->p_div = i;
+ 
+-	for (i = 0; i < ARRAY_SIZE(aic31xx_divs) &&
+-		     aic31xx_divs[i].mclk_p != freq/aic31xx->p_div; i++)
+-		;
++	for (i = 0; i < ARRAY_SIZE(aic31xx_divs); i++)
++		if (aic31xx_divs[i].mclk_p == freq / aic31xx->p_div)
++			break;
+ 	if (i == ARRAY_SIZE(aic31xx_divs)) {
+ 		dev_err(aic31xx->dev, "%s: Unsupported frequency %d\n",
+ 			__func__, freq);
+@@ -996,6 +1004,7 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 			    clk_id << AIC31XX_PLL_CLKIN_SHIFT);
+ 
+ 	aic31xx->sysclk = freq;
 +
-+/* AIC31XX_PLLPR */
-+/* AIC31XX_NDAC */
-+/* AIC31XX_MDAC */
-+/* AIC31XX_NADC */
-+/* AIC31XX_MADC */
-+/* AIC31XX_BCLKN */
-+#define AIC31XX_PLL_MASK		GENMASK(6, 0)
-+#define AIC31XX_PM_MASK			BIT(7)
+ 	return 0;
+ }
  
- /* AIC31XX_IFACE1 */
--#define AIC31XX_WORD_LEN_16BITS		0x00
--#define AIC31XX_WORD_LEN_20BITS		0x01
--#define AIC31XX_WORD_LEN_24BITS		0x02
--#define AIC31XX_WORD_LEN_32BITS		0x03
--#define AIC31XX_IFACE1_DATALEN_MASK	0x30
--#define AIC31XX_IFACE1_DATALEN_SHIFT	(4)
--#define AIC31XX_IFACE1_DATATYPE_MASK	0xC0
-+#define AIC31XX_IFACE1_DATATYPE_MASK	GENMASK(7, 6)
- #define AIC31XX_IFACE1_DATATYPE_SHIFT	(6)
- #define AIC31XX_I2S_MODE		0x00
- #define AIC31XX_DSP_MODE		0x01
- #define AIC31XX_RIGHT_JUSTIFIED_MODE	0x02
- #define AIC31XX_LEFT_JUSTIFIED_MODE	0x03
--#define AIC31XX_IFACE1_MASTER_MASK	0x0C
--#define AIC31XX_BCLK_MASTER		0x08
--#define AIC31XX_WCLK_MASTER		0x04
-+#define AIC31XX_IFACE1_DATALEN_MASK	GENMASK(5, 4)
-+#define AIC31XX_IFACE1_DATALEN_SHIFT	(4)
-+#define AIC31XX_WORD_LEN_16BITS		0x00
-+#define AIC31XX_WORD_LEN_20BITS		0x01
-+#define AIC31XX_WORD_LEN_24BITS		0x02
-+#define AIC31XX_WORD_LEN_32BITS		0x03
-+#define AIC31XX_IFACE1_MASTER_MASK	GENMASK(3, 2)
-+#define AIC31XX_BCLK_MASTER		BIT(2)
-+#define AIC31XX_WCLK_MASTER		BIT(3)
+@@ -1057,7 +1066,7 @@ static void aic31xx_clk_off(struct snd_soc_codec *codec)
+ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ {
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
+-	int ret = 0;
++	int ret;
  
- /* AIC31XX_DATA_OFFSET */
--#define AIC31XX_DATA_OFFSET_MASK	0xFF
-+#define AIC31XX_DATA_OFFSET_MASK	GENMASK(7, 0)
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(aic31xx->supplies),
+ 				    aic31xx->supplies);
+@@ -1070,7 +1079,7 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ 	}
+ 	regcache_cache_only(aic31xx->regmap, false);
+ 	ret = regcache_sync(aic31xx->regmap);
+-	if (ret != 0) {
++	if (ret) {
+ 		dev_err(codec->dev,
+ 			"Failed to restore cache: %d\n", ret);
+ 		regcache_cache_only(aic31xx->regmap, true);
+@@ -1078,6 +1087,7 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+ 				       aic31xx->supplies);
+ 		return ret;
+ 	}
++
+ 	return 0;
+ }
  
- /* AIC31XX_IFACE2 */
--#define AIC31XX_BCLKINV_MASK		0x08
--#define AIC31XX_BDIVCLK_MASK		0x03
-+#define AIC31XX_BCLKINV_MASK		BIT(3)
-+#define AIC31XX_BDIVCLK_MASK		GENMASK(1, 0)
- #define AIC31XX_DAC2BCLK		0x00
- #define AIC31XX_DACMOD2BCLK		0x01
- #define AIC31XX_ADC2BCLK		0x02
- #define AIC31XX_ADCMOD2BCLK		0x03
+@@ -1126,14 +1136,11 @@ static int aic31xx_set_bias_level(struct snd_soc_codec *codec,
  
- /* AIC31XX_ADCFLAG */
--#define AIC31XX_ADCPWRSTATUS_MASK		0x40
-+#define AIC31XX_ADCPWRSTATUS_MASK	BIT(6)
+ static int aic31xx_codec_probe(struct snd_soc_codec *codec)
+ {
+-	int ret = 0;
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
+-	int i;
++	int i, ret;
  
- /* AIC31XX_DACFLAG1 */
--#define AIC31XX_LDACPWRSTATUS_MASK		0x80
--#define AIC31XX_RDACPWRSTATUS_MASK		0x08
--#define AIC31XX_HPLDRVPWRSTATUS_MASK		0x20
--#define AIC31XX_HPRDRVPWRSTATUS_MASK		0x02
--#define AIC31XX_SPLDRVPWRSTATUS_MASK		0x10
--#define AIC31XX_SPRDRVPWRSTATUS_MASK		0x01
-+#define AIC31XX_LDACPWRSTATUS_MASK	BIT(7)
-+#define AIC31XX_HPLDRVPWRSTATUS_MASK	BIT(5)
-+#define AIC31XX_SPLDRVPWRSTATUS_MASK	BIT(4)
-+#define AIC31XX_RDACPWRSTATUS_MASK	BIT(3)
-+#define AIC31XX_HPRDRVPWRSTATUS_MASK	BIT(1)
-+#define AIC31XX_SPRDRVPWRSTATUS_MASK	BIT(0)
+ 	dev_dbg(aic31xx->dev, "## %s\n", __func__);
  
- /* AIC31XX_INTRDACFLAG */
--#define AIC31XX_HPSCDETECT_MASK			0x80
--#define AIC31XX_BUTTONPRESS_MASK		0x20
--#define AIC31XX_HSPLUG_MASK			0x10
--#define AIC31XX_LDRCTHRES_MASK			0x08
--#define AIC31XX_RDRCTHRES_MASK			0x04
--#define AIC31XX_DACSINT_MASK			0x02
--#define AIC31XX_DACAINT_MASK			0x01
-+#define AIC31XX_HPLSCDETECT		BIT(7)
-+#define AIC31XX_HPRSCDETECT		BIT(6)
-+#define AIC31XX_BUTTONPRESS		BIT(5)
-+#define AIC31XX_HSPLUG			BIT(4)
-+#define AIC31XX_LDRCTHRES		BIT(3)
-+#define AIC31XX_RDRCTHRES		BIT(2)
-+#define AIC31XX_DACSINT			BIT(1)
-+#define AIC31XX_DACAINT			BIT(0)
+-	aic31xx = snd_soc_codec_get_drvdata(codec);
+-
+ 	aic31xx->codec = codec;
  
- /* AIC31XX_INT1CTRL */
--#define AIC31XX_HSPLUGDET_MASK			0x80
--#define AIC31XX_BUTTONPRESSDET_MASK		0x40
--#define AIC31XX_DRCTHRES_MASK			0x20
--#define AIC31XX_AGCNOISE_MASK			0x10
--#define AIC31XX_OC_MASK				0x08
--#define AIC31XX_ENGINE_MASK			0x04
-+#define AIC31XX_HSPLUGDET		BIT(7)
-+#define AIC31XX_BUTTONPRESSDET		BIT(6)
-+#define AIC31XX_DRCTHRES		BIT(5)
-+#define AIC31XX_AGCNOISE		BIT(4)
-+#define AIC31XX_SC			BIT(3)
-+#define AIC31XX_ENGINE			BIT(2)
+ 	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++) {
+@@ -1158,8 +1165,10 @@ static int aic31xx_codec_probe(struct snd_soc_codec *codec)
+ 		return ret;
  
- /* AIC31XX_DACSETUP */
--#define AIC31XX_SOFTSTEP_MASK			0x03
-+#define AIC31XX_SOFTSTEP_MASK		GENMASK(1, 0)
+ 	ret = aic31xx_add_widgets(codec);
++	if (ret)
++		return ret;
  
- /* AIC31XX_DACMUTE */
--#define AIC31XX_DACMUTE_MASK			0x0C
-+#define AIC31XX_DACMUTE_MASK		GENMASK(3, 2)
+-	return ret;
++	return 0;
+ }
  
- /* AIC31XX_MICBIAS */
--#define AIC31XX_MICBIAS_MASK			0x03
--#define AIC31XX_MICBIAS_SHIFT			0
-+#define AIC31XX_MICBIAS_MASK		GENMASK(1, 0)
-+#define AIC31XX_MICBIAS_SHIFT		0
+ static int aic31xx_codec_remove(struct snd_soc_codec *codec)
+@@ -1322,10 +1331,12 @@ static int aic31xx_device_init(struct aic31xx_priv *aic31xx)
+ 	ret = devm_regulator_bulk_get(aic31xx->dev,
+ 				      ARRAY_SIZE(aic31xx->supplies),
+ 				      aic31xx->supplies);
+-	if (ret != 0)
++	if (ret) {
+ 		dev_err(aic31xx->dev, "Failed to request supplies: %d\n", ret);
++		return ret;
++	}
  
- #endif	/* _TLV320AIC31XX_H */
+-	return ret;
++	return 0;
+ }
+ 
+ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+@@ -1333,18 +1344,15 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct aic31xx_priv *aic31xx;
+ 	int ret;
+-	const struct regmap_config *regmap_config;
+ 
+ 	dev_dbg(&i2c->dev, "## %s: %s codec_type = %d\n", __func__,
+ 		id->name, (int) id->driver_data);
+ 
+-	regmap_config = &aic31xx_i2c_regmap;
+-
+ 	aic31xx = devm_kzalloc(&i2c->dev, sizeof(*aic31xx), GFP_KERNEL);
+-	if (aic31xx == NULL)
++	if (!aic31xx)
+ 		return -ENOMEM;
+ 
+-	aic31xx->regmap = devm_regmap_init_i2c(i2c, regmap_config);
++	aic31xx->regmap = devm_regmap_init_i2c(i2c, &aic31xx_i2c_regmap);
+ 	if (IS_ERR(aic31xx->regmap)) {
+ 		ret = PTR_ERR(aic31xx->regmap);
+ 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
+@@ -1400,7 +1408,6 @@ static struct i2c_driver aic31xx_i2c_driver = {
+ 	.remove		= aic31xx_i2c_remove,
+ 	.id_table	= aic31xx_i2c_id,
+ };
+-
+ module_i2c_driver(aic31xx_i2c_driver);
+ 
+ MODULE_AUTHOR("Jyri Sarha <jsarha@ti.com>");
 -- 
 2.15.0
