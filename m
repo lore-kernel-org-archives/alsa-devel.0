@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nuc900: Fix platform_get_irq's error checking" to the asoc tree
-Date: Fri, 01 Dec 2017 13:44:03 +0000
-Message-ID: <E1eKlbn-0001Ip-40@debutante>
-References: <0703b0d6d8ba826a42f244eec6bce71514edd563.1511970158.git.arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: tfa9879: Export OF device ID as module alias" to the asoc tree
+Date: Fri, 01 Dec 2017 13:44:16 +0000
+Message-ID: <E1eKlc0-0001MT-Ia@debutante>
+References: <20171130175616.29073-1-javierm@redhat.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <0703b0d6d8ba826a42f244eec6bce71514edd563.1511970158.git.arvind.yadav.cs@gmail.com>
+In-Reply-To: <20171130175616.29073-1-javierm@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Javier Martinez Canillas <javierm@redhat.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Peter Rosin <peda@axentia.se>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nuc900: Fix platform_get_irq's error checking
+   ASoC: tfa9879: Export OF device ID as module alias
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,45 @@ to this mail.
 Thanks,
 Mark
 
->From fa8cc38165c2f6f73bf947087b3cdc5dd9b9b560 Mon Sep 17 00:00:00 2001
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Wed, 29 Nov 2017 21:47:12 +0530
-Subject: [PATCH] ASoC: nuc900: Fix platform_get_irq's error checking
+>From 56ae83f11db58a3a62d0d309efb84544f2c02e3b Mon Sep 17 00:00:00 2001
+From: Javier Martinez Canillas <javierm@redhat.com>
+Date: Thu, 30 Nov 2017 18:56:16 +0100
+Subject: [PATCH] ASoC: tfa9879: Export OF device ID as module alias
 
-The platform_get_irq() function returns negative if an error occurs.
-zero or positive number on success. platform_get_irq() error checking
-for zero is not correct.
+The I2C core always reports a MODALIAS of the form i2c:<foo> even if the
+device was registered via OF, this means that exporting the OF device ID
+table device aliases in the module is not needed. But in order to change
+how the core reports modaliases to user-space, it's better to export it.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Before this patch:
+
+$ modinfo sound/soc/codecs/snd-soc-tfa9879.ko  | grep alias
+alias:          i2c:tfa9879
+
+After this patch:
+
+$ modinfo sound/soc/codecs/snd-soc-tfa9879.ko  | grep alias
+alias:          i2c:tfa9879
+alias:          of:N*T*Cnxp,tfa9879C*
+alias:          of:N*T*Cnxp,tfa9879
+
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/nuc900/nuc900-ac97.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tfa9879.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-index b6615affe571..5e4fbd2d3479 100644
---- a/sound/soc/nuc900/nuc900-ac97.c
-+++ b/sound/soc/nuc900/nuc900-ac97.c
-@@ -346,8 +346,8 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/codecs/tfa9879.c b/sound/soc/codecs/tfa9879.c
+index f8dd67ca0744..e7ca764b5729 100644
+--- a/sound/soc/codecs/tfa9879.c
++++ b/sound/soc/codecs/tfa9879.c
+@@ -316,6 +316,7 @@ static const struct of_device_id tfa9879_of_match[] = {
+ 	{ .compatible = "nxp,tfa9879", },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, tfa9879_of_match);
  
- 	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
--	if (!nuc900_audio->irq_num) {
--		ret = -EBUSY;
-+	if (nuc900_audio->irq_num <= 0) {
-+		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
- 		goto out;
- 	}
- 
+ static struct i2c_driver tfa9879_i2c_driver = {
+ 	.driver = {
 -- 
 2.15.0
