@@ -1,163 +1,207 @@
-From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
-Subject: Guarantee a 0-terminated string for all usages of
-	strncpy()
-Date: Fri, 1 Dec 2017 09:58:27 +0000
-Message-ID: <B0FB33DC1499054591F62C0EF1E013D7684C8400@HI2EXCH01.adit-jv.com>
+From: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Subject: Re: [PATCH v8 01/13] Documentation: Add SLIMbus summary
+Date: Fri, 1 Dec 2017 11:27:58 +0100
+Message-ID: <20171201102758.bcziygl3k46iepc6@latitude>
+References: <20171130174200.6684-1-srinivas.kandagatla@linaro.org>
+ <20171130174200.6684-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 7730C266E04
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:58:34 +0100 (CET)
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
- by smtp1.de.adit-jv.com (Postfix) with ESMTP id 818CF3C023A
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:58:34 +0100 (CET)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
- by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id yut76VggWn4m for <alsa-devel@alsa-project.org>;
- Fri,  1 Dec 2017 10:58:28 +0100 (CET)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 732A93C0034
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:58:28 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="7555buyfd4hlmmdc"
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20171130174200.6684-2-srinivas.kandagatla@linaro.org>
+Sender: linux-arm-msm-owner@vger.kernel.org
+To: srinivas.kandagatla@linaro.org
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
---_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_
-Content-Type: text/plain; charset="iso-8859-1"
+
+--7555buyfd4hlmmdc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi, some small nits below.
 
-see attached a patch for ensuring a 0-terminated string when using strncpy(=
-).
-I observed this issue in the ext control implementation.
+On Thu, Nov 30, 2017 at 05:41:48PM +0000, srinivas.kandagatla@linaro.org wr=
+ote:
+> From: Sagar Dharia <sdharia@codeaurora.org>
+>=20
+> SLIMbus (Serial Low Power Interchip Media Bus) is a specification
+> developed by MIPI (Mobile Industry Processor Interface) alliance.
+> SLIMbus is a 2-wire implementation, which is used to communicate with
+> peripheral components like audio-codec.
+>=20
+> The summary of SLIMbus and API is documented in the 'summary' file.
+>=20
+> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  Documentation/driver-api/slimbus/index.rst   |  15 ++++
+>  Documentation/driver-api/slimbus/summary.rst | 108 +++++++++++++++++++++=
+++++++
+>  2 files changed, 123 insertions(+)
+>  create mode 100644 Documentation/driver-api/slimbus/index.rst
+>  create mode 100644 Documentation/driver-api/slimbus/summary.rst
 
-Best regards
+It would probably make sense to Cc the documentation maintainers/mailing
+list on this patch (AFAICS, you didn't do that).
 
-Timo Wischer
+When do you plan to add slimbus to Documentation/driver-api/index.rst?
 
-Advanced Driver Information Technology GmbH
-Engineering Software Base (ADITG/ESB)
-Robert-Bosch-Str. 200
-31139 Hildesheim
-Germany
+> diff --git a/Documentation/driver-api/slimbus/index.rst b/Documentation/d=
+river-api/slimbus/index.rst
+> new file mode 100644
+> index 000000000000..586f979659e6
+> --- /dev/null
+> +++ b/Documentation/driver-api/slimbus/index.rst
+> @@ -0,0 +1,15 @@
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +SLIMbus Documentation
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +.. toctree::
+> +   :maxdepth: 1
+> +
+> +   summary
+> +
+> +.. only::  subproject
+> +
+> +   Indices
+> +   =3D=3D=3D=3D=3D=3D=3D
+> +
+> +   * :ref:`genindex`
+> diff --git a/Documentation/driver-api/slimbus/summary.rst b/Documentation=
+/driver-api/slimbus/summary.rst
+> new file mode 100644
+> index 000000000000..ba165611725a
+> --- /dev/null
+> +++ b/Documentation/driver-api/slimbus/summary.rst
+> @@ -0,0 +1,108 @@
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +Linux kernel SLIMbus support
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> +
+> +Overview
+> +=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +What is SLIMbus?
+> +----------------
+> +SLIMbus (Serial Low Power Interchip Media Bus) is a specification develo=
+ped by
+> +MIPI (Mobile Industry Processor Interface) alliance. The bus uses master=
+/slave
+> +configuration, and is a 2-wire multi-drop implementation (clock, and dat=
+a).
+> +
+> +Currently, SLIMbus is used to interface between application processors o=
+f SoCs
+> +(System-on-Chip) and peripheral components (typically codec).SLIMbus uses
+> +Time-Division-Multiplexing to accommodate multiple data channels, and
+> +a control channel.
+> +
+> +The control channel is used for various control functions such as bus
+> +management, configuration and status updates.These messages can be unica=
+st (e.g.
+                                               ^^ space after period, please
 
-Tel. +49 5121 49 6938
-Fax +49 5121 49 6999
-twischer@de.adit-jv.com
+> +reading/writing device specific values), or multicast (e.g. data channel
+> +reconfiguration sequence is a broadcast message announced to all devices)
+> +
+> +A data channel is used for data-transfer between 2 SLIMbus devices. Data
+> +channel uses dedicated ports on the device.
+> +
+[...]
+> +
+> +Device notifications to the driver:
+> +-----------------------------------
+> +Since SLIMbus devices have mechanisms for reporting their presence, the
+> +framework allows drivers to bind when corresponding devices report their
+> +presence on the bus.
+> +However, it is possible that the driver needs to be probed
+> +first so that it can enable corresponding SLIMbus device (e.g. power it =
+up and/or
+> +take it out of reset). To support that behavior, the framework allows dr=
+ivers
+> +to probe first as well  (e.g. using standard DeviceTree compatbility fie=
+ld).
 
-ADIT is a joint venture company of Robert Bosch GmbH/Robert Bosch Car Multi=
-media GmbH and DENSO Corporation
-Sitz: Hildesheim, Registergericht: Amtsgericht Hildesheim HRB 3438
-Gesch=E4ftsf=FChrung: Wilhelm Grabow, Ken Yaguchi
+Typo: s/compatbility/compatibility/
 
---_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_
-Content-Type: text/x-patch; name="append-0-after-strncpy.patch"
-Content-Description: append-0-after-strncpy.patch
-Content-Disposition: attachment; filename="append-0-after-strncpy.patch";
-	size=4537; creation-date="Fri, 01 Dec 2017 09:55:39 GMT";
-	modification-date="Fri, 01 Dec 2017 09:55:39 GMT"
-Content-Transfer-Encoding: base64
+> +This creates the necessity for the driver to know when the device is fun=
+ctional
+> +(i.e. reported present). device_up callback is used for that reason when=
+ the
+> +device reports present and is assigned a logical address by the controll=
+er.
+> +
+> +Similarly, SLIMbus devices 'report absent' when they go down. A 'device_=
+down'
+> +callback notifies the driver when the device reports absent and its logi=
+cal
+> +address assignment is invalidated by the controller.
+> +
+> +Another notification "boot_device" is used to notify the slim_driver when
+> +controller resets the bus. This notification allows the driver to take n=
+ecessary
+> +steps to boot the device so that it's functional after the bus has been =
+reset.
+> +
+> +Clock-pause:
+> +------------
+> +SLIMbus mandates that a reconfiguration sequence (known as clock-pause) =
+be
+> +broadcast to all active devices on the bus before the bus can enter low-=
+power
+> +mode. Controller uses this sequence when it decides to enter low-power m=
+ode so
+> +that corresponding clocks and/or power-rails can be turned off to save p=
+ower.
+> +Clock-pause is exited by waking up framer device (if controller driver i=
+nitiates
+> +exiting low power mode), or by toggling the data line (if a slave device=
+ wants
+> +to initiate it).
+> +
+> +Messaging APIs:
+> +---------------
+> +The framework supports APIs to exchange control-information with a SLIMb=
+us
+> +device. APIs can be synchronous or asynchronous.
+> +From controller's perspective, multiple buffers can be queued to/from
+> +hardware for sending/receiving data using slim_ctrl_buf circular buffer.
+> +The header file <linux/slimbus.h> has more documentation about messaging=
+ APIs.
 
-RnJvbSBiMDhkZDJkMzk1ZmMxZDA1MTM0NWYxOWQxMmI2MmIyZmFhMTRiYzY3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBUaW1vIFdpc2NoZXIgPHR3aXNjaGVyQGRlLmFkaXQtanYuY29t
-PgpEYXRlOiBGcmksIDEgRGVjIDIwMTcgMTA6NDU6MDQgKzAxMDAKU3ViamVjdDogQWx3YXlzIHRl
-cm1pbmF0ZSBzdHJpbmcgd2l0aCAwIHdoaWNoIHdhcyBjb3BpZWQgd2l0aCBzdHJuY3B5KCkKClNp
-Z25lZC1vZmYtYnk6IFRpbW8gV2lzY2hlciA8dHdpc2NoZXJAZGUuYWRpdC1qdi5jb20+CgpkaWZm
-IC0tZ2l0IGEvc3JjL2NvbnRyb2wvY29udHJvbC5jIGIvc3JjL2NvbnRyb2wvY29udHJvbC5jCmlu
-ZGV4IDExZjc4MTUuLjM0YThkZWUgMTAwNjQ0Ci0tLSBhL3NyYy9jb250cm9sL2NvbnRyb2wuYwor
-KysgYi9zcmMvY29udHJvbC9jb250cm9sLmMKQEAgLTE4MDQsNiArMTgwNCw3IEBAIHZvaWQgc25k
-X2N0bF9lbGVtX2lkX3NldF9uYW1lKHNuZF9jdGxfZWxlbV9pZF90ICpvYmosIGNvbnN0IGNoYXIg
-KnZhbCkKIHsKIAlhc3NlcnQob2JqKTsKIAlzdHJuY3B5KChjaGFyICopb2JqLT5uYW1lLCB2YWws
-IHNpemVvZihvYmotPm5hbWUpKTsKKwlvYmotPm5hbWVbc2l6ZW9mKG9iai0+bmFtZSktMV0gPSAw
-OwogfQogCiAvKioKQEAgLTI3MjIsNiArMjcyMyw3IEBAIHZvaWQgc25kX2N0bF9lbGVtX2luZm9f
-c2V0X25hbWUoc25kX2N0bF9lbGVtX2luZm9fdCAqb2JqLCBjb25zdCBjaGFyICp2YWwpCiB7CiAJ
-YXNzZXJ0KG9iaik7CiAJc3RybmNweSgoY2hhciAqKW9iai0+aWQubmFtZSwgdmFsLCBzaXplb2Yo
-b2JqLT5pZC5uYW1lKSk7CisJb2JqLT5pZC5uYW1lW3NpemVvZihvYmotPmlkLm5hbWUpLTFdID0g
-MDsKIH0KIAogLyoqCkBAIC0yOTQ0LDYgKzI5NDYsNyBAQCB2b2lkIHNuZF9jdGxfZWxlbV92YWx1
-ZV9zZXRfbmFtZShzbmRfY3RsX2VsZW1fdmFsdWVfdCAqb2JqLCBjb25zdCBjaGFyICp2YWwpCiB7
-CiAJYXNzZXJ0KG9iaik7CiAJc3RybmNweSgoY2hhciAqKW9iai0+aWQubmFtZSwgdmFsLCBzaXpl
-b2Yob2JqLT5pZC5uYW1lKSk7CisJb2JqLT5pZC5uYW1lW3NpemVvZihvYmotPmlkLm5hbWUpLTFd
-ID0gMDsKIH0KIAogLyoqCmRpZmYgLS1naXQgYS9zcmMvbWl4ZXIvc2ltcGxlX25vbmUuYyBiL3Ny
-Yy9taXhlci9zaW1wbGVfbm9uZS5jCmluZGV4IGU5ZGMxNzMuLjMyNzA0N2MgMTAwNjQ0Ci0tLSBh
-L3NyYy9taXhlci9zaW1wbGVfbm9uZS5jCisrKyBiL3NyYy9taXhlci9zaW1wbGVfbm9uZS5jCkBA
-IC0xMzM0LDYgKzEzMzQsNyBAQCBzdGF0aWMgaW50IGVudW1faXRlbV9uYW1lX29wcyhzbmRfbWl4
-ZXJfZWxlbV90ICplbGVtLAogCXNuZF9jdGxfZWxlbV9pbmZvX3NldF9pdGVtKCZpbmZvLCBpdGVt
-KTsKIAlzbmRfaGN0bF9lbGVtX2luZm8oaGVsZW0sICZpbmZvKTsKIAlzdHJuY3B5KGJ1Ziwgc25k
-X2N0bF9lbGVtX2luZm9fZ2V0X2l0ZW1fbmFtZSgmaW5mbyksIG1heGxlbik7CisJYnVmW21heGxl
-bi0xXSA9IDA7CiAJcmV0dXJuIDA7CiB9CiAKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX2RpcmVj
-dC5jIGIvc3JjL3BjbS9wY21fZGlyZWN0LmMKaW5kZXggYWJmNzM3OC4uMDExNzIyMyAxMDA2NDQK
-LS0tIGEvc3JjL3BjbS9wY21fZGlyZWN0LmMKKysrIGIvc3JjL3BjbS9wY21fZGlyZWN0LmMKQEAg
-LTc2Nyw4ICs3NjcsMTEgQEAgaW50IHNuZF9wY21fZGlyZWN0X2luZm8oc25kX3BjbV90ICpwY20s
-IHNuZF9wY21faW5mb190ICogaW5mbykKIAkvKiBGSVhNRTogZmlsbCB0aGlzIHdpdGggc29tZXRo
-aW5nIG1vcmUgdXNlZnVsOiB3ZSBrbm93IHRoZSBoYXJkd2FyZSBuYW1lICovCiAJaWYgKHBjbS0+
-bmFtZSkgewogCQlzdHJuY3B5KChjaGFyICopaW5mby0+aWQsIHBjbS0+bmFtZSwgc2l6ZW9mKGlu
-Zm8tPmlkKSk7CisJCWluZm8tPmlkW3NpemVvZihpbmZvLT5pZCktMV0gPSAwOwogCQlzdHJuY3B5
-KChjaGFyICopaW5mby0+bmFtZSwgcGNtLT5uYW1lLCBzaXplb2YoaW5mby0+bmFtZSkpOworCQlp
-bmZvLT5uYW1lW3NpemVvZihpbmZvLT5uYW1lKS0xXSA9IDA7CiAJCXN0cm5jcHkoKGNoYXIgKilp
-bmZvLT5zdWJuYW1lLCBwY20tPm5hbWUsIHNpemVvZihpbmZvLT5zdWJuYW1lKSk7CisJCWluZm8t
-PnN1Ym5hbWVbc2l6ZW9mKGluZm8tPnN1Ym5hbWUpLTFdID0gMDsKIAl9CiAJaW5mby0+c3ViZGV2
-aWNlc19jb3VudCA9IDE7CiAJcmV0dXJuIDA7CmRpZmYgLS1naXQgYS9zcmMvcGNtL3BjbV9pb3Bs
-dWcuYyBiL3NyYy9wY20vcGNtX2lvcGx1Zy5jCmluZGV4IDdhNzgyZTYuLjI5NmRlYTAgMTAwNjQ0
-Ci0tLSBhL3NyYy9wY20vcGNtX2lvcGx1Zy5jCisrKyBiL3NyYy9wY20vcGNtX2lvcGx1Zy5jCkBA
-IC03NCw4ICs3NCwxMSBAQCBzdGF0aWMgaW50IHNuZF9wY21faW9wbHVnX2luZm8oc25kX3BjbV90
-ICpwY20sIHNuZF9wY21faW5mb190ICppbmZvKQogCWluZm8tPmNhcmQgPSAtMTsKIAlpZiAocGNt
-LT5uYW1lKSB7CiAJCXN0cm5jcHkoKGNoYXIgKilpbmZvLT5pZCwgcGNtLT5uYW1lLCBzaXplb2Yo
-aW5mby0+aWQpKTsKKwkJaW5mby0+aWRbc2l6ZW9mKGluZm8tPmlkKS0xXSA9IDA7CiAJCXN0cm5j
-cHkoKGNoYXIgKilpbmZvLT5uYW1lLCBwY20tPm5hbWUsIHNpemVvZihpbmZvLT5uYW1lKSk7CisJ
-CWluZm8tPm5hbWVbc2l6ZW9mKGluZm8tPm5hbWUpLTFdID0gMDsKIAkJc3RybmNweSgoY2hhciAq
-KWluZm8tPnN1Ym5hbWUsIHBjbS0+bmFtZSwgc2l6ZW9mKGluZm8tPnN1Ym5hbWUpKTsKKwkJaW5m
-by0+c3VibmFtZVtzaXplb2YoaW5mby0+c3VibmFtZSktMV0gPSAwOwogCX0KIAlpbmZvLT5zdWJk
-ZXZpY2VzX2NvdW50ID0gMTsKIAlyZXR1cm4gMDsKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX251
-bGwuYyBiL3NyYy9wY20vcGNtX251bGwuYwppbmRleCA3YWZlMTU4Li5mZmUyMDU5IDEwMDY0NAot
-LS0gYS9zcmMvcGNtL3BjbV9udWxsLmMKKysrIGIvc3JjL3BjbS9wY21fbnVsbC5jCkBAIC03Miw4
-ICs3MiwxMSBAQCBzdGF0aWMgaW50IHNuZF9wY21fbnVsbF9pbmZvKHNuZF9wY21fdCAqcGNtLCBz
-bmRfcGNtX2luZm9fdCAqIGluZm8pCiAJaW5mby0+Y2FyZCA9IC0xOwogCWlmIChwY20tPm5hbWUp
-IHsKIAkJc3RybmNweSgoY2hhciAqKWluZm8tPmlkLCBwY20tPm5hbWUsIHNpemVvZihpbmZvLT5p
-ZCkpOworCQlpbmZvLT5pZFtzaXplb2YoaW5mby0+aWQpLTFdID0gMDsKIAkJc3RybmNweSgoY2hh
-ciAqKWluZm8tPm5hbWUsIHBjbS0+bmFtZSwgc2l6ZW9mKGluZm8tPm5hbWUpKTsKKwkJaW5mby0+
-bmFtZVtzaXplb2YoaW5mby0+bmFtZSktMV0gPSAwOwogCQlzdHJuY3B5KChjaGFyICopaW5mby0+
-c3VibmFtZSwgcGNtLT5uYW1lLCBzaXplb2YoaW5mby0+c3VibmFtZSkpOworCQlpbmZvLT5zdWJu
-YW1lW3NpemVvZihpbmZvLT5zdWJuYW1lKS0xXSA9IDA7CiAJfQogCWluZm8tPnN1YmRldmljZXNf
-Y291bnQgPSAxOwogCXJldHVybiAwOwpkaWZmIC0tZ2l0IGEvc3JjL3NlcS9zZXEuYyBiL3NyYy9z
-ZXEvc2VxLmMKaW5kZXggOTgzYzRmYS4uYjcwYTY0MCAxMDA2NDQKLS0tIGEvc3JjL3NlcS9zZXEu
-YworKysgYi9zcmMvc2VxL3NlcS5jCkBAIC0xNzQ1LDYgKzE3NDUsNyBAQCB2b2lkIHNuZF9zZXFf
-Y2xpZW50X2luZm9fc2V0X25hbWUoc25kX3NlcV9jbGllbnRfaW5mb190ICppbmZvLCBjb25zdCBj
-aGFyICpuYW1lKQogewogCWFzc2VydChpbmZvICYmIG5hbWUpOwogCXN0cm5jcHkoaW5mby0+bmFt
-ZSwgbmFtZSwgc2l6ZW9mKGluZm8tPm5hbWUpKTsKKwlpbmZvLT5uYW1lW3NpemVvZihpbmZvLT5u
-YW1lKS0xXSA9IDA7CiB9CiAKIC8qKgpAQCAtMjE3OCw2ICsyMTc5LDcgQEAgdm9pZCBzbmRfc2Vx
-X3BvcnRfaW5mb19zZXRfbmFtZShzbmRfc2VxX3BvcnRfaW5mb190ICppbmZvLCBjb25zdCBjaGFy
-ICpuYW1lKQogewogCWFzc2VydChpbmZvICYmIG5hbWUpOwogCXN0cm5jcHkoaW5mby0+bmFtZSwg
-bmFtZSwgc2l6ZW9mKGluZm8tPm5hbWUpKTsKKwlpbmZvLT5uYW1lW3NpemVvZihpbmZvLT5uYW1l
-KS0xXSA9IDA7CiB9CiAKIC8qKgpAQCAtMzEyMyw2ICszMTI1LDcgQEAgdm9pZCBzbmRfc2VxX3F1
-ZXVlX2luZm9fc2V0X25hbWUoc25kX3NlcV9xdWV1ZV9pbmZvX3QgKmluZm8sIGNvbnN0IGNoYXIg
-Km5hbWUpCiB7CiAJYXNzZXJ0KGluZm8gJiYgbmFtZSk7CiAJc3RybmNweShpbmZvLT5uYW1lLCBu
-YW1lLCBzaXplb2YoaW5mby0+bmFtZSkpOworCWluZm8tPm5hbWVbc2l6ZW9mKGluZm8tPm5hbWUp
-LTFdID0gMDsKIH0KIAogLyoqCkBAIC0zMjgwLDYgKzMyODMsNyBAQCBpbnQgc25kX3NlcV9xdWVy
-eV9uYW1lZF9xdWV1ZShzbmRfc2VxX3QgKnNlcSwgY29uc3QgY2hhciAqbmFtZSkKIAlzbmRfc2Vx
-X3F1ZXVlX2luZm9fdCBpbmZvOwogCWFzc2VydChzZXEgJiYgbmFtZSk7CiAJc3RybmNweShpbmZv
-Lm5hbWUsIG5hbWUsIHNpemVvZihpbmZvLm5hbWUpKTsKKwlpbmZvLm5hbWVbc2l6ZW9mKGluZm8u
-bmFtZSktMV0gPSAwOwogCWVyciA9IHNlcS0+b3BzLT5nZXRfbmFtZWRfcXVldWUoc2VxLCAmaW5m
-byk7CiAJaWYgKGVyciA8IDApCiAJCXJldHVybiBlcnI7Cg==
-
---_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Once the kerneldoc documentation (i.e. the /** ... */ comments in the
+source) is included somewhere, I think it would make sense to make
+slim_ctrl_buf a clickable link to the struct's documentation.
 
 
---_002_B0FB33DC1499054591F62C0EF1E013D7684C8400HI2EXCH01aditjv_--
+Thanks,
+Jonathan Neusch=C3=A4fer
+
+--7555buyfd4hlmmdc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAABAgAGBQJaIS6lAAoJEAgwRJqO81/bCmIP/iwOelNOwoOzAGuQ594zSwU4
+nGEAj9COKOYCrsuRDktG3hMgTXQQ4FUCYM5Cy/oOguaaCcssLpPkJrEokNDJ0KRI
+RVpSgyUdhFIq8rUcT3Z6N/ZwcJvwpScw3nlHuerP/Z6cFvwq2ErH85z7ao3TXv9l
+1yGUTA/XoExqycxXCuwRG6bsdiusjQFCw8GyhlqXMrnQm5DaWXwu0Iv1jR86Scvw
+vGq4cRPJj9qsKHdJX4gDyMJwQKSUsjAVMlPBg+Pd4D46zWlB1YcOu7RBWGXZR4On
+uSnoIVn47hgm4/bh50+o9ypcz9RA+WZO2CGfQxAdrzyKz38l77k3hOolCxOZILhd
+yefCg85rNnuGAcjk6Jhh/14gA+2kdtc86PGHRlQv9X8oKlJbcq5NUcLfecNabQc5
+/QJSMRC5t254CBJu8lOXHZc2DCL1IjIUTaZdBE9bLE152jgvSPkwTCyqrlZQQKJV
+/pdfnscZotStDN7vzbbyCtNayfv04MbQzm9+yGeeqt1lmM8a5CrdyXHX3sMNzg6M
+v+hMw8C2YBp0iJ4yoZjED/LM4eFPiEooSz6q8O8mYl2a+lvwo6U2s9O6yq5hJEBj
+omFm1ZkCzEt85O1BduMWn9HACJgH9ZMlEixOnTUn60KWaVepRVCLuM9JSc2YC7DD
+kfUZ0Uw/bEobndkdCvgP
+=YxQl
+-----END PGP SIGNATURE-----
+
+--7555buyfd4hlmmdc--
