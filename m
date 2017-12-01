@@ -1,7 +1,7 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 10/15] soundwire: Add sysfs for SoundWire DisCo properties
-Date: Fri,  1 Dec 2017 15:26:12 +0530
-Message-ID: <1512122177-2889-11-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 09/15] soundwire: Add slave status handling
+Date: Fri,  1 Dec 2017 15:26:11 +0530
+Message-ID: <1512122177-2889-10-git-send-email-vinod.koul@intel.com>
 References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
@@ -10,480 +10,432 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-It helps to read the properties for understanding and debugging
-systems, so add sysfs files for SoundWire DisCo properties.
+Add status handling API sdw_handle_slave_status() to handle
+Slave status changes.
 
-TODO: Add ABI files for sysfs
-
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Makefile    |   2 +-
- drivers/soundwire/bus.c       |   3 +
+ drivers/soundwire/bus.c       | 351 ++++++++++++++++++++++++++++++++++++++++++
  drivers/soundwire/bus.h       |   2 +
- drivers/soundwire/slave.c     |   1 +
- drivers/soundwire/sysfs.c     | 343 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h |  13 ++
- 6 files changed, 363 insertions(+), 1 deletion(-)
- create mode 100644 drivers/soundwire/sysfs.c
+ include/linux/soundwire/sdw.h |  20 +++
+ 3 files changed, 373 insertions(+)
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index bcde0d26524c..67dc7b546258 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -3,5 +3,5 @@
- #
- 
- #Bus Objs
--soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o
-+soundwire-bus-objs := bus_type.o bus.o slave.o mipi_disco.o sysfs.o
- obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index c6a59a7a1306..6f933413d247 100644
+index 09126ddd3cdd..c6a59a7a1306 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -41,6 +41,8 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 		}
- 	}
+@@ -602,3 +602,354 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
  
-+	sdw_sysfs_bus_init(bus);
-+
- 	/*
- 	 * Device numbers in SoundWire are 0 thru 15 with 0 being
- 	 * Enumeration device number and 15 broadcast device number. So
-@@ -101,6 +103,7 @@ static int sdw_delete_slave(struct device *dev, void *data)
-  */
- void sdw_delete_bus_master(struct sdw_bus *bus)
- {
-+	sdw_sysfs_bus_exit(bus);
- 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+ 	return 0;
  }
- EXPORT_SYMBOL(sdw_delete_bus_master);
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 463fecb02563..282950f4b513 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -16,6 +16,8 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			u64 addr, struct sdw_slave_id *id);
- 
-+extern const struct attribute_group *sdw_slave_dev_attr_groups[];
 +
- enum {
- 	SDW_MSG_FLAG_READ = 0,
- 	SDW_MSG_FLAG_WRITE,
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 397e100d66e3..7b2e2e3da0b2 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -34,6 +34,7 @@ static int sdw_slave_add(struct sdw_bus *bus,
- 			id->class_id, id->unique_id);
- 
- 	slave->dev.release = sdw_slave_release;
-+	slave->dev.groups = sdw_slave_dev_attr_groups;
- 	slave->dev.bus = &sdw_bus_type;
- 	slave->bus = bus;
- 	slave->status = SDW_SLAVE_UNATTACHED;
-diff --git a/drivers/soundwire/sysfs.c b/drivers/soundwire/sysfs.c
-new file mode 100644
-index 000000000000..9e9093c17dcf
---- /dev/null
-+++ b/drivers/soundwire/sysfs.c
-@@ -0,0 +1,343 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#include <linux/device.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/slab.h>
-+#include <linux/sysfs.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+#include "bus.h"
-+
-+/*
-+ * The sysfs for properties reflects the MIPI description as given
-+ * in the MIPI DisCo spec
-+ *
-+ * Base file is:
-+ *		properties
-+ *		|---- interface-revision
-+ *		|---- master-count
-+ *		|---- link-N
-+ *		      |---- clock-stop-modes
-+ *		      |---- max-clock-frequency
-+ *		      |---- clock-frequencies
-+ *		      |---- default-frame-rows
-+ *		      |---- default-frame-cols
-+ *		      |---- dynamic-frame-shape
-+ *		      |---- command-error-threshold
-+ */
-+
-+struct sdw_master_sysfs {
-+	struct kobject kobj;
-+	struct sdw_bus *bus;
-+};
-+
-+struct sdw_prop_attribute {
-+	struct attribute attr;
-+	ssize_t (*show)(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf);
-+};
-+
-+static ssize_t sdw_prop_attr_show(struct kobject *kobj,
-+		struct attribute *attr, char *buf)
++static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
 +{
-+	struct sdw_prop_attribute *prop_attr =
-+		container_of(attr, struct sdw_prop_attribute, attr);
-+	struct sdw_master_sysfs *master =
-+		container_of(kobj, struct sdw_master_sysfs, kobj);
++	u8 clear = 0, impl_int_mask;
++	int status, ret, count = 0;
 +
-+	if (!prop_attr->show)
-+		return -EIO;
-+
-+	return prop_attr->show(master->bus, prop_attr, buf);
-+}
-+
-+static const struct sysfs_ops sdw_prop_sysfs_ops = {
-+	.show	= sdw_prop_attr_show,
-+};
-+
-+static void prop_release(struct kobject *kobj)
-+{
-+	struct sdw_master_sysfs *master =
-+		container_of(kobj, struct sdw_master_sysfs, kobj);
-+
-+	kfree(master);
-+}
-+
-+static struct kobj_type sdw_master_prop_ktype = {
-+	.release	= prop_release,
-+	.sysfs_ops	= &sdw_prop_sysfs_ops,
-+};
-+
-+
-+#define MASTER_ATTR(_name) \
-+	struct sdw_prop_attribute master_attr_##_name = __ATTR_RO(_name)
-+
-+static ssize_t revision_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.revision);
-+}
-+
-+static ssize_t count_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.master_count);
-+}
-+
-+static ssize_t clock_stop_modes_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.clk_stop_mode);
-+}
-+
-+static ssize_t max_clock_frequency_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.max_freq);
-+}
-+
-+static ssize_t clock_frequencies_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	ssize_t size = 0;
-+	int i;
-+
-+	for (i = 0; i < bus->prop.num_freq; i++)
-+		size += sprintf(buf + size, "%8d\n", bus->prop.freq[i]);
-+
-+	return size;
-+}
-+
-+static ssize_t clock_gears_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	ssize_t size = 0;
-+	int i;
-+
-+	for (i = 0; i < bus->prop.num_clk_gears; i++)
-+		size += sprintf(buf + size, "%8d\n", bus->prop.clk_gears[i]);
-+
-+	return size;
-+}
-+
-+static ssize_t default_frame_rows_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.default_row);
-+}
-+
-+static ssize_t default_frame_cols_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.default_col);
-+}
-+
-+static ssize_t dynamic_frame_shape_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.dynamic_frame);
-+}
-+
-+static ssize_t command_error_threshold_show(struct sdw_bus *bus,
-+			struct sdw_prop_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "0x%08x\n", bus->prop.err_threshold);
-+}
-+
-+static MASTER_ATTR(revision);
-+static MASTER_ATTR(count);
-+static MASTER_ATTR(clock_stop_modes);
-+static MASTER_ATTR(max_clock_frequency);
-+static MASTER_ATTR(clock_frequencies);
-+static MASTER_ATTR(clock_gears);
-+static MASTER_ATTR(default_frame_rows);
-+static MASTER_ATTR(default_frame_cols);
-+static MASTER_ATTR(dynamic_frame_shape);
-+static MASTER_ATTR(command_error_threshold);
-+
-+static struct attribute *master_node_attrs[] = {
-+	&master_attr_revision.attr,
-+	&master_attr_count.attr,
-+	&master_attr_clock_stop_modes.attr,
-+	&master_attr_max_clock_frequency.attr,
-+	&master_attr_clock_frequencies.attr,
-+	&master_attr_clock_gears.attr,
-+	&master_attr_default_frame_rows.attr,
-+	&master_attr_default_frame_cols.attr,
-+	&master_attr_dynamic_frame_shape.attr,
-+	&master_attr_command_error_threshold.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group sdw_master_node_group = {
-+	.attrs = master_node_attrs,
-+};
-+
-+int sdw_sysfs_bus_init(struct sdw_bus *bus)
-+{
-+	struct kset *sdw_bus_kset;
-+	struct sdw_master_sysfs *master;
-+	int err;
-+
-+	if (bus->sysfs) {
-+		dev_err(bus->dev, "SDW sysfs is already initialized\n");
-+		return -EIO;
++	status = sdw_read(slave, SDW_DP0_INT);
++	if (status < 0) {
++		dev_err(slave->bus->dev,
++				"SDW_DP0_INT read failed:%d", status);
++		return status;
 +	}
 +
-+	sdw_bus_kset = bus_get_kset(&sdw_bus_type);
++	do {
 +
-+	master = bus->sysfs = kzalloc(sizeof(*master), GFP_KERNEL);
-+	if (!master)
-+		return -ENOMEM;
++		if (status & SDW_DP0_INT_TEST_FAIL) {
++			dev_err(&slave->dev, "Test fail for port 0");
++			clear |= SDW_DP0_INT_TEST_FAIL;
++		}
 +
-+	err = kobject_init_and_add(&master->kobj,
-+			&sdw_master_prop_ktype, &sdw_bus_kset->kobj,
-+			"mipi-properties-link%d", bus->link_id);
-+	if (err < 0)
-+		return err;
++		/*
++		 * Assumption: PORT_READY interrupt will be received only for
++		 * ports implementing Channel Prepare state machine (CP_SM)
++		 */
 +
-+	master->bus = bus;
++		if (status & SDW_DP0_INT_PORT_READY) {
++			complete(&slave->port_ready[0]);
++			clear |= SDW_DP0_INT_PORT_READY;
++		}
 +
-+	err = sysfs_create_group(&master->kobj, &sdw_master_node_group);
-+	if (err < 0) {
-+		kobject_put(&master->kobj);
-+		return err;
++		if (status & SDW_DP0_INT_BRA_FAILURE) {
++			dev_err(&slave->dev, "BRA failed");
++			clear |= SDW_DP0_INT_BRA_FAILURE;
++		}
++
++		impl_int_mask = SDW_DP0_INT_IMPDEF1 |
++			SDW_DP0_INT_IMPDEF2 | SDW_DP0_INT_IMPDEF3;
++
++		if (status & impl_int_mask) {
++			clear |= impl_int_mask;
++			*slave_status = clear;
++		}
++
++		/* clear the interrupt */
++		ret = sdw_write(slave, SDW_DP0_INT, clear);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++				"SDW_DP0_INT write failed:%d", ret);
++			return ret;
++		}
++
++		/* Read DP0 interrupt again */
++		status = sdw_read(slave, SDW_DP0_INT);
++		if (status < 0) {
++			dev_err(slave->bus->dev,
++				"SDW_DP0_INT read failed:%d", status);
++			return status;
++		}
++
++		count++;
++
++		/* we can get alerts while processing so keep retrying */
++	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
++
++	if (count == SDW_READ_INTR_CLEAR_RETRY)
++		dev_warn(slave->bus->dev, "Reached MAX_RETRY on DP0 read");
++
++	return ret;
++}
++
++static int sdw_handle_port_interrupt(struct sdw_slave *slave,
++		int port, u8 *slave_status)
++{
++	u8 clear = 0, impl_int_mask;
++	int status, ret, count = 0;
++	u32 addr;
++
++	if (port == 0)
++		return sdw_handle_dp0_interrupt(slave, slave_status);
++
++	addr = SDW_DPN_INT(port);
++	status = sdw_read(slave, addr);
++	if (status < 0) {
++		dev_err(slave->bus->dev,
++				"SDW_DPN_INT read failed:%d", status);
++
++		return status;
 +	}
 +
-+	kobject_uevent(&master->kobj, KOBJ_CHANGE);
++	do {
++
++		if (status & SDW_DPN_INT_TEST_FAIL) {
++			dev_err(&slave->dev, "Test fail for port:%d", port);
++			clear |= SDW_DPN_INT_TEST_FAIL;
++		}
++
++		/*
++		 * Assumption: PORT_READY interrupt will be received only
++		 * for ports implementing CP_SM.
++		 */
++		if (status & SDW_DPN_INT_PORT_READY) {
++			complete(&slave->port_ready[port]);
++			clear |= SDW_DPN_INT_PORT_READY;
++		}
++
++		impl_int_mask = SDW_DPN_INT_IMPDEF1 |
++			SDW_DPN_INT_IMPDEF2 | SDW_DPN_INT_IMPDEF3;
++
++
++		if (status & impl_int_mask) {
++			clear |= impl_int_mask;
++			*slave_status = clear;
++		}
++
++		/* clear the interrupt */
++		ret = sdw_write(slave, addr, clear);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_DPN_INT write failed:%d", ret);
++			return ret;
++		}
++
++		/* Read DPN interrupt again */
++		status = sdw_read(slave, addr);
++		if (status < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_DPN_INT read failed:%d", status);
++			return status;
++		}
++
++		count++;
++
++		/* we can get alerts while processing so keep retrying */
++	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
++
++	if (count == SDW_READ_INTR_CLEAR_RETRY)
++		dev_warn(slave->bus->dev, "Reached MAX_RETRY on port read");
++
++	return ret;
++}
++
++static int sdw_handle_slave_alerts(struct sdw_slave *slave)
++{
++	u8 clear = 0, bit, port_status[15];
++	int port_num, stat, ret, count = 0;
++	unsigned long port;
++	bool slave_notify = false;
++	u8 buf[3];
++
++	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
++
++	/* Read Instat 1, Instat 2 and Instat 3 registers */
++	ret = sdw_nread(slave, SDW_SCP_INT1, 3, buf);
++	if (ret < 0) {
++		dev_err(slave->bus->dev,
++					"SDW_SCP_INT1 read failed:%d", ret);
++		return ret;
++	}
++
++	do {
++		/*
++		 * Check parity, bus clash and Slave (impl defined)
++		 * interrupt
++		 */
++		if (buf[0] & SDW_SCP_INT1_PARITY) {
++			dev_err(&slave->dev, "Parity error detected");
++			clear |= SDW_SCP_INT1_PARITY;
++		}
++
++		if (buf[0] & SDW_SCP_INT1_BUS_CLASH) {
++			dev_err(&slave->dev, "Bus clash error detected");
++			clear |= SDW_SCP_INT1_BUS_CLASH;
++		}
++
++		/*
++		 * When bus clash or parity errors are detected, such errors
++		 * are unlikely to be recoverable errors.
++		 * TODO: In such scenario, reset bus. Make this configurable
++		 * via sysfs property with bus reset being the default.
++		 */
++
++		if (buf[0] & SDW_SCP_INT1_IMPL_DEF) {
++			dev_dbg(&slave->dev, "Slave impl defined interrupt\n");
++			clear |= SDW_SCP_INT1_IMPL_DEF;
++			slave_notify = true;
++		}
++
++		/* Check port 0 - 4 interrupts */
++		port = buf[0] & SDW_SCP_INT1_PORT0_3;
++
++		/* To get port number corresponding to bits, shift it */
++		port = port >> SDW_REG_SHIFT(SDW_SCP_INT1_PORT0_3);
++		for_each_set_bit(bit, &port, 8) {
++			sdw_handle_port_interrupt(slave, bit,
++						&port_status[bit]);
++
++		}
++
++		/* Check if cascade 2 interrupt is present */
++		if (buf[0] & SDW_SCP_INT1_SCP2_CASCADE) {
++			port = buf[1] & SDW_SCP_INTSTAT2_PORT4_10;
++			for_each_set_bit(bit, &port, 8) {
++				/* scp2 ports start from 4 */
++				port_num = bit + 3;
++				sdw_handle_port_interrupt(slave,
++						port_num,
++						&port_status[port_num]);
++			}
++		}
++
++		/* now check last cascade */
++		if (buf[1] & SDW_SCP_INTSTAT2_SCP3_CASCADE) {
++			port = buf[2] & SDW_SCP_INTSTAT3_PORT11_14;
++			for_each_set_bit(bit, &port, 8) {
++				/* scp3 ports start from 11 */
++				port_num = bit + 10;
++				sdw_handle_port_interrupt(slave,
++						port_num,
++						&port_status[port_num]);
++			}
++		}
++
++		/* Update the Slave driver */
++		if (slave_notify && (slave->ops) &&
++					(slave->ops->interrupt_callback)) {
++			struct sdw_slave_intr_status slave_intr;
++
++			slave_intr.control_port = clear;
++			memcpy(slave_intr.port, &port_status,
++						sizeof(slave_intr.port));
++
++			slave->ops->interrupt_callback(slave, &slave_intr);
++		}
++
++		/* Ack interrupt */
++		ret = sdw_write(slave, SDW_SCP_INT1, clear);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_SCP_INT1 write failed:%d", ret);
++			return ret;
++		}
++
++		/*
++		 * Read status again to ensure no new interrupts arrived
++		 * while servicing interrupts
++		 */
++		ret = sdw_nread(slave, SDW_SCP_INT1, 3, buf);
++		if (ret < 0) {
++			dev_err(slave->bus->dev,
++					"SDW_SCP_INT1 read failed:%d", ret);
++			return ret;
++		}
++
++		/* Make sure no interrupts are pending */
++		stat = buf[0] || buf[1] || buf[2];
++
++		/*
++		 * Exit loop if Slave is continuously in ALERT state even
++		 * after servicing the interrupt multiple times.
++		 */
++		count++;
++
++		/* we can get alerts while processing so keep retrying */
++	} while (stat != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
++
++	if (count == SDW_READ_INTR_CLEAR_RETRY)
++		dev_warn(slave->bus->dev, "Reached MAX_RETRY on alert read");
++
++	return ret;
++}
++
++static int sdw_update_slave_status(struct sdw_slave *slave,
++				enum sdw_slave_status status)
++{
++	if ((slave->ops) && (slave->ops->update_status))
++		return slave->ops->update_status(slave, status);
++
 +	return 0;
 +}
 +
-+void sdw_sysfs_bus_exit(struct sdw_bus *bus)
++/**
++ * sdw_handle_slave_status() - Handle Slave status
++ * @bus: SDW bus instance
++ * @status: Status for all Slave(s)
++ */
++int sdw_handle_slave_status(struct sdw_bus *bus,
++			enum sdw_slave_status status[])
 +{
-+	struct sdw_master_sysfs *master = bus->sysfs;
-+
-+	if (!master)
-+		return;
-+
-+	kobject_put(&master->kobj);
-+	bus->sysfs = NULL;
-+}
-+
-+/*
-+ * Slave sysfs
-+ */
-+
-+/*
-+ * The sysfs for Slave reflects the MIPI description as given
-+ * in the MIPI DisCo spec
-+ *
-+ * Base file is device
-+ *	|---- mipi_revision
-+ *	|---- wake_capable
-+ *	|---- test_mode_capable
-+ *	|---- simple_clk_stop_capable
-+ *	|---- clk_stop_timeout
-+ *	|---- ch_prep_timeout
-+ *	|---- reset_behave
-+ *	|---- high_PHY_capable
-+ *	|---- paging_support
-+ *	|---- bank_delay_support
-+ *	|---- p15_behave
-+ *	|---- master_count
-+ *	|---- source_ports
-+ *	|---- sink_ports
-+ *	|---- dp0
-+ *		|---- max_word
-+ *		|---- min_word
-+ *		|---- words
-+ *		|---- flow_controlled
-+ *		|---- simple_ch_prep_sm
-+ *		|---- device_interrupts
-+ *	|---- dpN
-+ *		|---- max_word
-+ *		|---- min_word
-+ *		|---- words
-+ *		|---- type
-+ *		|---- max_grouping
-+ *		|---- simple_ch_prep_sm
-+ *		|---- ch_prep_timeout
-+ *		|---- device_interrupts
-+ *		|---- max_ch
-+ *		|---- min_ch
-+ *		|---- ch
-+ *		|---- ch_combinations
-+ *		|---- modes
-+ *		|---- max_async_buffer
-+ *		|---- block_pack_mode
-+ *		|---- port_encoding
-+ *		|---- bus_min_freq
-+ *		|---- bus_max_freq
-+ *		|---- bus_freq
-+ *		|---- max_freq
-+ *		|---- min_freq
-+ *		|---- freq
-+ *		|---- prep_ch_behave
-+ *		|---- glitchless
-+ *
-+ */
-+struct sdw_slave_sysfs {
 +	struct sdw_slave *slave;
-+};
++	int i, ret = 0;
 +
-+#define SLAVE_ATTR(type)					\
-+static ssize_t type##_show(struct device *dev,			\
-+		struct device_attribute *attr, char *buf)	\
-+{								\
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);		\
-+	return sprintf(buf, "0x%x\n", slave->prop.type);	\
-+}								\
-+static DEVICE_ATTR_RO(type)
++	if (status[0] == SDW_SLAVE_ATTACHED) {
++		ret = sdw_program_device_num(bus);
++		if (ret)
++			dev_err(bus->dev, "Slave attach failed: %d", ret);
++	}
 +
-+SLAVE_ATTR(mipi_revision);
-+SLAVE_ATTR(wake_capable);
-+SLAVE_ATTR(test_mode_capable);
-+SLAVE_ATTR(clk_stop_mode1);
-+SLAVE_ATTR(simple_clk_stop_capable);
-+SLAVE_ATTR(clk_stop_timeout);
-+SLAVE_ATTR(ch_prep_timeout);
-+SLAVE_ATTR(reset_behave);
-+SLAVE_ATTR(high_PHY_capable);
-+SLAVE_ATTR(paging_support);
-+SLAVE_ATTR(bank_delay_support);
-+SLAVE_ATTR(p15_behave);
-+SLAVE_ATTR(master_count);
-+SLAVE_ATTR(source_ports);
++	/* Continue to check other slave statuses */
++	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
++		mutex_lock(&bus->bus_lock);
++		if (test_bit(i, bus->assigned) == false) {
++			mutex_unlock(&bus->bus_lock);
++			continue;
++		}
++		mutex_unlock(&bus->bus_lock);
 +
-+static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
-+			     char *buf)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++		slave = sdw_get_slave(bus, i);
++		if (!slave)
++			continue;
 +
-+	return sdw_slave_modalias(slave, buf, 256);
++		switch (status[i]) {
++		case SDW_SLAVE_UNATTACHED:
++			if (slave->status == SDW_SLAVE_UNATTACHED)
++				break;
++
++			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
++			break;
++
++		case SDW_SLAVE_ALERT:
++			ret = sdw_handle_slave_alerts(slave);
++			if (ret)
++				dev_err(bus->dev,
++					"Slave %d alert handling failed: %d",
++					i, ret);
++			break;
++
++		case SDW_SLAVE_ATTACHED:
++			if (slave->status == SDW_SLAVE_ATTACHED)
++				break;
++
++			sdw_initialize_slave(slave);
++			sdw_modify_slave_status(slave, SDW_SLAVE_ATTACHED);
++
++			break;
++
++		default:
++			dev_err(bus->dev, "Invalid slave %d status:%d",
++							i, status[i]);
++			break;
++		}
++
++		ret = sdw_update_slave_status(slave, status[i]);
++		if (ret)
++			dev_err(slave->bus->dev,
++				"Update Slave status failed:%d", ret);
++
++	}
++
++	return ret;
 +}
-+static DEVICE_ATTR_RO(modalias);
++EXPORT_SYMBOL(sdw_handle_slave_status);
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index b491e86f2c4c..463fecb02563 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -45,6 +45,8 @@ struct sdw_msg {
+ 	bool page;
+ };
+ 
++#define SDW_READ_INTR_CLEAR_RETRY	10
 +
-+static struct attribute *slave_dev_attrs[] = {
-+	&dev_attr_mipi_revision.attr,
-+	&dev_attr_wake_capable.attr,
-+	&dev_attr_test_mode_capable.attr,
-+	&dev_attr_clk_stop_mode1.attr,
-+	&dev_attr_simple_clk_stop_capable.attr,
-+	&dev_attr_clk_stop_timeout.attr,
-+	&dev_attr_ch_prep_timeout.attr,
-+	&dev_attr_reset_behave.attr,
-+	&dev_attr_high_PHY_capable.attr,
-+	&dev_attr_paging_support.attr,
-+	&dev_attr_bank_delay_support.attr,
-+	&dev_attr_p15_behave.attr,
-+	&dev_attr_master_count.attr,
-+	&dev_attr_source_ports.attr,
-+	&dev_attr_modalias.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group sdw_slave_dev_attr_group = {
-+	.attrs	= slave_dev_attrs,
-+};
-+
-+const struct attribute_group *sdw_slave_dev_attr_groups[] = {
-+	&sdw_slave_dev_attr_group,
-+	NULL
-+};
+ int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
+ 			struct sdw_msg *msg);
+ int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 861a910911b6..b04e7ed86162 100644
+index 09619d042909..861a910911b6 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -300,6 +300,15 @@ int sdw_master_read_prop(struct sdw_bus *bus);
- int sdw_slave_read_prop(struct sdw_slave *slave);
- 
- /*
-+ * SDW sysfs APIs
-+ */
-+struct sdw_slave_sysfs;
-+struct sdw_master_sysfs;
-+
-+int sdw_sysfs_bus_init(struct sdw_bus *bus);
-+void sdw_sysfs_bus_exit(struct sdw_bus *bus);
-+
-+/*
-  * SDW Slave Structures and APIs
-  */
- 
-@@ -355,6 +364,7 @@ struct sdw_slave_ops {
-  * @bus: Bus handle
-  * @ops: Slave callback ops
-  * @prop: Slave properties
-+ * @sysfs: Sysfs interface
-  * @node: node for bus list
-  * @port_ready: Port ready completion flag for each Slave port
-  * @dev_num: Device Number assigned by Bus
-@@ -366,6 +376,7 @@ struct sdw_slave {
- 	struct sdw_bus *bus;
- 	const struct sdw_slave_ops *ops;
- 	struct sdw_slave_prop prop;
-+	struct sdw_slave_sysfs *sysfs;
- 	struct list_head node;
- 	struct completion *port_ready;
- 	u16 dev_num;
-@@ -445,6 +456,7 @@ struct sdw_master_ops {
-  * @msg_lock: message lock
-  * @ops: Master callback ops
-  * @prop: Master properties
-+ * @sysfs: Bus sysfs
-  * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
-  */
-@@ -457,6 +469,7 @@ struct sdw_bus {
- 	struct mutex msg_lock;
- 	const struct sdw_master_ops *ops;
- 	struct sdw_master_prop prop;
-+	struct sdw_master_sysfs *sysfs;
- 	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
+@@ -323,11 +323,28 @@ struct sdw_slave_id {
  };
+ 
+ /**
++ * struct sdw_slave_intr_status - Slave interrupt status
++ * @control_port: control port status
++ * @port: data port status
++ */
++struct sdw_slave_intr_status {
++	u8 control_port;
++	u8 port[14];
++};
++
++/**
+  * struct sdw_slave_ops - Slave driver callback ops
+  * @read_prop: Read Slave properties
++ * @interrupt_callback: Device interrupt notification (invoked in thread
++ * context)
++ * @update_status: Update Slave status
+  */
+ struct sdw_slave_ops {
+ 	int (*read_prop)(struct sdw_slave *sdw);
++	int (*interrupt_callback)(struct sdw_slave *slave,
++			struct sdw_slave_intr_status *status);
++	int (*update_status)(struct sdw_slave *slave,
++			enum sdw_slave_status status);
+ };
+ 
+ /**
+@@ -377,6 +394,9 @@ struct sdw_driver {
+ int sdw_handle_slave_status(struct sdw_bus *bus,
+ 			enum sdw_slave_status status[]);
+ 
++int sdw_handle_slave_status(struct sdw_bus *bus,
++			enum sdw_slave_status status[]);
++
+ /*
+  * SDW master structures and APIs
+  */
 -- 
 2.7.4
