@@ -1,48 +1,596 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: [PATCH 1/2] dt-bindings: trivial: add tfa9879 device
-Date: Fri,  1 Dec 2017 23:44:24 +0100
-Message-ID: <20171201224425.5477-2-peda@axentia.se>
+From: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Subject: [PATCH 2/2] ARM: dts: at91: add devicetree for the Axentia Nattis with Natte power
+Date: Fri,  1 Dec 2017 23:44:25 +0100
+Message-ID: <20171201224425.5477-3-peda@axentia.se>
 References: <20171201224425.5477-1-peda@axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01on0116.outbound.protection.outlook.com [104.47.2.116])
- by alsa0.perex.cz (Postfix) with ESMTP id 27545267D4B
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 23:44:42 +0100 (CET)
-In-Reply-To: <20171201224425.5477-1-peda@axentia.se>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Russell King <linux@armlinux.org.uk>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Peter Rosin <peda@axentia.se>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20171201224425.5477-1-peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Nicolas Ferre <nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add record for NXP TFA9879 Mono BTL Class D audio amplifier.
+The Axentia Nattis is a device designed for presenting departures for
+public transport systems. The Natte helper board provides power and
+features a battery of battery chargers.
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
 ---
- Documentation/devicetree/bindings/trivial-devices.txt | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/arm/axentia.txt |   9 +
+ MAINTAINERS                                       |   2 +
+ arch/arm/boot/dts/Makefile                        |   1 +
+ arch/arm/boot/dts/at91-natte.dtsi                 | 245 ++++++++++++++++++++
+ arch/arm/boot/dts/at91-nattis-2-natte-2.dts       | 258 ++++++++++++++++++++++
+ 5 files changed, 515 insertions(+)
+ create mode 100644 arch/arm/boot/dts/at91-natte.dtsi
+ create mode 100644 arch/arm/boot/dts/at91-nattis-2-natte-2.dts
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.txt b/Documentation/devicetree/bindings/trivial-devices.txt
-index af284fbd4d23..4cf30ce4e71f 100644
---- a/Documentation/devicetree/bindings/trivial-devices.txt
-+++ b/Documentation/devicetree/bindings/trivial-devices.txt
-@@ -157,6 +157,7 @@ nxp,pcf2127		Real-time clock
- nxp,pcf2129		Real-time clock
- nxp,pcf8563		Real-time clock/calendar
- nxp,pcf85063		Tiny Real-Time Clock
-+nxp,tfa9879		Mono BTL Class D audio amplifier
- oki,ml86v7667		OKI ML86V7667 video decoder
- ovti,ov5642		OV5642: Color CMOS QSXGA (5-megapixel) Image Sensor with OmniBSI and Embedded TrueFocus
- pericom,pt7c4338	Real-time Clock Module
+diff --git a/Documentation/devicetree/bindings/arm/axentia.txt b/Documentation/devicetree/bindings/arm/axentia.txt
+index ea3fb96ae465..de58f2463880 100644
+--- a/Documentation/devicetree/bindings/arm/axentia.txt
++++ b/Documentation/devicetree/bindings/arm/axentia.txt
+@@ -10,6 +10,15 @@ compatible = "axentia,linea",
+ and following the rules from atmel-at91.txt for a sama5d31 SoC.
+ 
+ 
++Nattis v2 board with Natte v2 power board
++-----------------------------------------
++
++Required root node properties:
++compatible = "axentia,nattis-2", "axentia,natte-2", "axentia,linea",
++	     "atmel,sama5d31", "atmel,sama5d3", "atmel,sama5";
++and following the rules from above for the axentia,linea CPU module.
++
++
+ TSE-850 v3 board
+ ----------------
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2811a211632c..303d04502b8f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2488,6 +2488,8 @@ L:	linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/arm/axentia.txt
+ F:	arch/arm/boot/dts/at91-linea.dtsi
++F:	arch/arm/boot/dts/at91-natte.dtsi
++F:	arch/arm/boot/dts/at91-nattis-2-natte-2.dts
+ F:	arch/arm/boot/dts/at91-tse850-3.dts
+ 
+ AXENTIA ASOC DRIVERS
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index eff87a344566..0c10d89adbc8 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -47,6 +47,7 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
+ 	at91sam9x35ek.dtb
+ dtb-$(CONFIG_SOC_SAM_V7) += \
+ 	at91-kizbox2.dtb \
++	at91-nattis-2-natte-2.dtb \
+ 	at91-sama5d27_som1_ek.dtb \
+ 	at91-sama5d2_xplained.dtb \
+ 	at91-sama5d3_xplained.dtb \
+diff --git a/arch/arm/boot/dts/at91-natte.dtsi b/arch/arm/boot/dts/at91-natte.dtsi
+new file mode 100644
+index 000000000000..53b7bb9098f4
+--- /dev/null
++++ b/arch/arm/boot/dts/at91-natte.dtsi
+@@ -0,0 +1,245 @@
++/*
++ * at91-natte.dts - Device Tree include file for the Natte board
++ *
++ * Copyright (C) 2017 Axentia Technologies AB
++ *
++ * Author: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
++ *
++ * Licensed under GPLv2 or later.
++ */
++
++/ {
++	mux: mux-controller {
++		compatible = "gpio-mux";
++		#mux-control-cells = <0>;
++
++		mux-gpios = <&ioexp 0 GPIO_ACTIVE_HIGH>,
++			    <&ioexp 1 GPIO_ACTIVE_HIGH>,
++			    <&ioexp 2 GPIO_ACTIVE_HIGH>;
++	};
++
++	batntc-mux {
++		compatible = "io-channel-mux";
++		io-channels = <&adc 5>;
++		io-channel-names = "parent";
++		mux-controls = <&mux>;
++
++		channels =
++			"batntc0", "batntc1", "batntc2", "batntc3",
++			"batntc4", "batntc5", "batntc6", "batntc7";
++	};
++
++	batv-mux {
++		compatible = "io-channel-mux";
++		io-channels = <&adc 6>;
++		io-channel-names = "parent";
++		mux-controls = <&mux>;
++
++		channels =
++			"batv0", "batv1", "batv2", "batv3",
++			"batv4", "batv5", "batv6", "batv7";
++	};
++
++	iout-mux {
++		compatible = "io-channel-mux";
++		io-channels = <&adc 7>;
++		io-channel-names = "parent";
++		mux-controls = <&mux>;
++
++		channels =
++			"iout0", "iout1", "iout2", "iout3",
++			"iout4", "iout5", "iout6", "iout7";
++	};
++
++	i2c-mux {
++		compatible = "i2c-mux";
++		mux-locked;
++		i2c-parent = <&i2c0>;
++		mux-controls = <&mux>;
++
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		i2c@0 {
++			reg = <0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@1 {
++			reg = <1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@2 {
++			reg = <2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@3 {
++			reg = <3>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@4 {
++			reg = <4>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@5 {
++			reg = <5>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@6 {
++			reg = <6>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++
++		i2c@7 {
++			reg = <7>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			bq24735-charger@9 {
++				compatible = "ti,bq24735";
++				reg = <0x9>;
++
++				ti,charge-current = <2000>;
++				ti,charge-voltage = <16800>;
++
++				poll-interval = <20000>;
++			};
++		};
++	};
++};
++
++&i2c0 {
++	status = "okay";
++
++	ioexp: sx1502q@20 {
++		#gpio-cells = <2>;
++		compatible = "semtech,sx1502q";
++		reg = <0x20>;
++
++		gpio-controller;
++		ngpios = <8>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&gpio3_cfg_pins>;
++
++		gpio3_cfg_pins: gpio3_cfg {
++			pins = "gpio3";
++			bias-pull-up;
++		};
++	};
++
++	adc: ads1015@48 {
++		compatible = "ti,ads1015";
++		reg = <0x48>;
++		#io-channel-cells = <1>;
++
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		channel@4 {
++			reg = <4>;
++			ti,gain = <2>;
++			ti,datarate = <4>;
++		};
++
++		channel@5 {
++			reg = <5>;
++			ti,gain = <2>;
++			ti,datarate = <4>;
++		};
++
++		channel@6 {
++			reg = <6>;
++			ti,gain = <1>;
++			ti,datarate = <4>;
++		};
++
++		channel@7 {
++			reg = <7>;
++			ti,gain = <3>;
++			ti,datarate = <4>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/at91-nattis-2-natte-2.dts b/arch/arm/boot/dts/at91-nattis-2-natte-2.dts
+new file mode 100644
+index 000000000000..c7224cbb50b4
+--- /dev/null
++++ b/arch/arm/boot/dts/at91-nattis-2-natte-2.dts
+@@ -0,0 +1,258 @@
++/*
++ * at91-nattis-2-natte-2.dts - Device Tree file for the Linea/Nattis board
++ *
++ * Copyright (C) 2017 Axentia Technologies AB
++ *
++ * Author: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
++ *
++ * Licensed under GPLv2 or later.
++ */
++/dts-v1/;
++#include "at91-linea.dtsi"
++#include "sama5d3_lcd.dtsi"
++#include "at91-natte.dtsi"
++
++/ {
++	model = "Axentia Linea-Nattis v2 Natte v2";
++	compatible = "axentia,nattis-2", "axentia,natte-2", "axentia,linea",
++		     "atmel,sama5d31", "atmel,sama5d3", "atmel,sama5";
++
++	ahb {
++		apb {
++			pinctrl@fffff200 {
++				nattis {
++					pinctrl_usba_vbus: usba_vbus {
++						atmel,pins =
++							<AT91_PIOD 28
++							 AT91_PERIPH_GPIO
++							 AT91_PINCTRL_DEGLITCH>;
++					};
++
++					pinctrl_mmc0_cd: mmc0_cd {
++						atmel,pins =
++							<AT91_PIOD 5
++							 AT91_PERIPH_GPIO
++							 AT91_PINCTRL_PULL_UP_DEGLITCH>;
++					};
++
++					pinctrl_lcd_prlud0: lcd_prlud0 {
++						atmel,pins =
++							<AT91_PIOA 21
++							 AT91_PERIPH_GPIO
++							 AT91_PINCTRL_OUTPUT_VAL(0)>;
++					};
++
++					pinctrl_lcd_hipow0: lcd_hipow0 {
++						atmel,pins =
++							<AT91_PIOA 23
++							 AT91_PERIPH_GPIO
++							 AT91_PINCTRL_OUTPUT_VAL(0)>;
++					};
++				};
++			};
++
++			watchdog@fffffe40 {
++				status = "okay";
++			};
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		wakeup {
++			label = "Wakeup";
++			linux,code = <10>;
++			gpio-key,wakeup;
++			gpios = <&pioB 27 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	panel_reg: panel-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "panel-VCC";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	bl_reg: backlight-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "panel-VDD";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++	};
++
++	panel_bl: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&hlcdc_pwm 0 100000 0>;
++
++		brightness-levels = < 0  1  2  3  4  5  6  7  8  9
++				     10 11 12 13 14 15 16 17 18 19
++				     20 21 22 23 24 25 26 27 28 29
++				     30 31 32 33 34 35 36 37 38 39
++				     40 41 42 43 44 45 46 47 48 49
++				     50 51 52 53 54 55 56 57 58 59
++				     60 61 62 63 64 65 66 67 68 69
++				     70 71 72 73 74 75 76 77 78 79
++				     80 81 82 83 84 85 86 87 88 89
++				     90 91 92 93 94 95 96 97 98 99
++				    100>;
++		default-brightness-level = <40>;
++
++		power-supply = <&bl_reg>;
++		enable-gpios = <&pioA 20 GPIO_ACTIVE_HIGH>;
++	};
++
++	panel: panel {
++		compatible = "sharp,lq150x1lg11";
++		backlight = <&panel_bl>;
++		power-supply = <&panel_reg>;
++
++		port {
++			panel_input: endpoint {
++				remote-endpoint = <&hlcdc_panel_output>;
++			};
++		};
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++
++		simple-audio-card,name = "nattis-tfa9879";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,bitclock-master = <&cpu_dai>;
++		simple-audio-card,frame-master = <&cpu_dai>;
++		simple-audio-card,widgets = "Line", "Line Out Jack";
++		simple-audio-card,routing = "Line Out Jack", "LINEOUT";
++
++		cpu_dai: simple-audio-card,cpu {
++			sound-dai = <&ssc0>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&codec>;
++		};
++	};
++};
++
++&i2c0 {
++	status = "okay";
++
++	clock-frequency = <100000>;
++
++	temp@18 {
++		compatible = "nxp,se97b", "jedec,jc-42.4-temp";
++		reg = <0x18>;
++		smbus-timeout-disable;
++	};
++
++	eeprom@50 {
++		compatible = "nxp,24c02";
++		reg = <0x50>;
++		pagesize = <16>;
++	};
++
++	codec: codec@6c {
++		 compatible = "nxp,tfa9879";
++		 reg = <0x6c>;
++	};
++};
++
++&ssc0 {
++	status = "okay";
++
++	atmel,clk-from-rk-pin;
++	#sound-dai-cells = <0>;
++};
++
++&hlcdc {
++	status = "okay";
++
++	hlcdc-display-controller {
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_lcd_base
++			     &pinctrl_lcd_rgb565
++			     &pinctrl_lcd_prlud0
++			     &pinctrl_lcd_hipow0>;
++
++		port@0 {
++			hlcdc_panel_output: endpoint {
++				remote-endpoint = <&panel_input>;
++			};
++		};
++	};
++};
++
++&mmc0 {
++	status = "okay";
++
++	pinctrl-0 = <&pinctrl_mmc0_clk_cmd_dat0
++		     &pinctrl_mmc0_dat1_3
++		     &pinctrl_mmc0_cd>;
++
++	slot@0 {
++		reg = <0>;
++		bus-width = <4>;
++		cd-gpios = <&pioD 5 GPIO_ACTIVE_HIGH>;
++	};
++};
++
++&usart0 {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usart0>;
++	atmel,use-dma-rx;
++};
++
++&nand {
++	partitions {
++		compatible = "fixed-partitions";
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		at91bootstrap@0 {
++			label = "at91bootstrap";
++			reg = <0x0 0x40000>;
++		};
++
++		bootloader@40000 {
++			label = "bootloader";
++			reg = <0x40000 0x80000>;
++		};
++
++		bootloaderenv@c0000 {
++			label = "bootloader env";
++			reg = <0xc0000 0xc0000>;
++		};
++
++		dtb@180000 {
++			label = "device tree";
++			reg = <0x180000 0x80000>;
++		};
++
++		kernel@200000 {
++			label = "kernel";
++			reg = <0x200000 0x600000>;
++		};
++
++		rootfs@800000 {
++			label = "rootfs";
++			reg = <0x800000 0x0f800000>;
++		};
++	};
++};
++
++&dbgu {
++	status = "okay";
++
++	atmel,use-dma-rx;
++};
++
++&usb0 {
++	status = "okay";
++
++	atmel,vbus-gpio = <&pioD 28 GPIO_ACTIVE_HIGH>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usba_vbus>;
++};
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
