@@ -1,56 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 15/19] ASoC: tlv320aic31xx: Reset registers during
- power up
-Date: Fri, 1 Dec 2017 15:55:52 +0000
-Message-ID: <20171201155552.jj3mwb7sp645u2ud@sirena.org.uk>
-References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-16-afd@ti.com>
- <20171201133723.vlxqci4paw7szjce@sirena.org.uk>
- <f8b03c59-c7c5-da32-c0fb-de366e931bc9@ti.com>
+From: Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH 1/1] timecounter: Make cyclecounter struct part of
+ timecounter struct
+Date: Fri, 1 Dec 2017 07:56:05 -0800
+Message-ID: <20171201155605.7c7oiq5we4n7wdum@localhost>
+References: <1512114454-26958-1-git-send-email-sagar.a.kamble@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5iu6nc6tottybtb6"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <f8b03c59-c7c5-da32-c0fb-de366e931bc9@ti.com>
+In-Reply-To: <1512114454-26958-1-git-send-email-sagar.a.kamble@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Sagar Arun Kamble <sagar.a.kamble@intel.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Chris Wilson <chris@chris-wilson.co.uk>, John Stultz <john.stultz@linaro.org>, intel-wired-lan@lists.osuosl.org, Thomas Gleixner <tglx@linutronix.de>, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Dec 01, 2017 at 01:17:34PM +0530, Sagar Arun Kamble wrote:
+> There is no real need for the users of timecounters to define cyclecounter
+> and timecounter variables separately. Since timecounter will always be
+> based on cyclecounter, have cyclecounter struct as member of timecounter
+> struct.
 
---5iu6nc6tottybtb6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Could you please put the PTP maintainer onto CC?
 
-On Fri, Dec 01, 2017 at 09:04:41AM -0600, Andrew F. Davis wrote:
-> On 12/01/2017 07:37 AM, Mark Brown wrote:
-> > On Wed, Nov 29, 2017 at 03:32:56PM -0600, Andrew F. Davis wrote:
-
-> >> +	} else {
-> >> +		ret = regmap_write(aic31xx->regmap, AIC31XX_RESET, 1);
-> >> +		if (ret < 0)
-> >> +			dev_err(aic31xx->dev, "Could not reset device\n");
-
-> > Print the error to help people doing debug.
-
-> Do you mean by adding the ret code to the print?
-
-Yes.
-
---5iu6nc6tottybtb6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlohe4cACgkQJNaLcl1U
-h9BYBQf/dRj2BtdVJ9dgKmkWIIYBdTDLZ8th7j+LPSW/W9fRZ1Z+aGefWICGvXXw
-vTdvml0NJRVj9yMf1+pVMQg7DgcKzJUOAoYl86tvibcZjmJZ/4+hDb/NvAGKibRX
-WrerVrlgqf6itIHKqJJ2/gRteL9Zti1z7xrFBF63zRQV811DWSHDIa8RDW5+7IM2
-HrWBu5xRXwcLP4/yV1jwNIER6L67WxMkflh0BP8uHVqcuLq24thvGGHZVDBjiWu6
-iv9N0VNgQIkgkA2PhtfEG34mRnF2olhmNLXKydC0xWvfArFlLGFevVU1ZDwsDlHj
-8HE4wm9jLPse/esEtEIx/83T7GKUJA==
-=BPHe
------END PGP SIGNATURE-----
-
---5iu6nc6tottybtb6--
+Thanks,
+Richard
