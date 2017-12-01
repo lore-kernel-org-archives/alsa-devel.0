@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: sst: Handle return value of platform_get_irq" to the asoc tree
-Date: Fri, 01 Dec 2017 13:44:00 +0000
-Message-ID: <E1eKlbk-0001HK-3L@debutante>
-References: <deb09b18d95f81661dbb8136fec947a548af6a77.1511970158.git.arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: nuc900: Fix platform_get_irq's error checking" to the asoc tree
+Date: Fri, 01 Dec 2017 13:44:03 +0000
+Message-ID: <E1eKlbn-0001Ip-40@debutante>
+References: <0703b0d6d8ba826a42f244eec6bce71514edd563.1511970158.git.arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <deb09b18d95f81661dbb8136fec947a548af6a77.1511970158.git.arvind.yadav.cs@gmail.com>
+In-Reply-To: <0703b0d6d8ba826a42f244eec6bce71514edd563.1511970158.git.arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: sst: Handle return value of platform_get_irq
+   ASoC: nuc900: Fix platform_get_irq's error checking
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From eee44bfcf931428d7e94a9ae2092d687386a135a Mon Sep 17 00:00:00 2001
+>From fa8cc38165c2f6f73bf947087b3cdc5dd9b9b560 Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Wed, 29 Nov 2017 21:47:13 +0530
-Subject: [PATCH] ASoC: intel: sst: Handle return value of platform_get_irq
+Date: Wed, 29 Nov 2017 21:47:12 +0530
+Subject: [PATCH] ASoC: nuc900: Fix platform_get_irq's error checking
 
-platform_get_irq() can fail here and we must check its return value.
+The platform_get_irq() function returns negative if an error occurs.
+zero or positive number on success. platform_get_irq() error checking
+for zero is not correct.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/nuc900/nuc900-ac97.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 32d6e02e2104..6cd481bec275 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -236,6 +236,9 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 	/* Find the IRQ */
- 	ctx->irq_num = platform_get_irq(pdev,
- 				ctx->pdata->res_info->acpi_ipc_irq_index);
-+	if (ctx->irq_num <= 0)
-+		return ctx->irq_num < 0 ? ctx->irq_num : -EIO;
-+
- 	return 0;
- }
+diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+index b6615affe571..5e4fbd2d3479 100644
+--- a/sound/soc/nuc900/nuc900-ac97.c
++++ b/sound/soc/nuc900/nuc900-ac97.c
+@@ -346,8 +346,8 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
+ 	}
+ 
+ 	nuc900_audio->irq_num = platform_get_irq(pdev, 0);
+-	if (!nuc900_audio->irq_num) {
+-		ret = -EBUSY;
++	if (nuc900_audio->irq_num <= 0) {
++		ret = nuc900_audio->irq_num < 0 ? nuc900_audio->irq_num : -EBUSY;
+ 		goto out;
+ 	}
  
 -- 
 2.15.0
