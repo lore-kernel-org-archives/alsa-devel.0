@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: hdac_hdmi: introduce macro to
- access HDMI private data" to the asoc tree
-Date: Fri, 1 Dec 2017 16:40:49 +0000
-Message-ID: <20171201164049.q3egpkfoau446lqj@sirena.org.uk>
-References: <1512119602-2416-2-git-send-email-rakesh.a.ughreja@intel.com>
- <E1eKlcI-0001RU-QR@debutante> <s5hindqjydq.wl-tiwai@suse.de>
- <20171201155358.2uz224exbtl4s7q4@sirena.org.uk>
- <s5h1skejv26.wl-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v6 02/13] docs: driver-api: add iio hw consumer
+	section
+Date: Fri, 1 Dec 2017 18:40:09 +0100
+Message-ID: <1512150020-20335-3-git-send-email-arnaud.pouliquen@st.com>
+References: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6617330896160426195=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 838CC267CEC
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 17:40:57 +0100 (CET)
-In-Reply-To: <s5h1skejv26.wl-tiwai@suse.de>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 3AA64267D01
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 18:40:28 +0100 (CET)
+In-Reply-To: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,66 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Rakesh A <rakesh.a.ughreja@intel.com>, Ughreja@sirena.org.uk
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Alexandre Torgue <alexandre.torgue@st.com>, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6617330896160426195==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fgq4eaqjelydtkmc"
-Content-Disposition: inline
-
-
---fgq4eaqjelydtkmc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Dec 01, 2017 at 05:02:09PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > On Fri, Dec 01, 2017 at 03:50:25PM +0100, Takashi Iwai wrote:
-
-> > > Isn't it a RFC patchset?  Please hold on.
-
-> > These just look like useful cleanups to improve consistency and so on of
-> > the code - they're nowhere near the meat of the series.
-
-> The first three do just rename, not really cleanups, so they make
-> little sense without the rest changes.
-
-Really?  2 and 3 looked kind of neutral to me, and patch 1 looked fairly
-clearly useful.
-
-> > Right, I've not touched any of that stuff.
-
-> My concern at this point is that we need to coordinate the common
-> branch for the all stuff.  It's a kind of cross-tree things.
-
-Sure, I was expecting this to end up getting pulled into your tree.
-
---fgq4eaqjelydtkmc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlohhhAACgkQJNaLcl1U
-h9AC9Qf/VyGxn000WR272BwmR6kyPhMGIq77po3wDFod74/nFO+FIhIioIIffmF/
-335PrMEVt9kGXGm942TJh+wy+0/pJK1tunFdkTMLSyOd63/4miFVGJT3QYCZdZMV
-1iw/FFB380YvRMyhu2sfySxGZQrqHN1Z0zHwE/0A5UlqdxQZbJfCQfXTVTiZxRaT
-+AjRWIPpltsqFTo/HP9/pwFIkrlh3xYbYpMzbGwO2yDe/mxPJ0wXFjASdjbGdZwR
-/CCiFs7f3PVCn+4Ivln7F1wBoHF5+vi+sk4D/BMkgcoFBYhoshLq2zP0sTDZYiK4
-x24g/b8O7lWJv0/fu4KNEEfvKuDbjA==
-=ibk6
------END PGP SIGNATURE-----
-
---fgq4eaqjelydtkmc--
-
---===============6617330896160426195==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6617330896160426195==--
+VGhpcyBhZGRzIGEgc2VjdGlvbiBhYm91dCB0aGUgSGFyZHdhcmUgY29uc3VtZXIKQVBJIG9mIHRo
+ZSBJSU8gc3Vic3lzdGVtIHRvIHRoZSBkcml2ZXIgQVBJCmRvY3VtZW50YXRpb24uCgpTaWduZWQt
+b2ZmLWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91bGlxdWVuQHN0LmNvbT4KLS0tCiBE
+b2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJzdCB8IDUxICsrKysrKysr
+KysrKysrKysrKysrKysrKysrKysKIERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgu
+cnN0ICAgICAgIHwgIDEgKwogMiBmaWxlcyBjaGFuZ2VkLCA1MiBpbnNlcnRpb25zKCspCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lpby9ody1jb25zdW1lci5y
+c3QKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVy
+LnJzdCBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaHctY29uc3VtZXIucnN0Cm5ldyBm
+aWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjhmYWNjZTYKLS0tIC9kZXYvbnVsbAorKysg
+Yi9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2h3LWNvbnN1bWVyLnJzdApAQCAtMCwwICsx
+LDUxIEBACis9PT09PT09PT09PQorSFcgY29uc3VtZXIKKz09PT09PT09PT09CitBbiBJSU8gZGV2
+aWNlIGNhbiBiZSBkaXJlY3RseSBjb25uZWN0ZWQgdG8gYW5vdGhlciBkZXZpY2UgaW4gaGFyZHdh
+cmUuIGluIHRoaXMKK2Nhc2UgdGhlIGJ1ZmZlcnMgYmV0d2VlbiBJSU8gcHJvdmlkZXIgYW5kIElJ
+TyBjb25zdW1lciBhcmUgaGFuZGxlZCBieSBoYXJkd2FyZS4KK1RoZSBJbmR1c3RyaWFsIEkvTyBI
+VyBjb25zdW1lciBvZmZlcnMgYSB3YXkgdG8gYm9uZCB0aGVzZSBJSU8gZGV2aWNlcyB3aXRob3V0
+Citzb2Z0d2FyZSBidWZmZXIgZm9yIGRhdGEuIFRoZSBpbXBsZW1lbnRhdGlvbiBjYW4gYmUgZm91
+bmQgdW5kZXIKKzpmaWxlOmBkcml2ZXJzL2lpby9idWZmZXIvaHctY29uc3VtZXIuY2AKKworCisq
+IHN0cnVjdCA6Yzp0eXBlOmBpaW9faHdfY29uc3VtZXJgIOKAlCBIYXJkd2FyZSBjb25zdW1lciBz
+dHJ1Y3R1cmUKKyogOmM6ZnVuYzpgaWlvX2h3X2NvbnN1bWVyX2FsbG9jYCDigJQgQWxsb2NhdGUg
+SUlPIGhhcmR3YXJlIGNvbnN1bWVyCisqIDpjOmZ1bmM6YGlpb19od19jb25zdW1lcl9mcmVlYCDi
+gJQgRnJlZSBJSU8gaGFyZHdhcmUgY29uc3VtZXIKKyogOmM6ZnVuYzpgaWlvX2h3X2NvbnN1bWVy
+X2VuYWJsZWAg4oCUIEVuYWJsZSBJSU8gaGFyZHdhcmUgY29uc3VtZXIKKyogOmM6ZnVuYzpgaWlv
+X2h3X2NvbnN1bWVyX2Rpc2FibGVgIOKAlCBEaXNhYmxlIElJTyBoYXJkd2FyZSBjb25zdW1lcgor
+CisKK0hXIGNvbnN1bWVyIHNldHVwCis9PT09PT09PT09PT09PT09PQorCitBcyBzdGFuZGFyZCBJ
+SU8gZGV2aWNlIHRoZSBpbXBsZW1lbnRhdGlvbiBpcyBiYXNlZCBvbiBJSU8gcHJvdmlkZXIvY29u
+c3VtZXIuCitBIHR5cGljYWwgSUlPIEhXIGNvbnN1bWVyIHNldHVwIGxvb2tzIGxpa2UgdGhpczo6
+CisKKwlzdGF0aWMgc3RydWN0IGlpb19od19jb25zdW1lciAqaHdjOworCisJc3RhdGljIGNvbnN0
+IHN0cnVjdCBpaW9faW5mbyBhZGNfaW5mbyA9IHsKKwkJLnJlYWRfcmF3ID0gYWRjX3JlYWRfcmF3
+LAorCX07CisKKwlzdGF0aWMgaW50IGFkY19yZWFkX3JhdyhzdHJ1Y3QgaWlvX2RldiAqaW5kaW9f
+ZGV2LAorCQkJCXN0cnVjdCBpaW9fY2hhbl9zcGVjIGNvbnN0ICpjaGFuLCBpbnQgKnZhbCwKKwkJ
+CQlpbnQgKnZhbDIsIGxvbmcgbWFzaykKKwl7CisJCXJldCA9IGlpb19od19jb25zdW1lcl9lbmFi
+bGUoaHdjKTsKKworCQkvKiBBY3F1aXJlIGRhdGEgKi8KKworCQlyZXQgPSBpaW9faHdfY29uc3Vt
+ZXJfZGlzYWJsZShod2MpOworCX0KKworCXN0YXRpYyBpbnQgYWRjX3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UgKnBkZXYpCisJeworCQlod2MgPSBkZXZtX2lpb19od19jb25zdW1lcl9hbGxv
+YygmaWlvLT5kZXYpOworCX0KKworTW9yZSBkZXRhaWxzCis9PT09PT09PT09PT0KKy4uIGtlcm5l
+bC1kb2M6OiBpbmNsdWRlL2xpbnV4L2lpby9ody1jb25zdW1lci5oCisuLiBrZXJuZWwtZG9jOjog
+ZHJpdmVycy9paW8vYnVmZmVyL2luZHVzdHJpYWxpby1ody1jb25zdW1lci5jCisgICA6ZXhwb3J0
+OgorCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvaWlvL2luZGV4LnJzdCBi
+L0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0CmluZGV4IGU1YzM5MjIuLjdm
+YmEzNDEgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0
+CisrKyBiL0RvY3VtZW50YXRpb24vZHJpdmVyLWFwaS9paW8vaW5kZXgucnN0CkBAIC0xNSwzICsx
+NSw0IEBAIENvbnRlbnRzOgogICAgYnVmZmVycwogICAgdHJpZ2dlcnMKICAgIHRyaWdnZXJlZC1i
+dWZmZXJzCisgICBody1jb25zdW1lcgotLSAKMi43LjQKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
