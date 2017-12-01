@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic31xx: Handle inverted BCLK in
-	non-DSP modes" to the asoc tree
-Date: Fri, 01 Dec 2017 13:42:55 +0000
-Message-ID: <E1eKlah-00018p-Kw@debutante>
-References: <20171129213300.20021-14-afd@ti.com>
+Subject: Applied "ASoC: tlv320aic31xx: Add CODEC clock slave
+	support" to the asoc tree
+Date: Fri, 01 Dec 2017 13:43:15 +0000
+Message-ID: <E1eKlb1-00019v-SE@debutante>
+References: <20171129213300.20021-13-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BC864267C23
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 14:43:00 +0100 (CET)
-In-Reply-To: <20171129213300.20021-14-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A5E9A267C74
+ for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 14:43:20 +0100 (CET)
+In-Reply-To: <20171129213300.20021-13-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320aic31xx: Handle inverted BCLK in non-DSP modes
+   ASoC: tlv320aic31xx: Add CODEC clock slave support
 
 has been applied to the asoc tree at
 
@@ -52,67 +52,44 @@ to this mail.
 Thanks,
 Mark
 
->From dcb407b257af06fa58b0544ec01ec9e0d3927e02 Mon Sep 17 00:00:00 2001
+>From 77f8b3cfc33cd4231cc2748bcac9f43b9eea546c Mon Sep 17 00:00:00 2001
 From: "Andrew F. Davis" <afd@ti.com>
-Date: Wed, 29 Nov 2017 15:32:54 -0600
-Subject: [PATCH] ASoC: tlv320aic31xx: Handle inverted BCLK in non-DSP modes
+Date: Wed, 29 Nov 2017 15:32:53 -0600
+Subject: [PATCH] ASoC: tlv320aic31xx: Add CODEC clock slave support
 
-Currently BCLK inverting is only handled when the DAI format is
-DSP, but the BCLK may be inverted in any supported mode. Without
-this using this CODEC in any other mode than DSP with the BCLK
-inverted leads to bad sampling timing and very poor audio quality.
+This CODEC supports being the WCLK and/or BCLK slave, add
+support for this here.
+
+Also make the alert into an error as alert is more urgent
+than needed here and is rarely used.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index d77cc36d7360..38fd6ea275fb 100644
+index 05e6d194d6a9..d77cc36d7360 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -938,6 +938,18 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+@@ -925,8 +925,16 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		iface_reg1 |= AIC31XX_BCLK_MASTER | AIC31XX_WCLK_MASTER;
+ 		break;
++	case SND_SOC_DAIFMT_CBS_CFM:
++		iface_reg1 |= AIC31XX_WCLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		iface_reg1 |= AIC31XX_BCLK_MASTER;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
+ 	default:
+-		dev_alert(codec->dev, "Invalid DAI master/slave interface\n");
++		dev_err(codec->dev, "Invalid DAI master/slave interface\n");
  		return -EINVAL;
  	}
  
-+	/* signal polarity */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		iface_reg2 |= AIC31XX_BCLKINV_MASK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "Invalid DAI clock signal polarity\n");
-+		return -EINVAL;
-+	}
-+
- 	/* interface format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -945,16 +957,12 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_DSP_A:
- 		dsp_a_val = 0x1; /* fall through */
- 	case SND_SOC_DAIFMT_DSP_B:
--		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
--		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--		case SND_SOC_DAIFMT_NB_NF:
--			iface_reg2 |= AIC31XX_BCLKINV_MASK;
--			break;
--		case SND_SOC_DAIFMT_IB_NF:
--			break;
--		default:
--			return -EINVAL;
--		}
-+		/*
-+		 * NOTE: This CODEC samples on the falling edge of BCLK in
-+		 * DSP mode, this is inverted compared to what most DAIs
-+		 * expect, so we invert for this mode
-+		 */
-+		iface_reg2 ^= AIC31XX_BCLKINV_MASK;
- 		iface_reg1 |= (AIC31XX_DSP_MODE <<
- 			       AIC31XX_IFACE1_DATATYPE_SHIFT);
- 		break;
 -- 
 2.15.0
