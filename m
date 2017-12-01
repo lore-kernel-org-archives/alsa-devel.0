@@ -1,496 +1,476 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 02/15] soundwire: Add SoundWire bus type
-Date: Fri,  1 Dec 2017 15:26:04 +0530
-Message-ID: <1512122177-2889-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 06/15] soundwire: Add IO transfer
+Date: Fri,  1 Dec 2017 15:26:08 +0530
+Message-ID: <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
 References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 819C9267BE5
- for <alsa-devel@alsa-project.org>; Fri,  1 Dec 2017 10:52:52 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the base SoundWire bus type, bus and driver registration.
-along with changes to module device table for new SoundWire
-device type.
+SoundWire bus supports read or write register(s) for SoundWire Slave
+device. sdw_read() and sdw_write() APIs are provided for single
+register read/write. sdw_nread() and sdw_nwrite() for operations on
+contiguous registers.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/Kconfig                    |   2 +
- drivers/Makefile                   |   1 +
- drivers/soundwire/Kconfig          |  22 +++++
- drivers/soundwire/Makefile         |   7 ++
- drivers/soundwire/bus_type.c       | 172 +++++++++++++++++++++++++++++++++++++
- include/linux/mod_devicetable.h    |   6 ++
- include/linux/soundwire/sdw.h      | 111 ++++++++++++++++++++++++
- include/linux/soundwire/sdw_type.h |  19 ++++
- scripts/mod/devicetable-offsets.c  |   4 +
- scripts/mod/file2alias.c           |  15 ++++
- 10 files changed, 359 insertions(+)
- create mode 100644 drivers/soundwire/Kconfig
- create mode 100644 drivers/soundwire/Makefile
- create mode 100644 drivers/soundwire/bus_type.c
- create mode 100644 include/linux/soundwire/sdw.h
- create mode 100644 include/linux/soundwire/sdw_type.h
+ drivers/soundwire/bus.c       | 275 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/bus.h       |  37 ++++++
+ include/linux/soundwire/sdw.h |  57 +++++++++
+ 3 files changed, 369 insertions(+)
 
-diff --git a/drivers/Kconfig b/drivers/Kconfig
-index 152744c5ef0f..3a0bbbd42292 100644
---- a/drivers/Kconfig
-+++ b/drivers/Kconfig
-@@ -153,6 +153,8 @@ source "drivers/remoteproc/Kconfig"
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 507ae85ad58e..2f108f162905 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -3,6 +3,8 @@
  
- source "drivers/rpmsg/Kconfig"
+ #include <linux/acpi.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/pm_runtime.h>
++#include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include "bus.h"
  
-+source "drivers/soundwire/Kconfig"
-+
- source "drivers/soc/Kconfig"
+@@ -22,6 +24,12 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 		return -ENODEV;
+ 	}
  
- source "drivers/devfreq/Kconfig"
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 1d034b680431..cd13b2ed7ed6 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -156,6 +156,7 @@ obj-$(CONFIG_MAILBOX)		+= mailbox/
- obj-$(CONFIG_HWSPINLOCK)	+= hwspinlock/
- obj-$(CONFIG_REMOTEPROC)	+= remoteproc/
- obj-$(CONFIG_RPMSG)		+= rpmsg/
-+obj-$(CONFIG_SOUNDWIRE)		+= soundwire/
- 
- # Virtualization drivers
- obj-$(CONFIG_VIRT_DRIVERS)	+= virt/
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-new file mode 100644
-index 000000000000..d7d3908f4913
---- /dev/null
-+++ b/drivers/soundwire/Kconfig
-@@ -0,0 +1,22 @@
-+#
-+# SoundWire subsystem configuration
-+#
-+
-+menuconfig SOUNDWIRE
-+	bool "SoundWire support"
-+	---help---
-+	  SoundWire is a 2-Pin interface with data and clock line ratified
-+	  by the MIPI Alliance. SoundWire is used for transporting data
-+	  typically related to audio functions. SoundWire interface is
-+	  optimized to integrate audio devices in mobile or mobile inspired
-+	  systems. Say Y to enable this subsystem, N if you do not have such
-+	  a device
-+
-+if SOUNDWIRE
-+
-+comment "SoundWire Devices"
-+
-+config SOUNDWIRE_BUS
-+	tristate
-+
-+endif
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-new file mode 100644
-index 000000000000..d1281def7662
---- /dev/null
-+++ b/drivers/soundwire/Makefile
-@@ -0,0 +1,7 @@
-+#
-+# Makefile for soundwire core
-+#
-+
-+#Bus Objs
-+soundwire-bus-objs := bus_type.o
-+obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-new file mode 100644
-index 000000000000..8d8dcc68e9a8
---- /dev/null
-+++ b/drivers/soundwire/bus_type.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/pm_domain.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_type.h>
-+
-+/**
-+ * sdw_get_device_id - find the matching SoundWire device id
-+ * @slave: SoundWire Slave Device
-+ * @drv: SoundWire Slave Driver
-+ *
-+ * The match is done by comparing the mfg_id and part_id from the
-+ * struct sdw_device_id.
-+ */
-+static const struct sdw_device_id *
-+sdw_get_device_id(struct sdw_slave *slave, struct sdw_driver *drv)
-+{
-+	const struct sdw_device_id *id = drv->id_table;
-+
-+	while (id && id->mfg_id) {
-+		if (slave->id.mfg_id == id->mfg_id &&
-+		    slave->id.part_id == id->part_id)
-+			return id;
-+		id++;
++	if (!bus->ops) {
++		dev_err(bus->dev, "SoundWire Bus ops are not set");
++		return -EINVAL;
 +	}
 +
-+	return NULL;
++	mutex_init(&bus->msg_lock);
+ 	mutex_init(&bus->bus_lock);
+ 	INIT_LIST_HEAD(&bus->slaves);
+ 
+@@ -97,6 +105,273 @@ void sdw_delete_bus_master(struct sdw_bus *bus)
+ }
+ EXPORT_SYMBOL(sdw_delete_bus_master);
+ 
++/*
++ * SDW IO Calls
++ */
++
++static inline int find_response_code(enum sdw_command_response resp)
++{
++	switch (resp) {
++	case SDW_CMD_OK:
++		return 0;
++
++	case SDW_CMD_IGNORED:
++		return -ENODATA;
++
++	case SDW_CMD_TIMEOUT:
++		return -ETIMEDOUT;
++
++	default:
++		return -EIO;
++	}
 +}
 +
-+static int sdw_bus_match(struct device *dev, struct device_driver *ddrv)
++static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(ddrv);
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
 +
-+	return !!sdw_get_device_id(slave, drv);
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->xfer_msg(bus, msg);
++		ret = find_response_code(resp);
++
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
 +}
 +
-+int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size)
++static inline int do_transfer_defer(struct sdw_bus *bus,
++			struct sdw_msg *msg, struct sdw_defer *defer)
 +{
-+	/* modalias is sdw:m<mfg_id>p<part_id> */
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
 +
-+	return snprintf(buf, size, "sdw:m%04Xp%04X\n",
-+			slave->id.mfg_id, slave->id.part_id);
++	defer->msg = msg;
++	defer->length = msg->len;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
++		ret = find_response_code(resp);
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
 +}
 +
-+static int sdw_uevent(struct device *dev, struct kobj_uevent_env *env)
++static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	char modalias[32];
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
 +
-+	sdw_slave_modalias(slave, modalias, sizeof(modalias));
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->reset_page_addr(bus, dev_num);
++		ret = find_response_code(resp);
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
 +
-+	if (add_uevent_var(env, "MODALIAS=%s", modalias))
-+		return -ENOMEM;
++	return ret;
++}
++
++/**
++ * sdw_transfer() - Synchronous transfer message to a SDW Slave device
++ * @bus: SDW bus
++ * @slave: SDW Slave
++ * @msg: SDW message to be xfered
++ */
++int sdw_transfer(struct sdw_bus *bus,
++		struct sdw_slave *slave, struct sdw_msg *msg)
++{
++	int ret;
++
++	mutex_lock(&bus->msg_lock);
++
++	ret = do_transfer(bus, msg);
++	if (ret != 0 && ret != -ENODATA)
++		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
++				msg->dev_num, ret);
++
++	if (msg->page)
++		sdw_reset_page(bus, msg->dev_num);
++
++	mutex_unlock(&bus->msg_lock);
++
++	return ret;
++}
++
++/**
++ * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
++ * @bus: SDW bus
++ * @slave: SDW Slave
++ * @msg: SDW message to be xfered
++ * @defer: Defer block for signal completion
++ *
++ * Caller needs to hold the msg_lock lock while calling this
++ */
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
++			struct sdw_msg *msg, struct sdw_defer *defer)
++{
++	int ret;
++
++	if (!bus->ops->xfer_msg_defer)
++		return -ENOTSUPP;
++
++	ret = do_transfer_defer(bus, msg, defer);
++	if (ret != 0 && ret != -ENODATA)
++		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
++				msg->dev_num, ret);
++
++	if (msg->page)
++		sdw_reset_page(bus, msg->dev_num);
++
++	return ret;
++}
++
++
++int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
++		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
++{
++	memset(msg, 0, sizeof(*msg));
++	msg->addr = addr;
++	msg->len = count;
++	msg->dev_num = dev_num;
++	msg->flags = flags;
++	msg->buf = buf;
++	msg->ssp_sync = false;
++	msg->page = false;
++
++	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
++		return 0;
++	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
++		pr_err("SDW: Invalid address %x passed\n", addr);
++		return -EINVAL;
++	}
++
++	if (addr < SDW_REG_OPTIONAL_PAGE) { /* 32k but no page */
++		if (slave && !slave->prop.paging_support)
++			return 0;
++		/* no need for else as that will fall thru to paging */
++	}
++
++	/* paging madatory */
++	if (dev_num == SDW_ENUM_DEV_NUM || dev_num == SDW_BROADCAST_DEV_NUM) {
++		pr_err("SDW: Invalid device for paging :%d\n", dev_num);
++		return -EINVAL;
++	}
++
++	if (!slave) {
++		pr_err("SDW: No slave for paging addr\n");
++		return -EINVAL;
++	} else if (!slave->prop.paging_support) {
++		dev_err(&slave->dev,
++			"address %x needs paging but no support", addr);
++		return -EINVAL;
++	}
++
++	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
++	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
++	msg->addr |= BIT(15);
++	msg->page = true;
 +
 +	return 0;
 +}
 +
-+struct bus_type sdw_bus_type = {
-+	.name = "soundwire",
-+	.match = sdw_bus_match,
-+	.uevent = sdw_uevent,
-+};
-+EXPORT_SYMBOL_GPL(sdw_bus_type);
-+
-+static int sdw_drv_probe(struct device *dev)
++/**
++ * sdw_nread() - Read "n" contiguous SDW Slave registers
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @count: length
++ * @val: Buffer for values to be read
++ */
++int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-+	const struct sdw_device_id *id;
++	struct sdw_msg msg;
 +	int ret;
 +
-+	id = sdw_get_device_id(slave, drv);
-+	if (!id)
-+		return -ENODEV;
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			slave->dev_num, SDW_MSG_FLAG_READ, val);
++	if (ret < 0)
++		return ret;
 +
-+	/*
-+	 * attach to power domain but don't turn on (last arg)
-+	 */
-+	ret = dev_pm_domain_attach(dev, false);
-+	if (ret != -EPROBE_DEFER) {
-+		ret = drv->probe(slave, id);
-+		if (ret) {
-+			dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-+			dev_pm_domain_detach(dev, false);
-+		}
-+	}
++	ret = pm_runtime_get_sync(slave->bus->dev);
++	if (!ret)
++		return ret;
++
++	ret = sdw_transfer(slave->bus, slave, &msg);
++	pm_runtime_put(slave->bus->dev);
 +
 +	return ret;
 +}
++EXPORT_SYMBOL(sdw_nread);
 +
-+static int sdw_drv_remove(struct device *dev)
++/**
++ * sdw_nwrite() - Write "n" contiguous SDW Slave registers
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @count: length
++ * @val: Buffer for values to be read
++ */
++int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
 +{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-+	int ret = 0;
++	struct sdw_msg msg;
++	int ret;
 +
-+	if (drv->remove)
-+		ret = drv->remove(slave);
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			slave->dev_num, SDW_MSG_FLAG_WRITE, val);
++	if (ret < 0)
++		return ret;
 +
-+	dev_pm_domain_detach(dev, false);
++	ret = pm_runtime_get_sync(slave->bus->dev);
++	if (!ret)
++		return ret;
++
++	ret = sdw_transfer(slave->bus, slave, &msg);
++	pm_runtime_put(slave->bus->dev);
 +
 +	return ret;
 +}
-+
-+static void sdw_drv_shutdown(struct device *dev)
-+{
-+	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-+	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-+
-+	if (drv->shutdown)
-+		drv->shutdown(slave);
-+}
++EXPORT_SYMBOL(sdw_nwrite);
 +
 +/**
-+ * __sdw_register_driver() - register a SoundWire Slave driver
-+ * @drv: driver to register
-+ * @owner: owning module/driver
-+ *
-+ * Return: zero on success, else a negative error code.
++ * sdw_read() - Read a SDW Slave register
++ * @slave: SDW Slave
++ * @addr: Register address
 + */
-+int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
++int sdw_read(struct sdw_slave *slave, u32 addr)
 +{
-+	drv->driver.bus = &sdw_bus_type;
++	u8 buf;
++	int ret;
 +
-+	if (!drv->probe) {
-+		pr_err("driver %s didn't provide SDW probe routine\n",
-+							drv->name);
-+		return -EINVAL;
-+	}
-+
-+	drv->driver.owner = owner;
-+	drv->driver.probe = sdw_drv_probe;
-+
-+	if (drv->remove)
-+		drv->driver.remove = sdw_drv_remove;
-+
-+	if (drv->shutdown)
-+		drv->driver.shutdown = sdw_drv_shutdown;
-+
-+	return driver_register(&drv->driver);
++	ret = sdw_nread(slave, addr, 1, &buf);
++	if (ret < 0)
++		return ret;
++	else
++		return buf;
 +}
-+EXPORT_SYMBOL_GPL(__sdw_register_driver);
++EXPORT_SYMBOL(sdw_read);
 +
 +/**
-+ * sdw_unregister_driver() - unregisters the SoundWire Slave driver
-+ * @drv: driver to unregister
++ * sdw_write() - Write a SDW Slave register
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @value: Register value
 + */
-+void sdw_unregister_driver(struct sdw_driver *drv)
++int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
 +{
-+	driver_unregister(&drv->driver);
++	return sdw_nwrite(slave, addr, 1, &value);
++
 +}
-+EXPORT_SYMBOL_GPL(sdw_unregister_driver);
++EXPORT_SYMBOL(sdw_write);
 +
-+static int __init sdw_bus_init(void)
-+{
-+	return bus_register(&sdw_bus_type);
-+}
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			u64 addr, struct sdw_slave_id *id)
+ {
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index a54921825ce0..bde5f840ca96 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -16,4 +16,41 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			u64 addr, struct sdw_slave_id *id);
+ 
++enum {
++	SDW_MSG_FLAG_READ = 0,
++	SDW_MSG_FLAG_WRITE,
++};
 +
-+static void __exit sdw_bus_exit(void)
-+{
-+	bus_unregister(&sdw_bus_type);
-+}
++/**
++ * struct sdw_msg - Message structure
++ * @addr: Register address accessed in the Slave
++ * @len: number of messages
++ * @dev_num: Slave device number
++ * @addr_page1: SCP address page 1 Slave register
++ * @addr_page2: SCP address page 2 Slave register
++ * @flags: transfer flags, indicate if xfer is read or write
++ * @buf: message data buffer
++ * @ssp_sync: Send message at SSP (Stream Synchronization Point)
++ * @page: address requires paging
++ */
++struct sdw_msg {
++	u16 addr;
++	u16 len;
++	u16 dev_num;
++	u8 addr_page1;
++	u8 addr_page2;
++	u8 flags;
++	u8 *buf;
++	bool ssp_sync;
++	bool page;
++};
 +
-+postcore_initcall(sdw_bus_init);
-+module_exit(sdw_bus_exit);
++int sdw_transfer(struct sdw_bus *bus, struct sdw_slave *slave,
++			struct sdw_msg *msg);
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_slave *slave,
++			struct sdw_msg *msg, struct sdw_defer *defer);
 +
-+MODULE_DESCRIPTION("SoundWire bus");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index abb6dc2ebbf8..d6f727a68eb1 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -229,6 +229,12 @@ struct hda_device_id {
- 	unsigned long driver_data;
++int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
++		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
++
+ #endif /* __SDW_BUS_H */
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index ddfae18f4306..d3337b5b882b 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -31,6 +31,27 @@ enum sdw_slave_status {
+ 	SDW_SLAVE_RESERVED = 3,
  };
  
-+struct sdw_device_id {
-+	__u16 mfg_id;
-+	__u16 part_id;
-+	kernel_ulong_t driver_data;
++/**
++ * enum sdw_command_response - Command response as defined by SDW spec
++ * @SDW_CMD_OK: cmd was successful
++ * @SDW_CMD_IGNORED: cmd was ignored
++ * @SDW_CMD_FAIL: cmd was NACKed
++ * @SDW_CMD_TIMEOUT: cmd timedout
++ * @SDW_CMD_FAIL_OTHER: cmd failed due to other reason than above
++ *
++ * NOTE: The enum is different than actual Spec as response in the Spec is
++ * combination of ACK/NAK bits
++ *
++ * SDW_CMD_TIMEOUT/FAIL_OTHER is defined for SW use, not in spec
++ */
++enum sdw_command_response {
++	SDW_CMD_OK = 0,
++	SDW_CMD_IGNORED = 1,
++	SDW_CMD_FAIL = 2,
++	SDW_CMD_TIMEOUT = 4,
++	SDW_CMD_FAIL_OTHER = 8,
 +};
 +
  /*
-  * Struct used for matching a device
+  * SDW properties, defined in MIPI DisCo spec v1.0
   */
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-new file mode 100644
-index 000000000000..4a7503781602
---- /dev/null
-+++ b/include/linux/soundwire/sdw.h
-@@ -0,0 +1,111 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SOUNDWIRE_H
-+#define __SOUNDWIRE_H
-+
-+struct sdw_bus;
-+struct sdw_slave;
-+
-+#define SDW_MAX_DEVICES			11
-+
-+/**
-+ * enum sdw_slave_status - Slave status
-+ * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
-+ * @SDW_SLAVE_ATTACHED: Slave is attached with bus.
-+ * @SDW_SLAVE_ALERT: Some alert condition on the Slave
-+ * @SDW_SLAVE_RESERVED: Reserved for future use
-+ */
-+enum sdw_slave_status {
-+	SDW_SLAVE_UNATTACHED = 0,
-+	SDW_SLAVE_ATTACHED = 1,
-+	SDW_SLAVE_ALERT = 2,
-+	SDW_SLAVE_RESERVED = 3,
-+};
-+
-+/*
-+ * SDW Slave Structures and APIs
-+ */
-+
-+/**
-+ * struct sdw_slave_id - Slave ID
-+ * @mfg_id: MIPI Manufacturer ID
-+ * @part_id: Device Part ID
-+ * @class_id: MIPI Class ID, unused now.
-+ * Currently a placeholder in MIPI SoundWire Spec
-+ * @unique_id: Device unique ID
-+ * @sdw_version: SDW version implemented
-+ *
-+ * The order of the IDs here does not follow the DisCo spec definitions
-+ */
-+struct sdw_slave_id {
-+	__u16 mfg_id;
-+	__u16 part_id;
-+	__u8 class_id;
-+	__u8 unique_id:4;
-+	__u8 sdw_version:4;
-+};
-+
-+/**
-+ * struct sdw_slave - SoundWire Slave
-+ * @id: MIPI device ID
-+ * @dev: Linux device
-+ * @status: Status reported by the Slave
-+ * @bus: Bus handle
-+ * @node: node for bus list
-+ * @dev_num: Device Number assigned by Bus
-+ */
-+struct sdw_slave {
-+	struct sdw_slave_id id;
-+	struct device dev;
-+	enum sdw_slave_status status;
-+	struct sdw_bus *bus;
-+	struct list_head node;
-+	u16 dev_num;
-+};
-+
-+#define dev_to_sdw_dev(_dev) container_of(_dev, struct sdw_slave, dev)
-+
-+struct sdw_driver {
-+	const char *name;
-+
-+	int (*probe)(struct sdw_slave *sdw,
-+			const struct sdw_device_id *id);
-+	int (*remove)(struct sdw_slave *sdw);
-+	void (*shutdown)(struct sdw_slave *sdw);
-+
-+	const struct sdw_device_id *id_table;
-+	const struct sdw_slave_ops *ops;
-+
-+	struct device_driver driver;
-+};
-+
-+#define SDW_SLAVE_ENTRY(_mfg_id, _part_id, _drv_data) \
-+	{ .mfg_id = (_mfg_id), .part_id = (_part_id), \
-+	  .driver_data = (unsigned long)(_drv_data) }
-+
-+int sdw_handle_slave_status(struct sdw_bus *bus,
-+			enum sdw_slave_status status[]);
-+
-+/*
-+ * SDW master structures and APIs
-+ */
-+
-+/**
-+ * struct sdw_bus - SoundWire bus
-+ * @dev: Master linux device
-+ * @link_id: Link id number, can be 0 to N, unique for each Master
-+ * @slaves: list of Slaves on this bus
-+ * @assigned: Bitmap for Slave device numbers.
-+ * Bit set implies used number, bit clear implies unused number.
-+ * @bus_lock: bus lock
-+ */
-+struct sdw_bus {
-+	struct device *dev;
-+	unsigned int link_id;
-+	struct list_head slaves;
-+	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
-+	struct mutex bus_lock;
-+};
-+
-+#endif /* __SOUNDWIRE_H */
-diff --git a/include/linux/soundwire/sdw_type.h b/include/linux/soundwire/sdw_type.h
-new file mode 100644
-index 000000000000..9fd553e553e9
---- /dev/null
-+++ b/include/linux/soundwire/sdw_type.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SOUNDWIRE_TYPES_H
-+#define __SOUNDWIRE_TYPES_H
-+
-+extern struct bus_type sdw_bus_type;
-+
-+#define drv_to_sdw_driver(_drv) container_of(_drv, struct sdw_driver, driver)
-+
-+#define sdw_register_driver(drv) \
-+	__sdw_register_driver(drv, THIS_MODULE)
-+
-+int __sdw_register_driver(struct sdw_driver *drv, struct module *);
-+void sdw_unregister_driver(struct sdw_driver *drv);
-+
-+int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
-+
-+#endif /* __SOUNDWIRE_TYPES_H */
-diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-offsets.c
-index 9826b9a6543c..9fad6afe4c41 100644
---- a/scripts/mod/devicetable-offsets.c
-+++ b/scripts/mod/devicetable-offsets.c
-@@ -203,6 +203,10 @@ int main(void)
- 	DEVID_FIELD(hda_device_id, rev_id);
- 	DEVID_FIELD(hda_device_id, api_version);
+@@ -359,12 +380,37 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+  * SDW master structures and APIs
+  */
  
-+	DEVID(sdw_device_id);
-+	DEVID_FIELD(sdw_device_id, mfg_id);
-+	DEVID_FIELD(sdw_device_id, part_id);
++struct sdw_msg;
 +
- 	DEVID(fsl_mc_device_id);
- 	DEVID_FIELD(fsl_mc_device_id, vendor);
- 	DEVID_FIELD(fsl_mc_device_id, obj_type);
-diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 6ef6e63f96fd..b9beeaa4695b 100644
---- a/scripts/mod/file2alias.c
-+++ b/scripts/mod/file2alias.c
-@@ -1289,6 +1289,21 @@ static int do_hda_entry(const char *filename, void *symval, char *alias)
- }
- ADD_TO_DEVTABLE("hdaudio", hda_device_id, do_hda_entry);
++/**
++ * struct sdw_defer - SDW deffered message
++ * @length: message length
++ * @complete: message completion
++ * @msg: SDW message
++ */
++struct sdw_defer {
++	int length;
++	struct completion complete;
++	struct sdw_msg *msg;
++};
++
+ /**
+  * struct sdw_master_ops - Master driver ops
+  * @read_prop: Read Master properties
++ * @xfer_msg: Transfer message callback
++ * @xfer_msg_defer: Defer version of transfer message callback
++ * @reset_page_addr: Reset the SCP page address registers
+  */
+ struct sdw_master_ops {
+ 	int (*read_prop)(struct sdw_bus *bus);
++
++	enum sdw_command_response (*xfer_msg)
++			(struct sdw_bus *bus, struct sdw_msg *msg);
++	enum sdw_command_response (*xfer_msg_defer)
++			(struct sdw_bus *bus, struct sdw_msg *msg,
++			struct sdw_defer *defer);
++	enum sdw_command_response (*reset_page_addr)
++			(struct sdw_bus *bus, unsigned int dev_num);
+ };
  
-+/* Looks like: sdw:mNpN */
-+static int do_sdw_entry(const char *filename, void *symval, char *alias)
-+{
-+	DEF_FIELD(symval, sdw_device_id, mfg_id);
-+	DEF_FIELD(symval, sdw_device_id, part_id);
+ /**
+@@ -375,8 +421,10 @@ struct sdw_master_ops {
+  * @assigned: Bitmap for Slave device numbers.
+  * Bit set implies used number, bit clear implies unused number.
+  * @bus_lock: bus lock
++ * @msg_lock: message lock
+  * @ops: Master callback ops
+  * @prop: Master properties
++ * @defer_msg: Defer message
+  * @clk_stop_timeout: Clock stop timeout computed
+  */
+ struct sdw_bus {
+@@ -385,12 +433,21 @@ struct sdw_bus {
+ 	struct list_head slaves;
+ 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+ 	struct mutex bus_lock;
++	struct mutex msg_lock;
+ 	const struct sdw_master_ops *ops;
+ 	struct sdw_master_prop prop;
++	struct sdw_defer defer_msg;
+ 	unsigned int clk_stop_timeout;
+ };
+ 
+ int sdw_add_bus_master(struct sdw_bus *bus);
+ void sdw_delete_bus_master(struct sdw_bus *bus);
+ 
++/* messaging and data APIs */
 +
-+	strcpy(alias, "sdw:");
-+	ADD(alias, "m", mfg_id != 0, mfg_id);
-+	ADD(alias, "p", part_id != 0, part_id);
++int sdw_read(struct sdw_slave *slave, u32 addr);
++int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
++int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
 +
-+	add_wildcard(alias);
-+	return 1;
-+}
-+ADD_TO_DEVTABLE("sdw", sdw_device_id, do_sdw_entry);
-+
- /* Looks like: fsl-mc:vNdN */
- static int do_fsl_mc_entry(const char *filename, void *symval,
- 			   char *alias)
+ #endif /* __SOUNDWIRE_H */
 -- 
 2.7.4
