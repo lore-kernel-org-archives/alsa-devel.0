@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: mfld: Handle return value of platform_get_irq" to the asoc tree
-Date: Fri, 01 Dec 2017 13:43:57 +0000
-Message-ID: <E1eKlbh-0001GI-3V@debutante>
-References: <3c83856bd9f1f23d1e0f5e8753d3998ae4785e37.1511970158.git.arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: intel: sst: Handle return value of platform_get_irq" to the asoc tree
+Date: Fri, 01 Dec 2017 13:44:00 +0000
+Message-ID: <E1eKlbk-0001HK-3L@debutante>
+References: <deb09b18d95f81661dbb8136fec947a548af6a77.1511970158.git.arvind.yadav.cs@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <3c83856bd9f1f23d1e0f5e8753d3998ae4785e37.1511970158.git.arvind.yadav.cs@gmail.com>
+In-Reply-To: <deb09b18d95f81661dbb8136fec947a548af6a77.1511970158.git.arvind.yadav.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com, alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: mfld: Handle return value of platform_get_irq
+   ASoC: intel: sst: Handle return value of platform_get_irq
 
 has been applied to the asoc tree at
 
@@ -37,31 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 00a5cc096774fbc9ac979765fa820e7c8d9121c4 Mon Sep 17 00:00:00 2001
+>From eee44bfcf931428d7e94a9ae2092d687386a135a Mon Sep 17 00:00:00 2001
 From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Wed, 29 Nov 2017 21:47:14 +0530
-Subject: [PATCH] ASoC: intel: mfld: Handle return value of platform_get_irq
+Date: Wed, 29 Nov 2017 21:47:13 +0530
+Subject: [PATCH] ASoC: intel: sst: Handle return value of platform_get_irq
 
 platform_get_irq() can fail here and we must check its return value.
 
 Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/mfld_machine.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/atom/sst/sst_acpi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/boards/mfld_machine.c b/sound/soc/intel/boards/mfld_machine.c
-index 6f44acfb4aae..7cb44fdde1ee 100644
---- a/sound/soc/intel/boards/mfld_machine.c
-+++ b/sound/soc/intel/boards/mfld_machine.c
-@@ -372,6 +372,8 @@ static int snd_mfld_mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 32d6e02e2104..6cd481bec275 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -236,6 +236,9 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
+ 	/* Find the IRQ */
+ 	ctx->irq_num = platform_get_irq(pdev,
+ 				ctx->pdata->res_info->acpi_ipc_irq_index);
++	if (ctx->irq_num <= 0)
++		return ctx->irq_num < 0 ? ctx->irq_num : -EIO;
++
+ 	return 0;
+ }
  
- 	/* retrive the irq number */
- 	irq = platform_get_irq(pdev, 0);
-+	if (irq <= 0)
-+		return irq < 0 ? irq : -ENODEV;
- 
- 	/* audio interrupt base of SRAM location where
- 	 * interrupts are stored by System FW */
 -- 
 2.15.0
