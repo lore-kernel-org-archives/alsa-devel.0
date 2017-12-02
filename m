@@ -1,104 +1,122 @@
 From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 02/13] docs: driver-api: add iio hw consumer section
-Date: Sat, 2 Dec 2017 14:51:37 +0000
-Message-ID: <20171202145137.159e7a0e@archlinux>
+Subject: Re: [PATCH v6 03/13] IIO: hw_consumer: add
+ devm_iio_hw_consumer_alloc
+Date: Sat, 2 Dec 2017 14:52:04 +0000
+Message-ID: <20171202145204.25e9093d@archlinux>
 References: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
-        <1512150020-20335-3-git-send-email-arnaud.pouliquen@st.com>
+        <1512150020-20335-4-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1512150020-20335-3-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1512150020-20335-4-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 1 Dec 2017 18:40:09 +0100
+On Fri, 1 Dec 2017 18:40:10 +0100
 Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
 
-> This adds a section about the Hardware consumer
-> API of the IIO subsystem to the driver API
-> documentation.
+> Add devm_iio_hw_consumer_alloc function that calls iio_hw_consumer_free
+> when the device is unbound from the bus.
 > 
 > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
 
 > ---
->  Documentation/driver-api/iio/hw-consumer.rst | 51 ++++++++++++++++++++++++++++
->  Documentation/driver-api/iio/index.rst       |  1 +
->  2 files changed, 52 insertions(+)
->  create mode 100644 Documentation/driver-api/iio/hw-consumer.rst
+>  drivers/iio/buffer/industrialio-hw-consumer.c | 66 +++++++++++++++++++++++++++
+>  include/linux/iio/hw-consumer.h               |  2 +
+>  2 files changed, 68 insertions(+)
 > 
-> diff --git a/Documentation/driver-api/iio/hw-consumer.rst b/Documentation/driver-api/iio/hw-consumer.rst
-> new file mode 100644
-> index 0000000..8facce6
-> --- /dev/null
-> +++ b/Documentation/driver-api/iio/hw-consumer.rst
-> @@ -0,0 +1,51 @@
-> +===========
-> +HW consumer
-> +===========
-> +An IIO device can be directly connected to another device in hardware. in this
-> +case the buffers between IIO provider and IIO consumer are handled by hardware.
-> +The Industrial I/O HW consumer offers a way to bond these IIO devices without
-> +software buffer for data. The implementation can be found under
-> +:file:`drivers/iio/buffer/hw-consumer.c`
+> diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
+> index 0253be1..e980a79 100644
+> --- a/drivers/iio/buffer/industrialio-hw-consumer.c
+> +++ b/drivers/iio/buffer/industrialio-hw-consumer.c
+> @@ -138,6 +138,72 @@ void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
+>  }
+>  EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
+>  
+> +static void devm_iio_hw_consumer_release(struct device *dev, void *res)
+> +{
+> +	iio_hw_consumer_free(*(struct iio_hw_consumer **)res);
+> +}
 > +
+> +static int devm_iio_hw_consumer_match(struct device *dev, void *res, void *data)
+> +{
+> +	struct iio_hw_consumer **r = res;
 > +
-> +* struct :c:type:`iio_hw_consumer` — Hardware consumer structure
-> +* :c:func:`iio_hw_consumer_alloc` — Allocate IIO hardware consumer
-> +* :c:func:`iio_hw_consumer_free` — Free IIO hardware consumer
-> +* :c:func:`iio_hw_consumer_enable` — Enable IIO hardware consumer
-> +* :c:func:`iio_hw_consumer_disable` — Disable IIO hardware consumer
+> +	if (!r || !*r) {
+> +		WARN_ON(!r || !*r);
+> +		return 0;
+> +	}
+> +	return *r == data;
+> +}
 > +
+> +/**
+> + * devm_iio_hw_consumer_alloc - Resource-managed iio_hw_consumer_alloc()
+> + * @dev: Pointer to consumer device.
+> + *
+> + * Managed iio_hw_consumer_alloc. iio_hw_consumer allocated with this function
+> + * is automatically freed on driver detach.
+> + *
+> + * If an iio_hw_consumer allocated with this function needs to be freed
+> + * separately, devm_iio_hw_consumer_free() must be used.
+> + *
+> + * returns pointer to allocated iio_hw_consumer on success, NULL on failure.
+> + */
+> +struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev)
+> +{
+> +	struct iio_hw_consumer **ptr, *iio_hwc;
 > +
-> +HW consumer setup
-> +=================
+> +	ptr = devres_alloc(devm_iio_hw_consumer_release, sizeof(*ptr),
+> +			   GFP_KERNEL);
+> +	if (!ptr)
+> +		return NULL;
 > +
-> +As standard IIO device the implementation is based on IIO provider/consumer.
-> +A typical IIO HW consumer setup looks like this::
-> +
-> +	static struct iio_hw_consumer *hwc;
-> +
-> +	static const struct iio_info adc_info = {
-> +		.read_raw = adc_read_raw,
-> +	};
-> +
-> +	static int adc_read_raw(struct iio_dev *indio_dev,
-> +				struct iio_chan_spec const *chan, int *val,
-> +				int *val2, long mask)
-> +	{
-> +		ret = iio_hw_consumer_enable(hwc);
-> +
-> +		/* Acquire data */
-> +
-> +		ret = iio_hw_consumer_disable(hwc);
+> +	iio_hwc = iio_hw_consumer_alloc(dev);
+> +	if (IS_ERR(iio_hwc)) {
+> +		devres_free(ptr);
+> +	} else {
+> +		*ptr = iio_hwc;
+> +		devres_add(dev, ptr);
 > +	}
 > +
-> +	static int adc_probe(struct platform_device *pdev)
-> +	{
-> +		hwc = devm_iio_hw_consumer_alloc(&iio->dev);
-> +	}
+> +	return iio_hwc;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_alloc);
 > +
-> +More details
-> +============
-> +.. kernel-doc:: include/linux/iio/hw-consumer.h
-> +.. kernel-doc:: drivers/iio/buffer/industrialio-hw-consumer.c
-> +   :export:
+> +/**
+> + * devm_iio_hw_consumer_free - Resource-managed iio_hw_consumer_free()
+> + * @dev: Pointer to consumer device.
+> + * @hwc: iio_hw_consumer to free.
+> + *
+> + * Free iio_hw_consumer allocated with devm_iio_hw_consumer_alloc().
+> + */
+> +void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc)
+> +{
+> +	int rc;
 > +
-> diff --git a/Documentation/driver-api/iio/index.rst b/Documentation/driver-api/iio/index.rst
-> index e5c3922..7fba341 100644
-> --- a/Documentation/driver-api/iio/index.rst
-> +++ b/Documentation/driver-api/iio/index.rst
-> @@ -15,3 +15,4 @@ Contents:
->     buffers
->     triggers
->     triggered-buffers
-> +   hw-consumer
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +	rc = devres_release(dev, devm_iio_hw_consumer_release,
+> +			    devm_iio_hw_consumer_match, hwc);
+> +	WARN_ON(rc);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_iio_hw_consumer_free);
+> +
+>  /**
+>   * iio_hw_consumer_enable() - Enable IIO hardware consumer
+>   * @hwc: iio_hw_consumer to enable.
+> diff --git a/include/linux/iio/hw-consumer.h b/include/linux/iio/hw-consumer.h
+> index f16791b..90ecfce 100644
+> --- a/include/linux/iio/hw-consumer.h
+> +++ b/include/linux/iio/hw-consumer.h
+> @@ -14,6 +14,8 @@ struct iio_hw_consumer;
+>  
+>  struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
+>  void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
+> +struct iio_hw_consumer *devm_iio_hw_consumer_alloc(struct device *dev);
+> +void devm_iio_hw_consumer_free(struct device *dev, struct iio_hw_consumer *hwc);
+>  int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
+>  void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
+>  
