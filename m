@@ -1,72 +1,164 @@
-From: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 03/17] mfd: madera: Add common support for Cirrus Logic
- Madera codecs
-Date: Sat, 2 Dec 2017 13:10:04 +0100
-Message-ID: <CACRpkdZ4QuOhk1LuGftcFozUKdZ4vFAO3omkQ004k39J=jKL7g@mail.gmail.com>
-References: <20171123171316.10868-1-rf@opensource.wolfsonmicro.com>
- <fe8064a5-8692-46c1-9f53-ab0a429baeeb@EX17.ad.cirrus.com> <CACRpkdaxKjPd_k8tuO3R4+5LFT4_37zn6ruDRPd5j9xNAH4+Dw@mail.gmail.com>
- <1eff5a38-cff3-449b-bda4-047f50a9f1d4@EX17.ad.cirrus.com>
+From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v6 04/13] IIO: inkern: API for manipulating channel
+ attributes
+Date: Sat, 2 Dec 2017 14:46:23 +0000
+Message-ID: <20171202144623.27438bb2@archlinux>
+References: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
+        <1512150020-20335-5-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1eff5a38-cff3-449b-bda4-047f50a9f1d4-MRjWshV2NDGMZzV0eMwobdBPR1lH4CV8@public.gmane.org>
+In-Reply-To: <1512150020-20335-5-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Nikesh Oswal <Nikesh.Oswal-UVNVL95qEvAciDkP5Hr2oA@public.gmane.org>
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 29, 2017 at 12:36 PM, Richard Fitzgerald
-<rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
-> On 29/11/17 10:18, Linus Walleij wrote:
->>
->> On Thu, Nov 23, 2017 at 6:13 PM, Richard Fitzgerald
->> <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
->>
->>> +config MFD_MADERA_I2C
->>> +       bool "Cirrus Logic Madera codecs with I2C"
->>> +       select MFD_MADERA
->>> +       select REGMAP_I2C
->>> +       depends on I2C
->>> +       depends on PINCTRL
->>> +       help
->>> +         Support for the Cirrus Logic Madera platform audio SoC
->>> +         core functionality controlled via I2C.
->>> +
->>> +config MFD_MADERA_SPI
->>> +       bool "Cirrus Logic Madera codecs with SPI"
->>> +       select MFD_MADERA
->>> +       select REGMAP_SPI
->>> +       depends on SPI_MASTER
->>> +       depends on PINCTRL
->>> +       help
->>> +         Support for the Cirrus Logic Madera platform audio SoC
->>> +         core functionality controlled via SPI.
->>
->>
->> Why do the I2C and SPI subdrivers depend on PINCTRL?
->>
->> They sure don't seem to be using any pinctrl-specific APIs.
->>
->
-> They require PINCTRL even if they don't call any functions on it because the
-> chip won't work correctly if there isn't a PINCTRL driver to apply the
-> correct pinmux configuration.
+On Fri, 1 Dec 2017 18:40:11 +0100
+Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org> wrote:
 
-Apply the configuration to what? Sorry I don't get it.
+> Extend the inkern API with functions for reading and writing
+> attribute of iio channels.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> ---
+> V5 to V6 update:
+>  Replace include type.h with iio.h to fix build warning
 
-You can't be referring to the internal pin controller of the Madera, since
-that has to come up before its pin controller can even be communicated
-with.
+Except don't do that.   Consumers should not be able to see the internals
+of iio devices..  Hence instead, move the required enum to types.h please.
 
-If you mean it is to apply the configuration to the system SoC where
-this coded is connected, this is wrong. There may very well be systems
-which have dedicated pins for the codec, atleast in theory. The fact
-that your reference board needs this is not a universal requirement,
-it should be set up in the machine-specific Kconfig for the reference
-board in that case.
+One other passing comment inline (not one I'm expecting you to do anything
+about!).  Otherwise this is fine with me.
 
-Yours,
-Linus Walleij
+Thanks,
+
+Jonathan
+
+> 
+>  drivers/iio/inkern.c         | 18 +++++++++++++-----
+>  include/linux/iio/consumer.h | 28 +++++++++++++++++++++++++++-
+>  2 files changed, 40 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+> index 069defc..f2e7824 100644
+> --- a/drivers/iio/inkern.c
+> +++ b/drivers/iio/inkern.c
+> @@ -664,9 +664,8 @@ int iio_convert_raw_to_processed(struct iio_channel *chan, int raw,
+>  }
+>  EXPORT_SYMBOL_GPL(iio_convert_raw_to_processed);
+>  
+> -static int iio_read_channel_attribute(struct iio_channel *chan,
+> -				      int *val, int *val2,
+> -				      enum iio_chan_info_enum attribute)
+> +int iio_read_channel_attribute(struct iio_channel *chan, int *val, int *val2,
+> +			       enum iio_chan_info_enum attribute)
+>  {
+>  	int ret;
+>  
+> @@ -682,6 +681,8 @@ static int iio_read_channel_attribute(struct iio_channel *chan,
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(iio_read_channel_attribute);
+> +
+>  
+>  int iio_read_channel_offset(struct iio_channel *chan, int *val, int *val2)
+>  {
+> @@ -850,7 +851,8 @@ static int iio_channel_write(struct iio_channel *chan, int val, int val2,
+>  						chan->channel, val, val2, info);
+>  }
+>  
+> -int iio_write_channel_raw(struct iio_channel *chan, int val)
+> +int iio_write_channel_attribute(struct iio_channel *chan, int val, int val2,
+> +				enum iio_chan_info_enum attribute)
+>  {
+>  	int ret;
+>  
+> @@ -860,12 +862,18 @@ int iio_write_channel_raw(struct iio_channel *chan, int val)
+>  		goto err_unlock;
+>  	}
+>  
+> -	ret = iio_channel_write(chan, val, 0, IIO_CHAN_INFO_RAW);
+> +	ret = iio_channel_write(chan, val, val2, attribute);
+>  err_unlock:
+>  	mutex_unlock(&chan->indio_dev->info_exist_lock);
+>  
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL_GPL(iio_write_channel_attribute);
+> +
+> +int iio_write_channel_raw(struct iio_channel *chan, int val)
+> +{
+> +	return iio_write_channel_attribute(chan, val, 0, IIO_CHAN_INFO_RAW);
+> +}
+>  EXPORT_SYMBOL_GPL(iio_write_channel_raw);
+>  
+>  unsigned int iio_get_channel_ext_info_count(struct iio_channel *chan)
+> diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
+> index 5e347a9..70658b1 100644
+> --- a/include/linux/iio/consumer.h
+> +++ b/include/linux/iio/consumer.h
+> @@ -11,7 +11,7 @@
+>  #define _IIO_INKERN_CONSUMER_H_
+>  
+>  #include <linux/types.h>
+> -#include <linux/iio/types.h>
+> +#include <linux/iio/iio.h>
+
+Hmm. Not keen on this include as it just exposed the internals
+to IIO consumers which we really don't want to do.
+
+This is to allow access to the enum iio_chan_info_enum?
+Move it to types.h please.
+
+>  
+>  struct iio_dev;
+>  struct iio_chan_spec;
+> @@ -216,6 +216,32 @@ int iio_read_channel_average_raw(struct iio_channel *chan, int *val);
+>  int iio_read_channel_processed(struct iio_channel *chan, int *val);
+>  
+>  /**
+> + * iio_write_channel_attribute() - Write values to the device attribute.
+> + * @chan:	The channel being queried.
+> + * @val:	Value being written.
+> + * @val2:	Value being written.val2 use depends on attribute type.
+> + * @attribute:	info attribute to be read.
+> + *
+> + * Returns an error code or 0.
+> + */
+> +int iio_write_channel_attribute(struct iio_channel *chan, int val,
+> +				int val2, enum iio_chan_info_enum attribute);
+> +
+> +/**
+> + * iio_read_channel_attribute() - Read values from the device attribute.
+> + * @chan:	The channel being queried.
+> + * @val:	Value being written.
+> + * @val2:	Value being written.Val2 use depends on attribute type.
+
+This pretty much highlights that we are still missing a function to allow us
+to query what form write data should be presented in...
+
+Here we have tightly coupled hardware so we know the answer, but in general
+we don't.
+
+Still can be a follow up patch when someone needs it.
+
+> + * @attribute:	info attribute to be written.
+> + *
+> + * Returns an error code if failed. Else returns a description of what is in val
+> + * and val2, such as IIO_VAL_INT_PLUS_MICRO telling us we have a value of val
+> + * + val2/1e6
+> + */
+> +int iio_read_channel_attribute(struct iio_channel *chan, int *val,
+> +			       int *val2, enum iio_chan_info_enum attribute);
+> +
+> +/**
+>   * iio_write_channel_raw() - write to a given channel
+>   * @chan:		The channel being queried.
+>   * @val:		Value being written.
+
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
