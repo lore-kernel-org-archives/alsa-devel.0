@@ -1,18 +1,18 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 3/9] ASoC: sun8i-codec: Add quirk to specify
-	aif1_lrck_div value
-Date: Sun,  3 Dec 2017 12:41:51 -0800
-Message-ID: <20171203204157.20829-4-anarsoul@gmail.com>
+Subject: [PATCH 5/9] ASoC: sun8i-codec-analog: Use callbacks to
+	add headphones and lineout outputs
+Date: Sun,  3 Dec 2017 12:41:53 -0800
+Message-ID: <20171203204157.20829-6-anarsoul@gmail.com>
 References: <20171203204157.20829-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E30E266B0F
- for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 21:42:06 +0100 (CET)
-Received: by mail-pg0-f66.google.com with SMTP id o2so6744728pgc.8
- for <alsa-devel@alsa-project.org>; Sun, 03 Dec 2017 12:42:06 -0800 (PST)
+Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8C02267321
+ for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 21:42:07 +0100 (CET)
+Received: by mail-pg0-f67.google.com with SMTP id f12so6753857pgo.5
+ for <alsa-devel@alsa-project.org>; Sun, 03 Dec 2017 12:42:07 -0800 (PST)
 In-Reply-To: <20171203204157.20829-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,97 +27,133 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-LRCK divider for A64 differs from A33, so add a quirk to support that.
+From: Marcus Cooper <codekipper@gmail.com>
+
+Widgets for headphones and lineout outputs on A64 are different enough
+and use different regs, so move addition of these outputs into callback to
+simplify upcoming A64 support.
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 ---
- sound/soc/sunxi/sun8i-codec.c | 38 ++++++++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 6 deletions(-)
+ sound/soc/sunxi/sun8i-codec-analog.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 3dd183be08a4..054201d1de03 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -24,6 +24,7 @@
- #include <linux/io.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/of_device.h>
+diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
+index 485e79f292c4..384f582b6f69 100644
+--- a/sound/soc/sunxi/sun8i-codec-analog.c
++++ b/sound/soc/sunxi/sun8i-codec-analog.c
+@@ -397,7 +397,7 @@ static const struct snd_soc_dapm_route sun8i_codec_mixer_routes[] = {
  
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -75,11 +76,22 @@
- #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK	GENMASK(8, 6)
- #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK	GENMASK(12, 9)
- 
-+/*
-+ * struct sun8i_codec_quirks - Differences between SoC variants.
-+ *
-+ * @aif1_lrck_div: LRCK divider
-+ */
-+struct sun8i_codec_quirks {
-+	unsigned int	aif1_lrck_div;
-+};
-+
-+
- struct sun8i_codec {
--	struct device	*dev;
--	struct regmap	*regmap;
--	struct clk	*clk_module;
--	struct clk	*clk_bus;
-+	struct device			*dev;
-+	struct regmap			*regmap;
-+	struct clk			*clk_module;
-+	struct clk			*clk_bus;
-+	const struct sun8i_codec_quirks	*variant;
- };
- 
- static int sun8i_codec_runtime_resume(struct device *dev)
-@@ -305,7 +317,7 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 
- 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
- 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
--			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16);
-+			   scodec->variant->aif1_lrck_div);
- 
- 	sample_rate = sun8i_codec_get_hw_rate(params);
- 	if (sample_rate < 0)
-@@ -440,6 +452,10 @@ static const struct regmap_config sun8i_codec_regmap_config = {
- 	.cache_type	= REGCACHE_FLAT,
- };
- 
-+static const struct sun8i_codec_quirks sun8i_a33_codec_quirks = {
-+	.aif1_lrck_div	= SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16,
-+};
-+
- static int sun8i_codec_probe(struct platform_device *pdev)
- {
- 	struct resource *res_base;
-@@ -453,6 +469,13 @@ static int sun8i_codec_probe(struct platform_device *pdev)
- 
- 	scodec->dev = &pdev->dev;
- 
-+	scodec->variant = of_device_get_match_data(&pdev->dev);
-+	if (!scodec->variant) {
-+		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
-+		return -ENODEV;
-+	}
-+
-+
- 	scodec->clk_module = devm_clk_get(&pdev->dev, "mod");
- 	if (IS_ERR(scodec->clk_module)) {
- 		dev_err(&pdev->dev, "Failed to get the module clock\n");
-@@ -524,7 +547,10 @@ static int sun8i_codec_remove(struct platform_device *pdev)
+ /* headphone specific controls, widgets, and routes */
+ static const DECLARE_TLV_DB_SCALE(sun8i_codec_hp_vol_scale, -6300, 100, 1);
+-static const struct snd_kcontrol_new sun8i_codec_headphone_controls[] = {
++static const struct snd_kcontrol_new sun8i_a23_codec_hp_ctrls[] = {
+ 	SOC_SINGLE_TLV("Headphone Playback Volume",
+ 		       SUN8I_ADDA_HP_VOLC,
+ 		       SUN8I_ADDA_HP_VOLC_HP_VOL, 0x3f, 0,
+@@ -447,7 +447,7 @@ static int sun8i_headphone_amp_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
  }
  
- static const struct of_device_id sun8i_codec_of_match[] = {
--	{ .compatible = "allwinner,sun8i-a33-codec" },
-+	{
-+		.compatible = "allwinner,sun8i-a33-codec",
-+		.data = &sun8i_a33_codec_quirks,
-+	},
- 	{}
+-static const struct snd_soc_dapm_widget sun8i_codec_headphone_widgets[] = {
++static const struct snd_soc_dapm_widget sun8i_a23_codec_hp_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Headphone Source Playback Route",
+ 			 SND_SOC_NOPM, 0, 0, sun8i_codec_hp_src),
+ 	SND_SOC_DAPM_OUT_DRV_E("Headphone Amp", SUN8I_ADDA_PAEN_HP_CTRL,
+@@ -471,22 +471,24 @@ static const struct snd_soc_dapm_route sun8i_codec_headphone_routes[] = {
+ 	{ "HP", NULL, "Headphone Amp" },
  };
- MODULE_DEVICE_TABLE(of, sun8i_codec_of_match);
+ 
+-static int sun8i_codec_add_headphone(struct snd_soc_component *cmpnt)
++static int sun8i_a23_codec_add_headphone(struct snd_soc_component *cmpnt)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
+ 	struct device *dev = cmpnt->dev;
+ 	int ret;
+ 
+ 	ret = snd_soc_add_component_controls(cmpnt,
+-					     sun8i_codec_headphone_controls,
+-					     ARRAY_SIZE(sun8i_codec_headphone_controls));
++					     sun8i_a23_codec_hp_ctrls,
++					     ARRAY_SIZE(
++						sun8i_a23_codec_hp_ctrls));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to add Headphone controls: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_dapm_new_controls(dapm, sun8i_codec_headphone_widgets,
+-					ARRAY_SIZE(sun8i_codec_headphone_widgets));
++	ret = snd_soc_dapm_new_controls(dapm,
++					sun8i_a23_codec_hp_widgets,
++					ARRAY_SIZE(sun8i_a23_codec_hp_widgets));
+ 	if (ret) {
+ 		dev_err(dev, "Failed to add Headphone DAPM widgets: %d\n", ret);
+ 		return ret;
+@@ -604,6 +606,7 @@ static const DECLARE_TLV_DB_RANGE(sun8i_codec_lineout_vol_scale,
+ 	0, 1, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
+ 	2, 31, TLV_DB_SCALE_ITEM(-4350, 150, 0),
+ );
++
+ static const struct snd_kcontrol_new sun8i_codec_lineout_controls[] = {
+ 	SOC_SINGLE_TLV("Line Out Playback Volume",
+ 		       SUN8I_ADDA_PHONE_GAIN_CTRL,
+@@ -648,7 +651,7 @@ static const struct snd_soc_dapm_route sun8i_codec_lineout_routes[] = {
+ 	{ "LINEOUT", NULL, "Line Out Enable", },
+ };
+ 
+-static int sun8i_codec_add_lineout(struct snd_soc_component *cmpnt)
++static int sun8i_h3_codec_add_lineout(struct snd_soc_component *cmpnt)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
+ 	struct device *dev = cmpnt->dev;
+@@ -751,6 +754,9 @@ struct sun8i_codec_analog_quirks {
+ 	bool has_lineout;
+ 	bool has_mbias;
+ 	bool has_mic2;
++	const struct snd_soc_component_driver *cmpnt_drv;
++	int (*add_headphone)(struct snd_soc_component *cmpnt);
++	int (*add_lineout)(struct snd_soc_component *cmpnt);
+ };
+ 
+ static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
+@@ -759,6 +765,7 @@ static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
+ 	.has_linein	= true,
+ 	.has_mbias	= true,
+ 	.has_mic2	= true,
++	.add_headphone	= sun8i_a23_codec_add_headphone,
+ };
+ 
+ static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
+@@ -766,8 +773,10 @@ static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
+ 	.has_lineout	= true,
+ 	.has_mbias	= true,
+ 	.has_mic2	= true,
++	.add_lineout	= sun8i_h3_codec_add_lineout,
+ };
+ 
++
+ static int sun8i_codec_analog_add_mixer(struct snd_soc_component *cmpnt,
+ 					const struct sun8i_codec_analog_quirks *quirks)
+ {
+@@ -834,7 +843,7 @@ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ 		return ret;
+ 
+ 	if (quirks->has_headphone) {
+-		ret = sun8i_codec_add_headphone(cmpnt);
++		ret = quirks->add_headphone(cmpnt);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -852,7 +861,7 @@ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ 	}
+ 
+ 	if (quirks->has_lineout) {
+-		ret = sun8i_codec_add_lineout(cmpnt);
++		ret = quirks->add_lineout(cmpnt);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.15.0
