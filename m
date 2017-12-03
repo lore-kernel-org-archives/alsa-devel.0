@@ -1,48 +1,119 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 1/2] dt-bindings: trivial: add tfa9879 device
-Date: Sun, 3 Dec 2017 09:12:37 -0200
-Message-ID: <CAOMZO5AE++an6MnagrWoL4qwkDJaqtg_qJ5UKX3PB7sw1cTeiA@mail.gmail.com>
-References: <20171201224425.5477-1-peda@axentia.se> <20171201224425.5477-2-peda@axentia.se>
- <CAOMZO5BA2ZbBnPVORALkEGV21j7H9GJW_2uVvtEEU=8qM599-w@mail.gmail.com> <8e295c61-089e-170d-bca2-42ded2021c99@axentia.se>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 03/15] soundwire: Add Master registration
+Date: Sun, 3 Dec 2017 22:11:20 +0530
+Message-ID: <20171203164119.GL32417@localhost>
+References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+ <1512122177-2889-4-git-send-email-vinod.koul@intel.com>
+ <435d9db4-eb3c-f4b4-d978-e5d10b921f71@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <8e295c61-089e-170d-bca2-42ded2021c99-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Cc: linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Nicolas Ferre <nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <435d9db4-eb3c-f4b4-d978-e5d10b921f71@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+On Fri, Dec 01, 2017 at 04:10:55PM -0600, Pierre-Louis Bossart wrote:
+> On 12/1/17 3:56 AM, Vinod Koul wrote:
+> >A Master registers with SoundWire bus and scans the firmware provided
+> 
+> nitpick: is the 'register' correct? You create a bus instance for each
+> hardware master interface. Or is my brain fried?
 
-On Sun, Dec 3, 2017 at 4:59 AM, Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org> wrote:
+naah, thankfully it is not :)
 
-> Right. However, the patch adding that should have been sent to me, the
-> maintainer of the driver. That is carefully recorded in MAINTAINERS. So,
-> forgive me for assuming that nothing had changed in the driver behind my
-> back.
->
-> Had that patch been sent my way as it should have been, I would have
-> insisted that maintenance of the bindings had been kept together with
-> the maintenance of the driver.
+I will reword this, I see it can cause ambguity :)
 
-When I sent this patch ./scripts/get_maintainer.pl did lot list your
-name, so that's why I did not put you on Cc, sorry.
+> >+int sdw_add_bus_master(struct sdw_bus *bus)
+> >+{
+> >+	int ret;
+> >+
+> >+	if (!bus->dev) {
+> >+		pr_err("SoundWire bus has no device");
+> >+		return -ENODEV;
+> >+	}
+> >+
+> >+	mutex_init(&bus->bus_lock);
+> >+	INIT_LIST_HEAD(&bus->slaves);
+> >+
+> >+	/*
+> >+	 * Device numbers in SoundWire are 0 thru 15 with 0 being
+> >+	 * Enumeration device number and 15 broadcast device number. So
+> >+	 * they are not used for assignment so mask these and other
+> >+	 * higher bits
+> 
+> device 14 is used for the master and is not supported by these patches.
+> While allowed, if you use device 12 and 13 (groups) you can't get the status
+> information in a PING command so the recommendation is to avoid them.
+> Those device numbers should never be used really (on top of 0 and 15 as
+> explained above)
 
-4.15-rc1 still does not list you, but linux-next does.
+Yeah we should also exclude 12 thru 14 here. The group alllocation when done
+need to do differently that this one, so will mask those too.
 
-Would you like me to send the following patch so that new binding
-updates go to you?
+> >+void sdw_extract_slave_id(struct sdw_bus *bus,
+> >+			u64 addr, struct sdw_slave_id *id)
+> >+{
+> >+	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
+> >+
+> >+	/*
+> >+	 * Spec definition
+> >+	 *   Register		Bit	Contents
+> >+	 *   DevId_0 [7:4]	47:44	sdw_version
+> >+	 *   DevId_0 [3:0]	43:40	unique_id
+> >+	 *   DevId_1		39:32	mfg_id [15:8]
+> >+	 *   DevId_2		31:24	mfg_id [7:0]
+> 
+> Add a reference to mid.mipi.org (here or in the summary) ?
 
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9808,6 +9808,7 @@ NXP TFA9879 DRIVER
- M:     Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
- L:     alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org (moderated for non-subscribers)
- S:     Maintained
-+F:     Documentation/devicetree/bindings/sound/tfa9879.txt
- F:     sound/soc/codecs/tfa9879*
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Will add in summary, makes sense on that page
+
+> >+int sdw_acpi_find_slaves(struct sdw_bus *bus)
+> >+{
+> >+	struct acpi_device *adev, *parent;
+> >+
+> >+	parent = ACPI_COMPANION(bus->dev);
+> >+	if (!parent) {
+> >+		dev_err(bus->dev, "Can't find parent for acpi bind\n");
+> >+		return -ENODEV;
+> >+	}
+> >+
+> >+	list_for_each_entry(adev, &parent->children, node) {
+> >+		unsigned long long addr;
+> >+		struct sdw_slave_id id;
+> >+		unsigned int link_id;
+> >+		acpi_status status;
+> >+
+> >+		status = acpi_evaluate_integer(adev->handle,
+> >+					METHOD_NAME__ADR, NULL, &addr);
+> >+
+> >+		if (ACPI_FAILURE(status)) {
+> >+			dev_err(bus->dev, "_ADR resolution failed: %x\n",
+> >+							status);
+> >+			return status;
+> >+		}
+> >+
+> >+		/* Extract link id from ADR, it is from 48 to 51 bits */
+> 
+> nitpick: in bits 51..48 as defined in the MIPI SoundWire DisCo spec.
+
+ok
+
+> >+/* SDW Enumeration Device Number */
+> >+#define SDW_ENUM_DEV_NUM		0
+> 
+> add
+> SDW_GROUP12_DEV_NUM		12
+> SDW_GROUP12_DEV_NUM		13
+
+you mean SDW_GROUP13_DEV_NUM :D
+
+> SDW_MASTER_DEV_NUM		14 /* not supported in these patches */
+
+These dont help now as we dont support, so kind of dead code.
+Lets add them when we really support it
+
+-- 
+~Vinod
