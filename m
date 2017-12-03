@@ -1,21 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 00/10] Enable HDA Codec support on Intel
- Platforms (Series2)
-Date: Sun, 3 Dec 2017 22:50:37 +0530
-Message-ID: <20171203172037.GS32417@localhost>
-References: <1512119648-2700-1-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hh8tajy3r.wl-tiwai@suse.de>
- <23319967-3571-9e8c-3077-94200bff813f@linux.intel.com>
- <s5ha7z2gqr6.wl-tiwai@suse.de>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH 1/9] ASoC: sun4i-i2s: Add quirk to handle fixed
+	WSS
+Date: Sun,  3 Dec 2017 12:41:49 -0800
+Message-ID: <20171203204157.20829-2-anarsoul@gmail.com>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D7E10266B0F
- for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 18:17:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5ha7z2gqr6.wl-tiwai@suse.de>
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E4C926710B
+ for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 21:42:03 +0100 (CET)
+Received: by mail-pf0-f195.google.com with SMTP id u19so6985448pfa.12
+ for <alsa-devel@alsa-project.org>; Sun, 03 Dec 2017 12:42:03 -0800 (PST)
+In-Reply-To: <20171203204157.20829-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +24,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>, =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 01, 2017 at 09:03:25PM +0100, Takashi Iwai wrote:
-> > >> FIXME:
-> > >> - KConfig changes does not look right, but I could not think of any proper
-> > >>    way without making changes into legacy HDA codec driver. So need some
-> > >>    help on this topic.
-> > >
-> > > And this is another big issue.  As long as you don't allow build both,
-> > > it never flies with distros, and it means no dramatic improvement of
-> > > the situation, either.
-> > >
-> > > IOW, we have to make the codec driver working on both controller/bus
-> > > implementations, and it essentially means to rewrite the HD-audio
-> > > codec plumbing code.  Currently, it's a kind of half-baked state, and
-> > > we need to cast to unified form.
-> > 
-> > Before going into codec support, should we first deal with the
-> > selection of the ASoC/Legacy mode for the controller side of things?
-> > Even with basic HDMI/iDisp cases, we don't have a clean solution
-> > today. When I worked on the late Joule platform, there was no fallback
-> > mode which forced a recompilation depending on BIOS settings.
-> > My understanding is that there is no support for multiple drivers
-> > registering for the same PCI ID, I believe we'll have to define a
-> > top-level wrapper which arbitrates internally based on BIOS settings
-> > and user/distro preferences which mode is selected.
-> 
-> True, we need to sort out that.  But the selection of the card-level
-> driver can be relatively easily done in a manual way, either via
-> blacklisting or by common module options.  Currently AMDGPU and radeon
-> drivers are in such situation, for example.
-> 
-> A common single switch, or at best the automatic arbitration would be
-> preferred, of course, though.
+I2S for audio codec on sun50i-A64 always uses fixed word select size value,
+no matter what is sample width. Add quirk to support that.
 
-The switch is again short term as we should progress and move towards one
-solution whilst deprecating the other, so that way this makes a simple
-solution and helps in transition, change flag defaults and deprecate.
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 04f92583a969..54c16eb64713 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -132,6 +132,8 @@
+  * @mclk_offset: Value by which mclkdiv needs to be adjusted.
+  * @bclk_offset: Value by which bclkdiv needs to be adjusted.
+  * @fmt_offset: Value by which wss and sr needs to be adjusted.
++ * @fixed_wss: Hardcoded 'word select size' value needs to be used
++ * @wss_value: Value to be used as WSS if fixed_wss is set
+  * @field_clkdiv_mclk_en: regmap field to enable mclk output.
+  * @field_fmt_wss: regmap field to set word select size.
+  * @field_fmt_sr: regmap field to set sample resolution.
+@@ -150,11 +152,13 @@ struct sun4i_i2s_quirks {
+ 	bool				has_chcfg;
+ 	bool				has_chsel_tx_chen;
+ 	bool				has_chsel_offset;
++	bool				fixed_wss;
+ 	unsigned int			reg_offset_txdata;	/* TX FIFO */
+ 	const struct regmap_config	*sun4i_i2s_regmap;
+ 	unsigned int			mclk_offset;
+ 	unsigned int			bclk_offset;
+ 	unsigned int			fmt_offset;
++	unsigned int			wss_value;
+ 
+ 	/* Register fields for i2s */
+ 	struct reg_field		field_clkdiv_mclk_en;
+@@ -345,7 +349,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+-	int sr, wss, channels;
++	int sr, wss, channels, pwidth;
+ 	u32 width;
+ 
+ 	channels = params_channels(params);
+@@ -386,7 +390,8 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	i2s->playback_dma_data.addr_width = width;
+ 
+-	switch (params_width(params)) {
++	pwidth = params_width(params);
++	switch (pwidth) {
+ 	case 16:
+ 		sr = 0;
+ 		wss = 0;
+@@ -396,13 +401,30 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
++	if (i2s->variant->fixed_wss) {
++		wss = i2s->variant->wss_value;
++		switch (wss) {
++		case 0:
++			pwidth = 16;
++			break;
++		case 1:
++			pwidth = 20;
++			break;
++		case 2:
++			pwidth = 24;
++			break;
++		case 3:
++			pwidth = 32;
++			break;
++		}
++	}
++
+ 	regmap_field_write(i2s->field_fmt_wss,
+ 			   wss + i2s->variant->fmt_offset);
+ 	regmap_field_write(i2s->field_fmt_sr,
+ 			   sr + i2s->variant->fmt_offset);
+ 
+-	return sun4i_i2s_set_clk_rate(i2s, params_rate(params),
+-				      params_width(params));
++	return sun4i_i2s_set_clk_rate(i2s, params_rate(params), pwidth);
+ }
+ 
+ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 -- 
-~Vinod
+2.15.0
