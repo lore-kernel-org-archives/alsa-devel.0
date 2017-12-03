@@ -1,119 +1,143 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 03/15] soundwire: Add Master registration
-Date: Sun, 3 Dec 2017 22:11:20 +0530
-Message-ID: <20171203164119.GL32417@localhost>
+Subject: Re: [PATCH v4 04/15] soundwire: Add MIPI DisCo
+ property helpers
+Date: Sun, 3 Dec 2017 22:22:03 +0530
+Message-ID: <20171203165203.GM32417@localhost>
 References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <1512122177-2889-4-git-send-email-vinod.koul@intel.com>
- <435d9db4-eb3c-f4b4-d978-e5d10b921f71@linux.intel.com>
+ <1512122177-2889-5-git-send-email-vinod.koul@intel.com>
+ <4a79c26c-db39-700c-627b-f474200f9a7f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 947DB266B0F
+ for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 17:48:29 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <435d9db4-eb3c-f4b4-d978-e5d10b921f71@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <4a79c26c-db39-700c-627b-f474200f9a7f@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 01, 2017 at 04:10:55PM -0600, Pierre-Louis Bossart wrote:
-> On 12/1/17 3:56 AM, Vinod Koul wrote:
-> >A Master registers with SoundWire bus and scans the firmware provided
-> 
-> nitpick: is the 'register' correct? You create a bus instance for each
-> hardware master interface. Or is my brain fried?
+On Fri, Dec 01, 2017 at 04:49:01PM -0600, Pierre-Louis Bossart wrote:
 
-naah, thankfully it is not :)
-
-I will reword this, I see it can cause ambguity :)
-
-> >+int sdw_add_bus_master(struct sdw_bus *bus)
+> >+int sdw_master_read_prop(struct sdw_bus *bus)
 > >+{
-> >+	int ret;
+> >+	struct sdw_master_prop *prop = &bus->prop;
+> >+	struct fwnode_handle *link;
+> >+	unsigned int count = 0;
+> >+	char name[32];
+> >+	int nval, i;
 > >+
-> >+	if (!bus->dev) {
-> >+		pr_err("SoundWire bus has no device");
-> >+		return -ENODEV;
-> >+	}
+> >+	device_property_read_u32(bus->dev,
+> >+			"mipi-sdw-sw-interface-revision", &prop->revision);
+> >+	device_property_read_u32(bus->dev, "mipi-sdw-master-count", &count);
 > >+
-> >+	mutex_init(&bus->bus_lock);
-> >+	INIT_LIST_HEAD(&bus->slaves);
-> >+
+> >+	/* Find link handle */
+> >+	snprintf(name, sizeof(name),
+> >+			"mipi-sdw-link-%d-subproperties", bus->link_id);
+> 
+> if you follow the DisCo spec, this property is at the controller level,
+> isn't there a confusion between controller/master here, and consequently are
+> we reading the same things multiple times or using the wrong bus parameter?
+
+Not sure I follow, this one is for a specific master ie a specfic link.
+we need to read respective master thru mipi-sdw-link-N-subproperties
+
+> If I look at intel_probe(), there is a clear reference to a link_id, and
+> then you set the pointer to this read_prop which reads the number of links,
+> which looks like the wrong order. You can't assign a link ID before knowing
+> how many links there are - or you may be unable to detect issues.
+
+Sorry I dont follow this part. FWIW, when master driver is enumerated it
+know the link_id value and then sets the read_prop and then these are read.
+
+Here we are reading "a specific link property" with the knowledge of link_id
+value...
+
+> >+	fwnode_property_read_u32(link, "mipi-sdw-default-frame-rate",
+> >+				&prop->default_frame_rate);
+> >+	fwnode_property_read_u32(link, "mipi-sdw-default-frame-row-size",
+> >+				&prop->default_row);
+> >+	fwnode_property_read_u32(link, "mipi-sdw-default-frame-col-size",
+> 
+> This is fine, just wondering if we should warnings if the values make no
+> sense, e.g. the DisCo spec states in Note1 page 15 that the values are
+> interrelated.
+
+I think we discussed in past and that would kind of form the firmware
+validation. We check all the values to see if firmware gave us sane values..
+
 > >+	/*
-> >+	 * Device numbers in SoundWire are 0 thru 15 with 0 being
-> >+	 * Enumeration device number and 15 broadcast device number. So
-> >+	 * they are not used for assignment so mask these and other
-> >+	 * higher bits
+> >+	 * Based on each DPn port, get source and sink dpn properties.
+> >+	 * Also, some ports can operate as both source or sink.
+> >+	 */
+> >+
+> >+	/* Allocate memory for set bits in port lists */
+> >+	nval = hweight32(prop->source_ports);
+> >+	num_of_ports += nval;
 > 
-> device 14 is used for the master and is not supported by these patches.
-> While allowed, if you use device 12 and 13 (groups) you can't get the status
-> information in a PING command so the recommendation is to avoid them.
-> Those device numbers should never be used really (on top of 0 and 15 as
-> explained above)
-
-Yeah we should also exclude 12 thru 14 here. The group alllocation when done
-need to do differently that this one, so will mask those too.
-
-> >+void sdw_extract_slave_id(struct sdw_bus *bus,
-> >+			u64 addr, struct sdw_slave_id *id)
-> >+{
-> >+	dev_dbg(bus->dev, "SDW Slave Addr: %llx", addr);
-> >+
-> >+	/*
-> >+	 * Spec definition
-> >+	 *   Register		Bit	Contents
-> >+	 *   DevId_0 [7:4]	47:44	sdw_version
-> >+	 *   DevId_0 [3:0]	43:40	unique_id
-> >+	 *   DevId_1		39:32	mfg_id [15:8]
-> >+	 *   DevId_2		31:24	mfg_id [7:0]
+> this and...
 > 
-> Add a reference to mid.mipi.org (here or in the summary) ?
-
-Will add in summary, makes sense on that page
-
-> >+int sdw_acpi_find_slaves(struct sdw_bus *bus)
-> >+{
-> >+	struct acpi_device *adev, *parent;
+> >+	prop->src_dpn_prop = devm_kcalloc(&slave->dev, nval,
+> >+				sizeof(*prop->src_dpn_prop), GFP_KERNEL);
+> >+	if (!prop->src_dpn_prop)
+> >+		return -ENOMEM;
 > >+
-> >+	parent = ACPI_COMPANION(bus->dev);
-> >+	if (!parent) {
-> >+		dev_err(bus->dev, "Can't find parent for acpi bind\n");
-> >+		return -ENODEV;
-> >+	}
+> >+	/* Read dpn properties for source port(s) */
+> >+	sdw_slave_read_dpn(slave, prop->src_dpn_prop, nval,
+> >+			prop->source_ports, "source");
 > >+
-> >+	list_for_each_entry(adev, &parent->children, node) {
-> >+		unsigned long long addr;
-> >+		struct sdw_slave_id id;
-> >+		unsigned int link_id;
-> >+		acpi_status status;
-> >+
-> >+		status = acpi_evaluate_integer(adev->handle,
-> >+					METHOD_NAME__ADR, NULL, &addr);
-> >+
-> >+		if (ACPI_FAILURE(status)) {
-> >+			dev_err(bus->dev, "_ADR resolution failed: %x\n",
-> >+							status);
-> >+			return status;
-> >+		}
-> >+
-> >+		/* Extract link id from ADR, it is from 48 to 51 bits */
+> >+	nval = hweight32(prop->sink_ports);
+> >+	num_of_ports += nval;
 > 
-> nitpick: in bits 51..48 as defined in the MIPI SoundWire DisCo spec.
-
-ok
-
-> >+/* SDW Enumeration Device Number */
-> >+#define SDW_ENUM_DEV_NUM		0
+> ... this is no longer needed since...
 > 
-> add
-> SDW_GROUP12_DEV_NUM		12
-> SDW_GROUP12_DEV_NUM		13
+> >+	prop->sink_dpn_prop = devm_kcalloc(&slave->dev, nval,
+> >+				sizeof(*prop->sink_dpn_prop), GFP_KERNEL);
+> >+	if (!prop->sink_dpn_prop)
+> >+		return -ENOMEM;
+> >+
+> >+	/* Read dpn properties for sink port(s) */
+> >+	sdw_slave_read_dpn(slave, prop->sink_dpn_prop, nval,
+> >+			prop->sink_ports, "sink");
+> >+
+> >+	/* some ports are bidirectional so check total ports by ORing */
+> >+	nval = prop->source_ports | prop->sink_ports;
+> >+	num_of_ports = hweight32(nval) + 1; /* add 1 for DP0 */
+> 
+> ... you reassign the value here. That was one earlier feedback from me but
+> you left the variable incrementation in the code.
 
-you mean SDW_GROUP13_DEV_NUM :D
+This seems to have artifact of merge conflicts as I clearly remember removing
+this, thanks for pointing will remove these..
 
-> SDW_MASTER_DEV_NUM		14 /* not supported in these patches */
+> >+/**
+> >+ * enum sdw_clk_stop_mode - Clock Stop modes
+> >+ * @SDW_CLK_STOP_MODE0: Slave can continue operation seamlessly on clock
+> >+ * restart
+> >+ * @SDW_CLK_STOP_MODE1: Slave may have entered a deeper power-saving mode,
+> >+ * not capable of continuing operation seamlessly when the clock restarts
+> >+ */
+> >+enum sdw_clk_stop_mode {
+> >+	SDW_CLK_STOP_MODE0 = 1,
+> >+	SDW_CLK_STOP_MODE1 = 2,
+> 
+> why not 0 and 1?
 
-These dont help now as we dont support, so kind of dead code.
-Lets add them when we really support it
+why not 1 and 2 :D
+
+I think it was to ensure we have a non zero value, but am not sure, will
+check though..
 
 -- 
 ~Vinod
