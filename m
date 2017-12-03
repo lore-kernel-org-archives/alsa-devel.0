@@ -1,115 +1,131 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 8/9] arm64: dts: allwinner: a64: Add nodes
-	necessary for analog sound support
-Date: Sun,  3 Dec 2017 12:41:56 -0800
-Message-ID: <20171203204157.20829-9-anarsoul@gmail.com>
+Subject: [PATCH 6/9] ASoC: sun8i-codec-analog: Add component driver field to
+ quirks structure
+Date: Sun,  3 Dec 2017 12:41:54 -0800
+Message-ID: <20171203204157.20829-7-anarsoul@gmail.com>
 References: <20171203204157.20829-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
- by alsa0.perex.cz (Postfix) with ESMTP id F139926733D
- for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 21:42:10 +0100 (CET)
-Received: by mail-pg0-f67.google.com with SMTP id m25so6738031pgv.12
- for <alsa-devel@alsa-project.org>; Sun, 03 Dec 2017 12:42:10 -0800 (PST)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20171203204157.20829-1-anarsoul@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>, =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add nodes for i2s, digital and analog parts of audiocodec on A64
+This is necessary for upcoming addition of A64 support. A64 uses
+the same DAPM routes, but slightly different widgets. Use approach from
+sun4i-codec driver and pass appropriate component driver through quirks.
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 52 +++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ sound/soc/sunxi/sun8i-codec-analog.c | 57 +++++++++++++++++++++---------------
+ 1 file changed, 33 insertions(+), 24 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index d783d164b9c3..504f16e3d92d 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -112,6 +112,28 @@
- 		method = "smc";
- 	};
+diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
+index 384f582b6f69..4e39d2668286 100644
+--- a/sound/soc/sunxi/sun8i-codec-analog.c
++++ b/sound/soc/sunxi/sun8i-codec-analog.c
+@@ -759,24 +759,6 @@ struct sun8i_codec_analog_quirks {
+ 	int (*add_lineout)(struct snd_soc_component *cmpnt);
+ };
  
-+	sound: sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "SUN50i Audio Card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,frame-master = <&cpudai>;
-+		simple-audio-card,bitclock-master = <&cpudai>;
-+		simple-audio-card,mclk-fs = <512>;
-+		simple-audio-card,aux-devs = <&codec_analog>;
-+		simple-audio-card,routing =
-+				"Left DAC", "AIF1 Slot 0 Left",
-+				"Right DAC", "AIF1 Slot 0 Right";
-+		status = "disabled";
-+
-+		cpudai: simple-audio-card,cpu {
-+			sound-dai = <&dai>;
-+		};
-+
-+		link_codec: simple-audio-card,codec {
-+			sound-dai = <&codec>;
-+		};
-+	};
-+
- 	timer {
- 		compatible = "arm,armv8-timer";
- 		interrupts = <GIC_PPI 13
-@@ -382,6 +404,30 @@
- 			};
- 		};
+-static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
+-	.has_headphone	= true,
+-	.has_hmic	= true,
+-	.has_linein	= true,
+-	.has_mbias	= true,
+-	.has_mic2	= true,
+-	.add_headphone	= sun8i_a23_codec_add_headphone,
+-};
+-
+-static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
+-	.has_linein	= true,
+-	.has_lineout	= true,
+-	.has_mbias	= true,
+-	.has_mic2	= true,
+-	.add_lineout	= sun8i_h3_codec_add_lineout,
+-};
+-
+-
+ static int sun8i_codec_analog_add_mixer(struct snd_soc_component *cmpnt,
+ 					const struct sun8i_codec_analog_quirks *quirks)
+ {
+@@ -819,11 +801,6 @@ static int sun8i_codec_analog_add_mixer(struct snd_soc_component *cmpnt,
+ 	return 0;
+ }
  
-+		dai: dai@1c22c00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-a64-acodec-i2s";
-+			reg = <0x01c22c00 0x200>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "apb", "mod";
-+			resets = <&ccu RST_BUS_CODEC>;
-+			reset-names = "rst";
-+			dmas = <&dma 15>, <&dma 15>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
-+		};
-+
-+		codec: codec@1c22e00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-a64-codec";
-+			reg = <0x01c22e00 0x600>;
-+			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "bus", "mod";
-+			status = "disabled";
-+		};
-+
- 		uart0: serial@1c28000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x01c28000 0x400>;
-@@ -563,6 +609,12 @@
- 			#reset-cells = <1>;
- 		};
+-static const struct sun8i_codec_analog_quirks sun8i_v3s_quirks = {
+-	.has_headphone	= true,
+-	.has_hmic	= true,
+-};
+-
+ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ {
+ 	struct device *dev = cmpnt->dev;
+@@ -891,6 +868,31 @@ static const struct snd_soc_component_driver sun8i_codec_analog_cmpnt_drv = {
+ 	.probe			= sun8i_codec_analog_cmpnt_probe,
+ };
  
-+		codec_analog: codec-analog@1f015c0 {
-+			compatible = "allwinner,sun50i-a64-codec-analog";
-+			reg = <0x01f015c0 0x4>;
-+			status = "disabled";
-+		};
++static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
++	.has_headphone	= true,
++	.has_hmic	= true,
++	.has_linein	= true,
++	.has_mbias	= true,
++	.has_mic2	= true,
++	.add_headphone	= sun8i_a23_codec_add_headphone,
++	.cmpnt_drv	= &sun8i_codec_analog_cmpnt_drv,
++};
 +
- 		r_pio: pinctrl@1f02c00 {
- 			compatible = "allwinner,sun50i-a64-r-pinctrl";
- 			reg = <0x01f02c00 0x400>;
++static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
++	.has_linein	= true,
++	.has_lineout	= true,
++	.has_mbias	= true,
++	.has_mic2	= true,
++	.add_lineout	= sun8i_h3_codec_add_lineout,
++	.cmpnt_drv	= &sun8i_codec_analog_cmpnt_drv,
++};
++
++static const struct sun8i_codec_analog_quirks sun8i_v3s_quirks = {
++	.has_headphone	= true,
++	.has_hmic	= true,
++	.cmpnt_drv	= &sun8i_codec_analog_cmpnt_drv,
++};
++
+ static const struct of_device_id sun8i_codec_analog_of_match[] = {
+ 	{
+ 		.compatible = "allwinner,sun8i-a23-codec-analog",
+@@ -913,6 +915,13 @@ static int sun8i_codec_analog_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	struct regmap *regmap;
+ 	void __iomem *base;
++	const struct sun8i_codec_analog_quirks *quirks;
++
++	quirks = of_device_get_match_data(&pdev->dev);
++	if (quirks == NULL) {
++		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
++		return -ENODEV;
++	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	base = devm_ioremap_resource(&pdev->dev, res);
+@@ -928,7 +937,7 @@ static int sun8i_codec_analog_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	return devm_snd_soc_register_component(&pdev->dev,
+-					       &sun8i_codec_analog_cmpnt_drv,
++					       quirks->cmpnt_drv,
+ 					       NULL, 0);
+ }
+ 
 -- 
 2.15.0
