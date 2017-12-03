@@ -1,19 +1,21 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 00/15] soundwire: Add a new SoundWire
- subsystem
-Date: Sun, 3 Dec 2017 22:42:56 +0530
-Message-ID: <20171203171255.GR32417@localhost>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <404dd97d-767d-1f93-949b-487dcca96256@linux.intel.com>
+Subject: Re: [RFC 00/10] Enable HDA Codec support on Intel
+ Platforms (Series2)
+Date: Sun, 3 Dec 2017 22:50:37 +0530
+Message-ID: <20171203172037.GS32417@localhost>
+References: <1512119648-2700-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <s5hh8tajy3r.wl-tiwai@suse.de>
+ <23319967-3571-9e8c-3077-94200bff813f@linux.intel.com>
+ <s5ha7z2gqr6.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CEAF266B0F
- for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 18:09:21 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7E10266B0F
+ for <alsa-devel@alsa-project.org>; Sun,  3 Dec 2017 18:17:02 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <404dd97d-767d-1f93-949b-487dcca96256@linux.intel.com>
+In-Reply-To: <s5ha7z2gqr6.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 01, 2017 at 06:24:10PM -0600, Pierre-Louis Bossart wrote:
-> On 12/1/17 3:56 AM, Vinod Koul wrote:
-> >This patch series adds a new SoundWire subsystem which implements a
-> >new MIPI bus protocol 'SoundWire'.
+On Fri, Dec 01, 2017 at 09:03:25PM +0100, Takashi Iwai wrote:
+> > >> FIXME:
+> > >> - KConfig changes does not look right, but I could not think of any proper
+> > >>    way without making changes into legacy HDA codec driver. So need some
+> > >>    help on this topic.
+> > >
+> > > And this is another big issue.  As long as you don't allow build both,
+> > > it never flies with distros, and it means no dramatic improvement of
+> > > the situation, either.
+> > >
+> > > IOW, we have to make the codec driver working on both controller/bus
+> > > implementations, and it essentially means to rewrite the HD-audio
+> > > codec plumbing code.  Currently, it's a kind of half-baked state, and
+> > > we need to cast to unified form.
+> > 
+> > Before going into codec support, should we first deal with the
+> > selection of the ASoC/Legacy mode for the controller side of things?
+> > Even with basic HDMI/iDisp cases, we don't have a clean solution
+> > today. When I worked on the late Joule platform, there was no fallback
+> > mode which forced a recompilation depending on BIOS settings.
+> > My understanding is that there is no support for multiple drivers
+> > registering for the same PCI ID, I believe we'll have to define a
+> > top-level wrapper which arbitrates internally based on BIOS settings
+> > and user/distro preferences which mode is selected.
 > 
-> Sorry for the late feedback Vinod and team.
+> True, we need to sort out that.  But the selection of the card-level
+> driver can be relatively easily done in a manual way, either via
+> blacklisting or by common module options.  Currently AMDGPU and radeon
+> drivers are in such situation, for example.
 > 
-> Overall the code looks very good to me and aligned with the MIPI specs,
-> there are only a couple of points that were added (or some code not removed)
-> during the code cleanups, e.g.
-> - device12..14 should not be used
-> - device_property handling (master/controller confusion?)
-> - error cases on transfers
-> - spec race condition on interrupt clear (not bad but to be discussed
-> further)
-> - some comments and code nit-picks
-> 
-> This is starting to get into second-order reviews really, which shows this
-> is becoming quite mature. And for the record this work isn't just scratching
-> the surface, it helped identify a couple of documentation issues in the MIPI
-> specs which will lead to clarifications in future revisions.
+> A common single switch, or at best the automatic arbitration would be
+> preferred, of course, though.
 
-Thanks for the good word, most the stuff you pointed needs a very detailed
-review, so many thaks for spending time on this one.
-
-> Looking forward to a v5 ;-)
-
-Yeah should be there in next few days..
+The switch is again short term as we should progress and move towards one
+solution whilst deprecating the other, so that way this makes a simple
+solution and helps in transition, change flag defaults and deprecate.
 
 -- 
 ~Vinod
