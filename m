@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
-	wm5110" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:50 +0000
-Message-ID: <E1eLvoM-0000db-GK@debutante>
-References: <87pobbklce.wl%kuninori.morimoto.gx@renesas.com>
+	wm8350" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:53 +0000
+Message-ID: <E1eLvoP-0000eS-I6@debutante>
+References: <87r2vrklcw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DD53B267686
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:53 +0100 (CET)
-In-Reply-To: <87pobbklce.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 448BE26762E
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:57 +0100 (CET)
+In-Reply-To: <87r2vrklcw.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use snd_soc_component_init_regmap() on wm5110
+   ASoC: use snd_soc_component_init_regmap() on wm8350
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 893d7cbea2fa259573e4ba36075e74f489f6dd28 Mon Sep 17 00:00:00 2001
+>From 40b84884617d9f07663862770d2574a71e313bc7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:04:45 +0000
-Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on wm5110
+Date: Tue, 28 Nov 2017 06:04:31 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on wm8350
 
 To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
 .get_regmap. But these are duplicated feature.
@@ -65,43 +65,39 @@ Let's use snd_soc_component_init_regmap() and remove .get_regmap
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm5110.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/codecs/wm8350.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 6ed1e1f9ce51..fb0cf9c61f48 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2280,9 +2280,11 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
- 	struct wm5110_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct arizona *arizona = priv->core.arizona;
- 	int i, ret;
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 2efc5b41ad0f..fc79c6725d06 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1472,6 +1472,8 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 			    GFP_KERNEL);
+ 	if (priv == NULL)
+ 		return -ENOMEM;
++
++	snd_soc_codec_init_regmap(codec, wm8350->regmap);
+ 	snd_soc_codec_set_drvdata(codec, priv);
  
--	priv->core.arizona->dapm = dapm;
-+	arizona->dapm = dapm;
-+	snd_soc_codec_init_regmap(codec, arizona->regmap);
+ 	priv->wm8350 = wm8350;
+@@ -1580,17 +1582,9 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
+ 	return 0;
+ }
  
- 	ret = arizona_init_spk(codec);
- 	if (ret < 0)
-@@ -2344,17 +2346,9 @@ static unsigned int wm5110_digital_vu[] = {
- 	ARIZONA_DAC_DIGITAL_VOLUME_6R,
- };
- 
--static struct regmap *wm5110_get_regmap(struct device *dev)
+-static struct regmap *wm8350_get_regmap(struct device *dev)
 -{
--	struct wm5110_priv *priv = dev_get_drvdata(dev);
+-	struct wm8350 *wm8350 = dev_get_platdata(dev);
 -
--	return priv->core.arizona->regmap;
+-	return wm8350->regmap;
 -}
 -
- static const struct snd_soc_codec_driver soc_codec_dev_wm5110 = {
- 	.probe = wm5110_codec_probe,
- 	.remove = wm5110_codec_remove,
--	.get_regmap = wm5110_get_regmap,
- 
- 	.idle_bias_off = true,
+ static const struct snd_soc_codec_driver soc_codec_dev_wm8350 = {
+ 	.probe =	wm8350_codec_probe,
+ 	.remove =	wm8350_codec_remove,
+-	.get_regmap =	wm8350_get_regmap,
+ 	.set_bias_level = wm8350_set_bias_level,
+ 	.suspend_bias_off = true,
  
 -- 
 2.15.0
