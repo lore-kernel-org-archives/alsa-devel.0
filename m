@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: spdif: Add S32_LE support for S/PDIF dummy codec drivers" to the asoc tree
-Date: Mon, 04 Dec 2017 18:48:48 +0000
-Message-ID: <E1eLvnM-0000KS-BR@debutante>
-References: <20171122114321.29196-2-suzuki.katsuhiro@socionext.com>
+Subject: Applied "ASoC: eukrea-tlv320: Remove include line of fsl_ssi.h" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:10 +0000
+Message-ID: <E1eLvni-0000OR-Kf@debutante>
+References: <1512195805-9023-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171122114321.29196-2-suzuki.katsuhiro@socionext.com>
+In-Reply-To: <1512195805-9023-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, bhumirks@gmail.com, tiwai@suse.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: spdif: Add S32_LE support for S/PDIF dummy codec drivers
+   ASoC: eukrea-tlv320: Remove include line of fsl_ssi.h
 
 has been applied to the asoc tree at
 
@@ -37,66 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From eb733366f5f7f416a7d9215a40e00d57aa193361 Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Date: Wed, 22 Nov 2017 20:43:14 +0900
-Subject: [PATCH] ASoC: spdif: Add S32_LE support for S/PDIF dummy codec
- drivers
+>From 8f1a1df58e011e54ffcc2acd09249579e9467544 Mon Sep 17 00:00:00 2001
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Date: Fri, 1 Dec 2017 22:32:35 -0800
+Subject: [PATCH] ASoC: eukrea-tlv320: Remove include line of fsl_ssi.h
 
-AIO on UniPhier can output S/PDIF where no codec is needed.
-This patch adds S32_LE support for dummy codec drivers.
+The machine driver links both imx-ssi (legacy non-DT driver) and
+fsl_ssi (up-to-date DT based driver). So It also includes both
+imx-ssi.h and fsl_ssi.h header files. This creates a limitation
+for two header files -- they can't define anything with identical
+names.
 
-If one S/PDIF controller has its own limitation, its CPU DAI driver should
-set the supported format by its own circumstance, since the soc-pcm driver
-will use the intersection of cpu_dai's formats and codec_dai's formats.
+Since the eukrea-tlv320 machine driver now does not really need
+anything being defined in the fsl_ssi header file, and it's also
+going to take some time to clean up two SSI drivers, this patch
+takes a quick way to remove the #include fsl_ssi.h line for now.
+It can be added back once the header files are done refactoring.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+The eukrea-tlv320 driver is still compiled successfully without
+any erorr using imx_v6_v7_defconfig, after removing it.
+
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/spdif_receiver.c    | 5 +++--
- sound/soc/codecs/spdif_transmitter.c | 5 +++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/fsl/eukrea-tlv320.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/spdif_receiver.c b/sound/soc/codecs/spdif_receiver.c
-index 7acd05140a81..c8fd6367f6c0 100644
---- a/sound/soc/codecs/spdif_receiver.c
-+++ b/sound/soc/codecs/spdif_receiver.c
-@@ -34,10 +34,11 @@ static const struct snd_soc_dapm_route dir_routes[] = {
- #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
- #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
- 			SNDRV_PCM_FMTBIT_S20_3LE | \
--			SNDRV_PCM_FMTBIT_S24_LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE  | \
-+			SNDRV_PCM_FMTBIT_S32_LE | \
- 			SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE)
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 84ef6385736c..191426a6d9ad 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -29,7 +29,6 @@
  
--static const struct snd_soc_codec_driver soc_codec_spdif_dir = {
-+static struct snd_soc_codec_driver soc_codec_spdif_dir = {
- 	.component_driver = {
- 		.dapm_widgets		= dir_widgets,
- 		.num_dapm_widgets	= ARRAY_SIZE(dir_widgets),
-diff --git a/sound/soc/codecs/spdif_transmitter.c b/sound/soc/codecs/spdif_transmitter.c
-index 063a64ff82d3..037aa1d45559 100644
---- a/sound/soc/codecs/spdif_transmitter.c
-+++ b/sound/soc/codecs/spdif_transmitter.c
-@@ -27,7 +27,8 @@
- #define STUB_RATES	SNDRV_PCM_RATE_8000_192000
- #define STUB_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
- 			SNDRV_PCM_FMTBIT_S20_3LE | \
--			SNDRV_PCM_FMTBIT_S24_LE)
-+			SNDRV_PCM_FMTBIT_S24_LE  | \
-+			SNDRV_PCM_FMTBIT_S32_LE)
+ #include "../codecs/tlv320aic23.h"
+ #include "imx-ssi.h"
+-#include "fsl_ssi.h"
+ #include "imx-audmux.h"
  
- static const struct snd_soc_dapm_widget dit_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("spdif-out"),
-@@ -37,7 +38,7 @@ static const struct snd_soc_dapm_route dit_routes[] = {
- 	{ "spdif-out", NULL, "Playback" },
- };
- 
--static const struct snd_soc_codec_driver soc_codec_spdif_dit = {
-+static struct snd_soc_codec_driver soc_codec_spdif_dit = {
- 	.component_driver = {
- 		.dapm_widgets		= dit_widgets,
- 		.num_dapm_widgets	= ARRAY_SIZE(dit_widgets),
+ #define CODEC_CLOCK 12000000
 -- 
 2.15.0
