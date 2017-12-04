@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: amd: added error checks in dma driver
-Date: Mon, 4 Dec 2017 17:54:19 +0000
-Message-ID: <20171204175419.kejdshqwqgg6lswv@sirena.org.uk>
-References: <1512400584-28170-1-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH 4/8] ASoC: uniphier: add support for
+	UniPhier EVEA codec
+Date: Mon, 4 Dec 2017 18:20:27 +0000
+Message-ID: <20171204182027.2k5uw5og65h6ac7w@sirena.org.uk>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
+ <20171122114321.29196-5-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8723422601833480947=="
+Content-Type: multipart/mixed; boundary="===============6660583542156104889=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FB51266BBC
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 18:54:21 +0100 (CET)
-In-Reply-To: <1512400584-28170-1-git-send-email-Vijendar.Mukunda@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 230CA266BBC
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:20:30 +0100 (CET)
+In-Reply-To: <20171122114321.29196-5-suzuki.katsuhiro@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Alexander.Deucher@amd.com
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8723422601833480947==
+--===============6660583542156104889==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6gocbygrhhvlmexq"
+	protocol="application/pgp-signature"; boundary="nyhrygpahjuvk5i3"
 Content-Disposition: inline
 
 
---6gocbygrhhvlmexq
+--nyhrygpahjuvk5i3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Dec 04, 2017 at 08:46:24PM +0530, Vijendar Mukunda wrote:
-> added additional error checks in acp dma driver
-> v2: printed error codes for acp init & acp deinit
-> failure cases.
+On Wed, Nov 22, 2017 at 08:43:17PM +0900, Katsuhiro Suzuki wrote:
 
-Don't include noise like inter-version changelogs in commit messages,
-add them after the --- if they're important as covered in
-SubmittingPatches.
+> +++ b/sound/soc/uniphier/evea.c
+> @@ -0,0 +1,567 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Socionext UniPhier EVEA ADC/DAC codec driver.
+> + *
+> + * Copyright (c) 2016-2017 Socionext Inc.
 
---6gocbygrhhvlmexq
+Make the entire comment a C++ comment, don't mix and match like this -
+it's ugly.  Otherwise this looks good so I'll apply it, please send a
+followup patch fixing this (and I guess the same thing will apply to
+other files).
+
+--nyhrygpahjuvk5i3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAloli8oACgkQJNaLcl1U
-h9AvUAf9GrLg1v5hzqCydKkFJpJMuLylqleff63JtohGe9NmT9nTsst+jUpbDPvl
-HBQapGecyEsSMau4rMfLetoIH6O53QWpk0aBT3mmi+R9jp5vy3USZZxdReH7NnRP
-8nh7JXO8ZSMo8rj0NvO1zMtToIhPod0SOoDXMlEqpmWrijmi9rq/6sB3y/pd8CWf
-yQRpFqJTr+Yos5omz4+IttrzOeUeGkGJv7o1kETJnXcbkYnI1NCHzmalAnV5+Yzu
-GgKg7aEv/3UDLaLSM7q8qukjpqIeMxa8YPMJvNnzM0jC1qV+p0zeuudk4mY+7ewF
-NRNjq1yaPlJ2OATt6Ab5DwPv8pIqfw==
-=E854
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlolkeoACgkQJNaLcl1U
+h9Dscwf/Zkc6wTXtO4duJEj9ORsWnc6KgJLeM/l8IGaIA1iTubdl0CS0y9ktnsLL
+ODP6xGXKUsrcwVqMALu0g+Kql4RTLlWjjNmsB5em2DjMyMjCdKTaeymxZOYItK/M
+Jev3uPsOH7bFqNvcVFF7kInneSvrD6ghAGtqvP8GFZ4CfDZVc73cwYX1wsDacMs0
+++KNZFjcm25UZquJ0wOeiWv62PxKIlotZiqNixFbLJ3ogxD5RoNRz2X/b+XJn5fb
+7uYQ9YpfRnsjvF7gthXM3R/SbN5YikekGfk/9EzMTkWskLL6KKhPcf3zSuO0FEZX
+NMM+CDLJ8UAEFdQFTgkbpUIiEvglWg==
+=HKyp
 -----END PGP SIGNATURE-----
 
---6gocbygrhhvlmexq--
+--nyhrygpahjuvk5i3--
 
---===============8723422601833480947==
+--===============6660583542156104889==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8723422601833480947==--
+--===============6660583542156104889==--
