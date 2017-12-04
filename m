@@ -1,35 +1,54 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 1/2] dt-bindings: trivial: add tfa9879 device
-Date: Sun, 3 Dec 2017 19:01:04 -0200
-Message-ID: <CAOMZO5Dgr6B19o+1xQJ7Ne8SC7kx90_iecHjD7tZ-GCsSr3JXA@mail.gmail.com>
-References: <20171201224425.5477-1-peda@axentia.se> <20171201224425.5477-2-peda@axentia.se>
- <CAOMZO5BA2ZbBnPVORALkEGV21j7H9GJW_2uVvtEEU=8qM599-w@mail.gmail.com>
- <8e295c61-089e-170d-bca2-42ded2021c99@axentia.se> <CAOMZO5AE++an6MnagrWoL4qwkDJaqtg_qJ5UKX3PB7sw1cTeiA@mail.gmail.com>
- <5ec7ae30-eeac-3cf8-15ad-f6c3a110c5d7@axentia.se>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH 1/9] ASoC: sun4i-i2s: Add quirk to handle
+	fixed WSS
+Date: Mon, 4 Dec 2017 08:43:33 +0800
+Message-ID: <CAGb2v64BpqPzj0WOeiY0mQkX9QXqKctUJyfD9DOVfaE_K6k39g@mail.gmail.com>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
+ <20171203204157.20829-2-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5ec7ae30-eeac-3cf8-15ad-f6c3a110c5d7-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org>
-Cc: linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Nicolas Ferre <nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.csie.ntu.edu.tw (smtp.csie.ntu.edu.tw [140.112.30.61])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29DD526710B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 01:44:03 +0100 (CET)
+Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: b93043)
+ by smtp.csie.ntu.edu.tw (Postfix) with ESMTPSA id 45EC020434
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 08:43:57 +0800 (CST)
+Received: by mail-wm0-f54.google.com with SMTP id 64so11460004wme.3
+ for <alsa-devel@alsa-project.org>; Sun, 03 Dec 2017 16:43:57 -0800 (PST)
+In-Reply-To: <20171203204157.20829-2-anarsoul@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 3, 2017 at 6:53 PM, Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org> wrote:
+Hi,
 
-> That's funny, because I get the below on both 4.14 and 4.15-rc1. And I
-> expect the same ever since the driver was added some 3 years ago.
->
-> $ scripts/get_maintainer.pl your-patch-from[1].diff | grep Peter
-> Peter Rosin <peda-koto5C5qi+TLoDKTGw+V6w@public.gmane.org> (maintainer:NXP TFA9879 DRIVER)
+On Mon, Dec 4, 2017 at 4:41 AM, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> I2S for audio codec on sun50i-A64 always uses fixed word select size value,
+> no matter what is sample width. Add quirk to support that.
 
-You are right.
+Please clarify on this. Does this mean the WSS bitfield is useless and it
+always sends out the same sample sizes regardless of the setting? Or it's
+the codec that can only use a fixed sample width?
 
-I tried ./scripts/get_maintainer.pl
-Documentation/devicetree/bindings/sound/tfa9879.txt
+As far as I can tell, the code you added in this patch points to the latter.
+In that case. this is the wrong way to go about it. The limitation is a
+property of the codec, not the I2S controller. If the codec assumes 32 bits
+per sample, then that is what you should setup in the code driver. See
+sun8i_codec_dai in sound/soc/sunxi/sun8i-codec.c where you can set the
+format. You'll likely need to make a copy of the data structure for A64,
+and tie it to the compatible.
 
-in 4.15-rc1.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ChenYu
