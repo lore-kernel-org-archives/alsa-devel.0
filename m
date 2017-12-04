@@ -1,120 +1,51 @@
-From: Sagar Arun Kamble <sagar.a.kamble@intel.com>
-Subject: Re: [PATCH 1/1] timecounter: Make cyclecounter struct part of
- timecounter struct
-Date: Mon, 4 Dec 2017 10:43:05 +0530
-Message-ID: <8cfdbb16-7053-1d8f-adae-4ce2487fe4ea@intel.com>
-References: <1512189095-28654-1-git-send-email-sagar.a.kamble@intel.com>
- <20171202180458.winwznbstsi355ed@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171202180458.winwznbstsi355ed@localhost>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Cochran <richardcochran@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>, John Stultz <john.stultz@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@codeaurora.org>, linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, alsa-devel@alsa-project.org, kvmarm@lists.cs.columbia.edu
+From: Jaejoong Kim <climbbb.kim@gmail.com>
+Subject: [PATCH V2 2/2] ALSA: usb-audio: Add check return value for usb_string()
+Date: Mon,  4 Dec 2017 15:31:49 +0900
+Message-ID: <1512369109-23253-3-git-send-email-climbbb.kim@gmail.com>
+References: <1511829388-5245-1-git-send-email-climbbb.kim@gmail.com>
+ <1512369109-23253-1-git-send-email-climbbb.kim@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1512369109-23253-1-git-send-email-climbbb.kim@gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, stable <stable@vger.kernel.org>, alsa-devel@alsa-project.org, Jaejoong Kim <climbbb.kim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+snd_usb_copy_string_desc() returns zero if usb_string() fails.
+In case of failure, we need to check the snd_usb_copy_string_desc()'s
+return value and add an exception case
 
+Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
+---
 
-On 12/2/2017 11:34 PM, Richard Cochran wrote:
-> On Sat, Dec 02, 2017 at 10:01:35AM +0530, Sagar Arun Kamble wrote:
->> There is no real need for the users of timecounters to define cyclecounter
->> and timecounter variables separately. Since timecounter will always be
->> based on cyclecounter, have cyclecounter struct as member of timecounter
->> struct.
-> Overall, this is a welcome change.  However, it doesn't go far enough,
-> IMHO, and I'll explain that more below.
->
->> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_clock.c b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
->> index 0247885..35987b5 100644
->> --- a/drivers/net/ethernet/mellanox/mlx4/en_clock.c
->> +++ b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-> ...
->
-> As it stands now, timecounter_init() is used for two totally different
-> reasons.  Some callers only want to set the time, ...
->
->> @@ -207,7 +207,7 @@ static int mlx4_en_phc_settime(struct ptp_clock_info *ptp,
->>   
->>   	/* reset the timecounter */
->>   	write_seqlock_irqsave(&mdev->clock_lock, flags);
->> -	timecounter_init(&mdev->clock, &mdev->cycles, ns);
->> +	timecounter_init(&mdev->clock, ns);
->>   	write_sequnlock_irqrestore(&mdev->clock_lock, flags);
->>   
->>   	return 0;
-> ... while others initialize the data structure the first time:
->
->> @@ -274,17 +274,17 @@ void mlx4_en_init_timestamp(struct mlx4_en_dev *mdev)
->>   
->>   	seqlock_init(&mdev->clock_lock);
->>   
->> -	memset(&mdev->cycles, 0, sizeof(mdev->cycles));
->> -	mdev->cycles.read = mlx4_en_read_clock;
->> -	mdev->cycles.mask = CLOCKSOURCE_MASK(48);
->> -	mdev->cycles.shift = freq_to_shift(dev->caps.hca_core_clock);
->> -	mdev->cycles.mult =
->> -		clocksource_khz2mult(1000 * dev->caps.hca_core_clock, mdev->cycles.shift);
->> -	mdev->nominal_c_mult = mdev->cycles.mult;
->> +	memset(&mdev->clock.cc, 0, sizeof(mdev->clock.cc));
->> +	mdev->clock.cc.read = mlx4_en_read_clock;
->> +	mdev->clock.cc.mask = CLOCKSOURCE_MASK(48);
->> +	mdev->clock.cc.shift = freq_to_shift(dev->caps.hca_core_clock);
->> +	mdev->clock.cc.mult =
->> +		clocksource_khz2mult(1000 * dev->caps.hca_core_clock,
->> +				     mdev->clock.cc.shift);
->> +	mdev->nominal_c_mult = mdev->clock.cc.mult;
->>   
->>   	write_seqlock_irqsave(&mdev->clock_lock, flags);
->> -	timecounter_init(&mdev->clock, &mdev->cycles,
->> -			 ktime_to_ns(ktime_get_real()));
->> +	timecounter_init(&mdev->clock, ktime_to_ns(ktime_get_real()));
-> I'd like to see two followup patches to this one:
->
-> 1. Convert timecounter_init() callers to a new timecounter_reset()
->     function where the intent is to reset the time.
->
-> 2. Change timecounter_init() to take the cyclecounter fields as
->     arguments.
->
-> 	void timecounter_init(struct timecounter *tc,
-> 			      u64 (*read)(const struct cyclecounter *cc),
-> 			      u64 mask,
-> 			      u32 mult,
-> 			      u32 shift,
-> 			      u64 start_tstamp);
->
-> Then we can clean up all this stuff:
->
-> 	mdev->clock.cc.read = mlx4_en_read_clock;
-> 	mdev->clock.cc.mask = CLOCKSOURCE_MASK(48);
-> 	mdev->clock.cc.shift = freq_to_shift(dev->caps.hca_core_clock);
-> 	mdev->clock.cc.mult = clocksource_khz2mult(...);
->
-> This second step can be phased in by calling the new function
-> timecounter_initialize() and converting the drivers one by one.
+Changes in V2:
+ - change return value check.
 
-Yes. Will make these changes and share new patchset.
+ sound/usb/mixer.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Thank you for the review Richard.
-
-Regards,
-Sagar
-
->> diff --git a/include/linux/timecounter.h b/include/linux/timecounter.h
->> index 2496ad4..6daca06 100644
->> --- a/include/linux/timecounter.h
->> +++ b/include/linux/timecounter.h
-> ...
->> @@ -98,7 +98,6 @@ static inline void timecounter_adjtime(struct timecounter *tc, s64 delta)
->>   /**
->>    * timecounter_init - initialize a time counter
->>    * @tc:			Pointer to time counter which is to be initialized/reset
->> - * @cc:			A cycle counter, ready to be used.
-> This "ready to used" requirement should go.  The init() function
-> should make the instance ready to be used all at once.
->
-> Thanks,
-> Richard
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 3294e3a..84b9f9c 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2165,13 +2165,14 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 	if (len)
+ 		;
+ 	else if (nameid)
+-		snd_usb_copy_string_desc(state, nameid, kctl->id.name,
++		len = snd_usb_copy_string_desc(state, nameid, kctl->id.name,
+ 					 sizeof(kctl->id.name));
+-	else {
++	else
+ 		len = get_term_name(state, &state->oterm,
+ 				    kctl->id.name, sizeof(kctl->id.name), 0);
+-		if (!len)
+-			strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
++
++	if (!len) {
++		strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
+ 
+ 		if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR)
+ 			append_ctl_name(kctl, " Clock Source");
+-- 
+2.7.4
