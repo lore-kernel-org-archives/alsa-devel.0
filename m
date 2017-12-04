@@ -1,22 +1,13 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 00/10] Enable HDA Codec support on Intel
- Platforms (Series2)
-Date: Mon, 4 Dec 2017 08:52:30 +0530
-Message-ID: <20171204032229.GZ32417@localhost>
-References: <1512119648-2700-1-git-send-email-rakesh.a.ughreja@intel.com>
- <s5hh8tajy3r.wl-tiwai@suse.de>
- <23319967-3571-9e8c-3077-94200bff813f@linux.intel.com>
- <s5ha7z2gqr6.wl-tiwai@suse.de> <20171203172037.GS32417@localhost>
- <780726ad-3587-1f05-89e4-800ad8ce7375@linux.intel.com>
+Subject: [GIT PULL]: Cannonlake audio firware
+Date: Mon, 4 Dec 2017 09:13:03 +0530
+Message-ID: <20171204034301.GB32417@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5627999278196060970=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id E52CE26710B
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 04:18:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <780726ad-3587-1f05-89e4-800ad8ce7375@linux.intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5703226710B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 04:39:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +17,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+To: linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 03, 2017 at 09:15:21PM -0600, Pierre-Louis Bossart wrote:
-> On 12/3/17 11:20 AM, Vinod Koul wrote:
-> >On Fri, Dec 01, 2017 at 09:03:25PM +0100, Takashi Iwai wrote:
-> >>>>>FIXME:
-> >>>>>- KConfig changes does not look right, but I could not think of any proper
-> >>>>>    way without making changes into legacy HDA codec driver. So need some
-> >>>>>    help on this topic.
-> >>>>
-> >>>>And this is another big issue.  As long as you don't allow build both,
-> >>>>it never flies with distros, and it means no dramatic improvement of
-> >>>>the situation, either.
-> >>>>
-> >>>>IOW, we have to make the codec driver working on both controller/bus
-> >>>>implementations, and it essentially means to rewrite the HD-audio
-> >>>>codec plumbing code.  Currently, it's a kind of half-baked state, and
-> >>>>we need to cast to unified form.
-> >>>
-> >>>Before going into codec support, should we first deal with the
-> >>>selection of the ASoC/Legacy mode for the controller side of things?
-> >>>Even with basic HDMI/iDisp cases, we don't have a clean solution
-> >>>today. When I worked on the late Joule platform, there was no fallback
-> >>>mode which forced a recompilation depending on BIOS settings.
-> >>>My understanding is that there is no support for multiple drivers
-> >>>registering for the same PCI ID, I believe we'll have to define a
-> >>>top-level wrapper which arbitrates internally based on BIOS settings
-> >>>and user/distro preferences which mode is selected.
-> >>
-> >>True, we need to sort out that.  But the selection of the card-level
-> >>driver can be relatively easily done in a manual way, either via
-> >>blacklisting or by common module options.  Currently AMDGPU and radeon
-> >>drivers are in such situation, for example.
-> >>
-> >>A common single switch, or at best the automatic arbitration would be
-> >>preferred, of course, though.
-> >
-> >The switch is again short term as we should progress and move towards one
-> >solution whilst deprecating the other, so that way this makes a simple
-> >solution and helps in transition, change flag defaults and deprecate.
-> 
-> Sorry, I don't get your point. Are you saying the legacy would be
-> deprecated? that was never my understanding, Rakesh's patches only make it
-> easier to use the DSP in combination with an HDaudio codec, but if the DSP
-> is not present the legacy is the fallback, no?
 
-for now yes, but what prevents us from supporting coupled mode when DSP is
-disabled :)
+--===============5627999278196060970==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Disposition: inline
 
--- 
+
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+Please PULL to recieve the Cannonlake audio firmware.
+
+The following changes since commit 17e6288135d4500f9fe60224dce2b46d850c346b:
+
+  brcm: update firmware for bcm4358 (2017-11-25 10:15:53 -0500)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git cnl
+
+for you to fetch changes up to 89c62115f14dd8f414dfd2702913a6f1fcac3287:
+
+  linux-firmware: intel: Add Cannonlake audio firmware (2017-12-04 09:04:57=
+ +0530)
+
+----------------------------------------------------------------
+Vinod Koul (1):
+      linux-firmware: intel: Add Cannonlake audio firmware
+
+ WHENCE                     |   5 +++++
+ intel/dsp_fw_cnl.bin       |   1 +
+ intel/dsp_fw_cnl_v1191.bin | Bin 0 -> 583852 bytes
+ 3 files changed, 6 insertions(+)
+ create mode 120000 intel/dsp_fw_cnl.bin
+ create mode 100644 intel/dsp_fw_cnl_v1191.bin
+
+--=20
 ~Vinod
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJaJMRFAAoJEHwUBw8lI4NHQqIP/1HU+8zaVkE0YmYSHs1EeiSx
+P4i8gw8OkBGjy06sMkRdllYxm14p4cV4VlBZKl/GwZEOg20CN+JbXaIBrqygvh6j
+aM8avaCvo01BiS3LVpmWEnMRvPR5c18PDW1JX6kWNlmsOBHjmHgbtpqcVzgyrf5z
+ea7oPC6mNE0Yv8UQzFLreIxVT4xX7F9xGL8Roee4FSjbEAM9XNgdvAeDoz4pYW5l
+lt+9P6cYOdvqFZtLxj8vIHobD1QWUvPdH1cEeqjXJAHbgTiFjCxoQXRYaB+T3B0M
+qtBKCsn0LKPQ0nLI15AUo0+OH7U3aj6pEdLb/ou8udd/xp6ASDYhS+9UcgN6qHPC
+OzyuPDclGeiyfGShCtDwHbO/Eso45ke2EuosyCw6285VVfyuq/ksq6eB+dvSynSq
+xZPJ/BJSK/pQmgtZ98kyyWr8R9tY7tO5wmKmlz54iliNdGdsbgBgoh6aBcdSbvHm
+b1IfaD7YHUTDdMrtoMIcsXKwatqLFmJ4y1WYN6whNJLykJfw3A/EruISdHpFQBjm
+CpNSqxn43FjbN+bhtU/uwJIMUX+2RsGV5AFr7bJLdBrqVKLQWN7vQtWotDy4vHfJ
+0t/zZSFNTXkak+4Ma4twKKmSqBK8ga7zYRSnEj6Ea9LKuGbsCYhN9Pv+YiQxjCvv
+sjcwWNmk2x28DQymd8/M
+=QN5i
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
+
+--===============5627999278196060970==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5627999278196060970==--
