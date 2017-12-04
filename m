@@ -1,7 +1,7 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 08/10] ASoC: fsl_ssi: Rename cpu_dai parameter to dai
-Date: Mon,  4 Dec 2017 12:46:41 -0800
-Message-ID: <1512420403-10164-9-git-send-email-nicoleotsuka@gmail.com>
+Subject: [PATCH 10/10] ASoC: fsl_ssi: Replace fsl_ssi_rxtx_reg_val with fsl_ssi_regvals
+Date: Mon,  4 Dec 2017 12:46:43 -0800
+Message-ID: <1512420403-10164-11-git-send-email-nicoleotsuka@gmail.com>
 References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
@@ -10,131 +10,214 @@ To: broonie@kernel.org
 Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, fabio.estevam@nxp.com, timur@tabi.org, mail@maciej.szmigiero.name, caleb@crome.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Shortens the variable name to save space, useful for dev_err outputs.
+The name fsl_ssi_rxtx_reg_val is too long to read comfortably.
+So this patch shortens it by using an array (fsl_ssi_regvals,
+renamed from fsl_ssi_reg_val). To do that, it also introduces
+two macros (TX and RX) to replace the wrapper structure. This
+will also help for further cleanups.
+
+Meanwhile, it unifies all local variable with the name "vals"
+to get rid of the name "reg" -- could be confusing with "regs"
+in the private struct for regmap.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/fsl/fsl_ssi.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 79 +++++++++++++++++++++++--------------------------
+ sound/soc/fsl/fsl_ssi.h |  3 ++
+ 2 files changed, 40 insertions(+), 42 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e1c985b..10f6b63 100644
+index 55f6a1f..50b470d 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -661,10 +661,10 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
-  *       (In 2-channel I2S Master mode, slot_width is fixed 32)
-  */
- static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
--			    struct snd_soc_dai *cpu_dai,
-+			    struct snd_soc_dai *dai,
- 			    struct snd_pcm_hw_params *hw_params)
+@@ -106,18 +106,13 @@ enum fsl_ssi_type {
+ 	FSL_SSI_MX51,
+ };
+ 
+-struct fsl_ssi_reg_val {
++struct fsl_ssi_regvals {
+ 	u32 sier;
+ 	u32 srcr;
+ 	u32 stcr;
+ 	u32 scr;
+ };
+ 
+-struct fsl_ssi_rxtx_reg_val {
+-	struct fsl_ssi_reg_val rx;
+-	struct fsl_ssi_reg_val tx;
+-};
+-
+ static bool fsl_ssi_readable_reg(struct device *dev, unsigned int reg)
  {
--	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
- 	struct regmap *regs = ssi->regs;
- 	int synchronous = ssi->cpu_dai_drv.symmetric_rates, ret;
- 	u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
-@@ -694,7 +694,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	 * never greater than 1/5 IPG clock rate
- 	 */
- 	if (freq * 5 > clk_get_rate(ssi->clk)) {
--		dev_err(cpu_dai->dev, "bitclk > ipgclk / 5\n");
-+		dev_err(dai->dev, "bitclk > ipgclk / 5\n");
- 		return -EINVAL;
- 	}
+ 	switch (reg) {
+@@ -213,7 +208,7 @@ struct fsl_ssi_soc_data {
+  * @fifo_depth: Depth of the SSI FIFOs
+  * @slot_width: Width of each DAI slot
+  * @slots: Number of slots
+- * @rxtx_reg_val: Specific RX/TX register settings
++ * @regvals: Specific RX/TX register settings
+  *
+  * @clk: Clock source to access register
+  * @baudclk: Clock source to generate bit and frame-sync clocks
+@@ -257,7 +252,7 @@ struct fsl_ssi {
+ 	unsigned int fifo_depth;
+ 	unsigned int slot_width;
+ 	unsigned int slots;
+-	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
++	struct fsl_ssi_regvals regvals[2];
  
-@@ -743,7 +743,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 
- 	/* No proper pm found if it is still remaining the initial value */
- 	if (pm == 999) {
--		dev_err(cpu_dai->dev, "failed to handle the required sysclk\n");
-+		dev_err(dai->dev, "failed to handle the required sysclk\n");
- 		return -EINVAL;
- 	}
- 
-@@ -759,7 +759,7 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
- 	if (!baudclk_is_used) {
- 		ret = clk_set_rate(ssi->baudclk, baudrate);
- 		if (ret) {
--			dev_err(cpu_dai->dev, "failed to set baudclk rate\n");
-+			dev_err(dai->dev, "failed to set baudclk rate\n");
- 			return -EINVAL;
- 		}
- 	}
-@@ -777,9 +777,9 @@ static int fsl_ssi_set_bclk(struct snd_pcm_substream *substream,
-  */
- static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *hw_params,
--			     struct snd_soc_dai *cpu_dai)
-+			     struct snd_soc_dai *dai)
+ 	struct clk *clk;
+ 	struct clk *baudclk;
+@@ -379,25 +374,25 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ static void fsl_ssi_rxtx_config(struct fsl_ssi *ssi, bool enable)
  {
--	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
  	struct regmap *regs = ssi->regs;
- 	unsigned int channels = params_channels(hw_params);
- 	unsigned int sample_size = params_width(hw_params);
-@@ -796,7 +796,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
+-	struct fsl_ssi_rxtx_reg_val *vals = &ssi->rxtx_reg_val;
++	struct fsl_ssi_regvals *vals = ssi->regvals;
  
- 	if (fsl_ssi_is_i2s_master(ssi)) {
--		ret = fsl_ssi_set_bclk(substream, cpu_dai, hw_params);
-+		ret = fsl_ssi_set_bclk(substream, dai, hw_params);
- 		if (ret)
- 			return ret;
- 
-@@ -834,7 +834,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	if (enable) {
+ 		regmap_update_bits(regs, REG_SSI_SIER,
+-				   vals->rx.sier | vals->tx.sier,
+-				   vals->rx.sier | vals->tx.sier);
++				   vals[RX].sier | vals[TX].sier,
++				   vals[RX].sier | vals[TX].sier);
+ 		regmap_update_bits(regs, REG_SSI_SRCR,
+-				   vals->rx.srcr | vals->tx.srcr,
+-				   vals->rx.srcr | vals->tx.srcr);
++				   vals[RX].srcr | vals[TX].srcr,
++				   vals[RX].srcr | vals[TX].srcr);
+ 		regmap_update_bits(regs, REG_SSI_STCR,
+-				   vals->rx.stcr | vals->tx.stcr,
+-				   vals->rx.stcr | vals->tx.stcr);
++				   vals[RX].stcr | vals[TX].stcr,
++				   vals[RX].stcr | vals[TX].stcr);
+ 	} else {
+ 		regmap_update_bits(regs, REG_SSI_SRCR,
+-				   vals->rx.srcr | vals->tx.srcr, 0);
++				   vals[RX].srcr | vals[TX].srcr, 0);
+ 		regmap_update_bits(regs, REG_SSI_STCR,
+-				   vals->rx.stcr | vals->tx.stcr, 0);
++				   vals[RX].stcr | vals[TX].stcr, 0);
+ 		regmap_update_bits(regs, REG_SSI_SIER,
+-				   vals->rx.sier | vals->tx.sier, 0);
++				   vals[RX].sier | vals[TX].sier, 0);
+ 	}
  }
  
- static int fsl_ssi_hw_free(struct snd_pcm_substream *substream,
--			   struct snd_soc_dai *cpu_dai)
-+			   struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-@@ -998,29 +998,29 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- /**
-  * Configure Digital Audio Interface (DAI) Format
+@@ -439,10 +434,10 @@ static void fsl_ssi_fifo_clear(struct fsl_ssi *ssi, bool is_rx)
+  * Enable or disable SSI configuration.
   */
--static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
-+static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+-			   struct fsl_ssi_reg_val *vals)
++			   struct fsl_ssi_regvals *vals)
  {
--	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
+ 	struct regmap *regs = ssi->regs;
+-	struct fsl_ssi_reg_val *avals;
++	struct fsl_ssi_regvals *avals;
+ 	int nr_active_streams;
+ 	u32 scr;
+ 	int keep_active;
+@@ -457,10 +452,10 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 		keep_active = 0;
  
- 	if (fsl_ssi_is_ac97(ssi))
- 		return 0;
+ 	/* Get the opposite direction to keep its values untouched */
+-	if (&ssi->rxtx_reg_val.rx == vals)
+-		avals = &ssi->rxtx_reg_val.tx;
++	if (&ssi->regvals[RX] == vals)
++		avals = &ssi->regvals[TX];
+ 	else
+-		avals = &ssi->rxtx_reg_val.rx;
++		avals = &ssi->regvals[RX];
  
--	return _fsl_ssi_set_dai_fmt(cpu_dai->dev, ssi, fmt);
-+	return _fsl_ssi_set_dai_fmt(dai->dev, ssi, fmt);
+ 	if (!enable) {
+ 		/* Exclude necessary bits for the opposite stream */
+@@ -537,7 +532,7 @@ static void fsl_ssi_config(struct fsl_ssi *ssi, bool enable,
+ 
+ static void fsl_ssi_rx_config(struct fsl_ssi *ssi, bool enable)
+ {
+-	fsl_ssi_config(ssi, enable, &ssi->rxtx_reg_val.rx);
++	fsl_ssi_config(ssi, enable, &ssi->regvals[RX]);
+ }
+ 
+ static void fsl_ssi_tx_ac97_saccst_setup(struct fsl_ssi *ssi)
+@@ -565,38 +560,38 @@ static void fsl_ssi_tx_config(struct fsl_ssi *ssi, bool enable)
+ 	if (enable && fsl_ssi_is_ac97(ssi))
+ 		fsl_ssi_tx_ac97_saccst_setup(ssi);
+ 
+-	fsl_ssi_config(ssi, enable, &ssi->rxtx_reg_val.tx);
++	fsl_ssi_config(ssi, enable, &ssi->regvals[TX]);
  }
  
  /**
-  * Set TDM slot number and slot width
+  * Cache register values to later set them at once
   */
--static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
-+static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
- 				    u32 rx_mask, int slots, int slot_width)
+-static void fsl_ssi_setup_reg_vals(struct fsl_ssi *ssi)
++static void fsl_ssi_setup_regvals(struct fsl_ssi *ssi)
  {
--	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct fsl_ssi *ssi = snd_soc_dai_get_drvdata(dai);
- 	struct regmap *regs = ssi->regs;
- 	u32 val;
+-	struct fsl_ssi_rxtx_reg_val *reg = &ssi->rxtx_reg_val;
++	struct fsl_ssi_regvals *vals = ssi->regvals;
  
- 	/* The word length should be 8, 10, 12, 16, 18, 20, 22 or 24 */
- 	if (slot_width & 1 || slot_width < 8 || slot_width > 24) {
--		dev_err(cpu_dai->dev, "invalid slot width: %d\n", slot_width);
-+		dev_err(dai->dev, "invalid slot width: %d\n", slot_width);
+-	reg->rx.sier = SSI_SIER_RFF0_EN;
+-	reg->rx.srcr = SSI_SRCR_RFEN0;
+-	reg->rx.scr = 0;
+-	reg->tx.sier = SSI_SIER_TFE0_EN;
+-	reg->tx.stcr = SSI_STCR_TFEN0;
+-	reg->tx.scr = 0;
++	vals[RX].sier = SSI_SIER_RFF0_EN;
++	vals[RX].srcr = SSI_SRCR_RFEN0;
++	vals[RX].scr = 0;
++	vals[TX].sier = SSI_SIER_TFE0_EN;
++	vals[TX].stcr = SSI_STCR_TFEN0;
++	vals[TX].scr = 0;
+ 
+ 	if (!fsl_ssi_is_ac97(ssi)) {
+-		reg->rx.scr = SSI_SCR_SSIEN | SSI_SCR_RE;
+-		reg->tx.scr = SSI_SCR_SSIEN | SSI_SCR_TE;
++		vals[RX].scr = SSI_SCR_SSIEN | SSI_SCR_RE;
++		vals[TX].scr = SSI_SCR_SSIEN | SSI_SCR_TE;
+ 	}
+ 
+ 	if (ssi->use_dma) {
+-		reg->rx.sier |= SSI_SIER_RDMAE;
+-		reg->tx.sier |= SSI_SIER_TDMAE;
++		vals[RX].sier |= SSI_SIER_RDMAE;
++		vals[TX].sier |= SSI_SIER_TDMAE;
+ 	} else {
+-		reg->rx.sier |= SSI_SIER_RIE;
+-		reg->tx.sier |= SSI_SIER_TIE;
++		vals[RX].sier |= SSI_SIER_RIE;
++		vals[TX].sier |= SSI_SIER_TIE;
+ 	}
+ 
+-	reg->rx.sier |= FSLSSI_SIER_DBG_RX_FLAGS;
+-	reg->tx.sier |= FSLSSI_SIER_DBG_TX_FLAGS;
++	vals[RX].sier |= FSLSSI_SIER_DBG_RX_FLAGS;
++	vals[TX].sier |= FSLSSI_SIER_DBG_TX_FLAGS;
+ }
+ 
+ static void fsl_ssi_setup_ac97(struct fsl_ssi *ssi)
+@@ -862,7 +857,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
  		return -EINVAL;
  	}
  
-@@ -1028,7 +1028,7 @@ static int fsl_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
- 	regmap_read(regs, REG_SSI_SCR, &val);
- 	val &= SSI_SCR_I2S_MODE_MASK | SSI_SCR_NET;
- 	if (val && slots < 2) {
--		dev_err(cpu_dai->dev, "slot number should be >= 2 in I2S or NET\n");
-+		dev_err(dai->dev, "slot number should be >= 2 in I2S or NET\n");
- 		return -EINVAL;
- 	}
+-	fsl_ssi_setup_reg_vals(ssi);
++	fsl_ssi_setup_regvals(ssi);
  
+ 	regmap_read(regs, REG_SSI_SCR, &scr);
+ 	scr &= ~(SSI_SCR_SYN | SSI_SCR_I2S_MODE_MASK);
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index 7bb8a08..71a305c 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -12,6 +12,9 @@
+ #ifndef _MPC8610_I2S_H
+ #define _MPC8610_I2S_H
+ 
++#define RX 0
++#define TX 1
++
+ /* -- SSI Register Map -- */
+ 
+ /* SSI Transmit Data Register 0 */
 -- 
 2.7.4
