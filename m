@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
-	cq93vc" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:38 +0000
-Message-ID: <E1eLvoA-0000Xw-4S@debutante>
-References: <87k21jkl9r.wl%kuninori.morimoto.gx@renesas.com>
+	mc13783" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:41 +0000
+Message-ID: <E1eLvoD-0000aN-55@debutante>
+References: <87lglzkla8.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 86C68267664
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:41 +0100 (CET)
-In-Reply-To: <87k21jkl9r.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C85626766D
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:44 +0100 (CET)
+In-Reply-To: <87lglzkla8.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use snd_soc_component_init_regmap() on cq93vc
+   ASoC: use snd_soc_component_init_regmap() on mc13783
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 60e1780ef27c626c7eaabae6103a218102b6e6ba Mon Sep 17 00:00:00 2001
+>From 33953d851d37f8b62b96d70fdccd35b62dffebe8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:05:46 +0000
-Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on cq93vc
+Date: Tue, 28 Nov 2017 06:05:31 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on mc13783
 
 To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
 .get_regmap. But these are duplicated feature.
@@ -65,36 +65,38 @@ Let's use snd_soc_component_init_regmap() and remove .get_regmap
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cq93vc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/mc13783.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
-index 6ed2cc374768..3bf93652bb31 100644
---- a/sound/soc/codecs/cq93vc.c
-+++ b/sound/soc/codecs/cq93vc.c
-@@ -121,17 +121,19 @@ static struct snd_soc_dai_driver cq93vc_dai = {
- 	.ops = &cq93vc_dai_ops,
+diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
+index 4fd8d1dc4eef..be7a45f05bbf 100644
+--- a/sound/soc/codecs/mc13783.c
++++ b/sound/soc/codecs/mc13783.c
+@@ -610,6 +610,9 @@ static int mc13783_probe(struct snd_soc_codec *codec)
+ {
+ 	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
+ 
++	snd_soc_codec_init_regmap(codec,
++				  dev_get_regmap(codec->dev->parent, NULL));
++
+ 	/* these are the reset values */
+ 	mc13xxx_reg_write(priv->mc13xxx, MC13783_AUDIO_RX0, 0x25893);
+ 	mc13xxx_reg_write(priv->mc13xxx, MC13783_AUDIO_RX1, 0x00d35A);
+@@ -728,15 +731,9 @@ static struct snd_soc_dai_driver mc13783_dai_sync[] = {
+ 	}
  };
  
--static struct regmap *cq93vc_get_regmap(struct device *dev)
-+static int cq93vc_probe(struct snd_soc_component *component)
- {
--	struct davinci_vc *davinci_vc = dev->platform_data;
-+	struct davinci_vc *davinci_vc = component->dev->platform_data;
- 
--	return davinci_vc->regmap;
-+	snd_soc_component_init_regmap(component, davinci_vc->regmap);
-+
-+	return 0;
- }
- 
- static const struct snd_soc_codec_driver soc_codec_dev_cq93vc = {
- 	.set_bias_level = cq93vc_set_bias_level,
--	.get_regmap = cq93vc_get_regmap,
+-static struct regmap *mc13783_get_regmap(struct device *dev)
+-{
+-	return dev_get_regmap(dev->parent, NULL);
+-}
+-
+ static const struct snd_soc_codec_driver soc_codec_dev_mc13783 = {
+ 	.probe		= mc13783_probe,
+ 	.remove		= mc13783_remove,
+-	.get_regmap	= mc13783_get_regmap,
  	.component_driver = {
-+		.probe = cq93vc_probe,
- 		.controls = cq93vc_snd_controls,
- 		.num_controls = ARRAY_SIZE(cq93vc_snd_controls),
- 	},
+ 		.controls		= mc13783_control_list,
+ 		.num_controls		= ARRAY_SIZE(mc13783_control_list),
 -- 
 2.15.0
