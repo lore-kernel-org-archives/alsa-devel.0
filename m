@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
-	mc13783" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:41 +0000
-Message-ID: <E1eLvoD-0000aN-55@debutante>
-References: <87lglzkla8.wl%kuninori.morimoto.gx@renesas.com>
+	si476x" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:44 +0000
+Message-ID: <E1eLvoG-0000bf-6b@debutante>
+References: <87mv6fklbj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C85626766D
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:44 +0100 (CET)
-In-Reply-To: <87lglzkla8.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A2BE3267679
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:47 +0100 (CET)
+In-Reply-To: <87mv6fklbj.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use snd_soc_component_init_regmap() on mc13783
+   ASoC: use snd_soc_component_init_regmap() on si476x
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 33953d851d37f8b62b96d70fdccd35b62dffebe8 Mon Sep 17 00:00:00 2001
+>From 3047ec50c3ebbe082217dc20ec0db4f3e5c7abea Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:05:31 +0000
-Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on mc13783
+Date: Tue, 28 Nov 2017 06:05:15 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on si476x
 
 To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
 .get_regmap. But these are duplicated feature.
@@ -65,38 +65,33 @@ Let's use snd_soc_component_init_regmap() and remove .get_regmap
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mc13783.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/codecs/si476x.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/mc13783.c b/sound/soc/codecs/mc13783.c
-index 4fd8d1dc4eef..be7a45f05bbf 100644
---- a/sound/soc/codecs/mc13783.c
-+++ b/sound/soc/codecs/mc13783.c
-@@ -610,6 +610,9 @@ static int mc13783_probe(struct snd_soc_codec *codec)
- {
- 	struct mc13783_priv *priv = snd_soc_codec_get_drvdata(codec);
- 
-+	snd_soc_codec_init_regmap(codec,
-+				  dev_get_regmap(codec->dev->parent, NULL));
-+
- 	/* these are the reset values */
- 	mc13xxx_reg_write(priv->mc13xxx, MC13783_AUDIO_RX0, 0x25893);
- 	mc13xxx_reg_write(priv->mc13xxx, MC13783_AUDIO_RX1, 0x00d35A);
-@@ -728,15 +731,9 @@ static struct snd_soc_dai_driver mc13783_dai_sync[] = {
- 	}
+diff --git a/sound/soc/codecs/si476x.c b/sound/soc/codecs/si476x.c
+index 354dc0d64f11..7b91ee267b4e 100644
+--- a/sound/soc/codecs/si476x.c
++++ b/sound/soc/codecs/si476x.c
+@@ -231,14 +231,17 @@ static struct snd_soc_dai_driver si476x_dai = {
+ 	.ops		= &si476x_dai_ops,
  };
  
--static struct regmap *mc13783_get_regmap(struct device *dev)
--{
+-static struct regmap *si476x_get_regmap(struct device *dev)
++static int si476x_probe(struct snd_soc_component *component)
+ {
 -	return dev_get_regmap(dev->parent, NULL);
--}
--
- static const struct snd_soc_codec_driver soc_codec_dev_mc13783 = {
- 	.probe		= mc13783_probe,
- 	.remove		= mc13783_remove,
--	.get_regmap	= mc13783_get_regmap,
++	snd_soc_component_init_regmap(component,
++				dev_get_regmap(component->dev->parent, NULL));
++
++	return 0;
+ }
+ 
+ static const struct snd_soc_codec_driver soc_codec_dev_si476x = {
+-	.get_regmap = si476x_get_regmap,
  	.component_driver = {
- 		.controls		= mc13783_control_list,
- 		.num_controls		= ARRAY_SIZE(mc13783_control_list),
++		.probe			= si476x_probe,
+ 		.dapm_widgets		= si476x_dapm_widgets,
+ 		.num_dapm_widgets	= ARRAY_SIZE(si476x_dapm_widgets),
+ 		.dapm_routes		= si476x_dapm_routes,
 -- 
 2.15.0
