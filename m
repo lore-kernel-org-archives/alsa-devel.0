@@ -1,7 +1,7 @@
 From: Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH V2 2/2] ALSA: usb-audio: Add check return value for usb_string()
-Date: Mon,  4 Dec 2017 15:31:49 +0900
-Message-ID: <1512369109-23253-3-git-send-email-climbbb.kim@gmail.com>
+Subject: [PATCH V2 1/2] ALSA: usb-audio: Fix out-of-bound error
+Date: Mon,  4 Dec 2017 15:31:48 +0900
+Message-ID: <1512369109-23253-2-git-send-email-climbbb.kim@gmail.com>
 References: <1511829388-5245-1-git-send-email-climbbb.kim@gmail.com>
  <1512369109-23253-1-git-send-email-climbbb.kim@gmail.com>
 Return-path: <stable-owner@vger.kernel.org>
@@ -11,41 +11,95 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: Jaroslav Kysela <perex@perex.cz>, stable <stable@vger.kernel.org>, alsa-devel@alsa-project.org, Jaejoong Kim <climbbb.kim@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-snd_usb_copy_string_desc() returns zero if usb_string() fails.
-In case of failure, we need to check the snd_usb_copy_string_desc()'s
-return value and add an exception case
+The snd_usb_copy_string_desc() retrieves the usb string corresponding to
+the index number through the usb_string(). The problem is that the
+usb_string() returns the length of the string (>= 0) when successful, but
+it can also return a negative value about the error case or status of
+usb_control_msg().
 
+If iClockSource is '0' as shown below, usb_string() will returns -EINVAL.
+This will result in '0' being inserted into buf[-22], and the following
+KASAN out-of-bound error message will be output.
+
+AudioControl Interface Descriptor:
+  bLength                 8
+  bDescriptorType        36
+  bDescriptorSubtype     10 (CLOCK_SOURCE)
+  bClockID                1
+  bmAttributes         0x07 Internal programmable Clock (synced to SOF)
+  bmControls           0x07
+  Clock Frequency Control (read/write)
+  Clock Validity Control (read-only)
+  bAssocTerminal          0
+  iClockSource            0
+
+To fix it, check usb_string()'return value and bail out.
+
+==================================================================
+BUG: KASAN: stack-out-of-bounds in parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
+Write of size 1 at addr ffff88007e66735a by task systemd-udevd/18376
+
+CPU: 0 PID: 18376 Comm: systemd-udevd Not tainted 4.13.0+ #3
+Hardware name: LG Electronics                   15N540-RFLGL/White Tip Mountain, BIOS 15N5
+Call Trace:
+dump_stack+0x63/0x8d
+print_address_description+0x70/0x290
+? parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
+kasan_report+0x265/0x350
+__asan_store1+0x4a/0x50
+parse_audio_unit+0x1327/0x1960 [snd_usb_audio]
+? save_stack+0xb5/0xd0
+? save_stack_trace+0x1b/0x20
+? save_stack+0x46/0xd0
+? kasan_kmalloc+0xad/0xe0
+? kmem_cache_alloc_trace+0xff/0x230
+? snd_usb_create_mixer+0xb0/0x4b0 [snd_usb_audio]
+? usb_audio_probe+0x4de/0xf40 [snd_usb_audio]
+? usb_probe_interface+0x1f5/0x440
+? driver_probe_device+0x3ed/0x660
+? build_feature_ctl+0xb10/0xb10 [snd_usb_audio]
+? save_stack_trace+0x1b/0x20
+? init_object+0x69/0xa0
+? snd_usb_find_csint_desc+0xa8/0xf0 [snd_usb_audio]
+snd_usb_mixer_controls+0x1dc/0x370 [snd_usb_audio]
+? build_audio_procunit+0x890/0x890 [snd_usb_audio]
+? snd_usb_create_mixer+0xb0/0x4b0 [snd_usb_audio]
+? kmem_cache_alloc_trace+0xff/0x230
+? usb_ifnum_to_if+0xbd/0xf0
+snd_usb_create_mixer+0x25b/0x4b0 [snd_usb_audio]
+? snd_usb_create_stream+0x255/0x2c0 [snd_usb_audio]
+usb_audio_probe+0x4de/0xf40 [snd_usb_audio]
+? snd_usb_autosuspend.part.7+0x30/0x30 [snd_usb_audio]
+? __pm_runtime_idle+0x90/0x90
+? kernfs_activate+0xa6/0xc0
+? usb_match_one_id_intf+0xdc/0x130
+? __pm_runtime_set_status+0x2d4/0x450
+usb_probe_interface+0x1f5/0x440
+
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Jaejoong Kim <climbbb.kim@gmail.com>
 ---
+Changes in v2:
+ - In case of failure case, return 0 not negative value (by Takashi Iwai)
+ - put an explicit error and bail out (by Takashi Iwai)
 
-Changes in V2:
- - change return value check.
-
- sound/usb/mixer.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/usb/mixer.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 3294e3a..84b9f9c 100644
+index 91bc8f1..3294e3a 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -2165,13 +2165,14 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
- 	if (len)
- 		;
- 	else if (nameid)
--		snd_usb_copy_string_desc(state, nameid, kctl->id.name,
-+		len = snd_usb_copy_string_desc(state, nameid, kctl->id.name,
- 					 sizeof(kctl->id.name));
--	else {
-+	else
- 		len = get_term_name(state, &state->oterm,
- 				    kctl->id.name, sizeof(kctl->id.name), 0);
--		if (!len)
--			strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
+@@ -204,6 +204,10 @@ static int snd_usb_copy_string_desc(struct mixer_build *state,
+ 				    int index, char *buf, int maxlen)
+ {
+ 	int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
 +
-+	if (!len) {
-+		strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
- 
- 		if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR)
- 			append_ctl_name(kctl, " Clock Source");
++	if (len < 0)
++		return 0;
++
+ 	buf[len] = 0;
+ 	return len;
+ }
 -- 
 2.7.4
