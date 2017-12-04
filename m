@@ -1,15 +1,20 @@
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH] ASoC: amd: added error checks in dma driver
-Date: Mon, 4 Dec 2017 20:46:24 +0530
-Message-ID: <1512400584-28170-1-git-send-email-Vijendar.Mukunda@amd.com>
+From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Subject: Re: [RFC 06/10] ASoC: hdac_hda: add ASoC based HDA
+ codec driver
+Date: Mon, 4 Dec 2017 15:35:54 +0000
+Message-ID: <85DFEED57DC57344B2483EF7BF8CB60579AC5EED@BGSMSX104.gar.corp.intel.com>
+References: <1512119648-2700-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <1512119648-2700-7-git-send-email-rakesh.a.ughreja@intel.com>
+ <f3560882-d825-01c6-d3d4-b712bf46ea6d@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com
- (mail-by2nam03on0067.outbound.protection.outlook.com [104.47.42.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 17776266BBC
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 16:15:54 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45954266BBC
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 16:36:00 +0100 (CET)
+In-Reply-To: <f3560882-d825-01c6-d3d4-b712bf46ea6d@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,113 +24,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-added additional error checks in acp dma driver
-v2: printed error codes for acp init & acp deinit
-failure cases.
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/acp-pcm-dma.c | 35 ++++++++++++++++++++++++++++++-----
- 1 file changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index fb09578..29be517 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -848,6 +848,9 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
- 
-+	if (!rtd)
-+		return -EINVAL;
-+
- 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
- 	bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
- 
-@@ -873,6 +876,8 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
- 
-+	if (!rtd)
-+		return -EINVAL;
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
- 					PLAYBACK_START_DMA_DESCR_CH12,
-@@ -1082,7 +1087,11 @@ static int acp_audio_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, audio_drv_data);
- 
- 	/* Initialize the ACP */
--	acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
-+	status = acp_init(audio_drv_data->acp_mmio, audio_drv_data->asic_type);
-+	if (status) {
-+		dev_err(&pdev->dev, "ACP Init failed status:%d\n", status);
-+		return status;
-+	}
- 
- 	status = snd_soc_register_platform(&pdev->dev, &acp_asoc_platform);
- 	if (status != 0) {
-@@ -1099,9 +1108,12 @@ static int acp_audio_probe(struct platform_device *pdev)
- 
- static int acp_audio_remove(struct platform_device *pdev)
- {
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(&pdev->dev);
- 
--	acp_deinit(adata->acp_mmio);
-+	status = acp_deinit(adata->acp_mmio);
-+	if (status)
-+		dev_err(&pdev->dev, "ACP Deinit failed status:%d\n", status);
- 	snd_soc_unregister_platform(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
-@@ -1111,9 +1123,14 @@ static int acp_audio_remove(struct platform_device *pdev)
- static int acp_pcm_resume(struct device *dev)
- {
- 	u16 bank;
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
--	acp_init(adata->acp_mmio, adata->asic_type);
-+	status = acp_init(adata->acp_mmio, adata->asic_type);
-+	if (status) {
-+		dev_err(dev, "ACP Init failed status:%d\n", status);
-+		return status;
-+	}
- 
- 	if (adata->play_stream && adata->play_stream->runtime) {
- 		/* For Stoney, Memory gating is disabled,i.e SRAM Banks
-@@ -1145,18 +1162,26 @@ static int acp_pcm_resume(struct device *dev)
- 
- static int acp_pcm_runtime_suspend(struct device *dev)
- {
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
--	acp_deinit(adata->acp_mmio);
-+	status = acp_deinit(adata->acp_mmio);
-+	if (status)
-+		dev_err(dev, "ACP Deinit failed status:%d\n", status);
- 	acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
- 
- static int acp_pcm_runtime_resume(struct device *dev)
- {
-+	int status;
- 	struct audio_drv_data *adata = dev_get_drvdata(dev);
- 
--	acp_init(adata->acp_mmio, adata->asic_type);
-+	status = acp_init(adata->acp_mmio, adata->asic_type);
-+	if (status) {
-+		dev_err(dev, "ACP Init failed status:%d\n", status);
-+		return status;
-+	}
- 	acp_reg_write(1, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
- 	return 0;
- }
--- 
-2.7.4
+>-----Original Message-----
+>From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+>Sent: Saturday, December 2, 2017 1:07 AM
+>To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>; alsa-devel@alsa-
+>project.org; broonie@kernel.org; tiwai@suse.de; liam.r.girdwood@linux.intel.com
+>Cc: Koul, Vinod <vinod.koul@intel.com>; Patches Audio
+><patches.audio@intel.com>
+>Subject: Re: [alsa-devel] [RFC 06/10] ASoC: hdac_hda: add ASoC based HDA
+>codec driver
+>
+>On 12/1/17 3:14 AM, Rakesh Ughreja wrote:
+>> This patch adds ASoC based HDA codec driver that can be used with
+>> all Intel platforms.
+>>
+>> FIXME:
+>> KConfig change allows users to compile legacy HDA codec drivers either
+>> as ASoC or ALSA codec driver. This is not a good approach and need
+>> suggestion to improve it.
+>>
+>> Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+>> ---
+>>   sound/pci/hda/Kconfig         | 11 +++++
+>>   sound/pci/hda/hda_codec.h     | 26 +++++++++++-
+>>   sound/soc/codecs/Kconfig      |  6 +++
+>>   sound/soc/codecs/Makefile     |  2 +
+>>   sound/soc/codecs/hdac_hda.c   | 95
+>+++++++++++++++++++++++++++++++++++++++++++
+>>   sound/soc/codecs/hdac_hda.h   | 16 ++++++++
+>>   sound/soc/intel/skylake/skl.c | 18 +++++++-
+>>   7 files changed, 171 insertions(+), 3 deletions(-)
+>>   create mode 100644 sound/soc/codecs/hdac_hda.c
+>>   create mode 100644 sound/soc/codecs/hdac_hda.h
+>>
+>> diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+>> index 7f3b5ed..010dd7d 100644
+>> --- a/sound/pci/hda/Kconfig
+>> +++ b/sound/pci/hda/Kconfig
+>> @@ -215,6 +215,17 @@ config SND_HDA_GENERIC
+>>   comment "Set to Y if you want auto-loading the codec driver"
+>>   	depends on SND_HDA=y && SND_HDA_GENERIC=m
+>>
+>> +config SND_ASOC_HDA_GENERIC
+>> +        bool "Build HDA drivers as HDA ASoC Codec drivers"
+>> +	select SND_SOC_HDAC_HDA
+>> +        def_bool n
+>> +        help
+>> +          Select to build legacy HD-audio codec drivers as ASoC
+>> +          codec drivers.
+>> +
+>> +comment "Set to Y if you want to enable support for HDA audio codec with
+>> +	 DSP on Intel platforms"
+>> +
+>>   config SND_HDA_POWER_SAVE_DEFAULT
+>>   	int "Default time-out for HD-audio power-save mode"
+>>   	depends on PM
+>> diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+>> index 2d02d02..67ce2e6 100644
+>> --- a/sound/pci/hda/hda_codec.h
+>> +++ b/sound/pci/hda/hda_codec.h
+>> @@ -104,9 +104,33 @@ int __hda_codec_driver_register(struct
+>hda_codec_driver *drv, const char *name,
+>>   #define hda_codec_driver_register(drv) \
+>>   	__hda_codec_driver_register(drv, KBUILD_MODNAME, THIS_MODULE)
+>>   void hda_codec_driver_unregister(struct hda_codec_driver *drv);
+>> +
+>> +/*
+>> + * FIXME:
+>> + * In this implementation one can compile codec drivers either as ALSA or as
+>> + * ASoC, but not both.
+>> + * This may be not the be the best way to build the HDA codec drivers as ALSA
+>> + * vs ASoC driver. Need to find a better way, where the driver can be built
+>> + * as ALSA as well as ASoC at the same time. Even though practically people
+>> + * would never use them at the same time. But may be disto guys may want to
+>> + * do it.
+>
+>Distros *have* to do it, since the DSP usage can be changed in
+>user-visible BIOS settings or disabled.
+
+Yes, agree.
+
+>
+>> + */
+>> +
+>> +#ifdef CONFIG_SND_ASOC_HDA_GENERIC
+>> +int __hdac_hda_codec_driver_register(struct hda_codec_driver *drv,
+>> +	const char *name, struct module *owner);
+>> +#define hdac_hda_codec_driver_register(drv) \
+>> +	__hdac_hda_codec_driver_register(drv, KBUILD_MODNAME,
+>THIS_MODULE)
+>> +void hdac_hda_codec_driver_unregister(struct hda_codec_driver *drv);
+>> +
+>> +#define module_hda_codec_driver(drv) \
+>> +	module_driver(drv, hdac_hda_codec_driver_register, \
+>> +			hdac_hda_codec_driver_unregister)
+>> +#else
+>>   #define module_hda_codec_driver(drv) \
+>>   	module_driver(drv, hda_codec_driver_register, \
+>> -		      hda_codec_driver_unregister)
+>> +			hda_codec_driver_unregister)
+>> +#endif
+>
+>Couldn't you use a common registration that internally checks if you are
+>running in legacy or DSP/ASoC mode and branch accordingly?
+
+Yes, this requires change in the legacy codec driver. Takashi also
+suggested that we need to change the legacy driver code in order to make
+it work. Now that we are okay to change the legacy driver source code,
+I will come up with some proposal.
