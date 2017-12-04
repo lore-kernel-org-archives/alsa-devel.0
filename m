@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
-	msm8916" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:26 +0000
-Message-ID: <E1eLvny-0000UN-6U@debutante>
-References: <87fuc7kl88.wl%kuninori.morimoto.gx@renesas.com>
+	88pm860x" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:29 +0000
+Message-ID: <E1eLvo1-0000VZ-9R@debutante>
+References: <87h8wnkl8q.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F19026762F
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:29 +0100 (CET)
-In-Reply-To: <87fuc7kl88.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B412526764A
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:32 +0100 (CET)
+In-Reply-To: <87h8wnkl8q.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use snd_soc_component_init_regmap() on msm8916
+   ASoC: use snd_soc_component_init_regmap() on 88pm860x
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 42e193cdcb9e197e788638bd33bab3d1905815f6 Mon Sep 17 00:00:00 2001
+>From 79b4885967cff17e0344b451e8fc4782013f0c9c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:06:29 +0000
-Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on msm8916
+Date: Tue, 28 Nov 2017 06:06:15 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on 88pm860x
 
 To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
 .get_regmap. But these are duplicated feature.
@@ -65,41 +65,39 @@ Let's use snd_soc_component_init_regmap() and remove .get_regmap
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/codecs/88pm860x-codec.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index 066ea2f4ce7b..44062bb7bf2f 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -712,6 +712,8 @@ static int pm8916_wcd_analog_probe(struct snd_soc_codec *codec)
- 		return err;
- 	}
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index 848c5fe49bc7..be8ea723dff9 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -1319,6 +1319,7 @@ static int pm860x_probe(struct snd_soc_codec *codec)
+ 	int i, ret;
  
-+	snd_soc_codec_init_regmap(codec,
-+				  dev_get_regmap(codec->dev->parent, NULL));
- 	snd_soc_codec_set_drvdata(codec, priv);
- 	priv->pmic_rev = snd_soc_read(codec, CDC_D_REVISION1);
- 	priv->codec_version = snd_soc_read(codec, CDC_D_PERPH_SUBTYPE);
-@@ -943,11 +945,6 @@ static int pm8916_wcd_analog_set_jack(struct snd_soc_codec *codec,
+ 	pm860x->codec = codec;
++	snd_soc_codec_init_regmap(codec,  pm860x->regmap);
+ 
+ 	for (i = 0; i < 4; i++) {
+ 		ret = request_threaded_irq(pm860x->irq[i], NULL,
+@@ -1348,18 +1349,10 @@ static int pm860x_remove(struct snd_soc_codec *codec)
  	return 0;
  }
  
--static struct regmap *pm8916_get_regmap(struct device *dev)
+-static struct regmap *pm860x_get_regmap(struct device *dev)
 -{
--	return dev_get_regmap(dev->parent, NULL);
+-	struct pm860x_priv *pm860x = dev_get_drvdata(dev);
+-
+-	return pm860x->regmap;
 -}
 -
- static irqreturn_t mbhc_btn_release_irq_handler(int irq, void *arg)
- {
- 	struct pm8916_wcd_analog_priv *priv = arg;
-@@ -1082,7 +1079,6 @@ static const struct snd_soc_codec_driver pm8916_wcd_analog = {
- 	.probe = pm8916_wcd_analog_probe,
- 	.remove = pm8916_wcd_analog_remove,
- 	.set_jack = pm8916_wcd_analog_set_jack,
--	.get_regmap = pm8916_get_regmap,
+ static const struct snd_soc_codec_driver soc_codec_dev_pm860x = {
+ 	.probe		= pm860x_probe,
+ 	.remove		= pm860x_remove,
+ 	.set_bias_level	= pm860x_set_bias_level,
+-	.get_regmap	= pm860x_get_regmap,
+ 
  	.component_driver = {
- 		.controls = pm8916_wcd_analog_snd_controls,
- 		.num_controls = ARRAY_SIZE(pm8916_wcd_analog_snd_controls),
+ 		.controls		= pm860x_snd_controls,
 -- 
 2.15.0
