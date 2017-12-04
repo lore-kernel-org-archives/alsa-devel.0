@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Make local functions
-	static" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:16 +0000
-Message-ID: <E1eLvno-0000QN-St@debutante>
-References: <20171204050012.21498-1-guneshwor.o.singh@intel.com>
+Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
+	atmel-classd" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:22 +0000
+Message-ID: <E1eLvnu-0000TP-Vx@debutante>
+References: <87efrrkl7q.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AF28D26760B
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:21 +0100 (CET)
-In-Reply-To: <20171204050012.21498-1-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A21CD2675E7
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:27 +0100 (CET)
+In-Reply-To: <87efrrkl7q.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Make local functions static
+   ASoC: use snd_soc_component_init_regmap() on atmel-classd
 
 has been applied to the asoc tree at
 
@@ -53,56 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 8e79ec98e1f613f6fda5d91b16f5e38cf0bd4627 Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Mon, 4 Dec 2017 10:30:11 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Make local functions static
+>From 4b952275d2e7c6b32671a121ea5303a467bf2a0f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 28 Nov 2017 06:06:44 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on atmel-classd
 
-Some functions are local to the source and do not need to be in global
-scope, so make them static.
+To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
+.get_regmap. But these are duplicated feature.
+This driver is using .get_regmap and set regmap by using
+dev_get_regmap(), but it is automatically done by
+snd_soc_component_add_unlocked(). let's remove .get_regmap.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-By: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-nhlt.c | 4 ++--
- sound/soc/intel/skylake/skl.c      | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/atmel/atmel-classd.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
-index 4d2136c0389a..ca5dc2be7b68 100644
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -269,7 +269,7 @@ void skl_nhlt_remove_sysfs(struct skl *skl)
-  * stores all possible rates supported in a rate table for the corresponding
-  * sclk/sclkfs.
-  */
--void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
-+static void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
- 				struct nhlt_fmt *fmt, u8 id)
- {
- 	struct skl_i2s_config_blob_legacy *i2s_config;
-@@ -360,7 +360,7 @@ void skl_get_ssp_clks(struct skl *skl, struct skl_ssp_clk *ssp_clks,
- 	}
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 8445edd06737..ebabed69f0e6 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -308,15 +308,9 @@ static int atmel_classd_codec_resume(struct snd_soc_codec *codec)
+ 	return regcache_sync(dd->regmap);
  }
  
--void skl_get_mclk(struct skl *skl, struct skl_ssp_clk *mclk,
-+static void skl_get_mclk(struct skl *skl, struct skl_ssp_clk *mclk,
- 				struct nhlt_fmt *fmt, u8 id)
- {
- 	struct skl_i2s_config_blob_legacy *i2s_config;
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 63e5456ef401..a89592b2850e 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -545,7 +545,7 @@ struct skl_clk_parent_src *skl_get_parent_clk(u8 clk_id)
- 	return NULL;
- }
- 
--void init_skl_xtal_rate(int pci_id)
-+static void init_skl_xtal_rate(int pci_id)
- {
- 	switch (pci_id) {
- 	case 0x9d70:
+-static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
+-{
+-	return dev_get_regmap(dev, NULL);
+-}
+-
+ static struct snd_soc_codec_driver soc_codec_dev_classd = {
+ 	.probe		= atmel_classd_codec_probe,
+ 	.resume		= atmel_classd_codec_resume,
+-	.get_regmap	= atmel_classd_codec_get_remap,
+ 	.component_driver = {
+ 		.controls		= atmel_classd_snd_controls,
+ 		.num_controls		= ARRAY_SIZE(atmel_classd_snd_controls),
 -- 
 2.15.0
