@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
-	88pm860x" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:29 +0000
-Message-ID: <E1eLvo1-0000VZ-9R@debutante>
-References: <87h8wnkl8q.wl%kuninori.morimoto.gx@renesas.com>
+	cs47l24" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:33 +0000
+Message-ID: <E1eLvo5-0000Wp-HN@debutante>
+References: <87inh3kl96.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B412526764A
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:32 +0100 (CET)
-In-Reply-To: <87h8wnkl8q.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CB27B267611
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:36 +0100 (CET)
+In-Reply-To: <87inh3kl96.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use snd_soc_component_init_regmap() on 88pm860x
+   ASoC: use snd_soc_component_init_regmap() on cs47l24
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 79b4885967cff17e0344b451e8fc4782013f0c9c Mon Sep 17 00:00:00 2001
+>From ba8dd49f9431497c6b13514cfab3065b01057247 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:06:15 +0000
-Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on 88pm860x
+Date: Tue, 28 Nov 2017 06:06:00 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on cs47l24
 
 To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
 .get_regmap. But these are duplicated feature.
@@ -65,39 +65,43 @@ Let's use snd_soc_component_init_regmap() and remove .get_regmap
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/88pm860x-codec.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ sound/soc/codecs/cs47l24.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 848c5fe49bc7..be8ea723dff9 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -1319,6 +1319,7 @@ static int pm860x_probe(struct snd_soc_codec *codec)
- 	int i, ret;
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 94c0209977d0..be2750680838 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -1120,9 +1120,11 @@ static int cs47l24_codec_probe(struct snd_soc_codec *codec)
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
+ 	struct cs47l24_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->core.arizona;
+ 	int ret;
  
- 	pm860x->codec = codec;
-+	snd_soc_codec_init_regmap(codec,  pm860x->regmap);
+-	priv->core.arizona->dapm = dapm;
++	arizona->dapm = dapm;
++	snd_soc_codec_init_regmap(codec, arizona->regmap);
  
- 	for (i = 0; i < 4; i++) {
- 		ret = request_threaded_irq(pm860x->irq[i], NULL,
-@@ -1348,18 +1349,10 @@ static int pm860x_remove(struct snd_soc_codec *codec)
- 	return 0;
- }
+ 	ret = arizona_init_spk(codec);
+ 	if (ret < 0)
+@@ -1175,17 +1177,9 @@ static unsigned int cs47l24_digital_vu[] = {
+ 	ARIZONA_DAC_DIGITAL_VOLUME_4L,
+ };
  
--static struct regmap *pm860x_get_regmap(struct device *dev)
+-static struct regmap *cs47l24_get_regmap(struct device *dev)
 -{
--	struct pm860x_priv *pm860x = dev_get_drvdata(dev);
+-	struct cs47l24_priv *priv = dev_get_drvdata(dev);
 -
--	return pm860x->regmap;
+-	return priv->core.arizona->regmap;
 -}
 -
- static const struct snd_soc_codec_driver soc_codec_dev_pm860x = {
- 	.probe		= pm860x_probe,
- 	.remove		= pm860x_remove,
- 	.set_bias_level	= pm860x_set_bias_level,
--	.get_regmap	= pm860x_get_regmap,
+ static const struct snd_soc_codec_driver soc_codec_dev_cs47l24 = {
+ 	.probe = cs47l24_codec_probe,
+ 	.remove = cs47l24_codec_remove,
+-	.get_regmap = cs47l24_get_regmap,
  
- 	.component_driver = {
- 		.controls		= pm860x_snd_controls,
+ 	.idle_bias_off = true,
+ 
 -- 
 2.15.0
