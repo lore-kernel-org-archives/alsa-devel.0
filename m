@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: use snd_soc_component_init_regmap() on
-	wm8350" to the asoc tree
-Date: Mon, 04 Dec 2017 18:49:53 +0000
-Message-ID: <E1eLvoP-0000eS-I6@debutante>
-References: <87r2vrklcw.wl%kuninori.morimoto.gx@renesas.com>
+	wm8400" to the asoc tree
+Date: Mon, 04 Dec 2017 18:49:56 +0000
+Message-ID: <E1eLvoS-0000fH-JV@debutante>
+References: <87shg7kldd.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 448BE26762E
- for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:57 +0100 (CET)
-In-Reply-To: <87r2vrklcw.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2BC5267631
+ for <alsa-devel@alsa-project.org>; Mon,  4 Dec 2017 19:49:59 +0100 (CET)
+In-Reply-To: <87shg7kldd.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: use snd_soc_component_init_regmap() on wm8350
+   ASoC: use snd_soc_component_init_regmap() on wm8400
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 40b84884617d9f07663862770d2574a71e313bc7 Mon Sep 17 00:00:00 2001
+>From 74c76497946e1f15b51d603735eb8273ac89381e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 28 Nov 2017 06:04:31 +0000
-Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on wm8350
+Date: Tue, 28 Nov 2017 06:04:17 +0000
+Subject: [PATCH] ASoC: use snd_soc_component_init_regmap() on wm8400
 
 To setup regmap, ALSA SoC has snd_soc_component_init_regmap() and
 .get_regmap. But these are duplicated feature.
@@ -65,38 +65,37 @@ Let's use snd_soc_component_init_regmap() and remove .get_regmap
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8350.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8400.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index 2efc5b41ad0f..fc79c6725d06 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -1472,6 +1472,8 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
- 			    GFP_KERNEL);
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 6c59fb933bd6..a36adf881bca 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -1285,6 +1285,7 @@ static int wm8400_codec_probe(struct snd_soc_codec *codec)
  	if (priv == NULL)
  		return -ENOMEM;
-+
-+	snd_soc_codec_init_regmap(codec, wm8350->regmap);
- 	snd_soc_codec_set_drvdata(codec, priv);
  
- 	priv->wm8350 = wm8350;
-@@ -1580,17 +1582,9 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
++	snd_soc_codec_init_regmap(codec, wm8400->regmap);
+ 	snd_soc_codec_set_drvdata(codec, priv);
+ 	priv->wm8400 = wm8400;
+ 
+@@ -1325,17 +1326,9 @@ static int  wm8400_codec_remove(struct snd_soc_codec *codec)
  	return 0;
  }
  
--static struct regmap *wm8350_get_regmap(struct device *dev)
+-static struct regmap *wm8400_get_regmap(struct device *dev)
 -{
--	struct wm8350 *wm8350 = dev_get_platdata(dev);
+-	struct wm8400 *wm8400 = dev_get_platdata(dev);
 -
--	return wm8350->regmap;
+-	return wm8400->regmap;
 -}
 -
- static const struct snd_soc_codec_driver soc_codec_dev_wm8350 = {
- 	.probe =	wm8350_codec_probe,
- 	.remove =	wm8350_codec_remove,
--	.get_regmap =	wm8350_get_regmap,
- 	.set_bias_level = wm8350_set_bias_level,
+ static const struct snd_soc_codec_driver soc_codec_dev_wm8400 = {
+ 	.probe =	wm8400_codec_probe,
+ 	.remove =	wm8400_codec_remove,
+-	.get_regmap =	wm8400_get_regmap,
+ 	.set_bias_level = wm8400_set_bias_level,
  	.suspend_bias_off = true,
  
 -- 
