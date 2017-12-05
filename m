@@ -1,20 +1,21 @@
-From: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ALSA: pcm: prevent UAF in snd_pcm_info
-Date: Tue, 5 Dec 2017 11:29:07 -0800
-Message-ID: <CAGXu5j+WH2N2Xu_FahJcC9VTDD1+c5LFtFPv3O9-9AgXyRCi=w@mail.gmail.com>
-References: <20171205171657.74392-1-ndesaulniers@google.com>
- <s5hvahldm28.wl-tiwai@suse.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 00/10] ASoC: fsl_ssi: Clean up - coding
+	style level
+Date: Tue, 5 Dec 2017 11:33:00 -0800
+Message-ID: <20171205193258.GA11039@Asurada-Nvidia>
+References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
+ <81e17b9c-e878-1fe9-bb6f-b074d5766232@maciej.szmigiero.name>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
- [209.85.213.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 96EA126698E
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 20:29:10 +0100 (CET)
-Received: by mail-vk0-f66.google.com with SMTP id x140so1035207vke.4
- for <alsa-devel@alsa-project.org>; Tue, 05 Dec 2017 11:29:10 -0800 (PST)
-In-Reply-To: <s5hvahldm28.wl-tiwai@suse.de>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76AB326698E
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 20:33:00 +0100 (CET)
+Received: by mail-pg0-f65.google.com with SMTP id o2so851541pgc.8
+ for <alsa-devel@alsa-project.org>; Tue, 05 Dec 2017 11:33:00 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <81e17b9c-e878-1fe9-bb6f-b074d5766232@maciej.szmigiero.name>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>, Nick Desaulniers <ndesaulniers@google.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Robb Glasser <rglasser@google.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Markus Elfring <elfring@users.sourceforge.net>
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, caleb@crome.org, timur@tabi.org, broonie@kernel.org, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 5, 2017 at 11:14 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 05 Dec 2017 18:16:55 +0100,
-> Nick Desaulniers wrote:
->>
->> From: Robb Glasser <rglasser@google.com>
->>
->> When the device descriptor is closed, the `substream->runtime` pointer
->> is freed. But another thread may be in the ioctl handler, case
->> SNDRV_CTL_IOCTL_PCM_INFO. This case calls snd_pcm_info_user() which
->> calls snd_pcm_info() which accesses the now freed `substream->runtime`.
->>
->> Signed-off-by: Robb Glasser <rglasser@google.com>
->> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Looks reasonable.  Applied with Cc to stable now.
+On Tue, Dec 05, 2017 at 02:01:17PM +0100, Maciej S. Szmigiero wrote:
 
-FWIW, this was assigned CVE-2017-0861. (Best to get it into the commit
-log if possible.)
+> > ==Verification==
+> > Theoretically, it only needs code review, build and sanity tests. I
+> > have done build and sanity tests on an i.MX 6 platform by building
+> > using imx_v6_v7_defconfig and testing with I2S slave/master mode.
 
--Kees
+> Due to my current workload I will be able to go through this and test
+> the AC'97 mode on a UDOO board only in about a week.
 
->
->
-> thanks,
->
-> Takashi
->
->> ---
->>  sound/core/pcm.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
->> index 9070f277f8db..09ee8c6b9f75 100644
->> --- a/sound/core/pcm.c
->> +++ b/sound/core/pcm.c
->> @@ -153,7 +153,9 @@ static int snd_pcm_control_ioctl(struct snd_card *card,
->>                               err = -ENXIO;
->>                               goto _error;
->>                       }
->> +                     mutex_lock(&pcm->open_mutex);
->>                       err = snd_pcm_info_user(substream, info);
->> +                     mutex_unlock(&pcm->open_mutex);
->>               _error:
->>                       mutex_unlock(&register_mutex);
->>                       return err;
->> --
->> 2.15.0.531.g2ccb3012c9-goog
->>
->>
-
-
-
--- 
-Kees Cook
-Pixel Security
+This is the first round which doesn't touch program flow. If you
+prefer to verify it other than merely reviewing it, I would like
+to wait for your Tested-by. There will be another set to simplify
+all functions and their program flows after this set gets merged.
+That one will need to be fully tested.
