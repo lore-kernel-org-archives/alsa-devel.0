@@ -1,189 +1,114 @@
-From: "Katsuhiro Suzuki" <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Subject: Re: [PATCH 5/8] ASoC: uniphier: add support for UniPhier AIO driver
-Date: Tue, 5 Dec 2017 13:48:39 +0900
-Message-ID: <002b01d36d84$51d80aa0$f5881fe0$@socionext.com>
-References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com> <20171122114321.29196-6-suzuki.katsuhiro@socionext.com> <20171204183934.rd4vin22ktukwpip@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [alsa-lib][PATCH 3/4] pcm: linear,
+ route: handle linear formats with 20-bit sample on 4 bytes
+Date: Tue, 5 Dec 2017 14:50:55 +0900
+Message-ID: <0eaf46f0-5ea3-0d37-7570-731e31ad1485@sakamocchi.jp>
+References: <06db78be-2d91-c996-5a5b-d408ff4a84fa@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20171204183934.rd4vin22ktukwpip-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: ja
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: 'Mark Brown' <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, =?iso-2022-jp?B?U3V6dWtpLCBLYXRzdWhpcm8vGyRCTmtMWhsoQiAbJEI+IUduGyhC?= <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, =?iso-2022-jp?B?WWFtYWRhLCBNYXNhaGlyby8bJEI7M0VEGyhCIBskQj8/OTAbKEI=?= <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>, Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jassi Brar <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 179A02676AA
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 06:50:57 +0100 (CET)
+In-Reply-To: <06db78be-2d91-c996-5a5b-d408ff4a84fa@maciej.szmigiero.name>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-Thanks a lot for your review.
-
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org]
-> Sent: Tuesday, December 5, 2017 3:40 AM
-> To: Suzuki, Katsuhiro/鈴木 勝博 <suzuki.katsuhiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>
-> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; Yamada, Masahiro/山
-> 田 真弘 <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>; Masami Hiramatsu <masami.hiramatsu-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>; Jassi Brar
-> <jaswinder.singh-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>; linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org; linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Subject: Re: [PATCH 5/8] ASoC: uniphier: add support for UniPhier AIO driver
+On Nov 30 2017 07:17, Maciej S. Szmigiero wrote:
+> The previous patch has added 20-bit PCM formats SND_PCM_FORMAT_{S,U}20 to
+> alsa-lib.
+> We need to extend the linear format conversion code with handling of these
+> sample formats so they can also be utilized by applications that only
+> recognize the more typical ones like SND_PCM_FORMAT_S16.
 > 
-> On Wed, Nov 22, 2017 at 08:43:18PM +0900, Katsuhiro Suzuki wrote:
+> Since the conversion arrays are indexed by a format bit width divided by 8
+> the easiest way to handle these formats is to treat them like they were
+> 40-bit wide (the next free integer multiple of 8 bits).
+> This doesn't create a collision risk with a future format since there can't
+> really be a 40-bit sample format that occupies 4 bytes.
 > 
-> >  sound/soc/uniphier/Makefile      |   4 +
-> >  sound/soc/uniphier/aio-core.c    | 368 +++++++++++++++++++++
-> >  sound/soc/uniphier/aio-dma.c     | 266 +++++++++++++++
-> >  sound/soc/uniphier/aio-regctrl.c | 699 +++++++++++++++++++++++++++++++++++++++
-> >  sound/soc/uniphier/aio-regctrl.h | 495 +++++++++++++++++++++++++++
-> >  sound/soc/uniphier/aio.h         | 261 +++++++++++++++
+> Make sure we use the getput conversion method for these formats since a
+> direct conversion from / to them is not supported.
 > 
-> Please split this up more, it looks like there's at least two or three
-> drivers in here and it winds up being quite large.  There's at least a
-> DMA and a DAI driver.  Looking through this my overall impression is
-> that this is a fairly large and complex audio subsystem with some DSP
-> and routing capacity which is being handled in a board specific fashion
-> rather than generically but it's kind of hard to tell as there's not
-> much description of what's going on so I'm needing to reverse engineer
-> things from the driver.
+> While we are at it let's also add asserts on a format bit width value
+> in snd_pcm_linear_get_index() and snd_pcm_linear_put_index() received from
+> snd_pcm_format_width() so we won't try to access memory outside a
+> conversion array if for some reason this function had returned a value that
+> is not in the expected range.
 > 
-> The code itself looks fairly clean, it's mainly a case of trying to
-> figure out if it's doing what it's supposed to with the limited
-> documentation.
+> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+> ---
+>   src/pcm/pcm_linear.c | 16 +++++++++++++---
+>   src/pcm/pcm_route.c  |  6 ++++--
+>   src/pcm/plugin_ops.h | 50 ++++++++++++++++++++++++++++++++++++++++++++++----
+>   3 files changed, 63 insertions(+), 9 deletions(-)
 > 
-> > +int uniphier_aio_hw_params(struct snd_pcm_substream *substream,
-> > +			   struct snd_pcm_hw_params *params,
-> > +			   struct snd_soc_dai *dai)
-> > +{
-> > +	struct uniphier_aio *aio = uniphier_priv(dai);
-> > +	struct uniphier_aio_sub *sub = &aio->sub[substream->stream];
-> > +
-> > +	sub->params = *params;
-> > +	sub->setting = 1;
+> diff --git a/src/pcm/pcm_linear.c b/src/pcm/pcm_linear.c
+> index 0d61e927323f..e4973a308004 100644
+> --- a/src/pcm/pcm_linear.c
+> +++ b/src/pcm/pcm_linear.c
+> @@ -90,6 +90,7 @@ int snd_pcm_linear_get_index(snd_pcm_format_t src_format, snd_pcm_format_t dst_f
+>   		endian = 0;
+>   	pwidth = snd_pcm_format_physical_width(src_format);
+>   	width = snd_pcm_format_width(src_format);
+> +	assert(width >= 8 && width <= 32);
 > 
-> So we don't validate the params at all?
-> 
-> > +	uniphier_aio_port_reset(sub);
-> > +	uniphier_aio_srcport_reset(sub);
-> 
-> Is there a mux in the SoC here?
-> 
+> ...
+> > @@ -121,6 +125,7 @@ int snd_pcm_linear_put_index(snd_pcm_format_t 
+src_format, snd_pcm_format_t dst_f
+>   		endian = 0;
+>   	pwidth = snd_pcm_format_physical_width(dst_format);
+>   	width = snd_pcm_format_width(dst_format);
+> +	assert(width >= 8 && width <= 32);
+>   	if (pwidth == 24) {
+>   		switch (width) {
+>   		case 24:
 
-Sorry for confusing, It's not mux.
+I can understand your intention to insert these assert(), while it's 
+better not to include them in this series of patch.
 
-uniphier_srcport_reset() resets HW SRC (sampling rate converter) block.
-Audio data out ports of UniPhier audio system have HW SRC.
+A call of 'snd_pcm_format_physical_width()' and 'snd_pcm_format_width()'
+returns 4 for 'SNDRV_PCM_FORMAT_IMA_ADPCM'. Furthermore, both of them
+returns -EINVAL for 'SNDRV_PCM_FORMAT_MPEG', 'SNDRV_PCM_FORMAT_GSM' and
+'SNDRV_PCM_FORMAT_SPECIAL'. They can bring wrong calculation to the
+resampling function, in the worse case result in any fault.
 
+However, this is another issue, at least out of your aim for this
+patchset. It's a kind of bug for wider influence. I think to have
+another opportunity to discuss about the way to handle such special
+formats in the resampling layer. Would you please post this patchset
+again without these assertions?
 
-> > +static const struct of_device_id uniphier_aio_of_match[] = {
-> > +#ifdef CONFIG_SND_SOC_UNIPHIER_LD11
-> > +	{
-> > +		.compatible = "socionext,uniphier-ld11-aio",
-> > +		.data = &uniphier_aio_ld11_spec,
-> > +	},
-> > +	{
-> > +		.compatible = "socionext,uniphier-ld20-aio",
-> > +		.data = &uniphier_aio_ld20_spec,
-> > +	},
-> > +#endif /* CONFIG_SND_SOC_UNIPHIER_LD11 */
-> 
-> Why is there an ifdef here?  There's no other conditional code in here,
-> it seems pointless.
-> 
+(Additionally, I suspect that current implementation of the resampling
+layer itself is not enough proper for non-PCM samples such as float, DSD
+and so on.)
 
-This config is used to support or not LD11 SoC.
-aio-ld11.c is not build and 'uniphier_aio_ldxx_spec' is undefined if this config is disabled.
-
-aio-ld11.c defines SoC dependent resources (port, HW ring buffer, DMA ch, etc.)
-and fixed settings.
-I know it's better to move such information into device-tree, but register areas of
-UniPhier's audio system is very strange and interleaved. It's hard to split each nodes...
-
-
-> > +		for (j = 0; j < ARRAY_SIZE(aio->sub); j++) {
-> > +			struct uniphier_aio_sub *sub = &aio->sub[j];
-> > +
-> > +			if (!sub->running)
-> > +				continue;
-> > +
-> > +			spin_lock(&sub->spin);
-> > +			uniphier_aio_rb_sync(sub);
-> > +			uniphier_aio_rb_clear_int(sub);
-> > +			spin_unlock(&sub->spin);
-> 
-> It's not 100% obvious what this does...  a comment might help.
-> 
-> > +int uniphier_aio_chip_init(struct uniphier_aio_chip *chip)
-> > +{
-> > +	struct regmap *r = chip->regmap;
-> > +
-> > +	regmap_update_bits(r, A2APLLCTR0,
-> > +			   A2APLLCTR0_APLLXPOW_MASK,
-> > +			   A2APLLCTR0_APLLXPOW_PWON);
-> > +
-> > +	regmap_update_bits(r, A2APLLCTR1, A2APLLCTR1_APLL_MASK,
-> > +			   A2APLLCTR1_APLLF2_33MHZ | A2APLLCTR1_APLLA2_33MHZ |
-> > +			   A2APLLCTR1_APLLF1_36MHZ | A2APLLCTR1_APLLA1_36MHZ);
-> > +
-> > +	regmap_update_bits(r, A2EXMCLKSEL0,
-> > +			   A2EXMCLKSEL0_EXMCLK_MASK,
-> > +			   A2EXMCLKSEL0_EXMCLK_OUTPUT);
-> > +
-> > +	regmap_update_bits(r, A2AIOINPUTSEL, A2AIOINPUTSEL_RXSEL_MASK,
-> > +			   A2AIOINPUTSEL_RXSEL_PCMI1_HDMIRX1 |
-> > +			   A2AIOINPUTSEL_RXSEL_PCMI2_SIF |
-> > +			   A2AIOINPUTSEL_RXSEL_PCMI3_EVEA |
-> > +			   A2AIOINPUTSEL_RXSEL_IECI1_HDMIRX1);
-> 
-> This definitely looks like there's some clocking and audio routing
-> within the SoC which should be exposed to userspace, or at the very
-> least machine driver configuration rather than being hard coded.
-> 
-> > +	switch (pc) {
-> > +	case IEC61937_PC_AC3:
-> > +		repet = OPORTMXREPET_STRLENGTH_AC3 |
-> > +			OPORTMXREPET_PMLENGTH_AC3;
-> > +		pause |= OPORTMXPAUDAT_PAUSEPD_AC3;
-> > +		break;
-> > +	case IEC61937_PC_MPA:
-> > +		repet = OPORTMXREPET_STRLENGTH_MPA |
-> > +			OPORTMXREPET_PMLENGTH_MPA;
-> > +		pause |= OPORTMXPAUDAT_PAUSEPD_MPA;
-> > +		break;
-> > +	case IEC61937_PC_MP3:
-> > +		repet = OPORTMXREPET_STRLENGTH_MP3 |
-> > +			OPORTMXREPET_PMLENGTH_MP3;
-> > +		pause |= OPORTMXPAUDAT_PAUSEPD_MP3;
-> > +		break;
-> 
-> This looks awfully like compressed audio support...  should there be
-> integration with the compressed audio API/
-
-Thanks, I'll try it. Is there Documentation in sound/designes/compress-offload.rst?
-And best sample is... Intel's driver?
+And next time, please follow a below instruction.
+1.use '--subject-prefix' option with 'alsa-lib][PATCH v3' for
+   git-format-patch so that subject of your patches includes better
+   information for reviewers.
+   (If it's for kernel stuffs, just use '--v')
+2. use '--cover-letter' option for git-format-patch so that you can
+   write changelog of your successive work.
+3.use '--thread' option for git-send-email (or add 'sendemail.thread'
+   entry into your local repository) so that posted patches spin in one
+   message thread.
 
 
-(Summary)
-I think I should fix as follows:
+Thanks
 
-  - Split DMA, DAI patches from large one
-  - Validate parameters in hw_params
-  - Add description about HW SRC (or fix bad name 'srcport')
-  - Add comments about uniphier_aiodma_irq()
-  - Expose clocking and audio routing to userspace, or at the very
-    least machine driver configuration
-  - Support compress-audio API for S/PDIF
-
-and post V2.
-
-
-Regards,
---
-Katsuhiro Suzuki
-
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Takashi Sakamoto
