@@ -1,104 +1,60 @@
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: Applied "ASoC: atmel-classd: select correct Kconfig symbol" to
- the asoc tree
-Date: Tue, 5 Dec 2017 13:52:29 +0100
-Message-ID: <b928fd88-8d2e-4c31-7f3d-e129e256aec8@microchip.com>
-References: <20171205124803.D380E44006B@finisterre.ee.mobilebroadband>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 00/10] ASoC: fsl_ssi: Clean up - coding
+	style level
+Date: Tue, 5 Dec 2017 14:01:17 +0100
+Message-ID: <81e17b9c-e878-1fe9-bb6f-b074d5766232@maciej.szmigiero.name>
+References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171205124803.D380E44006B@finisterre.ee.mobilebroadband>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B0B7266AE1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 14:01:23 +0100 (CET)
+In-Reply-To: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, caleb@crome.org, timur@tabi.org, broonie@kernel.org, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/12/2017 at 13:48, Mark Brown wrote:
-> The patch
-> 
->    ASoC: atmel-classd: select correct Kconfig symbol
-> 
-> has been applied to the asoc tree at
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Hi Nicolin,
 
-Mark,
+On 04.12.2017 21:46, Nicolin Chen wrote:
+> ==Background==
+> The fsl_ssi driver was designed for PPC originally and then it has
+> been updated to support different modes for i.MX Series, including
+> SDMA, I2S Master mode, AC97 and older i.MXs with FIQ, by different
+> contributors for different use cases in different coding styles.
+> 
+> Additionally, in order to fix/work-around hardware bugs and design
+> flaws, the driver made a lot of compromise so now its program flow
+> looks very complicated and it's getting hard to maintain or update.
+> 
+> So I am going to clean up the driver in both coding style level and
+> program flow level.
+> 
+> ==Introduction==
+> This series of patches is the first set to clean up fsl_ssi driver
+> in the coding style level. Any patch here is not supposed to change
+> the program flow.
+> 
+> ==Verification==
+> Theoretically, it only needs code review, build and sanity tests. I
+> have done build and sanity tests on an i.MX 6 platform by building
+> using imx_v6_v7_defconfig and testing with I2S slave/master mode.
 
-Actually the discussion is still ongoing regarding these issues and this
-fix isn't the proper one (aka NACK).
+Thanks for your cleanup work.
 
-Is an incremental patch has to be prepared or do you remove this patch?
+Due to my current workload I will be able to go through this and test
+the AC'97 mode on a UDOO board only in about a week.
 
-Thanks, regards,
-  Nicolas
-
-
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.  
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
-> 
->>From 7e3dba272e5ef5b38fba8710f98b4b3da7232ea5 Mon Sep 17 00:00:00 2001
-> From: Arnd Bergmann <arnd@arndb.de>
-> Date: Tue, 5 Dec 2017 11:09:38 +0100
-> Subject: [PATCH] ASoC: atmel-classd: select correct Kconfig symbol
-> 
-> Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-> changed the way that the dependencies are handled, but then the
-> Class D amplifier support got merged, which used the old method.
-> 
-> This seems to have triggered a very rare randconfig condition for me
-> now, leading to a link error:
-> 
-> sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
-> atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
-> atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
-> sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
-> atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
-> atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
-> 
-> Changing it to select SND_ATMEL_SOC_SSC_DMA as intended rather than
-> SND_ATMEL_SOC_DMA directly makes it work again.
-> 
-> Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  sound/soc/atmel/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-> index 4a56f3dfba51..2d998e5c4fb5 100644
-> --- a/sound/soc/atmel/Kconfig
-> +++ b/sound/soc/atmel/Kconfig
-> @@ -64,7 +64,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
->  config SND_ATMEL_SOC_CLASSD
->  	tristate "Atmel ASoC driver for boards using CLASSD"
->  	depends on ARCH_AT91 || COMPILE_TEST
-> -	select SND_ATMEL_SOC_DMA
-> +	select SND_ATMEL_SOC_SSC_DMA
->  	select REGMAP_MMIO
->  	help
->  	  Say Y if you want to add support for Atmel ASoC driver for boards using
-> 
-
-
--- 
-Nicolas Ferre
+Maciej
