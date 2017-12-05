@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: don't use rtd->codec on
-	qcom/apq8016_sbc" to the asoc tree
-Date: Tue,  5 Dec 2017 12:46:17 +0000 (GMT)
-Message-ID: <20171205124617.8D29C44006B@finisterre.ee.mobilebroadband>
-References: <87zi6xu7y3.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: don't use rtd->codec on Intel/haswell"
+	to the asoc tree
+Date: Tue,  5 Dec 2017 12:46:39 +0000 (GMT)
+Message-ID: <20171205124639.9299844006B@finisterre.ee.mobilebroadband>
+References: <871sk9vmj2.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 89B84266AE1
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 13:46:19 +0100 (CET)
-In-Reply-To: <87zi6xu7y3.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E815026772D
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 13:46:41 +0100 (CET)
+In-Reply-To: <871sk9vmj2.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: don't use rtd->codec on qcom/apq8016_sbc
+   ASoC: don't use rtd->codec on Intel/haswell
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 96e1b9eef4e53a1fea2b889881ca293d153fe0d1 Mon Sep 17 00:00:00 2001
+>From 187c43df88196c0c4b231771a39e4a46f20a4f7a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 5 Dec 2017 04:24:13 +0000
-Subject: [PATCH] ASoC: don't use rtd->codec on qcom/apq8016_sbc
+Date: Tue, 5 Dec 2017 04:23:52 +0000
+Subject: [PATCH] ASoC: don't use rtd->codec on Intel/haswell
 
 rtd->codec will be removed soon.
 rtd->codec = rtd->codec_dai->codec, thus,
@@ -65,40 +65,21 @@ we can use rtd->codec_dai->component instead of it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/apq8016_sbc.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/haswell.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 03851fedd1e2..704428735e3c 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -43,7 +43,7 @@ struct apq8016_sbc_data {
- static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_codec *codec;
-+	struct snd_soc_component *component;
- 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
- 	struct snd_soc_card *card = rtd->card;
- 	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
-@@ -102,15 +102,15 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	for (i = 0 ; i < dai_link->num_codecs; i++) {
- 		struct snd_soc_dai *dai = rtd->codec_dais[i];
+diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
+index 5e1ea0371c90..3c5160779204 100644
+--- a/sound/soc/intel/boards/haswell.c
++++ b/sound/soc/intel/boards/haswell.c
+@@ -76,7 +76,7 @@ static int haswell_rt5640_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
--		codec = dai->codec;
-+		component = dai->component;
- 		/* Set default mclk for internal codec */
--		rval = snd_soc_codec_set_sysclk(codec, 0, 0, DEFAULT_MCLK_RATE,
-+		rval = snd_soc_component_set_sysclk(component, 0, 0, DEFAULT_MCLK_RATE,
- 				       SND_SOC_CLOCK_IN);
- 		if (rval != 0 && rval != -ENOTSUPP) {
- 			dev_warn(card->dev, "Failed to set mclk: %d\n", rval);
- 			return rval;
- 		}
--		rval = snd_soc_codec_set_jack(codec, &pdata->jack, NULL);
-+		rval = snd_soc_component_set_jack(component, &pdata->jack, NULL);
- 		if (rval != 0 && rval != -ENOTSUPP) {
- 			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
- 			return rval;
+ 	/* set correct codec filter for DAI format and clock config */
+-	snd_soc_update_bits(rtd->codec, 0x83, 0xffff, 0x8000);
++	snd_soc_component_update_bits(codec_dai->component, 0x83, 0xffff, 0x8000);
+ 
+ 	return ret;
+ }
 -- 
 2.15.0
