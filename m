@@ -1,21 +1,20 @@
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH] ASoC: atmel-classd: select correct Kconfig
-	symbol
-Date: Tue, 5 Dec 2017 12:27:06 +0100
-Message-ID: <8268ff41-576b-4438-ad10-ec90f66b6e9f@microchip.com>
-References: <20171205101000.968887-1-arnd@arndb.de>
- <20171205105750.GI21780@piout.net>
- <CAK8P3a29G4T1DbkjwhEqa6cSVQL77z0jW0znMX47tqd5vM-P9Q@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/8] ASoC: uniphier: add support for
+	UniPhier EVEA codec
+Date: Tue, 5 Dec 2017 11:59:15 +0000
+Message-ID: <20171205115915.GB11658@finisterre>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
+ <20171122114321.29196-5-suzuki.katsuhiro@socionext.com>
+ <20171204182027.2k5uw5og65h6ac7w@sirena.org.uk>
+ <CAK7LNAR=-vHN5k6irpaDcAUYcH2kjCXLJpf10RMuq=GZB3huog@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8683592337963725759=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from esa6.microchip.iphmx.com (esa6.microchip.iphmx.com
- [216.71.154.253])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A3F2266A74
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 12:27:11 +0100 (CET)
-In-Reply-To: <CAK8P3a29G4T1DbkjwhEqa6cSVQL77z0jW0znMX47tqd5vM-P9Q@mail.gmail.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A16E266A74
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 12:59:21 +0100 (CET)
+In-Reply-To: <CAK7LNAR=-vHN5k6irpaDcAUYcH2kjCXLJpf10RMuq=GZB3huog@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, Jassi Brar <jaswinder.singh@linaro.org>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/12/2017 at 12:13, Arnd Bergmann wrote:
-> On Tue, Dec 5, 2017 at 11:57 AM, Alexandre Belloni
-> <alexandre.belloni@free-electrons.com> wrote:
->> On 05/12/2017 at 11:09:38 +0100, Arnd Bergmann wrote:
->>> Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
->>> changed the way that the dependencies are handled, but then the
->>> Class D amplifier support got merged, which used the old method.
->>>
->>> This seems to have triggered a very rare randconfig condition for me
->>> now, leading to a link error:
->>>
->>> sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
->>> atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
->>> atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
->>> sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
->>> atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
->>> atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
->>>
->>> Changing it to select SND_ATMEL_SOC_SSC_DMA as intended rather than
->>> SND_ATMEL_SOC_DMA directly makes it work again.
->>>
->>> Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-> 
-> Unfortunately, my testing just found a new problem with this patch
-> applied, I had
-> not run enough randconfig tests on top of it:
-> 
-> sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
-> atmel_ssc_dai.c:(.text+0x73c): undefined reference to `ssc_request'
-> sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
-> atmel_ssc_dai.c:(.text+0x7be): undefined reference to `ssc_free'
-> 
-> This is for a configuration with SND_ATMEL_SOC_CLASSD=y
-> and CONFIG_ATMEL_SSC=n. Could you tell me whether that is a
-> sensible configuration that should work, or whether we need a dependency
-> on ATMEL_SSC in SND_ATMEL_SOC_CLASSD? I can't really tell
-> from the source code, but you probably know the answer.
 
-Actually, they are two different interfaces which can be enabled at the
-same time or not and CLASSD doesn't use the SSC.
-So no dependency between them.
+--===============8683592337963725759==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lEGEL1/lMxI0MVQ2"
+Content-Disposition: inline
 
-It might be an issue with SND_ATMEL_SOC_DMA not selecting the proper code...
 
-Regards,
--- 
-Nicolas Ferre
+--lEGEL1/lMxI0MVQ2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Dec 05, 2017 at 09:58:54AM +0900, Masahiro Yamada wrote:
+
+> Indeed ugly,
+> but I think this is intentional to make the SPDX line stand out.
+
+>=20
+> Linus suggested this as far as I understood from the following:
+> https://patchwork.kernel.org/patch/10016201/
+
+> If you use C++ comment style for the entire block,
+> it will not stand out.
+
+It's the first line of the file to make it stand out, if you google
+around you can find some other conversation about how C++ comments are
+a good idea in general and this might encourage them.
+
+--lEGEL1/lMxI0MVQ2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlomihAACgkQJNaLcl1U
+h9C3NQf/ZoLjydjXpiCZxv4eVvZkj8DoVueUDFclZMb0P+Xhh/jUvBPTEnr4s/vf
+1VoDLyF3b4tlLKS4ctWGyEpjn2wGOMS6tyu2187xtf4CXBo0eFXzDwh5xBbUAOLp
+Y+R+R0vdCxcogJUlgtd2ktPYr3+Bp0YjEIdQP1IbTErntuQUz6qaqF95sYFyxS8H
+Y9plzNRzdWjg1Wbk6NkKBDhVaxKih1dpFmA9IX2PEIF8q9jDYEIhrsFU6tr3zH75
+Tp/tyuwKYG4NJ9+8QMiQPIUGbHyIz1iDv3oJ2UlAHbSkg6j9Et7flpHPmbLbdicX
+8kbPLjisDlNFiBgQdfKaqKl23zlMqQ==
+=RgyB
+-----END PGP SIGNATURE-----
+
+--lEGEL1/lMxI0MVQ2--
+
+--===============8683592337963725759==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8683592337963725759==--
