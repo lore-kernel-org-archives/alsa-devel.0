@@ -1,137 +1,89 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: Add IO transfer
-Date: Tue, 5 Dec 2017 12:01:14 +0530
-Message-ID: <20171205063114.GL32417@localhost>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
- <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
- <20171203170418.GN32417@localhost>
- <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: New codec support for ALC257
+Date: Tue, 5 Dec 2017 07:42:48 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A183FA056@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A183FA056RTITMBSV02realt_"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B44B26770B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 08:42:55 +0100 (CET)
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 03, 2017 at 09:01:41PM -0600, Pierre-Louis Bossart wrote:
-> On 12/3/17 11:04 AM, Vinod Koul wrote:
-> >On Fri, Dec 01, 2017 at 05:27:31PM -0600, Pierre-Louis Bossart wrote:
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183FA056RTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Sorry looks like I missed replying to this one earlier.
+Hi Takashi,
+=20
+This patch was support new codec for ALC257.
+=20
+BR,
+Kailang
 
-> >>>+static inline int find_response_code(enum sdw_command_response resp)
-> >>>+{
-> >>>+	switch (resp) {
-> >>>+	case SDW_CMD_OK:
-> >>>+		return 0;
-> >>>+
-> >>>+	case SDW_CMD_IGNORED:
-> >>>+		return -ENODATA;
-> >>>+
-> >>>+	case SDW_CMD_TIMEOUT:
-> >>>+		return -ETIMEDOUT;
-> >>>+
-> >>>+	default:
-> >>>+		return -EIO;
-> >>
-> >>the 'default' case will handle both SDW_CMD_FAIL (which is a bus event
-> >>usually due to bus clash or parity issues) and SDW_CMD_FAIL_OTHER (which is
-> >>an imp-def IP event).
-> >>
-> >>Do they really belong in the same basket? From a debug perspective there is
-> >>quite a bit of information lost.
-> >
-> >at higher level the error handling is same. the information is not lost as
-> >it is expected that you would log it at error source.
-> 
-> I don't understand this. It's certainly not the same for me if you detect an
-> electric problem or if the IP is in the weeds. Logging at the source is fine
-> but this filtering prevents higher levels from doing anything different.
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183FA056RTITMBSV02realt_
+Content-Type: application/octet-stream; name="0000-alc257-support.patch"
+Content-Description: 0000-alc257-support.patch
+Content-Disposition: attachment; filename="0000-alc257-support.patch";
+	size=2023; creation-date="Tue, 05 Dec 2017 07:42:05 GMT";
+	modification-date="Tue, 05 Dec 2017 07:39:48 GMT"
+Content-Transfer-Encoding: base64
 
-The point is higher levels like here cant do much than bail out and complain.
+RnJvbSA2ZjUxNjFkMTdmYzgxYzdmZDVlNDYxMDk0NGRiYjM4MjRkOTk0ZjhmIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFR1ZSwgNSBEZWMgMjAxNyAxNTozODoyNCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGhkYS9yZWFsdGVrIC0gTmV3IGNvZGVjIHN1cHBvcnQgZm9yIEFMQzI1NwoKQWRkIG5ldyBzdXBw
+b3J0IGZvciBBTEMyNTcgY29kZWMuCgpTaWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxh
+bmdAcmVhbHRlay5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
+LmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCA5MjFhMTBlLi40YjIxZjcx
+IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtMzMwLDYgKzMzMCw3IEBAIHN0YXRpYyB2b2lkIGFs
+Y19maWxsX2VhcGRfY29lZihzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAljYXNlIDB4MTBlYzAy
+MzY6CiAJY2FzZSAweDEwZWMwMjU1OgogCWNhc2UgMHgxMGVjMDI1NjoKKwljYXNlIDB4MTBlYzAy
+NTc6CiAJY2FzZSAweDEwZWMwMjgyOgogCWNhc2UgMHgxMGVjMDI4MzoKIAljYXNlIDB4MTBlYzAy
+ODY6CkBAIC0yNzcyLDYgKzI3NzMsNyBAQCBlbnVtIHsKIAlBTEMyNjlfVFlQRV9BTEMyOTgsCiAJ
+QUxDMjY5X1RZUEVfQUxDMjU1LAogCUFMQzI2OV9UWVBFX0FMQzI1NiwKKwlBTEMyNjlfVFlQRV9B
+TEMyNTcsCiAJQUxDMjY5X1RZUEVfQUxDMjE1LAogCUFMQzI2OV9UWVBFX0FMQzIyNSwKIAlBTEMy
+NjlfVFlQRV9BTEMyOTQsCkBAIC0yODA1LDYgKzI4MDcsNyBAQCBzdGF0aWMgaW50IGFsYzI2OV9w
+YXJzZV9hdXRvX2NvbmZpZyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAljYXNlIEFMQzI2OV9U
+WVBFX0FMQzI5ODoKIAljYXNlIEFMQzI2OV9UWVBFX0FMQzI1NToKIAljYXNlIEFMQzI2OV9UWVBF
+X0FMQzI1NjoKKwljYXNlIEFMQzI2OV9UWVBFX0FMQzI1NzoKIAljYXNlIEFMQzI2OV9UWVBFX0FM
+QzIxNToKIAljYXNlIEFMQzI2OV9UWVBFX0FMQzIyNToKIAljYXNlIEFMQzI2OV9UWVBFX0FMQzI5
+NDoKQEAgLTY4NjcsNiArNjg3MCwxMCBAQCBzdGF0aWMgaW50IHBhdGNoX2FsYzI2OShzdHJ1Y3Qg
+aGRhX2NvZGVjICpjb2RlYykKIAkJc3BlYy0+Z2VuLm1peGVyX25pZCA9IDA7IC8qIEFMQzI1NiBk
+b2VzIG5vdCBoYXZlIGFueSBsb29wYmFjayBtaXhlciBwYXRoICovCiAJCWFsY191cGRhdGVfY29l
+Zl9pZHgoY29kZWMsIDB4MzYsIDEgPDwgMTMsIDEgPDwgNSk7IC8qIFN3aXRjaCBwY2JlZXAgcGF0
+aCB0byBMaW5lIGluIHBhdGgqLwogCQlicmVhazsKKwljYXNlIDB4MTBlYzAyNTc6CisJCXNwZWMt
+PmNvZGVjX3ZhcmlhbnQgPSBBTEMyNjlfVFlQRV9BTEMyNTc7CisJCXNwZWMtPmdlbi5taXhlcl9u
+aWQgPSAwOworCQlicmVhazsKIAljYXNlIDB4MTBlYzAyMTU6CiAJY2FzZSAweDEwZWMwMjg1Ogog
+CWNhc2UgMHgxMGVjMDI4OToKQEAgLTc5MTQsNiArNzkyMSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1
+Y3QgaGRhX2RldmljZV9pZCBzbmRfaGRhX2lkX3JlYWx0ZWtbXSA9IHsKIAlIREFfQ09ERUNfRU5U
+UlkoMHgxMGVjMDIzNiwgIkFMQzIzNiIsIHBhdGNoX2FsYzI2OSksCiAJSERBX0NPREVDX0VOVFJZ
+KDB4MTBlYzAyNTUsICJBTEMyNTUiLCBwYXRjaF9hbGMyNjkpLAogCUhEQV9DT0RFQ19FTlRSWSgw
+eDEwZWMwMjU2LCAiQUxDMjU2IiwgcGF0Y2hfYWxjMjY5KSwKKwlIREFfQ09ERUNfRU5UUlkoMHgx
+MGVjMDI1NywgIkFMQzI1NyIsIHBhdGNoX2FsYzI2OSksCiAJSERBX0NPREVDX0VOVFJZKDB4MTBl
+YzAyNjAsICJBTEMyNjAiLCBwYXRjaF9hbGMyNjApLAogCUhEQV9DT0RFQ19FTlRSWSgweDEwZWMw
+MjYyLCAiQUxDMjYyIiwgcGF0Y2hfYWxjMjYyKSwKIAlIREFfQ09ERUNfRU5UUlkoMHgxMGVjMDI2
+NywgIkFMQzI2NyIsIHBhdGNoX2FsYzI2OCksCg==
 
-Can you point out what would be different behaviour in each of these cases?
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183FA056RTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> >>>+static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
-> >>>+{
-> >>>+	int retry = bus->prop.err_threshold;
-> >>>+	enum sdw_command_response resp;
-> >>>+	int ret = 0, i;
-> >>>+
-> >>>+	for (i = 0; i <= retry; i++) {
-> >>>+		resp = bus->ops->xfer_msg(bus, msg);
-> >>>+		ret = find_response_code(resp);
-> >>>+
-> >>>+		/* if cmd is ok or ignored return */
-> >>>+		if (ret == 0 || ret == -ENODATA)
-> >>
-> >>Can you document why you don't retry on a CMD_IGNORED? I know there was a
-> >>reason, I just can't remember it.
-> >
-> >CMD_IGNORED can be okay on broadcast. User of this API can retry all they
-> >want!
-> 
-> So you retry if this is a CMD_FAILED but let higher levels retry for
-> CMD_IGNORED, sorry I don't see the logic.
 
-Yes that is right.
-
-If I am doing a broadcast read, lets say for Device Id registers, why in the
-world would I want to retry? CMD_IGNORED is a valid response and required to
-stop enumeration cycle in that case.
-
-But if I am not expecting a CMD_IGNORED response, I can very well go ahead
-and retry from caller. The context is with caller and they can choose to do
-appropriate handling.
-
-And I have clarified this couple of times to you already, not sure how many
-more times I would have to do that.
-
-> >>Now that I think of it, the retry on TIMEOUT makes no sense to me. The retry
-> >>was intended for bus-level issues, where maybe a single bit error causes an
-> >>issue without consequences, but the TIMEOUT is a completely different beast,
-> >>it's the master IP that doesn't answer really, a completely different case.
-> >
-> >well in those cases where you have blue wires, it actually helps :)
-> 
-> Blue wires are not supposed to change electrical behavior. TIMEOUT is only
-> an internal SOC level issue, so no I don't get how this helps.
-> 
-> You have a retry count that is provided in the BIOS/firmware through disco
-> properties and it's meant to bus errors. You are abusing the definitions. A
-> command failed is supposed to be detected at the frame rate, which is
-> typically 20us. a timeout is likely a 100s of ms value, so if you retry on
-> top it's going to lock up the bus.
-
-The world is not perfect! A guy debugging setups needs all the help. I do
-not see any reason for not to retry. Bus is anyway locked up while a
-transfer is ongoing (we serialize transfers).
-
-Now if you feel this should be abhorred, I can change this for timeout.
-
-> >>>+enum sdw_command_response {
-> >>>+	SDW_CMD_OK = 0,
-> >>>+	SDW_CMD_IGNORED = 1,
-> >>>+	SDW_CMD_FAIL = 2,
-> >>>+	SDW_CMD_TIMEOUT = 4,
-> >>>+	SDW_CMD_FAIL_OTHER = 8,
-> >>
-> >>Humm, I can't recall if/why this is a mask? does it need to be?
-> >
-> >mask, not following!
-> >
-> >Taking a wild guess that you are asking about last error, which is for SW
-> >errors like malloc fail etc...
-> 
-> no, I was asking why this is declared as if it was used for a bitmask, why
-> not 0,1,2,3,4?
-
-Oh okay, I think it was something to do with bits for errors, but don see it
-helping so I can change it either way...
-
--- 
-~Vinod
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183FA056RTITMBSV02realt_--
