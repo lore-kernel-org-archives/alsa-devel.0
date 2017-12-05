@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: don't use rtd->codec on
-	soc_dev_attr_is_visible()" to the asoc tree
-Date: Tue,  5 Dec 2017 12:47:53 +0000 (GMT)
-Message-ID: <20171205124753.0C4F644006B@finisterre.ee.mobilebroadband>
-References: <878thzkkmx.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 573A92674EF
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 13:47:55 +0100 (CET)
-In-Reply-To: <878thzkkmx.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>
+Subject: Applied "ASoC: atmel-classd: select correct Kconfig symbol" to the asoc tree
+Date: Tue,  5 Dec 2017 12:48:03 +0000 (GMT)
+Message-ID: <20171205124803.D380E44006B@finisterre.ee.mobilebroadband>
+References: <20171205101000.968887-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171205101000.968887-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>Mark Brown <broonie@kernel.org>Alexandre Belloni <alexandre.belloni@free-electrons.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: don't use rtd->codec on soc_dev_attr_is_visible()
+   ASoC: atmel-classd: select correct Kconfig symbol
 
 has been applied to the asoc tree at
 
@@ -53,32 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From 3b6eed8deb37c349bffc7b3b4d722ce4023f8b11 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 5 Dec 2017 04:20:42 +0000
-Subject: [PATCH] ASoC: don't use rtd->codec on soc_dev_attr_is_visible()
+>From 7e3dba272e5ef5b38fba8710f98b4b3da7232ea5 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 5 Dec 2017 11:09:38 +0100
+Subject: [PATCH] ASoC: atmel-classd: select correct Kconfig symbol
 
-rtd->codec will be removed soon.
-checking rtd->num_codecs is enough
+Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
+changed the way that the dependencies are handled, but then the
+Class D amplifier support got merged, which used the old method.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This seems to have triggered a very rare randconfig condition for me
+now, leading to a link error:
+
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
+atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
+atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
+atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
+atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
+
+Changing it to select SND_ATMEL_SOC_SSC_DMA as intended rather than
+SND_ATMEL_SOC_DMA directly makes it work again.
+
+Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 2 +-
+ sound/soc/atmel/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c0edac80df34..90f1122d91c4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -213,7 +213,7 @@ static umode_t soc_dev_attr_is_visible(struct kobject *kobj,
- 
- 	if (attr == &dev_attr_pmdown_time.attr)
- 		return attr->mode; /* always visible */
--	return rtd->codec ? attr->mode : 0; /* enabled only with codec */
-+	return rtd->num_codecs ? attr->mode : 0; /* enabled only with codec */
- }
- 
- static const struct attribute_group soc_dapm_dev_group = {
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 4a56f3dfba51..2d998e5c4fb5 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -64,7 +64,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
+ config SND_ATMEL_SOC_CLASSD
+ 	tristate "Atmel ASoC driver for boards using CLASSD"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	select SND_ATMEL_SOC_DMA
++	select SND_ATMEL_SOC_SSC_DMA
+ 	select REGMAP_MMIO
+ 	help
+ 	  Say Y if you want to add support for Atmel ASoC driver for boards using
 -- 
 2.15.0
