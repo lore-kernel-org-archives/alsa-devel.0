@@ -1,114 +1,137 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-lib][PATCH 3/4] pcm: linear,
- route: handle linear formats with 20-bit sample on 4 bytes
-Date: Tue, 5 Dec 2017 14:50:55 +0900
-Message-ID: <0eaf46f0-5ea3-0d37-7570-731e31ad1485@sakamocchi.jp>
-References: <06db78be-2d91-c996-5a5b-d408ff4a84fa@maciej.szmigiero.name>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: Add IO transfer
+Date: Tue, 5 Dec 2017 12:01:14 +0530
+Message-ID: <20171205063114.GL32417@localhost>
+References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+ <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
+ <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
+ <20171203170418.GN32417@localhost>
+ <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 179A02676AA
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 06:50:57 +0100 (CET)
-In-Reply-To: <06db78be-2d91-c996-5a5b-d408ff4a84fa@maciej.szmigiero.name>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Dec 03, 2017 at 09:01:41PM -0600, Pierre-Louis Bossart wrote:
+> On 12/3/17 11:04 AM, Vinod Koul wrote:
+> >On Fri, Dec 01, 2017 at 05:27:31PM -0600, Pierre-Louis Bossart wrote:
 
-On Nov 30 2017 07:17, Maciej S. Szmigiero wrote:
-> The previous patch has added 20-bit PCM formats SND_PCM_FORMAT_{S,U}20 to
-> alsa-lib.
-> We need to extend the linear format conversion code with handling of these
-> sample formats so they can also be utilized by applications that only
-> recognize the more typical ones like SND_PCM_FORMAT_S16.
+Sorry looks like I missed replying to this one earlier.
+
+> >>>+static inline int find_response_code(enum sdw_command_response resp)
+> >>>+{
+> >>>+	switch (resp) {
+> >>>+	case SDW_CMD_OK:
+> >>>+		return 0;
+> >>>+
+> >>>+	case SDW_CMD_IGNORED:
+> >>>+		return -ENODATA;
+> >>>+
+> >>>+	case SDW_CMD_TIMEOUT:
+> >>>+		return -ETIMEDOUT;
+> >>>+
+> >>>+	default:
+> >>>+		return -EIO;
+> >>
+> >>the 'default' case will handle both SDW_CMD_FAIL (which is a bus event
+> >>usually due to bus clash or parity issues) and SDW_CMD_FAIL_OTHER (which is
+> >>an imp-def IP event).
+> >>
+> >>Do they really belong in the same basket? From a debug perspective there is
+> >>quite a bit of information lost.
+> >
+> >at higher level the error handling is same. the information is not lost as
+> >it is expected that you would log it at error source.
 > 
-> Since the conversion arrays are indexed by a format bit width divided by 8
-> the easiest way to handle these formats is to treat them like they were
-> 40-bit wide (the next free integer multiple of 8 bits).
-> This doesn't create a collision risk with a future format since there can't
-> really be a 40-bit sample format that occupies 4 bytes.
+> I don't understand this. It's certainly not the same for me if you detect an
+> electric problem or if the IP is in the weeds. Logging at the source is fine
+> but this filtering prevents higher levels from doing anything different.
+
+The point is higher levels like here cant do much than bail out and complain.
+
+Can you point out what would be different behaviour in each of these cases?
+
+> >>>+static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
+> >>>+{
+> >>>+	int retry = bus->prop.err_threshold;
+> >>>+	enum sdw_command_response resp;
+> >>>+	int ret = 0, i;
+> >>>+
+> >>>+	for (i = 0; i <= retry; i++) {
+> >>>+		resp = bus->ops->xfer_msg(bus, msg);
+> >>>+		ret = find_response_code(resp);
+> >>>+
+> >>>+		/* if cmd is ok or ignored return */
+> >>>+		if (ret == 0 || ret == -ENODATA)
+> >>
+> >>Can you document why you don't retry on a CMD_IGNORED? I know there was a
+> >>reason, I just can't remember it.
+> >
+> >CMD_IGNORED can be okay on broadcast. User of this API can retry all they
+> >want!
 > 
-> Make sure we use the getput conversion method for these formats since a
-> direct conversion from / to them is not supported.
+> So you retry if this is a CMD_FAILED but let higher levels retry for
+> CMD_IGNORED, sorry I don't see the logic.
+
+Yes that is right.
+
+If I am doing a broadcast read, lets say for Device Id registers, why in the
+world would I want to retry? CMD_IGNORED is a valid response and required to
+stop enumeration cycle in that case.
+
+But if I am not expecting a CMD_IGNORED response, I can very well go ahead
+and retry from caller. The context is with caller and they can choose to do
+appropriate handling.
+
+And I have clarified this couple of times to you already, not sure how many
+more times I would have to do that.
+
+> >>Now that I think of it, the retry on TIMEOUT makes no sense to me. The retry
+> >>was intended for bus-level issues, where maybe a single bit error causes an
+> >>issue without consequences, but the TIMEOUT is a completely different beast,
+> >>it's the master IP that doesn't answer really, a completely different case.
+> >
+> >well in those cases where you have blue wires, it actually helps :)
 > 
-> While we are at it let's also add asserts on a format bit width value
-> in snd_pcm_linear_get_index() and snd_pcm_linear_put_index() received from
-> snd_pcm_format_width() so we won't try to access memory outside a
-> conversion array if for some reason this function had returned a value that
-> is not in the expected range.
+> Blue wires are not supposed to change electrical behavior. TIMEOUT is only
+> an internal SOC level issue, so no I don't get how this helps.
 > 
-> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
-> ---
->   src/pcm/pcm_linear.c | 16 +++++++++++++---
->   src/pcm/pcm_route.c  |  6 ++++--
->   src/pcm/plugin_ops.h | 50 ++++++++++++++++++++++++++++++++++++++++++++++----
->   3 files changed, 63 insertions(+), 9 deletions(-)
+> You have a retry count that is provided in the BIOS/firmware through disco
+> properties and it's meant to bus errors. You are abusing the definitions. A
+> command failed is supposed to be detected at the frame rate, which is
+> typically 20us. a timeout is likely a 100s of ms value, so if you retry on
+> top it's going to lock up the bus.
+
+The world is not perfect! A guy debugging setups needs all the help. I do
+not see any reason for not to retry. Bus is anyway locked up while a
+transfer is ongoing (we serialize transfers).
+
+Now if you feel this should be abhorred, I can change this for timeout.
+
+> >>>+enum sdw_command_response {
+> >>>+	SDW_CMD_OK = 0,
+> >>>+	SDW_CMD_IGNORED = 1,
+> >>>+	SDW_CMD_FAIL = 2,
+> >>>+	SDW_CMD_TIMEOUT = 4,
+> >>>+	SDW_CMD_FAIL_OTHER = 8,
+> >>
+> >>Humm, I can't recall if/why this is a mask? does it need to be?
+> >
+> >mask, not following!
+> >
+> >Taking a wild guess that you are asking about last error, which is for SW
+> >errors like malloc fail etc...
 > 
-> diff --git a/src/pcm/pcm_linear.c b/src/pcm/pcm_linear.c
-> index 0d61e927323f..e4973a308004 100644
-> --- a/src/pcm/pcm_linear.c
-> +++ b/src/pcm/pcm_linear.c
-> @@ -90,6 +90,7 @@ int snd_pcm_linear_get_index(snd_pcm_format_t src_format, snd_pcm_format_t dst_f
->   		endian = 0;
->   	pwidth = snd_pcm_format_physical_width(src_format);
->   	width = snd_pcm_format_width(src_format);
-> +	assert(width >= 8 && width <= 32);
-> 
-> ...
-> > @@ -121,6 +125,7 @@ int snd_pcm_linear_put_index(snd_pcm_format_t 
-src_format, snd_pcm_format_t dst_f
->   		endian = 0;
->   	pwidth = snd_pcm_format_physical_width(dst_format);
->   	width = snd_pcm_format_width(dst_format);
-> +	assert(width >= 8 && width <= 32);
->   	if (pwidth == 24) {
->   		switch (width) {
->   		case 24:
+> no, I was asking why this is declared as if it was used for a bitmask, why
+> not 0,1,2,3,4?
 
-I can understand your intention to insert these assert(), while it's 
-better not to include them in this series of patch.
+Oh okay, I think it was something to do with bits for errors, but don see it
+helping so I can change it either way...
 
-A call of 'snd_pcm_format_physical_width()' and 'snd_pcm_format_width()'
-returns 4 for 'SNDRV_PCM_FORMAT_IMA_ADPCM'. Furthermore, both of them
-returns -EINVAL for 'SNDRV_PCM_FORMAT_MPEG', 'SNDRV_PCM_FORMAT_GSM' and
-'SNDRV_PCM_FORMAT_SPECIAL'. They can bring wrong calculation to the
-resampling function, in the worse case result in any fault.
-
-However, this is another issue, at least out of your aim for this
-patchset. It's a kind of bug for wider influence. I think to have
-another opportunity to discuss about the way to handle such special
-formats in the resampling layer. Would you please post this patchset
-again without these assertions?
-
-(Additionally, I suspect that current implementation of the resampling
-layer itself is not enough proper for non-PCM samples such as float, DSD
-and so on.)
-
-And next time, please follow a below instruction.
-1.use '--subject-prefix' option with 'alsa-lib][PATCH v3' for
-   git-format-patch so that subject of your patches includes better
-   information for reviewers.
-   (If it's for kernel stuffs, just use '--v')
-2. use '--cover-letter' option for git-format-patch so that you can
-   write changelog of your successive work.
-3.use '--thread' option for git-send-email (or add 'sendemail.thread'
-   entry into your local repository) so that posted patches spin in one
-   message thread.
-
-
-Thanks
-
-Takashi Sakamoto
+-- 
+~Vinod
