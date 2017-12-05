@@ -1,15 +1,19 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] [v2] ASoC: atmel-classd: improve Kconfig
-	dependencies
-Date: Tue,  5 Dec 2017 14:10:11 +0100
-Message-ID: <20171205131022.2082003-1-arnd@arndb.de>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [alsa-lib][PATCH 3/4] pcm: linear,
+ route: handle linear formats with 20-bit sample on 4 bytes
+Date: Tue, 5 Dec 2017 14:22:56 +0100
+Message-ID: <d505240a-7a88-4e2c-5fbb-8c6d53377de0@maciej.szmigiero.name>
+References: <06db78be-2d91-c996-5a5b-d408ff4a84fa@maciej.szmigiero.name>
+ <0eaf46f0-5ea3-0d37-7570-731e31ad1485@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id B67D8266AE1
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 14:11:46 +0100 (CET)
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEE33266AE1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 14:22:59 +0100 (CET)
+In-Reply-To: <0eaf46f0-5ea3-0d37-7570-731e31ad1485@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,66 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-changed the way that the dependencies are handled, but then the
-Class D amplifier support got merged, which used the old method.
-
-This seems to have triggered a very rare randconfig condition for me
-now, leading to a link error:
-
-sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
-atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
-atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
-sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
-atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
-atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
-
-This changes the SND_ATMEL_SOC_DMA option so it gets built whenever
-one of the two users (SND_ATMEL_SOC_SSC_DMA and SND_ATMEL_SOC_CLASSD)
-is enabled, with the twist that we make it built-in when SND_ATMEL_SOC_SSC
-is built-in, even if one of the other two is a module.
-
-I think this captures best what the real dependency in the hardware
-is, and it simplifies the logic a bit.
-
-Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: rewrite the change completely, after running into a new regression.
-
-I'm putting it out on the list so we can review the change together,
-but I'm still doing more testing at the same time. If I don't reply
-by Dec 6, nothing new has come up.
----
- sound/soc/atmel/Kconfig | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 4a56f3dfba51..af9a9096d50b 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -20,8 +20,8 @@ config SND_ATMEL_SOC_SSC_PDC
- config SND_ATMEL_SOC_DMA
- 	tristate
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
--	default m if SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=m
--	default y if SND_ATMEL_SOC_SSC_DMA=y || (SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=y)
-+	default y if SND_ATMEL_SOC_SSC=y && (SND_ATMEL_SOC_SSC_DMA=m || SND_ATMEL_SOC_CLASSD=m)
-+	default SND_ATMEL_SOC_CLASSD || SND_ATMEL_SOC_SSC_DMA
- 
- config SND_ATMEL_SOC_SSC_DMA
- 	tristate
-@@ -64,7 +64,6 @@ config SND_AT91_SOC_SAM9X5_WM8731
- config SND_ATMEL_SOC_CLASSD
- 	tristate "Atmel ASoC driver for boards using CLASSD"
- 	depends on ARCH_AT91 || COMPILE_TEST
--	select SND_ATMEL_SOC_DMA
- 	select REGMAP_MMIO
- 	help
- 	  Say Y if you want to add support for Atmel ASoC driver for boards using
--- 
-2.9.0
+SGkgVGFrYXNoaSwKCk9uIDA1LjEyLjIwMTcgMDY6NTAsIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6
+Cj4gSGksCj4gCj4gT24gTm92IDMwIDIwMTcgMDc6MTcsIE1hY2llaiBTLiBTem1pZ2llcm8gd3Jv
+dGU6CiguLikKPj4gZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNtX2xpbmVhci5jIGIvc3JjL3BjbS9w
+Y21fbGluZWFyLmMKPj4gaW5kZXggMGQ2MWU5MjczMjNmLi5lNDk3M2EzMDgwMDQgMTAwNjQ0Cj4+
+IC0tLSBhL3NyYy9wY20vcGNtX2xpbmVhci5jCj4+ICsrKyBiL3NyYy9wY20vcGNtX2xpbmVhci5j
+Cj4+IEBAIC05MCw2ICs5MCw3IEBAIGludCBzbmRfcGNtX2xpbmVhcl9nZXRfaW5kZXgoc25kX3Bj
+bV9mb3JtYXRfdCBzcmNfZm9ybWF0LCBzbmRfcGNtX2Zvcm1hdF90IGRzdF9mCj4+IMKgwqDCoMKg
+wqDCoMKgwqDCoCBlbmRpYW4gPSAwOwo+PiDCoMKgwqDCoMKgIHB3aWR0aCA9IHNuZF9wY21fZm9y
+bWF0X3BoeXNpY2FsX3dpZHRoKHNyY19mb3JtYXQpOwo+PiDCoMKgwqDCoMKgIHdpZHRoID0gc25k
+X3BjbV9mb3JtYXRfd2lkdGgoc3JjX2Zvcm1hdCk7Cj4+ICvCoMKgwqAgYXNzZXJ0KHdpZHRoID49
+IDggJiYgd2lkdGggPD0gMzIpOwo+Pgo+PiAuLi4KPj4gPiBAQCAtMTIxLDYgKzEyNSw3IEBAIGlu
+dCBzbmRfcGNtX2xpbmVhcl9wdXRfaW5kZXgoc25kX3BjbV9mb3JtYXRfdCAKPiBzcmNfZm9ybWF0
+LCBzbmRfcGNtX2Zvcm1hdF90IGRzdF9mCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBlbmRpYW4gPSAw
+Owo+PiDCoMKgwqDCoMKgIHB3aWR0aCA9IHNuZF9wY21fZm9ybWF0X3BoeXNpY2FsX3dpZHRoKGRz
+dF9mb3JtYXQpOwo+PiDCoMKgwqDCoMKgIHdpZHRoID0gc25kX3BjbV9mb3JtYXRfd2lkdGgoZHN0
+X2Zvcm1hdCk7Cj4+ICvCoMKgwqAgYXNzZXJ0KHdpZHRoID49IDggJiYgd2lkdGggPD0gMzIpOwo+
+PiDCoMKgwqDCoMKgIGlmIChwd2lkdGggPT0gMjQpIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHN3
+aXRjaCAod2lkdGgpIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGNhc2UgMjQ6Cj4gCj4gSSBjYW4g
+dW5kZXJzdGFuZCB5b3VyIGludGVudGlvbiB0byBpbnNlcnQgdGhlc2UgYXNzZXJ0KCksIHdoaWxl
+IGl0J3MgYmV0dGVyIG5vdCB0byBpbmNsdWRlIHRoZW0gaW4gdGhpcyBzZXJpZXMgb2YgcGF0Y2gu
+Cj4gCj4gQSBjYWxsIG9mICdzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aCgpJyBhbmQgJ3Nu
+ZF9wY21fZm9ybWF0X3dpZHRoKCknCj4gcmV0dXJucyA0IGZvciAnU05EUlZfUENNX0ZPUk1BVF9J
+TUFfQURQQ00nLiBGdXJ0aGVybW9yZSwgYm90aCBvZiB0aGVtCj4gcmV0dXJucyAtRUlOVkFMIGZv
+ciAnU05EUlZfUENNX0ZPUk1BVF9NUEVHJywgJ1NORFJWX1BDTV9GT1JNQVRfR1NNJyBhbmQKPiAn
+U05EUlZfUENNX0ZPUk1BVF9TUEVDSUFMJy4gVGhleSBjYW4gYnJpbmcgd3JvbmcgY2FsY3VsYXRp
+b24gdG8gdGhlCj4gcmVzYW1wbGluZyBmdW5jdGlvbiwgaW4gdGhlIHdvcnNlIGNhc2UgcmVzdWx0
+IGluIGFueSBmYXVsdC4KCnNuZF9wY21fbGluZWFyX2dldF9pbmRleCgpIGFuZCBzbmRfcGNtX2xp
+bmVhcl9wdXRfaW5kZXgoKSBzaG91bGQKYmUgY2FsbGVkIGZvciBsaW5lYXIgZm9ybWF0cyBvbmx5
+IChsaWtlIHRoZWlyIG5hbWVzIHN1Z2dlc3QpLgoKSWYgdGhleSB3ZXJlIGNhbGxlZCBmb3IgJ1NO
+RFJWX1BDTV9GT1JNQVRfSU1BX0FEUENNJyB0aGlzIHdpbGwgcmVzdWx0CmluIGEgbmVnYXRpdmUg
+Y29udmVyc2lvbiBhcnJheXMgaW5kZXguClRoZSBzYW1lIGdvZXMgZm9yIGZvcm1hdHMgdGhhdCBy
+ZXR1cm4gJy1FSU5WQUwnIGFzIHRoZWlyIHdpZHRoLgoKVGhpcyB3aWxsIG1lYW4gdGhhdCBhbiBh
+cHBsaWNhdGlvbiB3aWxsIHRyeSB0byBhY2Nlc3MgdGhlc2UgYXJyYXlzCm91dHNpZGUgb2YgdGhl
+aXIgYm91bmRzLCB3aGljaCBtYXkgcHJvZHVjZSBhIGhhcmQgdG8gZmluZCBidWdzLgpJIHRoaW5r
+IGl0IGlzIHJlYWxseSBiZXR0ZXIgdG8gZmFpbCB3aXRoIGFuIGFzc2VydGlvbiBmYWlsdXJlIGlu
+IHN1Y2gKY2FzZXMuCgo+IEhvd2V2ZXIsIHRoaXMgaXMgYW5vdGhlciBpc3N1ZSwgYXQgbGVhc3Qg
+b3V0IG9mIHlvdXIgYWltIGZvciB0aGlzCj4gcGF0Y2hzZXQuIEl0J3MgYSBraW5kIG9mIGJ1ZyBm
+b3Igd2lkZXIgaW5mbHVlbmNlLiBJIHRoaW5rIHRvIGhhdmUKPiBhbm90aGVyIG9wcG9ydHVuaXR5
+IHRvIGRpc2N1c3MgYWJvdXQgdGhlIHdheSB0byBoYW5kbGUgc3VjaCBzcGVjaWFsCj4gZm9ybWF0
+cyBpbiB0aGUgcmVzYW1wbGluZyBsYXllci4gV291bGQgeW91IHBsZWFzZSBwb3N0IHRoaXMgcGF0
+Y2hzZXQKPiBhZ2FpbiB3aXRob3V0IHRoZXNlIGFzc2VydGlvbnM/CgpJZiB0aGVzZSBhc3NlcnRp
+b25zIGFyZSByZWFsbHkgY29udHJvdmVyc2lhbCBJIHdpbGwgcmVtb3ZlIGl0LCBidXQgcGxlYXNl
+CnRoaW5rIGFnYWluIGFib3V0IGl0IGluIHRoZSBsaWdodCBvZiB0aGUgcGFyYWdyYXBoIGFib3Zl
+LgpBc3NlcnRzIGNhbiBhbHNvIGJlIHNwbGl0IG91dCB0byBhIHNlcGFyYXRlIHBhdGNoLgoKPiAo
+QWRkaXRpb25hbGx5LCBJIHN1c3BlY3QgdGhhdCBjdXJyZW50IGltcGxlbWVudGF0aW9uIG9mIHRo
+ZSByZXNhbXBsaW5nCj4gbGF5ZXIgaXRzZWxmIGlzIG5vdCBlbm91Z2ggcHJvcGVyIGZvciBub24t
+UENNIHNhbXBsZXMgc3VjaCBhcyBmbG9hdCwgRFNECj4gYW5kIHNvIG9uLikKPiAKPiBBbmQgbmV4
+dCB0aW1lLCBwbGVhc2UgZm9sbG93IGEgYmVsb3cgaW5zdHJ1Y3Rpb24uCj4gMS51c2UgJy0tc3Vi
+amVjdC1wcmVmaXgnIG9wdGlvbiB3aXRoICdhbHNhLWxpYl1bUEFUQ0ggdjMnIGZvcgo+IMKgIGdp
+dC1mb3JtYXQtcGF0Y2ggc28gdGhhdCBzdWJqZWN0IG9mIHlvdXIgcGF0Y2hlcyBpbmNsdWRlcyBi
+ZXR0ZXIKPiDCoCBpbmZvcm1hdGlvbiBmb3IgcmV2aWV3ZXJzLgo+IMKgIChJZiBpdCdzIGZvciBr
+ZXJuZWwgc3R1ZmZzLCBqdXN0IHVzZSAnLS12JykKCkhtbSwgYnV0IHRoaXMgc2VyaWVzIGFscmVh
+ZHkgaGFkIHRoaXMgcHJlZml4ICgnW2Fsc2EtbGliXVtQQVRDSF0nKT8KSGFkIG5vIHZlcnNpb24g
+bnVtYmVyLCBzaW5jZSBpdCB3YXMgdGhlIGZpcnN0IGl0ZXJhdGlvbi4KCj4gMi4gdXNlICctLWNv
+dmVyLWxldHRlcicgb3B0aW9uIGZvciBnaXQtZm9ybWF0LXBhdGNoIHNvIHRoYXQgeW91IGNhbgo+
+IMKgIHdyaXRlIGNoYW5nZWxvZyBvZiB5b3VyIHN1Y2Nlc3NpdmUgd29yay4KCldpbGwgZG8uCgo+
+IDMudXNlICctLXRocmVhZCcgb3B0aW9uIGZvciBnaXQtc2VuZC1lbWFpbCAob3IgYWRkICdzZW5k
+ZW1haWwudGhyZWFkJwo+IMKgIGVudHJ5IGludG8geW91ciBsb2NhbCByZXBvc2l0b3J5KSBzbyB0
+aGF0IHBvc3RlZCBwYXRjaGVzIHNwaW4gaW4gb25lCj4gwqAgbWVzc2FnZSB0aHJlYWQuCj4gCgpX
+aWxsIGRvLgoKQWxzbywgd2lsbCBhZGQgY29tbWFzIGF0IHRoZSBlbmRzIG9mIGxhc3QgZW50cmll
+cyBpbiBlbnVtcywgYXMgeW91IGhhZApzdWdnZXN0ZWQgaW4geW91ciBvdGhlciBtZXNzYWdlLgoK
+PiBUaGFua3MKPiAKPiBUYWthc2hpIFNha2Ftb3RvCgpUaGFua3MsCk1hY2llagpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
