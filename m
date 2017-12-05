@@ -1,15 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: atmel-classd: select correct Kconfig
-	symbol
-Date: Tue,  5 Dec 2017 11:09:38 +0100
-Message-ID: <20171205101000.968887-1-arnd@arndb.de>
+From: Jaime T <enopatch@gmail.com>
+Subject: usx2y: "should not be here with counts=40" then hard
+	lockup (linux 4.9.0)
+Date: Tue, 5 Dec 2017 10:18:14 +0000
+Message-ID: <CAAbCkm+ZD3_0JPuH5DHs0TT+syJ8tfKEo9x-d1Vv8W3SgQrhuQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
- by alsa0.perex.cz (Postfix) with ESMTP id BBAC2266E71
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 11:10:08 +0100 (CET)
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13485266AE1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 11:18:15 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id x49so20414099wrb.13
+ for <alsa-devel@alsa-project.org>; Tue, 05 Dec 2017 02:18:15 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-changed the way that the dependencies are handled, but then the
-Class D amplifier support got merged, which used the old method.
+Hi all.
 
-This seems to have triggered a very rare randconfig condition for me
-now, leading to a link error:
+I'm running a fresh and cleanly-installed debian stable (stretch) with
+my tascam us-122. After several hours of perfect sound, the kernel
+(4.9.0-2-686) emits:
 
-sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
-atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
-atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
-sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
-atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
-atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
+Dec  4 22:30:20 piano kernel: [14707.140766] should not be here with counts=40
+Dec  4 22:30:24 piano jackd[793]: ALSA: poll time out, polled for 3999073 usecs
+Dec  4 22:30:24 piano jackd[793]: JackAudioDriver::ProcessAsync: read
+error, stopping...
 
-Changing it to select SND_ATMEL_SOC_SSC_DMA as intended rather than
-SND_ATMEL_SOC_DMA directly makes it work again.
+and my jack server stops working, followed soon after by a hard
+lockup. I've run alsa-info.sh and the results are available at
+http://www.alsa-project.org/db/?f=e2385306145a37956360def8fe06e8c0f951839d
 
-Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/atmel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Should I log a bug at https://bugzilla.kernel.org/ ?
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 4a56f3dfba51..2d998e5c4fb5 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -64,7 +64,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
- config SND_ATMEL_SOC_CLASSD
- 	tristate "Atmel ASoC driver for boards using CLASSD"
- 	depends on ARCH_AT91 || COMPILE_TEST
--	select SND_ATMEL_SOC_DMA
-+	select SND_ATMEL_SOC_SSC_DMA
- 	select REGMAP_MMIO
- 	help
- 	  Say Y if you want to add support for Atmel ASoC driver for boards using
--- 
-2.9.0
+Many thanks, Jaime
