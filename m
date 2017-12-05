@@ -1,17 +1,24 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v2 2/6] ASoC: Intel: Skylake: Parse vendor
-	tokens to build A-State table
-Date: Wed,  6 Dec 2017 16:34:02 +0530
-Message-ID: <20171206110406.11400-3-guneshwor.o.singh@intel.com>
-References: <20171206110406.11400-1-guneshwor.o.singh@intel.com>
+From: Josh Boyer <jwboyer@kernel.org>
+Subject: Re: [GIT PULL]: Cannonlake audio firware
+Date: Tue, 5 Dec 2017 14:51:27 -0500
+Message-ID: <CA+5PVA5KRO55v9CBQ33f7d9ho=Gs+S56Xb7q3pBvt_LaUMvtvA@mail.gmail.com>
+References: <20171204034301.GB32417@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 05F682678DD
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 12:04:53 +0100 (CET)
-In-Reply-To: <20171206110406.11400-1-guneshwor.o.singh@intel.com>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9950326698E
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 20:51:32 +0100 (CET)
+Received: from mail-qt0-f174.google.com (mail-qt0-f174.google.com
+ [209.85.216.174])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4941C218B3
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 19:51:29 +0000 (UTC)
+Received: by mail-qt0-f174.google.com with SMTP id 33so3669096qtv.1
+ for <alsa-devel@alsa-project.org>; Tue, 05 Dec 2017 11:51:29 -0800 (PST)
+In-Reply-To: <20171204034301.GB32417@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,167 +28,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Pradeep Tewani <pradeep.d.tewani@intel.com>, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pradeep Tewani <pradeep.d.tewani@intel.com>
+On Sun, Dec 3, 2017 at 10:43 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+> Hi,
+>
+> Please PULL to recieve the Cannonlake audio firmware.
+>
+> The following changes since commit 17e6288135d4500f9fe60224dce2b46d850c346b:
+>
+>   brcm: update firmware for bcm4358 (2017-11-25 10:15:53 -0500)
+>
+> are available in the git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git cnl
+>
+> for you to fetch changes up to 89c62115f14dd8f414dfd2702913a6f1fcac3287:
+>
+>   linux-firmware: intel: Add Cannonlake audio firmware (2017-12-04 09:04:57 +0530)
+>
+> ----------------------------------------------------------------
+> Vinod Koul (1):
+>       linux-firmware: intel: Add Cannonlake audio firmware
+>
+>  WHENCE                     |   5 +++++
+>  intel/dsp_fw_cnl.bin       |   1 +
+>  intel/dsp_fw_cnl_v1191.bin | Bin 0 -> 583852 bytes
+>  3 files changed, 6 insertions(+)
+>  create mode 120000 intel/dsp_fw_cnl.bin
+>  create mode 100644 intel/dsp_fw_cnl_v1191.bin
 
-A-State table is a power management table which allows the driver to
-configure the DSP clock source corresponding to various load thresholds.
-The table contains upto 3 A-State entries. The patch adds and parses the
-corresponding A-State tokens to build the table.
+Merged and pushed out.  Thanks.
 
-Signed-off-by: Pradeep Tewani <pradeep.d.tewani@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
----
- include/uapi/sound/snd_sst_tokens.h    | 17 ++++++++++++-
- sound/soc/intel/skylake/skl-topology.c | 44 +++++++++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl.h          | 17 +++++++++++++
- 3 files changed, 76 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
-index 326054a72bc7..8ba0112e5336 100644
---- a/include/uapi/sound/snd_sst_tokens.h
-+++ b/include/uapi/sound/snd_sst_tokens.h
-@@ -222,6 +222,17 @@
-  * %SKL_TKN_MM_U32_NUM_IN_FMT:  Number of input formats
-  * %SKL_TKN_MM_U32_NUM_OUT_FMT: Number of output formats
-  *
-+ * %SKL_TKN_U32_ASTATE_IDX:     Table Index for the A-State entry to be filled
-+ *                              with kcps and clock source
-+ *
-+ * %SKL_TKN_U32_ASTATE_COUNT:   Number of valid entries in A-State table
-+ *
-+ * %SKL_TKN_U32_ASTATE_KCPS:    Specifies the core load threshold (in kilo
-+ *                              cycles per second) below which DSP is clocked
-+ *                              from source specified by clock source.
-+ *
-+ * %SKL_TKN_U32_ASTATE_CLK_SRC: Clock source for A-State entry
-+ *
-  * module_id and loadable flags dont have tokens as these values will be
-  * read from the DSP FW manifest
-  *
-@@ -309,7 +320,11 @@ enum SKL_TKNS {
- 	SKL_TKN_MM_U32_NUM_IN_FMT,
- 	SKL_TKN_MM_U32_NUM_OUT_FMT,
- 
--	SKL_TKN_MAX = SKL_TKN_MM_U32_NUM_OUT_FMT,
-+	SKL_TKN_U32_ASTATE_IDX,
-+	SKL_TKN_U32_ASTATE_COUNT,
-+	SKL_TKN_U32_ASTATE_KCPS,
-+	SKL_TKN_U32_ASTATE_CLK_SRC,
-+	SKL_TKN_MAX = SKL_TKN_U32_ASTATE_CLK_SRC,
- };
- 
- #endif
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index a072bcf209d2..6a5f8462c380 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3056,11 +3056,13 @@ static int skl_tplg_get_int_tkn(struct device *dev,
- 		struct snd_soc_tplg_vendor_value_elem *tkn_elem,
- 		struct skl *skl)
- {
--	int tkn_count = 0, ret;
-+	int tkn_count = 0, ret, size;
- 	static int mod_idx, res_val_idx, intf_val_idx, dir, pin_idx;
- 	struct skl_module_res *res = NULL;
- 	struct skl_module_iface *fmt = NULL;
- 	struct skl_module *mod = NULL;
-+	static struct skl_astate_param *astate_table;
-+	static int astate_cfg_idx, count;
- 	int i;
- 
- 	if (skl->modules) {
-@@ -3093,6 +3095,46 @@ static int skl_tplg_get_int_tkn(struct device *dev,
- 		mod_idx = tkn_elem->value;
- 		break;
- 
-+	case SKL_TKN_U32_ASTATE_COUNT:
-+		if (astate_table != NULL) {
-+			dev_err(dev, "More than one entry for A-State count");
-+			return -EINVAL;
-+		}
-+
-+		if (tkn_elem->value > SKL_MAX_ASTATE_CFG) {
-+			dev_err(dev, "Invalid A-State count %d\n",
-+				tkn_elem->value);
-+			return -EINVAL;
-+		}
-+
-+		size = tkn_elem->value * sizeof(struct skl_astate_param) +
-+				sizeof(count);
-+		skl->cfg.astate_cfg = devm_kzalloc(dev, size, GFP_KERNEL);
-+		if (!skl->cfg.astate_cfg)
-+			return -ENOMEM;
-+
-+		astate_table = skl->cfg.astate_cfg->astate_table;
-+		count = skl->cfg.astate_cfg->count = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_ASTATE_IDX:
-+		if (tkn_elem->value >= count) {
-+			dev_err(dev, "Invalid A-State index %d\n",
-+				tkn_elem->value);
-+			return -EINVAL;
-+		}
-+
-+		astate_cfg_idx = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_ASTATE_KCPS:
-+		astate_table[astate_cfg_idx].kcps = tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_ASTATE_CLK_SRC:
-+		astate_table[astate_cfg_idx].clk_src = tkn_elem->value;
-+		break;
-+
- 	case SKL_TKN_U8_IN_PIN_TYPE:
- 	case SKL_TKN_U8_OUT_PIN_TYPE:
- 	case SKL_TKN_U8_IN_QUEUE_COUNT:
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 554ad6b5a823..46dda88ba139 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -29,6 +29,8 @@
- 
- #define SKL_SUSPEND_DELAY 2000
- 
-+#define SKL_MAX_ASTATE_CFG		3
-+
- #define AZX_PCIREG_PGCTL		0x44
- #define AZX_PGCTL_LSRMD_MASK		(1 << 4)
- #define AZX_PCIREG_CGCTL		0x48
-@@ -46,6 +48,20 @@ struct skl_dsp_resource {
- 
- struct skl_debug;
- 
-+struct skl_astate_param {
-+	u32 kcps;
-+	u32 clk_src;
-+};
-+
-+struct skl_astate_config {
-+	u32 count;
-+	struct skl_astate_param astate_table[0];
-+};
-+
-+struct skl_fw_config {
-+	struct skl_astate_config *astate_cfg;
-+};
-+
- struct skl {
- 	struct hdac_ext_bus ebus;
- 	struct pci_dev *pci;
-@@ -77,6 +93,7 @@ struct skl {
- 	u8 nr_modules;
- 	struct skl_module **modules;
- 	bool use_tplg_pcm;
-+	struct skl_fw_config cfg;
- };
- 
- #define skl_to_ebus(s)	(&(s)->ebus)
--- 
-2.15.1
+josh
