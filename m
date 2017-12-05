@@ -1,15 +1,20 @@
-From: Harry Pan <harry.pan@intel.com>
-Subject: [PATCH] ASoC: Intel: bxt: Refine the HW contraint of
-	Ref capture.
-Date: Wed,  6 Dec 2017 03:21:27 +0800
-Message-ID: <20171205192127.16210-1-harry.pan@intel.com>
+From: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ALSA: pcm: prevent UAF in snd_pcm_info
+Date: Tue, 5 Dec 2017 11:29:07 -0800
+Message-ID: <CAGXu5j+WH2N2Xu_FahJcC9VTDD1+c5LFtFPv3O9-9AgXyRCi=w@mail.gmail.com>
+References: <20171205171657.74392-1-ndesaulniers@google.com>
+ <s5hvahldm28.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from E6440 (123-192-241-158.dynamic.kbronet.com.tw [123.192.241.158])
- by alsa0.perex.cz (Postfix) with ESMTP id E3D6426698E
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 20:22:07 +0100 (CET)
+Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
+ [209.85.213.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96EA126698E
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 20:29:10 +0100 (CET)
+Received: by mail-vk0-f66.google.com with SMTP id x140so1035207vke.4
+ for <alsa-devel@alsa-project.org>; Tue, 05 Dec 2017 11:29:10 -0800 (PST)
+In-Reply-To: <s5hvahldm28.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,48 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-audio-intel@eclists.intel.com
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, vinod.koul@intel.com, linux-kernel@vger.kernel.org, tiwai@suse.com, Harry Pan <harry.pan@intel.com>, broonie@kernel.org, sathyanarayana.nujella@intel.com, jeeja.kp@intel.com, Adam.Thomson.Opensource@diasemi.com, harshapriya.n@intel.com, yong.zhi@intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>, Nick Desaulniers <ndesaulniers@google.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Robb Glasser <rglasser@google.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, Markus Elfring <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The patch restricts the HW contraint of the refcap of WoV stream
-in single channel (mono) and 16k Hz based on platform implementation.
+On Tue, Dec 5, 2017 at 11:14 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 05 Dec 2017 18:16:55 +0100,
+> Nick Desaulniers wrote:
+>>
+>> From: Robb Glasser <rglasser@google.com>
+>>
+>> When the device descriptor is closed, the `substream->runtime` pointer
+>> is freed. But another thread may be in the ioctl handler, case
+>> SNDRV_CTL_IOCTL_PCM_INFO. This case calls snd_pcm_info_user() which
+>> calls snd_pcm_info() which accesses the now freed `substream->runtime`.
+>>
+>> Signed-off-by: Robb Glasser <rglasser@google.com>
+>> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> Looks reasonable.  Applied with Cc to stable now.
 
-Such that, the userspace program can rely on correct HW parameters
-through the ALSA library call to manipulate the device.
+FWIW, this was assigned CVE-2017-0861. (Best to get it into the commit
+log if possible.)
 
-Signed-off-by: Harry Pan <harry.pan@intel.com>
----
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+-Kees
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index ce35ec7884d1..382f71228807 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -338,8 +338,23 @@ static const struct snd_pcm_hw_constraint_list constraints_16000 = {
- 	.list  = rates_16000,
- };
- 
-+static const unsigned int ch_mono[] = {
-+	1,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_refcap = {
-+	.count = ARRAY_SIZE(ch_mono),
-+	.list  = ch_mono,
-+};
-+
- static int broxton_refcap_startup(struct snd_pcm_substream *substream)
- {
-+	substream->runtime->hw.channels_max = 1;
-+
-+	snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					SNDRV_PCM_HW_PARAM_CHANNELS,
-+					&constraints_refcap);
-+
- 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE,
- 			&constraints_16000);
+>
+>
+> thanks,
+>
+> Takashi
+>
+>> ---
+>>  sound/core/pcm.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+>> index 9070f277f8db..09ee8c6b9f75 100644
+>> --- a/sound/core/pcm.c
+>> +++ b/sound/core/pcm.c
+>> @@ -153,7 +153,9 @@ static int snd_pcm_control_ioctl(struct snd_card *card,
+>>                               err = -ENXIO;
+>>                               goto _error;
+>>                       }
+>> +                     mutex_lock(&pcm->open_mutex);
+>>                       err = snd_pcm_info_user(substream, info);
+>> +                     mutex_unlock(&pcm->open_mutex);
+>>               _error:
+>>                       mutex_unlock(&register_mutex);
+>>                       return err;
+>> --
+>> 2.15.0.531.g2ccb3012c9-goog
+>>
+>>
+
+
+
 -- 
-2.13.5
+Kees Cook
+Pixel Security
