@@ -1,83 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-classd: select correct Kconfig symbol" to the asoc tree
-Date: Tue,  5 Dec 2017 12:48:10 +0000 (GMT)
-Message-ID: <20171205124810.B155B44006B@finisterre.ee.mobilebroadband>
+Subject: Re: Applied "ASoC: atmel-classd: select correct
+ Kconfig symbol" to the asoc tree
+Date: Tue, 5 Dec 2017 12:51:00 +0000
+Message-ID: <20171205125100.GH11658@finisterre>
 References: <20171205101000.968887-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171205101000.968887-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
+ <20171205124803.D380E44006B@finisterre.ee.mobilebroadband>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0124979989312925922=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B69266AE1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 13:51:10 +0100 (CET)
+In-Reply-To: <20171205124803.D380E44006B@finisterre.ee.mobilebroadband>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: atmel-classd: select correct Kconfig symbol
+--===============0124979989312925922==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xQmOcGOVkeO43v2v"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--xQmOcGOVkeO43v2v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, Dec 05, 2017 at 12:48:03PM +0000, Mark Brown wrote:
+> The patch
+>=20
+>    ASoC: atmel-classd: select correct Kconfig symbol
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Following the subsequent discussion I'll drop this one.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--xQmOcGOVkeO43v2v
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlomljMACgkQJNaLcl1U
+h9Adswf9GO1683eEU3mNt0774VdsRQw9TMydogLHEoL6/DbR7PLjAgOkt8Ncrvuj
+p2795POCfTiff/7lFp6yp6LHu3/CKt1rOGV8DOx+4oPjEcdvEydVjzYUwb/SlcVX
+q+gQSVNIHz+NH3fWtVdWzaIGHBC7/PI2RqIaETMkkXUSF7TyvRaTWyL1d4Gy2/NT
+I6oVv8EiBUyEdwvccKz7DXSpwqfLryH4Zi8vwnOruMYnz7sVWc/uXBOmS3w4nDaM
+9KNfafoY0+Og6UhNHuxhjE+vT0rlZyhupZau2Omtb2/do8QWYrxmYShfHPVwWp8p
+QqygQdvpVzXeJqahWg/tFqV8epTTow==
+=pdX9
+-----END PGP SIGNATURE-----
 
->From d20957ef48c3c0c37e44c5385baf1cdfd132f0db Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 5 Dec 2017 11:09:38 +0100
-Subject: [PATCH] ASoC: atmel-classd: select correct Kconfig symbol
+--xQmOcGOVkeO43v2v--
 
-Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-changed the way that the dependencies are handled, but then the
-Class D amplifier support got merged, which used the old method.
+--===============0124979989312925922==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-This seems to have triggered a very rare randconfig condition for me
-now, leading to a link error:
 
-sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
-atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
-atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
-sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
-atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
-atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
-
-Changing it to select SND_ATMEL_SOC_SSC_DMA as intended rather than
-SND_ATMEL_SOC_DMA directly makes it work again.
-
-Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 4a56f3dfba51..2d998e5c4fb5 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -64,7 +64,7 @@ config SND_AT91_SOC_SAM9X5_WM8731
- config SND_ATMEL_SOC_CLASSD
- 	tristate "Atmel ASoC driver for boards using CLASSD"
- 	depends on ARCH_AT91 || COMPILE_TEST
--	select SND_ATMEL_SOC_DMA
-+	select SND_ATMEL_SOC_SSC_DMA
- 	select REGMAP_MMIO
- 	help
- 	  Say Y if you want to add support for Atmel ASoC driver for boards using
--- 
-2.15.0
+--===============0124979989312925922==--
