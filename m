@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/10] ASoC: fsl_ssi: Remove unused struct
-	device
-Date: Tue, 5 Dec 2017 13:04:46 +0000
-Message-ID: <20171205130446.GI11658@finisterre>
-References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
- <1512420403-10164-2-git-send-email-nicoleotsuka@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] [v2] ASoC: atmel-classd: improve Kconfig
+	dependencies
+Date: Tue,  5 Dec 2017 14:10:11 +0100
+Message-ID: <20171205131022.2082003-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2191989812650888224=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C0A0266AE1
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 14:05:01 +0100 (CET)
-In-Reply-To: <1512420403-10164-2-git-send-email-nicoleotsuka@gmail.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id B67D8266AE1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 14:11:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: mail@maciej.szmigiero.name, timur@tabi.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, caleb@crome.org, linux-kernel@vger.kernel.org, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+To: Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Commit 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
+changed the way that the dependencies are handled, but then the
+Class D amplifier support got merged, which used the old method.
 
---===============2191989812650888224==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7IgncvKP0CVPV/ZZ"
-Content-Disposition: inline
+This seems to have triggered a very rare randconfig condition for me
+now, leading to a link error:
 
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_set_audio':
+atmel_ssc_dai.c:(.text+0x79c): undefined reference to `atmel_pcm_dma_platform_register'
+atmel_ssc_dai.c:(.text+0x79c): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_register'
+sound/soc/atmel/atmel_ssc_dai.o: In function `atmel_ssc_put_audio':
+atmel_ssc_dai.c:(.text+0xf24): undefined reference to `atmel_pcm_dma_platform_unregister'
+atmel_ssc_dai.c:(.text+0xf24): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `atmel_pcm_dma_platform_unregister'
 
---7IgncvKP0CVPV/ZZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This changes the SND_ATMEL_SOC_DMA option so it gets built whenever
+one of the two users (SND_ATMEL_SOC_SSC_DMA and SND_ATMEL_SOC_CLASSD)
+is enabled, with the twist that we make it built-in when SND_ATMEL_SOC_SSC
+is built-in, even if one of the other two is a module.
 
-On Mon, Dec 04, 2017 at 12:46:34PM -0800, Nicolin Chen wrote:
-> struct device is defined in system level header files any way.
-> As long as fsl_ssi.h is included after those header files, it
-> should be safe to remove this line.
+I think this captures best what the real dependency in the hardware
+is, and it simplifies the logic a bit.
 
-It's better practice to either directly include those headers or have a
-forward declaration like this, it means there's no way things can go
-wrong.
+Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: rewrite the change completely, after running into a new regression.
 
---7IgncvKP0CVPV/ZZ
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm putting it out on the list so we can review the change together,
+but I'm still doing more testing at the same time. If I don't reply
+by Dec 6, nothing new has come up.
+---
+ sound/soc/atmel/Kconfig | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlommW0ACgkQJNaLcl1U
-h9DKngf9G0hdTAKCrt5SUpPnTKgEfzhkb8uVISWw9YmR/iqZcz2Aob1jJKc/J5UB
-fP+P+Jk+FTHbUPznEowCL7GJtOiB215wYCbb2aSYMV/Y+Q3RpAPEOijEnbWxR/kh
-eIzpxIbF+zWeHLqW5GXEQ9fc3w6uvoP3LzZqBX9rClD/GpRar1JJOvCHFt67pYE7
-K6ST4N+L5Hf1xmNtfDboNYQHuhkVYZXv1X3AWK1cajpZSfjuFerau232zc8KpiUT
-XO3eh3c/BETO4D74ffsMKIz8QobJPjlM4DNlpzhBiD1/5FBp+YjSn72L21G9JP6f
-/vWs3Be/ifI8LPq+R42KSpmfmnMmxw==
-=z7pP
------END PGP SIGNATURE-----
-
---7IgncvKP0CVPV/ZZ--
-
---===============2191989812650888224==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2191989812650888224==--
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 4a56f3dfba51..af9a9096d50b 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -20,8 +20,8 @@ config SND_ATMEL_SOC_SSC_PDC
+ config SND_ATMEL_SOC_DMA
+ 	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+-	default m if SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=m
+-	default y if SND_ATMEL_SOC_SSC_DMA=y || (SND_ATMEL_SOC_SSC_DMA=m && SND_ATMEL_SOC_SSC=y)
++	default y if SND_ATMEL_SOC_SSC=y && (SND_ATMEL_SOC_SSC_DMA=m || SND_ATMEL_SOC_CLASSD=m)
++	default SND_ATMEL_SOC_CLASSD || SND_ATMEL_SOC_SSC_DMA
+ 
+ config SND_ATMEL_SOC_SSC_DMA
+ 	tristate
+@@ -64,7 +64,6 @@ config SND_AT91_SOC_SAM9X5_WM8731
+ config SND_ATMEL_SOC_CLASSD
+ 	tristate "Atmel ASoC driver for boards using CLASSD"
+ 	depends on ARCH_AT91 || COMPILE_TEST
+-	select SND_ATMEL_SOC_DMA
+ 	select REGMAP_MMIO
+ 	help
+ 	  Say Y if you want to add support for Atmel ASoC driver for boards using
+-- 
+2.9.0
