@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] conf/ucm: Add Gigabyte mobo UCM profile
-	with dual HD-audio codecs
-Date: Tue,  5 Dec 2017 17:46:20 +0100
-Message-ID: <20171205164620.6257-3-tiwai@suse.de>
+Subject: [PATCH 2/3] conf/ucm: Add dual HD-audio codecs config
+	for Lenovo
+Date: Tue,  5 Dec 2017 17:46:19 +0100
+Message-ID: <20171205164620.6257-2-tiwai@suse.de>
 References: <20171205164620.6257-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 38364266DB1
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E795266DD5
  for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 17:46:27 +0100 (CET)
 In-Reply-To: <20171205164620.6257-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,50 +25,55 @@ To: alsa-devel@alsa-project.org
 Cc: Hui Wang <hui.wang@canonical.com>, Kailang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Like the previous Lenovo laptops, some Gigabyte mobos have dual
-HD-audio codecs and need to switch dynamically via UCM profile.
-Reuse the same profile as Lenovo dual codecs, so far.
+Some recent Lenovo laptops have dual codecs and we need to switch them
+accordingly.  The kernel side already contains a fix and gives the
+unique longname string for identifying the board, and here we hook up
+the corresponding UCM profile.
 
+The profile was corrected and tested by Hui Wang on Lenovo p520.
+
+Tested-by: Kailang <kailang@realtek.com>
+Tested-by: Hui Wang <hui.wang@canonical.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
  configure.ac                                       |   1 +
- .../HDAudio-Gigabyte-ALC1220DualCodecs.conf        |   5 +
- .../HDAudio-Gigabyte-ALC1220DualCodecs/HiFi.conf   | 145 +++++++++++++++++++++
- .../HDAudio-Gigabyte-ALC1220DualCodecs/Makefile.am |   4 +
+ .../HDAudio-Lenovo-DualCodecs.conf                 |   5 +
+ src/conf/ucm/HDAudio-Lenovo-DualCodecs/HiFi.conf   | 145 +++++++++++++++++++++
+ src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile.am |   4 +
  src/conf/ucm/Makefile.am                           |   1 +
  5 files changed, 156 insertions(+)
- create mode 100644 src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HDAudio-Gigabyte-ALC1220DualCodecs.conf
- create mode 100644 src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HiFi.conf
- create mode 100644 src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile.am
+ create mode 100644 src/conf/ucm/HDAudio-Lenovo-DualCodecs/HDAudio-Lenovo-DualCodecs.conf
+ create mode 100644 src/conf/ucm/HDAudio-Lenovo-DualCodecs/HiFi.conf
+ create mode 100644 src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile.am
 
 diff --git a/configure.ac b/configure.ac
-index 286f6bdd74cb..1d97946d843f 100644
+index 83724e07459c..286f6bdd74cb 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -698,6 +698,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
  	  src/conf/ucm/DAISY-I2S/Makefile \
  	  src/conf/ucm/DB410c/Makefile \
  	  src/conf/ucm/GoogleNyan/Makefile \
-+	  src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile \
- 	  src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile \
++	  src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile \
  	  src/conf/ucm/PandaBoard/Makefile \
  	  src/conf/ucm/PandaBoardES/Makefile \
-diff --git a/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HDAudio-Gigabyte-ALC1220DualCodecs.conf b/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HDAudio-Gigabyte-ALC1220DualCodecs.conf
+ 	  src/conf/ucm/PAZ00/Makefile \
+diff --git a/src/conf/ucm/HDAudio-Lenovo-DualCodecs/HDAudio-Lenovo-DualCodecs.conf b/src/conf/ucm/HDAudio-Lenovo-DualCodecs/HDAudio-Lenovo-DualCodecs.conf
 new file mode 100644
-index 000000000000..492eebf01aa9
+index 000000000000..98fdd8cceb7b
 --- /dev/null
-+++ b/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HDAudio-Gigabyte-ALC1220DualCodecs.conf
++++ b/src/conf/ucm/HDAudio-Lenovo-DualCodecs/HDAudio-Lenovo-DualCodecs.conf
 @@ -0,0 +1,5 @@
-+Comment "Gigabyte mobo with dual HD-audio codecs"
++Comment "Lenovo laptop with dual HD-audio codecs"
 +SectionUseCase."HiFi" {
 +	File "HiFi.conf"
 +	Comment "Default"
 +}
-diff --git a/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HiFi.conf b/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HiFi.conf
+diff --git a/src/conf/ucm/HDAudio-Lenovo-DualCodecs/HiFi.conf b/src/conf/ucm/HDAudio-Lenovo-DualCodecs/HiFi.conf
 new file mode 100644
 index 000000000000..509678964f3f
 --- /dev/null
-+++ b/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/HiFi.conf
++++ b/src/conf/ucm/HDAudio-Lenovo-DualCodecs/HiFi.conf
 @@ -0,0 +1,145 @@
 +SectionVerb {
 +	Value {
@@ -215,27 +220,27 @@ index 000000000000..509678964f3f
 +		cset "name='Front-Panel Capture Switch' off"
 +	]
 +}
-diff --git a/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile.am b/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile.am
+diff --git a/src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile.am b/src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile.am
 new file mode 100644
-index 000000000000..728fd19b9251
+index 000000000000..da285415c145
 --- /dev/null
-+++ b/src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile.am
++++ b/src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile.am
 @@ -0,0 +1,4 @@
 +alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/HDAudio-Gigabyte-ALC1220DualCodecs
-+ucm_DATA = HDAudio-Gigabyte-ALC1220DualCodecs.conf HiFi.conf
++ucmdir = $(alsaconfigdir)/ucm/HDAudio-Lenovo-DualCodecs
++ucm_DATA = HDAudio-Lenovo-DualCodecs.conf HiFi.conf
 +EXTRA_DIST = $(ucm_DATA)
 diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index 1d81beeb4ddf..954e32b8f0c8 100644
+index 060d025f1bb5..1d81beeb4ddf 100644
 --- a/src/conf/ucm/Makefile.am
 +++ b/src/conf/ucm/Makefile.am
 @@ -6,6 +6,7 @@ chtrt5645 \
  DAISY-I2S \
  DB410c \
  GoogleNyan \
-+HDAudio-Gigabyte-ALC1220DualCodecs \
- HDAudio-Lenovo-DualCodecs \
++HDAudio-Lenovo-DualCodecs \
  PandaBoard \
  PandaBoardES \
+ PAZ00 \
 -- 
 2.15.0
