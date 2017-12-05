@@ -1,19 +1,19 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH v2 09/19] ASoC: tlv320aic31xx: Remove
-	platform data
-Date: Tue, 5 Dec 2017 15:20:19 -0600
-Message-ID: <4fee76ef-e518-69b6-3bcc-f65b0a31cacc@ti.com>
+Subject: Re: [PATCH v2 08/19] ASoC: tlv320aic31xx: Switch GPIO
+ handling to use gpiod_* API
+Date: Tue, 5 Dec 2017 15:23:49 -0600
+Message-ID: <17fcc926-9ee8-1229-ea3d-f38347cb9a23@ti.com>
 References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-10-afd@ti.com>
- <20171201132606.vyw7wthmql5trkwq@sirena.org.uk>
+ <20171129213300.20021-9-afd@ti.com>
+ <537c8d62-de11-15e8-11bc-08e8334d4322@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F894266AE1
- for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 22:20:22 +0100 (CET)
-In-Reply-To: <20171201132606.vyw7wthmql5trkwq@sirena.org.uk>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5335F267800
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 22:24:11 +0100 (CET)
+In-Reply-To: <537c8d62-de11-15e8-11bc-08e8334d4322@ti.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,23 +24,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>, Tony Lindgren <tony@atomide.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12/01/2017 07:26 AM, Mark Brown wrote:
-> On Wed, Nov 29, 2017 at 03:32:50PM -0600, Andrew F. Davis wrote:
->> Platform data is not used by anyone (at least in upstream) so
->> drop this data and switch to using fwnode(DT/ACPI) only.
+On 12/04/2017 10:47 AM, Andrew F. Davis wrote:
+> On 11/29/2017 03:32 PM, Andrew F. Davis wrote:
+>> Move to using newer gpiod_* GPIO handling functions. This simplifies
+>> the code and eases dropping platform data in the next patch. Also
+>> remember GPIO are active low, so set "1" to reset.
+>>
+>> Signed-off-by: Andrew F. Davis <afd@ti.com>
+>> ---
 > 
-> The advantage being...?  Not all architectures use DT or ACPI so it's
-> not clear that this is a step forwards in itself.
+> 
+> Kbuild bot seems mad a this one, looks like I need to include
+> linux/gpio/consumer.h, will fix for v3.
 > 
 
-Simplifies the code in several places, and you don't need to use DT or
-ACPI, it probes just fine anyway you normally add an I2C device.
+Looks like you already have this in your -next branch, how do you want
+this fix, I can send a delta patch with the added include, a new v3
+version that you can replace the patch in-tree with, or if it's easier
+for you manually fix in-tree?
 
-All we are dropping here is the platform_data way of specifying mic-bias
-voltage, which if you are wanting to do that in an out-of-tree board
-file, then I'm sure you can locally modify this driver to use your
-wanted voltage setting by default.
+> 
+>>  sound/soc/codecs/tlv320aic31xx.c | 23 ++++++++++-------------
+>>  1 file changed, 10 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+>> index c84febd991a0..ab03a19f6aaa 100644
+>> --- a/sound/soc/codecs/tlv320aic31xx.c
+>> +++ b/sound/soc/codecs/tlv320aic31xx.c
+>> @@ -157,6 +157,7 @@ struct aic31xx_priv {
+>>  	u8 i2c_regs_status;
+>>  	struct device *dev;
+>>  	struct regmap *regmap;
+>> +	struct gpio_desc *gpio_reset;
+>>  	struct aic31xx_pdata pdata;
+>>  	struct regulator_bulk_data supplies[AIC31XX_NUM_SUPPLIES];
+>>  	struct aic31xx_disable_nb disable_nb[AIC31XX_NUM_SUPPLIES];
+>> @@ -1020,8 +1021,8 @@ static int aic31xx_regulator_event(struct notifier_block *nb,
+>>  		 * Put codec to reset and as at least one of the
+>>  		 * supplies was disabled.
+>>  		 */
+>> -		if (gpio_is_valid(aic31xx->pdata.gpio_reset))
+>> -			gpio_set_value(aic31xx->pdata.gpio_reset, 0);
+>> +		if (aic31xx->gpio_reset)
+>> +			gpiod_set_value(aic31xx->gpio_reset, 1);
+>>  
+>>  		regcache_mark_dirty(aic31xx->regmap);
+>>  		dev_dbg(aic31xx->dev, "## %s: DISABLE received\n", __func__);
+>> @@ -1073,8 +1074,8 @@ static int aic31xx_power_on(struct snd_soc_codec *codec)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> -	if (gpio_is_valid(aic31xx->pdata.gpio_reset)) {
+>> -		gpio_set_value(aic31xx->pdata.gpio_reset, 1);
+>> +	if (aic31xx->gpio_reset) {
+>> +		gpiod_set_value(aic31xx->gpio_reset, 0);
+>>  		udelay(100);
+>>  	}
+>>  	regcache_cache_only(aic31xx->regmap, false);
+>> @@ -1334,15 +1335,11 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+>>  	else if (aic31xx->dev->of_node)
+>>  		aic31xx_pdata_from_of(aic31xx);
+>>  
+>> -	if (aic31xx->pdata.gpio_reset) {
+>> -		ret = devm_gpio_request_one(aic31xx->dev,
+>> -					    aic31xx->pdata.gpio_reset,
+>> -					    GPIOF_OUT_INIT_HIGH,
+>> -					    "aic31xx-reset-pin");
+>> -		if (ret < 0) {
+>> -			dev_err(aic31xx->dev, "not able to acquire gpio\n");
+>> -			return ret;
+>> -		}
+>> +	aic31xx->gpio_reset = devm_gpiod_get_optional(aic31xx->dev, "reset",
+>> +						      GPIOD_OUT_LOW);
+>> +	if (IS_ERR(aic31xx->gpio_reset)) {
+>> +		dev_err(aic31xx->dev, "not able to acquire gpio\n");
+>> +		return PTR_ERR(aic31xx->gpio_reset);
+>>  	}
+>>  
+>>  	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++)
+>>
