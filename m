@@ -1,37 +1,44 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 09/15] ASoC: qcom: qdsp6: Add support to Q6CORE
-Date: Tue,  5 Dec 2017 22:18:06 +0000
-Message-ID: <20171205221812.25641-10-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 06/15] ASoC: qcom: qdsp6: Add support to Q6ASM
+Date: Tue,  5 Dec 2017 22:18:03 +0000
+Message-ID: <20171205221812.25641-7-srinivas.kandagatla@linaro.org>
 References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, bgoswami@codeaurora.org
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, plai@codeaurora.org, kwestfie@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lkasam@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to core apr service, which is used to query
-status of other static and dynamic services on the dsp.
+This patch adds basic support to Q6 ASM (Audio Stream Manager) module on
+Q6DSP. ASM supports up to 8 concurrent streams. each stream can be setup
+as playback/capture. ASM provides top control functions like
+Pause/flush/resume for playback and record. ASM can Create/destroy encoder,
+decoder and also provides POPP dynamic services.
+
+This patch adds support to basic features to allow hdmi playback.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
  sound/soc/qcom/Kconfig        |   5 +
  sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6core.c | 227 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 233 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ sound/soc/qcom/qdsp6/q6asm.c  | 250 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6asm.h  |  14 +++
+ 4 files changed, 270 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 7ebdb879a8a3..121b9c957024 100644
+index a307880dc992..7ebdb879a8a3 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -56,11 +56,16 @@ config SND_SOC_QDSP6_ASM
+@@ -52,10 +52,15 @@ config SND_SOC_QDSP6_ADM
  	tristate
  	default n
  
-+config SND_SOC_QDSP6_CORE
++config SND_SOC_QDSP6_ASM
 +	tristate
 +	default n
 +
@@ -39,252 +46,293 @@ index 7ebdb879a8a3..121b9c957024 100644
  	tristate "SoC ALSA audio driver for QDSP6"
  	select SND_SOC_QDSP6_AFE
  	select SND_SOC_QDSP6_ADM
- 	select SND_SOC_QDSP6_ASM
-+	select SND_SOC_QDSP6_CORE
++	select SND_SOC_QDSP6_ASM
  	help
  	 To add support for MSM QDSP6 Soc Audio.
  	 This will enable sound soc platform specific
 diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 49dd3ccab27b..ad7f10691e54 100644
+index 052813ea7062..49dd3ccab27b 100644
 --- a/sound/soc/qcom/qdsp6/Makefile
 +++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,3 +1,4 @@
+@@ -1,2 +1,3 @@
  obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
  obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
- obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
-+obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
++obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
 new file mode 100644
-index 000000000000..d4e2dbc62489
+index 000000000000..9cc583afef4d
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6core.c
-@@ -0,0 +1,227 @@
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -0,0 +1,250 @@
 +/* SPDX-License-Identifier: GPL-2.0
++* Copyright (c) 2011-2016, The Linux Foundation
 +* Copyright (c) 2017, Linaro Limited
 +*/
-+#include <linux/slab.h>
++#include <linux/mutex.h>
 +#include <linux/wait.h>
-+#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/sched.h>
-+#include <linux/jiffies.h>
-+#include <linux/wait.h>
 +#include <linux/soc/qcom/apr.h>
++#include <linux/device.h>
 +#include <linux/platform_device.h>
-+#include <sound/asound.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++#include <linux/mm.h>
++#include "q6asm.h"
 +#include "common.h"
 +
-+#define ADSP_STATE_READY_TIMEOUT_MS    3000
-+#define Q6_READY_TIMEOUT_MS 100
-+#define AVCS_CMD_ADSP_EVENT_GET_STATE		0x0001290C
-+#define AVCS_CMDRSP_ADSP_EVENT_GET_STATE	0x0001290D
-+#define AVCS_GET_VERSIONS       0x00012905
-+#define AVCS_GET_VERSIONS_RSP   0x00012906
++#define TUN_READ_IO_MODE		0x0004	/* tunnel read write mode */
++#define SYNC_IO_MODE			0x0001
++#define ASYNC_IO_MODE			0x0002
 +
-+struct avcs_svc_info {
-+	uint32_t service_id;
-+	uint32_t version;
-+} __packed;
-+
-+struct q6core {
++struct audio_client {
++	int session;
++	app_cb cb;
++	int cmd_state;
++	void *priv;
++	uint32_t io_mode;
++	uint64_t time_stamp;
 +	struct apr_device *adev;
-+	wait_queue_head_t wait;
-+	uint32_t avcs_state;
-+	int resp_received;
-+	uint32_t num_services;
-+	struct avcs_svc_info *svcs_info;
++	struct mutex cmd_lock;
++	wait_queue_head_t cmd_wait;
++	int perf_mode;
++	int stream_id;
++	struct device *dev;
 +};
 +
-+static struct apr_device_id static_services[] = {
-+	ADSP_AUDIO_APR_DEV("AFE", APR_SVC_AFE),
-+	ADSP_AUDIO_APR_DEV("ASM", APR_SVC_ASM),
-+	ADSP_AUDIO_APR_DEV("ADM", APR_SVC_ADM),
-+	ADSP_AUDIO_APR_DEV("TEST", APR_SVC_TEST_CLIENT),
-+	ADSP_AUDIO_APR_DEV("MVM", APR_SVC_ADSP_MVM),
-+	ADSP_AUDIO_APR_DEV("CVS", APR_SVC_ADSP_CVS),
-+	ADSP_AUDIO_APR_DEV("CVP", APR_SVC_ADSP_CVP),
-+	ADSP_AUDIO_APR_DEV("USM", APR_SVC_USM),
-+	ADSP_AUDIO_APR_DEV("VIDC", APR_SVC_VIDC),
-+	ADSP_AUDIO_APR_DEV("LSM", APR_SVC_LSM),
++struct q6asm {
++	struct apr_device *adev;
++	int mem_state;
++	struct device *dev;
++	wait_queue_head_t mem_wait;
++	struct mutex	session_lock;
++	struct platform_device *pcmdev;
++	struct audio_client *session[MAX_SESSIONS + 1];
 +};
 +
-+static int core_callback(struct apr_device *adev, struct apr_client_data *data)
++static int q6asm_session_alloc(struct audio_client *ac, struct q6asm *a)
 +{
-+	struct q6core *core = dev_get_drvdata(&adev->dev);
-+	uint32_t *payload;
++	int n = -EINVAL;
 +
-+	switch (data->opcode) {
-+	case AVCS_GET_VERSIONS_RSP:
-+		payload = data->payload;
-+		core->num_services = payload[1];
++	mutex_lock(&a->session_lock);
++	for (n = 1; n <= MAX_SESSIONS; n++) {
++		if (!a->session[n]) {
++			a->session[n] = ac;
++			break;
++		}
++	}
++	mutex_unlock(&a->session_lock);
 +
-+		if (!core->svcs_info)
-+			core->svcs_info = kcalloc(core->num_services,
-+						  sizeof(*core->svcs_info),
-+						  GFP_ATOMIC);
-+		if (!core->svcs_info)
-+			return -ENOMEM;
++	return n;
++}
 +
-+		/* svc info is after 8 bytes */
-+		memcpy(core->svcs_info, payload + 2,
-+		       core->num_services * sizeof(*core->svcs_info));
++static bool q6asm_is_valid_audio_client(struct audio_client *ac)
++{
++	struct q6asm *a = dev_get_drvdata(ac->dev->parent);
++	int n;
 +
-+		core->resp_received = 1;
-+		wake_up(&core->wait);
-+
-+		break;
-+	case AVCS_CMDRSP_ADSP_EVENT_GET_STATE:
-+		payload = data->payload;
-+		core->avcs_state = payload[0];
-+
-+		core->resp_received = 1;
-+		wake_up(&core->wait);
-+		break;
-+	default:
-+		dev_err(&adev->dev, "Message id from adsp core svc: 0x%x\n",
-+			data->opcode);
-+		break;
++	for (n = 1; n <= MAX_SESSIONS; n++) {
++		if (a->session[n] == ac)
++			return 1;
 +	}
 +
 +	return 0;
 +}
 +
-+void q6core_add_service(struct device *dev, uint32_t svc_id, uint32_t version)
++static void q6asm_session_free(struct audio_client *ac)
 +{
-+	int i;
++	struct q6asm *a = dev_get_drvdata(ac->dev->parent);
 +
-+	for (i = 0; i < ARRAY_SIZE(static_services); i++) {
-+		if (static_services[i].svc_id == svc_id) {
-+			static_services[i].svc_version = version;
-+			apr_add_device(dev->parent, &static_services[i]);
-+			dev_info(dev,
-+				"Adding SVC: %s: id 0x%x API Ver 0x%x:0x%x\n",
-+				 static_services[i].name, svc_id,
-+				 APR_SVC_MAJOR_VERSION(version),
-+				 APR_SVC_MINOR_VERSION(version));
-+		}
++	if (!a)
++		return;
++
++	mutex_lock(&a->session_lock);
++	a->session[ac->session] = 0;
++	ac->session = 0;
++	ac->perf_mode = LEGACY_PCM_MODE;
++	mutex_unlock(&a->session_lock);
++}
++
++/**
++ * q6asm_audio_client_free() - Freee allocated audio client
++ *
++ * @ac: audio client to free
++ */
++void q6asm_audio_client_free(struct audio_client *ac)
++{
++	q6asm_session_free(ac);
++	kfree(ac);
++}
++EXPORT_SYMBOL_GPL(q6asm_audio_client_free);
++
++static struct audio_client *q6asm_get_audio_client(struct q6asm *a,
++						   int session_id)
++{
++	if ((session_id <= 0) || (session_id > MAX_SESSIONS)) {
++		dev_err(a->dev, "invalid session: %d\n", session_id);
++		goto err;
 +	}
++
++	if (!a->session[session_id]) {
++		dev_err(a->dev, "session not active: %d\n", session_id);
++		goto err;
++	}
++	return a->session[session_id];
++err:
++	return NULL;
 +}
 +
-+static void q6core_add_static_services(struct q6core *core)
++static int q6asm_srvc_callback(struct apr_device *adev, struct apr_client_data *data)
 +{
-+	int i;
-+	struct apr_device *adev = core->adev;
-+	struct avcs_svc_info *svcs_info = core->svcs_info;
++	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
++	struct audio_client *ac = NULL;
++	uint32_t sid = 0;
++	uint32_t *payload;
 +
-+	for (i = 0; i < core->num_services; i++)
-+		q6core_add_service(&adev->dev, svcs_info[i].service_id,
-+				   svcs_info[i].version);
-+}
-+
-+static int q6core_get_svc_versions(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_hdr hdr = {0};
-+	int rc;
-+
-+	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	hdr.pkt_size = APR_PKT_SIZE(APR_HDR_SIZE, 0);
-+	hdr.opcode = AVCS_GET_VERSIONS;
-+
-+	rc = apr_send_pkt(adev, (uint32_t *)&hdr);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received == 1),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = 0;
++	if (!data) {
++		dev_err(&adev->dev, "%s: Invalid CB\n", __func__);
 +		return 0;
 +	}
 +
-+	return rc;
-+}
-+
-+static bool q6core_is_adsp_ready(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_hdr hdr = {0};
-+	int rc;
-+
-+	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	hdr.pkt_size = APR_PKT_SIZE(APR_HDR_SIZE, 0);
-+	hdr.opcode = AVCS_CMD_ADSP_EVENT_GET_STATE;
-+
-+	rc = apr_send_pkt(adev, (uint32_t *)&hdr);
-+	if (rc < 0)
-+		return false;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received == 1),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = 0;
-+		if (core->avcs_state == 0x1)
-+			return true;
++	payload = data->payload;
++	sid = (data->token >> 8) & 0x0F;
++	ac = q6asm_get_audio_client(q6asm, sid);
++	if (!ac) {
++		dev_err(&adev->dev, "Audio Client not active\n");
++		return 0;
 +	}
 +
-+	return false;
-+}
-+
-+static int q6core_probe(struct apr_device *adev)
-+{
-+	struct q6core *core;
-+	unsigned long  timeout = jiffies +
-+				 msecs_to_jiffies(ADSP_STATE_READY_TIMEOUT_MS);
-+	int ret = 0;
-+
-+	core = devm_kzalloc(&adev->dev, sizeof(*core), GFP_KERNEL);
-+	if (!core)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&adev->dev, core);
-+
-+	core->adev = adev;
-+	init_waitqueue_head(&core->wait);
-+
-+	do {
-+		if (!q6core_is_adsp_ready(core)) {
-+			dev_info(&adev->dev, "ADSP Audio isn't ready\n");
-+		} else {
-+			dev_info(&adev->dev, "ADSP Audio is ready\n");
-+
-+			ret = q6core_get_svc_versions(core);
-+			if (!ret)
-+				q6core_add_static_services(core);
-+
-+			break;
-+		}
-+	} while (time_after(timeout, jiffies));
-+
-+	return ret;
-+}
-+
-+static int q6core_exit(struct apr_device *adev)
-+{
++	if (ac->cb)
++		ac->cb(data->opcode, data->token, data->payload, ac->priv);
 +	return 0;
 +}
 +
-+static const struct apr_device_id core_id[] = {
-+	{"Q6CORE", APR_DOMAIN_ADSP, APR_SVC_ADSP_CORE, APR_CLIENT_AUDIO},
-+	{ },
++/**
++ * q6asm_get_session_id() - get session id for audio client
++ *
++ * @ac: audio client pointer
++ *
++ * Return: Will be an session id of the audio client.
++ */
++int q6asm_get_session_id(struct audio_client *c)
++{
++	return c->session;
++}
++EXPORT_SYMBOL_GPL(q6asm_get_session_id);
++
++/**
++ * q6asm_audio_client_alloc() - Allocate a new audio client
++ *
++ * @dev: Pointer to asm child device.
++ * @cb: event callback.
++ * @priv: private data associated with this client.
++ *
++ * Return: Will be an error pointer on error or a valid audio client
++ * on success.
++ */
++struct audio_client *q6asm_audio_client_alloc(struct device *dev,
++					      app_cb cb, void *priv)
++{
++	struct q6asm *a = dev_get_drvdata(dev->parent);
++	struct audio_client *ac;
++	int n;
++
++	ac = kzalloc(sizeof(struct audio_client), GFP_KERNEL);
++	if (!ac)
++		return NULL;
++
++	n = q6asm_session_alloc(ac, a);
++	if (n <= 0) {
++		dev_err(dev, "ASM Session alloc fail n=%d\n", n);
++		kfree(ac);
++		return NULL;
++	}
++
++	ac->session = n;
++	ac->cb = cb;
++	ac->dev = dev;
++	ac->priv = priv;
++	ac->io_mode = SYNC_IO_MODE;
++	ac->perf_mode = LEGACY_PCM_MODE;
++	/* DSP expects stream id from 1 */
++	ac->stream_id = 1;
++	ac->adev = a->adev;
++
++	init_waitqueue_head(&ac->cmd_wait);
++	mutex_init(&ac->cmd_lock);
++	ac->cmd_state = 0;
++
++	return ac;
++}
++EXPORT_SYMBOL_GPL(q6asm_audio_client_alloc);
++
++
++static int q6asm_probe(struct apr_device *adev)
++{
++	struct q6asm *q6asm;
++
++	q6asm = devm_kzalloc(&adev->dev, sizeof(*q6asm), GFP_KERNEL);
++	if (!q6asm)
++		return -ENOMEM;
++
++	q6asm->dev = &adev->dev;
++	q6asm->adev = adev;
++	q6asm->mem_state = 0;
++	init_waitqueue_head(&q6asm->mem_wait);
++	mutex_init(&q6asm->session_lock);
++	dev_set_drvdata(&adev->dev, q6asm);
++
++	q6asm->pcmdev = platform_device_register_data(&adev->dev,
++						      "q6asm_dai", -1, NULL, 0);
++
++	return 0;
++}
++
++static int q6asm_remove(struct apr_device *adev)
++{
++	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
++
++	platform_device_unregister(q6asm->pcmdev);
++
++	return 0;
++}
++
++static const struct apr_device_id q6asm_id[] = {
++	{"Q6ASM", APR_DOMAIN_ADSP, APR_SVC_ASM, APR_CLIENT_AUDIO},
++	{}
 +};
 +
-+static struct apr_driver qcom_q6core_driver = {
-+	.probe = q6core_probe,
-+	.remove = q6core_exit,
-+	.callback = core_callback,
-+	.id_table = core_id,
++static struct apr_driver qcom_q6asm_driver = {
++	.probe = q6asm_probe,
++	.remove = q6asm_remove,
++	.callback = q6asm_srvc_callback,
++	.id_table = q6asm_id,
 +	.driver = {
-+		   .name = "qcom-q6core",
++		   .name = "qcom-q6asm",
 +		   },
 +};
 +
-+module_apr_driver(qcom_q6core_driver);
-+
-+MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
-+MODULE_DESCRIPTION("q6 core");
++module_apr_driver(qcom_q6asm_driver);
++MODULE_DESCRIPTION("Q6 Audio Stream Manager driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
+new file mode 100644
+index 000000000000..7a8a9039fd89
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6asm.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __Q6_ASM_H__
++#define __Q6_ASM_H__
++
++#define MAX_SESSIONS	16
++
++typedef void (*app_cb) (uint32_t opcode, uint32_t token,
++			uint32_t *payload, void *priv);
++struct audio_client;
++struct audio_client *q6asm_audio_client_alloc(struct device *dev,
++					      app_cb cb, void *priv);
++void q6asm_audio_client_free(struct audio_client *ac);
++int q6asm_get_session_id(struct audio_client *ac);
++#endif /* __Q6_ASM_H__ */
 -- 
 2.15.0
