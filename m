@@ -1,27 +1,52 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 12/13] ASoC: add bindings for stm32 DFSDM filter
-Date: Mon, 4 Dec 2017 15:51:12 -0600
-Message-ID: <20171204215112.upkujy6grec6urae@rob-hp-laptop>
-References: <1512150020-20335-1-git-send-email-arnaud.pouliquen@st.com>
- <1512150020-20335-13-git-send-email-arnaud.pouliquen@st.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH 4/8] ASoC: uniphier: add support for UniPhier EVEA codec
+Date: Tue, 5 Dec 2017 09:58:54 +0900
+Message-ID: <CAK7LNAR=-vHN5k6irpaDcAUYcH2kjCXLJpf10RMuq=GZB3huog@mail.gmail.com>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com>
+ <20171122114321.29196-5-suzuki.katsuhiro@socionext.com> <20171204182027.2k5uw5og65h6ac7w@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1512150020-20335-13-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171204182027.2k5uw5og65h6ac7w@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>, alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 01, 2017 at 06:40:19PM +0100, Arnaud Pouliquen wrote:
-> Add bindings that describes audio settings to support
-> Digital Filter for pulse density modulation(PDM) microphone.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/st,stm32-adfsdm.txt  | 62 ++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
++CC Greg-KH
++CC Thomas Gleixner
 
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+2017-12-05 3:20 GMT+09:00 Mark Brown <broonie@kernel.org>:
+> On Wed, Nov 22, 2017 at 08:43:17PM +0900, Katsuhiro Suzuki wrote:
+>
+>> +++ b/sound/soc/uniphier/evea.c
+>> @@ -0,0 +1,567 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Socionext UniPhier EVEA ADC/DAC codec driver.
+>> + *
+>> + * Copyright (c) 2016-2017 Socionext Inc.
+>
+> Make the entire comment a C++ comment, don't mix and match like this -
+> it's ugly.  Otherwise this looks good so I'll apply it, please send a
+> followup patch fixing this (and I guess the same thing will apply to
+> other files).
+
+
+Indeed ugly,
+but I think this is intentional to make the SPDX line stand out.
+
+
+Linus suggested this as far as I understood from the following:
+https://patchwork.kernel.org/patch/10016201/
+
+
+If you use C++ comment style for the entire block,
+it will not stand out.
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
