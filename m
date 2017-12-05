@@ -1,86 +1,116 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [RFC PATCH 1/3] ASoC: Add platforms directory
-Date: Tue, 5 Dec 2017 12:14:46 -0600
-Message-ID: <20171205181448.18513-2-afd@ti.com>
-References: <20171205181448.18513-1-afd@ti.com>
+Subject: [RFC PATCH 0/3] Add ASoC platforms directory
+Date: Tue, 5 Dec 2017 12:14:45 -0600
+Message-ID: <20171205181448.18513-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171205181448.18513-1-afd@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Platform ASoC drivers are a lot like ASoC CODEC drivers in that they
-both are independent pieces of a sound device, or "machine". Platform
-drivers should be free of CODEC specifics and visa-versa. Both are then
-used by the the "machine" driver to form the complete sound device.
-This forms a hierarchy that makes it natural to group platform drivers
-into their own directory, much like we group CODEC drivers already.
+Hello all,
 
-With this change, we will leave machine drivers in the top-level ASoC
-directory and have CODECs and Platforms below. The machine drivers may
-also be moved at some point into a grouping directory to further
-enforce the logical separation intended by the ASoC framework.
+The first patch, I think, sums up well what I'm trying to do
+here with this series. The last two are a couple examples
+of what the moving would look like.
 
-Create the initial directory, Kconfig, and Makefile here.
+The very end result would look something like:
 
-Signed-off-by: Andrew F. Davis <afd@ti.com>
----
- sound/soc/Kconfig            | 3 +++
- sound/soc/Makefile           | 1 +
- sound/soc/platforms/Kconfig  | 7 +++++++
- sound/soc/platforms/Makefile | 1 +
- 4 files changed, 12 insertions(+)
+soc/
+|_codecs/
+  |_codecs*.c
+|_platforms/
+  |_adi/
+    |_adi_i2s.c
+    |_...
+  |_amd/
+  |_.../
+|_machines/
+  |_amd/
+    |_acp-rt5645.c
+    |_...
+  |_atmel/
+  |_.../
+|_core_files*.c
+
+I would like to think the churn is minimal for this as git
+seems to handles renaming like this rather well, but I guess that
+is up to the maintainers. :)
+
+Thanks for your comments,
+Andrew
+
+Andrew F. Davis (3):
+  ASoC: Add platforms directory
+  ASoC: Platforms: Move Davinci platform drivers into platforms
+    directory
+  ASoC: Platforms: Move OMAP platform drivers into platforms directory
+
+ MAINTAINERS                                       |  1 +
+ sound/soc/Kconfig                                 |  3 ++
+ sound/soc/Makefile                                |  1 +
+ sound/soc/davinci/Kconfig                         | 37 -----------------------
+ sound/soc/davinci/Makefile                        | 21 +++----------
+ sound/soc/omap/Kconfig                            | 29 ------------------
+ sound/soc/omap/Makefile                           | 13 --------
+ sound/soc/omap/am3517evm.c                        |  2 +-
+ sound/soc/omap/ams-delta.c                        |  2 +-
+ sound/soc/omap/n810.c                             |  2 +-
+ sound/soc/omap/omap-abe-twl6040.c                 |  4 +--
+ sound/soc/omap/omap-twl4030.c                     |  2 +-
+ sound/soc/omap/omap3pandora.c                     |  2 +-
+ sound/soc/omap/osk5912.c                          |  2 +-
+ sound/soc/omap/rx51.c                             |  2 +-
+ sound/soc/platforms/Kconfig                       | 10 ++++++
+ sound/soc/platforms/Makefile                      |  4 +++
+ sound/soc/platforms/davinci/Kconfig               | 36 ++++++++++++++++++++++
+ sound/soc/{ => platforms}/davinci/Makefile        |  5 ---
+ sound/soc/{ => platforms}/davinci/davinci-i2s.c   |  0
+ sound/soc/{ => platforms}/davinci/davinci-i2s.h   |  0
+ sound/soc/{ => platforms}/davinci/davinci-mcasp.c |  0
+ sound/soc/{ => platforms}/davinci/davinci-mcasp.h |  0
+ sound/soc/{ => platforms}/davinci/davinci-vcif.c  |  0
+ sound/soc/{ => platforms}/davinci/edma-pcm.c      |  0
+ sound/soc/{ => platforms}/davinci/edma-pcm.h      |  0
+ sound/soc/platforms/omap/Kconfig                  | 28 +++++++++++++++++
+ sound/soc/platforms/omap/Makefile                 | 13 ++++++++
+ sound/soc/{ => platforms}/omap/mcbsp.c            |  0
+ sound/soc/{ => platforms}/omap/mcbsp.h            |  0
+ sound/soc/{ => platforms}/omap/omap-dmic.c        |  0
+ sound/soc/{ => platforms}/omap/omap-dmic.h        |  0
+ sound/soc/{ => platforms}/omap/omap-hdmi-audio.c  |  0
+ sound/soc/{ => platforms}/omap/omap-mcbsp.c       |  0
+ sound/soc/{ => platforms}/omap/omap-mcbsp.h       |  0
+ sound/soc/{ => platforms}/omap/omap-mcpdm.c       |  0
+ sound/soc/{ => platforms}/omap/omap-mcpdm.h       |  0
+ sound/soc/{ => platforms}/omap/omap-pcm.c         |  0
+ 38 files changed, 110 insertions(+), 109 deletions(-)
+ rewrite sound/soc/davinci/Makefile (71%)
  create mode 100644 sound/soc/platforms/Kconfig
  create mode 100644 sound/soc/platforms/Makefile
+ create mode 100644 sound/soc/platforms/davinci/Kconfig
+ copy sound/soc/{ => platforms}/davinci/Makefile (76%)
+ rename sound/soc/{ => platforms}/davinci/davinci-i2s.c (100%)
+ rename sound/soc/{ => platforms}/davinci/davinci-i2s.h (100%)
+ rename sound/soc/{ => platforms}/davinci/davinci-mcasp.c (100%)
+ rename sound/soc/{ => platforms}/davinci/davinci-mcasp.h (100%)
+ rename sound/soc/{ => platforms}/davinci/davinci-vcif.c (100%)
+ rename sound/soc/{ => platforms}/davinci/edma-pcm.c (100%)
+ rename sound/soc/{ => platforms}/davinci/edma-pcm.h (100%)
+ create mode 100644 sound/soc/platforms/omap/Kconfig
+ create mode 100644 sound/soc/platforms/omap/Makefile
+ rename sound/soc/{ => platforms}/omap/mcbsp.c (100%)
+ rename sound/soc/{ => platforms}/omap/mcbsp.h (100%)
+ rename sound/soc/{ => platforms}/omap/omap-dmic.c (100%)
+ rename sound/soc/{ => platforms}/omap/omap-dmic.h (100%)
+ rename sound/soc/{ => platforms}/omap/omap-hdmi-audio.c (100%)
+ rename sound/soc/{ => platforms}/omap/omap-mcbsp.c (100%)
+ rename sound/soc/{ => platforms}/omap/omap-mcbsp.h (100%)
+ rename sound/soc/{ => platforms}/omap/omap-mcpdm.c (100%)
+ rename sound/soc/{ => platforms}/omap/omap-mcpdm.h (100%)
+ rename sound/soc/{ => platforms}/omap/omap-pcm.c (100%)
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index d22758165496..b8064e8b2bdf 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -75,6 +75,9 @@ source "sound/soc/ux500/Kconfig"
- source "sound/soc/xtensa/Kconfig"
- source "sound/soc/zte/Kconfig"
- 
-+# Supported platforms
-+source "sound/soc/platforms/Kconfig"
-+
- # Supported codecs
- source "sound/soc/codecs/Kconfig"
- 
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 5327f4d6c668..af578273548c 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_SND_SOC_ACPI) += snd-soc-acpi.o
- obj-$(CONFIG_SND_SOC)	+= snd-soc-core.o
- obj-$(CONFIG_SND_SOC)	+= codecs/
- obj-$(CONFIG_SND_SOC)	+= generic/
-+obj-$(CONFIG_SND_SOC)	+= platforms/
- obj-$(CONFIG_SND_SOC)	+= adi/
- obj-$(CONFIG_SND_SOC)	+= amd/
- obj-$(CONFIG_SND_SOC)	+= atmel/
-diff --git a/sound/soc/platforms/Kconfig b/sound/soc/platforms/Kconfig
-new file mode 100644
-index 000000000000..620d1f292246
---- /dev/null
-+++ b/sound/soc/platforms/Kconfig
-@@ -0,0 +1,7 @@
-+#
-+# SoC Platform Support Configuration
-+#
-+
-+menu "Platform drivers"
-+
-+endmenu
-diff --git a/sound/soc/platforms/Makefile b/sound/soc/platforms/Makefile
-new file mode 100644
-index 000000000000..f66554cd5c45
---- /dev/null
-+++ b/sound/soc/platforms/Makefile
-@@ -0,0 +1 @@
-+# SPDX-License-Identifier: GPL-2.0
 -- 
 2.15.0
