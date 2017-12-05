@@ -1,58 +1,179 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 01/15] dt-bindings: soc: qcom: Add bindings for APR bus
-Date: Tue,  5 Dec 2017 22:17:58 +0000
-Message-ID: <20171205221812.25641-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 14/15] ASoC: qcom: apq8096: Add db820c machine driver
+Date: Tue,  5 Dec 2017 22:18:11 +0000
+Message-ID: <20171205221812.25641-15-srinivas.kandagatla@linaro.org>
 References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Sender: linux-arm-msm-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, bgoswami@codeaurora.org
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, plai@codeaurora.org, kwestfie@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lkasam@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch add dt bindings for Qualcomm APR bus driver
+uThis patch adds support to DB820c machine driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 28 ++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+ sound/soc/qcom/Kconfig   |   9 +++-
+ sound/soc/qcom/apq8096.c | 124 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 132 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/qcom/apq8096.c
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index ecd1e4ba834d..748ccc3edefa 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -72,7 +72,6 @@ config SND_SOC_QDSP6_ASM_DAI
+ 	tristate
+ 	default n
+ 
+-
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+ 	select SND_SOC_QDSP6_AFE
+@@ -87,3 +86,11 @@ config SND_SOC_QDSP6
+ 	 This will enable sound soc platform specific
+ 	 audio drivers. This includes q6asm, q6adm,
+ 	 q6afe interfaces to DSP using apr.
++
++config SND_SOC_MSM8996
++	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
++	select SND_SOC_QDSP6V2
++	default n
++	help
++	 To add support for SoC audio on MSM8996 and APQ8096 boards
++
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
 new file mode 100644
-index 000000000000..4e93213ae98d
+index 000000000000..5b2036317f71
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-@@ -0,0 +1,28 @@
-+Qualcomm APR (Asynchronous Packet Router) binding
++++ b/sound/soc/qcom/apq8096.c
+@@ -0,0 +1,124 @@
++/*
++ * Copyright (c) 2017 The Linux Foundation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++#include <linux/clk.h>
++#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <linux/dma-mapping.h>
++#include <sound/pcm.h>
 +
-+This binding describes the Qualcomm APR. APR is a IPC protocol for
-+communication between Application processor and QDSP. APR is mainly
-+used for audio/voice services on the QDSP.
++int msm8996_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++					      struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_CHANNELS);
 +
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,apr-<SOC-NAME>" example: "qcom,apr-msm8996"
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
 +
++	return 0;
++}
++static struct snd_soc_dai_link msm8996_dai_links[] = {
++	/* FrontEnd DAI Links */
++	{
++		.name		= "MultiMedia1 Playback",
++		.stream_name	= "MultiMedia1",
++		.cpu_dai_name	= "MM_DL1",
++		.platform_name	= "q6asm_dai",
++		.dynamic	= 1,
++		.dpcm_playback	= 1,
 +
-+- qcom,smd-channel:
-+	Usage: required
-+	Value type: <string>
-+	Definition: standard SMD property specifying the SMD channel used for
-+		    communication with the APR on QDSP.
-+		    Should be "apr_audio_svc".
-+		    Described in soc/qcom/qcom,smd.txt
++		.codec_dai_name	= "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++	},
++	/* Backend DAI Links */
++	{
++		.name		= "HDMI Playback",
++		.stream_name	= "q6afe_dai",
++		.cpu_dai_name	= "HDMI",
++		.platform_name	= "q6routing",
++		.no_pcm		= 1,
++		.dpcm_playback	= 1,
++		.be_hw_params_fixup = msm8996_be_hw_params_fixup,
++		.codec_dai_name	= "i2s-hifi",
++		.codec_name = "hdmi-audio-codec.0.auto",
++	},
++};
 +
-+= EXAMPLE
-+The following example represents a QDSP based sound card on a MSM8996 device
-+which uses apr as communication between Apps and QDSP.
++static int apq8096_sbc_parse_of(struct snd_soc_card *card)
++{
++	struct device *dev = card->dev;
++	int ret;
 +
-+	apr {
-+		compatible = "qcom,apr-msm8996";
-+		qcom,smd-channels = "apr_audio_svc";
-+	};
++	ret = snd_soc_of_parse_card_name(card, "qcom,model");
++	if (ret)
++		dev_err(dev, "Error parsing card name: %d\n", ret);
++
++	return ret;
++}
++
++static int msm_snd_apq8096_probe(struct platform_device *pdev)
++{
++	int ret;
++	struct snd_soc_card *card;
++
++	card = devm_kzalloc(&pdev->dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++
++	card->dev = &pdev->dev;
++
++	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
++	if (ret)
++		return ret;
++
++	card->dai_link = msm8996_dai_links;
++	card->num_links	= ARRAY_SIZE(msm8996_dai_links);
++
++	ret = apq8096_sbc_parse_of(card);
++	if (ret) {
++		dev_err(&pdev->dev, "Error parsing OF data\n");
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
++		dev_err(&pdev->dev, "sound card register failed (%d)!\n", ret);
++	else
++		dev_err(&pdev->dev, "sound card register Sucessfull\n");
++
++	return ret;
++}
++
++static const struct of_device_id msm_snd_apq8096_dt_match[] = {
++	{.compatible = "qcom,apq8096-sndcard"},
++	{}
++};
++
++static struct platform_driver msm_snd_apq8096_driver = {
++	.probe  = msm_snd_apq8096_probe,
++	.driver = {
++		.name = "msm-snd-apq8096",
++		.owner = THIS_MODULE,
++		.of_match_table = msm_snd_apq8096_dt_match,
++	},
++};
++module_platform_driver(msm_snd_apq8096_driver);
++MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
++MODULE_DESCRIPTION("APQ8096 ASoC Machine Driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.15.0
