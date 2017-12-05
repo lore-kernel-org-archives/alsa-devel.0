@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 06/15] ASoC: qcom: qdsp6: Add support to Q6ASM
-Date: Tue,  5 Dec 2017 22:18:03 +0000
-Message-ID: <20171205221812.25641-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 03/15] ASoC: qcom: qdsp6: Add common qdsp6 helper functions
+Date: Tue,  5 Dec 2017 22:18:00 +0000
+Message-ID: <20171205221812.25641-4-srinivas.kandagatla@linaro.org>
 References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
@@ -12,327 +12,247 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds basic support to Q6 ASM (Audio Stream Manager) module on
-Q6DSP. ASM supports up to 8 concurrent streams. each stream can be setup
-as playback/capture. ASM provides top control functions like
-Pause/flush/resume for playback and record. ASM can Create/destroy encoder,
-decoder and also provides POPP dynamic services.
+This patch adds some common helper functions like translating dsp error
+to linux error codes and channel mappings etc.
 
-This patch adds support to basic features to allow hdmi playback.
+These functions are used in all the following qdsp6 drivers.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig        |   5 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6asm.c  | 250 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6asm.h  |  14 +++
- 4 files changed, 270 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6asm.c
- create mode 100644 sound/soc/qcom/qdsp6/q6asm.h
+ sound/soc/qcom/qdsp6/common.h | 225 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 225 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/common.h
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index a307880dc992..7ebdb879a8a3 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -52,10 +52,15 @@ config SND_SOC_QDSP6_ADM
- 	tristate
- 	default n
- 
-+config SND_SOC_QDSP6_ASM
-+	tristate
-+	default n
-+
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	select SND_SOC_QDSP6_AFE
- 	select SND_SOC_QDSP6_ADM
-+	select SND_SOC_QDSP6_ASM
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
- 	 This will enable sound soc platform specific
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 052813ea7062..49dd3ccab27b 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
- obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
-+obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+diff --git a/sound/soc/qcom/qdsp6/common.h b/sound/soc/qcom/qdsp6/common.h
 new file mode 100644
-index 000000000000..9cc583afef4d
+index 000000000000..cbd6e009ef4b
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -0,0 +1,250 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+* Copyright (c) 2011-2016, The Linux Foundation
-+* Copyright (c) 2017, Linaro Limited
-+*/
-+#include <linux/mutex.h>
-+#include <linux/wait.h>
-+#include <linux/module.h>
-+#include <linux/soc/qcom/apr.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/mm.h>
-+#include "q6asm.h"
-+#include "common.h"
-+
-+#define TUN_READ_IO_MODE		0x0004	/* tunnel read write mode */
-+#define SYNC_IO_MODE			0x0001
-+#define ASYNC_IO_MODE			0x0002
-+
-+struct audio_client {
-+	int session;
-+	app_cb cb;
-+	int cmd_state;
-+	void *priv;
-+	uint32_t io_mode;
-+	uint64_t time_stamp;
-+	struct apr_device *adev;
-+	struct mutex cmd_lock;
-+	wait_queue_head_t cmd_wait;
-+	int perf_mode;
-+	int stream_id;
-+	struct device *dev;
-+};
-+
-+struct q6asm {
-+	struct apr_device *adev;
-+	int mem_state;
-+	struct device *dev;
-+	wait_queue_head_t mem_wait;
-+	struct mutex	session_lock;
-+	struct platform_device *pcmdev;
-+	struct audio_client *session[MAX_SESSIONS + 1];
-+};
-+
-+static int q6asm_session_alloc(struct audio_client *ac, struct q6asm *a)
-+{
-+	int n = -EINVAL;
-+
-+	mutex_lock(&a->session_lock);
-+	for (n = 1; n <= MAX_SESSIONS; n++) {
-+		if (!a->session[n]) {
-+			a->session[n] = ac;
-+			break;
-+		}
-+	}
-+	mutex_unlock(&a->session_lock);
-+
-+	return n;
-+}
-+
-+static bool q6asm_is_valid_audio_client(struct audio_client *ac)
-+{
-+	struct q6asm *a = dev_get_drvdata(ac->dev->parent);
-+	int n;
-+
-+	for (n = 1; n <= MAX_SESSIONS; n++) {
-+		if (a->session[n] == ac)
-+			return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static void q6asm_session_free(struct audio_client *ac)
-+{
-+	struct q6asm *a = dev_get_drvdata(ac->dev->parent);
-+
-+	if (!a)
-+		return;
-+
-+	mutex_lock(&a->session_lock);
-+	a->session[ac->session] = 0;
-+	ac->session = 0;
-+	ac->perf_mode = LEGACY_PCM_MODE;
-+	mutex_unlock(&a->session_lock);
-+}
-+
-+/**
-+ * q6asm_audio_client_free() - Freee allocated audio client
++++ b/sound/soc/qcom/qdsp6/common.h
+@@ -0,0 +1,225 @@
++/*
++ * Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
 + *
-+ * @ac: audio client to free
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
 + */
-+void q6asm_audio_client_free(struct audio_client *ac)
++#ifndef __Q6DSP_COMMON_H__
++#define __Q6DSP_COMMON_H__
++
++/* ERROR CODES */
++/* Success. The operation completed with no errors. */
++#define ADSP_EOK          0x00000000
++/* General failure. */
++#define ADSP_EFAILED      0x00000001
++/* Bad operation parameter. */
++#define ADSP_EBADPARAM    0x00000002
++/* Unsupported routine or operation. */
++#define ADSP_EUNSUPPORTED 0x00000003
++/* Unsupported version. */
++#define ADSP_EVERSION     0x00000004
++/* Unexpected problem encountered. */
++#define ADSP_EUNEXPECTED  0x00000005
++/* Unhandled problem occurred. */
++#define ADSP_EPANIC       0x00000006
++/* Unable to allocate resource. */
++#define ADSP_ENORESOURCE  0x00000007
++/* Invalid handle. */
++#define ADSP_EHANDLE      0x00000008
++/* Operation is already processed. */
++#define ADSP_EALREADY     0x00000009
++/* Operation is not ready to be processed. */
++#define ADSP_ENOTREADY    0x0000000A
++/* Operation is pending completion. */
++#define ADSP_EPENDING     0x0000000B
++/* Operation could not be accepted or processed. */
++#define ADSP_EBUSY        0x0000000C
++/* Operation aborted due to an error. */
++#define ADSP_EABORTED     0x0000000D
++/* Operation preempted by a higher priority. */
++#define ADSP_EPREEMPTED   0x0000000E
++/* Operation requests intervention to complete. */
++#define ADSP_ECONTINUE    0x0000000F
++/* Operation requests immediate intervention to complete. */
++#define ADSP_EIMMEDIATE   0x00000010
++/* Operation is not implemented. */
++#define ADSP_ENOTIMPL     0x00000011
++/* Operation needs more data or resources. */
++#define ADSP_ENEEDMORE    0x00000012
++/* Operation does not have memory. */
++#define ADSP_ENOMEMORY    0x00000014
++/* Item does not exist. */
++#define ADSP_ENOTEXIST    0x00000015
++/* Max count for adsp error code sent to HLOS*/
++#define ADSP_ERR_MAX      (ADSP_ENOTEXIST + 1)
++/* Operation is finished. */
++#define ADSP_ETERMINATED    0x00011174
++
++/* ERROR STRING */
++/* Success. The operation completed with no errors. */
++#define ADSP_EOK_STR          "ADSP_EOK"
++/* General failure. */
++#define ADSP_EFAILED_STR      "ADSP_EFAILED"
++/* Bad operation parameter. */
++#define ADSP_EBADPARAM_STR    "ADSP_EBADPARAM"
++/* Unsupported routine or operation. */
++#define ADSP_EUNSUPPORTED_STR "ADSP_EUNSUPPORTED"
++/* Unsupported version. */
++#define ADSP_EVERSION_STR     "ADSP_EVERSION"
++/* Unexpected problem encountered. */
++#define ADSP_EUNEXPECTED_STR  "ADSP_EUNEXPECTED"
++/* Unhandled problem occurred. */
++#define ADSP_EPANIC_STR       "ADSP_EPANIC"
++/* Unable to allocate resource. */
++#define ADSP_ENORESOURCE_STR  "ADSP_ENORESOURCE"
++/* Invalid handle. */
++#define ADSP_EHANDLE_STR      "ADSP_EHANDLE"
++/* Operation is already processed. */
++#define ADSP_EALREADY_STR     "ADSP_EALREADY"
++/* Operation is not ready to be processed. */
++#define ADSP_ENOTREADY_STR    "ADSP_ENOTREADY"
++/* Operation is pending completion. */
++#define ADSP_EPENDING_STR     "ADSP_EPENDING"
++/* Operation could not be accepted or processed. */
++#define ADSP_EBUSY_STR        "ADSP_EBUSY"
++/* Operation aborted due to an error. */
++#define ADSP_EABORTED_STR     "ADSP_EABORTED"
++/* Operation preempted by a higher priority. */
++#define ADSP_EPREEMPTED_STR   "ADSP_EPREEMPTED"
++/* Operation requests intervention to complete. */
++#define ADSP_ECONTINUE_STR    "ADSP_ECONTINUE"
++/* Operation requests immediate intervention to complete. */
++#define ADSP_EIMMEDIATE_STR   "ADSP_EIMMEDIATE"
++/* Operation is not implemented. */
++#define ADSP_ENOTIMPL_STR     "ADSP_ENOTIMPL"
++/* Operation needs more data or resources. */
++#define ADSP_ENEEDMORE_STR    "ADSP_ENEEDMORE"
++/* Operation does not have memory. */
++#define ADSP_ENOMEMORY_STR    "ADSP_ENOMEMORY"
++/* Item does not exist. */
++#define ADSP_ENOTEXIST_STR    "ADSP_ENOTEXIST"
++/* Unexpected error code. */
++#define ADSP_ERR_MAX_STR      "ADSP_ERR_MAX"
++
++#define PCM_FORMAT_MAX_NUM_CHANNEL  8
++#define PCM_CHANNEL_NULL 0
++
++#define PCM_CHANNEL_FL    1	/* Front left channel. */
++#define PCM_CHANNEL_FR    2	/* Front right channel. */
++#define PCM_CHANNEL_FC    3	/* Front center channel. */
++#define PCM_CHANNEL_LS   4	/* Left surround channel. */
++#define PCM_CHANNEL_RS   5	/* Right surround channel. */
++#define PCM_CHANNEL_LFE  6	/* Low frequency effect channel. */
++#define PCM_CHANNEL_CS   7	/* Center surround channel; Rear center ch */
++#define PCM_CHANNEL_LB   8	/* Left back channel; Rear left channel. */
++#define PCM_CHANNEL_RB   9	/* Right back channel; Rear right channel. */
++#define PCM_CHANNELS   10	/* Top surround channel. */
++
++static inline int q6dsp_map_channels(u8 *ch_map, int ch)
 +{
-+	q6asm_session_free(ac);
-+	kfree(ac);
-+}
-+EXPORT_SYMBOL_GPL(q6asm_audio_client_free);
++	memset(ch_map, 0, PCM_FORMAT_MAX_NUM_CHANNEL);
 +
-+static struct audio_client *q6asm_get_audio_client(struct q6asm *a,
-+						   int session_id)
-+{
-+	if ((session_id <= 0) || (session_id > MAX_SESSIONS)) {
-+		dev_err(a->dev, "invalid session: %d\n", session_id);
-+		goto err;
++	if (ch == 1) {
++		ch_map[0] = PCM_CHANNEL_FC;
++	} else if (ch == 2) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++	} else if (ch == 3) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_FC;
++	} else if (ch == 4) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LS;
++		ch_map[3] = PCM_CHANNEL_RS;
++	} else if (ch == 5) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_FC;
++		ch_map[3] = PCM_CHANNEL_LS;
++		ch_map[4] = PCM_CHANNEL_RS;
++	} else if (ch == 6) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LFE;
++		ch_map[3] = PCM_CHANNEL_FC;
++		ch_map[4] = PCM_CHANNEL_LS;
++		ch_map[5] = PCM_CHANNEL_RS;
++	} else if (ch == 8) {
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LFE;
++		ch_map[3] = PCM_CHANNEL_FC;
++		ch_map[4] = PCM_CHANNEL_LS;
++		ch_map[5] = PCM_CHANNEL_RS;
++		ch_map[6] = PCM_CHANNEL_LB;
++		ch_map[7] = PCM_CHANNEL_RB;
++	} else {
++		return -EINVAL;
 +	}
 +
-+	if (!a->session[session_id]) {
-+		dev_err(a->dev, "session not active: %d\n", session_id);
-+		goto err;
-+	}
-+	return a->session[session_id];
-+err:
-+	return NULL;
-+}
-+
-+static int q6asm_srvc_callback(struct apr_device *adev, struct apr_client_data *data)
-+{
-+	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
-+	struct audio_client *ac = NULL;
-+	uint32_t sid = 0;
-+	uint32_t *payload;
-+
-+	if (!data) {
-+		dev_err(&adev->dev, "%s: Invalid CB\n", __func__);
-+		return 0;
-+	}
-+
-+	payload = data->payload;
-+	sid = (data->token >> 8) & 0x0F;
-+	ac = q6asm_get_audio_client(q6asm, sid);
-+	if (!ac) {
-+		dev_err(&adev->dev, "Audio Client not active\n");
-+		return 0;
-+	}
-+
-+	if (ac->cb)
-+		ac->cb(data->opcode, data->token, data->payload, ac->priv);
 +	return 0;
 +}
 +
-+/**
-+ * q6asm_get_session_id() - get session id for audio client
-+ *
-+ * @ac: audio client pointer
-+ *
-+ * Return: Will be an session id of the audio client.
-+ */
-+int q6asm_get_session_id(struct audio_client *c)
-+{
-+	return c->session;
-+}
-+EXPORT_SYMBOL_GPL(q6asm_get_session_id);
-+
-+/**
-+ * q6asm_audio_client_alloc() - Allocate a new audio client
-+ *
-+ * @dev: Pointer to asm child device.
-+ * @cb: event callback.
-+ * @priv: private data associated with this client.
-+ *
-+ * Return: Will be an error pointer on error or a valid audio client
-+ * on success.
-+ */
-+struct audio_client *q6asm_audio_client_alloc(struct device *dev,
-+					      app_cb cb, void *priv)
-+{
-+	struct q6asm *a = dev_get_drvdata(dev->parent);
-+	struct audio_client *ac;
-+	int n;
-+
-+	ac = kzalloc(sizeof(struct audio_client), GFP_KERNEL);
-+	if (!ac)
-+		return NULL;
-+
-+	n = q6asm_session_alloc(ac, a);
-+	if (n <= 0) {
-+		dev_err(dev, "ASM Session alloc fail n=%d\n", n);
-+		kfree(ac);
-+		return NULL;
-+	}
-+
-+	ac->session = n;
-+	ac->cb = cb;
-+	ac->dev = dev;
-+	ac->priv = priv;
-+	ac->io_mode = SYNC_IO_MODE;
-+	ac->perf_mode = LEGACY_PCM_MODE;
-+	/* DSP expects stream id from 1 */
-+	ac->stream_id = 1;
-+	ac->adev = a->adev;
-+
-+	init_waitqueue_head(&ac->cmd_wait);
-+	mutex_init(&ac->cmd_lock);
-+	ac->cmd_state = 0;
-+
-+	return ac;
-+}
-+EXPORT_SYMBOL_GPL(q6asm_audio_client_alloc);
-+
-+
-+static int q6asm_probe(struct apr_device *adev)
-+{
-+	struct q6asm *q6asm;
-+
-+	q6asm = devm_kzalloc(&adev->dev, sizeof(*q6asm), GFP_KERNEL);
-+	if (!q6asm)
-+		return -ENOMEM;
-+
-+	q6asm->dev = &adev->dev;
-+	q6asm->adev = adev;
-+	q6asm->mem_state = 0;
-+	init_waitqueue_head(&q6asm->mem_wait);
-+	mutex_init(&q6asm->session_lock);
-+	dev_set_drvdata(&adev->dev, q6asm);
-+
-+	q6asm->pcmdev = platform_device_register_data(&adev->dev,
-+						      "q6asm_dai", -1, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static int q6asm_remove(struct apr_device *adev)
-+{
-+	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
-+
-+	platform_device_unregister(q6asm->pcmdev);
-+
-+	return 0;
-+}
-+
-+static const struct apr_device_id q6asm_id[] = {
-+	{"Q6ASM", APR_DOMAIN_ADSP, APR_SVC_ASM, APR_CLIENT_AUDIO},
-+	{}
++enum {
++	LEGACY_PCM_MODE = 0,
++	LOW_LATENCY_PCM_MODE,
++	ULTRA_LOW_LATENCY_PCM_MODE,
++	ULL_POST_PROCESSING_PCM_MODE,
 +};
 +
-+static struct apr_driver qcom_q6asm_driver = {
-+	.probe = q6asm_probe,
-+	.remove = q6asm_remove,
-+	.callback = q6asm_srvc_callback,
-+	.id_table = q6asm_id,
-+	.driver = {
-+		   .name = "qcom-q6asm",
-+		   },
++struct adsp_err_code {
++	int		lnx_err_code;
++	char	*adsp_err_str;
 +};
 +
-+module_apr_driver(qcom_q6asm_driver);
-+MODULE_DESCRIPTION("Q6 Audio Stream Manager driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-new file mode 100644
-index 000000000000..7a8a9039fd89
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __Q6_ASM_H__
-+#define __Q6_ASM_H__
++static struct adsp_err_code adsp_err_code_info[ADSP_ERR_MAX+1] = {
++	{ 0, ADSP_EOK_STR},
++	{ -ENOTRECOVERABLE, ADSP_EFAILED_STR},
++	{ -EINVAL, ADSP_EBADPARAM_STR},
++	{ -ENOSYS, ADSP_EUNSUPPORTED_STR},
++	{ -ENOPROTOOPT, ADSP_EVERSION_STR},
++	{ -ENOTRECOVERABLE, ADSP_EUNEXPECTED_STR},
++	{ -ENOTRECOVERABLE, ADSP_EPANIC_STR},
++	{ -ENOSPC, ADSP_ENORESOURCE_STR},
++	{ -EBADR, ADSP_EHANDLE_STR},
++	{ -EALREADY, ADSP_EALREADY_STR},
++	{ -EPERM, ADSP_ENOTREADY_STR},
++	{ -EINPROGRESS, ADSP_EPENDING_STR},
++	{ -EBUSY, ADSP_EBUSY_STR},
++	{ -ECANCELED, ADSP_EABORTED_STR},
++	{ -EAGAIN, ADSP_EPREEMPTED_STR},
++	{ -EAGAIN, ADSP_ECONTINUE_STR},
++	{ -EAGAIN, ADSP_EIMMEDIATE_STR},
++	{ -EAGAIN, ADSP_ENOTIMPL_STR},
++	{ -ENODATA, ADSP_ENEEDMORE_STR},
++	{ -EADV, ADSP_ERR_MAX_STR},
++	{ -ENOMEM, ADSP_ENOMEMORY_STR},
++	{ -ENODEV, ADSP_ENOTEXIST_STR},
++	{ -EADV, ADSP_ERR_MAX_STR},
++};
 +
-+#define MAX_SESSIONS	16
++static inline int adsp_err_get_lnx_err_code(u32 adsp_error)
++{
++	if (adsp_error > ADSP_ERR_MAX)
++		return adsp_err_code_info[ADSP_ERR_MAX].lnx_err_code;
++	else
++		return adsp_err_code_info[adsp_error].lnx_err_code;
++}
 +
-+typedef void (*app_cb) (uint32_t opcode, uint32_t token,
-+			uint32_t *payload, void *priv);
-+struct audio_client;
-+struct audio_client *q6asm_audio_client_alloc(struct device *dev,
-+					      app_cb cb, void *priv);
-+void q6asm_audio_client_free(struct audio_client *ac);
-+int q6asm_get_session_id(struct audio_client *ac);
-+#endif /* __Q6_ASM_H__ */
++static inline char *adsp_err_get_err_str(u32 adsp_error)
++{
++	if (adsp_error > ADSP_ERR_MAX)
++		return adsp_err_code_info[ADSP_ERR_MAX].adsp_err_str;
++	else
++		return adsp_err_code_info[adsp_error].adsp_err_str;
++}
++
++#endif /* __Q6DSP_COMMON_H__ */
 -- 
 2.15.0
