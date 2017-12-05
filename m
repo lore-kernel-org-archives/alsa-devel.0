@@ -1,52 +1,58 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 13/15] dt-bindings: sound: qcom: Add devicetree bindings for apq8096
-Date: Tue,  5 Dec 2017 22:18:10 +0000
-Message-ID: <20171205221812.25641-14-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 01/15] dt-bindings: soc: qcom: Add bindings for APR bus
+Date: Tue,  5 Dec 2017 22:17:58 +0000
+Message-ID: <20171205221812.25641-2-srinivas.kandagatla@linaro.org>
 References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-arm-msm-owner@vger.kernel.org>
 In-Reply-To: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-arm-msm-owner@vger.kernel.org
 To: broonie@kernel.org, bgoswami@codeaurora.org
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, plai@codeaurora.org, kwestfie@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lkasam@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
+This patch add dt bindings for Qualcomm APR bus driver
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/sound/qcom,apq8096.txt     | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+ .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 28 ++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
 new file mode 100644
-index 000000000000..27b511dab533
+index 000000000000..4e93213ae98d
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-@@ -0,0 +1,22 @@
-+* Qualcomm Technologies APQ8096 ASoC sound card driver
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+@@ -0,0 +1,28 @@
++Qualcomm APR (Asynchronous Packet Router) binding
 +
-+This binding describes the APQ8096 sound card, which uses qdsp for audio.
++This binding describes the Qualcomm APR. APR is a IPC protocol for
++communication between Application processor and QDSP. APR is mainly
++used for audio/voice services on the QDSP.
 +
 +- compatible:
 +	Usage: required
 +	Value type: <stringlist>
-+	Definition: must be "qcom,apq8096-sndcard"
++	Definition: must be "qcom,apr-<SOC-NAME>" example: "qcom,apr-msm8996"
 +
-+- qcom,audio-routing:
-+	Usage: Optional
-+	Value type: <stringlist>
-+	Definition:  A list of the connections between audio components.
-+		  Each entry is a pair of strings, the first being the
-+		  connection's sink, the second being the connection's
-+		  source. Valid names could be power supplies, MicBias
-+		  of codec and the jacks on the board:
-+Example:
-+	sound {
-+		compatible	= "qcom,snd-apq8096";
-+		qcom,model = "DB820c";
++
++- qcom,smd-channel:
++	Usage: required
++	Value type: <string>
++	Definition: standard SMD property specifying the SMD channel used for
++		    communication with the APR on QDSP.
++		    Should be "apr_audio_svc".
++		    Described in soc/qcom/qcom,smd.txt
++
++= EXAMPLE
++The following example represents a QDSP based sound card on a MSM8996 device
++which uses apr as communication between Apps and QDSP.
++
++	apr {
++		compatible = "qcom,apr-msm8996";
++		qcom,smd-channels = "apr_audio_svc";
 +	};
 -- 
 2.15.0
