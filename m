@@ -1,39 +1,45 @@
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 00/10] ASoC: fsl_ssi: Clean up - coding style level
-Date: Wed, 6 Dec 2017 02:01:32 +0100
-Message-ID: <1cbd2b92-30c3-4f07-e9ab-8c9a2d342800@maciej.szmigiero.name>
-References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
- <81e17b9c-e878-1fe9-bb6f-b074d5766232@maciej.szmigiero.name>
- <20171205193258.GA11039@Asurada-Nvidia>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v8 10/13] dt-bindings: Add qcom slimbus controller
+ bindings
+Date: Tue, 5 Dec 2017 22:03:04 +0000
+Message-ID: <e8914c67-1a5d-b164-52f5-9bf1392ed422@linaro.org>
+References: <20171130174200.6684-1-srinivas.kandagatla@linaro.org>
+ <20171130174200.6684-11-srinivas.kandagatla@linaro.org>
+ <20171204212829.bmcp5dktc5w46rom@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171205193258.GA11039@Asurada-Nvidia>
+In-Reply-To: <20171204212829.bmcp5dktc5w46rom@rob-hp-laptop>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, fabio.estevam@nxp.com, timur@tabi.org, caleb@crome.org, lgirdwood@gmail.com
+To: Rob Herring <robh@kernel.org>
+Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-On 05.12.2017 20:33, Nicolin Chen wrote:
-> On Tue, Dec 05, 2017 at 02:01:17PM +0100, Maciej S. Szmigiero wrote:
-> 
->>> ==Verification==
->>> Theoretically, it only needs code review, build and sanity tests. I
->>> have done build and sanity tests on an i.MX 6 platform by building
->>> using imx_v6_v7_defconfig and testing with I2S slave/master mode.
-> 
->> Due to my current workload I will be able to go through this and test
->> the AC'97 mode on a UDOO board only in about a week.
-> 
-> This is the first round which doesn't touch program flow. If you
-> prefer to verify it other than merely reviewing it, I would like
-> to wait for your Tested-by. There will be another set to simplify
-> all functions and their program flows after this set gets merged.
-> That one will need to be fully tested.
 
-If you can wait a week then naturally it would be better to test
-these changes on a real board.
 
-Maciej
+On 04/12/17 21:28, Rob Herring wrote:
+> On Thu, Nov 30, 2017 at 05:41:57PM +0000, srinivas.kandagatla@linaro.org wrote:
+>> From: Sagar Dharia <sdharia@codeaurora.org>
+>>
+>> This patch add device tree bindings for Qualcomm slimbus controller.
+>>
+>> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt | 39 ++++++++++++++++++++++
+>>   1 file changed, 39 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+>>
+>> + - clocks : Interface and core clocks used by this SLIMbus controller
+>> + - clock-names : Required clock-name entries are:
+>> +	"iface_clk" : Interface clock for this controller
+>> +	"core_clk" : Interrupt for controller core's BAM
+> 
+> Doesn't match the example. You should drop the '_clk'. With that,
+> 
+
+Thanks for the Reviewed-by tag, I will fix the above in next version.
+
+> Reviewed-by: Rob Herring <robh@kernel.org>
