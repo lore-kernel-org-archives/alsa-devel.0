@@ -1,13 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: atmel-classd: select correct Kconfig symbol" to the asoc tree
-Date: Tue,  5 Dec 2017 12:48:03 +0000 (GMT)
-Message-ID: <20171205124803.D380E44006B@finisterre.ee.mobilebroadband>
+Date: Tue,  5 Dec 2017 12:48:10 +0000 (GMT)
+Message-ID: <20171205124810.B155B44006B@finisterre.ee.mobilebroadband>
 References: <20171205101000.968887-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20171205101000.968887-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>Mark Brown <broonie@kernel.org>Alexandre Belloni <alexandre.belloni@free-electrons.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
@@ -37,7 +37,7 @@ to this mail.
 Thanks,
 Mark
 
->From 7e3dba272e5ef5b38fba8710f98b4b3da7232ea5 Mon Sep 17 00:00:00 2001
+>From d20957ef48c3c0c37e44c5385baf1cdfd132f0db Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
 Date: Tue, 5 Dec 2017 11:09:38 +0100
 Subject: [PATCH] ASoC: atmel-classd: select correct Kconfig symbol
@@ -61,7 +61,6 @@ SND_ATMEL_SOC_DMA directly makes it work again.
 
 Fixes: e0a25b6d1862 ("ASoC: atmel-classd: add the Audio Class D Amplifier")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/atmel/Kconfig | 2 +-
