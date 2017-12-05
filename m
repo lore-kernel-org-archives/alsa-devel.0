@@ -1,470 +1,681 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v2 10/15] ASoC: qcom: qdsp6: Add support to q6routing driver
-Date: Tue,  5 Dec 2017 22:18:07 +0000
-Message-ID: <20171205221812.25641-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 02/15] soc: qcom: add support to APR bus
+	driver
+Date: Tue,  5 Dec 2017 22:17:59 +0000
+Message-ID: <20171205221812.25641-3-srinivas.kandagatla@linaro.org>
 References: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C43F267818
+ for <alsa-devel@alsa-project.org>; Tue,  5 Dec 2017 23:20:21 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id i11so3941030wmf.4
+ for <alsa-devel@alsa-project.org>; Tue, 05 Dec 2017 14:20:21 -0800 (PST)
 In-Reply-To: <20171205221812.25641-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, bgoswami@codeaurora.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, plai@codeaurora.org, kwestfie@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lkasam@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, kwestfie@codeaurora.org, tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lkasam@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to q6 routing driver which configures route
-between ASM and AFE module using ADM apis.
-
-This driver uses dapm widgets to setup the matrix between AFE ports and
-ASM streams.
+This patch adds support toi APR bus (Asynchronous Packet Router) driver.
+ARP driver is made as a bus driver so that the apr devices can added removed
+more dynamically depending on the state of the services on the dsp.
+APR is used for communication between application processor and QDSP to
+use services on QDSP like Audio and others.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig           |   5 +
- sound/soc/qcom/qdsp6/Makefile    |   1 +
- sound/soc/qcom/qdsp6/q6routing.c | 386 +++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6routing.h |   9 +
- 4 files changed, 401 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6routing.c
- create mode 100644 sound/soc/qcom/qdsp6/q6routing.h
+ drivers/soc/qcom/Kconfig        |   8 +
+ drivers/soc/qcom/Makefile       |   1 +
+ drivers/soc/qcom/apr.c          | 395 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mod_devicetable.h |  13 ++
+ include/linux/soc/qcom/apr.h    | 174 ++++++++++++++++++
+ 5 files changed, 591 insertions(+)
+ create mode 100644 drivers/soc/qcom/apr.c
+ create mode 100644 include/linux/soc/qcom/apr.h
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 121b9c957024..dd8fb0cde614 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -60,12 +60,17 @@ config SND_SOC_QDSP6_CORE
- 	tristate
- 	default n
+diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+index b81374bb6713..1daa39925dd4 100644
+--- a/drivers/soc/qcom/Kconfig
++++ b/drivers/soc/qcom/Kconfig
+@@ -97,4 +97,12 @@ config QCOM_WCNSS_CTRL
+ 	  Client driver for the WCNSS_CTRL SMD channel, used to download nv
+ 	  firmware to a newly booted WCNSS chip.
  
-+config SND_SOC_QDSP6_ROUTING
-+	tristate
-+	default n
-+
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	select SND_SOC_QDSP6_AFE
- 	select SND_SOC_QDSP6_ADM
- 	select SND_SOC_QDSP6_ASM
- 	select SND_SOC_QDSP6_CORE
-+	select SND_SOC_QDSP6_ROUTING
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
- 	 This will enable sound soc platform specific
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index ad7f10691e54..c1ad060a2341 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -2,3 +2,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
- obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
- obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
- obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-+obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
++config QCOM_APR
++	tristate "Qualcomm APR Bus (Asynchronous Packet Router)"
++	depends on (RPMSG_QCOM_SMD || RPMSG_QCOM_GLINK_RPM)
++	help
++          Enable APR IPC protocol support between
++          application processor and QDSP6. APR is
++          used by audio driver to configure QDSP6
++          ASM, ADM and AFE modules.
+ endmenu
+diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+index 40c56f67e94a..9daba7e6d20f 100644
+--- a/drivers/soc/qcom/Makefile
++++ b/drivers/soc/qcom/Makefile
+@@ -10,3 +10,4 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+ obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+ obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
++obj-$(CONFIG_QCOM_APR) += apr.o
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
 new file mode 100644
-index 000000000000..f5f12d61a1ee
+index 000000000000..c6f3aa7a375b
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -0,0 +1,386 @@
++++ b/drivers/soc/qcom/apr.c
+@@ -0,0 +1,395 @@
 +/* SPDX-License-Identifier: GPL-2.0
 +* Copyright (c) 2011-2016, The Linux Foundation
 +* Copyright (c) 2017, Linaro Limited
 +*/
-+#include <linux/init.h>
-+#include <linux/err.h>
++
++#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/bitops.h>
-+#include <linux/mutex.h>
-+#include <linux/of_device.h>
++#include <linux/device.h>
++#include <linux/spinlock.h>
++#include <linux/list.h>
 +#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/pcm.h>
-+#include <sound/control.h>
-+#include <sound/asound.h>
-+#include <sound/pcm_params.h>
-+#include "q6afe.h"
-+#include "q6asm.h"
-+#include "q6adm.h"
-+#include "q6routing.h"
++#include <linux/of_device.h>
++#include <linux/soc/qcom/apr.h>
++#include <linux/rpmsg.h>
++#include <linux/of.h>
 +
-+struct session_data {
-+	int state;
-+	int port_id;
-+	int path_type;
-+	int app_type;
-+	int acdb_id;
-+	int sample_rate;
-+	int bits_per_sample;
-+	int channels;
-+	int format;
-+	int perf_mode;
-+	int numcopps;
-+	int fedai_id;
-+	unsigned long copp_map;
++struct apr_data {
++	int (*get_data_src)(struct apr_hdr *hdr);
++	int dest_id;
 +};
 +
-+struct msm_routing_data {
-+	struct session_data sessions[MAX_SESSIONS];
++struct apr {
++	struct rpmsg_endpoint *ch;
 +	struct device *dev;
-+	struct mutex lock;
++	spinlock_t svcs_lock;
++	struct list_head svcs;
++	int dest_id;
++	const struct apr_data *data;
 +};
 +
-+static struct msm_routing_data *routing_data;
++/* Static CORE service on the ADSP */
++static const struct apr_device_id core_svc_device_id =
++		ADSP_AUDIO_APR_DEV("CORE", APR_SVC_ADSP_CORE);
 +
 +/**
-+ * q6routing_reg_phy_stream() - Register a new stream for route setup
++ * apr_send_pkt() - Send a apr message from apr device
 + *
-+ * @fedai_id: Frontend dai id.
-+ * @perf_mode: Performace mode.
-+ * @stream_id: ASM stream id to map.
-+ * @stream_type: Direction of stream
++ * @adev: Pointer to previously registered apr device.
++ * @buf: Pointer to buffer to send
 + *
-+ * Return: Will be an negative on error or a zero on success.
++ * Return: Will be an negative on packet size on success.
 + */
-+int q6routing_reg_phy_stream(int fedai_id, int perf_mode,
-+			   int stream_id, int stream_type)
++int apr_send_pkt(struct apr_device *adev, uint32_t *buf)
 +{
-+	int j, topology, num_copps = 0;
-+	struct route_payload payload;
-+	int copp_idx;
-+	struct session_data *session;
++	struct apr *apr = dev_get_drvdata(adev->dev.parent);
++	struct apr_hdr *hdr;
++	unsigned long flags;
++	int ret;
 +
-+	if (!routing_data) {
-+		pr_err("Routing driver not yet ready\n");
++	spin_lock_irqsave(&adev->lock, flags);
++
++	hdr = (struct apr_hdr *)buf;
++	hdr->src_domain = APR_DOMAIN_APPS;
++	hdr->src_svc = adev->svc_id;
++	hdr->dest_domain = adev->domain_id;
++	hdr->dest_svc = adev->svc_id;
++
++	ret = rpmsg_send(apr->ch, buf, hdr->pkt_size);
++	if (ret) {
++		dev_err(&adev->dev, "Unable to send APR pkt %d\n",
++			hdr->pkt_size);
++	} else {
++		ret = hdr->pkt_size;
++	}
++
++	spin_unlock_irqrestore(&adev->lock, flags);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(apr_send_pkt);
++
++static void apr_dev_release(struct device *dev)
++{
++	struct apr_device *adev = to_apr_device(dev);
++
++	kfree(adev);
++}
++
++static int qcom_rpmsg_q6_callback(struct rpmsg_device *rpdev, void *buf,
++				  int len, void *priv, u32 addr)
++{
++	struct apr *apr = dev_get_drvdata(&rpdev->dev);
++	struct apr_client_data data;
++	struct apr_device *p, *c_svc = NULL;
++	struct apr_driver *adrv = NULL;
++	struct apr_hdr *hdr;
++	uint16_t hdr_size;
++	uint16_t msg_type;
++	uint16_t ver;
++	uint16_t src;
++	uint16_t svc;
++
++	if (!buf || len <= APR_HDR_SIZE) {
++		dev_err(apr->dev, "APR: Improper apr pkt received:%p %d\n",
++			buf, len);
 +		return -EINVAL;
 +	}
 +
-+	session = &routing_data->sessions[stream_id - 1];
-+	mutex_lock(&routing_data->lock);
-+	session->fedai_id = fedai_id;
-+	payload.num_copps = 0; /* only RX needs to use payload */
-+	topology = NULL_COPP_TOPOLOGY;
-+	copp_idx = q6adm_open(routing_data->dev, session->port_id,
-+			      session->path_type, session->sample_rate,
-+			      session->channels, topology, perf_mode,
-+			      session->bits_per_sample, 0, 0);
-+	if ((copp_idx < 0) || (copp_idx >= MAX_COPPS_PER_PORT)) {
-+		mutex_unlock(&routing_data->lock);
++	hdr = buf;
++	ver = APR_HDR_FIELD_VER(hdr->hdr_field);
++	if (ver > APR_PKT_VER + 1)
++		return -EINVAL;
++
++	hdr_size = APR_HDR_FIELD_SIZE_BYTES(hdr->hdr_field);
++	if (hdr_size < APR_HDR_SIZE) {
++		dev_err(apr->dev, "APR: Wrong hdr size:%d\n", hdr_size);
 +		return -EINVAL;
 +	}
 +
-+	set_bit(copp_idx, &session->copp_map);
-+	for (j = 0; j < MAX_COPPS_PER_PORT; j++) {
-+		unsigned long copp = session->copp_map;
++	if (hdr->pkt_size < APR_HDR_SIZE) {
++		dev_err(apr->dev, "APR: Wrong paket size\n");
++		return -EINVAL;
++	}
 +
-+		if (test_bit(j, &copp)) {
-+			payload.port_id[num_copps] = session->port_id;
-+			payload.copp_idx[num_copps] = j;
-+			num_copps++;
++	msg_type = APR_HDR_FIELD_MT(hdr->hdr_field);
++	if (msg_type >= APR_MSG_TYPE_MAX && msg_type != APR_BASIC_RSP_RESULT) {
++		dev_err(apr->dev, "APR: Wrong message type: %d\n", msg_type);
++		return -EINVAL;
++	}
++
++	if (hdr->src_domain >= APR_DOMAIN_MAX ||
++			hdr->dest_domain >= APR_DOMAIN_MAX ||
++			hdr->src_svc >= APR_SVC_MAX ||
++			hdr->dest_svc >= APR_SVC_MAX) {
++		dev_err(apr->dev, "APR: Wrong APR header\n");
++		return -EINVAL;
++	}
++
++	svc = hdr->dest_svc;
++	src = apr->data->get_data_src(hdr);
++	if (src == APR_DEST_MAX)
++		return -EINVAL;
++
++	spin_lock(&apr->svcs_lock);
++	list_for_each_entry(p, &apr->svcs, node) {
++		if (svc == p->svc_id) {
++			c_svc = p;
++			if (c_svc->dev.driver)
++				adrv = to_apr_driver(c_svc->dev.driver);
++			break;
 +		}
 +	}
++	spin_unlock(&apr->svcs_lock);
 +
-+	if (num_copps) {
-+		payload.num_copps = num_copps;
-+		payload.session_id = stream_id;
-+		q6adm_matrix_map(routing_data->dev, session->path_type,
-+				 payload, perf_mode);
-+	}
-+	mutex_unlock(&routing_data->lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6routing_reg_phy_stream);
-+
-+static struct session_data *routing_get_session(struct msm_routing_data *data,
-+						int port_id, int port_type)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_SESSIONS; i++)
-+		if (port_id == data->sessions[i].port_id)
-+			return &data->sessions[i];
-+
-+	return NULL;
-+}
-+
-+static struct session_data *get_session_from_id(struct msm_routing_data *data,
-+						int fedai_id)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAX_SESSIONS; i++) {
-+		if (fedai_id == data->sessions[i].fedai_id)
-+			return &data->sessions[i];
-+	}
-+
-+	return NULL;
-+}
-+/**
-+ * q6routing_dereg_phy_stream() - Deregister a stream
-+ *
-+ * @fedai_id: Frontend dai id.
-+ * @stream_type: Direction of stream
-+ *
-+ * Return: Will be an negative on error or a zero on success.
-+ */
-+void q6routing_dereg_phy_stream(int fedai_id, int stream_type)
-+{
-+	struct session_data *session;
-+	int idx;
-+
-+	session = get_session_from_id(routing_data, fedai_id);
-+	if (!session)
-+		return;
-+
-+	for_each_set_bit(idx, &session->copp_map, MAX_COPPS_PER_PORT)
-+		q6adm_close(routing_data->dev, session->port_id,
-+			    session->perf_mode, idx);
-+
-+	session->fedai_id = -1;
-+	session->copp_map = 0;
-+}
-+EXPORT_SYMBOL_GPL(q6routing_dereg_phy_stream);
-+
-+static int msm_routing_get_audio_mixer(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm =
-+	    snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct soc_mixer_control *mc =
-+	    (struct soc_mixer_control *)kcontrol->private_value;
-+	int session_id = mc->shift;
-+	struct snd_soc_platform *platform = snd_soc_dapm_to_platform(dapm);
-+	struct msm_routing_data *priv = snd_soc_platform_get_drvdata(platform);
-+	struct session_data *session = &priv->sessions[session_id];
-+
-+	if (session->port_id != -1)
-+		ucontrol->value.integer.value[0] = 1;
-+	else
-+		ucontrol->value.integer.value[0] = 0;
-+
-+	return 0;
-+}
-+
-+static int msm_routing_put_audio_mixer(struct snd_kcontrol *kcontrol,
-+				       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_context *dapm =
-+				    snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_dapm_to_platform(dapm);
-+	struct msm_routing_data *data = snd_soc_platform_get_drvdata(platform);
-+	struct soc_mixer_control *mc =
-+		    (struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_dapm_update *update = NULL;
-+	int be_id = mc->reg;
-+	int session_id = mc->shift;
-+	struct session_data *session = &data->sessions[session_id];
-+
-+	if (ucontrol->value.integer.value[0]) {
-+		session->port_id = be_id;
-+		snd_soc_dapm_mixer_update_power(dapm, kcontrol, 1, update);
-+	} else {
-+		session->port_id = -1;
-+		snd_soc_dapm_mixer_update_power(dapm, kcontrol, 0, update);
-+	}
-+
-+	return 1;
-+}
-+
-+static const struct snd_kcontrol_new hdmi_mixer_controls[] = {
-+	SOC_SINGLE_EXT("MultiMedia1", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA1, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia2", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA2, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia3", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA3, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia4", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA4, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia5", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA5, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia6", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA6, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia7", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA7, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+	SOC_SINGLE_EXT("MultiMedia8", AFE_PORT_HDMI_RX,
-+		       MSM_FRONTEND_DAI_MULTIMEDIA8, 1, 0,
-+		       msm_routing_get_audio_mixer,
-+		       msm_routing_put_audio_mixer),
-+};
-+
-+static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
-+	/* Frontend AIF */
-+	/* Widget name equals to Front-End DAI name<Need confirmation>,
-+	 * Stream name must contains substring of front-end dai name
-+	 */
-+	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, 0, 0, 0),
-+
-+	/* Mixer definitions */
-+	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
-+			   hdmi_mixer_controls,
-+			   ARRAY_SIZE(hdmi_mixer_controls)),
-+};
-+
-+static const struct snd_soc_dapm_route intercon[] = {
-+	{"HDMI Mixer", "MultiMedia1", "MM_DL1"},
-+	{"HDMI Mixer", "MultiMedia2", "MM_DL2"},
-+	{"HDMI Mixer", "MultiMedia3", "MM_DL3"},
-+	{"HDMI Mixer", "MultiMedia4", "MM_DL4"},
-+	{"HDMI Mixer", "MultiMedia5", "MM_DL5"},
-+	{"HDMI Mixer", "MultiMedia6", "MM_DL6"},
-+	{"HDMI Mixer", "MultiMedia7", "MM_DL7"},
-+	{"HDMI Mixer", "MultiMedia8", "MM_DL8"},
-+	{"HDMI", NULL, "HDMI Mixer"},
-+	{"HDMI-RX", NULL, "HDMI"},
-+};
-+
-+static int routing_hw_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	unsigned int be_id = rtd->cpu_dai->id;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct msm_routing_data *data = snd_soc_platform_get_drvdata(platform);
-+	struct session_data *session;
-+	int port_id, port_type, path_type, bits_per_sample;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		path_type = ADM_PATH_PLAYBACK;
-+		port_type = MSM_AFE_PORT_TYPE_RX;
-+	}
-+
-+	port_id = be_id;
-+
-+	session = routing_get_session(data, port_id, port_type);
-+
-+	if (!session) {
-+		pr_err("No session matrix setup yet..\n");
++	if (!adrv) {
++		dev_err(apr->dev, "APR: service is not registered\n");
 +		return -EINVAL;
 +	}
 +
-+	mutex_lock(&data->lock);
++	data.payload_size = hdr->pkt_size - hdr_size;
++	data.opcode = hdr->opcode;
++	data.src = src;
++	data.src_port = hdr->src_port;
++	data.dest_port = hdr->dest_port;
++	data.token = hdr->token;
++	data.msg_type = msg_type;
 +
-+	session->path_type = path_type;
-+	session->sample_rate = params_rate(params);
-+	session->channels = params_channels(params);
-+	session->format = params_format(params);
++	if (data.payload_size > 0)
++		data.payload = (char *)hdr + hdr_size;
 +
-+	if (session->format == SNDRV_PCM_FORMAT_S16_LE)
-+		session->bits_per_sample = 16;
-+	else if (session->format == SNDRV_PCM_FORMAT_S24_LE)
-+		bits_per_sample = 24;
++	adrv->callback(c_svc, &data);
 +
-+	mutex_unlock(&data->lock);
 +	return 0;
 +}
 +
-+static int routing_close(struct snd_pcm_substream *substream)
++static const struct apr_device_id *apr_match(const struct apr_device_id *id,
++					       const struct apr_device *adev)
 +{
-+	return 0;
++	while (id->domain_id != 0 || id->svc_id != 0) {
++		if (id->domain_id == adev->domain_id &&
++		    id->svc_id == adev->svc_id &&
++		    id->client_id == adev->client_id)
++			return id;
++		id++;
++	}
++	return NULL;
 +}
 +
-+static int routing_prepare(struct snd_pcm_substream *substream)
++static int apr_device_match(struct device *dev, struct device_driver *drv)
 +{
++	struct apr_device *adev = to_apr_device(dev);
++	struct apr_driver *adrv = to_apr_driver(drv);
++
++	return !!apr_match(adrv->id_table, adev);
++}
++
++static int apr_device_probe(struct device *dev)
++{
++	struct apr_device	*adev;
++	struct apr_driver	*adrv;
++	int ret = 0;
++
++	adev = to_apr_device(dev);
++	adrv = to_apr_driver(dev->driver);
++
++	ret = adrv->probe(adev);
++
++	return ret;
++}
++
++static int apr_device_remove(struct device *dev)
++{
++	struct apr_device *adev = to_apr_device(dev);
++	struct apr_driver *adrv;
++	struct apr *apr = dev_get_drvdata(adev->dev.parent);
++
++	if (dev->driver) {
++		adrv = to_apr_driver(dev->driver);
++		if (adrv->remove)
++			adrv->remove(adev);
++		spin_lock(&apr->svcs_lock);
++		list_del(&adev->node);
++		spin_unlock(&apr->svcs_lock);
++	}
++
 +	return 0;
 +}
 +
-+static struct snd_pcm_ops q6pcm_routing_ops = {
-+	.hw_params = routing_hw_params,
-+	.close = routing_close,
-+	.prepare = routing_prepare,
++struct bus_type aprbus_type = {
++	.name		= "aprbus",
++	.match		= apr_device_match,
++	.probe		= apr_device_probe,
++	.remove		= apr_device_remove,
 +};
++EXPORT_SYMBOL_GPL(aprbus_type);
 +
-+/* Not used but frame seems to require it */
-+static int msm_routing_probe(struct snd_soc_platform *platform)
++/**
++ * apr_add_device() - Add a new apr device
++ *
++ * @dev: Pointer to apr device.
++ * @id: Pointer to apr device id to add.
++ *
++ * Return: Will be an negative on error or a zero on success.
++ */
++int apr_add_device(struct device *dev, const struct apr_device_id *id)
 +{
-+	int i;
++	struct apr *apr = dev_get_drvdata(dev);
++	struct apr_device *adev = NULL;
 +
-+	for (i = 0; i < MAX_SESSIONS; i++)
-+		routing_data->sessions[i].port_id = -1;
++	if (!apr)
++		return -EINVAL;
 +
-+	snd_soc_platform_set_drvdata(platform, routing_data);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_platform_driver msm_soc_routing_platform = {
-+	.ops = &q6pcm_routing_ops,
-+	.probe = msm_routing_probe,
-+	.component_driver = {
-+			     .dapm_widgets = msm_qdsp6_widgets,
-+			     .num_dapm_widgets = ARRAY_SIZE(msm_qdsp6_widgets),
-+			     .dapm_routes = intercon,
-+			     .num_dapm_routes = ARRAY_SIZE(intercon),
-+			     },
-+};
-+
-+static int q6pcm_routing_probe(struct platform_device *pdev)
-+{
-+
-+	routing_data = devm_kzalloc(&pdev->dev,
-+				    sizeof(*routing_data), GFP_KERNEL);
-+	if (!routing_data)
++	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
++	if (!adev)
 +		return -ENOMEM;
 +
-+	routing_data->dev = &pdev->dev;
++	spin_lock_init(&adev->lock);
 +
-+	mutex_init(&routing_data->lock);
-+	dev_set_drvdata(&pdev->dev, routing_data);
++	adev->svc_id = id->svc_id;
++	adev->dest_id = apr->dest_id;
++	adev->client_id = id->client_id;
++	adev->domain_id = id->domain_id;
++	adev->version = id->svc_version;
 +
-+	return devm_snd_soc_register_platform(&pdev->dev,
-+					      &msm_soc_routing_platform);
++	adev->dev.bus = &aprbus_type;
++	adev->dev.parent = dev;
++	adev->dev.release = apr_dev_release;
++	adev->dev.driver = NULL;
++
++	dev_set_name(&adev->dev, "apr:%s:%x:%x:%x", id->name, id->domain_id,
++				 id->svc_id, id->client_id);
++
++	spin_lock(&apr->svcs_lock);
++	list_add_tail(&adev->node, &apr->svcs);
++	spin_unlock(&apr->svcs_lock);
++
++	return device_register(&adev->dev);
 +}
++EXPORT_SYMBOL_GPL(apr_add_device);
 +
-+static int q6pcm_routing_remove(struct platform_device *pdev)
++static int qcom_rpmsg_q6_probe(struct rpmsg_device *rpdev)
 +{
++	struct device *dev = &rpdev->dev;
++	struct apr *apr;
++
++	apr = devm_kzalloc(dev, sizeof(*apr), GFP_KERNEL);
++	if (!apr)
++		return -ENOMEM;
++
++	apr->data = of_device_get_match_data(dev);
++	if (!apr->data)
++		return -ENODEV;
++
++	apr->dest_id = apr->data->dest_id;
++	dev_set_drvdata(dev, apr);
++	apr->ch = rpdev->ept;
++	apr->dev = dev;
++	INIT_LIST_HEAD(&apr->svcs);
++
++	/* register core service */
++	apr_add_device(dev, &core_svc_device_id);
++
 +	return 0;
 +}
 +
-+static struct platform_driver q6pcm_routing_driver = {
-+	.driver = {
-+		   .name = "q6routing",
-+		   .owner = THIS_MODULE,
-+		   },
-+	.probe = q6pcm_routing_probe,
-+	.remove = q6pcm_routing_remove,
++static int apr_remove_device(struct device *dev, void *null)
++{
++	struct apr_device *adev = to_apr_device(dev);
++
++	device_unregister(&adev->dev);
++
++	return 0;
++}
++
++static void qcom_rpmsg_q6_remove(struct rpmsg_device *rpdev)
++{
++	device_for_each_child(&rpdev->dev, NULL, apr_remove_device);
++}
++
++static int apr_v2_get_data_src(struct apr_hdr *hdr)
++{
++	if (hdr->src_domain == APR_DOMAIN_MODEM)
++		return APR_DEST_MODEM;
++	else if (hdr->src_domain == APR_DOMAIN_ADSP)
++		return APR_DEST_QDSP6;
++
++	return APR_DEST_MAX;
++}
++
++/*
++ * __apr_driver_register() - Client driver registration with aprbus
++ *
++ * @drv:Client driver to be associated with client-device.
++ * @owner: owning module/driver
++ *
++ * This API will register the client driver with the aprbus
++ * It is called from the driver's module-init function.
++ */
++int __apr_driver_register(struct apr_driver *drv, struct module *owner)
++{
++	/* ID table is mandatory to match the devices to probe */
++	if (!drv->id_table)
++		return -EINVAL;
++
++	drv->driver.bus = &aprbus_type;
++	drv->driver.owner = owner;
++
++	return driver_register(&drv->driver);
++}
++EXPORT_SYMBOL_GPL(__apr_driver_register);
++
++/*
++ * apr_driver_unregister() - Undo effect of apr_driver_register
++ *
++ * @drv: Client driver to be unregistered
++ */
++void apr_driver_unregister(struct apr_driver *drv)
++{
++	driver_unregister(&drv->driver);
++}
++EXPORT_SYMBOL_GPL(apr_driver_unregister);
++
++static const struct apr_data apr_v2_data = {
++	.get_data_src = apr_v2_get_data_src,
++	.dest_id = APR_DEST_QDSP6,
 +};
 +
-+module_platform_driver(q6pcm_routing_driver);
++static const struct of_device_id qcom_rpmsg_q6_of_match[] = {
++	{ .compatible = "qcom,apr-msm8996", .data = &apr_v2_data},
++	{}
++};
 +
-+MODULE_DESCRIPTION("Q6 Routing platform");
++static struct rpmsg_driver qcom_rpmsg_q6_driver = {
++	.probe = qcom_rpmsg_q6_probe,
++	.remove = qcom_rpmsg_q6_remove,
++	.callback = qcom_rpmsg_q6_callback,
++	.drv = {
++		.name = "qcom_rpmsg_q6",
++		.owner = THIS_MODULE,
++		.of_match_table = qcom_rpmsg_q6_of_match,
++		},
++};
++
++static int __init apr_init(void)
++{
++	int ret;
++
++	ret = register_rpmsg_driver(&qcom_rpmsg_q6_driver);
++	if (!ret)
++		return bus_register(&aprbus_type);
++
++	return ret;
++}
++
++static void __exit apr_exit(void)
++{
++	bus_unregister(&aprbus_type);
++	unregister_rpmsg_driver(&qcom_rpmsg_q6_driver);
++}
++
++subsys_initcall(apr_init);
++module_exit(apr_exit);
++
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6routing.h b/sound/soc/qcom/qdsp6/q6routing.h
++MODULE_DESCRIPTION("Qualcomm APR Bus");
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index abb6dc2ebbf8..068d215c3be6 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -452,6 +452,19 @@ struct spi_device_id {
+ 	kernel_ulong_t driver_data;	/* Data private to the driver */
+ };
+ 
++
++#define APR_NAME_SIZE	32
++#define APR_MODULE_PREFIX "apr:"
++
++struct apr_device_id {
++	char name[APR_NAME_SIZE];
++	__u32 domain_id;
++	__u32 svc_id;
++	__u32 client_id;
++	__u32 svc_version;
++	kernel_ulong_t driver_data;	/* Data private to the driver */
++};
++
+ #define SPMI_NAME_SIZE	32
+ #define SPMI_MODULE_PREFIX "spmi:"
+ 
+diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
 new file mode 100644
-index 000000000000..7f0feb196acc
+index 000000000000..8620289c34ab
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6routing.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _Q6_PCM_ROUTING_H
-+#define _Q6_PCM_ROUTING_H
++++ b/include/linux/soc/qcom/apr.h
+@@ -0,0 +1,174 @@
++/* SPDX-License-Identifier: GPL-2.0
++* Copyright (c) 2011-2016, The Linux Foundation
++* Copyright (c) 2017, Linaro Limited
++*/
 +
-+int q6routing_reg_phy_stream(int fedai_id, int perf_mode,
-+			   int stream_id, int stream_type);
-+void q6routing_dereg_phy_stream(int fedai_id, int stream_type);
++#ifndef __APR_H_
++#define __APR_H_
 +
-+#endif /*_Q6_PCM_ROUTING_H */
++#include <linux/spinlock.h>
++#include <linux/device.h>
++#include <linux/mod_devicetable.h>
++/* APR Client IDs */
++#define APR_CLIENT_AUDIO	0x0
++#define APR_CLIENT_VOICE	0x1
++#define APR_CLIENT_MAX		0x2
++
++#define APR_DL_SMD    0
++#define APR_DL_MAX    1
++
++#define APR_DEST_MODEM 0
++#define APR_DEST_QDSP6 1
++#define APR_DEST_MAX   2
++#define APR_MAX_BUF   8192
++
++#define APR_HDR_LEN(hdr_len) ((hdr_len)/4)
++#define APR_PKT_SIZE(hdr_len, payload_len) ((hdr_len) + (payload_len))
++#define APR_HDR_FIELD(msg_type, hdr_len, ver)\
++	(((msg_type & 0x3) << 8) | ((hdr_len & 0xF) << 4) | (ver & 0xF))
++
++#define APR_HDR_SIZE sizeof(struct apr_hdr)
++#define APR_SEQ_CMD_HDR_FIELD APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD, \
++					    APR_HDR_LEN(APR_HDR_SIZE), \
++					    APR_PKT_VER)
++
++/* Version */
++#define APR_PKT_VER		0x0
++
++/* Command and Response Types */
++#define APR_MSG_TYPE_EVENT	0x0
++#define APR_MSG_TYPE_CMD_RSP	0x1
++#define APR_MSG_TYPE_SEQ_CMD	0x2
++#define APR_MSG_TYPE_NSEQ_CMD	0x3
++#define APR_MSG_TYPE_MAX	0x04
++
++/* APR Basic Response Message */
++#define APR_BASIC_RSP_RESULT 0x000110E8
++#define APR_RSP_ACCEPTED     0x000100BE
++
++/* Domain IDs */
++#define APR_DOMAIN_SIM	0x1
++#define APR_DOMAIN_PC		0x2
++#define APR_DOMAIN_MODEM	0x3
++#define APR_DOMAIN_ADSP	0x4
++#define APR_DOMAIN_APPS	0x5
++#define APR_DOMAIN_MAX	0x6
++
++/* ADSP service IDs */
++#define APR_SVC_TEST_CLIENT     0x2
++#define APR_SVC_ADSP_CORE	0x3
++#define APR_SVC_AFE		0x4
++#define APR_SVC_VSM		0x5
++#define APR_SVC_VPM		0x6
++#define APR_SVC_ASM		0x7
++#define APR_SVC_ADM		0x8
++#define APR_SVC_ADSP_MVM	0x09
++#define APR_SVC_ADSP_CVS	0x0A
++#define APR_SVC_ADSP_CVP	0x0B
++#define APR_SVC_USM		0x0C
++#define APR_SVC_LSM		0x0D
++#define APR_SVC_VIDC		0x16
++#define APR_SVC_MAX		0x17
++
++/* Modem Service IDs */
++#define APR_SVC_MVS		0x3
++#define APR_SVC_MVM		0x4
++#define APR_SVC_CVS		0x5
++#define APR_SVC_CVP		0x6
++#define APR_SVC_SRD		0x7
++
++/* APR Port IDs */
++#define APR_MAX_PORTS		0x80
++#define APR_NAME_MAX		0x40
++#define RESET_EVENTS		0x000130D7
++
++/* hdr field Ver [0:3], Size [4:7], Message type [8:10] */
++#define APR_HDR_FIELD_VER(h)		(h & 0x000F)
++#define APR_HDR_FIELD_SIZE(h)		((h & 0x00F0) >> 4)
++#define APR_HDR_FIELD_SIZE_BYTES(h)	(((h & 0x00F0) >> 4) * 4)
++#define APR_HDR_FIELD_MT(h)		((h & 0x0300) >> 8)
++
++struct apr_hdr {
++	uint16_t hdr_field;
++	uint16_t pkt_size;
++	uint8_t src_svc;
++	uint8_t src_domain;
++	uint16_t src_port;
++	uint8_t dest_svc;
++	uint8_t dest_domain;
++	uint16_t dest_port;
++	uint32_t token;
++	uint32_t opcode;
++};
++
++struct apr_client_data {
++	uint16_t payload_size;
++	uint16_t hdr_len;
++	uint16_t msg_type;
++	uint16_t src;
++	uint16_t dest_svc;
++	uint16_t src_port;
++	uint16_t dest_port;
++	uint32_t token;
++	uint32_t opcode;
++	void *payload;
++};
++
++#define ADSP_AUDIO_APR_DEV(name, id) \
++	{name, APR_DOMAIN_ADSP, id, APR_CLIENT_AUDIO}
++
++/* Bits 0 to 15 -- Minor version,  Bits 16 to 31 -- Major version */
++
++#define APR_SVC_MAJOR_VERSION(v)	((v >> 16) & 0xFF)
++#define APR_SVC_MINOR_VERSION(v)	(v & 0xFF)
++
++struct apr_device {
++	struct device	dev;
++	uint16_t	svc_id;
++	uint16_t	dest_id;
++	uint16_t	client_id;
++	uint16_t	domain_id;
++	uint16_t	version;
++
++	spinlock_t	lock;
++	struct list_head node;
++};
++
++
++#define to_apr_device(d) container_of(d, struct apr_device, dev)
++
++struct apr_driver {
++	int	(*probe)(struct apr_device *sl);
++	int	(*remove)(struct apr_device *sl);
++	int	(*callback)(struct apr_device *a, struct apr_client_data *d);
++	struct device_driver		driver;
++	const struct apr_device_id	*id_table;
++};
++
++#define to_apr_driver(d) container_of(d, struct apr_driver, driver)
++
++/*
++ * use a macro to avoid include chaining to get THIS_MODULE
++ */
++#define apr_driver_register(drv) __apr_driver_register(drv, THIS_MODULE)
++
++int __apr_driver_register(struct apr_driver *drv, struct module *owner);
++void apr_driver_unregister(struct apr_driver *drv);
++int apr_add_device(struct device *dev, const struct apr_device_id *id);
++
++/**
++ * module_apr_driver() - Helper macro for registering a aprbus driver
++ * @__aprbus_driver: aprbus_driver struct
++ *
++ * Helper macro for aprbus drivers which do not do anything special in
++ * module init/exit. This eliminates a lot of boilerplate. Each module
++ * may only use this macro once, and calling it replaces module_init()
++ * and module_exit()
++ */
++#define module_apr_driver(__apr_driver) \
++	module_driver(__apr_driver, apr_driver_register, \
++			apr_driver_unregister)
++
++int apr_send_pkt(struct apr_device *adev, uint32_t *buf);
++
++#endif /* __APR_H_ */
 -- 
 2.15.0
