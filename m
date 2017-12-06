@@ -1,93 +1,113 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_asrc: protect macro argument
-Date: Wed, 6 Dec 2017 14:39:50 +0000
-Message-ID: <20171206143950.irihxu25xg7jut4e@sirena.org.uk>
-References: <20170807063657.12581-1-stefan@agner.ch>
- <20170807070806.GA8208@Asurada>
- <b96fa8a745e7d6e9de8bb70d0f335648@agner.ch>
- <20171206141155.ytdmashkum3ujpvk@sirena.org.uk>
- <450504e854cf68efff7f212c6bd66fe2@agner.ch>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: Add IO transfer
+Date: Wed, 6 Dec 2017 20:14:02 +0530
+Message-ID: <20171206144402.GT32417@localhost>
+References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
+ <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
+ <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
+ <20171203170418.GN32417@localhost>
+ <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
+ <20171205063114.GL32417@localhost>
+ <fb78b1c5-0a52-90b3-262e-8880aeb2da11@linux.intel.com>
+ <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
+ <20171206055813.GO32417@localhost>
+ <8c38baee-45f8-682e-f781-c35e26c26d9f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0896584525634785992=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E13BF26698E
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 15:39:52 +0100 (CET)
-In-Reply-To: <450504e854cf68efff7f212c6bd66fe2@agner.ch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Agner <stefan@agner.ch>
-Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, timur@tabi.org, Nicolin Chen <nicoleotsuka@gmail.com>, fabio.estevam@nxp.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <8c38baee-45f8-682e-f781-c35e26c26d9f@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Dec 06, 2017 at 07:32:43AM -0600, Pierre-Louis Bossart wrote:
+> On 12/5/17 11:58 PM, Vinod Koul wrote:
+> >On Tue, Dec 05, 2017 at 08:48:03AM -0600, Pierre-Louis Bossart wrote:
+> >>On 12/5/17 7:43 AM, Pierre-Louis Bossart wrote:
+> >>>On 12/5/17 12:31 AM, Vinod Koul wrote:
+> >>>>On Sun, Dec 03, 2017 at 09:01:41PM -0600, Pierre-Louis Bossart wrote:
+> >
+> >>>>>>>>+static inline int do_transfer(struct sdw_bus *bus, struct
+> >>>>>>>>sdw_msg *msg)
+> >>>>>>>>+{
+> >>>>>>>>+    int retry = bus->prop.err_threshold;
+> >>>>>>>>+    enum sdw_command_response resp;
+> >>>>>>>>+    int ret = 0, i;
+> >>>>>>>>+
+> >>>>>>>>+    for (i = 0; i <= retry; i++) {
+> >>>>>>>>+        resp = bus->ops->xfer_msg(bus, msg);
+> >>>>>>>>+        ret = find_response_code(resp);
+> >>>>>>>>+
+> >>>>>>>>+        /* if cmd is ok or ignored return */
+> >>>>>>>>+        if (ret == 0 || ret == -ENODATA)
+> >>>>>>>
+> >>>>>>>Can you document why you don't retry on a CMD_IGNORED? I know
+> >>>>>>>there was a
+> >>>>>>>reason, I just can't remember it.
+> >>>>>>
+> >>>>>>CMD_IGNORED can be okay on broadcast. User of this API can retry all
+> >>>>>>they
+> >>>>>>want!
+> >>>>>
+> >>>>>So you retry if this is a CMD_FAILED but let higher levels retry for
+> >>>>>CMD_IGNORED, sorry I don't see the logic.
+> >>>>
+> >>>>Yes that is right.
+> >>>>
+> >>>>If I am doing a broadcast read, lets say for Device Id registers, why in
+> >>>>the
+> >>>>world would I want to retry? CMD_IGNORED is a valid response and
+> >>>>required to
+> >>>>stop enumeration cycle in that case.
+> >
+> >Above is the clarfication
+> >
+> >>>>But if I am not expecting a CMD_IGNORED response, I can very well go
+> >>>>ahead
+> >>>>and retry from caller. The context is with caller and they can choose to
+> >>>>do
+> >>>>appropriate handling.
+> >>>>
+> >>>>And I have clarified this couple of times to you already, not sure how
+> >>>>many
+> >>>>more times I would have to do that.
+> >>>
+> >>>Until you clarify what you are doing.
+> >
+> >Let me try again, I think u missed that part of my reply above
+> >
+> >If I am doing a broadcast read, lets say for Device Id registers,
+> >why in the world would I want to retry? CMD_IGNORED is a valid response
+> >and required to stop enumeration cycle in that case.
+> >
+> >>>There is ONE case where IGNORED is a valid answer (reading the Prepare not
+> >>>finished bits), and it should not only be documented but analyzed in more
+> >>>details.
+> >>I meant Read SCP_DevID registers from Device0... prepare bits should never
+> >>return a CMD_IGNORED
+> >
+> >Precisely as I pointed out above.
+> >
+> >>>For a write an IGNORED is never OK.
+> >
+> >Agreed, but then transfer does both read and write. Write call can treat it
+> >as error and read call leaves it upto caller.
+> >
+> >Does that sound okay for you?
+> 
+> Not really.
+> You have one case where it's ok and all others are not ok, to me this sounds
+> like you should avoid the retry at the lowest level rather than pushing this
+> to the caller
+> And now that I think of it, the definitions for the DisCo spec were really
+> meant for hardware-based retries available in some master IPs. If this is
+> enabled, then the loops in software are not really needed at all. Can you
+> please check this point?
 
---===============0896584525634785992==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2eytg7umg3jb36bz"
-Content-Disposition: inline
+Sure I will check that
 
-
---2eytg7umg3jb36bz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Dec 06, 2017 at 03:25:37PM +0100, Stefan Agner wrote:
-> On 2017-12-06 15:11, Mark Brown wrote:
-
-> > Please don't send content free pings and please allow a reasonable time
-> > for review.  People get busy, go on holiday, attend conferences and so=
-=20
-> > on so unless there is some reason for urgency (like critical bug fixes)
-> > please allow at least a couple of weeks for review.  If there have been
-> > review comments then people may be waiting for those to be addressed.
-
-> Well, it was not entirely content free since I added you/Liam to the
-> list of recipient which I missed in the initial patch. I probably should
-> have mentioned that.
-
-Then it's definitely just a content free ping since I obviously don't
-have the patch if you didn't send it to me and as the mail you're
-replying to said you'll need to send me a copy.
-
-> I did not meant to bug people, just wanted to make sure the patch does
-> not falls through the cracks... After all, patch as well as the Ack
-> already more than 3 months old....
-
-You need to send patches to the relevant maintainers as covered in
-SubmittingPatches, if you don't send us patches we won't have them and
-can't apply them.
-
---2eytg7umg3jb36bz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlooATUACgkQJNaLcl1U
-h9AZcgf9HE8yjOtmmeZ62T48j4ozMvR09BFTSnvSJwXp4UoBLzYldZAlGm/v84LK
-Owq7cpK6uV3JDRO4TK7ZoxTqybnqEQPf5e2CCTaqZ2OLC8kxWxfK9133JUwHetwr
-2ZMayAwqMND+hAcWwTwSyYvG37S8lMLIpJkHSoHPH1wdS8cNxtMXIyjWwc6uZvBT
-yfd0wSGq43nHebeiyawSBJhsln2ThSQiGdHqdr06B68leZv2pBom74Od6SN44Cjo
-XH3NVrUUn1bZnvy7Q4QPt7+VQlHT7VBEN1F+FOQbC7bBVTl1Xt8Cktb9iKo+i7el
-I01qJIvKSUdNR8sZhfUpkSiaV1XLiw==
-=i2za
------END PGP SIGNATURE-----
-
---2eytg7umg3jb36bz--
-
---===============0896584525634785992==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0896584525634785992==--
+-- 
+~Vinod
