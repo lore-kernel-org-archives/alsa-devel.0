@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove second shim read
-	in register_poll" to the asoc tree
-Date: Wed, 06 Dec 2017 17:49:46 +0000
-Message-ID: <E1eMdpK-0004oI-9S@debutante>
-References: <20171107104626.25800-6-guneshwor.o.singh@intel.com>
+Subject: Re: [PATCH v2 18/19] ASoC: tlv320aic31xx: Add
+ headphone/headset detection
+Date: Wed, 6 Dec 2017 17:52:23 +0000
+Message-ID: <20171206175223.2f6ki2w2ryaguhuy@sirena.org.uk>
+References: <20171129213300.20021-1-afd@ti.com>
+ <20171129213300.20021-19-afd@ti.com>
+ <20171201134127.2msgmjrfj47ypl3w@sirena.org.uk>
+ <b2d9ffa9-3923-cb86-f0ad-cf4f37e56334@ti.com>
+ <20171206173215.bitae546h2ibedhz@sirena.org.uk>
+ <8e52d973-2335-e3c5-5e57-15621819cf45@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7948135014560896327=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E1F2267A48
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:49:49 +0100 (CET)
-In-Reply-To: <20171107104626.25800-6-guneshwor.o.singh@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B2F8D267A29
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:52:30 +0100 (CET)
+In-Reply-To: <8e52d973-2335-e3c5-5e57-15621819cf45@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +26,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: Skylake: Remove second shim read in register_poll
+--===============7948135014560896327==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5bkb6c2vmnla7nal"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--5bkb6c2vmnla7nal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Dec 06, 2017 at 11:47:14AM -0600, Andrew F. Davis wrote:
+> On 12/06/2017 11:32 AM, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> >> missing a generic way to report jack information up to the machine layer
+> >> driver.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > snd_soc_codec_set_jack()
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> Hmm, this looks close to what I was thinking (I was wanting to go the
+> other direction and have the codec report what jacks it supports, this
+> could allow for more than one jack), I'll see if I can make it work.
 
-Thanks,
-Mark
+Almost always the CODEC requires some extra connections in order to
+enable jack detection features, these are going to be board specific so
+they come from the machine driver.
 
->From b2ca3bdd07f68ca63fdb8e45f1fe039ba6af54a2 Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Wed, 6 Dec 2017 16:34:01 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove second shim read in
- register_poll
+--5bkb6c2vmnla7nal
+Content-Type: application/pgp-signature; name="signature.asc"
 
-No need to read the register again if the value read has already matched
-the target during the loop. So remove the second shim read.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/common/sst-dsp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlooLlYACgkQJNaLcl1U
+h9DmZQf/cB+ZYSTwBE/qbDozUDWCs9h0CyvqvPdc90spap371JSWZP9owyNT72eX
+EsxXJahTHLW9WPZu12pSVIQ8oMUldfYfIvL5DI+Jz+sWFFrTzgauNy1/eyNGlamn
+dPwnRZCF6VO7IVTbNNqkmgrTn6zaV73WApMw0RUwRLJooL8WLy8NjPQtncqfZdUy
+VbY+mFggOUHLUKJIjLtsuTJJkjEcmLASOteb1wvTVEnM9O+hytuOk/+IG9OZH3Ff
+TtbZK/HFct4gArvYg2aOV+357pPkWpduL/tRAa2OZIKEOZTRc1L+jn0PT5+TfHw9
+2smtXuQD0U0s+woTU3LKAjYcJJoZ6w==
+=i7mZ
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/intel/common/sst-dsp.c b/sound/soc/intel/common/sst-dsp.c
-index 11c0805393ff..fd82f4b1d4a0 100644
---- a/sound/soc/intel/common/sst-dsp.c
-+++ b/sound/soc/intel/common/sst-dsp.c
-@@ -269,7 +269,7 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
- 	 */
- 
- 	timeout = jiffies + msecs_to_jiffies(time);
--	while (((sst_dsp_shim_read_unlocked(ctx, offset) & mask) != target)
-+	while ((((reg = sst_dsp_shim_read_unlocked(ctx, offset)) & mask) != target)
- 		&& time_before(jiffies, timeout)) {
- 		k++;
- 		if (k > 10)
-@@ -278,8 +278,6 @@ int sst_dsp_register_poll(struct sst_dsp *ctx, u32 offset, u32 mask,
- 		usleep_range(s, 2*s);
- 	}
- 
--	reg = sst_dsp_shim_read_unlocked(ctx, offset);
--
- 	if ((reg & mask) == target) {
- 		dev_dbg(ctx->dev, "FW Poll Status: reg=%#x %s successful\n",
- 					reg, operation);
--- 
-2.15.0
+--5bkb6c2vmnla7nal--
+
+--===============7948135014560896327==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7948135014560896327==--
