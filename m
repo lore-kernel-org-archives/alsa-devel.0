@@ -1,93 +1,39 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 09/15] soundwire: Add slave status
- handling
-Date: Wed, 6 Dec 2017 15:14:48 +0530
-Message-ID: <20171206094448.GP32417@localhost>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <1512122177-2889-10-git-send-email-vinod.koul@intel.com>
- <693f15b3-3751-2416-5d81-abd362464309@linux.intel.com>
- <20171203171139.GQ32417@localhost>
- <fb95d8f8-b6a5-6848-8b28-52e2c77a90bd@linux.intel.com>
- <20171204032059.GY32417@localhost>
- <382cc7a0-a478-fb30-9ea4-22f828cd9093@linux.intel.com>
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 00/10] ASoC: fsl_ssi: Clean up - coding style level
+Date: Wed, 6 Dec 2017 02:01:32 +0100
+Message-ID: <1cbd2b92-30c3-4f07-e9ab-8c9a2d342800@maciej.szmigiero.name>
+References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
+ <81e17b9c-e878-1fe9-bb6f-b074d5766232@maciej.szmigiero.name>
+ <20171205193258.GA11039@Asurada-Nvidia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 08D3C26698E
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 10:41:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <382cc7a0-a478-fb30-9ea4-22f828cd9093@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20171205193258.GA11039@Asurada-Nvidia>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, fabio.estevam@nxp.com, timur@tabi.org, caleb@crome.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 03, 2017 at 09:52:48PM -0600, Pierre-Louis Bossart wrote:
-> On 12/3/17 9:21 PM, Vinod Koul wrote:
-> >On Sun, Dec 03, 2017 at 09:11:39PM -0600, Pierre-Louis Bossart wrote:
-> >>On 12/3/17 11:11 AM, Vinod Koul wrote:
-> >>>On Fri, Dec 01, 2017 at 05:52:03PM -0600, Pierre-Louis Bossart wrote:
-> >>>
-> >>>>>+		status = sdw_read(slave, SDW_DP0_INT);
-> >>>>>+		if (status < 0) {
-> >>>>>+			dev_err(slave->bus->dev,
-> >>>>>+				"SDW_DP0_INT read failed:%d", status);
-> >>>>>+			return status;
-> >>>>>+		}
-> >>>>>+
-> >>>>>+		count++;
-> >>>>>+
-> >>>>>+		/* we can get alerts while processing so keep retrying */
-> >>>>
-> >>>>This is not incorrect, but this goes beyond what the spec requires.
-> >>>>
-> >>>>The additional read is to make sure some interrupts are not lost due to a
-> >>>>known race condition. It would be enough to mask the status read the second
-> >>>>time to only check if the interrupts sources which were cleared are still
-> >>>>signaling something.
-> >>>>
-> >>>>With the code as it is, you may catch *new* interrupt sources, which could
-> >>>>impact the arbitration/priority/policy in handling interrupts. It's not
-> >>>>necessarily bad, but you'd need to document whether you want to deal with
-> >>>>the race condition described in the MIPI spec or try to be smarter.
-> >>>
-> >>>This was based on your last comment, lets discuss more offline on this to
-> >>>see what else is required here.
-> >>
-> >>I am fine if you leave the code as is for now, it's not bad but can be
-> >>optimized.
-> >
-> >Not bad is not good here :)
-> >
-> >Okay I still havent grabbed my coffee, so help me out here. I am not sure I
-> >understand here, can you point me to the part of spec handling you were
-> >referring and what should be *ideally* done
+On 05.12.2017 20:33, Nicolin Chen wrote:
+> On Tue, Dec 05, 2017 at 02:01:17PM +0100, Maciej S. Szmigiero wrote:
 > 
-> You first read the status, then clear the interrupts then re-read the
-> status. I'd be good enough in the second read to mask with the settings of
-> the first read. This is intended to detect alert sources that fired between
-> the last successful read and the write to clear interrupts (see Figure 92 in
-> the 1.1 spec)
+>>> ==Verification==
+>>> Theoretically, it only needs code review, build and sanity tests. I
+>>> have done build and sanity tests on an i.MX 6 platform by building
+>>> using imx_v6_v7_defconfig and testing with I2S slave/master mode.
 > 
-> e.g.
+>> Due to my current workload I will be able to go through this and test
+>> the AC'97 mode on a UDOO board only in about a week.
 > 
-> do {
-> status1= sdw_read()
-> deal with interrupts
-> status2 = sdw_read()
-> status2 &= status1; /* filter initial sources */
+> This is the first round which doesn't touch program flow. If you
+> prefer to verify it other than merely reviewing it, I would like
+> to wait for your Tested-by. There will be another set to simplify
+> all functions and their program flows after this set gets merged.
+> That one will need to be fully tested.
 
-Sounds better, updated now, thanks
+If you can wait a week then naturally it would be better to test
+these changes on a real board.
 
--- 
-~Vinod
+Maciej
