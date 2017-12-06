@@ -1,21 +1,17 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH 2/9] ASoC: sun4i-i2s: Add compatibility
-	with A64 codec I2S
-Date: Wed, 6 Dec 2017 16:27:25 +0100
-Message-ID: <20171206152725.ejvum7s3ck7yzwgn@flea.lan>
-References: <20171203204157.20829-1-anarsoul@gmail.com>
- <20171203204157.20829-3-anarsoul@gmail.com>
- <CAEKpxBmHhZ+2WNXJEPbQFS6KeKsqRrZeNodRnu1M5yLc15DerA@mail.gmail.com>
- <CA+E=qVd+uM0Aq_=sf+fomQ-m+3Oy0MdG7OPjF5tVagG1UgKYzg@mail.gmail.com>
- <20171205080149.2siofhpynfrvnoiq@flea.lan>
- <CA+E=qVeZtWqLZddHtZMv264bWaVcReToYqkriYryf+wZnUVtCA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: disable clock on error" to
+	the asoc tree
+Date: Wed, 06 Dec 2017 15:29:07 +0000
+Message-ID: <E1eMbdD-0007Xa-97@debutante>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1003079371844545396=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 256AF26704A
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:27:37 +0100 (CET)
-In-Reply-To: <CA+E=qVeZtWqLZddHtZMv264bWaVcReToYqkriYryf+wZnUVtCA@mail.gmail.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2677526704A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:29:08 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,74 +21,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Code Kipper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Stefan Potyra <Stefan.Potyra@elektrobit.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1003079371844545396==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="c6lewebwbmyj3su7"
-Content-Disposition: inline
+   ASoC: rockchip: disable clock on error
 
+has been applied to the asoc tree at
 
---c6lewebwbmyj3su7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Dec 05, 2017 at 03:04:19PM -0800, Vasily Khoruzhick wrote:
-> On Tue, Dec 5, 2017 at 12:01 AM, Maxime Ripard
-> <maxime.ripard@free-electrons.com> wrote:
-> > Hi,
-> >
-> > On Sun, Dec 03, 2017 at 11:34:06PM -0800, Vasily Khoruzhick wrote:
-> >> I'd keep it sun50i_a64_acodec_i2s, since other 3 I2S modules aren't
-> >> compatible with this one, but similar to H3.
-> >
-> > Please don't top-post.
-> >
-> > What are those differences?
->=20
-> Different registers and their locations. Compare quirks for
-> sun50i_a64_acodec_i2s and sun8i_h3_i2s fro details.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Whatever differences should also be mentionned in your commit log.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Maxime
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---c6lewebwbmyj3su7
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From c7b92172a61b91936be985cb9bc499a4ebc6489b Mon Sep 17 00:00:00 2001
+From: Stefan Potyra <Stefan.Potyra@elektrobit.com>
+Date: Wed, 6 Dec 2017 16:03:24 +0100
+Subject: [PATCH] ASoC: rockchip: disable clock on error
 
-iQIzBAABCAAdFiEE0VqZU19dR2zEVaqr0rTAlCFNr3QFAlooDFoACgkQ0rTAlCFN
-r3Sm0A//VRGnIIpT1rJOrIH5upUfxBgTUFpx2N2kF97otga8fPw/QZCzbED5RVAG
-zaO5a+COrTi07aivuQ+xm90H0SsqFSgefzB0ZhVX94/C8n8AhMse1vlqCwDbKBHI
-Ns/mLNNKIoEZzk9nh6Z+XDNH3b1f+eoE4rU+LYmDvmfa0v6A0dFVyI9z7Wmiky2s
-dG1W2XEcmLtNUO5E5a+8oVfGoAnuwbWAmN2iJwgMDxf1wDVjUXqvd418Q6t2Z8vM
-4BTiunYeeZSyGosnMGtjX9tInwLjiga3ALrgwFNffnG/umPgeYkQYVZfNzjS7jYT
-SyNVwKO7j7yNvVtm8cL62s2ZGXMqYPSvpSd9eDZcIsO0pR93w/2UricfZtbzLBwx
-ZdVP1v+tCunZTz9W9D/9EfbkmTyuXrrppshFMzDcDzZI5/f8n+HVQ4dLufKEwgrA
-tA8p1tm5PqKlU4yq7eTzLfEqE6oN8EWBkejPoXoTKjVOolrCX2swiOufjYZ9a0TL
-r1Eg+0E3egliEFpnqUHBMRscrWwHj3wfYjFHh8hy2zq74RMdqJWeZJ2WIJF1aq2V
-F0ioT4zo4nCe07Uy/Cb2lU92VSwf4bV4/HKDfo7udb3FIryGFU4N893gV9v7MPw5
-IQW6nGnL4iFtSsmcF/0RUwx1JIPsje2DHkZS/RguFs6OI10Tu68=
-=U8jy
------END PGP SIGNATURE-----
+Disable the clocks in  rk_spdif_probe when an error occurs after one
+of the clocks has been enabled previously.
 
---c6lewebwbmyj3su7--
+Found by Linux Driver Verification project (linuxtesting.org).
 
---===============1003079371844545396==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Fixes: f874b80e1571 ASoC: rockchip: Add rockchip SPDIF transceiver driver
+Signed-off-by: Stefan Potyra <Stefan.Potyra@elektrobit.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/rockchip/rockchip_spdif.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-
---===============1003079371844545396==--
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index ee5055d47d13..a89fe9b6463b 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -322,26 +322,30 @@ static int rk_spdif_probe(struct platform_device *pdev)
+ 	spdif->mclk = devm_clk_get(&pdev->dev, "mclk");
+ 	if (IS_ERR(spdif->mclk)) {
+ 		dev_err(&pdev->dev, "Can't retrieve rk_spdif master clock\n");
+-		return PTR_ERR(spdif->mclk);
++		ret = PTR_ERR(spdif->mclk);
++		goto err_disable_hclk;
+ 	}
+ 
+ 	ret = clk_prepare_enable(spdif->mclk);
+ 	if (ret) {
+ 		dev_err(spdif->dev, "clock enable failed %d\n", ret);
+-		return ret;
++		goto err_disable_clocks;
+ 	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs))
+-		return PTR_ERR(regs);
++	if (IS_ERR(regs)) {
++		ret = PTR_ERR(regs);
++		goto err_disable_clocks;
++	}
+ 
+ 	spdif->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "hclk", regs,
+ 						  &rk_spdif_regmap_config);
+ 	if (IS_ERR(spdif->regmap)) {
+ 		dev_err(&pdev->dev,
+ 			"Failed to initialise managed register map\n");
+-		return PTR_ERR(spdif->regmap);
++		ret = PTR_ERR(spdif->regmap);
++		goto err_disable_clocks;
+ 	}
+ 
+ 	spdif->playback_dma_data.addr = res->start + SPDIF_SMPDR;
+@@ -373,6 +377,10 @@ static int rk_spdif_probe(struct platform_device *pdev)
+ 
+ err_pm_runtime:
+ 	pm_runtime_disable(&pdev->dev);
++err_disable_clocks:
++	clk_disable_unprepare(spdif->mclk);
++err_disable_hclk:
++	clk_disable_unprepare(spdif->hclk);
+ 
+ 	return ret;
+ }
+-- 
+2.15.0
