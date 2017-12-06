@@ -1,21 +1,20 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH v2 16/19] ASoC: tlv320aic31xx: Add short
- circuit detection support
-Date: Wed, 6 Dec 2017 14:22:39 -0600
-Message-ID: <fd362117-ae71-a6a2-eb43-70c2457c0a5d@ti.com>
-References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-17-afd@ti.com>
- <20171201133930.xzfjjj6wzkbtk6c4@sirena.org.uk>
- <4d956cbc-829c-0d81-2980-aa2a79f36660@ti.com>
+From: Philippe Ombredanne <pombredanne@nexb.com>
+Subject: Re: [PATCH v5 00/15] soundwire: Add a new SoundWire
+	subsystem
+Date: Wed, 6 Dec 2017 21:44:40 +0100
+Message-ID: <CAOFm3uFNo2Y9_4mHzzsypO4n67KtJF8ZKqW8si_F46K77NFwrg@mail.gmail.com>
+References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F0E8267044
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 21:22:41 +0100 (CET)
-In-Reply-To: <4d956cbc-829c-0d81-2980-aa2a79f36660@ti.com>
-Content-Language: en-US
+Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
+ [209.85.128.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5B33267044
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 21:45:21 +0100 (CET)
+Received: by mail-wr0-f195.google.com with SMTP id g53so5283314wra.2
+ for <alsa-devel@alsa-project.org>; Wed, 06 Dec 2017 12:45:21 -0800 (PST)
+In-Reply-To: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,68 +24,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/01/2017 09:32 AM, Andrew F. Davis wrote:
-> On 12/01/2017 07:39 AM, Mark Brown wrote:
->> On Wed, Nov 29, 2017 at 03:32:57PM -0600, Andrew F. Davis wrote:
->>
->>> +static irqreturn_t aic31xx_irq(int irq, void *data)
->>> +{
->>> +	struct aic31xx_priv *aic31xx = (struct aic31xx_priv *)data;
->>
->> There is no need to cast away from void, doing so can only mask bugs.
->>
->>> +	ret = regmap_read(aic31xx->regmap, AIC31XX_INTRDACFLAG, &value);
->>> +	if (ret) {
->>> +		dev_err(dev, "Failed to read interrupt mask: %d\n", ret);
->>> +		return IRQ_NONE;
->>> +	}
->>> +
->>> +	if (value & AIC31XX_HPLSCDETECT)
->>> +		dev_err(dev, "Short circuit on Left output is detected\n");
->>> +	if (value & AIC31XX_HPRSCDETECT)
->>> +		dev_err(dev, "Short circuit on Right output is detected\n");
->>> +
->>> +	return IRQ_HANDLED;
->>
->> This will report the interrupt as handled even if we didn't see an
->> interrupt we understand which will break shared interrupt lines.  At the
->> very least we should log other interrupt sources numerically.
->>
-> 
-> Okay, I think I can make that work by checking if no bits are set in the
-> interrupt regs and returning early if not, IRQ_NONE.
-> 
+On Wed, Dec 6, 2017 at 4:46 PM, Vinod Koul <vinod.koul@intel.com> wrote:
+> This patch series adds a new SoundWire subsystem which implements a
+> new MIPI bus protocol 'SoundWire'.
+>
+> The SoundWire protocol is a robust, scalable, low complexity, low
+> power, low latency, two-pin (clock and data) multi-drop bus that
+> allows for the transfer of multiple audio streams and embedded
+> control/commands.  SoundWire provides synchronization capabilities
+> and supports both PCM and PDM, multichannel data, isochronous and
+> asynchronous modes.
+>
+> This series adds SoundWire Bus, IO transfers, DisCo (Discovery and
+> Configuration) sysfs interface, regmap and Documentation summary
+>
+> This patch series is also available on
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git topic/patch_v5
+>
+> v4: https://lkml.org/lkml/2017/12/1/205
+> v3: https://lkml.org/lkml/2017/11/30/160
+> v2: https://lkml.org/lkml/2017/11/10/216
+> v1: https://lkml.org/lkml/2017/10/18/1030
+> RFC: https://lkml.org/lkml/2016/10/21/395
+>
+> Changes in v5:
+> - Address comments by Pierre
+>   - add reference to mid.mipi.org in documentation
+>   - add group and master device number and don't use those for enumeration
+>   - fix unused calls in disco code and also remove superfluous initialization
+>   - remove sdw_transfer apis slave arg, make enum values integer and not
+>     bitmaps
+>   - clarify the sdw_program_device_num loop and fix interrupt handling
+>
+> Changes in v4:
+> - Remove text licenses and add SPDX tags only with C99 style comments
+> - make bus_type code as GPL v2.0 only
+>
+> Changes in v3:
+> - Update the kernel-doc styles and fix included headers for files
+> - handle dev_pm_domain_attach() for defered probe
+> - remove OF placeholders
+> - change regmap license to GPLv2 only
+>
+> Changes in v2:
+> - move documentation into driver-api and do rst conversion
+> - fix documentation comments
+> - add SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) to all
+>   source files
+> - rework the transfer logic and paging logic as commented on v1
+> - remove dummy sysfs fns
+> - registration checks and fixes
+> - remove slave check for regamp as that turned superfluous
+> - remove depends SoundWire symbol
+> - make modalias api arg const
+> - use bitmap for tracking assigned
+> - add counter for report present tracking
+> todo: add the dt-bindings
+>
+> Sanyog Kale (4):
+>   Documentation: Add SoundWire summary
+>   soundwire: Add SoundWire MIPI defined registers
+>   soundwire: Add Slave status handling helpers
+>   soundwire: cdns: Add sdw_master_ops and IO transfer support
+>
+> Vinod Koul (11):
+>   soundwire: Add SoundWire bus type
+>   soundwire: Add Master registration
+>   soundwire: Add MIPI DisCo property helpers
+>   soundwire: Add IO transfer
+>   regmap: Add SoundWire bus support
+>   soundwire: Add slave status handling
+>   soundwire: Add sysfs for SoundWire DisCo properties
+>   soundwire: cdns: Add cadence library
+>   soundwire: intel: Add Intel Master driver
+>   soundwire: intel: Add Intel init module
+>   MAINTAINERS: Add SoundWire entry
+>
+>  Documentation/driver-api/index.rst             |   1 +
+>  Documentation/driver-api/soundwire/index.rst   |  15 +
+>  Documentation/driver-api/soundwire/summary.rst | 207 ++++++
+>  MAINTAINERS                                    |  10 +
+>  drivers/Kconfig                                |   2 +
+>  drivers/Makefile                               |   1 +
+>  drivers/base/regmap/Kconfig                    |   4 +
+>  drivers/base/regmap/Makefile                   |   1 +
+>  drivers/base/regmap/regmap-sdw.c               |  92 +++
+>  drivers/soundwire/Kconfig                      |  37 +
+>  drivers/soundwire/Makefile                     |  18 +
+>  drivers/soundwire/bus.c                        | 967 +++++++++++++++++++++++++
+>  drivers/soundwire/bus.h                        |  73 ++
+>  drivers/soundwire/bus_type.c                   | 193 +++++
+>  drivers/soundwire/cadence_master.c             | 749 +++++++++++++++++++
+>  drivers/soundwire/cadence_master.h             |  48 ++
+>  drivers/soundwire/intel.c                      | 347 +++++++++
+>  drivers/soundwire/intel.h                      |  23 +
+>  drivers/soundwire/intel_init.c                 | 198 +++++
+>  drivers/soundwire/mipi_disco.c                 | 370 ++++++++++
+>  drivers/soundwire/slave.c                      | 115 +++
+>  drivers/soundwire/sysfs.c                      | 343 +++++++++
+>  include/linux/mod_devicetable.h                |   6 +
+>  include/linux/regmap.h                         |  37 +
+>  include/linux/soundwire/sdw.h                  | 495 +++++++++++++
+>  include/linux/soundwire/sdw_intel.h            |  24 +
+>  include/linux/soundwire/sdw_registers.h        | 194 +++++
+>  include/linux/soundwire/sdw_type.h             |  19 +
+>  scripts/mod/devicetable-offsets.c              |   4 +
+>  scripts/mod/file2alias.c                       |  15 +
+>  30 files changed, 4608 insertions(+)
 
-This turned out to be more difficult than I expected, plus if I do
-handle an interrupt it doesn't mean the other device did not right? So
-this wouldn't fix shared lines as far as I can tell, but I don't
-register it as shared so this should be fine.
+Vinod:
+For the whole patch series usage of the new SPDX-License-identifiers:
+Thank you very much!
+This makes the code so much more pleasant to read.
 
-As for your other suggestion of "log other interrupt sources
-numerically", could you explain this or point to an example of what you
-mean?
-
->>> +	if (aic31xx->irq > 0) {
->>> +		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
->>> +				   AIC31XX_GPIO1_FUNC_MASK,
->>> +				   AIC31XX_GPIO1_INT1 <<
->>> +				   AIC31XX_GPIO1_FUNC_SHIFT);
->>
->> Is the interrupt only available on GPIO1?
->>
-> 
-> Some devices can route this to GPIO2 IIRC.
-> 
-> I'm not sure how that would be supported, I think we would need to add
-> interrupt names to DT so users could specify which gpio they wired their
-> IRQ lines to.
-> 
-> interrupt = <&host 23>;
-> interrupt-name = "gpio2";
-> 
-> or similar?
-> 
+I am not qualified to review the code, but feel free to add my ack or
+review for the license id parts.
+Reviewed-by: Philippe Ombredanne <pombredanne@nexb.com>
+-- 
+Cordially
+Philippe Ombredanne
