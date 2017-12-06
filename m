@@ -1,21 +1,19 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH v2 16/19] ASoC: tlv320aic31xx: Add short
- circuit detection support
-Date: Wed, 6 Dec 2017 11:15:12 -0600
-Message-ID: <73ee66e9-81c3-2bfe-8808-2c3e90f5bcba@ti.com>
+Subject: Re: [PATCH v2 18/19] ASoC: tlv320aic31xx: Add
+ headphone/headset detection
+Date: Wed, 6 Dec 2017 11:25:15 -0600
+Message-ID: <b2d9ffa9-3923-cb86-f0ad-cf4f37e56334@ti.com>
 References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-17-afd@ti.com>
- <20171201133930.xzfjjj6wzkbtk6c4@sirena.org.uk>
- <4d956cbc-829c-0d81-2980-aa2a79f36660@ti.com>
- <20171201155725.lrl35nig53fnwkac@sirena.org.uk>
+ <20171129213300.20021-19-afd@ti.com>
+ <20171201134127.2msgmjrfj47ypl3w@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D3422679C7
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:15:14 +0100 (CET)
-In-Reply-To: <20171201155725.lrl35nig53fnwkac@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ADE72679C7
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:25:16 +0100 (CET)
+In-Reply-To: <20171201134127.2msgmjrfj47ypl3w@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,26 +28,25 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/01/2017 09:57 AM, Mark Brown wrote:
-> On Fri, Dec 01, 2017 at 09:32:12AM -0600, Andrew F. Davis wrote:
->> On 12/01/2017 07:39 AM, Mark Brown wrote:
+On 12/01/2017 07:41 AM, Mark Brown wrote:
+> On Wed, Nov 29, 2017 at 03:32:59PM -0600, Andrew F. Davis wrote:
+>> This device can detect the insertion/removal of headphones and headsets.
+>> Enable reporting this status by enabling this interrupt and forwarding
+>> this to upper-layers if a jack has been defined.
+>>
+>> This jack definition and the resulting operation from a jack detection
+>> event must currently be defined by sound card platform code until CODEC
+>> outputs to jack mappings can be defined generically.
 > 
->>> Is the interrupt only available on GPIO1?
-> 
->> Some devices can route this to GPIO2 IIRC.
-> 
->> I'm not sure how that would be supported, I think we would need to add
->> interrupt names to DT so users could specify which gpio they wired their
->> IRQ lines to.
-> 
->> interrupt = <&host 23>;
->> interrupt-name = "gpio2";
-> 
->> or similar?
-> 
-> You could also use pinctrl an require the user to mux the interrupt in
-> whatever fashion makes sense for their device.
+> This only does half the job, there's no way for anything to specify a
+> jack here.
 > 
 
-If done at that layer then no change is needed in the driver right? We
-just request and use the IRQ passed to us from i2c data.
+Other CODECs drivers expose some kind of platform/machine specific
+function(s) to send the jack definition to the CODEC, we seem to be
+missing a generic way to report jack information up to the machine layer
+driver.
+
+Perhaps a struct with a jack enable/disable and call-back functions
+could be created when registering the codec/platform component driver?
+Then machines can hook to this as they need?
