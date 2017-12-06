@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v5 06/15] soundwire: Add IO transfer
-Date: Wed,  6 Dec 2017 21:17:02 +0530
-Message-ID: <1512575231-4154-7-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v5 07/15] regmap: Add SoundWire bus support
+Date: Wed,  6 Dec 2017 21:17:03 +0530
+Message-ID: <1512575231-4154-8-git-send-email-vinod.koul@intel.com>
 References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id F2D652679A6
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:43:58 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 54FEC267981
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:44:03 +0100 (CET)
 In-Reply-To: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,463 +24,227 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SoundWire bus supports read or write register(s) for SoundWire Slave
-device. sdw_read() and sdw_write() APIs are provided for single
-register read/write. sdw_nread() and sdw_nwrite() for operations on
-contiguous registers.
+SoundWire bus provides sdw_read() and sdw_write() APIs for Slave
+devices to program the registers. Provide support in regmap for
+SoundWire bus.
 
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/bus.c       | 272 ++++++++++++++++++++++++++++++++++++++++++
- drivers/soundwire/bus.h       |  36 ++++++
- include/linux/soundwire/sdw.h |  57 +++++++++
- 3 files changed, 365 insertions(+)
+ drivers/base/regmap/Kconfig      |  4 ++
+ drivers/base/regmap/Makefile     |  1 +
+ drivers/base/regmap/regmap-sdw.c | 92 ++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/Kconfig        |  1 +
+ include/linux/regmap.h           | 37 ++++++++++++++++
+ 5 files changed, 135 insertions(+)
+ create mode 100644 drivers/base/regmap/regmap-sdw.c
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 1bed2d33df45..dfa1bd39c8eb 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -3,6 +3,8 @@
+diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
+index 3a1535d812d8..71dc88a48cfa 100644
+--- a/drivers/base/regmap/Kconfig
++++ b/drivers/base/regmap/Kconfig
+@@ -41,3 +41,7 @@ config REGMAP_IRQ
  
- #include <linux/acpi.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/soundwire/sdw_registers.h>
- #include <linux/soundwire/sdw.h>
- #include "bus.h"
- 
-@@ -22,6 +24,12 @@ int sdw_add_bus_master(struct sdw_bus *bus)
- 		return -ENODEV;
- 	}
- 
-+	if (!bus->ops) {
-+		dev_err(bus->dev, "SoundWire Bus ops are not set");
-+		return -EINVAL;
-+	}
+ config REGMAP_HWSPINLOCK
+ 	bool
 +
-+	mutex_init(&bus->msg_lock);
- 	mutex_init(&bus->bus_lock);
- 	INIT_LIST_HEAD(&bus->slaves);
- 
-@@ -101,6 +109,270 @@ void sdw_delete_bus_master(struct sdw_bus *bus)
- }
- EXPORT_SYMBOL(sdw_delete_bus_master);
- 
-+/*
-+ * SDW IO Calls
-+ */
++config REGMAP_SOUNDWIRE
++	tristate
++	depends on SOUNDWIRE_BUS
+diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
+index 0d298c446108..22d263cca395 100644
+--- a/drivers/base/regmap/Makefile
++++ b/drivers/base/regmap/Makefile
+@@ -13,3 +13,4 @@ obj-$(CONFIG_REGMAP_SPMI) += regmap-spmi.o
+ obj-$(CONFIG_REGMAP_MMIO) += regmap-mmio.o
+ obj-$(CONFIG_REGMAP_IRQ) += regmap-irq.o
+ obj-$(CONFIG_REGMAP_W1) += regmap-w1.o
++obj-$(CONFIG_REGMAP_SOUNDWIRE) += regmap-sdw.o
+diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
+new file mode 100644
+index 000000000000..3a72039e94ea
+--- /dev/null
++++ b/drivers/base/regmap/regmap-sdw.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2015-17 Intel Corporation.
 +
-+static inline int find_response_code(enum sdw_command_response resp)
++#include <linux/device.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/soundwire/sdw.h>
++#include "internal.h"
++
++static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
 +{
-+	switch (resp) {
-+	case SDW_CMD_OK:
-+		return 0;
++	struct device *dev = context;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
 +
-+	case SDW_CMD_IGNORED:
-+		return -ENODATA;
-+
-+	case SDW_CMD_TIMEOUT:
-+		return -ETIMEDOUT;
-+
-+	default:
-+		return -EIO;
-+	}
++	return sdw_write(slave, reg, val);
 +}
 +
-+static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
++static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
 +{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
++	struct device *dev = context;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++	int read;
 +
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->xfer_msg(bus, msg);
-+		ret = find_response_code(resp);
++	read = sdw_read(slave, reg);
++	if (read < 0)
++		return read;
 +
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
-+			return ret;
-+	}
-+
-+	return ret;
++	*val = read;
++	return 0;
 +}
 +
-+static inline int do_transfer_defer(struct sdw_bus *bus,
-+			struct sdw_msg *msg, struct sdw_defer *defer)
++static struct regmap_bus regmap_sdw = {
++	.reg_read = regmap_sdw_read,
++	.reg_write = regmap_sdw_write,
++	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
++	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
++};
++
++static int regmap_sdw_config_check(const struct regmap_config *config)
 +{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
-+
-+	defer->msg = msg;
-+	defer->length = msg->len;
-+
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
-+		ret = find_response_code(resp);
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
-+{
-+	int retry = bus->prop.err_threshold;
-+	enum sdw_command_response resp;
-+	int ret = 0, i;
-+
-+	for (i = 0; i <= retry; i++) {
-+		resp = bus->ops->reset_page_addr(bus, dev_num);
-+		ret = find_response_code(resp);
-+		/* if cmd is ok or ignored return */
-+		if (ret == 0 || ret == -ENODATA)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * sdw_transfer() - Synchronous transfer message to a SDW Slave device
-+ * @bus: SDW bus
-+ * @msg: SDW message to be xfered
-+ */
-+int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
-+{
-+	int ret;
-+
-+	mutex_lock(&bus->msg_lock);
-+
-+	ret = do_transfer(bus, msg);
-+	if (ret != 0 && ret != -ENODATA)
-+		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
-+				msg->dev_num, ret);
-+
-+	if (msg->page)
-+		sdw_reset_page(bus, msg->dev_num);
-+
-+	mutex_unlock(&bus->msg_lock);
-+
-+	return ret;
-+}
-+
-+/**
-+ * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
-+ * @bus: SDW bus
-+ * @msg: SDW message to be xfered
-+ * @defer: Defer block for signal completion
-+ *
-+ * Caller needs to hold the msg_lock lock while calling this
-+ */
-+int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
-+				struct sdw_defer *defer)
-+{
-+	int ret;
-+
-+	if (!bus->ops->xfer_msg_defer)
++	/* All register are 8-bits wide as per MIPI Soundwire 1.0 Spec */
++	if (config->val_bits != 8)
 +		return -ENOTSUPP;
 +
-+	ret = do_transfer_defer(bus, msg, defer);
-+	if (ret != 0 && ret != -ENODATA)
-+		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
-+				msg->dev_num, ret);
++	/* Registers are 32 bits wide */
++	if (config->reg_bits != 32)
++		return -ENOTSUPP;
 +
-+	if (msg->page)
-+		sdw_reset_page(bus, msg->dev_num);
++	/* SoundWire register address are contiguous */
++	if (config->reg_stride != 0)
++		return -ENOTSUPP;
 +
-+	return ret;
-+}
-+
-+
-+int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
-+		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
-+{
-+	memset(msg, 0, sizeof(*msg));
-+	msg->addr = addr; /* addr is 16 bit and truncated here */
-+	msg->len = count;
-+	msg->dev_num = dev_num;
-+	msg->flags = flags;
-+	msg->buf = buf;
-+	msg->ssp_sync = false;
-+	msg->page = false;
-+
-+	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
-+		return 0;
-+	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
-+		pr_err("SDW: Invalid address %x passed\n", addr);
-+		return -EINVAL;
-+	}
-+
-+	if (addr < SDW_REG_OPTIONAL_PAGE) { /* 32k but no page */
-+		if (slave && !slave->prop.paging_support)
-+			return 0;
-+		/* no need for else as that will fall thru to paging */
-+	}
-+
-+	/* paging mandatory */
-+	if (dev_num == SDW_ENUM_DEV_NUM || dev_num == SDW_BROADCAST_DEV_NUM) {
-+		pr_err("SDW: Invalid device for paging :%d\n", dev_num);
-+		return -EINVAL;
-+	}
-+
-+	if (!slave) {
-+		pr_err("SDW: No slave for paging addr\n");
-+		return -EINVAL;
-+	} else if (!slave->prop.paging_support) {
-+		dev_err(&slave->dev,
-+			"address %x needs paging but no support", addr);
-+		return -EINVAL;
-+	}
-+
-+	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
-+	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
-+	msg->addr |= BIT(15);
-+	msg->page = true;
++	if (config->pad_bits != 0)
++		return -ENOTSUPP;
 +
 +	return 0;
 +}
 +
-+/**
-+ * sdw_nread() - Read "n" contiguous SDW Slave registers
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @count: length
-+ * @val: Buffer for values to be read
-+ */
-+int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name)
 +{
-+	struct sdw_msg msg;
 +	int ret;
 +
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			slave->dev_num, SDW_MSG_FLAG_READ, val);
-+	if (ret < 0)
-+		return ret;
++	ret = regmap_sdw_config_check(config);
++	if (ret)
++		return ERR_PTR(ret);
 +
-+	ret = pm_runtime_get_sync(slave->bus->dev);
-+	if (!ret)
-+		return ret;
-+
-+	ret = sdw_transfer(slave->bus, &msg);
-+	pm_runtime_put(slave->bus->dev);
-+
-+	return ret;
++	return __regmap_init(&sdw->dev, &regmap_sdw,
++			&sdw->dev, config, lock_key, lock_name);
 +}
-+EXPORT_SYMBOL(sdw_nread);
++EXPORT_SYMBOL_GPL(__regmap_init_sdw);
 +
-+/**
-+ * sdw_nwrite() - Write "n" contiguous SDW Slave registers
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @count: length
-+ * @val: Buffer for values to be read
-+ */
-+int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
++				      const struct regmap_config *config,
++				      struct lock_class_key *lock_key,
++				      const char *lock_name)
 +{
-+	struct sdw_msg msg;
 +	int ret;
 +
-+	ret = sdw_fill_msg(&msg, slave, addr, count,
-+			slave->dev_num, SDW_MSG_FLAG_WRITE, val);
-+	if (ret < 0)
-+		return ret;
++	ret = regmap_sdw_config_check(config);
++	if (ret)
++		return ERR_PTR(ret);
 +
-+	ret = pm_runtime_get_sync(slave->bus->dev);
-+	if (!ret)
-+		return ret;
-+
-+	ret = sdw_transfer(slave->bus, &msg);
-+	pm_runtime_put(slave->bus->dev);
-+
-+	return ret;
++	return __devm_regmap_init(&sdw->dev, &regmap_sdw,
++			&sdw->dev, config, lock_key, lock_name);
 +}
-+EXPORT_SYMBOL(sdw_nwrite);
++EXPORT_SYMBOL_GPL(__devm_regmap_init_sdw);
 +
-+/**
-+ * sdw_read() - Read a SDW Slave register
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ */
-+int sdw_read(struct sdw_slave *slave, u32 addr)
-+{
-+	u8 buf;
-+	int ret;
-+
-+	ret = sdw_nread(slave, addr, 1, &buf);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return buf;
-+}
-+EXPORT_SYMBOL(sdw_read);
-+
-+/**
-+ * sdw_write() - Write a SDW Slave register
-+ * @slave: SDW Slave
-+ * @addr: Register address
-+ * @value: Register value
-+ */
-+int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
-+{
-+	return sdw_nwrite(slave, addr, 1, &value);
-+
-+}
-+EXPORT_SYMBOL(sdw_write);
-+
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			u64 addr, struct sdw_slave_id *id)
- {
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index a54921825ce0..48eb7de8db7b 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -16,4 +16,40 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
- void sdw_extract_slave_id(struct sdw_bus *bus,
- 			u64 addr, struct sdw_slave_id *id);
++MODULE_DESCRIPTION("Regmap SoundWire Module");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
+index d7d3908f4913..92a2c3bad87f 100644
+--- a/drivers/soundwire/Kconfig
++++ b/drivers/soundwire/Kconfig
+@@ -18,5 +18,6 @@ comment "SoundWire Devices"
  
-+enum {
-+	SDW_MSG_FLAG_READ = 0,
-+	SDW_MSG_FLAG_WRITE,
-+};
-+
-+/**
-+ * struct sdw_msg - Message structure
-+ * @addr: Register address accessed in the Slave
-+ * @len: number of messages
-+ * @dev_num: Slave device number
-+ * @addr_page1: SCP address page 1 Slave register
-+ * @addr_page2: SCP address page 2 Slave register
-+ * @flags: transfer flags, indicate if xfer is read or write
-+ * @buf: message data buffer
-+ * @ssp_sync: Send message at SSP (Stream Synchronization Point)
-+ * @page: address requires paging
-+ */
-+struct sdw_msg {
-+	u16 addr;
-+	u16 len;
-+	u8 dev_num;
-+	u8 addr_page1;
-+	u8 addr_page2;
-+	u8 flags;
-+	u8 *buf;
-+	bool ssp_sync;
-+	bool page;
-+};
-+
-+int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg);
-+int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
-+				struct sdw_defer *defer);
-+
-+int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
-+		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
-+
- #endif /* __SDW_BUS_H */
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index dcadc3e54422..2efc93b1a717 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -38,6 +38,27 @@ enum sdw_slave_status {
- 	SDW_SLAVE_RESERVED = 3,
- };
+ config SOUNDWIRE_BUS
+ 	tristate
++	select REGMAP_SOUNDWIRE
  
-+/**
-+ * enum sdw_command_response - Command response as defined by SDW spec
-+ * @SDW_CMD_OK: cmd was successful
-+ * @SDW_CMD_IGNORED: cmd was ignored
-+ * @SDW_CMD_FAIL: cmd was NACKed
-+ * @SDW_CMD_TIMEOUT: cmd timedout
-+ * @SDW_CMD_FAIL_OTHER: cmd failed due to other reason than above
-+ *
-+ * NOTE: The enum is different than actual Spec as response in the Spec is
-+ * combination of ACK/NAK bits
-+ *
-+ * SDW_CMD_TIMEOUT/FAIL_OTHER is defined for SW use, not in spec
-+ */
-+enum sdw_command_response {
-+	SDW_CMD_OK = 0,
-+	SDW_CMD_IGNORED = 1,
-+	SDW_CMD_FAIL = 2,
-+	SDW_CMD_TIMEOUT = 3,
-+	SDW_CMD_FAIL_OTHER = 4,
-+};
-+
+ endif
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index 15eddc1353ba..97a9c6563bb1 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -30,6 +30,7 @@ struct regmap;
+ struct regmap_range_cfg;
+ struct regmap_field;
+ struct snd_ac97;
++struct sdw_slave;
+ 
+ /* An enum of all the supported cache types */
+ enum regcache_type {
+@@ -524,6 +525,10 @@ struct regmap *__regmap_init_ac97(struct snd_ac97 *ac97,
+ 				  const struct regmap_config *config,
+ 				  struct lock_class_key *lock_key,
+ 				  const char *lock_name);
++struct regmap *__regmap_init_sdw(struct sdw_slave *sdw,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name);
+ 
+ struct regmap *__devm_regmap_init(struct device *dev,
+ 				  const struct regmap_bus *bus,
+@@ -561,6 +566,10 @@ struct regmap *__devm_regmap_init_ac97(struct snd_ac97 *ac97,
+ 				       const struct regmap_config *config,
+ 				       struct lock_class_key *lock_key,
+ 				       const char *lock_name);
++struct regmap *__devm_regmap_init_sdw(struct sdw_slave *sdw,
++				 const struct regmap_config *config,
++				 struct lock_class_key *lock_key,
++				 const char *lock_name);
+ 
  /*
-  * SDW properties, defined in MIPI DisCo spec v1.0
-  */
-@@ -366,12 +387,37 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
-  * SDW master structures and APIs
-  */
+  * Wrapper for regmap_init macros to include a unique lockdep key and name
+@@ -710,6 +719,20 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
+ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
  
-+struct sdw_msg;
+ /**
++ * regmap_init_sdw() - Initialise register map
++ *
++ * @sdw: Device that will be interacted with
++ * @config: Configuration for register map
++ *
++ * The return value will be an ERR_PTR() on error or a valid pointer to
++ * a struct regmap.
++ */
++#define regmap_init_sdw(sdw, config)					\
++	__regmap_lockdep_wrapper(__regmap_init_sdw, #config,		\
++				sdw, config)
++
 +
 +/**
-+ * struct sdw_defer - SDW deffered message
-+ * @length: message length
-+ * @complete: message completion
-+ * @msg: SDW message
+  * devm_regmap_init() - Initialise managed register map
+  *
+  * @dev: Device that will be interacted with
+@@ -839,6 +862,20 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
+ 	__regmap_lockdep_wrapper(__devm_regmap_init_ac97, #config,	\
+ 				ac97, config)
+ 
++/**
++ * devm_regmap_init_sdw() - Initialise managed register map
++ *
++ * @sdw: Device that will be interacted with
++ * @config: Configuration for register map
++ *
++ * The return value will be an ERR_PTR() on error or a valid pointer
++ * to a struct regmap. The regmap will be automatically freed by the
++ * device management code.
 + */
-+struct sdw_defer {
-+	int length;
-+	struct completion complete;
-+	struct sdw_msg *msg;
-+};
++#define devm_regmap_init_sdw(sdw, config)				\
++	__regmap_lockdep_wrapper(__devm_regmap_init_sdw, #config,	\
++				sdw, config)
 +
- /**
-  * struct sdw_master_ops - Master driver ops
-  * @read_prop: Read Master properties
-+ * @xfer_msg: Transfer message callback
-+ * @xfer_msg_defer: Defer version of transfer message callback
-+ * @reset_page_addr: Reset the SCP page address registers
-  */
- struct sdw_master_ops {
- 	int (*read_prop)(struct sdw_bus *bus);
-+
-+	enum sdw_command_response (*xfer_msg)
-+			(struct sdw_bus *bus, struct sdw_msg *msg);
-+	enum sdw_command_response (*xfer_msg_defer)
-+			(struct sdw_bus *bus, struct sdw_msg *msg,
-+			struct sdw_defer *defer);
-+	enum sdw_command_response (*reset_page_addr)
-+			(struct sdw_bus *bus, unsigned int dev_num);
- };
- 
- /**
-@@ -382,8 +428,10 @@ struct sdw_master_ops {
-  * @assigned: Bitmap for Slave device numbers.
-  * Bit set implies used number, bit clear implies unused number.
-  * @bus_lock: bus lock
-+ * @msg_lock: message lock
-  * @ops: Master callback ops
-  * @prop: Master properties
-+ * @defer_msg: Defer message
-  * @clk_stop_timeout: Clock stop timeout computed
-  */
- struct sdw_bus {
-@@ -392,12 +440,21 @@ struct sdw_bus {
- 	struct list_head slaves;
- 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
- 	struct mutex bus_lock;
-+	struct mutex msg_lock;
- 	const struct sdw_master_ops *ops;
- 	struct sdw_master_prop prop;
-+	struct sdw_defer defer_msg;
- 	unsigned int clk_stop_timeout;
- };
- 
- int sdw_add_bus_master(struct sdw_bus *bus);
- void sdw_delete_bus_master(struct sdw_bus *bus);
- 
-+/* messaging and data APIs */
-+
-+int sdw_read(struct sdw_slave *slave, u32 addr);
-+int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
-+int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+
- #endif /* __SOUNDWIRE_H */
+ void regmap_exit(struct regmap *map);
+ int regmap_reinit_cache(struct regmap *map,
+ 			const struct regmap_config *config);
 -- 
 2.7.4
