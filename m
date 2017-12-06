@@ -1,59 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_asrc: protect macro argument
-Date: Wed, 6 Dec 2017 14:11:55 +0000
-Message-ID: <20171206141155.ytdmashkum3ujpvk@sirena.org.uk>
-References: <20170807063657.12581-1-stefan@agner.ch>
- <20170807070806.GA8208@Asurada>
- <b96fa8a745e7d6e9de8bb70d0f335648@agner.ch>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Multiple codecs on the same DAI
+Date: Wed, 6 Dec 2017 15:26:47 +0100
+Message-ID: <alpine.DEB.2.11.1712061521180.22247@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
+ <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
+ <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
+ <20171124180456.6c63tkph4e7ahuid@sirena.org.uk>
+ <alpine.DEB.2.11.1712061352160.22247@lnxricardw1.se.axis.com>
+ <20171206130323.GG1827@finisterre>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rwockcdss4ztkoqm"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <b96fa8a745e7d6e9de8bb70d0f335648@agner.ch>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stefan Agner <stefan@agner.ch>
-Cc: timur@tabi.org, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, lgirdwood@gmail.com
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34A7526698E
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 15:26:55 +0100 (CET)
+In-Reply-To: <20171206130323.GG1827@finisterre>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---rwockcdss4ztkoqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 6 Dec 2017, Mark Brown wrote:
 
-On Wed, Dec 06, 2017 at 02:53:39PM +0100, Stefan Agner wrote:
-> On 2017-08-07 09:08, Nicolin Chen wrote:
-> > On Sun, Aug 06, 2017 at 11:36:57PM -0700, Stefan Agner wrote:
+> On Wed, Dec 06, 2017 at 01:54:38PM +0100, Ricard Wanderlof wrote:
+> =
 
-> Mark, you seem to have merged other patches for this driver, can you
-> merge this one too?
+> > How about non-sound devices, for instance if there is a chip solely for =
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+> > managing the microphone power but it's not actually part of the codec. =
+Is =
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, though there are some other maintainers who like them - if in
-doubt look at how patches for the subsystem are normally handled.
+> > it reasonable to bring it in as an aux device too, even though there's =
 
---rwockcdss4ztkoqm
-Content-Type: application/pgp-signature; name="signature.asc"
+> > actually no sound going through it?
+> =
 
------BEGIN PGP SIGNATURE-----
+> That just sounds like a regulator?  I'd expect that just to be used as a
+> supply as normal.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon+qkACgkQJNaLcl1U
-h9Bbogf8CxMDO1vwwpNH8S0H0kC1c5e9bb9prelvdsqqW/ovPIWDK0OncGc6zNDq
-L1L/wdgEP3eT9CX9DzwkOMMPx6/VTjyzQnpbxAp1U22R/Y3SRjUU2hXdMjfat/4l
-CvBdHLLIEbbHOeotIV2QUW3VTwNWL4i4a6hNWpmYjfaAL9d24S5rjsofcZm58XCI
-BnfPImG9gy8E9lkYq2/GwrjNlzdjqOShGbgI8tfaABhuc1ddoQGenXr/TmMSd7Pv
-20iRxBZBA8ljz3ONqc4dqVgk6NvIZPFvZOhB9/gVBiKUzrp5736a2t9Jh2I+7oZq
-EQmnQ4eEKWRBH+0xXNN+dgHBcB8tHg==
-=TdLN
------END PGP SIGNATURE-----
+You mean as a DAPM widget?
 
---rwockcdss4ztkoqm--
+>  What audio specific control would this device be provdiing?
+
+What it does provide is current sensing if the connected device draws too =
+
+much power, although it does not automatically shut off the connected =
+
+device if that is the case, so a small driver is required to shut down the =
+
+output in the case of overcurrent. There's also a requirement to be able =
+
+to read the overcurrent status. One approach is to implementet the whole =
+
+thing as an auxilliary device, with one ALSA control to control the power, =
+
+and a read only control to read the overcurrent status.
+
+So, no, it's not really audio specific, and furthermore it's not just =
+
+providing a power output the way a regulator would.
+
+It could of course be implemented as a completely separate device, but =
+
+hardware wise it is still an integrated part of the audio solution.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
