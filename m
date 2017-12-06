@@ -1,473 +1,486 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v5 13/15] soundwire: intel: Add Intel Master driver
-Date: Wed,  6 Dec 2017 21:17:09 +0530
-Message-ID: <1512575231-4154-14-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v5 06/15] soundwire: Add IO transfer
+Date: Wed,  6 Dec 2017 21:17:02 +0530
+Message-ID: <1512575231-4154-7-git-send-email-vinod.koul@intel.com>
 References: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2D652679A6
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:43:58 +0100 (CET)
 In-Reply-To: <1512575231-4154-1-git-send-email-vinod.koul@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA <alsa-devel@alsa-project.org>, Mark <broonie@kernel.org>, Takashi <tiwai@suse.de>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, alan@linux.intel.com, Charles Keepax <ckeepax@opensource.cirrus.com>, Sagar Dharia <sdharia@codeaurora.org>, srinivas.kandagatla@linaro.org, plai@codeaurora.org, Sudheer Papothi <spapothi@codeaurora.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Pierre <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Some Intel platforms have SoundWire Master, so add Intel SoundWire
-Master driver which uses Cadence module. This patch adds probe and
-initialization routines for Intel Master driver.
+SoundWire bus supports read or write register(s) for SoundWire Slave
+device. sdw_read() and sdw_write() APIs are provided for single
+register read/write. sdw_nread() and sdw_nwrite() for operations on
+contiguous registers.
 
-Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- drivers/soundwire/Kconfig           |  11 ++
- drivers/soundwire/Makefile          |   4 +
- drivers/soundwire/intel.c           | 347 ++++++++++++++++++++++++++++++++++++
- drivers/soundwire/intel.h           |  23 +++
- include/linux/soundwire/sdw_intel.h |  21 +++
- 5 files changed, 406 insertions(+)
- create mode 100644 drivers/soundwire/intel.c
- create mode 100644 drivers/soundwire/intel.h
- create mode 100644 include/linux/soundwire/sdw_intel.h
+ drivers/soundwire/bus.c       | 272 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/soundwire/bus.h       |  36 ++++++
+ include/linux/soundwire/sdw.h |  57 +++++++++
+ 3 files changed, 365 insertions(+)
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index 34361952310e..b46084b4b1f8 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -23,4 +23,15 @@ config SOUNDWIRE_BUS
- config SOUNDWIRE_CADENCE
- 	tristate
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 1bed2d33df45..dfa1bd39c8eb 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -3,6 +3,8 @@
  
-+config SOUNDWIRE_INTEL
-+	tristate "Intel SoundWire Master driver"
-+	select SOUNDWIRE_CADENCE
-+	select SOUNDWIRE_BUS
-+	depends on X86 && ACPI
-+	---help---
-+	  SoundWire Intel Master driver.
-+	  If you have an Intel platform which has a SoundWire Master then
-+	  enable this config option to get the SoundWire support for that
-+	  device.
-+
- endif
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index f9a1ce3a860e..0813b2c74426 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -9,3 +9,7 @@ obj-$(CONFIG_SOUNDWIRE_BUS) += soundwire-bus.o
- #Cadence Objs
- soundwire-cadence-objs := cadence_master.o
- obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
-+
-+#Intel driver
-+soundwire-intel-objs :=	intel.o
-+obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-new file mode 100644
-index 000000000000..1d37be3537c7
---- /dev/null
-+++ b/drivers/soundwire/intel.c
-@@ -0,0 +1,347 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+/*
-+ * Soundwire Intel Master Driver
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
+ #include <linux/acpi.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/pm_runtime.h>
 +#include <linux/soundwire/sdw_registers.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_intel.h>
-+#include "cadence_master.h"
-+#include "intel.h"
+ #include <linux/soundwire/sdw.h>
+ #include "bus.h"
+ 
+@@ -22,6 +24,12 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 		return -ENODEV;
+ 	}
+ 
++	if (!bus->ops) {
++		dev_err(bus->dev, "SoundWire Bus ops are not set");
++		return -EINVAL;
++	}
 +
-+/* Intel SHIM Registers Definition */
-+#define SDW_SHIM_LCAP			0x0
-+#define SDW_SHIM_LCTL			0x4
-+#define SDW_SHIM_IPPTR			0x8
-+#define SDW_SHIM_SYNC			0xC
-+
-+#define SDW_SHIM_CTLSCAP(x)		(0x010 + 0x60 * x)
-+#define SDW_SHIM_CTLS0CM(x)		(0x012 + 0x60 * x)
-+#define SDW_SHIM_CTLS1CM(x)		(0x014 + 0x60 * x)
-+#define SDW_SHIM_CTLS2CM(x)		(0x016 + 0x60 * x)
-+#define SDW_SHIM_CTLS3CM(x)		(0x018 + 0x60 * x)
-+#define SDW_SHIM_PCMSCAP(x)		(0x020 + 0x60 * x)
-+
-+#define SDW_SHIM_PCMSYCHM(x, y)		(0x022 + (0x60 * x) + (0x2 * y))
-+#define SDW_SHIM_PCMSYCHC(x, y)		(0x042 + (0x60 * x) + (0x2 * y))
-+#define SDW_SHIM_PDMSCAP(x)		(0x062 + 0x60 * x)
-+#define SDW_SHIM_IOCTL(x)		(0x06C + 0x60 * x)
-+#define SDW_SHIM_CTMCTL(x)		(0x06E + 0x60 * x)
-+
-+#define SDW_SHIM_WAKEEN			0x190
-+#define SDW_SHIM_WAKESTS		0x192
-+
-+#define SDW_SHIM_LCTL_SPA		BIT(0)
-+#define SDW_SHIM_LCTL_CPA		BIT(8)
-+
-+#define SDW_SHIM_SYNC_SYNCPRD_VAL	0x176F
-+#define SDW_SHIM_SYNC_SYNCPRD		GENMASK(14, 0)
-+#define SDW_SHIM_SYNC_SYNCCPU		BIT(15)
-+#define SDW_SHIM_SYNC_CMDSYNC_MASK	GENMASK(19, 16)
-+#define SDW_SHIM_SYNC_CMDSYNC		BIT(16)
-+#define SDW_SHIM_SYNC_SYNCGO		BIT(24)
-+
-+#define SDW_SHIM_PCMSCAP_ISS		GENMASK(3, 0)
-+#define SDW_SHIM_PCMSCAP_OSS		GENMASK(7, 4)
-+#define SDW_SHIM_PCMSCAP_BSS		GENMASK(12, 8)
-+
-+#define SDW_SHIM_PCMSYCM_LCHN		GENMASK(3, 0)
-+#define SDW_SHIM_PCMSYCM_HCHN		GENMASK(7, 4)
-+#define SDW_SHIM_PCMSYCM_STREAM		GENMASK(13, 8)
-+#define SDW_SHIM_PCMSYCM_DIR		BIT(15)
-+
-+#define SDW_SHIM_PDMSCAP_ISS		GENMASK(3, 0)
-+#define SDW_SHIM_PDMSCAP_OSS		GENMASK(7, 4)
-+#define SDW_SHIM_PDMSCAP_BSS		GENMASK(12, 8)
-+#define SDW_SHIM_PDMSCAP_CPSS		GENMASK(15, 13)
-+
-+#define SDW_SHIM_IOCTL_MIF		BIT(0)
-+#define SDW_SHIM_IOCTL_CO		BIT(1)
-+#define SDW_SHIM_IOCTL_COE		BIT(2)
-+#define SDW_SHIM_IOCTL_DO		BIT(3)
-+#define SDW_SHIM_IOCTL_DOE		BIT(4)
-+#define SDW_SHIM_IOCTL_BKE		BIT(5)
-+#define SDW_SHIM_IOCTL_WPDD		BIT(6)
-+#define SDW_SHIM_IOCTL_CIBD		BIT(8)
-+#define SDW_SHIM_IOCTL_DIBD		BIT(9)
-+
-+#define SDW_SHIM_CTMCTL_DACTQE		BIT(0)
-+#define SDW_SHIM_CTMCTL_DODS		BIT(1)
-+#define SDW_SHIM_CTMCTL_DOAIS		GENMASK(4, 3)
-+
-+#define SDW_SHIM_WAKEEN_ENABLE		BIT(0)
-+#define SDW_SHIM_WAKESTS_STATUS		BIT(0)
-+
-+/* Intel ALH Register definitions */
-+#define SDW_ALH_STRMZCFG(x)		(0x000 + (0x4 * x))
-+
-+#define SDW_ALH_STRMZCFG_DMAT_VAL	0x3
-+#define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
-+#define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
-+
-+struct sdw_intel {
-+	struct sdw_cdns cdns;
-+	int instance;
-+	struct sdw_intel_link_res *res;
-+};
-+
-+#define cdns_to_intel(_cdns) container_of(_cdns, struct sdw_intel, cdns)
-+
++	mutex_init(&bus->msg_lock);
+ 	mutex_init(&bus->bus_lock);
+ 	INIT_LIST_HEAD(&bus->slaves);
+ 
+@@ -101,6 +109,270 @@ void sdw_delete_bus_master(struct sdw_bus *bus)
+ }
+ EXPORT_SYMBOL(sdw_delete_bus_master);
+ 
 +/*
-+ * Read, write helpers for HW registers
-+ */
-+static inline int intel_readl(void __iomem *base, int offset)
-+{
-+	return readl(base + offset);
-+}
-+
-+static inline void intel_writel(void __iomem *base, int offset, int value)
-+{
-+	writel(value, base + offset);
-+}
-+
-+static inline u16 intel_readw(void __iomem *base, int offset)
-+{
-+	return readw(base + offset);
-+}
-+
-+static inline void intel_writew(void __iomem *base, int offset, u16 value)
-+{
-+	writew(value, base + offset);
-+}
-+
-+static int intel_clear_bit(void __iomem *base, int offset, u32 value, u32 mask)
-+{
-+	int timeout = 10;
-+	u32 reg_read;
-+
-+	writel(value, base + offset);
-+	do {
-+		reg_read = readl(base + offset);
-+		if (!(reg_read & mask))
-+			return 0;
-+
-+		timeout--;
-+		usleep_range(1, 50);
-+
-+	} while (timeout != 0);
-+
-+	return -EAGAIN;
-+}
-+
-+static int intel_set_bit(void __iomem *base, int offset, u32 value, u32 mask)
-+{
-+	int timeout = 10;
-+	u32 reg_read;
-+
-+	writel(value, base + offset);
-+	do {
-+		reg_read = readl(base + offset);
-+		if (reg_read & mask)
-+			return 0;
-+
-+		timeout--;
-+		usleep_range(1, 50);
-+
-+	} while (timeout != 0);
-+
-+	return -EAGAIN;
-+}
-+
-+/*
-+ * shim ops
++ * SDW IO Calls
 + */
 +
-+static int intel_link_power_up(struct sdw_intel *sdw)
++static inline int find_response_code(enum sdw_command_response resp)
 +{
-+	unsigned int link_id = sdw->instance;
-+	void __iomem *shim = sdw->res->shim;
-+	int spa_mask, cpa_mask;
-+	int link_control, ret;
++	switch (resp) {
++	case SDW_CMD_OK:
++		return 0;
 +
-+	/* Link power up sequence */
-+	link_control = intel_readl(shim, SDW_SHIM_LCTL);
-+	spa_mask = (SDW_SHIM_LCTL_SPA << link_id);
-+	cpa_mask = (SDW_SHIM_LCTL_SPA << link_id);
-+	link_control |=  spa_mask;
++	case SDW_CMD_IGNORED:
++		return -ENODATA;
 +
-+	ret = intel_set_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
++	case SDW_CMD_TIMEOUT:
++		return -ETIMEDOUT;
++
++	default:
++		return -EIO;
++	}
++}
++
++static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
++{
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->xfer_msg(bus, msg);
++		ret = find_response_code(resp);
++
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
++}
++
++static inline int do_transfer_defer(struct sdw_bus *bus,
++			struct sdw_msg *msg, struct sdw_defer *defer)
++{
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
++
++	defer->msg = msg;
++	defer->length = msg->len;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
++		ret = find_response_code(resp);
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
++}
++
++static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
++{
++	int retry = bus->prop.err_threshold;
++	enum sdw_command_response resp;
++	int ret = 0, i;
++
++	for (i = 0; i <= retry; i++) {
++		resp = bus->ops->reset_page_addr(bus, dev_num);
++		ret = find_response_code(resp);
++		/* if cmd is ok or ignored return */
++		if (ret == 0 || ret == -ENODATA)
++			return ret;
++	}
++
++	return ret;
++}
++
++/**
++ * sdw_transfer() - Synchronous transfer message to a SDW Slave device
++ * @bus: SDW bus
++ * @msg: SDW message to be xfered
++ */
++int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
++{
++	int ret;
++
++	mutex_lock(&bus->msg_lock);
++
++	ret = do_transfer(bus, msg);
++	if (ret != 0 && ret != -ENODATA)
++		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
++				msg->dev_num, ret);
++
++	if (msg->page)
++		sdw_reset_page(bus, msg->dev_num);
++
++	mutex_unlock(&bus->msg_lock);
++
++	return ret;
++}
++
++/**
++ * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
++ * @bus: SDW bus
++ * @msg: SDW message to be xfered
++ * @defer: Defer block for signal completion
++ *
++ * Caller needs to hold the msg_lock lock while calling this
++ */
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
++				struct sdw_defer *defer)
++{
++	int ret;
++
++	if (!bus->ops->xfer_msg_defer)
++		return -ENOTSUPP;
++
++	ret = do_transfer_defer(bus, msg, defer);
++	if (ret != 0 && ret != -ENODATA)
++		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
++				msg->dev_num, ret);
++
++	if (msg->page)
++		sdw_reset_page(bus, msg->dev_num);
++
++	return ret;
++}
++
++
++int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
++		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf)
++{
++	memset(msg, 0, sizeof(*msg));
++	msg->addr = addr; /* addr is 16 bit and truncated here */
++	msg->len = count;
++	msg->dev_num = dev_num;
++	msg->flags = flags;
++	msg->buf = buf;
++	msg->ssp_sync = false;
++	msg->page = false;
++
++	if (addr < SDW_REG_NO_PAGE) { /* no paging area */
++		return 0;
++	} else if (addr >= SDW_REG_MAX) { /* illegal addr */
++		pr_err("SDW: Invalid address %x passed\n", addr);
++		return -EINVAL;
++	}
++
++	if (addr < SDW_REG_OPTIONAL_PAGE) { /* 32k but no page */
++		if (slave && !slave->prop.paging_support)
++			return 0;
++		/* no need for else as that will fall thru to paging */
++	}
++
++	/* paging mandatory */
++	if (dev_num == SDW_ENUM_DEV_NUM || dev_num == SDW_BROADCAST_DEV_NUM) {
++		pr_err("SDW: Invalid device for paging :%d\n", dev_num);
++		return -EINVAL;
++	}
++
++	if (!slave) {
++		pr_err("SDW: No slave for paging addr\n");
++		return -EINVAL;
++	} else if (!slave->prop.paging_support) {
++		dev_err(&slave->dev,
++			"address %x needs paging but no support", addr);
++		return -EINVAL;
++	}
++
++	msg->addr_page1 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE1_MASK));
++	msg->addr_page2 = (addr >> SDW_REG_SHIFT(SDW_SCP_ADDRPAGE2_MASK));
++	msg->addr |= BIT(15);
++	msg->page = true;
++
++	return 0;
++}
++
++/**
++ * sdw_nread() - Read "n" contiguous SDW Slave registers
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @count: length
++ * @val: Buffer for values to be read
++ */
++int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++{
++	struct sdw_msg msg;
++	int ret;
++
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			slave->dev_num, SDW_MSG_FLAG_READ, val);
 +	if (ret < 0)
 +		return ret;
 +
-+	sdw->cdns.link_up = true;
-+	return 0;
-+}
++	ret = pm_runtime_get_sync(slave->bus->dev);
++	if (!ret)
++		return ret;
 +
-+static int intel_shim_init(struct sdw_intel *sdw)
-+{
-+	void __iomem *shim = sdw->res->shim;
-+	unsigned int link_id = sdw->instance;
-+	int sync_reg, ret;
-+	u16 ioctl = 0, act = 0;
-+
-+	/* Initialize Shim */
-+	ioctl |= SDW_SHIM_IOCTL_BKE;
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	ioctl |= SDW_SHIM_IOCTL_WPDD;
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	ioctl |= SDW_SHIM_IOCTL_DO;
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	ioctl |= SDW_SHIM_IOCTL_DOE;
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	/* Switch to MIP from Glue logic */
-+	ioctl = intel_readw(shim,  SDW_SHIM_IOCTL(link_id));
-+
-+	ioctl &= ~(SDW_SHIM_IOCTL_DOE);
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	ioctl &= ~(SDW_SHIM_IOCTL_DO);
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	ioctl |= (SDW_SHIM_IOCTL_MIF);
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	ioctl &= ~(SDW_SHIM_IOCTL_BKE);
-+	ioctl &= ~(SDW_SHIM_IOCTL_COE);
-+
-+	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-+
-+	act |= 0x1 << SDW_REG_SHIFT(SDW_SHIM_CTMCTL_DOAIS);
-+	act |= SDW_SHIM_CTMCTL_DACTQE;
-+	act |= SDW_SHIM_CTMCTL_DODS;
-+	intel_writew(shim, SDW_SHIM_CTMCTL(link_id), act);
-+
-+	/* Now set SyncPRD period */
-+	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
-+	sync_reg |= (SDW_SHIM_SYNC_SYNCPRD_VAL <<
-+			SDW_REG_SHIFT(SDW_SHIM_SYNC_SYNCPRD));
-+
-+	/* Set SyncCPU bit */
-+	sync_reg |= SDW_SHIM_SYNC_SYNCCPU;
-+	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
-+				SDW_SHIM_SYNC_SYNCCPU);
-+	if (ret < 0)
-+		dev_err(sdw->cdns.dev, "Failed to set sync period: %d", ret);
++	ret = sdw_transfer(slave->bus, &msg);
++	pm_runtime_put(slave->bus->dev);
 +
 +	return ret;
 +}
++EXPORT_SYMBOL(sdw_nread);
 +
-+static int intel_prop_read(struct sdw_bus *bus)
-+{
-+	/* Initialize with default handler to read all DisCo properties */
-+	sdw_master_read_prop(bus);
-+
-+	/* BIOS is not giving some values correctly. So, lets override them */
-+	bus->prop.num_freq = 1;
-+	bus->prop.freq = devm_kcalloc(bus->dev, sizeof(*bus->prop.freq),
-+					bus->prop.num_freq, GFP_KERNEL);
-+	if (!bus->prop.freq)
-+		return -ENOMEM;
-+
-+	bus->prop.freq[0] = bus->prop.max_freq;
-+	bus->prop.err_threshold = 5;
-+
-+	return 0;
-+}
-+
-+/*
-+ * probe and init
++/**
++ * sdw_nwrite() - Write "n" contiguous SDW Slave registers
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @count: length
++ * @val: Buffer for values to be read
 + */
-+static int intel_probe(struct platform_device *pdev)
++int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
 +{
-+	struct sdw_intel *sdw;
++	struct sdw_msg msg;
 +	int ret;
 +
-+	sdw = devm_kzalloc(&pdev->dev, sizeof(*sdw), GFP_KERNEL);
-+	if (!sdw)
-+		return -ENOMEM;
++	ret = sdw_fill_msg(&msg, slave, addr, count,
++			slave->dev_num, SDW_MSG_FLAG_WRITE, val);
++	if (ret < 0)
++		return ret;
 +
-+	sdw->instance = pdev->id;
-+	sdw->res = dev_get_platdata(&pdev->dev);
-+	sdw->cdns.dev = &pdev->dev;
-+	sdw->cdns.registers = sdw->res->registers;
-+	sdw->cdns.instance = sdw->instance;
-+	sdw->cdns.msg_count = 0;
-+	sdw->cdns.bus.dev = &pdev->dev;
-+	sdw->cdns.bus.link_id = pdev->id;
++	ret = pm_runtime_get_sync(slave->bus->dev);
++	if (!ret)
++		return ret;
 +
-+	sdw_cdns_probe(&sdw->cdns);
++	ret = sdw_transfer(slave->bus, &msg);
++	pm_runtime_put(slave->bus->dev);
 +
-+	/* Set property read ops */
-+	sdw_cdns_master_ops.read_prop = intel_prop_read;
-+	sdw->cdns.bus.ops = &sdw_cdns_master_ops;
-+
-+	platform_set_drvdata(pdev, sdw);
-+
-+	ret = sdw_add_bus_master(&sdw->cdns.bus);
-+	if (ret) {
-+		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
-+		goto err_master_reg;
-+	}
-+
-+	/* Initialize shim and controller */
-+	intel_link_power_up(sdw);
-+	intel_shim_init(sdw);
-+
-+	ret = sdw_cdns_init(&sdw->cdns);
-+	if (ret)
-+		goto err_init;
-+
-+	sdw_cdns_enable_interrupt(&sdw->cdns);
-+	if (ret)
-+		goto err_init;
-+
-+	/* Acquire IRQ */
-+	ret = request_threaded_irq(sdw->res->irq, sdw_cdns_irq,
-+			sdw_cdns_thread, IRQF_SHARED, KBUILD_MODNAME,
-+			&sdw->cdns);
-+	if (ret < 0) {
-+		dev_err(sdw->cdns.dev, "unable to grab IRQ %d, disabling device\n",
-+				sdw->res->irq);
-+		goto err_init;
-+	}
-+
-+	return 0;
-+
-+err_init:
-+	sdw_delete_bus_master(&sdw->cdns.bus);
-+err_master_reg:
 +	return ret;
 +}
++EXPORT_SYMBOL(sdw_nwrite);
 +
-+static int intel_remove(struct platform_device *pdev)
++/**
++ * sdw_read() - Read a SDW Slave register
++ * @slave: SDW Slave
++ * @addr: Register address
++ */
++int sdw_read(struct sdw_slave *slave, u32 addr)
 +{
-+	struct sdw_intel *sdw;
++	u8 buf;
++	int ret;
 +
-+	sdw = platform_get_drvdata(pdev);
-+
-+	free_irq(sdw->res->irq, sdw);
-+	sdw_delete_bus_master(&sdw->cdns.bus);
-+
-+	return 0;
++	ret = sdw_nread(slave, addr, 1, &buf);
++	if (ret < 0)
++		return ret;
++	else
++		return buf;
 +}
-+
-+static struct platform_driver sdw_intel_drv = {
-+	.probe = intel_probe,
-+	.remove = intel_remove,
-+	.driver = {
-+		.name = "int-sdw",
-+
-+	},
-+};
-+
-+module_platform_driver(sdw_intel_drv);
-+
-+MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_ALIAS("platform:int-sdw");
-+MODULE_DESCRIPTION("Intel Soundwire Master Driver");
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-new file mode 100644
-index 000000000000..ffa30d9535a2
---- /dev/null
-+++ b/drivers/soundwire/intel.h
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SDW_INTEL_LOCAL_H
-+#define __SDW_INTEL_LOCAL_H
++EXPORT_SYMBOL(sdw_read);
 +
 +/**
-+ * struct sdw_intel_res - Soundwire link resources
-+ * @registers: Link IO registers base
-+ * @shim: Audio shim pointer
-+ * @alh: ALH (Audio Link Hub) pointer
-+ * @irq: Interrupt line
++ * sdw_write() - Write a SDW Slave register
++ * @slave: SDW Slave
++ * @addr: Register address
++ * @value: Register value
++ */
++int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
++{
++	return sdw_nwrite(slave, addr, 1, &value);
++
++}
++EXPORT_SYMBOL(sdw_write);
++
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			u64 addr, struct sdw_slave_id *id)
+ {
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index a54921825ce0..48eb7de8db7b 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -16,4 +16,40 @@ static inline int sdw_acpi_find_slaves(struct sdw_bus *bus)
+ void sdw_extract_slave_id(struct sdw_bus *bus,
+ 			u64 addr, struct sdw_slave_id *id);
+ 
++enum {
++	SDW_MSG_FLAG_READ = 0,
++	SDW_MSG_FLAG_WRITE,
++};
++
++/**
++ * struct sdw_msg - Message structure
++ * @addr: Register address accessed in the Slave
++ * @len: number of messages
++ * @dev_num: Slave device number
++ * @addr_page1: SCP address page 1 Slave register
++ * @addr_page2: SCP address page 2 Slave register
++ * @flags: transfer flags, indicate if xfer is read or write
++ * @buf: message data buffer
++ * @ssp_sync: Send message at SSP (Stream Synchronization Point)
++ * @page: address requires paging
++ */
++struct sdw_msg {
++	u16 addr;
++	u16 len;
++	u8 dev_num;
++	u8 addr_page1;
++	u8 addr_page2;
++	u8 flags;
++	u8 *buf;
++	bool ssp_sync;
++	bool page;
++};
++
++int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg);
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
++				struct sdw_defer *defer);
++
++int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
++		u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
++
+ #endif /* __SDW_BUS_H */
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index dcadc3e54422..2efc93b1a717 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -38,6 +38,27 @@ enum sdw_slave_status {
+ 	SDW_SLAVE_RESERVED = 3,
+ };
+ 
++/**
++ * enum sdw_command_response - Command response as defined by SDW spec
++ * @SDW_CMD_OK: cmd was successful
++ * @SDW_CMD_IGNORED: cmd was ignored
++ * @SDW_CMD_FAIL: cmd was NACKed
++ * @SDW_CMD_TIMEOUT: cmd timedout
++ * @SDW_CMD_FAIL_OTHER: cmd failed due to other reason than above
 + *
-+ * This is set as pdata for each link instance.
++ * NOTE: The enum is different than actual Spec as response in the Spec is
++ * combination of ACK/NAK bits
++ *
++ * SDW_CMD_TIMEOUT/FAIL_OTHER is defined for SW use, not in spec
 + */
-+struct sdw_intel_link_res {
-+	void __iomem *registers;
-+	void __iomem *shim;
-+	void __iomem *alh;
-+	int irq;
++enum sdw_command_response {
++	SDW_CMD_OK = 0,
++	SDW_CMD_IGNORED = 1,
++	SDW_CMD_FAIL = 2,
++	SDW_CMD_TIMEOUT = 3,
++	SDW_CMD_FAIL_OTHER = 4,
 +};
 +
-+#endif /* __SDW_INTEL_LOCAL_H */
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-new file mode 100644
-index 000000000000..370cc52d8d1e
---- /dev/null
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+// Copyright(c) 2015-17 Intel Corporation.
-+
-+#ifndef __SDW_INTEL_H
-+#define __SDW_INTEL_H
+ /*
+  * SDW properties, defined in MIPI DisCo spec v1.0
+  */
+@@ -366,12 +387,37 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+  * SDW master structures and APIs
+  */
+ 
++struct sdw_msg;
 +
 +/**
-+ * struct sdw_intel_res - Soundwire Intel resource structure
-+ * @mmio_base: mmio base of SoundWire registers
-+ * @irq: interrupt number
-+ * @handle: ACPI parent handle
-+ * @parent: parent device
++ * struct sdw_defer - SDW deffered message
++ * @length: message length
++ * @complete: message completion
++ * @msg: SDW message
 + */
-+struct sdw_intel_res {
-+	void __iomem *mmio_base;
-+	int irq;
-+	acpi_handle handle;
-+	struct device *parent;
++struct sdw_defer {
++	int length;
++	struct completion complete;
++	struct sdw_msg *msg;
 +};
 +
-+#endif
+ /**
+  * struct sdw_master_ops - Master driver ops
+  * @read_prop: Read Master properties
++ * @xfer_msg: Transfer message callback
++ * @xfer_msg_defer: Defer version of transfer message callback
++ * @reset_page_addr: Reset the SCP page address registers
+  */
+ struct sdw_master_ops {
+ 	int (*read_prop)(struct sdw_bus *bus);
++
++	enum sdw_command_response (*xfer_msg)
++			(struct sdw_bus *bus, struct sdw_msg *msg);
++	enum sdw_command_response (*xfer_msg_defer)
++			(struct sdw_bus *bus, struct sdw_msg *msg,
++			struct sdw_defer *defer);
++	enum sdw_command_response (*reset_page_addr)
++			(struct sdw_bus *bus, unsigned int dev_num);
+ };
+ 
+ /**
+@@ -382,8 +428,10 @@ struct sdw_master_ops {
+  * @assigned: Bitmap for Slave device numbers.
+  * Bit set implies used number, bit clear implies unused number.
+  * @bus_lock: bus lock
++ * @msg_lock: message lock
+  * @ops: Master callback ops
+  * @prop: Master properties
++ * @defer_msg: Defer message
+  * @clk_stop_timeout: Clock stop timeout computed
+  */
+ struct sdw_bus {
+@@ -392,12 +440,21 @@ struct sdw_bus {
+ 	struct list_head slaves;
+ 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+ 	struct mutex bus_lock;
++	struct mutex msg_lock;
+ 	const struct sdw_master_ops *ops;
+ 	struct sdw_master_prop prop;
++	struct sdw_defer defer_msg;
+ 	unsigned int clk_stop_timeout;
+ };
+ 
+ int sdw_add_bus_master(struct sdw_bus *bus);
+ void sdw_delete_bus_master(struct sdw_bus *bus);
+ 
++/* messaging and data APIs */
++
++int sdw_read(struct sdw_slave *slave, u32 addr);
++int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
++int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++
+ #endif /* __SOUNDWIRE_H */
 -- 
 2.7.4
