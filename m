@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: disable clock on error" to
-	the asoc tree
-Date: Wed, 06 Dec 2017 15:29:07 +0000
-Message-ID: <E1eMbdD-0007Xa-97@debutante>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2677526704A
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:29:08 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Potyra <Stefan.Potyra@elektrobit.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_asrc: protect macro argument" to the asoc tree
+Date: Wed, 06 Dec 2017 15:29:09 +0000
+Message-ID: <E1eMbdF-0007YZ-Nj@debutante>
+References: <20170807063657.12581-1-stefan@agner.ch>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170807063657.12581-1-stefan@agner.ch>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stefan Agner <stefan@agner.ch>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, timur@tabi.orgnicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: disable clock on error
+   ASoC: fsl_asrc: protect macro argument
 
 has been applied to the asoc tree at
 
@@ -52,73 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From c7b92172a61b91936be985cb9bc499a4ebc6489b Mon Sep 17 00:00:00 2001
-From: Stefan Potyra <Stefan.Potyra@elektrobit.com>
-Date: Wed, 6 Dec 2017 16:03:24 +0100
-Subject: [PATCH] ASoC: rockchip: disable clock on error
+>From d1b726a9018e3f684ce190a1cbe012cb64f363d8 Mon Sep 17 00:00:00 2001
+From: Stefan Agner <stefan@agner.ch>
+Date: Wed, 6 Dec 2017 16:17:27 +0100
+Subject: [PATCH] ASoC: fsl_asrc: protect macro argument
 
-Disable the clocks in  rk_spdif_probe when an error occurs after one
-of the clocks has been enabled previously.
+Protect macro argument with parentheses to avoid ambiguity.
+This fixes a warning seen with clang:
+  warning: logical not is only applied to the left hand side of this comparison
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Fixes: f874b80e1571 ASoC: rockchip: Add rockchip SPDIF transceiver driver
-Signed-off-by: Stefan Potyra <Stefan.Potyra@elektrobit.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_spdif.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ sound/soc/fsl/fsl_asrc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
-index ee5055d47d13..a89fe9b6463b 100644
---- a/sound/soc/rockchip/rockchip_spdif.c
-+++ b/sound/soc/rockchip/rockchip_spdif.c
-@@ -322,26 +322,30 @@ static int rk_spdif_probe(struct platform_device *pdev)
- 	spdif->mclk = devm_clk_get(&pdev->dev, "mclk");
- 	if (IS_ERR(spdif->mclk)) {
- 		dev_err(&pdev->dev, "Can't retrieve rk_spdif master clock\n");
--		return PTR_ERR(spdif->mclk);
-+		ret = PTR_ERR(spdif->mclk);
-+		goto err_disable_hclk;
- 	}
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index 0f163abe4ba3..ec33dab4b909 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
+@@ -57,7 +57,7 @@
+ #define REG_ASRDOC			0x74
+ #define REG_ASRDI(i)			(REG_ASRDIA + (i << 3))
+ #define REG_ASRDO(i)			(REG_ASRDOA + (i << 3))
+-#define REG_ASRDx(x, i)			(x == IN ? REG_ASRDI(i) : REG_ASRDO(i))
++#define REG_ASRDx(x, i)			((x) == IN ? REG_ASRDI(i) : REG_ASRDO(i))
  
- 	ret = clk_prepare_enable(spdif->mclk);
- 	if (ret) {
- 		dev_err(spdif->dev, "clock enable failed %d\n", ret);
--		return ret;
-+		goto err_disable_clocks;
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(regs))
--		return PTR_ERR(regs);
-+	if (IS_ERR(regs)) {
-+		ret = PTR_ERR(regs);
-+		goto err_disable_clocks;
-+	}
- 
- 	spdif->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "hclk", regs,
- 						  &rk_spdif_regmap_config);
- 	if (IS_ERR(spdif->regmap)) {
- 		dev_err(&pdev->dev,
- 			"Failed to initialise managed register map\n");
--		return PTR_ERR(spdif->regmap);
-+		ret = PTR_ERR(spdif->regmap);
-+		goto err_disable_clocks;
- 	}
- 
- 	spdif->playback_dma_data.addr = res->start + SPDIF_SMPDR;
-@@ -373,6 +377,10 @@ static int rk_spdif_probe(struct platform_device *pdev)
- 
- err_pm_runtime:
- 	pm_runtime_disable(&pdev->dev);
-+err_disable_clocks:
-+	clk_disable_unprepare(spdif->mclk);
-+err_disable_hclk:
-+	clk_disable_unprepare(spdif->hclk);
- 
- 	return ret;
- }
+ #define REG_ASRIDRHA			0x80
+ #define REG_ASRIDRLA			0x84
 -- 
 2.15.0
