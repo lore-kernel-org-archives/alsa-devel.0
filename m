@@ -1,56 +1,41 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v2 0/6] ASoC: Intel: Skylake: Skylake driver
-	updates
-Date: Wed,  6 Dec 2017 16:34:00 +0530
-Message-ID: <20171206110406.11400-1-guneshwor.o.singh@intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 00/10] ASoC: fsl_ssi: Clean up - coding style level
+Date: Tue, 5 Dec 2017 17:23:13 -0800
+Message-ID: <20171206012312.GA11876@Asurada-Nvidia>
+References: <1512420403-10164-1-git-send-email-nicoleotsuka@gmail.com>
+ <81e17b9c-e878-1fe9-bb6f-b074d5766232@maciej.szmigiero.name>
+ <20171205193258.GA11039@Asurada-Nvidia>
+ <1cbd2b92-30c3-4f07-e9ab-8c9a2d342800@maciej.szmigiero.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B66F6266D1A
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 12:04:30 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1cbd2b92-30c3-4f07-e9ab-8c9a2d342800@maciej.szmigiero.name>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, fabio.estevam@nxp.com, timur@tabi.org, caleb@crome.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This series includes fixes for HDMI widgets sysfs not updating, shim
-read optimization, fixes for dmic dev_type check and feature to
-configure DSP clock source.
+On Wed, Dec 06, 2017 at 02:01:32AM +0100, Maciej S. Szmigiero wrote:
 
-Guneshwor Singh (1):
-  ASoC: Intel: Skylake: Do not check dev_type for dmic link type
+> >>> ==Verification==
+> >>> Theoretically, it only needs code review, build and sanity tests. I
+> >>> have done build and sanity tests on an i.MX 6 platform by building
+> >>> using imx_v6_v7_defconfig and testing with I2S slave/master mode.
+> > 
+> >> Due to my current workload I will be able to go through this and test
+> >> the AC'97 mode on a UDOO board only in about a week.
+> > 
+> > This is the first round which doesn't touch program flow. If you
+> > prefer to verify it other than merely reviewing it, I would like
+> > to wait for your Tested-by. There will be another set to simplify
+> > all functions and their program flows after this set gets merged.
+> > That one will need to be fully tested.
+> 
+> If you can wait a week then naturally it would be better to test
+> these changes on a real board.
 
-Pradeep Tewani (2):
-  ASoC: Intel: Skylake: Parse vendor tokens to build A-State table
-  ASoC: Intel: Skylake: Configure DSP clock source
-
-Puneeth Prabhu (2):
-  ASoC: hdac_hdmi: Refresh sysfs during hdmi device probe
-  ASoC: hdac_hdmi: Remove redundant assignments
-
-Subhransu S. Prusty (1):
-  ASoC: Intel: Skylake: Remove second shim read in register_poll
-
- include/uapi/sound/snd_sst_tokens.h    | 17 ++++++++++++-
- sound/soc/codecs/hdac_hdmi.c           |  8 ++-----
- sound/soc/intel/common/sst-dsp.c       |  4 +---
- sound/soc/intel/skylake/skl-messages.c | 18 ++++++++++++++
- sound/soc/intel/skylake/skl-nhlt.c     | 15 ++++++++----
- sound/soc/intel/skylake/skl-pcm.c      |  6 +++++
- sound/soc/intel/skylake/skl-sst-dsp.h  |  3 +++
- sound/soc/intel/skylake/skl-topology.c | 44 +++++++++++++++++++++++++++++++++-
- sound/soc/intel/skylake/skl.h          | 17 +++++++++++++
- 9 files changed, 116 insertions(+), 16 deletions(-)
-
--- 
-2.15.1
+I can wait for a week. I think Timur will also want to justify for
+some changes. So I need time to revise and rebase as well -- I've
+some patches for the 2nd set already, so rebasing would take some
+time.
