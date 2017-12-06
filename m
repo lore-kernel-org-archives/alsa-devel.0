@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 08/19] ASoC: tlv320aic31xx: Switch GPIO
- handling to use gpiod_* API
-Date: Wed, 6 Dec 2017 12:46:38 +0000
-Message-ID: <20171206124638.GD1827@finisterre>
-References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-9-afd@ti.com>
- <537c8d62-de11-15e8-11bc-08e8334d4322@ti.com>
- <17fcc926-9ee8-1229-ea3d-f38347cb9a23@ti.com>
+Subject: Re: Question about soc-utils
+Date: Wed, 6 Dec 2017 12:47:42 +0000
+Message-ID: <20171206124742.GE1827@finisterre>
+References: <87r2s9txwi.wl%kuninori.morimoto.gx@renesas.com>
+ <20171205123924.GG11658@finisterre>
+ <87po7szq28.wl%kuninori.morimoto.gx@renesas.com>
+ <87609kzb7u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3586602946237265480=="
+Content-Type: multipart/mixed; boundary="===============1830892229951232995=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CBED266AE1
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 13:46:41 +0100 (CET)
-In-Reply-To: <17fcc926-9ee8-1229-ea3d-f38347cb9a23@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BB007266AE1
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 13:47:44 +0100 (CET)
+In-Reply-To: <87609kzb7u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3586602946237265480==
+--===============1830892229951232995==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DiL7RhKs8rK9YGuF"
+	protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
 Content-Disposition: inline
 
 
---DiL7RhKs8rK9YGuF
+--SNIs70sCzqvszXB4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Dec 05, 2017 at 03:23:49PM -0600, Andrew F. Davis wrote:
-> On 12/04/2017 10:47 AM, Andrew F. Davis wrote:
+On Wed, Dec 06, 2017 at 05:26:54AM +0000, Kuninori Morimoto wrote:
 
-> > Kbuild bot seems mad a this one, looks like I need to include
-> > linux/gpio/consumer.h, will fix for v3.
+> > > That's just an oversight, it should be using the sample size.
 
-> Looks like you already have this in your -next branch, how do you want
-> this fix, I can send a delta patch with the added include, a new v3
-> version that you can replace the patch in-tree with, or if it's easier
-> for you manually fix in-tree?
+> The original commit was below.
+> It seems original code was also assuming format width.
+> Was this also oversight ?
+> format_width -> physical_width changes meaning, I think...
 
-As the patch applied mail says:
+> -	switch (params_format(params)) {
+> -	case SNDRV_PCM_FORMAT_S16_LE:
+> -	case SNDRV_PCM_FORMAT_S16_BE:
+> -		sample_size = 16;
+> -		break;
+> -	case SNDRV_PCM_FORMAT_S20_3LE:
+> -	case SNDRV_PCM_FORMAT_S20_3BE:
+> -		sample_size = 20;
+> -		break;
 
-| If any updates are required or you are submitting further changes they
-| should be sent as incremental updates against current git, existing
-| patches will not be replaced.
+Ah, sorry - I misread what you were saying.  The above is the intention.
 
---DiL7RhKs8rK9YGuF
+--SNIs70sCzqvszXB4
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon5q0ACgkQJNaLcl1U
-h9B6Vwf+Mim1FuDiJAqRFw5C3aCj84xUEoCjBY3Cm39RFdpTANw0nH9p5+GJa7DB
-8mspachRVyVILrexXPyWnpr1WGW0YSdNU+ZJPfh5qjg79mt8F4ELo7HKyl3LHN3x
-OLa8G0z/gTJ9oQNfeb8kzU77nEiA8/eUU33CVr6pQEyHpde2XF+Fvvsl3FqCB7Jt
-I07tR1FHbO14+RqrVeY778lOy8jAXzxYhMfMR14iPA+GeuwlkZ9uQmWxE7y0Dwyt
-RLehl/4UoJuJWM1TNBEoSLwvW0tBeap/tHvu1240gwx0dHVZzi+XhUZWVq+5z/ul
-gGcVKLBbq4Hp8r+IdZp+cMmU5fCB7A==
-=ZRtc
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon5u0ACgkQJNaLcl1U
+h9Bl7gf/YVZVGXC/XCGrANMVb02DrnzIg6qydVQALhwK9Jm6K+u7BXIJMVAVEt9P
+vkHA9YGsww+im86vZk+QYy6TBwMocdUhOJ2UJ9SDnpRQbGcV/+gcU3jU7m4MMIbq
+yWOpsSt3/2hkfvPkvFAg3OKfPCl7tkIgw8O/a3MV1Qi08E5+52sTxgD7KvSrrmtv
+zGSb1Mq6yROIQKoxudU/xWe9ZttDKXVKeWqWu0IgXuD/PjMJ9ZazlJVcq8/X05Xn
+CZmnvnnlXi6UitKOpm8T3RjddmtL4bEO2Srzx8ECA9p/Wua5t2ZOsZq7KTnZDotn
+Oaf5JhBGXatqcnwPROTf0w3M8R/8kw==
+=L5Ru
 -----END PGP SIGNATURE-----
 
---DiL7RhKs8rK9YGuF--
+--SNIs70sCzqvszXB4--
 
---===============3586602946237265480==
+--===============1830892229951232995==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3586602946237265480==--
+--===============1830892229951232995==--
