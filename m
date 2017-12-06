@@ -1,82 +1,89 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 09/19] ASoC: tlv320aic31xx: Remove platform data
-Date: Wed, 6 Dec 2017 19:11:12 +0000
-Message-ID: <20171206191112.ip47bylnvyfc2irt@sirena.org.uk>
-References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-10-afd@ti.com>
- <20171201132606.vyw7wthmql5trkwq@sirena.org.uk>
- <4fee76ef-e518-69b6-3bcc-f65b0a31cacc@ti.com>
- <20171206124540.GC1827@finisterre>
- <10f1b19b-4a0a-e336-b757-933d46b5c8e9@ti.com>
- <20171206173059.qw4tt7nizmyo6xbl@sirena.org.uk>
- <b6f581be-6d3a-6fc3-036f-9efc1bfc2429@ti.com>
- <20171206181534.7t23ljja6fgle4ar@sirena.org.uk>
- <86e13e26-e8d5-35ed-6bd0-d91d9323d5e6@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/9] ASoC: sun8i-codec: Add support for A64
+	SoC
+Date: Wed, 6 Dec 2017 19:13:11 +0000
+Message-ID: <20171206191311.7wlvqiolpho4zvxh@sirena.org.uk>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
+ <20171203204157.20829-5-anarsoul@gmail.com>
+ <20171205080444.zo2rlusqpjyraqcw@flea.lan>
+ <CA+E=qVdZME2fiMw09NUP4DNCYhk58dqSapCdfBjLrdMq5HFwyg@mail.gmail.com>
+ <20171206153205.k3l5sofdco3t75mi@flea.lan>
+ <20171206154810.eb2czpb4kusxv5kj@sirena.org.uk>
+ <20171206185308.ijt76lodwgkz2pm3@flea.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yt5swpqm4kzhqwy4"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <86e13e26-e8d5-35ed-6bd0-d91d9323d5e6-l0cyMroinI0@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Andrew F. Davis" <afd-l0cyMroinI0@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============4795521844822157810=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B67CC267048
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 20:13:13 +0100 (CET)
+In-Reply-To: <20171206185308.ijt76lodwgkz2pm3@flea.lan>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Vasily Khoruzhick <anarsoul@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, arm-linux <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---yt5swpqm4kzhqwy4
+--===============4795521844822157810==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="he6j2mbdve2xu6gt"
+Content-Disposition: inline
+
+
+--he6j2mbdve2xu6gt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 06, 2017 at 12:40:45PM -0600, Andrew F. Davis wrote:
+On Wed, Dec 06, 2017 at 07:53:08PM +0100, Maxime Ripard wrote:
+> On Wed, Dec 06, 2017 at 03:48:10PM +0000, Mark Brown wrote:
 
-> For some userspace feature sure, but this is kernel code, there is no
-> guarantee for a sable API, in fact some would probably argue even
-> further that there is a guarantee that stuff *will* change and this is a
-> good thing as it kinda serves to punish for those you don't try to upstre=
-am.
+> > BCLK can be higher than the minimum there in most formats, though some
+> > hardware is more restrictive so we tend to go for the minimum clock rate.
 
-> So the helpfulness bar should be zero for changes that break out-of-tree
-> stuff.
+> How does that work in such a case? Is LRCK faster as well, and we're
+> keeping the same ratio, or will the codec buffer the current sample
+> until the next word?
 
-There is no need to actively get in people's way or put up barriers to
-people who do in future decide to upstream things, that doesn't help
-anyone.
+No, the extra clock cycles just get ignored - most of the formats define
+the location of the data in terms of LRCLK edges, any extra BCLK edges
+shouldn't do anything.
 
-> Even more so this patch isn't a zero gain, the cleaner, better looking,
-> and easier to maintain code *is* the benefit in itself. Plus we gain the
-> ability to set mic-gain voltage with ACPI, something you couldn't do
-> before this patch.
+> Is it usually a property of the codec or the DAI?
 
-If this patch adds ACPI support then the patch description was clearly
-not great (I don't think I read the patch itself since the description
-just said that it was removing platform data without giving a reason,
-that's the main review comment here).=20
+Things that require extra cycles for some reason tend to be CODECs, but
+this can also be done just because whatever the clock master is doesn't
+have very flexible dividers.
 
-If you want to use the device property stuff that's fine but there's no
-need to remove platform data to do that, it's a smaller change.  I find
-it hard to see the platform data as a particularly big blight on the
-code here, looking at the driver it's just going to remove the "pdata."
-=66rom a few variable accesses which isn't exactly transformational.
-
---yt5swpqm4kzhqwy4
+--he6j2mbdve2xu6gt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlooQNAACgkQJNaLcl1U
-h9CgUQf+OfU8ycYyHa+CYnGn6Htt1oye9dJUuOyY3jFAhDXOy4x9KtZq32YdXHQl
-hv+Sdm0VIlh++nSEqarNFnPW/OklMjCtjxHUzAO1TbrkCWk1NZUO83iSeDQ8bUk4
-giKnACOSoB5RWExsRwo+8LEezAWaxp/6m5thiM94iNJmY1Du3p0xHpYZyBPnn/WV
-74b0dxwBwzPU8VVbkGFNq6j36zaf5c8pewwzLqb2rPjTlzfBSNIukc0DowIp0i/k
-8gYAOSXvM9xLzAz3NoOiGihBtNlhDbpNK0PX7Inhfm9LDQzsET57k/5/T8Gh2y82
-9aGaIzEB/lgnT7v07QRQE7kj6FlrIA==
-=ACWY
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlooQUYACgkQJNaLcl1U
+h9Bbcgf/eqlSpFBu9TcdcX2g08L6iERguwurgGVPJfkT2iI+FhcbwHZqXx/EXitp
+/sm36esx1OzWTZcrUI+nNZP4ARr+nVhyOVLxrnbN4KeN8SAWnH4+z6OVfeVLU9K5
+UVxuUs+dkAu9Ss4sYm0M7D37M8fqEFH2tbbkrJTacCXwdFJw3z4ky3CAJjZVOszv
+PMzEaznU9zaX/IKNE5GtntI1NrkIZRWw7xy6gGRAhGVhW1/DWg/SLwRvXMilqU3r
+jyHQCqHeJymmjaomXSh4c07XzP+ZVDv2tv3AKLq08kwRGF5rya286hWJxZQTvt32
+Hjkx2kHTnVrutFOTClBaqlTX58NGFw==
+=QQDZ
 -----END PGP SIGNATURE-----
 
---yt5swpqm4kzhqwy4--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--he6j2mbdve2xu6gt--
+
+--===============4795521844822157810==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4795521844822157810==--
