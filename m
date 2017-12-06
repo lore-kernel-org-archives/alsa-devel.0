@@ -1,73 +1,69 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [RFC PATCH 1/3] ASoC: Add platforms directory
-Date: Wed, 6 Dec 2017 10:06:34 -0600
-Message-ID: <561a6ebd-c978-c52a-a13a-3300be9a58bb@ti.com>
-References: <20171205181448.18513-1-afd@ti.com>
- <20171205181448.18513-2-afd@ti.com> <20171206123908.GB1827@finisterre>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC 01/10] ASoC: Intel: Boards: Machine driver
+ for Intel platforms
+Date: Wed, 6 Dec 2017 21:47:55 +0530
+Message-ID: <20171206161755.GD32417@localhost>
+References: <1512119648-2700-1-git-send-email-rakesh.a.ughreja@intel.com>
+ <1512119648-2700-2-git-send-email-rakesh.a.ughreja@intel.com>
+ <67a5002e-9671-f6cd-f37b-e8c1b6d630ce@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60579AC5C24@BGSMSX104.gar.corp.intel.com>
+ <a3a5250b-6b0e-4238-7e01-365624b1a35c@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60579AC5D64@BGSMSX104.gar.corp.intel.com>
+ <bd2f2ff6-ad7f-1f72-2422-7cc539b51f46@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171206123908.GB1827@finisterre>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D58A2679B0
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 17:14:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <bd2f2ff6-ad7f-1f72-2422-7cc539b51f46@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/06/2017 06:39 AM, Mark Brown wrote:
-> On Tue, Dec 05, 2017 at 12:14:46PM -0600, Andrew F. Davis wrote:
->> Platform ASoC drivers are a lot like ASoC CODEC drivers in that they
->> both are independent pieces of a sound device, or "machine". Platform
->> drivers should be free of CODEC specifics and visa-versa. Both are then
->> used by the the "machine" driver to form the complete sound device.
->> This forms a hierarchy that makes it natural to group platform drivers
->> into their own directory, much like we group CODEC drivers already.
+On Mon, Dec 04, 2017 at 09:37:37AM -0600, Pierre-Louis Bossart wrote:
+> On 12/4/17 9:10 AM, Ughreja, Rakesh A wrote:
+
+> >>>>>    sound/soc/intel/boards/Kconfig           |  10 ++
+> >>>>>    sound/soc/intel/boards/Makefile          |   2 +
+> >>>>>    sound/soc/intel/boards/skl_hda_generic.c | 276
+> >>>>+++++++++++++++++++++++++++++++
+> >>>>
+> >>>>can we drop the Skylake reference? It's become a catch-all term to mean
+> >>>>both the platform, the IP and the driver.
+> >>>
+> >>>Suggest some name. I have no problem.
+> >>
+> >>HiFi3 ?
+> >>iDisp ?
+> >>HDAudio-DSP ?
+> >
+> >hda_dsp_generic.c -- For the main file
+> >hda_dsp_common.c -- for common functions
+> >
+> >Does it look fine ?
 > 
-> This seems like a step backwards, and your current patch set only does
-> this for the TI drivers anyway.  Currently we have things split up by IP
-> holder, with machine drivers that have some platform specifics grouped
-> together with the matching IP drivers that may also share some platform
-> specific considerations.  This would group all the IP drivers together
-> and separate them from the machine drivers they work in concert with for
-> no obvious benefit.
-> 
+> works for me.
 
-My current patches are an RFC with a couple examples, so I only moved
-two TI platforms that I was familiar with, others would follow.
+Sorry not for me. hda_dsp_xxx doesnt tie it to anything. HDA and DSP are too
+generic terms. But yes I don't have a better alternate than skl_generic.
+Here this solution is tied to a very specfic IP which is present in SKL
+onwards platforms..
 
-Your wording seems a bit inconsistent to me, what do you mean by "IP
-drivers", CODEC or SoC internal IP? For clarity I'll try to use only the
-three driver type labels: codec, platform, and machine. This is all in
-Documentation/sound/soc/overview.rst which I'm sure you are familiar
-with as you seem to have had a hand in writing it.
+Yes SKL is become an IP as well as platform. Maybe we should have a codename
+for this like azx :)
 
-Anyway, I'm working under the assumption that we should try to enforce a
-logical separation between component drivers: codec drivers should be
-agnostic to what machine they are placed, platform drivers should do the
-same and not make special arrangements to work with one machine in
-particular. Machine drivers on the other hand will need to dig into
-specifics of the codec and platform drivers that they use and connect.
-
-With this in mind I do not see any reason not to have platform drivers
-in a platforms/ directory just like we do with codecs/. In case there
-was any confusion, I still want to keep the platform drivers' files all
-grouped in directories by IP holder, just moved under this platforms/.
-
-This has the benefit of reducing exactly what you are talking about,
-platform drivers working in concert with machine drivers, instead of the
-other way around.
-
-This isn't only confusing to me, but other first time ASoC devs:
-https://stackoverflow.com/questions/20110801/asoc-drivers-which-files-are-platform-machine-and-codec-drivers
-
-even the answerer seems to assume there is a
-sound/soc/platforms/, for the same reason we have sound/soc/codecs/.
-
-> If you want to make a common directory for TI stuff do that, there's no
-> need to mess up all the other platforms to do that though.
-> 
-
-Do you mean sounds/soc/ti/{platforms,machines}/ ? I could do this, but I
-don't see how what I've done in my example patches has any effect on
-other IP holders, they are free to migrate as the please.
+-- 
+~Vinod
