@@ -1,22 +1,17 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH v2 18/19] ASoC: tlv320aic31xx: Add
- headphone/headset detection
-Date: Wed, 6 Dec 2017 11:47:14 -0600
-Message-ID: <8e52d973-2335-e3c5-5e57-15621819cf45@ti.com>
-References: <20171129213300.20021-1-afd@ti.com>
- <20171129213300.20021-19-afd@ti.com>
- <20171201134127.2msgmjrfj47ypl3w@sirena.org.uk>
- <b2d9ffa9-3923-cb86-f0ad-cf4f37e56334@ti.com>
- <20171206173215.bitae546h2ibedhz@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 30/45] sound: soc: hisilicon: remove
+	duplicate includes
+Date: Wed, 6 Dec 2017 17:48:06 +0000
+Message-ID: <20171206174806.dq4aokctc6nlnw2o@sirena.org.uk>
+References: <1512581940-6407-1-git-send-email-pravin.shedge4linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5178763874446284251=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id DFBFA2679FF
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:47:16 +0100 (CET)
-In-Reply-To: <20171206173215.bitae546h2ibedhz@sirena.org.uk>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5FFD267A12
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:48:07 +0100 (CET)
+In-Reply-To: <1512581940-6407-1-git-send-email-pravin.shedge4linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,32 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
+To: Pravin Shedge <pravin.shedge4linux@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, john.stultz@linaro.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12/06/2017 11:32 AM, Mark Brown wrote:
-> On Wed, Dec 06, 2017 at 11:25:15AM -0600, Andrew F. Davis wrote:
->> On 12/01/2017 07:41 AM, Mark Brown wrote:
-> 
->>> This only does half the job, there's no way for anything to specify a
->>> jack here.
-> 
->> Other CODECs drivers expose some kind of platform/machine specific
->> function(s) to send the jack definition to the CODEC, we seem to be
-> 
-> Your driver doesn't do that.
-> 
 
-Right, I don't have a specific machine in mind so didn't wan to do it
-that way.
+--===============5178763874446284251==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lj45d7crl7fcn6q3"
+Content-Disposition: inline
 
->> missing a generic way to report jack information up to the machine layer
->> driver.
-> 
-> snd_soc_codec_set_jack()
-> 
 
-Hmm, this looks close to what I was thinking (I was wanting to go the
-other direction and have the codec report what jacks it supports, this
-could allow for more than one jack), I'll see if I can make it work.
+--lj45d7crl7fcn6q3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Dec 06, 2017 at 11:09:00PM +0530, Pravin Shedge wrote:
+> These duplicate includes have been found with scripts/checkincludes.pl but
+> they have been removed manually to avoid removing false positives.
+
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
+
+--lj45d7crl7fcn6q3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlooLVUACgkQJNaLcl1U
+h9AzbAf/ZDwCkJ8O3Di3yogjZ2LDwdB2ATASDd1Bf3zUnK6NmbsqZ9j6rxMVHI4d
+0EfE/E2lFNjLdl8efNVB+G5ibAZDplTt6UGZu2P7DIw77IC8tdqFzGWziHVKGl3a
+L2OZbp5JQU81pOEJF77CcMPQko9RXxzAk8Xv/rGfqxQCg0FXEfH3kuEEKBpE0Tb/
+GjLPgws4NhKY0PrQXjFjunZYBJJsG0vUEOev+Owmc6/HNv23QSb+emkR/Eqf/78N
++vv6wjqhX5t52hjS18eHxt7DnJUEv0uM/ennoQ3EHIjUgAIUaeeEd0M9WZ5U5GS+
+0L5zv2+NJaMsybb1wPZqNnYHeE5x1Q==
+=cLBI
+-----END PGP SIGNATURE-----
+
+--lj45d7crl7fcn6q3--
+
+--===============5178763874446284251==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5178763874446284251==--
