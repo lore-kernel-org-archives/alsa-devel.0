@@ -1,93 +1,55 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 06/15] soundwire: Add IO transfer
-Date: Wed, 6 Dec 2017 07:32:43 -0600
-Message-ID: <8c38baee-45f8-682e-f781-c35e26c26d9f@linux.intel.com>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
- <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
- <20171203170418.GN32417@localhost>
- <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
- <20171205063114.GL32417@localhost>
- <fb78b1c5-0a52-90b3-262e-8880aeb2da11@linux.intel.com>
- <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
- <20171206055813.GO32417@localhost>
+From: Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH] ASoC: fsl_asrc: protect macro argument
+Date: Wed, 06 Dec 2017 14:53:39 +0100
+Message-ID: <b96fa8a745e7d6e9de8bb70d0f335648@agner.ch>
+References: <20170807063657.12581-1-stefan@agner.ch>
+ <20170807070806.GA8208@Asurada>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 90EE026698E
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 14:32:38 +0100 (CET)
-In-Reply-To: <20171206055813.GO32417@localhost>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Sudheer Papothi <spapothi@codeaurora.org>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sagar Dharia <sdharia@codeaurora.org>, alan@linux.intel.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170807070806.GA8208@Asurada>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: timur@tabi.org, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTIvNS8xNyAxMTo1OCBQTSwgVmlub2QgS291bCB3cm90ZToKPiBPbiBUdWUsIERlYyAwNSwg
-MjAxNyBhdCAwODo0ODowM0FNIC0wNjAwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4g
-T24gMTIvNS8xNyA3OjQzIEFNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+IE9uIDEy
-LzUvMTcgMTI6MzEgQU0sIFZpbm9kIEtvdWwgd3JvdGU6Cj4+Pj4gT24gU3VuLCBEZWMgMDMsIDIw
-MTcgYXQgMDk6MDE6NDFQTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4+
-Pj4+Pj4+ICtzdGF0aWMgaW5saW5lIGludCBkb190cmFuc2ZlcihzdHJ1Y3Qgc2R3X2J1cyAqYnVz
-LCBzdHJ1Y3QKPj4+Pj4+Pj4gc2R3X21zZyAqbXNnKQo+Pj4+Pj4+PiArewo+Pj4+Pj4+PiArwqDC
-oMKgIGludCByZXRyeSA9IGJ1cy0+cHJvcC5lcnJfdGhyZXNob2xkOwo+Pj4+Pj4+PiArwqDCoMKg
-IGVudW0gc2R3X2NvbW1hbmRfcmVzcG9uc2UgcmVzcDsKPj4+Pj4+Pj4gK8KgwqDCoCBpbnQgcmV0
-ID0gMCwgaTsKPj4+Pj4+Pj4gKwo+Pj4+Pj4+PiArwqDCoMKgIGZvciAoaSA9IDA7IGkgPD0gcmV0
-cnk7IGkrKykgewo+Pj4+Pj4+PiArwqDCoMKgwqDCoMKgwqAgcmVzcCA9IGJ1cy0+b3BzLT54ZmVy
-X21zZyhidXMsIG1zZyk7Cj4+Pj4+Pj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBmaW5kX3Jlc3Bv
-bnNlX2NvZGUocmVzcCk7Cj4+Pj4+Pj4+ICsKPj4+Pj4+Pj4gK8KgwqDCoMKgwqDCoMKgIC8qIGlm
-IGNtZCBpcyBvayBvciBpZ25vcmVkIHJldHVybiAqLwo+Pj4+Pj4+PiArwqDCoMKgwqDCoMKgwqAg
-aWYgKHJldCA9PSAwIHx8IHJldCA9PSAtRU5PREFUQSkKPj4+Pj4+Pgo+Pj4+Pj4+IENhbiB5b3Ug
-ZG9jdW1lbnQgd2h5IHlvdSBkb24ndCByZXRyeSBvbiBhIENNRF9JR05PUkVEPyBJIGtub3cKPj4+
-Pj4+PiB0aGVyZSB3YXMgYQo+Pj4+Pj4+IHJlYXNvbiwgSSBqdXN0IGNhbid0IHJlbWVtYmVyIGl0
-Lgo+Pj4+Pj4KPj4+Pj4+IENNRF9JR05PUkVEIGNhbiBiZSBva2F5IG9uIGJyb2FkY2FzdC4gVXNl
-ciBvZiB0aGlzIEFQSSBjYW4gcmV0cnkgYWxsCj4+Pj4+PiB0aGV5Cj4+Pj4+PiB3YW50IQo+Pj4+
-Pgo+Pj4+PiBTbyB5b3UgcmV0cnkgaWYgdGhpcyBpcyBhIENNRF9GQUlMRUQgYnV0IGxldCBoaWdo
-ZXIgbGV2ZWxzIHJldHJ5IGZvcgo+Pj4+PiBDTURfSUdOT1JFRCwgc29ycnkgSSBkb24ndCBzZWUg
-dGhlIGxvZ2ljLgo+Pj4+Cj4+Pj4gWWVzIHRoYXQgaXMgcmlnaHQuCj4+Pj4KPj4+PiBJZiBJIGFt
-IGRvaW5nIGEgYnJvYWRjYXN0IHJlYWQsIGxldHMgc2F5IGZvciBEZXZpY2UgSWQgcmVnaXN0ZXJz
-LCB3aHkgaW4KPj4+PiB0aGUKPj4+PiB3b3JsZCB3b3VsZCBJIHdhbnQgdG8gcmV0cnk/IENNRF9J
-R05PUkVEIGlzIGEgdmFsaWQgcmVzcG9uc2UgYW5kCj4+Pj4gcmVxdWlyZWQgdG8KPj4+PiBzdG9w
-IGVudW1lcmF0aW9uIGN5Y2xlIGluIHRoYXQgY2FzZS4KPiAKPiBBYm92ZSBpcyB0aGUgY2xhcmZp
-Y2F0aW9uCj4gCj4+Pj4gQnV0IGlmIEkgYW0gbm90IGV4cGVjdGluZyBhIENNRF9JR05PUkVEIHJl
-c3BvbnNlLCBJIGNhbiB2ZXJ5IHdlbGwgZ28KPj4+PiBhaGVhZAo+Pj4+IGFuZCByZXRyeSBmcm9t
-IGNhbGxlci4gVGhlIGNvbnRleHQgaXMgd2l0aCBjYWxsZXIgYW5kIHRoZXkgY2FuIGNob29zZSB0
-bwo+Pj4+IGRvCj4+Pj4gYXBwcm9wcmlhdGUgaGFuZGxpbmcuCj4+Pj4KPj4+PiBBbmQgSSBoYXZl
-IGNsYXJpZmllZCB0aGlzIGNvdXBsZSBvZiB0aW1lcyB0byB5b3UgYWxyZWFkeSwgbm90IHN1cmUg
-aG93Cj4+Pj4gbWFueQo+Pj4+IG1vcmUgdGltZXMgSSB3b3VsZCBoYXZlIHRvIGRvIHRoYXQuCj4+
-Pgo+Pj4gVW50aWwgeW91IGNsYXJpZnkgd2hhdCB5b3UgYXJlIGRvaW5nLgo+IAo+IExldCBtZSB0
-cnkgYWdhaW4sIEkgdGhpbmsgdSBtaXNzZWQgdGhhdCBwYXJ0IG9mIG15IHJlcGx5IGFib3ZlCj4g
-Cj4gSWYgSSBhbSBkb2luZyBhIGJyb2FkY2FzdCByZWFkLCBsZXRzIHNheSBmb3IgRGV2aWNlIElk
-IHJlZ2lzdGVycywKPiB3aHkgaW4gdGhlIHdvcmxkIHdvdWxkIEkgd2FudCB0byByZXRyeT8gQ01E
-X0lHTk9SRUQgaXMgYSB2YWxpZCByZXNwb25zZQo+IGFuZCByZXF1aXJlZCB0byBzdG9wIGVudW1l
-cmF0aW9uIGN5Y2xlIGluIHRoYXQgY2FzZS4KPiAKPj4+IFRoZXJlIGlzIE9ORSBjYXNlIHdoZXJl
-IElHTk9SRUQgaXMgYSB2YWxpZCBhbnN3ZXIgKHJlYWRpbmcgdGhlIFByZXBhcmUgbm90Cj4+PiBm
-aW5pc2hlZCBiaXRzKSwgYW5kIGl0IHNob3VsZCBub3Qgb25seSBiZSBkb2N1bWVudGVkIGJ1dCBh
-bmFseXplZCBpbiBtb3JlCj4+PiBkZXRhaWxzLgo+PiBJIG1lYW50IFJlYWQgU0NQX0RldklEIHJl
-Z2lzdGVycyBmcm9tIERldmljZTAuLi4gcHJlcGFyZSBiaXRzIHNob3VsZCBuZXZlcgo+PiByZXR1
-cm4gYSBDTURfSUdOT1JFRAo+IAo+IFByZWNpc2VseSBhcyBJIHBvaW50ZWQgb3V0IGFib3ZlLgo+
-IAo+Pj4gRm9yIGEgd3JpdGUgYW4gSUdOT1JFRCBpcyBuZXZlciBPSy4KPiAKPiBBZ3JlZWQsIGJ1
-dCB0aGVuIHRyYW5zZmVyIGRvZXMgYm90aCByZWFkIGFuZCB3cml0ZS4gV3JpdGUgY2FsbCBjYW4g
-dHJlYXQgaXQKPiBhcyBlcnJvciBhbmQgcmVhZCBjYWxsIGxlYXZlcyBpdCB1cHRvIGNhbGxlci4K
-PiAKPiBEb2VzIHRoYXQgc291bmQgb2theSBmb3IgeW91PwoKTm90IHJlYWxseS4KWW91IGhhdmUg
-b25lIGNhc2Ugd2hlcmUgaXQncyBvayBhbmQgYWxsIG90aGVycyBhcmUgbm90IG9rLCB0byBtZSB0
-aGlzIApzb3VuZHMgbGlrZSB5b3Ugc2hvdWxkIGF2b2lkIHRoZSByZXRyeSBhdCB0aGUgbG93ZXN0
-IGxldmVsIHJhdGhlciB0aGFuIApwdXNoaW5nIHRoaXMgdG8gdGhlIGNhbGxlcgpBbmQgbm93IHRo
-YXQgSSB0aGluayBvZiBpdCwgdGhlIGRlZmluaXRpb25zIGZvciB0aGUgRGlzQ28gc3BlYyB3ZXJl
-IApyZWFsbHkgbWVhbnQgZm9yIGhhcmR3YXJlLWJhc2VkIHJldHJpZXMgYXZhaWxhYmxlIGluIHNv
-bWUgbWFzdGVyIElQcy4gSWYgCnRoaXMgaXMgZW5hYmxlZCwgdGhlbiB0aGUgbG9vcHMgaW4gc29m
-dHdhcmUgYXJlIG5vdCByZWFsbHkgbmVlZGVkIGF0IAphbGwuIENhbiB5b3UgcGxlYXNlIGNoZWNr
-IHRoaXMgcG9pbnQ/CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On 2017-08-07 09:08, Nicolin Chen wrote:
+> On Sun, Aug 06, 2017 at 11:36:57PM -0700, Stefan Agner wrote:
+>> Protect macro argument with parentheses to avoid ambiguity.
+>> This fixes a warning seen with clang:
+>>   warning: logical not is only applied to the left hand side of this comparison
+>>
+>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> 
+> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+
+Mark, you seem to have merged other patches for this driver, can you
+merge this one too?
+
+--
+Stefan
+
+> 
+> Thanks
+> 
+>> ---
+>>  sound/soc/fsl/fsl_asrc.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+>> index 0f163abe4ba3..ec33dab4b909 100644
+>> --- a/sound/soc/fsl/fsl_asrc.h
+>> +++ b/sound/soc/fsl/fsl_asrc.h
+>> @@ -57,7 +57,7 @@
+>>  #define REG_ASRDOC			0x74
+>>  #define REG_ASRDI(i)			(REG_ASRDIA + (i << 3))
+>>  #define REG_ASRDO(i)			(REG_ASRDOA + (i << 3))
+>> -#define REG_ASRDx(x, i)			(x == IN ? REG_ASRDI(i) : REG_ASRDO(i))
+>> +#define REG_ASRDx(x, i)			((x) == IN ? REG_ASRDI(i) : REG_ASRDO(i))
+>>
+>>  #define REG_ASRIDRHA			0x80
+>>  #define REG_ASRIDRLA			0x84
+>> --
+>> 2.13.3
+>>
