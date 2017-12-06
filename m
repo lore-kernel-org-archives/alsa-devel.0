@@ -1,22 +1,21 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [RFC PATCH 1/3] ASoC: Add platforms directory
-Date: Wed, 6 Dec 2017 12:49:39 -0600
-Message-ID: <d531a2c5-94d9-aa6f-dc6e-aeb22f70d746@ti.com>
-References: <20171205181448.18513-1-afd@ti.com>
- <20171205181448.18513-2-afd@ti.com> <20171206123908.GB1827@finisterre>
- <561a6ebd-c978-c52a-a13a-3300be9a58bb@ti.com>
- <20171206172924.mrd233uipzorrymc@sirena.org.uk>
- <caea9bc4-94f3-41bc-5940-5769917962cf@ti.com>
- <20171206184219.fhhohxdihsm33kf6@sirena.org.uk>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [PATCH 4/9] ASoC: sun8i-codec: Add support for A64
+	SoC
+Date: Wed, 6 Dec 2017 19:53:08 +0100
+Message-ID: <20171206185308.ijt76lodwgkz2pm3@flea.lan>
+References: <20171203204157.20829-1-anarsoul@gmail.com>
+ <20171203204157.20829-5-anarsoul@gmail.com>
+ <20171205080444.zo2rlusqpjyraqcw@flea.lan>
+ <CA+E=qVdZME2fiMw09NUP4DNCYhk58dqSapCdfBjLrdMq5HFwyg@mail.gmail.com>
+ <20171206153205.k3l5sofdco3t75mi@flea.lan>
+ <20171206154810.eb2czpb4kusxv5kj@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6967349602128069912=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E17E267048
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 19:49:41 +0100 (CET)
-In-Reply-To: <20171206184219.fhhohxdihsm33kf6@sirena.org.uk>
-Content-Language: en-US
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48666267048
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 19:53:09 +0100 (CET)
+In-Reply-To: <20171206154810.eb2czpb4kusxv5kj@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,84 +26,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Vasily Khoruzhick <anarsoul@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, arm-linux <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/06/2017 12:42 PM, Mark Brown wrote:
-> On Wed, Dec 06, 2017 at 12:13:22PM -0600, Andrew F. Davis wrote:
->> On 12/06/2017 11:29 AM, Mark Brown wrote:
-> 
->>> Machine and drivers for SoC internal stuff tend to be bound fairly
->>> closely together, simiarly the various drivers for an IP on a SoC often
->>> know things about each other for various reasons.
-> 
->> This is the problem, we don't want them to be so tightly bound, and
->> luckily, for the most part they are not. Even a complex and history rich
->> platform like OMAP was rather trivial to split from its various machine
->> drivers.
-> 
-> Anything new that can is already getting pushed into using the existing
-> generic cards.  New machine drivers are only for things where that's not
-> possible.
-> 
->>> What I am saying is that they go together very closely.  Moving the code
->>> around isn't going to change that.
-> 
->> Not at first, but this partition will discourage future machine-platform
->> mash-ups (like omap-hdmi-audio.c, yuck).
-> 
-> It's not a pressing problem.
-> 
->> My end-goal here is to start trimming the needed machine drivers and
->> replacing them with generics, a couple OMAP machine drivers do nothing
->> that couldn't be done with the "asoc-simple-card" driver. With the
->> machine drivers split out form the platform drivers it becomes easier to
->> target them.
-> 
-> We need to preserve old bindings to ensure DT compatiblity, the easiest
-> way to do that is to keep old machine drivers around.  There are plenty
-> of older drivers that wouldn't be accepted now but would at least need
-> replacing with a compatibility layer that adapts the bindings onto one
-> of the generic drivers.  That adaption layer would definitely be useful
-> (basically a big table of platform data) but it'd take time to implement
-> it.
-> 
 
-We then should at least start depreciating them now so that someday we
-can drop that stuff. Isolating them would be the first step.
+--===============6967349602128069912==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="odsm553lhsv476hf"
+Content-Disposition: inline
 
->> I don't have any need to group the TI platforms (Davinci / OMAP) right
->> now, but I *have* been thinking about grouping the TI CODECs, they share
->> a lot of code that could be factored out if they were stored in their
->> own space sound/soc/codecs/ti/. Plus it would make it easy to add myself
-> 
-> You can share code easily enough without moving anything, just make a
-> library like the arizona drivers did.
-> 
 
-The lack of organization bugs me, this is why directories exist.
+--odsm553lhsv476hf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> as a reviewer for them (I seem to be getting a lot of internal support
->> requests for these drivers these days). That can be a re-org for another
->> day, unless you would like me to post an RFC with what I had in mind?
-> 
-> Wouldn't a few regexps in the MAINTAINERS file cover it?  We've already
-> got a bunch of vendors doing this.
-> 
+On Wed, Dec 06, 2017 at 03:48:10PM +0000, Mark Brown wrote:
+> On Wed, Dec 06, 2017 at 04:32:05PM +0100, Maxime Ripard wrote:
+>=20
+> > BCLK is sample rate * sample size * channels, and LRCK is running at
+> > the sample rate. So the ratio is the sample size * channels.
+>=20
+> > Anything deviating from those standard i2s concepts should at least be
+> > documented, with arguments to back them off.
+>=20
+> BCLK can be higher than the minimum there in most formats, though some
+> hardware is more restrictive so we tend to go for the minimum clock rate.
 
-pcm*
-tas*
-tlv*
-twl*
+How does that work in such a case? Is LRCK faster as well, and we're
+keeping the same ratio, or will the codec buffer the current sample
+until the next word?
 
-It's messy how many prefixes we have :/
+Is it usually a property of the codec or the DAI?
 
->>> If we were going to do this reshuffling then we *really* shouldn't be
->>> doing it randomly for only a few vendors.  Doing it inconsistently is
->>> not going to make anything clearer.
-> 
->> I can send patches for rest of the vendors if you would like to see that
->> and what the end result would look like.
-> 
-> I'm not convinced this is a good idea.
-> 
+Thanks!
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--odsm553lhsv476hf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE0VqZU19dR2zEVaqr0rTAlCFNr3QFAlooO/YACgkQ0rTAlCFN
+r3QI8w//ZTBYyyRGNK63x1mh32Ps4Ee/Ot+asZ+NJXJlWHa+DiNAiQWUS3CjTDyV
+W5z7WIBBKv4tOu2GV6gw5/6iTFWj81RPkOX78AsA/b3453XbEiIavqmqQXKHWoy4
+ZDsLiZKCjdBLWpqLjx5PDVmPAG/OGEYVa+gMQG9hoIr/bCFJLPM1+vQE8+j8PVH6
+p5VmktyCFQhDN0uyS+9s12xkYBqhXGLowe3V5w5NHaQJ42rk5orqVZ0JPAOi7crT
+Gfh8trJaYqLe/UzTizQElJPeCoQJ6/kqGQCRmqWBEK5FbBmkHhld5oFJjglj/YCm
+fO2sFb7Gco6X6n0zVLp0xl/+qWz+/u+ri7HJpzQ9MN+ESirGK/9wUm3cNBYFAumC
+pvPeioyey6zyxrWUBHmA3TpWwlcUBff1/YxWKunWk9C1UL6mEQiOn9f8FEw57wvS
+6idJICmYY+C3kW12lgMCwTsi07Xq6BBOCbC77XXQrOJyyBA6oRWqtreBIVun8gk7
+X604b1nRGAOv2xCrHLrY9lJu/2K4CL2esuBFLSVSIRKlPi+6O9SjYBOOPrV3pt79
+3g9iyqOGFtMM2osb08m1YoNNWxoQWaVIQ8luw17iLNkvHt9bXwd6p0EYCXLQMvb7
+IUq1JUltiAfyym9WW/XNE9jmHOKSilBhO13kLCIvx6E4g275Ezk=
+=ZKls
+-----END PGP SIGNATURE-----
+
+--odsm553lhsv476hf--
+
+--===============6967349602128069912==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6967349602128069912==--
