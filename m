@@ -1,98 +1,63 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: Add IO transfer
-Date: Wed, 6 Dec 2017 11:28:15 +0530
-Message-ID: <20171206055813.GO32417@localhost>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
- <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
- <20171203170418.GN32417@localhost>
- <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
- <20171205063114.GL32417@localhost>
- <fb78b1c5-0a52-90b3-262e-8880aeb2da11@linux.intel.com>
- <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
+Subject: Re: [PATCH v4 4/7] ASoC: Intel: kbl: Enable mclk and
+ ssp sclk early
+Date: Wed, 6 Dec 2017 17:25:07 +0530
+Message-ID: <20171206115506.GR32417@localhost>
+References: <1511352592-4006-1-git-send-email-sriramx.periyasamy@intel.com>
+ <1511352592-4006-5-git-send-email-sriramx.periyasamy@intel.com>
+ <20171205233326.GD4283@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C8B4266AE1
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 12:51:30 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+In-Reply-To: <20171205233326.GD4283@codeaurora.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Boyd <sboyd@codeaurora.org>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Harsha Priya <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, mturquette@baylibre.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 05, 2017 at 08:48:03AM -0600, Pierre-Louis Bossart wrote:
-> On 12/5/17 7:43 AM, Pierre-Louis Bossart wrote:
-> >On 12/5/17 12:31 AM, Vinod Koul wrote:
-> >>On Sun, Dec 03, 2017 at 09:01:41PM -0600, Pierre-Louis Bossart wrote:
+On Tue, Dec 05, 2017 at 03:33:26PM -0800, Stephen Boyd wrote:
+> On 11/22, Sriram Periyasamy wrote:
 
-> >>>>>>+static inline int do_transfer(struct sdw_bus *bus, struct
-> >>>>>>sdw_msg *msg)
-> >>>>>>+{
-> >>>>>>+    int retry = bus->prop.err_threshold;
-> >>>>>>+    enum sdw_command_response resp;
-> >>>>>>+    int ret = 0, i;
-> >>>>>>+
-> >>>>>>+    for (i = 0; i <= retry; i++) {
-> >>>>>>+        resp = bus->ops->xfer_msg(bus, msg);
-> >>>>>>+        ret = find_response_code(resp);
-> >>>>>>+
-> >>>>>>+        /* if cmd is ok or ignored return */
-> >>>>>>+        if (ret == 0 || ret == -ENODATA)
-> >>>>>
-> >>>>>Can you document why you don't retry on a CMD_IGNORED? I know
-> >>>>>there was a
-> >>>>>reason, I just can't remember it.
-> >>>>
-> >>>>CMD_IGNORED can be okay on broadcast. User of this API can retry all
-> >>>>they
-> >>>>want!
-> >>>
-> >>>So you retry if this is a CMD_FAILED but let higher levels retry for
-> >>>CMD_IGNORED, sorry I don't see the logic.
-> >>
-> >>Yes that is right.
-> >>
-> >>If I am doing a broadcast read, lets say for Device Id registers, why in
-> >>the
-> >>world would I want to retry? CMD_IGNORED is a valid response and
-> >>required to
-> >>stop enumeration cycle in that case.
+> > +static int platform_clock_control(struct snd_soc_dapm_widget *w,
+> > +			struct snd_kcontrol *k, int  event)
+> > +{
+> > +	struct snd_soc_dapm_context *dapm = w->dapm;
+> > +	struct snd_soc_card *card = dapm->card;
+> > +	struct kbl_rt5663_private *priv = snd_soc_card_get_drvdata(card);
+> > +	int ret = 0;
+> > +
+> > +	/*
+> > +	 * MCLK/SCLK need to be ON early for a successful synchronization of
+> > +	 * codec internal clock. And the clocks are turned off during
+> > +	 * POST_PMD after the stream is stopped.
+> > +	 */
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_PRE_PMU:
+> > +		if (__clk_is_enabled(priv->mclk))
+> 
+> Why do you need to use this in your consumer driver? Do you not
+> know if the clk is on at boot time and then you need to make sure
+> you don't call clk_set_rate() on an already enabled clk? If so,
+> why can't the provider driver for mclk take care of that and do
+> nothing if the clk is enabled already and clk_set_rate() is
+> called with the same rate as what's in the hardware?
 
-Above is the clarfication
-
-> >>But if I am not expecting a CMD_IGNORED response, I can very well go
-> >>ahead
-> >>and retry from caller. The context is with caller and they can choose to
-> >>do
-> >>appropriate handling.
-> >>
-> >>And I have clarified this couple of times to you already, not sure how
-> >>many
-> >>more times I would have to do that.
-> >
-> >Until you clarify what you are doing.
-
-Let me try again, I think u missed that part of my reply above
-
-If I am doing a broadcast read, lets say for Device Id registers,
-why in the world would I want to retry? CMD_IGNORED is a valid response
-and required to stop enumeration cycle in that case.
-
-> >There is ONE case where IGNORED is a valid answer (reading the Prepare not
-> >finished bits), and it should not only be documented but analyzed in more
-> >details.
-> I meant Read SCP_DevID registers from Device0... prepare bits should never
-> return a CMD_IGNORED
-
-Precisely as I pointed out above.
-
-> >For a write an IGNORED is never OK.
-
-Agreed, but then transfer does both read and write. Write call can treat it
-as error and read call leaves it upto caller.
-
-Does that sound okay for you?
+yes makes sense, we will move the check of __clk_is_enabled() in the
+provider driver and let that return success if it is already at same rate
+etc and is enabled.
 
 -- 
 ~Vinod
