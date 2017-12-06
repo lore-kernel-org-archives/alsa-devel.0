@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Multiple codecs on the same DAI
-Date: Wed, 6 Dec 2017 13:03:23 +0000
-Message-ID: <20171206130323.GG1827@finisterre>
-References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
- <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
- <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
- <20171124180456.6c63tkph4e7ahuid@sirena.org.uk>
- <alpine.DEB.2.11.1712061352160.22247@lnxricardw1.se.axis.com>
+Subject: Applied "ASoC: pcm186x: Add PCM186x binding
+	documentation" to the asoc tree
+Date: Wed,  6 Dec 2017 13:07:53 +0000 (GMT)
+Message-ID: <20171206130753.2BC1544006B@finisterre.ee.mobilebroadband>
+References: <20171129185015.5304-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2192286405409027084=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7499B267923
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 14:03:27 +0100 (CET)
-In-Reply-To: <alpine.DEB.2.11.1712061352160.22247@lnxricardw1.se.axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 57880267923
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 14:07:55 +0100 (CET)
+In-Reply-To: <20171129185015.5304-1-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +22,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2192286405409027084==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Wtrm9ATX0sn6fFKv"
-Content-Disposition: inline
+   ASoC: pcm186x: Add PCM186x binding documentation
 
+has been applied to the asoc tree at
 
---Wtrm9ATX0sn6fFKv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Dec 06, 2017 at 01:54:38PM +0100, Ricard Wanderlof wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> How about non-sound devices, for instance if there is a chip solely for=
-=20
-> managing the microphone power but it's not actually part of the codec. Is=
-=20
-> it reasonable to bring it in as an aux device too, even though there's=20
-> actually no sound going through it?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-That just sounds like a regulator?  I'd expect that just to be used as a
-supply as normal.  What audio specific control would this device be
-provdiing?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---Wtrm9ATX0sn6fFKv
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon6poACgkQJNaLcl1U
-h9AB8Qf7BIo2OGD1NjmXtt+JMQeyOYnAkrD9tA1jmgs2ZOpbmQvxq3ObLDptvo7v
-1x6ngCe1WWLxOL4JAis6QdurSnZjK/LecGWwO5thVzLNAB9zE8t/x+thps6k93Ct
-TQKxjNARIWdRpnnhiwUHHd4dyKtq46KM3nNSHDffReZOkrD9OtMXjcCn9+XSnXC7
-l5LPKWBRtMNDNM6QNJxGBAEsO7FVt3ZKIBJA+zZazlKXlboE1l1a+RpRyuthE1gq
-EUyZTe902lLqILbYmu9EDBQcWqh90WQhwm9xk8t1arVMjOleLtNBUHvvgaCBCmO/
-fFcooHnDk1ykcCIGAvQ1drRXkrsWog==
-=S7Py
------END PGP SIGNATURE-----
+>From eb2a8168b9fd69f66199d9d7e86d23fecfab4e33 Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Tue, 5 Dec 2017 14:52:55 -0600
+Subject: [PATCH] ASoC: pcm186x: Add PCM186x binding documentation
 
---Wtrm9ATX0sn6fFKv--
+Add the dt-binding documentation for the TI PCM186x 2ch and 4ch Audio
+ADCs With Universal Front End.
 
---===============2192286405409027084==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/pcm186x.txt          | 42 ++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/pcm186x.txt
 
-
---===============2192286405409027084==--
+diff --git a/Documentation/devicetree/bindings/sound/pcm186x.txt b/Documentation/devicetree/bindings/sound/pcm186x.txt
+new file mode 100644
+index 000000000000..1087f4855980
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/pcm186x.txt
+@@ -0,0 +1,42 @@
++Texas Instruments PCM186x Universal Audio ADC
++
++These devices support both I2C and SPI (configured with pin strapping
++on the board).
++
++Required properties:
++
++ - compatible : "ti,pcm1862",
++                "ti,pcm1863",
++                "ti,pcm1864",
++                "ti,pcm1865"
++
++ - reg : The I2C address of the device for I2C, the chip select
++         number for SPI.
++
++ - avdd-supply: Analog core power supply (3.3v)
++ - dvdd-supply: Digital core power supply
++ - iovdd-supply: Digital IO power supply
++        See regulator/regulator.txt for more information
++
++CODEC input pins:
++ * VINL1
++ * VINR1
++ * VINL2
++ * VINR2
++ * VINL3
++ * VINR3
++ * VINL4
++ * VINR4
++
++The pins can be used in referring sound node's audio-routing property.
++
++Example:
++
++	pcm186x: audio-codec@4a {
++		compatible = "ti,pcm1865";
++		reg = <0x4a>;
++
++		avdd-supply = <&reg_3v3_analog>;
++		dvdd-supply = <&reg_3v3>;
++		iovdd-supply = <&reg_1v8>;
++	};
+-- 
+2.15.0
