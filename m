@@ -1,113 +1,77 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 06/15] soundwire: Add IO transfer
-Date: Wed, 6 Dec 2017 20:14:02 +0530
-Message-ID: <20171206144402.GT32417@localhost>
-References: <1512122177-2889-1-git-send-email-vinod.koul@intel.com>
- <1512122177-2889-7-git-send-email-vinod.koul@intel.com>
- <40d00228-2891-6e25-4c6f-789518a0e2c2@linux.intel.com>
- <20171203170418.GN32417@localhost>
- <d7ed6ffa-e9b3-a7c9-ae07-369d2d541eab@linux.intel.com>
- <20171205063114.GL32417@localhost>
- <fb78b1c5-0a52-90b3-262e-8880aeb2da11@linux.intel.com>
- <6a475ed4-8ca5-0422-e416-2a32f1afa8ef@linux.intel.com>
- <20171206055813.GO32417@localhost>
- <8c38baee-45f8-682e-f781-c35e26c26d9f@linux.intel.com>
+From: Stefan Potyra <Stefan.Potyra@elektrobit.com>
+Subject: [PATCH] SoC: rockchip: disable clock on error
+Date: Wed, 6 Dec 2017 16:03:24 +0100
+Message-ID: <20171206150324.va4ph66ohjt3v7r3@agrajag.zerfleddert.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8c38baee-45f8-682e-f781-c35e26c26d9f@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: ALSA <alsa-devel@alsa-project.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, plai@codeaurora.org, LKML <linux-kernel@vger.kernel.org>, Sagar Dharia <sdharia@codeaurora.org>, patches.audio@intel.com, Mark <broonie@kernel.org>, srinivas.kandagatla@linaro.org, Sudheer Papothi <spapothi@codeaurora.org>, alan@linux.intel.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: ldv-project@linuxtesting.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 06, 2017 at 07:32:43AM -0600, Pierre-Louis Bossart wrote:
-> On 12/5/17 11:58 PM, Vinod Koul wrote:
-> >On Tue, Dec 05, 2017 at 08:48:03AM -0600, Pierre-Louis Bossart wrote:
-> >>On 12/5/17 7:43 AM, Pierre-Louis Bossart wrote:
-> >>>On 12/5/17 12:31 AM, Vinod Koul wrote:
-> >>>>On Sun, Dec 03, 2017 at 09:01:41PM -0600, Pierre-Louis Bossart wrote:
-> >
-> >>>>>>>>+static inline int do_transfer(struct sdw_bus *bus, struct
-> >>>>>>>>sdw_msg *msg)
-> >>>>>>>>+{
-> >>>>>>>>+    int retry = bus->prop.err_threshold;
-> >>>>>>>>+    enum sdw_command_response resp;
-> >>>>>>>>+    int ret = 0, i;
-> >>>>>>>>+
-> >>>>>>>>+    for (i = 0; i <= retry; i++) {
-> >>>>>>>>+        resp = bus->ops->xfer_msg(bus, msg);
-> >>>>>>>>+        ret = find_response_code(resp);
-> >>>>>>>>+
-> >>>>>>>>+        /* if cmd is ok or ignored return */
-> >>>>>>>>+        if (ret == 0 || ret == -ENODATA)
-> >>>>>>>
-> >>>>>>>Can you document why you don't retry on a CMD_IGNORED? I know
-> >>>>>>>there was a
-> >>>>>>>reason, I just can't remember it.
-> >>>>>>
-> >>>>>>CMD_IGNORED can be okay on broadcast. User of this API can retry all
-> >>>>>>they
-> >>>>>>want!
-> >>>>>
-> >>>>>So you retry if this is a CMD_FAILED but let higher levels retry for
-> >>>>>CMD_IGNORED, sorry I don't see the logic.
-> >>>>
-> >>>>Yes that is right.
-> >>>>
-> >>>>If I am doing a broadcast read, lets say for Device Id registers, why in
-> >>>>the
-> >>>>world would I want to retry? CMD_IGNORED is a valid response and
-> >>>>required to
-> >>>>stop enumeration cycle in that case.
-> >
-> >Above is the clarfication
-> >
-> >>>>But if I am not expecting a CMD_IGNORED response, I can very well go
-> >>>>ahead
-> >>>>and retry from caller. The context is with caller and they can choose to
-> >>>>do
-> >>>>appropriate handling.
-> >>>>
-> >>>>And I have clarified this couple of times to you already, not sure how
-> >>>>many
-> >>>>more times I would have to do that.
-> >>>
-> >>>Until you clarify what you are doing.
-> >
-> >Let me try again, I think u missed that part of my reply above
-> >
-> >If I am doing a broadcast read, lets say for Device Id registers,
-> >why in the world would I want to retry? CMD_IGNORED is a valid response
-> >and required to stop enumeration cycle in that case.
-> >
-> >>>There is ONE case where IGNORED is a valid answer (reading the Prepare not
-> >>>finished bits), and it should not only be documented but analyzed in more
-> >>>details.
-> >>I meant Read SCP_DevID registers from Device0... prepare bits should never
-> >>return a CMD_IGNORED
-> >
-> >Precisely as I pointed out above.
-> >
-> >>>For a write an IGNORED is never OK.
-> >
-> >Agreed, but then transfer does both read and write. Write call can treat it
-> >as error and read call leaves it upto caller.
-> >
-> >Does that sound okay for you?
-> 
-> Not really.
-> You have one case where it's ok and all others are not ok, to me this sounds
-> like you should avoid the retry at the lowest level rather than pushing this
-> to the caller
-> And now that I think of it, the definitions for the DisCo spec were really
-> meant for hardware-based retries available in some master IPs. If this is
-> enabled, then the loops in software are not really needed at all. Can you
-> please check this point?
+Disable the clocks in  rk_spdif_probe when an error occurs after one
+of the clocks has been enabled previously.
 
-Sure I will check that
+Found by Linux Driver Verification project (linuxtesting.org).
 
+Fixes: f874b80e1571 ASoC: rockchip: Add rockchip SPDIF transceiver driver
+Signed-off-by: Stefan Potyra <Stefan.Potyra@elektrobit.com>
+---
+ sound/soc/rockchip/rockchip_spdif.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index ee5055d47d13..a89fe9b6463b 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -322,26 +322,30 @@ static int rk_spdif_probe(struct platform_device *pdev)
+ 	spdif->mclk = devm_clk_get(&pdev->dev, "mclk");
+ 	if (IS_ERR(spdif->mclk)) {
+ 		dev_err(&pdev->dev, "Can't retrieve rk_spdif master clock\n");
+-		return PTR_ERR(spdif->mclk);
++		ret = PTR_ERR(spdif->mclk);
++		goto err_disable_hclk;
+ 	}
+ 
+ 	ret = clk_prepare_enable(spdif->mclk);
+ 	if (ret) {
+ 		dev_err(spdif->dev, "clock enable failed %d\n", ret);
+-		return ret;
++		goto err_disable_clocks;
+ 	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs))
+-		return PTR_ERR(regs);
++	if (IS_ERR(regs)) {
++		ret = PTR_ERR(regs);
++		goto err_disable_clocks;
++	}
+ 
+ 	spdif->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "hclk", regs,
+ 						  &rk_spdif_regmap_config);
+ 	if (IS_ERR(spdif->regmap)) {
+ 		dev_err(&pdev->dev,
+ 			"Failed to initialise managed register map\n");
+-		return PTR_ERR(spdif->regmap);
++		ret = PTR_ERR(spdif->regmap);
++		goto err_disable_clocks;
+ 	}
+ 
+ 	spdif->playback_dma_data.addr = res->start + SPDIF_SMPDR;
+@@ -373,6 +377,10 @@ static int rk_spdif_probe(struct platform_device *pdev)
+ 
+ err_pm_runtime:
+ 	pm_runtime_disable(&pdev->dev);
++err_disable_clocks:
++	clk_disable_unprepare(spdif->mclk);
++err_disable_hclk:
++	clk_disable_unprepare(spdif->hclk);
+ 
+ 	return ret;
+ }
 -- 
-~Vinod
+2.15.1
