@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Question about soc-utils
-Date: Wed, 6 Dec 2017 12:47:42 +0000
-Message-ID: <20171206124742.GE1827@finisterre>
-References: <87r2s9txwi.wl%kuninori.morimoto.gx@renesas.com>
- <20171205123924.GG11658@finisterre>
- <87po7szq28.wl%kuninori.morimoto.gx@renesas.com>
- <87609kzb7u.wl%kuninori.morimoto.gx@renesas.com>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Multiple codecs on the same DAI
+Date: Wed, 6 Dec 2017 13:54:38 +0100
+Message-ID: <alpine.DEB.2.11.1712061352160.22247@lnxricardw1.se.axis.com>
+References: <alpine.DEB.2.11.1711231533480.27895@lnxricardw1.se.axis.com>
+ <20171124123921.ajhxztwypujty6ps@sirena.org.uk>
+ <alpine.DEB.2.11.1711241456420.27895@lnxricardw1.se.axis.com>
+ <20171124180456.6c63tkph4e7ahuid@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1830892229951232995=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BB007266AE1
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 13:47:44 +0100 (CET)
-In-Reply-To: <87609kzb7u.wl%kuninori.morimoto.gx@renesas.com>
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 709E4266AE1
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 13:54:45 +0100 (CET)
+In-Reply-To: <20171124180456.6c63tkph4e7ahuid@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1830892229951232995==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SNIs70sCzqvszXB4"
-Content-Disposition: inline
+On Fri, 24 Nov 2017, Mark Brown wrote:
 
+> On Fri, Nov 24, 2017 at 03:21:24PM +0100, Ricard Wanderlof wrote:
+> =
 
---SNIs70sCzqvszXB4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > In a sense, what I'd want would be to bring in the S/PDIF receiver as a =
 
-On Wed, Dec 06, 2017 at 05:26:54AM +0000, Kuninori Morimoto wrote:
+> > codec driver, but separate from the ordinary chain of sound drivers =
 
-> > > That's just an oversight, it should be using the sample size.
+> > (codec, platform, etc). I suppose one way would be to somehow (via =
 
-> The original commit was below.
-> It seems original code was also assuming format width.
-> Was this also oversight ?
-> format_width -> physical_width changes meaning, I think...
+> > platform data or DT) pass a reference to the S/PDIF receiver to the =
 
-> -	switch (params_format(params)) {
-> -	case SNDRV_PCM_FORMAT_S16_LE:
-> -	case SNDRV_PCM_FORMAT_S16_BE:
-> -		sample_size = 16;
-> -		break;
-> -	case SNDRV_PCM_FORMAT_S20_3LE:
-> -	case SNDRV_PCM_FORMAT_S20_3BE:
-> -		sample_size = 20;
-> -		break;
+> > machine driver, which would then somehow convert this to a snd_soc_code=
+c =
 
-Ah, sorry - I misread what you were saying.  The above is the intention.
+> > *, and then have it explicitly call the the snd_soc_codec_driver.probe =
 
---SNIs70sCzqvszXB4
-Content-Type: application/pgp-signature; name="signature.asc"
+> > function set up by the S/PDIF receiver driver to initialize it much the =
 
------BEGIN PGP SIGNATURE-----
+> > way ALSA would have done if it had been part of a dai_link for card. =
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlon5u0ACgkQJNaLcl1U
-h9Bl7gf/YVZVGXC/XCGrANMVb02DrnzIg6qydVQALhwK9Jm6K+u7BXIJMVAVEt9P
-vkHA9YGsww+im86vZk+QYy6TBwMocdUhOJ2UJ9SDnpRQbGcV/+gcU3jU7m4MMIbq
-yWOpsSt3/2hkfvPkvFAg3OKfPCl7tkIgw8O/a3MV1Qi08E5+52sTxgD7KvSrrmtv
-zGSb1Mq6yROIQKoxudU/xWe9ZttDKXVKeWqWu0IgXuD/PjMJ9ZazlJVcq8/X05Xn
-CZmnvnnlXi6UitKOpm8T3RjddmtL4bEO2Srzx8ECA9p/Wua5t2ZOsZq7KTnZDotn
-Oaf5JhBGXatqcnwPROTf0w3M8R/8kw==
-=L5Ru
------END PGP SIGNATURE-----
+> =
 
---SNIs70sCzqvszXB4--
+> You can just register any CODEC device as an aux_dev, that seems to be
+> exactly what you're looking for.
 
---===============1830892229951232995==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Ah, thanks. Yes, having tried it now it does indeed seem to be what I =
 
+need.
 
---===============1830892229951232995==--
+How about non-sound devices, for instance if there is a chip solely for =
+
+managing the microphone power but it's not actually part of the codec. Is =
+
+it reasonable to bring it in as an aux device too, even though there's =
+
+actually no sound going through it?
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
