@@ -1,45 +1,135 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v8 10/13] dt-bindings: Add qcom slimbus controller
- bindings
-Date: Tue, 5 Dec 2017 22:03:04 +0000
-Message-ID: <e8914c67-1a5d-b164-52f5-9bf1392ed422@linaro.org>
-References: <20171130174200.6684-1-srinivas.kandagatla@linaro.org>
- <20171130174200.6684-11-srinivas.kandagatla@linaro.org>
- <20171204212829.bmcp5dktc5w46rom@rob-hp-laptop>
+From: "Katsuhiro Suzuki" <suzuki.katsuhiro@socionext.com>
+Subject: Re: [PATCH 5/8] ASoC: uniphier: add support for UniPhier AIO driver
+Date: Wed, 6 Dec 2017 15:03:18 +0900
+Message-ID: <004801d36e57$ea1940d0$be4bc270$@socionext.com>
+References: <20171122114321.29196-1-suzuki.katsuhiro@socionext.com> <20171122114321.29196-6-suzuki.katsuhiro@socionext.com> <20171204183934.rd4vin22ktukwpip@sirena.org.uk> <002b01d36d84$51d80aa0$f5881fe0$@socionext.com> <20171205121440.GC11658@finisterre>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain;
+        charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20171204212829.bmcp5dktc5w46rom@rob-hp-laptop>
-Content-Language: en-US
+In-Reply-To: <20171205121440.GC11658@finisterre>
+Content-Language: ja
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, alsa-devel@alsa-project.org, sdharia@codeaurora.org, bp@suse.de, poeschel@lemonage.de, treding@nvidia.com, andreas.noever@gmail.com, alan@linux.intel.com, mathieu.poirier@linaro.org, daniel@ffwll.ch, jkosina@suse.cz, sharon.dvir1@mail.huji.ac.il, joe@perches.com, davem@davemloft.net, james.hogan@imgtec.com, michael.opdenacker@free-electrons.com, pawel.moll@arm.com, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, vinod.koul@intel.com, arnd@arndb.de
+To: 'Mark Brown' <broonie@kernel.org>, =?iso-2022-jp?B?U3V6dWtpLCBLYXRzdWhpcm8vGyRCTmtMWhsoQiAbJEI+IUduGyhC?= <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, =?iso-2022-jp?B?WWFtYWRhLCBNYXNhaGlyby8bJEI7M0VEGyhCIBskQj8/OTAbKEI=?= <yamada.masahiro@socionext.com>, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-
-On 04/12/17 21:28, Rob Herring wrote:
-> On Thu, Nov 30, 2017 at 05:41:57PM +0000, srinivas.kandagatla@linaro.org wrote:
->> From: Sagar Dharia <sdharia@codeaurora.org>
->>
->> This patch add device tree bindings for Qualcomm slimbus controller.
->>
->> Signed-off-by: Sagar Dharia <sdharia@codeaurora.org>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../devicetree/bindings/slimbus/slim-qcom-ctrl.txt | 39 ++++++++++++++++++++++
->>   1 file changed, 39 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
->>
->> + - clocks : Interface and core clocks used by this SLIMbus controller
->> + - clock-names : Required clock-name entries are:
->> +	"iface_clk" : Interface clock for this controller
->> +	"core_clk" : Interrupt for controller core's BAM
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Tuesday, December 5, 2017 9:15 PM
+> To: Suzuki, Katsuhiro/鈴木 勝博 <suzuki.katsuhiro@socionext.com>
+> Cc: alsa-devel@alsa-project.org; Rob Herring <robh+dt@kernel.org>;
+> devicetree@vger.kernel.org; Yamada, Masahiro/山田 真弘
+> <yamada.masahiro@socionext.com>; Masami Hiramatsu
+> <masami.hiramatsu@linaro.org>; Jassi Brar <jaswinder.singh@linaro.org>;
+> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 5/8] ASoC: uniphier: add support for UniPhier AIO driver
 > 
-> Doesn't match the example. You should drop the '_clk'. With that,
+> On Tue, Dec 05, 2017 at 01:48:39PM +0900, Katsuhiro Suzuki wrote:
+> 
+> Please fix your mail client to word wrap within paragraphs at something
+> substantially less than 80 columns.  Doing this makes your messages much
+> easier to read and reply to.
 > 
 
-Thanks for the Reviewed-by tag, I will fix the above in next version.
+Thank you, I set it.
 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+
+> > > Is there a mux in the SoC here?
+> 
+> > Sorry for confusing, It's not mux.
+> 
+> > uniphier_srcport_reset() resets HW SRC (sampling rate converter) block.
+> > Audio data out ports of UniPhier audio system have HW SRC.
+> 
+> Is the SRC just a single block sitting between the DMA and the external
+> audio port or is there more going on?  Some of the other code made me
+> think the hardware was more flexible than this (all the writing to
+> registers with names like RXSEL for example).
+> 
+
+This hardware has 2 types of HW SRC. First type sit before audio port and
+cannot change routing. I use it in this driver. Second type is like a loopback,
+but this block is not used in this driver to simplify the first version.
+
+Type 1:
+  Mem -> DMA -> SRC -> Out Port -> External pin
+Type 2:
+  Mem -> DMA -> SRC -> Out Port -> In Port -> DMA -> Mem
+
+
+> > > > +#endif /* CONFIG_SND_SOC_UNIPHIER_LD11 */
+> 
+> > > Why is there an ifdef here?  There's no other conditional code in here,
+> > > it seems pointless.
+> 
+> > This config is used to support or not LD11 SoC.
+> > aio-ld11.c is not build and 'uniphier_aio_ldxx_spec' is undefined if this
+config is
+> disabled.
+> >
+> > aio-ld11.c defines SoC dependent resources (port, HW ring buffer, DMA ch,
+etc.)
+> > and fixed settings.
+> > I know it's better to move such information into device-tree, but register
+areas of
+> > UniPhier's audio system is very strange and interleaved. It's hard to split
+each
+> nodes...
+> 
+> I'd expect this code to be structured more like a library - have a
+> driver that handles the specific IPs then have it call into a shared
+> block of code that does the generic bits.  Though in this case the
+> device specific bit looks like a couple of tiny data tables so I'm not
+> sure it's worth making it conditional or separate at all.
+> 
+
+Sorry... I agree your opinion, but I can't imagine the detail.
+
+I think my driver has structure as follows (ex. startup):
+  DAI: uniphier_aio_startup()@aio-core.c
+  Lib: uniphier_aio_init()@aio-regctrl.c
+  SoC specific: uniphier_aio_ld11_spec@aio-ld11.c
+
+Am I wrong? Would you mean split the functions in aio-regctl.[ch] to other
+kernel module? I wonder if you could tell me the example from existing
+drivers. I'll try to fix my driver like as it.
+
+
+> > > This looks awfully like compressed audio support...  should there be
+> > > integration with the compressed audio API/
+> 
+> > Thanks, I'll try it. Is there Documentation in
+> sound/designes/compress-offload.rst?
+> > And best sample is... Intel's driver?
+> 
+> Yes.
+> 
+> > (Summary)
+> > I think I should fix as follows:
+> 
+> >   - Split DMA, DAI patches from large one
+> >   - Validate parameters in hw_params
+> >   - Add description about HW SRC (or fix bad name 'srcport')
+> >   - Add comments about uniphier_aiodma_irq()
+> >   - Expose clocking and audio routing to userspace, or at the very
+> >     least machine driver configuration
+> >   - Support compress-audio API for S/PDIF
+> 
+> > and post V2.
+> 
+> At least.  I do think we need to get to the bottom of how flexible the
+> hardware is first though.
+
+Yes, indeed. This hardware is more flexible and complex, but now I (and our
+company) don't use it. Of course, I don't want to hide some features of this
+hardware from ALSA people. I should try to upstream all features in the future,
+I think.
+
+
+Regards,
+--
+Katsuhiro Suzuki
