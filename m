@@ -1,77 +1,51 @@
-From: Stefan Potyra <Stefan.Potyra@elektrobit.com>
-Subject: [PATCH] SoC: rockchip: disable clock on error
-Date: Wed, 6 Dec 2017 16:03:24 +0100
-Message-ID: <20171206150324.va4ph66ohjt3v7r3@agrajag.zerfleddert.de>
+From: Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH] ASoC: fsl_asrc: protect macro argument
+Date: Wed, 06 Dec 2017 16:03:24 +0100
+Message-ID: <a79ecfeb4b74ba18fe839d53e0f874f8@agner.ch>
+References: <20170807063657.12581-1-stefan@agner.ch>
+ <20170807070806.GA8208@Asurada> <b96fa8a745e7d6e9de8bb70d0f335648@agner.ch>
+ <20171206141155.ytdmashkum3ujpvk@sirena.org.uk>
+ <450504e854cf68efff7f212c6bd66fe2@agner.ch>
+ <20171206143950.irihxu25xg7jut4e@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: ldv-project@linuxtesting.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kmu-office.ch (mail.kmu-office.ch [178.209.48.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45F17267953
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 16:08:12 +0100 (CET)
+In-Reply-To: <20171206143950.irihxu25xg7jut4e@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, timur@tabi.org, Nicolin Chen <nicoleotsuka@gmail.com>, fabio.estevam@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-Disable the clocks in  rk_spdif_probe when an error occurs after one
-of the clocks has been enabled previously.
+On 2017-12-06 15:39, Mark Brown wrote:
+> On Wed, Dec 06, 2017 at 03:25:37PM +0100, Stefan Agner wrote:
+>> On 2017-12-06 15:11, Mark Brown wrote:
+> 
+[...]
+>> I did not meant to bug people, just wanted to make sure the patch does
+>> not falls through the cracks... After all, patch as well as the Ack
+>> already more than 3 months old....
+> 
+> You need to send patches to the relevant maintainers as covered in
+> SubmittingPatches, if you don't send us patches we won't have them and
+> can't apply them.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Yeah this is where it gets a bit fuzzy around the affected file, there
+are maintainers mentioned in the MAINTAINER file but I just realized
+today that it was typically you which merged patches for the file.
 
-Fixes: f874b80e1571 ASoC: rockchip: Add rockchip SPDIF transceiver driver
-Signed-off-by: Stefan Potyra <Stefan.Potyra@elektrobit.com>
----
- sound/soc/rockchip/rockchip_spdif.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+Will resend the patch and add you as recipient.
 
-diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
-index ee5055d47d13..a89fe9b6463b 100644
---- a/sound/soc/rockchip/rockchip_spdif.c
-+++ b/sound/soc/rockchip/rockchip_spdif.c
-@@ -322,26 +322,30 @@ static int rk_spdif_probe(struct platform_device *pdev)
- 	spdif->mclk = devm_clk_get(&pdev->dev, "mclk");
- 	if (IS_ERR(spdif->mclk)) {
- 		dev_err(&pdev->dev, "Can't retrieve rk_spdif master clock\n");
--		return PTR_ERR(spdif->mclk);
-+		ret = PTR_ERR(spdif->mclk);
-+		goto err_disable_hclk;
- 	}
- 
- 	ret = clk_prepare_enable(spdif->mclk);
- 	if (ret) {
- 		dev_err(spdif->dev, "clock enable failed %d\n", ret);
--		return ret;
-+		goto err_disable_clocks;
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(regs))
--		return PTR_ERR(regs);
-+	if (IS_ERR(regs)) {
-+		ret = PTR_ERR(regs);
-+		goto err_disable_clocks;
-+	}
- 
- 	spdif->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "hclk", regs,
- 						  &rk_spdif_regmap_config);
- 	if (IS_ERR(spdif->regmap)) {
- 		dev_err(&pdev->dev,
- 			"Failed to initialise managed register map\n");
--		return PTR_ERR(spdif->regmap);
-+		ret = PTR_ERR(spdif->regmap);
-+		goto err_disable_clocks;
- 	}
- 
- 	spdif->playback_dma_data.addr = res->start + SPDIF_SMPDR;
-@@ -373,6 +377,10 @@ static int rk_spdif_probe(struct platform_device *pdev)
- 
- err_pm_runtime:
- 	pm_runtime_disable(&pdev->dev);
-+err_disable_clocks:
-+	clk_disable_unprepare(spdif->mclk);
-+err_disable_hclk:
-+	clk_disable_unprepare(spdif->hclk);
- 
- 	return ret;
- }
--- 
-2.15.1
+--
+Stefan
