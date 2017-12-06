@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/6] ASoC: Intel: Skylake: Skylake
-	driver updates
-Date: Wed, 6 Dec 2017 17:43:44 +0000
-Message-ID: <20171206174344.kimjlfmy6frjibxz@sirena.org.uk>
-References: <20171206110406.11400-1-guneshwor.o.singh@intel.com>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: Re: [PATCH v2 18/19] ASoC: tlv320aic31xx: Add
+ headphone/headset detection
+Date: Wed, 6 Dec 2017 11:47:14 -0600
+Message-ID: <8e52d973-2335-e3c5-5e57-15621819cf45@ti.com>
+References: <20171129213300.20021-1-afd@ti.com>
+ <20171129213300.20021-19-afd@ti.com>
+ <20171201134127.2msgmjrfj47ypl3w@sirena.org.uk>
+ <b2d9ffa9-3923-cb86-f0ad-cf4f37e56334@ti.com>
+ <20171206173215.bitae546h2ibedhz@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4877813393729660916=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F6742679FF
- for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:43:50 +0100 (CET)
-In-Reply-To: <20171206110406.11400-1-guneshwor.o.singh@intel.com>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFBFA2679FF
+ for <alsa-devel@alsa-project.org>; Wed,  6 Dec 2017 18:47:16 +0100 (CET)
+In-Reply-To: <20171206173215.bitae546h2ibedhz@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +26,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Patches Audio <patches.audio@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 12/06/2017 11:32 AM, Mark Brown wrote:
+> On Wed, Dec 06, 2017 at 11:25:15AM -0600, Andrew F. Davis wrote:
+>> On 12/01/2017 07:41 AM, Mark Brown wrote:
+> 
+>>> This only does half the job, there's no way for anything to specify a
+>>> jack here.
+> 
+>> Other CODECs drivers expose some kind of platform/machine specific
+>> function(s) to send the jack definition to the CODEC, we seem to be
+> 
+> Your driver doesn't do that.
+> 
 
---===============4877813393729660916==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sbttzj6h3zegz7y3"
-Content-Disposition: inline
+Right, I don't have a specific machine in mind so didn't wan to do it
+that way.
 
+>> missing a generic way to report jack information up to the machine layer
+>> driver.
+> 
+> snd_soc_codec_set_jack()
+> 
 
---sbttzj6h3zegz7y3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Dec 06, 2017 at 04:34:00PM +0530, Guneshwor Singh wrote:
-> This series includes fixes for HDMI widgets sysfs not updating, shim
-> read optimization, fixes for dmic dev_type check and feature to
-> configure DSP clock source.
-
-Please don't throw together a bunch of unrelated things into a patch
-series, if a patch is a standalone thing that isn't really related to
-and doesn't depend on the rest of the series just send it separately.
-This makes it much easier to follow what's going on and avoids changes
-getting held up by other, unrelated, changes.  For example here the DSP
-clock scaling stuff is a three patch series, if there were problems with
-this probably the rest of the series would take longer to get looked at.
-
---sbttzj6h3zegz7y3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlooLE8ACgkQJNaLcl1U
-h9DDHgf/WMqMwZgstqrUdngcAgsy3/PM77lkIVgOSIe+QsMYUpyjFSL+HOF2P76C
-YA1Wh9mE8qfGlg0KPgbS7rkcq5Xhp2uNREMpSqXB3PJq4fUj/8v5FSaFEECNtQLA
-brC8XbVylNqfXgbaTmiKEAnv4CICqO8veqIJWhVVAXvNmNnwQXZ8OdqP7kzHxKGF
-A+7jLClPNIEj5hmLppkdvDtLjrSTWqEzTDoDEV5E5uYcQC8wt893VkOQTlsJ2vbd
-BWuUKFYXTwIkn442KMzdFmQ9iR1IMF3n7mBh0Q38DFBqWV0COsdZTSybb8ZCqh9V
-MqUJmlXHwGvZ9o8p62EtS2WdMl++dw==
-=oPnV
------END PGP SIGNATURE-----
-
---sbttzj6h3zegz7y3--
-
---===============4877813393729660916==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4877813393729660916==--
+Hmm, this looks close to what I was thinking (I was wanting to go the
+other direction and have the codec report what jacks it supports, this
+could allow for more than one jack), I'll see if I can make it work.
